@@ -47,7 +47,12 @@ export class UIManager {
             this.abilityTooltip.style.display = 'none';
         });
 
-        // Event Delegation for Stat Buttons
+        // Stat Tooltip
+        this.statTooltip = document.getElementById('stat-tooltip');
+        this.statTooltipTitle = document.getElementById('stat-tooltip-title');
+        this.statTooltipDesc = document.getElementById('stat-tooltip-desc');
+
+        // Event Delegation for Stat Buttons & Tooltips
         this.statsContent.addEventListener('click', (e) => {
             if (e.target.classList.contains('stat-btn')) {
                 const stat = e.target.dataset.stat;
@@ -56,6 +61,19 @@ export class UIManager {
                     this.onStatUpgrade(stat);
                 }
             }
+        });
+
+        this.statsContent.addEventListener('mousemove', (e) => {
+            const row = e.target.closest('.stat-row');
+            if (row && row.dataset.statName) {
+                this.showStatTooltip(row.dataset.statName, e.clientX, e.clientY);
+            } else {
+                this.statTooltip.style.display = 'none';
+            }
+        });
+
+        this.statsContent.addEventListener('mouseleave', () => {
+            this.statTooltip.style.display = 'none';
         });
 
         // Make windows draggable and stop propagation
@@ -245,6 +263,8 @@ export class UIManager {
 
     updateCharacterSheet(player) {
         if (!player || this.characterSheet.style.display === 'none') return;
+        
+        this.lastPlayerRef = player; // Store reference for tooltips
 
         const btnStyle = player.statPoints > 0 ? 'display:inline-block; margin-left:5px; cursor:pointer;' : 'display:none;';
 
@@ -259,11 +279,11 @@ export class UIManager {
                 <div><strong>Mana:</strong> ${Math.ceil(player.stats.mana)} / ${player.stats.maxMana}</div>
             </div>
             <div style="margin-bottom: 10px; border-top: 1px solid #444; padding-top: 5px;">
-                <div class="stat-row"><strong>STR:</strong> ${player.stats.strength} <button class="stat-btn" data-stat="strength" style="${btnStyle}">+</button></div>
-                <div class="stat-row"><strong>DEX:</strong> ${player.stats.dexterity} <button class="stat-btn" data-stat="dexterity" style="${btnStyle}">+</button></div>
-                <div class="stat-row"><strong>INT:</strong> ${player.stats.intelligence} <button class="stat-btn" data-stat="intelligence" style="${btnStyle}">+</button></div>
-                <div class="stat-row"><strong>VIT:</strong> ${player.stats.vitality} <button class="stat-btn" data-stat="vitality" style="${btnStyle}">+</button></div>
-                <div class="stat-row"><strong>WIS:</strong> ${player.stats.wisdom} <button class="stat-btn" data-stat="wisdom" style="${btnStyle}">+</button></div>
+                <div class="stat-row" data-stat-name="strength"><strong>STR:</strong> ${player.stats.strength} <button class="stat-btn" data-stat="strength" style="${btnStyle}">+</button></div>
+                <div class="stat-row" data-stat-name="dexterity"><strong>DEX:</strong> ${player.stats.dexterity} <button class="stat-btn" data-stat="dexterity" style="${btnStyle}">+</button></div>
+                <div class="stat-row" data-stat-name="intelligence"><strong>INT:</strong> ${player.stats.intelligence} <button class="stat-btn" data-stat="intelligence" style="${btnStyle}">+</button></div>
+                <div class="stat-row" data-stat-name="vitality"><strong>VIT:</strong> ${player.stats.vitality} <button class="stat-btn" data-stat="vitality" style="${btnStyle}">+</button></div>
+                <div class="stat-row" data-stat-name="wisdom"><strong>WIS:</strong> ${player.stats.wisdom} <button class="stat-btn" data-stat="wisdom" style="${btnStyle}">+</button></div>
             </div>
             <div style="border-top: 1px solid #444; padding-top: 5px;">
                 <div><strong>DMG:</strong> ${player.stats.damage}</div>
@@ -357,5 +377,59 @@ export class UIManager {
         window.addEventListener('mouseup', () => {
             isDragging = false;
         });
+    }
+
+    showStatTooltip(statName, x, y) {
+        // Determine text based on player class and stat
+        // We need access to player. Since we don't store player in UIManager, we might need to pass it or store it.
+        // Actually, updatePlayerStats is called every frame with player. Let's store a reference.
+        // Or better, just assume we can access it via gameEngine if we had it, but we don't.
+        // Let's store the last player object in updatePlayerStats or updateCharacterSheet.
+        
+        if (!this.lastPlayerRef) return;
+        const player = this.lastPlayerRef;
+        const className = player.constructor.name; // Fighter, Rogue, etc.
+        const manaStat = player.manaStatName || 'intelligence';
+
+        let title = statName.toUpperCase();
+        let desc = "";
+
+        switch (statName) {
+            case 'strength':
+                desc = "Increases Melee Damage.";
+                if (className === 'Fighter') desc += " Increases Charge ability damage.";
+                break;
+            case 'dexterity':
+                desc = "Increases Movement Speed and Attack Speed.";
+                if (className === 'Rogue') desc += " Increases Dagger ability damage.";
+                break;
+            case 'vitality':
+                desc = "Increases Max HP and HP Regeneration.";
+                break;
+            case 'intelligence':
+                if (manaStat === 'intelligence') {
+                    desc = "Increases Max Mana and Mana Regeneration.";
+                    if (className === 'Wizard') desc += " Increases Fireball ability damage.";
+                } else {
+                    desc = "This stat isn't important for you.";
+                }
+                break;
+            case 'wisdom':
+                if (manaStat === 'wisdom') {
+                    desc = "Increases Max Mana and Mana Regeneration.";
+                    if (className === 'Cleric') desc += " Increases Spirit ability damage.";
+                }
+                // Everyone gets cast speed/cost reduction from wisdom currently
+                if (desc) desc += " ";
+                desc += "Increases Cast Speed and reduces Mana Costs.";
+                break;
+        }
+
+        this.statTooltipTitle.textContent = title;
+        this.statTooltipDesc.textContent = desc;
+        
+        this.statTooltip.style.display = 'block';
+        this.statTooltip.style.left = `${x + 15}px`;
+        this.statTooltip.style.top = `${y + 15}px`;
     }
 }
