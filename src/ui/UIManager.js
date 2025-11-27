@@ -10,6 +10,7 @@ export class UIManager {
         
         this.floatingBars = new Map(); // Entity ID -> DOM Element
         this.uiLayer = document.getElementById('ui-layer');
+        this.gameTimer = document.getElementById('game-timer');
 
         // New UI Elements
         this.xpBar = document.getElementById('xp-bar-fill');
@@ -163,6 +164,14 @@ export class UIManager {
     showHUD() {
         this.hud.style.display = 'block';
         this.abilityContainer.style.display = 'block';
+        if (this.gameTimer) this.gameTimer.style.display = 'block';
+    }
+
+    updateTimer(seconds) {
+        if (!this.gameTimer) return;
+        const m = Math.floor(seconds / 60);
+        const s = Math.floor(seconds % 60);
+        this.gameTimer.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     }
 
     updatePlayerStats(player) {

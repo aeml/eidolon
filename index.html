@@ -20,6 +20,22 @@
             background: transparent;
         }
 
+        /* Game Timer */
+        #game-timer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 2px 2px 0 #000;
+            font-family: 'Courier New', Courier, monospace;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border: 1px solid #444;
+            border-radius: 4px;
+        }
+
         /* Player HUD */
         #player-hud {
             position: absolute;
@@ -650,6 +666,38 @@
         <div id="patch-notes-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 600px; z-index: 101; flex-direction: column;">
             <div class="window-header">PATCH NOTES</div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.05 (Elite Update)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Elite Enemy System:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li>A powerful Elite Enemy now spawns every 3 minutes.</li>
+                                <li>Elites have 3x HP, 3x Damage, and grant 5x XP.</li>
+                                <li>Visual distinction: Elites are 1.5x larger and emit a red glow.</li>
+                                <li><strong>Guaranteed Loot:</strong> Killing an Elite guarantees a high-quality item drop (50% Uncommon, 40% Rare, 10% Legendary).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Game Timer:</strong> Added a game timer to the UI to track session duration.</li>
+                        <li><strong>Balance Changes:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>HP Regeneration:</strong> Increased to <code>Vitality * 0.5</code> (previously 0.1).</li>
+                                <li><strong>Mana Regeneration:</strong> Increased to <code>Wisdom * 0.5</code> (previously 0.1).</li>
+                                <li><strong>Attack Speed:</strong> Scaling increased to <code>Dexterity * 0.01</code> per point (previously 0.002).</li>
+                                <li><strong>Cooldown Reduction:</strong> Scaling increased to <strong>1% per Intelligence point</strong> (previously 0.5%), capped at 50%.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Performance Optimizations:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Raycast Throttling:</strong> Mouse interaction raycasting is now throttled to 20 checks per second to reduce CPU usage.</li>
+                                <li><strong>Entity Caching:</strong> Active entities are now cached once per frame to prevent redundant calculations.</li>
+                                <li><strong>Optimized Collision:</strong> Projectile and AoE damage logic now uses cached entities, improving performance with many enemies.</li>
+                                <li><strong>Enemy Lifecycle:</strong> Respawn and cleanup logic runs less frequently (every 10 frames) to save resources.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Bug Fixes:</strong> Fixed syntax errors in ItemSystem preventing loot generation and Elite loot logic.</li>
+                    </ul>
+                </div>
+
                 <div style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.04</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
