@@ -6,13 +6,12 @@ import { CONSTANTS } from '../core/Constants.js';
 export class MeshFactory {
     static loader = new GLTFLoader();
     static cache = {};
-    static pool = {}; // Pool for recycling meshes
+    static pool = {};
 
     static getPooledMesh(type) {
         if (this.pool[type] && this.pool[type].length > 0) {
-            // console.log(`MeshFactory: Reusing pooled mesh for ${type}`);
             const mesh = this.pool[type].pop();
-            mesh.visible = true; // Ensure visible
+            mesh.visible = true;
             return mesh;
         }
         return null;
@@ -22,24 +21,17 @@ export class MeshFactory {
         if (!mesh) return;
         if (!this.pool[type]) this.pool[type] = [];
         
-        // Reset mesh state if needed
         mesh.visible = false;
         mesh.position.set(0, 0, 0);
         mesh.rotation.set(0, 0, 0);
         if (mesh.parent) mesh.parent.remove(mesh);
         
-        // Limit pool size to avoid infinite memory growth (e.g. 50 per type)
         if (this.pool[type].length < 50) {
             this.pool[type].push(mesh);
-        } else {
-            // Let GC handle it if pool is full
-            // console.log(`MeshFactory: Pool full for ${type}, discarding mesh`);
         }
     }
 
     static async loadModel(path) {
-        // We don't clone the scene here because we need the raw GLTF object for animations sometimes
-        // But for caching purposes, we should probably cache the GLTF object
         if (this.cache[path]) return this.cache[path];
         
         return new Promise((resolve, reject) => {
@@ -51,21 +43,16 @@ export class MeshFactory {
     }
 
     static async createMeshForType(type) {
-        // Check Pool First
         const pooled = this.getPooledMesh(type);
         if (pooled) return pooled;
 
         let geometry, material, mesh;
         
-        // Check for Mobile (Global check or pass it in? We can check window width or UA here too)
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800;
 
-        // Try to load GLB for Fighter first
         if (type === 'Fighter') {
             try {
-                // Load Base Mesh (Idle)
                 const idleGltf = await this.loadModel('./assets/archetypes/Fighter/idle.glb');
-                // Use SkeletonUtils to clone properly, preserving bone/skin connections
                 mesh = SkeletonUtils.clone(idleGltf.scene);
                 
                 console.log("Structure of loaded mesh:");
@@ -77,62 +64,51 @@ export class MeshFactory {
                     }
                 });
 
-                // Initialize animations array
                 mesh.userData.animations = [];
 
-                // Helper to add animation
                 const addAnim = (clip, name) => {
                     if (clip) {
                         const newClip = clip.clone();
                         newClip.name = name;
-                        // Strip scale tracks to prevent size popping between animations
                         newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
                         mesh.userData.animations.push(newClip);
                     }
                 };
 
-                // Add Idle Animation
                 if (idleGltf.animations.length > 0) {
                     addAnim(idleGltf.animations[0], 'Idle');
                 } else {
                     console.warn("MeshFactory: No animations found in idle.glb");
                 }
 
-                // Load and Add Walk
                 try {
                     const walkGltf = await this.loadModel('./assets/archetypes/Fighter/walk.glb');
                     if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
                 } catch (e) { console.warn("Missing walk anim"); }
 
-                // Load and Add Run
                 try {
                     const runGltf = await this.loadModel('./assets/archetypes/Fighter/run.glb');
                     if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
                 } catch (e) { console.warn("Missing run anim"); }
 
-                // Load and Add Attack
                 try {
                     const attackGltf = await this.loadModel('./assets/archetypes/Fighter/attack.glb');
                     if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
                 } catch (e) { console.warn("Missing attack anim"); }
 
-                mesh.scale.set(2.5, 2.5, 2.5); // Reduced scale from 10 to 2.5
+                mesh.scale.set(2.5, 2.5, 2.5);
                 
-                // Restore original materials but ensure they react to light
                 mesh.traverse(c => {
                     if (c.isMesh) {
-                        // If the model has no material, give it a default one
                         if (!c.material) {
                             c.material = new THREE.MeshStandardMaterial({ color: 0xffffff });
                         }
-                        // Ensure shadows are enabled
                         c.castShadow = true;
                         c.receiveShadow = true;
                         c.frustumCulled = false;
                     }
                 });
                 
-                // Ensure mesh is centered
                 const box = new THREE.Box3().setFromObject(mesh);
                 const size = box.getSize(new THREE.Vector3());
                 const center = box.getCenter(new THREE.Vector3());
@@ -141,13 +117,12 @@ export class MeshFactory {
                     console.error("MeshFactory: Mesh has ZERO size! It might be empty or scale 0.");
                 }
 
-                mesh.position.sub(center); // Center the mesh at 0,0,0
-                mesh.position.y += size.y / 2; // Lift to sit on ground
+                mesh.position.sub(center);
+                mesh.position.y += size.y / 2;
 
                 return mesh;
             } catch (e) {
                 console.warn(`Failed to load model for ${type}, falling back to primitive.`, e);
-                // Fallback
                 const geometry = new THREE.BoxGeometry(1, 1, 1);
                 const material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.FIGHTER.COLOR });
                 mesh = new THREE.Mesh(geometry, material);
@@ -158,45 +133,36 @@ export class MeshFactory {
             }
         }
 
-        // Try to load GLB for Wizard
         if (type === 'Wizard') {
             try {
-                // Load Base Mesh (Idle)
                 const idleGltf = await this.loadModel('./assets/archetypes/Wizard/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);
                 
-                // Initialize animations array
                 mesh.userData.animations = [];
 
-                // Helper to add animation
                 const addAnim = (clip, name) => {
                     if (clip) {
                         const newClip = clip.clone();
                         newClip.name = name;
-                        // Strip scale tracks to prevent size popping between animations
                         newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
                         mesh.userData.animations.push(newClip);
                     }
                 };
 
-                // Add Idle Animation
                 if (idleGltf.animations.length > 0) {
                     addAnim(idleGltf.animations[0], 'Idle');
                 }
 
-                // Load and Add Walk
                 try {
                     const walkGltf = await this.loadModel('./assets/archetypes/Wizard/walk.glb');
                     if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
                 } catch (e) { console.warn("Missing walk anim"); }
 
-                // Load and Add Run
                 try {
                     const runGltf = await this.loadModel('./assets/archetypes/Wizard/run.glb');
                     if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
                 } catch (e) { console.warn("Missing run anim"); }
 
-                // Load and Add Attack
                 try {
                     const attackGltf = await this.loadModel('./assets/archetypes/Wizard/attack.glb');
                     if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
@@ -204,7 +170,6 @@ export class MeshFactory {
 
                 mesh.scale.set(2.5, 2.5, 2.5); 
                 
-                // Restore original materials but ensure they react to light
                 mesh.traverse(c => {
                     if (c.isMesh) {
                         if (!c.material) {
@@ -216,7 +181,6 @@ export class MeshFactory {
                     }
                 });
                 
-                // Ensure mesh is centered
                 const box = new THREE.Box3().setFromObject(mesh);
                 const size = box.getSize(new THREE.Vector3());
                 const center = box.getCenter(new THREE.Vector3());
@@ -237,45 +201,36 @@ export class MeshFactory {
             }
         }
 
-        // Try to load GLB for Rogue
         if (type === 'Rogue') {
             try {
-                // Load Base Mesh (Idle)
                 const idleGltf = await this.loadModel('./assets/archetypes/Rogue/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);
                 
-                // Initialize animations array
                 mesh.userData.animations = [];
 
-                // Helper to add animation
                 const addAnim = (clip, name) => {
                     if (clip) {
                         const newClip = clip.clone();
                         newClip.name = name;
-                        // Strip scale tracks to prevent size popping between animations
                         newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
                         mesh.userData.animations.push(newClip);
                     }
                 };
 
-                // Add Idle Animation
                 if (idleGltf.animations.length > 0) {
                     addAnim(idleGltf.animations[0], 'Idle');
                 }
 
-                // Load and Add Walk
                 try {
                     const walkGltf = await this.loadModel('./assets/archetypes/Rogue/walk.glb');
                     if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
                 } catch (e) { console.warn("Missing walk anim"); }
 
-                // Load and Add Run
                 try {
                     const runGltf = await this.loadModel('./assets/archetypes/Rogue/run.glb');
                     if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
                 } catch (e) { console.warn("Missing run anim"); }
 
-                // Load and Add Attack
                 try {
                     const attackGltf = await this.loadModel('./assets/archetypes/Rogue/attack.glb');
                     if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
@@ -283,7 +238,6 @@ export class MeshFactory {
 
                 mesh.scale.set(2.5, 2.5, 2.5); 
                 
-                // Restore original materials but ensure they react to light
                 mesh.traverse(c => {
                     if (c.isMesh) {
                         if (!c.material) {
@@ -295,7 +249,6 @@ export class MeshFactory {
                     }
                 });
                 
-                // Ensure mesh is centered
                 const box = new THREE.Box3().setFromObject(mesh);
                 const size = box.getSize(new THREE.Vector3());
                 const center = box.getCenter(new THREE.Vector3());
@@ -316,45 +269,36 @@ export class MeshFactory {
             }
         }
 
-        // Try to load GLB for Cleric
         if (type === 'Cleric') {
             try {
-                // Load Base Mesh (Idle)
                 const idleGltf = await this.loadModel('./assets/archetypes/Cleric/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);
                 
-                // Initialize animations array
                 mesh.userData.animations = [];
 
-                // Helper to add animation
                 const addAnim = (clip, name) => {
                     if (clip) {
                         const newClip = clip.clone();
                         newClip.name = name;
-                        // Strip scale tracks to prevent size popping between animations
                         newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
                         mesh.userData.animations.push(newClip);
                     }
                 };
 
-                // Add Idle Animation
                 if (idleGltf.animations.length > 0) {
                     addAnim(idleGltf.animations[0], 'Idle');
                 }
 
-                // Load and Add Walk
                 try {
                     const walkGltf = await this.loadModel('./assets/archetypes/Cleric/walk.glb');
                     if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
                 } catch (e) { console.warn("Missing walk anim"); }
 
-                // Load and Add Run
                 try {
                     const runGltf = await this.loadModel('./assets/archetypes/Cleric/run.glb');
                     if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
                 } catch (e) { console.warn("Missing run anim"); }
 
-                // Load and Add Attack
                 try {
                     const attackGltf = await this.loadModel('./assets/archetypes/Cleric/attack.glb');
                     if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
@@ -362,7 +306,6 @@ export class MeshFactory {
 
                 mesh.scale.set(2.5, 2.5, 2.5); 
                 
-                // Restore original materials but ensure they react to light
                 mesh.traverse(c => {
                     if (c.isMesh) {
                         if (!c.material) {
@@ -374,7 +317,6 @@ export class MeshFactory {
                     }
                 });
                 
-                // Ensure mesh is centered
                 const box = new THREE.Box3().setFromObject(mesh);
                 const size = box.getSize(new THREE.Vector3());
                 const center = box.getCenter(new THREE.Vector3());
@@ -382,11 +324,10 @@ export class MeshFactory {
                 mesh.position.sub(center); 
                 mesh.position.y += size.y / 2; 
 
-                // Add Hitbox for easier clicking
-                const hitGeo = new THREE.BoxGeometry(1.5, 2.0, 1.5); // Increased hitbox
+                const hitGeo = new THREE.BoxGeometry(1.5, 2.0, 1.5);
                 const hitMat = new THREE.MeshBasicMaterial({ visible: false });
                 const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-                hitMesh.position.y = 0.9; // Center vertically
+                hitMesh.position.y = 0.9;
                 mesh.add(hitMesh);
 
                 return mesh;
@@ -402,7 +343,6 @@ export class MeshFactory {
             }
         }
 
-        // Skeleton Loading Logic
         if (type === 'Skeleton') {
             try {
                 const idleGltf = await this.loadModel('./assets/enemies/undead/skeleton/idle.glb');
@@ -450,8 +390,7 @@ export class MeshFactory {
                     }
                 });
 
-                // Add Hitbox for easier clicking
-                const hitGeo = new THREE.BoxGeometry(2.0, 2.5, 2.0); // Increased hitbox
+                const hitGeo = new THREE.BoxGeometry(2.0, 2.5, 2.0);
                 const hitMat = new THREE.MeshBasicMaterial({ visible: false });
                 const hitMesh = new THREE.Mesh(hitGeo, hitMat);
                 hitMesh.position.y = 1.0;
@@ -465,7 +404,6 @@ export class MeshFactory {
 
         if (type === 'DemonOrc') {
             try {
-                // Load Base Mesh (Idle)
                 const idleGltf = await this.loadModel('./assets/enemies/demons/demon_orc/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);
                 
@@ -501,7 +439,7 @@ export class MeshFactory {
                     if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
                 } catch (e) {}
 
-                mesh.scale.set(3.0, 3.0, 3.0); // Slightly larger than skeleton
+                mesh.scale.set(3.0, 3.0, 3.0);
                 
                 mesh.traverse(c => {
                     if (c.isMesh) {
@@ -514,8 +452,7 @@ export class MeshFactory {
                     }
                 });
 
-                // Add Hitbox for easier clicking
-                const hitGeo = new THREE.BoxGeometry(2.5, 3.0, 2.5); // Increased hitbox
+                const hitGeo = new THREE.BoxGeometry(2.5, 3.0, 2.5);
                 const hitMat = new THREE.MeshBasicMaterial({ visible: false });
                 const hitMesh = new THREE.Mesh(hitGeo, hitMat);
                 hitMesh.position.y = 1.0;
@@ -524,7 +461,6 @@ export class MeshFactory {
                 return mesh;
             } catch (e) {
                 console.error("Failed to load DemonOrc:", e);
-                // Fallback to box if loading fails
                 const geometry = new THREE.BoxGeometry(1.5, 2, 1.5);
                 const material = new THREE.MeshStandardMaterial({ color: 0x8b0000 });
                 mesh = new THREE.Mesh(geometry, material);
@@ -535,7 +471,6 @@ export class MeshFactory {
             }
         } else if (type === 'Imp') {
             try {
-                // Load Base Mesh (Idle)
                 const idleGltf = await this.loadModel('./assets/enemies/demons/imp/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);
                 
@@ -571,7 +506,7 @@ export class MeshFactory {
                     if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
                 } catch (e) {}
 
-                mesh.scale.set(1.8, 1.8, 1.8); // Scaled up by 20%
+                mesh.scale.set(1.8, 1.8, 1.8);
                 
                 mesh.traverse(c => {
                     if (c.isMesh) {
@@ -584,8 +519,7 @@ export class MeshFactory {
                     }
                 });
 
-                // Add Hitbox for easier clicking
-                const hitGeo = new THREE.BoxGeometry(2.0, 2.0, 2.0); // Increased hitbox
+                const hitGeo = new THREE.BoxGeometry(2.0, 2.0, 2.0);
                 const hitMat = new THREE.MeshBasicMaterial({ visible: false });
                 const hitMesh = new THREE.Mesh(hitGeo, hitMat);
                 hitMesh.position.y = 0.75;
@@ -594,7 +528,6 @@ export class MeshFactory {
                 return mesh;
             } catch (e) {
                 console.error("Failed to load Imp:", e);
-                // Fallback to box if loading fails
                 const geometry = new THREE.BoxGeometry(0.8, 1, 0.8);
                 const material = new THREE.MeshStandardMaterial({ color: 0xff4500 });
                 mesh = new THREE.Mesh(geometry, material);
@@ -615,7 +548,7 @@ export class MeshFactory {
                     mesh.userData.animations.push(clip);
                 }
 
-                mesh.scale.set(2.0, 2.0, 2.0); // Adjust scale as needed
+                mesh.scale.set(2.0, 2.0, 2.0);
                 
                 mesh.traverse(c => {
                     if (c.isMesh) {
@@ -624,8 +557,7 @@ export class MeshFactory {
                     }
                 });
 
-                // Add invisible hitbox
-                const hitGeo = new THREE.BoxGeometry(2.5, 3.5, 2.5); // Increased hitbox
+                const hitGeo = new THREE.BoxGeometry(2.5, 3.5, 2.5);
                 const hitMat = new THREE.MeshBasicMaterial({ visible: false });
                 const hitMesh = new THREE.Mesh(hitGeo, hitMat);
                 hitMesh.position.y = 1.5;
@@ -634,15 +566,13 @@ export class MeshFactory {
                 return mesh;
             } catch (err) {
                 console.error("Failed to load DwarfSalesman:", err);
-                // Fallback
                 geometry = new THREE.BoxGeometry(1, 1.5, 1);
-                material = new THREE.MeshStandardMaterial({ color: 0x8B4513 }); // SaddleBrown
+                material = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
                 mesh = new THREE.Mesh(geometry, material);
                 return mesh;
             }
         } else if (type === 'Construct') {
             try {
-                // Load Base Mesh (Idle)
                 const idleGltf = await this.loadModel('./assets/enemies/undead/construct/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);
                 
@@ -673,7 +603,7 @@ export class MeshFactory {
                     if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
                 } catch (e) {}
 
-                mesh.scale.set(2.5, 2.5, 2.5); // Large scale for Construct
+                mesh.scale.set(2.5, 2.5, 2.5);
                 
                 mesh.traverse(c => {
                     if (c.isMesh) {
@@ -686,7 +616,6 @@ export class MeshFactory {
                     }
                 });
 
-                // Add Hitbox
                 const hitGeo = new THREE.BoxGeometry(2.5, 3.0, 2.5);
                 const hitMat = new THREE.MeshBasicMaterial({ visible: false });
                 const hitMesh = new THREE.Mesh(hitGeo, hitMat);
@@ -731,7 +660,6 @@ export class MeshFactory {
         mesh = new THREE.Mesh(geometry, material);
         mesh.castShadow = true;
         mesh.receiveShadow = true;
-        // Lift up so it sits on ground (assuming height ~1)
         mesh.position.y = 0.5; 
         return mesh;
     }

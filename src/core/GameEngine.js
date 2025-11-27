@@ -28,7 +28,7 @@ export class GameEngine {
         this.inputManager = new InputManager(this.renderSystem.camera, this.renderSystem.scene);
         if (this.isMobile) {
             this.inputManager.setupMobileControls();
-            this.cameraLocked = true; // Force camera lock on mobile
+            this.cameraLocked = true;
         }
 
         this.chunkManager = new ChunkManager(this.renderSystem.scene);
@@ -41,36 +41,32 @@ export class GameEngine {
         this.player = null;
         this.hoveredEntity = null;
         this.playerType = playerType || 'Fighter';
-        this.enemies = []; // Keep track of enemies for pooling
-        this.projectiles = []; // Track active projectiles
-        this.cameraLocked = true; // Default to locked
-        this.pendingInteraction = null; // Entity to interact with when in range
-        this.pendingAbilityTarget = null; // Entity to use ability on when in range
+        this.enemies = [];
+        this.projectiles = [];
+        this.cameraLocked = true;
+        this.pendingInteraction = null;
+        this.pendingAbilityTarget = null;
         
         this.lastTime = 0;
         this.accumulator = 0;
         this.fixedTimeStep = 1 / 60;
 
         this.gameTime = 0;
-        this.nextEliteSpawnTime = 180; // 3 minutes
+        this.nextEliteSpawnTime = 180;
 
-        // Optimization: Raycast throttling and caching
         this.raycastTimer = 0;
         this.mousePosition = new THREE.Vector2();
         this.needsRaycast = false;
         this.activeEntitiesCache = [];
         this.frameCount = 0;
-
-        // this.init(); // Defer init to loadGame
     }
 
     async loadGame(onProgress) {
-        console.error(`Initializing GameEngine with player type: ${this.playerType}`); // Error level to ensure visibility
+        console.error(`Initializing GameEngine with player type: ${this.playerType}`);
         
         if (onProgress) onProgress(10, "Creating Player...");
         await new Promise(r => setTimeout(r, 50));
 
-        // Spawn Player based on selection
         switch(this.playerType) {
             case 'Rogue':
                 this.player = new Rogue('player-1');
@@ -92,14 +88,12 @@ export class GameEngine {
         }
 
         this.addEntity(this.player);
-        // console.log("Player entity added to scene."); // Removed misleading log
         
         if (onProgress) onProgress(30, "Initializing UI...");
         await new Promise(r => setTimeout(r, 50));
 
         this.uiManager.showHUD();
 
-        // Handle Stat Upgrades
         this.uiManager.onStatUpgrade = (stat) => {
             if (this.player) {
                 const success = this.player.increaseStat(stat);
@@ -112,13 +106,12 @@ export class GameEngine {
             }
         };
 
-        // Handle Respawn / Unstuck
         this.uiManager.onRespawn = () => {
             if (this.player) {
                 console.log("Player requested respawn/unstuck.");
                 this.player.respawn(0, 0);
                 this.player.timeSinceDeath = null;
-                this.chunkManager.updateEntityChunk(this.player); // Force chunk update
+                this.chunkManager.updateEntityChunk(this.player);
                 this.renderSystem.setCameraTarget(this.player.position);
                 this.chunkManager.update(this.player, 0, this.collisionManager);
             }
@@ -127,33 +120,26 @@ export class GameEngine {
         if (onProgress) onProgress(50, "Generating World...");
         await new Promise(r => setTimeout(r, 50));
 
-        // Force initial chunk update to ensure player is visible immediately
         console.log("GameEngine: Forcing initial chunk update");
         this.chunkManager.update(this.player, 0, this.collisionManager);
 
-        // Generate World (Town)
-        this.worldGenerator.createTown(0, 0, 100); // 100x100 unit town
+        this.worldGenerator.createTown(0, 0, 100);
 
-        // Spawn NPCs
         this.spawnNPCs();
 
         if (onProgress) onProgress(70, "Spawning Enemies...");
         await new Promise(r => setTimeout(r, 50));
 
-        // Spawn Enemies
         this.spawnEnemies();
 
         if (onProgress) onProgress(90, "Setting up Controls...");
         await new Promise(r => setTimeout(r, 50));
 
-        // Input Handling
         this.inputManager.subscribe('onClick', () => {
             if (!this.player) return;
-            if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen) return; // Disable movement in Esc menu or Patch Notes
+            if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen) return;
 
-            // Mobile Attack Logic (Auto-target nearest)
             if (this.isMobile) {
-                // Find nearest enemy
                 let nearest = null;
                 let minDst = 1000;
                 this.enemies.forEach(e => {
@@ -170,24 +156,20 @@ export class GameEngine {
                     this.pendingInteraction = nearest;
                     this.player.move(nearest.position);
                 } else {
-                    // Just attack in place
                     this.player.playAnimation('Attack', false);
                 }
                 return;
             }
 
-            // 1. Check for Entity Click (Attack or Loot)
             if (this.hoveredEntity && this.hoveredEntity !== this.player) {
-                // Set as pending interaction and move towards it
                 this.pendingInteraction = this.hoveredEntity;
-                this.pendingAbilityTarget = null; // Clear pending ability
+                this.pendingAbilityTarget = null;
                 this.player.move(this.hoveredEntity.position);
             } else {
-                // 2. Ground Click (Move)
                 const point = this.inputManager.getGroundIntersection();
                 if (point) {
-                    this.pendingInteraction = null; // Cancel pending interaction
-                    this.pendingAbilityTarget = null; // Clear pending ability
+                    this.pendingInteraction = null;
+                    this.pendingAbilityTarget = null;
                     this.player.move(point);
                 }
             }
@@ -195,11 +177,9 @@ export class GameEngine {
 
         this.inputManager.subscribe('onRightClick', () => {
             if (!this.player) return;
-            if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen) return; // Disable abilities in Esc menu or Patch Notes
+            if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen) return;
             
-            // Mobile Ability Logic (Auto-target)
             if (this.isMobile) {
-                // Find nearest enemy
                 let nearest = null;
                 let minDst = 1000;
                 this.enemies.forEach(e => {
@@ -216,8 +196,6 @@ export class GameEngine {
                     this.player.useAbility(nearest.position, this);
                     this.uiManager.updateAbilityIcon(this.player);
                 } else {
-                    // Cast in facing direction?
-                    // For now, just cast at current position + forward vector
                     const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.player.mesh.quaternion);
                     const target = this.player.position.clone().add(forward.multiplyScalar(5));
                     this.player.useAbility(target, this);
@@ -226,37 +204,30 @@ export class GameEngine {
                 return;
             }
 
-            // 1. Check if hovering an enemy
             if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
-                // Check if player is Ranged (Wizard or Rogue) or Fighter (Charge)
                 if (this.player instanceof Wizard || this.player instanceof Rogue || this.player instanceof Fighter) {
-                    // Cast Immediately from any distance
                     this.pendingAbilityTarget = null;
                     this.pendingInteraction = null;
                     this.player.useAbility(this.hoveredEntity.position, this);
                     this.uiManager.updateAbilityIcon(this.player);
                     
-                    // Stop movement if we were moving
                     this.player.targetPosition = null;
-                    // Only set to IDLE if not charging (Fighter sets ATTACKING in useAbility)
                     if (this.player.state !== 'ATTACKING') {
                         this.player.state = 'IDLE';
                         this.player.playAnimation('Idle');
                     }
                 } else {
-                    // Melee: Move to range
                     this.pendingAbilityTarget = this.hoveredEntity;
-                    this.pendingInteraction = null; // Clear pending interaction
+                    this.pendingInteraction = null;
                     this.player.move(this.hoveredEntity.position);
                 }
             } else {
-                // 2. Fallback to ground click (Immediate cast)
                 const targetPoint = this.inputManager.getGroundIntersection();
                 if (targetPoint) {
                     this.pendingAbilityTarget = null;
                     this.pendingInteraction = null;
                     this.player.useAbility(targetPoint, this);
-                    this.uiManager.updateAbilityIcon(this.player); // Update cooldown visual
+                    this.uiManager.updateAbilityIcon(this.player);
                 }
             }
         });
@@ -267,9 +238,6 @@ export class GameEngine {
         });
 
         this.inputManager.subscribe('onZoom', (delta) => {
-            // delta is +1 (zoom out) or -1 (zoom in) usually
-            // For orthographic size, smaller = zoomed in.
-            // So if delta is positive (scroll down), we want to increase size (zoom out).
             const newZoom = this.renderSystem.currentZoom + delta * 2;
             this.renderSystem.setZoom(newZoom);
         });
@@ -284,10 +252,6 @@ export class GameEngine {
 
         this.inputManager.subscribe('onInteract', () => {
             if (!this.player || !this.isMobile) return;
-            
-            // Smart Interact Logic:
-            // 1. Loot (Very close range)
-            // 2. NPC (Close range)
             
             const activeEntities = this.chunkManager.getActiveEntities();
             let nearestLoot = null;
@@ -309,13 +273,11 @@ export class GameEngine {
             });
 
             if (nearestLoot) {
-                // Pick up
                 if (this.player.addToInventory(nearestLoot.item)) {
                     console.log(`Picked up ${nearestLoot.item.name}`);
                     this.uiManager.updateInventory(this.player);
                     nearestLoot.isActive = false;
                     this.renderSystem.remove(nearestLoot.mesh);
-                    // Remove from chunk
                     const key = this.chunkManager.getChunkKey(nearestLoot.position.x, nearestLoot.position.z);
                     if (this.chunkManager.chunks.has(key)) {
                         this.chunkManager.chunks.get(key).delete(nearestLoot);
@@ -334,10 +296,9 @@ export class GameEngine {
             if (this.player) {
                 console.log("Teleporting to town...");
                 this.player.position.set(0, 0, 0);
-                this.player.targetPosition = null; // Stop moving
+                this.player.targetPosition = null;
                 this.player.state = 'IDLE';
                 
-                // Force chunk update
                 this.chunkManager.updateEntityChunk(this.player);
                 this.renderSystem.setCameraTarget(this.player.position);
                 this.chunkManager.update(this.player, 0, this.collisionManager);
@@ -359,12 +320,11 @@ export class GameEngine {
         });
 
         if (onProgress) onProgress(95, "Waiting for silicon...");
-        await new Promise(r => setTimeout(r, 5000));
+        await new Promise(r => setTimeout(r, 1000));
 
         if (onProgress) onProgress(100, "Ready!");
         await new Promise(r => setTimeout(r, 100));
 
-        // Start Loop
         this.loop(0);
     }
 
@@ -372,13 +332,11 @@ export class GameEngine {
         this.chunkManager.addEntity(entity);
         
         if (!entity.mesh) {
-            // Wait for mesh to load asynchronously
             const originalOnMeshReady = entity.onMeshReady;
             entity.onMeshReady = (mesh) => {
                 console.log(`GameEngine: Mesh ready for ${entity.id}`);
                 if (originalOnMeshReady) originalOnMeshReady(mesh);
                 
-                // Re-add to chunk manager to ensure visibility check runs with the new mesh
                 const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
                 if (this.chunkManager.activeChunkKeys.has(key) || entity.type === 'DwarfSalesman') {
                     console.log(`GameEngine: Adding mesh for ${entity.id} to scene (delayed)`);
@@ -394,28 +352,17 @@ export class GameEngine {
 
     spawnNPCs() {
         console.log("Spawning NPCs...");
-        // Spawn Dwarf Salesman in Town (Safe Area)
-        // Position him near the center but slightly offset
         const merchant = new DwarfSalesman('merchant-1');
-        merchant.position.set(5, 0, 5); // Near spawn
-        // Rotate to face South
+        merchant.position.set(5, 0, 5);
         merchant.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 4);
         
         this.addEntity(merchant);
-        // Note: We don't add him to this.enemies list so he isn't targeted by logic iterating that list
     }
 
     spawnEnemies() {
-        // Spawn Skeletons (Level 1-5 Area: 60-150 radius)
         this.spawnEnemyGroup(Skeleton, 50, 60, 150, 'skeleton');
-
-        // Spawn Imps (Level 5-10 Area: 160-250 radius)
         this.spawnEnemyGroup(Imp, 50, 160, 250, 'imp');
-
-        // Spawn Demon Orcs (Level 10+ Area: 260-350 radius)
         this.spawnEnemyGroup(DemonOrc, 50, 260, 350, 'demon-orc');
-
-        // Spawn Constructs (Level 20+ Area: 360-450 radius)
         this.spawnEnemyGroup(Construct, 50, 360, 450, 'construct');
     }
 
@@ -425,14 +372,11 @@ export class GameEngine {
         const angleStep = (Math.PI * 2) / count;
 
         for (let i = 0; i < count; i++) {
-            // Distribute angles evenly around the circle
             const baseAngle = i * angleStep;
             
-            // Add random jitter to angle (up to 80% of the step) to avoid perfect lines
             const jitter = (Math.random() - 0.5) * angleStep * 0.8;
             const angle = baseAngle + jitter;
 
-            // Random radius within the zone
             const radius = minRadius + Math.random() * (maxRadius - minRadius);
             
             const x = Math.cos(angle) * radius;
@@ -457,13 +401,11 @@ export class GameEngine {
 
         console.log("Spawning Elite Enemy!");
         
-        // Pick random enemy type
         const types = [Skeleton, Imp, DemonOrc];
         const EnemyClass = types[Math.floor(Math.random() * types.length)];
         
         const elite = new EnemyClass(`elite-${Date.now()}`);
         
-        // Spawn near player (20-30 units away)
         const angle = Math.random() * Math.PI * 2;
         const dist = 20 + Math.random() * 10;
         const x = this.player.position.x + Math.cos(angle) * dist;
@@ -471,52 +413,58 @@ export class GameEngine {
         
         elite.position.set(x, 0, z);
         
-        // Buff Stats
         elite.stats.maxHp *= 3;
         elite.stats.hp = elite.stats.maxHp;
         elite.stats.damage *= 3;
         elite.xpValue *= 5;
         elite.isElite = true;
 
-        // Visual Scale (Persistent Modifier)
         elite.modifyMesh = (mesh) => {
             if (!mesh) return;
             mesh.scale.multiplyScalar(1.5);
             
+            // Temporarily disabled material cloning to prevent crashes on specific models (Imp)
+            // The scaling is sufficient to identify Elites for now.
+            /*
             mesh.traverse(child => {
-                if (child.isMesh && child.material) {
-                    // Clone material to avoid affecting shared assets
-                    // Check if already cloned to avoid double cloning if called multiple times (though setMesh is usually once per load)
-                    if (!child.material.userData?.isEliteClone) {
-                        try {
-                            child.material = child.material.clone();
-                            child.material.userData = { isEliteClone: true };
-                            child.material.emissive = new THREE.Color(0xff0000);
-                            child.material.emissiveIntensity = 0.5;
-                        } catch (e) {
-                            console.warn("Failed to clone material for Elite:", e);
+                if (child.isMesh) {
+                    if (Array.isArray(child.material)) {
+                        child.material = child.material.map(m => {
+                            if (m.userData?.isEliteClone) return m;
+                            const clone = m.clone();
+                            clone.userData = { isEliteClone: true };
+                            clone.emissive = new THREE.Color(0xff0000);
+                            clone.emissiveIntensity = 0.5;
+                            return clone;
+                        });
+                    } else if (child.material) {
+                        if (!child.material.userData?.isEliteClone) {
+                            try {
+                                child.material = child.material.clone();
+                                child.material.userData = { isEliteClone: true };
+                                child.material.emissive = new THREE.Color(0xff0000);
+                                child.material.emissiveIntensity = 0.5;
+                            } catch (e) {
+                                console.warn("Failed to clone material for Elite:", e);
+                            }
                         }
                     }
                 }
             });
+            */
         };
 
         this.addEntity(elite);
         this.enemies.push(elite);
-        
-        // Notify UI
-        // this.uiManager.showNotification("An Elite Enemy has appeared!");
     }
 
     performRaycast() {
-        // Raycast against active entities to find hovered one
-        // Use cached active entities
         const meshes = this.activeEntitiesCache
             .filter(e => e.mesh && e.isActive && e !== this.player)
             .map(e => e.mesh);
         
         this.inputManager.raycaster.setFromCamera(this.mousePosition, this.renderSystem.camera);
-        const intersects = this.inputManager.raycaster.intersectObjects(meshes, true); // Recursive for child meshes
+        const intersects = this.inputManager.raycaster.intersectObjects(meshes, true);
         
         if (intersects.length > 0) {
             let hitEntities = [];
@@ -531,10 +479,8 @@ export class GameEngine {
                 }
             }
 
-            // Filter out DEAD entities (unless they are Loot)
             hitEntities = hitEntities.filter(e => e.state !== 'DEAD' || e instanceof LootDrop);
 
-            // Sort: Loot first, then others
             hitEntities.sort((a, b) => {
                 if (a instanceof LootDrop && !(b instanceof LootDrop)) return -1;
                 if (!(a instanceof LootDrop) && b instanceof LootDrop) return 1;
@@ -564,7 +510,7 @@ export class GameEngine {
     loop(time) {
         try {
             const seconds = time * 0.001;
-            const dt = Math.min(seconds - this.lastTime, 0.1); // Cap dt to prevent spiral of death
+            const dt = Math.min(seconds - this.lastTime, 0.1);
             this.lastTime = seconds;
             
             this.accumulator += dt;
@@ -574,7 +520,6 @@ export class GameEngine {
                 this.accumulator -= this.fixedTimeStep;
             }
     
-            // Render with interpolation factor (alpha)
             const alpha = this.accumulator / this.fixedTimeStep;
             this.render(alpha);
     
@@ -587,40 +532,35 @@ export class GameEngine {
     update(dt) {
         this.frameCount++;
 
-        // Optimization: Cache active entities once per frame
         this.activeEntitiesCache = this.chunkManager.getActiveEntities();
 
-        // Handle Raycast (Throttled)
         this.raycastTimer += dt;
-        if (this.needsRaycast && this.raycastTimer > 0.05) { // 20 times per second
+        if (this.needsRaycast && this.raycastTimer > 0.05) {
              this.performRaycast();
              this.raycastTimer = 0;
              this.needsRaycast = false;
         }
 
-        // Update Game Timer
         this.gameTime += dt;
         this.uiManager.updateTimer(this.gameTime);
 
-        // Check for Elite Spawn
         if (this.gameTime >= this.nextEliteSpawnTime) {
-            this.spawnEliteEnemy();
-            this.nextEliteSpawnTime += 180; // Next spawn in 3 minutes
+            try {
+                this.spawnEliteEnemy();
+            } catch (e) {
+                console.error("Failed to spawn Elite Enemy:", e);
+            }
+            this.nextEliteSpawnTime += 180;
         }
 
-        // Update ChunkManager (handles loading/unloading and entity updates)
         if (this.player) {
-            // Hold-to-Move / Hold-to-Attack Logic (Desktop)
             if (!this.isMobile && this.inputManager.isMouseDown && !this.uiManager.isEscMenuOpen) {
                 
-                // 1. Stationary Attack (Control Key)
                 if (this.inputManager.keys.control) {
-                    // Stop moving
                     this.player.targetPosition = null;
                     this.pendingInteraction = null;
                     this.pendingAbilityTarget = null;
 
-                    // Determine Facing Direction
                     let lookTarget = null;
                     if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player) {
                         lookTarget = new THREE.Vector3(this.hoveredEntity.position.x, this.player.position.y, this.hoveredEntity.position.z);
@@ -636,20 +576,15 @@ export class GameEngine {
                         this.player.rotation.copy(this.player.mesh.quaternion);
                     }
 
-                    // Attack (if not already attacking)
                     if (this.player.state !== 'ATTACKING') {
-                        // Always perform Cone Attack (Melee Range) when holding Control
-                        // This prevents unlimited range "sniping" with melee attacks
                         this.player.state = 'ATTACKING';
                         this.player.playAnimation('Attack', false);
                         
-                        // Delayed Hit Check (Cone)
                         setTimeout(() => {
                             if (this.player.state === 'DEAD') return;
                             
-                            // Define Attack Cone/Box
                             const attackRange = 3.0;
-                            const attackAngle = Math.PI / 3; // 60 degrees
+                            const attackAngle = Math.PI / 3;
                             const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.player.mesh.quaternion);
                             
                             this.chunkManager.getActiveEntities().forEach(entity => {
@@ -661,18 +596,11 @@ export class GameEngine {
                                         dirToEntity.normalize();
                                         const angle = forward.angleTo(dirToEntity);
                                         if (angle < attackAngle / 2) {
-                                            // Hit!
                                             const baseDmg = this.player.stats.damage;
                                             const variance = (Math.random() * 0.4) + 0.8;
                                             const finalDmg = Math.floor(baseDmg * variance);
                                             entity.takeDamage(finalDmg);
                                             if (entity.stats.hp <= 0) {
-                                                // XP is handled by handleEnemyDeath now, but we can leave it or remove it.
-                                                // The previous code had it, but we moved XP to handleEnemyDeath?
-                                                // Let's check handleEnemyDeath.
-                                                // handleEnemyDeath calls gainXp. So we should NOT call it here to avoid double XP if handleEnemyDeath is called.
-                                                // But wait, handleEnemyDeath is called right after.
-                                                // Let's remove explicit gainXp here to be safe and rely on handleEnemyDeath.
                                                 this.handleEnemyDeath(entity);
                                             }
                                         }
@@ -682,26 +610,21 @@ export class GameEngine {
 
                             this.player.state = 'IDLE';
                             this.player.playAnimation('Idle');
-                        }, 500); // Sync with animation
+                        }, 500);
                     }
                 } 
-                // 2. Hold-to-Attack (Hovering Enemy)
                 else if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
-                    // If in range, attack
                     const dist = this.player.position.distanceTo(this.hoveredEntity.position);
-                    const range = (this.player instanceof Wizard || this.player instanceof Rogue) ? 8.0 : 2.0; // Ranged vs Melee
+                    const range = (this.player instanceof Wizard || this.player instanceof Rogue) ? 8.0 : 2.0;
 
                     if (dist < range) {
-                        this.player.targetPosition = null; // Stop moving
+                        this.player.targetPosition = null;
                         this.player.attack(this.hoveredEntity);
                     } else {
-                        // Move to range
                         this.player.move(this.hoveredEntity.position);
                     }
                 }
-                // 3. Hold-to-Move (Ground)
                 else {
-                    // If we are NOT hovering an entity (or hovering ground), update movement target
                     if (!this.hoveredEntity || this.hoveredEntity === this.player) {
                         const point = this.inputManager.getGroundIntersection();
                         if (point) {
@@ -714,38 +637,32 @@ export class GameEngine {
 
             this.chunkManager.update(this.player, dt, this.collisionManager);
 
-            // Handle Pending Interaction (Move to Interact)
             if (this.pendingInteraction) {
-                // Check if entity is still valid
                 if (!this.pendingInteraction.isActive || (this.pendingInteraction.state === 'DEAD' && !(this.pendingInteraction instanceof LootDrop))) {
                     this.pendingInteraction = null;
                 } else {
-                    // Update target position to follow moving entities
                     if (this.pendingInteraction.position) {
                         this.player.targetPosition = this.pendingInteraction.position.clone();
                     }
 
                     const dist = this.player.position.distanceTo(this.pendingInteraction.position);
-                    let range = 2.5; // Default (Loot)
+                    let range = 2.5;
                     
                     if (this.pendingInteraction instanceof DwarfSalesman) {
                         range = 4.0;
                     } else if (this.pendingInteraction instanceof Actor && this.pendingInteraction !== this.player) {
-                        range = 5.0; // Attack Range
+                        range = 5.0;
                     }
 
                     if (dist < range) {
-                        // Perform Interaction
                         if (this.pendingInteraction instanceof LootDrop) {
                             if (this.player.addToInventory(this.pendingInteraction.item)) {
                                 console.log(`Picked up ${this.pendingInteraction.item.name}`);
                                 this.uiManager.updateInventory(this.player);
                                 
-                                // Remove loot entity
                                 this.pendingInteraction.isActive = false;
                                 this.renderSystem.remove(this.pendingInteraction.mesh);
                                 
-                                // Remove from ChunkManager
                                 const key = this.chunkManager.getChunkKey(this.pendingInteraction.position.x, this.pendingInteraction.position.z);
                                 if (this.chunkManager.chunks.has(key)) {
                                     this.chunkManager.chunks.get(key).delete(this.pendingInteraction);
@@ -759,7 +676,6 @@ export class GameEngine {
                             this.player.attack(this.pendingInteraction);
                         }
 
-                        // Clear pending interaction and stop moving
                         this.pendingInteraction = null;
                         this.player.targetPosition = null;
                         this.player.state = 'IDLE';
@@ -768,16 +684,14 @@ export class GameEngine {
                 }
             }
 
-            // Handle Pending Ability (Move to Cast)
             if (this.pendingAbilityTarget) {
                 if (!this.pendingAbilityTarget.isActive || this.pendingAbilityTarget.state === 'DEAD') {
                     this.pendingAbilityTarget = null;
                 } else {
-                    // Update target position
                     this.player.targetPosition = this.pendingAbilityTarget.position.clone();
                     
                     const dist = this.player.position.distanceTo(this.pendingAbilityTarget.position);
-                    const range = 8.0; // Generic Ability Range (should be dynamic based on ability)
+                    const range = 8.0;
 
                     if (dist < range) {
                         this.player.useAbility(this.pendingAbilityTarget.position, this);
@@ -791,41 +705,33 @@ export class GameEngine {
                 }
             }
             
-            // Player Death & Respawn Logic
             if (this.player.state === 'DEAD') {
                 if (this.player.timeSinceDeath === undefined || this.player.timeSinceDeath === null) {
                     this.player.timeSinceDeath = 0;
                 }
                 this.player.timeSinceDeath += dt;
                 
-                if (this.player.timeSinceDeath > 3.0) { // Respawn after 3 seconds
+                if (this.player.timeSinceDeath > 3.0) {
                     console.log("Player respawning in town...");
-                    this.player.respawn(0, 0); // Respawn at Town Center (0,0)
-                    this.player.timeSinceDeath = null; // Reset timer
+                    this.player.respawn(0, 0);
+                    this.player.timeSinceDeath = null;
                     
-                    // Force chunk update
                     this.chunkManager.updateEntityChunk(this.player);
 
-                    // Reset Camera
                     this.renderSystem.setCameraTarget(this.player.position);
                     
-                    // Force chunk update to ensure town is loaded
                     this.chunkManager.update(this.player, 0, this.collisionManager);
                 }
             } else {
-                // Reset timer when alive
                 this.player.timeSinceDeath = null;
             }
 
-            // Fighter Charge Logic
             if (this.player instanceof Fighter && this.player.isCharging) {
-                // Optimization: Use cached active entities
                 this.activeEntitiesCache.forEach(enemy => {
                     if (enemy instanceof Actor && enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
                         const dist = this.player.position.distanceTo(enemy.position);
                         const hitRadius = (this.player.radius || 0.5) + (enemy.radius || 0.5);
-                        if (dist < hitRadius) { // Hit radius
-                            // Damage Calculation: Base 10 + (Strength * 1.5)
+                        if (dist < hitRadius) {
                             const dmg = 10 + (this.player.stats.strength * 1.5);
                             enemy.takeDamage(Math.floor(dmg));
                             
@@ -833,7 +739,6 @@ export class GameEngine {
                                 this.handleEnemyDeath(enemy);
                             }
 
-                            // Stop charging on impact
                             this.player.isCharging = false;
                             this.player.state = 'IDLE';
                             this.player.playAnimation('Idle');
@@ -842,27 +747,20 @@ export class GameEngine {
                 });
             }
 
-            // Cleric Spirit Damage Logic
             if (this.player instanceof Cleric && this.player.spiritsActive) {
-                // Optimization: Use cached active entities
                 this.activeEntitiesCache.forEach(enemy => {
                     if (enemy instanceof Actor && enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
                         const dist = this.player.position.distanceTo(enemy.position);
-                        if (dist < 8.0) { // Spirit radius (Increased to 8.0)
-                            // Damage tick (simple implementation: damage every frame is too much, need timer)
-                            // Let's just do small damage per frame or use a timer on the enemy?
-                            // Better: Timer on player
+                        if (dist < 8.0) {
                             if (!this.player.spiritTick) this.player.spiritTick = 0;
                             this.player.spiritTick += dt;
-                            if (this.player.spiritTick > 0.5) { // Tick every 0.5s
-                                // Damage Calculation: Base 10 + (Wisdom * 1.0)
+                            if (this.player.spiritTick > 0.5) {
                                 const dmg = 10 + (this.player.stats.wisdom * 1.0);
                                 enemy.takeDamage(Math.floor(dmg));
                                 
                                 if (enemy.stats.hp <= 0) {
                                     this.handleEnemyDeath(enemy);
                                 }
-                                // Reset handled after loop
                             }
                         }
                     }
@@ -871,20 +769,15 @@ export class GameEngine {
             }
         }
 
-        // Camera Handling
         if (this.player) {
-            // Mobile Joystick Movement
             if (this.isMobile) {
                 const moveDir = this.inputManager.getMovementDirection();
                 if (moveDir.lengthSq() > 0) {
-                    // Move player directly
                     const speed = this.player.stats.speed;
                     const moveVec = moveDir.multiplyScalar(speed * dt);
                     
-                    // Calculate next position
                     const nextPos = this.player.position.clone().add(moveVec);
                     
-                    // Check Collision
                     if (this.collisionManager) {
                         const correctedPos = this.collisionManager.checkCollision(nextPos, 0.5);
                         if (correctedPos) {
@@ -897,16 +790,14 @@ export class GameEngine {
                     }
                     
                     this.player.state = 'MOVING';
-                    this.player.playAnimation('Run'); // Always run with joystick
+                    this.player.playAnimation('Run');
                     
-                    // Rotate player to face movement
                     const lookTarget = this.player.position.clone().add(moveDir);
                     if (this.player.mesh) {
                         this.player.mesh.lookAt(lookTarget);
                         this.player.rotation.copy(this.player.mesh.quaternion);
                     }
                     
-                    // Cancel any target position (click-to-move)
                     this.player.targetPosition = null;
                 } else {
                     if (this.player.state === 'MOVING' && !this.player.targetPosition) {
@@ -919,19 +810,16 @@ export class GameEngine {
             if (this.cameraLocked) {
                 this.renderSystem.setCameraTarget(this.player.position);
             } else {
-                // Handle Camera Movement (WASD)
-                const panSpeed = 30; // Increased speed for better feel
+                const panSpeed = 30;
                 const keys = this.inputManager.keys;
                 let dx = 0;
                 let dz = 0;
 
-                // Isometric Movement Mapping
                 if (keys.w) { dx -= 1; dz -= 1; }
                 if (keys.s) { dx += 1; dz += 1; }
                 if (keys.a) { dx -= 1; dz += 1; }
                 if (keys.d) { dx += 1; dz -= 1; }
 
-                // Get current target
                 const currentTarget = this.renderSystem.cameraTarget.clone();
 
                 if (dx !== 0 || dz !== 0) {
@@ -943,15 +831,10 @@ export class GameEngine {
                     currentTarget.z += dz * panSpeed * dt;
                 }
 
-                // Clamp Camera to Loaded Area (relative to Player)
-                // We allow the camera to roam within the loaded chunks.
-                // LOAD_DISTANCE = 1 means 3x3 chunks. 
-                // Safe radius is roughly 1 chunk size (50 units).
                 const maxDist = 50; 
                 const dist = currentTarget.distanceTo(this.player.position);
                 
                 if (dist > maxDist) {
-                    // Pull camera back towards player
                     const dir = new THREE.Vector3().subVectors(currentTarget, this.player.position).normalize();
                     currentTarget.copy(this.player.position).add(dir.multiplyScalar(maxDist));
                 }
@@ -960,30 +843,24 @@ export class GameEngine {
             }
         }
 
-        // Check for newly dead enemies to award loot/xp
-        // This ensures that however they died (basic attack, dot, etc), we handle it.
         this.activeEntitiesCache.forEach(enemy => {
             if (enemy instanceof Actor && enemy.state === 'DEAD' && !enemy.deathHandled && enemy !== this.player) {
                 this.handleEnemyDeath(enemy);
             }
         });
 
-        // Enemy Spawning / Recycling Logic
-        // Optimization: Run less frequently (every 10 frames)
         if (this.frameCount % 10 === 0) {
             this.enemies.forEach(enemy => {
                 if (enemy.state === 'DEAD') {
                     if (typeof enemy.timeSinceDeath !== 'number') enemy.timeSinceDeath = 0;
-                    enemy.timeSinceDeath += dt * 10; // Compensate for 10x slower update
+                    enemy.timeSinceDeath += dt * 10;
 
-                    // Hide body after 2 seconds (allow animation to finish)
                     if (enemy.timeSinceDeath > 2 && enemy.mesh && enemy.mesh.visible) {
                         enemy.mesh.visible = false;
                     }
 
-                    // Respawn after 5 seconds
                     if (enemy.timeSinceDeath > 5) {
-                        enemy.timeSinceDeath = 0; // Reset timer
+                        enemy.timeSinceDeath = 0;
                         
                         let minR = 60, maxR = 150;
                         if (enemy instanceof Imp) {
@@ -995,26 +872,21 @@ export class GameEngine {
                         }
                         const pos = this.getRandomSpawnPosition(minR, maxR);
                         
-                        // We need to update ChunkManager because it might move to a new chunk
-                        // Remove from old chunk
                         const oldKey = this.chunkManager.getChunkKey(enemy.position.x, enemy.position.z);
                         if (this.chunkManager.chunks.has(oldKey)) {
                             this.chunkManager.chunks.get(oldKey).delete(enemy);
                         }
 
-                        // Respawn (updates position)
                         if (enemy.mesh) enemy.mesh.visible = true;
                         enemy.respawn(pos.x, pos.z);
                         enemy.deathHandled = false;
 
-                        // Add to new chunk
                         this.chunkManager.addEntity(enemy);
                     }
                 }
             });
         }
 
-        // Projectile Logic
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
             const p = this.projectiles[i];
             p.update(dt);
@@ -1025,32 +897,23 @@ export class GameEngine {
                 continue;
             }
 
-            // Collision with Enemies
-            // Optimization: Use cached active entities
             for (const enemy of this.activeEntitiesCache) {
-                // Ensure we only hit Actors (characters), not other projectiles or loot
                 if (enemy instanceof Actor && enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
-                    // Skip if already hit (for piercing projectiles)
                     if (p.hitEntities.has(enemy.id)) continue;
 
                     const dist = p.position.distanceTo(enemy.position);
                     const hitRadius = p.radius + (enemy.radius || 0.5);
                     
-                    if (dist < hitRadius) { // Projectile radius + Enemy radius
-                        // Register hit
+                    if (dist < hitRadius) {
                         p.hitEntities.add(enemy.id);
 
-                        // Deal Damage
                         enemy.takeDamage(Math.floor(p.damage));
                         if (enemy.stats.hp <= 0) {
                             this.handleEnemyDeath(enemy);
                         }
 
-                        // Special Effects
                         if (p.type === 'Fireball') {
-                            // Splash Damage (40% to nearby enemies, 10.0 radius)
                             const splashRadius = 10.0;
-                            // Optimization: Use cached active entities for splash
                             this.activeEntitiesCache.forEach(nearbyEnemy => {
                                 if (nearbyEnemy instanceof Actor && nearbyEnemy !== enemy && nearbyEnemy.state !== 'DEAD' && nearbyEnemy.isActive && nearbyEnemy !== this.player) {
                                     if (nearbyEnemy.position.distanceTo(enemy.position) < splashRadius) {
@@ -1063,17 +926,12 @@ export class GameEngine {
                                 }
                             });
                             
-                            // Fireball explodes on first contact
                             p.isActive = false;
                             this.renderSystem.remove(p.mesh);
                             this.projectiles.splice(i, 1);
-                            break; // Stop checking enemies for this projectile
+                            break;
                         } else if (p.type === 'Dagger') {
-                            // Dagger pierces, so we DON'T destroy it immediately
-                            // It continues to travel and hit other enemies
-                            // But we need to make sure we don't hit the same enemy twice (handled by hitEntities)
                         } else {
-                            // Default behavior: destroy on hit
                             p.isActive = false;
                             this.renderSystem.remove(p.mesh);
                             this.projectiles.splice(i, 1);
@@ -1086,31 +944,26 @@ export class GameEngine {
     }
 
     handleEnemyDeath(enemy) {
-        if (enemy.deathHandled) return; // Already handled
+        if (enemy.deathHandled) return;
         enemy.deathHandled = true;
         
         this.player.gainXp(enemy.xpValue);
         
-        // Gold Drop (Increased by 50%)
         const minGold = Math.max(1, Math.floor(enemy.level * 1.5));
         const maxGold = Math.max(30, enemy.level * 30);
         const goldAmount = Math.floor(minGold + Math.random() * (maxGold - minGold));
         
         this.player.gold += goldAmount;
         console.log(`Gained ${goldAmount} gold. Total: ${this.player.gold}`);
-        // Ideally show floating text for gold too
         
-        // Loot Drop Logic
         let shouldDrop = false;
         let item = null;
 
         if (enemy.isElite) {
-            // Guaranteed Elite Drop
             shouldDrop = true;
             item = ItemGenerator.generateEliteLoot(enemy.level);
             console.log(`Elite Loot Dropped: ${item.name}`);
         } else if (Math.random() < 0.5) {
-            // Standard Drop Chance (50%)
             shouldDrop = true;
             let maxLevel = 1;
             if (enemy instanceof Skeleton) maxLevel = 5;
@@ -1124,7 +977,6 @@ export class GameEngine {
         if (shouldDrop && item) {
             console.log(`Loot Dropped: ${item.name}`);
             
-            // Spawn LootDrop entity
             const dropX = enemy.position.x + (Math.random() - 0.5) * 1.0;
             const dropZ = enemy.position.z + (Math.random() - 0.5) * 1.0;
             
@@ -1134,7 +986,6 @@ export class GameEngine {
     }
 
     render(alpha) {
-        // Get active entities for rendering interpolation
         const activeEntities = this.chunkManager.getActiveEntities();
         activeEntities.forEach(entity => {
             if (entity.isActive) {
@@ -1144,7 +995,6 @@ export class GameEngine {
         
         this.renderSystem.render();
         
-        // Update UI
         if (this.player) {
             this.minimap.update(this.player, activeEntities);
             this.uiManager.updatePlayerStats(this.player);
