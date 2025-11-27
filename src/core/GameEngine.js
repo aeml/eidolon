@@ -993,7 +993,7 @@ export class GameEngine {
                         }
 
                         // Respawn (updates position)
-                        enemy.mesh.visible = true;
+                        if (enemy.mesh) enemy.mesh.visible = true;
                         enemy.respawn(pos.x, pos.z);
                         enemy.deathHandled = false;
 
