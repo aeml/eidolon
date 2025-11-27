@@ -15,6 +15,8 @@ export class Skeleton extends Actor {
         this.roamTimer = 0;
         this.roamInterval = 3; // Seconds between roams
         
+        this.isRunning = false; // Enemies always walk
+
         this.initMesh();
     }
 

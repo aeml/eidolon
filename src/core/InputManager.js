@@ -24,7 +24,8 @@ export class InputManager {
             onCharacter: [],
             onInventory: [],
             onTeleport: [],
-            onMap: []
+            onMap: [],
+            onToggleRun: [] // New callback
         };
 
         this.keys = {
@@ -65,6 +66,9 @@ export class InputManager {
         }
         if (key === 'm') {
             this.callbacks.onMap.forEach(cb => cb());
+        }
+        if (key === 'r') {
+            this.callbacks.onToggleRun.forEach(cb => cb());
         }
     }
 

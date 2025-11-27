@@ -12,6 +12,7 @@ import { Skeleton } from '../entities/Skeleton.js';
 import { Rogue } from '../entities/Rogue.js';
 import { Wizard } from '../entities/Wizard.js';
 import { Cleric } from '../entities/Cleric.js';
+import { DemonOrc } from '../entities/DemonOrc.js';
 import { Projectile } from '../entities/Projectile.js';
 
 export class GameEngine {
@@ -87,8 +88,8 @@ export class GameEngine {
         // Generate World (Town)
         this.worldGenerator.createTown(0, 0, 100); // 100x100 unit town
 
-        // Spawn Enemies (Outside Town)
-        this.spawnEnemies(20);
+        // Spawn Enemies
+        this.spawnEnemies();
 
         // Input Handling
         this.inputManager.subscribe('onClick', () => {
@@ -122,9 +123,18 @@ export class GameEngine {
         this.inputManager.subscribe('onRightClick', () => {
             if (!this.player) return;
             
-            const point = this.inputManager.getGroundIntersection();
-            if (point) {
-                this.player.useAbility(point, this);
+            let targetPoint;
+
+            // 1. Check if hovering an enemy
+            if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
+                targetPoint = this.hoveredEntity.position.clone();
+            } else {
+                // 2. Fallback to ground click
+                targetPoint = this.inputManager.getGroundIntersection();
+            }
+
+            if (targetPoint) {
+                this.player.useAbility(targetPoint, this);
                 this.uiManager.updateAbilityIcon(this.player); // Update cooldown visual
             }
         });
@@ -200,6 +210,13 @@ export class GameEngine {
             this.uiManager.updateCharacterSheet(this.player);
         });
 
+        this.inputManager.subscribe('onToggleRun', () => {
+            if (this.player) {
+                this.player.isRunning = !this.player.isRunning;
+                console.log(`Run toggled: ${this.player.isRunning}`);
+            }
+        });
+
         this.inputManager.subscribe('onInventory', () => {
             this.uiManager.toggleInventory();
             this.uiManager.updateInventory(this.player);
@@ -233,24 +250,33 @@ export class GameEngine {
         }
     }
 
-    spawnEnemies(count) {
-        console.log(`Spawning ${count} skeletons...`);
-        for (let i = 0; i < count; i++) {
+    spawnEnemies() {
+        // Spawn Skeletons (Level 1-5 Area: 60-150 radius)
+        const skeletonCount = 50;
+        console.log(`Spawning ${skeletonCount} skeletons...`);
+        for (let i = 0; i < skeletonCount; i++) {
             const skeleton = new Skeleton(`skeleton-${i}`);
-            
-            // Random position outside town
-            const pos = this.getRandomSpawnPosition();
+            const pos = this.getRandomSpawnPosition(60, 150);
             skeleton.position.copy(pos);
-            
             this.addEntity(skeleton);
             this.enemies.push(skeleton);
         }
+
+        // Spawn Demon Orcs (Level 5-10 Area: 160-250 radius)
+        const orcCount = 30;
+        console.log(`Spawning ${orcCount} demon orcs...`);
+        for (let i = 0; i < orcCount; i++) {
+            const orc = new DemonOrc(`demon-orc-${i}`);
+            const pos = this.getRandomSpawnPosition(160, 250);
+            orc.position.copy(pos);
+            this.addEntity(orc);
+            this.enemies.push(orc);
+        }
     }
 
-    getRandomSpawnPosition() {
-        // Spawn in a ring between 60 and 150 units
+    getRandomSpawnPosition(minRadius, maxRadius) {
         const angle = Math.random() * Math.PI * 2;
-        const radius = 60 + Math.random() * 90;
+        const radius = minRadius + Math.random() * (maxRadius - minRadius);
         return new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
     }
 
@@ -435,19 +461,54 @@ export class GameEngine {
             // Collision with Enemies
             for (const enemy of this.enemies) {
                 if (enemy.state !== 'DEAD' && enemy.isActive) {
+                    // Skip if already hit (for piercing projectiles)
+                    if (p.hitEntities.has(enemy.id)) continue;
+
                     const dist = p.position.distanceTo(enemy.position);
                     const hitRadius = p.radius + (enemy.radius || 0.5);
+                    
                     if (dist < hitRadius) { // Projectile radius + Enemy radius
+                        // Register hit
+                        p.hitEntities.add(enemy.id);
+
+                        // Deal Damage
                         enemy.takeDamage(Math.floor(p.damage));
                         if (enemy.stats.hp <= 0) {
                             p.owner.gainXp(enemy.xpValue);
                         }
-                        
-                        // Destroy projectile
-                        p.isActive = false;
-                        this.renderSystem.remove(p.mesh);
-                        this.projectiles.splice(i, 1);
-                        break; // Stop checking enemies for this projectile
+
+                        // Special Effects
+                        if (p.type === 'Fireball') {
+                            // Splash Damage (20% to nearby enemies)
+                            const splashRadius = 5.0;
+                            this.enemies.forEach(nearbyEnemy => {
+                                if (nearbyEnemy !== enemy && nearbyEnemy.state !== 'DEAD' && nearbyEnemy.isActive) {
+                                    if (nearbyEnemy.position.distanceTo(enemy.position) < splashRadius) {
+                                        const splashDmg = Math.floor(p.damage * 0.2);
+                                        nearbyEnemy.takeDamage(splashDmg);
+                                        if (nearbyEnemy.stats.hp <= 0) {
+                                            p.owner.gainXp(nearbyEnemy.xpValue);
+                                        }
+                                    }
+                                }
+                            });
+                            
+                            // Fireball explodes on first contact
+                            p.isActive = false;
+                            this.renderSystem.remove(p.mesh);
+                            this.projectiles.splice(i, 1);
+                            break; // Stop checking enemies for this projectile
+                        } else if (p.type === 'Dagger') {
+                            // Dagger pierces, so we DON'T destroy it immediately
+                            // It continues to travel and hit other enemies
+                            // But we need to make sure we don't hit the same enemy twice (handled by hitEntities)
+                        } else {
+                            // Default behavior: destroy on hit
+                            p.isActive = false;
+                            this.renderSystem.remove(p.mesh);
+                            this.projectiles.splice(i, 1);
+                            break;
+                        }
                     }
                 }
             }

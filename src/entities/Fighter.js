@@ -48,6 +48,10 @@ export class Fighter extends Actor {
         }
     }
 
+    cancelAbilities() {
+        this.isCharging = false;
+    }
+
     update(dt, collisionManager) {
         if (this.isCharging) {
             const speed = 25; // Fast charge speed

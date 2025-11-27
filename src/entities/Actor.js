@@ -46,15 +46,16 @@ export class Actor extends Entity {
             vitality: baseStats.STAMINA,
             maxHp: baseStats.STAMINA * 10,
             hp: baseStats.STAMINA * 10,
-            maxMana: manaStatValue * 10,
-            mana: manaStatValue * 10,
+            maxMana: baseStats.INTELLIGENCE * 10,
+            mana: baseStats.INTELLIGENCE * 10,
             speed: 3 + (baseStats.DEXTERITY * 0.5), // Base 3 + bonus
             damage: baseStats.STRENGTH * 2, // Base physical damage
             defense: 0, // Base defense
             hpRegen: baseStats.STAMINA * 0.1, // 1 HP per 10s per point
-            manaRegen: manaStatValue * 0.1, // 1 Mana per 10s per point
+            manaRegen: baseStats.WISDOM * 0.1, // 1 Mana per 10s per point
             attackSpeed: 1 + (baseStats.DEXTERITY / 5) * 0.01, // 1% per 5 points
-            manaCostReduction: (baseStats.WISDOM / 5) * 0.01, // 1% per 5 points
+            cooldownReduction: Math.min(0.5, baseStats.INTELLIGENCE * 0.005),
+            manaCostReduction: 0, 
             castSpeed: 1 + (baseStats.WISDOM / 5) * 0.01 // 1% per 5 points
         };
 
@@ -93,6 +94,12 @@ export class Actor extends Entity {
         this.currentAction = null;
         
         this.radius = 1.25; // Collision radius (matches 2.5 scale width)
+
+        // Stamina System
+        this.stats.maxStamina = 100;
+        this.stats.stamina = 100;
+        this.isRunning = true; // Default to running
+        this.isExhausted = false; // True if stamina hit 0 and hasn't fully recovered
     }
 
     setMesh(mesh) {
@@ -168,7 +175,7 @@ export class Actor extends Entity {
         }
         
         // Apply Mana Cost Reduction
-        const cost = this.abilityManaCost * (1 - this.stats.manaCostReduction);
+        const cost = this.abilityManaCost * (1 - (this.stats.manaCostReduction || 0));
         
         if (this.stats.mana < cost) {
             console.log("Not enough mana");
@@ -176,7 +183,10 @@ export class Actor extends Entity {
         }
 
         this.stats.mana -= cost;
-        this.abilityCooldown = this.abilityMaxCooldown;
+        
+        // Apply Cooldown Reduction
+        const cdr = this.stats.cooldownReduction || 0;
+        this.abilityCooldown = this.abilityMaxCooldown * (1 - cdr);
         
         // Subclasses implement actual logic
         return true;
@@ -206,6 +216,29 @@ export class Actor extends Entity {
                     this.stats.mana = Math.min(this.stats.maxMana, this.stats.mana + this.stats.manaRegen);
                 }
             }
+
+            // Stamina Logic (Per frame)
+            const staminaDrainRate = 10; // Per second while running
+            const staminaRegenRate = 20; // Per second while walking/idle (2x drain)
+
+            if (this.state === 'MOVING' && this.isRunning && !this.isExhausted) {
+                this.stats.stamina -= staminaDrainRate * dt;
+                if (this.stats.stamina <= 0) {
+                    this.stats.stamina = 0;
+                    this.isExhausted = true; // Exhausted! Must wait for full regen.
+                    console.log("Stamina exhausted! Walking until full.");
+                }
+            } else {
+                // Regen when idle, walking, or exhausted
+                if (this.stats.stamina < this.stats.maxStamina) {
+                    this.stats.stamina += staminaRegenRate * dt;
+                    if (this.stats.stamina >= this.stats.maxStamina) {
+                        this.stats.stamina = this.stats.maxStamina;
+                        this.isExhausted = false; // Recovered
+                        console.log("Stamina recovered!");
+                    }
+                }
+            }
         }
 
         if (this.mixer) {
@@ -224,7 +257,14 @@ export class Actor extends Entity {
                 this.playAnimation('Idle');
             } else {
                 direction.normalize();
-                this.velocity.copy(direction).multiplyScalar(this.stats.speed * dt);
+                
+                // Determine Speed
+                let currentSpeed = this.stats.speed;
+                if (!this.isRunning || this.isExhausted) {
+                    currentSpeed *= 0.5; // Walk speed is half
+                }
+
+                this.velocity.copy(direction).multiplyScalar(currentSpeed * dt);
                 
                 // Proposed new position
                 const nextPos = this.position.clone().add(this.velocity);
@@ -235,11 +275,6 @@ export class Actor extends Entity {
                     if (correctedPos) {
                         // Collision occurred, use corrected position
                         this.position.copy(correctedPos);
-                        
-                        // If we hit a wall, we might want to stop or slide. 
-                        // For now, sliding is handled by the checkCollision pushing us out.
-                        // But if we are stuck, maybe stop?
-                        // this.targetPosition = null; // Optional: Stop on collision
                     } else {
                         this.position.copy(nextPos);
                     }
@@ -248,11 +283,17 @@ export class Actor extends Entity {
                 }
                 
                 // Rotate to face movement
-                // Simple lookAt logic for Y-axis rotation
                 const lookTarget = new THREE.Vector3(this.targetPosition.x, this.position.y, this.targetPosition.z);
                 if (this.mesh) {
                     this.mesh.lookAt(lookTarget);
                     this.rotation.copy(this.mesh.quaternion);
+                }
+                
+                // Update Animation Speed based on movement type
+                if (this.isRunning && !this.isExhausted) {
+                     this.playAnimation('Run');
+                } else {
+                     this.playAnimation('Walk');
                 }
             }
         }
@@ -268,10 +309,16 @@ export class Actor extends Entity {
     }
 
     die() {
+        if (this.state === 'DEAD') return;
         this.state = 'DEAD';
         this.playAnimation('Death', false); 
         this.timeSinceDeath = 0;
+        this.cancelAbilities();
         // Do not set isActive = false, so animation plays
+    }
+
+    cancelAbilities() {
+        // Override in subclasses
     }
 
     attack(target) {
@@ -401,39 +448,38 @@ export class Actor extends Entity {
 
     recalculateStats() {
         // Recalculate derived stats based on attributes
-        // Note: We add base values to the calculation if needed, or just use raw stats
-        // For now, let's stick to the formulas in constructor
+        const levelBonus = (this.level - 1) * 5; 
         
-        // We preserve the "base growth" added in levelUp by not fully resetting maxHp to just vitality*10
-        // But that gets complicated. Let's make derived stats purely dependent on attributes for now, 
-        // plus maybe a level bonus.
-        
-        const levelBonus = (this.level - 1) * 5; // 5 HP per level automatically?
-        
+        // Vit: Increase health and health regen
         this.stats.maxHp = (this.stats.vitality * 10) + levelBonus;
-        
-        let manaStatValue = this.stats[this.manaStatName];
-        if (manaStatValue === undefined) {
-            console.warn(`RecalculateStats: Mana stat ${this.manaStatName} not found in stats. Using Intelligence.`);
-            manaStatValue = this.stats.intelligence || 0;
-        }
-        
-        console.log(`Recalculating Stats for ${this.id}: Mana Stat (${this.manaStatName}) = ${manaStatValue}`);
-        
-        this.stats.maxMana = (manaStatValue * 10) + levelBonus;
-        
+        this.stats.hpRegen = this.stats.vitality * 0.1;
+
+        // Int: Increase max mana and reduces ability cooldown (up to 50% max)
+        this.stats.maxMana = (this.stats.intelligence * 10) + levelBonus;
+        // 0.5% CDR per point of Int, capped at 50%
+        this.stats.cooldownReduction = Math.min(0.5, this.stats.intelligence * 0.005);
+
+        // Strength: Melee damage increase
         this.stats.damage = this.stats.strength * 2;
+
+        // Dex: Movement speed and melee attack speed
         this.stats.speed = 3 + (this.stats.dexterity * 0.5);
+        this.stats.attackSpeed = 1 + (this.stats.dexterity / 5) * 0.01;
+
+        // Wisdom: Mana regen and cast speed
+        this.stats.manaRegen = this.stats.wisdom * 0.1;
+        this.stats.castSpeed = 1 + (this.stats.wisdom / 5) * 0.01;
         
-        // New Derived Stats
-        this.stats.hpRegen = this.stats.vitality * 0.1; // 1 HP per 10s per point (0.1 per sec)
-        this.stats.manaRegen = manaStatValue * 0.1; // 1 Mana per 10s per point (0.1 per sec)
-        this.stats.attackSpeed = 1 + (this.stats.dexterity / 5) * 0.01; // 1% per 5 points
-        this.stats.manaCostReduction = (this.stats.wisdom / 5) * 0.01; // 1% per 5 points
-        this.stats.castSpeed = 1 + (this.stats.wisdom / 5) * 0.01; // 1% per 5 points
+        // Reset Mana Cost Reduction as it's not in the new spec
+        this.stats.manaCostReduction = 0;
+
+        // Stamina (Fixed)
+        this.stats.maxStamina = 100;
 
         // Heal up to new max? Or just keep current percentage?
         // Let's just clamp current HP
         if (this.stats.hp > this.stats.maxHp) this.stats.hp = this.stats.maxHp;
+        if (this.stats.mana > this.stats.maxMana) this.stats.mana = this.stats.maxMana;
+        if (this.stats.stamina > this.stats.maxStamina) this.stats.stamina = this.stats.maxStamina;
     }
 }
