@@ -70,6 +70,11 @@ export class UIManager {
         this.statTooltipTitle = document.getElementById('stat-tooltip-title');
         this.statTooltipDesc = document.getElementById('stat-tooltip-desc');
 
+        // Compare Tooltip
+        this.compareTooltip = document.getElementById('compare-tooltip');
+        this.compareTooltipTitle = document.getElementById('compare-tooltip-title');
+        this.compareTooltipDesc = document.getElementById('compare-tooltip-desc');
+
         // Event Delegation for Stat Buttons & Tooltips
         this.statsContent.addEventListener('click', (e) => {
             if (e.target.classList.contains('stat-btn')) {
@@ -99,13 +104,17 @@ export class UIManager {
         equipSlots.forEach(slot => {
             slot.addEventListener('mousemove', (e) => {
                 if (slot._item) {
-                    this.showItemTooltip(slot._item, e.clientX, e.clientY);
+                    this.showItemTooltip(slot._item, e.clientX, e.clientY, e);
                 } else {
                     this.statTooltip.style.display = 'none';
+                    this.compareTooltip.style.display = 'none';
+                    this.hoveredItem = null;
                 }
             });
             slot.addEventListener('mouseleave', () => {
                 this.statTooltip.style.display = 'none';
+                this.compareTooltip.style.display = 'none';
+                this.hoveredItem = null; // Clear hover state
             });
         });
 
@@ -113,18 +122,33 @@ export class UIManager {
         this.inventoryGrid.addEventListener('mousemove', (e) => {
             const slot = e.target.closest('.inv-slot');
             if (slot && slot._item) {
-                this.showItemTooltip(slot._item, e.clientX, e.clientY);
+                this.showItemTooltip(slot._item, e.clientX, e.clientY, e);
             } else {
                 this.statTooltip.style.display = 'none';
+                this.compareTooltip.style.display = 'none';
+                this.hoveredItem = null;
             }
         });
         this.inventoryGrid.addEventListener('mouseleave', () => {
             this.statTooltip.style.display = 'none';
+            this.compareTooltip.style.display = 'none';
+            this.hoveredItem = null;
         });
 
         // Make windows draggable and stop propagation
         this.setupWindow(this.characterSheet);
         this.setupWindow(this.inventoryScreen);
+
+        this.compareMode = false; // Toggle state for comparison
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Shift' && !e.repeat) {
+                this.compareMode = !this.compareMode;
+                // If currently hovering an item, refresh tooltip
+                if (this.hoveredItem && this.statTooltip.style.display === 'block') {
+                    this.showItemTooltip(this.hoveredItem, this.lastMouseX, this.lastMouseY);
+                }
+            }
+        });
     }
 
     showHUD() {
@@ -532,11 +556,22 @@ export class UIManager {
         this.statTooltip.style.top = `${y + 15}px`;
     }
 
-    showItemTooltip(item, x, y) {
+    showItemTooltip(item, x, y, event) {
+        // Store hover state for toggle update
+        this.hoveredItem = item;
+        this.lastMouseX = x;
+        this.lastMouseY = y;
+
         this.statTooltipTitle.textContent = item.name;
         this.statTooltipTitle.style.color = item.rarity.color;
         
-        let desc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${item.rarity.name} ${item.type} - Lvl ${item.level}</div>`;
+        // Format slot name
+        let slotName = item.slot;
+        if (slotName === 'mainHand') slotName = 'Main Hand';
+        else if (slotName === 'offHand') slotName = 'Off Hand';
+        else slotName = slotName.charAt(0).toUpperCase() + slotName.slice(1);
+
+        let desc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${item.rarity.name} ${item.type} (${slotName}) - Lvl ${item.level}</div>`;
         
         for (const stat in item.stats) {
             const val = item.stats[stat];
@@ -550,14 +585,46 @@ export class UIManager {
         this.statTooltip.style.top = `${y + 15}px`;
         
         // Ensure it stays on screen
-        // We need to wait for render to get correct rect, but usually it's fine.
-        // If it goes off screen, we can adjust.
         const rect = this.statTooltip.getBoundingClientRect();
         if (rect.right > window.innerWidth) {
             this.statTooltip.style.left = `${window.innerWidth - rect.width - 10}px`;
         }
-        if (rect.bottom > window.innerHeight) {
-            this.statTooltip.style.top = `${window.innerHeight - rect.height - 10}px`;
+
+        // Comparison Tooltip Logic
+        this.compareTooltip.style.display = 'none'; // Default to hidden
+        
+        // Check compareMode OR shiftKey (support both just in case, but user asked for toggle)
+        // Actually user said "shift just toggles on compare", so we rely on this.compareMode
+        if (this.compareMode && this.lastPlayerRef) {
+            const equippedItem = this.lastPlayerRef.equipment[item.slot];
+            
+            // Only show if there is an equipped item and it's not the same item we are hovering
+            if (equippedItem && equippedItem !== item) {
+                this.compareTooltipTitle.textContent = equippedItem.name;
+                this.compareTooltipTitle.style.color = equippedItem.rarity.color;
+                
+                let compDesc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${equippedItem.rarity.name} ${equippedItem.type} (${slotName}) - Lvl ${equippedItem.level}</div>`;
+                
+                for (const stat in equippedItem.stats) {
+                    const val = equippedItem.stats[stat];
+                    compDesc += `<div style="color: #fff;">+${val} ${stat.charAt(0).toUpperCase() + stat.slice(1)}</div>`;
+                }
+                
+                this.compareTooltipDesc.innerHTML = compDesc;
+                
+                this.compareTooltip.style.display = 'block';
+                
+                // Position logic
+                const mainRect = this.statTooltip.getBoundingClientRect();
+                this.compareTooltip.style.left = `${mainRect.right + 10}px`;
+                this.compareTooltip.style.top = `${mainRect.top}px`;
+                
+                const compRect = this.compareTooltip.getBoundingClientRect();
+                if (compRect.right > window.innerWidth) {
+                    // Move to left of main tooltip
+                    this.compareTooltip.style.left = `${mainRect.left - compRect.width - 10}px`;
+                }
+            }
         }
     }
 }

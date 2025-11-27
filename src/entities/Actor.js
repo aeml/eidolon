@@ -234,6 +234,7 @@ export class Actor extends Entity {
                 this.state = 'IDLE';
                 this.velocity.set(0, 0, 0);
                 this.playAnimation('Idle');
+                if (this.currentAction) this.currentAction.setEffectiveTimeScale(1.0); // Reset speed for Idle
             } else {
                 direction.normalize();
                 
@@ -243,7 +244,13 @@ export class Actor extends Entity {
                     currentSpeed *= 0.5; // Walk speed is half (for enemies)
                 }
 
-                this.velocity.copy(direction).multiplyScalar(currentSpeed * dt);
+                let moveDist = currentSpeed * dt;
+                // Prevent overshoot (Fix for high speed jitter)
+                if (moveDist > distance) {
+                    moveDist = distance;
+                }
+
+                this.velocity.copy(direction).multiplyScalar(moveDist);
                 
                 // Proposed new position
                 const nextPos = this.position.clone().add(this.velocity);
@@ -273,6 +280,13 @@ export class Actor extends Entity {
                      this.playAnimation('Run');
                 } else {
                      this.playAnimation('Walk');
+                }
+
+                // Scale animation speed with movement speed
+                if (this.currentAction) {
+                    // Base speed is ~3.0. If speed is 6.0, anim plays 2x faster.
+                    const animSpeed = Math.max(1.0, currentSpeed / 3.0); 
+                    this.currentAction.setEffectiveTimeScale(animSpeed);
                 }
             }
         }
