@@ -478,15 +478,25 @@ export class GameEngine {
         elite.xpValue *= 5;
         elite.isElite = true;
 
-        // Visual Scale
-        elite.onMeshReady = (mesh) => {
+        // Visual Scale (Persistent Modifier)
+        elite.modifyMesh = (mesh) => {
+            if (!mesh) return;
             mesh.scale.multiplyScalar(1.5);
-            // Add a red tint or glow if possible?
+            
             mesh.traverse(child => {
-                if (child.isMesh) {
-                    child.material = child.material.clone();
-                    child.material.emissive = new THREE.Color(0xff0000);
-                    child.material.emissiveIntensity = 0.5;
+                if (child.isMesh && child.material) {
+                    // Clone material to avoid affecting shared assets
+                    // Check if already cloned to avoid double cloning if called multiple times (though setMesh is usually once per load)
+                    if (!child.material.userData?.isEliteClone) {
+                        try {
+                            child.material = child.material.clone();
+                            child.material.userData = { isEliteClone: true };
+                            child.material.emissive = new THREE.Color(0xff0000);
+                            child.material.emissiveIntensity = 0.5;
+                        } catch (e) {
+                            console.warn("Failed to clone material for Elite:", e);
+                        }
+                    }
                 }
             });
         };

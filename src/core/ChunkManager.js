@@ -197,8 +197,14 @@ export class ChunkManager {
                     
                     // Aggressive Memory Saving: Recycle mesh if it's not the player
                     if (entity.id !== 'player-1' && entity.meshType) {
-                        // console.log(`ChunkManager: Recycling mesh for ${entity.id}`);
-                        MeshFactory.releaseMesh(entity.meshType, entity.mesh);
+                        // Don't pool Elites (they have modified scales/materials)
+                        if (!entity.isElite) {
+                            // console.log(`ChunkManager: Recycling mesh for ${entity.id}`);
+                            MeshFactory.releaseMesh(entity.meshType, entity.mesh);
+                        } else {
+                            // console.log(`ChunkManager: Disposing Elite mesh for ${entity.id}`);
+                            // For Elites, we just let them be GC'd because they are "dirty"
+                        }
                         entity.mesh = null; 
                         entity.isMeshLoading = false; 
                     }
