@@ -37,11 +37,15 @@ export class GameEngine {
         this.accumulator = 0;
         this.fixedTimeStep = 1 / 60;
 
-        this.init();
+        // this.init(); // Defer init to loadGame
     }
 
-    init() {
-        console.log(`Initializing GameEngine with player type: ${this.playerType}`);
+    async loadGame(onProgress) {
+        console.error(`Initializing GameEngine with player type: ${this.playerType}`); // Error level to ensure visibility
+        
+        if (onProgress) onProgress(10, "Creating Player...");
+        await new Promise(r => setTimeout(r, 50));
+
         // Spawn Player based on selection
         switch(this.playerType) {
             case 'Rogue':
@@ -66,6 +70,9 @@ export class GameEngine {
         this.addEntity(this.player);
         // console.log("Player entity added to scene."); // Removed misleading log
         
+        if (onProgress) onProgress(30, "Initializing UI...");
+        await new Promise(r => setTimeout(r, 50));
+
         this.uiManager.showHUD();
 
         // Handle Stat Upgrades
@@ -81,6 +88,9 @@ export class GameEngine {
             }
         };
 
+        if (onProgress) onProgress(50, "Generating World...");
+        await new Promise(r => setTimeout(r, 50));
+
         // Force initial chunk update to ensure player is visible immediately
         console.log("GameEngine: Forcing initial chunk update");
         this.chunkManager.update(this.player, 0, this.collisionManager);
@@ -88,8 +98,14 @@ export class GameEngine {
         // Generate World (Town)
         this.worldGenerator.createTown(0, 0, 100); // 100x100 unit town
 
+        if (onProgress) onProgress(70, "Spawning Enemies...");
+        await new Promise(r => setTimeout(r, 50));
+
         // Spawn Enemies
         this.spawnEnemies();
+
+        if (onProgress) onProgress(90, "Setting up Controls...");
+        await new Promise(r => setTimeout(r, 50));
 
         // Input Handling
         this.inputManager.subscribe('onClick', () => {
@@ -210,17 +226,13 @@ export class GameEngine {
             this.uiManager.updateCharacterSheet(this.player);
         });
 
-        this.inputManager.subscribe('onToggleRun', () => {
-            if (this.player) {
-                this.player.isRunning = !this.player.isRunning;
-                console.log(`Run toggled: ${this.player.isRunning}`);
-            }
-        });
-
         this.inputManager.subscribe('onInventory', () => {
             this.uiManager.toggleInventory();
             this.uiManager.updateInventory(this.player);
         });
+
+        if (onProgress) onProgress(100, "Ready!");
+        await new Promise(r => setTimeout(r, 100));
 
         // Start Loop
         this.loop(0);
@@ -252,51 +264,66 @@ export class GameEngine {
 
     spawnEnemies() {
         // Spawn Skeletons (Level 1-5 Area: 60-150 radius)
-        const skeletonCount = 50;
-        console.log(`Spawning ${skeletonCount} skeletons...`);
-        for (let i = 0; i < skeletonCount; i++) {
-            const skeleton = new Skeleton(`skeleton-${i}`);
-            const pos = this.getRandomSpawnPosition(60, 150);
-            skeleton.position.copy(pos);
-            this.addEntity(skeleton);
-            this.enemies.push(skeleton);
-        }
+        this.spawnEnemyGroup(Skeleton, 50, 60, 150, 'skeleton');
 
         // Spawn Demon Orcs (Level 5-10 Area: 160-250 radius)
-        const orcCount = 30;
-        console.log(`Spawning ${orcCount} demon orcs...`);
-        for (let i = 0; i < orcCount; i++) {
-            const orc = new DemonOrc(`demon-orc-${i}`);
-            const pos = this.getRandomSpawnPosition(160, 250);
-            orc.position.copy(pos);
-            this.addEntity(orc);
-            this.enemies.push(orc);
+        this.spawnEnemyGroup(DemonOrc, 30, 160, 250, 'demon-orc');
+    }
+
+    spawnEnemyGroup(EnemyClass, count, minRadius, maxRadius, idPrefix) {
+        console.log(`Spawning ${count} ${idPrefix}s...`);
+        
+        const angleStep = (Math.PI * 2) / count;
+
+        for (let i = 0; i < count; i++) {
+            // Distribute angles evenly around the circle
+            const baseAngle = i * angleStep;
+            
+            // Add random jitter to angle (up to 80% of the step) to avoid perfect lines
+            const jitter = (Math.random() - 0.5) * angleStep * 0.8;
+            const angle = baseAngle + jitter;
+
+            // Random radius within the zone
+            const radius = minRadius + Math.random() * (maxRadius - minRadius);
+            
+            const x = Math.cos(angle) * radius;
+            const z = Math.sin(angle) * radius;
+
+            const enemy = new EnemyClass(`${idPrefix}-${i}`);
+            enemy.position.set(x, 0, z);
+            
+            this.addEntity(enemy);
+            this.enemies.push(enemy);
         }
     }
 
-    getRandomSpawnPosition(minRadius, maxRadius) {
+    getRandomSpawnPosition(minRadius = 60, maxRadius = 150) {
         const angle = Math.random() * Math.PI * 2;
         const radius = minRadius + Math.random() * (maxRadius - minRadius);
         return new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
     }
 
     loop(time) {
-        const seconds = time * 0.001;
-        const dt = Math.min(seconds - this.lastTime, 0.1); // Cap dt to prevent spiral of death
-        this.lastTime = seconds;
-        
-        this.accumulator += dt;
-
-        while (this.accumulator >= this.fixedTimeStep) {
-            this.update(this.fixedTimeStep);
-            this.accumulator -= this.fixedTimeStep;
+        try {
+            const seconds = time * 0.001;
+            const dt = Math.min(seconds - this.lastTime, 0.1); // Cap dt to prevent spiral of death
+            this.lastTime = seconds;
+            
+            this.accumulator += dt;
+    
+            while (this.accumulator >= this.fixedTimeStep) {
+                this.update(this.fixedTimeStep);
+                this.accumulator -= this.fixedTimeStep;
+            }
+    
+            // Render with interpolation factor (alpha)
+            const alpha = this.accumulator / this.fixedTimeStep;
+            this.render(alpha);
+    
+            requestAnimationFrame((t) => this.loop(t));
+        } catch (err) {
+            console.error("GameEngine Loop Error:", err);
         }
-
-        // Render with interpolation factor (alpha)
-        const alpha = this.accumulator / this.fixedTimeStep;
-        this.render(alpha);
-
-        requestAnimationFrame((t) => this.loop(t));
     }
 
     update(dt) {
@@ -306,7 +333,9 @@ export class GameEngine {
             
             // Player Death & Respawn Logic
             if (this.player.state === 'DEAD') {
-                if (this.player.timeSinceDeath === undefined) this.player.timeSinceDeath = 0;
+                if (this.player.timeSinceDeath === undefined || this.player.timeSinceDeath === null) {
+                    this.player.timeSinceDeath = 0;
+                }
                 this.player.timeSinceDeath += dt;
                 
                 if (this.player.timeSinceDeath > 3.0) { // Respawn after 3 seconds
@@ -319,6 +348,9 @@ export class GameEngine {
                     // Force chunk update to ensure town is loaded
                     this.chunkManager.update(this.player, 0, this.collisionManager);
                 }
+            } else {
+                // Reset timer when alive
+                this.player.timeSinceDeath = null;
             }
 
             // Cleric Spirit Damage Logic
@@ -428,7 +460,11 @@ export class GameEngine {
 
                 // Respawn after 5 seconds
                 if (enemy.timeSinceDeath > 5) {
-                    const pos = this.getRandomSpawnPosition();
+                    let minR = 60, maxR = 150;
+                    if (enemy instanceof DemonOrc) {
+                        minR = 160; maxR = 250;
+                    }
+                    const pos = this.getRandomSpawnPosition(minR, maxR);
                     
                     // We need to update ChunkManager because it might move to a new chunk
                     // Remove from old chunk

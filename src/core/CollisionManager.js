@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { CONSTANTS } from './Constants.js';
 
 export class CollisionManager {
     constructor() {
@@ -30,6 +31,25 @@ export class CollisionManager {
         let collided = false;
         const tempPos = position.clone();
         
+        // 1. Check World Bounds
+        const halfSize = CONSTANTS.SCENE.WORLD_BOUNDS / 2;
+        
+        if (tempPos.x < -halfSize + radius) {
+            tempPos.x = -halfSize + radius;
+            collided = true;
+        } else if (tempPos.x > halfSize - radius) {
+            tempPos.x = halfSize - radius;
+            collided = true;
+        }
+
+        if (tempPos.z < -halfSize + radius) {
+            tempPos.z = -halfSize + radius;
+            collided = true;
+        } else if (tempPos.z > halfSize - radius) {
+            tempPos.z = halfSize - radius;
+            collided = true;
+        }
+
         // We treat the entity as a sphere/circle
         const sphere = new THREE.Sphere(tempPos, radius);
 

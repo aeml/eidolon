@@ -100,17 +100,6 @@ export class UIManager {
         this.manaBar.style.width = `${Math.max(0, manaPct)}%`;
         this.manaText.textContent = `${Math.floor(mana)} / ${maxMana}`;
 
-        // Stamina
-        const stamina = player.stats.stamina || 100;
-        const maxStamina = player.stats.maxStamina || 100;
-        const staminaPct = (stamina / maxStamina) * 100;
-        const staminaBar = document.getElementById('player-stamina-bar');
-        const staminaText = document.getElementById('player-stamina-text');
-        if (staminaBar && staminaText) {
-            staminaBar.style.width = `${Math.max(0, staminaPct)}%`;
-            staminaText.textContent = `${Math.floor(stamina)} / ${maxStamina}`;
-        }
-
         // Update Ability UI
         this.updateAbilityIcon(player);
     }

@@ -95,11 +95,7 @@ export class Actor extends Entity {
         
         this.radius = 1.25; // Collision radius (matches 2.5 scale width)
 
-        // Stamina System
-        this.stats.maxStamina = 100;
-        this.stats.stamina = 100;
-        this.isRunning = true; // Default to running
-        this.isExhausted = false; // True if stamina hit 0 and hasn't fully recovered
+        this.isRunning = true; // Default to running (Players run, Enemies walk)
     }
 
     setMesh(mesh) {
@@ -216,29 +212,6 @@ export class Actor extends Entity {
                     this.stats.mana = Math.min(this.stats.maxMana, this.stats.mana + this.stats.manaRegen);
                 }
             }
-
-            // Stamina Logic (Per frame)
-            const staminaDrainRate = 10; // Per second while running
-            const staminaRegenRate = 20; // Per second while walking/idle (2x drain)
-
-            if (this.state === 'MOVING' && this.isRunning && !this.isExhausted) {
-                this.stats.stamina -= staminaDrainRate * dt;
-                if (this.stats.stamina <= 0) {
-                    this.stats.stamina = 0;
-                    this.isExhausted = true; // Exhausted! Must wait for full regen.
-                    console.log("Stamina exhausted! Walking until full.");
-                }
-            } else {
-                // Regen when idle, walking, or exhausted
-                if (this.stats.stamina < this.stats.maxStamina) {
-                    this.stats.stamina += staminaRegenRate * dt;
-                    if (this.stats.stamina >= this.stats.maxStamina) {
-                        this.stats.stamina = this.stats.maxStamina;
-                        this.isExhausted = false; // Recovered
-                        console.log("Stamina recovered!");
-                    }
-                }
-            }
         }
 
         if (this.mixer) {
@@ -260,8 +233,8 @@ export class Actor extends Entity {
                 
                 // Determine Speed
                 let currentSpeed = this.stats.speed;
-                if (!this.isRunning || this.isExhausted) {
-                    currentSpeed *= 0.5; // Walk speed is half
+                if (!this.isRunning) {
+                    currentSpeed *= 0.5; // Walk speed is half (for enemies)
                 }
 
                 this.velocity.copy(direction).multiplyScalar(currentSpeed * dt);
@@ -290,7 +263,7 @@ export class Actor extends Entity {
                 }
                 
                 // Update Animation Speed based on movement type
-                if (this.isRunning && !this.isExhausted) {
+                if (this.isRunning) {
                      this.playAnimation('Run');
                 } else {
                      this.playAnimation('Walk');
@@ -312,7 +285,7 @@ export class Actor extends Entity {
         if (this.state === 'DEAD') return;
         this.state = 'DEAD';
         this.playAnimation('Death', false); 
-        this.timeSinceDeath = 0;
+        // timeSinceDeath is managed by GameEngine
         this.cancelAbilities();
         // Do not set isActive = false, so animation plays
     }
@@ -463,7 +436,8 @@ export class Actor extends Entity {
         this.stats.damage = this.stats.strength * 2;
 
         // Dex: Movement speed and melee attack speed
-        this.stats.speed = 3 + (this.stats.dexterity * 0.5);
+        // Increased base speed by 20%
+        this.stats.speed = (3 + (this.stats.dexterity * 0.5)) * 1.2;
         this.stats.attackSpeed = 1 + (this.stats.dexterity / 5) * 0.01;
 
         // Wisdom: Mana regen and cast speed
@@ -473,13 +447,9 @@ export class Actor extends Entity {
         // Reset Mana Cost Reduction as it's not in the new spec
         this.stats.manaCostReduction = 0;
 
-        // Stamina (Fixed)
-        this.stats.maxStamina = 100;
-
         // Heal up to new max? Or just keep current percentage?
         // Let's just clamp current HP
         if (this.stats.hp > this.stats.maxHp) this.stats.hp = this.stats.maxHp;
         if (this.stats.mana > this.stats.maxMana) this.stats.mana = this.stats.maxMana;
-        if (this.stats.stamina > this.stats.maxStamina) this.stats.stamina = this.stats.maxStamina;
     }
 }
