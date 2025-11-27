@@ -78,6 +78,15 @@ export class Item {
         this.stats = config.stats || {};
         this.level = config.level || 1;
     }
+
+    static getValue(item) {
+        if (!item) return 0;
+        let multiplier = 1;
+        if (item.rarity.name === 'Uncommon') multiplier = 2;
+        if (item.rarity.name === 'Rare') multiplier = 5;
+        if (item.rarity.name === 'Legendary') multiplier = 20;
+        return Math.floor(item.level * 10 * multiplier);
+    }
 }
 
 export class ItemGenerator {

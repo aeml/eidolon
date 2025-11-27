@@ -217,8 +217,8 @@ export class GameEngine {
 
             // 1. Check if hovering an enemy
             if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
-                // Check if player is Ranged (Wizard or Rogue)
-                if (this.player instanceof Wizard || this.player instanceof Rogue) {
+                // Check if player is Ranged (Wizard or Rogue) or Fighter (Charge)
+                if (this.player instanceof Wizard || this.player instanceof Rogue || this.player instanceof Fighter) {
                     // Cast Immediately from any distance
                     this.pendingAbilityTarget = null;
                     this.pendingInteraction = null;
@@ -227,8 +227,11 @@ export class GameEngine {
                     
                     // Stop movement if we were moving
                     this.player.targetPosition = null;
-                    this.player.state = 'IDLE';
-                    this.player.playAnimation('Idle');
+                    // Only set to IDLE if not charging (Fighter sets ATTACKING in useAbility)
+                    if (this.player.state !== 'ATTACKING') {
+                        this.player.state = 'IDLE';
+                        this.player.playAnimation('Idle');
+                    }
                 } else {
                     // Melee: Move to range
                     this.pendingAbilityTarget = this.hoveredEntity;
@@ -490,6 +493,18 @@ export class GameEngine {
     update(dt) {
         // Update ChunkManager (handles loading/unloading and entity updates)
         if (this.player) {
+            // Hold-to-Move Logic (Desktop)
+            if (!this.isMobile && this.inputManager.isMouseDown && !this.uiManager.isEscMenuOpen) {
+                // If we are NOT hovering an entity (or hovering ground), update movement target
+                if (!this.hoveredEntity || this.hoveredEntity === this.player) {
+                    const point = this.inputManager.getGroundIntersection();
+                    if (point) {
+                        this.pendingInteraction = null;
+                        this.player.move(point);
+                    }
+                }
+            }
+
             this.chunkManager.update(this.player, dt, this.collisionManager);
 
             // Handle Pending Interaction (Move to Interact)

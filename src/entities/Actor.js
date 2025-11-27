@@ -165,8 +165,12 @@ export class Actor extends Entity {
     move(targetVector) {
         if (this.state === 'DEAD') return;
         this.targetPosition = targetVector.clone();
-        this.state = 'MOVING';
-        this.playAnimation('Walk'); // Or 'Run'
+        
+        // Only trigger animation if changing state
+        if (this.state !== 'MOVING') {
+            this.state = 'MOVING';
+            this.playAnimation('Walk'); // Or 'Run'
+        }
     }
 
     useAbility(targetVector, gameEngine) {
@@ -509,6 +513,11 @@ export class Actor extends Entity {
     equipItem(item) {
         if (!item || !item.slot) return false;
         
+        if (this.level < item.level) {
+            console.log(`Cannot equip ${item.name}. Level ${item.level} required.`);
+            return false;
+        }
+
         // Unequip current item in slot if exists
         const currentItem = this.equipment[item.slot];
         if (currentItem) {

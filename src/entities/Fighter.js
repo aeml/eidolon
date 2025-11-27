@@ -72,7 +72,10 @@ export class Fighter extends Actor {
                 // For now, just stop.
             } else {
                 direction.normalize();
-                this.position.add(direction.multiplyScalar(speed * dt));
+                let moveDist = speed * dt;
+                if (moveDist > dist) moveDist = dist; // Prevent overshoot
+                
+                this.position.add(direction.multiplyScalar(moveDist));
                 
                 // Update mesh
                 if (this.mesh) this.mesh.position.copy(this.position);

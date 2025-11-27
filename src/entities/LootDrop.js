@@ -2,9 +2,9 @@ import * as THREE from 'three';
 import { Entity } from './Entity.js';
 
 // Optimization: Shared Geometries and Materials
-const SHARED_GEOMETRY = new THREE.SphereGeometry(0.2, 16, 16);
-const HITBOX_GEOMETRY = new THREE.BoxGeometry(2.0, 2.0, 2.0); // Large box to cover orb and text
-const HITBOX_MATERIAL = new THREE.MeshBasicMaterial({ visible: false });
+const SHARED_GEOMETRY = new THREE.SphereGeometry(0.2, 8, 8); // Reduced detail
+const HITBOX_GEOMETRY = new THREE.BoxGeometry(3.0, 3.0, 3.0); // Larger box to cover orb and text
+const HITBOX_MATERIAL = new THREE.MeshBasicMaterial({ visible: false, side: THREE.DoubleSide });
 const MATERIAL_CACHE = new Map(); // Color -> Material
 const TEXTURE_CACHE = new Map(); // "Name|Color" -> Texture
 
@@ -25,12 +25,9 @@ export class LootDrop extends Entity {
         // Get or Create Material
         let material = MATERIAL_CACHE.get(color);
         if (!material) {
-            material = new THREE.MeshStandardMaterial({ 
-                color: color,
-                emissive: color,
-                emissiveIntensity: 0.5,
-                roughness: 0.2,
-                metalness: 0.8
+            // Use MeshBasicMaterial for performance (self-illuminated look)
+            material = new THREE.MeshBasicMaterial({ 
+                color: color
             });
             MATERIAL_CACHE.set(color, material);
         }
@@ -40,15 +37,7 @@ export class LootDrop extends Entity {
         this.mesh.userData.entityId = this.id;
         this.mesh.userData.type = 'LOOT';
         
-        // Add a light (Lights are expensive, maybe limit them? Keeping for now)
-        const light = new THREE.PointLight(color, 0.5, 3);
-        light.position.set(0, 0, 0);
-        this.mesh.add(light);
-
-        // Add Text Label
-        const label = this.createTextSprite(item.name, color);
-        label.position.set(0, 0.6, 0); // Above the orb
-        this.mesh.add(label);
+        // Removed PointLight for performance
         
         // Add Hitbox for easier clicking
         const hitMesh = new THREE.Mesh(HITBOX_GEOMETRY, HITBOX_MATERIAL);
@@ -56,6 +45,12 @@ export class LootDrop extends Entity {
         this.mesh.add(hitMesh);
         
         this.bobOffset = Math.random() * Math.PI * 2;
+
+        // Delayed Text Generation
+        this.textGenerated = false;
+        this.itemColor = color;
+        this.itemName = item.name;
+        this.textDelay = Math.random() * 0.5; // Stagger text generation
     }
 
     createTextSprite(message, color) {
@@ -121,6 +116,14 @@ export class LootDrop extends Entity {
         if (this.lifetime >= this.maxLifetime) {
             this.isActive = false;
             return;
+        }
+
+        // Lazy Load Text
+        if (!this.textGenerated && this.lifetime > this.textDelay) {
+            const label = this.createTextSprite(this.itemName, this.itemColor);
+            label.position.set(0, 0.6, 0); // Above the orb
+            this.mesh.add(label);
+            this.textGenerated = true;
         }
 
         // Bobbing animation
