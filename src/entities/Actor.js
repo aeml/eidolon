@@ -14,6 +14,28 @@ export class Actor extends Entity {
             STAMINA: 5
         };
 
+        let manaStatName = config.MANA_STAT || 'INTELLIGENCE';
+        
+        // Ensure we can find the value in baseStats
+        let manaStatValue = baseStats[manaStatName];
+        
+        if (manaStatValue === undefined) {
+            // Try finding it with different casing
+            const upper = manaStatName.toUpperCase();
+            if (baseStats[upper] !== undefined) {
+                manaStatName = upper;
+                manaStatValue = baseStats[upper];
+            } else {
+                console.warn(`Mana stat ${manaStatName} not found in baseStats. Defaulting to INTELLIGENCE.`);
+                manaStatName = 'INTELLIGENCE';
+                manaStatValue = baseStats.INTELLIGENCE || 5;
+            }
+        }
+
+        this.manaStatName = manaStatName.toLowerCase(); // Store as lowercase for property access in this.stats
+        
+        console.log(`Actor ${id} init: Mana Stat = ${this.manaStatName}, Value = ${manaStatValue}`);
+
         // Derived Stats
         this.stats = {
             ...baseStats,
@@ -24,11 +46,16 @@ export class Actor extends Entity {
             vitality: baseStats.STAMINA,
             maxHp: baseStats.STAMINA * 10,
             hp: baseStats.STAMINA * 10,
-            maxMana: baseStats.INTELLIGENCE * 10,
-            mana: baseStats.INTELLIGENCE * 10,
+            maxMana: manaStatValue * 10,
+            mana: manaStatValue * 10,
             speed: 3 + (baseStats.DEXTERITY * 0.5), // Base 3 + bonus
             damage: baseStats.STRENGTH * 2, // Base physical damage
-            defense: 0 // Base defense
+            defense: 0, // Base defense
+            hpRegen: baseStats.STAMINA * 0.1, // 1 HP per 10s per point
+            manaRegen: manaStatValue * 0.1, // 1 Mana per 10s per point
+            attackSpeed: 1 + (baseStats.DEXTERITY / 5) * 0.01, // 1% per 5 points
+            manaCostReduction: (baseStats.WISDOM / 5) * 0.01, // 1% per 5 points
+            castSpeed: 1 + (baseStats.WISDOM / 5) * 0.01 // 1% per 5 points
         };
 
         // Progression
@@ -37,6 +64,15 @@ export class Actor extends Entity {
         this.xpToNextLevel = 100;
         this.statPoints = 0;
         
+        this.regenTimer = 0; // Accumulator for regeneration
+        
+        // Ability State
+        this.abilityCooldown = 0;
+        this.abilityMaxCooldown = 0;
+        this.abilityManaCost = 0;
+        this.abilityName = "Unknown";
+        this.abilityDescription = "No ability";
+
         // Inventory & Equipment
         this.inventory = new Array(25).fill(null); // 25 slots
         this.equipment = {
@@ -55,11 +91,27 @@ export class Actor extends Entity {
         this.mixer = null;
         this.animations = {};
         this.currentAction = null;
+        
+        this.radius = 1.25; // Collision radius (matches 2.5 scale width)
     }
 
     setMesh(mesh) {
         super.setMesh(mesh);
         
+        // Add Hitbox for easier clicking
+        // The mesh is scaled by 2.5 in MeshFactory, so a 1x2x1 box becomes 2.5x5x2.5
+        const hitGeo = new THREE.BoxGeometry(1.0, 2.0, 1.0);
+        const hitMat = new THREE.MeshBasicMaterial({ 
+            visible: true, 
+            transparent: true, 
+            opacity: 0,
+            depthWrite: false
+        });
+        const hitbox = new THREE.Mesh(hitGeo, hitMat);
+        hitbox.position.y = 1.0; // Center vertically (assuming origin at feet)
+        hitbox.userData.entityId = this.id;
+        mesh.add(hitbox);
+
         // Setup Animation Mixer if mesh has animations
         if (mesh.userData.animations && mesh.userData.animations.length > 0) {
             this.mixer = new THREE.AnimationMixer(mesh);
@@ -70,13 +122,21 @@ export class Actor extends Entity {
                 this.animations[clip.name] = this.mixer.clipAction(clip);
             });
 
-            // Start Idle
-            this.playAnimation('Idle');
+            // Start Idle if available
+            if (this.animations['Idle']) {
+                this.playAnimation('Idle');
+            }
         }
     }
 
     playAnimation(name, loop = true) {
-        if (!this.mixer || !this.animations[name]) return;
+        if (!this.mixer) return;
+        
+        // Fallback or check if animation exists
+        if (!this.animations[name]) {
+            // console.warn(`Animation ${name} not found for ${this.id}`);
+            return;
+        }
         
         const action = this.animations[name];
         if (this.currentAction === action) return;
@@ -99,9 +159,55 @@ export class Actor extends Entity {
         this.playAnimation('Walk'); // Or 'Run'
     }
 
+    useAbility(targetVector, gameEngine) {
+        // Base implementation checks costs
+        if (this.state === 'DEAD') return false;
+        if (this.abilityCooldown > 0) {
+            console.log("Ability on cooldown");
+            return false;
+        }
+        
+        // Apply Mana Cost Reduction
+        const cost = this.abilityManaCost * (1 - this.stats.manaCostReduction);
+        
+        if (this.stats.mana < cost) {
+            console.log("Not enough mana");
+            return false;
+        }
+
+        this.stats.mana -= cost;
+        this.abilityCooldown = this.abilityMaxCooldown;
+        
+        // Subclasses implement actual logic
+        return true;
+    }
+
     update(dt, collisionManager) {
         super.update(dt);
         
+        // Cooldowns
+        if (this.abilityCooldown > 0) {
+            this.abilityCooldown -= dt;
+        }
+
+        // Regeneration Logic (1 second tick)
+        if (this.state !== 'DEAD') {
+            this.regenTimer += dt;
+            if (this.regenTimer >= 1.0) {
+                this.regenTimer -= 1.0;
+                
+                // Regenerate HP
+                if (this.stats.hp < this.stats.maxHp) {
+                    this.stats.hp = Math.min(this.stats.maxHp, this.stats.hp + this.stats.hpRegen);
+                }
+                
+                // Regenerate Mana
+                if (this.stats.mana < this.stats.maxMana) {
+                    this.stats.mana = Math.min(this.stats.maxMana, this.stats.mana + this.stats.manaRegen);
+                }
+            }
+        }
+
         if (this.mixer) {
             this.mixer.update(dt);
         }
@@ -153,6 +259,7 @@ export class Actor extends Entity {
     }
 
     takeDamage(amount) {
+        if (this.state === 'DEAD') return;
         this.stats.hp -= amount;
         console.log(`${this.id} took ${amount} damage. HP: ${this.stats.hp}`);
         if (this.stats.hp <= 0) {
@@ -162,13 +269,14 @@ export class Actor extends Entity {
 
     die() {
         this.state = 'DEAD';
-        this.playAnimation('Death', false); // Assuming Death animation exists
-        // Disable collision/interaction?
-        this.isActive = false; // Will stop updating/rendering eventually
+        this.playAnimation('Death', false); 
+        this.timeSinceDeath = 0;
+        // Do not set isActive = false, so animation plays
     }
 
     attack(target) {
         if (this.state === 'DEAD' || this.state === 'ATTACKING') return;
+        if (target && target.state === 'DEAD') return; // Don't attack dead targets
         
         // Simple cooldown check could go here
         
@@ -184,6 +292,9 @@ export class Actor extends Entity {
 
         // Deal damage after a delay (sync with animation hit)
         setTimeout(() => {
+            // Check if we died during the swing
+            if (this.state === 'DEAD') return;
+
             if (target && target.stats.hp > 0) {
                 // Calculate damage based on stats
                 // Random variance +/- 20%
@@ -300,10 +411,27 @@ export class Actor extends Entity {
         const levelBonus = (this.level - 1) * 5; // 5 HP per level automatically?
         
         this.stats.maxHp = (this.stats.vitality * 10) + levelBonus;
-        this.stats.maxMana = (this.stats.intelligence * 10) + levelBonus;
+        
+        let manaStatValue = this.stats[this.manaStatName];
+        if (manaStatValue === undefined) {
+            console.warn(`RecalculateStats: Mana stat ${this.manaStatName} not found in stats. Using Intelligence.`);
+            manaStatValue = this.stats.intelligence || 0;
+        }
+        
+        console.log(`Recalculating Stats for ${this.id}: Mana Stat (${this.manaStatName}) = ${manaStatValue}`);
+        
+        this.stats.maxMana = (manaStatValue * 10) + levelBonus;
+        
         this.stats.damage = this.stats.strength * 2;
         this.stats.speed = 3 + (this.stats.dexterity * 0.5);
         
+        // New Derived Stats
+        this.stats.hpRegen = this.stats.vitality * 0.1; // 1 HP per 10s per point (0.1 per sec)
+        this.stats.manaRegen = manaStatValue * 0.1; // 1 Mana per 10s per point (0.1 per sec)
+        this.stats.attackSpeed = 1 + (this.stats.dexterity / 5) * 0.01; // 1% per 5 points
+        this.stats.manaCostReduction = (this.stats.wisdom / 5) * 0.01; // 1% per 5 points
+        this.stats.castSpeed = 1 + (this.stats.wisdom / 5) * 0.01; // 1% per 5 points
+
         // Heal up to new max? Or just keep current percentage?
         // Let's just clamp current HP
         if (this.stats.hp > this.stats.maxHp) this.stats.hp = this.stats.maxHp;

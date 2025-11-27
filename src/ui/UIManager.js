@@ -17,6 +17,23 @@ export class UIManager {
         this.inventoryScreen = document.getElementById('inventory-screen');
         this.inventoryGrid = document.getElementById('inventory-grid');
         
+        // Ability UI
+        this.abilityContainer = document.getElementById('ability-container');
+        this.abilityIcon = document.getElementById('ability-icon');
+        this.abilityCooldown = document.getElementById('ability-cooldown');
+        this.abilityTooltip = document.getElementById('ability-tooltip');
+        this.abilityName = document.getElementById('ability-name');
+        this.abilityDesc = document.getElementById('ability-desc');
+        this.abilityCost = document.getElementById('ability-cost');
+
+        // Tooltip Events
+        this.abilityContainer.addEventListener('mouseenter', () => {
+            this.abilityTooltip.style.display = 'block';
+        });
+        this.abilityContainer.addEventListener('mouseleave', () => {
+            this.abilityTooltip.style.display = 'none';
+        });
+
         // Event Delegation for Stat Buttons
         this.statsContent.addEventListener('click', (e) => {
             if (e.target.classList.contains('stat-btn')) {
@@ -35,6 +52,7 @@ export class UIManager {
 
     showHUD() {
         this.hud.style.display = 'block';
+        this.abilityContainer.style.display = 'block';
     }
 
     updatePlayerStats(player) {
@@ -50,6 +68,27 @@ export class UIManager {
         const manaPct = (mana / maxMana) * 100;
         this.manaBar.style.width = `${Math.max(0, manaPct)}%`;
         this.manaText.textContent = `${Math.ceil(mana)} / ${maxMana}`;
+
+        // Update Ability UI
+        this.updateAbilityIcon(player);
+    }
+
+    updateAbilityIcon(player) {
+        if (!player) return;
+
+        // Update Info (only needs to happen once really, but safe here)
+        this.abilityName.textContent = player.abilityName;
+        this.abilityDesc.textContent = player.abilityDescription;
+        const cost = Math.floor(player.abilityManaCost * (1 - player.stats.manaCostReduction));
+        this.abilityCost.textContent = `Mana: ${cost}`;
+
+        // Update Cooldown
+        if (player.abilityCooldown > 0) {
+            this.abilityCooldown.style.display = 'flex';
+            this.abilityCooldown.textContent = Math.ceil(player.abilityCooldown);
+        } else {
+            this.abilityCooldown.style.display = 'none';
+        }
     }
 
     updateEnemyBars(entities, camera, hoveredEntity, isAltPressed) {
@@ -57,8 +96,8 @@ export class UIManager {
         const activeIds = new Set();
 
         entities.forEach(entity => {
-            // Only show for enemies (not player) and if alive
-            if (entity.id.startsWith('player') || entity.stats.hp <= 0) return;
+            // Only show for enemies (not player) and if alive. Also skip entities without stats (like projectiles).
+            if (entity.id.startsWith('player') || !entity.stats || entity.stats.hp <= 0) return;
 
             const isHovered = (hoveredEntity && hoveredEntity.id === entity.id);
             const shouldShow = isAltPressed || isHovered;

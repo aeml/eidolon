@@ -19,6 +19,7 @@ export const CONSTANTS = {
     ENTITIES: {
         FIGHTER: {
             COLOR: 0xff0000,
+            MANA_STAT: 'WISDOM',
             STATS: {
                 STRENGTH: 10, // Earth
                 INTELLIGENCE: 2,
@@ -29,6 +30,7 @@ export const CONSTANTS = {
         },
         ROGUE: {
             COLOR: 0x00ff00,
+            MANA_STAT: 'INTELLIGENCE',
             STATS: {
                 STRENGTH: 4,
                 INTELLIGENCE: 5,
@@ -39,6 +41,7 @@ export const CONSTANTS = {
         },
         WIZARD: {
             COLOR: 0x0000ff,
+            MANA_STAT: 'INTELLIGENCE',
             STATS: {
                 STRENGTH: 2,
                 INTELLIGENCE: 10, // Air
@@ -49,6 +52,7 @@ export const CONSTANTS = {
         },
         CLERIC: {
             COLOR: 0xffd700,
+            MANA_STAT: 'WISDOM',
             STATS: {
                 STRENGTH: 5,
                 INTELLIGENCE: 4,
@@ -59,6 +63,7 @@ export const CONSTANTS = {
         },
         SKELETON: {
             COLOR: 0xcccccc,
+            MANA_STAT: 'INTELLIGENCE',
             STATS: {
                 STRENGTH: 3,
                 INTELLIGENCE: 1,

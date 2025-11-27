@@ -98,8 +98,7 @@ export class InputManager {
         }
     }
 
-    getRayIntersection() {
-        // Deprecated for direct use, but kept for compatibility if needed
+    getGroundIntersection() {
         this.raycaster.setFromCamera(this.mouse, this.camera);
         const target = new THREE.Vector3();
         const intersection = this.raycaster.ray.intersectPlane(this.groundPlane, target);

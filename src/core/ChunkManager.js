@@ -16,9 +16,12 @@ export class ChunkManager {
         return `${cx},${cz}`;
     }
 
-    update(playerPos, dt, collisionManager) {
-        if (!playerPos) return;
+    update(player, dt, collisionManager) {
+        if (!player) return;
+        
+        // console.log("ChunkManager: update running"); // Uncomment for spammy debug
 
+        const playerPos = player.position;
         const playerChunkKey = this.getChunkKey(playerPos.x, playerPos.z);
         const [px, pz] = playerChunkKey.split(',').map(Number);
 
@@ -53,7 +56,7 @@ export class ChunkManager {
                 // We need to iterate over a copy or be careful because moveEntity modifies the Set
                 const entitiesArray = Array.from(entities); 
                 for (const entity of entitiesArray) {
-                    entity.update(dt, collisionManager);
+                    entity.update(dt, collisionManager, player);
                     
                     // Check if entity moved to a different chunk
                     const newKey = this.getChunkKey(entity.position.x, entity.position.z);
@@ -67,6 +70,7 @@ export class ChunkManager {
 
     addEntity(entity) {
         const key = this.getChunkKey(entity.position.x, entity.position.z);
+        console.log(`ChunkManager: Adding entity ${entity.id} to chunk ${key}`);
         if (!this.chunks.has(key)) {
             this.chunks.set(key, new Set());
         }
@@ -111,9 +115,15 @@ export class ChunkManager {
     }
 
     loadChunk(key) {
+        console.log(`ChunkManager: Loading chunk ${key}`);
         if (this.chunks.has(key)) {
             for (const entity of this.chunks.get(key)) {
-                if (entity.mesh) this.scene.add(entity.mesh);
+                if (entity.mesh) {
+                    console.log(`ChunkManager: Adding mesh for ${entity.id} to scene`);
+                    this.scene.add(entity.mesh);
+                } else {
+                    console.log(`ChunkManager: Entity ${entity.id} has no mesh yet`);
+                }
             }
         }
     }
