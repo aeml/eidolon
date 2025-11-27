@@ -102,6 +102,7 @@ export class Actor extends Entity {
         this.isRunning = true; // Default to running (Players run, Enemies walk)
         
         this.gold = 0; // Currency
+        this.scaleAnimSpeed = true; // Default to scaling animation speed with movement speed
     }
 
     setMesh(mesh) {
@@ -283,7 +284,7 @@ export class Actor extends Entity {
                 }
 
                 // Scale animation speed with movement speed
-                if (this.currentAction) {
+                if (this.currentAction && this.scaleAnimSpeed) {
                     // Base speed is ~3.0. If speed is 6.0, anim plays 2x faster.
                     const animSpeed = Math.max(1.0, currentSpeed / 3.0); 
                     this.currentAction.setEffectiveTimeScale(animSpeed);

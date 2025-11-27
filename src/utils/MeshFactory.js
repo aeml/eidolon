@@ -467,6 +467,43 @@ export class MeshFactory {
                 mesh.position.y = 1;
                 return mesh;
             }
+        } else if (type === 'DwarfSalesman') {
+            try {
+                const gltf = await this.loadModel('./assets/npc/dwarf_salesman/idle.glb');
+                mesh = SkeletonUtils.clone(gltf.scene);
+                
+                mesh.userData.animations = [];
+                if (gltf.animations.length > 0) {
+                    const clip = gltf.animations[0].clone();
+                    clip.name = 'Idle';
+                    mesh.userData.animations.push(clip);
+                }
+
+                mesh.scale.set(2.0, 2.0, 2.0); // Adjust scale as needed
+                
+                mesh.traverse(c => {
+                    if (c.isMesh) {
+                        c.castShadow = true;
+                        c.receiveShadow = true;
+                    }
+                });
+
+                // Add invisible hitbox
+                const hitGeo = new THREE.BoxGeometry(1.5, 3, 1.5);
+                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+                hitMesh.position.y = 1.5;
+                mesh.add(hitMesh);
+
+                return mesh;
+            } catch (err) {
+                console.error("Failed to load DwarfSalesman:", err);
+                // Fallback
+                geometry = new THREE.BoxGeometry(1, 1.5, 1);
+                material = new THREE.MeshStandardMaterial({ color: 0x8B4513 }); // SaddleBrown
+                mesh = new THREE.Mesh(geometry, material);
+                return mesh;
+            }
         }
 
         switch (type) {
