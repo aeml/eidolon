@@ -14,6 +14,7 @@ import { Rogue } from '../entities/Rogue.js';
 import { Wizard } from '../entities/Wizard.js';
 import { Cleric } from '../entities/Cleric.js';
 import { DemonOrc } from '../entities/DemonOrc.js';
+import { Construct } from '../entities/Construct.js';
 import { Projectile } from '../entities/Projectile.js';
 import { LootDrop } from '../entities/LootDrop.js';
 import { DwarfSalesman } from '../entities/DwarfSalesman.js';
@@ -413,6 +414,9 @@ export class GameEngine {
 
         // Spawn Demon Orcs (Level 10+ Area: 260-350 radius)
         this.spawnEnemyGroup(DemonOrc, 30, 260, 350, 'demon-orc');
+
+        // Spawn Constructs (Level 20+ Area: 360-450 radius)
+        this.spawnEnemyGroup(Construct, 20, 360, 450, 'construct');
     }
 
     spawnEnemyGroup(EnemyClass, count, minRadius, maxRadius, idPrefix) {
@@ -606,63 +610,69 @@ export class GameEngine {
                     this.pendingInteraction = null;
                     this.pendingAbilityTarget = null;
 
-                    // Face Mouse
-                    const point = this.inputManager.getGroundIntersection();
-                    if (point) {
-                        const lookTarget = new THREE.Vector3(point.x, this.player.position.y, point.z);
-                        if (this.player.mesh) {
-                            this.player.mesh.lookAt(lookTarget);
-                            this.player.rotation.copy(this.player.mesh.quaternion);
+                    // Determine Facing Direction
+                    let lookTarget = null;
+                    if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player) {
+                        lookTarget = new THREE.Vector3(this.hoveredEntity.position.x, this.player.position.y, this.hoveredEntity.position.z);
+                    } else {
+                        const point = this.inputManager.getGroundIntersection();
+                        if (point) {
+                            lookTarget = new THREE.Vector3(point.x, this.player.position.y, point.z);
                         }
+                    }
+
+                    if (lookTarget && this.player.mesh) {
+                        this.player.mesh.lookAt(lookTarget);
+                        this.player.rotation.copy(this.player.mesh.quaternion);
                     }
 
                     // Attack (if not already attacking)
                     if (this.player.state !== 'ATTACKING') {
-                        // If hovering enemy, attack it directly (auto-aim)
-                        if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
-                            this.player.attack(this.hoveredEntity);
-                        } else {
-                            // Attack in direction (Ground Attack)
-                            // We need to manually trigger attack animation and check for hits
-                            this.player.state = 'ATTACKING';
-                            this.player.playAnimation('Attack', false);
+                        // Always perform Cone Attack (Melee Range) when holding Control
+                        // This prevents unlimited range "sniping" with melee attacks
+                        this.player.state = 'ATTACKING';
+                        this.player.playAnimation('Attack', false);
+                        
+                        // Delayed Hit Check (Cone)
+                        setTimeout(() => {
+                            if (this.player.state === 'DEAD') return;
                             
-                            // Delayed Hit Check (Cone)
-                            setTimeout(() => {
-                                if (this.player.state === 'DEAD') return;
-                                
-                                // Define Attack Cone/Box
-                                const attackRange = 3.0;
-                                const attackAngle = Math.PI / 3; // 60 degrees
-                                const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.player.mesh.quaternion);
-                                
-                                this.chunkManager.getActiveEntities().forEach(entity => {
-                                    if (entity !== this.player && entity.isActive && entity.state !== 'DEAD' && entity.stats && entity.stats.hp > 0) {
-                                        const dirToEntity = new THREE.Vector3().subVectors(entity.position, this.player.position);
-                                        const dist = dirToEntity.length();
-                                        
-                                        if (dist < attackRange) {
-                                            dirToEntity.normalize();
-                                            const angle = forward.angleTo(dirToEntity);
-                                            if (angle < attackAngle / 2) {
-                                                // Hit!
-                                                const baseDmg = this.player.stats.damage;
-                                                const variance = (Math.random() * 0.4) + 0.8;
-                                                const finalDmg = Math.floor(baseDmg * variance);
-                                                entity.takeDamage(finalDmg);
-                                                if (entity.stats.hp <= 0) {
-                                                    this.player.gainXp(entity.xpValue || 10);
-                                                    this.handleEnemyDeath(entity);
-                                                }
+                            // Define Attack Cone/Box
+                            const attackRange = 3.0;
+                            const attackAngle = Math.PI / 3; // 60 degrees
+                            const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.player.mesh.quaternion);
+                            
+                            this.chunkManager.getActiveEntities().forEach(entity => {
+                                if (entity !== this.player && entity.isActive && entity.state !== 'DEAD' && entity.stats && entity.stats.hp > 0) {
+                                    const dirToEntity = new THREE.Vector3().subVectors(entity.position, this.player.position);
+                                    const dist = dirToEntity.length();
+                                    
+                                    if (dist < attackRange) {
+                                        dirToEntity.normalize();
+                                        const angle = forward.angleTo(dirToEntity);
+                                        if (angle < attackAngle / 2) {
+                                            // Hit!
+                                            const baseDmg = this.player.stats.damage;
+                                            const variance = (Math.random() * 0.4) + 0.8;
+                                            const finalDmg = Math.floor(baseDmg * variance);
+                                            entity.takeDamage(finalDmg);
+                                            if (entity.stats.hp <= 0) {
+                                                // XP is handled by handleEnemyDeath now, but we can leave it or remove it.
+                                                // The previous code had it, but we moved XP to handleEnemyDeath?
+                                                // Let's check handleEnemyDeath.
+                                                // handleEnemyDeath calls gainXp. So we should NOT call it here to avoid double XP if handleEnemyDeath is called.
+                                                // But wait, handleEnemyDeath is called right after.
+                                                // Let's remove explicit gainXp here to be safe and rely on handleEnemyDeath.
+                                                this.handleEnemyDeath(entity);
                                             }
                                         }
                                     }
-                                });
+                                }
+                            });
 
-                                this.player.state = 'IDLE';
-                                this.player.playAnimation('Idle');
-                            }, 500); // Sync with animation
-                        }
+                            this.player.state = 'IDLE';
+                            this.player.playAnimation('Idle');
+                        }, 500); // Sync with animation
                     }
                 } 
                 // 2. Hold-to-Attack (Hovering Enemy)
@@ -957,6 +967,8 @@ export class GameEngine {
                             minR = 160; maxR = 250;
                         } else if (enemy instanceof DemonOrc) {
                             minR = 260; maxR = 350;
+                        } else if (enemy instanceof Construct) {
+                            minR = 360; maxR = 450;
                         }
                         const pos = this.getRandomSpawnPosition(minR, maxR);
                         
@@ -1081,6 +1093,7 @@ export class GameEngine {
             if (enemy instanceof Skeleton) maxLevel = 5;
             else if (enemy instanceof Imp) maxLevel = 10;
             else if (enemy instanceof DemonOrc) maxLevel = 20;
+            else if (enemy instanceof Construct) maxLevel = 30;
 
             item = ItemGenerator.generateLoot(maxLevel);
         }
