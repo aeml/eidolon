@@ -380,7 +380,7 @@ export class GameEngine {
                 
                 // Re-add to chunk manager to ensure visibility check runs with the new mesh
                 const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
-                if (this.chunkManager.activeChunkKeys.has(key)) {
+                if (this.chunkManager.activeChunkKeys.has(key) || entity.type === 'DwarfSalesman') {
                     console.log(`GameEngine: Adding mesh for ${entity.id} to scene (delayed)`);
                     this.renderSystem.add(mesh);
                 } else {

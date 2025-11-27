@@ -8,6 +8,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        #browser-warning {
+            display: none;
+            background-color: #e6a23c;
+            color: #000;
+            text-align: center;
+            padding: 12px;
+            font-weight: bold;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 20000;
+            box-sizing: border-box;
+            border-bottom: 2px solid #d48806;
+            font-family: 'Segoe UI', sans-serif;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        #browser-warning .close-btn {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+            margin-right: 15px;
+            line-height: 20px;
+        }
+        #browser-warning .close-btn:hover {
+            color: #fff;
+        }
         canvas { display: block; }
 
         #ui-layer {
@@ -565,6 +592,22 @@
     </script>
 </head>
 <body>
+    <div id="browser-warning">
+        ⚠️ For the best experience, please use Google Chrome or Microsoft Edge.
+        <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+    </div>
+    <script>
+        (function() {
+            const ua = navigator.userAgent;
+            // Check for Chrome (Desktop/Android), CriOS (iOS Chrome), or Edg (Edge)
+            const isSupported = /Chrome/.test(ua) || /CriOS/.test(ua) || /Edg/.test(ua);
+            
+            if (!isSupported) {
+                const warning = document.getElementById('browser-warning');
+                if (warning) warning.style.display = 'block';
+            }
+        })();
+    </script>
     <div id="debug-console"></div>
     <div id="ui-layer">
         <div id="game-timer">00:00</div>
@@ -703,6 +746,32 @@
         <div id="patch-notes-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 600px; z-index: 101; flex-direction: column;">
             <div class="window-header">PATCH NOTES</div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.08 (Mobile Performance & Stability)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Performance Overhaul:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Lazy Loading:</strong> 3D assets now load only when needed, drastically reducing startup memory usage and preventing crashes.</li>
+                                <li><strong>Object Pooling:</strong> Enemies and projectiles are now recycled instead of destroyed, eliminating "stutter" from garbage collection.</li>
+                                <li><strong>Aggressive Unloading:</strong> Distant enemies are completely unloaded from memory to save resources.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Mobile Support:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Restored Visuals:</strong> Mobile users now see full 3D models and textures instead of colored boxes.</li>
+                                <li><strong>Shadow Optimization:</strong> Shadow quality is automatically adjusted on mobile for better performance.</li>
+                                <li><strong>Controls:</strong> Fixed joystick controls to correctly match isometric movement.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Bug Fixes:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li>Fixed a crash on mobile caused by race conditions during asset loading.</li>
+                                <li>Fixed an issue where the Shopkeeper would disappear or unload when walking away.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
                 <div style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.07 (The Construct & Loot 2.0)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

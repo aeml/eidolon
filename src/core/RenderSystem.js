@@ -70,7 +70,8 @@ export class RenderSystem {
         dirLight.castShadow = true;
         
         // Optimization: Reduce Shadow Map Size on Mobile
-        const shadowSize = this.isMobile ? 1024 : 2048;
+        // 512 is much lighter on VRAM than 1024/2048
+        const shadowSize = this.isMobile ? 512 : 2048;
         dirLight.shadow.mapSize.width = shadowSize;
         dirLight.shadow.mapSize.height = shadowSize;
         
