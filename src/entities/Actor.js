@@ -36,27 +36,31 @@ export class Actor extends Entity {
         
         console.log(`Actor ${id} init: Mana Stat = ${this.manaStatName}, Value = ${manaStatValue}`);
 
-        // Derived Stats
-        this.stats = {
-            ...baseStats,
+        // Base Stats (Permanent)
+        this.baseStats = {
             strength: baseStats.STRENGTH,
             intelligence: baseStats.INTELLIGENCE,
             dexterity: baseStats.DEXTERITY,
             wisdom: baseStats.WISDOM,
-            vitality: baseStats.STAMINA,
-            maxHp: baseStats.STAMINA * 10,
-            hp: baseStats.STAMINA * 10,
-            maxMana: baseStats.INTELLIGENCE * 10,
-            mana: baseStats.INTELLIGENCE * 10,
-            speed: 3 + (baseStats.DEXTERITY * 0.5), // Base 3 + bonus
-            damage: baseStats.STRENGTH * 2, // Base physical damage
-            defense: 0, // Base defense
-            hpRegen: baseStats.STAMINA * 0.1, // 1 HP per 10s per point
-            manaRegen: baseStats.WISDOM * 0.1, // 1 Mana per 10s per point
-            attackSpeed: 1 + (baseStats.DEXTERITY / 5) * 0.01, // 1% per 5 points
-            cooldownReduction: Math.min(0.5, baseStats.INTELLIGENCE * 0.005),
+            vitality: baseStats.STAMINA
+        };
+
+        // Derived Stats (Total)
+        this.stats = {
+            ...this.baseStats,
+            maxHp: this.baseStats.vitality * 10,
+            hp: this.baseStats.vitality * 10,
+            maxMana: this.baseStats.intelligence * 10,
+            mana: this.baseStats.intelligence * 10,
+            speed: 3 + (this.baseStats.dexterity * 0.5),
+            damage: this.baseStats.strength * 2,
+            defense: 0,
+            hpRegen: this.baseStats.vitality * 0.1,
+            manaRegen: this.baseStats.wisdom * 0.1,
+            attackSpeed: 1 + (this.baseStats.dexterity / 5) * 0.01,
+            cooldownReduction: Math.min(0.5, this.baseStats.intelligence * 0.005),
             manaCostReduction: 0, 
-            castSpeed: 1 + (baseStats.WISDOM / 5) * 0.01 // 1% per 5 points
+            castSpeed: 1 + (this.baseStats.wisdom / 5) * 0.01
         };
 
         // Progression
@@ -96,6 +100,8 @@ export class Actor extends Entity {
         this.radius = 1.25; // Collision radius (matches 2.5 scale width)
 
         this.isRunning = true; // Default to running (Players run, Enemies walk)
+        
+        this.gold = 0; // Currency
     }
 
     setMesh(mesh) {
@@ -401,17 +407,19 @@ export class Actor extends Entity {
         
         this.statPoints += 3;
         
-        // Auto-increase HP/Damage slightly as base growth? 
-        // Or rely purely on stats? Let's keep a small base growth + stat points.
-        this.stats.maxHp += 5; 
+        // Recalculate to apply level scaling
+        this.recalculateStats();
+        
+        // Heal on level up
         this.stats.hp = this.stats.maxHp;
+        this.stats.mana = this.stats.maxMana;
         
         console.log(`${this.id} leveled up to ${this.level}! Points: ${this.statPoints}`);
     }
 
     increaseStat(statName) {
-        if (this.statPoints > 0 && this.stats[statName] !== undefined) {
-            this.stats[statName]++;
+        if (this.statPoints > 0 && this.baseStats[statName] !== undefined) {
+            this.baseStats[statName]++;
             this.statPoints--;
             this.recalculateStats();
             return true;
@@ -420,36 +428,105 @@ export class Actor extends Entity {
     }
 
     recalculateStats() {
-        // Recalculate derived stats based on attributes
+        // 1. Start with Base Stats
+        const totalStats = { ...this.baseStats };
+        
+        // Initialize derived stats that accumulate
+        totalStats.damage = 0;
+        totalStats.defense = 0;
+
+        // Add Equipment Stats
+        for (const slot in this.equipment) {
+            const item = this.equipment[slot];
+            if (item && item.stats) {
+                for (const stat in item.stats) {
+                    if (totalStats[stat] !== undefined) {
+                        totalStats[stat] += item.stats[stat];
+                    } else {
+                        // Handle direct damage/defense stats on items
+                        if (stat === 'damage') totalStats.damage += item.stats.damage;
+                        if (stat === 'defense') totalStats.defense += item.stats.defense;
+                    }
+                }
+            }
+        }
+
+        // Update Total Stats in this.stats
+        this.stats.strength = totalStats.strength;
+        this.stats.dexterity = totalStats.dexterity;
+        this.stats.intelligence = totalStats.intelligence;
+        this.stats.wisdom = totalStats.wisdom;
+        this.stats.vitality = totalStats.vitality;
+
+        // 2. Recalculate derived stats based on Total Attributes
         const levelBonus = (this.level - 1) * 5; 
         
         // Vit: Increase health and health regen
-        this.stats.maxHp = (this.stats.vitality * 10) + levelBonus;
-        this.stats.hpRegen = this.stats.vitality * 0.1;
+        this.stats.maxHp = (totalStats.vitality * 10) + levelBonus;
+        this.stats.hpRegen = totalStats.vitality * 0.1;
 
         // Int: Increase max mana and reduces ability cooldown (up to 50% max)
-        this.stats.maxMana = (this.stats.intelligence * 10) + levelBonus;
-        // 0.5% CDR per point of Int, capped at 50%
-        this.stats.cooldownReduction = Math.min(0.5, this.stats.intelligence * 0.005);
+        this.stats.maxMana = (totalStats.intelligence * 10) + levelBonus;
+        this.stats.cooldownReduction = Math.min(0.5, totalStats.intelligence * 0.005);
 
         // Strength: Melee damage increase
-        this.stats.damage = this.stats.strength * 2;
+        // Base Damage from Stats + Weapon Damage
+        this.stats.damage = (totalStats.strength * 2) + totalStats.damage;
+
+        // Defense
+        this.stats.defense = totalStats.defense;
 
         // Dex: Movement speed and melee attack speed
-        // Increased base speed by 20%
-        this.stats.speed = (3 + (this.stats.dexterity * 0.5)) * 1.2;
-        this.stats.attackSpeed = 1 + (this.stats.dexterity / 5) * 0.01;
+        this.stats.speed = (3 + (totalStats.dexterity * 0.5)) * 1.2;
+        this.stats.attackSpeed = 1 + (totalStats.dexterity / 5) * 0.01;
 
         // Wisdom: Mana regen and cast speed
-        this.stats.manaRegen = this.stats.wisdom * 0.1;
-        this.stats.castSpeed = 1 + (this.stats.wisdom / 5) * 0.01;
+        this.stats.manaRegen = totalStats.wisdom * 0.1;
+        this.stats.castSpeed = 1 + (totalStats.wisdom / 5) * 0.01;
         
-        // Reset Mana Cost Reduction as it's not in the new spec
         this.stats.manaCostReduction = 0;
 
-        // Heal up to new max? Or just keep current percentage?
-        // Let's just clamp current HP
+        // Clamp current HP/Mana
         if (this.stats.hp > this.stats.maxHp) this.stats.hp = this.stats.maxHp;
         if (this.stats.mana > this.stats.maxMana) this.stats.mana = this.stats.maxMana;
+    }
+
+    equipItem(item) {
+        if (!item || !item.slot) return false;
+        
+        // Unequip current item in slot if exists
+        const currentItem = this.equipment[item.slot];
+        if (currentItem) {
+            this.addToInventory(currentItem);
+        }
+        
+        this.equipment[item.slot] = item;
+        this.recalculateStats();
+        console.log(`${this.id} equipped ${item.name}`);
+        return true;
+    }
+
+    unequipItem(slot) {
+        const item = this.equipment[slot];
+        if (item) {
+            if (this.addToInventory(item)) {
+                this.equipment[slot] = null;
+                this.recalculateStats();
+                console.log(`${this.id} unequipped ${item.name}`);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    addToInventory(item) {
+        // Find first empty slot
+        const index = this.inventory.findIndex(slot => slot === null);
+        if (index !== -1) {
+            this.inventory[index] = item;
+            return true;
+        }
+        console.log("Inventory full!");
+        return false;
     }
 }

@@ -3,6 +3,7 @@ import { RenderSystem } from './RenderSystem.js';
 import { InputManager } from './InputManager.js';
 import { ChunkManager } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
+import { ItemGenerator } from './ItemSystem.js';
 import { UIManager } from '../ui/UIManager.js';
 import { WorldGenerator } from '../world/WorldGenerator.js';
 import { Minimap } from '../ui/Minimap.js';
@@ -14,6 +15,7 @@ import { Wizard } from '../entities/Wizard.js';
 import { Cleric } from '../entities/Cleric.js';
 import { DemonOrc } from '../entities/DemonOrc.js';
 import { Projectile } from '../entities/Projectile.js';
+import { LootDrop } from '../entities/LootDrop.js';
 
 export class GameEngine {
     constructor(playerType) {
@@ -88,6 +90,17 @@ export class GameEngine {
             }
         };
 
+        // Handle Respawn / Unstuck
+        this.uiManager.onRespawn = () => {
+            if (this.player) {
+                console.log("Player requested respawn/unstuck.");
+                this.player.respawn(0, 0);
+                this.player.timeSinceDeath = null;
+                this.renderSystem.setCameraTarget(this.player.position);
+                this.chunkManager.update(this.player, 0, this.collisionManager);
+            }
+        };
+
         if (onProgress) onProgress(50, "Generating World...");
         await new Promise(r => setTimeout(r, 50));
 
@@ -110,9 +123,42 @@ export class GameEngine {
         // Input Handling
         this.inputManager.subscribe('onClick', () => {
             if (!this.player) return;
+            if (this.uiManager.isEscMenuOpen) return; // Disable movement in Esc menu
 
-            // 1. Check for Entity Click (Attack)
+            // 1. Check for Entity Click (Attack or Loot)
             if (this.hoveredEntity && this.hoveredEntity !== this.player) {
+                
+                // Loot Pickup Logic
+                if (this.hoveredEntity instanceof LootDrop) {
+                    const dist = this.player.position.distanceTo(this.hoveredEntity.position);
+                    if (dist < 2.5) { // Pickup range
+                        if (this.player.addToInventory(this.hoveredEntity.item)) {
+                            console.log(`Picked up ${this.hoveredEntity.item.name}`);
+                            this.uiManager.updateInventory(this.player);
+                            
+                            // Remove loot entity
+                            this.hoveredEntity.isActive = false;
+                            this.renderSystem.remove(this.hoveredEntity.mesh);
+                            
+                            // Remove from ChunkManager
+                            const key = this.chunkManager.getChunkKey(this.hoveredEntity.position.x, this.hoveredEntity.position.z);
+                            if (this.chunkManager.chunks.has(key)) {
+                                this.chunkManager.chunks.get(key).delete(this.hoveredEntity);
+                            }
+                            
+                            this.hoveredEntity = null;
+                            document.body.style.cursor = 'default';
+                        } else {
+                            console.log("Inventory full!");
+                        }
+                    } else {
+                        // Move to loot
+                        this.player.move(this.hoveredEntity.position);
+                    }
+                    return;
+                }
+
+                // Attack Logic
                 // Check distance
                 const dist = this.player.position.distanceTo(this.hoveredEntity.position);
                 if (dist < 5) { // Melee range
@@ -138,6 +184,7 @@ export class GameEngine {
 
         this.inputManager.subscribe('onRightClick', () => {
             if (!this.player) return;
+            if (this.uiManager.isEscMenuOpen) return; // Disable abilities in Esc menu
             
             let targetPoint;
 
@@ -174,8 +221,14 @@ export class GameEngine {
                 
                 if (obj.userData.entityId) {
                     this.hoveredEntity = activeEntities.find(e => e.id === obj.userData.entityId);
-                    // Change cursor?
-                    document.body.style.cursor = 'crosshair';
+                    
+                    if (this.hoveredEntity instanceof LootDrop) {
+                        document.body.style.cursor = 'grab';
+                    } else if (this.hoveredEntity && this.hoveredEntity.state !== 'DEAD') {
+                        document.body.style.cursor = 'crosshair';
+                    } else {
+                        document.body.style.cursor = 'default';
+                    }
                 }
             } else {
                 this.hoveredEntity = null;
@@ -341,6 +394,7 @@ export class GameEngine {
                 if (this.player.timeSinceDeath > 3.0) { // Respawn after 3 seconds
                     console.log("Player respawning in town...");
                     this.player.respawn(0, 0); // Respawn at Town Center (0,0)
+                    this.player.timeSinceDeath = null; // Reset timer
                     
                     // Reset Camera
                     this.renderSystem.setCameraTarget(this.player.position);
@@ -365,7 +419,7 @@ export class GameEngine {
                             enemy.takeDamage(Math.floor(dmg));
                             
                             if (enemy.stats.hp <= 0) {
-                                this.player.gainXp(enemy.xpValue);
+                                this.handleEnemyDeath(enemy);
                             }
 
                             // Stop charging on impact
@@ -382,7 +436,7 @@ export class GameEngine {
                 this.enemies.forEach(enemy => {
                     if (enemy.state !== 'DEAD' && enemy.isActive) {
                         const dist = this.player.position.distanceTo(enemy.position);
-                        if (dist < 5.0) { // Spirit radius (Increased to 5.0)
+                        if (dist < 8.0) { // Spirit radius (Increased to 8.0)
                             // Damage tick (simple implementation: damage every frame is too much, need timer)
                             // Let's just do small damage per frame or use a timer on the enemy?
                             // Better: Timer on player
@@ -394,7 +448,7 @@ export class GameEngine {
                                 enemy.takeDamage(Math.floor(dmg));
                                 
                                 if (enemy.stats.hp <= 0) {
-                                    this.player.gainXp(enemy.xpValue);
+                                    this.handleEnemyDeath(enemy);
                                 }
                                 // Reset handled after loop
                             }
@@ -403,7 +457,10 @@ export class GameEngine {
                 });
                 if (this.player.spiritTick > 0.5) this.player.spiritTick = 0;
             }
-            
+        }
+
+        // Camera Handling
+        if (this.player) {
             if (this.cameraLocked) {
                 this.renderSystem.setCameraTarget(this.player.position);
             } else {
@@ -451,6 +508,7 @@ export class GameEngine {
         // Enemy Spawning / Recycling Logic
         this.enemies.forEach(enemy => {
             if (enemy.state === 'DEAD') {
+                if (typeof enemy.timeSinceDeath !== 'number') enemy.timeSinceDeath = 0;
                 enemy.timeSinceDeath += dt;
 
                 // Hide body after 2 seconds (allow animation to finish)
@@ -460,6 +518,8 @@ export class GameEngine {
 
                 // Respawn after 5 seconds
                 if (enemy.timeSinceDeath > 5) {
+                    enemy.timeSinceDeath = 0; // Reset timer
+                    
                     let minR = 60, maxR = 150;
                     if (enemy instanceof DemonOrc) {
                         minR = 160; maxR = 250;
@@ -476,6 +536,7 @@ export class GameEngine {
                     // Respawn (updates position)
                     enemy.mesh.visible = true;
                     enemy.respawn(pos.x, pos.z);
+                    enemy.deathHandled = false;
 
                     // Add to new chunk
                     this.chunkManager.addEntity(enemy);
@@ -510,7 +571,7 @@ export class GameEngine {
                         // Deal Damage
                         enemy.takeDamage(Math.floor(p.damage));
                         if (enemy.stats.hp <= 0) {
-                            p.owner.gainXp(enemy.xpValue);
+                            this.handleEnemyDeath(enemy);
                         }
 
                         // Special Effects
@@ -523,7 +584,7 @@ export class GameEngine {
                                         const splashDmg = Math.floor(p.damage * 0.2);
                                         nearbyEnemy.takeDamage(splashDmg);
                                         if (nearbyEnemy.stats.hp <= 0) {
-                                            p.owner.gainXp(nearbyEnemy.xpValue);
+                                            this.handleEnemyDeath(nearbyEnemy);
                                         }
                                     }
                                 }
@@ -547,6 +608,42 @@ export class GameEngine {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    handleEnemyDeath(enemy) {
+        if (enemy.deathHandled) return; // Already handled
+        enemy.deathHandled = true;
+        
+        this.player.gainXp(enemy.xpValue);
+        
+        // Gold Drop (1-200 range, scaled by level)
+        // Base: 1-20. Max at level 10: 10-200.
+        const minGold = Math.max(1, enemy.level);
+        const maxGold = Math.max(20, enemy.level * 20);
+        const goldAmount = Math.floor(minGold + Math.random() * (maxGold - minGold));
+        
+        this.player.gold += goldAmount;
+        console.log(`Gained ${goldAmount} gold. Total: ${this.player.gold}`);
+        // Ideally show floating text for gold too
+        
+        // Loot Drop Chance (e.g., 30%)
+        if (Math.random() < 0.3) {
+            let maxLevel = 1;
+            if (enemy instanceof Skeleton) maxLevel = 10;
+            else if (enemy instanceof DemonOrc) maxLevel = 15;
+
+            const item = ItemGenerator.generateLoot(maxLevel);
+            if (item) {
+                console.log(`Loot Dropped: ${item.name}`);
+                
+                // Spawn LootDrop entity
+                const dropX = enemy.position.x + (Math.random() - 0.5) * 1.0;
+                const dropZ = enemy.position.z + (Math.random() - 0.5) * 1.0;
+                
+                const loot = new LootDrop(item, dropX, dropZ);
+                this.addEntity(loot);
             }
         }
     }
