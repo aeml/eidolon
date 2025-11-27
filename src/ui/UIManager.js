@@ -17,6 +17,19 @@ export class UIManager {
         this.inventoryScreen = document.getElementById('inventory-screen');
         this.inventoryGrid = document.getElementById('inventory-grid');
         
+        // Escape Menu & Help
+        this.escMenu = document.getElementById('esc-menu');
+        this.helpScreen = document.getElementById('help-screen');
+        this.btnResume = document.getElementById('btn-resume');
+        this.btnHelp = document.getElementById('btn-help');
+        this.btnMenu = document.getElementById('btn-menu');
+        this.btnCloseHelp = document.getElementById('btn-close-help');
+
+        this.btnResume.addEventListener('click', () => this.toggleEscMenu());
+        this.btnHelp.addEventListener('click', () => this.toggleHelp());
+        this.btnMenu.addEventListener('click', () => location.reload());
+        this.btnCloseHelp.addEventListener('click', () => this.toggleHelp());
+
         // Ability UI
         this.abilityContainer = document.getElementById('ability-container');
         this.abilityIcon = document.getElementById('ability-icon');
@@ -169,6 +182,58 @@ export class UIManager {
     toggleInventory() {
         const isHidden = this.inventoryScreen.style.display === 'none' || this.inventoryScreen.style.display === '';
         this.inventoryScreen.style.display = isHidden ? 'block' : 'none';
+    }
+
+    toggleEscMenu() {
+        const isHidden = this.escMenu.style.display === 'none' || this.escMenu.style.display === '';
+        this.escMenu.style.display = isHidden ? 'block' : 'none';
+        
+        // If closing menu, also close help if open
+        if (!isHidden) {
+            this.helpScreen.style.display = 'none';
+        }
+    }
+
+    toggleHelp() {
+        const isHidden = this.helpScreen.style.display === 'none' || this.helpScreen.style.display === '';
+        this.helpScreen.style.display = isHidden ? 'block' : 'none';
+    }
+
+    handleEscape() {
+        let closedSomething = false;
+
+        // 1. Close Gameplay Windows
+        if (this.characterSheet.style.display === 'block') {
+            this.characterSheet.style.display = 'none';
+            closedSomething = true;
+        }
+        if (this.inventoryScreen.style.display === 'block') {
+            this.inventoryScreen.style.display = 'none';
+            closedSomething = true;
+        }
+        
+        // Check World Map (accessed via DOM directly as UIManager doesn't own the class instance)
+        const worldMap = document.getElementById('world-map');
+        if (worldMap && (worldMap.style.display === 'flex' || worldMap.style.display === 'block')) {
+            worldMap.style.display = 'none';
+            closedSomething = true;
+        }
+
+        // 2. Close Help Screen (return to ESC menu or close?)
+        // If Help is open, we close it.
+        if (this.helpScreen.style.display === 'block') {
+            this.helpScreen.style.display = 'none';
+            // If we want to return to ESC menu, we should ensure ESC menu is visible?
+            // But the user said "closes all menus".
+            // Let's just close it.
+            closedSomething = true;
+        }
+
+        // 3. If nothing was closed, Toggle ESC Menu
+        // (If ESC menu is already open, this will close it. If closed, it will open it.)
+        if (!closedSomething) {
+            this.toggleEscMenu();
+        }
     }
 
     updateXP(player) {

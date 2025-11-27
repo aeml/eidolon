@@ -173,6 +173,10 @@ export class GameEngine {
             }
         });
 
+        this.inputManager.subscribe('onEscape', () => {
+            this.uiManager.handleEscape();
+        });
+
         this.inputManager.subscribe('onTeleport', () => {
             if (this.player) {
                 console.log("Teleporting to town...");
