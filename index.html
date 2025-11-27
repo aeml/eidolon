@@ -46,6 +46,7 @@
 
         .health-fill { background: linear-gradient(90deg, #8b0000, #ff0000); }
         .mana-fill { background: linear-gradient(90deg, #00008b, #0000ff); }
+        .stamina-fill { background: linear-gradient(90deg, #006400, #00ff00); }
 
         .bar-text {
             position: absolute;
@@ -394,6 +395,10 @@
                 <div id="player-mana-bar" class="bar-fill mana-fill"></div>
                 <div id="player-mana-text" class="bar-text">50 / 50</div>
             </div>
+            <div class="bar-container">
+                <div id="player-stamina-bar" class="bar-fill stamina-fill"></div>
+                <div id="player-stamina-text" class="bar-text">100 / 100</div>
+            </div>
         </div>
             
         <!-- Ability Icon -->
@@ -474,6 +479,7 @@
                 <div><strong style="color: #ffd700;">Scroll:</strong> Zoom In / Out</div>
                 <div><strong style="color: #ffd700;">WASD:</strong> Pan Camera</div>
                 <div><strong style="color: #ffd700;">Spacebar:</strong> Toggle Camera Lock</div>
+                <div><strong style="color: #ffd700;">R:</strong> Toggle Run/Walk</div>
             </div>
             <div style="text-align: center; padding-bottom: 10px;">
                 <button id="btn-close-help" class="menu-btn">Close</button>

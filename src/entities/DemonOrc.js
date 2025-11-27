@@ -3,18 +3,19 @@ import { Actor } from './Actor.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 
-export class Skeleton extends Actor {
+export class DemonOrc extends Actor {
     constructor(id) {
-        super(id, CONSTANTS.ENTITIES.SKELETON || { STATS: { STRENGTH: 3, STAMINA: 3, DEXTERITY: 3, INTELLIGENCE: 1, WISDOM: 1 } });
-        this.xpValue = 50; // XP reward for killing
+        super(id, CONSTANTS.ENTITIES.DEMON_ORC);
+        this.xpValue = 150; // Higher XP reward
         
         // AI State
-        this.sightRange = 45; // Increased from 15 to 45 (3x)
-        this.attackRange = 2.5;
-        this.roamRadius = 10;
+        this.sightRange = 50; 
+        this.attackRange = 3.0;
+        this.roamRadius = 15;
         this.roamTimer = 0;
-        this.roamInterval = 3; // Seconds between roams
+        this.roamInterval = 4; 
         
+        this.radius = 2.0; // Larger collision radius
         this.isRunning = false; // Enemies always walk
 
         this.initMesh();
@@ -22,17 +23,16 @@ export class Skeleton extends Actor {
 
     async initMesh() {
         try {
-            const mesh = await MeshFactory.createMeshForType('Skeleton');
+            const mesh = await MeshFactory.createMeshForType('DemonOrc');
             if (mesh) {
                 this.setMesh(mesh);
             }
         } catch (e) {
-            console.error("Skeleton: initMesh failed", e);
+            console.error("DemonOrc: initMesh failed", e);
         }
     }
 
     update(dt, collisionManager, player) {
-        // Run base Actor update (handles movement, animations, etc.)
         super.update(dt, collisionManager);
 
         if (this.state === 'DEAD') return;
@@ -48,26 +48,23 @@ export class Skeleton extends Actor {
                     this.attack(player);
                 } else {
                     // Chase!
-                    // Only update path occasionally or if target moved significantly? 
-                    // For now, just update target position every frame is fine for simple AI
                     this.move(player.position);
                 }
-                return; // Skip roam logic if chasing/attacking
+                return; 
             }
         }
 
-        // Roam Logic (if not chasing)
+        // Roam Logic
         if (this.state === 'IDLE') {
             this.roamTimer -= dt;
             if (this.roamTimer <= 0) {
                 this.roam();
-                this.roamTimer = this.roamInterval + Math.random() * 2; // Randomize interval
+                this.roamTimer = this.roamInterval + Math.random() * 2; 
             }
         }
     }
 
     roam() {
-        // Pick a random point nearby
         const angle = Math.random() * Math.PI * 2;
         const radius = Math.random() * this.roamRadius;
         const dx = Math.cos(angle) * radius;

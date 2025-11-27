@@ -10,13 +10,15 @@ export class Projectile extends Entity {
         
         // Calculate velocity
         const direction = new THREE.Vector3().subVectors(targetPos, startPos).normalize();
-        this.speed = type === 'Fireball' ? 15 : 25;
+        this.speed = type === 'Fireball' ? 20 : 35; // Increased speed
         this.velocity = direction.multiplyScalar(this.speed);
         
         this.damage = 0;
-        this.radius = 0.5;
+        this.radius = type === 'Fireball' ? 2.0 : 1.5; // Increased hit radius
         this.lifeTime = 3.0; // Seconds
         
+        this.hitEntities = new Set(); // Track entities hit by this projectile
+
         this.initMesh();
     }
 

@@ -383,6 +383,71 @@ export class MeshFactory {
             }
         }
 
+        if (type === 'DemonOrc') {
+            try {
+                // Load Base Mesh (Idle)
+                const idleGltf = await this.loadModel('./assets/enemies/demons/demon_orc/idle.glb');
+                mesh = SkeletonUtils.clone(idleGltf.scene);
+                
+                mesh.userData.animations = [];
+                const addAnim = (clip, name) => {
+                    if (clip) {
+                        const newClip = clip.clone();
+                        newClip.name = name;
+                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
+                        mesh.userData.animations.push(newClip);
+                    }
+                };
+
+                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
+
+                try {
+                    const walkGltf = await this.loadModel('./assets/enemies/demons/demon_orc/walk.glb');
+                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
+                } catch (e) {}
+
+                try {
+                    const runGltf = await this.loadModel('./assets/enemies/demons/demon_orc/run.glb');
+                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
+                } catch (e) {}
+
+                try {
+                    const attackGltf = await this.loadModel('./assets/enemies/demons/demon_orc/attack.glb');
+                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
+                } catch (e) {}
+
+                try {
+                    const deathGltf = await this.loadModel('./assets/enemies/demons/demon_orc/death.glb');
+                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
+                } catch (e) {}
+
+                mesh.scale.set(3.0, 3.0, 3.0); // Slightly larger than skeleton
+                
+                mesh.traverse(c => {
+                    if (c.isMesh) {
+                        if (!c.material) {
+                            c.material = new THREE.MeshStandardMaterial({ color: 0x8b0000 });
+                        }
+                        c.castShadow = true;
+                        c.receiveShadow = true;
+                        c.frustumCulled = false;
+                    }
+                });
+                
+                return mesh;
+            } catch (e) {
+                console.error("Failed to load DemonOrc:", e);
+                // Fallback to box if loading fails
+                const geometry = new THREE.BoxGeometry(1.5, 2, 1.5);
+                const material = new THREE.MeshStandardMaterial({ color: 0x8b0000 });
+                mesh = new THREE.Mesh(geometry, material);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.position.y = 1;
+                return mesh;
+            }
+        }
+
         switch (type) {
             case 'Fighter':
                 geometry = new THREE.BoxGeometry(1, 1, 1);

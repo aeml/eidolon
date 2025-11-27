@@ -48,6 +48,14 @@ export class Cleric extends Actor {
         }
     }
 
+    cancelAbilities() {
+        this.spiritsActive = false;
+        this.spirits.forEach(s => {
+            if (this.mesh) this.mesh.remove(s.mesh);
+        });
+        this.spirits = [];
+    }
+
     update(dt, collisionManager) {
         super.update(dt, collisionManager);
 
