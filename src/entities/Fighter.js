@@ -6,6 +6,7 @@ import { MeshFactory } from '../utils/MeshFactory.js';
 export class Fighter extends Actor {
     constructor(id) {
         super(id, CONSTANTS.ENTITIES.FIGHTER);
+        this.scaleAnimSpeed = false;
         this.initMesh();
         
         this.abilityName = "Charge";

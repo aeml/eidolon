@@ -23,7 +23,7 @@
 
         /* Game Timer */
         #game-timer {
-            position: absolute;
+            position: fixed;
             top: 20px;
             left: 20px;
             font-size: 28px;
@@ -40,7 +40,7 @@
             align-items: center;
             justify-content: center;
             min-width: 120px;
-            z-index: 100;
+            z-index: 9999;
             letter-spacing: 2px;
         }
         
@@ -546,6 +546,7 @@
 </head>
 <body>
     <div id="ui-layer">
+        <div id="game-timer">00:00</div>
         <!-- Mobile UI Overlay -->
         <div id="mobile-ui">
             <div id="joystick-zone">
@@ -688,6 +689,18 @@
                             <ul style="padding-left: 20px; margin-top: 5px;">
                                 <li><strong>New Enemy: Construct:</strong> Ancient machines now roam the outer wastelands (Level 20-30). High health and damage.</li>
                                 <li><strong>Zone Expansion:</strong> Added a new world ring (Radius 360-450) for Constructs.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Visuals & UI:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Animation Fixes:</strong> Fixed "jittery" movement animations for Fighter, Wizard, and Cleric.</li>
+                                <li><strong>Boss Timer:</strong> Fixed an issue where the timer was hidden. It is now always visible.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Balance:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Enemy Spawns:</strong> Significantly increased spawn rates for all enemy types.</li>
+                                <li><strong>Enemy Stats:</strong> Buffed HP and Damage for all enemies to match the new power curve.</li>
                             </ul>
                         </li>
                         <li><strong>Loot System 2.0:</strong>
