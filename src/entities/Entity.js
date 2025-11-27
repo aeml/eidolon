@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { MeshFactory } from '../utils/MeshFactory.js';
 
 export class Entity {
     constructor(id) {
@@ -7,6 +8,25 @@ export class Entity {
         this.rotation = new THREE.Quaternion();
         this.isActive = true;
         this.mesh = null;
+        this.meshType = null;
+        this.isMeshLoading = false;
+    }
+
+    async ensureMesh() {
+        if (this.mesh || this.isMeshLoading || !this.meshType) return;
+        
+        this.isMeshLoading = true;
+        try {
+            // console.log(`Entity ${this.id} loading mesh type ${this.meshType}...`);
+            const mesh = await MeshFactory.createMeshForType(this.meshType);
+            if (mesh) {
+                this.setMesh(mesh);
+            }
+        } catch (e) {
+            console.error(`Entity ${this.id} failed to load mesh ${this.meshType}`, e);
+        } finally {
+            this.isMeshLoading = false;
+        }
     }
 
     update(dt) {

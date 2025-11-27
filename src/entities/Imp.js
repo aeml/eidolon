@@ -18,18 +18,7 @@ export class Imp extends Actor {
         this.radius = 1.0; // Smaller collision radius
         this.isRunning = false; // Enemies always walk
 
-        this.initMesh();
-    }
-
-    async initMesh() {
-        try {
-            const mesh = await MeshFactory.createMeshForType('Imp');
-            if (mesh) {
-                this.setMesh(mesh);
-            }
-        } catch (e) {
-            console.error("Imp: initMesh failed", e);
-        }
+        this.meshType = 'Imp';
     }
 
     update(dt, collisionManager, player) {

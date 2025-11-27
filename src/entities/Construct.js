@@ -18,18 +18,7 @@ export class Construct extends Actor {
         this.radius = 2.5; // Large collision radius
         this.isRunning = false; // Slow moving
 
-        this.initMesh();
-    }
-
-    async initMesh() {
-        try {
-            const mesh = await MeshFactory.createMeshForType('Construct');
-            if (mesh) {
-                this.setMesh(mesh);
-            }
-        } catch (e) {
-            console.error("Construct: initMesh failed", e);
-        }
+        this.meshType = 'Construct';
     }
 
     update(dt, collisionManager, player) {

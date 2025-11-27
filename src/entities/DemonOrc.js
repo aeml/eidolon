@@ -18,18 +18,7 @@ export class DemonOrc extends Actor {
         this.radius = 2.0; // Larger collision radius
         this.isRunning = false; // Enemies always walk
 
-        this.initMesh();
-    }
-
-    async initMesh() {
-        try {
-            const mesh = await MeshFactory.createMeshForType('DemonOrc');
-            if (mesh) {
-                this.setMesh(mesh);
-            }
-        } catch (e) {
-            console.error("DemonOrc: initMesh failed", e);
-        }
+        this.meshType = 'DemonOrc';
     }
 
     update(dt, collisionManager, player) {

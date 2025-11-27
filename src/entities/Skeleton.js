@@ -17,18 +17,7 @@ export class Skeleton extends Actor {
         
         this.isRunning = false; // Enemies always walk
 
-        this.initMesh();
-    }
-
-    async initMesh() {
-        try {
-            const mesh = await MeshFactory.createMeshForType('Skeleton');
-            if (mesh) {
-                this.setMesh(mesh);
-            }
-        } catch (e) {
-            console.error("Skeleton: initMesh failed", e);
-        }
+        this.meshType = 'Skeleton';
     }
 
     update(dt, collisionManager, player) {

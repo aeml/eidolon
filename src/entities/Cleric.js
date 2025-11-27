@@ -7,7 +7,7 @@ export class Cleric extends Actor {
     constructor(id) {
         super(id, CONSTANTS.ENTITIES.CLERIC);
         this.scaleAnimSpeed = false;
-        this.initMesh();
+        this.meshType = 'Cleric';
 
         this.abilityName = "Guardian Spirits";
         this.abilityDescription = "Summon spirits that orbit you and damage nearby enemies.";
@@ -17,11 +17,6 @@ export class Cleric extends Actor {
         this.spiritsActive = false;
         this.spiritDuration = 0;
         this.spirits = []; // Array of meshes
-    }
-
-    async initMesh() {
-        const mesh = await MeshFactory.createMeshForType('Cleric');
-        this.setMesh(mesh);
     }
 
     useAbility(targetVector, gameEngine) {
