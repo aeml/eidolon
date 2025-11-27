@@ -44,6 +44,11 @@ export class Entity {
         this.mesh = mesh;
         this.mesh.userData.entityId = this.id;
         
+        // Apply any custom modifications (e.g. Elite scaling/coloring)
+        if (this.modifyMesh) {
+            this.modifyMesh(mesh);
+        }
+
         if (this.onMeshReady) {
             this.onMeshReady(mesh);
             this.onMeshReady = null; // Clear callback
