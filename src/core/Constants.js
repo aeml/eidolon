@@ -66,44 +66,44 @@ export const CONSTANTS = {
             COLOR: 0xcccccc,
             MANA_STAT: 'INTELLIGENCE',
             STATS: {
-                STRENGTH: 3,
-                INTELLIGENCE: 1,
-                DEXTERITY: 2,
-                WISDOM: 1,
-                STAMINA: 3
+                STRENGTH: 5,
+                INTELLIGENCE: 2,
+                DEXTERITY: 3,
+                WISDOM: 2,
+                STAMINA: 5
             }
         },
         IMP: {
             COLOR: 0xff4500,
             MANA_STAT: 'INTELLIGENCE',
             STATS: {
-                STRENGTH: 8,
-                INTELLIGENCE: 2,
-                DEXTERITY: 4,
-                WISDOM: 2,
-                STAMINA: 8
+                STRENGTH: 12,
+                INTELLIGENCE: 4,
+                DEXTERITY: 6,
+                WISDOM: 4,
+                STAMINA: 12
             }
         },
         DEMON_ORC: {
             COLOR: 0x8b0000,
             MANA_STAT: 'INTELLIGENCE',
             STATS: {
-                STRENGTH: 15,
-                INTELLIGENCE: 4,
-                DEXTERITY: 6,
-                WISDOM: 4,
-                STAMINA: 15
+                STRENGTH: 25,
+                INTELLIGENCE: 8,
+                DEXTERITY: 10,
+                WISDOM: 8,
+                STAMINA: 25
             }
         },
         CONSTRUCT: {
             COLOR: 0x555555,
             MANA_STAT: 'INTELLIGENCE',
             STATS: {
-                STRENGTH: 25,
-                INTELLIGENCE: 10,
-                DEXTERITY: 2,
-                WISDOM: 10,
-                STAMINA: 25
+                STRENGTH: 40,
+                INTELLIGENCE: 15,
+                DEXTERITY: 5,
+                WISDOM: 15,
+                STAMINA: 40
             }
         }
     }

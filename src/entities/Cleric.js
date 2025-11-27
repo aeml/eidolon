@@ -6,6 +6,7 @@ import { MeshFactory } from '../utils/MeshFactory.js';
 export class Cleric extends Actor {
     constructor(id) {
         super(id, CONSTANTS.ENTITIES.CLERIC);
+        this.scaleAnimSpeed = false;
         this.initMesh();
 
         this.abilityName = "Guardian Spirits";

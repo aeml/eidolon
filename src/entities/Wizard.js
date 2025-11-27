@@ -6,6 +6,7 @@ import { Projectile } from './Projectile.js';
 export class Wizard extends Actor {
     constructor(id) {
         super(id, CONSTANTS.ENTITIES.WIZARD);
+        this.scaleAnimSpeed = false;
         this.initMesh();
 
         this.abilityName = "Fireball";

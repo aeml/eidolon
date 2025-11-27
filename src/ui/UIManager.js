@@ -164,7 +164,7 @@ export class UIManager {
     showHUD() {
         this.hud.style.display = 'block';
         this.abilityContainer.style.display = 'block';
-        if (this.gameTimer) this.gameTimer.style.display = 'block';
+        if (this.gameTimer) this.gameTimer.style.display = 'flex';
     }
 
     updateTimer(seconds) {
@@ -283,6 +283,10 @@ export class UIManager {
 
     get isEscMenuOpen() {
         return this.escMenu.style.display === 'block';
+    }
+
+    get isPatchNotesOpen() {
+        return this.patchNotesScreen.style.display === 'flex';
     }
 
     toggleCharacterSheet() {

@@ -149,7 +149,7 @@ export class GameEngine {
         // Input Handling
         this.inputManager.subscribe('onClick', () => {
             if (!this.player) return;
-            if (this.uiManager.isEscMenuOpen) return; // Disable movement in Esc menu
+            if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen) return; // Disable movement in Esc menu or Patch Notes
 
             // Mobile Attack Logic (Auto-target nearest)
             if (this.isMobile) {
@@ -195,7 +195,7 @@ export class GameEngine {
 
         this.inputManager.subscribe('onRightClick', () => {
             if (!this.player) return;
-            if (this.uiManager.isEscMenuOpen) return; // Disable abilities in Esc menu
+            if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen) return; // Disable abilities in Esc menu or Patch Notes
             
             // Mobile Ability Logic (Auto-target)
             if (this.isMobile) {
@@ -410,13 +410,13 @@ export class GameEngine {
         this.spawnEnemyGroup(Skeleton, 50, 60, 150, 'skeleton');
 
         // Spawn Imps (Level 5-10 Area: 160-250 radius)
-        this.spawnEnemyGroup(Imp, 40, 160, 250, 'imp');
+        this.spawnEnemyGroup(Imp, 50, 160, 250, 'imp');
 
         // Spawn Demon Orcs (Level 10+ Area: 260-350 radius)
-        this.spawnEnemyGroup(DemonOrc, 30, 260, 350, 'demon-orc');
+        this.spawnEnemyGroup(DemonOrc, 50, 260, 350, 'demon-orc');
 
         // Spawn Constructs (Level 20+ Area: 360-450 radius)
-        this.spawnEnemyGroup(Construct, 20, 360, 450, 'construct');
+        this.spawnEnemyGroup(Construct, 50, 360, 450, 'construct');
     }
 
     spawnEnemyGroup(EnemyClass, count, minRadius, maxRadius, idPrefix) {
