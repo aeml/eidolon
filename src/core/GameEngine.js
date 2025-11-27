@@ -12,6 +12,7 @@ import { Skeleton } from '../entities/Skeleton.js';
 import { Rogue } from '../entities/Rogue.js';
 import { Wizard } from '../entities/Wizard.js';
 import { Cleric } from '../entities/Cleric.js';
+import { Projectile } from '../entities/Projectile.js';
 
 export class GameEngine {
     constructor(playerType) {
@@ -28,6 +29,7 @@ export class GameEngine {
         this.hoveredEntity = null;
         this.playerType = playerType || 'Fighter';
         this.enemies = []; // Keep track of enemies for pooling
+        this.projectiles = []; // Track active projectiles
         this.cameraLocked = true; // Default to locked
         
         this.lastTime = 0;
@@ -78,6 +80,10 @@ export class GameEngine {
             }
         };
 
+        // Force initial chunk update to ensure player is visible immediately
+        console.log("GameEngine: Forcing initial chunk update");
+        this.chunkManager.update(this.player, 0, this.collisionManager);
+
         // Generate World (Town)
         this.worldGenerator.createTown(0, 0, 100); // 100x100 unit town
 
@@ -100,17 +106,26 @@ export class GameEngine {
                 }
             } else {
                 // 2. Ground Click (Move)
-                const target = this.inputManager.getRayIntersection();
-                if (target) {
-                    this.player.move(target);
-                }
+                // const target = this.inputManager.getRayIntersection(); // Removed as it doesn't exist
+                // if (target) {
+                //     this.player.move(target);
+                // } else {
+                    // Move to ground position
+                    const point = this.inputManager.getGroundIntersection();
+                    if (point) {
+                        this.player.move(point);
+                    }
+                // }
             }
         });
 
         this.inputManager.subscribe('onRightClick', () => {
-            const target = this.inputManager.getRayIntersection();
-            if (this.player && target) {
-                this.player.performSkill(target);
+            if (!this.player) return;
+            
+            const point = this.inputManager.getGroundIntersection();
+            if (point) {
+                this.player.useAbility(point, this);
+                this.uiManager.updateAbilityIcon(this.player); // Update cooldown visual
             }
         });
 
@@ -197,14 +212,20 @@ export class GameEngine {
             // Wait for mesh to load asynchronously
             const originalOnMeshReady = entity.onMeshReady;
             entity.onMeshReady = (mesh) => {
+                console.log(`GameEngine: Mesh ready for ${entity.id}`);
                 if (originalOnMeshReady) originalOnMeshReady(mesh);
                 
                 // Re-add to chunk manager to ensure visibility check runs with the new mesh
                 const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
                 if (this.chunkManager.activeChunkKeys.has(key)) {
+                    console.log(`GameEngine: Adding mesh for ${entity.id} to scene (delayed)`);
                     this.renderSystem.add(mesh);
+                } else {
+                    console.log(`GameEngine: Chunk ${key} not active, mesh not added yet`);
                 }
             };
+        } else {
+             console.log(`GameEngine: Entity ${entity.id} already has mesh`);
         }
     }
 
@@ -249,9 +270,77 @@ export class GameEngine {
     }
 
     update(dt) {
-        // Update Chunk Manager (handles loading/unloading and entity updates)
+        // Update ChunkManager (handles loading/unloading and entity updates)
         if (this.player) {
-            this.chunkManager.update(this.player.position, dt, this.collisionManager);
+            this.chunkManager.update(this.player, dt, this.collisionManager);
+            
+            // Player Death & Respawn Logic
+            if (this.player.state === 'DEAD') {
+                if (this.player.timeSinceDeath === undefined) this.player.timeSinceDeath = 0;
+                this.player.timeSinceDeath += dt;
+                
+                if (this.player.timeSinceDeath > 3.0) { // Respawn after 3 seconds
+                    console.log("Player respawning in town...");
+                    this.player.respawn(0, 0); // Respawn at Town Center (0,0)
+                    
+                    // Reset Camera
+                    this.renderSystem.setCameraTarget(this.player.position);
+                    
+                    // Force chunk update to ensure town is loaded
+                    this.chunkManager.update(this.player, 0, this.collisionManager);
+                }
+            }
+
+            // Cleric Spirit Damage Logic
+            if (this.player instanceof Fighter && this.player.isCharging) {
+                this.enemies.forEach(enemy => {
+                    if (enemy.state !== 'DEAD' && enemy.isActive) {
+                        const dist = this.player.position.distanceTo(enemy.position);
+                        const hitRadius = (this.player.radius || 0.5) + (enemy.radius || 0.5);
+                        if (dist < hitRadius) { // Hit radius
+                            // Damage Calculation: Base 10 + (Strength * 1.5)
+                            const dmg = 10 + (this.player.stats.strength * 1.5);
+                            enemy.takeDamage(Math.floor(dmg));
+                            
+                            if (enemy.stats.hp <= 0) {
+                                this.player.gainXp(enemy.xpValue);
+                            }
+
+                            // Stop charging on impact
+                            this.player.isCharging = false;
+                            this.player.state = 'IDLE';
+                            this.player.playAnimation('Idle');
+                        }
+                    }
+                });
+            }
+
+            // Cleric Spirit Damage Logic
+            if (this.player instanceof Cleric && this.player.spiritsActive) {
+                this.enemies.forEach(enemy => {
+                    if (enemy.state !== 'DEAD' && enemy.isActive) {
+                        const dist = this.player.position.distanceTo(enemy.position);
+                        if (dist < 5.0) { // Spirit radius (Increased to 5.0)
+                            // Damage tick (simple implementation: damage every frame is too much, need timer)
+                            // Let's just do small damage per frame or use a timer on the enemy?
+                            // Better: Timer on player
+                            if (!this.player.spiritTick) this.player.spiritTick = 0;
+                            this.player.spiritTick += dt;
+                            if (this.player.spiritTick > 0.5) { // Tick every 0.5s
+                                // Damage Calculation: Base 10 + (Wisdom * 1.0)
+                                const dmg = 10 + (this.player.stats.wisdom * 1.0);
+                                enemy.takeDamage(Math.floor(dmg));
+                                
+                                if (enemy.stats.hp <= 0) {
+                                    this.player.gainXp(enemy.xpValue);
+                                }
+                                // Reset handled after loop
+                            }
+                        }
+                    }
+                });
+                if (this.player.spiritTick > 0.5) this.player.spiritTick = 0;
+            }
             
             if (this.cameraLocked) {
                 this.renderSystem.setCameraTarget(this.player.position);
@@ -300,9 +389,15 @@ export class GameEngine {
         // Enemy Spawning / Recycling Logic
         this.enemies.forEach(enemy => {
             if (enemy.state === 'DEAD') {
-                // Simple timer check (using a random chance for now to stagger spawns)
-                // In a real system, we'd track time since death
-                if (Math.random() < 0.01) { // ~1% chance per frame (approx once every 1.6s at 60fps)
+                enemy.timeSinceDeath += dt;
+
+                // Hide body after 2 seconds (allow animation to finish)
+                if (enemy.timeSinceDeath > 2 && enemy.mesh && enemy.mesh.visible) {
+                    enemy.mesh.visible = false;
+                }
+
+                // Respawn after 5 seconds
+                if (enemy.timeSinceDeath > 5) {
                     const pos = this.getRandomSpawnPosition();
                     
                     // We need to update ChunkManager because it might move to a new chunk
@@ -313,6 +408,7 @@ export class GameEngine {
                     }
 
                     // Respawn (updates position)
+                    enemy.mesh.visible = true;
                     enemy.respawn(pos.x, pos.z);
 
                     // Add to new chunk
@@ -320,6 +416,38 @@ export class GameEngine {
                 }
             }
         });
+
+        // Projectile Logic
+        for (let i = this.projectiles.length - 1; i >= 0; i--) {
+            const p = this.projectiles[i];
+            p.update(dt);
+            
+            if (!p.isActive) {
+                this.renderSystem.remove(p.mesh);
+                this.projectiles.splice(i, 1);
+                continue;
+            }
+
+            // Collision with Enemies
+            for (const enemy of this.enemies) {
+                if (enemy.state !== 'DEAD' && enemy.isActive) {
+                    const dist = p.position.distanceTo(enemy.position);
+                    const hitRadius = p.radius + (enemy.radius || 0.5);
+                    if (dist < hitRadius) { // Projectile radius + Enemy radius
+                        enemy.takeDamage(Math.floor(p.damage));
+                        if (enemy.stats.hp <= 0) {
+                            p.owner.gainXp(enemy.xpValue);
+                        }
+                        
+                        // Destroy projectile
+                        p.isActive = false;
+                        this.renderSystem.remove(p.mesh);
+                        this.projectiles.splice(i, 1);
+                        break; // Stop checking enemies for this projectile
+                    }
+                }
+            }
+        }
     }
 
     render(alpha) {

@@ -68,8 +68,6 @@ export class Minimap {
         ctx.fill();
         
         // Draw Direction Indicator
-        const angle = Math.atan2(player.velocity.x, player.velocity.z); // Or rotation
-        // Since we don't have rotation easily accessible on Entity base (it's a quaternion), 
-        // we'll skip direction for now or use velocity if moving.
+        // const angle = Math.atan2(player.velocity.x, player.velocity.z); 
     }
 }

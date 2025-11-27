@@ -73,10 +73,17 @@ export class RenderSystem {
     setupGround() {
         console.log("RenderSystem: Loading ground texture...");
         const loader = new THREE.TextureLoader();
-        const groundTexture = loader.load('./assets/backgrounds/ground_texture.png', (tex) => {
+        // Add timestamp to force reload of texture (bypass cache)
+        const groundTexture = loader.load(`./assets/backgrounds/ground_texture.png?v=${Date.now()}`, (tex) => {
             console.log("RenderSystem: Ground texture loaded successfully.", tex);
             tex.wrapS = THREE.RepeatWrapping;
             tex.wrapT = THREE.RepeatWrapping;
+
+            // Improve texture sampling to reduce visual gaps/seams
+            tex.minFilter = THREE.LinearMipmapLinearFilter;
+            tex.magFilter = THREE.LinearFilter;
+            tex.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
+
             // Scale repeat based on ground size (assuming 100 units = 4 repeats)
             const repeatCount = Math.max(4, CONSTANTS.SCENE.GROUND_SIZE / 25);
             tex.repeat.set(repeatCount, repeatCount); 
