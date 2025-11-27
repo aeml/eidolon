@@ -18,11 +18,18 @@ import { Projectile } from '../entities/Projectile.js';
 import { LootDrop } from '../entities/LootDrop.js';
 import { DwarfSalesman } from '../entities/DwarfSalesman.js';
 import { Actor } from '../entities/Actor.js';
+import { Imp } from '../entities/Imp.js';
 
 export class GameEngine {
-    constructor(playerType) {
-        this.renderSystem = new RenderSystem();
+    constructor(playerType, isMobile = false) {
+        this.isMobile = isMobile;
+        this.renderSystem = new RenderSystem(isMobile);
         this.inputManager = new InputManager(this.renderSystem.camera, this.renderSystem.scene);
+        if (this.isMobile) {
+            this.inputManager.setupMobileControls();
+            this.cameraLocked = true; // Force camera lock on mobile
+        }
+
         this.chunkManager = new ChunkManager(this.renderSystem.scene);
         this.collisionManager = new CollisionManager();
         this.uiManager = new UIManager();
@@ -37,6 +44,7 @@ export class GameEngine {
         this.projectiles = []; // Track active projectiles
         this.cameraLocked = true; // Default to locked
         this.pendingInteraction = null; // Entity to interact with when in range
+        this.pendingAbilityTarget = null; // Entity to use ability on when in range
         
         this.lastTime = 0;
         this.accumulator = 0;
@@ -132,16 +140,43 @@ export class GameEngine {
             if (!this.player) return;
             if (this.uiManager.isEscMenuOpen) return; // Disable movement in Esc menu
 
+            // Mobile Attack Logic (Auto-target nearest)
+            if (this.isMobile) {
+                // Find nearest enemy
+                let nearest = null;
+                let minDst = 1000;
+                this.enemies.forEach(e => {
+                    if (e.isActive && e.state !== 'DEAD') {
+                        const d = this.player.position.distanceTo(e.position);
+                        if (d < minDst) {
+                            minDst = d;
+                            nearest = e;
+                        }
+                    }
+                });
+
+                if (nearest && minDst < 8.0) {
+                    this.pendingInteraction = nearest;
+                    this.player.move(nearest.position);
+                } else {
+                    // Just attack in place
+                    this.player.playAnimation('Attack', false);
+                }
+                return;
+            }
+
             // 1. Check for Entity Click (Attack or Loot)
             if (this.hoveredEntity && this.hoveredEntity !== this.player) {
                 // Set as pending interaction and move towards it
                 this.pendingInteraction = this.hoveredEntity;
+                this.pendingAbilityTarget = null; // Clear pending ability
                 this.player.move(this.hoveredEntity.position);
             } else {
                 // 2. Ground Click (Move)
                 const point = this.inputManager.getGroundIntersection();
                 if (point) {
                     this.pendingInteraction = null; // Cancel pending interaction
+                    this.pendingAbilityTarget = null; // Clear pending ability
                     this.player.move(point);
                 }
             }
@@ -151,19 +186,64 @@ export class GameEngine {
             if (!this.player) return;
             if (this.uiManager.isEscMenuOpen) return; // Disable abilities in Esc menu
             
-            let targetPoint;
+            // Mobile Ability Logic (Auto-target)
+            if (this.isMobile) {
+                // Find nearest enemy
+                let nearest = null;
+                let minDst = 1000;
+                this.enemies.forEach(e => {
+                    if (e.isActive && e.state !== 'DEAD') {
+                        const d = this.player.position.distanceTo(e.position);
+                        if (d < minDst) {
+                            minDst = d;
+                            nearest = e;
+                        }
+                    }
+                });
+
+                if (nearest && minDst < 15.0) {
+                    this.player.useAbility(nearest.position, this);
+                    this.uiManager.updateAbilityIcon(this.player);
+                } else {
+                    // Cast in facing direction?
+                    // For now, just cast at current position + forward vector
+                    const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.player.mesh.quaternion);
+                    const target = this.player.position.clone().add(forward.multiplyScalar(5));
+                    this.player.useAbility(target, this);
+                    this.uiManager.updateAbilityIcon(this.player);
+                }
+                return;
+            }
 
             // 1. Check if hovering an enemy
             if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
-                targetPoint = this.hoveredEntity.position.clone();
+                // Check if player is Ranged (Wizard or Rogue)
+                if (this.player instanceof Wizard || this.player instanceof Rogue) {
+                    // Cast Immediately from any distance
+                    this.pendingAbilityTarget = null;
+                    this.pendingInteraction = null;
+                    this.player.useAbility(this.hoveredEntity.position, this);
+                    this.uiManager.updateAbilityIcon(this.player);
+                    
+                    // Stop movement if we were moving
+                    this.player.targetPosition = null;
+                    this.player.state = 'IDLE';
+                    this.player.playAnimation('Idle');
+                } else {
+                    // Melee: Move to range
+                    this.pendingAbilityTarget = this.hoveredEntity;
+                    this.pendingInteraction = null; // Clear pending interaction
+                    this.player.move(this.hoveredEntity.position);
+                }
             } else {
-                // 2. Fallback to ground click
-                targetPoint = this.inputManager.getGroundIntersection();
-            }
-
-            if (targetPoint) {
-                this.player.useAbility(targetPoint, this);
-                this.uiManager.updateAbilityIcon(this.player); // Update cooldown visual
+                // 2. Fallback to ground click (Immediate cast)
+                const targetPoint = this.inputManager.getGroundIntersection();
+                if (targetPoint) {
+                    this.pendingAbilityTarget = null;
+                    this.pendingInteraction = null;
+                    this.player.useAbility(targetPoint, this);
+                    this.uiManager.updateAbilityIcon(this.player); // Update cooldown visual
+                }
             }
         });
 
@@ -217,6 +297,50 @@ export class GameEngine {
             }
         });
 
+        this.inputManager.subscribe('onInteract', () => {
+            if (!this.player || !this.isMobile) return;
+            
+            // Smart Interact Logic:
+            // 1. Loot (Very close range)
+            // 2. NPC (Close range)
+            
+            const activeEntities = this.chunkManager.getActiveEntities();
+            let nearestLoot = null;
+            let nearestNPC = null;
+            let lootDist = 2.5;
+            let npcDist = 4.0;
+
+            activeEntities.forEach(e => {
+                if (!e.isActive) return;
+                const d = this.player.position.distanceTo(e.position);
+                
+                if (e instanceof LootDrop && d < lootDist) {
+                    nearestLoot = e;
+                    lootDist = d;
+                } else if (e instanceof DwarfSalesman && d < npcDist) {
+                    nearestNPC = e;
+                    npcDist = d;
+                }
+            });
+
+            if (nearestLoot) {
+                // Pick up
+                if (this.player.addToInventory(nearestLoot.item)) {
+                    console.log(`Picked up ${nearestLoot.item.name}`);
+                    this.uiManager.updateInventory(this.player);
+                    nearestLoot.isActive = false;
+                    this.renderSystem.remove(nearestLoot.mesh);
+                    // Remove from chunk
+                    const key = this.chunkManager.getChunkKey(nearestLoot.position.x, nearestLoot.position.z);
+                    if (this.chunkManager.chunks.has(key)) {
+                        this.chunkManager.chunks.get(key).delete(nearestLoot);
+                    }
+                }
+            } else if (nearestNPC) {
+                this.uiManager.toggleShop();
+            }
+        });
+
         this.inputManager.subscribe('onEscape', () => {
             this.uiManager.handleEscape();
         });
@@ -248,6 +372,9 @@ export class GameEngine {
             this.uiManager.toggleInventory();
             this.uiManager.updateInventory(this.player);
         });
+
+        if (onProgress) onProgress(95, "Waiting for silicon...");
+        await new Promise(r => setTimeout(r, 5000));
 
         if (onProgress) onProgress(100, "Ready!");
         await new Promise(r => setTimeout(r, 100));
@@ -297,8 +424,11 @@ export class GameEngine {
         // Spawn Skeletons (Level 1-5 Area: 60-150 radius)
         this.spawnEnemyGroup(Skeleton, 50, 60, 150, 'skeleton');
 
-        // Spawn Demon Orcs (Level 5-10 Area: 160-250 radius)
-        this.spawnEnemyGroup(DemonOrc, 30, 160, 250, 'demon-orc');
+        // Spawn Imps (Level 5-10 Area: 160-250 radius)
+        this.spawnEnemyGroup(Imp, 40, 160, 250, 'imp');
+
+        // Spawn Demon Orcs (Level 10+ Area: 260-350 radius)
+        this.spawnEnemyGroup(DemonOrc, 30, 260, 350, 'demon-orc');
     }
 
     spawnEnemyGroup(EnemyClass, count, minRadius, maxRadius, idPrefix) {
@@ -368,6 +498,11 @@ export class GameEngine {
                 if (!this.pendingInteraction.isActive || (this.pendingInteraction.state === 'DEAD' && !(this.pendingInteraction instanceof LootDrop))) {
                     this.pendingInteraction = null;
                 } else {
+                    // Update target position to follow moving entities
+                    if (this.pendingInteraction.position) {
+                        this.player.targetPosition = this.pendingInteraction.position.clone();
+                    }
+
                     const dist = this.player.position.distanceTo(this.pendingInteraction.position);
                     let range = 2.5; // Default (Loot)
                     
@@ -404,6 +539,29 @@ export class GameEngine {
 
                         // Clear pending interaction and stop moving
                         this.pendingInteraction = null;
+                        this.player.targetPosition = null;
+                        this.player.state = 'IDLE';
+                        this.player.playAnimation('Idle');
+                    }
+                }
+            }
+
+            // Handle Pending Ability (Move to Cast)
+            if (this.pendingAbilityTarget) {
+                if (!this.pendingAbilityTarget.isActive || this.pendingAbilityTarget.state === 'DEAD') {
+                    this.pendingAbilityTarget = null;
+                } else {
+                    // Update target position
+                    this.player.targetPosition = this.pendingAbilityTarget.position.clone();
+                    
+                    const dist = this.player.position.distanceTo(this.pendingAbilityTarget.position);
+                    const range = 8.0; // Generic Ability Range (should be dynamic based on ability)
+
+                    if (dist < range) {
+                        this.player.useAbility(this.pendingAbilityTarget.position, this);
+                        this.uiManager.updateAbilityIcon(this.player);
+                        
+                        this.pendingAbilityTarget = null;
                         this.player.targetPosition = null;
                         this.player.state = 'IDLE';
                         this.player.playAnimation('Idle');
@@ -491,6 +649,36 @@ export class GameEngine {
 
         // Camera Handling
         if (this.player) {
+            // Mobile Joystick Movement
+            if (this.isMobile) {
+                const moveDir = this.inputManager.getMovementDirection();
+                if (moveDir.lengthSq() > 0) {
+                    // Move player directly
+                    const speed = this.player.stats.speed;
+                    const moveVec = moveDir.multiplyScalar(speed * dt);
+                    
+                    // Simple collision check (very basic)
+                    const nextPos = this.player.position.clone().add(moveVec);
+                    
+                    // Update Player Position
+                    this.player.position.copy(nextPos);
+                    this.player.state = 'MOVING';
+                    this.player.playAnimation('Run'); // Always run with joystick
+                    
+                    // Rotate player to face movement
+                    const lookTarget = this.player.position.clone().add(moveDir);
+                    this.player.mesh.lookAt(lookTarget);
+                    
+                    // Cancel any target position (click-to-move)
+                    this.player.targetPosition = null;
+                } else {
+                    if (this.player.state === 'MOVING' && !this.player.targetPosition) {
+                        this.player.state = 'IDLE';
+                        this.player.playAnimation('Idle');
+                    }
+                }
+            }
+
             if (this.cameraLocked) {
                 this.renderSystem.setCameraTarget(this.player.position);
             } else {
@@ -551,8 +739,10 @@ export class GameEngine {
                     enemy.timeSinceDeath = 0; // Reset timer
                     
                     let minR = 60, maxR = 150;
-                    if (enemy instanceof DemonOrc) {
+                    if (enemy instanceof Imp) {
                         minR = 160; maxR = 250;
+                    } else if (enemy instanceof DemonOrc) {
+                        minR = 260; maxR = 350;
                     }
                     const pos = this.getRandomSpawnPosition(minR, maxR);
                     
@@ -661,8 +851,9 @@ export class GameEngine {
         // Loot Drop Chance (e.g., 30%)
         if (Math.random() < 0.3) {
             let maxLevel = 1;
-            if (enemy instanceof Skeleton) maxLevel = 10;
-            else if (enemy instanceof DemonOrc) maxLevel = 15;
+            if (enemy instanceof Skeleton) maxLevel = 5;
+            else if (enemy instanceof Imp) maxLevel = 10;
+            else if (enemy instanceof DemonOrc) maxLevel = 20;
 
             const item = ItemGenerator.generateLoot(maxLevel);
             if (item) {

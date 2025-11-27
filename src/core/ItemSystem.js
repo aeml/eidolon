@@ -183,4 +183,87 @@ export class ItemGenerator {
             level: level
         });
     }
+
+    static generateLootForSlot(slot, level) {
+        // 1. Roll for Rarity (Same as generateLoot)
+        const roll = Math.random();
+        let rarity = RARITY.COMMON;
+        if (roll < 0.01) rarity = RARITY.LEGENDARY;
+        else if (roll < 0.30) rarity = RARITY.RARE;
+        else if (roll < 0.60) rarity = RARITY.UNCOMMON;
+
+        // 2. Filter Base Items by Slot
+        const possibleItems = BASE_ITEMS.filter(item => item.slot === slot);
+        if (possibleItems.length === 0) {
+            console.error(`No base items found for slot: ${slot}`);
+            return null;
+        }
+        const baseItem = possibleItems[Math.floor(Math.random() * possibleItems.length)];
+
+        // 3. Calculate Base Stats
+        const stats = {};
+        const baseVal = Math.floor(baseItem.baseValue * (1 + level * 0.1) * rarity.multiplier);
+        stats[baseItem.baseStat] = baseVal;
+
+        // 4. Add Random Stats
+        const availableStats = [...STAT_POOL];
+        for (let i = 0; i < rarity.statCount; i++) {
+            if (availableStats.length === 0) break;
+            const statIndex = Math.floor(Math.random() * availableStats.length);
+            const statName = availableStats.splice(statIndex, 1)[0];
+            const statVal = Math.floor((1 + Math.random() * 2 + (level * 0.5)) * rarity.multiplier);
+            stats[statName] = (stats[statName] || 0) + Math.max(1, statVal);
+        }
+
+        // 5. Add Affixes
+        let prefix = null;
+        let suffix = null;
+        let name = baseItem.name;
+
+        const affixChance = Math.random();
+        let allowPrefix = false;
+        let allowSuffix = false;
+
+        if (rarity === RARITY.LEGENDARY) {
+            allowPrefix = true;
+            allowSuffix = true;
+        } else if (rarity === RARITY.RARE) {
+            if (Math.random() > 0.5) allowPrefix = true;
+            else allowSuffix = true;
+            if (Math.random() > 0.7) { allowPrefix = true; allowSuffix = true; }
+        } else if (rarity === RARITY.UNCOMMON) {
+            if (Math.random() > 0.5) allowPrefix = true;
+            else allowSuffix = true;
+        } else {
+            if (Math.random() > 0.8) allowPrefix = true;
+        }
+
+        if (allowPrefix) {
+            prefix = PREFIXES[Math.floor(Math.random() * PREFIXES.length)];
+            const val = Math.floor((prefix.min + Math.random() * (prefix.max - prefix.min)) * (1 + level * 0.1));
+            stats[prefix.stat] = (stats[prefix.stat] || 0) + val;
+            name = `${prefix.name} ${name}`;
+        }
+
+        if (allowSuffix) {
+            suffix = SUFFIXES[Math.floor(Math.random() * SUFFIXES.length)];
+            const val = Math.floor((suffix.min + Math.random() * (suffix.max - suffix.min)) * (1 + level * 0.1));
+            stats[suffix.stat] = (stats[suffix.stat] || 0) + val;
+            name = `${name} ${suffix.name}`;
+        }
+
+        if (!prefix && rarity !== RARITY.COMMON) {
+            name = `${rarity.name} ${baseItem.name}`;
+            if (suffix) name += ` ${suffix.name}`;
+        }
+
+        return new Item({
+            name: name,
+            type: baseItem.type,
+            slot: baseItem.slot,
+            rarity: rarity,
+            stats: stats,
+            level: level
+        });
+    }
 }

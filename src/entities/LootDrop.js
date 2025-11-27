@@ -3,7 +3,7 @@ import { Entity } from './Entity.js';
 
 // Optimization: Shared Geometries and Materials
 const SHARED_GEOMETRY = new THREE.SphereGeometry(0.2, 16, 16);
-const HITBOX_GEOMETRY = new THREE.SphereGeometry(0.7, 8, 8);
+const HITBOX_GEOMETRY = new THREE.BoxGeometry(2.0, 2.0, 2.0); // Large box to cover orb and text
 const HITBOX_MATERIAL = new THREE.MeshBasicMaterial({ visible: false });
 const MATERIAL_CACHE = new Map(); // Color -> Material
 const TEXTURE_CACHE = new Map(); // "Name|Color" -> Texture
@@ -52,6 +52,7 @@ export class LootDrop extends Entity {
         
         // Add Hitbox for easier clicking
         const hitMesh = new THREE.Mesh(HITBOX_GEOMETRY, HITBOX_MATERIAL);
+        hitMesh.position.y = 0.0; // Centered on orb
         this.mesh.add(hitMesh);
         
         this.bobOffset = Math.random() * Math.PI * 2;

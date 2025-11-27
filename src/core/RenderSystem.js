@@ -2,10 +2,14 @@ import * as THREE from 'three';
 import { CONSTANTS } from './Constants.js';
 
 export class RenderSystem {
-    constructor() {
+    constructor(isMobile = false) {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x220033); // Temporary fallback color (Dark Purple)
         
+        // Optimization: Mobile Settings
+        this.isMobile = isMobile;
+        console.log(`RenderSystem initialized. Mobile Mode: ${this.isMobile}`);
+
         // Load Background Texture
         console.log("RenderSystem: Loading background texture...");
         const loader = new THREE.TextureLoader();
@@ -14,7 +18,7 @@ export class RenderSystem {
             texture.colorSpace = THREE.SRGBColorSpace;
             this.scene.background = texture;
         }, (xhr) => {
-            console.log(`RenderSystem: Background load progress: ${(xhr.loaded / xhr.total * 100)}%`);
+            // console.log(`RenderSystem: Background load progress: ${(xhr.loaded / xhr.total * 100)}%`);
         }, (err) => {
             console.error("RenderSystem: Error loading background texture:", err);
         });
@@ -31,9 +35,15 @@ export class RenderSystem {
         this.updateCamera();
         
         // Renderer
-        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        // Optimization: Disable antialias on mobile for performance
+        this.renderer = new THREE.WebGLRenderer({ 
+            antialias: !this.isMobile,
+            powerPreference: "high-performance"
+        });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.shadowMap.enabled = true;
+        // Optimization: Use PCFSoftShadowMap for better look, or Basic for performance
+        this.renderer.shadowMap.type = this.isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
         
         // Ensure canvas is behind UI but visible
         this.renderer.domElement.style.position = 'absolute';
@@ -60,8 +70,12 @@ export class RenderSystem {
         const dirLight = new THREE.DirectionalLight(0xffffff, 2);
         dirLight.position.set(10, 20, 10);
         dirLight.castShadow = true;
-        dirLight.shadow.mapSize.width = 2048;
-        dirLight.shadow.mapSize.height = 2048;
+        
+        // Optimization: Reduce Shadow Map Size on Mobile
+        const shadowSize = this.isMobile ? 1024 : 2048;
+        dirLight.shadow.mapSize.width = shadowSize;
+        dirLight.shadow.mapSize.height = shadowSize;
+        
         const d = 50;
         dirLight.shadow.camera.left = -d;
         dirLight.shadow.camera.right = d;

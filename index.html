@@ -375,6 +375,134 @@
             height: 100%;
             background: #111;
         }
+
+        /* Compare Tooltip */
+        #compare-tooltip {
+            position: absolute;
+            display: none;
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid #ffd700;
+            padding: 10px;
+            border-radius: 4px;
+            color: #eee;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 200;
+            max-width: 200px;
+        }
+
+        /* Mobile UI */
+        #mobile-ui {
+            display: none; /* Hidden by default, shown via JS on mobile */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            touch-action: none; /* Prevent browser zooming/scrolling */
+        }
+
+        .mobile-btn {
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #888;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        
+        .mobile-btn:active {
+            background: rgba(255, 215, 0, 0.5);
+            border-color: #ffd700;
+        }
+
+        #joystick-zone {
+            position: absolute;
+            bottom: 50px;
+            left: 50px;
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            pointer-events: auto;
+        }
+
+        #joystick-knob {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        #mobile-actions {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            width: 150px;
+            height: 150px;
+            pointer-events: none;
+        }
+
+        #btn-mobile-attack {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: rgba(139, 0, 0, 0.6);
+            border-color: #ff4444;
+            font-size: 14px;
+        }
+
+        #btn-mobile-ability {
+            position: absolute;
+            bottom: 90px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 0, 139, 0.6);
+            border-color: #4444ff;
+            font-size: 12px;
+        }
+
+        #btn-mobile-interact {
+            position: absolute;
+            bottom: 20px;
+            right: 90px;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 100, 0, 0.6);
+            border-color: #44ff44;
+            font-size: 12px;
+        }
+        
+        #mobile-top-right {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            pointer-events: auto;
+        }
+        
+        .mobile-icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            font-size: 20px;
+        }
     </style>
     <script type="importmap">
         {
@@ -387,6 +515,26 @@
 </head>
 <body>
     <div id="ui-layer">
+        <!-- Mobile UI Overlay -->
+        <div id="mobile-ui">
+            <div id="joystick-zone">
+                <div id="joystick-knob"></div>
+            </div>
+            
+            <div id="mobile-actions">
+                <div id="btn-mobile-attack" class="mobile-btn">ATK</div>
+                <div id="btn-mobile-ability" class="mobile-btn">SKILL</div>
+                <div id="btn-mobile-interact" class="mobile-btn">USE</div>
+            </div>
+
+            <div id="mobile-top-right">
+                <div id="btn-mobile-inv" class="mobile-btn mobile-icon-btn">I</div>
+                <div id="btn-mobile-char" class="mobile-btn mobile-icon-btn">C</div>
+                <div id="btn-mobile-menu" class="mobile-btn mobile-icon-btn">☰</div>
+            </div>
+        </div>
+
+        <!-- Player HUD -->
         <div id="player-hud" style="display: none;">
             <div class="bar-container">
                 <div id="player-hp-bar" class="bar-fill health-fill"></div>
@@ -502,6 +650,36 @@
         <div id="patch-notes-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 600px; z-index: 101; flex-direction: column;">
             <div class="window-header">PATCH NOTES</div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.03</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Mobile Support:</strong> Full mobile controls added! Virtual Joystick, Action Buttons, and Mobile UI.</li>
+                        <li><strong>Performance:</strong> Optimized rendering for mobile devices (Shadows, AA).</li>
+                        <li><strong>Ranged Combat:</strong> Fireball and Dagger Throw can now be cast instantly from any distance.</li>
+                        <li><strong>Shop Update:</strong> Mystery Boxes now guarantee an item for the selected slot. ESC key now closes the shop.</li>
+                        <li><strong>Interaction Polish:</strong> Significantly improved click detection for loot. Added "Smart Interact" for mobile.</li>
+                        <li><strong>Visuals:</strong> Imps are larger. Loading times reduced.</li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.02</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>New Content: The Merchant:</strong> A Dwarf Salesman has arrived in town! Sell your unwanted loot or buy "Mystery Boxes" (500g) to gamble for gear at your level.</li>
+                        <li><strong>New Enemy: Imp:</strong> Mischievous demons now inhabit the lands beyond the skeletons (Level 5-10).</li>
+                        <li><strong>World Expansion:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li>Zone 1: Skeletons (Level 1-5)</li>
+                                <li>Zone 2: Imps (Level 5-10)</li>
+                                <li>Zone 3: Demon Orcs (Level 10+). Significantly buffed.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Move-to-Interact:</strong> Clicking an object from afar will now automatically move you into range to interact.</li>
+                        <li><strong>Rogue Polish:</strong> Fixed animation jitter/speed issues for the Rogue class.</li>
+                        <li><strong>Bug Fixes:</strong> Fixed crashes when picking up items and invisible NPC meshes.</li>
+                    </ul>
+                </div>
+
                 <div style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.01</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

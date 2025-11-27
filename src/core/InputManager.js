@@ -24,7 +24,8 @@ export class InputManager {
             onCharacter: [],
             onInventory: [],
             onTeleport: [],
-            onMap: []
+            onMap: [],
+            onInteract: [] // New callback for Mobile "USE" button
         };
 
         this.keys = {
@@ -34,9 +35,150 @@ export class InputManager {
             d: false,
             alt: false // Track Alt
         };
+        
+        this.joystickVector = new THREE.Vector2(0, 0);
+        this.isMobile = false;
 
         window.addEventListener('keydown', (e) => this.onKeyDown(e));
         window.addEventListener('keyup', (e) => this.onKeyUp(e));
+    }
+
+    setupMobileControls() {
+        this.isMobile = true;
+        const mobileUI = document.getElementById('mobile-ui');
+        if (mobileUI) mobileUI.style.display = 'block';
+
+        // Joystick Logic
+        const zone = document.getElementById('joystick-zone');
+        const knob = document.getElementById('joystick-knob');
+        
+        if (zone && knob) {
+            let startX, startY;
+            const maxDist = 35; // Max radius for knob movement
+
+            zone.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.changedTouches[0];
+                startX = touch.clientX;
+                startY = touch.clientY;
+                
+                // Reset knob to center of touch initially? No, center of zone.
+                // Actually, let's make it static joystick for simplicity.
+                // Center of zone:
+                const rect = zone.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                // Calculate initial offset if they didn't touch exact center
+                // But usually we want the knob to follow the finger relative to center
+            }, { passive: false });
+
+            zone.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.changedTouches[0];
+                
+                const rect = zone.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                let dx = touch.clientX - centerX;
+                let dy = touch.clientY - centerY;
+                
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                
+                // Normalize and Clamp
+                if (dist > maxDist) {
+                    dx = (dx / dist) * maxDist;
+                    dy = (dy / dist) * maxDist;
+                }
+
+                // Move Knob
+                knob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+
+                // Update Vector (-1 to 1)
+                this.joystickVector.x = dx / maxDist;
+                this.joystickVector.y = dy / maxDist; // Inverted Y? Screen Y is down, World Z is down (South). 
+                // Screen Up (Negative Y) -> World North (Negative Z).
+                // So Screen Y maps to World Z directly.
+            }, { passive: false });
+
+            const endHandler = (e) => {
+                e.preventDefault();
+                knob.style.transform = `translate(-50%, -50%)`;
+                this.joystickVector.set(0, 0);
+            };
+
+            zone.addEventListener('touchend', endHandler);
+            zone.addEventListener('touchcancel', endHandler);
+        }
+
+        // Buttons
+        const bindBtn = (id, callbackName) => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                btn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation(); // Prevent click-through
+                    this.callbacks[callbackName].forEach(cb => cb());
+                }, { passive: false });
+            }
+        };
+
+        // Map Mobile Buttons to Game Actions
+        // Attack -> Left Click (Ground/Enemy) logic is handled by GameEngine, but we need to trigger it.
+        // Actually, GameEngine listens to 'onClick'.
+        // But 'onClick' usually expects a mouse position for raycasting.
+        // For mobile, "Attack" button should probably attack the nearest enemy or just trigger "Attack" action.
+        // Since we don't have a "target" from mouse hover, we might need auto-targeting or just attack in front.
+        // For now, let's map Attack to onClick, but we need to fake a mouse position? 
+        // Or better, GameEngine should handle "Attack Button Pressed" differently.
+        
+        // Let's reuse existing callbacks but maybe add a flag or new callback?
+        // Reuse 'onClick' for Attack. GameEngine will need to handle "no mouse position" or use player position/direction.
+        
+        bindBtn('btn-mobile-attack', 'onClick'); // Attack
+        bindBtn('btn-mobile-ability', 'onRightClick'); // Ability
+        bindBtn('btn-mobile-interact', 'onInteract'); // Interact (Loot/NPC)
+        
+        bindBtn('btn-mobile-inv', 'onInventory');
+        bindBtn('btn-mobile-char', 'onCharacter');
+        bindBtn('btn-mobile-menu', 'onEscape');
+    }
+
+    getMovementDirection() {
+        const dir = new THREE.Vector3(0, 0, 0);
+        
+        // Keyboard
+        if (this.keys.w) { dir.x -= 1; dir.z -= 1; }
+        if (this.keys.s) { dir.x += 1; dir.z += 1; }
+        if (this.keys.a) { dir.x -= 1; dir.z += 1; }
+        if (this.keys.d) { dir.x += 1; dir.z -= 1; }
+
+        // Joystick (Isometric Mapping)
+        // Joystick Up (Y < 0) -> World North (X-1, Z-1)
+        // Joystick Right (X > 0) -> World East (X+1, Z-1)
+        // Joystick Down (Y > 0) -> World South (X+1, Z+1)
+        // Joystick Left (X < 0) -> World West (X-1, Z+1)
+        
+        // Standard 2D to Iso rotation is 45 degrees.
+        // Iso X = Screen X - Screen Y
+        // Iso Z = Screen X + Screen Y
+        // Let's try this mapping:
+        if (this.joystickVector.lengthSq() > 0.01) {
+            const jx = this.joystickVector.x;
+            const jy = this.joystickVector.y;
+            
+            // Rotate inputs by 45 degrees for isometric
+            // x' = x cos(45) - y sin(45)
+            // y' = x sin(45) + y cos(45)
+            // cos(45) = sin(45) ~= 0.707
+            
+            dir.x += (jx - jy); // * 0.707 (normalized later)
+            dir.z += (jx + jy); // * 0.707
+        }
+
+        if (dir.lengthSq() > 0) dir.normalize();
+        return dir;
     }
 
     onKeyDown(e) {
