@@ -1,3 +1,4 @@
+import { MeshFactory } from '../utils/MeshFactory.js';
 import * as THREE from 'three';
 import { CONSTANTS } from './Constants.js';
 
@@ -93,7 +94,8 @@ export class ChunkManager {
         this.chunks.get(key).add(entity);
         
         // If adding to an active chunk, ensure it's visible
-        if (this.activeChunkKeys.has(key)) {
+        // Special Case: DwarfSalesman is always visible
+        if (this.activeChunkKeys.has(key) || entity.type === 'DwarfSalesman') {
             // Lazy Load Mesh if needed
             if (!entity.mesh && entity.ensureMesh) {
                 entity.ensureMesh();
@@ -173,7 +175,20 @@ export class ChunkManager {
     unloadChunk(key) {
         if (this.chunks.has(key)) {
             for (const entity of this.chunks.get(key)) {
-                if (entity.mesh) this.scene.remove(entity.mesh);
+                // Special Case: DwarfSalesman is always visible/loaded
+                if (entity.type === 'DwarfSalesman') continue;
+
+                if (entity.mesh) {
+                    this.scene.remove(entity.mesh);
+                    
+                    // Aggressive Memory Saving: Recycle mesh if it's not the player
+                    if (entity.id !== 'player-1' && entity.meshType) {
+                        // console.log(`ChunkManager: Recycling mesh for ${entity.id}`);
+                        MeshFactory.releaseMesh(entity.meshType, entity.mesh);
+                        entity.mesh = null; 
+                        entity.isMeshLoading = false; 
+                    }
+                }
             }
         }
     }

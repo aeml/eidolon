@@ -1,6 +1,18 @@
 import * as THREE from 'three';
 import { Entity } from './Entity.js';
 
+// Shared Resources
+const FIREBALL_GEO = new THREE.SphereGeometry(0.5, 8, 8);
+const FIREBALL_MAT = new THREE.MeshStandardMaterial({ 
+    color: 0xff4500, 
+    emissive: 0xff0000,
+    emissiveIntensity: 2
+});
+
+const DAGGER_GEO = new THREE.ConeGeometry(0.2, 1.0, 8);
+DAGGER_GEO.rotateX(Math.PI / 2); // Point forward
+const DAGGER_MAT = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.8, roughness: 0.2 });
+
 export class Projectile extends Entity {
     constructor(owner, type, startPos, targetPos) {
         super();
@@ -26,18 +38,12 @@ export class Projectile extends Entity {
         let geometry, material;
         
         if (this.type === 'Fireball') {
-            geometry = new THREE.SphereGeometry(0.5, 8, 8);
-            material = new THREE.MeshStandardMaterial({ 
-                color: 0xff4500, 
-                emissive: 0xff0000,
-                emissiveIntensity: 2
-            });
+            geometry = FIREBALL_GEO;
+            material = FIREBALL_MAT;
             this.damage = 20 + (this.owner.stats.intelligence * 2);
         } else if (this.type === 'Dagger') {
-            // Increased size for visibility
-            geometry = new THREE.ConeGeometry(0.2, 1.0, 8);
-            geometry.rotateX(Math.PI / 2); // Point forward
-            material = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.8, roughness: 0.2 });
+            geometry = DAGGER_GEO;
+            material = DAGGER_MAT;
             this.damage = 15 + (this.owner.stats.dexterity * 1.5);
         }
 

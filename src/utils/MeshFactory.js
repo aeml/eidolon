@@ -6,6 +6,36 @@ import { CONSTANTS } from '../core/Constants.js';
 export class MeshFactory {
     static loader = new GLTFLoader();
     static cache = {};
+    static pool = {}; // Pool for recycling meshes
+
+    static getPooledMesh(type) {
+        if (this.pool[type] && this.pool[type].length > 0) {
+            // console.log(`MeshFactory: Reusing pooled mesh for ${type}`);
+            const mesh = this.pool[type].pop();
+            mesh.visible = true; // Ensure visible
+            return mesh;
+        }
+        return null;
+    }
+
+    static releaseMesh(type, mesh) {
+        if (!mesh) return;
+        if (!this.pool[type]) this.pool[type] = [];
+        
+        // Reset mesh state if needed
+        mesh.visible = false;
+        mesh.position.set(0, 0, 0);
+        mesh.rotation.set(0, 0, 0);
+        if (mesh.parent) mesh.parent.remove(mesh);
+        
+        // Limit pool size to avoid infinite memory growth (e.g. 50 per type)
+        if (this.pool[type].length < 50) {
+            this.pool[type].push(mesh);
+        } else {
+            // Let GC handle it if pool is full
+            // console.log(`MeshFactory: Pool full for ${type}, discarding mesh`);
+        }
+    }
 
     static async loadModel(path) {
         // We don't clone the scene here because we need the raw GLTF object for animations sometimes
@@ -21,6 +51,10 @@ export class MeshFactory {
     }
 
     static async createMeshForType(type) {
+        // Check Pool First
+        const pooled = this.getPooledMesh(type);
+        if (pooled) return pooled;
+
         let geometry, material, mesh;
         
         // Check for Mobile (Global check or pass it in? We can check window width or UA here too)
