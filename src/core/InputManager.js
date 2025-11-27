@@ -160,26 +160,20 @@ export class InputManager {
         if (this.keys.d) { dir.x += 1; dir.z -= 1; }
 
         // Joystick (Isometric Mapping)
-        // Joystick Up (Y < 0) -> World North (X-1, Z-1)
-        // Joystick Right (X > 0) -> World East (X+1, Z-1)
-        // Joystick Down (Y > 0) -> World South (X+1, Z+1)
-        // Joystick Left (X < 0) -> World West (X-1, Z+1)
+        // Camera is at (100, 100, 100) looking at (0, 0, 0).
+        // Screen Up (Joystick Y < 0) -> World North-West (-X, -Z)
+        // Screen Right (Joystick X > 0) -> World North-East (+X, -Z)
         
-        // Standard 2D to Iso rotation is 45 degrees.
-        // Iso X = Screen X - Screen Y
-        // Iso Z = Screen X + Screen Y
-        // Let's try this mapping:
         if (this.joystickVector.lengthSq() > 0.01) {
             const jx = this.joystickVector.x;
             const jy = this.joystickVector.y;
             
-            // Rotate inputs by 45 degrees for isometric
-            // x' = x cos(45) - y sin(45)
-            // y' = x sin(45) + y cos(45)
-            // cos(45) = sin(45) ~= 0.707
+            // Correct Isometric Mapping
+            // dir.x = jx + jy
+            // dir.z = jy - jx
             
-            dir.x += (jx - jy); // * 0.707 (normalized later)
-            dir.z += (jx + jy); // * 0.707
+            dir.x += (jx + jy);
+            dir.z += (jy - jx);
         }
 
         if (dir.lengthSq() > 0) dir.normalize();

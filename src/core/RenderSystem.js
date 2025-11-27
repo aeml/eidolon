@@ -11,17 +11,20 @@ export class RenderSystem {
         console.log(`RenderSystem initialized. Mobile Mode: ${this.isMobile}`);
 
         // Load Background Texture
-        console.log("RenderSystem: Loading background texture...");
-        const loader = new THREE.TextureLoader();
-        loader.load('./assets/backgrounds/space_texture.png', (texture) => {
-            console.log("RenderSystem: Background texture loaded successfully.", texture);
-            texture.colorSpace = THREE.SRGBColorSpace;
-            this.scene.background = texture;
-        }, (xhr) => {
-            // console.log(`RenderSystem: Background load progress: ${(xhr.loaded / xhr.total * 100)}%`);
-        }, (err) => {
-            console.error("RenderSystem: Error loading background texture:", err);
-        });
+        if (!this.isMobile) {
+            console.log("RenderSystem: Loading background texture...");
+            const loader = new THREE.TextureLoader();
+            loader.load('./assets/backgrounds/space_texture.png', (texture) => {
+                console.log("RenderSystem: Background texture loaded successfully.", texture);
+                texture.colorSpace = THREE.SRGBColorSpace;
+                this.scene.background = texture;
+            }, undefined, (err) => {
+                console.error("RenderSystem: Error loading background texture:", err);
+            });
+        } else {
+            console.log("RenderSystem: Mobile detected, skipping background texture.");
+            this.scene.background = new THREE.Color(0x110022); // Simple dark background
+        }
 
         // Camera Setup (Isometric Orthographic)
         const aspect = window.innerWidth / window.innerHeight;
@@ -85,6 +88,17 @@ export class RenderSystem {
     }
 
     setupGround() {
+        if (this.isMobile) {
+            console.log("RenderSystem: Mobile detected, using simple ground color.");
+            const geometry = new THREE.PlaneGeometry(1000, 1000);
+            const material = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.8 });
+            const ground = new THREE.Mesh(geometry, material);
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            this.scene.add(ground);
+            return;
+        }
+
         console.log("RenderSystem: Loading ground texture...");
         const loader = new THREE.TextureLoader();
         // Add timestamp to force reload of texture (bypass cache)

@@ -22,10 +22,15 @@ export class MeshFactory {
 
     static async createMeshForType(type) {
         let geometry, material, mesh;
+        
+        // Check for Mobile (Global check or pass it in? We can check window width or UA here too)
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800;
 
         // Try to load GLB for Fighter first
         if (type === 'Fighter') {
             try {
+                if (isMobile) throw new Error("Mobile Optimization: Skipping GLB"); // Force fallback on mobile for now
+                
                 // Load Base Mesh (Idle)
                 const idleGltf = await this.loadModel('./assets/archetypes/Fighter/idle.glb');
                 // Use SkeletonUtils to clone properly, preserving bone/skin connections
@@ -124,6 +129,8 @@ export class MeshFactory {
         // Try to load GLB for Wizard
         if (type === 'Wizard') {
             try {
+                if (isMobile) throw new Error("Mobile Optimization: Skipping GLB");
+
                 // Load Base Mesh (Idle)
                 const idleGltf = await this.loadModel('./assets/archetypes/Wizard/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);
@@ -203,6 +210,8 @@ export class MeshFactory {
         // Try to load GLB for Rogue
         if (type === 'Rogue') {
             try {
+                if (isMobile) throw new Error("Mobile Optimization: Skipping GLB");
+
                 // Load Base Mesh (Idle)
                 const idleGltf = await this.loadModel('./assets/archetypes/Rogue/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);
@@ -282,6 +291,8 @@ export class MeshFactory {
         // Try to load GLB for Cleric
         if (type === 'Cleric') {
             try {
+                if (isMobile) throw new Error("Mobile Optimization: Skipping GLB");
+
                 // Load Base Mesh (Idle)
                 const idleGltf = await this.loadModel('./assets/archetypes/Cleric/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);
@@ -368,6 +379,8 @@ export class MeshFactory {
         // Skeleton Loading Logic
         if (type === 'Skeleton') {
             try {
+                if (isMobile) throw new Error("Mobile Optimization: Skipping GLB");
+
                 const idleGltf = await this.loadModel('./assets/enemies/undead/skeleton/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);
                 
@@ -428,6 +441,8 @@ export class MeshFactory {
 
         if (type === 'DemonOrc') {
             try {
+                if (isMobile) throw new Error("Mobile Optimization: Skipping GLB");
+
                 // Load Base Mesh (Idle)
                 const idleGltf = await this.loadModel('./assets/enemies/demons/demon_orc/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);
@@ -498,6 +513,8 @@ export class MeshFactory {
             }
         } else if (type === 'Imp') {
             try {
+                if (isMobile) throw new Error("Mobile Optimization: Skipping GLB");
+
                 // Load Base Mesh (Idle)
                 const idleGltf = await this.loadModel('./assets/enemies/demons/imp/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);
@@ -568,6 +585,8 @@ export class MeshFactory {
             }
         } else if (type === 'DwarfSalesman') {
             try {
+                if (isMobile) throw new Error("Mobile Optimization: Skipping GLB");
+
                 const gltf = await this.loadModel('./assets/npc/dwarf_salesman/idle.glb');
                 mesh = SkeletonUtils.clone(gltf.scene);
                 
@@ -605,6 +624,8 @@ export class MeshFactory {
             }
         } else if (type === 'Construct') {
             try {
+                if (isMobile) throw new Error("Mobile Optimization: Skipping GLB");
+
                 // Load Base Mesh (Idle)
                 const idleGltf = await this.loadModel('./assets/enemies/undead/construct/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);

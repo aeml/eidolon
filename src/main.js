@@ -6,7 +6,7 @@ const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/
 // Debug Console Logic
 const debugConsole = document.getElementById('debug-console');
 function logToScreen(msg, type = 'INFO') {
-    if (debugConsole) {
+    if (debugConsole && isMobile) {
         debugConsole.style.display = 'block';
         debugConsole.textContent += `[${type}] ${msg}\n`;
         debugConsole.scrollTop = debugConsole.scrollHeight;
