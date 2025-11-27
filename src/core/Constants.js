@@ -1,7 +1,9 @@
 export const CONSTANTS = {
     SCENE: {
         BACKGROUND_COLOR: 0x202020,
-        GROUND_SIZE: 100,
+        GROUND_SIZE: 1000,
+        CHUNK_SIZE: 50, // Entities within this grid size are grouped
+        LOAD_DISTANCE: 1, // How many chunks away to load (1 = 3x3 grid active)
         GROUND_COLOR: 0x333333,
     },
     CAMERA: {
@@ -17,23 +19,53 @@ export const CONSTANTS = {
     ENTITIES: {
         FIGHTER: {
             COLOR: 0xff0000,
-            SPEED: 5,
-            HP: 100
+            STATS: {
+                STRENGTH: 10, // Earth
+                INTELLIGENCE: 2,
+                DEXTERITY: 4,
+                WISDOM: 3,
+                STAMINA: 8
+            }
         },
         ROGUE: {
             COLOR: 0x00ff00,
-            SPEED: 8,
-            HP: 60
+            STATS: {
+                STRENGTH: 4,
+                INTELLIGENCE: 5,
+                DEXTERITY: 10, // Fire
+                WISDOM: 3,
+                STAMINA: 5
+            }
         },
         WIZARD: {
             COLOR: 0x0000ff,
-            SPEED: 4,
-            HP: 50
+            STATS: {
+                STRENGTH: 2,
+                INTELLIGENCE: 10, // Air
+                DEXTERITY: 4,
+                WISDOM: 6,
+                STAMINA: 3
+            }
         },
         CLERIC: {
             COLOR: 0xffd700,
-            SPEED: 5,
-            HP: 70
+            STATS: {
+                STRENGTH: 5,
+                INTELLIGENCE: 4,
+                DEXTERITY: 3,
+                WISDOM: 10, // Water
+                STAMINA: 6
+            }
+        },
+        SKELETON: {
+            COLOR: 0xcccccc,
+            STATS: {
+                STRENGTH: 3,
+                INTELLIGENCE: 1,
+                DEXTERITY: 2,
+                WISDOM: 1,
+                STAMINA: 3
+            }
         }
     }
 };
