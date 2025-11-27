@@ -96,6 +96,7 @@ export class GameEngine {
                 console.log("Player requested respawn/unstuck.");
                 this.player.respawn(0, 0);
                 this.player.timeSinceDeath = null;
+                this.chunkManager.updateEntityChunk(this.player); // Force chunk update
                 this.renderSystem.setCameraTarget(this.player.position);
                 this.chunkManager.update(this.player, 0, this.collisionManager);
             }
@@ -263,10 +264,10 @@ export class GameEngine {
                 this.player.targetPosition = null; // Stop moving
                 this.player.state = 'IDLE';
                 
-                // Reset camera if locked
-                if (this.cameraLocked) {
-                    this.renderSystem.setCameraTarget(this.player.position);
-                }
+                // Force chunk update
+                this.chunkManager.updateEntityChunk(this.player);
+                this.renderSystem.setCameraTarget(this.player.position);
+                this.chunkManager.update(this.player, 0, this.collisionManager);
             }
         });
 
@@ -396,6 +397,9 @@ export class GameEngine {
                     this.player.respawn(0, 0); // Respawn at Town Center (0,0)
                     this.player.timeSinceDeath = null; // Reset timer
                     
+                    // Force chunk update
+                    this.chunkManager.updateEntityChunk(this.player);
+
                     // Reset Camera
                     this.renderSystem.setCameraTarget(this.player.position);
                     

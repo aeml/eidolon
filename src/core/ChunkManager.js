@@ -58,6 +58,12 @@ export class ChunkManager {
                 for (const entity of entitiesArray) {
                     entity.update(dt, collisionManager, player);
                     
+                    if (!entity.isActive) {
+                        // Remove entity
+                        this.removeEntity(entity);
+                        continue;
+                    }
+
                     // Check if entity moved to a different chunk
                     const newKey = this.getChunkKey(entity.position.x, entity.position.z);
                     if (newKey !== key) {
@@ -70,6 +76,7 @@ export class ChunkManager {
 
     addEntity(entity) {
         const key = this.getChunkKey(entity.position.x, entity.position.z);
+        entity._chunkKey = key; // Track chunk key on entity
         console.log(`ChunkManager: Adding entity ${entity.id} to chunk ${key}`);
         if (!this.chunks.has(key)) {
             this.chunks.set(key, new Set());
@@ -83,8 +90,6 @@ export class ChunkManager {
             }
         } else {
             // Ensure it is NOT in the scene if the chunk is inactive
-            // (In case the entity was just created with a mesh that hasn't been added yet, 
-            // or if we are re-adding an entity)
             if (entity.mesh && entity.mesh.parent === this.scene) {
                 this.scene.remove(entity.mesh);
             }
@@ -102,6 +107,7 @@ export class ChunkManager {
             this.chunks.set(newKey, new Set());
         }
         this.chunks.get(newKey).add(entity);
+        entity._chunkKey = newKey; // Update key
 
         // Handle visibility changes if crossing active/inactive boundary
         const isActiveOld = this.activeChunkKeys.has(oldKey);
@@ -111,6 +117,23 @@ export class ChunkManager {
             if (entity.mesh) this.scene.remove(entity.mesh);
         } else if (!isActiveOld && isActiveNew) {
             if (entity.mesh) this.scene.add(entity.mesh);
+        }
+    }
+
+    // Force update an entity's chunk (useful after teleporting)
+    updateEntityChunk(entity) {
+        if (!entity._chunkKey) {
+            // If for some reason it's missing, try to find it or just add it
+            this.addEntity(entity);
+            return;
+        }
+
+        const oldKey = entity._chunkKey;
+        const newKey = this.getChunkKey(entity.position.x, entity.position.z);
+        
+        if (oldKey !== newKey) {
+            console.log(`ChunkManager: Force moving entity ${entity.id} from ${oldKey} to ${newKey}`);
+            this.moveEntity(entity, oldKey, newKey);
         }
     }
 
@@ -146,5 +169,16 @@ export class ChunkManager {
             }
         }
         return active;
+    }
+
+    removeEntity(entity) {
+        const key = entity._chunkKey || this.getChunkKey(entity.position.x, entity.position.z);
+        if (this.chunks.has(key)) {
+            this.chunks.get(key).delete(entity);
+        }
+        if (entity.mesh) {
+            this.scene.remove(entity.mesh);
+            // Optional: Dispose geometry/material if not shared
+        }
     }
 }
