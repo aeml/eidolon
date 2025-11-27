@@ -110,6 +110,14 @@ export class MeshFactory {
                 return mesh;
             } catch (e) {
                 console.warn(`Failed to load model for ${type}, falling back to primitive.`, e);
+                // Fallback
+                const geometry = new THREE.BoxGeometry(1, 1, 1);
+                const material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.FIGHTER.COLOR });
+                mesh = new THREE.Mesh(geometry, material);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.position.y = 0.5;
+                return mesh;
             }
         }
 
@@ -182,6 +190,13 @@ export class MeshFactory {
                 return mesh;
             } catch (e) {
                 console.warn(`Failed to load model for ${type}, falling back to primitive.`, e);
+                const geometry = new THREE.ConeGeometry(0.5, 1.5, 8);
+                const material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.WIZARD.COLOR });
+                mesh = new THREE.Mesh(geometry, material);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.position.y = 0.75;
+                return mesh;
             }
         }
 
@@ -254,6 +269,13 @@ export class MeshFactory {
                 return mesh;
             } catch (e) {
                 console.warn(`Failed to load model for ${type}, falling back to primitive.`, e);
+                const geometry = new THREE.CylinderGeometry(0.3, 0.3, 1.5, 8);
+                const material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.ROGUE.COLOR });
+                mesh = new THREE.Mesh(geometry, material);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.position.y = 0.75;
+                return mesh;
             }
         }
 
@@ -333,6 +355,13 @@ export class MeshFactory {
                 return mesh;
             } catch (e) {
                 console.warn(`Failed to load model for ${type}, falling back to primitive.`, e);
+                const geometry = new THREE.SphereGeometry(0.6, 16, 16);
+                const material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.CLERIC.COLOR });
+                mesh = new THREE.Mesh(geometry, material);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.position.y = 0.6;
+                return mesh;
             }
         }
 

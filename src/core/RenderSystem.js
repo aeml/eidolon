@@ -155,7 +155,11 @@ export class RenderSystem {
     }
 
     add(mesh) {
-        this.scene.add(mesh);
+        if (mesh) {
+            this.scene.add(mesh);
+        } else {
+            console.warn("RenderSystem: Attempted to add null/undefined mesh to scene.");
+        }
     }
 
     remove(mesh) {

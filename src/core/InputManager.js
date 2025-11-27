@@ -57,30 +57,10 @@ export class InputManager {
         const knob = document.getElementById('joystick-knob');
         
         if (zone && knob) {
-            let startX, startY;
+            let joystickTouchId = null;
             const maxDist = 35; // Max radius for knob movement
 
-            zone.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                const touch = e.changedTouches[0];
-                startX = touch.clientX;
-                startY = touch.clientY;
-                
-                // Reset knob to center of touch initially? No, center of zone.
-                // Actually, let's make it static joystick for simplicity.
-                // Center of zone:
-                const rect = zone.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                
-                // Calculate initial offset if they didn't touch exact center
-                // But usually we want the knob to follow the finger relative to center
-            }, { passive: false });
-
-            zone.addEventListener('touchmove', (e) => {
-                e.preventDefault();
-                const touch = e.changedTouches[0];
-                
+            const handleJoystick = (touch) => {
                 const rect = zone.getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
@@ -101,15 +81,36 @@ export class InputManager {
 
                 // Update Vector (-1 to 1)
                 this.joystickVector.x = dx / maxDist;
-                this.joystickVector.y = dy / maxDist; // Inverted Y? Screen Y is down, World Z is down (South). 
-                // Screen Up (Negative Y) -> World North (Negative Z).
-                // So Screen Y maps to World Z directly.
+                this.joystickVector.y = dy / maxDist;
+            };
+
+            zone.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.changedTouches[0];
+                joystickTouchId = touch.identifier;
+                handleJoystick(touch);
+            }, { passive: false });
+
+            zone.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    if (e.changedTouches[i].identifier === joystickTouchId) {
+                        handleJoystick(e.changedTouches[i]);
+                        break;
+                    }
+                }
             }, { passive: false });
 
             const endHandler = (e) => {
                 e.preventDefault();
-                knob.style.transform = `translate(-50%, -50%)`;
-                this.joystickVector.set(0, 0);
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    if (e.changedTouches[i].identifier === joystickTouchId) {
+                        joystickTouchId = null;
+                        knob.style.transform = `translate(-50%, -50%)`;
+                        this.joystickVector.set(0, 0);
+                        break;
+                    }
+                }
             };
 
             zone.addEventListener('touchend', endHandler);

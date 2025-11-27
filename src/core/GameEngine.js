@@ -871,17 +871,30 @@ export class GameEngine {
                     const speed = this.player.stats.speed;
                     const moveVec = moveDir.multiplyScalar(speed * dt);
                     
-                    // Simple collision check (very basic)
+                    // Calculate next position
                     const nextPos = this.player.position.clone().add(moveVec);
                     
-                    // Update Player Position
-                    this.player.position.copy(nextPos);
+                    // Check Collision
+                    if (this.collisionManager) {
+                        const correctedPos = this.collisionManager.checkCollision(nextPos, 0.5);
+                        if (correctedPos) {
+                            this.player.position.copy(correctedPos);
+                        } else {
+                            this.player.position.copy(nextPos);
+                        }
+                    } else {
+                        this.player.position.copy(nextPos);
+                    }
+                    
                     this.player.state = 'MOVING';
                     this.player.playAnimation('Run'); // Always run with joystick
                     
                     // Rotate player to face movement
                     const lookTarget = this.player.position.clone().add(moveDir);
-                    this.player.mesh.lookAt(lookTarget);
+                    if (this.player.mesh) {
+                        this.player.mesh.lookAt(lookTarget);
+                        this.player.rotation.copy(this.player.mesh.quaternion);
+                    }
                     
                     // Cancel any target position (click-to-move)
                     this.player.targetPosition = null;
