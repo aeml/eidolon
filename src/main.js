@@ -46,6 +46,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 console.log("loadGame finished.");
 
                 loadingScreen.style.display = 'none';
+                
+                // Show Patch Notes on Launch
+                window.game.uiManager.togglePatchNotes();
+                
                 console.log(`Eidolon Engine Started with ${type}`);
             } catch (error) {
                 console.error("Failed to start game:", error);

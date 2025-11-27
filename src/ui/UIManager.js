@@ -1,4 +1,4 @@
-import { ItemGenerator, SLOTS } from '../core/ItemSystem.js';
+import { ItemGenerator, SLOTS, Item } from '../core/ItemSystem.js';
 
 export class UIManager {
     constructor() {
@@ -464,6 +464,11 @@ export class UIManager {
                 // Add click handler for equipping (simple toggle for now)
                 slots[i].onclick = (e) => {
                     e.stopPropagation();
+                    if (player.level < item.level) {
+                        console.log("Level too low to equip!");
+                        // Optional: Visual feedback (shake, red flash, etc.)
+                        return;
+                    }
                     if (player.equipItem(item)) {
                         player.inventory[i] = null; // Remove from inventory
                         this.updateInventory(player);
@@ -608,11 +613,23 @@ export class UIManager {
         else if (slotName === 'offHand') slotName = 'Off Hand';
         else slotName = slotName.charAt(0).toUpperCase() + slotName.slice(1);
 
-        let desc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${item.rarity.name} ${item.type} (${slotName}) - Lvl ${item.level}</div>`;
+        // Level Requirement Color
+        let levelColor = '#aaa';
+        if (this.lastPlayerRef && this.lastPlayerRef.level < item.level) {
+            levelColor = '#ff0000';
+        }
+
+        let desc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${item.rarity.name} ${item.type} (${slotName}) - <span style="color: ${levelColor}">Lvl ${item.level}</span></div>`;
         
         for (const stat in item.stats) {
             const val = item.stats[stat];
             desc += `<div style="color: #fff;">+${val} ${stat.charAt(0).toUpperCase() + stat.slice(1)}</div>`;
+        }
+
+        // Show Sell Price if Shop is Open
+        if (this.shopScreen.style.display === 'flex') {
+            const value = Item.getValue(item);
+            desc += `<div style="color: #ffd700; margin-top: 10px; border-top: 1px solid #444; padding-top: 5px;">Sell Value: ${value} Gold</div>`;
         }
         
         this.statTooltipDesc.innerHTML = desc;
@@ -669,15 +686,7 @@ export class UIManager {
         const item = player.inventory[index];
         if (!item) return;
 
-        // Calculate Value
-        // Base: Level * 10
-        // Rarity Multiplier: Common 1, Uncommon 2, Rare 5, Legendary 20
-        let multiplier = 1;
-        if (item.rarity.name === 'Uncommon') multiplier = 2;
-        if (item.rarity.name === 'Rare') multiplier = 5;
-        if (item.rarity.name === 'Legendary') multiplier = 20;
-
-        const value = Math.floor(item.level * 10 * multiplier);
+        const value = Item.getValue(item);
         
         player.gold += value;
         player.inventory[index] = null;

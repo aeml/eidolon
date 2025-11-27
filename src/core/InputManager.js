@@ -41,6 +41,9 @@ export class InputManager {
 
         window.addEventListener('keydown', (e) => this.onKeyDown(e));
         window.addEventListener('keyup', (e) => this.onKeyUp(e));
+        window.addEventListener('mouseup', (e) => this.onMouseUp(e));
+        
+        this.isMouseDown = false;
     }
 
     setupMobileControls() {
@@ -234,14 +237,17 @@ export class InputManager {
     }
 
     onMouseDown(event) {
-        // We now pass the raw mouse coordinates or let the GameEngine handle the raycasting logic entirely
-        // But to keep the interface consistent, we'll just trigger the callback.
-        // The GameEngine will query the raycaster state.
-        
         if (event.button === 0) { // Left Click
+            this.isMouseDown = true;
             this.callbacks.onClick.forEach(cb => cb());
         } else if (event.button === 2) { // Right Click
             this.callbacks.onRightClick.forEach(cb => cb());
+        }
+    }
+
+    onMouseUp(event) {
+        if (event.button === 0) {
+            this.isMouseDown = false;
         }
     }
 

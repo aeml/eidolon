@@ -8,6 +8,8 @@ export class ChunkManager {
         this.activeChunkKeys = new Set();
         this.chunkSize = CONSTANTS.SCENE.CHUNK_SIZE;
         this.loadDistance = CONSTANTS.SCENE.LOAD_DISTANCE;
+        this.lastPlayerChunkKey = null;
+        this.frameCount = 0;
     }
 
     getChunkKey(x, z) {
@@ -19,43 +21,50 @@ export class ChunkManager {
     update(player, dt, collisionManager) {
         if (!player) return;
         
-        // console.log("ChunkManager: update running"); // Uncomment for spammy debug
+        this.frameCount++;
 
         const playerPos = player.position;
         const playerChunkKey = this.getChunkKey(playerPos.x, playerPos.z);
-        const [px, pz] = playerChunkKey.split(',').map(Number);
+        
+        // Only update active chunks if player moved to a new chunk
+        if (playerChunkKey !== this.lastPlayerChunkKey) {
+            this.lastPlayerChunkKey = playerChunkKey;
+            const [px, pz] = playerChunkKey.split(',').map(Number);
 
-        // 1. Determine which chunks should be active
-        const newActiveKeys = new Set();
-        for (let x = px - this.loadDistance; x <= px + this.loadDistance; x++) {
-            for (let z = pz - this.loadDistance; z <= pz + this.loadDistance; z++) {
-                newActiveKeys.add(`${x},${z}`);
+            // 1. Determine which chunks should be active
+            const newActiveKeys = new Set();
+            for (let x = px - this.loadDistance; x <= px + this.loadDistance; x++) {
+                for (let z = pz - this.loadDistance; z <= pz + this.loadDistance; z++) {
+                    newActiveKeys.add(`${x},${z}`);
+                }
             }
-        }
 
-        // 2. Unload chunks that are no longer active
-        for (const key of this.activeChunkKeys) {
-            if (!newActiveKeys.has(key)) {
-                this.unloadChunk(key);
+            // 2. Unload chunks that are no longer active
+            for (const key of this.activeChunkKeys) {
+                if (!newActiveKeys.has(key)) {
+                    this.unloadChunk(key);
+                }
             }
-        }
 
-        // 3. Load new active chunks
-        for (const key of newActiveKeys) {
-            if (!this.activeChunkKeys.has(key)) {
-                this.loadChunk(key);
+            // 3. Load new active chunks
+            for (const key of newActiveKeys) {
+                if (!this.activeChunkKeys.has(key)) {
+                    this.loadChunk(key);
+                }
             }
-        }
 
-        this.activeChunkKeys = newActiveKeys;
+            this.activeChunkKeys = newActiveKeys;
+        }
 
         // 4. Update entities in active chunks
         for (const key of this.activeChunkKeys) {
             if (this.chunks.has(key)) {
                 const entities = this.chunks.get(key);
-                // We need to iterate over a copy or be careful because moveEntity modifies the Set
-                const entitiesArray = Array.from(entities); 
-                for (const entity of entitiesArray) {
+                // Iterate directly to avoid GC. Use frame check to prevent double updates.
+                for (const entity of entities) {
+                    if (entity._lastUpdateFrame === this.frameCount) continue;
+                    entity._lastUpdateFrame = this.frameCount;
+
                     entity.update(dt, collisionManager, player);
                     
                     if (!entity.isActive) {
