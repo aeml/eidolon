@@ -15,9 +15,181 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Player HUD */
+        #player-hud {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 300px;
+            pointer-events: auto;
+        }
+
+        .bar-container {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #444;
+            margin-bottom: 5px;
+            position: relative;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            width: 100%;
+            transition: width 0.2s ease-out;
+        }
+
+        .health-fill { background: linear-gradient(90deg, #8b0000, #ff0000); }
+        .mana-fill { background: linear-gradient(90deg, #00008b, #0000ff); }
+
+        .bar-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-size: 12px;
+            color: white;
+            text-shadow: 1px 1px 2px black;
+            font-weight: bold;
+        }
+
+        /* XP Bar */
+        #xp-bar-container {
+            width: 100%;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border-top: 2px solid #444;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        #xp-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: #ffd700; /* Gold */
+            transition: width 0.2s;
+        }
+        
+        #xp-text {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffd700;
+            font-size: 12px;
+            font-weight: bold;
+            text-shadow: 1px 1px 1px black;
+        }
+
+        /* Windows (Char Sheet / Inventory) */
+        .window {
+            position: absolute;
+            background: rgba(20, 20, 20, 0.95);
+            border: 2px solid #666;
+            border-radius: 4px;
+            color: #eee;
+            padding: 10px;
+            display: none; /* Hidden by default */
+            pointer-events: auto;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        .window-header {
+            font-size: 1.2rem;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        /* Character Sheet Specifics */
+        #character-sheet {
+            top: 50%;
+            left: 50%;
+            transform: translate(-150%, -50%); /* Left of center */
+            width: 400px;
+            height: 550px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .equipment-slots {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .equip-slot {
+            background: #111;
+            border: 1px solid #444;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* Inventory Specifics */
+        #inventory-screen {
+            top: 50%;
+            left: 50%;
+            transform: translate(50%, -50%); /* Right of center */
+            width: 300px;
+            height: 400px;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+        }
+
+        .inv-slot {
+            background: #111;
+            border: 1px solid #444;
+            aspect-ratio: 1;
+            cursor: pointer;
+        }
+        
+        .inv-slot:hover { border-color: #888; }
+
+        /* Floating Health Bars */
+        .floating-bar {
+            position: absolute;
+            width: 60px;
+            height: 6px;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #000;
+            pointer-events: none;
+            display: none; /* Hidden by default */
+            transform: translate(-50%, -50%);
+        }
+        
+        .floating-fill {
+            height: 100%;
+            background: #ff0000;
+            width: 100%;
+            transition: width 0.1s;
         }
 
         #start-screen {
@@ -30,7 +202,10 @@
             justify-content: center;
             align-items: center;
             color: white;
-            z-index: 10;
+            z-index: 20;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         #game-title {
@@ -94,6 +269,40 @@
         .hidden {
             display: none !important;
         }
+
+        /* World Map */
+        #world-map {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            background: rgba(10, 10, 10, 0.95);
+            border: 2px solid #ffd700;
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+        }
+
+        #world-map-header {
+            height: 40px;
+            border-bottom: 1px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffd700;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: #222;
+        }
+
+        #world-map-canvas {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            background: #111;
+        }
     </style>
     <script type="importmap">
         {
@@ -106,6 +315,54 @@
 </head>
 <body>
     <div id="ui-layer">
+        <div id="player-hud" style="display: none;">
+            <div class="bar-container">
+                <div id="player-hp-bar" class="bar-fill health-fill"></div>
+                <div id="player-hp-text" class="bar-text">100 / 100</div>
+            </div>
+            <div class="bar-container">
+                <div id="player-mana-bar" class="bar-fill mana-fill"></div>
+                <div id="player-mana-text" class="bar-text">50 / 50</div>
+            </div>
+        </div>
+
+        <div id="xp-bar-container">
+            <div id="xp-text">LVL 1</div>
+            <div id="xp-bar-fill"></div>
+        </div>
+
+        <div id="character-sheet" class="window">
+            <div class="window-header">CHARACTER STATS</div>
+            <div id="stats-content">
+                <!-- Populated by JS -->
+            </div>
+            <div class="equipment-slots">
+                <div class="equip-slot" id="slot-head">HEAD</div>
+                <div class="equip-slot" id="slot-chest">CHEST</div>
+                <div class="equip-slot" id="slot-mainhand">MAIN HAND</div>
+                <div class="equip-slot" id="slot-offhand">OFF HAND</div>
+                <div class="equip-slot" id="slot-legs">LEGS</div>
+                <div class="equip-slot" id="slot-feet">FEET</div>
+            </div>
+        </div>
+
+        <div id="inventory-screen" class="window">
+            <div class="window-header">INVENTORY</div>
+            <div class="inventory-grid" id="inventory-grid">
+                <!-- 25 Slots -->
+                <div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div>
+                <div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div>
+                <div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div>
+                <div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div>
+                <div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div>
+            </div>
+        </div>
+
+        <div id="world-map">
+            <div id="world-map-header">WORLD MAP</div>
+            <canvas id="world-map-canvas"></canvas>
+        </div>
+
         <div id="start-screen">
             <h1 id="game-title">EIDOLON</h1>
             <div class="subtitle">Select your Archetype</div>

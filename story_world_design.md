@@ -36,9 +36,9 @@ Gameplay: The region becomes a Hub. Previously blocked paths open. Resources are
 
 3. The Setting: Aethelgard
 
-The world is divided into four realms, representing the Four Jungian Functions of Consciousness.
+The world is divided into four realms, each governed by a primal Element.
 
-Act I: The Iron Weald (Sensation / Earth)
+Act I: The Iron Weald (Earth)
 
 Theme: Physical Reality, Strength, Growth.
 
@@ -48,7 +48,7 @@ The Fallen Paragon: Valos, The Titan. Once a guardian of the forest, the Umbra t
 
 Restored State: A golden, sun-dappled forest where iron and wood coexist in harmony.
 
-Act II: The Crystalline Spire (Thinking / Air)
+Act II: The Crystalline Spire (Air)
 
 Theme: Logic, Order, Structure.
 
@@ -58,7 +58,7 @@ The Fallen Paragon: Archivist Sol. Once a keeper of wisdom, now a hoarder of dat
 
 Restored State: A floating academy of warm light, moving bridges, and flowing wind.
 
-Act III: The Shifting Sands (Intuition / Fire)
+Act III: The Shifting Sands (Fire)
 
 Theme: Possibility, Spirit, The Unknown.
 
@@ -68,7 +68,7 @@ The Fallen Paragon: The Weaver. Once a guide to the future, now a deceiver who t
 
 Restored State: A mystic oasis under a starry night sky, where the path forward is always clear.
 
-Act IV: The Abyssal Well (Feeling / Water)
+Act IV: The Abyssal Well (Water)
 
 Theme: Emotion, Connection, Value.
 

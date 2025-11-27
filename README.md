@@ -75,11 +75,11 @@ The project uses a "Greybox First" philosophy that has evolved into a full Asset
 
 ## 🗺️ World Design
 
-The game takes place in **Aethelgard**, divided into four realms representing Jungian functions:
-1.  **The Iron Weald** (Sensation/Earth) - Fighter
-2.  **The Crystalline Spire** (Thinking/Air) - Wizard
-3.  **The Shifting Sands** (Intuition/Fire) - Rogue
-4.  **The Abyssal Well** (Feeling/Water) - Cleric
+The game takes place in **Aethelgard**, divided into four realms representing the Primal Elements:
+1.  **The Iron Weald** (Earth) - Fighter
+2.  **The Crystalline Spire** (Air) - Wizard
+3.  **The Shifting Sands** (Fire) - Rogue
+4.  **The Abyssal Well** (Water) - Cleric
 
 ## 📄 License
 

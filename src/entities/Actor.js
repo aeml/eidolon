@@ -2,13 +2,50 @@ import * as THREE from 'three';
 import { Entity } from './Entity.js';
 
 export class Actor extends Entity {
-    constructor(id, stats) {
+    constructor(id, config) {
         super(id);
+        
+        // Base Stats
+        const baseStats = config.STATS || {
+            STRENGTH: 5,
+            INTELLIGENCE: 5,
+            DEXTERITY: 5,
+            WISDOM: 5,
+            STAMINA: 5
+        };
+
+        // Derived Stats
         this.stats = {
-            hp: stats.HP || 100,
-            maxHp: stats.HP || 100,
-            speed: stats.SPEED || 5,
-            ...stats
+            ...baseStats,
+            strength: baseStats.STRENGTH,
+            intelligence: baseStats.INTELLIGENCE,
+            dexterity: baseStats.DEXTERITY,
+            wisdom: baseStats.WISDOM,
+            vitality: baseStats.STAMINA,
+            maxHp: baseStats.STAMINA * 10,
+            hp: baseStats.STAMINA * 10,
+            maxMana: baseStats.INTELLIGENCE * 10,
+            mana: baseStats.INTELLIGENCE * 10,
+            speed: 3 + (baseStats.DEXTERITY * 0.5), // Base 3 + bonus
+            damage: baseStats.STRENGTH * 2, // Base physical damage
+            defense: 0 // Base defense
+        };
+
+        // Progression
+        this.level = 1;
+        this.xp = 0;
+        this.xpToNextLevel = 100;
+        this.statPoints = 0;
+        
+        // Inventory & Equipment
+        this.inventory = new Array(25).fill(null); // 25 slots
+        this.equipment = {
+            head: null,
+            chest: null,
+            legs: null,
+            feet: null,
+            mainHand: null,
+            offHand: null
         };
         
         this.targetPosition = null;
@@ -62,7 +99,7 @@ export class Actor extends Entity {
         this.playAnimation('Walk'); // Or 'Run'
     }
 
-    update(dt) {
+    update(dt, collisionManager) {
         super.update(dt);
         
         if (this.mixer) {
@@ -82,7 +119,27 @@ export class Actor extends Entity {
             } else {
                 direction.normalize();
                 this.velocity.copy(direction).multiplyScalar(this.stats.speed * dt);
-                this.position.add(this.velocity);
+                
+                // Proposed new position
+                const nextPos = this.position.clone().add(this.velocity);
+                
+                // Check Collision
+                if (collisionManager) {
+                    const correctedPos = collisionManager.checkCollision(nextPos, 0.5); // 0.5 radius
+                    if (correctedPos) {
+                        // Collision occurred, use corrected position
+                        this.position.copy(correctedPos);
+                        
+                        // If we hit a wall, we might want to stop or slide. 
+                        // For now, sliding is handled by the checkCollision pushing us out.
+                        // But if we are stuck, maybe stop?
+                        // this.targetPosition = null; // Optional: Stop on collision
+                    } else {
+                        this.position.copy(nextPos);
+                    }
+                } else {
+                    this.position.copy(nextPos);
+                }
                 
                 // Rotate to face movement
                 // Simple lookAt logic for Y-axis rotation
@@ -97,12 +154,53 @@ export class Actor extends Entity {
 
     takeDamage(amount) {
         this.stats.hp -= amount;
+        console.log(`${this.id} took ${amount} damage. HP: ${this.stats.hp}`);
         if (this.stats.hp <= 0) {
-            this.stats.hp = 0;
-            this.state = 'DEAD';
-            console.log(`${this.constructor.name} died.`);
-            this.playAnimation('Death', false);
+            this.die();
         }
+    }
+
+    die() {
+        this.state = 'DEAD';
+        this.playAnimation('Death', false); // Assuming Death animation exists
+        // Disable collision/interaction?
+        this.isActive = false; // Will stop updating/rendering eventually
+    }
+
+    attack(target) {
+        if (this.state === 'DEAD' || this.state === 'ATTACKING') return;
+        
+        // Simple cooldown check could go here
+        
+        this.state = 'ATTACKING';
+        this.playAnimation('Attack', false);
+        
+        // Face target
+        const lookTarget = new THREE.Vector3(target.position.x, this.position.y, target.position.z);
+        if (this.mesh) {
+            this.mesh.lookAt(lookTarget);
+            this.rotation.copy(this.mesh.quaternion);
+        }
+
+        // Deal damage after a delay (sync with animation hit)
+        setTimeout(() => {
+            if (target && target.stats.hp > 0) {
+                // Calculate damage based on stats
+                // Random variance +/- 20%
+                const baseDmg = this.stats.damage;
+                const variance = (Math.random() * 0.4) + 0.8; // 0.8 to 1.2
+                const finalDmg = Math.floor(baseDmg * variance);
+                
+                target.takeDamage(finalDmg);
+
+                if (target.stats.hp <= 0) {
+                    const xp = target.xpValue || 10;
+                    this.gainXp(xp);
+                }
+            }
+            this.state = 'IDLE';
+            this.playAnimation('Idle');
+        }, 500); // 500ms delay for hit
     }
 
     performSkill(targetVector) {
@@ -138,5 +236,76 @@ export class Actor extends Entity {
                 if (this.state === 'ATTACKING') this.state = 'IDLE';
             }, 500);
         }
+    }
+
+    respawn(x, z) {
+        this.position.set(x, 0, z);
+        this.stats.hp = this.stats.maxHp;
+        this.state = 'IDLE';
+        this.isActive = true;
+        this.playAnimation('Idle');
+        
+        // Reset visual rotation if needed
+        this.rotation.set(0, 0, 0, 1);
+        if (this.mesh) {
+            this.mesh.quaternion.copy(this.rotation);
+        }
+        
+        console.log(`${this.id} respawned at ${x}, ${z}`);
+    }
+
+    gainXp(amount) {
+        this.xp += amount;
+        console.log(`${this.id} gained ${amount} XP. Total: ${this.xp}/${this.xpToNextLevel}`);
+        
+        if (this.xp >= this.xpToNextLevel) {
+            this.levelUp();
+        }
+    }
+
+    levelUp() {
+        this.level++;
+        this.xp -= this.xpToNextLevel;
+        this.xpToNextLevel = Math.floor(this.xpToNextLevel * 1.5); // Curve
+        
+        this.statPoints += 3;
+        
+        // Auto-increase HP/Damage slightly as base growth? 
+        // Or rely purely on stats? Let's keep a small base growth + stat points.
+        this.stats.maxHp += 5; 
+        this.stats.hp = this.stats.maxHp;
+        
+        console.log(`${this.id} leveled up to ${this.level}! Points: ${this.statPoints}`);
+    }
+
+    increaseStat(statName) {
+        if (this.statPoints > 0 && this.stats[statName] !== undefined) {
+            this.stats[statName]++;
+            this.statPoints--;
+            this.recalculateStats();
+            return true;
+        }
+        return false;
+    }
+
+    recalculateStats() {
+        // Recalculate derived stats based on attributes
+        // Note: We add base values to the calculation if needed, or just use raw stats
+        // For now, let's stick to the formulas in constructor
+        
+        // We preserve the "base growth" added in levelUp by not fully resetting maxHp to just vitality*10
+        // But that gets complicated. Let's make derived stats purely dependent on attributes for now, 
+        // plus maybe a level bonus.
+        
+        const levelBonus = (this.level - 1) * 5; // 5 HP per level automatically?
+        
+        this.stats.maxHp = (this.stats.vitality * 10) + levelBonus;
+        this.stats.maxMana = (this.stats.intelligence * 10) + levelBonus;
+        this.stats.damage = this.stats.strength * 2;
+        this.stats.speed = 3 + (this.stats.dexterity * 0.5);
+        
+        // Heal up to new max? Or just keep current percentage?
+        // Let's just clamp current HP
+        if (this.stats.hp > this.stats.maxHp) this.stats.hp = this.stats.maxHp;
     }
 }

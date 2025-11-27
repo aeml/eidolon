@@ -77,7 +77,9 @@ export class RenderSystem {
             console.log("RenderSystem: Ground texture loaded successfully.", tex);
             tex.wrapS = THREE.RepeatWrapping;
             tex.wrapT = THREE.RepeatWrapping;
-            tex.repeat.set(4, 4); // Repeat texture to avoid stretching
+            // Scale repeat based on ground size (assuming 100 units = 4 repeats)
+            const repeatCount = Math.max(4, CONSTANTS.SCENE.GROUND_SIZE / 25);
+            tex.repeat.set(repeatCount, repeatCount); 
             tex.colorSpace = THREE.SRGBColorSpace;
             
             // Force material update

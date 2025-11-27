@@ -18,14 +18,20 @@ export class InputManager {
             onClick: [],
             onRightClick: [],
             onZoom: [],
-            onSpace: []
+            onSpace: [],
+            onMouseMove: [], // New callback
+            onCharacter: [],
+            onInventory: [],
+            onTeleport: [],
+            onMap: []
         };
 
         this.keys = {
             w: false,
             a: false,
             s: false,
-            d: false
+            d: false,
+            alt: false // Track Alt
         };
 
         window.addEventListener('keydown', (e) => this.onKeyDown(e));
@@ -37,8 +43,23 @@ export class InputManager {
         if (this.keys.hasOwnProperty(key)) {
             this.keys[key] = true;
         }
+        if (e.key === 'Alt') this.keys.alt = true; // Handle Alt specifically
+        
         if (e.code === 'Space') {
             this.callbacks.onSpace.forEach(cb => cb());
+        }
+
+        if (key === 'c') {
+            this.callbacks.onCharacter.forEach(cb => cb());
+        }
+        if (key === 'i') {
+            this.callbacks.onInventory.forEach(cb => cb());
+        }
+        if (key === 'b') {
+            this.callbacks.onTeleport.forEach(cb => cb());
+        }
+        if (key === 'm') {
+            this.callbacks.onMap.forEach(cb => cb());
         }
     }
 
@@ -47,11 +68,15 @@ export class InputManager {
         if (this.keys.hasOwnProperty(key)) {
             this.keys[key] = false;
         }
+        if (e.key === 'Alt') this.keys.alt = false;
     }
 
     onMouseMove(event) {
         this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        
+        // Notify listeners of mouse move (for hover checks)
+        this.callbacks.onMouseMove.forEach(cb => cb(this.mouse));
     }
 
     onWheel(event) {
@@ -62,26 +87,22 @@ export class InputManager {
     }
 
     onMouseDown(event) {
-        const intersection = this.getRayIntersection();
+        // We now pass the raw mouse coordinates or let the GameEngine handle the raycasting logic entirely
+        // But to keep the interface consistent, we'll just trigger the callback.
+        // The GameEngine will query the raycaster state.
         
         if (event.button === 0) { // Left Click
-            if (intersection) {
-                this.callbacks.onClick.forEach(cb => cb(intersection));
-            }
+            this.callbacks.onClick.forEach(cb => cb());
         } else if (event.button === 2) { // Right Click
-            if (intersection) {
-                this.callbacks.onRightClick.forEach(cb => cb(intersection));
-            }
+            this.callbacks.onRightClick.forEach(cb => cb());
         }
     }
 
     getRayIntersection() {
+        // Deprecated for direct use, but kept for compatibility if needed
         this.raycaster.setFromCamera(this.mouse, this.camera);
-        
-        // Intersect with an invisible mathematical plane for movement
         const target = new THREE.Vector3();
         const intersection = this.raycaster.ray.intersectPlane(this.groundPlane, target);
-        
         return intersection ? target : null;
     }
 
