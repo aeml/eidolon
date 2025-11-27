@@ -12,6 +12,7 @@ export class Rogue extends Actor {
         this.abilityDescription = "Throw a dagger for high single-target damage.";
         this.abilityManaCost = 15;
         this.abilityMaxCooldown = 1.0;
+        this.scaleAnimSpeed = false; // Rogue animations are static speed
     }
 
     async initMesh() {

@@ -16,6 +16,8 @@ import { Cleric } from '../entities/Cleric.js';
 import { DemonOrc } from '../entities/DemonOrc.js';
 import { Projectile } from '../entities/Projectile.js';
 import { LootDrop } from '../entities/LootDrop.js';
+import { DwarfSalesman } from '../entities/DwarfSalesman.js';
+import { Actor } from '../entities/Actor.js';
 
 export class GameEngine {
     constructor(playerType) {
@@ -34,6 +36,7 @@ export class GameEngine {
         this.enemies = []; // Keep track of enemies for pooling
         this.projectiles = []; // Track active projectiles
         this.cameraLocked = true; // Default to locked
+        this.pendingInteraction = null; // Entity to interact with when in range
         
         this.lastTime = 0;
         this.accumulator = 0;
@@ -112,6 +115,9 @@ export class GameEngine {
         // Generate World (Town)
         this.worldGenerator.createTown(0, 0, 100); // 100x100 unit town
 
+        // Spawn NPCs
+        this.spawnNPCs();
+
         if (onProgress) onProgress(70, "Spawning Enemies...");
         await new Promise(r => setTimeout(r, 50));
 
@@ -128,58 +134,16 @@ export class GameEngine {
 
             // 1. Check for Entity Click (Attack or Loot)
             if (this.hoveredEntity && this.hoveredEntity !== this.player) {
-                
-                // Loot Pickup Logic
-                if (this.hoveredEntity instanceof LootDrop) {
-                    const dist = this.player.position.distanceTo(this.hoveredEntity.position);
-                    if (dist < 2.5) { // Pickup range
-                        if (this.player.addToInventory(this.hoveredEntity.item)) {
-                            console.log(`Picked up ${this.hoveredEntity.item.name}`);
-                            this.uiManager.updateInventory(this.player);
-                            
-                            // Remove loot entity
-                            this.hoveredEntity.isActive = false;
-                            this.renderSystem.remove(this.hoveredEntity.mesh);
-                            
-                            // Remove from ChunkManager
-                            const key = this.chunkManager.getChunkKey(this.hoveredEntity.position.x, this.hoveredEntity.position.z);
-                            if (this.chunkManager.chunks.has(key)) {
-                                this.chunkManager.chunks.get(key).delete(this.hoveredEntity);
-                            }
-                            
-                            this.hoveredEntity = null;
-                            document.body.style.cursor = 'default';
-                        } else {
-                            console.log("Inventory full!");
-                        }
-                    } else {
-                        // Move to loot
-                        this.player.move(this.hoveredEntity.position);
-                    }
-                    return;
-                }
-
-                // Attack Logic
-                // Check distance
-                const dist = this.player.position.distanceTo(this.hoveredEntity.position);
-                if (dist < 5) { // Melee range
-                    this.player.attack(this.hoveredEntity);
-                } else {
-                    // Move to target? Or just move towards it
-                    this.player.move(this.hoveredEntity.position);
-                }
+                // Set as pending interaction and move towards it
+                this.pendingInteraction = this.hoveredEntity;
+                this.player.move(this.hoveredEntity.position);
             } else {
                 // 2. Ground Click (Move)
-                // const target = this.inputManager.getRayIntersection(); // Removed as it doesn't exist
-                // if (target) {
-                //     this.player.move(target);
-                // } else {
-                    // Move to ground position
-                    const point = this.inputManager.getGroundIntersection();
-                    if (point) {
-                        this.player.move(point);
-                    }
-                // }
+                const point = this.inputManager.getGroundIntersection();
+                if (point) {
+                    this.pendingInteraction = null; // Cancel pending interaction
+                    this.player.move(point);
+                }
             }
         });
 
@@ -316,6 +280,19 @@ export class GameEngine {
         }
     }
 
+    spawnNPCs() {
+        console.log("Spawning NPCs...");
+        // Spawn Dwarf Salesman in Town (Safe Area)
+        // Position him near the center but slightly offset
+        const merchant = new DwarfSalesman('merchant-1');
+        merchant.position.set(5, 0, 5); // Near spawn
+        // Rotate to face South
+        merchant.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 4);
+        
+        this.addEntity(merchant);
+        // Note: We don't add him to this.enemies list so he isn't targeted by logic iterating that list
+    }
+
     spawnEnemies() {
         // Spawn Skeletons (Level 1-5 Area: 60-150 radius)
         this.spawnEnemyGroup(Skeleton, 50, 60, 150, 'skeleton');
@@ -384,6 +361,55 @@ export class GameEngine {
         // Update ChunkManager (handles loading/unloading and entity updates)
         if (this.player) {
             this.chunkManager.update(this.player, dt, this.collisionManager);
+
+            // Handle Pending Interaction (Move to Interact)
+            if (this.pendingInteraction) {
+                // Check if entity is still valid
+                if (!this.pendingInteraction.isActive || (this.pendingInteraction.state === 'DEAD' && !(this.pendingInteraction instanceof LootDrop))) {
+                    this.pendingInteraction = null;
+                } else {
+                    const dist = this.player.position.distanceTo(this.pendingInteraction.position);
+                    let range = 2.5; // Default (Loot)
+                    
+                    if (this.pendingInteraction instanceof DwarfSalesman) {
+                        range = 4.0;
+                    } else if (this.pendingInteraction instanceof Actor && this.pendingInteraction !== this.player) {
+                        range = 5.0; // Attack Range
+                    }
+
+                    if (dist < range) {
+                        // Perform Interaction
+                        if (this.pendingInteraction instanceof LootDrop) {
+                            if (this.player.addToInventory(this.pendingInteraction.item)) {
+                                console.log(`Picked up ${this.pendingInteraction.item.name}`);
+                                this.uiManager.updateInventory(this.player);
+                                
+                                // Remove loot entity
+                                this.pendingInteraction.isActive = false;
+                                this.renderSystem.remove(this.pendingInteraction.mesh);
+                                
+                                // Remove from ChunkManager
+                                const key = this.chunkManager.getChunkKey(this.pendingInteraction.position.x, this.pendingInteraction.position.z);
+                                if (this.chunkManager.chunks.has(key)) {
+                                    this.chunkManager.chunks.get(key).delete(this.pendingInteraction);
+                                }
+                            } else {
+                                console.log("Inventory full!");
+                            }
+                        } else if (this.pendingInteraction instanceof DwarfSalesman) {
+                            this.uiManager.toggleShop();
+                        } else if (this.pendingInteraction instanceof Actor) {
+                            this.player.attack(this.pendingInteraction);
+                        }
+
+                        // Clear pending interaction and stop moving
+                        this.pendingInteraction = null;
+                        this.player.targetPosition = null;
+                        this.player.state = 'IDLE';
+                        this.player.playAnimation('Idle');
+                    }
+                }
+            }
             
             // Player Death & Respawn Logic
             if (this.player.state === 'DEAD') {

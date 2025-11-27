@@ -1,3 +1,5 @@
+import { ItemGenerator, SLOTS } from '../core/ItemSystem.js';
+
 export class UIManager {
     constructor() {
         this.hud = document.getElementById('player-hud');
@@ -139,6 +141,13 @@ export class UIManager {
         this.setupWindow(this.characterSheet);
         this.setupWindow(this.inventoryScreen);
 
+        // Shop UI
+        this.shopScreen = document.getElementById('shop-screen');
+        this.btnCloseShop = document.getElementById('btn-close-shop');
+        this.btnCloseShop.addEventListener('click', () => this.toggleShop());
+        this.setupWindow(this.shopScreen);
+        this.setupShop();
+
         this.compareMode = false; // Toggle state for comparison
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Shift' && !e.repeat) {
@@ -158,6 +167,7 @@ export class UIManager {
 
     updatePlayerStats(player) {
         if (!player) return;
+        this.lastPlayerRef = player;
         
         const hpPct = (player.stats.hp / player.stats.maxHp) * 100;
         this.hpBar.style.width = `${Math.max(0, hpPct)}%`;
@@ -300,6 +310,16 @@ export class UIManager {
         if (isHidden) this.helpScreen.style.display = 'none'; // Close other windows
     }
 
+    toggleShop() {
+        const isHidden = this.shopScreen.style.display === 'none' || this.shopScreen.style.display === '';
+        this.shopScreen.style.display = isHidden ? 'flex' : 'none';
+        
+        // Open inventory when shop opens
+        if (isHidden) {
+            this.inventoryScreen.style.display = 'block';
+        }
+    }
+
     handleEscape() {
         let closedSomething = false;
 
@@ -414,6 +434,7 @@ export class UIManager {
 
     updateInventory(player) {
         if (!player || this.inventoryScreen.style.display === 'none') return;
+        this.lastPlayerRef = player;
 
         // Update Gold
         if (this.goldDisplay) {
@@ -443,12 +464,22 @@ export class UIManager {
                         this.updateCharacterSheet(player);
                     }
                 };
+
+                // Right-click to sell if shop is open
+                slots[i].oncontextmenu = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (this.shopScreen.style.display === 'flex') {
+                        this.sellItem(player, i);
+                    }
+                };
             } else {
                 slots[i].textContent = '';
                 slots[i].title = 'Empty';
                 slots[i].style.border = '1px solid #444';
                 slots[i].style.backgroundColor = 'rgba(0,0,0,0.3)';
                 slots[i].onclick = null;
+                slots[i].oncontextmenu = null;
             }
         }
     }
@@ -627,4 +658,114 @@ export class UIManager {
             }
         }
     }
+
+    sellItem(player, index) {
+        const item = player.inventory[index];
+        if (!item) return;
+
+        // Calculate Value
+        // Base: Level * 10
+        // Rarity Multiplier: Common 1, Uncommon 2, Rare 5, Legendary 20
+        let multiplier = 1;
+        if (item.rarity.name === 'Uncommon') multiplier = 2;
+        if (item.rarity.name === 'Rare') multiplier = 5;
+        if (item.rarity.name === 'Legendary') multiplier = 20;
+
+        const value = Math.floor(item.level * 10 * multiplier);
+        
+        player.gold += value;
+        player.inventory[index] = null;
+        
+        console.log(`Sold ${item.name} for ${value} gold.`);
+        
+        this.updateInventory(player);
+    }
+
+    setupShop() {
+        const grid = document.getElementById('shop-grid');
+        if (!grid) return;
+        
+        grid.innerHTML = ''; // Clear existing
+
+        const gambleOptions = [
+            { name: 'Mystery Helm', slot: SLOTS.HEAD, icon: 'H' },
+            { name: 'Mystery Chest', slot: SLOTS.CHEST, icon: 'C' },
+            { name: 'Mystery Legs', slot: SLOTS.LEGS, icon: 'L' },
+            { name: 'Mystery Boots', slot: SLOTS.FEET, icon: 'B' },
+            { name: 'Mystery Weapon', slot: SLOTS.MAIN_HAND, icon: 'W' },
+            { name: 'Mystery Offhand', slot: SLOTS.OFF_HAND, icon: 'O' }
+        ];
+
+        gambleOptions.forEach(opt => {
+            const btn = document.createElement('div');
+            btn.className = 'shop-item';
+            btn.style.cssText = `
+                background: #222;
+                border: 1px solid #444;
+                padding: 10px;
+                cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.2s;
+            `;
+            btn.innerHTML = `
+                <div style="font-size: 24px; color: #ffd700; margin-bottom: 5px;">?</div>
+                <div style="font-size: 12px; font-weight: bold;">${opt.name}</div>
+                <div style="font-size: 10px; color: #aaa;">${opt.slot}</div>
+            `;
+
+            btn.onmouseover = () => {
+                btn.style.background = '#333';
+                btn.style.borderColor = '#ffd700';
+            };
+            btn.onmouseout = () => {
+                btn.style.background = '#222';
+                btn.style.borderColor = '#444';
+            };
+
+            btn.onclick = () => this.buyGambleItem(opt.slot);
+
+            grid.appendChild(btn);
+        });
+    }
+
+    buyGambleItem(slot) {
+        if (!this.lastPlayerRef) return;
+        const player = this.lastPlayerRef;
+        const cost = 500;
+
+        if (player.gold >= cost) {
+            // Check inventory space
+            if (player.inventory.includes(null)) {
+                player.gold -= cost;
+                
+                // Generate Item
+                // Scale level based on player level? Or just max level?
+                // Let's say max level is player level
+                const item = ItemGenerator.generateLootForSlot(slot, player.level);
+                
+                if (item) {
+                    player.addToInventory(item);
+                    console.log(`Bought gamble item: ${item.name}`);
+                    
+                    // Update UI
+                    this.updateInventory(player);
+                    
+                    // Visual Feedback?
+                } else {
+                    console.error("Failed to generate item for slot:", slot);
+                    player.gold += cost; // Refund
+                }
+            } else {
+                console.log("Inventory Full!");
+                // Show error message?
+            }
+        } else {
+            console.log("Not enough gold!");
+            // Show error message?
+        }
+    }
+
 }

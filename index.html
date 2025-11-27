@@ -523,6 +523,23 @@
             </div>
         </div>
 
+        <!-- Shop Screen -->
+        <div id="shop-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 400px; z-index: 101; flex-direction: column;">
+            <div class="window-header">MERCHANT</div>
+            <div style="padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column;">
+                <p style="color: #aaa; font-size: 14px; margin-bottom: 15px;">Right-click items in your inventory to sell them.</p>
+                
+                <h3 style="color: #ffd700; margin-bottom: 10px; border-bottom: 1px solid #444; padding-bottom: 5px;">MYSTERY BOXES (500g)</h3>
+                
+                <div id="shop-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px;">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            <div style="text-align: center; padding: 10px; border-top: 1px solid #444;">
+                <button id="btn-close-shop" class="menu-btn">Close</button>
+            </div>
+        </div>
+
         <!-- Stat Tooltip -->
         <div id="stat-tooltip" style="position: absolute; display: none; background: rgba(20, 20, 20, 0.95); border: 1px solid #ffd700; padding: 10px; border-radius: 4px; color: #eee; font-size: 12px; pointer-events: none; z-index: 200; max-width: 200px;">
             <div id="stat-tooltip-title" style="color: #ffd700; font-weight: bold; margin-bottom: 5px;">STAT</div>
