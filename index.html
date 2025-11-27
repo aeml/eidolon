@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eidolon - Isometric ARPG</title>
     <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         canvas { display: block; }
@@ -25,15 +26,29 @@
             position: absolute;
             top: 20px;
             left: 20px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #ffd700;
-            text-shadow: 2px 2px 0 #000;
-            font-family: 'Courier New', Courier, monospace;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 5px 10px;
-            border: 1px solid #444;
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffeb3b;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5), 2px 2px 0 #000;
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(180deg, #2a0a0a 0%, #1a0505 100%);
+            padding: 8px 20px;
+            border: 2px solid #ffd700;
             border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(139, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            z-index: 100;
+            letter-spacing: 2px;
+        }
+        
+        #game-timer::before {
+            content: '⚔️';
+            margin-right: 12px;
+            font-size: 20px;
+            filter: drop-shadow(0 0 2px #ffd700);
         }
 
         /* Player HUD */
@@ -666,6 +681,39 @@
         <div id="patch-notes-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 600px; z-index: 101; flex-direction: column;">
             <div class="window-header">PATCH NOTES</div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.07 (The Construct & Loot 2.0)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>New Content:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>New Enemy: Construct:</strong> Ancient machines now roam the outer wastelands (Level 20-30). High health and damage.</li>
+                                <li><strong>Zone Expansion:</strong> Added a new world ring (Radius 360-450) for Constructs.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Loot System 2.0:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Rarity Overhaul:</strong>
+                                    <ul>
+                                        <li><span style="color: #fff">Common</span>: Base Stats only.</li>
+                                        <li><span style="color: #1eff00">Uncommon</span>: 1 Bonus Stat.</li>
+                                        <li><span style="color: #0070dd">Rare</span>: 2 Bonus Stats.</li>
+                                        <li><span style="color: #ff8000">Legendary</span>: 5 Bonus Stats (All stats).</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Stat Budgeting:</strong> Stats are now calculated using a "Budget" system based on item level. Higher level items are consistently stronger.</li>
+                                <li><strong>Dynamic Naming:</strong> Items are named based on their stats (e.g., "Strong Sword of the Bear").</li>
+                            </ul>
+                        </li>
+                        <li><strong>Combat & UI:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Stationary Attack (Ctrl+Click):</strong> Now strictly enforces melee range (Cone Attack). No more melee sniping!</li>
+                                <li><strong>Fighter Charge:</strong> Confirmed unlimited cast range for Charge ability.</li>
+                                <li><strong>Boss Timer:</strong> Updated the game timer with a new stylized look.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
                 <div style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.06 (Balance & Fixes)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

@@ -94,6 +94,17 @@ export const CONSTANTS = {
                 WISDOM: 4,
                 STAMINA: 15
             }
+        },
+        CONSTRUCT: {
+            COLOR: 0x555555,
+            MANA_STAT: 'INTELLIGENCE',
+            STATS: {
+                STRENGTH: 25,
+                INTELLIGENCE: 10,
+                DEXTERITY: 2,
+                WISDOM: 10,
+                STAMINA: 25
+            }
         }
     }
 };

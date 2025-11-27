@@ -574,6 +574,70 @@ export class MeshFactory {
                 mesh = new THREE.Mesh(geometry, material);
                 return mesh;
             }
+        } else if (type === 'Construct') {
+            try {
+                // Load Base Mesh (Idle)
+                const idleGltf = await this.loadModel('./assets/enemies/undead/construct/idle.glb');
+                mesh = SkeletonUtils.clone(idleGltf.scene);
+                
+                mesh.userData.animations = [];
+                const addAnim = (clip, name) => {
+                    if (clip) {
+                        const newClip = clip.clone();
+                        newClip.name = name;
+                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
+                        mesh.userData.animations.push(newClip);
+                    }
+                };
+
+                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
+
+                try {
+                    const walkGltf = await this.loadModel('./assets/enemies/undead/construct/walk.glb');
+                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
+                } catch (e) {}
+
+                try {
+                    const attackGltf = await this.loadModel('./assets/enemies/undead/construct/attack.glb');
+                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
+                } catch (e) {}
+
+                try {
+                    const deathGltf = await this.loadModel('./assets/enemies/undead/construct/death.glb');
+                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
+                } catch (e) {}
+
+                mesh.scale.set(2.5, 2.5, 2.5); // Large scale for Construct
+                
+                mesh.traverse(c => {
+                    if (c.isMesh) {
+                        if (!c.material) {
+                            c.material = new THREE.MeshStandardMaterial({ color: 0x555555 });
+                        }
+                        c.castShadow = true;
+                        c.receiveShadow = true;
+                        c.frustumCulled = false;
+                    }
+                });
+
+                // Add Hitbox
+                const hitGeo = new THREE.BoxGeometry(2.5, 3.0, 2.5);
+                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+                hitMesh.position.y = 1.5;
+                mesh.add(hitMesh);
+                
+                return mesh;
+            } catch (e) {
+                console.error("Failed to load Construct:", e);
+                const geometry = new THREE.BoxGeometry(1.5, 2.5, 1.5);
+                const material = new THREE.MeshStandardMaterial({ color: 0x555555 });
+                mesh = new THREE.Mesh(geometry, material);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.position.y = 1.25;
+                return mesh;
+            }
         }
 
         switch (type) {

@@ -1,8 +1,8 @@
 export const RARITY = {
     COMMON: { name: 'Common', color: '#ffffff', multiplier: 1.0, statCount: 0 },
-    UNCOMMON: { name: 'Uncommon', color: '#1eff00', multiplier: 1.2, statCount: 1 },
-    RARE: { name: 'Rare', color: '#0070dd', multiplier: 1.5, statCount: 2 },
-    LEGENDARY: { name: 'Legendary', color: '#ff8000', multiplier: 2.0, statCount: 3 }
+    UNCOMMON: { name: 'Uncommon', color: '#1eff00', multiplier: 1.5, statCount: 1 },
+    RARE: { name: 'Rare', color: '#0070dd', multiplier: 2.0, statCount: 2 },
+    LEGENDARY: { name: 'Legendary', color: '#ff8000', multiplier: 3.0, statCount: 5 }
 };
 
 export const SLOTS = {
@@ -48,25 +48,13 @@ const BASE_ITEMS = [
 
 const STAT_POOL = ['strength', 'dexterity', 'intelligence', 'wisdom', 'vitality'];
 
-const PREFIXES = [
-    { name: 'Strong', stat: 'strength', min: 1, max: 3 },
-    { name: 'Agile', stat: 'dexterity', min: 1, max: 3 },
-    { name: 'Brilliant', stat: 'intelligence', min: 1, max: 3 },
-    { name: 'Wise', stat: 'wisdom', min: 1, max: 3 },
-    { name: 'Hearty', stat: 'vitality', min: 1, max: 3 },
-    { name: 'Sharp', stat: 'damage', min: 2, max: 5 },
-    { name: 'Sturdy', stat: 'defense', min: 2, max: 5 }
-];
-
-const SUFFIXES = [
-    { name: 'of the Bear', stat: 'vitality', min: 2, max: 4 },
-    { name: 'of the Tiger', stat: 'strength', min: 2, max: 4 },
-    { name: 'of the Owl', stat: 'wisdom', min: 2, max: 4 },
-    { name: 'of the Eagle', stat: 'dexterity', min: 2, max: 4 },
-    { name: 'of the Fox', stat: 'intelligence', min: 2, max: 4 },
-    { name: 'of Destruction', stat: 'damage', min: 3, max: 6 },
-    { name: 'of Protection', stat: 'defense', min: 3, max: 6 }
-];
+const STAT_NAMES = {
+    strength: { prefix: 'Strong', suffix: 'of the Bear' },
+    dexterity: { prefix: 'Agile', suffix: 'of the Tiger' },
+    intelligence: { prefix: 'Brilliant', suffix: 'of the Owl' },
+    wisdom: { prefix: 'Wise', suffix: 'of the Eagle' },
+    vitality: { prefix: 'Hearty', suffix: 'of the Whale' }
+};
 
 export class Item {
     constructor(config) {
@@ -119,59 +107,71 @@ export class ItemGenerator {
     }
 
     static createItem(baseItem, rarity, level) {
-        // 4. Calculate Base Stats
+        // 4. Calculate Base Stats (Damage/Defense)
         const stats = {};
         
-        // Base Stat (Damage or Defense) scales with level and rarity
-        const baseVal = Math.floor(baseItem.baseValue * (1 + level * 0.1) * rarity.multiplier);
+        // Base Stat scales with level and rarity multiplier
+        const baseVal = Math.floor(baseItem.baseValue * (1 + level * 0.15) * rarity.multiplier);
         stats[baseItem.baseStat] = baseVal;
 
-        // 5. Add Random Stats based on Rarity (Stat Count)
-        const availableStats = [...STAT_POOL];
-        for (let i = 0; i < rarity.statCount; i++) {
-            if (availableStats.length === 0) break;
-            const statIndex = Math.floor(Math.random() * availableStats.length);
-            const statName = availableStats.splice(statIndex, 1)[0];
-            
-            // Stat value: 1-3 base + level scaling
-            const statVal = Math.floor((1 + Math.random() * 2 + (level * 0.5)) * rarity.multiplier);
-            stats[statName] = (stats[statName] || 0) + Math.max(1, statVal);
-        }
-
-        // 6. Add Affixes (Prefix/Suffix)
-        let prefix = null;
-        let suffix = null;
+        // 5. Calculate Bonus Stats
         let name = baseItem.name;
+        
+        if (rarity.statCount > 0) {
+            // Calculate Total Stat Budget
+            // Roll between 2 and 4 per level, multiplied by rarity
+            const rollPerLevel = 2 + Math.random() * 2; 
+            const totalBudget = Math.floor(rollPerLevel * level * rarity.multiplier);
+            
+            // Select Stats
+            let selectedStats = [];
+            if (rarity === RARITY.LEGENDARY) {
+                selectedStats = [...STAT_POOL]; // All stats
+            } else {
+                // Pick random unique stats
+                const pool = [...STAT_POOL];
+                for (let i = 0; i < rarity.statCount; i++) {
+                    const idx = Math.floor(Math.random() * pool.length);
+                    selectedStats.push(pool.splice(idx, 1)[0]);
+                }
+            }
 
-        let allowPrefix = false;
-        let allowSuffix = false;
+            // Distribute Budget
+            // Primary Stat gets 50% of budget
+            const primaryStat = selectedStats[0]; // First one picked is primary
+            const primaryBudget = Math.floor(totalBudget * 0.5);
+            
+            stats[primaryStat] = (stats[primaryStat] || 0) + primaryBudget;
 
-        if (rarity === RARITY.LEGENDARY) {
-            allowPrefix = true;
-            allowSuffix = true;
-        } else if (rarity === RARITY.RARE) {
-            if (Math.random() > 0.5) allowPrefix = true;
-            else allowSuffix = true;
-            // Chance for both
-            if (Math.random() > 0.7) { allowPrefix = true; allowSuffix = true; }
-        } else if (rarity === RARITY.UNCOMMON) {
-            if (Math.random() > 0.5) allowPrefix = true;
-            else allowSuffix = true;
-        } else {
-            // Common
-            if (Math.random() > 0.8) allowPrefix = true;
-        }
+            // Remaining Stats share the other 50%
+            if (selectedStats.length > 1) {
+                const remainingBudget = totalBudget - primaryBudget;
+                const perStatBudget = Math.floor(remainingBudget / (selectedStats.length - 1));
+                
+                for (let i = 1; i < selectedStats.length; i++) {
+                    const stat = selectedStats[i];
+                    stats[stat] = (stats[stat] || 0) + Math.max(1, perStatBudget);
+                }
+            } else {
+                // If only 1 stat (Uncommon), it gets the rest too (so 100%)
+                stats[primaryStat] += (totalBudget - primaryBudget);
+            }
 
-        if (allowPrefix) {
-            const p = PREFIXES[Math.floor(Math.random() * PREFIXES.length)];
-            name = `${p.name} ${name}`;
-            stats[p.stat] = (stats[p.stat] || 0) + Math.floor(p.min + Math.random() * (p.max - p.min));
-        }
+            // 6. Generate Name based on Stats
+            // Prefix from Primary Stat
+            if (STAT_NAMES[primaryStat]) {
+                name = `${STAT_NAMES[primaryStat].prefix} ${name}`;
+            }
 
-        if (allowSuffix) {
-            const s = SUFFIXES[Math.floor(Math.random() * SUFFIXES.length)];
-            name = `${name} ${s.name}`;
-            stats[s.stat] = (stats[s.stat] || 0) + Math.floor(s.min + Math.random() * (s.max - s.min));
+            // Suffix from Secondary Stat (if exists)
+            if (selectedStats.length > 1) {
+                const secondaryStat = selectedStats[1];
+                if (STAT_NAMES[secondaryStat]) {
+                    name = `${name} ${STAT_NAMES[secondaryStat].suffix}`;
+                }
+            } else if (rarity === RARITY.LEGENDARY) {
+                 name = `${name} of Legends`;
+            }
         }
 
         return new Item({
