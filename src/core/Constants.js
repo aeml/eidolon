@@ -1,7 +1,8 @@
 export const CONSTANTS = {
     SCENE: {
         BACKGROUND_COLOR: 0x202020,
-        GROUND_SIZE: 1000,
+        GROUND_SIZE: 2000, // Visual ground size (larger than playable area)
+        WORLD_BOUNDS: 1000, // Playable area size (collision boundary)
         CHUNK_SIZE: 50, // Entities within this grid size are grouped
         LOAD_DISTANCE: 1, // How many chunks away to load (1 = 3x3 grid active)
         GROUND_COLOR: 0x333333,

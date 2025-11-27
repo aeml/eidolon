@@ -39,7 +39,7 @@ export class RenderSystem {
         this.renderer.domElement.style.position = 'absolute';
         this.renderer.domElement.style.top = '0';
         this.renderer.domElement.style.left = '0';
-        this.renderer.domElement.style.zIndex = '0'; // Behind UI (which is 10)
+        this.renderer.domElement.style.zIndex = '1'; // Behind UI (which is 10)
         
         document.body.appendChild(this.renderer.domElement);
 
