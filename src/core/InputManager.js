@@ -19,6 +19,7 @@ export class InputManager {
             onRightClick: [],
             onZoom: [],
             onSpace: [],
+            onEscape: [],
             onMouseMove: [], // New callback
             onCharacter: [],
             onInventory: [],
@@ -47,6 +48,10 @@ export class InputManager {
         
         if (e.code === 'Space') {
             this.callbacks.onSpace.forEach(cb => cb());
+        }
+
+        if (e.code === 'Escape') {
+            this.callbacks.onEscape.forEach(cb => cb());
         }
 
         if (key === 'c') {

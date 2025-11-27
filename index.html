@@ -293,6 +293,24 @@
             animation: fadeIn 1s ease-out 1.5s forwards;
         }
 
+        .menu-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            background: #333;
+            color: #eee;
+            border: 1px solid #666;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .menu-btn:hover {
+            background: #555;
+            border-color: #fff;
+        }
+
         .class-btn {
             padding: 15px 30px;
             font-size: 1.2rem;
@@ -434,6 +452,31 @@
                 <button class="class-btn" data-type="Rogue">Rogue</button>
                 <button class="class-btn" data-type="Wizard">Wizard</button>
                 <button class="class-btn" data-type="Cleric">Cleric</button>
+            </div>
+        </div>
+
+        <!-- Escape Menu -->
+        <div id="esc-menu" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; text-align: center; z-index: 100;">
+            <div class="window-header">PAUSED</div>
+            <div style="padding: 20px;">
+                <button id="btn-resume" class="menu-btn">Resume Game</button>
+                <button id="btn-help" class="menu-btn">Help</button>
+                <button id="btn-menu" class="menu-btn">Return to Menu</button>
+            </div>
+        </div>
+
+        <!-- Help Screen -->
+        <div id="help-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; z-index: 101;">
+            <div class="window-header">CONTROLS</div>
+            <div style="padding: 20px; text-align: left; line-height: 1.8; font-size: 14px;">
+                <div><strong style="color: #ffd700;">Left Click:</strong> Move / Melee Attack</div>
+                <div><strong style="color: #ffd700;">Right Click:</strong> Use Ability</div>
+                <div><strong style="color: #ffd700;">Scroll:</strong> Zoom In / Out</div>
+                <div><strong style="color: #ffd700;">WASD:</strong> Pan Camera</div>
+                <div><strong style="color: #ffd700;">Spacebar:</strong> Toggle Camera Lock</div>
+            </div>
+            <div style="text-align: center; padding-bottom: 10px;">
+                <button id="btn-close-help" class="menu-btn">Close</button>
             </div>
         </div>
     </div>
