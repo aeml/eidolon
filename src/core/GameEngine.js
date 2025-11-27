@@ -619,7 +619,7 @@ export class GameEngine {
                     // Attack (if not already attacking)
                     if (this.player.state !== 'ATTACKING') {
                         // If hovering enemy, attack it directly (auto-aim)
-                        if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
+                        if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
                             this.player.attack(this.hoveredEntity);
                         } else {
                             // Attack in direction (Ground Attack)
@@ -666,7 +666,7 @@ export class GameEngine {
                     }
                 } 
                 // 2. Hold-to-Attack (Hovering Enemy)
-                else if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
+                else if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
                     // If in range, attack
                     const dist = this.player.position.distanceTo(this.hoveredEntity.position);
                     const range = (this.player instanceof Wizard || this.player instanceof Rogue) ? 8.0 : 2.0; // Ranged vs Melee
@@ -797,11 +797,11 @@ export class GameEngine {
                 this.player.timeSinceDeath = null;
             }
 
-            // Cleric Spirit Damage Logic
+            // Fighter Charge Logic
             if (this.player instanceof Fighter && this.player.isCharging) {
                 // Optimization: Use cached active entities
                 this.activeEntitiesCache.forEach(enemy => {
-                    if (enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
+                    if (enemy instanceof Actor && enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
                         const dist = this.player.position.distanceTo(enemy.position);
                         const hitRadius = (this.player.radius || 0.5) + (enemy.radius || 0.5);
                         if (dist < hitRadius) { // Hit radius
@@ -826,7 +826,7 @@ export class GameEngine {
             if (this.player instanceof Cleric && this.player.spiritsActive) {
                 // Optimization: Use cached active entities
                 this.activeEntitiesCache.forEach(enemy => {
-                    if (enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
+                    if (enemy instanceof Actor && enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
                         const dist = this.player.position.distanceTo(enemy.position);
                         if (dist < 8.0) { // Spirit radius (Increased to 8.0)
                             // Damage tick (simple implementation: damage every frame is too much, need timer)
@@ -927,6 +927,14 @@ export class GameEngine {
             }
         }
 
+        // Check for newly dead enemies to award loot/xp
+        // This ensures that however they died (basic attack, dot, etc), we handle it.
+        this.activeEntitiesCache.forEach(enemy => {
+            if (enemy instanceof Actor && enemy.state === 'DEAD' && !enemy.deathHandled && enemy !== this.player) {
+                this.handleEnemyDeath(enemy);
+            }
+        });
+
         // Enemy Spawning / Recycling Logic
         // Optimization: Run less frequently (every 10 frames)
         if (this.frameCount % 10 === 0) {
@@ -985,7 +993,8 @@ export class GameEngine {
             // Collision with Enemies
             // Optimization: Use cached active entities
             for (const enemy of this.activeEntitiesCache) {
-                if (enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
+                // Ensure we only hit Actors (characters), not other projectiles or loot
+                if (enemy instanceof Actor && enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
                     // Skip if already hit (for piercing projectiles)
                     if (p.hitEntities.has(enemy.id)) continue;
 
@@ -1004,13 +1013,13 @@ export class GameEngine {
 
                         // Special Effects
                         if (p.type === 'Fireball') {
-                            // Splash Damage (20% to nearby enemies)
-                            const splashRadius = 5.0;
+                            // Splash Damage (40% to nearby enemies, 10.0 radius)
+                            const splashRadius = 10.0;
                             // Optimization: Use cached active entities for splash
                             this.activeEntitiesCache.forEach(nearbyEnemy => {
-                                if (nearbyEnemy !== enemy && nearbyEnemy.state !== 'DEAD' && nearbyEnemy.isActive && nearbyEnemy !== this.player) {
+                                if (nearbyEnemy instanceof Actor && nearbyEnemy !== enemy && nearbyEnemy.state !== 'DEAD' && nearbyEnemy.isActive && nearbyEnemy !== this.player) {
                                     if (nearbyEnemy.position.distanceTo(enemy.position) < splashRadius) {
-                                        const splashDmg = Math.floor(p.damage * 0.2);
+                                        const splashDmg = Math.floor(p.damage * 0.4);
                                         nearbyEnemy.takeDamage(splashDmg);
                                         if (nearbyEnemy.stats.hp <= 0) {
                                             this.handleEnemyDeath(nearbyEnemy);
@@ -1047,10 +1056,9 @@ export class GameEngine {
         
         this.player.gainXp(enemy.xpValue);
         
-        // Gold Drop (1-200 range, scaled by level)
-        // Base: 1-20. Max at level 10: 10-200.
-        const minGold = Math.max(1, enemy.level);
-        const maxGold = Math.max(20, enemy.level * 20);
+        // Gold Drop (Increased by 50%)
+        const minGold = Math.max(1, Math.floor(enemy.level * 1.5));
+        const maxGold = Math.max(30, enemy.level * 30);
         const goldAmount = Math.floor(minGold + Math.random() * (maxGold - minGold));
         
         this.player.gold += goldAmount;
@@ -1066,8 +1074,8 @@ export class GameEngine {
             shouldDrop = true;
             item = ItemGenerator.generateEliteLoot(enemy.level);
             console.log(`Elite Loot Dropped: ${item.name}`);
-        } else if (Math.random() < 0.3) {
-            // Standard Drop Chance (30%)
+        } else if (Math.random() < 0.5) {
+            // Standard Drop Chance (50%)
             shouldDrop = true;
             let maxLevel = 1;
             if (enemy instanceof Skeleton) maxLevel = 5;

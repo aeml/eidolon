@@ -349,10 +349,7 @@ export class Actor extends Entity {
                 
                 target.takeDamage(finalDmg);
 
-                if (target.stats.hp <= 0) {
-                    const xp = target.xpValue || 10;
-                    this.gainXp(xp);
-                }
+                // XP and Loot are handled by GameEngine detecting the death state
             }
             this.state = 'IDLE';
             this.playAnimation('Idle');
