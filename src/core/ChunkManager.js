@@ -166,7 +166,14 @@ export class ChunkManager {
             for (const entity of this.chunks.get(key)) {
                 // Lazy Load Mesh
                 if (!entity.mesh && entity.ensureMesh) {
-                    entity.ensureMesh();
+                    entity.ensureMesh().then(() => {
+                        // Check if still in active chunk (player might have moved while loading)
+                        const currentKey = this.getChunkKey(entity.position.x, entity.position.z);
+                        if ((this.activeChunkKeys.has(currentKey) || entity.type === 'DwarfSalesman') && entity.mesh) {
+                            // console.log(`ChunkManager: Mesh loaded for ${entity.id} (via loadChunk), adding to scene`);
+                            this.scene.add(entity.mesh);
+                        }
+                    });
                 }
 
                 if (entity.mesh) {
