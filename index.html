@@ -438,6 +438,9 @@
                 <div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div>
                 <div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div>
             </div>
+            <div id="gold-display" style="padding: 10px; color: #ffd700; font-weight: bold; border-top: 1px solid #444; text-align: right;">
+                GOLD: 0
+            </div>
         </div>
 
         <div id="world-map">
@@ -470,6 +473,8 @@
             <div style="padding: 20px;">
                 <button id="btn-resume" class="menu-btn">Resume Game</button>
                 <button id="btn-help" class="menu-btn">Help</button>
+                <button id="btn-patch-notes" class="menu-btn">Patch Notes</button>
+                <button id="btn-respawn" class="menu-btn" style="border-color: #ff4444; color: #ff4444;">Unstuck / Respawn</button>
                 <button id="btn-menu" class="menu-btn">Return to Menu</button>
             </div>
         </div>
@@ -483,9 +488,37 @@
                 <div><strong style="color: #ffd700;">Scroll:</strong> Zoom In / Out</div>
                 <div><strong style="color: #ffd700;">WASD:</strong> Pan Camera</div>
                 <div><strong style="color: #ffd700;">Spacebar:</strong> Toggle Camera Lock</div>
+                <div><strong style="color: #ffd700;">C:</strong> Character Sheet</div>
+                <div><strong style="color: #ffd700;">I:</strong> Inventory</div>
+                <div><strong style="color: #ffd700;">M:</strong> World Map</div>
             </div>
             <div style="text-align: center; padding-bottom: 10px;">
                 <button id="btn-close-help" class="menu-btn">Close</button>
+            </div>
+        </div>
+
+        <!-- Patch Notes Screen -->
+        <div id="patch-notes-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 600px; z-index: 101; flex-direction: column;">
+            <div class="window-header">PATCH NOTES</div>
+            <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.01</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Loot System:</strong> Enemies now drop physical loot orbs on the ground.</li>
+                        <li><strong>Rarity Colors:</strong> Items have rarity colors (Common, Uncommon, Rare, Legendary).</li>
+                        <li><strong>Affixes:</strong> Items can now drop with prefixes and suffixes (e.g., "Strong Iron Sword of Fire").</li>
+                        <li><strong>Gold System:</strong> Enemies drop gold. Gold counter added to Inventory.</li>
+                        <li><strong>Hitboxes:</strong> Improved click detection for enemies and loot.</li>
+                        <li><strong>Tooltips:</strong> Added detailed tooltips for equipment and inventory items.</li>
+                        <li><strong>Stat Bonuses:</strong> Character sheet now shows stat bonuses from gear (e.g., +3 STR).</li>
+                        <li><strong>Respawn Fixes:</strong> Fixed issues with enemy respawn timers.</li>
+                        <li><strong>Unstuck:</strong> Added "Unstuck / Respawn" button to Escape Menu.</li>
+                        <li><strong>Cleric:</strong> Increased Spirit Guardians damage range (Visuals unchanged).</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 10px; border-top: 1px solid #444;">
+                <button id="btn-close-patch-notes" class="menu-btn">Close</button>
             </div>
         </div>
 

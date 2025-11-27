@@ -323,6 +323,13 @@ export class MeshFactory {
                 mesh.position.sub(center); 
                 mesh.position.y += size.y / 2; 
 
+                // Add Hitbox for easier clicking
+                const hitGeo = new THREE.BoxGeometry(0.8, 1.8, 0.8);
+                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+                hitMesh.position.y = 0.9; // Center vertically
+                mesh.add(hitMesh);
+
                 return mesh;
             } catch (e) {
                 console.warn(`Failed to load model for ${type}, falling back to primitive.`, e);
@@ -376,6 +383,13 @@ export class MeshFactory {
                         c.frustumCulled = false;
                     }
                 });
+
+                // Add Hitbox for easier clicking
+                const hitGeo = new THREE.BoxGeometry(1.0, 2.0, 1.0); // Slightly wider for skeleton
+                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+                hitMesh.position.y = 1.0;
+                mesh.add(hitMesh);
                 
                 return mesh;
             } catch (e) {
@@ -433,6 +447,13 @@ export class MeshFactory {
                         c.frustumCulled = false;
                     }
                 });
+
+                // Add Hitbox for easier clicking
+                const hitGeo = new THREE.BoxGeometry(1.2, 2.0, 1.2); // Larger for Orc
+                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+                hitMesh.position.y = 1.0;
+                mesh.add(hitMesh);
                 
                 return mesh;
             } catch (e) {

@@ -16,19 +16,37 @@ export class UIManager {
         this.statsContent = document.getElementById('stats-content');
         this.inventoryScreen = document.getElementById('inventory-screen');
         this.inventoryGrid = document.getElementById('inventory-grid');
+        this.goldDisplay = document.getElementById('gold-display');
         
         // Escape Menu & Help
         this.escMenu = document.getElementById('esc-menu');
         this.helpScreen = document.getElementById('help-screen');
+        this.patchNotesScreen = document.getElementById('patch-notes-screen');
+        
         this.btnResume = document.getElementById('btn-resume');
         this.btnHelp = document.getElementById('btn-help');
+        this.btnPatchNotes = document.getElementById('btn-patch-notes');
         this.btnMenu = document.getElementById('btn-menu');
         this.btnCloseHelp = document.getElementById('btn-close-help');
+        this.btnClosePatchNotes = document.getElementById('btn-close-patch-notes');
+        this.btnRespawn = document.getElementById('btn-respawn');
 
         this.btnResume.addEventListener('click', () => this.toggleEscMenu());
         this.btnHelp.addEventListener('click', () => this.toggleHelp());
+        this.btnPatchNotes.addEventListener('click', () => this.togglePatchNotes());
         this.btnMenu.addEventListener('click', () => location.reload());
         this.btnCloseHelp.addEventListener('click', () => this.toggleHelp());
+        this.btnClosePatchNotes.addEventListener('click', (e) => {
+            console.log("Close Patch Notes Button Clicked");
+            this.togglePatchNotes();
+            e.stopPropagation();
+        });
+        this.btnRespawn.addEventListener('click', () => {
+            if (this.onRespawn) {
+                this.onRespawn();
+            }
+            this.toggleEscMenu();
+        });
 
         // Ability UI
         this.abilityContainer = document.getElementById('ability-container');
@@ -73,6 +91,34 @@ export class UIManager {
         });
 
         this.statsContent.addEventListener('mouseleave', () => {
+            this.statTooltip.style.display = 'none';
+        });
+
+        // Equipment Tooltips
+        const equipSlots = document.querySelectorAll('.equip-slot');
+        equipSlots.forEach(slot => {
+            slot.addEventListener('mousemove', (e) => {
+                if (slot._item) {
+                    this.showItemTooltip(slot._item, e.clientX, e.clientY);
+                } else {
+                    this.statTooltip.style.display = 'none';
+                }
+            });
+            slot.addEventListener('mouseleave', () => {
+                this.statTooltip.style.display = 'none';
+            });
+        });
+
+        // Inventory Tooltips (Delegation)
+        this.inventoryGrid.addEventListener('mousemove', (e) => {
+            const slot = e.target.closest('.inv-slot');
+            if (slot && slot._item) {
+                this.showItemTooltip(slot._item, e.clientX, e.clientY);
+            } else {
+                this.statTooltip.style.display = 'none';
+            }
+        });
+        this.inventoryGrid.addEventListener('mouseleave', () => {
             this.statTooltip.style.display = 'none';
         });
 
@@ -192,6 +238,10 @@ export class UIManager {
         bar.style.top = `${y}px`;
     }
 
+    get isEscMenuOpen() {
+        return this.escMenu.style.display === 'block';
+    }
+
     toggleCharacterSheet() {
         const isHidden = this.characterSheet.style.display === 'none' || this.characterSheet.style.display === '';
         this.characterSheet.style.display = isHidden ? 'block' : 'none';
@@ -206,15 +256,24 @@ export class UIManager {
         const isHidden = this.escMenu.style.display === 'none' || this.escMenu.style.display === '';
         this.escMenu.style.display = isHidden ? 'block' : 'none';
         
-        // If closing menu, also close help if open
+        // If closing menu, also close help/patch notes if open
         if (!isHidden) {
             this.helpScreen.style.display = 'none';
+            this.patchNotesScreen.style.display = 'none';
         }
     }
 
     toggleHelp() {
         const isHidden = this.helpScreen.style.display === 'none' || this.helpScreen.style.display === '';
         this.helpScreen.style.display = isHidden ? 'block' : 'none';
+        if (!isHidden) this.patchNotesScreen.style.display = 'none'; // Close other windows
+    }
+
+    togglePatchNotes() {
+        console.log("Toggling Patch Notes");
+        const isHidden = this.patchNotesScreen.style.display === 'none' || this.patchNotesScreen.style.display === '';
+        this.patchNotesScreen.style.display = isHidden ? 'flex' : 'none'; // Flex for layout
+        if (isHidden) this.helpScreen.style.display = 'none'; // Close other windows
     }
 
     handleEscape() {
@@ -237,13 +296,13 @@ export class UIManager {
             closedSomething = true;
         }
 
-        // 2. Close Help Screen (return to ESC menu or close?)
-        // If Help is open, we close it.
+        // 2. Close Help/Patch Screens
         if (this.helpScreen.style.display === 'block') {
             this.helpScreen.style.display = 'none';
-            // If we want to return to ESC menu, we should ensure ESC menu is visible?
-            // But the user said "closes all menus".
-            // Let's just close it.
+            closedSomething = true;
+        }
+        if (this.patchNotesScreen.style.display === 'flex') {
+            this.patchNotesScreen.style.display = 'none';
             closedSomething = true;
         }
 
@@ -268,6 +327,17 @@ export class UIManager {
 
         const btnStyle = player.statPoints > 0 ? 'display:inline-block; margin-left:5px; cursor:pointer;' : 'display:none;';
 
+        // Helper to format stat with bonus
+        const fmtStat = (statName) => {
+            const total = player.stats[statName];
+            const base = player.baseStats ? player.baseStats[statName] : total; // Fallback if baseStats missing
+            const bonus = total - base;
+            if (bonus > 0) {
+                return `${total} <span style="color:#0f0; font-size:0.9em;">(+${bonus})</span>`;
+            }
+            return total;
+        };
+
         this.statsContent.innerHTML = `
             <div style="margin-bottom: 10px;">
                 <div><strong>Level:</strong> ${player.level}</div>
@@ -279,11 +349,11 @@ export class UIManager {
                 <div><strong>Mana:</strong> ${Math.ceil(player.stats.mana)} / ${player.stats.maxMana}</div>
             </div>
             <div style="margin-bottom: 10px; border-top: 1px solid #444; padding-top: 5px;">
-                <div class="stat-row" data-stat-name="strength"><strong>STR:</strong> ${player.stats.strength} <button class="stat-btn" data-stat="strength" style="${btnStyle}">+</button></div>
-                <div class="stat-row" data-stat-name="dexterity"><strong>DEX:</strong> ${player.stats.dexterity} <button class="stat-btn" data-stat="dexterity" style="${btnStyle}">+</button></div>
-                <div class="stat-row" data-stat-name="intelligence"><strong>INT:</strong> ${player.stats.intelligence} <button class="stat-btn" data-stat="intelligence" style="${btnStyle}">+</button></div>
-                <div class="stat-row" data-stat-name="vitality"><strong>VIT:</strong> ${player.stats.vitality} <button class="stat-btn" data-stat="vitality" style="${btnStyle}">+</button></div>
-                <div class="stat-row" data-stat-name="wisdom"><strong>WIS:</strong> ${player.stats.wisdom} <button class="stat-btn" data-stat="wisdom" style="${btnStyle}">+</button></div>
+                <div class="stat-row" data-stat-name="strength"><strong>STR:</strong> ${fmtStat('strength')} <button class="stat-btn" data-stat="strength" style="${btnStyle}">+</button></div>
+                <div class="stat-row" data-stat-name="dexterity"><strong>DEX:</strong> ${fmtStat('dexterity')} <button class="stat-btn" data-stat="dexterity" style="${btnStyle}">+</button></div>
+                <div class="stat-row" data-stat-name="intelligence"><strong>INT:</strong> ${fmtStat('intelligence')} <button class="stat-btn" data-stat="intelligence" style="${btnStyle}">+</button></div>
+                <div class="stat-row" data-stat-name="vitality"><strong>VIT:</strong> ${fmtStat('vitality')} <button class="stat-btn" data-stat="vitality" style="${btnStyle}">+</button></div>
+                <div class="stat-row" data-stat-name="wisdom"><strong>WIS:</strong> ${fmtStat('wisdom')} <button class="stat-btn" data-stat="wisdom" style="${btnStyle}">+</button></div>
             </div>
             <div style="border-top: 1px solid #444; padding-top: 5px;">
                 <div><strong>DMG:</strong> ${player.stats.damage}</div>
@@ -302,14 +372,18 @@ export class UIManager {
     updateEquipSlot(id, item, placeholder) {
         const el = document.getElementById(id);
         if (el) {
+            el._item = item; // Store item for tooltip
             if (item) {
                 el.textContent = item.name;
-                el.style.color = '#fff';
-                el.style.borderColor = '#ffd700';
+                el.style.color = item.rarity ? item.rarity.color : '#fff';
+                el.style.borderColor = item.rarity ? item.rarity.color : '#ffd700';
+                // el.title = this.getItemTooltipText(item); // Disable native tooltip
+                el.removeAttribute('title');
             } else {
                 el.textContent = placeholder;
                 el.style.color = '#666';
                 el.style.borderColor = '#444';
+                el.title = 'Empty Slot';
             }
         }
     }
@@ -317,19 +391,50 @@ export class UIManager {
     updateInventory(player) {
         if (!player || this.inventoryScreen.style.display === 'none') return;
 
+        // Update Gold
+        if (this.goldDisplay) {
+            this.goldDisplay.textContent = `GOLD: ${player.gold || 0}`;
+        }
+
         const slots = this.inventoryGrid.children;
         for (let i = 0; i < slots.length; i++) {
             const item = player.inventory[i];
+            slots[i]._item = item; // Store item for tooltip
+            
             if (item) {
-                slots[i].textContent = item.name ? item.name.substring(0, 1).toUpperCase() : '?';
-                slots[i].title = item.name || 'Unknown Item';
-                slots[i].style.backgroundColor = '#555';
+                // Show first letter or icon placeholder
+                slots[i].textContent = item.name ? item.name.substring(0, 2) : '??';
+                slots[i].style.color = item.rarity ? item.rarity.color : '#fff';
+                slots[i].style.border = `1px solid ${item.rarity ? item.rarity.color : '#444'}`;
+                // slots[i].title = this.getItemTooltipText(item); // Disable native tooltip
+                slots[i].removeAttribute('title');
+                slots[i].style.backgroundColor = '#222';
+                
+                // Add click handler for equipping (simple toggle for now)
+                slots[i].onclick = (e) => {
+                    e.stopPropagation();
+                    if (player.equipItem(item)) {
+                        player.inventory[i] = null; // Remove from inventory
+                        this.updateInventory(player);
+                        this.updateCharacterSheet(player);
+                    }
+                };
             } else {
                 slots[i].textContent = '';
                 slots[i].title = 'Empty';
+                slots[i].style.border = '1px solid #444';
                 slots[i].style.backgroundColor = 'rgba(0,0,0,0.3)';
+                slots[i].onclick = null;
             }
         }
+    }
+
+    getItemTooltipText(item) {
+        let text = `${item.name}\n${item.rarity.name} ${item.type}\nLevel ${item.level}\n\n`;
+        for (const stat in item.stats) {
+            text += `+${item.stats[stat]} ${stat.charAt(0).toUpperCase() + stat.slice(1)}\n`;
+        }
+        return text;
     }
 
     setupWindow(element) {
@@ -380,6 +485,9 @@ export class UIManager {
     }
 
     showStatTooltip(statName, x, y) {
+        // Reset title color
+        this.statTooltipTitle.style.color = '#ffd700';
+
         // Determine text based on player class and stat
         // We need access to player. Since we don't store player in UIManager, we might need to pass it or store it.
         // Actually, updatePlayerStats is called every frame with player. Let's store a reference.
@@ -396,40 +504,60 @@ export class UIManager {
 
         switch (statName) {
             case 'strength':
-                desc = "Increases Melee Damage.";
+                desc = "Increases Physical Damage (+2 per point).";
                 if (className === 'Fighter') desc += " Increases Charge ability damage.";
                 break;
             case 'dexterity':
-                desc = "Increases Movement Speed and Attack Speed.";
+                desc = "Increases Movement Speed (+1.2 per point) and Attack Speed (+0.2% per point).";
                 if (className === 'Rogue') desc += " Increases Dagger ability damage.";
                 break;
             case 'vitality':
-                desc = "Increases Max HP and HP Regeneration.";
+                desc = "Increases Max HP (+10 per point) and HP Regeneration (+0.1 per point).";
                 break;
             case 'intelligence':
-                if (manaStat === 'intelligence') {
-                    desc = "Increases Max Mana and Mana Regeneration.";
-                    if (className === 'Wizard') desc += " Increases Fireball ability damage.";
-                } else {
-                    desc = "This stat isn't important for you.";
-                }
+                desc = "Increases Max Mana (+10 per point) and Cooldown Reduction (+0.5% per point, max 50%).";
+                if (className === 'Wizard') desc += " Increases Fireball ability damage.";
                 break;
             case 'wisdom':
-                if (manaStat === 'wisdom') {
-                    desc = "Increases Max Mana and Mana Regeneration.";
-                    if (className === 'Cleric') desc += " Increases Spirit ability damage.";
-                }
-                // Everyone gets cast speed/cost reduction from wisdom currently
-                if (desc) desc += " ";
-                desc += "Increases Cast Speed and reduces Mana Costs.";
+                desc = "Increases Mana Regeneration (+0.1 per point) and Cast Speed (+0.2% per point).";
+                if (className === 'Cleric') desc += " Increases Spirit ability damage.";
                 break;
         }
 
         this.statTooltipTitle.textContent = title;
-        this.statTooltipDesc.textContent = desc;
+        this.statTooltipDesc.innerHTML = desc; // Use innerHTML to be consistent
         
         this.statTooltip.style.display = 'block';
         this.statTooltip.style.left = `${x + 15}px`;
         this.statTooltip.style.top = `${y + 15}px`;
+    }
+
+    showItemTooltip(item, x, y) {
+        this.statTooltipTitle.textContent = item.name;
+        this.statTooltipTitle.style.color = item.rarity.color;
+        
+        let desc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${item.rarity.name} ${item.type} - Lvl ${item.level}</div>`;
+        
+        for (const stat in item.stats) {
+            const val = item.stats[stat];
+            desc += `<div style="color: #fff;">+${val} ${stat.charAt(0).toUpperCase() + stat.slice(1)}</div>`;
+        }
+        
+        this.statTooltipDesc.innerHTML = desc;
+        
+        this.statTooltip.style.display = 'block';
+        this.statTooltip.style.left = `${x + 15}px`;
+        this.statTooltip.style.top = `${y + 15}px`;
+        
+        // Ensure it stays on screen
+        // We need to wait for render to get correct rect, but usually it's fine.
+        // If it goes off screen, we can adjust.
+        const rect = this.statTooltip.getBoundingClientRect();
+        if (rect.right > window.innerWidth) {
+            this.statTooltip.style.left = `${window.innerWidth - rect.width - 10}px`;
+        }
+        if (rect.bottom > window.innerHeight) {
+            this.statTooltip.style.top = `${window.innerHeight - rect.height - 10}px`;
+        }
     }
 }
