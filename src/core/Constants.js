@@ -1,18 +1,18 @@
 export const CONSTANTS = {
     SCENE: {
         BACKGROUND_COLOR: 0x202020,
-        GROUND_SIZE: 2000, // Visual ground size (larger than playable area)
-        WORLD_BOUNDS: 1000, // Playable area size (collision boundary)
-        CHUNK_SIZE: 50, // Entities within this grid size are grouped
-        LOAD_DISTANCE: 1, // How many chunks away to load (1 = 3x3 grid active)
+        GROUND_SIZE: 2000,
+        WORLD_BOUNDS: 1000,
+        CHUNK_SIZE: 50,
+        LOAD_DISTANCE: 1,
         GROUND_COLOR: 0x333333,
     },
     CAMERA: {
-        FOV: 45, // Not used for Orthographic, but good to have
+        FOV: 45,
         NEAR: 0.1,
         FAR: 1000,
-        ISO_ANGLE_X: Math.atan(-1 / Math.sqrt(2)), // approx -35.264 degrees
-        ISO_ANGLE_Y: Math.PI / 4, // 45 degrees
+        ISO_ANGLE_X: Math.atan(-1 / Math.sqrt(2)),
+        ISO_ANGLE_Y: Math.PI / 4,
         ZOOM: 15,
         MIN_ZOOM: 5,
         MAX_ZOOM: 30
@@ -22,7 +22,7 @@ export const CONSTANTS = {
             COLOR: 0xff0000,
             MANA_STAT: 'WISDOM',
             STATS: {
-                STRENGTH: 10, // Earth
+                STRENGTH: 10,
                 INTELLIGENCE: 2,
                 DEXTERITY: 4,
                 WISDOM: 3,
@@ -35,7 +35,7 @@ export const CONSTANTS = {
             STATS: {
                 STRENGTH: 4,
                 INTELLIGENCE: 5,
-                DEXTERITY: 10, // Fire
+                DEXTERITY: 10,
                 WISDOM: 3,
                 STAMINA: 5
             }
@@ -45,7 +45,7 @@ export const CONSTANTS = {
             MANA_STAT: 'INTELLIGENCE',
             STATS: {
                 STRENGTH: 2,
-                INTELLIGENCE: 10, // Air
+                INTELLIGENCE: 10,
                 DEXTERITY: 4,
                 WISDOM: 6,
                 STAMINA: 3
@@ -58,7 +58,7 @@ export const CONSTANTS = {
                 STRENGTH: 5,
                 INTELLIGENCE: 4,
                 DEXTERITY: 3,
-                WISDOM: 10, // Water
+                WISDOM: 10,
                 STAMINA: 6
             }
         },
