@@ -324,7 +324,7 @@ export class MeshFactory {
                 mesh.position.y += size.y / 2; 
 
                 // Add Hitbox for easier clicking
-                const hitGeo = new THREE.BoxGeometry(0.8, 1.8, 0.8);
+                const hitGeo = new THREE.BoxGeometry(1.5, 2.0, 1.5); // Increased hitbox
                 const hitMat = new THREE.MeshBasicMaterial({ visible: false });
                 const hitMesh = new THREE.Mesh(hitGeo, hitMat);
                 hitMesh.position.y = 0.9; // Center vertically
@@ -385,7 +385,7 @@ export class MeshFactory {
                 });
 
                 // Add Hitbox for easier clicking
-                const hitGeo = new THREE.BoxGeometry(1.0, 2.0, 1.0); // Slightly wider for skeleton
+                const hitGeo = new THREE.BoxGeometry(2.0, 2.5, 2.0); // Increased hitbox
                 const hitMat = new THREE.MeshBasicMaterial({ visible: false });
                 const hitMesh = new THREE.Mesh(hitGeo, hitMat);
                 hitMesh.position.y = 1.0;
@@ -449,7 +449,7 @@ export class MeshFactory {
                 });
 
                 // Add Hitbox for easier clicking
-                const hitGeo = new THREE.BoxGeometry(1.2, 2.0, 1.2); // Larger for Orc
+                const hitGeo = new THREE.BoxGeometry(2.5, 3.0, 2.5); // Increased hitbox
                 const hitMat = new THREE.MeshBasicMaterial({ visible: false });
                 const hitMesh = new THREE.Mesh(hitGeo, hitMat);
                 hitMesh.position.y = 1.0;
@@ -465,6 +465,76 @@ export class MeshFactory {
                 mesh.castShadow = true;
                 mesh.receiveShadow = true;
                 mesh.position.y = 1;
+                return mesh;
+            }
+        } else if (type === 'Imp') {
+            try {
+                // Load Base Mesh (Idle)
+                const idleGltf = await this.loadModel('./assets/enemies/demons/imp/idle.glb');
+                mesh = SkeletonUtils.clone(idleGltf.scene);
+                
+                mesh.userData.animations = [];
+                const addAnim = (clip, name) => {
+                    if (clip) {
+                        const newClip = clip.clone();
+                        newClip.name = name;
+                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
+                        mesh.userData.animations.push(newClip);
+                    }
+                };
+
+                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
+
+                try {
+                    const walkGltf = await this.loadModel('./assets/enemies/demons/imp/walk.glb');
+                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
+                } catch (e) {}
+
+                try {
+                    const runGltf = await this.loadModel('./assets/enemies/demons/imp/run.glb');
+                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
+                } catch (e) {}
+
+                try {
+                    const attackGltf = await this.loadModel('./assets/enemies/demons/imp/attack.glb');
+                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
+                } catch (e) {}
+
+                try {
+                    const deathGltf = await this.loadModel('./assets/enemies/demons/imp/death.glb');
+                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
+                } catch (e) {}
+
+                mesh.scale.set(1.8, 1.8, 1.8); // Scaled up by 20%
+                
+                mesh.traverse(c => {
+                    if (c.isMesh) {
+                        if (!c.material) {
+                            c.material = new THREE.MeshStandardMaterial({ color: 0xff4500 });
+                        }
+                        c.castShadow = true;
+                        c.receiveShadow = true;
+                        c.frustumCulled = false;
+                    }
+                });
+
+                // Add Hitbox for easier clicking
+                const hitGeo = new THREE.BoxGeometry(2.0, 2.0, 2.0); // Increased hitbox
+                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+                hitMesh.position.y = 0.75;
+                mesh.add(hitMesh);
+                
+                return mesh;
+            } catch (e) {
+                console.error("Failed to load Imp:", e);
+                // Fallback to box if loading fails
+                const geometry = new THREE.BoxGeometry(0.8, 1, 0.8);
+                const material = new THREE.MeshStandardMaterial({ color: 0xff4500 });
+                mesh = new THREE.Mesh(geometry, material);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.position.y = 0.5;
                 return mesh;
             }
         } else if (type === 'DwarfSalesman') {
@@ -489,7 +559,7 @@ export class MeshFactory {
                 });
 
                 // Add invisible hitbox
-                const hitGeo = new THREE.BoxGeometry(1.5, 3, 1.5);
+                const hitGeo = new THREE.BoxGeometry(2.5, 3.5, 2.5); // Increased hitbox
                 const hitMat = new THREE.MeshBasicMaterial({ visible: false });
                 const hitMesh = new THREE.Mesh(hitGeo, hitMat);
                 hitMesh.position.y = 1.5;

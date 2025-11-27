@@ -30,9 +30,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 startScreen.classList.add('hidden');
                 loadingScreen.style.display = 'flex';
                 
+                // Check for Mobile
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                console.log(`Device Check: Mobile=${isMobile}`);
+
                 // Start Game
                 console.log("Creating GameEngine...");
-                window.game = new GameEngine(type);
+                window.game = new GameEngine(type, isMobile);
                 
                 console.log("Calling loadGame...");
                 await window.game.loadGame((progress, text) => {

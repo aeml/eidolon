@@ -15,7 +15,7 @@ export class Projectile extends Entity {
         
         this.damage = 0;
         this.radius = type === 'Fireball' ? 2.0 : 1.5; // Increased hit radius
-        this.lifeTime = 3.0; // Seconds
+        this.lifeTime = 10.0; // Increased lifetime to allow long-range shots
         
         this.hitEntities = new Set(); // Track entities hit by this projectile
 

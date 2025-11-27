@@ -73,8 +73,8 @@ export const CONSTANTS = {
                 STAMINA: 3
             }
         },
-        DEMON_ORC: {
-            COLOR: 0x8b0000,
+        IMP: {
+            COLOR: 0xff4500,
             MANA_STAT: 'INTELLIGENCE',
             STATS: {
                 STRENGTH: 8,
@@ -82,6 +82,17 @@ export const CONSTANTS = {
                 DEXTERITY: 4,
                 WISDOM: 2,
                 STAMINA: 8
+            }
+        },
+        DEMON_ORC: {
+            COLOR: 0x8b0000,
+            MANA_STAT: 'INTELLIGENCE',
+            STATS: {
+                STRENGTH: 15,
+                INTELLIGENCE: 4,
+                DEXTERITY: 6,
+                WISDOM: 4,
+                STAMINA: 15
             }
         }
     }

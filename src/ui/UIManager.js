@@ -340,6 +340,12 @@ export class UIManager {
             closedSomething = true;
         }
 
+        // Close Shop
+        if (this.shopScreen.style.display === 'flex') {
+            this.shopScreen.style.display = 'none';
+            closedSomething = true;
+        }
+
         // 2. Close Help/Patch Screens
         if (this.helpScreen.style.display === 'block') {
             this.helpScreen.style.display = 'none';
