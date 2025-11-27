@@ -50,6 +50,16 @@ export class GameEngine {
         this.accumulator = 0;
         this.fixedTimeStep = 1 / 60;
 
+        this.gameTime = 0;
+        this.nextEliteSpawnTime = 180; // 3 minutes
+
+        // Optimization: Raycast throttling and caching
+        this.raycastTimer = 0;
+        this.mousePosition = new THREE.Vector2();
+        this.needsRaycast = false;
+        this.activeEntitiesCache = [];
+        this.frameCount = 0;
+
         // this.init(); // Defer init to loadGame
     }
 
@@ -251,37 +261,8 @@ export class GameEngine {
         });
 
         this.inputManager.subscribe('onMouseMove', (mouse) => {
-            // Raycast against active entities to find hovered one
-            const activeEntities = this.chunkManager.getActiveEntities();
-            const meshes = activeEntities
-                .filter(e => e.mesh && e.isActive && e !== this.player)
-                .map(e => e.mesh);
-            
-            this.inputManager.raycaster.setFromCamera(mouse, this.renderSystem.camera);
-            const intersects = this.inputManager.raycaster.intersectObjects(meshes, true); // Recursive for child meshes
-            
-            if (intersects.length > 0) {
-                // Find the root entity from the mesh
-                let obj = intersects[0].object;
-                while (obj.parent && !obj.userData.entityId) {
-                    obj = obj.parent;
-                }
-                
-                if (obj.userData.entityId) {
-                    this.hoveredEntity = activeEntities.find(e => e.id === obj.userData.entityId);
-                    
-                    if (this.hoveredEntity instanceof LootDrop) {
-                        document.body.style.cursor = 'grab';
-                    } else if (this.hoveredEntity && this.hoveredEntity.state !== 'DEAD') {
-                        document.body.style.cursor = 'crosshair';
-                    } else {
-                        document.body.style.cursor = 'default';
-                    }
-                }
-            } else {
-                this.hoveredEntity = null;
-                document.body.style.cursor = 'default';
-            }
+            this.mousePosition.copy(mouse);
+            this.needsRaycast = true;
         });
 
         this.inputManager.subscribe('onZoom', (delta) => {
@@ -467,6 +448,105 @@ export class GameEngine {
         return new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
     }
 
+    spawnEliteEnemy() {
+        if (!this.player) return;
+
+        console.log("Spawning Elite Enemy!");
+        
+        // Pick random enemy type
+        const types = [Skeleton, Imp, DemonOrc];
+        const EnemyClass = types[Math.floor(Math.random() * types.length)];
+        
+        const elite = new EnemyClass(`elite-${Date.now()}`);
+        
+        // Spawn near player (20-30 units away)
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 20 + Math.random() * 10;
+        const x = this.player.position.x + Math.cos(angle) * dist;
+        const z = this.player.position.z + Math.sin(angle) * dist;
+        
+        elite.position.set(x, 0, z);
+        
+        // Buff Stats
+        elite.stats.maxHp *= 3;
+        elite.stats.hp = elite.stats.maxHp;
+        elite.stats.damage *= 3;
+        elite.xpValue *= 5;
+        elite.isElite = true;
+
+        // Visual Scale
+        elite.onMeshReady = (mesh) => {
+            mesh.scale.multiplyScalar(1.5);
+            // Add a red tint or glow if possible?
+            mesh.traverse(child => {
+                if (child.isMesh) {
+                    child.material = child.material.clone();
+                    child.material.emissive = new THREE.Color(0xff0000);
+                    child.material.emissiveIntensity = 0.5;
+                }
+            });
+        };
+
+        this.addEntity(elite);
+        this.enemies.push(elite);
+        
+        // Notify UI
+        // this.uiManager.showNotification("An Elite Enemy has appeared!");
+    }
+
+    performRaycast() {
+        // Raycast against active entities to find hovered one
+        // Use cached active entities
+        const meshes = this.activeEntitiesCache
+            .filter(e => e.mesh && e.isActive && e !== this.player)
+            .map(e => e.mesh);
+        
+        this.inputManager.raycaster.setFromCamera(this.mousePosition, this.renderSystem.camera);
+        const intersects = this.inputManager.raycaster.intersectObjects(meshes, true); // Recursive for child meshes
+        
+        if (intersects.length > 0) {
+            let hitEntities = [];
+            for (const hit of intersects) {
+                let obj = hit.object;
+                while (obj.parent && !obj.userData.entityId) {
+                    obj = obj.parent;
+                }
+                if (obj.userData.entityId) {
+                    const entity = this.activeEntitiesCache.find(e => e.id === obj.userData.entityId);
+                    if (entity) hitEntities.push(entity);
+                }
+            }
+
+            // Filter out DEAD entities (unless they are Loot)
+            hitEntities = hitEntities.filter(e => e.state !== 'DEAD' || e instanceof LootDrop);
+
+            // Sort: Loot first, then others
+            hitEntities.sort((a, b) => {
+                if (a instanceof LootDrop && !(b instanceof LootDrop)) return -1;
+                if (!(a instanceof LootDrop) && b instanceof LootDrop) return 1;
+                return 0;
+            });
+
+            if (hitEntities.length > 0) {
+                this.hoveredEntity = hitEntities[0];
+                
+                if (this.hoveredEntity instanceof LootDrop) {
+                    document.body.style.cursor = 'grab';
+                } else if (this.hoveredEntity && this.hoveredEntity.state !== 'DEAD') {
+                    document.body.style.cursor = 'crosshair';
+                } else {
+                    document.body.style.cursor = 'default';
+                }
+            } else {
+                this.hoveredEntity = null;
+                document.body.style.cursor = 'default';
+            }
+        } else {
+            this.hoveredEntity = null;
+            document.body.style.cursor = 'default';
+        }
+    }
+
     loop(time) {
         try {
             const seconds = time * 0.001;
@@ -491,16 +571,123 @@ export class GameEngine {
     }
 
     update(dt) {
+        this.frameCount++;
+
+        // Optimization: Cache active entities once per frame
+        this.activeEntitiesCache = this.chunkManager.getActiveEntities();
+
+        // Handle Raycast (Throttled)
+        this.raycastTimer += dt;
+        if (this.needsRaycast && this.raycastTimer > 0.05) { // 20 times per second
+             this.performRaycast();
+             this.raycastTimer = 0;
+             this.needsRaycast = false;
+        }
+
+        // Update Game Timer
+        this.gameTime += dt;
+        this.uiManager.updateTimer(this.gameTime);
+
+        // Check for Elite Spawn
+        if (this.gameTime >= this.nextEliteSpawnTime) {
+            this.spawnEliteEnemy();
+            this.nextEliteSpawnTime += 180; // Next spawn in 3 minutes
+        }
+
         // Update ChunkManager (handles loading/unloading and entity updates)
         if (this.player) {
-            // Hold-to-Move Logic (Desktop)
+            // Hold-to-Move / Hold-to-Attack Logic (Desktop)
             if (!this.isMobile && this.inputManager.isMouseDown && !this.uiManager.isEscMenuOpen) {
-                // If we are NOT hovering an entity (or hovering ground), update movement target
-                if (!this.hoveredEntity || this.hoveredEntity === this.player) {
+                
+                // 1. Stationary Attack (Control Key)
+                if (this.inputManager.keys.control) {
+                    // Stop moving
+                    this.player.targetPosition = null;
+                    this.pendingInteraction = null;
+                    this.pendingAbilityTarget = null;
+
+                    // Face Mouse
                     const point = this.inputManager.getGroundIntersection();
                     if (point) {
-                        this.pendingInteraction = null;
-                        this.player.move(point);
+                        const lookTarget = new THREE.Vector3(point.x, this.player.position.y, point.z);
+                        if (this.player.mesh) {
+                            this.player.mesh.lookAt(lookTarget);
+                            this.player.rotation.copy(this.player.mesh.quaternion);
+                        }
+                    }
+
+                    // Attack (if not already attacking)
+                    if (this.player.state !== 'ATTACKING') {
+                        // If hovering enemy, attack it directly (auto-aim)
+                        if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
+                            this.player.attack(this.hoveredEntity);
+                        } else {
+                            // Attack in direction (Ground Attack)
+                            // We need to manually trigger attack animation and check for hits
+                            this.player.state = 'ATTACKING';
+                            this.player.playAnimation('Attack', false);
+                            
+                            // Delayed Hit Check (Cone)
+                            setTimeout(() => {
+                                if (this.player.state === 'DEAD') return;
+                                
+                                // Define Attack Cone/Box
+                                const attackRange = 3.0;
+                                const attackAngle = Math.PI / 3; // 60 degrees
+                                const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.player.mesh.quaternion);
+                                
+                                this.chunkManager.getActiveEntities().forEach(entity => {
+                                    if (entity !== this.player && entity.isActive && entity.state !== 'DEAD' && entity.stats && entity.stats.hp > 0) {
+                                        const dirToEntity = new THREE.Vector3().subVectors(entity.position, this.player.position);
+                                        const dist = dirToEntity.length();
+                                        
+                                        if (dist < attackRange) {
+                                            dirToEntity.normalize();
+                                            const angle = forward.angleTo(dirToEntity);
+                                            if (angle < attackAngle / 2) {
+                                                // Hit!
+                                                const baseDmg = this.player.stats.damage;
+                                                const variance = (Math.random() * 0.4) + 0.8;
+                                                const finalDmg = Math.floor(baseDmg * variance);
+                                                entity.takeDamage(finalDmg);
+                                                if (entity.stats.hp <= 0) {
+                                                    this.player.gainXp(entity.xpValue || 10);
+                                                    this.handleEnemyDeath(entity);
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+
+                                this.player.state = 'IDLE';
+                                this.player.playAnimation('Idle');
+                            }, 500); // Sync with animation
+                        }
+                    }
+                } 
+                // 2. Hold-to-Attack (Hovering Enemy)
+                else if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
+                    // If in range, attack
+                    const dist = this.player.position.distanceTo(this.hoveredEntity.position);
+                    const range = (this.player instanceof Wizard || this.player instanceof Rogue) ? 8.0 : 2.0; // Ranged vs Melee
+
+                    if (dist < range) {
+                        this.player.targetPosition = null; // Stop moving
+                        this.player.attack(this.hoveredEntity);
+                    } else {
+                        // Move to range
+                        this.player.move(this.hoveredEntity.position);
+                    }
+                }
+                // 3. Hold-to-Move (Ground)
+                else {
+                    // If we are NOT hovering an entity (or hovering ground), update movement target
+                    if (!this.hoveredEntity || this.hoveredEntity === this.player) {
+                        const point = this.inputManager.getGroundIntersection();
+                        if (point) {
+                            this.pendingInteraction = null;
+                            this.player.move(point);
+                        }
                     }
                 }
             }
@@ -612,8 +799,9 @@ export class GameEngine {
 
             // Cleric Spirit Damage Logic
             if (this.player instanceof Fighter && this.player.isCharging) {
-                this.enemies.forEach(enemy => {
-                    if (enemy.state !== 'DEAD' && enemy.isActive) {
+                // Optimization: Use cached active entities
+                this.activeEntitiesCache.forEach(enemy => {
+                    if (enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
                         const dist = this.player.position.distanceTo(enemy.position);
                         const hitRadius = (this.player.radius || 0.5) + (enemy.radius || 0.5);
                         if (dist < hitRadius) { // Hit radius
@@ -636,8 +824,9 @@ export class GameEngine {
 
             // Cleric Spirit Damage Logic
             if (this.player instanceof Cleric && this.player.spiritsActive) {
-                this.enemies.forEach(enemy => {
-                    if (enemy.state !== 'DEAD' && enemy.isActive) {
+                // Optimization: Use cached active entities
+                this.activeEntitiesCache.forEach(enemy => {
+                    if (enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
                         const dist = this.player.position.distanceTo(enemy.position);
                         if (dist < 8.0) { // Spirit radius (Increased to 8.0)
                             // Damage tick (simple implementation: damage every frame is too much, need timer)
@@ -739,45 +928,48 @@ export class GameEngine {
         }
 
         // Enemy Spawning / Recycling Logic
-        this.enemies.forEach(enemy => {
-            if (enemy.state === 'DEAD') {
-                if (typeof enemy.timeSinceDeath !== 'number') enemy.timeSinceDeath = 0;
-                enemy.timeSinceDeath += dt;
+        // Optimization: Run less frequently (every 10 frames)
+        if (this.frameCount % 10 === 0) {
+            this.enemies.forEach(enemy => {
+                if (enemy.state === 'DEAD') {
+                    if (typeof enemy.timeSinceDeath !== 'number') enemy.timeSinceDeath = 0;
+                    enemy.timeSinceDeath += dt * 10; // Compensate for 10x slower update
 
-                // Hide body after 2 seconds (allow animation to finish)
-                if (enemy.timeSinceDeath > 2 && enemy.mesh && enemy.mesh.visible) {
-                    enemy.mesh.visible = false;
-                }
-
-                // Respawn after 5 seconds
-                if (enemy.timeSinceDeath > 5) {
-                    enemy.timeSinceDeath = 0; // Reset timer
-                    
-                    let minR = 60, maxR = 150;
-                    if (enemy instanceof Imp) {
-                        minR = 160; maxR = 250;
-                    } else if (enemy instanceof DemonOrc) {
-                        minR = 260; maxR = 350;
-                    }
-                    const pos = this.getRandomSpawnPosition(minR, maxR);
-                    
-                    // We need to update ChunkManager because it might move to a new chunk
-                    // Remove from old chunk
-                    const oldKey = this.chunkManager.getChunkKey(enemy.position.x, enemy.position.z);
-                    if (this.chunkManager.chunks.has(oldKey)) {
-                        this.chunkManager.chunks.get(oldKey).delete(enemy);
+                    // Hide body after 2 seconds (allow animation to finish)
+                    if (enemy.timeSinceDeath > 2 && enemy.mesh && enemy.mesh.visible) {
+                        enemy.mesh.visible = false;
                     }
 
-                    // Respawn (updates position)
-                    enemy.mesh.visible = true;
-                    enemy.respawn(pos.x, pos.z);
-                    enemy.deathHandled = false;
+                    // Respawn after 5 seconds
+                    if (enemy.timeSinceDeath > 5) {
+                        enemy.timeSinceDeath = 0; // Reset timer
+                        
+                        let minR = 60, maxR = 150;
+                        if (enemy instanceof Imp) {
+                            minR = 160; maxR = 250;
+                        } else if (enemy instanceof DemonOrc) {
+                            minR = 260; maxR = 350;
+                        }
+                        const pos = this.getRandomSpawnPosition(minR, maxR);
+                        
+                        // We need to update ChunkManager because it might move to a new chunk
+                        // Remove from old chunk
+                        const oldKey = this.chunkManager.getChunkKey(enemy.position.x, enemy.position.z);
+                        if (this.chunkManager.chunks.has(oldKey)) {
+                            this.chunkManager.chunks.get(oldKey).delete(enemy);
+                        }
 
-                    // Add to new chunk
-                    this.chunkManager.addEntity(enemy);
+                        // Respawn (updates position)
+                        enemy.mesh.visible = true;
+                        enemy.respawn(pos.x, pos.z);
+                        enemy.deathHandled = false;
+
+                        // Add to new chunk
+                        this.chunkManager.addEntity(enemy);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         // Projectile Logic
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
@@ -791,8 +983,9 @@ export class GameEngine {
             }
 
             // Collision with Enemies
-            for (const enemy of this.enemies) {
-                if (enemy.state !== 'DEAD' && enemy.isActive) {
+            // Optimization: Use cached active entities
+            for (const enemy of this.activeEntitiesCache) {
+                if (enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
                     // Skip if already hit (for piercing projectiles)
                     if (p.hitEntities.has(enemy.id)) continue;
 
@@ -813,8 +1006,9 @@ export class GameEngine {
                         if (p.type === 'Fireball') {
                             // Splash Damage (20% to nearby enemies)
                             const splashRadius = 5.0;
-                            this.enemies.forEach(nearbyEnemy => {
-                                if (nearbyEnemy !== enemy && nearbyEnemy.state !== 'DEAD' && nearbyEnemy.isActive) {
+                            // Optimization: Use cached active entities for splash
+                            this.activeEntitiesCache.forEach(nearbyEnemy => {
+                                if (nearbyEnemy !== enemy && nearbyEnemy.state !== 'DEAD' && nearbyEnemy.isActive && nearbyEnemy !== this.player) {
                                     if (nearbyEnemy.position.distanceTo(enemy.position) < splashRadius) {
                                         const splashDmg = Math.floor(p.damage * 0.2);
                                         nearbyEnemy.takeDamage(splashDmg);
@@ -863,24 +1057,35 @@ export class GameEngine {
         console.log(`Gained ${goldAmount} gold. Total: ${this.player.gold}`);
         // Ideally show floating text for gold too
         
-        // Loot Drop Chance (e.g., 30%)
-        if (Math.random() < 0.3) {
+        // Loot Drop Logic
+        let shouldDrop = false;
+        let item = null;
+
+        if (enemy.isElite) {
+            // Guaranteed Elite Drop
+            shouldDrop = true;
+            item = ItemGenerator.generateEliteLoot(enemy.level);
+            console.log(`Elite Loot Dropped: ${item.name}`);
+        } else if (Math.random() < 0.3) {
+            // Standard Drop Chance (30%)
+            shouldDrop = true;
             let maxLevel = 1;
             if (enemy instanceof Skeleton) maxLevel = 5;
             else if (enemy instanceof Imp) maxLevel = 10;
             else if (enemy instanceof DemonOrc) maxLevel = 20;
 
-            const item = ItemGenerator.generateLoot(maxLevel);
-            if (item) {
-                console.log(`Loot Dropped: ${item.name}`);
-                
-                // Spawn LootDrop entity
-                const dropX = enemy.position.x + (Math.random() - 0.5) * 1.0;
-                const dropZ = enemy.position.z + (Math.random() - 0.5) * 1.0;
-                
-                const loot = new LootDrop(item, dropX, dropZ);
-                this.addEntity(loot);
-            }
+            item = ItemGenerator.generateLoot(maxLevel);
+        }
+
+        if (shouldDrop && item) {
+            console.log(`Loot Dropped: ${item.name}`);
+            
+            // Spawn LootDrop entity
+            const dropX = enemy.position.x + (Math.random() - 0.5) * 1.0;
+            const dropZ = enemy.position.z + (Math.random() - 0.5) * 1.0;
+            
+            const loot = new LootDrop(item, dropX, dropZ);
+            this.addEntity(loot);
         }
     }
 

@@ -104,6 +104,21 @@ export class ItemGenerator {
         // 3. Pick Base Item
         const baseItem = BASE_ITEMS[Math.floor(Math.random() * BASE_ITEMS.length)];
         
+        return this.createItem(baseItem, rarity, level);
+    }
+
+    static generateEliteLoot(level) {
+        // Rarity: 50% Uncommon, 40% Rare, 10% Legendary
+        const roll = Math.random();
+        let rarity = RARITY.UNCOMMON;
+        if (roll < 0.10) rarity = RARITY.LEGENDARY;
+        else if (roll < 0.50) rarity = RARITY.RARE;
+        
+        const baseItem = BASE_ITEMS[Math.floor(Math.random() * BASE_ITEMS.length)];
+        return this.createItem(baseItem, rarity, level);
+    }
+
+    static createItem(baseItem, rarity, level) {
         // 4. Calculate Base Stats
         const stats = {};
         
@@ -124,18 +139,10 @@ export class ItemGenerator {
         }
 
         // 6. Add Affixes (Prefix/Suffix)
-        // Chance for affixes increases with rarity, or just random?
-        // Let's make it random but influenced by rarity for guaranteed slots
         let prefix = null;
         let suffix = null;
         let name = baseItem.name;
 
-        // Legendary always gets both
-        // Rare gets at least one
-        // Uncommon gets chance for one
-        // Common gets small chance for one
-
-        const affixChance = Math.random();
         let allowPrefix = false;
         let allowSuffix = false;
 
@@ -151,36 +158,20 @@ export class ItemGenerator {
             if (Math.random() > 0.5) allowPrefix = true;
             else allowSuffix = true;
         } else {
-            // Common: small chance for one
+            // Common
             if (Math.random() > 0.8) allowPrefix = true;
         }
 
         if (allowPrefix) {
-            prefix = PREFIXES[Math.floor(Math.random() * PREFIXES.length)];
-            const val = Math.floor((prefix.min + Math.random() * (prefix.max - prefix.min)) * (1 + level * 0.1));
-            stats[prefix.stat] = (stats[prefix.stat] || 0) + val;
-            name = `${prefix.name} ${name}`;
+            const p = PREFIXES[Math.floor(Math.random() * PREFIXES.length)];
+            name = `${p.name} ${name}`;
+            stats[p.stat] = (stats[p.stat] || 0) + Math.floor(p.min + Math.random() * (p.max - p.min));
         }
 
         if (allowSuffix) {
-            suffix = SUFFIXES[Math.floor(Math.random() * SUFFIXES.length)];
-            const val = Math.floor((suffix.min + Math.random() * (suffix.max - suffix.min)) * (1 + level * 0.1));
-            stats[suffix.stat] = (stats[suffix.stat] || 0) + val;
-            name = `${name} ${suffix.name}`;
-        }
-
-        // If no prefix/suffix but rarity is high, maybe add rarity name?
-        // Or just always prepend rarity if no prefix?
-        // Let's keep it simple: Rarity Name + Item Name if no prefix, else Prefix + Item Name
-        // Actually, standard ARPG style: "Rare Iron Sword" or "Strong Iron Sword".
-        // If we have a prefix, we don't usually show rarity name in the item name itself, 
-        // but the color indicates it.
-        // However, the previous code did `${rarity.name} ${baseItem.name}`.
-        // Let's stick to: if prefix exists, use it. If not, use rarity name (except Common).
-        
-        if (!prefix && rarity !== RARITY.COMMON) {
-            name = `${rarity.name} ${baseItem.name}`;
-            if (suffix) name += ` ${suffix.name}`;
+            const s = SUFFIXES[Math.floor(Math.random() * SUFFIXES.length)];
+            name = `${name} ${s.name}`;
+            stats[s.stat] = (stats[s.stat] || 0) + Math.floor(s.min + Math.random() * (s.max - s.min));
         }
 
         return new Item({
@@ -208,71 +199,7 @@ export class ItemGenerator {
             return null;
         }
         const baseItem = possibleItems[Math.floor(Math.random() * possibleItems.length)];
-
-        // 3. Calculate Base Stats
-        const stats = {};
-        const baseVal = Math.floor(baseItem.baseValue * (1 + level * 0.1) * rarity.multiplier);
-        stats[baseItem.baseStat] = baseVal;
-
-        // 4. Add Random Stats
-        const availableStats = [...STAT_POOL];
-        for (let i = 0; i < rarity.statCount; i++) {
-            if (availableStats.length === 0) break;
-            const statIndex = Math.floor(Math.random() * availableStats.length);
-            const statName = availableStats.splice(statIndex, 1)[0];
-            const statVal = Math.floor((1 + Math.random() * 2 + (level * 0.5)) * rarity.multiplier);
-            stats[statName] = (stats[statName] || 0) + Math.max(1, statVal);
-        }
-
-        // 5. Add Affixes
-        let prefix = null;
-        let suffix = null;
-        let name = baseItem.name;
-
-        const affixChance = Math.random();
-        let allowPrefix = false;
-        let allowSuffix = false;
-
-        if (rarity === RARITY.LEGENDARY) {
-            allowPrefix = true;
-            allowSuffix = true;
-        } else if (rarity === RARITY.RARE) {
-            if (Math.random() > 0.5) allowPrefix = true;
-            else allowSuffix = true;
-            if (Math.random() > 0.7) { allowPrefix = true; allowSuffix = true; }
-        } else if (rarity === RARITY.UNCOMMON) {
-            if (Math.random() > 0.5) allowPrefix = true;
-            else allowSuffix = true;
-        } else {
-            if (Math.random() > 0.8) allowPrefix = true;
-        }
-
-        if (allowPrefix) {
-            prefix = PREFIXES[Math.floor(Math.random() * PREFIXES.length)];
-            const val = Math.floor((prefix.min + Math.random() * (prefix.max - prefix.min)) * (1 + level * 0.1));
-            stats[prefix.stat] = (stats[prefix.stat] || 0) + val;
-            name = `${prefix.name} ${name}`;
-        }
-
-        if (allowSuffix) {
-            suffix = SUFFIXES[Math.floor(Math.random() * SUFFIXES.length)];
-            const val = Math.floor((suffix.min + Math.random() * (suffix.max - suffix.min)) * (1 + level * 0.1));
-            stats[suffix.stat] = (stats[suffix.stat] || 0) + val;
-            name = `${name} ${suffix.name}`;
-        }
-
-        if (!prefix && rarity !== RARITY.COMMON) {
-            name = `${rarity.name} ${baseItem.name}`;
-            if (suffix) name += ` ${suffix.name}`;
-        }
-
-        return new Item({
-            name: name,
-            type: baseItem.type,
-            slot: baseItem.slot,
-            rarity: rarity,
-            stats: stats,
-            level: level
-        });
+        
+        return this.createItem(baseItem, rarity, level);
     }
 }

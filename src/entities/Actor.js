@@ -55,10 +55,10 @@ export class Actor extends Entity {
             speed: 3 + (this.baseStats.dexterity * 0.5),
             damage: this.baseStats.strength * 2,
             defense: 0,
-            hpRegen: this.baseStats.vitality * 0.1,
-            manaRegen: this.baseStats.wisdom * 0.1,
-            attackSpeed: 1 + (this.baseStats.dexterity / 5) * 0.01,
-            cooldownReduction: Math.min(0.5, this.baseStats.intelligence * 0.005),
+            hpRegen: this.baseStats.vitality * 0.5,
+            manaRegen: this.baseStats.wisdom * 0.5,
+            attackSpeed: 1 + (this.baseStats.dexterity / 5) * 0.05,
+            cooldownReduction: Math.min(0.5, this.baseStats.intelligence * 0.01),
             manaCostReduction: 0, 
             castSpeed: 1 + (this.baseStats.wisdom / 5) * 0.01
         };
@@ -482,11 +482,11 @@ export class Actor extends Entity {
         
         // Vit: Increase health and health regen
         this.stats.maxHp = (totalStats.vitality * 10) + levelBonus;
-        this.stats.hpRegen = totalStats.vitality * 0.1;
+        this.stats.hpRegen = totalStats.vitality * 0.5;
 
         // Int: Increase max mana and reduces ability cooldown (up to 50% max)
         this.stats.maxMana = (totalStats.intelligence * 10) + levelBonus;
-        this.stats.cooldownReduction = Math.min(0.5, totalStats.intelligence * 0.005);
+        this.stats.cooldownReduction = Math.min(0.5, totalStats.intelligence * 0.01);
 
         // Strength: Melee damage increase
         // Base Damage from Stats + Weapon Damage
@@ -497,10 +497,10 @@ export class Actor extends Entity {
 
         // Dex: Movement speed and melee attack speed
         this.stats.speed = (3 + (totalStats.dexterity * 0.5)) * 1.2;
-        this.stats.attackSpeed = 1 + (totalStats.dexterity / 5) * 0.01;
+        this.stats.attackSpeed = 1 + (totalStats.dexterity / 5) * 0.05;
 
         // Wisdom: Mana regen and cast speed
-        this.stats.manaRegen = totalStats.wisdom * 0.1;
+        this.stats.manaRegen = totalStats.wisdom * 0.5;
         this.stats.castSpeed = 1 + (totalStats.wisdom / 5) * 0.01;
         
         this.stats.manaCostReduction = 0;
