@@ -13,17 +13,7 @@ export class DwarfSalesman extends Actor {
         this.type = 'DwarfSalesman';
         this.isInvulnerable = true;
         this.name = "Dwarf Merchant";
-        this.initMesh();
-    }
-
-    async initMesh() {
-        try {
-            const mesh = await MeshFactory.createMeshForType('DwarfSalesman');
-            this.setMesh(mesh);
-            this.playAnimation('Idle', true);
-        } catch (err) {
-            console.error("DwarfSalesman: Failed to init mesh", err);
-        }
+        this.meshType = 'DwarfSalesman';
     }
 
     update(dt) {

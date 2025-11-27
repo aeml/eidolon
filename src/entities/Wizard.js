@@ -7,17 +7,12 @@ export class Wizard extends Actor {
     constructor(id) {
         super(id, CONSTANTS.ENTITIES.WIZARD);
         this.scaleAnimSpeed = false;
-        this.initMesh();
+        this.meshType = 'Wizard';
 
         this.abilityName = "Fireball";
         this.abilityDescription = "Launch a fiery orb that explodes on impact.";
         this.abilityManaCost = 30;
         this.abilityMaxCooldown = 2.0;
-    }
-
-    async initMesh() {
-        const mesh = await MeshFactory.createMeshForType('Wizard');
-        this.setMesh(mesh);
     }
 
     useAbility(targetVector, gameEngine) {

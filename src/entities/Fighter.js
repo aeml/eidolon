@@ -7,7 +7,7 @@ export class Fighter extends Actor {
     constructor(id) {
         super(id, CONSTANTS.ENTITIES.FIGHTER);
         this.scaleAnimSpeed = false;
-        this.initMesh();
+        this.meshType = 'Fighter';
         
         this.abilityName = "Charge";
         this.abilityDescription = "Dash towards an enemy and deal damage.";
@@ -16,18 +16,6 @@ export class Fighter extends Actor {
         
         this.isCharging = false;
         this.chargeTarget = null;
-    }
-
-    async initMesh() {
-        console.log("Fighter: initMesh started");
-        try {
-            const mesh = await MeshFactory.createMeshForType('Fighter');
-            console.log("Fighter: mesh created", mesh);
-            this.setMesh(mesh);
-            console.log("Fighter: setMesh called");
-        } catch (e) {
-            console.error("Fighter: initMesh failed", e);
-        }
     }
 
     useAbility(targetVector, gameEngine) {

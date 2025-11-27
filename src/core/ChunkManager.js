@@ -94,6 +94,11 @@ export class ChunkManager {
         
         // If adding to an active chunk, ensure it's visible
         if (this.activeChunkKeys.has(key)) {
+            // Lazy Load Mesh if needed
+            if (!entity.mesh && entity.ensureMesh) {
+                entity.ensureMesh();
+            }
+
             if (entity.mesh) {
                 this.scene.add(entity.mesh);
             }
@@ -150,11 +155,16 @@ export class ChunkManager {
         console.log(`ChunkManager: Loading chunk ${key}`);
         if (this.chunks.has(key)) {
             for (const entity of this.chunks.get(key)) {
+                // Lazy Load Mesh
+                if (!entity.mesh && entity.ensureMesh) {
+                    entity.ensureMesh();
+                }
+
                 if (entity.mesh) {
                     console.log(`ChunkManager: Adding mesh for ${entity.id} to scene`);
                     this.scene.add(entity.mesh);
                 } else {
-                    console.log(`ChunkManager: Entity ${entity.id} has no mesh yet`);
+                    // console.log(`ChunkManager: Entity ${entity.id} has no mesh yet`);
                 }
             }
         }
