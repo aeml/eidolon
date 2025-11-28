@@ -34,6 +34,7 @@ export class UIManager {
         this.btnCloseHelp = document.getElementById('btn-close-help');
         this.btnClosePatchNotes = document.getElementById('btn-close-patch-notes');
         this.btnRespawn = document.getElementById('btn-respawn');
+        this.btnCloseShop = document.getElementById('btn-close-shop');
 
         this.btnResume.addEventListener('click', () => this.toggleEscMenu());
         this.btnHelp.addEventListener('click', () => this.toggleHelp());
@@ -45,6 +46,7 @@ export class UIManager {
             this.togglePatchNotes();
             e.stopPropagation();
         });
+        this.btnCloseShop.addEventListener('click', () => this.toggleShop());
         this.btnRespawn.addEventListener('click', () => {
             if (this.onRespawn) {
                 this.onRespawn();
