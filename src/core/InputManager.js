@@ -25,6 +25,7 @@ export class InputManager {
             onInventory: [],
             onTeleport: [],
             onMap: [],
+            onChat: [], // New callback for Chat
             onInteract: [] // New callback for Mobile "USE" button
         };
 
@@ -207,6 +208,9 @@ export class InputManager {
         }
         if (key === 'm') {
             this.callbacks.onMap.forEach(cb => cb());
+        }
+        if (e.key === 'Enter') {
+            this.callbacks.onChat.forEach(cb => cb());
         }
     }
 

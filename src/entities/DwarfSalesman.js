@@ -7,7 +7,8 @@ export class DwarfSalesman extends Actor {
             STATS: { 
                 HP: 9999, 
                 MAX_HP: 9999, 
-                SPEED: 0 
+                SPEED: 0,
+                INTELLIGENCE: 10
             } 
         });
         this.type = 'DwarfSalesman';
