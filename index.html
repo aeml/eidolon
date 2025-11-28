@@ -612,6 +612,34 @@
             border: none;
             border-top: 1px solid #444;
         }
+
+        @media (max-width: 800px) {
+            /* Scale down windows for mobile */
+            #character-sheet {
+                transform: translate(-150%, -50%) scale(0.7) !important;
+            }
+            #inventory-screen {
+                transform: translate(50%, -50%) scale(0.7) !important;
+            }
+            #shop-screen {
+                transform: translate(-50%, -50%) scale(0.8) !important;
+            }
+            #esc-menu {
+                transform: translate(-50%, -50%) scale(0.8) !important;
+            }
+            #help-screen {
+                transform: translate(-50%, -50%) scale(0.8) !important;
+            }
+            #patch-notes-screen {
+                transform: translate(-50%, -50%) scale(0.8) !important;
+                width: 95% !important;
+                height: 90% !important;
+            }
+            
+            .window {
+                font-size: 12px;
+            }
+        }
     </style>
     <script type="importmap">
         {
