@@ -227,7 +227,53 @@ export class GameEngine {
             if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen) return;
             
             if (this.isMobile) {
-                // ... existing mobile logic ...
+                // Auto-target nearest enemy for mobile ability
+                let nearest = null;
+                let minDst = 1000;
+                this.enemies.forEach(e => {
+                    if (e.isActive && e.state !== 'DEAD') {
+                        const d = this.player.position.distanceTo(e.position);
+                        if (d < minDst) {
+                            minDst = d;
+                            nearest = e;
+                        }
+                    }
+                });
+
+                let targetPos = null;
+                let targetId = "";
+
+                if (nearest && minDst < 15.0) { // Generous auto-aim range
+                    targetPos = nearest.position;
+                    targetId = nearest.id;
+                } else {
+                    // Cast in front of player if no enemy
+                    // Assuming player mesh rotation is valid
+                    if (this.player.mesh) {
+                        const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.player.mesh.quaternion);
+                        targetPos = this.player.position.clone().add(forward.multiplyScalar(5));
+                    } else {
+                        // Fallback
+                        targetPos = this.player.position.clone();
+                        targetPos.z += 5;
+                    }
+                }
+
+                if (this.isMultiplayer) {
+                    const abilityMsg = {
+                        type: "ability",
+                        payload: {
+                            targetX: targetPos.x,
+                            targetZ: targetPos.z,
+                            targetId: targetId
+                        }
+                    };
+                    this.socket.send(JSON.stringify(abilityMsg));
+                    this.player.playAnimation('Attack', false);
+                } else {
+                    this.player.useAbility(targetPos, this);
+                    this.uiManager.updateAbilityIcon(this.player);
+                }
                 return;
             }
 
