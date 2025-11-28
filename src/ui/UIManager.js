@@ -126,7 +126,7 @@ export class UIManager {
         }
 
         this.isHelpOpen = false;
-        this.isShopOpen = false;
+        // this.isShopOpen is a getter now
         
         this.onStatUpgrade = null;
         this.onRespawn = null;
