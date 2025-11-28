@@ -4,11 +4,14 @@ const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/
 
 const debugConsole = document.getElementById('debug-console');
 function logToScreen(msg, type = 'INFO') {
+    // Debug console disabled for mobile users
+    /*
     if (debugConsole && isMobile) {
         debugConsole.style.display = 'block';
         debugConsole.textContent += `[${type}] ${msg}\n`;
         debugConsole.scrollTop = debugConsole.scrollHeight;
     }
+    */
 }
 
 const originalConsoleError = console.error;
