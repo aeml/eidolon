@@ -288,11 +288,19 @@ export class UIManager {
     toggleCharacterSheet() {
         const isHidden = this.characterSheet.style.display === 'none' || this.characterSheet.style.display === '';
         this.characterSheet.style.display = isHidden ? 'block' : 'none';
+        
+        if (isHidden && this.lastPlayerRef) {
+            this.updateCharacterSheet(this.lastPlayerRef);
+        }
     }
 
     toggleInventory() {
         const isHidden = this.inventoryScreen.style.display === 'none' || this.inventoryScreen.style.display === '';
         this.inventoryScreen.style.display = isHidden ? 'block' : 'none';
+        
+        if (isHidden && this.lastPlayerRef) {
+            this.updateInventory(this.lastPlayerRef);
+        }
     }
 
     toggleEscMenu() {
@@ -326,6 +334,9 @@ export class UIManager {
         // Open inventory when shop opens
         if (isHidden) {
             this.inventoryScreen.style.display = 'block';
+            if (this.lastPlayerRef) {
+                this.updateInventory(this.lastPlayerRef);
+            }
         }
     }
 
@@ -380,9 +391,12 @@ export class UIManager {
     }
 
     updateCharacterSheet(player) {
-        if (!player || this.characterSheet.style.display === 'none') return;
+        if (!player) return;
         
         this.lastPlayerRef = player; // Store reference for tooltips
+
+        // Only update DOM if visible to save performance
+        if (this.characterSheet.style.display === 'none') return;
 
         const btnStyle = player.statPoints > 0 ? 'display:inline-block; margin-left:5px; cursor:pointer;' : 'display:none;';
 
@@ -448,7 +462,7 @@ export class UIManager {
     }
 
     updateInventory(player) {
-        if (!player || this.inventoryScreen.style.display === 'none') return;
+        if (!player) return;
         this.lastPlayerRef = player;
 
         // Update Gold
