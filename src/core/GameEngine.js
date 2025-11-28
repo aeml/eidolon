@@ -1380,42 +1380,42 @@ export class GameEngine {
         this.player.gainXp(enemy.xpValue);
         
         const minGold = Math.max(1, Math.floor(enemy.level * 1.5));
-        // Loot is now handled by server
-        /*
-        const maxGold = Math.max(30, enemy.level * 30);
-        const goldAmount = Math.floor(minGold + Math.random() * (maxGold - minGold));
         
-        this.player.gold += goldAmount;
-        console.log(`Gained ${goldAmount} gold. Total: ${this.player.gold}`);
-        
-        let shouldDrop = false;
-        let item = null;
-
-        if (enemy.isElite) {
-            shouldDrop = true;
-            item = ItemGenerator.generateEliteLoot(enemy.level);
-            console.log(`Elite Loot Dropped: ${item.name}`);
-        } else if (Math.random() < 0.5) {
-            shouldDrop = true;
-            let maxLevel = 1;
-            if (enemy instanceof Skeleton) maxLevel = 5;
-            else if (enemy instanceof Imp) maxLevel = 10;
-            else if (enemy instanceof DemonOrc) maxLevel = 20;
-            else if (enemy instanceof Construct) maxLevel = 30;
-
-            item = ItemGenerator.generateLoot(maxLevel);
-        }
-
-        if (shouldDrop && item) {
-            console.log(`Loot Dropped: ${item.name}`);
+        if (!this.isMultiplayer) {
+            const maxGold = Math.max(30, enemy.level * 30);
+            const goldAmount = Math.floor(minGold + Math.random() * (maxGold - minGold));
             
-            const dropX = enemy.position.x + (Math.random() - 0.5) * 1.0;
-            const dropZ = enemy.position.z + (Math.random() - 0.5) * 1.0;
+            this.player.gold += goldAmount;
+            console.log(`Gained ${goldAmount} gold. Total: ${this.player.gold}`);
             
-            const loot = new LootDrop(item, dropX, dropZ);
-            this.addEntity(loot);
+            let shouldDrop = false;
+            let item = null;
+
+            if (enemy.isElite) {
+                shouldDrop = true;
+                item = ItemGenerator.generateEliteLoot(enemy.level);
+                console.log(`Elite Loot Dropped: ${item.name}`);
+            } else if (Math.random() < 0.5) {
+                shouldDrop = true;
+                let maxLevel = 1;
+                if (enemy instanceof Skeleton) maxLevel = 5;
+                else if (enemy instanceof Imp) maxLevel = 10;
+                else if (enemy instanceof DemonOrc) maxLevel = 20;
+                else if (enemy instanceof Construct) maxLevel = 30;
+
+                item = ItemGenerator.generateLoot(maxLevel);
+            }
+
+            if (shouldDrop && item) {
+                console.log(`Loot Dropped: ${item.name}`);
+                
+                const dropX = enemy.position.x + (Math.random() - 0.5) * 1.0;
+                const dropZ = enemy.position.z + (Math.random() - 0.5) * 1.0;
+                
+                const loot = new LootDrop(item, dropX, dropZ);
+                this.addEntity(loot);
+            }
         }
-        */
     }
 
     render(alpha) {
