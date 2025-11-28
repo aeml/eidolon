@@ -985,7 +985,7 @@ export class GameEngine {
         }
 
         if (this.player) {
-            if (!this.isMobile && this.inputManager.isMouseDown && !this.uiManager.isEscMenuOpen) {
+            if (!this.isMobile && this.inputManager.isMouseDown && !this.uiManager.isEscMenuOpen && !this.uiManager.isShopOpen) {
                 
                 if (this.inputManager.keys.control) {
                     this.player.targetPosition = null;
