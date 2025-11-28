@@ -15,8 +15,8 @@ export class LootDrop extends Entity {
         this.position.set(x, 0.5, z); // Float slightly above ground
         this.radius = 0.5;
         
-        this.lifetime = 0;
-        this.maxLifetime = 30.0; // 30 seconds despawn timer
+        this.creationTime = Date.now();
+        this.maxLifetime = 30000; // 30 seconds in ms
 
         // Create visual representation
         // Color based on rarity
@@ -112,14 +112,13 @@ export class LootDrop extends Entity {
 
     update(dt) {
         // Lifetime check
-        this.lifetime += dt;
-        if (this.lifetime >= this.maxLifetime) {
+        if (Date.now() - this.creationTime >= this.maxLifetime) {
             this.isActive = false;
             return;
         }
 
         // Lazy Load Text
-        if (!this.textGenerated && this.lifetime > this.textDelay) {
+        if (!this.textGenerated && (Date.now() - this.creationTime) > (this.textDelay * 1000)) {
             const label = this.createTextSprite(this.itemName, this.itemColor);
             label.position.set(0, 0.6, 0); // Above the orb
             this.mesh.add(label);
