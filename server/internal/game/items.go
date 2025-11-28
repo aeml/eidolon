@@ -140,6 +140,45 @@ func GenerateEliteLoot(level int) *Item {
 	return createItem(baseItem, rarity, multiplier, statCount, level)
 }
 
+func GenerateLootForSlot(slot string, level int) *Item {
+	// Filter BaseItems by slot
+	var candidates []BaseItem
+	for _, item := range BaseItems {
+		if item.Slot == slot {
+			candidates = append(candidates, item)
+		}
+	}
+
+	if len(candidates) == 0 {
+		return nil
+	}
+
+	// Pick random base item
+	baseItem := candidates[rand.Intn(len(candidates))]
+
+	// Roll for Rarity (Same logic as GenerateLoot)
+	roll := rand.Float64()
+	rarity := RarityCommon
+	multiplier := 1.0
+	statCount := 0
+
+	if roll < 0.05 { // Slightly better odds for gamble?
+		rarity = RarityLegendary
+		multiplier = 3.0
+		statCount = 5
+	} else if roll < 0.35 {
+		rarity = RarityRare
+		multiplier = 2.0
+		statCount = 2
+	} else if roll < 0.65 {
+		rarity = RarityUncommon
+		multiplier = 1.5
+		statCount = 1
+	}
+
+	return createItem(baseItem, rarity, multiplier, statCount, level)
+}
+
 func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCount int, level int) *Item {
 	// 4. Calculate Base Stats (Damage/Defense)
 	// Base Stat scales with level and rarity multiplier

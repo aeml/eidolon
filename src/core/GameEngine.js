@@ -39,6 +39,19 @@ export class GameEngine {
         this.chunkManager = new ChunkManager(this.renderSystem.scene);
         this.collisionManager = new CollisionManager();
         this.uiManager = new UIManager();
+        this.uiManager.onBuyGamble = (slot) => {
+            if (this.isMultiplayer) {
+                if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                    const msg = {
+                        type: 'buy_gamble',
+                        payload: { slot }
+                    };
+                    this.socket.send(JSON.stringify(msg));
+                }
+            } else {
+                this.handleLocalGamble(slot);
+            }
+        };
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         this.minimap = new Minimap();
         this.worldMap = new WorldMap(this);
@@ -682,6 +695,10 @@ export class GameEngine {
             });
 
             if (this.player) {
+                // Pad with nulls to maintain fixed size
+                while (inventory.length < 20) {
+                    inventory.push(null);
+                }
                 this.player.inventory = inventory;
                 this.uiManager.updateInventory(this.player);
             }
@@ -1478,6 +1495,16 @@ export class GameEngine {
             this.minimap.update(this.player, activeEntities);
             this.uiManager.updatePlayerStats(this.player);
             this.uiManager.updateXP(this.player);
+            
+            // Dynamic UI Updates (Throttled)
+            if (this.frameCount % 10 === 0) {
+                if (this.uiManager.isCharacterSheetOpen) {
+                    this.uiManager.updateCharacterSheet(this.player);
+                }
+                // Inventory update is expensive, only do it if absolutely necessary or less frequently
+                // For now, we rely on event-based updates for inventory to avoid performance hit
+            }
+
             this.uiManager.updateEnemyBars(
                 activeEntities, 
                 this.renderSystem.camera, 
@@ -1485,6 +1512,36 @@ export class GameEngine {
                 this.inputManager.keys.alt
             );
             this.worldMap.update(this.player);
+        }
+    }
+
+    handleLocalGamble(slot) {
+        if (!this.player) return;
+        const cost = 500;
+
+        if (this.player.gold >= cost) {
+            // Check inventory space
+            if (this.player.inventory.includes(null)) {
+                this.player.gold -= cost;
+                
+                // Generate Item
+                const item = ItemGenerator.generateLootForSlot(slot, this.player.level);
+                
+                if (item) {
+                    this.player.addToInventory(item);
+                    console.log(`Bought gamble item: ${item.name}`);
+                    
+                    // Update UI
+                    this.uiManager.updateInventory(this.player);
+                } else {
+                    console.error("Failed to generate item for slot:", slot);
+                    this.player.gold += cost; // Refund
+                }
+            } else {
+                console.log("Inventory Full!");
+            }
+        } else {
+            console.log("Not enough gold!");
         }
     }
 }

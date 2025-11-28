@@ -68,6 +68,7 @@ const (
 	MsgInventory = "inventory"
 	MsgAbility   = "ability"
 	MsgEquip     = "equip"
+	MsgBuyGamble = "buy_gamble"
 )
 
 type Message struct {
@@ -98,6 +99,10 @@ type AttackPayload struct {
 
 type PickupPayload struct {
 	LootID string `json:"lootId"`
+}
+
+type BuyGamblePayload struct {
+	Slot string `json:"slot"`
 }
 
 type EquipPayload struct {
@@ -638,6 +643,44 @@ func (c *Client) handleMessage(msg Message) {
 			}
 			b, _ := json.Marshal(msg)
 			c.send <- b
+		}
+
+	case MsgBuyGamble:
+		if c.playerID == "" {
+			return
+		}
+		var payload BuyGamblePayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player := world.GetEntity(c.playerID)
+		if player == nil {
+			return
+		}
+
+		cost := 500
+		if player.Gold >= cost {
+			// Check inventory space (assuming max 20 slots)
+			if len(player.Inventory) < 20 {
+				player.Gold -= cost
+
+				item := game.GenerateLootForSlot(payload.Slot, player.Level)
+				if item != nil {
+					player.Inventory = append(player.Inventory, *item)
+
+					// Send Inventory Update
+					invPayload, _ := json.Marshal(player.Inventory)
+					msg := Message{
+						Type:    MsgInventory,
+						Payload: invPayload,
+					}
+					b, _ := json.Marshal(msg)
+					c.send <- b
+				} else {
+					player.Gold += cost // Refund
+				}
+			}
 		}
 	}
 }

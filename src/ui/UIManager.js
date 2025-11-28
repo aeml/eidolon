@@ -54,6 +54,8 @@ export class UIManager {
             this.toggleEscMenu();
         });
 
+        this.setupShop();
+
         // Ability UI
         this.abilityContainer = document.getElementById('ability-container');
         this.abilityIcon = document.getElementById('ability-icon');
@@ -273,6 +275,14 @@ export class UIManager {
 
     get isPatchNotesOpen() {
         return this.patchNotesScreen.style.display === 'flex';
+    }
+
+    get isInventoryOpen() {
+        return this.inventoryScreen.style.display === 'block';
+    }
+
+    get isCharacterSheetOpen() {
+        return this.characterSheet.style.display === 'block';
     }
 
     toggleCharacterSheet() {
@@ -746,39 +756,10 @@ export class UIManager {
     }
 
     buyGambleItem(slot) {
-        if (!this.lastPlayerRef) return;
-        const player = this.lastPlayerRef;
-        const cost = 500;
-
-        if (player.gold >= cost) {
-            // Check inventory space
-            if (player.inventory.includes(null)) {
-                player.gold -= cost;
-                
-                // Generate Item
-                // Scale level based on player level? Or just max level?
-                // Let's say max level is player level
-                const item = ItemGenerator.generateLootForSlot(slot, player.level);
-                
-                if (item) {
-                    player.addToInventory(item);
-                    console.log(`Bought gamble item: ${item.name}`);
-                    
-                    // Update UI
-                    this.updateInventory(player);
-                    
-                    // Visual Feedback?
-                } else {
-                    console.error("Failed to generate item for slot:", slot);
-                    player.gold += cost; // Refund
-                }
-            } else {
-                console.log("Inventory Full!");
-                // Show error message?
-            }
+        if (this.onBuyGamble) {
+            this.onBuyGamble(slot);
         } else {
-            console.log("Not enough gold!");
-            // Show error message?
+            console.warn("onBuyGamble callback not defined");
         }
     }
 
