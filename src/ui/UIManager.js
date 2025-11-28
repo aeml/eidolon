@@ -56,6 +56,13 @@ export class UIManager {
 
         this.setupShop();
 
+        // Setup Windows (Drag & Click Blocking)
+        this.setupWindow(this.characterSheet);
+        this.setupWindow(this.inventoryScreen);
+        this.setupWindow(this.shopScreen);
+        this.setupWindow(this.helpScreen);
+        this.setupWindow(this.patchNotesScreen);
+
         // Ability UI
         this.abilityContainer = document.getElementById('ability-container');
         this.abilityIcon = document.getElementById('ability-icon');
