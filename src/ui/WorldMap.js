@@ -121,6 +121,17 @@ export class WorldMap {
         ctx.textAlign = 'center';
         ctx.fillText("TOWN", townPos.x + 50 * this.scale, townPos.y + 50 * this.scale);
 
+        // 2.5 Draw Remote Players
+        if (this.gameEngine.remotePlayers) {
+            this.gameEngine.remotePlayers.forEach(rp => {
+                const pos = worldToScreen(rp.position.x, rp.position.z);
+                ctx.fillStyle = '#00ffff'; // Cyan for other players
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
         // 3. Draw Player
         ctx.fillStyle = '#0f0';
         ctx.beginPath();

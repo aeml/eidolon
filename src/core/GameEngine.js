@@ -369,8 +369,8 @@ export class GameEngine {
         });
 
         this.inputManager.subscribe('onMap', () => {
-            if (this.uiManager.worldMap) {
-                this.uiManager.worldMap.toggle();
+            if (this.worldMap) {
+                this.worldMap.toggle();
             }
         });
 
