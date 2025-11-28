@@ -579,6 +579,39 @@
             border-radius: 8px;
             font-size: 20px;
         }
+
+        /* Chat Box */
+        #chat-box {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 300px;
+            height: 200px;
+            background: rgba(0,0,0,0.7);
+            border: 1px solid #444;
+            z-index: 100;
+            flex-direction: column;
+        }
+
+        #chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+            color: #fff;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        #chat-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 5px;
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+            border: none;
+            border-top: 1px solid #444;
+        }
     </style>
     <script type="importmap">
         {
@@ -702,7 +735,35 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON</h1>
             <div class="subtitle">Select your Archetype</div>
-            <div class="class-selection">
+            
+            <div class="mode-selection" style="margin-bottom: 20px; text-align: center;">
+                <label style="color: #ffd700; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <input type="checkbox" id="multiplayer-toggle" style="transform: scale(1.5);">
+                    Multiplayer Mode
+                </label>
+                <div id="server-input-container" style="display: none; margin-top: 10px;">
+                    <input type="text" id="server-address" value="wss://eserver.mendola.tech:8080/ws" placeholder="wss://server-address:8080/ws" style="padding: 5px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; width: 250px;">
+                    
+                    <div id="auth-container" style="margin-top: 10px; border-top: 1px solid #444; padding-top: 10px;">
+                        <div style="margin-bottom: 5px;">
+                            <input type="text" id="auth-username" placeholder="Username" style="padding: 5px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; width: 120px;">
+                            <input type="email" id="auth-email" placeholder="Email" style="padding: 5px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; width: 120px;">
+                            <input type="password" id="auth-password" placeholder="Password" style="padding: 5px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; width: 120px;">
+                        </div>
+                        <div>
+                            <button id="btn-login" style="background: #4CAF50; color: white; border: none; padding: 5px 10px; cursor: pointer;">Login</button>
+                            <button id="btn-register" style="background: #2196F3; color: white; border: none; padding: 5px 10px; cursor: pointer;">Register</button>
+                        </div>
+                        <div id="auth-status" style="color: #ffeb3b; font-size: 12px; margin-top: 5px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="play-container" style="display: none; text-align: center; margin-top: 20px;">
+                <button id="btn-play-character" class="menu-btn" style="font-size: 24px; padding: 10px 40px; background: #4CAF50; color: white; border: 2px solid #45a049;">PLAY</button>
+            </div>
+
+            <div id="class-selection-container" class="class-selection">
                 <button class="class-btn" data-type="Fighter">Fighter</button>
                 <button class="class-btn" data-type="Rogue">Rogue</button>
                 <button class="class-btn" data-type="Wizard">Wizard</button>

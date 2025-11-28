@@ -57,7 +57,11 @@ export class Projectile extends Entity {
         this.rotation.copy(this.mesh.quaternion);
     }
 
-    update(dt, collisionManager, player) { // player arg not really needed here but keeping signature
+    update(dt, collisionManager, player) { 
+        // In multiplayer, position is authoritative from server, but we can interpolate
+        // If this is a remote projectile, we might want to just let the server update position
+        // However, for smoothness, we can predict movement
+        
         this.lifeTime -= dt;
         if (this.lifeTime <= 0) {
             this.isActive = false;
@@ -71,11 +75,5 @@ export class Projectile extends Entity {
         if (this.mesh) {
             this.mesh.position.copy(this.position);
         }
-
-        // Collision Check (Simple sphere check against enemies)
-        // We need access to enemies list... passed via collisionManager or we need a new system.
-        // For now, let's assume GameEngine handles projectile collision against entities?
-        // Or we can pass the entity list to update.
-        // Let's stick to simple movement here, and GameEngine can check overlaps.
     }
 }

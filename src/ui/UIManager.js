@@ -20,6 +20,7 @@ export class UIManager {
         this.inventoryScreen = document.getElementById('inventory-screen');
         this.inventoryGrid = document.getElementById('inventory-grid');
         this.goldDisplay = document.getElementById('gold-display');
+        this.shopScreen = document.getElementById('shop-screen');
         
         // Escape Menu & Help
         this.escMenu = document.getElementById('esc-menu');
@@ -102,63 +103,46 @@ export class UIManager {
             this.statTooltip.style.display = 'none';
         });
 
-        // Equipment Tooltips
-        const equipSlots = document.querySelectorAll('.equip-slot');
-        equipSlots.forEach(slot => {
-            slot.addEventListener('mousemove', (e) => {
-                if (slot._item) {
-                    this.showItemTooltip(slot._item, e.clientX, e.clientY, e);
-                } else {
-                    this.statTooltip.style.display = 'none';
-                    this.compareTooltip.style.display = 'none';
-                    this.hoveredItem = null;
+        // Chat UI
+        this.chatBox = document.getElementById('chat-box');
+        this.chatMessages = document.getElementById('chat-messages');
+        this.chatInput = document.getElementById('chat-input');
+        
+        if (this.chatInput) {
+            this.chatInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const msg = this.chatInput.value.trim();
+                    if (msg && this.onChatSend) {
+                        this.onChatSend(msg);
+                        this.chatInput.value = '';
+                    }
+                    this.chatInput.blur(); // Unfocus after sending
                 }
             });
-            slot.addEventListener('mouseleave', () => {
-                this.statTooltip.style.display = 'none';
-                this.compareTooltip.style.display = 'none';
-                this.hoveredItem = null; // Clear hover state
-            });
-        });
+        }
 
-        // Inventory Tooltips (Delegation)
-        this.inventoryGrid.addEventListener('mousemove', (e) => {
-            const slot = e.target.closest('.inv-slot');
-            if (slot && slot._item) {
-                this.showItemTooltip(slot._item, e.clientX, e.clientY, e);
-            } else {
-                this.statTooltip.style.display = 'none';
-                this.compareTooltip.style.display = 'none';
-                this.hoveredItem = null;
-            }
-        });
-        this.inventoryGrid.addEventListener('mouseleave', () => {
-            this.statTooltip.style.display = 'none';
-            this.compareTooltip.style.display = 'none';
-            this.hoveredItem = null;
-        });
+        this.isHelpOpen = false;
+        this.isShopOpen = false;
+        
+        this.onStatUpgrade = null;
+        this.onRespawn = null;
+        this.onChatSend = null;
+    }
 
-        // Make windows draggable and stop propagation
-        this.setupWindow(this.characterSheet);
-        this.setupWindow(this.inventoryScreen);
+    addChatMessage(sender, message) {
+        if (!this.chatBox) return;
+        this.chatBox.style.display = 'flex';
+        const div = document.createElement('div');
+        div.style.marginBottom = '4px';
+        div.innerHTML = `<strong style="color: #ffd700;">${sender}:</strong> <span style="color: #fff;">${message}</span>`;
+        this.chatMessages.appendChild(div);
+        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+    }
 
-        // Shop UI
-        this.shopScreen = document.getElementById('shop-screen');
-        this.btnCloseShop = document.getElementById('btn-close-shop');
-        this.btnCloseShop.addEventListener('click', () => this.toggleShop());
-        this.setupWindow(this.shopScreen);
-        this.setupShop();
-
-        this.compareMode = false; // Toggle state for comparison
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Shift' && !e.repeat) {
-                this.compareMode = !this.compareMode;
-                // If currently hovering an item, refresh tooltip
-                if (this.hoveredItem && this.statTooltip.style.display === 'block') {
-                    this.showItemTooltip(this.hoveredItem, this.lastMouseX, this.lastMouseY);
-                }
-            }
-        });
+    toggleChat(show) {
+        if (this.chatBox) {
+            this.chatBox.style.display = show ? 'flex' : 'none';
+        }
     }
 
     showHUD() {
