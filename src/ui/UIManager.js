@@ -285,6 +285,10 @@ export class UIManager {
         return this.characterSheet.style.display === 'block';
     }
 
+    get isShopOpen() {
+        return this.shopScreen.style.display === 'flex';
+    }
+
     toggleCharacterSheet() {
         const isHidden = this.characterSheet.style.display === 'none' || this.characterSheet.style.display === '';
         this.characterSheet.style.display = isHidden ? 'block' : 'none';
@@ -770,6 +774,11 @@ export class UIManager {
     }
 
     buyGambleItem(slot) {
+        if (this.lastPlayerRef && this.lastPlayerRef.gold < 500) {
+            this.addChatMessage("System", "Not sufficient gold!");
+            return;
+        }
+
         if (this.onBuyGamble) {
             this.onBuyGamble(slot);
         } else {
