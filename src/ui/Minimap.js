@@ -1,11 +1,13 @@
 export class Minimap {
     constructor(size = 200) {
-        this.size = size;
+        // Adjust size for mobile
+        const isMobile = window.innerWidth <= 800;
+        this.size = isMobile ? 120 : size;
         this.scale = 4; // World units per pixel (approx)
         
         this.canvas = document.createElement('canvas');
-        this.canvas.width = size;
-        this.canvas.height = size;
+        this.canvas.width = this.size;
+        this.canvas.height = this.size;
         this.canvas.style.position = 'absolute';
         this.canvas.style.top = '20px';
         this.canvas.style.right = '20px';
