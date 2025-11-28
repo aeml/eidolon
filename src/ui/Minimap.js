@@ -1,18 +1,21 @@
 export class Minimap {
     constructor(size = 200) {
-        // Adjust size for mobile
-        const isMobile = window.innerWidth <= 800;
-        this.size = isMobile ? 120 : size;
+        this.baseSize = size;
         this.scale = 4; // World units per pixel (approx)
         
         this.canvas = document.createElement('canvas');
-        this.canvas.width = this.size;
-        this.canvas.height = this.size;
+        this.canvas.id = 'minimap-canvas'; // Add ID for CSS styling
+        
+        // Set internal resolution (high quality)
+        this.canvas.width = size;
+        this.canvas.height = size;
+        
+        // Default styles (can be overridden by CSS)
         this.canvas.style.position = 'absolute';
         this.canvas.style.top = '20px';
         this.canvas.style.right = '20px';
         this.canvas.style.border = '2px solid #444';
-        this.canvas.style.borderRadius = '50%'; // Circular minimap
+        this.canvas.style.borderRadius = '50%';
         this.canvas.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
         this.canvas.style.zIndex = '100';
         
@@ -24,10 +27,12 @@ export class Minimap {
         if (!player) return;
 
         const ctx = this.ctx;
-        const halfSize = this.size / 2;
+        // Use internal width/height for drawing logic
+        const size = this.canvas.width;
+        const halfSize = size / 2;
         
         // Clear
-        ctx.clearRect(0, 0, this.size, this.size);
+        ctx.clearRect(0, 0, size, size);
 
         // Draw Background/Grid (Optional)
         ctx.beginPath();
@@ -43,9 +48,6 @@ export class Minimap {
             const dz = entity.position.z - player.position.z;
             
             // Rotate by 45 degrees to match isometric camera
-            // x' = x cos(theta) - y sin(theta)
-            // y' = x sin(theta) + y cos(theta)
-            // theta = 45 degrees (PI/4)
             const cos = 0.707;
             const sin = 0.707;
             
@@ -68,8 +70,5 @@ export class Minimap {
         ctx.beginPath();
         ctx.arc(halfSize, halfSize, 4, 0, Math.PI * 2);
         ctx.fill();
-        
-        // Draw Direction Indicator
-        // const angle = Math.atan2(player.velocity.x, player.velocity.z); 
     }
 }
