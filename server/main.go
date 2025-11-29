@@ -155,10 +155,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	world = game.NewWorld()
-
 	// Seed the random number generator
 	rand.Seed(time.Now().UnixNano())
+
+	world = game.NewWorld()
 
 	// Game Loop
 	go func() {
@@ -360,13 +360,18 @@ func (c *Client) handleMessage(msg Message) {
 		sessionsMu.Lock()
 		if oldClient, ok := activeSessions[c.username]; ok {
 			// Kick old client
-			oldClient.sendError("Logged in from another location")
-			// We don't close immediately here to let the error message go through?
-			// But sendError is async (channel).
-			// Closing the connection will trigger unregister.
-			// We should probably wait a tiny bit or just close.
-			// If we close, readPump returns, unregister is sent.
-			oldClient.conn.Close()
+			// Use a goroutine to avoid blocking and potential deadlocks if oldClient is stuck
+			go func(clientToKick *Client) {
+				defer func() {
+					if r := recover(); r != nil {
+						log.Printf("Recovered from kick panic: %v", r)
+					}
+				}()
+				clientToKick.sendError("Logged in from another location")
+				// Give a small delay for the message to be sent before closing
+				time.Sleep(100 * time.Millisecond)
+				clientToKick.conn.Close()
+			}(oldClient)
 		}
 		activeSessions[c.username] = c
 		sessionsMu.Unlock()
@@ -831,6 +836,11 @@ func (c *Client) handleMessage(msg Message) {
 }
 
 func (c *Client) sendError(msg string) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("Recovered from sendError panic: %v", r)
+		}
+	}()
 	m := Message{
 		Type:    MsgError,
 		Payload: json.RawMessage(`"` + msg + `"`),

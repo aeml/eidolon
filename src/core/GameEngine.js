@@ -551,6 +551,11 @@ export class GameEngine {
             const state = msg.payload;
             const seenIds = new Set();
             
+            // Debug log for entity count (throttled)
+            if (this.frameCount % 600 === 0) {
+                console.log(`Received state with ${Object.keys(state).length} entities`);
+            }
+
             // Update remote players
             Object.values(state).forEach(pData => {
                 seenIds.add(pData.id);
@@ -655,6 +660,7 @@ export class GameEngine {
                         remoteEntity = new Projectile(pData.id, owner || dummyOwner, pData.subType, start, target);
                     } else {
                         remoteEntity = this.createRemotePlayer(pData.type || 'Enemy', pData.id, pData.subType); 
+                        console.log(`Created remote entity: ${pData.id} (${pData.type}/${pData.subType})`);
                     }
                     
                     if (remoteEntity) {
