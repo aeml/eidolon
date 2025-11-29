@@ -9,8 +9,8 @@ const MATERIAL_CACHE = new Map(); // Color -> Material
 const TEXTURE_CACHE = new Map(); // "Name|Color" -> Texture
 
 export class LootDrop extends Entity {
-    constructor(item, x, z) {
-        super();
+    constructor(item, x, z, id = null) {
+        super(id);
         this.item = item;
         this.position.set(x, 0.5, z); // Float slightly above ground
         this.radius = 0.5;

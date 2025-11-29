@@ -4,8 +4,13 @@ import (
 	"encoding/json"
 	"flag"
 	"log"
+	"math"
 	"math/rand"
 	"net/http"
+	"os"
+	"os/signal"
+	"sync"
+	"syscall"
 	"time"
 
 	"eidolon-server/internal/database"
@@ -25,7 +30,7 @@ const (
 	pingPeriod = (pongWait * 9) / 10
 
 	// Maximum message size allowed from peer.
-	maxMessageSize = 4096 // Increased for larger payloads if needed
+	maxMessageSize = 8192 // Increased for larger payloads
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
@@ -69,6 +74,7 @@ const (
 	MsgAbility   = "ability"
 	MsgEquip     = "equip"
 	MsgBuyGamble = "buy_gamble"
+	MsgSell      = "sell"
 )
 
 type Message struct {
@@ -91,6 +97,7 @@ type MovePayload struct {
 	Y        float64 `json:"y"`
 	Z        float64 `json:"z"`
 	Rotation float64 `json:"rotation"`
+	State    string  `json:"state"`
 }
 
 type AttackPayload struct {
@@ -103,6 +110,10 @@ type PickupPayload struct {
 
 type BuyGamblePayload struct {
 	Slot string `json:"slot"`
+}
+
+type SellPayload struct {
+	ItemID string `json:"itemId"`
 }
 
 type EquipPayload struct {
@@ -128,6 +139,8 @@ type ChatPayload struct {
 }
 
 var clients = make(map[*Client]bool)
+var activeSessions = make(map[string]*Client)
+var sessionsMu sync.Mutex
 var broadcast = make(chan []byte)
 var register = make(chan *Client)
 var unregister = make(chan *Client)
@@ -175,6 +188,16 @@ func main() {
 		}
 	}()
 
+	// Graceful Shutdown
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-stop
+		log.Println("Shutting down server...")
+		saveAllPlayers()
+		os.Exit(0)
+	}()
+
 	http.HandleFunc("/ws", serveWs)
 	log.Printf("Server started on %s", *addr)
 
@@ -199,6 +222,13 @@ func runHub() {
 				if client.playerID != "" {
 					world.RemoveEntity(client.playerID)
 				}
+
+				// Remove from active sessions
+				sessionsMu.Lock()
+				if existing, exists := activeSessions[client.username]; exists && existing == client {
+					delete(activeSessions, client.username)
+				}
+				sessionsMu.Unlock()
 
 				delete(clients, client)
 				close(client.send)
@@ -325,6 +355,22 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 		c.username = payload.Username
+
+		// Enforce single session
+		sessionsMu.Lock()
+		if oldClient, ok := activeSessions[c.username]; ok {
+			// Kick old client
+			oldClient.sendError("Logged in from another location")
+			// We don't close immediately here to let the error message go through?
+			// But sendError is async (channel).
+			// Closing the connection will trigger unregister.
+			// We should probably wait a tiny bit or just close.
+			// If we close, readPump returns, unregister is sent.
+			oldClient.conn.Close()
+		}
+		activeSessions[c.username] = c
+		sessionsMu.Unlock()
+
 		// Check for characters
 		user, err := db.GetUser(c.username)
 		hasCharacter := false
@@ -351,13 +397,17 @@ func (c *Client) handleMessage(msg Message) {
 
 	case MsgJoin:
 		if c.username == "" {
+			log.Printf("MsgJoin failed: User not logged in (Client: %s)", c.conn.RemoteAddr())
 			c.sendError("Please login first")
 			return
 		}
 		var payload JoinPayload
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			log.Printf("MsgJoin failed: Invalid payload from %s", c.username)
 			return
 		}
+
+		log.Printf("Player joining: %s (Class: %s)", c.username, payload.Type)
 
 		// Load user from DB to check for existing character
 		user, err := db.GetUser(c.username)
@@ -394,7 +444,17 @@ func (c *Client) handleMessage(msg Message) {
 				},
 			}
 			// Save new character to DB
-			if err := db.CreateCharacter(c.username, char); err != nil {
+			var err error
+			if user.Characters == nil {
+				// If characters array is nil/null in DB, use $set to initialize it
+				err = db.SetFirstCharacter(c.username, char)
+			} else {
+				// Otherwise use $push
+				err = db.CreateCharacter(c.username, char)
+			}
+
+			if err != nil {
+				log.Printf("Failed to create character for %s: %v", c.username, err)
 				c.sendError("Failed to create character")
 				return
 			}
@@ -414,9 +474,11 @@ func (c *Client) handleMessage(msg Message) {
 			Z:              char.Z,
 			Health:         char.Stats.Vitality * 10,
 			MaxHealth:      char.Stats.Vitality * 10,
+			Mana:           char.Stats.Intelligence * 10,
+			MaxMana:        char.Stats.Intelligence * 10,
 			Level:          char.Level,
 			Experience:     char.XP,
-			MaxExperience:  char.Level * 100,
+			MaxExperience:  int(100 * math.Pow(1.2, float64(char.Level-1))),
 			Gold:           char.Gold,
 			State:          "IDLE",
 			Damage:         char.Stats.Strength * 2,
@@ -433,6 +495,7 @@ func (c *Client) handleMessage(msg Message) {
 
 		// Convert DB Inventory to Game Inventory
 		if len(char.Inventory) > 0 {
+			log.Printf("Loading inventory for %s: %d items", c.username, len(char.Inventory))
 			entity.Inventory = make([]game.Item, len(char.Inventory))
 			for i, dbItem := range char.Inventory {
 				// Manual conversion or JSON marshal/unmarshal hack
@@ -474,6 +537,17 @@ func (c *Client) handleMessage(msg Message) {
 		entity.RecalculateStats()
 		world.AddEntity(entity)
 
+		// Send initial inventory
+		if len(entity.Inventory) > 0 {
+			invPayload, _ := json.Marshal(entity.Inventory)
+			msg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.send <- b
+		}
+
 	case MsgMove:
 		if c.playerID == "" {
 			return
@@ -489,7 +563,11 @@ func (c *Client) handleMessage(msg Message) {
 			e.Y = payload.Y
 			e.Z = payload.Z
 			e.Rotation = payload.Rotation
-			e.State = "MOVING" // Simplified
+			if payload.State != "" {
+				e.State = payload.State
+			} else {
+				e.State = "MOVING" // Fallback
+			}
 		}
 
 	case MsgAttack:
@@ -682,6 +760,73 @@ func (c *Client) handleMessage(msg Message) {
 				}
 			}
 		}
+
+	case MsgSell:
+		if c.playerID == "" {
+			return
+		}
+		var payload SellPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player := world.GetEntity(c.playerID)
+		if player == nil {
+			return
+		}
+
+		// Find item by ID
+		itemIndex := -1
+		var itemToSell *game.Item
+		for i := range player.Inventory {
+			if player.Inventory[i].ID == payload.ItemID {
+				itemToSell = &player.Inventory[i]
+				itemIndex = i
+				break
+			}
+		}
+
+		if itemToSell != nil {
+			// Calculate Value (or use stored value)
+			value := itemToSell.Value
+			if value <= 0 {
+				value = 1 // Minimum value
+			}
+
+			player.Gold += value
+
+			// Remove item (Swap with last and truncate)
+			player.Inventory[itemIndex] = player.Inventory[len(player.Inventory)-1]
+			player.Inventory = player.Inventory[:len(player.Inventory)-1]
+
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.send <- b
+
+			// Send State Update (for Gold) - actually MsgState includes Gold?
+			// MsgState includes Gold. But it runs on tick.
+			// We can force a state update or just wait for next tick.
+			// But MsgInventory update is separate.
+			// Client updates gold from MsgState usually?
+			// Let's check client `handleServerMessage` for `state`.
+			// Yes: `if (pData.gold !== undefined) { this.player.gold = pData.gold; ... }`
+			// So next tick will update gold.
+			// But we can also send a specific gold update if we want instant feedback?
+			// MsgInventory only sends the array.
+			// Wait, `MsgInventory` payload is just `[]Item`. It doesn't include gold.
+			// Client `handleServerMessage` for `inventory`:
+			// `this.player.inventory = inventory; this.uiManager.updateInventory(this.player);`
+			// `updateInventory` updates gold display from `player.gold`.
+			// But `player.gold` is NOT updated by `MsgInventory`.
+			// It is updated by `MsgState`.
+			// So there might be a slight delay or desync if we don't send gold.
+			// Let's check `MsgState` frequency. 20Hz. So 50ms delay max. That's fine.
+		}
 	}
 }
 
@@ -793,11 +938,11 @@ func savePlayer(client *Client) {
 	}
 
 	// Run in goroutine to not block
-	go func(u string, c *database.Character) {
-		if err := db.SaveCharacter(u, c); err != nil {
-			log.Printf("Failed to save character for %s: %v", u, err)
-		} else {
-			log.Printf("Saved character for %s", u)
-		}
-	}(client.username, char)
+	// go func(u string, c *database.Character) {
+	if err := db.SaveCharacter(client.username, char); err != nil {
+		log.Printf("Failed to save character for %s: %v", client.username, err)
+	} else {
+		log.Printf("Saved character for %s (Inv: %d, Equip: %d)", client.username, len(char.Inventory), len(char.Equipment))
+	}
+	// }(client.username, char)
 }

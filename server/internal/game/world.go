@@ -45,7 +45,7 @@ type Entity struct {
 	Gold          int        `json:"gold"`
 
 	// Inventory
-	Inventory []Item          `json:"inventory"`
+	Inventory []Item          `json:"-"`
 	Equipment map[string]Item `json:"equipment"`
 
 	// Stats
@@ -84,7 +84,7 @@ type Entity struct {
 	Radius  float64 `json:"-"`
 
 	// Abilities
-	SpiritsActive  bool      `json:"spiritsActive,omitempty"`
+	SpiritsActive  bool      `json:"spiritsActive"`
 	SpiritEndTime  time.Time `json:"-"`
 	LastSpiritTick time.Time `json:"-"`
 	IsCharging     bool      `json:"isCharging,omitempty"`
@@ -98,12 +98,16 @@ type World struct {
 
 	// Elite Spawning
 	EliteSpawnTimer time.Time
+
+	// Global Regen Timer
+	RegenTimer float64
 }
 
 func NewWorld() *World {
 	w := &World{
 		Entities:        make(map[string]*Entity),
 		EliteSpawnTimer: time.Now(),
+		RegenTimer:      0,
 	}
 	w.initWorld()
 	return w
@@ -278,6 +282,28 @@ func (w *World) Update(dt float64) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
+	// Global Regeneration (1 second tick)
+	w.RegenTimer += dt
+	if w.RegenTimer >= 1.0 {
+		w.RegenTimer -= 1.0
+		for _, e := range w.Entities {
+			if e.State != "DEAD" {
+				if e.Health < e.MaxHealth {
+					e.Health += int(e.HpRegen)
+					if e.Health > e.MaxHealth {
+						e.Health = e.MaxHealth
+					}
+				}
+				if e.Mana < e.MaxMana {
+					e.Mana += int(e.ManaRegen)
+					if e.Mana > e.MaxMana {
+						e.Mana = e.MaxMana
+					}
+				}
+			}
+		}
+	}
+
 	// 1. Identify potential targets (Players & Enemies)
 	var players []*Entity
 	var enemies []*Entity
@@ -443,8 +469,13 @@ func (w *World) Update(dt float64) {
 							// TODO: Handle player death (respawn logic is usually client request or server timer)
 						}
 					} else {
-						// Waiting for cooldown, face target?
-						e.State = "IDLE" // Or "COMBAT_IDLE"
+						// Waiting for cooldown
+						// Only reset to IDLE if enough time has passed for the attack animation (e.g. 500ms)
+						if time.Since(e.LastAttackTime) > 500*time.Millisecond {
+							if e.State == "ATTACKING" {
+								e.State = "IDLE"
+							}
+						}
 					}
 				} else {
 					// Chase
@@ -547,6 +578,11 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		return 0, false
 	}
 
+	// NO NPC ATTACKS
+	if target.Type == TypeNPC {
+		return 0, false
+	}
+
 	// Check Cooldown
 	if time.Since(attacker.LastAttackTime) < attacker.AttackCooldown {
 		return 0, false
@@ -560,7 +596,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	attackRange := 2.5 // Default Melee range
 	switch attacker.SubType {
 	case "Wizard", "Rogue":
-		attackRange = 8.5 // Ranged
+		attackRange = 100.0 // Ranged - effectively infinite
 	case "DwarfSalesman":
 		attackRange = 4.0
 	}
@@ -583,58 +619,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	// For now, we just set it, and next movement will override it.
 
 	if target.Health <= 0 {
-		target.Health = 0
-		target.State = "DEAD"
-		target.LastAttackTime = time.Now() // Mark death time for respawn logic
-
-		// Award XP if attacker is player and target is enemy
-		if attacker.Type == TypePlayer && target.Type == TypeEnemy {
-			// XP Formula: Level * 10 + 10
-			xpReward := target.Level*10 + 10
-			if xpReward <= 0 {
-				xpReward = 10
-			}
-			attacker.Experience += xpReward
-
-			// Level Up Logic
-			// MaxXP = Level * 100
-			if attacker.MaxExperience == 0 {
-				attacker.MaxExperience = attacker.Level * 100
-			}
-
-			for attacker.Experience >= attacker.MaxExperience {
-				attacker.Experience -= attacker.MaxExperience
-				attacker.Level++
-				attacker.MaxExperience = attacker.Level * 100
-
-				// Stat Increase
-				attacker.MaxHealth += 20
-				attacker.Health = attacker.MaxHealth
-				attacker.Damage += 5
-			}
-		}
-
-		// Drop Loot
-		if target.Type == TypeEnemy {
-			// Gold
-			gold := rand.Intn(target.Level*10) + 10
-			attacker.Gold += gold
-
-			// Item Drop Chance (50%)
-			if rand.Float64() < 0.5 {
-				item := GenerateLoot(target.Level)
-				fmt.Printf("Loot dropped: %s (Rarity: %s) at %.2f, %.2f\n", item.Name, item.Rarity, target.X, target.Z)
-				lootEntity := &Entity{
-					ID:       fmt.Sprintf("loot-%d", time.Now().UnixNano()),
-					Type:     TypeLoot,
-					X:        target.X,
-					Y:        0.5,
-					Z:        target.Z,
-					LootItem: item,
-				}
-				w.AddEntity(lootEntity)
-			}
-		}
+		w.handleDeath(target, attacker)
 	}
 
 	return damage, true
@@ -782,13 +767,18 @@ func (w *World) handleDeath(target *Entity, attacker *Entity) {
 		xpReward := target.Level*10 + 10
 		attacker.Experience += xpReward
 		if attacker.MaxExperience == 0 {
-			attacker.MaxExperience = attacker.Level * 100
+			attacker.MaxExperience = 100
 		}
 
 		for attacker.Experience >= attacker.MaxExperience {
+			if attacker.Level >= 100 {
+				attacker.Experience = attacker.MaxExperience
+				break
+			}
 			attacker.Experience -= attacker.MaxExperience
 			attacker.Level++
-			attacker.MaxExperience = attacker.Level * 100
+			// Exponential Curve: 100 * (1.2 ^ (Level-1))
+			attacker.MaxExperience = int(100 * math.Pow(1.2, float64(attacker.Level-1)))
 
 			// Update Base Stats
 			attacker.BaseStats.Vitality += 2
@@ -799,14 +789,13 @@ func (w *World) handleDeath(target *Entity, attacker *Entity) {
 
 			attacker.RecalculateStats()
 			attacker.Health = attacker.MaxHealth
-		}
-
-		// Loot
+		} // Loot
 		gold := rand.Intn(target.Level*10) + 10
 		attacker.Gold += gold
 
 		if rand.Float64() < 0.5 {
 			item := GenerateLoot(target.Level)
+			fmt.Printf("Loot dropped: %s (Rarity: %s) at %.2f, %.2f\n", item.Name, item.Rarity, target.X, target.Z)
 			lootEntity := &Entity{
 				ID:       fmt.Sprintf("loot-%d", time.Now().UnixNano()),
 				Type:     TypeLoot,
@@ -887,10 +876,6 @@ func (e *Entity) RecalculateStats() {
 	e.ManaRegen = float64(totalWis) * 0.5
 	e.CastSpeed = 1.0 + (float64(totalWis)/5.0)*0.01
 
-	// Clamp Health/Mana if needed (optional, but good practice)
-	if e.Health > e.MaxHealth {
-		e.Health = e.MaxHealth
-	}
 	if e.Mana > e.MaxMana {
 		e.Mana = e.MaxMana
 	}

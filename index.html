@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eidolon - Isometric ARPG</title>
+    <title>Eidolon Online</title>
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background-color: #000; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('assets/backgrounds/mainbg.png') no-repeat center center fixed; 
+            background-size: cover;
+        }
         #browser-warning {
             display: none;
             background-color: #e6a23c;
@@ -62,7 +69,7 @@
             border: 2px solid #ffd700;
             border-radius: 4px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(139, 0, 0, 0.3);
-            display: flex;
+            display: none; /* Hidden by default */
             align-items: center;
             justify-content: center;
             min-width: 120px;
@@ -324,7 +331,7 @@
 
         #start-screen {
             pointer-events: auto;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.3); /* More transparent to show bg */
             width: 100%;
             height: 100%;
             display: flex;
@@ -346,6 +353,7 @@
             text-transform: uppercase;
             transform: translateX(-100vw);
             animation: slideIn 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
         }
 
         @keyframes slideIn {
@@ -364,11 +372,64 @@
             to { opacity: 1; }
         }
 
-        .class-selection {
+        #login-panel {
+            background: rgba(20, 20, 20, 0.9);
+            border: 2px solid #444;
+            border-radius: 8px;
+            padding: 30px;
+            width: 350px;
             display: flex;
-            gap: 20px;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
             opacity: 0;
             animation: fadeIn 1s ease-out 1.5s forwards;
+        }
+
+        .auth-input {
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            background: #111;
+            color: #fff;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        
+        .auth-input:focus {
+            border-color: #ffd700;
+            outline: none;
+        }
+
+        .auth-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        #btn-login {
+            background: #4CAF50;
+            color: white;
+        }
+        #btn-login:hover { background: #45a049; }
+
+        #btn-register {
+            background: #2196F3;
+            color: white;
+        }
+        #btn-register:hover { background: #1e88e5; }
+
+        .class-selection {
+            display: none; /* Hidden initially */
+            gap: 20px;
+            margin-top: 20px;
         }
 
         .menu-btn {
@@ -584,7 +645,7 @@
         #chat-box {
             display: none;
             position: fixed;
-            bottom: 20px;
+            bottom: 80px; /* Moved up above HUD */
             left: 20px;
             width: 300px;
             height: 200px;
@@ -592,6 +653,7 @@
             border: 1px solid #444;
             z-index: 100;
             flex-direction: column;
+            pointer-events: auto;
         }
 
         #chat-messages {
@@ -805,7 +867,7 @@
             </div>
         </div>
 
-        <div id="xp-bar-container">
+        <div id="xp-bar-container" style="display: none;">
             <div id="xp-text">LVL 1</div>
             <div id="xp-bar-fill"></div>
         </div>
@@ -840,6 +902,12 @@
             </div>
         </div>
 
+        <!-- Chat Box -->
+        <div id="chat-box">
+            <div id="chat-messages"></div>
+            <input type="text" id="chat-input" placeholder="Type message...">
+        </div>
+
         <div id="world-map">
             <div id="world-map-header">WORLD MAP</div>
             <canvas id="world-map-canvas"></canvas>
@@ -854,37 +922,32 @@
         </div>
 
         <div id="start-screen">
-            <h1 id="game-title">EIDOLON</h1>
-            <div class="subtitle">Select your Archetype</div>
+            <h1 id="game-title">EIDOLON ONLINE</h1>
             
-            <div class="mode-selection" style="margin-bottom: 20px; text-align: center;">
-                <label style="color: #ffd700; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                    <input type="checkbox" id="multiplayer-toggle" style="transform: scale(1.5);">
-                    Multiplayer Mode
-                </label>
-                <div id="server-input-container" style="display: none; margin-top: 10px;">
-                    <input type="text" id="server-address" value="wss://eserver.mendola.tech:8080/ws" placeholder="wss://server-address:8080/ws" style="padding: 5px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; width: 250px;">
-                    
-                    <div id="auth-container" style="margin-top: 10px; border-top: 1px solid #444; padding-top: 10px;">
-                        <div style="margin-bottom: 5px;">
-                            <input type="text" id="auth-username" placeholder="Username" style="padding: 5px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; width: 120px;">
-                            <input type="email" id="auth-email" placeholder="Email" style="padding: 5px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; width: 120px;">
-                            <input type="password" id="auth-password" placeholder="Password" style="padding: 5px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; width: 120px;">
-                        </div>
-                        <div>
-                            <button id="btn-login" style="background: #4CAF50; color: white; border: none; padding: 5px 10px; cursor: pointer;">Login</button>
-                            <button id="btn-register" style="background: #2196F3; color: white; border: none; padding: 5px 10px; cursor: pointer;">Register</button>
-                        </div>
-                        <div id="auth-status" style="color: #ffeb3b; font-size: 12px; margin-top: 5px;"></div>
-                    </div>
+            <!-- Hidden inputs for game logic -->
+            <input type="hidden" id="server-address" value="wss://eserver.mendola.tech:8080/ws">
+
+            <div id="login-panel">
+                <div style="text-align: center; font-size: 1.2rem; color: #ffd700; margin-bottom: 10px; font-weight: bold;">LOGIN / REGISTER</div>
+                
+                <input type="text" id="auth-username" class="auth-input" placeholder="Username">
+                <input type="email" id="auth-email" class="auth-input" placeholder="Email (Optional for Login)">
+                <input type="password" id="auth-password" class="auth-input" placeholder="Password">
+                
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button id="btn-login" class="auth-btn" style="flex: 1;">Login</button>
+                    <button id="btn-register" class="auth-btn" style="flex: 1;">Register</button>
                 </div>
+                
+                <div id="auth-status" style="color: #ffeb3b; font-size: 14px; text-align: center; min-height: 20px;"></div>
             </div>
 
             <div id="play-container" style="display: none; text-align: center; margin-top: 20px;">
-                <button id="btn-play-character" class="menu-btn" style="font-size: 24px; padding: 10px 40px; background: #4CAF50; color: white; border: 2px solid #45a049;">PLAY</button>
+                <button id="btn-play-character" class="menu-btn" style="font-size: 24px; padding: 15px 50px; background: #4CAF50; color: white; border: 2px solid #45a049; box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);">ENTER WORLD</button>
             </div>
 
             <div id="class-selection-container" class="class-selection">
+                <div style="width: 100%; text-align: center; color: #aaa; margin-bottom: 10px;">Create New Character</div>
                 <button class="class-btn" data-type="Fighter">Fighter</button>
                 <button class="class-btn" data-type="Rogue">Rogue</button>
                 <button class="class-btn" data-type="Wizard">Wizard</button>
@@ -926,6 +989,27 @@
         <div id="patch-notes-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 600px; z-index: 101; flex-direction: column;">
             <div class="window-header">PATCH NOTES</div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.10 (The Awakening)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Eidolon Online:</strong> The world is no longer lonely. <strong>Full Multiplayer Support</strong> is now live! See other players, fight together, and trade in real-time.</li>
+                        <li><strong>Social Features:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Global Chat:</strong> Communicate with fellow adventurers using the new chat system.</li>
+                                <li><strong>Shared World:</strong> Single-player mode has been removed. Everyone now shares the same persistent world.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Polish & Fixes:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Death Animations:</strong> Fallen foes now properly succumb to the void. No more "sleeping" skeletons!</li>
+                                <li><strong>Cleric Fixes:</strong> Guardian Spirits now properly dissipate when their duration expires.</li>
+                                <li><strong>Visual Cooldowns:</strong> Ability icons now show real-time cooldown feedback.</li>
+                                <li><strong>NPC Protection:</strong> The Dwarf Salesman is now <strong>Invulnerable</strong>. Clicking him safely moves you to trade range.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
                 <div style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.09</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
@@ -1135,6 +1219,12 @@
             <div style="padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column;">
                 <p style="color: #aaa; font-size: 14px; margin-bottom: 15px;">Right-click items in your inventory to sell them.</p>
                 
+                <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
+                    <button id="btn-sell-common" class="menu-btn" style="background: #333; color: #fff; border-color: #fff; font-size: 12px; padding: 5px 10px;">Sell All Common</button>
+                    <button id="btn-sell-uncommon" class="menu-btn" style="background: #1a331a; color: #1eff00; border-color: #1eff00; font-size: 12px; padding: 5px 10px;">Sell All Uncommon</button>
+                    <button id="btn-sell-rare" class="menu-btn" style="background: #1a1a33; color: #0070dd; border-color: #0070dd; font-size: 12px; padding: 5px 10px;">Sell All Rare</button>
+                </div>
+
                 <h3 style="color: #ffd700; margin-bottom: 10px; border-bottom: 1px solid #444; padding-bottom: 5px;">MYSTERY BOXES (500g)</h3>
                 
                 <div id="shop-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px;">

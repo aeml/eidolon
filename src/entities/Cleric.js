@@ -28,8 +28,11 @@ export class Cleric extends Actor {
         this.spiritsActive = true;
         this.spiritDuration = 8.0; // Lasts 8 seconds
         
-        // Create visual spirits
-        if (this.mesh) {
+        this.createSpirits();
+    }
+
+    createSpirits() {
+        if (this.mesh && this.spirits.length === 0) {
             for (let i = 0; i < 3; i++) {
                 const geo = new THREE.SphereGeometry(0.3, 8, 8);
                 const mat = new THREE.MeshStandardMaterial({ 
@@ -41,6 +44,17 @@ export class Cleric extends Actor {
                 this.mesh.add(spirit); // Attach to player
                 this.spirits.push({ mesh: spirit, angle: (i / 3) * Math.PI * 2 });
             }
+        } else if (!this.mesh) {
+            // Retry later if mesh not ready
+            setTimeout(() => {
+                if (this.spiritsActive) this.createSpirits();
+            }, 100);
+        }
+    }
+
+    onMeshReady(mesh) {
+        if (this.spiritsActive) {
+            this.createSpirits();
         }
     }
 
@@ -56,7 +70,10 @@ export class Cleric extends Actor {
         super.update(dt, collisionManager);
 
         if (this.spiritsActive) {
-            this.spiritDuration -= dt;
+            // Only decrement duration in singleplayer
+            if (!this.isMultiplayer && !this.isRemote) {
+                this.spiritDuration -= dt;
+            }
             
             // Rotate spirits
             const radius = 3.0; // Increased visual radius to match larger damage area
@@ -77,7 +94,7 @@ export class Cleric extends Actor {
             // But since we don't have enemies here, let's just handle visuals here and damage in GameEngine?
             // Or we can emit an event?
             
-            if (this.spiritDuration <= 0) {
+            if (!this.isMultiplayer && !this.isRemote && this.spiritDuration <= 0) {
                 this.spiritsActive = false;
                 this.spirits.forEach(s => {
                     if (s.mesh.parent) s.mesh.parent.remove(s.mesh);
