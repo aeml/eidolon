@@ -549,6 +549,36 @@ export class GameEngine {
                             this.player.stats.maxHp = pData.maxHealth;
                             this.player.stats.mana = pData.mana;
                             this.player.stats.maxMana = pData.maxMana;
+
+                            // Sync Attributes from Server
+                            if (pData.stats) {
+                                this.player.stats.strength = pData.stats.strength;
+                                this.player.stats.dexterity = pData.stats.dexterity;
+                                this.player.stats.intelligence = pData.stats.intelligence;
+                                this.player.stats.wisdom = pData.stats.wisdom;
+                                this.player.stats.vitality = pData.stats.vitality;
+                            }
+
+                            // Sync Derived Stats
+                            this.player.stats.damage = pData.damage;
+                            this.player.stats.defense = pData.defense;
+                        }
+
+                        // Sync Equipment
+                        if (pData.equipment) {
+                            this.player.equipment = pData.equipment;
+                            // Hydrate Rarity for UI
+                            for (const key in this.player.equipment) {
+                                const item = this.player.equipment[key];
+                                if (item && typeof item.rarity === 'string') {
+                                    for (const rKey in RARITY) {
+                                        if (RARITY[rKey].name === item.rarity) {
+                                            item.rarity = RARITY[rKey];
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         this.uiManager.updateXP(this.player);

@@ -114,6 +114,51 @@ export class UIManager {
             this.statTooltip.style.display = 'none';
         });
 
+        // Inventory Tooltips
+        this.inventoryGrid.addEventListener('mousemove', (e) => {
+            if (e.target.classList.contains('inv-slot') && e.target._item) {
+                this.showItemTooltip(e.target._item, e.clientX, e.clientY, e);
+            } else {
+                this.hideTooltips();
+            }
+        });
+        
+        this.inventoryGrid.addEventListener('mouseleave', () => {
+            this.hideTooltips();
+        });
+
+        // Equipment Tooltips
+        const equipContainer = this.characterSheet.querySelector('.equipment-slots');
+        if (equipContainer) {
+            equipContainer.addEventListener('mousemove', (e) => {
+                if (e.target.classList.contains('equip-slot') && e.target._item) {
+                    this.showItemTooltip(e.target._item, e.clientX, e.clientY, e);
+                } else {
+                    this.hideTooltips();
+                }
+            });
+            equipContainer.addEventListener('mouseleave', () => this.hideTooltips());
+        }
+
+        // Compare Mode Toggle
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Shift') {
+                this.compareMode = true;
+                if (this.hoveredItem) {
+                    this.showItemTooltip(this.hoveredItem, this.lastMouseX, this.lastMouseY);
+                }
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'Shift') {
+                this.compareMode = false;
+                if (this.hoveredItem) {
+                    this.showItemTooltip(this.hoveredItem, this.lastMouseX, this.lastMouseY);
+                }
+            }
+        });
+
         // Chat UI
         this.chatBox = document.getElementById('chat-box');
         this.chatMessages = document.getElementById('chat-messages');
@@ -791,6 +836,12 @@ export class UIManager {
         } else {
             console.warn("onBuyGamble callback not defined");
         }
+    }
+
+    hideTooltips() {
+        this.statTooltip.style.display = 'none';
+        this.compareTooltip.style.display = 'none';
+        this.hoveredItem = null;
     }
 
 }
