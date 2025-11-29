@@ -59,8 +59,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const loadingText = document.getElementById('loading-text');
     const buttons = document.querySelectorAll('.class-btn');
     
-    const multiplayerToggle = document.getElementById('multiplayer-toggle');
-    const serverInputContainer = document.getElementById('server-input-container');
+    // const multiplayerToggle = document.getElementById('multiplayer-toggle'); // Removed
+    // const serverInputContainer = document.getElementById('server-input-container'); // Removed
     const serverAddressInput = document.getElementById('server-address');
     
     // Auth elements
@@ -70,6 +70,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const btnLogin = document.getElementById('btn-login');
     const btnRegister = document.getElementById('btn-register');
     const authStatus = document.getElementById('auth-status');
+    const loginPanel = document.getElementById('login-panel');
     
     let authSocket = null;
     let isAuthenticated = false;
@@ -78,23 +79,6 @@ window.addEventListener('DOMContentLoaded', () => {
     const playContainer = document.getElementById('play-container');
     const btnPlayCharacter = document.getElementById('btn-play-character');
     let savedCharacterType = null;
-
-    if (multiplayerToggle) {
-        multiplayerToggle.addEventListener('change', (e) => {
-            const isMulti = e.target.checked;
-            serverInputContainer.style.display = isMulti ? 'block' : 'none';
-            
-            if (isMulti) {
-                // Hide class selection until logged in
-                classSelectionContainer.style.display = 'none';
-                playContainer.style.display = 'none';
-            } else {
-                // Show class selection for single player
-                classSelectionContainer.style.display = 'flex'; // Assuming flex
-                playContainer.style.display = 'none';
-            }
-        });
-    }
 
     // Simple Auth Logic
     const connectAuth = () => {
@@ -118,18 +102,14 @@ window.addEventListener('DOMContentLoaded', () => {
                 authStatus.textContent = data.message || "Logged in!";
                 authStatus.style.color = '#4CAF50';
                 
-                // Disable auth inputs
-                authUsernameInput.disabled = true;
-                authEmailInput.disabled = true;
-                authPasswordInput.disabled = true;
-                btnLogin.disabled = true;
-                btnRegister.disabled = true;
+                // Hide login panel
+                if (loginPanel) loginPanel.style.display = 'none';
 
                 if (data.hasCharacter) {
                     savedCharacterType = data.characterType;
                     playContainer.style.display = 'block';
                     classSelectionContainer.style.display = 'none';
-                    btnPlayCharacter.textContent = `Play as ${savedCharacterType}`;
+                    btnPlayCharacter.textContent = `ENTER WORLD (${savedCharacterType})`;
                 } else {
                     playContainer.style.display = 'none';
                     classSelectionContainer.style.display = 'flex';
@@ -194,12 +174,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const startGame = async (type) => {
         try {
-            const isMultiplayer = multiplayerToggle ? multiplayerToggle.checked : false;
+            const isMultiplayer = true; // Always multiplayer
             const serverAddress = serverAddressInput ? serverAddressInput.value : '';
             const username = authUsernameInput ? authUsernameInput.value : '';
 
-            if (isMultiplayer && !isAuthenticated) {
-                alert("Please login first for multiplayer!");
+            if (!isAuthenticated) {
+                alert("Please login first!");
                 return;
             }
 

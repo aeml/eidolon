@@ -75,33 +75,37 @@ export class Entity {
 
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
-        const fontSize = 24;
+        const fontSize = 32; // Higher resolution for texture
         context.font = `bold ${fontSize}px Arial`;
         const textWidth = context.measureText(this.name).width;
         
         canvas.width = textWidth + 20;
-        canvas.height = fontSize + 10;
+        canvas.height = fontSize + 20;
         
-        // Background (optional)
-        // context.fillStyle = "rgba(0, 0, 0, 0.5)";
-        // context.fillRect(0, 0, canvas.width, canvas.height);
-
         context.font = `bold ${fontSize}px Arial`;
         context.fillStyle = "white";
         context.textAlign = "center";
         context.textBaseline = "middle";
         context.strokeStyle = 'black';
-        context.lineWidth = 3;
+        context.lineWidth = 4;
         context.strokeText(this.name, canvas.width / 2, canvas.height / 2);
         context.fillText(this.name, canvas.width / 2, canvas.height / 2);
 
         const texture = new THREE.CanvasTexture(canvas);
+        texture.minFilter = THREE.LinearFilter;
+        
         const material = new THREE.SpriteMaterial({ map: texture, depthTest: false, depthWrite: false });
         const sprite = new THREE.Sprite(material);
         
         sprite.name = "NameTag";
-        sprite.position.set(0, 2.5, 0); // Adjust height based on entity size
-        sprite.scale.set(2, 1, 1); // Adjust scale
+        sprite.position.set(0, 2.5, 0); 
+        
+        // Scale based on aspect ratio to prevent distortion
+        // User wanted "smaller", so we reduce the world-space height
+        const scaleHeight = 0.4; 
+        const scaleWidth = (canvas.width / canvas.height) * scaleHeight;
+        
+        sprite.scale.set(scaleWidth, scaleHeight, 1); 
         
         this.mesh.add(sprite);
     }

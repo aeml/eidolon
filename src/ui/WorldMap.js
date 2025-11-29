@@ -121,41 +121,44 @@ export class WorldMap {
         ctx.textAlign = 'center';
         ctx.fillText("TOWN", townPos.x + 50 * this.scale, townPos.y + 50 * this.scale);
 
-        // 2.5 Draw Remote Players
-        if (this.gameEngine.remotePlayers) {
-            this.gameEngine.remotePlayers.forEach(rp => {
-                const pos = worldToScreen(rp.position.x, rp.position.z);
-                ctx.fillStyle = '#00ffff'; // Cyan for other players
-                ctx.beginPath();
-                ctx.arc(pos.x, pos.y, 4, 0, Math.PI * 2);
-                ctx.fill();
-            });
-        }
-
-        // 3. Draw Player
-        ctx.fillStyle = '#0f0';
-        ctx.beginPath();
-        ctx.arc(cx, cy, 5, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Player Direction
-        // Assuming isometric rotation logic or just velocity
-        // Let's just draw a cone or arrow
-        
-        // 4. Draw Enemies (only if in visited chunks? or only if active?)
-        // Let's draw active enemies for now
+        // 2.5 Draw Entities (Players, Enemies, NPCs)
         if (this.gameEngine.chunkManager) {
             const activeEntities = this.gameEngine.chunkManager.getActiveEntities();
             activeEntities.forEach(entity => {
-                if (entity === player) return;
-                if (entity.id.startsWith('skeleton')) {
-                    const pos = worldToScreen(entity.position.x, entity.position.z);
-                    ctx.fillStyle = '#f00';
+                if (entity === player) return; // Draw local player last
+
+                const pos = worldToScreen(entity.position.x, entity.position.z);
+                const type = entity.constructor.name;
+                let color = null;
+                let size = 3;
+
+                // Determine Color
+                if (['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(type)) {
+                    color = '#0000ff'; // Blue for Players
+                    size = 4;
+                } else if (['Skeleton', 'Imp', 'DemonOrc', 'Construct'].includes(type)) {
+                    color = '#ff0000'; // Red for Enemies
+                } else if (type === 'DwarfSalesman') {
+                    color = '#00ff00'; // Green for NPC
+                }
+
+                if (color) {
+                    ctx.fillStyle = color;
                     ctx.beginPath();
-                    ctx.arc(pos.x, pos.y, 3, 0, Math.PI * 2);
+                    ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
                     ctx.fill();
                 }
             });
         }
+
+        // 3. Draw Player (Local)
+        ctx.fillStyle = '#0000ff'; // Blue
+        ctx.beginPath();
+        ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+        ctx.fill();
+        // Add a white ring to distinguish local player
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
     }
 }

@@ -3,7 +3,7 @@ import { RenderSystem } from './RenderSystem.js';
 import { InputManager } from './InputManager.js';
 import { ChunkManager } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
-import { ItemGenerator, RARITY } from './ItemSystem.js';
+import { RARITY } from './ItemSystem.js';
 import { UIManager } from '../ui/UIManager.js';
 import { WorldGenerator } from '../world/WorldGenerator.js';
 import { Minimap } from '../ui/Minimap.js';
@@ -22,9 +22,9 @@ import { Actor } from '../entities/Actor.js';
 import { Imp } from '../entities/Imp.js';
 
 export class GameEngine {
-    constructor(playerType, isMobile = false, isMultiplayer = false, serverAddress = '', username = '', socket = null) {
+    constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null) {
         this.isMobile = isMobile;
-        this.isMultiplayer = isMultiplayer;
+        this.isMultiplayer = true;
         this.serverAddress = serverAddress;
         this.username = username;
         this.socket = socket;
@@ -40,16 +40,38 @@ export class GameEngine {
         this.collisionManager = new CollisionManager();
         this.uiManager = new UIManager();
         this.uiManager.onBuyGamble = (slot) => {
-            if (this.isMultiplayer) {
-                if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                    const msg = {
-                        type: 'buy_gamble',
-                        payload: { slot }
-                    };
-                    this.socket.send(JSON.stringify(msg));
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'buy_gamble',
+                    payload: { slot }
+                };
+                this.socket.send(JSON.stringify(msg));
+            }
+        };
+        this.uiManager.onSellItem = (index) => {
+            const item = this.player.inventory[index];
+            if (!item) return;
+
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'sell',
+                    payload: { 
+                        itemId: item.id,
+                        slotIndex: index // Optional, but might help debugging
+                    }
+                };
+                this.socket.send(JSON.stringify(msg));
+            }
+        };
+        this.uiManager.onSellAll = (rarityName) => {
+            if (!this.player) return;
+            
+            // Iterate backwards to avoid potential index issues
+            for (let i = this.player.inventory.length - 1; i >= 0; i--) {
+                const item = this.player.inventory[i];
+                if (item && item.rarity && item.rarity.name === rarityName) {
+                    this.uiManager.onSellItem(i);
                 }
-            } else {
-                this.handleLocalGamble(slot);
             }
         };
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
@@ -111,37 +133,38 @@ export class GameEngine {
             this.player.setName(this.username);
         }
 
+        // Disable local regen in multiplayer
+        this.player.isMultiplayer = true;
+
         this.addEntity(this.player);
 
         // Hook equipItem for multiplayer
-        if (this.isMultiplayer) {
-            const originalEquip = this.player.equipItem.bind(this.player);
-            this.player.equipItem = (item) => {
-                const success = originalEquip(item);
-                if (success) {
-                    this.sendEquipMessage(item);
-                }
-                return success;
-            };
-        }
+        // Completely override equipItem to only send message
+        this.player.equipItem = (item) => {
+            this.sendEquipMessage(item);
+            return true; // Assume success, server will correct if not
+        };
         
-        // Connect to server if multiplayer
-        if (this.isMultiplayer) {
-            this.uiManager.toggleChat(true);
-            this.uiManager.onChatSend = (msg) => {
+        // Connect to server
+        this.uiManager.toggleChat(true);
+        this.uiManager.onChatSend = (msg) => {
+                // Check socket state directly or try to reconnect?
+                // For now, just check state.
                 if (this.socket && this.socket.readyState === WebSocket.OPEN) {
                     const chatMsg = {
                         type: "chat",
-                        payload: JSON.stringify({
+                        payload: {
                             message: msg,
                             sender: this.username
-                        })
+                        }
                     };
                     this.socket.send(JSON.stringify(chatMsg));
+                } else {
+                    console.warn("Chat send failed: Socket not open");
+                    this.uiManager.addChatMessage("System", "Not connected to server.");
                 }
             };
             this.connectToServer();
-        }
         
         if (onProgress) onProgress(30, "Initializing UI...");
         await new Promise(r => setTimeout(r, 50));
@@ -150,12 +173,13 @@ export class GameEngine {
 
         this.uiManager.onStatUpgrade = (stat) => {
             if (this.player) {
-                const success = this.player.increaseStat(stat);
-                if (success) {
-                    console.log(`Upgraded ${stat}. New value: ${this.player.stats[stat]}`);
-                    this.uiManager.updateCharacterSheet(this.player);
-                } else {
-                    console.log(`Failed to upgrade ${stat}. Points: ${this.player.statPoints}`);
+                // Send upgrade request to server
+                if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                    const msg = {
+                        type: 'upgrade_stat',
+                        payload: { stat }
+                    };
+                    this.socket.send(JSON.stringify(msg));
                 }
             }
         };
@@ -177,20 +201,11 @@ export class GameEngine {
         console.log("GameEngine: Forcing initial chunk update");
         this.chunkManager.update(this.player, 0, this.collisionManager);
 
-        if (!this.isMultiplayer) {
-            this.worldGenerator.createTown(0, 0, 100);
-            this.spawnNPCs();
-        } else {
-            // In multiplayer, we still need to render the static town
-            this.worldGenerator.createTown(0, 0, 100);
-        }
+        // In multiplayer, we still need to render the static town
+        this.worldGenerator.createTown(0, 0, 100);
 
         if (onProgress) onProgress(70, "Spawning Enemies...");
         await new Promise(r => setTimeout(r, 50));
-
-        if (!this.isMultiplayer) {
-            this.spawnEnemies();
-        }
 
         if (onProgress) onProgress(90, "Setting up Controls...");
         await new Promise(r => setTimeout(r, 50));
@@ -272,56 +287,46 @@ export class GameEngine {
                     }
                 }
 
-                if (this.isMultiplayer) {
-                    const abilityMsg = {
-                        type: "ability",
-                        payload: {
-                            targetX: targetPos.x,
-                            targetZ: targetPos.z,
-                            targetId: targetId
-                        }
-                    };
-                    this.socket.send(JSON.stringify(abilityMsg));
-                    this.player.playAnimation('Attack', false);
-                } else {
-                    this.player.useAbility(targetPos, this);
-                    this.uiManager.updateAbilityIcon(this.player);
-                }
+                const abilityMsg = {
+                    type: "ability",
+                    payload: {
+                        targetX: targetPos.x,
+                        targetZ: targetPos.z,
+                        targetId: targetId
+                    }
+                };
+                this.socket.send(JSON.stringify(abilityMsg));
+                this.player.playAnimation('Attack', false);
+                this.player.setAttackingState();
+                // Optimistic Cooldown
+                this.player.abilityCooldown = this.player.abilityMaxCooldown * (1 - (this.player.stats.cooldownReduction || 0));
                 return;
             }
 
             if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
-                // Check if we should cast immediately or move closer first
-                // Wizard, Rogue, Fighter cast immediately (Ranged or Charge)
-                // Cleric (and others) move closer first
-                if (this.player instanceof Wizard || this.player instanceof Rogue || this.player instanceof Fighter) {
-                    if (this.isMultiplayer) {
-                        // Multiplayer Ability Logic (Targeted)
-                        const abilityMsg = {
-                            type: "ability",
-                            payload: {
-                                targetX: this.hoveredEntity.position.x,
-                                targetZ: this.hoveredEntity.position.z,
-                                targetId: this.hoveredEntity.id
-                            }
-                        };
-                        this.socket.send(JSON.stringify(abilityMsg));
-                        this.player.playAnimation('Attack', false);
-                    } else {
-                        // Singleplayer Logic
-                        this.pendingAbilityTarget = null;
-                        this.pendingInteraction = null;
-                        this.player.useAbility(this.hoveredEntity.position, this);
-                        this.uiManager.updateAbilityIcon(this.player);
-                        
-                        this.player.targetPosition = null;
-                        if (this.player.state !== 'ATTACKING') {
-                            this.player.state = 'IDLE';
-                            this.player.playAnimation('Idle');
+                if (this.hoveredEntity instanceof DwarfSalesman) return;
+
+                const dist = this.player.position.distanceTo(this.hoveredEntity.position);
+                const abilityRange = 100.0; // Effectively infinite range as requested
+
+                // Check if we are in range
+                if (dist <= abilityRange) {
+                    // Multiplayer Ability Logic (Targeted)
+                    const abilityMsg = {
+                        type: "ability",
+                        payload: {
+                            targetX: this.hoveredEntity.position.x,
+                            targetZ: this.hoveredEntity.position.z,
+                            targetId: this.hoveredEntity.id
                         }
-                    }
+                    };
+                    this.socket.send(JSON.stringify(abilityMsg));
+                    this.player.playAnimation('Attack', false);
+                    this.player.setAttackingState();
+                    // Optimistic Cooldown
+                    this.player.abilityCooldown = this.player.abilityMaxCooldown * (1 - (this.player.stats.cooldownReduction || 0));
                 } else {
-                    // Move closer first (Cleric, etc.)
+                    // Move closer first
                     this.pendingAbilityTarget = this.hoveredEntity;
                     this.pendingInteraction = null;
                     this.player.move(this.hoveredEntity.position);
@@ -330,26 +335,22 @@ export class GameEngine {
                 // Ground click (Movement or Skillshot)
                 const targetPoint = this.inputManager.getGroundIntersection();
                 if (targetPoint) {
-                    if (this.isMultiplayer) {
-                        // Multiplayer Ability Logic (Skillshot)
-                        const abilityMsg = {
-                            type: "ability",
-                            payload: {
-                                targetX: targetPoint.x,
-                                targetZ: targetPoint.z,
-                                targetId: ""
-                            }
-                        };
-                        this.socket.send(JSON.stringify(abilityMsg));
-                        
-                        // Client-side prediction
-                        this.player.playAnimation('Attack', false);
-                    } else {
-                        this.pendingAbilityTarget = null;
-                        this.pendingInteraction = null;
-                        this.player.useAbility(targetPoint, this);
-                        this.uiManager.updateAbilityIcon(this.player);
-                    }
+                    // Multiplayer Ability Logic (Skillshot)
+                    const abilityMsg = {
+                        type: "ability",
+                        payload: {
+                            targetX: targetPoint.x,
+                            targetZ: targetPoint.z,
+                            targetId: ""
+                        }
+                    };
+                    this.socket.send(JSON.stringify(abilityMsg));
+                    
+                    // Client-side prediction
+                    this.player.playAnimation('Attack', false);
+                    this.player.setAttackingState();
+                    // Optimistic Cooldown
+                    this.player.abilityCooldown = this.player.abilityMaxCooldown * (1 - (this.player.stats.cooldownReduction || 0));
                 }
             }
         });
@@ -395,16 +396,7 @@ export class GameEngine {
             });
 
             if (nearestLoot) {
-                if (this.player.addToInventory(nearestLoot.item)) {
-                    console.log(`Picked up ${nearestLoot.item.name}`);
-                    this.uiManager.updateInventory(this.player);
-                    nearestLoot.isActive = false;
-                    this.renderSystem.remove(nearestLoot.mesh);
-                    const key = this.chunkManager.getChunkKey(nearestLoot.position.x, nearestLoot.position.z);
-                    if (this.chunkManager.chunks.has(key)) {
-                        this.chunkManager.chunks.get(key).delete(nearestLoot);
-                    }
-                }
+                this.pickupLoot(nearestLoot.id);
             } else if (nearestNPC) {
                 this.uiManager.toggleShop();
             }
@@ -434,7 +426,7 @@ export class GameEngine {
         });
 
         this.inputManager.subscribe('onChat', () => {
-            if (this.isMultiplayer) {
+            if (this.isMultiplayer && this.uiManager.chatInput) {
                 // Focus chat input if not already focused
                 if (document.activeElement !== this.uiManager.chatInput) {
                     this.uiManager.chatInput.focus();
@@ -463,8 +455,6 @@ export class GameEngine {
     }
 
     connectToServer() {
-        if (!this.isMultiplayer) return;
-
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             console.log("Reusing existing auth socket connection...");
             this.setupSocketListeners();
@@ -479,6 +469,13 @@ export class GameEngine {
             return;
         }
 
+        // If we are here, it means we don't have an open authenticated socket.
+        // Since we need to be logged in to join, we cannot just open a new connection.
+        console.error("Connection lost or not authenticated. Please refresh and login.");
+        alert("Connection lost! Please refresh the page and login again.");
+        
+        /* 
+        // Old logic - removed because it bypasses auth
         console.log(`Connecting to server at ${this.serverAddress}...`);
         this.socket = new WebSocket(this.serverAddress);
 
@@ -494,6 +491,7 @@ export class GameEngine {
             };
             this.socket.send(JSON.stringify(joinMsg));
         };
+        */
     }
 
     setupSocketListeners() {
@@ -508,6 +506,10 @@ export class GameEngine {
 
         this.socket.onclose = () => {
             console.log("Disconnected from server.");
+            if (!this.isExpectedDisconnect) {
+                alert("Disconnected from server. Returning to menu.");
+                window.location.reload();
+            }
         };
         
         this.socket.onerror = (error) => {
@@ -517,10 +519,19 @@ export class GameEngine {
 
     handleServerMessage(msg) {
         if (msg.type === 'chat') {
-            const chatData = JSON.parse(msg.payload);
+            const chatData = msg.payload;
             this.uiManager.addChatMessage(chatData.sender, chatData.message);
+        } else if (msg.type === 'time') {
+            const timeData = msg.payload;
+            // Calculate time since server start or just display server time
+            // For now, let's just display the time component
+            const date = new Date(timeData.time * 1000);
+            const timeString = date.toLocaleTimeString();
+            if (this.uiManager.gameTimer) {
+                this.uiManager.gameTimer.textContent = timeString;
+            }
         } else if (msg.type === 'damage') {
-            const dmgData = JSON.parse(msg.payload);
+            const dmgData = msg.payload;
             // Show damage number
             // TODO: Add floating text system
             console.log(`Damage: ${dmgData.amount} to ${dmgData.targetId} from ${dmgData.sourceId}`);
@@ -528,6 +539,13 @@ export class GameEngine {
             // If target is local player, flash screen or shake camera?
             if (this.player && dmgData.targetId === this.player.id) {
                 // this.renderSystem.shakeCamera(0.2);
+            }
+        } else if (msg.type === 'error') {
+            console.error("Server Error:", msg.payload);
+            alert(`Server Error: ${msg.payload}`);
+            if (typeof msg.payload === 'string' && msg.payload.includes("Logged in from another location")) {
+                this.isExpectedDisconnect = true;
+                window.location.reload();
             }
         } else if (msg.type === 'state') {
             const state = msg.payload;
@@ -562,6 +580,9 @@ export class GameEngine {
                             // Sync Derived Stats
                             this.player.stats.damage = pData.damage;
                             this.player.stats.defense = pData.defense;
+                            if (pData.speed) this.player.stats.speed = pData.speed;
+                            if (pData.attackSpeed) this.player.stats.attackSpeed = pData.attackSpeed;
+                            if (pData.cooldownReduction !== undefined) this.player.stats.cooldownReduction = pData.cooldownReduction;
                         }
 
                         // Sync Equipment
@@ -577,6 +598,18 @@ export class GameEngine {
                                             break;
                                         }
                                     }
+                                }
+                            }
+                        }
+
+                        // Sync Spirits (Cleric)
+                        if (this.player instanceof Cleric) {
+                            if (pData.spiritsActive !== undefined) {
+                                if (pData.spiritsActive && !this.player.spiritsActive) {
+                                    this.player.spiritsActive = true;
+                                    this.player.createSpirits();
+                                } else if (!pData.spiritsActive && this.player.spiritsActive) {
+                                    this.player.cancelAbilities();
                                 }
                             }
                         }
@@ -605,7 +638,7 @@ export class GameEngine {
                         }
 
                         // Create LootDrop
-                        remoteEntity = new LootDrop(pData.lootItem, pData.x, pData.z);
+                        remoteEntity = new LootDrop(pData.lootItem, pData.x, pData.z, pData.id);
                         remoteEntity.id = pData.id;
                         // Add click handler for pickup
                         remoteEntity.onClick = () => {
@@ -619,8 +652,7 @@ export class GameEngine {
                         const owner = this.remotePlayers.get(pData.ownerId) || (pData.ownerId === this.player.id ? this.player : null);
                         const dummyOwner = { stats: { intelligence: 10, dexterity: 10 } };
                         
-                        remoteEntity = new Projectile(owner || dummyOwner, pData.subType, start, target);
-                        remoteEntity.id = pData.id;
+                        remoteEntity = new Projectile(pData.id, owner || dummyOwner, pData.subType, start, target);
                     } else {
                         remoteEntity = this.createRemotePlayer(pData.type || 'Enemy', pData.id, pData.subType); 
                     }
@@ -641,6 +673,11 @@ export class GameEngine {
                     } else {
                         remoteEntity.position.set(pData.x, pData.y, pData.z);
                     }
+
+                    // Sync Name
+                    if (pData.name && remoteEntity.name !== pData.name) {
+                        remoteEntity.setName(pData.name);
+                    }
                     
                     // Handle Spirits (Cleric)
                     if (pData.spiritsActive !== undefined) {
@@ -660,24 +697,37 @@ export class GameEngine {
                         if (!remoteEntity.isDead) {
                             remoteEntity.isDead = true;
                             remoteEntity.state = 'DEAD';
-                            // Lay flat visually
-                            const deathRot = new THREE.Quaternion();
-                            deathRot.setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
-                            // Combine with current Y rotation
-                            const currentY = new THREE.Quaternion();
-                            if (pData.rotation !== undefined) {
-                                currentY.setFromAxisAngle(new THREE.Vector3(0, 1, 0), pData.rotation);
+                            remoteEntity.deadTimer = 0;
+
+                            // Try to play Death animation
+                            if (remoteEntity.animations && remoteEntity.animations['Death']) {
+                                remoteEntity.playAnimation('Death', false);
+                            } else {
+                                // Fallback: Lay flat visually
+                                const deathRot = new THREE.Quaternion();
+                                deathRot.setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+                                // Combine with current Y rotation
+                                const currentY = new THREE.Quaternion();
+                                if (pData.rotation !== undefined) {
+                                    currentY.setFromAxisAngle(new THREE.Vector3(0, 1, 0), pData.rotation);
+                                }
+                                remoteEntity.rotation.multiplyQuaternions(deathRot, currentY);
                             }
-                            remoteEntity.rotation.multiplyQuaternions(deathRot, currentY);
                         }
                     } else {
                         remoteEntity.isDead = false;
+                        remoteEntity.deadTimer = 0;
+                        if (remoteEntity.mesh) remoteEntity.mesh.visible = true;
                         
                         // Update State and Animation
-                        if (remoteEntity.state !== pData.state) {
+                        if (remoteEntity.state !== pData.state || (pData.isCharging !== undefined && remoteEntity.isCharging !== pData.isCharging)) {
                             remoteEntity.state = pData.state;
+                            if (pData.isCharging !== undefined) remoteEntity.isCharging = pData.isCharging;
+
                             if (remoteEntity.playAnimation) {
-                                if (pData.state === 'MOVING') {
+                                if (remoteEntity.isCharging) {
+                                    remoteEntity.playAnimation('Run');
+                                } else if (pData.state === 'MOVING') {
                                     remoteEntity.playAnimation('Run');
                                 } else if (pData.state === 'ATTACKING') {
                                     remoteEntity.playAnimation('Attack', false);
@@ -700,18 +750,17 @@ export class GameEngine {
                 if (!seenIds.has(id)) {
                     entity.isActive = false;
                     if (entity.mesh) {
-    this.renderSystem.remove(entity.mesh);
+                        this.renderSystem.remove(entity.mesh);
                     }
-                    // Remove from chunk manager
                     const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
                     if (this.chunkManager.chunks.has(key)) {
-    this.chunkManager.chunks.get(key).delete(entity);
+                        this.chunkManager.chunks.get(key).delete(entity);
                     }
                     this.remotePlayers.delete(id);
                 }
             }
         } else if (msg.type === 'inventory') {
-            const inventory = JSON.parse(msg.payload);
+            const inventory = msg.payload;
             // Hydrate rarity from string to object for UI
             inventory.forEach(item => {
                 if (item && typeof item.rarity === 'string') {
@@ -726,7 +775,7 @@ export class GameEngine {
 
             if (this.player) {
                 // Pad with nulls to maintain fixed size
-                while (inventory.length < 20) {
+                while (inventory.length < 25) {
                     inventory.push(null);
                 }
                 this.player.inventory = inventory;
@@ -738,7 +787,7 @@ export class GameEngine {
     pickupLoot(lootId) {
         const msg = {
             type: 'pickup',
-            payload: JSON.stringify({ lootId: lootId })
+            payload: { lootId: lootId }
         };
         this.socket.send(JSON.stringify(msg));
     }
@@ -747,16 +796,22 @@ export class GameEngine {
         if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
         const msg = {
             type: 'equip',
-            payload: JSON.stringify({
+            payload: {
                 itemId: item.id,
                 slot: item.slot
-            })
+            }
         };
         this.socket.send(JSON.stringify(msg));
     }
 
     createRemotePlayer(type, id, subType) {
         let p;
+
+        // Fix for merchant appearing as skeleton if type is wrong
+        if (subType === 'DwarfSalesman') {
+            return new DwarfSalesman(id);
+        }
+
         // If type is NPC, handle it
         if (type === 'NPC') {
             if (subType === 'DwarfSalesman') {
@@ -774,8 +829,9 @@ export class GameEngine {
                 default: p = new Skeleton(id); break;
             }
         } else {
-            // Players
-            switch(type) {
+            // Players - Use subType if available (e.g. "Fighter", "Rogue")
+            const classType = subType || type;
+            switch(classType) {
                 case 'Rogue': p = new Rogue(id); break;
                 case 'Wizard': p = new Wizard(id); break;
                 case 'Cleric': p = new Cleric(id); break;
@@ -796,7 +852,7 @@ export class GameEngine {
             const originalOnMeshReady = entity.onMeshReady;
             entity.onMeshReady = (mesh) => {
                 console.log(`GameEngine: Mesh ready for ${entity.id}`);
-                if (originalOnMeshReady) originalOnMeshReady(mesh);
+                if (originalOnMeshReady) originalOnMeshReady.call(entity, mesh);
                 
                 const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
                 if (this.chunkManager.activeChunkKeys.has(key) || entity.type === 'DwarfSalesman') {
@@ -809,114 +865,6 @@ export class GameEngine {
         } else {
              console.log(`GameEngine: Entity ${entity.id} already has mesh`);
         }
-    }
-
-    spawnNPCs() {
-        console.log("Spawning NPCs...");
-        const merchant = new DwarfSalesman('merchant-1');
-        merchant.position.set(5, 0, 5);
-        merchant.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 4);
-        
-        this.addEntity(merchant);
-    }
-
-    spawnEnemies() {
-        this.spawnEnemyGroup(Skeleton, 50, 60, 150, 'skeleton');
-        this.spawnEnemyGroup(Imp, 50, 160, 250, 'imp');
-        this.spawnEnemyGroup(DemonOrc, 50, 260, 350, 'demon-orc');
-        this.spawnEnemyGroup(Construct, 50, 360, 450, 'construct');
-    }
-
-    spawnEnemyGroup(EnemyClass, count, minRadius, maxRadius, idPrefix) {
-        console.log(`Spawning ${count} ${idPrefix}s...`);
-        
-        const angleStep = (Math.PI * 2) / count;
-
-        for (let i = 0; i < count; i++) {
-            const baseAngle = i * angleStep;
-            
-            const jitter = (Math.random() - 0.5) * angleStep * 0.8;
-            const angle = baseAngle + jitter;
-
-            const radius = minRadius + Math.random() * (maxRadius - minRadius);
-            
-            const x = Math.cos(angle) * radius;
-            const z = Math.sin(angle) * radius;
-
-            const enemy = new EnemyClass(`${idPrefix}-${i}`);
-            enemy.position.set(x, 0, z);
-            
-            this.addEntity(enemy);
-            this.enemies.push(enemy);
-        }
-    }
-
-    getRandomSpawnPosition(minRadius = 60, maxRadius = 150) {
-        const angle = Math.random() * Math.PI * 2;
-        const radius = minRadius + Math.random() * (maxRadius - minRadius);
-        return new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
-    }
-
-    spawnEliteEnemy() {
-        if (!this.player || this.isMultiplayer) return;
-
-        console.log("Spawning Elite Enemy!");
-        
-        const types = [Skeleton, Imp, DemonOrc];
-        const EnemyClass = types[Math.floor(Math.random() * types.length)];
-        
-        const elite = new EnemyClass(`elite-${Date.now()}`);
-        
-        const angle = Math.random() * Math.PI * 2;
-        const dist = 20 + Math.random() * 10;
-        const x = this.player.position.x + Math.cos(angle) * dist;
-        const z = this.player.position.z + Math.sin(angle) * dist;
-        
-        elite.position.set(x, 0, z);
-        
-        elite.stats.maxHp *= 3;
-        elite.stats.hp = elite.stats.maxHp;
-        elite.stats.damage *= 3;
-        elite.xpValue *= 5;
-        elite.isElite = true;
-
-        elite.modifyMesh = (mesh) => {
-            if (!mesh) return;
-            mesh.scale.multiplyScalar(1.5);
-            
-            // Temporarily disabled material cloning to prevent crashes on specific models (Imp)
-            // The scaling is sufficient to identify Elites for now.
-            /*
-            mesh.traverse(child => {
-                if (child.isMesh) {
-                    if (Array.isArray(child.material)) {
-                        child.material = child.material.map(m => {
-                            if (m.userData?.isEliteClone) return m;
-                            const clone = m.clone();
-                            clone.userData = { isEliteClone: true };
-                            clone.emissive = new THREE.Color(0xff0000);
-                            clone.emissiveIntensity = 0.5;
-                            return clone;
-                        });
-                    } else if (child.material) {
-                        if (!child.material.userData?.isEliteClone) {
-                            try {
-                                child.material = child.material.clone();
-                                child.material.userData = { isEliteClone: true };
-                                child.material.emissive = new THREE.Color(0xff0000);
-                                child.material.emissiveIntensity = 0.5;
-                            } catch (e) {
-                                console.warn("Failed to clone material for Elite:", e);
-                            }
-                        }
-                    }
-                }
-            });
-            */
-        };
-
-        this.addEntity(elite);
-        this.enemies.push(elite);
     }
 
     performRaycast() {
@@ -993,6 +941,21 @@ export class GameEngine {
     update(dt) {
         this.frameCount++;
 
+        // Remote Entity Corpse Cleanup
+        if (this.isMultiplayer) {
+            this.remotePlayers.forEach(entity => {
+                if (entity.state === 'DEAD') {
+                    if (typeof entity.deadTimer !== 'number') entity.deadTimer = 0;
+                    entity.deadTimer += dt;
+                    
+                    // Hide after 2 seconds
+                    if (entity.deadTimer > 2.0 && entity.mesh && entity.mesh.visible) {
+                        entity.mesh.visible = false;
+                    }
+                }
+            });
+        }
+
         this.activeEntitiesCache = this.chunkManager.getActiveEntities();
 
         this.raycastTimer += dt;
@@ -1003,16 +966,7 @@ export class GameEngine {
         }
 
         this.gameTime += dt;
-        this.uiManager.updateTimer(this.gameTime);
-
-        if (this.gameTime >= this.nextEliteSpawnTime) {
-            try {
-                this.spawnEliteEnemy();
-            } catch (e) {
-                console.error("Failed to spawn Elite Enemy:", e);
-            }
-            this.nextEliteSpawnTime += 180;
-        }
+        // Timer updated by server message
 
         if (this.player) {
             if (!this.isMobile && this.inputManager.isMouseDown && !this.uiManager.isEscMenuOpen && !this.uiManager.isShopOpen) {
@@ -1038,6 +992,14 @@ export class GameEngine {
                     }
 
                     if (this.player.state !== 'ATTACKING') {
+                        // Check Attack Speed Cooldown
+                        const now = Date.now();
+                        const cooldownMs = (1.0 / this.player.stats.attackSpeed) * 1000;
+                        if (now - this.player.lastAttackTime < cooldownMs) {
+                            return;
+                        }
+                        this.player.lastAttackTime = now;
+
                         this.player.state = 'ATTACKING';
                         this.player.playAnimation('Attack', false);
                         
@@ -1077,12 +1039,25 @@ export class GameEngine {
                     }
                 } 
                 else if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
+                    if (this.hoveredEntity instanceof DwarfSalesman) {
+                        this.player.move(this.hoveredEntity.position);
+                        return;
+                    }
+
                     const dist = this.player.position.distanceTo(this.hoveredEntity.position);
                     const range = (this.player instanceof Wizard || this.player instanceof Rogue) ? 8.0 : 2.0;
 
                     if (dist < range) {
                         this.player.targetPosition = null;
                         if (this.isMultiplayer) {
+                            // Check Attack Speed Cooldown
+                            const now = Date.now();
+                            const cooldownMs = (1.0 / this.player.stats.attackSpeed) * 1000;
+                            if (now - this.player.lastAttackTime < cooldownMs) {
+                                return;
+                            }
+                            this.player.lastAttackTime = now;
+
                             const attackMsg = {
                                 type: "attack",
                                 payload: {
@@ -1091,6 +1066,7 @@ export class GameEngine {
                             };
                             this.socket.send(JSON.stringify(attackMsg));
                             this.player.playAnimation('Attack', false);
+                            this.player.setAttackingState();
                         } else {
                             this.player.attack(this.hoveredEntity);
                         }
@@ -1150,6 +1126,14 @@ export class GameEngine {
                             this.uiManager.toggleShop();
                         } else if (this.pendingInteraction instanceof Actor) {
                             if (this.isMultiplayer) {
+                                // Check Attack Speed Cooldown
+                                const now = Date.now();
+                                const cooldownMs = (1.0 / this.player.stats.attackSpeed) * 1000;
+                                if (now - this.player.lastAttackTime < cooldownMs) {
+                                    return;
+                                }
+                                this.player.lastAttackTime = now;
+
                                 const attackMsg = {
                                     type: "attack",
                                     payload: {
@@ -1158,6 +1142,7 @@ export class GameEngine {
                                 };
                                 this.socket.send(JSON.stringify(attackMsg));
                                 this.player.playAnimation('Attack', false);
+                                this.player.setAttackingState();
                             } else {
                                 this.player.attack(this.pendingInteraction);
                             }
@@ -1178,7 +1163,7 @@ export class GameEngine {
                     this.player.targetPosition = this.pendingAbilityTarget.position.clone();
                     
                     const dist = this.player.position.distanceTo(this.pendingAbilityTarget.position);
-                    const range = 8.0;
+                    const range = 10.0;
 
                     if (dist < range) {
                         if (this.isMultiplayer) {
@@ -1194,24 +1179,18 @@ export class GameEngine {
                             this.player.playAnimation('Attack', false);
                         } else {
                             this.player.useAbility(this.pendingAbilityTarget.position, this);
-                            this.uiManager.updateAbilityIcon(this.player);
                         }
-                        
-                        this.pendingAbilityTarget = null;
-                        this.player.targetPosition = null;
-                        this.player.state = 'IDLE';
-                        this.player.playAnimation('Idle');
                     }
                 }
             }
-            
+
             if (this.player.state === 'DEAD') {
                 if (this.player.timeSinceDeath === undefined || this.player.timeSinceDeath === null) {
                     this.player.timeSinceDeath = 0;
                 }
                 this.player.timeSinceDeath += dt;
                 
-                if (this.player.timeSinceDeath > 3.0) {
+                if (!this.isMultiplayer && this.player.timeSinceDeath > 3.0) {
                     console.log("Player respawning in town...");
                     this.player.respawn(0, 0);
                     this.player.timeSinceDeath = null;
@@ -1224,51 +1203,6 @@ export class GameEngine {
                 }
             } else {
                 this.player.timeSinceDeath = null;
-            }
-
-            if (this.player instanceof Fighter && this.player.isCharging) {
-                if (!this.isMultiplayer) {
-                    this.activeEntitiesCache.forEach(enemy => {
-                        if (enemy instanceof Actor && enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
-                            const dist = this.player.position.distanceTo(enemy.position);
-                            const hitRadius = (this.player.radius || 0.5) + (enemy.radius || 0.5);
-                            if (dist < hitRadius) {
-                                const dmg = 10 + (this.player.stats.strength * 1.5);
-                                enemy.takeDamage(Math.floor(dmg));
-                                
-                                if (enemy.stats.hp <= 0) {
-                                    this.handleEnemyDeath(enemy);
-                                }
-
-                                this.player.isCharging = false;
-                                this.player.state = 'IDLE';
-                                this.player.playAnimation('Idle');
-                            }
-                        }
-                    });
-                }
-            }
-
-            if (this.player instanceof Cleric && this.player.spiritsActive) {
-                if (!this.isMultiplayer) {
-                    this.activeEntitiesCache.forEach(enemy => {
-                        if (enemy instanceof Actor && enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
-                            const dist = this.player.position.distanceTo(enemy.position);
-                            if (dist < 8.0) {
-                                if (!this.player.spiritTick) this.player.spiritTick = 0;
-                                this.player.spiritTick += dt;
-                                if (this.player.spiritTick > 0.5) {
-                                    const dmg = 10 + (this.player.stats.wisdom * 1.0);
-                                    enemy.takeDamage(Math.floor(dmg));
-                                    if (enemy.stats.hp <= 0) {
-                                        this.handleEnemyDeath(enemy);
-                                    }
-                                }
-                            }
-                        }
-                    });
-                    if (this.player.spiritTick > 0.5) this.player.spiritTick = 0;
-                }
             }
         }
 
@@ -1346,108 +1280,6 @@ export class GameEngine {
             }
         }
 
-        // Local Simulation Logic (Singleplayer Only)
-        if (!this.isMultiplayer) {
-            this.activeEntitiesCache.forEach(enemy => {
-                if (enemy instanceof Actor && enemy.state === 'DEAD' && !enemy.deathHandled && enemy !== this.player) {
-                    this.handleEnemyDeath(enemy);
-                }
-            });
-
-            if (this.frameCount % 10 === 0) {
-                this.enemies.forEach(enemy => {
-                    if (enemy.state === 'DEAD') {
-                        if (typeof enemy.timeSinceDeath !== 'number') enemy.timeSinceDeath = 0;
-                        enemy.timeSinceDeath += dt * 10;
-
-                        if (enemy.timeSinceDeath > 2 && enemy.mesh && enemy.mesh.visible) {
-                            enemy.mesh.visible = false;
-                        }
-
-                        if (enemy.timeSinceDeath > 5) {
-                            enemy.timeSinceDeath = 0;
-                            
-                            let minR = 60, maxR = 150;
-                            if (enemy instanceof Imp) {
-                                minR = 160; maxR = 250;
-                            } else if (enemy instanceof DemonOrc) {
-                                minR = 260; maxR = 350;
-                            } else if (enemy instanceof Construct) {
-                                minR = 360; maxR = 450;
-                            }
-                            const pos = this.getRandomSpawnPosition(minR, maxR);
-                            
-                            const oldKey = this.chunkManager.getChunkKey(enemy.position.x, enemy.position.z);
-                            if (this.chunkManager.chunks.has(oldKey)) {
-                                this.chunkManager.chunks.get(oldKey).delete(enemy);
-                            }
-
-                            if (enemy.mesh) enemy.mesh.visible = true;
-                            enemy.respawn(pos.x, pos.z);
-                            enemy.deathHandled = false;
-
-                            this.chunkManager.addEntity(enemy);
-                        }
-                    }
-                });
-            }
-
-            for (let i = this.projectiles.length - 1; i >= 0; i--) {
-                const p = this.projectiles[i];
-                p.update(dt);
-                
-                if (!p.isActive) {
-                    this.renderSystem.remove(p.mesh);
-                    this.projectiles.splice(i, 1);
-                    continue;
-                }
-
-                for (const enemy of this.activeEntitiesCache) {
-                    if (enemy instanceof Actor && enemy.state !== 'DEAD' && enemy.isActive && enemy !== this.player) {
-                        if (p.hitEntities.has(enemy.id)) continue;
-
-                        const dist = p.position.distanceTo(enemy.position);
-                        const hitRadius = p.radius + (enemy.radius || 0.5);
-                        
-                        if (dist < hitRadius) {
-                            p.hitEntities.add(enemy.id);
-
-                            enemy.takeDamage(Math.floor(p.damage));
-                            if (enemy.stats.hp <= 0) {
-                                this.handleEnemyDeath(enemy);
-                            }
-
-                            if (p.type === 'Fireball') {
-                                const splashRadius = 10.0;
-                                this.activeEntitiesCache.forEach(nearbyEnemy => {
-                                    if (nearbyEnemy instanceof Actor && nearbyEnemy !== enemy && nearbyEnemy.state !== 'DEAD' && nearbyEnemy.isActive && nearbyEnemy !== this.player) {
-                                        if (nearbyEnemy.position.distanceTo(enemy.position) < splashRadius) {
-                                            const splashDmg = Math.floor(p.damage * 0.4);
-                                            nearbyEnemy.takeDamage(splashDmg);
-                                            if (nearbyEnemy.stats.hp <= 0) {
-                                                this.handleEnemyDeath(nearbyEnemy);
-                                            }
-                                        }
-                                    }
-                                });
-                                
-                                p.isActive = false;
-                                this.renderSystem.remove(p.mesh);
-                                this.projectiles.splice(i, 1);
-                                break;
-                            } else if (p.type === 'Dagger') {
-                            } else {
-                                p.isActive = false;
-                                this.renderSystem.remove(p.mesh);
-                                this.projectiles.splice(i, 1);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         // Network Update
         if (this.isMultiplayer && this.socket && this.socket.readyState === WebSocket.OPEN && this.player) {
             if (this.frameCount % 3 === 0) {
@@ -1458,55 +1290,11 @@ export class GameEngine {
                         x: this.player.position.x,
                         y: this.player.position.y,
                         z: this.player.position.z,
-                        rotation: euler.y
+                        rotation: euler.y,
+                        state: this.player.state
                     }
                 };
                 this.socket.send(JSON.stringify(moveMsg));
-            }
-        }
-    }
-
-    handleEnemyDeath(enemy) {
-        if (enemy.deathHandled) return;
-        enemy.deathHandled = true;
-        
-        this.player.gainXp(enemy.xpValue);
-        
-        const minGold = Math.max(1, Math.floor(enemy.level * 1.5));
-        
-        if (!this.isMultiplayer) {
-            const maxGold = Math.max(30, enemy.level * 30);
-            const goldAmount = Math.floor(minGold + Math.random() * (maxGold - minGold));
-            
-            this.player.gold += goldAmount;
-            console.log(`Gained ${goldAmount} gold. Total: ${this.player.gold}`);
-            
-            let shouldDrop = false;
-            let item = null;
-
-            if (enemy.isElite) {
-                shouldDrop = true;
-                item = ItemGenerator.generateEliteLoot(enemy.level);
-                console.log(`Elite Loot Dropped: ${item.name}`);
-            } else if (Math.random() < 0.5) {
-                shouldDrop = true;
-                let maxLevel = 1;
-                if (enemy instanceof Skeleton) maxLevel = 5;
-                else if (enemy instanceof Imp) maxLevel = 10;
-                else if (enemy instanceof DemonOrc) maxLevel = 20;
-                else if (enemy instanceof Construct) maxLevel = 30;
-
-                item = ItemGenerator.generateLoot(maxLevel);
-            }
-
-            if (shouldDrop && item) {
-                console.log(`Loot Dropped: ${item.name}`);
-                
-                const dropX = enemy.position.x + (Math.random() - 0.5) * 1.0;
-                const dropZ = enemy.position.z + (Math.random() - 0.5) * 1.0;
-                
-                const loot = new LootDrop(item, dropX, dropZ);
-                this.addEntity(loot);
             }
         }
     }
@@ -1545,33 +1333,4 @@ export class GameEngine {
         }
     }
 
-    handleLocalGamble(slot) {
-        if (!this.player) return;
-        const cost = 500;
-
-        if (this.player.gold >= cost) {
-            // Check inventory space
-            if (this.player.inventory.includes(null)) {
-                this.player.gold -= cost;
-                
-                // Generate Item
-                const item = ItemGenerator.generateLootForSlot(slot, this.player.level);
-                
-                if (item) {
-                    this.player.addToInventory(item);
-                    console.log(`Bought gamble item: ${item.name}`);
-                    
-                    // Update UI
-                    this.uiManager.updateInventory(this.player);
-                } else {
-                    console.error("Failed to generate item for slot:", slot);
-                    this.player.gold += cost; // Refund
-                }
-            } else {
-                console.log("Inventory Full!");
-            }
-        } else {
-            console.log("Not enough gold!");
-        }
-    }
 }

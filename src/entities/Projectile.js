@@ -14,8 +14,8 @@ DAGGER_GEO.rotateX(Math.PI / 2); // Point forward
 const DAGGER_MAT = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.8, roughness: 0.2 });
 
 export class Projectile extends Entity {
-    constructor(owner, type, startPos, targetPos) {
-        super();
+    constructor(id, owner, type, startPos, targetPos) {
+        super(id);
         this.owner = owner;
         this.type = type; // 'Fireball', 'Dagger'
         this.position.copy(startPos);

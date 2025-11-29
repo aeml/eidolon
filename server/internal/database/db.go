@@ -102,6 +102,7 @@ func (db *DB) CreateUser(username, email, password string) error {
 		Email:        email,
 		PasswordHash: string(hash),
 		CreatedAt:    time.Now(),
+		Characters:   make([]*Character, 0),
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -141,6 +142,23 @@ func (db *DB) CreateCharacter(username string, char *Character) error {
 
 	filter := bson.M{"username": username}
 	update := bson.M{"$push": bson.M{"characters": char}}
+
+	result, err := db.users.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+	if result.MatchedCount == 0 {
+		return errors.New("user not found")
+	}
+	return nil
+}
+
+func (db *DB) SetFirstCharacter(username string, char *Character) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{"username": username}
+	update := bson.M{"$set": bson.M{"characters": []*Character{char}}}
 
 	result, err := db.users.UpdateOne(ctx, filter, update)
 	if err != nil {

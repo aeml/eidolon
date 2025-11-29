@@ -35,6 +35,10 @@ export class UIManager {
         this.btnClosePatchNotes = document.getElementById('btn-close-patch-notes');
         this.btnRespawn = document.getElementById('btn-respawn');
         this.btnCloseShop = document.getElementById('btn-close-shop');
+        
+        this.btnSellCommon = document.getElementById('btn-sell-common');
+        this.btnSellUncommon = document.getElementById('btn-sell-uncommon');
+        this.btnSellRare = document.getElementById('btn-sell-rare');
 
         this.btnResume.addEventListener('click', () => this.toggleEscMenu());
         this.btnHelp.addEventListener('click', () => this.toggleHelp());
@@ -53,6 +57,10 @@ export class UIManager {
             }
             this.toggleEscMenu();
         });
+
+        this.btnSellCommon.addEventListener('click', () => this.handleSellAll('Common'));
+        this.btnSellUncommon.addEventListener('click', () => this.handleSellAll('Uncommon'));
+        this.btnSellRare.addEventListener('click', () => this.handleSellAll('Rare'));
 
         this.setupShop();
 
@@ -173,9 +181,21 @@ export class UIManager {
                         this.chatInput.value = '';
                     }
                     this.chatInput.blur(); // Unfocus after sending
+                    // Keep chat open but maybe fade out later? For now keep it.
                 }
             });
         }
+
+        // Global Enter to open chat
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                if (this.chatInput && document.activeElement !== this.chatInput) {
+                    e.preventDefault(); // Prevent other actions
+                    this.toggleChat(true);
+                    this.chatInput.focus();
+                }
+            }
+        });
 
         this.isHelpOpen = false;
         // this.isShopOpen is a getter now
@@ -183,6 +203,14 @@ export class UIManager {
         this.onStatUpgrade = null;
         this.onRespawn = null;
         this.onChatSend = null;
+        this.onSellItem = null;
+        this.onSellAll = null;
+    }
+
+    handleSellAll(rarityName) {
+        if (this.onSellAll) {
+            this.onSellAll(rarityName);
+        }
     }
 
     addChatMessage(sender, message) {
@@ -205,6 +233,10 @@ export class UIManager {
         this.hud.style.display = 'block';
         this.abilityContainer.style.display = 'block';
         if (this.gameTimer) this.gameTimer.style.display = 'flex';
+        
+        // Show XP Bar
+        const xpContainer = document.getElementById('xp-bar-container');
+        if (xpContainer) xpContainer.style.display = 'block';
     }
 
     updateTimer(seconds) {
@@ -454,7 +486,8 @@ export class UIManager {
         // Only update DOM if visible to save performance
         if (this.characterSheet.style.display === 'none') return;
 
-        const btnStyle = player.statPoints > 0 ? 'display:inline-block; margin-left:5px; cursor:pointer;' : 'display:none;';
+        const showPoints = !player.isMultiplayer;
+        const btnStyle = (player.statPoints > 0 && showPoints) ? 'display:inline-block; margin-left:5px; cursor:pointer;' : 'display:none;';
 
         // Helper to format stat with bonus
         const fmtStat = (statName) => {
@@ -471,7 +504,7 @@ export class UIManager {
             <div style="margin-bottom: 10px;">
                 <div><strong>Level:</strong> ${player.level}</div>
                 <div><strong>XP:</strong> ${player.xp} / ${player.xpToNextLevel}</div>
-                <div style="color: #ffd700;"><strong>Points:</strong> ${player.statPoints}</div>
+                ${showPoints ? `<div style="color: #ffd700;"><strong>Points:</strong> ${player.statPoints}</div>` : ''}
             </div>
             <div style="margin-bottom: 10px; border-top: 1px solid #444; padding-top: 5px;">
                 <div><strong>HP:</strong> ${Math.ceil(player.stats.hp)} / ${player.stats.maxHp}</div>
@@ -762,17 +795,22 @@ export class UIManager {
     }
 
     sellItem(player, index) {
-        const item = player.inventory[index];
-        if (!item) return;
+        if (this.onSellItem) {
+            this.onSellItem(index);
+        } else {
+            // Fallback for local testing if engine not hooked up
+            const item = player.inventory[index];
+            if (!item) return;
 
-        const value = Item.getValue(item);
-        
-        player.gold += value;
-        player.inventory[index] = null;
-        
-        console.log(`Sold ${item.name} for ${value} gold.`);
-        
-        this.updateInventory(player);
+            const value = Item.getValue(item);
+            
+            player.gold += value;
+            player.inventory[index] = null;
+            
+            console.log(`Sold ${item.name} for ${value} gold.`);
+            
+            this.updateInventory(player);
+        }
     }
 
     setupShop() {

@@ -78,6 +78,8 @@ export class Actor extends Entity {
         this.abilityName = "Unknown";
         this.abilityDescription = "No ability";
 
+        this.lastAttackTime = 0; // For melee attack speed limit
+
         // Inventory & Equipment
         this.inventory = new Array(25).fill(null); // 25 slots
         this.equipment = {
@@ -176,6 +178,12 @@ export class Actor extends Entity {
     useAbility(targetVector, gameEngine) {
         // Base implementation checks costs
         if (this.state === 'DEAD') return false;
+        
+        // Bypass checks for remote entities (visual only)
+        if (this.isRemote || this.isMultiplayer) {
+            return true;
+        }
+
         if (this.abilityCooldown > 0) {
             console.log("Ability on cooldown");
             return false;
@@ -208,7 +216,7 @@ export class Actor extends Entity {
         }
 
         // Regeneration Logic (1 second tick)
-        if (this.state !== 'DEAD') {
+        if (this.state !== 'DEAD' && !this.isMultiplayer && !this.isRemote) {
             this.regenTimer += dt;
             if (this.regenTimer >= 1.0) {
                 this.regenTimer -= 1.0;
@@ -298,7 +306,7 @@ export class Actor extends Entity {
     }
 
     takeDamage(amount) {
-        if (this.state === 'DEAD') return;
+        if (this.state === 'DEAD' || this.isMultiplayer || this.isRemote) return;
         this.stats.hp -= amount;
         console.log(`${this.id} took ${amount} damage. HP: ${this.stats.hp}`);
         if (this.stats.hp <= 0) {
@@ -323,7 +331,13 @@ export class Actor extends Entity {
         if (this.state === 'DEAD' || this.state === 'ATTACKING') return;
         if (target && target.state === 'DEAD') return; // Don't attack dead targets
         
-        // Simple cooldown check could go here
+        // Attack Speed Check
+        const now = Date.now();
+        const cooldownMs = (1.0 / this.stats.attackSpeed) * 1000;
+        if (now - this.lastAttackTime < cooldownMs) {
+            return;
+        }
+        this.lastAttackTime = now;
         
         this.state = 'ATTACKING';
         this.playAnimation('Attack', false);
@@ -408,6 +422,7 @@ export class Actor extends Entity {
     }
 
     gainXp(amount) {
+        if (this.isMultiplayer || this.isRemote) return;
         this.xp += amount;
         console.log(`${this.id} gained ${amount} XP. Total: ${this.xp}/${this.xpToNextLevel}`);
         
@@ -419,7 +434,8 @@ export class Actor extends Entity {
     levelUp() {
         this.level++;
         this.xp -= this.xpToNextLevel;
-        this.xpToNextLevel = Math.floor(this.xpToNextLevel * 1.5); // Curve
+        // Match server exponential curve (1.2)
+        this.xpToNextLevel = Math.floor(100 * Math.pow(1.2, this.level - 1));
         
         this.statPoints += 3;
         
@@ -432,8 +448,8 @@ export class Actor extends Entity {
         
         console.log(`${this.id} leveled up to ${this.level}! Points: ${this.statPoints}`);
     }
-
     increaseStat(statName) {
+        if (this.isMultiplayer || this.isRemote) return false;
         if (this.statPoints > 0 && this.baseStats[statName] !== undefined) {
             this.baseStats[statName]++;
             this.statPoints--;
@@ -549,5 +565,17 @@ export class Actor extends Entity {
         }
         console.log("Inventory full!");
         return false;
+    }
+
+    setAttackingState() {
+        if (this.state === 'DEAD') return;
+        this.state = 'ATTACKING';
+        
+        setTimeout(() => {
+            if (this.state === 'ATTACKING') {
+                this.state = 'IDLE';
+                this.playAnimation('Idle');
+            }
+        }, 500);
     }
 }
