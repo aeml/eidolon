@@ -28,10 +28,10 @@ type Item struct {
 	Rarity      ItemRarity     `json:"rarity" bson:"rarity"`
 	Slot        string         `json:"slot" bson:"slot"` // head, chest, legs, feet, mainHand, offHand
 	Level       int            `json:"level" bson:"level"`
-	Stats       map[string]int `json:"stats" bson:"stats"`
+	Stats       map[string]int `json:"stats,omitempty" bson:"stats"`
 	Value       int            `json:"value" bson:"value"`
-	Icon        string         `json:"icon" bson:"icon"`
-	Description string         `json:"description" bson:"description"`
+	Icon        string         `json:"icon,omitempty" bson:"icon"`
+	Description string         `json:"description,omitempty" bson:"description"`
 }
 
 // Base Item Definitions (Matching Client)

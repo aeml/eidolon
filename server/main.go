@@ -162,9 +162,9 @@ func main() {
 
 	// Game Loop
 	go func() {
-		ticker := time.NewTicker(50 * time.Millisecond) // 20 TPS
+		ticker := time.NewTicker(100 * time.Millisecond) // 10 TPS (Reduced from 20 TPS to save bandwidth)
 		for range ticker.C {
-			world.Update(0.05)
+			world.Update(0.1) // Update dt to match ticker
 			broadcastState()
 		}
 	}()
@@ -610,31 +610,16 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 
-		player := world.GetEntity(c.playerID)
-		loot := world.GetEntity(payload.LootID)
-
-		if player != nil && loot != nil && loot.Type == game.TypeLoot {
-			// Check distance
-			dx := player.X - loot.X
-			dz := player.Z - loot.Z
-			dist := dx*dx + dz*dz
-			if dist < 9.0 { // 3.0 * 3.0
-				// Add to inventory
-				if loot.LootItem != nil {
-					player.Inventory = append(player.Inventory, *loot.LootItem)
-
-					// Send inventory update to player
-					invPayload, _ := json.Marshal(player.Inventory)
-					msg := Message{
-						Type:    MsgInventory,
-						Payload: invPayload,
-					}
-					b, _ := json.Marshal(msg)
-					c.send <- b
-				}
-				// Remove loot from world
-				world.RemoveEntity(payload.LootID)
+		player, success := world.PerformPickup(c.playerID, payload.LootID)
+		if success {
+			// Send inventory update to player
+			invPayload, _ := json.Marshal(player.Inventory)
+			msg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
 			}
+			b, _ := json.Marshal(msg)
+			c.send <- b
 		}
 
 	case MsgAbility:
@@ -678,46 +663,8 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 
-		player := world.GetEntity(c.playerID)
-		if player == nil {
-			return
-		}
-
-		// Find item in inventory
-		var itemToEquip *game.Item
-		invIndex := -1
-		for i := range player.Inventory {
-			if player.Inventory[i].ID == payload.ItemID {
-				itemToEquip = &player.Inventory[i]
-				invIndex = i
-				break
-			}
-		}
-
-		if itemToEquip != nil {
-			// Check Level
-			if player.Level < itemToEquip.Level {
-				return
-			}
-
-			// Unequip current item in slot if exists
-			if current, ok := player.Equipment[payload.Slot]; ok {
-				player.Inventory = append(player.Inventory, current)
-			}
-
-			// Equip new item
-			if player.Equipment == nil {
-				player.Equipment = make(map[string]game.Item)
-			}
-			player.Equipment[payload.Slot] = *itemToEquip
-
-			// Remove from inventory
-			player.Inventory[invIndex] = player.Inventory[len(player.Inventory)-1]
-			player.Inventory = player.Inventory[:len(player.Inventory)-1]
-
-			// Recalculate Stats
-			player.RecalculateStats()
-
+		player, success := world.PerformEquip(c.playerID, payload.ItemID, payload.Slot)
+		if success {
 			// Send Inventory Update
 			invPayload, _ := json.Marshal(player.Inventory)
 			msg := Message{
@@ -737,33 +684,16 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 
-		player := world.GetEntity(c.playerID)
-		if player == nil {
-			return
-		}
-
-		cost := 500
-		if player.Gold >= cost {
-			// Check inventory space (assuming max 20 slots)
-			if len(player.Inventory) < 20 {
-				player.Gold -= cost
-
-				item := game.GenerateLootForSlot(payload.Slot, player.Level)
-				if item != nil {
-					player.Inventory = append(player.Inventory, *item)
-
-					// Send Inventory Update
-					invPayload, _ := json.Marshal(player.Inventory)
-					msg := Message{
-						Type:    MsgInventory,
-						Payload: invPayload,
-					}
-					b, _ := json.Marshal(msg)
-					c.send <- b
-				} else {
-					player.Gold += cost // Refund
-				}
+		player, success := world.PerformBuyGamble(c.playerID, payload.Slot)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
 			}
+			b, _ := json.Marshal(msg)
+			c.send <- b
 		}
 
 	case MsgSell:
@@ -775,35 +705,8 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 
-		player := world.GetEntity(c.playerID)
-		if player == nil {
-			return
-		}
-
-		// Find item by ID
-		itemIndex := -1
-		var itemToSell *game.Item
-		for i := range player.Inventory {
-			if player.Inventory[i].ID == payload.ItemID {
-				itemToSell = &player.Inventory[i]
-				itemIndex = i
-				break
-			}
-		}
-
-		if itemToSell != nil {
-			// Calculate Value (or use stored value)
-			value := itemToSell.Value
-			if value <= 0 {
-				value = 1 // Minimum value
-			}
-
-			player.Gold += value
-
-			// Remove item (Swap with last and truncate)
-			player.Inventory[itemIndex] = player.Inventory[len(player.Inventory)-1]
-			player.Inventory = player.Inventory[:len(player.Inventory)-1]
-
+		player, success := world.PerformSell(c.playerID, payload.ItemID)
+		if success {
 			// Send Inventory Update
 			invPayload, _ := json.Marshal(player.Inventory)
 			msg := Message{
@@ -812,25 +715,6 @@ func (c *Client) handleMessage(msg Message) {
 			}
 			b, _ := json.Marshal(msg)
 			c.send <- b
-
-			// Send State Update (for Gold) - actually MsgState includes Gold?
-			// MsgState includes Gold. But it runs on tick.
-			// We can force a state update or just wait for next tick.
-			// But MsgInventory update is separate.
-			// Client updates gold from MsgState usually?
-			// Let's check client `handleServerMessage` for `state`.
-			// Yes: `if (pData.gold !== undefined) { this.player.gold = pData.gold; ... }`
-			// So next tick will update gold.
-			// But we can also send a specific gold update if we want instant feedback?
-			// MsgInventory only sends the array.
-			// Wait, `MsgInventory` payload is just `[]Item`. It doesn't include gold.
-			// Client `handleServerMessage` for `inventory`:
-			// `this.player.inventory = inventory; this.uiManager.updateInventory(this.player);`
-			// `updateInventory` updates gold display from `player.gold`.
-			// But `player.gold` is NOT updated by `MsgInventory`.
-			// It is updated by `MsgState`.
-			// So there might be a slight delay or desync if we don't send gold.
-			// Let's check `MsgState` frequency. 20Hz. So 50ms delay max. That's fine.
 		}
 	}
 }
@@ -885,7 +769,7 @@ func savePlayer(client *Client) {
 		return
 	}
 
-	entity := world.GetEntity(client.playerID)
+	entity := world.GetEntityCopy(client.playerID)
 	if entity == nil {
 		return
 	}

@@ -75,7 +75,8 @@ type Entity struct {
 	AbilityCooldown time.Duration `json:"-"`
 
 	// Loot
-	LootItem *Item `json:"lootItem,omitempty"` // If Type == TypeLoot
+	LootItem *Item     `json:"lootItem,omitempty"` // If Type == TypeLoot
+	LootTime time.Time `json:"-"`
 
 	// Projectile
 	OwnerID string  `json:"ownerId,omitempty"`
@@ -183,7 +184,7 @@ func (w *World) spawnEliteInArea(level int, minR, maxR float64) {
 	// Actually client checks `isElite` property usually.
 	// Let's just rely on ID for now or add property to Entity struct if we want to be clean.
 	// For now, just spawn it.
-	w.AddEntity(elite)
+	w.Entities[elite.ID] = elite
 }
 
 func (w *World) spawnMerchant() {
@@ -278,9 +279,174 @@ func (w *World) GetEntity(id string) *Entity {
 	return w.Entities[id]
 }
 
+func (w *World) GetEntityCopy(id string) *Entity {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+	e, ok := w.Entities[id]
+	if !ok {
+		return nil
+	}
+	// Deep copy
+	newE := *e
+	if e.Inventory != nil {
+		newE.Inventory = make([]Item, len(e.Inventory))
+		copy(newE.Inventory, e.Inventory)
+	}
+	if e.Equipment != nil {
+		newE.Equipment = make(map[string]Item)
+		for k, v := range e.Equipment {
+			newE.Equipment[k] = v
+		}
+	}
+	return &newE
+}
+
+func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+	loot, ok := w.Entities[lootID]
+	if !ok || loot.Type != TypeLoot {
+		return nil, false
+	}
+
+	dx := player.X - loot.X
+	dz := player.Z - loot.Z
+	dist := dx*dx + dz*dz
+	if dist < 9.0 {
+		if loot.LootItem != nil {
+			player.Inventory = append(player.Inventory, *loot.LootItem)
+			delete(w.Entities, lootID)
+			return player, true
+		}
+	}
+	return nil, false
+}
+
+func (w *World) PerformEquip(playerID, itemID, slot string) (*Entity, bool) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+
+	// Find item
+	invIndex := -1
+	var itemToEquip *Item
+	for i := range player.Inventory {
+		if player.Inventory[i].ID == itemID {
+			itemToEquip = &player.Inventory[i]
+			invIndex = i
+			break
+		}
+	}
+
+	if itemToEquip == nil {
+		return nil, false
+	}
+
+	if player.Level < itemToEquip.Level {
+		return nil, false
+	}
+
+	// Unequip current
+	if current, ok := player.Equipment[slot]; ok {
+		player.Inventory = append(player.Inventory, current)
+	}
+
+	if player.Equipment == nil {
+		player.Equipment = make(map[string]Item)
+	}
+	player.Equipment[slot] = *itemToEquip
+
+	// Swap remove
+	lastIdx := len(player.Inventory) - 1
+	player.Inventory[invIndex] = player.Inventory[lastIdx]
+	player.Inventory = player.Inventory[:lastIdx]
+
+	player.RecalculateStats()
+	return player, true
+}
+
+func (w *World) PerformBuyGamble(playerID, slot string) (*Entity, bool) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+
+	cost := 500
+	if player.Gold < cost {
+		return nil, false
+	}
+	if len(player.Inventory) >= 20 {
+		return nil, false
+	}
+
+	player.Gold -= cost
+	item := GenerateLootForSlot(slot, player.Level)
+	if item != nil {
+		player.Inventory = append(player.Inventory, *item)
+		return player, true
+	} else {
+		player.Gold += cost
+		return nil, false
+	}
+}
+
+func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+
+	invIndex := -1
+	var itemToSell *Item
+	for i := range player.Inventory {
+		if player.Inventory[i].ID == itemID {
+			itemToSell = &player.Inventory[i]
+			invIndex = i
+			break
+		}
+	}
+
+	if itemToSell == nil {
+		return nil, false
+	}
+
+	value := itemToSell.Value
+	if value <= 0 {
+		value = 1
+	}
+	player.Gold += value
+
+	lastIdx := len(player.Inventory) - 1
+	player.Inventory[invIndex] = player.Inventory[lastIdx]
+	player.Inventory = player.Inventory[:lastIdx]
+
+	return player, true
+}
+
 func (w *World) Update(dt float64) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
+
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Recovered from panic in Update: %v\n", r)
+		}
+	}()
 
 	// Global Regeneration (1 second tick)
 	w.RegenTimer += dt
@@ -317,6 +483,28 @@ func (w *World) Update(dt float64) {
 
 	// 2. Update Entities
 	for id, e := range w.Entities {
+		// --- Loot Cleanup ---
+		if e.Type == TypeLoot {
+			if time.Since(e.LootTime) > 5*time.Minute {
+				delete(w.Entities, id)
+			}
+			continue
+		}
+
+		// --- Respawn Logic for Enemies and NPCs ---
+		if e.Type == TypeEnemy || e.Type == TypeNPC {
+			if e.State == "DEAD" {
+				// Respawn Logic
+				if time.Since(e.LastAttackTime) > 10*time.Second { // Use LastAttackTime as death time for simplicity
+					e.State = "IDLE"
+					e.Health = e.MaxHealth
+					e.X = e.SpawnX
+					e.Z = e.SpawnZ
+				}
+				continue
+			}
+		}
+
 		// --- Projectiles ---
 		if e.Type == TypeProjectile {
 			// Move
@@ -414,17 +602,6 @@ func (w *World) Update(dt float64) {
 		}
 
 		if e.Type == TypeEnemy {
-			if e.State == "DEAD" {
-				// Respawn Logic
-				if time.Since(e.LastAttackTime) > 10*time.Second { // Use LastAttackTime as death time for simplicity
-					e.State = "IDLE"
-					e.Health = e.MaxHealth
-					e.X = e.SpawnX
-					e.Z = e.SpawnZ
-				}
-				continue
-			}
-
 			// AI Logic
 			var target *Entity
 			minDist := 1000.0 // Far
@@ -553,9 +730,18 @@ func (w *World) Update(dt float64) {
 	if time.Since(w.EliteSpawnTimer) >= 15*time.Minute {
 		w.EliteSpawnTimer = time.Now()
 		// Spawn one random elite
-		areas := [][]float64{{60, 150}, {160, 250}, {260, 350}, {360, 450}}
+		type SpawnArea struct {
+			MinR, MaxR float64
+			Level      int
+		}
+		areas := []SpawnArea{
+			{60, 150, 5},
+			{160, 250, 10},
+			{260, 350, 15},
+			{360, 450, 20},
+		}
 		area := areas[rand.Intn(len(areas))]
-		w.spawnEliteInArea(0, area[0], area[1])
+		w.spawnEliteInArea(area.Level, area.MinR, area.MaxR)
 	}
 }
 
@@ -790,10 +976,13 @@ func (w *World) handleDeath(target *Entity, attacker *Entity) {
 			attacker.RecalculateStats()
 			attacker.Health = attacker.MaxHealth
 		} // Loot
-		gold := rand.Intn(target.Level*10) + 10
+		gold := 0
+		if target.Level > 0 {
+			gold = rand.Intn(target.Level*10) + 10
+		}
 		attacker.Gold += gold
 
-		if rand.Float64() < 0.5 {
+		if rand.Float64() < 0.5 && target.Level > 0 {
 			item := GenerateLoot(target.Level)
 			fmt.Printf("Loot dropped: %s (Rarity: %s) at %.2f, %.2f\n", item.Name, item.Rarity, target.X, target.Z)
 			lootEntity := &Entity{
@@ -803,6 +992,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity) {
 				Y:        0.5,
 				Z:        target.Z,
 				LootItem: item,
+				LootTime: time.Now(),
 			}
 			w.Entities[lootEntity.ID] = lootEntity
 		}
@@ -820,6 +1010,18 @@ func (w *World) GetState() map[string]*Entity {
 	for k, v := range w.Entities {
 		// Shallow copy of entity struct is fine for now
 		e := *v
+
+		// Optimize Equipment for network: Strip descriptions to save bandwidth
+		if len(e.Equipment) > 0 {
+			newEquip := make(map[string]Item)
+			for slot, item := range e.Equipment {
+				newItem := item
+				newItem.Description = "" // Strip description
+				newEquip[slot] = newItem
+			}
+			e.Equipment = newEquip
+		}
+
 		state[k] = &e
 	}
 	return state
