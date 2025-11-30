@@ -121,6 +121,47 @@ export class WorldMap {
         ctx.textAlign = 'center';
         ctx.fillText("TOWN", townPos.x + 50 * this.scale, townPos.y + 50 * this.scale);
 
+        // 2.1 Draw Level Areas (Rings)
+        const worldCenterX = cx - player.position.x * this.scale;
+        const worldCenterY = cy - player.position.z * this.scale;
+
+        const drawLevelRing = (minR, maxR, label, color) => {
+            ctx.beginPath();
+            // Outer circle
+            ctx.arc(worldCenterX, worldCenterY, maxR * this.scale, 0, Math.PI * 2);
+            // Inner circle (counter-clockwise to create hole)
+            ctx.arc(worldCenterX, worldCenterY, minR * this.scale, 0, Math.PI * 2, true);
+            ctx.fillStyle = color;
+            ctx.fill();
+            
+            // Border lines
+            ctx.strokeStyle = color.replace('0.05', '0.2'); // Make border slightly more visible
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(worldCenterX, worldCenterY, minR * this.scale, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(worldCenterX, worldCenterY, maxR * this.scale, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Label (Top)
+            const midR = (minR + maxR) / 2;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.font = '10px Arial';
+            ctx.fillText(label, worldCenterX, worldCenterY - midR * this.scale);
+            // Label (Bottom)
+            ctx.fillText(label, worldCenterX, worldCenterY + midR * this.scale);
+            // Label (Left)
+            ctx.fillText(label, worldCenterX - midR * this.scale, worldCenterY);
+            // Label (Right)
+            ctx.fillText(label, worldCenterX + midR * this.scale, worldCenterY);
+        };
+
+        drawLevelRing(60, 150, "Lv 1-5", 'rgba(0, 255, 0, 0.05)');
+        drawLevelRing(160, 250, "Lv 5-10", 'rgba(255, 255, 0, 0.05)');
+        drawLevelRing(260, 350, "Lv 10-15", 'rgba(255, 165, 0, 0.05)');
+        drawLevelRing(360, 450, "Lv 15-20", 'rgba(255, 0, 0, 0.05)');
+
         // 2.5 Draw Entities (Players, Enemies, NPCs)
         if (this.gameEngine.chunkManager) {
             const activeEntities = this.gameEngine.chunkManager.getActiveEntities();
