@@ -106,6 +106,7 @@ export class GameEngine {
 
         // Network Message Buffering
         this.latestServerState = null;
+        this.latestServerTime = null;
         this.messageQueue = [];
     }
 
@@ -509,6 +510,9 @@ export class GameEngine {
                 if (msg.type === 'state') {
                     // Only keep the latest state to prevent processing backlog
                     this.latestServerState = msg.payload;
+                } else if (msg.type === 'time') {
+                    // Coalesce time updates as well
+                    this.latestServerTime = msg.payload;
                 } else {
                     // Queue other messages (chat, inventory, etc.)
                     this.messageQueue.push(msg);
@@ -532,6 +536,8 @@ export class GameEngine {
     }
 
     handleServerMessage(msg) {
+        if (!this.player) return; // Safety check
+
         if (msg.type === 'chat') {
             const chatData = msg.payload;
             this.uiManager.addChatMessage(chatData.sender, chatData.message);
@@ -962,18 +968,45 @@ export class GameEngine {
 
         // Process Network Message Queue
         // 1. Handle critical messages (Chat, Inventory, etc.)
-        const maxMessages = 50; // Safety limit
+        // Increased limit to clear backlog faster
+        const maxMessages = 200; 
         let msgCount = 0;
+        
+        // Debug queue size if it gets large
+        if (this.messageQueue.length > 100 && this.frameCount % 60 === 0) {
+            console.warn(`Message Queue Backlog: ${this.messageQueue.length}`);
+        }
+
         while (this.messageQueue.length > 0 && msgCount < maxMessages) {
             const msg = this.messageQueue.shift();
-            this.handleServerMessage(msg);
+            try {
+                this.handleServerMessage(msg);
+            } catch (e) {
+                console.error("Error handling message:", msg.type, e);
+            }
             msgCount++;
         }
 
         // 2. Handle latest state update (Coalesced)
         if (this.latestServerState) {
-            this.handleServerMessage({ type: 'state', payload: this.latestServerState });
-            this.latestServerState = null;
+            try {
+                this.handleServerMessage({ type: 'state', payload: this.latestServerState });
+            } catch (e) {
+                console.error("Error handling server state:", e);
+            } finally {
+                this.latestServerState = null;
+            }
+        }
+
+        // 3. Handle latest time update (Coalesced)
+        if (this.latestServerTime) {
+            try {
+                this.handleServerMessage({ type: 'time', payload: this.latestServerTime });
+            } catch (e) {
+                console.error("Error handling server time:", e);
+            } finally {
+                this.latestServerTime = null;
+            }
         }
 
         // Process Entity Creation Queue (Throttle to 5 per frame)
@@ -986,41 +1019,45 @@ export class GameEngine {
             // Double check if it was already created (race condition)
             if (this.remotePlayers.has(pData.id)) continue;
 
-            let remoteEntity;
-            // Pass subType (e.g. "Skeleton", "DwarfSalesman")
-            if (pData.type === 'Loot') {
-                // Map rarity string to object
-                if (typeof pData.lootItem.rarity === 'string') {
-                    const rarityKey = pData.lootItem.rarity.toUpperCase();
-                    pData.lootItem.rarity = RARITY[rarityKey] || RARITY.COMMON;
-                }
+            try {
+                let remoteEntity;
+                // Pass subType (e.g. "Skeleton", "DwarfSalesman")
+                if (pData.type === 'Loot') {
+                    // Map rarity string to object
+                    if (typeof pData.lootItem.rarity === 'string') {
+                        const rarityKey = pData.lootItem.rarity.toUpperCase();
+                        pData.lootItem.rarity = RARITY[rarityKey] || RARITY.COMMON;
+                    }
 
-                // Create LootDrop
-                remoteEntity = new LootDrop(pData.lootItem, pData.x, pData.z, pData.id);
-                remoteEntity.id = pData.id;
-                // Add click handler for pickup
-                remoteEntity.onClick = () => {
-                    this.pickupLoot(pData.id);
-                };
-            } else if (pData.type === 'Projectile') {
-                // Create Projectile
-                const start = new THREE.Vector3(pData.x, pData.y, pData.z);
-                const target = new THREE.Vector3(pData.x + (pData.velX || 1), pData.y, pData.z + (pData.velZ || 0));
+                    // Create LootDrop
+                    remoteEntity = new LootDrop(pData.lootItem, pData.x, pData.z, pData.id);
+                    remoteEntity.id = pData.id;
+                    // Add click handler for pickup
+                    remoteEntity.onClick = () => {
+                        this.pickupLoot(pData.id);
+                    };
+                } else if (pData.type === 'Projectile') {
+                    // Create Projectile
+                    const start = new THREE.Vector3(pData.x, pData.y, pData.z);
+                    const target = new THREE.Vector3(pData.x + (pData.velX || 1), pData.y, pData.z + (pData.velZ || 0));
+                    
+                    const owner = this.remotePlayers.get(pData.ownerId) || (pData.ownerId === this.player.id ? this.player : null);
+                    const dummyOwner = { stats: { intelligence: 10, dexterity: 10 } };
+                    
+                    remoteEntity = new Projectile(pData.id, owner || dummyOwner, pData.subType, start, target);
+                } else {
+                    remoteEntity = this.createRemotePlayer(pData.type || 'Enemy', pData.id, pData.subType); 
+                    // console.log(`Created remote entity: ${pData.id} (${pData.type}/${pData.subType})`);
+                }
                 
-                const owner = this.remotePlayers.get(pData.ownerId) || (pData.ownerId === this.player.id ? this.player : null);
-                const dummyOwner = { stats: { intelligence: 10, dexterity: 10 } };
-                
-                remoteEntity = new Projectile(pData.id, owner || dummyOwner, pData.subType, start, target);
-            } else {
-                remoteEntity = this.createRemotePlayer(pData.type || 'Enemy', pData.id, pData.subType); 
-                // console.log(`Created remote entity: ${pData.id} (${pData.type}/${pData.subType})`);
-            }
-            
-            if (remoteEntity) {
-                // Set initial position immediately
-                remoteEntity.position.set(pData.x, pData.y, pData.z);
-                this.remotePlayers.set(pData.id, remoteEntity);
-                this.addEntity(remoteEntity);
+                if (remoteEntity) {
+                    // Set initial position immediately
+                    remoteEntity.position.set(pData.x, pData.y, pData.z);
+                    this.remotePlayers.set(pData.id, remoteEntity);
+                    this.addEntity(remoteEntity);
+                }
+            } catch (e) {
+                console.error("Error creating entity:", pData.id, e);
             }
             createdCount++;
         }
