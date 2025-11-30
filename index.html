@@ -693,7 +693,17 @@
             #joystick-knob { width: 40px !important; height: 40px !important; }
             .window { transform-origin: center center; transform: translate(-50%, -50%) scale(0.5) !important; }
             #character-sheet { transform: translate(-50%, -50%) scale(0.5) !important; left: 50% !important; }
-            #inventory-screen { transform: translate(-50%, -50%) scale(0.5) !important; left: 50% !important; }
+            #inventory-screen { 
+                left: auto !important; 
+                right: 5px !important; 
+                transform-origin: right center !important; 
+                transform: translate(0, -50%) scale(0.5) !important; 
+            }
+            #shop-screen { 
+                left: 5px !important; 
+                transform-origin: left center !important; 
+                transform: translate(0, -50%) scale(0.5) !important; 
+            }
         }
 
         /* Force Mobile Mode (for Localhost testing) */
@@ -712,7 +722,17 @@
         .mobile-mode #joystick-knob { width: 40px !important; height: 40px !important; }
         .mobile-mode .window { transform-origin: center center; transform: translate(-50%, -50%) scale(0.5) !important; }
         .mobile-mode #character-sheet { transform: translate(-50%, -50%) scale(0.5) !important; left: 50% !important; }
-        .mobile-mode #inventory-screen { transform: translate(-50%, -50%) scale(0.5) !important; left: 50% !important; }
+        .mobile-mode #inventory-screen { 
+            left: auto !important; 
+            right: 5px !important; 
+            transform-origin: right center !important; 
+            transform: translate(0, -50%) scale(0.5) !important; 
+        }
+        .mobile-mode #shop-screen { 
+            left: 5px !important; 
+            transform-origin: left center !important; 
+            transform: translate(0, -50%) scale(0.5) !important; 
+        }
 
         /* Landscape Mode Specifics */
         @media (max-height: 600px) {

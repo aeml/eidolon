@@ -126,6 +126,7 @@ export class UIManager {
 
         // Inventory Tooltips
         this.inventoryGrid.addEventListener('mousemove', (e) => {
+            if (this.selectedSlot !== -1) return; // Don't override selection with hover
             if (e.target.classList.contains('inv-slot') && e.target._item) {
                 this.showItemTooltip(e.target._item, e.clientX, e.clientY, e);
             } else {
@@ -134,7 +135,9 @@ export class UIManager {
         });
         
         this.inventoryGrid.addEventListener('mouseleave', () => {
-            this.hideTooltips();
+            if (this.selectedSlot === -1) { // Only hide if nothing selected (allows moving mouse to tooltip)
+                this.hideTooltips();
+            }
         });
 
         // Equipment Tooltips
@@ -207,6 +210,17 @@ export class UIManager {
         this.onChatSend = null;
         this.onSellItem = null;
         this.onSellAll = null;
+        
+        this.selectedSlot = -1; // Track selected inventory slot
+        this.statTooltip.style.pointerEvents = 'auto'; // Allow clicking buttons in tooltip
+        
+        // Close tooltip/selection when clicking outside
+        window.addEventListener('click', (e) => {
+            if (this.selectedSlot !== -1 && !e.target.closest('#stat-tooltip') && !e.target.closest('.inv-slot')) {
+                this.selectedSlot = -1;
+                this.hideTooltips();
+            }
+        });
     }
 
     handleSellAll(rarityName) {
@@ -589,15 +603,28 @@ export class UIManager {
                 // Add click handler for equipping (simple toggle for now)
                 slots[i].onclick = (e) => {
                     e.stopPropagation();
-                    if (player.level < item.level) {
-                        console.log("Level too low to equip!");
-                        // Optional: Visual feedback (shake, red flash, etc.)
-                        return;
-                    }
-                    if (player.equipItem(item)) {
-                        player.inventory[i] = null; // Remove from inventory
-                        this.updateInventory(player);
-                        this.updateCharacterSheet(player);
+                    
+                    // Mobile/Desktop Selection Logic
+                    if (this.selectedSlot === i) {
+                        // Already selected -> Equip
+                        if (player.level < item.level) {
+                            console.log("Level too low to equip!");
+                            return;
+                        }
+                        if (player.equipItem(item)) {
+                            this.selectedSlot = -1; // Reset
+                            this.hideTooltips();
+                            this.updateInventory(player);
+                            this.updateCharacterSheet(player);
+                        }
+                    } else {
+                        // Select it
+                        this.selectedSlot = i;
+                        const rect = slots[i].getBoundingClientRect();
+                        // Show tooltip to the right or left depending on screen position
+                        let x = rect.right;
+                        if (x + 220 > window.innerWidth) x = rect.left - 220;
+                        this.showItemTooltip(item, x, rect.top);
                     }
                 };
 
@@ -755,9 +782,52 @@ export class UIManager {
         if (this.shopScreen.style.display === 'flex') {
             const value = Item.getValue(item);
             desc += `<div style="color: #ffd700; margin-top: 10px; border-top: 1px solid #444; padding-top: 5px;">Sell Value: ${value} Gold</div>`;
+            
+            // Add Sell Button
+            desc += `<button id="btn-tooltip-sell" style="width:100%; margin-top:10px; padding: 8px; background:#333; color:#ffd700; border:1px solid #ffd700; cursor:pointer; font-weight:bold;">SELL ITEM</button>`;
         }
         
+        // Add Equip Button
+        desc += `<button id="btn-tooltip-equip" style="width:100%; margin-top:5px; padding: 8px; background:#222; color:#fff; border:1px solid #666; cursor:pointer;">EQUIP</button>`;
+        
         this.statTooltipDesc.innerHTML = desc;
+        
+        // Bind Button Events
+        setTimeout(() => { // Timeout to ensure DOM is updated
+            const btnSell = document.getElementById('btn-tooltip-sell');
+            if (btnSell) {
+                btnSell.onclick = (e) => {
+                    e.stopPropagation();
+                    if (this.selectedSlot !== -1) {
+                        this.sellItem(this.lastPlayerRef, this.selectedSlot);
+                        this.selectedSlot = -1;
+                        this.hideTooltips();
+                    }
+                };
+            }
+            
+            const btnEquip = document.getElementById('btn-tooltip-equip');
+            if (btnEquip) {
+                btnEquip.onclick = (e) => {
+                    e.stopPropagation();
+                    if (this.selectedSlot !== -1 && this.lastPlayerRef) {
+                        const itemToEquip = this.lastPlayerRef.inventory[this.selectedSlot];
+                        if (itemToEquip) {
+                             if (this.lastPlayerRef.level < itemToEquip.level) {
+                                console.log("Level too low!");
+                                return;
+                            }
+                            if (this.lastPlayerRef.equipItem(itemToEquip)) {
+                                this.selectedSlot = -1;
+                                this.hideTooltips();
+                                this.updateInventory(this.lastPlayerRef);
+                                this.updateCharacterSheet(this.lastPlayerRef);
+                            }
+                        }
+                    }
+                };
+            }
+        }, 0);
         
         this.statTooltip.style.display = 'block';
         this.statTooltip.style.left = `${x + 15}px`;
