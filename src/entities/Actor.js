@@ -512,10 +512,15 @@ export class Actor extends Entity {
 
         // Dex: Movement speed and melee attack speed
         // Cap movement speed at 300% of base movement (derived from base stats)
-        const baseSpeed = (3 + (this.baseStats.dexterity * 0.5)) * 1.2;
-        const maxSpeed = baseSpeed * 3.0;
-
+        
+        // Calculate Speed
         this.stats.speed = (3 + (totalStats.dexterity * 0.5)) * 1.2;
+
+        // Cap Speed (Max = 3x Speed at 10 Dex)
+        const refDex = 10;
+        const refSpeed = (3 + (refDex * 0.5)) * 1.2; // ~9.6
+        const maxSpeed = refSpeed * 3.0; // ~28.8
+
         if (this.stats.speed > maxSpeed) {
             this.stats.speed = maxSpeed;
         }

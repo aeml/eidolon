@@ -1146,7 +1146,18 @@ func (e *Entity) RecalculateStats() {
 	e.Damage = (totalStr * 2) + flatDamage
 	e.Defense = flatDefense
 
+	// Speed Calculation
 	e.Speed = (3.0 + (float64(totalDex) * 0.5)) * 1.2
+
+	// Cap Speed (Max = 3x Speed at 10 Dex)
+	refDex := 10.0
+	refSpeed := (3.0 + (refDex * 0.5)) * 1.2 // ~9.6
+	maxSpeed := refSpeed * 3.0               // ~28.8
+
+	if e.Speed > maxSpeed {
+		e.Speed = maxSpeed
+	}
+
 	e.AttackSpeed = 1.0 + (float64(totalDex)/5.0)*0.05
 
 	e.ManaRegen = float64(totalWis) * 0.5
