@@ -681,10 +681,22 @@ export class UIManager {
             
             // 2. Reset positioning properties to prepare for absolute positioning
             element.style.position = 'absolute';
-            element.style.transform = 'none';
             element.style.margin = '0';
             element.style.right = 'auto';
             element.style.bottom = 'auto';
+
+            // Check for mobile scale
+            // We assume mobile if width < 800 OR if we detect a scale transform
+            // But simpler is to just check window width as per CSS media query
+            const isMobile = window.innerWidth <= 800 || document.body.classList.contains('mobile-mode');
+            
+            if (isMobile) {
+                // Preserve scale but move origin to top-left for easy dragging
+                element.style.transformOrigin = 'top left';
+                element.style.transform = 'scale(0.5)';
+            } else {
+                element.style.transform = 'none';
+            }
             
             // 3. Calculate position relative to the offset parent
             let parentX = 0;
