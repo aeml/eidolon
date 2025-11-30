@@ -99,6 +99,10 @@ export class GameEngine {
         this.needsRaycast = false;
         this.activeEntitiesCache = [];
         this.frameCount = 0;
+
+        // Entity Creation Throttling
+        this.entityCreationQueue = [];
+        this.pendingEntityIds = new Set();
     }
 
     async loadGame(onProgress) {
@@ -648,39 +652,13 @@ export class GameEngine {
 
                 let remoteEntity = this.remotePlayers.get(pData.id);
                 if (!remoteEntity) {
-                    // Pass subType (e.g. "Skeleton", "DwarfSalesman")
-                    if (pData.type === 'Loot') {
-                        // Map rarity string to object
-                        if (typeof pData.lootItem.rarity === 'string') {
-                            const rarityKey = pData.lootItem.rarity.toUpperCase();
-                            pData.lootItem.rarity = RARITY[rarityKey] || RARITY.COMMON;
-                        }
-
-                        // Create LootDrop
-                        remoteEntity = new LootDrop(pData.lootItem, pData.x, pData.z, pData.id);
-                        remoteEntity.id = pData.id;
-                        // Add click handler for pickup
-                        remoteEntity.onClick = () => {
-                            this.pickupLoot(pData.id);
-                        };
-                    } else if (pData.type === 'Projectile') {
-                        // Create Projectile
-                        const start = new THREE.Vector3(pData.x, pData.y, pData.z);
-                        const target = new THREE.Vector3(pData.x + (pData.velX || 1), pData.y, pData.z + (pData.velZ || 0));
-                        
-                        const owner = this.remotePlayers.get(pData.ownerId) || (pData.ownerId === this.player.id ? this.player : null);
-                        const dummyOwner = { stats: { intelligence: 10, dexterity: 10 } };
-                        
-                        remoteEntity = new Projectile(pData.id, owner || dummyOwner, pData.subType, start, target);
-                    } else {
-                        remoteEntity = this.createRemotePlayer(pData.type || 'Enemy', pData.id, pData.subType); 
-                        console.log(`Created remote entity: ${pData.id} (${pData.type}/${pData.subType})`);
+                    // Check if already pending creation
+                    if (!this.pendingEntityIds.has(pData.id)) {
+                        this.pendingEntityIds.add(pData.id);
+                        this.entityCreationQueue.push(pData);
                     }
-                    
-                    if (remoteEntity) {
-                        this.remotePlayers.set(pData.id, remoteEntity);
-                        this.addEntity(remoteEntity);
-                    }
+                    // Skip update for now, wait for creation
+                    return;
                 }
                 
                 if (remoteEntity) {
@@ -971,6 +949,55 @@ export class GameEngine {
 
     update(dt) {
         this.frameCount++;
+
+        // Process Entity Creation Queue (Throttle to 5 per frame)
+        const creationLimit = 5;
+        let createdCount = 0;
+        while (this.entityCreationQueue.length > 0 && createdCount < creationLimit) {
+            const pData = this.entityCreationQueue.shift();
+            this.pendingEntityIds.delete(pData.id);
+            
+            // Double check if it was already created (race condition)
+            if (this.remotePlayers.has(pData.id)) continue;
+
+            let remoteEntity;
+            // Pass subType (e.g. "Skeleton", "DwarfSalesman")
+            if (pData.type === 'Loot') {
+                // Map rarity string to object
+                if (typeof pData.lootItem.rarity === 'string') {
+                    const rarityKey = pData.lootItem.rarity.toUpperCase();
+                    pData.lootItem.rarity = RARITY[rarityKey] || RARITY.COMMON;
+                }
+
+                // Create LootDrop
+                remoteEntity = new LootDrop(pData.lootItem, pData.x, pData.z, pData.id);
+                remoteEntity.id = pData.id;
+                // Add click handler for pickup
+                remoteEntity.onClick = () => {
+                    this.pickupLoot(pData.id);
+                };
+            } else if (pData.type === 'Projectile') {
+                // Create Projectile
+                const start = new THREE.Vector3(pData.x, pData.y, pData.z);
+                const target = new THREE.Vector3(pData.x + (pData.velX || 1), pData.y, pData.z + (pData.velZ || 0));
+                
+                const owner = this.remotePlayers.get(pData.ownerId) || (pData.ownerId === this.player.id ? this.player : null);
+                const dummyOwner = { stats: { intelligence: 10, dexterity: 10 } };
+                
+                remoteEntity = new Projectile(pData.id, owner || dummyOwner, pData.subType, start, target);
+            } else {
+                remoteEntity = this.createRemotePlayer(pData.type || 'Enemy', pData.id, pData.subType); 
+                // console.log(`Created remote entity: ${pData.id} (${pData.type}/${pData.subType})`);
+            }
+            
+            if (remoteEntity) {
+                // Set initial position immediately
+                remoteEntity.position.set(pData.x, pData.y, pData.z);
+                this.remotePlayers.set(pData.id, remoteEntity);
+                this.addEntity(remoteEntity);
+            }
+            createdCount++;
+        }
 
         // Remote Entity Corpse Cleanup
         if (this.isMultiplayer) {

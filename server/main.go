@@ -162,9 +162,9 @@ func main() {
 
 	// Game Loop
 	go func() {
-		ticker := time.NewTicker(100 * time.Millisecond) // 10 TPS (Reduced from 20 TPS to save bandwidth)
+		ticker := time.NewTicker(50 * time.Millisecond) // 20 TPS
 		for range ticker.C {
-			world.Update(0.1) // Update dt to match ticker
+			world.Update(0.05)
 			broadcastState()
 		}
 	}()
