@@ -1,7 +1,7 @@
 import { GameEngine } from './core/GameEngine.js';
 
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800 || isLocalhost);
+const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800);
 
 const debugConsole = document.getElementById('debug-console');
 function logToScreen(msg, type = 'INFO') {
