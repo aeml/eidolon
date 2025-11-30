@@ -235,8 +235,10 @@ export class GameEngine {
             if (this.isMobile) {
                 let nearest = null;
                 let minDst = 1000;
-                this.enemies.forEach(e => {
-                    if (e.isActive && e.state !== 'DEAD') {
+                const activeEntities = this.chunkManager.getActiveEntities();
+
+                activeEntities.forEach(e => {
+                    if (e instanceof Actor && e !== this.player && !(e instanceof DwarfSalesman) && e.isActive && e.state !== 'DEAD') {
                         const d = this.player.position.distanceTo(e.position);
                         if (d < minDst) {
                             minDst = d;
@@ -246,12 +248,13 @@ export class GameEngine {
                 });
 
                 if (nearest && minDst < 8.0) {
-                    // Face target immediately
+                    // Turn towards enemy
                     const lookTarget = new THREE.Vector3(nearest.position.x, this.player.position.y, nearest.position.z);
                     if (this.player.mesh) {
                         this.player.mesh.lookAt(lookTarget);
                         this.player.rotation.copy(this.player.mesh.quaternion);
                     }
+
                     this.pendingInteraction = nearest;
                     this.player.move(nearest.position);
                 } else {
@@ -303,8 +306,10 @@ export class GameEngine {
                 // Auto-target nearest enemy for mobile ability
                 let nearest = null;
                 let minDst = 1000;
-                this.enemies.forEach(e => {
-                    if (e.isActive && e.state !== 'DEAD') {
+                const activeEntities = this.chunkManager.getActiveEntities();
+
+                activeEntities.forEach(e => {
+                    if (e instanceof Actor && e !== this.player && !(e instanceof DwarfSalesman) && e.isActive && e.state !== 'DEAD') {
                         const d = this.player.position.distanceTo(e.position);
                         if (d < minDst) {
                             minDst = d;
@@ -319,6 +324,13 @@ export class GameEngine {
                 if (nearest && minDst < 15.0) { // Generous auto-aim range
                     targetPos = nearest.position;
                     targetId = nearest.id;
+
+                    // Turn towards enemy
+                    const lookTarget = new THREE.Vector3(nearest.position.x, this.player.position.y, nearest.position.z);
+                    if (this.player.mesh) {
+                        this.player.mesh.lookAt(lookTarget);
+                        this.player.rotation.copy(this.player.mesh.quaternion);
+                    }
                 } else {
                     // Cast in front of player if no enemy
                     // Assuming player mesh rotation is valid
@@ -1055,7 +1067,6 @@ export class GameEngine {
     }
 
     update(dt) {
-        this.hasJustAttacked = false;
         this.frameCount++;
 
         // Process Network Message Queue
@@ -1443,7 +1454,6 @@ export class GameEngine {
                                     this.player.playAnimation('Attack', false);
                                     this.player.setAttackingState();
                                     attacked = true;
-                                    this.hasJustAttacked = true;
                                     
                                     // Do NOT clear pendingInteraction to enable Auto-Attack / Chase
                                     // The loop will continue, checking range and cooldown every frame
@@ -1452,7 +1462,6 @@ export class GameEngine {
                                 // Singleplayer Attack
                                 if (this.player.attack(this.pendingInteraction)) {
                                     attacked = true;
-                                    this.hasJustAttacked = true;
                                 }
                                 // Do NOT clear pendingInteraction
                             }
@@ -1556,16 +1565,13 @@ export class GameEngine {
                         this.player.position.copy(nextPos);
                     }
                     
-                    // Only override state and rotation if we didn't just attack
-                    if (!this.hasJustAttacked) {
-                        this.player.state = 'MOVING';
-                        this.player.playAnimation('Run');
-                        
-                        const lookTarget = this.player.position.clone().add(moveDir);
-                        if (this.player.mesh) {
-                            this.player.mesh.lookAt(lookTarget);
-                            this.player.rotation.copy(this.player.mesh.quaternion);
-                        }
+                    this.player.state = 'MOVING';
+                    this.player.playAnimation('Run');
+                    
+                    const lookTarget = this.player.position.clone().add(moveDir);
+                    if (this.player.mesh) {
+                        this.player.mesh.lookAt(lookTarget);
+                        this.player.rotation.copy(this.player.mesh.quaternion);
                     }
                     
                     this.player.targetPosition = null;
