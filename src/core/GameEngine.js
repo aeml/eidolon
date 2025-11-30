@@ -103,6 +103,10 @@ export class GameEngine {
         // Entity Creation Throttling
         this.entityCreationQueue = [];
         this.pendingEntityIds = new Set();
+
+        // Network Message Buffering
+        this.latestServerState = null;
+        this.messageQueue = [];
     }
 
     async loadGame(onProgress) {
@@ -502,7 +506,13 @@ export class GameEngine {
         this.socket.onmessage = (event) => {
             try {
                 const msg = JSON.parse(event.data);
-                this.handleServerMessage(msg);
+                if (msg.type === 'state') {
+                    // Only keep the latest state to prevent processing backlog
+                    this.latestServerState = msg.payload;
+                } else {
+                    // Queue other messages (chat, inventory, etc.)
+                    this.messageQueue.push(msg);
+                }
             } catch (e) {
                 console.error("Failed to parse server message:", e);
             }
@@ -949,6 +959,22 @@ export class GameEngine {
 
     update(dt) {
         this.frameCount++;
+
+        // Process Network Message Queue
+        // 1. Handle critical messages (Chat, Inventory, etc.)
+        const maxMessages = 50; // Safety limit
+        let msgCount = 0;
+        while (this.messageQueue.length > 0 && msgCount < maxMessages) {
+            const msg = this.messageQueue.shift();
+            this.handleServerMessage(msg);
+            msgCount++;
+        }
+
+        // 2. Handle latest state update (Coalesced)
+        if (this.latestServerState) {
+            this.handleServerMessage({ type: 'state', payload: this.latestServerState });
+            this.latestServerState = null;
+        }
 
         // Process Entity Creation Queue (Throttle to 5 per frame)
         const creationLimit = 5;
