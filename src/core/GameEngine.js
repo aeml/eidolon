@@ -619,14 +619,28 @@ export class GameEngine {
                             }
                         }
 
-                        this.uiManager.updateXP(this.player);
-                        this.uiManager.updateCharacterSheet(this.player);
-                        this.uiManager.updatePlayerStats(this.player);
+                        // Optimization: Only update UI if values changed
+                        if (this.player.xp !== this.lastXP || this.player.xpToNextLevel !== this.lastMaxXP) {
+                            this.uiManager.updateXP(this.player);
+                            this.lastXP = this.player.xp;
+                            this.lastMaxXP = this.player.xpToNextLevel;
+                        }
+
+                        // Check stats change (simple heuristic or deep compare)
+                        // We can just check a few key stats or use a dirty flag if we had one
+                        // For now, let's just throttle it to once per second or check key values
+                        const currentStatsHash = `${this.player.stats.hp}/${this.player.stats.maxHp}/${this.player.stats.mana}/${this.player.stats.strength}`;
+                        if (currentStatsHash !== this.lastStatsHash) {
+                            this.uiManager.updateCharacterSheet(this.player);
+                            this.uiManager.updatePlayerStats(this.player);
+                            this.lastStatsHash = currentStatsHash;
+                        }
                         
                         // Update Gold
-                        if (pData.gold !== undefined) {
+                        if (pData.gold !== undefined && pData.gold !== this.lastGold) {
                             this.player.gold = pData.gold;
                             this.uiManager.updateInventory(this.player);
+                            this.lastGold = pData.gold;
                         }
                     }
                     return; // Skip self
@@ -925,6 +939,17 @@ export class GameEngine {
     loop(time) {
         try {
             const seconds = time * 0.001;
+            // Catch-up logic: If we are too far behind (e.g. tab backgrounded), jump ahead
+            if (seconds - this.lastTime > 1.0) {
+                console.log("GameEngine: Large lag spike detected, skipping simulation catch-up.");
+                this.lastTime = seconds;
+                this.accumulator = 0;
+                // Force a render to update positions from any pending network messages
+                this.render(1.0);
+                requestAnimationFrame((t) => this.loop(t));
+                return;
+            }
+
             const dt = Math.min(seconds - this.lastTime, 0.1);
             this.lastTime = seconds;
             
