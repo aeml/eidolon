@@ -74,6 +74,11 @@ export class GameEngine {
                 }
             }
         };
+        this.uiManager.onSocialOpen = () => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(JSON.stringify({ type: 'social', payload: {} }));
+            }
+        };
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         this.minimap = new Minimap();
         this.worldMap = new WorldMap(this);
@@ -93,6 +98,7 @@ export class GameEngine {
 
         this.gameTime = 0;
         this.nextEliteSpawnTime = 180;
+        this.lastPickupTime = 0; // Throttle for pickup attempts
 
         this.raycastTimer = 0;
         this.mousePosition = new THREE.Vector2();
@@ -223,6 +229,9 @@ export class GameEngine {
             if (!this.player) return;
             if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen) return;
 
+            // Force raycast to ensure hoveredEntity is up to date with exact click position
+            this.performRaycast();
+
             if (this.isMobile) {
                 let nearest = null;
                 let minDst = 1000;
@@ -246,15 +255,36 @@ export class GameEngine {
             }
 
             if (this.hoveredEntity && this.hoveredEntity !== this.player) {
-                this.pendingInteraction = this.hoveredEntity;
-                this.pendingAbilityTarget = null;
-                this.player.move(this.hoveredEntity.position);
+                this.moveToAndInteract(this.hoveredEntity);
             } else {
                 const point = this.inputManager.getGroundIntersection();
                 if (point) {
-                    this.pendingInteraction = null;
-                    this.pendingAbilityTarget = null;
-                    this.player.move(point);
+                    // Smart Click: Check for nearby loot if we clicked ground
+                    // This handles cases where the click slightly missed the item or hitbox issues
+                    let nearestLoot = null;
+                    let minLootDist = 3.0; // Increased search radius around click point
+
+                    const activeEntities = this.chunkManager.getActiveEntities();
+                    for (const entity of activeEntities) {
+                        if (entity instanceof LootDrop && entity.isActive) {
+                            const d = new THREE.Vector2(point.x, point.z).distanceTo(new THREE.Vector2(entity.position.x, entity.position.z));
+                            if (d < minLootDist) {
+                                minLootDist = d;
+                                nearestLoot = entity;
+                            }
+                        }
+                    }
+
+                    if (nearestLoot) {
+                        this.moveToAndInteract(nearestLoot);
+                    } else {
+                        // Only clear pending interaction if we are clicking significantly far away from it?
+                        // Or if we explicitly clicked ground.
+                        // Since we force raycast above, if hoveredEntity is null, we definitely missed the entity.
+                        this.pendingInteraction = null;
+                        this.pendingAbilityTarget = null;
+                        this.player.move(point);
+                    }
                 }
             }
         });
@@ -451,6 +481,10 @@ export class GameEngine {
             this.uiManager.toggleInventory();
         });
 
+        this.inputManager.subscribe('onSocial', () => {
+            this.uiManager.toggleSocial();
+        });
+
 
         if (onProgress) onProgress(95, "Waiting for silicon...");
         await new Promise(r => setTimeout(r, 1000));
@@ -506,15 +540,27 @@ export class GameEngine {
     setupSocketListeners() {
         this.socket.onmessage = (event) => {
             try {
-                const msg = JSON.parse(event.data);
+                // Optimization: Check for state/time messages without full parse
+                // This avoids parsing huge JSONs that we might discard anyway
+                const data = event.data;
+                if (typeof data === 'string') {
+                    if (data.includes('"type":"state"')) {
+                        // Store raw string, parse lazily in update loop
+                        this.latestServerState = data;
+                        return;
+                    } else if (data.includes('"type":"time"')) {
+                        this.latestServerTime = data;
+                        return;
+                    }
+                }
+
+                const msg = JSON.parse(data);
+                // Fallback for safety or other messages
                 if (msg.type === 'state') {
-                    // Only keep the latest state to prevent processing backlog
-                    this.latestServerState = msg.payload;
+                    this.latestServerState = JSON.stringify(msg.payload); // Store as string to match optimization
                 } else if (msg.type === 'time') {
-                    // Coalesce time updates as well
-                    this.latestServerTime = msg.payload;
+                    this.latestServerTime = JSON.stringify(msg.payload);
                 } else {
-                    // Queue other messages (chat, inventory, etc.)
                     this.messageQueue.push(msg);
                 }
             } catch (e) {
@@ -554,7 +600,7 @@ export class GameEngine {
             const dmgData = msg.payload;
             // Show damage number
             // TODO: Add floating text system
-            console.log(`Damage: ${dmgData.amount} to ${dmgData.targetId} from ${dmgData.sourceId}`);
+            // console.log(`Damage: ${dmgData.amount} to ${dmgData.targetId} from ${dmgData.sourceId}`);
             
             // If target is local player, flash screen or shake camera?
             if (this.player && dmgData.targetId === this.player.id) {
@@ -755,6 +801,14 @@ export class GameEngine {
                         if (pData.rotation !== undefined) {
                             remoteEntity.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), pData.rotation);
                         }
+
+                        // Sync Health/Stats for Remote Entities (Enemies/Players)
+                        if (remoteEntity.stats) {
+                            if (pData.health !== undefined) remoteEntity.stats.hp = pData.health;
+                            if (pData.maxHealth !== undefined) remoteEntity.stats.maxHp = pData.maxHealth;
+                            if (pData.mana !== undefined) remoteEntity.stats.mana = pData.mana;
+                            if (pData.maxMana !== undefined) remoteEntity.stats.maxMana = pData.maxMana;
+                        }
                     }
                 }
             });
@@ -795,6 +849,8 @@ export class GameEngine {
                 this.player.inventory = inventory;
                 this.uiManager.updateInventory(this.player);
             }
+        } else if (msg.type === 'social') {
+            this.uiManager.updateSocialList(msg.payload);
         }
     }
 
@@ -881,12 +937,41 @@ export class GameEngine {
         }
     }
 
+    moveToAndInteract(entity) {
+        if (!entity) return;
+        this.pendingInteraction = entity;
+        this.pendingAbilityTarget = null;
+        
+        // Check if already in range to avoid unnecessary movement start
+        const dist = new THREE.Vector2(this.player.position.x, this.player.position.z)
+            .distanceTo(new THREE.Vector2(entity.position.x, entity.position.z));
+        
+        let range = 5.0;
+        if (entity instanceof DwarfSalesman) {
+            range = 4.0;
+        } else if (entity instanceof Actor && entity !== this.player) {
+            if (this.player.constructor.name === 'Wizard') {
+                range = 16.0;
+            } else {
+                range = 5.0;
+            }
+        }
+
+        if (dist > range) {
+            // Flatten move target
+            const target = entity.position.clone();
+            target.y = this.player.position.y;
+            this.player.move(target);
+        }
+    }
+
     performRaycast() {
         const meshes = this.activeEntitiesCache
             .filter(e => e.mesh && e.isActive && e !== this.player)
             .map(e => e.mesh);
         
-        this.inputManager.raycaster.setFromCamera(this.mousePosition, this.renderSystem.camera);
+        // Use inputManager.mouse directly to ensure we use the latest cursor position
+        this.inputManager.raycaster.setFromCamera(this.inputManager.mouse, this.renderSystem.camera);
         const intersects = this.inputManager.raycaster.intersectObjects(meshes, true);
         
         if (intersects.length > 0) {
@@ -990,7 +1075,21 @@ export class GameEngine {
         // 2. Handle latest state update (Coalesced)
         if (this.latestServerState) {
             try {
-                this.handleServerMessage({ type: 'state', payload: this.latestServerState });
+                // Parse the raw string here
+                let payload;
+                if (typeof this.latestServerState === 'string') {
+                    // If it's the full message string
+                    if (this.latestServerState.startsWith('{')) {
+                        const msg = JSON.parse(this.latestServerState);
+                        payload = msg.payload;
+                    } else {
+                        // Should not happen with current logic but safe fallback
+                        payload = JSON.parse(this.latestServerState);
+                    }
+                } else {
+                    payload = this.latestServerState;
+                }
+                this.handleServerMessage({ type: 'state', payload: payload });
             } catch (e) {
                 console.error("Error handling server state:", e);
             } finally {
@@ -1001,7 +1100,18 @@ export class GameEngine {
         // 3. Handle latest time update (Coalesced)
         if (this.latestServerTime) {
             try {
-                this.handleServerMessage({ type: 'time', payload: this.latestServerTime });
+                let payload;
+                if (typeof this.latestServerTime === 'string') {
+                    if (this.latestServerTime.startsWith('{')) {
+                        const msg = JSON.parse(this.latestServerTime);
+                        payload = msg.payload;
+                    } else {
+                        payload = JSON.parse(this.latestServerTime);
+                    }
+                } else {
+                    payload = this.latestServerTime;
+                }
+                this.handleServerMessage({ type: 'time', payload: payload });
             } catch (e) {
                 console.error("Error handling server time:", e);
             } finally {
@@ -1127,7 +1237,7 @@ export class GameEngine {
                         setTimeout(() => {
                             if (this.player.state === 'DEAD') return;
                             
-                            const attackRange = 3.0;
+                            const attackRange = 6.0;
                             const attackAngle = Math.PI / 3;
                             const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.player.mesh.quaternion);
                             
@@ -1166,7 +1276,7 @@ export class GameEngine {
                     }
 
                     const dist = this.player.position.distanceTo(this.hoveredEntity.position);
-                    const range = (this.player instanceof Wizard || this.player instanceof Rogue) ? 8.0 : 2.0;
+                    const range = (this.player instanceof Wizard || this.player instanceof Rogue) ? 16.0 : 4.0;
 
                     if (dist < range) {
                         this.player.targetPosition = null;
@@ -1186,6 +1296,14 @@ export class GameEngine {
                                 }
                             };
                             this.socket.send(JSON.stringify(attackMsg));
+                            
+                            // Face target
+                            const lookTarget = new THREE.Vector3(this.hoveredEntity.position.x, this.player.position.y, this.hoveredEntity.position.z);
+                            if (this.player.mesh) {
+                                this.player.mesh.lookAt(lookTarget);
+                                this.player.rotation.copy(this.player.mesh.quaternion);
+                            }
+
                             this.player.playAnimation('Attack', false);
                             this.player.setAttackingState();
                         } else {
@@ -1199,8 +1317,10 @@ export class GameEngine {
                     if (!this.hoveredEntity || this.hoveredEntity === this.player) {
                         const point = this.inputManager.getGroundIntersection();
                         if (point) {
-                            this.pendingInteraction = null;
-                            this.player.move(point);
+                            
+                            if (!this.pendingInteraction) {
+                                this.player.move(point);
+                            }
                         }
                     }
                 }
@@ -1209,70 +1329,150 @@ export class GameEngine {
             this.chunkManager.update(this.player, dt, this.collisionManager);
 
             if (this.pendingInteraction) {
+                // 1. Validate Target
                 if (!this.pendingInteraction.isActive || (this.pendingInteraction.state === 'DEAD' && !(this.pendingInteraction instanceof LootDrop))) {
                     this.pendingInteraction = null;
+                    // Stop moving if the target is invalid/gone
+                    this.player.targetPosition = null;
+                    this.player.state = 'IDLE';
+                    this.player.playAnimation('Idle');
                 } else {
-                    if (this.pendingInteraction.position) {
-                        this.player.targetPosition = this.pendingInteraction.position.clone();
-                    }
-
-                    const dist = this.player.position.distanceTo(this.pendingInteraction.position);
-                    let range = 2.5;
+                    // 2. Calculate Distance & Range
+                    const dist = new THREE.Vector2(this.player.position.x, this.player.position.z)
+                        .distanceTo(new THREE.Vector2(this.pendingInteraction.position.x, this.pendingInteraction.position.z));
+                    
+                    let range = 5.0; // Tight range for reliable interactions
                     
                     if (this.pendingInteraction instanceof DwarfSalesman) {
                         range = 4.0;
                     } else if (this.pendingInteraction instanceof Actor && this.pendingInteraction !== this.player) {
-                        range = 5.0;
+                        // Dynamic Attack Range based on class
+                        // Wizard is the only true ranged class for now
+                        if (this.player.constructor.name === 'Wizard') {
+                            range = 16.0;
+                        } else {
+                            range = 5.0; // Melee range (Fighter, Rogue, Cleric) - tighter to ensure server hit
+                        }
                     }
 
-                    if (dist < range) {
+                    // 3. Execute Logic
+                    if (dist <= range) {
+                        // ARRIVED: Interact
+                        
                         if (this.pendingInteraction instanceof LootDrop) {
-                            if (this.isMultiplayer && this.pendingInteraction.onClick) {
-                                this.pendingInteraction.onClick();
-                            } else if (this.player.addToInventory(this.pendingInteraction.item)) {
-                                console.log(`Picked up ${this.pendingInteraction.item.name}`);
-                                this.uiManager.updateInventory(this.player);
-                                
-                                this.pendingInteraction.isActive = false;
-                                this.renderSystem.remove(this.pendingInteraction.mesh);
-                                
-                                const key = this.chunkManager.getChunkKey(this.pendingInteraction.position.x, this.pendingInteraction.position.z);
-                                if (this.chunkManager.chunks.has(key)) {
-                                    this.chunkManager.chunks.get(key).delete(this.pendingInteraction);
-                                }
-                            } else {
-                                console.log("Inventory full!");
+                            this.player.targetPosition = null; 
+                            if (this.player.state === 'MOVING') {
+                                this.player.state = 'IDLE';
+                                this.player.playAnimation('Idle');
                             }
+                            // Extra check: If item is gone from server (multiplayer), stop trying immediately
+                            if (this.isMultiplayer && !this.remotePlayers.has(this.pendingInteraction.id)) {
+                                this.pendingInteraction = null;
+                                this.player.targetPosition = null;
+                                this.player.state = 'IDLE';
+                                this.player.playAnimation('Idle');
+                            } else {
+                                const now = Date.now();
+                                if (now - this.lastPickupTime > 250) { // 250ms throttle for retries
+                                    this.lastPickupTime = now;
+                                    
+                                    if (this.isMultiplayer && this.pendingInteraction.onClick) {
+                                        this.pendingInteraction.onClick();
+                                        // Do NOT clear pendingInteraction immediately.
+                                        // We wait for the server to remove the item (via state update).
+                                        // This ensures we keep trying or stay close until it's actually gone.
+                                    } else if (this.player.addToInventory(this.pendingInteraction.item)) {
+                                        console.log(`Picked up ${this.pendingInteraction.item.name}`);
+                                        this.uiManager.updateInventory(this.player);
+                                        
+                                        this.pendingInteraction.isActive = false;
+                                        this.renderSystem.remove(this.pendingInteraction.mesh);
+                                        
+                                        const key = this.chunkManager.getChunkKey(this.pendingInteraction.position.x, this.pendingInteraction.position.z);
+                                        if (this.chunkManager.chunks.has(key)) {
+                                            this.chunkManager.chunks.get(key).delete(this.pendingInteraction);
+                                        }
+                                        this.pendingInteraction = null; // Local success, clear immediately
+                                    } else {
+                                        console.log("Inventory full!");
+                                        this.pendingInteraction = null; // Stop trying if full
+                                    }
+                                }
+                            }
+
                         } else if (this.pendingInteraction instanceof DwarfSalesman) {
+                            this.player.targetPosition = null; 
+                            if (this.player.state === 'MOVING') {
+                                this.player.state = 'IDLE';
+                                this.player.playAnimation('Idle');
+                            }
                             this.uiManager.toggleShop();
+                            this.pendingInteraction = null;
+
                         } else if (this.pendingInteraction instanceof Actor) {
+                            let attacked = false;
                             if (this.isMultiplayer) {
                                 // Check Attack Speed Cooldown
                                 const now = Date.now();
                                 const cooldownMs = (1.0 / this.player.stats.attackSpeed) * 1000;
-                                if (now - this.player.lastAttackTime < cooldownMs) {
-                                    return;
-                                }
-                                this.player.lastAttackTime = now;
+                                if (now - this.player.lastAttackTime >= cooldownMs) {
+                                    this.player.lastAttackTime = now;
 
-                                const attackMsg = {
-                                    type: "attack",
-                                    payload: {
-                                        targetId: this.pendingInteraction.id
+                                    const attackMsg = {
+                                        type: "attack",
+                                        payload: {
+                                            targetId: this.pendingInteraction.id
+                                        }
+                                    };
+                                    this.socket.send(JSON.stringify(attackMsg));
+                                    
+                                    // Face target
+                                    const lookTarget = new THREE.Vector3(this.pendingInteraction.position.x, this.player.position.y, this.pendingInteraction.position.z);
+                                    if (this.player.mesh) {
+                                        this.player.mesh.lookAt(lookTarget);
+                                        this.player.rotation.copy(this.player.mesh.quaternion);
                                     }
-                                };
-                                this.socket.send(JSON.stringify(attackMsg));
-                                this.player.playAnimation('Attack', false);
-                                this.player.setAttackingState();
+
+                                    this.player.playAnimation('Attack', false);
+                                    this.player.setAttackingState();
+                                    attacked = true;
+                                    
+                                    // Do NOT clear pendingInteraction to enable Auto-Attack / Chase
+                                    // The loop will continue, checking range and cooldown every frame
+                                }
                             } else {
-                                this.player.attack(this.pendingInteraction);
+                                // Singleplayer Attack
+                                if (this.player.attack(this.pendingInteraction)) {
+                                    attacked = true;
+                                }
+                                // Do NOT clear pendingInteraction
+                            }
+
+                            // Movement Logic (Hysteresis)
+                            if (!attacked) {
+                                const stopRange = range - 0.5;
+                                if (dist <= stopRange) {
+                                    this.player.targetPosition = null;
+                                    if (this.player.state === 'MOVING') {
+                                        this.player.state = 'IDLE';
+                                        this.player.playAnimation('Idle');
+                                    }
+                                } else {
+                                    // Close in
+                                    const target = this.pendingInteraction.position.clone();
+                                    target.y = this.player.position.y;
+                                    this.player.move(target);
+                                }
                             }
                         }
-
-                        this.pendingInteraction = null;
-                        this.player.targetPosition = null;
-                        this.player.state = 'IDLE';
-                        this.player.playAnimation('Idle');
+                    } else {
+                        // MOVING: Chase Target
+                        // Continuously update target position to handle moving targets
+                        const target = this.pendingInteraction.position.clone();
+                        target.y = this.player.position.y;
+                        
+                        // Force move every frame to override any idle states
+                        this.player.move(target);
                     }
                 }
             }

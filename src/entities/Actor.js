@@ -328,14 +328,14 @@ export class Actor extends Entity {
     }
 
     attack(target) {
-        if (this.state === 'DEAD' || this.state === 'ATTACKING') return;
-        if (target && target.state === 'DEAD') return; // Don't attack dead targets
+        if (this.state === 'DEAD' || this.state === 'ATTACKING') return false;
+        if (target && target.state === 'DEAD') return false; // Don't attack dead targets
         
         // Attack Speed Check
         const now = Date.now();
         const cooldownMs = (1.0 / this.stats.attackSpeed) * 1000;
         if (now - this.lastAttackTime < cooldownMs) {
-            return;
+            return false;
         }
         this.lastAttackTime = now;
         
@@ -368,6 +368,8 @@ export class Actor extends Entity {
             this.state = 'IDLE';
             this.playAnimation('Idle');
         }, 500); // 500ms delay for hit
+        
+        return true;
     }
 
     performSkill(targetVector) {
@@ -509,7 +511,15 @@ export class Actor extends Entity {
         this.stats.defense = totalStats.defense;
 
         // Dex: Movement speed and melee attack speed
+        // Cap movement speed at 300% of base movement (derived from base stats)
+        const baseSpeed = (3 + (this.baseStats.dexterity * 0.5)) * 1.2;
+        const maxSpeed = baseSpeed * 3.0;
+
         this.stats.speed = (3 + (totalStats.dexterity * 0.5)) * 1.2;
+        if (this.stats.speed > maxSpeed) {
+            this.stats.speed = maxSpeed;
+        }
+
         this.stats.attackSpeed = 1 + (totalStats.dexterity / 5) * 0.05;
 
         // Wisdom: Mana regen and cast speed

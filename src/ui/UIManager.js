@@ -63,6 +63,7 @@ export class UIManager {
         this.btnSellRare.addEventListener('click', () => this.handleSellAll('Rare'));
 
         this.setupShop();
+        this.createSocialWindow();
 
         // Setup Windows (Drag & Click Blocking)
         this.setupWindow(this.characterSheet);
@@ -70,6 +71,7 @@ export class UIManager {
         this.setupWindow(this.shopScreen);
         this.setupWindow(this.helpScreen);
         this.setupWindow(this.patchNotesScreen);
+        this.setupWindow(this.socialWindow);
 
         // Ability UI
         this.abilityContainer = document.getElementById('ability-container');
@@ -346,11 +348,16 @@ export class UIManager {
         // Project to 2D screen space
         pos.project(camera);
 
-        const x = (pos.x * .5 + .5) * window.innerWidth;
-        const y = (-(pos.y * .5) + .5) * window.innerHeight;
+        // Convert NDC to pixel coordinates
+        // NDC: [-1, 1] -> Screen: [0, width]
+        const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
+        // NDC Y is up, Screen Y is down
+        const y = (-(pos.y * 0.5) + 0.5) * window.innerHeight;
 
+        // Center the bar horizontally
         bar.style.left = `${x}px`;
         bar.style.top = `${y}px`;
+        bar.style.transform = 'translate(-50%, -50%)'; // Center anchor point
     }
 
     get isEscMenuOpen() {
@@ -451,6 +458,12 @@ export class UIManager {
         // Close Shop
         if (this.shopScreen.style.display === 'flex') {
             this.shopScreen.style.display = 'none';
+            closedSomething = true;
+        }
+
+        // Close Social
+        if (this.socialWindow.style.display === 'block') {
+            this.socialWindow.style.display = 'none';
             closedSomething = true;
         }
 
@@ -880,6 +893,78 @@ export class UIManager {
         this.statTooltip.style.display = 'none';
         this.compareTooltip.style.display = 'none';
         this.hoveredItem = null;
+    }
+
+    createSocialWindow() {
+        const div = document.createElement('div');
+        div.id = 'social-window';
+        div.className = 'window'; // Add window class for styling/scaling
+        div.style.display = 'none';
+        div.style.position = 'absolute';
+        div.style.top = '50%';
+        div.style.left = '50%';
+        div.style.transform = 'translate(-50%, -50%)';
+        div.style.width = '400px';
+        div.style.height = '500px';
+        div.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+        div.style.border = '2px solid #444';
+        div.style.color = 'white';
+        div.style.padding = '20px';
+        div.style.zIndex = '1000';
+        div.style.fontFamily = 'Arial, sans-serif';
+        
+        div.innerHTML = `
+            <div class="window-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid #666; padding-bottom:10px;">
+                <h2 style="margin:0;">Social</h2>
+                <button id="close-social" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">X</button>
+            </div>
+            <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; font-weight:bold; margin-bottom:10px; color:#aaa;">
+                <span>Name</span>
+                <span>Class</span>
+                <span>Level</span>
+            </div>
+            <div id="social-list" style="overflow-y:auto; height:380px;">
+                <!-- Players go here -->
+            </div>
+        `;
+        
+        document.body.appendChild(div);
+        
+        document.getElementById('close-social').onclick = () => this.toggleSocial(false);
+        this.socialWindow = div;
+        this.socialList = document.getElementById('social-list');
+    }
+
+    toggleSocial(show) {
+        if (show === undefined) {
+            show = this.socialWindow.style.display === 'none';
+        }
+        this.socialWindow.style.display = show ? 'block' : 'none';
+        if (show) {
+            // Trigger refresh callback if needed, or GameEngine handles it
+            if (this.onSocialOpen) this.onSocialOpen();
+        }
+    }
+
+    updateSocialList(players) {
+        this.socialList.innerHTML = '';
+        players.forEach(p => {
+            const row = document.createElement('div');
+            row.style.display = 'grid';
+            row.style.gridTemplateColumns = '2fr 1fr 1fr';
+            row.style.padding = '5px 0';
+            row.style.borderBottom = '1px solid #333';
+            
+            // Use lastPlayerRef to check self name if available, otherwise just white
+            const isSelf = this.lastPlayerRef && this.lastPlayerRef.name === p.name;
+
+            row.innerHTML = `
+                <span style="color:${isSelf ? '#4CAF50' : 'white'}">${p.name}</span>
+                <span style="color:#aaa">${p.class}</span>
+                <span style="color:#FFD700">${p.level}</span>
+            `;
+            this.socialList.appendChild(row);
+        });
     }
 
 }

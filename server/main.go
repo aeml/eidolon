@@ -75,11 +75,18 @@ const (
 	MsgEquip     = "equip"
 	MsgBuyGamble = "buy_gamble"
 	MsgSell      = "sell"
+	MsgSocial    = "social"
 )
 
 type Message struct {
 	Type    string          `json:"type"`
 	Payload json.RawMessage `json:"payload"`
+}
+
+type SocialEntry struct {
+	Name  string `json:"name"`
+	Class string `json:"class"`
+	Level int    `json:"level"`
 }
 
 type AuthPayload struct {
@@ -138,10 +145,15 @@ type ChatPayload struct {
 	Sender  string `json:"sender"`
 }
 
+type BroadcastMessage struct {
+	Type string
+	Data []byte
+}
+
 var clients = make(map[*Client]bool)
 var activeSessions = make(map[string]*Client)
 var sessionsMu sync.Mutex
-var broadcast = make(chan []byte)
+var broadcast = make(chan BroadcastMessage)
 var register = make(chan *Client)
 var unregister = make(chan *Client)
 
@@ -159,6 +171,28 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	world = game.NewWorld()
+
+	// Set up World Event Callback
+	world.OnEvent = func(eventType string, data interface{}) {
+		if eventType == "elite_spawn" {
+			msgText, ok := data.(string)
+			if !ok {
+				return
+			}
+			// Broadcast chat message
+			outPayload := ChatPayload{
+				Message: msgText,
+				Sender:  "System",
+			}
+			b, _ := json.Marshal(outPayload)
+			outMsg := Message{
+				Type:    MsgChat,
+				Payload: b,
+			}
+			dataBytes, _ := json.Marshal(outMsg)
+			broadcast <- BroadcastMessage{Type: MsgChat, Data: dataBytes}
+		}
+	}
 
 	// Game Loop
 	go func() {
@@ -235,11 +269,30 @@ func runHub() {
 			}
 		case message := <-broadcast:
 			for client := range clients {
-				select {
-				case client.send <- message:
-				default:
-					close(client.send)
-					delete(clients, client)
+				if message.Type == MsgState || message.Type == "time" {
+					// Non-blocking send for state/time updates
+					// If channel is full, drop the message instead of disconnecting
+					select {
+					case client.send <- message.Data:
+					default:
+						// Drop message, client is too slow
+					}
+				} else {
+					// Critical messages (Chat, Damage, etc.)
+					// Try to send, if full, we might have to disconnect or risk blocking
+					select {
+					case client.send <- message.Data:
+					default:
+						// Remove from activeSessions first to prevent broadcastState from writing to closed channel
+						sessionsMu.Lock()
+						if existing, exists := activeSessions[client.username]; exists && existing == client {
+							delete(activeSessions, client.username)
+						}
+						sessionsMu.Unlock()
+
+						close(client.send)
+						delete(clients, client)
+					}
 				}
 			}
 		}
@@ -255,7 +308,7 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 
 	client := &Client{
 		conn: c,
-		send: make(chan []byte, 1024), // Increased buffer size
+		send: make(chan []byte, 64), // Reduced buffer size to prevent lag accumulation
 	}
 	register <- client
 
@@ -598,7 +651,7 @@ func (c *Client) handleMessage(msg Message) {
 				Payload: b,
 			}
 			data, _ := json.Marshal(outMsg)
-			broadcast <- data
+			broadcast <- BroadcastMessage{Type: MsgDamage, Data: data}
 		}
 
 	case MsgPickup:
@@ -652,7 +705,7 @@ func (c *Client) handleMessage(msg Message) {
 			Payload: b,
 		}
 		data, _ := json.Marshal(outMsg)
-		broadcast <- data
+		broadcast <- BroadcastMessage{Type: MsgChat, Data: data}
 
 	case MsgEquip:
 		if c.playerID == "" {
@@ -716,6 +769,32 @@ func (c *Client) handleMessage(msg Message) {
 			b, _ := json.Marshal(msg)
 			c.send <- b
 		}
+
+	case MsgSocial:
+		// Gather online players
+		var playerList []SocialEntry
+		sessionsMu.Lock()
+		for _, client := range activeSessions {
+			if client.playerID != "" {
+				entity := world.GetEntity(client.playerID)
+				if entity != nil {
+					playerList = append(playerList, SocialEntry{
+						Name:  entity.Name,
+						Class: entity.SubType,
+						Level: entity.Level,
+					})
+				}
+			}
+		}
+		sessionsMu.Unlock()
+
+		payload, _ := json.Marshal(playerList)
+		msg := Message{
+			Type:    MsgSocial,
+			Payload: payload,
+		}
+		b, _ := json.Marshal(msg)
+		c.send <- b
 	}
 }
 
@@ -734,14 +813,32 @@ func (c *Client) sendError(msg string) {
 }
 
 func broadcastState() {
-	state := world.GetState()
-	payload, _ := json.Marshal(state)
-	msg := Message{
-		Type:    MsgState,
-		Payload: payload,
+	// Iterate over active sessions and send custom state to each
+	sessionsMu.Lock()
+	defer sessionsMu.Unlock()
+
+	for _, client := range activeSessions {
+		if client.playerID == "" {
+			continue
+		}
+
+		// Get custom state (60 unit radius)
+		state := world.GetStateForPlayer(client.playerID, 60.0)
+		payload, _ := json.Marshal(state)
+
+		msg := Message{
+			Type:    MsgState,
+			Payload: payload,
+		}
+		data, _ := json.Marshal(msg)
+
+		// Non-blocking send
+		select {
+		case client.send <- data:
+		default:
+			// Drop message if client is too slow
+		}
 	}
-	data, _ := json.Marshal(msg)
-	broadcast <- data
 }
 
 func broadcastTime() {
@@ -755,11 +852,19 @@ func broadcastTime() {
 		Payload: payload,
 	}
 	data, _ := json.Marshal(msg)
-	broadcast <- data
+	broadcast <- BroadcastMessage{Type: "time", Data: data}
 }
 
 func saveAllPlayers() {
-	for client := range clients {
+	// Create a snapshot of active sessions to avoid holding the lock during DB operations
+	var clientsToSave []*Client
+	sessionsMu.Lock()
+	for _, client := range activeSessions {
+		clientsToSave = append(clientsToSave, client)
+	}
+	sessionsMu.Unlock()
+
+	for _, client := range clientsToSave {
 		savePlayer(client)
 	}
 }

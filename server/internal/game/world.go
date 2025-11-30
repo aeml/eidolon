@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"strings"
 	"sync"
 	"time"
 )
@@ -102,6 +103,9 @@ type World struct {
 
 	// Global Regen Timer
 	RegenTimer float64
+
+	// Event Callback
+	OnEvent func(eventType string, data interface{})
 }
 
 func NewWorld() *World {
@@ -109,6 +113,7 @@ func NewWorld() *World {
 		Entities:        make(map[string]*Entity),
 		EliteSpawnTimer: time.Now(),
 		RegenTimer:      0,
+		OnEvent:         func(eventType string, data interface{}) {}, // Default no-op
 	}
 	w.initWorld()
 	return w
@@ -185,6 +190,11 @@ func (w *World) spawnEliteInArea(level int, minR, maxR float64) {
 	// Let's just rely on ID for now or add property to Entity struct if we want to be clean.
 	// For now, just spawn it.
 	w.Entities[elite.ID] = elite
+
+	// Announce Spawn
+	if w.OnEvent != nil {
+		w.OnEvent("elite_spawn", fmt.Sprintf("An Elite %s has spawned in the Level %d area!", subType, level))
+	}
 }
 
 func (w *World) spawnMerchant() {
@@ -317,7 +327,7 @@ func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool) {
 	dx := player.X - loot.X
 	dz := player.Z - loot.Z
 	dist := dx*dx + dz*dz
-	if dist < 9.0 {
+	if dist < 36.0 {
 		if loot.LootItem != nil {
 			player.Inventory = append(player.Inventory, *loot.LootItem)
 			delete(w.Entities, lootID)
@@ -494,7 +504,16 @@ func (w *World) Update(dt float64) {
 		// --- Respawn Logic for Enemies and NPCs ---
 		if e.Type == TypeEnemy || e.Type == TypeNPC {
 			if e.State == "DEAD" {
-				// Respawn Logic
+				// Check if Elite
+				if strings.HasPrefix(e.ID, "elite-") {
+					// Elites do not respawn, they are removed after death animation time
+					if time.Since(e.LastAttackTime) > 5*time.Second {
+						delete(w.Entities, id)
+					}
+					continue
+				}
+
+				// Respawn Logic for normal mobs
 				if time.Since(e.LastAttackTime) > 10*time.Second { // Use LastAttackTime as death time for simplicity
 					e.State = "IDLE"
 					e.Health = e.MaxHealth
@@ -589,7 +608,7 @@ func (w *World) Update(dt float64) {
 							dx := e.X - target.X
 							dz := e.Z - target.Z
 							dist := math.Sqrt(dx*dx + dz*dz)
-							if dist < 8.0 {
+							if dist < 16.0 {
 								target.Health -= damage
 								if target.Health <= 0 {
 									w.handleDeath(target, e)
@@ -726,8 +745,8 @@ func (w *World) Update(dt float64) {
 		}
 	}
 
-	// 3. Elite Spawning Logic (Every 15 minutes)
-	if time.Since(w.EliteSpawnTimer) >= 15*time.Minute {
+	// 3. Elite Spawning Logic (Every 5 minutes)
+	if time.Since(w.EliteSpawnTimer) >= 5*time.Minute {
 		w.EliteSpawnTimer = time.Now()
 		// Spawn one random elite
 		type SpawnArea struct {
@@ -779,12 +798,12 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	dz := attacker.Z - target.Z
 	dist := math.Sqrt(dx*dx + dz*dz)
 
-	attackRange := 2.5 // Default Melee range
+	attackRange := 5.0 // Default Melee range
 	switch attacker.SubType {
 	case "Wizard", "Rogue":
 		attackRange = 100.0 // Ranged - effectively infinite
 	case "DwarfSalesman":
-		attackRange = 4.0
+		attackRange = 6.0
 	}
 
 	if dist > attackRange {
@@ -982,15 +1001,34 @@ func (w *World) handleDeath(target *Entity, attacker *Entity) {
 		}
 		attacker.Gold += gold
 
-		if rand.Float64() < 0.5 && target.Level > 0 {
-			item := GenerateLoot(target.Level)
+		// Check if Elite
+		isElite := strings.HasPrefix(target.ID, "elite-")
+		dropCount := 0
+		if isElite {
+			dropCount = 3 // Elites drop 3 items guaranteed
+		} else if rand.Float64() < 0.5 && target.Level > 0 {
+			dropCount = 1 // Normal enemies have 50% chance for 1 item
+		}
+
+		for i := 0; i < dropCount; i++ {
+			var item *Item
+			if isElite {
+				item = GenerateEliteLoot(target.Level)
+			} else {
+				item = GenerateLoot(target.Level)
+			}
+
+			// Offset loot slightly so they don't stack perfectly
+			offsetX := (rand.Float64() - 0.5) * 1.0
+			offsetZ := (rand.Float64() - 0.5) * 1.0
+
 			fmt.Printf("Loot dropped: %s (Rarity: %s) at %.2f, %.2f\n", item.Name, item.Rarity, target.X, target.Z)
 			lootEntity := &Entity{
-				ID:       fmt.Sprintf("loot-%d", time.Now().UnixNano()),
+				ID:       fmt.Sprintf("loot-%d-%d", time.Now().UnixNano(), i),
 				Type:     TypeLoot,
-				X:        target.X,
+				X:        target.X + offsetX,
 				Y:        0.5,
-				Z:        target.Z,
+				Z:        target.Z + offsetZ,
 				LootItem: item,
 				LootTime: time.Now(),
 			}
@@ -1023,6 +1061,42 @@ func (w *World) GetState() map[string]*Entity {
 		}
 
 		state[k] = &e
+	}
+	return state
+}
+
+func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[string]*Entity {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return make(map[string]*Entity)
+	}
+
+	state := make(map[string]*Entity)
+
+	for k, v := range w.Entities {
+		// Check distance
+		dx := v.X - player.X
+		dz := v.Z - player.Z
+		distSq := dx*dx + dz*dz
+
+		// Include if within distance OR if it's the player themselves
+		if distSq <= viewDistance*viewDistance || k == playerID {
+			// Shallow copy & strip
+			e := *v
+			if len(e.Equipment) > 0 {
+				newEquip := make(map[string]Item)
+				for slot, item := range e.Equipment {
+					newItem := item
+					newItem.Description = ""
+					newEquip[slot] = newItem
+				}
+				e.Equipment = newEquip
+			}
+			state[k] = &e
+		}
 	}
 	return state
 }
