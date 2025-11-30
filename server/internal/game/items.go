@@ -98,15 +98,15 @@ func GenerateLoot(maxLevel int) *Item {
 
 	if roll < 0.01 {
 		rarity = RarityLegendary
-		multiplier = 5.0
+		multiplier = 20.0
 		statCount = 5
 	} else if roll < 0.30 {
 		rarity = RarityRare
-		multiplier = 3.0
+		multiplier = 5.0
 		statCount = 2
 	} else if roll < 0.60 {
 		rarity = RarityUncommon
-		multiplier = 1.5
+		multiplier = 2.0
 		statCount = 1
 	}
 
@@ -123,16 +123,16 @@ func GenerateEliteLoot(level int) *Item {
 	// Rarity: 50% Uncommon, 40% Rare, 10% Legendary
 	roll := rand.Float64()
 	rarity := RarityUncommon
-	multiplier := 1.5
+	multiplier := 2.0
 	statCount := 1
 
 	if roll < 0.10 {
 		rarity = RarityLegendary
-		multiplier = 5.0
+		multiplier = 20.0
 		statCount = 5
 	} else if roll < 0.50 {
 		rarity = RarityRare
-		multiplier = 3.0
+		multiplier = 5.0
 		statCount = 2
 	}
 
@@ -164,15 +164,15 @@ func GenerateLootForSlot(slot string, level int) *Item {
 
 	if roll < 0.05 { // Slightly better odds for gamble?
 		rarity = RarityLegendary
-		multiplier = 5.0
+		multiplier = 20.0
 		statCount = 5
 	} else if roll < 0.35 {
 		rarity = RarityRare
-		multiplier = 3.0
+		multiplier = 5.0
 		statCount = 2
 	} else if roll < 0.65 {
 		rarity = RarityUncommon
-		multiplier = 1.5
+		multiplier = 2.0
 		statCount = 1
 	}
 
@@ -262,6 +262,6 @@ func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCo
 		Slot:   baseItem.Slot,
 		Level:  level,
 		Stats:  itemStats,
-		Value:  level * 10 * int(multiplier),
+		Value:  int(float64(level*10) * multiplier),
 	}
 }
