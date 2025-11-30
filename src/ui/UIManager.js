@@ -659,7 +659,8 @@ export class UIManager {
         // Stop clicks from reaching the game
         element.addEventListener('mousedown', (e) => e.stopPropagation());
         element.addEventListener('click', (e) => e.stopPropagation()); // Also stop click events
-        
+        element.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: false });
+
         // Drag Logic
         const header = element.querySelector('.window-header');
         if (!header) return;
@@ -668,10 +669,10 @@ export class UIManager {
         let isDragging = false;
         let startX, startY, startLeft, startTop;
 
-        header.addEventListener('mousedown', (e) => {
+        const startDrag = (clientX, clientY) => {
             isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
+            startX = clientX;
+            startY = clientY;
 
             // Neutralize transform if present (first drag)
             const style = window.getComputedStyle(element);
@@ -683,23 +684,79 @@ export class UIManager {
                 element.style.margin = '0';
             }
             
-            startLeft = parseFloat(element.style.left);
-            startTop = parseFloat(element.style.top);
+            // If left/top are not set (e.g. initial CSS), use getBoundingClientRect
+            // Or if we just neutralized transform, we need to ensure we have the current visual position
+            const rect = element.getBoundingClientRect();
+            startLeft = rect.left;
+            startTop = rect.top;
+
+            // Ensure absolute positioning is active and set to current visual position
+            if (element.style.position !== 'absolute') {
+                element.style.position = 'absolute';
+            }
+            element.style.left = `${startLeft}px`;
+            element.style.top = `${startTop}px`;
+        };
+
+        const moveDrag = (clientX, clientY) => {
+            if (!isDragging) return;
+            const dx = clientX - startX;
+            const dy = clientY - startY;
             
+            let newLeft = startLeft + dx;
+            let newTop = startTop + dy;
+
+            // Simple bounds check to keep header somewhat on screen
+            const headerRect = header.getBoundingClientRect();
+            const maxX = window.innerWidth - 50; // Keep at least 50px visible
+            const maxY = window.innerHeight - headerRect.height;
+
+            if (newTop < 0) newTop = 0;
+            if (newTop > maxY) newTop = maxY;
+            if (newLeft < -headerRect.width + 50) newLeft = -headerRect.width + 50;
+            if (newLeft > maxX) newLeft = maxX;
+
+            element.style.left = `${newLeft}px`;
+            element.style.top = `${newTop}px`;
+        };
+
+        const endDrag = () => {
+            isDragging = false;
+        };
+
+        // Mouse Events
+        header.addEventListener('mousedown', (e) => {
+            startDrag(e.clientX, e.clientY);
             e.preventDefault(); // Prevent selection
         });
 
         window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            element.style.left = `${startLeft + dx}px`;
-            element.style.top = `${startTop + dy}px`;
+            moveDrag(e.clientX, e.clientY);
         });
 
-        window.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
+        window.addEventListener('mouseup', endDrag);
+
+        // Touch Events
+        header.addEventListener('touchstart', (e) => {
+            // Allow buttons to work
+            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                return;
+            }
+
+            if (e.touches.length === 1) {
+                startDrag(e.touches[0].clientX, e.touches[0].clientY);
+                e.preventDefault(); // Prevent scrolling
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length === 1) {
+                moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+                e.preventDefault(); // Prevent scrolling
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchend', endDrag);
     }
 
     showStatTooltip(statName, x, y) {
