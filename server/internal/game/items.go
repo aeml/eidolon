@@ -98,11 +98,11 @@ func GenerateLoot(maxLevel int) *Item {
 
 	if roll < 0.01 {
 		rarity = RarityLegendary
-		multiplier = 3.0
+		multiplier = 5.0
 		statCount = 5
 	} else if roll < 0.30 {
 		rarity = RarityRare
-		multiplier = 2.0
+		multiplier = 3.0
 		statCount = 2
 	} else if roll < 0.60 {
 		rarity = RarityUncommon
@@ -128,11 +128,11 @@ func GenerateEliteLoot(level int) *Item {
 
 	if roll < 0.10 {
 		rarity = RarityLegendary
-		multiplier = 3.0
+		multiplier = 5.0
 		statCount = 5
 	} else if roll < 0.50 {
 		rarity = RarityRare
-		multiplier = 2.0
+		multiplier = 3.0
 		statCount = 2
 	}
 
@@ -164,11 +164,11 @@ func GenerateLootForSlot(slot string, level int) *Item {
 
 	if roll < 0.05 { // Slightly better odds for gamble?
 		rarity = RarityLegendary
-		multiplier = 3.0
+		multiplier = 5.0
 		statCount = 5
 	} else if roll < 0.35 {
 		rarity = RarityRare
-		multiplier = 2.0
+		multiplier = 3.0
 		statCount = 2
 	} else if roll < 0.65 {
 		rarity = RarityUncommon
@@ -198,8 +198,11 @@ func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCo
 		// Select Stats
 		var selectedStats []string
 		if rarity == RarityLegendary {
-			selectedStats = make([]string, len(StatPool))
-			copy(selectedStats, StatPool)
+			// Shuffle StatPool to ensure random primary stat
+			shuffled := make([]string, len(StatPool))
+			copy(shuffled, StatPool)
+			rand.Shuffle(len(shuffled), func(i, j int) { shuffled[i], shuffled[j] = shuffled[j], shuffled[i] })
+			selectedStats = shuffled
 		} else {
 			// Pick random unique stats
 			pool := make([]string, len(StatPool))

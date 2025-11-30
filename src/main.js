@@ -1,6 +1,7 @@
 import { GameEngine } from './core/GameEngine.js';
 
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800;
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800 || isLocalhost);
 
 const debugConsole = document.getElementById('debug-console');
 function logToScreen(msg, type = 'INFO') {
@@ -27,6 +28,7 @@ console.warn = function(...args) {
 };
 
 if (isMobile) {
+    document.body.classList.add('mobile-mode');
     const originalConsoleLog = console.log;
     console.log = function(...args) {
         originalConsoleLog.apply(console, args);
@@ -43,7 +45,6 @@ window.addEventListener('unhandledrejection', function(event) {
     logToScreen(`Unhandled Rejection: ${event.reason}`, 'CRITICAL');
 });
 
-const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 if (!isLocalhost && !isMobile) {
     console.log = function() {};
 } else {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Eidolon Online</title>
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
@@ -678,95 +678,41 @@
         /* Mobile Styles */
         @media (max-width: 800px) {
             /* Portrait Mode */
-            #minimap-canvas {
-                width: 120px !important;
-                height: 120px !important;
-                top: 10px !important;
-                right: 10px !important;
-            }
-            
-            #game-timer {
-                font-size: 18px !important;
-                padding: 5px 10px !important;
-                min-width: 80px !important;
-                top: 10px !important;
-                left: 10px !important;
-            }
-            
-            #player-hud {
-                width: 200px !important;
-                bottom: 10px !important;
-                left: 10px !important;
-            }
-            
-            .bar-container {
-                height: 15px !important;
-            }
-            
-            .bar-text {
-                font-size: 10px !important;
-            }
-            
-            #mobile-actions {
-                width: 120px !important;
-                height: 120px !important;
-                bottom: 20px !important;
-                right: 20px !important;
-            }
-            
-            #btn-mobile-attack {
-                width: 60px !important;
-                height: 60px !important;
-                font-size: 12px !important;
-            }
-            
-            #btn-mobile-ability {
-                width: 45px !important;
-                height: 45px !important;
-                bottom: 70px !important;
-                right: 15px !important;
-                font-size: 10px !important;
-            }
-            
-            #btn-mobile-interact {
-                width: 45px !important;
-                height: 45px !important;
-                bottom: 15px !important;
-                right: 70px !important;
-                font-size: 10px !important;
-            }
-            
-            #joystick-zone {
-                width: 100px !important;
-                height: 100px !important;
-                bottom: 30px !important;
-                left: 30px !important;
-            }
-            
-            #joystick-knob {
-                width: 40px !important;
-                height: 40px !important;
-            }
-
-            /* Windows Scaling */
-            .window {
-                transform-origin: center center;
-                transform: translate(-50%, -50%) scale(0.7) !important;
-            }
-            
-            /* Specific Window Adjustments */
-            #character-sheet {
-                /* Character sheet is normally translate(-150%, -50%) */
-                transform: translate(-50%, -50%) scale(0.7) !important;
-                left: 50% !important; /* Center it on mobile */
-            }
-            
-            #inventory-screen {
-                /* Inventory is normally translate(100%, -50%) */
-                transform: translate(-50%, -50%) scale(0.7) !important;
-                left: 50% !important; /* Center it on mobile */
-            }
+            #minimap-canvas { width: 120px !important; height: 120px !important; top: 70px !important; right: 10px !important; }
+            #game-timer { font-size: 18px !important; padding: 5px 10px !important; min-width: 80px !important; top: 10px !important; left: 10px !important; }
+            #player-hud { width: 150px !important; top: 10px !important; left: 220px !important; bottom: auto !important; }
+            .bar-container { height: 15px !important; }
+            .bar-text { font-size: 10px !important; }
+            #ability-container { top: 10px !important; left: 380px !important; right: auto !important; bottom: auto !important; width: 40px !important; height: 40px !important; }
+            #chat-box { top: 60px !important; left: 10px !important; bottom: auto !important; width: 250px !important; height: 120px !important; font-size: 10px !important; }
+            #mobile-actions { width: 120px !important; height: 120px !important; bottom: 20px !important; right: 20px !important; }
+            #btn-mobile-attack { width: 60px !important; height: 60px !important; font-size: 12px !important; }
+            #btn-mobile-ability { width: 45px !important; height: 45px !important; bottom: 70px !important; right: 15px !important; font-size: 10px !important; }
+            #btn-mobile-interact { width: 45px !important; height: 45px !important; bottom: 15px !important; right: 70px !important; font-size: 10px !important; }
+            #joystick-zone { width: 100px !important; height: 100px !important; bottom: 30px !important; left: 30px !important; }
+            #joystick-knob { width: 40px !important; height: 40px !important; }
+            .window { transform-origin: center center; transform: translate(-50%, -50%) scale(0.5) !important; }
+            #character-sheet { transform: translate(-50%, -50%) scale(0.5) !important; left: 50% !important; }
+            #inventory-screen { transform: translate(-50%, -50%) scale(0.5) !important; left: 50% !important; }
         }
+
+        /* Force Mobile Mode (for Localhost testing) */
+        .mobile-mode #minimap-canvas { width: 120px !important; height: 120px !important; top: 70px !important; right: 10px !important; }
+        .mobile-mode #game-timer { font-size: 18px !important; padding: 5px 10px !important; min-width: 80px !important; top: 10px !important; left: 10px !important; }
+        .mobile-mode #player-hud { width: 150px !important; top: 10px !important; left: 220px !important; bottom: auto !important; }
+        .mobile-mode .bar-container { height: 15px !important; }
+        .mobile-mode .bar-text { font-size: 10px !important; }
+        .mobile-mode #ability-container { top: 10px !important; left: 380px !important; right: auto !important; bottom: auto !important; width: 40px !important; height: 40px !important; }
+        .mobile-mode #chat-box { top: 60px !important; left: 10px !important; bottom: auto !important; width: 250px !important; height: 120px !important; font-size: 10px !important; }
+        .mobile-mode #mobile-actions { width: 120px !important; height: 120px !important; bottom: 20px !important; right: 20px !important; }
+        .mobile-mode #btn-mobile-attack { width: 60px !important; height: 60px !important; font-size: 12px !important; }
+        .mobile-mode #btn-mobile-ability { width: 45px !important; height: 45px !important; bottom: 70px !important; right: 15px !important; font-size: 10px !important; }
+        .mobile-mode #btn-mobile-interact { width: 45px !important; height: 45px !important; bottom: 15px !important; right: 70px !important; font-size: 10px !important; }
+        .mobile-mode #joystick-zone { width: 100px !important; height: 100px !important; bottom: 30px !important; left: 30px !important; }
+        .mobile-mode #joystick-knob { width: 40px !important; height: 40px !important; }
+        .mobile-mode .window { transform-origin: center center; transform: translate(-50%, -50%) scale(0.5) !important; }
+        .mobile-mode #character-sheet { transform: translate(-50%, -50%) scale(0.5) !important; left: 50% !important; }
+        .mobile-mode #inventory-screen { transform: translate(-50%, -50%) scale(0.5) !important; left: 50% !important; }
 
         /* Landscape Mode Specifics */
         @media (max-height: 600px) {
@@ -840,6 +786,7 @@
             <div id="mobile-top-right">
                 <div id="btn-mobile-inv" class="mobile-btn mobile-icon-btn">I</div>
                 <div id="btn-mobile-char" class="mobile-btn mobile-icon-btn">C</div>
+                <div id="btn-mobile-social" class="mobile-btn mobile-icon-btn">O</div>
                 <div id="btn-mobile-menu" class="mobile-btn mobile-icon-btn">☰</div>
             </div>
         </div>

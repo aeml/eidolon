@@ -4,7 +4,13 @@ import { Entity } from './Entity.js';
 // Optimization: Shared Geometries and Materials
 const SHARED_GEOMETRY = new THREE.SphereGeometry(0.2, 8, 8); // Reduced detail
 const HITBOX_GEOMETRY = new THREE.BoxGeometry(3.0, 3.0, 3.0); // Larger box to cover orb and text
-const HITBOX_MATERIAL = new THREE.MeshBasicMaterial({ visible: false, side: THREE.DoubleSide });
+const HITBOX_MATERIAL = new THREE.MeshBasicMaterial({ 
+    visible: true, 
+    transparent: true, 
+    opacity: 0, 
+    side: THREE.DoubleSide,
+    depthWrite: false
+});
 const MATERIAL_CACHE = new Map(); // Color -> Material
 const TEXTURE_CACHE = new Map(); // "Name|Color" -> Texture
 

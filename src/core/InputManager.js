@@ -26,7 +26,8 @@ export class InputManager {
             onTeleport: [],
             onMap: [],
             onChat: [], // New callback for Chat
-            onInteract: [] // New callback for Mobile "USE" button
+            onInteract: [], // New callback for Mobile "USE" button
+            onSocial: [] // New callback for Social Window
         };
 
         this.keys = {
@@ -148,7 +149,47 @@ export class InputManager {
         
         bindBtn('btn-mobile-inv', 'onInventory');
         bindBtn('btn-mobile-char', 'onCharacter');
+        bindBtn('btn-mobile-social', 'onSocial');
         bindBtn('btn-mobile-menu', 'onEscape');
+
+        // Pinch to Zoom Logic
+        let initialPinchDist = null;
+        
+        window.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                initialPinchDist = Math.sqrt(dx * dx + dy * dy);
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && initialPinchDist) {
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                const diff = dist - initialPinchDist;
+                
+                // Threshold to avoid jitter
+                if (Math.abs(diff) > 2) {
+                    // diff > 0 means spreading (Zoom In) -> We want negative delta (Zoom In)
+                    // diff < 0 means pinching (Zoom Out) -> We want positive delta (Zoom Out)
+                    const sensitivity = 0.1; 
+                    const dir = diff > 0 ? -1 : 1;
+                    
+                    this.callbacks.onZoom.forEach(cb => cb(dir * sensitivity));
+                    
+                    initialPinchDist = dist;
+                }
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchend', (e) => {
+            if (e.touches.length < 2) {
+                initialPinchDist = null;
+            }
+        });
     }
 
     getMovementDirection() {
@@ -208,6 +249,9 @@ export class InputManager {
         }
         if (key === 'm') {
             this.callbacks.onMap.forEach(cb => cb());
+        }
+        if (key === 'o') {
+            this.callbacks.onSocial.forEach(cb => cb());
         }
         if (e.key === 'Enter') {
             this.callbacks.onChat.forEach(cb => cb());
