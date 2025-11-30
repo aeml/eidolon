@@ -666,6 +666,8 @@ export class UIManager {
         if (!header) return;
         
         header.style.cursor = 'move';
+        header.style.touchAction = 'none'; // Prevent browser handling (scrolling/swiping)
+        
         let isDragging = false;
         let startX, startY, startLeft, startTop;
 
@@ -674,28 +676,36 @@ export class UIManager {
             startX = clientX;
             startY = clientY;
 
-            // Neutralize transform if present (first drag)
-            const style = window.getComputedStyle(element);
-            if (style.transform !== 'none') {
-                const rect = element.getBoundingClientRect();
-                element.style.left = `${rect.left}px`;
-                element.style.top = `${rect.top}px`;
-                element.style.transform = 'none';
-                element.style.margin = '0';
+            // 1. Capture current visual position (viewport coordinates)
+            const rect = element.getBoundingClientRect();
+            
+            // 2. Reset positioning properties to prepare for absolute positioning
+            element.style.position = 'absolute';
+            element.style.transform = 'none';
+            element.style.margin = '0';
+            element.style.right = 'auto';
+            element.style.bottom = 'auto';
+            
+            // 3. Calculate position relative to the offset parent
+            let parentX = 0;
+            let parentY = 0;
+            const op = element.offsetParent;
+            
+            if (op) {
+                const opRect = op.getBoundingClientRect();
+                parentX = opRect.left + (op.clientLeft || 0);
+                parentY = opRect.top + (op.clientTop || 0);
             }
             
-            // If left/top are not set (e.g. initial CSS), use getBoundingClientRect
-            // Or if we just neutralized transform, we need to ensure we have the current visual position
-            const rect = element.getBoundingClientRect();
-            startLeft = rect.left;
-            startTop = rect.top;
-
-            // Ensure absolute positioning is active and set to current visual position
-            if (element.style.position !== 'absolute') {
-                element.style.position = 'absolute';
-            }
-            element.style.left = `${startLeft}px`;
-            element.style.top = `${startTop}px`;
+            // 4. Set the new left/top to match the visual position
+            const newLeft = rect.left - parentX;
+            const newTop = rect.top - parentY;
+            
+            element.style.left = `${newLeft}px`;
+            element.style.top = `${newTop}px`;
+            
+            startLeft = newLeft;
+            startTop = newTop;
         };
 
         const moveDrag = (clientX, clientY) => {
@@ -706,9 +716,9 @@ export class UIManager {
             let newLeft = startLeft + dx;
             let newTop = startTop + dy;
 
-            // Simple bounds check to keep header somewhat on screen
+            // Bounds check
             const headerRect = header.getBoundingClientRect();
-            const maxX = window.innerWidth - 50; // Keep at least 50px visible
+            const maxX = window.innerWidth - 50; 
             const maxY = window.innerHeight - headerRect.height;
 
             if (newTop < 0) newTop = 0;
