@@ -38,6 +38,10 @@ export class RenderSystem {
             antialias: !this.isMobile,
             powerPreference: "high-performance"
         });
+        
+        // Optimization: Cap pixel ratio to save fill rate on high DPI screens
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.shadowMap.enabled = true;
         // Optimization: Use PCFSoftShadowMap for better look, or Basic for performance
@@ -71,11 +75,12 @@ export class RenderSystem {
         
         // Optimization: Reduce Shadow Map Size on Mobile
         // 512 is much lighter on VRAM than 1024/2048
-        const shadowSize = this.isMobile ? 512 : 2048;
+        // Reduced desktop to 1024 for better performance
+        const shadowSize = this.isMobile ? 512 : 1024;
         dirLight.shadow.mapSize.width = shadowSize;
         dirLight.shadow.mapSize.height = shadowSize;
         
-        const d = 50;
+        const d = 40; // Reduced shadow frustum slightly to increase effective resolution
         dirLight.shadow.camera.left = -d;
         dirLight.shadow.camera.right = d;
         dirLight.shadow.camera.top = d;
@@ -95,7 +100,8 @@ export class RenderSystem {
             // Improve texture sampling to reduce visual gaps/seams
             tex.minFilter = THREE.LinearMipmapLinearFilter;
             tex.magFilter = THREE.LinearFilter;
-            tex.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
+            // Optimization: Cap anisotropy to 4
+            tex.anisotropy = Math.min(this.renderer.capabilities.getMaxAnisotropy(), 4);
 
             // Scale repeat based on ground size (assuming 100 units = 4 repeats)
             const repeatCount = Math.max(4, CONSTANTS.SCENE.GROUND_SIZE / 25);

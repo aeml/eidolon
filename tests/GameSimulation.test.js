@@ -17,12 +17,33 @@ MeshFactory.loadModel = jest.fn().mockResolvedValue({
     animations: []
 });
 
+// Mock WebSocket
+global.WebSocket = class {
+    constructor(url) {
+        this.readyState = 1; // OPEN
+        this.onopen = null;
+        this.onmessage = null;
+        this.onclose = null;
+        this.onerror = null;
+    }
+    send(data) {}
+    close() {}
+};
+global.WebSocket.OPEN = 1;
+
+// Mock Alert
+global.alert = jest.fn();
+
 describe('GameEngine Simulation', () => {
     let game;
+    let mockSocket;
 
     beforeEach(() => {
         // Reset mocks
         jest.clearAllMocks();
+        
+        // Create a fresh mock socket for each test
+        mockSocket = new WebSocket('ws://localhost:8080');
         
         // Setup DOM elements required by GameEngine/UIManager
         document.body.innerHTML = `
@@ -60,6 +81,14 @@ describe('GameEngine Simulation', () => {
                         <div id="stat-dexterity"></div>
                         <div id="stat-wisdom"></div>
                         <div id="stat-stamina"></div>
+                    </div>
+                    <div class="equipment-slots">
+                        <div id="slot-head"></div>
+                        <div id="slot-chest"></div>
+                        <div id="slot-mainhand"></div>
+                        <div id="slot-offhand"></div>
+                        <div id="slot-legs"></div>
+                        <div id="slot-feet"></div>
                     </div>
                 </div>
                 <div id="patch-notes-screen">
@@ -99,22 +128,19 @@ describe('GameEngine Simulation', () => {
                     <div id="shop-grid"></div>
                     <button id="btn-close-shop"></button>
                 </div>
-                <div id="stat-tooltip">
-                    <div id="stat-tooltip-title"></div>
-                    <div id="stat-tooltip-desc"></div>
-                </div>
-                <div id="compare-tooltip">
-                    <div id="compare-tooltip-title"></div>
-                    <div id="compare-tooltip-desc"></div>
-                </div>
                 <div id="notification-area"></div>
+                <div id="chat-box" style="display:none">
+                    <div id="chat-messages"></div>
+                    <input id="chat-input" type="text">
+                </div>
+                <div id="xp-bar-container" style="display:none"></div>
             </div>
             <canvas id="minimap-canvas"></canvas>
         `;
     });
 
     test('initializes and loads game', async () => {
-        game = new GameEngine('Fighter', false);
+        game = new GameEngine('Fighter', false, true, 'ws://test', 'testuser', mockSocket);
         
         // Mock onProgress callback
         const onProgress = jest.fn();
@@ -124,12 +150,11 @@ describe('GameEngine Simulation', () => {
         
         expect(game.player).toBeDefined();
         expect(game.player.meshType).toBe('Fighter');
-        expect(game.enemies.length).toBeGreaterThan(0);
         expect(onProgress).toHaveBeenCalledWith(100, "Ready!");
     });
 
     test('runs game loop and updates entities', async () => {
-        game = new GameEngine('Fighter', false);
+        game = new GameEngine('Fighter', false, true, 'ws://test', 'testuser', mockSocket);
         await game.loadGame();
 
         // Simulate 1 second of gameplay
@@ -141,45 +166,86 @@ describe('GameEngine Simulation', () => {
         expect(game.gameTime).toBeGreaterThan(0);
     });
 
-    test('spawns elite enemy without crashing', async () => {
-        game = new GameEngine('Fighter', false);
+    test('spawns enemy via server message', async () => {
+        game = new GameEngine('Fighter', false, true, 'ws://test', 'testuser', mockSocket);
         await game.loadGame();
 
-        // Force spawn elite
-        expect(() => {
-            game.spawnEliteEnemy();
-        }).not.toThrow();
+        // Simulate server state message spawning an enemy
+        const enemyId = 'enemy-123';
+        const stateMsg = {
+            type: 'state',
+            payload: {
+                [enemyId]: {
+                    id: enemyId,
+                    type: 'Enemy',
+                    subType: 'Skeleton',
+                    x: 10,
+                    y: 0,
+                    z: 10,
+                    state: 'IDLE',
+                    health: 100,
+                    maxHealth: 100
+                }
+            }
+        };
 
-        const elite = game.enemies.find(e => e.isElite);
-        expect(elite).toBeDefined();
-        expect(elite.stats.maxHp).toBeGreaterThan(100); // Should be buffed
+        game.handleServerMessage(stateMsg);
+        
+        // Process creation queue
+        game.update(0.016);
+
+        const enemy = game.remotePlayers.get(enemyId);
+        expect(enemy).toBeDefined();
+        expect(enemy.constructor.name).toBe('Skeleton');
+        expect(enemy.position.x).toBe(10);
     });
 
-    test('player can attack enemy', async () => {
-        game = new GameEngine('Fighter', false);
+    test('player sends attack message', async () => {
+        game = new GameEngine('Fighter', false, true, 'ws://test', 'testuser', mockSocket);
         await game.loadGame();
 
-        const enemy = game.enemies[0];
-        // Move enemy close to player
-        enemy.position.set(1, 0, 1);
-        game.player.position.set(0, 0, 0);
+        // Mock socket send
+        const sendSpy = jest.spyOn(game.socket, 'send');
 
-        // Mock input to attack
-        // We can directly call attack method or simulate input
-        // Let's directly call attack for unit testing logic
-        const initialHp = enemy.stats.hp;
+        // Spawn an enemy
+        const enemyId = 'enemy-target';
+        const stateMsg = {
+            type: 'state',
+            payload: {
+                [enemyId]: {
+                    id: enemyId,
+                    type: 'Enemy',
+                    subType: 'Skeleton',
+                    x: 2, // Close enough to attack
+                    y: 0,
+                    z: 2,
+                    state: 'IDLE',
+                    health: 100,
+                    maxHealth: 100
+                }
+            }
+        };
+        game.handleServerMessage(stateMsg);
+        game.update(0.016);
         
-        // Fighter attack logic is usually triggered by input or state
-        // Let's simulate the state change
-        game.player.state = 'ATTACKING';
+        const enemy = game.remotePlayers.get(enemyId);
+        expect(enemy).toBeDefined();
+
+        // Set hovered entity to simulate mouse over
+        game.hoveredEntity = enemy;
         
-        // We need to simulate the hit check which happens in GameEngine.update or via timeout
-        // In GameEngine.js, the attack logic uses setTimeout for the hit check.
-        // We should use jest.useFakeTimers() to test this properly, but for now let's just verify the method exists
-        expect(game.player.attack).toBeDefined();
+        // Simulate click (which triggers attack if close enough)
+        game.inputManager.isMouseDown = true;
+        game.inputManager.keys = { alt: false }; // Ensure no modifier that might change behavior
         
-        // Manually trigger damage to verify damage logic
-        enemy.takeDamage(10);
-        expect(enemy.stats.hp).toBe(initialHp - 10);
+        // Force update to trigger attack logic
+        game.update(0.016);
+
+        // Check if attack message was sent
+        expect(sendSpy).toHaveBeenCalled();
+        const calls = sendSpy.mock.calls;
+        const attackCall = calls.find(call => call[0].includes('"type":"attack"'));
+        expect(attackCall).toBeDefined();
+        expect(attackCall[0]).toContain(enemyId);
     });
 });

@@ -105,7 +105,7 @@ export class MeshFactory {
                         }
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        c.frustumCulled = false;
+                        // c.frustumCulled = false;
                     }
                 });
                 
@@ -177,7 +177,7 @@ export class MeshFactory {
                         }
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        c.frustumCulled = false;
+                        // c.frustumCulled = false;
                     }
                 });
                 
@@ -245,7 +245,7 @@ export class MeshFactory {
                         }
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        c.frustumCulled = false;
+                        // c.frustumCulled = false;
                     }
                 });
                 
@@ -313,7 +313,7 @@ export class MeshFactory {
                         }
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        c.frustumCulled = false;
+                        // c.frustumCulled = false;
                     }
                 });
                 
@@ -386,7 +386,7 @@ export class MeshFactory {
                     if (c.isMesh) {
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        c.frustumCulled = false;
+                        // c.frustumCulled = false;
                     }
                 });
 
@@ -448,7 +448,7 @@ export class MeshFactory {
                         }
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        c.frustumCulled = false;
+                        // c.frustumCulled = false;
                     }
                 });
 
@@ -515,7 +515,7 @@ export class MeshFactory {
                         }
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        c.frustumCulled = false;
+                        // c.frustumCulled = false;
                     }
                 });
 
@@ -612,7 +612,7 @@ export class MeshFactory {
                         }
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        c.frustumCulled = false;
+                        // c.frustumCulled = false;
                     }
                 });
 

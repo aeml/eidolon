@@ -79,6 +79,7 @@ export class Actor extends Entity {
         this.abilityDescription = "No ability";
 
         this.lastAttackTime = 0; // For melee attack speed limit
+        this.attackTimer = null;
 
         // Inventory & Equipment
         this.inventory = new Array(25).fill(null); // 25 slots
@@ -141,7 +142,7 @@ export class Actor extends Entity {
         }
     }
 
-    playAnimation(name, loop = true) {
+    playAnimation(name, loop = true, force = false) {
         if (!this.mixer) return;
         
         // Fallback or check if animation exists
@@ -151,10 +152,14 @@ export class Actor extends Entity {
         }
         
         const action = this.animations[name];
-        if (this.currentAction === action) return;
+        if (!force && this.currentAction === action) return;
 
-        if (this.currentAction) {
+        if (this.currentAction && this.currentAction !== action) {
             this.currentAction.fadeOut(0.2);
+        }
+
+        if (force && this.currentAction === action) {
+            action.stop();
         }
 
         action.reset().fadeIn(0.2).play();
@@ -328,7 +333,7 @@ export class Actor extends Entity {
     }
 
     attack(target) {
-        if (this.state === 'DEAD' || this.state === 'ATTACKING') return false;
+        if (this.state === 'DEAD') return false;
         if (target && target.state === 'DEAD') return false; // Don't attack dead targets
         
         // Attack Speed Check
@@ -339,8 +344,13 @@ export class Actor extends Entity {
         }
         this.lastAttackTime = now;
         
+        if (this.attackTimer) {
+            clearTimeout(this.attackTimer);
+            this.attackTimer = null;
+        }
+
         this.state = 'ATTACKING';
-        this.playAnimation('Attack', false);
+        this.playAnimation('Attack', false, true);
         
         // Face target
         const lookTarget = new THREE.Vector3(target.position.x, this.position.y, target.position.z);
@@ -350,7 +360,7 @@ export class Actor extends Entity {
         }
 
         // Deal damage after a delay (sync with animation hit)
-        setTimeout(() => {
+        this.attackTimer = setTimeout(() => {
             // Check if we died during the swing
             if (this.state === 'DEAD') return;
 
@@ -367,6 +377,7 @@ export class Actor extends Entity {
             }
             this.state = 'IDLE';
             this.playAnimation('Idle');
+            this.attackTimer = null;
         }, 500); // 500ms delay for hit
         
         return true;
@@ -584,13 +595,21 @@ export class Actor extends Entity {
 
     setAttackingState() {
         if (this.state === 'DEAD') return;
-        this.state = 'ATTACKING';
         
-        setTimeout(() => {
+        if (this.attackTimer) {
+            clearTimeout(this.attackTimer);
+            this.attackTimer = null;
+        }
+
+        this.state = 'ATTACKING';
+        this.playAnimation('Attack', false, true);
+        
+        this.attackTimer = setTimeout(() => {
             if (this.state === 'ATTACKING') {
                 this.state = 'IDLE';
                 this.playAnimation('Idle');
             }
+            this.attackTimer = null;
         }, 500);
     }
 }

@@ -80,10 +80,11 @@ type Entity struct {
 	LootTime time.Time `json:"-"`
 
 	// Projectile
-	OwnerID string  `json:"ownerId,omitempty"`
-	VelX    float64 `json:"velX"`
-	VelZ    float64 `json:"velZ"`
-	Radius  float64 `json:"-"`
+	OwnerID string          `json:"ownerId,omitempty"`
+	VelX    float64         `json:"velX"`
+	VelZ    float64         `json:"velZ"`
+	Radius  float64         `json:"-"`
+	HitList map[string]bool `json:"-"`
 
 	// Abilities
 	SpiritsActive  bool      `json:"spiritsActive"`
@@ -536,7 +537,17 @@ func (w *World) Update(dt float64) {
 				dz := e.Z - target.Z
 				dist := math.Sqrt(dx*dx + dz*dz)
 				if dist < (e.Radius + 0.5) { // 0.5 is approx enemy radius
+					// Check if already hit (for piercing projectiles)
+					if e.HitList == nil {
+						e.HitList = make(map[string]bool)
+					}
+					if e.HitList[target.ID] {
+						continue
+					}
+
 					// Hit!
+					e.HitList[target.ID] = true
+
 					damage := e.Damage
 					target.Health -= damage
 					if target.Health <= 0 {
@@ -561,9 +572,11 @@ func (w *World) Update(dt float64) {
 						}
 					}
 
-					// Destroy Projectile
-					delete(w.Entities, id)
-					break
+					// Destroy Projectile unless it's a Dagger (Piercing)
+					if e.SubType != "Dagger" {
+						delete(w.Entities, id)
+						break
+					}
 				}
 			}
 

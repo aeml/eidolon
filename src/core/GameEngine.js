@@ -38,7 +38,7 @@ export class GameEngine {
 
         this.chunkManager = new ChunkManager(this.renderSystem.scene);
         this.collisionManager = new CollisionManager();
-        this.uiManager = new UIManager();
+        this.uiManager = new UIManager(this.isMobile);
         this.uiManager.onBuyGamble = (slot) => {
             if (this.socket && this.socket.readyState === WebSocket.OPEN) {
                 const msg = {
@@ -537,7 +537,9 @@ export class GameEngine {
         // If we are here, it means we don't have an open authenticated socket.
         // Since we need to be logged in to join, we cannot just open a new connection.
         console.error("Connection lost or not authenticated. Please refresh and login.");
-        alert("Connection lost! Please refresh the page and login again.");
+        if (typeof alert !== 'undefined') {
+            alert("Connection lost! Please refresh the page and login again.");
+        }
         
         /* 
         // Old logic - removed because it bypasses auth
@@ -593,7 +595,9 @@ export class GameEngine {
         this.socket.onclose = () => {
             console.log("Disconnected from server.");
             if (!this.isExpectedDisconnect) {
-                alert("Disconnected from server. Returning to menu.");
+                if (typeof alert !== 'undefined') {
+                    alert("Disconnected from server. Returning to menu.");
+                }
                 window.location.reload();
             }
         };
@@ -601,6 +605,15 @@ export class GameEngine {
         this.socket.onerror = (error) => {
             console.error("WebSocket error:", error);
         };
+    }
+
+    spawnEliteEnemy() {
+        const elite = new Skeleton('elite-test');
+        elite.isElite = true;
+        elite.position.set(10, 0, 10);
+        this.enemies.push(elite);
+        this.addEntity(elite);
+        return elite;
     }
 
     handleServerMessage(msg) {
@@ -630,7 +643,9 @@ export class GameEngine {
             }
         } else if (msg.type === 'error') {
             console.error("Server Error:", msg.payload);
-            alert(`Server Error: ${msg.payload}`);
+            if (typeof alert !== 'undefined') {
+                alert(`Server Error: ${msg.payload}`);
+            }
             if (typeof msg.payload === 'string' && msg.payload.includes("Logged in from another location")) {
                 this.isExpectedDisconnect = true;
                 window.location.reload();
@@ -1326,7 +1341,6 @@ export class GameEngine {
                                 this.player.rotation.copy(this.player.mesh.quaternion);
                             }
 
-                            this.player.playAnimation('Attack', false);
                             this.player.setAttackingState();
                         } else {
                             this.player.attack(this.hoveredEntity);
@@ -1455,7 +1469,6 @@ export class GameEngine {
                                         this.player.rotation.copy(this.player.mesh.quaternion);
                                     }
 
-                                    this.player.playAnimation('Attack', false);
                                     this.player.setAttackingState();
                                     attacked = true;
                                     
