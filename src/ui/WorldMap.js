@@ -175,10 +175,15 @@ export class WorldMap {
 
                 // Determine Color
                 if (['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(type)) {
-                    color = '#0000ff'; // Blue for Players
+                    color = '#00ffff'; // Cyan for Players
                     size = 4;
                 } else if (['Skeleton', 'Imp', 'DemonOrc', 'Construct'].includes(type)) {
-                    color = '#ff0000'; // Red for Enemies
+                    if (entity.isElite) {
+                        color = '#ffffff'; // White for Elites
+                        size = 6;
+                    } else {
+                        color = '#ff0000'; // Red for Enemies
+                    }
                 } else if (type === 'DwarfSalesman') {
                     color = '#00ff00'; // Green for NPC
                 }
@@ -193,7 +198,7 @@ export class WorldMap {
         }
 
         // 3. Draw Player (Local)
-        ctx.fillStyle = '#0000ff'; // Blue
+        ctx.fillStyle = '#00ffff'; // Cyan
         ctx.beginPath();
         ctx.arc(cx, cy, 5, 0, Math.PI * 2);
         ctx.fill();
