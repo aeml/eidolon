@@ -939,6 +939,11 @@ export class GameEngine {
                 case 'Construct': p = new Construct(id); break;
                 default: p = new Skeleton(id); break;
             }
+
+            // Check for Elite ID pattern
+            if (id && id.startsWith('elite-')) {
+                p.isElite = true;
+            }
         } else {
             // Players - Use subType if available (e.g. "Fighter", "Rogue")
             const classType = subType || type;
