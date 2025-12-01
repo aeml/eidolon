@@ -128,12 +128,12 @@ func (w *World) initWorld() {
 
 func (w *World) spawnInitialElites() {
 	// Spawn one elite in each area
-	// Level 1-10 Area (Radius 60-150)
-	w.spawnEliteInArea(10, 60, 150)
-	// Level 10-20 Area (Radius 160-250)
-	w.spawnEliteInArea(20, 160, 250)
-	// Level 20-30 Area (Radius 260-350)
-	w.spawnEliteInArea(30, 260, 350)
+	// Level 1-10 Area (Radius 60-160)
+	w.spawnEliteInArea(10, 60, 160)
+	// Level 10-20 Area (Radius 160-260)
+	w.spawnEliteInArea(20, 160, 260)
+	// Level 20-30 Area (Radius 260-360)
+	w.spawnEliteInArea(30, 260, 360)
 	// Level 30-40 Area (Radius 360-450)
 	w.spawnEliteInArea(40, 360, 450)
 	// Level 40-50 Area (Radius 450-600)
@@ -222,20 +222,20 @@ func (w *World) spawnMerchant() {
 }
 
 func (w *World) spawnEnemies() {
-	// Skeleton: 50 count, 60-150 radius (Level 1-10 Area) - 3x Stronger
-	w.spawnEnemyGroup("Skeleton", 50, 60, 150, 10, Stats{Strength: 15, Intelligence: 6, Dexterity: 9, Wisdom: 6, Vitality: 15})
+	// Skeleton: 50 count, 60-160 radius (Level 1-10 Area)
+	w.spawnEnemyGroup("Skeleton", 50, 60, 160, 10, Stats{Strength: 15, Intelligence: 6, Dexterity: 9, Wisdom: 6, Vitality: 15})
 
-	// Imp: 100 count, 160-250 radius (Level 10-20 Area) - 5x Stronger
-	w.spawnEnemyGroup("Imp", 100, 160, 250, 20, Stats{Strength: 60, Intelligence: 20, Dexterity: 30, Wisdom: 20, Vitality: 60})
+	// Imp: 100 count, 160-260 radius (Level 10-20 Area)
+	w.spawnEnemyGroup("Imp", 100, 160, 260, 20, Stats{Strength: 600, Intelligence: 200, Dexterity: 300, Wisdom: 200, Vitality: 600})
 
-	// Demon Orc: 150 count, 260-350 radius (Level 20-30 Area) - 5x Stronger
-	w.spawnEnemyGroup("DemonOrc", 150, 260, 350, 30, Stats{Strength: 125, Intelligence: 40, Dexterity: 50, Wisdom: 40, Vitality: 125})
+	// Demon Orc: 150 count, 260-360 radius (Level 20-30 Area)
+	w.spawnEnemyGroup("DemonOrc", 150, 260, 360, 30, Stats{Strength: 1250, Intelligence: 400, Dexterity: 500, Wisdom: 400, Vitality: 1250})
 
-	// Construct: 200 count (Increased), 360-450 radius (Level 30-40 Area) - 5x Stronger
-	w.spawnEnemyGroup("Construct", 200, 360, 450, 40, Stats{Strength: 200, Intelligence: 75, Dexterity: 25, Wisdom: 75, Vitality: 200})
+	// Construct: 200 count (Increased), 360-450 radius (Level 30-40 Area)
+	w.spawnEnemyGroup("Construct", 200, 360, 450, 40, Stats{Strength: 2000, Intelligence: 750, Dexterity: 250, Wisdom: 750, Vitality: 2000})
 
 	// Inferno Titan: 300 count, 450-600 radius (Level 40-50 Area)
-	w.spawnEnemyGroup("InfernoTitan", 300, 450, 600, 50, Stats{Strength: 300, Intelligence: 100, Dexterity: 40, Wisdom: 100, Vitality: 300})
+	w.spawnEnemyGroup("InfernoTitan", 300, 450, 600, 50, Stats{Strength: 3000, Intelligence: 1000, Dexterity: 400, Wisdom: 1000, Vitality: 3000})
 }
 
 func (w *World) spawnEnemyGroup(subType string, count int, minRadius, maxRadius float64, level int, baseStats Stats) {
