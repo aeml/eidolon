@@ -578,11 +578,13 @@ func (w *World) PerformRespawn(playerID string) {
 	player.State = "IDLE"
 	player.LastRespawnTime = time.Now()
 	player.Health = player.MaxHealth
+
+	oldX, oldZ := player.X, player.Z
 	player.X = 0
 	player.Z = 0
 	player.TargetX = 0
 	player.TargetZ = 0
-	w.Grid.Update(player, 0, 0) // Force update to 0,0
+	w.Grid.Update(player, oldX, oldZ) // Force update to 0,0
 }
 
 func (w *World) Update(dt float64) {

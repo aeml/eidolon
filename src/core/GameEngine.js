@@ -678,10 +678,32 @@ export class GameEngine {
                                 this.player.die();
                             } else if (this.player.state === 'DEAD' && pData.state !== 'DEAD') {
                                 // Revived?
-                                this.player.state = pData.state;
-                                this.player.playAnimation('Idle');
+                                // Force town spawn (0,0) to ensure immediate visual feedback
+                                const x = 0;
+                                const z = 0;
+                                
+                                console.log(`GameEngine: Respawn detected. Teleporting to Town (${x}, ${z})`);
+                                this.player.respawn(x, z);
+                                this.player.state = pData.state; // Ensure state matches server
+                                
+                                this.chunkManager.updateEntityChunk(this.player);
+                                this.renderSystem.setCameraTarget(this.player.position);
                             } else {
                                 this.player.state = pData.state;
+                            }
+                        }
+
+                        // Check for forced teleport (large distance discrepancy)
+                        // This handles portals or admin teleports where state might not change from DEAD
+                        if (pData.x !== undefined && pData.z !== undefined) {
+                            const serverPos = new THREE.Vector3(pData.x, pData.y || 0, pData.z);
+                            const dist = this.player.position.distanceTo(serverPos);
+                            if (dist > 20.0) { // Threshold for teleport (larger than normal lag correction)
+                                console.log("GameEngine: Detected server teleport, syncing position.");
+                                this.player.position.copy(serverPos);
+                                this.player.targetPosition = null;
+                                this.chunkManager.updateEntityChunk(this.player);
+                                this.renderSystem.setCameraTarget(this.player.position);
                             }
                         }
 
