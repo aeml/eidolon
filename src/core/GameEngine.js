@@ -353,8 +353,10 @@ export class GameEngine {
                     }
                 };
                 this.socket.send(JSON.stringify(abilityMsg));
-                this.player.playAnimation('Attack', false);
-                this.player.setAttackingState();
+                
+                // Client-side prediction
+                this.player.useAbility(targetPos, this);
+                
                 // Optimistic Cooldown
                 this.player.abilityCooldown = this.player.abilityMaxCooldown * (1 - (this.player.stats.cooldownReduction || 0));
                 return;
@@ -378,8 +380,10 @@ export class GameEngine {
                         }
                     };
                     this.socket.send(JSON.stringify(abilityMsg));
-                    this.player.playAnimation('Attack', false);
-                    this.player.setAttackingState();
+                    
+                    // Client-side prediction
+                    this.player.useAbility(this.hoveredEntity.position, this);
+                    
                     // Optimistic Cooldown
                     this.player.abilityCooldown = this.player.abilityMaxCooldown * (1 - (this.player.stats.cooldownReduction || 0));
                 } else {
@@ -404,8 +408,8 @@ export class GameEngine {
                     this.socket.send(JSON.stringify(abilityMsg));
                     
                     // Client-side prediction
-                    this.player.playAnimation('Attack', false);
-                    this.player.setAttackingState();
+                    this.player.useAbility(targetPoint, this);
+                    
                     // Optimistic Cooldown
                     this.player.abilityCooldown = this.player.abilityMaxCooldown * (1 - (this.player.stats.cooldownReduction || 0));
                 }
