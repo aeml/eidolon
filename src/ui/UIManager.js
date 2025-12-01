@@ -1014,7 +1014,7 @@ export class UIManager {
         ];
 
         gambleOptions.forEach(opt => {
-            const btn = document.createElement('div');
+            const btn = document.createElement('button');
             btn.className = 'shop-item';
             btn.style.cssText = `
                 background: #222;
@@ -1026,11 +1026,16 @@ export class UIManager {
                 align-items: center;
                 justify-content: center;
                 transition: background 0.2s;
+                user-select: none;
+                -webkit-user-select: none;
+                width: 100%;
+                font-family: inherit;
+                color: inherit;
             `;
             btn.innerHTML = `
-                <div style="font-size: 24px; color: #ffd700; margin-bottom: 5px;">?</div>
-                <div style="font-size: 12px; font-weight: bold;">${opt.name}</div>
-                <div style="font-size: 10px; color: #aaa;">${opt.slot}</div>
+                <div style="font-size: 24px; color: #ffd700; margin-bottom: 5px; pointer-events: none;">?</div>
+                <div style="font-size: 12px; font-weight: bold; pointer-events: none;">${opt.name}</div>
+                <div style="font-size: 10px; color: #aaa; pointer-events: none;">${opt.slot}</div>
             `;
 
             btn.onmouseover = () => {
