@@ -1,7 +1,8 @@
 import { ItemGenerator, SLOTS, Item } from '../core/ItemSystem.js';
 
 export class UIManager {
-    constructor() {
+    constructor(isMobile = false) {
+        this.isMobile = isMobile;
         this.hud = document.getElementById('player-hud');
         this.hpBar = document.getElementById('player-hp-bar');
         this.hpText = document.getElementById('player-hp-text');
@@ -40,27 +41,27 @@ export class UIManager {
         this.btnSellUncommon = document.getElementById('btn-sell-uncommon');
         this.btnSellRare = document.getElementById('btn-sell-rare');
 
-        this.btnResume.addEventListener('click', () => this.toggleEscMenu());
-        this.btnHelp.addEventListener('click', () => this.toggleHelp());
-        this.btnPatchNotes.addEventListener('click', () => this.togglePatchNotes());
-        this.btnMenu.addEventListener('click', () => location.reload());
-        this.btnCloseHelp.addEventListener('click', () => this.toggleHelp());
-        this.btnClosePatchNotes.addEventListener('click', (e) => {
+        if (this.btnResume) this.btnResume.addEventListener('click', () => this.toggleEscMenu());
+        if (this.btnHelp) this.btnHelp.addEventListener('click', () => this.toggleHelp());
+        if (this.btnPatchNotes) this.btnPatchNotes.addEventListener('click', () => this.togglePatchNotes());
+        if (this.btnMenu) this.btnMenu.addEventListener('click', () => location.reload());
+        if (this.btnCloseHelp) this.btnCloseHelp.addEventListener('click', () => this.toggleHelp());
+        if (this.btnClosePatchNotes) this.btnClosePatchNotes.addEventListener('click', (e) => {
             console.log("Close Patch Notes Button Clicked");
             this.togglePatchNotes();
             e.stopPropagation();
         });
-        this.btnCloseShop.addEventListener('click', () => this.toggleShop());
-        this.btnRespawn.addEventListener('click', () => {
+        if (this.btnCloseShop) this.btnCloseShop.addEventListener('click', () => this.toggleShop());
+        if (this.btnRespawn) this.btnRespawn.addEventListener('click', () => {
             if (this.onRespawn) {
                 this.onRespawn();
             }
             this.toggleEscMenu();
         });
 
-        this.btnSellCommon.addEventListener('click', () => this.handleSellAll('Common'));
-        this.btnSellUncommon.addEventListener('click', () => this.handleSellAll('Uncommon'));
-        this.btnSellRare.addEventListener('click', () => this.handleSellAll('Rare'));
+        if (this.btnSellCommon) this.btnSellCommon.addEventListener('click', () => this.handleSellAll('Common'));
+        if (this.btnSellUncommon) this.btnSellUncommon.addEventListener('click', () => this.handleSellAll('Uncommon'));
+        if (this.btnSellRare) this.btnSellRare.addEventListener('click', () => this.handleSellAll('Rare'));
 
         this.setupShop();
         this.createSocialWindow();
@@ -605,26 +606,40 @@ export class UIManager {
                     e.stopPropagation();
                     
                     // Mobile/Desktop Selection Logic
-                    if (this.selectedSlot === i) {
-                        // Already selected -> Equip
+                    if (this.isMobile) {
+                        if (this.selectedSlot === i) {
+                            // Already selected -> Equip
+                            if (player.level < item.level) {
+                                console.log("Level too low to equip!");
+                                return;
+                            }
+                            if (player.equipItem(item)) {
+                                this.selectedSlot = -1; // Reset
+                                this.hideTooltips();
+                                this.updateInventory(player);
+                                this.updateCharacterSheet(player);
+                            }
+                        } else {
+                            // Select it
+                            this.selectedSlot = i;
+                            const rect = slots[i].getBoundingClientRect();
+                            // Show tooltip to the right or left depending on screen position
+                            let x = rect.right;
+                            if (x + 220 > window.innerWidth) x = rect.left - 220;
+                            this.showItemTooltip(item, x, rect.top);
+                        }
+                    } else {
+                        // Desktop: Instant Equip
                         if (player.level < item.level) {
                             console.log("Level too low to equip!");
                             return;
                         }
                         if (player.equipItem(item)) {
-                            this.selectedSlot = -1; // Reset
+                            this.selectedSlot = -1;
                             this.hideTooltips();
                             this.updateInventory(player);
                             this.updateCharacterSheet(player);
                         }
-                    } else {
-                        // Select it
-                        this.selectedSlot = i;
-                        const rect = slots[i].getBoundingClientRect();
-                        // Show tooltip to the right or left depending on screen position
-                        let x = rect.right;
-                        if (x + 220 > window.innerWidth) x = rect.left - 220;
-                        this.showItemTooltip(item, x, rect.top);
                     }
                 };
 
@@ -862,12 +877,16 @@ export class UIManager {
             const value = Item.getValue(item);
             desc += `<div style="color: #ffd700; margin-top: 10px; border-top: 1px solid #444; padding-top: 5px;">Sell Value: ${value} Gold</div>`;
             
-            // Add Sell Button
-            desc += `<button id="btn-tooltip-sell" style="width:100%; margin-top:10px; padding: 8px; background:#333; color:#ffd700; border:1px solid #ffd700; cursor:pointer; font-weight:bold;">SELL ITEM</button>`;
+            // Add Sell Button ONLY on Mobile
+            if (this.isMobile) {
+                desc += `<button id="btn-tooltip-sell" style="width:100%; margin-top:10px; padding: 8px; background:#333; color:#ffd700; border:1px solid #ffd700; cursor:pointer; font-weight:bold;">SELL ITEM</button>`;
+            }
         }
         
-        // Add Equip Button
-        desc += `<button id="btn-tooltip-equip" style="width:100%; margin-top:5px; padding: 8px; background:#222; color:#fff; border:1px solid #666; cursor:pointer;">EQUIP</button>`;
+        // Add Equip Button ONLY on Mobile
+        if (this.isMobile) {
+            desc += `<button id="btn-tooltip-equip" style="width:100%; margin-top:5px; padding: 8px; background:#222; color:#fff; border:1px solid #666; cursor:pointer;">EQUIP</button>`;
+        }
         
         this.statTooltipDesc.innerHTML = desc;
         
@@ -877,10 +896,16 @@ export class UIManager {
             if (btnSell) {
                 btnSell.onclick = (e) => {
                     e.stopPropagation();
-                    if (this.selectedSlot !== -1) {
-                        this.sellItem(this.lastPlayerRef, this.selectedSlot);
-                        this.selectedSlot = -1;
-                        this.hideTooltips();
+                    // Use captured item/index if possible, or fallback to selectedSlot
+                    // Since we are in showItemTooltip, we know 'item'. We need index for sellItem.
+                    // We can find index from inventory.
+                    if (this.lastPlayerRef) {
+                        const index = this.lastPlayerRef.inventory.indexOf(item);
+                        if (index !== -1) {
+                            this.sellItem(this.lastPlayerRef, index);
+                            this.selectedSlot = -1;
+                            this.hideTooltips();
+                        }
                     }
                 };
             }
@@ -889,19 +914,17 @@ export class UIManager {
             if (btnEquip) {
                 btnEquip.onclick = (e) => {
                     e.stopPropagation();
-                    if (this.selectedSlot !== -1 && this.lastPlayerRef) {
-                        const itemToEquip = this.lastPlayerRef.inventory[this.selectedSlot];
-                        if (itemToEquip) {
-                             if (this.lastPlayerRef.level < itemToEquip.level) {
-                                console.log("Level too low!");
-                                return;
-                            }
-                            if (this.lastPlayerRef.equipItem(itemToEquip)) {
-                                this.selectedSlot = -1;
-                                this.hideTooltips();
-                                this.updateInventory(this.lastPlayerRef);
-                                this.updateCharacterSheet(this.lastPlayerRef);
-                            }
+                    if (this.lastPlayerRef) {
+                        // Use the item passed to showItemTooltip directly
+                        if (this.lastPlayerRef.level < item.level) {
+                            console.log("Level too low!");
+                            return;
+                        }
+                        if (this.lastPlayerRef.equipItem(item)) {
+                            this.selectedSlot = -1;
+                            this.hideTooltips();
+                            this.updateInventory(this.lastPlayerRef);
+                            this.updateCharacterSheet(this.lastPlayerRef);
                         }
                     }
                 };

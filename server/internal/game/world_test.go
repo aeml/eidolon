@@ -41,15 +41,15 @@ func TestAddRemoveEntity(t *testing.T) {
 
 func TestWorldUpdate(t *testing.T) {
 	w := NewWorld()
-	// Add a moving enemy
+	// Add a moving enemy outside safe zone (> 50)
 	e := &Entity{
 		ID:      "enemy-1",
 		Type:    TypeEnemy,
 		State:   "MOVING",
-		X:       0,
+		X:       100,
 		Y:       0,
 		Z:       0,
-		TargetX: 10,
+		TargetX: 110,
 		TargetZ: 0,
 		Speed:   1.0,
 	}
@@ -58,12 +58,12 @@ func TestWorldUpdate(t *testing.T) {
 	// Update for 1 second
 	w.Update(1.0)
 
-	// Should have moved towards (10, 0)
-	// New X should be approx 1.0
-	if e.X <= 0 {
+	// Should have moved towards (110, 0)
+	// New X should be approx 101.0
+	if e.X <= 100 {
 		t.Errorf("Entity did not move. X = %f", e.X)
 	}
-	if e.X > 1.1 {
+	if e.X > 101.1 {
 		t.Errorf("Entity moved too far. X = %f", e.X)
 	}
 }
