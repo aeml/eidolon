@@ -589,6 +589,24 @@ func (w *World) Update(dt float64) {
 					e.Z = e.ChargeTargetZ
 					e.IsCharging = false
 					e.State = "IDLE"
+
+					// Deal AoE Damage on Impact
+					damage := int(float64(e.Damage) * 1.5)
+					for _, target := range enemies {
+						// Check if target is still alive (might have died earlier in this frame)
+						if target.State == "DEAD" {
+							continue
+						}
+						dx := e.X - target.X
+						dz := e.Z - target.Z
+						dist := math.Sqrt(dx*dx + dz*dz)
+						if dist < 3.0 {
+							target.Health -= damage
+							if target.Health <= 0 {
+								w.handleDeath(target, e)
+							}
+						}
+					}
 				} else {
 					e.X += (dx / dist) * moveDist
 					e.Z += (dz / dist) * moveDist
