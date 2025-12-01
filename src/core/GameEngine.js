@@ -963,6 +963,13 @@ export class GameEngine {
             const originalOnMeshReady = entity.onMeshReady;
             entity.onMeshReady = (mesh) => {
                 console.log(`GameEngine: Mesh ready for ${entity.id}`);
+                
+                if (!entity.isActive) {
+                    console.log(`GameEngine: Entity ${entity.id} is inactive, discarding mesh.`);
+                    this.renderSystem.remove(mesh);
+                    return;
+                }
+
                 if (originalOnMeshReady) originalOnMeshReady.call(entity, mesh);
                 
                 const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);

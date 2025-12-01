@@ -20,6 +20,11 @@ export class Entity {
             // console.log(`Entity ${this.id} loading mesh type ${this.meshType}...`);
             const mesh = await MeshFactory.createMeshForType(this.meshType);
             if (mesh) {
+                if (!this.isActive) {
+                    // Entity died/removed while loading
+                    MeshFactory.releaseMesh(this.meshType, mesh);
+                    return;
+                }
                 this.setMesh(mesh);
             }
         } catch (e) {
