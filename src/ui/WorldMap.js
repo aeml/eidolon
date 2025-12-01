@@ -171,24 +171,25 @@ export class WorldMap {
 
                 const pos = worldToScreen(entity.position.x, entity.position.z);
                 const type = entity.constructor.name;
+                const meshType = entity.meshType;
                 let color = null;
                 let size = 3;
 
                 // Determine Color
-                if (['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(type)) {
+                if (['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(type) || ['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(meshType)) {
                     color = '#00ffff'; // Cyan for Players
                     size = 4;
-                } else if (['Skeleton', 'Imp', 'DemonOrc', 'Construct', 'InfernoTitan'].includes(type)) {
+                } else if (['Skeleton', 'Imp', 'DemonOrc', 'Construct', 'InfernoTitan'].includes(type) || ['Skeleton', 'Imp', 'DemonOrc', 'Construct', 'InfernoTitan'].includes(meshType)) {
                     if (entity.isElite) {
                         color = '#ffffff'; // White for Elites
                         size = 6;
-                    } else if (type === 'InfernoTitan') {
+                    } else if (type === 'InfernoTitan' || meshType === 'InfernoTitan') {
                         color = '#ff4500'; // OrangeRed for Inferno Titan
                         size = 5;
                     } else {
                         color = '#ff0000'; // Red for Enemies
                     }
-                } else if (type === 'DwarfSalesman') {
+                } else if (type === 'DwarfSalesman' || meshType === 'DwarfSalesman') {
                     color = '#00ff00'; // Green for NPC
                 }
 
