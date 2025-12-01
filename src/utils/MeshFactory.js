@@ -682,10 +682,10 @@ export class MeshFactory {
                     }
                 });
 
-                const hitGeo = new THREE.BoxGeometry(3.5, 4.5, 3.5);
+                const hitGeo = new THREE.BoxGeometry(1.0, 2.0, 1.0);
                 const hitMat = new THREE.MeshBasicMaterial({ visible: false });
                 const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-                hitMesh.position.y = 2.0;
+                hitMesh.position.y = 1.0;
                 mesh.add(hitMesh);
                 
                 return mesh;

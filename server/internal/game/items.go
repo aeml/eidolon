@@ -197,8 +197,9 @@ func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCo
 
 	if statCount > 0 {
 		// Calculate Total Stat Budget
-		rollPerLevel := 2.0 + rand.Float64()*2.0
-		totalBudget := int(rollPerLevel * float64(level) * multiplier)
+		// Strict level scaling to ensure higher level items have higher stat pools
+		// Fixed scalar per level (e.g. 3.0) * multiplier
+		totalBudget := int(3.0 * float64(level) * multiplier)
 
 		// Select Stats
 		var selectedStats []string

@@ -14,7 +14,7 @@ export class InfernoTitan extends Actor {
         this.roamTimer = 0;
         this.roamInterval = 4; 
         
-        this.radius = 3.0; // Larger collision radius
+        this.radius = 1.0; // Reduced collision radius
         this.isRunning = false; // Enemies always walk
 
         this.meshType = 'InfernoTitan';
