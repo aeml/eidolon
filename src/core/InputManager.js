@@ -223,6 +223,14 @@ export class InputManager {
     }
 
     onKeyDown(e) {
+        const activeElement = document.activeElement;
+        if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+            if (e.key === 'Escape') {
+                activeElement.blur();
+            }
+            return;
+        }
+
         const key = e.key.toLowerCase();
         if (this.keys.hasOwnProperty(key)) {
             this.keys[key] = true;
