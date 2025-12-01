@@ -76,6 +76,7 @@ const (
 	MsgBuyGamble = "buy_gamble"
 	MsgSell      = "sell"
 	MsgSocial    = "social"
+	MsgRespawn   = "respawn"
 )
 
 type Message struct {
@@ -795,6 +796,12 @@ func (c *Client) handleMessage(msg Message) {
 		}
 		b, _ := json.Marshal(msg)
 		c.send <- b
+
+	case MsgRespawn:
+		if c.playerID == "" {
+			return
+		}
+		world.PerformRespawn(c.playerID)
 	}
 }
 

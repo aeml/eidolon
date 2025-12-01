@@ -202,12 +202,18 @@ export class GameEngine {
 
         this.uiManager.onRespawn = () => {
             if (this.player) {
-                console.log("Player requested respawn/unstuck.");
-                this.player.respawn(0, 0);
-                this.player.timeSinceDeath = null;
-                this.chunkManager.updateEntityChunk(this.player);
-                this.renderSystem.setCameraTarget(this.player.position);
-                this.chunkManager.update(this.player, 0, this.collisionManager);
+                console.log("Player requested respawn.");
+                
+                if (this.isMultiplayer && this.socket && this.socket.readyState === WebSocket.OPEN) {
+                    this.socket.send(JSON.stringify({ type: 'respawn', payload: {} }));
+                    // Wait for server state update to handle actual respawn
+                } else {
+                    this.player.respawn(0, 0);
+                    this.player.timeSinceDeath = null;
+                    this.chunkManager.updateEntityChunk(this.player);
+                    this.renderSystem.setCameraTarget(this.player.position);
+                    this.chunkManager.update(this.player, 0, this.collisionManager);
+                }
             }
         };
 
@@ -667,6 +673,19 @@ export class GameEngine {
                 if (pData.id === this.player.id) {
                     // Update local player stats from server
                     if (this.player) {
+                        // Sync State
+                        if (pData.state) {
+                            if (this.player.state !== 'DEAD' && pData.state === 'DEAD') {
+                                this.player.die();
+                            } else if (this.player.state === 'DEAD' && pData.state !== 'DEAD') {
+                                // Revived?
+                                this.player.state = pData.state;
+                                this.player.playAnimation('Idle');
+                            } else {
+                                this.player.state = pData.state;
+                            }
+                        }
+
                         this.player.xp = pData.experience;
                         this.player.xpToNextLevel = pData.maxExperience;
                         this.player.level = pData.level;
@@ -1564,23 +1583,9 @@ export class GameEngine {
             }
 
             if (this.player.state === 'DEAD') {
-                if (this.player.timeSinceDeath === undefined || this.player.timeSinceDeath === null) {
-                    this.player.timeSinceDeath = 0;
-                }
-                this.player.timeSinceDeath += dt;
-                
-                if (!this.isMultiplayer && this.player.timeSinceDeath > 3.0) {
-                    console.log("Player respawning in town...");
-                    this.player.respawn(0, 0);
-                    this.player.timeSinceDeath = null;
-                    
-                    this.chunkManager.updateEntityChunk(this.player);
-
-                    this.renderSystem.setCameraTarget(this.player.position);
-                    
-                    this.chunkManager.update(this.player, 0, this.collisionManager);
-                }
+                this.uiManager.showDeathScreen();
             } else {
+                this.uiManager.hideDeathScreen();
                 this.player.timeSinceDeath = null;
             }
         }

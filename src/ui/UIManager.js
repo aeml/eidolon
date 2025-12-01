@@ -65,6 +65,7 @@ export class UIManager {
 
         this.setupShop();
         this.createSocialWindow();
+        this.createDeathScreen();
 
         // Setup Windows (Drag & Click Blocking)
         this.setupWindow(this.characterSheet);
@@ -222,6 +223,69 @@ export class UIManager {
                 this.hideTooltips();
             }
         });
+    }
+
+    createDeathScreen() {
+        const div = document.createElement('div');
+        div.id = 'death-screen';
+        div.style.display = 'none';
+        div.style.position = 'absolute';
+        div.style.top = '0';
+        div.style.left = '0';
+        div.style.width = '100%';
+        div.style.height = '100%';
+        div.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        div.style.zIndex = '2000';
+        div.style.flexDirection = 'column';
+        div.style.alignItems = 'center';
+        div.style.justifyContent = 'center';
+        div.style.color = '#ff0000';
+        div.style.fontFamily = 'Arial, sans-serif';
+        
+        div.innerHTML = `
+            <h1 style="font-size: 72px; margin-bottom: 20px; text-shadow: 0 0 10px #000;">YOU DIED</h1>
+            <button id="btn-death-respawn" style="
+                padding: 15px 40px; 
+                font-size: 24px; 
+                background: #333; 
+                color: white; 
+                border: 2px solid #666; 
+                cursor: pointer;
+                transition: all 0.2s;
+            ">Respawn in Town</button>
+        `;
+        
+        document.body.appendChild(div);
+        
+        const btn = document.getElementById('btn-death-respawn');
+        btn.onmouseover = () => {
+            btn.style.background = '#444';
+            btn.style.borderColor = '#fff';
+        };
+        btn.onmouseout = () => {
+            btn.style.background = '#333';
+            btn.style.borderColor = '#666';
+        };
+        btn.onclick = () => {
+            if (this.onRespawn) {
+                this.onRespawn();
+            }
+            this.hideDeathScreen();
+        };
+        
+        this.deathScreen = div;
+    }
+
+    showDeathScreen() {
+        if (this.deathScreen) {
+            this.deathScreen.style.display = 'flex';
+        }
+    }
+
+    hideDeathScreen() {
+        if (this.deathScreen) {
+            this.deathScreen.style.display = 'none';
+        }
     }
 
     handleSellAll(rarityName) {
