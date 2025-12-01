@@ -22,7 +22,7 @@ export class LootDrop extends Entity {
         this.radius = 0.5;
         
         this.creationTime = Date.now();
-        this.maxLifetime = 30000; // 30 seconds in ms
+        this.maxLifetime = 60000; // 60 seconds in ms
 
         // Create visual representation
         // Color based on rarity

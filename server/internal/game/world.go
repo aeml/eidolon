@@ -499,7 +499,7 @@ func (w *World) Update(dt float64) {
 	for id, e := range w.Entities {
 		// --- Loot Cleanup ---
 		if e.Type == TypeLoot {
-			if time.Since(e.LootTime) > 5*time.Minute {
+			if time.Since(e.LootTime) > 1*time.Minute {
 				delete(w.Entities, id)
 			}
 			continue
