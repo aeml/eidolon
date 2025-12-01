@@ -670,7 +670,7 @@ func (w *World) Update(dt float64) {
 				} else {
 					if time.Since(e.LastSpiritTick) >= 500*time.Millisecond {
 						e.LastSpiritTick = time.Now()
-						damage := 10 + (e.BaseStats.Wisdom * 1)
+						damage := 10 + (e.Stats.Wisdom * 1)
 						for _, target := range enemies {
 							dx := e.X - target.X
 							dz := e.Z - target.Z
@@ -950,7 +950,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			velX := (dx / dist) * 20.0 // Speed 20
 			velZ := (dz / dist) * 20.0
 
-			damage := 20 + (player.Stats.Intelligence * 2)
+			damage := 20 + (player.Stats.Wisdom * 2)
 
 			proj := &Entity{
 				ID:       fmt.Sprintf("proj-%d", time.Now().UnixNano()),
@@ -1038,6 +1038,9 @@ func (w *World) handleDeath(target *Entity, attacker *Entity) {
 	if attacker != nil && attacker.Type == TypePlayer && target.Type == TypeEnemy {
 		// XP
 		xpReward := target.Level*10 + 10
+		if target.SubType == "InfernoTitan" {
+			xpReward *= 3
+		}
 
 		attacker.Experience += xpReward
 		if attacker.MaxExperience == 0 {

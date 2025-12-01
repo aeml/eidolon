@@ -62,13 +62,16 @@ export class Minimap {
             let color = '#ff0000'; // Default Enemy color
             let size = 3;
 
+            const type = entity.constructor.name;
+            const meshType = entity.meshType;
+
             if (entity.isElite) {
                 color = '#ffffff'; // White for Elites
                 size = 5;
-            } else if (['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(entity.constructor.name)) {
+            } else if (['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(type) || ['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(meshType)) {
                 color = '#00ffff'; // Cyan for other players
                 size = 4;
-            } else if (entity.constructor.name === 'DwarfSalesman') {
+            } else if (type === 'DwarfSalesman' || meshType === 'DwarfSalesman') {
                 color = '#00ff00'; // Green for NPC
             }
 
