@@ -16,6 +16,7 @@ export class Wizard extends Actor {
     }
 
     useAbility(targetVector, gameEngine) {
+        if (!targetVector) return;
         if (!super.useAbility(targetVector, gameEngine)) return;
 
         console.log("Wizard used Fireball!");

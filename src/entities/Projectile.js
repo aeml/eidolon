@@ -18,12 +18,18 @@ export class Projectile extends Entity {
         super(id);
         this.owner = owner;
         this.type = type; // 'Fireball', 'Dagger'
-        this.position.copy(startPos);
+        if (startPos) {
+            this.position.copy(startPos);
+        }
         
         // Calculate velocity
-        const direction = new THREE.Vector3().subVectors(targetPos, startPos).normalize();
-        this.speed = type === 'Fireball' ? 20 : 35; // Increased speed
-        this.velocity = direction.multiplyScalar(this.speed);
+        if (targetPos && startPos) {
+            const direction = new THREE.Vector3().subVectors(targetPos, startPos).normalize();
+            this.speed = type === 'Fireball' ? 20 : 35; // Increased speed
+            this.velocity = direction.multiplyScalar(this.speed);
+        } else {
+            this.velocity = new THREE.Vector3(0, 0, 1);
+        }
         
         this.damage = 0;
         this.radius = type === 'Fireball' ? 2.0 : 1.5; // Increased hit radius
