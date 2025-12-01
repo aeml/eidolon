@@ -128,14 +128,14 @@ func (w *World) initWorld() {
 
 func (w *World) spawnInitialElites() {
 	// Spawn one elite in each area
-	// Level 5 Area (Radius 60-150)
-	w.spawnEliteInArea(5, 60, 150)
-	// Level 10 Area (Radius 160-250)
-	w.spawnEliteInArea(10, 160, 250)
-	// Level 15 Area (Radius 260-350)
-	w.spawnEliteInArea(15, 260, 350)
-	// Level 20+ Area (Radius 360-450)
-	w.spawnEliteInArea(20, 360, 450)
+	// Level 1-10 Area (Radius 60-150)
+	w.spawnEliteInArea(10, 60, 150)
+	// Level 10-20 Area (Radius 160-250)
+	w.spawnEliteInArea(20, 160, 250)
+	// Level 20-30 Area (Radius 260-350)
+	w.spawnEliteInArea(30, 260, 350)
+	// Level 30-40 Area (Radius 360-450)
+	w.spawnEliteInArea(40, 360, 450)
 }
 
 func (w *World) spawnEliteInArea(level int, minR, maxR float64) {
@@ -213,17 +213,17 @@ func (w *World) spawnMerchant() {
 }
 
 func (w *World) spawnEnemies() {
-	// Skeleton: 50 count, 60-150 radius (Level 1-5 Area) - 3x Stronger
-	w.spawnEnemyGroup("Skeleton", 50, 60, 150, 5, Stats{Strength: 15, Intelligence: 6, Dexterity: 9, Wisdom: 6, Vitality: 15})
+	// Skeleton: 50 count, 60-150 radius (Level 1-10 Area) - 3x Stronger
+	w.spawnEnemyGroup("Skeleton", 50, 60, 150, 10, Stats{Strength: 15, Intelligence: 6, Dexterity: 9, Wisdom: 6, Vitality: 15})
 
-	// Imp: 50 count, 160-250 radius (Level 5-10 Area) - 5x Stronger
-	w.spawnEnemyGroup("Imp", 50, 160, 250, 10, Stats{Strength: 60, Intelligence: 20, Dexterity: 30, Wisdom: 20, Vitality: 60})
+	// Imp: 50 count, 160-250 radius (Level 10-20 Area) - 5x Stronger
+	w.spawnEnemyGroup("Imp", 50, 160, 250, 20, Stats{Strength: 60, Intelligence: 20, Dexterity: 30, Wisdom: 20, Vitality: 60})
 
-	// Demon Orc: 50 count, 260-350 radius (Level 10-15 Area) - 5x Stronger
-	w.spawnEnemyGroup("DemonOrc", 50, 260, 350, 15, Stats{Strength: 125, Intelligence: 40, Dexterity: 50, Wisdom: 40, Vitality: 125})
+	// Demon Orc: 50 count, 260-350 radius (Level 20-30 Area) - 5x Stronger
+	w.spawnEnemyGroup("DemonOrc", 50, 260, 350, 30, Stats{Strength: 125, Intelligence: 40, Dexterity: 50, Wisdom: 40, Vitality: 125})
 
-	// Construct: 100 count (Increased), 360-450 radius (Level 15-20 Area) - 5x Stronger
-	w.spawnEnemyGroup("Construct", 100, 360, 450, 20, Stats{Strength: 200, Intelligence: 75, Dexterity: 25, Wisdom: 75, Vitality: 200})
+	// Construct: 200 count (Increased), 360-450 radius (Level 30-40 Area) - 5x Stronger
+	w.spawnEnemyGroup("Construct", 200, 360, 450, 40, Stats{Strength: 200, Intelligence: 75, Dexterity: 25, Wisdom: 75, Vitality: 200})
 }
 
 func (w *World) spawnEnemyGroup(subType string, count int, minRadius, maxRadius float64, level int, baseStats Stats) {
@@ -788,10 +788,10 @@ func (w *World) Update(dt float64) {
 			Level      int
 		}
 		areas := []SpawnArea{
-			{60, 150, 5},
-			{160, 250, 10},
-			{260, 350, 15},
-			{360, 450, 20},
+			{60, 150, 10},
+			{160, 250, 20},
+			{260, 350, 30},
+			{360, 450, 40},
 		}
 		area := areas[rand.Intn(len(areas))]
 		w.spawnEliteInArea(area.Level, area.MinR, area.MaxR)
@@ -1004,6 +1004,12 @@ func (w *World) handleDeath(target *Entity, attacker *Entity) {
 	if attacker != nil && attacker.Type == TypePlayer && target.Type == TypeEnemy {
 		// XP
 		xpReward := target.Level*10 + 10
+
+		// XP Penalty: If player is 15+ levels higher than enemy, no XP
+		if attacker.Level-target.Level >= 15 {
+			xpReward = 0
+		}
+
 		attacker.Experience += xpReward
 		if attacker.MaxExperience == 0 {
 			attacker.MaxExperience = 100
