@@ -103,6 +103,15 @@ export class LootDrop extends Entity {
             context.fillText(message, canvas.width / 2, canvas.height / 2);
             
             texture = new THREE.CanvasTexture(canvas);
+            
+            // Simple Cache Limit
+            if (TEXTURE_CACHE.size > 100) {
+                // Clear cache if too big to prevent leaks
+                // In a real app, we might use LRU, but clearing is safe as textures will be recreated if needed
+                TEXTURE_CACHE.forEach(t => t.dispose());
+                TEXTURE_CACHE.clear();
+            }
+            
             TEXTURE_CACHE.set(cacheKey, texture);
             
             width = canvas.width;

@@ -26,7 +26,11 @@ export class Wizard extends Actor {
         const startPos = this.position.clone();
         startPos.y += 1.5; // Shoot from chest/staff height
         
-        const fireball = new Projectile(null, this, 'Fireball', startPos, targetVector);
+        // Adjust target height to match start height for horizontal flight
+        const adjustedTarget = targetVector.clone();
+        adjustedTarget.y = startPos.y;
+
+        const fireball = new Projectile(null, this, 'Fireball', startPos, adjustedTarget);
         
         // Damage Calculation: Base 20 + (Intelligence * 2.0)
         fireball.damage = 20 + (this.stats.intelligence * 2.0);

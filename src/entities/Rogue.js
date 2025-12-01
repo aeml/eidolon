@@ -25,7 +25,11 @@ export class Rogue extends Actor {
         const startPos = this.position.clone();
         startPos.y += 1.0;
         
-        const dagger = new Projectile(null, this, 'Dagger', startPos, targetVector);
+        // Adjust target height to match start height for horizontal flight
+        const adjustedTarget = targetVector.clone();
+        adjustedTarget.y = startPos.y;
+
+        const dagger = new Projectile(null, this, 'Dagger', startPos, adjustedTarget);
         
         // Damage Calculation: Base 15 + (Dexterity * 1.5)
         dagger.damage = 15 + (this.stats.dexterity * 1.5);

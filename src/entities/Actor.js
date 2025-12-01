@@ -185,7 +185,7 @@ export class Actor extends Entity {
         if (this.state === 'DEAD') return false;
         
         // Bypass checks for remote entities (visual only)
-        if (this.isRemote || this.isMultiplayer) {
+        if (this.isRemote) {
             return true;
         }
 
