@@ -4,6 +4,16 @@
 
 > *The world has fallen into Dissonance. You are a Harmonizer. You do not kill to conquer; you fight to re-tune.*
 
+## ✨ Features
+
+*   **Multiplayer:** Real-time MMO gameplay with shared world state.
+*   **4 Classes:** Fighter, Rogue, Wizard, Cleric - each with unique stats and abilities.
+*   **Progression:** Leveling system (1-100), Stat allocation, and XP grinding.
+*   **Loot System:** Diablo-style loot with rarities (Common, Uncommon, Rare, Legendary) and random affixes.
+*   **Economy:** Gold drops, Trading with NPCs, and Gambling for gear.
+*   **Mobile Support:** Full touch controls, virtual joystick, and optimized UI for mobile devices.
+*   **Performance:** Chunk-based loading and object pooling for smooth performance.
+
 ## 🎮 Playable Demo
 
 This project is built with **Vanilla JavaScript** and **Three.js**, requiring no build steps. It runs directly in modern browsers.
@@ -20,35 +30,42 @@ This project is built with **Vanilla JavaScript** and **Three.js**, requiring no
 
 ## 🛠️ Technology Stack
 
-*   **Language:** Vanilla JavaScript (ES6+ Modules). No transpilers or bundlers (Webpack/Vite) required.
-*   **Renderer:** [Three.js](https://threejs.org/) (WebGL).
+*   **Client:** Vanilla JavaScript (ES6+ Modules), [Three.js](https://threejs.org/) (WebGL).
+*   **Server:** Go (Golang) with WebSockets for real-time multiplayer.
 *   **Assets:** GLTF/GLB 3D Models, PNG Textures.
-*   **Architecture:** Object-Oriented Entity System with Component-like composition for visuals.
+*   **Architecture:** Authoritative Server with Client-Side Prediction and Interpolation.
 
 ## 🚀 Getting Started
 
 Since this project uses ES Modules, you cannot open `index.html` directly from the file system due to CORS security policies. You must serve it via a local web server.
 
 ### Prerequisites
-*   Python 3.x (Pre-installed on most systems)
-*   OR Node.js (`http-server`)
-*   OR VS Code "Live Server" extension
+*   Go 1.21+ (For the Server)
+*   Python 3.x (For the Client Web Server)
 
-### Running Locally (Python)
+### Running Locally
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/eidolon.git
+    git clone https://github.com/aeml/eidolon.git
     cd eidolon
     ```
 
-2.  Start a local server:
+2.  Start the Game Server (Go):
+    ```bash
+    cd server
+    go run main.go
+    ```
+    The server will start on port `8080`.
+
+3.  Start the Client (Web Server):
+    Open a new terminal in the root `eidolon` directory:
     ```bash
     # Python 3
     python3 -m http.server 8000
     ```
 
-3.  Open your browser and navigate to:
+4.  Open your browser and navigate to:
     `http://localhost:8000`
 
 ## 🏛️ System Architecture
@@ -56,10 +73,12 @@ Since this project uses ES Modules, you cannot open `index.html` directly from t
 The codebase follows a strict separation between **Simulation** and **Visualization**.
 
 ### Core Subsystems
-*   **GameEngine:** The central orchestrator. Runs a fixed time-step update loop for deterministic logic and a variable render loop for smooth visuals.
-*   **RenderSystem:** Manages the Three.js Scene, Orthographic Camera, and Lighting. Handles the isometric projection math.
-*   **InputManager:** Abstracts mouse/keyboard events. Uses Raycasting to translate 2D screen coordinates into 3D world-space coordinates on the ground plane.
-*   **MeshFactory:** An asynchronous asset loader that handles GLB loading, bone cloning (via `SkeletonUtils`), and animation extraction.
+*   **Server (Go):** Handles all game logic, physics, combat, and state management. It broadcasts state updates to connected clients via WebSockets.
+*   **Client (JS):** Handles input, rendering, and interpolation.
+    *   **GameEngine:** Manages the game loop, network synchronization, and entity interpolation.
+    *   **RenderSystem:** Manages the Three.js Scene, Orthographic Camera, and Lighting.
+    *   **InputManager:** Abstracts mouse/keyboard/touch events.
+    *   **ChunkManager:** Handles dynamic loading/unloading of entities and terrain based on player position.
 
 ### Entity Hierarchy
 *   **Entity:** Base class for all world objects (Position, Rotation, ID).
