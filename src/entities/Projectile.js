@@ -64,6 +64,8 @@ export class Projectile extends Entity {
     }
 
     update(dt, collisionManager, player, activeEntities) { 
+        if (!this.isActive) return;
+
         // In multiplayer, position is authoritative from server, but we can interpolate
         // If this is a remote projectile, we might want to just let the server update position
         // However, for smoothness, we can predict movement
@@ -113,6 +115,7 @@ export class Projectile extends Entity {
                     } else if (this.type === 'Fireball') {
                         // Explode Logic: Hit, Splash, Destroy
                         this.isActive = false; // Destroy projectile
+                        if (this.mesh) this.mesh.visible = false; // Hide immediately to prevent visual piercing
                         
                         // Splash Damage
                         const splashRadius = 4.0;
