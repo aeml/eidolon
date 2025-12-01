@@ -618,6 +618,12 @@ func (c *Client) handleMessage(msg Message) {
 		// Authoritative movement validation should happen here
 		// For now, trust client but update world state
 		if e := world.GetEntity(c.playerID); e != nil {
+			// Ignore client updates immediately after respawn to prevent race conditions
+			// where client sends old position/dead state before receiving respawn update
+			if time.Since(e.LastRespawnTime) < 1*time.Second {
+				return
+			}
+
 			e.X = payload.X
 			e.Y = payload.Y
 			e.Z = payload.Z

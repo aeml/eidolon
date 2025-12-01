@@ -74,6 +74,7 @@ type Entity struct {
 	AttackCooldown  time.Duration `json:"-"`
 	LastAbilityTime time.Time     `json:"-"`
 	AbilityCooldown time.Duration `json:"-"`
+	LastRespawnTime time.Time     `json:"-"`
 
 	// Loot
 	LootItem *Item     `json:"lootItem,omitempty"` // If Type == TypeLoot
@@ -475,6 +476,7 @@ func (w *World) PerformRespawn(playerID string) {
 
 	// Allow respawn even if not dead (unstuck)
 	player.State = "IDLE"
+	player.LastRespawnTime = time.Now()
 	player.Health = player.MaxHealth
 	player.Mana = player.MaxMana
 	player.X = 0
@@ -1036,11 +1038,6 @@ func (w *World) handleDeath(target *Entity, attacker *Entity) {
 	if attacker != nil && attacker.Type == TypePlayer && target.Type == TypeEnemy {
 		// XP
 		xpReward := target.Level*10 + 10
-
-		// XP Penalty: If player is 15+ levels higher than enemy, no XP
-		if attacker.Level-target.Level >= 15 {
-			xpReward = 0
-		}
 
 		attacker.Experience += xpReward
 		if attacker.MaxExperience == 0 {
