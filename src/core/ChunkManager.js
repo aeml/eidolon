@@ -167,17 +167,15 @@ export class ChunkManager {
             for (const entity of this.chunks.get(key)) {
                 if (entity.type === 'DwarfSalesman') continue;
 
-                if (entity.mesh) {
+                if (entity.dispose) {
+                    entity.dispose();
+                } else if (entity.mesh) {
                     this.scene.remove(entity.mesh);
-                    
-                    if (entity.id !== 'player-1' && entity.meshType) {
-                        if (!entity.isElite) {
-                            MeshFactory.releaseMesh(entity.meshType, entity.mesh);
-                        }
-                        entity.mesh = null; 
-                        entity.isMeshLoading = false; 
-                    }
                 }
+                
+                // Ensure state is reset for reloading
+                entity.mesh = null;
+                entity.isMeshLoading = false;
             }
         }
     }
@@ -199,7 +197,10 @@ export class ChunkManager {
         if (this.chunks.has(key)) {
             this.chunks.get(key).delete(entity);
         }
-        if (entity.mesh) {
+        
+        if (entity.dispose) {
+            entity.dispose();
+        } else if (entity.mesh) {
             this.scene.remove(entity.mesh);
         }
     }

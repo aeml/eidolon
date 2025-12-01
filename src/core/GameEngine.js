@@ -854,9 +854,13 @@ export class GameEngine {
             for (const [id, entity] of this.remotePlayers) {
                 if (!seenIds.has(id)) {
                     entity.isActive = false;
-                    if (entity.mesh) {
+                    
+                    if (entity.dispose) {
+                        entity.dispose();
+                    } else if (entity.mesh) {
                         this.renderSystem.remove(entity.mesh);
                     }
+
                     const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
                     if (this.chunkManager.chunks.has(key)) {
                         this.chunkManager.chunks.get(key).delete(entity);
@@ -1422,7 +1426,12 @@ export class GameEngine {
                                         this.uiManager.updateInventory(this.player);
                                         
                                         this.pendingInteraction.isActive = false;
-                                        this.renderSystem.remove(this.pendingInteraction.mesh);
+                                        
+                                        if (this.pendingInteraction.dispose) {
+                                            this.pendingInteraction.dispose();
+                                        } else if (this.pendingInteraction.mesh) {
+                                            this.renderSystem.remove(this.pendingInteraction.mesh);
+                                        }
                                         
                                         const key = this.chunkManager.getChunkKey(this.pendingInteraction.position.x, this.pendingInteraction.position.z);
                                         if (this.chunkManager.chunks.has(key)) {
