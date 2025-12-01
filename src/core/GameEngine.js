@@ -88,7 +88,6 @@ export class GameEngine {
         this.hoveredEntity = null;
         this.playerType = playerType || 'Fighter';
         this.enemies = [];
-        this.projectiles = [];
         this.cameraLocked = true;
         this.pendingInteraction = null;
         this.pendingAbilityTarget = null;

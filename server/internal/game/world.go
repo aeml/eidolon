@@ -77,8 +77,9 @@ type Entity struct {
 	LastRespawnTime time.Time     `json:"-"`
 
 	// Loot
-	LootItem *Item     `json:"lootItem,omitempty"` // If Type == TypeLoot
-	LootTime time.Time `json:"-"`
+	LootItem  *Item     `json:"lootItem,omitempty"` // If Type == TypeLoot
+	LootTime  time.Time `json:"-"`
+	CreatedAt time.Time `json:"-"`
 
 	// Projectile
 	OwnerID string          `json:"ownerId,omitempty"`
@@ -96,8 +97,81 @@ type Entity struct {
 	ChargeTargetZ  float64   `json:"-"`
 }
 
+type SpatialMap struct {
+	cellSize float64
+	cells    map[string]map[string]*Entity
+}
+
+func NewSpatialMap(cellSize float64) *SpatialMap {
+	return &SpatialMap{
+		cellSize: cellSize,
+		cells:    make(map[string]map[string]*Entity),
+	}
+}
+
+func (sm *SpatialMap) key(x, z float64) string {
+	cx := int(math.Floor(x / sm.cellSize))
+	cz := int(math.Floor(z / sm.cellSize))
+	return fmt.Sprintf("%d:%d", cx, cz)
+}
+
+func (sm *SpatialMap) Add(e *Entity) {
+	k := sm.key(e.X, e.Z)
+	if sm.cells[k] == nil {
+		sm.cells[k] = make(map[string]*Entity)
+	}
+	sm.cells[k][e.ID] = e
+}
+
+func (sm *SpatialMap) Remove(e *Entity) {
+	k := sm.key(e.X, e.Z)
+	if sm.cells[k] != nil {
+		delete(sm.cells[k], e.ID)
+		if len(sm.cells[k]) == 0 {
+			delete(sm.cells, k)
+		}
+	}
+}
+
+func (sm *SpatialMap) Update(e *Entity, oldX, oldZ float64) {
+	oldKey := sm.key(oldX, oldZ)
+	newKey := sm.key(e.X, e.Z)
+	if oldKey == newKey {
+		return
+	}
+	if sm.cells[oldKey] != nil {
+		delete(sm.cells[oldKey], e.ID)
+		if len(sm.cells[oldKey]) == 0 {
+			delete(sm.cells, oldKey)
+		}
+	}
+	if sm.cells[newKey] == nil {
+		sm.cells[newKey] = make(map[string]*Entity)
+	}
+	sm.cells[newKey][e.ID] = e
+}
+
+func (sm *SpatialMap) Nearby(x, z, radius float64) []*Entity {
+	var result []*Entity
+	minX := int(math.Floor((x - radius) / sm.cellSize))
+	maxX := int(math.Floor((x + radius) / sm.cellSize))
+	minZ := int(math.Floor((z - radius) / sm.cellSize))
+	maxZ := int(math.Floor((z + radius) / sm.cellSize))
+
+	for cx := minX; cx <= maxX; cx++ {
+		for cz := minZ; cz <= maxZ; cz++ {
+			k := fmt.Sprintf("%d:%d", cx, cz)
+			for _, e := range sm.cells[k] {
+				result = append(result, e)
+			}
+		}
+	}
+	return result
+}
+
 type World struct {
 	Entities map[string]*Entity
+	Grid     *SpatialMap
 	mu       sync.RWMutex
 
 	// Elite Spawning
@@ -113,6 +187,7 @@ type World struct {
 func NewWorld() *World {
 	w := &World{
 		Entities:        make(map[string]*Entity),
+		Grid:            NewSpatialMap(50.0), // 50 unit cell size
 		EliteSpawnTimer: time.Now(),
 		RegenTimer:      0,
 		OnEvent:         func(eventType string, data interface{}) {}, // Default no-op
@@ -201,6 +276,7 @@ func (w *World) spawnEliteInArea(level int, minR, maxR float64) {
 	// Let's just rely on ID for now or add property to Entity struct if we want to be clean.
 	// For now, just spawn it.
 	w.Entities[elite.ID] = elite
+	w.Grid.Add(elite)
 
 	// Announce Spawn
 	if w.OnEvent != nil {
@@ -292,12 +368,35 @@ func (w *World) AddEntity(e *Entity) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 	w.Entities[e.ID] = e
+	w.Grid.Add(e)
 }
 
 func (w *World) RemoveEntity(id string) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
-	delete(w.Entities, id)
+	if e, ok := w.Entities[id]; ok {
+		w.Grid.Remove(e)
+		delete(w.Entities, id)
+	}
+}
+
+func (w *World) UpdateEntityPosition(id string, x, y, z, rotation float64) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	e, ok := w.Entities[id]
+	if !ok {
+		return
+	}
+
+	oldX, oldZ := e.X, e.Z
+	e.X = x
+	e.Y = y
+	e.Z = z
+	e.Rotation = rotation
+	e.State = "MOVING" // Default to moving if position updates
+
+	w.Grid.Update(e, oldX, oldZ)
 }
 
 func (w *World) GetEntity(id string) *Entity {
@@ -347,6 +446,7 @@ func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool) {
 	if dist < 36.0 {
 		if loot.LootItem != nil {
 			player.Inventory = append(player.Inventory, *loot.LootItem)
+			w.Grid.Remove(loot)
 			delete(w.Entities, lootID)
 			return player, true
 		}
@@ -478,11 +578,11 @@ func (w *World) PerformRespawn(playerID string) {
 	player.State = "IDLE"
 	player.LastRespawnTime = time.Now()
 	player.Health = player.MaxHealth
-	player.Mana = player.MaxMana
 	player.X = 0
 	player.Z = 0
 	player.TargetX = 0
 	player.TargetZ = 0
+	w.Grid.Update(player, 0, 0) // Force update to 0,0
 }
 
 func (w *World) Update(dt float64) {
@@ -533,6 +633,7 @@ func (w *World) Update(dt float64) {
 		// --- Loot Cleanup ---
 		if e.Type == TypeLoot {
 			if time.Since(e.LootTime) > 1*time.Minute {
+				w.Grid.Remove(e)
 				delete(w.Entities, id)
 			}
 			continue
@@ -545,6 +646,7 @@ func (w *World) Update(dt float64) {
 				if strings.HasPrefix(e.ID, "elite-") {
 					// Elites do not respawn, they are removed after death animation time
 					if time.Since(e.LastAttackTime) > 5*time.Second {
+						w.Grid.Remove(e)
 						delete(w.Entities, id)
 					}
 					continue
@@ -554,8 +656,10 @@ func (w *World) Update(dt float64) {
 				if time.Since(e.LastAttackTime) > 10*time.Second { // Use LastAttackTime as death time for simplicity
 					e.State = "IDLE"
 					e.Health = e.MaxHealth
+					oldX, oldZ := e.X, e.Z
 					e.X = e.SpawnX
 					e.Z = e.SpawnZ
+					w.Grid.Update(e, oldX, oldZ)
 				}
 				continue
 			}
@@ -563,12 +667,26 @@ func (w *World) Update(dt float64) {
 
 		// --- Projectiles ---
 		if e.Type == TypeProjectile {
+			// Lifetime check (prevent memory leaks from stationary or lost projectiles)
+			if time.Since(e.CreatedAt) > 5*time.Second {
+				w.Grid.Remove(e)
+				delete(w.Entities, id)
+				continue
+			}
+
 			// Move
+			oldX, oldZ := e.X, e.Z
 			e.X += e.VelX * dt
 			e.Z += e.VelZ * dt
+			w.Grid.Update(e, oldX, oldZ)
 
 			// Check Collision with Enemies
-			for _, target := range enemies {
+			// Optimization: Use Grid
+			nearbyEnemies := w.Grid.Nearby(e.X, e.Z, e.Radius+2.0) // +2 buffer
+			for _, target := range nearbyEnemies {
+				if target.Type != TypeEnemy || target.State == "DEAD" {
+					continue
+				}
 				dx := e.X - target.X
 				dz := e.Z - target.Z
 				dist := math.Sqrt(dx*dx + dz*dz)
@@ -592,8 +710,10 @@ func (w *World) Update(dt float64) {
 
 					// Splash Damage (Fireball)
 					if e.SubType == "Fireball" {
-						for _, splashTarget := range enemies {
-							if splashTarget == target {
+						// Optimization: Use Grid for splash too
+						splashTargets := w.Grid.Nearby(e.X, e.Z, 10.0)
+						for _, splashTarget := range splashTargets {
+							if splashTarget.Type != TypeEnemy || splashTarget == target || splashTarget.State == "DEAD" {
 								continue
 							}
 							sdx := e.X - splashTarget.X
@@ -610,6 +730,7 @@ func (w *World) Update(dt float64) {
 
 					// Destroy Projectile unless it's a Dagger (Piercing)
 					if e.SubType != "Dagger" {
+						w.Grid.Remove(e)
 						delete(w.Entities, id)
 						break
 					}
@@ -618,6 +739,7 @@ func (w *World) Update(dt float64) {
 
 			// Cleanup if too far
 			if e.X < -1000 || e.X > 1000 || e.Z < -1000 || e.Z > 1000 {
+				w.Grid.Remove(e)
 				delete(w.Entities, id)
 			}
 			continue
@@ -633,6 +755,7 @@ func (w *World) Update(dt float64) {
 				speed := 50.0 // Increased speed
 				moveDist := speed * dt
 
+				oldX, oldZ := e.X, e.Z
 				if moveDist >= dist {
 					e.X = e.ChargeTargetX
 					e.Z = e.ChargeTargetZ
@@ -641,9 +764,11 @@ func (w *World) Update(dt float64) {
 
 					// Deal AoE Damage on Impact (Radius 16.0 like Spirit Guardians)
 					damage := int(float64(e.Damage) * 1.5)
-					for _, target := range enemies {
-						// Check if target is still alive (might have died earlier in this frame)
-						if target.State == "DEAD" {
+
+					// Optimization: Use Grid
+					nearby := w.Grid.Nearby(e.X, e.Z, 16.0)
+					for _, target := range nearby {
+						if target.Type != TypeEnemy || target.State == "DEAD" {
 							continue
 						}
 						dx := e.X - target.X
@@ -661,6 +786,7 @@ func (w *World) Update(dt float64) {
 					e.Z += (dz / dist) * moveDist
 					e.Rotation = math.Atan2(dx, dz)
 				}
+				w.Grid.Update(e, oldX, oldZ)
 			}
 
 			// Cleric Spirits
@@ -671,7 +797,13 @@ func (w *World) Update(dt float64) {
 					if time.Since(e.LastSpiritTick) >= 500*time.Millisecond {
 						e.LastSpiritTick = time.Now()
 						damage := 10 + (e.Stats.Wisdom * 1)
-						for _, target := range enemies {
+
+						// Optimization: Use Grid
+						nearby := w.Grid.Nearby(e.X, e.Z, 16.0)
+						for _, target := range nearby {
+							if target.Type != TypeEnemy || target.State == "DEAD" {
+								continue
+							}
 							dx := e.X - target.X
 							dz := e.Z - target.Z
 							dist := math.Sqrt(dx*dx + dz*dz)
@@ -693,6 +825,11 @@ func (w *World) Update(dt float64) {
 			minDist := 1000.0 // Far
 
 			// Find nearest player
+			// Optimization: Use Grid? Or just iterate players?
+			// Iterating players is fine if player count is low (100), but Grid is better if players are spread out.
+			// Let's stick to iterating players for now as it's simpler than querying grid for "nearest player" specifically
+			// unless we maintain a separate list of players.
+			// Actually, we have `players` slice from step 1.
 			for _, p := range players {
 				// Check if player is in Safe Zone (Town: -50 to 50)
 				if p.X > -50 && p.X < 50 && p.Z > -50 && p.Z < 50 {
@@ -755,6 +892,7 @@ func (w *World) Update(dt float64) {
 						if moveDist > dist {
 							moveDist = dist
 						}
+						oldX, oldZ := e.X, e.Z
 						newX := e.X + (dx/dist)*moveDist
 						newZ := e.Z + (dz/dist)*moveDist
 
@@ -766,6 +904,7 @@ func (w *World) Update(dt float64) {
 							e.X = newX
 							e.Z = newZ
 							e.Rotation = math.Atan2(dx, dz)
+							w.Grid.Update(e, oldX, oldZ)
 						}
 					}
 				}
@@ -795,6 +934,7 @@ func (w *World) Update(dt float64) {
 					if moveDist > dist {
 						moveDist = dist
 					}
+					oldX, oldZ := e.X, e.Z
 					newX := e.X + (dx/dist)*moveDist
 					newZ := e.Z + (dz/dist)*moveDist
 
@@ -806,6 +946,7 @@ func (w *World) Update(dt float64) {
 						e.X = newX
 						e.Z = newZ
 						e.Rotation = math.Atan2(dx, dz)
+						w.Grid.Update(e, oldX, oldZ)
 					}
 				}
 			}
@@ -953,20 +1094,22 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			damage := 20 + (player.Stats.Wisdom * 2)
 
 			proj := &Entity{
-				ID:       fmt.Sprintf("proj-%d", time.Now().UnixNano()),
-				Type:     TypeProjectile,
-				SubType:  "Fireball",
-				X:        player.X,
-				Y:        1.5,
-				Z:        player.Z,
-				VelX:     velX,
-				VelZ:     velZ,
-				Radius:   2.0,
-				Damage:   damage,
-				OwnerID:  player.ID,
-				Rotation: math.Atan2(velX, velZ),
+				ID:        fmt.Sprintf("proj-%d", time.Now().UnixNano()),
+				Type:      TypeProjectile,
+				SubType:   "Fireball",
+				X:         player.X,
+				Y:         1.5,
+				Z:         player.Z,
+				VelX:      velX,
+				VelZ:      velZ,
+				Radius:    2.0,
+				Damage:    damage,
+				OwnerID:   player.ID,
+				Rotation:  math.Atan2(velX, velZ),
+				CreatedAt: time.Now(),
 			}
 			w.Entities[proj.ID] = proj
+			w.Grid.Add(proj)
 
 			player.State = "ATTACKING"
 			player.AbilityCooldown = 2 * time.Second
@@ -992,20 +1135,22 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			damage := 15 + int(float64(player.Stats.Dexterity)*1.5)
 
 			proj := &Entity{
-				ID:       fmt.Sprintf("proj-%d", time.Now().UnixNano()),
-				Type:     TypeProjectile,
-				SubType:  "Dagger",
-				X:        player.X,
-				Y:        1.0,
-				Z:        player.Z,
-				VelX:     velX,
-				VelZ:     velZ,
-				Radius:   1.5,
-				Damage:   damage,
-				OwnerID:  player.ID,
-				Rotation: math.Atan2(velX, velZ),
+				ID:        fmt.Sprintf("proj-%d", time.Now().UnixNano()),
+				Type:      TypeProjectile,
+				SubType:   "Dagger",
+				X:         player.X,
+				Y:         1.0,
+				Z:         player.Z,
+				VelX:      velX,
+				VelZ:      velZ,
+				Radius:    1.5,
+				Damage:    damage,
+				OwnerID:   player.ID,
+				Rotation:  math.Atan2(velX, velZ),
+				CreatedAt: time.Now(),
 			}
 			w.Entities[proj.ID] = proj
+			w.Grid.Add(proj)
 
 			player.State = "ATTACKING"
 			player.AbilityCooldown = 1 * time.Second
@@ -1105,6 +1250,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity) {
 				LootTime: time.Now(),
 			}
 			w.Entities[lootEntity.ID] = lootEntity
+			w.Grid.Add(lootEntity)
 		}
 	}
 }
@@ -1148,29 +1294,40 @@ func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[str
 
 	state := make(map[string]*Entity)
 
-	for k, v := range w.Entities {
-		// Check distance
+	// Always include self
+	state[playerID] = w.copyEntity(player)
+
+	// Query Grid
+	nearby := w.Grid.Nearby(player.X, player.Z, viewDistance)
+	for _, v := range nearby {
+		if v.ID == playerID {
+			continue
+		}
+		// Precise distance check
 		dx := v.X - player.X
 		dz := v.Z - player.Z
 		distSq := dx*dx + dz*dz
 
-		// Include if within distance OR if it's the player themselves
-		if distSq <= viewDistance*viewDistance || k == playerID {
-			// Shallow copy & strip
-			e := *v
-			if len(e.Equipment) > 0 {
-				newEquip := make(map[string]Item)
-				for slot, item := range e.Equipment {
-					newItem := item
-					newItem.Description = ""
-					newEquip[slot] = newItem
-				}
-				e.Equipment = newEquip
-			}
-			state[k] = &e
+		if distSq <= viewDistance*viewDistance {
+			state[v.ID] = w.copyEntity(v)
 		}
 	}
 	return state
+}
+
+func (w *World) copyEntity(v *Entity) *Entity {
+	// Shallow copy & strip
+	e := *v
+	if len(e.Equipment) > 0 {
+		newEquip := make(map[string]Item)
+		for slot, item := range e.Equipment {
+			newItem := item
+			newItem.Description = ""
+			newEquip[slot] = newItem
+		}
+		e.Equipment = newEquip
+	}
+	return &e
 }
 
 func (e *Entity) RecalculateStats() {

@@ -30,6 +30,5 @@ export class Rogue extends Actor {
         dagger.damage = 15 + (this.stats.dexterity * 1.5);
         
         gameEngine.addEntity(dagger);
-        gameEngine.projectiles.push(dagger);
     }
 }
