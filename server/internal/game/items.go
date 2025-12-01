@@ -89,7 +89,7 @@ var StatNames = map[string]struct {
 	"vitality":     {"Hearty", "of the Whale"},
 }
 
-func GenerateLoot(maxLevel int) *Item {
+func GenerateLoot(targetLevel int) *Item {
 	// 1. Roll for Rarity (Legendary 1%, Rare 29%, Uncommon 30%, Common 40%)
 	roll := rand.Float64()
 	rarity := RarityCommon
@@ -110,8 +110,13 @@ func GenerateLoot(maxLevel int) *Item {
 		statCount = 1
 	}
 
-	// 2. Determine Item Level (Random 1 to maxLevel)
-	level := rand.Intn(maxLevel) + 1
+	// 2. Determine Item Level (Target Level +/- variance, but mostly close to target)
+	// Let's say Level - 3 to Level
+	minLevel := targetLevel - 3
+	if minLevel < 1 {
+		minLevel = 1
+	}
+	level := rand.Intn(targetLevel-minLevel+1) + minLevel
 
 	// 3. Pick Base Item
 	baseItem := BaseItems[rand.Intn(len(BaseItems))]

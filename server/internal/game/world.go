@@ -136,12 +136,19 @@ func (w *World) spawnInitialElites() {
 	w.spawnEliteInArea(30, 260, 350)
 	// Level 30-40 Area (Radius 360-450)
 	w.spawnEliteInArea(40, 360, 450)
+	// Level 40-50 Area (Radius 450-600)
+	w.spawnEliteInArea(50, 450, 600)
 }
 
 func (w *World) spawnEliteInArea(level int, minR, maxR float64) {
 	// Pick random type
-	types := []string{"Skeleton", "Imp", "DemonOrc", "Construct"}
+	types := []string{"Skeleton", "Imp", "DemonOrc", "Construct", "InfernoTitan"}
 	subType := types[rand.Intn(len(types))]
+
+	// If level 50, force InfernoTitan
+	if level == 50 {
+		subType = "InfernoTitan"
+	}
 
 	angle := rand.Float64() * 2 * math.Pi
 	radius := minR + rand.Float64()*(maxR-minR)
@@ -162,6 +169,8 @@ func (w *World) spawnEliteInArea(level int, minR, maxR float64) {
 		baseStats = Stats{Strength: 25, Intelligence: 8, Dexterity: 10, Wisdom: 8, Vitality: 25}
 	case "Construct":
 		baseStats = Stats{Strength: 40, Intelligence: 15, Dexterity: 5, Wisdom: 15, Vitality: 40}
+	case "InfernoTitan":
+		baseStats = Stats{Strength: 120, Intelligence: 40, Dexterity: 20, Wisdom: 40, Vitality: 120}
 	}
 
 	maxHealth := int(float64(baseStats.Vitality*10) * mult)
@@ -216,14 +225,17 @@ func (w *World) spawnEnemies() {
 	// Skeleton: 50 count, 60-150 radius (Level 1-10 Area) - 3x Stronger
 	w.spawnEnemyGroup("Skeleton", 50, 60, 150, 10, Stats{Strength: 15, Intelligence: 6, Dexterity: 9, Wisdom: 6, Vitality: 15})
 
-	// Imp: 50 count, 160-250 radius (Level 10-20 Area) - 5x Stronger
-	w.spawnEnemyGroup("Imp", 50, 160, 250, 20, Stats{Strength: 60, Intelligence: 20, Dexterity: 30, Wisdom: 20, Vitality: 60})
+	// Imp: 100 count, 160-250 radius (Level 10-20 Area) - 5x Stronger
+	w.spawnEnemyGroup("Imp", 100, 160, 250, 20, Stats{Strength: 60, Intelligence: 20, Dexterity: 30, Wisdom: 20, Vitality: 60})
 
-	// Demon Orc: 50 count, 260-350 radius (Level 20-30 Area) - 5x Stronger
-	w.spawnEnemyGroup("DemonOrc", 50, 260, 350, 30, Stats{Strength: 125, Intelligence: 40, Dexterity: 50, Wisdom: 40, Vitality: 125})
+	// Demon Orc: 150 count, 260-350 radius (Level 20-30 Area) - 5x Stronger
+	w.spawnEnemyGroup("DemonOrc", 150, 260, 350, 30, Stats{Strength: 125, Intelligence: 40, Dexterity: 50, Wisdom: 40, Vitality: 125})
 
 	// Construct: 200 count (Increased), 360-450 radius (Level 30-40 Area) - 5x Stronger
 	w.spawnEnemyGroup("Construct", 200, 360, 450, 40, Stats{Strength: 200, Intelligence: 75, Dexterity: 25, Wisdom: 75, Vitality: 200})
+
+	// Inferno Titan: 300 count, 450-600 radius (Level 40-50 Area)
+	w.spawnEnemyGroup("InfernoTitan", 300, 450, 600, 50, Stats{Strength: 300, Intelligence: 100, Dexterity: 40, Wisdom: 100, Vitality: 300})
 }
 
 func (w *World) spawnEnemyGroup(subType string, count int, minRadius, maxRadius float64, level int, baseStats Stats) {
@@ -792,6 +804,7 @@ func (w *World) Update(dt float64) {
 			{160, 250, 20},
 			{260, 350, 30},
 			{360, 450, 40},
+			{450, 600, 50},
 		}
 		area := areas[rand.Intn(len(areas))]
 		w.spawnEliteInArea(area.Level, area.MinR, area.MaxR)

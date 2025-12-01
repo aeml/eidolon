@@ -2,7 +2,7 @@ export const CONSTANTS = {
     SCENE: {
         BACKGROUND_COLOR: 0x202020,
         GROUND_SIZE: 2000,
-        WORLD_BOUNDS: 1000,
+        WORLD_BOUNDS: 2000,
         CHUNK_SIZE: 50,
         LOAD_DISTANCE: 1,
         GROUND_COLOR: 0x333333,
@@ -104,6 +104,17 @@ export const CONSTANTS = {
                 DEXTERITY: 5,
                 WISDOM: 15,
                 STAMINA: 40
+            }
+        },
+        INFERNO_TITAN: {
+            COLOR: 0xff4500,
+            MANA_STAT: 'INTELLIGENCE',
+            STATS: {
+                STRENGTH: 60,
+                INTELLIGENCE: 20,
+                DEXTERITY: 10,
+                WISDOM: 20,
+                STAMINA: 60
             }
         }
     }
