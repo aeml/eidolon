@@ -21,6 +21,7 @@ export class Fighter extends Actor {
     useAbility(targetVector, gameEngine) {
         if (!super.useAbility(targetVector, gameEngine)) return;
 
+        this.gameEngine = gameEngine;
         console.log("Fighter used Charge!");
         this.isCharging = true;
         this.state = 'ATTACKING'; // Lock movement
@@ -43,6 +44,19 @@ export class Fighter extends Actor {
 
     update(dt, collisionManager) {
         if (this.isCharging) {
+            // Remote entities are moved by server updates, so we skip local physics simulation
+            if (this.isRemote) {
+                if (this.mixer) this.mixer.update(dt);
+                return;
+            }
+
+            // Safety check: If chargeTarget is missing, abort charge
+            if (!this.chargeTarget) {
+                this.isCharging = false;
+                super.update(dt, collisionManager);
+                return;
+            }
+
             const speed = 25; // Fast charge speed
             const direction = new THREE.Vector3().subVectors(this.chargeTarget, this.position);
             const dist = direction.length();
@@ -53,12 +67,27 @@ export class Fighter extends Actor {
                 this.state = 'IDLE';
                 this.playAnimation('Idle');
                 
-                // Deal AoE damage at location? Or just stop.
-                // For now, we rely on GameEngine to check if we hit an enemy during charge?
-                // Or we just stop at the point.
-                // Let's do a small AoE hit at the end
-                // We need access to enemies... handled in GameEngine or we pass it down.
-                // For now, just stop.
+                // Deal AoE damage
+                if (this.gameEngine && !this.isMultiplayer && !this.isRemote) {
+                    const range = 3.0;
+                    const damage = Math.floor(this.stats.damage * 1.5);
+                    
+                    if (this.gameEngine.chunkManager) {
+                        const entities = this.gameEngine.chunkManager.getActiveEntities();
+                        entities.forEach(e => {
+                            if (e !== this && e.isActive && e.state !== 'DEAD' && e.stats && e.stats.hp > 0) {
+                                // Don't hit self or other players (in singleplayer there are no other players usually, but good practice)
+                                if (e.id.startsWith('player')) return;
+
+                                const d = this.position.distanceTo(e.position);
+                                if (d < range) {
+                                    e.takeDamage(damage);
+                                    console.log(`Charge hit ${e.id} for ${damage}`);
+                                }
+                            }
+                        });
+                    }
+                }
             } else {
                 direction.normalize();
                 let moveDist = speed * dt;
