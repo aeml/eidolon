@@ -1690,7 +1690,8 @@ export class GameEngine {
 
         // Network Update
         if (this.isMultiplayer && this.socket && this.socket.readyState === WebSocket.OPEN && this.player) {
-            if (this.frameCount % 3 === 0) {
+            // Don't send move updates if dead
+            if (this.player.state !== 'DEAD' && this.frameCount % 3 === 0) {
                 const euler = new THREE.Euler().setFromQuaternion(this.player.rotation);
                 const moveMsg = {
                     type: "move",
