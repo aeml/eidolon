@@ -20,6 +20,7 @@ import { LootDrop } from '../entities/LootDrop.js';
 import { DwarfSalesman } from '../entities/DwarfSalesman.js';
 import { Actor } from '../entities/Actor.js';
 import { Imp } from '../entities/Imp.js';
+import { InfernoTitan } from '../entities/InfernoTitan.js';
 
 export class GameEngine {
     constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null) {
@@ -937,6 +938,7 @@ export class GameEngine {
                 case 'Imp': p = new Imp(id); break;
                 case 'DemonOrc': p = new DemonOrc(id); break;
                 case 'Construct': p = new Construct(id); break;
+                case 'InfernoTitan': p = new InfernoTitan(id); break;
                 default: p = new Skeleton(id); break;
             }
 

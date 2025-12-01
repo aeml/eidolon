@@ -633,6 +633,72 @@ export class MeshFactory {
                 mesh.position.y = 1.25;
                 return mesh;
             }
+        } else if (type === 'InfernoTitan') {
+            try {
+                const idleGltf = await this.loadModel('./assets/enemies/demons/inferno_titan/idle.glb');
+                mesh = SkeletonUtils.clone(idleGltf.scene);
+                
+                mesh.userData.animations = [];
+                const addAnim = (clip, name) => {
+                    if (clip) {
+                        const newClip = clip.clone();
+                        newClip.name = name;
+                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
+                        mesh.userData.animations.push(newClip);
+                    }
+                };
+
+                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
+
+                try {
+                    const walkGltf = await this.loadModel('./assets/enemies/demons/inferno_titan/walk.glb');
+                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
+                } catch (e) {}
+
+                try {
+                    const runGltf = await this.loadModel('./assets/enemies/demons/inferno_titan/run.glb');
+                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
+                } catch (e) {}
+
+                try {
+                    const attackGltf = await this.loadModel('./assets/enemies/demons/inferno_titan/attack.glb');
+                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
+                } catch (e) {}
+
+                try {
+                    const deathGltf = await this.loadModel('./assets/enemies/demons/inferno_titan/death.glb');
+                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
+                } catch (e) {}
+
+                mesh.scale.set(4.0, 4.0, 4.0);
+                
+                mesh.traverse(c => {
+                    if (c.isMesh) {
+                        if (!c.material) {
+                            c.material = new THREE.MeshStandardMaterial({ color: 0xff4500 });
+                        }
+                        c.castShadow = true;
+                        c.receiveShadow = true;
+                    }
+                });
+
+                const hitGeo = new THREE.BoxGeometry(3.5, 4.5, 3.5);
+                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+                hitMesh.position.y = 2.0;
+                mesh.add(hitMesh);
+                
+                return mesh;
+            } catch (e) {
+                console.error("Failed to load InfernoTitan:", e);
+                const geometry = new THREE.BoxGeometry(2.0, 3.5, 2.0);
+                const material = new THREE.MeshStandardMaterial({ color: 0xff4500 });
+                mesh = new THREE.Mesh(geometry, material);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.position.y = 1.75;
+                return mesh;
+            }
         }
 
         switch (type) {

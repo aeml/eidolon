@@ -161,6 +161,7 @@ export class WorldMap {
         drawLevelRing(160, 250, "Lv 10-20", 'rgba(255, 255, 0, 0.05)');
         drawLevelRing(260, 350, "Lv 20-30", 'rgba(255, 165, 0, 0.05)');
         drawLevelRing(360, 450, "Lv 30-40", 'rgba(255, 0, 0, 0.05)');
+        drawLevelRing(450, 600, "Lv 40-50", 'rgba(128, 0, 128, 0.05)');
 
         // 2.5 Draw Entities (Players, Enemies, NPCs)
         if (this.gameEngine.chunkManager) {
@@ -177,10 +178,13 @@ export class WorldMap {
                 if (['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(type)) {
                     color = '#00ffff'; // Cyan for Players
                     size = 4;
-                } else if (['Skeleton', 'Imp', 'DemonOrc', 'Construct'].includes(type)) {
+                } else if (['Skeleton', 'Imp', 'DemonOrc', 'Construct', 'InfernoTitan'].includes(type)) {
                     if (entity.isElite) {
                         color = '#ffffff'; // White for Elites
                         size = 6;
+                    } else if (type === 'InfernoTitan') {
+                        color = '#ff4500'; // OrangeRed for Inferno Titan
+                        size = 5;
                     } else {
                         color = '#ff0000'; // Red for Enemies
                     }
