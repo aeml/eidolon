@@ -157,9 +157,9 @@ export class WorldMap {
             ctx.fillText(label, worldCenterX + midR * this.scale, worldCenterY);
         };
 
-        drawLevelRing(60, 150, "Lv 1-10", 'rgba(0, 255, 0, 0.05)');
-        drawLevelRing(160, 250, "Lv 10-20", 'rgba(255, 255, 0, 0.05)');
-        drawLevelRing(260, 350, "Lv 20-30", 'rgba(255, 165, 0, 0.05)');
+        drawLevelRing(60, 160, "Lv 1-10", 'rgba(0, 255, 0, 0.05)');
+        drawLevelRing(160, 260, "Lv 10-20", 'rgba(255, 255, 0, 0.05)');
+        drawLevelRing(260, 360, "Lv 20-30", 'rgba(255, 165, 0, 0.05)');
         drawLevelRing(360, 450, "Lv 30-40", 'rgba(255, 0, 0, 0.05)');
         drawLevelRing(450, 600, "Lv 40-50", 'rgba(128, 0, 128, 0.05)');
 
