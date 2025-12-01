@@ -630,7 +630,7 @@ func (w *World) Update(dt float64) {
 				dx := e.ChargeTargetX - e.X
 				dz := e.ChargeTargetZ - e.Z
 				dist := math.Sqrt(dx*dx + dz*dz)
-				speed := 25.0
+				speed := 50.0 // Increased speed
 				moveDist := speed * dt
 
 				if moveDist >= dist {
@@ -639,7 +639,7 @@ func (w *World) Update(dt float64) {
 					e.IsCharging = false
 					e.State = "IDLE"
 
-					// Deal AoE Damage on Impact
+					// Deal AoE Damage on Impact (Radius 16.0 like Spirit Guardians)
 					damage := int(float64(e.Damage) * 1.5)
 					for _, target := range enemies {
 						// Check if target is still alive (might have died earlier in this frame)
@@ -649,7 +649,7 @@ func (w *World) Update(dt float64) {
 						dx := e.X - target.X
 						dz := e.Z - target.Z
 						dist := math.Sqrt(dx*dx + dz*dz)
-						if dist < 3.0 {
+						if dist < 16.0 {
 							target.Health -= damage
 							if target.Health <= 0 {
 								w.handleDeath(target, e)
