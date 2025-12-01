@@ -31,6 +31,5 @@ export class Wizard extends Actor {
         fireball.damage = 20 + (this.stats.intelligence * 2.0);
         
         gameEngine.addEntity(fireball);
-        gameEngine.projectiles.push(fireball); // Track for collision
     }
 }

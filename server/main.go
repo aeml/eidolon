@@ -617,6 +617,7 @@ func (c *Client) handleMessage(msg Message) {
 		}
 		// Authoritative movement validation should happen here
 		// For now, trust client but update world state
+		world.UpdateEntityPosition(c.playerID, payload.X, payload.Y, payload.Z, payload.Rotation)
 		if e := world.GetEntity(c.playerID); e != nil {
 			// Ignore client updates immediately after respawn to prevent race conditions
 			// where client sends old position/dead state before receiving respawn update
@@ -624,10 +625,6 @@ func (c *Client) handleMessage(msg Message) {
 				return
 			}
 
-			e.X = payload.X
-			e.Y = payload.Y
-			e.Z = payload.Z
-			e.Rotation = payload.Rotation
 			if payload.State != "" {
 				e.State = payload.State
 			} else {
