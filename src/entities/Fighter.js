@@ -66,28 +66,6 @@ export class Fighter extends Actor {
                 this.isCharging = false;
                 this.state = 'IDLE';
                 this.playAnimation('Idle');
-                
-                // Deal AoE damage
-                if (this.gameEngine && !this.isMultiplayer && !this.isRemote) {
-                    const range = 3.0;
-                    const damage = Math.floor(this.stats.damage * 1.5);
-                    
-                    if (this.gameEngine.chunkManager) {
-                        const entities = this.gameEngine.chunkManager.getActiveEntities();
-                        entities.forEach(e => {
-                            if (e !== this && e.isActive && e.state !== 'DEAD' && e.stats && e.stats.hp > 0) {
-                                // Don't hit self or other players (in singleplayer there are no other players usually, but good practice)
-                                if (e.id.startsWith('player')) return;
-
-                                const d = this.position.distanceTo(e.position);
-                                if (d < range) {
-                                    e.takeDamage(damage);
-                                    console.log(`Charge hit ${e.id} for ${damage}`);
-                                }
-                            }
-                        });
-                    }
-                }
             } else {
                 direction.normalize();
                 let moveDist = speed * dt;
