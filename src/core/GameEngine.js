@@ -307,6 +307,15 @@ export class GameEngine {
         this.inputManager.subscribe('onRightClick', () => {
             if (!this.player) return;
             if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen) return;
+
+            // Check Cooldown and Mana before proceeding
+            if (this.player.abilityCooldown > 0) {
+                return;
+            }
+            const cost = this.player.abilityManaCost * (1 - (this.player.stats.manaCostReduction || 0));
+            if (this.player.stats.mana < cost) {
+                return;
+            }
             
             if (this.isMobile) {
                 // Auto-target nearest enemy for mobile ability
@@ -362,9 +371,6 @@ export class GameEngine {
                 
                 // Client-side prediction
                 this.player.useAbility(targetPos, this);
-                
-                // Optimistic Cooldown
-                this.player.abilityCooldown = this.player.abilityMaxCooldown * (1 - (this.player.stats.cooldownReduction || 0));
                 return;
             }
 
@@ -389,9 +395,6 @@ export class GameEngine {
                     
                     // Client-side prediction
                     this.player.useAbility(this.hoveredEntity.position, this);
-                    
-                    // Optimistic Cooldown
-                    this.player.abilityCooldown = this.player.abilityMaxCooldown * (1 - (this.player.stats.cooldownReduction || 0));
                 } else {
                     // Move closer first
                     this.pendingAbilityTarget = this.hoveredEntity;
@@ -415,9 +418,6 @@ export class GameEngine {
                     
                     // Client-side prediction
                     this.player.useAbility(targetPoint, this);
-                    
-                    // Optimistic Cooldown
-                    this.player.abilityCooldown = this.player.abilityMaxCooldown * (1 - (this.player.stats.cooldownReduction || 0));
                 }
             }
         });
@@ -1220,6 +1220,9 @@ export class GameEngine {
                         this.pickupLoot(pData.id);
                     };
                 } else if (pData.type === 'Projectile') {
+                    // Skip creating server projectile if it belongs to local player (avoid duplicates)
+                    if (pData.ownerId === this.player.id) continue;
+
                     // Create Projectile
                     const start = new THREE.Vector3(pData.x, pData.y, pData.z);
                     const target = new THREE.Vector3(pData.x + (pData.velX || 1), pData.y, pData.z + (pData.velZ || 0));

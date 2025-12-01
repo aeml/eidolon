@@ -63,7 +63,7 @@ export class Projectile extends Entity {
         this.rotation.copy(this.mesh.quaternion);
     }
 
-    update(dt, collisionManager, player) { 
+    update(dt, collisionManager, player, activeEntities) { 
         // In multiplayer, position is authoritative from server, but we can interpolate
         // If this is a remote projectile, we might want to just let the server update position
         // However, for smoothness, we can predict movement
@@ -80,6 +80,62 @@ export class Projectile extends Entity {
         
         if (this.mesh) {
             this.mesh.position.copy(this.position);
+        }
+
+        // Collision Detection (Client-side prediction / Singleplayer)
+        if (activeEntities) {
+            const hitRadius = 1.0; // Collision radius
+
+            for (const entity of activeEntities) {
+                // Skip self, owner, dead entities, and already hit entities (for pierce)
+                if (entity === this || entity === this.owner || entity.state === 'DEAD' || !entity.isActive) continue;
+                if (this.hitEntities.has(entity.id)) continue;
+                
+                // Skip friendly fire (Player vs Player handled by server, but locally we ignore)
+                // Assuming owner is Player, ignore other Players? Or if owner is Enemy, ignore Enemies?
+                // For now, simple check: If owner is Player, ignore Player.
+                if (this.owner && this.owner.constructor.name === entity.constructor.name) continue;
+                // Also ignore Loot
+                if (entity.constructor.name === 'LootDrop') continue;
+
+                const dist = this.position.distanceTo(entity.position);
+                if (dist < hitRadius + (entity.radius || 0.5)) {
+                    // HIT!
+                    
+                    if (this.type === 'Dagger') {
+                        // Pierce Logic: Hit and continue
+                        this.hitEntities.add(entity.id);
+                        // Visual effect?
+                        // Apply damage if singleplayer
+                        if (!this.owner.isMultiplayer && !this.owner.isRemote) {
+                            entity.takeDamage(this.damage);
+                        }
+                    } else if (this.type === 'Fireball') {
+                        // Explode Logic: Hit, Splash, Destroy
+                        this.isActive = false; // Destroy projectile
+                        
+                        // Splash Damage
+                        const splashRadius = 4.0;
+                        // Find all entities in splash radius
+                        for (const splashTarget of activeEntities) {
+                            if (splashTarget.state === 'DEAD' || !splashTarget.isActive) continue;
+                            if (splashTarget.constructor.name === 'LootDrop') continue;
+                            if (this.owner && this.owner.constructor.name === splashTarget.constructor.name) continue;
+
+                            const splashDist = this.position.distanceTo(splashTarget.position);
+                            if (splashDist < splashRadius) {
+                                if (!this.owner.isMultiplayer && !this.owner.isRemote) {
+                                    splashTarget.takeDamage(this.damage);
+                                }
+                            }
+                        }
+                        
+                        // Visual Explosion (Simple scale up and fade out or particle system)
+                        // For now, we just remove it. Ideally, spawn an explosion entity.
+                        break; // Stop checking other entities since we exploded
+                    }
+                }
+            }
         }
     }
 }

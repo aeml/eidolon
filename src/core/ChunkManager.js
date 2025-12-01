@@ -53,6 +53,9 @@ export class ChunkManager {
             this.activeChunkKeys = newActiveKeys;
         }
 
+        // Calculate active entities once for this frame to pass to entities that need it (like Projectiles)
+        const activeEntities = this.getActiveEntities();
+
         for (const key of this.activeChunkKeys) {
             if (this.chunks.has(key)) {
                 const entities = this.chunks.get(key);
@@ -60,7 +63,7 @@ export class ChunkManager {
                     if (entity._lastUpdateFrame === this.frameCount) continue;
                     entity._lastUpdateFrame = this.frameCount;
 
-                    entity.update(dt, collisionManager, player);
+                    entity.update(dt, collisionManager, player, activeEntities);
                     
                     if (!entity.isActive) {
                         this.removeEntity(entity);
@@ -181,6 +184,9 @@ export class ChunkManager {
     }
     
     getActiveEntities() {
+        if (this._cachedActiveEntitiesFrame === this.frameCount && this._cachedActiveEntities) {
+            return this._cachedActiveEntities;
+        }
         const active = [];
         for (const key of this.activeChunkKeys) {
             if (this.chunks.has(key)) {
@@ -189,6 +195,8 @@ export class ChunkManager {
                 }
             }
         }
+        this._cachedActiveEntities = active;
+        this._cachedActiveEntitiesFrame = this.frameCount;
         return active;
     }
 
