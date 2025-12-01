@@ -70,6 +70,10 @@ export class Entity {
         // Remove existing name tag
         const existingTag = this.mesh.getObjectByName("NameTag");
         if (existingTag) {
+            if (existingTag.material) {
+                if (existingTag.material.map) existingTag.material.map.dispose();
+                existingTag.material.dispose();
+            }
             this.mesh.remove(existingTag);
         }
 
@@ -108,5 +112,28 @@ export class Entity {
         sprite.scale.set(scaleWidth, scaleHeight, 1); 
         
         this.mesh.add(sprite);
+    }
+
+    dispose() {
+        if (this.mesh) {
+            // Dispose NameTag
+            const nameTag = this.mesh.getObjectByName("NameTag");
+            if (nameTag) {
+                if (nameTag.material.map) nameTag.material.map.dispose();
+                nameTag.material.dispose();
+            }
+
+            // Remove from parent
+            if (this.mesh.parent) {
+                this.mesh.parent.remove(this.mesh);
+            }
+
+            // Release to pool if applicable
+            if (this.meshType && !this.isElite) {
+                MeshFactory.releaseMesh(this.meshType, this.mesh);
+            }
+            
+            this.mesh = null;
+        }
     }
 }

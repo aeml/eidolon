@@ -139,4 +139,17 @@ export class LootDrop extends Entity {
         
         this.position.copy(this.mesh.position);
     }
+
+    dispose() {
+        if (this.mesh) {
+            this.mesh.children.forEach(child => {
+                // Text Sprite
+                if (child.isSprite && child.material) {
+                    // Do NOT dispose map as it is cached in TEXTURE_CACHE
+                    child.material.dispose();
+                }
+            });
+        }
+        super.dispose();
+    }
 }
