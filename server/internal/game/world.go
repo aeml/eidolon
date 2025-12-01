@@ -464,6 +464,25 @@ func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
 	return player, true
 }
 
+func (w *World) PerformRespawn(playerID string) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return
+	}
+
+	// Allow respawn even if not dead (unstuck)
+	player.State = "IDLE"
+	player.Health = player.MaxHealth
+	player.Mana = player.MaxMana
+	player.X = 0
+	player.Z = 0
+	player.TargetX = 0
+	player.TargetZ = 0
+}
+
 func (w *World) Update(dt float64) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
