@@ -24,9 +24,20 @@ export class LootDrop extends Entity {
         this.creationTime = Date.now();
         this.maxLifetime = 60000; // 60 seconds in ms
 
-        // Create visual representation
-        // Color based on rarity
-        const color = item.rarity.color;
+        this.bobOffset = Math.random() * Math.PI * 2;
+        this.textDelay = Math.random() * 0.5; // Stagger text generation
+        
+        this.itemColor = item.rarity.color;
+        this.itemName = item.name;
+        this.textGenerated = false;
+
+        this.createMesh();
+    }
+
+    createMesh() {
+        if (this.mesh) return;
+
+        const color = this.itemColor;
         
         // Get or Create Material
         let material = MATERIAL_CACHE.get(color);
@@ -43,20 +54,16 @@ export class LootDrop extends Entity {
         this.mesh.userData.entityId = this.id;
         this.mesh.userData.type = 'LOOT';
         
-        // Removed PointLight for performance
-        
         // Add Hitbox for easier clicking
         const hitMesh = new THREE.Mesh(HITBOX_GEOMETRY, HITBOX_MATERIAL);
         hitMesh.position.y = 0.0; // Centered on orb
         this.mesh.add(hitMesh);
-        
-        this.bobOffset = Math.random() * Math.PI * 2;
+    }
 
-        // Delayed Text Generation
-        this.textGenerated = false;
-        this.itemColor = color;
-        this.itemName = item.name;
-        this.textDelay = Math.random() * 0.5; // Stagger text generation
+    async ensureMesh() {
+        if (!this.mesh) {
+            this.createMesh();
+        }
     }
 
     createTextSprite(message, color) {
@@ -122,6 +129,8 @@ export class LootDrop extends Entity {
             this.isActive = false;
             return;
         }
+
+        if (!this.mesh) return;
 
         // Lazy Load Text
         if (!this.textGenerated && (Date.now() - this.creationTime) > (this.textDelay * 1000)) {
