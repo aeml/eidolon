@@ -59,9 +59,22 @@ export class Minimap {
             const mapY = halfSize + rotZ * this.scale;
 
             // Draw dot
-            ctx.fillStyle = '#ff0000'; // Enemy color
+            let color = '#ff0000'; // Default Enemy color
+            let size = 3;
+
+            if (entity.isElite) {
+                color = '#ffffff'; // White for Elites
+                size = 5;
+            } else if (['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(entity.constructor.name)) {
+                color = '#00ffff'; // Cyan for other players
+                size = 4;
+            } else if (entity.constructor.name === 'DwarfSalesman') {
+                color = '#00ff00'; // Green for NPC
+            }
+
+            ctx.fillStyle = color;
             ctx.beginPath();
-            ctx.arc(mapX, mapY, 3, 0, Math.PI * 2);
+            ctx.arc(mapX, mapY, size, 0, Math.PI * 2);
             ctx.fill();
         });
 

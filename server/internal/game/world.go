@@ -181,7 +181,7 @@ func (w *World) spawnEliteInArea(level int, minR, maxR float64) {
 		MaxHealth:      maxHealth,
 		Damage:         damage,
 		Level:          level,
-		Speed:          4.0, // Slightly faster
+		Speed:          5.4, // 150% of Player Base Speed (3.6)
 		State:          "IDLE",
 		AttackCooldown: 1000 * time.Millisecond,
 	}
@@ -213,17 +213,17 @@ func (w *World) spawnMerchant() {
 }
 
 func (w *World) spawnEnemies() {
-	// Skeleton: 50 count, 60-150 radius
-	w.spawnEnemyGroup("Skeleton", 50, 60, 150, 5, Stats{Strength: 5, Intelligence: 2, Dexterity: 3, Wisdom: 2, Vitality: 5})
+	// Skeleton: 50 count, 60-150 radius (Level 1-5 Area) - 3x Stronger
+	w.spawnEnemyGroup("Skeleton", 50, 60, 150, 5, Stats{Strength: 15, Intelligence: 6, Dexterity: 9, Wisdom: 6, Vitality: 15})
 
-	// Imp: 50 count, 160-250 radius
-	w.spawnEnemyGroup("Imp", 50, 160, 250, 10, Stats{Strength: 12, Intelligence: 4, Dexterity: 6, Wisdom: 4, Vitality: 12})
+	// Imp: 50 count, 160-250 radius (Level 5-10 Area) - 5x Stronger
+	w.spawnEnemyGroup("Imp", 50, 160, 250, 10, Stats{Strength: 60, Intelligence: 20, Dexterity: 30, Wisdom: 20, Vitality: 60})
 
-	// Demon Orc: 50 count, 260-350 radius
-	w.spawnEnemyGroup("DemonOrc", 50, 260, 350, 15, Stats{Strength: 25, Intelligence: 8, Dexterity: 10, Wisdom: 8, Vitality: 25})
+	// Demon Orc: 50 count, 260-350 radius (Level 10-15 Area) - 5x Stronger
+	w.spawnEnemyGroup("DemonOrc", 50, 260, 350, 15, Stats{Strength: 125, Intelligence: 40, Dexterity: 50, Wisdom: 40, Vitality: 125})
 
-	// Construct: 50 count, 360-450 radius
-	w.spawnEnemyGroup("Construct", 50, 360, 450, 20, Stats{Strength: 40, Intelligence: 15, Dexterity: 5, Wisdom: 15, Vitality: 40})
+	// Construct: 100 count (Increased), 360-450 radius (Level 15-20 Area) - 5x Stronger
+	w.spawnEnemyGroup("Construct", 100, 360, 450, 20, Stats{Strength: 200, Intelligence: 75, Dexterity: 25, Wisdom: 75, Vitality: 200})
 }
 
 func (w *World) spawnEnemyGroup(subType string, count int, minRadius, maxRadius float64, level int, baseStats Stats) {
@@ -243,7 +243,10 @@ func (w *World) spawnEnemyGroup(subType string, count int, minRadius, maxRadius 
 		maxHealth := baseStats.Vitality * 10
 		maxMana := baseStats.Intelligence * 10
 		damage := baseStats.Strength * 2
-		speed := 3.0 + (float64(baseStats.Dexterity) * 0.5)
+
+		// Player Base Speed (0 Dex) = 3.0 * 1.2 = 3.6
+		// Enemy Speed = 150% of Player Base Speed = 5.4
+		speed := 5.4
 
 		// Attack cooldown based on dexterity? For now fixed.
 		attackCooldown := 1500 * time.Millisecond
