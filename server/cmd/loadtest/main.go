@@ -416,7 +416,7 @@ func send(c *websocket.Conn, msgType string, payload interface{}) error {
 
 func generateRandomName() string {
 	names := []string{
-		"HughAnus",
+		"HughJanis",
 		"BenDover",
 		"PhilMcCracken",
 		"MikeRotch",
@@ -436,8 +436,26 @@ func generateRandomName() string {
 		"TerryCloth",
 		"DixieNormous",
 		"YuriNator",
+		"JohnnyBGoode",
+		"MarkMyWords",
+		"WillieStroker",
+		"ChrisP.Bend",
+		"PatMyBack",
+		"OpheliaCrotch",
+		"LotusBlossom",
+		"FannyPack",
+		"BeaO'Problem",
+		"MoLester",
+		"PhilAtio",
+		"AnitaHardcock",
+		"MikeHunt",
+		"OliverKlozoff",
+		"BenDurr",
+		"SaulT.Balls",
+		"WoodyJohnson",
+		"RichardHead",
 	}
 
 	name := names[rand.Intn(len(names))]
-	return fmt.Sprintf("%s%d", name, rand.Intn(10000))
+	return fmt.Sprintf("%s%d", name, rand.Intn(100000))
 }

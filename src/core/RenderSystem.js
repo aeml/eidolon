@@ -89,32 +89,20 @@ export class RenderSystem {
     }
 
     setupGround() {
-        console.log("RenderSystem: Loading ground texture...");
+        console.log("RenderSystem: Loading ground textures...");
         const loader = new THREE.TextureLoader();
-        // Add timestamp to force reload of texture (bypass cache)
-        const groundTexture = loader.load(`./assets/backgrounds/ground_texture.png?v=${Date.now()}`, (tex) => {
-            console.log("RenderSystem: Ground texture loaded successfully.", tex);
-            tex.wrapS = THREE.RepeatWrapping;
-            tex.wrapT = THREE.RepeatWrapping;
+        
+        // Load Grass Texture
+        this.groundTexture = loader.load(`./assets/backgrounds/ground_texture.png?v=${Date.now()}`);
+        this.setupTexture(this.groundTexture);
 
-            // Improve texture sampling to reduce visual gaps/seams
-            tex.minFilter = THREE.LinearMipmapLinearFilter;
-            tex.magFilter = THREE.LinearFilter;
-            // Optimization: Cap anisotropy to 4
-            tex.anisotropy = Math.min(this.renderer.capabilities.getMaxAnisotropy(), 4);
-
-            // Scale repeat based on ground size (assuming 100 units = 4 repeats)
-            const repeatCount = Math.max(4, CONSTANTS.SCENE.GROUND_SIZE / 25);
-            tex.repeat.set(repeatCount, repeatCount); 
-            tex.colorSpace = THREE.SRGBColorSpace;
-            
-            // Force material update
-            if (this.ground) this.ground.material.needsUpdate = true;
-        }, undefined, (err) => console.error("RenderSystem: Error loading ground texture:", err));
+        // Load Snow Texture
+        this.snowTexture = loader.load(`./assets/backgrounds/snow_texture.png?v=${Date.now()}`);
+        this.setupTexture(this.snowTexture);
 
         const geometry = new THREE.PlaneGeometry(CONSTANTS.SCENE.GROUND_SIZE, CONSTANTS.SCENE.GROUND_SIZE);
         const material = new THREE.MeshStandardMaterial({ 
-            map: groundTexture,
+            map: this.groundTexture,
             color: 0xffffff,
             roughness: 0.8,
             metalness: 0.2
@@ -123,6 +111,32 @@ export class RenderSystem {
         this.ground.rotation.x = -Math.PI / 2;
         this.ground.receiveShadow = true;
         this.scene.add(this.ground);
+        
+        this.currentGroundType = 'ground';
+    }
+
+    setupTexture(tex) {
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+        tex.minFilter = THREE.LinearMipmapLinearFilter;
+        tex.magFilter = THREE.LinearFilter;
+        tex.anisotropy = Math.min(this.renderer.capabilities.getMaxAnisotropy(), 4);
+        const repeatCount = Math.max(4, CONSTANTS.SCENE.GROUND_SIZE / 25);
+        tex.repeat.set(repeatCount, repeatCount); 
+        tex.colorSpace = THREE.SRGBColorSpace;
+    }
+
+    setGroundTexture(type) {
+        if (this.currentGroundType === type) return;
+        
+        if (type === 'snow') {
+            this.ground.material.map = this.snowTexture;
+            this.currentGroundType = 'snow';
+        } else {
+            this.ground.material.map = this.groundTexture;
+            this.currentGroundType = 'ground';
+        }
+        this.ground.material.needsUpdate = true;
     }
 
     onWindowResize() {

@@ -21,6 +21,8 @@ import { DwarfSalesman } from '../entities/DwarfSalesman.js';
 import { Actor } from '../entities/Actor.js';
 import { Imp } from '../entities/Imp.js';
 import { InfernoTitan } from '../entities/InfernoTitan.js';
+import { Siren } from '../entities/Siren.js';
+import { Fence } from '../entities/Fence.js';
 
 export class GameEngine {
     constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null) {
@@ -979,6 +981,7 @@ export class GameEngine {
                 case 'DemonOrc': p = new DemonOrc(id); break;
                 case 'Construct': p = new Construct(id); break;
                 case 'InfernoTitan': p = new InfernoTitan(id); break;
+                case 'Siren': p = new Siren(id); break;
                 default: p = new Skeleton(id); break;
             }
 
@@ -1253,6 +1256,18 @@ export class GameEngine {
                     const dummyOwner = { stats: { intelligence: 10, dexterity: 10 } };
                     
                     remoteEntity = new Projectile(pData.id, owner || dummyOwner, pData.subType, start, target);
+                } else if (pData.type === 'Fence') {
+                    remoteEntity = new Fence(pData.id, pData.x, pData.z, pData.rotation || 0);
+                    // Add to collision manager
+                    // We need to wait for mesh? Or just add a box now?
+                    // Fence size is approx 4x1.
+                    const box = new THREE.Box3();
+                    box.setFromCenterAndSize(new THREE.Vector3(pData.x, 1.5, pData.z), new THREE.Vector3(4, 3, 1));
+                    // Rotate box? Box3 is AABB. If fence is rotated, AABB might be larger.
+                    // For simple fence circle, rotation is important.
+                    // CollisionManager uses simple box check.
+                    // Let's just add it.
+                    this.collisionManager.addCollider(box);
                 } else {
                     remoteEntity = this.createRemotePlayer(pData.type || 'Enemy', pData.id, pData.subType); 
                     // console.log(`Created remote entity: ${pData.id} (${pData.type}/${pData.subType})`);
@@ -1706,19 +1721,28 @@ export class GameEngine {
                 this.socket.send(JSON.stringify(moveMsg));
             }
         }
-    }
-
-    render(alpha) {
-        const activeEntities = this.chunkManager.getActiveEntities();
-        activeEntities.forEach(entity => {
-            if (entity.isActive) {
-                entity.render(alpha);
-            }
-        });
-        
         this.renderSystem.render();
-        
+        // Update Ground Texture based on position
         if (this.player) {
+            if (this.player.position.z < -600) {
+                this.renderSystem.setGroundTexture('snow');
+            } else {
+                this.renderSystem.setGroundTexture('ground');
+            }
+        }
+
+        if (this.player) {render();
+        // Update Ground Texture based on position
+        if (this.player) {
+            if (this.player.position.x > 10000) {
+                this.renderSystem.setGroundTexture('snow');
+            } else {
+                this.renderSystem.setGroundTexture('ground');
+            }
+        }
+
+        if (this.player) {
+            this.minimap.update(this.player, activeEntities);
             this.minimap.update(this.player, activeEntities);
             this.uiManager.updatePlayerStats(this.player);
             this.uiManager.updateXP(this.player);

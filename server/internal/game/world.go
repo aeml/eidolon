@@ -17,6 +17,7 @@ const (
 	TypeNPC        EntityType = "NPC"
 	TypeLoot       EntityType = "Loot"
 	TypeProjectile EntityType = "Projectile"
+	TypeFence      EntityType = "Fence"
 )
 
 type Stats struct {
@@ -200,6 +201,92 @@ func (w *World) initWorld() {
 	w.spawnMerchant()
 	w.spawnEnemies()
 	w.spawnInitialElites()
+	w.spawnFence()
+	w.spawnSnowWorld()
+}
+
+func (w *World) spawnFence() {
+	radius := 620.0
+	circumference := 2 * math.Pi * radius
+	fenceWidth := 4.0
+	count := int(circumference / fenceWidth)
+	angleStep := (2 * math.Pi) / float64(count)
+
+	// Opening at North (approx -PI/2 or 270 deg)
+	// In our coord system (X=Cos, Z=Sin), North is usually -Z (Sin = -1) -> 3*PI/2
+	openingAngle := 3 * math.Pi / 2
+	openingWidthAngle := (20.0 / radius) // 20 unit gap
+
+	for i := 0; i < count; i++ {
+		angle := float64(i) * angleStep
+		
+		// Check if within opening
+		diff := math.Abs(angle - openingAngle)
+		if diff > math.Pi { diff = 2*math.Pi - diff } // Handle wrap around
+		
+		if diff < openingWidthAngle/2 {
+			continue
+		}
+
+		x := math.Cos(angle) * radius
+		z := math.Sin(angle) * radius
+		
+		// Rotation: Face center? Or tangent?
+		// Tangent is angle + PI/2
+		rotation := -angle // Three.js rotation might need adjustment
+
+		fence := &Entity{
+			ID:       fmt.Sprintf("fence-%d", i),
+			Type:     TypeFence,
+			X:        x,
+			Y:        0,
+			Z:        z,
+			Rotation: rotation,
+			State:    "IDLE",
+		}
+		w.AddEntity(fence)
+	}
+}
+
+func (w *World) spawnSnowWorld() {
+	// Area 1: 50-54 (Siren)
+	// Z range: -600 to -1000
+	// X range: -200 to 200 (Width of the snow path)
+	
+	count := 50
+	minZ := -1000.0
+	maxZ := -600.0
+	minX := -200.0
+	maxX := 200.0
+
+	for i := 0; i < count; i++ {
+		x := minX + rand.Float64()*(maxX-minX)
+		z := minZ + rand.Float64()*(maxZ-minZ)
+
+		baseStats := Stats{Strength: 4000, Intelligence: 2000, Dexterity: 1000, Wisdom: 2000, Vitality: 4000}
+		maxHealth := baseStats.Vitality * 10
+		damage := baseStats.Strength * 2
+
+		siren := &Entity{
+			ID:             fmt.Sprintf("Siren-%d", i),
+			Type:           TypeEnemy,
+			SubType:        "Siren",
+			X:              x,
+			Y:              0,
+			Z:              z,
+			SpawnX:         x,
+			SpawnZ:         z,
+			BaseStats:      baseStats,
+			Health:         maxHealth,
+			MaxHealth:      maxHealth,
+			Damage:         damage,
+			Level:          52,
+			Speed:          5.4,
+			State:          "IDLE",
+			AttackCooldown: 1500 * time.Millisecond,
+		}
+		w.AddEntity(siren)
+	}
 }
 
 func (w *World) spawnInitialElites() {
@@ -217,11 +304,13 @@ func (w *World) spawnInitialElites() {
 }
 
 func (w *World) spawnEliteInArea(level int, minR, maxR float64) {
-	// Pick random type
-	types := []string{"Skeleton", "Imp", "DemonOrc", "Construct", "InfernoTitan"}
-	subType := types[rand.Intn(len(types))]
+	case "InfernoTitan":
+		baseStats = Stats{Strength: 120, Intelligence: 40, Dexterity: 20, Wisdom: 40, Vitality: 120}
+	case "Siren":
+		baseStats = Stats{Strength: 150, Intelligence: 80, Dexterity: 40, Wisdom: 80, Vitality: 150}
+	}
 
-	// If level 50, force InfernoTitan
+	maxHealth := int(float64(baseStats.Vitality*10) * mult)
 	if level == 50 {
 		subType = "InfernoTitan"
 	}
@@ -296,26 +385,24 @@ func (w *World) spawnMerchant() {
 	}
 	// Merchant doesn't need combat stats for now
 	w.AddEntity(merchant)
-}
-
 func (w *World) spawnEnemies() {
 	// Skeleton: 50 count, 60-160 radius (Level 1-10 Area)
-	w.spawnEnemyGroup("Skeleton", 50, 60, 160, 10, Stats{Strength: 15, Intelligence: 6, Dexterity: 9, Wisdom: 6, Vitality: 15})
+	w.spawnEnemyGroup("Skeleton", 50, 60, 160, 10, Stats{Strength: 15, Intelligence: 6, Dexterity: 9, Wisdom: 6, Vitality: 15}, 0, 0)
 
 	// Imp: 100 count, 160-260 radius (Level 10-20 Area)
-	w.spawnEnemyGroup("Imp", 100, 160, 260, 20, Stats{Strength: 600, Intelligence: 200, Dexterity: 300, Wisdom: 200, Vitality: 600})
+	w.spawnEnemyGroup("Imp", 100, 160, 260, 20, Stats{Strength: 600, Intelligence: 200, Dexterity: 300, Wisdom: 200, Vitality: 600}, 0, 0)
 
 	// Demon Orc: 150 count, 260-360 radius (Level 20-30 Area)
-	w.spawnEnemyGroup("DemonOrc", 150, 260, 360, 30, Stats{Strength: 1250, Intelligence: 400, Dexterity: 500, Wisdom: 400, Vitality: 1250})
+	w.spawnEnemyGroup("DemonOrc", 150, 260, 360, 30, Stats{Strength: 1250, Intelligence: 400, Dexterity: 500, Wisdom: 400, Vitality: 1250}, 0, 0)
 
 	// Construct: 200 count (Increased), 360-450 radius (Level 30-40 Area)
-	w.spawnEnemyGroup("Construct", 200, 360, 450, 40, Stats{Strength: 2000, Intelligence: 750, Dexterity: 250, Wisdom: 750, Vitality: 2000})
+	w.spawnEnemyGroup("Construct", 200, 360, 450, 40, Stats{Strength: 2000, Intelligence: 750, Dexterity: 250, Wisdom: 750, Vitality: 2000}, 0, 0)
 
 	// Inferno Titan: 300 count, 450-600 radius (Level 40-50 Area)
-	w.spawnEnemyGroup("InfernoTitan", 300, 450, 600, 50, Stats{Strength: 3000, Intelligence: 1000, Dexterity: 400, Wisdom: 1000, Vitality: 3000})
+	w.spawnEnemyGroup("InfernoTitan", 300, 450, 600, 50, Stats{Strength: 3000, Intelligence: 1000, Dexterity: 400, Wisdom: 1000, Vitality: 3000}, 0, 0)
 }
 
-func (w *World) spawnEnemyGroup(subType string, count int, minRadius, maxRadius float64, level int, baseStats Stats) {
+func (w *World) spawnEnemyGroup(subType string, count int, minRadius, maxRadius float64, level int, baseStats Stats, centerX, centerZ float64) {
 	angleStep := (math.Pi * 2) / float64(count)
 
 	for i := 0; i < count; i++ {
@@ -325,8 +412,10 @@ func (w *World) spawnEnemyGroup(subType string, count int, minRadius, maxRadius 
 
 		radius := minRadius + rand.Float64()*(maxRadius-minRadius)
 
-		x := math.Cos(angle) * radius
-		z := math.Sin(angle) * radius
+		x := centerX + math.Cos(angle)*radius
+		z := centerZ + math.Sin(angle)*radius
+
+		// Calculate derived statsius
 
 		// Calculate derived stats
 		maxHealth := baseStats.Vitality * 10
@@ -687,21 +776,9 @@ func (w *World) Update(dt float64) {
 			nearbyEnemies := w.Grid.Nearby(e.X, e.Z, e.Radius+2.0) // +2 buffer
 			for _, target := range nearbyEnemies {
 				if target.Type != TypeEnemy || target.State == "DEAD" {
-					continue
-				}
-				dx := e.X - target.X
-				dz := e.Z - target.Z
-				dist := math.Sqrt(dx*dx + dz*dz)
-				if dist < (e.Radius + 0.5) { // 0.5 is approx enemy radius
-					// Check if already hit (for piercing projectiles)
-					if e.HitList == nil {
-						e.HitList = make(map[string]bool)
-					}
-					if e.HitList[target.ID] {
-						continue
-					}
-
-					// Hit!
+		// --- Player Abilities ---
+		if e.Type == TypePlayer {
+			// Fighter Charge
 					e.HitList[target.ID] = true
 
 					damage := e.Damage
@@ -745,9 +822,21 @@ func (w *World) Update(dt float64) {
 				delete(w.Entities, id)
 			}
 			continue
-		}
-
 		// --- Player Abilities ---
+		if e.Type == TypePlayer {
+			// Teleporter Check
+			if e.X > -50 && e.X < 50 && e.Z < -590 && e.Z > -610 {
+				// Teleport to Snow World
+				oldX, oldZ := e.X, e.Z
+				e.X = 20000
+				e.Z = 20000
+				e.TargetX = 20000
+				e.TargetZ = 20000
+				e.State = "IDLE"
+				w.Grid.Update(e, oldX, oldZ)
+			}
+
+			// Fighter Chargeities ---
 		if e.Type == TypePlayer {
 			// Fighter Charge
 			if e.IsCharging {
