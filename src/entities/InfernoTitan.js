@@ -18,6 +18,7 @@ export class InfernoTitan extends Actor {
         this.isRunning = false; // Enemies always walk
 
         this.meshType = 'InfernoTitan';
+        this.name = 'Inferno Titan';
     }
 
     update(dt, collisionManager, player) {

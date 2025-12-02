@@ -77,6 +77,7 @@ const (
 	MsgSell      = "sell"
 	MsgSocial    = "social"
 	MsgRespawn   = "respawn"
+	MsgReport    = "report"
 )
 
 type Message struct {
@@ -144,6 +145,11 @@ type DamagePayload struct {
 type ChatPayload struct {
 	Message string `json:"message"`
 	Sender  string `json:"sender"`
+}
+
+type ReportPayload struct {
+	ReportType string `json:"reportType"`
+	Text       string `json:"text"`
 }
 
 type BroadcastMessage struct {
@@ -801,12 +807,18 @@ func (c *Client) handleMessage(msg Message) {
 		}
 		b, _ := json.Marshal(msg)
 		c.send <- b
-
 	case MsgRespawn:
 		if c.playerID == "" {
 			return
 		}
 		world.PerformRespawn(c.playerID)
+
+	case MsgReport:
+		var payload ReportPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		saveReport(c.username, payload)
 	}
 }
 
@@ -948,12 +960,50 @@ func savePlayer(client *Client) {
 		}
 	}
 
-	// Run in goroutine to not block
-	// go func(u string, c *database.Character) {
 	if err := db.SaveCharacter(client.username, char); err != nil {
 		log.Printf("Failed to save character for %s: %v", client.username, err)
 	} else {
 		log.Printf("Saved character for %s (Inv: %d, Equip: %d)", client.username, len(char.Inventory), len(char.Equipment))
 	}
-	// }(client.username, char)
+}
+
+type SavedReport struct {
+	Timestamp  string `json:"timestamp"`
+	Username   string `json:"username"`
+	ReportType string `json:"reportType"`
+	Text       string `json:"text"`
+}
+
+func saveReport(username string, payload ReportPayload) {
+	report := SavedReport{
+		Timestamp:  time.Now().Format(time.RFC3339),
+		Username:   username,
+		ReportType: payload.ReportType,
+		Text:       payload.Text,
+	}
+
+	filename := "bug_reports.json"
+	var reports []SavedReport
+
+	// Read existing
+	data, err := os.ReadFile(filename)
+	if err == nil {
+		json.Unmarshal(data, &reports)
+	}
+
+	// Append
+	reports = append(reports, report)
+
+	// Write back
+	newData, err := json.MarshalIndent(reports, "", "  ")
+	if err != nil {
+		log.Printf("Failed to marshal reports: %v", err)
+		return
+	}
+
+	if err := os.WriteFile(filename, newData, 0644); err != nil {
+		log.Printf("Failed to write report file: %v", err)
+	} else {
+		log.Printf("Saved report from %s: %s", username, payload.ReportType)
+	}
 }

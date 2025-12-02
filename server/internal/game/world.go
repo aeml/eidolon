@@ -206,61 +206,115 @@ func (w *World) initWorld() {
 }
 
 func (w *World) spawnFence() {
-	radius := 620.0
-	circumference := 2 * math.Pi * radius
-	fenceWidth := 4.0
-	count := int(circumference / fenceWidth)
-	angleStep := (2 * math.Pi) / float64(count)
+	// 1. Rectangular Fence around the "Earth Realm"
+	// Bounds: X: -1000 to 1000, Z: -600 to 1000
+	minX, maxX := -1000.0, 1000.0
+	minZ, maxZ := -600.0, 1000.0
 
-	// Opening at North (approx -PI/2 or 270 deg)
-	// In our coord system (X=Cos, Z=Sin), North is usually -Z (Sin = -1) -> 3*PI/2
-	openingAngle := 3 * math.Pi / 2
-	openingWidthAngle := (20.0 / radius) // 20 unit gap
+	// Gap in the North Wall (Z = -600) for access to Water Realm (Snow)
+	// Small opening (-20 to 20)
+	gapMinX := -20.0
+	gapMaxX := 20.0
 
-	for i := 0; i < count; i++ {
-		angle := float64(i) * angleStep
-
-		// Check if within opening
-		diff := math.Abs(angle - openingAngle)
-		if diff > math.Pi {
-			diff = 2*math.Pi - diff
-		} // Handle wrap around
-
-		if diff < openingWidthAngle/2 {
-			continue
-		}
-
-		x := math.Cos(angle) * radius
-		z := math.Sin(angle) * radius
-
-		// Rotation: Face center? Or tangent?
-		// Tangent is angle + PI/2
-		// User requested 90 degree rotation adjustment to fix gaps
-		rotation := -angle + math.Pi/2
-
+	// Helper to create fence segment
+	createSegment := func(x, z, rot float64) {
 		fence := &Entity{
-			ID:       fmt.Sprintf("fence-%d", i),
+			ID:       fmt.Sprintf("fence-%d-%d", int(x), int(z)),
 			Type:     TypeFence,
 			X:        x,
 			Y:        0,
 			Z:        z,
-			Rotation: rotation,
+			Rotation: rot,
 			State:    "IDLE",
 		}
 		w.AddEntity(fence)
 	}
+
+	segmentLen := 4.0
+
+	// North Wall (Earth Realm)
+	for x := minX; x <= maxX; x += segmentLen {
+		if x > gapMinX && x < gapMaxX {
+			continue
+		}
+		createSegment(x, minZ, 0)
+	}
+	// South Wall
+	for x := minX; x <= maxX; x += segmentLen {
+		createSegment(x, maxZ, 0)
+	}
+	// West Wall
+	for z := minZ; z <= maxZ; z += segmentLen {
+		createSegment(minX, z, math.Pi/2)
+	}
+	// East Wall
+	for z := minZ; z <= maxZ; z += segmentLen {
+		createSegment(maxX, z, math.Pi/2)
+	}
+
+	// 2. Rectangular Town Fence (Center of Earth Realm)
+	// Center: (0, 200). Size: 200x200.
+	// Bounds: X: -100 to 100, Z: 100 to 300
+	townMinX, townMaxX := -100.0, 100.0
+	townMinZ, townMaxZ := 100.0, 300.0
+
+	// Town Exits (Centers)
+	// North: (0, 100)
+	// South: (0, 300)
+	// East: (100, 200)
+	// West: (-100, 200)
+	exitGap := 20.0
+
+	// Town North/South Walls
+	for x := townMinX; x <= townMaxX; x += segmentLen {
+		// North Exit
+		if x > -exitGap/2 && x < exitGap/2 {
+			continue
+		}
+		createSegment(x, townMinZ, 0) // North
+		createSegment(x, townMaxZ, 0) // South
+	}
+	// Town East/West Walls
+	for z := townMinZ; z <= townMaxZ; z += segmentLen {
+		// East/West Exits (at Z=200)
+		if z > 200-exitGap/2 && z < 200+exitGap/2 {
+			continue
+		}
+		createSegment(townMinX, z, math.Pi/2) // West
+		createSegment(townMaxX, z, math.Pi/2) // East
+	}
+
+	// 3. Rectangular Snow Area Fence (Water Realm)
+	// Bounds: X: -1000 to 1000, Z: -2200 to -600
+	// Connects to the gap in Earth Realm North Wall
+	snowMinX, snowMaxX := -1000.0, 1000.0
+	snowMinZ, snowMaxZ := -2200.0, -600.0
+
+	// Snow North Wall
+	for x := snowMinX; x <= snowMaxX; x += segmentLen {
+		createSegment(x, snowMinZ, 0)
+	}
+	// Snow West Wall
+	for z := snowMinZ; z <= snowMaxZ; z += segmentLen {
+		createSegment(snowMinX, z, math.Pi/2)
+	}
+	// Snow East Wall
+	for z := snowMinZ; z <= snowMaxZ; z += segmentLen {
+		createSegment(snowMaxX, z, math.Pi/2)
+	}
+	// South is open to Earth Realm (handled by gap above)
 }
 
 func (w *World) spawnSnowWorld() {
 	// Area 1: 50-54 (Siren)
 	// Z range: -600 to -1000
-	// X range: -200 to 200 (Width of the snow path)
+	// X range: -1000 to 1000 (Width of the snow path)
 
-	count := 50
-	minZ := -1000.0
-	maxZ := -600.0
-	minX := -200.0
-	maxX := 200.0
+	count := 300
+	minZ := -1000.0 + 5.0
+	maxZ := -600.0 - 5.0
+	minX := -1000.0 + 5.0
+	maxX := 1000.0 - 5.0
 
 	for i := 0; i < count; i++ {
 		x := minX + rand.Float64()*(maxX-minX)
@@ -293,41 +347,48 @@ func (w *World) spawnSnowWorld() {
 }
 
 func (w *World) spawnInitialElites() {
-	// Spawn one elite in each area
-	// Level 1-10 Area (Radius 60-160)
-	w.spawnEliteInArea(10, 60, 160)
-	// Level 10-20 Area (Radius 160-260)
-	w.spawnEliteInArea(20, 160, 260)
-	// Level 20-30 Area (Radius 260-360)
-	w.spawnEliteInArea(30, 260, 360)
-	// Level 30-40 Area (Radius 360-450)
-	w.spawnEliteInArea(40, 360, 450)
-	// Level 40-50 Area (Radius 450-600)
-	w.spawnEliteInArea(50, 450, 600)
+	// Spawn one elite in each rectangular sector
+	// Sector 3 (Center): Lv 1-10 (-200 to 200)
+	w.spawnEliteInRect(10, -200, 200, -600, 1000)
+	// Sector 2 (Left): Lv 10-20 (-600 to -200)
+	w.spawnEliteInRect(20, -600, -200, -600, 1000)
+	// Sector 4 (Right): Lv 20-30 (200 to 600)
+	w.spawnEliteInRect(30, 200, 600, -600, 1000)
+	// Sector 1 (Far Left): Lv 30-40 (-1000 to -600)
+	w.spawnEliteInRect(40, -1000, -600, -600, 1000)
+	// Sector 5 (Far Right): Lv 40-50 (600 to 1000)
+	w.spawnEliteInRect(50, 600, 1000, -600, 1000)
 }
 
-func (w *World) spawnEliteInArea(level int, minR, maxR float64) {
+func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 	subType := "Skeleton"
-	if level >= 10 {
+	if level >= 20 {
 		subType = "Imp"
 	}
-	if level >= 20 {
+	if level >= 30 {
 		subType = "DemonOrc"
 	}
-	if level >= 30 {
+	if level >= 40 {
 		subType = "Construct"
 	}
-	if level >= 40 {
+	if level >= 50 {
 		subType = "InfernoTitan"
 	}
-	if level >= 50 {
-		subType = "Siren"
-	}
 
-	angle := rand.Float64() * 2 * math.Pi
-	radius := minR + rand.Float64()*(maxR-minR)
-	x := math.Cos(angle) * radius
-	z := math.Sin(angle) * radius
+	// Random pos in rect
+	x := minX + rand.Float64()*(maxX-minX)
+	z := minZ + rand.Float64()*(maxZ-minZ)
+
+	// Avoid Town Safe Zone if in center sector
+	// Town: Rectangular (-100 to 100 X, 100 to 300 Z)
+	if x > -100 && x < 100 && z > 100 && z < 300 {
+		// Push out
+		if x > 0 {
+			x = 120
+		} else {
+			x = -120
+		}
+	}
 
 	// Base stats multiplier for Elite
 	mult := 3.0
@@ -373,9 +434,8 @@ func (w *World) spawnEliteInArea(level int, minR, maxR float64) {
 	w.Entities[elite.ID] = elite
 	w.Grid.Add(elite)
 
-	// Announce Spawn
 	if w.OnEvent != nil {
-		w.OnEvent("elite_spawn", fmt.Sprintf("An Elite %s has spawned in the Level %d area!", subType, level))
+		w.OnEvent("elite_spawn", fmt.Sprintf("An Elite %s has spawned!", subType))
 	}
 }
 
@@ -386,7 +446,7 @@ func (w *World) spawnMerchant() {
 		SubType: "DwarfSalesman",
 		X:       5,
 		Y:       0,
-		Z:       5,
+		Z:       205, // Moved to new town center (0, 200)
 		State:   "IDLE",
 	}
 	// Merchant doesn't need combat stats for now
@@ -394,34 +454,43 @@ func (w *World) spawnMerchant() {
 }
 
 func (w *World) spawnEnemies() {
-	// Skeleton: 50 count, 60-160 radius (Level 1-10 Area)
-	w.spawnEnemyGroup("Skeleton", 50, 60, 160, 10, Stats{Strength: 15, Intelligence: 6, Dexterity: 9, Wisdom: 6, Vitality: 15}, 0, 0)
+	// 5 Rectangular Sectors (Vertical Strips)
+	// Total Width: 2000 (-1000 to 1000)
+	// Each Sector Width: 400
+	// Z Range: -600 to 1000
 
-	// Imp: 100 count, 160-260 radius (Level 10-20 Area)
-	w.spawnEnemyGroup("Imp", 100, 160, 260, 20, Stats{Strength: 600, Intelligence: 200, Dexterity: 300, Wisdom: 200, Vitality: 600}, 0, 0)
+	// Sector 3 (Center): Lv 1-10 (Skeleton)
+	// X: -200 to 200
+	w.spawnEnemyRect("Skeleton", 300, -200, 200, -600, 1000, 10, Stats{Strength: 15, Intelligence: 6, Dexterity: 9, Wisdom: 6, Vitality: 15})
 
-	// Demon Orc: 150 count, 260-360 radius (Level 20-30 Area)
-	w.spawnEnemyGroup("DemonOrc", 150, 260, 360, 30, Stats{Strength: 1250, Intelligence: 400, Dexterity: 500, Wisdom: 400, Vitality: 1250}, 0, 0)
+	// Sector 2 (Left): Lv 10-20 (Imp)
+	// X: -600 to -200
+	w.spawnEnemyRect("Imp", 300, -600, -200, -600, 1000, 20, Stats{Strength: 600, Intelligence: 200, Dexterity: 300, Wisdom: 200, Vitality: 600})
 
-	// Construct: 200 count (Increased), 360-450 radius (Level 30-40 Area)
-	w.spawnEnemyGroup("Construct", 200, 360, 450, 40, Stats{Strength: 2000, Intelligence: 750, Dexterity: 250, Wisdom: 750, Vitality: 2000}, 0, 0)
+	// Sector 4 (Right): Lv 20-30 (DemonOrc)
+	// X: 200 to 600
+	w.spawnEnemyRect("DemonOrc", 300, 200, 600, -600, 1000, 30, Stats{Strength: 1250, Intelligence: 400, Dexterity: 500, Wisdom: 400, Vitality: 1250})
 
-	// Inferno Titan: 300 count, 450-600 radius (Level 40-50 Area)
-	w.spawnEnemyGroup("InfernoTitan", 300, 450, 600, 50, Stats{Strength: 3000, Intelligence: 1000, Dexterity: 400, Wisdom: 1000, Vitality: 3000}, 0, 0)
+	// Sector 1 (Far Left): Lv 30-40 (Construct)
+	// X: -1000 to -600
+	w.spawnEnemyRect("Construct", 300, -1000, -600, -600, 1000, 40, Stats{Strength: 2000, Intelligence: 750, Dexterity: 250, Wisdom: 750, Vitality: 2000})
+
+	// Sector 5 (Far Right): Lv 40-50 (InfernoTitan)
+	// X: 600 to 1000
+	w.spawnEnemyRect("InfernoTitan", 300, 600, 1000, -600, 1000, 50, Stats{Strength: 3000, Intelligence: 1000, Dexterity: 400, Wisdom: 1000, Vitality: 3000})
 }
 
-func (w *World) spawnEnemyGroup(subType string, count int, minRadius, maxRadius float64, level int, baseStats Stats, centerX, centerZ float64) {
-	angleStep := (math.Pi * 2) / float64(count)
-
+func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ float64, level int, baseStats Stats) {
 	for i := 0; i < count; i++ {
-		baseAngle := float64(i) * angleStep
-		jitter := (rand.Float64() - 0.5) * angleStep * 0.8
-		angle := baseAngle + jitter
+		x := minX + rand.Float64()*(maxX-minX)
+		z := minZ + rand.Float64()*(maxZ-minZ)
 
-		radius := minRadius + rand.Float64()*(maxRadius-minRadius)
+		// Avoid Town Safe Zone if in center sector
+		// Town: Rectangular (-100 to 100 X, 100 to 300 Z)
+		if x > -100 && x < 100 && z > 100 && z < 300 {
+			continue // Skip spawn inside town
+		}
 
-		x := centerX + math.Cos(angle)*radius
-		z := centerZ + math.Sin(angle)*radius
 		// Calculate derived stats
 		maxHealth := baseStats.Vitality * 10
 		maxMana := baseStats.Intelligence * 10
@@ -675,10 +744,10 @@ func (w *World) PerformRespawn(playerID string) {
 
 	oldX, oldZ := player.X, player.Z
 	player.X = 0
-	player.Z = 0
+	player.Z = 200
 	player.TargetX = 0
-	player.TargetZ = 0
-	w.Grid.Update(player, oldX, oldZ) // Force update to 0,0
+	player.TargetZ = 200
+	w.Grid.Update(player, oldX, oldZ) // Force update to 0,200
 }
 
 func (w *World) Update(dt float64) {
@@ -941,8 +1010,8 @@ func (w *World) Update(dt float64) {
 			// unless we maintain a separate list of players.
 			// Actually, we have `players` slice from step 1.
 			for _, p := range players {
-				// Check if player is in Safe Zone (Town: Radius 60)
-				if p.X*p.X+p.Z*p.Z < 60*60 {
+				// Check if player is in Safe Zone (Town: Rectangular (-100 to 100 X, 100 to 300 Z))
+				if p.X > -100 && p.X < 100 && p.Z > 100 && p.Z < 300 {
 					continue
 				}
 
@@ -1006,8 +1075,8 @@ func (w *World) Update(dt float64) {
 						newX := e.X + (dx/dist)*moveDist
 						newZ := e.Z + (dz/dist)*moveDist
 
-						// Prevent entering Safe Zone (Radius 60)
-						if newX*newX+newZ*newZ < 60*60 {
+						// Prevent entering Safe Zone (Town: Rectangular (-100 to 100 X, 100 to 300 Z))
+						if newX > -100 && newX < 100 && newZ > 100 && newZ < 300 {
 							// Blocked
 							e.State = "IDLE"
 						} else {
@@ -1048,8 +1117,8 @@ func (w *World) Update(dt float64) {
 					newX := e.X + (dx/dist)*moveDist
 					newZ := e.Z + (dz/dist)*moveDist
 
-					// Prevent entering Safe Zone (Radius 60)
-					if newX*newX+newZ*newZ < 60*60 {
+					// Prevent entering Safe Zone (Town: Rectangular (-100 to 100 X, 100 to 300 Z))
+					if newX > -100 && newX < 100 && newZ > 100 && newZ < 300 {
 						e.TargetX = e.SpawnX
 						e.TargetZ = e.SpawnZ
 					} else {
@@ -1068,18 +1137,18 @@ func (w *World) Update(dt float64) {
 		w.EliteSpawnTimer = time.Now()
 		// Spawn one random elite
 		type SpawnArea struct {
-			MinR, MaxR float64
-			Level      int
+			MinX, MaxX, MinZ, MaxZ float64
+			Level                  int
 		}
 		areas := []SpawnArea{
-			{60, 150, 10},
-			{160, 250, 20},
-			{260, 350, 30},
-			{360, 450, 40},
-			{450, 600, 50},
+			{-200, 200, -600, 1000, 10},
+			{-600, -200, -600, 1000, 20},
+			{200, 600, -600, 1000, 30},
+			{-1000, -600, -600, 1000, 40},
+			{600, 1000, -600, 1000, 50},
 		}
 		area := areas[rand.Intn(len(areas))]
-		w.spawnEliteInArea(area.Level, area.MinR, area.MaxR)
+		w.spawnEliteInRect(area.Level, area.MinX, area.MaxX, area.MinZ, area.MaxZ)
 	}
 }
 

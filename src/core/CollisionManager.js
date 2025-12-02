@@ -27,26 +27,26 @@ export class CollisionManager {
 
     // Simple circle-box collision resolution
     // Returns the corrected position if collision occurs, or null if no collision
-    checkCollision(position, radius) {
+    checkCollision(position, radius, oldPosition = null) {
         let collided = false;
         const tempPos = position.clone();
         
         // 1. Check World Bounds
-        const halfSize = CONSTANTS.SCENE.WORLD_BOUNDS / 2;
+        const bounds = CONSTANTS.SCENE.BOUNDS;
         
-        if (tempPos.x < -halfSize + radius) {
-            tempPos.x = -halfSize + radius;
+        if (tempPos.x < bounds.MIN_X + radius) {
+            tempPos.x = bounds.MIN_X + radius;
             collided = true;
-        } else if (tempPos.x > halfSize - radius) {
-            tempPos.x = halfSize - radius;
+        } else if (tempPos.x > bounds.MAX_X - radius) {
+            tempPos.x = bounds.MAX_X - radius;
             collided = true;
         }
 
-        if (tempPos.z < -halfSize + radius) {
-            tempPos.z = -halfSize + radius;
+        if (tempPos.z < bounds.MIN_Z + radius) {
+            tempPos.z = bounds.MIN_Z + radius;
             collided = true;
-        } else if (tempPos.z > halfSize - radius) {
-            tempPos.z = halfSize - radius;
+        } else if (tempPos.z > bounds.MAX_Z - radius) {
+            tempPos.z = bounds.MAX_Z - radius;
             collided = true;
         }
 
@@ -57,6 +57,52 @@ export class CollisionManager {
             if (box.intersectsSphere(sphere)) {
                 collided = true;
                 
+                let preferredFace = null;
+                if (oldPosition) {
+                    const distMinX = box.min.x - oldPosition.x;
+                    const distMaxX = oldPosition.x - box.max.x;
+                    const distMinZ = box.min.z - oldPosition.z;
+                    const distMaxZ = oldPosition.z - box.max.z;
+
+                    const maxDist = Math.max(distMinX, distMaxX, distMinZ, distMaxZ);
+                    
+                    if (maxDist > 0) {
+                        if (maxDist === distMinX) preferredFace = 'minX';
+                        else if (maxDist === distMaxX) preferredFace = 'maxX';
+                        else if (maxDist === distMinZ) preferredFace = 'minZ';
+                        else if (maxDist === distMaxZ) preferredFace = 'maxZ';
+                    }
+                }
+
+                // Check if center is inside the box (Tunneling fix)
+                if (box.containsPoint(tempPos)) {
+                     const min = box.min;
+                     const max = box.max;
+                     const epsilon = 0.01;
+                     
+                     if (preferredFace === 'minX') { tempPos.x = min.x - radius - epsilon; continue; }
+                     if (preferredFace === 'maxX') { tempPos.x = max.x + radius + epsilon; continue; }
+                     if (preferredFace === 'minZ') { tempPos.z = min.z - radius - epsilon; continue; }
+                     if (preferredFace === 'maxZ') { tempPos.z = max.z + radius + epsilon; continue; }
+
+                     // Distances to each face
+                     const dx1 = tempPos.x - min.x;
+                     const dx2 = max.x - tempPos.x;
+                     const dz1 = tempPos.z - min.z;
+                     const dz2 = max.z - tempPos.z;
+                     
+                     // Find minimum penetration
+                     const minP = Math.min(dx1, dx2, dz1, dz2);
+                     
+                     // Push out + radius buffer + epsilon
+                     if (minP === dx1) tempPos.x = min.x - radius - epsilon;
+                     else if (minP === dx2) tempPos.x = max.x + radius + epsilon;
+                     else if (minP === dz1) tempPos.z = min.z - radius - epsilon;
+                     else if (minP === dz2) tempPos.z = max.z + radius + epsilon;
+                     
+                     continue;
+                }
+
                 // Find closest point on box to sphere center
                 const closestPoint = new THREE.Vector3();
                 box.clampPoint(tempPos, closestPoint);
@@ -65,15 +111,8 @@ export class CollisionManager {
                 const push = new THREE.Vector3().subVectors(tempPos, closestPoint);
                 const distance = push.length();
                 
-                // If center is inside box, push will be 0, handle that
-                if (distance === 0) {
-                    // Push out along shortest axis (simple heuristic)
-                    // For now, just push back along velocity (not available here) or just ignore
-                    continue; 
-                }
-
                 // Push out
-                if (distance < radius) {
+                if (distance < radius && distance > 0) {
                     push.normalize();
                     push.multiplyScalar(radius - distance);
                     tempPos.add(push);

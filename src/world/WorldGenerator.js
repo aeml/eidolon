@@ -9,67 +9,80 @@ export class WorldGenerator {
     createTown(centerX, centerZ, size) {
         console.log(`Generating town at ${centerX},${centerZ} size ${size}`);
         
-        // Switch to circular town with radius 60 (matching Lv 1-10 border)
-        const radius = 60;
+        // Use the passed size as radius (should be 100)
+        // const radius = size;
 
         // Note: CollisionManager safe zone is box-only, so we rely on the fence colliders
         // generated below to define the physical boundary.
         
-        this.createCircularFence(centerX, centerZ, radius);
+        // this.createCircularFence(centerX, centerZ, radius);
+        this.createRectangularFence(centerX, centerZ, size * 2, size * 2);
     }
 
-    createCircularFence(cx, cz, radius) {
-        const postGeo = new THREE.BoxGeometry(0.5, 2, 0.5);
-        const railGeo = new THREE.BoxGeometry(4, 0.2, 0.2);
+    createRectangularFence(cx, cz, width, depth) {
+        // Taller fence: Post height 8, Rail height adjusted
+        const postGeo = new THREE.BoxGeometry(0.8, 8, 0.8);
+        const railGeo = new THREE.BoxGeometry(4, 0.4, 0.2);
         const material = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
 
         const group = new THREE.Group();
-        const circumference = 2 * Math.PI * radius;
-        const segmentLength = 4; 
-        const count = Math.floor(circumference / segmentLength);
-        const angleStep = (2 * Math.PI) / count;
+        
+        const minX = cx - width / 2;
+        const maxX = cx + width / 2;
+        const minZ = cz - depth / 2;
+        const maxZ = cz + depth / 2;
 
-        // Exits at N, S, E, W
-        // Angles in 3D (X, Z): 0=East, PI/2=South, PI=West, 3PI/2=North
-        const exitWidthAngle = 12 / radius; // ~12 unit gap
+        const segmentLength = 4;
+        const exitGap = 20;
 
-        for (let i = 0; i < count; i++) {
-            const angle = i * angleStep;
-            
-            // Check for exits
-            let isExit = false;
-            for (let exitAngle of [0, Math.PI/2, Math.PI, 3*Math.PI/2]) {
-                let diff = Math.abs(angle - exitAngle);
-                if (diff > Math.PI) diff = 2*Math.PI - diff;
-                if (diff < exitWidthAngle / 2) {
-                    isExit = true;
-                    break;
-                }
-            }
-
-            if (isExit) continue;
-
-            const x = cx + Math.cos(angle) * radius;
-            const z = cz + Math.sin(angle) * radius;
-            
+        // Helper to create segment
+        const createSegment = (x, z, rotation) => {
             // Post
             this.addPost(group, postGeo, material, x, z);
 
-            // Rail
-            const rail = new THREE.Mesh(railGeo, material);
-            rail.position.set(x, 1.5, z);
-            // Tangent rotation
-            rail.rotation.y = -angle + Math.PI/2;
-            group.add(rail);
+            // Rails
+            const railHeights = [2, 4, 6];
+            for (let h of railHeights) {
+                const rail = new THREE.Mesh(railGeo, material);
+                rail.position.set(x, h, z);
+                rail.rotation.y = rotation;
+                group.add(rail);
+            }
 
-            // Collider (Approximate circle with small boxes)
+            // Collider
             const collider = new THREE.Box3();
-            // Make collider slightly larger/thicker to prevent slipping through
+            const sizeX = (Math.abs(Math.cos(rotation)) > 0.1) ? 4.5 : 1.0;
+            const sizeZ = (Math.abs(Math.sin(rotation)) > 0.1) ? 4.5 : 1.0;
+            
             collider.setFromCenterAndSize(
-                new THREE.Vector3(x, 1.5, z),
-                new THREE.Vector3(2, 5, 2) 
+                new THREE.Vector3(x, 4, z),
+                new THREE.Vector3(sizeX, 8, sizeZ) 
             );
             this.collisionManager.addCollider(collider);
+        };
+
+        // North Wall (minZ) - Horizontal
+        for (let x = minX; x <= maxX; x += segmentLength) {
+            if (Math.abs(x - cx) < exitGap / 2) continue;
+            createSegment(x, minZ, 0);
+        }
+
+        // South Wall (maxZ) - Horizontal
+        for (let x = minX; x <= maxX; x += segmentLength) {
+            if (Math.abs(x - cx) < exitGap / 2) continue;
+            createSegment(x, maxZ, 0);
+        }
+
+        // West Wall (minX) - Vertical
+        for (let z = minZ; z <= maxZ; z += segmentLength) {
+            if (Math.abs(z - cz) < exitGap / 2) continue;
+            createSegment(minX, z, Math.PI / 2);
+        }
+
+        // East Wall (maxX) - Vertical
+        for (let z = minZ; z <= maxZ; z += segmentLength) {
+            if (Math.abs(z - cz) < exitGap / 2) continue;
+            createSegment(maxX, z, Math.PI / 2);
         }
 
         this.scene.add(group);
@@ -77,7 +90,7 @@ export class WorldGenerator {
 
     addPost(group, geo, mat, x, z) {
         const post = new THREE.Mesh(geo, mat);
-        post.position.set(x, 1, z);
+        post.position.set(x, 4, z); // Center at y=4 for height 8
         group.add(post);
     }
 }

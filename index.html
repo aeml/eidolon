@@ -930,8 +930,25 @@
                 <button id="btn-resume" class="menu-btn">Resume Game</button>
                 <button id="btn-help" class="menu-btn">Help</button>
                 <button id="btn-patch-notes" class="menu-btn">Patch Notes</button>
+                <button id="btn-report" class="menu-btn" style="border-color: #ffd700; color: #ffd700;">Report Bug / Feature</button>
                 <button id="btn-respawn" class="menu-btn" style="border-color: #ff4444; color: #ff4444;">Unstuck / Respawn</button>
                 <button id="btn-menu" class="menu-btn">Return to Menu</button>
+            </div>
+        </div>
+
+        <!-- Report Screen -->
+        <div id="report-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; z-index: 102;">
+            <div class="window-header">SUBMIT REPORT</div>
+            <div style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+                <select id="report-type" style="padding: 10px; background: #333; color: white; border: 1px solid #666; font-family: inherit;">
+                    <option value="Bug Report">Bug Report</option>
+                    <option value="Feature Request">Feature Request</option>
+                </select>
+                <textarea id="report-text" rows="8" placeholder="Describe your issue or idea..." style="padding: 10px; background: #333; color: white; border: 1px solid #666; resize: none; font-family: inherit;"></textarea>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <button id="btn-cancel-report" class="menu-btn" style="width: 45%;">Cancel</button>
+                    <button id="btn-submit-report" class="menu-btn" style="width: 45%; background: #4CAF50; border-color: #45a049;">Submit</button>
+                </div>
             </div>
         </div>
 
@@ -957,6 +974,29 @@
         <div id="patch-notes-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 600px; z-index: 101; flex-direction: column;">
             <div class="window-header">PATCH NOTES</div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.13 (Elemental Realms & Quality of Life)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>New Content:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Water Realm:</strong> A brand new elemental zone has been added to the world.</li>
+                                <li><strong>Earth Realm:</strong> The Earth Realm has received a design overhaul.</li>
+                            </ul>
+                        </li>
+                        <li><strong>World Map 2.0:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Interactive Panning:</strong> You can now <strong>Click and Drag</strong> to move the map view.</li>
+                                <li><strong>Zooming:</strong> Use the scroll wheel to zoom in and out for a better view of the world.</li>
+                            </ul>
+                        </li>
+                        <li><strong>System:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Feedback System:</strong> Added a "Report Bug / Feature" button to the ESC menu. Submit issues directly to the server!</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
                 <div style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.12 (The Expansion)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

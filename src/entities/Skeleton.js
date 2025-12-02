@@ -18,6 +18,7 @@ export class Skeleton extends Actor {
         this.isRunning = false; // Enemies always walk
 
         this.meshType = 'Skeleton';
+        this.name = 'Skeleton';
     }
 
     update(dt, collisionManager, player) {

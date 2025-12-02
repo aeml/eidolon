@@ -2,7 +2,13 @@ export const CONSTANTS = {
     SCENE: {
         BACKGROUND_COLOR: 0x202020,
         GROUND_SIZE: 2000,
-        WORLD_BOUNDS: 2000,
+        WORLD_BOUNDS: 2000, // Deprecated, use BOUNDS
+        BOUNDS: {
+            MIN_X: -1000,
+            MAX_X: 1000,
+            MIN_Z: -2200,
+            MAX_Z: 1000
+        },
         CHUNK_SIZE: 50,
         LOAD_DISTANCE: 1,
         GROUND_COLOR: 0x333333,

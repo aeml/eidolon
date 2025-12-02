@@ -82,6 +82,20 @@ export class GameEngine {
                 this.socket.send(JSON.stringify({ type: 'social', payload: {} }));
             }
         };
+        this.uiManager.onReportSubmit = (type, text) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'report',
+                    payload: {
+                        reportType: type,
+                        text: text
+                    }
+                };
+                this.socket.send(JSON.stringify(msg));
+            } else {
+                console.warn("Cannot submit report: Not connected to server.");
+            }
+        };
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         this.minimap = new Minimap();
         this.worldMap = new WorldMap(this);
@@ -209,7 +223,7 @@ export class GameEngine {
                     this.socket.send(JSON.stringify({ type: 'respawn', payload: {} }));
                     // Wait for server state update to handle actual respawn
                 } else {
-                    this.player.respawn(0, 0);
+                    this.player.respawn(0, 200);
                     this.player.timeSinceDeath = null;
                     this.chunkManager.updateEntityChunk(this.player);
                     this.renderSystem.setCameraTarget(this.player.position);
@@ -225,7 +239,8 @@ export class GameEngine {
         this.chunkManager.update(this.player, 0, this.collisionManager);
 
         // In multiplayer, we still need to render the static town
-        this.worldGenerator.createTown(0, 0, 100);
+        // Town Center: (0, 200), Radius: 100
+        // this.worldGenerator.createTown(0, 200, 100);
 
         if (onProgress) onProgress(70, "Spawning Enemies...");
         await new Promise(r => setTimeout(r, 50));
@@ -235,7 +250,7 @@ export class GameEngine {
 
         this.inputManager.subscribe('onClick', () => {
             if (!this.player) return;
-            if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen) return;
+            if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen || this.uiManager.reportScreen.style.display === 'block') return;
 
             // Force raycast to ensure hoveredEntity is up to date with exact click position
             this.performRaycast();
@@ -308,7 +323,7 @@ export class GameEngine {
 
         this.inputManager.subscribe('onRightClick', () => {
             if (!this.player) return;
-            if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen) return;
+            if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen || this.uiManager.reportScreen.style.display === 'block') return;
 
             // Check Cooldown and Mana before proceeding
             if (this.player.abilityCooldown > 0) {
@@ -478,7 +493,7 @@ export class GameEngine {
         this.inputManager.subscribe('onTeleport', () => {
             if (this.player) {
                 console.log("Teleporting to town...");
-                this.player.position.set(0, 0, 0);
+                this.player.position.set(0, 0, 200);
                 this.player.targetPosition = null;
                 this.player.state = 'IDLE';
                 
@@ -680,9 +695,9 @@ export class GameEngine {
                                 this.player.die();
                             } else if (this.player.state === 'DEAD' && pData.state !== 'DEAD') {
                                 // Revived?
-                                // Force town spawn (0,0) to ensure immediate visual feedback
+                                // Force town spawn (0, 200) to ensure immediate visual feedback
                                 const x = 0;
-                                const z = 0;
+                                const z = 200;
                                 
                                 console.log(`GameEngine: Respawn detected. Teleporting to Town (${x}, ${z})`);
                                 this.player.respawn(x, z);
@@ -1261,14 +1276,23 @@ export class GameEngine {
                 } else if (pData.type === 'Fence') {
                     remoteEntity = new Fence(pData.id, pData.x, pData.z, pData.rotation || 0);
                     // Add to collision manager
-                    // We need to wait for mesh? Or just add a box now?
-                    // Fence size is approx 4x1.
                     const box = new THREE.Box3();
-                    box.setFromCenterAndSize(new THREE.Vector3(pData.x, 1.5, pData.z), new THREE.Vector3(4, 3, 1));
-                    // Rotate box? Box3 is AABB. If fence is rotated, AABB might be larger.
-                    // For simple fence circle, rotation is important.
-                    // CollisionManager uses simple box check.
-                    // Let's just add it.
+                    
+                    // Calculate AABB for rotated fence
+                    // Original dimensions: Width 4 (X), Depth 1 (Z)
+                    // Increased depth to 4.0 for more solid collision
+                    const w = 4.5;
+                    const d = 4.0;
+                    const rot = pData.rotation || 0;
+                    
+                    const absCos = Math.abs(Math.cos(rot));
+                    const absSin = Math.abs(Math.sin(rot));
+                    
+                    const newWidth = w * absCos + d * absSin;
+                    const newDepth = w * absSin + d * absCos;
+
+                    // Height 8, Center Y 4
+                    box.setFromCenterAndSize(new THREE.Vector3(pData.x, 4.0, pData.z), new THREE.Vector3(newWidth, 8, newDepth));
                     this.collisionManager.addCollider(box);
                 } else {
                     remoteEntity = this.createRemotePlayer(pData.type || 'Enemy', pData.id, pData.subType); 
@@ -1641,7 +1665,7 @@ export class GameEngine {
                     const nextPos = this.player.position.clone().add(moveVec);
                     
                     if (this.collisionManager) {
-                        const correctedPos = this.collisionManager.checkCollision(nextPos, 0.5);
+                        const correctedPos = this.collisionManager.checkCollision(nextPos, this.player.radius, this.player.position);
                         if (correctedPos) {
                             this.player.position.copy(correctedPos);
                         } else {

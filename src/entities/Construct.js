@@ -19,6 +19,7 @@ export class Construct extends Actor {
         this.isRunning = false; // Slow moving
 
         this.meshType = 'Construct';
+        this.name = 'Construct';
     }
 
     update(dt, collisionManager, player) {

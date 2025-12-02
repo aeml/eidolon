@@ -19,6 +19,7 @@ export class DemonOrc extends Actor {
         this.isRunning = false; // Enemies always walk
 
         this.meshType = 'DemonOrc';
+        this.name = 'Demon Orc';
     }
 
     update(dt, collisionManager, player) {
