@@ -699,6 +699,80 @@ export class MeshFactory {
                 mesh.position.y = 1.75;
                 return mesh;
             }
+        } else if (type === 'Siren') {
+            try {
+                const idleGltf = await this.loadModel('./assets/enemies/snow/siren/idle.glb');
+                mesh = SkeletonUtils.clone(idleGltf.scene);
+                
+                mesh.userData.animations = [];
+                const addAnim = (clip, name) => {
+                    if (clip) {
+                        const newClip = clip.clone();
+                        newClip.name = name;
+                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
+                        mesh.userData.animations.push(newClip);
+                    }
+                };
+
+                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
+
+                try {
+                    const walkGltf = await this.loadModel('./assets/enemies/snow/siren/walk.glb');
+                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
+                } catch (e) {}
+
+                try {
+                    const runGltf = await this.loadModel('./assets/enemies/snow/siren/run.glb');
+                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
+                } catch (e) {}
+
+                try {
+                    const attackGltf = await this.loadModel('./assets/enemies/snow/siren/attack.glb');
+                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
+                } catch (e) {}
+
+                try {
+                    const deathGltf = await this.loadModel('./assets/enemies/snow/siren/death.glb');
+                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
+                } catch (e) {}
+
+                mesh.scale.set(2.5, 2.5, 2.5);
+                
+                mesh.traverse(c => {
+                    if (c.isMesh) {
+                        if (!c.material) {
+                            c.material = new THREE.MeshStandardMaterial({ color: 0x00ffff });
+                        }
+                        c.castShadow = true;
+                        c.receiveShadow = true;
+                    }
+                });
+
+                const hitGeo = new THREE.BoxGeometry(1.5, 2.5, 1.5);
+                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+                hitMesh.position.y = 1.25;
+                mesh.add(hitMesh);
+                
+                return mesh;
+            } catch (e) {
+                console.error("Failed to load Siren:", e);
+                const geometry = new THREE.BoxGeometry(1.0, 2.0, 1.0);
+                const material = new THREE.MeshStandardMaterial({ color: 0x00ffff });
+                mesh = new THREE.Mesh(geometry, material);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.position.y = 1.0;
+                return mesh;
+            }
+        } else if (type === 'Fence') {
+            const geometry = new THREE.BoxGeometry(4, 3, 1);
+            const material = new THREE.MeshStandardMaterial({ color: 0x8B4513 }); // SaddleBrown
+            mesh = new THREE.Mesh(geometry, material);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            mesh.position.y = 1.5;
+            return mesh;
         }
 
         switch (type) {

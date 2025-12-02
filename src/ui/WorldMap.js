@@ -10,15 +10,77 @@ export class WorldMap {
         
         // Map Settings
         this.scale = 2; // Pixels per world unit
-        this.offsetX = 0;
-        this.offsetY = 0;
+        this.mapOffsetX = 0;
+        this.mapOffsetY = 0;
         
+        // Interaction State
+        this.isDragging = false;
+        this.lastMouseX = 0;
+        this.lastMouseY = 0;
+
+        // Event Listeners for Interaction
+        this.setupInteraction();
+
         // Resize observer to handle window resizing
         this.resizeObserver = new ResizeObserver(() => this.resize());
         this.resizeObserver.observe(this.container);
         
         // Initial resize
         this.resize();
+    }
+
+    setupInteraction() {
+        this.canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const zoomSpeed = 0.1;
+            const delta = -Math.sign(e.deltaY);
+            const newScale = this.scale + delta * zoomSpeed * this.scale;
+            
+            // Clamp scale
+            this.scale = Math.max(0.5, Math.min(10.0, newScale));
+            
+            if (this.gameEngine.player) {
+                this.draw(this.gameEngine.player);
+            }
+        }, { passive: false });
+
+        this.canvas.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.isDragging = true;
+            this.lastMouseX = e.clientX;
+            this.lastMouseY = e.clientY;
+            this.canvas.style.cursor = 'grabbing';
+        });
+
+        this.canvas.addEventListener('mousemove', (e) => {
+            if (!this.isDragging) return;
+            e.preventDefault();
+            e.stopPropagation();
+
+            const dx = e.clientX - this.lastMouseX;
+            const dy = e.clientY - this.lastMouseY;
+
+            this.lastMouseX = e.clientX;
+            this.lastMouseY = e.clientY;
+
+            this.mapOffsetX += dx;
+            this.mapOffsetY += dy;
+
+            if (this.gameEngine.player) {
+                this.draw(this.gameEngine.player);
+            }
+        });
+
+        const stopDrag = () => {
+            this.isDragging = false;
+            this.canvas.style.cursor = 'default';
+        };
+
+        this.canvas.addEventListener('mouseup', stopDrag);
+        this.canvas.addEventListener('mouseleave', stopDrag);
     }
 
     resize() {
@@ -71,12 +133,12 @@ export class WorldMap {
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, w, h);
 
-        // Center map on player
-        // World (0,0) should be at screen (cx - player.x * scale, cy - player.z * scale)
+        // Center map on player + offset
+        // World (0,0) should be at screen (cx - player.x * scale + offsetX, cy - player.z * scale + offsetY)
         const worldToScreen = (wx, wz) => {
             return {
-                x: cx + (wx - player.position.x) * this.scale,
-                y: cy + (wz - player.position.z) * this.scale
+                x: cx + (wx - player.position.x) * this.scale + this.mapOffsetX,
+                y: cy + (wz - player.position.z) * this.scale + this.mapOffsetY
             };
         };
 
@@ -117,19 +179,45 @@ export class WorldMap {
         
         // Town Label
         ctx.fillStyle = '#fff';
-        ctx.font = '12px Arial';
+        ctx.font = `${12 * (this.scale / 2)}px Arial`; // Scale font slightly
         ctx.textAlign = 'center';
         ctx.fillText("TOWN", townPos.x + 50 * this.scale, townPos.y + 50 * this.scale);
 
-        // 2.1 Draw Level Areas (Rings)
-        const worldCenterX = cx - player.position.x * this.scale;
-        const worldCenterY = cy - player.position.z * this.scale;
+        // 2.05 Draw Snow World Area
+        // Snow World starts at Z = -600 and goes North (negative Z)
+        // Let's draw a large area for it
+        const snowStartZ = -600;
+        const snowWidth = 1000; // Visual width
+        const snowDepth = 1000; // Visual depth
+        const snowPos = worldToScreen(-snowWidth/2, snowStartZ - snowDepth);
+        
+        ctx.fillStyle = 'rgba(200, 240, 255, 0.2)'; // Light Cyan/White
+        ctx.fillRect(snowPos.x, snowPos.y, snowWidth * this.scale, snowDepth * this.scale);
+        
+        // Snow World Label
+        ctx.fillStyle = '#fff';
+        ctx.font = `${14 * (this.scale / 2)}px Arial`;
+        const snowLabelPos = worldToScreen(0, -800);
+        ctx.fillText("SNOW WORLD", snowLabelPos.x, snowLabelPos.y);
 
-        const drawLevelRing = (minR, maxR, label, color) => {
-            ctx.beginPath();
-            // Outer circle
-            ctx.arc(worldCenterX, worldCenterY, maxR * this.scale, 0, Math.PI * 2);
-            // Inner circle (counter-clockwise to create hole)
+        // Fence Line (at Z = -600 approx, radius 620 circle actually)
+        // Draw the fence circle
+        const fenceCenter = worldToScreen(0, 0);
+        ctx.beginPath();
+        ctx.arc(fenceCenter.x, fenceCenter.y, 620 * this.scale, 0, Math.PI * 2);
+        ctx.strokeStyle = '#8B4513'; // SaddleBrown
+            // Label (Top)
+            const midR = (minR + maxR) / 2;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.font = `${10 * (this.scale / 2)}px Arial`;
+            ctx.fillText(label, worldCenterX, worldCenterY - midR * this.scale);
+            // Label (Bottom)
+            ctx.fillText(label, worldCenterX, worldCenterY + midR * this.scale);
+            // Label (Left)
+            ctx.fillText(label, worldCenterX - midR * this.scale, worldCenterY);
+            // Label (Right)
+            ctx.fillText(label, worldCenterX + midR * this.scale, worldCenterY);
+        };  // Inner circle (counter-clockwise to create hole)
             ctx.arc(worldCenterX, worldCenterY, minR * this.scale, 0, Math.PI * 2, true);
             ctx.fillStyle = color;
             ctx.fill();

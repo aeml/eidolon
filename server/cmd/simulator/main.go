@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math"
 	"math/rand"
 	"net/url"
 	"os"
@@ -59,9 +60,11 @@ type Entity struct {
 	X       float64 `json:"x"`
 	Y       float64 `json:"y"`
 	Z       float64 `json:"z"`
+	State   string  `json:"state"`
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	serverAddr := flag.String("addr", "eserver.mendola.tech:8080", "Server address")
 	insecure := flag.Bool("insecure", false, "Skip SSL verification")
 	flag.Parse()
@@ -88,6 +91,12 @@ func main() {
 
 	done := make(chan struct{})
 
+	// State tracking
+	var myPlayerID string
+	var enemies []string
+	var otherPlayers []Entity
+	var stateMutex = make(chan struct{}, 1) // Simple mutex using channel
+
 	// Read Loop
 	go func() {
 		defer close(done)
@@ -110,25 +119,43 @@ func main() {
 			case MsgState:
 				var state map[string]Entity
 				json.Unmarshal(msg.Payload, &state)
-				// Analyze state
-				enemyCount := 0
-				playerCount := 0
-				for _, e := range state {
-					switch e.Type {
-					case "Enemy":
-						enemyCount++
-					case "Player":
-						playerCount++
+
+				// Update local state
+				currentEnemies := []string{}
+				currentPlayers := []Entity{}
+				var me *Entity
+
+				for id, e := range state {
+					if e.Type == "Enemy" && e.State != "DEAD" {
+						currentEnemies = append(currentEnemies, id)
+					}
+					if e.Type == "Player" && id != myPlayerID {
+						currentPlayers = append(currentPlayers, e)
+					}
+					if id == myPlayerID {
+						me = &e
 					}
 				}
-				// Only log occasionally or interesting events to avoid spam
-				if rand.Intn(20) == 0 {
-					log.Printf("World State: %d Players, %d Enemies", playerCount, enemyCount)
+
+				// Update shared state
+				select {
+				case stateMutex <- struct{}{}:
+					enemies = currentEnemies
+					otherPlayers = currentPlayers
+					<-stateMutex
+				default:
 				}
+
+				// Check for Death
+				if me != nil && me.State == "DEAD" {
+					log.Printf("I am DEAD! Respawning...")
+					sendJSON(c, "respawn", map[string]interface{}{})
+				}
+
 			case MsgChat:
 				log.Printf("Chat: %s", msg.Payload)
 			case MsgDamage:
-				log.Printf("COMBAT: %s", msg.Payload)
+				// log.Printf("COMBAT: %s", msg.Payload)
 			default:
 				// log.Printf("Recv: %s", msg.Type)
 			}
@@ -139,6 +166,7 @@ func main() {
 	go func() {
 		// 1. Register
 		username := fmt.Sprintf("sim_user_%d", rand.Intn(10000))
+		myPlayerID = "player-" + username
 		password := "password123"
 		log.Printf("Attempting to Register as %s...", username)
 
@@ -156,24 +184,100 @@ func main() {
 		time.Sleep(1 * time.Second)
 
 		// 4. Move Loop
-		ticker := time.NewTicker(200 * time.Millisecond)
+		ticker := time.NewTicker(50 * time.Millisecond) // 20 updates per second
 		defer ticker.Stop()
 
-		x, z := 0.0, 0.0
+		// Randomize start position to avoid stacking
+		x := (rand.Float64() - 0.5) * 40.0
+		z := (rand.Float64() - 0.5) * 40.0
+		targetX, targetZ := x, z
+		speed := 6.0 // Slightly faster than base speed
+
 		for {
 			select {
 			case <-done:
 				return
 			case <-ticker.C:
-				// Random walk
-				x += (rand.Float64() - 0.5) * 1.0
-				z += (rand.Float64() - 0.5) * 1.0
+				// Movement Logic
+				// Calculate Repulsion from other players
+				repX, repZ := 0.0, 0.0
+				separationDist := 2.0
+
+				stateMutex <- struct{}{}
+				localOthers := make([]Entity, len(otherPlayers))
+				copy(localOthers, otherPlayers)
+				<-stateMutex
+
+				for _, p := range localOthers {
+					dx := x - p.X
+					dz := z - p.Z
+					dist := math.Sqrt(dx*dx + dz*dz)
+					if dist < separationDist && dist > 0.001 {
+						// Push away
+						force := (separationDist - dist) / separationDist
+						repX += (dx / dist) * force * 2.0
+						repZ += (dz / dist) * force * 2.0
+					}
+				}
+
+				dx := targetX - x
+				dz := targetZ - z
+				dist := math.Sqrt(dx*dx + dz*dz)
+
+				if dist < 1.0 {
+					// Pick new target
+					angle := rand.Float64() * 2 * math.Pi
+					radius := 10.0 + rand.Float64()*40.0 // Move 10-50 units away
+					targetX = x + math.Cos(angle)*radius
+					targetZ = z + math.Sin(angle)*radius
+
+					// Clamp to reasonable bounds (e.g. -100 to 100)
+					if targetX < -100 {
+						targetX = -100
+					}
+					if targetX > 100 {
+						targetX = 100
+					}
+					if targetZ < -100 {
+						targetZ = -100
+					}
+					if targetZ > 100 {
+						targetZ = 100
+					}
+				} else {
+					// Move towards target
+					step := speed * 0.05 // speed * dt
+					dirX, dirZ := 0.0, 0.0
+					if dist > 0 {
+						dirX = dx / dist
+						dirZ = dz / dist
+					}
+
+					// Combine target direction with repulsion
+					finalDx := dirX + repX
+					finalDz := dirZ + repZ
+
+					// Normalize final direction
+					finalLen := math.Sqrt(finalDx*finalDx + finalDz*finalDz)
+					if finalLen > 0 {
+						x += (finalDx / finalLen) * step
+						z += (finalDz / finalLen) * step
+					}
+				}
 
 				sendJSON(c, MsgMove, MovePayload{X: x, Y: 0, Z: z})
 
-				// Combat logic: Attack skeleton-1 if close
-				if rand.Intn(5) == 0 { // 20% chance per tick
-					sendJSON(c, MsgAttack, AttackPayload{TargetID: "skeleton-1"})
+				// Combat logic: Attack random enemy
+				stateMutex <- struct{}{}
+				enemyCount := len(enemies)
+				var targetID string
+				if enemyCount > 0 {
+					targetID = enemies[rand.Intn(enemyCount)]
+				}
+				<-stateMutex
+
+				if targetID != "" && rand.Intn(20) == 0 { // Reduced chance per tick since tick rate is higher (50ms vs 200ms)
+					sendJSON(c, MsgAttack, AttackPayload{TargetID: targetID})
 				}
 			}
 		}
