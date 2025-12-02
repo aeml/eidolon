@@ -18,8 +18,9 @@ import (
 )
 
 var (
-	addr  = flag.String("addr", "localhost:8080", "http service address")
-	count = flag.Int("n", 10, "number of bots")
+	addr     = flag.String("addr", "localhost:8080", "http service address")
+	count    = flag.Int("n", 10, "number of bots")
+	townMode = flag.Bool("town", false, "bots only roam in town")
 )
 
 type Message struct {
@@ -34,6 +35,7 @@ type Entity struct {
 	Z         float64         `json:"z"`
 	State     string          `json:"state"`
 	Health    int             `json:"health"`
+	Level     int             `json:"level"`
 	Equipment map[string]Item `json:"equipment"`
 }
 
@@ -46,6 +48,26 @@ type Item struct {
 	Value  int    `json:"value"`
 }
 
+type BotCredentials struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func loadCredentials() []BotCredentials {
+	file, err := os.ReadFile("bot_data.json")
+	if err != nil {
+		return []BotCredentials{}
+	}
+	var creds []BotCredentials
+	json.Unmarshal(file, &creds)
+	return creds
+}
+
+func saveCredentials(creds []BotCredentials) {
+	data, _ := json.MarshalIndent(creds, "", "  ")
+	os.WriteFile("bot_data.json", data, 0644)
+}
+
 func main() {
 	flag.Parse()
 	rand.Seed(time.Now().UnixNano())
@@ -55,16 +77,30 @@ func main() {
 	u := url.URL{Scheme: "wss", Host: *addr, Path: "/ws"}
 	log.Printf("Connecting to %s with %d bots...", u.String(), *count)
 
+	// Load or Generate Credentials
+	creds := loadCredentials()
+	if len(creds) < *count {
+		log.Printf("Generating %d new bot accounts...", *count-len(creds))
+		for len(creds) < *count {
+			name := generateRandomName()
+			creds = append(creds, BotCredentials{
+				Username: name,
+				Password: "password123",
+			})
+		}
+		saveCredentials(creds)
+	}
+
 	var wg sync.WaitGroup
 
 	for i := 0; i < *count; i++ {
 		wg.Add(1)
-		go func(id int) {
+		go func(idx int) {
 			defer wg.Done()
-			runBot(id, u.String())
+			runBot(idx, u.String(), creds[idx])
 		}(i)
 		// Stagger connections slightly to avoid hammering the server all at once
-		time.Sleep(50 * time.Millisecond)
+		time.Sleep(100 * time.Millisecond)
 	}
 
 	// Wait for interrupt to stop
@@ -72,7 +108,7 @@ func main() {
 	log.Println("Stopping bots...")
 }
 
-func runBot(id int, urlStr string) {
+func runBot(id int, urlStr string, cred BotCredentials) {
 	dialer := *websocket.DefaultDialer
 	dialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
@@ -87,28 +123,22 @@ func runBot(id int, urlStr string) {
 	}
 	defer c.Close()
 
-	// Unique username for each run/bot
-	username := generateRandomName()
-	password := "password123"
-
-	// 1. Register
+	// 1. Register (Try to register, ignore if exists)
 	regPayload := map[string]string{
-		"username": username,
-		"email":    username + "@bot.com",
-		"password": password,
+		"username": cred.Username,
+		"email":    cred.Username + "@bot.com",
+		"password": cred.Password,
 	}
-	if err := send(c, "register", regPayload); err != nil {
-		log.Printf("Bot %d register error: %v", id, err)
-		return
-	}
+	// We don't check error here strictly because they might already exist
+	send(c, "register", regPayload)
 
 	// Small delay to ensure registration processes
 	time.Sleep(200 * time.Millisecond)
 
 	// 2. Login
 	loginPayload := map[string]string{
-		"username": username,
-		"password": password,
+		"username": cred.Username,
+		"password": cred.Password,
 	}
 	if err := send(c, "login", loginPayload); err != nil {
 		log.Printf("Bot %d login error: %v", id, err)
@@ -120,7 +150,12 @@ func runBot(id int, urlStr string) {
 	worldState := make(map[string]Entity)
 	var inventory []Item
 	isSelling := false
-	myID := "player-" + username
+	myID := "player-" + cred.Username
+
+	// Movement State
+	var roamTargetX, roamTargetZ float64
+	var hasRoamTarget bool
+	var lastRoamTime time.Time
 
 	// Start reading messages to keep connection alive and handle server responses
 	done := make(chan struct{})
@@ -184,26 +219,19 @@ func runBot(id int, urlStr string) {
 
 							if newScore > curScore {
 								// Equip it!
-								// Note: We launch this in a goroutine or just send it?
-								// Send is safe if concurrent? send() uses c.WriteJSON which is NOT concurrent safe usually.
-								// But here we are in the read loop. We should probably use a channel or lock for writing.
-								// For this simple test, let's assume low contention or risk it,
-								// OR better: set a flag/queue for the main loop to handle.
-								// Actually, let's just log it for now and let the main loop handle logic?
-								// No, let's try to send. But `send` is used by main loop too.
-								// We need a mutex for the websocket write.
+								send(c, "equip", map[string]string{"itemId": item.ID, "slot": item.Slot})
 							}
 						}
 					}
 
-					// Check if full
+					// Check if full (or nearly full) to trigger sell run
 					count := 0
 					for _, it := range inv {
 						if it.ID != "" {
 							count++
 						}
 					}
-					if count >= 20 {
+					if count >= 15 { // Start selling when mostly full
 						isSelling = true
 					} else if count == 0 {
 						isSelling = false
@@ -227,10 +255,24 @@ func runBot(id int, urlStr string) {
 		return
 	}
 
-	log.Printf("Bot %s joined as %s.", username, randomArchetype)
+	log.Printf("Bot %s joined as %s.", cred.Username, randomArchetype)
+
+	// Cooldowns
+	var abilityCooldown time.Duration
+	switch randomArchetype {
+	case "Fighter":
+		abilityCooldown = 5 * time.Second
+	case "Wizard":
+		abilityCooldown = 2 * time.Second
+	case "Rogue":
+		abilityCooldown = 1 * time.Second
+	case "Cleric":
+		abilityCooldown = 10 * time.Second
+	}
+	lastAbilityTime := time.Time{}
 
 	// 4. AI Loop
-	ticker := time.NewTicker(500 * time.Millisecond)
+	ticker := time.NewTicker(200 * time.Millisecond) // Faster tick for smoother movement
 	defer ticker.Stop()
 
 	for {
@@ -254,47 +296,15 @@ func runBot(id int, urlStr string) {
 				continue // Wait until we exist
 			}
 
-			// 0. Equip Upgrades (Simple check every tick)
-			for _, item := range currentInv {
-				if item.ID == "" || item.Slot == "" {
-					continue
-				}
-
-				current, hasEquip := me.Equipment[item.Slot]
-
-				getScore := func(i Item) int {
-					r := 0
-					switch i.Rarity {
-					case "Legendary":
-						r = 4
-					case "Epic":
-						r = 3
-					case "Rare":
-						r = 2
-					case "Uncommon":
-						r = 1
-					}
-					return r*1000 + i.Level
-				}
-
-				newScore := getScore(item)
-				curScore := -1
-				if hasEquip {
-					curScore = getScore(current)
-				}
-
-				if newScore > curScore {
-					send(c, "equip", map[string]string{"itemId": item.ID, "slot": item.Slot})
-					// Break to avoid spamming equips in one tick, wait for next inventory update
-					break
-				}
-			}
-
 			// 1. Selling Logic
 			if selling {
-				distFromTown := math.Sqrt(me.X*me.X + me.Z*me.Z)
-				if distFromTown < 5.0 {
-					// Sell everything in inventory
+				// Town Center is (0, 200)
+				dx := me.X - 0
+				dz := me.Z - 200
+				distFromTown := math.Sqrt(dx*dx + dz*dz)
+
+				if distFromTown < 10.0 {
+					// Sell everything in inventory (since we auto-equip upgrades, inventory is junk)
 					for _, item := range currentInv {
 						if item.ID != "" {
 							send(c, "sell", map[string]string{"itemId": item.ID})
@@ -305,8 +315,34 @@ func runBot(id int, urlStr string) {
 					isSelling = false
 					stateMu.Unlock()
 				} else {
-					// Move to town
-					sendMove(c, 0, 0)
+					// Move to town (0, 200)
+					sendMove(c, 0, 200)
+				}
+				continue
+			}
+
+			// Town Mode Override
+			if *townMode {
+				// Just roam around town (0, 200)
+				// Town bounds approx -100 to 100 X, 100 to 300 Z
+				if !hasRoamTarget || time.Since(lastRoamTime) > 5*time.Second {
+					roamTargetX = (rand.Float64() * 180) - 90     // -90 to 90
+					roamTargetZ = 200 + (rand.Float64()*180 - 90) // 110 to 290
+					hasRoamTarget = true
+					lastRoamTime = time.Now()
+				}
+
+				dx := roamTargetX - me.X
+				dz := roamTargetZ - me.Z
+				dist := math.Sqrt(dx*dx + dz*dz)
+
+				if dist < 2.0 {
+					hasRoamTarget = false
+					if rand.Float64() < 0.3 {
+						time.Sleep(time.Duration(rand.Intn(2000)) * time.Millisecond)
+					}
+				} else {
+					sendMove(c, roamTargetX, roamTargetZ)
 				}
 				continue
 			}
@@ -348,38 +384,104 @@ func runBot(id int, urlStr string) {
 					// Move to loot
 					sendMove(c, loot.X, loot.Z)
 				}
+				hasRoamTarget = false
 			} else if target != nil && minDist < 30.0 {
 				// Fight
-				// 10% chance to use ability if in range
-				if minDist < 15.0 && rand.Float64() < 0.1 {
+				hasRoamTarget = false
+
+				// Use ability on cooldown if in range
+				if minDist < 15.0 && time.Since(lastAbilityTime) >= abilityCooldown {
 					abilityPayload := map[string]interface{}{
 						"targetX":  target.X,
 						"targetZ":  target.Z,
 						"targetId": target.ID,
 					}
 					send(c, "ability", abilityPayload)
+					lastAbilityTime = time.Now()
 				} else if minDist < 4.0 {
 					send(c, "attack", map[string]string{"targetId": target.ID})
 				} else {
-					// Chase
-					sendMove(c, target.X, target.Z)
+					// Chase / Combat Movement
+					// Add some "stutter" or strafing to look more human
+					// Instead of moving directly to target, move slightly offset
+					angle := math.Atan2(target.Z-me.Z, target.X-me.X)
+
+					// If we are very close, maybe back up a bit if we are ranged?
+					// For now, just simple chase with noise
+					noise := (rand.Float64() - 0.5) * 0.5 // +/- 0.25 rad
+					moveAngle := angle + noise
+
+					// Move towards target but with noise
+					tx := me.X + math.Cos(moveAngle)*5.0
+					tz := me.Z + math.Sin(moveAngle)*5.0
+
+					sendMove(c, tx, tz)
 				}
 			} else {
-				// Roam
-				// Check if we are in town (radius 50)
-				distFromCenter := math.Sqrt(me.X*me.X + me.Z*me.Z)
-				if distFromCenter < 60.0 {
-					// Move out
-					angle := rand.Float64() * 2 * math.Pi
-					r := 70.0 + rand.Float64()*30.0
-					tx := math.Cos(angle) * r
-					tz := math.Sin(angle) * r
-					sendMove(c, tx, tz)
+				// Roam based on Level
+				// Sector 1: Z [200, 1000] (Lvl 1-10)
+				// Sector 2: Z [-600, 200] (Lvl 10-20)
+				// Sector 3: Z [-1400, -600] (Lvl 20-30)
+				// Sector 4: Z [-2200, -1400] (Lvl 30+)
+
+				var minZ, maxZ float64
+				if me.Level < 10 {
+					minZ, maxZ = 200, 1000
+				} else if me.Level < 20 {
+					minZ, maxZ = -600, 200
+				} else if me.Level < 30 {
+					minZ, maxZ = -1400, -600
 				} else {
-					// Random walk nearby
-					tx := me.X + (rand.Float64()*20 - 10)
-					tz := me.Z + (rand.Float64()*20 - 10)
-					sendMove(c, tx, tz)
+					minZ, maxZ = -2200, -1400
+				}
+
+				// Check if we are in our sector
+				if me.Z < minZ || me.Z > maxZ {
+					// Move towards sector center
+					targetZ := (minZ + maxZ) / 2
+					// Add some randomness to X
+					targetX := (rand.Float64() * 1800) - 900
+					sendMove(c, targetX, targetZ)
+					hasRoamTarget = false
+				} else {
+					// Roaming Logic with Waypoints
+					if !hasRoamTarget || time.Since(lastRoamTime) > 5*time.Second {
+						// Pick new waypoint
+						roamTargetX = me.X + (rand.Float64()*100 - 50)
+						roamTargetZ = me.Z + (rand.Float64()*100 - 50)
+
+						// Clamp
+						if roamTargetX < -950 {
+							roamTargetX = -950
+						}
+						if roamTargetX > 950 {
+							roamTargetX = 950
+						}
+						if roamTargetZ < minZ {
+							roamTargetZ = minZ
+						}
+						if roamTargetZ > maxZ {
+							roamTargetZ = maxZ
+						}
+
+						hasRoamTarget = true
+						lastRoamTime = time.Now()
+					}
+
+					// Check if reached
+					dx := roamTargetX - me.X
+					dz := roamTargetZ - me.Z
+					dist := math.Sqrt(dx*dx + dz*dz)
+
+					if dist < 2.0 {
+						hasRoamTarget = false // Pick new one next tick
+						// Maybe pause?
+						if rand.Float64() < 0.3 {
+							time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
+						}
+					} else {
+						sendMove(c, roamTargetX, roamTargetZ)
+					}
 				}
 			}
 		}
