@@ -31,12 +31,19 @@ export class UIManager {
         this.btnResume = document.getElementById('btn-resume');
         this.btnHelp = document.getElementById('btn-help');
         this.btnPatchNotes = document.getElementById('btn-patch-notes');
+        this.btnReport = document.getElementById('btn-report');
         this.btnMenu = document.getElementById('btn-menu');
         this.btnCloseHelp = document.getElementById('btn-close-help');
         this.btnClosePatchNotes = document.getElementById('btn-close-patch-notes');
         this.btnRespawn = document.getElementById('btn-respawn');
         this.btnCloseShop = document.getElementById('btn-close-shop');
         
+        this.reportScreen = document.getElementById('report-screen');
+        this.btnCancelReport = document.getElementById('btn-cancel-report');
+        this.btnSubmitReport = document.getElementById('btn-submit-report');
+        this.reportType = document.getElementById('report-type');
+        this.reportText = document.getElementById('report-text');
+
         this.btnSellCommon = document.getElementById('btn-sell-common');
         this.btnSellUncommon = document.getElementById('btn-sell-uncommon');
         this.btnSellRare = document.getElementById('btn-sell-rare');
@@ -44,6 +51,7 @@ export class UIManager {
         if (this.btnResume) this.btnResume.addEventListener('click', () => this.toggleEscMenu());
         if (this.btnHelp) this.btnHelp.addEventListener('click', () => this.toggleHelp());
         if (this.btnPatchNotes) this.btnPatchNotes.addEventListener('click', () => this.togglePatchNotes());
+        if (this.btnReport) this.btnReport.addEventListener('click', () => this.toggleReport());
         if (this.btnMenu) this.btnMenu.addEventListener('click', () => location.reload());
         if (this.btnCloseHelp) this.btnCloseHelp.addEventListener('click', () => this.toggleHelp());
         if (this.btnClosePatchNotes) this.btnClosePatchNotes.addEventListener('click', (e) => {
@@ -57,6 +65,18 @@ export class UIManager {
                 this.onRespawn();
             }
             this.toggleEscMenu();
+        });
+
+        if (this.btnCancelReport) this.btnCancelReport.addEventListener('click', () => this.toggleReport());
+        if (this.btnSubmitReport) this.btnSubmitReport.addEventListener('click', () => {
+            const type = this.reportType.value;
+            const text = this.reportText.value.trim();
+            if (text && this.onReportSubmit) {
+                this.onReportSubmit(type, text);
+                this.reportText.value = ''; // Clear
+                this.toggleReport();
+                this.addChatMessage("System", "Report submitted successfully!");
+            }
         });
 
         if (this.btnSellCommon) this.btnSellCommon.addEventListener('click', () => this.handleSellAll('Common'));
@@ -73,6 +93,7 @@ export class UIManager {
         this.setupWindow(this.shopScreen);
         this.setupWindow(this.helpScreen);
         this.setupWindow(this.patchNotesScreen);
+        this.setupWindow(this.reportScreen);
         this.setupWindow(this.socialWindow);
 
         // Ability UI
@@ -212,6 +233,7 @@ export class UIManager {
         this.onChatSend = null;
         this.onSellItem = null;
         this.onSellAll = null;
+        this.onReportSubmit = null;
         
         this.selectedSlot = -1; // Track selected inventory slot
         this.statTooltip.style.pointerEvents = 'auto'; // Allow clicking buttons in tooltip
@@ -485,20 +507,35 @@ export class UIManager {
         if (!isHidden) {
             this.helpScreen.style.display = 'none';
             this.patchNotesScreen.style.display = 'none';
+            this.reportScreen.style.display = 'none';
         }
     }
 
     toggleHelp() {
         const isHidden = this.helpScreen.style.display === 'none' || this.helpScreen.style.display === '';
         this.helpScreen.style.display = isHidden ? 'block' : 'none';
-        if (!isHidden) this.patchNotesScreen.style.display = 'none'; // Close other windows
+        if (!isHidden) {
+            this.patchNotesScreen.style.display = 'none'; // Close other windows
+            this.reportScreen.style.display = 'none';
+        }
     }
-
     togglePatchNotes() {
         console.log("Toggling Patch Notes");
         const isHidden = this.patchNotesScreen.style.display === 'none' || this.patchNotesScreen.style.display === '';
         this.patchNotesScreen.style.display = isHidden ? 'flex' : 'none'; // Flex for layout
-        if (isHidden) this.helpScreen.style.display = 'none'; // Close other windows
+        if (isHidden) {
+            this.helpScreen.style.display = 'none'; // Close other windows
+            this.reportScreen.style.display = 'none';
+        }
+    }
+
+    toggleReport() {
+        const isHidden = this.reportScreen.style.display === 'none' || this.reportScreen.style.display === '';
+        this.reportScreen.style.display = isHidden ? 'block' : 'none';
+        if (isHidden) {
+            this.helpScreen.style.display = 'none';
+            this.patchNotesScreen.style.display = 'none';
+        }
     }
 
     toggleShop() {
@@ -547,12 +584,12 @@ export class UIManager {
         }
 
         // 2. Close Help/Patch Screens
-        if (this.helpScreen.style.display === 'block') {
-            this.helpScreen.style.display = 'none';
-            closedSomething = true;
-        }
         if (this.patchNotesScreen.style.display === 'flex') {
             this.patchNotesScreen.style.display = 'none';
+            closedSomething = true;
+        }
+        if (this.reportScreen.style.display === 'block') {
+            this.reportScreen.style.display = 'none';
             closedSomething = true;
         }
 

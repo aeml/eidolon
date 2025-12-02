@@ -19,6 +19,7 @@ export class Imp extends Actor {
         this.isRunning = false; // Enemies always walk
 
         this.meshType = 'Imp';
+        this.name = 'Imp';
     }
 
     update(dt, collisionManager, player) {

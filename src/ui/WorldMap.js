@@ -13,6 +13,10 @@ export class WorldMap {
         this.mapOffsetX = 0;
         this.mapOffsetY = 0;
         
+        // Camera Center (Snapshot of player pos when map opens)
+        this.cameraX = 0;
+        this.cameraZ = 0;
+        
         // Interaction State
         this.isDragging = false;
         this.lastMouseX = 0;
@@ -96,6 +100,11 @@ export class WorldMap {
         const isHidden = this.container.style.display === 'none' || this.container.style.display === '';
         this.container.style.display = isHidden ? 'flex' : 'none';
         if (isHidden && this.gameEngine.player) {
+            // Center on player initially
+            this.cameraX = this.gameEngine.player.position.x;
+            this.cameraZ = this.gameEngine.player.position.z;
+            this.mapOffsetX = 0;
+            this.mapOffsetY = 0;
             this.draw(this.gameEngine.player);
         }
     }
@@ -133,12 +142,12 @@ export class WorldMap {
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, w, h);
 
-        // Center map on player + offset
-        // World (0,0) should be at screen (cx - player.x * scale + offsetX, cy - player.z * scale + offsetY)
+        // Center map on camera + offset
+        // World (0,0) should be at screen (cx - cameraX * scale + offsetX, cy - cameraZ * scale + offsetY)
         const worldToScreen = (wx, wz) => {
             return {
-                x: cx + (wx - player.position.x) * this.scale + this.mapOffsetX,
-                y: cy + (wz - player.position.z) * this.scale + this.mapOffsetY
+                x: cx + (wx - this.cameraX) * this.scale + this.mapOffsetX,
+                y: cy + (wz - this.cameraZ) * this.scale + this.mapOffsetY
             };
         };
 
@@ -169,20 +178,24 @@ export class WorldMap {
             );
         });
 
-        // 2. Draw Town (Circular Safe Zone)
-        const townCenter = worldToScreen(0, 0);
-        const townRadius = 60; // Matches start of Lv 1-10 area
+        // 2. Draw Town (Rectangular Safe Zone)
+        // Bounds: X: -100 to 100, Z: 100 to 300
+        const townMinX = -100;
+        const townMaxX = 100;
+        const townMinZ = 100;
+        const townMaxZ = 300;
+        
+        const townTopLeft = worldToScreen(townMinX, townMinZ);
+        const townWidth = (townMaxX - townMinX) * this.scale;
+        const townHeight = (townMaxZ - townMinZ) * this.scale;
+        const townCenter = worldToScreen(0, 200); // For label
 
         ctx.fillStyle = 'rgba(100, 100, 255, 0.3)';
-        ctx.beginPath();
-        ctx.arc(townCenter.x, townCenter.y, townRadius * this.scale, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillRect(townTopLeft.x, townTopLeft.y, townWidth, townHeight);
 
         ctx.strokeStyle = '#44f';
         ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(townCenter.x, townCenter.y, townRadius * this.scale, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.strokeRect(townTopLeft.x, townTopLeft.y, townWidth, townHeight);
         
         // Town Label
         ctx.fillStyle = '#fff';
@@ -194,8 +207,8 @@ export class WorldMap {
         // Snow World starts at Z = -600 and goes North (negative Z)
         // Let's draw a large area for it
         const snowStartZ = -600;
-        const snowWidth = 1000; // Visual width
-        const snowDepth = 1000; // Visual depth
+        const snowWidth = 2000; // Visual width (Matches Earth Realm now)
+        const snowDepth = 1600; // Visual depth (Extended to -2200)
         const snowPos = worldToScreen(-snowWidth/2, snowStartZ - snowDepth);
         
         ctx.fillStyle = 'rgba(200, 240, 255, 0.2)'; // Light Cyan/White
@@ -205,12 +218,16 @@ export class WorldMap {
         ctx.fillStyle = '#fff';
         ctx.font = `${14 * (this.scale / 2)}px Arial`;
         const snowLabelPos = worldToScreen(0, -800);
-        ctx.fillText("SNOW WORLD", snowLabelPos.x, snowLabelPos.y);
+        ctx.fillText("The Abyssal Well (Water Realm)", snowLabelPos.x, snowLabelPos.y);
+
+        // Earth Realm Label (Main Area)
+        const earthLabelPos = worldToScreen(0, 200);
+        ctx.fillText("The Iron Weald (Earth Realm)", earthLabelPos.x, earthLabelPos.y + 20 * this.scale);
 
         // Siren Zone (Lv 50-54) - Specific Spawn Area
-        const sirenZoneX = -200;
+        const sirenZoneX = -1000;
         const sirenZoneZ = -1000; // Top Z (most negative)
-        const sirenZoneW = 400;   // -200 to 200
+        const sirenZoneW = 2000;   // -1000 to 1000
         const sirenZoneD = 400;   // -1000 to -600
         
         const sirenScreenPos = worldToScreen(sirenZoneX, sirenZoneZ);
@@ -228,55 +245,142 @@ export class WorldMap {
         // Position slightly below the main "SNOW WORLD" text
         ctx.fillText("Lv 50-54", snowLabelPos.x, snowLabelPos.y + (20 * this.scale / 2));
 
-        // Fence Line (at Z = -600 approx, radius 620 circle actually)
-        // Draw the fence circle
-        const fenceCenter = worldToScreen(0, 0);
-        ctx.beginPath();
-        ctx.arc(fenceCenter.x, fenceCenter.y, 620 * this.scale, 0, Math.PI * 2);
+        // Future Zone 2 (Placeholder)
+        const zone2Z = -1400;
+        const zone2ScreenPos = worldToScreen(-1000, zone2Z);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.strokeRect(zone2ScreenPos.x, zone2ScreenPos.y, 2000 * this.scale, 400 * this.scale);
+        
+        // Future Zone 3 (Placeholder)
+        const zone3Z = -1800;
+        const zone3ScreenPos = worldToScreen(-1000, zone3Z);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.strokeRect(zone3ScreenPos.x, zone3ScreenPos.y, 2000 * this.scale, 400 * this.scale);
+
+        // Future Zone 4 (Placeholder)
+        const zone4Z = -2200;
+        const zone4ScreenPos = worldToScreen(-1000, zone4Z);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.strokeRect(zone4ScreenPos.x, zone4ScreenPos.y, 2000 * this.scale, 400 * this.scale);
+
+
+        // Fence Line (Rectangular)
+        // Bounds: X: -1000 to 1000, Z: -600 to 1000
+        const fenceMinX = -1000;
+        const fenceMaxX = 1000;
+        const fenceMinZ = -600;
+        const fenceMaxZ = 1000;
+        
+        // Gap for Water Realm: -20 to 20 on North Wall (Z = -600)
+        const gapMinX = -20;
+        const gapMaxX = 20;
+
         ctx.strokeStyle = '#8B4513'; // SaddleBrown
         ctx.lineWidth = 3;
+        ctx.beginPath();
+        
+        // North Wall (Left Part)
+        let start = worldToScreen(fenceMinX, fenceMinZ);
+        let end = worldToScreen(gapMinX, fenceMinZ);
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        
+        // North Wall (Right Part)
+        start = worldToScreen(gapMaxX, fenceMinZ);
+        end = worldToScreen(fenceMaxX, fenceMinZ);
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        
+        // East Wall
+        start = worldToScreen(fenceMaxX, fenceMinZ);
+        end = worldToScreen(fenceMaxX, fenceMaxZ);
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        
+        // South Wall
+        start = worldToScreen(fenceMaxX, fenceMaxZ);
+        end = worldToScreen(fenceMinX, fenceMaxZ);
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        
+        // West Wall
+        start = worldToScreen(fenceMinX, fenceMaxZ);
+        end = worldToScreen(fenceMinX, fenceMinZ);
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        
         ctx.stroke();
 
-        // 2.1 Draw Level Rings (Donut shapes)
-        const drawLevelRing = (minR, maxR, label, color) => {
-            const worldCenterX = cx + (0 - player.position.x) * this.scale + this.mapOffsetX;
-            const worldCenterY = cy + (0 - player.position.z) * this.scale + this.mapOffsetY;
+        // Snow World Fence (Water Realm)
+        // Bounds: X: -1000 to 1000, Z: -2200 to -600
+        const snowFenceMinX = -1000;
+        const snowFenceMaxX = 1000;
+        const snowFenceMinZ = -2200;
+        const snowFenceMaxZ = -600;
+        
+        ctx.beginPath();
+        // West Wall
+        start = worldToScreen(snowFenceMinX, snowFenceMaxZ); // Starts at connection
+        end = worldToScreen(snowFenceMinX, snowFenceMinZ);
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        
+        // North Wall
+        start = worldToScreen(snowFenceMinX, snowFenceMinZ);
+        end = worldToScreen(snowFenceMaxX, snowFenceMinZ);
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        
+        // East Wall
+        start = worldToScreen(snowFenceMaxX, snowFenceMinZ);
+        end = worldToScreen(snowFenceMaxX, snowFenceMaxZ); // Ends at connection
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        
+        ctx.stroke();
 
-            ctx.beginPath();
-            ctx.arc(worldCenterX, worldCenterY, maxR * this.scale, 0, Math.PI * 2, false); // Outer circle
-            ctx.arc(worldCenterX, worldCenterY, minR * this.scale, 0, Math.PI * 2, true);  // Inner circle (counter-clockwise to create hole)
-            ctx.fillStyle = color;
-            ctx.fill();
+        // 2.1 Draw Level Rectangles (Vertical Strips)
+        const drawLevelRect = (minX, maxX, label, color) => {
+            const minZ = -600;
+            const maxZ = 1000;
             
-            // Border lines
-            ctx.strokeStyle = color.replace('0.05', '0.2'); // Make border slightly more visible
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.arc(worldCenterX, worldCenterY, minR * this.scale, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.arc(worldCenterX, worldCenterY, maxR * this.scale, 0, Math.PI * 2);
-            ctx.stroke();
+            const topLeft = worldToScreen(minX, minZ);
+            const w = (maxX - minX) * this.scale;
+            const h = (maxZ - minZ) * this.scale;
 
-            // Label (Top)
-            const midR = (minR + maxR) / 2;
+            ctx.fillStyle = color;
+            ctx.fillRect(topLeft.x, topLeft.y, w, h);
+            
+            ctx.strokeStyle = color.replace('0.05', '0.2');
+            ctx.lineWidth = 1;
+            ctx.strokeRect(topLeft.x, topLeft.y, w, h);
+
+            // Label
+            const centerX = (minX + maxX) / 2;
+            const centerZ = (minZ + maxZ) / 2;
+            const labelPos = worldToScreen(centerX, centerZ);
+            
             ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
             ctx.font = `${10 * (this.scale / 2)}px Arial`;
             ctx.textAlign = 'center';
-            ctx.fillText(label, worldCenterX, worldCenterY - midR * this.scale);
-            // Label (Bottom)
-            ctx.fillText(label, worldCenterX, worldCenterY + midR * this.scale);
-            // Label (Left)
-            ctx.fillText(label, worldCenterX - midR * this.scale, worldCenterY);
-            // Label (Right)
-            ctx.fillText(label, worldCenterX + midR * this.scale, worldCenterY);
+            // Offset label slightly if it overlaps town
+            let yOffset = 0;
+            if (Math.abs(centerX - 0) < 10 && Math.abs(centerZ - 200) < 10) {
+                yOffset = 150 * this.scale; // Push down below town
+            }
+            ctx.fillText(label, labelPos.x, labelPos.y + yOffset);
         };
 
-        drawLevelRing(60, 160, "Lv 1-10", 'rgba(0, 255, 0, 0.05)');
-        drawLevelRing(160, 260, "Lv 10-20", 'rgba(255, 255, 0, 0.05)');
-        drawLevelRing(260, 360, "Lv 20-30", 'rgba(255, 165, 0, 0.05)');
-        drawLevelRing(360, 450, "Lv 30-40", 'rgba(255, 0, 0, 0.05)');
-        drawLevelRing(450, 600, "Lv 40-50", 'rgba(128, 0, 128, 0.05)');
+        // Sector 3 (Center): Lv 1-10
+        drawLevelRect(-200, 200, "Lv 1-10", 'rgba(0, 255, 0, 0.05)');
+        // Sector 2 (Left): Lv 10-20
+        drawLevelRect(-600, -200, "Lv 10-20", 'rgba(255, 255, 0, 0.05)');
+        // Sector 4 (Right): Lv 20-30
+        drawLevelRect(200, 600, "Lv 20-30", 'rgba(255, 165, 0, 0.05)');
+        // Sector 1 (Far Left): Lv 30-40
+        drawLevelRect(-1000, -600, "Lv 30-40", 'rgba(255, 0, 0, 0.05)');
+        // Sector 5 (Far Right): Lv 40-50
+        drawLevelRect(600, 1000, "Lv 40-50", 'rgba(128, 0, 128, 0.05)');
 
         // 2.5 Draw Entities (Players, Enemies, NPCs)
         if (this.gameEngine.chunkManager) {
@@ -318,9 +422,10 @@ export class WorldMap {
         }
 
         // 3. Draw Player (Local)
+        const playerScreenPos = worldToScreen(player.position.x, player.position.z);
         ctx.fillStyle = '#00ffff'; // Cyan
         ctx.beginPath();
-        ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+        ctx.arc(playerScreenPos.x, playerScreenPos.y, 5, 0, Math.PI * 2);
         ctx.fill();
         // Add a white ring to distinguish local player
         ctx.strokeStyle = '#fff';

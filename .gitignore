@@ -1,3 +1,4 @@
 node_modules/
 *.pem
 *.exe
+server/bug_reports.json

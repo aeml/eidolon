@@ -766,12 +766,12 @@ export class MeshFactory {
                 return mesh;
             }
         } else if (type === 'Fence') {
-            const geometry = new THREE.BoxGeometry(4, 3, 1);
+            const geometry = new THREE.BoxGeometry(4.5, 8, 1.5);
             const material = new THREE.MeshStandardMaterial({ color: 0x8B4513 }); // SaddleBrown
             mesh = new THREE.Mesh(geometry, material);
             mesh.castShadow = true;
             mesh.receiveShadow = true;
-            mesh.position.y = 1.5;
+            mesh.position.y = 4.0;
             return mesh;
         }
 

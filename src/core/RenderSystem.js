@@ -94,49 +94,55 @@ export class RenderSystem {
         
         // Load Grass Texture
         this.groundTexture = loader.load(`./assets/backgrounds/ground_texture.png?v=${Date.now()}`);
-        this.setupTexture(this.groundTexture);
+        this.setupTexture(this.groundTexture, 80, 64);
 
         // Load Snow Texture
         this.snowTexture = loader.load(`./assets/backgrounds/snow_texture.png?v=${Date.now()}`);
-        this.setupTexture(this.snowTexture);
+        this.setupTexture(this.snowTexture, 80, 64);
 
-        const geometry = new THREE.PlaneGeometry(CONSTANTS.SCENE.GROUND_SIZE, CONSTANTS.SCENE.GROUND_SIZE);
-        const material = new THREE.MeshStandardMaterial({ 
+        // Earth Ground (Z > -600)
+        // Center at Z = 200 (covering -600 to 1000) -> Size 1600 (Height)
+        const earthGeo = new THREE.PlaneGeometry(2000, 1600);
+        const earthMat = new THREE.MeshStandardMaterial({ 
             map: this.groundTexture,
             color: 0xffffff,
             roughness: 0.8,
             metalness: 0.2
         });
-        this.ground = new THREE.Mesh(geometry, material);
-        this.ground.rotation.x = -Math.PI / 2;
-        this.ground.receiveShadow = true;
-        this.scene.add(this.ground);
-        
-        this.currentGroundType = 'ground';
+        this.groundEarth = new THREE.Mesh(earthGeo, earthMat);
+        this.groundEarth.rotation.x = -Math.PI / 2;
+        this.groundEarth.position.set(0, 0, 200); // Center at 200. Top: -600, Bottom: 1000.
+        this.groundEarth.receiveShadow = true;
+        this.scene.add(this.groundEarth);
+
+        // Snow Ground (Z < -600)
+        // Covers -600 to -2200. Center: -1400. Height: 1600.
+        const snowGeo = new THREE.PlaneGeometry(2000, 1600);
+        const snowMat = new THREE.MeshStandardMaterial({ 
+            map: this.snowTexture,
+            color: 0xffffff,
+            roughness: 0.8,
+            metalness: 0.2
+        });
+        this.groundSnow = new THREE.Mesh(snowGeo, snowMat);
+        this.groundSnow.rotation.x = -Math.PI / 2;
+        this.groundSnow.position.set(0, 0, -1400); // Center at -1400. Top: -2200, Bottom: -600.
+        this.groundSnow.receiveShadow = true;
+        this.scene.add(this.groundSnow);
     }
 
-    setupTexture(tex) {
+    setupTexture(tex, repeatX = 80, repeatY = 80) {
         tex.wrapS = THREE.RepeatWrapping;
         tex.wrapT = THREE.RepeatWrapping;
         tex.minFilter = THREE.LinearMipmapLinearFilter;
         tex.magFilter = THREE.LinearFilter;
         tex.anisotropy = Math.min(this.renderer.capabilities.getMaxAnisotropy(), 4);
-        const repeatCount = Math.max(4, CONSTANTS.SCENE.GROUND_SIZE / 25);
-        tex.repeat.set(repeatCount, repeatCount); 
+        tex.repeat.set(repeatX, repeatY); 
         tex.colorSpace = THREE.SRGBColorSpace;
     }
 
     setGroundTexture(type) {
-        if (this.currentGroundType === type) return;
-        
-        if (type === 'snow') {
-            this.ground.material.map = this.snowTexture;
-            this.currentGroundType = 'snow';
-        } else {
-            this.ground.material.map = this.groundTexture;
-            this.currentGroundType = 'ground';
-        }
-        this.ground.material.needsUpdate = true;
+        // Deprecated: Ground is now split
     }
 
     onWindowResize() {

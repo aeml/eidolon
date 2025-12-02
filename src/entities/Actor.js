@@ -108,6 +108,13 @@ export class Actor extends Entity {
         this.scaleAnimSpeed = true; // Default to scaling animation speed with movement speed
     }
 
+    modifyMesh(mesh) {
+        if (this.isElite) {
+            mesh.scale.multiplyScalar(2.0);
+            console.log(`Scaled up Elite ${this.id} (${this.constructor.name})`);
+        }
+    }
+
     setMesh(mesh) {
         super.setMesh(mesh);
         
@@ -275,7 +282,7 @@ export class Actor extends Entity {
                 
                 // Check Collision
                 if (collisionManager) {
-                    const correctedPos = collisionManager.checkCollision(nextPos, 0.5); // 0.5 radius
+                    const correctedPos = collisionManager.checkCollision(nextPos, this.radius, this.position); // Use actual radius
                     if (correctedPos) {
                         // Collision occurred, use corrected position
                         this.position.copy(correctedPos);
