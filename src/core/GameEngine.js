@@ -697,6 +697,7 @@ export class GameEngine {
 
                         // Check for forced teleport (large distance discrepancy)
                         // This handles portals or admin teleports where state might not change from DEAD
+    
                         if (pData.x !== undefined && pData.z !== undefined) {
                             const serverPos = new THREE.Vector3(pData.x, pData.y || 0, pData.z);
                             const dist = this.player.position.distanceTo(serverPos);
@@ -708,6 +709,7 @@ export class GameEngine {
                                 this.renderSystem.setCameraTarget(this.player.position);
                             }
                         }
+                        
 
                         this.player.xp = pData.experience;
                         this.player.xpToNextLevel = pData.maxExperience;
@@ -1721,7 +1723,7 @@ export class GameEngine {
                 this.socket.send(JSON.stringify(moveMsg));
             }
         }
-        this.renderSystem.render();
+        
         // Update Ground Texture based on position
         if (this.player) {
             if (this.player.position.z < -600) {
@@ -1730,19 +1732,19 @@ export class GameEngine {
                 this.renderSystem.setGroundTexture('ground');
             }
         }
+    }
 
-        if (this.player) {render();
-        // Update Ground Texture based on position
-        if (this.player) {
-            if (this.player.position.x > 10000) {
-                this.renderSystem.setGroundTexture('snow');
-            } else {
-                this.renderSystem.setGroundTexture('ground');
+    render(alpha) {
+        const activeEntities = this.chunkManager.getActiveEntities();
+        activeEntities.forEach(entity => {
+            if (entity.isActive) {
+                entity.render(alpha);
             }
-        }
+        });
+
+        this.renderSystem.render();
 
         if (this.player) {
-            this.minimap.update(this.player, activeEntities);
             this.minimap.update(this.player, activeEntities);
             this.uiManager.updatePlayerStats(this.player);
             this.uiManager.updateXP(this.player);

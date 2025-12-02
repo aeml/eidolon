@@ -169,19 +169,26 @@ export class WorldMap {
             );
         });
 
-        // 2. Draw Town (Fixed at 0,0, size 100x100)
-        const townPos = worldToScreen(-50, -50); // Town is centered at 0,0, so top-left is -50,-50
+        // 2. Draw Town (Circular Safe Zone)
+        const townCenter = worldToScreen(0, 0);
+        const townRadius = 60; // Matches start of Lv 1-10 area
+
         ctx.fillStyle = 'rgba(100, 100, 255, 0.3)';
-        ctx.fillRect(townPos.x, townPos.y, 100 * this.scale, 100 * this.scale);
+        ctx.beginPath();
+        ctx.arc(townCenter.x, townCenter.y, townRadius * this.scale, 0, Math.PI * 2);
+        ctx.fill();
+
         ctx.strokeStyle = '#44f';
         ctx.lineWidth = 2;
-        ctx.strokeRect(townPos.x, townPos.y, 100 * this.scale, 100 * this.scale);
+        ctx.beginPath();
+        ctx.arc(townCenter.x, townCenter.y, townRadius * this.scale, 0, Math.PI * 2);
+        ctx.stroke();
         
         // Town Label
         ctx.fillStyle = '#fff';
         ctx.font = `${12 * (this.scale / 2)}px Arial`; // Scale font slightly
         ctx.textAlign = 'center';
-        ctx.fillText("TOWN", townPos.x + 50 * this.scale, townPos.y + 50 * this.scale);
+        ctx.fillText("TOWN", townCenter.x, townCenter.y);
 
         // 2.05 Draw Snow World Area
         // Snow World starts at Z = -600 and goes North (negative Z)
@@ -200,25 +207,44 @@ export class WorldMap {
         const snowLabelPos = worldToScreen(0, -800);
         ctx.fillText("SNOW WORLD", snowLabelPos.x, snowLabelPos.y);
 
+        // Siren Zone (Lv 50-54) - Specific Spawn Area
+        const sirenZoneX = -200;
+        const sirenZoneZ = -1000; // Top Z (most negative)
+        const sirenZoneW = 400;   // -200 to 200
+        const sirenZoneD = 400;   // -1000 to -600
+        
+        const sirenScreenPos = worldToScreen(sirenZoneX, sirenZoneZ);
+        
+        ctx.fillStyle = 'rgba(0, 100, 255, 0.15)'; // Distinct blue tint
+        ctx.fillRect(sirenScreenPos.x, sirenScreenPos.y, sirenZoneW * this.scale, sirenZoneD * this.scale);
+        
+        ctx.strokeStyle = 'rgba(0, 200, 255, 0.5)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(sirenScreenPos.x, sirenScreenPos.y, sirenZoneW * this.scale, sirenZoneD * this.scale);
+
+        // Siren Zone Label
+        ctx.fillStyle = '#aaffff';
+        ctx.font = `${12 * (this.scale / 2)}px Arial`;
+        // Position slightly below the main "SNOW WORLD" text
+        ctx.fillText("Lv 50-54", snowLabelPos.x, snowLabelPos.y + (20 * this.scale / 2));
+
         // Fence Line (at Z = -600 approx, radius 620 circle actually)
         // Draw the fence circle
         const fenceCenter = worldToScreen(0, 0);
         ctx.beginPath();
         ctx.arc(fenceCenter.x, fenceCenter.y, 620 * this.scale, 0, Math.PI * 2);
         ctx.strokeStyle = '#8B4513'; // SaddleBrown
-            // Label (Top)
-            const midR = (minR + maxR) / 2;
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-            ctx.font = `${10 * (this.scale / 2)}px Arial`;
-            ctx.fillText(label, worldCenterX, worldCenterY - midR * this.scale);
-            // Label (Bottom)
-            ctx.fillText(label, worldCenterX, worldCenterY + midR * this.scale);
-            // Label (Left)
-            ctx.fillText(label, worldCenterX - midR * this.scale, worldCenterY);
-            // Label (Right)
-            ctx.fillText(label, worldCenterX + midR * this.scale, worldCenterY);
-        };  // Inner circle (counter-clockwise to create hole)
-            ctx.arc(worldCenterX, worldCenterY, minR * this.scale, 0, Math.PI * 2, true);
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        // 2.1 Draw Level Rings (Donut shapes)
+        const drawLevelRing = (minR, maxR, label, color) => {
+            const worldCenterX = cx + (0 - player.position.x) * this.scale + this.mapOffsetX;
+            const worldCenterY = cy + (0 - player.position.z) * this.scale + this.mapOffsetY;
+
+            ctx.beginPath();
+            ctx.arc(worldCenterX, worldCenterY, maxR * this.scale, 0, Math.PI * 2, false); // Outer circle
+            ctx.arc(worldCenterX, worldCenterY, minR * this.scale, 0, Math.PI * 2, true);  // Inner circle (counter-clockwise to create hole)
             ctx.fillStyle = color;
             ctx.fill();
             
@@ -235,7 +261,8 @@ export class WorldMap {
             // Label (Top)
             const midR = (minR + maxR) / 2;
             ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-            ctx.font = '10px Arial';
+            ctx.font = `${10 * (this.scale / 2)}px Arial`;
+            ctx.textAlign = 'center';
             ctx.fillText(label, worldCenterX, worldCenterY - midR * this.scale);
             // Label (Bottom)
             ctx.fillText(label, worldCenterX, worldCenterY + midR * this.scale);

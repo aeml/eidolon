@@ -219,21 +219,24 @@ func (w *World) spawnFence() {
 
 	for i := 0; i < count; i++ {
 		angle := float64(i) * angleStep
-		
+
 		// Check if within opening
 		diff := math.Abs(angle - openingAngle)
-		if diff > math.Pi { diff = 2*math.Pi - diff } // Handle wrap around
-		
+		if diff > math.Pi {
+			diff = 2*math.Pi - diff
+		} // Handle wrap around
+
 		if diff < openingWidthAngle/2 {
 			continue
 		}
 
 		x := math.Cos(angle) * radius
 		z := math.Sin(angle) * radius
-		
+
 		// Rotation: Face center? Or tangent?
 		// Tangent is angle + PI/2
-		rotation := -angle // Three.js rotation might need adjustment
+		// User requested 90 degree rotation adjustment to fix gaps
+		rotation := -angle + math.Pi/2
 
 		fence := &Entity{
 			ID:       fmt.Sprintf("fence-%d", i),
@@ -252,7 +255,7 @@ func (w *World) spawnSnowWorld() {
 	// Area 1: 50-54 (Siren)
 	// Z range: -600 to -1000
 	// X range: -200 to 200 (Width of the snow path)
-	
+
 	count := 50
 	minZ := -1000.0
 	maxZ := -600.0
@@ -304,15 +307,21 @@ func (w *World) spawnInitialElites() {
 }
 
 func (w *World) spawnEliteInArea(level int, minR, maxR float64) {
-	case "InfernoTitan":
-		baseStats = Stats{Strength: 120, Intelligence: 40, Dexterity: 20, Wisdom: 40, Vitality: 120}
-	case "Siren":
-		baseStats = Stats{Strength: 150, Intelligence: 80, Dexterity: 40, Wisdom: 80, Vitality: 150}
+	subType := "Skeleton"
+	if level >= 10 {
+		subType = "Imp"
 	}
-
-	maxHealth := int(float64(baseStats.Vitality*10) * mult)
-	if level == 50 {
+	if level >= 20 {
+		subType = "DemonOrc"
+	}
+	if level >= 30 {
+		subType = "Construct"
+	}
+	if level >= 40 {
 		subType = "InfernoTitan"
+	}
+	if level >= 50 {
+		subType = "Siren"
 	}
 
 	angle := rand.Float64() * 2 * math.Pi
@@ -336,6 +345,8 @@ func (w *World) spawnEliteInArea(level int, minR, maxR float64) {
 		baseStats = Stats{Strength: 40, Intelligence: 15, Dexterity: 5, Wisdom: 15, Vitality: 40}
 	case "InfernoTitan":
 		baseStats = Stats{Strength: 120, Intelligence: 40, Dexterity: 20, Wisdom: 40, Vitality: 120}
+	case "Siren":
+		baseStats = Stats{Strength: 150, Intelligence: 80, Dexterity: 40, Wisdom: 80, Vitality: 150}
 	}
 
 	maxHealth := int(float64(baseStats.Vitality*10) * mult)
@@ -344,7 +355,7 @@ func (w *World) spawnEliteInArea(level int, minR, maxR float64) {
 	elite := &Entity{
 		ID:             fmt.Sprintf("elite-%s-%d", subType, time.Now().UnixNano()),
 		Type:           TypeEnemy,
-		SubType:        subType, // Client can scale mesh based on ID or we add IsElite flag
+		SubType:        subType,
 		X:              x,
 		Y:              0,
 		Z:              z,
@@ -355,15 +366,10 @@ func (w *World) spawnEliteInArea(level int, minR, maxR float64) {
 		MaxHealth:      maxHealth,
 		Damage:         damage,
 		Level:          level,
-		Speed:          5.4, // 150% of Player Base Speed (3.6)
+		Speed:          5.4,
 		State:          "IDLE",
 		AttackCooldown: 1000 * time.Millisecond,
 	}
-	// Hack: Append "Elite" to ID so client knows to scale it?
-	// Or add a field. Let's add a field later if needed, but for now ID prefix "elite-" is good enough if client checks it.
-	// Actually client checks `isElite` property usually.
-	// Let's just rely on ID for now or add property to Entity struct if we want to be clean.
-	// For now, just spawn it.
 	w.Entities[elite.ID] = elite
 	w.Grid.Add(elite)
 
@@ -385,6 +391,8 @@ func (w *World) spawnMerchant() {
 	}
 	// Merchant doesn't need combat stats for now
 	w.AddEntity(merchant)
+}
+
 func (w *World) spawnEnemies() {
 	// Skeleton: 50 count, 60-160 radius (Level 1-10 Area)
 	w.spawnEnemyGroup("Skeleton", 50, 60, 160, 10, Stats{Strength: 15, Intelligence: 6, Dexterity: 9, Wisdom: 6, Vitality: 15}, 0, 0)
@@ -414,9 +422,6 @@ func (w *World) spawnEnemyGroup(subType string, count int, minRadius, maxRadius 
 
 		x := centerX + math.Cos(angle)*radius
 		z := centerZ + math.Sin(angle)*radius
-
-		// Calculate derived statsius
-
 		// Calculate derived stats
 		maxHealth := baseStats.Vitality * 10
 		maxMana := baseStats.Intelligence * 10
@@ -776,9 +781,21 @@ func (w *World) Update(dt float64) {
 			nearbyEnemies := w.Grid.Nearby(e.X, e.Z, e.Radius+2.0) // +2 buffer
 			for _, target := range nearbyEnemies {
 				if target.Type != TypeEnemy || target.State == "DEAD" {
-		// --- Player Abilities ---
-		if e.Type == TypePlayer {
-			// Fighter Charge
+					continue
+				}
+				dx := e.X - target.X
+				dz := e.Z - target.Z
+				dist := math.Sqrt(dx*dx + dz*dz)
+				if dist < (e.Radius + 0.5) { // 0.5 is approx enemy radius
+					// Check if already hit (for piercing projectiles)
+					if e.HitList == nil {
+						e.HitList = make(map[string]bool)
+					}
+					if e.HitList[target.ID] {
+						continue
+					}
+
+					// Hit!
 					e.HitList[target.ID] = true
 
 					damage := e.Damage
@@ -822,22 +839,24 @@ func (w *World) Update(dt float64) {
 				delete(w.Entities, id)
 			}
 			continue
+		}
+
 		// --- Player Abilities ---
 		if e.Type == TypePlayer {
-			// Teleporter Check
-			if e.X > -50 && e.X < 50 && e.Z < -590 && e.Z > -610 {
-				// Teleport to Snow World
-				oldX, oldZ := e.X, e.Z
-				e.X = 20000
-				e.Z = 20000
-				e.TargetX = 20000
-				e.TargetZ = 20000
-				e.State = "IDLE"
-				w.Grid.Update(e, oldX, oldZ)
-			}
+			// Teleporter Check REMOVED as per user request (connected world)
+			/*
+				if e.X > -50 && e.X < 50 && e.Z < -590 && e.Z > -610 {
+					// Teleport to Snow World
+					oldX, oldZ := e.X, e.Z
+					e.X = 20000
+					e.Z = 20000
+					e.TargetX = 20000
+					e.TargetZ = 20000
+					e.State = "IDLE"
+					w.Grid.Update(e, oldX, oldZ)
+				}
+			*/
 
-			// Fighter Chargeities ---
-		if e.Type == TypePlayer {
 			// Fighter Charge
 			if e.IsCharging {
 				dx := e.ChargeTargetX - e.X
@@ -922,8 +941,8 @@ func (w *World) Update(dt float64) {
 			// unless we maintain a separate list of players.
 			// Actually, we have `players` slice from step 1.
 			for _, p := range players {
-				// Check if player is in Safe Zone (Town: -50 to 50)
-				if p.X > -50 && p.X < 50 && p.Z > -50 && p.Z < 50 {
+				// Check if player is in Safe Zone (Town: Radius 60)
+				if p.X*p.X+p.Z*p.Z < 60*60 {
 					continue
 				}
 
@@ -987,8 +1006,8 @@ func (w *World) Update(dt float64) {
 						newX := e.X + (dx/dist)*moveDist
 						newZ := e.Z + (dz/dist)*moveDist
 
-						// Prevent entering Safe Zone
-						if newX > -50 && newX < 50 && newZ > -50 && newZ < 50 {
+						// Prevent entering Safe Zone (Radius 60)
+						if newX*newX+newZ*newZ < 60*60 {
 							// Blocked
 							e.State = "IDLE"
 						} else {
@@ -1029,8 +1048,8 @@ func (w *World) Update(dt float64) {
 					newX := e.X + (dx/dist)*moveDist
 					newZ := e.Z + (dz/dist)*moveDist
 
-					// Prevent entering Safe Zone
-					if newX > -50 && newX < 50 && newZ > -50 && newZ < 50 {
+					// Prevent entering Safe Zone (Radius 60)
+					if newX*newX+newZ*newZ < 60*60 {
 						e.TargetX = e.SpawnX
 						e.TargetZ = e.SpawnZ
 					} else {
