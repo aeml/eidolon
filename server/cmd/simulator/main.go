@@ -227,22 +227,24 @@ func main() {
 				if dist < 1.0 {
 					// Pick new target
 					angle := rand.Float64() * 2 * math.Pi
-					radius := 10.0 + rand.Float64()*40.0 // Move 10-50 units away
+					radius := 50.0 + rand.Float64()*200.0 // Move 50-250 units away
 					targetX = x + math.Cos(angle)*radius
 					targetZ = z + math.Sin(angle)*radius
 
-					// Clamp to reasonable bounds (e.g. -100 to 100)
-					if targetX < -100 {
-						targetX = -100
+					// Clamp to World Bounds (Earth + Water Realms)
+					// X: -1000 to 1000
+					// Z: -2200 to 1000
+					if targetX < -950 {
+						targetX = -950
 					}
-					if targetX > 100 {
-						targetX = 100
+					if targetX > 950 {
+						targetX = 950
 					}
-					if targetZ < -100 {
-						targetZ = -100
+					if targetZ < -2150 {
+						targetZ = -2150
 					}
-					if targetZ > 100 {
-						targetZ = 100
+					if targetZ > 950 {
+						targetZ = 950
 					}
 				} else {
 					// Move towards target
