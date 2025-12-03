@@ -22,6 +22,7 @@ import (
 
 var (
 	addr     = flag.String("addr", "localhost:8080", "http service address")
+	scheme   = flag.String("scheme", "wss", "websocket scheme (ws or wss)")
 	count    = flag.Int("n", 10, "number of bots")
 	townMode = flag.Bool("town", false, "bots only roam in town")
 )
@@ -77,7 +78,7 @@ func main() {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 
-	u := url.URL{Scheme: "wss", Host: *addr, Path: "/ws"}
+	u := url.URL{Scheme: *scheme, Host: *addr, Path: "/ws"}
 	log.Printf("Connecting to %s with %d bots...", u.String(), *count)
 
 	// Load or Generate Credentials
