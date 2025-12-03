@@ -25,6 +25,7 @@ import { InfernoTitan } from '../entities/InfernoTitan.js';
 import { Siren } from '../entities/Siren.js';
 import { FrostGuardian } from '../entities/FrostGuardian.js';
 import { Fence } from '../entities/Fence.js';
+import { LevelUpEffect } from '../ui/LevelUpEffect.js';
 
 export class GameEngine {
     constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null) {
@@ -44,6 +45,7 @@ export class GameEngine {
         this.chunkManager = new ChunkManager(this.renderSystem.scene);
         this.collisionManager = new CollisionManager();
         this.uiManager = new UIManager(this.isMobile);
+        this.effects = []; // Active visual effects
         this.uiManager.onBuyGamble = (slot) => {
             if (this.socket && this.socket.readyState === WebSocket.OPEN) {
                 const msg = {
@@ -652,7 +654,36 @@ export class GameEngine {
 
                         this.player.xp = pData.experience;
                         this.player.xpToNextLevel = pData.maxExperience;
-                        this.player.level = pData.level;
+                        
+                        // Level Up Detection
+                        if (this.player.level < pData.level) {
+                            console.log(`Level Up! ${this.player.level} -> ${pData.level}`);
+                            this.player.level = pData.level;
+                            
+                            // Trigger Effect
+                            const effect = new LevelUpEffect(this.renderSystem.scene, this.player.position);
+                            this.effects.push(effect);
+                            
+                            // Floating Text
+                            this.floatingTextManager.spawn("LEVEL UP!", 
+                                new THREE.Vector3(this.player.position.x, this.player.position.y + 2, this.player.position.z), 
+                                '#ffd700' // Gold
+                            );
+
+                            // Chat Notification
+                            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                                const chatMsg = {
+                                    type: "chat",
+                                    payload: {
+                                        message: `* has reached level ${pData.level}! *`,
+                                        sender: this.username || "Player"
+                                    }
+                                };
+                                this.socket.send(JSON.stringify(chatMsg));
+                            }
+                        } else {
+                            this.player.level = pData.level;
+                        }
 
                         if (this.player.stats) {
                             this.player.stats.hp = pData.health;
@@ -853,10 +884,20 @@ export class GameEngine {
                         // Update Rotation
                         if (pData.rotation !== undefined) {
                             remoteEntity.targetServerRotation = pData.rotation;
-                            // If no rotation set yet (or identity), snap
-                            // Note: We can't easily check "no rotation set yet" on a Quaternion without a flag, 
-                            // but if it's a new entity, it might be at 0,0,0,1.
-                            // For now, we just set the target.
+                        }
+
+                        // Remote Level Up Detection
+                        if (pData.level !== undefined) {
+                            if (remoteEntity.level === undefined) {
+                                remoteEntity.level = pData.level;
+                            } else if (remoteEntity.level < pData.level) {
+                                console.log(`Remote Entity ${remoteEntity.id} Level Up! ${remoteEntity.level} -> ${pData.level}`);
+                                remoteEntity.level = pData.level;
+                                
+                                // Trigger Effect
+                                const effect = new LevelUpEffect(this.renderSystem.scene, remoteEntity.position);
+                                this.effects.push(effect);
+                            }
                         }
                     }
                 }
@@ -1876,6 +1917,15 @@ export class GameEngine {
         }
 
         this.floatingTextManager.update(dt);
+
+        // Update Effects
+        for (let i = this.effects.length - 1; i >= 0; i--) {
+            const effect = this.effects[i];
+            effect.update(dt);
+            if (!effect.isActive) {
+                this.effects.splice(i, 1);
+            }
+        }
     }
 
     render(alpha) {
