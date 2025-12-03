@@ -344,6 +344,43 @@ func (w *World) spawnSnowWorld() {
 		}
 		w.AddEntity(siren)
 	}
+
+	// Area 2: 54-58 (Frost Guardian)
+	// Z range: -1000 to -1400 (North of Sirens)
+	// X range: -1000 to 1000
+
+	fgCount := 300
+	fgMinZ := -1400.0 + 5.0
+	fgMaxZ := -1000.0 - 5.0
+
+	for i := 0; i < fgCount; i++ {
+		x := minX + rand.Float64()*(maxX-minX)
+		z := fgMinZ + rand.Float64()*(fgMaxZ-fgMinZ)
+
+		baseStats := Stats{Strength: 5000, Intelligence: 1000, Dexterity: 800, Wisdom: 1000, Vitality: 6000}
+		maxHealth := baseStats.Vitality * 10
+		damage := baseStats.Strength * 2
+
+		fg := &Entity{
+			ID:             fmt.Sprintf("FrostGuardian-%d", i),
+			Type:           TypeEnemy,
+			SubType:        "FrostGuardian",
+			X:              x,
+			Y:              0,
+			Z:              z,
+			SpawnX:         x,
+			SpawnZ:         z,
+			BaseStats:      baseStats,
+			Health:         maxHealth,
+			MaxHealth:      maxHealth,
+			Damage:         damage,
+			Level:          56,
+			Speed:          4.5, // Slower but tankier
+			State:          "IDLE",
+			AttackCooldown: 2000 * time.Millisecond,
+		}
+		w.AddEntity(fg)
+	}
 }
 
 func (w *World) spawnInitialElites() {
@@ -408,6 +445,8 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 		baseStats = Stats{Strength: 120, Intelligence: 40, Dexterity: 20, Wisdom: 40, Vitality: 120}
 	case "Siren":
 		baseStats = Stats{Strength: 150, Intelligence: 80, Dexterity: 40, Wisdom: 80, Vitality: 150}
+	case "FrostGuardian":
+		baseStats = Stats{Strength: 200, Intelligence: 50, Dexterity: 30, Wisdom: 50, Vitality: 250}
 	}
 
 	maxHealth := int(float64(baseStats.Vitality*10) * mult)
@@ -1325,11 +1364,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				Radius:    1.5,
 				Damage:    damage,
 				OwnerID:   player.ID,
-				Rotation:  math.Atan2(velX, velZ),
-				CreatedAt: time.Now(),
-			}
-			w.Entities[proj.ID] = proj
-			w.Grid.Add(proj)
+		if target.SubType == "InfernoTitan" {
+			xpReward *= 3
+		}
+		if target.SubType == "Siren" {
+			xpReward *= 3
+		}
+
+		attacker.Experience += xpReward
 
 			player.State = "ATTACKING"
 			player.AbilityCooldown = 1 * time.Second

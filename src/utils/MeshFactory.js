@@ -765,6 +765,71 @@ export class MeshFactory {
                 mesh.position.y = 1.0;
                 return mesh;
             }
+        } else if (type === 'FrostGuardian') {
+            try {
+                // Reuse Construct model but with Ice styling
+                const idleGltf = await this.loadModel('./assets/enemies/undead/construct/idle.glb');
+                mesh = SkeletonUtils.clone(idleGltf.scene);
+                
+                mesh.userData.animations = [];
+                const addAnim = (clip, name) => {
+                    if (clip) {
+                        const newClip = clip.clone();
+                        newClip.name = name;
+                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
+                        mesh.userData.animations.push(newClip);
+                    }
+                };
+
+                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
+
+                try {
+                    const walkGltf = await this.loadModel('./assets/enemies/undead/construct/walk.glb');
+                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
+                } catch (e) {}
+
+                try {
+                    const attackGltf = await this.loadModel('./assets/enemies/undead/construct/attack.glb');
+                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
+                } catch (e) {}
+
+                try {
+                    const deathGltf = await this.loadModel('./assets/enemies/undead/construct/death.glb');
+                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
+                } catch (e) {}
+
+                mesh.scale.set(3.0, 3.0, 3.0); // Slightly larger than Construct
+                
+                mesh.traverse(c => {
+                    if (c.isMesh) {
+                        // Force Ice Material
+                        c.material = new THREE.MeshStandardMaterial({ 
+                            color: 0x00FFFF, // Cyan/Ice
+                            metalness: 0.8,
+                            roughness: 0.2
+                        });
+                        c.castShadow = true;
+                        c.receiveShadow = true;
+                    }
+                });
+
+                const hitGeo = new THREE.BoxGeometry(3.0, 3.5, 3.0);
+                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+                hitMesh.position.y = 1.75;
+                mesh.add(hitMesh);
+                
+                return mesh;
+            } catch (e) {
+                console.error("Failed to load FrostGuardian:", e);
+                const geometry = new THREE.BoxGeometry(2.0, 3.0, 2.0);
+                const material = new THREE.MeshStandardMaterial({ color: 0x00FFFF });
+                mesh = new THREE.Mesh(geometry, material);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.position.y = 1.5;
+                return mesh;
+            }
         } else if (type === 'Fence') {
             const geometry = new THREE.BoxGeometry(4.5, 8, 1.5);
             const material = new THREE.MeshStandardMaterial({ color: 0x8B4513 }); // SaddleBrown
