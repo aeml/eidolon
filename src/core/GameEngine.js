@@ -847,6 +847,9 @@ export class GameEngine {
                         remoteEntity.position.set(pData.x, pData.y, pData.z);
                     }
 
+                    // Force update chunk for remote entities to handle visibility culling
+                    this.chunkManager.updateEntityChunk(remoteEntity);
+
                     // Sync Name
                     if (pData.name && remoteEntity.name !== pData.name) {
                         remoteEntity.setName(pData.name);
