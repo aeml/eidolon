@@ -587,12 +587,29 @@ export class GameEngine {
     setupSocketListeners() {
         this.socket.onmessage = (event) => {
             try {
+                let data = event.data;
+                
+                // Check for binary data (Compressed State)
+                if (data instanceof Blob) {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        try {
+                            const compressed = new Uint8Array(reader.result);
+                            // Decompress using pako
+                            const jsonString = pako.inflate(compressed, { to: 'string' });
+                            const msg = JSON.parse(jsonString);
+                            this.handleServerMessage(msg);
+                        } catch (e) {
+                            console.error("Decompression error:", e);
+                        }
+                    };
+                    reader.readAsArrayBuffer(data);
+                    return;
+                }
+
                 // Optimization: Check for state/time messages without full parse
-                // This avoids parsing huge JSONs that we might discard anyway
-                const data = event.data;
                 if (typeof data === 'string') {
                     if (data.includes('"type":"state"')) {
-                        // Store raw string, parse lazily in update loop
                         this.latestServerState = data;
                         return;
                     } else if (data.includes('"type":"time"')) {
@@ -602,9 +619,8 @@ export class GameEngine {
                 }
 
                 const msg = JSON.parse(data);
-                // Fallback for safety or other messages
                 if (msg.type === 'state') {
-                    this.latestServerState = JSON.stringify(msg.payload); // Store as string to match optimization
+                    this.latestServerState = JSON.stringify(msg.payload);
                 } else if (msg.type === 'time') {
                     this.latestServerTime = JSON.stringify(msg.payload);
                 } else {

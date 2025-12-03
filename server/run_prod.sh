@@ -2,8 +2,8 @@
 # Run Eidolon Server with Production SSL
 # Make sure you have generated certificates using Certbot first!
 
-CERT_PATH="/etc/letsencrypt/live/eserver.mendola.tech/fullchain.pem"
-KEY_PATH="/etc/letsencrypt/live/eserver.mendola.tech/privkey.pem"
+CERT_PATH="./certs/fullchain.pem"
+KEY_PATH="./certs/privkey.pem"
 
 # Check if certificates exist
 if [ ! -f "$CERT_PATH" ] || [ ! -f "$KEY_PATH" ]; then

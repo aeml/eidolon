@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"compress/gzip"
 	"encoding/json"
 	"flag"
 	"log"
@@ -42,6 +44,7 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},
+	// EnableCompression: true, // Disabled, using manual GZIP
 }
 
 // Global instances
@@ -49,6 +52,14 @@ var (
 	db    *database.DB
 	world *game.World
 )
+
+// GZIP Writer Pool to reduce memory allocation
+var gzipWriterPool = sync.Pool{
+	New: func() interface{} {
+		w, _ := gzip.NewWriterLevel(nil, gzip.BestSpeed)
+		return w
+	},
+}
 
 // Client represents a connected player
 type Client struct {
@@ -203,9 +214,9 @@ func main() {
 
 	// Game Loop
 	go func() {
-		ticker := time.NewTicker(50 * time.Millisecond) // 20 TPS
+		ticker := time.NewTicker(33 * time.Millisecond) // 30 TPS
 		for range ticker.C {
-			world.Update(0.05)
+			world.Update(0.033)
 			broadcastState()
 		}
 	}()
@@ -369,10 +380,17 @@ func (c *Client) writePump() {
 				return
 			}
 
-			w, err := c.conn.NextWriter(websocket.TextMessage)
+			// Check if data is GZIP compressed (Magic numbers: 1f 8b)
+			msgType := websocket.TextMessage
+			if len(message) > 2 && message[0] == 0x1f && message[1] == 0x8b {
+				msgType = websocket.BinaryMessage
+			}
+
+			w, err := c.conn.NextWriter(msgType)
 			if err != nil {
 				return
 			}
+
 			w.Write(message)
 
 			if err := w.Close(); err != nil {
@@ -418,7 +436,7 @@ func (c *Client) handleMessage(msg Message) {
 
 		// Enforce single session
 		sessionsMu.Lock()
-		if oldClient, ok := activeSessions[c.username]; ok {
+		if oldClient, ok := activeSessions[c.username]; ok && oldClient != c {
 			// Kick old client
 			// Use a goroutine to avoid blocking and potential deadlocks if oldClient is stuck
 			go func(clientToKick *Client) {
@@ -837,32 +855,73 @@ func (c *Client) sendError(msg string) {
 }
 
 func broadcastState() {
-	// Iterate over active sessions and send custom state to each
+	// 1. Copy active sessions to minimize lock time
 	sessionsMu.Lock()
-	defer sessionsMu.Unlock()
-
+	clients := make([]*Client, 0, len(activeSessions))
 	for _, client := range activeSessions {
-		if client.playerID == "" {
-			continue
-		}
-
-		// Get custom state (60 unit radius)
-		state := world.GetStateForPlayer(client.playerID, 60.0)
-		payload, _ := json.Marshal(state)
-
-		msg := Message{
-			Type:    MsgState,
-			Payload: payload,
-		}
-		data, _ := json.Marshal(msg)
-
-		// Non-blocking send
-		select {
-		case client.send <- data:
-		default:
-			// Drop message if client is too slow
+		if client.playerID != "" {
+			clients = append(clients, client)
 		}
 	}
+	sessionsMu.Unlock()
+
+	// 2. Process in parallel
+	var wg sync.WaitGroup
+
+	// Pre-defined JSON parts to avoid double-marshaling
+	stateHeader := []byte(`{"type":"state","payload":`)
+	stateFooter := []byte(`}`)
+
+	for _, client := range clients {
+		wg.Add(1)
+		go func(c *Client) {
+			defer wg.Done()
+			defer func() {
+				if r := recover(); r != nil {
+					// Client likely disconnected
+				}
+			}()
+
+			// Get custom state (100 unit radius)
+			state := world.GetStateForPlayer(c.playerID, 100.0)
+
+			payload, err := json.Marshal(state)
+			if err != nil {
+				return
+			}
+
+			// Construct full JSON message
+			data := make([]byte, 0, len(stateHeader)+len(payload)+len(stateFooter))
+			data = append(data, stateHeader...)
+			data = append(data, payload...)
+			data = append(data, stateFooter...)
+
+			// Compress using GZIP (Pooled)
+			var b bytes.Buffer
+			gz := gzipWriterPool.Get().(*gzip.Writer)
+			gz.Reset(&b)
+
+			if _, err := gz.Write(data); err != nil {
+				gzipWriterPool.Put(gz)
+				return
+			}
+			if err := gz.Close(); err != nil {
+				gzipWriterPool.Put(gz)
+				return
+			}
+			gzipWriterPool.Put(gz) // Return to pool
+
+			compressedData := b.Bytes()
+
+			// Non-blocking send (Binary Message)
+			select {
+			case c.send <- compressedData:
+			default:
+				// Drop message if client is too slow
+			}
+		}(client)
+	}
+	wg.Wait()
 }
 
 func broadcastTime() {
