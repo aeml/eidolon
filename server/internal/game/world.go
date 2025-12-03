@@ -334,6 +334,15 @@ func (w *World) spawnSnowWorld() {
 		maxHealth := baseStats.Vitality * 10
 		damage := baseStats.Strength * 2
 
+		// Attack Speed
+		speedMult := 1.0 + (float64(baseStats.Dexterity) * 0.02)
+		cooldown := 5.0 / speedMult
+		if cooldown < 1.0 {
+			cooldown = 1.0
+		}
+		attackSpeed := cooldown
+		attackCooldown := time.Duration(cooldown * float64(time.Second))
+
 		siren := &Entity{
 			ID:             fmt.Sprintf("Siren-%d", i),
 			Type:           TypeEnemy,
@@ -350,7 +359,8 @@ func (w *World) spawnSnowWorld() {
 			Level:          52,
 			Speed:          5.4,
 			State:          "IDLE",
-			AttackCooldown: 1500 * time.Millisecond,
+			AttackSpeed:    attackSpeed,
+			AttackCooldown: attackCooldown,
 		}
 		w.AddEntity(siren)
 	}
@@ -371,6 +381,15 @@ func (w *World) spawnSnowWorld() {
 		maxHealth := baseStats.Vitality * 10
 		damage := baseStats.Strength * 2
 
+		// Attack Speed
+		speedMult := 1.0 + (float64(baseStats.Dexterity) * 0.02)
+		cooldown := 5.0 / speedMult
+		if cooldown < 1.0 {
+			cooldown = 1.0
+		}
+		attackSpeed := cooldown
+		attackCooldown := time.Duration(cooldown * float64(time.Second))
+
 		fg := &Entity{
 			ID:             fmt.Sprintf("FrostGuardian-%d", i),
 			Type:           TypeEnemy,
@@ -387,7 +406,8 @@ func (w *World) spawnSnowWorld() {
 			Level:          56,
 			Speed:          4.5, // Slower but tankier
 			State:          "IDLE",
-			AttackCooldown: 2000 * time.Millisecond,
+			AttackSpeed:    attackSpeed,
+			AttackCooldown: attackCooldown,
 		}
 		w.AddEntity(fg)
 	}
@@ -462,6 +482,15 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 	maxHealth := int(float64(baseStats.Vitality*10) * mult)
 	damage := int(float64(baseStats.Strength*2) * mult)
 
+	// Attack Speed (Seconds Per Attack)
+	speedMult := 1.0 + (float64(baseStats.Dexterity) * 0.02)
+	cooldown := 5.0 / speedMult
+	if cooldown < 1.0 {
+		cooldown = 1.0
+	}
+	attackSpeed := cooldown
+	attackCooldown := time.Duration(cooldown * float64(time.Second))
+
 	elite := &Entity{
 		ID:             fmt.Sprintf("elite-%s-%d", subType, time.Now().UnixNano()),
 		Type:           TypeEnemy,
@@ -478,7 +507,8 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 		Level:          level,
 		Speed:          5.4,
 		State:          "IDLE",
-		AttackCooldown: 1000 * time.Millisecond,
+		AttackSpeed:    attackSpeed,
+		AttackCooldown: attackCooldown,
 	}
 	w.Entities[elite.ID] = elite
 	w.Grid.Add(elite)
@@ -567,8 +597,15 @@ func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ
 		// Enemy Speed = 150% of Player Base Speed = 5.4
 		speed := 5.4
 
-		// Attack cooldown based on dexterity? For now fixed.
-		attackCooldown := 1500 * time.Millisecond
+		// Attack Speed (Seconds Per Attack)
+		// Base 5.0s, scales down with Dex, min 1.0s
+		speedMult := 1.0 + (float64(baseStats.Dexterity) * 0.02)
+		cooldown := 5.0 / speedMult
+		if cooldown < 1.0 {
+			cooldown = 1.0
+		}
+		attackSpeed := cooldown
+		attackCooldown := time.Duration(cooldown * float64(time.Second))
 
 		enemy := &Entity{
 			ID:             fmt.Sprintf("%s-%d", subType, i),
@@ -588,6 +625,7 @@ func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ
 			Level:          level,
 			Speed:          speed,
 			State:          "IDLE",
+			AttackSpeed:    attackSpeed,
 			AttackCooldown: attackCooldown,
 		}
 		w.AddEntity(enemy)
@@ -1097,37 +1135,21 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		e.mu.Lock()
 		defer e.mu.Unlock()
 
+		// Animation Lock: If attacking, stay attacking and don't move
+		if time.Since(e.LastAttackTime) < e.AttackCooldown {
+			if e.State != "ATTACKING" {
+				e.State = "ATTACKING"
+			}
+			return
+		}
+
 		if target != nil && minDist <= sightRange {
 			if minDist <= attackRange {
 				// Attack
 				if time.Since(e.LastAttackTime) >= e.AttackCooldown {
-					e.LastAttackTime = time.Now()
-					e.State = "ATTACKING"
-					damage := e.Damage
-
-					e.mu.Unlock() // Unlock self to lock target
-
-					target.mu.Lock()
-					damage -= target.Defense
-					if damage < 1 {
-						damage = 1
-					}
-					target.Health -= damage
-					isDead := target.Health <= 0
-					target.mu.Unlock()
-
-					if isDead {
-						// Handle player death?
-						// target.State = "DEAD" // Already handled in client/respawn logic usually
-					}
-
+					e.mu.Unlock() // Unlock self before interaction
+					w.PerformAttack(e.ID, target.ID)
 					e.mu.Lock() // Relock self
-				} else {
-					if time.Since(e.LastAttackTime) > 500*time.Millisecond {
-						if e.State == "ATTACKING" {
-							e.State = "IDLE"
-						}
-					}
 				}
 			} else {
 				// Chase
@@ -1369,24 +1391,41 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		return 0, false
 	}
 
-	// Apply Damage
-	damage := attacker.Damage - target.Defense
-	if damage < 1 {
-		damage = 1
-	}
-	target.Health -= damage
-
+	// Start Attack State & Cooldown immediately
 	attacker.LastAttackTime = time.Now()
 	attacker.State = "ATTACKING"
 
-	// Reset state to IDLE after a short delay (handled in Update or client prediction)
-	// For now, we just set it, and next movement will override it.
+	// Calculate Delay (35% of animation duration)
+	// AttackCooldown IS the duration now.
+	delay := time.Duration(float64(attacker.AttackCooldown) * 0.35)
 
-	if target.Health <= 0 {
-		w.handleDeath(target, attacker, nil)
-	}
+	// Async Damage Application
+	go func(attID, tgtID string, d time.Duration) {
+		time.Sleep(d)
+		w.mu.Lock()
+		defer w.mu.Unlock()
 
-	return damage, true
+		att, ok := w.Entities[attID]
+		if !ok || att.State == "DEAD" {
+			return
+		}
+		tgt, ok := w.Entities[tgtID]
+		if !ok || tgt.State == "DEAD" {
+			return
+		}
+
+		damage := att.Damage - tgt.Defense
+		if damage < 1 {
+			damage = 1
+		}
+		tgt.Health -= damage
+
+		if tgt.Health <= 0 {
+			w.handleDeath(tgt, att, nil)
+		}
+	}(attackerID, targetID, delay)
+
+	return 0, true
 }
 
 func (w *World) PerformAbility(playerID string, targetX, targetZ float64, targetID string) {
@@ -1743,7 +1782,15 @@ func (e *Entity) RecalculateStats() {
 		e.Speed = maxSpeed
 	}
 
-	e.AttackSpeed = 1.0 + (float64(totalDex)/5.0)*0.05
+	// Attack Speed (Seconds Per Attack)
+	// Base 5.0s, scales down with Dex, min 1.0s
+	speedMult := 1.0 + (float64(totalDex) * 0.02)
+	cooldown := 5.0 / speedMult
+	if cooldown < 1.0 {
+		cooldown = 1.0
+	}
+	e.AttackSpeed = cooldown
+	e.AttackCooldown = time.Duration(cooldown * float64(time.Second))
 
 	e.ManaRegen = float64(totalWis) * 0.5
 	e.CastSpeed = 1.0 + (float64(totalWis)/5.0)*0.01

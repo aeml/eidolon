@@ -47,6 +47,7 @@ export class InputManager {
         window.addEventListener('mouseup', (e) => this.onMouseUp(e));
         
         this.isMouseDown = false;
+        this.isRightMouseDown = false;
     }
 
     setupMobileControls() {
@@ -295,6 +296,7 @@ export class InputManager {
             this.isMouseDown = true;
             this.callbacks.onClick.forEach(cb => cb());
         } else if (event.button === 2) { // Right Click
+            this.isRightMouseDown = true;
             this.callbacks.onRightClick.forEach(cb => cb());
         }
     }
@@ -302,6 +304,8 @@ export class InputManager {
     onMouseUp(event) {
         if (event.button === 0) {
             this.isMouseDown = false;
+        } else if (event.button === 2) {
+            this.isRightMouseDown = false;
         }
     }
 

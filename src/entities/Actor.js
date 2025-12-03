@@ -339,13 +339,18 @@ export class Actor extends Entity {
         // Override in subclasses
     }
 
+    getAttackHitDelay() {
+        const cooldown = this.stats.attackSpeed || 1.0;
+        return (cooldown * 1000) * 0.35; // 35% through animation
+    }
+
     attack(target) {
         if (this.state === 'DEAD') return false;
         if (target && target.state === 'DEAD') return false; // Don't attack dead targets
         
         // Attack Speed Check
         const now = Date.now();
-        const cooldownMs = (1.0 / this.stats.attackSpeed) * 1000;
+        const cooldownMs = this.stats.attackSpeed * 1000;
         if (now - this.lastAttackTime < cooldownMs) {
             return false;
         }
@@ -359,6 +364,19 @@ export class Actor extends Entity {
         this.state = 'ATTACKING';
         this.playAnimation('Attack', false, true);
         
+        // Scale animation speed
+        // Base animation ~1.0s. Target duration = this.stats.attackSpeed
+        const cooldown = this.stats.attackSpeed || 1.0;
+        
+        if (this.currentAction) {
+            const clipDuration = this.currentAction.getClip().duration;
+            // Play slightly faster (90% of cooldown) to ensure it finishes before state reset
+            const timeScale = clipDuration / (cooldown * 0.9);
+            this.currentAction.setEffectiveTimeScale(timeScale);
+        }
+        const duration = cooldown * 1000;
+        const hitDelay = this.getAttackHitDelay();
+
         // Face target
         const lookTarget = new THREE.Vector3(target.position.x, this.position.y, target.position.z);
         if (this.mesh) {
@@ -384,8 +402,9 @@ export class Actor extends Entity {
             }
             this.state = 'IDLE';
             this.playAnimation('Idle');
+            if (this.currentAction) this.currentAction.setEffectiveTimeScale(1.0);
             this.attackTimer = null;
-        }, 500); // 500ms delay for hit
+        }, hitDelay); // Dynamic delay
         
         return true;
     }
@@ -543,7 +562,13 @@ export class Actor extends Entity {
             this.stats.speed = maxSpeed;
         }
 
-        this.stats.attackSpeed = 1 + (totalStats.dexterity / 5) * 0.05;
+        // Attack Speed (Seconds Per Attack)
+        // Base 5.0s, scales down with Dex, min 1.0s
+        const speedMult = 1.0 + (totalStats.dexterity * 0.02);
+        let cooldown = 5.0 / speedMult;
+        if (cooldown < 1.0) cooldown = 1.0;
+        
+        this.stats.attackSpeed = cooldown;
 
         // Wisdom: Mana regen and cast speed
         this.stats.manaRegen = totalStats.wisdom * 0.5;
@@ -611,12 +636,25 @@ export class Actor extends Entity {
         this.state = 'ATTACKING';
         this.playAnimation('Attack', false, true);
         
+        // Scale animation speed
+        const cooldown = this.stats.attackSpeed || 1.0;
+
+        if (this.currentAction) {
+            const clipDuration = this.currentAction.getClip().duration;
+            // Play slightly faster (90% of cooldown) to ensure it finishes before state reset
+            const timeScale = clipDuration / (cooldown * 0.9);
+            this.currentAction.setEffectiveTimeScale(timeScale);
+        }
+
+        const duration = cooldown * 1000;
+
         this.attackTimer = setTimeout(() => {
             if (this.state === 'ATTACKING') {
                 this.state = 'IDLE';
                 this.playAnimation('Idle');
+                if (this.currentAction) this.currentAction.setEffectiveTimeScale(1.0);
             }
             this.attackTimer = null;
-        }, 500);
+        }, duration);
     }
 }
