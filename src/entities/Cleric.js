@@ -71,9 +71,9 @@ export class Cleric extends Actor {
 
         if (this.spiritsActive) {
             // Only decrement duration in singleplayer
-            if (!this.isMultiplayer && !this.isRemote) {
-                this.spiritDuration -= dt;
-            }
+            // if (!this.isMultiplayer && !this.isRemote) {
+            //     this.spiritDuration -= dt;
+            // }
             
             // Rotate spirits
             const radius = 3.0; // Increased visual radius to match larger damage area
@@ -104,25 +104,25 @@ export class Cleric extends Actor {
                         
                         const d = this.position.distanceTo(entity.position);
                         if (d < damageRadius) {
-                             if (!this.isMultiplayer && !this.isRemote) {
-                                entity.takeDamage(damage);
-                             }
+                             // if (!this.isMultiplayer && !this.isRemote) {
+                             //    entity.takeDamage(damage);
+                             // }
                              
-                             if (floatingTextManager) {
-                                 floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffffff');
-                             }
+                             // if (floatingTextManager && !this.isMultiplayer) {
+                             //     floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffffff');
+                             // }
                         }
                     }
                 }
             }
             
-            if (!this.isMultiplayer && !this.isRemote && this.spiritDuration <= 0) {
-                this.spiritsActive = false;
-                this.spirits.forEach(s => {
-                    if (s.mesh.parent) s.mesh.parent.remove(s.mesh);
-                });
-                this.spirits = [];
-            }
+            // if (!this.isMultiplayer && !this.isRemote && this.spiritDuration <= 0) {
+            //     this.spiritsActive = false;
+            //     this.spirits.forEach(s => {
+            //         if (s.mesh.parent) s.mesh.parent.remove(s.mesh);
+            //     });
+            //     this.spirits = [];
+            // }
         }
     }
 }
