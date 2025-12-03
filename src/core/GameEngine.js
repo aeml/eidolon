@@ -323,121 +323,7 @@ export class GameEngine {
         });
 
         this.inputManager.subscribe('onRightClick', () => {
-            if (!this.player) return;
-            if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen || this.uiManager.reportScreen.style.display === 'block') return;
-
-            // Check Cooldown and Mana before proceeding
-            if (this.player.abilityCooldown > 0) {
-                return;
-            }
-            const cost = this.player.abilityManaCost * (1 - (this.player.stats.manaCostReduction || 0));
-            if (this.player.stats.mana < cost) {
-                return;
-            }
-            
-            if (this.isMobile) {
-                // Auto-target nearest enemy for mobile ability
-                let nearest = null;
-                let minDst = 1000;
-                const activeEntities = this.chunkManager.getActiveEntities();
-
-                activeEntities.forEach(e => {
-                    if (e instanceof Actor && e !== this.player && !(e instanceof DwarfSalesman) && e.isActive && e.state !== 'DEAD') {
-                        const d = this.player.position.distanceTo(e.position);
-                        if (d < minDst) {
-                            minDst = d;
-                            nearest = e;
-                        }
-                    }
-                });
-
-                let targetPos = null;
-                let targetId = "";
-
-                if (nearest && minDst < 15.0) { // Generous auto-aim range
-                    targetPos = nearest.position;
-                    targetId = nearest.id;
-
-                    // Turn towards enemy
-                    const lookTarget = new THREE.Vector3(nearest.position.x, this.player.position.y, nearest.position.z);
-                    if (this.player.mesh) {
-                        this.player.mesh.lookAt(lookTarget);
-                        this.player.rotation.copy(this.player.mesh.quaternion);
-                    }
-                } else {
-                    // Cast in front of player if no enemy
-                    // Assuming player mesh rotation is valid
-                    if (this.player.mesh) {
-                        const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.player.mesh.quaternion);
-                        targetPos = this.player.position.clone().add(forward.multiplyScalar(5));
-                    } else {
-                        // Fallback
-                        targetPos = this.player.position.clone();
-                        targetPos.z += 5;
-                    }
-                }
-
-                const abilityMsg = {
-                    type: "ability",
-                    payload: {
-                        targetX: targetPos.x,
-                        targetZ: targetPos.z,
-                        targetId: targetId
-                    }
-                };
-                this.socket.send(JSON.stringify(abilityMsg));
-                
-                // Client-side prediction
-                this.player.useAbility(targetPos, this);
-                return;
-            }
-
-            if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
-                if (this.hoveredEntity instanceof DwarfSalesman) return;
-
-                const dist = this.player.position.distanceTo(this.hoveredEntity.position);
-                const abilityRange = 100.0; // Effectively infinite range as requested
-
-                // Check if we are in range
-                if (dist <= abilityRange) {
-                    // Multiplayer Ability Logic (Targeted)
-                    const abilityMsg = {
-                        type: "ability",
-                        payload: {
-                            targetX: this.hoveredEntity.position.x,
-                            targetZ: this.hoveredEntity.position.z,
-                            targetId: this.hoveredEntity.id
-                        }
-                    };
-                    this.socket.send(JSON.stringify(abilityMsg));
-                    
-                    // Client-side prediction
-                    this.player.useAbility(this.hoveredEntity.position, this);
-                } else {
-                    // Move closer first
-                    this.pendingAbilityTarget = this.hoveredEntity;
-                    this.pendingInteraction = null;
-                    this.player.move(this.hoveredEntity.position);
-                }
-            } else {
-                // Ground click (Movement or Skillshot)
-                const targetPoint = this.inputManager.getGroundIntersection();
-                if (targetPoint) {
-                    // Multiplayer Ability Logic (Skillshot)
-                    const abilityMsg = {
-                        type: "ability",
-                        payload: {
-                            targetX: targetPoint.x,
-                            targetZ: targetPoint.z,
-                            targetId: ""
-                        }
-                    };
-                    this.socket.send(JSON.stringify(abilityMsg));
-                    
-                    // Client-side prediction
-                    this.player.useAbility(targetPoint, this);
-                }
-            }
+            this.performAbility();
         });
 
         this.inputManager.subscribe('onMouseMove', (mouse) => {
@@ -896,6 +782,15 @@ export class GameEngine {
                         remoteEntity.deadTimer = 0;
                         if (remoteEntity.mesh) remoteEntity.mesh.visible = true;
                         
+                        // Sync Health/Stats for Remote Entities (Enemies/Players)
+                        if (remoteEntity.stats) {
+                            if (pData.health !== undefined) remoteEntity.stats.hp = pData.health;
+                            if (pData.maxHealth !== undefined) remoteEntity.stats.maxHp = pData.maxHealth;
+                            if (pData.mana !== undefined) remoteEntity.stats.mana = pData.mana;
+                            if (pData.maxMana !== undefined) remoteEntity.stats.maxMana = pData.maxMana;
+                            if (pData.attackSpeed !== undefined) remoteEntity.stats.attackSpeed = pData.attackSpeed;
+                        }
+
                         // Update State and Animation
                         if (remoteEntity.state !== pData.state || (pData.isCharging !== undefined && remoteEntity.isCharging !== pData.isCharging)) {
                             remoteEntity.state = pData.state;
@@ -908,6 +803,14 @@ export class GameEngine {
                                     remoteEntity.playAnimation('Run');
                                 } else if (pData.state === 'ATTACKING') {
                                     remoteEntity.playAnimation('Attack', false);
+                                    // Scale animation speed for remote entities
+                                    if (remoteEntity.currentAction && remoteEntity.stats.attackSpeed) {
+                                        const cooldown = remoteEntity.stats.attackSpeed;
+                                        const clipDuration = remoteEntity.currentAction.getClip().duration;
+                                        // Play slightly faster (90% of cooldown) to ensure it finishes before server state reset
+                                        const timeScale = clipDuration / (cooldown * 0.9);
+                                        remoteEntity.currentAction.setEffectiveTimeScale(timeScale);
+                                    }
                                 } else {
                                     remoteEntity.playAnimation('Idle');
                                 }
@@ -917,14 +820,6 @@ export class GameEngine {
                         // Update Rotation
                         if (pData.rotation !== undefined) {
                             remoteEntity.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), pData.rotation);
-                        }
-
-                        // Sync Health/Stats for Remote Entities (Enemies/Players)
-                        if (remoteEntity.stats) {
-                            if (pData.health !== undefined) remoteEntity.stats.hp = pData.health;
-                            if (pData.maxHealth !== undefined) remoteEntity.stats.maxHp = pData.maxHealth;
-                            if (pData.mana !== undefined) remoteEntity.stats.mana = pData.mana;
-                            if (pData.maxMana !== undefined) remoteEntity.stats.maxMana = pData.maxMana;
                         }
                     }
                 }
@@ -1151,6 +1046,166 @@ export class GameEngine {
         }
     }
 
+    performAbility() {
+        if (!this.player) return;
+        if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen || this.uiManager.reportScreen.style.display === 'block') return;
+
+        // Check Cooldown and Mana before proceeding
+        if (this.player.abilityCooldown > 0) {
+            return;
+        }
+        const cost = this.player.abilityManaCost * (1 - (this.player.stats.manaCostReduction || 0));
+        if (this.player.stats.mana < cost) {
+            return;
+        }
+        
+        if (this.isMobile) {
+            // Auto-target nearest enemy for mobile ability
+            let nearest = null;
+            let minDst = 1000;
+            const activeEntities = this.chunkManager.getActiveEntities();
+
+            activeEntities.forEach(e => {
+                if (e instanceof Actor && e !== this.player && !(e instanceof DwarfSalesman) && e.isActive && e.state !== 'DEAD') {
+                    const d = this.player.position.distanceTo(e.position);
+                    if (d < minDst) {
+                        minDst = d;
+                        nearest = e;
+                    }
+                }
+            });
+
+            let targetPos = null;
+            let targetId = "";
+
+            if (nearest && minDst < 15.0) { // Generous auto-aim range
+                targetPos = nearest.position;
+                targetId = nearest.id;
+
+                // Turn towards enemy
+                const lookTarget = new THREE.Vector3(nearest.position.x, this.player.position.y, nearest.position.z);
+                if (this.player.mesh) {
+                    this.player.mesh.lookAt(lookTarget);
+                    this.player.rotation.copy(this.player.mesh.quaternion);
+                }
+            } else {
+                // Cast in front of player if no enemy
+                // Assuming player mesh rotation is valid
+                if (this.player.mesh) {
+                    const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.player.mesh.quaternion);
+                    targetPos = this.player.position.clone().add(forward.multiplyScalar(5));
+                } else {
+                    // Fallback
+                    targetPos = this.player.position.clone();
+                    targetPos.z += 5;
+                }
+            }
+
+            const abilityMsg = {
+                type: "ability",
+                payload: {
+                    targetX: targetPos.x,
+                    targetZ: targetPos.z,
+                    targetId: targetId
+                }
+            };
+            this.socket.send(JSON.stringify(abilityMsg));
+            
+            // Client-side prediction
+            this.player.useAbility(targetPos, this);
+            return;
+        }
+
+        if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
+            if (this.hoveredEntity instanceof DwarfSalesman) return;
+
+            const dist = this.player.position.distanceTo(this.hoveredEntity.position);
+            const abilityRange = 100.0; // Effectively infinite range as requested
+
+            // Check if we are in range
+            if (dist <= abilityRange) {
+                // Multiplayer Ability Logic (Targeted)
+                const abilityMsg = {
+                    type: "ability",
+                    payload: {
+                        targetX: this.hoveredEntity.position.x,
+                        targetZ: this.hoveredEntity.position.z,
+                        targetId: this.hoveredEntity.id
+                    }
+                };
+                this.socket.send(JSON.stringify(abilityMsg));
+                
+                // Client-side prediction
+                this.player.useAbility(this.hoveredEntity.position, this);
+            } else {
+                // Move closer first
+                this.pendingAbilityTarget = this.hoveredEntity;
+                this.pendingInteraction = null;
+                this.player.move(this.hoveredEntity.position);
+            }
+        } else {
+            // Ground click (Movement or Skillshot)
+            const targetPoint = this.inputManager.getGroundIntersection();
+            if (targetPoint) {
+                // Multiplayer Ability Logic (Skillshot)
+                const abilityMsg = {
+                    type: "ability",
+                    payload: {
+                        targetX: targetPoint.x,
+                        targetZ: targetPoint.z,
+                        targetId: ""
+                    }
+                };
+                this.socket.send(JSON.stringify(abilityMsg));
+                
+                // Client-side prediction
+                this.player.useAbility(targetPoint, this);
+            }
+        }
+    }
+
+    performAttack(target) {
+        if (!this.player || !target) return;
+
+        // Send to Server
+        const attackMsg = {
+            type: "attack",
+            payload: {
+                targetId: target.id
+            }
+        };
+        this.socket.send(JSON.stringify(attackMsg));
+
+        // Visuals
+        const lookTarget = new THREE.Vector3(target.position.x, this.player.position.y, target.position.z);
+        if (this.player.mesh) {
+            this.player.mesh.lookAt(lookTarget);
+            this.player.rotation.copy(this.player.mesh.quaternion);
+        }
+
+        this.player.setAttackingState();
+
+        // Client-Side Prediction
+        // Sync with Actor.js setAttackingState timing
+        // Animation duration = cooldown * 1000
+        // Hit point assumed at 35%
+        const hitDelay = this.player.getAttackHitDelay();
+
+        setTimeout(() => {
+            // Check if target is still valid
+            if (target && target.stats && target.stats.hp > 0) {
+                // Predict damage
+                // We use base damage as a guess. Server is authoritative.
+                const predictedDmg = this.player.stats.damage;
+                target.stats.hp -= predictedDmg;
+                
+                // Visual feedback immediately
+                // If it goes below 0, UI will hide it next frame
+                if (target.stats.hp < 0) target.stats.hp = 0;
+            }
+        }, hitDelay);
+    }
+
     loop(time) {
         try {
             const seconds = time * 0.001;
@@ -1360,6 +1415,11 @@ export class GameEngine {
         // Timer updated by server message
 
         if (this.player) {
+            if (this.inputManager.isRightMouseDown) {
+                this.needsRaycast = true;
+                this.performAbility();
+            }
+
             if (!this.isMobile && this.inputManager.isMouseDown && !this.uiManager.isEscMenuOpen && !this.uiManager.isShopOpen) {
                 
                 if (this.inputManager.keys.control) {
@@ -1385,7 +1445,7 @@ export class GameEngine {
                     if (this.player.state !== 'ATTACKING') {
                         // Check Attack Speed Cooldown
                         const now = Date.now();
-                        const cooldownMs = (1.0 / this.player.stats.attackSpeed) * 1000;
+                        const cooldownMs = this.player.stats.attackSpeed * 1000;
                         if (now - this.player.lastAttackTime < cooldownMs) {
                             return;
                         }
@@ -1394,6 +1454,8 @@ export class GameEngine {
                         this.player.state = 'ATTACKING';
                         this.player.playAnimation('Attack', false);
                         
+                        const hitDelay = this.player.getAttackHitDelay();
+
                         setTimeout(() => {
                             if (this.player.state === 'DEAD') return;
                             
@@ -1443,28 +1505,13 @@ export class GameEngine {
                         if (this.isMultiplayer) {
                             // Check Attack Speed Cooldown
                             const now = Date.now();
-                            const cooldownMs = (1.0 / this.player.stats.attackSpeed) * 1000;
+                            const cooldownMs = this.player.stats.attackSpeed * 1000;
                             if (now - this.player.lastAttackTime < cooldownMs) {
                                 return;
                             }
                             this.player.lastAttackTime = now;
 
-                            const attackMsg = {
-                                type: "attack",
-                                payload: {
-                                    targetId: this.hoveredEntity.id
-                                }
-                            };
-                            this.socket.send(JSON.stringify(attackMsg));
-                            
-                            // Face target
-                            const lookTarget = new THREE.Vector3(this.hoveredEntity.position.x, this.player.position.y, this.hoveredEntity.position.z);
-                            if (this.player.mesh) {
-                                this.player.mesh.lookAt(lookTarget);
-                                this.player.rotation.copy(this.player.mesh.quaternion);
-                            }
-
-                            this.player.setAttackingState();
+                            this.performAttack(this.hoveredEntity);
                         } else {
                             this.player.attack(this.hoveredEntity);
                         }
@@ -1578,26 +1625,11 @@ export class GameEngine {
                             if (this.isMultiplayer) {
                                 // Check Attack Speed Cooldown
                                 const now = Date.now();
-                                const cooldownMs = (1.0 / this.player.stats.attackSpeed) * 1000;
+                                const cooldownMs = this.player.stats.attackSpeed * 1000;
                                 if (now - this.player.lastAttackTime >= cooldownMs) {
                                     this.player.lastAttackTime = now;
 
-                                    const attackMsg = {
-                                        type: "attack",
-                                        payload: {
-                                            targetId: this.pendingInteraction.id
-                                        }
-                                    };
-                                    this.socket.send(JSON.stringify(attackMsg));
-                                    
-                                    // Face target
-                                    const lookTarget = new THREE.Vector3(this.pendingInteraction.position.x, this.player.position.y, this.pendingInteraction.position.z);
-                                    if (this.player.mesh) {
-                                        this.player.mesh.lookAt(lookTarget);
-                                        this.player.rotation.copy(this.player.mesh.quaternion);
-                                    }
-
-                                    this.player.setAttackingState();
+                                    this.performAttack(this.pendingInteraction);
                                     attacked = true;
                                     
                                     // Do NOT clear pendingInteraction to enable Auto-Attack / Chase
