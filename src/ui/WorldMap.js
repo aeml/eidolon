@@ -199,7 +199,7 @@ export class WorldMap {
         
         // Town Label
         ctx.fillStyle = '#fff';
-        ctx.font = `${12 * (this.scale / 2)}px Arial`; // Scale font slightly
+        ctx.font = `${36 * (this.scale / 2)}px Arial`; // Scale font slightly
         ctx.textAlign = 'center';
         ctx.fillText("TOWN", townCenter.x, townCenter.y);
 
@@ -216,13 +216,14 @@ export class WorldMap {
         
         // Snow World Label
         ctx.fillStyle = '#fff';
-        ctx.font = `${14 * (this.scale / 2)}px Arial`;
-        const snowLabelPos = worldToScreen(0, -800);
+        ctx.font = `${48 * (this.scale / 2)}px Arial`;
+        const snowLabelPos = worldToScreen(0, -1400);
         ctx.fillText("The Abyssal Well (Water Realm)", snowLabelPos.x, snowLabelPos.y);
 
         // Earth Realm Label (Main Area)
+        ctx.font = `${48 * (this.scale / 2)}px Arial`;
         const earthLabelPos = worldToScreen(0, 200);
-        ctx.fillText("The Iron Weald (Earth Realm)", earthLabelPos.x, earthLabelPos.y + 20 * this.scale);
+        ctx.fillText("The Iron Weald (Earth Realm)", earthLabelPos.x, earthLabelPos.y + 100 * this.scale);
 
         // Siren Zone (Lv 50-54) - Specific Spawn Area
         const sirenZoneX = -1000;
@@ -241,9 +242,9 @@ export class WorldMap {
 
         // Siren Zone Label
         ctx.fillStyle = '#aaffff';
-        ctx.font = `${12 * (this.scale / 2)}px Arial`;
-        // Position slightly below the main "SNOW WORLD" text
-        ctx.fillText("Sirens (Lv 50-54)", snowLabelPos.x, snowLabelPos.y + (20 * this.scale / 2));
+        ctx.font = `${36 * (this.scale / 2)}px Arial`;
+        const sirenLabelPos = worldToScreen(0, -800);
+        ctx.fillText("Sirens (Lv 50-54)", sirenLabelPos.x, sirenLabelPos.y);
 
         // Frost Guardian Zone (Lv 54-58)
         const fgZoneX = -1000;
@@ -263,6 +264,7 @@ export class WorldMap {
         // Frost Guardian Label
         const fgLabelPos = worldToScreen(0, -1200); // Center of -1000 to -1400
         ctx.fillStyle = '#aaffff';
+        ctx.font = `${36 * (this.scale / 2)}px Arial`;
         ctx.fillText("Frost Guardians (Lv 54-58)", fgLabelPos.x, fgLabelPos.y);
 
         // Future Zone 2 (Placeholder)
@@ -381,7 +383,7 @@ export class WorldMap {
             const labelPos = worldToScreen(centerX, centerZ);
             
             ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-            ctx.font = `${10 * (this.scale / 2)}px Arial`;
+            ctx.font = `${36 * (this.scale / 2)}px Arial`;
             ctx.textAlign = 'center';
             // Offset label slightly if it overlaps town
             let yOffset = 0;
