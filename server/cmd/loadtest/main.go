@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bytes"
+	"compress/gzip"
 	"crypto/tls"
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"math"
 	"math/rand"
@@ -167,6 +170,20 @@ func runBot(id int, urlStr string, cred BotCredentials) {
 				return
 			}
 
+			// Check for GZIP
+			if len(message) > 2 && message[0] == 0x1f && message[1] == 0x8b {
+				r, err := gzip.NewReader(bytes.NewReader(message))
+				if err != nil {
+					continue
+				}
+				decompressed, err := io.ReadAll(r)
+				r.Close()
+				if err != nil {
+					continue
+				}
+				message = decompressed
+			}
+
 			var msg Message
 			if err := json.Unmarshal(message, &msg); err != nil {
 				continue
@@ -303,7 +320,7 @@ func runBot(id int, urlStr string, cred BotCredentials) {
 				dz := me.Z - 200
 				distFromTown := math.Sqrt(dx*dx + dz*dz)
 
-				if distFromTown < 10.0 {
+				if distFromTown < 80.0 {
 					// Sell everything in inventory (since we auto-equip upgrades, inventory is junk)
 					for _, item := range currentInv {
 						if item.ID != "" {
@@ -315,34 +332,46 @@ func runBot(id int, urlStr string, cred BotCredentials) {
 					isSelling = false
 					stateMu.Unlock()
 				} else {
-					// Move to town (0, 200)
-					sendMove(c, 0, 200)
+					// Move to random spot in town (0, 200) to avoid stacking
+					// Town bounds approx -100 to 100 X, 100 to 300 Z
+					targetX := (rand.Float64() * 160) - 80     // -80 to 80
+					targetZ := 200 + (rand.Float64()*160 - 80) // 120 to 280
+					sendMove(c, targetX, targetZ)
 				}
 				continue
 			}
 
 			// Town Mode Override
 			if *townMode {
-				// Just roam around town (0, 200)
-				// Town bounds approx -100 to 100 X, 100 to 300 Z
-				if !hasRoamTarget || time.Since(lastRoamTime) > 5*time.Second {
-					roamTargetX = (rand.Float64() * 180) - 90     // -90 to 90
-					roamTargetZ = 200 + (rand.Float64()*180 - 90) // 110 to 290
+				// Announce presence occasionally
+				if rand.Intn(100) == 0 {
+					send(c, "chat", map[string]string{"message": fmt.Sprintf("I am roaming at %.1f, %.1f", me.X, me.Z)})
+				}
+
+				// Pick new target if needed
+				if !hasRoamTarget || time.Since(lastRoamTime) > 10*time.Second {
+					roamTargetX = (rand.Float64() * 160) - 80     // -80 to 80
+					roamTargetZ = 200 + (rand.Float64()*160 - 80) // 120 to 280
 					hasRoamTarget = true
 					lastRoamTime = time.Now()
 				}
+
+				// Walk towards target
+				speed := 6.0
+				dt := 0.2 // 200ms
+				step := speed * dt
 
 				dx := roamTargetX - me.X
 				dz := roamTargetZ - me.Z
 				dist := math.Sqrt(dx*dx + dz*dz)
 
-				if dist < 2.0 {
-					hasRoamTarget = false
-					if rand.Float64() < 0.3 {
-						time.Sleep(time.Duration(rand.Intn(2000)) * time.Millisecond)
-					}
-				} else {
+				if dist < step {
 					sendMove(c, roamTargetX, roamTargetZ)
+					hasRoamTarget = false
+				} else {
+					newX := me.X + (dx/dist)*step
+					newZ := me.Z + (dz/dist)*step
+					sendMove(c, newX, newZ)
 				}
 				continue
 			}
@@ -420,29 +449,29 @@ func runBot(id int, urlStr string, cred BotCredentials) {
 			} else {
 				// Roam based on Level
 				// Sector 1: Z [200, 1000] (Lvl 1-10)
-				// Sector 2: Z [-600, 200] (Lvl 10-20)
-				// Sector 3: Z [-1400, -600] (Lvl 20-30)
-				// Sector 4: Z [-2200, -1400] (Lvl 30+)
+				// Sector 2: Z [-600, 200] (Lvl 10-30)
+				// Sector 3: Z [-1000, -600] (Lvl 30-50) - Sirens
+				// Sector 4: Z [-1400, -1000] (Lvl 50+) - Frost Guardians
 
 				var minZ, maxZ float64
 				if me.Level < 10 {
 					minZ, maxZ = 200, 1000
-				} else if me.Level < 20 {
-					minZ, maxZ = -600, 200
 				} else if me.Level < 30 {
-					minZ, maxZ = -1400, -600
+					minZ, maxZ = -600, 200
+				} else if me.Level < 50 {
+					minZ, maxZ = -1000, -600
 				} else {
-					minZ, maxZ = -2200, -1400
+					minZ, maxZ = -1400, -1000
 				}
 
 				// Check if we are in our sector
 				if me.Z < minZ || me.Z > maxZ {
-					// Move towards sector center
-					targetZ := (minZ + maxZ) / 2
-					// Add some randomness to X
-					targetX := (rand.Float64() * 1800) - 900
-					sendMove(c, targetX, targetZ)
-					hasRoamTarget = false
+					if !hasRoamTarget {
+						// Move to random spot in sector
+						roamTargetZ = minZ + rand.Float64()*(maxZ-minZ)
+						roamTargetX = (rand.Float64() * 1800) - 900
+						hasRoamTarget = true
+					}
 				} else {
 					// Roaming Logic with Waypoints
 					if !hasRoamTarget || time.Since(lastRoamTime) > 5*time.Second {
@@ -467,21 +496,24 @@ func runBot(id int, urlStr string, cred BotCredentials) {
 						hasRoamTarget = true
 						lastRoamTime = time.Now()
 					}
+				}
 
-					// Check if reached
-					dx := roamTargetX - me.X
-					dz := roamTargetZ - me.Z
-					dist := math.Sqrt(dx*dx + dz*dz)
+				// Walk towards target
+				speed := 6.0
+				dt := 0.2 // 200ms
+				step := speed * dt
 
-					if dist < 2.0 {
-						hasRoamTarget = false // Pick new one next tick
-						// Maybe pause?
-						if rand.Float64() < 0.3 {
-							time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
-						}
-					} else {
-						sendMove(c, roamTargetX, roamTargetZ)
-					}
+				dx := roamTargetX - me.X
+				dz := roamTargetZ - me.Z
+				dist := math.Sqrt(dx*dx + dz*dz)
+
+				if dist < step {
+					sendMove(c, roamTargetX, roamTargetZ)
+					hasRoamTarget = false
+				} else {
+					newX := me.X + (dx/dist)*step
+					newZ := me.Z + (dz/dist)*step
+					sendMove(c, newX, newZ)
 				}
 			}
 		}
