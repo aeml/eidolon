@@ -344,7 +344,7 @@ export class Actor extends Entity {
         return (cooldown * 1000) * 0.35; // 35% through animation
     }
 
-    attack(target) {
+    attack(target, onHit = null) {
         if (this.state === 'DEAD') return false;
         if (target && target.state === 'DEAD') return false; // Don't attack dead targets
         
@@ -364,18 +364,21 @@ export class Actor extends Entity {
         this.state = 'ATTACKING';
         this.playAnimation('Attack', false, true);
         
-        // Scale animation speed
-        // Base animation ~1.0s. Target duration = this.stats.attackSpeed
+        // Scale animation speed to match cooldown exactly (Slow attack = Slow animation)
         const cooldown = this.stats.attackSpeed || 1.0;
-        
+        let timeScale = 1.0;
+        let clipDuration = 1.0;
+
         if (this.currentAction) {
-            const clipDuration = this.currentAction.getClip().duration;
-            // Play slightly faster (90% of cooldown) to ensure it finishes before state reset
-            const timeScale = clipDuration / (cooldown * 0.9);
+            clipDuration = this.currentAction.getClip().duration;
+            // Scale to fit cooldown
+            timeScale = clipDuration / cooldown;
             this.currentAction.setEffectiveTimeScale(timeScale);
         }
+        
         const duration = cooldown * 1000;
-        const hitDelay = this.getAttackHitDelay();
+        // Hit happens at 35% of the animation (which is now exactly the cooldown duration)
+        const hitDelay = duration * 0.35;
 
         // Face target
         const lookTarget = new THREE.Vector3(target.position.x, this.position.y, target.position.z);
@@ -384,27 +387,29 @@ export class Actor extends Entity {
             this.rotation.copy(this.mesh.quaternion);
         }
 
-        // Deal damage after a delay (sync with animation hit)
+        // Deal damage after a delay
         this.attackTimer = setTimeout(() => {
-            // Check if we died during the swing
             if (this.state === 'DEAD') return;
 
             if (target && target.stats.hp > 0) {
-                // Calculate damage based on stats
-                // Random variance +/- 20%
                 const baseDmg = this.stats.damage;
-                const variance = (Math.random() * 0.4) + 0.8; // 0.8 to 1.2
+                const variance = (Math.random() * 0.4) + 0.8;
                 const finalDmg = Math.floor(baseDmg * variance);
-                
                 target.takeDamage(finalDmg);
-
-                // XP and Loot are handled by GameEngine detecting the death state
+                
+                if (onHit) onHit(finalDmg, target);
             }
-            this.state = 'IDLE';
-            this.playAnimation('Idle');
-            if (this.currentAction) this.currentAction.setEffectiveTimeScale(1.0);
             this.attackTimer = null;
-        }, hitDelay); // Dynamic delay
+        }, hitDelay);
+        
+        // Reset state when animation finishes
+        setTimeout(() => {
+            if (this.state === 'ATTACKING') {
+                this.state = 'IDLE';
+                this.playAnimation('Idle');
+                if (this.currentAction) this.currentAction.setEffectiveTimeScale(1.0);
+            }
+        }, duration);
         
         return true;
     }

@@ -63,7 +63,7 @@ export class Projectile extends Entity {
         this.rotation.copy(this.mesh.quaternion);
     }
 
-    update(dt, collisionManager, player, activeEntities) { 
+    update(dt, collisionManager, player, activeEntities, floatingTextManager) { 
         if (!this.isActive) return;
 
         // In multiplayer, position is authoritative from server, but we can interpolate
@@ -112,6 +112,11 @@ export class Projectile extends Entity {
                         if (!this.owner.isMultiplayer && !this.owner.isRemote) {
                             entity.takeDamage(this.damage);
                         }
+                        
+                        if (floatingTextManager) {
+                            floatingTextManager.spawn(Math.floor(this.damage), entity.position, '#ffffff');
+                        }
+
                     } else if (this.type === 'Fireball') {
                         // Explode Logic: Hit, Splash, Destroy
                         this.isActive = false; // Destroy projectile
@@ -129,6 +134,10 @@ export class Projectile extends Entity {
                             if (splashDist < splashRadius) {
                                 if (!this.owner.isMultiplayer && !this.owner.isRemote) {
                                     splashTarget.takeDamage(this.damage);
+                                }
+                                
+                                if (floatingTextManager) {
+                                    floatingTextManager.spawn(Math.floor(this.damage), splashTarget.position, '#ffffff');
                                 }
                             }
                         }

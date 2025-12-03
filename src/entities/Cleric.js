@@ -66,8 +66,8 @@ export class Cleric extends Actor {
         this.spirits = [];
     }
 
-    update(dt, collisionManager) {
-        super.update(dt, collisionManager);
+    update(dt, collisionManager, player, activeEntities, floatingTextManager) {
+        super.update(dt, collisionManager, player, activeEntities, floatingTextManager);
 
         if (this.spiritsActive) {
             // Only decrement duration in singleplayer
@@ -89,10 +89,32 @@ export class Cleric extends Actor {
             });
 
             // Damage Logic (Area check)
-            // This needs access to enemies list, which we don't have easily here without passing it down.
-            // For now, we'll rely on GameEngine to handle the damage tick or pass enemies in update.
-            // But since we don't have enemies here, let's just handle visuals here and damage in GameEngine?
-            // Or we can emit an event?
+            if (activeEntities) {
+                this.spiritDamageTimer = (this.spiritDamageTimer || 0) + dt;
+                if (this.spiritDamageTimer > 0.5) {
+                    this.spiritDamageTimer = 0;
+                    
+                    const damageRadius = 3.5;
+                    const damage = 10 + (this.stats.wisdom * 1.0);
+
+                    for (const entity of activeEntities) {
+                        if (entity === this || entity.state === 'DEAD' || !entity.isActive) continue;
+                        if (entity.constructor.name === 'LootDrop') continue;
+                        if (entity.constructor.name === 'DwarfSalesman') continue;
+                        
+                        const d = this.position.distanceTo(entity.position);
+                        if (d < damageRadius) {
+                             if (!this.isMultiplayer && !this.isRemote) {
+                                entity.takeDamage(damage);
+                             }
+                             
+                             if (floatingTextManager) {
+                                 floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffffff');
+                             }
+                        }
+                    }
+                }
+            }
             
             if (!this.isMultiplayer && !this.isRemote && this.spiritDuration <= 0) {
                 this.spiritsActive = false;
