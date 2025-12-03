@@ -23,7 +23,7 @@ export class Cleric extends Actor {
         if (!super.useAbility(targetVector, gameEngine)) return;
 
         console.log("Cleric used Guardian Spirits!");
-        this.playAnimation('Attack', false); // Cast animation
+        this.playAnimation('Attack', false, true); // Cast animation
         
         this.spiritsActive = true;
         this.spiritDuration = 8.0; // Lasts 8 seconds

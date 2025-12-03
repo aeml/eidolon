@@ -20,7 +20,7 @@ export class Wizard extends Actor {
         if (!super.useAbility(targetVector, gameEngine)) return;
 
         console.log("Wizard used Fireball!");
-        this.playAnimation('Attack', false);
+        this.playAnimation('Attack', false, true);
         
         // Spawn Projectile
         const startPos = this.position.clone();

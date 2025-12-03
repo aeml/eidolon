@@ -20,7 +20,7 @@ export class Rogue extends Actor {
         if (!super.useAbility(targetVector, gameEngine)) return;
 
         console.log("Rogue used Throw Dagger!");
-        this.playAnimation('Attack', false);
+        this.playAnimation('Attack', false, true);
         
         const startPos = this.position.clone();
         startPos.y += 1.0;

@@ -221,6 +221,36 @@ export class Actor extends Entity {
 
     update(dt, collisionManager) {
         super.update(dt);
+
+        if (this.isRemote) {
+            // Interpolate Position
+            if (this.targetServerPosition) {
+                const lerpFactor = 10.0 * dt;
+                this.position.lerp(this.targetServerPosition, lerpFactor);
+                
+                // Snap if very close to avoid micro-jitter
+                if (this.position.distanceTo(this.targetServerPosition) < 0.05) {
+                    this.position.copy(this.targetServerPosition);
+                }
+            }
+
+            // Interpolate Rotation
+            if (this.targetServerRotation !== undefined) {
+                const targetQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.targetServerRotation);
+                this.rotation.slerp(targetQuat, 10.0 * dt);
+            }
+
+            // Update Mesh
+            if (this.mesh) {
+                this.mesh.position.copy(this.position);
+                this.mesh.quaternion.copy(this.rotation);
+            }
+
+            if (this.mixer) {
+                this.mixer.update(dt);
+            }
+            return;
+        }
         
         // Cooldowns
         if (this.abilityCooldown > 0) {
