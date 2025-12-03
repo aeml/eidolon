@@ -79,15 +79,17 @@ export class Fighter extends Actor {
                         
                         const d = this.position.distanceTo(entity.position);
                         if (d < chargeRadius) {
-                             if (!this.isMultiplayer && !this.isRemote) {
-                                entity.takeDamage(damage);
-                             }
+                             // if (!this.isMultiplayer && !this.isRemote) {
+                             //    entity.takeDamage(damage);
+                             // }
                              
-                             if (floatingTextManager) {
-                                 floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffffff');
-                             } else if (this.gameEngine && this.gameEngine.floatingTextManager) {
-                                 this.gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffffff');
-                             }
+                             // if (!this.isMultiplayer) {
+                             //     if (floatingTextManager) {
+                             //         floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffffff');
+                             //     } else if (this.gameEngine && this.gameEngine.floatingTextManager) {
+                             //         this.gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffffff');
+                             //     }
+                             // }
                         }
                     }
                 }

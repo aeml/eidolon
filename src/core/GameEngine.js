@@ -562,10 +562,6 @@ export class GameEngine {
         } else if (msg.type === 'damage') {
             const dmgData = msg.payload;
             
-            // If source is player, we already showed predicted damage (unless we want to correct it?)
-            // For now, skip to avoid duplicates
-            if (this.player && dmgData.sourceId === this.player.id) return;
-
             // Find target entity
             let target = null;
             if (this.player && this.player.id === dmgData.targetId) {
@@ -575,14 +571,17 @@ export class GameEngine {
             }
 
             if (target) {
-                let color = '#ffffff';
-                if (target === this.player) {
-                    color = '#ff0000'; // Red if player takes damage
-                } else {
-                    color = '#ffff00'; // Yellow if enemy takes damage from others
+                // Only show if player is source or target
+                if (this.player && (dmgData.sourceId === this.player.id || dmgData.targetId === this.player.id)) {
+                    let color = '#ffffff';
+                    if (target === this.player) {
+                        color = '#ff0000'; // Red if player takes damage
+                    } else {
+                        color = '#ffff00'; // Yellow if player deals damage
+                    }
+                    
+                    this.floatingTextManager.spawn(dmgData.amount, target.position, color);
                 }
-                
-                this.floatingTextManager.spawn(dmgData.amount, target.position, color);
             }
 
             // If target is local player, flash screen or shake camera?
@@ -1211,24 +1210,26 @@ export class GameEngine {
         // Sync with Actor.js setAttackingState timing
         // Animation duration = cooldown * 1000
         // Hit point assumed at 35%
-        const hitDelay = this.player.getAttackHitDelay();
+        // const hitDelay = this.player.getAttackHitDelay();
 
-        setTimeout(() => {
-            // Check if target is still valid
-            if (target && target.stats && target.stats.hp > 0) {
-                // Predict damage
-                // We use base damage as a guess. Server is authoritative.
-                const predictedDmg = this.player.stats.damage;
-                target.stats.hp -= predictedDmg;
+        // setTimeout(() => {
+        //     // Check if target is still valid
+        //     if (target && target.stats && target.stats.hp > 0) {
+        //         // Predict damage
+        //         // We use base damage as a guess. Server is authoritative.
+        //         // const predictedDmg = this.player.stats.damage;
+        //         // target.stats.hp -= predictedDmg;
                 
-                // Visual feedback immediately
-                // If it goes below 0, UI will hide it next frame
-                if (target.stats.hp < 0) target.stats.hp = 0;
+        //         // Visual feedback immediately
+        //         // If it goes below 0, UI will hide it next frame
+        //         // if (target.stats.hp < 0) target.stats.hp = 0;
 
-                // Spawn Damage Text
-                this.floatingTextManager.spawn(predictedDmg, target.position, '#ffffff');
-            }
-        }, hitDelay);
+        //         // Spawn Damage Text
+        //         // if (!this.isMultiplayer) {
+        //         //    this.floatingTextManager.spawn(predictedDmg, target.position, '#ffffff');
+        //         // }
+        //     }
+        // }, hitDelay);
     }
 
     loop(time) {

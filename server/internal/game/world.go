@@ -195,6 +195,12 @@ type World struct {
 	OnEvent func(eventType string, data interface{})
 }
 
+type DamageEvent struct {
+	TargetID string
+	SourceID string
+	Amount   int
+}
+
 func NewWorld() *World {
 	w := &World{
 		Entities:        make(map[string]*Entity),
@@ -946,6 +952,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				isDead := target.Health <= 0
 				target.mu.Unlock()
 
+				if w.OnEvent != nil {
+					w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: damage})
+				}
+
 				if isDead {
 					// We need the owner entity to award XP
 					owner := w.GetEntity(ownerID) // This uses RLock on World
@@ -970,9 +980,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						sdist := math.Sqrt(sdx*sdx + sdz*sdz)
 						if sdist < 10.0 {
 							splashTarget.mu.Lock()
-							splashTarget.Health -= int(float64(damage) * 0.4)
+							splashDmg := int(float64(damage) * 0.4)
+							splashTarget.Health -= splashDmg
 							isSplashDead := splashTarget.Health <= 0
 							splashTarget.mu.Unlock()
+
+							if w.OnEvent != nil {
+								w.OnEvent("damage", DamageEvent{TargetID: splashTarget.ID, SourceID: ownerID, Amount: splashDmg})
+							}
 
 							if isSplashDead {
 								owner := w.GetEntity(ownerID)
@@ -1040,6 +1055,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						isDead := target.Health <= 0
 						target.mu.Unlock()
 
+						if w.OnEvent != nil {
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: damage})
+						}
+
 						if isDead {
 							target.mu.Lock()
 							w.handleDeath(target, e, deferred)
@@ -1083,6 +1102,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							target.Health -= damage
 							isDead := target.Health <= 0
 							target.mu.Unlock()
+
+							if w.OnEvent != nil {
+								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: damage})
+							}
 
 							if isDead {
 								target.mu.Lock()
@@ -1419,6 +1442,10 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 			damage = 1
 		}
 		tgt.Health -= damage
+
+		if w.OnEvent != nil {
+			w.OnEvent("damage", DamageEvent{TargetID: tgt.ID, SourceID: att.ID, Amount: damage})
+		}
 
 		if tgt.Health <= 0 {
 			w.handleDeath(tgt, att, nil)

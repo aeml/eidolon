@@ -213,6 +213,27 @@ func main() {
 			go func() {
 				broadcast <- BroadcastMessage{Type: MsgChat, Data: dataBytes}
 			}()
+		} else if eventType == "damage" {
+			evt, ok := data.(game.DamageEvent)
+			if !ok {
+				return
+			}
+
+			payload := DamagePayload{
+				TargetID: evt.TargetID,
+				Amount:   evt.Amount,
+				SourceID: evt.SourceID,
+			}
+			b, _ := json.Marshal(payload)
+			outMsg := Message{
+				Type:    MsgDamage,
+				Payload: b,
+			}
+			dataBytes, _ := json.Marshal(outMsg)
+
+			go func() {
+				broadcast <- BroadcastMessage{Type: MsgDamage, Data: dataBytes}
+			}()
 		}
 	}
 
@@ -680,22 +701,8 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 
-		damage, success := world.PerformAttack(c.playerID, payload.TargetID)
-		if success {
-			// Broadcast damage event
-			dmgPayload := DamagePayload{
-				TargetID: payload.TargetID,
-				Amount:   damage,
-				SourceID: c.playerID,
-			}
-			b, _ := json.Marshal(dmgPayload)
-			outMsg := Message{
-				Type:    MsgDamage,
-				Payload: b,
-			}
-			data, _ := json.Marshal(outMsg)
-			broadcast <- BroadcastMessage{Type: MsgDamage, Data: data}
-		}
+		world.PerformAttack(c.playerID, payload.TargetID)
+		// Damage is now broadcast via OnEvent("damage") asynchronously
 
 	case MsgPickup:
 		if c.playerID == "" {

@@ -109,13 +109,13 @@ export class Projectile extends Entity {
                         this.hitEntities.add(entity.id);
                         // Visual effect?
                         // Apply damage if singleplayer
-                        if (!this.owner.isMultiplayer && !this.owner.isRemote) {
-                            entity.takeDamage(this.damage);
-                        }
+                        // if (!this.owner.isMultiplayer && !this.owner.isRemote) {
+                        //     entity.takeDamage(this.damage);
+                        // }
                         
-                        if (floatingTextManager) {
-                            floatingTextManager.spawn(Math.floor(this.damage), entity.position, '#ffffff');
-                        }
+                        // if (floatingTextManager && !this.owner.isMultiplayer) {
+                        //     floatingTextManager.spawn(Math.floor(this.damage), entity.position, '#ffffff');
+                        // }
 
                     } else if (this.type === 'Fireball') {
                         // Explode Logic: Hit, Splash, Destroy
@@ -132,13 +132,13 @@ export class Projectile extends Entity {
 
                             const splashDist = this.position.distanceTo(splashTarget.position);
                             if (splashDist < splashRadius) {
-                                if (!this.owner.isMultiplayer && !this.owner.isRemote) {
-                                    splashTarget.takeDamage(this.damage);
-                                }
+                                // if (!this.owner.isMultiplayer && !this.owner.isRemote) {
+                                //     splashTarget.takeDamage(this.damage);
+                                // }
                                 
-                                if (floatingTextManager) {
-                                    floatingTextManager.spawn(Math.floor(this.damage), splashTarget.position, '#ffffff');
-                                }
+                                // if (floatingTextManager && !this.owner.isMultiplayer) {
+                                //     floatingTextManager.spawn(Math.floor(this.damage), splashTarget.position, '#ffffff');
+                                // }
                             }
                         }
                         
