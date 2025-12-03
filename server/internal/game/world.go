@@ -1364,16 +1364,11 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				Radius:    1.5,
 				Damage:    damage,
 				OwnerID:   player.ID,
-		if target.SubType == "InfernoTitan" {
-			xpReward *= 3
-		}
-		if target.SubType == "Siren" {
-			xpReward *= 3
-		}
-
-		attacker.Experience += xpReward
-
-			player.State = "ATTACKING"
+				Rotation:  math.Atan2(velX, velZ),
+				CreatedAt: time.Now(),
+			}
+			w.Entities[proj.ID] = proj
+			w.Grid.Add(proj)
 			player.AbilityCooldown = 1 * time.Second
 			player.LastAbilityTime = time.Now()
 		}
@@ -1405,6 +1400,9 @@ func (w *World) handleDeath(target *Entity, attacker *Entity) {
 		// XP
 		xpReward := target.Level*10 + 10
 		if target.SubType == "InfernoTitan" {
+			xpReward *= 3
+		}
+		if target.SubType == "Siren" {
 			xpReward *= 3
 		}
 
