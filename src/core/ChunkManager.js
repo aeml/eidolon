@@ -125,7 +125,16 @@ export class ChunkManager {
         if (isActiveOld && !isActiveNew) {
             if (entity.mesh) this.scene.remove(entity.mesh);
         } else if (!isActiveOld && isActiveNew) {
-            if (entity.mesh) this.scene.add(entity.mesh);
+            if (entity.mesh) {
+                this.scene.add(entity.mesh);
+            } else if (entity.ensureMesh) {
+                entity.ensureMesh().then(() => {
+                    const currentKey = this.getChunkKey(entity.position.x, entity.position.z);
+                    if (this.activeChunkKeys.has(currentKey) && entity.mesh) {
+                        this.scene.add(entity.mesh);
+                    }
+                });
+            }
         }
     }
 
