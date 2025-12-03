@@ -208,7 +208,11 @@ func main() {
 				Payload: b,
 			}
 			dataBytes, _ := json.Marshal(outMsg)
-			broadcast <- BroadcastMessage{Type: MsgChat, Data: dataBytes}
+
+			// Send in goroutine to avoid deadlock if hub is busy
+			go func() {
+				broadcast <- BroadcastMessage{Type: MsgChat, Data: dataBytes}
+			}()
 		}
 	}
 
@@ -269,19 +273,7 @@ func runHub() {
 			clients[client] = true
 		case client := <-unregister:
 			if _, ok := clients[client]; ok {
-				// Save character state before removing
-				savePlayer(client)
-				if client.playerID != "" {
-					world.RemoveEntity(client.playerID)
-				}
-
-				// Remove from active sessions
-				sessionsMu.Lock()
-				if existing, exists := activeSessions[client.username]; exists && existing == client {
-					delete(activeSessions, client.username)
-				}
-				sessionsMu.Unlock()
-
+				cleanupClient(client)
 				delete(clients, client)
 				close(client.send)
 			}
@@ -301,19 +293,40 @@ func runHub() {
 					select {
 					case client.send <- message.Data:
 					default:
-						// Remove from activeSessions first to prevent broadcastState from writing to closed channel
-						sessionsMu.Lock()
-						if existing, exists := activeSessions[client.username]; exists && existing == client {
-							delete(activeSessions, client.username)
-						}
-						sessionsMu.Unlock()
-
-						close(client.send)
+						cleanupClient(client)
 						delete(clients, client)
+						close(client.send)
 					}
 				}
 			}
 		}
+	}
+}
+
+func cleanupClient(client *Client) {
+	// 1. Get state (fast, in-memory)
+	var entity *game.Entity
+	if client.playerID != "" {
+		entity = world.GetEntityCopy(client.playerID)
+	}
+
+	// 2. Remove from world (fast, in-memory)
+	if client.playerID != "" {
+		world.RemoveEntity(client.playerID)
+	}
+
+	// 3. Cleanup session (fast)
+	sessionsMu.Lock()
+	if existing, exists := activeSessions[client.username]; exists && existing == client {
+		delete(activeSessions, client.username)
+	}
+	sessionsMu.Unlock()
+
+	// 4. Save to DB (slow, do async)
+	if entity != nil {
+		go func(c *Client, e *game.Entity) {
+			saveCharacterDB(c, e)
+		}(client, entity)
 	}
 }
 
@@ -476,7 +489,7 @@ func (c *Client) handleMessage(msg Message) {
 			Payload: payloadBytes,
 		}
 		data, _ := json.Marshal(successMsg)
-		c.send <- data
+		c.sendSafe(data)
 
 	case MsgJoin:
 		if c.username == "" {
@@ -628,7 +641,7 @@ func (c *Client) handleMessage(msg Message) {
 				Payload: invPayload,
 			}
 			b, _ := json.Marshal(msg)
-			c.send <- b
+			c.sendSafe(b)
 		}
 
 	case MsgMove:
@@ -702,7 +715,7 @@ func (c *Client) handleMessage(msg Message) {
 				Payload: invPayload,
 			}
 			b, _ := json.Marshal(msg)
-			c.send <- b
+			c.sendSafe(b)
 		}
 
 	case MsgAbility:
@@ -755,7 +768,7 @@ func (c *Client) handleMessage(msg Message) {
 				Payload: invPayload,
 			}
 			b, _ := json.Marshal(msg)
-			c.send <- b
+			c.sendSafe(b)
 		}
 
 	case MsgBuyGamble:
@@ -776,7 +789,7 @@ func (c *Client) handleMessage(msg Message) {
 				Payload: invPayload,
 			}
 			b, _ := json.Marshal(msg)
-			c.send <- b
+			c.sendSafe(b)
 		}
 
 	case MsgSell:
@@ -797,7 +810,7 @@ func (c *Client) handleMessage(msg Message) {
 				Payload: invPayload,
 			}
 			b, _ := json.Marshal(msg)
-			c.send <- b
+			c.sendSafe(b)
 		}
 
 	case MsgSocial:
@@ -824,7 +837,7 @@ func (c *Client) handleMessage(msg Message) {
 			Payload: payload,
 		}
 		b, _ := json.Marshal(msg)
-		c.send <- b
+		c.sendSafe(b)
 	case MsgRespawn:
 		if c.playerID == "" {
 			return
@@ -838,6 +851,15 @@ func (c *Client) handleMessage(msg Message) {
 		}
 		saveReport(c.username, payload)
 	}
+}
+
+func (c *Client) sendSafe(data []byte) {
+	defer func() {
+		if r := recover(); r != nil {
+			// Channel closed, client disconnected
+		}
+	}()
+	c.send <- data
 }
 
 func (c *Client) sendError(msg string) {
@@ -961,7 +983,10 @@ func savePlayer(client *Client) {
 	if entity == nil {
 		return
 	}
+	saveCharacterDB(client, entity)
+}
 
+func saveCharacterDB(client *Client, entity *game.Entity) {
 	// Update DB character
 	char := &database.Character{
 		Name:  client.username,
