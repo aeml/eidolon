@@ -752,7 +752,19 @@ export class GameEngine {
                             remoteEntity.velocity.set(pData.velX, 0, pData.velZ);
                         }
                     } else {
-                        remoteEntity.position.set(pData.x, pData.y, pData.z);
+                        // Interpolation Setup
+                        const newPos = new THREE.Vector3(pData.x, pData.y, pData.z);
+                        if (!remoteEntity.targetServerPosition) {
+                            // First update or no previous target, snap immediately
+                            remoteEntity.position.copy(newPos);
+                            remoteEntity.targetServerPosition = newPos;
+                        } else {
+                            // Check for teleport (large distance)
+                            if (remoteEntity.position.distanceTo(newPos) > 10.0) {
+                                remoteEntity.position.copy(newPos);
+                            }
+                            remoteEntity.targetServerPosition = newPos;
+                        }
                     }
 
                     // Force update chunk for remote entities to handle visibility culling
@@ -840,7 +852,11 @@ export class GameEngine {
 
                         // Update Rotation
                         if (pData.rotation !== undefined) {
-                            remoteEntity.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), pData.rotation);
+                            remoteEntity.targetServerRotation = pData.rotation;
+                            // If no rotation set yet (or identity), snap
+                            // Note: We can't easily check "no rotation set yet" on a Quaternion without a flag, 
+                            // but if it's a new entity, it might be at 0,0,0,1.
+                            // For now, we just set the target.
                         }
                     }
                 }
@@ -1070,6 +1086,27 @@ export class GameEngine {
     performAbility() {
         if (!this.player) return;
         if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen || this.uiManager.reportScreen.style.display === 'block') return;
+
+        // Rotate to face cursor/target immediately (even if on cooldown)
+        if (!this.isMobile) {
+            let lookAtPos = null;
+            if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD' && !(this.hoveredEntity instanceof DwarfSalesman)) {
+                lookAtPos = this.hoveredEntity.position;
+            } else {
+                const point = this.inputManager.getGroundIntersection();
+                if (point) {
+                    lookAtPos = point;
+                }
+            }
+
+            if (lookAtPos) {
+                const lookTarget = new THREE.Vector3(lookAtPos.x, this.player.position.y, lookAtPos.z);
+                if (this.player.mesh) {
+                    this.player.mesh.lookAt(lookTarget);
+                    this.player.rotation.copy(this.player.mesh.quaternion);
+                }
+            }
+        }
 
         // Check Cooldown and Mana before proceeding
         if (this.player.abilityCooldown > 0) {
