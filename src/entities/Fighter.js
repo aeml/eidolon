@@ -42,7 +42,7 @@ export class Fighter extends Actor {
         this.isCharging = false;
     }
 
-    update(dt, collisionManager) {
+    update(dt, collisionManager, player, activeEntities, floatingTextManager) {
         if (this.isCharging) {
             // Remote entities are moved by server updates, so we skip local physics simulation
             if (this.isRemote) {
@@ -66,6 +66,32 @@ export class Fighter extends Actor {
                 this.isCharging = false;
                 this.state = 'IDLE';
                 this.playAnimation('Idle');
+
+                // Charge Damage Logic
+                if (activeEntities) {
+                    const chargeRadius = 2.5;
+                    const damage = 25 + (this.stats.strength * 1.5);
+                    
+                    for (const entity of activeEntities) {
+                        if (entity === this || entity.state === 'DEAD' || !entity.isActive) continue;
+                        if (entity.constructor.name === 'LootDrop') continue;
+                        if (entity.constructor.name === 'DwarfSalesman') continue;
+                        
+                        const d = this.position.distanceTo(entity.position);
+                        if (d < chargeRadius) {
+                             if (!this.isMultiplayer && !this.isRemote) {
+                                entity.takeDamage(damage);
+                             }
+                             
+                             if (floatingTextManager) {
+                                 floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffffff');
+                             } else if (this.gameEngine && this.gameEngine.floatingTextManager) {
+                                 this.gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffffff');
+                             }
+                        }
+                    }
+                }
+
             } else {
                 direction.normalize();
                 let moveDist = speed * dt;

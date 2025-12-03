@@ -10,7 +10,7 @@ export class Skeleton extends Actor {
         
         // AI State
         this.sightRange = 45; // Increased from 15 to 45 (3x)
-        this.attackRange = 2.5;
+        this.attackRange = 3.0;
         this.roamRadius = 10;
         this.roamTimer = 0;
         this.roamInterval = 3; // Seconds between roams

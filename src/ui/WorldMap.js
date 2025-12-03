@@ -142,13 +142,50 @@ export class WorldMap {
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, w, h);
 
+        // Rotation Constants (45 degrees clockwise)
+        const cos = 0.70710678;
+        const sin = 0.70710678;
+
         // Center map on camera + offset
         // World (0,0) should be at screen (cx - cameraX * scale + offsetX, cy - cameraZ * scale + offsetY)
+        // Now with rotation
         const worldToScreen = (wx, wz) => {
+            const relX = wx - this.cameraX;
+            const relZ = wz - this.cameraZ;
+            
+            // Rotate
+            const rotX = relX * cos - relZ * sin;
+            const rotZ = relX * sin + relZ * cos;
+
             return {
-                x: cx + (wx - this.cameraX) * this.scale + this.mapOffsetX,
-                y: cy + (wz - this.cameraZ) * this.scale + this.mapOffsetY
+                x: cx + rotX * this.scale + this.mapOffsetX,
+                y: cy + rotZ * this.scale + this.mapOffsetY
             };
+        };
+
+        // Helper to draw rotated rectangles (polygons)
+        const drawRotatedRect = (minX, minZ, width, depth, fillStyle, strokeStyle, lineWidth = 1) => {
+            const p1 = worldToScreen(minX, minZ);
+            const p2 = worldToScreen(minX + width, minZ);
+            const p3 = worldToScreen(minX + width, minZ + depth);
+            const p4 = worldToScreen(minX, minZ + depth);
+
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.lineTo(p3.x, p3.y);
+            ctx.lineTo(p4.x, p4.y);
+            ctx.closePath();
+
+            if (fillStyle) {
+                ctx.fillStyle = fillStyle;
+                ctx.fill();
+            }
+            if (strokeStyle) {
+                ctx.strokeStyle = strokeStyle;
+                ctx.lineWidth = lineWidth;
+                ctx.stroke();
+            }
         };
 
         // 1. Draw Visited Chunks (Background)
@@ -158,46 +195,15 @@ export class WorldMap {
             const wx = chunkX * this.chunkSize;
             const wz = chunkZ * this.chunkSize;
             
-            const screenPos = worldToScreen(wx, wz);
-            // Draw chunk rect
-            ctx.fillRect(
-                screenPos.x, 
-                screenPos.y, 
-                this.chunkSize * this.scale, 
-                this.chunkSize * this.scale
-            );
-            
-            // Grid lines
-            ctx.strokeStyle = '#333';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(
-                screenPos.x, 
-                screenPos.y, 
-                this.chunkSize * this.scale, 
-                this.chunkSize * this.scale
-            );
+            drawRotatedRect(wx, wz, this.chunkSize, this.chunkSize, '#222', '#333', 1);
         });
 
         // 2. Draw Town (Rectangular Safe Zone)
         // Bounds: X: -100 to 100, Z: 100 to 300
-        const townMinX = -100;
-        const townMaxX = 100;
-        const townMinZ = 100;
-        const townMaxZ = 300;
-        
-        const townTopLeft = worldToScreen(townMinX, townMinZ);
-        const townWidth = (townMaxX - townMinX) * this.scale;
-        const townHeight = (townMaxZ - townMinZ) * this.scale;
-        const townCenter = worldToScreen(0, 200); // For label
-
-        ctx.fillStyle = 'rgba(100, 100, 255, 0.3)';
-        ctx.fillRect(townTopLeft.x, townTopLeft.y, townWidth, townHeight);
-
-        ctx.strokeStyle = '#44f';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(townTopLeft.x, townTopLeft.y, townWidth, townHeight);
+        drawRotatedRect(-100, 100, 200, 200, 'rgba(100, 100, 255, 0.3)', '#44f', 2);
         
         // Town Label
+        const townCenter = worldToScreen(0, 200);
         ctx.fillStyle = '#fff';
         ctx.font = `${36 * (this.scale / 2)}px Arial`; // Scale font slightly
         ctx.textAlign = 'center';
@@ -205,14 +211,11 @@ export class WorldMap {
 
         // 2.05 Draw Snow World Area
         // Snow World starts at Z = -600 and goes North (negative Z)
-        // Let's draw a large area for it
         const snowStartZ = -600;
-        const snowWidth = 2000; // Visual width (Matches Earth Realm now)
-        const snowDepth = 1600; // Visual depth (Extended to -2200)
-        const snowPos = worldToScreen(-snowWidth/2, snowStartZ - snowDepth);
-        
-        ctx.fillStyle = 'rgba(200, 240, 255, 0.2)'; // Light Cyan/White
-        ctx.fillRect(snowPos.x, snowPos.y, snowWidth * this.scale, snowDepth * this.scale);
+        const snowWidth = 2000; 
+        const snowDepth = 1600; 
+        // Rect from (-1000, -2200) to (1000, -600)
+        drawRotatedRect(-snowWidth/2, snowStartZ - snowDepth, snowWidth, snowDepth, 'rgba(200, 240, 255, 0.2)');
         
         // Snow World Label
         ctx.fillStyle = '#fff';
@@ -223,22 +226,10 @@ export class WorldMap {
         // Earth Realm Label (Main Area)
         ctx.font = `${48 * (this.scale / 2)}px Arial`;
         const earthLabelPos = worldToScreen(0, 200);
-        ctx.fillText("The Iron Weald (Earth Realm)", earthLabelPos.x, earthLabelPos.y + 100 * this.scale);
+        ctx.fillText("The Iron Weald (Earth Realm)", earthLabelPos.x, earthLabelPos.y - 100 * this.scale);
 
-        // Siren Zone (Lv 50-54) - Specific Spawn Area
-        const sirenZoneX = -1000;
-        const sirenZoneZ = -1000; // Top Z (most negative)
-        const sirenZoneW = 2000;   // -1000 to 1000
-        const sirenZoneD = 400;   // -1000 to -600
-        
-        const sirenScreenPos = worldToScreen(sirenZoneX, sirenZoneZ);
-        
-        ctx.fillStyle = 'rgba(0, 100, 255, 0.15)'; // Distinct blue tint
-        ctx.fillRect(sirenScreenPos.x, sirenScreenPos.y, sirenZoneW * this.scale, sirenZoneD * this.scale);
-        
-        ctx.strokeStyle = 'rgba(0, 200, 255, 0.5)';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(sirenScreenPos.x, sirenScreenPos.y, sirenZoneW * this.scale, sirenZoneD * this.scale);
+        // Siren Zone (Lv 50-54)
+        drawRotatedRect(-1000, -1000, 2000, 400, 'rgba(0, 100, 255, 0.15)', 'rgba(0, 200, 255, 0.5)', 1);
 
         // Siren Zone Label
         ctx.fillStyle = '#aaffff';
@@ -247,43 +238,22 @@ export class WorldMap {
         ctx.fillText("Sirens (Lv 50-54)", sirenLabelPos.x, sirenLabelPos.y);
 
         // Frost Guardian Zone (Lv 54-58)
-        const fgZoneX = -1000;
-        const fgZoneZ = -1400;
-        const fgZoneW = 2000;
-        const fgZoneD = 400;
-
-        const fgScreenPos = worldToScreen(fgZoneX, fgZoneZ);
-
-        ctx.fillStyle = 'rgba(0, 255, 255, 0.15)'; // Cyan tint
-        ctx.fillRect(fgScreenPos.x, fgScreenPos.y, fgZoneW * this.scale, fgZoneD * this.scale);
-
-        ctx.strokeStyle = 'rgba(0, 255, 255, 0.5)';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(fgScreenPos.x, fgScreenPos.y, fgZoneW * this.scale, fgZoneD * this.scale);
+        drawRotatedRect(-1000, -1400, 2000, 400, 'rgba(0, 255, 255, 0.15)', 'rgba(0, 255, 255, 0.5)', 1);
 
         // Frost Guardian Label
-        const fgLabelPos = worldToScreen(0, -1200); // Center of -1000 to -1400
+        const fgLabelPos = worldToScreen(0, -1200); 
         ctx.fillStyle = '#aaffff';
         ctx.font = `${36 * (this.scale / 2)}px Arial`;
         ctx.fillText("Frost Guardians (Lv 54-58)", fgLabelPos.x, fgLabelPos.y);
 
         // Future Zone 2 (Placeholder)
-        const zone2Z = -1400;
-        const zone2ScreenPos = worldToScreen(-1000, zone2Z);
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.strokeRect(zone2ScreenPos.x, zone2ScreenPos.y, 2000 * this.scale, 400 * this.scale);
+        drawRotatedRect(-1000, -1400, 2000, 400, null, 'rgba(255, 255, 255, 0.1)', 1);
         
         // Future Zone 3 (Placeholder)
-        const zone3Z = -1800;
-        const zone3ScreenPos = worldToScreen(-1000, zone3Z);
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.strokeRect(zone3ScreenPos.x, zone3ScreenPos.y, 2000 * this.scale, 400 * this.scale);
+        drawRotatedRect(-1000, -1800, 2000, 400, null, 'rgba(255, 255, 255, 0.1)', 1);
 
         // Future Zone 4 (Placeholder)
-        const zone4Z = -2200;
-        const zone4ScreenPos = worldToScreen(-1000, zone4Z);
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.strokeRect(zone4ScreenPos.x, zone4ScreenPos.y, 2000 * this.scale, 400 * this.scale);
+        drawRotatedRect(-1000, -2200, 2000, 400, null, 'rgba(255, 255, 255, 0.1)', 1);
 
 
         // Fence Line (Rectangular)
@@ -365,17 +335,10 @@ export class WorldMap {
         const drawLevelRect = (minX, maxX, label, color) => {
             const minZ = -600;
             const maxZ = 1000;
+            const w = maxX - minX;
+            const h = maxZ - minZ;
             
-            const topLeft = worldToScreen(minX, minZ);
-            const w = (maxX - minX) * this.scale;
-            const h = (maxZ - minZ) * this.scale;
-
-            ctx.fillStyle = color;
-            ctx.fillRect(topLeft.x, topLeft.y, w, h);
-            
-            ctx.strokeStyle = color.replace('0.05', '0.2');
-            ctx.lineWidth = 1;
-            ctx.strokeRect(topLeft.x, topLeft.y, w, h);
+            drawRotatedRect(minX, minZ, w, h, color, color.replace('0.05', '0.2'), 1);
 
             // Label
             const centerX = (minX + maxX) / 2;
@@ -388,7 +351,7 @@ export class WorldMap {
             // Offset label slightly if it overlaps town
             let yOffset = 0;
             if (Math.abs(centerX - 0) < 10 && Math.abs(centerZ - 200) < 10) {
-                yOffset = 150 * this.scale; // Push down below town
+                yOffset = 100 * this.scale; // Push down below town
             }
             ctx.fillText(label, labelPos.x, labelPos.y + yOffset);
         };

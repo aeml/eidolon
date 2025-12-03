@@ -10,7 +10,7 @@ export class DemonOrc extends Actor {
         
         // AI State
         this.sightRange = 50; 
-        this.attackRange = 3.0;
+        this.attackRange = 4.0;
         this.roamRadius = 15;
         this.roamTimer = 0;
         this.roamInterval = 4; 

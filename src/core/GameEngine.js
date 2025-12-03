@@ -8,6 +8,7 @@ import { UIManager } from '../ui/UIManager.js';
 import { WorldGenerator } from '../world/WorldGenerator.js';
 import { Minimap } from '../ui/Minimap.js';
 import { WorldMap } from '../ui/WorldMap.js';
+import { FloatingTextManager } from '../ui/FloatingTextManager.js';
 import { Fighter } from '../entities/Fighter.js';
 import { Skeleton } from '../entities/Skeleton.js';
 import { Rogue } from '../entities/Rogue.js';
@@ -100,6 +101,7 @@ export class GameEngine {
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         this.minimap = new Minimap();
         this.worldMap = new WorldMap(this);
+        this.floatingTextManager = new FloatingTextManager(this.renderSystem.camera);
         
         this.player = null;
         this.hoveredEntity = null;
@@ -559,10 +561,30 @@ export class GameEngine {
             }
         } else if (msg.type === 'damage') {
             const dmgData = msg.payload;
-            // Show damage number
-            // TODO: Add floating text system
-            // console.log(`Damage: ${dmgData.amount} to ${dmgData.targetId} from ${dmgData.sourceId}`);
             
+            // If source is player, we already showed predicted damage (unless we want to correct it?)
+            // For now, skip to avoid duplicates
+            if (this.player && dmgData.sourceId === this.player.id) return;
+
+            // Find target entity
+            let target = null;
+            if (this.player && this.player.id === dmgData.targetId) {
+                target = this.player;
+            } else {
+                target = this.remotePlayers.get(dmgData.targetId);
+            }
+
+            if (target) {
+                let color = '#ffffff';
+                if (target === this.player) {
+                    color = '#ff0000'; // Red if player takes damage
+                } else {
+                    color = '#ffff00'; // Yellow if enemy takes damage from others
+                }
+                
+                this.floatingTextManager.spawn(dmgData.amount, target.position, color);
+            }
+
             // If target is local player, flash screen or shake camera?
             if (this.player && dmgData.targetId === this.player.id) {
                 // this.renderSystem.shakeCamera(0.2);
@@ -1202,6 +1224,9 @@ export class GameEngine {
                 // Visual feedback immediately
                 // If it goes below 0, UI will hide it next frame
                 if (target.stats.hp < 0) target.stats.hp = 0;
+
+                // Spawn Damage Text
+                this.floatingTextManager.spawn(predictedDmg, target.position, '#ffffff');
             }
         }, hitDelay);
     }
@@ -1346,7 +1371,7 @@ export class GameEngine {
                     const target = new THREE.Vector3(pData.x + (pData.velX || 1), pData.y, pData.z + (pData.velZ || 0));
                     
                     const owner = this.remotePlayers.get(pData.ownerId) || (pData.ownerId === this.player.id ? this.player : null);
-                    const dummyOwner = { stats: { intelligence: 10, dexterity: 10 } };
+                    const dummyOwner = { stats: { intelligence: 10, dexterity: 10 }, isRemote: true, isMultiplayer: true };
                     
                     remoteEntity = new Projectile(pData.id, owner || dummyOwner, pData.subType, start, target);
                 } else if (pData.type === 'Fence') {
@@ -1532,7 +1557,7 @@ export class GameEngine {
                 }
             }
 
-            this.chunkManager.update(this.player, dt, this.collisionManager);
+            this.chunkManager.update(this.player, dt, this.collisionManager, this.floatingTextManager);
 
             if (this.pendingInteraction) {
                 // 1. Validate Target
@@ -1637,7 +1662,9 @@ export class GameEngine {
                                 }
                             } else {
                                 // Singleplayer Attack
-                                if (this.player.attack(this.pendingInteraction)) {
+                                if (this.player.attack(this.pendingInteraction, (dmg, target) => {
+                                    this.floatingTextManager.spawn(dmg, target.position, '#ffffff');
+                                })) {
                                     attacked = true;
                                 }
                                 // Do NOT clear pendingInteraction
@@ -1809,6 +1836,8 @@ export class GameEngine {
                 this.renderSystem.setGroundTexture('ground');
             }
         }
+
+        this.floatingTextManager.update(dt);
     }
 
     render(alpha) {

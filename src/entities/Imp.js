@@ -10,7 +10,7 @@ export class Imp extends Actor {
         
         // AI State
         this.sightRange = 45; 
-        this.attackRange = 2.0;
+        this.attackRange = 3.0;
         this.roamRadius = 12;
         this.roamTimer = 0;
         this.roamInterval = 3; 
