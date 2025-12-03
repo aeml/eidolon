@@ -657,33 +657,37 @@ export class GameEngine {
                         
                         // Level Up Detection
                         if (this.player.level < pData.level) {
-                            console.log(`Level Up! ${this.player.level} -> ${pData.level}`);
-                            this.player.level = pData.level;
-                            
-                            // Trigger Effect
-                            const effect = new LevelUpEffect(this.renderSystem.scene, this.player.position);
-                            this.effects.push(effect);
-                            
-                            // Floating Text
-                            this.floatingTextManager.spawn("LEVEL UP!", 
-                                new THREE.Vector3(this.player.position.x, this.player.position.y + 2, this.player.position.z), 
-                                '#ffd700' // Gold
-                            );
+                            // Only trigger if we have synced at least once (avoid login level up)
+                            if (this.player.hasSyncedLevel) {
+                                console.log(`Level Up! ${this.player.level} -> ${pData.level}`);
+                                
+                                // Trigger Effect
+                                const effect = new LevelUpEffect(this.renderSystem.scene, this.player.position);
+                                this.effects.push(effect);
+                                
+                                // Floating Text
+                                this.floatingTextManager.spawn("LEVEL UP!", 
+                                    new THREE.Vector3(this.player.position.x, this.player.position.y + 2, this.player.position.z), 
+                                    '#ffd700' // Gold
+                                );
 
-                            // Chat Notification
-                            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                                const chatMsg = {
-                                    type: "chat",
-                                    payload: {
-                                        message: `* has reached level ${pData.level}! *`,
-                                        sender: this.username || "Player"
-                                    }
-                                };
-                                this.socket.send(JSON.stringify(chatMsg));
+                                // Chat Notification
+                                if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                                    const chatMsg = {
+                                        type: "chat",
+                                        payload: {
+                                            message: `* has reached level ${pData.level}! *`,
+                                            sender: this.username || "Player"
+                                        }
+                                    };
+                                    this.socket.send(JSON.stringify(chatMsg));
+                                }
                             }
+                            this.player.level = pData.level;
                         } else {
                             this.player.level = pData.level;
                         }
+                        this.player.hasSyncedLevel = true;
 
                         if (this.player.stats) {
                             this.player.stats.hp = pData.health;
@@ -888,8 +892,9 @@ export class GameEngine {
 
                         // Remote Level Up Detection
                         if (pData.level !== undefined) {
-                            if (remoteEntity.level === undefined) {
+                            if (!remoteEntity.hasSyncedLevel) {
                                 remoteEntity.level = pData.level;
+                                remoteEntity.hasSyncedLevel = true;
                             } else if (remoteEntity.level < pData.level) {
                                 console.log(`Remote Entity ${remoteEntity.id} Level Up! ${remoteEntity.level} -> ${pData.level}`);
                                 remoteEntity.level = pData.level;
