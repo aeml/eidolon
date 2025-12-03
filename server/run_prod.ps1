@@ -2,8 +2,8 @@
 # Make sure you have generated certificates using Certbot first!
 # See README.md for instructions.
 
-$CertPath = "C:\Certbot\live\eserver.mendola.tech\fullchain.pem"
-$KeyPath = "C:\Certbot\live\eserver.mendola.tech\privkey.pem"
+$CertPath = ".\certs\fullchain.pem"
+$KeyPath = ".\certs\privkey.pem"
 
 # Check if certificates exist
 if (!(Test-Path $CertPath) -or !(Test-Path $KeyPath)) {

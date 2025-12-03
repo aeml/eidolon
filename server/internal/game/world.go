@@ -1471,13 +1471,15 @@ func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[str
 		return make(map[string]*Entity)
 	}
 
-	state := make(map[string]*Entity)
+	// Query Grid
+	nearby := w.Grid.Nearby(player.X, player.Z, viewDistance)
+
+	// Optimization: Pre-allocate map size to avoid re-allocations
+	state := make(map[string]*Entity, len(nearby)+1)
 
 	// Always include self
 	state[playerID] = w.copyEntity(player)
 
-	// Query Grid
-	nearby := w.Grid.Nearby(player.X, player.Z, viewDistance)
 	for _, v := range nearby {
 		if v.ID == playerID {
 			continue
