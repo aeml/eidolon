@@ -243,7 +243,27 @@ export class WorldMap {
         ctx.fillStyle = '#aaffff';
         ctx.font = `${12 * (this.scale / 2)}px Arial`;
         // Position slightly below the main "SNOW WORLD" text
-        ctx.fillText("Lv 50-54", snowLabelPos.x, snowLabelPos.y + (20 * this.scale / 2));
+        ctx.fillText("Sirens (Lv 50-54)", snowLabelPos.x, snowLabelPos.y + (20 * this.scale / 2));
+
+        // Frost Guardian Zone (Lv 54-58)
+        const fgZoneX = -1000;
+        const fgZoneZ = -1400;
+        const fgZoneW = 2000;
+        const fgZoneD = 400;
+
+        const fgScreenPos = worldToScreen(fgZoneX, fgZoneZ);
+
+        ctx.fillStyle = 'rgba(0, 255, 255, 0.15)'; // Cyan tint
+        ctx.fillRect(fgScreenPos.x, fgScreenPos.y, fgZoneW * this.scale, fgZoneD * this.scale);
+
+        ctx.strokeStyle = 'rgba(0, 255, 255, 0.5)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(fgScreenPos.x, fgScreenPos.y, fgZoneW * this.scale, fgZoneD * this.scale);
+
+        // Frost Guardian Label
+        const fgLabelPos = worldToScreen(0, -1200); // Center of -1000 to -1400
+        ctx.fillStyle = '#aaffff';
+        ctx.fillText("Frost Guardians (Lv 54-58)", fgLabelPos.x, fgLabelPos.y);
 
         // Future Zone 2 (Placeholder)
         const zone2Z = -1400;
