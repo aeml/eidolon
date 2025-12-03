@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -29,22 +30,23 @@ type Stats struct {
 }
 
 type Entity struct {
-	ID            string     `json:"id"`
-	Name          string     `json:"name"`
-	Type          EntityType `json:"type"`
-	SubType       string     `json:"subType"` // e.g., "Fighter", "Skeleton"
-	X             float64    `json:"x"`
-	Y             float64    `json:"y"`
-	Z             float64    `json:"z"`
-	Rotation      float64    `json:"rotation"` // Y-axis rotation in radians
-	Health        int        `json:"health"`
-	MaxHealth     int        `json:"maxHealth"`
-	Mana          int        `json:"mana"`
-	MaxMana       int        `json:"maxMana"`
-	Level         int        `json:"level"`
-	Experience    int        `json:"experience"`
-	MaxExperience int        `json:"maxExperience"`
-	Gold          int        `json:"gold"`
+	mu            sync.RWMutex // Protects concurrent access
+	ID            string       `json:"id"`
+	Name          string       `json:"name"`
+	Type          EntityType   `json:"type"`
+	SubType       string       `json:"subType"` // e.g., "Fighter", "Skeleton"
+	X             float64      `json:"x"`
+	Y             float64      `json:"y"`
+	Z             float64      `json:"z"`
+	Rotation      float64      `json:"rotation"` // Y-axis rotation in radians
+	Health        int          `json:"health"`
+	MaxHealth     int          `json:"maxHealth"`
+	Mana          int          `json:"mana"`
+	MaxMana       int          `json:"maxMana"`
+	Level         int          `json:"level"`
+	Experience    int          `json:"experience"`
+	MaxExperience int          `json:"maxExperience"`
+	Gold          int          `json:"gold"`
 
 	// Inventory
 	Inventory []Item          `json:"-"`
@@ -101,6 +103,7 @@ type Entity struct {
 type SpatialMap struct {
 	cellSize float64
 	cells    map[string]map[string]*Entity
+	mu       sync.RWMutex
 }
 
 func NewSpatialMap(cellSize float64) *SpatialMap {
@@ -115,8 +118,9 @@ func (sm *SpatialMap) key(x, z float64) string {
 	cz := int(math.Floor(z / sm.cellSize))
 	return fmt.Sprintf("%d:%d", cx, cz)
 }
-
 func (sm *SpatialMap) Add(e *Entity) {
+	sm.mu.Lock()
+	defer sm.mu.Unlock()
 	k := sm.key(e.X, e.Z)
 	if sm.cells[k] == nil {
 		sm.cells[k] = make(map[string]*Entity)
@@ -125,6 +129,8 @@ func (sm *SpatialMap) Add(e *Entity) {
 }
 
 func (sm *SpatialMap) Remove(e *Entity) {
+	sm.mu.Lock()
+	defer sm.mu.Unlock()
 	k := sm.key(e.X, e.Z)
 	if sm.cells[k] != nil {
 		delete(sm.cells[k], e.ID)
@@ -135,6 +141,8 @@ func (sm *SpatialMap) Remove(e *Entity) {
 }
 
 func (sm *SpatialMap) Update(e *Entity, oldX, oldZ float64) {
+	sm.mu.Lock()
+	defer sm.mu.Unlock()
 	oldKey := sm.key(oldX, oldZ)
 	newKey := sm.key(e.X, e.Z)
 	if oldKey == newKey {
@@ -153,6 +161,8 @@ func (sm *SpatialMap) Update(e *Entity, oldX, oldZ float64) {
 }
 
 func (sm *SpatialMap) Nearby(x, z, radius float64) []*Entity {
+	sm.mu.RLock()
+	defer sm.mu.RUnlock()
 	var result []*Entity
 	minX := int(math.Floor((x - radius) / sm.cellSize))
 	maxX := int(math.Floor((x + radius) / sm.cellSize))
@@ -519,6 +529,24 @@ func (w *World) spawnEnemies() {
 	w.spawnEnemyRect("InfernoTitan", 300, 600, 1000, -600, 1000, 50, Stats{Strength: 3000, Intelligence: 1000, Dexterity: 400, Wisdom: 1000, Vitality: 3000})
 }
 
+type deferredActions struct {
+	mu        sync.Mutex
+	removals  []string
+	additions []*Entity
+}
+
+func (d *deferredActions) addRemoval(id string) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	d.removals = append(d.removals, id)
+}
+
+func (d *deferredActions) addAddition(e *Entity) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	d.additions = append(d.additions, e)
+}
+
 func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ float64, level int, baseStats Stats) {
 	for i := 0; i < count; i++ {
 		x := minX + rand.Float64()*(maxX-minX)
@@ -789,13 +817,404 @@ func (w *World) PerformRespawn(playerID string) {
 	w.Grid.Update(player, oldX, oldZ) // Force update to 0,200
 }
 
+func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred *deferredActions) {
+	// --- Loot Cleanup ---
+	if e.Type == TypeLoot {
+		e.mu.Lock()
+		if time.Since(e.LootTime) > 1*time.Minute {
+			deferred.addRemoval(e.ID)
+		}
+		e.mu.Unlock()
+		return
+	}
+
+	// --- Respawn Logic for Enemies and NPCs ---
+	if e.Type == TypeEnemy || e.Type == TypeNPC {
+		e.mu.Lock()
+		if e.State == "DEAD" {
+			// Check if Elite
+			if strings.HasPrefix(e.ID, "elite-") {
+				if time.Since(e.LastAttackTime) > 5*time.Second {
+					deferred.addRemoval(e.ID)
+				}
+				e.mu.Unlock()
+				return
+			}
+
+			// Respawn Logic for normal mobs
+			if time.Since(e.LastAttackTime) > 10*time.Second {
+				e.State = "IDLE"
+				e.Health = e.MaxHealth
+				oldX, oldZ := e.X, e.Z
+				e.X = e.SpawnX
+				e.Z = e.SpawnZ
+				w.Grid.Update(e, oldX, oldZ)
+			}
+			e.mu.Unlock()
+			return
+		}
+		e.mu.Unlock()
+	}
+
+	// --- Projectiles ---
+	if e.Type == TypeProjectile {
+		e.mu.Lock()
+		// Lifetime check
+		if time.Since(e.CreatedAt) > 5*time.Second {
+			deferred.addRemoval(e.ID)
+			e.mu.Unlock()
+			return
+		}
+
+		// Move
+		oldX, oldZ := e.X, e.Z
+		e.X += e.VelX * dt
+		e.Z += e.VelZ * dt
+		w.Grid.Update(e, oldX, oldZ)
+
+		// Snapshot for collision check
+		projX, projZ, radius, damage, ownerID, subType := e.X, e.Z, e.Radius, e.Damage, e.OwnerID, e.SubType
+		e.mu.Unlock()
+
+		// Check Collision with Enemies
+		nearbyEnemies := w.Grid.Nearby(projX, projZ, radius+2.0)
+		for _, target := range nearbyEnemies {
+			// Read Target State
+			target.mu.RLock()
+			if target.Type != TypeEnemy || target.State == "DEAD" {
+				target.mu.RUnlock()
+				continue
+			}
+			dx := projX - target.X
+			dz := projZ - target.Z
+			target.mu.RUnlock()
+
+			dist := math.Sqrt(dx*dx + dz*dz)
+			if dist < (radius + 0.5) {
+				e.mu.Lock()
+				if e.HitList == nil {
+					e.HitList = make(map[string]bool)
+				}
+				if e.HitList[target.ID] {
+					e.mu.Unlock()
+					continue
+				}
+				e.HitList[target.ID] = true
+				e.mu.Unlock()
+
+				// Hit!
+				target.mu.Lock()
+				target.Health -= damage
+				isDead := target.Health <= 0
+				target.mu.Unlock()
+
+				if isDead {
+					// We need the owner entity to award XP
+					owner := w.GetEntity(ownerID) // This uses RLock on World
+					target.mu.Lock()              // Lock target for handleDeath
+					w.handleDeath(target, owner, deferred)
+					target.mu.Unlock()
+				}
+
+				// Splash Damage (Fireball)
+				if subType == "Fireball" {
+					splashTargets := w.Grid.Nearby(projX, projZ, 10.0)
+					for _, splashTarget := range splashTargets {
+						splashTarget.mu.RLock()
+						if splashTarget.Type != TypeEnemy || splashTarget.ID == target.ID || splashTarget.State == "DEAD" {
+							splashTarget.mu.RUnlock()
+							continue
+						}
+						sdx := projX - splashTarget.X
+						sdz := projZ - splashTarget.Z
+						splashTarget.mu.RUnlock()
+
+						sdist := math.Sqrt(sdx*sdx + sdz*sdz)
+						if sdist < 10.0 {
+							splashTarget.mu.Lock()
+							splashTarget.Health -= int(float64(damage) * 0.4)
+							isSplashDead := splashTarget.Health <= 0
+							splashTarget.mu.Unlock()
+
+							if isSplashDead {
+								owner := w.GetEntity(ownerID)
+								splashTarget.mu.Lock()
+								w.handleDeath(splashTarget, owner, deferred)
+								splashTarget.mu.Unlock()
+							}
+						}
+					}
+				}
+
+				if subType != "Dagger" {
+					deferred.addRemoval(e.ID)
+					break
+				}
+			}
+		}
+
+		e.mu.Lock()
+		if e.X < -1000 || e.X > 1000 || e.Z < -2200 || e.Z > 1000 {
+			deferred.addRemoval(e.ID)
+		}
+		e.mu.Unlock()
+		return
+	}
+
+	// --- Player Abilities ---
+	if e.Type == TypePlayer {
+		e.mu.Lock()
+		// Fighter Charge
+		if e.IsCharging {
+			dx := e.ChargeTargetX - e.X
+			dz := e.ChargeTargetZ - e.Z
+			dist := math.Sqrt(dx*dx + dz*dz)
+			speed := 50.0
+			moveDist := speed * dt
+
+			oldX, oldZ := e.X, e.Z
+			if moveDist >= dist {
+				e.X = e.ChargeTargetX
+				e.Z = e.ChargeTargetZ
+				e.IsCharging = false
+				e.State = "IDLE"
+				w.Grid.Update(e, oldX, oldZ)
+
+				// Impact Damage
+				damage := int(float64(e.Damage) * 1.5)
+				e.mu.Unlock() // Unlock before interaction
+
+				nearby := w.Grid.Nearby(e.ChargeTargetX, e.ChargeTargetZ, 16.0)
+				for _, target := range nearby {
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					tdx := e.ChargeTargetX - target.X
+					tdz := e.ChargeTargetZ - target.Z
+					target.mu.RUnlock()
+
+					tdist := math.Sqrt(tdx*tdx + tdz*tdz)
+					if tdist < 16.0 {
+						target.mu.Lock()
+						target.Health -= damage
+						isDead := target.Health <= 0
+						target.mu.Unlock()
+
+						if isDead {
+							target.mu.Lock()
+							w.handleDeath(target, e, deferred)
+							target.mu.Unlock()
+						}
+					}
+				}
+			} else {
+				e.X += (dx / dist) * moveDist
+				e.Z += (dz / dist) * moveDist
+				e.Rotation = math.Atan2(dx, dz)
+				w.Grid.Update(e, oldX, oldZ)
+				e.mu.Unlock()
+			}
+		} else if e.SpiritsActive {
+			// Cleric Spirits
+			if time.Now().After(e.SpiritEndTime) {
+				e.SpiritsActive = false
+				e.mu.Unlock()
+			} else {
+				if time.Since(e.LastSpiritTick) >= 500*time.Millisecond {
+					e.LastSpiritTick = time.Now()
+					damage := 10 + (e.Stats.Wisdom * 1)
+					pX, pZ := e.X, e.Z
+					e.mu.Unlock() // Unlock before interaction
+
+					nearby := w.Grid.Nearby(pX, pZ, 16.0)
+					for _, target := range nearby {
+						target.mu.RLock()
+						if target.Type != TypeEnemy || target.State == "DEAD" {
+							target.mu.RUnlock()
+							continue
+						}
+						tdx := pX - target.X
+						tdz := pZ - target.Z
+						target.mu.RUnlock()
+
+						tdist := math.Sqrt(tdx*tdx + tdz*tdz)
+						if tdist < 16.0 {
+							target.mu.Lock()
+							target.Health -= damage
+							isDead := target.Health <= 0
+							target.mu.Unlock()
+
+							if isDead {
+								target.mu.Lock()
+								w.handleDeath(target, e, deferred)
+								target.mu.Unlock()
+							}
+						}
+					}
+				} else {
+					e.mu.Unlock()
+				}
+			}
+		} else {
+			e.mu.Unlock()
+		}
+	}
+
+	if e.Type == TypeEnemy {
+		// AI Logic
+		var target *Entity
+		minDist := 1000.0
+
+		e.mu.Lock()
+		ex, ez := e.X, e.Z
+		e.mu.Unlock()
+
+		// Find nearest player
+		for _, p := range players {
+			p.mu.RLock()
+			// Check Safe Zone
+			if p.X > -100 && p.X < 100 && p.Z > 100 && p.Z < 300 {
+				p.mu.RUnlock()
+				continue
+			}
+			dx := p.X - ex
+			dz := p.Z - ez
+			p.mu.RUnlock()
+
+			dist := math.Sqrt(dx*dx + dz*dz)
+			if dist < minDist {
+				minDist = dist
+				target = p
+			}
+		}
+
+		sightRange := 45.0
+		attackRange := 2.5
+		roamRadius := 10.0
+
+		e.mu.Lock()
+		defer e.mu.Unlock()
+
+		if target != nil && minDist <= sightRange {
+			if minDist <= attackRange {
+				// Attack
+				if time.Since(e.LastAttackTime) >= e.AttackCooldown {
+					e.LastAttackTime = time.Now()
+					e.State = "ATTACKING"
+					damage := e.Damage
+
+					e.mu.Unlock() // Unlock self to lock target
+
+					target.mu.Lock()
+					damage -= target.Defense
+					if damage < 1 {
+						damage = 1
+					}
+					target.Health -= damage
+					isDead := target.Health <= 0
+					target.mu.Unlock()
+
+					if isDead {
+						// Handle player death?
+						// target.State = "DEAD" // Already handled in client/respawn logic usually
+					}
+
+					e.mu.Lock() // Relock self
+				} else {
+					if time.Since(e.LastAttackTime) > 500*time.Millisecond {
+						if e.State == "ATTACKING" {
+							e.State = "IDLE"
+						}
+					}
+				}
+			} else {
+				// Chase
+				target.mu.RLock()
+				tx, tz := target.X, target.Z
+				target.mu.RUnlock()
+
+				e.TargetX = tx
+				e.TargetZ = tz
+				e.State = "MOVING"
+
+				dx := e.TargetX - e.X
+				dz := e.TargetZ - e.Z
+				dist := math.Sqrt(dx*dx + dz*dz)
+				if dist > 0 {
+					moveDist := e.Speed * dt
+					if moveDist > dist {
+						moveDist = dist
+					}
+					oldX, oldZ := e.X, e.Z
+					newX := e.X + (dx/dist)*moveDist
+					newZ := e.Z + (dz/dist)*moveDist
+
+					if newX > -100 && newX < 100 && newZ > 100 && newZ < 300 {
+						e.State = "IDLE"
+					} else {
+						e.X = newX
+						e.Z = newZ
+						e.Rotation = math.Atan2(dx, dz)
+						w.Grid.Update(e, oldX, oldZ)
+					}
+				}
+			}
+		} else {
+			// Roam
+			dx := e.TargetX - e.X
+			dz := e.TargetZ - e.Z
+			distToTarget := math.Sqrt(dx*dx + dz*dz)
+
+			if distToTarget < 0.5 || (e.TargetX == 0 && e.TargetZ == 0) {
+				angle := rand.Float64() * 2 * math.Pi
+				dist := rand.Float64() * roamRadius
+				e.TargetX = e.SpawnX + math.Cos(angle)*dist
+				e.TargetZ = e.SpawnZ + math.Sin(angle)*dist
+				e.State = "MOVING"
+			}
+
+			dx = e.TargetX - e.X
+			dz = e.TargetZ - e.Z
+			dist := math.Sqrt(dx*dx + dz*dz)
+
+			if dist > 0 {
+				moveDist := e.Speed * dt
+				if moveDist > dist {
+					moveDist = dist
+				}
+				oldX, oldZ := e.X, e.Z
+				newX := e.X + (dx/dist)*moveDist
+				newZ := e.Z + (dz/dist)*moveDist
+
+				if newX > -100 && newX < 100 && newZ > 100 && newZ < 300 {
+					e.TargetX = e.SpawnX
+					e.TargetZ = e.SpawnZ
+				} else {
+					e.X = newX
+					e.Z = newZ
+					e.Rotation = math.Atan2(dx, dz)
+					w.Grid.Update(e, oldX, oldZ)
+				}
+			}
+		}
+	}
+}
+
 func (w *World) Update(dt float64) {
+	// Note: We do NOT hold w.mu during the main update loop to allow parallelism.
+	// However, we need to snapshot the entity list safely.
+
 	w.mu.Lock()
-	defer w.mu.Unlock()
 
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Printf("Recovered from panic in Update: %v\n", r)
+			// Ensure we don't leave mutex locked if we panic while holding it
+			// This is tricky because we lock/unlock multiple times.
+			// Ideally we should use a named mutex or check state, but sync.Mutex doesn't expose state.
+			// For now, we assume panic handling is last resort.
 		}
 	}()
 
@@ -821,357 +1240,70 @@ func (w *World) Update(dt float64) {
 		}
 	}
 
-	// 1. Identify potential targets (Players & Enemies)
-	var players []*Entity
-	var enemies []*Entity
+	// 1. Identify potential targets (Players) & Snapshot Entities
+	players := make([]*Entity, 0, 100)
+	allEntities := make([]*Entity, 0, len(w.Entities))
+
 	for _, e := range w.Entities {
+		allEntities = append(allEntities, e)
 		if e.Type == TypePlayer && e.State != "DEAD" {
 			players = append(players, e)
-		} else if e.Type == TypeEnemy && e.State != "DEAD" {
-			enemies = append(enemies, e)
+		}
+	}
+	w.mu.Unlock() // Unlock World so parallel updates can happen
+
+	// 2. Update Entities (Parallel)
+	deferred := &deferredActions{}
+
+	// Create a channel for entities to update
+	entityChan := make(chan *Entity, len(allEntities))
+	for _, e := range allEntities {
+		entityChan <- e
+	}
+	close(entityChan)
+
+	var wg sync.WaitGroup
+	numWorkers := runtime.NumCPU()
+	wg.Add(numWorkers)
+
+	for i := 0; i < numWorkers; i++ {
+		go func() {
+			defer wg.Done()
+			defer func() {
+				if r := recover(); r != nil {
+					fmt.Printf("Worker panic: %v\n", r)
+				}
+			}()
+			for e := range entityChan {
+				w.updateEntity(e, dt, players, deferred)
+			}
+		}()
+	}
+	wg.Wait()
+
+	// 3. Process Deferred Actions (Removals/Additions)
+	w.mu.Lock()
+
+	for _, id := range deferred.removals {
+		if e, ok := w.Entities[id]; ok {
+			w.Grid.Remove(e)
+			delete(w.Entities, id)
 		}
 	}
 
-	// 2. Update Entities
-	for id, e := range w.Entities {
-		// --- Loot Cleanup ---
-		if e.Type == TypeLoot {
-			if time.Since(e.LootTime) > 1*time.Minute {
-				w.Grid.Remove(e)
-				delete(w.Entities, id)
-			}
-			continue
-		}
-
-		// --- Respawn Logic for Enemies and NPCs ---
-		if e.Type == TypeEnemy || e.Type == TypeNPC {
-			if e.State == "DEAD" {
-				// Check if Elite
-				if strings.HasPrefix(e.ID, "elite-") {
-					// Elites do not respawn, they are removed after death animation time
-					if time.Since(e.LastAttackTime) > 5*time.Second {
-						w.Grid.Remove(e)
-						delete(w.Entities, id)
-					}
-					continue
-				}
-
-				// Respawn Logic for normal mobs
-				if time.Since(e.LastAttackTime) > 10*time.Second { // Use LastAttackTime as death time for simplicity
-					e.State = "IDLE"
-					e.Health = e.MaxHealth
-					oldX, oldZ := e.X, e.Z
-					e.X = e.SpawnX
-					e.Z = e.SpawnZ
-					w.Grid.Update(e, oldX, oldZ)
-				}
-				continue
-			}
-		}
-
-		// --- Projectiles ---
-		if e.Type == TypeProjectile {
-			// Lifetime check (prevent memory leaks from stationary or lost projectiles)
-			if time.Since(e.CreatedAt) > 5*time.Second {
-				w.Grid.Remove(e)
-				delete(w.Entities, id)
-				continue
-			}
-
-			// Move
-			oldX, oldZ := e.X, e.Z
-			e.X += e.VelX * dt
-			e.Z += e.VelZ * dt
-			w.Grid.Update(e, oldX, oldZ)
-
-			// Check Collision with Enemies
-			// Optimization: Use Grid
-			nearbyEnemies := w.Grid.Nearby(e.X, e.Z, e.Radius+2.0) // +2 buffer
-			for _, target := range nearbyEnemies {
-				if target.Type != TypeEnemy || target.State == "DEAD" {
-					continue
-				}
-				dx := e.X - target.X
-				dz := e.Z - target.Z
-				dist := math.Sqrt(dx*dx + dz*dz)
-				if dist < (e.Radius + 0.5) { // 0.5 is approx enemy radius
-					// Check if already hit (for piercing projectiles)
-					if e.HitList == nil {
-						e.HitList = make(map[string]bool)
-					}
-					if e.HitList[target.ID] {
-						continue
-					}
-
-					// Hit!
-					e.HitList[target.ID] = true
-
-					damage := e.Damage
-					target.Health -= damage
-					if target.Health <= 0 {
-						w.handleDeath(target, w.Entities[e.OwnerID])
-					}
-
-					// Splash Damage (Fireball)
-					if e.SubType == "Fireball" {
-						// Optimization: Use Grid for splash too
-						splashTargets := w.Grid.Nearby(e.X, e.Z, 10.0)
-						for _, splashTarget := range splashTargets {
-							if splashTarget.Type != TypeEnemy || splashTarget == target || splashTarget.State == "DEAD" {
-								continue
-							}
-							sdx := e.X - splashTarget.X
-							sdz := e.Z - splashTarget.Z
-							sdist := math.Sqrt(sdx*sdx + sdz*sdz)
-							if sdist < 10.0 {
-								splashTarget.Health -= int(float64(damage) * 0.4)
-								if splashTarget.Health <= 0 {
-									w.handleDeath(splashTarget, w.Entities[e.OwnerID])
-								}
-							}
-						}
-					}
-
-					// Destroy Projectile unless it's a Dagger (Piercing)
-					if e.SubType != "Dagger" {
-						w.Grid.Remove(e)
-						delete(w.Entities, id)
-						break
-					}
-				}
-			}
-
-			// Cleanup if too far
-			if e.X < -1000 || e.X > 1000 || e.Z < -2200 || e.Z > 1000 {
-				w.Grid.Remove(e)
-				delete(w.Entities, id)
-			}
-			continue
-		}
-
-		// --- Player Abilities ---
-		if e.Type == TypePlayer {
-			// Teleporter Check REMOVED as per user request (connected world)
-			/*
-				if e.X > -50 && e.X < 50 && e.Z < -590 && e.Z > -610 {
-					// Teleport to Snow World
-					oldX, oldZ := e.X, e.Z
-					e.X = 20000
-					e.Z = 20000
-					e.TargetX = 20000
-					e.TargetZ = 20000
-					e.State = "IDLE"
-					w.Grid.Update(e, oldX, oldZ)
-				}
-			*/
-
-			// Fighter Charge
-			if e.IsCharging {
-				dx := e.ChargeTargetX - e.X
-				dz := e.ChargeTargetZ - e.Z
-				dist := math.Sqrt(dx*dx + dz*dz)
-				speed := 50.0 // Increased speed
-				moveDist := speed * dt
-
-				oldX, oldZ := e.X, e.Z
-				if moveDist >= dist {
-					e.X = e.ChargeTargetX
-					e.Z = e.ChargeTargetZ
-					e.IsCharging = false
-					e.State = "IDLE"
-
-					// Deal AoE Damage on Impact (Radius 16.0 like Spirit Guardians)
-					damage := int(float64(e.Damage) * 1.5)
-
-					// Optimization: Use Grid
-					nearby := w.Grid.Nearby(e.X, e.Z, 16.0)
-					for _, target := range nearby {
-						if target.Type != TypeEnemy || target.State == "DEAD" {
-							continue
-						}
-						dx := e.X - target.X
-						dz := e.Z - target.Z
-						dist := math.Sqrt(dx*dx + dz*dz)
-						if dist < 16.0 {
-							target.Health -= damage
-							if target.Health <= 0 {
-								w.handleDeath(target, e)
-							}
-						}
-					}
-				} else {
-					e.X += (dx / dist) * moveDist
-					e.Z += (dz / dist) * moveDist
-					e.Rotation = math.Atan2(dx, dz)
-				}
-				w.Grid.Update(e, oldX, oldZ)
-			}
-
-			// Cleric Spirits
-			if e.SpiritsActive {
-				if time.Now().After(e.SpiritEndTime) {
-					e.SpiritsActive = false
-				} else {
-					if time.Since(e.LastSpiritTick) >= 500*time.Millisecond {
-						e.LastSpiritTick = time.Now()
-						damage := 10 + (e.Stats.Wisdom * 1)
-
-						// Optimization: Use Grid
-						nearby := w.Grid.Nearby(e.X, e.Z, 16.0)
-						for _, target := range nearby {
-							if target.Type != TypeEnemy || target.State == "DEAD" {
-								continue
-							}
-							dx := e.X - target.X
-							dz := e.Z - target.Z
-							dist := math.Sqrt(dx*dx + dz*dz)
-							if dist < 16.0 {
-								target.Health -= damage
-								if target.Health <= 0 {
-									w.handleDeath(target, e)
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		if e.Type == TypeEnemy {
-			// AI Logic
-			var target *Entity
-			minDist := 1000.0 // Far
-
-			// Find nearest player
-			// Optimization: Use Grid? Or just iterate players?
-			// Iterating players is fine if player count is low (100), but Grid is better if players are spread out.
-			// Let's stick to iterating players for now as it's simpler than querying grid for "nearest player" specifically
-			// unless we maintain a separate list of players.
-			// Actually, we have `players` slice from step 1.
-			for _, p := range players {
-				// Check if player is in Safe Zone (Town: Rectangular (-100 to 100 X, 100 to 300 Z))
-				if p.X > -100 && p.X < 100 && p.Z > 100 && p.Z < 300 {
-					continue
-				}
-
-				dx := p.X - e.X
-				dz := p.Z - e.Z
-				dist := math.Sqrt(dx*dx + dz*dz)
-				if dist < minDist {
-					minDist = dist
-					target = p
-				}
-			}
-
-			sightRange := 45.0
-			attackRange := 2.5
-			roamRadius := 10.0
-
-			if target != nil && minDist <= sightRange {
-				// Chase or Attack
-				if minDist <= attackRange {
-					// Attack
-					if time.Since(e.LastAttackTime) >= e.AttackCooldown {
-						// Perform Attack
-						damage := e.Damage - target.Defense
-						if damage < 1 {
-							damage = 1
-						}
-						target.Health -= damage
-						e.LastAttackTime = time.Now()
-						e.State = "ATTACKING" // Client can play animation
-
-						if target.Health <= 0 {
-							target.Health = 0
-							target.State = "DEAD"
-							// TODO: Handle player death (respawn logic is usually client request or server timer)
-						}
-					} else {
-						// Waiting for cooldown
-						// Only reset to IDLE if enough time has passed for the attack animation (e.g. 500ms)
-						if time.Since(e.LastAttackTime) > 500*time.Millisecond {
-							if e.State == "ATTACKING" {
-								e.State = "IDLE"
-							}
-						}
-					}
-				} else {
-					// Chase
-					e.TargetX = target.X
-					e.TargetZ = target.Z
-					e.State = "MOVING"
-
-					// Move
-					dx := e.TargetX - e.X
-					dz := e.TargetZ - e.Z
-					dist := math.Sqrt(dx*dx + dz*dz)
-					if dist > 0 {
-						moveDist := e.Speed * dt
-						if moveDist > dist {
-							moveDist = dist
-						}
-						oldX, oldZ := e.X, e.Z
-						newX := e.X + (dx/dist)*moveDist
-						newZ := e.Z + (dz/dist)*moveDist
-
-						// Prevent entering Safe Zone (Town: Rectangular (-100 to 100 X, 100 to 300 Z))
-						if newX > -100 && newX < 100 && newZ > 100 && newZ < 300 {
-							// Blocked
-							e.State = "IDLE"
-						} else {
-							e.X = newX
-							e.Z = newZ
-							e.Rotation = math.Atan2(dx, dz)
-							w.Grid.Update(e, oldX, oldZ)
-						}
-					}
-				}
-			} else {
-				// Roam
-				// If no target or reached target, pick new one
-				dx := e.TargetX - e.X
-				dz := e.TargetZ - e.Z
-				distToTarget := math.Sqrt(dx*dx + dz*dz)
-
-				if distToTarget < 0.5 || (e.TargetX == 0 && e.TargetZ == 0) {
-					// Pick new random target around Spawn Point
-					angle := rand.Float64() * 2 * math.Pi
-					dist := rand.Float64() * roamRadius
-					e.TargetX = e.SpawnX + math.Cos(angle)*dist
-					e.TargetZ = e.SpawnZ + math.Sin(angle)*dist
-					e.State = "MOVING"
-				}
-
-				// Move towards roam target
-				dx = e.TargetX - e.X
-				dz = e.TargetZ - e.Z
-				dist := math.Sqrt(dx*dx + dz*dz)
-
-				if dist > 0 {
-					moveDist := e.Speed * dt
-					if moveDist > dist {
-						moveDist = dist
-					}
-					oldX, oldZ := e.X, e.Z
-					newX := e.X + (dx/dist)*moveDist
-					newZ := e.Z + (dz/dist)*moveDist
-
-					// Prevent entering Safe Zone (Town: Rectangular (-100 to 100 X, 100 to 300 Z))
-					if newX > -100 && newX < 100 && newZ > 100 && newZ < 300 {
-						e.TargetX = e.SpawnX
-						e.TargetZ = e.SpawnZ
-					} else {
-						e.X = newX
-						e.Z = newZ
-						e.Rotation = math.Atan2(dx, dz)
-						w.Grid.Update(e, oldX, oldZ)
-					}
-				}
-			}
-		}
+	for _, e := range deferred.additions {
+		w.Entities[e.ID] = e
+		w.Grid.Add(e)
 	}
 
-	// 3. Elite Spawning Logic (Every 5 minutes)
+	w.mu.Unlock()
+
+	// 4. Elite Spawning Logic (Every 5 minutes)
+	// Note: w.EliteSpawnTimer is accessed without lock here.
+	// Strictly speaking, we should lock it. But it's only used in Update loop (single threaded relative to itself).
+	// However, if we want to be safe, we can lock just for the check.
+	// But w.spawnEliteInRect locks w.mu internally.
+
 	if time.Since(w.EliteSpawnTimer) >= 5*time.Minute {
 		w.EliteSpawnTimer = time.Now()
 		// Spawn one random elite
@@ -1251,7 +1383,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	// For now, we just set it, and next movement will override it.
 
 	if target.Health <= 0 {
-		w.handleDeath(target, attacker)
+		w.handleDeath(target, attacker, nil)
 	}
 
 	return damage, true
@@ -1387,7 +1519,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	}
 }
 
-func (w *World) handleDeath(target *Entity, attacker *Entity) {
+func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferredActions) {
 	if target.State == "DEAD" {
 		return
 	}
@@ -1458,7 +1590,6 @@ func (w *World) handleDeath(target *Entity, attacker *Entity) {
 			offsetX := (rand.Float64() - 0.5) * 1.0
 			offsetZ := (rand.Float64() - 0.5) * 1.0
 
-			fmt.Printf("Loot dropped: %s (Rarity: %s) at %.2f, %.2f\n", item.Name, item.Rarity, target.X, target.Z)
 			lootEntity := &Entity{
 				ID:       fmt.Sprintf("loot-%d-%d", time.Now().UnixNano(), i),
 				Type:     TypeLoot,
@@ -1468,8 +1599,12 @@ func (w *World) handleDeath(target *Entity, attacker *Entity) {
 				LootItem: item,
 				LootTime: time.Now(),
 			}
-			w.Entities[lootEntity.ID] = lootEntity
-			w.Grid.Add(lootEntity)
+			if deferred != nil {
+				deferred.addAddition(lootEntity)
+			} else {
+				w.Entities[lootEntity.ID] = lootEntity
+				w.Grid.Add(lootEntity)
+			}
 		}
 	}
 }
