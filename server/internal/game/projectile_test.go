@@ -2,6 +2,7 @@ package game
 
 import (
 	"testing"
+	"time"
 )
 
 func TestProjectilePiercing(t *testing.T) {
@@ -35,16 +36,17 @@ func TestProjectilePiercing(t *testing.T) {
 	// 2. Setup Dagger Projectile
 	// Moving along X axis, speed 10
 	dagger := &Entity{
-		ID:      "dagger-1",
-		Type:    TypeProjectile,
-		SubType: "Dagger",
-		X:       0,
-		Z:       0,
-		VelX:    10, // Will reach enemy1 (5) in 0.5s, enemy2 (10) in 1.0s
-		VelZ:    0,
-		Radius:  1.0,
-		Damage:  10,
-		OwnerID: "player-1",
+		ID:        "dagger-1",
+		Type:      TypeProjectile,
+		SubType:   "Dagger",
+		X:         0,
+		Z:         0,
+		VelX:      10, // Will reach enemy1 (5) in 0.5s, enemy2 (10) in 1.0s
+		VelZ:      0,
+		Radius:    1.0,
+		Damage:    10,
+		OwnerID:   "player-1",
+		CreatedAt: time.Now(),
 	}
 	w.AddEntity(dagger)
 
@@ -94,16 +96,17 @@ func TestProjectileNonPiercing(t *testing.T) {
 
 	// Generic Projectile
 	proj := &Entity{
-		ID:      "arrow-1",
-		Type:    TypeProjectile,
-		SubType: "Arrow", // Not Dagger
-		X:       0,
-		Z:       0,
-		VelX:    10,
-		VelZ:    0,
-		Radius:  1.0,
-		Damage:  10,
-		OwnerID: "player-1",
+		ID:        "arrow-1",
+		Type:      TypeProjectile,
+		SubType:   "Arrow", // Not Dagger
+		X:         0,
+		Z:         0,
+		VelX:      10,
+		VelZ:      0,
+		Radius:    1.0,
+		Damage:    10,
+		OwnerID:   "player-1",
+		CreatedAt: time.Now(),
 	}
 	w.AddEntity(proj)
 
@@ -134,15 +137,16 @@ func TestProjectileHitListInitialization(t *testing.T) {
 	w.AddEntity(enemy)
 
 	dagger := &Entity{
-		ID:      "d1",
-		Type:    TypeProjectile,
-		SubType: "Dagger",
-		X:       0,
-		Z:       0,
-		VelX:    10,
-		Damage:  10,
-		Radius:  1.0, // Set Radius
-		HitList: nil, // Explicitly nil
+		ID:        "d1",
+		Type:      TypeProjectile,
+		SubType:   "Dagger",
+		X:         0,
+		Z:         0,
+		VelX:      10,
+		Damage:    10,
+		Radius:    1.0, // Set Radius
+		HitList:   nil, // Explicitly nil
+		CreatedAt: time.Now(),
 	}
 	w.AddEntity(dagger)
 
