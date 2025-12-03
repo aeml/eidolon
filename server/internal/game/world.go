@@ -428,25 +428,25 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 	}
 
 	// Base stats multiplier for Elite
-	mult := 3.0
+	mult := 1.5
 
 	// Base stats for the type (simplified lookup)
 	var baseStats Stats
 	switch subType {
 	case "Skeleton":
-		baseStats = Stats{Strength: 5, Intelligence: 2, Dexterity: 3, Wisdom: 2, Vitality: 5}
+		baseStats = Stats{Strength: 15, Intelligence: 6, Dexterity: 9, Wisdom: 6, Vitality: 15}
 	case "Imp":
-		baseStats = Stats{Strength: 12, Intelligence: 4, Dexterity: 6, Wisdom: 4, Vitality: 12}
+		baseStats = Stats{Strength: 600, Intelligence: 200, Dexterity: 300, Wisdom: 200, Vitality: 600}
 	case "DemonOrc":
-		baseStats = Stats{Strength: 25, Intelligence: 8, Dexterity: 10, Wisdom: 8, Vitality: 25}
+		baseStats = Stats{Strength: 1250, Intelligence: 400, Dexterity: 500, Wisdom: 400, Vitality: 1250}
 	case "Construct":
-		baseStats = Stats{Strength: 40, Intelligence: 15, Dexterity: 5, Wisdom: 15, Vitality: 40}
+		baseStats = Stats{Strength: 2000, Intelligence: 750, Dexterity: 250, Wisdom: 750, Vitality: 2000}
 	case "InfernoTitan":
-		baseStats = Stats{Strength: 120, Intelligence: 40, Dexterity: 20, Wisdom: 40, Vitality: 120}
+		baseStats = Stats{Strength: 3000, Intelligence: 1000, Dexterity: 400, Wisdom: 1000, Vitality: 3000}
 	case "Siren":
-		baseStats = Stats{Strength: 150, Intelligence: 80, Dexterity: 40, Wisdom: 80, Vitality: 150}
+		baseStats = Stats{Strength: 4000, Intelligence: 2000, Dexterity: 1000, Wisdom: 2000, Vitality: 4000}
 	case "FrostGuardian":
-		baseStats = Stats{Strength: 200, Intelligence: 50, Dexterity: 30, Wisdom: 50, Vitality: 250}
+		baseStats = Stats{Strength: 5000, Intelligence: 1000, Dexterity: 800, Wisdom: 1000, Vitality: 6500}
 	}
 
 	maxHealth := int(float64(baseStats.Vitality*10) * mult)
@@ -942,7 +942,7 @@ func (w *World) Update(dt float64) {
 			}
 
 			// Cleanup if too far
-			if e.X < -1000 || e.X > 1000 || e.Z < -1000 || e.Z > 1000 {
+			if e.X < -1000 || e.X > 1000 || e.Z < -2200 || e.Z > 1000 {
 				w.Grid.Remove(e)
 				delete(w.Entities, id)
 			}
