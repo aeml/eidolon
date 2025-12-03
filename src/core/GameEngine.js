@@ -22,6 +22,7 @@ import { Actor } from '../entities/Actor.js';
 import { Imp } from '../entities/Imp.js';
 import { InfernoTitan } from '../entities/InfernoTitan.js';
 import { Siren } from '../entities/Siren.js';
+import { FrostGuardian } from '../entities/FrostGuardian.js';
 import { Fence } from '../entities/Fence.js';
 
 export class GameEngine {
@@ -1018,6 +1019,7 @@ export class GameEngine {
                 case 'Construct': p = new Construct(id); break;
                 case 'InfernoTitan': p = new InfernoTitan(id); break;
                 case 'Siren': p = new Siren(id); break;
+                case 'FrostGuardian': p = new FrostGuardian(id); break;
                 default: p = new Skeleton(id); break;
             }
 
