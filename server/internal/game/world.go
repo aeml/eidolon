@@ -1024,6 +1024,35 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 	ly, lm, ld := player.LastDailyQuest.UTC().Date()
 
 	if y == ly && m == lm && d == ld && len(player.Quests) > 0 {
+		// Hotfix: Update rewards if they don't match the current values
+		updated := false
+		for i := range player.Quests {
+			q := &player.Quests[i]
+			var expectedXP int
+			switch q.Target {
+			case "Skeleton":
+				expectedXP = 50000
+			case "Imp":
+				expectedXP = 150000
+			case "DemonOrc":
+				expectedXP = 300000
+			case "Construct":
+				expectedXP = 500000
+			case "InfernoTitan":
+				expectedXP = 800000
+			case "Siren":
+				expectedXP = 1000000
+			case "FrostGuardian":
+				expectedXP = 1500000
+			}
+			if expectedXP > 0 && q.RewardXP != expectedXP {
+				q.RewardXP = expectedXP
+				updated = true
+			}
+		}
+		if updated {
+			fmt.Printf("Updated daily quest rewards for %s\n", player.Name)
+		}
 		return player // Already has quests for today
 	}
 
