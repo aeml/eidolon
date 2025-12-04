@@ -775,14 +775,14 @@
 </head>
 <body>
     <div id="browser-warning">
-        ⚠️ For the best experience, please use Google Chrome or Microsoft Edge.
+        ⚠️ For the best experience, please use Google Chrome, Microsoft Edge, or Firefox.
         <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
     </div>
     <script>
         (function() {
             const ua = navigator.userAgent;
-            // Check for Chrome (Desktop/Android), CriOS (iOS Chrome), or Edg (Edge)
-            const isSupported = /Chrome/.test(ua) || /CriOS/.test(ua) || /Edg/.test(ua);
+            // Check for Chrome (Desktop/Android), CriOS (iOS Chrome), Edg (Edge), or Firefox
+            const isSupported = /Chrome/.test(ua) || /CriOS/.test(ua) || /Edg/.test(ua) || /Firefox/.test(ua);
             
             if (!isSupported) {
                 const warning = document.getElementById('browser-warning');

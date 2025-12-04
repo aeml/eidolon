@@ -34,18 +34,26 @@ export class RenderSystem {
         
         // Renderer
         // Optimization: Disable antialias on mobile for performance
+        // Firefox Optimization: alpha: false (we have a background), stencil: false (unused)
+        const isFirefox = /firefox/i.test(navigator.userAgent);
+        
         this.renderer = new THREE.WebGLRenderer({ 
-            antialias: !this.isMobile,
-            powerPreference: "high-performance"
+            antialias: !this.isMobile && !isFirefox, // Disable AA on Firefox for performance
+            powerPreference: "high-performance",
+            alpha: false,
+            stencil: false
         });
         
         // Optimization: Cap pixel ratio to save fill rate on high DPI screens
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        // Firefox: Cap at 1.0 to ensure smooth framerate
+        const maxPixelRatio = isFirefox ? 1.0 : 1.5;
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
         
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.shadowMap.enabled = true;
         // Optimization: Use PCFSoftShadowMap for better look, or Basic for performance
-        this.renderer.shadowMap.type = this.isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
+        // Firefox: Use Basic shadows to reduce GPU load
+        this.renderer.shadowMap.type = (this.isMobile || isFirefox) ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
         
         // Ensure canvas is behind UI but visible
         this.renderer.domElement.style.position = 'absolute';
