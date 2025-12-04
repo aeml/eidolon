@@ -477,6 +477,19 @@ export class GameEngine {
         this.townEntitiesSpawned = true;
 
         console.log("Spawning Town Entities (Local)...");
+
+        // Cleanup existing local entities to prevent duplicates
+        // Iterate over all chunks to ensure we catch them even if not active
+        for (const chunk of this.chunkManager.chunks.values()) {
+            // Create a copy to safely remove while iterating
+            const entities = Array.from(chunk);
+            for (const entity of entities) {
+                if (entity.id === 'quest-npc-local' || entity.id === 'stash-local') {
+                    console.log(`Removing existing ${entity.id} before respawn`);
+                    this.chunkManager.removeEntity(entity);
+                }
+            }
+        }
         
         // Quest NPC (Left of Stash)
         const questNPC = new QuestNPC('quest-npc-local');
@@ -1388,7 +1401,7 @@ export class GameEngine {
                 this.accumulator = 0;
                 // Force a render to update positions from any pending network messages
                 this.render(1.0);
-                requestAnimationFrame((t) => this.loop(t));
+                this.animationFrameId = requestAnimationFrame((t) => this.loop(t));
                 return;
             }
 
@@ -1405,10 +1418,26 @@ export class GameEngine {
             const alpha = this.accumulator / this.fixedTimeStep;
             this.render(alpha);
     
-            requestAnimationFrame((t) => this.loop(t));
+            this.animationFrameId = requestAnimationFrame((t) => this.loop(t));
         } catch (err) {
             console.error("GameEngine Loop Error:", err);
         }
+    }
+
+    destroy() {
+        console.log("GameEngine: Destroying instance...");
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+        }
+        
+        if (this.renderSystem) {
+            this.renderSystem.dispose();
+        }
+
+        // Close socket if it was created internally (not passed in)
+        // But here we usually pass it in. If we want to reuse it, we shouldn't close it.
+        // The main.js logic reuses the socket.
     }
 
     update(dt) {
@@ -1417,39 +1446,48 @@ export class GameEngine {
         // Cleanup Rogue Stashes and Quest NPCs (Fix for extra entities at 0,0,0)
         if (this.frameCount % 60 === 0) {
             const activeEntities = this.chunkManager.getActiveEntities();
+            let stashCount = 0;
+            let questNpcCount = 0;
+
+            // Use a copy or be careful about modification during iteration
+            // activeEntities is an array copy from ChunkManager, so it's safe to iterate
+            // but removing from ChunkManager won't affect this array immediately
+            
             for (const entity of activeEntities) {
                 // Stash Cleanup
-                if (entity instanceof Stash && entity.id !== 'stash-local') {
-                    console.warn(`Removing rogue Stash entity: ${entity.id} at ${entity.position.x}, ${entity.position.z}`);
-                    entity.isActive = false;
-                    if (entity.mesh) {
-                        this.renderSystem.remove(entity.mesh);
+                if (entity instanceof Stash) {
+                    if (entity.id !== 'stash-local') {
+                        console.warn(`Removing rogue Stash entity: ${entity.id} at ${entity.position.x}, ${entity.position.z}`);
+                        this.chunkManager.removeEntity(entity);
+                    } else {
+                        stashCount++;
+                        if (stashCount > 1) {
+                             console.warn(`Removing duplicate stash-local`);
+                             this.chunkManager.removeEntity(entity);
+                        } else if (entity.position.lengthSq() < 1) {
+                             console.warn(`Fixing stash-local position from 0,0,0 to 0,0,205`);
+                             entity.position.set(0, 0, 205);
+                             this.chunkManager.updateEntityChunk(entity);
+                        }
                     }
-                    const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
-                    if (this.chunkManager.chunks.has(key)) {
-                        this.chunkManager.chunks.get(key).delete(entity);
-                    }
-                } else if (entity instanceof Stash && entity.id === 'stash-local' && entity.position.lengthSq() < 1) {
-                     console.warn(`Fixing stash-local position from 0,0,0 to 0,0,205`);
-                     entity.position.set(0, 0, 205);
-                     this.chunkManager.updateEntityChunk(entity);
                 }
 
                 // QuestNPC Cleanup
-                if (entity instanceof QuestNPC && entity.id !== 'quest-npc-local') {
-                    console.warn(`Removing rogue QuestNPC entity: ${entity.id} at ${entity.position.x}, ${entity.position.z}`);
-                    entity.isActive = false;
-                    if (entity.mesh) {
-                        this.renderSystem.remove(entity.mesh);
+                if (entity instanceof QuestNPC) {
+                    if (entity.id !== 'quest-npc-local') {
+                        console.warn(`Removing rogue QuestNPC entity: ${entity.id} at ${entity.position.x}, ${entity.position.z}`);
+                        this.chunkManager.removeEntity(entity);
+                    } else {
+                        questNpcCount++;
+                        if (questNpcCount > 1) {
+                             console.warn(`Removing duplicate quest-npc-local`);
+                             this.chunkManager.removeEntity(entity);
+                        } else if (entity.position.lengthSq() < 1) {
+                             console.warn(`Fixing quest-npc-local position from 0,0,0 to -5,0,205`);
+                             entity.position.set(-5, 0, 205);
+                             this.chunkManager.updateEntityChunk(entity);
+                        }
                     }
-                    const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
-                    if (this.chunkManager.chunks.has(key)) {
-                        this.chunkManager.chunks.get(key).delete(entity);
-                    }
-                } else if (entity instanceof QuestNPC && entity.id === 'quest-npc-local' && entity.position.lengthSq() < 1) {
-                     console.warn(`Fixing quest-npc-local position from 0,0,0 to -5,0,205`);
-                     entity.position.set(-5, 0, 205);
-                     this.chunkManager.updateEntityChunk(entity);
                 }
             }
         }
