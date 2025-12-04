@@ -71,24 +71,30 @@ type Client struct {
 
 // Message types
 const (
-	MsgJoin      = "join"
-	MsgLogin     = "login"
-	MsgRegister  = "register"
-	MsgMove      = "move"
-	MsgAttack    = "attack"
-	MsgDamage    = "damage"
-	MsgChat      = "chat"
-	MsgState     = "state"
-	MsgError     = "error"
-	MsgPickup    = "pickup"
-	MsgInventory = "inventory"
-	MsgAbility   = "ability"
-	MsgEquip     = "equip"
-	MsgBuyGamble = "buy_gamble"
-	MsgSell      = "sell"
-	MsgSocial    = "social"
-	MsgRespawn   = "respawn"
-	MsgReport    = "report"
+	MsgJoin          = "join"
+	MsgLogin         = "login"
+	MsgRegister      = "register"
+	MsgMove          = "move"
+	MsgAttack        = "attack"
+	MsgDamage        = "damage"
+	MsgChat          = "chat"
+	MsgState         = "state"
+	MsgError         = "error"
+	MsgPickup        = "pickup"
+	MsgInventory     = "inventory"
+	MsgAbility       = "ability"
+	MsgEquip         = "equip"
+	MsgBuyGamble     = "buy_gamble"
+	MsgSell          = "sell"
+	MsgSocial        = "social"
+	MsgRespawn       = "respawn"
+	MsgReport        = "report"
+	MsgStashDeposit  = "stash_deposit"
+	MsgStashWithdraw = "stash_withdraw"
+	MsgStash         = "stash"
+	MsgQuestUpdate   = "quest_update"
+	MsgAcceptQuest   = "accept_quest"
+	MsgCompleteQuest = "complete_quest"
 )
 
 type Message struct {
@@ -134,6 +140,22 @@ type BuyGamblePayload struct {
 
 type SellPayload struct {
 	ItemID string `json:"itemId"`
+}
+
+type StashDepositPayload struct {
+	ItemID string `json:"itemId"`
+}
+
+type StashWithdrawPayload struct {
+	ItemID string `json:"itemId"`
+}
+
+type AcceptQuestPayload struct {
+	QuestID string `json:"questId"`
+}
+
+type CompleteQuestPayload struct {
+	QuestID string `json:"questId"`
 }
 
 type EquipPayload struct {
@@ -234,6 +256,29 @@ func main() {
 			go func() {
 				broadcast <- BroadcastMessage{Type: MsgDamage, Data: dataBytes}
 			}()
+		}
+	}
+
+	world.OnQuestUpdate = func(playerID string, quests []game.Quest) {
+		// Find client
+		sessionsMu.Lock()
+		var client *Client
+		for _, c := range activeSessions {
+			if c.playerID == playerID {
+				client = c
+				break
+			}
+		}
+		sessionsMu.Unlock()
+
+		if client != nil {
+			payload, _ := json.Marshal(quests)
+			msg := Message{
+				Type:    MsgQuestUpdate,
+				Payload: payload,
+			}
+			b, _ := json.Marshal(msg)
+			client.sendSafe(b)
 		}
 	}
 
@@ -632,6 +677,25 @@ func (c *Client) handleMessage(msg Message) {
 			}
 		}
 
+		// Convert DB Stash to Game Stash
+		if len(char.Stash) > 0 {
+			entity.Stash = make([]game.Item, len(char.Stash))
+			for i, dbItem := range char.Stash {
+				entity.Stash[i] = game.Item{
+					ID:          dbItem.ID,
+					Name:        dbItem.Name,
+					Type:        game.ItemType(dbItem.Type),
+					Rarity:      game.ItemRarity(dbItem.Rarity),
+					Slot:        dbItem.Slot,
+					Level:       dbItem.Level,
+					Value:       dbItem.Value,
+					Icon:        dbItem.Icon,
+					Description: dbItem.Description,
+					Stats:       dbItem.Stats,
+				}
+			}
+		}
+
 		// Convert DB Equipment to Game Equipment
 		if len(char.Equipment) > 0 {
 			entity.Equipment = make(map[string]game.Item)
@@ -651,8 +715,29 @@ func (c *Client) handleMessage(msg Message) {
 			}
 		}
 
+		// Convert DB Quests to Game Quests
+		if len(char.Quests) > 0 {
+			entity.Quests = make([]game.Quest, len(char.Quests))
+			for i, q := range char.Quests {
+				entity.Quests[i] = game.Quest{
+					ID:        q.ID,
+					Type:      q.Type,
+					Target:    q.Target,
+					Count:     q.Count,
+					MaxCount:  q.MaxCount,
+					RewardXP:  q.RewardXP,
+					Completed: q.Completed,
+					Accepted:  q.Accepted,
+				}
+			}
+		}
+		entity.LastDailyQuest = char.LastDailyQuest
+
 		entity.RecalculateStats()
 		world.AddEntity(entity)
+
+		// Generate Daily Quests if needed
+		world.GenerateDailyQuests(playerID)
 
 		// Send initial inventory
 		if len(entity.Inventory) > 0 {
@@ -660,6 +745,28 @@ func (c *Client) handleMessage(msg Message) {
 			msg := Message{
 				Type:    MsgInventory,
 				Payload: invPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
+
+		// Send initial stash
+		if len(entity.Stash) > 0 {
+			stashPayload, _ := json.Marshal(entity.Stash)
+			msg := Message{
+				Type:    MsgStash,
+				Payload: stashPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
+
+		// Send initial quests
+		if len(entity.Quests) > 0 {
+			questPayload, _ := json.Marshal(entity.Quests)
+			msg := Message{
+				Type:    MsgQuestUpdate,
+				Payload: questPayload,
 			}
 			b, _ := json.Marshal(msg)
 			c.sendSafe(b)
@@ -857,6 +964,108 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 		saveReport(c.username, payload)
+
+	case MsgStashDeposit:
+		if c.playerID == "" {
+			return
+		}
+		var payload StashDepositPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success := world.PerformStashDeposit(c.playerID, payload.ItemID)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msgInv := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			bInv, _ := json.Marshal(msgInv)
+			c.sendSafe(bInv)
+
+			// Send Stash Update
+			stashPayload, _ := json.Marshal(player.Stash)
+			msgStash := Message{
+				Type:    MsgStash,
+				Payload: stashPayload,
+			}
+			bStash, _ := json.Marshal(msgStash)
+			c.sendSafe(bStash)
+		}
+
+	case MsgStashWithdraw:
+		if c.playerID == "" {
+			return
+		}
+		var payload StashWithdrawPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success := world.PerformStashWithdraw(c.playerID, payload.ItemID)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msgInv := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			bInv, _ := json.Marshal(msgInv)
+			c.sendSafe(bInv)
+
+			// Send Stash Update
+			stashPayload, _ := json.Marshal(player.Stash)
+			msgStash := Message{
+				Type:    MsgStash,
+				Payload: stashPayload,
+			}
+			bStash, _ := json.Marshal(msgStash)
+			c.sendSafe(bStash)
+		}
+
+	case MsgAcceptQuest:
+		if c.playerID == "" {
+			return
+		}
+		var payload AcceptQuestPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success := world.PerformAcceptQuest(c.playerID, payload.QuestID)
+		if success {
+			// Send Quest Update
+			questPayload, _ := json.Marshal(player.Quests)
+			msg := Message{
+				Type:    MsgQuestUpdate,
+				Payload: questPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
+
+	case MsgCompleteQuest:
+		if c.playerID == "" {
+			return
+		}
+		var payload CompleteQuestPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success := world.PerformCompleteQuest(c.playerID, payload.QuestID)
+		if success {
+			// Send Quest Update
+			questPayload, _ := json.Marshal(player.Quests)
+			msg := Message{
+				Type:    MsgQuestUpdate,
+				Payload: questPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
 	}
 }
 
@@ -1032,6 +1241,25 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 		}
 	}
 
+	// Convert Game Stash to DB Stash
+	if len(entity.Stash) > 0 {
+		char.Stash = make([]database.Item, len(entity.Stash))
+		for i, item := range entity.Stash {
+			char.Stash[i] = database.Item{
+				ID:          item.ID,
+				Name:        item.Name,
+				Type:        string(item.Type),
+				Rarity:      string(item.Rarity),
+				Slot:        item.Slot,
+				Level:       item.Level,
+				Value:       item.Value,
+				Icon:        item.Icon,
+				Description: item.Description,
+				Stats:       item.Stats,
+			}
+		}
+	}
+
 	// Convert Game Equipment to DB Equipment
 	if len(entity.Equipment) > 0 {
 		char.Equipment = make(map[string]database.Item)
@@ -1050,6 +1278,24 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 			}
 		}
 	}
+
+	// Convert Game Quests to DB Quests
+	if len(entity.Quests) > 0 {
+		char.Quests = make([]database.Quest, len(entity.Quests))
+		for i, q := range entity.Quests {
+			char.Quests[i] = database.Quest{
+				ID:        q.ID,
+				Type:      q.Type,
+				Target:    q.Target,
+				Count:     q.Count,
+				MaxCount:  q.MaxCount,
+				RewardXP:  q.RewardXP,
+				Completed: q.Completed,
+				Accepted:  q.Accepted,
+			}
+		}
+	}
+	char.LastDailyQuest = entity.LastDailyQuest
 
 	if err := db.SaveCharacter(client.username, char); err != nil {
 		log.Printf("Failed to save character for %s: %v", client.username, err)

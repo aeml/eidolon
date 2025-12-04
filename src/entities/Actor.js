@@ -106,6 +106,7 @@ export class Actor extends Entity {
         
         this.gold = 0; // Currency
         this.scaleAnimSpeed = true; // Default to scaling animation speed with movement speed
+        this.visualOffset = new THREE.Vector3(); // Visual separation offset
     }
 
     modifyMesh(mesh) {
@@ -142,9 +143,25 @@ export class Actor extends Entity {
                 this.animations[clip.name] = this.mixer.clipAction(clip);
             });
 
-            // Start Idle if available
-            if (this.animations['Idle']) {
-                this.playAnimation('Idle');
+            // Initial Animation State
+            if (this.state === 'DEAD') {
+                if (this.animations['Death']) {
+                    const action = this.animations['Death'];
+                    action.reset().play();
+                    action.setLoop(THREE.LoopOnce);
+                    action.clampWhenFinished = true;
+                    // Fast forward to end so it appears as a corpse immediately
+                    action.time = action.getClip().duration;
+                    this.currentAction = action;
+                }
+            } else if (this.state === 'ATTACKING') {
+                this.playAnimation('Attack', false);
+            } else if (this.state === 'MOVING') {
+                this.playAnimation('Run');
+            } else {
+                if (this.animations['Idle']) {
+                    this.playAnimation('Idle');
+                }
             }
         }
     }
@@ -219,14 +236,37 @@ export class Actor extends Entity {
         return true;
     }
 
-    update(dt, collisionManager) {
+    updateState(newState) {
+        if (this.isRemote) {
+            if (newState === 'ATTACKING') {
+                // If already attacking, just extend the state without restarting animation
+                const restart = this.state !== 'ATTACKING';
+                this.setAttackingState(restart);
+            } else if (newState === 'DEAD') {
+                this.die();
+            } else {
+                // If we are currently attacking, we ignore other state updates 
+                // until the local timer expires to prevent cutting off animations.
+                if (this.state !== 'ATTACKING') {
+                    this.state = newState;
+                }
+            }
+        } else {
+            this.state = newState;
+        }
+    }
+
+    update(dt, collisionManager, player, activeEntities) {
         super.update(dt);
 
         if (this.isRemote) {
             // Interpolate Position
+            let movedDistance = 0;
             if (this.targetServerPosition) {
                 const lerpFactor = 10.0 * dt;
+                const oldPos = this.position.clone();
                 this.position.lerp(this.targetServerPosition, lerpFactor);
+                movedDistance = this.position.distanceTo(oldPos);
                 
                 // Snap if very close to avoid micro-jitter
                 if (this.position.distanceTo(this.targetServerPosition) < 0.05) {
@@ -238,12 +278,65 @@ export class Actor extends Entity {
             if (this.targetServerRotation !== undefined) {
                 const targetQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.targetServerRotation);
                 this.rotation.slerp(targetQuat, 10.0 * dt);
+            } else if (movedDistance > 0.001) {
+                // Fallback: Face movement direction if no server rotation provided
+                // This ensures entities don't slide sideways if the server omits rotation
+                const lookTarget = this.position.clone().add(this.targetServerPosition.clone().sub(this.position));
+                lookTarget.y = this.position.y;
+                if (this.mesh) {
+                    this.mesh.lookAt(lookTarget);
+                    this.rotation.copy(this.mesh.quaternion);
+                }
+            }
+
+            // Apply Entity Separation (Visual De-stacking)
+            // Decay offset
+            this.visualOffset.lerp(new THREE.Vector3(0, 0, 0), 2.0 * dt);
+
+            if (collisionManager && activeEntities) {
+                // If this is a remote entity, ignore the local player for separation
+                // to prevent fighting with server position updates (chasing).
+                const ignore = this.isRemote ? player : null;
+                const separation = collisionManager.checkEntityCollision(this, activeEntities, ignore);
+                if (separation) {
+                    // Add to visual offset instead of position to avoid fighting Lerp
+                    this.visualOffset.add(separation.multiplyScalar(5.0 * dt));
+                    // Clamp to avoid extreme offsets
+                    if (this.visualOffset.length() > 1.5) {
+                        this.visualOffset.setLength(1.5);
+                    }
+                }
             }
 
             // Update Mesh
             if (this.mesh) {
-                this.mesh.position.copy(this.position);
+                // Combine logical position (Server) with visual offset (Client Separation)
+                this.mesh.position.copy(this.position).add(this.visualOffset);
                 this.mesh.quaternion.copy(this.rotation);
+            }
+
+            // Animation Logic (Remote)
+            if (this.state === 'DEAD') {
+                // Ensure death animation is playing/played
+                if (this.currentAction !== this.animations['Death'] && this.animations['Death']) {
+                    this.playAnimation('Death', false);
+                }
+            } else if (this.state === 'ATTACKING') {
+                this.playAnimation('Attack', false);
+                // Scale animation speed for remote entities
+                if (this.currentAction && this.stats.attackSpeed) {
+                    const cooldown = this.stats.attackSpeed;
+                    const clipDuration = this.currentAction.getClip().duration;
+                    // Play slightly faster (90% of cooldown) to ensure it finishes before server state reset
+                    const timeScale = clipDuration / (cooldown * 0.9);
+                    this.currentAction.setEffectiveTimeScale(timeScale);
+                }
+            } else if (this.isCharging) {
+                this.playAnimation('Run');
+            } else if (this.state === 'MOVING') {
+                this.playAnimation('Run');
+            } else {
+                this.playAnimation('Idle');
             }
 
             if (this.mixer) {
@@ -312,12 +405,29 @@ export class Actor extends Entity {
                 
                 // Check Collision
                 if (collisionManager) {
-                    const correctedPos = collisionManager.checkCollision(nextPos, this.radius, this.position); // Use actual radius
+                    // 1. Static World Collision
+                    const correctedPos = collisionManager.checkCollision(nextPos, this.radius, this.position); 
                     if (correctedPos) {
-                        // Collision occurred, use corrected position
                         this.position.copy(correctedPos);
                     } else {
                         this.position.copy(nextPos);
+                    }
+
+                    // 2. Dynamic Entity Collision (Separation)
+                    if (activeEntities) {
+                        const separation = collisionManager.checkEntityCollision(this, activeEntities);
+                        if (separation) {
+                            // Apply separation force
+                            // We add it to the position directly. 
+                            // Since we are moving every frame, this acts as a sliding force.
+                            this.position.add(separation.multiplyScalar(0.5));
+                            
+                            // Re-check static collision to ensure we didn't get pushed into a wall
+                            const finalCheck = collisionManager.checkCollision(this.position, this.radius, this.position);
+                            if (finalCheck) {
+                                this.position.copy(finalCheck);
+                            }
+                        }
                     }
                 } else {
                     this.position.copy(nextPos);
@@ -660,7 +770,7 @@ export class Actor extends Entity {
         return false;
     }
 
-    setAttackingState() {
+    setAttackingState(restartAnimation = true) {
         if (this.state === 'DEAD') return;
         
         if (this.attackTimer) {
@@ -669,7 +779,7 @@ export class Actor extends Entity {
         }
 
         this.state = 'ATTACKING';
-        this.playAnimation('Attack', false, true);
+        this.playAnimation('Attack', false, restartAnimation);
         
         // Scale animation speed
         const cooldown = this.stats.attackSpeed || 1.0;

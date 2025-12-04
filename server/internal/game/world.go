@@ -19,7 +19,21 @@ const (
 	TypeLoot       EntityType = "Loot"
 	TypeProjectile EntityType = "Projectile"
 	TypeFence      EntityType = "Fence"
+
+	MaxInventorySize = 25
+	MaxStashSize     = 100
 )
+
+type Quest struct {
+	ID        string `json:"id"`
+	Type      string `json:"type"` // "KILL"
+	Target    string `json:"target"`
+	Count     int    `json:"count"`
+	MaxCount  int    `json:"maxCount"`
+	RewardXP  int    `json:"rewardXP"`
+	Completed bool   `json:"completed"`
+	Accepted  bool   `json:"accepted"`
+}
 
 type Stats struct {
 	Strength     int `json:"strength"`
@@ -49,8 +63,11 @@ type Entity struct {
 	Gold          int          `json:"gold"`
 
 	// Inventory
-	Inventory []Item          `json:"-"`
-	Equipment map[string]Item `json:"equipment"`
+	Inventory      []Item          `json:"-"`
+	Stash          []Item          `json:"-"`
+	Equipment      map[string]Item `json:"equipment"`
+	Quests         []Quest         `json:"quests"`
+	LastDailyQuest time.Time       `json:"-"`
 
 	// Stats
 	BaseStats Stats `json:"baseStats"` // Naked stats
@@ -192,7 +209,8 @@ type World struct {
 	RegenTimer float64
 
 	// Event Callback
-	OnEvent func(eventType string, data interface{})
+	OnEvent       func(eventType string, data interface{})
+	OnQuestUpdate func(playerID string, quests []Quest)
 }
 
 type DamageEvent struct {
@@ -208,6 +226,7 @@ func NewWorld() *World {
 		EliteSpawnTimer: time.Now(),
 		RegenTimer:      0,
 		OnEvent:         func(eventType string, data interface{}) {}, // Default no-op
+		OnQuestUpdate:   func(playerID string, quests []Quest) {},
 	}
 	w.initWorld()
 	return w
@@ -526,13 +545,14 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 
 func (w *World) spawnMerchant() {
 	merchant := &Entity{
-		ID:      "merchant-1",
-		Type:    TypeNPC,
-		SubType: "DwarfSalesman",
-		X:       5,
-		Y:       0,
-		Z:       205, // Moved to new town center (0, 200)
-		State:   "IDLE",
+		ID:       "merchant-1",
+		Type:     TypeNPC,
+		SubType:  "DwarfSalesman",
+		X:        5,
+		Y:        0,
+		Z:        205, // Moved to new town center (0, 200)
+		Rotation: 0,
+		State:    "IDLE",
 	}
 	// Merchant doesn't need combat stats for now
 	w.AddEntity(merchant)
@@ -692,6 +712,10 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		newE.Inventory = make([]Item, len(e.Inventory))
 		copy(newE.Inventory, e.Inventory)
 	}
+	if e.Stash != nil {
+		newE.Stash = make([]Item, len(e.Stash))
+		copy(newE.Stash, e.Stash)
+	}
 	if e.Equipment != nil {
 		newE.Equipment = make(map[string]Item)
 		for k, v := range e.Equipment {
@@ -719,6 +743,9 @@ func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool) {
 	dist := dx*dx + dz*dz
 	if dist < 36.0 {
 		if loot.LootItem != nil {
+			if len(player.Inventory) >= MaxInventorySize {
+				return nil, false
+			}
 			player.Inventory = append(player.Inventory, *loot.LootItem)
 			w.Grid.Remove(loot)
 			delete(w.Entities, lootID)
@@ -788,7 +815,7 @@ func (w *World) PerformBuyGamble(playerID, slot string) (*Entity, bool) {
 	if player.Gold < cost {
 		return nil, false
 	}
-	if len(player.Inventory) >= 20 {
+	if len(player.Inventory) >= MaxInventorySize {
 		return nil, false
 	}
 
@@ -837,6 +864,205 @@ func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
 	player.Inventory = player.Inventory[:lastIdx]
 
 	return player, true
+}
+
+func (w *World) PerformStashDeposit(playerID, itemID string) (*Entity, bool) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+
+	// Check Stash Size
+	if len(player.Stash) >= MaxStashSize {
+		return nil, false
+	}
+
+	// Find item in Inventory
+	invIndex := -1
+	var itemToDeposit *Item
+	for i := range player.Inventory {
+		if player.Inventory[i].ID == itemID {
+			itemToDeposit = &player.Inventory[i]
+			invIndex = i
+			break
+		}
+	}
+
+	if itemToDeposit == nil {
+		return nil, false
+	}
+
+	// Move to Stash
+	player.Stash = append(player.Stash, *itemToDeposit)
+
+	// Remove from Inventory
+	lastIdx := len(player.Inventory) - 1
+	player.Inventory[invIndex] = player.Inventory[lastIdx]
+	player.Inventory = player.Inventory[:lastIdx]
+
+	return player, true
+}
+
+func (w *World) PerformStashWithdraw(playerID, itemID string) (*Entity, bool) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+
+	// Check Inventory Size
+	if len(player.Inventory) >= MaxInventorySize {
+		return nil, false
+	}
+
+	// Find item in Stash
+	stashIndex := -1
+	var itemToWithdraw *Item
+	for i := range player.Stash {
+		if player.Stash[i].ID == itemID {
+			itemToWithdraw = &player.Stash[i]
+			stashIndex = i
+			break
+		}
+	}
+
+	if itemToWithdraw == nil {
+		return nil, false
+	}
+
+	// Move to Inventory
+	player.Inventory = append(player.Inventory, *itemToWithdraw)
+
+	// Remove from Stash
+	lastIdx := len(player.Stash) - 1
+	player.Stash[stashIndex] = player.Stash[lastIdx]
+	player.Stash = player.Stash[:lastIdx]
+
+	return player, true
+}
+
+func (w *World) GenerateDailyQuests(playerID string) *Entity {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil
+	}
+
+	// Check if already generated today
+	now := time.Now()
+	y, m, d := now.Date()
+	ly, lm, ld := player.LastDailyQuest.Date()
+
+	if y == ly && m == lm && d == ld && len(player.Quests) > 0 {
+		return player // Already has quests for today
+	}
+
+	// Generate 7 Daily Quests
+	player.Quests = []Quest{
+		{ID: "daily_skeleton", Type: "KILL", Target: "Skeleton", Count: 0, MaxCount: 100, RewardXP: 5000, Completed: false, Accepted: false},
+		{ID: "daily_imp", Type: "KILL", Target: "Imp", Count: 0, MaxCount: 100, RewardXP: 15000, Completed: false, Accepted: false},
+		{ID: "daily_demonorc", Type: "KILL", Target: "DemonOrc", Count: 0, MaxCount: 100, RewardXP: 30000, Completed: false, Accepted: false},
+		{ID: "daily_construct", Type: "KILL", Target: "Construct", Count: 0, MaxCount: 100, RewardXP: 50000, Completed: false, Accepted: false},
+		{ID: "daily_infernotitan", Type: "KILL", Target: "InfernoTitan", Count: 0, MaxCount: 100, RewardXP: 80000, Completed: false, Accepted: false},
+		{ID: "daily_siren", Type: "KILL", Target: "Siren", Count: 0, MaxCount: 100, RewardXP: 100000, Completed: false, Accepted: false},
+		{ID: "daily_frostguardian", Type: "KILL", Target: "FrostGuardian", Count: 0, MaxCount: 100, RewardXP: 150000, Completed: false, Accepted: false},
+	}
+	player.LastDailyQuest = now
+
+	return player
+}
+
+func (w *World) PerformAcceptQuest(playerID, questID string) (*Entity, bool) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+
+	for i := range player.Quests {
+		if player.Quests[i].ID == questID {
+			if !player.Quests[i].Accepted {
+				player.Quests[i].Accepted = true
+				return player, true
+			}
+			return nil, false
+		}
+	}
+	return nil, false
+}
+
+func (w *World) PerformCompleteQuest(playerID, questID string) (*Entity, bool) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+
+	for i := range player.Quests {
+		if player.Quests[i].ID == questID {
+			q := &player.Quests[i]
+			if q.Accepted && !q.Completed && q.Count >= q.MaxCount {
+				q.Completed = true
+				player.Experience += q.RewardXP
+
+				// Level Up Logic (Duplicated from handleDeath, should refactor but keeping simple for now)
+				if player.MaxExperience == 0 {
+					player.MaxExperience = 100
+				}
+				for player.Experience >= player.MaxExperience {
+					if player.Level >= 100 {
+						player.Experience = player.MaxExperience
+						break
+					}
+					player.Experience -= player.MaxExperience
+					player.Level++
+					player.MaxExperience = int(100 * math.Pow(1.2, float64(player.Level-1)))
+					player.BaseStats.Vitality += 2
+					player.BaseStats.Strength += 2
+					player.BaseStats.Dexterity += 1
+					player.BaseStats.Intelligence += 1
+					player.BaseStats.Wisdom += 1
+					player.RecalculateStats()
+					player.Health = player.MaxHealth
+				}
+				return player, true
+			}
+			return nil, false
+		}
+	}
+	return nil, false
+}
+
+func (w *World) UpdateQuestProgress(player *Entity, targetType string) bool {
+	// Assumes caller holds lock on player or it's safe
+	updated := false
+	for i := range player.Quests {
+		q := &player.Quests[i]
+		if q.Accepted && !q.Completed && q.Type == "KILL" && q.Target == targetType {
+			if q.Count < q.MaxCount {
+				q.Count++
+				updated = true
+			}
+		}
+	}
+	if updated && w.OnQuestUpdate != nil {
+		// Need to copy quests to avoid race conditions if called asynchronously later
+		questsCopy := make([]Quest, len(player.Quests))
+		copy(questsCopy, player.Quests)
+		w.OnQuestUpdate(player.ID, questsCopy)
+	}
+	return updated
 }
 
 func (w *World) PerformRespawn(playerID string) {
@@ -1608,6 +1834,9 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 		if attacker.MaxExperience == 0 {
 			attacker.MaxExperience = 100
 		}
+
+		// Update Quests
+		w.UpdateQuestProgress(attacker, target.SubType)
 
 		for attacker.Experience >= attacker.MaxExperience {
 			if attacker.Level >= 100 {
