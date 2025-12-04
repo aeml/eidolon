@@ -10,16 +10,8 @@ export class RenderSystem {
         this.isMobile = isMobile;
         console.log(`RenderSystem initialized. Mobile Mode: ${this.isMobile}`);
 
-        // Load Background Texture
-        console.log("RenderSystem: Loading background texture...");
-        const loader = new THREE.TextureLoader();
-        loader.load('./assets/backgrounds/space_texture.png', (texture) => {
-            console.log("RenderSystem: Background texture loaded successfully.", texture);
-            texture.colorSpace = THREE.SRGBColorSpace;
-            this.scene.background = texture;
-        }, undefined, (err) => {
-            console.error("RenderSystem: Error loading background texture:", err);
-        });
+        // Setup Water (Background)
+        this.setupWater();
 
         // Camera Setup (Isometric Orthographic)
         const aspect = window.innerWidth / window.innerHeight;
@@ -94,6 +86,33 @@ export class RenderSystem {
         dirLight.shadow.camera.top = d;
         dirLight.shadow.camera.bottom = -d;
         this.scene.add(dirLight);
+    }
+
+    setupWater() {
+        console.log("RenderSystem: Setting up water plane...");
+        const loader = new THREE.TextureLoader();
+        loader.load('./assets/backgrounds/water_texture.png', (texture) => {
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(500, 500); // High repeat for large plane
+            texture.colorSpace = THREE.SRGBColorSpace;
+            
+            this.waterTexture = texture;
+            
+            // Huge plane to cover the world
+            const geo = new THREE.PlaneGeometry(10000, 10000);
+            const mat = new THREE.MeshBasicMaterial({ 
+                map: texture, 
+                color: 0x88ccff, // Tint it blueish
+                transparent: true,
+                opacity: 0.8
+            });
+            
+            this.waterPlane = new THREE.Mesh(geo, mat);
+            this.waterPlane.rotation.x = -Math.PI / 2;
+            this.waterPlane.position.y = -5; // Below ground
+            this.scene.add(this.waterPlane);
+        });
     }
 
     setupGround() {
@@ -200,6 +219,11 @@ export class RenderSystem {
     }
 
     render() {
+        if (this.waterTexture) {
+            const time = performance.now() * 0.0001;
+            this.waterTexture.offset.x = time;
+            this.waterTexture.offset.y = time;
+        }
         this.renderer.render(this.scene, this.camera);
     }
 
