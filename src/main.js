@@ -192,6 +192,10 @@ window.addEventListener('DOMContentLoaded', () => {
             console.log(`Device Check: Mobile=${isMobile} (UA: ${navigator.userAgent}, Width: ${window.innerWidth})`);
 
             console.log("Creating GameEngine...");
+            if (window.game) {
+                console.log("Destroying previous GameEngine instance...");
+                window.game.destroy();
+            }
             // Pass username and socket to GameEngine
             window.game = new GameEngine(type, isMobile, isMultiplayer, serverAddress, username, authSocket);
             

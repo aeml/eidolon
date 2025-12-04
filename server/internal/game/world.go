@@ -706,8 +706,61 @@ func (w *World) GetEntityCopy(id string) *Entity {
 	if !ok {
 		return nil
 	}
-	// Deep copy
-	newE := *e
+
+	// Manual copy to avoid copying the mutex
+	newE := &Entity{
+		ID:                e.ID,
+		Name:              e.Name,
+		Type:              e.Type,
+		SubType:           e.SubType,
+		X:                 e.X,
+		Y:                 e.Y,
+		Z:                 e.Z,
+		Rotation:          e.Rotation,
+		Health:            e.Health,
+		MaxHealth:         e.MaxHealth,
+		Mana:              e.Mana,
+		MaxMana:           e.MaxMana,
+		Level:             e.Level,
+		Experience:        e.Experience,
+		MaxExperience:     e.MaxExperience,
+		Gold:              e.Gold,
+		LastDailyQuest:    e.LastDailyQuest,
+		BaseStats:         e.BaseStats,
+		Stats:             e.Stats,
+		Damage:            e.Damage,
+		Defense:           e.Defense,
+		Speed:             e.Speed,
+		AttackSpeed:       e.AttackSpeed,
+		CooldownReduction: e.CooldownReduction,
+		HpRegen:           e.HpRegen,
+		ManaRegen:         e.ManaRegen,
+		CastSpeed:         e.CastSpeed,
+		TargetX:           e.TargetX,
+		TargetZ:           e.TargetZ,
+		SpawnX:            e.SpawnX,
+		SpawnZ:            e.SpawnZ,
+		State:             e.State,
+		LastAttackTime:    e.LastAttackTime,
+		AttackCooldown:    e.AttackCooldown,
+		LastAbilityTime:   e.LastAbilityTime,
+		AbilityCooldown:   e.AbilityCooldown,
+		LastRespawnTime:   e.LastRespawnTime,
+		LootItem:          e.LootItem,
+		LootTime:          e.LootTime,
+		CreatedAt:         e.CreatedAt,
+		OwnerID:           e.OwnerID,
+		VelX:              e.VelX,
+		VelZ:              e.VelZ,
+		Radius:            e.Radius,
+		SpiritsActive:     e.SpiritsActive,
+		SpiritEndTime:     e.SpiritEndTime,
+		LastSpiritTick:    e.LastSpiritTick,
+		IsCharging:        e.IsCharging,
+		ChargeTargetX:     e.ChargeTargetX,
+		ChargeTargetZ:     e.ChargeTargetZ,
+	}
+
 	if e.Inventory != nil {
 		newE.Inventory = make([]Item, len(e.Inventory))
 		copy(newE.Inventory, e.Inventory)
@@ -722,7 +775,17 @@ func (w *World) GetEntityCopy(id string) *Entity {
 			newE.Equipment[k] = v
 		}
 	}
-	return &newE
+	if e.Quests != nil {
+		newE.Quests = make([]Quest, len(e.Quests))
+		copy(newE.Quests, e.Quests)
+	}
+	if e.HitList != nil {
+		newE.HitList = make(map[string]bool)
+		for k, v := range e.HitList {
+			newE.HitList[k] = v
+		}
+	}
+	return newE
 }
 
 func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool) {
@@ -956,23 +1019,25 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 	}
 
 	// Check if already generated today
-	now := time.Now()
+	now := time.Now().UTC()
 	y, m, d := now.Date()
-	ly, lm, ld := player.LastDailyQuest.Date()
+	ly, lm, ld := player.LastDailyQuest.UTC().Date()
 
 	if y == ly && m == lm && d == ld && len(player.Quests) > 0 {
 		return player // Already has quests for today
 	}
 
+	fmt.Printf("Generating daily quests for %s (Last: %v, Now: %v)\n", player.Name, player.LastDailyQuest, now)
+
 	// Generate 7 Daily Quests
 	player.Quests = []Quest{
-		{ID: "daily_skeleton", Type: "KILL", Target: "Skeleton", Count: 0, MaxCount: 100, RewardXP: 50000, Completed: false, Accepted: false},
-		{ID: "daily_imp", Type: "KILL", Target: "Imp", Count: 0, MaxCount: 100, RewardXP: 150000, Completed: false, Accepted: false},
-		{ID: "daily_demonorc", Type: "KILL", Target: "DemonOrc", Count: 0, MaxCount: 100, RewardXP: 300000, Completed: false, Accepted: false},
-		{ID: "daily_construct", Type: "KILL", Target: "Construct", Count: 0, MaxCount: 100, RewardXP: 500000, Completed: false, Accepted: false},
-		{ID: "daily_infernotitan", Type: "KILL", Target: "InfernoTitan", Count: 0, MaxCount: 100, RewardXP: 800000, Completed: false, Accepted: false},
-		{ID: "daily_siren", Type: "KILL", Target: "Siren", Count: 0, MaxCount: 100, RewardXP: 1000000, Completed: false, Accepted: false},
-		{ID: "daily_frostguardian", Type: "KILL", Target: "FrostGuardian", Count: 0, MaxCount: 100, RewardXP: 1500000, Completed: false, Accepted: false},
+		{ID: "daily_skeleton", Type: "KILL", Target: "Skeleton", Count: 0, MaxCount: 100, RewardXP: 500000, Completed: false, Accepted: false},
+		{ID: "daily_imp", Type: "KILL", Target: "Imp", Count: 0, MaxCount: 100, RewardXP: 1500000, Completed: false, Accepted: false},
+		{ID: "daily_demonorc", Type: "KILL", Target: "DemonOrc", Count: 0, MaxCount: 100, RewardXP: 3000000, Completed: false, Accepted: false},
+		{ID: "daily_construct", Type: "KILL", Target: "Construct", Count: 0, MaxCount: 100, RewardXP: 5000000, Completed: false, Accepted: false},
+		{ID: "daily_infernotitan", Type: "KILL", Target: "InfernoTitan", Count: 0, MaxCount: 100, RewardXP: 8000000, Completed: false, Accepted: false},
+		{ID: "daily_siren", Type: "KILL", Target: "Siren", Count: 0, MaxCount: 100, RewardXP: 10000000, Completed: false, Accepted: false},
+		{ID: "daily_frostguardian", Type: "KILL", Target: "FrostGuardian", Count: 0, MaxCount: 100, RewardXP: 15000000, Completed: false, Accepted: false},
 	}
 	player.LastDailyQuest = now
 
@@ -1914,7 +1979,60 @@ func (w *World) GetState() map[string]*Entity {
 	state := make(map[string]*Entity, len(w.Entities))
 	for k, v := range w.Entities {
 		// Shallow copy of entity struct is fine for now
-		e := *v
+		// Manual copy to avoid copying mutex
+		e := Entity{
+			ID:                v.ID,
+			Name:              v.Name,
+			Type:              v.Type,
+			SubType:           v.SubType,
+			X:                 v.X,
+			Y:                 v.Y,
+			Z:                 v.Z,
+			Rotation:          v.Rotation,
+			Health:            v.Health,
+			MaxHealth:         v.MaxHealth,
+			Mana:              v.Mana,
+			MaxMana:           v.MaxMana,
+			Level:             v.Level,
+			Experience:        v.Experience,
+			MaxExperience:     v.MaxExperience,
+			Gold:              v.Gold,
+			LastDailyQuest:    v.LastDailyQuest,
+			BaseStats:         v.BaseStats,
+			Stats:             v.Stats,
+			Damage:            v.Damage,
+			Defense:           v.Defense,
+			Speed:             v.Speed,
+			AttackSpeed:       v.AttackSpeed,
+			CooldownReduction: v.CooldownReduction,
+			HpRegen:           v.HpRegen,
+			ManaRegen:         v.ManaRegen,
+			CastSpeed:         v.CastSpeed,
+			TargetX:           v.TargetX,
+			TargetZ:           v.TargetZ,
+			SpawnX:            v.SpawnX,
+			SpawnZ:            v.SpawnZ,
+			State:             v.State,
+			LastAttackTime:    v.LastAttackTime,
+			AttackCooldown:    v.AttackCooldown,
+			LastAbilityTime:   v.LastAbilityTime,
+			AbilityCooldown:   v.AbilityCooldown,
+			LastRespawnTime:   v.LastRespawnTime,
+			LootItem:          v.LootItem,
+			LootTime:          v.LootTime,
+			CreatedAt:         v.CreatedAt,
+			OwnerID:           v.OwnerID,
+			VelX:              v.VelX,
+			VelZ:              v.VelZ,
+			Radius:            v.Radius,
+			SpiritsActive:     v.SpiritsActive,
+			SpiritEndTime:     v.SpiritEndTime,
+			LastSpiritTick:    v.LastSpiritTick,
+			IsCharging:        v.IsCharging,
+			ChargeTargetX:     v.ChargeTargetX,
+			ChargeTargetZ:     v.ChargeTargetZ,
+			Equipment:         v.Equipment, // Shallow copy of map is fine if we don't modify it
+		}
 
 		// Optimize Equipment for network: Strip descriptions to save bandwidth
 		if len(e.Equipment) > 0 {
@@ -1968,7 +2086,61 @@ func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[str
 
 func (w *World) copyEntity(v *Entity) *Entity {
 	// Shallow copy & strip
-	e := *v
+	// Manual copy to avoid copying mutex
+	e := Entity{
+		ID:                v.ID,
+		Name:              v.Name,
+		Type:              v.Type,
+		SubType:           v.SubType,
+		X:                 v.X,
+		Y:                 v.Y,
+		Z:                 v.Z,
+		Rotation:          v.Rotation,
+		Health:            v.Health,
+		MaxHealth:         v.MaxHealth,
+		Mana:              v.Mana,
+		MaxMana:           v.MaxMana,
+		Level:             v.Level,
+		Experience:        v.Experience,
+		MaxExperience:     v.MaxExperience,
+		Gold:              v.Gold,
+		LastDailyQuest:    v.LastDailyQuest,
+		BaseStats:         v.BaseStats,
+		Stats:             v.Stats,
+		Damage:            v.Damage,
+		Defense:           v.Defense,
+		Speed:             v.Speed,
+		AttackSpeed:       v.AttackSpeed,
+		CooldownReduction: v.CooldownReduction,
+		HpRegen:           v.HpRegen,
+		ManaRegen:         v.ManaRegen,
+		CastSpeed:         v.CastSpeed,
+		TargetX:           v.TargetX,
+		TargetZ:           v.TargetZ,
+		SpawnX:            v.SpawnX,
+		SpawnZ:            v.SpawnZ,
+		State:             v.State,
+		LastAttackTime:    v.LastAttackTime,
+		AttackCooldown:    v.AttackCooldown,
+		LastAbilityTime:   v.LastAbilityTime,
+		AbilityCooldown:   v.AbilityCooldown,
+		LastRespawnTime:   v.LastRespawnTime,
+		LootItem:          v.LootItem,
+		LootTime:          v.LootTime,
+		CreatedAt:         v.CreatedAt,
+		OwnerID:           v.OwnerID,
+		VelX:              v.VelX,
+		VelZ:              v.VelZ,
+		Radius:            v.Radius,
+		SpiritsActive:     v.SpiritsActive,
+		SpiritEndTime:     v.SpiritEndTime,
+		LastSpiritTick:    v.LastSpiritTick,
+		IsCharging:        v.IsCharging,
+		ChargeTargetX:     v.ChargeTargetX,
+		ChargeTargetZ:     v.ChargeTargetZ,
+		Equipment:         v.Equipment,
+	}
+
 	if len(e.Equipment) > 0 {
 		newEquip := make(map[string]Item)
 		for slot, item := range e.Equipment {

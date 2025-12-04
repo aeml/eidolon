@@ -214,7 +214,8 @@ func main() {
 
 	// Set up World Event Callback
 	world.OnEvent = func(eventType string, data interface{}) {
-		if eventType == "elite_spawn" {
+		switch eventType {
+		case "elite_spawn":
 			msgText, ok := data.(string)
 			if !ok {
 				return
@@ -235,7 +236,7 @@ func main() {
 			go func() {
 				broadcast <- BroadcastMessage{Type: MsgChat, Data: dataBytes}
 			}()
-		} else if eventType == "damage" {
+		case "damage":
 			evt, ok := data.(game.DamageEvent)
 			if !ok {
 				return
@@ -732,6 +733,12 @@ func (c *Client) handleMessage(msg Message) {
 			}
 		}
 		entity.LastDailyQuest = char.LastDailyQuest
+
+		// Fix for persistence issue: If we have quests but no date (or zero date), assume they are valid for today to prevent reset
+		if len(entity.Quests) > 0 && entity.LastDailyQuest.IsZero() {
+			log.Printf("Restoring LastDailyQuest for %s (was zero, setting to Now)", c.username)
+			entity.LastDailyQuest = time.Now().UTC()
+		}
 
 		entity.RecalculateStats()
 		world.AddEntity(entity)
