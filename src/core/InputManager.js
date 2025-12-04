@@ -285,10 +285,13 @@ export class InputManager {
     }
 
     onWheel(event) {
-        event.preventDefault();
-        // Normalize wheel delta
-        const delta = Math.sign(event.deltaY);
-        this.callbacks.onZoom.forEach(cb => cb(delta));
+        // Only zoom if hovering over the game canvas
+        if (event.target.tagName === 'CANVAS') {
+            event.preventDefault();
+            // Normalize wheel delta
+            const delta = Math.sign(event.deltaY);
+            this.callbacks.onZoom.forEach(cb => cb(delta));
+        }
     }
 
     onMouseDown(event) {
