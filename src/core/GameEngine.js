@@ -473,6 +473,9 @@ export class GameEngine {
     }
 
     spawnTownEntities() {
+        if (this.townEntitiesSpawned) return;
+        this.townEntitiesSpawned = true;
+
         console.log("Spawning Town Entities (Local)...");
         
         // Quest NPC (Left of Stash)
@@ -1410,6 +1413,28 @@ export class GameEngine {
 
     update(dt) {
         this.frameCount++;
+
+        // Cleanup Rogue Stashes (Fix for extra chest at 0,0,0)
+        if (this.frameCount % 60 === 0) {
+            const activeEntities = this.chunkManager.getActiveEntities();
+            for (const entity of activeEntities) {
+                if (entity instanceof Stash && entity.id !== 'stash-local') {
+                    console.warn(`Removing rogue Stash entity: ${entity.id} at ${entity.position.x}, ${entity.position.z}`);
+                    entity.isActive = false;
+                    if (entity.mesh) {
+                        this.renderSystem.remove(entity.mesh);
+                    }
+                    const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
+                    if (this.chunkManager.chunks.has(key)) {
+                        this.chunkManager.chunks.get(key).delete(entity);
+                    }
+                } else if (entity instanceof Stash && entity.id === 'stash-local' && entity.position.lengthSq() < 1) {
+                     console.warn(`Fixing stash-local position from 0,0,0 to 0,0,205`);
+                     entity.position.set(0, 0, 205);
+                     this.chunkManager.updateEntityChunk(entity);
+                }
+            }
+        }
 
         // Process Network Message Queue
         // 1. Handle critical messages (Chat, Inventory, etc.)
