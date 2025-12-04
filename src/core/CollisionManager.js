@@ -25,6 +25,63 @@ export class CollisionManager {
         return false;
     }
 
+    // Check collision against other entities
+    checkEntityCollision(entity, activeEntities, ignoreEntity = null) {
+        if (!activeEntities) return null;
+        
+        // Use mesh position if available for visual collision (prevents jitter)
+        const position = entity.mesh ? entity.mesh.position : entity.position;
+        const radius = entity.radius || 1.0;
+        const pushVec = new THREE.Vector3();
+        let count = 0;
+
+        for (const other of activeEntities) {
+            if (other === entity) continue;
+            if (other === ignoreEntity) continue;
+            if (other.state === 'DEAD') continue; // Ignore dead bodies
+            if (!other.isActive) continue;
+            if (other instanceof THREE.Mesh) continue; // Skip raw meshes if any
+            
+            // Only collide with other Actors (things with stats)
+            // This prevents enemies from vibrating against Loot, Projectiles, etc.
+            if (!other.stats) continue;
+
+            const otherPos = other.mesh ? other.mesh.position : other.position;
+
+            // Calculate distance
+            const dx = position.x - otherPos.x;
+            const dz = position.z - otherPos.z;
+            const distSq = dx*dx + dz*dz;
+            
+            const otherRadius = other.radius || 1.0;
+            const minDist = radius + otherRadius;
+            
+            if (distSq < minDist * minDist) {
+                const dist = Math.sqrt(distSq);
+                
+                // Prevent division by zero
+                if (dist < 0.001) {
+                    // Too close, push in random direction
+                    pushVec.x += (Math.random() - 0.5);
+                    pushVec.z += (Math.random() - 0.5);
+                } else {
+                    const overlap = minDist - dist;
+                    // Push away
+                    pushVec.x += (dx / dist) * overlap;
+                    pushVec.z += (dz / dist) * overlap;
+                }
+                count++;
+            }
+        }
+        
+        if (count > 0) {
+            // Return the separation vector
+            // We can weigh it if needed, but returning the sum of overlaps works well for iterative solving
+            return pushVec;
+        }
+        return null;
+    }
+
     // Simple circle-box collision resolution
     // Returns the corrected position if collision occurs, or null if no collision
     checkCollision(position, radius, oldPosition = null) {

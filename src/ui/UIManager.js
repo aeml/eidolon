@@ -22,7 +22,17 @@ export class UIManager {
         this.inventoryGrid = document.getElementById('inventory-grid');
         this.goldDisplay = document.getElementById('gold-display');
         this.shopScreen = document.getElementById('shop-screen');
+        this.stashScreen = document.getElementById('stash-screen');
+        this.stashGrid = document.getElementById('stash-grid');
         
+        // Quest UI
+        this.questWindow = document.getElementById('quest-window');
+        this.questList = document.getElementById('quest-list');
+        this.questJournal = document.getElementById('quest-journal');
+        this.journalList = document.getElementById('journal-list');
+        this.btnCloseQuest = document.getElementById('btn-close-quest');
+        this.btnCloseJournal = document.getElementById('btn-close-journal');
+
         // Escape Menu & Help
         this.escMenu = document.getElementById('esc-menu');
         this.helpScreen = document.getElementById('help-screen');
@@ -37,6 +47,7 @@ export class UIManager {
         this.btnClosePatchNotes = document.getElementById('btn-close-patch-notes');
         this.btnRespawn = document.getElementById('btn-respawn');
         this.btnCloseShop = document.getElementById('btn-close-shop');
+        this.btnCloseStash = document.getElementById('btn-close-stash');
         
         this.reportScreen = document.getElementById('report-screen');
         this.btnCancelReport = document.getElementById('btn-cancel-report');
@@ -60,6 +71,9 @@ export class UIManager {
             e.stopPropagation();
         });
         if (this.btnCloseShop) this.btnCloseShop.addEventListener('click', () => this.toggleShop());
+        if (this.btnCloseStash) this.btnCloseStash.addEventListener('click', () => this.toggleStash());
+        if (this.btnCloseQuest) this.btnCloseQuest.addEventListener('click', () => this.toggleQuestWindow());
+        if (this.btnCloseJournal) this.btnCloseJournal.addEventListener('click', () => this.toggleJournal());
         if (this.btnRespawn) this.btnRespawn.addEventListener('click', () => {
             if (this.onRespawn) {
                 this.onRespawn();
@@ -91,6 +105,9 @@ export class UIManager {
         this.setupWindow(this.characterSheet);
         this.setupWindow(this.inventoryScreen);
         this.setupWindow(this.shopScreen);
+        this.setupWindow(this.stashScreen);
+        this.setupWindow(this.questWindow);
+        this.setupWindow(this.questJournal);
         this.setupWindow(this.helpScreen);
         this.setupWindow(this.patchNotesScreen);
         this.setupWindow(this.reportScreen);
@@ -221,6 +238,11 @@ export class UIManager {
                     e.preventDefault(); // Prevent other actions
                     this.toggleChat(true);
                     this.chatInput.focus();
+                }
+            }
+            if (e.key.toLowerCase() === 'j') {
+                if (document.activeElement !== this.chatInput) {
+                    this.toggleJournal();
                 }
             }
         });
@@ -481,6 +503,10 @@ export class UIManager {
         return this.shopScreen.style.display === 'flex';
     }
 
+    get isStashOpen() {
+        return this.stashScreen.style.display === 'flex';
+    }
+
     toggleCharacterSheet() {
         const isHidden = this.characterSheet.style.display === 'none' || this.characterSheet.style.display === '';
         this.characterSheet.style.display = isHidden ? 'block' : 'none';
@@ -496,6 +522,157 @@ export class UIManager {
         
         if (isHidden && this.lastPlayerRef) {
             this.updateInventory(this.lastPlayerRef);
+        }
+    }
+
+    toggleStash() {
+        const isHidden = this.stashScreen.style.display === 'none' || this.stashScreen.style.display === '';
+        this.stashScreen.style.display = isHidden ? 'flex' : 'none';
+        
+        if (isHidden) {
+            this.inventoryScreen.style.display = 'block'; // Open inventory too
+            if (this.lastPlayerRef) {
+                this.updateInventory(this.lastPlayerRef);
+                this.updateStash(this.lastPlayerRef);
+            }
+        }
+    }
+
+    toggleQuestWindow() {
+        const isHidden = this.questWindow.style.display === 'none' || this.questWindow.style.display === '';
+        this.questWindow.style.display = isHidden ? 'flex' : 'none';
+        if (isHidden && this.lastPlayerRef && this.lastPlayerRef.quests) {
+            this.updateQuestWindow(this.lastPlayerRef.quests);
+        }
+    }
+
+    toggleJournal() {
+        const isHidden = this.questJournal.style.display === 'none' || this.questJournal.style.display === '';
+        this.questJournal.style.display = isHidden ? 'flex' : 'none';
+        if (isHidden && this.lastPlayerRef && this.lastPlayerRef.quests) {
+            this.updateJournal(this.lastPlayerRef.quests);
+        }
+    }
+
+    updateQuestWindow(quests) {
+        this.questList.innerHTML = '';
+        if (!quests) return;
+
+        quests.forEach(q => {
+            // Show if:
+            // 1. Not accepted (Available)
+            // 2. Accepted AND Completed (Ready to Turn In)
+            // Hide if Accepted and Not Completed (In Progress - check Journal)
+            
+            if (q.accepted && !q.completed && q.count < q.maxCount) return; 
+            if (q.completed && q.accepted) {
+                 // Ready to turn in
+            } else if (q.accepted && q.completed) {
+                // Already turned in? Wait, my logic in server sets Completed=true.
+                // I need a way to know if reward is claimed?
+                // Server logic: PerformCompleteQuest sets Completed=true and gives XP.
+                // So if Completed=true, it's done.
+                // I should probably filter out completed quests from the "Available" list unless I want to show history.
+                // Let's hide completed quests.
+                return;
+            }
+
+            const div = document.createElement('div');
+            div.style.background = '#222';
+            div.style.border = '1px solid #444';
+            div.style.padding = '10px';
+            div.style.display = 'flex';
+            div.style.flexDirection = 'column';
+            div.style.gap = '5px';
+
+            let btnHtml = '';
+            let statusText = '';
+
+            if (!q.accepted) {
+                statusText = `<div style="color: #ffd700; font-weight: bold;">Daily: Kill ${q.maxCount} ${q.target}s</div>`;
+                btnHtml = `<button class="menu-btn" style="margin-top: 5px; background: #4CAF50; border-color: #45a049;">Accept Quest</button>`;
+            } else if (q.accepted && !q.completed && q.count >= q.maxCount) {
+                // Ready to turn in (Client side check, server sets completed on turn in)
+                // Wait, server sets Completed=true ONLY when PerformCompleteQuest is called.
+                // So here q.completed is false, but count >= maxCount.
+                statusText = `<div style="color: #4CAF50; font-weight: bold;">COMPLETE: Kill ${q.maxCount} ${q.target}s</div>`;
+                btnHtml = `<button class="menu-btn" style="margin-top: 5px; background: #FFD700; color: #000; border-color: #FFA000;">Claim Reward</button>`;
+            } else {
+                return; // Should be covered by top check
+            }
+
+            div.innerHTML = `
+                ${statusText}
+                <div style="color: #aaa; font-size: 12px;">Reward: ${q.rewardXP} XP</div>
+                ${btnHtml}
+            `;
+
+            const btn = div.querySelector('button');
+            btn.onclick = () => {
+                if (!q.accepted) {
+                    if (this.onAcceptQuest) this.onAcceptQuest(q.id);
+                } else {
+                    if (this.onCompleteQuest) this.onCompleteQuest(q.id);
+                }
+            };
+
+            this.questList.appendChild(div);
+        });
+
+        if (this.questList.children.length === 0) {
+            this.questList.innerHTML = '<div style="color: #888; text-align: center; margin-top: 20px;">No available quests. Check your Journal (J) for active quests.</div>';
+        }
+    }
+
+    updateJournal(quests) {
+        this.journalList.innerHTML = '';
+        if (!quests) return;
+
+        let hasActive = false;
+        quests.forEach(q => {
+            if (!q.accepted) return; // Only show accepted
+
+            hasActive = true;
+            const div = document.createElement('div');
+            div.style.background = '#222';
+            div.style.border = '1px solid #444';
+            div.style.padding = '10px';
+            div.style.display = 'flex';
+            div.style.flexDirection = 'column';
+            div.style.gap = '5px';
+
+            const pct = Math.min(100, (q.count / q.maxCount) * 100);
+            const color = q.completed ? '#4CAF50' : '#ffd700';
+            const status = q.completed ? 'COMPLETED' : 'IN PROGRESS';
+
+            div.innerHTML = `
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #fff; font-weight: bold;">Kill ${q.target}s</span>
+                    <span style="color: ${color}; font-size: 12px;">${status}</span>
+                </div>
+                <div style="background: #111; height: 10px; border: 1px solid #444; position: relative;">
+                    <div style="background: ${color}; width: ${pct}%; height: 100%;"></div>
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; text-align: center; font-size: 8px; line-height: 10px; color: #fff;">${q.count} / ${q.maxCount}</div>
+                </div>
+                <div style="color: #aaa; font-size: 12px;">Reward: ${q.rewardXP} XP</div>
+            `;
+
+            if (q.completed) {
+                // Auto-complete or button? Let's add a button to claim if we want, or just show completed.
+                // Requirement was "quest journal... lists the quest and your progress".
+                // Usually you turn in at NPC.
+                // Let's assume turn in at NPC for now, but maybe add a "Claim" button here for convenience?
+                // User said "Quest Window... offer daily quest".
+                // Let's stick to NPC interaction for turn-in.
+                // But wait, if I close the quest window, how do I turn it in?
+                // I should add "Turn In" button to the Quest Window (NPC) if completed.
+            }
+
+            this.journalList.appendChild(div);
+        });
+
+        if (!hasActive) {
+            this.journalList.innerHTML = '<div style="color: #888; text-align: center; margin-top: 20px;">No active quests.</div>';
         }
     }
 
@@ -574,6 +751,12 @@ export class UIManager {
         // Close Shop
         if (this.shopScreen.style.display === 'flex') {
             this.shopScreen.style.display = 'none';
+            closedSomething = true;
+        }
+
+        // Close Stash
+        if (this.stashScreen.style.display === 'flex') {
+            this.stashScreen.style.display = 'none';
             closedSomething = true;
         }
 
@@ -750,6 +933,10 @@ export class UIManager {
                     e.stopPropagation();
                     if (this.shopScreen.style.display === 'flex') {
                         this.sellItem(player, i);
+                    } else if (this.stashScreen.style.display === 'flex') {
+                        if (this.onStashDeposit) {
+                            this.onStashDeposit(item.id);
+                        }
                     }
                 };
             } else {
@@ -759,6 +946,56 @@ export class UIManager {
                 slots[i].style.backgroundColor = 'rgba(0,0,0,0.3)';
                 slots[i].onclick = null;
                 slots[i].oncontextmenu = null;
+            }
+        }
+    }
+
+    updateStash(player) {
+        if (!player) return;
+        this.lastPlayerRef = player;
+        
+        // Ensure grid has 100 slots
+        if (this.stashGrid.children.length === 0) {
+            for (let i = 0; i < 100; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'inv-slot';
+                this.stashGrid.appendChild(slot);
+            }
+        }
+        
+        const slots = this.stashGrid.children;
+        for (let i = 0; i < slots.length; i++) {
+            const item = player.stash ? player.stash[i] : null;
+            slots[i]._item = item;
+            
+            if (item) {
+                slots[i].textContent = item.name ? item.name.substring(0, 2) : '??';
+                slots[i].style.color = item.rarity ? item.rarity.color : '#fff';
+                slots[i].style.border = `1px solid ${item.rarity ? item.rarity.color : '#444'}`;
+                slots[i].style.backgroundColor = '#222';
+                
+                // Right-click to withdraw
+                slots[i].oncontextmenu = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (this.onStashWithdraw) {
+                        this.onStashWithdraw(item.id);
+                    }
+                };
+                
+                // Tooltip
+                slots[i].onmousemove = (e) => {
+                    this.showItemTooltip(item, e.clientX, e.clientY, e);
+                };
+                slots[i].onmouseleave = () => {
+                    this.hideTooltips();
+                };
+            } else {
+                slots[i].textContent = '';
+                slots[i].style.border = '1px solid #444';
+                slots[i].style.backgroundColor = 'rgba(0,0,0,0.3)';
+                slots[i].oncontextmenu = null;
+                slots[i].onmousemove = null;
             }
         }
     }

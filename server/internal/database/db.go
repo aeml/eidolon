@@ -25,17 +25,31 @@ type User struct {
 }
 
 type Character struct {
-	Name      string          `bson:"name"`
-	Class     string          `bson:"class"` // Fighter, Wizard, etc.
-	Level     int             `bson:"level"`
-	XP        int             `bson:"xp"`
-	Gold      int             `bson:"gold"`
-	X         float64         `bson:"x"`
-	Y         float64         `bson:"y"`
-	Z         float64         `bson:"z"`
-	Stats     Stats           `bson:"stats"`
-	Inventory []Item          `bson:"inventory"`
-	Equipment map[string]Item `bson:"equipment"`
+	Name           string          `bson:"name"`
+	Class          string          `bson:"class"` // Fighter, Wizard, etc.
+	Level          int             `bson:"level"`
+	XP             int             `bson:"xp"`
+	Gold           int             `bson:"gold"`
+	X              float64         `bson:"x"`
+	Y              float64         `bson:"y"`
+	Z              float64         `bson:"z"`
+	Stats          Stats           `bson:"stats"`
+	Inventory      []Item          `bson:"inventory"`
+	Stash          []Item          `bson:"stash"`
+	Equipment      map[string]Item `bson:"equipment"`
+	Quests         []Quest         `bson:"quests"`
+	LastDailyQuest time.Time       `bson:"last_daily_quest"`
+}
+
+type Quest struct {
+	ID        string `bson:"id"`
+	Type      string `bson:"type"` // "KILL"
+	Target    string `bson:"target"`
+	Count     int    `bson:"count"`
+	MaxCount  int    `bson:"max_count"`
+	RewardXP  int    `bson:"reward_xp"`
+	Completed bool   `bson:"completed"`
+	Accepted  bool   `bson:"accepted"`
 }
 
 type Stats struct {

@@ -838,6 +838,81 @@ export class MeshFactory {
             mesh.receiveShadow = true;
             mesh.position.y = 4.0;
             return mesh;
+        } else if (type === 'QuestNPC') {
+            try {
+                const gltf = await this.loadModel('./assets/npc/quest_man/idle.glb');
+                mesh = SkeletonUtils.clone(gltf.scene);
+                
+                mesh.userData.animations = [];
+                if (gltf.animations.length > 0) {
+                    const clip = gltf.animations[0].clone();
+                    clip.name = 'Idle';
+                    mesh.userData.animations.push(clip);
+                }
+
+                mesh.scale.set(2.0, 2.0, 2.0);
+                
+                mesh.traverse(c => {
+                    if (c.isMesh) {
+                        c.castShadow = true;
+                        c.receiveShadow = true;
+                    }
+                });
+
+                const hitGeo = new THREE.BoxGeometry(1.5, 3.5, 1.5);
+                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+                hitMesh.position.y = 1.75;
+                mesh.add(hitMesh);
+
+                return mesh;
+            } catch (err) {
+                console.error("Failed to load QuestNPC:", err);
+                geometry = new THREE.BoxGeometry(1, 2, 1);
+                material = new THREE.MeshStandardMaterial({ color: 0x0000FF });
+                mesh = new THREE.Mesh(geometry, material);
+                return mesh;
+            }
+        } else if (type === 'Stash') {
+            try {
+                const gltf = await this.loadModel('./assets/objects/chests/stash_base.glb');
+                const model = SkeletonUtils.clone(gltf.scene);
+                
+                model.scale.set(2.0, 2.0, 2.0);
+                
+                model.traverse(c => {
+                    if (c.isMesh) {
+                        c.castShadow = true;
+                        c.receiveShadow = true;
+                    }
+                });
+
+                // Calculate bounding box to center and ground the mesh
+                const box = new THREE.Box3().setFromObject(model);
+                const size = box.getSize(new THREE.Vector3());
+                const center = box.getCenter(new THREE.Vector3());
+                
+                model.position.sub(center); // Center at 0,0,0
+                model.position.y += size.y / 2 + 0.2; // Move up so bottom is at 0
+
+                // Wrapper Group to persist offset
+                mesh = new THREE.Group();
+                mesh.add(model);
+
+                const hitGeo = new THREE.BoxGeometry(2.0, 2.0, 2.0);
+                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+                hitMesh.position.y = 1.0;
+                mesh.add(hitMesh);
+
+                return mesh;
+            } catch (err) {
+                console.error("Failed to load Stash:", err);
+                geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+                material = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
+                mesh = new THREE.Mesh(geometry, material);
+                return mesh;
+            }
         }
 
         switch (type) {

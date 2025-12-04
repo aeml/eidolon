@@ -25,6 +25,8 @@ import { InfernoTitan } from '../entities/InfernoTitan.js';
 import { Siren } from '../entities/Siren.js';
 import { FrostGuardian } from '../entities/FrostGuardian.js';
 import { Fence } from '../entities/Fence.js';
+import { QuestNPC } from '../entities/QuestNPC.js';
+import { Stash } from '../entities/Stash.js';
 import { LevelUpEffect } from '../ui/LevelUpEffect.js';
 
 export class GameEngine {
@@ -98,6 +100,42 @@ export class GameEngine {
                 this.socket.send(JSON.stringify(msg));
             } else {
                 console.warn("Cannot submit report: Not connected to server.");
+            }
+        };
+        this.uiManager.onStashDeposit = (itemId) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'stash_deposit',
+                    payload: { itemId }
+                };
+                this.socket.send(JSON.stringify(msg));
+            }
+        };
+        this.uiManager.onStashWithdraw = (itemId) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'stash_withdraw',
+                    payload: { itemId }
+                };
+                this.socket.send(JSON.stringify(msg));
+            }
+        };
+        this.uiManager.onAcceptQuest = (questId) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'accept_quest',
+                    payload: { questId }
+                };
+                this.socket.send(JSON.stringify(msg));
+            }
+        };
+        this.uiManager.onCompleteQuest = (questId) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'complete_quest',
+                    payload: { questId }
+                };
+                this.socket.send(JSON.stringify(msg));
             }
         };
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
@@ -246,6 +284,7 @@ export class GameEngine {
         // In multiplayer, we still need to render the static town
         // Town Center: (0, 200), Radius: 100
         // this.worldGenerator.createTown(0, 200, 100);
+        this.spawnTownEntities();
 
         if (onProgress) onProgress(70, "Spawning Enemies...");
         await new Promise(r => setTimeout(r, 50));
@@ -433,6 +472,22 @@ export class GameEngine {
         this.loop(0);
     }
 
+    spawnTownEntities() {
+        console.log("Spawning Town Entities (Local)...");
+        
+        // Quest NPC (Left of Stash)
+        const questNPC = new QuestNPC('quest-npc-local');
+        questNPC.position.set(-5, 0, 205); 
+        questNPC.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0);
+        this.addEntity(questNPC);
+
+        // Stash (Center)
+        const stash = new Stash('stash-local');
+        stash.position.set(0, 0, 205);
+        stash.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0);
+        this.addEntity(stash);
+    }
+
     connectToServer() {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             console.log("Reusing existing auth socket connection...");
@@ -498,21 +553,16 @@ export class GameEngine {
                     return;
                 }
 
-                // Optimization: Check for state/time messages without full parse
+                // Optimization: Check for time messages without full parse
                 if (typeof data === 'string') {
-                    if (data.includes('"type":"state"')) {
-                        this.latestServerState = data;
-                        return;
-                    } else if (data.includes('"type":"time"')) {
+                    if (data.includes('"type":"time"')) {
                         this.latestServerTime = data;
                         return;
                     }
                 }
 
                 const msg = JSON.parse(data);
-                if (msg.type === 'state') {
-                    this.latestServerState = JSON.stringify(msg.payload);
-                } else if (msg.type === 'time') {
+                if (msg.type === 'time') {
                     this.latestServerTime = JSON.stringify(msg.payload);
                 } else {
                     this.messageQueue.push(msg);
@@ -774,6 +824,12 @@ export class GameEngine {
                     if (!this.pendingEntityIds.has(pData.id)) {
                         this.pendingEntityIds.add(pData.id);
                         this.entityCreationQueue.push(pData);
+                    } else {
+                        // Update pending creation with latest data to prevent state jumps/glitches upon spawn
+                        const idx = this.entityCreationQueue.findIndex(e => e.id === pData.id);
+                        if (idx !== -1) {
+                            this.entityCreationQueue[idx] = { ...this.entityCreationQueue[idx], ...pData };
+                        }
                     }
                     // Skip update for now, wait for creation
                     return;
@@ -829,21 +885,8 @@ export class GameEngine {
                             remoteEntity.isDead = true;
                             remoteEntity.state = 'DEAD';
                             remoteEntity.deadTimer = 0;
-
-                            // Try to play Death animation
-                            if (remoteEntity.animations && remoteEntity.animations['Death']) {
-                                remoteEntity.playAnimation('Death', false);
-                            } else {
-                                // Fallback: Lay flat visually
-                                const deathRot = new THREE.Quaternion();
-                                deathRot.setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
-                                // Combine with current Y rotation
-                                const currentY = new THREE.Quaternion();
-                                if (pData.rotation !== undefined) {
-                                    currentY.setFromAxisAngle(new THREE.Vector3(0, 1, 0), pData.rotation);
-                                }
-                                remoteEntity.rotation.multiplyQuaternions(deathRot, currentY);
-                            }
+                            
+                            // Animation handled by Actor.updateState or setMesh
                         }
                     } else {
                         remoteEntity.isDead = false;
@@ -861,28 +904,16 @@ export class GameEngine {
 
                         // Update State and Animation
                         if (remoteEntity.state !== pData.state || (pData.isCharging !== undefined && remoteEntity.isCharging !== pData.isCharging)) {
-                            remoteEntity.state = pData.state;
-                            if (pData.isCharging !== undefined) remoteEntity.isCharging = pData.isCharging;
-
-                            if (remoteEntity.playAnimation) {
-                                if (remoteEntity.isCharging) {
-                                    remoteEntity.playAnimation('Run');
-                                } else if (pData.state === 'MOVING') {
-                                    remoteEntity.playAnimation('Run');
-                                } else if (pData.state === 'ATTACKING') {
-                                    remoteEntity.playAnimation('Attack', false);
-                                    // Scale animation speed for remote entities
-                                    if (remoteEntity.currentAction && remoteEntity.stats.attackSpeed) {
-                                        const cooldown = remoteEntity.stats.attackSpeed;
-                                        const clipDuration = remoteEntity.currentAction.getClip().duration;
-                                        // Play slightly faster (90% of cooldown) to ensure it finishes before server state reset
-                                        const timeScale = clipDuration / (cooldown * 0.9);
-                                        remoteEntity.currentAction.setEffectiveTimeScale(timeScale);
-                                    }
-                                } else {
-                                    remoteEntity.playAnimation('Idle');
-                                }
+                            if (remoteEntity.updateState) {
+                                remoteEntity.updateState(pData.state);
+                            } else {
+                                remoteEntity.state = pData.state;
                             }
+                            
+                            if (pData.isCharging !== undefined) remoteEntity.isCharging = pData.isCharging;
+                        } else if (pData.state === 'ATTACKING' && remoteEntity.updateState) {
+                            // Force update for ATTACKING state to refresh timer/animation
+                            remoteEntity.updateState(pData.state);
                         }
 
                         // Update Rotation
@@ -948,8 +979,37 @@ export class GameEngine {
                 this.player.inventory = inventory;
                 this.uiManager.updateInventory(this.player);
             }
+        } else if (msg.type === 'stash') {
+            const stash = msg.payload;
+            // Hydrate rarity from string to object for UI
+            stash.forEach(item => {
+                if (item && typeof item.rarity === 'string') {
+                    for (const key in RARITY) {
+                        if (RARITY[key].name === item.rarity) {
+                            item.rarity = RARITY[key];
+                            break;
+                        }
+                    }
+                }
+            });
+
+            if (this.player) {
+                // Pad with nulls to maintain fixed size (100)
+                while (stash.length < 100) {
+                    stash.push(null);
+                }
+                this.player.stash = stash;
+                this.uiManager.updateStash(this.player);
+            }
         } else if (msg.type === 'social') {
             this.uiManager.updateSocialList(msg.payload);
+        } else if (msg.type === 'quest_update') {
+            const quests = msg.payload;
+            if (this.player) {
+                this.player.quests = quests;
+                this.uiManager.updateQuestWindow(quests);
+                this.uiManager.updateJournal(quests);
+            }
         }
     }
 
@@ -1372,30 +1432,8 @@ export class GameEngine {
             msgCount++;
         }
 
-        // 2. Handle latest state update (Coalesced)
-        if (this.latestServerState) {
-            try {
-                // Parse the raw string here
-                let payload;
-                if (typeof this.latestServerState === 'string') {
-                    // If it's the full message string
-                    if (this.latestServerState.startsWith('{')) {
-                        const msg = JSON.parse(this.latestServerState);
-                        payload = msg.payload;
-                    } else {
-                        // Should not happen with current logic but safe fallback
-                        payload = JSON.parse(this.latestServerState);
-                    }
-                } else {
-                    payload = this.latestServerState;
-                }
-                this.handleServerMessage({ type: 'state', payload: payload });
-            } catch (e) {
-                console.error("Error handling server state:", e);
-            } finally {
-                this.latestServerState = null;
-            }
-        }
+        // 2. Handle latest state update (Coalesced) - REMOVED to ensure all state transitions (like Attacks) are processed
+        // if (this.latestServerState) { ... }
 
         // 3. Handle latest time update (Coalesced)
         if (this.latestServerTime) {
@@ -1487,6 +1525,13 @@ export class GameEngine {
                 if (remoteEntity) {
                     // Set initial position immediately
                     remoteEntity.position.set(pData.x, pData.y, pData.z);
+                    
+                    // Set initial rotation immediately to prevent spin-up glitch
+                    if (pData.rotation !== undefined) {
+                        remoteEntity.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), pData.rotation);
+                        remoteEntity.targetServerRotation = pData.rotation;
+                    }
+
                     this.remotePlayers.set(pData.id, remoteEntity);
                     this.addEntity(remoteEntity);
                 }
@@ -1616,11 +1661,12 @@ export class GameEngine {
                             const now = Date.now();
                             const cooldownMs = this.player.stats.attackSpeed * 1000;
                             if (now - this.player.lastAttackTime < cooldownMs) {
-                                return;
+                                // Do not return here, as it exits the entire update loop!
+                                // Just skip the attack logic for this frame.
+                            } else {
+                                this.player.lastAttackTime = now;
+                                this.performAttack(this.hoveredEntity);
                             }
-                            this.player.lastAttackTime = now;
-
-                            this.performAttack(this.hoveredEntity);
                         } else {
                             this.player.attack(this.hoveredEntity);
                         }
@@ -1727,6 +1773,24 @@ export class GameEngine {
                                 this.player.playAnimation('Idle');
                             }
                             this.uiManager.toggleShop();
+                            this.pendingInteraction = null;
+
+                        } else if (this.pendingInteraction instanceof QuestNPC) {
+                            this.player.targetPosition = null;
+                            if (this.player.state === 'MOVING') {
+                                this.player.state = 'IDLE';
+                                this.player.playAnimation('Idle');
+                            }
+                            this.uiManager.toggleQuestWindow();
+                            this.pendingInteraction = null;
+
+                        } else if (this.pendingInteraction instanceof Stash) {
+                            this.player.targetPosition = null;
+                            if (this.player.state === 'MOVING') {
+                                this.player.state = 'IDLE';
+                                this.player.playAnimation('Idle');
+                            }
+                            this.uiManager.toggleStash();
                             this.pendingInteraction = null;
 
                         } else if (this.pendingInteraction instanceof Actor) {
