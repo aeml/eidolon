@@ -1035,6 +1035,28 @@ export class GameEngine {
             payload: { lootId: lootId }
         };
         this.socket.send(JSON.stringify(msg));
+
+        // Optimistic removal to prevent "ghost items"
+        const entity = this.remotePlayers.get(lootId);
+        if (entity) {
+            console.log(`Optimistically removing loot ${lootId}`);
+            entity.isActive = false;
+            if (entity.dispose) {
+                entity.dispose();
+            } else if (entity.mesh) {
+                this.renderSystem.remove(entity.mesh);
+            }
+            
+            const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
+            if (this.chunkManager.chunks.has(key)) {
+                this.chunkManager.chunks.get(key).delete(entity);
+            }
+            this.remotePlayers.delete(lootId);
+            
+            if (this.pendingInteraction === entity) {
+                this.pendingInteraction = null;
+            }
+        }
     }
 
     sendEquipMessage(item) {
