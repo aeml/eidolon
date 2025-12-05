@@ -22,6 +22,7 @@ export class UIManager {
         this.inventoryGrid = document.getElementById('inventory-grid');
         this.goldDisplay = document.getElementById('gold-display');
         this.shopScreen = document.getElementById('shop-screen');
+        this.shopGambleTitle = document.getElementById('shop-gamble-title');
         this.stashScreen = document.getElementById('stash-screen');
         this.stashGrid = document.getElementById('stash-grid');
         
@@ -724,6 +725,12 @@ export class UIManager {
             this.inventoryScreen.style.display = 'block';
             if (this.lastPlayerRef) {
                 this.updateInventory(this.lastPlayerRef);
+
+                // Update Gamble Cost Title
+                if (this.shopGambleTitle) {
+                    const cost = Math.ceil(34.68 * this.lastPlayerRef.level);
+                    this.shopGambleTitle.textContent = `MYSTERY BOXES (${cost}g)`;
+                }
             }
         }
     }
@@ -1392,8 +1399,12 @@ export class UIManager {
     }
 
     buyGambleItem(slot) {
-        if (this.lastPlayerRef && this.lastPlayerRef.gold < 500) {
-            this.addChatMessage("System", "Not sufficient gold!");
+        if (!this.lastPlayerRef) return;
+
+        const cost = Math.ceil(35 * this.lastPlayerRef.level);
+
+        if (this.lastPlayerRef.gold < cost) {
+            this.addChatMessage("System", `Not sufficient gold! Cost: ${cost}`);
             return;
         }
 

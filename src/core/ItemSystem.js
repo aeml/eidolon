@@ -142,19 +142,30 @@ export class ItemGenerator {
             const primaryBudget = Math.floor(totalBudget * 0.5);
             
             stats[primaryStat] = (stats[primaryStat] || 0) + primaryBudget;
+            let remainingBudget = totalBudget - primaryBudget;
 
             // Remaining Stats share the other 50%
             if (selectedStats.length > 1) {
-                const remainingBudget = totalBudget - primaryBudget;
-                const perStatBudget = Math.floor(remainingBudget / (selectedStats.length - 1));
-                
-                for (let i = 1; i < selectedStats.length; i++) {
-                    const stat = selectedStats[i];
-                    stats[stat] = (stats[stat] || 0) + Math.max(1, perStatBudget);
+                if (selectedStats.length > 2) {
+                    // Legendary: Boost Secondary (25% of total)
+                    const secondaryStat = selectedStats[1];
+                    const secondaryBudget = Math.floor(remainingBudget * 0.5);
+                    stats[secondaryStat] = (stats[secondaryStat] || 0) + secondaryBudget;
+                    remainingBudget -= secondaryBudget;
+
+                    const perStatBudget = Math.floor(remainingBudget / (selectedStats.length - 2));
+                    for (let i = 2; i < selectedStats.length; i++) {
+                        const stat = selectedStats[i];
+                        stats[stat] = (stats[stat] || 0) + Math.max(1, perStatBudget);
+                    }
+                } else {
+                    // Rare: Secondary gets the rest (50/50 split)
+                    const stat = selectedStats[1];
+                    stats[stat] = (stats[stat] || 0) + remainingBudget;
                 }
             } else {
                 // If only 1 stat (Uncommon), it gets the rest too (so 100%)
-                stats[primaryStat] += (totalBudget - primaryBudget);
+                stats[primaryStat] += remainingBudget;
             }
 
             // 6. Generate Name based on Stats
