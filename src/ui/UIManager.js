@@ -627,6 +627,18 @@ export class UIManager {
 
     updateJournal(quests) {
         this.journalList.innerHTML = '';
+
+        // Add Reset Time Info
+        const infoDiv = document.createElement('div');
+        infoDiv.style.color = '#888';
+        infoDiv.style.fontSize = '12px';
+        infoDiv.style.marginBottom = '15px';
+        infoDiv.style.textAlign = 'center';
+        infoDiv.style.borderBottom = '1px solid #444';
+        infoDiv.style.paddingBottom = '10px';
+        infoDiv.textContent = `Daily quests reset at 12:00 AM Eastern Time`;
+        this.journalList.appendChild(infoDiv);
+
         if (!quests) return;
 
         let hasActive = false;

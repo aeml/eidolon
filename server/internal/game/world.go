@@ -1021,9 +1021,15 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 	}
 
 	// Check if already generated today
-	now := time.Now().UTC()
+	loc, err := time.LoadLocation("America/New_York")
+	if err != nil {
+		fmt.Printf("Error loading timezone America/New_York: %v. Defaulting to UTC.\n", err)
+		loc = time.UTC
+	}
+
+	now := time.Now().In(loc)
 	y, m, d := now.Date()
-	ly, lm, ld := player.LastDailyQuest.UTC().Date()
+	ly, lm, ld := player.LastDailyQuest.In(loc).Date()
 
 	if y == ly && m == lm && d == ld && len(player.Quests) > 0 {
 		// Hotfix: Update rewards if they don't match the current values
