@@ -228,20 +228,33 @@ func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCo
 			primaryBudget := int(float64(totalBudget) * 0.5)
 
 			itemStats[primaryStat] += primaryBudget
+			remainingBudget := totalBudget - primaryBudget
 
 			if len(selectedStats) > 1 {
-				remainingBudget := totalBudget - primaryBudget
-				perStatBudget := remainingBudget / (len(selectedStats) - 1)
-				if perStatBudget < 1 {
-					perStatBudget = 1
-				}
+				// If we have more than 2 stats (Legendary has 5), give secondary stat a boost
+				// Primary: 50%, Secondary: 25%, Others: Share 25%
+				if len(selectedStats) > 2 {
+					secondaryStat := selectedStats[1]
+					secondaryBudget := int(float64(remainingBudget) * 0.5)
+					itemStats[secondaryStat] += secondaryBudget
+					remainingBudget -= secondaryBudget
 
-				for i := 1; i < len(selectedStats); i++ {
-					stat := selectedStats[i]
-					itemStats[stat] += perStatBudget
+					perStatBudget := remainingBudget / (len(selectedStats) - 2)
+					if perStatBudget < 1 {
+						perStatBudget = 1
+					}
+
+					for i := 2; i < len(selectedStats); i++ {
+						stat := selectedStats[i]
+						itemStats[stat] += perStatBudget
+					}
+				} else {
+					// Rare (2 stats) - Secondary gets the rest (50/50 split)
+					stat := selectedStats[1]
+					itemStats[stat] += remainingBudget
 				}
 			} else {
-				itemStats[primaryStat] += (totalBudget - primaryBudget)
+				itemStats[primaryStat] += remainingBudget
 			}
 
 			// 6. Generate Name

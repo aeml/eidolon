@@ -874,7 +874,9 @@ func (w *World) PerformBuyGamble(playerID, slot string) (*Entity, bool) {
 		return nil, false
 	}
 
-	cost := 500
+	// Cost calculated to ensure ~0.5% house edge against EV (34.5 * Level)
+	cost := int(math.Ceil(35 * float64(player.Level)))
+
 	if player.Gold < cost {
 		return nil, false
 	}
