@@ -22,6 +22,52 @@ export class Cleric extends Actor {
     useAbility(targetVector, gameEngine) {
         if (!super.useAbility(targetVector, gameEngine)) return;
 
+        if (this.abilityName === "Heal") {
+            console.log("Cleric used Heal!");
+            this.playAnimation('Attack', false, true);
+            
+            // Visual Effect: Light Pillar on target
+            // Find target entity (closest to cursor)
+            // For now, just self or assume targetVector is close to someone
+            // Client side visual only
+            
+            const healPos = targetVector.clone();
+            healPos.y = 0;
+            
+            // Create a temporary light/particle effect
+            if (gameEngine && gameEngine.scene) {
+                const geometry = new THREE.CylinderGeometry(0.5, 0.5, 4, 8);
+                const material = new THREE.MeshBasicMaterial({ 
+                    color: 0x00ff00, 
+                    transparent: true, 
+                    opacity: 0.5,
+                    depthWrite: false
+                });
+                const cylinder = new THREE.Mesh(geometry, material);
+                cylinder.position.copy(healPos);
+                cylinder.position.y = 2;
+                gameEngine.scene.add(cylinder);
+                
+                // Animate and remove
+                const startTime = Date.now();
+                const animateHeal = () => {
+                    const elapsed = Date.now() - startTime;
+                    if (elapsed > 1000) {
+                        gameEngine.scene.remove(cylinder);
+                        geometry.dispose();
+                        material.dispose();
+                        return;
+                    }
+                    
+                    material.opacity = 0.5 * (1 - (elapsed / 1000));
+                    cylinder.scale.setScalar(1 + (elapsed / 1000));
+                    requestAnimationFrame(animateHeal);
+                };
+                animateHeal();
+            }
+            return;
+        }
+
         console.log("Cleric used Guardian Spirits!");
         this.playAnimation('Attack', false, true); // Cast animation
         
@@ -70,11 +116,6 @@ export class Cleric extends Actor {
         super.update(dt, collisionManager, player, activeEntities, floatingTextManager);
 
         if (this.spiritsActive) {
-            // Only decrement duration in singleplayer
-            // if (!this.isMultiplayer && !this.isRemote) {
-            //     this.spiritDuration -= dt;
-            // }
-            
             // Rotate spirits
             const radius = 3.0; // Increased visual radius to match larger damage area
             const speed = 3.0;

@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { Actor } from './Actor.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
@@ -18,6 +19,28 @@ export class Rogue extends Actor {
     useAbility(targetVector, gameEngine) {
         if (!targetVector) return;
         if (!super.useAbility(targetVector, gameEngine)) return;
+
+        if (this.abilityName === "Fan of Knives") {
+            console.log("Rogue used Fan of Knives!");
+            this.playAnimation('Attack', false, true);
+            
+            const startPos = this.position.clone();
+            startPos.y += 1.0;
+            
+            const projectileCount = 12;
+            const angleStep = (Math.PI * 2) / projectileCount;
+            
+            for (let i = 0; i < projectileCount; i++) {
+                const angle = i * angleStep;
+                const direction = new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle));
+                const target = startPos.clone().add(direction.multiplyScalar(10)); // Target 10 units away
+                
+                const dagger = new Projectile(null, this, 'Dagger', startPos, target);
+                dagger.damage = 10 + this.stats.dexterity;
+                gameEngine.addEntity(dagger);
+            }
+            return;
+        }
 
         console.log("Rogue used Throw Dagger!");
         this.playAnimation('Attack', false, true);

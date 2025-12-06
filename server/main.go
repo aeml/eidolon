@@ -164,9 +164,10 @@ type EquipPayload struct {
 }
 
 type AbilityPayload struct {
-	TargetX  float64 `json:"targetX"`
-	TargetZ  float64 `json:"targetZ"`
-	TargetID string  `json:"targetId"`
+	TargetX   float64 `json:"targetX"`
+	TargetZ   float64 `json:"targetZ"`
+	TargetID  string  `json:"targetId"`
+	SkillName string  `json:"skillName"`
 }
 
 type DamagePayload struct {
@@ -847,7 +848,7 @@ func (c *Client) handleMessage(msg Message) {
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
 			return
 		}
-		world.PerformAbility(c.playerID, payload.TargetX, payload.TargetZ, payload.TargetID)
+		world.PerformAbility(c.playerID, payload.TargetX, payload.TargetZ, payload.TargetID, payload.SkillName)
 
 	case MsgChat:
 		if c.username == "" {

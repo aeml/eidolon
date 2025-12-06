@@ -22,6 +22,18 @@ export class Fighter extends Actor {
         if (!super.useAbility(targetVector, gameEngine)) return;
 
         this.gameEngine = gameEngine;
+        
+        if (this.abilityName === "Whirlwind") {
+            console.log("Fighter used Whirlwind!");
+            this.isWhirlwinding = true;
+            this.whirlwindTimer = 0;
+            this.whirlwindDuration = 1.0; // Spin for 1 second
+            this.state = 'ATTACKING';
+            this.playAnimation('Attack'); // Or a spin animation if available
+            return;
+        }
+
+        // Default: Charge
         console.log("Fighter used Charge!");
         this.isCharging = true;
         this.state = 'ATTACKING'; // Lock movement
@@ -40,9 +52,29 @@ export class Fighter extends Actor {
 
     cancelAbilities() {
         this.isCharging = false;
+        this.isWhirlwinding = false;
     }
 
     update(dt, collisionManager, player, activeEntities, floatingTextManager) {
+        if (this.isWhirlwinding) {
+            this.whirlwindTimer += dt;
+            
+            // Spin Effect
+            if (this.mesh) {
+                this.mesh.rotation.y += 15.0 * dt; // Fast spin
+            }
+
+            if (this.whirlwindTimer >= this.whirlwindDuration) {
+                this.isWhirlwinding = false;
+                this.state = 'IDLE';
+                this.playAnimation('Idle');
+                // Reset rotation? Maybe not needed, just stop spinning
+            }
+            
+            if (this.mixer) this.mixer.update(dt);
+            return;
+        }
+
         if (this.isCharging) {
             // Remote entities are moved by server updates, so we skip local physics simulation
             if (this.isRemote) {

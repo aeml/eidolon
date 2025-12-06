@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { Actor } from './Actor.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
@@ -18,6 +19,33 @@ export class Wizard extends Actor {
     useAbility(targetVector, gameEngine) {
         if (!targetVector) return;
         if (!super.useAbility(targetVector, gameEngine)) return;
+
+        if (this.abilityName === "Teleport") {
+            console.log("Wizard used Teleport!");
+            
+            // Visual Effect: Fade out/in or particles (Simplified for now)
+            // Just move instantly
+            
+            const maxRange = 15.0;
+            const dist = this.position.distanceTo(targetVector);
+            
+            let finalTarget = targetVector.clone();
+            if (dist > maxRange) {
+                const dir = new THREE.Vector3().subVectors(targetVector, this.position).normalize();
+                finalTarget = this.position.clone().add(dir.multiplyScalar(maxRange));
+            }
+            
+            // Clamp to bounds (Client side check, server is authority)
+            if (finalTarget.x < -1000) finalTarget.x = -1000;
+            if (finalTarget.x > 1000) finalTarget.x = 1000;
+            if (finalTarget.z < -2200) finalTarget.z = -2200;
+            if (finalTarget.z > 1000) finalTarget.z = 1000;
+
+            this.position.copy(finalTarget);
+            if (this.mesh) this.mesh.position.copy(this.position);
+            
+            return;
+        }
 
         console.log("Wizard used Fireball!");
         this.playAnimation('Attack', false, true);

@@ -27,7 +27,10 @@ export class InputManager {
             onMap: [],
             onChat: [], // New callback for Chat
             onInteract: [], // New callback for Mobile "USE" button
-            onSocial: [] // New callback for Social Window
+            onSocial: [], // New callback for Social Window
+            onSkills: [], // New callback for Skill Tree
+            onAbilities: [], // New callback for Abilities Menu (P)
+            onHotbar: [] // New callback for Hotbar (1-4)
         };
 
         this.keys = {
@@ -261,6 +264,16 @@ export class InputManager {
         }
         if (key === 'o') {
             this.callbacks.onSocial.forEach(cb => cb());
+        }
+        if (key === 'k') {
+            this.callbacks.onSkills.forEach(cb => cb());
+        }
+        if (key === 'p') {
+            this.callbacks.onAbilities.forEach(cb => cb());
+        }
+        if (['1', '2', '3', '4'].includes(key)) {
+            const slot = parseInt(key) - 1;
+            this.callbacks.onHotbar.forEach(cb => cb(slot));
         }
         if (e.key === 'Enter') {
             this.callbacks.onChat.forEach(cb => cb());

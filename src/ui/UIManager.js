@@ -1,4 +1,5 @@
 import { ItemGenerator, SLOTS, Item } from '../core/ItemSystem.js';
+import { CONSTANTS } from '../core/Constants.js';
 
 export class UIManager {
     constructor(isMobile = false) {
@@ -50,6 +51,28 @@ export class UIManager {
         this.btnCloseShop = document.getElementById('btn-close-shop');
         this.btnCloseStash = document.getElementById('btn-close-stash');
         
+        // Skill Tree UI
+        this.skillTreeWindow = document.getElementById('skill-tree-window');
+        this.skillTreeContent = document.getElementById('skill-tree-content');
+        this.btnCloseSkillTree = document.getElementById('btn-close-skills');
+        
+        if (this.btnCloseSkillTree) this.btnCloseSkillTree.addEventListener('click', () => this.toggleSkillTree());
+
+        // Abilities Menu UI
+        this.abilitiesMenu = document.getElementById('abilities-menu');
+        this.abilitiesContent = document.getElementById('abilities-content');
+        this.btnCloseAbilities = document.getElementById('btn-close-abilities');
+        if (this.btnCloseAbilities) this.btnCloseAbilities.addEventListener('click', () => this.toggleAbilitiesMenu());
+
+        // Hotbar UI
+        this.hotbarContainer = document.getElementById('hotbar-container');
+        this.hotbarSlots = Array.from(document.querySelectorAll('.hotbar-slot'));
+        
+        // Drag and Drop State
+        this.draggedAbility = null;
+        
+        this.setupDragAndDrop();
+
         this.reportScreen = document.getElementById('report-screen');
         this.btnCancelReport = document.getElementById('btn-cancel-report');
         this.btnSubmitReport = document.getElementById('btn-submit-report');
@@ -113,6 +136,8 @@ export class UIManager {
         this.setupWindow(this.patchNotesScreen);
         this.setupWindow(this.reportScreen);
         this.setupWindow(this.socialWindow);
+        this.setupWindow(this.skillTreeWindow);
+        this.setupWindow(this.abilitiesMenu);
 
         // Ability UI
         this.abilityContainer = document.getElementById('ability-container');
@@ -552,6 +577,219 @@ export class UIManager {
         this.questJournal.style.display = isHidden ? 'flex' : 'none';
         if (isHidden && this.lastPlayerRef && this.lastPlayerRef.quests) {
             this.updateJournal(this.lastPlayerRef.quests);
+        }
+    }
+
+    toggleSkillTree() {
+        const isHidden = this.skillTreeWindow.style.display === 'none' || this.skillTreeWindow.style.display === '';
+        this.skillTreeWindow.style.display = isHidden ? 'flex' : 'none';
+        
+        if (isHidden && this.lastPlayerRef) {
+            let classType = this.lastPlayerRef.subType || this.lastPlayerRef.meshType;
+            // Fallback if subType is not set (e.g. local player before first server update)
+            if (!classType && this.lastPlayerRef.constructor) {
+                 // Check if it's an instance of a class
+                 const name = this.lastPlayerRef.constructor.name;
+                 if (['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(name)) {
+                     classType = name;
+                 }
+            }
+            
+            this.renderSkillTree(classType);
+        }
+    }
+
+    renderSkillTree(classType) {
+        if (!classType) return;
+        
+        const treeData = CONSTANTS.SKILL_TREES[classType];
+        if (!treeData) {
+            this.skillTreeContent.innerHTML = `<div style="text-align:center; color:#aaa; margin-top:50px;">No skill tree data for ${classType}</div>`;
+            return;
+        }
+
+        this.skillTreeContent.innerHTML = '';
+        
+        const header = document.createElement('h2');
+        header.style.textAlign = 'center';
+        header.style.color = '#ffd700';
+        header.style.margin = '5px 0';
+        header.textContent = `${classType} Skill Tree`;
+        this.skillTreeContent.appendChild(header);
+
+        // Tier 1 (Starting Skill)
+        if (treeData.Tier1) {
+            const t1Container = document.createElement('div');
+            t1Container.className = 'skill-tier-1-container';
+            t1Container.innerHTML = `
+                <div class="skill-tier-label">Tier 1 (Starting Skill)</div>
+                <div class="skill-node unlocked" style="cursor: default;">
+                    <div class="skill-node-title">${treeData.Tier1.name}</div>
+                    <div class="skill-node-desc">${treeData.Tier1.desc}</div>
+                </div>
+            `;
+            this.skillTreeContent.appendChild(t1Container);
+        }
+        
+        const container = document.createElement('div');
+        container.className = 'skill-branches-container';
+        
+        const branches = ['A', 'B', 'C'];
+        
+        branches.forEach(branchKey => {
+            const branchData = treeData[`Branch${branchKey}`];
+            if (!branchData) return;
+
+            const branchDiv = document.createElement('div');
+            branchDiv.className = 'skill-branch';
+            
+            const title = document.createElement('div');
+            title.className = 'skill-branch-title';
+            title.textContent = branchData.name;
+            branchDiv.appendChild(title);
+            
+            // Add 4 tiers (Tier 2 to 5)
+            for (let i = 2; i <= 5; i++) {
+                const tierKey = `Tier${i}`;
+                const skill = branchData[tierKey];
+
+                const node = document.createElement('div');
+                node.className = 'skill-node';
+                
+                const nodeTitle = document.createElement('div');
+                nodeTitle.className = 'skill-node-title';
+                nodeTitle.textContent = skill ? skill.name : `Tier ${i} ???`;
+                
+                const nodeDesc = document.createElement('div');
+                nodeDesc.className = 'skill-node-desc';
+                nodeDesc.textContent = skill ? skill.desc : 'Coming Soon...';
+                
+                node.appendChild(nodeTitle);
+                node.appendChild(nodeDesc);
+                
+                if (skill) {
+                    node.style.cursor = 'pointer';
+                    node.onclick = () => {
+                        if (this.lastPlayerRef) {
+                            console.log(`Selected skill: ${skill.name}`);
+                            this.lastPlayerRef.abilityName = skill.name;
+                            // Simple visual feedback
+                            node.style.borderColor = '#00ff00';
+                            setTimeout(() => node.style.borderColor = '#444', 500);
+                        }
+                    };
+                }
+
+                branchDiv.appendChild(node);
+            }
+            
+            container.appendChild(branchDiv);
+        });
+        
+        this.skillTreeContent.appendChild(container);
+    }
+
+    toggleAbilitiesMenu() {
+        const isHidden = this.abilitiesMenu.style.display === 'none' || this.abilitiesMenu.style.display === '';
+        this.abilitiesMenu.style.display = isHidden ? 'block' : 'none';
+        
+        if (isHidden && this.lastPlayerRef) {
+            let classType = this.lastPlayerRef.subType || this.lastPlayerRef.meshType;
+            if (!classType && this.lastPlayerRef.constructor) {
+                 const name = this.lastPlayerRef.constructor.name;
+                 if (['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(name)) {
+                     classType = name;
+                 }
+            }
+            this.renderAbilitiesMenu(classType);
+        }
+    }
+
+    renderAbilitiesMenu(classType) {
+        if (!classType) return;
+        this.abilitiesContent.innerHTML = '';
+        
+        const treeData = CONSTANTS.SKILL_TREES[classType];
+        if (!treeData) return;
+
+        // Helper to create draggable ability item
+        const createAbilityItem = (skillName, skillDesc) => {
+            const item = document.createElement('div');
+            item.className = 'ability-item';
+            item.draggable = true;
+            item.dataset.skillName = skillName;
+            item.innerHTML = `<div>${skillName}</div>`;
+            item.title = skillDesc;
+            
+            item.addEventListener('dragstart', (e) => {
+                this.draggedAbility = skillName;
+                e.dataTransfer.setData('text/plain', skillName);
+                e.dataTransfer.effectAllowed = 'copy';
+            });
+            
+            return item;
+        };
+
+        // Add Tier 1 Skill (Base Ability)
+        if (treeData.Tier1) {
+            const item = createAbilityItem(treeData.Tier1.name, treeData.Tier1.desc);
+            this.abilitiesContent.appendChild(item);
+        }
+
+        // Add other unlocked skills (For now, just placeholders or check player unlocks)
+        // TODO: Check player unlocked skills
+    }
+
+    setupDragAndDrop() {
+        this.hotbarSlots.forEach((slot, index) => {
+            slot.addEventListener('dragover', (e) => {
+                e.preventDefault(); // Allow drop
+                e.dataTransfer.dropEffect = 'copy';
+                slot.style.borderColor = '#fff';
+            });
+
+            slot.addEventListener('dragleave', (e) => {
+                slot.style.borderColor = '#444';
+            });
+
+            slot.addEventListener('drop', (e) => {
+                e.preventDefault();
+                slot.style.borderColor = '#444';
+                const skillName = e.dataTransfer.getData('text/plain');
+                
+                if (skillName) {
+                    this.assignSkillToSlot(index, skillName);
+                }
+            });
+            
+            // Allow clearing slot with right click
+            slot.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                this.assignSkillToSlot(index, null);
+            });
+        });
+    }
+
+    assignSkillToSlot(slotIndex, skillName) {
+        const slot = this.hotbarSlots[slotIndex];
+        const icon = slot.querySelector('.hotbar-icon');
+        
+        if (skillName) {
+            icon.textContent = skillName.substring(0, 2); // Placeholder icon
+            icon.style.display = 'flex';
+            icon.style.alignItems = 'center';
+            icon.style.justifyContent = 'center';
+            icon.style.color = '#ffd700';
+            icon.style.fontWeight = 'bold';
+            icon.title = skillName;
+        } else {
+            icon.textContent = '';
+            icon.title = '';
+        }
+
+        // Notify GameEngine
+        if (this.onHotbarAssign) {
+            this.onHotbarAssign(slotIndex, skillName);
         }
     }
 

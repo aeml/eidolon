@@ -134,6 +134,50 @@ describe('GameEngine Simulation', () => {
                     <input id="chat-input" type="text">
                 </div>
                 <div id="xp-bar-container" style="display:none"></div>
+                
+                <!-- Skill Tree -->
+                <div id="skill-tree-window" style="display:none">
+                    <div id="skill-tree-content"></div>
+                    <button id="btn-close-skills"></button>
+                </div>
+
+                <!-- Abilities Menu -->
+                <div id="abilities-menu" style="display:none">
+                    <div id="abilities-content"></div>
+                    <button id="btn-close-abilities"></button>
+                </div>
+
+                <!-- Hotbar -->
+                <div id="hotbar-container">
+                    <div class="hotbar-slot" data-slot="0"><div class="hotbar-icon"></div><div class="hotbar-key">1</div></div>
+                    <div class="hotbar-slot" data-slot="1"><div class="hotbar-icon"></div><div class="hotbar-key">2</div></div>
+                    <div class="hotbar-slot" data-slot="2"><div class="hotbar-icon"></div><div class="hotbar-key">3</div></div>
+                    <div class="hotbar-slot" data-slot="3"><div class="hotbar-icon"></div><div class="hotbar-key">4</div></div>
+                </div>
+
+                <!-- Missing UI elements for tests -->
+                <div id="quest-window">
+                    <div id="quest-list"></div>
+                    <button id="btn-close-quest"></button>
+                </div>
+                <div id="quest-journal">
+                    <div id="journal-list"></div>
+                    <button id="btn-close-journal"></button>
+                </div>
+                <div id="stash-screen">
+                    <div id="stash-grid"></div>
+                    <button id="btn-close-stash"></button>
+                </div>
+                <div id="report-screen">
+                    <select id="report-type"></select>
+                    <textarea id="report-text"></textarea>
+                    <button id="btn-cancel-report"></button>
+                    <button id="btn-submit-report"></button>
+                </div>
+                <button id="btn-report"></button>
+                <button id="btn-sell-common"></button>
+                <button id="btn-sell-uncommon"></button>
+                <button id="btn-sell-rare"></button>
             </div>
             <canvas id="minimap-canvas"></canvas>
         `;
