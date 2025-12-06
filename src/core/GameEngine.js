@@ -387,6 +387,26 @@ export class GameEngine {
             }
         });
 
+        this.inputManager.subscribe('onSkills', () => {
+            this.uiManager.toggleSkillTree();
+        });
+
+        this.inputManager.subscribe('onAbilities', () => {
+            this.uiManager.toggleAbilitiesMenu();
+        });
+
+        this.inputManager.subscribe('onHotbar', (slotIndex) => {
+            this.performHotbarAbility(slotIndex);
+        });
+
+        this.uiManager.onHotbarAssign = (slotIndex, skillName) => {
+            if (this.player) {
+                if (!this.player.hotbar) this.player.hotbar = [null, null, null, null];
+                this.player.hotbar[slotIndex] = skillName;
+                console.log(`Assigned ${skillName} to slot ${slotIndex + 1}`);
+            }
+        };
+
         this.inputManager.subscribe('onInteract', () => {
             if (!this.player || !this.isMobile) return;
             
@@ -1227,14 +1247,34 @@ export class GameEngine {
         }
     }
 
-    performAbility() {
+    performHotbarAbility(slotIndex) {
+        if (!this.player || !this.player.hotbar) return;
+        const skillName = this.player.hotbar[slotIndex];
+        if (!skillName) return;
+
+        // Determine target (mouse cursor)
+        let targetPos = null;
+        if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD' && !(this.hoveredEntity instanceof DwarfSalesman)) {
+            targetPos = this.hoveredEntity.position;
+        } else {
+            targetPos = this.inputManager.getGroundIntersection();
+        }
+
+        if (targetPos) {
+            this.performAbility(targetPos, skillName);
+        }
+    }
+
+    performAbility(targetVectorOverride = null, skillNameOverride = null) {
         if (!this.player) return;
         if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen || this.uiManager.reportScreen.style.display === 'block') return;
 
         // Rotate to face cursor/target immediately (even if on cooldown)
         if (!this.isMobile) {
             let lookAtPos = null;
-            if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD' && !(this.hoveredEntity instanceof DwarfSalesman)) {
+            if (targetVectorOverride) {
+                lookAtPos = targetVectorOverride;
+            } else if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD' && !(this.hoveredEntity instanceof DwarfSalesman)) {
                 lookAtPos = this.hoveredEntity.position;
             } else {
                 const point = this.inputManager.getGroundIntersection();
@@ -1253,15 +1293,17 @@ export class GameEngine {
         }
 
         // Check Cooldown and Mana before proceeding
-        if (this.player.abilityCooldown > 0) {
-            return;
-        }
-        const cost = this.player.abilityManaCost * (1 - (this.player.stats.manaCostReduction || 0));
-        if (this.player.stats.mana < cost) {
-            return;
+        if (!skillNameOverride) {
+            if (this.player.abilityCooldown > 0) {
+                return;
+            }
+            const cost = this.player.abilityManaCost * (1 - (this.player.stats.manaCostReduction || 0));
+            if (this.player.stats.mana < cost) {
+                return;
+            }
         }
         
-        if (this.isMobile) {
+        if (this.isMobile && !targetVectorOverride) {
             // Auto-target nearest enemy for mobile ability
             let nearest = null;
             let minDst = 1000;
@@ -1303,18 +1345,47 @@ export class GameEngine {
                 }
             }
 
-            const abilityMsg = {
-                type: "ability",
-                payload: {
-                    targetX: targetPos.x,
-                    targetZ: targetPos.z,
-                    targetId: targetId
-                }
-            };
-            this.socket.send(JSON.stringify(abilityMsg));
+            if (this.isMultiplayer && this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const abilityMsg = {
+                    type: "ability",
+                    payload: {
+                        targetX: targetPos.x,
+                        targetZ: targetPos.z,
+                        targetId: targetId,
+                        skillName: skillNameOverride || this.player.abilityName
+                    }
+                };
+                this.socket.send(JSON.stringify(abilityMsg));
+            }
             
             // Client-side prediction
-            this.player.useAbility(targetPos, this);
+            if (skillNameOverride && this.player.useSkill) {
+                this.player.useSkill(skillNameOverride, targetPos, this);
+            } else {
+                this.player.useAbility(targetPos, this);
+            }
+            return;
+        }
+
+        if (targetVectorOverride) {
+             if (this.isMultiplayer && this.socket && this.socket.readyState === WebSocket.OPEN) {
+                 const abilityMsg = {
+                    type: "ability",
+                    payload: {
+                        targetX: targetVectorOverride.x,
+                        targetZ: targetVectorOverride.z,
+                        targetId: "",
+                        skillName: skillNameOverride || this.player.abilityName
+                    }
+                };
+                this.socket.send(JSON.stringify(abilityMsg));
+            }
+            
+            if (skillNameOverride && this.player.useSkill) {
+                this.player.useSkill(skillNameOverride, targetVectorOverride, this);
+            } else {
+                this.player.useAbility(targetVectorOverride, this);
+            }
             return;
         }
 
@@ -1327,18 +1398,25 @@ export class GameEngine {
             // Check if we are in range
             if (dist <= abilityRange) {
                 // Multiplayer Ability Logic (Targeted)
-                const abilityMsg = {
-                    type: "ability",
-                    payload: {
-                        targetX: this.hoveredEntity.position.x,
-                        targetZ: this.hoveredEntity.position.z,
-                        targetId: this.hoveredEntity.id
-                    }
-                };
-                this.socket.send(JSON.stringify(abilityMsg));
+                if (this.isMultiplayer && this.socket && this.socket.readyState === WebSocket.OPEN) {
+                    const abilityMsg = {
+                        type: "ability",
+                        payload: {
+                            targetX: this.hoveredEntity.position.x,
+                            targetZ: this.hoveredEntity.position.z,
+                            targetId: this.hoveredEntity.id,
+                            skillName: skillNameOverride || this.player.abilityName
+                        }
+                    };
+                    this.socket.send(JSON.stringify(abilityMsg));
+                }
                 
                 // Client-side prediction
-                this.player.useAbility(this.hoveredEntity.position, this);
+                if (skillNameOverride && this.player.useSkill) {
+                    this.player.useSkill(skillNameOverride, this.hoveredEntity.position, this);
+                } else {
+                    this.player.useAbility(this.hoveredEntity.position, this);
+                }
             } else {
                 // Move closer first
                 this.pendingAbilityTarget = this.hoveredEntity;
@@ -1350,18 +1428,25 @@ export class GameEngine {
             const targetPoint = this.inputManager.getGroundIntersection();
             if (targetPoint) {
                 // Multiplayer Ability Logic (Skillshot)
-                const abilityMsg = {
-                    type: "ability",
-                    payload: {
-                        targetX: targetPoint.x,
-                        targetZ: targetPoint.z,
-                        targetId: ""
-                    }
-                };
-                this.socket.send(JSON.stringify(abilityMsg));
+                if (this.isMultiplayer && this.socket && this.socket.readyState === WebSocket.OPEN) {
+                    const abilityMsg = {
+                        type: "ability",
+                        payload: {
+                            targetX: targetPoint.x,
+                            targetZ: targetPoint.z,
+                            targetId: "",
+                            skillName: skillNameOverride || this.player.abilityName
+                        }
+                    };
+                    this.socket.send(JSON.stringify(abilityMsg));
+                }
                 
                 // Client-side prediction
-                this.player.useAbility(targetPoint, this);
+                if (skillNameOverride && this.player.useSkill) {
+                    this.player.useSkill(skillNameOverride, targetPoint, this);
+                } else {
+                    this.player.useAbility(targetPoint, this);
+                }
             }
         }
     }

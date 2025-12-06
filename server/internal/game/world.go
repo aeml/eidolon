@@ -1783,13 +1783,27 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	return 0, true
 }
 
-func (w *World) PerformAbility(playerID string, targetX, targetZ float64, targetID string) {
+func (w *World) PerformAbility(playerID string, targetX, targetZ float64, targetID string, skillName string) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok || player.State == "DEAD" {
 		return
+	}
+
+	// Default skill names if not provided (Legacy support)
+	if skillName == "" {
+		switch player.SubType {
+		case "Fighter":
+			skillName = "Charge"
+		case "Wizard":
+			skillName = "Fireball"
+		case "Rogue":
+			skillName = "Piercing Throw"
+		case "Cleric":
+			skillName = "Spirit Guardians"
+		}
 	}
 
 	// Check Global Cooldown or Ability Cooldown
@@ -1806,109 +1820,267 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	// Class Specific Logic
 	switch player.SubType {
 	case "Fighter":
-		// Charge
-		cost := 20
-		if player.Mana >= cost {
-			player.Mana -= cost
-			player.IsCharging = true
-			player.ChargeTargetX = targetX
-			player.ChargeTargetZ = targetZ
-			player.State = "ATTACKING" // Or special state?
-			player.AbilityCooldown = 5 * time.Second
-			player.LastAbilityTime = time.Now()
+		if skillName == "Charge" {
+			// Charge
+			cost := 20
+			if player.Mana >= cost {
+				player.Mana -= cost
+				player.IsCharging = true
+				player.ChargeTargetX = targetX
+				player.ChargeTargetZ = targetZ
+				player.State = "ATTACKING" // Or special state?
+				player.AbilityCooldown = 5 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Whirlwind" {
+			// Whirlwind
+			cost := 30
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				// AoE Damage around player
+				radius := 6.0
+				damage := int(float64(player.Damage)*0.8) + (player.Stats.Strength * 2)
+
+				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				for _, target := range nearby {
+					// Skip self
+					if target.ID == player.ID {
+						continue
+					}
+
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					// Distance check
+					dx := player.X - target.X
+					dz := player.Z - target.Z
+					target.mu.RUnlock()
+
+					if (dx*dx + dz*dz) <= radius*radius {
+						target.mu.Lock()
+						target.Health -= damage
+						isDead := target.Health <= 0
+						target.mu.Unlock()
+
+						if w.OnEvent != nil {
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+						}
+
+						if isDead {
+							target.mu.Lock()
+							w.handleDeath(target, player, nil)
+							target.mu.Unlock()
+						}
+					}
+				}
+
+				player.State = "ATTACKING"
+				player.AbilityCooldown = 8 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
 		}
 
 	case "Wizard":
-		// Fireball
-		cost := 30
-		if player.Mana >= cost {
-			player.Mana -= cost
+		if skillName == "Fireball" {
+			// Fireball
+			cost := 30
+			if player.Mana >= cost {
+				player.Mana -= cost
 
-			// Spawn Projectile
-			dx := targetX - player.X
-			dz := targetZ - player.Z
-			dist := math.Sqrt(dx*dx + dz*dz)
-			if dist == 0 {
-				dist = 1 // Avoid div by zero
+				// Spawn Projectile
+				dx := targetX - player.X
+				dz := targetZ - player.Z
+				dist := math.Sqrt(dx*dx + dz*dz)
+				if dist == 0 {
+					dist = 1 // Avoid div by zero
+				}
+
+				velX := (dx / dist) * 20.0 // Speed 20
+				velZ := (dz / dist) * 20.0
+
+				damage := 20 + (player.Stats.Wisdom * 2)
+
+				proj := &Entity{
+					ID:        fmt.Sprintf("proj-%d", time.Now().UnixNano()),
+					Type:      TypeProjectile,
+					SubType:   "Fireball",
+					X:         player.X,
+					Y:         1.5,
+					Z:         player.Z,
+					VelX:      velX,
+					VelZ:      velZ,
+					Radius:    2.0,
+					Damage:    damage,
+					OwnerID:   player.ID,
+					Rotation:  math.Atan2(velX, velZ),
+					CreatedAt: time.Now(),
+				}
+				w.Entities[proj.ID] = proj
+				w.Grid.Add(proj)
+
+				player.State = "ATTACKING"
+				player.AbilityCooldown = 2 * time.Second
+				player.LastAbilityTime = time.Now()
 			}
+		} else if skillName == "Teleport" {
+			// Teleport
+			cost := 40
+			if player.Mana >= cost {
+				// Max Range Check
+				dx := targetX - player.X
+				dz := targetZ - player.Z
+				dist := math.Sqrt(dx*dx + dz*dz)
+				maxRange := 15.0
 
-			velX := (dx / dist) * 20.0 // Speed 20
-			velZ := (dz / dist) * 20.0
+				if dist <= maxRange {
+					player.Mana -= cost
+					oldX, oldZ := player.X, player.Z
 
-			damage := 20 + (player.Stats.Wisdom * 2)
+					// Clamp to bounds
+					if targetX < -1000 {
+						targetX = -1000
+					}
+					if targetX > 1000 {
+						targetX = 1000
+					}
+					if targetZ < -2200 {
+						targetZ = -2200
+					}
+					if targetZ > 1000 {
+						targetZ = 1000
+					}
 
-			proj := &Entity{
-				ID:        fmt.Sprintf("proj-%d", time.Now().UnixNano()),
-				Type:      TypeProjectile,
-				SubType:   "Fireball",
-				X:         player.X,
-				Y:         1.5,
-				Z:         player.Z,
-				VelX:      velX,
-				VelZ:      velZ,
-				Radius:    2.0,
-				Damage:    damage,
-				OwnerID:   player.ID,
-				Rotation:  math.Atan2(velX, velZ),
-				CreatedAt: time.Now(),
+					player.X = targetX
+					player.Z = targetZ
+					w.Grid.Update(player, oldX, oldZ)
+
+					player.AbilityCooldown = 12 * time.Second
+					player.LastAbilityTime = time.Now()
+				}
 			}
-			w.Entities[proj.ID] = proj
-			w.Grid.Add(proj)
-
-			player.State = "ATTACKING"
-			player.AbilityCooldown = 2 * time.Second
-			player.LastAbilityTime = time.Now()
 		}
 
 	case "Rogue":
-		// Throw Dagger
-		cost := 15
-		if player.Mana >= cost {
-			player.Mana -= cost
+		if skillName == "Piercing Throw" {
+			// Throw Dagger
+			cost := 15
+			if player.Mana >= cost {
+				player.Mana -= cost
 
-			dx := targetX - player.X
-			dz := targetZ - player.Z
-			dist := math.Sqrt(dx*dx + dz*dz)
-			if dist == 0 {
-				dist = 1
+				dx := targetX - player.X
+				dz := targetZ - player.Z
+				dist := math.Sqrt(dx*dx + dz*dz)
+				if dist == 0 {
+					dist = 1
+				}
+
+				velX := (dx / dist) * 35.0 // Speed 35
+				velZ := (dz / dist) * 35.0
+
+				damage := 15 + int(float64(player.Stats.Dexterity)*1.5)
+
+				proj := &Entity{
+					ID:        fmt.Sprintf("proj-%d", time.Now().UnixNano()),
+					Type:      TypeProjectile,
+					SubType:   "Dagger",
+					X:         player.X,
+					Y:         1.0,
+					Z:         player.Z,
+					VelX:      velX,
+					VelZ:      velZ,
+					Radius:    1.5,
+					Damage:    damage,
+					OwnerID:   player.ID,
+					Rotation:  math.Atan2(velX, velZ),
+					CreatedAt: time.Now(),
+				}
+				w.Entities[proj.ID] = proj
+				w.Grid.Add(proj)
+				player.AbilityCooldown = 1 * time.Second
+				player.LastAbilityTime = time.Now()
 			}
+		} else if skillName == "Fan of Knives" {
+			// Fan of Knives
+			cost := 25
+			if player.Mana >= cost {
+				player.Mana -= cost
 
-			velX := (dx / dist) * 35.0 // Speed 35
-			velZ := (dz / dist) * 35.0
+				projectileCount := 12
+				angleStep := (2 * math.Pi) / float64(projectileCount)
 
-			damage := 15 + int(float64(player.Stats.Dexterity)*1.5)
+				for i := 0; i < projectileCount; i++ {
+					angle := float64(i) * angleStep
+					velX := math.Cos(angle) * 25.0
+					velZ := math.Sin(angle) * 25.0
 
-			proj := &Entity{
-				ID:        fmt.Sprintf("proj-%d", time.Now().UnixNano()),
-				Type:      TypeProjectile,
-				SubType:   "Dagger",
-				X:         player.X,
-				Y:         1.0,
-				Z:         player.Z,
-				VelX:      velX,
-				VelZ:      velZ,
-				Radius:    1.5,
-				Damage:    damage,
-				OwnerID:   player.ID,
-				Rotation:  math.Atan2(velX, velZ),
-				CreatedAt: time.Now(),
+					damage := 10 + player.Stats.Dexterity
+
+					proj := &Entity{
+						ID:        fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
+						Type:      TypeProjectile,
+						SubType:   "Dagger",
+						X:         player.X,
+						Y:         1.0,
+						Z:         player.Z,
+						VelX:      velX,
+						VelZ:      velZ,
+						Radius:    1.0,
+						Damage:    damage,
+						OwnerID:   player.ID,
+						Rotation:  angle,
+						CreatedAt: time.Now(),
+					}
+					w.Entities[proj.ID] = proj
+					w.Grid.Add(proj)
+				}
+
+				player.AbilityCooldown = 6 * time.Second
+				player.LastAbilityTime = time.Now()
 			}
-			w.Entities[proj.ID] = proj
-			w.Grid.Add(proj)
-			player.AbilityCooldown = 1 * time.Second
-			player.LastAbilityTime = time.Now()
 		}
 
 	case "Cleric":
-		// Guardian Spirits
-		cost := 40
-		if player.Mana >= cost {
-			player.Mana -= cost
-			player.SpiritsActive = true
-			player.SpiritEndTime = time.Now().Add(8 * time.Second)
-			player.State = "ATTACKING"
-			player.AbilityCooldown = 10 * time.Second
-			player.LastAbilityTime = time.Now()
+		if skillName == "Spirit Guardians" {
+			// Guardian Spirits
+			cost := 40
+			if player.Mana >= cost {
+				player.Mana -= cost
+				player.SpiritsActive = true
+				player.SpiritEndTime = time.Now().Add(8 * time.Second)
+				player.State = "ATTACKING"
+				player.AbilityCooldown = 10 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Heal" {
+			// Heal
+			cost := 25
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				healAmount := 30 + (player.Stats.Wisdom * 3)
+
+				var target *Entity
+				if targetID != "" {
+					if t, ok := w.Entities[targetID]; ok {
+						target = t
+					}
+				}
+
+				if target == nil {
+					target = player
+				}
+
+				target.Health += healAmount
+				if target.Health > target.MaxHealth {
+					target.Health = target.MaxHealth
+				}
+
+				player.AbilityCooldown = 5 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
 		}
 	}
 }

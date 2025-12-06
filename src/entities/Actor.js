@@ -236,6 +236,13 @@ export class Actor extends Entity {
         return true;
     }
 
+    useSkill(skillName, targetVector, gameEngine) {
+        // Default implementation: just use the base ability
+        // In the future, this should switch on skillName
+        console.log(`Using skill: ${skillName}`);
+        return this.useAbility(targetVector, gameEngine);
+    }
+
     updateState(newState) {
         if (this.isRemote) {
             if (newState === 'ATTACKING') {
