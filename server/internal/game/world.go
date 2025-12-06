@@ -69,6 +69,11 @@ type Entity struct {
 	Quests         []Quest         `json:"quests"`
 	LastDailyQuest time.Time       `json:"-"`
 
+	// Skills
+	SkillPoints    int      `json:"skillPoints"`
+	SelectedBranch string   `json:"selectedBranch"` // "A", "B", or "C"
+	UnlockedSkills []string `json:"unlockedSkills"`
+
 	// Stats
 	BaseStats Stats `json:"baseStats"` // Naked stats
 	Stats     Stats `json:"stats"`     // Total stats (Base + Equipment)
@@ -759,6 +764,13 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		IsCharging:        e.IsCharging,
 		ChargeTargetX:     e.ChargeTargetX,
 		ChargeTargetZ:     e.ChargeTargetZ,
+		SkillPoints:       e.SkillPoints,
+		SelectedBranch:    e.SelectedBranch,
+	}
+
+	if e.UnlockedSkills != nil {
+		newE.UnlockedSkills = make([]string, len(e.UnlockedSkills))
+		copy(newE.UnlockedSkills, e.UnlockedSkills)
 	}
 
 	if e.Inventory != nil {
@@ -1130,6 +1142,12 @@ func (w *World) PerformCompleteQuest(playerID, questID string) (*Entity, bool) {
 					player.Experience -= player.MaxExperience
 					player.Level++
 					player.MaxExperience = int(100 * math.Pow(1.2, float64(player.Level-1)))
+
+					// Skill Point every 10 levels
+					if player.Level%10 == 0 {
+						player.SkillPoints++
+					}
+
 					player.BaseStats.Vitality += 2
 					player.BaseStats.Strength += 2
 					player.BaseStats.Dexterity += 1
@@ -2085,6 +2103,53 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	}
 }
 
+func (w *World) PerformSelectBranch(playerID, branch string) (*Entity, bool) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+
+	// Can only select branch if none selected
+	if player.SelectedBranch != "" {
+		return nil, false
+	}
+
+	if branch != "A" && branch != "B" && branch != "C" {
+		return nil, false
+	}
+
+	player.SelectedBranch = branch
+	return player, true
+}
+
+func (w *World) PerformUnlockSkill(playerID, skillName string) (*Entity, bool) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+
+	if player.SkillPoints <= 0 {
+		return nil, false
+	}
+
+	// Check if already unlocked
+	for _, s := range player.UnlockedSkills {
+		if s == skillName {
+			return nil, false
+		}
+	}
+
+	player.SkillPoints--
+	player.UnlockedSkills = append(player.UnlockedSkills, skillName)
+	return player, true
+}
+
 func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferredActions) {
 	if target.State == "DEAD" {
 		return
@@ -2121,6 +2186,11 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			attacker.Level++
 			// Exponential Curve: 100 * (1.2 ^ (Level-1))
 			attacker.MaxExperience = int(100 * math.Pow(1.2, float64(attacker.Level-1)))
+
+			// Skill Point every 10 levels
+			if attacker.Level%10 == 0 {
+				attacker.SkillPoints++
+			}
 
 			// Update Base Stats
 			attacker.BaseStats.Vitality += 2
@@ -2207,6 +2277,9 @@ func (w *World) GetState() map[string]*Entity {
 			MaxExperience:     v.MaxExperience,
 			Gold:              v.Gold,
 			LastDailyQuest:    v.LastDailyQuest,
+			SkillPoints:       v.SkillPoints,
+			SelectedBranch:    v.SelectedBranch,
+			UnlockedSkills:    v.UnlockedSkills,
 			BaseStats:         v.BaseStats,
 			Stats:             v.Stats,
 			Damage:            v.Damage,
@@ -2314,6 +2387,9 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		MaxExperience:     v.MaxExperience,
 		Gold:              v.Gold,
 		LastDailyQuest:    v.LastDailyQuest,
+		SkillPoints:       v.SkillPoints,
+		SelectedBranch:    v.SelectedBranch,
+		UnlockedSkills:    v.UnlockedSkills,
 		BaseStats:         v.BaseStats,
 		Stats:             v.Stats,
 		Damage:            v.Damage,

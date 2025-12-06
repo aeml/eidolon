@@ -102,6 +102,26 @@ export class GameEngine {
                 console.warn("Cannot submit report: Not connected to server.");
             }
         };
+        this.uiManager.onSelectBranch = (branch) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(JSON.stringify({
+                    type: 'selectBranch',
+                    payload: { branch }
+                }));
+            }
+        };
+        this.uiManager.onUnlockSkill = (skillName) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(JSON.stringify({
+                    type: 'unlockSkill',
+                    payload: { skillName }
+                }));
+            }
+        };
+        this.uiManager.onHotbarAssign = (slotIndex, skillName) => {
+            // Optional: Persist hotbar to server or local storage
+            console.log(`Hotbar slot ${slotIndex} assigned to ${skillName}`);
+        };
         this.uiManager.onStashDeposit = (itemId) => {
             if (this.socket && this.socket.readyState === WebSocket.OPEN) {
                 const msg = {
@@ -796,6 +816,32 @@ export class GameEngine {
                             if (pData.speed) this.player.stats.speed = pData.speed;
                             if (pData.attackSpeed) this.player.stats.attackSpeed = pData.attackSpeed;
                             if (pData.cooldownReduction !== undefined) this.player.stats.cooldownReduction = pData.cooldownReduction;
+                        }
+
+                        // Sync Skills
+                        const prevBranch = this.player.selectedBranch;
+                        const prevPoints = this.player.skillPoints;
+                        const prevUnlocked = this.player.unlockedSkills ? this.player.unlockedSkills.length : 0;
+
+                        this.player.skillPoints = pData.skillPoints;
+                        this.player.selectedBranch = pData.selectedBranch;
+                        this.player.unlockedSkills = pData.unlockedSkills;
+
+                        const currUnlocked = this.player.unlockedSkills ? this.player.unlockedSkills.length : 0;
+
+                        // Update Hotbar if skills changed
+                        if (prevUnlocked !== currUnlocked) {
+                            this.uiManager.updateHotbar(this.player);
+                        }
+
+                        // Refresh Skill Tree if open and data changed
+                        if (this.uiManager.skillTreeWindow && this.uiManager.skillTreeWindow.style.display === 'flex') {
+                             if (prevBranch !== this.player.selectedBranch || 
+                                 prevPoints !== this.player.skillPoints || 
+                                 prevUnlocked !== currUnlocked) {
+                                     const classType = this.player.subType || this.playerType;
+                                     this.uiManager.renderSkillTree(classType);
+                             }
                         }
 
                         // Sync Equipment
