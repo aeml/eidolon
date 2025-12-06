@@ -95,6 +95,8 @@ const (
 	MsgQuestUpdate   = "quest_update"
 	MsgAcceptQuest   = "accept_quest"
 	MsgCompleteQuest = "complete_quest"
+	MsgSelectBranch  = "selectBranch"
+	MsgUnlockSkill   = "unlockSkill"
 )
 
 type Message struct {
@@ -184,6 +186,14 @@ type ChatPayload struct {
 type ReportPayload struct {
 	ReportType string `json:"reportType"`
 	Text       string `json:"text"`
+}
+
+type SelectBranchPayload struct {
+	Branch string `json:"branch"`
+}
+
+type UnlockSkillPayload struct {
+	SkillName string `json:"skillName"`
 }
 
 type BroadcastMessage struct {
@@ -655,6 +665,26 @@ func (c *Client) handleMessage(msg Message) {
 				Wisdom:       char.Stats.Wisdom,
 				Vitality:     char.Stats.Vitality,
 			},
+			SkillPoints:    char.SkillPoints,
+			SelectedBranch: char.SelectedBranch,
+			UnlockedSkills: char.UnlockedSkills,
+		}
+
+		// Validate Skill Points (Retroactive fix for existing characters)
+		expectedTotalPoints := entity.Level / 10
+		spentPoints := len(entity.UnlockedSkills)
+		correctAvailablePoints := expectedTotalPoints - spentPoints
+		if correctAvailablePoints < 0 {
+			correctAvailablePoints = 0
+		}
+
+		log.Printf("Login %s: Level %d, Points %d, Branch %s, Unlocked %v",
+			c.username, entity.Level, entity.SkillPoints, entity.SelectedBranch, entity.UnlockedSkills)
+
+		if entity.SkillPoints != correctAvailablePoints {
+			log.Printf("Correcting SkillPoints for %s: Was %d, Should be %d (Level %d, Spent %d)",
+				c.username, entity.SkillPoints, correctAvailablePoints, entity.Level, spentPoints)
+			entity.SkillPoints = correctAvailablePoints
 		}
 
 		// Convert DB Inventory to Game Inventory
@@ -1074,6 +1104,30 @@ func (c *Client) handleMessage(msg Message) {
 			b, _ := json.Marshal(msg)
 			c.sendSafe(b)
 		}
+
+	case MsgSelectBranch:
+		if c.playerID == "" {
+			return
+		}
+		var payload SelectBranchPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		if _, success := world.PerformSelectBranch(c.playerID, payload.Branch); success {
+			savePlayer(c) // Persist immediately
+		}
+
+	case MsgUnlockSkill:
+		if c.playerID == "" {
+			return
+		}
+		var payload UnlockSkillPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		if _, success := world.PerformUnlockSkill(c.playerID, payload.SkillName); success {
+			savePlayer(c) // Persist immediately
+		}
 	}
 }
 
@@ -1228,6 +1282,9 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 			Intelligence: entity.BaseStats.Intelligence,
 			Wisdom:       entity.BaseStats.Wisdom,
 		},
+		SkillPoints:    entity.SkillPoints,
+		SelectedBranch: entity.SelectedBranch,
+		UnlockedSkills: entity.UnlockedSkills,
 	}
 
 	// Convert Game Inventory to DB Inventory

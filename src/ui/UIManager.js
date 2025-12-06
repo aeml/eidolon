@@ -608,13 +608,18 @@ export class UIManager {
             return;
         }
 
+        const player = this.lastPlayerRef;
+        const skillPoints = player ? (player.skillPoints || 0) : 0;
+        const selectedBranch = player ? (player.selectedBranch || "") : "";
+        const unlockedSkills = player ? (player.unlockedSkills || []) : [];
+
         this.skillTreeContent.innerHTML = '';
         
         const header = document.createElement('h2');
         header.style.textAlign = 'center';
         header.style.color = '#ffd700';
         header.style.margin = '5px 0';
-        header.textContent = `${classType} Skill Tree`;
+        header.textContent = `${classType} Skill Tree (Points: ${skillPoints})`;
         this.skillTreeContent.appendChild(header);
 
         // Tier 1 (Starting Skill)
@@ -623,7 +628,7 @@ export class UIManager {
             t1Container.className = 'skill-tier-1-container';
             t1Container.innerHTML = `
                 <div class="skill-tier-label">Tier 1 (Starting Skill)</div>
-                <div class="skill-node unlocked" style="cursor: default;">
+                <div class="skill-node unlocked" style="cursor: default; border-color: #00ff00;">
                     <div class="skill-node-title">${treeData.Tier1.name}</div>
                     <div class="skill-node-desc">${treeData.Tier1.desc}</div>
                 </div>
@@ -640,12 +645,35 @@ export class UIManager {
             const branchData = treeData[`Branch${branchKey}`];
             if (!branchData) return;
 
+            const isBranchSelected = selectedBranch === branchKey;
+            const isBranchLocked = selectedBranch !== "" && !isBranchSelected;
+
             const branchDiv = document.createElement('div');
             branchDiv.className = 'skill-branch';
+            if (isBranchLocked) {
+                branchDiv.style.opacity = '0.3';
+                branchDiv.style.pointerEvents = 'none';
+            }
             
             const title = document.createElement('div');
             title.className = 'skill-branch-title';
             title.textContent = branchData.name;
+            
+            if (selectedBranch === "" && skillPoints > 0) {
+                const selectBtn = document.createElement('button');
+                selectBtn.textContent = "Select Path";
+                selectBtn.style.marginLeft = "10px";
+                selectBtn.onclick = () => {
+                    if (this.onSelectBranch) {
+                        this.onSelectBranch(branchKey);
+                    }
+                };
+                title.appendChild(selectBtn);
+            } else if (isBranchSelected) {
+                title.style.color = "#00ff00";
+                title.textContent += " (Selected)";
+            }
+
             branchDiv.appendChild(title);
             
             // Add 4 tiers (Tier 2 to 5)
@@ -656,6 +684,12 @@ export class UIManager {
                 const node = document.createElement('div');
                 node.className = 'skill-node';
                 
+                const isUnlocked = skill && unlockedSkills.includes(skill.name);
+                if (isUnlocked) {
+                    node.classList.add('unlocked');
+                    node.style.borderColor = '#00ff00';
+                }
+
                 const nodeTitle = document.createElement('div');
                 nodeTitle.className = 'skill-node-title';
                 nodeTitle.textContent = skill ? skill.name : `Tier ${i} ???`;
@@ -667,17 +701,26 @@ export class UIManager {
                 node.appendChild(nodeTitle);
                 node.appendChild(nodeDesc);
                 
-                if (skill) {
-                    node.style.cursor = 'pointer';
-                    node.onclick = () => {
-                        if (this.lastPlayerRef) {
-                            console.log(`Selected skill: ${skill.name}`);
-                            this.lastPlayerRef.abilityName = skill.name;
-                            // Simple visual feedback
-                            node.style.borderColor = '#00ff00';
-                            setTimeout(() => node.style.borderColor = '#444', 500);
+                if (skill && !isUnlocked && isBranchSelected && skillPoints > 0) {
+                    // Check if previous tier is unlocked
+                    let canUnlock = true;
+                    if (i > 2) {
+                        const prevTierKey = `Tier${i-1}`;
+                        const prevSkill = branchData[prevTierKey];
+                        if (!prevSkill || !unlockedSkills.includes(prevSkill.name)) {
+                            canUnlock = false;
                         }
-                    };
+                    }
+
+                    if (canUnlock) {
+                        node.style.cursor = 'pointer';
+                        node.style.borderColor = '#ffff00'; // Yellow for available
+                        node.onclick = () => {
+                             if (this.onUnlockSkill) {
+                                this.onUnlockSkill(skill.name);
+                            }
+                        };
+                    }
                 }
 
                 branchDiv.appendChild(node);
@@ -689,55 +732,36 @@ export class UIManager {
         this.skillTreeContent.appendChild(container);
     }
 
-    toggleAbilitiesMenu() {
-        const isHidden = this.abilitiesMenu.style.display === 'none' || this.abilitiesMenu.style.display === '';
-        this.abilitiesMenu.style.display = isHidden ? 'block' : 'none';
+    updateHotbar(player) {
+        if (!player) return;
+
+        // Slot 0 (Key 1) is always Tier 1 skill (Base Ability)
+        // User requested NOT to put Tier 1 on hotbar as it is already Right Click.
+        // So we skip Tier 1 assignment to Slot 0.
+        // Instead, we will fill slots 1-4 with unlocked skills (Tier 2+).
         
-        if (isHidden && this.lastPlayerRef) {
-            let classType = this.lastPlayerRef.subType || this.lastPlayerRef.meshType;
-            if (!classType && this.lastPlayerRef.constructor) {
-                 const name = this.lastPlayerRef.constructor.name;
-                 if (['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(name)) {
-                     classType = name;
-                 }
-            }
-            this.renderAbilitiesMenu(classType);
+        // Clear slots first to avoid duplicates or stale icons
+        // But we want to be careful not to wipe user customizations if we add that later.
+        // For now, auto-fill is the requested behavior.
+        
+        // Slots 1-4 (Keys 1-4) are unlocked skills
+        if (player.unlockedSkills) {
+            player.unlockedSkills.forEach((skillName, index) => {
+                if (index < 4) {
+                    // Assign to Slot 0, 1, 2, 3 (Keys 1, 2, 3, 4)
+                    this.assignSkillToSlot(index, skillName);
+                }
+            });
         }
     }
 
+    toggleAbilitiesMenu() {
+        // Deprecated / Removed
+        console.log("Abilities menu is deprecated.");
+    }
+
     renderAbilitiesMenu(classType) {
-        if (!classType) return;
-        this.abilitiesContent.innerHTML = '';
-        
-        const treeData = CONSTANTS.SKILL_TREES[classType];
-        if (!treeData) return;
-
-        // Helper to create draggable ability item
-        const createAbilityItem = (skillName, skillDesc) => {
-            const item = document.createElement('div');
-            item.className = 'ability-item';
-            item.draggable = true;
-            item.dataset.skillName = skillName;
-            item.innerHTML = `<div>${skillName}</div>`;
-            item.title = skillDesc;
-            
-            item.addEventListener('dragstart', (e) => {
-                this.draggedAbility = skillName;
-                e.dataTransfer.setData('text/plain', skillName);
-                e.dataTransfer.effectAllowed = 'copy';
-            });
-            
-            return item;
-        };
-
-        // Add Tier 1 Skill (Base Ability)
-        if (treeData.Tier1) {
-            const item = createAbilityItem(treeData.Tier1.name, treeData.Tier1.desc);
-            this.abilitiesContent.appendChild(item);
-        }
-
-        // Add other unlocked skills (For now, just placeholders or check player unlocks)
-        // TODO: Check player unlocked skills
+        // Deprecated / Removed
     }
 
     setupDragAndDrop() {
@@ -762,12 +786,77 @@ export class UIManager {
                 }
             });
             
-            // Allow clearing slot with right click
+            // Disable context menu (Right Click)
             slot.addEventListener('contextmenu', (e) => {
                 e.preventDefault();
-                this.assignSkillToSlot(index, null);
+                e.stopPropagation();
+                // Do nothing
+            });
+
+            // Disable Left Click
+            slot.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                // Do nothing
+            });
+
+            // Tooltip
+            slot.addEventListener('mouseenter', (e) => {
+                const icon = slot.querySelector('.hotbar-icon');
+                if (icon && icon.dataset.skill) {
+                    const rect = slot.getBoundingClientRect();
+                    this.showSkillTooltip(icon.dataset.skill, rect.left, rect.top - 10);
+                }
+            });
+
+            slot.addEventListener('mouseleave', () => {
+                this.hideTooltips();
             });
         });
+    }
+
+    showSkillTooltip(skillName, x, y) {
+        if (!this.lastPlayerRef) return;
+        
+        const classType = this.lastPlayerRef.subType || this.lastPlayerRef.meshType;
+        if (!classType) return;
+
+        const treeData = CONSTANTS.SKILL_TREES[classType];
+        if (!treeData) return;
+
+        // Find skill description
+        let desc = "No description available.";
+        
+        // Check Tier 1
+        if (treeData.Tier1 && treeData.Tier1.name === skillName) {
+            desc = treeData.Tier1.desc;
+        } else {
+            // Check Branches
+            ['BranchA', 'BranchB', 'BranchC'].forEach(branch => {
+                if (treeData[branch]) {
+                    for (let i = 2; i <= 5; i++) {
+                        const tier = treeData[branch][`Tier${i}`];
+                        if (tier && tier.name === skillName) {
+                            desc = tier.desc;
+                        }
+                    }
+                }
+            });
+        }
+
+        this.statTooltipTitle.textContent = skillName;
+        this.statTooltipTitle.style.color = '#ffd700';
+        this.statTooltipDesc.innerHTML = `<div style="color: #ccc;">${desc}</div>`;
+        
+        this.statTooltip.style.display = 'block';
+        this.statTooltip.style.left = `${x}px`;
+        this.statTooltip.style.top = `${y - this.statTooltip.offsetHeight}px`; // Show above
+        
+        // Adjust if off screen
+        const rect = this.statTooltip.getBoundingClientRect();
+        if (rect.top < 0) {
+            this.statTooltip.style.top = `${y + 50}px`; // Show below if no space above
+        }
     }
 
     assignSkillToSlot(slotIndex, skillName) {
@@ -781,10 +870,12 @@ export class UIManager {
             icon.style.justifyContent = 'center';
             icon.style.color = '#ffd700';
             icon.style.fontWeight = 'bold';
-            icon.title = skillName;
+            // icon.title = skillName; // Removed to prevent native tooltip
+            icon.dataset.skill = skillName; // Use data attribute
         } else {
             icon.textContent = '';
-            icon.title = '';
+            // icon.title = '';
+            delete icon.dataset.skill;
         }
 
         // Notify GameEngine

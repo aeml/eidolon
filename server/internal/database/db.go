@@ -39,6 +39,9 @@ type Character struct {
 	Equipment      map[string]Item `bson:"equipment"`
 	Quests         []Quest         `bson:"quests"`
 	LastDailyQuest time.Time       `bson:"last_daily_quest"`
+	SkillPoints    int             `bson:"skill_points"`
+	SelectedBranch string          `bson:"selected_branch"`
+	UnlockedSkills []string        `bson:"unlocked_skills"`
 }
 
 type Quest struct {
