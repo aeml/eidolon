@@ -25,6 +25,7 @@ export class InputManager {
             onInventory: [],
             onTeleport: [],
             onMap: [],
+            onQuest: [], // New callback for Quest Journal
             onChat: [], // New callback for Chat
             onInteract: [], // New callback for Mobile "USE" button
             onSocial: [] // New callback for Social Window
@@ -151,6 +152,8 @@ export class InputManager {
         bindBtn('btn-mobile-inv', 'onInventory');
         bindBtn('btn-mobile-char', 'onCharacter');
         bindBtn('btn-mobile-social', 'onSocial');
+        bindBtn('btn-mobile-map', 'onMap');
+        bindBtn('btn-mobile-quest', 'onQuest');
         bindBtn('btn-mobile-menu', 'onEscape');
 
         // Pinch to Zoom Logic
