@@ -125,11 +125,13 @@ export class InputManager {
         const bindBtn = (id, callbackName) => {
             const btn = document.getElementById(id);
             if (btn) {
-                btn.addEventListener('touchstart', (e) => {
+                const handler = (e) => {
                     e.preventDefault();
                     e.stopPropagation(); // Prevent click-through
                     this.callbacks[callbackName].forEach(cb => cb());
-                }, { passive: false });
+                };
+                btn.addEventListener('touchstart', handler, { passive: false });
+                btn.addEventListener('mousedown', handler);
             }
         };
 
@@ -255,6 +257,9 @@ export class InputManager {
         }
         if (key === 'i') {
             this.callbacks.onInventory.forEach(cb => cb());
+        }
+        if (key === 'j') {
+            this.callbacks.onQuest.forEach(cb => cb());
         }
         if (key === 'b') {
             this.callbacks.onTeleport.forEach(cb => cb());
