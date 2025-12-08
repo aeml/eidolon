@@ -863,6 +863,27 @@ export class UIManager {
         const slot = this.hotbarSlots[slotIndex];
         const icon = slot.querySelector('.hotbar-icon');
         
+        // Create or get cooldown overlay
+        let cooldownOverlay = slot.querySelector('.cooldown-overlay');
+        if (!cooldownOverlay) {
+            cooldownOverlay = document.createElement('div');
+            cooldownOverlay.className = 'cooldown-overlay';
+            cooldownOverlay.style.position = 'absolute';
+            cooldownOverlay.style.top = '0';
+            cooldownOverlay.style.left = '0';
+            cooldownOverlay.style.width = '100%';
+            cooldownOverlay.style.height = '100%';
+            cooldownOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            cooldownOverlay.style.display = 'none';
+            cooldownOverlay.style.justifyContent = 'center';
+            cooldownOverlay.style.alignItems = 'center';
+            cooldownOverlay.style.color = 'white';
+            cooldownOverlay.style.fontSize = '14px';
+            cooldownOverlay.style.fontWeight = 'bold';
+            cooldownOverlay.style.pointerEvents = 'none'; // Click through
+            slot.appendChild(cooldownOverlay);
+        }
+
         if (skillName) {
             icon.textContent = skillName.substring(0, 2); // Placeholder icon
             icon.style.display = 'flex';
@@ -876,12 +897,42 @@ export class UIManager {
             icon.textContent = '';
             // icon.title = '';
             delete icon.dataset.skill;
+            cooldownOverlay.style.display = 'none';
         }
 
         // Notify GameEngine
         if (this.onHotbarAssign) {
             this.onHotbarAssign(slotIndex, skillName);
         }
+    }
+
+    updateHotbarCooldowns(player) {
+        if (!player || !player.hotbar) return;
+
+        this.hotbarSlots.forEach((slot, index) => {
+            const skillName = player.hotbar[index];
+            const overlay = slot.querySelector('.cooldown-overlay');
+            
+            if (skillName && overlay) {
+                // Check cooldown for this specific skill
+                let cd = 0;
+                if (player.cooldowns && player.cooldowns[skillName] > 0) {
+                    cd = player.cooldowns[skillName];
+                } else if (skillName === player.abilityName && player.abilityCooldown > 0) {
+                    // Fallback for base ability if not in map
+                    cd = player.abilityCooldown;
+                }
+
+                if (cd > 0) {
+                    overlay.style.display = 'flex';
+                    overlay.textContent = Math.ceil(cd);
+                } else {
+                    overlay.style.display = 'none';
+                }
+            } else if (overlay) {
+                overlay.style.display = 'none';
+            }
+        });
     }
 
     updateQuestWindow(quests) {
