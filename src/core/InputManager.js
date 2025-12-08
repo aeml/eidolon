@@ -25,6 +25,7 @@ export class InputManager {
             onInventory: [],
             onTeleport: [],
             onMap: [],
+            onQuest: [], // New callback for Quest Journal
             onChat: [], // New callback for Chat
             onInteract: [], // New callback for Mobile "USE" button
             onSocial: [], // New callback for Social Window
@@ -127,11 +128,13 @@ export class InputManager {
         const bindBtn = (id, callbackName) => {
             const btn = document.getElementById(id);
             if (btn) {
-                btn.addEventListener('touchstart', (e) => {
+                const handler = (e) => {
                     e.preventDefault();
                     e.stopPropagation(); // Prevent click-through
                     this.callbacks[callbackName].forEach(cb => cb());
-                }, { passive: false });
+                };
+                btn.addEventListener('touchstart', handler, { passive: false });
+                btn.addEventListener('mousedown', handler);
             }
         };
 
@@ -154,6 +157,8 @@ export class InputManager {
         bindBtn('btn-mobile-inv', 'onInventory');
         bindBtn('btn-mobile-char', 'onCharacter');
         bindBtn('btn-mobile-social', 'onSocial');
+        bindBtn('btn-mobile-map', 'onMap');
+        bindBtn('btn-mobile-quest', 'onQuest');
         bindBtn('btn-mobile-menu', 'onEscape');
 
         // Pinch to Zoom Logic
@@ -255,6 +260,9 @@ export class InputManager {
         }
         if (key === 'i') {
             this.callbacks.onInventory.forEach(cb => cb());
+        }
+        if (key === 'j') {
+            this.callbacks.onQuest.forEach(cb => cb());
         }
         if (key === 'b') {
             this.callbacks.onTeleport.forEach(cb => cb());
