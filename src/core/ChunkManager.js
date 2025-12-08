@@ -19,7 +19,7 @@ export class ChunkManager {
         return `${cx},${cz}`;
     }
 
-    update(player, dt, collisionManager, floatingTextManager) {
+    update(player, dt, collisionManager, floatingTextManager, gameEngine) {
         if (!player) return;
         
         this.frameCount++;
@@ -63,7 +63,7 @@ export class ChunkManager {
                     if (entity._lastUpdateFrame === this.frameCount) continue;
                     entity._lastUpdateFrame = this.frameCount;
 
-                    entity.update(dt, collisionManager, player, activeEntities, floatingTextManager);
+                    entity.update(dt, collisionManager, player, activeEntities, floatingTextManager, gameEngine);
                     
                     if (!entity.isActive) {
                         this.removeEntity(entity);

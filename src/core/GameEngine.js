@@ -1298,9 +1298,15 @@ export class GameEngine {
     }
 
     performHotbarAbility(slotIndex) {
-        if (!this.player || !this.player.hotbar) return;
+        if (!this.player || !this.player.hotbar) {
+            console.warn("Player or hotbar not initialized.");
+            return;
+        }
         const skillName = this.player.hotbar[slotIndex];
-        if (!skillName) return;
+        if (!skillName) {
+            console.log(`Hotbar slot ${slotIndex + 1} is empty.`);
+            return;
+        }
 
         // Determine target (mouse cursor)
         let targetPos = null;
@@ -1925,7 +1931,7 @@ export class GameEngine {
                 }
             }
 
-            this.chunkManager.update(this.player, dt, this.collisionManager, this.floatingTextManager);
+            this.chunkManager.update(this.player, dt, this.collisionManager, this.floatingTextManager, this);
 
             if (this.pendingInteraction) {
                 // 1. Validate Target
@@ -2249,6 +2255,7 @@ export class GameEngine {
             this.minimap.update(this.player, activeEntities);
             this.uiManager.updatePlayerStats(this.player);
             this.uiManager.updateXP(this.player);
+            this.uiManager.updateHotbarCooldowns(this.player);
             
             // Dynamic UI Updates (Throttled)
             if (this.frameCount % 10 === 0) {

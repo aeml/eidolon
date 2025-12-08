@@ -80,6 +80,50 @@ export class Actor extends Entity {
 
         this.lastAttackTime = 0; // For melee attack speed limit
         this.attackTimer = null;
+        this.stunTimer = 0; // Time remaining for stun
+        this.guardianRoarTimer = 0; // Guardian Roar Buff
+        this.guardianRoarReduction = 0;
+        this.slowTimer = 0;
+        this.slowFactor = 0;
+        this.lastStandTimer = 0; // Last Stand Rampage Buff
+        this.lastStandDamageBoost = 0;
+        this.berserkerEdgeActive = false; // Passive check
+
+        // Cleric Buffs/Debuffs
+        this.blessingResolveTimer = 0;
+        this.blessingResolveReduction = 0;
+        this.blessingZealTimer = 0;
+        this.blessingZealFactor = 0;
+        this.markWeaknessTimer = 0;
+        this.markWeaknessFactor = 0;
+
+        // Rogue Debuffs
+        this.bleedTimer = 0;
+        this.bleedStacks = 0;
+        this.weakPointMarkTimer = 0;
+        
+        // Rogue Branch C Debuffs
+        this.accuracyReductionTimer = 0;
+        this.accuracyReductionFactor = 0;
+        this.healingReductionTimer = 0;
+        this.healingReductionFactor = 0;
+        this.rootTimer = 0;
+        this.stealthTimer = 0;
+        this.poisonTimer = 0;
+        this.poisonStacks = 0;
+        this.speedBoostTimer = 0;
+        this.speedBoostFactor = 0;
+
+        // Wizard Debuffs/Buffs
+        this.frozenTimer = 0; // Stun + Visual
+        this.shieldHP = 0; // Absorbs damage
+        this.hasteTimer = 0; // Speed + CDR
+        this.hasteFactor = 0;
+
+        // Hotbar & Skills
+        this.hotbar = [null, null, null, null];
+        this.unlockedSkills = [];
+        this.cooldowns = {}; // Map of skillName -> cooldown timer
 
         // Inventory & Equipment
         this.inventory = new Array(25).fill(null); // 25 slots
@@ -204,16 +248,25 @@ export class Actor extends Entity {
         }
     }
 
-    useAbility(targetVector, gameEngine) {
+    useAbility(targetVector, gameEngine, skillNameOverride = null) {
         // Base implementation checks costs
-        if (this.state === 'DEAD') return false;
+        if (this.state === 'DEAD' || this.stunTimer > 0) return false;
         
         // Bypass checks for remote entities (visual only)
         if (this.isRemote) {
             return true;
         }
 
-        if (this.abilityCooldown > 0) {
+        const skillName = skillNameOverride || this.abilityName;
+
+        // Check specific cooldown
+        if (this.cooldowns[skillName] > 0) {
+            console.log(`Skill ${skillName} on cooldown: ${this.cooldowns[skillName].toFixed(1)}s`);
+            return false;
+        }
+
+        // Fallback to global cooldown if no specific skill name (legacy)
+        if (!skillNameOverride && this.abilityCooldown > 0) {
             console.log("Ability on cooldown");
             return false;
         }
@@ -230,7 +283,17 @@ export class Actor extends Entity {
         
         // Apply Cooldown Reduction
         const cdr = this.stats.cooldownReduction || 0;
-        this.abilityCooldown = this.abilityMaxCooldown * (1 - cdr);
+        const maxCd = this.abilityMaxCooldown * (1 - cdr);
+        
+        // Set Cooldown
+        if (skillName) {
+            this.cooldowns[skillName] = maxCd;
+        }
+        
+        // Also set global cooldown for legacy support / base ability
+        if (!skillNameOverride) {
+            this.abilityCooldown = maxCd;
+        }
         
         // Subclasses implement actual logic
         return true;
@@ -240,7 +303,7 @@ export class Actor extends Entity {
         // Default implementation: just use the base ability
         // In the future, this should switch on skillName
         console.log(`Using skill: ${skillName}`);
-        return this.useAbility(targetVector, gameEngine);
+        return this.useAbility(targetVector, gameEngine, skillName);
     }
 
     updateState(newState) {
@@ -265,6 +328,187 @@ export class Actor extends Entity {
 
     update(dt, collisionManager, player, activeEntities) {
         super.update(dt);
+
+        // Stun Logic
+        if (this.stunTimer > 0) {
+            this.stunTimer -= dt;
+            if (this.stunTimer <= 0) {
+                this.stunTimer = 0;
+                // Resume Idle if not dead
+                if (this.state !== 'DEAD') {
+                    this.state = 'IDLE';
+                    this.playAnimation('Idle');
+                }
+            } else {
+                // While stunned, ensure state is STUNNED or IDLE and don't move
+                if (this.state !== 'DEAD') {
+                    // Optional: Play stun animation if available
+                    // this.playAnimation('Stun'); 
+                    return; // Skip movement and other updates
+                }
+            }
+        }
+
+        // Guardian Roar Buff Logic
+        if (this.guardianRoarTimer > 0) {
+            this.guardianRoarTimer -= dt;
+            if (this.guardianRoarTimer <= 0) {
+                this.guardianRoarTimer = 0;
+            }
+        }
+
+        // Slow Logic
+        if (this.slowTimer > 0) {
+            this.slowTimer -= dt;
+            if (this.slowTimer <= 0) {
+                this.slowTimer = 0;
+                this.slowFactor = 0;
+            }
+        }
+
+        // Last Stand Logic
+        if (this.lastStandTimer > 0) {
+            this.lastStandTimer -= dt;
+            if (this.lastStandTimer <= 0) {
+                this.lastStandTimer = 0;
+                this.lastStandDamageBoost = 0;
+            }
+        }
+
+        // Cleric Buffs/Debuffs Logic
+        if (this.blessingResolveTimer > 0) {
+            this.blessingResolveTimer -= dt;
+            if (this.blessingResolveTimer <= 0) {
+                this.blessingResolveTimer = 0;
+                this.blessingResolveReduction = 0;
+            }
+        }
+        if (this.blessingZealTimer > 0) {
+            this.blessingZealTimer -= dt;
+            if (this.blessingZealTimer <= 0) {
+                this.blessingZealTimer = 0;
+                this.blessingZealFactor = 0;
+            }
+        }
+        if (this.markWeaknessTimer > 0) {
+            this.markWeaknessTimer -= dt;
+            if (this.markWeaknessTimer <= 0) {
+                this.markWeaknessTimer = 0;
+                this.markWeaknessFactor = 0;
+            }
+        }
+
+        // Rogue Debuffs Logic
+        if (this.weakPointMarkTimer > 0) {
+            this.weakPointMarkTimer -= dt;
+            if (this.weakPointMarkTimer <= 0) {
+                this.weakPointMarkTimer = 0;
+            }
+        }
+        if (this.bleedTimer > 0) {
+            this.bleedTimer -= dt;
+            
+            // Bleed Tick (every 1s)
+            if (!this.bleedTickTimer) this.bleedTickTimer = 0;
+            this.bleedTickTimer += dt;
+            if (this.bleedTickTimer >= 1.0) {
+                this.bleedTickTimer -= 1.0;
+                const bleedDmg = 5 * this.bleedStacks;
+                this.takeDamage(bleedDmg);
+                // Visual
+                // if (floatingTextManager) floatingTextManager.spawn(bleedDmg, this.position, '#ff0000');
+            }
+
+            if (this.bleedTimer <= 0) {
+                this.bleedTimer = 0;
+                this.bleedStacks = 0;
+            }
+        }
+
+        // Rogue Branch C Logic
+        if (this.accuracyReductionTimer > 0) this.accuracyReductionTimer -= dt;
+        if (this.healingReductionTimer > 0) this.healingReductionTimer -= dt;
+        if (this.rootTimer > 0) this.rootTimer -= dt;
+        if (this.speedBoostTimer > 0) {
+            this.speedBoostTimer -= dt;
+            if (this.speedBoostTimer <= 0) {
+                this.speedBoostTimer = 0;
+                this.speedBoostFactor = 0;
+            }
+        }
+        
+        if (this.stealthTimer > 0) {
+            this.stealthTimer -= dt;
+            if (this.mesh) {
+                this.mesh.traverse(child => {
+                    if (child.isMesh) {
+                        child.material.transparent = true;
+                        child.material.opacity = 0.3;
+                    }
+                });
+            }
+            if (this.stealthTimer <= 0) {
+                // Restore opacity
+                if (this.mesh) {
+                    this.mesh.traverse(child => {
+                        if (child.isMesh) {
+                            child.material.opacity = 1.0;
+                        }
+                    });
+                }
+            }
+        }
+
+        if (this.poisonTimer > 0) {
+            this.poisonTimer -= dt;
+            
+            // Poison Tick (every 1s)
+            if (!this.poisonTickTimer) this.poisonTickTimer = 0;
+            this.poisonTickTimer += dt;
+            if (this.poisonTickTimer >= 1.0) {
+                this.poisonTickTimer -= 1.0;
+                const poisonDmg = 3 * this.poisonStacks; // Lower base dmg than bleed but reduces healing
+                this.takeDamage(poisonDmg);
+                // Visual
+                // if (floatingTextManager) floatingTextManager.spawn(poisonDmg, this.position, '#00ff00');
+            }
+
+            if (this.poisonTimer <= 0) {
+                this.poisonTimer = 0;
+                this.poisonStacks = 0;
+            }
+        }
+
+        // Wizard Control Logic
+        if (this.frozenTimer > 0) {
+            this.frozenTimer -= dt;
+            // Visual: Turn blue
+            if (this.mesh) {
+                this.mesh.traverse(child => {
+                    if (child.isMesh && child.material) {
+                        if (!child.userData.originalColor) child.userData.originalColor = child.material.color.getHex();
+                        child.material.color.setHex(0x00ffff);
+                    }
+                });
+            }
+            if (this.frozenTimer <= 0) {
+                // Restore color
+                if (this.mesh) {
+                    this.mesh.traverse(child => {
+                        if (child.isMesh && child.material && child.userData.originalColor !== undefined) {
+                            child.material.color.setHex(child.userData.originalColor);
+                        }
+                    });
+                }
+            }
+        }
+        
+        if (this.hasteTimer > 0) {
+            this.hasteTimer -= dt;
+            if (this.hasteTimer <= 0) {
+                this.hasteFactor = 0;
+            }
+        }
 
         if (this.isRemote) {
             // Interpolate Position
@@ -357,6 +601,14 @@ export class Actor extends Entity {
             this.abilityCooldown -= dt;
         }
 
+        // Update per-skill cooldowns
+        for (const skill in this.cooldowns) {
+            if (this.cooldowns[skill] > 0) {
+                this.cooldowns[skill] -= dt;
+                if (this.cooldowns[skill] < 0) this.cooldowns[skill] = 0;
+            }
+        }
+
         // Regeneration Logic (1 second tick)
         if (this.state !== 'DEAD' && !this.isMultiplayer && !this.isRemote) {
             this.regenTimer += dt;
@@ -365,7 +617,11 @@ export class Actor extends Entity {
                 
                 // Regenerate HP
                 if (this.stats.hp < this.stats.maxHp) {
-                    this.stats.hp = Math.min(this.stats.maxHp, this.stats.hp + this.stats.hpRegen);
+                    let regenAmount = this.stats.hpRegen;
+                    if (this.healingReductionTimer > 0) {
+                        regenAmount *= (1 - this.healingReductionFactor);
+                    }
+                    this.stats.hp = Math.min(this.stats.maxHp, this.stats.hp + regenAmount);
                 }
                 
                 // Regenerate Mana
@@ -380,6 +636,14 @@ export class Actor extends Entity {
         }
         
         if (this.state === 'MOVING' && this.targetPosition) {
+            // Root/Freeze Check
+            if (this.rootTimer > 0 || this.frozenTimer > 0) {
+                this.state = 'IDLE';
+                this.velocity.set(0, 0, 0);
+                this.playAnimation('Idle');
+                return;
+            }
+
             const direction = new THREE.Vector3().subVectors(this.targetPosition, this.position);
             const distance = direction.length();
             
@@ -397,6 +661,16 @@ export class Actor extends Entity {
                 let currentSpeed = this.stats.speed;
                 if (!this.isRunning) {
                     currentSpeed *= 0.5; // Walk speed is half (for enemies)
+                }
+                
+                // Apply Slow
+                if (this.slowTimer > 0) {
+                    currentSpeed *= (1 - this.slowFactor);
+                }
+
+                // Apply Speed Boost
+                if (this.speedBoostTimer > 0) {
+                    currentSpeed *= (1 + this.speedBoostFactor);
                 }
 
                 let moveDist = currentSpeed * dt;
@@ -464,10 +738,56 @@ export class Actor extends Entity {
         }
     }
 
+    cleanse() {
+        this.stunTimer = 0;
+        this.slowTimer = 0;
+        this.slowFactor = 0;
+        this.markWeaknessTimer = 0;
+        this.markWeaknessFactor = 0;
+        this.bleedTimer = 0;
+        this.bleedStacks = 0;
+        this.weakPointMarkTimer = 0;
+        // Add other debuffs here if they exist (poison, bleed, etc.)
+        console.log(`${this.id} was cleansed!`);
+    }
+
     takeDamage(amount) {
         if (this.state === 'DEAD' || this.isMultiplayer || this.isRemote) return;
-        this.stats.hp -= amount;
-        console.log(`${this.id} took ${amount} damage. HP: ${this.stats.hp}`);
+        
+        let finalAmount = amount;
+        
+        // Damage Reductions (Buffs)
+        if (this.guardianRoarTimer > 0) {
+            finalAmount *= (1 - this.guardianRoarReduction);
+        }
+        if (this.blessingResolveTimer > 0) {
+            finalAmount *= (1 - this.blessingResolveReduction);
+        }
+
+        // Damage Increases (Debuffs)
+        if (this.markWeaknessTimer > 0) {
+            finalAmount *= (1 + this.markWeaknessFactor);
+        }
+        
+        // Shield Absorption
+        if (this.shieldHP > 0) {
+            const absorbed = Math.min(this.shieldHP, finalAmount);
+            this.shieldHP -= absorbed;
+            finalAmount -= absorbed;
+            console.log(`${this.id} shield absorbed ${absorbed}. Remaining Shield: ${this.shieldHP}`);
+            if (finalAmount <= 0) return; // Fully absorbed
+        }
+        
+        // Divine Intervention Check
+        if (this.divineInterventionActive && (this.stats.hp - finalAmount <= 0)) {
+            this.stats.hp = this.stats.maxHp * 0.30; // Heal to 30%
+            this.divineInterventionActive = false;
+            console.log(`${this.id} was saved by Divine Intervention!`);
+            return; 
+        }
+
+        this.stats.hp -= finalAmount;
+        console.log(`${this.id} took ${finalAmount} damage (was ${amount}). HP: ${this.stats.hp}`);
         if (this.stats.hp <= 0) {
             this.die();
         }
@@ -487,7 +807,10 @@ export class Actor extends Entity {
     }
 
     getAttackHitDelay() {
-        const cooldown = this.stats.attackSpeed || 1.0;
+        let cooldown = this.stats.attackSpeed || 1.0;
+        if (this.hasteTimer > 0) {
+            cooldown /= (1 + this.hasteFactor);
+        }
         return (cooldown * 1000) * 0.35; // 35% through animation
     }
 
@@ -495,9 +818,31 @@ export class Actor extends Entity {
         if (this.state === 'DEAD') return false;
         if (target && target.state === 'DEAD') return false; // Don't attack dead targets
         
+        // Frozen Check
+        if (this.frozenTimer > 0) return false;
+
+        // Accuracy Check (Blindness)
+        if (this.accuracyReductionTimer > 0) {
+            if (Math.random() < this.accuracyReductionFactor) {
+                console.log(`${this.id} missed due to blindness!`);
+                // Trigger cooldown anyway to prevent spamming until hit
+                this.lastAttackTime = Date.now();
+                return false;
+            }
+        }
+
         // Attack Speed Check
         const now = Date.now();
-        const cooldownMs = this.stats.attackSpeed * 1000;
+        let cooldownMs = this.stats.attackSpeed * 1000;
+        
+        // Apply Attack Speed Buffs
+        if (this.blessingZealTimer > 0) {
+            cooldownMs /= (1 + this.blessingZealFactor);
+        }
+        if (this.hasteTimer > 0) {
+            cooldownMs /= (1 + this.hasteFactor);
+        }
+
         if (now - this.lastAttackTime < cooldownMs) {
             return false;
         }
@@ -512,18 +857,18 @@ export class Actor extends Entity {
         this.playAnimation('Attack', false, true);
         
         // Scale animation speed to match cooldown exactly (Slow attack = Slow animation)
-        const cooldown = this.stats.attackSpeed || 1.0;
+        let effectiveCooldown = cooldownMs / 1000;
         let timeScale = 1.0;
         let clipDuration = 1.0;
 
         if (this.currentAction) {
             clipDuration = this.currentAction.getClip().duration;
             // Scale to fit cooldown
-            timeScale = clipDuration / cooldown;
+            timeScale = clipDuration / effectiveCooldown;
             this.currentAction.setEffectiveTimeScale(timeScale);
         }
         
-        const duration = cooldown * 1000;
+        const duration = cooldownMs;
         // Hit happens at 35% of the animation (which is now exactly the cooldown duration)
         const hitDelay = duration * 0.35;
 
@@ -704,6 +1049,12 @@ export class Actor extends Entity {
         
         // Calculate Speed
         this.stats.speed = (3 + (totalStats.dexterity * 0.5)) * 1.2;
+        
+        // Haste Buff
+        if (this.hasteTimer > 0) {
+            this.stats.speed *= (1 + this.hasteFactor);
+            this.stats.cooldownReduction = Math.min(0.8, this.stats.cooldownReduction + 0.2); // +20% CDR
+        }
 
         // Cap Speed (Max = 3x Speed at 10 Dex)
         const refDex = 10;
