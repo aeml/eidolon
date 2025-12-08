@@ -479,6 +479,10 @@ export class GameEngine {
             }
         });
 
+        this.inputManager.subscribe('onQuest', () => {
+            this.uiManager.toggleJournal();
+        });
+
         this.inputManager.subscribe('onChat', () => {
             if (this.isMultiplayer && this.uiManager.chatInput) {
                 // Focus chat input if not already focused
