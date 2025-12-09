@@ -14,11 +14,6 @@ export class Fighter extends Actor {
         this.abilityManaCost = 20;
         this.abilityMaxCooldown = 5.0;
         
-        // Pre-unlock Whirlwind for testing if not already unlocked
-        // In a real scenario, this would come from the server/save data
-        this.unlockedSkills = ["Whirlwind", "Berserker Edge", "Shattering Charge", "Executioner Spin", "Last Stand Rampage"];
-        this.hotbar = ["Berserker Edge", "Shattering Charge", "Executioner Spin", "Last Stand Rampage"];
-        
         this.isCharging = false;
         this.ironFortressTimer = 0;
         this.ironFortressReduction = 0;
@@ -33,6 +28,7 @@ export class Fighter extends Actor {
         const skill = skillNameOverride || this.abilityName;
 
         if (skill === "Whirlwind") {
+            if (!this.unlockedSkills.includes("Whirlwind")) return;
             console.log("Fighter used Whirlwind!");
             this.isWhirlwinding = true;
             this.whirlwindTimer = 0;
@@ -49,6 +45,7 @@ export class Fighter extends Actor {
         }
 
         if (skill === "Shield Slam") {
+            if (!this.unlockedSkills.includes("Shield Slam")) return;
             console.log("Fighter used Shield Slam!");
             this.playAnimation('Attack', false, true);
             
@@ -93,6 +90,7 @@ export class Fighter extends Actor {
         }
 
         if (skill === "Iron Fortress") {
+            if (!this.unlockedSkills.includes("Iron Fortress")) return;
             console.log("Fighter used Iron Fortress!");
             // Buff Animation (maybe a shout or just a particle)
             this.playAnimation('Idle', false, true); // No specific anim, just reset
@@ -116,6 +114,7 @@ export class Fighter extends Actor {
         }
 
         if (skill === "Guardian Roar") {
+            if (!this.unlockedSkills.includes("Guardian Roar")) return;
             console.log("Fighter used Guardian Roar!");
             this.playAnimation('Attack', false, true); // Shout anim?
             
@@ -154,6 +153,7 @@ export class Fighter extends Actor {
         }
 
         if (skill === "Sweeping Strike") {
+            if (!this.unlockedSkills.includes("Sweeping Strike")) return;
             console.log("Fighter used Sweeping Strike!");
             this.playAnimation('Attack', false, true);
             
@@ -192,6 +192,7 @@ export class Fighter extends Actor {
         }
 
         if (skill === "Earthshaker") {
+            if (!this.unlockedSkills.includes("Earthshaker")) return;
             console.log("Fighter used Earthshaker!");
             this.playAnimation('Attack', false, true); // Smash anim
             

@@ -55,7 +55,7 @@ export class AreaOfEffect extends Entity {
         return mesh;
     }
     
-    update(dt, gameEngine) {
+    update(dt, collisionManager, player, activeEntities, floatingTextManager, gameEngine) {
         this.elapsedTime += dt;
         if (this.elapsedTime >= this.duration) {
             this.isActive = false;

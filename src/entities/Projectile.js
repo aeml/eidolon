@@ -76,6 +76,22 @@ export class Projectile extends Entity {
             geometry = DAGGER_GEO;
             material = DAGGER_MAT;
             this.damage = 15 + (this.owner.stats.dexterity * 1.5);
+        } else if (this.type === 'FlameTornado') {
+            // Tornado shape: Cone upside down or just a cylinder?
+            // Let's use a ConeGeometry
+            geometry = new THREE.ConeGeometry(1.0, 3.0, 8, 1, true); // Open ended?
+            geometry.rotateX(-Math.PI / 2); // Point forward
+            material = new THREE.MeshStandardMaterial({ 
+                color: 0xff8800, 
+                emissive: 0xff4400,
+                emissiveIntensity: 2,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.8
+            });
+            this.damage = 30 + (this.owner.stats.intelligence * 2.0);
+            this.speed = 10; // Slower
+            this.isPiercingThrow = true; // Pass through enemies
         }
 
         this.mesh = new THREE.Mesh(geometry, material);
@@ -86,10 +102,19 @@ export class Projectile extends Entity {
         const lookTarget = this.position.clone().add(this.velocity);
         this.mesh.lookAt(lookTarget);
         this.rotation.copy(this.mesh.quaternion);
+        
+        // Spin effect for Tornado
+        if (this.type === 'FlameTornado') {
+            this.mesh.rotation.z = Math.random() * Math.PI;
+        }
     }
 
     update(dt, collisionManager, player, activeEntities, floatingTextManager, gameEngine) { 
         if (!this.isActive) return;
+
+        if (this.type === 'FlameTornado' && this.mesh) {
+            this.mesh.rotation.x += 10.0 * dt; // Spin around local axis
+        }
 
         // In multiplayer, position is authoritative from server, but we can interpolate
         // If this is a remote projectile, we might want to just let the server update position

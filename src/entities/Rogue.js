@@ -9,8 +9,8 @@ export class Rogue extends Actor {
         super(id, CONSTANTS.ENTITIES.ROGUE);
         this.meshType = 'Rogue';
 
-        this.abilityName = "Throw Dagger";
-        this.abilityDescription = "Throw a dagger for high single-target damage.";
+        this.abilityName = "Piercing Throw";
+        this.abilityDescription = "Throw a dagger that pierces through enemies in a line.";
         this.abilityManaCost = 15;
         this.abilityMaxCooldown = 1.0;
         this.scaleAnimSpeed = false; // Rogue animations are static speed
@@ -86,6 +86,7 @@ export class Rogue extends Actor {
         // --- Branch A: Assassin Burst Path ---
 
         if (skill === "Backstab") {
+            if (!this.unlockedSkills.includes("Backstab")) return;
             console.log("Rogue used Backstab!");
             this.playAnimation('Attack', false, true);
             

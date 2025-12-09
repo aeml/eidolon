@@ -266,11 +266,6 @@ export class UIManager {
                     this.chatInput.focus();
                 }
             }
-            if (e.key.toLowerCase() === 'j') {
-                if (document.activeElement !== this.chatInput) {
-                    this.toggleJournal();
-                }
-            }
         });
 
         this.isHelpOpen = false;
@@ -744,15 +739,17 @@ export class UIManager {
         // But we want to be careful not to wipe user customizations if we add that later.
         // For now, auto-fill is the requested behavior.
         
+        // Filter out the base ability (Right Click) from the hotbar
+        const baseAbility = player.abilityName;
+        const hotbarSkills = player.unlockedSkills ? player.unlockedSkills.filter(s => s !== baseAbility) : [];
+
         // Slots 1-4 (Keys 1-4) are unlocked skills
-        if (player.unlockedSkills) {
-            player.unlockedSkills.forEach((skillName, index) => {
-                if (index < 4) {
-                    // Assign to Slot 0, 1, 2, 3 (Keys 1, 2, 3, 4)
-                    this.assignSkillToSlot(index, skillName);
-                }
-            });
-        }
+        hotbarSkills.forEach((skillName, index) => {
+            if (index < 4) {
+                // Assign to Slot 0, 1, 2, 3 (Keys 1, 2, 3, 4)
+                this.assignSkillToSlot(index, skillName);
+            }
+        });
     }
 
     toggleAbilitiesMenu() {
