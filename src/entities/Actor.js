@@ -97,6 +97,10 @@ export class Actor extends Entity {
         this.markWeaknessTimer = 0;
         this.markWeaknessFactor = 0;
 
+        // Hotbar (Default empty)
+        this.hotbar = [null, null, null, null];
+        this.unlockedSkills = [];
+
         // Rogue Debuffs
         this.bleedTimer = 0;
         this.bleedStacks = 0;

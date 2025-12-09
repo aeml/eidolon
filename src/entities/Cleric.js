@@ -9,7 +9,7 @@ export class Cleric extends Actor {
         this.scaleAnimSpeed = false;
         this.meshType = 'Cleric';
 
-        this.abilityName = "Guardian Spirits";
+        this.abilityName = "Spirit Guardians";
         this.abilityDescription = "Summon spirits that orbit you and damage nearby enemies.";
         this.abilityManaCost = 40;
         this.abilityMaxCooldown = 10.0;
@@ -25,6 +25,7 @@ export class Cleric extends Actor {
         const skill = skillNameOverride || this.abilityName;
 
         if (skill === "Healing Light") {
+            if (!this.unlockedSkills.includes("Healing Light")) return;
             console.log("Cleric used Healing Light!");
             this.playAnimation('Attack', false, true);
             

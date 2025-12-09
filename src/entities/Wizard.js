@@ -19,8 +19,8 @@ export class Wizard extends Actor {
         // Skill Tree: Pyromancer (Branch A)
         this.skillLevels = {
             pyromancer: {
-                burningGround: 1,    // Tier 2: Fireball leaves damaging zone
-                flameSurge: 1,       // Tier 3: Increased explosion radius
+                flameWhip: 1,        // Tier 2: Active Skill - Cone stun
+                flameTornado: 1,     // Tier 3: Active Skill - Moving tornado
                 meteorDrop: 1,       // Tier 4: Active Skill - Call down a meteor
                 infernoCataclysm: 1  // Tier 5: Active Skill - Massive fire storm
             },
@@ -77,8 +77,79 @@ export class Wizard extends Actor {
 
         // --- Pyromancer Branch Skills ---
 
+        if (skill === "Flame Whip") {
+            if (!this.unlockedSkills.includes("Flame Whip")) return;
+            console.log("Wizard used Flame Whip!");
+            this.playAnimation('Attack', false, true);
+            
+            // Cooldown 10s
+            const cdr = this.stats.cooldownReduction || 0;
+            this.cooldowns["Flame Whip"] = 10.0 * (1 - cdr);
+            
+            // Cone Logic
+            const range = 6.0;
+            const angleThreshold = Math.PI / 4; // 45 degrees half-angle
+            const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion);
+            
+            // Visual
+            this.spawnVisualEffect(gameEngine, this.position, 0xff4500, "cone"); // Reuse cone visual
+            
+            const entities = gameEngine.chunkManager.getActiveEntities();
+            entities.forEach(entity => {
+                if (entity !== this && entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
+                    // Enemy check
+                    const isEnemy = !['Wizard', 'Cleric', 'Fighter', 'Rogue'].includes(entity.constructor.name);
+                    if (isEnemy) {
+                        const dir = new THREE.Vector3().subVectors(entity.position, this.position);
+                        const dist = dir.length();
+                        if (dist < range) {
+                            dir.normalize();
+                            const angle = forward.angleTo(dir);
+                            if (angle < angleThreshold) {
+                                // Hit!
+                                const damage = (20 + (this.stats.intelligence * 1.5)) * damageMultiplier;
+                                entity.takeDamage(damage);
+                                gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#ff4500');
+                                
+                                // Stun 3s
+                                if (entity.stunTimer !== undefined) {
+                                    entity.stunTimer = 3.0;
+                                    gameEngine.floatingTextManager.spawn("STUNNED!", entity.position, '#ffffff');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            return;
+        }
+
+        if (skill === "Flame Tornado") {
+            if (!this.unlockedSkills.includes("Flame Tornado")) return;
+            console.log("Wizard used Flame Tornado!");
+            this.playAnimation('Attack', false, true);
+            
+            // Cooldown 12s
+            const cdr = this.stats.cooldownReduction || 0;
+            this.cooldowns["Flame Tornado"] = 12.0 * (1 - cdr);
+            
+            const startPos = this.position.clone();
+            startPos.y += 1.0;
+            
+            // Target direction
+            const adjustedTarget = targetVector.clone();
+            adjustedTarget.y = startPos.y;
+            
+            const tornado = new Projectile(null, this, 'FlameTornado', startPos, adjustedTarget);
+            // Damage is set in Projectile.js but we can override or apply multiplier
+            tornado.damage *= damageMultiplier;
+            
+            gameEngine.addEntity(tornado);
+            return;
+        }
+
         if (skill === "Meteor Drop") {
-            if (this.skillLevels.pyromancer.meteorDrop < 1) return;
+            if (!this.unlockedSkills.includes("Meteor Drop")) return;
             console.log("Wizard used Meteor Drop!");
             this.playAnimation('Attack', false, true);
             
@@ -117,7 +188,7 @@ export class Wizard extends Actor {
         }
 
         if (skill === "Inferno Cataclysm") {
-            if (this.skillLevels.pyromancer.infernoCataclysm < 1) return;
+            if (!this.unlockedSkills.includes("Inferno Cataclysm")) return;
             console.log("Wizard used Inferno Cataclysm!");
             this.playAnimation('Attack', false, true);
             
@@ -153,7 +224,7 @@ export class Wizard extends Actor {
         // --- Single-Target Caster Branch Skills ---
 
         if (skill === "Scorch Beam") {
-            if (this.skillLevels.singleTarget.scorchBeam < 1) return;
+            if (!this.unlockedSkills.includes("Scorch Beam")) return;
             console.log("Wizard used Scorch Beam!");
             this.playAnimation('Attack', false, true);
             
@@ -231,7 +302,7 @@ export class Wizard extends Actor {
         }
 
         if (skill === "Arcane Missiles") {
-            if (this.skillLevels.singleTarget.arcaneMissiles < 1) return;
+            if (!this.unlockedSkills.includes("Arcane Missiles")) return;
             console.log("Wizard used Arcane Missiles!");
             this.playAnimation('Attack', false, true);
             
@@ -286,7 +357,7 @@ export class Wizard extends Actor {
         }
 
         if (skill === "Spell Focus") {
-            if (this.skillLevels.singleTarget.spellFocus < 1) return;
+            if (!this.unlockedSkills.includes("Spell Focus")) return;
             console.log("Wizard used Spell Focus!");
             this.playAnimation('Attack', false, true);
             
@@ -303,7 +374,7 @@ export class Wizard extends Actor {
         }
 
         if (skill === "Dragonfire Lance") {
-            if (this.skillLevels.singleTarget.dragonfireLance < 1) return;
+            if (!this.unlockedSkills.includes("Dragonfire Lance")) return;
             console.log("Wizard used Dragonfire Lance!");
             this.playAnimation('Attack', false, true);
             
@@ -335,7 +406,7 @@ export class Wizard extends Actor {
         // --- Control & Utility Branch Skills ---
 
         if (skill === "Frost Nova") {
-            if (this.skillLevels.controlUtility.frostNova < 1) return;
+            if (!this.unlockedSkills.includes("Frost Nova")) return;
             console.log("Wizard used Frost Nova!");
             this.playAnimation('Attack', false, true);
             
@@ -375,7 +446,7 @@ export class Wizard extends Actor {
         }
 
         if (skill === "Arcane Shield") {
-            if (this.skillLevels.controlUtility.arcaneShield < 1) return;
+            if (!this.unlockedSkills.includes("Arcane Shield")) return;
             console.log("Wizard used Arcane Shield!");
             this.playAnimation('Attack', false, true);
             
@@ -397,7 +468,7 @@ export class Wizard extends Actor {
         }
 
         if (skill === "Gravity Well") {
-            if (this.skillLevels.controlUtility.gravityWell < 1) return;
+            if (!this.unlockedSkills.includes("Gravity Well")) return;
             console.log("Wizard used Gravity Well!");
             this.playAnimation('Attack', false, true);
             
@@ -456,7 +527,7 @@ export class Wizard extends Actor {
         }
 
         if (skill === "Time Warp") {
-            if (this.skillLevels.controlUtility.timeWarp < 1) return;
+            if (!this.unlockedSkills.includes("Time Warp")) return;
             console.log("Wizard used Time Warp!");
             this.playAnimation('Attack', false, true);
             
@@ -490,10 +561,11 @@ export class Wizard extends Actor {
         // --- Standard Spells ---
 
         if (skill === "Teleport") {
+            if (!this.unlockedSkills.includes("Teleport")) return;
             console.log("Wizard used Teleport!");
             
-            // Visual Effect: Fade out/in or particles (Simplified for now)
-            // Just move instantly
+            // Visual Effect: Fade out/in or particles
+            this.spawnVisualEffect(gameEngine, this.position, 0x00ffff, "burst");
             
             const maxRange = 15.0;
             const dist = this.position.distanceTo(targetVector);
@@ -512,6 +584,9 @@ export class Wizard extends Actor {
 
             this.position.copy(finalTarget);
             if (this.mesh) this.mesh.position.copy(this.position);
+            
+            // Arrival Effect
+            this.spawnVisualEffect(gameEngine, this.position, 0x00ffff, "burst");
             
             return;
         }
@@ -532,14 +607,109 @@ export class Wizard extends Actor {
         // Damage Calculation: Base 20 + (Intelligence * 2.0)
         fireball.damage = 20 + (this.stats.intelligence * 2.0);
         
-        // Pyromancer Passives
-        if (this.skillLevels.pyromancer.flameSurge > 0) {
-            fireball.explosionRadius = 6.0; // Increased from default 4.0
-        }
-        if (this.skillLevels.pyromancer.burningGround > 0) {
-            fireball.leaveBurningGround = true;
-        }
+        // Pyromancer Passives (Removed/Replaced)
+        // if (this.skillLevels.pyromancer.flameSurge > 0) { ... }
+        // if (this.skillLevels.pyromancer.burningGround > 0) { ... }
         
         gameEngine.addEntity(fireball);
+    }
+
+    spawnVisualEffect(gameEngine, position, color, type) {
+        if (!gameEngine || !gameEngine.scene) return;
+        
+        if (type === "ring") {
+            const geometry = new THREE.RingGeometry(0.5, 1.0, 32);
+            const material = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide, transparent: true, opacity: 0.5 });
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.rotation.x = Math.PI / 2;
+            mesh.position.copy(position);
+            mesh.position.y += 0.1;
+            gameEngine.scene.add(mesh);
+            
+            const animate = () => {
+                if (mesh.material.opacity <= 0) {
+                    gameEngine.scene.remove(mesh);
+                    geometry.dispose();
+                    material.dispose();
+                    return;
+                }
+                mesh.scale.multiplyScalar(1.05);
+                mesh.material.opacity -= 0.02;
+                requestAnimationFrame(animate);
+            };
+            animate();
+        } else if (type === "buff") {
+            const geometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 8);
+            const material = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.5 });
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.copy(position);
+            mesh.position.y += 1.0;
+            gameEngine.scene.add(mesh);
+            
+            const animate = () => {
+                if (mesh.material.opacity <= 0) {
+                    gameEngine.scene.remove(mesh);
+                    geometry.dispose();
+                    material.dispose();
+                    return;
+                }
+                mesh.position.y += 0.1;
+                mesh.material.opacity -= 0.02;
+                requestAnimationFrame(animate);
+            };
+            animate();
+        } else if (type === "cone") {
+            const count = 5;
+            const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.5);
+            const material = new THREE.MeshBasicMaterial({ color: color });
+            
+            const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion);
+            
+            for(let i=0; i<count; i++) {
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.copy(position);
+                mesh.position.y += 1.0;
+                
+                // Spread
+                const angle = (i - (count/2)) * 0.2;
+                const dir = forward.clone().applyAxisAngle(new THREE.Vector3(0,1,0), angle);
+                
+                mesh.lookAt(position.clone().add(dir));
+                gameEngine.scene.add(mesh);
+                
+                const speed = 10.0;
+                const animate = () => {
+                    if (!mesh.parent) return; 
+                    mesh.position.add(dir.clone().multiplyScalar(speed * 0.016));
+                    mesh.scale.multiplyScalar(0.95);
+                    if (mesh.scale.x < 0.1) {
+                        gameEngine.scene.remove(mesh);
+                        return;
+                    }
+                    requestAnimationFrame(animate);
+                };
+                animate();
+            }
+        } else if (type === "sphere") {
+             const geometry = new THREE.SphereGeometry(1, 16, 16);
+             const material = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.5 });
+             const mesh = new THREE.Mesh(geometry, material);
+             mesh.position.copy(position);
+             mesh.position.y += 1.0;
+             gameEngine.scene.add(mesh);
+             
+             const animate = () => {
+                 if (mesh.material.opacity <= 0) {
+                     gameEngine.scene.remove(mesh);
+                     geometry.dispose();
+                     material.dispose();
+                     return;
+                 }
+                 mesh.scale.multiplyScalar(1.1);
+                 mesh.material.opacity -= 0.05;
+                 requestAnimationFrame(animate);
+             };
+             animate();
+        }
     }
 }

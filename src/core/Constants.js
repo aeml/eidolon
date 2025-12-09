@@ -177,8 +177,8 @@ export const CONSTANTS = {
             Tier1: { name: "Fireball", desc: "Classic AoE projectile dealing fire damage." },
             BranchA: {
                 name: "Pyromancer",
-                Tier2: { name: "Burning Ground", desc: "Fireball leaves a damaging zone." },
-                Tier3: { name: "Flame Surge", desc: "Fireball explosion radius increases." },
+                Tier2: { name: "Flame Whip", desc: "Cone attack that stuns enemies for 3 seconds." },
+                Tier3: { name: "Flame Tornado", desc: "Spawns a moving tornado that damages enemies." },
                 Tier4: { name: "Meteor Drop", desc: "Large AoE with a delay." },
                 Tier5: { name: "Inferno Cataclysm", desc: "Massive ultimate AoE covering a large region." }
             },

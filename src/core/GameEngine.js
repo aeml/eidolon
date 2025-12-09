@@ -833,8 +833,10 @@ export class GameEngine {
 
                         const currUnlocked = this.player.unlockedSkills ? this.player.unlockedSkills.length : 0;
 
-                        // Update Hotbar if skills changed
-                        if (prevUnlocked !== currUnlocked) {
+                        // Update Hotbar if skills changed or if we have skills but hotbar is empty
+                        const isHotbarEmpty = !this.player.hotbar || this.player.hotbar.every(s => !s);
+                        if (prevUnlocked !== currUnlocked || (currUnlocked > 0 && isHotbarEmpty)) {
+                            console.log(`Updating Hotbar: Skills=${currUnlocked}, Empty=${isHotbarEmpty}`);
                             this.uiManager.updateHotbar(this.player);
                         }
 
@@ -1418,7 +1420,7 @@ export class GameEngine {
             if (skillNameOverride && this.player.useSkill) {
                 this.player.useSkill(skillNameOverride, targetPos, this);
             } else {
-                this.player.useAbility(targetPos, this);
+                this.player.useAbility(targetPos, this, skillNameOverride);
             }
             return;
         }
@@ -1440,7 +1442,7 @@ export class GameEngine {
             if (skillNameOverride && this.player.useSkill) {
                 this.player.useSkill(skillNameOverride, targetVectorOverride, this);
             } else {
-                this.player.useAbility(targetVectorOverride, this);
+                this.player.useAbility(targetVectorOverride, this, skillNameOverride);
             }
             return;
         }

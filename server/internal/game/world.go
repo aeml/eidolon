@@ -88,11 +88,12 @@ type Entity struct {
 	ManaRegen         float64 `json:"manaRegen"`
 	CastSpeed         float64 `json:"castSpeed"`
 
-	TargetX float64 `json:"-"`
-	TargetZ float64 `json:"-"`
-	SpawnX  float64 `json:"-"`
-	SpawnZ  float64 `json:"-"`
-	State   string  `json:"state"` // IDLE, MOVING, ATTACKING, DEAD
+	TargetX  float64 `json:"-"`
+	TargetZ  float64 `json:"-"`
+	TargetID string  `json:"-"`
+	SpawnX   float64 `json:"-"`
+	SpawnZ   float64 `json:"-"`
+	State    string  `json:"state"` // IDLE, MOVING, ATTACKING, DEAD
 
 	// Combat
 	LastAttackTime  time.Time     `json:"-"`
@@ -120,6 +121,61 @@ type Entity struct {
 	IsCharging     bool      `json:"isCharging,omitempty"`
 	ChargeTargetX  float64   `json:"-"`
 	ChargeTargetZ  float64   `json:"-"`
+
+	// Buffs
+	BerserkerModeActive  bool      `json:"berserkerModeActive,omitempty"`
+	BerserkerModeEndTime time.Time `json:"-"`
+	LastStandActive      bool      `json:"lastStandActive,omitempty"`
+	LastStandEndTime     time.Time `json:"-"`
+	StealthActive        bool      `json:"stealthActive,omitempty"`
+	StealthEndTime       time.Time `json:"-"`
+	ZealActive           bool      `json:"zealActive,omitempty"`
+	ZealEndTime          time.Time `json:"-"`
+
+	// New Buffs
+	IronFortressActive        bool      `json:"ironFortressActive,omitempty"`
+	IronFortressEndTime       time.Time `json:"-"`
+	GuardianRoarActive        bool      `json:"guardianRoarActive,omitempty"`
+	GuardianRoarEndTime       time.Time `json:"-"`
+	SerratedEdgesActive       bool      `json:"serratedEdgesActive,omitempty"`
+	SerratedEdgesEndTime      time.Time `json:"-"`
+	PoisonCoatingActive       bool      `json:"poisonCoatingActive,omitempty"`
+	PoisonCoatingEndTime      time.Time `json:"-"`
+	SpellFocusActive          bool      `json:"spellFocusActive,omitempty"`
+	SpellFocusEndTime         time.Time `json:"-"`
+	ArcaneShieldActive        bool      `json:"arcaneShieldActive,omitempty"`
+	ArcaneShieldHP            int       `json:"arcaneShieldHP,omitempty"`
+	ArcaneShieldEndTime       time.Time `json:"-"`
+	TimeWarpActive            bool      `json:"timeWarpActive,omitempty"`
+	TimeWarpEndTime           time.Time `json:"-"`
+	DivineInterventionActive  bool      `json:"divineInterventionActive,omitempty"`
+	DivineInterventionEndTime time.Time `json:"-"`
+	BlessingResolveActive     bool      `json:"blessingResolveActive,omitempty"`
+	BlessingResolveEndTime    time.Time `json:"-"`
+	GuardianEmbraceActive     bool      `json:"guardianEmbraceActive,omitempty"`
+	GuardianEmbraceEndTime    time.Time `json:"-"`
+	LastGuardianEmbraceTick   time.Time `json:"-"`
+
+	// Debuffs / CC
+	Stunned             bool      `json:"stunned,omitempty"`
+	StunEndTime         time.Time `json:"-"`
+	Slowed              bool      `json:"slowed,omitempty"`
+	SlowEndTime         time.Time `json:"-"`
+	SlowFactor          float64   `json:"slowFactor,omitempty"`
+	Rooted              bool      `json:"rooted,omitempty"`
+	RootEndTime         time.Time `json:"-"`
+	WeakPointMarked     bool      `json:"weakPointMarked,omitempty"`
+	WeakPointEndTime    time.Time `json:"-"`
+	MarkWeakness        bool      `json:"markWeakness,omitempty"` // Cleric
+	MarkWeaknessEndTime time.Time `json:"-"`
+	Bleeding            bool      `json:"bleeding,omitempty"`
+	BleedEndTime        time.Time `json:"-"`
+	BleedDamage         int       `json:"-"`
+	LastBleedTick       time.Time `json:"-"`
+	Poisoned            bool      `json:"poisoned,omitempty"`
+	PoisonEndTime       time.Time `json:"-"`
+	PoisonDamage        int       `json:"-"`
+	LastPoisonTick      time.Time `json:"-"`
 }
 
 type SpatialMap struct {
@@ -1249,8 +1305,71 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 	// --- Projectiles ---
 	if e.Type == TypeProjectile {
 		e.mu.Lock()
+
+		// Zone Logic
+		if e.SubType == "Zone" {
+			if time.Since(e.CreatedAt) > 8*time.Second {
+				deferred.addRemoval(e.ID)
+				e.mu.Unlock()
+				return
+			}
+			// Zone doesn't move
+			// Periodic Effect (e.g. every 1s)
+			// For simplicity, let's just do damage/heal every tick but scaled by dt?
+			// Or just check if we haven't ticked this second.
+			// Let's use LastAttackTime as "LastTickTime"
+			if time.Since(e.LastAttackTime) >= 1*time.Second {
+				e.LastAttackTime = time.Now()
+
+				// Zone Effect
+				// Consecrated Ground: Damage Enemies, Heal Allies?
+				// Let's just do Damage Enemies for now based on description "Consecrated Ground" usually hurts undead/enemies.
+
+				radius := e.Radius
+				ownerID := e.OwnerID
+				e.mu.Unlock() // Unlock to query grid
+
+				nearby := w.Grid.Nearby(e.X, e.Z, radius)
+				for _, target := range nearby {
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					dx := e.X - target.X
+					dz := e.Z - target.Z
+					target.mu.RUnlock()
+
+					if (dx*dx + dz*dz) <= radius*radius {
+						target.mu.Lock()
+						target.Health -= 10 // Flat damage per tick
+						isDead := target.Health <= 0
+						target.mu.Unlock()
+
+						if w.OnEvent != nil {
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: 10})
+						}
+
+						if isDead {
+							owner := w.GetEntity(ownerID)
+							target.mu.Lock()
+							w.handleDeath(target, owner, deferred)
+							target.mu.Unlock()
+						}
+					}
+				}
+				return
+			}
+			e.mu.Unlock()
+			return
+		}
+
 		// Lifetime check
-		if time.Since(e.CreatedAt) > 5*time.Second {
+		lifetime := 5 * time.Second
+		if e.SubType == "ExplosiveTrap" || e.SubType == "SnareTrap" {
+			lifetime = 60 * time.Second
+		}
+		if time.Since(e.CreatedAt) > lifetime {
 			deferred.addRemoval(e.ID)
 			e.mu.Unlock()
 			return
@@ -1296,6 +1415,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				target.mu.Lock()
 				target.Health -= damage
 				isDead := target.Health <= 0
+
+				// Apply Trap Effects
+				if subType == "SnareTrap" {
+					target.Rooted = true
+					target.RootEndTime = time.Now().Add(3 * time.Second)
+				}
+
 				target.mu.Unlock()
 
 				if w.OnEvent != nil {
@@ -1310,9 +1436,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					target.mu.Unlock()
 				}
 
-				// Splash Damage (Fireball)
-				if subType == "Fireball" {
-					splashTargets := w.Grid.Nearby(projX, projZ, 10.0)
+				// Splash Damage (Fireball / Explosive Trap)
+				if subType == "Fireball" || subType == "ExplosiveTrap" {
+					splashRadius := 10.0
+					if subType == "ExplosiveTrap" {
+						splashRadius = 6.0
+					}
+
+					splashTargets := w.Grid.Nearby(projX, projZ, splashRadius)
 					for _, splashTarget := range splashTargets {
 						splashTarget.mu.RLock()
 						if splashTarget.Type != TypeEnemy || splashTarget.ID == target.ID || splashTarget.State == "DEAD" {
@@ -1345,7 +1476,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					}
 				}
 
-				if subType != "Dagger" {
+				if subType != "Dagger" && subType != "FlameTornado" {
 					deferred.addRemoval(e.ID)
 					break
 				}
@@ -1419,53 +1550,181 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				w.Grid.Update(e, oldX, oldZ)
 				e.mu.Unlock()
 			}
-		} else if e.SpiritsActive {
-			// Cleric Spirits
-			if time.Now().After(e.SpiritEndTime) {
-				e.SpiritsActive = false
-				e.mu.Unlock()
-			} else {
-				if time.Since(e.LastSpiritTick) >= 500*time.Millisecond {
-					e.LastSpiritTick = time.Now()
-					damage := 10 + (e.Stats.Wisdom * 1)
-					pX, pZ := e.X, e.Z
-					e.mu.Unlock() // Unlock before interaction
+		} else {
+			// Check Buff Expirations
+			now := time.Now()
+			if e.BerserkerModeActive && now.After(e.BerserkerModeEndTime) {
+				e.BerserkerModeActive = false
+			}
+			if e.LastStandActive && now.After(e.LastStandEndTime) {
+				e.LastStandActive = false
+			}
+			if e.StealthActive && now.After(e.StealthEndTime) {
+				e.StealthActive = false
+			}
+			if e.ZealActive && now.After(e.ZealEndTime) {
+				e.ZealActive = false
+			}
+			if e.IronFortressActive && now.After(e.IronFortressEndTime) {
+				e.IronFortressActive = false
+			}
+			if e.GuardianRoarActive && now.After(e.GuardianRoarEndTime) {
+				e.GuardianRoarActive = false
+			}
+			if e.SerratedEdgesActive && now.After(e.SerratedEdgesEndTime) {
+				e.SerratedEdgesActive = false
+			}
+			if e.PoisonCoatingActive && now.After(e.PoisonCoatingEndTime) {
+				e.PoisonCoatingActive = false
+			}
+			if e.ArcaneShieldActive && now.After(e.ArcaneShieldEndTime) {
+				e.ArcaneShieldActive = false
+				e.ArcaneShieldHP = 0
+			}
+			if e.TimeWarpActive && now.After(e.TimeWarpEndTime) {
+				e.TimeWarpActive = false
+			}
+			if e.DivineInterventionActive && now.After(e.DivineInterventionEndTime) {
+				e.DivineInterventionActive = false
+			}
+			if e.BlessingResolveActive && now.After(e.BlessingResolveEndTime) {
+				e.BlessingResolveActive = false
+			}
+			if e.Stunned && now.After(e.StunEndTime) {
+				e.Stunned = false
+			}
+			if e.Slowed && now.After(e.SlowEndTime) {
+				e.Slowed = false
+				e.SlowFactor = 0
+			}
+			if e.Rooted && now.After(e.RootEndTime) {
+				e.Rooted = false
+			}
+			if e.WeakPointMarked && now.After(e.WeakPointEndTime) {
+				e.WeakPointMarked = false
+			}
+			if e.MarkWeakness && now.After(e.MarkWeaknessEndTime) {
+				e.MarkWeakness = false
+			}
 
-					nearby := w.Grid.Nearby(pX, pZ, 16.0)
-					for _, target := range nearby {
-						target.mu.RLock()
-						if target.Type != TypeEnemy || target.State == "DEAD" {
-							target.mu.RUnlock()
-							continue
-						}
-						tdx := pX - target.X
-						tdz := pZ - target.Z
-						target.mu.RUnlock()
-
-						tdist := math.Sqrt(tdx*tdx + tdz*tdz)
-						if tdist < 16.0 {
-							target.mu.Lock()
-							target.Health -= damage
-							isDead := target.Health <= 0
-							target.mu.Unlock()
-
-							if w.OnEvent != nil {
-								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: damage})
-							}
-
-							if isDead {
-								target.mu.Lock()
-								w.handleDeath(target, e, deferred)
-								target.mu.Unlock()
-							}
-						}
+			// DoT Ticks
+			if e.Bleeding {
+				if now.After(e.BleedEndTime) {
+					e.Bleeding = false
+				} else if time.Since(e.LastBleedTick) >= 1*time.Second {
+					e.LastBleedTick = now
+					e.Health -= e.BleedDamage
+					if w.OnEvent != nil {
+						w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: "bleed", Amount: e.BleedDamage})
 					}
-				} else {
-					e.mu.Unlock()
+					if e.Health <= 0 {
+						// Handle death (tricky without attacker ref, assume environment/self)
+						e.mu.Unlock()
+						w.handleDeath(e, nil, deferred)
+						e.mu.Lock()
+					}
 				}
 			}
-		} else {
-			e.mu.Unlock()
+			if e.Poisoned {
+				if now.After(e.PoisonEndTime) {
+					e.Poisoned = false
+				} else if time.Since(e.LastPoisonTick) >= 1*time.Second {
+					e.LastPoisonTick = now
+					e.Health -= e.PoisonDamage
+					if w.OnEvent != nil {
+						w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: "poison", Amount: e.PoisonDamage})
+					}
+					if e.Health <= 0 {
+						e.mu.Unlock()
+						w.handleDeath(e, nil, deferred)
+						e.mu.Lock()
+					}
+				}
+			}
+
+			// HoT Ticks (Guardian Embrace)
+			if e.GuardianEmbraceActive {
+				if now.After(e.GuardianEmbraceEndTime) {
+					e.GuardianEmbraceActive = false
+				} else if time.Since(e.LastGuardianEmbraceTick) >= 1*time.Second {
+					e.LastGuardianEmbraceTick = now
+					heal := 20 + (e.Stats.Wisdom * 2)
+
+					// Heal Self
+					e.Health += heal
+					if e.Health > e.MaxHealth {
+						e.Health = e.MaxHealth
+					}
+
+					// Heal Nearby Allies
+					pX, pZ := e.X, e.Z
+					e.mu.Unlock()
+					nearby := w.Grid.Nearby(pX, pZ, 10.0)
+					for _, target := range nearby {
+						if target.ID == e.ID {
+							continue
+						}
+						if target.Type == TypePlayer || target.Type == TypeNPC {
+							target.mu.Lock()
+							target.Health += heal
+							if target.Health > target.MaxHealth {
+								target.Health = target.MaxHealth
+							}
+							target.mu.Unlock()
+						}
+					}
+					e.mu.Lock()
+				}
+			}
+
+			if e.SpiritsActive {
+				// Cleric Spirits
+				if now.After(e.SpiritEndTime) {
+					e.SpiritsActive = false
+					e.mu.Unlock()
+				} else {
+					if time.Since(e.LastSpiritTick) >= 500*time.Millisecond {
+						e.LastSpiritTick = now
+						damage := 10 + (e.Stats.Wisdom * 1)
+						pX, pZ := e.X, e.Z
+						e.mu.Unlock() // Unlock before interaction
+
+						nearby := w.Grid.Nearby(pX, pZ, 16.0)
+						for _, target := range nearby {
+							target.mu.RLock()
+							if target.Type != TypeEnemy || target.State == "DEAD" {
+								target.mu.RUnlock()
+								continue
+							}
+							tdx := pX - target.X
+							tdz := pZ - target.Z
+							target.mu.RUnlock()
+
+							tdist := math.Sqrt(tdx*tdx + tdz*tdz)
+							if tdist < 16.0 {
+								target.mu.Lock()
+								target.Health -= damage
+								isDead := target.Health <= 0
+								target.mu.Unlock()
+
+								if w.OnEvent != nil {
+									w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: damage})
+								}
+
+								if isDead {
+									target.mu.Lock()
+									w.handleDeath(target, e, deferred)
+									target.mu.Unlock()
+								}
+							}
+						}
+					} else {
+						e.mu.Unlock()
+					}
+				}
+			} else {
+				e.mu.Unlock()
+			}
 		}
 	}
 
@@ -1485,6 +1744,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if p.X > -100 && p.X < 100 && p.Z > 100 && p.Z < 300 {
 				p.mu.RUnlock()
 				continue
+			}
+			// Check Stealth
+			if p.StealthActive {
+				if time.Now().Before(p.StealthEndTime) {
+					p.mu.RUnlock()
+					continue
+				}
 			}
 			dx := p.X - ex
 			dz := p.Z - ez
@@ -1743,6 +2009,11 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		return 0, false
 	}
 
+	// Check CC
+	if attacker.Stunned {
+		return 0, false
+	}
+
 	// Check Range (Simple distance check)
 	dx := attacker.X - target.X
 	dz := attacker.Z - target.Z
@@ -1784,16 +2055,37 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		}
 
 		damage := att.Damage - tgt.Defense
+
+		// Apply Buff Effects to Damage
+		if att.BerserkerModeActive {
+			// Already handled in RecalculateStats for base damage, but maybe extra here?
+			// RecalculateStats updates att.Damage, so we are good.
+		}
+
 		if damage < 1 {
 			damage = 1
 		}
 		tgt.Health -= damage
 
+		// Apply On-Hit Effects
+		if att.SerratedEdgesActive {
+			tgt.Bleeding = true
+			tgt.BleedDamage = 10 + (att.Stats.Strength / 2)
+			tgt.BleedEndTime = time.Now().Add(5 * time.Second)
+		}
+		if att.PoisonCoatingActive {
+			tgt.Poisoned = true
+			tgt.PoisonDamage = 8 + (att.Stats.Dexterity / 2)
+			tgt.PoisonEndTime = time.Now().Add(8 * time.Second)
+		}
+
+		isDead := tgt.Health <= 0
+
 		if w.OnEvent != nil {
 			w.OnEvent("damage", DamageEvent{TargetID: tgt.ID, SourceID: att.ID, Amount: damage})
 		}
 
-		if tgt.Health <= 0 {
+		if isDead {
 			w.handleDeath(tgt, att, nil)
 		}
 	}(attackerID, targetID, delay)
@@ -1832,6 +2124,28 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	}
 
 	if time.Since(player.LastAbilityTime) < cooldown {
+		return
+	}
+
+	// Check if skill is unlocked
+	isUnlocked := false
+	for _, s := range player.UnlockedSkills {
+		if s == skillName {
+			isUnlocked = true
+			break
+		}
+	}
+	// Fallback: Always allow base skills if UnlockedSkills is empty or not found
+	if !isUnlocked {
+		if (player.SubType == "Fighter" && skillName == "Charge") ||
+			(player.SubType == "Rogue" && skillName == "Piercing Throw") ||
+			(player.SubType == "Wizard" && skillName == "Fireball") ||
+			(player.SubType == "Cleric" && skillName == "Spirit Guardians") {
+			isUnlocked = true
+		}
+	}
+
+	if !isUnlocked {
 		return
 	}
 
@@ -1899,10 +2213,399 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.AbilityCooldown = 8 * time.Second
 				player.LastAbilityTime = time.Now()
 			}
+		} else if skillName == "Shield Slam" {
+			// Shield Slam: Cone Damage
+			cost := 25
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				rangeDist := 4.0
+				angleThreshold := math.Pi / 4 // 45 degrees
+				damage := int(float64(player.Stats.Strength) * 1.5)
+
+				pDirX := math.Sin(player.Rotation)
+				pDirZ := math.Cos(player.Rotation)
+
+				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					dx := target.X - player.X
+					dz := target.Z - player.Z
+					target.mu.RUnlock()
+
+					dist := math.Sqrt(dx*dx + dz*dz)
+					if dist <= rangeDist {
+						dirX := dx / dist
+						dirZ := dz / dist
+
+						dot := pDirX*dirX + pDirZ*dirZ
+						if dot > math.Cos(angleThreshold) {
+							target.mu.Lock()
+							target.Health -= damage
+							isDead := target.Health <= 0
+							target.mu.Unlock()
+
+							if w.OnEvent != nil {
+								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+							}
+							if isDead {
+								target.mu.Lock()
+								w.handleDeath(target, player, nil)
+								target.mu.Unlock()
+							}
+						}
+					}
+				}
+				player.AbilityCooldown = 6 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Sweeping Strike" {
+			// Sweeping Strike: Wide Cone
+			cost := 30
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				rangeDist := 5.0
+				angleThreshold := math.Pi / 2 // 90 degrees
+				damage := int(float64(player.Stats.Strength) * 1.2)
+
+				pDirX := math.Sin(player.Rotation)
+				pDirZ := math.Cos(player.Rotation)
+
+				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					dx := target.X - player.X
+					dz := target.Z - player.Z
+					target.mu.RUnlock()
+
+					dist := math.Sqrt(dx*dx + dz*dz)
+					if dist <= rangeDist {
+						dirX := dx / dist
+						dirZ := dz / dist
+
+						dot := pDirX*dirX + pDirZ*dirZ
+						if dot > math.Cos(angleThreshold) {
+							target.mu.Lock()
+							target.Health -= damage
+							isDead := target.Health <= 0
+							target.mu.Unlock()
+
+							if w.OnEvent != nil {
+								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+							}
+							if isDead {
+								target.mu.Lock()
+								w.handleDeath(target, player, nil)
+								target.mu.Unlock()
+							}
+						}
+					}
+				}
+				player.AbilityCooldown = 4 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Earthshaker" {
+			// Earthshaker: AoE
+			cost := 40
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				radius := 6.0
+				damage := player.Stats.Strength * 2
+
+				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					dx := target.X - player.X
+					dz := target.Z - player.Z
+					target.mu.RUnlock()
+
+					if (dx*dx + dz*dz) <= radius*radius {
+						target.mu.Lock()
+						target.Health -= damage
+						isDead := target.Health <= 0
+						target.mu.Unlock()
+
+						if w.OnEvent != nil {
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+						}
+						if isDead {
+							target.mu.Lock()
+							w.handleDeath(target, player, nil)
+							target.mu.Unlock()
+						}
+					}
+				}
+				player.AbilityCooldown = 12 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Unbreakable Grip" {
+			// Pull Target
+			cost := 35
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				var bestTarget *Entity
+				minDist := 3.0
+
+				nearby := w.Grid.Nearby(targetX, targetZ, 5.0)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					dx := target.X - targetX
+					dz := target.Z - targetZ
+					target.mu.RUnlock()
+
+					d := math.Sqrt(dx*dx + dz*dz)
+					if d < minDist {
+						minDist = d
+						bestTarget = target
+					}
+				}
+
+				if bestTarget != nil {
+					pDirX := math.Sin(player.Rotation)
+					pDirZ := math.Cos(player.Rotation)
+
+					pullX := player.X + pDirX*2.0
+					pullZ := player.Z + pDirZ*2.0
+
+					bestTarget.mu.Lock()
+					oldX, oldZ := bestTarget.X, bestTarget.Z
+					bestTarget.X = pullX
+					bestTarget.Z = pullZ
+					w.Grid.Update(bestTarget, oldX, oldZ)
+					bestTarget.mu.Unlock()
+				}
+
+				player.AbilityCooldown = 15 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Juggernaut Charge" || skillName == "Shattering Charge" {
+			// Charge Variants
+			cost := 30
+			if player.Mana >= cost {
+				player.Mana -= cost
+				player.IsCharging = true
+				player.ChargeTargetX = targetX
+				player.ChargeTargetZ = targetZ
+				player.State = "ATTACKING"
+				player.AbilityCooldown = 12 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Executioner Spin" {
+			// Executioner Spin
+			cost := 40
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				radius := 6.0
+				damage := int(float64(player.Damage)*1.0) + (player.Stats.Strength * 3)
+
+				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					dx := player.X - target.X
+					dz := player.Z - target.Z
+					target.mu.RUnlock()
+
+					if (dx*dx + dz*dz) <= radius*radius {
+						target.mu.Lock()
+						target.Health -= damage
+						isDead := target.Health <= 0
+						target.mu.Unlock()
+
+						if w.OnEvent != nil {
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+						}
+
+						if isDead {
+							target.mu.Lock()
+							w.handleDeath(target, player, nil)
+							target.mu.Unlock()
+						}
+					}
+				}
+
+				player.State = "ATTACKING"
+				player.AbilityCooldown = 15 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Iron Fortress" {
+			// Iron Fortress (Buff)
+			cost := 40
+			if player.Mana >= cost {
+				player.Mana -= cost
+				player.IronFortressActive = true
+				player.IronFortressEndTime = time.Now().Add(10 * time.Second)
+				player.AbilityCooldown = 30 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Guardian Roar" {
+			// Guardian Roar (AoE Taunt + Buff)
+			cost := 35
+			if player.Mana >= cost {
+				player.Mana -= cost
+				player.GuardianRoarActive = true
+				player.GuardianRoarEndTime = time.Now().Add(8 * time.Second)
+
+				// Taunt Logic
+				radius := 10.0
+				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+					target.mu.Lock()
+					if target.Type == TypeEnemy && target.State != "DEAD" {
+						// Force target to attack player
+						target.TargetID = player.ID
+						target.State = "CHASING"
+					}
+					target.mu.Unlock()
+				}
+
+				player.AbilityCooldown = 20 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Serrated Edges" {
+			// Serrated Edges (Buff)
+			cost := 30
+			if player.Mana >= cost {
+				player.Mana -= cost
+				player.SerratedEdgesActive = true
+				player.SerratedEdgesEndTime = time.Now().Add(12 * time.Second)
+				player.AbilityCooldown = 25 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Berserker Edge" {
+			// Berserker Edge (Buff)
+			// cost := 0 // Passive/Buff usually low cost or free? Client says 45s CD.
+			player.BerserkerModeActive = true
+			player.BerserkerModeEndTime = time.Now().Add(15 * time.Second)
+
+			player.AbilityCooldown = 45 * time.Second
+			player.LastAbilityTime = time.Now()
+
+		} else if skillName == "Last Stand Rampage" {
+			// Last Stand (Buff) - Requires < 30% HP
+			hpPercent := float64(player.Health) / float64(player.MaxHealth)
+			if hpPercent < 0.30 {
+				player.LastStandActive = true
+				player.LastStandEndTime = time.Now().Add(10 * time.Second)
+
+				player.AbilityCooldown = 120 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
 		}
 
 	case "Wizard":
-		if skillName == "Fireball" {
+		if skillName == "Spell Focus" {
+			// Spell Focus (Buff)
+			cost := 30
+			if player.Mana >= cost {
+				player.Mana -= cost
+				player.SpellFocusActive = true
+				player.SpellFocusEndTime = time.Now().Add(15 * time.Second)
+				player.AbilityCooldown = 45 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Arcane Shield" {
+			// Arcane Shield (Buff/Shield)
+			cost := 40
+			if player.Mana >= cost {
+				player.Mana -= cost
+				player.ArcaneShieldActive = true
+				player.ArcaneShieldHP = 100 + (player.Stats.Intelligence * 5)
+				player.ArcaneShieldEndTime = time.Now().Add(20 * time.Second)
+				player.AbilityCooldown = 30 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Time Warp" {
+			// Time Warp (Buff)
+			cost := 50
+			if player.Mana >= cost {
+				player.Mana -= cost
+				player.TimeWarpActive = true
+				player.TimeWarpEndTime = time.Now().Add(8 * time.Second)
+				player.AbilityCooldown = 60 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Gravity Well" {
+			// Gravity Well (AoE Pull + Slow)
+			cost := 60
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				radius := 8.0
+				nearby := w.Grid.Nearby(targetX, targetZ, radius)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+					target.mu.Lock()
+					if target.Type == TypeEnemy && target.State != "DEAD" {
+						// Pull towards center
+						dx := targetX - target.X
+						dz := targetZ - target.Z
+						dist := math.Sqrt(dx*dx + dz*dz)
+						if dist > 0.5 {
+							target.X += dx * 0.5 // Move halfway to center
+							target.Z += dz * 0.5
+							w.Grid.Update(target, target.X-dx*0.5, target.Z-dz*0.5)
+						}
+
+						// Apply Slow
+						target.Slowed = true
+						target.SlowFactor = 0.5
+						target.SlowEndTime = time.Now().Add(3 * time.Second)
+					}
+					target.mu.Unlock()
+				}
+
+				player.AbilityCooldown = 20 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Fireball" {
 			// Fireball
 			cost := 30
 			if player.Mana >= cost {
@@ -1941,6 +2644,195 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				player.State = "ATTACKING"
 				player.AbilityCooldown = 2 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Flame Whip" {
+			// Flame Whip (Cone Stun)
+			cost := 35
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				rangeDist := 5.0
+				angleThreshold := math.Pi / 4 // 45 degrees
+				damage := 25 + (player.Stats.Intelligence * 2)
+
+				pDirX := math.Sin(player.Rotation)
+				pDirZ := math.Cos(player.Rotation)
+
+				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					dx := target.X - player.X
+					dz := target.Z - player.Z
+					target.mu.RUnlock()
+
+					dist := math.Sqrt(dx*dx + dz*dz)
+					if dist <= rangeDist {
+						dirX := dx / dist
+						dirZ := dz / dist
+
+						dot := pDirX*dirX + pDirZ*dirZ
+						if dot > math.Cos(angleThreshold) {
+							target.mu.Lock()
+							target.Health -= damage
+							target.Stunned = true
+							target.StunEndTime = time.Now().Add(3 * time.Second)
+							isDead := target.Health <= 0
+							target.mu.Unlock()
+
+							if w.OnEvent != nil {
+								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+							}
+
+							if isDead {
+								target.mu.Lock()
+								w.handleDeath(target, player, nil)
+								target.mu.Unlock()
+							}
+						}
+					}
+				}
+
+				player.State = "ATTACKING"
+				player.AbilityCooldown = 10 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Flame Tornado" {
+			// Flame Tornado
+			cost := 50
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				dx := targetX - player.X
+				dz := targetZ - player.Z
+				dist := math.Sqrt(dx*dx + dz*dz)
+				if dist == 0 {
+					dist = 1
+				}
+
+				velX := (dx / dist) * 10.0 // Slow speed
+				velZ := (dz / dist) * 10.0
+
+				damage := 30 + (player.Stats.Intelligence * 3)
+
+				proj := &Entity{
+					ID:        fmt.Sprintf("proj-%d", time.Now().UnixNano()),
+					Type:      TypeProjectile,
+					SubType:   "FlameTornado",
+					X:         player.X,
+					Y:         1.5,
+					Z:         player.Z,
+					VelX:      velX,
+					VelZ:      velZ,
+					Radius:    3.0, // Large radius
+					Damage:    damage,
+					OwnerID:   player.ID,
+					Rotation:  math.Atan2(velX, velZ),
+					CreatedAt: time.Now(),
+				}
+				w.Entities[proj.ID] = proj
+				w.Grid.Add(proj)
+
+				player.State = "ATTACKING"
+				player.AbilityCooldown = 8 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Frost Nova" {
+			// Frost Nova
+			cost := 40
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				radius := 8.0
+				damage := 25 + (player.Stats.Intelligence * 2)
+
+				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					dx := player.X - target.X
+					dz := player.Z - target.Z
+					target.mu.RUnlock()
+
+					if (dx*dx + dz*dz) <= radius*radius {
+						target.mu.Lock()
+						target.Health -= damage
+						isDead := target.Health <= 0
+						target.mu.Unlock()
+
+						if w.OnEvent != nil {
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+						}
+
+						if isDead {
+							target.mu.Lock()
+							w.handleDeath(target, player, nil)
+							target.mu.Unlock()
+						}
+					}
+				}
+
+				player.State = "ATTACKING"
+				player.AbilityCooldown = 10 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Arcane Missiles" {
+			// Arcane Missiles
+			cost := 30
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				dx := targetX - player.X
+				dz := targetZ - player.Z
+				dist := math.Sqrt(dx*dx + dz*dz)
+				if dist == 0 {
+					dist = 1
+				}
+
+				baseAngle := math.Atan2(dz, dx)
+				angles := []float64{baseAngle - 0.2, baseAngle, baseAngle + 0.2}
+
+				for i, angle := range angles {
+					velX := math.Cos(angle) * 25.0
+					velZ := math.Sin(angle) * 25.0
+
+					damage := 15 + player.Stats.Intelligence
+
+					proj := &Entity{
+						ID:        fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
+						Type:      TypeProjectile,
+						SubType:   "ArcaneMissile",
+						X:         player.X,
+						Y:         1.5,
+						Z:         player.Z,
+						VelX:      velX,
+						VelZ:      velZ,
+						Radius:    1.0,
+						Damage:    damage,
+						OwnerID:   player.ID,
+						Rotation:  angle,
+						CreatedAt: time.Now(),
+					}
+					w.Entities[proj.ID] = proj
+					w.Grid.Add(proj)
+				}
+
+				player.State = "ATTACKING"
+				player.AbilityCooldown = 4 * time.Second
 				player.LastAbilityTime = time.Now()
 			}
 		} else if skillName == "Teleport" {
@@ -1982,7 +2874,172 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 		}
 
 	case "Rogue":
-		if skillName == "Piercing Throw" {
+		if skillName == "Stealth" {
+			// Stealth (Buff)
+			cost := 25
+			if player.Mana >= cost {
+				player.Mana -= cost
+				player.StealthActive = true
+				player.StealthEndTime = time.Now().Add(10 * time.Second)
+				player.AbilityCooldown = 20 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Shadow Strike" {
+			// Shadow Strike (Teleport + Damage)
+			cost := 35
+			if player.Mana >= cost {
+				// Teleport behind target
+				dx := targetX - player.X
+				dz := targetZ - player.Z
+				dist := math.Sqrt(dx*dx + dz*dz)
+
+				if dist <= 10.0 { // Max range
+					player.Mana -= cost
+
+					// Calculate position behind target
+					// Normalize direction
+					dirX := dx / dist
+					dirZ := dz / dist
+
+					// Teleport to other side
+					destX := targetX + dirX*1.0
+					destZ := targetZ + dirZ*1.0
+
+					oldX, oldZ := player.X, player.Z
+					player.X = destX
+					player.Z = destZ
+					w.Grid.Update(player, oldX, oldZ)
+
+					// Deal Damage
+					damage := int(float64(player.Damage) * 2.0)
+					if player.StealthActive {
+						damage = int(float64(damage) * 1.5)
+						player.StealthActive = false // Break stealth
+					}
+
+					// Find target at location
+					nearby := w.Grid.Nearby(targetX, targetZ, 2.0)
+					for _, target := range nearby {
+						if target.ID == player.ID {
+							continue
+						}
+						target.mu.Lock()
+						if target.Type == TypeEnemy && target.State != "DEAD" {
+							target.Health -= damage
+							if w.OnEvent != nil {
+								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+							}
+							if target.Health <= 0 {
+								w.handleDeath(target, player, nil)
+							}
+						}
+						target.mu.Unlock()
+					}
+
+					player.AbilityCooldown = 12 * time.Second
+					player.LastAbilityTime = time.Now()
+				}
+			}
+		} else if skillName == "Poison Coating" {
+			// Poison Coating (Buff)
+			cost := 30
+			if player.Mana >= cost {
+				player.Mana -= cost
+				player.PoisonCoatingActive = true
+				player.PoisonCoatingEndTime = time.Now().Add(15 * time.Second)
+				player.AbilityCooldown = 30 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Explosive Trap" {
+			// Explosive Trap
+			cost := 30
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				trap := &Entity{
+					ID:        fmt.Sprintf("trap-exp-%d", time.Now().UnixNano()),
+					Type:      TypeProjectile, // Handled in updateProjectiles
+					SubType:   "ExplosiveTrap",
+					X:         player.X,
+					Y:         0.5,
+					Z:         player.Z,
+					VelX:      0,
+					VelZ:      0,
+					Radius:    1.0,
+					Damage:    50 + (player.Stats.Dexterity * 3),
+					OwnerID:   player.ID,
+					CreatedAt: time.Now(),
+					// Custom field for trap duration? Projectiles usually expire by distance/time.
+					// We'll need to ensure updateProjectiles doesn't kill it immediately.
+				}
+				w.Entities[trap.ID] = trap
+				w.Grid.Add(trap)
+
+				player.AbilityCooldown = 15 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Snare Trap" {
+			// Snare Trap
+			cost := 25
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				trap := &Entity{
+					ID:        fmt.Sprintf("trap-snare-%d", time.Now().UnixNano()),
+					Type:      TypeProjectile,
+					SubType:   "SnareTrap",
+					X:         player.X,
+					Y:         0.5,
+					Z:         player.Z,
+					VelX:      0,
+					VelZ:      0,
+					Radius:    1.0,
+					Damage:    10, // Low damage, mostly root
+					OwnerID:   player.ID,
+					CreatedAt: time.Now(),
+				}
+				w.Entities[trap.ID] = trap
+				w.Grid.Add(trap)
+
+				player.AbilityCooldown = 18 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Rain of Arrows" {
+			// Rain of Arrows (AoE)
+			cost := 45
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				// Target area
+				radius := 6.0
+				damage := 20 + (player.Stats.Dexterity * 2)
+
+				nearby := w.Grid.Nearby(targetX, targetZ, radius)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+					target.mu.Lock()
+					if target.Type == TypeEnemy && target.State != "DEAD" {
+						dx := target.X - targetX
+						dz := target.Z - targetZ
+						if (dx*dx + dz*dz) <= radius*radius {
+							target.Health -= damage
+							if w.OnEvent != nil {
+								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+							}
+							if target.Health <= 0 {
+								w.handleDeath(target, player, nil)
+							}
+						}
+					}
+					target.mu.Unlock()
+				}
+
+				player.AbilityCooldown = 12 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Piercing Throw" {
 			// Throw Dagger
 			cost := 15
 			if player.Mana >= cost {
@@ -2058,10 +3115,315 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.AbilityCooldown = 6 * time.Second
 				player.LastAbilityTime = time.Now()
 			}
+		} else if skillName == "Backstab" {
+			// Backstab
+			cost := 20
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				rangeDist := 2.5
+				damage := int(float64(player.Damage) * 1.5)
+
+				// Find target
+				var bestTarget *Entity
+				minDist := rangeDist
+
+				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					dx := target.X - player.X
+					dz := target.Z - player.Z
+					target.mu.RUnlock()
+
+					d := math.Sqrt(dx*dx + dz*dz)
+					if d < minDist {
+						minDist = d
+						bestTarget = target
+					}
+				}
+
+				if bestTarget != nil {
+					// Check angle for backstab
+					bestTarget.mu.RLock()
+					tRot := bestTarget.Rotation
+					bestTarget.mu.RUnlock()
+
+					tDirX := math.Sin(tRot)
+					tDirZ := math.Cos(tRot)
+
+					pDirX := math.Sin(player.Rotation)
+					pDirZ := math.Cos(player.Rotation)
+
+					dot := tDirX*pDirX + tDirZ*pDirZ
+
+					if dot > 0.5 { // Same direction -> Behind
+						damage = int(float64(damage) * 2.5)
+					}
+
+					bestTarget.mu.Lock()
+					bestTarget.Health -= damage
+					isDead := bestTarget.Health <= 0
+					bestTarget.mu.Unlock()
+
+					if w.OnEvent != nil {
+						w.OnEvent("damage", DamageEvent{TargetID: bestTarget.ID, SourceID: player.ID, Amount: damage})
+					}
+					if isDead {
+						bestTarget.mu.Lock()
+						w.handleDeath(bestTarget, player, nil)
+						bestTarget.mu.Unlock()
+					}
+				}
+
+				player.AbilityCooldown = 6 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Shadow Lunge" {
+			// Teleport Behind
+			cost := 25
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				// Find target
+				var bestTarget *Entity
+				minDist := 10.0 // Range
+
+				nearby := w.Grid.Nearby(targetX, targetZ, 5.0)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					dx := target.X - targetX
+					dz := target.Z - targetZ
+					target.mu.RUnlock()
+
+					d := math.Sqrt(dx*dx + dz*dz)
+					if d < minDist {
+						minDist = d
+						bestTarget = target
+					}
+				}
+
+				if bestTarget != nil {
+					bestTarget.mu.RLock()
+					tRot := bestTarget.Rotation
+					tx, tz := bestTarget.X, bestTarget.Z
+					bestTarget.mu.RUnlock()
+
+					// Behind position
+					tDirX := math.Sin(tRot)
+					tDirZ := math.Cos(tRot)
+
+					teleX := tx - tDirX*1.5
+					teleZ := tz - tDirZ*1.5
+
+					oldX, oldZ := player.X, player.Z
+					player.X = teleX
+					player.Z = teleZ
+					player.Rotation = tRot
+					w.Grid.Update(player, oldX, oldZ)
+				}
+
+				player.AbilityCooldown = 10 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Blade Storm" {
+			// Cone of Daggers
+			cost := 30
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				dx := targetX - player.X
+				dz := targetZ - player.Z
+				baseAngle := math.Atan2(dx, dz)
+				angleStep := math.Pi / 8
+
+				for i := -2; i <= 2; i++ {
+					angle := baseAngle + float64(i)*angleStep
+					velX := math.Sin(angle) * 35.0
+					velZ := math.Cos(angle) * 35.0
+
+					damage := 10 + player.Stats.Dexterity
+
+					proj := &Entity{
+						ID:        fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
+						Type:      TypeProjectile,
+						SubType:   "Dagger",
+						X:         player.X,
+						Y:         1.0,
+						Z:         player.Z,
+						VelX:      velX,
+						VelZ:      velZ,
+						Radius:    1.0,
+						Damage:    damage,
+						OwnerID:   player.ID,
+						Rotation:  angle,
+						CreatedAt: time.Now(),
+					}
+					w.Entities[proj.ID] = proj
+					w.Grid.Add(proj)
+				}
+
+				player.AbilityCooldown = 15 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Death Spiral" {
+			// AoE
+			cost := 35
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				radius := 4.0
+				damage := player.Damage * 2
+
+				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					dx := target.X - player.X
+					dz := target.Z - player.Z
+					target.mu.RUnlock()
+
+					if (dx*dx + dz*dz) <= radius*radius {
+						target.mu.Lock()
+						target.Health -= damage
+						isDead := target.Health <= 0
+						target.mu.Unlock()
+
+						if w.OnEvent != nil {
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+						}
+						if isDead {
+							target.mu.Lock()
+							w.handleDeath(target, player, nil)
+							target.mu.Unlock()
+						}
+					}
+				}
+				player.AbilityCooldown = 20 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Cloak & Vanish" {
+			// Stealth + Speed
+			cost := 30
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				player.StealthActive = true
+				player.StealthEndTime = time.Now().Add(5 * time.Second)
+
+				player.AbilityCooldown = 30 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
 		}
 
 	case "Cleric":
-		if skillName == "Spirit Guardians" {
+		if skillName == "Divine Intervention" {
+			// Divine Intervention (Buff/Heal)
+			cost := 60
+			if player.Mana >= cost {
+				player.Mana -= cost
+				player.DivineInterventionActive = true
+				player.DivineInterventionEndTime = time.Now().Add(5 * time.Second)
+
+				// Big Heal
+				heal := player.MaxHealth / 2
+				player.Health += heal
+				if player.Health > player.MaxHealth {
+					player.Health = player.MaxHealth
+				}
+
+				player.AbilityCooldown = 120 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Guardian Embrace" {
+			// Guardian Embrace (HoT Aura)
+			cost := 40
+			if player.Mana >= cost {
+				player.Mana -= cost
+				player.GuardianEmbraceActive = true
+				player.GuardianEmbraceEndTime = time.Now().Add(10 * time.Second)
+				player.AbilityCooldown = 30 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Smite" {
+			// Smite (Damage + Stun)
+			cost := 30
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				damage := 30 + (player.Stats.Wisdom * 2)
+
+				// Single Target
+				var target *Entity
+				if targetID != "" {
+					if t, ok := w.Entities[targetID]; ok {
+						target = t
+					}
+				} else {
+					// Find closest enemy
+					minDist := 4.0
+					nearby := w.Grid.Nearby(targetX, targetZ, 4.0)
+					for _, t := range nearby {
+						if t.Type == TypeEnemy && t.State != "DEAD" {
+							dx := t.X - targetX
+							dz := t.Z - targetZ
+							d := math.Sqrt(dx*dx + dz*dz)
+							if d < minDist {
+								minDist = d
+								target = t
+							}
+						}
+					}
+				}
+
+				if target != nil {
+					target.mu.Lock()
+					target.Health -= damage
+					target.Stunned = true
+					target.StunEndTime = time.Now().Add(2 * time.Second)
+
+					if w.OnEvent != nil {
+						w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+					}
+					if target.Health <= 0 {
+						w.handleDeath(target, player, nil)
+					}
+					target.mu.Unlock()
+				}
+
+				player.AbilityCooldown = 12 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Blessing of Resolve" {
+			// Blessing of Resolve (Buff)
+			cost := 35
+			if player.Mana >= cost {
+				player.Mana -= cost
+				player.BlessingResolveActive = true
+				player.BlessingResolveEndTime = time.Now().Add(20 * time.Second)
+				player.AbilityCooldown = 45 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Spirit Guardians" {
 			// Guardian Spirits
 			cost := 40
 			if player.Mana >= cost {
@@ -2099,6 +3461,193 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.AbilityCooldown = 5 * time.Second
 				player.LastAbilityTime = time.Now()
 			}
+		} else if skillName == "Healing Light" {
+			// Same as Heal
+			cost := 25
+			if player.Mana >= cost {
+				player.Mana -= cost
+				healAmount := 30 + (player.Stats.Wisdom * 3)
+
+				var target *Entity
+				// Find target near cursor if targetID not set
+				if targetID != "" {
+					if t, ok := w.Entities[targetID]; ok {
+						target = t
+					}
+				} else {
+					// Find closest ally
+					minDist := 3.0
+					nearby := w.Grid.Nearby(targetX, targetZ, 5.0)
+					for _, t := range nearby {
+						if t.Type == TypePlayer || t.Type == TypeNPC { // Ally
+							dx := t.X - targetX
+							dz := t.Z - targetZ
+							d := math.Sqrt(dx*dx + dz*dz)
+							if d < minDist {
+								minDist = d
+								target = t
+							}
+						}
+					}
+				}
+
+				if target == nil {
+					target = player
+				}
+
+				target.mu.Lock()
+				target.Health += healAmount
+				if target.Health > target.MaxHealth {
+					target.Health = target.MaxHealth
+				}
+				target.mu.Unlock()
+
+				player.AbilityCooldown = 5 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Radiant Strike" {
+			// Cone Damage
+			cost := 20
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				rangeDist := 3.0
+				angleThreshold := math.Pi / 3 // 60 degrees
+				damage := player.Damage + (player.Stats.Wisdom * 2)
+
+				pDirX := math.Sin(player.Rotation)
+				pDirZ := math.Cos(player.Rotation)
+
+				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					dx := target.X - player.X
+					dz := target.Z - player.Z
+					target.mu.RUnlock()
+
+					dist := math.Sqrt(dx*dx + dz*dz)
+					if dist <= rangeDist {
+						dirX := dx / dist
+						dirZ := dz / dist
+
+						dot := pDirX*dirX + pDirZ*dirZ
+						if dot > math.Cos(angleThreshold) {
+							target.mu.Lock()
+							target.Health -= damage
+							isDead := target.Health <= 0
+							target.mu.Unlock()
+
+							if w.OnEvent != nil {
+								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+							}
+							if isDead {
+								target.mu.Lock()
+								w.handleDeath(target, player, nil)
+								target.mu.Unlock()
+							}
+						}
+					}
+				}
+				player.AbilityCooldown = 4 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Heaven's Trumpet" {
+			// AoE Stun/Damage
+			cost := 50
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				radius := 12.0
+				damage := player.Stats.Wisdom * 3
+
+				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				for _, target := range nearby {
+					if target.ID == player.ID {
+						continue
+					}
+
+					target.mu.RLock()
+					if target.Type != TypeEnemy || target.State == "DEAD" {
+						target.mu.RUnlock()
+						continue
+					}
+					dx := target.X - player.X
+					dz := target.Z - player.Z
+					target.mu.RUnlock()
+
+					if (dx*dx + dz*dz) <= radius*radius {
+						target.mu.Lock()
+						target.Health -= damage
+						// Stun logic would go here
+						isDead := target.Health <= 0
+						target.mu.Unlock()
+
+						if w.OnEvent != nil {
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+						}
+						if isDead {
+							target.mu.Lock()
+							w.handleDeath(target, player, nil)
+							target.mu.Unlock()
+						}
+					}
+				}
+				player.AbilityCooldown = 60 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Consecrated Ground" {
+			// Zone AoE
+			cost := 40
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				// Spawn Zone Entity
+				zone := &Entity{
+					ID:        fmt.Sprintf("zone-%d", time.Now().UnixNano()),
+					Type:      TypeProjectile, // Reuse projectile for now
+					SubType:   "Zone",
+					X:         player.X,
+					Y:         0.1,
+					Z:         player.Z,
+					Radius:    5.0,
+					OwnerID:   player.ID,
+					CreatedAt: time.Now(),
+					// Zone specific data could be stored in fields or inferred from SubType
+				}
+				w.Entities[zone.ID] = zone
+				w.Grid.Add(zone)
+
+				player.AbilityCooldown = 12 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
+		} else if skillName == "Blessing of Zeal" {
+			// AoE Buff
+			cost := 35
+			if player.Mana >= cost {
+				player.Mana -= cost
+
+				radius := 10.0
+				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				for _, target := range nearby {
+					if target.Type == TypePlayer || target.Type == TypeNPC {
+						target.mu.Lock()
+						target.ZealActive = true
+						target.ZealEndTime = time.Now().Add(8 * time.Second)
+						target.mu.Unlock()
+					}
+				}
+
+				player.AbilityCooldown = 25 * time.Second
+				player.LastAbilityTime = time.Now()
+			}
 		}
 	}
 }
@@ -2122,7 +3671,56 @@ func (w *World) PerformSelectBranch(playerID, branch string) (*Entity, bool) {
 	}
 
 	player.SelectedBranch = branch
+
+	// Auto-unlock skills for the selected branch
+	skills := getSkillsForBranch(player.SubType, branch)
+	player.UnlockedSkills = skills
+
 	return player, true
+}
+
+func getSkillsForBranch(classType, branch string) []string {
+	var skills []string
+
+	switch classType {
+	case "Fighter":
+		skills = append(skills, "Charge") // Base
+		if branch == "A" {
+			skills = append(skills, "Whirlwind", "Shield Slam", "Iron Fortress", "Guardian Roar")
+		} else if branch == "B" {
+			skills = append(skills, "Sweeping Strike", "Earthshaker", "Unbreakable Grip", "Juggernaut Charge")
+		} else if branch == "C" {
+			skills = append(skills, "Berserker Edge", "Shattering Charge", "Executioner Spin", "Last Stand Rampage")
+		}
+	case "Rogue":
+		skills = append(skills, "Piercing Throw") // Base
+		if branch == "A" {
+			skills = append(skills, "Backstab", "Weak Point Mark", "Shadow Lunge", "Death Spiral")
+		} else if branch == "B" {
+			skills = append(skills, "Fan of Knives", "Serrated Edges", "Blade Storm", "Phantom Volley")
+		} else if branch == "C" {
+			skills = append(skills, "Smoke Bomb", "Poison Coating", "Tripwire", "Cloak & Vanish")
+		}
+	case "Wizard":
+		skills = append(skills, "Fireball") // Base
+		if branch == "A" {
+			skills = append(skills, "Flame Whip", "Flame Tornado", "Meteor Drop", "Inferno Cataclysm")
+		} else if branch == "B" {
+			skills = append(skills, "Scorch Beam", "Arcane Missiles", "Spell Focus", "Dragonfire Lance")
+		} else if branch == "C" {
+			skills = append(skills, "Teleport", "Arcane Shield", "Gravity Well", "Time Warp")
+		}
+	case "Cleric":
+		skills = append(skills, "Spirit Guardians") // Base
+		if branch == "A" {
+			skills = append(skills, "Heal", "Guardian Embrace", "Purifying Wave", "Divine Intervention")
+		} else if branch == "B" {
+			skills = append(skills, "Radiant Strike", "Consecrated Ground", "Spirit Guardians Boost", "Avenging Seraph")
+		} else if branch == "C" {
+			skills = append(skills, "Blessing of Resolve", "Blessing of Zeal", "Mark of Weakness", "Heaven's Trumpet")
+		}
+	}
+	return skills
 }
 
 func (w *World) PerformUnlockSkill(playerID, skillName string) (*Entity, bool) {
@@ -2510,5 +4108,37 @@ func (e *Entity) RecalculateStats() {
 
 	if e.Mana > e.MaxMana {
 		e.Mana = e.MaxMana
+	}
+
+	// Apply Buffs/Debuffs
+	if e.BerserkerModeActive {
+		e.Damage = int(float64(e.Damage) * 1.5)
+		e.Defense = int(float64(e.Defense) * 0.8)
+	}
+	if e.LastStandActive {
+		e.Defense = int(float64(e.Defense) * 1.5)
+	}
+	if e.ZealActive {
+		e.Speed *= 1.2
+		e.AttackSpeed /= 1.3 // Faster attacks = lower cooldown
+		e.AttackCooldown = time.Duration(e.AttackSpeed * float64(time.Second))
+	}
+	if e.IronFortressActive {
+		e.Defense = int(float64(e.Defense) * 1.5)
+		e.Speed *= 0.8
+	}
+	if e.GuardianRoarActive {
+		e.Defense = int(float64(e.Defense) * 1.2)
+	}
+	if e.TimeWarpActive {
+		e.Speed *= 1.5
+		e.AttackSpeed /= 1.5
+		e.AttackCooldown = time.Duration(e.AttackSpeed * float64(time.Second))
+	}
+	if e.BlessingResolveActive {
+		e.Defense = int(float64(e.Defense) * 1.2)
+	}
+	if e.Slowed {
+		e.Speed *= (1.0 - e.SlowFactor)
 	}
 }
