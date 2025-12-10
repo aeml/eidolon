@@ -19,6 +19,79 @@ export class WorldGenerator {
         // this.createCircularFence(centerX, centerZ, radius);
         this.createRectangularFence(centerX, centerZ, size * 2, size * 2);
         this.loadBuildings(centerX, centerZ);
+        this.loadTrees(centerX, centerZ);
+    }
+
+    loadTrees(cx, cz) {
+        const loader = new GLTFLoader();
+        const treeTypes = [
+            { file: 'birch.glb', count: 150, scaleMin: 4, scaleMax: 7 },
+            { file: 'pine.glb', count: 150, scaleMin: 4, scaleMax: 7 },
+            { file: 'willow.glb', count: 150, scaleMin: 4, scaleMax: 7 }
+        ];
+
+        // Earth Realm Bounds (approximate based on fence)
+        const bounds = { minX: -950, maxX: 950, minZ: -550, maxZ: 950 };
+        // Town Exclusion Zone (Center 0,200, Size 100 -> +/- 100)
+        // Add buffer
+        const townBounds = { minX: cx - 150, maxX: cx + 150, minZ: cz - 150, maxZ: cz + 150 };
+
+        const setupTree = (model, x, z, scale, rotation) => {
+            const mesh = model.clone();
+            mesh.scale.set(scale, scale, scale);
+            mesh.rotation.y = rotation;
+            mesh.position.set(x, 0, z);
+
+            mesh.updateMatrixWorld(true);
+            const box = new THREE.Box3().setFromObject(mesh);
+            const bottomY = box.min.y;
+            
+            // Place on ground (0)
+            mesh.position.y += (0 - bottomY);
+
+            mesh.traverse(c => { if(c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+            this.scene.add(mesh);
+
+            // Custom Trunk Collider
+            // Assume trunk is roughly in center. 
+            // Width 2, Height 10 (tall enough to block), Depth 2
+            const colliderSize = new THREE.Vector3(2, 10, 2);
+            const colliderCenter = new THREE.Vector3(x, 5, z); // Center Y at 5
+            const collider = new THREE.Box3().setFromCenterAndSize(colliderCenter, colliderSize);
+            this.collisionManager.addCollider(collider);
+        };
+
+        treeTypes.forEach(type => {
+            loader.load(`./assets/plants/${type.file}`, (gltf) => {
+                const model = gltf.scene;
+                
+                for (let i = 0; i < type.count; i++) {
+                    let x, z;
+                    let valid = false;
+                    let attempts = 0;
+
+                    while (!valid && attempts < 50) {
+                        x = bounds.minX + Math.random() * (bounds.maxX - bounds.minX);
+                        z = bounds.minZ + Math.random() * (bounds.maxZ - bounds.minZ);
+
+                        // Check if inside town
+                        if (x > townBounds.minX && x < townBounds.maxX && 
+                            z > townBounds.minZ && z < townBounds.maxZ) {
+                            valid = false;
+                        } else {
+                            valid = true;
+                        }
+                        attempts++;
+                    }
+
+                    if (valid) {
+                        const scale = type.scaleMin + Math.random() * (type.scaleMax - type.scaleMin);
+                        const rotation = Math.random() * Math.PI * 2;
+                        setupTree(model, x, z, scale, rotation);
+                    }
+                }
+            }, undefined, (err) => console.error(`Failed to load ${type.file}:`, err));
+        });
     }
 
     loadBuildings(cx, cz) {
@@ -56,20 +129,20 @@ export class WorldGenerator {
             }
         };
 
-        // Two Story Building (North) - Scaled 8x
+        // Two Story Building (North) - Scaled 12x
         loader.load('./assets/buildings/two_story_building.glb', (gltf) => {
             // Move to North (z - 30)
-            setupBuilding(gltf.scene, 8, cx, cz - 30, 0);
+            setupBuilding(gltf.scene, 12, cx, cz - 30, 0);
         }, undefined, (err) => console.error("Failed to load two_story_building:", err));
 
-        // Trading Post (East) - Scaled 4x
+        // Trading Post (East) - Scaled 6x
         loader.load('./assets/buildings/trading_post.glb', (gltf) => {
-            setupBuilding(gltf.scene, 4, cx + 30, cz, -Math.PI / 2);
+            setupBuilding(gltf.scene, 6, cx + 30, cz, -Math.PI / 2);
         }, undefined, (err) => console.error("Failed to load trading_post:", err));
 
-        // Blacksmith (West) - Scaled 4x
+        // Blacksmith (West) - Scaled 6x
         loader.load('./assets/buildings/blacksmith.glb', (gltf) => {
-            setupBuilding(gltf.scene, 4, cx - 30, cz, Math.PI / 2);
+            setupBuilding(gltf.scene, 6, cx - 30, cz, Math.PI / 2);
         }, undefined, (err) => console.error("Failed to load blacksmith:", err));
 
         // Camp Sites (Randomly distributed outside center)
