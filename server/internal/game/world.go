@@ -176,6 +176,9 @@ type Entity struct {
 	PoisonEndTime       time.Time `json:"-"`
 	PoisonDamage        int       `json:"-"`
 	LastPoisonTick      time.Time `json:"-"`
+
+	// Party
+	PartyID string `json:"partyId,omitempty"`
 }
 
 type SpatialMap struct {
@@ -260,6 +263,7 @@ func (sm *SpatialMap) Nearby(x, z, radius float64) []*Entity {
 
 type World struct {
 	Entities map[string]*Entity
+	Parties  map[string]*Party
 	Grid     *SpatialMap
 	mu       sync.RWMutex
 
@@ -283,6 +287,7 @@ type DamageEvent struct {
 func NewWorld() *World {
 	w := &World{
 		Entities:        make(map[string]*Entity),
+		Parties:         make(map[string]*Party),
 		Grid:            NewSpatialMap(50.0), // 50 unit cell size
 		EliteSpawnTimer: time.Now(),
 		RegenTimer:      0,
@@ -1555,6 +1560,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			now := time.Now()
 			if e.BerserkerModeActive && now.After(e.BerserkerModeEndTime) {
 				e.BerserkerModeActive = false
+				e.RecalculateStats()
 			}
 			if e.LastStandActive && now.After(e.LastStandEndTime) {
 				e.LastStandActive = false
@@ -2522,6 +2528,34 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			// cost := 0 // Passive/Buff usually low cost or free? Client says 45s CD.
 			player.BerserkerModeActive = true
 			player.BerserkerModeEndTime = time.Now().Add(15 * time.Second)
+			player.RecalculateStats()
+
+			// Apply to party
+			if player.PartyID != "" {
+				party := w.GetParty(player.PartyID)
+				if party != nil {
+					_, _, members := party.GetSnapshot()
+					for _, mid := range members {
+						if mid == player.ID {
+							continue
+						}
+						member := w.GetEntity(mid)
+						if member != nil {
+							// Check distance
+							dx := member.X - player.X
+							dz := member.Z - player.Z
+							dist := math.Sqrt(dx*dx + dz*dz)
+							if dist <= 15.0 {
+								member.mu.Lock()
+								member.BerserkerModeActive = true
+								member.BerserkerModeEndTime = time.Now().Add(15 * time.Second)
+								member.RecalculateStats()
+								member.mu.Unlock()
+							}
+						}
+					}
+				}
+			}
 
 			player.AbilityCooldown = 45 * time.Second
 			player.LastAbilityTime = time.Now()

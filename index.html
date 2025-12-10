@@ -942,6 +942,76 @@
                 transform: translate(-50%, -50%) scale(0.6) !important;
             }
         }
+        #party-panel {
+            position: absolute;
+            top: 150px;
+            left: 20px;
+            width: 220px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #444;
+            border-radius: 5px;
+            padding: 10px;
+            pointer-events: auto;
+            display: none; /* Shown when in party or manually opened? Or always show invite box? */
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            z-index: 100;
+        }
+        .party-member {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .party-member-info {
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .party-name {
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .party-hp-bar {
+            width: 100%;
+            height: 4px;
+            background: #333;
+            margin-top: 2px;
+            position: relative;
+        }
+        .party-hp-fill {
+            height: 100%;
+            background: #d32f2f;
+            width: 100%;
+            transition: width 0.2s;
+        }
+        .party-actions {
+            display: flex;
+            gap: 2px;
+            margin-left: 5px;
+        }
+        .party-btn {
+            background: #444;
+            border: 1px solid #666;
+            color: white;
+            cursor: pointer;
+            font-size: 10px;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+        .party-btn:hover {
+            background: #666;
+        }
+        .party-leader-icon {
+            color: #ffd700;
+            margin-right: 4px;
+            font-size: 10px;
+        }
+
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
     <script type="importmap">
@@ -1092,6 +1162,33 @@
             </div>
             <div id="gold-display" style="padding: 10px; color: #ffd700; font-weight: bold; border-top: 1px solid #444; text-align: right;">
                 GOLD: 0
+            </div>
+        </div>
+
+        <!-- Party Panel -->
+        <div id="party-panel">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #444; padding-bottom: 5px;">
+                <span style="font-weight: bold; color: #ffd700;">PARTY</span>
+                <button id="btn-leave-party" class="party-btn" style="background: #c62828;">Leave</button>
+            </div>
+            <div id="party-list">
+                <!-- Members go here -->
+            </div>
+            <div style="margin-top: 10px; display: flex; gap: 5px; border-top: 1px solid #444; padding-top: 10px;">
+                <input type="text" id="party-invite-input" placeholder="Player Name" style="width: 100px; background: #222; border: 1px solid #444; color: white; padding: 2px; font-size: 12px;">
+                <button id="btn-invite-party" class="party-btn" style="background: #2e7d32;">Invite</button>
+            </div>
+        </div>
+
+        <!-- Party Request Modal -->
+        <div id="party-request-modal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); border: 2px solid #ffd700; padding: 20px; z-index: 2000; text-align: center; color: white; box-shadow: 0 0 20px rgba(0,0,0,0.8);">
+            <h3 id="party-request-text" style="margin-top: 0; color: #ffd700;">Party Invite</h3>
+            <div style="margin-bottom: 15px;">
+                <span id="party-inviter-name" style="font-weight: bold; color: #fff;">Player</span> wants to invite you to a party.
+            </div>
+            <div style="display: flex; justify-content: center; gap: 10px;">
+                <button id="btn-accept-party" class="party-btn" style="font-size: 14px; padding: 5px 15px; background: #2e7d32;">Accept</button>
+                <button id="btn-decline-party" class="party-btn" style="font-size: 14px; padding: 5px 15px; background: #c62828;">Decline</button>
             </div>
         </div>
 
