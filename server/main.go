@@ -699,27 +699,16 @@ func (c *Client) handleMessage(msg Message) {
 				Wisdom:       char.Stats.Wisdom,
 				Vitality:     char.Stats.Vitality,
 			},
-			SkillPoints:    char.SkillPoints,
+			SkillPoints:    0,
 			SelectedBranch: char.SelectedBranch,
-			UnlockedSkills: char.UnlockedSkills,
+			UnlockedSkills: []string{},
 		}
 
-		// Validate Skill Points (Retroactive fix for existing characters)
-		expectedTotalPoints := entity.Level / 10
-		spentPoints := len(entity.UnlockedSkills)
-		correctAvailablePoints := expectedTotalPoints - spentPoints
-		if correctAvailablePoints < 0 {
-			correctAvailablePoints = 0
-		}
+		// Auto-Unlock Skills based on Level and Branch
+		world.UpdateUnlockedSkills(entity)
 
-		log.Printf("Login %s: Level %d, Points %d, Branch %s, Unlocked %v",
-			c.username, entity.Level, entity.SkillPoints, entity.SelectedBranch, entity.UnlockedSkills)
-
-		if entity.SkillPoints != correctAvailablePoints {
-			log.Printf("Correcting SkillPoints for %s: Was %d, Should be %d (Level %d, Spent %d)",
-				c.username, entity.SkillPoints, correctAvailablePoints, entity.Level, spentPoints)
-			entity.SkillPoints = correctAvailablePoints
-		}
+		log.Printf("Login %s: Level %d, Branch %s, Unlocked %v",
+			c.username, entity.Level, entity.SelectedBranch, entity.UnlockedSkills)
 
 		// Convert DB Inventory to Game Inventory
 		if len(char.Inventory) > 0 {

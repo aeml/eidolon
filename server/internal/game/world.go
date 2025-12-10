@@ -1204,10 +1204,8 @@ func (w *World) PerformCompleteQuest(playerID, questID string) (*Entity, bool) {
 					player.Level++
 					player.MaxExperience = int(100 * math.Pow(1.2, float64(player.Level-1)))
 
-					// Skill Point every 10 levels
-					if player.Level%10 == 0 {
-						player.SkillPoints++
-					}
+					// Update Unlocked Skills
+					w.UpdateUnlockedSkills(player)
 
 					player.BaseStats.Vitality += 2
 					player.BaseStats.Strength += 2
@@ -3706,22 +3704,76 @@ func (w *World) PerformSelectBranch(playerID, branch string) (*Entity, bool) {
 		return nil, false
 	}
 
-	// Can only select branch if none selected
-	if player.SelectedBranch != "" {
-		return nil, false
-	}
-
+	// Allow switching branches freely
 	if branch != "A" && branch != "B" && branch != "C" {
 		return nil, false
 	}
 
 	player.SelectedBranch = branch
 
-	// Auto-unlock skills for the selected branch
-	skills := getSkillsForBranch(player.SubType, branch)
-	player.UnlockedSkills = skills
+	// Update unlocked skills based on level
+	w.UpdateUnlockedSkills(player)
 
 	return player, true
+}
+
+func (w *World) UpdateUnlockedSkills(player *Entity) {
+	if player.SelectedBranch == "" {
+		return
+	}
+
+	allSkills := getSkillsForBranch(player.SubType, player.SelectedBranch)
+	var unlocked []string
+
+	for _, skill := range allSkills {
+		reqLevel := 1
+		switch skill {
+		// Fighter
+		case "Whirlwind", "Sweeping Strike", "Berserker Edge":
+			reqLevel = 10
+		case "Shield Slam", "Earthshaker", "Shattering Charge":
+			reqLevel = 20
+		case "Iron Fortress", "Unbreakable Grip", "Executioner Spin":
+			reqLevel = 30
+		case "Guardian Roar", "Juggernaut Charge", "Last Stand Rampage":
+			reqLevel = 40
+
+		// Rogue
+		case "Backstab", "Fan of Knives", "Smoke Bomb":
+			reqLevel = 10
+		case "Weak Point Mark", "Serrated Edges", "Poison Coating":
+			reqLevel = 20
+		case "Shadow Lunge", "Blade Storm", "Tripwire":
+			reqLevel = 30
+		case "Death Spiral", "Phantom Volley", "Cloak & Vanish":
+			reqLevel = 40
+
+		// Wizard
+		case "Flame Whip", "Scorch Beam", "Teleport":
+			reqLevel = 10
+		case "Flame Tornado", "Arcane Missiles", "Arcane Shield":
+			reqLevel = 20
+		case "Meteor Drop", "Spell Focus", "Gravity Well":
+			reqLevel = 30
+		case "Inferno Cataclysm", "Dragonfire Lance", "Time Warp":
+			reqLevel = 40
+
+		// Cleric
+		case "Heal", "Radiant Strike", "Blessing of Resolve":
+			reqLevel = 10
+		case "Guardian Embrace", "Consecrated Ground", "Blessing of Zeal":
+			reqLevel = 20
+		case "Purifying Wave", "Spirit Guardians Boost", "Mark of Weakness":
+			reqLevel = 30
+		case "Divine Intervention", "Avenging Seraph", "Heaven's Trumpet":
+			reqLevel = 40
+		}
+
+		if player.Level >= reqLevel {
+			unlocked = append(unlocked, skill)
+		}
+	}
+	player.UnlockedSkills = unlocked
 }
 
 func getSkillsForBranch(classType, branch string) []string {
@@ -3878,9 +3930,8 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 						member.Level++
 						member.MaxExperience = int(100 * math.Pow(1.2, float64(member.Level-1)))
 
-						if member.Level%10 == 0 {
-							member.SkillPoints++
-						}
+						// Update Unlocked Skills
+						w.UpdateUnlockedSkills(member)
 
 						member.BaseStats.Vitality += 2
 						member.BaseStats.Strength += 2
@@ -3915,10 +3966,8 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					// Exponential Curve: 100 * (1.2 ^ (Level-1))
 					attacker.MaxExperience = int(100 * math.Pow(1.2, float64(attacker.Level-1)))
 
-					// Skill Point every 10 levels
-					if attacker.Level%10 == 0 {
-						attacker.SkillPoints++
-					}
+					// Update Unlocked Skills
+					w.UpdateUnlockedSkills(attacker)
 
 					// Update Base Stats
 					attacker.BaseStats.Vitality += 2

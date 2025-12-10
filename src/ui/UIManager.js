@@ -639,9 +639,9 @@ export class UIManager {
         }
 
         const player = this.lastPlayerRef;
-        const skillPoints = player ? (player.skillPoints || 0) : 0;
         const selectedBranch = player ? (player.selectedBranch || "") : "";
         const unlockedSkills = player ? (player.unlockedSkills || []) : [];
+        const playerLevel = player ? player.level : 1;
 
         this.skillTreeContent.innerHTML = '';
         
@@ -649,7 +649,7 @@ export class UIManager {
         header.style.textAlign = 'center';
         header.style.color = '#ffd700';
         header.style.margin = '5px 0';
-        header.textContent = `${classType} Skill Tree (Points: ${skillPoints})`;
+        header.textContent = `${classType} Skill Tree`;
         this.skillTreeContent.appendChild(header);
 
         // Tier 1 (Starting Skill)
@@ -676,22 +676,20 @@ export class UIManager {
             if (!branchData) return;
 
             const isBranchSelected = selectedBranch === branchKey;
-            const isBranchLocked = selectedBranch !== "" && !isBranchSelected;
 
             const branchDiv = document.createElement('div');
             branchDiv.className = 'skill-branch';
-            if (isBranchLocked) {
-                branchDiv.style.opacity = '0.3';
-                branchDiv.style.pointerEvents = 'none';
-            }
             
             const title = document.createElement('div');
             title.className = 'skill-branch-title';
             title.textContent = branchData.name;
             
-            if (selectedBranch === "" && skillPoints > 0) {
+            if (isBranchSelected) {
+                title.style.color = "#00ff00";
+                title.textContent += " (Active)";
+            } else {
                 const selectBtn = document.createElement('button');
-                selectBtn.textContent = "Select Path";
+                selectBtn.textContent = "Select Spec";
                 selectBtn.style.marginLeft = "10px";
                 selectBtn.onclick = () => {
                     if (this.onSelectBranch) {
@@ -699,9 +697,6 @@ export class UIManager {
                     }
                 };
                 title.appendChild(selectBtn);
-            } else if (isBranchSelected) {
-                title.style.color = "#00ff00";
-                title.textContent += " (Selected)";
             }
 
             branchDiv.appendChild(title);
@@ -728,30 +723,22 @@ export class UIManager {
                 nodeDesc.className = 'skill-node-desc';
                 nodeDesc.textContent = skill ? skill.desc : 'Coming Soon...';
                 
+                const reqLevel = (i - 1) * 10;
+                const levelReqDiv = document.createElement('div');
+                levelReqDiv.style.fontSize = '10px';
+                levelReqDiv.style.marginTop = '4px';
+                
+                if (isUnlocked) {
+                    levelReqDiv.style.color = '#00ff00';
+                    levelReqDiv.textContent = 'Unlocked';
+                } else {
+                    levelReqDiv.style.color = '#aaa';
+                    levelReqDiv.textContent = `Unlocks at Level ${reqLevel}`;
+                }
+
                 node.appendChild(nodeTitle);
                 node.appendChild(nodeDesc);
-                
-                if (skill && !isUnlocked && isBranchSelected && skillPoints > 0) {
-                    // Check if previous tier is unlocked
-                    let canUnlock = true;
-                    if (i > 2) {
-                        const prevTierKey = `Tier${i-1}`;
-                        const prevSkill = branchData[prevTierKey];
-                        if (!prevSkill || !unlockedSkills.includes(prevSkill.name)) {
-                            canUnlock = false;
-                        }
-                    }
-
-                    if (canUnlock) {
-                        node.style.cursor = 'pointer';
-                        node.style.borderColor = '#ffff00'; // Yellow for available
-                        node.onclick = () => {
-                             if (this.onUnlockSkill) {
-                                this.onUnlockSkill(skill.name);
-                            }
-                        };
-                    }
-                }
+                node.appendChild(levelReqDiv);
 
                 branchDiv.appendChild(node);
             }
