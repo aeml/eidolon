@@ -645,7 +645,7 @@ func (w *World) spawnMerchant() {
 		ID:       "merchant-1",
 		Type:     TypeNPC,
 		SubType:  "DwarfSalesman",
-		X:        25,
+		X:        22.5, // Moved to 22.5 (between 20 and 25)
 		Y:        0,
 		Z:        200,          // Near Trading Post (East)
 		Rotation: -math.Pi / 2, // Face West (towards center)

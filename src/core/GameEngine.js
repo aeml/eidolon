@@ -744,6 +744,11 @@ export class GameEngine {
                     pData.x = 0;
                     pData.z = 185;
                 }
+                // Hack: Force Merchant position if server is outdated
+                if (pData.id === 'merchant-1') {
+                    pData.x = 22.5;
+                    pData.z = 200;
+                }
 
                 seenIds.add(pData.id);
 
