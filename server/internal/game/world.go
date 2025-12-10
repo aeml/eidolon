@@ -19,6 +19,7 @@ const (
 	TypeLoot       EntityType = "Loot"
 	TypeProjectile EntityType = "Projectile"
 	TypeFence      EntityType = "Fence"
+	TypeStash      EntityType = "Stash"
 
 	MaxInventorySize = 25
 	MaxStashSize     = 100
@@ -300,6 +301,8 @@ func NewWorld() *World {
 
 func (w *World) initWorld() {
 	w.spawnMerchant()
+	w.spawnQuestNPC()
+	w.spawnStash()
 	w.spawnEnemies()
 	w.spawnInitialElites()
 	w.spawnFence()
@@ -609,15 +612,43 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 	}
 }
 
+func (w *World) spawnStash() {
+	stash := &Entity{
+		ID:       "stash-1",
+		Type:     TypeStash,
+		SubType:  "Stash",
+		X:        0,
+		Y:        0.5, // Slightly above ground
+		Z:        185, // In front of Two Story Building (which is at 170)
+		Rotation: 0,
+		State:    "IDLE",
+	}
+	w.AddEntity(stash)
+}
+
+func (w *World) spawnQuestNPC() {
+	npc := &Entity{
+		ID:       "quest-npc-1",
+		Type:     TypeNPC,
+		SubType:  "QuestNPC",
+		X:        -25,         // Near Blacksmith (West)
+		Y:        0.5,         // Slightly above ground
+		Z:        200,         // Center Z
+		Rotation: math.Pi / 2, // Face East (towards center)
+		State:    "IDLE",
+	}
+	w.AddEntity(npc)
+}
+
 func (w *World) spawnMerchant() {
 	merchant := &Entity{
 		ID:       "merchant-1",
 		Type:     TypeNPC,
 		SubType:  "DwarfSalesman",
-		X:        5,
+		X:        25,
 		Y:        0,
-		Z:        205, // Moved to new town center (0, 200)
-		Rotation: 0,
+		Z:        200,          // Near Trading Post (East)
+		Rotation: -math.Pi / 2, // Face West (towards center)
 		State:    "IDLE",
 	}
 	// Merchant doesn't need combat stats for now
