@@ -1868,10 +1868,11 @@ export class UIManager {
                 <h2 style="margin:0;">Social</h2>
                 <button id="close-social" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">X</button>
             </div>
-            <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; font-weight:bold; margin-bottom:10px; color:#aaa;">
+            <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; font-weight:bold; margin-bottom:10px; color:#aaa;">
                 <span>Name</span>
                 <span>Class</span>
                 <span>Level</span>
+                <span>Action</span>
             </div>
             <div id="social-list" style="overflow-y:auto; height:380px;">
                 <!-- Players go here -->
@@ -1890,9 +1891,30 @@ export class UIManager {
             show = this.socialWindow.style.display === 'none';
         }
         this.socialWindow.style.display = show ? 'block' : 'none';
+        
+        // Also toggle Party Panel if opening Social, or ensure it's visible if in party
         if (show) {
             // Trigger refresh callback if needed, or GameEngine handles it
             if (this.onSocialOpen) this.onSocialOpen();
+            
+            // Show Party Panel alongside Social Window for easy access
+            if (this.partyPanel) {
+                this.partyPanel.style.display = 'block';
+            }
+        } else {
+            // Hide party panel if empty? No, keep it if in party.
+            // But if we want to manually close it?
+            // Let's just leave it be, or maybe hide it if not in party.
+            // Actually, let's make the Party Panel toggleable via a button in Social Window?
+            // Or just make 'O' toggle both for now.
+            // If we are NOT in a party, hide it when closing social.
+            // If we ARE in a party, keep it open.
+            // We can check partyList content or some state.
+            // But we don't have easy access to party state here without checking DOM or storing it.
+            // Let's just hide it if the list says "No party".
+            if (this.partyList && this.partyList.textContent.includes("No party")) {
+                this.partyPanel.style.display = 'none';
+            }
         }
     }
 
@@ -1901,7 +1923,7 @@ export class UIManager {
         players.forEach(p => {
             const row = document.createElement('div');
             row.style.display = 'grid';
-            row.style.gridTemplateColumns = '2fr 1fr 1fr';
+            row.style.gridTemplateColumns = '2fr 1fr 1fr 1fr'; // Added column for Invite
             row.style.padding = '5px 0';
             row.style.borderBottom = '1px solid #333';
             
@@ -1912,8 +1934,21 @@ export class UIManager {
                 <span style="color:${isSelf ? '#4CAF50' : 'white'}">${p.name}</span>
                 <span style="color:#aaa">${p.class}</span>
                 <span style="color:#FFD700">${p.level}</span>
+                ${!isSelf ? `<button class="btn-invite" data-name="${p.name}" style="background:#2e7d32; border:none; color:white; cursor:pointer; font-size:10px; padding:2px 5px;">INVITE</button>` : '<span></span>'}
             `;
             this.socialList.appendChild(row);
+        });
+
+        // Add event listeners to invite buttons
+        const inviteBtns = this.socialList.querySelectorAll('.btn-invite');
+        inviteBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const name = e.target.getAttribute('data-name');
+                if (this.onPartyInvite) {
+                    this.onPartyInvite(name);
+                    this.addChatMessage("System", `Invited ${name} to party.`);
+                }
+            });
         });
     }
 
@@ -1921,7 +1956,17 @@ export class UIManager {
         if (!this.partyPanel || !this.partyList) return;
 
         if (!partyData || !partyData.partyId) {
-            this.partyPanel.style.display = 'none';
+            // Only hide if we are not manually keeping it open? 
+            // For now, let's hide it if party is empty/null, unless we want to show the "Create Party" state.
+            // But the user asked "how do i open the party panel".
+            // If I make it so 'O' opens it, then we should respect that.
+            if (this.socialWindow.style.display === 'none') {
+                 this.partyPanel.style.display = 'none';
+            } else {
+                 // Keep it open if social window is open, so they can see the invite box
+                 this.partyPanel.style.display = 'block';
+            }
+            this.partyList.innerHTML = '<div style="color:#aaa; font-style:italic; padding:5px;">No party. Invite someone!</div>';
             return;
         }
 
