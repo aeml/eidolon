@@ -758,8 +758,9 @@ export class UIManager {
         // Instead, we will fill slots 1-4 with unlocked skills (Tier 2+).
         
         // Clear slots first to avoid duplicates or stale icons
-        // But we want to be careful not to wipe user customizations if we add that later.
-        // For now, auto-fill is the requested behavior.
+        this.hotbarSlots.forEach((_, index) => {
+            this.assignSkillToSlot(index, null);
+        });
         
         // Filter out the base ability (Right Click) from the hotbar
         const baseAbility = player.abilityName;

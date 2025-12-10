@@ -848,8 +848,8 @@ export class GameEngine {
 
                         // Update Hotbar if skills changed or if we have skills but hotbar is empty
                         const isHotbarEmpty = !this.player.hotbar || this.player.hotbar.every(s => !s);
-                        if (prevUnlocked !== currUnlocked || (currUnlocked > 0 && isHotbarEmpty)) {
-                            console.log(`Updating Hotbar: Skills=${currUnlocked}, Empty=${isHotbarEmpty}`);
+                        if (prevUnlocked !== currUnlocked || prevBranch !== this.player.selectedBranch || (currUnlocked > 0 && isHotbarEmpty)) {
+                            console.log(`Updating Hotbar: Skills=${currUnlocked}, Branch=${this.player.selectedBranch}, Empty=${isHotbarEmpty}`);
                             this.uiManager.updateHotbar(this.player);
                         }
 
