@@ -17,4 +17,4 @@ if (!(Test-Path $CertPath) -or !(Test-Path $KeyPath)) {
 }
 
 Write-Host "Starting Eidolon Server on eserver.mendola.tech:8080..." -ForegroundColor Green
-go run main.go --addr=":8080" --cert=$CertPath --key=$KeyPath
+go run . --addr=":8080" --cert=$CertPath --key=$KeyPath
