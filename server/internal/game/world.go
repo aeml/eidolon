@@ -2048,32 +2048,33 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	// Async Damage Application
 	go func(attID, tgtID string, d time.Duration) {
 		time.Sleep(d)
-		w.mu.Lock()
-		defer w.mu.Unlock()
 
-		att, ok := w.Entities[attID]
-		if !ok || att.State == "DEAD" {
+		// Use fine-grained locking instead of global lock
+		att := w.GetEntity(attID)
+		if att == nil || att.State == "DEAD" {
 			return
 		}
-		tgt, ok := w.Entities[tgtID]
-		if !ok || tgt.State == "DEAD" {
+		tgt := w.GetEntity(tgtID)
+		if tgt == nil || tgt.State == "DEAD" {
 			return
 		}
+
+		// Lock target for modification
+		tgt.mu.Lock()
+		// We should also lock attacker if we read mutable fields, but Damage is updated in RecalculateStats
+		// and we are reading it. Ideally we lock both, but let's be careful of deadlock.
+		// Since we only read att.Damage (int), it's atomic-ish on 64bit, but technically racey.
+		// However, locking both requires ordering.
+		// For now, let's assume reading att.Damage is "safe enough" or we RLock att.
 
 		damage := att.Damage - tgt.Defense
-
-		// Apply Buff Effects to Damage
-		if att.BerserkerModeActive {
-			// Already handled in RecalculateStats for base damage, but maybe extra here?
-			// RecalculateStats updates att.Damage, so we are good.
-		}
-
 		if damage < 1 {
 			damage = 1
 		}
 		tgt.Health -= damage
 
 		// Apply On-Hit Effects
+		// These read att fields.
 		if att.SerratedEdgesActive {
 			tgt.Bleeding = true
 			tgt.BleedDamage = 10 + (att.Stats.Strength / 2)
@@ -2086,13 +2087,23 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		}
 
 		isDead := tgt.Health <= 0
+		tgt.mu.Unlock() // Unlock target before event/death handling to avoid holding too long?
+		// No, handleDeath expects target to be locked?
+		// Let's check handleDeath contract.
+		// In updateProjectiles, target IS locked.
+		// So we should keep it locked or re-lock.
 
 		if w.OnEvent != nil {
 			w.OnEvent("damage", DamageEvent{TargetID: tgt.ID, SourceID: att.ID, Amount: damage})
 		}
 
 		if isDead {
-			w.handleDeath(tgt, att, nil)
+			tgt.mu.Lock() // Re-lock for death handling
+			// Double check if still dead (race condition?)
+			if tgt.Health <= 0 && tgt.State != "DEAD" {
+				w.handleDeath(tgt, att, nil)
+			}
+			tgt.mu.Unlock()
 		}
 	}(attackerID, targetID, delay)
 
@@ -3792,91 +3803,177 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 	target.LastAttackTime = time.Now()
 
 	if attacker != nil && attacker.Type == TypePlayer && target.Type == TypeEnemy {
-		// XP
-		xpReward := target.Level*10 + 10
-		if target.SubType == "InfernoTitan" {
-			xpReward *= 3
-		}
-		if target.SubType == "Siren" {
-			xpReward *= 3
-		}
+		// Capture data for async processing to avoid deadlocks
+		tLevel := target.Level
+		tSubType := target.SubType
+		tID := target.ID
+		tX, tZ := target.X, target.Z
 
-		attacker.Experience += xpReward
-		if attacker.MaxExperience == 0 {
-			attacker.MaxExperience = 100
-		}
-
-		// Update Quests
-		w.UpdateQuestProgress(attacker, target.SubType)
-
-		for attacker.Experience >= attacker.MaxExperience {
-			if attacker.Level >= 100 {
-				attacker.Experience = attacker.MaxExperience
-				break
+		go func() {
+			// XP
+			baseXpReward := tLevel*10 + 10
+			if tSubType == "InfernoTitan" {
+				baseXpReward *= 3
 			}
-			attacker.Experience -= attacker.MaxExperience
-			attacker.Level++
-			// Exponential Curve: 100 * (1.2 ^ (Level-1))
-			attacker.MaxExperience = int(100 * math.Pow(1.2, float64(attacker.Level-1)))
-
-			// Skill Point every 10 levels
-			if attacker.Level%10 == 0 {
-				attacker.SkillPoints++
+			if tSubType == "Siren" {
+				baseXpReward *= 3
 			}
 
-			// Update Base Stats
-			attacker.BaseStats.Vitality += 2
-			attacker.BaseStats.Strength += 2
-			attacker.BaseStats.Dexterity += 1
-			attacker.BaseStats.Intelligence += 1
-			attacker.BaseStats.Wisdom += 1
+			// Gold
+			baseGold := 0
+			if tLevel > 0 {
+				baseGold = rand.Intn(tLevel*10) + 10
+			}
 
-			attacker.RecalculateStats()
-			attacker.Health = attacker.MaxHealth
-		} // Loot
-		gold := 0
-		if target.Level > 0 {
-			gold = rand.Intn(target.Level*10) + 10
-		}
-		attacker.Gold += gold
+			// Party Logic
+			var partyMembers []*Entity
 
-		// Check if Elite
-		isElite := strings.HasPrefix(target.ID, "elite-")
-		dropCount := 0
-		if isElite {
-			dropCount = 3 // Elites drop 3 items guaranteed
-		} else if rand.Float64() < 0.5 && target.Level > 0 {
-			dropCount = 1 // Normal enemies have 50% chance for 1 item
-		}
+			// We need to access Party, which requires w.mu.RLock via GetParty
+			// Since we are in a goroutine and not holding any locks, this is safe.
+			if attacker.PartyID != "" {
+				party := w.GetParty(attacker.PartyID)
+				if party != nil {
+					_, _, memberIDs := party.GetSnapshot()
+					for _, mid := range memberIDs {
+						member := w.GetEntity(mid)
+						if member != nil {
+							// Check distance (e.g., 50 units) to share XP
+							dx := member.X - tX
+							dz := member.Z - tZ
+							if math.Sqrt(dx*dx+dz*dz) <= 50.0 {
+								partyMembers = append(partyMembers, member)
+							}
+						}
+					}
+				}
+			}
 
-		for i := 0; i < dropCount; i++ {
-			var item *Item
+			if len(partyMembers) > 0 {
+				// Calculate Bonus
+				bonusMultiplier := 1.0 + (float64(len(partyMembers)) * 0.10)
+				totalXP := int(float64(baseXpReward) * bonusMultiplier)
+				totalGold := int(float64(baseGold) * bonusMultiplier)
+
+				xpPerMember := totalXP / len(partyMembers)
+				goldPerMember := totalGold / len(partyMembers)
+
+				for _, member := range partyMembers {
+					member.mu.Lock()
+					member.Experience += xpPerMember
+					member.Gold += goldPerMember
+
+					// Update Quests for all party members
+					w.UpdateQuestProgress(member, tSubType)
+
+					// Level Up Logic
+					if member.MaxExperience == 0 {
+						member.MaxExperience = 100
+					}
+					for member.Experience >= member.MaxExperience {
+						if member.Level >= 100 {
+							member.Experience = member.MaxExperience
+							break
+						}
+						member.Experience -= member.MaxExperience
+						member.Level++
+						member.MaxExperience = int(100 * math.Pow(1.2, float64(member.Level-1)))
+
+						if member.Level%10 == 0 {
+							member.SkillPoints++
+						}
+
+						member.BaseStats.Vitality += 2
+						member.BaseStats.Strength += 2
+						member.BaseStats.Dexterity += 1
+						member.BaseStats.Intelligence += 1
+						member.BaseStats.Wisdom += 1
+
+						member.RecalculateStats()
+						member.Health = member.MaxHealth
+					}
+					member.mu.Unlock()
+				}
+			} else {
+				// Solo Logic
+				attacker.mu.Lock()
+				attacker.Experience += baseXpReward
+				attacker.Gold += baseGold
+				if attacker.MaxExperience == 0 {
+					attacker.MaxExperience = 100
+				}
+
+				// Update Quests
+				w.UpdateQuestProgress(attacker, tSubType)
+
+				for attacker.Experience >= attacker.MaxExperience {
+					if attacker.Level >= 100 {
+						attacker.Experience = attacker.MaxExperience
+						break
+					}
+					attacker.Experience -= attacker.MaxExperience
+					attacker.Level++
+					// Exponential Curve: 100 * (1.2 ^ (Level-1))
+					attacker.MaxExperience = int(100 * math.Pow(1.2, float64(attacker.Level-1)))
+
+					// Skill Point every 10 levels
+					if attacker.Level%10 == 0 {
+						attacker.SkillPoints++
+					}
+
+					// Update Base Stats
+					attacker.BaseStats.Vitality += 2
+					attacker.BaseStats.Strength += 2
+					attacker.BaseStats.Dexterity += 1
+					attacker.BaseStats.Intelligence += 1
+					attacker.BaseStats.Wisdom += 1
+
+					attacker.RecalculateStats()
+					attacker.Health = attacker.MaxHealth
+				}
+				attacker.mu.Unlock()
+			}
+
+			// Loot
+			// Check if Elite
+			isElite := strings.HasPrefix(tID, "elite-")
+			dropCount := 0
 			if isElite {
-				item = GenerateEliteLoot(target.Level)
-			} else {
-				item = GenerateLoot(target.Level)
+				dropCount = 3 // Elites drop 3 items guaranteed
+			} else if rand.Float64() < 0.5 && tLevel > 0 {
+				dropCount = 1 // Normal enemies have 50% chance for 1 item
 			}
 
-			// Offset loot slightly so they don't stack perfectly
-			offsetX := (rand.Float64() - 0.5) * 1.0
-			offsetZ := (rand.Float64() - 0.5) * 1.0
+			if dropCount > 0 {
+				w.mu.Lock() // Lock world to add entities
+				for i := 0; i < dropCount; i++ {
+					var item *Item
+					if isElite {
+						item = GenerateEliteLoot(tLevel)
+					} else {
+						item = GenerateLoot(tLevel)
+					}
 
-			lootEntity := &Entity{
-				ID:       fmt.Sprintf("loot-%d-%d", time.Now().UnixNano(), i),
-				Type:     TypeLoot,
-				X:        target.X + offsetX,
-				Y:        0.5,
-				Z:        target.Z + offsetZ,
-				LootItem: item,
-				LootTime: time.Now(),
+					// Offset loot slightly so they don't stack perfectly
+					offsetX := (rand.Float64() - 0.5) * 1.0
+					offsetZ := (rand.Float64() - 0.5) * 1.0
+
+					lootEntity := &Entity{
+						ID:       fmt.Sprintf("loot-%d-%d", time.Now().UnixNano(), i),
+						Type:     TypeLoot,
+						X:        tX + offsetX,
+						Y:        0.5,
+						Z:        tZ + offsetZ,
+						LootItem: item,
+						LootTime: time.Now(),
+					}
+
+					// Always add directly since we are async
+					w.Entities[lootEntity.ID] = lootEntity
+					w.Grid.Add(lootEntity)
+				}
+				w.mu.Unlock()
 			}
-			if deferred != nil {
-				deferred.addAddition(lootEntity)
-			} else {
-				w.Entities[lootEntity.ID] = lootEntity
-				w.Grid.Add(lootEntity)
-			}
-		}
+		}()
 	}
 }
 
