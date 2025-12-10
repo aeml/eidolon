@@ -102,6 +102,15 @@ export class GameEngine {
                 console.warn("Cannot submit report: Not connected to server.");
             }
         };
+        this.uiManager.onPartyInvite = (targetName) => {
+            this.sendPartyMessage('party_invite', { targetName });
+        };
+        this.uiManager.onPartyLeave = () => {
+            this.sendPartyMessage('party_leave', {});
+        };
+        this.uiManager.onPartyResponse = (inviterName, accepted) => {
+            this.sendPartyMessage('party_response', { inviterName, accepted });
+        };
         this.uiManager.onSelectBranch = (branch) => {
             if (this.socket && this.socket.readyState === WebSocket.OPEN) {
                 this.socket.send(JSON.stringify({
@@ -662,6 +671,10 @@ export class GameEngine {
         if (msg.type === 'chat') {
             const chatData = msg.payload;
             this.uiManager.addChatMessage(chatData.sender, chatData.message);
+        } else if (msg.type === 'party_update') {
+            this.uiManager.updateParty(msg.payload);
+        } else if (msg.type === 'party_request') {
+            this.uiManager.showPartyRequest(msg.payload.targetName);
         } else if (msg.type === 'time') {
             const timeData = msg.payload;
             // Calculate time since server start or just display server time
@@ -2241,6 +2254,20 @@ export class GameEngine {
                 this.effects.splice(i, 1);
             }
         }
+    }
+
+    sendPartyMessage(type, payload) {
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+            this.socket.send(JSON.stringify({ type, payload }));
+        }
+    }
+
+    kickPartyMember(targetId) {
+        this.sendPartyMessage('party_kick', { targetId });
+    }
+
+    promotePartyMember(targetId) {
+        this.sendPartyMessage('party_promote', { targetId });
     }
 
     render(alpha) {

@@ -139,6 +139,41 @@ export class UIManager {
         this.setupWindow(this.skillTreeWindow);
         this.setupWindow(this.abilitiesMenu);
 
+        // Party UI
+        this.partyPanel = document.getElementById('party-panel');
+        this.partyList = document.getElementById('party-list');
+        this.partyInviteInput = document.getElementById('party-invite-input');
+        this.btnInviteParty = document.getElementById('btn-invite-party');
+        this.btnLeaveParty = document.getElementById('btn-leave-party');
+        this.partyRequestModal = document.getElementById('party-request-modal');
+        this.partyInviterName = document.getElementById('party-inviter-name');
+        this.btnAcceptParty = document.getElementById('btn-accept-party');
+        this.btnDeclineParty = document.getElementById('btn-decline-party');
+
+        if (this.btnInviteParty) this.btnInviteParty.addEventListener('click', () => {
+            const name = this.partyInviteInput.value.trim();
+            if (name && this.onPartyInvite) {
+                this.onPartyInvite(name);
+                this.partyInviteInput.value = '';
+            }
+        });
+
+        if (this.btnLeaveParty) this.btnLeaveParty.addEventListener('click', () => {
+            if (this.onPartyLeave) this.onPartyLeave();
+        });
+
+        if (this.btnAcceptParty) this.btnAcceptParty.addEventListener('click', () => {
+            if (this.onPartyResponse) this.onPartyResponse(this.currentInviter, true);
+            this.hidePartyRequest();
+        });
+
+        if (this.btnDeclineParty) this.btnDeclineParty.addEventListener('click', () => {
+            if (this.onPartyResponse) this.onPartyResponse(this.currentInviter, false);
+            this.hidePartyRequest();
+        });
+        
+        if (this.partyPanel) this.setupWindow(this.partyPanel);
+
         // Ability UI
         this.abilityContainer = document.getElementById('ability-container');
         this.abilityIcon = document.getElementById('ability-icon');
@@ -1880,6 +1915,69 @@ export class UIManager {
             `;
             this.socialList.appendChild(row);
         });
+    }
+
+    updateParty(partyData) {
+        if (!this.partyPanel || !this.partyList) return;
+
+        if (!partyData || !partyData.partyId) {
+            this.partyPanel.style.display = 'none';
+            return;
+        }
+
+        this.partyPanel.style.display = 'block';
+        this.partyList.innerHTML = '';
+
+        const members = partyData.members || [];
+        const leaderId = partyData.leaderId;
+        const myId = this.lastPlayerRef ? this.lastPlayerRef.id : null;
+        const amILeader = myId === leaderId;
+
+        members.forEach(member => {
+            const div = document.createElement('div');
+            div.className = 'party-member';
+            
+            const hpPercent = (member.hp / member.maxHp) * 100;
+            const isLeader = member.isLeader;
+            const isMe = member.id === myId;
+
+            let actionsHtml = '';
+            if (amILeader && !isMe) {
+                actionsHtml = `
+                    <div class="party-actions">
+                        <button class="party-btn" onclick="window.game.kickPartyMember('${member.id}')" title="Kick">K</button>
+                        <button class="party-btn" onclick="window.game.promotePartyMember('${member.id}')" title="Promote">P</button>
+                    </div>
+                `;
+            }
+
+            div.innerHTML = `
+                <div class="party-member-info">
+                    <div class="party-name">
+                        ${isLeader ? '<span class="party-leader-icon">★</span>' : ''}
+                        ${member.name} <span style="color: #aaa; font-size: 10px;">(Lvl ${member.level} ${member.class})</span>
+                    </div>
+                    <div class="party-hp-bar">
+                        <div class="party-hp-fill" style="width: ${hpPercent}%"></div>
+                    </div>
+                </div>
+                ${actionsHtml}
+            `;
+            this.partyList.appendChild(div);
+        });
+    }
+
+    showPartyRequest(inviterName) {
+        if (!this.partyRequestModal) return;
+        this.currentInviter = inviterName;
+        if (this.partyInviterName) this.partyInviterName.textContent = inviterName;
+        this.partyRequestModal.style.display = 'block';
+    }
+
+    hidePartyRequest() {
+        if (!this.partyRequestModal) return;
+        this.partyRequestModal.style.display = 'none';
+        this.currentInviter = null;
     }
 
 }
