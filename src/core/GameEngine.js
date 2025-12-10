@@ -312,8 +312,8 @@ export class GameEngine {
 
         // In multiplayer, we still need to render the static town
         // Town Center: (0, 200), Radius: 100
-        // this.worldGenerator.createTown(0, 200, 100);
-        this.spawnTownEntities();
+        this.worldGenerator.createTown(0, 200, 100);
+        // this.spawnTownEntities();
 
         if (onProgress) onProgress(70, "Spawning Enemies...");
         await new Promise(r => setTimeout(r, 50));
@@ -546,13 +546,13 @@ export class GameEngine {
         
         // Quest NPC (Left of Stash)
         const questNPC = new QuestNPC('quest-npc-local');
-        questNPC.position.set(-5, 0, 205); 
-        questNPC.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0);
+        questNPC.position.set(-25, 0, 200); // Near Blacksmith
+        questNPC.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
         this.addEntity(questNPC);
 
-        // Stash (Center)
+        // Stash (In front of Two Story Building)
         const stash = new Stash('stash-local');
-        stash.position.set(0, 0, 205);
+        stash.position.set(0, 0, 185);
         stash.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0);
         this.addEntity(stash);
     }
@@ -733,6 +733,18 @@ export class GameEngine {
 
             // Update remote players
             Object.values(state).forEach(pData => {
+                // Hack: Force Quest NPC position if server is outdated
+                if (pData.id === 'quest-npc-1') {
+                    pData.x = -25;
+                    pData.z = 200;
+                    pData.rotation = Math.PI / 2;
+                }
+                // Hack: Force Stash position if server is outdated
+                if (pData.id === 'stash-1') {
+                    pData.x = 0;
+                    pData.z = 185;
+                }
+
                 seenIds.add(pData.id);
 
                 if (pData.id === this.player.id) {
@@ -1164,10 +1176,16 @@ export class GameEngine {
             return new DwarfSalesman(id);
         }
 
+        if (type === 'Stash') {
+            return new Stash(id);
+        }
+
         // If type is NPC, handle it
         if (type === 'NPC') {
             if (subType === 'DwarfSalesman') {
                 p = new DwarfSalesman(id);
+            } else if (subType === 'QuestNPC') {
+                p = new QuestNPC(id);
             } else {
                 p = new DwarfSalesman(id); // Default NPC
             }
@@ -1634,17 +1652,15 @@ export class GameEngine {
             for (const entity of activeEntities) {
                 // Stash Cleanup
                 if (entity instanceof Stash) {
-                    if (entity.id !== 'stash-local') {
-                        console.warn(`Removing rogue Stash entity: ${entity.id} at ${entity.position.x}, ${entity.position.z}`);
-                        this.chunkManager.removeEntity(entity);
-                    } else {
+                    // Allow server stashes (stash-1) and local stash (stash-local)
+                    if (entity.id === 'stash-local') {
                         stashCount++;
                         if (stashCount > 1) {
                              console.warn(`Removing duplicate stash-local`);
                              this.chunkManager.removeEntity(entity);
                         } else if (entity.position.lengthSq() < 1) {
-                             console.warn(`Fixing stash-local position from 0,0,0 to 0,0,205`);
-                             entity.position.set(0, 0, 205);
+                             console.warn(`Fixing stash-local position from 0,0,0 to 0,0,185`);
+                             entity.position.set(0, 0, 185);
                              this.chunkManager.updateEntityChunk(entity);
                         }
                     }
@@ -1652,17 +1668,18 @@ export class GameEngine {
 
                 // QuestNPC Cleanup
                 if (entity instanceof QuestNPC) {
-                    if (entity.id !== 'quest-npc-local') {
+                    // Allow server quest npc (quest-npc-1) and local (quest-npc-local)
+                    if (entity.id !== 'quest-npc-local' && entity.id !== 'quest-npc-1') {
                         console.warn(`Removing rogue QuestNPC entity: ${entity.id} at ${entity.position.x}, ${entity.position.z}`);
                         this.chunkManager.removeEntity(entity);
-                    } else {
+                    } else if (entity.id === 'quest-npc-local') {
                         questNpcCount++;
                         if (questNpcCount > 1) {
                              console.warn(`Removing duplicate quest-npc-local`);
                              this.chunkManager.removeEntity(entity);
                         } else if (entity.position.lengthSq() < 1) {
-                             console.warn(`Fixing quest-npc-local position from 0,0,0 to -5,0,205`);
-                             entity.position.set(-5, 0, 205);
+                             console.warn(`Fixing quest-npc-local position from 0,0,0 to -25,0,200`);
+                             entity.position.set(-25, 0, 200);
                              this.chunkManager.updateEntityChunk(entity);
                         }
                     }

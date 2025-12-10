@@ -88,11 +88,11 @@ export class ChunkManager {
         }
         this.chunks.get(key).add(entity);
         
-        if (this.activeChunkKeys.has(key) || entity.type === 'DwarfSalesman') {
+        if (this.activeChunkKeys.has(key) || entity.type === 'DwarfSalesman' || entity.type === 'Stash' || entity.type === 'QuestNPC') {
             if (!entity.mesh && entity.ensureMesh) {
                 entity.ensureMesh().then(() => {
                     const currentKey = this.getChunkKey(entity.position.x, entity.position.z);
-                    if ((this.activeChunkKeys.has(currentKey) || entity.type === 'DwarfSalesman') && entity.mesh) {
+                    if ((this.activeChunkKeys.has(currentKey) || entity.type === 'DwarfSalesman' || entity.type === 'Stash' || entity.type === 'QuestNPC') && entity.mesh) {
                         this.scene.add(entity.mesh);
                     }
                 });
@@ -177,7 +177,7 @@ export class ChunkManager {
     unloadChunk(key) {
         if (this.chunks.has(key)) {
             for (const entity of this.chunks.get(key)) {
-                if (entity.type === 'DwarfSalesman') continue;
+                if (entity.type === 'DwarfSalesman' || entity.type === 'Stash' || entity.type === 'QuestNPC') continue;
 
                 if (entity.dispose) {
                     entity.dispose();
