@@ -97,11 +97,12 @@ type Entity struct {
 	State    string  `json:"state"` // IDLE, MOVING, ATTACKING, DEAD
 
 	// Combat
-	LastAttackTime  time.Time     `json:"-"`
-	AttackCooldown  time.Duration `json:"-"`
-	LastAbilityTime time.Time     `json:"-"`
-	AbilityCooldown time.Duration `json:"-"`
-	LastRespawnTime time.Time     `json:"-"`
+	LastAttackTime  time.Time            `json:"-"`
+	AttackCooldown  time.Duration        `json:"-"`
+	LastAbilityTime time.Time            `json:"-"`
+	AbilityCooldown time.Duration        `json:"-"`
+	Cooldowns       map[string]time.Time `json:"-"`
+	LastRespawnTime time.Time            `json:"-"`
 
 	// Loot
 	LootItem  *Item     `json:"lootItem,omitempty"` // If Type == TypeLoot
@@ -117,6 +118,7 @@ type Entity struct {
 
 	// Abilities
 	SpiritsActive  bool      `json:"spiritsActive"`
+	SpiritsBoosted bool      `json:"spiritsBoosted"`
 	SpiritEndTime  time.Time `json:"-"`
 	LastSpiritTick time.Time `json:"-"`
 	IsCharging     bool      `json:"isCharging,omitempty"`
@@ -1774,10 +1776,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					if time.Since(e.LastSpiritTick) >= 500*time.Millisecond {
 						e.LastSpiritTick = now
 						damage := 10 + (e.Stats.Wisdom * 1)
+						radius := 16.0
+						if e.SpiritsBoosted {
+							damage = 20 + int(float64(e.Stats.Wisdom)*1.5)
+							radius = 20.0
+						}
 						pX, pZ := e.X, e.Z
 						e.mu.Unlock() // Unlock before interaction
 
-						nearby := w.Grid.Nearby(pX, pZ, 16.0)
+						nearby := w.Grid.Nearby(pX, pZ, radius)
 						for _, target := range nearby {
 							target.mu.RLock()
 							if target.Type != TypeEnemy || target.State == "DEAD" {
@@ -1789,7 +1796,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							target.mu.RUnlock()
 
 							tdist := math.Sqrt(tdx*tdx + tdz*tdz)
-							if tdist < 16.0 {
+							if tdist < radius {
 								target.mu.Lock()
 								target.Health -= damage
 								isDead := target.Health <= 0
@@ -1814,6 +1821,120 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.mu.Unlock()
 			}
 		}
+	}
+
+	if e.SubType == "AvengingSeraph" {
+		e.mu.Lock()
+		// Duration Check (15s)
+		if time.Since(e.CreatedAt) > 15*time.Second {
+			e.mu.Unlock()
+			deferred.addRemoval(e.ID)
+			return
+		}
+
+		// Owner Check
+		owner := w.GetEntity(e.OwnerID)
+		if owner == nil {
+			e.mu.Unlock()
+			deferred.addRemoval(e.ID)
+			return
+		}
+
+		owner.mu.RLock()
+		ox, oz := owner.X, owner.Z
+		owner.mu.RUnlock()
+
+		// AI Logic
+		// 1. Find Target (Enemy)
+		var target *Entity
+		minDist := 15.0 // Aggro Range
+
+		// Unlock self to search grid
+		ex, ez := e.X, e.Z
+		e.mu.Unlock()
+
+		nearby := w.Grid.Nearby(ex, ez, minDist)
+		for _, t := range nearby {
+			t.mu.RLock()
+			if t.Type != TypeEnemy || t.State == "DEAD" {
+				t.mu.RUnlock()
+				continue
+			}
+			dx := t.X - ex
+			dz := t.Z - ez
+			t.mu.RUnlock()
+			d := math.Sqrt(dx*dx + dz*dz)
+			if d < minDist {
+				minDist = d
+				target = t
+			}
+		}
+
+		e.mu.Lock()
+
+		// Attack Logic
+		if target != nil {
+			// Face Target
+			target.mu.RLock()
+			tx, tz := target.X, target.Z
+			target.mu.RUnlock()
+
+			dx := tx - e.X
+			dz := tz - e.Z
+			e.Rotation = math.Atan2(dx, dz)
+
+			if time.Since(e.LastAttackTime) >= 1500*time.Millisecond {
+				e.LastAttackTime = time.Now()
+				e.State = "ATTACKING"
+
+				// Ranged Smite Attack
+				damage := e.Damage
+
+				e.mu.Unlock() // Unlock before interaction
+
+				target.mu.Lock()
+				target.Health -= damage
+				isDead := target.Health <= 0
+				target.mu.Unlock()
+
+				if w.OnEvent != nil {
+					w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: damage})
+					// Visual Beam event? Or just rely on attack animation
+					w.OnEvent("ability", AbilityEvent{SourceID: e.ID, TargetID: target.ID, SkillName: "Smite", TargetX: tx, TargetZ: tz})
+				}
+
+				if isDead {
+					target.mu.Lock()
+					w.handleDeath(target, owner, deferred) // Owner gets XP
+					target.mu.Unlock()
+				}
+				e.mu.Lock()
+			}
+		} else {
+			// Follow Owner
+			dx := ox - e.X
+			dz := oz - e.Z
+			dist := math.Sqrt(dx*dx + dz*dz)
+
+			if dist > 3.0 {
+				e.State = "MOVING"
+				// Move towards owner
+				dirX := dx / dist
+				dirZ := dz / dist
+				speed := 6.0 * dt
+
+				e.X += dirX * speed
+				e.Z += dirZ * speed
+				e.Rotation = math.Atan2(dirX, dirZ)
+
+				// Update Grid
+				w.Grid.Update(e, ex, ez)
+			} else {
+				e.State = "IDLE"
+			}
+		}
+		e.mu.Unlock()
+		return
 	}
 
 	if e.Type == TypeEnemy {
@@ -2215,15 +2336,31 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 		}
 	}
 
-	// Check Global Cooldown or Ability Cooldown
-	// Apply Cooldown Reduction
-	cooldown := player.AbilityCooldown
-	if player.CooldownReduction > 0 {
-		cooldown = time.Duration(float64(cooldown) * (1.0 - player.CooldownReduction))
+	// Lazy init cooldowns
+	if player.Cooldowns == nil {
+		player.Cooldowns = make(map[string]time.Time)
 	}
 
-	if time.Since(player.LastAbilityTime) < cooldown {
+	// Check Specific Cooldown
+	if readyAt, ok := player.Cooldowns[skillName]; ok {
+		if time.Now().Before(readyAt) {
+			return
+		}
+	}
+
+	// Check Global Cooldown (0.5s)
+	// Apply Cooldown Reduction to GCD? Maybe not necessary for GCD, but let's keep it snappy.
+	gcd := 500 * time.Millisecond
+	if time.Since(player.LastAbilityTime) < gcd {
 		return
+	}
+
+	setCooldown := func(duration time.Duration) {
+		if player.CooldownReduction > 0 {
+			duration = time.Duration(float64(duration) * (1.0 - player.CooldownReduction))
+		}
+		player.Cooldowns[skillName] = time.Now().Add(duration)
+		player.LastAbilityTime = time.Now()
 	}
 
 	// Check if skill is unlocked
@@ -2260,8 +2397,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.ChargeTargetX = targetX
 				player.ChargeTargetZ = targetZ
 				player.State = "ATTACKING" // Or special state?
-				player.AbilityCooldown = 5 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(5 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2312,8 +2448,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				player.State = "ATTACKING"
-				player.AbilityCooldown = 8 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(8 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2369,8 +2504,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						}
 					}
 				}
-				player.AbilityCooldown = 6 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(6 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2426,8 +2560,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						}
 					}
 				}
-				player.AbilityCooldown = 4 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(4 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2472,8 +2605,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						}
 					}
 				}
-				player.AbilityCooldown = 12 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(12 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2523,8 +2655,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					bestTarget.mu.Unlock()
 				}
 
-				player.AbilityCooldown = 15 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(15 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2569,8 +2700,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						}
 					}
 				}
-				player.AbilityCooldown = 20 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(20 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2584,8 +2714,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.ChargeTargetX = targetX
 				player.ChargeTargetZ = targetZ
 				player.State = "ATTACKING"
-				player.AbilityCooldown = 12 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(12 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2633,8 +2762,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				player.State = "ATTACKING"
-				player.AbilityCooldown = 15 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(15 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2646,8 +2774,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 				player.IronFortressActive = true
 				player.IronFortressEndTime = time.Now().Add(30 * time.Second)
-				player.AbilityCooldown = 60 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(60 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2676,8 +2803,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					target.mu.Unlock()
 				}
 
-				player.AbilityCooldown = 30 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(30 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2689,8 +2815,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 				player.SerratedEdgesActive = true
 				player.SerratedEdgesEndTime = time.Now().Add(10 * time.Second)
-				player.AbilityCooldown = 20 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(20 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2729,8 +2854,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 			}
 
-			player.AbilityCooldown = 45 * time.Second
-			player.LastAbilityTime = time.Now()
+			setCooldown(45 * time.Second)
 			if w.OnEvent != nil {
 				w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 			}
@@ -2742,8 +2866,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.LastStandActive = true
 				player.LastStandEndTime = time.Now().Add(10 * time.Second)
 
-				player.AbilityCooldown = 120 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(120 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2758,8 +2881,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 				player.SpellFocusActive = true
 				player.SpellFocusEndTime = time.Now().Add(15 * time.Second)
-				player.AbilityCooldown = 45 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(45 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2772,8 +2894,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.ArcaneShieldActive = true
 				player.ArcaneShieldHP = 100 + (player.Stats.Intelligence * 5)
 				player.ArcaneShieldEndTime = time.Now().Add(20 * time.Second)
-				player.AbilityCooldown = 30 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(30 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2785,8 +2906,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 				player.TimeWarpActive = true
 				player.TimeWarpEndTime = time.Now().Add(8 * time.Second)
-				player.AbilityCooldown = 60 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(60 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2823,8 +2943,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					target.mu.Unlock()
 				}
 
-				player.AbilityCooldown = 20 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(20 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2867,8 +2986,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				w.Grid.Add(proj)
 
 				player.State = "ATTACKING"
-				player.AbilityCooldown = 2 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(2 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2929,8 +3047,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				player.State = "ATTACKING"
-				player.AbilityCooldown = 10 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(10 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -2982,8 +3099,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				w.Grid.Add(proj)
 
 				player.State = "ATTACKING"
-				player.AbilityCooldown = 8 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(8 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3039,8 +3155,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				w.Grid.Add(proj)
 
 				player.State = "ATTACKING"
-				player.AbilityCooldown = 15 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(15 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3068,8 +3183,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				w.Grid.Add(zone)
 
 				player.State = "ATTACKING"
-				player.AbilityCooldown = 60 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(60 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3153,8 +3267,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				player.State = "ATTACKING"
-				player.AbilityCooldown = 8 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(8 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3205,8 +3318,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				w.Grid.Add(proj)
 
 				player.State = "ATTACKING"
-				player.AbilityCooldown = 20 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(20 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3262,8 +3374,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				player.State = "ATTACKING"
-				player.AbilityCooldown = 10 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(10 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3319,8 +3430,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				player.State = "ATTACKING"
-				player.AbilityCooldown = 4 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(4 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3357,8 +3467,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					player.Z = targetZ
 					w.Grid.Update(player, oldX, oldZ)
 
-					player.AbilityCooldown = 12 * time.Second
-					player.LastAbilityTime = time.Now()
+					setCooldown(12 * time.Second)
 					if w.OnEvent != nil {
 						w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 					}
@@ -3374,8 +3483,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 				player.StealthActive = true
 				player.StealthEndTime = time.Now().Add(10 * time.Second)
-				player.AbilityCooldown = 20 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(20 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3438,8 +3546,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						target.mu.Unlock()
 					}
 
-					player.AbilityCooldown = 10 * time.Second
-					player.LastAbilityTime = time.Now()
+					setCooldown(10 * time.Second)
 					if w.OnEvent != nil {
 						w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 					}
@@ -3482,8 +3589,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					bestTarget.mu.Unlock()
 				}
 
-				player.AbilityCooldown = 12 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(12 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3525,8 +3631,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
 
-				player.AbilityCooldown = 8 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(8 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3538,8 +3643,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 				player.PoisonCoatingActive = true
 				player.PoisonCoatingEndTime = time.Now().Add(15 * time.Second)
-				player.AbilityCooldown = 30 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(30 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3569,8 +3673,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				w.Entities[trap.ID] = trap
 				w.Grid.Add(trap)
 
-				player.AbilityCooldown = 15 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(15 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3598,8 +3701,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				w.Entities[trap.ID] = trap
 				w.Grid.Add(trap)
 
-				player.AbilityCooldown = 18 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(18 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3636,8 +3738,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					target.mu.Unlock()
 				}
 
-				player.AbilityCooldown = 12 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(12 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3677,8 +3778,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
-				player.AbilityCooldown = 1 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(1 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3718,8 +3818,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					w.Grid.Add(proj)
 				}
 
-				player.AbilityCooldown = 6 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(6 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3791,8 +3890,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					}
 				}
 
-				player.AbilityCooldown = 6 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(6 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3848,8 +3946,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					w.Grid.Update(player, oldX, oldZ)
 				}
 
-				player.AbilityCooldown = 10 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(10 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3891,8 +3988,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					w.Grid.Add(proj)
 				}
 
-				player.AbilityCooldown = 15 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(15 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3936,8 +4032,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						}
 					}
 				}
-				player.AbilityCooldown = 20 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(20 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3951,8 +4046,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.StealthActive = true
 				player.StealthEndTime = time.Now().Add(5 * time.Second)
 
-				player.AbilityCooldown = 30 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(30 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -3974,8 +4068,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					}
 				}
 
-				player.AbilityCooldown = 20 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(20 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4001,8 +4094,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				w.Entities[trap.ID] = trap
 				w.Grid.Add(trap)
 
-				player.AbilityCooldown = 15 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(15 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4047,8 +4139,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					w.Grid.Add(proj)
 				}
 
-				player.AbilityCooldown = 18 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(18 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4071,8 +4162,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					player.Health = player.MaxHealth
 				}
 
-				player.AbilityCooldown = 120 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(120 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4084,8 +4174,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 				player.GuardianEmbraceActive = true
 				player.GuardianEmbraceEndTime = time.Now().Add(10 * time.Second)
-				player.AbilityCooldown = 30 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(30 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4112,8 +4201,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					}
 				}
 
-				player.AbilityCooldown = 12 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(12 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4124,10 +4212,10 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 				player.SpiritsActive = true
+				player.SpiritsBoosted = true
 				player.SpiritEndTime = time.Now().Add(10 * time.Second)
 				// Boost logic would be in updateEntity where spirits do damage
-				player.AbilityCooldown = 20 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(20 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4153,10 +4241,11 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					State:     "IDLE",
 					CreatedAt: time.Now(),
 				}
-				w.AddEntity(seraph)
+				// w.AddEntity(seraph) // DEADLOCK: PerformAbility already holds w.mu
+				w.Entities[seraph.ID] = seraph
+				w.Grid.Add(seraph)
 
-				player.AbilityCooldown = 45 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(45 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4207,8 +4296,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					target.mu.Unlock()
 				}
 
-				player.AbilityCooldown = 12 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(12 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4220,8 +4308,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 				player.BlessingResolveActive = true
 				player.BlessingResolveEndTime = time.Now().Add(20 * time.Second)
-				player.AbilityCooldown = 45 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(45 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4232,10 +4319,10 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 				player.SpiritsActive = true
+				player.SpiritsBoosted = false
 				player.SpiritEndTime = time.Now().Add(8 * time.Second)
 				player.State = "ATTACKING"
-				player.AbilityCooldown = 10 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(10 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4281,8 +4368,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 				target.mu.Unlock()
 
-				player.AbilityCooldown = 5 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(5 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4338,8 +4424,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						}
 					}
 				}
-				player.AbilityCooldown = 4 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(4 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4385,8 +4470,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						}
 					}
 				}
-				player.AbilityCooldown = 60 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(60 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4414,8 +4498,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				w.Entities[zone.ID] = zone
 				w.Grid.Add(zone)
 
-				player.AbilityCooldown = 12 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(12 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4437,8 +4520,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					}
 				}
 
-				player.AbilityCooldown = 25 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(25 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4477,8 +4559,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					target.mu.Unlock()
 				}
 
-				player.AbilityCooldown = 20 * time.Second
-				player.LastAbilityTime = time.Now()
+				setCooldown(20 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}

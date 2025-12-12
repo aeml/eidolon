@@ -229,22 +229,7 @@ export class Cleric extends Actor {
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Avenging Seraph"] = 45.0 * (1 - cdr);
 
-            this.seraphActive = true;
-            this.seraphDuration = 15.0;
-            
-            // Create Seraph Mesh
-            if (this.mesh) {
-                const geo = new THREE.ConeGeometry(0.5, 1.5, 8);
-                const mat = new THREE.MeshStandardMaterial({ 
-                    color: 0xffffff, 
-                    emissive: 0xffffff,
-                    emissiveIntensity: 2
-                });
-                this.seraphMesh = new THREE.Mesh(geo, mat);
-                this.seraphMesh.position.set(0, 3, -1);
-                this.seraphMesh.rotation.x = Math.PI / 2;
-                this.mesh.add(this.seraphMesh);
-            }
+            // Server handles summoning the entity
             
             gameEngine.floatingTextManager.spawn("SERAPH SUMMONED!", this.position, '#ffffff');
             return;
@@ -598,7 +583,8 @@ export class Cleric extends Actor {
             }
         }
 
-        // Avenging Seraph Logic
+        // Avenging Seraph Logic (Handled by Server Entity now)
+        /*
         if (this.seraphActive) {
             this.seraphDuration -= dt;
             if (this.seraphDuration <= 0) {
@@ -642,6 +628,7 @@ export class Cleric extends Actor {
                 }
             }
         }
+        */
 
         // Guardian Embrace Logic
         if (this.guardianEmbraceActive) {
