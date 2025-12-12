@@ -303,26 +303,64 @@ export class Rogue extends Actor {
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Blade Storm"] = 15.0 * (1 - cdr);
 
+            // Cone of daggers
             const startPos = this.position.clone();
             startPos.y += 1.0;
             
-            // Cone of 5 daggers
-            const forward = new THREE.Vector3().subVectors(targetVector, this.position).normalize();
-            const angleStep = Math.PI / 8; // 22.5 degrees
-            const baseAngle = Math.atan2(forward.z, forward.x);
-            
+            const dx = targetVector.x - this.position.x;
+            const dz = targetVector.z - this.position.z;
+            const baseAngle = Math.atan2(dx, dz);
+            const angleStep = Math.PI / 8;
+
             for (let i = -2; i <= 2; i++) {
                 const angle = baseAngle + (i * angleStep);
-                const direction = new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle));
-                const target = startPos.clone().add(direction.multiplyScalar(10));
+                const velX = Math.sin(angle);
+                const velZ = Math.cos(angle);
                 
-                const dagger = new Projectile(null, this, 'Dagger', startPos, target);
+                const targetPos = new THREE.Vector3(
+                    this.position.x + velX * 10,
+                    this.position.y,
+                    this.position.z + velZ * 10
+                );
+
+                const dagger = new Projectile(null, this, 'Dagger', startPos, targetPos);
                 dagger.damage = 10 + this.stats.dexterity;
-                if (this.serratedEdgesActive) dagger.applyBleed = true;
                 gameEngine.addEntity(dagger);
             }
             return;
         }
+
+        if (skill === "Phantom Volley") {
+            console.log("Rogue used Phantom Volley!");
+            this.playAnimation('Attack', false, true);
+            
+            // Cooldown 18s
+            const cdr = this.stats.cooldownReduction || 0;
+            this.cooldowns["Phantom Volley"] = 18.0 * (1 - cdr);
+
+            // Rapid Fire 3 shots
+            const startPos = this.position.clone();
+            startPos.y += 1.0;
+            
+            const direction = new THREE.Vector3().subVectors(targetVector, this.position).normalize();
+            const targetPos = startPos.clone().add(direction.multiplyScalar(50)); // Far away target
+
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    // Use 'PhantomArrow' for the purple visual
+                    const arrow = new Projectile(null, this, 'PhantomArrow', startPos, targetPos);
+                    // Damage is set in Projectile.js for PhantomArrow
+                    gameEngine.addEntity(arrow);
+                    
+                    // Small burst for each shot
+                    this.spawnVisualEffect(gameEngine, this.position, 0x8800ff, "burst");
+                }, i * 150); // 150ms delay between shots
+            }
+            
+            return;
+        }
+
+        // --- Branch C: Traps & Tricks ---
 
         if (skill === "Fan of Knives") {
             console.log("Rogue used Fan of Knives!");

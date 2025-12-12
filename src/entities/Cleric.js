@@ -300,15 +300,17 @@ export class Cleric extends Actor {
                     // Allies only
                     if (entity === this || entity.constructor.name === 'Fighter' || entity.constructor.name === 'Rogue' || entity.constructor.name === 'Wizard' || entity.constructor.name === 'Cleric') {
                         if (this.position.distanceTo(entity.position) < radius) {
-                            entity.blessingZealTimer = 8.0;
-                            entity.blessingZealFactor = 0.30; // 30% attack speed
-                            gameEngine.floatingTextManager.spawn("SPEED UP!", entity.position, '#ff0000');
+                            entity.zealTimer = 8.0;
+                            // Zeal effect (e.g. attack speed or damage) handled in stats or update
+                            gameEngine.floatingTextManager.spawn("ZEAL!", entity.position, '#ff0000');
                         }
                     }
                 }
             });
             return;
         }
+
+
 
         if (skill === "Mark of Weakness") {
             console.log("Cleric used Mark of Weakness!");

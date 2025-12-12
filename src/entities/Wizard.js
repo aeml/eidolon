@@ -87,12 +87,14 @@ export class Wizard extends Actor {
             this.cooldowns["Flame Whip"] = 10.0 * (1 - cdr);
             
             // Cone Logic
-            const range = 6.0;
+            const range = 12.0;
             const angleThreshold = Math.PI / 4; // 45 degrees half-angle
-            const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion);
+            const forward = new THREE.Vector3().subVectors(targetVector, this.position);
+            forward.y = 0;
+            forward.normalize();
             
             // Visual
-            this.spawnVisualEffect(gameEngine, this.position, 0xff4500, "cone"); // Reuse cone visual
+            this.spawnVisualEffect(gameEngine, this.position, 0xff4500, "cone_large", forward); 
             
             const entities = gameEngine.chunkManager.getActiveEntities();
             entities.forEach(entity => {
@@ -162,18 +164,10 @@ export class Wizard extends Actor {
             startPos.y += 30.0; // High up
             
             // It's a projectile, but big
-            const meteor = new Projectile(null, this, 'Fireball', startPos, targetVector);
+            const meteor = new Projectile(null, this, 'Meteor', startPos, targetVector);
             meteor.damage = (50 + (this.stats.intelligence * 3.0)) * damageMultiplier;
             meteor.explosionRadius = 8.0; // Big radius
             meteor.speed = 20.0; // Fast fall
-            
-            // Visual scale up (hacky, assuming Projectile has a mesh we can scale later, 
-            // but Projectile creates mesh in constructor. We can't easily access it here 
-            // unless we modify Projectile to expose it or wait. 
-            // Actually Projectile.js creates mesh immediately.)
-            if (meteor.mesh) {
-                meteor.mesh.scale.set(3, 3, 3);
-            }
             
             // Synergy: Meteor also leaves burning ground if unlocked
             if (this.skillLevels.pyromancer.burningGround > 0) {
@@ -614,7 +608,7 @@ export class Wizard extends Actor {
         gameEngine.addEntity(fireball);
     }
 
-    spawnVisualEffect(gameEngine, position, color, type) {
+    spawnVisualEffect(gameEngine, position, color, type, direction = null) {
         if (!gameEngine || !gameEngine.scene) return;
         
         if (type === "ring") {
@@ -682,6 +676,46 @@ export class Wizard extends Actor {
                     if (!mesh.parent) return; 
                     mesh.position.add(dir.clone().multiplyScalar(speed * 0.016));
                     mesh.scale.multiplyScalar(0.95);
+                    if (mesh.scale.x < 0.1) {
+                        gameEngine.scene.remove(mesh);
+                        return;
+                    }
+                    requestAnimationFrame(animate);
+                };
+                animate();
+            }
+        } else if (type === "cone_large") {
+            const count = 30; // More particles
+            const geometry = new THREE.BoxGeometry(0.5, 0.5, 1.5); // Bigger particles
+            const material = new THREE.MeshBasicMaterial({ color: color });
+            
+            let forward;
+            if (direction) {
+                forward = direction.clone().normalize();
+            } else {
+                forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.mesh.quaternion);
+            }
+            
+            for(let i=0; i<count; i++) {
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.copy(position);
+                mesh.position.y += 1.0;
+                
+                // Spread (Cover 90 degrees total)
+                const totalArc = Math.PI / 2;
+                const step = totalArc / count;
+                const angle = (i - (count/2)) * step;
+                
+                const dir = forward.clone().applyAxisAngle(new THREE.Vector3(0,1,0), angle);
+                
+                mesh.lookAt(position.clone().add(dir));
+                gameEngine.scene.add(mesh);
+                
+                const speed = 20.0;
+                const animate = () => {
+                    if (!mesh.parent) return; 
+                    mesh.position.add(dir.clone().multiplyScalar(speed * 0.016));
+                    mesh.scale.multiplyScalar(0.94);
                     if (mesh.scale.x < 0.1) {
                         gameEngine.scene.remove(mesh);
                         return;

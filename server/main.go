@@ -178,6 +178,7 @@ type AbilityPayload struct {
 	TargetZ   float64 `json:"targetZ"`
 	TargetID  string  `json:"targetId"`
 	SkillName string  `json:"skillName"`
+	SourceID  string  `json:"sourceId"`
 }
 
 type DamagePayload struct {
@@ -280,6 +281,27 @@ func main() {
 			// Send in goroutine to avoid deadlock if hub is busy
 			go func() {
 				broadcast <- BroadcastMessage{Type: MsgChat, Data: dataBytes}
+			}()
+		case "ability":
+			evt, ok := data.(game.AbilityEvent)
+			if !ok {
+				return
+			}
+			payload := AbilityPayload{
+				TargetX:   evt.TargetX,
+				TargetZ:   evt.TargetZ,
+				TargetID:  evt.TargetID,
+				SkillName: evt.SkillName,
+				SourceID:  evt.SourceID,
+			}
+			b, _ := json.Marshal(payload)
+			outMsg := Message{
+				Type:    MsgAbility,
+				Payload: b,
+			}
+			dataBytes, _ := json.Marshal(outMsg)
+			go func() {
+				broadcast <- BroadcastMessage{Type: MsgAbility, Data: dataBytes}
 			}()
 		case "damage":
 			evt, ok := data.(game.DamageEvent)
@@ -640,9 +662,9 @@ func (c *Client) handleMessage(msg Message) {
 				Class: payload.Type,
 				Level: 1,
 				XP:    0,
-				X:     0,
+				X:     -1.25, // Midpoint between Quest NPC (-25) and Merchant (22.5)
 				Y:     0,
-				Z:     0,
+				Z:     200, // Town Center Z
 				Stats: database.Stats{
 					Strength:     10,
 					Dexterity:    10,

@@ -77,21 +77,71 @@ export class Projectile extends Entity {
             material = DAGGER_MAT;
             this.damage = 15 + (this.owner.stats.dexterity * 1.5);
         } else if (this.type === 'FlameTornado') {
-            // Tornado shape: Cone upside down or just a cylinder?
-            // Let's use a ConeGeometry
-            geometry = new THREE.ConeGeometry(1.0, 3.0, 8, 1, true); // Open ended?
-            geometry.rotateX(-Math.PI / 2); // Point forward
+            // Tornado shape: Vertical Cylinder/Cone
+            geometry = new THREE.CylinderGeometry(1.5, 0.5, 4.0, 8, 1, true); 
+            // No rotation needed if we want it upright (Y-up)
+            // But Projectile logic might rotate it to face velocity.
+            // If we want it to stay upright, we need to handle rotation in update or here.
+            // Let's assume standard projectile rotation (facing forward) is applied.
+            // If we want it upright, we should rotate geometry so that "forward" is "up"? No.
+            // If the projectile moves along Z, and we want the cylinder to be vertical (Y),
+            // we should rotate the geometry 90 degrees on X?
+            // Default Cylinder is Y-up.
+            // If projectile looks at target, its Z axis points to target.
+            // We want the cylinder axis (Y) to remain World Y.
+            // This is hard with standard lookAt.
+            // Instead, let's just make it a spinning ball of particles or a simple upright cylinder that ignores rotation?
+            // We can override render/update rotation.
+            
             material = new THREE.MeshStandardMaterial({ 
-                color: 0xff8800, 
-                emissive: 0xff4400,
+                color: 0xff4500, 
+                emissive: 0xff0000,
                 emissiveIntensity: 2,
                 side: THREE.DoubleSide,
                 transparent: true,
-                opacity: 0.8
+                opacity: 0.6
             });
             this.damage = 30 + (this.owner.stats.intelligence * 2.0);
-            this.speed = 10; // Slower
-            this.isPiercingThrow = true; // Pass through enemies
+            this.speed = 10; 
+            this.isPiercingThrow = true;
+        } else if (this.type === 'Meteor') {
+            geometry = new THREE.SphereGeometry(1.5, 16, 16);
+            material = new THREE.MeshStandardMaterial({ 
+                color: 0x550000, 
+                emissive: 0xff4500,
+                emissiveIntensity: 1,
+                roughness: 0.9
+            });
+            this.damage = 50 + (this.owner.stats.intelligence * 3);
+        } else if (this.type === 'PhantomArrow') {
+            geometry = DAGGER_GEO;
+            material = new THREE.MeshStandardMaterial({ color: 0x8800ff, metalness: 0.8, roughness: 0.2, emissive: 0x440088 });
+            this.damage = 25 + (this.owner.stats.dexterity * 2.0);
+            this.speed = 35;
+        } else if (this.type === 'Tripwire') {
+            geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.1, 8);
+            material = new THREE.MeshBasicMaterial({ color: 0x888888 });
+            this.damage = 20 + this.owner.stats.dexterity;
+            this.speed = 0;
+            this.velocity.set(0,0,0);
+        } else if (this.type === 'ExplosiveTrap') {
+            geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 8);
+            material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            this.damage = 50 + (this.owner.stats.dexterity * 3);
+            this.speed = 0;
+            this.velocity.set(0,0,0);
+        } else if (this.type === 'SnareTrap') {
+            geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 8);
+            material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            this.damage = 10;
+            this.speed = 0;
+            this.velocity.set(0,0,0);
+        } else if (this.type === 'Zone') {
+            geometry = new THREE.CylinderGeometry(5.0, 5.0, 0.1, 32);
+            material = new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.3 });
+            this.damage = 20 + (this.owner.stats.wisdom * 1);
+            this.speed = 0;
+            this.velocity.set(0,0,0);
         }
 
         this.mesh = new THREE.Mesh(geometry, material);
@@ -111,6 +161,33 @@ export class Projectile extends Entity {
 
     update(dt, collisionManager, player, activeEntities, floatingTextManager, gameEngine) { 
         if (!this.isActive) return;
+
+        // Meteor Trail
+        if (this.type === 'Meteor' && gameEngine && gameEngine.scene) {
+             const geometry = new THREE.SphereGeometry(0.5, 4, 4);
+             const material = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.6 });
+             const particle = new THREE.Mesh(geometry, material);
+             const offset = new THREE.Vector3(
+                 (Math.random() - 0.5) * 1.0,
+                 (Math.random() - 0.5) * 1.0,
+                 (Math.random() - 0.5) * 1.0
+             );
+             particle.position.copy(this.position).add(offset);
+             gameEngine.scene.add(particle);
+             
+             const animate = () => {
+                 if (particle.material.opacity <= 0) {
+                     gameEngine.scene.remove(particle);
+                     geometry.dispose();
+                     material.dispose();
+                     return;
+                 }
+                 particle.scale.multiplyScalar(0.9);
+                 particle.material.opacity -= 0.05;
+                 requestAnimationFrame(animate);
+             };
+             animate();
+        }
 
         if (this.type === 'FlameTornado' && this.mesh) {
             this.mesh.rotation.x += 10.0 * dt; // Spin around local axis
@@ -153,7 +230,7 @@ export class Projectile extends Entity {
 
         // Collision Detection (Client-side prediction / Singleplayer)
         if (activeEntities) {
-            const hitRadius = 1.0; // Collision radius
+            const hitRadius = this.radius || 1.0; // Use projectile's radius
 
             for (const entity of activeEntities) {
                 // Skip self, owner, dead entities, and already hit entities (for pierce)
@@ -171,7 +248,7 @@ export class Projectile extends Entity {
                 if (dist < hitRadius + (entity.radius || 0.5)) {
                     // HIT!
                     
-                    if (this.type === 'Dagger' || this.type === 'DragonfireLance') {
+                    if (this.type === 'Dagger' || this.type === 'DragonfireLance' || this.type === 'FlameTornado') {
                         // Pierce Logic: Hit and continue
                         this.hitEntities.add(entity.id);
                         
@@ -273,13 +350,13 @@ export class Projectile extends Entity {
                         }
                         break;
 
-                    } else if (this.type === 'Fireball') {
+                    } else if (this.type === 'Fireball' || this.type === 'Meteor') {
                         // Explode Logic: Hit, Splash, Destroy
                         this.isActive = false; // Destroy projectile
                         if (this.mesh) this.mesh.visible = false; // Hide immediately to prevent visual piercing
                         
                         // Splash Damage
-                        const splashRadius = this.explosionRadius || 4.0;
+                        const splashRadius = this.explosionRadius || (this.type === 'Meteor' ? 8.0 : 4.0);
                         // Find all entities in splash radius
                         for (const splashTarget of activeEntities) {
                             if (splashTarget.state === 'DEAD' || !splashTarget.isActive) continue;
@@ -305,7 +382,8 @@ export class Projectile extends Entity {
                         // Visual Explosion
                         if (gameEngine && gameEngine.scene) {
                              const geometry = new THREE.SphereGeometry(splashRadius, 16, 16);
-                             const material = new THREE.MeshBasicMaterial({ color: 0xff4500, transparent: true, opacity: 0.5 });
+                             const color = this.type === 'Meteor' ? 0xff2200 : 0xff4500;
+                             const material = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.5 });
                              const mesh = new THREE.Mesh(geometry, material);
                              mesh.position.copy(this.position);
                              gameEngine.scene.add(mesh);
