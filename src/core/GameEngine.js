@@ -204,6 +204,10 @@ export class GameEngine {
         this.messageQueue = [];
     }
 
+    get scene() {
+        return this.renderSystem.scene;
+    }
+
     async loadGame(onProgress) {
         console.error(`Initializing GameEngine with player type: ${this.playerType}`);
         
@@ -295,7 +299,7 @@ export class GameEngine {
                     this.socket.send(JSON.stringify({ type: 'respawn', payload: {} }));
                     // Wait for server state update to handle actual respawn
                 } else {
-                    this.player.respawn(0, 200);
+                    this.player.respawn(-1.25, 200);
                     this.player.timeSinceDeath = null;
                     this.chunkManager.updateEntityChunk(this.player);
                     this.renderSystem.setCameraTarget(this.player.position);
@@ -665,6 +669,108 @@ export class GameEngine {
         return elite;
     }
 
+    triggerRemoteAbilityVisuals(entity, skillName, targetX, targetZ) {
+        if (!entity || !entity.spawnVisualEffect) return;
+
+        const targetPos = new THREE.Vector3(targetX, 0, targetZ);
+        const position = entity.position.clone();
+
+        // Fighter
+        if (entity instanceof Fighter) {
+            switch (skillName) {
+                case "Whirlwind":
+                    entity.spawnVisualEffect(this, position, 0xaaaaaa, "spin");
+                    break;
+                case "Shield Slam":
+                    // Calculate impact position in front
+                    const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(entity.mesh.quaternion);
+                    entity.spawnVisualEffect(this, position.clone().add(forward), 0xffff00, "impact");
+                    break;
+                case "Iron Fortress":
+                    entity.spawnVisualEffect(this, position, 0x808080, "buff");
+                    break;
+                case "Sweeping Strike":
+                    entity.spawnVisualEffect(this, position, 0xffffff, "cone");
+                    break;
+                case "Earthshaker":
+                    entity.spawnVisualEffect(this, position, 0x8b4513, "wave");
+                    break;
+                case "Unbreakable Grip":
+                    entity.spawnVisualEffect(this, targetPos, 0x0000ff, "impact");
+                    break;
+                case "Juggernaut Charge":
+                    entity.spawnVisualEffect(this, position, 0xff0000, "wave");
+                    break;
+            }
+        }
+        // Rogue
+        else if (entity instanceof Rogue) {
+            switch (skillName) {
+                case "Shadow Step":
+                    entity.spawnVisualEffect(this, position, 0x000000, "smoke");
+                    break;
+                case "Fan of Knives":
+                    entity.spawnVisualEffect(this, position, 0x333333, "spin");
+                    break;
+                case "Venomous Strike":
+                    entity.spawnVisualEffect(this, targetPos, 0x00ff00, "mark");
+                    break;
+                case "Assassinate":
+                    entity.spawnVisualEffect(this, targetPos, 0xff0000, "blood");
+                    break;
+                case "Smoke Bomb":
+                    entity.spawnVisualEffect(this, position, 0x555555, "smoke_cloud");
+                    break;
+                case "Adrenaline Rush":
+                    entity.spawnVisualEffect(this, position, 0xff0000, "buff");
+                    break;
+            }
+        }
+        // Wizard
+        else if (entity instanceof Wizard) {
+            switch (skillName) {
+                case "Frost Nova":
+                    entity.spawnVisualEffect(this, position, 0x00ffff, "ring");
+                    break;
+                case "Blink":
+                    entity.spawnVisualEffect(this, position, 0xff00ff, "ring");
+                    break;
+                case "Meteor":
+                    entity.spawnVisualEffect(this, targetPos, 0xff4500, "burst");
+                    break;
+                case "Ice Barrier":
+                    entity.spawnVisualEffect(this, position, 0x00ffff, "buff");
+                    break;
+                case "Time Warp":
+                    entity.spawnVisualEffect(this, position, 0xffd700, "ring");
+                    break;
+            }
+        }
+        // Cleric
+        else if (entity instanceof Cleric) {
+            switch (skillName) {
+                case "Smite":
+                    entity.spawnVisualEffect(this, targetPos, 0xffff00, "impact");
+                    break;
+                case "Healing Light":
+                    entity.spawnVisualEffect(this, targetPos, 0xffff00, "beam"); 
+                    break;
+                case "Holy Nova":
+                    entity.spawnVisualEffect(this, position, 0xffff00, "ring");
+                    break;
+                case "Divine Protection":
+                    entity.spawnVisualEffect(this, position, 0xffff00, "buff");
+                    break;
+                case "Sacred Ground":
+                    entity.spawnVisualEffect(this, targetPos, 0xffffff, "ring");
+                    break;
+                case "Resurrection":
+                    entity.spawnVisualEffect(this, targetPos, 0xffffff, "beam");
+                    break;
+            }
+        }
+    }
+
     handleServerMessage(msg) {
         if (!this.player) return; // Safety check
 
@@ -683,6 +789,15 @@ export class GameEngine {
             const timeString = date.toLocaleTimeString();
             if (this.uiManager.gameTimer) {
                 this.uiManager.gameTimer.textContent = timeString;
+            }
+        } else if (msg.type === 'ability') {
+            const abilityData = msg.payload;
+            // Ignore if source is local player (we already played the effect locally)
+            if (this.player && abilityData.sourceId === this.player.id) return;
+
+            const source = this.remotePlayers.get(abilityData.sourceId);
+            if (source) {
+                this.triggerRemoteAbilityVisuals(source, abilityData.skillName, abilityData.targetX, abilityData.targetZ);
             }
         } else if (msg.type === 'damage') {
             const dmgData = msg.payload;
@@ -761,8 +876,8 @@ export class GameEngine {
                                 this.player.die();
                             } else if (this.player.state === 'DEAD' && pData.state !== 'DEAD') {
                                 // Revived?
-                                // Force town spawn (0, 200) to ensure immediate visual feedback
-                                const x = 0;
+                                // Force town spawn (-1.25, 200) to ensure immediate visual feedback
+                                const x = -1.25;
                                 const z = 200;
                                 
                                 console.log(`GameEngine: Respawn detected. Teleporting to Town (${x}, ${z})`);

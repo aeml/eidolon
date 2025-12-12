@@ -201,7 +201,7 @@ export const CONSTANTS = {
             Tier1: { name: "Spirit Guardians", desc: "Persistent radius damage." },
             BranchA: {
                 name: "Pure Healer Path",
-                Tier2: { name: "Heal", desc: "Restores health to yourself or a target." },
+                Tier2: { name: "Healing Light", desc: "Restores health to yourself or a target." },
                 Tier3: { name: "Guardian Embrace", desc: "AoE heal over time around the cleric." },
                 Tier4: { name: "Purifying Wave", desc: "Cleanse negative effects." },
                 Tier5: { name: "Divine Intervention", desc: "Save an ally from death once every X minutes." }
