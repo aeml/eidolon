@@ -870,6 +870,8 @@ export class GameEngine {
                 if (pData.id === this.player.id) {
                     // Update local player stats from server
                     if (this.player) {
+                        let justRespawned = false;
+
                         // Sync State
                         if (pData.state) {
                             if (this.player.state !== 'DEAD' && pData.state === 'DEAD') {
@@ -886,6 +888,7 @@ export class GameEngine {
                                 
                                 this.chunkManager.updateEntityChunk(this.player);
                                 this.renderSystem.setCameraTarget(this.player.position);
+                                justRespawned = true;
                             } else {
                                 this.player.state = pData.state;
                             }
@@ -894,7 +897,7 @@ export class GameEngine {
                         // Check for forced teleport (large distance discrepancy)
                         // This handles portals or admin teleports where state might not change from DEAD
     
-                        if (pData.x !== undefined && pData.z !== undefined) {
+                        if (!justRespawned && pData.x !== undefined && pData.z !== undefined) {
                             const serverPos = new THREE.Vector3(pData.x, pData.y || 0, pData.z);
                             const dist = this.player.position.distanceTo(serverPos);
                             if (dist > 20.0) { // Threshold for teleport (larger than normal lag correction)
