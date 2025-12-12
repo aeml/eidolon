@@ -27,6 +27,7 @@ import { FrostGuardian } from '../entities/FrostGuardian.js';
 import { Fence } from '../entities/Fence.js';
 import { QuestNPC } from '../entities/QuestNPC.js';
 import { Stash } from '../entities/Stash.js';
+import { AvengingSeraph } from '../entities/AvengingSeraph.js';
 import { LevelUpEffect } from '../ui/LevelUpEffect.js';
 
 export class GameEngine {
@@ -202,6 +203,10 @@ export class GameEngine {
         this.latestServerState = null;
         this.latestServerTime = null;
         this.messageQueue = [];
+        
+        // Input Buffering
+        this.inputBuffer = [];
+        this.inputBufferWindow = 0.4; // 400ms buffer window
     }
 
     get scene() {
@@ -769,6 +774,14 @@ export class GameEngine {
                     break;
             }
         }
+        // Avenging Seraph
+        else if (entity instanceof AvengingSeraph) {
+            switch (skillName) {
+                case "Smite":
+                    entity.spawnVisualEffect(this, targetPos, 0xffff00, "impact");
+                    break;
+            }
+        }
     }
 
     handleServerMessage(msg) {
@@ -1028,10 +1041,12 @@ export class GameEngine {
                         }
 
                         // Optimization: Only update UI if values changed
-                        if (this.player.xp !== this.lastXP || this.player.xpToNextLevel !== this.lastMaxXP) {
+                        if (this.player.xp !== this.lastXP || this.player.xpToNextLevel !== this.lastMaxXP || this.player.level !== this.lastLevel) {
+                            console.log(`Updating XP/Level UI: Level=${this.player.level}, XP=${this.player.xp}`);
                             this.uiManager.updateXP(this.player);
                             this.lastXP = this.player.xp;
                             this.lastMaxXP = this.player.xpToNextLevel;
+                            this.lastLevel = this.player.level;
                         }
 
                         // Check stats change (simple heuristic or deep compare)
@@ -1309,6 +1324,9 @@ export class GameEngine {
                 p = new DwarfSalesman(id);
             } else if (subType === 'QuestNPC') {
                 p = new QuestNPC(id);
+            } else if (subType === 'AvengingSeraph') {
+                console.log(`GameEngine: Creating AvengingSeraph ${id}`);
+                p = new AvengingSeraph(id);
             } else {
                 p = new DwarfSalesman(id); // Default NPC
             }
@@ -1505,14 +1523,38 @@ export class GameEngine {
         }
 
         // Check Cooldown and Mana before proceeding
+        let onCooldown = false;
         if (!skillNameOverride) {
             if (this.player.abilityCooldown > 0) {
-                return;
+                onCooldown = true;
             }
-            const cost = this.player.abilityManaCost * (1 - (this.player.stats.manaCostReduction || 0));
-            if (this.player.stats.mana < cost) {
-                return;
+        } else {
+            if (this.player.cooldowns && this.player.cooldowns[skillNameOverride] > 0) {
+                onCooldown = true;
             }
+        }
+
+        if (onCooldown) {
+            // Buffer the input
+            const existing = this.inputBuffer.find(b => b.skillName === skillNameOverride);
+            if (!existing) {
+                // Only buffer if not already buffered to avoid duplicates
+                this.inputBuffer.push({
+                    skillName: skillNameOverride,
+                    target: targetVectorOverride,
+                    timestamp: Date.now() / 1000
+                });
+                console.log(`Buffered ability: ${skillNameOverride || 'Primary'} (CD)`);
+            }
+            return;
+        }
+
+        // Mana Check
+        const cost = (skillNameOverride ? 0 : this.player.abilityManaCost) * (1 - (this.player.stats.manaCostReduction || 0));
+        // Note: Specific skills might have their own mana costs checked in useAbility, 
+        // but for primary ability we check here.
+        if (!skillNameOverride && this.player.stats.mana < cost) {
+            return;
         }
         
         if (this.isMobile && !targetVectorOverride) {
@@ -1761,6 +1803,43 @@ export class GameEngine {
 
     update(dt) {
         this.frameCount++;
+
+        // Process Input Buffer
+        if (this.inputBuffer.length > 0) {
+            const now = Date.now() / 1000;
+            // Remove expired
+            this.inputBuffer = this.inputBuffer.filter(b => now - b.timestamp < this.inputBufferWindow);
+            
+            // Try to execute oldest
+            if (this.inputBuffer.length > 0) {
+                const buffered = this.inputBuffer[0];
+                
+                // Check if ready
+                let ready = false;
+                if (!buffered.skillName) {
+                    if (this.player.abilityCooldown <= 0) ready = true;
+                } else {
+                    if (!this.player.cooldowns || this.player.cooldowns[buffered.skillName] <= 0) ready = true;
+                }
+
+                if (ready) {
+                    console.log(`Executing buffered ability: ${buffered.skillName || 'Primary'}`);
+                    // Remove BEFORE executing to prevent infinite recursion if performAbility re-buffers (though we check ready first)
+                    this.inputBuffer.shift();
+                    
+                    // Re-determine target if not overridden (to aim at current mouse pos)
+                    let target = buffered.target;
+                    if (!target) {
+                         // If it was a ground click or hover that wasn't captured in targetVectorOverride,
+                         // we might want to re-evaluate current mouse pos?
+                         // But performAbility logic handles null target by checking mouse.
+                         // So passing null is fine.
+                    }
+                    
+                    this.performAbility(target, buffered.skillName);
+                }
+            }
+        }
 
         // Cleanup Rogue Stashes and Quest NPCs (Fix for extra entities at 0,0,0)
         if (this.frameCount % 60 === 0) {
