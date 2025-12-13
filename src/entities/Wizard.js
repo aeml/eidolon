@@ -399,45 +399,6 @@ export class Wizard extends Actor {
 
         // --- Control & Utility Branch Skills ---
 
-        if (skill === "Frost Nova") {
-            if (!this.unlockedSkills.includes("Frost Nova")) return;
-            console.log("Wizard used Frost Nova!");
-            this.playAnimation('Attack', false, true);
-            
-            // Cooldown 12s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Frost Nova"] = 12.0 * (1 - cdr);
-            
-            const radius = 8.0;
-            const entities = gameEngine.chunkManager.getActiveEntities();
-            
-            // Visual Ring
-            this.spawnVisualEffect(gameEngine, this.position, 0x00ffff, "ring");
-            
-            // Logic
-            entities.forEach(entity => {
-                if (entity.isActive && entity.state !== 'DEAD' && entity !== this && !(entity instanceof Actor && entity.constructor.name === 'LootDrop')) {
-                    // Enemy check
-                    if (entity.constructor.name !== 'Wizard' && entity.constructor.name !== 'Cleric' && entity.constructor.name !== 'Fighter' && entity.constructor.name !== 'Rogue') {
-                        const d = entity.position.distanceTo(this.position);
-                        if (d < radius) {
-                            // Apply Freeze (Stun)
-                            entity.frozenTimer = 3.0;
-                            entity.state = 'IDLE'; // Force stop
-                            if (entity.velocity) entity.velocity.set(0,0,0);
-                            
-                            // Damage
-                            const damage = (15 + (this.stats.intelligence * 1.0)) * damageMultiplier;
-                            entity.takeDamage(damage);
-                            
-                            gameEngine.floatingTextManager.spawn("FROZEN!", entity.position, '#00ffff');
-                            gameEngine.floatingTextManager.spawn(Math.floor(damage), entity.position, '#00ffff');
-                        }
-                    }
-                }
-            });
-            return;
-        }
 
         if (skill === "Arcane Shield") {
             if (!this.unlockedSkills.includes("Arcane Shield")) return;

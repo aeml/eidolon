@@ -254,30 +254,6 @@ export class Rogue extends Actor {
 
         // --- Branch B: Throwing Specialist ---
 
-        if (skill === "Ricochet Blades") {
-            console.log("Rogue used Ricochet Blades!");
-            this.playAnimation('Attack', false, true);
-            
-            // Cooldown 8s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Ricochet Blades"] = 8.0 * (1 - cdr);
-
-            const startPos = this.position.clone();
-            startPos.y += 1.0;
-            const adjustedTarget = targetVector.clone();
-            adjustedTarget.y = startPos.y;
-
-            const dagger = new Projectile(null, this, 'Dagger', startPos, adjustedTarget);
-            dagger.damage = 15 + (this.stats.dexterity * 1.2);
-            dagger.bounces = 1; // Enable bounce
-            dagger.isPiercingThrow = true; // Counts as Piercing Throw for Weak Point Mark
-            
-            // Apply Serrated Edges if active
-            if (this.serratedEdgesActive) dagger.applyBleed = true;
-
-            gameEngine.addEntity(dagger);
-            return;
-        }
 
         if (skill === "Serrated Edges") {
             console.log("Rogue used Serrated Edges!");
