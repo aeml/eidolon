@@ -218,7 +218,7 @@ export const CONSTANTS = {
                 Tier2: { name: "Blessing of Resolve", desc: "Party defense buff." },
                 Tier3: { name: "Blessing of Zeal", desc: "Party attack speed buff." },
                 Tier4: { name: "Mark of Weakness", desc: "Enemies take more damage from all sources." },
-                Tier5: { name: "Heaven’s Trumpet", desc: "Massive AoE stun + damage taken buff on enemies." }
+                Tier5: { name: "Heaven's Trumpet", desc: "Massive AoE stun + damage taken buff on enemies." }
             }
         }
     }

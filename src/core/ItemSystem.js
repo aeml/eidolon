@@ -60,6 +60,7 @@ export class Item {
     constructor(config) {
         this.id = crypto.randomUUID();
         this.name = config.name;
+        this.baseName = config.baseName || config.name; // Store base name for icons
         this.type = config.type;
         this.slot = config.slot;
         this.rarity = config.rarity;
@@ -187,6 +188,7 @@ export class ItemGenerator {
 
         return new Item({
             name: name,
+            baseName: baseItem.name, // Pass original base name
             type: baseItem.type,
             slot: baseItem.slot,
             rarity: rarity,

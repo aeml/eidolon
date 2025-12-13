@@ -467,9 +467,33 @@ export class UIManager {
     getSkillIconPath(skillName, classType) {
         if (!skillName || !classType) return null;
         // Remove special characters like & and replace spaces with underscores
-        const formattedName = skillName.toLowerCase().replace(/ & /g, '_').replace(/ /g, '_');
+        // Also remove apostrophes (both straight and curly)
+        const formattedName = skillName.toLowerCase()
+            .replace(/ & /g, '_')
+            .replace(/['’]/g, '')
+            .replace(/ /g, '_');
         const formattedClass = classType.toLowerCase();
         return `assets/icons/${formattedClass}/${formattedName}.png`;
+    }
+
+    getItemIconPath(item) {
+        if (!item) return null;
+        // Use baseName if available (for prefixed items), otherwise fallback to name
+        const nameToUse = item.baseName || item.name;
+        const formattedName = nameToUse.toLowerCase()
+            .replace(/['’]/g, '')
+            .replace(/ /g, '_');
+        return `assets/icons/equipment/${formattedName}.png`;
+    }
+
+    getItemRarityFilter(rarity) {
+        if (!rarity) return 'none';
+        switch (rarity.name) {
+            case 'Uncommon': return 'sepia(1) saturate(3) hue-rotate(70deg)'; // Green
+            case 'Rare': return 'sepia(1) saturate(3) hue-rotate(190deg)'; // Blue
+            case 'Legendary': return 'sepia(1) saturate(5) hue-rotate(-30deg)'; // Orange
+            default: return 'none';
+        }
     }
 
     updateAbilityIcon(player) {
@@ -1320,8 +1344,14 @@ export class UIManager {
         const el = document.getElementById(id);
         if (el) {
             el._item = item; // Store item for tooltip
+            el.innerHTML = ''; // Clear text/children
+            
             if (item) {
-                el.textContent = item.name;
+                const iconPath = this.getItemIconPath(item);
+                const filter = this.getItemRarityFilter(item.rarity);
+                
+                el.innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center; filter:${filter};"></div>`;
+                
                 el.style.color = item.rarity ? item.rarity.color : '#fff';
                 el.style.borderColor = item.rarity ? item.rarity.color : '#ffd700';
                 // el.title = this.getItemTooltipText(item); // Disable native tooltip
@@ -1348,10 +1378,14 @@ export class UIManager {
         for (let i = 0; i < slots.length; i++) {
             const item = player.inventory[i];
             slots[i]._item = item; // Store item for tooltip
+            slots[i].innerHTML = ''; // Clear
             
             if (item) {
-                // Show first letter or icon placeholder
-                slots[i].textContent = item.name ? item.name.substring(0, 2) : '??';
+                const iconPath = this.getItemIconPath(item);
+                const filter = this.getItemRarityFilter(item.rarity);
+                
+                slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center; filter:${filter};"></div>`;
+                
                 slots[i].style.color = item.rarity ? item.rarity.color : '#fff';
                 slots[i].style.border = `1px solid ${item.rarity ? item.rarity.color : '#444'}`;
                 // slots[i].title = this.getItemTooltipText(item); // Disable native tooltip
@@ -1440,9 +1474,14 @@ export class UIManager {
         for (let i = 0; i < slots.length; i++) {
             const item = player.stash ? player.stash[i] : null;
             slots[i]._item = item;
+            slots[i].innerHTML = '';
             
             if (item) {
-                slots[i].textContent = item.name ? item.name.substring(0, 2) : '??';
+                const iconPath = this.getItemIconPath(item);
+                const filter = this.getItemRarityFilter(item.rarity);
+                
+                slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center; filter:${filter};"></div>`;
+                
                 slots[i].style.color = item.rarity ? item.rarity.color : '#fff';
                 slots[i].style.border = `1px solid ${item.rarity ? item.rarity.color : '#444'}`;
                 slots[i].style.backgroundColor = '#222';
