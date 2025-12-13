@@ -244,8 +244,9 @@ export class UIManager {
         // Inventory Tooltips
         this.inventoryGrid.addEventListener('mousemove', (e) => {
             if (this.selectedSlot !== -1) return; // Don't override selection with hover
-            if (e.target.classList.contains('inv-slot') && e.target._item) {
-                this.showItemTooltip(e.target._item, e.clientX, e.clientY, e);
+            const slot = e.target.closest('.inv-slot');
+            if (slot && slot._item) {
+                this.showItemTooltip(slot._item, e.clientX, e.clientY, e);
             } else {
                 this.hideTooltips();
             }
@@ -261,8 +262,9 @@ export class UIManager {
         const equipContainer = this.characterSheet.querySelector('.equipment-slots');
         if (equipContainer) {
             equipContainer.addEventListener('mousemove', (e) => {
-                if (e.target.classList.contains('equip-slot') && e.target._item) {
-                    this.showItemTooltip(e.target._item, e.clientX, e.clientY, e);
+                const slot = e.target.closest('.equip-slot');
+                if (slot && slot._item) {
+                    this.showItemTooltip(slot._item, e.clientX, e.clientY, e);
                 } else {
                     this.hideTooltips();
                 }
@@ -502,16 +504,6 @@ export class UIManager {
             .replace(/['’]/g, '')
             .replace(/ /g, '_');
         return `assets/icons/equipment/${formattedName}.png`;
-    }
-
-    getItemRarityFilter(rarity) {
-        if (!rarity) return 'none';
-        switch (rarity.name) {
-            case 'Uncommon': return 'sepia(1) saturate(3) hue-rotate(70deg)'; // Green
-            case 'Rare': return 'sepia(1) saturate(3) hue-rotate(190deg)'; // Blue
-            case 'Legendary': return 'sepia(1) saturate(5) hue-rotate(-30deg)'; // Orange
-            default: return 'none';
-        }
     }
 
     updateAbilityIcon(player) {
@@ -1366,12 +1358,13 @@ export class UIManager {
             
             if (item) {
                 const iconPath = this.getItemIconPath(item);
-                const filter = this.getItemRarityFilter(item.rarity);
+                const color = item.rarity ? item.rarity.color : '#ffffff';
                 
-                el.innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center; filter:${filter};"></div>`;
+                // Use multiply blend mode to tint the background
+                el.innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
                 
-                el.style.color = item.rarity ? item.rarity.color : '#fff';
-                el.style.borderColor = item.rarity ? item.rarity.color : '#ffd700';
+                el.style.color = color;
+                el.style.borderColor = color;
                 // el.title = this.getItemTooltipText(item); // Disable native tooltip
                 el.removeAttribute('title');
             } else {
@@ -1400,12 +1393,12 @@ export class UIManager {
             
             if (item) {
                 const iconPath = this.getItemIconPath(item);
-                const filter = this.getItemRarityFilter(item.rarity);
+                const color = item.rarity ? item.rarity.color : '#ffffff';
                 
-                slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center; filter:${filter};"></div>`;
+                slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
                 
-                slots[i].style.color = item.rarity ? item.rarity.color : '#fff';
-                slots[i].style.border = `1px solid ${item.rarity ? item.rarity.color : '#444'}`;
+                slots[i].style.color = color;
+                slots[i].style.border = `1px solid ${color}`;
                 // slots[i].title = this.getItemTooltipText(item); // Disable native tooltip
                 slots[i].removeAttribute('title');
                 slots[i].style.backgroundColor = '#222';
@@ -1496,12 +1489,12 @@ export class UIManager {
             
             if (item) {
                 const iconPath = this.getItemIconPath(item);
-                const filter = this.getItemRarityFilter(item.rarity);
+                const color = item.rarity ? item.rarity.color : '#ffffff';
                 
-                slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center; filter:${filter};"></div>`;
+                slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
                 
-                slots[i].style.color = item.rarity ? item.rarity.color : '#fff';
-                slots[i].style.border = `1px solid ${item.rarity ? item.rarity.color : '#444'}`;
+                slots[i].style.color = color;
+                slots[i].style.border = `1px solid ${color}`;
                 slots[i].style.backgroundColor = '#222';
                 
                 // Right-click to withdraw
