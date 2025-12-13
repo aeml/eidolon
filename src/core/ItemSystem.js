@@ -14,7 +14,7 @@ export const SLOTS = {
     OFF_HAND: 'offHand'
 };
 
-const BASE_ITEMS = [
+export const BASE_ITEMS = [
     // Weapons
     { name: 'Iron Sword', type: 'WEAPON', slot: SLOTS.MAIN_HAND, baseStat: 'damage', baseValue: 10, scaling: 'strength' },
     { name: 'Steel Dagger', type: 'WEAPON', slot: SLOTS.MAIN_HAND, baseStat: 'damage', baseValue: 8, scaling: 'dexterity' },
