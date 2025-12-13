@@ -316,6 +316,9 @@ export class InputManager {
     }
 
     onMouseDown(event) {
+        // Only handle clicks on the canvas (ignore UI)
+        if (event.target.tagName !== 'CANVAS') return;
+
         if (event.button === 0) { // Left Click
             this.isMouseDown = true;
             this.callbacks.onClick.forEach(cb => cb());

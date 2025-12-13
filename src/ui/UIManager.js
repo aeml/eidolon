@@ -201,6 +201,22 @@ export class UIManager {
         this.compareTooltipTitle = document.getElementById('compare-tooltip-title');
         this.compareTooltipDesc = document.getElementById('compare-tooltip-desc');
 
+        // Menu Bar Buttons
+        this.menuBar = document.getElementById('menu-bar');
+        this.btnMenuMap = document.getElementById('btn-menu-map');
+        this.btnMenuSocial = document.getElementById('btn-menu-social');
+        this.btnMenuInventory = document.getElementById('btn-menu-inventory');
+        this.btnMenuCharacter = document.getElementById('btn-menu-character');
+        this.btnMenuSkills = document.getElementById('btn-menu-skills');
+
+        if (this.btnMenuMap) this.btnMenuMap.addEventListener('click', () => {
+            if (this.onMapToggle) this.onMapToggle();
+        });
+        if (this.btnMenuSocial) this.btnMenuSocial.addEventListener('click', () => this.toggleSocial());
+        if (this.btnMenuInventory) this.btnMenuInventory.addEventListener('click', () => this.toggleInventory());
+        if (this.btnMenuCharacter) this.btnMenuCharacter.addEventListener('click', () => this.toggleCharacterSheet());
+        if (this.btnMenuSkills) this.btnMenuSkills.addEventListener('click', () => this.toggleSkillTree());
+
         // Event Delegation for Stat Buttons & Tooltips
         this.statsContent.addEventListener('click', (e) => {
             if (e.target.classList.contains('stat-btn')) {
@@ -414,6 +430,8 @@ export class UIManager {
         this.hud.style.display = 'block';
         this.abilityContainer.style.display = 'block';
         if (this.gameTimer) this.gameTimer.style.display = 'flex';
+        if (this.hotbarContainer) this.hotbarContainer.style.display = 'flex';
+        if (this.menuBar) this.menuBar.style.display = 'flex';
         
         // Show XP Bar
         const xpContainer = document.getElementById('xp-bar-container');
@@ -446,6 +464,14 @@ export class UIManager {
         this.updateAbilityIcon(player);
     }
 
+    getSkillIconPath(skillName, classType) {
+        if (!skillName || !classType) return null;
+        // Remove special characters like & and replace spaces with underscores
+        const formattedName = skillName.toLowerCase().replace(/ & /g, '_').replace(/ /g, '_');
+        const formattedClass = classType.toLowerCase();
+        return `assets/icons/${formattedClass}/${formattedName}.png`;
+    }
+
     updateAbilityIcon(player) {
         if (!player) return;
 
@@ -454,6 +480,19 @@ export class UIManager {
         this.abilityDesc.textContent = player.abilityDescription;
         const cost = Math.floor(player.abilityManaCost * (1 - player.stats.manaCostReduction));
         this.abilityCost.textContent = `Mana: ${cost}`;
+
+        // Update Icon
+        const classType = player.subType || player.meshType;
+        const iconPath = this.getSkillIconPath(player.abilityName, classType);
+        
+        if (iconPath) {
+            this.abilityIcon.style.backgroundImage = `url('${iconPath}')`;
+            this.abilityIcon.textContent = '';
+        } else {
+            this.abilityIcon.style.backgroundImage = 'none';
+            // Placeholder icon
+            this.abilityIcon.style.backgroundImage = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23444" stroke="%23888" stroke-width="5"/><text x="50" y="55" font-size="40" text-anchor="middle" fill="white" font-family="sans-serif">${player.abilityName.substring(0, 1)}</text></svg>')`;
+        }
 
         // Update Cooldown
         if (player.abilityCooldown > 0) {
@@ -905,7 +944,21 @@ export class UIManager {
         }
 
         if (skillName) {
-            icon.textContent = skillName.substring(0, 2); // Placeholder icon
+            let iconPath = null;
+            if (this.lastPlayerRef) {
+                 const classType = this.lastPlayerRef.subType || this.lastPlayerRef.meshType;
+                 iconPath = this.getSkillIconPath(skillName, classType);
+            }
+
+            if (iconPath) {
+                icon.style.backgroundImage = `url('${iconPath}')`;
+                icon.style.backgroundSize = 'cover';
+                icon.textContent = '';
+            } else {
+                icon.style.backgroundImage = 'none';
+                icon.textContent = skillName.substring(0, 2); // Placeholder icon
+            }
+
             icon.style.display = 'flex';
             icon.style.alignItems = 'center';
             icon.style.justifyContent = 'center';
@@ -914,6 +967,7 @@ export class UIManager {
             // icon.title = skillName; // Removed to prevent native tooltip
             icon.dataset.skill = skillName; // Use data attribute
         } else {
+            icon.style.backgroundImage = 'none';
             icon.textContent = '';
             // icon.title = '';
             delete icon.dataset.skill;
@@ -1890,17 +1944,9 @@ export class UIManager {
                 this.partyPanel.style.display = 'block';
             }
         } else {
-            // Hide party panel if empty? No, keep it if in party.
-            // But if we want to manually close it?
-            // Let's just leave it be, or maybe hide it if not in party.
-            // Actually, let's make the Party Panel toggleable via a button in Social Window?
-            // Or just make 'O' toggle both for now.
-            // If we are NOT in a party, hide it when closing social.
-            // If we ARE in a party, keep it open.
-            // We can check partyList content or some state.
-            // But we don't have easy access to party state here without checking DOM or storing it.
-            // Let's just hide it if the list says "No party".
-            if (this.partyList && this.partyList.textContent.includes("No party")) {
+            // Closing social
+            // Only hide party panel if NOT in a party
+            if (this.partyPanel && !this.inParty) {
                 this.partyPanel.style.display = 'none';
             }
         }
@@ -1943,11 +1989,11 @@ export class UIManager {
     updateParty(partyData) {
         if (!this.partyPanel || !this.partyList) return;
 
-        if (!partyData || !partyData.partyId) {
-            // Only hide if we are not manually keeping it open? 
-            // For now, let's hide it if party is empty/null, unless we want to show the "Create Party" state.
-            // But the user asked "how do i open the party panel".
-            // If I make it so 'O' opens it, then we should respect that.
+        const inParty = !!(partyData && partyData.partyId);
+        this.inParty = inParty;
+
+        if (!inParty) {
+            // Not in party
             if (this.socialWindow.style.display === 'none') {
                  this.partyPanel.style.display = 'none';
             } else {
