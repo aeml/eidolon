@@ -2089,7 +2089,8 @@ func (w *World) Update(dt float64) {
 	if w.RegenTimer >= 1.0 {
 		w.RegenTimer -= 1.0
 		for _, e := range w.Entities {
-			if e.State != "DEAD" {
+			// Prevent regen if dead or effectively dead (<= 0 HP)
+			if e.State != "DEAD" && e.Health > 0 {
 				if e.Health < e.MaxHealth {
 					e.Health += int(e.HpRegen)
 					if e.Health > e.MaxHealth {

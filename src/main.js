@@ -79,6 +79,31 @@ window.addEventListener('DOMContentLoaded', () => {
     const classSelectionContainer = document.getElementById('class-selection-container');
     const playContainer = document.getElementById('play-container');
     const btnPlayCharacter = document.getElementById('btn-play-character');
+    const loginPatchNotesLink = document.getElementById('login-patch-notes-link');
+    const patchNotesScreen = document.getElementById('patch-notes-screen');
+    const btnClosePatchNotes = document.getElementById('btn-close-patch-notes');
+
+    if (loginPatchNotesLink) {
+        loginPatchNotesLink.addEventListener('click', () => {
+            if (patchNotesScreen) {
+                patchNotesScreen.style.display = 'flex';
+            }
+        });
+    }
+
+    // Ensure close button works even before game starts
+    if (btnClosePatchNotes) {
+        // Remove old listeners to avoid duplicates if any (though this runs once)
+        const newBtn = btnClosePatchNotes.cloneNode(true);
+        btnClosePatchNotes.parentNode.replaceChild(newBtn, btnClosePatchNotes);
+        
+        newBtn.addEventListener('click', () => {
+            if (patchNotesScreen) {
+                patchNotesScreen.style.display = 'none';
+            }
+        });
+    }
+
     let savedCharacterType = null;
 
     // Simple Auth Logic
@@ -146,6 +171,15 @@ window.addEventListener('DOMContentLoaded', () => {
             };
             sendLogin();
         });
+
+        // Allow Enter key to trigger login
+        const handleLoginEnter = (e) => {
+            if (e.key === 'Enter') {
+                btnLogin.click();
+            }
+        };
+        if (authUsernameInput) authUsernameInput.addEventListener('keydown', handleLoginEnter);
+        if (authPasswordInput) authPasswordInput.addEventListener('keydown', handleLoginEnter);
     }
 
     if (btnRegister) {
@@ -208,7 +242,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
             loadingScreen.style.display = 'none';
             
-            window.game.uiManager.togglePatchNotes();
+            // window.game.uiManager.togglePatchNotes(); // Disabled auto-show
             
             console.log(`Eidolon Engine Started with ${type}`);
         } catch (error) {
