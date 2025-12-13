@@ -1,4 +1,4 @@
-import { ItemGenerator, SLOTS, Item } from '../core/ItemSystem.js';
+import { ItemGenerator, SLOTS, Item, BASE_ITEMS } from '../core/ItemSystem.js';
 import { CONSTANTS } from '../core/Constants.js';
 
 export class UIManager {
@@ -478,8 +478,26 @@ export class UIManager {
 
     getItemIconPath(item) {
         if (!item) return null;
-        // Use baseName if available (for prefixed items), otherwise fallback to name
-        const nameToUse = item.baseName || item.name;
+        
+        let nameToUse = item.baseName;
+        
+        // Fallback: If baseName is missing (e.g. existing items), try to find it in BASE_ITEMS
+        if (!nameToUse) {
+            // Check if the item name contains any of the known base names
+            // Sort by length descending to match "Plate Mail" before "Plate" if that were a case
+            const sortedBaseItems = BASE_ITEMS.sort((a, b) => b.name.length - a.name.length);
+            
+            for (const baseItem of sortedBaseItems) {
+                if (item.name.includes(baseItem.name)) {
+                    nameToUse = baseItem.name;
+                    break;
+                }
+            }
+            
+            // If still not found, fallback to full name (might fail for prefixed items but best effort)
+            if (!nameToUse) nameToUse = item.name;
+        }
+
         const formattedName = nameToUse.toLowerCase()
             .replace(/['’]/g, '')
             .replace(/ /g, '_');
