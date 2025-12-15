@@ -228,32 +228,41 @@ export class WorldMap {
         const earthLabelPos = worldToScreen(0, 200);
         ctx.fillText("The Iron Weald (Earth Realm)", earthLabelPos.x, earthLabelPos.y - 100 * this.scale);
 
-        // Siren Zone (Lv 50-54)
-        drawRotatedRect(-1000, -1000, 2000, 400, 'rgba(0, 100, 255, 0.15)', 'rgba(0, 200, 255, 0.5)', 1);
+        // Siren Zone (Lv 60-65) - Moved Deeper
+        drawRotatedRect(-1000, -1800, 2000, 400, 'rgba(0, 100, 255, 0.15)', 'rgba(0, 200, 255, 0.5)', 1);
 
         // Siren Zone Label
         ctx.fillStyle = '#aaffff';
         ctx.font = `${36 * (this.scale / 2)}px Arial`;
-        const sirenLabelPos = worldToScreen(0, -800);
-        ctx.fillText("Sirens (Lv 50-54)", sirenLabelPos.x, sirenLabelPos.y);
+        const sirenLabelPos = worldToScreen(0, -1600);
+        ctx.fillText("Sirens (Lv 60-65)", sirenLabelPos.x, sirenLabelPos.y);
 
-        // Frost Guardian Zone (Lv 54-58)
-        drawRotatedRect(-1000, -1400, 2000, 400, 'rgba(0, 255, 255, 0.15)', 'rgba(0, 255, 255, 0.5)', 1);
+        // Frost Guardian Zone (Lv 65-70) - Moved Deeper
+        drawRotatedRect(-1000, -2200, 2000, 400, 'rgba(0, 255, 255, 0.15)', 'rgba(0, 255, 255, 0.5)', 1);
 
         // Frost Guardian Label
-        const fgLabelPos = worldToScreen(0, -1200); 
+        const fgLabelPos = worldToScreen(0, -2000); 
         ctx.fillStyle = '#aaffff';
         ctx.font = `${36 * (this.scale / 2)}px Arial`;
-        ctx.fillText("Frost Guardians (Lv 54-58)", fgLabelPos.x, fgLabelPos.y);
+        ctx.fillText("Frost Guardians (Lv 65-70)", fgLabelPos.x, fgLabelPos.y);
 
-        // Future Zone 2 (Placeholder)
-        drawRotatedRect(-1000, -1400, 2000, 400, null, 'rgba(255, 255, 255, 0.1)', 1);
-        
-        // Future Zone 3 (Placeholder)
-        drawRotatedRect(-1000, -1800, 2000, 400, null, 'rgba(255, 255, 255, 0.1)', 1);
+        // Mountain Troll Zone (Lv 50-55)
+        drawRotatedRect(-1000, -1000, 2000, 400, 'rgba(139, 69, 19, 0.15)', 'rgba(139, 69, 19, 0.5)', 1);
 
-        // Future Zone 4 (Placeholder)
-        drawRotatedRect(-1000, -2200, 2000, 400, null, 'rgba(255, 255, 255, 0.1)', 1);
+        // Mountain Troll Label
+        ctx.fillStyle = '#aaffff';
+        ctx.font = `${36 * (this.scale / 2)}px Arial`;
+        const trollLabelPos = worldToScreen(0, -800);
+        ctx.fillText("Mountain Trolls (Lv 50-55)", trollLabelPos.x, trollLabelPos.y);
+
+        // Aqua Golem Zone (Lv 55-60)
+        drawRotatedRect(-1000, -1400, 2000, 400, 'rgba(0, 136, 255, 0.15)', 'rgba(0, 136, 255, 0.5)', 1);
+
+        // Aqua Golem Label
+        const golemLabelPos = worldToScreen(0, -1200); 
+        ctx.fillStyle = '#aaffff';
+        ctx.font = `${36 * (this.scale / 2)}px Arial`;
+        ctx.fillText("Aqua Golems (Lv 55-60)", golemLabelPos.x, golemLabelPos.y);
 
 
         // Fence Line (Rectangular)

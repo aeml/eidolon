@@ -124,7 +124,7 @@ export class RenderSystem {
         this.setupTexture(this.groundTexture, 80, 64);
 
         // Load Snow Texture
-        this.snowTexture = loader.load(`./assets/backgrounds/snow_texture.png?v=${Date.now()}`);
+        this.snowTexture = loader.load(`./assets/backgrounds/abyssal_well_floor.png?v=${Date.now()}`);
         this.setupTexture(this.snowTexture, 80, 64);
 
         // Earth Ground (Z > -600)
