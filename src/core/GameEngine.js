@@ -29,6 +29,8 @@ import { QuestNPC } from '../entities/QuestNPC.js';
 import { Stash } from '../entities/Stash.js';
 import { AvengingSeraph } from '../entities/AvengingSeraph.js';
 import { LevelUpEffect } from '../ui/LevelUpEffect.js';
+import { AquaGolem } from '../entities/AquaGolem.js';
+import { MountainTroll } from '../entities/MountainTroll.js';
 
 export class GameEngine {
     constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null) {
@@ -1341,6 +1343,8 @@ export class GameEngine {
                 case 'InfernoTitan': p = new InfernoTitan(id); break;
                 case 'Siren': p = new Siren(id); break;
                 case 'FrostGuardian': p = new FrostGuardian(id); break;
+                case 'AquaGolem': p = new AquaGolem(id); break;
+                case 'MountainTroll': p = new MountainTroll(id); break;
                 default: p = new Skeleton(id); break;
             }
 

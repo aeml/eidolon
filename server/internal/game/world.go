@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/rand"
 	"runtime"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -420,9 +421,9 @@ func (w *World) spawnFence() {
 }
 
 func (w *World) spawnSnowWorld() {
-	// Area 1: 50-54 (Siren)
+	// Area 1: 50-55 (Mountain Troll)
 	// Z range: -600 to -1000
-	// X range: -1000 to 1000 (Width of the snow path)
+	// X range: -1000 to 1000
 
 	count := 300
 	minZ := -1000.0 + 5.0
@@ -433,6 +434,100 @@ func (w *World) spawnSnowWorld() {
 	for i := 0; i < count; i++ {
 		x := minX + rand.Float64()*(maxX-minX)
 		z := minZ + rand.Float64()*(maxZ-minZ)
+
+		baseStats := Stats{Strength: 3500, Intelligence: 500, Dexterity: 800, Wisdom: 500, Vitality: 3500}
+		maxHealth := baseStats.Vitality * 10
+		damage := baseStats.Strength * 2
+
+		// Attack Speed
+		speedMult := 1.0 + (float64(baseStats.Dexterity) * 0.02)
+		cooldown := 5.0 / speedMult
+		if cooldown < 1.0 {
+			cooldown = 1.0
+		}
+		attackSpeed := cooldown
+		attackCooldown := time.Duration(cooldown * float64(time.Second))
+
+		troll := &Entity{
+			ID:             fmt.Sprintf("MountainTroll-%d", i),
+			Type:           TypeEnemy,
+			SubType:        "MountainTroll",
+			X:              x,
+			Y:              0,
+			Z:              z,
+			SpawnX:         x,
+			SpawnZ:         z,
+			BaseStats:      baseStats,
+			Health:         maxHealth,
+			MaxHealth:      maxHealth,
+			Damage:         damage,
+			Level:          50 + rand.Intn(6),
+			Speed:          5.0,
+			State:          "IDLE",
+			AttackSpeed:    attackSpeed,
+			AttackCooldown: attackCooldown,
+		}
+		w.AddEntity(troll)
+	}
+
+	// Area 2: 55-60 (Aqua Golem)
+	// Z range: -1000 to -1400
+	// X range: -1000 to 1000
+
+	agCount := 300
+	agMinZ := -1400.0 + 5.0
+	agMaxZ := -1000.0 - 5.0
+
+	for i := 0; i < agCount; i++ {
+		x := minX + rand.Float64()*(maxX-minX)
+		z := agMinZ + rand.Float64()*(agMaxZ-agMinZ)
+
+		baseStats := Stats{Strength: 4500, Intelligence: 1000, Dexterity: 500, Wisdom: 1000, Vitality: 5000}
+		maxHealth := baseStats.Vitality * 10
+		damage := baseStats.Strength * 2
+
+		// Attack Speed
+		speedMult := 1.0 + (float64(baseStats.Dexterity) * 0.02)
+		cooldown := 5.0 / speedMult
+		if cooldown < 1.0 {
+			cooldown = 1.0
+		}
+		attackSpeed := cooldown
+		attackCooldown := time.Duration(cooldown * float64(time.Second))
+
+		golem := &Entity{
+			ID:             fmt.Sprintf("AquaGolem-%d", i),
+			Type:           TypeEnemy,
+			SubType:        "AquaGolem",
+			X:              x,
+			Y:              0,
+			Z:              z,
+			SpawnX:         x,
+			SpawnZ:         z,
+			BaseStats:      baseStats,
+			Health:         maxHealth,
+			MaxHealth:      maxHealth,
+			Damage:         damage,
+			Level:          55 + rand.Intn(6),
+			Speed:          4.0,
+			State:          "IDLE",
+			AttackSpeed:    attackSpeed,
+			AttackCooldown: attackCooldown,
+		}
+		w.AddEntity(golem)
+	}
+
+	// Area 3: 60-65 (Siren) - Moved deeper
+	// Z range: -1400 to -1800
+	// X range: -1000 to 1000 (Width of the snow path)
+
+	sirenCount := 300
+	sirenMinZ := -1800.0 + 5.0
+	sirenMaxZ := -1400.0 - 5.0
+
+	for i := 0; i < sirenCount; i++ {
+		x := minX + rand.Float64()*(maxX-minX)
+		z := sirenMinZ + rand.Float64()*(sirenMaxZ-sirenMinZ)
 
 		baseStats := Stats{Strength: 4000, Intelligence: 2000, Dexterity: 1000, Wisdom: 2000, Vitality: 4000}
 		maxHealth := baseStats.Vitality * 10
@@ -460,7 +555,7 @@ func (w *World) spawnSnowWorld() {
 			Health:         maxHealth,
 			MaxHealth:      maxHealth,
 			Damage:         damage,
-			Level:          52,
+			Level:          60 + rand.Intn(6),
 			Speed:          5.4,
 			State:          "IDLE",
 			AttackSpeed:    attackSpeed,
@@ -469,13 +564,13 @@ func (w *World) spawnSnowWorld() {
 		w.AddEntity(siren)
 	}
 
-	// Area 2: 54-58 (Frost Guardian)
-	// Z range: -1000 to -1400 (North of Sirens)
+	// Area 4: 65-70 (Frost Guardian) - Moved deeper
+	// Z range: -1800 to -2200
 	// X range: -1000 to 1000
 
 	fgCount := 300
-	fgMinZ := -1400.0 + 5.0
-	fgMaxZ := -1000.0 - 5.0
+	fgMinZ := -2200.0 + 5.0
+	fgMaxZ := -1800.0 - 5.0
 
 	for i := 0; i < fgCount; i++ {
 		x := minX + rand.Float64()*(maxX-minX)
@@ -507,7 +602,7 @@ func (w *World) spawnSnowWorld() {
 			Health:         maxHealth,
 			MaxHealth:      maxHealth,
 			Damage:         damage,
-			Level:          56,
+			Level:          65 + rand.Intn(6),
 			Speed:          4.5, // Slower but tankier
 			State:          "IDLE",
 			AttackSpeed:    attackSpeed,
@@ -1162,33 +1257,66 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 				expectedXP = 500000
 			case "InfernoTitan":
 				expectedXP = 800000
+			case "MountainTroll":
+				expectedXP = 1200000
+			case "AquaGolem":
+				expectedXP = 1600000
 			case "Siren":
-				expectedXP = 1000000
+				expectedXP = 2200000
 			case "FrostGuardian":
-				expectedXP = 1500000
+				expectedXP = 3000000
 			}
 			if expectedXP > 0 && q.RewardXP != expectedXP {
 				q.RewardXP = expectedXP
 				updated = true
 			}
 		}
+
+		// Check if new quests are missing
+		hasTroll := false
+		hasGolem := false
+		for _, q := range player.Quests {
+			if q.Target == "MountainTroll" {
+				hasTroll = true
+			}
+			if q.Target == "AquaGolem" {
+				hasGolem = true
+			}
+		}
+
+		if !hasTroll {
+			player.Quests = append(player.Quests, Quest{ID: "daily_mountaintroll", Type: "KILL", Target: "MountainTroll", Count: 0, MaxCount: 100, RewardXP: 1200000, Completed: false, Accepted: false})
+			updated = true
+		}
+		if !hasGolem {
+			player.Quests = append(player.Quests, Quest{ID: "daily_aquagolem", Type: "KILL", Target: "AquaGolem", Count: 0, MaxCount: 100, RewardXP: 1600000, Completed: false, Accepted: false})
+			updated = true
+		}
+
+		// Sort quests by RewardXP to ensure they are in order of difficulty
+		sort.Slice(player.Quests, func(i, j int) bool {
+			return player.Quests[i].RewardXP < player.Quests[j].RewardXP
+		})
+
 		if updated {
-			fmt.Printf("Updated daily quest rewards for %s\n", player.Name)
+			fmt.Printf("Updated daily quest rewards/list for %s\n", player.Name)
 		}
 		return player // Already has quests for today
 	}
 
 	fmt.Printf("Generating daily quests for %s (Last: %v, Now: %v)\n", player.Name, player.LastDailyQuest, now)
 
-	// Generate 7 Daily Quests
+	// Generate 9 Daily Quests
 	player.Quests = []Quest{
 		{ID: "daily_skeleton", Type: "KILL", Target: "Skeleton", Count: 0, MaxCount: 100, RewardXP: 50000, Completed: false, Accepted: false},
 		{ID: "daily_imp", Type: "KILL", Target: "Imp", Count: 0, MaxCount: 100, RewardXP: 150000, Completed: false, Accepted: false},
 		{ID: "daily_demonorc", Type: "KILL", Target: "DemonOrc", Count: 0, MaxCount: 100, RewardXP: 300000, Completed: false, Accepted: false},
 		{ID: "daily_construct", Type: "KILL", Target: "Construct", Count: 0, MaxCount: 100, RewardXP: 500000, Completed: false, Accepted: false},
 		{ID: "daily_infernotitan", Type: "KILL", Target: "InfernoTitan", Count: 0, MaxCount: 100, RewardXP: 800000, Completed: false, Accepted: false},
-		{ID: "daily_siren", Type: "KILL", Target: "Siren", Count: 0, MaxCount: 100, RewardXP: 1000000, Completed: false, Accepted: false},
-		{ID: "daily_frostguardian", Type: "KILL", Target: "FrostGuardian", Count: 0, MaxCount: 100, RewardXP: 1500000, Completed: false, Accepted: false},
+		{ID: "daily_mountaintroll", Type: "KILL", Target: "MountainTroll", Count: 0, MaxCount: 100, RewardXP: 1200000, Completed: false, Accepted: false},
+		{ID: "daily_aquagolem", Type: "KILL", Target: "AquaGolem", Count: 0, MaxCount: 100, RewardXP: 1600000, Completed: false, Accepted: false},
+		{ID: "daily_siren", Type: "KILL", Target: "Siren", Count: 0, MaxCount: 100, RewardXP: 2200000, Completed: false, Accepted: false},
+		{ID: "daily_frostguardian", Type: "KILL", Target: "FrostGuardian", Count: 0, MaxCount: 100, RewardXP: 3000000, Completed: false, Accepted: false},
 	}
 	player.LastDailyQuest = now
 
@@ -4743,6 +4871,15 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			}
 			if tSubType == "Siren" {
 				baseXpReward *= 3
+			}
+			if tSubType == "FrostGuardian" {
+				baseXpReward *= 3
+			}
+			if tSubType == "MountainTroll" {
+				baseXpReward *= 2
+			}
+			if tSubType == "AquaGolem" {
+				baseXpReward *= 2
 			}
 
 			// Gold
