@@ -310,8 +310,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-150%, -50%); /* Left of center */
-            width: 400px;
-            height: 550px;
+            width: 320px;
+            height: 600px;
         }
 
         .stat-row {
@@ -324,19 +324,23 @@
         .equipment-slots {
             margin-top: 20px;
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
         }
 
         .equip-slot {
             background: #111;
             border: 1px solid #444;
-            height: 40px;
+            aspect-ratio: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.65rem;
             color: #666;
+            position: relative;
+            text-align: center;
+            word-break: break-word;
+            padding: 2px;
         }
 
         /* Inventory Specifics */
@@ -1195,11 +1199,17 @@
             </div>
             <div class="equipment-slots">
                 <div class="equip-slot" id="slot-head">HEAD</div>
+                <div class="equip-slot" id="slot-shoulders">SHOULDERS</div>
                 <div class="equip-slot" id="slot-chest">CHEST</div>
-                <div class="equip-slot" id="slot-mainhand">MAIN HAND</div>
-                <div class="equip-slot" id="slot-offhand">OFF HAND</div>
+                <div class="equip-slot" id="slot-belt">BELT</div>
                 <div class="equip-slot" id="slot-legs">LEGS</div>
                 <div class="equip-slot" id="slot-feet">FEET</div>
+                <div class="equip-slot" id="slot-mainhand">MAIN HAND</div>
+                <div class="equip-slot" id="slot-offhand">OFF HAND</div>
+                <div class="equip-slot" id="slot-ring1">RING 1</div>
+                <div class="equip-slot" id="slot-ring2">RING 2</div>
+                <div class="equip-slot" id="slot-trinket1">TRINKET 1</div>
+                <div class="equip-slot" id="slot-trinket2">TRINKET 2</div>
             </div>
         </div>
 

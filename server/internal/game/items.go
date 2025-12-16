@@ -12,13 +12,17 @@ const (
 	RarityUncommon  ItemRarity = "Uncommon"
 	RarityRare      ItemRarity = "Rare"
 	RarityLegendary ItemRarity = "Legendary"
+	RarityEidolic   ItemRarity = "Eidolic"
 )
 
 type ItemType string
 
 const (
-	ItemWeapon ItemType = "WEAPON"
-	ItemArmor  ItemType = "ARMOR"
+	ItemWeapon    ItemType = "WEAPON"
+	ItemArmor     ItemType = "ARMOR"
+	ItemAccessory ItemType = "ACCESSORY"
+	ItemMaterial  ItemType = "MATERIAL"
+	ItemRelic     ItemType = "RELIC"
 )
 
 type Item struct {
@@ -32,6 +36,8 @@ type Item struct {
 	Value       int            `json:"value" bson:"value"`
 	Icon        string         `json:"icon,omitempty" bson:"icon"`
 	Description string         `json:"description,omitempty" bson:"description"`
+	Stack       int            `json:"stack,omitempty" bson:"stack"`
+	MaxStack    int            `json:"maxStack,omitempty" bson:"maxStack"`
 }
 
 // Base Item Definitions (Matching Client)
@@ -74,6 +80,30 @@ var BaseItems = []BaseItem{
 	{"Leather Boots", ItemArmor, "feet", "defense", 2, ""},
 	{"Iron Boots", ItemArmor, "feet", "defense", 4, ""},
 	{"Sandals", ItemArmor, "feet", "defense", 1, ""},
+
+	// Armor - Shoulders
+	{"Reinforced Spaulders", ItemArmor, "shoulders", "defense", 4, ""},
+	{"Steel Pauldrons", ItemArmor, "shoulders", "defense", 7, ""},
+	{"Velvet Mantle", ItemArmor, "shoulders", "defense", 2, ""},
+
+	// Armor - Belt
+	{"Studded Belt", ItemArmor, "belt", "defense", 3, ""},
+	{"Plated Girdle", ItemArmor, "belt", "defense", 5, ""},
+	{"Silk Sash", ItemArmor, "belt", "defense", 1, ""},
+
+	// Accessories - Ring
+	{"Gold Ring", ItemAccessory, "ring", "vitality", 5, ""},
+	{"Silver Ring", ItemAccessory, "ring", "wisdom", 5, ""},
+	{"Ruby Ring", ItemAccessory, "ring", "strength", 5, ""},
+
+	// Accessories - Trinket
+	{"Amulet of Power", ItemAccessory, "trinket", "strength", 10, ""},
+	{"Talisman of Speed", ItemAccessory, "trinket", "dexterity", 10, ""},
+	{"Orb of Mana", ItemAccessory, "trinket", "intelligence", 10, ""},
+
+	// Materials & Relics
+	{"Shard", ItemMaterial, "material", "", 0, ""},
+	{"Heart", ItemRelic, "relic", "", 0, ""},
 }
 
 var StatPool = []string{"strength", "dexterity", "intelligence", "wisdom", "vitality"}
@@ -146,6 +176,14 @@ func GenerateEliteLoot(level int) *Item {
 }
 
 func GenerateLootForSlot(slot string, level int) *Item {
+	// Normalize slot for accessories
+	if slot == "ring1" || slot == "ring2" {
+		slot = "ring"
+	}
+	if slot == "trinket1" || slot == "trinket2" {
+		slot = "trinket"
+	}
+
 	// Filter BaseItems by slot
 	var candidates []BaseItem
 	for _, item := range BaseItems {
@@ -184,7 +222,82 @@ func GenerateLootForSlot(slot string, level int) *Item {
 	return createItem(baseItem, rarity, multiplier, statCount, level)
 }
 
+func GenerateShardLoot(isElite bool) []*Item {
+	var items []*Item
+
+	// Shard Logic
+	// Normal: 20-35% chance for 1-2 shards
+	// Elite: 100% chance for 3-6 shards
+
+	shardCount := 0
+	if isElite {
+		shardCount = rand.Intn(4) + 3 // 3 to 6
+	} else {
+		roll := rand.Float64()
+		// 20-35% chance. Let's say 30% average.
+		// User said "20-35% chance". I'll pick a random threshold between 0.20 and 0.35?
+		// Or just fixed 30%? Let's do 30%.
+		if roll < 0.30 {
+			shardCount = rand.Intn(2) + 1 // 1 to 2
+		}
+	}
+
+	if shardCount > 0 {
+		baseShard := BaseItem{Name: "Shard", Type: ItemMaterial, Slot: "material"}
+		for i := 0; i < shardCount; i++ {
+			items = append(items, createItem(baseShard, RarityEidolic, 1.0, 0, 1))
+		}
+	}
+
+	// Heart Logic
+	// "Heart... Rarity: Rare" (but Eidolic type)
+	// Let's give it a small chance.
+	// Elite: 5%? Normal: 0.5%?
+	heartChance := 0.005
+	if isElite {
+		heartChance = 0.05
+	}
+
+	if rand.Float64() < heartChance {
+		baseHeart := BaseItem{Name: "Heart", Type: ItemRelic, Slot: "relic"}
+		items = append(items, createItem(baseHeart, RarityEidolic, 1.0, 0, 1))
+	}
+
+	return items
+}
+
 func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCount int, level int) *Item {
+	// Special handling for Materials/Relics
+	if baseItem.Type == ItemMaterial || baseItem.Type == ItemRelic {
+		desc := ""
+		if baseItem.Name == "Shard" {
+			desc = "What remains after purpose is broken."
+			rarity = RarityCommon // Shards are always common? Or Eidolic? User said "Eidolic instead of normal/rare"
+			// Wait, user said "make these items Eidolic instead of normal/ rare eidolic will be purple but only as an outline"
+			// So Shard and Heart are BOTH Eidolic rarity?
+			// "add both of these items into the game also make these items Eidolic instead of normal/ rare"
+			// Okay, so they are Eidolic.
+			rarity = RarityEidolic
+		} else if baseItem.Name == "Heart" {
+			desc = "Power that chose to endure."
+			rarity = RarityEidolic
+		}
+
+		return &Item{
+			ID:          fmt.Sprintf("item-%d-%d", rand.Int63(), rand.Int63()),
+			Name:        baseItem.Name,
+			Type:        baseItem.Type,
+			Rarity:      rarity,
+			Slot:        baseItem.Slot,
+			Level:       1, // Materials don't really have level?
+			Stats:       make(map[string]int),
+			Value:       10, // Base value
+			Description: desc,
+			Stack:       1,
+			MaxStack:    1000,
+		}
+	}
+
 	// 4. Calculate Base Stats (Damage/Defense)
 	// Base Stat scales with level and rarity multiplier
 	baseVal := int(float64(baseItem.BaseValue) * (1.0 + float64(level)*0.15) * multiplier)
@@ -274,13 +387,15 @@ func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCo
 	}
 
 	return &Item{
-		ID:     fmt.Sprintf("item-%d", rand.Int63()),
-		Name:   name,
-		Type:   baseItem.Type,
-		Rarity: rarity,
-		Slot:   baseItem.Slot,
-		Level:  level,
-		Stats:  itemStats,
-		Value:  int(float64(level*10) * multiplier),
+		ID:       fmt.Sprintf("item-%d", rand.Int63()),
+		Name:     name,
+		Type:     baseItem.Type,
+		Rarity:   rarity,
+		Slot:     baseItem.Slot,
+		Level:    level,
+		Stats:    itemStats,
+		Value:    int(float64(level*10) * multiplier),
+		Stack:    1,
+		MaxStack: 1,
 	}
 }
