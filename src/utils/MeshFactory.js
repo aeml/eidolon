@@ -8,6 +8,19 @@ export class MeshFactory {
     static cache = {};
     static pool = {};
 
+    // Cache for primitive geometries to avoid recreation and leaks
+    static geometryCache = {
+        fighter: new THREE.BoxGeometry(1, 1, 1),
+        rogue: new THREE.CylinderGeometry(0.3, 0.3, 1.5, 8),
+        wizard: new THREE.ConeGeometry(0.5, 1.5, 8),
+        cleric: new THREE.SphereGeometry(0.6, 16, 16),
+        default: new THREE.BoxGeometry(0.5, 0.5, 0.5),
+        fence: new THREE.BoxGeometry(4.5, 8, 1.5),
+        questNPC: new THREE.BoxGeometry(1, 2, 1),
+        stash: new THREE.BoxGeometry(1.5, 1.5, 1.5),
+        seraph: new THREE.CylinderGeometry(0.5, 0.5, 2, 8)
+    };
+
     static getPooledMesh(type) {
         if (this.pool[type] && this.pool[type].length > 0) {
             const mesh = this.pool[type].pop();
@@ -28,6 +41,21 @@ export class MeshFactory {
         
         if (this.pool[type].length < 50) {
             this.pool[type].push(mesh);
+        } else {
+            // Pool is full, dispose of the mesh resources
+            // We only dispose materials, as geometries are either shared (GLTF) or cached (Primitives)
+            mesh.traverse((child) => {
+                if (child.isMesh) {
+                    if (child.material) {
+                        if (Array.isArray(child.material)) {
+                            child.material.forEach(m => m.dispose());
+                        } else {
+                            child.material.dispose();
+                        }
+                    }
+                    // DO NOT dispose geometry as it is likely shared
+                }
+            });
         }
     }
 
@@ -1023,7 +1051,7 @@ export class MeshFactory {
                 } catch (e2) {
                     console.error("Failed to load AvengingSeraph (all attempts):", e2);
                     // Fallback to simple geometry
-                    const geometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 8);
+                    const geometry = this.geometryCache.seraph;
                     const material = new THREE.MeshStandardMaterial({ color: 0xffff00 });
                     mesh = new THREE.Mesh(geometry, material);
                     mesh.position.y = 1.0;
@@ -1031,7 +1059,7 @@ export class MeshFactory {
                 }
             }
         } else if (type === 'Fence') {
-            const geometry = new THREE.BoxGeometry(4.5, 8, 1.5);
+            const geometry = this.geometryCache.fence;
             const material = new THREE.MeshStandardMaterial({ color: 0x8B4513 }); // SaddleBrown
             mesh = new THREE.Mesh(geometry, material);
             mesh.castShadow = true;
@@ -1068,7 +1096,7 @@ export class MeshFactory {
                 return mesh;
             } catch (err) {
                 console.error("Failed to load QuestNPC:", err);
-                geometry = new THREE.BoxGeometry(1, 2, 1);
+                geometry = this.geometryCache.questNPC;
                 material = new THREE.MeshStandardMaterial({ color: 0x0000FF });
                 mesh = new THREE.Mesh(geometry, material);
                 return mesh;
@@ -1108,7 +1136,7 @@ export class MeshFactory {
                 return mesh;
             } catch (err) {
                 console.error("Failed to load Stash:", err);
-                geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+                geometry = this.geometryCache.stash;
                 material = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
                 mesh = new THREE.Mesh(geometry, material);
                 return mesh;
@@ -1117,23 +1145,23 @@ export class MeshFactory {
 
         switch (type) {
             case 'Fighter':
-                geometry = new THREE.BoxGeometry(1, 1, 1);
+                geometry = this.geometryCache.fighter;
                 material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.FIGHTER.COLOR });
                 break;
             case 'Rogue':
-                geometry = new THREE.CylinderGeometry(0.3, 0.3, 1.5, 8);
+                geometry = this.geometryCache.rogue;
                 material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.ROGUE.COLOR });
                 break;
             case 'Wizard':
-                geometry = new THREE.ConeGeometry(0.5, 1.5, 8);
+                geometry = this.geometryCache.wizard;
                 material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.WIZARD.COLOR });
                 break;
             case 'Cleric':
-                geometry = new THREE.SphereGeometry(0.6, 16, 16);
+                geometry = this.geometryCache.cleric;
                 material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.CLERIC.COLOR });
                 break;
             default:
-                geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+                geometry = this.geometryCache.default;
                 material = new THREE.MeshStandardMaterial({ color: 0xffffff });
         }
 

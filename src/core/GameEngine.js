@@ -2230,8 +2230,10 @@ export class GameEngine {
                     this.player.playAnimation('Idle');
                 } else {
                     // 2. Calculate Distance & Range
-                    const dist = new THREE.Vector2(this.player.position.x, this.player.position.z)
-                        .distanceTo(new THREE.Vector2(this.pendingInteraction.position.x, this.pendingInteraction.position.z));
+                    // Optimization: Avoid Vector2 allocation
+                    const dx = this.player.position.x - this.pendingInteraction.position.x;
+                    const dz = this.player.position.z - this.pendingInteraction.position.z;
+                    const dist = Math.sqrt(dx * dx + dz * dz);
                     
                     let range = 5.0; // Tight range for reliable interactions
                     
@@ -2543,17 +2545,26 @@ export class GameEngine {
     }
 
     render(alpha) {
+        // Optimization: Use cached active entities from ChunkManager
+        // This avoids re-iterating chunks just for rendering if update() already did it
         const activeEntities = this.chunkManager.getActiveEntities();
-        activeEntities.forEach(entity => {
+        
+        // Use a simple for loop for performance instead of forEach
+        for (let i = 0; i < activeEntities.length; i++) {
+            const entity = activeEntities[i];
             if (entity.isActive) {
                 entity.render(alpha);
             }
-        });
+        }
 
         this.renderSystem.render();
 
         if (this.player) {
-            this.minimap.update(this.player, activeEntities);
+            // Throttle Minimap updates (every 3 frames)
+            if (this.frameCount % 3 === 0) {
+                this.minimap.update(this.player, activeEntities);
+            }
+            
             this.uiManager.updatePlayerStats(this.player);
             this.uiManager.updateXP(this.player);
             this.uiManager.updateHotbarCooldowns(this.player);
@@ -2563,8 +2574,6 @@ export class GameEngine {
                 if (this.uiManager.isCharacterSheetOpen) {
                     this.uiManager.updateCharacterSheet(this.player);
                 }
-                // Inventory update is expensive, only do it if absolutely necessary or less frequently
-                // For now, we rely on event-based updates for inventory to avoid performance hit
             }
 
             this.uiManager.updateEnemyBars(

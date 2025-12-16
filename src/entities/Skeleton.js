@@ -21,9 +21,9 @@ export class Skeleton extends Actor {
         this.name = 'Skeleton';
     }
 
-    update(dt, collisionManager, player) {
+    update(dt, collisionManager, player, chunkManager) {
         // Run base Actor update (handles movement, animations, etc.)
-        super.update(dt, collisionManager);
+        super.update(dt, collisionManager, player, chunkManager);
 
         if (this.state === 'DEAD') return;
 

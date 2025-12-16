@@ -25,8 +25,8 @@ export class Rogue extends Actor {
         this.traps = []; // Array of active traps
     }
 
-    update(dt, collisionManager, player, activeEntities, floatingTextManager) {
-        super.update(dt, collisionManager, player, activeEntities);
+    update(dt, collisionManager, player, chunkManager, floatingTextManager) {
+        super.update(dt, collisionManager, player, chunkManager);
 
         if (this.serratedEdgesActive) {
             this.serratedEdgesTimer -= dt;
@@ -45,7 +45,8 @@ export class Rogue extends Actor {
         }
 
         // Trap Logic
-        if (this.traps.length > 0 && activeEntities) {
+        if (this.traps.length > 0 && chunkManager) {
+            const activeEntities = chunkManager.getActiveEntities();
             for (let i = this.traps.length - 1; i >= 0; i--) {
                 const trap = this.traps[i];
                 let triggered = false;

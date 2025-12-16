@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { MeshFactory } from '../utils/MeshFactory.js';
 
+const NAME_TEXTURE_CACHE = new Map();
+
 export class Entity {
     constructor(id) {
         this.id = id || crypto.randomUUID();
@@ -76,32 +78,49 @@ export class Entity {
         const existingTag = this.mesh.getObjectByName("NameTag");
         if (existingTag) {
             if (existingTag.material) {
-                if (existingTag.material.map) existingTag.material.map.dispose();
+                // Do NOT dispose map here as it might be cached
                 existingTag.material.dispose();
             }
             this.mesh.remove(existingTag);
         }
 
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        const fontSize = 32; // Higher resolution for texture
-        context.font = `bold ${fontSize}px Arial`;
-        const textWidth = context.measureText(this.name).width;
-        
-        canvas.width = textWidth + 20;
-        canvas.height = fontSize + 20;
-        
-        context.font = `bold ${fontSize}px Arial`;
-        context.fillStyle = "white";
-        context.textAlign = "center";
-        context.textBaseline = "middle";
-        context.strokeStyle = 'black';
-        context.lineWidth = 4;
-        context.strokeText(this.name, canvas.width / 2, canvas.height / 2);
-        context.fillText(this.name, canvas.width / 2, canvas.height / 2);
+        let texture = NAME_TEXTURE_CACHE.get(this.name);
+        let width, height;
 
-        const texture = new THREE.CanvasTexture(canvas);
-        texture.minFilter = THREE.LinearFilter;
+        if (!texture) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            const fontSize = 32; // Higher resolution for texture
+            context.font = `bold ${fontSize}px Arial`;
+            const textWidth = context.measureText(this.name).width;
+            
+            canvas.width = textWidth + 20;
+            canvas.height = fontSize + 20;
+            
+            context.font = `bold ${fontSize}px Arial`;
+            context.fillStyle = "white";
+            context.textAlign = "center";
+            context.textBaseline = "middle";
+            context.strokeStyle = 'black';
+            context.lineWidth = 4;
+            context.strokeText(this.name, canvas.width / 2, canvas.height / 2);
+            context.fillText(this.name, canvas.width / 2, canvas.height / 2);
+
+            texture = new THREE.CanvasTexture(canvas);
+            texture.minFilter = THREE.LinearFilter;
+            
+            if (NAME_TEXTURE_CACHE.size > 200) {
+                NAME_TEXTURE_CACHE.forEach(t => t.dispose());
+                NAME_TEXTURE_CACHE.clear();
+            }
+            NAME_TEXTURE_CACHE.set(this.name, texture);
+            
+            width = canvas.width;
+            height = canvas.height;
+        } else {
+            width = texture.image.width;
+            height = texture.image.height;
+        }
         
         const material = new THREE.SpriteMaterial({ map: texture, depthTest: false, depthWrite: false });
         const sprite = new THREE.Sprite(material);
@@ -112,7 +131,7 @@ export class Entity {
         // Scale based on aspect ratio to prevent distortion
         // User wanted "smaller", so we reduce the world-space height
         const scaleHeight = 0.4; 
-        const scaleWidth = (canvas.width / canvas.height) * scaleHeight;
+        const scaleWidth = (width / height) * scaleHeight;
         
         sprite.scale.set(scaleWidth, scaleHeight, 1); 
         
@@ -124,8 +143,8 @@ export class Entity {
             // Dispose NameTag
             const nameTag = this.mesh.getObjectByName("NameTag");
             if (nameTag) {
-                if (nameTag.material.map) nameTag.material.map.dispose();
-                nameTag.material.dispose();
+                // Only dispose material, texture is cached
+                if (nameTag.material) nameTag.material.dispose();
             }
 
             // Remove from parent

@@ -538,8 +538,8 @@ export class Cleric extends Actor {
         }
     }
 
-    update(dt, collisionManager, player, activeEntities, floatingTextManager) {
-        super.update(dt, collisionManager, player, activeEntities, floatingTextManager);
+    update(dt, collisionManager, player, chunkManager, floatingTextManager) {
+        super.update(dt, collisionManager, player, chunkManager, floatingTextManager);
 
         // Consecrated Ground Logic
         if (this.consecratedZone) {
@@ -557,7 +557,7 @@ export class Cleric extends Actor {
                     const healAmount = 15 + (this.stats.wisdom * 0.5);
                     const damageAmount = 10 + (this.stats.wisdom * 0.5);
                     
-                    const entities = (this.gameEngine && this.gameEngine.chunkManager) ? this.gameEngine.chunkManager.getActiveEntities() : (activeEntities || []);
+                    const entities = chunkManager ? chunkManager.getActiveEntities() : [];
                     entities.forEach(entity => {
                         if (entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
                             if (entity.position.distanceTo(this.consecratedZone.position) < radius) {
@@ -675,7 +675,7 @@ export class Cleric extends Actor {
             });
 
             // Damage Logic (Area check)
-            if (activeEntities) {
+            if (chunkManager) {
                 this.spiritDamageTimer = (this.spiritDamageTimer || 0) + dt;
                 if (this.spiritDamageTimer > 0.5) {
                     this.spiritDamageTimer = 0;
@@ -684,7 +684,8 @@ export class Cleric extends Actor {
                     let damage = 10 + (this.stats.wisdom * 1.0);
                     if (this.spiritBoosted) damage *= 1.5;
 
-                    for (const entity of activeEntities) {
+                    const entities = chunkManager.getActiveEntities();
+                    for (const entity of entities) {
                         if (entity === this || entity.state === 'DEAD' || !entity.isActive) continue;
                         if (entity.constructor.name === 'LootDrop') continue;
                         if (entity.constructor.name === 'DwarfSalesman') continue;

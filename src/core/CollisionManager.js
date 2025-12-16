@@ -26,8 +26,8 @@ export class CollisionManager {
     }
 
     // Check collision against other entities
-    checkEntityCollision(entity, activeEntities, ignoreEntity = null) {
-        if (!activeEntities) return null;
+    checkEntityCollision(entity, chunkManager, ignoreEntity = null) {
+        if (!chunkManager) return null;
         
         // Use mesh position if available for visual collision (prevents jitter)
         const position = entity.mesh ? entity.mesh.position : entity.position;
@@ -35,48 +35,59 @@ export class CollisionManager {
         const pushVec = new THREE.Vector3();
         let count = 0;
 
-        for (const other of activeEntities) {
-            if (other === entity) continue;
-            if (other === ignoreEntity) continue;
-            if (other.state === 'DEAD') continue; // Ignore dead bodies
-            if (!other.isActive) continue;
-            if (other instanceof THREE.Mesh) continue; // Skip raw meshes if any
-            
-            // Only collide with other Actors (things with stats)
-            // This prevents enemies from vibrating against Loot, Projectiles, etc.
-            if (!other.stats) continue;
+        // Optimization: Only check entities in the same chunk and neighbors
+        const centerKey = chunkManager.getChunkKey(position.x, position.z);
+        const [cx, cz] = centerKey.split(',').map(Number);
+        
+        // Check 3x3 grid
+        for (let x = cx - 1; x <= cx + 1; x++) {
+            for (let z = cz - 1; z <= cz + 1; z++) {
+                const key = `${x},${z}`;
+                if (chunkManager.chunks.has(key)) {
+                    const chunkEntities = chunkManager.chunks.get(key);
+                    for (const other of chunkEntities) {
+                        if (other === entity) continue;
+                        if (other === ignoreEntity) continue;
+                        if (other.state === 'DEAD') continue; // Ignore dead bodies
+                        if (!other.isActive) continue;
+                        if (other instanceof THREE.Mesh) continue; // Skip raw meshes if any
+                        
+                        // Only collide with other Actors (things with stats)
+                        if (!other.stats) continue;
 
-            const otherPos = other.mesh ? other.mesh.position : other.position;
+                        const otherPos = other.mesh ? other.mesh.position : other.position;
 
-            // Calculate distance
-            const dx = position.x - otherPos.x;
-            const dz = position.z - otherPos.z;
-            const distSq = dx*dx + dz*dz;
-            
-            const otherRadius = other.radius || 1.0;
-            const minDist = radius + otherRadius;
-            
-            if (distSq < minDist * minDist) {
-                const dist = Math.sqrt(distSq);
-                
-                // Prevent division by zero
-                if (dist < 0.001) {
-                    // Too close, push in random direction
-                    pushVec.x += (Math.random() - 0.5);
-                    pushVec.z += (Math.random() - 0.5);
-                } else {
-                    const overlap = minDist - dist;
-                    // Push away
-                    pushVec.x += (dx / dist) * overlap;
-                    pushVec.z += (dz / dist) * overlap;
+                        // Calculate distance
+                        const dx = position.x - otherPos.x;
+                        const dz = position.z - otherPos.z;
+                        const distSq = dx*dx + dz*dz;
+                        
+                        const otherRadius = other.radius || 1.0;
+                        const minDist = radius + otherRadius;
+                        
+                        if (distSq < minDist * minDist) {
+                            const dist = Math.sqrt(distSq);
+                            
+                            // Prevent division by zero
+                            if (dist < 0.001) {
+                                // Too close, push in random direction
+                                pushVec.x += (Math.random() - 0.5);
+                                pushVec.z += (Math.random() - 0.5);
+                            } else {
+                                const overlap = minDist - dist;
+                                // Push away
+                                pushVec.x += (dx / dist) * overlap;
+                                pushVec.z += (dz / dist) * overlap;
+                            }
+                            count++;
+                        }
+                    }
                 }
-                count++;
             }
         }
         
         if (count > 0) {
             // Return the separation vector
-            // We can weigh it if needed, but returning the sum of overlaps works well for iterative solving
             return pushVec;
         }
         return null;

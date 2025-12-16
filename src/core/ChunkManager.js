@@ -11,6 +11,8 @@ export class ChunkManager {
         this.loadDistance = CONSTANTS.SCENE.LOAD_DISTANCE;
         this.lastPlayerChunkKey = null;
         this.frameCount = 0;
+        this._cachedActiveEntities = [];
+        this._cachedActiveEntitiesFrame = -1;
     }
 
     getChunkKey(x, z) {
@@ -54,6 +56,7 @@ export class ChunkManager {
         }
 
         // Calculate active entities once for this frame to pass to entities that need it (like Projectiles)
+        // Note: CollisionManager now uses chunkManager directly for spatial queries, but Projectiles might still use this list.
         const activeEntities = this.getActiveEntities();
 
         for (const key of this.activeChunkKeys) {
@@ -63,7 +66,23 @@ export class ChunkManager {
                     if (entity._lastUpdateFrame === this.frameCount) continue;
                     entity._lastUpdateFrame = this.frameCount;
 
-                    entity.update(dt, collisionManager, player, activeEntities, floatingTextManager, gameEngine);
+                    // Pass 'this' (ChunkManager) instead of activeEntities for collision optimization
+                    // But we also pass activeEntities for legacy support if needed by other systems
+                    // Actually, we need to update Entity.update signature or just pass both?
+                    // Let's pass 'this' as the 4th argument, replacing activeEntities?
+                    // Wait, Entity.update(dt, collisionManager, player, activeEntities, ...)
+                    // If we change the signature, we break Projectile.js etc.
+                    // Let's pass 'this' as a property of activeEntities? No that's hacky.
+                    // Let's just pass 'this' INSTEAD of activeEntities?
+                    // Projectile.js uses activeEntities for collision?
+                    // Let's check Projectile.js.
+                    
+                    // For now, let's assume we update Entity.update to accept chunkManager OR activeEntities.
+                    // But CollisionManager.checkEntityCollision now EXPECTS chunkManager.
+                    // So we MUST pass chunkManager to Entity.update, which passes it to CollisionManager.
+                    
+                    // Let's pass chunkManager as the 4th argument.
+                    entity.update(dt, collisionManager, player, this, floatingTextManager, gameEngine);
                     
                     if (!entity.isActive) {
                         this.removeEntity(entity);
@@ -193,20 +212,23 @@ export class ChunkManager {
     }
     
     getActiveEntities() {
-        if (this._cachedActiveEntitiesFrame === this.frameCount && this._cachedActiveEntities) {
+        if (this._cachedActiveEntitiesFrame === this.frameCount) {
             return this._cachedActiveEntities;
         }
-        const active = [];
+        
+        // Clear array without allocating new one
+        this._cachedActiveEntities.length = 0;
+        
         for (const key of this.activeChunkKeys) {
             if (this.chunks.has(key)) {
                 for (const entity of this.chunks.get(key)) {
-                    active.push(entity);
+                    this._cachedActiveEntities.push(entity);
                 }
             }
         }
-        this._cachedActiveEntities = active;
+        
         this._cachedActiveEntitiesFrame = this.frameCount;
-        return active;
+        return this._cachedActiveEntities;
     }
 
     removeEntity(entity) {

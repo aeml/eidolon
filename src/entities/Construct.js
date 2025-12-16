@@ -22,8 +22,8 @@ export class Construct extends Actor {
         this.name = 'Construct';
     }
 
-    update(dt, collisionManager, player) {
-        super.update(dt, collisionManager);
+    update(dt, collisionManager, player, chunkManager) {
+        super.update(dt, collisionManager, player, chunkManager);
 
         if (this.state === 'DEAD') return;
 

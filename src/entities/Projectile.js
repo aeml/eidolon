@@ -13,6 +13,30 @@ const DAGGER_GEO = new THREE.ConeGeometry(0.2, 1.0, 8);
 DAGGER_GEO.rotateX(Math.PI / 2); // Point forward
 const DAGGER_MAT = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.8, roughness: 0.2 });
 
+// Shared Resources for other projectiles
+const ARCANE_GEO = new THREE.SphereGeometry(0.3, 8, 8);
+const ARCANE_MAT = new THREE.MeshStandardMaterial({ color: 0xaa00ff, emissive: 0x8800ff, emissiveIntensity: 2 });
+
+const LANCE_GEO = new THREE.CylinderGeometry(0.2, 0.4, 2.0, 8);
+LANCE_GEO.rotateX(-Math.PI / 2);
+const LANCE_MAT = new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff4400, emissiveIntensity: 3 });
+
+const TORNADO_GEO = new THREE.CylinderGeometry(1.5, 0.5, 4.0, 8, 1, true);
+const TORNADO_MAT = new THREE.MeshStandardMaterial({ color: 0xff4500, emissive: 0xff0000, emissiveIntensity: 2, side: THREE.DoubleSide, transparent: true, opacity: 0.6 });
+
+const METEOR_GEO = new THREE.SphereGeometry(1.5, 16, 16);
+const METEOR_MAT = new THREE.MeshStandardMaterial({ color: 0x550000, emissive: 0xff4500, emissiveIntensity: 1, roughness: 0.9 });
+
+const PHANTOM_MAT = new THREE.MeshStandardMaterial({ color: 0x8800ff, metalness: 0.8, roughness: 0.2, emissive: 0x440088 });
+
+const TRAP_GEO = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 8);
+const TRIPWIRE_MAT = new THREE.MeshBasicMaterial({ color: 0x888888 });
+const EXPLOSIVE_MAT = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const SNARE_MAT = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+const ZONE_GEO = new THREE.CylinderGeometry(5.0, 5.0, 0.1, 32);
+const ZONE_MAT = new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.3 });
+
 export class Projectile extends Entity {
     constructor(id, owner, type, startPos, targetPos) {
         super(id);
@@ -54,22 +78,13 @@ export class Projectile extends Entity {
             material = FIREBALL_MAT;
             this.damage = 20 + (this.owner.stats.intelligence * 2);
         } else if (this.type === 'ArcaneMissile') {
-            geometry = new THREE.SphereGeometry(0.3, 8, 8);
-            material = new THREE.MeshStandardMaterial({ 
-                color: 0xaa00ff, 
-                emissive: 0x8800ff,
-                emissiveIntensity: 2
-            });
+            geometry = ARCANE_GEO;
+            material = ARCANE_MAT;
             this.damage = 10 + (this.owner.stats.intelligence * 1.0);
             this.speed = 25;
         } else if (this.type === 'DragonfireLance') {
-            geometry = new THREE.CylinderGeometry(0.2, 0.4, 2.0, 8);
-            geometry.rotateX(-Math.PI / 2);
-            material = new THREE.MeshStandardMaterial({ 
-                color: 0xff0000, 
-                emissive: 0xff4400,
-                emissiveIntensity: 3
-            });
+            geometry = LANCE_GEO;
+            material = LANCE_MAT;
             this.damage = 50 + (this.owner.stats.intelligence * 4.0);
             this.speed = 40;
         } else if (this.type === 'Dagger') {
@@ -77,68 +92,41 @@ export class Projectile extends Entity {
             material = DAGGER_MAT;
             this.damage = 15 + (this.owner.stats.dexterity * 1.5);
         } else if (this.type === 'FlameTornado') {
-            // Tornado shape: Vertical Cylinder/Cone
-            geometry = new THREE.CylinderGeometry(1.5, 0.5, 4.0, 8, 1, true); 
-            // No rotation needed if we want it upright (Y-up)
-            // But Projectile logic might rotate it to face velocity.
-            // If we want it to stay upright, we need to handle rotation in update or here.
-            // Let's assume standard projectile rotation (facing forward) is applied.
-            // If we want it upright, we should rotate geometry so that "forward" is "up"? No.
-            // If the projectile moves along Z, and we want the cylinder to be vertical (Y),
-            // we should rotate the geometry 90 degrees on X?
-            // Default Cylinder is Y-up.
-            // If projectile looks at target, its Z axis points to target.
-            // We want the cylinder axis (Y) to remain World Y.
-            // This is hard with standard lookAt.
-            // Instead, let's just make it a spinning ball of particles or a simple upright cylinder that ignores rotation?
-            // We can override render/update rotation.
-            
-            material = new THREE.MeshStandardMaterial({ 
-                color: 0xff4500, 
-                emissive: 0xff0000,
-                emissiveIntensity: 2,
-                side: THREE.DoubleSide,
-                transparent: true,
-                opacity: 0.6
-            });
+            geometry = TORNADO_GEO;
+            material = TORNADO_MAT;
             this.damage = 30 + (this.owner.stats.intelligence * 2.0);
             this.speed = 10; 
             this.isPiercingThrow = true;
         } else if (this.type === 'Meteor') {
-            geometry = new THREE.SphereGeometry(1.5, 16, 16);
-            material = new THREE.MeshStandardMaterial({ 
-                color: 0x550000, 
-                emissive: 0xff4500,
-                emissiveIntensity: 1,
-                roughness: 0.9
-            });
+            geometry = METEOR_GEO;
+            material = METEOR_MAT;
             this.damage = 50 + (this.owner.stats.intelligence * 3);
         } else if (this.type === 'PhantomArrow') {
             geometry = DAGGER_GEO;
-            material = new THREE.MeshStandardMaterial({ color: 0x8800ff, metalness: 0.8, roughness: 0.2, emissive: 0x440088 });
+            material = PHANTOM_MAT;
             this.damage = 25 + (this.owner.stats.dexterity * 2.0);
             this.speed = 35;
         } else if (this.type === 'Tripwire') {
-            geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.1, 8);
-            material = new THREE.MeshBasicMaterial({ color: 0x888888 });
+            geometry = TRAP_GEO;
+            material = TRIPWIRE_MAT;
             this.damage = 20 + this.owner.stats.dexterity;
             this.speed = 0;
             this.velocity.set(0,0,0);
         } else if (this.type === 'ExplosiveTrap') {
-            geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 8);
-            material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            geometry = TRAP_GEO;
+            material = EXPLOSIVE_MAT;
             this.damage = 50 + (this.owner.stats.dexterity * 3);
             this.speed = 0;
             this.velocity.set(0,0,0);
         } else if (this.type === 'SnareTrap') {
-            geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 8);
-            material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            geometry = TRAP_GEO;
+            material = SNARE_MAT;
             this.damage = 10;
             this.speed = 0;
             this.velocity.set(0,0,0);
         } else if (this.type === 'Zone') {
-            geometry = new THREE.CylinderGeometry(5.0, 5.0, 0.1, 32);
-            material = new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.3 });
+            geometry = ZONE_GEO;
+            material = ZONE_MAT;
             this.damage = 20 + (this.owner.stats.wisdom * 1);
             this.speed = 0;
             this.velocity.set(0,0,0);
@@ -159,7 +147,7 @@ export class Projectile extends Entity {
         }
     }
 
-    update(dt, collisionManager, player, activeEntities, floatingTextManager, gameEngine) { 
+    update(dt, collisionManager, player, chunkManager, floatingTextManager, gameEngine) { 
         if (!this.isActive) return;
 
         // Meteor Trail
@@ -229,7 +217,8 @@ export class Projectile extends Entity {
         }
 
         // Collision Detection (Client-side prediction / Singleplayer)
-        if (activeEntities) {
+        if (chunkManager) {
+            const activeEntities = chunkManager.getActiveEntities();
             const hitRadius = this.radius || 1.0; // Use projectile's radius
 
             for (const entity of activeEntities) {
