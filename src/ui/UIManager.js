@@ -481,6 +481,10 @@ export class UIManager {
     getItemIconPath(item) {
         if (!item) return null;
         
+        if (item.icon) {
+            return item.icon;
+        }
+        
         let nameToUse = item.baseName;
         
         // Fallback: If baseName is missing (e.g. existing items), try to find it in BASE_ITEMS
@@ -1411,14 +1415,19 @@ export class UIManager {
                 const color = item.rarity ? item.rarity.color : '#ffffff';
                 const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
                 
+                let stackHtml = '';
+                if (item.stack > 1) {
+                    stackHtml = `<div style="position:absolute; bottom:2px; right:2px; font-size:10px; color:white; text-shadow:1px 1px 0 #000; font-weight:bold;">${item.stack}</div>`;
+                }
+
                 // For Eidolic, we do NOT tint the background, only the border.
                 // For others, we use multiply blend mode.
                 if (isEidolic) {
-                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
+                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}`;
                     slots[i].style.border = `2px solid ${color}`; // Thicker border for Eidolic?
                     slots[i].style.boxShadow = `0 0 5px ${color}`; // Glow
                 } else {
-                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
+                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}`;
                     slots[i].style.border = `1px solid ${color}`;
                     slots[i].style.boxShadow = 'none';
                 }
@@ -1432,6 +1441,11 @@ export class UIManager {
                 slots[i].onclick = (e) => {
                     e.stopPropagation();
                     
+                    // Prevent equipping non-equippable items
+                    if (item.type === 'MATERIAL' || item.type === 'RELIC' || item.slot === 'material' || item.slot === 'relic') {
+                        return;
+                    }
+
                     // Mobile/Desktop Selection Logic
                     if (this.isMobile) {
                         if (this.selectedSlot === i) {
@@ -1515,11 +1529,24 @@ export class UIManager {
             if (item) {
                 const iconPath = this.getItemIconPath(item);
                 const color = item.rarity ? item.rarity.color : '#ffffff';
+                const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
                 
-                slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
+                let stackHtml = '';
+                if (item.stack > 1) {
+                    stackHtml = `<div style="position:absolute; bottom:2px; right:2px; font-size:10px; color:white; text-shadow:1px 1px 0 #000; font-weight:bold;">${item.stack}</div>`;
+                }
+
+                if (isEidolic) {
+                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}`;
+                    slots[i].style.border = `2px solid ${color}`;
+                    slots[i].style.boxShadow = `0 0 5px ${color}`;
+                } else {
+                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}`;
+                    slots[i].style.border = `1px solid ${color}`;
+                    slots[i].style.boxShadow = 'none';
+                }
                 
                 slots[i].style.color = color;
-                slots[i].style.border = `1px solid ${color}`;
                 slots[i].style.backgroundColor = '#222';
                 
                 // Right-click to withdraw
@@ -1753,6 +1780,10 @@ export class UIManager {
 
         let desc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${item.rarity.name} ${item.type} (${slotName}) - <span style="color: ${levelColor}">Lvl ${item.level}</span></div>`;
         
+        if (item.stack > 1) {
+            desc += `<div style="color: #fff; margin-bottom: 5px;">Stack Size: ${item.stack} / ${item.maxStack || 1000}</div>`;
+        }
+        
         for (const stat in item.stats) {
             const val = item.stats[stat];
             desc += `<div style="color: #fff;">+${val} ${stat.charAt(0).toUpperCase() + stat.slice(1)}</div>`;
@@ -1895,6 +1926,10 @@ export class UIManager {
             { name: 'Mystery Chest', slot: SLOTS.CHEST, icon: 'C' },
             { name: 'Mystery Legs', slot: SLOTS.LEGS, icon: 'L' },
             { name: 'Mystery Boots', slot: SLOTS.FEET, icon: 'B' },
+            { name: 'Mystery Shoulders', slot: SLOTS.SHOULDERS, icon: 'S' },
+            { name: 'Mystery Belt', slot: SLOTS.BELT, icon: 'Be' },
+            { name: 'Mystery Ring', slot: SLOTS.RING, icon: 'Ri' },
+            { name: 'Mystery Trinket', slot: SLOTS.TRINKET, icon: 'T' },
             { name: 'Mystery Weapon', slot: SLOTS.MAIN_HAND, icon: 'W' },
             { name: 'Mystery Offhand', slot: SLOTS.OFF_HAND, icon: 'O' }
         ];
@@ -1942,7 +1977,7 @@ export class UIManager {
     buyGambleItem(slot) {
         if (!this.lastPlayerRef) return;
 
-        const cost = Math.ceil(35 * this.lastPlayerRef.level);
+        let cost = Math.ceil(35 * this.lastPlayerRef.level);
 
         if (this.lastPlayerRef.gold < cost) {
             this.addChatMessage("System", `Not sufficient gold! Cost: ${cost}`);

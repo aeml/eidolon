@@ -74,6 +74,8 @@ type Item struct {
 	Value       int            `bson:"value"`
 	Icon        string         `bson:"icon"`
 	Description string         `bson:"description"`
+	Stack       int            `bson:"stack"`
+	MaxStack    int            `bson:"max_stack"`
 }
 
 func New(uri string) (*DB, error) {
