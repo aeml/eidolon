@@ -359,6 +359,17 @@ func main() {
 		}
 	}()
 
+	// Party Update Loop (Every 1 second)
+	go func() {
+		ticker := time.NewTicker(1 * time.Second)
+		for range ticker.C {
+			parties := world.GetAllParties()
+			for _, party := range parties {
+				broadcastPartyUpdate(party)
+			}
+		}
+	}()
+
 	// Time Sync Loop (Every 1 second)
 	go func() {
 		ticker := time.NewTicker(1 * time.Second)
@@ -1228,6 +1239,12 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 		world.PerformRespawn(c.playerID)
+
+	case MsgRecall:
+		if c.playerID == "" {
+			return
+		}
+		world.PerformRecall(c.playerID)
 
 	case MsgReport:
 		var payload ReportPayload

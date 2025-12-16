@@ -51,6 +51,8 @@ func broadcastPartyUpdate(party *game.Party) {
 				"hp":       entity.Health,
 				"maxHp":    entity.MaxHealth,
 				"isLeader": entity.ID == leaderID,
+				"x":        entity.X,
+				"z":        entity.Z,
 			})
 		}
 	}

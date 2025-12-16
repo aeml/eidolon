@@ -2101,6 +2101,7 @@ export class UIManager {
     }
 
     updateParty(partyData) {
+        this.partyData = partyData; // Store for WorldMap access
         if (!this.partyPanel || !this.partyList) return;
 
         const inParty = !!(partyData && partyData.partyId);
