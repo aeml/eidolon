@@ -17,6 +17,8 @@ export const SLOTS = {
     TRINKET: 'trinket',
     MAIN_HAND: 'mainHand',
     OFF_HAND: 'offHand',
+    NECK: 'neck',
+    GLOVES: 'gloves',
     MATERIAL: 'material',
     RELIC: 'relic'
 };
@@ -50,7 +52,37 @@ export const BASE_ITEMS = [
     // Armor - Feet
     { name: 'Leather Boots', type: 'ARMOR', slot: SLOTS.FEET, baseStat: 'defense', baseValue: 2 },
     { name: 'Iron Boots', type: 'ARMOR', slot: SLOTS.FEET, baseStat: 'defense', baseValue: 4 },
-    { name: 'Sandals', type: 'ARMOR', slot: SLOTS.FEET, baseStat: 'defense', baseValue: 1 }
+    { name: 'Sandals', type: 'ARMOR', slot: SLOTS.FEET, baseStat: 'defense', baseValue: 1 },
+
+    // Armor - Gloves
+    { name: 'Leather Gloves', type: 'GLOVES', slot: SLOTS.GLOVES, baseStat: 'defense', baseValue: 2 },
+    { name: 'Iron Gauntlets', type: 'GLOVES', slot: SLOTS.GLOVES, baseStat: 'defense', baseValue: 4 },
+    { name: 'Silk Gloves', type: 'GLOVES', slot: SLOTS.GLOVES, baseStat: 'defense', baseValue: 1 },
+
+    // Armor - Shoulders
+    { name: 'Reinforced Spaulders', type: 'ARMOR', slot: SLOTS.SHOULDERS, baseStat: 'defense', baseValue: 4 },
+    { name: 'Steel Pauldrons', type: 'ARMOR', slot: SLOTS.SHOULDERS, baseStat: 'defense', baseValue: 7 },
+    { name: 'Velvet Mantle', type: 'ARMOR', slot: SLOTS.SHOULDERS, baseStat: 'defense', baseValue: 2 },
+
+    // Armor - Belt
+    { name: 'Studded Belt', type: 'ARMOR', slot: SLOTS.BELT, baseStat: 'defense', baseValue: 3 },
+    { name: 'Plated Girdle', type: 'ARMOR', slot: SLOTS.BELT, baseStat: 'defense', baseValue: 5 },
+    { name: 'Silk Sash', type: 'ARMOR', slot: SLOTS.BELT, baseStat: 'defense', baseValue: 1 },
+
+    // Accessories - Ring
+    { name: 'Gold Ring', type: 'ACCESSORY', slot: SLOTS.RING, baseStat: 'vitality', baseValue: 5 },
+    { name: 'Silver Ring', type: 'ACCESSORY', slot: SLOTS.RING, baseStat: 'wisdom', baseValue: 5 },
+    { name: 'Ruby Ring', type: 'ACCESSORY', slot: SLOTS.RING, baseStat: 'strength', baseValue: 5 },
+
+    // Accessories - Neck
+    { name: 'Pendant', type: 'NECK', slot: SLOTS.NECK, baseStat: 'vitality', baseValue: 5 },
+    { name: 'Choker', type: 'NECK', slot: SLOTS.NECK, baseStat: 'dexterity', baseValue: 5 },
+    { name: 'Necklace', type: 'NECK', slot: SLOTS.NECK, baseStat: 'intelligence', baseValue: 5 },
+
+    // Accessories - Trinket
+    { name: 'Amulet of Power', type: 'ACCESSORY', slot: SLOTS.TRINKET, baseStat: 'strength', baseValue: 10 },
+    { name: 'Talisman of Speed', type: 'ACCESSORY', slot: SLOTS.TRINKET, baseStat: 'dexterity', baseValue: 10 },
+    { name: 'Orb of Mana', type: 'ACCESSORY', slot: SLOTS.TRINKET, baseStat: 'intelligence', baseValue: 10 }
 ];
 
 const STAT_POOL = ['strength', 'dexterity', 'intelligence', 'wisdom', 'vitality'];

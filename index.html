@@ -310,28 +310,42 @@
             top: 50%;
             left: 50%;
             transform: translate(-150%, -50%); /* Left of center */
-            width: 320px;
-            height: 600px;
+            width: 380px; /* Wider for side-by-side */
+            height: 560px; /* Increased height */
+        }
+
+        .char-sheet-body {
+            display: flex;
+            gap: 15px;
+            height: calc(100% - 40px); /* Subtract header height */
+        }
+
+        #stats-content {
+            flex: 1;
+            min-width: 180px;
         }
 
         .stat-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
+            margin-bottom: 2px; /* Compact rows */
+            font-size: 0.85rem;
         }
 
         .equipment-slots {
-            margin-top: 20px;
+            margin-top: 0;
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
+            grid-template-columns: repeat(2, 60px); /* Fixed size columns */
+            gap: 8px;
+            justify-content: center;
+            align-content: start;
         }
 
         .equip-slot {
             background: #111;
             border: 1px solid #444;
-            aspect-ratio: 1;
+            width: 60px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1195,22 +1209,39 @@
 
         <div id="character-sheet" class="window">
             <div class="window-header">CHARACTER STATS</div>
-            <div id="stats-content">
-                <!-- Populated by JS -->
-            </div>
-            <div class="equipment-slots">
-                <div class="equip-slot" id="slot-head">HEAD</div>
-                <div class="equip-slot" id="slot-shoulders">SHOULDERS</div>
-                <div class="equip-slot" id="slot-chest">CHEST</div>
-                <div class="equip-slot" id="slot-belt">BELT</div>
-                <div class="equip-slot" id="slot-legs">LEGS</div>
-                <div class="equip-slot" id="slot-feet">FEET</div>
-                <div class="equip-slot" id="slot-mainhand">MAIN HAND</div>
-                <div class="equip-slot" id="slot-offhand">OFF HAND</div>
-                <div class="equip-slot" id="slot-ring1">RING 1</div>
-                <div class="equip-slot" id="slot-ring2">RING 2</div>
-                <div class="equip-slot" id="slot-trinket1">TRINKET 1</div>
-                <div class="equip-slot" id="slot-trinket2">TRINKET 2</div>
+            <div class="char-sheet-body">
+                <div id="stats-content">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="equipment-slots">
+                    <!-- Row 1 -->
+                    <div class="equip-slot" id="slot-head">HEAD</div>
+                    <div class="equip-slot" id="slot-gloves">GLOVES</div>
+                    
+                    <!-- Row 2 -->
+                    <div class="equip-slot" id="slot-shoulders">SHOULDERS</div>
+                    <div class="equip-slot" id="slot-belt">BELT</div>
+                    
+                    <!-- Row 3 -->
+                    <div class="equip-slot" id="slot-chest">CHEST</div>
+                    <div class="equip-slot" id="slot-feet">FEET</div>
+                    
+                    <!-- Row 4 -->
+                    <div class="equip-slot" id="slot-legs">LEGS</div>
+                    <div class="equip-slot" id="slot-neck">NECK</div>
+                    
+                    <!-- Row 5 -->
+                    <div class="equip-slot" id="slot-ring1">RING 1</div>
+                    <div class="equip-slot" id="slot-ring2">RING 2</div>
+                    
+                    <!-- Row 6 -->
+                    <div class="equip-slot" id="slot-trinket1">TRINKET 1</div>
+                    <div class="equip-slot" id="slot-trinket2">TRINKET 2</div>
+
+                    <!-- Row 7 -->
+                    <div class="equip-slot" id="slot-mainhand">MAIN HAND</div>
+                    <div class="equip-slot" id="slot-offhand">OFF HAND</div>
+                </div>
             </div>
         </div>
 

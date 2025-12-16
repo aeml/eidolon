@@ -258,15 +258,33 @@ export class GameEngine {
         this.player.equipItem = (item) => {
             let targetSlot = item.slot;
             
-            // Handle Ring/Trinket logic (Auto-fill empty slots)
+            const getWeakerSlot = (slot1, slot2) => {
+                const item1 = this.player.equipment[slot1];
+                const item2 = this.player.equipment[slot2];
+
+                if (!item1) return slot1;
+                if (!item2) return slot2;
+
+                // Compare Level
+                if (item1.level < item2.level) return slot1;
+                if (item2.level < item1.level) return slot2;
+
+                // Compare Rarity
+                const r1 = item1.rarity ? (item1.rarity.multiplier || 0) : 0;
+                const r2 = item2.rarity ? (item2.rarity.multiplier || 0) : 0;
+
+                if (r1 < r2) return slot1;
+                if (r2 < r1) return slot2;
+
+                // Default to slot1
+                return slot1;
+            };
+
+            // Handle Ring/Trinket logic (Auto-fill empty slots or replace weaker)
             if (item.slot === 'ring') {
-                if (!this.player.equipment.ring1) targetSlot = 'ring1';
-                else if (!this.player.equipment.ring2) targetSlot = 'ring2';
-                else targetSlot = 'ring1'; // Default to ring1 if both full
+                targetSlot = getWeakerSlot('ring1', 'ring2');
             } else if (item.slot === 'trinket') {
-                if (!this.player.equipment.trinket1) targetSlot = 'trinket1';
-                else if (!this.player.equipment.trinket2) targetSlot = 'trinket2';
-                else targetSlot = 'trinket1';
+                targetSlot = getWeakerSlot('trinket1', 'trinket2');
             }
 
             this.sendEquipMessage(item, targetSlot);

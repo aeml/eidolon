@@ -21,6 +21,8 @@ const (
 	ItemWeapon    ItemType = "WEAPON"
 	ItemArmor     ItemType = "ARMOR"
 	ItemAccessory ItemType = "ACCESSORY"
+	ItemNeck      ItemType = "NECK"
+	ItemGloves    ItemType = "GLOVES"
 	ItemMaterial  ItemType = "MATERIAL"
 	ItemRelic     ItemType = "RELIC"
 )
@@ -81,6 +83,11 @@ var BaseItems = []BaseItem{
 	{"Iron Boots", ItemArmor, "feet", "defense", 4, ""},
 	{"Sandals", ItemArmor, "feet", "defense", 1, ""},
 
+	// Armor - Gloves
+	{"Leather Gloves", ItemGloves, "gloves", "defense", 2, ""},
+	{"Iron Gauntlets", ItemGloves, "gloves", "defense", 4, ""},
+	{"Silk Gloves", ItemGloves, "gloves", "defense", 1, ""},
+
 	// Armor - Shoulders
 	{"Reinforced Spaulders", ItemArmor, "shoulders", "defense", 4, ""},
 	{"Steel Pauldrons", ItemArmor, "shoulders", "defense", 7, ""},
@@ -95,6 +102,11 @@ var BaseItems = []BaseItem{
 	{"Gold Ring", ItemAccessory, "ring", "vitality", 5, ""},
 	{"Silver Ring", ItemAccessory, "ring", "wisdom", 5, ""},
 	{"Ruby Ring", ItemAccessory, "ring", "strength", 5, ""},
+
+	// Accessories - Neck
+	{"Pendant", ItemNeck, "neck", "vitality", 5, ""},
+	{"Choker", ItemNeck, "neck", "dexterity", 5, ""},
+	{"Necklace", ItemNeck, "neck", "intelligence", 5, ""},
 
 	// Accessories - Trinket
 	{"Amulet of Power", ItemAccessory, "trinket", "strength", 10, ""},
