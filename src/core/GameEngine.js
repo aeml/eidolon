@@ -256,7 +256,20 @@ export class GameEngine {
         // Hook equipItem for multiplayer
         // Completely override equipItem to only send message
         this.player.equipItem = (item) => {
-            this.sendEquipMessage(item);
+            let targetSlot = item.slot;
+            
+            // Handle Ring/Trinket logic (Auto-fill empty slots)
+            if (item.slot === 'ring') {
+                if (!this.player.equipment.ring1) targetSlot = 'ring1';
+                else if (!this.player.equipment.ring2) targetSlot = 'ring2';
+                else targetSlot = 'ring1'; // Default to ring1 if both full
+            } else if (item.slot === 'trinket') {
+                if (!this.player.equipment.trinket1) targetSlot = 'trinket1';
+                else if (!this.player.equipment.trinket2) targetSlot = 'trinket2';
+                else targetSlot = 'trinket1';
+            }
+
+            this.sendEquipMessage(item, targetSlot);
             return true; // Assume success, server will correct if not
         };
         
@@ -1297,13 +1310,13 @@ export class GameEngine {
         }
     }
 
-    sendEquipMessage(item) {
+    sendEquipMessage(item, targetSlot) {
         if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
         const msg = {
             type: 'equip',
             payload: {
                 itemId: item.id,
-                slot: item.slot
+                slot: targetSlot || item.slot
             }
         };
         this.socket.send(JSON.stringify(msg));

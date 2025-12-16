@@ -1015,13 +1015,17 @@ func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool) {
 	dist := dx*dx + dz*dz
 	if dist < 36.0 {
 		if loot.LootItem != nil {
-			if len(player.Inventory) >= MaxInventorySize {
-				return nil, false
+			originalStack := loot.LootItem.Stack
+			remaining := player.AddItemToInventory(*loot.LootItem)
+
+			if remaining == 0 {
+				w.Grid.Remove(loot)
+				delete(w.Entities, lootID)
+				return player, true
+			} else if remaining < originalStack {
+				loot.LootItem.Stack = remaining
+				return player, true
 			}
-			player.Inventory = append(player.Inventory, *loot.LootItem)
-			w.Grid.Remove(loot)
-			delete(w.Entities, lootID)
-			return player, true
 		}
 	}
 	return nil, false
@@ -1052,6 +1056,20 @@ func (w *World) PerformEquip(playerID, itemID, slot string) (*Entity, bool) {
 	}
 
 	if player.Level < itemToEquip.Level {
+		return nil, false
+	}
+
+	// Validate Slot
+	validSlot := false
+	if itemToEquip.Slot == slot {
+		validSlot = true
+	} else if itemToEquip.Slot == "ring" && (slot == "ring1" || slot == "ring2") {
+		validSlot = true
+	} else if itemToEquip.Slot == "trinket" && (slot == "trinket1" || slot == "trinket2") {
+		validSlot = true
+	}
+
+	if !validSlot {
 		return nil, false
 	}
 
@@ -1189,11 +1207,6 @@ func (w *World) PerformStashWithdraw(playerID, itemID string) (*Entity, bool) {
 		return nil, false
 	}
 
-	// Check Inventory Size
-	if len(player.Inventory) >= MaxInventorySize {
-		return nil, false
-	}
-
 	// Find item in Stash
 	stashIndex := -1
 	var itemToWithdraw *Item
@@ -1210,14 +1223,21 @@ func (w *World) PerformStashWithdraw(playerID, itemID string) (*Entity, bool) {
 	}
 
 	// Move to Inventory
-	player.Inventory = append(player.Inventory, *itemToWithdraw)
+	remaining := player.AddItemToInventory(*itemToWithdraw)
 
-	// Remove from Stash
-	lastIdx := len(player.Stash) - 1
-	player.Stash[stashIndex] = player.Stash[lastIdx]
-	player.Stash = player.Stash[:lastIdx]
+	if remaining == 0 {
+		// Fully withdrawn
+		lastIdx := len(player.Stash) - 1
+		player.Stash[stashIndex] = player.Stash[lastIdx]
+		player.Stash = player.Stash[:lastIdx]
+		return player, true
+	} else if remaining < itemToWithdraw.Stack {
+		// Partially withdrawn
+		player.Stash[stashIndex].Stack = remaining
+		return player, true
+	}
 
-	return player, true
+	return nil, false
 }
 
 func (w *World) GenerateDailyQuests(playerID string) *Entity {
@@ -4996,6 +5016,8 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			// Loot
 			// Check if Elite
 			isElite := strings.HasPrefix(tID, "elite-")
+
+			// 1. Equipment Loot
 			dropCount := 0
 			if isElite {
 				dropCount = 3 // Elites drop 3 items guaranteed
@@ -5003,16 +5025,28 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				dropCount = 1 // Normal enemies have 50% chance for 1 item
 			}
 
-			if dropCount > 0 {
-				w.mu.Lock() // Lock world to add entities
-				for i := 0; i < dropCount; i++ {
-					var item *Item
-					if isElite {
-						item = GenerateEliteLoot(tLevel)
-					} else {
-						item = GenerateLoot(tLevel)
-					}
+			var lootItems []*Item
 
+			if dropCount > 0 {
+				for i := 0; i < dropCount; i++ {
+					if isElite {
+						lootItems = append(lootItems, GenerateEliteLoot(tLevel))
+					} else {
+						lootItems = append(lootItems, GenerateLoot(tLevel))
+					}
+				}
+			}
+
+			// 2. Shard/Heart Loot (Eidolic)
+			eidolicLoot := GenerateShardLoot(isElite)
+			lootItems = append(lootItems, eidolicLoot...)
+
+			if len(lootItems) > 0 {
+				w.mu.Lock() // Lock world to add entities
+				for i, item := range lootItems {
+					if item == nil {
+						continue
+					}
 					// Offset loot slightly so they don't stack perfectly
 					offsetX := (rand.Float64() - 0.5) * 1.0
 					offsetZ := (rand.Float64() - 0.5) * 1.0
@@ -5225,6 +5259,37 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		e.Equipment = newEquip
 	}
 	return &e
+}
+
+func (e *Entity) AddItemToInventory(item Item) int {
+	remaining := item.Stack
+	// 1. Try to stack
+	if item.MaxStack > 1 {
+		for i := range e.Inventory {
+			if e.Inventory[i].Name == item.Name && e.Inventory[i].Stack < e.Inventory[i].MaxStack {
+				space := e.Inventory[i].MaxStack - e.Inventory[i].Stack
+				if space >= remaining {
+					e.Inventory[i].Stack += remaining
+					return 0
+				} else {
+					e.Inventory[i].Stack += space
+					remaining -= space
+				}
+			}
+		}
+	}
+
+	// 2. Add remaining as new item
+	if remaining > 0 {
+		if len(e.Inventory) < MaxInventorySize {
+			newItem := item
+			newItem.Stack = remaining
+			e.Inventory = append(e.Inventory, newItem)
+			return 0
+		}
+		return remaining // Inventory full
+	}
+	return 0
 }
 
 func (e *Entity) RecalculateStats() {

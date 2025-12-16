@@ -145,6 +145,12 @@ export class WorldGenerator {
             setupBuilding(gltf.scene, 6, cx - 30, cz, Math.PI / 2);
         }, undefined, (err) => console.error("Failed to load blacksmith:", err));
 
+        // Blacksmith Forge (Next to Blacksmith)
+        loader.load('./assets/buildings/blacksmith_forge.glb', (gltf) => {
+            // Place to the left of the blacksmith (more positive Z, same X)
+            setupBuilding(gltf.scene, 4, cx - 28, cz + 18, Math.PI / 2); 
+        }, undefined, (err) => console.error("Failed to load blacksmith_forge:", err));
+
         // Camp Sites (Randomly distributed outside center)
         loader.load('./assets/buildings/camp_site.glb', (gltf) => {
             const campModel = gltf.scene;

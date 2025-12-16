@@ -1096,15 +1096,26 @@ export class Actor extends Entity {
             return false;
         }
 
+        let targetSlot = item.slot;
+        if (item.slot === 'ring') {
+             if (!this.equipment.ring1) targetSlot = 'ring1';
+             else if (!this.equipment.ring2) targetSlot = 'ring2';
+             else targetSlot = 'ring1';
+        } else if (item.slot === 'trinket') {
+             if (!this.equipment.trinket1) targetSlot = 'trinket1';
+             else if (!this.equipment.trinket2) targetSlot = 'trinket2';
+             else targetSlot = 'trinket1';
+        }
+
         // Unequip current item in slot if exists
-        const currentItem = this.equipment[item.slot];
+        const currentItem = this.equipment[targetSlot];
         if (currentItem) {
             this.addToInventory(currentItem);
         }
         
-        this.equipment[item.slot] = item;
+        this.equipment[targetSlot] = item;
         this.recalculateStats();
-        console.log(`${this.id} equipped ${item.name}`);
+        console.log(`${this.id} equipped ${item.name} to ${targetSlot}`);
         return true;
     }
 

@@ -2,7 +2,8 @@ export const RARITY = {
     COMMON: { name: 'Common', color: '#ffffff', multiplier: 1.0, statCount: 0 },
     UNCOMMON: { name: 'Uncommon', color: '#1eff00', multiplier: 1.5, statCount: 1 },
     RARE: { name: 'Rare', color: '#0070dd', multiplier: 2.0, statCount: 2 },
-    LEGENDARY: { name: 'Legendary', color: '#ff8000', multiplier: 3.0, statCount: 5 }
+    LEGENDARY: { name: 'Legendary', color: '#ff8000', multiplier: 3.0, statCount: 5 },
+    EIDOLIC: { name: 'Eidolic', color: '#A020F0', multiplier: 1.0, statCount: 0 } // Purple
 };
 
 export const SLOTS = {

@@ -1343,11 +1343,17 @@ export class UIManager {
         `;
 
         this.updateEquipSlot('slot-head', player.equipment.head, 'HEAD');
+        this.updateEquipSlot('slot-shoulders', player.equipment.shoulders, 'SHOULDERS');
         this.updateEquipSlot('slot-chest', player.equipment.chest, 'CHEST');
-        this.updateEquipSlot('slot-mainhand', player.equipment.mainHand, 'MAIN HAND');
-        this.updateEquipSlot('slot-offhand', player.equipment.offHand, 'OFF HAND');
+        this.updateEquipSlot('slot-belt', player.equipment.belt, 'BELT');
         this.updateEquipSlot('slot-legs', player.equipment.legs, 'LEGS');
         this.updateEquipSlot('slot-feet', player.equipment.feet, 'FEET');
+        this.updateEquipSlot('slot-mainhand', player.equipment.mainHand, 'MAIN HAND');
+        this.updateEquipSlot('slot-offhand', player.equipment.offHand, 'OFF HAND');
+        this.updateEquipSlot('slot-ring1', player.equipment.ring1, 'RING 1');
+        this.updateEquipSlot('slot-ring2', player.equipment.ring2, 'RING 2');
+        this.updateEquipSlot('slot-trinket1', player.equipment.trinket1, 'TRINKET 1');
+        this.updateEquipSlot('slot-trinket2', player.equipment.trinket2, 'TRINKET 2');
     }
 
     updateEquipSlot(id, item, placeholder) {
@@ -1359,9 +1365,18 @@ export class UIManager {
             if (item) {
                 const iconPath = this.getItemIconPath(item);
                 const color = item.rarity ? item.rarity.color : '#ffffff';
+                const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
                 
-                // Use multiply blend mode to tint the background
-                el.innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
+                if (isEidolic) {
+                    el.innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
+                    el.style.border = `2px solid ${color}`;
+                    el.style.boxShadow = `0 0 5px ${color}`;
+                } else {
+                    // Use multiply blend mode to tint the background
+                    el.innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
+                    el.style.border = `1px solid ${color}`;
+                    el.style.boxShadow = 'none';
+                }
                 
                 el.style.color = color;
                 el.style.borderColor = color;
@@ -1394,11 +1409,21 @@ export class UIManager {
             if (item) {
                 const iconPath = this.getItemIconPath(item);
                 const color = item.rarity ? item.rarity.color : '#ffffff';
+                const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
                 
-                slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
+                // For Eidolic, we do NOT tint the background, only the border.
+                // For others, we use multiply blend mode.
+                if (isEidolic) {
+                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
+                    slots[i].style.border = `2px solid ${color}`; // Thicker border for Eidolic?
+                    slots[i].style.boxShadow = `0 0 5px ${color}`; // Glow
+                } else {
+                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
+                    slots[i].style.border = `1px solid ${color}`;
+                    slots[i].style.boxShadow = 'none';
+                }
                 
                 slots[i].style.color = color;
-                slots[i].style.border = `1px solid ${color}`;
                 // slots[i].title = this.getItemTooltipText(item); // Disable native tooltip
                 slots[i].removeAttribute('title');
                 slots[i].style.backgroundColor = '#222';
