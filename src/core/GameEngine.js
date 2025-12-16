@@ -75,6 +75,15 @@ export class GameEngine {
                 this.socket.send(JSON.stringify(msg));
             }
         };
+        this.uiManager.onBuyback = (itemId) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'buyback',
+                    payload: { itemId }
+                };
+                this.socket.send(JSON.stringify(msg));
+            }
+        };
         this.uiManager.onSellAll = (rarityName) => {
             if (!this.player) return;
             

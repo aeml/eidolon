@@ -1274,7 +1274,8 @@ export class UIManager {
         reversedItems.forEach(item => {
             const el = document.createElement('div');
             el.className = 'inv-slot';
-            el.style.backgroundImage = `url('assets/items/${item.icon}')`;
+            const iconPath = this.getItemIconPath(item);
+            el.style.backgroundImage = `url('${iconPath}')`;
             el.style.backgroundSize = 'contain';
             el.style.backgroundRepeat = 'no-repeat';
             el.style.backgroundPosition = 'center';
@@ -1301,11 +1302,8 @@ export class UIManager {
             }
 
             el.onclick = () => {
-                if (this.gameEngine && this.gameEngine.socket) {
-                    this.gameEngine.socket.send(JSON.stringify({
-                        type: 'buyback',
-                        payload: { itemId: item.id }
-                    }));
+                if (this.onBuyback) {
+                    this.onBuyback(item.id);
                 }
             };
 
