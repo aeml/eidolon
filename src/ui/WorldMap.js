@@ -415,6 +415,28 @@ export class WorldMap {
             });
         }
 
+        // 2.6 Draw Party Members (Global)
+        if (this.gameEngine.uiManager.partyData && this.gameEngine.uiManager.partyData.members) {
+            const members = this.gameEngine.uiManager.partyData.members;
+            members.forEach(member => {
+                if (member.id === player.id) return; // Skip self
+                if (member.x === undefined || member.z === undefined) return; // No position data
+
+                const pos = worldToScreen(member.x, member.z);
+                
+                // Draw Party Member
+                ctx.fillStyle = '#00ff00'; // Green for Party
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 6, 0, Math.PI * 2); // Slightly larger
+                ctx.fill();
+                
+                // Add a white ring
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+        }
+
         // 3. Draw Player (Local)
         const playerScreenPos = worldToScreen(player.position.x, player.position.z);
         ctx.fillStyle = '#00ffff'; // Cyan

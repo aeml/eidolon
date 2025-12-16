@@ -129,15 +129,15 @@ export class AreaOfEffect extends Entity {
                 const dist = this.position.distanceTo(entity.position);
                 if (dist <= this.radius) {
                     entity.takeDamage(this.damage);
-                    if (gameEngine.floatingTextManager) {
-                        gameEngine.floatingTextManager.spawn(Math.floor(this.damage), entity.position, '#ff8800');
+                    if (this.gameEngine.floatingTextManager) {
+                        this.gameEngine.floatingTextManager.spawn(Math.floor(this.damage), entity.position, '#ff8800');
                     }
                 }
             }
         }
         
         if (this.onTick) {
-            this.onTick(gameEngine, this);
+            this.onTick(this.gameEngine, this);
         }
     }
 }

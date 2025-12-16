@@ -310,6 +310,17 @@ func NewWorld() *World {
 	return w
 }
 
+func (w *World) GetAllParties() []*Party {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+
+	parties := make([]*Party, 0, len(w.Parties))
+	for _, p := range w.Parties {
+		parties = append(parties, p)
+	}
+	return parties
+}
+
 func (w *World) initWorld() {
 	w.spawnMerchant()
 	w.spawnQuestNPC()
@@ -1476,6 +1487,26 @@ func (w *World) PerformRespawn(playerID string) {
 	player.TargetX = -1.25
 	player.TargetZ = 200
 	w.Grid.Update(player, oldX, oldZ) // Force update to -1.25,200
+}
+
+func (w *World) PerformRecall(playerID string) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return
+	}
+
+	// Teleport to town
+	player.State = "IDLE"
+
+	oldX, oldZ := player.X, player.Z
+	player.X = -1.25
+	player.Z = 200
+	player.TargetX = -1.25
+	player.TargetZ = 200
+	w.Grid.Update(player, oldX, oldZ)
 }
 
 func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred *deferredActions) {

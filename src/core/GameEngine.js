@@ -515,6 +515,12 @@ export class GameEngine {
         this.inputManager.subscribe('onTeleport', () => {
             if (this.player) {
                 console.log("Teleporting to town...");
+                // Send recall request to server to ensure sync
+                if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                    this.socket.send(JSON.stringify({ type: 'recall', payload: {} }));
+                }
+                
+                // Optimistic update
                 this.player.position.set(0, 0, 200);
                 this.player.targetPosition = null;
                 this.player.state = 'IDLE';
