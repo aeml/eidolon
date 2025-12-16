@@ -1324,23 +1324,23 @@ export class UIManager {
         };
 
         this.statsContent.innerHTML = `
-            <div style="margin-bottom: 10px;">
+            <div style="margin-bottom: 5px;">
                 <div><strong>Level:</strong> ${player.level}</div>
-                <div><strong>XP:</strong> ${player.xp} / ${player.xpToNextLevel}</div>
+                <div style="font-size: 0.8rem; color: #aaa;"><strong>XP:</strong> ${player.xp} / ${player.xpToNextLevel}</div>
                 ${showPoints ? `<div style="color: #ffd700;"><strong>Points:</strong> ${player.statPoints}</div>` : ''}
             </div>
-            <div style="margin-bottom: 10px; border-top: 1px solid #444; padding-top: 5px;">
-                <div><strong>HP:</strong> ${Math.ceil(player.stats.hp)} / ${player.stats.maxHp}</div>
-                <div><strong>Mana:</strong> ${Math.ceil(player.stats.mana)} / ${player.stats.maxMana}</div>
+            <div style="margin-bottom: 5px; border-top: 1px solid #444; padding-top: 2px;">
+                <div style="color: #ff4444;"><strong>HP:</strong> ${Math.ceil(player.stats.hp)} / ${player.stats.maxHp}</div>
+                <div style="color: #4444ff;"><strong>Mana:</strong> ${Math.ceil(player.stats.mana)} / ${player.stats.maxMana}</div>
             </div>
-            <div style="margin-bottom: 10px; border-top: 1px solid #444; padding-top: 5px;">
+            <div style="margin-bottom: 5px; border-top: 1px solid #444; padding-top: 2px;">
                 <div class="stat-row" data-stat-name="strength"><strong>STR:</strong> ${fmtStat('strength')} <button class="stat-btn" data-stat="strength" style="${btnStyle}">+</button></div>
                 <div class="stat-row" data-stat-name="dexterity"><strong>DEX:</strong> ${fmtStat('dexterity')} <button class="stat-btn" data-stat="dexterity" style="${btnStyle}">+</button></div>
                 <div class="stat-row" data-stat-name="intelligence"><strong>INT:</strong> ${fmtStat('intelligence')} <button class="stat-btn" data-stat="intelligence" style="${btnStyle}">+</button></div>
                 <div class="stat-row" data-stat-name="vitality"><strong>VIT:</strong> ${fmtStat('vitality')} <button class="stat-btn" data-stat="vitality" style="${btnStyle}">+</button></div>
                 <div class="stat-row" data-stat-name="wisdom"><strong>WIS:</strong> ${fmtStat('wisdom')} <button class="stat-btn" data-stat="wisdom" style="${btnStyle}">+</button></div>
             </div>
-            <div style="border-top: 1px solid #444; padding-top: 5px;">
+            <div style="border-top: 1px solid #444; padding-top: 2px;">
                 <div><strong>DMG:</strong> ${player.stats.damage}</div>
                 <div><strong>DEF:</strong> ${player.stats.defense}</div>
             </div>
@@ -1352,6 +1352,8 @@ export class UIManager {
         this.updateEquipSlot('slot-belt', player.equipment.belt, 'BELT');
         this.updateEquipSlot('slot-legs', player.equipment.legs, 'LEGS');
         this.updateEquipSlot('slot-feet', player.equipment.feet, 'FEET');
+        this.updateEquipSlot('slot-gloves', player.equipment.gloves, 'GLOVES');
+        this.updateEquipSlot('slot-neck', player.equipment.neck, 'NECK');
         this.updateEquipSlot('slot-mainhand', player.equipment.mainHand, 'MAIN HAND');
         this.updateEquipSlot('slot-offhand', player.equipment.offHand, 'OFF HAND');
         this.updateEquipSlot('slot-ring1', player.equipment.ring1, 'RING 1');
@@ -1926,9 +1928,11 @@ export class UIManager {
             { name: 'Mystery Chest', slot: SLOTS.CHEST, icon: 'C' },
             { name: 'Mystery Legs', slot: SLOTS.LEGS, icon: 'L' },
             { name: 'Mystery Boots', slot: SLOTS.FEET, icon: 'B' },
+            { name: 'Mystery Gloves', slot: SLOTS.GLOVES, icon: 'G' },
             { name: 'Mystery Shoulders', slot: SLOTS.SHOULDERS, icon: 'S' },
             { name: 'Mystery Belt', slot: SLOTS.BELT, icon: 'Be' },
             { name: 'Mystery Ring', slot: SLOTS.RING, icon: 'Ri' },
+            { name: 'Mystery Neck', slot: SLOTS.NECK, icon: 'N' },
             { name: 'Mystery Trinket', slot: SLOTS.TRINKET, icon: 'T' },
             { name: 'Mystery Weapon', slot: SLOTS.MAIN_HAND, icon: 'W' },
             { name: 'Mystery Offhand', slot: SLOTS.OFF_HAND, icon: 'O' }

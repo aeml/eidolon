@@ -136,6 +136,14 @@ export class Actor extends Entity {
             chest: null,
             legs: null,
             feet: null,
+            gloves: null,
+            shoulders: null,
+            belt: null,
+            ring1: null,
+            ring2: null,
+            neck: null,
+            trinket1: null,
+            trinket2: null,
             mainHand: null,
             offHand: null
         };
