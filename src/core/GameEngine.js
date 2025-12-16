@@ -170,6 +170,15 @@ export class GameEngine {
                 this.socket.send(JSON.stringify(msg));
             }
         };
+        this.uiManager.onUnequipRequest = (slot) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'unequip',
+                    payload: { slot }
+                };
+                this.socket.send(JSON.stringify(msg));
+            }
+        };
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         this.minimap = new Minimap();
         this.worldMap = new WorldMap(this);
@@ -858,6 +867,9 @@ export class GameEngine {
         } else if (msg.type === 'stash') {
             this.player.stash = msg.payload.map(item => this.hydrateItem(item));
             this.uiManager.updateStash(this.player);
+        } else if (msg.type === 'buyback_list') {
+            const buybackItems = msg.payload.map(item => this.hydrateItem(item));
+            this.uiManager.updateBuybackList(buybackItems);
         } else if (msg.type === 'party_update') {
             this.uiManager.updateParty(msg.payload);
         } else if (msg.type === 'party_request') {

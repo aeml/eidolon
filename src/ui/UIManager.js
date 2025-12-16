@@ -51,6 +51,16 @@ export class UIManager {
         this.btnCloseShop = document.getElementById('btn-close-shop');
         this.btnCloseStash = document.getElementById('btn-close-stash');
         
+        // Shop Tabs
+        this.tabShopMain = document.getElementById('tab-shop-main');
+        this.tabShopBuyback = document.getElementById('tab-shop-buyback');
+        this.shopContentMain = document.getElementById('shop-content-main');
+        this.shopContentBuyback = document.getElementById('shop-content-buyback');
+        this.buybackGrid = document.getElementById('buyback-grid');
+
+        if (this.tabShopMain) this.tabShopMain.addEventListener('click', () => this.switchShopTab('main'));
+        if (this.tabShopBuyback) this.tabShopBuyback.addEventListener('click', () => this.switchShopTab('buyback'));
+
         // Skill Tree UI
         this.skillTreeWindow = document.getElementById('skill-tree-window');
         this.skillTreeContent = document.getElementById('skill-tree-content');
@@ -1239,6 +1249,59 @@ export class UIManager {
         }
     }
 
+    switchShopTab(tab) {
+        if (tab === 'main') {
+            this.shopContentMain.style.display = 'flex';
+            this.shopContentBuyback.style.display = 'none';
+            this.tabShopMain.style.background = '#333';
+            this.tabShopBuyback.style.background = '#111';
+        } else {
+            this.shopContentMain.style.display = 'none';
+            this.shopContentBuyback.style.display = 'flex';
+            this.tabShopMain.style.background = '#111';
+            this.tabShopBuyback.style.background = '#333';
+        }
+    }
+
+    updateBuybackList(items) {
+        if (!this.buybackGrid) return;
+        this.buybackGrid.innerHTML = '';
+        if (!items) return;
+
+        // Reverse order to show newest first
+        const reversedItems = [...items].reverse();
+
+        reversedItems.forEach(item => {
+            const el = document.createElement('div');
+            el.className = 'inventory-item';
+            el.style.backgroundImage = `url('assets/items/${item.icon}')`;
+            el.style.border = `1px solid ${this.getRarityColor(item.rarity)}`;
+            el.style.position = 'relative';
+            el.style.cursor = 'pointer';
+            
+            // Tooltip
+            el.title = `${item.name}\nBuyback Price: ${item.value * (item.stack || 1)}g`;
+
+            if (item.stack > 1) {
+                const stackCount = document.createElement('div');
+                stackCount.className = 'item-stack';
+                stackCount.innerText = item.stack;
+                el.appendChild(stackCount);
+            }
+
+            el.onclick = () => {
+                if (this.gameEngine && this.gameEngine.socket) {
+                    this.gameEngine.socket.send(JSON.stringify({
+                        type: 'buyback',
+                        payload: { itemId: item.id }
+                    }));
+                }
+            };
+
+            this.buybackGrid.appendChild(el);
+        });
+    }
+
     handleEscape() {
         let closedSomething = false;
 
@@ -1368,31 +1431,60 @@ export class UIManager {
             el._item = item; // Store item for tooltip
             el.innerHTML = ''; // Clear text/children
             
+            // Remove old event listeners (by cloning and replacing)
+            const newEl = el.cloneNode(true);
+            el.parentNode.replaceChild(newEl, el);
+            
+            // Re-assign to new element
+            const slotEl = newEl;
+            slotEl._item = item; // Re-attach item data
+
             if (item) {
                 const iconPath = this.getItemIconPath(item);
                 const color = item.rarity ? item.rarity.color : '#ffffff';
                 const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
                 
                 if (isEidolic) {
-                    el.innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
-                    el.style.border = `2px solid ${color}`;
-                    el.style.boxShadow = `0 0 5px ${color}`;
+                    slotEl.innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
+                    slotEl.style.border = `2px solid ${color}`;
+                    slotEl.style.boxShadow = `0 0 5px ${color}`;
                 } else {
                     // Use multiply blend mode to tint the background
-                    el.innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
-                    el.style.border = `1px solid ${color}`;
-                    el.style.boxShadow = 'none';
+                    slotEl.innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
+                    slotEl.style.border = `1px solid ${color}`;
+                    slotEl.style.boxShadow = 'none';
                 }
                 
-                el.style.color = color;
-                el.style.borderColor = color;
-                // el.title = this.getItemTooltipText(item); // Disable native tooltip
-                el.removeAttribute('title');
+                slotEl.style.color = color;
+                slotEl.style.borderColor = color;
+                // slotEl.title = this.getItemTooltipText(item); // Disable native tooltip
+                slotEl.removeAttribute('title');
+
+                // Add click handler for unequipping
+                slotEl.onclick = (e) => {
+                    e.stopPropagation();
+                    if (this.onUnequipRequest) {
+                        // Extract slot name from ID (e.g., "slot-head" -> "head")
+                        const slotName = id.replace('slot-', '');
+                        this.onUnequipRequest(slotName);
+                    }
+                };
+
+                // Tooltip handlers
+                slotEl.addEventListener('mouseenter', (e) => {
+                    const rect = slotEl.getBoundingClientRect();
+                    this.showItemTooltip(item, rect.right + 10, rect.top);
+                });
+                slotEl.addEventListener('mouseleave', () => {
+                    this.hideTooltips();
+                });
+
             } else {
-                el.textContent = placeholder;
-                el.style.color = '#666';
-                el.style.borderColor = '#444';
-                el.title = 'Empty Slot';
+                slotEl.textContent = placeholder;
+                slotEl.style.color = '#666';
+                slotEl.style.borderColor = '#444';
+                slotEl.title = 'Empty Slot';
+                slotEl.onclick = null;
             }
         }
     }

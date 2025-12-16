@@ -105,6 +105,9 @@ const (
 	MsgPartyPromote  = "party_promote"
 	MsgPartyLeave    = "party_leave"
 	MsgPartyUpdate   = "party_update"
+	MsgBuyback       = "buyback"
+	MsgBuybackList   = "buyback_list"
+	MsgUnequip       = "unequip"
 )
 
 type Message struct {
@@ -152,6 +155,10 @@ type SellPayload struct {
 	ItemID string `json:"itemId"`
 }
 
+type BuybackPayload struct {
+	ItemID string `json:"itemId"`
+}
+
 type StashDepositPayload struct {
 	ItemID string `json:"itemId"`
 }
@@ -171,6 +178,10 @@ type CompleteQuestPayload struct {
 type EquipPayload struct {
 	ItemID string `json:"itemId"`
 	Slot   string `json:"slot"`
+}
+
+type UnequipPayload struct {
+	Slot string `json:"slot"`
 }
 
 type AbilityPayload struct {
@@ -807,6 +818,37 @@ func (c *Client) handleMessage(msg Message) {
 			}
 		}
 
+		// Convert DB Buyback to Game Buyback
+		if len(char.Buyback) > 0 {
+			entity.Buyback = make([]game.Item, len(char.Buyback))
+			for i, dbItem := range char.Buyback {
+				// Fix for old items
+				maxStack := dbItem.MaxStack
+				if (dbItem.Name == "Shard" || dbItem.Name == "Heart") && maxStack == 0 {
+					maxStack = 1000
+				}
+				stack := dbItem.Stack
+				if stack == 0 {
+					stack = 1
+				}
+
+				entity.Buyback[i] = game.Item{
+					ID:          dbItem.ID,
+					Name:        dbItem.Name,
+					Type:        game.ItemType(dbItem.Type),
+					Rarity:      game.ItemRarity(dbItem.Rarity),
+					Slot:        dbItem.Slot,
+					Level:       dbItem.Level,
+					Value:       dbItem.Value,
+					Icon:        dbItem.Icon,
+					Description: dbItem.Description,
+					Stats:       dbItem.Stats,
+					Stack:       stack,
+					MaxStack:    maxStack,
+				}
+			}
+		}
+
 		// Convert DB Equipment to Game Equipment
 		if len(char.Equipment) > 0 {
 			entity.Equipment = make(map[string]game.Item)
@@ -1004,6 +1046,27 @@ func (c *Client) handleMessage(msg Message) {
 			c.sendSafe(b)
 		}
 
+	case MsgUnequip:
+		if c.playerID == "" {
+			return
+		}
+		var payload UnequipPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success := world.PerformUnequip(c.playerID, payload.Slot)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
+
 	case MsgBuyGamble:
 		if c.playerID == "" {
 			return
@@ -1044,6 +1107,45 @@ func (c *Client) handleMessage(msg Message) {
 			}
 			b, _ := json.Marshal(msg)
 			c.sendSafe(b)
+
+			// Send Buyback Update
+			buybackPayload, _ := json.Marshal(player.Buyback)
+			msgBuyback := Message{
+				Type:    MsgBuybackList,
+				Payload: buybackPayload,
+			}
+			bBuyback, _ := json.Marshal(msgBuyback)
+			c.sendSafe(bBuyback)
+		}
+
+	case MsgBuyback:
+		if c.playerID == "" {
+			return
+		}
+		var payload BuybackPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success := world.PerformBuyback(c.playerID, payload.ItemID)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msgInv := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			bInv, _ := json.Marshal(msgInv)
+			c.sendSafe(bInv)
+
+			// Send Buyback Update
+			buybackPayload, _ := json.Marshal(player.Buyback)
+			msgBuyback := Message{
+				Type:    MsgBuybackList,
+				Payload: buybackPayload,
+			}
+			bBuyback, _ := json.Marshal(msgBuyback)
+			c.sendSafe(bBuyback)
 		}
 
 	case MsgPartyInvite:
@@ -1563,6 +1665,27 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 		char.Stash = make([]database.Item, len(entity.Stash))
 		for i, item := range entity.Stash {
 			char.Stash[i] = database.Item{
+				ID:          item.ID,
+				Name:        item.Name,
+				Type:        string(item.Type),
+				Rarity:      string(item.Rarity),
+				Slot:        item.Slot,
+				Level:       item.Level,
+				Value:       item.Value,
+				Icon:        item.Icon,
+				Description: item.Description,
+				Stats:       item.Stats,
+				Stack:       item.Stack,
+				MaxStack:    item.MaxStack,
+			}
+		}
+	}
+
+	// Convert Game Buyback to DB Buyback
+	if len(entity.Buyback) > 0 {
+		char.Buyback = make([]database.Item, len(entity.Buyback))
+		for i, item := range entity.Buyback {
+			char.Buyback[i] = database.Item{
 				ID:          item.ID,
 				Name:        item.Name,
 				Type:        string(item.Type),
