@@ -1273,9 +1273,13 @@ export class UIManager {
 
         reversedItems.forEach(item => {
             const el = document.createElement('div');
-            el.className = 'inventory-item';
+            el.className = 'inv-slot';
             el.style.backgroundImage = `url('assets/items/${item.icon}')`;
-            el.style.border = `1px solid ${this.getRarityColor(item.rarity)}`;
+            el.style.backgroundSize = 'contain';
+            el.style.backgroundRepeat = 'no-repeat';
+            el.style.backgroundPosition = 'center';
+            const color = item.rarity ? item.rarity.color : '#ffffff';
+            el.style.border = `1px solid ${color}`;
             el.style.position = 'relative';
             el.style.cursor = 'pointer';
             
@@ -1286,6 +1290,13 @@ export class UIManager {
                 const stackCount = document.createElement('div');
                 stackCount.className = 'item-stack';
                 stackCount.innerText = item.stack;
+                stackCount.style.position = 'absolute';
+                stackCount.style.bottom = '2px';
+                stackCount.style.right = '2px';
+                stackCount.style.fontSize = '10px';
+                stackCount.style.color = 'white';
+                stackCount.style.textShadow = '1px 1px 0 #000';
+                stackCount.style.fontWeight = 'bold';
                 el.appendChild(stackCount);
             }
 

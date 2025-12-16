@@ -1217,7 +1217,10 @@ func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
 	player.Gold += value * stackSize
 
 	// Add to buyback (Legendary only)
-	if itemToSell.Rarity == RarityLegendary {
+	// Debug log
+	fmt.Printf("Selling item: %s, Rarity: %s\n", itemToSell.Name, itemToSell.Rarity)
+
+	if strings.EqualFold(string(itemToSell.Rarity), string(RarityLegendary)) {
 		player.Buyback = append(player.Buyback, *itemToSell)
 		if len(player.Buyback) > 20 {
 			player.Buyback = player.Buyback[1:]
