@@ -88,6 +88,7 @@ const (
 	MsgSell          = "sell"
 	MsgSocial        = "social"
 	MsgRespawn       = "respawn"
+	MsgRecall        = "recall"
 	MsgReport        = "report"
 	MsgStashDeposit  = "stash_deposit"
 	MsgStashWithdraw = "stash_withdraw"

@@ -868,8 +868,12 @@ export class GameEngine {
             this.player.stash = msg.payload.map(item => this.hydrateItem(item));
             this.uiManager.updateStash(this.player);
         } else if (msg.type === 'buyback_list') {
-            const buybackItems = msg.payload.map(item => this.hydrateItem(item));
-            this.uiManager.updateBuybackList(buybackItems);
+            if (msg.payload) {
+                const buybackItems = msg.payload.map(item => this.hydrateItem(item));
+                this.uiManager.updateBuybackList(buybackItems);
+            } else {
+                this.uiManager.updateBuybackList([]);
+            }
         } else if (msg.type === 'party_update') {
             this.uiManager.updateParty(msg.payload);
         } else if (msg.type === 'party_request') {
