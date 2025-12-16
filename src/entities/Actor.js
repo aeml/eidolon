@@ -1,6 +1,12 @@
 import * as THREE from 'three';
 import { Entity } from './Entity.js';
 
+// Optimization: Reusable temporary objects to avoid GC
+const TEMP_VEC = new THREE.Vector3();
+const TEMP_QUAT = new THREE.Quaternion();
+const UP_VEC = new THREE.Vector3(0, 1, 0);
+const ZERO_VEC = new THREE.Vector3(0, 0, 0);
+
 export class Actor extends Entity {
     constructor(id, config) {
         super(id);
@@ -527,9 +533,9 @@ export class Actor extends Entity {
             let movedDistance = 0;
             if (this.targetServerPosition) {
                 const lerpFactor = 10.0 * dt;
-                const oldPos = this.position.clone();
+                TEMP_VEC.copy(this.position); // Save old pos
                 this.position.lerp(this.targetServerPosition, lerpFactor);
-                movedDistance = this.position.distanceTo(oldPos);
+                movedDistance = this.position.distanceTo(TEMP_VEC);
                 
                 // Snap if very close to avoid micro-jitter
                 if (this.position.distanceTo(this.targetServerPosition) < 0.05) {
@@ -539,23 +545,26 @@ export class Actor extends Entity {
 
             // Interpolate Rotation
             if (this.targetServerRotation !== undefined) {
-                const targetQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.targetServerRotation);
-                this.rotation.slerp(targetQuat, 10.0 * dt);
+                TEMP_QUAT.setFromAxisAngle(UP_VEC, this.targetServerRotation);
+                this.rotation.slerp(TEMP_QUAT, 10.0 * dt);
             } else if (movedDistance > 0.001) {
                 // Fallback: Face movement direction if no server rotation provided
                 // This ensures entities don't slide sideways if the server omits rotation
-                const lookTarget = this.position.clone().add(this.targetServerPosition.clone().sub(this.position));
-                lookTarget.y = this.position.y;
+                // Use TEMP_VEC to calculate look target without cloning
+                TEMP_VEC.copy(this.targetServerPosition).sub(this.position).add(this.position);
+                TEMP_VEC.y = this.position.y;
+                
                 if (this.mesh) {
-                    this.mesh.lookAt(lookTarget);
+                    this.mesh.lookAt(TEMP_VEC);
                     this.rotation.copy(this.mesh.quaternion);
                 }
             }
 
             // Apply Entity Separation (Visual De-stacking)
             // Decay offset
-            this.visualOffset.lerp(new THREE.Vector3(0, 0, 0), 2.0 * dt);
+            this.visualOffset.lerp(ZERO_VEC, 2.0 * dt);
 
+            // Note: activeEntities parameter is now actually chunkManager
             if (collisionManager && activeEntities) {
                 // If this is a remote entity, ignore the local player for separation
                 // to prevent fighting with server position updates (chasing).
@@ -1009,7 +1018,18 @@ export class Actor extends Entity {
 
     recalculateStats() {
         // 1. Start with Base Stats
-        const totalStats = { ...this.baseStats };
+        // Optimization: Avoid object spread { ...this.baseStats }
+        const totalStats = this._tempStats || {
+            strength: 0, intelligence: 0, dexterity: 0, wisdom: 0, vitality: 0,
+            damage: 0, defense: 0
+        };
+        this._tempStats = totalStats;
+        
+        totalStats.strength = this.baseStats.strength;
+        totalStats.intelligence = this.baseStats.intelligence;
+        totalStats.dexterity = this.baseStats.dexterity;
+        totalStats.wisdom = this.baseStats.wisdom;
+        totalStats.vitality = this.baseStats.vitality;
         
         // Initialize derived stats that accumulate
         totalStats.damage = 0;

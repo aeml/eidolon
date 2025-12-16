@@ -7,6 +7,7 @@ export class InputManager {
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
         this.groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0); // Plane at Y=0
+        this._intersectionTarget = new THREE.Vector3(); // Reusable vector
         
         // Event Listeners
         window.addEventListener('mousemove', (e) => this.onMouseMove(e));
@@ -338,9 +339,8 @@ export class InputManager {
 
     getGroundIntersection() {
         this.raycaster.setFromCamera(this.mouse, this.camera);
-        const target = new THREE.Vector3();
-        const intersection = this.raycaster.ray.intersectPlane(this.groundPlane, target);
-        return intersection ? target : null;
+        const intersection = this.raycaster.ray.intersectPlane(this.groundPlane, this._intersectionTarget);
+        return intersection ? this._intersectionTarget : null;
     }
 
     subscribe(event, callback) {

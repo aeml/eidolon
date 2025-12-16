@@ -21,8 +21,8 @@ export class InfernoTitan extends Actor {
         this.name = 'Inferno Titan';
     }
 
-    update(dt, collisionManager, player) {
-        super.update(dt, collisionManager);
+    update(dt, collisionManager, player, chunkManager) {
+        super.update(dt, collisionManager, player, chunkManager);
 
         if (this.state === 'DEAD') return;
 

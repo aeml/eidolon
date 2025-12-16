@@ -4,6 +4,7 @@ import { Entity } from './Entity.js';
 export class AreaOfEffect extends Entity {
     constructor(gameEngine, owner, position, config) {
         super(gameEngine.getUniqueId ? gameEngine.getUniqueId() : Math.random().toString(36).substr(2, 9));
+        this.gameEngine = gameEngine;
         this.type = 'AreaOfEffect';
         this.owner = owner;
         this.position.copy(position);
@@ -55,11 +56,11 @@ export class AreaOfEffect extends Entity {
         return mesh;
     }
     
-    update(dt, collisionManager, player, activeEntities, floatingTextManager, gameEngine) {
+    update(dt, collisionManager, player, chunkManager, floatingTextManager) {
         this.elapsedTime += dt;
         if (this.elapsedTime >= this.duration) {
             this.isActive = false;
-            if (this.onExpire) this.onExpire(gameEngine, this);
+            if (this.onExpire) this.onExpire(this.gameEngine, this);
             return;
         }
         
@@ -78,13 +79,13 @@ export class AreaOfEffect extends Entity {
         this.tickTimer += dt;
         if (this.tickTimer >= this.damageInterval) {
             this.tickTimer = 0;
-            this.performTick(gameEngine);
+            this.performTick(chunkManager);
         }
     }
     
-    performTick(gameEngine) {
+    performTick(chunkManager) {
         if (this.damage > 0) {
-            const entities = gameEngine.chunkManager.getActiveEntities();
+            const entities = chunkManager ? chunkManager.getActiveEntities() : [];
             for (const entity of entities) {
                 if (!entity.isActive || entity.state === 'DEAD') continue;
                 if (entity === this.owner) continue;

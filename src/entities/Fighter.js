@@ -444,7 +444,7 @@ export class Fighter extends Actor {
         super.takeDamage(finalAmount);
     }
 
-    update(dt, collisionManager, player, activeEntities, floatingTextManager) {
+    update(dt, collisionManager, player, chunkManager, floatingTextManager) {
         if (this.ironFortressTimer > 0) {
             this.ironFortressTimer -= dt;
             if (this.ironFortressTimer <= 0) {
@@ -472,8 +472,8 @@ export class Fighter extends Actor {
 
             // Damage Tick (every 0.2s)
             const radius = 3.0;
-            // Use gameEngine to get entities if activeEntities is not passed or incomplete
-            const entities = (this.gameEngine && this.gameEngine.chunkManager) ? this.gameEngine.chunkManager.getActiveEntities() : (activeEntities || []);
+            // Use chunkManager to get entities
+            const entities = chunkManager ? chunkManager.getActiveEntities() : [];
             
             if (!this.whirlwindDamageTimer) this.whirlwindDamageTimer = 0;
             this.whirlwindDamageTimer += dt;

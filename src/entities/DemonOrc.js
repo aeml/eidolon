@@ -22,8 +22,8 @@ export class DemonOrc extends Actor {
         this.name = 'Demon Orc';
     }
 
-    update(dt, collisionManager, player) {
-        super.update(dt, collisionManager);
+    update(dt, collisionManager, player, chunkManager) {
+        super.update(dt, collisionManager, player, chunkManager);
 
         if (this.state === 'DEAD') return;
 
