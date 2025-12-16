@@ -226,26 +226,27 @@ func GenerateShardLoot(isElite bool) []*Item {
 	var items []*Item
 
 	// Shard Logic
-	// Normal: 20-35% chance for 1-2 shards
-	// Elite: 100% chance for 3-6 shards
+	// Normal: 10% chance for 1 shard
+	// Elite: 50% chance for 1-3 shards
 
 	shardCount := 0
 	if isElite {
-		shardCount = rand.Intn(4) + 3 // 3 to 6
+		if rand.Float64() < 0.50 {
+			shardCount = rand.Intn(3) + 1 // 1 to 3
+		}
 	} else {
-		roll := rand.Float64()
-		// 20-35% chance. Let's say 30% average.
-		// User said "20-35% chance". I'll pick a random threshold between 0.20 and 0.35?
-		// Or just fixed 30%? Let's do 30%.
-		if roll < 0.30 {
-			shardCount = rand.Intn(2) + 1 // 1 to 2
+		if rand.Float64() < 0.10 {
+			shardCount = 1
 		}
 	}
 
 	if shardCount > 0 {
 		baseShard := BaseItem{Name: "Shard", Type: ItemMaterial, Slot: "material"}
 		for i := 0; i < shardCount; i++ {
-			items = append(items, createItem(baseShard, RarityEidolic, 1.0, 0, 1))
+			item := createItem(baseShard, RarityEidolic, 1.0, 0, 1)
+			item.MaxStack = 1000
+			item.Icon = "assets/items/eidolon_shard/eidolon_shard.png"
+			items = append(items, item)
 		}
 	}
 
@@ -260,7 +261,10 @@ func GenerateShardLoot(isElite bool) []*Item {
 
 	if rand.Float64() < heartChance {
 		baseHeart := BaseItem{Name: "Heart", Type: ItemRelic, Slot: "relic"}
-		items = append(items, createItem(baseHeart, RarityEidolic, 1.0, 0, 1))
+		item := createItem(baseHeart, RarityEidolic, 1.0, 0, 1)
+		item.MaxStack = 1000
+		item.Icon = "assets/items/eidolon_heart/eidolon_heart.png"
+		items = append(items, item)
 	}
 
 	return items

@@ -11,8 +11,14 @@ export const SLOTS = {
     CHEST: 'chest',
     LEGS: 'legs',
     FEET: 'feet',
+    SHOULDERS: 'shoulders',
+    BELT: 'belt',
+    RING: 'ring',
+    TRINKET: 'trinket',
     MAIN_HAND: 'mainHand',
-    OFF_HAND: 'offHand'
+    OFF_HAND: 'offHand',
+    MATERIAL: 'material',
+    RELIC: 'relic'
 };
 
 export const BASE_ITEMS = [
@@ -71,11 +77,26 @@ export class Item {
 
     static getValue(item) {
         if (!item) return 0;
+        // If the server sent a value, use it as base
+        if (item.value) {
+            let val = item.value;
+            if (item.stack && item.stack > 1) {
+                val *= item.stack;
+            }
+            return val;
+        }
+
         let multiplier = 1;
         if (item.rarity.name === 'Uncommon') multiplier = 2;
         if (item.rarity.name === 'Rare') multiplier = 5;
         if (item.rarity.name === 'Legendary') multiplier = 20;
-        return Math.floor(item.level * 10 * multiplier);
+        if (item.rarity.name === 'Eidolic') multiplier = 50;
+        
+        let val = Math.floor(item.level * 10 * multiplier);
+        if (item.stack && item.stack > 1) {
+            val *= item.stack;
+        }
+        return val;
     }
 }
 

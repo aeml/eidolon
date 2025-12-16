@@ -1059,6 +1059,11 @@ func (w *World) PerformEquip(playerID, itemID, slot string) (*Entity, bool) {
 		return nil, false
 	}
 
+	// Prevent equipping non-equippable items
+	if itemToEquip.Type == ItemMaterial || itemToEquip.Type == ItemRelic {
+		return nil, false
+	}
+
 	// Validate Slot
 	validSlot := false
 	if itemToEquip.Slot == slot {
@@ -1075,7 +1080,13 @@ func (w *World) PerformEquip(playerID, itemID, slot string) (*Entity, bool) {
 
 	// Unequip current
 	if current, ok := player.Equipment[slot]; ok {
-		player.Inventory = append(player.Inventory, current)
+		remaining := player.AddItemToInventory(current)
+		if remaining > 0 {
+			current.Stack = remaining
+			player.Inventory[invIndex] = current
+			player.Equipment[slot] = *itemToEquip
+			return player, true
+		}
 	}
 
 	if player.Equipment == nil {
@@ -1107,14 +1118,18 @@ func (w *World) PerformBuyGamble(playerID, slot string) (*Entity, bool) {
 	if player.Gold < cost {
 		return nil, false
 	}
-	if len(player.Inventory) >= MaxInventorySize {
-		return nil, false
-	}
 
 	player.Gold -= cost
 	item := GenerateLootForSlot(slot, player.Level)
 	if item != nil {
-		player.Inventory = append(player.Inventory, *item)
+		remaining := player.AddItemToInventory(*item)
+		if remaining == item.Stack {
+			// Inventory full, nothing added
+			player.Gold += cost
+			return nil, false
+		}
+		// If remaining > 0 but < item.Stack, we partially added.
+		// We keep the gold as the transaction partially succeeded.
 		return player, true
 	} else {
 		player.Gold += cost
@@ -1149,7 +1164,13 @@ func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
 	if value <= 0 {
 		value = 1
 	}
-	player.Gold += value
+
+	stackSize := itemToSell.Stack
+	if stackSize <= 0 {
+		stackSize = 1
+	}
+
+	player.Gold += value * stackSize
 
 	lastIdx := len(player.Inventory) - 1
 	player.Inventory[invIndex] = player.Inventory[lastIdx]
@@ -1164,11 +1185,6 @@ func (w *World) PerformStashDeposit(playerID, itemID string) (*Entity, bool) {
 
 	player, ok := w.Entities[playerID]
 	if !ok {
-		return nil, false
-	}
-
-	// Check Stash Size
-	if len(player.Stash) >= MaxStashSize {
 		return nil, false
 	}
 
@@ -1188,14 +1204,21 @@ func (w *World) PerformStashDeposit(playerID, itemID string) (*Entity, bool) {
 	}
 
 	// Move to Stash
-	player.Stash = append(player.Stash, *itemToDeposit)
+	remaining := player.AddItemToStash(*itemToDeposit)
 
-	// Remove from Inventory
-	lastIdx := len(player.Inventory) - 1
-	player.Inventory[invIndex] = player.Inventory[lastIdx]
-	player.Inventory = player.Inventory[:lastIdx]
+	if remaining == 0 {
+		// Fully deposited
+		lastIdx := len(player.Inventory) - 1
+		player.Inventory[invIndex] = player.Inventory[lastIdx]
+		player.Inventory = player.Inventory[:lastIdx]
+		return player, true
+	} else if remaining < itemToDeposit.Stack {
+		// Partially deposited
+		player.Inventory[invIndex].Stack = remaining
+		return player, true
+	}
 
-	return player, true
+	return nil, false
 }
 
 func (w *World) PerformStashWithdraw(playerID, itemID string) (*Entity, bool) {
@@ -5266,14 +5289,26 @@ func (e *Entity) AddItemToInventory(item Item) int {
 	// 1. Try to stack
 	if item.MaxStack > 1 {
 		for i := range e.Inventory {
-			if e.Inventory[i].Name == item.Name && e.Inventory[i].Stack < e.Inventory[i].MaxStack {
-				space := e.Inventory[i].MaxStack - e.Inventory[i].Stack
-				if space >= remaining {
-					e.Inventory[i].Stack += remaining
-					return 0
-				} else {
-					e.Inventory[i].Stack += space
-					remaining -= space
+			if e.Inventory[i].Name == item.Name {
+				// Self-heal: Update MaxStack from incoming item if it's better (fixes old items)
+				if item.MaxStack > e.Inventory[i].MaxStack {
+					e.Inventory[i].MaxStack = item.MaxStack
+				}
+
+				// Self-heal: Update Icon if missing
+				if e.Inventory[i].Icon == "" && item.Icon != "" {
+					e.Inventory[i].Icon = item.Icon
+				}
+
+				if e.Inventory[i].Stack < e.Inventory[i].MaxStack {
+					space := e.Inventory[i].MaxStack - e.Inventory[i].Stack
+					if space >= remaining {
+						e.Inventory[i].Stack += remaining
+						return 0
+					} else {
+						e.Inventory[i].Stack += space
+						remaining -= space
+					}
 				}
 			}
 		}
@@ -5288,6 +5323,49 @@ func (e *Entity) AddItemToInventory(item Item) int {
 			return 0
 		}
 		return remaining // Inventory full
+	}
+	return 0
+}
+
+func (e *Entity) AddItemToStash(item Item) int {
+	remaining := item.Stack
+	// 1. Try to stack
+	if item.MaxStack > 1 {
+		for i := range e.Stash {
+			if e.Stash[i].Name == item.Name {
+				// Self-heal: Update MaxStack from incoming item if it's better
+				if item.MaxStack > e.Stash[i].MaxStack {
+					e.Stash[i].MaxStack = item.MaxStack
+				}
+
+				// Self-heal: Update Icon if missing
+				if e.Stash[i].Icon == "" && item.Icon != "" {
+					e.Stash[i].Icon = item.Icon
+				}
+
+				if e.Stash[i].Stack < e.Stash[i].MaxStack {
+					space := e.Stash[i].MaxStack - e.Stash[i].Stack
+					if space >= remaining {
+						e.Stash[i].Stack += remaining
+						return 0
+					} else {
+						e.Stash[i].Stack += space
+						remaining -= space
+					}
+				}
+			}
+		}
+	}
+
+	// 2. Add remaining as new item
+	if remaining > 0 {
+		if len(e.Stash) < MaxStashSize {
+			newItem := item
+			newItem.Stack = remaining
+			e.Stash = append(e.Stash, newItem)
+			return 0
+		}
+		return remaining // Stash full
 	}
 	return 0
 }

@@ -800,12 +800,40 @@ export class GameEngine {
         }
     }
 
+    hydrateItem(item) {
+        if (!item) return null;
+        if (typeof item.rarity === 'string') {
+            // Try direct lookup (e.g. "COMMON")
+            let rarity = RARITY[item.rarity.toUpperCase()];
+            
+            // If not found, try by name (e.g. "Common")
+            if (!rarity) {
+                for (const key in RARITY) {
+                    if (RARITY[key].name === item.rarity) {
+                        rarity = RARITY[key];
+                        break;
+                    }
+                }
+            }
+            
+            // Default to Common if still not found
+            item.rarity = rarity || RARITY.COMMON;
+        }
+        return item;
+    }
+
     handleServerMessage(msg) {
         if (!this.player) return; // Safety check
 
         if (msg.type === 'chat') {
             const chatData = msg.payload;
             this.uiManager.addChatMessage(chatData.sender, chatData.message);
+        } else if (msg.type === 'inventory') {
+            this.player.inventory = msg.payload.map(item => this.hydrateItem(item));
+            this.uiManager.updateInventory(this.player);
+        } else if (msg.type === 'stash') {
+            this.player.stash = msg.payload.map(item => this.hydrateItem(item));
+            this.uiManager.updateStash(this.player);
         } else if (msg.type === 'party_update') {
             this.uiManager.updateParty(msg.payload);
         } else if (msg.type === 'party_request') {
@@ -1032,15 +1060,7 @@ export class GameEngine {
                             this.player.equipment = pData.equipment;
                             // Hydrate Rarity for UI
                             for (const key in this.player.equipment) {
-                                const item = this.player.equipment[key];
-                                if (item && typeof item.rarity === 'string') {
-                                    for (const rKey in RARITY) {
-                                        if (RARITY[rKey].name === item.rarity) {
-                                            item.rarity = RARITY[rKey];
-                                            break;
-                                        }
-                                    }
-                                }
+                                this.player.equipment[key] = this.hydrateItem(this.player.equipment[key]);
                             }
                         }
 
@@ -1968,10 +1988,7 @@ export class GameEngine {
                 // Pass subType (e.g. "Skeleton", "DwarfSalesman")
                 if (pData.type === 'Loot') {
                     // Map rarity string to object
-                    if (typeof pData.lootItem.rarity === 'string') {
-                        const rarityKey = pData.lootItem.rarity.toUpperCase();
-                        pData.lootItem.rarity = RARITY[rarityKey] || RARITY.COMMON;
-                    }
+                    this.hydrateItem(pData.lootItem);
 
                     // Create LootDrop
                     remoteEntity = new LootDrop(pData.lootItem, pData.x, pData.z, pData.id);

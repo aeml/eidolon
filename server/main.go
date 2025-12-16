@@ -737,8 +737,17 @@ func (c *Client) handleMessage(msg Message) {
 			log.Printf("Loading inventory for %s: %d items", c.username, len(char.Inventory))
 			entity.Inventory = make([]game.Item, len(char.Inventory))
 			for i, dbItem := range char.Inventory {
-				// Manual conversion or JSON marshal/unmarshal hack
-				// Let's do manual for safety
+				// Fix for old items (Shards/Hearts missing MaxStack)
+				maxStack := dbItem.MaxStack
+				if (dbItem.Name == "Shard" || dbItem.Name == "Heart") && maxStack == 0 {
+					maxStack = 1000
+				}
+				// Fix for old items (Missing Stack count)
+				stack := dbItem.Stack
+				if stack == 0 {
+					stack = 1
+				}
+
 				entity.Inventory[i] = game.Item{
 					ID:          dbItem.ID,
 					Name:        dbItem.Name,
@@ -750,6 +759,8 @@ func (c *Client) handleMessage(msg Message) {
 					Icon:        dbItem.Icon,
 					Description: dbItem.Description,
 					Stats:       dbItem.Stats,
+					Stack:       stack,
+					MaxStack:    maxStack,
 				}
 			}
 		}
@@ -758,6 +769,16 @@ func (c *Client) handleMessage(msg Message) {
 		if len(char.Stash) > 0 {
 			entity.Stash = make([]game.Item, len(char.Stash))
 			for i, dbItem := range char.Stash {
+				// Fix for old items
+				maxStack := dbItem.MaxStack
+				if (dbItem.Name == "Shard" || dbItem.Name == "Heart") && maxStack == 0 {
+					maxStack = 1000
+				}
+				stack := dbItem.Stack
+				if stack == 0 {
+					stack = 1
+				}
+
 				entity.Stash[i] = game.Item{
 					ID:          dbItem.ID,
 					Name:        dbItem.Name,
@@ -769,6 +790,8 @@ func (c *Client) handleMessage(msg Message) {
 					Icon:        dbItem.Icon,
 					Description: dbItem.Description,
 					Stats:       dbItem.Stats,
+					Stack:       stack,
+					MaxStack:    maxStack,
 				}
 			}
 		}
@@ -788,6 +811,8 @@ func (c *Client) handleMessage(msg Message) {
 					Icon:        dbItem.Icon,
 					Description: dbItem.Description,
 					Stats:       dbItem.Stats,
+					Stack:       dbItem.Stack,
+					MaxStack:    dbItem.MaxStack,
 				}
 			}
 		}
@@ -1510,6 +1535,8 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				Icon:        item.Icon,
 				Description: item.Description,
 				Stats:       item.Stats,
+				Stack:       item.Stack,
+				MaxStack:    item.MaxStack,
 			}
 		}
 	}
@@ -1529,6 +1556,8 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				Icon:        item.Icon,
 				Description: item.Description,
 				Stats:       item.Stats,
+				Stack:       item.Stack,
+				MaxStack:    item.MaxStack,
 			}
 		}
 	}
@@ -1548,6 +1577,8 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				Icon:        item.Icon,
 				Description: item.Description,
 				Stats:       item.Stats,
+				Stack:       item.Stack,
+				MaxStack:    item.MaxStack,
 			}
 		}
 	}
