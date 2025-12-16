@@ -36,6 +36,7 @@ type Character struct {
 	Stats          Stats           `bson:"stats"`
 	Inventory      []Item          `bson:"inventory"`
 	Stash          []Item          `bson:"stash"`
+	Buyback        []Item          `bson:"buyback"`
 	Equipment      map[string]Item `bson:"equipment"`
 	Quests         []Quest         `bson:"quests"`
 	LastDailyQuest time.Time       `bson:"last_daily_quest"`

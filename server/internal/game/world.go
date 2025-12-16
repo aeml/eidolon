@@ -67,6 +67,7 @@ type Entity struct {
 	// Inventory
 	Inventory      []Item          `json:"-"`
 	Stash          []Item          `json:"-"`
+	Buyback        []Item          `json:"-"`
 	Equipment      map[string]Item `json:"equipment"`
 	Quests         []Quest         `json:"quests"`
 	LastDailyQuest time.Time       `json:"-"`
@@ -1089,13 +1090,16 @@ func (w *World) PerformEquip(playerID, itemID, slot string) (*Entity, bool) {
 		return nil, false
 	}
 
+	// Capture the item value BEFORE any inventory modifications to prevent pointer invalidation
+	newItem := *itemToEquip
+
 	// Unequip current
 	if current, ok := player.Equipment[slot]; ok {
 		remaining := player.AddItemToInventory(current)
 		if remaining > 0 {
 			current.Stack = remaining
 			player.Inventory[invIndex] = current
-			player.Equipment[slot] = *itemToEquip
+			player.Equipment[slot] = newItem
 			return player, true
 		}
 	}
@@ -1103,12 +1107,41 @@ func (w *World) PerformEquip(playerID, itemID, slot string) (*Entity, bool) {
 	if player.Equipment == nil {
 		player.Equipment = make(map[string]Item)
 	}
-	player.Equipment[slot] = *itemToEquip
+	player.Equipment[slot] = newItem
 
 	// Swap remove
 	lastIdx := len(player.Inventory) - 1
 	player.Inventory[invIndex] = player.Inventory[lastIdx]
 	player.Inventory = player.Inventory[:lastIdx]
+
+	player.RecalculateStats()
+	return player, true
+}
+
+func (w *World) PerformUnequip(playerID, slot string) (*Entity, bool) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+
+	// Check if slot has item
+	item, ok := player.Equipment[slot]
+	if !ok {
+		return nil, false
+	}
+
+	// Try to add to inventory
+	remaining := player.AddItemToInventory(item)
+	if remaining > 0 {
+		// Inventory full
+		return nil, false
+	}
+
+	// Remove from equipment
+	delete(player.Equipment, slot)
 
 	player.RecalculateStats()
 	return player, true
@@ -1183,9 +1216,63 @@ func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
 
 	player.Gold += value * stackSize
 
+	// Add to buyback (Legendary only)
+	if itemToSell.Rarity == RarityLegendary {
+		player.Buyback = append(player.Buyback, *itemToSell)
+		if len(player.Buyback) > 20 {
+			player.Buyback = player.Buyback[1:]
+		}
+	}
+
 	lastIdx := len(player.Inventory) - 1
 	player.Inventory[invIndex] = player.Inventory[lastIdx]
 	player.Inventory = player.Inventory[:lastIdx]
+
+	return player, true
+}
+
+func (w *World) PerformBuyback(playerID, itemID string) (*Entity, bool) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+
+	buybackIndex := -1
+	var itemToBuy *Item
+	for i := range player.Buyback {
+		if player.Buyback[i].ID == itemID {
+			itemToBuy = &player.Buyback[i]
+			buybackIndex = i
+			break
+		}
+	}
+
+	if itemToBuy == nil {
+		return nil, false
+	}
+
+	cost := itemToBuy.Value
+	if cost <= 0 {
+		cost = 1
+	}
+	stackSize := itemToBuy.Stack
+	if stackSize <= 0 {
+		stackSize = 1
+	}
+	totalCost := cost * stackSize
+
+	if player.Gold < totalCost {
+		return nil, false
+	}
+
+	player.Gold -= totalCost
+	player.Inventory = append(player.Inventory, *itemToBuy)
+
+	// Remove from buyback
+	player.Buyback = append(player.Buyback[:buybackIndex], player.Buyback[buybackIndex+1:]...)
 
 	return player, true
 }

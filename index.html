@@ -1809,7 +1809,15 @@
         <!-- Shop Screen -->
         <div id="shop-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: auto; z-index: 101; flex-direction: column;">
             <div class="window-header">MERCHANT</div>
-            <div style="padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column;">
+            
+            <!-- Tabs -->
+            <div style="display: flex; border-bottom: 1px solid #444;">
+                <button id="tab-shop-main" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #333;">Shop</button>
+                <button id="tab-shop-buyback" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">Buyback</button>
+            </div>
+
+            <!-- Main Shop Content -->
+            <div id="shop-content-main" style="padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column;">
                 <p style="color: #aaa; font-size: 14px; margin-bottom: 15px;">Right-click items in your inventory to sell them.</p>
                 
                 <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
@@ -1824,6 +1832,15 @@
                     <!-- Populated by JS -->
                 </div>
             </div>
+
+            <!-- Buyback Content -->
+            <div id="shop-content-buyback" style="padding: 10px; text-align: center; flex-grow: 1; display: none; flex-direction: column;">
+                <p style="color: #aaa; font-size: 14px; margin-bottom: 15px;">Click items to buy them back.</p>
+                <div id="buyback-grid" class="inventory-grid" style="grid-template-columns: repeat(5, 1fr); padding: 10px; max-height: 300px; overflow-y: auto;">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
             <div style="text-align: center; padding: 10px; border-top: 1px solid #444;">
                 <button id="btn-close-shop" class="menu-btn">Close</button>
             </div>
