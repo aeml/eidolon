@@ -102,6 +102,54 @@ export class GameEngine {
                 this.socket.send(JSON.stringify({ type: 'social', payload: {} }));
             }
         };
+        this.uiManager.onTradingSearch = (query) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(JSON.stringify({ 
+                    type: 'trading_search', 
+                    payload: { query } 
+                }));
+            }
+        };
+        this.uiManager.onTradingCreate = (slotIndex, bid, buyout, duration) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(JSON.stringify({ 
+                    type: 'trading_create', 
+                    payload: { slotIndex, bid, buyout, duration } 
+                }));
+            }
+        };
+        this.uiManager.onTradingMyAuctions = () => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(JSON.stringify({ 
+                    type: 'trading_my_auctions', 
+                    payload: {} 
+                }));
+            }
+        };
+        this.uiManager.onTradingBuyout = (auctionId) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(JSON.stringify({ 
+                    type: 'trading_buyout', 
+                    payload: { auctionId } 
+                }));
+            }
+        };
+        this.uiManager.onTradingCollect = (auctionId) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(JSON.stringify({ 
+                    type: 'trading_collect', 
+                    payload: { auctionId } 
+                }));
+            }
+        };
+        this.uiManager.onTradingCancel = (auctionId) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(JSON.stringify({ 
+                    type: 'trading_cancel', 
+                    payload: { auctionId } 
+                }));
+            }
+        };
         this.uiManager.onReportSubmit = (type, text) => {
             if (this.socket && this.socket.readyState === WebSocket.OPEN) {
                 const msg = {
@@ -962,6 +1010,22 @@ export class GameEngine {
             // If target is local player, flash screen or shake camera?
             if (this.player && dmgData.targetId === this.player.id) {
                 // this.renderSystem.shakeCamera(0.2);
+            }
+        } else if (msg.type === 'trading_list') {
+            if (msg.payload) {
+                const auctions = msg.payload.map(auction => ({
+                    ...auction,
+                    item: this.hydrateItem(auction.item)
+                }));
+                this.uiManager.renderAuctionList(auctions);
+            }
+        } else if (msg.type === 'trading_my_list') {
+            if (msg.payload) {
+                const auctions = msg.payload.map(auction => ({
+                    ...auction,
+                    item: this.hydrateItem(auction.item)
+                }));
+                this.uiManager.renderMyAuctions(auctions);
             }
         } else if (msg.type === 'error') {
             console.error("Server Error:", msg.payload);

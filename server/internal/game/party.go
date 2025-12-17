@@ -10,12 +10,12 @@ type Party struct {
 	LeaderID string   `json:"leaderId"`
 	Members  []string `json:"members"`
 	MaxSize  int      `json:"maxSize"`
-	mu       sync.RWMutex
+	Mu       sync.RWMutex
 }
 
 func (w *World) CreateParty(leaderID string) *Party {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	leader, exists := w.Entities[leaderID]
 	if !exists || leader.PartyID != "" {
@@ -36,8 +36,8 @@ func (w *World) CreateParty(leaderID string) *Party {
 }
 
 func (w *World) JoinParty(partyID, playerID string) error {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	party, exists := w.Parties[partyID]
 	if !exists {
@@ -53,8 +53,8 @@ func (w *World) JoinParty(partyID, playerID string) error {
 		return fmt.Errorf("player already in a party")
 	}
 
-	party.mu.Lock()
-	defer party.mu.Unlock()
+	party.Mu.Lock()
+	defer party.Mu.Unlock()
 
 	if len(party.Members) >= party.MaxSize {
 		return fmt.Errorf("party is full")
@@ -66,8 +66,8 @@ func (w *World) JoinParty(partyID, playerID string) error {
 }
 
 func (w *World) LeaveParty(playerID string) (*Party, error) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, exists := w.Entities[playerID]
 	if !exists {
@@ -85,8 +85,8 @@ func (w *World) LeaveParty(playerID string) (*Party, error) {
 		return nil, nil
 	}
 
-	party.mu.Lock()
-	defer party.mu.Unlock()
+	party.Mu.Lock()
+	defer party.Mu.Unlock()
 
 	newMembers := []string{}
 	for _, mid := range party.Members {
@@ -110,8 +110,8 @@ func (w *World) LeaveParty(playerID string) (*Party, error) {
 }
 
 func (w *World) KickPartyMember(leaderID, targetID string) (*Party, error) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	leader, exists := w.Entities[leaderID]
 	if !exists || leader.PartyID == "" {
@@ -136,8 +136,8 @@ func (w *World) KickPartyMember(leaderID, targetID string) (*Party, error) {
 		return nil, fmt.Errorf("target not in this party")
 	}
 
-	party.mu.Lock()
-	defer party.mu.Unlock()
+	party.Mu.Lock()
+	defer party.Mu.Unlock()
 
 	newMembers := []string{}
 	for _, mid := range party.Members {
@@ -152,8 +152,8 @@ func (w *World) KickPartyMember(leaderID, targetID string) (*Party, error) {
 }
 
 func (w *World) PromotePartyMember(leaderID, targetID string) (*Party, error) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	leader, exists := w.Entities[leaderID]
 	if !exists || leader.PartyID == "" {
@@ -178,22 +178,22 @@ func (w *World) PromotePartyMember(leaderID, targetID string) (*Party, error) {
 		return nil, fmt.Errorf("target not in this party")
 	}
 
-	party.mu.Lock()
-	defer party.mu.Unlock()
+	party.Mu.Lock()
+	defer party.Mu.Unlock()
 
 	party.LeaderID = targetID
 	return party, nil
 }
 
 func (w *World) GetParty(partyID string) *Party {
-	w.mu.RLock()
-	defer w.mu.RUnlock()
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
 	return w.Parties[partyID]
 }
 
 func (p *Party) GetSnapshot() (string, string, []string) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
+	p.Mu.RLock()
+	defer p.Mu.RUnlock()
 	members := make([]string, len(p.Members))
 	copy(members, p.Members)
 	return p.ID, p.LeaderID, members

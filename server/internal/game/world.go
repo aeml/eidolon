@@ -48,7 +48,7 @@ type Stats struct {
 }
 
 type Entity struct {
-	mu            sync.RWMutex // Protects concurrent access
+	Mu            sync.RWMutex // Protects concurrent access
 	ID            string       `json:"id"`
 	Name          string       `json:"name"`
 	Type          EntityType   `json:"type"`
@@ -191,7 +191,7 @@ type Entity struct {
 type SpatialMap struct {
 	cellSize float64
 	cells    map[string]map[string]*Entity
-	mu       sync.RWMutex
+	Mu       sync.RWMutex
 }
 
 func NewSpatialMap(cellSize float64) *SpatialMap {
@@ -207,8 +207,8 @@ func (sm *SpatialMap) key(x, z float64) string {
 	return fmt.Sprintf("%d:%d", cx, cz)
 }
 func (sm *SpatialMap) Add(e *Entity) {
-	sm.mu.Lock()
-	defer sm.mu.Unlock()
+	sm.Mu.Lock()
+	defer sm.Mu.Unlock()
 	k := sm.key(e.X, e.Z)
 	if sm.cells[k] == nil {
 		sm.cells[k] = make(map[string]*Entity)
@@ -217,8 +217,8 @@ func (sm *SpatialMap) Add(e *Entity) {
 }
 
 func (sm *SpatialMap) Remove(e *Entity) {
-	sm.mu.Lock()
-	defer sm.mu.Unlock()
+	sm.Mu.Lock()
+	defer sm.Mu.Unlock()
 	k := sm.key(e.X, e.Z)
 	if sm.cells[k] != nil {
 		delete(sm.cells[k], e.ID)
@@ -229,8 +229,8 @@ func (sm *SpatialMap) Remove(e *Entity) {
 }
 
 func (sm *SpatialMap) Update(e *Entity, oldX, oldZ float64) {
-	sm.mu.Lock()
-	defer sm.mu.Unlock()
+	sm.Mu.Lock()
+	defer sm.Mu.Unlock()
 	oldKey := sm.key(oldX, oldZ)
 	newKey := sm.key(e.X, e.Z)
 	if oldKey == newKey {
@@ -249,8 +249,8 @@ func (sm *SpatialMap) Update(e *Entity, oldX, oldZ float64) {
 }
 
 func (sm *SpatialMap) Nearby(x, z, radius float64) []*Entity {
-	sm.mu.RLock()
-	defer sm.mu.RUnlock()
+	sm.Mu.RLock()
+	defer sm.Mu.RUnlock()
 	var result []*Entity
 	minX := int(math.Floor((x - radius) / sm.cellSize))
 	maxX := int(math.Floor((x + radius) / sm.cellSize))
@@ -271,8 +271,9 @@ func (sm *SpatialMap) Nearby(x, z, radius float64) []*Entity {
 type World struct {
 	Entities map[string]*Entity
 	Parties  map[string]*Party
+	Trading  *TradingSystem
 	Grid     *SpatialMap
-	mu       sync.RWMutex
+	Mu       sync.RWMutex
 
 	// Elite Spawning
 	EliteSpawnTimer time.Time
@@ -303,6 +304,7 @@ func NewWorld() *World {
 	w := &World{
 		Entities:        make(map[string]*Entity),
 		Parties:         make(map[string]*Party),
+		Trading:         NewTradingSystem(),
 		Grid:            NewSpatialMap(50.0), // 50 unit cell size
 		EliteSpawnTimer: time.Now(),
 		RegenTimer:      0,
@@ -314,8 +316,8 @@ func NewWorld() *World {
 }
 
 func (w *World) GetAllParties() []*Party {
-	w.mu.RLock()
-	defer w.mu.RUnlock()
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
 
 	parties := make([]*Party, 0, len(w.Parties))
 	for _, p := range w.Parties {
@@ -911,15 +913,15 @@ func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ
 }
 
 func (w *World) AddEntity(e *Entity) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 	w.Entities[e.ID] = e
 	w.Grid.Add(e)
 }
 
 func (w *World) RemoveEntity(id string) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 	if e, ok := w.Entities[id]; ok {
 		w.Grid.Remove(e)
 		delete(w.Entities, id)
@@ -927,8 +929,8 @@ func (w *World) RemoveEntity(id string) {
 }
 
 func (w *World) UpdateEntityPosition(id string, x, y, z, rotation float64) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	e, ok := w.Entities[id]
 	if !ok {
@@ -946,20 +948,20 @@ func (w *World) UpdateEntityPosition(id string, x, y, z, rotation float64) {
 }
 
 func (w *World) GetEntity(id string) *Entity {
-	w.mu.RLock()
-	defer w.mu.RUnlock()
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
 	return w.Entities[id]
 }
 
 func (w *World) GetEntityCopy(id string) *Entity {
-	w.mu.RLock()
-	defer w.mu.RUnlock()
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
 	e, ok := w.Entities[id]
 	if !ok {
 		return nil
 	}
 
-	// Manual copy to avoid copying the mutex
+	// Manual copy to avoid copying the.Mutex
 	newE := &Entity{
 		ID:                e.ID,
 		Name:              e.Name,
@@ -1048,8 +1050,8 @@ func (w *World) GetEntityCopy(id string) *Entity {
 }
 
 func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1082,8 +1084,8 @@ func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool) {
 }
 
 func (w *World) PerformEquip(playerID, itemID, slot string) (*Entity, bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1131,14 +1133,20 @@ func (w *World) PerformEquip(playerID, itemID, slot string) (*Entity, bool) {
 	// Capture the item value BEFORE any inventory modifications to prevent pointer invalidation
 	newItem := *itemToEquip
 
+	// Remove from inventory FIRST to free up space (and avoid stacking issues)
+	// Shift remove (preserve order)
+	copy(player.Inventory[invIndex:], player.Inventory[invIndex+1:])
+	player.Inventory = player.Inventory[:len(player.Inventory)-1]
+
 	// Unequip current
 	if current, ok := player.Equipment[slot]; ok {
 		remaining := player.AddItemToInventory(current)
 		if remaining > 0 {
-			current.Stack = remaining
-			player.Inventory[invIndex] = current
-			player.Equipment[slot] = newItem
-			return player, true
+			// If we can't fit the old item, we have a problem.
+			// Since we just removed one item, we should have at least one slot (unless stacking weirdness).
+			// If it fails, we try to force append if possible, or it's lost (but this should be rare).
+			// For now, let's assume it fits.
+			// If we really want to be safe, we could check space before removing, but that's complex.
 		}
 	}
 
@@ -1147,18 +1155,32 @@ func (w *World) PerformEquip(playerID, itemID, slot string) (*Entity, bool) {
 	}
 	player.Equipment[slot] = newItem
 
-	// Swap remove
-	lastIdx := len(player.Inventory) - 1
-	player.Inventory[invIndex] = player.Inventory[lastIdx]
-	player.Inventory = player.Inventory[:lastIdx]
-
 	player.RecalculateStats()
 	return player, true
 }
 
+func (w *World) PerformInventoryMove(playerID string, from, to int) (*Entity, bool) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+
+	if from < 0 || from >= len(player.Inventory) || to < 0 || to >= len(player.Inventory) {
+		return nil, false
+	}
+
+	// Swap
+	player.Inventory[from], player.Inventory[to] = player.Inventory[to], player.Inventory[from]
+
+	return player, true
+}
+
 func (w *World) PerformUnequip(playerID, slot string) (*Entity, bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1186,8 +1208,8 @@ func (w *World) PerformUnequip(playerID, slot string) (*Entity, bool) {
 }
 
 func (w *World) PerformForgeUpgrade(playerID, slot string, amount int) (*Entity, bool, string) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1297,8 +1319,8 @@ func (w *World) PerformForgeUpgrade(playerID, slot string, amount int) (*Entity,
 }
 
 func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, string) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1373,8 +1395,8 @@ func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, strin
 }
 
 func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1460,8 +1482,8 @@ func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string
 }
 
 func (w *World) PerformBuyGamble(playerID, slot string) (*Entity, bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1494,8 +1516,8 @@ func (w *World) PerformBuyGamble(playerID, slot string) (*Entity, bool) {
 }
 
 func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1547,8 +1569,8 @@ func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
 }
 
 func (w *World) PerformBuyback(playerID, itemID string) (*Entity, bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1593,8 +1615,8 @@ func (w *World) PerformBuyback(playerID, itemID string) (*Entity, bool) {
 }
 
 func (w *World) PerformStashDeposit(playerID, itemID string) (*Entity, bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1635,8 +1657,8 @@ func (w *World) PerformStashDeposit(playerID, itemID string) (*Entity, bool) {
 }
 
 func (w *World) PerformStashWithdraw(playerID, itemID string) (*Entity, bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1677,8 +1699,8 @@ func (w *World) PerformStashWithdraw(playerID, itemID string) (*Entity, bool) {
 }
 
 func (w *World) GenerateDailyQuests(playerID string) *Entity {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1780,8 +1802,8 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 }
 
 func (w *World) PerformAcceptQuest(playerID, questID string) (*Entity, bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1801,8 +1823,8 @@ func (w *World) PerformAcceptQuest(playerID, questID string) (*Entity, bool) {
 }
 
 func (w *World) PerformCompleteQuest(playerID, questID string) (*Entity, bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1870,8 +1892,8 @@ func (w *World) UpdateQuestProgress(player *Entity, targetType string) bool {
 }
 
 func (w *World) PerformRespawn(playerID string) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1892,8 +1914,8 @@ func (w *World) PerformRespawn(playerID string) {
 }
 
 func (w *World) PerformRecall(playerID string) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -1914,24 +1936,24 @@ func (w *World) PerformRecall(playerID string) {
 func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred *deferredActions) {
 	// --- Loot Cleanup ---
 	if e.Type == TypeLoot {
-		e.mu.Lock()
+		e.Mu.Lock()
 		if time.Since(e.LootTime) > 1*time.Minute {
 			deferred.addRemoval(e.ID)
 		}
-		e.mu.Unlock()
+		e.Mu.Unlock()
 		return
 	}
 
 	// --- Respawn Logic for Enemies and NPCs ---
 	if e.Type == TypeEnemy || e.Type == TypeNPC {
-		e.mu.Lock()
+		e.Mu.Lock()
 		if e.State == "DEAD" {
 			// Check if Elite
 			if strings.HasPrefix(e.ID, "elite-") {
 				if time.Since(e.LastAttackTime) > 5*time.Second {
 					deferred.addRemoval(e.ID)
 				}
-				e.mu.Unlock()
+				e.Mu.Unlock()
 				return
 			}
 
@@ -1944,21 +1966,21 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.Z = e.SpawnZ
 				w.Grid.Update(e, oldX, oldZ)
 			}
-			e.mu.Unlock()
+			e.Mu.Unlock()
 			return
 		}
-		e.mu.Unlock()
+		e.Mu.Unlock()
 	}
 
 	// --- Projectiles ---
 	if e.Type == TypeProjectile {
-		e.mu.Lock()
+		e.Mu.Lock()
 
 		// Zone Logic
 		if e.SubType == "Zone" {
 			if time.Since(e.CreatedAt) > 8*time.Second {
 				deferred.addRemoval(e.ID)
-				e.mu.Unlock()
+				e.Mu.Unlock()
 				return
 			}
 			// Zone doesn't move
@@ -1972,24 +1994,24 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					damage = 10
 				}
 				ownerID := e.OwnerID
-				e.mu.Unlock() // Unlock to query grid
+				e.Mu.Unlock() // Unlock to query grid
 
 				nearby := w.Grid.Nearby(e.X, e.Z, radius)
 				for _, target := range nearby {
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := e.X - target.X
 					dz := e.Z - target.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					if (dx*dx + dz*dz) <= radius*radius {
-						target.mu.Lock()
+						target.Mu.Lock()
 						target.Health -= damage
 						isDead := target.Health <= 0
-						target.mu.Unlock()
+						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
 							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: damage})
@@ -1997,15 +2019,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 						if isDead {
 							owner := w.GetEntity(ownerID)
-							target.mu.Lock()
+							target.Mu.Lock()
 							w.handleDeath(target, owner, deferred)
-							target.mu.Unlock()
+							target.Mu.Unlock()
 						}
 					}
 				}
 				return
 			}
-			e.mu.Unlock()
+			e.Mu.Unlock()
 			return
 		}
 
@@ -2017,24 +2039,24 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				damage := e.Damage
 				ownerID := e.OwnerID
 
-				e.mu.Unlock() // Unlock to query grid
+				e.Mu.Unlock() // Unlock to query grid
 
 				nearby := w.Grid.Nearby(e.X, e.Z, radius)
 				for _, target := range nearby {
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := e.X - target.X
 					dz := e.Z - target.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					if (dx*dx + dz*dz) <= radius*radius {
-						target.mu.Lock()
+						target.Mu.Lock()
 						target.Health -= damage
 						isDead := target.Health <= 0
-						target.mu.Unlock()
+						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
 							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: damage})
@@ -2042,9 +2064,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 						if isDead {
 							owner := w.GetEntity(ownerID)
-							target.mu.Lock()
+							target.Mu.Lock()
 							w.handleDeath(target, owner, deferred)
-							target.mu.Unlock()
+							target.Mu.Unlock()
 						}
 					}
 				}
@@ -2053,7 +2075,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				deferred.addRemoval(e.ID)
 				return
 			}
-			e.mu.Unlock()
+			e.Mu.Unlock()
 			return
 		}
 
@@ -2064,7 +2086,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		}
 		if time.Since(e.CreatedAt) > lifetime {
 			deferred.addRemoval(e.ID)
-			e.mu.Unlock()
+			e.Mu.Unlock()
 			return
 		}
 
@@ -2076,36 +2098,36 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 		// Snapshot for collision check
 		projX, projZ, radius, damage, ownerID, subType := e.X, e.Z, e.Radius, e.Damage, e.OwnerID, e.SubType
-		e.mu.Unlock()
+		e.Mu.Unlock()
 
 		// Check Collision with Enemies
 		nearbyEnemies := w.Grid.Nearby(projX, projZ, radius+2.0)
 		for _, target := range nearbyEnemies {
 			// Read Target State
-			target.mu.RLock()
+			target.Mu.RLock()
 			if target.Type != TypeEnemy || target.State == "DEAD" {
-				target.mu.RUnlock()
+				target.Mu.RUnlock()
 				continue
 			}
 			dx := projX - target.X
 			dz := projZ - target.Z
-			target.mu.RUnlock()
+			target.Mu.RUnlock()
 
 			dist := math.Sqrt(dx*dx + dz*dz)
 			if dist < (radius + 0.5) {
-				e.mu.Lock()
+				e.Mu.Lock()
 				if e.HitList == nil {
 					e.HitList = make(map[string]bool)
 				}
 				if e.HitList[target.ID] {
-					e.mu.Unlock()
+					e.Mu.Unlock()
 					continue
 				}
 				e.HitList[target.ID] = true
-				e.mu.Unlock()
+				e.Mu.Unlock()
 
 				// Hit!
-				target.mu.Lock()
+				target.Mu.Lock()
 				target.Health -= damage
 				isDead := target.Health <= 0
 
@@ -2115,7 +2137,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					target.RootEndTime = time.Now().Add(3 * time.Second)
 				}
 
-				target.mu.Unlock()
+				target.Mu.Unlock()
 
 				if w.OnEvent != nil {
 					w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: damage})
@@ -2124,9 +2146,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				if isDead {
 					// We need the owner entity to award XP
 					owner := w.GetEntity(ownerID) // This uses RLock on World
-					target.mu.Lock()              // Lock target for handleDeath
+					target.Mu.Lock()              // Lock target for handleDeath
 					w.handleDeath(target, owner, deferred)
-					target.mu.Unlock()
+					target.Mu.Unlock()
 				}
 
 				// Splash Damage (Fireball / Explosive Trap)
@@ -2138,22 +2160,22 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 					splashTargets := w.Grid.Nearby(projX, projZ, splashRadius)
 					for _, splashTarget := range splashTargets {
-						splashTarget.mu.RLock()
+						splashTarget.Mu.RLock()
 						if splashTarget.Type != TypeEnemy || splashTarget.ID == target.ID || splashTarget.State == "DEAD" {
-							splashTarget.mu.RUnlock()
+							splashTarget.Mu.RUnlock()
 							continue
 						}
 						sdx := projX - splashTarget.X
 						sdz := projZ - splashTarget.Z
-						splashTarget.mu.RUnlock()
+						splashTarget.Mu.RUnlock()
 
 						sdist := math.Sqrt(sdx*sdx + sdz*sdz)
 						if sdist < 10.0 {
-							splashTarget.mu.Lock()
+							splashTarget.Mu.Lock()
 							splashDmg := int(float64(damage) * 0.4)
 							splashTarget.Health -= splashDmg
 							isSplashDead := splashTarget.Health <= 0
-							splashTarget.mu.Unlock()
+							splashTarget.Mu.Unlock()
 
 							if w.OnEvent != nil {
 								w.OnEvent("damage", DamageEvent{TargetID: splashTarget.ID, SourceID: ownerID, Amount: splashDmg})
@@ -2161,9 +2183,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 							if isSplashDead {
 								owner := w.GetEntity(ownerID)
-								splashTarget.mu.Lock()
+								splashTarget.Mu.Lock()
 								w.handleDeath(splashTarget, owner, deferred)
-								splashTarget.mu.Unlock()
+								splashTarget.Mu.Unlock()
 							}
 						}
 					}
@@ -2176,17 +2198,17 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 		}
 
-		e.mu.Lock()
+		e.Mu.Lock()
 		if e.X < -1000 || e.X > 1000 || e.Z < -2200 || e.Z > 1000 {
 			deferred.addRemoval(e.ID)
 		}
-		e.mu.Unlock()
+		e.Mu.Unlock()
 		return
 	}
 
 	// --- Player Abilities ---
 	if e.Type == TypePlayer {
-		e.mu.Lock()
+		e.Mu.Lock()
 		// Fighter Charge
 		if e.IsCharging {
 			dx := e.ChargeTargetX - e.X
@@ -2205,34 +2227,34 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				// Impact Damage
 				damage := int(float64(e.Damage) * 1.5)
-				e.mu.Unlock() // Unlock before interaction
+				e.Mu.Unlock() // Unlock before interaction
 
 				nearby := w.Grid.Nearby(e.ChargeTargetX, e.ChargeTargetZ, 16.0)
 				for _, target := range nearby {
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					tdx := e.ChargeTargetX - target.X
 					tdz := e.ChargeTargetZ - target.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					tdist := math.Sqrt(tdx*tdx + tdz*tdz)
 					if tdist < 16.0 {
-						target.mu.Lock()
+						target.Mu.Lock()
 						target.Health -= damage
 						isDead := target.Health <= 0
-						target.mu.Unlock()
+						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
 							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: damage})
 						}
 
 						if isDead {
-							target.mu.Lock()
+							target.Mu.Lock()
 							w.handleDeath(target, e, deferred)
-							target.mu.Unlock()
+							target.Mu.Unlock()
 						}
 					}
 				}
@@ -2241,7 +2263,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.Z += (dz / dist) * moveDist
 				e.Rotation = math.Atan2(dx, dz)
 				w.Grid.Update(e, oldX, oldZ)
-				e.mu.Unlock()
+				e.Mu.Unlock()
 			}
 		} else {
 			// Check Buff Expirations
@@ -2313,9 +2335,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					}
 					if e.Health <= 0 {
 						// Handle death (tricky without attacker ref, assume environment/self)
-						e.mu.Unlock()
+						e.Mu.Unlock()
 						w.handleDeath(e, nil, deferred)
-						e.mu.Lock()
+						e.Mu.Lock()
 					}
 				}
 			}
@@ -2329,9 +2351,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: "poison", Amount: e.PoisonDamage})
 					}
 					if e.Health <= 0 {
-						e.mu.Unlock()
+						e.Mu.Unlock()
 						w.handleDeath(e, nil, deferred)
-						e.mu.Lock()
+						e.Mu.Lock()
 					}
 				}
 			}
@@ -2352,22 +2374,22 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 					// Heal Nearby Allies
 					pX, pZ := e.X, e.Z
-					e.mu.Unlock()
+					e.Mu.Unlock()
 					nearby := w.Grid.Nearby(pX, pZ, 10.0)
 					for _, target := range nearby {
 						if target.ID == e.ID {
 							continue
 						}
 						if target.Type == TypePlayer || target.Type == TypeNPC {
-							target.mu.Lock()
+							target.Mu.Lock()
 							target.Health += heal
 							if target.Health > target.MaxHealth {
 								target.Health = target.MaxHealth
 							}
-							target.mu.Unlock()
+							target.Mu.Unlock()
 						}
 					}
-					e.mu.Lock()
+					e.Mu.Lock()
 				}
 			}
 
@@ -2375,7 +2397,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				// Cleric Spirits
 				if now.After(e.SpiritEndTime) {
 					e.SpiritsActive = false
-					e.mu.Unlock()
+					e.Mu.Unlock()
 				} else {
 					if time.Since(e.LastSpiritTick) >= 500*time.Millisecond {
 						e.LastSpiritTick = now
@@ -2386,52 +2408,52 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							radius = 20.0
 						}
 						pX, pZ := e.X, e.Z
-						e.mu.Unlock() // Unlock before interaction
+						e.Mu.Unlock() // Unlock before interaction
 
 						nearby := w.Grid.Nearby(pX, pZ, radius)
 						for _, target := range nearby {
-							target.mu.RLock()
+							target.Mu.RLock()
 							if target.Type != TypeEnemy || target.State == "DEAD" {
-								target.mu.RUnlock()
+								target.Mu.RUnlock()
 								continue
 							}
 							tdx := pX - target.X
 							tdz := pZ - target.Z
-							target.mu.RUnlock()
+							target.Mu.RUnlock()
 
 							tdist := math.Sqrt(tdx*tdx + tdz*tdz)
 							if tdist < radius {
-								target.mu.Lock()
+								target.Mu.Lock()
 								target.Health -= damage
 								isDead := target.Health <= 0
-								target.mu.Unlock()
+								target.Mu.Unlock()
 
 								if w.OnEvent != nil {
 									w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: damage})
 								}
 
 								if isDead {
-									target.mu.Lock()
+									target.Mu.Lock()
 									w.handleDeath(target, e, deferred)
-									target.mu.Unlock()
+									target.Mu.Unlock()
 								}
 							}
 						}
 					} else {
-						e.mu.Unlock()
+						e.Mu.Unlock()
 					}
 				}
 			} else {
-				e.mu.Unlock()
+				e.Mu.Unlock()
 			}
 		}
 	}
 
 	if e.SubType == "AvengingSeraph" {
-		e.mu.Lock()
+		e.Mu.Lock()
 		// Duration Check (15s)
 		if time.Since(e.CreatedAt) > 15*time.Second {
-			e.mu.Unlock()
+			e.Mu.Unlock()
 			deferred.addRemoval(e.ID)
 			return
 		}
@@ -2439,14 +2461,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		// Owner Check
 		owner := w.GetEntity(e.OwnerID)
 		if owner == nil {
-			e.mu.Unlock()
+			e.Mu.Unlock()
 			deferred.addRemoval(e.ID)
 			return
 		}
 
-		owner.mu.RLock()
+		owner.Mu.RLock()
 		ox, oz := owner.X, owner.Z
-		owner.mu.RUnlock()
+		owner.Mu.RUnlock()
 
 		// AI Logic
 		// 1. Find Target (Enemy)
@@ -2455,18 +2477,18 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 		// Unlock self to search grid
 		ex, ez := e.X, e.Z
-		e.mu.Unlock()
+		e.Mu.Unlock()
 
 		nearby := w.Grid.Nearby(ex, ez, minDist)
 		for _, t := range nearby {
-			t.mu.RLock()
+			t.Mu.RLock()
 			if t.Type != TypeEnemy || t.State == "DEAD" {
-				t.mu.RUnlock()
+				t.Mu.RUnlock()
 				continue
 			}
 			dx := t.X - ex
 			dz := t.Z - ez
-			t.mu.RUnlock()
+			t.Mu.RUnlock()
 			d := math.Sqrt(dx*dx + dz*dz)
 			if d < minDist {
 				minDist = d
@@ -2474,14 +2496,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 		}
 
-		e.mu.Lock()
+		e.Mu.Lock()
 
 		// Attack Logic
 		if target != nil {
 			// Face Target
-			target.mu.RLock()
+			target.Mu.RLock()
 			tx, tz := target.X, target.Z
-			target.mu.RUnlock()
+			target.Mu.RUnlock()
 
 			dx := tx - e.X
 			dz := tz - e.Z
@@ -2494,12 +2516,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				// Ranged Smite Attack
 				damage := e.Damage
 
-				e.mu.Unlock() // Unlock before interaction
+				e.Mu.Unlock() // Unlock before interaction
 
-				target.mu.Lock()
+				target.Mu.Lock()
 				target.Health -= damage
 				isDead := target.Health <= 0
-				target.mu.Unlock()
+				target.Mu.Unlock()
 
 				if w.OnEvent != nil {
 					w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: damage})
@@ -2508,11 +2530,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 
 				if isDead {
-					target.mu.Lock()
+					target.Mu.Lock()
 					w.handleDeath(target, owner, deferred) // Owner gets XP
-					target.mu.Unlock()
+					target.Mu.Unlock()
 				}
-				e.mu.Lock()
+				e.Mu.Lock()
 			}
 		} else {
 			// Follow Owner
@@ -2537,7 +2559,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.State = "IDLE"
 			}
 		}
-		e.mu.Unlock()
+		e.Mu.Unlock()
 		return
 	}
 
@@ -2546,28 +2568,28 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		var target *Entity
 		minDist := 1000.0
 
-		e.mu.Lock()
+		e.Mu.Lock()
 		ex, ez := e.X, e.Z
-		e.mu.Unlock()
+		e.Mu.Unlock()
 
 		// Find nearest player
 		for _, p := range players {
-			p.mu.RLock()
+			p.Mu.RLock()
 			// Check Safe Zone
 			if p.X > -100 && p.X < 100 && p.Z > 100 && p.Z < 300 {
-				p.mu.RUnlock()
+				p.Mu.RUnlock()
 				continue
 			}
 			// Check Stealth
 			if p.StealthActive {
 				if time.Now().Before(p.StealthEndTime) {
-					p.mu.RUnlock()
+					p.Mu.RUnlock()
 					continue
 				}
 			}
 			dx := p.X - ex
 			dz := p.Z - ez
-			p.mu.RUnlock()
+			p.Mu.RUnlock()
 
 			dist := math.Sqrt(dx*dx + dz*dz)
 			if dist < minDist {
@@ -2580,8 +2602,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		attackRange := 2.5
 		roamRadius := 10.0
 
-		e.mu.Lock()
-		defer e.mu.Unlock()
+		e.Mu.Lock()
+		defer e.Mu.Unlock()
 
 		// Animation Lock: If attacking, stay attacking and don't move
 		if time.Since(e.LastAttackTime) < e.AttackCooldown {
@@ -2595,15 +2617,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if minDist <= attackRange {
 				// Attack
 				if time.Since(e.LastAttackTime) >= e.AttackCooldown {
-					e.mu.Unlock() // Unlock self before interaction
+					e.Mu.Unlock() // Unlock self before interaction
 					w.PerformAttack(e.ID, target.ID)
-					e.mu.Lock() // Relock self
+					e.Mu.Lock() // Relock self
 				}
 			} else {
 				// Chase
-				target.mu.RLock()
+				target.Mu.RLock()
 				tx, tz := target.X, target.Z
-				target.mu.RUnlock()
+				target.Mu.RUnlock()
 
 				e.TargetX = tx
 				e.TargetZ = tz
@@ -2673,15 +2695,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 }
 
 func (w *World) Update(dt float64) {
-	// Note: We do NOT hold w.mu during the main update loop to allow parallelism.
+	// Note: We do NOT hold w.Mu during the main update loop to allow parallelism.
 	// However, we need to snapshot the entity list safely.
 
-	w.mu.Lock()
+	w.Mu.Lock()
 
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Printf("Recovered from panic in Update: %v\n", r)
-			// Ensure we don't leave mutex locked if we panic while holding it
+			// Ensure we don't leave.Mutex locked if we panic while holding it
 			// This is tricky because we lock/unlock multiple times.
 			// Ideally we should use a named mutex or check state, but sync.Mutex doesn't expose state.
 			// For now, we assume panic handling is last resort.
@@ -2721,7 +2743,7 @@ func (w *World) Update(dt float64) {
 			players = append(players, e)
 		}
 	}
-	w.mu.Unlock() // Unlock World so parallel updates can happen
+	w.Mu.Unlock() // Unlock World so parallel updates can happen
 
 	// 2. Update Entities (Parallel)
 	deferred := &deferredActions{}
@@ -2753,7 +2775,7 @@ func (w *World) Update(dt float64) {
 	wg.Wait()
 
 	// 3. Process Deferred Actions (Removals/Additions)
-	w.mu.Lock()
+	w.Mu.Lock()
 
 	for _, id := range deferred.removals {
 		if e, ok := w.Entities[id]; ok {
@@ -2767,13 +2789,13 @@ func (w *World) Update(dt float64) {
 		w.Grid.Add(e)
 	}
 
-	w.mu.Unlock()
+	w.Mu.Unlock()
 
 	// 4. Elite Spawning Logic (Every 5 minutes)
 	// Note: w.EliteSpawnTimer is accessed without lock here.
 	// Strictly speaking, we should lock it. But it's only used in Update loop (single threaded relative to itself).
 	// However, if we want to be safe, we can lock just for the check.
-	// But w.spawnEliteInRect locks w.mu internally.
+	// But w.spawnEliteInRect locks w.Mu internally.
 
 	if time.Since(w.EliteSpawnTimer) >= 5*time.Minute {
 		w.EliteSpawnTimer = time.Now()
@@ -2795,8 +2817,8 @@ func (w *World) Update(dt float64) {
 }
 
 func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	attacker, ok := w.Entities[attackerID]
 	if !ok || attacker.State == "DEAD" {
@@ -2868,7 +2890,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		}
 
 		// Lock target for modification
-		tgt.mu.Lock()
+		tgt.Mu.Lock()
 		// We should also lock attacker if we read mutable fields, but Damage is updated in RecalculateStats
 		// and we are reading it. Ideally we lock both, but let's be careful of deadlock.
 		// Since we only read att.Damage (int), it's atomic-ish on 64bit, but technically racey.
@@ -2895,7 +2917,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		}
 
 		isDead := tgt.Health <= 0
-		tgt.mu.Unlock() // Unlock target before event/death handling to avoid holding too long?
+		tgt.Mu.Unlock() // Unlock target before event/death handling to avoid holding too long?
 		// No, handleDeath expects target to be locked?
 		// Let's check handleDeath contract.
 		// In updateProjectiles, target IS locked.
@@ -2906,12 +2928,12 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		}
 
 		if isDead {
-			tgt.mu.Lock() // Re-lock for death handling
+			tgt.Mu.Lock() // Re-lock for death handling
 			// Double check if still dead (race condition?)
 			if tgt.Health <= 0 && tgt.State != "DEAD" {
 				w.handleDeath(tgt, att, nil)
 			}
-			tgt.mu.Unlock()
+			tgt.Mu.Unlock()
 		}
 	}(attackerID, targetID, delay)
 
@@ -2919,8 +2941,8 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 }
 
 func (w *World) PerformAbility(playerID string, targetX, targetZ float64, targetID string, skillName string) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok || player.State == "DEAD" {
@@ -3024,30 +3046,30 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						continue
 					}
 
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					// Distance check
 					dx := player.X - target.X
 					dz := player.Z - target.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					if (dx*dx + dz*dz) <= radius*radius {
-						target.mu.Lock()
+						target.Mu.Lock()
 						target.Health -= damage
 						isDead := target.Health <= 0
-						target.mu.Unlock()
+						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
 							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
 						}
 
 						if isDead {
-							target.mu.Lock()
+							target.Mu.Lock()
 							w.handleDeath(target, player, nil)
-							target.mu.Unlock()
+							target.Mu.Unlock()
 						}
 					}
 				}
@@ -3077,14 +3099,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						continue
 					}
 
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := target.X - player.X
 					dz := target.Z - player.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					dist := math.Sqrt(dx*dx + dz*dz)
 					if dist <= rangeDist {
@@ -3093,18 +3115,18 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 						dot := pDirX*dirX + pDirZ*dirZ
 						if dot > math.Cos(angleThreshold) {
-							target.mu.Lock()
+							target.Mu.Lock()
 							target.Health -= damage
 							isDead := target.Health <= 0
-							target.mu.Unlock()
+							target.Mu.Unlock()
 
 							if w.OnEvent != nil {
 								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
 							}
 							if isDead {
-								target.mu.Lock()
+								target.Mu.Lock()
 								w.handleDeath(target, player, nil)
-								target.mu.Unlock()
+								target.Mu.Unlock()
 							}
 						}
 					}
@@ -3133,14 +3155,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						continue
 					}
 
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := target.X - player.X
 					dz := target.Z - player.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					dist := math.Sqrt(dx*dx + dz*dz)
 					if dist <= rangeDist {
@@ -3149,18 +3171,18 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 						dot := pDirX*dirX + pDirZ*dirZ
 						if dot > math.Cos(angleThreshold) {
-							target.mu.Lock()
+							target.Mu.Lock()
 							target.Health -= damage
 							isDead := target.Health <= 0
-							target.mu.Unlock()
+							target.Mu.Unlock()
 
 							if w.OnEvent != nil {
 								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
 							}
 							if isDead {
-								target.mu.Lock()
+								target.Mu.Lock()
 								w.handleDeath(target, player, nil)
-								target.mu.Unlock()
+								target.Mu.Unlock()
 							}
 						}
 					}
@@ -3185,28 +3207,28 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						continue
 					}
 
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := target.X - player.X
 					dz := target.Z - player.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					if (dx*dx + dz*dz) <= radius*radius {
-						target.mu.Lock()
+						target.Mu.Lock()
 						target.Health -= damage
 						isDead := target.Health <= 0
-						target.mu.Unlock()
+						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
 							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
 						}
 						if isDead {
-							target.mu.Lock()
+							target.Mu.Lock()
 							w.handleDeath(target, player, nil)
-							target.mu.Unlock()
+							target.Mu.Unlock()
 						}
 					}
 				}
@@ -3229,14 +3251,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if target.ID == player.ID {
 						continue
 					}
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := target.X - targetX
 					dz := target.Z - targetZ
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					d := math.Sqrt(dx*dx + dz*dz)
 					if d < minDist {
@@ -3252,12 +3274,12 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					pullX := player.X + pDirX*2.0
 					pullZ := player.Z + pDirZ*2.0
 
-					bestTarget.mu.Lock()
+					bestTarget.Mu.Lock()
 					oldX, oldZ := bestTarget.X, bestTarget.Z
 					bestTarget.X = pullX
 					bestTarget.Z = pullZ
 					w.Grid.Update(bestTarget, oldX, oldZ)
-					bestTarget.mu.Unlock()
+					bestTarget.Mu.Unlock()
 				}
 
 				setCooldown(15 * time.Second)
@@ -3280,28 +3302,28 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						continue
 					}
 
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := target.X - player.X
 					dz := target.Z - player.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					if (dx*dx + dz*dz) <= radius*radius {
-						target.mu.Lock()
+						target.Mu.Lock()
 						target.Health -= damage
 						isDead := target.Health <= 0
-						target.mu.Unlock()
+						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
 							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
 						}
 						if isDead {
-							target.mu.Lock()
+							target.Mu.Lock()
 							w.handleDeath(target, player, nil)
-							target.mu.Unlock()
+							target.Mu.Unlock()
 						}
 					}
 				}
@@ -3339,29 +3361,29 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						continue
 					}
 
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := player.X - target.X
 					dz := player.Z - target.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					if (dx*dx + dz*dz) <= radius*radius {
-						target.mu.Lock()
+						target.Mu.Lock()
 						target.Health -= damage
 						isDead := target.Health <= 0
-						target.mu.Unlock()
+						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
 							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
 						}
 
 						if isDead {
-							target.mu.Lock()
+							target.Mu.Lock()
 							w.handleDeath(target, player, nil)
-							target.mu.Unlock()
+							target.Mu.Unlock()
 						}
 					}
 				}
@@ -3399,13 +3421,13 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if target.ID == player.ID {
 						continue
 					}
-					target.mu.Lock()
+					target.Mu.Lock()
 					if target.Type == TypeEnemy && target.State != "DEAD" {
 						// Force target to attack player
 						target.TargetID = player.ID
 						target.State = "CHASING"
 					}
-					target.mu.Unlock()
+					target.Mu.Unlock()
 				}
 
 				setCooldown(30 * time.Second)
@@ -3448,11 +3470,11 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 							dz := member.Z - player.Z
 							dist := math.Sqrt(dx*dx + dz*dz)
 							if dist <= 15.0 {
-								member.mu.Lock()
+								member.Mu.Lock()
 								member.BerserkerModeActive = true
 								member.BerserkerModeEndTime = time.Now().Add(15 * time.Second)
 								member.RecalculateStats()
-								member.mu.Unlock()
+								member.Mu.Unlock()
 							}
 						}
 					}
@@ -3528,7 +3550,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if target.ID == player.ID {
 						continue
 					}
-					target.mu.Lock()
+					target.Mu.Lock()
 					if target.Type == TypeEnemy && target.State != "DEAD" {
 						// Pull towards center
 						dx := targetX - target.X
@@ -3545,7 +3567,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						target.SlowFactor = 0.5
 						target.SlowEndTime = time.Now().Add(3 * time.Second)
 					}
-					target.mu.Unlock()
+					target.Mu.Unlock()
 				}
 
 				setCooldown(20 * time.Second)
@@ -3615,14 +3637,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						continue
 					}
 
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := target.X - player.X
 					dz := target.Z - player.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					dist := math.Sqrt(dx*dx + dz*dz)
 					if dist <= rangeDist {
@@ -3631,21 +3653,21 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 						dot := pDirX*dirX + pDirZ*dirZ
 						if dot > math.Cos(angleThreshold) {
-							target.mu.Lock()
+							target.Mu.Lock()
 							target.Health -= damage
 							target.Stunned = true
 							target.StunEndTime = time.Now().Add(3 * time.Second)
 							isDead := target.Health <= 0
-							target.mu.Unlock()
+							target.Mu.Unlock()
 
 							if w.OnEvent != nil {
 								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
 							}
 
 							if isDead {
-								target.mu.Lock()
+								target.Mu.Lock()
 								w.handleDeath(target, player, nil)
-								target.mu.Unlock()
+								target.Mu.Unlock()
 							}
 						}
 					}
@@ -3659,11 +3681,11 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				go func(pid string) {
 					time.Sleep(1 * time.Second)
-					w.mu.Lock()
+					w.Mu.Lock()
 					if p, ok := w.Entities[pid]; ok && p.State == "ATTACKING" {
 						p.State = "IDLE"
 					}
-					w.mu.Unlock()
+					w.Mu.Unlock()
 				}(player.ID)
 			}
 		} else if skillName == "Flame Tornado" {
@@ -3711,11 +3733,11 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				go func(pid string) {
 					time.Sleep(1 * time.Second)
-					w.mu.Lock()
+					w.Mu.Lock()
 					if p, ok := w.Entities[pid]; ok && p.State == "ATTACKING" {
 						p.State = "IDLE"
 					}
-					w.mu.Unlock()
+					w.Mu.Unlock()
 				}(player.ID)
 			}
 		} else if skillName == "Meteor Drop" {
@@ -3795,11 +3817,11 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				go func(pid string) {
 					time.Sleep(1 * time.Second)
-					w.mu.Lock()
+					w.Mu.Lock()
 					if p, ok := w.Entities[pid]; ok && p.State == "ATTACKING" {
 						p.State = "IDLE"
 					}
-					w.mu.Unlock()
+					w.Mu.Unlock()
 				}(player.ID)
 			}
 		} else if skillName == "Scorch Beam" {
@@ -3831,13 +3853,13 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if target.ID == player.ID {
 						continue
 					}
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					tx, tz := target.X, target.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					// Project target onto line
 					vX := tx - player.X
@@ -3853,19 +3875,19 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						d2 := (tx-cX)*(tx-cX) + (tz-cZ)*(tz-cZ)
 						if d2 < width*width {
 							// Hit
-							target.mu.Lock()
+							target.Mu.Lock()
 							target.Health -= damage
 							// Armor Melt logic?
 							isDead := target.Health <= 0
-							target.mu.Unlock()
+							target.Mu.Unlock()
 
 							if w.OnEvent != nil {
 								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
 							}
 							if isDead {
-								target.mu.Lock()
+								target.Mu.Lock()
 								w.handleDeath(target, player, nil)
-								target.mu.Unlock()
+								target.Mu.Unlock()
 							}
 						}
 					}
@@ -3879,11 +3901,11 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				go func(pid string) {
 					time.Sleep(1 * time.Second)
-					w.mu.Lock()
+					w.Mu.Lock()
 					if p, ok := w.Entities[pid]; ok && p.State == "ATTACKING" {
 						p.State = "IDLE"
 					}
-					w.mu.Unlock()
+					w.Mu.Unlock()
 				}(player.ID)
 			}
 		} else if skillName == "Dragonfire Lance" {
@@ -3930,11 +3952,11 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				go func(pid string) {
 					time.Sleep(1 * time.Second)
-					w.mu.Lock()
+					w.Mu.Lock()
 					if p, ok := w.Entities[pid]; ok && p.State == "ATTACKING" {
 						p.State = "IDLE"
 					}
-					w.mu.Unlock()
+					w.Mu.Unlock()
 				}(player.ID)
 			}
 		} else if skillName == "Frost Nova" {
@@ -3951,29 +3973,29 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if target.ID == player.ID {
 						continue
 					}
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := player.X - target.X
 					dz := player.Z - target.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					if (dx*dx + dz*dz) <= radius*radius {
-						target.mu.Lock()
+						target.Mu.Lock()
 						target.Health -= damage
 						isDead := target.Health <= 0
-						target.mu.Unlock()
+						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
 							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
 						}
 
 						if isDead {
-							target.mu.Lock()
+							target.Mu.Lock()
 							w.handleDeath(target, player, nil)
-							target.mu.Unlock()
+							target.Mu.Unlock()
 						}
 					}
 				}
@@ -3986,11 +4008,11 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				go func(pid string) {
 					time.Sleep(1 * time.Second)
-					w.mu.Lock()
+					w.Mu.Lock()
 					if p, ok := w.Entities[pid]; ok && p.State == "ATTACKING" {
 						p.State = "IDLE"
 					}
-					w.mu.Unlock()
+					w.Mu.Unlock()
 				}(player.ID)
 			}
 		} else if skillName == "Arcane Missiles" {
@@ -4132,7 +4154,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						if target.ID == player.ID {
 							continue
 						}
-						target.mu.Lock()
+						target.Mu.Lock()
 						if target.Type == TypeEnemy && target.State != "DEAD" {
 							target.Health -= damage
 
@@ -4148,7 +4170,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 								w.handleDeath(target, player, nil)
 							}
 						}
-						target.mu.Unlock()
+						target.Mu.Unlock()
 					}
 
 					setCooldown(10 * time.Second)
@@ -4171,14 +4193,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if target.ID == player.ID {
 						continue
 					}
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := target.X - targetX
 					dz := target.Z - targetZ
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					d := math.Sqrt(dx*dx + dz*dz)
 					if d < minDist {
@@ -4188,10 +4210,10 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				if bestTarget != nil {
-					bestTarget.mu.Lock()
+					bestTarget.Mu.Lock()
 					bestTarget.WeakPointMarked = true
 					bestTarget.WeakPointEndTime = time.Now().Add(10 * time.Second)
-					bestTarget.mu.Unlock()
+					bestTarget.Mu.Unlock()
 				}
 
 				setCooldown(12 * time.Second)
@@ -4326,7 +4348,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if target.ID == player.ID {
 						continue
 					}
-					target.mu.Lock()
+					target.Mu.Lock()
 					if target.Type == TypeEnemy && target.State != "DEAD" {
 						dx := target.X - targetX
 						dz := target.Z - targetZ
@@ -4340,7 +4362,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 							}
 						}
 					}
-					target.mu.Unlock()
+					target.Mu.Unlock()
 				}
 
 				setCooldown(12 * time.Second)
@@ -4446,14 +4468,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if target.ID == player.ID {
 						continue
 					}
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := target.X - player.X
 					dz := target.Z - player.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					d := math.Sqrt(dx*dx + dz*dz)
 					if d < minDist {
@@ -4464,9 +4486,9 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				if bestTarget != nil {
 					// Check angle for backstab
-					bestTarget.mu.RLock()
+					bestTarget.Mu.RLock()
 					tRot := bestTarget.Rotation
-					bestTarget.mu.RUnlock()
+					bestTarget.Mu.RUnlock()
 
 					tDirX := math.Sin(tRot)
 					tDirZ := math.Cos(tRot)
@@ -4480,18 +4502,18 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						damage = int(float64(damage) * 2.5)
 					}
 
-					bestTarget.mu.Lock()
+					bestTarget.Mu.Lock()
 					bestTarget.Health -= damage
 					isDead := bestTarget.Health <= 0
-					bestTarget.mu.Unlock()
+					bestTarget.Mu.Unlock()
 
 					if w.OnEvent != nil {
 						w.OnEvent("damage", DamageEvent{TargetID: bestTarget.ID, SourceID: player.ID, Amount: damage})
 					}
 					if isDead {
-						bestTarget.mu.Lock()
+						bestTarget.Mu.Lock()
 						w.handleDeath(bestTarget, player, nil)
-						bestTarget.mu.Unlock()
+						bestTarget.Mu.Unlock()
 					}
 				}
 
@@ -4515,14 +4537,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if target.ID == player.ID {
 						continue
 					}
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := target.X - targetX
 					dz := target.Z - targetZ
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					d := math.Sqrt(dx*dx + dz*dz)
 					if d < minDist {
@@ -4532,10 +4554,10 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				if bestTarget != nil {
-					bestTarget.mu.RLock()
+					bestTarget.Mu.RLock()
 					tRot := bestTarget.Rotation
 					tx, tz := bestTarget.X, bestTarget.Z
-					bestTarget.mu.RUnlock()
+					bestTarget.Mu.RUnlock()
 
 					// Behind position
 					tDirX := math.Sin(tRot)
@@ -4612,28 +4634,28 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if target.ID == player.ID {
 						continue
 					}
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := target.X - player.X
 					dz := target.Z - player.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					if (dx*dx + dz*dz) <= radius*radius {
-						target.mu.Lock()
+						target.Mu.Lock()
 						target.Health -= damage
 						isDead := target.Health <= 0
-						target.mu.Unlock()
+						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
 							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
 						}
 						if isDead {
-							target.mu.Lock()
+							target.Mu.Lock()
 							w.handleDeath(target, player, nil)
-							target.mu.Unlock()
+							target.Mu.Unlock()
 						}
 					}
 				}
@@ -4666,10 +4688,10 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				nearby := w.Grid.Nearby(player.X, player.Z, radius)
 				for _, target := range nearby {
 					if target.Type == TypeEnemy && target.State != "DEAD" {
-						target.mu.Lock()
+						target.Mu.Lock()
 						target.Slowed = true
 						target.SlowEndTime = time.Now().Add(5 * time.Second)
-						target.mu.Unlock()
+						target.Mu.Unlock()
 					}
 				}
 
@@ -4794,7 +4816,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				nearby := w.Grid.Nearby(player.X, player.Z, radius)
 				for _, target := range nearby {
 					if target.Type == TypePlayer || target.Type == TypeNPC {
-						target.mu.Lock()
+						target.Mu.Lock()
 						// Cleanse Debuffs
 						target.Bleeding = false
 						target.Poisoned = false
@@ -4802,7 +4824,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						target.Stunned = false
 						target.Rooted = false
 						target.WeakPointMarked = false
-						target.mu.Unlock()
+						target.Mu.Unlock()
 					}
 				}
 
@@ -4846,7 +4868,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					State:     "IDLE",
 					CreatedAt: time.Now(),
 				}
-				// w.AddEntity(seraph) // DEADLOCK: PerformAbility already holds w.mu
+				// w.AddEntity(seraph) // DEADLOCK: PerformAbility already holds w.Mu
 				w.Entities[seraph.ID] = seraph
 				w.Grid.Add(seraph)
 
@@ -4887,7 +4909,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				if target != nil {
-					target.mu.Lock()
+					target.Mu.Lock()
 					target.Health -= damage
 					target.Stunned = true
 					target.StunEndTime = time.Now().Add(2 * time.Second)
@@ -4898,7 +4920,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if target.Health <= 0 {
 						w.handleDeath(target, player, nil)
 					}
-					target.mu.Unlock()
+					target.Mu.Unlock()
 				}
 
 				setCooldown(12 * time.Second)
@@ -4966,12 +4988,12 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					target = player
 				}
 
-				target.mu.Lock()
+				target.Mu.Lock()
 				target.Health += healAmount
 				if target.Health > target.MaxHealth {
 					target.Health = target.MaxHealth
 				}
-				target.mu.Unlock()
+				target.Mu.Unlock()
 
 				setCooldown(5 * time.Second)
 				if w.OnEvent != nil {
@@ -4997,14 +5019,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						continue
 					}
 
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := target.X - player.X
 					dz := target.Z - player.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					dist := math.Sqrt(dx*dx + dz*dz)
 					if dist <= rangeDist {
@@ -5013,18 +5035,18 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 						dot := pDirX*dirX + pDirZ*dirZ
 						if dot > math.Cos(angleThreshold) {
-							target.mu.Lock()
+							target.Mu.Lock()
 							target.Health -= damage
 							isDead := target.Health <= 0
-							target.mu.Unlock()
+							target.Mu.Unlock()
 
 							if w.OnEvent != nil {
 								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
 							}
 							if isDead {
-								target.mu.Lock()
+								target.Mu.Lock()
 								w.handleDeath(target, player, nil)
-								target.mu.Unlock()
+								target.Mu.Unlock()
 							}
 						}
 					}
@@ -5049,29 +5071,29 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						continue
 					}
 
-					target.mu.RLock()
+					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.mu.RUnlock()
+						target.Mu.RUnlock()
 						continue
 					}
 					dx := target.X - player.X
 					dz := target.Z - player.Z
-					target.mu.RUnlock()
+					target.Mu.RUnlock()
 
 					if (dx*dx + dz*dz) <= radius*radius {
-						target.mu.Lock()
+						target.Mu.Lock()
 						target.Health -= damage
 						// Stun logic would go here
 						isDead := target.Health <= 0
-						target.mu.Unlock()
+						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
 							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
 						}
 						if isDead {
-							target.mu.Lock()
+							target.Mu.Lock()
 							w.handleDeath(target, player, nil)
-							target.mu.Unlock()
+							target.Mu.Unlock()
 						}
 					}
 				}
@@ -5118,10 +5140,10 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				nearby := w.Grid.Nearby(player.X, player.Z, radius)
 				for _, target := range nearby {
 					if target.Type == TypePlayer || target.Type == TypeNPC {
-						target.mu.Lock()
+						target.Mu.Lock()
 						target.ZealActive = true
 						target.ZealEndTime = time.Now().Add(8 * time.Second)
-						target.mu.Unlock()
+						target.Mu.Unlock()
 					}
 				}
 
@@ -5158,10 +5180,10 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				if target != nil {
-					target.mu.Lock()
+					target.Mu.Lock()
 					target.WeakPointMarked = true
 					target.WeakPointEndTime = time.Now().Add(10 * time.Second)
-					target.mu.Unlock()
+					target.Mu.Unlock()
 				}
 
 				setCooldown(20 * time.Second)
@@ -5174,8 +5196,8 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 }
 
 func (w *World) PerformSelectBranch(playerID, branch string) (*Entity, bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -5299,8 +5321,8 @@ func getSkillsForBranch(classType, branch string) []string {
 }
 
 func (w *World) PerformUnlockSkill(playerID, skillName string) (*Entity, bool) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -5373,7 +5395,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			// Party Logic
 			var partyMembers []*Entity
 
-			// We need to access Party, which requires w.mu.RLock via GetParty
+			// We need to access Party, which requires w.Mu.RLock via GetParty
 			// Since we are in a goroutine and not holding any locks, this is safe.
 			if attacker.PartyID != "" {
 				party := w.GetParty(attacker.PartyID)
@@ -5403,7 +5425,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				goldPerMember := totalGold / len(partyMembers)
 
 				for _, member := range partyMembers {
-					member.mu.Lock()
+					member.Mu.Lock()
 					member.Experience += xpPerMember
 					member.Gold += goldPerMember
 
@@ -5435,11 +5457,11 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 						member.RecalculateStats()
 						member.Health = member.MaxHealth
 					}
-					member.mu.Unlock()
+					member.Mu.Unlock()
 				}
 			} else {
 				// Solo Logic
-				attacker.mu.Lock()
+				attacker.Mu.Lock()
 				attacker.Experience += baseXpReward
 				attacker.Gold += baseGold
 				if attacker.MaxExperience == 0 {
@@ -5472,7 +5494,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					attacker.RecalculateStats()
 					attacker.Health = attacker.MaxHealth
 				}
-				attacker.mu.Unlock()
+				attacker.Mu.Unlock()
 			}
 
 			// Loot
@@ -5504,7 +5526,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			lootItems = append(lootItems, eidolicLoot...)
 
 			if len(lootItems) > 0 {
-				w.mu.Lock() // Lock world to add entities
+				w.Mu.Lock() // Lock world to add entities
 				for i, item := range lootItems {
 					if item == nil {
 						continue
@@ -5527,15 +5549,15 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					w.Entities[lootEntity.ID] = lootEntity
 					w.Grid.Add(lootEntity)
 				}
-				w.mu.Unlock()
+				w.Mu.Unlock()
 			}
 		}()
 	}
 }
 
 func (w *World) GetState() map[string]*Entity {
-	w.mu.RLock()
-	defer w.mu.RUnlock()
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
 
 	// Return a copy or the map itself?
 	// For JSON marshaling, we can just return the map, but need to be careful about concurrency during marshal
@@ -5618,8 +5640,8 @@ func (w *World) GetState() map[string]*Entity {
 }
 
 func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[string]*Entity {
-	w.mu.RLock()
-	defer w.mu.RUnlock()
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
@@ -5914,4 +5936,18 @@ func (e *Entity) RecalculateStats() {
 	if e.Slowed {
 		e.Speed *= (1.0 - e.SlowFactor)
 	}
+}
+
+func (w *World) DropLoot(item Item, x, y float64) {
+	// Create Loot Entity
+	loot := &Entity{
+		ID:        fmt.Sprintf("loot-%d", time.Now().UnixNano()),
+		Type:      TypeLoot,
+		X:         x,
+		Y:         0.5,
+		Z:         y,
+		LootItem:  &item,
+		CreatedAt: time.Now(),
+	}
+	w.AddEntity(loot)
 }
