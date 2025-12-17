@@ -121,12 +121,18 @@ const (
 	MsgTradingBuyout     = "trading_buyout"
 	MsgTradingCollect    = "trading_collect"
 	MsgTradingCancel     = "trading_cancel"
+	MsgTradingBid        = "trading_bid"
 	MsgInventoryMove     = "inventory_move"
 )
 
 type Message struct {
 	Type    string          `json:"type"`
 	Payload json.RawMessage `json:"payload"`
+}
+
+type TradingBidPayload struct {
+	AuctionID string `json:"auctionId"`
+	Amount    int    `json:"amount"`
 }
 
 type InventoryMovePayload struct {
@@ -322,7 +328,7 @@ func main() {
 	// Seed the random number generator
 	rand.Seed(time.Now().UnixNano())
 
-	world = game.NewWorld()
+	world = game.NewWorld(db)
 
 	// Set up World Event Callback
 	world.OnEvent = func(eventType string, data interface{}) {
@@ -1255,6 +1261,73 @@ func (c *Client) handleMessage(msg Message) {
 		b2, _ := json.Marshal(msg2)
 		c.sendSafe(b2)
 
+	case MsgTradingBid:
+		if c.playerID == "" {
+			return
+		}
+		var payload TradingBidPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		world.Mu.Lock()
+		player, ok := world.Entities[c.playerID]
+		world.Mu.Unlock()
+
+		if !ok {
+			return
+		}
+
+		refundFunc := func(targetID, targetName string, amount int) {
+			// Try to find online player
+			world.Mu.Lock()
+			target, ok := world.Entities[targetID]
+			world.Mu.Unlock()
+
+			if ok {
+				target.Mu.Lock()
+				target.Gold += amount
+				target.Mu.Unlock()
+
+				// We could try to notify them if we had the client, but gold update is enough for now.
+				// Next time they check inventory it will be there.
+			} else {
+				// Offline refund
+				char, err := db.GetCharacter(targetID, targetName)
+				if err == nil {
+					char.Gold += amount
+					db.SaveCharacter(targetID, char)
+				}
+			}
+		}
+
+		err := world.Trading.BidAuction(payload.AuctionID, player, payload.Amount, refundFunc)
+		if err != nil {
+			c.sendError(err.Error())
+			return
+		}
+
+		// Send Inventory Update (Gold changed)
+		player.Mu.Lock()
+		invPayload, _ := json.Marshal(player.Inventory)
+		player.Mu.Unlock()
+		msgInv := Message{
+			Type:    MsgInventory,
+			Payload: invPayload,
+		}
+		bInv, _ := json.Marshal(msgInv)
+		c.sendSafe(bInv)
+
+		c.sendError("Bid placed!")
+
+		// Refresh Search List
+		msgRefresh := Message{
+			Type:    "trading_refresh",
+			Payload: nil,
+		}
+		bRefresh, _ := json.Marshal(msgRefresh)
+		c.sendSafe(bRefresh)
+
 	case MsgTradingBuyout:
 		if c.playerID == "" {
 			return
@@ -1272,7 +1345,7 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 
-		_, err := world.Trading.BuyoutAuction(payload.AuctionID, player)
+		_, err := world.Trading.BuyoutAuction(payload.AuctionID, player, world)
 		if err != nil {
 			c.sendError(err.Error())
 			return
@@ -1287,6 +1360,14 @@ func (c *Client) handleMessage(msg Message) {
 		c.sendSafe(b)
 
 		c.sendError("Auction bought!")
+
+		// Refresh Search List
+		msgRefresh := Message{
+			Type:    "trading_refresh",
+			Payload: nil,
+		}
+		bRefresh, _ := json.Marshal(msgRefresh)
+		c.sendSafe(bRefresh)
 
 	case MsgTradingCollect:
 		if c.playerID == "" {
@@ -1399,6 +1480,14 @@ func (c *Client) handleMessage(msg Message) {
 		}
 		b2, _ := json.Marshal(msg2)
 		c.sendSafe(b2)
+
+		// Refresh Search List (in case I was searching and saw my own item)
+		msgRefresh := Message{
+			Type:    "trading_refresh",
+			Payload: nil,
+		}
+		bRefresh, _ := json.Marshal(msgRefresh)
+		c.sendSafe(bRefresh)
 
 	case MsgBuyGamble:
 		if c.playerID == "" {

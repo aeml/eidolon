@@ -134,6 +134,14 @@ export class GameEngine {
                 }));
             }
         };
+        this.uiManager.onTradingBid = (auctionId, amount) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(JSON.stringify({ 
+                    type: 'trading_bid', 
+                    payload: { auctionId, amount } 
+                }));
+            }
+        };
         this.uiManager.onTradingCollect = (auctionId) => {
             if (this.socket && this.socket.readyState === WebSocket.OPEN) {
                 this.socket.send(JSON.stringify({ 
@@ -1027,6 +1035,8 @@ export class GameEngine {
                 }));
                 this.uiManager.renderMyAuctions(auctions);
             }
+        } else if (msg.type === 'trading_refresh') {
+            this.uiManager.handleTradingSearch();
         } else if (msg.type === 'error') {
             console.error("Server Error:", msg.payload);
             if (typeof alert !== 'undefined') {
