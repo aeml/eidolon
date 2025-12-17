@@ -1134,20 +1134,18 @@ func (w *World) PerformEquip(playerID, itemID, slot string) (*Entity, bool) {
 	// Capture the item value BEFORE any inventory modifications to prevent pointer invalidation
 	newItem := *itemToEquip
 
-	// Remove from inventory FIRST to free up space (and avoid stacking issues)
-	// Shift remove (preserve order)
-	copy(player.Inventory[invIndex:], player.Inventory[invIndex+1:])
-	player.Inventory = player.Inventory[:len(player.Inventory)-1]
+	// Remove from inventory (Clear slot)
+	player.Inventory[invIndex] = Item{}
 
 	// Unequip current
 	if current, ok := player.Equipment[slot]; ok {
 		remaining := player.AddItemToInventory(current)
 		if remaining > 0 {
 			// If we can't fit the old item, we have a problem.
-			// Since we just removed one item, we should have at least one slot (unless stacking weirdness).
-			// If it fails, we try to force append if possible, or it's lost (but this should be rare).
-			// For now, let's assume it fits.
-			// If we really want to be safe, we could check space before removing, but that's complex.
+			// Since we just cleared one slot, we should have at least one slot.
+			// Restore the item to inventory if swap fails (unlikely)
+			player.Inventory[invIndex] = newItem
+			return nil, false
 		}
 	}
 
@@ -1169,7 +1167,7 @@ func (w *World) PerformInventoryMove(playerID string, from, to int) (*Entity, bo
 		return nil, false
 	}
 
-	if from < 0 || from >= len(player.Inventory) || to < 0 || to >= len(player.Inventory) {
+	if from < 0 || from >= MaxInventorySize || to < 0 || to >= MaxInventorySize {
 		return nil, false
 	}
 
@@ -1562,9 +1560,8 @@ func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
 		}
 	}
 
-	lastIdx := len(player.Inventory) - 1
-	player.Inventory[invIndex] = player.Inventory[lastIdx]
-	player.Inventory = player.Inventory[:lastIdx]
+	// Clear slot
+	player.Inventory[invIndex] = Item{}
 
 	return player, true
 }
@@ -1644,9 +1641,7 @@ func (w *World) PerformStashDeposit(playerID, itemID string) (*Entity, bool) {
 
 	if remaining == 0 {
 		// Fully deposited
-		lastIdx := len(player.Inventory) - 1
-		player.Inventory[invIndex] = player.Inventory[lastIdx]
-		player.Inventory = player.Inventory[:lastIdx]
+		player.Inventory[invIndex] = Item{}
 		return player, true
 	} else if remaining < itemToDeposit.Stack {
 		// Partially deposited
@@ -5751,7 +5746,7 @@ func (e *Entity) AddItemToInventory(item Item) int {
 	// 1. Try to stack
 	if item.MaxStack > 1 {
 		for i := range e.Inventory {
-			if e.Inventory[i].Name == item.Name {
+			if e.Inventory[i].ID != "" && e.Inventory[i].Name == item.Name {
 				// Self-heal: Update MaxStack from incoming item if it's better (fixes old items)
 				if item.MaxStack > e.Inventory[i].MaxStack {
 					e.Inventory[i].MaxStack = item.MaxStack
@@ -5778,11 +5773,14 @@ func (e *Entity) AddItemToInventory(item Item) int {
 
 	// 2. Add remaining as new item
 	if remaining > 0 {
-		if len(e.Inventory) < MaxInventorySize {
-			newItem := item
-			newItem.Stack = remaining
-			e.Inventory = append(e.Inventory, newItem)
-			return 0
+		// Find first empty slot
+		for i := range e.Inventory {
+			if e.Inventory[i].ID == "" {
+				newItem := item
+				newItem.Stack = remaining
+				e.Inventory[i] = newItem
+				return 0
+			}
 		}
 		return remaining // Inventory full
 	}
