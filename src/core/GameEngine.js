@@ -459,6 +459,7 @@ export class GameEngine {
         // In multiplayer, we still need to render the static town
         // Town Center: (0, 200), Radius: 100
         this.worldGenerator.createTown(0, 200, 100);
+        this.worldGenerator.createOverworldStructures();
         // this.spawnTownEntities();
 
         if (onProgress) onProgress(70, "Spawning Enemies...");
@@ -949,6 +950,53 @@ export class GameEngine {
         return item;
     }
 
+    enterInstance(instanceId, type) {
+        console.log(`Entering instance: ${instanceId} (${type})`);
+
+        // Clear current entities
+        this.remotePlayers.forEach(entity => {
+            this.renderSystem.scene.remove(entity.mesh);
+            if (entity.healthBar) entity.healthBar.remove();
+        });
+        this.remotePlayers.clear();
+        this.enemies = [];
+        this.lootDrops = [];
+
+        // Remove all meshes except player and ground (if we want to keep ground)
+        // Actually, for dungeon we might want to hide the main ground or overlay it.
+        // For now, simple cleanup.
+        const toRemove = [];
+        this.renderSystem.scene.traverse(child => {
+            if (child.isMesh && child !== this.player.mesh && child.name !== 'Ground') {
+                // Check if it's part of player
+                let isPlayer = false;
+                child.traverseAncestors(p => {
+                    if (p === this.player.mesh) isPlayer = true;
+                });
+                if (!isPlayer) toRemove.push(child);
+            }
+        });
+
+        toRemove.forEach(child => {
+            this.renderSystem.scene.remove(child);
+        });
+
+        // Clear collisions
+        this.collisionManager.colliders = [];
+
+        // Generate new world
+        const worldGen = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
+        if (type === 'crypt') {
+            worldGen.createDungeon(0, 0, 100);
+        } else {
+            worldGen.createTown(0, 0, 100);
+        }
+
+        // Reset player position
+        this.player.position.set(0, 0, 0);
+        this.player.mesh.position.set(0, 0, 0);
+    }
+
     handleServerMessage(msg) {
         if (!this.player) return; // Safety check
 
@@ -1046,6 +1094,9 @@ export class GameEngine {
                 this.isExpectedDisconnect = true;
                 window.location.reload();
             }
+        } else if (msg.type === 'enter_instance') {
+            const instanceData = msg.payload;
+            this.enterInstance(instanceData.instanceId, instanceData.type);
         } else if (msg.type === 'state') {
             const state = msg.payload;
             const seenIds = new Set();

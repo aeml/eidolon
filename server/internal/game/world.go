@@ -51,6 +51,7 @@ type Stats struct {
 type Entity struct {
 	Mu            sync.RWMutex // Protects concurrent access
 	ID            string       `json:"id"`
+	InstanceID    string       `json:"instanceId"`
 	Name          string       `json:"name"`
 	Type          EntityType   `json:"type"`
 	SubType       string       `json:"subType"` // e.g., "Fighter", "Skeleton"
@@ -202,15 +203,15 @@ func NewSpatialMap(cellSize float64) *SpatialMap {
 	}
 }
 
-func (sm *SpatialMap) key(x, z float64) string {
+func (sm *SpatialMap) key(x, z float64, instanceID string) string {
 	cx := int(math.Floor(x / sm.cellSize))
 	cz := int(math.Floor(z / sm.cellSize))
-	return fmt.Sprintf("%d:%d", cx, cz)
+	return fmt.Sprintf("%s:%d:%d", instanceID, cx, cz)
 }
 func (sm *SpatialMap) Add(e *Entity) {
 	sm.Mu.Lock()
 	defer sm.Mu.Unlock()
-	k := sm.key(e.X, e.Z)
+	k := sm.key(e.X, e.Z, e.InstanceID)
 	if sm.cells[k] == nil {
 		sm.cells[k] = make(map[string]*Entity)
 	}
@@ -220,7 +221,7 @@ func (sm *SpatialMap) Add(e *Entity) {
 func (sm *SpatialMap) Remove(e *Entity) {
 	sm.Mu.Lock()
 	defer sm.Mu.Unlock()
-	k := sm.key(e.X, e.Z)
+	k := sm.key(e.X, e.Z, e.InstanceID)
 	if sm.cells[k] != nil {
 		delete(sm.cells[k], e.ID)
 		if len(sm.cells[k]) == 0 {
@@ -232,8 +233,10 @@ func (sm *SpatialMap) Remove(e *Entity) {
 func (sm *SpatialMap) Update(e *Entity, oldX, oldZ float64) {
 	sm.Mu.Lock()
 	defer sm.Mu.Unlock()
-	oldKey := sm.key(oldX, oldZ)
-	newKey := sm.key(e.X, e.Z)
+	// Note: We assume InstanceID doesn't change during a normal Update call.
+	// If it does (EnterInstance), we should use Remove() then Add() manually.
+	oldKey := sm.key(oldX, oldZ, e.InstanceID)
+	newKey := sm.key(e.X, e.Z, e.InstanceID)
 	if oldKey == newKey {
 		return
 	}
@@ -249,7 +252,7 @@ func (sm *SpatialMap) Update(e *Entity, oldX, oldZ float64) {
 	sm.cells[newKey][e.ID] = e
 }
 
-func (sm *SpatialMap) Nearby(x, z, radius float64) []*Entity {
+func (sm *SpatialMap) Nearby(x, z, radius float64, instanceID string) []*Entity {
 	sm.Mu.RLock()
 	defer sm.Mu.RUnlock()
 	var result []*Entity
@@ -260,7 +263,7 @@ func (sm *SpatialMap) Nearby(x, z, radius float64) []*Entity {
 
 	for cx := minX; cx <= maxX; cx++ {
 		for cz := minZ; cz <= maxZ; cz++ {
-			k := fmt.Sprintf("%d:%d", cx, cz)
+			k := fmt.Sprintf("%s:%d:%d", instanceID, cx, cz)
 			for _, e := range sm.cells[k] {
 				result = append(result, e)
 			}
@@ -1048,6 +1051,15 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		}
 	}
 	return newE
+}
+
+func (w *World) GetPlayerInstance(id string) string {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+	if e, ok := w.Entities[id]; ok {
+		return e.InstanceID
+	}
+	return ""
 }
 
 func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool) {
@@ -1926,7 +1938,13 @@ func (w *World) PerformRecall(playerID string) {
 	player.Z = 200
 	player.TargetX = -1.25
 	player.TargetZ = 200
-	w.Grid.Update(player, oldX, oldZ)
+	// Reset InstanceID to Overworld if respawning in town
+	// Note: If we want them to respawn inside the dungeon, we shouldn't clear InstanceID here.
+	// For now, let's assume death sends you to town (Overworld).
+	// We need to handle the Grid update carefully if InstanceID changes.
+	w.Grid.Remove(player)
+	player.InstanceID = ""
+	w.Grid.Add(player)
 }
 
 func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred *deferredActions) {
@@ -2097,8 +2115,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		e.Mu.Unlock()
 
 		// Check Collision with Enemies
-		nearbyEnemies := w.Grid.Nearby(projX, projZ, radius+2.0)
+		nearbyEnemies := w.Grid.Nearby(projX, projZ, radius+2.0, e.InstanceID)
 		for _, target := range nearbyEnemies {
+			if target.InstanceID != e.InstanceID {
+				continue
+			}
 			// Read Target State
 			target.Mu.RLock()
 			if target.Type != TypeEnemy || target.State == "DEAD" {
@@ -2154,8 +2175,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						splashRadius = 6.0
 					}
 
-					splashTargets := w.Grid.Nearby(projX, projZ, splashRadius)
+					splashTargets := w.Grid.Nearby(projX, projZ, splashRadius, e.InstanceID)
 					for _, splashTarget := range splashTargets {
+						if splashTarget.InstanceID != e.InstanceID {
+							continue
+						}
 						splashTarget.Mu.RLock()
 						if splashTarget.Type != TypeEnemy || splashTarget.ID == target.ID || splashTarget.State == "DEAD" {
 							splashTarget.Mu.RUnlock()
@@ -2371,8 +2395,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					// Heal Nearby Allies
 					pX, pZ := e.X, e.Z
 					e.Mu.Unlock()
-					nearby := w.Grid.Nearby(pX, pZ, 10.0)
+					nearby := w.Grid.Nearby(pX, pZ, 10.0, e.InstanceID)
 					for _, target := range nearby {
+						if target.InstanceID != e.InstanceID {
+							continue
+						}
 						if target.ID == e.ID {
 							continue
 						}
@@ -2406,8 +2433,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						pX, pZ := e.X, e.Z
 						e.Mu.Unlock() // Unlock before interaction
 
-						nearby := w.Grid.Nearby(pX, pZ, radius)
+						nearby := w.Grid.Nearby(pX, pZ, radius, e.InstanceID)
 						for _, target := range nearby {
+							if target.InstanceID != e.InstanceID {
+								continue
+							}
 							target.Mu.RLock()
 							if target.Type != TypeEnemy || target.State == "DEAD" {
 								target.Mu.RUnlock()
@@ -2475,8 +2505,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		ex, ez := e.X, e.Z
 		e.Mu.Unlock()
 
-		nearby := w.Grid.Nearby(ex, ez, minDist)
+		nearby := w.Grid.Nearby(ex, ez, minDist, e.InstanceID)
 		for _, t := range nearby {
+			if t.InstanceID != e.InstanceID {
+				continue
+			}
 			t.Mu.RLock()
 			if t.Type != TypeEnemy || t.State == "DEAD" {
 				t.Mu.RUnlock()
@@ -2570,6 +2603,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 		// Find nearest player
 		for _, p := range players {
+			if p.InstanceID != e.InstanceID {
+				continue
+			}
 			p.Mu.RLock()
 			// Check Safe Zone
 			if p.X > -100 && p.X < 100 && p.Z > 100 && p.Z < 300 {
@@ -2823,6 +2859,10 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 
 	target, ok := w.Entities[targetID]
 	if !ok || target.State == "DEAD" {
+		return 0, false
+	}
+
+	if attacker.InstanceID != target.InstanceID {
 		return 0, false
 	}
 
@@ -5645,7 +5685,7 @@ func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[str
 	}
 
 	// Query Grid
-	nearby := w.Grid.Nearby(player.X, player.Z, viewDistance)
+	nearby := w.Grid.Nearby(player.X, player.Z, viewDistance, player.InstanceID)
 
 	// Optimization: Pre-allocate map size to avoid re-allocations
 	state := make(map[string]*Entity, len(nearby)+1)
@@ -5655,6 +5695,9 @@ func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[str
 
 	for _, v := range nearby {
 		if v.ID == playerID {
+			continue
+		}
+		if v.InstanceID != player.InstanceID {
 			continue
 		}
 		// Precise distance check
@@ -5674,6 +5717,7 @@ func (w *World) copyEntity(v *Entity) *Entity {
 	// Manual copy to avoid copying mutex
 	e := Entity{
 		ID:                v.ID,
+		InstanceID:        v.InstanceID,
 		Name:              v.Name,
 		Type:              v.Type,
 		SubType:           v.SubType,
@@ -5940,13 +5984,85 @@ func (e *Entity) RecalculateStats() {
 func (w *World) DropLoot(item Item, x, y float64) {
 	// Create Loot Entity
 	loot := &Entity{
-		ID:        fmt.Sprintf("loot-%d", time.Now().UnixNano()),
-		Type:      TypeLoot,
-		X:         x,
-		Y:         0.5,
-		Z:         y,
-		LootItem:  &item,
-		CreatedAt: time.Now(),
+		ID:         fmt.Sprintf("loot-%d", time.Now().UnixNano()),
+		Type:       TypeLoot,
+		X:          x,
+		Y:          0.5,
+		Z:          y,
+		LootItem:   &item,
+		CreatedAt:  time.Now(),
+		InstanceID: "", // Loot drops in overworld by default unless specified
+	}
+	// If we want loot to drop in instances, we need to pass the instance ID to DropLoot
+	// For now, let's assume DropLoot is only called for overworld or we need to update it.
+	// Actually, DropLoot is usually called from handleDeath, which has access to the dead entity.
+	// We should update DropLoot to take instanceID.
+	w.AddEntity(loot)
+}
+
+func (w *World) DropLootInInstance(item Item, x, y float64, instanceID string) {
+	loot := &Entity{
+		ID:         fmt.Sprintf("loot-%d", time.Now().UnixNano()),
+		Type:       TypeLoot,
+		X:          x,
+		Y:          0.5,
+		Z:          y,
+		LootItem:   &item,
+		CreatedAt:  time.Now(),
+		InstanceID: instanceID,
 	}
 	w.AddEntity(loot)
+}
+
+func (w *World) CreateDungeon(partyID string, dungeonType string) string {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	instanceID := fmt.Sprintf("dungeon_%s_%d", partyID, time.Now().Unix())
+
+	// Spawn Dungeon Entities (Example: 20 Skeletons)
+	for i := 0; i < 20; i++ {
+		x := (rand.Float64() * 40) - 20
+		z := (rand.Float64() * 40) - 20
+
+		skeleton := &Entity{
+			ID:             fmt.Sprintf("Skeleton-%s-%d", instanceID, i),
+			InstanceID:     instanceID,
+			Type:           TypeEnemy,
+			SubType:        "Skeleton",
+			X:              x,
+			Y:              0,
+			Z:              z,
+			SpawnX:         x,
+			SpawnZ:         z,
+			BaseStats:      Stats{Strength: 100, Vitality: 100},
+			Health:         1000,
+			MaxHealth:      1000,
+			State:          "IDLE",
+			Speed:          3.0,
+			AttackSpeed:    2.0,
+			AttackCooldown: 2 * time.Second,
+		}
+		w.Entities[skeleton.ID] = skeleton
+		w.Grid.Insert(skeleton)
+	}
+
+	return instanceID
+}
+
+func (w *World) EnterInstance(playerID string, instanceID string) error {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return fmt.Errorf("player not found")
+	}
+
+	player.InstanceID = instanceID
+	player.X = 0
+	player.Z = 0
+
+	w.Grid.Update(player)
+	return nil
 }

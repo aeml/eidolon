@@ -278,4 +278,64 @@ export class WorldGenerator {
         post.position.set(x, 4, z); // Center at y=4 for height 8
         group.add(post);
     }
+
+    createDungeon(centerX, centerZ, size) {
+        console.log(`Generating dungeon at ${centerX},${centerZ}`);
+
+        // Simple room for now
+        const floorGeo = new THREE.PlaneGeometry(size, size);
+        const floorMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+        const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.rotation.x = -Math.PI / 2;
+        floor.position.set(centerX, 0.1, centerZ); // Slightly above ground to cover grass
+        this.scene.add(floor);
+
+        // Walls
+        this.createRectangularFence(centerX, centerZ, size, size);
+
+        // Add some pillars
+        const pillarGeo = new THREE.BoxGeometry(2, 10, 2);
+        const pillarMat = new THREE.MeshStandardMaterial({ color: 0x555555 });
+
+        for (let i = 0; i < 10; i++) {
+            const x = (Math.random() * size) - size / 2;
+            const z = (Math.random() * size) - size / 2;
+            const pillar = new THREE.Mesh(pillarGeo, pillarMat);
+            pillar.position.set(centerX + x, 5, centerZ + z);
+            this.scene.add(pillar);
+
+            const collider = new THREE.Box3().setFromObject(pillar);
+            this.collisionManager.addCollider(collider);
+        }
+    }
+
+    createOverworldStructures() {
+        const loader = new GLTFLoader();
+        
+        // The Verdant Bastion (Level 40-50 Dungeon)
+        // Location: X=800, Z=200 (In the InfernoTitan area)
+        loader.load('./assets/buildings/dungeons/the_verdant_bastion.glb', (gltf) => {
+            const mesh = gltf.scene;
+            const scale = 40; // "Very large"
+            mesh.scale.set(scale, scale, scale);
+            mesh.position.set(800, 0, 200);
+            
+            mesh.updateMatrixWorld(true);
+            const box = new THREE.Box3().setFromObject(mesh);
+            const bottomY = box.min.y;
+            mesh.position.y += (0 - bottomY); // Ground it
+
+            mesh.traverse(c => { if(c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+            this.scene.add(mesh);
+
+            // Update matrix again to account for the Y shift
+            mesh.updateMatrixWorld(true);
+
+            // Add collision
+            const collider = new THREE.Box3().setFromObject(mesh);
+            this.collisionManager.addCollider(collider);
+            
+            console.log("Loaded The Verdant Bastion at 800, 200");
+        }, undefined, (err) => console.error("Failed to load the_verdant_bastion:", err));
+    }
 }
