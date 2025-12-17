@@ -123,6 +123,8 @@ const (
 	MsgTradingCancel     = "trading_cancel"
 	MsgTradingBid        = "trading_bid"
 	MsgInventoryMove     = "inventory_move"
+	MsgEnterDungeon      = "enter_dungeon"
+	MsgEnterInstance     = "enter_instance"
 )
 
 type Message struct {
@@ -304,8 +306,9 @@ type PartyPromotePayload struct {
 }
 
 type BroadcastMessage struct {
-	Type string
-	Data []byte
+	Type       string
+	Data       []byte
+	InstanceID string
 }
 
 var clients = make(map[*Client]bool)
@@ -497,6 +500,14 @@ func runHub() {
 			}
 		case message := <-broadcast:
 			for client := range clients {
+				// Filter by InstanceID
+				if message.InstanceID != "" {
+					clientInstance := world.GetPlayerInstance(client.playerID)
+					if clientInstance != message.InstanceID {
+						continue
+					}
+				}
+
 				if message.Type == MsgState || message.Type == "time" {
 					// Non-blocking send for state/time updates
 					// If channel is full, drop the message instead of disconnecting
@@ -1011,6 +1022,58 @@ func (c *Client) handleMessage(msg Message) {
 			}
 			b, _ := json.Marshal(msg)
 			c.sendSafe(b)
+		}
+
+	case MsgEnterDungeon:
+		if c.playerID == "" {
+			return
+		}
+
+		player := world.GetEntityCopy(c.playerID)
+		if player == nil {
+			return
+		}
+
+		if player.PartyID == "" {
+			c.sendError("You must be in a party to enter a dungeon.")
+			return
+		}
+
+		// Create Dungeon
+		instanceID := world.CreateDungeon(player.PartyID, "crypt")
+
+		// Get Party
+		party := world.GetParty(player.PartyID)
+		if party == nil {
+			return
+		}
+
+		// Get members safely
+		_, _, members := party.GetSnapshot()
+
+		for _, memberID := range members {
+			world.EnterInstance(memberID, instanceID)
+
+			// Notify Client
+			sessionsMu.Lock()
+			var memberClient *Client
+			for _, mc := range activeSessions {
+				if mc.playerID == memberID {
+					memberClient = mc
+					break
+				}
+			}
+			sessionsMu.Unlock()
+
+			if memberClient != nil {
+				payload := []byte(fmt.Sprintf(`{"instanceId":"%s", "type":"crypt"}`, instanceID))
+				msg := Message{
+					Type:    MsgEnterInstance,
+					Payload: payload,
+				}
+				b, _ := json.Marshal(msg)
+				memberClient.sendSafe(b)
+			}
 		}
 
 	case MsgMove:
