@@ -247,6 +247,9 @@ func (ts *TradingSystem) GetPlayerAuctions(playerID string) []*Auction {
 	for _, auction := range ts.Auctions {
 		if auction.SellerID == playerID {
 			results = append(results, auction)
+		} else if auction.BuyerID == playerID && auction.Status == AuctionSold {
+			// Include won auctions so I can collect them
+			results = append(results, auction)
 		}
 	}
 
@@ -292,12 +295,18 @@ func (ts *TradingSystem) BuyoutAuction(auctionID string, buyer *Entity, w *World
 
 	// Check for inventory space (Conservative check)
 	canFit := false
-	if len(buyer.Inventory) < MaxInventorySize {
-		canFit = true
-	} else if auction.Item.MaxStack > 1 {
+	// Check for empty slot
+	for _, invItem := range buyer.Inventory {
+		if invItem.ID == "" {
+			canFit = true
+			break
+		}
+	}
+
+	if !canFit && auction.Item.MaxStack > 1 {
 		// Check if it can stack
 		for _, invItem := range buyer.Inventory {
-			if invItem.Name == auction.Item.Name && invItem.Stack < invItem.MaxStack {
+			if invItem.ID != "" && invItem.Name == auction.Item.Name && invItem.Stack < invItem.MaxStack {
 				canFit = true
 				break
 			}
@@ -501,7 +510,7 @@ func (ts *TradingSystem) RemoveAuction(auctionID string) {
 	delete(ts.Auctions, auctionID)
 }
 
-func (ts *TradingSystem) CancelAuction(auctionID string, player *Entity) error {
+func (ts *TradingSystem) CancelAuction(auctionID string, player *Entity, w *World) error {
 	ts.mu.Lock()
 	defer ts.mu.Unlock()
 
@@ -518,11 +527,31 @@ func (ts *TradingSystem) CancelAuction(auctionID string, player *Entity) error {
 		return fmt.Errorf("auction is not active")
 	}
 
-	auction.Status = AuctionCancelled
+	// Refund Item Immediately
+	player.Mu.Lock()
+	remaining := player.AddItemToInventory(auction.Item)
+	player.Mu.Unlock()
 
-	// Save to DB
-	if err := ts.db.UpdateAuction(ts.toDBAuction(auction)); err != nil {
-		log.Printf("Failed to update auction cancel: %v", err)
+	if remaining > 0 {
+		// Fallback: Try Stash
+		leftoverItem := auction.Item
+		leftoverItem.Stack = remaining
+
+		player.Mu.Lock()
+		remStash := player.AddItemToStash(leftoverItem)
+		player.Mu.Unlock()
+
+		if remStash > 0 {
+			// Fallback: Drop on Ground
+			leftoverItem.Stack = remStash
+			w.DropLoot(leftoverItem, player.X, player.Y)
+		}
+	}
+
+	// Remove auction
+	delete(ts.Auctions, auctionID)
+	if err := ts.db.DeleteAuction(auctionID); err != nil {
+		log.Printf("Failed to delete auction: %v", err)
 	}
 
 	return nil

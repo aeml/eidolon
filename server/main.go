@@ -817,10 +817,14 @@ func (c *Client) handleMessage(msg Message) {
 			c.username, entity.Level, entity.SelectedBranch, entity.UnlockedSkills)
 
 		// Convert DB Inventory to Game Inventory
+		entity.Inventory = make([]game.Item, game.MaxInventorySize)
 		if len(char.Inventory) > 0 {
 			log.Printf("Loading inventory for %s: %d items", c.username, len(char.Inventory))
-			entity.Inventory = make([]game.Item, len(char.Inventory))
+			// Fill slots sequentially for now (since DB doesn't store slot index)
 			for i, dbItem := range char.Inventory {
+				if i >= game.MaxInventorySize {
+					break
+				}
 				// Fix for old items (Shards/Hearts missing MaxStack)
 				maxStack := dbItem.MaxStack
 				if (dbItem.Name == "Shard" || dbItem.Name == "Heart") && maxStack == 0 {
@@ -852,6 +856,7 @@ func (c *Client) handleMessage(msg Message) {
 		}
 
 		// Convert DB Stash to Game Stash
+		entity.Stash = make([]game.Item, 0)
 		if len(char.Stash) > 0 {
 			entity.Stash = make([]game.Item, len(char.Stash))
 			for i, dbItem := range char.Stash {
@@ -885,6 +890,7 @@ func (c *Client) handleMessage(msg Message) {
 		}
 
 		// Convert DB Buyback to Game Buyback
+		entity.Buyback = make([]game.Item, 0)
 		if len(char.Buyback) > 0 {
 			entity.Buyback = make([]game.Item, len(char.Buyback))
 			for i, dbItem := range char.Buyback {
@@ -918,8 +924,8 @@ func (c *Client) handleMessage(msg Message) {
 		}
 
 		// Convert DB Equipment to Game Equipment
+		entity.Equipment = make(map[string]game.Item)
 		if len(char.Equipment) > 0 {
-			entity.Equipment = make(map[string]game.Item)
 			for slot, dbItem := range char.Equipment {
 				entity.Equipment[slot] = game.Item{
 					ID:          dbItem.ID,
@@ -1446,6 +1452,14 @@ func (c *Client) handleMessage(msg Message) {
 		b2, _ := json.Marshal(msg2)
 		c.sendSafe(b2)
 
+		// Refresh Search List
+		msgRefresh := Message{
+			Type:    "trading_refresh",
+			Payload: nil,
+		}
+		bRefresh, _ := json.Marshal(msgRefresh)
+		c.sendSafe(bRefresh)
+
 	case MsgTradingCancel:
 		if c.playerID == "" {
 			return
@@ -1463,13 +1477,24 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 
-		err := world.Trading.CancelAuction(payload.AuctionID, player)
+		err := world.Trading.CancelAuction(payload.AuctionID, player, world)
 		if err != nil {
 			c.sendError(err.Error())
 			return
 		}
 
-		c.sendError("Auction cancelled")
+		c.sendError("Auction cancelled & item reclaimed")
+
+		// Send Inventory Update
+		player.Mu.Lock()
+		invPayload, _ := json.Marshal(player.Inventory)
+		player.Mu.Unlock()
+		msgInv := Message{
+			Type:    MsgInventory,
+			Payload: invPayload,
+		}
+		bInv, _ := json.Marshal(msgInv)
+		c.sendSafe(bInv)
 
 		// Refresh My Auctions
 		results := world.Trading.GetPlayerAuctions(c.playerID)
@@ -1481,7 +1506,7 @@ func (c *Client) handleMessage(msg Message) {
 		b2, _ := json.Marshal(msg2)
 		c.sendSafe(b2)
 
-		// Refresh Search List (in case I was searching and saw my own item)
+		// Refresh Search List
 		msgRefresh := Message{
 			Type:    "trading_refresh",
 			Payload: nil,
@@ -2131,9 +2156,18 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 	}
 
 	// Convert Game Inventory to DB Inventory
+	char.Inventory = make([]database.Item, 0)
 	if len(entity.Inventory) > 0 {
-		char.Inventory = make([]database.Item, len(entity.Inventory))
-		for i, item := range entity.Inventory {
+		// Filter empty items
+		validItems := make([]game.Item, 0)
+		for _, item := range entity.Inventory {
+			if item.ID != "" {
+				validItems = append(validItems, item)
+			}
+		}
+
+		char.Inventory = make([]database.Item, len(validItems))
+		for i, item := range validItems {
 			char.Inventory[i] = database.Item{
 				ID:          item.ID,
 				Name:        item.Name,
@@ -2154,6 +2188,7 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 	}
 
 	// Convert Game Stash to DB Stash
+	char.Stash = make([]database.Item, 0)
 	if len(entity.Stash) > 0 {
 		char.Stash = make([]database.Item, len(entity.Stash))
 		for i, item := range entity.Stash {
@@ -2177,6 +2212,7 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 	}
 
 	// Convert Game Buyback to DB Buyback
+	char.Buyback = make([]database.Item, 0)
 	if len(entity.Buyback) > 0 {
 		char.Buyback = make([]database.Item, len(entity.Buyback))
 		for i, item := range entity.Buyback {
@@ -2200,8 +2236,8 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 	}
 
 	// Convert Game Equipment to DB Equipment
+	char.Equipment = make(map[string]database.Item)
 	if len(entity.Equipment) > 0 {
-		char.Equipment = make(map[string]database.Item)
 		for slot, item := range entity.Equipment {
 			char.Equipment[slot] = database.Item{
 				ID:          item.ID,

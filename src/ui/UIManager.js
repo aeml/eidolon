@@ -2211,6 +2211,7 @@ export class UIManager {
         const reversedItems = [...items].reverse();
 
         reversedItems.forEach(item => {
+            if (!item || !item.id) return;
             const el = document.createElement('div');
             el.className = 'inv-slot';
             const iconPath = this.getItemIconPath(item);
@@ -2422,7 +2423,7 @@ export class UIManager {
     updateEquipSlot(id, item, placeholder, serverSlotName) {
         const el = document.getElementById(id);
         if (el) {
-            el._item = item; // Store item for tooltip
+            el._item = (item && item.id) ? item : null; // Store item for tooltip
             el.innerHTML = ''; // Clear text/children
             
             // Remove old event listeners (by cloning and replacing)
@@ -2431,11 +2432,11 @@ export class UIManager {
             
             // Re-assign to new element
             const slotEl = newEl;
-            slotEl._item = item; // Re-attach item data
+            slotEl._item = (item && item.id) ? item : null; // Re-attach item data
 
             const slotId = serverSlotName || id.replace('slot-', '');
 
-            if (item) {
+            if (item && item.id) {
                 const iconPath = this.getItemIconPath(item);
                 const color = item.rarity ? item.rarity.color : '#ffffff';
                 const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
@@ -2512,10 +2513,10 @@ export class UIManager {
         const slots = this.inventoryGrid.children;
         for (let i = 0; i < slots.length; i++) {
             const item = player.inventory[i];
-            slots[i]._item = item; // Store item for tooltip
+            slots[i]._item = (item && item.id) ? item : null; // Store item for tooltip
             slots[i].innerHTML = ''; // Clear
             
-            if (item) {
+            if (item && item.id) {
                 const iconPath = this.getItemIconPath(item);
                 const color = item.rarity ? item.rarity.color : '#ffffff';
                 const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
@@ -2662,10 +2663,10 @@ export class UIManager {
         const slots = this.stashGrid.children;
         for (let i = 0; i < slots.length; i++) {
             const item = player.stash ? player.stash[i] : null;
-            slots[i]._item = item;
+            slots[i]._item = (item && item.id) ? item : null;
             slots[i].innerHTML = '';
             
-            if (item) {
+            if (item && item.id) {
                 const iconPath = this.getItemIconPath(item);
                 const color = item.rarity ? item.rarity.color : '#ffffff';
                 const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
