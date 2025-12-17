@@ -115,6 +115,8 @@ export class UIManager {
         this.forgeCostValue = document.getElementById('forge-cost-value');
         this.forgeUpgradeStats = document.getElementById('forge-upgrade-stats');
         this.btnForgeUpgrade = document.getElementById('btn-forge-upgrade');
+        this.btnForgeUpgrade1 = document.getElementById('btn-forge-upgrade-1');
+        this.btnForgeUpgrade10 = document.getElementById('btn-forge-upgrade-10');
         this.btnCloseForge = document.getElementById('btn-close-forge');
 
         // Forge Potency UI
@@ -150,7 +152,9 @@ export class UIManager {
         this.selectedForgeSocketSlot = null;
 
         if (this.btnCloseForge) this.btnCloseForge.addEventListener('click', () => this.toggleForge());
-        if (this.btnForgeUpgrade) this.btnForgeUpgrade.addEventListener('click', () => this.handleForgeUpgrade());
+        if (this.btnForgeUpgrade) this.btnForgeUpgrade.addEventListener('click', () => this.handleForgeUpgrade(1)); // Fallback
+        if (this.btnForgeUpgrade1) this.btnForgeUpgrade1.addEventListener('click', () => this.handleForgeUpgrade(1));
+        if (this.btnForgeUpgrade10) this.btnForgeUpgrade10.addEventListener('click', () => this.handleForgeUpgrade(10));
         if (this.btnForgePotency) this.btnForgePotency.addEventListener('click', () => this.handleForgePotency());
         
         this.selectedForgeSlot = null;
@@ -888,42 +892,75 @@ export class UIManager {
             this.forgeSelectedItemName.style.color = item.rarity ? item.rarity.color : 'white';
         }
         
-        // Calculate Cost
-        let cost = 0;
-        let targetLevel = 0;
+        // Calculate Per-Level Cost
+        let perLevelCost = 0;
         if (item.level < 90) {
             const tier = Math.floor(item.level / 10);
-            cost = Math.pow(2, tier);
-            targetLevel = (tier + 1) * 10;
-        } else if (item.level < 100) {
-            cost = 200;
-            targetLevel = item.level + 1;
+            const baseTierCost = Math.pow(2, tier);
+            perLevelCost = Math.floor(baseTierCost / 100);
+            if (perLevelCost < 1) perLevelCost = 1;
         } else {
-            if (this.forgeCostValue) this.forgeCostValue.textContent = "MAX";
-            if (this.btnForgeUpgrade) this.btnForgeUpgrade.disabled = true;
+            perLevelCost = 2;
+        }
+
+        // Option 1: +1 Level
+        const cost1 = perLevelCost;
+        const targetLevel1 = item.level + 1;
+        
+        // Option 2: +10 Levels
+        let cost10 = perLevelCost * 10;
+        let targetLevel10 = item.level + 10;
+        if (targetLevel10 > 100) {
+            targetLevel10 = 100;
+            const actualLevels = targetLevel10 - item.level;
+            cost10 = perLevelCost * actualLevels;
+        }
+
+        // Display Cost (Show +1 cost by default or range?)
+        // Let's show "Cost per level: X" or just update buttons to show cost?
+        // The UI has a single cost display. Let's update it to show "1 Level: X | 10 Levels: Y"
+        if (this.forgeCostValue) {
+            if (item.level >= 100) {
+                this.forgeCostValue.textContent = "MAX";
+            } else {
+                this.forgeCostValue.textContent = `${cost1} (1 Lvl) / ${cost10} (10 Lvl)`;
+            }
+        }
+
+        // Update Buttons
+        if (item.level >= 100) {
+            if (this.btnForgeUpgrade1) this.btnForgeUpgrade1.disabled = true;
+            if (this.btnForgeUpgrade10) this.btnForgeUpgrade10.disabled = true;
             if (this.forgeUpgradeStats) this.forgeUpgradeStats.innerHTML = '';
             return;
         }
-        
-        if (this.forgeCostValue) this.forgeCostValue.textContent = cost;
-        if (this.btnForgeUpgrade) {
-            this.btnForgeUpgrade.disabled = false;
-            this.btnForgeUpgrade.textContent = `Upgrade to Lvl ${targetLevel}`;
+
+        if (this.btnForgeUpgrade1) {
+            this.btnForgeUpgrade1.disabled = false;
+            this.btnForgeUpgrade1.textContent = `+1 Level (${cost1})`;
+        }
+        if (this.btnForgeUpgrade10) {
+            this.btnForgeUpgrade10.disabled = false;
+            this.btnForgeUpgrade10.textContent = `+${targetLevel10 - item.level} Levels (${cost10})`;
         }
 
-        // Stat Preview
+        // Stat Preview (Show +1 by default)
         if (this.forgeUpgradeStats) {
             let statsHtml = '<div style="margin-top: 10px; font-size: 12px;">';
-            statsHtml += `<div style="color: #aaa; margin-bottom: 5px;">Level: ${item.level} <span style="color: #0f0;">-> ${targetLevel}</span></div>`;
+            statsHtml += `<div style="color: #aaa; margin-bottom: 5px;">Level: ${item.level} <span style="color: #0f0;">-> ${targetLevel1} / ${targetLevel10}</span></div>`;
             
             if (item.stats) {
                 const currentMult = 1.0 + (item.level * 0.15);
-                const nextMult = 1.0 + (targetLevel * 0.15);
-                const ratio = nextMult / currentMult;
+                const nextMult1 = 1.0 + (targetLevel1 * 0.15);
+                const ratio1 = nextMult1 / currentMult;
+
+                const nextMult10 = 1.0 + (targetLevel10 * 0.15);
+                const ratio10 = nextMult10 / currentMult;
 
                 for (const [stat, value] of Object.entries(item.stats)) {
-                    const nextValue = Math.floor(value * ratio);
-                    statsHtml += `<div>${stat}: ${value} <span style="color: #0f0;">-> ${nextValue}</span></div>`;
+                    const nextValue1 = Math.floor(value * ratio1);
+                    const nextValue10 = Math.floor(value * ratio10);
+                    statsHtml += `<div>${stat}: ${value} <span style="color: #0f0;">-> ${nextValue1} / ${nextValue10}</span></div>`;
                 }
             }
             statsHtml += '</div>';
@@ -931,10 +968,10 @@ export class UIManager {
         }
     }
 
-    handleForgeUpgrade() {
+    handleForgeUpgrade(amount) {
         if (!this.selectedForgeSlot) return;
         if (this.onForgeUpgrade) {
-            this.onForgeUpgrade(this.selectedForgeSlot);
+            this.onForgeUpgrade(this.selectedForgeSlot, amount);
         }
     }
 
