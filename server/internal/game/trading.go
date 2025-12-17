@@ -136,6 +136,10 @@ func (ts *TradingSystem) fromDBAuction(a *database.Auction) *Auction {
 }
 
 func (ts *TradingSystem) fromDBItem(i database.Item) Item {
+	stack := i.Stack
+	if stack == 0 {
+		stack = 1
+	}
 	return Item{
 		ID:          i.ID,
 		Name:        i.Name,
@@ -147,7 +151,7 @@ func (ts *TradingSystem) fromDBItem(i database.Item) Item {
 		Value:       i.Value,
 		Icon:        i.Icon,
 		Description: i.Description,
-		Stack:       i.Stack,
+		Stack:       stack,
 		MaxStack:    i.MaxStack,
 		Potency:     i.Potency,
 		Sockets:     i.Sockets,

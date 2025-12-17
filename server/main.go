@@ -927,6 +927,10 @@ func (c *Client) handleMessage(msg Message) {
 		entity.Equipment = make(map[string]game.Item)
 		if len(char.Equipment) > 0 {
 			for slot, dbItem := range char.Equipment {
+				stack := dbItem.Stack
+				if stack == 0 {
+					stack = 1
+				}
 				entity.Equipment[slot] = game.Item{
 					ID:          dbItem.ID,
 					Name:        dbItem.Name,
@@ -938,7 +942,7 @@ func (c *Client) handleMessage(msg Message) {
 					Icon:        dbItem.Icon,
 					Description: dbItem.Description,
 					Stats:       dbItem.Stats,
-					Stack:       dbItem.Stack,
+					Stack:       stack,
 					MaxStack:    dbItem.MaxStack,
 					Potency:     dbItem.Potency,
 					Sockets:     dbItem.Sockets,
