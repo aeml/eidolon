@@ -1141,6 +1141,47 @@ export class MeshFactory {
                 mesh = new THREE.Mesh(geometry, material);
                 return mesh;
             }
+        } else if (type === 'Forge') {
+            try {
+                const gltf = await this.loadModel('./assets/buildings/blacksmith_forge.glb');
+                const model = SkeletonUtils.clone(gltf.scene);
+                
+                model.scale.set(4.0, 4.0, 4.0);
+                
+                model.traverse(c => {
+                    if (c.isMesh) {
+                        c.castShadow = true;
+                        c.receiveShadow = true;
+                    }
+                });
+
+                // Calculate bounding box to center and ground the mesh
+                const box = new THREE.Box3().setFromObject(model);
+                const size = box.getSize(new THREE.Vector3());
+                const center = box.getCenter(new THREE.Vector3());
+                
+                model.position.sub(center); // Center at 0,0,0
+                model.position.y += size.y / 2; // Move up so bottom is at 0
+
+                // Wrapper Group to persist offset
+                mesh = new THREE.Group();
+                mesh.add(model);
+
+                // Hitbox
+                const hitGeo = new THREE.BoxGeometry(4.0, 4.0, 4.0);
+                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+                hitMesh.position.y = 2.0;
+                mesh.add(hitMesh);
+
+                return mesh;
+            } catch (err) {
+                console.error("Failed to load Forge:", err);
+                geometry = new THREE.BoxGeometry(2, 2, 2);
+                material = new THREE.MeshStandardMaterial({ color: 0x555555 });
+                mesh = new THREE.Mesh(geometry, material);
+                return mesh;
+            }
         }
 
         switch (type) {

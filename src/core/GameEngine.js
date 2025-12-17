@@ -31,6 +31,7 @@ import { AvengingSeraph } from '../entities/AvengingSeraph.js';
 import { LevelUpEffect } from '../ui/LevelUpEffect.js';
 import { AquaGolem } from '../entities/AquaGolem.js';
 import { MountainTroll } from '../entities/MountainTroll.js';
+import { Forge } from '../entities/Forge.js';
 
 export class GameEngine {
     constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null) {
@@ -148,6 +149,33 @@ export class GameEngine {
                 const msg = {
                     type: 'stash_deposit',
                     payload: { itemId }
+                };
+                this.socket.send(JSON.stringify(msg));
+            }
+        };
+        this.uiManager.onForgeUpgrade = (slot) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'forge_upgrade',
+                    payload: { slot }
+                };
+                this.socket.send(JSON.stringify(msg));
+            }
+        };
+        this.uiManager.onForgePotency = (slot) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'forge_potency',
+                    payload: { slot }
+                };
+                this.socket.send(JSON.stringify(msg));
+            }
+        };
+        this.uiManager.onForgeSocket = (slot) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'forge_socket',
+                    payload: { slot }
                 };
                 this.socket.send(JSON.stringify(msg));
             }
@@ -1111,6 +1139,27 @@ export class GameEngine {
                             for (const key in this.player.equipment) {
                                 this.player.equipment[key] = this.hydrateItem(this.player.equipment[key]);
                             }
+                            
+                            // Force UI Update if Forge is open
+                            if (this.uiManager.forgeScreen.style.display === 'flex') {
+                                this.uiManager.updateForgeUI(this.player);
+                                this.uiManager.updateForgePotencyUI(this.player);
+                                this.uiManager.updateForgeSocketUI(this.player);
+                                
+                                // Update selected item info if any
+                                if (this.uiManager.selectedForgeSlot) {
+                                    const item = this.player.equipment[this.uiManager.selectedForgeSlot];
+                                    this.uiManager.updateForgeInfo(item);
+                                }
+                                if (this.uiManager.selectedForgePotencySlot) {
+                                    const item = this.player.equipment[this.uiManager.selectedForgePotencySlot];
+                                    this.uiManager.updateForgePotencyInfo(item);
+                                }
+                                if (this.uiManager.selectedForgeSocketSlot) {
+                                    const item = this.player.equipment[this.uiManager.selectedForgeSocketSlot];
+                                    this.uiManager.updateForgeSocketInfo(item);
+                                }
+                            }
                         }
 
                         // Sync Spirits (Cleric)
@@ -1403,6 +1452,10 @@ export class GameEngine {
             return new Stash(id);
         }
 
+        if (type === 'Forge') {
+            return new Forge(id);
+        }
+
         // If type is NPC, handle it
         if (type === 'NPC') {
             if (subType === 'DwarfSalesman') {
@@ -1492,6 +1545,8 @@ export class GameEngine {
         let range = 5.0;
         if (entity instanceof DwarfSalesman) {
             range = 4.0;
+        } else if (entity instanceof Forge) {
+            range = 4.0;
         } else if (entity instanceof Actor && entity !== this.player) {
             if (this.player.constructor.name === 'Wizard') {
                 range = 16.0;
@@ -1543,6 +1598,8 @@ export class GameEngine {
                 
                 if (this.hoveredEntity instanceof LootDrop) {
                     document.body.style.cursor = 'grab';
+                } else if (this.hoveredEntity instanceof Forge) {
+                    document.body.style.cursor = 'pointer';
                 } else if (this.hoveredEntity && this.hoveredEntity.state !== 'DEAD') {
                     document.body.style.cursor = 'crosshair';
                 } else {
@@ -2355,6 +2412,15 @@ export class GameEngine {
                                 this.player.playAnimation('Idle');
                             }
                             this.uiManager.toggleStash();
+                            this.pendingInteraction = null;
+
+                        } else if (this.pendingInteraction instanceof Forge) {
+                            this.player.targetPosition = null;
+                            if (this.player.state === 'MOVING') {
+                                this.player.state = 'IDLE';
+                                this.player.playAnimation('Idle');
+                            }
+                            this.uiManager.toggleForge();
                             this.pendingInteraction = null;
 
                         } else if (this.pendingInteraction instanceof Actor) {

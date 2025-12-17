@@ -40,6 +40,8 @@ type Item struct {
 	Description string         `json:"description,omitempty" bson:"description"`
 	Stack       int            `json:"stack,omitempty" bson:"stack"`
 	MaxStack    int            `json:"maxStack,omitempty" bson:"maxStack"`
+	Potency     int            `json:"potency,omitempty" bson:"potency"`
+	Sockets     int            `json:"sockets,omitempty" bson:"sockets"`
 }
 
 // Base Item Definitions (Matching Client)
@@ -286,17 +288,15 @@ func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCo
 	// Special handling for Materials/Relics
 	if baseItem.Type == ItemMaterial || baseItem.Type == ItemRelic {
 		desc := ""
+		icon := ""
 		if baseItem.Name == "Shard" {
 			desc = "What remains after purpose is broken."
-			rarity = RarityCommon // Shards are always common? Or Eidolic? User said "Eidolic instead of normal/rare"
-			// Wait, user said "make these items Eidolic instead of normal/ rare eidolic will be purple but only as an outline"
-			// So Shard and Heart are BOTH Eidolic rarity?
-			// "add both of these items into the game also make these items Eidolic instead of normal/ rare"
-			// Okay, so they are Eidolic.
 			rarity = RarityEidolic
+			icon = "assets/items/eidolon_shard/eidolon_shard.png"
 		} else if baseItem.Name == "Heart" {
 			desc = "Power that chose to endure."
 			rarity = RarityEidolic
+			icon = "assets/items/eidolon_heart/eidolon_heart.png"
 		}
 
 		return &Item{
@@ -311,6 +311,7 @@ func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCo
 			Description: desc,
 			Stack:       1,
 			MaxStack:    1000,
+			Icon:        icon,
 		}
 	}
 

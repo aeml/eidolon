@@ -106,6 +106,56 @@ export class UIManager {
         });
         if (this.btnCloseShop) this.btnCloseShop.addEventListener('click', () => this.toggleShop());
         if (this.btnCloseStash) this.btnCloseStash.addEventListener('click', () => this.toggleStash());
+        
+        // Forge UI
+        this.forgeScreen = document.getElementById('forge-screen');
+        this.forgeEquipmentList = document.getElementById('forge-equipment-list');
+        this.forgeUpgradeInfo = document.getElementById('forge-upgrade-info');
+        this.forgeSelectedItemName = document.getElementById('forge-selected-item-name');
+        this.forgeCostValue = document.getElementById('forge-cost-value');
+        this.forgeUpgradeStats = document.getElementById('forge-upgrade-stats');
+        this.btnForgeUpgrade = document.getElementById('btn-forge-upgrade');
+        this.btnCloseForge = document.getElementById('btn-close-forge');
+
+        // Forge Potency UI
+        this.forgePotencyList = document.getElementById('forge-potency-list');
+        this.forgePotencyInfo = document.getElementById('forge-potency-info');
+        this.forgePotencyItemName = document.getElementById('forge-potency-item-name');
+        this.forgePotencyStats = document.getElementById('forge-potency-stats');
+        this.forgePotencyCostValue = document.getElementById('forge-potency-cost-value');
+        this.btnForgePotency = document.getElementById('btn-forge-potency');
+
+        // Forge Tabs
+        this.tabForgeUpgrade = document.getElementById('tab-forge-upgrade');
+        this.tabForgePotency = document.getElementById('tab-forge-potency');
+        this.tabForgeSocket = document.getElementById('tab-forge-socket');
+        this.forgePanelUpgrade = document.getElementById('forge-panel-upgrade');
+        this.forgePanelPotency = document.getElementById('forge-panel-potency');
+        this.forgePanelSocket = document.getElementById('forge-panel-socket');
+
+        if (this.tabForgeUpgrade) this.tabForgeUpgrade.addEventListener('click', () => this.switchForgeTab('upgrade'));
+        if (this.tabForgePotency) this.tabForgePotency.addEventListener('click', () => this.switchForgeTab('potency'));
+        if (this.tabForgeSocket) this.tabForgeSocket.addEventListener('click', () => this.switchForgeTab('socket'));
+
+        // Forge Socket UI
+        this.forgeSocketList = document.getElementById('forge-socket-list');
+        this.forgeSocketInfo = document.getElementById('forge-socket-info');
+        this.forgeSocketItemName = document.getElementById('forge-socket-item-name');
+        this.forgeSocketStats = document.getElementById('forge-socket-stats');
+        this.forgeSocketCostHearts = document.getElementById('forge-socket-cost-hearts');
+        this.forgeSocketCostShards = document.getElementById('forge-socket-cost-shards');
+        this.btnForgeSocket = document.getElementById('btn-forge-socket');
+
+        if (this.btnForgeSocket) this.btnForgeSocket.addEventListener('click', () => this.handleForgeSocket());
+        this.selectedForgeSocketSlot = null;
+
+        if (this.btnCloseForge) this.btnCloseForge.addEventListener('click', () => this.toggleForge());
+        if (this.btnForgeUpgrade) this.btnForgeUpgrade.addEventListener('click', () => this.handleForgeUpgrade());
+        if (this.btnForgePotency) this.btnForgePotency.addEventListener('click', () => this.handleForgePotency());
+        
+        this.selectedForgeSlot = null;
+        this.selectedForgePotencySlot = null;
+
         if (this.btnCloseQuest) this.btnCloseQuest.addEventListener('click', () => this.toggleQuestWindow());
         if (this.btnCloseJournal) this.btnCloseJournal.addEventListener('click', () => this.toggleJournal());
         if (this.btnRespawn) this.btnRespawn.addEventListener('click', () => {
@@ -140,6 +190,7 @@ export class UIManager {
         this.setupWindow(this.inventoryScreen);
         this.setupWindow(this.shopScreen);
         this.setupWindow(this.stashScreen);
+        this.setupWindow(this.forgeScreen);
         this.setupWindow(this.questWindow);
         this.setupWindow(this.questJournal);
         this.setupWindow(this.helpScreen);
@@ -494,6 +545,14 @@ export class UIManager {
         if (item.icon) {
             return item.icon;
         }
+
+        // Specific overrides for known items that might be missing icons
+        if (item.name === 'Shard') {
+            return 'assets/items/eidolon_shard/eidolon_shard.png';
+        }
+        if (item.name === 'Heart') {
+            return 'assets/items/eidolon_heart/eidolon_heart.png';
+        }
         
         let nameToUse = item.baseName;
         
@@ -678,6 +737,508 @@ export class UIManager {
                 this.updateInventory(this.lastPlayerRef);
                 this.updateStash(this.lastPlayerRef);
             }
+        }
+    }
+
+    toggleForge() {
+        const isHidden = this.forgeScreen.style.display === 'none' || this.forgeScreen.style.display === '';
+        this.forgeScreen.style.display = isHidden ? 'flex' : 'none';
+        
+        if (isHidden) {
+            this.inventoryScreen.style.display = 'block'; // Open inventory too
+            this.switchForgeTab('upgrade'); // Default to upgrade tab
+            if (this.lastPlayerRef) {
+                this.updateForgeUI(this.lastPlayerRef);
+                this.updateForgePotencyUI(this.lastPlayerRef);
+                this.updateForgeSocketUI(this.lastPlayerRef);
+            }
+        } else {
+            this.selectedForgeSlot = null;
+            this.selectedForgePotencySlot = null;
+            this.selectedForgeSocketSlot = null;
+            this.forgeUpgradeInfo.style.display = 'none';
+            this.forgePotencyInfo.style.display = 'none';
+            this.forgeSocketInfo.style.display = 'none';
+        }
+    }
+
+    switchForgeTab(tab) {
+        // Reset styles
+        if (this.tabForgeUpgrade) this.tabForgeUpgrade.style.background = '#111';
+        if (this.tabForgePotency) this.tabForgePotency.style.background = '#111';
+        if (this.tabForgeSocket) this.tabForgeSocket.style.background = '#111';
+        
+        if (this.forgePanelUpgrade) this.forgePanelUpgrade.style.display = 'none';
+        if (this.forgePanelPotency) this.forgePanelPotency.style.display = 'none';
+        if (this.forgePanelSocket) this.forgePanelSocket.style.display = 'none';
+
+        if (tab === 'upgrade') {
+            if (this.tabForgeUpgrade) this.tabForgeUpgrade.style.background = '#333';
+            if (this.forgePanelUpgrade) this.forgePanelUpgrade.style.display = 'flex';
+        } else if (tab === 'potency') {
+            if (this.tabForgePotency) this.tabForgePotency.style.background = '#333';
+            if (this.forgePanelPotency) this.forgePanelPotency.style.display = 'flex';
+        } else if (tab === 'socket') {
+            if (this.tabForgeSocket) this.tabForgeSocket.style.background = '#333';
+            if (this.forgePanelSocket) this.forgePanelSocket.style.display = 'flex';
+        }
+    }
+
+    updateForgeUI(player) {
+        if (!this.forgeEquipmentList) return;
+        
+        const slots = ['mainHand', 'offHand', 'head', 'chest', 'legs', 'feet', 'gloves', 'shoulders', 'belt', 'ring1', 'ring2', 'trinket1', 'trinket2', 'neck'];
+        
+        // Map existing children
+        const existingEls = {};
+        Array.from(this.forgeEquipmentList.children).forEach(child => {
+            existingEls[child.dataset.slot] = child;
+        });
+
+        slots.forEach(slot => {
+            const item = player.equipment ? player.equipment[slot] : null;
+            let el = existingEls[slot];
+
+            if (item) {
+                if (!el) {
+                    el = document.createElement('div');
+                    el.className = 'inv-slot';
+                    el.dataset.slot = slot;
+                    el.style.position = 'relative';
+                    el.style.cursor = 'pointer';
+                    el.style.pointerEvents = 'auto';
+                    
+                    // Level Indicator
+                    const levelDiv = document.createElement('div');
+                    levelDiv.className = 'level-indicator';
+                    levelDiv.style.position = 'absolute';
+                    levelDiv.style.bottom = '2px';
+                    levelDiv.style.right = '2px';
+                    levelDiv.style.color = '#ffffff';
+                    levelDiv.style.fontWeight = 'bold';
+                    levelDiv.style.fontSize = '10px';
+                    levelDiv.style.textShadow = '1px 1px 0 #000';
+                    levelDiv.style.pointerEvents = 'none';
+                    el.appendChild(levelDiv);
+
+                    this.forgeEquipmentList.appendChild(el);
+                }
+
+                // Update Visuals
+                const iconPath = this.getItemIconPath(item);
+                // Only update background if changed to avoid flickering
+                if (!el.style.backgroundImage.includes(iconPath)) {
+                    el.style.backgroundImage = `url('${iconPath}')`;
+                }
+                el.style.backgroundSize = 'contain';
+                el.style.backgroundRepeat = 'no-repeat';
+                el.style.backgroundPosition = 'center';
+                
+                const color = item.rarity ? item.rarity.color : '#ffffff';
+                const border = `1px solid ${color}`;
+                if (el.dataset.originalBorder !== border) {
+                    el.style.border = border;
+                    el.dataset.originalBorder = border;
+                }
+
+                // Update Level Indicator
+                const levelDiv = el.querySelector('.level-indicator');
+                if (levelDiv) levelDiv.textContent = `Lvl ${item.level}`;
+
+                // Highlight
+                if (this.selectedForgeSlot === slot) {
+                    el.style.boxShadow = '0 0 10px #ffd700';
+                    el.style.borderColor = '#ffd700';
+                } else {
+                    el.style.boxShadow = 'none';
+                    el.style.border = el.dataset.originalBorder;
+                }
+
+                // Update Handler (Use onclick to replace previous)
+                el.onclick = (e) => {
+                    e.stopPropagation();
+                    this.selectedForgeSlot = slot;
+                    this.updateForgeInfo(item);
+                    
+                    // Update highlights
+                    Array.from(this.forgeEquipmentList.children).forEach(child => {
+                        if (child.dataset.slot === slot) {
+                            child.style.boxShadow = '0 0 10px #ffd700';
+                            child.style.borderColor = '#ffd700';
+                        } else {
+                            child.style.boxShadow = 'none';
+                            child.style.border = child.dataset.originalBorder;
+                        }
+                    });
+                };
+                
+                el.title = `${item.name} (Lvl ${item.level})`;
+
+            } else {
+                if (el) el.remove();
+            }
+        });
+    }
+
+    updateForgeInfo(item) {
+        if (!item) return;
+        this.forgeUpgradeInfo.style.display = 'flex';
+        if (this.forgeSelectedItemName) {
+            this.forgeSelectedItemName.textContent = item.name;
+            this.forgeSelectedItemName.style.color = item.rarity ? item.rarity.color : 'white';
+        }
+        
+        // Calculate Cost
+        let cost = 0;
+        let targetLevel = 0;
+        if (item.level < 90) {
+            const tier = Math.floor(item.level / 10);
+            cost = Math.pow(2, tier);
+            targetLevel = (tier + 1) * 10;
+        } else if (item.level < 100) {
+            cost = 200;
+            targetLevel = item.level + 1;
+        } else {
+            if (this.forgeCostValue) this.forgeCostValue.textContent = "MAX";
+            if (this.btnForgeUpgrade) this.btnForgeUpgrade.disabled = true;
+            if (this.forgeUpgradeStats) this.forgeUpgradeStats.innerHTML = '';
+            return;
+        }
+        
+        if (this.forgeCostValue) this.forgeCostValue.textContent = cost;
+        if (this.btnForgeUpgrade) {
+            this.btnForgeUpgrade.disabled = false;
+            this.btnForgeUpgrade.textContent = `Upgrade to Lvl ${targetLevel}`;
+        }
+
+        // Stat Preview
+        if (this.forgeUpgradeStats) {
+            let statsHtml = '<div style="margin-top: 10px; font-size: 12px;">';
+            statsHtml += `<div style="color: #aaa; margin-bottom: 5px;">Level: ${item.level} <span style="color: #0f0;">-> ${targetLevel}</span></div>`;
+            
+            if (item.stats) {
+                const currentMult = 1.0 + (item.level * 0.15);
+                const nextMult = 1.0 + (targetLevel * 0.15);
+                const ratio = nextMult / currentMult;
+
+                for (const [stat, value] of Object.entries(item.stats)) {
+                    const nextValue = Math.floor(value * ratio);
+                    statsHtml += `<div>${stat}: ${value} <span style="color: #0f0;">-> ${nextValue}</span></div>`;
+                }
+            }
+            statsHtml += '</div>';
+            this.forgeUpgradeStats.innerHTML = statsHtml;
+        }
+    }
+
+    handleForgeUpgrade() {
+        if (!this.selectedForgeSlot) return;
+        if (this.onForgeUpgrade) {
+            this.onForgeUpgrade(this.selectedForgeSlot);
+        }
+    }
+
+    updateForgePotencyUI(player) {
+        if (!this.forgePotencyList) return;
+        
+        const slots = ['mainHand', 'offHand', 'head', 'chest', 'legs', 'feet', 'gloves', 'shoulders', 'belt', 'ring1', 'ring2', 'trinket1', 'trinket2', 'neck'];
+        
+        // Map existing children
+        const existingEls = {};
+        Array.from(this.forgePotencyList.children).forEach(child => {
+            existingEls[child.dataset.slot] = child;
+        });
+
+        slots.forEach(slot => {
+            const item = player.equipment ? player.equipment[slot] : null;
+            let el = existingEls[slot];
+
+            if (item) {
+                if (!el) {
+                    el = document.createElement('div');
+                    el.className = 'inv-slot';
+                    el.dataset.slot = slot;
+                    el.style.position = 'relative';
+                    el.style.cursor = 'pointer';
+                    el.style.pointerEvents = 'auto';
+                    
+                    // Potency Indicator
+                    const potencyDiv = document.createElement('div');
+                    potencyDiv.className = 'potency-indicator';
+                    potencyDiv.style.position = 'absolute';
+                    potencyDiv.style.bottom = '2px';
+                    potencyDiv.style.right = '2px';
+                    potencyDiv.style.color = '#00ff00';
+                    potencyDiv.style.fontWeight = 'bold';
+                    potencyDiv.style.fontSize = '10px';
+                    potencyDiv.style.textShadow = '1px 1px 0 #000';
+                    potencyDiv.style.pointerEvents = 'none';
+                    el.appendChild(potencyDiv);
+
+                    this.forgePotencyList.appendChild(el);
+                }
+
+                // Update Visuals
+                const iconPath = this.getItemIconPath(item);
+                if (!el.style.backgroundImage.includes(iconPath)) {
+                    el.style.backgroundImage = `url('${iconPath}')`;
+                }
+                el.style.backgroundSize = 'contain';
+                el.style.backgroundRepeat = 'no-repeat';
+                el.style.backgroundPosition = 'center';
+                
+                const color = item.rarity ? item.rarity.color : '#ffffff';
+                const border = `1px solid ${color}`;
+                if (el.dataset.originalBorder !== border) {
+                    el.style.border = border;
+                    el.dataset.originalBorder = border;
+                }
+
+                // Update Potency Indicator
+                const potencyDiv = el.querySelector('.potency-indicator');
+                if (potencyDiv) {
+                    if (item.potency > 0) {
+                        potencyDiv.style.display = 'block';
+                        potencyDiv.textContent = `+${item.potency}`;
+                    } else {
+                        potencyDiv.style.display = 'none';
+                    }
+                }
+
+                // Highlight
+                if (this.selectedForgePotencySlot === slot) {
+                    el.style.boxShadow = '0 0 10px #ff4444';
+                    el.style.borderColor = '#ff4444';
+                } else {
+                    el.style.boxShadow = 'none';
+                    el.style.border = el.dataset.originalBorder;
+                }
+
+                // Update Handler
+                el.onclick = (e) => {
+                    e.stopPropagation();
+                    this.selectedForgePotencySlot = slot;
+                    this.updateForgePotencyInfo(item);
+                    
+                    // Update highlights
+                    Array.from(this.forgePotencyList.children).forEach(child => {
+                        if (child.dataset.slot === slot) {
+                            child.style.boxShadow = '0 0 10px #ff4444';
+                            child.style.borderColor = '#ff4444';
+                        } else {
+                            child.style.boxShadow = 'none';
+                            child.style.border = child.dataset.originalBorder;
+                        }
+                    });
+                };
+                
+                el.title = `${item.name} (Potency +${item.potency || 0})`;
+
+            } else {
+                if (el) el.remove();
+            }
+        });
+    }
+
+    updateForgePotencyInfo(item) {
+        if (!item) return;
+        this.forgePotencyInfo.style.display = 'flex';
+        if (this.forgePotencyItemName) {
+            this.forgePotencyItemName.textContent = item.name;
+            this.forgePotencyItemName.style.color = item.rarity ? item.rarity.color : 'white';
+        }
+        
+        // Calculate Cost
+        const currentPotency = item.potency || 0;
+        if (currentPotency >= 20) {
+            if (this.forgePotencyCostValue) this.forgePotencyCostValue.textContent = "MAX";
+            if (this.btnForgePotency) this.btnForgePotency.disabled = true;
+            if (this.forgePotencyStats) this.forgePotencyStats.innerHTML = '';
+            return;
+        }
+
+        const cost = Math.pow(2, currentPotency);
+        
+        if (this.forgePotencyCostValue) this.forgePotencyCostValue.textContent = cost;
+        if (this.btnForgePotency) {
+            this.btnForgePotency.disabled = false;
+            this.btnForgePotency.textContent = `Empower to +${currentPotency + 1}`;
+        }
+
+        // Stat Preview
+        if (this.forgePotencyStats) {
+            let statsHtml = '<div style="margin-top: 10px; font-size: 12px;">';
+            statsHtml += `<div style="color: #aaa; margin-bottom: 5px;">Potency: +${currentPotency} <span style="color: #0f0;">-> +${currentPotency + 1}</span></div>`;
+            
+            if (item.stats) {
+                const currentMult = 1.0 + (currentPotency * 0.1);
+                const nextMult = 1.0 + ((currentPotency + 1) * 0.1);
+                const ratio = nextMult / currentMult;
+
+                for (const [stat, value] of Object.entries(item.stats)) {
+                    const nextValue = Math.floor(value * ratio);
+                    statsHtml += `<div>${stat}: ${value} <span style="color: #0f0;">-> ${nextValue}</span></div>`;
+                }
+            }
+            statsHtml += '</div>';
+            this.forgePotencyStats.innerHTML = statsHtml;
+        }
+    }
+
+    handleForgePotency() {
+        if (!this.selectedForgePotencySlot) return;
+        if (this.onForgePotency) {
+            this.onForgePotency(this.selectedForgePotencySlot);
+        }
+    }
+
+    updateForgeSocketUI(player) {
+        if (!this.forgeSocketList) return;
+        
+        const slots = ['mainHand', 'offHand', 'head', 'chest', 'legs', 'feet', 'gloves', 'shoulders', 'belt', 'ring1', 'ring2', 'trinket1', 'trinket2', 'neck'];
+        
+        // Map existing children
+        const existingEls = {};
+        Array.from(this.forgeSocketList.children).forEach(child => {
+            existingEls[child.dataset.slot] = child;
+        });
+
+        slots.forEach(slot => {
+            const item = player.equipment ? player.equipment[slot] : null;
+            let el = existingEls[slot];
+
+            if (item) {
+                if (!el) {
+                    el = document.createElement('div');
+                    el.className = 'inv-slot';
+                    el.dataset.slot = slot;
+                    el.style.position = 'relative';
+                    el.style.cursor = 'pointer';
+                    el.style.pointerEvents = 'auto';
+                    
+                    // Socket Indicator
+                    const socketDiv = document.createElement('div');
+                    socketDiv.className = 'socket-indicator';
+                    socketDiv.style.position = 'absolute';
+                    socketDiv.style.bottom = '2px';
+                    socketDiv.style.left = '2px';
+                    socketDiv.style.display = 'flex';
+                    socketDiv.style.gap = '1px';
+                    socketDiv.style.pointerEvents = 'none';
+                    el.appendChild(socketDiv);
+
+                    this.forgeSocketList.appendChild(el);
+                }
+
+                // Update Visuals
+                const iconPath = this.getItemIconPath(item);
+                if (!el.style.backgroundImage.includes(iconPath)) {
+                    el.style.backgroundImage = `url('${iconPath}')`;
+                }
+                el.style.backgroundSize = 'contain';
+                el.style.backgroundRepeat = 'no-repeat';
+                el.style.backgroundPosition = 'center';
+                
+                const color = item.rarity ? item.rarity.color : '#ffffff';
+                const border = `1px solid ${color}`;
+                if (el.dataset.originalBorder !== border) {
+                    el.style.border = border;
+                    el.dataset.originalBorder = border;
+                }
+
+                // Update Socket Indicator
+                const socketDiv = el.querySelector('.socket-indicator');
+                if (socketDiv) {
+                    socketDiv.innerHTML = ''; // Clear dots
+                    const sockets = item.sockets || 0;
+                    if (sockets > 0) {
+                        for (let i = 0; i < sockets; i++) {
+                            const dot = document.createElement('div');
+                            dot.style.width = '4px';
+                            dot.style.height = '4px';
+                            dot.style.borderRadius = '50%';
+                            dot.style.backgroundColor = '#00ffff';
+                            dot.style.boxShadow = '0 0 2px #00ffff';
+                            socketDiv.appendChild(dot);
+                        }
+                    }
+                }
+
+                // Highlight
+                if (this.selectedForgeSocketSlot === slot) {
+                    el.style.boxShadow = '0 0 10px #00ffff';
+                    el.style.borderColor = '#00ffff';
+                } else {
+                    el.style.boxShadow = 'none';
+                    el.style.border = el.dataset.originalBorder;
+                }
+
+                // Update Handler
+                el.onclick = (e) => {
+                    e.stopPropagation();
+                    this.selectedForgeSocketSlot = slot;
+                    this.updateForgeSocketInfo(item);
+                    
+                    // Update highlights
+                    Array.from(this.forgeSocketList.children).forEach(child => {
+                        if (child.dataset.slot === slot) {
+                            child.style.boxShadow = '0 0 10px #00ffff';
+                            child.style.borderColor = '#00ffff';
+                        } else {
+                            child.style.boxShadow = 'none';
+                            child.style.border = child.dataset.originalBorder;
+                        }
+                    });
+                };
+                
+                el.title = `${item.name} (Sockets: ${item.sockets || 0})`;
+
+            } else {
+                if (el) el.remove();
+            }
+        });
+    }
+
+    updateForgeSocketInfo(item) {
+        if (!item) return;
+        this.forgeSocketInfo.style.display = 'flex';
+        if (this.forgeSocketItemName) {
+            this.forgeSocketItemName.textContent = item.name;
+            this.forgeSocketItemName.style.color = item.rarity ? item.rarity.color : 'white';
+        }
+        
+        const currentSockets = item.sockets || 0;
+        if (currentSockets >= 4) {
+            if (this.forgeSocketCostHearts) this.forgeSocketCostHearts.textContent = "MAX";
+            if (this.forgeSocketCostShards) this.forgeSocketCostShards.textContent = "MAX";
+            if (this.btnForgeSocket) this.btnForgeSocket.disabled = true;
+            if (this.forgeSocketStats) this.forgeSocketStats.innerHTML = '';
+            return;
+        }
+
+        const shardCost = 250 * Math.pow(2, currentSockets);
+        const heartCost = 25;
+        
+        if (this.forgeSocketCostHearts) this.forgeSocketCostHearts.textContent = heartCost;
+        if (this.forgeSocketCostShards) this.forgeSocketCostShards.textContent = shardCost;
+        if (this.btnForgeSocket) {
+            this.btnForgeSocket.disabled = false;
+            this.btnForgeSocket.textContent = `Add Socket (${currentSockets + 1}/4)`;
+        }
+
+        // Stat Preview
+        if (this.forgeSocketStats) {
+            let statsHtml = '<div style="margin-top: 10px; font-size: 12px;">';
+            statsHtml += `<div style="color: #aaa; margin-bottom: 5px;">Sockets: ${currentSockets} <span style="color: #0f0;">-> ${currentSockets + 1}</span></div>`;
+            statsHtml += '</div>';
+            this.forgeSocketStats.innerHTML = statsHtml;
+        }
+    }
+
+    handleForgeSocket() {
+        if (!this.selectedForgeSocketSlot) return;
+        if (this.onForgeSocket) {
+            this.onForgeSocket(this.selectedForgeSocketSlot);
         }
     }
 
@@ -1469,6 +2030,20 @@ export class UIManager {
                 // slotEl.title = this.getItemTooltipText(item); // Disable native tooltip
                 slotEl.removeAttribute('title');
 
+                // Potency Indicator
+                if (item.potency > 0) {
+                    const potencyDiv = document.createElement('div');
+                    potencyDiv.style.position = 'absolute';
+                    potencyDiv.style.top = '2px';
+                    potencyDiv.style.right = '2px';
+                    potencyDiv.style.color = '#00ff00';
+                    potencyDiv.style.fontWeight = 'bold';
+                    potencyDiv.style.fontSize = '12px';
+                    potencyDiv.style.textShadow = '1px 1px 0 #000';
+                    potencyDiv.textContent = `+${item.potency}`;
+                    slotEl.appendChild(potencyDiv);
+                }
+
                 // Add click handler for unequipping
                 slotEl.onclick = (e) => {
                     e.stopPropagation();
@@ -1523,14 +2098,28 @@ export class UIManager {
                     stackHtml = `<div style="position:absolute; bottom:2px; right:2px; font-size:10px; color:white; text-shadow:1px 1px 0 #000; font-weight:bold;">${item.stack}</div>`;
                 }
 
+                let potencyHtml = '';
+                if (item.potency > 0) {
+                    potencyHtml = `<div style="position:absolute; top:2px; right:2px; font-size:10px; color:#00ff00; text-shadow:1px 1px 0 #000; font-weight:bold;">+${item.potency}</div>`;
+                }
+
+                let socketHtml = '';
+                if (item.sockets > 0) {
+                    let dots = '';
+                    for(let k=0; k<item.sockets; k++) {
+                        dots += `<div style="width:3px; height:3px; border-radius:50%; background-color:#00ffff; box-shadow:0 0 2px #00ffff;"></div>`;
+                    }
+                    socketHtml = `<div style="position:absolute; bottom:2px; left:2px; display:flex; gap:1px;">${dots}</div>`;
+                }
+
                 // For Eidolic, we do NOT tint the background, only the border.
                 // For others, we use multiply blend mode.
                 if (isEidolic) {
-                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}`;
+                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}${potencyHtml}${socketHtml}`;
                     slots[i].style.border = `2px solid ${color}`; // Thicker border for Eidolic?
                     slots[i].style.boxShadow = `0 0 5px ${color}`; // Glow
                 } else {
-                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}`;
+                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}${potencyHtml}${socketHtml}`;
                     slots[i].style.border = `1px solid ${color}`;
                     slots[i].style.boxShadow = 'none';
                 }

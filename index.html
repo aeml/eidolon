@@ -1405,6 +1405,20 @@
             <div class="window-header">PATCH NOTES</div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
                 <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.16b (Forge Polish)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Forge Overhaul:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Stat Previews:</strong> You can now see exactly how much your stats will increase before upgrading or empowering items.</li>
+                                <li><strong>Visual Indicators:</strong> Added Level and Potency indicators directly on the item icons in the Forge.</li>
+                                <li><strong>Stability Fix:</strong> Fixed an issue where Forge items were sometimes difficult to click.</li>
+                                <li><strong>UI Improvements:</strong> Increased Forge window height for better layout.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.16 (Performance & Polish)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
                         <li><strong>Global Party Map:</strong> See your party members anywhere in the world on the map (M).</li>
@@ -1857,6 +1871,70 @@
             </div>
             <div style="padding: 10px; color: #aaa; font-size: 12px; text-align: center;">
                 Right-click to move items between Inventory and Stash.
+            </div>
+        </div>
+
+        <!-- Forge Screen -->
+        <div id="forge-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 700px; z-index: 101; flex-direction: column;">
+            <div class="window-header">
+                <span>FORGE</span>
+                <button id="btn-close-forge" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">X</button>
+            </div>
+            
+            <!-- Tabs -->
+            <div style="display: flex; border-bottom: 1px solid #444;">
+                <button id="tab-forge-upgrade" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #333;">Upgrade</button>
+                <button id="tab-forge-potency" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">Potency</button>
+                <button id="tab-forge-socket" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">Sockets</button>
+            </div>
+
+            <div style="display: flex; flex-grow: 1; padding: 10px; flex-direction: column;">
+                
+                <!-- Panel 1: Upgrade -->
+                <div id="forge-panel-upgrade" style="flex: 1; display: flex; flex-direction: column;">
+                    <h3 style="margin: 0 0 10px 0; color: #ffd700; text-align: center;">Upgrade Equipment</h3>
+                    <div id="forge-equipment-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div id="forge-upgrade-info" style="flex-grow: 1; border-top: 1px solid #444; padding-top: 10px; display: none; flex-direction: column; align-items: center;">
+                        <div id="forge-selected-item-name" style="color: white; font-weight: bold; margin-bottom: 5px;"></div>
+                        <div id="forge-upgrade-stats" style="width: 100%; margin-bottom: 10px; font-size: 12px; color: #ccc;"></div>
+                        <div id="forge-upgrade-cost" style="color: #aaa; margin-bottom: 10px;">Cost: <span id="forge-cost-value" style="color: #ffd700;">0</span> Shards</div>
+                        <button id="btn-forge-upgrade" class="btn-menu" style="width: 100%;">UPGRADE</button>
+                    </div>
+                </div>
+
+                <!-- Panel 2: Potency -->
+                <div id="forge-panel-potency" style="flex: 1; display: none; flex-direction: column;">
+                    <h3 style="margin: 0 0 10px 0; color: #ff4444; text-align: center;">Increase Potency</h3>
+                    <div id="forge-potency-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div id="forge-potency-info" style="flex-grow: 1; border-top: 1px solid #444; padding-top: 10px; display: none; flex-direction: column; align-items: center;">
+                        <div id="forge-potency-item-name" style="color: white; font-weight: bold; margin-bottom: 5px;"></div>
+                        <div id="forge-potency-stats" style="width: 100%; margin-bottom: 10px; font-size: 12px; color: #ccc;"></div>
+                        <div id="forge-potency-cost" style="color: #aaa; margin-bottom: 10px;">Cost: <span id="forge-potency-cost-value" style="color: #ff4444;">0</span> Hearts</div>
+                        <button id="btn-forge-potency" class="btn-menu" style="width: 100%;">EMPOWER</button>
+                    </div>
+                </div>
+
+                <!-- Panel 3: Sockets -->
+                <div id="forge-panel-socket" style="flex: 1; display: none; flex-direction: column;">
+                    <h3 style="margin: 0 0 10px 0; color: #00ffff; text-align: center;">Add Sockets</h3>
+                    <div id="forge-socket-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div id="forge-socket-info" style="flex-grow: 1; border-top: 1px solid #444; padding-top: 10px; display: none; flex-direction: column; align-items: center;">
+                        <div id="forge-socket-item-name" style="color: white; font-weight: bold; margin-bottom: 5px;"></div>
+                        <div id="forge-socket-stats" style="width: 100%; margin-bottom: 10px; font-size: 12px; color: #ccc;"></div>
+                        <div id="forge-socket-cost" style="color: #aaa; margin-bottom: 10px;">
+                            Cost: <span id="forge-socket-cost-hearts" style="color: #ff4444;">0</span> Hearts + 
+                            <span id="forge-socket-cost-shards" style="color: #ffd700;">0</span> Shards
+                        </div>
+                        <button id="btn-forge-socket" class="btn-menu" style="width: 100%;">ADD SOCKET</button>
+                    </div>
+                </div>
+
             </div>
         </div>
 
