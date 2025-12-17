@@ -733,28 +733,32 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 
 func (w *World) spawnStash() {
 	stash := &Entity{
-		ID:       "stash-1",
-		Type:     TypeStash,
-		SubType:  "Stash",
-		X:        0,
-		Y:        0.5, // Slightly above ground
-		Z:        185, // In front of Two Story Building (which is at 170)
-		Rotation: 0,
-		State:    "IDLE",
+		ID:        "stash-1",
+		Type:      TypeStash,
+		SubType:   "Stash",
+		X:         0,
+		Y:         0.5, // Slightly above ground
+		Z:         185, // In front of Two Story Building (which is at 170)
+		Rotation:  0,
+		State:     "IDLE",
+		Health:    100000,
+		MaxHealth: 100000,
 	}
 	w.AddEntity(stash)
 }
 
 func (w *World) spawnForge() {
 	forge := &Entity{
-		ID:       "forge-1",
-		Type:     TypeForge,
-		SubType:  "Forge",
-		X:        -28,
-		Y:        0.5,
-		Z:        218,
-		Rotation: math.Pi / 2,
-		State:    "IDLE",
+		ID:        "forge-1",
+		Type:      TypeForge,
+		SubType:   "Forge",
+		X:         -28,
+		Y:         0.5,
+		Z:         218,
+		Rotation:  math.Pi / 2,
+		State:     "IDLE",
+		Health:    100000,
+		MaxHealth: 100000,
 	}
 	w.AddEntity(forge)
 }
@@ -1163,7 +1167,7 @@ func (w *World) PerformUnequip(playerID, slot string) (*Entity, bool) {
 	return player, true
 }
 
-func (w *World) PerformForgeUpgrade(playerID, slot string) (*Entity, bool, string) {
+func (w *World) PerformForgeUpgrade(playerID, slot string, amount int) (*Entity, bool, string) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
@@ -1178,20 +1182,42 @@ func (w *World) PerformForgeUpgrade(playerID, slot string) (*Entity, bool, strin
 		return nil, false, "No item in slot"
 	}
 
+	if amount <= 0 {
+		amount = 1
+	}
+
 	// Calculate Cost and Target Level
 	cost := 0
 	targetLevel := 0
 
+	// Calculate per-level cost
+	perLevelCost := 0
 	if item.Level < 90 {
 		tier := item.Level / 10
-		cost = int(math.Pow(2, float64(tier)))
-		targetLevel = (tier + 1) * 10
-	} else if item.Level < 100 {
-		cost = 200
-		targetLevel = item.Level + 1
+		baseTierCost := int(math.Pow(2, float64(tier)))
+		// User requested 1/10th of the cost for the range.
+		// Previous range cost was baseTierCost.
+		// So 10 levels should cost baseTierCost / 10.
+		// So 1 level should cost baseTierCost / 100.
+		perLevelCost = baseTierCost / 100
+		if perLevelCost < 1 {
+			perLevelCost = 1
+		}
 	} else {
+		perLevelCost = 2 // 200 / 100
+	}
+
+	targetLevel = item.Level + amount
+	if targetLevel > 100 {
+		targetLevel = 100
+	}
+
+	levelsToAdd := targetLevel - item.Level
+	if levelsToAdd <= 0 {
 		return nil, false, "Max level reached"
 	}
+
+	cost = perLevelCost * levelsToAdd
 
 	// Check Player Level Requirement
 	if player.Level < targetLevel {
@@ -2770,7 +2796,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	}
 
 	// NO NPC ATTACKS
-	if target.Type == TypeNPC {
+	if target.Type == TypeNPC || target.Type == TypeForge || target.Type == TypeStash {
 		return 0, false
 	}
 
@@ -5280,6 +5306,12 @@ func (w *World) PerformUnlockSkill(playerID, skillName string) (*Entity, bool) {
 }
 
 func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferredActions) {
+	// Prevent destruction of static objects
+	if target.Type == TypeForge || target.Type == TypeStash {
+		target.Health = target.MaxHealth
+		return
+	}
+
 	if target.State == "DEAD" {
 		return
 	}

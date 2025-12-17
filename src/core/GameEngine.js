@@ -153,11 +153,11 @@ export class GameEngine {
                 this.socket.send(JSON.stringify(msg));
             }
         };
-        this.uiManager.onForgeUpgrade = (slot) => {
+        this.uiManager.onForgeUpgrade = (slot, amount) => {
             if (this.socket && this.socket.readyState === WebSocket.OPEN) {
                 const msg = {
                     type: 'forge_upgrade',
-                    payload: { slot }
+                    payload: { slot, amount }
                 };
                 this.socket.send(JSON.stringify(msg));
             }

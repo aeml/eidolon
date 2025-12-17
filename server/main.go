@@ -172,7 +172,8 @@ type StashWithdrawPayload struct {
 }
 
 type ForgeUpgradePayload struct {
-	Slot string `json:"slot"`
+	Slot   string `json:"slot"`
+	Amount int    `json:"amount"`
 }
 
 type ForgePotencyPayload struct {
@@ -1486,7 +1487,7 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 
-		player, success, msgStr := world.PerformForgeUpgrade(c.playerID, payload.Slot)
+		player, success, msgStr := world.PerformForgeUpgrade(c.playerID, payload.Slot, payload.Amount)
 		if success {
 			// Send Inventory Update
 			invPayload, _ := json.Marshal(player.Inventory)
