@@ -98,6 +98,9 @@ const (
 	MsgCompleteQuest = "complete_quest"
 	MsgSelectBranch  = "selectBranch"
 	MsgUnlockSkill   = "unlockSkill"
+	MsgForgeUpgrade  = "forge_upgrade"
+	MsgForgePotency  = "forge_potency"
+	MsgForgeSocket   = "forge_socket"
 	MsgPartyInvite   = "party_invite"
 	MsgPartyResponse = "party_response"
 	MsgPartyRequest  = "party_request"
@@ -166,6 +169,18 @@ type StashDepositPayload struct {
 
 type StashWithdrawPayload struct {
 	ItemID string `json:"itemId"`
+}
+
+type ForgeUpgradePayload struct {
+	Slot string `json:"slot"`
+}
+
+type ForgePotencyPayload struct {
+	Slot string `json:"slot"`
+}
+
+type ForgeSocketPayload struct {
+	Slot string `json:"slot"`
 }
 
 type AcceptQuestPayload struct {
@@ -784,6 +799,7 @@ func (c *Client) handleMessage(msg Message) {
 					Stats:       dbItem.Stats,
 					Stack:       stack,
 					MaxStack:    maxStack,
+					Potency:     dbItem.Potency,
 				}
 			}
 		}
@@ -815,6 +831,7 @@ func (c *Client) handleMessage(msg Message) {
 					Stats:       dbItem.Stats,
 					Stack:       stack,
 					MaxStack:    maxStack,
+					Potency:     dbItem.Potency,
 				}
 			}
 		}
@@ -846,6 +863,7 @@ func (c *Client) handleMessage(msg Message) {
 					Stats:       dbItem.Stats,
 					Stack:       stack,
 					MaxStack:    maxStack,
+					Potency:     dbItem.Potency,
 				}
 			}
 		}
@@ -867,6 +885,7 @@ func (c *Client) handleMessage(msg Message) {
 					Stats:       dbItem.Stats,
 					Stack:       dbItem.Stack,
 					MaxStack:    dbItem.MaxStack,
+					Potency:     dbItem.Potency,
 				}
 			}
 		}
@@ -1458,6 +1477,75 @@ func (c *Client) handleMessage(msg Message) {
 			c.sendSafe(b)
 		}
 
+	case MsgForgeUpgrade:
+		if c.playerID == "" {
+			return
+		}
+		var payload ForgeUpgradePayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success, msgStr := world.PerformForgeUpgrade(c.playerID, payload.Slot)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msgInv := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			bInv, _ := json.Marshal(msgInv)
+			c.sendSafe(bInv)
+		} else {
+			c.sendError(msgStr)
+		}
+
+	case MsgForgePotency:
+		if c.playerID == "" {
+			return
+		}
+		var payload ForgePotencyPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success, msgStr := world.PerformForgePotency(c.playerID, payload.Slot)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msgInv := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			bInv, _ := json.Marshal(msgInv)
+			c.sendSafe(bInv)
+		} else {
+			c.sendError(msgStr)
+		}
+
+	case MsgForgeSocket:
+		if c.playerID == "" {
+			return
+		}
+		var payload ForgeSocketPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success, msgStr := world.PerformForgeSocket(c.playerID, payload.Slot)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msgInv := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			bInv, _ := json.Marshal(msgInv)
+			c.sendSafe(bInv)
+		} else {
+			c.sendError(msgStr)
+		}
+
 	case MsgSelectBranch:
 		if c.playerID == "" {
 			return
@@ -1657,6 +1745,7 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				Stats:       item.Stats,
 				Stack:       item.Stack,
 				MaxStack:    item.MaxStack,
+				Potency:     item.Potency,
 			}
 		}
 	}
@@ -1678,6 +1767,7 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				Stats:       item.Stats,
 				Stack:       item.Stack,
 				MaxStack:    item.MaxStack,
+				Potency:     item.Potency,
 			}
 		}
 	}
@@ -1699,6 +1789,7 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				Stats:       item.Stats,
 				Stack:       item.Stack,
 				MaxStack:    item.MaxStack,
+				Potency:     item.Potency,
 			}
 		}
 	}
@@ -1720,6 +1811,7 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				Stats:       item.Stats,
 				Stack:       item.Stack,
 				MaxStack:    item.MaxStack,
+				Potency:     item.Potency,
 			}
 		}
 	}

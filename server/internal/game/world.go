@@ -21,6 +21,7 @@ const (
 	TypeProjectile EntityType = "Projectile"
 	TypeFence      EntityType = "Fence"
 	TypeStash      EntityType = "Stash"
+	TypeForge      EntityType = "Forge"
 
 	MaxInventorySize = 25
 	MaxStashSize     = 100
@@ -326,6 +327,7 @@ func (w *World) initWorld() {
 	w.spawnMerchant()
 	w.spawnQuestNPC()
 	w.spawnStash()
+	w.spawnForge()
 	w.spawnEnemies()
 	w.spawnInitialElites()
 	w.spawnFence()
@@ -743,6 +745,20 @@ func (w *World) spawnStash() {
 	w.AddEntity(stash)
 }
 
+func (w *World) spawnForge() {
+	forge := &Entity{
+		ID:       "forge-1",
+		Type:     TypeForge,
+		SubType:  "Forge",
+		X:        -28,
+		Y:        0.5,
+		Z:        218,
+		Rotation: math.Pi / 2,
+		State:    "IDLE",
+	}
+	w.AddEntity(forge)
+}
+
 func (w *World) spawnQuestNPC() {
 	npc := &Entity{
 		ID:       "quest-npc-1",
@@ -1145,6 +1161,258 @@ func (w *World) PerformUnequip(playerID, slot string) (*Entity, bool) {
 
 	player.RecalculateStats()
 	return player, true
+}
+
+func (w *World) PerformForgeUpgrade(playerID, slot string) (*Entity, bool, string) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false, "Player not found"
+	}
+
+	// Get item from slot
+	item, ok := player.Equipment[slot]
+	if !ok {
+		return nil, false, "No item in slot"
+	}
+
+	// Calculate Cost and Target Level
+	cost := 0
+	targetLevel := 0
+
+	if item.Level < 90 {
+		tier := item.Level / 10
+		cost = int(math.Pow(2, float64(tier)))
+		targetLevel = (tier + 1) * 10
+	} else if item.Level < 100 {
+		cost = 200
+		targetLevel = item.Level + 1
+	} else {
+		return nil, false, "Max level reached"
+	}
+
+	// Check Player Level Requirement
+	if player.Level < targetLevel {
+		return nil, false, fmt.Sprintf("Player level too low. Need level %d", targetLevel)
+	}
+
+	// Check Shards
+	shardCount := 0
+	for _, invItem := range player.Inventory {
+		if invItem.Name == "Shard" {
+			shardCount += invItem.Stack
+		}
+	}
+
+	if shardCount < cost {
+		return nil, false, fmt.Sprintf("Not enough Shards. Need %d", cost)
+	}
+
+	// Deduct Shards
+	remainingCost := cost
+	// Iterate backwards to safely remove empty stacks
+	for i := len(player.Inventory) - 1; i >= 0; i-- {
+		if player.Inventory[i].Name == "Shard" {
+			take := remainingCost
+			if player.Inventory[i].Stack <= take {
+				take = player.Inventory[i].Stack
+				// Remove item
+				player.Inventory = append(player.Inventory[:i], player.Inventory[i+1:]...)
+			} else {
+				player.Inventory[i].Stack -= take
+			}
+			remainingCost -= take
+			if remainingCost <= 0 {
+				break
+			}
+		}
+	}
+
+	// Upgrade Item
+	newItem := item
+	oldLevel := newItem.Level
+	newItem.Level = targetLevel
+
+	// Scale Stats
+	// Using Base Stat scaling formula: (1 + 0.15 * NewLevel) / (1 + 0.15 * OldLevel)
+	ratio := (1.0 + float64(newItem.Level)*0.15) / (1.0 + float64(oldLevel)*0.15)
+
+	for k, v := range newItem.Stats {
+		newItem.Stats[k] = int(float64(v) * ratio)
+	}
+
+	// Update Value
+	newItem.Value = int(float64(newItem.Value) * ratio)
+
+	player.Equipment[slot] = newItem
+	player.RecalculateStats()
+
+	return player, true, "Upgrade successful"
+}
+
+func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, string) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false, "Player not found"
+	}
+
+	// Get item from slot
+	item, ok := player.Equipment[slot]
+	if !ok {
+		return nil, false, "No item in slot"
+	}
+
+	if item.Potency >= 20 {
+		return nil, false, "Max potency reached"
+	}
+
+	// Calculate Cost: 2 ^ Potency
+	cost := int(math.Pow(2, float64(item.Potency)))
+
+	// Check Hearts
+	heartCount := 0
+	for _, invItem := range player.Inventory {
+		if invItem.Name == "Heart" {
+			heartCount += invItem.Stack
+		}
+	}
+
+	if heartCount < cost {
+		return nil, false, fmt.Sprintf("Not enough Hearts. Need %d", cost)
+	}
+
+	// Deduct Hearts
+	remainingCost := cost
+	for i := len(player.Inventory) - 1; i >= 0; i-- {
+		if player.Inventory[i].Name == "Heart" {
+			take := remainingCost
+			if player.Inventory[i].Stack <= take {
+				take = player.Inventory[i].Stack
+				player.Inventory = append(player.Inventory[:i], player.Inventory[i+1:]...)
+			} else {
+				player.Inventory[i].Stack -= take
+			}
+			remainingCost -= take
+			if remainingCost <= 0 {
+				break
+			}
+		}
+	}
+
+	// Upgrade Potency
+	newItem := item
+	oldPotency := newItem.Potency
+	newItem.Potency++
+
+	// Scale Stats: +10% per potency level
+	// NewStats = OldStats * (1 + 0.1 * NewPotency) / (1 + 0.1 * OldPotency)
+	oldMult := 1.0 + (0.1 * float64(oldPotency))
+	newMult := 1.0 + (0.1 * float64(newItem.Potency))
+	ratio := newMult / oldMult
+
+	for k, v := range newItem.Stats {
+		newItem.Stats[k] = int(float64(v) * ratio)
+	}
+
+	// Update Value
+	newItem.Value = int(float64(newItem.Value) * ratio)
+
+	player.Equipment[slot] = newItem
+	player.RecalculateStats()
+
+	return player, true, "Potency upgrade successful"
+}
+
+func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false, "Player not found"
+	}
+
+	// Get item from slot
+	item, ok := player.Equipment[slot]
+	if !ok {
+		return nil, false, "No item in slot"
+	}
+
+	if item.Sockets >= 4 {
+		return nil, false, "Max sockets reached"
+	}
+
+	// Calculate Cost
+	// 25 Hearts + 250 Shards * (2 ^ current_sockets)
+	shardCost := 250 * int(math.Pow(2, float64(item.Sockets)))
+	heartCost := 25
+
+	// Check Resources
+	shardCount := 0
+	heartCount := 0
+	for _, invItem := range player.Inventory {
+		if invItem.Name == "Shard" {
+			shardCount += invItem.Stack
+		}
+		if invItem.Name == "Heart" {
+			heartCount += invItem.Stack
+		}
+	}
+
+	if shardCount < shardCost {
+		return nil, false, fmt.Sprintf("Not enough Shards. Need %d", shardCost)
+	}
+	if heartCount < heartCost {
+		return nil, false, fmt.Sprintf("Not enough Hearts. Need %d", heartCost)
+	}
+
+	// Deduct Shards
+	remainingShards := shardCost
+	for i := len(player.Inventory) - 1; i >= 0; i-- {
+		if player.Inventory[i].Name == "Shard" {
+			take := remainingShards
+			if player.Inventory[i].Stack <= take {
+				take = player.Inventory[i].Stack
+				player.Inventory = append(player.Inventory[:i], player.Inventory[i+1:]...)
+			} else {
+				player.Inventory[i].Stack -= take
+			}
+			remainingShards -= take
+			if remainingShards <= 0 {
+				break
+			}
+		}
+	}
+
+	// Deduct Hearts
+	remainingHearts := heartCost
+	for i := len(player.Inventory) - 1; i >= 0; i-- {
+		if player.Inventory[i].Name == "Heart" {
+			take := remainingHearts
+			if player.Inventory[i].Stack <= take {
+				take = player.Inventory[i].Stack
+				player.Inventory = append(player.Inventory[:i], player.Inventory[i+1:]...)
+			} else {
+				player.Inventory[i].Stack -= take
+			}
+			remainingHearts -= take
+			if remainingHearts <= 0 {
+				break
+			}
+		}
+	}
+
+	// Add Socket
+	newItem := item
+	newItem.Sockets++
+	player.Equipment[slot] = newItem
+
+	return player, true, "Socket added successfully"
 }
 
 func (w *World) PerformBuyGamble(playerID, slot string) (*Entity, bool) {
