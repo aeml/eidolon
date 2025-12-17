@@ -27,11 +27,12 @@ import { FrostGuardian } from '../entities/FrostGuardian.js';
 import { Fence } from '../entities/Fence.js';
 import { QuestNPC } from '../entities/QuestNPC.js';
 import { Stash } from '../entities/Stash.js';
+import { Forge } from '../entities/Forge.js';
+import { TradingHouse } from '../entities/TradingHouse.js';
 import { AvengingSeraph } from '../entities/AvengingSeraph.js';
 import { LevelUpEffect } from '../ui/LevelUpEffect.js';
 import { AquaGolem } from '../entities/AquaGolem.js';
 import { MountainTroll } from '../entities/MountainTroll.js';
-import { Forge } from '../entities/Forge.js';
 
 export class GameEngine {
     constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null) {
@@ -1456,6 +1457,10 @@ export class GameEngine {
             return new Forge(id);
         }
 
+        if (type === 'TradingHouse') {
+            return new TradingHouse(id);
+        }
+
         // If type is NPC, handle it
         if (type === 'NPC') {
             if (subType === 'DwarfSalesman') {
@@ -1547,6 +1552,8 @@ export class GameEngine {
             range = 4.0;
         } else if (entity instanceof Forge) {
             range = 4.0;
+        } else if (entity instanceof TradingHouse) {
+            range = 20.0; // Large building radius
         } else if (entity instanceof Actor && entity !== this.player) {
             if (this.player.constructor.name === 'Wizard') {
                 range = 16.0;
@@ -1598,7 +1605,7 @@ export class GameEngine {
                 
                 if (this.hoveredEntity instanceof LootDrop) {
                     document.body.style.cursor = 'grab';
-                } else if (this.hoveredEntity instanceof Forge) {
+                } else if (this.hoveredEntity instanceof Forge || this.hoveredEntity instanceof TradingHouse) {
                     document.body.style.cursor = 'pointer';
                 } else if (this.hoveredEntity && this.hoveredEntity.state !== 'DEAD') {
                     document.body.style.cursor = 'crosshair';
@@ -2327,6 +2334,8 @@ export class GameEngine {
                     
                     if (this.pendingInteraction instanceof DwarfSalesman) {
                         range = 4.0;
+                    } else if (this.pendingInteraction instanceof TradingHouse) {
+                        range = 20.0;
                     } else if (this.pendingInteraction instanceof Actor && this.pendingInteraction !== this.player) {
                         // Dynamic Attack Range based on class
                         // Wizard is the only true ranged class for now
@@ -2421,6 +2430,15 @@ export class GameEngine {
                                 this.player.playAnimation('Idle');
                             }
                             this.uiManager.toggleForge();
+                            this.pendingInteraction = null;
+
+                        } else if (this.pendingInteraction instanceof TradingHouse) {
+                            this.player.targetPosition = null;
+                            if (this.player.state === 'MOVING') {
+                                this.player.state = 'IDLE';
+                                this.player.playAnimation('Idle');
+                            }
+                            this.uiManager.toggleTradingHouse();
                             this.pendingInteraction = null;
 
                         } else if (this.pendingInteraction instanceof Actor) {

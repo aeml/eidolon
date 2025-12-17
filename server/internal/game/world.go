@@ -14,14 +14,15 @@ import (
 type EntityType string
 
 const (
-	TypePlayer     EntityType = "Player"
-	TypeEnemy      EntityType = "Enemy"
-	TypeNPC        EntityType = "NPC"
-	TypeLoot       EntityType = "Loot"
-	TypeProjectile EntityType = "Projectile"
-	TypeFence      EntityType = "Fence"
-	TypeStash      EntityType = "Stash"
-	TypeForge      EntityType = "Forge"
+	TypePlayer       EntityType = "Player"
+	TypeEnemy        EntityType = "Enemy"
+	TypeNPC          EntityType = "NPC"
+	TypeLoot         EntityType = "Loot"
+	TypeProjectile   EntityType = "Projectile"
+	TypeFence        EntityType = "Fence"
+	TypeStash        EntityType = "Stash"
+	TypeForge        EntityType = "Forge"
+	TypeTradingHouse EntityType = "TradingHouse"
 
 	MaxInventorySize = 25
 	MaxStashSize     = 100
@@ -328,6 +329,7 @@ func (w *World) initWorld() {
 	w.spawnQuestNPC()
 	w.spawnStash()
 	w.spawnForge()
+	w.spawnTradingHouse()
 	w.spawnEnemies()
 	w.spawnInitialElites()
 	w.spawnFence()
@@ -761,6 +763,22 @@ func (w *World) spawnForge() {
 		MaxHealth: 100000,
 	}
 	w.AddEntity(forge)
+}
+
+func (w *World) spawnTradingHouse() {
+	tradingHouse := &Entity{
+		ID:        "trading-house-1",
+		Type:      TypeTradingHouse,
+		SubType:   "TradingHouse",
+		X:         -22,
+		Y:         0.5,
+		Z:         185,
+		Rotation:  math.Pi / 4,
+		State:     "IDLE",
+		Health:    100000,
+		MaxHealth: 100000,
+	}
+	w.AddEntity(tradingHouse)
 }
 
 func (w *World) spawnQuestNPC() {
