@@ -1131,10 +1131,10 @@ export class MeshFactory {
 
                 // Hitbox (Invisible, for clicking)
                 // Make it roughly the size of the building
-                const hitGeo = new THREE.BoxGeometry(20, 20, 20);
+                const hitGeo = new THREE.BoxGeometry(12, 12, 12);
                 const hitMat = new THREE.MeshBasicMaterial({ visible: false });
                 const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-                hitMesh.position.y = 10.0;
+                hitMesh.position.y = 6.0;
                 mesh.add(hitMesh);
 
                 return mesh;

@@ -1951,6 +1951,42 @@ export class UIManager {
             closedSomething = true;
         }
 
+        // Close Forge
+        if (this.forgeScreen.style.display === 'flex') {
+            this.forgeScreen.style.display = 'none';
+            closedSomething = true;
+        }
+
+        // Close Trading House
+        if (this.tradingHouseScreen.style.display === 'flex') {
+            this.tradingHouseScreen.style.display = 'none';
+            closedSomething = true;
+        }
+
+        // Close Quest Window (NPC)
+        if (this.questWindow.style.display === 'flex') {
+            this.questWindow.style.display = 'none';
+            closedSomething = true;
+        }
+
+        // Close Quest Journal
+        if (this.questJournal.style.display === 'flex') {
+            this.questJournal.style.display = 'none';
+            closedSomething = true;
+        }
+
+        // Close Skill Tree
+        if (this.skillTreeWindow.style.display === 'flex') {
+            this.skillTreeWindow.style.display = 'none';
+            closedSomething = true;
+        }
+
+        // Close Abilities Menu
+        if (this.abilitiesMenu.style.display === 'flex') {
+            this.abilitiesMenu.style.display = 'none';
+            closedSomething = true;
+        }
+
         // Close Social
         if (this.socialWindow.style.display === 'block') {
             this.socialWindow.style.display = 'none';
@@ -1964,6 +2000,10 @@ export class UIManager {
         }
         if (this.reportScreen.style.display === 'block') {
             this.reportScreen.style.display = 'none';
+            closedSomething = true;
+        }
+        if (this.helpScreen.style.display === 'flex') {
+            this.helpScreen.style.display = 'none';
             closedSomething = true;
         }
 
