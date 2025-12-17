@@ -12,8 +12,9 @@ import (
 )
 
 type DB struct {
-	client *mongo.Client
-	users  *mongo.Collection
+	client   *mongo.Client
+	users    *mongo.Collection
+	auctions *mongo.Collection
 }
 
 type User struct {
@@ -22,6 +23,23 @@ type User struct {
 	PasswordHash string       `bson:"password_hash"`
 	CreatedAt    time.Time    `bson:"created_at"`
 	Characters   []*Character `bson:"characters"`
+}
+
+type Auction struct {
+	ID         string    `bson:"id"`
+	SellerID   string    `bson:"seller_id"`
+	SellerName string    `bson:"seller_name"`
+	Item       Item      `bson:"item"`
+	Bid        int       `bson:"bid"`
+	Buyout     int       `bson:"buyout"`
+	Duration   int       `bson:"duration"`
+	StartTime  time.Time `bson:"start_time"`
+	EndTime    time.Time `bson:"end_time"`
+	Status     string    `bson:"status"`
+	BuyerID    string    `bson:"buyer_id"`
+	BidderID   string    `bson:"bidder_id"`
+	BidderName string    `bson:"bidder_name"`
+	Deposit    int       `bson:"deposit"`
 }
 
 type Character struct {
@@ -97,6 +115,7 @@ func New(uri string) (*DB, error) {
 
 	db := client.Database("eidolon")
 	users := db.Collection("users")
+	auctions := db.Collection("auctions")
 
 	// Create unique index on username
 	_, err = users.Indexes().CreateOne(ctx, mongo.IndexModel{
@@ -108,8 +127,9 @@ func New(uri string) (*DB, error) {
 	}
 
 	return &DB{
-		client: client,
-		users:  users,
+		client:   client,
+		users:    users,
+		auctions: auctions,
 	}, nil
 }
 
@@ -238,4 +258,48 @@ func (db *DB) SaveCharacter(username string, char *Character) error {
 
 	_, err := db.users.UpdateOne(ctx, filter, update)
 	return err
+}
+
+func (db *DB) CreateAuction(auction *Auction) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err := db.auctions.InsertOne(ctx, auction)
+	return err
+}
+
+func (db *DB) UpdateAuction(auction *Auction) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{"id": auction.ID}
+	update := bson.M{"$set": auction}
+
+	_, err := db.auctions.UpdateOne(ctx, filter, update)
+	return err
+}
+
+func (db *DB) DeleteAuction(auctionID string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err := db.auctions.DeleteOne(ctx, bson.M{"id": auctionID})
+	return err
+}
+
+func (db *DB) LoadAuctions() ([]*Auction, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	cursor, err := db.auctions.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var auctions []*Auction
+	if err = cursor.All(ctx, &auctions); err != nil {
+		return nil, err
+	}
+	return auctions, nil
 }

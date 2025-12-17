@@ -995,6 +995,27 @@ export class UIManager {
             actionDiv.style.display = 'flex';
             actionDiv.style.gap = '5px';
             
+            const btnBid = document.createElement('button');
+            btnBid.textContent = 'Bid';
+            btnBid.className = 'btn-menu';
+            btnBid.style.fontSize = '10px';
+            btnBid.style.padding = '2px 5px';
+            btnBid.onclick = () => {
+                let minBid = auction.currentBid + Math.ceil(auction.currentBid * 0.05);
+                if (minBid < auction.currentBid + 1) minBid = auction.currentBid + 1;
+                // If no bids yet, start at currentBid (starting bid)
+                if (!auction.bidderId) minBid = auction.currentBid;
+
+                const amount = prompt(`Enter bid amount (Minimum: ${minBid})`, minBid);
+                if (amount !== null) {
+                    const val = parseInt(amount);
+                    if (!isNaN(val)) {
+                        if (this.onTradingBid) this.onTradingBid(auction.id, val);
+                    }
+                }
+            };
+            actionDiv.appendChild(btnBid);
+
             const btnBuy = document.createElement('button');
             btnBuy.textContent = 'Buyout';
             btnBuy.className = 'btn-menu';

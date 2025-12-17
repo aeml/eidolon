@@ -1,6 +1,7 @@
 package game
 
 import (
+	"eidolon-server/internal/database"
 	"fmt"
 	"math"
 	"math/rand"
@@ -300,11 +301,11 @@ type AbilityEvent struct {
 	TargetZ   float64 `json:"targetZ"`
 }
 
-func NewWorld() *World {
+func NewWorld(db *database.DB) *World {
 	w := &World{
 		Entities:        make(map[string]*Entity),
 		Parties:         make(map[string]*Party),
-		Trading:         NewTradingSystem(),
+		Trading:         NewTradingSystem(db),
 		Grid:            NewSpatialMap(50.0), // 50 unit cell size
 		EliteSpawnTimer: time.Now(),
 		RegenTimer:      0,
