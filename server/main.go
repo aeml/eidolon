@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
 	"math"
 	"math/rand"
@@ -112,11 +113,25 @@ const (
 	MsgBuyback       = "buyback"
 	MsgBuybackList   = "buyback_list"
 	MsgUnequip       = "unequip"
+
+	// Trading
+	MsgTradingSearch     = "trading_search"
+	MsgTradingCreate     = "trading_create"
+	MsgTradingMyAuctions = "trading_my_auctions"
+	MsgTradingBuyout     = "trading_buyout"
+	MsgTradingCollect    = "trading_collect"
+	MsgTradingCancel     = "trading_cancel"
+	MsgInventoryMove     = "inventory_move"
 )
 
 type Message struct {
 	Type    string          `json:"type"`
 	Payload json.RawMessage `json:"payload"`
+}
+
+type InventoryMovePayload struct {
+	FromIndex int `json:"fromIndex"`
+	ToIndex   int `json:"toIndex"`
 }
 
 type SocialEntry struct {
@@ -195,6 +210,29 @@ type CompleteQuestPayload struct {
 type EquipPayload struct {
 	ItemID string `json:"itemId"`
 	Slot   string `json:"slot"`
+}
+
+type TradingSearchPayload struct {
+	Query string `json:"query"`
+}
+
+type TradingCreatePayload struct {
+	SlotIndex int `json:"slotIndex"`
+	Bid       int `json:"bid"`
+	Buyout    int `json:"buyout"`
+	Duration  int `json:"duration"`
+}
+
+type TradingBuyoutPayload struct {
+	AuctionID string `json:"auctionId"`
+}
+
+type TradingCollectPayload struct {
+	AuctionID string `json:"auctionId"`
+}
+
+type TradingCancelPayload struct {
+	AuctionID string `json:"auctionId"`
 }
 
 type UnequipPayload struct {
@@ -414,6 +452,7 @@ func main() {
 		ticker := time.NewTicker(1 * time.Minute)
 		for range ticker.C {
 			saveAllPlayers()
+			world.Trading.CleanupExpired()
 		}
 	}()
 
@@ -801,6 +840,7 @@ func (c *Client) handleMessage(msg Message) {
 					Stack:       stack,
 					MaxStack:    maxStack,
 					Potency:     dbItem.Potency,
+					Sockets:     dbItem.Sockets,
 				}
 			}
 		}
@@ -833,6 +873,7 @@ func (c *Client) handleMessage(msg Message) {
 					Stack:       stack,
 					MaxStack:    maxStack,
 					Potency:     dbItem.Potency,
+					Sockets:     dbItem.Sockets,
 				}
 			}
 		}
@@ -865,6 +906,7 @@ func (c *Client) handleMessage(msg Message) {
 					Stack:       stack,
 					MaxStack:    maxStack,
 					Potency:     dbItem.Potency,
+					Sockets:     dbItem.Sockets,
 				}
 			}
 		}
@@ -887,6 +929,7 @@ func (c *Client) handleMessage(msg Message) {
 					Stack:       dbItem.Stack,
 					MaxStack:    dbItem.MaxStack,
 					Potency:     dbItem.Potency,
+					Sockets:     dbItem.Sockets,
 				}
 			}
 		}
@@ -1087,6 +1130,275 @@ func (c *Client) handleMessage(msg Message) {
 			b, _ := json.Marshal(msg)
 			c.sendSafe(b)
 		}
+
+	case MsgInventoryMove:
+		if c.playerID == "" {
+			return
+		}
+		var payload InventoryMovePayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success := world.PerformInventoryMove(c.playerID, payload.FromIndex, payload.ToIndex)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
+
+	case MsgTradingSearch:
+		var payload TradingSearchPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		results := world.Trading.SearchAuctions(payload.Query)
+
+		resPayload, _ := json.Marshal(results)
+		msg := Message{
+			Type:    "trading_list",
+			Payload: resPayload,
+		}
+		b, _ := json.Marshal(msg)
+		c.sendSafe(b)
+
+	case MsgTradingMyAuctions:
+		if c.playerID == "" {
+			return
+		}
+		results := world.Trading.GetPlayerAuctions(c.playerID)
+
+		resPayload, _ := json.Marshal(results)
+		msg := Message{
+			Type:    "trading_my_list",
+			Payload: resPayload,
+		}
+		b, _ := json.Marshal(msg)
+		c.sendSafe(b)
+
+	case MsgTradingCreate:
+		if c.playerID == "" {
+			return
+		}
+		var payload TradingCreatePayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		world.Mu.Lock()
+		player, ok := world.Entities[c.playerID]
+		world.Mu.Unlock()
+
+		if !ok {
+			return
+		}
+
+		player.Mu.Lock()
+		if payload.SlotIndex < 0 || payload.SlotIndex >= len(player.Inventory) {
+			player.Mu.Unlock()
+			c.sendError("Invalid inventory slot")
+			return
+		}
+		item := player.Inventory[payload.SlotIndex]
+
+		if item.ID == "" {
+			player.Mu.Unlock()
+			c.sendError("No item in slot")
+			return
+		}
+
+		// Remove item immediately to prevent duplication
+		copy(player.Inventory[payload.SlotIndex:], player.Inventory[payload.SlotIndex+1:])
+		player.Inventory = player.Inventory[:len(player.Inventory)-1]
+		player.Mu.Unlock()
+
+		_, err := world.Trading.CreateAuction(player, item, payload.Bid, payload.Buyout, payload.Duration)
+		if err != nil {
+			// Refund item on failure
+			player.Mu.Lock()
+			player.AddItemToInventory(item)
+			player.Mu.Unlock()
+			c.sendError(err.Error())
+
+			// Send Inventory Update (to show item back)
+			player.Mu.Lock()
+			invPayload, _ := json.Marshal(player.Inventory)
+			player.Mu.Unlock()
+			msgInv := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			bInv, _ := json.Marshal(msgInv)
+			c.sendSafe(bInv)
+			return
+		}
+
+		invPayload, _ := json.Marshal(player.Inventory)
+		msg := Message{
+			Type:    MsgInventory,
+			Payload: invPayload,
+		}
+		b, _ := json.Marshal(msg)
+		c.sendSafe(b)
+
+		results := world.Trading.GetPlayerAuctions(c.playerID)
+		resPayload, _ := json.Marshal(results)
+		msg2 := Message{
+			Type:    "trading_my_list",
+			Payload: resPayload,
+		}
+		b2, _ := json.Marshal(msg2)
+		c.sendSafe(b2)
+
+	case MsgTradingBuyout:
+		if c.playerID == "" {
+			return
+		}
+		var payload TradingBuyoutPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		world.Mu.Lock()
+		player, ok := world.Entities[c.playerID]
+		world.Mu.Unlock()
+
+		if !ok {
+			return
+		}
+
+		_, err := world.Trading.BuyoutAuction(payload.AuctionID, player)
+		if err != nil {
+			c.sendError(err.Error())
+			return
+		}
+
+		invPayload, _ := json.Marshal(player.Inventory)
+		msg := Message{
+			Type:    MsgInventory,
+			Payload: invPayload,
+		}
+		b, _ := json.Marshal(msg)
+		c.sendSafe(b)
+
+		c.sendError("Auction bought!")
+
+	case MsgTradingCollect:
+		if c.playerID == "" {
+			return
+		}
+		var payload TradingCollectPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		world.Mu.Lock()
+		player, ok := world.Entities[c.playerID]
+		world.Mu.Unlock()
+
+		if !ok {
+			return
+		}
+
+		result, err := world.Trading.CollectAuction(payload.AuctionID, player)
+		if err != nil {
+			c.sendError(err.Error())
+			return
+		}
+
+		if gold, ok := result.(int); ok {
+			c.sendError(fmt.Sprintf("Collected %d gold", gold))
+		} else if item, ok := result.(game.Item); ok {
+			player.Mu.Lock()
+			remaining := player.AddItemToInventory(item)
+			player.Mu.Unlock()
+
+			if remaining > 0 {
+				// Update item stack to remaining amount
+				item.Stack = remaining
+
+				// Fallback to Stash
+				player.Mu.Lock()
+				stashRemaining := player.AddItemToStash(item)
+				player.Mu.Unlock()
+
+				if stashRemaining == 0 {
+					c.sendError("Inventory full! Item sent to Stash.")
+					// Send Stash Update
+					stashPayload, _ := json.Marshal(player.Stash)
+					msgStash := Message{
+						Type:    MsgStash,
+						Payload: stashPayload,
+					}
+					bStash, _ := json.Marshal(msgStash)
+					c.sendSafe(bStash)
+				} else {
+					// Stash also full - Drop on Ground
+					item.Stack = stashRemaining
+					world.DropLoot(item, player.X, player.Z)
+					c.sendError("Inventory & Stash full! Item dropped on ground.")
+				}
+			} else {
+				c.sendError("Item reclaimed")
+			}
+		}
+
+		invPayload, _ := json.Marshal(player.Inventory)
+		msg := Message{
+			Type:    MsgInventory,
+			Payload: invPayload,
+		}
+		b, _ := json.Marshal(msg)
+		c.sendSafe(b)
+
+		results := world.Trading.GetPlayerAuctions(c.playerID)
+		resPayload, _ := json.Marshal(results)
+		msg2 := Message{
+			Type:    "trading_my_list",
+			Payload: resPayload,
+		}
+		b2, _ := json.Marshal(msg2)
+		c.sendSafe(b2)
+
+	case MsgTradingCancel:
+		if c.playerID == "" {
+			return
+		}
+		var payload TradingCancelPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		world.Mu.Lock()
+		player, ok := world.Entities[c.playerID]
+		world.Mu.Unlock()
+
+		if !ok {
+			return
+		}
+
+		err := world.Trading.CancelAuction(payload.AuctionID, player)
+		if err != nil {
+			c.sendError(err.Error())
+			return
+		}
+
+		c.sendError("Auction cancelled")
+
+		// Refresh My Auctions
+		results := world.Trading.GetPlayerAuctions(c.playerID)
+		resPayload, _ := json.Marshal(results)
+		msg2 := Message{
+			Type:    "trading_my_list",
+			Payload: resPayload,
+		}
+		b2, _ := json.Marshal(msg2)
+		c.sendSafe(b2)
 
 	case MsgBuyGamble:
 		if c.playerID == "" {
@@ -1747,6 +2059,7 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				Stack:       item.Stack,
 				MaxStack:    item.MaxStack,
 				Potency:     item.Potency,
+				Sockets:     item.Sockets,
 			}
 		}
 	}
@@ -1769,6 +2082,7 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				Stack:       item.Stack,
 				MaxStack:    item.MaxStack,
 				Potency:     item.Potency,
+				Sockets:     item.Sockets,
 			}
 		}
 	}
@@ -1791,6 +2105,7 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				Stack:       item.Stack,
 				MaxStack:    item.MaxStack,
 				Potency:     item.Potency,
+				Sockets:     item.Sockets,
 			}
 		}
 	}
@@ -1813,6 +2128,7 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				Stack:       item.Stack,
 				MaxStack:    item.MaxStack,
 				Potency:     item.Potency,
+				Sockets:     item.Sockets,
 			}
 		}
 	}
