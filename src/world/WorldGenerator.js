@@ -116,8 +116,14 @@ export class WorldGenerator {
             
             if (customCollider) {
                 // Use custom collider (e.g. smaller box for campsite)
-                // Center it on the mesh position
-                const center = new THREE.Vector3(x, 4, z); // Height 4 is arbitrary center
+                // Center it on the mesh's actual center (better for rotated/offset meshes)
+                mesh.updateMatrixWorld(true);
+                const currentBox = new THREE.Box3().setFromObject(mesh);
+                const center = currentBox.getCenter(new THREE.Vector3());
+                // Keep the Y center somewhat grounded or use the passed size's half height?
+                // For now, let's use the visual center but override Y if needed?
+                // Actually, box.getCenter() gives the geometric center.
+                
                 const size = customCollider; // Vector3 size
                 const collider = new THREE.Box3().setFromCenterAndSize(center, size);
                 this.collisionManager.addCollider(collider);
@@ -140,10 +146,12 @@ export class WorldGenerator {
             setupBuilding(gltf.scene, 6, cx + 30, cz, -Math.PI / 2);
         }, undefined, (err) => console.error("Failed to load trading_post:", err));
 
-        // Blacksmith (West) - Scaled 6x
+        // Blacksmith (West) - Scaled 7.8x
         loader.load('./assets/buildings/blacksmith.glb', (gltf) => {
-            setupBuilding(gltf.scene, 6, cx - 30, cz, Math.PI / 2);
+            setupBuilding(gltf.scene, 7.8, cx - 30, cz, Math.PI / 2);
         }, undefined, (err) => console.error("Failed to load blacksmith:", err));
+
+        // Trading House is now an Entity (loaded in MeshFactory) to handle interaction/collision better
 
         // Camp Sites (Randomly distributed outside center)
         loader.load('./assets/buildings/camp_site.glb', (gltf) => {

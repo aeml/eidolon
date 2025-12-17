@@ -109,6 +109,8 @@ export class UIManager {
         
         // Forge UI
         this.forgeScreen = document.getElementById('forge-screen');
+        this.tradingHouseScreen = document.getElementById('trading-house-screen');
+        this.btnCloseTradingHouse = document.getElementById('btn-close-trading-house');
         this.forgeEquipmentList = document.getElementById('forge-equipment-list');
         this.forgeUpgradeInfo = document.getElementById('forge-upgrade-info');
         this.forgeSelectedItemName = document.getElementById('forge-selected-item-name');
@@ -152,6 +154,7 @@ export class UIManager {
         this.selectedForgeSocketSlot = null;
 
         if (this.btnCloseForge) this.btnCloseForge.addEventListener('click', () => this.toggleForge());
+        if (this.btnCloseTradingHouse) this.btnCloseTradingHouse.addEventListener('click', () => this.toggleTradingHouse());
         if (this.btnForgeUpgrade) this.btnForgeUpgrade.addEventListener('click', () => this.handleForgeUpgrade(1)); // Fallback
         if (this.btnForgeUpgrade1) this.btnForgeUpgrade1.addEventListener('click', () => this.handleForgeUpgrade(1));
         if (this.btnForgeUpgrade10) this.btnForgeUpgrade10.addEventListener('click', () => this.handleForgeUpgrade(10));
@@ -763,6 +766,13 @@ export class UIManager {
             this.forgeUpgradeInfo.style.display = 'none';
             this.forgePotencyInfo.style.display = 'none';
             this.forgeSocketInfo.style.display = 'none';
+        }
+    }
+
+    toggleTradingHouse() {
+        if (this.tradingHouseScreen) {
+            const isHidden = this.tradingHouseScreen.style.display === 'none' || this.tradingHouseScreen.style.display === '';
+            this.tradingHouseScreen.style.display = isHidden ? 'flex' : 'none';
         }
     }
 
