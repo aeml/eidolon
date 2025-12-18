@@ -4206,6 +4206,15 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						targetZ = 1000
 					}
 
+					// Dungeon Bounds Check
+					if strings.HasPrefix(player.InstanceID, "dungeon_") {
+						if !w.IsLocationInDungeon(player.InstanceID, targetX, targetZ) {
+							// Teleported out of bounds -> Exit Instance
+							w.PerformRecall(player.ID)
+							return
+						}
+					}
+
 					player.X = targetX
 					player.Z = targetZ
 					w.Grid.Update(player, oldX, oldZ)
@@ -6194,7 +6203,7 @@ func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
 	}
 
 	// Start Room
-	layout.Rooms = append(layout.Rooms, DungeonRoom{X: 0, Z: 0, Width: 40, Height: 40, Type: "start", Color: 0x444444})
+	layout.Rooms = append(layout.Rooms, DungeonRoom{X: 0, Z: 0, Width: 120, Height: 120, Type: "start", Color: 0x444444})
 
 	// Boss Milestones
 	bosses := []struct {
@@ -6214,8 +6223,8 @@ func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
 	// but for now we just use global rand since we store the layout.
 
 	for _, boss := range bosses {
-		// Target Z for next boss (roughly -100 units further North)
-		targetZ := currentZ - 100.0
+		// Target Z for next boss (roughly -300 units further North)
+		targetZ := currentZ - 300.0
 
 		// Generate 2-3 intermediate rooms
 		numIntermediate := 2 + rand.Intn(2)
@@ -6224,8 +6233,8 @@ func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
 		for j := 0; j < numIntermediate; j++ {
 			// Move North
 			nextZ := currentZ + stepZ
-			// Random East/West offset (-30 to 30)
-			nextX := currentX + (rand.Float64() * 60) - 30
+			// Random East/West offset (-80 to 80)
+			nextX := currentX + (rand.Float64() * 160) - 80
 
 			// Add Room
 			roomType := "normal"
@@ -6234,7 +6243,7 @@ func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
 			}
 
 			layout.Rooms = append(layout.Rooms, DungeonRoom{
-				X: nextX, Z: nextZ, Width: 30, Height: 30, Type: roomType, Color: 0x333333,
+				X: nextX, Z: nextZ, Width: 100, Height: 100, Type: roomType, Color: 0x333333,
 			})
 
 			// Spawn Mobs
@@ -6261,7 +6270,7 @@ func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
 		currentZ = targetZ
 
 		layout.Rooms = append(layout.Rooms, DungeonRoom{
-			X: currentX, Z: currentZ, Width: 40, Height: 40, Type: "boss", Color: 0x222222,
+			X: currentX, Z: currentZ, Width: 120, Height: 120, Type: "boss", Color: 0x222222,
 		})
 
 		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats)
@@ -6397,4 +6406,61 @@ func (w *World) checkAndResetDungeonLocked(instanceID string) {
 			inst.EmptySince = time.Now()
 		}
 	}
+}
+
+func (w *World) IsLocationInDungeon(instanceID string, x, z float64) bool {
+	layout, ok := w.InstanceLayouts[instanceID]
+	if !ok {
+		return false
+	}
+	if layout.Layout.Rooms == nil {
+		return true // Default open dungeon
+	}
+
+	// Check Rooms
+	for _, r := range layout.Layout.Rooms {
+		halfW := r.Width / 2
+		halfH := r.Height / 2
+		if x >= r.X-halfW && x <= r.X+halfW && z >= r.Z-halfH && z <= r.Z+halfH {
+			return true
+		}
+	}
+
+	// Check Corridors
+	// Assuming rooms are in order
+	corridorWidth := 40.0 // Match client
+	halfCW := corridorWidth / 2
+
+	for i := 0; i < len(layout.Layout.Rooms)-1; i++ {
+		r1 := layout.Layout.Rooms[i]
+		r2 := layout.Layout.Rooms[i+1]
+
+		midZ := (r1.Z + r2.Z) / 2
+
+		// Segment 1: Vertical from r1 to midZ (at r1.X)
+		// Bounds: X = r1.X +/- halfCW, Z = r1.Z to midZ
+		minX1, maxX1 := r1.X-halfCW, r1.X+halfCW
+		minZ1, maxZ1 := math.Min(r1.Z, midZ), math.Max(r1.Z, midZ)
+		if x >= minX1 && x <= maxX1 && z >= minZ1 && z <= maxZ1 {
+			return true
+		}
+
+		// Segment 2: Horizontal at midZ (from r1.X to r2.X)
+		// Bounds: X = r1.X to r2.X, Z = midZ +/- halfCW
+		minX2, maxX2 := math.Min(r1.X, r2.X), math.Max(r1.X, r2.X)
+		minZ2, maxZ2 := midZ-halfCW, midZ+halfCW
+		if x >= minX2 && x <= maxX2 && z >= minZ2 && z <= maxZ2 {
+			return true
+		}
+
+		// Segment 3: Vertical from midZ to r2 (at r2.X)
+		// Bounds: X = r2.X +/- halfCW, Z = midZ to r2.Z
+		minX3, maxX3 := r2.X-halfCW, r2.X+halfCW
+		minZ3, maxZ3 := math.Min(midZ, r2.Z), math.Max(midZ, r2.Z)
+		if x >= minX3 && x <= maxX3 && z >= minZ3 && z <= maxZ3 {
+			return true
+		}
+	}
+
+	return false
 }
