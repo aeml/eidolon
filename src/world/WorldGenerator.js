@@ -387,9 +387,36 @@ export class WorldGenerator {
                 
                 this.createRoom(room.x, room.z, room.width, room.color, openings);
                 
-                // Corridor to previous
+                // Corridor to previous (Z-Shaped / Manhattan Routing)
                 if (prevRoom) {
-                    this.createCorridor(prevRoom.x, prevRoom.z, room.x, room.z, 10);
+                    const corridorWidth = 20;
+                    const halfWidth = corridorWidth / 2;
+                    
+                    // 1. Vertical Segment from PrevRoom
+                    // Exit North/South from PrevRoom to the midpoint Z
+                    const midZ = (prevRoom.z + room.z) / 2;
+                    
+                    // Wall Start: prevRoom.height/2 (Exit Room)
+                    // Wall End: halfWidth (Enter Corner)
+                    this.createCorridor(prevRoom.x, prevRoom.z, prevRoom.x, midZ, corridorWidth, prevRoom.height/2, halfWidth);
+
+                    // Corner 1
+                    this.createCorner(prevRoom.x, midZ, corridorWidth);
+
+                    // 2. Horizontal Segment
+                    // Move East/West to align with Room X
+                    // Wall Start: halfWidth (Exit Corner 1)
+                    // Wall End: halfWidth (Enter Corner 2)
+                    this.createCorridor(prevRoom.x, midZ, room.x, midZ, corridorWidth, halfWidth, halfWidth);
+
+                    // Corner 2
+                    this.createCorner(room.x, midZ, corridorWidth);
+
+                    // 3. Vertical Segment to Room
+                    // Enter North/South into Room
+                    // Wall Start: halfWidth (Exit Corner 2)
+                    // Wall End: room.height/2 (Enter Room)
+                    this.createCorridor(room.x, midZ, room.x, room.z, corridorWidth, halfWidth, room.height/2);
                 }
                 
                 prevRoom = room;
@@ -420,7 +447,8 @@ export class WorldGenerator {
             const z = centerZ + loc.z;
             
             // Corridor
-            this.createCorridor(prevX, prevZ, x, z, corridorWidth);
+            // Start at prevRoom edge (20), End at room edge (20)
+            this.createCorridor(prevX, prevZ, x, z, corridorWidth, 20, 20);
             
             // Room
             const isLast = i === bossLocations.length - 1;
@@ -441,15 +469,46 @@ export class WorldGenerator {
         floor.position.set(x, 0.1, z);
         this.scene.add(floor);
         
-        // Walls (Simple Box Walls for now)
-        // North
-        if (!openings.north) this.createWall(x, z - size/2, size, 10, 1, 0);
-        // South
-        if (!openings.south) this.createWall(x, z + size/2, size, 10, 1, 0);
-        // East
-        if (!openings.east) this.createWall(x + size/2, z, 1, 10, size, 0);
-        // West
-        if (!openings.west) this.createWall(x - size/2, z, 1, 10, size, 0);
+        const wallHeight = 15;
+        const wallThickness = 2;
+        const doorWidth = 20; // Match corridor width
+
+        // Helper to create wall segments with potential doorway
+        const createWallSide = (cx, cz, isVertical, hasOpening) => {
+            if (!hasOpening) {
+                // Full Wall
+                if (isVertical) {
+                    this.createWall(cx, cz, wallThickness, wallHeight, size + wallThickness, 0);
+                } else {
+                    this.createWall(cx, cz, size + wallThickness, wallHeight, wallThickness, 0);
+                }
+            } else {
+                // Wall with Doorway (Two segments)
+                const segmentLen = (size - doorWidth) / 2;
+                if (segmentLen <= 0) return; // Room too small for door walls
+
+                const offset = (doorWidth + segmentLen) / 2;
+
+                if (isVertical) {
+                    // East/West side (Vertical along Z)
+                    this.createWall(cx, cz - offset, wallThickness, wallHeight, segmentLen, 0);
+                    this.createWall(cx, cz + offset, wallThickness, wallHeight, segmentLen, 0);
+                } else {
+                    // North/South side (Horizontal along X)
+                    this.createWall(cx - offset, cz, segmentLen, wallHeight, wallThickness, 0);
+                    this.createWall(cx + offset, cz, segmentLen, wallHeight, wallThickness, 0);
+                }
+            }
+        };
+
+        // North (z - size/2)
+        createWallSide(x, z - size/2, false, openings.north);
+        // South (z + size/2)
+        createWallSide(x, z + size/2, false, openings.south);
+        // East (x + size/2)
+        createWallSide(x + size/2, z, true, openings.east);
+        // West (x - size/2)
+        createWallSide(x - size/2, z, true, openings.west);
     }
 
     createWall(x, z, w, h, d, rotY) {
@@ -464,29 +523,85 @@ export class WorldGenerator {
         this.collisionManager.addCollider(collider);
     }
 
-    createCorridor(x1, z1, x2, z2, width) {
-        const dist = Math.sqrt((x2-x1)**2 + (z2-z1)**2);
-        const angle = Math.atan2(z2-z1, x2-x1); // Angle in radians
-        
+    createCorner(x, z, width) {
         // Floor
+        const floorGeo = new THREE.PlaneGeometry(width, width);
+        const floorMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+        const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.rotation.x = -Math.PI / 2;
+        floor.position.set(x, 0.11, z);
+        this.scene.add(floor);
+
+        // Corner Pillars (to fill gaps)
+        const pillarSize = 2.5; // Slightly larger than wall thickness (2)
+        const pillarGeo = new THREE.BoxGeometry(pillarSize, 15, pillarSize);
+        const pillarMat = new THREE.MeshStandardMaterial({ color: 0x555555 });
+
+        const offsets = [
+            { ox: -width/2, oz: -width/2 },
+            { ox: width/2, oz: -width/2 },
+            { ox: -width/2, oz: width/2 },
+            { ox: width/2, oz: width/2 }
+        ];
+
+        offsets.forEach(off => {
+            const pillar = new THREE.Mesh(pillarGeo, pillarMat);
+            pillar.position.set(x + off.ox, 7.5, z + off.oz);
+            this.scene.add(pillar);
+            this.collisionManager.addCollider(new THREE.Box3().setFromObject(pillar));
+        });
+    }
+
+    createCorridor(x1, z1, x2, z2, width, wallStartOffset = 0, wallEndOffset = 0) {
+        const dx = x2 - x1;
+        const dz = z2 - z1;
+        const dist = Math.sqrt(dx*dx + dz*dz);
+        if (dist < 0.1) return; // Too short
+
+        const angle = Math.atan2(dz, dx); // Angle in radians
+        
+        // Floor (Full Length)
+        // Raise slightly to 0.11 to avoid z-fighting with room floors
         const geo = new THREE.PlaneGeometry(dist, width);
         const mat = new THREE.MeshStandardMaterial({ color: 0x333333 });
         const mesh = new THREE.Mesh(geo, mat);
         mesh.rotation.x = -Math.PI / 2;
-        mesh.position.set((x1+x2)/2, 0.1, (z1+z2)/2);
+        mesh.position.set((x1+x2)/2, 0.11, (z1+z2)/2);
         mesh.rotation.z = -angle; 
         this.scene.add(mesh);
         
-        // Walls
-        const wallGeo = new THREE.BoxGeometry(dist, 10, 1);
+        // Walls (Trimmed)
+        const wallLength = dist - wallStartOffset - wallEndOffset;
+        if (wallLength <= 0) return; // Walls completely trimmed
+
+        const wallHeight = 15;
+        const wallThickness = 2;
+        const wallGeo = new THREE.BoxGeometry(wallLength, wallHeight, wallThickness);
         const wallMat = new THREE.MeshStandardMaterial({ color: 0x555555 });
         
+        // Calculate center of walls
+        // Start point shifted by wallStartOffset
+        // End point shifted by wallEndOffset
+        // Center is midpoint of trimmed segment
+        
+        // Direction vector
+        const dirX = Math.cos(angle);
+        const dirZ = Math.sin(angle);
+
+        const startX = x1 + dirX * wallStartOffset;
+        const startZ = z1 + dirZ * wallStartOffset;
+        const endX = x2 - dirX * wallEndOffset;
+        const endZ = z2 - dirZ * wallEndOffset;
+
+        const cx = (startX + endX) / 2;
+        const cz = (startZ + endZ) / 2;
+
         // Left Wall
         const leftWall = new THREE.Mesh(wallGeo, wallMat);
         leftWall.position.set(
-            (x1+x2)/2 + Math.cos(angle + Math.PI/2) * (width/2),
-            5,
-            (z1+z2)/2 + Math.sin(angle + Math.PI/2) * (width/2)
+            cx + Math.cos(angle + Math.PI/2) * (width/2 + wallThickness/2),
+            wallHeight/2,
+            cz + Math.sin(angle + Math.PI/2) * (width/2 + wallThickness/2)
         );
         leftWall.rotation.y = -angle;
         this.scene.add(leftWall);
@@ -495,9 +610,9 @@ export class WorldGenerator {
         // Right Wall
         const rightWall = new THREE.Mesh(wallGeo, wallMat);
         rightWall.position.set(
-            (x1+x2)/2 + Math.cos(angle - Math.PI/2) * (width/2),
-            5,
-            (z1+z2)/2 + Math.sin(angle - Math.PI/2) * (width/2)
+            cx + Math.cos(angle - Math.PI/2) * (width/2 + wallThickness/2),
+            wallHeight/2,
+            cz + Math.sin(angle - Math.PI/2) * (width/2 + wallThickness/2)
         );
         rightWall.rotation.y = -angle;
         this.scene.add(rightWall);

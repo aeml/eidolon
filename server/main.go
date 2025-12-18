@@ -1059,7 +1059,9 @@ func (c *Client) handleMessage(msg Message) {
 		}
 
 		// Create Dungeon
+		log.Printf("Creating dungeon for party %s (Player: %s)", player.PartyID, c.playerID)
 		instanceID := world.CreateDungeon(player.PartyID, dungeonType)
+		log.Printf("Dungeon created: %s", instanceID)
 		// c.sendError(fmt.Sprintf("Debug: Dungeon Created %s", instanceID))
 
 		// Get Party
