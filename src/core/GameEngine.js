@@ -966,24 +966,33 @@ export class GameEngine {
         this.enemies = [];
         this.lootDrops = [];
 
-        // Remove all meshes except player and ground (if we want to keep ground)
-        // Actually, for dungeon we might want to hide the main ground or overlay it.
-        // For now, simple cleanup.
-        const toRemove = [];
-        this.renderSystem.scene.traverse(child => {
-            if (child.isMesh && child !== this.player.mesh && child.name !== 'Ground') {
-                // Check if it's part of player
-                let isPlayer = false;
-                child.traverseAncestors(p => {
-                    if (p === this.player.mesh) isPlayer = true;
+        // Remove all meshes except player
+        // Use reverse loop for safe removal
+        for (let i = this.renderSystem.scene.children.length - 1; i >= 0; i--) {
+            const child = this.renderSystem.scene.children[i];
+            
+            // Keep Lights
+            if (child.isLight) continue;
+            // Keep Camera (usually not in scene children directly but just in case)
+            if (child.isCamera) continue;
+            
+            // Check if it's the player or part of the player
+            let isPlayer = false;
+            if (child === this.player.mesh) isPlayer = true;
+            else {
+                // Check if child is an ancestor of player mesh (unlikely) or vice versa
+                // Actually, we just need to check if this top-level object IS the player mesh
+                // or if the player mesh is inside it.
+                child.traverse(c => {
+                    if (c === this.player.mesh) isPlayer = true;
                 });
-                if (!isPlayer) toRemove.push(child);
             }
-        });
 
-        toRemove.forEach(child => {
-            this.renderSystem.scene.remove(child);
-        });
+            if (!isPlayer) {
+                this.renderSystem.scene.remove(child);
+                // Optional: Dispose geometry/material if needed for memory
+            }
+        }
 
         // Clear collisions
         this.collisionManager.clear();
@@ -999,9 +1008,21 @@ export class GameEngine {
             worldGen.createOverworldStructures();
         }
 
-        // Reset player position
-        this.player.position.set(0, 0, 0);
-        this.player.mesh.position.set(0, 0, 0);
+        // Reset player position and state
+        this.player.position.set(0, 0.5, 0);
+        if (this.player.mesh) {
+            this.player.mesh.position.set(0, 0.5, 0);
+            this.renderSystem.scene.add(this.player.mesh); // Ensure player is in scene
+            this.player.mesh.visible = true;
+        }
+        this.player.targetPosition = null;
+        this.player.state = 'IDLE';
+        this.player.playAnimation('Idle');
+
+        // Reset Camera
+        if (this.cameraLocked) {
+            this.renderSystem.setCameraTarget(this.player.position);
+        }
     }
 
     handleServerMessage(msg) {

@@ -3,6 +3,7 @@ package game
 import (
 	"eidolon-server/internal/database"
 	"fmt"
+	"log"
 	"math"
 	"math/rand"
 	"runtime"
@@ -997,6 +998,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 	// Manual copy to avoid copying the.Mutex
 	newE := &Entity{
 		ID:                e.ID,
+		InstanceID:        e.InstanceID,
 		Name:              e.Name,
 		PartyID:           e.PartyID,
 		Type:              e.Type,
@@ -5776,6 +5778,7 @@ func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[str
 			continue
 		}
 		if v.InstanceID != player.InstanceID {
+			log.Printf("CRITICAL: GetStateForPlayer LEAK! Player %s (Inst: %s) sees %s (Inst: %s)", playerID, player.InstanceID, v.ID, v.InstanceID)
 			continue
 		}
 		// Precise distance check
@@ -6112,7 +6115,7 @@ func (w *World) CreateDungeon(partyID string, dungeonType string) string {
 		}
 	}
 
-	instanceID := fmt.Sprintf("dungeon_%s_%d", partyID, time.Now().Unix())
+	instanceID := fmt.Sprintf("dungeon_%s_%d_%d", partyID, time.Now().UnixNano(), rand.Intn(10000))
 
 	dungeon := &DungeonInstance{
 		ID:        instanceID,
@@ -6338,6 +6341,7 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 	w.Grid.Remove(player)
 
 	oldInstanceID := player.InstanceID
+	log.Printf("EnterInstance: Player %s moving from '%s' to '%s'", playerID, oldInstanceID, instanceID)
 	player.InstanceID = instanceID
 	player.X = 0
 	player.Z = 0
