@@ -358,7 +358,7 @@ export class WorldGenerator {
     createVerdantBastionCatacombs(centerX, centerZ, layout) {
         console.log(`Generating Verdant Bastion Catacombs at ${centerX},${centerZ}`);
         
-        if (layout && layout.rooms) {
+        if (layout && layout.rooms && layout.rooms.length > 0) {
             let prevRoom = null;
             
             layout.rooms.forEach((room, index) => {

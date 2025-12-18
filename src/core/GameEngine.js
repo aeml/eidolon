@@ -966,33 +966,13 @@ export class GameEngine {
         this.enemies = [];
         this.lootDrops = [];
 
-        // Remove all meshes except player
-        // Use reverse loop for safe removal
-        for (let i = this.renderSystem.scene.children.length - 1; i >= 0; i--) {
-            const child = this.renderSystem.scene.children[i];
-            
-            // Keep Lights
-            if (child.isLight) continue;
-            // Keep Camera (usually not in scene children directly but just in case)
-            if (child.isCamera) continue;
-            
-            // Check if it's the player or part of the player
-            let isPlayer = false;
-            if (child === this.player.mesh) isPlayer = true;
-            else {
-                // Check if child is an ancestor of player mesh (unlikely) or vice versa
-                // Actually, we just need to check if this top-level object IS the player mesh
-                // or if the player mesh is inside it.
-                child.traverse(c => {
-                    if (c === this.player.mesh) isPlayer = true;
-                });
-            }
-
-            if (!isPlayer) {
-                this.renderSystem.scene.remove(child);
-                // Optional: Dispose geometry/material if needed for memory
-            }
+        // Force Clear Scene (Safer than selective removal)
+        while(this.renderSystem.scene.children.length > 0){ 
+            this.renderSystem.scene.remove(this.renderSystem.scene.children[0]); 
         }
+
+        // Re-setup Lights
+        this.renderSystem.setupLights();
 
         // Clear collisions
         this.collisionManager.clear();
@@ -1014,6 +994,9 @@ export class GameEngine {
             this.player.mesh.position.set(0, 0.5, 0);
             this.renderSystem.scene.add(this.player.mesh); // Ensure player is in scene
             this.player.mesh.visible = true;
+            console.log("Player mesh re-added to scene at 0,0.5,0");
+        } else {
+            console.error("Player mesh missing during instance entry!");
         }
         this.player.targetPosition = null;
         this.player.state = 'IDLE';
@@ -1407,6 +1390,11 @@ export class GameEngine {
                     // Sync Name
                     if (pData.name && remoteEntity.name !== pData.name) {
                         remoteEntity.setName(pData.name);
+                    }
+
+                    // Sync Scale
+                    if (pData.scale !== undefined && remoteEntity.scale !== pData.scale) {
+                        remoteEntity.setScale(pData.scale);
                     }
                     
                     // Handle Spirits (Cleric)
@@ -2357,6 +2345,11 @@ export class GameEngine {
                 if (remoteEntity) {
                     // Set initial position immediately
                     remoteEntity.position.set(pData.x, pData.y, pData.z);
+
+                    // Set initial scale
+                    if (pData.scale !== undefined) {
+                        remoteEntity.setScale(pData.scale);
+                    }
                     
                     // Set initial rotation immediately to prevent spin-up glitch
                     if (pData.rotation !== undefined) {
