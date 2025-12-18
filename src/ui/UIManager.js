@@ -148,6 +148,30 @@ export class UIManager {
         // Forge Potency UI
         this.forgePotencyList = document.getElementById('forge-potency-list');
         this.forgePotencyInfo = document.getElementById('forge-potency-info');
+
+        // Split Stack UI
+        this.splitStackWindow = document.getElementById('split-stack-window');
+        this.btnCloseSplit = document.getElementById('btn-close-split');
+        this.splitItemName = document.getElementById('split-item-name');
+        this.splitAmountRange = document.getElementById('split-amount-range');
+        this.splitAmountInput = document.getElementById('split-amount-input');
+        this.btnConfirmSplit = document.getElementById('btn-confirm-split');
+        this.btnCancelSplit = document.getElementById('btn-cancel-split');
+
+        if (this.btnCloseSplit) this.btnCloseSplit.addEventListener('click', () => this.hideSplitWindow());
+        if (this.btnCancelSplit) this.btnCancelSplit.addEventListener('click', () => this.hideSplitWindow());
+        if (this.btnConfirmSplit) this.btnConfirmSplit.addEventListener('click', () => this.confirmSplit());
+        
+        if (this.splitAmountRange) {
+            this.splitAmountRange.addEventListener('input', (e) => {
+                if (this.splitAmountInput) this.splitAmountInput.value = e.target.value;
+            });
+        }
+        if (this.splitAmountInput) {
+            this.splitAmountInput.addEventListener('input', (e) => {
+                if (this.splitAmountRange) this.splitAmountRange.value = e.target.value;
+            });
+        }
         this.forgePotencyItemName = document.getElementById('forge-potency-item-name');
         this.forgePotencyStats = document.getElementById('forge-potency-stats');
         this.forgePotencyCostValue = document.getElementById('forge-potency-cost-value');
@@ -778,6 +802,51 @@ export class UIManager {
         if (isHidden && this.lastPlayerRef) {
             this.updateInventory(this.lastPlayerRef);
         }
+    }
+
+    showSplitWindow(item, slotIndex) {
+        if (!this.splitStackWindow) return;
+        
+        this.pendingSplitItem = item;
+        this.pendingSplitSlot = slotIndex;
+        
+        this.splitItemName.textContent = item.name;
+        
+        // Allow splitting 1 to stack-1
+        const maxSplit = item.stack - 1;
+        
+        if (maxSplit < 1) return; 
+        
+        this.splitAmountRange.min = 1;
+        this.splitAmountRange.max = maxSplit;
+        this.splitAmountRange.value = Math.floor(item.stack / 2) || 1;
+        
+        this.splitAmountInput.min = 1;
+        this.splitAmountInput.max = maxSplit;
+        this.splitAmountInput.value = Math.floor(item.stack / 2) || 1;
+        
+        this.splitStackWindow.style.display = 'block';
+    }
+
+    hideSplitWindow() {
+        if (this.splitStackWindow) {
+            this.splitStackWindow.style.display = 'none';
+        }
+        this.pendingSplitItem = null;
+        this.pendingSplitSlot = -1;
+    }
+
+    confirmSplit() {
+        if (!this.pendingSplitItem || this.pendingSplitSlot === -1) return;
+        
+        const amount = parseInt(this.splitAmountInput.value);
+        if (isNaN(amount) || amount < 1) return;
+        
+        if (window.game) {
+            window.game.sendSplitStackMessage(this.pendingSplitSlot, amount);
+        }
+        
+        this.hideSplitWindow();
     }
 
     toggleStash() {
@@ -2562,6 +2631,12 @@ export class UIManager {
                 // Add click handler for equipping (simple toggle for now)
                 slots[i].onclick = (e) => {
                     e.stopPropagation();
+
+                    // Shift+Click to Split Stack
+                    if (e.shiftKey && item.stack > 1) {
+                        this.showSplitWindow(item, i);
+                        return;
+                    }
                     
                     // Prevent equipping non-equippable items
                     if (item.type === 'MATERIAL' || item.type === 'RELIC' || item.slot === 'material' || item.slot === 'relic') {
@@ -3398,6 +3473,97 @@ export class UIManager {
                 }));
             }
         }
+    }
+
+    showDungeonMenu(data) {
+        // Remove existing if any
+        const existing = document.getElementById('dungeon-menu');
+        if (existing) existing.remove();
+
+        const menu = document.createElement('div');
+        menu.id = 'dungeon-menu';
+        menu.style.position = 'absolute';
+        menu.style.top = '50%';
+        menu.style.left = '50%';
+        menu.style.transform = 'translate(-50%, -50%)';
+        menu.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+        menu.style.border = '2px solid #444';
+        menu.style.padding = '20px';
+        menu.style.color = '#fff';
+        menu.style.zIndex = '1000';
+        menu.style.textAlign = 'center';
+        menu.style.minWidth = '300px';
+
+        const title = document.createElement('h2');
+        title.innerText = 'Dungeon Entrance';
+        title.style.marginTop = '0';
+        menu.appendChild(title);
+
+        if (data.hasInstance && data.timeLeft > 0) {
+            const timer = document.createElement('p');
+            timer.innerText = `Instance resets in: ${Math.ceil(data.timeLeft)}s`;
+            timer.style.color = '#ffaa00';
+            menu.appendChild(timer);
+        } else if (data.hasInstance) {
+            const status = document.createElement('p');
+            status.innerText = 'Instance Active';
+            status.style.color = '#00ff00';
+            menu.appendChild(status);
+        } else {
+            const status = document.createElement('p');
+            status.innerText = 'No Active Instance';
+            status.style.color = '#aaa';
+            menu.appendChild(status);
+        }
+
+        // Enter Button
+        const enterBtn = document.createElement('button');
+        enterBtn.innerText = 'Enter Instance';
+        enterBtn.style.margin = '10px';
+        enterBtn.style.padding = '10px 20px';
+        enterBtn.style.cursor = 'pointer';
+        enterBtn.onclick = () => {
+            if (window.game && window.game.socket) {
+                window.game.socket.send(JSON.stringify({
+                    type: 'enter_dungeon',
+                    payload: { dungeonType: 'verdant_bastion_catacombs' }
+                }));
+            }
+            menu.remove();
+        };
+        menu.appendChild(enterBtn);
+
+        // Reset Button (Leader Only)
+        if (data.isLeader) {
+            const resetBtn = document.createElement('button');
+            resetBtn.innerText = 'Reset Instance';
+            resetBtn.style.margin = '10px';
+            resetBtn.style.padding = '10px 20px';
+            resetBtn.style.cursor = 'pointer';
+            resetBtn.style.backgroundColor = '#800';
+            resetBtn.style.color = '#fff';
+            resetBtn.onclick = () => {
+                if (window.game && window.game.socket) {
+                    window.game.socket.send(JSON.stringify({
+                        type: 'reset_dungeon',
+                        payload: {}
+                    }));
+                }
+                menu.remove();
+            };
+            menu.appendChild(resetBtn);
+        }
+
+        // Close Button
+        const closeBtn = document.createElement('button');
+        closeBtn.innerText = 'Close';
+        closeBtn.style.margin = '10px';
+        closeBtn.style.padding = '5px 10px';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.onclick = () => menu.remove();
+        menu.appendChild(closeBtn);
+
+        document.body.appendChild(menu);
     }
 
 }

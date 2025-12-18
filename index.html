@@ -1260,6 +1260,25 @@
             </div>
         </div>
 
+        <!-- Split Stack Window -->
+        <div id="split-stack-window" class="window" style="display: none; width: 250px; height: auto; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000;">
+            <div class="window-header">
+                <span>Split Stack</span>
+                <div class="close-btn" id="btn-close-split">×</div>
+            </div>
+            <div class="window-content" style="display: flex; flex-direction: column; gap: 10px; padding: 15px; align-items: center;">
+                <div id="split-item-name" style="color: #ffd700; font-weight: bold;">Item Name</div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="range" id="split-amount-range" min="1" max="1" value="1" style="width: 100px;">
+                    <input type="number" id="split-amount-input" min="1" max="1" value="1" style="width: 50px; background: #222; color: white; border: 1px solid #444; padding: 5px;">
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button id="btn-confirm-split" class="btn-action">Split</button>
+                    <button id="btn-cancel-split" class="btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Party Panel -->
         <div id="party-panel">
             <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #444; padding-bottom: 5px;">

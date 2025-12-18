@@ -4,11 +4,23 @@ import { CONSTANTS } from './Constants.js';
 export class CollisionManager {
     constructor() {
         this.colliders = []; // Array of THREE.Box3
+        this.circularColliders = []; // Array of {x, z, radius}
         this.safeZones = []; // Array of THREE.Box3
     }
 
     addCollider(box) {
         this.colliders.push(box);
+    }
+
+    addCircularCollider(x, z, radius) {
+        console.log(`Adding circular collider at ${x},${z} r=${radius}`);
+        this.circularColliders.push({x, z, radius});
+    }
+
+    clear() {
+        this.colliders = [];
+        this.circularColliders = [];
+        this.safeZones = [];
     }
 
     addSafeZone(box) {
@@ -184,6 +196,27 @@ export class CollisionManager {
                     push.normalize();
                     push.multiplyScalar(radius - distance);
                     tempPos.add(push);
+                }
+            }
+        }
+
+        // 3. Circular Colliders
+        for (const circle of this.circularColliders) {
+            const dx = tempPos.x - circle.x;
+            const dz = tempPos.z - circle.z;
+            const distSq = dx*dx + dz*dz;
+            const minDist = circle.radius + radius;
+            
+            if (distSq < minDist * minDist) {
+                collided = true;
+                const dist = Math.sqrt(distSq);
+                if (dist > 0) {
+                    // Push out
+                    const overlap = minDist - dist;
+                    const pushX = (dx / dist) * overlap;
+                    const pushZ = (dz / dist) * overlap;
+                    tempPos.x += pushX;
+                    tempPos.z += pushZ;
                 }
             }
         }

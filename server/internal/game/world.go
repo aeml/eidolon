@@ -190,6 +190,19 @@ type Entity struct {
 	PartyID string `json:"partyId,omitempty"`
 }
 
+type DungeonRoom struct {
+	X      float64 `json:"x"`
+	Z      float64 `json:"z"`
+	Width  float64 `json:"width"`
+	Height float64 `json:"height"`
+	Type   string  `json:"type"` // "start", "boss", "normal", "elite"
+	Color  int     `json:"color"`
+}
+
+type DungeonLayout struct {
+	Rooms []DungeonRoom `json:"rooms"`
+}
+
 type SpatialMap struct {
 	cellSize float64
 	cells    map[string]map[string]*Entity
@@ -272,12 +285,22 @@ func (sm *SpatialMap) Nearby(x, z, radius float64, instanceID string) []*Entity 
 	return result
 }
 
+type DungeonInstance struct {
+	ID          string
+	Layout      DungeonLayout
+	PartyID     string
+	CreatedAt   time.Time
+	EmptySince  time.Time
+	PlayerCount int
+}
+
 type World struct {
-	Entities map[string]*Entity
-	Parties  map[string]*Party
-	Trading  *TradingSystem
-	Grid     *SpatialMap
-	Mu       sync.RWMutex
+	Entities        map[string]*Entity
+	Parties         map[string]*Party
+	Trading         *TradingSystem
+	Grid            *SpatialMap
+	InstanceLayouts map[string]*DungeonInstance
+	Mu              sync.RWMutex
 
 	// Elite Spawning
 	EliteSpawnTimer time.Time
@@ -310,6 +333,7 @@ func NewWorld(db *database.DB) *World {
 		Parties:         make(map[string]*Party),
 		Trading:         NewTradingSystem(db),
 		Grid:            NewSpatialMap(50.0), // 50 unit cell size
+		InstanceLayouts: make(map[string]*DungeonInstance),
 		EliteSpawnTimer: time.Now(),
 		RegenTimer:      0,
 		OnEvent:         func(eventType string, data interface{}) {}, // Default no-op
@@ -927,8 +951,25 @@ func (w *World) RemoveEntity(id string) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	if e, ok := w.Entities[id]; ok {
+		instanceID := e.InstanceID
 		w.Grid.Remove(e)
 		delete(w.Entities, id)
+
+		if strings.HasPrefix(instanceID, "dungeon_") {
+			w.checkAndResetDungeonLocked(instanceID)
+		}
+	}
+}
+				toRemove = append(toRemove, id)
+			}
+		}
+
+		for _, id := range toRemove {
+			if e, ok := w.Entities[id]; ok {
+				w.Grid.Remove(e)
+				delete(w.Entities, id)
+			}
+		}
 	}
 }
 
@@ -1094,6 +1135,55 @@ func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool) {
 		}
 	}
 	return nil, false
+}
+
+func (w *World) PerformSplitStack(playerID string, slot int, amount int) (*Entity, bool) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+
+	if slot < 0 || slot >= len(player.Inventory) {
+		return nil, false
+	}
+
+	// Use pointer to modify directly
+	item := &player.Inventory[slot]
+
+	// Validation
+	if item.ID == "" || item.Stack <= 1 || amount >= item.Stack || amount < 1 {
+		return nil, false
+	}
+
+	// Find empty slot
+	emptySlot := -1
+	for i, invItem := range player.Inventory {
+		if invItem.ID == "" {
+			emptySlot = i
+			break
+		}
+	}
+
+	if emptySlot == -1 {
+		return nil, false // Inventory full
+	}
+
+	// Create new item stack
+	newItem := *item
+	newItem.Stack = amount
+	// Generate new ID to ensure uniqueness
+	newItem.ID = fmt.Sprintf("%s-%d", item.ID, rand.Intn(1000000))
+
+	// Update original stack
+	item.Stack -= amount
+
+	// Place new item
+	player.Inventory[emptySlot] = newItem
+
+	return player, true
 }
 
 func (w *World) PerformEquip(playerID, itemID, slot string) (*Entity, bool) {
@@ -6018,36 +6108,234 @@ func (w *World) CreateDungeon(partyID string, dungeonType string) string {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
-	instanceID := fmt.Sprintf("dungeon_%s_%d", partyID, time.Now().Unix())
-
-	// Spawn Dungeon Entities (Example: 20 Skeletons)
-	for i := 0; i < 20; i++ {
-		x := (rand.Float64() * 40) - 20
-		z := (rand.Float64() * 40) - 20
-
-		skeleton := &Entity{
-			ID:             fmt.Sprintf("Skeleton-%s-%d", instanceID, i),
-			InstanceID:     instanceID,
-			Type:           TypeEnemy,
-			SubType:        "Skeleton",
-			X:              x,
-			Y:              0,
-			Z:              z,
-			SpawnX:         x,
-			SpawnZ:         z,
-			BaseStats:      Stats{Strength: 100, Vitality: 100},
-			Health:         1000,
-			MaxHealth:      1000,
-			State:          "IDLE",
-			Speed:          3.0,
-			AttackSpeed:    2.0,
-			AttackCooldown: 2 * time.Second,
+	// Check for existing active dungeon for this party
+	for id, inst := range w.InstanceLayouts {
+		if inst.PartyID == partyID {
+			// Check if expired (empty for > 5 minutes)
+			if !inst.EmptySince.IsZero() && time.Since(inst.EmptySince) > 5*time.Minute {
+				// Expired, delete it (cleanup will happen below or we can do it here)
+				// We'll just let the new one be created and the old one will be orphaned/cleaned up
+				// Actually, let's clean it up to be safe
+				w.cleanupInstanceLocked(id)
+			} else {
+				// Valid existing dungeon
+				return id
+			}
 		}
-		w.Entities[skeleton.ID] = skeleton
-		w.Grid.Insert(skeleton)
+	}
+
+	instanceID := fmt.Sprintf("dungeon_%s_%d", partyID, time.Now().Unix())
+	
+	dungeon := &DungeonInstance{
+		ID:        instanceID,
+		PartyID:   partyID,
+		CreatedAt: time.Now(),
+		// EmptySince is zero initially, but since no players are in yet, maybe it should be Now?
+		// But we are about to enter it. Let's leave it zero or handle it in EnterInstance.
+		// Actually, if we create it and nobody enters for 5 mins, it should expire.
+		EmptySince: time.Now(), 
+	}
+
+	if dungeonType == "verdant_bastion_catacombs" {
+		layout := w.generateVerdantBastionLayout(instanceID)
+		dungeon.Layout = layout
+		w.InstanceLayouts[instanceID] = dungeon
+	} else {
+		// Default Crypt
+		// For default crypts we might not store a layout, but we should store the instance record
+		w.InstanceLayouts[instanceID] = dungeon
+		
+		// Spawn Dungeon Entities (Example: 20 Skeletons)
+		for i := 0; i < 20; i++ {
+			x := (rand.Float64() * 40) - 20
+			z := (rand.Float64() * 40) - 20
+			w.spawnEnemyInInstance("Skeleton", x, z, instanceID)
+		}
 	}
 
 	return instanceID
+}
+
+func (w *World) ResetDungeon(partyID string) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	
+	for id, inst := range w.InstanceLayouts {
+		if inst.PartyID == partyID {
+			w.cleanupInstanceLocked(id)
+			return
+		}
+	}
+}
+
+func (w *World) GetDungeonStatus(partyID string) (bool, float64) {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+	
+	for _, inst := range w.InstanceLayouts {
+		if inst.PartyID == partyID {
+			timeLeft := 0.0
+			if !inst.EmptySince.IsZero() {
+				elapsed := time.Since(inst.EmptySince)
+				if elapsed < 5*time.Minute {
+					timeLeft = (5 * time.Minute).Seconds() - elapsed.Seconds()
+				}
+			}
+			return true, timeLeft
+		}
+	}
+	return false, 0
+}
+
+func (w *World) GetInstanceLayout(instanceID string) (DungeonLayout, bool) {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+	inst, ok := w.InstanceLayouts[instanceID]
+	if !ok {
+		return DungeonLayout{}, false
+	}
+	return inst.Layout, true
+}
+
+func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
+	layout := DungeonLayout{
+		Rooms: []DungeonRoom{},
+	}
+
+	// Start Room
+	layout.Rooms = append(layout.Rooms, DungeonRoom{X: 0, Z: 0, Width: 40, Height: 40, Type: "start", Color: 0x444444})
+
+	// Boss Milestones
+	bosses := []struct {
+		Name  string
+		Stats Stats
+	}{
+		{"RootboundWarden", Stats{Strength: 2000, Vitality: 1250000}},
+		{"BriarMatron", Stats{Strength: 2500, Vitality: 1350000}},
+		{"RustboundColossus", Stats{Strength: 3000, Vitality: 1500000}},
+		{"HollowSentinel", Stats{Strength: 3500, Vitality: 1750000}},
+	}
+
+	currentX := 0.0
+	currentZ := 0.0
+
+	// Use a deterministic seed based on instanceID hash if possible,
+	// but for now we just use global rand since we store the layout.
+
+	for i, boss := range bosses {
+		// Target Z for next boss (roughly -100 units further North)
+		targetZ := currentZ - 100.0
+
+		// Generate 2-3 intermediate rooms
+		numIntermediate := 2 + rand.Intn(2)
+		stepZ := (targetZ - currentZ) / float64(numIntermediate+1)
+
+		for j := 0; j < numIntermediate; j++ {
+			// Move North
+			nextZ := currentZ + stepZ
+			// Random East/West offset (-30 to 30)
+			nextX := currentX + (rand.Float64() * 60) - 30
+
+			// Add Room
+			roomType := "normal"
+			if rand.Float64() < 0.3 {
+				roomType = "elite"
+			}
+
+			layout.Rooms = append(layout.Rooms, DungeonRoom{
+				X: nextX, Z: nextZ, Width: 30, Height: 30, Type: roomType, Color: 0x333333,
+			})
+
+			// Spawn Mobs
+			if roomType == "elite" {
+				// Spawn Elite
+				w.spawnEnemyInInstance("DemonOrc", nextX, nextZ, instanceID) // Placeholder Elite
+			} else {
+				// Spawn Trash
+				for k := 0; k < 3; k++ {
+					ox := (rand.Float64() * 10) - 5
+					oz := (rand.Float64() * 10) - 5
+					w.spawnEnemyInInstance("Skeleton", nextX+ox, nextZ+oz, instanceID)
+				}
+			}
+
+			currentX = nextX
+			currentZ = nextZ
+		}
+
+		// Place Boss Room
+		// Re-center X slightly towards 0 to keep dungeon from drifting too far?
+		// Or just let it wander. Let's pull it back 50% towards 0.
+		currentX = currentX * 0.5
+		currentZ = targetZ
+
+		layout.Rooms = append(layout.Rooms, DungeonRoom{
+			X: currentX, Z: currentZ, Width: 40, Height: 40, Type: "boss", Color: 0x222222,
+		})
+
+		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats)
+	}
+
+	return layout
+}
+
+func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID string, stats Stats) {
+	boss := &Entity{
+		ID:             fmt.Sprintf("%s-%s", subType, instanceID),
+		InstanceID:     instanceID,
+		Type:           TypeEnemy,
+		SubType:        subType,
+		X:              x,
+		Y:              0,
+		Z:              z,
+		SpawnX:         x,
+		SpawnZ:         z,
+		BaseStats:      stats,
+		Health:         stats.Vitality * 10,
+		MaxHealth:      stats.Vitality * 10,
+		State:          "IDLE",
+		Speed:          2.5,
+		AttackSpeed:    1.5,
+		AttackCooldown: 2 * time.Second,
+	}
+	w.Entities[boss.ID] = boss
+	w.Grid.Insert(boss)
+}
+
+func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID string) {
+	// "25x normal hp"
+	// Assuming "normal hp" refers to a standard enemy at the dungeon's level (Level 70).
+	// If a Level 70 enemy has ~50,000 HP (5000 Vitality), then 25x is 1,250,000 HP (125,000 Vitality).
+	
+	vitality := 125000
+	strength := 4000 // Scaled up damage for Level 70
+
+	if subType == "DemonOrc" {
+		// Elite
+		vitality = 150000
+		strength = 5000
+	}
+
+	enemy := &Entity{
+		ID:             fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000)),
+		InstanceID:     instanceID,
+		Type:           TypeEnemy,
+		SubType:        subType,
+		X:              x,
+		Y:              0,
+		Z:              z,
+		SpawnX:         x,
+		SpawnZ:         z,
+		BaseStats:      Stats{Strength: strength, Vitality: vitality},
+		Health:         vitality * 10,
+		MaxHealth:      vitality * 10,
+		State:          "IDLE",
+		Speed:          3.0,
+		AttackSpeed:    2.0,
+		AttackCooldown: 2 * time.Second,
+	}
+	w.Entities[enemy.ID] = enemy
+	w.Grid.Insert(enemy)
 }
 
 func (w *World) EnterInstance(playerID string, instanceID string) error {
@@ -6059,10 +6347,60 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 		return fmt.Errorf("player not found")
 	}
 
+	oldInstanceID := player.InstanceID
 	player.InstanceID = instanceID
 	player.X = 0
 	player.Z = 0
 
 	w.Grid.Update(player)
+
+	// Handle Old Instance (Leaving)
+	if strings.HasPrefix(oldInstanceID, "dungeon_") {
+		w.checkAndResetDungeonLocked(oldInstanceID)
+	}
+
+	// Handle New Instance (Entering)
+	if strings.HasPrefix(instanceID, "dungeon_") {
+		if inst, ok := w.InstanceLayouts[instanceID]; ok {
+			inst.EmptySince = time.Time{} // Reset empty timer
+		}
+	}
+
 	return nil
+}
+
+func (w *World) cleanupInstanceLocked(instanceID string) {
+	delete(w.InstanceLayouts, instanceID)
+
+	toRemove := []string{}
+	for id, e := range w.Entities {
+		if e.InstanceID == instanceID {
+			toRemove = append(toRemove, id)
+		}
+	}
+
+	for _, id := range toRemove {
+		if e, ok := w.Entities[id]; ok {
+			w.Grid.Remove(e)
+			delete(w.Entities, id)
+		}
+	}
+}
+
+func (w *World) checkAndResetDungeonLocked(instanceID string) {
+	// Check if any players remain
+	hasPlayers := false
+	for _, e := range w.Entities {
+		if e.Type == TypePlayer && e.InstanceID == instanceID {
+			hasPlayers = true
+			break
+		}
+	}
+
+	if !hasPlayers {
+		// Mark as empty
+		if inst, ok := w.InstanceLayouts[instanceID]; ok {
+			inst.EmptySince = time.Now()
+		}
+	}
 }

@@ -316,6 +316,7 @@ export class WorldGenerator {
         // Location: X=800, Z=200 (In the InfernoTitan area)
         loader.load('./assets/buildings/dungeons/the_verdant_bastion.glb', (gltf) => {
             const mesh = gltf.scene;
+            mesh.name = 'DungeonEntrance'; // Tag for interaction
             const scale = 40; // "Very large"
             mesh.scale.set(scale, scale, scale);
             mesh.position.set(800, 0, 200);
@@ -332,10 +333,174 @@ export class WorldGenerator {
             mesh.updateMatrixWorld(true);
 
             // Add collision
-            const collider = new THREE.Box3().setFromObject(mesh);
-            this.collisionManager.addCollider(collider);
+            // const collider = new THREE.Box3().setFromObject(mesh);
+            // this.collisionManager.addCollider(collider);
+
+            // Use circular collider for better fit
+            const collisionBox = new THREE.Box3().setFromObject(mesh);
+            const size = new THREE.Vector3();
+            collisionBox.getSize(size);
+            // Use slightly smaller radius than full box width to avoid "corners" issue
+            const radius = (Math.min(size.x, size.z) / 2) * 0.9; 
+            
+            // Store radius for interaction range
+            mesh.userData.interactionRadius = radius;
+
+            console.log(`Bastion Size: ${size.x}x${size.z}, Radius: ${radius}`);
+            this.collisionManager.addCircularCollider(800, 200, radius);
+            
+            console.log(`Loaded The Verdant Bastion at 800, 200 with radius ${radius}`);
             
             console.log("Loaded The Verdant Bastion at 800, 200");
         }, undefined, (err) => console.error("Failed to load the_verdant_bastion:", err));
+    }
+
+    createVerdantBastionCatacombs(centerX, centerZ, layout) {
+        console.log(`Generating Verdant Bastion Catacombs at ${centerX},${centerZ}`);
+        
+        if (layout && layout.rooms) {
+            let prevRoom = null;
+            
+            layout.rooms.forEach((room, index) => {
+                const nextRoom = layout.rooms[index + 1];
+                
+                // Determine openings based on neighbors
+                const openings = {};
+                const checkOpening = (target) => {
+                    if (!target) return;
+                    const dx = target.x - room.x;
+                    const dz = target.z - room.z;
+                    
+                    if (Math.abs(dz) > Math.abs(dx)) {
+                        // Mostly vertical
+                        if (dz < 0) openings.north = true;
+                        else openings.south = true;
+                    } else {
+                        // Mostly horizontal
+                        if (dx > 0) openings.east = true;
+                        else openings.west = true;
+                    }
+                };
+                
+                checkOpening(prevRoom);
+                checkOpening(nextRoom);
+                
+                this.createRoom(room.x, room.z, room.width, room.color, openings);
+                
+                // Corridor to previous
+                if (prevRoom) {
+                    this.createCorridor(prevRoom.x, prevRoom.z, room.x, room.z, 10);
+                }
+                
+                prevRoom = room;
+            });
+            return;
+        }
+
+        const roomSize = 40;
+        const corridorWidth = 10;
+        
+        // Start Room (0,0) - Open North
+        this.createRoom(centerX, centerZ, roomSize, 0x444444, { north: true });
+        
+        // Boss Rooms (Linear Path North)
+        const bossLocations = [
+            { x: 0, z: -100, name: "Rootbound Warden" },
+            { x: 0, z: -200, name: "Briar Matron" },
+            { x: 0, z: -300, name: "Rustbound Colossus" },
+            { x: 0, z: -400, name: "Hollow Sentinel" }
+        ];
+        
+        let prevX = centerX;
+        let prevZ = centerZ;
+        
+        for (let i = 0; i < bossLocations.length; i++) {
+            const loc = bossLocations[i];
+            const x = centerX + loc.x;
+            const z = centerZ + loc.z;
+            
+            // Corridor
+            this.createCorridor(prevX, prevZ, x, z, corridorWidth);
+            
+            // Room
+            const isLast = i === bossLocations.length - 1;
+            // Open South (entry) and North (exit) unless last
+            this.createRoom(x, z, roomSize, 0x222222, { south: true, north: !isLast });
+            
+            prevX = x;
+            prevZ = z;
+        }
+    }
+
+    createRoom(x, z, size, color, openings = {}) {
+        // Floor
+        const floorGeo = new THREE.PlaneGeometry(size, size);
+        const floorMat = new THREE.MeshStandardMaterial({ color: color });
+        const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.rotation.x = -Math.PI / 2;
+        floor.position.set(x, 0.1, z);
+        this.scene.add(floor);
+        
+        // Walls (Simple Box Walls for now)
+        // North
+        if (!openings.north) this.createWall(x, z - size/2, size, 10, 1, 0);
+        // South
+        if (!openings.south) this.createWall(x, z + size/2, size, 10, 1, 0);
+        // East
+        if (!openings.east) this.createWall(x + size/2, z, 1, 10, size, 0);
+        // West
+        if (!openings.west) this.createWall(x - size/2, z, 1, 10, size, 0);
+    }
+
+    createWall(x, z, w, h, d, rotY) {
+        const geo = new THREE.BoxGeometry(w, h, d);
+        const mat = new THREE.MeshStandardMaterial({ color: 0x555555 });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set(x, h/2, z);
+        mesh.rotation.y = rotY;
+        this.scene.add(mesh);
+        
+        const collider = new THREE.Box3().setFromObject(mesh);
+        this.collisionManager.addCollider(collider);
+    }
+
+    createCorridor(x1, z1, x2, z2, width) {
+        const dist = Math.sqrt((x2-x1)**2 + (z2-z1)**2);
+        const angle = Math.atan2(z2-z1, x2-x1); // Angle in radians
+        
+        // Floor
+        const geo = new THREE.PlaneGeometry(dist, width);
+        const mat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.rotation.x = -Math.PI / 2;
+        mesh.position.set((x1+x2)/2, 0.1, (z1+z2)/2);
+        mesh.rotation.z = -angle; 
+        this.scene.add(mesh);
+        
+        // Walls
+        const wallGeo = new THREE.BoxGeometry(dist, 10, 1);
+        const wallMat = new THREE.MeshStandardMaterial({ color: 0x555555 });
+        
+        // Left Wall
+        const leftWall = new THREE.Mesh(wallGeo, wallMat);
+        leftWall.position.set(
+            (x1+x2)/2 + Math.cos(angle + Math.PI/2) * (width/2),
+            5,
+            (z1+z2)/2 + Math.sin(angle + Math.PI/2) * (width/2)
+        );
+        leftWall.rotation.y = -angle;
+        this.scene.add(leftWall);
+        this.collisionManager.addCollider(new THREE.Box3().setFromObject(leftWall));
+
+        // Right Wall
+        const rightWall = new THREE.Mesh(wallGeo, wallMat);
+        rightWall.position.set(
+            (x1+x2)/2 + Math.cos(angle - Math.PI/2) * (width/2),
+            5,
+            (z1+z2)/2 + Math.sin(angle - Math.PI/2) * (width/2)
+        );
+        rightWall.rotation.y = -angle;
+        this.scene.add(rightWall);
+        this.collisionManager.addCollider(new THREE.Box3().setFromObject(rightWall));
     }
 }
