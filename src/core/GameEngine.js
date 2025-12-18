@@ -28,6 +28,10 @@ import { Fence } from '../entities/Fence.js';
 import { QuestNPC } from '../entities/QuestNPC.js';
 import { Stash } from '../entities/Stash.js';
 import { Forge } from '../entities/Forge.js';
+import { RootboundWarden } from '../entities/RootboundWarden.js';
+import { BriarMatron } from '../entities/BriarMatron.js';
+import { RustboundColossus } from '../entities/RustboundColossus.js';
+import { HollowSentinel } from '../entities/HollowSentinel.js';
 import { TradingHouse } from '../entities/TradingHouse.js';
 import { AvengingSeraph } from '../entities/AvengingSeraph.js';
 import { LevelUpEffect } from '../ui/LevelUpEffect.js';
@@ -950,7 +954,7 @@ export class GameEngine {
         return item;
     }
 
-    enterInstance(instanceId, type) {
+    enterInstance(instanceId, type, layout) {
         console.log(`Entering instance: ${instanceId} (${type})`);
 
         // Clear current entities
@@ -982,14 +986,17 @@ export class GameEngine {
         });
 
         // Clear collisions
-        this.collisionManager.colliders = [];
+        this.collisionManager.clear();
 
         // Generate new world
         const worldGen = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         if (type === 'crypt') {
             worldGen.createDungeon(0, 0, 100);
+        } else if (type === 'verdant_bastion_catacombs') {
+            worldGen.createVerdantBastionCatacombs(0, 0, layout);
         } else {
             worldGen.createTown(0, 0, 100);
+            worldGen.createOverworldStructures();
         }
 
         // Reset player position
@@ -1096,7 +1103,11 @@ export class GameEngine {
             }
         } else if (msg.type === 'enter_instance') {
             const instanceData = msg.payload;
-            this.enterInstance(instanceData.instanceId, instanceData.type);
+            this.enterInstance(instanceData.instanceId, instanceData.type, instanceData.layout);
+        } else if (msg.type === 'get_dungeon_status') {
+            if (this.uiManager) {
+                this.uiManager.showDungeonMenu(msg.payload);
+            }
         } else if (msg.type === 'state') {
             const state = msg.payload;
             const seenIds = new Set();
@@ -1566,6 +1577,18 @@ export class GameEngine {
         this.socket.send(JSON.stringify(msg));
     }
 
+    sendSplitStackMessage(slotIndex, amount) {
+        if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
+        const msg = {
+            type: 'split_stack',
+            payload: {
+                slot: slotIndex,
+                amount: amount
+            }
+        };
+        this.socket.send(JSON.stringify(msg));
+    }
+
     createRemotePlayer(type, id, subType) {
         let p;
 
@@ -1610,6 +1633,10 @@ export class GameEngine {
                 case 'FrostGuardian': p = new FrostGuardian(id); break;
                 case 'AquaGolem': p = new AquaGolem(id); break;
                 case 'MountainTroll': p = new MountainTroll(id); break;
+                case 'RootboundWarden': p = new RootboundWarden(id); break;
+                case 'BriarMatron': p = new BriarMatron(id); break;
+                case 'RustboundColossus': p = new RustboundColossus(id); break;
+                case 'HollowSentinel': p = new HollowSentinel(id); break;
                 default: p = new Skeleton(id); break;
             }
 
@@ -1650,6 +1677,13 @@ export class GameEngine {
 
                 if (originalOnMeshReady) originalOnMeshReady.call(entity, mesh);
                 
+                // Add Collision for static structures
+                if (entity.type === 'TradingHouse') {
+                     const box = new THREE.Box3().setFromObject(mesh);
+                     this.collisionManager.addCollider(box);
+                     console.log(`Added collision for TradingHouse ${entity.id}`);
+                }
+
                 const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
                 if (this.chunkManager.activeChunkKeys.has(key) || entity.type === 'DwarfSalesman') {
                     console.log(`GameEngine: Adding mesh for ${entity.id} to scene (delayed)`);
@@ -1700,6 +1734,12 @@ export class GameEngine {
             .filter(e => e.mesh && e.isActive && e !== this.player)
             .map(e => e.mesh);
         
+        // Add Dungeon Entrance to raycast list
+        const dungeonEntrance = this.renderSystem.scene.getObjectByName('DungeonEntrance');
+        if (dungeonEntrance) {
+            meshes.push(dungeonEntrance);
+        }
+
         // Use inputManager.mouse directly to ensure we use the latest cursor position
         this.inputManager.raycaster.setFromCamera(this.inputManager.mouse, this.renderSystem.camera);
         const intersects = this.inputManager.raycaster.intersectObjects(meshes, true);
@@ -1708,6 +1748,25 @@ export class GameEngine {
             let hitEntities = [];
             for (const hit of intersects) {
                 let obj = hit.object;
+                
+                // Check for Dungeon Entrance
+                let current = obj;
+                while (current) {
+                    if (current.name === 'DungeonEntrance') {
+                        // Create a proxy entity for interaction
+                        const proxy = {
+                            name: 'DungeonEntrance',
+                            position: current.position,
+                            userData: current.userData,
+                            mesh: current
+                        };
+                        this.hoveredEntity = proxy;
+                        document.body.style.cursor = 'pointer';
+                        return; // Prioritize entrance
+                    }
+                    current = current.parent;
+                }
+
                 while (obj.parent && !obj.userData.entityId) {
                     obj = obj.parent;
                 }
@@ -2457,10 +2516,18 @@ export class GameEngine {
                     
                     let range = 5.0; // Tight range for reliable interactions
                     
+                    // Use custom interaction radius if available (e.g. large buildings)
+                    if (this.pendingInteraction.userData && this.pendingInteraction.userData.interactionRadius) {
+                        range = this.pendingInteraction.userData.interactionRadius + 10.0; // Radius + Buffer
+                    }
+
                     if (this.pendingInteraction instanceof DwarfSalesman) {
                         range = 4.0;
                     } else if (this.pendingInteraction instanceof TradingHouse) {
                         range = 20.0;
+                    } else if (this.pendingInteraction.name === 'DungeonEntrance') {
+                        // Fallback if userData not set, or override
+                        if (range < 60.0) range = 60.0; 
                     } else if (this.pendingInteraction instanceof Actor && this.pendingInteraction !== this.player) {
                         // Dynamic Attack Range based on class
                         // Wizard is the only true ranged class for now
@@ -2520,6 +2587,20 @@ export class GameEngine {
                                     }
                                 }
                             }
+
+                        } else if (this.pendingInteraction.name === 'DungeonEntrance') {
+                            this.player.targetPosition = null;
+                            this.player.state = 'IDLE';
+                            this.player.playAnimation('Idle');
+                            
+                            // Request Dungeon Status
+                            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                                this.socket.send(JSON.stringify({
+                                    type: 'get_dungeon_status',
+                                    payload: {}
+                                }));
+                            }
+                            this.pendingInteraction = null;
 
                         } else if (this.pendingInteraction instanceof DwarfSalesman) {
                             this.player.targetPosition = null; 

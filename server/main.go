@@ -125,7 +125,15 @@ const (
 	MsgInventoryMove     = "inventory_move"
 	MsgEnterDungeon      = "enter_dungeon"
 	MsgEnterInstance     = "enter_instance"
+	MsgSplitStack        = "split_stack"
+	MsgGetDungeonStatus  = "get_dungeon_status"
+	MsgResetDungeon      = "reset_dungeon"
 )
+
+type SplitStackPayload struct {
+	Slot   int `json:"slot"`
+	Amount int `json:"amount"`
+}
 
 type Message struct {
 	Type    string          `json:"type"`
@@ -1029,6 +1037,17 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 
+		var req struct {
+			DungeonType string `json:"dungeonType"`
+		}
+		if len(msg.Payload) > 0 {
+			json.Unmarshal(msg.Payload, &req)
+		}
+		dungeonType := req.DungeonType
+		if dungeonType == "" {
+			dungeonType = "crypt"
+		}
+
 		player := world.GetEntityCopy(c.playerID)
 		if player == nil {
 			return
@@ -1040,7 +1059,7 @@ func (c *Client) handleMessage(msg Message) {
 		}
 
 		// Create Dungeon
-		instanceID := world.CreateDungeon(player.PartyID, "crypt")
+		instanceID := world.CreateDungeon(player.PartyID, dungeonType)
 
 		// Get Party
 		party := world.GetParty(player.PartyID)
@@ -1066,15 +1085,74 @@ func (c *Client) handleMessage(msg Message) {
 			sessionsMu.Unlock()
 
 			if memberClient != nil {
-				payload := []byte(fmt.Sprintf(`{"instanceId":"%s", "type":"crypt"}`, instanceID))
+				layout, hasLayout := world.GetInstanceLayout(instanceID)
+				resp := map[string]interface{}{
+					"instanceId": instanceID,
+					"type":       dungeonType,
+				}
+				if hasLayout {
+					resp["layout"] = layout
+				}
+				payloadBytes, _ := json.Marshal(resp)
+
 				msg := Message{
 					Type:    MsgEnterInstance,
-					Payload: payload,
+					Payload: payloadBytes,
 				}
 				b, _ := json.Marshal(msg)
 				memberClient.sendSafe(b)
 			}
 		}
+
+	case MsgGetDungeonStatus:
+		if c.playerID == "" {
+			return
+		}
+		player := world.GetEntityCopy(c.playerID)
+		if player == nil || player.PartyID == "" {
+			c.sendError("You must be in a party.")
+			return
+		}
+
+		hasInstance, timeLeft := world.GetDungeonStatus(player.PartyID)
+
+		// Check if leader
+		party := world.GetParty(player.PartyID)
+		isLeader := false
+		if party != nil {
+			leaderID, _, _ := party.GetSnapshot()
+			isLeader = (leaderID == c.playerID)
+		}
+
+		resp := map[string]interface{}{
+			"hasInstance": hasInstance,
+			"timeLeft":    timeLeft,
+			"isLeader":    isLeader,
+		}
+		payloadBytes, _ := json.Marshal(resp)
+		c.sendSafe(createMessage(MsgGetDungeonStatus, payloadBytes))
+
+	case MsgResetDungeon:
+		if c.playerID == "" {
+			return
+		}
+		player := world.GetEntityCopy(c.playerID)
+		if player == nil || player.PartyID == "" {
+			return
+		}
+
+		party := world.GetParty(player.PartyID)
+		if party == nil {
+			return
+		}
+		leaderID, _, _ := party.GetSnapshot()
+		if leaderID != c.playerID {
+			c.sendError("Only the party leader can reset the dungeon.")
+			return
+		}
+
+		world.ResetDungeon(player.PartyID)
+		c.sendError("Dungeon reset.") // Using sendError for notification for now
 
 	case MsgMove:
 		if c.playerID == "" {
@@ -1220,6 +1298,27 @@ func (c *Client) handleMessage(msg Message) {
 		}
 
 		player, success := world.PerformInventoryMove(c.playerID, payload.FromIndex, payload.ToIndex)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
+
+	case MsgSplitStack:
+		if c.playerID == "" {
+			return
+		}
+		var payload SplitStackPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success := world.PerformSplitStack(c.playerID, payload.Slot, payload.Amount)
 		if success {
 			// Send Inventory Update
 			invPayload, _ := json.Marshal(player.Inventory)

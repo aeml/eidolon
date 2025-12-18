@@ -734,6 +734,11 @@ export class Actor extends Entity {
                 } else {
                     this.position.copy(nextPos);
                 }
+
+                // Ground Clamp: Ensure we never go below ground
+                if (this.position.y < 0) {
+                    this.position.y = 0;
+                }
                 
                 // Rotate to face movement
                 const lookTarget = new THREE.Vector3(this.targetPosition.x, this.position.y, this.targetPosition.z);
