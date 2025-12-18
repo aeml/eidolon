@@ -18,7 +18,12 @@ func (w *World) CreateParty(leaderID string) *Party {
 	defer w.Mu.Unlock()
 
 	leader, exists := w.Entities[leaderID]
-	if !exists || leader.PartyID != "" {
+	if !exists {
+		fmt.Printf("CreateParty Failed: Leader %s not found\n", leaderID)
+		return nil
+	}
+	if leader.PartyID != "" {
+		fmt.Printf("CreateParty Failed: Leader %s already in party %s\n", leaderID, leader.PartyID)
 		return nil
 	}
 
