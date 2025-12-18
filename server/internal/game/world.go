@@ -95,6 +95,7 @@ type Entity struct {
 	HpRegen           float64 `json:"hpRegen"`
 	ManaRegen         float64 `json:"manaRegen"`
 	CastSpeed         float64 `json:"castSpeed"`
+	Scale             float64 `json:"scale,omitempty"` // Visual scale multiplier
 
 	TargetX  float64 `json:"-"`
 	TargetZ  float64 `json:"-"`
@@ -388,6 +389,7 @@ func (w *World) spawnFence() {
 			Z:        z,
 			Rotation: rot,
 			State:    "IDLE",
+			Scale:    1.0,
 		}
 		w.AddEntity(fence)
 	}
@@ -513,6 +515,7 @@ func (w *World) spawnSnowWorld() {
 			State:          "IDLE",
 			AttackSpeed:    attackSpeed,
 			AttackCooldown: attackCooldown,
+			Scale:          1.0,
 		}
 		w.AddEntity(troll)
 	}
@@ -560,6 +563,7 @@ func (w *World) spawnSnowWorld() {
 			State:          "IDLE",
 			AttackSpeed:    attackSpeed,
 			AttackCooldown: attackCooldown,
+			Scale:          1.0,
 		}
 		w.AddEntity(golem)
 	}
@@ -607,6 +611,7 @@ func (w *World) spawnSnowWorld() {
 			State:          "IDLE",
 			AttackSpeed:    attackSpeed,
 			AttackCooldown: attackCooldown,
+			Scale:          1.0,
 		}
 		w.AddEntity(siren)
 	}
@@ -654,6 +659,7 @@ func (w *World) spawnSnowWorld() {
 			State:          "IDLE",
 			AttackSpeed:    attackSpeed,
 			AttackCooldown: attackCooldown,
+			Scale:          1.0,
 		}
 		w.AddEntity(fg)
 	}
@@ -755,6 +761,7 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 		State:          "IDLE",
 		AttackSpeed:    attackSpeed,
 		AttackCooldown: attackCooldown,
+		Scale:          1.0,
 	}
 	w.Entities[elite.ID] = elite
 	w.Grid.Add(elite)
@@ -776,6 +783,7 @@ func (w *World) spawnStash() {
 		State:     "IDLE",
 		Health:    100000,
 		MaxHealth: 100000,
+		Scale:     1.0,
 	}
 	w.AddEntity(stash)
 }
@@ -792,6 +800,7 @@ func (w *World) spawnForge() {
 		State:     "IDLE",
 		Health:    100000,
 		MaxHealth: 100000,
+		Scale:     1.0,
 	}
 	w.AddEntity(forge)
 }
@@ -808,6 +817,7 @@ func (w *World) spawnTradingHouse() {
 		State:     "IDLE",
 		Health:    100000,
 		MaxHealth: 100000,
+		Scale:     1.0,
 	}
 	w.AddEntity(tradingHouse)
 }
@@ -822,6 +832,7 @@ func (w *World) spawnQuestNPC() {
 		Z:        200,         // Center Z
 		Rotation: math.Pi / 2, // Face East (towards center)
 		State:    "IDLE",
+		Scale:    1.0,
 	}
 	w.AddEntity(npc)
 }
@@ -836,6 +847,7 @@ func (w *World) spawnMerchant() {
 		Z:        200,          // Near Trading Post (East)
 		Rotation: -math.Pi / 2, // Face West (towards center)
 		State:    "IDLE",
+		Scale:    1.0,
 	}
 	// Merchant doesn't need combat stats for now
 	w.AddEntity(merchant)
@@ -936,6 +948,7 @@ func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ
 			State:          "IDLE",
 			AttackSpeed:    attackSpeed,
 			AttackCooldown: attackCooldown,
+			Scale:          1.0,
 		}
 		w.AddEntity(enemy)
 	}
@@ -1026,6 +1039,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		HpRegen:           e.HpRegen,
 		ManaRegen:         e.ManaRegen,
 		CastSpeed:         e.CastSpeed,
+		Scale:             e.Scale,
 		TargetX:           e.TargetX,
 		TargetZ:           e.TargetZ,
 		SpawnX:            e.SpawnX,
@@ -3724,6 +3738,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					OwnerID:   player.ID,
 					Rotation:  math.Atan2(velX, velZ),
 					CreatedAt: time.Now(),
+					Scale:     1.0,
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
@@ -3837,6 +3852,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					Rotation:  math.Atan2(velX, velZ),
 					CreatedAt: time.Now(),
 					HitList:   make(map[string]bool), // Initialize HitList
+					Scale:     1.0,
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
@@ -3893,6 +3909,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					CreatedAt: time.Now(),
 					// Use LastAttackTime as "Impact Time"
 					LastAttackTime: time.Now().Add(1500 * time.Millisecond),
+					Scale:          1.0,
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
@@ -3921,6 +3938,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					Damage:    30 + player.Stats.Intelligence,
 					OwnerID:   player.ID,
 					CreatedAt: time.Now(),
+					Scale:     1.0,
 				}
 				w.Entities[zone.ID] = zone
 				w.Grid.Add(zone)
@@ -4056,6 +4074,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					OwnerID:   player.ID,
 					Rotation:  math.Atan2(velX, velZ),
 					CreatedAt: time.Now(),
+					Scale:     1.0,
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
@@ -4167,6 +4186,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						OwnerID:   player.ID,
 						Rotation:  angle,
 						CreatedAt: time.Now(),
+						Scale:     1.0,
 					}
 					w.Entities[proj.ID] = proj
 					w.Grid.Add(proj)
@@ -4379,6 +4399,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					Rotation:  math.Atan2(velX, velZ),
 					CreatedAt: time.Now(),
 					// Bounces logic would need to be in updateProjectiles, but for now just a projectile
+					Scale: 1.0,
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
@@ -4527,6 +4548,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					OwnerID:   player.ID,
 					Rotation:  math.Atan2(velX, velZ),
 					CreatedAt: time.Now(),
+					Scale:     1.0,
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
@@ -4565,6 +4587,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						OwnerID:   player.ID,
 						Rotation:  angle,
 						CreatedAt: time.Now(),
+						Scale:     1.0,
 					}
 					w.Entities[proj.ID] = proj
 					w.Grid.Add(proj)
@@ -4735,6 +4758,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						OwnerID:   player.ID,
 						Rotation:  angle,
 						CreatedAt: time.Now(),
+						Scale:     1.0,
 					}
 					w.Entities[proj.ID] = proj
 					w.Grid.Add(proj)
@@ -4842,6 +4866,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					Damage:    20 + player.Stats.Dexterity,
 					OwnerID:   player.ID,
 					CreatedAt: time.Now(),
+					Scale:     1.0,
 				}
 				w.Entities[trap.ID] = trap
 				w.Grid.Add(trap)
@@ -4886,6 +4911,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						OwnerID:   player.ID,
 						Rotation:  math.Atan2(dirX, dirZ),
 						CreatedAt: time.Now(),
+						Scale:     1.0,
 					}
 					w.Entities[proj.ID] = proj
 					w.Grid.Add(proj)
@@ -6109,20 +6135,23 @@ func (w *World) CreateDungeon(partyID string, dungeonType string) string {
 	defer w.Mu.Unlock()
 
 	// Check for existing active dungeon for this party
-	for id, inst := range w.InstanceLayouts {
-		if inst.PartyID == partyID {
-			// Check if expired (empty for > 5 minutes)
-			if !inst.EmptySince.IsZero() && time.Since(inst.EmptySince) > 5*time.Minute {
-				// Expired, delete it (cleanup will happen below or we can do it here)
-				// We'll just let the new one be created and the old one will be orphaned/cleaned up
-				// Actually, let's clean it up to be safe
-				w.cleanupInstanceLocked(id)
-			} else {
-				// Valid existing dungeon
-				return id
+	// DEBUG: Always create new dungeon for now to fix layout issues
+	/*
+		for id, inst := range w.InstanceLayouts {
+			if inst.PartyID == partyID {
+				// Check if expired (empty for > 5 minutes)
+				if !inst.EmptySince.IsZero() && time.Since(inst.EmptySince) > 5*time.Minute {
+					// Expired, delete it (cleanup will happen below or we can do it here)
+					// We'll just let the new one be created and the old one will be orphaned/cleaned up
+					// Actually, let's clean it up to be safe
+					w.cleanupInstanceLocked(id)
+				} else {
+					// Valid existing dungeon
+					return id
+				}
 			}
 		}
-	}
+	*/
 
 	instanceID := fmt.Sprintf("dungeon_%s_%d_%d", partyID, time.Now().UnixNano(), rand.Intn(10000))
 
@@ -6223,12 +6252,17 @@ func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
 	// but for now we just use global rand since we store the layout.
 
 	for _, boss := range bosses {
-		// Target Z for next boss (roughly -300 units further North)
-		targetZ := currentZ - 300.0
-
 		// Generate 2-3 intermediate rooms
 		numIntermediate := 2 + rand.Intn(2)
-		stepZ := (targetZ - currentZ) / float64(numIntermediate+1)
+
+		// Calculate Target Z based on required spacing
+		// We need enough space for the Z-shaped corridor segments to be longer than the wall offsets.
+		// Room Half Height (60) + Corridor Half Width (20) = 80 offset.
+		// We need vertical segment > 80.
+		// Vertical segment is stepZ / 2.
+		// So stepZ must be > 160. Let's use 250 for safety and spaciousness.
+		stepZ := -250.0
+		targetZ := currentZ + (stepZ * float64(numIntermediate+1))
 
 		for j := 0; j < numIntermediate; j++ {
 			// Move North
@@ -6293,10 +6327,12 @@ func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID str
 		BaseStats:      stats,
 		Health:         stats.Vitality * 10,
 		MaxHealth:      stats.Vitality * 10,
+		Damage:         stats.Strength * 2, // Ensure damage is set
 		State:          "IDLE",
 		Speed:          2.5,
 		AttackSpeed:    1.5,
 		AttackCooldown: 2 * time.Second,
+		Scale:          2.0, // 2x Scale
 	}
 	w.Entities[boss.ID] = boss
 	w.Grid.Add(boss)
@@ -6333,6 +6369,7 @@ func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID st
 		Speed:          3.0,
 		AttackSpeed:    2.0,
 		AttackCooldown: 2 * time.Second,
+		Scale:          1.0,
 	}
 	w.Entities[enemy.ID] = enemy
 	w.Grid.Add(enemy)

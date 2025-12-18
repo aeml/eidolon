@@ -817,6 +817,7 @@ func (c *Client) handleMessage(msg Message) {
 			Damage:         char.Stats.Strength * 2,
 			Defense:        0,
 			AttackCooldown: 1000 * time.Millisecond,
+			Scale:          1.0,
 			BaseStats: game.Stats{
 				Strength:     char.Stats.Strength,
 				Dexterity:    char.Stats.Dexterity,
@@ -1094,6 +1095,12 @@ func (c *Client) handleMessage(msg Message) {
 
 			if memberClient != nil {
 				layout, hasLayout := world.GetInstanceLayout(instanceID)
+				if hasLayout {
+					log.Printf("Sending layout to %s: %d rooms", memberID, len(layout.Rooms))
+				} else {
+					log.Printf("Sending NO layout to %s", memberID)
+				}
+
 				resp := map[string]interface{}{
 					"instanceId": instanceID,
 					"type":       dungeonType,

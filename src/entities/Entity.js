@@ -12,6 +12,7 @@ export class Entity {
         this.mesh = null;
         this.meshType = null;
         this.isMeshLoading = false;
+        this.scale = 1.0;
     }
 
     async ensureMesh() {
@@ -36,6 +37,17 @@ export class Entity {
         }
     }
 
+    setScale(scale) {
+        this.scale = scale;
+        if (this.mesh) {
+            if (!this.mesh.userData.baseScale) {
+                this.mesh.userData.baseScale = this.mesh.scale.clone();
+            }
+            const s = (this.scale && this.scale > 0) ? this.scale : 1.0;
+            this.mesh.scale.copy(this.mesh.userData.baseScale).multiplyScalar(s);
+        }
+    }
+
     update(dt) {
     }
 
@@ -49,6 +61,12 @@ export class Entity {
     setMesh(mesh) {
         this.mesh = mesh;
         this.mesh.userData.entityId = this.id;
+        
+        if (!this.mesh.userData.baseScale) {
+            this.mesh.userData.baseScale = this.mesh.scale.clone();
+        }
+        const s = (this.scale && this.scale > 0) ? this.scale : 1.0;
+        this.mesh.scale.copy(this.mesh.userData.baseScale).multiplyScalar(s);
         
         if (this.modifyMesh) {
             this.modifyMesh(mesh);
