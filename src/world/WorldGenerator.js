@@ -389,7 +389,7 @@ export class WorldGenerator {
                 
                 // Corridor to previous (Z-Shaped / Manhattan Routing)
                 if (prevRoom) {
-                    const corridorWidth = 20;
+                    const corridorWidth = 40;
                     const halfWidth = corridorWidth / 2;
                     
                     // 1. Vertical Segment from PrevRoom
@@ -424,18 +424,18 @@ export class WorldGenerator {
             return;
         }
 
-        const roomSize = 40;
-        const corridorWidth = 10;
+        const roomSize = 80;
+        const corridorWidth = 20;
         
         // Start Room (0,0) - Open North
         this.createRoom(centerX, centerZ, roomSize, 0x444444, { north: true });
         
         // Boss Rooms (Linear Path North)
         const bossLocations = [
-            { x: 0, z: -100, name: "Rootbound Warden" },
-            { x: 0, z: -200, name: "Briar Matron" },
-            { x: 0, z: -300, name: "Rustbound Colossus" },
-            { x: 0, z: -400, name: "Hollow Sentinel" }
+            { x: 0, z: -200, name: "Rootbound Warden" },
+            { x: 0, z: -400, name: "Briar Matron" },
+            { x: 0, z: -600, name: "Rustbound Colossus" },
+            { x: 0, z: -800, name: "Hollow Sentinel" }
         ];
         
         let prevX = centerX;
@@ -447,8 +447,8 @@ export class WorldGenerator {
             const z = centerZ + loc.z;
             
             // Corridor
-            // Start at prevRoom edge (20), End at room edge (20)
-            this.createCorridor(prevX, prevZ, x, z, corridorWidth, 20, 20);
+            // Start at prevRoom edge (40), End at room edge (40)
+            this.createCorridor(prevX, prevZ, x, z, corridorWidth, 40, 40);
             
             // Room
             const isLast = i === bossLocations.length - 1;
@@ -471,16 +471,16 @@ export class WorldGenerator {
         
         const wallHeight = 15;
         const wallThickness = 2;
-        const doorWidth = 20; // Match corridor width
+        const doorWidth = 40; // Match corridor width
 
         // Helper to create wall segments with potential doorway
-        const createWallSide = (cx, cz, isVertical, hasOpening) => {
+        const createWallSide = (cx, cz, isVertical, hasOpening, isTransparent) => {
             if (!hasOpening) {
                 // Full Wall
                 if (isVertical) {
-                    this.createWall(cx, cz, wallThickness, wallHeight, size + wallThickness, 0);
+                    this.createWall(cx, cz, wallThickness, wallHeight, size + wallThickness, 0, isTransparent);
                 } else {
-                    this.createWall(cx, cz, size + wallThickness, wallHeight, wallThickness, 0);
+                    this.createWall(cx, cz, size + wallThickness, wallHeight, wallThickness, 0, isTransparent);
                 }
             } else {
                 // Wall with Doorway (Two segments)
@@ -491,29 +491,33 @@ export class WorldGenerator {
 
                 if (isVertical) {
                     // East/West side (Vertical along Z)
-                    this.createWall(cx, cz - offset, wallThickness, wallHeight, segmentLen, 0);
-                    this.createWall(cx, cz + offset, wallThickness, wallHeight, segmentLen, 0);
+                    this.createWall(cx, cz - offset, wallThickness, wallHeight, segmentLen, 0, isTransparent);
+                    this.createWall(cx, cz + offset, wallThickness, wallHeight, segmentLen, 0, isTransparent);
                 } else {
                     // North/South side (Horizontal along X)
-                    this.createWall(cx - offset, cz, segmentLen, wallHeight, wallThickness, 0);
-                    this.createWall(cx + offset, cz, segmentLen, wallHeight, wallThickness, 0);
+                    this.createWall(cx - offset, cz, segmentLen, wallHeight, wallThickness, 0, isTransparent);
+                    this.createWall(cx + offset, cz, segmentLen, wallHeight, wallThickness, 0, isTransparent);
                 }
             }
         };
 
-        // North (z - size/2)
-        createWallSide(x, z - size/2, false, openings.north);
-        // South (z + size/2)
-        createWallSide(x, z + size/2, false, openings.south);
-        // East (x + size/2)
-        createWallSide(x + size/2, z, true, openings.east);
-        // West (x - size/2)
-        createWallSide(x - size/2, z, true, openings.west);
+        // North (z - size/2) - Back Wall (Opaque)
+        createWallSide(x, z - size/2, false, openings.north, false);
+        // South (z + size/2) - Front Wall (Transparent)
+        createWallSide(x, z + size/2, false, openings.south, true);
+        // East (x + size/2) - Right Wall (Transparent)
+        createWallSide(x + size/2, z, true, openings.east, true);
+        // West (x - size/2) - Left Wall (Opaque)
+        createWallSide(x - size/2, z, true, openings.west, false);
     }
 
-    createWall(x, z, w, h, d, rotY) {
+    createWall(x, z, w, h, d, rotY, isTransparent = false) {
         const geo = new THREE.BoxGeometry(w, h, d);
-        const mat = new THREE.MeshStandardMaterial({ color: 0x555555 });
+        const mat = new THREE.MeshStandardMaterial({ 
+            color: 0x555555,
+            transparent: isTransparent,
+            opacity: isTransparent ? 0.3 : 1.0
+        });
         const mesh = new THREE.Mesh(geo, mat);
         mesh.position.set(x, h/2, z);
         mesh.rotation.y = rotY;
@@ -535,8 +539,7 @@ export class WorldGenerator {
         // Corner Pillars (to fill gaps)
         const pillarSize = 2.5; // Slightly larger than wall thickness (2)
         const pillarGeo = new THREE.BoxGeometry(pillarSize, 15, pillarSize);
-        const pillarMat = new THREE.MeshStandardMaterial({ color: 0x555555 });
-
+        
         const offsets = [
             { ox: -width/2, oz: -width/2 },
             { ox: width/2, oz: -width/2 },
@@ -545,8 +548,19 @@ export class WorldGenerator {
         ];
 
         offsets.forEach(off => {
+            const px = x + off.ox;
+            const pz = z + off.oz;
+            
+            // Transparency Check
+            const isTransparent = (px + pz) > (x + z);
+            const pillarMat = new THREE.MeshStandardMaterial({ 
+                color: 0x555555,
+                transparent: isTransparent,
+                opacity: isTransparent ? 0.3 : 1.0
+            });
+
             const pillar = new THREE.Mesh(pillarGeo, pillarMat);
-            pillar.position.set(x + off.ox, 7.5, z + off.oz);
+            pillar.position.set(px, 7.5, pz);
             this.scene.add(pillar);
             this.collisionManager.addCollider(new THREE.Box3().setFromObject(pillar));
         });
@@ -577,7 +591,6 @@ export class WorldGenerator {
         const wallHeight = 15;
         const wallThickness = 2;
         const wallGeo = new THREE.BoxGeometry(wallLength, wallHeight, wallThickness);
-        const wallMat = new THREE.MeshStandardMaterial({ color: 0x555555 });
         
         // Calculate center of walls
         // Start point shifted by wallStartOffset
@@ -596,24 +609,49 @@ export class WorldGenerator {
         const cx = (startX + endX) / 2;
         const cz = (startZ + endZ) / 2;
 
+        // Determine transparency based on wall position relative to corridor center
+        // Camera is at (+100, +100, +100) looking at (0,0,0)
+        // Walls with higher X or higher Z than the floor center block the view
+        
+        // Left Wall Position
+        const lx = cx + Math.cos(angle + Math.PI/2) * (width/2 + wallThickness/2);
+        const lz = cz + Math.sin(angle + Math.PI/2) * (width/2 + wallThickness/2);
+        
+        // Right Wall Position
+        const rx = cx + Math.cos(angle - Math.PI/2) * (width/2 + wallThickness/2);
+        const rz = cz + Math.sin(angle - Math.PI/2) * (width/2 + wallThickness/2);
+
+        // Check if Left Wall is "in front" (Higher X or Z)
+        // Simple heuristic: Sum of X+Z. Higher sum = closer to camera.
+        const leftScore = lx + lz;
+        const rightScore = rx + rz;
+        const centerScore = cx + cz;
+
+        const isLeftTransparent = leftScore > centerScore;
+        const isRightTransparent = rightScore > centerScore;
+
+        const leftMat = new THREE.MeshStandardMaterial({ 
+            color: 0x555555,
+            transparent: isLeftTransparent,
+            opacity: isLeftTransparent ? 0.3 : 1.0
+        });
+
+        const rightMat = new THREE.MeshStandardMaterial({ 
+            color: 0x555555,
+            transparent: isRightTransparent,
+            opacity: isRightTransparent ? 0.3 : 1.0
+        });
+
         // Left Wall
-        const leftWall = new THREE.Mesh(wallGeo, wallMat);
-        leftWall.position.set(
-            cx + Math.cos(angle + Math.PI/2) * (width/2 + wallThickness/2),
-            wallHeight/2,
-            cz + Math.sin(angle + Math.PI/2) * (width/2 + wallThickness/2)
-        );
+        const leftWall = new THREE.Mesh(wallGeo, leftMat);
+        leftWall.position.set(lx, wallHeight/2, lz);
         leftWall.rotation.y = -angle;
         this.scene.add(leftWall);
         this.collisionManager.addCollider(new THREE.Box3().setFromObject(leftWall));
 
         // Right Wall
-        const rightWall = new THREE.Mesh(wallGeo, wallMat);
-        rightWall.position.set(
-            cx + Math.cos(angle - Math.PI/2) * (width/2 + wallThickness/2),
-            wallHeight/2,
-            cz + Math.sin(angle - Math.PI/2) * (width/2 + wallThickness/2)
-        );
+        const rightWall = new THREE.Mesh(wallGeo, rightMat);
+        rightWall.position.set(rx, wallHeight/2, rz);
         rightWall.rotation.y = -angle;
         this.scene.add(rightWall);
         this.collisionManager.addCollider(new THREE.Box3().setFromObject(rightWall));
