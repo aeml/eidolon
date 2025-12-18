@@ -576,7 +576,7 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 
 	client := &Client{
 		conn: c,
-		send: make(chan []byte, 64), // Reduced buffer size to prevent lag accumulation
+		send: make(chan []byte, 256), // Increased buffer size to prevent drops
 	}
 	register <- client
 
@@ -1060,10 +1060,12 @@ func (c *Client) handleMessage(msg Message) {
 
 		// Create Dungeon
 		instanceID := world.CreateDungeon(player.PartyID, dungeonType)
+		// c.sendError(fmt.Sprintf("Debug: Dungeon Created %s", instanceID))
 
 		// Get Party
 		party := world.GetParty(player.PartyID)
 		if party == nil {
+			c.sendError("Debug: Party not found")
 			return
 		}
 
@@ -1071,7 +1073,11 @@ func (c *Client) handleMessage(msg Message) {
 		_, _, members := party.GetSnapshot()
 
 		for _, memberID := range members {
-			world.EnterInstance(memberID, instanceID)
+			err := world.EnterInstance(memberID, instanceID)
+			if err != nil {
+				// c.sendError(fmt.Sprintf("Debug: EnterInstance failed for %s: %v", memberID, err))
+				continue
+			}
 
 			// Notify Client
 			sessionsMu.Lock()
@@ -1101,6 +1107,7 @@ func (c *Client) handleMessage(msg Message) {
 				}
 				b, _ := json.Marshal(msg)
 				memberClient.sendSafe(b)
+				// memberClient.sendError("Debug: Sent EnterInstance")
 			}
 		}
 
@@ -1109,9 +1116,34 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 		player := world.GetEntityCopy(c.playerID)
-		if player == nil || player.PartyID == "" {
-			c.sendError("You must be in a party.")
+		if player == nil {
 			return
+		}
+
+		// Auto-create party for solo players
+		if player.PartyID == "" {
+			party := world.CreateParty(c.playerID)
+			if party != nil {
+				broadcastPartyUpdate(party)
+				// Update local player copy's PartyID
+				player.PartyID = party.ID
+			} else {
+				// Check if failure was due to race condition (already in party)
+				updatedPlayer := world.GetEntityCopy(c.playerID)
+				if updatedPlayer != nil && updatedPlayer.PartyID != "" {
+					player.PartyID = updatedPlayer.PartyID
+				} else {
+					// DEBUG: Detailed failure reason
+					exists := false
+					pid := "nil"
+					if updatedPlayer != nil {
+						exists = true
+						pid = updatedPlayer.PartyID
+					}
+					c.sendError(fmt.Sprintf("Failed to create party. Exists: %v, PID: %s, ID: %s", exists, pid, c.playerID))
+					return
+				}
+			}
 		}
 
 		hasInstance, timeLeft := world.GetDungeonStatus(player.PartyID)
@@ -1130,7 +1162,9 @@ func (c *Client) handleMessage(msg Message) {
 			"isLeader":    isLeader,
 		}
 		payloadBytes, _ := json.Marshal(resp)
+		log.Printf("Sending Dungeon Menu to %s: %+v", c.username, resp)
 		c.sendSafe(createMessage(MsgGetDungeonStatus, payloadBytes))
+		// c.sendError(fmt.Sprintf("Debug: Menu Data Sent. Party: %s, Leader: %v", player.PartyID, isLeader))
 
 	case MsgResetDungeon:
 		if c.playerID == "" {

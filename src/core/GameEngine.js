@@ -1758,7 +1758,8 @@ export class GameEngine {
                             name: 'DungeonEntrance',
                             position: current.position,
                             userData: current.userData,
-                            mesh: current
+                            mesh: current,
+                            isActive: true // Required to prevent immediate cancellation in update loop
                         };
                         this.hoveredEntity = proxy;
                         document.body.style.cursor = 'pointer';

@@ -973,32 +973,37 @@ export class UIManager {
         this.tradingInventoryList.innerHTML = '';
         
         player.inventory.forEach((item, index) => {
-            if (!item) return;
-            
             const el = document.createElement('div');
             el.className = 'inv-slot';
             el.style.width = '40px';
             el.style.height = '40px';
-            el.style.cursor = 'pointer';
             
-            const iconPath = this.getItemIconPath(item);
-            el.style.backgroundImage = `url('${iconPath}')`;
-            el.style.backgroundSize = 'contain';
-            el.style.backgroundRepeat = 'no-repeat';
-            el.style.backgroundPosition = 'center';
-            
-            // Rarity Border
-            if (item.rarity) {
-                const color = this.getRarityColor(item.rarity);
-                el.style.border = `1px solid ${color}`;
-                el.style.boxShadow = `inset 0 0 5px ${color}40`;
-            }
+            if (item && item.id) {
+                el.style.cursor = 'pointer';
+                
+                const iconPath = this.getItemIconPath(item);
+                el.style.backgroundImage = `url('${iconPath}')`;
+                el.style.backgroundSize = 'contain';
+                el.style.backgroundRepeat = 'no-repeat';
+                el.style.backgroundPosition = 'center';
+                
+                // Rarity Border
+                if (item.rarity) {
+                    const color = this.getRarityColor(item.rarity);
+                    el.style.border = `1px solid ${color}`;
+                    el.style.boxShadow = `inset 0 0 5px ${color}40`;
+                } else {
+                    el.style.border = '1px solid #666';
+                }
 
-            el.onclick = () => this.selectTradingItem(item, index);
-            
-            // Tooltip
-            el.onmouseenter = (e) => this.showItemTooltip(item, e.clientX, e.clientY);
-            el.onmouseleave = () => this.hideTooltips();
+                el.onclick = () => this.selectTradingItem(item, index);
+                
+                // Tooltip
+                el.onmouseenter = (e) => this.showItemTooltip(item, e.clientX, e.clientY);
+                el.onmouseleave = () => this.hideTooltips();
+            } else {
+                el.style.border = '1px solid #444';
+            }
             
             this.tradingInventoryList.appendChild(el);
         });
@@ -3476,6 +3481,7 @@ export class UIManager {
     }
 
     showDungeonMenu(data) {
+        console.log("Showing Dungeon Menu:", data);
         // Remove existing if any
         const existing = document.getElementById('dungeon-menu');
         if (existing) existing.remove();

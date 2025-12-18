@@ -960,18 +960,6 @@ func (w *World) RemoveEntity(id string) {
 		}
 	}
 }
-				toRemove = append(toRemove, id)
-			}
-		}
-
-		for _, id := range toRemove {
-			if e, ok := w.Entities[id]; ok {
-				w.Grid.Remove(e)
-				delete(w.Entities, id)
-			}
-		}
-	}
-}
 
 func (w *World) UpdateEntityPosition(id string, x, y, z, rotation float64) {
 	w.Mu.Lock()
@@ -1010,6 +998,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 	newE := &Entity{
 		ID:                e.ID,
 		Name:              e.Name,
+		PartyID:           e.PartyID,
 		Type:              e.Type,
 		SubType:           e.SubType,
 		X:                 e.X,
@@ -2023,7 +2012,7 @@ func (w *World) PerformRecall(playerID string) {
 	// Teleport to town
 	player.State = "IDLE"
 
-	oldX, oldZ := player.X, player.Z
+	w.Grid.Remove(player)
 	player.X = -1.25
 	player.Z = 200
 	player.TargetX = -1.25
@@ -2032,7 +2021,6 @@ func (w *World) PerformRecall(playerID string) {
 	// Note: If we want them to respawn inside the dungeon, we shouldn't clear InstanceID here.
 	// For now, let's assume death sends you to town (Overworld).
 	// We need to handle the Grid update carefully if InstanceID changes.
-	w.Grid.Remove(player)
 	player.InstanceID = ""
 	w.Grid.Add(player)
 }
@@ -2100,7 +2088,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				ownerID := e.OwnerID
 				e.Mu.Unlock() // Unlock to query grid
 
-				nearby := w.Grid.Nearby(e.X, e.Z, radius)
+				nearby := w.Grid.Nearby(e.X, e.Z, radius, e.InstanceID)
 				for _, target := range nearby {
 					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
@@ -2145,7 +2133,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				e.Mu.Unlock() // Unlock to query grid
 
-				nearby := w.Grid.Nearby(e.X, e.Z, radius)
+				nearby := w.Grid.Nearby(e.X, e.Z, radius, e.InstanceID)
 				for _, target := range nearby {
 					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
@@ -2339,7 +2327,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				damage := int(float64(e.Damage) * 1.5)
 				e.Mu.Unlock() // Unlock before interaction
 
-				nearby := w.Grid.Nearby(e.ChargeTargetX, e.ChargeTargetZ, 16.0)
+				nearby := w.Grid.Nearby(e.ChargeTargetX, e.ChargeTargetZ, 16.0, e.InstanceID)
 				for _, target := range nearby {
 					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
@@ -3165,7 +3153,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				radius := 6.0
 				damage := int(float64(player.Damage)*0.8) + (player.Stats.Strength * 2)
 
-				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
 					// Skip self
 					if target.ID == player.ID {
@@ -3219,7 +3207,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				pDirX := math.Sin(player.Rotation)
 				pDirZ := math.Cos(player.Rotation)
 
-				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist)
+				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -3275,7 +3263,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				pDirX := math.Sin(player.Rotation)
 				pDirZ := math.Cos(player.Rotation)
 
-				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist)
+				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -3327,7 +3315,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				radius := 6.0
 				damage := player.Stats.Strength * 2
 
-				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -3372,7 +3360,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				var bestTarget *Entity
 				minDist := 3.0
 
-				nearby := w.Grid.Nearby(targetX, targetZ, 5.0)
+				nearby := w.Grid.Nearby(targetX, targetZ, 5.0, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -3422,7 +3410,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				radius := 10.0
 				damage := player.Stats.Strength * 1
 
-				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -3481,7 +3469,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				radius := 6.0
 				damage := int(float64(player.Damage)*1.0) + (player.Stats.Strength * 3)
 
-				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -3542,7 +3530,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				// Taunt Logic
 				radius := 15.0
-				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -3671,7 +3659,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				radius := 8.0
-				nearby := w.Grid.Nearby(targetX, targetZ, radius)
+				nearby := w.Grid.Nearby(targetX, targetZ, radius, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -3757,7 +3745,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				pDirX := math.Sin(player.Rotation)
 				pDirZ := math.Cos(player.Rotation)
 
-				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist)
+				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -3974,7 +3962,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				// Check all entities
 				// This is expensive, maybe optimize with Grid?
 				// Grid.Nearby with max range
-				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist)
+				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -4094,7 +4082,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				radius := 8.0
 				damage := 25 + (player.Stats.Intelligence * 2)
 
-				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -4275,7 +4263,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					}
 
 					// Find target at location
-					nearby := w.Grid.Nearby(targetX, targetZ, 2.0)
+					nearby := w.Grid.Nearby(targetX, targetZ, 2.0, player.InstanceID)
 					for _, target := range nearby {
 						if target.ID == player.ID {
 							continue
@@ -4314,7 +4302,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				// Find target near cursor
 				var bestTarget *Entity
 				minDist := 3.0
-				nearby := w.Grid.Nearby(targetX, targetZ, 5.0)
+				nearby := w.Grid.Nearby(targetX, targetZ, 5.0, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -4469,7 +4457,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				radius := 6.0
 				damage := 20 + (player.Stats.Dexterity * 2)
 
-				nearby := w.Grid.Nearby(targetX, targetZ, radius)
+				nearby := w.Grid.Nearby(targetX, targetZ, radius, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -4589,7 +4577,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				var bestTarget *Entity
 				minDist := rangeDist
 
-				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist)
+				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -4658,7 +4646,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				var bestTarget *Entity
 				minDist := 10.0 // Range
 
-				nearby := w.Grid.Nearby(targetX, targetZ, 5.0)
+				nearby := w.Grid.Nearby(targetX, targetZ, 5.0, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -4755,7 +4743,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				radius := 4.0
 				damage := player.Damage * 2
 
-				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -4811,7 +4799,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				radius := 5.0
-				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
 					if target.Type == TypeEnemy && target.State != "DEAD" {
 						target.Mu.Lock()
@@ -4939,7 +4927,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				radius := 8.0
-				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
 					if target.Type == TypePlayer || target.Type == TypeNPC {
 						target.Mu.Lock()
@@ -5020,7 +5008,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				} else {
 					// Find closest enemy
 					minDist := 4.0
-					nearby := w.Grid.Nearby(targetX, targetZ, 4.0)
+					nearby := w.Grid.Nearby(targetX, targetZ, 4.0, player.InstanceID)
 					for _, t := range nearby {
 						if t.Type == TypeEnemy && t.State != "DEAD" {
 							dx := t.X - targetX
@@ -5096,7 +5084,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				} else {
 					// Find closest ally
 					minDist := 3.0
-					nearby := w.Grid.Nearby(targetX, targetZ, 5.0)
+					nearby := w.Grid.Nearby(targetX, targetZ, 5.0, player.InstanceID)
 					for _, t := range nearby {
 						if t.Type == TypePlayer || t.Type == TypeNPC { // Ally
 							dx := t.X - targetX
@@ -5139,7 +5127,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				pDirX := math.Sin(player.Rotation)
 				pDirZ := math.Cos(player.Rotation)
 
-				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist)
+				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -5191,7 +5179,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				radius := 12.0
 				damage := player.Stats.Wisdom * 3
 
-				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -5263,7 +5251,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				radius := 10.0
-				nearby := w.Grid.Nearby(player.X, player.Z, radius)
+				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
 					if target.Type == TypePlayer || target.Type == TypeNPC {
 						target.Mu.Lock()
@@ -5293,7 +5281,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				} else {
 					// Closest enemy
 					minDist := 5.0
-					nearby := w.Grid.Nearby(targetX, targetZ, 5.0)
+					nearby := w.Grid.Nearby(targetX, targetZ, 5.0, player.InstanceID)
 					for _, t := range nearby {
 						if t.Type == TypeEnemy && t.State != "DEAD" {
 							d := math.Sqrt((t.X-targetX)*(t.X-targetX) + (t.Z-targetZ)*(t.Z-targetZ))
@@ -6125,7 +6113,7 @@ func (w *World) CreateDungeon(partyID string, dungeonType string) string {
 	}
 
 	instanceID := fmt.Sprintf("dungeon_%s_%d", partyID, time.Now().Unix())
-	
+
 	dungeon := &DungeonInstance{
 		ID:        instanceID,
 		PartyID:   partyID,
@@ -6133,7 +6121,7 @@ func (w *World) CreateDungeon(partyID string, dungeonType string) string {
 		// EmptySince is zero initially, but since no players are in yet, maybe it should be Now?
 		// But we are about to enter it. Let's leave it zero or handle it in EnterInstance.
 		// Actually, if we create it and nobody enters for 5 mins, it should expire.
-		EmptySince: time.Now(), 
+		EmptySince: time.Now(),
 	}
 
 	if dungeonType == "verdant_bastion_catacombs" {
@@ -6144,7 +6132,7 @@ func (w *World) CreateDungeon(partyID string, dungeonType string) string {
 		// Default Crypt
 		// For default crypts we might not store a layout, but we should store the instance record
 		w.InstanceLayouts[instanceID] = dungeon
-		
+
 		// Spawn Dungeon Entities (Example: 20 Skeletons)
 		for i := 0; i < 20; i++ {
 			x := (rand.Float64() * 40) - 20
@@ -6159,7 +6147,7 @@ func (w *World) CreateDungeon(partyID string, dungeonType string) string {
 func (w *World) ResetDungeon(partyID string) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
-	
+
 	for id, inst := range w.InstanceLayouts {
 		if inst.PartyID == partyID {
 			w.cleanupInstanceLocked(id)
@@ -6171,7 +6159,7 @@ func (w *World) ResetDungeon(partyID string) {
 func (w *World) GetDungeonStatus(partyID string) (bool, float64) {
 	w.Mu.RLock()
 	defer w.Mu.RUnlock()
-	
+
 	for _, inst := range w.InstanceLayouts {
 		if inst.PartyID == partyID {
 			timeLeft := 0.0
@@ -6222,7 +6210,7 @@ func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
 	// Use a deterministic seed based on instanceID hash if possible,
 	// but for now we just use global rand since we store the layout.
 
-	for i, boss := range bosses {
+	for _, boss := range bosses {
 		// Target Z for next boss (roughly -100 units further North)
 		targetZ := currentZ - 100.0
 
@@ -6299,14 +6287,14 @@ func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID str
 		AttackCooldown: 2 * time.Second,
 	}
 	w.Entities[boss.ID] = boss
-	w.Grid.Insert(boss)
+	w.Grid.Add(boss)
 }
 
 func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID string) {
 	// "25x normal hp"
 	// Assuming "normal hp" refers to a standard enemy at the dungeon's level (Level 70).
 	// If a Level 70 enemy has ~50,000 HP (5000 Vitality), then 25x is 1,250,000 HP (125,000 Vitality).
-	
+
 	vitality := 125000
 	strength := 4000 // Scaled up damage for Level 70
 
@@ -6335,7 +6323,7 @@ func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID st
 		AttackCooldown: 2 * time.Second,
 	}
 	w.Entities[enemy.ID] = enemy
-	w.Grid.Insert(enemy)
+	w.Grid.Add(enemy)
 }
 
 func (w *World) EnterInstance(playerID string, instanceID string) error {
@@ -6347,12 +6335,14 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 		return fmt.Errorf("player not found")
 	}
 
+	w.Grid.Remove(player)
+
 	oldInstanceID := player.InstanceID
 	player.InstanceID = instanceID
 	player.X = 0
 	player.Z = 0
 
-	w.Grid.Update(player)
+	w.Grid.Add(player)
 
 	// Handle Old Instance (Leaving)
 	if strings.HasPrefix(oldInstanceID, "dungeon_") {

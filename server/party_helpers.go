@@ -69,7 +69,7 @@ func broadcastPartyUpdate(party *game.Party) {
 	for _, mid := range memberIDs {
 		client := getClientByPlayerID(mid)
 		if client != nil {
-			client.send <- msg
+			client.sendSafe(msg)
 		}
 	}
 }
