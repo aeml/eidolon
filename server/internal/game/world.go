@@ -2331,8 +2331,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		}
 
 		e.Mu.Lock()
-		if e.X < -1000 || e.X > 1000 || e.Z < -2200 || e.Z > 1000 {
-			deferred.addRemoval(e.ID)
+		// Only check bounds if in Overworld (InstanceID == "")
+		if e.InstanceID == "" {
+			if e.X < -1000 || e.X > 1000 || e.Z < -2200 || e.Z > 1000 {
+				deferred.addRemoval(e.ID)
+			}
 		}
 		e.Mu.Unlock()
 		return
@@ -6291,7 +6294,13 @@ func (w *World) CreateDungeon(partyID string, dungeonType string) string {
 		w.InstanceLayouts[instanceID] = dungeon
 	} else {
 		// Default Crypt
-		// For default crypts we might not store a layout, but we should store the instance record
+		// Generate a simple layout for the crypt too, so we have a start point
+		layout := DungeonLayout{
+			Rooms: []DungeonRoom{
+				{X: 0, Z: 0, Width: 40, Height: 40, Type: "start"},
+			},
+		}
+		dungeon.Layout = layout
 		w.InstanceLayouts[instanceID] = dungeon
 
 		// Spawn Dungeon Entities (Example: 20 Skeletons)
@@ -6528,6 +6537,14 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 		if inst, ok := w.InstanceLayouts[instanceID]; ok && len(inst.Layout.Rooms) > 0 {
 			startX = inst.Layout.Rooms[0].X
 			startZ = inst.Layout.Rooms[0].Z
+		} else {
+			// Fallback if no layout found (shouldn't happen with recent fix, but safe default)
+			// If it's a crypt, maybe 0,0 is fine.
+			// If it's verdant bastion, we need 20000, 20000
+			if strings.Contains(instanceID, "verdant") { // Heuristic
+				startX = 20000.0
+				startZ = 20000.0
+			}
 		}
 	}
 	player.X = startX
