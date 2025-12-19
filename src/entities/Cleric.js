@@ -645,7 +645,7 @@ export class Cleric extends Actor {
                     const healAmount = 10 + (this.stats.wisdom * 0.5);
                     
                     // Find allies in range
-                    const entities = (this.gameEngine && this.gameEngine.chunkManager) ? this.gameEngine.chunkManager.getActiveEntities() : (activeEntities || []);
+                    const entities = (this.gameEngine && this.gameEngine.chunkManager) ? this.gameEngine.chunkManager.getActiveEntities() : (chunkManager ? chunkManager.getActiveEntities() : []);
                     entities.forEach(entity => {
                         if (entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
                             if (this.position.distanceTo(entity.position) < radius) {

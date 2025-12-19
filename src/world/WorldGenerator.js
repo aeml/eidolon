@@ -417,7 +417,7 @@ export class WorldGenerator {
                         // Vertical -> Horizontal -> Vertical
                         
                         // Check for straight line (or very close)
-                        if (Math.abs(dx) < 1.0) {
+                        if (Math.abs(dx) < corridorWidth) {
                              this.createCorridor(prevRoom.x, prevRoom.z, room.x, room.z, corridorWidth, prevSize/2, currentSize/2);
                         } else {
                             const midZ = (prevRoom.z + room.z) / 2;
@@ -455,7 +455,7 @@ export class WorldGenerator {
                         // Horizontal -> Vertical -> Horizontal
                         
                         // Check for straight line
-                        if (Math.abs(dz) < 1.0) {
+                        if (Math.abs(dz) < corridorWidth) {
                              this.createCorridor(prevRoom.x, prevRoom.z, room.x, room.z, corridorWidth, prevSize/2, currentSize/2);
                         } else {
                             const midX = (prevRoom.x + room.x) / 2;

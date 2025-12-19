@@ -5621,6 +5621,10 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				}
 			}
 
+			if isBoss {
+				log.Printf("Boss Death Detected: %s. Attacker: %s. PartyID: %s", tSubType, attacker.ID, attacker.PartyID)
+			}
+
 			// Dungeon Boss Check
 			isDungeonBoss := false
 			dungeonBosses := []string{"RootboundWarden", "BriarMatron", "RustboundColossus", "HollowSentinel"}
@@ -5707,8 +5711,12 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					// Boss Loot
 					if isBoss {
 						hearts := GenerateBossHearts()
+						log.Printf("Party Boss Loot: Generated %d hearts for member %s", len(hearts), member.ID)
 						for _, heart := range hearts {
-							member.AddItemToInventory(*heart)
+							rem := member.AddItemToInventory(*heart)
+							if rem > 0 {
+								log.Printf("Party Boss Loot: Inventory full for %s. Remaining: %d", member.ID, rem)
+							}
 						}
 					}
 
@@ -5766,8 +5774,12 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				// Boss Loot
 				if isBoss {
 					hearts := GenerateBossHearts()
+					log.Printf("Solo Boss Loot: Generated %d hearts for %s", len(hearts), attacker.ID)
 					for _, heart := range hearts {
-						attacker.AddItemToInventory(*heart)
+						rem := attacker.AddItemToInventory(*heart)
+						if rem > 0 {
+							log.Printf("Solo Boss Loot: Inventory full for %s. Remaining: %d", attacker.ID, rem)
+						}
 					}
 				}
 
@@ -6423,7 +6435,12 @@ func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
 			// Move North
 			nextZ := currentZ + stepZ
 			// Random East/West offset (-80 to 80)
-			nextX := currentX + (rand.Float64() * 160) - 80
+			offset := (rand.Float64() * 160) - 80
+			// Avoid small offsets that cause Z-shape corner overlap in client generation
+			if math.Abs(offset) < 45 {
+				offset = 0
+			}
+			nextX := currentX + offset
 
 			// Add Room
 			roomType := "normal"
