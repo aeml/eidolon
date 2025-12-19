@@ -2731,6 +2731,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		e.Mu.Lock()
 		defer e.Mu.Unlock()
 
+		// Adjust range for large entities
+		if e.Scale > 1.0 {
+			attackRange *= e.Scale
+		}
+
 		// Animation Lock: If attacking, stay attacking and don't move
 		if time.Since(e.LastAttackTime) < e.AttackCooldown {
 			if e.State != "ATTACKING" {
@@ -5543,6 +5548,16 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				baseGold = rand.Intn(tLevel*10) + 10
 			}
 
+			// Boss Check
+			isBoss := false
+			bosses := []string{"InfernoTitan", "Siren", "FrostGuardian", "MountainTroll", "AquaGolem", "Rootbound Warden", "Briar Matron", "Rustbound Colossus", "Hollow Sentinel", "Avenging Seraph"}
+			for _, b := range bosses {
+				if tSubType == b {
+					isBoss = true
+					break
+				}
+			}
+
 			// Party Logic
 			var partyMembers []*Entity
 
@@ -5608,7 +5623,20 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 						member.RecalculateStats()
 						member.Health = member.MaxHealth
 					}
+
+					// Boss Loot
+					if isBoss {
+						hearts := GenerateBossHearts()
+						for _, heart := range hearts {
+							member.AddItemToInventory(*heart)
+						}
+					}
+
 					member.Mu.Unlock()
+
+					if isBoss && w.OnEvent != nil {
+						w.OnEvent("inventory_update", member.ID)
+					}
 				}
 			} else {
 				// Solo Logic
@@ -5645,7 +5673,20 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					attacker.RecalculateStats()
 					attacker.Health = attacker.MaxHealth
 				}
+
+				// Boss Loot
+				if isBoss {
+					hearts := GenerateBossHearts()
+					for _, heart := range hearts {
+						attacker.AddItemToInventory(*heart)
+					}
+				}
+
 				attacker.Mu.Unlock()
+
+				if isBoss && w.OnEvent != nil {
+					w.OnEvent("inventory_update", attacker.ID)
+				}
 			}
 
 			// Loot
@@ -6327,12 +6368,12 @@ func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID str
 		BaseStats:      stats,
 		Health:         stats.Vitality * 10,
 		MaxHealth:      stats.Vitality * 10,
-		Damage:         stats.Strength * 2, // Ensure damage is set
 		State:          "IDLE",
 		Speed:          2.5,
-		AttackSpeed:    1.5,
+		AttackSpeed:    2.0,
 		AttackCooldown: 2 * time.Second,
-		Scale:          2.0, // 2x Scale
+		Scale:          5.0, // 5x Scale
+		Damage:         stats.Strength * 5,
 	}
 	w.Entities[boss.ID] = boss
 	w.Grid.Add(boss)
@@ -6365,6 +6406,7 @@ func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID st
 		BaseStats:      Stats{Strength: strength, Vitality: vitality},
 		Health:         vitality * 10,
 		MaxHealth:      vitality * 10,
+		Damage:         strength * 2,
 		State:          "IDLE",
 		Speed:          3.0,
 		AttackSpeed:    2.0,

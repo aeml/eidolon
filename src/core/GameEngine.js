@@ -287,6 +287,7 @@ export class GameEngine {
         this.hoveredEntity = null;
         this.playerType = playerType || 'Fighter';
         this.enemies = [];
+        this.lootDrops = [];
         this.cameraLocked = true;
         this.pendingInteraction = null;
         this.pendingAbilityTarget = null;
@@ -961,9 +962,14 @@ export class GameEngine {
         this.remotePlayers.forEach(entity => {
             this.renderSystem.scene.remove(entity.mesh);
             if (entity.healthBar) entity.healthBar.remove();
+            this.chunkManager.removeEntity(entity);
         });
         this.remotePlayers.clear();
+
+        this.enemies.forEach(e => this.chunkManager.removeEntity(e));
         this.enemies = [];
+
+        this.lootDrops.forEach(e => this.chunkManager.removeEntity(e));
         this.lootDrops = [];
 
         // Force Clear Scene (Safer than selective removal)
@@ -998,6 +1004,12 @@ export class GameEngine {
         } else {
             console.error("Player mesh missing during instance entry!");
         }
+
+        // Force update chunk to ensure player is tracked correctly in new location
+        this.chunkManager.updateEntityChunk(this.player);
+        
+        // Reset Camera
+        this.renderSystem.setCameraTarget(this.player.position);
         this.player.targetPosition = null;
         this.player.state = 'IDLE';
         this.player.playAnimation('Idle');

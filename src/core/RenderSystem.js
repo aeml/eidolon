@@ -4,7 +4,15 @@ import { CONSTANTS } from './Constants.js';
 export class RenderSystem {
     constructor(isMobile = false) {
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x220033); // Temporary fallback color (Dark Purple)
+        
+        // Load Background Texture
+        const loader = new THREE.TextureLoader();
+        loader.load('./assets/backgrounds/underground.png', (texture) => {
+            this.scene.background = texture;
+        }, undefined, () => {
+            // Fallback if texture fails
+            this.scene.background = new THREE.Color(0x220033); 
+        });
         
         // Optimization: Mobile Settings
         this.isMobile = isMobile;

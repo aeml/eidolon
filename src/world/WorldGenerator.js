@@ -5,6 +5,15 @@ export class WorldGenerator {
     constructor(scene, collisionManager) {
         this.scene = scene;
         this.collisionManager = collisionManager;
+
+        const loader = new THREE.TextureLoader();
+        this.floorTexture = loader.load('./assets/backgrounds/cobblestone.png');
+        this.floorTexture.wrapS = THREE.RepeatWrapping;
+        this.floorTexture.wrapT = THREE.RepeatWrapping;
+
+        this.wallTexture = loader.load('./assets/backgrounds/cobblestone_walls.png');
+        this.wallTexture.wrapS = THREE.RepeatWrapping;
+        this.wallTexture.wrapT = THREE.RepeatWrapping;
     }
 
     createTown(centerX, centerZ, size) {
@@ -284,7 +293,12 @@ export class WorldGenerator {
 
         // Simple room for now
         const floorGeo = new THREE.PlaneGeometry(size, size);
-        const floorMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+        
+        const texture = this.floorTexture.clone();
+        texture.repeat.set(size / 10, size / 10);
+        texture.needsUpdate = true;
+
+        const floorMat = new THREE.MeshStandardMaterial({ map: texture });
         const floor = new THREE.Mesh(floorGeo, floorMat);
         floor.rotation.x = -Math.PI / 2;
         floor.position.set(centerX, 0.1, centerZ); // Slightly above ground to cover grass
@@ -387,36 +401,84 @@ export class WorldGenerator {
                 
                 this.createRoom(room.x, room.z, room.width, room.color, openings);
                 
-                // Corridor to previous (Z-Shaped / Manhattan Routing)
+                // Corridor to previous (Manhattan Routing)
                 if (prevRoom) {
                     const corridorWidth = 40;
                     const halfWidth = corridorWidth / 2;
                     
-                    // 1. Vertical Segment from PrevRoom
-                    // Exit North/South from PrevRoom to the midpoint Z
-                    const midZ = (prevRoom.z + room.z) / 2;
+                    const dx = room.x - prevRoom.x;
+                    const dz = room.z - prevRoom.z;
                     
-                    // Wall Start: prevRoom.height/2 (Exit Room)
-                    // Wall End: halfWidth (Enter Corner)
-                    this.createCorridor(prevRoom.x, prevRoom.z, prevRoom.x, midZ, corridorWidth, prevRoom.height/2, halfWidth);
+                    // Use width for size since rooms are square
+                    const prevSize = prevRoom.width; 
+                    const currentSize = room.width;
 
-                    // Corner 1
-                    this.createCorner(prevRoom.x, midZ, corridorWidth);
+                    if (Math.abs(dz) > Math.abs(dx)) {
+                        // Vertical -> Horizontal -> Vertical
+                        const midZ = (prevRoom.z + room.z) / 2;
+                        
+                        // 1. Vertical from Prev
+                        this.createCorridor(prevRoom.x, prevRoom.z, prevRoom.x, midZ, corridorWidth, prevSize/2, halfWidth);
 
-                    // 2. Horizontal Segment
-                    // Move East/West to align with Room X
-                    // Wall Start: halfWidth (Exit Corner 1)
-                    // Wall End: halfWidth (Enter Corner 2)
-                    this.createCorridor(prevRoom.x, midZ, room.x, midZ, corridorWidth, halfWidth, halfWidth);
+                        // Corner 1
+                        const c1Openings = {};
+                        if (prevRoom.z < midZ) c1Openings.north = true;
+                        else c1Openings.south = true;
+                        
+                        if (room.x > prevRoom.x) c1Openings.east = true;
+                        else c1Openings.west = true;
 
-                    // Corner 2
-                    this.createCorner(room.x, midZ, corridorWidth);
+                        this.createCorner(prevRoom.x, midZ, corridorWidth, c1Openings);
 
-                    // 3. Vertical Segment to Room
-                    // Enter North/South into Room
-                    // Wall Start: halfWidth (Exit Corner 2)
-                    // Wall End: room.height/2 (Enter Room)
-                    this.createCorridor(room.x, midZ, room.x, room.z, corridorWidth, halfWidth, room.height/2);
+                        // 2. Horizontal
+                        this.createCorridor(prevRoom.x, midZ, room.x, midZ, corridorWidth, halfWidth, halfWidth);
+
+                        // Corner 2
+                        const c2Openings = {};
+                        if (prevRoom.x < room.x) c2Openings.west = true;
+                        else c2Openings.east = true;
+                        
+                        if (room.z < midZ) c2Openings.north = true;
+                        else c2Openings.south = true;
+
+                        this.createCorner(room.x, midZ, corridorWidth, c2Openings);
+
+                        // 3. Vertical to Room
+                        this.createCorridor(room.x, midZ, room.x, room.z, corridorWidth, halfWidth, currentSize/2);
+                        
+                    } else {
+                        // Horizontal -> Vertical -> Horizontal
+                        const midX = (prevRoom.x + room.x) / 2;
+                        
+                        // 1. Horizontal from Prev
+                        this.createCorridor(prevRoom.x, prevRoom.z, midX, prevRoom.z, corridorWidth, prevSize/2, halfWidth);
+
+                        // Corner 1
+                        const c1Openings = {};
+                        if (prevRoom.x < midX) c1Openings.west = true;
+                        else c1Openings.east = true;
+                        
+                        if (room.z > prevRoom.z) c1Openings.south = true;
+                        else c1Openings.north = true;
+
+                        this.createCorner(midX, prevRoom.z, corridorWidth, c1Openings);
+
+                        // 2. Vertical
+                        this.createCorridor(midX, prevRoom.z, midX, room.z, corridorWidth, halfWidth, halfWidth);
+
+                        // Corner 2
+                        const c2Openings = {};
+                        if (prevRoom.z < room.z) c2Openings.north = true;
+                        else c2Openings.south = true;
+                        
+                        if (room.x > midX) c2Openings.east = true;
+                        else c2Openings.west = true;
+
+                        this.createCorner(midX, room.z, corridorWidth, c2Openings);
+
+                        // 3. Horizontal to Room
+                        this.createCorridor(midX, room.z, room.x, room.z, corridorWidth, halfWidth, currentSize/2);
+                    }
                 }
                 
                 prevRoom = room;
@@ -463,7 +525,12 @@ export class WorldGenerator {
     createRoom(x, z, size, color, openings = {}) {
         // Floor
         const floorGeo = new THREE.PlaneGeometry(size, size);
-        const floorMat = new THREE.MeshStandardMaterial({ color: color });
+        
+        const texture = this.floorTexture.clone();
+        texture.repeat.set(size / 10, size / 10);
+        texture.needsUpdate = true;
+
+        const floorMat = new THREE.MeshStandardMaterial({ map: texture });
         const floor = new THREE.Mesh(floorGeo, floorMat);
         floor.rotation.x = -Math.PI / 2;
         floor.position.set(x, 0.1, z);
@@ -478,7 +545,7 @@ export class WorldGenerator {
             if (!hasOpening) {
                 // Full Wall
                 if (isVertical) {
-                    this.createWall(cx, cz, wallThickness, wallHeight, size + wallThickness, 0, isTransparent);
+                    this.createWall(cx, cz, size + wallThickness, wallHeight, wallThickness, Math.PI/2, isTransparent);
                 } else {
                     this.createWall(cx, cz, size + wallThickness, wallHeight, wallThickness, 0, isTransparent);
                 }
@@ -491,8 +558,8 @@ export class WorldGenerator {
 
                 if (isVertical) {
                     // East/West side (Vertical along Z)
-                    this.createWall(cx, cz - offset, wallThickness, wallHeight, segmentLen, 0, isTransparent);
-                    this.createWall(cx, cz + offset, wallThickness, wallHeight, segmentLen, 0, isTransparent);
+                    this.createWall(cx, cz - offset, segmentLen, wallHeight, wallThickness, Math.PI/2, isTransparent);
+                    this.createWall(cx, cz + offset, segmentLen, wallHeight, wallThickness, Math.PI/2, isTransparent);
                 } else {
                     // North/South side (Horizontal along X)
                     this.createWall(cx - offset, cz, segmentLen, wallHeight, wallThickness, 0, isTransparent);
@@ -513,8 +580,13 @@ export class WorldGenerator {
 
     createWall(x, z, w, h, d, rotY, isTransparent = false) {
         const geo = new THREE.BoxGeometry(w, h, d);
+        
+        const texture = this.wallTexture.clone();
+        texture.repeat.set(w / 10, h / 10);
+        texture.needsUpdate = true;
+
         const mat = new THREE.MeshStandardMaterial({ 
-            color: 0x555555,
+            map: texture,
             transparent: isTransparent,
             opacity: isTransparent ? 0.3 : 1.0
         });
@@ -527,14 +599,36 @@ export class WorldGenerator {
         this.collisionManager.addCollider(collider);
     }
 
-    createCorner(x, z, width) {
+    createCorner(x, z, width, openings = {}) {
         // Floor
         const floorGeo = new THREE.PlaneGeometry(width, width);
-        const floorMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+        
+        const texture = this.floorTexture.clone();
+        texture.repeat.set(width / 10, width / 10);
+        texture.needsUpdate = true;
+
+        const floorMat = new THREE.MeshStandardMaterial({ map: texture });
         const floor = new THREE.Mesh(floorGeo, floorMat);
         floor.rotation.x = -Math.PI / 2;
-        floor.position.set(x, 0.11, z);
+        floor.position.set(x, 0.1, z); // Match room/corridor height
         this.scene.add(floor);
+
+        // Walls
+        const wallHeight = 15;
+        const wallThickness = 2;
+
+        if (!openings.north) {
+             this.createWall(x, z - width/2, width, wallHeight, wallThickness, 0, false);
+        }
+        if (!openings.south) {
+             this.createWall(x, z + width/2, width, wallHeight, wallThickness, 0, true);
+        }
+        if (!openings.east) {
+             this.createWall(x + width/2, z, width, wallHeight, wallThickness, Math.PI/2, true);
+        }
+        if (!openings.west) {
+             this.createWall(x - width/2, z, width, wallHeight, wallThickness, Math.PI/2, false);
+        }
 
         // Corner Pillars (to fill gaps)
         const pillarSize = 2.5; // Slightly larger than wall thickness (2)
@@ -553,8 +647,13 @@ export class WorldGenerator {
             
             // Transparency Check
             const isTransparent = (px + pz) > (x + z);
+            
+            const pillarTexture = this.wallTexture.clone();
+            pillarTexture.repeat.set(0.5, 1.5);
+            pillarTexture.needsUpdate = true;
+
             const pillarMat = new THREE.MeshStandardMaterial({ 
-                color: 0x555555,
+                map: pillarTexture,
                 transparent: isTransparent,
                 opacity: isTransparent ? 0.3 : 1.0
             });
@@ -574,25 +673,7 @@ export class WorldGenerator {
 
         const angle = Math.atan2(dz, dx); // Angle in radians
         
-        // Floor (Full Length)
-        // Raise slightly to 0.11 to avoid z-fighting with room floors
-        const geo = new THREE.PlaneGeometry(dist, width);
-        const mat = new THREE.MeshStandardMaterial({ color: 0x333333 });
-        const mesh = new THREE.Mesh(geo, mat);
-        mesh.rotation.x = -Math.PI / 2;
-        mesh.position.set((x1+x2)/2, 0.11, (z1+z2)/2);
-        mesh.rotation.z = -angle; 
-        this.scene.add(mesh);
-        
-        // Walls (Trimmed)
-        const wallLength = dist - wallStartOffset - wallEndOffset;
-        if (wallLength <= 0) return; // Walls completely trimmed
-
-        const wallHeight = 15;
-        const wallThickness = 2;
-        const wallGeo = new THREE.BoxGeometry(wallLength, wallHeight, wallThickness);
-        
-        // Calculate center of walls
+        // Calculate center of walls/floor
         // Start point shifted by wallStartOffset
         // End point shifted by wallEndOffset
         // Center is midpoint of trimmed segment
@@ -608,6 +689,30 @@ export class WorldGenerator {
 
         const cx = (startX + endX) / 2;
         const cz = (startZ + endZ) / 2;
+
+        const segmentLength = dist - wallStartOffset - wallEndOffset;
+        if (segmentLength <= 0) return; // Completely trimmed
+
+        // Floor (Trimmed)
+        // Use 0.1 to match room floor height since we are trimming
+        const geo = new THREE.PlaneGeometry(segmentLength, width);
+        
+        const texture = this.floorTexture.clone();
+        texture.repeat.set(segmentLength / 10, width / 10);
+        texture.needsUpdate = true;
+
+        const mat = new THREE.MeshStandardMaterial({ map: texture });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.rotation.x = -Math.PI / 2;
+        mesh.position.set(cx, 0.1, cz);
+        mesh.rotation.z = -angle; 
+        this.scene.add(mesh);
+        
+        // Walls (Trimmed)
+        const wallLength = segmentLength;
+        const wallHeight = 15;
+        const wallThickness = 2;
+        const wallGeo = new THREE.BoxGeometry(wallLength, wallHeight, wallThickness);
 
         // Determine transparency based on wall position relative to corridor center
         // Camera is at (+100, +100, +100) looking at (0,0,0)
@@ -630,14 +735,22 @@ export class WorldGenerator {
         const isLeftTransparent = leftScore > centerScore;
         const isRightTransparent = rightScore > centerScore;
 
+        const leftTexture = this.wallTexture.clone();
+        leftTexture.repeat.set(wallLength / 10, wallHeight / 10);
+        leftTexture.needsUpdate = true;
+
         const leftMat = new THREE.MeshStandardMaterial({ 
-            color: 0x555555,
+            map: leftTexture,
             transparent: isLeftTransparent,
             opacity: isLeftTransparent ? 0.3 : 1.0
         });
 
+        const rightTexture = this.wallTexture.clone();
+        rightTexture.repeat.set(wallLength / 10, wallHeight / 10);
+        rightTexture.needsUpdate = true;
+
         const rightMat = new THREE.MeshStandardMaterial({ 
-            color: 0x555555,
+            map: rightTexture,
             transparent: isRightTransparent,
             opacity: isRightTransparent ? 0.3 : 1.0
         });

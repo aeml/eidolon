@@ -178,6 +178,14 @@ export class Actor extends Entity {
         }
     }
 
+    setScale(scale) {
+        super.setScale(scale);
+        if (this.baseRadius === undefined) {
+            this.baseRadius = this.radius;
+        }
+        this.radius = this.baseRadius * scale;
+    }
+
     setMesh(mesh) {
         super.setMesh(mesh);
         

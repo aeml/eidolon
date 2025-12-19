@@ -386,6 +386,33 @@ func main() {
 			go func() {
 				broadcast <- BroadcastMessage{Type: MsgAbility, Data: dataBytes}
 			}()
+		case "inventory_update":
+			playerID, ok := data.(string)
+			if !ok {
+				return
+			}
+			sessionsMu.Lock()
+			client, exists := activeSessions[playerID]
+			sessionsMu.Unlock()
+
+			if exists {
+				player := world.GetEntity(playerID)
+				if player != nil {
+					player.Mu.RLock()
+					// Copy inventory to avoid race conditions during marshal
+					inv := make([]game.Item, len(player.Inventory))
+					copy(inv, player.Inventory)
+					player.Mu.RUnlock()
+
+					b, _ := json.Marshal(inv)
+					outMsg := Message{
+						Type:    MsgInventory,
+						Payload: b,
+					}
+					dataBytes, _ := json.Marshal(outMsg)
+					client.sendSafe(dataBytes)
+				}
+			}
 		case "damage":
 			evt, ok := data.(game.DamageEvent)
 			if !ok {
