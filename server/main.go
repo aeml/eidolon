@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -393,8 +394,14 @@ func main() {
 			}
 			log.Printf("Handling inventory_update event for player: %s", playerID)
 
+			// Extract username from playerID (player-username)
+			username := playerID
+			if strings.HasPrefix(playerID, "player-") {
+				username = strings.TrimPrefix(playerID, "player-")
+			}
+
 			sessionsMu.Lock()
-			client, exists := activeSessions[playerID]
+			client, exists := activeSessions[username]
 			sessionsMu.Unlock()
 
 			if exists {
