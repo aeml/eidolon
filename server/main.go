@@ -63,12 +63,29 @@ var gzipWriterPool = sync.Pool{
 	},
 }
 
+// EntitySnapshot stores minimal state for delta comparison
+// We only track fields that change frequently
+type EntitySnapshot struct {
+	X          float64
+	Z          float64
+	Y          float64
+	Rotation   float64
+	Health     int
+	MaxHealth  int
+	Mana       int
+	State      string
+	Level      int
+	IsCharging bool
+}
+
 // Client represents a connected player
 type Client struct {
-	conn     *websocket.Conn
-	send     chan []byte
-	playerID string
-	username string
+	conn      *websocket.Conn
+	send      chan []byte
+	playerID  string
+	username  string
+	lastState map[string]*EntitySnapshot // Track last sent state per entity
+	seenIDs   map[string]bool            // Track which entities client knows about
 }
 
 // Message types
@@ -621,8 +638,10 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	client := &Client{
-		conn: c,
-		send: make(chan []byte, 256), // Increased buffer size to prevent drops
+		conn:      c,
+		send:      make(chan []byte, 256), // Increased buffer size to prevent drops
+		lastState: make(map[string]*EntitySnapshot),
+		seenIDs:   make(map[string]bool),
 	}
 	register <- client
 
@@ -2382,6 +2401,67 @@ func (c *Client) sendError(msg string) {
 	c.send <- b
 }
 
+// entityToSnapshot extracts fields we track for delta comparison
+func entityToSnapshot(e *game.Entity) *EntitySnapshot {
+	return &EntitySnapshot{
+		X:          e.X,
+		Z:          e.Z,
+		Y:          e.Y,
+		Rotation:   e.Rotation,
+		Health:     e.Health,
+		MaxHealth:  e.MaxHealth,
+		Mana:       e.Mana,
+		State:      e.State,
+		Level:      e.Level,
+		IsCharging: e.IsCharging,
+	}
+}
+
+// hasEntityChanged checks if entity state differs from last snapshot
+// Returns true if any tracked field changed significantly
+func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
+	// Position change threshold (0.05 units = basically any movement)
+	const posTolerance = 0.05
+	dx := current.X - last.X
+	dz := current.Z - last.Z
+	dy := current.Y - last.Y
+	if dx*dx+dz*dz > posTolerance*posTolerance || dy*dy > posTolerance*posTolerance {
+		return true
+	}
+
+	// Rotation change threshold (~3 degrees)
+	const rotTolerance = 0.05
+	dr := current.Rotation - last.Rotation
+	if dr > rotTolerance || dr < -rotTolerance {
+		return true
+	}
+
+	// Health/Mana changes are always significant
+	if current.Health != last.Health || current.MaxHealth != last.MaxHealth {
+		return true
+	}
+	if current.Mana != last.Mana {
+		return true
+	}
+
+	// State changes are always significant
+	if current.State != last.State {
+		return true
+	}
+
+	// Level ups are significant
+	if current.Level != last.Level {
+		return true
+	}
+
+	// Charging state for enemies
+	if current.IsCharging != last.IsCharging {
+		return true
+	}
+
+	return false
+}
+
 func broadcastState() {
 	// 1. Copy active sessions to minimize lock time
 	sessionsMu.Lock()
@@ -2396,9 +2476,12 @@ func broadcastState() {
 	// 2. Process in parallel
 	var wg sync.WaitGroup
 
-	// Pre-defined JSON parts to avoid double-marshaling
+	// Pre-defined JSON parts for different message types
 	stateHeader := []byte(`{"type":"state","payload":`)
+	deltaHeader := []byte(`{"type":"delta","payload":{"u":`) // u = updates
+	deltaMiddle := []byte(`,"r":`)                           // r = removed
 	stateFooter := []byte(`}`)
+	deltaFooter := []byte(`}}`)
 
 	for _, client := range clients {
 		wg.Add(1)
@@ -2410,30 +2493,118 @@ func broadcastState() {
 				}
 			}()
 
-			// Get custom state (100 unit radius)
-			state := world.GetStateForPlayer(c.playerID, 100.0)
+			// Get current state (100 unit radius)
+			currentState := world.GetStateForPlayer(c.playerID, 100.0)
 
-			payload, err := json.Marshal(state)
-			if err != nil {
+			// Initialize lastState if nil (shouldn't happen, but safety check)
+			if c.lastState == nil {
+				c.lastState = make(map[string]*EntitySnapshot)
+			}
+			if c.seenIDs == nil {
+				c.seenIDs = make(map[string]bool)
+			}
+
+			// Track current IDs to detect removals
+			currentIDs := make(map[string]bool, len(currentState))
+			for id := range currentState {
+				currentIDs[id] = true
+			}
+
+			// Find removed entities (were in seenIDs but not in currentState)
+			removed := make([]string, 0)
+			for id := range c.seenIDs {
+				if !currentIDs[id] {
+					removed = append(removed, id)
+					delete(c.lastState, id)
+					delete(c.seenIDs, id)
+				}
+			}
+
+			// Find changed/new entities
+			changedState := make(map[string]*game.Entity)
+			for id, entity := range currentState {
+				lastSnap, existed := c.lastState[id]
+
+				// ALWAYS include the player's own entity - they need full state for UI
+				// (skills, equipment, gold, etc. aren't tracked in EntitySnapshot)
+				if id == c.playerID {
+					changedState[id] = entity
+					c.lastState[id] = entityToSnapshot(entity)
+					c.seenIDs[id] = true
+					continue
+				}
+
+				// New entity or entity changed?
+				if !existed {
+					// New entity - always send full state
+					changedState[id] = entity
+					c.lastState[id] = entityToSnapshot(entity)
+					c.seenIDs[id] = true
+				} else if hasEntityChanged(entity, lastSnap) {
+					// Changed entity - send updated state
+					changedState[id] = entity
+					c.lastState[id] = entityToSnapshot(entity)
+				}
+				// else: unchanged, skip sending
+			}
+
+			// If nothing changed and nothing removed, skip this broadcast
+			if len(changedState) == 0 && len(removed) == 0 {
 				return
 			}
 
-			// Construct full JSON message
-			data := make([]byte, 0, len(stateHeader)+len(payload)+len(stateFooter))
-			data = append(data, stateHeader...)
-			data = append(data, payload...)
-			data = append(data, stateFooter...)
+			var data []byte
+			var err error
+
+			// Use delta format if client has seen entities before (not first sync)
+			// First sync sends full state, subsequent sends ALWAYS use delta
+			// (We can't mix state/delta or client will incorrectly remove entities)
+			isFirstSync := len(c.seenIDs) == len(changedState) && len(removed) == 0
+
+			if isFirstSync {
+				// Full state sync (first connection only)
+				payload, err := json.Marshal(currentState)
+				if err != nil {
+					return
+				}
+				data = make([]byte, 0, len(stateHeader)+len(payload)+len(stateFooter))
+				data = append(data, stateHeader...)
+				data = append(data, payload...)
+				data = append(data, stateFooter...)
+
+				// Update seenIDs with all current entities
+				for id := range currentState {
+					c.seenIDs[id] = true
+				}
+			} else {
+				// Delta sync - only send changes
+				updatesPayload, err := json.Marshal(changedState)
+				if err != nil {
+					return
+				}
+				removedPayload, err := json.Marshal(removed)
+				if err != nil {
+					return
+				}
+
+				data = make([]byte, 0, len(deltaHeader)+len(updatesPayload)+len(deltaMiddle)+len(removedPayload)+len(deltaFooter))
+				data = append(data, deltaHeader...)
+				data = append(data, updatesPayload...)
+				data = append(data, deltaMiddle...)
+				data = append(data, removedPayload...)
+				data = append(data, deltaFooter...)
+			}
 
 			// Compress using GZIP (Pooled)
 			var b bytes.Buffer
 			gz := gzipWriterPool.Get().(*gzip.Writer)
 			gz.Reset(&b)
 
-			if _, err := gz.Write(data); err != nil {
+			if _, err = gz.Write(data); err != nil {
 				gzipWriterPool.Put(gz)
 				return
 			}
-			if err := gz.Close(); err != nil {
+			if err = gz.Close(); err != nil {
 				gzipWriterPool.Put(gz)
 				return
 			}

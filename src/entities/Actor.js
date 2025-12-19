@@ -263,6 +263,30 @@ export class Actor extends Entity {
         action.clampWhenFinished = !loop;
         
         this.currentAction = action;
+
+        // For non-looping Attack animations, set up a callback to return to Idle
+        if (!loop && name === 'Attack' && this.state !== 'DEAD') {
+            // Clear any existing animation finished handler
+            if (this._animFinishedHandler) {
+                this.mixer.removeEventListener('finished', this._animFinishedHandler);
+                this._animFinishedHandler = null;
+            }
+            
+            const self = this;
+            this._animFinishedHandler = function onFinished(e) {
+                if (e.action === action) {
+                    self.mixer.removeEventListener('finished', onFinished);
+                    self._animFinishedHandler = null;
+                    // Return to Idle if not dead, not moving, and not in a special ability state
+                    if (self.state !== 'DEAD' && self.state !== 'MOVING' && 
+                        !self.spiritsActive && !self.isWhirlwinding && !self.isCharging) {
+                        self.state = 'IDLE';
+                        self.playAnimation('Idle');
+                    }
+                }
+            };
+            this.mixer.addEventListener('finished', this._animFinishedHandler);
+        }
     }
 
     move(targetVector) {
