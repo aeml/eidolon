@@ -2754,12 +2754,20 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 		// Adjust range for large entities
 		if e.Scale > 1.0 {
-			attackRange *= e.Scale
+			// Use a gentler scaling for range so it doesn't get ridiculous
+			// Was: attackRange *= e.Scale
+			attackRange += (e.Scale - 1.0) * 1.0
 		}
 
 		// Animation Lock: If attacking, stay attacking and don't move
-		// Only lock for 1s (animation duration) instead of full cooldown
-		if time.Since(e.LastAttackTime) < 1*time.Second {
+		// Lock for 80% of cooldown to allow a brief IDLE reset before next attack
+		// This ensures the client sees a state change to trigger the animation again.
+		lockDuration := time.Duration(float64(e.AttackCooldown) * 0.8)
+		if lockDuration > 1*time.Second {
+			lockDuration = 1 * time.Second
+		}
+
+		if time.Since(e.LastAttackTime) < lockDuration {
 			if e.State != "ATTACKING" {
 				e.State = "ATTACKING"
 			}
@@ -2773,6 +2781,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					e.Mu.Unlock() // Unlock self before interaction
 					w.PerformAttack(e.ID, target.ID)
 					e.Mu.Lock() // Relock self
+				} else {
+					// Waiting for cooldown, reset to IDLE so client knows animation finished
+					e.State = "IDLE"
 				}
 			} else {
 				// Chase
@@ -5592,7 +5603,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 			// Boss Check
 			isBoss := false
-			bosses := []string{"Rootbound Warden", "Briar Matron", "Rustbound Colossus", "Hollow Sentinel", "Avenging Seraph"}
+			bosses := []string{"RootboundWarden", "BriarMatron", "RustboundColossus", "HollowSentinel", "AvengingSeraph"}
 			for _, b := range bosses {
 				if tSubType == b {
 					isBoss = true
@@ -5602,7 +5613,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 			// Dungeon Boss Check
 			isDungeonBoss := false
-			dungeonBosses := []string{"Rootbound Warden", "Briar Matron", "Rustbound Colossus", "Hollow Sentinel"}
+			dungeonBosses := []string{"RootboundWarden", "BriarMatron", "RustboundColossus", "HollowSentinel"}
 			for _, b := range dungeonBosses {
 				if tSubType == b {
 					isDungeonBoss = true
@@ -6472,7 +6483,7 @@ func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID str
 		Speed:          2.5,
 		AttackSpeed:    cooldown,
 		AttackCooldown: time.Duration(cooldown * float64(time.Second)),
-		Scale:          5.0, // 5x Scale
+		Scale:          8.0, // Increased from 5.0 to 8.0
 		Damage:         stats.Strength * 10,
 	}
 	w.Entities[boss.ID] = boss

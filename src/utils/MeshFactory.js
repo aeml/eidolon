@@ -761,7 +761,7 @@ export class MeshFactory {
                     if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
                 } catch (e) {}
 
-                mesh.scale.set(2.5, 2.5, 2.5);
+                mesh.scale.set(5.0, 5.0, 5.0);
                 mesh.traverse(c => { if(c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
                 return mesh;
             } catch (e) {
