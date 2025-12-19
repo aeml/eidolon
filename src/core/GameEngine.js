@@ -1002,7 +1002,11 @@ export class GameEngine {
             const startRoom = layout.rooms[0];
             startX = startRoom.x;
             startZ = startRoom.z;
-        } else if (type !== 'crypt' && type !== 'verdant_bastion_catacombs') {
+        } else if (type === 'crypt') {
+            // Default crypt spawn
+            startX = 0;
+            startZ = 0;
+        } else if (type !== 'verdant_bastion_catacombs') {
              // Overworld spawn default
              startX = -1.25;
              startZ = 200;

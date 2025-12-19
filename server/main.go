@@ -1240,6 +1240,16 @@ func (c *Client) handleMessage(msg Message) {
 			if time.Since(e.LastRespawnTime) < 1*time.Second {
 				return
 			}
+
+			// Basic distance validation to prevent teleporting across map due to lag/race conditions
+			// e.g. Client sends (0,0) after server moved player to (20000, 20000)
+			dx := payload.X - e.X
+			dz := payload.Z - e.Z
+			distSq := dx*dx + dz*dz
+			if distSq > 100*100 { // 100 units max jump per frame
+				// Ignore this move packet, it's likely from the previous context
+				return
+			}
 		}
 
 		world.UpdateEntityPosition(c.playerID, payload.X, payload.Y, payload.Z, payload.Rotation)
