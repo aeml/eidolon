@@ -391,6 +391,8 @@ func main() {
 			if !ok {
 				return
 			}
+			log.Printf("Handling inventory_update event for player: %s", playerID)
+
 			sessionsMu.Lock()
 			client, exists := activeSessions[playerID]
 			sessionsMu.Unlock()
@@ -404,14 +406,24 @@ func main() {
 					copy(inv, player.Inventory)
 					player.Mu.RUnlock()
 
-					b, _ := json.Marshal(inv)
+					b, err := json.Marshal(inv)
+					if err != nil {
+						log.Printf("Error marshaling inventory for %s: %v", playerID, err)
+						return
+					}
+
 					outMsg := Message{
 						Type:    MsgInventory,
 						Payload: b,
 					}
 					dataBytes, _ := json.Marshal(outMsg)
 					client.sendSafe(dataBytes)
+					log.Printf("Sent inventory update to client %s. Payload size: %d bytes", playerID, len(dataBytes))
+				} else {
+					log.Printf("Player entity %s not found during inventory update", playerID)
 				}
+			} else {
+				log.Printf("No active session found for player %s during inventory update", playerID)
 			}
 		case "damage":
 			evt, ok := data.(game.DamageEvent)

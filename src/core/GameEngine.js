@@ -1048,6 +1048,7 @@ export class GameEngine {
             const chatData = msg.payload;
             this.uiManager.addChatMessage(chatData.sender, chatData.message);
         } else if (msg.type === 'inventory') {
+            console.log("GameEngine: Received inventory update. Items:", msg.payload.length);
             this.player.inventory = msg.payload.map(item => this.hydrateItem(item));
             this.uiManager.updateInventory(this.player);
         } else if (msg.type === 'stash') {

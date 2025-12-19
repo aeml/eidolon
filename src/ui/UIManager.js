@@ -800,6 +800,7 @@ export class UIManager {
         this.inventoryScreen.style.display = isHidden ? 'block' : 'none';
         
         if (isHidden && this.lastPlayerRef) {
+            console.log("UIManager: Opening inventory, refreshing...");
             this.updateInventory(this.lastPlayerRef);
         }
     }
@@ -2578,6 +2579,7 @@ export class UIManager {
     updateInventory(player) {
         if (!player) return;
         this.lastPlayerRef = player;
+        // console.log("UIManager: Updating inventory UI. Items:", player.inventory.length);
 
         // Update Gold
         if (this.goldDisplay) {
