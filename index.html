@@ -1337,7 +1337,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.16</span> 
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.17</span> 
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
             
@@ -1421,8 +1421,46 @@
 
         <!-- Patch Notes Screen -->
         <div id="patch-notes-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 600px; z-index: 101; flex-direction: column;">
-            <div class="window-header">PATCH NOTES</div>
+            <div class="window-header">
+                <span>
+                    PATCH NOTES 
+                    <span style="font-size: 12px; font-weight: normal; color: #ccc; margin-left: 10px;">
+                        (Click <a href="https://github.com/aeml/eidolon/commits/master/" target="_blank" style="color: #ffd700; text-decoration: underline; cursor: pointer;">here</a> for full commit history)
+                    </span>
+                </span>
+            </div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.17 (Dungeons & Economy)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>New Features:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Instanced Dungeons:</strong> Fully implemented the instanced dungeon system. Party up and enter unique, private dungeon instances!</li>
+                                <li><strong>Trading Hall:</strong> Added the Trading Hall! You can now list items for sale and buy items from other players.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Dungeon Fixes:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Generation:</strong> Fixed an issue where dungeon walls were sometimes impassable.</li>
+                                <li><strong>Respawns:</strong> Enemies no longer respawn inside dungeons. Once cleared, they stay cleared!</li>
+                            </ul>
+                        </li>
+                        <li><strong>Economy & Forge:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Item Renaming:</strong> "Hearts" and "Shards" are now "Eidolon Hearts" and "Eidolon Shards".</li>
+                                <li><strong>Forge Logic:</strong> The Forge now correctly recognizes these items for upgrades and socketing.</li>
+                                <li><strong>Migration:</strong> Old items in your inventory, stash, and buyback have been automatically converted.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Bug Fixes:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Inventory Sync:</strong> Fixed a bug where boss loot wouldn't appear in your inventory until you refreshed.</li>
+                                <li><strong>Cleric Crash:</strong> Fixed a client crash related to Cleric ability targeting.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
                 <div style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.16b (Forge Polish)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

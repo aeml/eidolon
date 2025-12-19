@@ -116,7 +116,7 @@ var BaseItems = []BaseItem{
 	{"Orb of Mana", ItemAccessory, "trinket", "intelligence", 10, ""},
 
 	// Materials & Relics
-	{"Shard", ItemMaterial, "material", "", 0, ""},
+	{"Eidolon Shard", ItemMaterial, "material", "", 0, ""},
 	{"Eidolon Heart", ItemRelic, "relic", "", 0, ""},
 }
 
@@ -255,7 +255,7 @@ func GenerateShardLoot(isElite bool) []*Item {
 	}
 
 	if shardCount > 0 {
-		baseShard := BaseItem{Name: "Shard", Type: ItemMaterial, Slot: "material"}
+		baseShard := BaseItem{Name: "Eidolon Shard", Type: ItemMaterial, Slot: "material"}
 		for i := 0; i < shardCount; i++ {
 			item := createItem(baseShard, RarityEidolic, 1.0, 0, 1)
 			item.MaxStack = 1000
@@ -302,7 +302,7 @@ func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCo
 	if baseItem.Type == ItemMaterial || baseItem.Type == ItemRelic {
 		desc := ""
 		icon := ""
-		if baseItem.Name == "Shard" {
+		if baseItem.Name == "Eidolon Shard" {
 			desc = "What remains after purpose is broken."
 			rarity = RarityEidolic
 			icon = "assets/items/eidolon_shard/eidolon_shard.png"

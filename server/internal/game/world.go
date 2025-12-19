@@ -5729,7 +5729,10 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					member.Mu.Unlock()
 
 					if isBoss && w.OnEvent != nil {
-						w.OnEvent("inventory_update", member.ID)
+						// Use a goroutine to avoid blocking the world lock
+						go func(pid string) {
+							w.OnEvent("inventory_update", pid)
+						}(member.ID)
 					}
 				}
 			} else {
@@ -5792,7 +5795,9 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				attacker.Mu.Unlock()
 
 				if isBoss && w.OnEvent != nil {
-					w.OnEvent("inventory_update", attacker.ID)
+					go func(pid string) {
+						w.OnEvent("inventory_update", pid)
+					}(attacker.ID)
 				}
 			}
 
