@@ -4,10 +4,10 @@ export const CONSTANTS = {
         GROUND_SIZE: 2000,
         WORLD_BOUNDS: 2000, // Deprecated, use BOUNDS
         BOUNDS: {
-            MIN_X: -1000,
-            MAX_X: 1000,
-            MIN_Z: -2200,
-            MAX_Z: 1000
+            MIN_X: -50000,
+            MAX_X: 50000,
+            MIN_Z: -50000,
+            MAX_Z: 50000
         },
         CHUNK_SIZE: 50,
         LOAD_DISTANCE: 1,

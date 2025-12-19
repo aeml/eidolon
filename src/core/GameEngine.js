@@ -57,6 +57,7 @@ export class GameEngine {
         this.collisionManager = new CollisionManager();
         this.uiManager = new UIManager(this.isMobile);
         this.effects = []; // Active visual effects
+        this.currentInstanceId = null; // Track current instance to prevent state desync
         this.uiManager.onBuyGamble = (slot) => {
             if (this.socket && this.socket.readyState === WebSocket.OPEN) {
                 const msg = {
@@ -957,6 +958,7 @@ export class GameEngine {
 
     enterInstance(instanceId, type, layout) {
         console.log(`Entering instance: ${instanceId} (${type})`);
+        this.currentInstanceId = instanceId;
 
         // Clear current entities
         this.remotePlayers.forEach(entity => {
@@ -1013,6 +1015,7 @@ export class GameEngine {
         }
 
         this.player.position.set(startX, 0.5, startZ);
+        this.player.targetPosition = null; // Clear any pending movement target
 
         if (this.player.mesh) {
             this.player.mesh.position.set(startX, 0.5, startZ);
@@ -1137,6 +1140,7 @@ export class GameEngine {
             }
         } else if (msg.type === 'enter_instance') {
             const instanceData = msg.payload;
+            console.log(`GameEngine: Received enter_instance. ID: ${instanceData.instanceId}, Type: ${instanceData.type}`);
             this.enterInstance(instanceData.instanceId, instanceData.type, instanceData.layout);
         } else if (msg.type === 'get_dungeon_status') {
             if (this.uiManager) {
@@ -1175,6 +1179,17 @@ export class GameEngine {
                 if (pData.id === this.player.id) {
                     // Update local player stats from server
                     if (this.player) {
+                        // Initialize currentInstanceId if null (first connection)
+                        if (!this.currentInstanceId && pData.instanceId) {
+                            this.currentInstanceId = pData.instanceId;
+                        }
+
+                        // Check for instance mismatch (ignore stale state updates during transition)
+                        if (pData.instanceId && this.currentInstanceId && pData.instanceId !== this.currentInstanceId) {
+                            // console.log(`Ignoring state update from wrong instance: ${pData.instanceId} vs ${this.currentInstanceId}`);
+                            return;
+                        }
+
                         let justRespawned = false;
 
                         // Sync State
@@ -1206,7 +1221,7 @@ export class GameEngine {
                             const serverPos = new THREE.Vector3(pData.x, pData.y || 0, pData.z);
                             const dist = this.player.position.distanceTo(serverPos);
                             if (dist > 20.0) { // Threshold for teleport (larger than normal lag correction)
-                                console.log("GameEngine: Detected server teleport, syncing position.");
+                                console.log(`GameEngine: Detected server teleport, syncing position. Dist: ${dist}, Server: ${serverPos.x},${serverPos.z}, Client: ${this.player.position.x},${this.player.position.z}`);
                                 this.player.position.copy(serverPos);
                                 this.player.targetPosition = null;
                                 this.chunkManager.updateEntityChunk(this.player);

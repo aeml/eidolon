@@ -1248,6 +1248,7 @@ func (c *Client) handleMessage(msg Message) {
 			distSq := dx*dx + dz*dz
 			if distSq > 100*100 { // 100 units max jump per frame
 				// Ignore this move packet, it's likely from the previous context
+				// log.Printf("Ignored large move for %s: distSq=%f", c.playerID, distSq)
 				return
 			}
 		}
@@ -2041,6 +2042,7 @@ func (c *Client) handleMessage(msg Message) {
 		world.PerformRespawn(c.playerID)
 
 		if wasInInstance {
+			log.Printf("Respawn: Sending return to overworld for %s", c.playerID)
 			// Send "return to overworld" message
 			resp := map[string]interface{}{
 				"instanceId": "",
@@ -2067,6 +2069,7 @@ func (c *Client) handleMessage(msg Message) {
 		world.PerformRecall(c.playerID)
 
 		if wasInInstance {
+			log.Printf("Recall: Sending return to overworld for %s", c.playerID)
 			// Send "return to overworld" message
 			resp := map[string]interface{}{
 				"instanceId": "",
