@@ -270,17 +270,28 @@ func (sm *SpatialMap) Update(e *Entity, oldX, oldZ float64) {
 func (sm *SpatialMap) Nearby(x, z, radius float64, instanceID string) []*Entity {
 	sm.Mu.RLock()
 	defer sm.Mu.RUnlock()
-	var result []*Entity
+
+	// Pre-allocate with estimated capacity to reduce allocations
+	result := make([]*Entity, 0, 32)
+
 	minX := int(math.Floor((x - radius) / sm.cellSize))
 	maxX := int(math.Floor((x + radius) / sm.cellSize))
 	minZ := int(math.Floor((z - radius) / sm.cellSize))
 	maxZ := int(math.Floor((z + radius) / sm.cellSize))
 
+	// Use strings.Builder to reduce string allocations in hot path
+	var keyBuilder strings.Builder
+	keyBuilder.Grow(32) // Pre-allocate for typical key size
+
 	for cx := minX; cx <= maxX; cx++ {
 		for cz := minZ; cz <= maxZ; cz++ {
-			k := fmt.Sprintf("%s:%d:%d", instanceID, cx, cz)
-			for _, e := range sm.cells[k] {
-				result = append(result, e)
+			keyBuilder.Reset()
+			fmt.Fprintf(&keyBuilder, "%s:%d:%d", instanceID, cx, cz)
+			k := keyBuilder.String()
+			if cell := sm.cells[k]; cell != nil {
+				for _, e := range cell {
+					result = append(result, e)
+				}
 			}
 		}
 	}
@@ -5955,11 +5966,15 @@ func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[str
 	// Query Grid
 	nearby := w.Grid.Nearby(player.X, player.Z, viewDistance, player.InstanceID)
 
-	// Optimization: Pre-allocate map size to avoid re-allocations
-	state := make(map[string]*Entity, len(nearby)+1)
+	// Optimization: Pre-allocate map with expected capacity
+	// +10 for self, NPCs, and some buffer
+	state := make(map[string]*Entity, len(nearby)+10)
 
 	// Always include self
 	state[playerID] = w.copyEntity(player)
+
+	// Pre-compute squared view distance to avoid sqrt in loop
+	viewDistSq := viewDistance * viewDistance
 
 	for _, v := range nearby {
 		if v.ID == playerID {
@@ -5969,12 +5984,12 @@ func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[str
 			log.Printf("CRITICAL: GetStateForPlayer LEAK! Player %s (Inst: %s) sees %s (Inst: %s)", playerID, player.InstanceID, v.ID, v.InstanceID)
 			continue
 		}
-		// Precise distance check
+		// Precise distance check using squared distance (avoids sqrt)
 		dx := v.X - player.X
 		dz := v.Z - player.Z
 		distSq := dx*dx + dz*dz
 
-		if distSq <= viewDistance*viewDistance {
+		if distSq <= viewDistSq {
 			state[v.ID] = w.copyEntity(v)
 		}
 	}
@@ -5982,75 +5997,78 @@ func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[str
 }
 
 func (w *World) copyEntity(v *Entity) *Entity {
-	// Shallow copy & strip
-	// Manual copy to avoid copying mutex
+	// Optimized: Only copy essential fields based on entity type
+	// Enemies don't need inventory, stash, equipment details, etc.
+	// This significantly reduces JSON payload size for state broadcasts
+
 	e := Entity{
-		ID:                v.ID,
-		InstanceID:        v.InstanceID,
-		Name:              v.Name,
-		Type:              v.Type,
-		SubType:           v.SubType,
-		X:                 v.X,
-		Y:                 v.Y,
-		Z:                 v.Z,
-		Rotation:          v.Rotation,
-		Health:            v.Health,
-		MaxHealth:         v.MaxHealth,
-		Mana:              v.Mana,
-		MaxMana:           v.MaxMana,
-		Level:             v.Level,
-		Experience:        v.Experience,
-		MaxExperience:     v.MaxExperience,
-		Gold:              v.Gold,
-		LastDailyQuest:    v.LastDailyQuest,
-		SkillPoints:       v.SkillPoints,
-		SelectedBranch:    v.SelectedBranch,
-		UnlockedSkills:    v.UnlockedSkills,
-		BaseStats:         v.BaseStats,
-		Stats:             v.Stats,
-		Damage:            v.Damage,
-		Defense:           v.Defense,
-		Speed:             v.Speed,
-		AttackSpeed:       v.AttackSpeed,
-		CooldownReduction: v.CooldownReduction,
-		HpRegen:           v.HpRegen,
-		ManaRegen:         v.ManaRegen,
-		CastSpeed:         v.CastSpeed,
-		TargetX:           v.TargetX,
-		TargetZ:           v.TargetZ,
-		SpawnX:            v.SpawnX,
-		SpawnZ:            v.SpawnZ,
-		State:             v.State,
-		LastAttackTime:    v.LastAttackTime,
-		AttackCooldown:    v.AttackCooldown,
-		LastAbilityTime:   v.LastAbilityTime,
-		AbilityCooldown:   v.AbilityCooldown,
-		LastRespawnTime:   v.LastRespawnTime,
-		LootItem:          v.LootItem,
-		LootTime:          v.LootTime,
-		CreatedAt:         v.CreatedAt,
-		OwnerID:           v.OwnerID,
-		VelX:              v.VelX,
-		VelZ:              v.VelZ,
-		Radius:            v.Radius,
-		SpiritsActive:     v.SpiritsActive,
-		SpiritEndTime:     v.SpiritEndTime,
-		LastSpiritTick:    v.LastSpiritTick,
-		IsCharging:        v.IsCharging,
-		ChargeTargetX:     v.ChargeTargetX,
-		ChargeTargetZ:     v.ChargeTargetZ,
-		Equipment:         v.Equipment,
+		ID:         v.ID,
+		InstanceID: v.InstanceID,
+		Name:       v.Name,
+		Type:       v.Type,
+		SubType:    v.SubType,
+		X:          v.X,
+		Y:          v.Y,
+		Z:          v.Z,
+		Rotation:   v.Rotation,
+		Health:     v.Health,
+		MaxHealth:  v.MaxHealth,
+		Level:      v.Level,
+		State:      v.State,
+		Scale:      v.Scale,
 	}
 
-	if len(e.Equipment) > 0 {
-		newEquip := make(map[string]Item)
-		for slot, item := range e.Equipment {
-			newItem := item
-			newItem.Description = ""
-			newEquip[slot] = newItem
+	// Add type-specific fields
+	switch v.Type {
+	case TypePlayer:
+		// Players need full stats and equipment for UI
+		e.Mana = v.Mana
+		e.MaxMana = v.MaxMana
+		e.Experience = v.Experience
+		e.MaxExperience = v.MaxExperience
+		e.Gold = v.Gold
+		e.SkillPoints = v.SkillPoints
+		e.SelectedBranch = v.SelectedBranch
+		e.UnlockedSkills = v.UnlockedSkills
+		e.BaseStats = v.BaseStats
+		e.Stats = v.Stats
+		e.Damage = v.Damage
+		e.Defense = v.Defense
+		e.Speed = v.Speed
+		e.AttackSpeed = v.AttackSpeed
+		e.CooldownReduction = v.CooldownReduction
+		e.HpRegen = v.HpRegen
+		e.ManaRegen = v.ManaRegen
+		e.CastSpeed = v.CastSpeed
+		e.SpiritsActive = v.SpiritsActive
+		e.IsCharging = v.IsCharging
+		e.ChargeTargetX = v.ChargeTargetX
+		e.ChargeTargetZ = v.ChargeTargetZ
+		if len(v.Equipment) > 0 {
+			newEquip := make(map[string]Item, len(v.Equipment))
+			for slot, item := range v.Equipment {
+				newItem := item
+				newItem.Description = "" // Strip description to save bandwidth
+				newEquip[slot] = newItem
+			}
+			e.Equipment = newEquip
 		}
-		e.Equipment = newEquip
+	case TypeEnemy:
+		// Enemies only need combat-relevant stats
+		e.Damage = v.Damage
+		e.AttackSpeed = v.AttackSpeed
+		e.IsCharging = v.IsCharging
+	case TypeProjectile:
+		// Projectiles need velocity and owner
+		e.OwnerID = v.OwnerID
+		e.VelX = v.VelX
+		e.VelZ = v.VelZ
+		e.Radius = v.Radius
+	case TypeLoot:
+		// Loot needs item info
+		e.LootItem = v.LootItem
 	}
+
 	return &e
 }
 
