@@ -2085,6 +2085,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 			// Respawn Logic for normal mobs
 			if time.Since(e.LastAttackTime) > 10*time.Second {
+				// Do not respawn enemies in dungeons
+				if strings.HasPrefix(e.InstanceID, "dungeon_") {
+					e.Mu.Unlock()
+					return
+				}
+
 				e.State = "IDLE"
 				e.Health = e.MaxHealth
 				oldX, oldZ := e.X, e.Z
