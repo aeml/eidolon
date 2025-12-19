@@ -6521,8 +6521,19 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 	oldInstanceID := player.InstanceID
 	log.Printf("EnterInstance: Player %s moving from '%s' to '%s'", playerID, oldInstanceID, instanceID)
 	player.InstanceID = instanceID
-	player.X = 0
-	player.Z = 0
+
+	// Set Spawn Position based on Dungeon Layout
+	startX, startZ := 0.0, 0.0
+	if strings.HasPrefix(instanceID, "dungeon_") {
+		if inst, ok := w.InstanceLayouts[instanceID]; ok && len(inst.Layout.Rooms) > 0 {
+			startX = inst.Layout.Rooms[0].X
+			startZ = inst.Layout.Rooms[0].Z
+		}
+	}
+	player.X = startX
+	player.Z = startZ
+	player.TargetX = startX
+	player.TargetZ = startZ
 
 	w.Grid.Add(player)
 
