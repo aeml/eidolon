@@ -117,7 +117,7 @@ var BaseItems = []BaseItem{
 
 	// Materials & Relics
 	{"Shard", ItemMaterial, "material", "", 0, ""},
-	{"Heart", ItemRelic, "relic", "", 0, ""},
+	{"Eidolon Heart", ItemRelic, "relic", "", 0, ""},
 }
 
 var StatPool = []string{"strength", "dexterity", "intelligence", "wisdom", "vitality"}
@@ -274,7 +274,7 @@ func GenerateShardLoot(isElite bool) []*Item {
 	}
 
 	if rand.Float64() < heartChance {
-		baseHeart := BaseItem{Name: "Heart", Type: ItemRelic, Slot: "relic"}
+		baseHeart := BaseItem{Name: "Eidolon Heart", Type: ItemRelic, Slot: "relic"}
 		item := createItem(baseHeart, RarityEidolic, 1.0, 0, 1)
 		item.MaxStack = 1000
 		item.Icon = "assets/items/eidolon_heart/eidolon_heart.png"
@@ -288,7 +288,7 @@ func GenerateBossHearts() []*Item {
 	count := rand.Intn(3) + 1 // 1 to 3
 	var items []*Item
 	for i := 0; i < count; i++ {
-		baseHeart := BaseItem{Name: "Heart", Type: ItemRelic, Slot: "relic"}
+		baseHeart := BaseItem{Name: "Eidolon Heart", Type: ItemRelic, Slot: "relic"}
 		item := createItem(baseHeart, RarityEidolic, 1.0, 0, 1)
 		item.MaxStack = 1000
 		item.Icon = "assets/items/eidolon_heart/eidolon_heart.png"
@@ -306,7 +306,7 @@ func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCo
 			desc = "What remains after purpose is broken."
 			rarity = RarityEidolic
 			icon = "assets/items/eidolon_shard/eidolon_shard.png"
-		} else if baseItem.Name == "Heart" {
+		} else if baseItem.Name == "Eidolon Heart" {
 			desc = "Power that chose to endure."
 			rarity = RarityEidolic
 			icon = "assets/items/eidolon_heart/eidolon_heart.png"

@@ -2361,7 +2361,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				w.Grid.Update(e, oldX, oldZ)
 
 				// Impact Damage
-				damage := int(float64(e.Damage) * 1.5)
+				damage := int(float64(e.Damage) * 1.5 * 1.3)
 				e.Mu.Unlock() // Unlock before interaction
 
 				nearby := w.Grid.Nearby(e.ChargeTargetX, e.ChargeTargetZ, 16.0, e.InstanceID)
@@ -2774,6 +2774,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			return
 		}
 
+		// Force IDLE state if we are past lockDuration but before next attack
+		// This ensures the state flips ATTACKING -> IDLE -> ATTACKING
+		if time.Since(e.LastAttackTime) >= lockDuration && time.Since(e.LastAttackTime) < e.AttackCooldown {
+			e.State = "IDLE"
+			return
+		}
+
 		if target != nil && minDist <= sightRange {
 			if minDist <= attackRange {
 				// Attack
@@ -2781,9 +2788,6 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					e.Mu.Unlock() // Unlock self before interaction
 					w.PerformAttack(e.ID, target.ID)
 					e.Mu.Lock() // Relock self
-				} else {
-					// Waiting for cooldown, reset to IDLE so client knows animation finished
-					e.State = "IDLE"
 				}
 			} else {
 				// Chase
@@ -3024,6 +3028,12 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	dist := math.Sqrt(dx*dx + dz*dz)
 
 	attackRange := 5.0 // Default Melee range
+
+	// Adjust range for scale (Bosses)
+	if attacker.Scale > 1.0 {
+		attackRange += (attacker.Scale - 1.0) * 1.5
+	}
+
 	switch attacker.SubType {
 	case "Wizard", "Rogue":
 		attackRange = 100.0 // Ranged - effectively infinite
@@ -3070,8 +3080,8 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		// Bosses ignore 50% of defense
 		bosses := map[string]bool{
 			"InfernoTitan": true, "Siren": true, "FrostGuardian": true,
-			"MountainTroll": true, "AquaGolem": true, "Rootbound Warden": true,
-			"Briar Matron": true, "Rustbound Colossus": true, "Hollow Sentinel": true,
+			"MountainTroll": true, "AquaGolem": true, "RootboundWarden": true,
+			"BriarMatron": true, "RustboundColossus": true, "HollowSentinel": true,
 			"Avenging Seraph": true,
 		}
 		if bosses[att.SubType] {
@@ -3218,7 +3228,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				// AoE Damage around player
 				radius := 6.0
-				damage := int(float64(player.Damage)*0.8) + (player.Stats.Strength * 2)
+				damage := int((float64(player.Damage)*0.8 + float64(player.Stats.Strength)*2) * 1.3)
 
 				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
@@ -3269,7 +3279,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				rangeDist := 4.0
 				angleThreshold := math.Pi / 4 // 45 degrees
-				damage := int(float64(player.Stats.Strength) * 1.5)
+				damage := int(float64(player.Stats.Strength) * 1.5 * 1.3)
 
 				pDirX := math.Sin(player.Rotation)
 				pDirZ := math.Cos(player.Rotation)
@@ -3325,7 +3335,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				rangeDist := 5.0
 				angleThreshold := math.Pi / 2 // 90 degrees
-				damage := int(float64(player.Stats.Strength) * 1.2)
+				damage := int(float64(player.Stats.Strength) * 1.2 * 1.3)
 
 				pDirX := math.Sin(player.Rotation)
 				pDirZ := math.Cos(player.Rotation)
@@ -3380,7 +3390,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				radius := 6.0
-				damage := player.Stats.Strength * 2
+				damage := int(float64(player.Stats.Strength) * 2 * 1.3)
 
 				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
@@ -3475,7 +3485,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				radius := 10.0
-				damage := player.Stats.Strength * 1
+				damage := int(float64(player.Stats.Strength) * 1 * 1.3)
 
 				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
@@ -3534,7 +3544,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				radius := 6.0
-				damage := int(float64(player.Damage)*1.0) + (player.Stats.Strength * 3)
+				damage := int((float64(player.Damage)*1.0 + float64(player.Stats.Strength)*3) * 1.3)
 
 				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
@@ -5633,10 +5643,10 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					for _, mid := range memberIDs {
 						member := w.GetEntity(mid)
 						if member != nil {
-							// Check distance (e.g., 50 units) to share XP
+							// Check distance (e.g., 200 units) to share XP
 							dx := member.X - tX
 							dz := member.Z - tZ
-							if math.Sqrt(dx*dx+dz*dz) <= 50.0 {
+							if math.Sqrt(dx*dx+dz*dz) <= 200.0 {
 								partyMembers = append(partyMembers, member)
 							}
 						}
