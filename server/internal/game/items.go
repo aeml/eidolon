@@ -284,6 +284,19 @@ func GenerateShardLoot(isElite bool) []*Item {
 	return items
 }
 
+func GenerateBossHearts() []*Item {
+	count := rand.Intn(3) + 1 // 1 to 3
+	var items []*Item
+	for i := 0; i < count; i++ {
+		baseHeart := BaseItem{Name: "Heart", Type: ItemRelic, Slot: "relic"}
+		item := createItem(baseHeart, RarityEidolic, 1.0, 0, 1)
+		item.MaxStack = 1000
+		item.Icon = "assets/items/eidolon_heart/eidolon_heart.png"
+		items = append(items, item)
+	}
+	return items
+}
+
 func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCount int, level int) *Item {
 	// Special handling for Materials/Relics
 	if baseItem.Type == ItemMaterial || baseItem.Type == ItemRelic {
