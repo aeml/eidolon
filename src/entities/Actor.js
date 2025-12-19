@@ -607,8 +607,15 @@ export class Actor extends Entity {
                 if (this.currentAction && this.stats.attackSpeed) {
                     const cooldown = this.stats.attackSpeed;
                     const clipDuration = this.currentAction.getClip().duration;
+                    
                     // Play slightly faster (90% of cooldown) to ensure it finishes before server state reset
-                    const timeScale = clipDuration / (cooldown * 0.9);
+                    // For RootboundWarden, play even faster (70%) to align hit with server damage (35%)
+                    let speedFactor = 0.9;
+                    if (this.type === 'RootboundWarden') {
+                        speedFactor = 0.7;
+                    }
+                    
+                    const timeScale = clipDuration / (cooldown * speedFactor);
                     this.currentAction.setEffectiveTimeScale(timeScale);
                 }
             } else if (this.isCharging) {
