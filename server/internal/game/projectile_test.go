@@ -6,7 +6,7 @@ import (
 )
 
 func TestProjectilePiercing(t *testing.T) {
-	w := NewWorld()
+	w := NewWorld(nil)
 	// Clear initial entities to avoid noise
 	w.Entities = make(map[string]*Entity)
 	w.Grid = NewSpatialMap(50.0)
@@ -79,7 +79,7 @@ func TestProjectilePiercing(t *testing.T) {
 }
 
 func TestProjectileNonPiercing(t *testing.T) {
-	w := NewWorld()
+	w := NewWorld(nil)
 	w.Entities = make(map[string]*Entity)
 	w.Grid = NewSpatialMap(50.0)
 
@@ -123,7 +123,7 @@ func TestProjectileNonPiercing(t *testing.T) {
 
 func TestProjectileHitListInitialization(t *testing.T) {
 	// Ensure HitList is initialized correctly if nil
-	w := NewWorld()
+	w := NewWorld(nil)
 	w.Entities = make(map[string]*Entity)
 	w.Grid = NewSpatialMap(50.0)
 

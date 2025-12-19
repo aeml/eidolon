@@ -5,7 +5,7 @@ import (
 )
 
 func TestNewWorld(t *testing.T) {
-	w := NewWorld()
+	w := NewWorld(nil)
 	if w == nil {
 		t.Fatal("NewWorld returned nil")
 	}
@@ -19,7 +19,7 @@ func TestNewWorld(t *testing.T) {
 }
 
 func TestAddRemoveEntity(t *testing.T) {
-	w := NewWorld()
+	w := NewWorld(nil)
 	e := &Entity{
 		ID:   "player-1",
 		Type: TypePlayer,
@@ -40,7 +40,7 @@ func TestAddRemoveEntity(t *testing.T) {
 }
 
 func TestWorldUpdate(t *testing.T) {
-	w := NewWorld()
+	w := NewWorld(nil)
 	// Add a moving enemy outside safe zone (> 50)
 	e := &Entity{
 		ID:      "enemy-1",
@@ -69,7 +69,7 @@ func TestWorldUpdate(t *testing.T) {
 }
 
 func TestGetState(t *testing.T) {
-	w := NewWorld()
+	w := NewWorld(nil)
 	e := &Entity{ID: "p1", Type: TypePlayer}
 	w.AddEntity(e)
 

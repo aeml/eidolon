@@ -995,12 +995,22 @@ export class GameEngine {
         }
 
         // Reset player position and state
-        this.player.position.set(0, 0.5, 0);
+        let startX = 0;
+        let startZ = 0;
+
+        if (layout && layout.rooms && layout.rooms.length > 0) {
+            const startRoom = layout.rooms[0];
+            startX = startRoom.x;
+            startZ = startRoom.z;
+        }
+
+        this.player.position.set(startX, 0.5, startZ);
+
         if (this.player.mesh) {
-            this.player.mesh.position.set(0, 0.5, 0);
+            this.player.mesh.position.set(startX, 0.5, startZ);
             this.renderSystem.scene.add(this.player.mesh); // Ensure player is in scene
             this.player.mesh.visible = true;
-            console.log("Player mesh re-added to scene at 0,0.5,0");
+            console.log(`Player mesh re-added to scene at ${startX},0.5,${startZ}`);
         } else {
             console.error("Player mesh missing during instance entry!");
         }
