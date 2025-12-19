@@ -2023,13 +2023,53 @@ func (c *Client) handleMessage(msg Message) {
 		if c.playerID == "" {
 			return
 		}
+
+		// Check if in instance before respawn resets it
+		p := world.GetEntity(c.playerID)
+		wasInInstance := p != nil && p.InstanceID != ""
+
 		world.PerformRespawn(c.playerID)
+
+		if wasInInstance {
+			// Send "return to overworld" message
+			resp := map[string]interface{}{
+				"instanceId": "",
+				"type":       "overworld",
+			}
+			payloadBytes, _ := json.Marshal(resp)
+			msg := Message{
+				Type:    MsgEnterInstance,
+				Payload: payloadBytes,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
 
 	case MsgRecall:
 		if c.playerID == "" {
 			return
 		}
+
+		// Check if in instance before recall resets it
+		p := world.GetEntity(c.playerID)
+		wasInInstance := p != nil && p.InstanceID != ""
+
 		world.PerformRecall(c.playerID)
+
+		if wasInInstance {
+			// Send "return to overworld" message
+			resp := map[string]interface{}{
+				"instanceId": "",
+				"type":       "overworld",
+			}
+			payloadBytes, _ := json.Marshal(resp)
+			msg := Message{
+				Type:    MsgEnterInstance,
+				Payload: payloadBytes,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
 
 	case MsgReport:
 		var payload ReportPayload
