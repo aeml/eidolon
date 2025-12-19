@@ -886,9 +886,27 @@ func (c *Client) handleMessage(msg Message) {
 				}
 				// Fix for old items (Shards/Hearts missing MaxStack)
 				maxStack := dbItem.MaxStack
-				if (dbItem.Name == "Shard" || dbItem.Name == "Heart") && maxStack == 0 {
+				if (dbItem.Name == "Shard" || dbItem.Name == "Eidolon Shard" || dbItem.Name == "Heart" || dbItem.Name == "Eidolon Heart") && maxStack == 0 {
 					maxStack = 1000
 				}
+
+				// Migration: Rename "Heart" to "Eidolon Heart"
+				name := dbItem.Name
+				if name == "Heart" {
+					name = "Eidolon Heart"
+					// Also update icon if needed
+					if dbItem.Icon == "" || dbItem.Icon == "assets/items/heart.png" {
+						dbItem.Icon = "assets/items/eidolon_heart/eidolon_heart.png"
+					}
+				}
+				// Migration: Rename "Shard" to "Eidolon Shard"
+				if name == "Shard" {
+					name = "Eidolon Shard"
+					if dbItem.Icon == "" || dbItem.Icon == "assets/items/shard.png" {
+						dbItem.Icon = "assets/items/eidolon_shard/eidolon_shard.png"
+					}
+				}
+
 				// Fix for old items (Missing Stack count)
 				stack := dbItem.Stack
 				if stack == 0 {
@@ -897,7 +915,7 @@ func (c *Client) handleMessage(msg Message) {
 
 				entity.Inventory[i] = game.Item{
 					ID:          dbItem.ID,
-					Name:        dbItem.Name,
+					Name:        name,
 					Type:        game.ItemType(dbItem.Type),
 					Rarity:      game.ItemRarity(dbItem.Rarity),
 					Slot:        dbItem.Slot,
@@ -921,9 +939,26 @@ func (c *Client) handleMessage(msg Message) {
 			for i, dbItem := range char.Stash {
 				// Fix for old items
 				maxStack := dbItem.MaxStack
-				if (dbItem.Name == "Shard" || dbItem.Name == "Heart") && maxStack == 0 {
+				if (dbItem.Name == "Shard" || dbItem.Name == "Eidolon Shard" || dbItem.Name == "Heart" || dbItem.Name == "Eidolon Heart") && maxStack == 0 {
 					maxStack = 1000
 				}
+
+				// Migration: Rename "Heart" to "Eidolon Heart"
+				name := dbItem.Name
+				if name == "Heart" {
+					name = "Eidolon Heart"
+					if dbItem.Icon == "" || dbItem.Icon == "assets/items/heart.png" {
+						dbItem.Icon = "assets/items/eidolon_heart/eidolon_heart.png"
+					}
+				}
+				// Migration: Rename "Shard" to "Eidolon Shard"
+				if name == "Shard" {
+					name = "Eidolon Shard"
+					if dbItem.Icon == "" || dbItem.Icon == "assets/items/shard.png" {
+						dbItem.Icon = "assets/items/eidolon_shard/eidolon_shard.png"
+					}
+				}
+
 				stack := dbItem.Stack
 				if stack == 0 {
 					stack = 1
@@ -931,7 +966,7 @@ func (c *Client) handleMessage(msg Message) {
 
 				entity.Stash[i] = game.Item{
 					ID:          dbItem.ID,
-					Name:        dbItem.Name,
+					Name:        name,
 					Type:        game.ItemType(dbItem.Type),
 					Rarity:      game.ItemRarity(dbItem.Rarity),
 					Slot:        dbItem.Slot,
@@ -955,9 +990,26 @@ func (c *Client) handleMessage(msg Message) {
 			for i, dbItem := range char.Buyback {
 				// Fix for old items
 				maxStack := dbItem.MaxStack
-				if (dbItem.Name == "Shard" || dbItem.Name == "Heart") && maxStack == 0 {
+				if (dbItem.Name == "Shard" || dbItem.Name == "Eidolon Shard" || dbItem.Name == "Heart" || dbItem.Name == "Eidolon Heart") && maxStack == 0 {
 					maxStack = 1000
 				}
+
+				// Migration: Rename "Heart" to "Eidolon Heart"
+				name := dbItem.Name
+				if name == "Heart" {
+					name = "Eidolon Heart"
+					if dbItem.Icon == "" || dbItem.Icon == "assets/items/heart.png" {
+						dbItem.Icon = "assets/items/eidolon_heart/eidolon_heart.png"
+					}
+				}
+				// Migration: Rename "Shard" to "Eidolon Shard"
+				if name == "Shard" {
+					name = "Eidolon Shard"
+					if dbItem.Icon == "" || dbItem.Icon == "assets/items/shard.png" {
+						dbItem.Icon = "assets/items/eidolon_shard/eidolon_shard.png"
+					}
+				}
+
 				stack := dbItem.Stack
 				if stack == 0 {
 					stack = 1
@@ -965,7 +1017,7 @@ func (c *Client) handleMessage(msg Message) {
 
 				entity.Buyback[i] = game.Item{
 					ID:          dbItem.ID,
-					Name:        dbItem.Name,
+					Name:        name,
 					Type:        game.ItemType(dbItem.Type),
 					Rarity:      game.ItemRarity(dbItem.Rarity),
 					Slot:        dbItem.Slot,

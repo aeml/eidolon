@@ -85,7 +85,7 @@ export const BASE_ITEMS = [
     { name: 'Orb of Mana', type: 'ACCESSORY', slot: SLOTS.TRINKET, baseStat: 'intelligence', baseValue: 10 },
 
     // Materials & Relics
-    { name: 'Shard', type: 'MATERIAL', slot: SLOTS.MATERIAL, baseStat: '', baseValue: 0 },
+    { name: 'Eidolon Shard', type: 'MATERIAL', slot: SLOTS.MATERIAL, baseStat: '', baseValue: 0 },
     { name: 'Eidolon Heart', type: 'RELIC', slot: SLOTS.RELIC, baseStat: '', baseValue: 0 }
 ];
 
@@ -172,7 +172,7 @@ export class ItemGenerator {
             let icon = "";
             let finalRarity = rarity;
 
-            if (baseItem.name === "Shard") {
+            if (baseItem.name === "Eidolon Shard") {
                 desc = "What remains after purpose is broken.";
                 finalRarity = RARITY.EIDOLIC;
                 icon = "assets/items/eidolon_shard/eidolon_shard.png";
