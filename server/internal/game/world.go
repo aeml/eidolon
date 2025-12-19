@@ -1874,6 +1874,18 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 			updated = true
 		}
 
+		// Check for Dungeon Bosses Quest
+		hasDungeonBosses := false
+		for _, q := range player.Quests {
+			if q.ID == "daily_dungeon_bosses" {
+				hasDungeonBosses = true
+			}
+		}
+		if !hasDungeonBosses {
+			player.Quests = append(player.Quests, Quest{ID: "daily_dungeon_bosses", Type: "KILL", Target: "DungeonBoss", Count: 0, MaxCount: 4, RewardXP: 5000000, Completed: false, Accepted: false})
+			updated = true
+		}
+
 		// Sort quests by RewardXP to ensure they are in order of difficulty
 		sort.Slice(player.Quests, func(i, j int) bool {
 			return player.Quests[i].RewardXP < player.Quests[j].RewardXP
@@ -1898,6 +1910,7 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 		{ID: "daily_aquagolem", Type: "KILL", Target: "AquaGolem", Count: 0, MaxCount: 100, RewardXP: 1600000, Completed: false, Accepted: false},
 		{ID: "daily_siren", Type: "KILL", Target: "Siren", Count: 0, MaxCount: 100, RewardXP: 2200000, Completed: false, Accepted: false},
 		{ID: "daily_frostguardian", Type: "KILL", Target: "FrostGuardian", Count: 0, MaxCount: 100, RewardXP: 3000000, Completed: false, Accepted: false},
+		{ID: "daily_dungeon_bosses", Type: "KILL", Target: "DungeonBoss", Count: 0, MaxCount: 4, RewardXP: 5000000, Completed: false, Accepted: false},
 	}
 	player.LastDailyQuest = now
 
@@ -2008,12 +2021,17 @@ func (w *World) PerformRespawn(playerID string) {
 	player.LastRespawnTime = time.Now()
 	player.Health = player.MaxHealth
 
-	oldX, oldZ := player.X, player.Z
+	// Remove from current grid location (which might be in an instance)
+	w.Grid.Remove(player)
+
 	player.X = -1.25
 	player.Z = 200
 	player.TargetX = -1.25
 	player.TargetZ = 200
-	w.Grid.Update(player, oldX, oldZ) // Force update to -1.25,200
+	player.InstanceID = "" // Reset to overworld
+
+	// Add back to grid in the new location/instance
+	w.Grid.Add(player)
 }
 
 func (w *World) PerformRecall(playerID string) {
@@ -2737,7 +2755,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		}
 
 		// Animation Lock: If attacking, stay attacking and don't move
-		if time.Since(e.LastAttackTime) < e.AttackCooldown {
+		// Only lock for 1s (animation duration) instead of full cooldown
+		if time.Since(e.LastAttackTime) < 1*time.Second {
 			if e.State != "ATTACKING" {
 				e.State = "ATTACKING"
 			}
@@ -3032,7 +3051,20 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		// However, locking both requires ordering.
 		// For now, let's assume reading att.Damage is "safe enough" or we RLock att.
 
-		damage := att.Damage - tgt.Defense
+		defense := tgt.Defense
+
+		// Bosses ignore 50% of defense
+		bosses := map[string]bool{
+			"InfernoTitan": true, "Siren": true, "FrostGuardian": true,
+			"MountainTroll": true, "AquaGolem": true, "Rootbound Warden": true,
+			"Briar Matron": true, "Rustbound Colossus": true, "Hollow Sentinel": true,
+			"Avenging Seraph": true,
+		}
+		if bosses[att.SubType] {
+			defense = defense / 2
+		}
+
+		damage := att.Damage - defense
 		if damage < 1 {
 			damage = 1
 		}
@@ -4178,20 +4210,21 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					damage := 15 + player.Stats.Intelligence
 
 					proj := &Entity{
-						ID:        fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
-						Type:      TypeProjectile,
-						SubType:   "ArcaneMissile",
-						X:         player.X,
-						Y:         1.5,
-						Z:         player.Z,
-						VelX:      velX,
-						VelZ:      velZ,
-						Radius:    1.0,
-						Damage:    damage,
-						OwnerID:   player.ID,
-						Rotation:  angle,
-						CreatedAt: time.Now(),
-						Scale:     1.0,
+						ID:         fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
+						InstanceID: player.InstanceID,
+						Type:       TypeProjectile,
+						SubType:    "ArcaneMissile",
+						X:          player.X,
+						Y:          1.5,
+						Z:          player.Z,
+						VelX:       velX,
+						VelZ:       velZ,
+						Radius:     1.0,
+						Damage:     damage,
+						OwnerID:    player.ID,
+						Rotation:   angle,
+						CreatedAt:  time.Now(),
+						Scale:      1.0,
 					}
 					w.Entities[proj.ID] = proj
 					w.Grid.Add(proj)
@@ -4390,19 +4423,20 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				damage := 15 + int(float64(player.Stats.Dexterity)*1.2)
 
 				proj := &Entity{
-					ID:        fmt.Sprintf("proj-%d", time.Now().UnixNano()),
-					Type:      TypeProjectile,
-					SubType:   "Dagger", // Reuse Dagger visual
-					X:         player.X,
-					Y:         1.0,
-					Z:         player.Z,
-					VelX:      velX,
-					VelZ:      velZ,
-					Radius:    1.5,
-					Damage:    damage,
-					OwnerID:   player.ID,
-					Rotation:  math.Atan2(velX, velZ),
-					CreatedAt: time.Now(),
+					ID:         fmt.Sprintf("proj-%d", time.Now().UnixNano()),
+					InstanceID: player.InstanceID,
+					Type:       TypeProjectile,
+					SubType:    "Dagger", // Reuse Dagger visual
+					X:          player.X,
+					Y:          1.0,
+					Z:          player.Z,
+					VelX:       velX,
+					VelZ:       velZ,
+					Radius:     1.5,
+					Damage:     damage,
+					OwnerID:    player.ID,
+					Rotation:   math.Atan2(velX, velZ),
+					CreatedAt:  time.Now(),
 					// Bounces logic would need to be in updateProjectiles, but for now just a projectile
 					Scale: 1.0,
 				}
@@ -4433,18 +4467,19 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				trap := &Entity{
-					ID:        fmt.Sprintf("trap-exp-%d", time.Now().UnixNano()),
-					Type:      TypeProjectile, // Handled in updateProjectiles
-					SubType:   "ExplosiveTrap",
-					X:         player.X,
-					Y:         0.5,
-					Z:         player.Z,
-					VelX:      0,
-					VelZ:      0,
-					Radius:    1.0,
-					Damage:    50 + (player.Stats.Dexterity * 3),
-					OwnerID:   player.ID,
-					CreatedAt: time.Now(),
+					ID:         fmt.Sprintf("trap-exp-%d", time.Now().UnixNano()),
+					InstanceID: player.InstanceID,
+					Type:       TypeProjectile, // Handled in updateProjectiles
+					SubType:    "ExplosiveTrap",
+					X:          player.X,
+					Y:          0.5,
+					Z:          player.Z,
+					VelX:       0,
+					VelZ:       0,
+					Radius:     1.0,
+					Damage:     50 + (player.Stats.Dexterity * 3),
+					OwnerID:    player.ID,
+					CreatedAt:  time.Now(),
 					// Custom field for trap duration? Projectiles usually expire by distance/time.
 					// We'll need to ensure updateProjectiles doesn't kill it immediately.
 				}
@@ -4463,18 +4498,19 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				trap := &Entity{
-					ID:        fmt.Sprintf("trap-snare-%d", time.Now().UnixNano()),
-					Type:      TypeProjectile,
-					SubType:   "SnareTrap",
-					X:         player.X,
-					Y:         0.5,
-					Z:         player.Z,
-					VelX:      0,
-					VelZ:      0,
-					Radius:    1.0,
-					Damage:    10, // Low damage, mostly root
-					OwnerID:   player.ID,
-					CreatedAt: time.Now(),
+					ID:         fmt.Sprintf("trap-snare-%d", time.Now().UnixNano()),
+					InstanceID: player.InstanceID,
+					Type:       TypeProjectile,
+					SubType:    "SnareTrap",
+					X:          player.X,
+					Y:          0.5,
+					Z:          player.Z,
+					VelX:       0,
+					VelZ:       0,
+					Radius:     1.0,
+					Damage:     10, // Low damage, mostly root
+					OwnerID:    player.ID,
+					CreatedAt:  time.Now(),
 				}
 				w.Entities[trap.ID] = trap
 				w.Grid.Add(trap)
@@ -4540,20 +4576,21 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				damage := 15 + int(float64(player.Stats.Dexterity)*1.5)
 
 				proj := &Entity{
-					ID:        fmt.Sprintf("proj-%d", time.Now().UnixNano()),
-					Type:      TypeProjectile,
-					SubType:   "Dagger",
-					X:         player.X,
-					Y:         1.0,
-					Z:         player.Z,
-					VelX:      velX,
-					VelZ:      velZ,
-					Radius:    1.5,
-					Damage:    damage,
-					OwnerID:   player.ID,
-					Rotation:  math.Atan2(velX, velZ),
-					CreatedAt: time.Now(),
-					Scale:     1.0,
+					ID:         fmt.Sprintf("proj-%d", time.Now().UnixNano()),
+					InstanceID: player.InstanceID,
+					Type:       TypeProjectile,
+					SubType:    "Dagger",
+					X:          player.X,
+					Y:          1.0,
+					Z:          player.Z,
+					VelX:       velX,
+					VelZ:       velZ,
+					Radius:     1.5,
+					Damage:     damage,
+					OwnerID:    player.ID,
+					Rotation:   math.Atan2(velX, velZ),
+					CreatedAt:  time.Now(),
+					Scale:      1.0,
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
@@ -4861,17 +4898,18 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				trap := &Entity{
-					ID:        fmt.Sprintf("trap-trip-%d", time.Now().UnixNano()),
-					Type:      TypeProjectile,
-					SubType:   "Tripwire",
-					X:         player.X,
-					Y:         0.1,
-					Z:         player.Z,
-					Radius:    1.5,
-					Damage:    20 + player.Stats.Dexterity,
-					OwnerID:   player.ID,
-					CreatedAt: time.Now(),
-					Scale:     1.0,
+					ID:         fmt.Sprintf("trap-trip-%d", time.Now().UnixNano()),
+					InstanceID: player.InstanceID,
+					Type:       TypeProjectile,
+					SubType:    "Tripwire",
+					X:          player.X,
+					Y:          0.1,
+					Z:          player.Z,
+					Radius:     1.5,
+					Damage:     20 + player.Stats.Dexterity,
+					OwnerID:    player.ID,
+					CreatedAt:  time.Now(),
+					Scale:      1.0,
 				}
 				w.Entities[trap.ID] = trap
 				w.Grid.Add(trap)
@@ -4903,20 +4941,21 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					offset := float64(i) * -5.0
 
 					proj := &Entity{
-						ID:        fmt.Sprintf("proj-phantom-%d-%d", time.Now().UnixNano(), i),
-						Type:      TypeProjectile,
-						SubType:   "PhantomArrow",
-						X:         player.X + (dirX * offset),
-						Y:         1.0,
-						Z:         player.Z + (dirZ * offset),
-						VelX:      dirX * 35.0,
-						VelZ:      dirZ * 35.0,
-						Radius:    0.5,
-						Damage:    25 + (player.Stats.Dexterity * 2),
-						OwnerID:   player.ID,
-						Rotation:  math.Atan2(dirX, dirZ),
-						CreatedAt: time.Now(),
-						Scale:     1.0,
+						ID:         fmt.Sprintf("proj-phantom-%d-%d", time.Now().UnixNano(), i),
+						InstanceID: player.InstanceID,
+						Type:       TypeProjectile,
+						SubType:    "PhantomArrow",
+						X:          player.X + (dirX * offset),
+						Y:          1.0,
+						Z:          player.Z + (dirZ * offset),
+						VelX:       dirX * 35.0,
+						VelZ:       dirZ * 35.0,
+						Radius:     0.5,
+						Damage:     25 + (player.Stats.Dexterity * 2),
+						OwnerID:    player.ID,
+						Rotation:   math.Atan2(dirX, dirZ),
+						CreatedAt:  time.Now(),
+						Scale:      1.0,
 					}
 					w.Entities[proj.ID] = proj
 					w.Grid.Add(proj)
@@ -5550,10 +5589,20 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 			// Boss Check
 			isBoss := false
-			bosses := []string{"InfernoTitan", "Siren", "FrostGuardian", "MountainTroll", "AquaGolem", "Rootbound Warden", "Briar Matron", "Rustbound Colossus", "Hollow Sentinel", "Avenging Seraph"}
+			bosses := []string{"Rootbound Warden", "Briar Matron", "Rustbound Colossus", "Hollow Sentinel", "Avenging Seraph"}
 			for _, b := range bosses {
 				if tSubType == b {
 					isBoss = true
+					break
+				}
+			}
+
+			// Dungeon Boss Check
+			isDungeonBoss := false
+			dungeonBosses := []string{"Rootbound Warden", "Briar Matron", "Rustbound Colossus", "Hollow Sentinel"}
+			for _, b := range dungeonBosses {
+				if tSubType == b {
+					isDungeonBoss = true
 					break
 				}
 			}
@@ -5590,6 +5639,10 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				xpPerMember := totalXP / len(partyMembers)
 				goldPerMember := totalGold / len(partyMembers)
 
+				if isBoss {
+					xpPerMember += 2000000
+				}
+
 				for _, member := range partyMembers {
 					member.Mu.Lock()
 					member.Experience += xpPerMember
@@ -5597,6 +5650,9 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 					// Update Quests for all party members
 					w.UpdateQuestProgress(member, tSubType)
+					if isDungeonBoss {
+						w.UpdateQuestProgress(member, "DungeonBoss")
+					}
 
 					// Level Up Logic
 					if member.MaxExperience == 0 {
@@ -5641,7 +5697,13 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			} else {
 				// Solo Logic
 				attacker.Mu.Lock()
-				attacker.Experience += baseXpReward
+
+				finalXp := baseXpReward
+				if isBoss {
+					finalXp += 2000000
+				}
+
+				attacker.Experience += finalXp
 				attacker.Gold += baseGold
 				if attacker.MaxExperience == 0 {
 					attacker.MaxExperience = 100
@@ -5649,6 +5711,9 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 				// Update Quests
 				w.UpdateQuestProgress(attacker, tSubType)
+				if isDungeonBoss {
+					w.UpdateQuestProgress(attacker, "DungeonBoss")
+				}
 
 				for attacker.Experience >= attacker.MaxExperience {
 					if attacker.Level >= 100 {
@@ -6073,7 +6138,21 @@ func (e *Entity) RecalculateStats() {
 	e.MaxMana = (totalInt * 10) + levelBonus
 	e.CooldownReduction = math.Min(0.5, float64(totalInt)*0.01)
 
-	e.Damage = (totalStr * 2) + flatDamage
+	if e.Type == TypePlayer {
+		switch e.SubType {
+		case "Rogue":
+			e.Damage = (totalDex / 4) + flatDamage
+		case "Wizard":
+			e.Damage = (totalInt / 4) + flatDamage
+		case "Cleric":
+			e.Damage = (totalWis / 4) + flatDamage
+		default: // Fighter and others
+			e.Damage = (totalStr / 4) + flatDamage
+		}
+	} else {
+		e.Damage = (totalStr * 2) + flatDamage
+	}
+
 	e.Defense = flatDefense
 
 	// Speed Calculation
@@ -6272,22 +6351,26 @@ func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
 		Rooms: []DungeonRoom{},
 	}
 
+	// Offset coordinates to avoid overworld overlap (e.g., 20000, 20000)
+	offsetX := 20000.0
+	offsetZ := 20000.0
+
 	// Start Room
-	layout.Rooms = append(layout.Rooms, DungeonRoom{X: 0, Z: 0, Width: 120, Height: 120, Type: "start", Color: 0x444444})
+	layout.Rooms = append(layout.Rooms, DungeonRoom{X: offsetX, Z: offsetZ, Width: 120, Height: 120, Type: "start", Color: 0x444444})
 
 	// Boss Milestones
 	bosses := []struct {
 		Name  string
 		Stats Stats
 	}{
-		{"RootboundWarden", Stats{Strength: 2000, Vitality: 1250000}},
-		{"BriarMatron", Stats{Strength: 2500, Vitality: 1350000}},
-		{"RustboundColossus", Stats{Strength: 3000, Vitality: 1500000}},
-		{"HollowSentinel", Stats{Strength: 3500, Vitality: 1750000}},
+		{"RootboundWarden", Stats{Strength: 2000, Vitality: 1250000, Dexterity: 150}},
+		{"BriarMatron", Stats{Strength: 2500, Vitality: 1350000, Dexterity: 200}},
+		{"RustboundColossus", Stats{Strength: 3000, Vitality: 1500000, Dexterity: 250}},
+		{"HollowSentinel", Stats{Strength: 3500, Vitality: 1750000, Dexterity: 300}},
 	}
 
-	currentX := 0.0
-	currentZ := 0.0
+	currentX := offsetX
+	currentZ := offsetZ
 
 	// Use a deterministic seed based on instanceID hash if possible,
 	// but for now we just use global rand since we store the layout.
@@ -6355,6 +6438,13 @@ func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
 }
 
 func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID string, stats Stats) {
+	// Calculate Attack Speed
+	speedMult := 1.0 + (float64(stats.Dexterity) * 0.02)
+	cooldown := 5.0 / speedMult
+	if cooldown < 0.5 {
+		cooldown = 0.5
+	}
+
 	boss := &Entity{
 		ID:             fmt.Sprintf("%s-%s", subType, instanceID),
 		InstanceID:     instanceID,
@@ -6370,10 +6460,10 @@ func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID str
 		MaxHealth:      stats.Vitality * 10,
 		State:          "IDLE",
 		Speed:          2.5,
-		AttackSpeed:    2.0,
-		AttackCooldown: 2 * time.Second,
+		AttackSpeed:    cooldown,
+		AttackCooldown: time.Duration(cooldown * float64(time.Second)),
 		Scale:          5.0, // 5x Scale
-		Damage:         stats.Strength * 5,
+		Damage:         stats.Strength * 10,
 	}
 	w.Entities[boss.ID] = boss
 	w.Grid.Add(boss)

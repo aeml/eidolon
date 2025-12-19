@@ -53,7 +53,9 @@ func NewTradingSystem(db *database.DB) *TradingSystem {
 		Auctions: make(map[string]*Auction),
 		db:       db,
 	}
-	ts.loadAuctions()
+	if db != nil {
+		ts.loadAuctions()
+	}
 	return ts
 }
 
