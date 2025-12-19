@@ -1,6 +1,13 @@
 import * as THREE from 'three';
 import { CONSTANTS } from './Constants.js';
 
+// Optimization: Reusable temp objects to avoid GC pressure
+const TEMP_VEC3 = new THREE.Vector3();
+const TEMP_POINT = new THREE.Vector3();
+const TEMP_PUSH = new THREE.Vector3();
+const TEMP_SPHERE = new THREE.Sphere();
+const TEMP_CLOSEST = new THREE.Vector3();
+
 export class CollisionManager {
     constructor() {
         this.colliders = []; // Array of THREE.Box3
@@ -13,7 +20,7 @@ export class CollisionManager {
     }
 
     addCircularCollider(x, z, radius) {
-        console.log(`Adding circular collider at ${x},${z} r=${radius}`);
+        // Debug logging removed for performance
         this.circularColliders.push({x, z, radius});
     }
 
@@ -28,9 +35,10 @@ export class CollisionManager {
     }
 
     isPositionSafe(x, z) {
-        const point = new THREE.Vector3(x, 0, z);
-        for (const zone of this.safeZones) {
-            if (zone.containsPoint(point)) {
+        // Reuse temp vector to avoid allocation
+        TEMP_POINT.set(x, 0, z);
+        for (let i = 0; i < this.safeZones.length; i++) {
+            if (this.safeZones[i].containsPoint(TEMP_POINT)) {
                 return true;
             }
         }
@@ -109,32 +117,36 @@ export class CollisionManager {
     // Returns the corrected position if collision occurs, or null if no collision
     checkCollision(position, radius, oldPosition = null) {
         let collided = false;
-        const tempPos = position.clone();
+        // Reuse temp vector instead of cloning
+        TEMP_VEC3.copy(position);
         
         // 1. Check World Bounds
         const bounds = CONSTANTS.SCENE.BOUNDS;
         
-        if (tempPos.x < bounds.MIN_X + radius) {
-            tempPos.x = bounds.MIN_X + radius;
+        if (TEMP_VEC3.x < bounds.MIN_X + radius) {
+            TEMP_VEC3.x = bounds.MIN_X + radius;
             collided = true;
-        } else if (tempPos.x > bounds.MAX_X - radius) {
-            tempPos.x = bounds.MAX_X - radius;
-            collided = true;
-        }
-
-        if (tempPos.z < bounds.MIN_Z + radius) {
-            tempPos.z = bounds.MIN_Z + radius;
-            collided = true;
-        } else if (tempPos.z > bounds.MAX_Z - radius) {
-            tempPos.z = bounds.MAX_Z - radius;
+        } else if (TEMP_VEC3.x > bounds.MAX_X - radius) {
+            TEMP_VEC3.x = bounds.MAX_X - radius;
             collided = true;
         }
 
-        // We treat the entity as a sphere/circle
-        const sphere = new THREE.Sphere(tempPos, radius);
+        if (TEMP_VEC3.z < bounds.MIN_Z + radius) {
+            TEMP_VEC3.z = bounds.MIN_Z + radius;
+            collided = true;
+        } else if (TEMP_VEC3.z > bounds.MAX_Z - radius) {
+            TEMP_VEC3.z = bounds.MAX_Z - radius;
+            collided = true;
+        }
 
-        for (const box of this.colliders) {
-            if (box.intersectsSphere(sphere)) {
+        // Reuse temp sphere instead of creating new one
+        TEMP_SPHERE.set(TEMP_VEC3, radius);
+
+        // Use indexed loop for slight performance gain
+        const collidersLen = this.colliders.length;
+        for (let i = 0; i < collidersLen; i++) {
+            const box = this.colliders[i];
+            if (box.intersectsSphere(TEMP_SPHERE)) {
                 collided = true;
                 
                 let preferredFace = null;
@@ -155,55 +167,56 @@ export class CollisionManager {
                 }
 
                 // Check if center is inside the box (Tunneling fix)
-                if (box.containsPoint(tempPos)) {
+                if (box.containsPoint(TEMP_VEC3)) {
                      const min = box.min;
                      const max = box.max;
                      const epsilon = 0.01;
                      
-                     if (preferredFace === 'minX') { tempPos.x = min.x - radius - epsilon; continue; }
-                     if (preferredFace === 'maxX') { tempPos.x = max.x + radius + epsilon; continue; }
-                     if (preferredFace === 'minZ') { tempPos.z = min.z - radius - epsilon; continue; }
-                     if (preferredFace === 'maxZ') { tempPos.z = max.z + radius + epsilon; continue; }
+                     if (preferredFace === 'minX') { TEMP_VEC3.x = min.x - radius - epsilon; continue; }
+                     if (preferredFace === 'maxX') { TEMP_VEC3.x = max.x + radius + epsilon; continue; }
+                     if (preferredFace === 'minZ') { TEMP_VEC3.z = min.z - radius - epsilon; continue; }
+                     if (preferredFace === 'maxZ') { TEMP_VEC3.z = max.z + radius + epsilon; continue; }
 
                      // Distances to each face
-                     const dx1 = tempPos.x - min.x;
-                     const dx2 = max.x - tempPos.x;
-                     const dz1 = tempPos.z - min.z;
-                     const dz2 = max.z - tempPos.z;
+                     const dx1 = TEMP_VEC3.x - min.x;
+                     const dx2 = max.x - TEMP_VEC3.x;
+                     const dz1 = TEMP_VEC3.z - min.z;
+                     const dz2 = max.z - TEMP_VEC3.z;
                      
                      // Find minimum penetration
                      const minP = Math.min(dx1, dx2, dz1, dz2);
                      
                      // Push out + radius buffer + epsilon
-                     if (minP === dx1) tempPos.x = min.x - radius - epsilon;
-                     else if (minP === dx2) tempPos.x = max.x + radius + epsilon;
-                     else if (minP === dz1) tempPos.z = min.z - radius - epsilon;
-                     else if (minP === dz2) tempPos.z = max.z + radius + epsilon;
+                     if (minP === dx1) TEMP_VEC3.x = min.x - radius - epsilon;
+                     else if (minP === dx2) TEMP_VEC3.x = max.x + radius + epsilon;
+                     else if (minP === dz1) TEMP_VEC3.z = min.z - radius - epsilon;
+                     else if (minP === dz2) TEMP_VEC3.z = max.z + radius + epsilon;
                      
                      continue;
                 }
 
-                // Find closest point on box to sphere center
-                const closestPoint = new THREE.Vector3();
-                box.clampPoint(tempPos, closestPoint);
+                // Find closest point on box to sphere center - reuse temp vector
+                box.clampPoint(TEMP_VEC3, TEMP_CLOSEST);
                 
-                // Calculate push vector
-                const push = new THREE.Vector3().subVectors(tempPos, closestPoint);
-                const distance = push.length();
+                // Calculate push vector - reuse temp vector
+                TEMP_PUSH.subVectors(TEMP_VEC3, TEMP_CLOSEST);
+                const distance = TEMP_PUSH.length();
                 
                 // Push out
                 if (distance < radius && distance > 0) {
-                    push.normalize();
-                    push.multiplyScalar(radius - distance);
-                    tempPos.add(push);
+                    TEMP_PUSH.normalize();
+                    TEMP_PUSH.multiplyScalar(radius - distance);
+                    TEMP_VEC3.add(TEMP_PUSH);
                 }
             }
         }
 
         // 3. Circular Colliders
-        for (const circle of this.circularColliders) {
-            const dx = tempPos.x - circle.x;
-            const dz = tempPos.z - circle.z;
+        const circularLen = this.circularColliders.length;
+        for (let i = 0; i < circularLen; i++) {
+            const circle = this.circularColliders[i];
+            const dx = TEMP_VEC3.x - circle.x;
+            const dz = TEMP_VEC3.z - circle.z;
             const distSq = dx*dx + dz*dz;
             const minDist = circle.radius + radius;
             
@@ -215,12 +228,12 @@ export class CollisionManager {
                     const overlap = minDist - dist;
                     const pushX = (dx / dist) * overlap;
                     const pushZ = (dz / dist) * overlap;
-                    tempPos.x += pushX;
-                    tempPos.z += pushZ;
+                    TEMP_VEC3.x += pushX;
+                    TEMP_VEC3.z += pushZ;
                 }
             }
         }
 
-        return collided ? tempPos : null;
+        return collided ? TEMP_VEC3.clone() : null;
     }
 }

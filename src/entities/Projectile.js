@@ -37,6 +37,120 @@ const SNARE_MAT = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const ZONE_GEO = new THREE.CylinderGeometry(5.0, 5.0, 0.1, 32);
 const ZONE_MAT = new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.3 });
 
+// =====================================================
+// Particle Pool Manager - Centralized for performance
+// Replaces individual requestAnimationFrame loops
+// =====================================================
+const PARTICLE_GEO = new THREE.SphereGeometry(0.5, 4, 4);
+
+class ParticlePool {
+    constructor() {
+        this.particles = [];
+        this.activeCount = 0;
+        this.maxParticles = 100;
+        this.isUpdating = false;
+        this.lastUpdateTime = 0;
+    }
+    
+    spawn(scene, position, color = 0xffaa00) {
+        if (this.activeCount >= this.maxParticles) return; // Limit particles for performance
+        
+        // Try to reuse an inactive particle
+        let particle = null;
+        for (let i = 0; i < this.particles.length; i++) {
+            if (!this.particles[i].active) {
+                particle = this.particles[i];
+                break;
+            }
+        }
+        
+        // Create new particle if none available in pool
+        if (!particle) {
+            const material = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.6 });
+            const mesh = new THREE.Mesh(PARTICLE_GEO, material);
+            particle = { mesh, material, active: false, opacity: 0.6, scale: 1.0 };
+            this.particles.push(particle);
+        }
+        
+        // Initialize particle
+        particle.mesh.position.copy(position);
+        particle.mesh.position.x += (Math.random() - 0.5) * 1.0;
+        particle.mesh.position.y += (Math.random() - 0.5) * 1.0;
+        particle.mesh.position.z += (Math.random() - 0.5) * 1.0;
+        particle.mesh.scale.setScalar(1.0);
+        particle.material.opacity = 0.6;
+        particle.material.color.setHex(color);
+        particle.active = true;
+        particle.opacity = 0.6;
+        particle.scale = 1.0;
+        particle.scene = scene;
+        
+        if (!particle.mesh.parent) {
+            scene.add(particle.mesh);
+        }
+        particle.mesh.visible = true;
+        this.activeCount++;
+        
+        // Start update loop if not already running
+        if (!this.isUpdating) {
+            this.startUpdateLoop();
+        }
+    }
+    
+    startUpdateLoop() {
+        this.isUpdating = true;
+        this.lastUpdateTime = performance.now();
+        
+        const update = () => {
+            const now = performance.now();
+            const dt = (now - this.lastUpdateTime) / 1000;
+            this.lastUpdateTime = now;
+            
+            let hasActive = false;
+            
+            for (let i = 0; i < this.particles.length; i++) {
+                const p = this.particles[i];
+                if (!p.active) continue;
+                
+                hasActive = true;
+                p.scale *= 0.9;
+                p.opacity -= 3.0 * dt; // Fade out over ~0.2 seconds
+                
+                if (p.opacity <= 0) {
+                    p.active = false;
+                    p.mesh.visible = false;
+                    this.activeCount--;
+                } else {
+                    p.mesh.scale.setScalar(p.scale);
+                    p.material.opacity = p.opacity;
+                }
+            }
+            
+            if (hasActive) {
+                requestAnimationFrame(update);
+            } else {
+                this.isUpdating = false;
+            }
+        };
+        
+        requestAnimationFrame(update);
+    }
+    
+    dispose() {
+        for (const p of this.particles) {
+            if (p.scene && p.mesh.parent) {
+                p.scene.remove(p.mesh);
+            }
+            p.material.dispose();
+        }
+        this.particles = [];
+        this.activeCount = 0;
+    }
+}
+
+// Global particle pool instance
+const particlePool = new ParticlePool();
+
 export class Projectile extends Entity {
     constructor(id, owner, type, startPos, targetPos) {
         super(id);
@@ -150,31 +264,9 @@ export class Projectile extends Entity {
     update(dt, collisionManager, player, chunkManager, floatingTextManager, gameEngine) { 
         if (!this.isActive) return;
 
-        // Meteor Trail
+        // Meteor Trail - Using centralized particle pool for performance
         if (this.type === 'Meteor' && gameEngine && gameEngine.scene) {
-             const geometry = new THREE.SphereGeometry(0.5, 4, 4);
-             const material = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.6 });
-             const particle = new THREE.Mesh(geometry, material);
-             const offset = new THREE.Vector3(
-                 (Math.random() - 0.5) * 1.0,
-                 (Math.random() - 0.5) * 1.0,
-                 (Math.random() - 0.5) * 1.0
-             );
-             particle.position.copy(this.position).add(offset);
-             gameEngine.scene.add(particle);
-             
-             const animate = () => {
-                 if (particle.material.opacity <= 0) {
-                     gameEngine.scene.remove(particle);
-                     geometry.dispose();
-                     material.dispose();
-                     return;
-                 }
-                 particle.scale.multiplyScalar(0.9);
-                 particle.material.opacity -= 0.05;
-                 requestAnimationFrame(animate);
-             };
-             animate();
+            particlePool.spawn(gameEngine.scene, this.position, 0xffaa00);
         }
 
         if (this.type === 'FlameTornado' && this.mesh) {

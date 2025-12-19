@@ -13,6 +13,7 @@ export class ChunkManager {
         this.frameCount = 0;
         this._cachedActiveEntities = [];
         this._cachedActiveEntitiesFrame = -1;
+        this._activeChunksChanged = true; // Track when active chunks change for cache invalidation
     }
 
     getChunkKey(x, z) {
@@ -53,6 +54,7 @@ export class ChunkManager {
             }
 
             this.activeChunkKeys = newActiveKeys;
+            this._activeChunksChanged = true; // Mark cache as stale
         }
 
         // Calculate active entities once for this frame to pass to entities that need it (like Projectiles)
@@ -101,7 +103,7 @@ export class ChunkManager {
     addEntity(entity) {
         const key = this.getChunkKey(entity.position.x, entity.position.z);
         entity._chunkKey = key;
-        console.log(`ChunkManager: Adding entity ${entity.id} to chunk ${key}`);
+        // Debug logging removed for performance
         if (!this.chunks.has(key)) {
             this.chunks.set(key, new Set());
         }
@@ -167,13 +169,13 @@ export class ChunkManager {
         const newKey = this.getChunkKey(entity.position.x, entity.position.z);
         
         if (oldKey !== newKey) {
-            console.log(`ChunkManager: Force moving entity ${entity.id} from ${oldKey} to ${newKey}`);
+            // Debug logging removed for performance
             this.moveEntity(entity, oldKey, newKey);
         }
     }
 
     loadChunk(key) {
-        console.log(`ChunkManager: Loading chunk ${key}`);
+        // Debug logging removed for performance
         if (this.chunks.has(key)) {
             for (const entity of this.chunks.get(key)) {
                 if (!entity.mesh && entity.ensureMesh) {
@@ -186,7 +188,7 @@ export class ChunkManager {
                 }
 
                 if (entity.mesh) {
-                    console.log(`ChunkManager: Adding mesh for ${entity.id} to scene`);
+                    // Debug logging removed for performance
                     this.scene.add(entity.mesh);
                 }
             }
@@ -212,22 +214,29 @@ export class ChunkManager {
     }
     
     getActiveEntities() {
-        if (this._cachedActiveEntitiesFrame === this.frameCount) {
+        // Use frame-based caching with chunk change detection for optimal performance
+        if (this._cachedActiveEntitiesFrame === this.frameCount && !this._activeChunksChanged) {
             return this._cachedActiveEntities;
         }
         
-        // Clear array without allocating new one
-        this._cachedActiveEntities.length = 0;
-        
-        for (const key of this.activeChunkKeys) {
-            if (this.chunks.has(key)) {
-                for (const entity of this.chunks.get(key)) {
-                    this._cachedActiveEntities.push(entity);
+        // Only rebuild if chunks changed or first call this frame
+        if (this._activeChunksChanged || this._cachedActiveEntitiesFrame !== this.frameCount) {
+            // Clear array without allocating new one
+            this._cachedActiveEntities.length = 0;
+            
+            for (const key of this.activeChunkKeys) {
+                const chunk = this.chunks.get(key);
+                if (chunk) {
+                    for (const entity of chunk) {
+                        this._cachedActiveEntities.push(entity);
+                    }
                 }
             }
+            
+            this._cachedActiveEntitiesFrame = this.frameCount;
+            this._activeChunksChanged = false;
         }
         
-        this._cachedActiveEntitiesFrame = this.frameCount;
         return this._cachedActiveEntities;
     }
 

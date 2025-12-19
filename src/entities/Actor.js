@@ -3,6 +3,8 @@ import { Entity } from './Entity.js';
 
 // Optimization: Reusable temporary objects to avoid GC
 const TEMP_VEC = new THREE.Vector3();
+const TEMP_VEC2 = new THREE.Vector3();
+const TEMP_VEC3 = new THREE.Vector3();
 const TEMP_QUAT = new THREE.Quaternion();
 const UP_VEC = new THREE.Vector3(0, 1, 0);
 const ZERO_VEC = new THREE.Vector3(0, 0, 0);
@@ -680,8 +682,9 @@ export class Actor extends Entity {
                 return;
             }
 
-            const direction = new THREE.Vector3().subVectors(this.targetPosition, this.position);
-            const distance = direction.length();
+            // Use temp vector for direction calculation to avoid allocation
+            TEMP_VEC2.subVectors(this.targetPosition, this.position);
+            const distance = TEMP_VEC2.length();
             
             if (distance < 0.1) {
                 this.position.copy(this.targetPosition);
@@ -691,7 +694,7 @@ export class Actor extends Entity {
                 this.playAnimation('Idle');
                 if (this.currentAction) this.currentAction.setEffectiveTimeScale(1.0); // Reset speed for Idle
             } else {
-                direction.normalize();
+                TEMP_VEC2.normalize();
                 
                 // Determine Speed
                 let currentSpeed = this.stats.speed;
@@ -715,19 +718,19 @@ export class Actor extends Entity {
                     moveDist = distance;
                 }
 
-                this.velocity.copy(direction).multiplyScalar(moveDist);
+                this.velocity.copy(TEMP_VEC2).multiplyScalar(moveDist);
                 
-                // Proposed new position
-                const nextPos = this.position.clone().add(this.velocity);
+                // Proposed new position - use temp vector
+                TEMP_VEC3.copy(this.position).add(this.velocity);
                 
                 // Check Collision
                 if (collisionManager) {
                     // 1. Static World Collision
-                    const correctedPos = collisionManager.checkCollision(nextPos, this.radius, this.position); 
+                    const correctedPos = collisionManager.checkCollision(TEMP_VEC3, this.radius, this.position); 
                     if (correctedPos) {
                         this.position.copy(correctedPos);
                     } else {
-                        this.position.copy(nextPos);
+                        this.position.copy(TEMP_VEC3);
                     }
 
                     // 2. Dynamic Entity Collision (Separation)
@@ -747,7 +750,7 @@ export class Actor extends Entity {
                         }
                     }
                 } else {
-                    this.position.copy(nextPos);
+                    this.position.copy(TEMP_VEC3);
                 }
 
                 // Ground Clamp: Ensure we never go below ground
@@ -755,10 +758,10 @@ export class Actor extends Entity {
                     this.position.y = 0;
                 }
                 
-                // Rotate to face movement
-                const lookTarget = new THREE.Vector3(this.targetPosition.x, this.position.y, this.targetPosition.z);
+                // Rotate to face movement - use temp vector instead of allocating
+                TEMP_VEC.set(this.targetPosition.x, this.position.y, this.targetPosition.z);
                 if (this.mesh) {
-                    this.mesh.lookAt(lookTarget);
+                    this.mesh.lookAt(TEMP_VEC);
                     this.rotation.copy(this.mesh.quaternion);
                 }
                 
