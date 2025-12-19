@@ -415,69 +415,80 @@ export class WorldGenerator {
 
                     if (Math.abs(dz) > Math.abs(dx)) {
                         // Vertical -> Horizontal -> Vertical
-                        const midZ = (prevRoom.z + room.z) / 2;
                         
-                        // 1. Vertical from Prev
-                        this.createCorridor(prevRoom.x, prevRoom.z, prevRoom.x, midZ, corridorWidth, prevSize/2, halfWidth);
+                        // Check for straight line (or very close)
+                        if (Math.abs(dx) < 1.0) {
+                             this.createCorridor(prevRoom.x, prevRoom.z, room.x, room.z, corridorWidth, prevSize/2, currentSize/2);
+                        } else {
+                            const midZ = (prevRoom.z + room.z) / 2;
+                            
+                            // 1. Vertical from Prev
+                            this.createCorridor(prevRoom.x, prevRoom.z, prevRoom.x, midZ, corridorWidth, prevSize/2, halfWidth);
 
-                        // Corner 1
-                        const c1Openings = {};
-                        if (prevRoom.z < midZ) c1Openings.north = true;
-                        else c1Openings.south = true;
-                        
-                        if (room.x > prevRoom.x) c1Openings.east = true;
-                        else c1Openings.west = true;
+                            // Corner 1
+                            const c1Openings = {};
+                            if (prevRoom.z < midZ) c1Openings.north = true;
+                            else c1Openings.south = true;
+                            
+                            if (room.x > prevRoom.x) c1Openings.east = true;
+                            else c1Openings.west = true;
 
-                        this.createCorner(prevRoom.x, midZ, corridorWidth, c1Openings);
+                            this.createCorner(prevRoom.x, midZ, corridorWidth, c1Openings);
 
-                        // 2. Horizontal
-                        this.createCorridor(prevRoom.x, midZ, room.x, midZ, corridorWidth, halfWidth, halfWidth);
+                            // 2. Horizontal
+                            this.createCorridor(prevRoom.x, midZ, room.x, midZ, corridorWidth, halfWidth, halfWidth);
 
-                        // Corner 2
-                        const c2Openings = {};
-                        if (prevRoom.x < room.x) c2Openings.west = true;
-                        else c2Openings.east = true;
-                        
-                        if (room.z < midZ) c2Openings.north = true;
-                        else c2Openings.south = true;
+                            // Corner 2
+                            const c2Openings = {};
+                            if (prevRoom.x < room.x) c2Openings.west = true;
+                            else c2Openings.east = true;
+                            
+                            if (room.z < midZ) c2Openings.north = true;
+                            else c2Openings.south = true;
 
-                        this.createCorner(room.x, midZ, corridorWidth, c2Openings);
+                            this.createCorner(room.x, midZ, corridorWidth, c2Openings);
 
-                        // 3. Vertical to Room
-                        this.createCorridor(room.x, midZ, room.x, room.z, corridorWidth, halfWidth, currentSize/2);
-                        
+                            // 3. Vertical to Room
+                            this.createCorridor(room.x, midZ, room.x, room.z, corridorWidth, halfWidth, currentSize/2);
+                        }
                     } else {
                         // Horizontal -> Vertical -> Horizontal
-                        const midX = (prevRoom.x + room.x) / 2;
                         
-                        // 1. Horizontal from Prev
-                        this.createCorridor(prevRoom.x, prevRoom.z, midX, prevRoom.z, corridorWidth, prevSize/2, halfWidth);
+                        // Check for straight line
+                        if (Math.abs(dz) < 1.0) {
+                             this.createCorridor(prevRoom.x, prevRoom.z, room.x, room.z, corridorWidth, prevSize/2, currentSize/2);
+                        } else {
+                            const midX = (prevRoom.x + room.x) / 2;
+                            
+                            // 1. Horizontal from Prev
+                            this.createCorridor(prevRoom.x, prevRoom.z, midX, prevRoom.z, corridorWidth, prevSize/2, halfWidth);
 
-                        // Corner 1
-                        const c1Openings = {};
-                        if (prevRoom.x < midX) c1Openings.west = true;
-                        else c1Openings.east = true;
-                        
-                        if (room.z > prevRoom.z) c1Openings.south = true;
-                        else c1Openings.north = true;
+                            // Corner 1
+                            const c1Openings = {};
+                            if (prevRoom.x < midX) c1Openings.west = true;
+                            else c1Openings.east = true;
+                            
+                            if (room.z > prevRoom.z) c1Openings.south = true;
+                            else c1Openings.north = true;
 
-                        this.createCorner(midX, prevRoom.z, corridorWidth, c1Openings);
+                            this.createCorner(midX, prevRoom.z, corridorWidth, c1Openings);
 
-                        // 2. Vertical
-                        this.createCorridor(midX, prevRoom.z, midX, room.z, corridorWidth, halfWidth, halfWidth);
+                            // 2. Vertical
+                            this.createCorridor(midX, prevRoom.z, midX, room.z, corridorWidth, halfWidth, halfWidth);
 
-                        // Corner 2
-                        const c2Openings = {};
-                        if (prevRoom.z < room.z) c2Openings.north = true;
-                        else c2Openings.south = true;
-                        
-                        if (room.x > midX) c2Openings.east = true;
-                        else c2Openings.west = true;
+                            // Corner 2
+                            const c2Openings = {};
+                            if (prevRoom.z < room.z) c2Openings.north = true;
+                            else c2Openings.south = true;
+                            
+                            if (room.x > midX) c2Openings.east = true;
+                            else c2Openings.west = true;
 
-                        this.createCorner(midX, room.z, corridorWidth, c2Openings);
+                            this.createCorner(midX, room.z, corridorWidth, c2Openings);
 
-                        // 3. Horizontal to Room
-                        this.createCorridor(midX, room.z, room.x, room.z, corridorWidth, halfWidth, currentSize/2);
+                            // 3. Horizontal to Room
+                            this.createCorridor(midX, room.z, room.x, room.z, corridorWidth, halfWidth, currentSize/2);
+                        }
                     }
                 }
                 

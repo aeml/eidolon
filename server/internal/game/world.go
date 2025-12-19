@@ -6385,16 +6385,17 @@ func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
 	// but for now we just use global rand since we store the layout.
 
 	for _, boss := range bosses {
-		// Generate 2-3 intermediate rooms
-		numIntermediate := 2 + rand.Intn(2)
+		// Generate 1-2 intermediate rooms (Reduced from 2-3 to prevent "endless" feel)
+		numIntermediate := 1 + rand.Intn(2)
 
 		// Calculate Target Z based on required spacing
 		// We need enough space for the Z-shaped corridor segments to be longer than the wall offsets.
 		// Room Half Height (60) + Corridor Half Width (20) = 80 offset.
 		// We need vertical segment > 80.
 		// Vertical segment is stepZ / 2.
-		// So stepZ must be > 160. Let's use 250 for safety and spaciousness.
-		stepZ := -250.0
+		// So stepZ must be > 160.
+		// Reduced from 250 to 180 to make corridors shorter and less tedious.
+		stepZ := -180.0
 		targetZ := currentZ + (stepZ * float64(numIntermediate+1))
 
 		for j := 0; j < numIntermediate; j++ {
@@ -6431,9 +6432,9 @@ func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
 		}
 
 		// Place Boss Room
-		// Re-center X slightly towards 0 to keep dungeon from drifting too far?
-		// Or just let it wander. Let's pull it back 50% towards 0.
-		currentX = currentX * 0.5
+		// Re-center X slightly towards the dungeon center (20000) to keep dungeon from drifting too far
+		// Pull it back 50% towards 20000.
+		currentX = 20000.0 + (currentX-20000.0)*0.5
 		currentZ = targetZ
 
 		layout.Rooms = append(layout.Rooms, DungeonRoom{
