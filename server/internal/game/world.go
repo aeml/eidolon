@@ -1373,7 +1373,7 @@ func (w *World) PerformForgeUpgrade(playerID, slot string, amount int) (*Entity,
 	// Check Shards
 	shardCount := 0
 	for _, invItem := range player.Inventory {
-		if invItem.Name == "Shard" {
+		if invItem.Name == "Eidolon Shard" {
 			shardCount += invItem.Stack
 		}
 	}
@@ -1386,7 +1386,7 @@ func (w *World) PerformForgeUpgrade(playerID, slot string, amount int) (*Entity,
 	remainingCost := cost
 	// Iterate backwards to safely remove empty stacks
 	for i := len(player.Inventory) - 1; i >= 0; i-- {
-		if player.Inventory[i].Name == "Shard" {
+		if player.Inventory[i].Name == "Eidolon Shard" {
 			take := remainingCost
 			if player.Inventory[i].Stack <= take {
 				take = player.Inventory[i].Stack
@@ -1449,7 +1449,7 @@ func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, strin
 	// Check Hearts
 	heartCount := 0
 	for _, invItem := range player.Inventory {
-		if invItem.Name == "Heart" {
+		if invItem.Name == "Eidolon Heart" {
 			heartCount += invItem.Stack
 		}
 	}
@@ -1461,7 +1461,7 @@ func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, strin
 	// Deduct Hearts
 	remainingCost := cost
 	for i := len(player.Inventory) - 1; i >= 0; i-- {
-		if player.Inventory[i].Name == "Heart" {
+		if player.Inventory[i].Name == "Eidolon Heart" {
 			take := remainingCost
 			if player.Inventory[i].Stack <= take {
 				take = player.Inventory[i].Stack
@@ -1528,10 +1528,10 @@ func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string
 	shardCount := 0
 	heartCount := 0
 	for _, invItem := range player.Inventory {
-		if invItem.Name == "Shard" {
+		if invItem.Name == "Eidolon Shard" {
 			shardCount += invItem.Stack
 		}
-		if invItem.Name == "Heart" {
+		if invItem.Name == "Eidolon Heart" {
 			heartCount += invItem.Stack
 		}
 	}
@@ -1546,7 +1546,7 @@ func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string
 	// Deduct Shards
 	remainingShards := shardCost
 	for i := len(player.Inventory) - 1; i >= 0; i-- {
-		if player.Inventory[i].Name == "Shard" {
+		if player.Inventory[i].Name == "Eidolon Shard" {
 			take := remainingShards
 			if player.Inventory[i].Stack <= take {
 				take = player.Inventory[i].Stack
@@ -1564,7 +1564,7 @@ func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string
 	// Deduct Hearts
 	remainingHearts := heartCost
 	for i := len(player.Inventory) - 1; i >= 0; i-- {
-		if player.Inventory[i].Name == "Heart" {
+		if player.Inventory[i].Name == "Eidolon Heart" {
 			take := remainingHearts
 			if player.Inventory[i].Stack <= take {
 				take = player.Inventory[i].Stack

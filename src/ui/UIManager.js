@@ -611,10 +611,10 @@ export class UIManager {
         }
 
         // Specific overrides for known items that might be missing icons
-        if (item.name === 'Shard') {
+        if (item.name === 'Shard' || item.name === 'Eidolon Shard') {
             return 'assets/items/eidolon_shard/eidolon_shard.png';
         }
-        if (item.name === 'Heart') {
+        if (item.name === 'Heart' || item.name === 'Eidolon Heart') {
             return 'assets/items/eidolon_heart/eidolon_heart.png';
         }
         
