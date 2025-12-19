@@ -1464,10 +1464,17 @@ export class GameEngine {
                     if (pData.state === 'DEAD') {
                         if (!remoteEntity.isDead) {
                             remoteEntity.isDead = true;
-                            remoteEntity.state = 'DEAD';
                             remoteEntity.deadTimer = 0;
-                            
-                            // Animation handled by Actor.updateState or setMesh
+                            // Trigger death animation
+                            if (remoteEntity.updateState) {
+                                remoteEntity.updateState('DEAD');
+                            } else {
+                                remoteEntity.state = 'DEAD';
+                            }
+                            // Play death animation
+                            if (remoteEntity.playAnimation) {
+                                remoteEntity.playAnimation('Death', false);
+                            }
                         }
                     } else {
                         remoteEntity.isDead = false;
@@ -1523,6 +1530,262 @@ export class GameEngine {
             // Cleanup removed entities
             for (const [id, entity] of this.remotePlayers) {
                 if (!seenIds.has(id)) {
+                    entity.isActive = false;
+                    
+                    if (entity.dispose) {
+                        entity.dispose();
+                    } else if (entity.mesh) {
+                        this.renderSystem.remove(entity.mesh);
+                    }
+
+                    const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
+                    if (this.chunkManager.chunks.has(key)) {
+                        this.chunkManager.chunks.get(key).delete(entity);
+                    }
+                    this.remotePlayers.delete(id);
+                }
+            }
+        } else if (msg.type === 'delta') {
+            // Delta compression: Only changed entities and removals
+            const delta = msg.payload;
+            const updates = delta.u || {};  // Updated/new entities
+            const removed = delta.r || [];  // Removed entity IDs
+
+            // Debug log for delta stats (throttled)
+            if (this.frameCount % 300 === 0) {
+                console.log(`Delta: ${Object.keys(updates).length} updates, ${removed.length} removed`);
+                // Log entity states for debugging
+                Object.values(updates).forEach(e => {
+                    if (e.type === 'Enemy') {
+                        console.log(`  Enemy ${e.id}: state=${e.state}, hp=${e.health}/${e.maxHealth}, pos=(${e.x?.toFixed(1)}, ${e.z?.toFixed(1)})`);
+                    }
+                });
+            }
+
+            // Process updated entities
+            Object.values(updates).forEach(pData => {
+                // Apply same position hacks as full state
+                if (pData.id === 'quest-npc-1') {
+                    pData.x = -25;
+                    pData.z = 200;
+                    pData.rotation = Math.PI / 2;
+                }
+                if (pData.id === 'stash-1') {
+                    pData.x = 0;
+                    pData.z = 185;
+                }
+                if (pData.id === 'merchant-1') {
+                    pData.x = 22.5;
+                    pData.z = 200;
+                }
+
+                // Skip self - local player updates come through full state messages
+                if (pData.id === this.player.id) {
+                    // Still update critical player state from delta
+                    if (this.player && this.player.stats) {
+                        if (pData.health !== undefined) this.player.stats.hp = pData.health;
+                        if (pData.maxHealth !== undefined) this.player.stats.maxHp = pData.maxHealth;
+                        if (pData.mana !== undefined) this.player.stats.mana = pData.mana;
+                        if (pData.maxMana !== undefined) this.player.stats.maxMana = pData.maxMana;
+                        
+                        // Sync Attributes from Server
+                        if (pData.stats) {
+                            this.player.stats.strength = pData.stats.strength;
+                            this.player.stats.dexterity = pData.stats.dexterity;
+                            this.player.stats.intelligence = pData.stats.intelligence;
+                            this.player.stats.wisdom = pData.stats.wisdom;
+                            this.player.stats.vitality = pData.stats.vitality;
+                        }
+                        
+                        // Sync Derived Stats
+                        if (pData.damage !== undefined) this.player.stats.damage = pData.damage;
+                        if (pData.defense !== undefined) this.player.stats.defense = pData.defense;
+                        if (pData.speed) this.player.stats.speed = pData.speed;
+                        if (pData.attackSpeed) this.player.stats.attackSpeed = pData.attackSpeed;
+                        if (pData.cooldownReduction !== undefined) this.player.stats.cooldownReduction = pData.cooldownReduction;
+                    }
+                    
+                    // Sync Skills
+                    if (pData.selectedBranch !== undefined || pData.unlockedSkills !== undefined || pData.skillPoints !== undefined) {
+                        const prevBranch = this.player.selectedBranch;
+                        const prevPoints = this.player.skillPoints;
+                        const prevUnlocked = this.player.unlockedSkills ? this.player.unlockedSkills.length : 0;
+                        
+                        if (pData.skillPoints !== undefined) this.player.skillPoints = pData.skillPoints;
+                        if (pData.selectedBranch !== undefined) this.player.selectedBranch = pData.selectedBranch;
+                        if (pData.unlockedSkills !== undefined) this.player.unlockedSkills = pData.unlockedSkills;
+                        
+                        const currUnlocked = this.player.unlockedSkills ? this.player.unlockedSkills.length : 0;
+                        
+                        // Update Hotbar if skills changed
+                        const isHotbarEmpty = !this.player.hotbar || this.player.hotbar.every(s => !s);
+                        if (prevUnlocked !== currUnlocked || prevBranch !== this.player.selectedBranch || (currUnlocked > 0 && isHotbarEmpty)) {
+                            console.log(`[Delta] Updating Hotbar: Skills=${currUnlocked}, Branch=${this.player.selectedBranch}`);
+                            this.uiManager.updateHotbar(this.player);
+                        }
+                        
+                        // Refresh Skill Tree if open
+                        if (this.uiManager.skillTreeWindow && this.uiManager.skillTreeWindow.style.display === 'flex') {
+                            if (prevBranch !== this.player.selectedBranch || 
+                                prevPoints !== this.player.skillPoints || 
+                                prevUnlocked !== currUnlocked) {
+                                const classType = this.player.subType || this.playerType;
+                                this.uiManager.renderSkillTree(classType);
+                            }
+                        }
+                    }
+                    
+                    // Sync XP, Level, Gold
+                    if (pData.xp !== undefined) this.player.xp = pData.xp;
+                    if (pData.xpToNextLevel !== undefined) this.player.xpToNextLevel = pData.xpToNextLevel;
+                    if (pData.level !== undefined) this.player.level = pData.level;
+                    if (pData.gold !== undefined) this.player.gold = pData.gold;
+                    
+                    // Sync Inventory
+                    if (pData.inventory !== undefined) {
+                        this.player.inventory = pData.inventory;
+                        for (let i = 0; i < this.player.inventory.length; i++) {
+                            this.player.inventory[i] = this.hydrateItem(this.player.inventory[i]);
+                        }
+                    }
+                    
+                    // Sync Equipment
+                    if (pData.equipment) {
+                        this.player.equipment = pData.equipment;
+                        for (const key in this.player.equipment) {
+                            this.player.equipment[key] = this.hydrateItem(this.player.equipment[key]);
+                        }
+                    }
+                    
+                    return;
+                }
+
+                let remoteEntity = this.remotePlayers.get(pData.id);
+                if (!remoteEntity) {
+                    // New entity - queue for creation
+                    if (!this.pendingEntityIds.has(pData.id)) {
+                        this.pendingEntityIds.add(pData.id);
+                        this.entityCreationQueue.push(pData);
+                    } else {
+                        const idx = this.entityCreationQueue.findIndex(e => e.id === pData.id);
+                        if (idx !== -1) {
+                            this.entityCreationQueue[idx] = { ...this.entityCreationQueue[idx], ...pData };
+                        }
+                    }
+                    return;
+                }
+
+                // Update existing remote entity
+                if (pData.type === 'Projectile') {
+                    remoteEntity.position.set(pData.x, pData.y, pData.z);
+                    if (pData.velX !== undefined && pData.velZ !== undefined) {
+                        remoteEntity.velocity.set(pData.velX, 0, pData.velZ);
+                    }
+                } else {
+                    // Interpolation Setup
+                    const newPos = new THREE.Vector3(pData.x, pData.y, pData.z);
+                    if (!remoteEntity.targetServerPosition) {
+                        remoteEntity.position.copy(newPos);
+                        remoteEntity.targetServerPosition = newPos;
+                    } else {
+                        if (remoteEntity.position.distanceTo(newPos) > 10.0) {
+                            remoteEntity.position.copy(newPos);
+                        }
+                        remoteEntity.targetServerPosition = newPos;
+                    }
+                }
+
+                // Update chunk for visibility
+                this.chunkManager.updateEntityChunk(remoteEntity);
+
+                // Sync Name
+                if (pData.name && remoteEntity.name !== pData.name) {
+                    remoteEntity.setName(pData.name);
+                }
+
+                // Sync Scale
+                if (pData.scale !== undefined && remoteEntity.scale !== pData.scale) {
+                    remoteEntity.setScale(pData.scale);
+                }
+
+                // Handle Spirits (Cleric)
+                if (pData.spiritsActive !== undefined) {
+                    if (pData.spiritsActive && !remoteEntity.spiritsActive) {
+                        if (remoteEntity instanceof Cleric) {
+                            remoteEntity.useAbility(null, this);
+                        }
+                    } else if (!pData.spiritsActive && remoteEntity.spiritsActive) {
+                        if (remoteEntity instanceof Cleric) {
+                            remoteEntity.cancelAbilities();
+                        }
+                    }
+                }
+
+                // Handle Death State
+                if (pData.state === 'DEAD') {
+                    if (!remoteEntity.isDead) {
+                        remoteEntity.isDead = true;
+                        remoteEntity.deadTimer = 0;
+                        // Trigger death animation
+                        if (remoteEntity.updateState) {
+                            remoteEntity.updateState('DEAD');
+                        } else {
+                            remoteEntity.state = 'DEAD';
+                        }
+                        // Play death animation
+                        if (remoteEntity.playAnimation) {
+                            remoteEntity.playAnimation('Death', false);
+                        }
+                    }
+                } else {
+                    remoteEntity.isDead = false;
+                    remoteEntity.deadTimer = 0;
+                    if (remoteEntity.mesh) remoteEntity.mesh.visible = true;
+
+                    // Sync Health/Stats
+                    if (remoteEntity.stats) {
+                        if (pData.health !== undefined) remoteEntity.stats.hp = pData.health;
+                        if (pData.maxHealth !== undefined) remoteEntity.stats.maxHp = pData.maxHealth;
+                        if (pData.mana !== undefined) remoteEntity.stats.mana = pData.mana;
+                        if (pData.maxMana !== undefined) remoteEntity.stats.maxMana = pData.maxMana;
+                        if (pData.attackSpeed !== undefined) remoteEntity.stats.attackSpeed = pData.attackSpeed;
+                    }
+
+                    // Update State and Animation
+                    if (remoteEntity.state !== pData.state || (pData.isCharging !== undefined && remoteEntity.isCharging !== pData.isCharging)) {
+                        if (remoteEntity.updateState) {
+                            remoteEntity.updateState(pData.state);
+                        } else {
+                            remoteEntity.state = pData.state;
+                        }
+                        if (pData.isCharging !== undefined) remoteEntity.isCharging = pData.isCharging;
+                    } else if (pData.state === 'ATTACKING' && remoteEntity.updateState) {
+                        remoteEntity.updateState(pData.state);
+                    }
+
+                    // Update Rotation
+                    if (pData.rotation !== undefined) {
+                        remoteEntity.targetServerRotation = pData.rotation;
+                    }
+
+                    // Remote Level Up Detection
+                    if (pData.level !== undefined) {
+                        if (!remoteEntity.hasSyncedLevel) {
+                            remoteEntity.level = pData.level;
+                            remoteEntity.hasSyncedLevel = true;
+                        } else if (remoteEntity.level < pData.level) {
+                            remoteEntity.level = pData.level;
+                            const effect = new LevelUpEffect(this.renderSystem.scene, remoteEntity.position);
+                            this.effects.push(effect);
+                        }
+                    }
+                }
+            });
+
+            // Process removed entities
+            for (const id of removed) {
+                const entity = this.remotePlayers.get(id);
+                if (entity) {
                     entity.isActive = false;
                     
                     if (entity.dispose) {

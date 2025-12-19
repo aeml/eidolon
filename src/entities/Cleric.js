@@ -661,61 +661,65 @@ export class Cleric extends Actor {
         }
 
         if (this.spiritsActive) {
-            // Rotate spirits
-            const radius = this.spiritBoosted ? 5.0 : 3.0; // Boosted radius
-            const speed = 3.0;
+            // Decrement spirit duration
+            this.spiritDuration -= dt;
             
-            this.spirits.forEach(s => {
-                s.angle += speed * dt;
-                s.mesh.position.set(
-                    Math.cos(s.angle) * radius,
-                    1.0 + Math.sin(s.angle * 2) * 0.2, // Bob up and down
-                    Math.sin(s.angle) * radius
-                );
-            });
+            // Check if spirits should expire
+            if (this.spiritDuration <= 0) {
+                this.spiritsActive = false;
+                this.spirits.forEach(s => {
+                    if (s.mesh && s.mesh.parent) {
+                        s.mesh.parent.remove(s.mesh);
+                    }
+                    if (s.mesh && s.mesh.geometry) s.mesh.geometry.dispose();
+                    if (s.mesh && s.mesh.material) s.mesh.material.dispose();
+                });
+                this.spirits = [];
+                // Return to idle animation
+                if (this.state !== 'DEAD') {
+                    this.playAnimation('Idle', true);
+                }
+            } else {
+                // Rotate spirits
+                const radius = this.spiritBoosted ? 5.0 : 3.0; // Boosted radius
+                const speed = 3.0;
+                
+                this.spirits.forEach(s => {
+                    s.angle += speed * dt;
+                    s.mesh.position.set(
+                        Math.cos(s.angle) * radius,
+                        1.0 + Math.sin(s.angle * 2) * 0.2, // Bob up and down
+                        Math.sin(s.angle) * radius
+                    );
+                });
 
-            // Damage Logic (Area check)
-            if (chunkManager) {
-                this.spiritDamageTimer = (this.spiritDamageTimer || 0) + dt;
-                if (this.spiritDamageTimer > 0.5) {
-                    this.spiritDamageTimer = 0;
-                    
-                    const damageRadius = this.spiritBoosted ? 5.5 : 3.5;
-                    let damage = 10 + (this.stats.wisdom * 1.0);
-                    if (this.spiritBoosted) damage *= 1.5;
-
-                    const entities = chunkManager.getActiveEntities();
-                    for (const entity of entities) {
-                        if (entity === this || entity.state === 'DEAD' || !entity.isActive) continue;
-                        if (entity.constructor.name === 'LootDrop') continue;
-                        if (entity.constructor.name === 'DwarfSalesman') continue;
+                // Damage Logic (Area check)
+                if (chunkManager) {
+                    this.spiritDamageTimer = (this.spiritDamageTimer || 0) + dt;
+                    if (this.spiritDamageTimer > 0.5) {
+                        this.spiritDamageTimer = 0;
                         
-                        const d = this.position.distanceTo(entity.position);
-                        if (d < damageRadius) {
-                             // if (!this.isMultiplayer && !this.isRemote) {
-                             //    entity.takeDamage(damage);
-                             // }
-                             
-                             // if (floatingTextManager && !this.isMultiplayer) {
-                             //     floatingTextManager.spawn(Math.floor(damage), entity.position, '#ffffff');
-                             // }
-                             
-                             if (this.spiritBoosted && entity.slowTimer !== undefined) {
-                                 entity.slowTimer = 1.0;
-                                 entity.slowFactor = 0.3;
-                             }
+                        const damageRadius = this.spiritBoosted ? 5.5 : 3.5;
+                        let damage = 10 + (this.stats.wisdom * 1.0);
+                        if (this.spiritBoosted) damage *= 1.5;
+
+                        const entities = chunkManager.getActiveEntities();
+                        for (const entity of entities) {
+                            if (entity === this || entity.state === 'DEAD' || !entity.isActive) continue;
+                            if (entity.constructor.name === 'LootDrop') continue;
+                            if (entity.constructor.name === 'DwarfSalesman') continue;
+                            
+                            const d = this.position.distanceTo(entity.position);
+                            if (d < damageRadius) {
+                                 if (this.spiritBoosted && entity.slowTimer !== undefined) {
+                                     entity.slowTimer = 1.0;
+                                     entity.slowFactor = 0.3;
+                                 }
+                            }
                         }
                     }
                 }
             }
-            
-            // if (!this.isMultiplayer && !this.isRemote && this.spiritDuration <= 0) {
-            //     this.spiritsActive = false;
-            //     this.spirits.forEach(s => {
-            //         if (s.mesh.parent) s.mesh.parent.remove(s.mesh);
-            //     });
-            //     this.spirits = [];
-            // }
         }
     }
 }

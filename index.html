@@ -1431,6 +1431,26 @@
             </div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
                 <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.17c (Animation & Sync Fixes)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Animation Fixes:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Cleric Spirit Guardians:</strong> Fixed spirits not disappearing and animation staying stuck on Attack after spell expires.</li>
+                                <li><strong>Ability Animations:</strong> All class abilities now properly return to Idle animation after casting completes.</li>
+                                <li><strong>Animation Cleanup:</strong> Added proper memory disposal for spirit visual effects.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Delta Sync Fixes:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Hotbar Icons:</strong> Fixed ability icons disappearing from the hotbar after login.</li>
+                                <li><strong>Skill Tree:</strong> Fixed specialization selection not working in the K menu.</li>
+                                <li><strong>Full State Sync:</strong> Delta updates now properly sync skills, equipment, inventory, XP, level, and gold.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.17b (Performance)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
                         <li><strong>Client Optimizations:</strong>
@@ -1444,6 +1464,7 @@
                         </li>
                         <li><strong>Server Optimizations:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Delta Compression:</strong> Server now only sends entities that changed since last update. Huge bandwidth savings!</li>
                                 <li><strong>Entity Serialization:</strong> Entities now send only essential fields (enemies: ~10 fields vs 40+).</li>
                                 <li><strong>Spatial Queries:</strong> Optimized with pre-allocated slices and strings.Builder.</li>
                                 <li><strong>Distance Checks:</strong> Squared distance comparisons avoid costly sqrt operations.</li>
