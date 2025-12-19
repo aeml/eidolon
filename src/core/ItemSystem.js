@@ -82,7 +82,11 @@ export const BASE_ITEMS = [
     // Accessories - Trinket
     { name: 'Amulet of Power', type: 'ACCESSORY', slot: SLOTS.TRINKET, baseStat: 'strength', baseValue: 10 },
     { name: 'Talisman of Speed', type: 'ACCESSORY', slot: SLOTS.TRINKET, baseStat: 'dexterity', baseValue: 10 },
-    { name: 'Orb of Mana', type: 'ACCESSORY', slot: SLOTS.TRINKET, baseStat: 'intelligence', baseValue: 10 }
+    { name: 'Orb of Mana', type: 'ACCESSORY', slot: SLOTS.TRINKET, baseStat: 'intelligence', baseValue: 10 },
+
+    // Materials & Relics
+    { name: 'Shard', type: 'MATERIAL', slot: SLOTS.MATERIAL, baseStat: '', baseValue: 0 },
+    { name: 'Eidolon Heart', type: 'RELIC', slot: SLOTS.RELIC, baseStat: '', baseValue: 0 }
 ];
 
 const STAT_POOL = ['strength', 'dexterity', 'intelligence', 'wisdom', 'vitality'];
@@ -162,6 +166,38 @@ export class ItemGenerator {
     }
 
     static createItem(baseItem, rarity, level) {
+        // Special handling for Materials/Relics
+        if (baseItem.type === 'MATERIAL' || baseItem.type === 'RELIC') {
+            let desc = "";
+            let icon = "";
+            let finalRarity = rarity;
+
+            if (baseItem.name === "Shard") {
+                desc = "What remains after purpose is broken.";
+                finalRarity = RARITY.EIDOLIC;
+                icon = "assets/items/eidolon_shard/eidolon_shard.png";
+            } else if (baseItem.name === "Eidolon Heart") {
+                desc = "Power that chose to endure.";
+                finalRarity = RARITY.EIDOLIC;
+                icon = "assets/items/eidolon_heart/eidolon_heart.png";
+            }
+
+            const item = new Item({
+                name: baseItem.name,
+                type: baseItem.type,
+                rarity: finalRarity,
+                slot: baseItem.slot,
+                level: 1,
+                stats: {},
+                value: 10,
+                description: desc,
+                stack: 1,
+                maxStack: 1000,
+                icon: icon
+            });
+            return item;
+        }
+
         // 4. Calculate Base Stats (Damage/Defense)
         const stats = {};
         

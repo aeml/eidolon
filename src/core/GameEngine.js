@@ -1094,10 +1094,14 @@ export class GameEngine {
             }
 
             if (target) {
-                // Only show if player is source or target
-                if (this.player && (dmgData.sourceId === this.player.id || dmgData.targetId === this.player.id)) {
+                // Only show if player is source or target, or if it's a DoT effect
+                if (this.player && (dmgData.sourceId === this.player.id || dmgData.targetId === this.player.id || dmgData.sourceId === 'bleed' || dmgData.sourceId === 'poison')) {
                     let color = '#ffffff';
-                    if (target === this.player) {
+                    if (dmgData.sourceId === 'bleed') {
+                        color = '#8b0000'; // Dark Red for Bleed
+                    } else if (dmgData.sourceId === 'poison') {
+                        color = '#00ff00'; // Green for Poison
+                    } else if (target === this.player) {
                         color = '#ff0000'; // Red if player takes damage
                     } else {
                         color = '#ffff00'; // Yellow if player deals damage
