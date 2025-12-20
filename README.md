@@ -1,105 +1,204 @@
 # EIDOLON
 
-**Eidolon** is a browser-based Isometric Action-RPG set in *Aethelgard*, a realm where physical reality is a direct projection of the Collective Consciousness.
+> **Brought to you by [Robert Mendola](https://mendola.tech)**
 
-> *The world has fallen into Dissonance. You are a Harmonizer. You do not kill to conquer; you fight to re-tune.*
+**Eidolon** is a browser-based Isometric Action-RPG MMO set in *Aethelgard*. Built with vanilla JavaScript, Three.js, and a Go WebSocket server, it features real-time multiplayer combat, deep character progression, and a Diablo-inspired loot system.
 
 ## ✨ Features
 
-*   **Multiplayer:** Real-time MMO gameplay with shared world state.
-*   **4 Classes:** Fighter, Rogue, Wizard, Cleric - each with unique stats and abilities.
-*   **Progression:** Leveling system (1-100), Stat allocation, and XP grinding.
-*   **Loot System:** Diablo-style loot with rarities (Common, Uncommon, Rare, Legendary) and random affixes.
-*   **Economy:** Gold drops, Trading with NPCs, and Gambling for gear.
-*   **Mobile Support:** Full touch controls, virtual joystick, and optimized UI for mobile devices.
-*   **Performance:** Chunk-based loading and object pooling for smooth performance.
+### Core Gameplay
+- **Real-Time Multiplayer:** Authoritative Go server with WebSocket connections, delta compression, and spatial partitioning for scalable MMO gameplay
+- **4 Playable Classes:** Fighter, Rogue, Wizard, Cleric — each with unique base stats, skill trees, and playstyles
+- **Skill Trees:** Each class has 3 branches with unlockable active abilities (e.g., Fighter: Charge, Whirlwind, Shield Slam, Iron Fortress, Guardian Roar, Earthshaker)
+- **Leveling System:** XP-based progression with stat point allocation (Strength, Dexterity, Intelligence, Wisdom, Vitality)
+- **Combat:** Melee attacks, projectiles, AoE abilities, buffs, debuffs, stuns, bleeds, and more
 
-## 🎮 Playable Demo
+### Loot & Economy
+- **Item Rarities:** Common, Uncommon, Rare, Legendary, Eidolic
+- **Equipment Slots:** Head, Chest, Legs, Feet, Gloves, Shoulders, Belt, Rings (x2), Neck, Trinkets (x2), Main Hand, Off Hand
+- **Random Affixes:** Items roll stats based on rarity and level
+- **Gambling NPC:** Spend gold for random gear
+- **Trading House:** Player-to-player auction system with bidding and buyouts
+- **Item Forge:** Upgrade equipment, increase potency, and add sockets using Eidolon Shards and Hearts
+- **Personal Stash:** 100-slot account storage
 
-This project is built with **Vanilla JavaScript** and **Three.js**, requiring no build steps. It runs directly in modern browsers.
+### World & Content
+- **Multiple Zones:** Earth Realm (main), Snow/Water Realm with unique enemies
+- **Enemy Types:** Skeletons, Imps, Demon Orcs, Constructs, Sirens, Frost Guardians, Mountain Trolls, Aqua Golems, dungeon bosses (Briar Matron, Hollow Sentinel, Rootbound Warden, Rustbound Colossus, Inferno Titan)
+- **Elite Enemies:** Scaled-up versions with better loot
+- **Dungeon Instances:** Procedurally generated layouts with party support
+- **NPCs:** Dwarf Salesman (shop), Quest NPC, Stash, Forge, Trading House
+- **Quest System:** Daily kill quests with XP rewards
 
-### Controls
+### Party System
+- Invite players to your party
+- Shared dungeon instances
+- Party UI with member health/mana display
+
+### Technical Features
+- **Mobile Support:** Touch controls, virtual joystick, responsive UI
+- **Chunk-Based Loading:** Dynamic entity loading/unloading based on player position
+- **Minimap & World Map:** Real-time position tracking
+- **Floating Combat Text:** Damage numbers, heals, status effects
+- **Persistent Characters:** MongoDB storage for accounts, inventory, and progress
+- **SSL/TLS Support:** Secure WebSocket connections for production
+
+## 🎮 Controls
 
 | Input | Action |
 |-------|--------|
 | **Left Click** | Move Character |
-| **Right Click** | Perform Skill / Attack |
+| **Right Click** | Attack / Use Ability |
+| **1-4 Keys** | Hotbar Abilities |
 | **Scroll Wheel** | Zoom In / Out |
 | **W / A / S / D** | Pan Camera |
 | **Spacebar** | Center Camera on Player |
+| **I** | Inventory |
+| **C** | Character Sheet |
+| **K** | Skill Tree |
+| **M** | World Map |
+| **J** | Quest Journal |
+| **ESC** | Menu |
 
 ## 🛠️ Technology Stack
 
-*   **Client:** Vanilla JavaScript (ES6+ Modules), [Three.js](https://threejs.org/) (WebGL).
-*   **Server:** Go (Golang) with WebSockets for real-time multiplayer.
-*   **Assets:** GLTF/GLB 3D Models, PNG Textures.
-*   **Architecture:** Authoritative Server with Client-Side Prediction and Interpolation.
+| Layer | Technology |
+|-------|------------|
+| **Client** | Vanilla JavaScript (ES6 Modules), [Three.js](https://threejs.org/) (WebGL) |
+| **Server** | Go 1.21+, [Gorilla WebSocket](https://github.com/gorilla/websocket) |
+| **Database** | MongoDB |
+| **Assets** | GLTF/GLB 3D Models, PNG Textures/Icons |
+| **Testing** | Jest (client), Go testing (server) |
 
 ## 🚀 Getting Started
 
-Since this project uses ES Modules, you cannot open `index.html` directly from the file system due to CORS security policies. You must serve it via a local web server.
-
 ### Prerequisites
-*   Go 1.21+ (For the Server)
-*   Python 3.x (For the Client Web Server)
+- Go 1.21+
+- MongoDB (local or Atlas)
+- Python 3.x or any static file server
 
 ### Running Locally
 
-1.  Clone the repository:
-    ```bash
-    git clone https://github.com/aeml/eidolon.git
-    cd eidolon
-    ```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/eidolon.git
+   cd eidolon
+   ```
 
-2.  Start the Game Server (Go):
-    ```bash
-    cd server
-    go run main.go
-    ```
-    The server will start on port `8080`.
+2. **Start MongoDB** (if running locally):
+   ```bash
+   mongod
+   ```
 
-3.  Start the Client (Web Server):
-    Open a new terminal in the root `eidolon` directory:
-    ```bash
-    # Python 3
-    python3 -m http.server 8000
-    ```
+3. **Start the Game Server:**
+   ```bash
+   cd server
+   go run main.go
+   ```
+   The server starts on port `8080` (WebSocket endpoint: `ws://localhost:8080/ws`).
 
-4.  Open your browser and navigate to:
-    `http://localhost:8000`
+4. **Serve the Client:**
+   ```bash
+   # From the root eidolon directory
+   python -m http.server 8000
+   ```
 
-## 🏛️ System Architecture
+5. **Play:**
+   Open `http://localhost:8000` in your browser.
 
-The codebase follows a strict separation between **Simulation** and **Visualization**.
+### Production Deployment
 
-### Core Subsystems
-*   **Server (Go):** Handles all game logic, physics, combat, and state management. It broadcasts state updates to connected clients via WebSockets.
-*   **Client (JS):** Handles input, rendering, and interpolation.
-    *   **GameEngine:** Manages the game loop, network synchronization, and entity interpolation.
-    *   **RenderSystem:** Manages the Three.js Scene, Orthographic Camera, and Lighting.
-    *   **InputManager:** Abstracts mouse/keyboard/touch events.
-    *   **ChunkManager:** Handles dynamic loading/unloading of entities and terrain based on player position.
+For SSL/TLS (required for `wss://`):
+```bash
+go run main.go --cert=cert.pem --key=key.pem --mongo-uri="mongodb+srv://..."
+```
 
-### Entity Hierarchy
-*   **Entity:** Base class for all world objects (Position, Rotation, ID).
-*   **Actor:** Extends Entity. Handles stats (HP, Speed), state machines (Idle, Moving, Attacking), and `AnimationMixer` logic.
-*   **Archetypes:** Concrete classes (`Fighter`, `Rogue`, `Wizard`, `Cleric`) that inject specific stats and visual configurations.
+See [server/README.md](server/README.md) for detailed deployment options including Let's Encrypt setup.
+
+## 🏗️ Project Structure
+
+```
+eidolon/
+├── index.html              # Game entry point
+├── src/
+│   ├── main.js             # Client initialization
+│   ├── core/
+│   │   ├── GameEngine.js   # Main game loop, networking, entity management
+│   │   ├── RenderSystem.js # Three.js scene, camera, lighting
+│   │   ├── InputManager.js # Mouse, keyboard, touch input
+│   │   ├── ChunkManager.js # Spatial loading/unloading
+│   │   ├── ItemSystem.js   # Loot generation, rarities, affixes
+│   │   └── Constants.js    # Game configuration
+│   ├── entities/
+│   │   ├── Actor.js        # Base class for all characters
+│   │   ├── Fighter.js      # Fighter class with skills
+│   │   ├── Rogue.js        # Rogue class with skills
+│   │   ├── Wizard.js       # Wizard class with skills
+│   │   ├── Cleric.js       # Cleric class with skills
+│   │   ├── Skeleton.js     # Enemy type
+│   │   └── ...             # Other entities
+│   ├── ui/
+│   │   ├── UIManager.js    # All UI panels (inventory, shop, forge, etc.)
+│   │   ├── Minimap.js      # Minimap rendering
+│   │   └── WorldMap.js     # Full world map
+│   └── world/
+│       └── WorldGenerator.js # Town buildings, trees, terrain
+├── server/
+│   ├── main.go             # Server entry, WebSocket hub, message routing
+│   ├── internal/
+│   │   ├── game/
+│   │   │   ├── world.go    # Entity management, combat, AI, dungeons
+│   │   │   ├── items.go    # Server-side loot generation
+│   │   │   ├── party.go    # Party system
+│   │   │   └── trading.go  # Auction house
+│   │   └── database/
+│   │       └── db.go       # MongoDB operations
+│   └── cmd/
+│       ├── loadtest/       # Load testing bots
+│       └── simulator/      # Game simulation
+├── assets/
+│   ├── archetypes/         # Player class GLB models
+│   ├── enemies/            # Enemy GLB models
+│   ├── buildings/          # Town structures
+│   ├── icons/              # UI icons for items and abilities
+│   └── ...
+└── tests/                  # Jest test files
+```
 
 ## 🎨 Asset Pipeline
 
-The project uses a "Greybox First" philosophy that has evolved into a full Asset Pipeline:
-1.  **Loading:** `MeshFactory` loads GLB files asynchronously.
-2.  **Cloning:** Uses `SkeletonUtils.clone()` to support multiple instances of SkinnedMeshes (characters with skeletons).
-3.  **Animation:** Animations are stripped of scale tracks to prevent visual popping and managed via a finite state machine in `Actor.js`.
+1. **3D Models:** GLB format loaded via Three.js `GLTFLoader`
+2. **Mesh Cloning:** `SkeletonUtils.clone()` for instancing skinned meshes
+3. **Animations:** Managed via `AnimationMixer` with state machine (Idle, Walk, Run, Attack, Death)
+4. **Icons:** PNG files organized by slot type in `assets/icons/`
 
-## 🗺️ World Design
+## 🔧 Server Architecture
 
-The game takes place in **Aethelgard**, divided into four realms representing the Primal Elements:
-1.  **The Iron Weald** (Earth) - Fighter
-2.  **The Crystalline Spire** (Air) - Wizard
-3.  **The Shifting Sands** (Fire) - Rogue
-4.  **The Abyssal Well** (Water) - Cleric
+The Go server is fully authoritative:
+
+- **State Management:** All entity positions, health, inventory, and combat validated server-side
+- **Tick Rate:** 30 TPS game loop with 1-second party/time sync broadcasts
+- **Spatial Partitioning:** Grid-based `SpatialMap` for efficient nearby entity queries
+- **Delta Compression:** Only changed entity states are sent to clients
+- **GZIP Compression:** Reduces bandwidth for state updates
+- **Graceful Shutdown:** Player data saved on SIGTERM/SIGINT
+
+## 📝 Running Tests
+
+```bash
+# Client tests (Jest)
+npm install
+npm test
+
+# Server tests
+cd server
+go test ./...
+```
 
 ## 📄 License
 
 This project is open source.
+
+---
+
+*Created by [Robert Mendola](https://mendola.tech)*
