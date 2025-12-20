@@ -2763,17 +2763,16 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		}
 
 		sightRange := 45.0
-		attackRange := 2.5
+		attackRange := 5.0 // Match PerformAttack base range
 		roamRadius := 10.0
 
 		e.Mu.Lock()
 		defer e.Mu.Unlock()
 
-		// Adjust range for large entities
+		// Adjust range for large entities (must match PerformAttack scaling)
 		if e.Scale > 1.0 {
-			// Use a gentler scaling for range so it doesn't get ridiculous
-			// Was: attackRange *= e.Scale
-			attackRange += (e.Scale - 1.0) * 1.0
+			// Use the same scaling as PerformAttack to ensure AI attacks when in range
+			attackRange += (e.Scale - 1.0) * 1.5
 		}
 
 		// Animation Lock: If attacking, stay attacking and don't move
