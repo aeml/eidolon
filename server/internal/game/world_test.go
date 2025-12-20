@@ -90,3 +90,354 @@ func TestGetState(t *testing.T) {
 		t.Errorf("GetState did not reflect update. Got %f, want 100", state2["p1"].X)
 	}
 }
+
+func TestEntityRecalculateStats(t *testing.T) {
+	e := &Entity{
+		ID:    "player-1",
+		Type:  TypePlayer,
+		Level: 1,
+		BaseStats: Stats{
+			Strength:     10,
+			Dexterity:    10,
+			Intelligence: 10,
+			Wisdom:       10,
+			Vitality:     10,
+		},
+		Equipment: make(map[string]Item),
+	}
+
+	e.RecalculateStats()
+
+	// MaxHealth = vitality * 10 + (level-1)*5 = 100 + 0 = 100
+	if e.MaxHealth != 100 {
+		t.Errorf("Expected MaxHealth 100, got %d", e.MaxHealth)
+	}
+
+	// MaxMana = intelligence * 10 + (level-1)*5 = 100 + 0 = 100
+	if e.MaxMana != 100 {
+		t.Errorf("Expected MaxMana 100, got %d", e.MaxMana)
+	}
+
+	// HpRegen = vitality * 0.5 = 5
+	if e.HpRegen != 5.0 {
+		t.Errorf("Expected HpRegen 5.0, got %f", e.HpRegen)
+	}
+
+	// ManaRegen = wisdom * 0.5 = 5
+	if e.ManaRegen != 5.0 {
+		t.Errorf("Expected ManaRegen 5.0, got %f", e.ManaRegen)
+	}
+
+	// CDR = min(0.5, intelligence * 0.01) = 0.1
+	if e.CooldownReduction != 0.1 {
+		t.Errorf("Expected CooldownReduction 0.1, got %f", e.CooldownReduction)
+	}
+}
+
+func TestEntityRecalculateStatsWithLevel(t *testing.T) {
+	e := &Entity{
+		ID:    "player-1",
+		Type:  TypePlayer,
+		Level: 10,
+		BaseStats: Stats{
+			Strength:     10,
+			Dexterity:    10,
+			Intelligence: 10,
+			Wisdom:       10,
+			Vitality:     10,
+		},
+		Equipment: make(map[string]Item),
+	}
+
+	e.RecalculateStats()
+
+	// MaxHealth = vitality * 10 + (level-1)*5 = 100 + 45 = 145
+	if e.MaxHealth != 145 {
+		t.Errorf("Expected MaxHealth 145, got %d", e.MaxHealth)
+	}
+
+	// MaxMana = intelligence * 10 + (level-1)*5 = 100 + 45 = 145
+	if e.MaxMana != 145 {
+		t.Errorf("Expected MaxMana 145, got %d", e.MaxMana)
+	}
+}
+
+func TestEntityRecalculateStatsWithEquipment(t *testing.T) {
+	e := &Entity{
+		ID:    "player-1",
+		Type:  TypePlayer,
+		Level: 1,
+		BaseStats: Stats{
+			Strength:     10,
+			Dexterity:    10,
+			Intelligence: 10,
+			Wisdom:       10,
+			Vitality:     10,
+		},
+		Equipment: make(map[string]Item),
+	}
+
+	// Add equipment with stats
+	e.Equipment["mainHand"] = Item{
+		Stats: map[string]int{"damage": 50},
+	}
+	e.Equipment["chest"] = Item{
+		Stats: map[string]int{"defense": 20, "vitality": 5},
+	}
+
+	e.RecalculateStats()
+
+	// Defense = 20 from chest
+	if e.Defense != 20 {
+		t.Errorf("Expected Defense 20, got %d", e.Defense)
+	}
+
+	// Vitality = 10 + 5 = 15
+	if e.Stats.Vitality != 15 {
+		t.Errorf("Expected Vitality 15, got %d", e.Stats.Vitality)
+	}
+
+	// MaxHealth = vitality * 10 = 150
+	if e.MaxHealth != 150 {
+		t.Errorf("Expected MaxHealth 150, got %d", e.MaxHealth)
+	}
+}
+
+func TestEntityRecalculateStatsFighter(t *testing.T) {
+	e := &Entity{
+		ID:      "player-1",
+		Type:    TypePlayer,
+		SubType: "Fighter",
+		Level:   1,
+		BaseStats: Stats{
+			Strength:     20,
+			Dexterity:    10,
+			Intelligence: 10,
+			Wisdom:       10,
+			Vitality:     10,
+		},
+		Equipment: make(map[string]Item),
+	}
+
+	e.RecalculateStats()
+
+	// Fighter damage = strength / 4 = 20 / 4 = 5
+	if e.Damage != 5 {
+		t.Errorf("Expected Fighter Damage 5, got %d", e.Damage)
+	}
+}
+
+func TestEntityRecalculateStatsRogue(t *testing.T) {
+	e := &Entity{
+		ID:      "player-1",
+		Type:    TypePlayer,
+		SubType: "Rogue",
+		Level:   1,
+		BaseStats: Stats{
+			Strength:     10,
+			Dexterity:    20,
+			Intelligence: 10,
+			Wisdom:       10,
+			Vitality:     10,
+		},
+		Equipment: make(map[string]Item),
+	}
+
+	e.RecalculateStats()
+
+	// Rogue damage = dexterity / 4 = 20 / 4 = 5
+	if e.Damage != 5 {
+		t.Errorf("Expected Rogue Damage 5, got %d", e.Damage)
+	}
+}
+
+func TestEntityRecalculateStatsWizard(t *testing.T) {
+	e := &Entity{
+		ID:      "player-1",
+		Type:    TypePlayer,
+		SubType: "Wizard",
+		Level:   1,
+		BaseStats: Stats{
+			Strength:     10,
+			Dexterity:    10,
+			Intelligence: 20,
+			Wisdom:       10,
+			Vitality:     10,
+		},
+		Equipment: make(map[string]Item),
+	}
+
+	e.RecalculateStats()
+
+	// Wizard damage = intelligence / 4 = 20 / 4 = 5
+	if e.Damage != 5 {
+		t.Errorf("Expected Wizard Damage 5, got %d", e.Damage)
+	}
+}
+
+func TestEntityRecalculateStatsCleric(t *testing.T) {
+	e := &Entity{
+		ID:      "player-1",
+		Type:    TypePlayer,
+		SubType: "Cleric",
+		Level:   1,
+		BaseStats: Stats{
+			Strength:     10,
+			Dexterity:    10,
+			Intelligence: 10,
+			Wisdom:       20,
+			Vitality:     10,
+		},
+		Equipment: make(map[string]Item),
+	}
+
+	e.RecalculateStats()
+
+	// Cleric damage = wisdom / 4 = 20 / 4 = 5
+	if e.Damage != 5 {
+		t.Errorf("Expected Cleric Damage 5, got %d", e.Damage)
+	}
+}
+
+func TestEntitySpeedCalculation(t *testing.T) {
+	e := &Entity{
+		ID:    "player-1",
+		Type:  TypePlayer,
+		Level: 1,
+		BaseStats: Stats{
+			Strength:     10,
+			Dexterity:    10,
+			Intelligence: 10,
+			Wisdom:       10,
+			Vitality:     10,
+		},
+		Equipment: make(map[string]Item),
+	}
+
+	e.RecalculateStats()
+
+	// Speed = (3.0 + (dex * 0.5)) * 1.2 = (3 + 5) * 1.2 = 9.6
+	expectedSpeed := 9.6
+	if e.Speed != expectedSpeed {
+		t.Errorf("Expected Speed %f, got %f", expectedSpeed, e.Speed)
+	}
+}
+
+func TestEntitySpeedCap(t *testing.T) {
+	e := &Entity{
+		ID:    "player-1",
+		Type:  TypePlayer,
+		Level: 1,
+		BaseStats: Stats{
+			Strength:     10,
+			Dexterity:    100, // Very high dex
+			Intelligence: 10,
+			Wisdom:       10,
+			Vitality:     10,
+		},
+		Equipment: make(map[string]Item),
+	}
+
+	e.RecalculateStats()
+
+	// Max speed = refSpeed * 3 = 9.6 * 3 = 28.8
+	maxSpeed := 28.8
+	diff := e.Speed - maxSpeed
+	if diff < -0.001 || diff > 0.001 {
+		t.Errorf("Expected capped Speed %f, got %f", maxSpeed, e.Speed)
+	}
+}
+
+func TestEntityAttackSpeedCalculation(t *testing.T) {
+	e := &Entity{
+		ID:    "player-1",
+		Type:  TypePlayer,
+		Level: 1,
+		BaseStats: Stats{
+			Strength:     10,
+			Dexterity:    10,
+			Intelligence: 10,
+			Wisdom:       10,
+			Vitality:     10,
+		},
+		Equipment: make(map[string]Item),
+	}
+
+	e.RecalculateStats()
+
+	// Attack Speed = 5.0 / (1 + dex*0.02) = 5.0 / 1.2 ≈ 4.17
+	expectedAttackSpeed := 5.0 / 1.2
+	diff := e.AttackSpeed - expectedAttackSpeed
+	if diff < -0.01 || diff > 0.01 {
+		t.Errorf("Expected AttackSpeed %f, got %f", expectedAttackSpeed, e.AttackSpeed)
+	}
+}
+
+func TestEntityAttackSpeedMinimum(t *testing.T) {
+	e := &Entity{
+		ID:    "player-1",
+		Type:  TypePlayer,
+		Level: 1,
+		BaseStats: Stats{
+			Strength:     10,
+			Dexterity:    500, // Extremely high
+			Intelligence: 10,
+			Wisdom:       10,
+			Vitality:     10,
+		},
+		Equipment: make(map[string]Item),
+	}
+
+	e.RecalculateStats()
+
+	// Attack Speed minimum is 1.0
+	if e.AttackSpeed != 1.0 {
+		t.Errorf("Expected minimum AttackSpeed 1.0, got %f", e.AttackSpeed)
+	}
+}
+
+func TestEntityCDRCap(t *testing.T) {
+	e := &Entity{
+		ID:    "player-1",
+		Type:  TypePlayer,
+		Level: 1,
+		BaseStats: Stats{
+			Strength:     10,
+			Dexterity:    10,
+			Intelligence: 100, // High int
+			Wisdom:       10,
+			Vitality:     10,
+		},
+		Equipment: make(map[string]Item),
+	}
+
+	e.RecalculateStats()
+
+	// CDR capped at 0.5
+	if e.CooldownReduction != 0.5 {
+		t.Errorf("Expected capped CDR 0.5, got %f", e.CooldownReduction)
+	}
+}
+
+func TestEnemyDamageCalculation(t *testing.T) {
+	e := &Entity{
+		ID:    "enemy-1",
+		Type:  TypeEnemy,
+		Level: 1,
+		BaseStats: Stats{
+			Strength:     10,
+			Dexterity:    10,
+			Intelligence: 10,
+			Wisdom:       10,
+			Vitality:     10,
+		},
+		Equipment: make(map[string]Item),
+	}
+
+	e.RecalculateStats()
+
+	// Enemy damage = strength * 2 = 20
+	if e.Damage != 20 {
+		t.Errorf("Expected Enemy Damage 20, got %d", e.Damage)
+	}
+}
