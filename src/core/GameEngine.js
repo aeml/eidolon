@@ -310,6 +310,10 @@ export class GameEngine {
         // Entity Creation Throttling
         this.entityCreationQueue = [];
         this.pendingEntityIds = new Set();
+        
+        // Track recently picked up loot IDs to prevent phantom item recreation
+        this.recentlyPickedUpLoot = new Set();
+        this.recentlyPickedUpLootTimeout = 5000; // 5 seconds
 
         // Network Message Buffering
         this.latestServerState = null;
@@ -1396,6 +1400,11 @@ export class GameEngine {
 
                 let remoteEntity = this.remotePlayers.get(pData.id);
                 if (!remoteEntity) {
+                    // Skip loot that was recently picked up (prevents phantom items from stale state)
+                    if (pData.type === 'Loot' && this.recentlyPickedUpLoot.has(pData.id)) {
+                        return;
+                    }
+                    
                     // Check if already pending creation
                     if (!this.pendingEntityIds.has(pData.id)) {
                         this.pendingEntityIds.add(pData.id);
@@ -1662,6 +1671,11 @@ export class GameEngine {
 
                 let remoteEntity = this.remotePlayers.get(pData.id);
                 if (!remoteEntity) {
+                    // Skip loot that was recently picked up (prevents phantom items from stale delta)
+                    if (pData.type === 'Loot' && this.recentlyPickedUpLoot.has(pData.id)) {
+                        return;
+                    }
+                    
                     // New entity - queue for creation
                     if (!this.pendingEntityIds.has(pData.id)) {
                         this.pendingEntityIds.add(pData.id);
@@ -1864,10 +1878,68 @@ export class GameEngine {
         };
         this.socket.send(JSON.stringify(msg));
 
+        // Track this loot as recently picked up to prevent phantom recreation
+        this.recentlyPickedUpLoot.add(lootId);
+        setTimeout(() => {
+            this.recentlyPickedUpLoot.delete(lootId);
+        }, this.recentlyPickedUpLootTimeout);
+
+        // Remove from entity creation queue if pending (prevents phantom items)
+        const queueIdx = this.entityCreationQueue.findIndex(e => e.id === lootId);
+        if (queueIdx !== -1) {
+            this.entityCreationQueue.splice(queueIdx, 1);
+            this.pendingEntityIds.delete(lootId);
+        }
+
         // Optimistic removal to prevent "ghost items"
         const entity = this.remotePlayers.get(lootId);
         if (entity) {
             console.log(`Optimistically removing loot ${lootId}`);
+            
+            // Optimistic inventory update - add item to bag instantly
+            if (entity.item && this.player && this.player.inventory) {
+                const item = this.hydrateItem({ ...entity.item });
+                
+                // Handle stackable items
+                if (item.maxStack && item.maxStack > 1) {
+                    // Try to stack with existing items first
+                    let remainingStack = item.stack || 1;
+                    for (let i = 0; i < this.player.inventory.length && remainingStack > 0; i++) {
+                        const invItem = this.player.inventory[i];
+                        if (invItem && invItem.name === item.name && invItem.stack < invItem.maxStack) {
+                            const spaceAvailable = invItem.maxStack - invItem.stack;
+                            const toAdd = Math.min(spaceAvailable, remainingStack);
+                            invItem.stack += toAdd;
+                            remainingStack -= toAdd;
+                        }
+                    }
+                    
+                    // If remaining, find empty slot
+                    if (remainingStack > 0) {
+                        for (let i = 0; i < this.player.inventory.length; i++) {
+                            if (!this.player.inventory[i]) {
+                                item.stack = remainingStack;
+                                this.player.inventory[i] = item;
+                                remainingStack = 0;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    // Non-stackable: find empty slot
+                    for (let i = 0; i < this.player.inventory.length; i++) {
+                        if (!this.player.inventory[i]) {
+                            this.player.inventory[i] = item;
+                            break;
+                        }
+                    }
+                }
+                
+                // Immediately update UI
+                this.uiManager.updateInventory(this.player);
+                console.log(`Optimistically added item to inventory: ${item.name}`);
+            }
+            
             entity.isActive = false;
             if (entity.dispose) {
                 entity.dispose();
@@ -2602,6 +2674,12 @@ export class GameEngine {
             
             // Double check if it was already created (race condition)
             if (this.remotePlayers.has(pData.id)) continue;
+            
+            // Skip loot that was recently picked up (prevents phantom items)
+            if (pData.type === 'Loot' && this.recentlyPickedUpLoot.has(pData.id)) {
+                console.log(`Skipping phantom loot creation: ${pData.id}`);
+                continue;
+            }
 
             try {
                 let remoteEntity;
