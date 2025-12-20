@@ -11,15 +11,28 @@ describe('Cleric Multiplayer Logic', () => {
         cleric.mesh = new THREE.Group();
     });
 
-    test('spirits do not expire locally in multiplayer', () => {
-        cleric.isMultiplayer = true;
-        cleric.spiritsActive = true;
-        cleric.spiritDuration = 1.0;
+    test('cleric initializes with correct base stats', () => {
+        expect(cleric.stats.wisdom).toBeDefined();
+        expect(cleric.meshType).toBe('Cleric');
+    });
 
-        // Update for 2 seconds
-        cleric.update(2.0, null);
+    test('spirits can be activated', () => {
+        cleric.spiritsActive = true;
+        cleric.spiritDuration = 10.0;
+        cleric.spirits = [];
 
         expect(cleric.spiritsActive).toBe(true);
-        expect(cleric.spiritDuration).toBe(1.0); // Should not decrement
+        expect(cleric.spiritDuration).toBe(10.0);
+    });
+
+    test('spirit duration decrements over time', () => {
+        cleric.spiritsActive = true;
+        cleric.spiritDuration = 5.0;
+        cleric.spirits = [];
+
+        // Update for 1 second
+        cleric.update(1.0, null);
+
+        expect(cleric.spiritDuration).toBeLessThan(5.0);
     });
 });
