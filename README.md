@@ -1,5 +1,8 @@
 # EIDOLON
 
+[![CI](https://github.com/aeml/eidolon/actions/workflows/ci.yml/badge.svg)](https://github.com/aeml/eidolon/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-report-blue)](https://eidolon.mendola.tech/coverage/)
+
 > **Brought to you by [Robert Mendola](https://mendola.tech)**
 
 **Eidolon** is a browser-based Isometric Action-RPG MMO set in *Aethelgard*. Built with vanilla JavaScript, Three.js, and a Go WebSocket server, it features real-time multiplayer combat, deep character progression, and a Diablo-inspired loot system.

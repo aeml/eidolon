@@ -1,0 +1,223 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # Client-side tests with Jest
+  client-tests:
+    name: Client Tests (Jest)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with coverage
+        run: npm test -- --coverage --coverageReporters=lcov --coverageReporters=text
+
+      - name: Upload client coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-coverage
+          path: coverage/
+          retention-days: 7
+
+  # Server-side tests with Go
+  server-tests:
+    name: Server Tests (Go)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+          cache-dependency-path: server/go.sum
+
+      - name: Run Go tests with coverage
+        working-directory: server
+        run: |
+          go test -v -coverprofile=coverage.out -covermode=atomic ./...
+          go tool cover -func=coverage.out
+
+      - name: Convert Go coverage to LCOV
+        working-directory: server
+        run: |
+          go install github.com/jandelgado/gcov2lcov@latest
+          gcov2lcov -infile=coverage.out -outfile=coverage.lcov
+
+      - name: Upload server coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-coverage
+          path: server/coverage.lcov
+          retention-days: 7
+
+  # Build site with coverage reports and deploy to GitHub Pages
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: [client-tests, server-tests]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install lcov
+        run: sudo apt-get update && sudo apt-get install -y lcov
+
+      - name: Download client coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: client-coverage
+          path: coverage-client
+
+      - name: Download server coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: server-coverage
+          path: coverage-server
+
+      - name: Prepare site with coverage reports
+        run: |
+          # Copy the entire game to public/ (preserves eidolon.mendola.tech)
+          mkdir -p public
+          cp -r index.html assets src public/ 2>/dev/null || true
+          cp -r *.css *.js public/ 2>/dev/null || true
+          
+          # Create coverage directory
+          mkdir -p public/coverage/client public/coverage/server
+
+          # Generate client HTML report
+          if [ -f coverage-client/lcov.info ]; then
+            genhtml coverage-client/lcov.info \
+              --output-directory public/coverage/client \
+              --title "Eidolon Client Coverage" \
+              --legend --show-details
+            
+            # Extract client coverage percentage for badge
+            CLIENT_COV=$(lcov --summary coverage-client/lcov.info 2>&1 | grep -oP 'lines\.*:\s*\K[0-9.]+' || echo "0")
+            echo "CLIENT_COV=$CLIENT_COV" >> $GITHUB_ENV
+          fi
+
+          # Generate server HTML report  
+          if [ -f coverage-server/coverage.lcov ]; then
+            genhtml coverage-server/coverage.lcov \
+              --output-directory public/coverage/server \
+              --title "Eidolon Server Coverage" \
+              --legend --show-details
+            
+            # Extract server coverage percentage for badge
+            SERVER_COV=$(lcov --summary coverage-server/coverage.lcov 2>&1 | grep -oP 'lines\.*:\s*\K[0-9.]+' || echo "0")
+            echo "SERVER_COV=$SERVER_COV" >> $GITHUB_ENV
+          fi
+
+          # Create coverage index page
+          cat > public/coverage/index.html << 'HTML'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Eidolon - Coverage Reports</title>
+            <style>
+              body {
+                font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+                margin: 0;
+                padding: 2rem;
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                min-height: 100vh;
+                color: #e0e0e0;
+              }
+              .container { max-width: 800px; margin: 0 auto; }
+              h1 { color: #00d4ff; text-align: center; font-size: 2.5rem; margin-bottom: 0.5rem; }
+              .subtitle { text-align: center; color: #888; margin-bottom: 2rem; }
+              .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+              .card {
+                background: rgba(255,255,255,0.05);
+                border: 1px solid rgba(255,255,255,0.1);
+                border-radius: 12px;
+                padding: 1.5rem;
+                text-decoration: none;
+                color: inherit;
+                transition: transform 0.2s, box-shadow 0.2s;
+              }
+              .card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 30px rgba(0,212,255,0.2);
+                border-color: #00d4ff;
+              }
+              .card h2 { color: #00d4ff; margin-top: 0; }
+              .card p { color: #aaa; margin-bottom: 0; }
+              .tech-badge {
+                display: inline-block;
+                background: rgba(0,212,255,0.2);
+                color: #00d4ff;
+                padding: 0.25rem 0.75rem;
+                border-radius: 20px;
+                font-size: 0.85rem;
+                margin-top: 1rem;
+              }
+              .back-link { text-align: center; margin-top: 2rem; }
+              .back-link a { color: #00d4ff; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>⚔️ Eidolon</h1>
+              <p class="subtitle">Code Coverage Reports</p>
+              <div class="cards">
+                <a href="client/" class="card">
+                  <h2>🎮 Client Coverage</h2>
+                  <p>JavaScript/Three.js game client test coverage report generated by Jest.</p>
+                  <span class="tech-badge">JavaScript • Jest • LCOV</span>
+                </a>
+                <a href="server/" class="card">
+                  <h2>🖥️ Server Coverage</h2>
+                  <p>Go WebSocket server test coverage report generated by go test.</p>
+                  <span class="tech-badge">Go • gcov2lcov • LCOV</span>
+                </a>
+              </div>
+              <p class="back-link"><a href="/">← Back to Game</a></p>
+            </div>
+          </body>
+          </html>
+          HTML
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
