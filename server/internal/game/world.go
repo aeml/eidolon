@@ -3050,6 +3050,11 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		attackRange += (attacker.Scale - 1.0) * 1.5
 	}
 
+	// Also adjust range for target's scale (allows melee to hit large bosses)
+	if target.Scale > 1.0 {
+		attackRange += (target.Scale - 1.0) * 1.5
+	}
+
 	switch attacker.SubType {
 	case "Wizard", "Rogue":
 		attackRange = 100.0 // Ranged - effectively infinite
@@ -5090,18 +5095,19 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				// Summon Entity
 				seraph := &Entity{
-					ID:        fmt.Sprintf("summon-seraph-%d", time.Now().UnixNano()),
-					Type:      TypeNPC, // Or specialized summon type
-					SubType:   "AvengingSeraph",
-					X:         player.X,
-					Y:         0,
-					Z:         player.Z,
-					OwnerID:   player.ID,
-					Health:    500 + (player.Stats.Wisdom * 10),
-					MaxHealth: 500 + (player.Stats.Wisdom * 10),
-					Damage:    50 + (player.Stats.Wisdom * 2),
-					State:     "IDLE",
-					CreatedAt: time.Now(),
+					ID:         fmt.Sprintf("summon-seraph-%d", time.Now().UnixNano()),
+					InstanceID: player.InstanceID, // Inherit instance from owner
+					Type:       TypeNPC,           // Or specialized summon type
+					SubType:    "AvengingSeraph",
+					X:          player.X,
+					Y:          0,
+					Z:          player.Z,
+					OwnerID:    player.ID,
+					Health:     500 + (player.Stats.Wisdom * 10),
+					MaxHealth:  500 + (player.Stats.Wisdom * 10),
+					Damage:     50 + (player.Stats.Wisdom * 2),
+					State:      "IDLE",
+					CreatedAt:  time.Now(),
 				}
 				// w.AddEntity(seraph) // DEADLOCK: PerformAbility already holds w.Mu
 				w.Entities[seraph.ID] = seraph
@@ -6538,7 +6544,7 @@ func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID str
 		Speed:          2.5,
 		AttackSpeed:    cooldown,
 		AttackCooldown: time.Duration(cooldown * float64(time.Second)),
-		Scale:          8.0, // Increased from 5.0 to 8.0
+		Scale:          4.0,
 		Damage:         stats.Strength * 10,
 	}
 	w.Entities[boss.ID] = boss

@@ -51,6 +51,8 @@ type Character struct {
 	X              float64         `bson:"x"`
 	Y              float64         `bson:"y"`
 	Z              float64         `bson:"z"`
+	InstanceID     string          `bson:"instance_id"`
+	LastLogout     time.Time       `bson:"last_logout"`
 	Stats          Stats           `bson:"stats"`
 	Inventory      []Item          `bson:"inventory"`
 	Stash          []Item          `bson:"stash"`
