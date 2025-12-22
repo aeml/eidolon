@@ -862,14 +862,47 @@ func (c *Client) handleMessage(msg Message) {
 		playerID := "player-" + c.username
 		c.playerID = playerID
 
+		// Check if player was in an instance and logged out more than 15 minutes ago
+		spawnX := char.X
+		spawnY := char.Y
+		spawnZ := char.Z
+		instanceID := char.InstanceID
+
+		if instanceID != "" {
+			// Player was in a dungeon instance
+			timeSinceLogout := time.Since(char.LastLogout)
+			if timeSinceLogout > 15*time.Minute {
+				// More than 15 minutes - return to town
+				log.Printf("Player %s was in instance %s but logged out %v ago - returning to town", c.username, instanceID, timeSinceLogout)
+				spawnX = -1.25 // Town center
+				spawnY = 0
+				spawnZ = 200
+				instanceID = "" // Clear instance
+			} else {
+				// Less than 15 minutes - check if instance still exists
+				_, exists := world.GetInstanceLayout(instanceID)
+				if !exists {
+					// Instance no longer exists - return to town
+					log.Printf("Player %s was in instance %s but it no longer exists - returning to town", c.username, instanceID)
+					spawnX = -1.25
+					spawnY = 0
+					spawnZ = 200
+					instanceID = ""
+				} else {
+					log.Printf("Player %s reconnecting to instance %s (logged out %v ago)", c.username, instanceID, timeSinceLogout)
+				}
+			}
+		}
+
 		entity := &game.Entity{
 			ID:             playerID,
 			Name:           c.username,
 			Type:           game.TypePlayer,
 			SubType:        char.Class,
-			X:              char.X,
-			Y:              char.Y,
-			Z:              char.Z,
+			X:              spawnX,
+			Y:              spawnY,
+			Z:              spawnZ,
+			InstanceID:     instanceID,
 			Health:         char.Stats.Vitality * 10,
 			MaxHealth:      char.Stats.Vitality * 10,
 			Mana:           char.Stats.Intelligence * 10,
@@ -1148,6 +1181,27 @@ func (c *Client) handleMessage(msg Message) {
 			}
 			b, _ := json.Marshal(msg)
 			c.sendSafe(b)
+		}
+
+		// If reconnecting to an instance, send the layout
+		if instanceID != "" {
+			layout, hasLayout := world.GetInstanceLayout(instanceID)
+			if hasLayout {
+				log.Printf("Reconnecting %s to instance %s: %d rooms", c.username, instanceID, len(layout.Rooms))
+				resp := map[string]interface{}{
+					"instanceId": instanceID,
+					"type":       "verdant_bastion", // TODO: Store dungeon type in DB if we have multiple
+				}
+				resp["layout"] = layout
+				payloadBytes, _ := json.Marshal(resp)
+
+				instMsg := Message{
+					Type:    MsgEnterInstance,
+					Payload: payloadBytes,
+				}
+				b, _ := json.Marshal(instMsg)
+				c.sendSafe(b)
+			}
 		}
 
 	case MsgEnterDungeon:
@@ -2666,14 +2720,16 @@ func savePlayer(client *Client) {
 func saveCharacterDB(client *Client, entity *game.Entity) {
 	// Update DB character
 	char := &database.Character{
-		Name:  client.username,
-		Class: entity.SubType,
-		Level: entity.Level,
-		XP:    entity.Experience,
-		Gold:  entity.Gold,
-		X:     entity.X,
-		Y:     entity.Y,
-		Z:     entity.Z,
+		Name:       client.username,
+		Class:      entity.SubType,
+		Level:      entity.Level,
+		XP:         entity.Experience,
+		Gold:       entity.Gold,
+		X:          entity.X,
+		Y:          entity.Y,
+		Z:          entity.Z,
+		InstanceID: entity.InstanceID,
+		LastLogout: time.Now(),
 		Stats: database.Stats{
 			Vitality:     entity.BaseStats.Vitality,
 			Strength:     entity.BaseStats.Strength,

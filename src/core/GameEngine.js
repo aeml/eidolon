@@ -996,6 +996,8 @@ export class GameEngine {
         } else if (type === 'verdant_bastion_catacombs') {
             worldGen.createVerdantBastionCatacombs(0, 0, layout);
         } else {
+            // Returning to overworld - re-setup ground textures
+            this.renderSystem.setupGround();
             worldGen.createTown(0, 0, 100);
             worldGen.createOverworldStructures();
         }
@@ -2941,6 +2943,10 @@ export class GameEngine {
                             range = 16.0;
                         } else {
                             range = 5.0; // Melee range (Fighter, Rogue, Cleric) - tighter to ensure server hit
+                        }
+                        // Adjust range for target's scale (allows melee to hit large bosses)
+                        if (this.pendingInteraction.scale && this.pendingInteraction.scale > 1.0) {
+                            range += (this.pendingInteraction.scale - 1.0) * 1.5;
                         }
                     }
 
