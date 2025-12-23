@@ -605,11 +605,35 @@ export class Actor extends Entity {
                 const ignore = this.isRemote ? player : null;
                 const separation = collisionManager.checkEntityCollision(this, activeEntities, ignore);
                 if (separation) {
+                    // Separation is purely visual. Near the local player, we keep the "spread out" look
+                    // but avoid pushing enemies *away* from the player (which makes melee hits look wrong).
+                    if (player && player.position) {
+                        const rx = this.position.x - player.position.x;
+                        const rz = this.position.z - player.position.z;
+                        const distSq = rx * rx + rz * rz;
+
+                        // Apply only when near the player (combat cluster).
+                        if (distSq < 9.0 * 9.0 && distSq > 0.0001) {
+                            const invLen = 1.0 / Math.sqrt(distSq);
+                            const ux = rx * invLen;
+                            const uz = rz * invLen;
+
+                            // Reduce outward radial component (dot > 0 means pushing farther from player).
+                            // Keep a small amount so enemies can still "make room" instead of stacking,
+                            // but avoid large visual gaps where melee hits look out-of-range.
+                            const dot = separation.x * ux + separation.z * uz;
+                            if (dot > 0) {
+                                separation.x -= ux * dot * 0.75;
+                                separation.z -= uz * dot * 0.75;
+                            }
+                        }
+                    }
+
                     // Add to visual offset instead of position to avoid fighting Lerp
-                    this.visualOffset.add(separation.multiplyScalar(5.0 * dt));
+                    this.visualOffset.add(separation.multiplyScalar(7.5 * dt));
                     // Clamp to avoid extreme offsets
-                    if (this.visualOffset.length() > 1.5) {
-                        this.visualOffset.setLength(1.5);
+                    if (this.visualOffset.length() > 2.0) {
+                        this.visualOffset.setLength(2.0);
                     }
                 }
             }

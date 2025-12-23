@@ -3,6 +3,7 @@ package game
 import (
 	"eidolon-server/internal/database"
 	"fmt"
+	"hash/fnv"
 	"log"
 	"math"
 	"math/rand"
@@ -12,6 +13,13 @@ import (
 	"sync"
 	"time"
 )
+
+func hashAngle(key string) float64 {
+	h := fnv.New32a()
+	_, _ = h.Write([]byte(key))
+	// Map uint32 -> [0, 2pi)
+	return (float64(h.Sum32()) / float64(math.MaxUint32)) * (2.0 * math.Pi)
+}
 
 type EntityType string
 
@@ -2763,7 +2771,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		}
 
 		sightRange := 45.0
-		attackRange := 5.0 // Match PerformAttack base range
+		attackRange := 3.0 // Match PerformAttack base range (tighter so melee looks/feels like contact)
 		roamRadius := 10.0
 
 		e.Mu.Lock()
@@ -2790,17 +2798,18 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			return
 		}
 
-		// Force IDLE state if we are past lockDuration but before next attack
-		// This ensures the state flips ATTACKING -> IDLE -> ATTACKING
-		if time.Since(e.LastAttackTime) >= lockDuration && time.Since(e.LastAttackTime) < e.AttackCooldown {
+		// After the swing lock, enemies should be allowed to move immediately.
+		// We still want the state flip (ATTACKING -> IDLE) during cooldown so the
+		// client can reliably retrigger ATTACKING on the next hit.
+		cooldownActive := time.Since(e.LastAttackTime) < e.AttackCooldown
+		if cooldownActive {
 			e.State = "IDLE"
-			return
 		}
 
 		if target != nil && minDist <= sightRange {
 			if minDist <= attackRange {
-				// Attack
-				if time.Since(e.LastAttackTime) >= e.AttackCooldown {
+				// Attack (if off cooldown). If still on cooldown, stay IDLE in-place.
+				if !cooldownActive {
 					e.Mu.Unlock() // Unlock self before interaction
 					w.PerformAttack(e.ID, target.ID)
 					e.Mu.Lock() // Relock self
@@ -2811,8 +2820,23 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				tx, tz := target.X, target.Z
 				target.Mu.RUnlock()
 
-				e.TargetX = tx
-				e.TargetZ = tz
+				// Anti-stacking steering:
+				// Many enemies converging on the exact player position causes them to overlap.
+				// Instead, chase distinct offset points on a ring around the player.
+				// Once in melee range, AI switches to attacking based on true distance to player.
+				angle := hashAngle(e.ID + "|" + target.ID)
+				// Offset tuned to be inside melee range but large enough to visibly separate.
+				offset := 1.8
+				if attackRange*0.8 < offset {
+					offset = attackRange * 0.8
+				}
+				// Large entities get a slightly larger orbit to reduce clipping.
+				if e.Scale > 1.0 {
+					offset += (e.Scale - 1.0) * 0.5
+				}
+
+				e.TargetX = tx + math.Cos(angle)*offset
+				e.TargetZ = tz + math.Sin(angle)*offset
 				e.State = "MOVING"
 
 				dx := e.TargetX - e.X
@@ -3043,7 +3067,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	dz := attacker.Z - target.Z
 	dist := math.Sqrt(dx*dx + dz*dz)
 
-	attackRange := 5.0 // Default Melee range
+	attackRange := 3.0 // Default Melee range (tighter so melee looks/feels like contact)
 
 	// Adjust range for scale (Bosses)
 	if attacker.Scale > 1.0 {
