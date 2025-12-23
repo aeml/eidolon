@@ -21,6 +21,37 @@ func hashAngle(key string) float64 {
 	return (float64(h.Sum32()) / float64(math.MaxUint32)) * (2.0 * math.Pi)
 }
 
+func addThreatLocked(enemy *Entity, playerID string, amount float64) {
+	if enemy == nil || playerID == "" || amount <= 0 {
+		return
+	}
+	if enemy.Threat == nil {
+		enemy.Threat = make(map[string]float64)
+	}
+	enemy.Threat[playerID] += amount
+}
+
+func tauntThreatLocked(enemy *Entity, playerID string) {
+	if enemy == nil || playerID == "" {
+		return
+	}
+	if enemy.Threat == nil {
+		enemy.Threat = make(map[string]float64)
+	}
+
+	maxThreat := 0.0
+	for _, v := range enemy.Threat {
+		if v > maxThreat {
+			maxThreat = v
+		}
+	}
+	// If nobody has threat yet, seed so taunt still works.
+	if maxThreat < 1.0 {
+		maxThreat = 1.0
+	}
+	enemy.Threat[playerID] = maxThreat * 1.10
+}
+
 type EntityType string
 
 const (
@@ -119,6 +150,9 @@ type Entity struct {
 	AbilityCooldown time.Duration        `json:"-"`
 	Cooldowns       map[string]time.Time `json:"-"`
 	LastRespawnTime time.Time            `json:"-"`
+
+	// Threat (server-side only): playerID -> threat
+	Threat map[string]float64 `json:"-"`
 
 	// Loot
 	LootItem  *Item     `json:"lootItem,omitempty"` // If Type == TypeLoot
@@ -2112,6 +2146,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				e.State = "IDLE"
 				e.Health = e.MaxHealth
+				e.Threat = nil
 				oldX, oldZ := e.X, e.Z
 				e.X = e.SpawnX
 				e.Z = e.SpawnZ
@@ -2145,6 +2180,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					damage = 10
 				}
 				ownerID := e.OwnerID
+				owner := w.GetEntity(ownerID)
+				ownerIsPlayer := owner != nil && owner.Type == TypePlayer
 				e.Mu.Unlock() // Unlock to query grid
 
 				nearby := w.Grid.Nearby(e.X, e.Z, radius, e.InstanceID)
@@ -2161,6 +2198,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					if (dx*dx + dz*dz) <= radius*radius {
 						target.Mu.Lock()
 						target.Health -= damage
+						if ownerIsPlayer {
+							addThreatLocked(target, ownerID, float64(damage))
+						}
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
@@ -2189,6 +2229,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				radius := e.Radius
 				damage := e.Damage
 				ownerID := e.OwnerID
+				owner := w.GetEntity(ownerID)
+				ownerIsPlayer := owner != nil && owner.Type == TypePlayer
 
 				e.Mu.Unlock() // Unlock to query grid
 
@@ -2206,6 +2248,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					if (dx*dx + dz*dz) <= radius*radius {
 						target.Mu.Lock()
 						target.Health -= damage
+						if ownerIsPlayer {
+							addThreatLocked(target, ownerID, float64(damage))
+						}
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
@@ -2251,6 +2296,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		projX, projZ, radius, damage, ownerID, subType := e.X, e.Z, e.Radius, e.Damage, e.OwnerID, e.SubType
 		e.Mu.Unlock()
 
+		owner := w.GetEntity(ownerID)
+		ownerIsPlayer := owner != nil && owner.Type == TypePlayer
+
 		// Check Collision with Enemies
 		nearbyEnemies := w.Grid.Nearby(projX, projZ, radius+2.0, e.InstanceID)
 		for _, target := range nearbyEnemies {
@@ -2283,6 +2331,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				// Hit!
 				target.Mu.Lock()
 				target.Health -= damage
+				if ownerIsPlayer {
+					addThreatLocked(target, ownerID, float64(damage))
+				}
 				isDead := target.Health <= 0
 
 				// Apply Trap Effects
@@ -2331,6 +2382,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							splashTarget.Mu.Lock()
 							splashDmg := int(float64(damage) * 0.4)
 							splashTarget.Health -= splashDmg
+							if ownerIsPlayer {
+								addThreatLocked(splashTarget, ownerID, float64(splashDmg))
+							}
 							isSplashDead := splashTarget.Health <= 0
 							splashTarget.Mu.Unlock()
 
@@ -2687,8 +2741,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				e.Mu.Unlock() // Unlock before interaction
 
+				ownerIsPlayer := owner != nil && owner.Type == TypePlayer
+				ownerID := e.OwnerID
 				target.Mu.Lock()
 				target.Health -= damage
+				if ownerIsPlayer {
+					addThreatLocked(target, ownerID, float64(damage))
+				}
 				isDead := target.Health <= 0
 				target.Mu.Unlock()
 
@@ -2736,12 +2795,37 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		// AI Logic
 		var target *Entity
 		minDist := 1000.0
+		sightRange := 45.0
 
-		e.Mu.Lock()
+		// Snapshot position + threat without holding the enemy lock while scanning players.
+		var threatSnapshot map[string]float64
+		e.Mu.RLock()
 		ex, ez := e.X, e.Z
-		e.Mu.Unlock()
+		if len(e.Threat) > 0 {
+			threatSnapshot = make(map[string]float64, len(e.Threat))
+			for k, v := range e.Threat {
+				threatSnapshot[k] = v
+			}
+		}
+		e.Mu.RUnlock()
 
-		// Find nearest player
+		// Apply decay to snapshot so selection matches this tick's decay.
+		decayFactor := math.Pow(0.97, dt)
+		if threatSnapshot != nil {
+			for k, v := range threatSnapshot {
+				threatSnapshot[k] = v * decayFactor
+			}
+		}
+
+		// Pick target:
+		// - If enemy has any threat on valid players, pick highest threat.
+		// - Otherwise, pick nearest valid player.
+		nearestDist := math.MaxFloat64
+		var nearestPlayer *Entity
+		maxThreat := 0.0
+		threatDist := math.MaxFloat64
+		var threatPlayer *Entity
+
 		for _, p := range players {
 			if p.InstanceID != e.InstanceID {
 				continue
@@ -2761,21 +2845,53 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 			dx := p.X - ex
 			dz := p.Z - ez
+			pid := p.ID
 			p.Mu.RUnlock()
 
 			dist := math.Sqrt(dx*dx + dz*dz)
-			if dist < minDist {
-				minDist = dist
-				target = p
+			if dist < nearestDist {
+				nearestDist = dist
+				nearestPlayer = p
+			}
+
+			thr := 0.0
+			if threatSnapshot != nil {
+				thr = threatSnapshot[pid]
+			}
+			if thr > 0 {
+				if thr > maxThreat || (thr == maxThreat && dist < threatDist) {
+					maxThreat = thr
+					threatDist = dist
+					threatPlayer = p
+				}
 			}
 		}
 
-		sightRange := 45.0
+		if threatPlayer != nil {
+			target = threatPlayer
+			minDist = threatDist
+		} else {
+			target = nearestPlayer
+			minDist = nearestDist
+		}
+
 		attackRange := 3.0 // Match PerformAttack base range (tighter so melee looks/feels like contact)
 		roamRadius := 10.0
 
 		e.Mu.Lock()
 		defer e.Mu.Unlock()
+
+		// Decay stored threat table by 3%/sec and prune tiny values.
+		if len(e.Threat) > 0 {
+			for k, v := range e.Threat {
+				nv := v * decayFactor
+				if nv < 0.01 {
+					delete(e.Threat, k)
+					continue
+				}
+				e.Threat[k] = nv
+			}
+		}
 
 		// Adjust range for large entities (must match PerformAttack scaling)
 		if e.Scale > 1.0 {
@@ -3138,6 +3254,9 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 			damage = 1
 		}
 		tgt.Health -= damage
+		if att.Type == TypePlayer && tgt.Type == TypeEnemy {
+			addThreatLocked(tgt, att.ID, float64(damage))
+		}
 
 		// Apply On-Hit Effects
 		// These read att fields.
@@ -3295,6 +3414,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if (dx*dx + dz*dz) <= radius*radius {
 						target.Mu.Lock()
 						target.Health -= damage
+						addThreatLocked(target, player.ID, float64(damage))
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
@@ -3353,6 +3473,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						if dot > math.Cos(angleThreshold) {
 							target.Mu.Lock()
 							target.Health -= damage
+							addThreatLocked(target, player.ID, float64(damage))
 							isDead := target.Health <= 0
 							target.Mu.Unlock()
 
@@ -3409,6 +3530,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						if dot > math.Cos(angleThreshold) {
 							target.Mu.Lock()
 							target.Health -= damage
+							addThreatLocked(target, player.ID, float64(damage))
 							isDead := target.Health <= 0
 							target.Mu.Unlock()
 
@@ -3455,6 +3577,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if (dx*dx + dz*dz) <= radius*radius {
 						target.Mu.Lock()
 						target.Health -= damage
+						addThreatLocked(target, player.ID, float64(damage))
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
@@ -3550,6 +3673,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if (dx*dx + dz*dz) <= radius*radius {
 						target.Mu.Lock()
 						target.Health -= damage
+						addThreatLocked(target, player.ID, float64(damage))
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
@@ -3609,6 +3733,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if (dx*dx + dz*dz) <= radius*radius {
 						target.Mu.Lock()
 						target.Health -= damage
+						addThreatLocked(target, player.ID, float64(damage))
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
@@ -3659,9 +3784,8 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					}
 					target.Mu.Lock()
 					if target.Type == TypeEnemy && target.State != "DEAD" {
-						// Force target to attack player
-						target.TargetID = player.ID
-						target.State = "CHASING"
+						// Taunt: set fighter to highest threat + 10% for this enemy.
+						tauntThreatLocked(target, player.ID)
 					}
 					target.Mu.Unlock()
 				}
@@ -3892,6 +4016,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						if dot > math.Cos(angleThreshold) {
 							target.Mu.Lock()
 							target.Health -= damage
+							addThreatLocked(target, player.ID, float64(damage))
 							target.Stunned = true
 							target.StunEndTime = time.Now().Add(3 * time.Second)
 							isDead := target.Health <= 0
@@ -4117,6 +4242,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 							// Hit
 							target.Mu.Lock()
 							target.Health -= damage
+							addThreatLocked(target, player.ID, float64(damage))
 							// Armor Melt logic?
 							isDead := target.Health <= 0
 							target.Mu.Unlock()
@@ -4226,6 +4352,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if (dx*dx + dz*dz) <= radius*radius {
 						target.Mu.Lock()
 						target.Health -= damage
+						addThreatLocked(target, player.ID, float64(damage))
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
@@ -4409,6 +4536,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						target.Mu.Lock()
 						if target.Type == TypeEnemy && target.State != "DEAD" {
 							target.Health -= damage
+							addThreatLocked(target, player.ID, float64(damage))
 
 							// Apply Bleed
 							target.Bleeding = true
@@ -4610,6 +4738,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						dz := target.Z - targetZ
 						if (dx*dx + dz*dz) <= radius*radius {
 							target.Health -= damage
+							addThreatLocked(target, player.ID, float64(damage))
 							if w.OnEvent != nil {
 								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
 							}
@@ -4763,6 +4892,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 					bestTarget.Mu.Lock()
 					bestTarget.Health -= damage
+					addThreatLocked(bestTarget, player.ID, float64(damage))
 					isDead := bestTarget.Health <= 0
 					bestTarget.Mu.Unlock()
 
@@ -5176,6 +5306,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				if target != nil {
 					target.Mu.Lock()
 					target.Health -= damage
+					addThreatLocked(target, player.ID, float64(damage))
 					target.Stunned = true
 					target.StunEndTime = time.Now().Add(2 * time.Second)
 
@@ -5302,6 +5433,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						if dot > math.Cos(angleThreshold) {
 							target.Mu.Lock()
 							target.Health -= damage
+							addThreatLocked(target, player.ID, float64(damage))
 							isDead := target.Health <= 0
 							target.Mu.Unlock()
 
@@ -5348,6 +5480,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					if (dx*dx + dz*dz) <= radius*radius {
 						target.Mu.Lock()
 						target.Health -= damage
+						addThreatLocked(target, player.ID, float64(damage))
 						// Stun logic would go here
 						isDead := target.Health <= 0
 						target.Mu.Unlock()

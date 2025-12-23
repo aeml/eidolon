@@ -1689,10 +1689,55 @@ export class GameEngine {
                     }
                     
                     // Sync XP, Level, Gold
+                    // Protobuf entity fields use experience/maxExperience; legacy JSON used xp/xpToNextLevel.
+                    if (pData.experience !== undefined) this.player.xp = pData.experience;
+                    if (pData.maxExperience !== undefined) this.player.xpToNextLevel = pData.maxExperience;
                     if (pData.xp !== undefined) this.player.xp = pData.xp;
                     if (pData.xpToNextLevel !== undefined) this.player.xpToNextLevel = pData.xpToNextLevel;
-                    if (pData.level !== undefined) this.player.level = pData.level;
+
+                    // Level Up Detection (delta path)
+                    if (pData.level !== undefined) {
+                        if (this.player.level < pData.level) {
+                            if (this.player.hasSyncedLevel) {
+                                console.log(`Level Up! ${this.player.level} -> ${pData.level}`);
+
+                                const effect = new LevelUpEffect(this.renderSystem.scene, this.player.position);
+                                this.effects.push(effect);
+
+                                this.floatingTextManager.spawn(
+                                    "LEVEL UP!",
+                                    new THREE.Vector3(this.player.position.x, this.player.position.y + 2, this.player.position.z),
+                                    '#ffd700'
+                                );
+
+                                if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                                    const chatMsg = {
+                                        type: "chat",
+                                        payload: {
+                                            message: `* has reached level ${pData.level}! *`,
+                                            sender: this.username || "Player"
+                                        }
+                                    };
+                                    this.socket.send(JSON.stringify(chatMsg));
+                                }
+                            }
+                            this.player.level = pData.level;
+                        } else {
+                            this.player.level = pData.level;
+                        }
+                        this.player.hasSyncedLevel = true;
+                    }
+
                     if (pData.gold !== undefined) this.player.gold = pData.gold;
+
+                    // Keep XP/Level UI responsive when updates arrive via delta.
+                    if (this.player.xp !== this.lastXP || this.player.xpToNextLevel !== this.lastMaxXP || this.player.level !== this.lastLevel) {
+                        console.log(`Updating XP/Level UI: Level=${this.player.level}, XP=${this.player.xp}`);
+                        this.uiManager.updateXP(this.player);
+                        this.lastXP = this.player.xp;
+                        this.lastMaxXP = this.player.xpToNextLevel;
+                        this.lastLevel = this.player.level;
+                    }
                     
                     // Sync Inventory
                     if (pData.inventory !== undefined) {
