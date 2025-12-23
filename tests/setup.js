@@ -1,4 +1,8 @@
 // Mock Canvas and WebGL
+import * as protobuf from 'protobufjs/minimal';
+
+globalThis.protobuf = protobuf;
+
 HTMLCanvasElement.prototype.getContext = () => { 
     return {
         getParameter: (param) => {

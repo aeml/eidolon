@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"compress/gzip"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -19,8 +18,10 @@ import (
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
+	statepb "eidolon-server/internal/proto"
 
 	"github.com/gorilla/websocket"
+	"google.golang.org/protobuf/proto"
 )
 
 const (
@@ -42,6 +43,10 @@ var mongoURI = flag.String("mongo-uri", "mongodb://localhost:27017", "MongoDB co
 var certFile = flag.String("cert", "", "Path to SSL certificate file")
 var keyFile = flag.String("key", "", "Path to SSL key file")
 
+var stateProtoMagic = []byte{'E', 'D', 'P', 'B'}
+
+const stateProtoWireVersion byte = 1
+
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
 		return true
@@ -54,14 +59,6 @@ var (
 	db    *database.DB
 	world *game.World
 )
-
-// GZIP Writer Pool to reduce memory allocation
-var gzipWriterPool = sync.Pool{
-	New: func() interface{} {
-		w, _ := gzip.NewWriterLevel(nil, gzip.BestSpeed)
-		return w
-	},
-}
 
 // EntitySnapshot stores minimal state for delta comparison
 // We only track fields that change frequently
@@ -695,9 +692,9 @@ func (c *Client) writePump() {
 				return
 			}
 
-			// Check if data is GZIP compressed (Magic numbers: 1f 8b)
+			// Check if data is Binary (Eidolon protobuf magic "EDPB")
 			msgType := websocket.TextMessage
-			if len(message) > 2 && message[0] == 0x1f && message[1] == 0x8b {
+			if len(message) > 5 && bytes.Equal(message[0:4], stateProtoMagic) {
 				msgType = websocket.BinaryMessage
 			}
 
@@ -2530,13 +2527,6 @@ func broadcastState() {
 	// 2. Process in parallel
 	var wg sync.WaitGroup
 
-	// Pre-defined JSON parts for different message types
-	stateHeader := []byte(`{"type":"state","payload":`)
-	deltaHeader := []byte(`{"type":"delta","payload":{"u":`) // u = updates
-	deltaMiddle := []byte(`,"r":`)                           // r = removed
-	stateFooter := []byte(`}`)
-	deltaFooter := []byte(`}}`)
-
 	for _, client := range clients {
 		wg.Add(1)
 		go func(c *Client) {
@@ -2608,73 +2598,168 @@ func broadcastState() {
 			}
 
 			var data []byte
-			var err error
 
 			// Use delta format if client has seen entities before (not first sync)
 			// First sync sends full state, subsequent sends ALWAYS use delta
 			// (We can't mix state/delta or client will incorrectly remove entities)
 			isFirstSync := len(c.seenIDs) == len(changedState) && len(removed) == 0
+			env := &statepb.StateEnvelope{Version: 1}
 
 			if isFirstSync {
-				// Full state sync (first connection only)
-				payload, err := json.Marshal(currentState)
-				if err != nil {
-					return
+				full := &statepb.StateFull{Entities: make([]*statepb.Entity, 0, len(currentState))}
+				for _, e := range currentState {
+					full.Entities = append(full.Entities, entityToProto(e))
 				}
-				data = make([]byte, 0, len(stateHeader)+len(payload)+len(stateFooter))
-				data = append(data, stateHeader...)
-				data = append(data, payload...)
-				data = append(data, stateFooter...)
+				env.Payload = &statepb.StateEnvelope_Full{Full: full}
 
 				// Update seenIDs with all current entities
 				for id := range currentState {
 					c.seenIDs[id] = true
 				}
 			} else {
-				// Delta sync - only send changes
-				updatesPayload, err := json.Marshal(changedState)
-				if err != nil {
-					return
+				delta := &statepb.StateDelta{Entities: make([]*statepb.Entity, 0, len(changedState)), RemovedIds: removed}
+				for _, e := range changedState {
+					delta.Entities = append(delta.Entities, entityToProto(e))
 				}
-				removedPayload, err := json.Marshal(removed)
-				if err != nil {
-					return
-				}
-
-				data = make([]byte, 0, len(deltaHeader)+len(updatesPayload)+len(deltaMiddle)+len(removedPayload)+len(deltaFooter))
-				data = append(data, deltaHeader...)
-				data = append(data, updatesPayload...)
-				data = append(data, deltaMiddle...)
-				data = append(data, removedPayload...)
-				data = append(data, deltaFooter...)
+				env.Payload = &statepb.StateEnvelope_Delta{Delta: delta}
 			}
 
-			// Compress using GZIP (Pooled)
-			var b bytes.Buffer
-			gz := gzipWriterPool.Get().(*gzip.Writer)
-			gz.Reset(&b)
-
-			if _, err = gz.Write(data); err != nil {
-				gzipWriterPool.Put(gz)
+			payload, err := proto.Marshal(env)
+			if err != nil {
 				return
 			}
-			if err = gz.Close(); err != nil {
-				gzipWriterPool.Put(gz)
-				return
-			}
-			gzipWriterPool.Put(gz) // Return to pool
 
-			compressedData := b.Bytes()
+			// Wire format: "EDPB" + version byte + protobuf payload
+			data = make([]byte, 0, 5+len(payload))
+			data = append(data, stateProtoMagic...)
+			data = append(data, stateProtoWireVersion)
+			data = append(data, payload...)
 
-			// Non-blocking send (Binary Message)
 			select {
-			case c.send <- compressedData:
+			case c.send <- data:
 			default:
-				// Drop message if client is too slow
 			}
 		}(client)
 	}
 	wg.Wait()
+}
+
+func statsToProto(s game.Stats) *statepb.Stats {
+	return &statepb.Stats{
+		Strength:     int32(s.Strength),
+		Dexterity:    int32(s.Dexterity),
+		Intelligence: int32(s.Intelligence),
+		Wisdom:       int32(s.Wisdom),
+		Vitality:     int32(s.Vitality),
+	}
+}
+
+func itemToProto(i *game.Item) *statepb.Item {
+	if i == nil {
+		return nil
+	}
+	stats := make(map[string]int32, len(i.Stats))
+	for k, v := range i.Stats {
+		stats[k] = int32(v)
+	}
+	return &statepb.Item{
+		Id:          i.ID,
+		Name:        i.Name,
+		Type:        string(i.Type),
+		Rarity:      string(i.Rarity),
+		Slot:        i.Slot,
+		Level:       int32(i.Level),
+		Stats:       stats,
+		Value:       int32(i.Value),
+		Icon:        i.Icon,
+		Description: i.Description,
+		Stack:       int32(i.Stack),
+		MaxStack:    int32(i.MaxStack),
+		Potency:     int32(i.Potency),
+		Sockets:     int32(i.Sockets),
+	}
+}
+
+func questsToProto(qs []game.Quest) []*statepb.Quest {
+	if qs == nil {
+		return nil
+	}
+	out := make([]*statepb.Quest, 0, len(qs))
+	for _, q := range qs {
+		out = append(out, &statepb.Quest{
+			Id:        q.ID,
+			Type:      q.Type,
+			Target:    q.Target,
+			Count:     int32(q.Count),
+			MaxCount:  int32(q.MaxCount),
+			RewardXp:  int32(q.RewardXP),
+			Completed: q.Completed,
+			Accepted:  q.Accepted,
+		})
+	}
+	return out
+}
+
+func entityToProto(e *game.Entity) *statepb.Entity {
+	if e == nil {
+		return nil
+	}
+
+	equipment := make(map[string]*statepb.Item, len(e.Equipment))
+	for slot, it := range e.Equipment {
+		// it is a value type in game.Entity
+		itemCopy := it
+		equipment[slot] = itemToProto(&itemCopy)
+	}
+
+	return &statepb.Entity{
+		Id:                e.ID,
+		InstanceId:        e.InstanceID,
+		Name:              e.Name,
+		Type:              string(e.Type),
+		SubType:           e.SubType,
+		X:                 float32(e.X),
+		Y:                 float32(e.Y),
+		Z:                 float32(e.Z),
+		Rotation:          float32(e.Rotation),
+		Health:            int32(e.Health),
+		MaxHealth:         int32(e.MaxHealth),
+		Mana:              int32(e.Mana),
+		MaxMana:           int32(e.MaxMana),
+		Level:             int32(e.Level),
+		Experience:        int32(e.Experience),
+		MaxExperience:     int32(e.MaxExperience),
+		Gold:              int32(e.Gold),
+		SkillPoints:       int32(e.SkillPoints),
+		SelectedBranch:    e.SelectedBranch,
+		UnlockedSkills:    e.UnlockedSkills,
+		BaseStats:         statsToProto(e.BaseStats),
+		Stats:             statsToProto(e.Stats),
+		Damage:            int32(e.Damage),
+		Defense:           int32(e.Defense),
+		Speed:             float32(e.Speed),
+		AttackSpeed:       float32(e.AttackSpeed),
+		CooldownReduction: float32(e.CooldownReduction),
+		HpRegen:           float32(e.HpRegen),
+		ManaRegen:         float32(e.ManaRegen),
+		CastSpeed:         float32(e.CastSpeed),
+		Scale:             float32(e.Scale),
+		State:             e.State,
+		Equipment:         equipment,
+		Quests:            questsToProto(e.Quests),
+		LootItem:          itemToProto(e.LootItem),
+		OwnerId:           e.OwnerID,
+		VelX:              float32(e.VelX),
+		VelZ:              float32(e.VelZ),
+		SpiritsActive:     e.SpiritsActive,
+		SpiritsBoosted:    e.SpiritsBoosted,
+		IsCharging:        e.IsCharging,
+		Stunned:           e.Stunned,
+		Slowed:            e.Slowed,
+		Rooted:            e.Rooted,
+		Bleeding:          e.Bleeding,
+		Poisoned:          e.Poisoned,
+	}
 }
 
 func broadcastTime() {

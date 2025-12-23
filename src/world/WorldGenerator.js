@@ -1,6 +1,14 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
+// Shared temp objects to reduce allocations during instancing
+const TEMP_BOX = new THREE.Box3();
+const TEMP_POS = new THREE.Vector3();
+const TEMP_SCALE = new THREE.Vector3();
+const TEMP_QUAT = new THREE.Quaternion();
+const TEMP_MAT4 = new THREE.Matrix4();
+const TEMP_UP = new THREE.Vector3(0, 1, 0);
+
 export class WorldGenerator {
     constructor(scene, collisionManager) {
         this.scene = scene;
@@ -45,60 +53,107 @@ export class WorldGenerator {
         // Add buffer
         const townBounds = { minX: cx - 150, maxX: cx + 150, minZ: cz - 150, maxZ: cz + 150 };
 
-        const setupTree = (model, x, z, scale, rotation) => {
-            const mesh = model.clone();
-            mesh.scale.set(scale, scale, scale);
-            mesh.rotation.y = rotation;
-            mesh.position.set(x, 0, z);
+        const pickTreePlacements = (count) => {
+            const placements = [];
+            placements.length = 0;
 
-            mesh.updateMatrixWorld(true);
-            const box = new THREE.Box3().setFromObject(mesh);
-            const bottomY = box.min.y;
-            
-            // Place on ground (0)
-            mesh.position.y += (0 - bottomY);
+            for (let i = 0; i < count; i++) {
+                let x, z;
+                let valid = false;
+                let attempts = 0;
 
-            mesh.traverse(c => { if(c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
-            this.scene.add(mesh);
+                while (!valid && attempts < 50) {
+                    x = bounds.minX + Math.random() * (bounds.maxX - bounds.minX);
+                    z = bounds.minZ + Math.random() * (bounds.maxZ - bounds.minZ);
 
-            // Custom Trunk Collider
-            // Assume trunk is roughly in center. 
-            // Width 2, Height 10 (tall enough to block), Depth 2
-            const colliderSize = new THREE.Vector3(2, 10, 2);
-            const colliderCenter = new THREE.Vector3(x, 5, z); // Center Y at 5
-            const collider = new THREE.Box3().setFromCenterAndSize(colliderCenter, colliderSize);
-            this.collisionManager.addCollider(collider);
+                    // Check if inside town
+                    if (x > townBounds.minX && x < townBounds.maxX && 
+                        z > townBounds.minZ && z < townBounds.maxZ) {
+                        valid = false;
+                    } else {
+                        valid = true;
+                    }
+                    attempts++;
+                }
+
+                if (valid) {
+                    placements.push({ x, z });
+                }
+            }
+            return placements;
+        };
+
+        const extractMeshParts = (root) => {
+            const parts = [];
+            root.traverse((child) => {
+                if (!child.isMesh) return;
+                // Ensure geometry bounds exist so instancing doesn't do extra work later
+                if (child.geometry && child.geometry.boundingBox === null) {
+                    child.geometry.computeBoundingBox();
+                }
+                parts.push(child);
+            });
+            return parts;
         };
 
         treeTypes.forEach(type => {
             loader.load(`./assets/plants/${type.file}`, (gltf) => {
                 const model = gltf.scene;
-                
-                for (let i = 0; i < type.count; i++) {
-                    let x, z;
-                    let valid = false;
-                    let attempts = 0;
+                model.updateMatrixWorld(true);
 
-                    while (!valid && attempts < 50) {
-                        x = bounds.minX + Math.random() * (bounds.maxX - bounds.minX);
-                        z = bounds.minZ + Math.random() * (bounds.maxZ - bounds.minZ);
+                // Compute a base bottom offset once (approx) so instances sit on the ground.
+                TEMP_BOX.setFromObject(model);
+                const baseBottomY = TEMP_BOX.min.y;
 
-                        // Check if inside town
-                        if (x > townBounds.minX && x < townBounds.maxX && 
-                            z > townBounds.minZ && z < townBounds.maxZ) {
-                            valid = false;
-                        } else {
-                            valid = true;
-                        }
-                        attempts++;
-                    }
+                const placements = pickTreePlacements(type.count);
+                if (placements.length === 0) return;
 
-                    if (valid) {
-                        const scale = type.scaleMin + Math.random() * (type.scaleMax - type.scaleMin);
-                        const rotation = Math.random() * Math.PI * 2;
-                        setupTree(model, x, z, scale, rotation);
-                    }
+                const parts = extractMeshParts(model);
+                if (parts.length === 0) return;
+
+                const group = new THREE.Group();
+                group.name = `trees:${type.file}`;
+
+                // One InstancedMesh per mesh-part in the GLB.
+                // This preserves multi-mesh tree models (trunk + leaves etc.) without hundreds of scene nodes.
+                const instancedMeshes = [];
+                for (const part of parts) {
+                    const material = Array.isArray(part.material)
+                        ? part.material.map(m => m.clone())
+                        : part.material.clone();
+                    const inst = new THREE.InstancedMesh(part.geometry, material, placements.length);
+                    inst.castShadow = true;
+                    inst.receiveShadow = true;
+                    instancedMeshes.push(inst);
+                    group.add(inst);
                 }
+
+                for (let i = 0; i < placements.length; i++) {
+                    const { x, z } = placements[i];
+                    const scale = type.scaleMin + Math.random() * (type.scaleMax - type.scaleMin);
+                    const rotation = Math.random() * Math.PI * 2;
+
+                    TEMP_POS.set(x, (-baseBottomY) * scale, z);
+                    TEMP_SCALE.set(scale, scale, scale);
+                    TEMP_QUAT.setFromAxisAngle(TEMP_UP, rotation);
+                    TEMP_MAT4.compose(TEMP_POS, TEMP_QUAT, TEMP_SCALE);
+
+                    for (const inst of instancedMeshes) {
+                        inst.setMatrixAt(i, TEMP_MAT4);
+                    }
+
+                    // Trunk Collider (keep as before)
+                    const colliderSize = new THREE.Vector3(2, 10, 2);
+                    const colliderCenter = new THREE.Vector3(x, 5, z);
+                    const collider = new THREE.Box3().setFromCenterAndSize(colliderCenter, colliderSize);
+                    this.collisionManager.addCollider(collider);
+                }
+
+                for (const inst of instancedMeshes) {
+                    inst.instanceMatrix.needsUpdate = true;
+                }
+
+                this.scene.add(group);
             }, undefined, (err) => console.error(`Failed to load ${type.file}:`, err));
         });
     }

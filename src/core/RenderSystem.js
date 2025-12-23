@@ -46,11 +46,12 @@ export class RenderSystem {
         
         // Optimization: Cap pixel ratio to save fill rate on high DPI screens
         // Firefox: Cap at 1.0 to ensure smooth framerate
-        const maxPixelRatio = isFirefox ? 1.0 : 1.5;
+        const maxPixelRatio = isFirefox ? 1.0 : (this.isMobile ? 1.0 : 1.5);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
         
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.shadowMap.enabled = true;
+        // Mobile preset: shadows are a major GPU cost; disable entirely on mobile.
+        this.renderer.shadowMap.enabled = !this.isMobile;
         // Optimization: Use PCFSoftShadowMap for better look, or Basic for performance
         // Firefox: Use Basic shadows to reduce GPU load
         this.renderer.shadowMap.type = (this.isMobile || isFirefox) ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
@@ -79,7 +80,7 @@ export class RenderSystem {
 
         const dirLight = new THREE.DirectionalLight(0xffffff, 2);
         dirLight.position.set(10, 20, 10);
-        dirLight.castShadow = true;
+        dirLight.castShadow = this.renderer.shadowMap.enabled;
         
         // Optimization: Reduce Shadow Map Size on Mobile
         // 512 is much lighter on VRAM than 1024/2048
@@ -171,7 +172,7 @@ export class RenderSystem {
         tex.wrapT = THREE.RepeatWrapping;
         tex.minFilter = THREE.LinearMipmapLinearFilter;
         tex.magFilter = THREE.LinearFilter;
-        tex.anisotropy = Math.min(this.renderer.capabilities.getMaxAnisotropy(), 4);
+        tex.anisotropy = this.isMobile ? 1 : Math.min(this.renderer.capabilities.getMaxAnisotropy(), 4);
         tex.repeat.set(repeatX, repeatY); 
         tex.colorSpace = THREE.SRGBColorSpace;
     }

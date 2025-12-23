@@ -7,6 +7,17 @@ const TEMP_POINT = new THREE.Vector3();
 const TEMP_PUSH = new THREE.Vector3();
 const TEMP_SPHERE = new THREE.Sphere();
 const TEMP_CLOSEST = new THREE.Vector3();
+const TEMP_ENTITY_PUSH = new THREE.Vector3();
+
+function stableHash32(str) {
+    // FNV-1a 32-bit
+    let hash = 0x811c9dc5;
+    for (let i = 0; i < str.length; i++) {
+        hash ^= str.charCodeAt(i);
+        hash = Math.imul(hash, 0x01000193);
+    }
+    return hash >>> 0;
+}
 
 export class CollisionManager {
     constructor() {
@@ -52,7 +63,7 @@ export class CollisionManager {
         // Use mesh position if available for visual collision (prevents jitter)
         const position = entity.mesh ? entity.mesh.position : entity.position;
         const radius = entity.radius || 1.0;
-        const pushVec = new THREE.Vector3();
+        TEMP_ENTITY_PUSH.set(0, 0, 0);
         let count = 0;
 
         // Optimization: Only check entities in the same chunk and neighbors
@@ -90,14 +101,16 @@ export class CollisionManager {
                             
                             // Prevent division by zero
                             if (dist < 0.001) {
-                                // Too close, push in random direction
-                                pushVec.x += (Math.random() - 0.5);
-                                pushVec.z += (Math.random() - 0.5);
+                                // Too close: deterministic push direction to avoid jitter/non-repro bugs
+                                const h = stableHash32(`${entity.id}|${other.id}`);
+                                const angle = (h % 360) * (Math.PI / 180);
+                                TEMP_ENTITY_PUSH.x += Math.cos(angle);
+                                TEMP_ENTITY_PUSH.z += Math.sin(angle);
                             } else {
                                 const overlap = minDist - dist;
                                 // Push away
-                                pushVec.x += (dx / dist) * overlap;
-                                pushVec.z += (dz / dist) * overlap;
+                                TEMP_ENTITY_PUSH.x += (dx / dist) * overlap;
+                                TEMP_ENTITY_PUSH.z += (dz / dist) * overlap;
                             }
                             count++;
                         }
@@ -108,7 +121,7 @@ export class CollisionManager {
         
         if (count > 0) {
             // Return the separation vector
-            return pushVec;
+            return TEMP_ENTITY_PUSH;
         }
         return null;
     }
