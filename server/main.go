@@ -2454,7 +2454,12 @@ func (c *Client) sendError(msg string) {
 
 // entityToSnapshot extracts fields we track for delta comparison
 func entityToSnapshot(e *game.Entity) *EntitySnapshot {
-	return &EntitySnapshot{
+	if e == nil {
+		return nil
+	}
+
+	e.Mu.RLock()
+	snap := &EntitySnapshot{
 		X:          e.X,
 		Z:          e.Z,
 		Y:          e.Y,
@@ -2466,6 +2471,9 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		Level:      e.Level,
 		IsCharging: e.IsCharging,
 	}
+	e.Mu.RUnlock()
+
+	return snap
 }
 
 // hasEntityChanged checks if entity state differs from last snapshot
@@ -2705,14 +2713,27 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		return nil
 	}
 
+	// Read-lock to avoid stale/racy reads while the world sim updates entities concurrently.
+	// This is especially important for State/position consistency (ATTACKING vs MOVING).
+	e.Mu.RLock()
+
+	// Copy slices/maps/pointers while under the lock.
+	unlockedSkills := append([]string(nil), e.UnlockedSkills...)
+	quests := append([]game.Quest(nil), e.Quests...)
+
 	equipment := make(map[string]*statepb.Item, len(e.Equipment))
 	for slot, it := range e.Equipment {
-		// it is a value type in game.Entity
 		itemCopy := it
 		equipment[slot] = itemToProto(&itemCopy)
 	}
 
-	return &statepb.Entity{
+	var lootItem *game.Item
+	if e.LootItem != nil {
+		li := *e.LootItem
+		lootItem = &li
+	}
+
+	out := &statepb.Entity{
 		Id:                e.ID,
 		InstanceId:        e.InstanceID,
 		Name:              e.Name,
@@ -2732,7 +2753,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		Gold:              int32(e.Gold),
 		SkillPoints:       int32(e.SkillPoints),
 		SelectedBranch:    e.SelectedBranch,
-		UnlockedSkills:    e.UnlockedSkills,
+		UnlockedSkills:    unlockedSkills,
 		BaseStats:         statsToProto(e.BaseStats),
 		Stats:             statsToProto(e.Stats),
 		Damage:            int32(e.Damage),
@@ -2746,8 +2767,8 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		Scale:             float32(e.Scale),
 		State:             e.State,
 		Equipment:         equipment,
-		Quests:            questsToProto(e.Quests),
-		LootItem:          itemToProto(e.LootItem),
+		Quests:            questsToProto(quests),
+		LootItem:          itemToProto(lootItem),
 		OwnerId:           e.OwnerID,
 		VelX:              float32(e.VelX),
 		VelZ:              float32(e.VelZ),
@@ -2760,6 +2781,9 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		Bleeding:          e.Bleeding,
 		Poisoned:          e.Poisoned,
 	}
+
+	e.Mu.RUnlock()
+	return out
 }
 
 func broadcastTime() {
