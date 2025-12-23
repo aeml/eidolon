@@ -2846,8 +2846,10 @@ export class UIManager {
 
     getItemTooltipText(item) {
         let text = `${item.name}\n${item.rarity.name} ${item.type}\nLevel ${item.level}\n\n`;
-        for (const stat in item.stats) {
-            text += `+${item.stats[stat]} ${stat.charAt(0).toUpperCase() + stat.slice(1)}\n`;
+        if (item.stats) {
+            for (const stat of this.getOrderedItemStatKeys(item.stats)) {
+                text += `+${item.stats[stat]} ${this.formatStatName(stat)}\n`;
+            }
         }
         return text;
     }
@@ -3026,6 +3028,44 @@ export class UIManager {
         this.statTooltip.style.top = `${y + 15}px`;
     }
 
+    formatStatName(statKey) {
+        if (!statKey) return '';
+        const spaced = String(statKey).replace(/([A-Z])/g, ' $1');
+        return spaced
+            .split(' ')
+            .filter(Boolean)
+            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(' ');
+    }
+
+    getOrderedItemStatKeys(stats) {
+        if (!stats) return [];
+
+        // Render item stats in a stable order to prevent tooltip lines from "moving around"
+        // when incoming item payloads reconstruct the stats object with different key orders.
+        const preferredOrder = [
+            'damage',
+            'defense',
+            'strength',
+            'dexterity',
+            'intelligence',
+            'wisdom',
+            'vitality'
+        ];
+
+        const keys = Object.keys(stats);
+        const ordered = [];
+
+        for (const k of preferredOrder) {
+            if (Object.prototype.hasOwnProperty.call(stats, k)) ordered.push(k);
+        }
+
+        const remaining = keys.filter(k => !preferredOrder.includes(k));
+        remaining.sort((a, b) => String(a).localeCompare(String(b)));
+
+        return ordered.concat(remaining);
+    }
+
     showItemTooltip(item, x, y, event) {
         // Store hover state for toggle update
         this.hoveredItem = item;
@@ -3053,9 +3093,11 @@ export class UIManager {
             desc += `<div style="color: #fff; margin-bottom: 5px;">Stack Size: ${item.stack} / ${item.maxStack || 1000}</div>`;
         }
         
-        for (const stat in item.stats) {
-            const val = item.stats[stat];
-            desc += `<div style="color: #fff;">+${val} ${stat.charAt(0).toUpperCase() + stat.slice(1)}</div>`;
+        if (item.stats) {
+            for (const stat of this.getOrderedItemStatKeys(item.stats)) {
+                const val = item.stats[stat];
+                desc += `<div style="color: #fff;">+${val} ${this.formatStatName(stat)}</div>`;
+            }
         }
 
         // Show Sell Price if Shop is Open
@@ -3142,9 +3184,11 @@ export class UIManager {
                 
                 let compDesc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${equippedItem.rarity.name} ${equippedItem.type} (${slotName}) - Lvl ${equippedItem.level}</div>`;
                 
-                for (const stat in equippedItem.stats) {
-                    const val = equippedItem.stats[stat];
-                    compDesc += `<div style="color: #fff;">+${val} ${stat.charAt(0).toUpperCase() + stat.slice(1)}</div>`;
+                if (equippedItem.stats) {
+                    for (const stat of this.getOrderedItemStatKeys(equippedItem.stats)) {
+                        const val = equippedItem.stats[stat];
+                        compDesc += `<div style="color: #fff;">+${val} ${this.formatStatName(stat)}</div>`;
+                    }
                 }
                 
                 this.compareTooltipDesc.innerHTML = compDesc;
