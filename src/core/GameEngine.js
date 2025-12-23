@@ -37,6 +37,7 @@ import { AvengingSeraph } from '../entities/AvengingSeraph.js';
 import { LevelUpEffect } from '../ui/LevelUpEffect.js';
 import { AquaGolem } from '../entities/AquaGolem.js';
 import { MountainTroll } from '../entities/MountainTroll.js';
+import { eidolon as eidolonProto } from '../proto/state_pb.js';
 
 export class GameEngine {
     constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null) {
@@ -773,10 +774,45 @@ export class GameEngine {
                     reader.onload = () => {
                         try {
                             const compressed = new Uint8Array(reader.result);
-                            // Decompress using pako
-                            const jsonString = pako.inflate(compressed, { to: 'string' });
-                            const msg = JSON.parse(jsonString);
-                            this.handleServerMessage(msg);
+
+                            // Protobuf path: "EDPB" + version byte + protobuf payload
+                            if (
+                                compressed.length > 5 &&
+                                compressed[0] === 0x45 && // E
+                                compressed[1] === 0x44 && // D
+                                compressed[2] === 0x50 && // P
+                                compressed[3] === 0x42    // B
+                            ) {
+                                const wireVersion = compressed[4];
+                                if (wireVersion !== 1) {
+                                    console.warn('Unsupported state proto wire version:', wireVersion);
+                                    return;
+                                }
+
+                                const payloadBytes = compressed.subarray(5);
+                                const env = eidolonProto.state.StateEnvelope.decode(payloadBytes);
+
+                                if (env.full) {
+                                    const entities = env.full.entities || [];
+                                    const payload = {};
+                                    for (const e of entities) payload[e.id] = e;
+                                    this.handleServerMessage({ type: 'state', payload });
+                                    return;
+                                }
+
+                                if (env.delta) {
+                                    const entities = env.delta.entities || [];
+                                    const u = {};
+                                    for (const e of entities) u[e.id] = e;
+                                    const r = env.delta.removedIds || [];
+                                    this.handleServerMessage({ type: 'delta', payload: { u, r } });
+                                    return;
+                                }
+
+                                return;
+                            }
+
+                            console.warn('Unknown binary payload; ignoring (expected EDPB protobuf)');
                         } catch (e) {
                             console.error("Decompression error:", e);
                         }
@@ -1120,6 +1156,12 @@ export class GameEngine {
 
             // If target is local player, flash screen or shake camera?
             if (this.player && dmgData.targetId === this.player.id) {
+                // Visual sync: if we took damage from a remote entity, force its ATTACKING animation.
+                // This prevents cases where state updates arrive out-of-sync and enemies appear to "run" while hitting.
+                const sourceEntity = this.remotePlayers.get(dmgData.sourceId);
+                if (sourceEntity && sourceEntity.isRemote && typeof sourceEntity.updateState === 'function') {
+                    sourceEntity.updateState('ATTACKING');
+                }
                 // this.renderSystem.shakeCamera(0.2);
             }
         } else if (msg.type === 'trading_list') {

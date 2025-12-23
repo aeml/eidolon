@@ -1085,7 +1085,7 @@
         }
 
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+    <script src="https://unpkg.com/protobufjs@7.5.4/dist/minimal/protobuf.min.js"></script>
     <script type="importmap">
         {
             "imports": {
@@ -1337,7 +1337,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.17</span> 
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.18</span> 
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
             
@@ -1430,6 +1430,17 @@
                 </span>
             </div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.18 (Protobuf State Streaming)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Networking:</strong> State updates now stream as protobuf frames (EDPB header + versioning) for lower bandwidth and CPU overhead.</li>
+                        <li><strong>Compatibility:</strong> Removed legacy gzip+JSON state update mode; client and server must both be updated to 0.18+.</li>
+                        <li><strong>Combat Visuals:</strong> Remote enemy attack animations now sync to damage events to prevent “running while hitting” desync.</li>
+                        <li><strong>Browser Fix:</strong> Protobuf JS runtime now loads reliably in the browser without resolving <strong>protobufjs/minimal</strong> as an ES module.</li>
+                        <li><strong>Tooling:</strong> Improved proto generation script so regenerating keeps the browser-safe protobuf module behavior.</li>
+                    </ul>
+                </div>
+
                 <div style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.17c (Animation & Sync Fixes)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
