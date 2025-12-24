@@ -220,10 +220,6 @@ export class GameEngine {
                 }));
             }
         };
-        this.uiManager.onHotbarAssign = (slotIndex, skillName) => {
-            // Optional: Persist hotbar to server or local storage
-            console.log(`Hotbar slot ${slotIndex} assigned to ${skillName}`);
-        };
         this.uiManager.onStashDeposit = (itemId) => {
             if (this.socket && this.socket.readyState === WebSocket.OPEN) {
                 const msg = {
