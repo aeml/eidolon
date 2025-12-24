@@ -65,6 +65,9 @@ export class UIManager {
         this.skillTreeWindow = document.getElementById('skill-tree-window');
         this.skillTreeContent = document.getElementById('skill-tree-content');
         this.btnCloseSkillTree = document.getElementById('btn-close-skills');
+
+        // Skill Tree Tabs
+        this.skillTreeMode = 'skills'; // 'skills' | 'talents'
         
         if (this.btnCloseSkillTree) this.btnCloseSkillTree.addEventListener('click', () => this.toggleSkillTree());
 
@@ -1779,10 +1782,55 @@ export class UIManager {
 
     renderSkillTree(classType) {
         if (!classType) return;
-        
+
+        // Tabs at top
+        this.skillTreeContent.innerHTML = '';
+        this.skillTreeContent.appendChild(this.createSkillTreeTabs(classType));
+
+        if (this.skillTreeMode === 'talents') {
+            this.renderTalentTree(classType);
+            return;
+        }
+
+        this.renderActiveSkillTree(classType);
+    }
+
+    createSkillTreeTabs(classType) {
+        const wrap = document.createElement('div');
+        wrap.style.display = 'flex';
+        wrap.style.justifyContent = 'center';
+        wrap.style.gap = '8px';
+        wrap.style.margin = '4px 0 10px 0';
+
+        const makeBtn = (label, mode) => {
+            const b = document.createElement('button');
+            b.textContent = label;
+            b.style.padding = '6px 10px';
+            b.style.cursor = 'pointer';
+            b.style.border = '1px solid #666';
+            b.style.background = (this.skillTreeMode === mode) ? 'rgba(50,50,50,0.9)' : 'rgba(0,0,0,0.6)';
+            b.style.color = (this.skillTreeMode === mode) ? '#ffd700' : '#eee';
+            b.onclick = () => {
+                this.skillTreeMode = mode;
+                this.renderSkillTree(classType);
+            };
+            return b;
+        };
+
+        wrap.appendChild(makeBtn('Skills', 'skills'));
+        wrap.appendChild(makeBtn('Talents', 'talents'));
+        return wrap;
+    }
+
+    renderActiveSkillTree(classType) {
         const treeData = CONSTANTS.SKILL_TREES[classType];
         if (!treeData) {
-            this.skillTreeContent.innerHTML = `<div style="text-align:center; color:#aaa; margin-top:50px;">No skill tree data for ${classType}</div>`;
+            const empty = document.createElement('div');
+            empty.style.textAlign = 'center';
+            empty.style.color = '#aaa';
+            empty.style.marginTop = '50px';
+            empty.textContent = `No skill tree data for ${classType}`;
+            this.skillTreeContent.appendChild(empty);
             return;
         }
 
@@ -1791,8 +1839,6 @@ export class UIManager {
         const unlockedSkills = player ? (player.unlockedSkills || []) : [];
         const playerLevel = player ? player.level : 1;
 
-        this.skillTreeContent.innerHTML = '';
-        
         const header = document.createElement('h2');
         header.style.textAlign = 'center';
         header.style.color = '#ffd700';
@@ -1813,25 +1859,23 @@ export class UIManager {
             `;
             this.skillTreeContent.appendChild(t1Container);
         }
-        
+
         const container = document.createElement('div');
         container.className = 'skill-branches-container';
-        
+
         const branches = ['A', 'B', 'C'];
-        
         branches.forEach(branchKey => {
             const branchData = treeData[`Branch${branchKey}`];
             if (!branchData) return;
 
             const isBranchSelected = selectedBranch === branchKey;
-
             const branchDiv = document.createElement('div');
             branchDiv.className = 'skill-branch';
-            
+
             const title = document.createElement('div');
             title.className = 'skill-branch-title';
             title.textContent = branchData.name;
-            
+
             if (isBranchSelected) {
                 title.style.color = "#00ff00";
                 title.textContent += " (Active)";
@@ -1846,36 +1890,44 @@ export class UIManager {
                 };
                 title.appendChild(selectBtn);
             }
-
             branchDiv.appendChild(title);
-            
+
             // Add 4 tiers (Tier 2 to 5)
             for (let i = 2; i <= 5; i++) {
                 const tierKey = `Tier${i}`;
                 const skill = branchData[tierKey];
-
                 const node = document.createElement('div');
                 node.className = 'skill-node';
-                
+
+                const reqLevel = (i - 1) * 10;
                 const isUnlocked = skill && unlockedSkills.includes(skill.name);
+                const canUnlock = !isUnlocked && skill && playerLevel >= reqLevel && (player && (player.skillPoints || 0) > 0);
+
                 if (isUnlocked) {
                     node.classList.add('unlocked');
                     node.style.borderColor = '#00ff00';
+                } else if (!canUnlock) {
+                    node.style.opacity = '0.7';
+                    node.style.cursor = 'default';
+                }
+
+                if (canUnlock) {
+                    node.onclick = () => {
+                        if (this.onUnlockSkill) this.onUnlockSkill(skill.name);
+                    };
                 }
 
                 const nodeTitle = document.createElement('div');
                 nodeTitle.className = 'skill-node-title';
                 nodeTitle.textContent = skill ? skill.name : `Tier ${i} ???`;
-                
+
                 const nodeDesc = document.createElement('div');
                 nodeDesc.className = 'skill-node-desc';
                 nodeDesc.textContent = skill ? skill.desc : 'Coming Soon...';
-                
-                const reqLevel = (i - 1) * 10;
+
                 const levelReqDiv = document.createElement('div');
                 levelReqDiv.style.fontSize = '10px';
                 levelReqDiv.style.marginTop = '4px';
-                
                 if (isUnlocked) {
                     levelReqDiv.style.color = '#00ff00';
                     levelReqDiv.textContent = 'Unlocked';
@@ -1884,17 +1936,180 @@ export class UIManager {
                     levelReqDiv.textContent = `Unlocks at Level ${reqLevel}`;
                 }
 
+                const pointsDiv = document.createElement('div');
+                pointsDiv.style.fontSize = '10px';
+                pointsDiv.style.marginTop = '2px';
+                pointsDiv.style.color = canUnlock ? '#ffd700' : '#666';
+                pointsDiv.textContent = canUnlock ? 'Tap to unlock (cost: 1 point)' : '';
+
                 node.appendChild(nodeTitle);
                 node.appendChild(nodeDesc);
                 node.appendChild(levelReqDiv);
+                if (pointsDiv.textContent) node.appendChild(pointsDiv);
 
                 branchDiv.appendChild(node);
             }
-            
+
             container.appendChild(branchDiv);
         });
-        
+
         this.skillTreeContent.appendChild(container);
+    }
+
+    renderTalentTree(classType) {
+        const talents = (CONSTANTS.PASSIVE_TALENTS && CONSTANTS.PASSIVE_TALENTS[classType]) ? CONSTANTS.PASSIVE_TALENTS[classType] : null;
+        const player = this.lastPlayerRef;
+        const ranks = player ? (player.talentRanks || {}) : {};
+        const totalPoints = player ? Math.floor((player.level || 0) / 5) : 0;
+        let spentPoints = 0;
+        if (ranks) {
+            for (const tid in ranks) {
+                const v = ranks[tid] | 0;
+                if (v > 0) spentPoints += v;
+            }
+        }
+        const points = Math.max(0, totalPoints - spentPoints);
+
+        // Filter talents to the player's current spec/branch.
+        // We keep generic talents (not tied to a specific skill) visible for all specs.
+        let visibleTalents = talents;
+        try {
+            const branch = player ? player.selectedBranch : null;
+            const skillTree = (CONSTANTS.SKILL_TREES && CONSTANTS.SKILL_TREES[classType]) ? CONSTANTS.SKILL_TREES[classType] : null;
+            const branchKey = (typeof branch === 'string' && ['A', 'B', 'C'].includes(branch)) ? `Branch${branch}` : null;
+            if (branchKey && skillTree && talents) {
+                const relevantSkills = new Set();
+                if (skillTree.Tier1 && skillTree.Tier1.name) relevantSkills.add(skillTree.Tier1.name);
+                const b = skillTree[branchKey];
+                if (b) {
+                    for (const k of ['Tier2', 'Tier3', 'Tier4', 'Tier5']) {
+                        if (b[k] && b[k].name) relevantSkills.add(b[k].name);
+                    }
+                }
+
+                const isSkillTalent = (t) => typeof t.name === 'string' && (t.name.endsWith(' - Mastery') || t.name.endsWith(' - Technique'));
+                const skillNameForTalent = (t) => {
+                    if (!t || typeof t.name !== 'string') return '';
+                    const idx = t.name.lastIndexOf(' - ');
+                    return idx >= 0 ? t.name.slice(0, idx) : '';
+                };
+
+                visibleTalents = talents.filter((t) => {
+                    // Strict mode: when a spec is selected, only show talents that map to
+                    // the active branch's skills (Mastery/Technique).
+                    if (!isSkillTalent(t)) return false;
+                    const skillName = skillNameForTalent(t);
+                    return relevantSkills.has(skillName);
+                });
+            }
+        } catch (e) {
+            visibleTalents = talents;
+        }
+
+        const resetWrap = document.createElement('div');
+        resetWrap.style.display = 'flex';
+        resetWrap.style.justifyContent = 'center';
+        resetWrap.style.margin = '6px 0 10px 0';
+
+        const resetBtn = document.createElement('button');
+        resetBtn.className = 'ui-button';
+        resetBtn.textContent = 'Reset Talents';
+        resetBtn.onclick = () => {
+            // Optimistic UI update; server remains authoritative.
+            if (this.lastPlayerRef) {
+                this.lastPlayerRef.talentRanks = {};
+            }
+            this.renderSkillTree(classType);
+            if (this.onResetTalents) this.onResetTalents();
+        };
+        resetWrap.appendChild(resetBtn);
+
+        const header = document.createElement('h2');
+        header.style.textAlign = 'center';
+        header.style.color = '#ffd700';
+        header.style.margin = '5px 0';
+        header.textContent = `${classType} Talents`;
+        this.skillTreeContent.appendChild(header);
+
+        const sub = document.createElement('div');
+        sub.style.textAlign = 'center';
+        sub.style.fontSize = '12px';
+        sub.style.color = '#aaa';
+        sub.style.marginBottom = '10px';
+        sub.textContent = `Talent Points: ${points} available / ${totalPoints} total (Spent: ${spentPoints})`;
+        this.skillTreeContent.appendChild(sub);
+
+        this.skillTreeContent.appendChild(resetWrap);
+
+        if (!visibleTalents) {
+            const empty = document.createElement('div');
+            empty.style.textAlign = 'center';
+            empty.style.color = '#aaa';
+            empty.style.marginTop = '50px';
+            empty.textContent = `No talent data for ${classType}`;
+            this.skillTreeContent.appendChild(empty);
+            return;
+        }
+
+        const list = document.createElement('div');
+        list.style.display = 'flex';
+        list.style.flexDirection = 'column';
+        list.style.gap = '10px';
+
+        for (const t of visibleTalents) {
+            const maxRank = t.maxRank || 1;
+            const currentRank = (ranks && typeof ranks[t.id] === 'number') ? ranks[t.id] : 0;
+            const isUnlocked = currentRank > 0;
+            const canRankUp = points > 0 && currentRank < maxRank;
+
+            const node = document.createElement('div');
+            node.className = 'skill-node';
+
+            if (isUnlocked) {
+                node.classList.add('unlocked');
+                node.style.borderColor = '#00ff00';
+            } else if (!canRankUp) {
+                node.style.opacity = '0.75';
+                node.style.cursor = 'default';
+            }
+
+            if (canRankUp) {
+                node.onclick = () => {
+                    // Optimistic UI update; server remains authoritative.
+                    if (this.lastPlayerRef) {
+                        if (!this.lastPlayerRef.talentRanks) this.lastPlayerRef.talentRanks = {};
+                        const prev = this.lastPlayerRef.talentRanks[t.id] | 0;
+                        this.lastPlayerRef.talentRanks[t.id] = prev + 1;
+                    }
+                    this.renderSkillTree(classType);
+                    if (this.onUnlockTalent) this.onUnlockTalent(t.id);
+                };
+            }
+
+            const title = document.createElement('div');
+            title.className = 'skill-node-title';
+            title.textContent = `${t.name}`;
+
+            const desc = document.createElement('div');
+            desc.className = 'skill-node-desc';
+            desc.textContent = t.desc;
+
+            const status = document.createElement('div');
+            status.style.fontSize = '10px';
+            status.style.marginTop = '4px';
+            status.style.color = isUnlocked ? '#00ff00' : (canRankUp ? '#ffd700' : '#666');
+            const statusSuffix = (currentRank >= maxRank)
+                ? '(Max rank)'
+                : (canRankUp ? '(Tap to rank up: 1 point)' : (isUnlocked ? '(No points)' : '(Locked)'));
+            status.textContent = `Rank: ${Math.max(0, currentRank)}/${maxRank} ${statusSuffix}`;
+
+            node.appendChild(title);
+            node.appendChild(desc);
+            node.appendChild(status);
+            list.appendChild(node);
+        }
+
+        this.skillTreeContent.appendChild(list);
     }
 
     updateHotbar(player) {

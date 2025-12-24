@@ -484,6 +484,18 @@
             flex-grow: 1;
         }
 
+        /* Mobile / small screens */
+        @media (max-width: 950px), (max-height: 750px) {
+            #skill-tree-window {
+                width: 95vw;
+                height: 85vh;
+            }
+
+            .skill-branches-container {
+                flex-direction: column;
+            }
+        }
+
         .skill-branch {
             flex: 1;
             background: rgba(0,0,0,0.3);
@@ -1430,6 +1442,20 @@
                 </span>
             </div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.19 (Passive Talents: Persistence & UX)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Passive Talents:</strong> Added a ranked passive talent system (0/5 per talent) that upgrades abilities rather than raw stat sticks.</li>
+                        <li><strong>Skill Tree UI:</strong> Added <strong>Skills</strong> / <strong>Talents</strong> tabs inside the K menu and a clearer talent points header showing <strong>available / total (spent)</strong>.</li>
+                        <li><strong>Spec-Focused Talents:</strong> Talent list now only shows Mastery/Technique entries relevant to your currently selected branch (A/B/C).</li>
+                        <li><strong>Networking Fix (Critical):</strong> Fixed talents not replicating to clients by ensuring player state copies include <strong>talent ranks</strong> and <strong>talent points</strong> during broadcasts.</li>
+                        <li><strong>Server Authority:</strong> Talent points are derived from level and spent ranks (1 point per 5 levels) and validated server-side on unlock/reset.</li>
+                        <li><strong>Persistence & Migration:</strong> Talent ranks are saved/loaded reliably; legacy <strong>unlocked_talents</strong> data migrates safely and canonicalizes IDs (e.g. <strong>CLR_1</strong> -&gt; <strong>CLR_01</strong>) to prevent invisible/ignored ranks.</li>
+                        <li><strong>Responsiveness:</strong> Talent rank-ups and resets update immediately in UI (optimistic), then reconcile against server-confirmed state.</li>
+                        <li><strong>Mobile UX:</strong> Skill tree window is more usable on smaller screens (responsive sizing/layout).</li>
+                    </ul>
+                </div>
+
                 <div style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.18 (Protobuf State Streaming)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

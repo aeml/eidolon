@@ -151,7 +151,7 @@ func (e *Entity) NormalizeTalentRanks() {
 		if !ok {
 			continue
 		}
-		canonicalID, ok := canonicalizeTalentID(e.SubType, tid)
+		canonicalID, ok := CanonicalizeTalentID(e.SubType, tid)
 		if !ok {
 			continue
 		}
@@ -163,7 +163,9 @@ func (e *Entity) NormalizeTalentRanks() {
 	e.TalentRanks = canon
 }
 
-func canonicalizeTalentID(classType, talentID string) (string, bool) {
+// CanonicalizeTalentID converts a talent ID into its zero-padded canonical form.
+// Example: CLR_1 -> CLR_01. Returns (canonicalID, true) if the ID is valid for the class.
+func CanonicalizeTalentID(classType, talentID string) (string, bool) {
 	// IDs are per-class and numeric (accepts legacy unpadded forms like CLR_1),
 	// canonical output is zero-padded: CLR_01.
 	prefix := ""
@@ -3034,7 +3036,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				e.Mu.Unlock() // Unlock before interaction
 
-				ownerIsPlayer := owner != nil && owner.Type == TypePlayer
+				ownerIsPlayer := owner.Type == TypePlayer
 				ownerID := e.OwnerID
 				target.Mu.Lock()
 				target.Health -= damage
@@ -3104,10 +3106,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 		// Apply decay to snapshot so selection matches this tick's decay.
 		decayFactor := math.Pow(0.97, dt)
-		if threatSnapshot != nil {
-			for k, v := range threatSnapshot {
-				threatSnapshot[k] = v * decayFactor
-			}
+		for k, v := range threatSnapshot {
+			threatSnapshot[k] = v * decayFactor
 		}
 
 		// Pick target:
@@ -6487,6 +6487,14 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		e.SkillPoints = v.SkillPoints
 		e.SelectedBranch = v.SelectedBranch
 		e.UnlockedSkills = v.UnlockedSkills
+		e.TalentPoints = v.TalentPoints
+		if v.TalentRanks != nil {
+			newRanks := make(map[string]int, len(v.TalentRanks))
+			for k, r := range v.TalentRanks {
+				newRanks[k] = r
+			}
+			e.TalentRanks = newRanks
+		}
 		e.BaseStats = v.BaseStats
 		e.Stats = v.Stats
 		e.Damage = v.Damage
