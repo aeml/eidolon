@@ -335,6 +335,7 @@ export class UIManager {
         this.btnMenuSocial = document.getElementById('btn-menu-social');
         this.btnMenuInventory = document.getElementById('btn-menu-inventory');
         this.btnMenuCharacter = document.getElementById('btn-menu-character');
+        this.btnMenuQuest = document.getElementById('btn-menu-quest');
         this.btnMenuSkills = document.getElementById('btn-menu-skills');
 
         if (this.btnMenuMap) this.btnMenuMap.addEventListener('click', () => {
@@ -343,6 +344,7 @@ export class UIManager {
         if (this.btnMenuSocial) this.btnMenuSocial.addEventListener('click', () => this.toggleSocial());
         if (this.btnMenuInventory) this.btnMenuInventory.addEventListener('click', () => this.toggleInventory());
         if (this.btnMenuCharacter) this.btnMenuCharacter.addEventListener('click', () => this.toggleCharacterSheet());
+        if (this.btnMenuQuest) this.btnMenuQuest.addEventListener('click', () => this.toggleJournal());
         if (this.btnMenuSkills) this.btnMenuSkills.addEventListener('click', () => this.toggleSkillTree());
 
         // Event Delegation for Stat Buttons & Tooltips
@@ -561,7 +563,7 @@ export class UIManager {
         this.abilityContainer.style.display = 'block';
         if (this.gameTimer) this.gameTimer.style.display = 'flex';
         if (this.hotbarContainer) this.hotbarContainer.style.display = 'flex';
-        if (this.menuBar) this.menuBar.style.display = 'flex';
+        if (this.menuBar) this.menuBar.style.display = this.isMobile ? 'none' : 'flex';
         
         // Show XP Bar
         const xpContainer = document.getElementById('xp-bar-container');
@@ -3731,39 +3733,37 @@ export class UIManager {
     }
 
     setupItemDragAndDrop(element, type, indexOrSlot, item) {
-        if (!item) {
-        const baseAbility = player.abilityName;
-        const unlocked = player.unlockedSkills ? player.unlockedSkills.filter(s => s !== baseAbility) : [];
+        if (!element) return;
 
-        const classType = player.subType || player.meshType;
-        const treeData = classType ? CONSTANTS.SKILL_TREES[classType] : null;
-        const branchKey = player.selectedBranch;
-
-        let ordered = [];
-        if (treeData && branchKey && treeData[branchKey]) {
-            for (let i = 2; i <= 5; i++) {
-                const tier = treeData[branchKey][`Tier${i}`];
-                if (tier && tier.name) ordered.push(tier.name);
-            }
-
-            const unlockedSet = new Set(unlocked);
-            ordered = ordered.filter(n => unlockedSet.has(n));
-        }
-
-        if (ordered.length === 0) {
-            ordered = unlocked;
-        }
-
-        for (let i = 0; i < 4; i++) {
-            const skillName = ordered[i];
-            if (skillName) this.assignSkillToSlot(i, skillName);
-        }
+        // Always allow dropping onto this slot (even if empty)
+        element.ondragover = (e) => {
+            e.preventDefault();
+            if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+        };
+        element.ondrop = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             try {
-                const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+                const raw = e.dataTransfer ? e.dataTransfer.getData('text/plain') : '';
+                if (!raw) return;
+                const data = JSON.parse(raw);
                 this.handleItemDrop(data, { type, id: indexOrSlot });
             } catch (err) {
-                console.error("Drop error", err);
+                console.error('Drop error', err);
             }
+        };
+
+        // Source behavior (only if this slot has an item)
+        element.draggable = !!item;
+        element.ondragstart = null;
+        element.ondragend = null;
+
+        if (!item) return;
+
+        element.ondragstart = (e) => {
+            if (!e.dataTransfer) return;
+            e.dataTransfer.setData('text/plain', JSON.stringify({ type, id: indexOrSlot }));
+            e.dataTransfer.effectAllowed = 'move';
         };
     }
 
