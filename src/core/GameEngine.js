@@ -611,6 +611,11 @@ export class GameEngine {
             }
         };
 
+        // Mobile: tap hotbar slots to cast (pages still map to slots 1-4)
+        this.uiManager.onHotbarCast = (slotIndex) => {
+            this.performHotbarAbility(slotIndex);
+        };
+
         this.inputManager.subscribe('onInteract', () => {
             if (!this.player || !this.isMobile) return;
             
@@ -2364,6 +2369,12 @@ export class GameEngine {
         const skillName = this.player.hotbar[slotIndex];
         if (!skillName) {
             console.log(`Hotbar slot ${slotIndex + 1} is empty.`);
+            return;
+        }
+
+        // Mobile uses auto-targeting logic inside performAbility().
+        if (this.isMobile) {
+            this.performAbility(null, skillName);
             return;
         }
 
