@@ -63,6 +63,9 @@ type Character struct {
 	SkillPoints    int             `bson:"skill_points"`
 	SelectedBranch string          `bson:"selected_branch"`
 	UnlockedSkills []string        `bson:"unlocked_skills"`
+	// Passive talents
+	UnlockedTalents []string       `bson:"unlocked_talents"` // legacy: treated as rank 1 per id
+	TalentRanks     map[string]int `bson:"talent_ranks,omitempty"`
 }
 
 type Quest struct {
