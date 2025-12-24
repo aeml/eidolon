@@ -26,7 +26,7 @@ export class UIManager {
         this.shopGambleTitle = document.getElementById('shop-gamble-title');
         this.stashScreen = document.getElementById('stash-screen');
         this.stashGrid = document.getElementById('stash-grid');
-        
+
         // Quest UI
         this.questWindow = document.getElementById('quest-window');
         this.questList = document.getElementById('quest-list');
@@ -39,7 +39,7 @@ export class UIManager {
         this.escMenu = document.getElementById('esc-menu');
         this.helpScreen = document.getElementById('help-screen');
         this.patchNotesScreen = document.getElementById('patch-notes-screen');
-        
+
         this.btnResume = document.getElementById('btn-resume');
         this.btnHelp = document.getElementById('btn-help');
         this.btnPatchNotes = document.getElementById('btn-patch-notes');
@@ -50,7 +50,7 @@ export class UIManager {
         this.btnRespawn = document.getElementById('btn-respawn');
         this.btnCloseShop = document.getElementById('btn-close-shop');
         this.btnCloseStash = document.getElementById('btn-close-stash');
-        
+
         // Shop Tabs
         this.tabShopMain = document.getElementById('tab-shop-main');
         this.tabShopBuyback = document.getElementById('tab-shop-buyback');
@@ -80,41 +80,6 @@ export class UIManager {
         // Hotbar UI
         this.hotbarContainer = document.getElementById('hotbar-container');
         this.hotbarSlots = Array.from(document.querySelectorAll('.hotbar-slot'));
-
-        // Mobile hotbar paging (lets mobile access all unlocked skills)
-        this.hotbarPage = 0;
-        this.hotbarNavLeft = document.getElementById('hotbar-nav-left');
-        this.hotbarNavRight = document.getElementById('hotbar-nav-right');
-        this.hotbarPageIndicator = document.getElementById('hotbar-page-indicator');
-
-        if (this.hotbarNavLeft) {
-            this.hotbarNavLeft.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.setHotbarPage(this.hotbarPage - 1);
-                if (this.lastPlayerRef) this.updateHotbar(this.lastPlayerRef);
-            });
-            this.hotbarNavLeft.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.setHotbarPage(this.hotbarPage - 1);
-                if (this.lastPlayerRef) this.updateHotbar(this.lastPlayerRef);
-            }, { passive: false });
-        }
-        if (this.hotbarNavRight) {
-            this.hotbarNavRight.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.setHotbarPage(this.hotbarPage + 1);
-                if (this.lastPlayerRef) this.updateHotbar(this.lastPlayerRef);
-            });
-            this.hotbarNavRight.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.setHotbarPage(this.hotbarPage + 1);
-                if (this.lastPlayerRef) this.updateHotbar(this.lastPlayerRef);
-            }, { passive: false });
-        }
         
         // Drag and Drop State
         this.draggedAbility = null;
@@ -504,11 +469,6 @@ export class UIManager {
                 this.hideTooltips();
             }
         });
-    }
-
-    setHotbarPage(pageIndex) {
-        const next = Number.isFinite(pageIndex) ? pageIndex : 0;
-        this.hotbarPage = Math.max(0, next | 0);
     }
 
     createDeathScreen() {
@@ -2167,37 +2127,30 @@ export class UIManager {
 
         // Filter out the base ability (Right Click) from the hotbar
         const baseAbility = player.abilityName;
-        const hotbarSkills = player.unlockedSkills ? player.unlockedSkills.filter(s => s !== baseAbility) : [];
+        const unlocked = player.unlockedSkills ? player.unlockedSkills.filter(s => s !== baseAbility) : [];
 
-        // Desktop: keep original behavior (first 4 skills). Mobile: page through all skills.
-        const pageSize = 4;
-        const totalPages = Math.max(1, Math.ceil(hotbarSkills.length / pageSize));
-        if (this.isMobile) {
-            if (this.hotbarPage >= totalPages) this.hotbarPage = totalPages - 1;
-        } else {
-            this.hotbarPage = 0;
-        }
+        // Spec-based 4-slot hotbar: Tier 2-5 of selected branch.
+        // If spec isn't selected (or tree data missing), fallback to unlocked order.
+        const classType = player.subType || player.meshType;
+        const treeData = classType ? CONSTANTS.SKILL_TREES[classType] : null;
+        const branchKey = player.selectedBranch;
 
-        const pageOffset = this.isMobile ? (this.hotbarPage * pageSize) : 0;
-        for (let i = 0; i < pageSize; i++) {
-            const skillName = hotbarSkills[pageOffset + i];
-            if (skillName) this.assignSkillToSlot(i, skillName);
-        }
-
-        if (this.hotbarPageIndicator) {
-            if (this.isMobile && totalPages > 1) {
-                this.hotbarPageIndicator.style.display = 'block';
-                this.hotbarPageIndicator.textContent = `${this.hotbarPage + 1}/${totalPages}`;
-            } else {
-                this.hotbarPageIndicator.style.display = 'none';
-                this.hotbarPageIndicator.textContent = '';
+        let ordered = [];
+        if (treeData && branchKey && treeData[branchKey]) {
+            for (let i = 2; i <= 5; i++) {
+                const tier = treeData[branchKey][`Tier${i}`];
+                if (tier && tier.name) ordered.push(tier.name);
             }
+
+            const unlockedSet = new Set(unlocked);
+            ordered = ordered.filter(n => unlockedSet.has(n));
         }
 
-        if (this.hotbarNavLeft && this.hotbarNavRight) {
-            const showNav = this.isMobile && totalPages > 1;
-            this.hotbarNavLeft.style.display = showNav ? 'flex' : 'none';
-            this.hotbarNavRight.style.display = showNav ? 'flex' : 'none';
+        if (ordered.length === 0) ordered = unlocked;
+
+        for (let i = 0; i < 4; i++) {
+            const skillName = ordered[i];
+            if (skillName) this.assignSkillToSlot(i, skillName);
         }
     }
 
@@ -3779,40 +3732,32 @@ export class UIManager {
 
     setupItemDragAndDrop(element, type, indexOrSlot, item) {
         if (!item) {
-            element.draggable = false;
-        } else {
-            element.draggable = true;
-            element.ondragstart = (e) => {
-                e.dataTransfer.setData('text/plain', JSON.stringify({
-                    type: type,
-                    id: indexOrSlot,
-                    itemId: item.id
-                }));
-                e.dataTransfer.effectAllowed = 'move';
-            };
+        const baseAbility = player.abilityName;
+        const unlocked = player.unlockedSkills ? player.unlockedSkills.filter(s => s !== baseAbility) : [];
+
+        const classType = player.subType || player.meshType;
+        const treeData = classType ? CONSTANTS.SKILL_TREES[classType] : null;
+        const branchKey = player.selectedBranch;
+
+        let ordered = [];
+        if (treeData && branchKey && treeData[branchKey]) {
+            for (let i = 2; i <= 5; i++) {
+                const tier = treeData[branchKey][`Tier${i}`];
+                if (tier && tier.name) ordered.push(tier.name);
+            }
+
+            const unlockedSet = new Set(unlocked);
+            ordered = ordered.filter(n => unlockedSet.has(n));
         }
 
-        element.ondragover = (e) => {
-            e.preventDefault();
-            element.style.borderColor = '#ffd700';
-        };
+        if (ordered.length === 0) {
+            ordered = unlocked;
+        }
 
-        element.ondragleave = (e) => {
-            if (item && item.rarity) {
-                 element.style.borderColor = item.rarity.color;
-            } else {
-                 element.style.borderColor = '#444';
-            }
-        };
-
-        element.ondrop = (e) => {
-            e.preventDefault();
-            if (item && item.rarity) {
-                 element.style.borderColor = item.rarity.color;
-            } else {
-                 element.style.borderColor = '#444';
-            }
-
+        for (let i = 0; i < 4; i++) {
+            const skillName = ordered[i];
+            if (skillName) this.assignSkillToSlot(i, skillName);
+        }
             try {
                 const data = JSON.parse(e.dataTransfer.getData('text/plain'));
                 this.handleItemDrop(data, { type, id: indexOrSlot });
