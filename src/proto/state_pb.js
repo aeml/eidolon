@@ -2067,6 +2067,9 @@ export const eidolon = $root.eidolon = (() => {
              * @property {boolean|null} [rooted] Entity rooted
              * @property {boolean|null} [bleeding] Entity bleeding
              * @property {boolean|null} [poisoned] Entity poisoned
+             * @property {number|null} [talentPoints] Entity talentPoints
+             * @property {Array.<string>|null} [unlockedTalents] Entity unlockedTalents
+             * @property {Object.<string,number>|null} [talentRanks] Entity talentRanks
              */
 
             /**
@@ -2081,6 +2084,8 @@ export const eidolon = $root.eidolon = (() => {
                 this.unlockedSkills = [];
                 this.equipment = {};
                 this.quests = [];
+                this.unlockedTalents = [];
+                this.talentRanks = {};
                 if (properties)
                     for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -2456,6 +2461,30 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.poisoned = false;
 
             /**
+             * Entity talentPoints.
+             * @member {number} talentPoints
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.talentPoints = 0;
+
+            /**
+             * Entity unlockedTalents.
+             * @member {Array.<string>} unlockedTalents
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.unlockedTalents = $util.emptyArray;
+
+            /**
+             * Entity talentRanks.
+             * @member {Object.<string,number>} talentRanks
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.talentRanks = $util.emptyObject;
+
+            /**
              * Creates a new Entity instance using the specified properties.
              * @function create
              * @memberof eidolon.state.Entity
@@ -2576,6 +2605,14 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 45, wireType 0 =*/360).bool(message.bleeding);
                 if (message.poisoned != null && Object.hasOwnProperty.call(message, "poisoned"))
                     writer.uint32(/* id 46, wireType 0 =*/368).bool(message.poisoned);
+                if (message.talentPoints != null && Object.hasOwnProperty.call(message, "talentPoints"))
+                    writer.uint32(/* id 47, wireType 0 =*/376).int32(message.talentPoints);
+                if (message.unlockedTalents != null && message.unlockedTalents.length)
+                    for (let i = 0; i < message.unlockedTalents.length; ++i)
+                        writer.uint32(/* id 48, wireType 2 =*/386).string(message.unlockedTalents[i]);
+                if (message.talentRanks != null && Object.hasOwnProperty.call(message, "talentRanks"))
+                    for (let keys = Object.keys(message.talentRanks), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 49, wireType 2 =*/394).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.talentRanks[keys[i]]).ldelim();
                 return writer;
             };
 
@@ -2819,6 +2856,39 @@ export const eidolon = $root.eidolon = (() => {
                             message.poisoned = reader.bool();
                             break;
                         }
+                    case 47: {
+                            message.talentPoints = reader.int32();
+                            break;
+                        }
+                    case 48: {
+                            if (!(message.unlockedTalents && message.unlockedTalents.length))
+                                message.unlockedTalents = [];
+                            message.unlockedTalents.push(reader.string());
+                            break;
+                        }
+                    case 49: {
+                            if (message.talentRanks === $util.emptyObject)
+                                message.talentRanks = {};
+                            let end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = 0;
+                            while (reader.pos < end2) {
+                                let tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.int32();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.talentRanks[key] = value;
+                            break;
+                        }
                     default:
                         reader.skipType(tag & 7);
                         break;
@@ -3015,6 +3085,24 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.poisoned != null && message.hasOwnProperty("poisoned"))
                     if (typeof message.poisoned !== "boolean")
                         return "poisoned: boolean expected";
+                if (message.talentPoints != null && message.hasOwnProperty("talentPoints"))
+                    if (!$util.isInteger(message.talentPoints))
+                        return "talentPoints: integer expected";
+                if (message.unlockedTalents != null && message.hasOwnProperty("unlockedTalents")) {
+                    if (!Array.isArray(message.unlockedTalents))
+                        return "unlockedTalents: array expected";
+                    for (let i = 0; i < message.unlockedTalents.length; ++i)
+                        if (!$util.isString(message.unlockedTalents[i]))
+                            return "unlockedTalents: string[] expected";
+                }
+                if (message.talentRanks != null && message.hasOwnProperty("talentRanks")) {
+                    if (!$util.isObject(message.talentRanks))
+                        return "talentRanks: object expected";
+                    let key = Object.keys(message.talentRanks);
+                    for (let i = 0; i < key.length; ++i)
+                        if (!$util.isInteger(message.talentRanks[key[i]]))
+                            return "talentRanks: integer{k:string} expected";
+                }
                 return null;
             };
 
@@ -3152,6 +3240,22 @@ export const eidolon = $root.eidolon = (() => {
                     message.bleeding = Boolean(object.bleeding);
                 if (object.poisoned != null)
                     message.poisoned = Boolean(object.poisoned);
+                if (object.talentPoints != null)
+                    message.talentPoints = object.talentPoints | 0;
+                if (object.unlockedTalents) {
+                    if (!Array.isArray(object.unlockedTalents))
+                        throw TypeError(".eidolon.state.Entity.unlockedTalents: array expected");
+                    message.unlockedTalents = [];
+                    for (let i = 0; i < object.unlockedTalents.length; ++i)
+                        message.unlockedTalents[i] = String(object.unlockedTalents[i]);
+                }
+                if (object.talentRanks) {
+                    if (typeof object.talentRanks !== "object")
+                        throw TypeError(".eidolon.state.Entity.talentRanks: object expected");
+                    message.talentRanks = {};
+                    for (let keys = Object.keys(object.talentRanks), i = 0; i < keys.length; ++i)
+                        message.talentRanks[keys[i]] = object.talentRanks[keys[i]] | 0;
+                }
                 return message;
             };
 
@@ -3171,9 +3275,12 @@ export const eidolon = $root.eidolon = (() => {
                 if (options.arrays || options.defaults) {
                     object.unlockedSkills = [];
                     object.quests = [];
+                    object.unlockedTalents = [];
                 }
-                if (options.objects || options.defaults)
+                if (options.objects || options.defaults) {
                     object.equipment = {};
+                    object.talentRanks = {};
+                }
                 if (options.defaults) {
                     object.id = "";
                     object.instanceId = "";
@@ -3218,6 +3325,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.rooted = false;
                     object.bleeding = false;
                     object.poisoned = false;
+                    object.talentPoints = 0;
                 }
                 if (message.id != null && message.hasOwnProperty("id"))
                     object.id = message.id;
@@ -3321,6 +3429,18 @@ export const eidolon = $root.eidolon = (() => {
                     object.bleeding = message.bleeding;
                 if (message.poisoned != null && message.hasOwnProperty("poisoned"))
                     object.poisoned = message.poisoned;
+                if (message.talentPoints != null && message.hasOwnProperty("talentPoints"))
+                    object.talentPoints = message.talentPoints;
+                if (message.unlockedTalents && message.unlockedTalents.length) {
+                    object.unlockedTalents = [];
+                    for (let j = 0; j < message.unlockedTalents.length; ++j)
+                        object.unlockedTalents[j] = message.unlockedTalents[j];
+                }
+                if (message.talentRanks && (keys2 = Object.keys(message.talentRanks)).length) {
+                    object.talentRanks = {};
+                    for (let j = 0; j < keys2.length; ++j)
+                        object.talentRanks[keys2[j]] = message.talentRanks[keys2[j]];
+                }
                 return object;
             };
 

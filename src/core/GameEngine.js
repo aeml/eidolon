@@ -203,6 +203,23 @@ export class GameEngine {
                 }));
             }
         };
+        this.uiManager.onUnlockTalent = (talentId) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(JSON.stringify({
+                    type: 'unlockTalent',
+                    payload: { talentId }
+                }));
+            }
+        };
+
+        this.uiManager.onResetTalents = () => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(JSON.stringify({
+                    type: 'resetTalents',
+                    payload: {}
+                }));
+            }
+        };
         this.uiManager.onHotbarAssign = (slotIndex, skillName) => {
             // Optional: Persist hotbar to server or local storage
             console.log(`Hotbar slot ${slotIndex} assigned to ${skillName}`);
@@ -1348,9 +1365,28 @@ export class GameEngine {
                         const prevPoints = this.player.skillPoints;
                         const prevUnlocked = this.player.unlockedSkills ? this.player.unlockedSkills.length : 0;
 
+                        // Sync Talents
+                        const prevTalentPoints = this.player.talentPoints || 0;
+                        const talentSig = (ranks) => {
+                            if (!ranks) return '0:0';
+                            let keys = 0;
+                            let sum = 0;
+                            for (const k in ranks) {
+                                const v = ranks[k] | 0;
+                                if (v > 0) { keys++; sum += v; }
+                            }
+                            return `${keys}:${sum}`;
+                        };
+                        const prevTalentSig = talentSig(this.player.talentRanks);
+
                         this.player.skillPoints = pData.skillPoints;
                         this.player.selectedBranch = pData.selectedBranch;
                         this.player.unlockedSkills = pData.unlockedSkills;
+
+                        // Server-authoritative talents: always apply the decoded values.
+                        // (Proto3 defaults will decode as 0/empty when truly unset.)
+                        if (pData.talentPoints !== undefined) this.player.talentPoints = pData.talentPoints;
+                        if (pData.talentRanks !== undefined) this.player.talentRanks = pData.talentRanks || {};
 
                         const currUnlocked = this.player.unlockedSkills ? this.player.unlockedSkills.length : 0;
 
@@ -1365,7 +1401,9 @@ export class GameEngine {
                         if (this.uiManager.skillTreeWindow && this.uiManager.skillTreeWindow.style.display === 'flex') {
                              if (prevBranch !== this.player.selectedBranch || 
                                  prevPoints !== this.player.skillPoints || 
-                                 prevUnlocked !== currUnlocked) {
+                                 prevUnlocked !== currUnlocked ||
+                                 prevTalentPoints !== (this.player.talentPoints || 0) ||
+                                 prevTalentSig !== talentSig(this.player.talentRanks)) {
                                      const classType = this.player.subType || this.playerType;
                                      this.uiManager.renderSkillTree(classType);
                              }
@@ -1682,6 +1720,34 @@ export class GameEngine {
                             if (prevBranch !== this.player.selectedBranch || 
                                 prevPoints !== this.player.skillPoints || 
                                 prevUnlocked !== currUnlocked) {
+                                const classType = this.player.subType || this.playerType;
+                                this.uiManager.renderSkillTree(classType);
+                            }
+                        }
+                    }
+
+                    // Sync Talents (delta path)
+                    if (pData.talentPoints !== undefined || pData.talentRanks !== undefined || pData.unlockedTalents !== undefined) {
+                        const prevTalentPoints = this.player.talentPoints || 0;
+                        const talentSig = (ranks) => {
+                            if (!ranks) return '0:0';
+                            let keys = 0;
+                            let sum = 0;
+                            for (const k in ranks) {
+                                const v = ranks[k] | 0;
+                                if (v > 0) { keys++; sum += v; }
+                            }
+                            return `${keys}:${sum}`;
+                        };
+                        const prevTalentSig = talentSig(this.player.talentRanks);
+
+                        // Server-authoritative talents: always apply the decoded values.
+                        if (pData.talentPoints !== undefined) this.player.talentPoints = pData.talentPoints;
+                        if (pData.talentRanks !== undefined) this.player.talentRanks = pData.talentRanks || {};
+
+                        if (this.uiManager.skillTreeWindow && this.uiManager.skillTreeWindow.style.display === 'flex') {
+                            if (prevTalentPoints !== (this.player.talentPoints || 0) ||
+                                prevTalentSig !== talentSig(this.player.talentRanks)) {
                                 const classType = this.player.subType || this.playerType;
                                 this.uiManager.renderSkillTree(classType);
                             }

@@ -43,7 +43,7 @@ $ProtoFile = Join-Path $RepoRoot "proto\state.proto"
 $ProtoInclude = Join-Path $RepoRoot "proto"
 
 Write-Host "Generating Go protobuf..."
-& $ProtocExe --proto_path=$ProtoInclude --go_out=$GoOutDir --go_opt=paths=source_relative $ProtoFile
+& $ProtocExe "--proto_path=$ProtoInclude" "--go_out=$GoOutDir" "--go_opt=paths=source_relative" $ProtoFile
 
 Write-Host "Generating browser JS protobuf module..."
 # Install protobufjs as a dev dependency if needed for pbjs/pbts

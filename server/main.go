@@ -973,6 +973,8 @@ func (c *Client) handleMessage(msg Message) {
 		// Sanitize ranks: only allow class-specific IDs and clamp to max rank.
 		// TalentPoints are derived later during RecalculateStats().
 		entity.NormalizeTalentRanks()
+		// Helpful debug line for shipping confidence: shows what we loaded from DB.
+		log.Printf("Login %s: TalentRanks=%d, TalentPoints=%d (Level=%d)", c.username, len(entity.TalentRanks), entity.TalentPoints, entity.Level)
 
 		// Auto-Unlock Skills based on Level and Branch
 		world.UpdateUnlockedSkills(entity)
@@ -2994,8 +2996,12 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 		if !ok {
 			continue
 		}
-		normalizedRanks[tid] = nr
-		unlockedTalents = append(unlockedTalents, tid)
+		cid, ok := game.CanonicalizeTalentID(entity.SubType, tid)
+		if !ok {
+			continue
+		}
+		normalizedRanks[cid] = nr
+		unlockedTalents = append(unlockedTalents, cid)
 	}
 	sort.Strings(unlockedTalents)
 

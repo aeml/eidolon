@@ -221,5 +221,175 @@ export const CONSTANTS = {
                 Tier5: { name: "Heaven's Trumpet", desc: "Massive AoE stun + damage taken buff on enemies." }
             }
         }
+    },
+    PASSIVE_TALENTS: {
+        Fighter: (() => {
+            const skills = [
+                "Charge",
+                "Whirlwind",
+                "Shield Slam",
+                "Iron Fortress",
+                "Guardian Roar",
+                "Sweeping Strike",
+                "Earthshaker",
+                "Unbreakable Grip",
+                "Juggernaut Charge",
+                "Berserker Edge",
+                "Shattering Charge",
+                "Executioner Spin",
+                "Last Stand Rampage",
+            ];
+
+            const entries = [];
+            for (const s of skills) {
+                entries.push({ name: `${s} - Mastery`, desc: `Improves ${s} power.`, maxRank: 5 });
+                entries.push({ name: `${s} - Technique`, desc: `Improves ${s} utility and reliability.`, maxRank: 5 });
+            }
+
+            entries.push(
+                { name: "Combat Discipline", desc: "Minor improvements to Fighter ability uptime.", maxRank: 5 },
+                { name: "Battle Breathing", desc: "Minor improvements to Fighter mana efficiency.", maxRank: 5 },
+                { name: "Threat Mastery", desc: "Minor improvements to threat generation from abilities.", maxRank: 5 },
+                { name: "Crowd Control Drills", desc: "Minor improvements to stun/slow effectiveness.", maxRank: 5 },
+                { name: "Frontliner Routine", desc: "Minor improvements to survivability while fighting.", maxRank: 5 },
+                { name: "Heavy Weapon Technique", desc: "Minor improvements to Fighter damage patterns.", maxRank: 5 },
+                { name: "Lineholder Instinct", desc: "Minor improvements to area coverage in fights.", maxRank: 5 },
+                { name: "Rally Presence", desc: "Minor improvements to party-support effects.", maxRank: 5 },
+                { name: "Aggressor Footwork", desc: "Minor improvements to repositioning after skills.", maxRank: 5 },
+                { name: "Shieldwall Training", desc: "Minor improvements to defensive effects.", maxRank: 5 },
+                { name: "Breakthrough", desc: "Minor improvements to debuffs applied by skills.", maxRank: 5 },
+                { name: "Enduring Rhythm", desc: "Minor improvements to sustained AoE output.", maxRank: 5 },
+                { name: "Battlefield Awareness", desc: "Minor improvements to targeting and consistency.", maxRank: 5 },
+                { name: "Vanguard Momentum", desc: "Minor improvements to chaining abilities smoothly.", maxRank: 5 },
+            );
+
+            return entries.slice(0, 40).map((t, i) => ({ id: `FTR_${String(i + 1).padStart(2, '0')}`, ...t }));
+        })(),
+        Rogue: (() => {
+            const skills = [
+                "Piercing Throw",
+                "Backstab",
+                "Weak Point Mark",
+                "Shadow Lunge",
+                "Death Spiral",
+                "Fan of Knives",
+                "Serrated Edges",
+                "Blade Storm",
+                "Phantom Volley",
+                "Smoke Bomb",
+                "Poison Coating",
+                "Tripwire",
+                "Cloak & Vanish",
+            ];
+
+            const entries = [];
+            for (const s of skills) {
+                entries.push({ name: `${s} - Mastery`, desc: `Improves ${s} power.`, maxRank: 5 });
+                entries.push({ name: `${s} - Technique`, desc: `Improves ${s} utility and reliability.`, maxRank: 5 });
+            }
+
+            entries.push(
+                { name: "Opportunist's Flow", desc: "Minor improvements to chaining Rogue abilities.", maxRank: 5 },
+                { name: "Dirty Tricks", desc: "Minor improvements to debuffs applied by abilities.", maxRank: 5 },
+                { name: "Quickhands", desc: "Minor improvements to responsiveness and animation flow.", maxRank: 5 },
+                { name: "Shadow Poise", desc: "Minor improvements to survivability while engaging.", maxRank: 5 },
+                { name: "Silent Balance", desc: "Minor improvements to mobility in combat.", maxRank: 5 },
+                { name: "Needle Precision", desc: "Minor improvements to single-target reliability.", maxRank: 5 },
+                { name: "Lightstep", desc: "Minor improvements to escape tools.", maxRank: 5 },
+                { name: "Fine Motor", desc: "Minor improvements to multi-target consistency.", maxRank: 5 },
+                { name: "Catlike Reflexes", desc: "Minor improvements to cooldown flow.", maxRank: 5 },
+                { name: "Quick Draw", desc: "Minor improvements to throw-based skills.", maxRank: 5 },
+                { name: "Evasive Flow", desc: "Minor improvements to defensive windows.", maxRank: 5 },
+                { name: "Close-Quarters Grace", desc: "Minor improvements to melee ability effectiveness.", maxRank: 5 },
+                { name: "Edge Awareness", desc: "Minor improvements to positioning and target selection.", maxRank: 5 },
+                { name: "Wrist Control", desc: "Minor improvements to burst combos.", maxRank: 5 },
+            );
+
+            return entries.slice(0, 40).map((t, i) => ({ id: `ROG_${String(i + 1).padStart(2, '0')}`, ...t }));
+        })(),
+        Wizard: (() => {
+            const skills = [
+                "Fireball",
+                "Flame Whip",
+                "Flame Tornado",
+                "Meteor Drop",
+                "Inferno Cataclysm",
+                "Scorch Beam",
+                "Arcane Missiles",
+                "Spell Focus",
+                "Dragonfire Lance",
+                "Teleport",
+                "Arcane Shield",
+                "Gravity Well",
+                "Time Warp",
+            ];
+
+            const entries = [];
+            for (const s of skills) {
+                entries.push({ name: `${s} - Mastery`, desc: `Improves ${s} power.`, maxRank: 5 });
+                entries.push({ name: `${s} - Technique`, desc: `Improves ${s} utility and reliability.`, maxRank: 5 });
+            }
+
+            entries.push(
+                { name: "Efficient Casting", desc: "Minor improvements to mana efficiency.", maxRank: 5 },
+                { name: "Quickened Formulae", desc: "Minor improvements to cooldown flow.", maxRank: 5 },
+                { name: "Runic Precision", desc: "Minor improvements to projectile reliability.", maxRank: 5 },
+                { name: "Leyline Recall", desc: "Minor improvements to mobility tools.", maxRank: 5 },
+                { name: "Overchannel", desc: "Minor improvements to burst windows.", maxRank: 5 },
+                { name: "Arcane Stability", desc: "Minor improvements to defensive spells.", maxRank: 5 },
+                { name: "Elemental Rhythm", desc: "Minor improvements to chaining spells.", maxRank: 5 },
+                { name: "Prismatic Control", desc: "Minor improvements to crowd control.", maxRank: 5 },
+                { name: "Aether Reach", desc: "Minor improvements to range and coverage.", maxRank: 5 },
+                { name: "Volatile Insight", desc: "Minor improvements to AoE effectiveness.", maxRank: 5 },
+                { name: "Channel Discipline", desc: "Minor improvements to channel/cast reliability.", maxRank: 5 },
+                { name: "Mana Geometry", desc: "Minor improvements to spell placement and spacing.", maxRank: 5 },
+                { name: "Sigil Mastery", desc: "Minor improvements to consistent spell output.", maxRank: 5 },
+                { name: "Contingency Wards", desc: "Minor improvements to survivability while casting.", maxRank: 5 },
+            );
+
+            return entries.slice(0, 40).map((t, i) => ({ id: `WIZ_${String(i + 1).padStart(2, '0')}`, ...t }));
+        })(),
+        Cleric: (() => {
+            const skills = [
+                "Spirit Guardians",
+                "Healing Light",
+                "Guardian Embrace",
+                "Purifying Wave",
+                "Divine Intervention",
+                "Radiant Strike",
+                "Consecrated Ground",
+                "Spirit Guardians Boost",
+                "Avenging Seraph",
+                "Blessing of Resolve",
+                "Blessing of Zeal",
+                "Mark of Weakness",
+                "Heaven's Trumpet",
+            ];
+
+            const entries = [];
+            for (const s of skills) {
+                entries.push({ name: `${s} - Mastery`, desc: `Improves ${s} power.`, maxRank: 5 });
+                entries.push({ name: `${s} - Technique`, desc: `Improves ${s} utility and reliability.`, maxRank: 5 });
+            }
+
+            entries.push(
+                { name: "Efficient Rites", desc: "Minor improvements to mana efficiency.", maxRank: 5 },
+                { name: "Rites of Haste", desc: "Minor improvements to cooldown flow.", maxRank: 5 },
+                { name: "Mercy Routine", desc: "Minor improvements to sustained healing output.", maxRank: 5 },
+                { name: "Sanctuary Practice", desc: "Minor improvements to protective effects.", maxRank: 5 },
+                { name: "Radiant Doctrine", desc: "Minor improvements to damage-oriented rites.", maxRank: 5 },
+                { name: "Cleanse Discipline", desc: "Minor improvements to cleansing reliability.", maxRank: 5 },
+                { name: "Chorus of Faith", desc: "Minor improvements to party-wide buffs.", maxRank: 5 },
+                { name: "Battlefield Ministry", desc: "Minor improvements to area effects.", maxRank: 5 },
+                { name: "Warden's Instinct", desc: "Minor improvements to survivability while casting.", maxRank: 5 },
+                { name: "Blessed Footwork", desc: "Minor improvements to repositioning after casts.", maxRank: 5 },
+                { name: "Hymncraft", desc: "Minor improvements to chaining support abilities.", maxRank: 5 },
+                { name: "Pilgrim Patience", desc: "Minor improvements to long-fight sustain.", maxRank: 5 },
+                { name: "Mercy Doctrine", desc: "Minor improvements to supportive play patterns.", maxRank: 5 },
+                { name: "Ritekeeper", desc: "Minor improvements to consistency in rotations.", maxRank: 5 },
+            );
+
+            return entries.slice(0, 40).map((t, i) => ({ id: `CLR_${String(i + 1).padStart(2, '0')}`, ...t }));
+        })(),
     }
 };

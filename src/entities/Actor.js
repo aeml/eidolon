@@ -137,6 +137,10 @@ export class Actor extends Entity {
         this.unlockedSkills = [];
         this.cooldowns = {}; // Map of skillName -> cooldown timer
 
+        // Passive Talents
+        this.talentPoints = 0;
+        this.talentRanks = {};
+
         // Inventory & Equipment
         this.inventory = new Array(25).fill(null); // 25 slots
         this.equipment = {
