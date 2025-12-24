@@ -375,6 +375,54 @@
             display: none;
             gap: 10px;
             pointer-events: auto;
+            padding: 0 32px; /* Space for mobile nav buttons */
+            box-sizing: border-box;
+        }
+
+        #hotbar-nav-left,
+        #hotbar-nav-right,
+        #hotbar-page-indicator {
+            display: none;
+        }
+
+        /* Mobile: page through all skills */
+        @media (max-width: 800px) {
+            #hotbar-nav-left,
+            #hotbar-nav-right {
+                display: flex;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 28px;
+                height: 50px;
+                align-items: center;
+                justify-content: center;
+                background: rgba(0, 0, 0, 0.8);
+                border: 2px solid #444;
+                border-radius: 4px;
+                color: #ffd700;
+                font-weight: bold;
+                user-select: none;
+                pointer-events: auto;
+            }
+
+            #hotbar-nav-left { left: 0; }
+            #hotbar-nav-right { right: 0; }
+
+            #hotbar-page-indicator {
+                display: block;
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                top: -18px;
+                font-size: 10px;
+                color: #aaa;
+                background: rgba(0, 0, 0, 0.6);
+                border: 1px solid #444;
+                padding: 2px 6px;
+                border-radius: 4px;
+                pointer-events: none;
+            }
         }
 
         .hotbar-slot {
@@ -1174,6 +1222,9 @@
 
         <!-- Hotbar -->
         <div id="hotbar-container">
+            <div id="hotbar-nav-left" aria-label="Previous skills page">‹</div>
+            <div id="hotbar-nav-right" aria-label="Next skills page">›</div>
+            <div id="hotbar-page-indicator"></div>
             <div class="hotbar-slot" data-slot="0">
                 <div class="hotbar-key">1</div>
                 <div class="hotbar-icon"></div>

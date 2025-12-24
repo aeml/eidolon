@@ -80,6 +80,41 @@ export class UIManager {
         // Hotbar UI
         this.hotbarContainer = document.getElementById('hotbar-container');
         this.hotbarSlots = Array.from(document.querySelectorAll('.hotbar-slot'));
+
+        // Mobile hotbar paging (lets mobile access all unlocked skills)
+        this.hotbarPage = 0;
+        this.hotbarNavLeft = document.getElementById('hotbar-nav-left');
+        this.hotbarNavRight = document.getElementById('hotbar-nav-right');
+        this.hotbarPageIndicator = document.getElementById('hotbar-page-indicator');
+
+        if (this.hotbarNavLeft) {
+            this.hotbarNavLeft.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.setHotbarPage(this.hotbarPage - 1);
+                if (this.lastPlayerRef) this.updateHotbar(this.lastPlayerRef);
+            });
+            this.hotbarNavLeft.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.setHotbarPage(this.hotbarPage - 1);
+                if (this.lastPlayerRef) this.updateHotbar(this.lastPlayerRef);
+            }, { passive: false });
+        }
+        if (this.hotbarNavRight) {
+            this.hotbarNavRight.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.setHotbarPage(this.hotbarPage + 1);
+                if (this.lastPlayerRef) this.updateHotbar(this.lastPlayerRef);
+            });
+            this.hotbarNavRight.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.setHotbarPage(this.hotbarPage + 1);
+                if (this.lastPlayerRef) this.updateHotbar(this.lastPlayerRef);
+            }, { passive: false });
+        }
         
         // Drag and Drop State
         this.draggedAbility = null;
@@ -469,6 +504,11 @@ export class UIManager {
                 this.hideTooltips();
             }
         });
+    }
+
+    setHotbarPage(pageIndex) {
+        const next = Number.isFinite(pageIndex) ? pageIndex : 0;
+        this.hotbarPage = Math.max(0, next | 0);
     }
 
     createDeathScreen() {
@@ -2124,18 +2164,41 @@ export class UIManager {
         this.hotbarSlots.forEach((_, index) => {
             this.assignSkillToSlot(index, null);
         });
-        
+
         // Filter out the base ability (Right Click) from the hotbar
         const baseAbility = player.abilityName;
         const hotbarSkills = player.unlockedSkills ? player.unlockedSkills.filter(s => s !== baseAbility) : [];
 
-        // Slots 1-4 (Keys 1-4) are unlocked skills
-        hotbarSkills.forEach((skillName, index) => {
-            if (index < 4) {
-                // Assign to Slot 0, 1, 2, 3 (Keys 1, 2, 3, 4)
-                this.assignSkillToSlot(index, skillName);
+        // Desktop: keep original behavior (first 4 skills). Mobile: page through all skills.
+        const pageSize = 4;
+        const totalPages = Math.max(1, Math.ceil(hotbarSkills.length / pageSize));
+        if (this.isMobile) {
+            if (this.hotbarPage >= totalPages) this.hotbarPage = totalPages - 1;
+        } else {
+            this.hotbarPage = 0;
+        }
+
+        const pageOffset = this.isMobile ? (this.hotbarPage * pageSize) : 0;
+        for (let i = 0; i < pageSize; i++) {
+            const skillName = hotbarSkills[pageOffset + i];
+            if (skillName) this.assignSkillToSlot(i, skillName);
+        }
+
+        if (this.hotbarPageIndicator) {
+            if (this.isMobile && totalPages > 1) {
+                this.hotbarPageIndicator.style.display = 'block';
+                this.hotbarPageIndicator.textContent = `${this.hotbarPage + 1}/${totalPages}`;
+            } else {
+                this.hotbarPageIndicator.style.display = 'none';
+                this.hotbarPageIndicator.textContent = '';
             }
-        });
+        }
+
+        if (this.hotbarNavLeft && this.hotbarNavRight) {
+            const showNav = this.isMobile && totalPages > 1;
+            this.hotbarNavLeft.style.display = showNav ? 'flex' : 'none';
+            this.hotbarNavRight.style.display = showNav ? 'flex' : 'none';
+        }
     }
 
     toggleAbilitiesMenu() {
@@ -2176,12 +2239,26 @@ export class UIManager {
                 // Do nothing
             });
 
-            // Disable Left Click
+            // Desktop: hotbar is keyboard-triggered. Mobile: hotbar is tap-to-cast.
             slot.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                // Do nothing
+                if (this.isMobile) {
+                    const icon = slot.querySelector('.hotbar-icon');
+                    const skillName = icon && icon.dataset ? icon.dataset.skill : null;
+                    if (skillName && this.onHotbarCast) this.onHotbarCast(index);
+                }
             });
+
+            slot.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (this.isMobile) {
+                    const icon = slot.querySelector('.hotbar-icon');
+                    const skillName = icon && icon.dataset ? icon.dataset.skill : null;
+                    if (skillName && this.onHotbarCast) this.onHotbarCast(index);
+                }
+            }, { passive: false });
 
             // Tooltip
             slot.addEventListener('mouseenter', (e) => {
