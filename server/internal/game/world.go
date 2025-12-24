@@ -9,10 +9,291 @@ import (
 	"math/rand"
 	"runtime"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 )
+
+type TalentBonus struct {
+	FlatStrength     int
+	FlatDexterity    int
+	FlatIntelligence int
+	FlatWisdom       int
+	FlatVitality     int
+	FlatDamage       int
+	FlatDefense      int
+	PctMaxHealth     float64
+	PctDamage        float64
+	PctSpeed         float64
+	AddCdr           float64
+}
+
+type TalentDef struct {
+	MaxRank int
+	PerRank TalentBonus
+}
+
+func talentDefForID(classType, talentID string) (TalentDef, bool) {
+	// IDs are per-class and numeric: FTR_01..FTR_40, ROG_01..ROG_40, WIZ_01..WIZ_40, CLR_01..CLR_40
+	prefix := ""
+	switch classType {
+	case "Fighter":
+		prefix = "FTR_"
+	case "Rogue":
+		prefix = "ROG_"
+	case "Wizard":
+		prefix = "WIZ_"
+	case "Cleric":
+		prefix = "CLR_"
+	default:
+		return TalentDef{}, false
+	}
+	if !strings.HasPrefix(talentID, prefix) {
+		return TalentDef{}, false
+	}
+	n, err := strconv.Atoi(strings.TrimPrefix(talentID, prefix))
+	if err != nil || n < 1 || n > 40 {
+		return TalentDef{}, false
+	}
+
+	// Keep bonuses small; stackable but bounded by normal stat scaling and existing caps.
+	// The design is "one talent entry with ranks" (e.g. 0/5) rather than duplicate talents per rank.
+	switch classType {
+	case "Fighter":
+		switch {
+		case n <= 10:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatVitality: 2}}, true
+		case n <= 20:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatStrength: 2}}, true
+		case n <= 25:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctMaxHealth: 0.02}}, true
+		case n <= 30:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctDamage: 0.02}}, true
+		case n <= 35:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctSpeed: 0.01}}, true
+		case n <= 38:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.01}}, true
+		default:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatDefense: 1}}, true
+		}
+	case "Rogue":
+		switch {
+		case n <= 14:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatDexterity: 2}}, true
+		case n <= 22:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctSpeed: 0.02}}, true
+		case n <= 30:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctDamage: 0.02}}, true
+		case n <= 36:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.01}}, true
+		default:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatDefense: 1}}, true
+		}
+	case "Wizard":
+		switch {
+		case n <= 14:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatIntelligence: 2}}, true
+		case n <= 22:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.015}}, true
+		case n <= 32:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctDamage: 0.02}}, true
+		case n <= 36:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatWisdom: 1}}, true
+		default:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatVitality: 1, PctMaxHealth: 0.01}}, true
+		}
+	case "Cleric":
+		switch {
+		case n <= 14:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatWisdom: 2}}, true
+		case n <= 22:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctMaxHealth: 0.02}}, true
+		case n <= 30:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.01}}, true
+		case n <= 36:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctDamage: 0.01}}, true
+		default:
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatDefense: 1}}, true
+		}
+	}
+
+	return TalentDef{}, false
+}
+
+// NormalizeTalentRank clamps a rank to the allowed range for the given class/talent ID.
+// Returns (normalizedRank, true) if the talent ID is valid for the class and rank > 0.
+func NormalizeTalentRank(classType, talentID string, rank int) (int, bool) {
+	if talentID == "" || rank <= 0 {
+		return 0, false
+	}
+	def, ok := talentDefForID(classType, talentID)
+	if !ok {
+		return 0, false
+	}
+	if rank > def.MaxRank {
+		rank = def.MaxRank
+	}
+	return rank, true
+}
+
+// NormalizeTalentRanks removes invalid talent IDs and clamps ranks to max rank.
+// This prevents cross-class or corrupted saves from consuming points.
+func (e *Entity) NormalizeTalentRanks() {
+	if e == nil || e.TalentRanks == nil {
+		return
+	}
+	// Canonicalize keys (e.g., CLR_1 -> CLR_01) so client and server agree on IDs.
+	// Also removes invalid talent IDs and clamps ranks to max rank.
+	canon := make(map[string]int, len(e.TalentRanks))
+	for tid, r := range e.TalentRanks {
+		nr, ok := NormalizeTalentRank(e.SubType, tid, r)
+		if !ok {
+			continue
+		}
+		canonicalID, ok := canonicalizeTalentID(e.SubType, tid)
+		if !ok {
+			continue
+		}
+		// If multiple legacy IDs collapse into the same canonical ID, keep the higher rank.
+		if existing, exists := canon[canonicalID]; !exists || nr > existing {
+			canon[canonicalID] = nr
+		}
+	}
+	e.TalentRanks = canon
+}
+
+func canonicalizeTalentID(classType, talentID string) (string, bool) {
+	// IDs are per-class and numeric (accepts legacy unpadded forms like CLR_1),
+	// canonical output is zero-padded: CLR_01.
+	prefix := ""
+	switch classType {
+	case "Fighter":
+		prefix = "FTR_"
+	case "Rogue":
+		prefix = "ROG_"
+	case "Wizard":
+		prefix = "WIZ_"
+	case "Cleric":
+		prefix = "CLR_"
+	default:
+		return "", false
+	}
+	if !strings.HasPrefix(talentID, prefix) {
+		return "", false
+	}
+	n, err := strconv.Atoi(strings.TrimPrefix(talentID, prefix))
+	if err != nil || n < 1 || n > 40 {
+		return "", false
+	}
+	return fmt.Sprintf("%s%02d", prefix, n), true
+}
+
+func (e *Entity) maxTalentPoints() int {
+	if e == nil {
+		return 0
+	}
+	if e.Level < 5 {
+		return 0
+	}
+	return e.Level / 5
+}
+
+func (e *Entity) recomputeTalentPoints() {
+	if e == nil {
+		return
+	}
+	spent := 0
+	for tid, r := range e.TalentRanks {
+		nr, ok := NormalizeTalentRank(e.SubType, tid, r)
+		if !ok {
+			continue
+		}
+		spent += nr
+	}
+	available := e.maxTalentPoints() - spent
+	if available < 0 {
+		available = 0
+	}
+	e.TalentPoints = available
+}
+
+func (w *World) PerformUnlockTalent(playerID, talentID string) (*Entity, bool, string) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false, "unlockTalent: player not found"
+	}
+	if player.Type != TypePlayer {
+		return nil, false, "unlockTalent: not a player"
+	}
+
+	// Lock the entity while mutating TalentRanks / derived fields.
+	// This keeps protobuf serialization (which RLocks entity.Mu) consistent.
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	if talentID == "" {
+		return nil, false, "unlockTalent: empty talentId"
+	}
+	// Only allow known talent IDs (server-authoritative).
+	def, ok := talentDefForID(player.SubType, talentID)
+	if !ok {
+		return nil, false, "unlockTalent: unknown talentId"
+	}
+	if player.TalentRanks == nil {
+		player.TalentRanks = make(map[string]int)
+	}
+	currentRank := player.TalentRanks[talentID]
+	if currentRank >= def.MaxRank {
+		return nil, false, "unlockTalent: max rank reached"
+	}
+
+	player.recomputeTalentPoints()
+	if player.TalentPoints <= 0 {
+		return nil, false, "unlockTalent: no talent points available"
+	}
+
+	player.TalentRanks[talentID] = currentRank + 1
+	player.recomputeTalentPoints()
+	player.RecalculateStats()
+	if player.Health > player.MaxHealth {
+		player.Health = player.MaxHealth
+	}
+	if player.Mana > player.MaxMana {
+		player.Mana = player.MaxMana
+	}
+	return player, true, ""
+}
+
+func (w *World) PerformResetTalents(playerID string) (*Entity, bool, string) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false, "resetTalents: player not found"
+	}
+	if player.Type != TypePlayer {
+		return nil, false, "resetTalents: not a player"
+	}
+
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+
+	// Clear all ranks and refund points (points are derived from level/ranks spent).
+	player.TalentRanks = make(map[string]int)
+	player.recomputeTalentPoints()
+	player.RecalculateStats()
+	if player.Health > player.MaxHealth {
+		player.Health = player.MaxHealth
+	}
+	if player.Mana > player.MaxMana {
+		player.Mana = player.MaxMana
+	}
+	return player, true, ""
+}
 
 func hashAngle(key string) float64 {
 	h := fnv.New32a()
@@ -120,6 +401,10 @@ type Entity struct {
 	SkillPoints    int      `json:"skillPoints"`
 	SelectedBranch string   `json:"selectedBranch"` // "A", "B", or "C"
 	UnlockedSkills []string `json:"unlockedSkills"`
+
+	// Passive Talents
+	TalentPoints int            `json:"talentPoints"`
+	TalentRanks  map[string]int `json:"talentRanks"`
 
 	// Stats
 	BaseStats Stats `json:"baseStats"` // Naked stats
@@ -1118,11 +1403,18 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		ChargeTargetZ:     e.ChargeTargetZ,
 		SkillPoints:       e.SkillPoints,
 		SelectedBranch:    e.SelectedBranch,
+		TalentPoints:      e.TalentPoints,
 	}
 
 	if e.UnlockedSkills != nil {
 		newE.UnlockedSkills = make([]string, len(e.UnlockedSkills))
 		copy(newE.UnlockedSkills, e.UnlockedSkills)
+	}
+	if e.TalentRanks != nil {
+		newE.TalentRanks = make(map[string]int, len(e.TalentRanks))
+		for k, v := range e.TalentRanks {
+			newE.TalentRanks[k] = v
+		}
 	}
 
 	if e.Inventory != nil {
@@ -2019,6 +2311,7 @@ func (w *World) PerformCompleteQuest(playerID, questID string) (*Entity, bool) {
 					player.Experience -= player.MaxExperience
 					player.Level++
 					player.MaxExperience = int(100 * math.Pow(1.2, float64(player.Level-1)))
+					player.recomputeTalentPoints()
 
 					// Update Unlocked Skills
 					w.UpdateUnlockedSkills(player)
@@ -5873,6 +6166,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 						member.Experience -= member.MaxExperience
 						member.Level++
 						member.MaxExperience = int(100 * math.Pow(1.2, float64(member.Level-1)))
+						member.recomputeTalentPoints()
 
 						// Update Unlocked Skills
 						w.UpdateUnlockedSkills(member)
@@ -5938,6 +6232,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					attacker.Level++
 					// Exponential Curve: 100 * (1.2 ^ (Level-1))
 					attacker.MaxExperience = int(100 * math.Pow(1.2, float64(attacker.Level-1)))
+					attacker.recomputeTalentPoints()
 
 					// Update Unlocked Skills
 					w.UpdateUnlockedSkills(attacker)
@@ -6344,6 +6639,63 @@ func (e *Entity) RecalculateStats() {
 
 		flatDamage += item.Stats["damage"]
 		flatDefense += item.Stats["defense"]
+	}
+
+	// Apply Passive Talents (server-authoritative)
+	if e.Type == TypePlayer {
+		pctMaxHealth := 0.0
+		pctDamage := 0.0
+		pctSpeed := 0.0
+		addCdr := 0.0
+		for tid, rank := range e.TalentRanks {
+			if rank <= 0 {
+				continue
+			}
+			def, ok := talentDefForID(e.SubType, tid)
+			if !ok {
+				continue
+			}
+			if rank > def.MaxRank {
+				rank = def.MaxRank
+			}
+			b := def.PerRank
+			totalStr += b.FlatStrength * rank
+			totalDex += b.FlatDexterity * rank
+			totalInt += b.FlatIntelligence * rank
+			totalWis += b.FlatWisdom * rank
+			totalVit += b.FlatVitality * rank
+			flatDamage += b.FlatDamage * rank
+			flatDefense += b.FlatDefense * rank
+			pctMaxHealth += b.PctMaxHealth * float64(rank)
+			pctDamage += b.PctDamage * float64(rank)
+			pctSpeed += b.PctSpeed * float64(rank)
+			addCdr += b.AddCdr * float64(rank)
+		}
+
+		// Recompute talent points whenever we recalc stats (keeps it consistent after level-ups)
+		e.recomputeTalentPoints()
+
+		// Derived multipliers applied later after base derived values are computed.
+		// Store as temporary on stack via closures below.
+		_ = pctMaxHealth
+		_ = pctDamage
+		_ = pctSpeed
+		_ = addCdr
+		// Apply after derived stats calculation (see below).
+		defer func() {
+			if pctMaxHealth != 0 {
+				e.MaxHealth = int(float64(e.MaxHealth) * (1.0 + pctMaxHealth))
+			}
+			if pctDamage != 0 {
+				e.Damage = int(float64(e.Damage) * (1.0 + pctDamage))
+			}
+			if pctSpeed != 0 {
+				e.Speed = e.Speed * (1.0 + pctSpeed)
+			}
+			if addCdr != 0 {
+				e.CooldownReduction = math.Min(0.5, e.CooldownReduction+addCdr)
+			}
+		}()
 	}
 
 	// Update Total Stats

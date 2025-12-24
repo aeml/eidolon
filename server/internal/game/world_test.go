@@ -419,6 +419,43 @@ func TestEntityCDRCap(t *testing.T) {
 	}
 }
 
+func TestResetTalentsRefundsPointsFromLevel(t *testing.T) {
+	w := NewWorld(nil)
+	p := &Entity{
+		ID:      "player-1",
+		Type:    TypePlayer,
+		SubType: "Fighter",
+		Level:   35, // should yield 7 points (1 per 5 levels)
+		BaseStats: Stats{
+			Strength:     10,
+			Dexterity:    10,
+			Intelligence: 10,
+			Wisdom:       10,
+			Vitality:     10,
+		},
+		Equipment:   make(map[string]Item),
+		TalentRanks: map[string]int{"FTR_01": 2},
+	}
+	// Ensure points are derived properly.
+	p.RecalculateStats()
+	if p.TalentPoints != 5 {
+		t.Fatalf("expected TalentPoints 5 after spending 2 ranks at level 35, got %d", p.TalentPoints)
+	}
+	w.AddEntity(p)
+
+	_, ok, msg := w.PerformResetTalents("player-1")
+	if !ok {
+		t.Fatalf("PerformResetTalents failed: %s", msg)
+	}
+
+	if len(p.TalentRanks) != 0 {
+		t.Fatalf("expected TalentRanks empty after reset, got %v", p.TalentRanks)
+	}
+	if p.TalentPoints != 7 {
+		t.Fatalf("expected TalentPoints 7 after reset at level 35, got %d", p.TalentPoints)
+	}
+}
+
 func TestEnemyDamageCalculation(t *testing.T) {
 	e := &Entity{
 		ID:    "enemy-1",

@@ -583,11 +583,17 @@ type Entity struct {
 	SpiritsBoosted bool `protobuf:"varint,40,opt,name=spirits_boosted,json=spiritsBoosted,proto3" json:"spirits_boosted,omitempty"`
 	IsCharging     bool `protobuf:"varint,41,opt,name=is_charging,json=isCharging,proto3" json:"is_charging,omitempty"`
 	// Common buff/debuff booleans used for visuals/behavior
-	Stunned       bool `protobuf:"varint,42,opt,name=stunned,proto3" json:"stunned,omitempty"`
-	Slowed        bool `protobuf:"varint,43,opt,name=slowed,proto3" json:"slowed,omitempty"`
-	Rooted        bool `protobuf:"varint,44,opt,name=rooted,proto3" json:"rooted,omitempty"`
-	Bleeding      bool `protobuf:"varint,45,opt,name=bleeding,proto3" json:"bleeding,omitempty"`
-	Poisoned      bool `protobuf:"varint,46,opt,name=poisoned,proto3" json:"poisoned,omitempty"`
+	Stunned  bool `protobuf:"varint,42,opt,name=stunned,proto3" json:"stunned,omitempty"`
+	Slowed   bool `protobuf:"varint,43,opt,name=slowed,proto3" json:"slowed,omitempty"`
+	Rooted   bool `protobuf:"varint,44,opt,name=rooted,proto3" json:"rooted,omitempty"`
+	Bleeding bool `protobuf:"varint,45,opt,name=bleeding,proto3" json:"bleeding,omitempty"`
+	Poisoned bool `protobuf:"varint,46,opt,name=poisoned,proto3" json:"poisoned,omitempty"`
+	// Passive talents
+	TalentPoints    int32    `protobuf:"varint,47,opt,name=talent_points,json=talentPoints,proto3" json:"talent_points,omitempty"`
+	UnlockedTalents []string `protobuf:"bytes,48,rep,name=unlocked_talents,json=unlockedTalents,proto3" json:"unlocked_talents,omitempty"`
+	// Ranked passive talents: talentId -> rank.
+	// New clients should use this; unlocked_talents is retained for backwards compatibility.
+	TalentRanks   map[string]int32 `protobuf:"bytes,49,rep,name=talent_ranks,json=talentRanks,proto3" json:"talent_ranks,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -944,6 +950,27 @@ func (x *Entity) GetPoisoned() bool {
 	return false
 }
 
+func (x *Entity) GetTalentPoints() int32 {
+	if x != nil {
+		return x.TalentPoints
+	}
+	return 0
+}
+
+func (x *Entity) GetUnlockedTalents() []string {
+	if x != nil {
+		return x.UnlockedTalents
+	}
+	return nil
+}
+
+func (x *Entity) GetTalentRanks() map[string]int32 {
+	if x != nil {
+		return x.TalentRanks
+	}
+	return nil
+}
+
 var File_state_proto protoreflect.FileDescriptor
 
 const file_state_proto_rawDesc = "" +
@@ -995,7 +1022,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xbd\v\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\x98\r\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -1051,10 +1078,16 @@ const file_state_proto_rawDesc = "" +
 	"\x06slowed\x18+ \x01(\bR\x06slowed\x12\x16\n" +
 	"\x06rooted\x18, \x01(\bR\x06rooted\x12\x1a\n" +
 	"\bbleeding\x18- \x01(\bR\bbleeding\x12\x1a\n" +
-	"\bpoisoned\x18. \x01(\bR\bpoisoned\x1aQ\n" +
+	"\bpoisoned\x18. \x01(\bR\bpoisoned\x12#\n" +
+	"\rtalent_points\x18/ \x01(\x05R\ftalentPoints\x12)\n" +
+	"\x10unlocked_talents\x180 \x03(\tR\x0funlockedTalents\x12I\n" +
+	"\ftalent_ranks\x181 \x03(\v2&.eidolon.state.Entity.TalentRanksEntryR\vtalentRanks\x1aQ\n" +
 	"\x0eEquipmentEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12)\n" +
-	"\x05value\x18\x02 \x01(\v2\x13.eidolon.state.ItemR\x05value:\x028\x01B%Z#eidolon-server/internal/proto;protob\x06proto3"
+	"\x05value\x18\x02 \x01(\v2\x13.eidolon.state.ItemR\x05value:\x028\x01\x1a>\n" +
+	"\x10TalentRanksEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01B%Z#eidolon-server/internal/proto;protob\x06proto3"
 
 var (
 	file_state_proto_rawDescOnce sync.Once
@@ -1068,7 +1101,7 @@ func file_state_proto_rawDescGZIP() []byte {
 	return file_state_proto_rawDescData
 }
 
-var file_state_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_state_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_state_proto_goTypes = []any{
 	(*StateEnvelope)(nil), // 0: eidolon.state.StateEnvelope
 	(*StateFull)(nil),     // 1: eidolon.state.StateFull
@@ -1079,6 +1112,7 @@ var file_state_proto_goTypes = []any{
 	(*Entity)(nil),        // 6: eidolon.state.Entity
 	nil,                   // 7: eidolon.state.Item.StatsEntry
 	nil,                   // 8: eidolon.state.Entity.EquipmentEntry
+	nil,                   // 9: eidolon.state.Entity.TalentRanksEntry
 }
 var file_state_proto_depIdxs = []int32{
 	1,  // 0: eidolon.state.StateEnvelope.full:type_name -> eidolon.state.StateFull
@@ -1091,12 +1125,13 @@ var file_state_proto_depIdxs = []int32{
 	8,  // 7: eidolon.state.Entity.equipment:type_name -> eidolon.state.Entity.EquipmentEntry
 	4,  // 8: eidolon.state.Entity.quests:type_name -> eidolon.state.Quest
 	5,  // 9: eidolon.state.Entity.loot_item:type_name -> eidolon.state.Item
-	5,  // 10: eidolon.state.Entity.EquipmentEntry.value:type_name -> eidolon.state.Item
-	11, // [11:11] is the sub-list for method output_type
-	11, // [11:11] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	9,  // 10: eidolon.state.Entity.talent_ranks:type_name -> eidolon.state.Entity.TalentRanksEntry
+	5,  // 11: eidolon.state.Entity.EquipmentEntry.value:type_name -> eidolon.state.Item
+	12, // [12:12] is the sub-list for method output_type
+	12, // [12:12] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_state_proto_init() }
@@ -1114,7 +1149,7 @@ func file_state_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_state_proto_rawDesc), len(file_state_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

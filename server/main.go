@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"sort"
 	"strings"
 	"sync"
 	"syscall"
@@ -63,16 +64,19 @@ var (
 // EntitySnapshot stores minimal state for delta comparison
 // We only track fields that change frequently
 type EntitySnapshot struct {
-	X          float64
-	Z          float64
-	Y          float64
-	Rotation   float64
-	Health     int
-	MaxHealth  int
-	Mana       int
-	State      string
-	Level      int
-	IsCharging bool
+	X            float64
+	Z            float64
+	Y            float64
+	Rotation     float64
+	Health       int
+	MaxHealth    int
+	Mana         int
+	State        string
+	Level        int
+	IsCharging   bool
+	TalentPoints int
+	TalentKeys   int
+	TalentSpent  int
 }
 
 // Client represents a connected player
@@ -114,6 +118,8 @@ const (
 	MsgCompleteQuest = "complete_quest"
 	MsgSelectBranch  = "selectBranch"
 	MsgUnlockSkill   = "unlockSkill"
+	MsgUnlockTalent  = "unlockTalent"
+	MsgResetTalents  = "resetTalents"
 	MsgForgeUpgrade  = "forge_upgrade"
 	MsgForgePotency  = "forge_potency"
 	MsgForgeSocket   = "forge_socket"
@@ -153,6 +159,10 @@ type SplitStackPayload struct {
 type Message struct {
 	Type    string          `json:"type"`
 	Payload json.RawMessage `json:"payload"`
+}
+
+type UnlockTalentPayload struct {
+	TalentId string `json:"talentId"`
 }
 
 type TradingBidPayload struct {
@@ -924,6 +934,45 @@ func (c *Client) handleMessage(msg Message) {
 			SelectedBranch: char.SelectedBranch,
 			UnlockedSkills: []string{},
 		}
+
+		// Passive talents: ranked map. Migrate legacy unlocked_talents (rank=1) if needed.
+		if char.TalentRanks != nil {
+			entity.TalentRanks = make(map[string]int, len(char.TalentRanks))
+			for k, v := range char.TalentRanks {
+				entity.TalentRanks[k] = v
+			}
+		} else if len(char.UnlockedTalents) > 0 {
+			// Legacy migration safety:
+			// Older saves may have large unlocked_talents lists that don't map cleanly to the
+			// new ranked + budgeted system (1 point per 5 levels). If we blindly convert all
+			// legacy unlocked IDs into ranks, players can appear to have 0 available points.
+			//
+			// If the legacy list exceeds the new budget, start them with a clean slate so
+			// they can re-allocate under the new rules.
+			budget := 0
+			if entity.Level >= 5 {
+				budget = entity.Level / 5
+			}
+			uniq := make(map[string]struct{}, len(char.UnlockedTalents))
+			for _, tid := range char.UnlockedTalents {
+				if tid == "" {
+					continue
+				}
+				uniq[tid] = struct{}{}
+			}
+			if len(uniq) > budget {
+				log.Printf("Legacy talent migration for %s: %d unlocked_talents exceeds budget %d at level %d; resetting talents to avoid 0 available points", c.username, len(uniq), budget, entity.Level)
+				entity.TalentRanks = make(map[string]int)
+			} else {
+				entity.TalentRanks = make(map[string]int, len(uniq))
+				for tid := range uniq {
+					entity.TalentRanks[tid] = 1
+				}
+			}
+		}
+		// Sanitize ranks: only allow class-specific IDs and clamp to max rank.
+		// TalentPoints are derived later during RecalculateStats().
+		entity.NormalizeTalentRanks()
 
 		// Auto-Unlock Skills based on Level and Branch
 		world.UpdateUnlockedSkills(entity)
@@ -2426,6 +2475,30 @@ func (c *Client) handleMessage(msg Message) {
 		if _, success := world.PerformUnlockSkill(c.playerID, payload.SkillName); success {
 			savePlayer(c) // Persist immediately
 		}
+
+	case MsgUnlockTalent:
+		if c.playerID == "" {
+			return
+		}
+		var payload UnlockTalentPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		if _, success, msgStr := world.PerformUnlockTalent(c.playerID, payload.TalentId); success {
+			savePlayer(c) // Persist immediately
+		} else {
+			c.sendError(msgStr)
+		}
+
+	case MsgResetTalents:
+		if c.playerID == "" {
+			return
+		}
+		if _, success, msgStr := world.PerformResetTalents(c.playerID); success {
+			savePlayer(c) // Persist immediately
+		} else {
+			c.sendError(msgStr)
+		}
 	}
 }
 
@@ -2459,17 +2532,37 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 	}
 
 	e.Mu.RLock()
+	keys := 0
+	spent := 0
+	for tid, r := range e.TalentRanks {
+		nr, ok := game.NormalizeTalentRank(e.SubType, tid, r)
+		if !ok {
+			continue
+		}
+		keys++
+		spent += nr
+	}
+	derivedTalentPoints := 0
+	if e.Level >= 5 {
+		derivedTalentPoints = (e.Level / 5) - spent
+		if derivedTalentPoints < 0 {
+			derivedTalentPoints = 0
+		}
+	}
 	snap := &EntitySnapshot{
-		X:          e.X,
-		Z:          e.Z,
-		Y:          e.Y,
-		Rotation:   e.Rotation,
-		Health:     e.Health,
-		MaxHealth:  e.MaxHealth,
-		Mana:       e.Mana,
-		State:      e.State,
-		Level:      e.Level,
-		IsCharging: e.IsCharging,
+		X:            e.X,
+		Z:            e.Z,
+		Y:            e.Y,
+		Rotation:     e.Rotation,
+		Health:       e.Health,
+		MaxHealth:    e.MaxHealth,
+		Mana:         e.Mana,
+		State:        e.State,
+		Level:        e.Level,
+		IsCharging:   e.IsCharging,
+		TalentPoints: derivedTalentPoints,
+		TalentKeys:   keys,
+		TalentSpent:  spent,
 	}
 	e.Mu.RUnlock()
 
@@ -2479,42 +2572,80 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 // hasEntityChanged checks if entity state differs from last snapshot
 // Returns true if any tracked field changed significantly
 func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
+	// Snapshot current values under lock to avoid races (TalentRanks is a map).
+	current.Mu.RLock()
+	cx := current.X
+	cz := current.Z
+	cy := current.Y
+	crot := current.Rotation
+	chealth := current.Health
+	cmaxHealth := current.MaxHealth
+	cmana := current.Mana
+	cstate := current.State
+	clevel := current.Level
+	cisCharging := current.IsCharging
+	ctalentPoints := current.TalentPoints
+	ctalentKeys := 0
+	ctalentSpent := 0
+	for tid, r := range current.TalentRanks {
+		nr, ok := game.NormalizeTalentRank(current.SubType, tid, r)
+		if !ok {
+			continue
+		}
+		ctalentKeys++
+		ctalentSpent += nr
+	}
+	// Compute derived points for comparison (don't depend on stored field).
+	ctalentPoints = 0
+	if clevel >= 5 {
+		ctalentPoints = (clevel / 5) - ctalentSpent
+		if ctalentPoints < 0 {
+			ctalentPoints = 0
+		}
+	}
+	current.Mu.RUnlock()
+
 	// Position change threshold (0.05 units = basically any movement)
 	const posTolerance = 0.05
-	dx := current.X - last.X
-	dz := current.Z - last.Z
-	dy := current.Y - last.Y
+	dx := cx - last.X
+	dz := cz - last.Z
+	dy := cy - last.Y
 	if dx*dx+dz*dz > posTolerance*posTolerance || dy*dy > posTolerance*posTolerance {
 		return true
 	}
 
 	// Rotation change threshold (~3 degrees)
 	const rotTolerance = 0.05
-	dr := current.Rotation - last.Rotation
+	dr := crot - last.Rotation
 	if dr > rotTolerance || dr < -rotTolerance {
 		return true
 	}
 
 	// Health/Mana changes are always significant
-	if current.Health != last.Health || current.MaxHealth != last.MaxHealth {
+	if chealth != last.Health || cmaxHealth != last.MaxHealth {
 		return true
 	}
-	if current.Mana != last.Mana {
+	if cmana != last.Mana {
+		return true
+	}
+
+	// Talent changes are significant (UI needs timely updates)
+	if ctalentPoints != last.TalentPoints || ctalentKeys != last.TalentKeys || ctalentSpent != last.TalentSpent {
 		return true
 	}
 
 	// State changes are always significant
-	if current.State != last.State {
+	if cstate != last.State {
 		return true
 	}
 
 	// Level ups are significant
-	if current.Level != last.Level {
+	if clevel != last.Level {
 		return true
 	}
 
 	// Charging state for enemies
-	if current.IsCharging != last.IsCharging {
+	if cisCharging != last.IsCharging {
 		return true
 	}
 
@@ -2719,6 +2850,30 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 
 	// Copy slices/maps/pointers while under the lock.
 	unlockedSkills := append([]string(nil), e.UnlockedSkills...)
+
+	// Passive talents: ranked map (new) + derived unlocked list (legacy).
+	talentRanks := make(map[string]int32)
+	unlockedTalents := make([]string, 0)
+	spentTalents := 0
+	for tid, r := range e.TalentRanks {
+		nr, ok := game.NormalizeTalentRank(e.SubType, tid, r)
+		if !ok {
+			continue
+		}
+		talentRanks[tid] = int32(nr)
+		spentTalents += nr
+		unlockedTalents = append(unlockedTalents, tid)
+	}
+	sort.Strings(unlockedTalents)
+	// TalentPoints are derived from level and normalized ranks. Compute here to avoid
+	// relying on the stored field (which may be stale if stats weren't recalculated yet).
+	derivedTalentPoints := 0
+	if e.Level >= 5 {
+		derivedTalentPoints = (e.Level / 5) - spentTalents
+		if derivedTalentPoints < 0 {
+			derivedTalentPoints = 0
+		}
+	}
 	quests := append([]game.Quest(nil), e.Quests...)
 
 	equipment := make(map[string]*statepb.Item, len(e.Equipment))
@@ -2754,6 +2909,9 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		SkillPoints:       int32(e.SkillPoints),
 		SelectedBranch:    e.SelectedBranch,
 		UnlockedSkills:    unlockedSkills,
+		TalentPoints:      int32(derivedTalentPoints),
+		UnlockedTalents:   unlockedTalents,
+		TalentRanks:       talentRanks,
 		BaseStats:         statsToProto(e.BaseStats),
 		Stats:             statsToProto(e.Stats),
 		Damage:            int32(e.Damage),
@@ -2827,6 +2985,20 @@ func savePlayer(client *Client) {
 }
 
 func saveCharacterDB(client *Client, entity *game.Entity) {
+	// Normalize talent ranks before persisting (class-only IDs; clamped ranks).
+	// Derive a stable legacy unlocked_talents list (rank > 0) for backwards compatibility.
+	normalizedRanks := make(map[string]int, len(entity.TalentRanks))
+	unlockedTalents := make([]string, 0)
+	for tid, r := range entity.TalentRanks {
+		nr, ok := game.NormalizeTalentRank(entity.SubType, tid, r)
+		if !ok {
+			continue
+		}
+		normalizedRanks[tid] = nr
+		unlockedTalents = append(unlockedTalents, tid)
+	}
+	sort.Strings(unlockedTalents)
+
 	// Update DB character
 	char := &database.Character{
 		Name:       client.username,
@@ -2846,9 +3018,11 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 			Intelligence: entity.BaseStats.Intelligence,
 			Wisdom:       entity.BaseStats.Wisdom,
 		},
-		SkillPoints:    entity.SkillPoints,
-		SelectedBranch: entity.SelectedBranch,
-		UnlockedSkills: entity.UnlockedSkills,
+		SkillPoints:     entity.SkillPoints,
+		SelectedBranch:  entity.SelectedBranch,
+		UnlockedSkills:  entity.UnlockedSkills,
+		UnlockedTalents: unlockedTalents,
+		TalentRanks:     normalizedRanks,
 	}
 
 	// Convert Game Inventory to DB Inventory

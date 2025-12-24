@@ -129,4 +129,11 @@ message Entity {
   bool rooted = 44;
   bool bleeding = 45;
   bool poisoned = 46;
+
+  // Passive talents
+  int32 talent_points = 47;
+  repeated string unlocked_talents = 48;
+  // Ranked passive talents: talentId -> rank.
+  // New clients should use this; unlocked_talents is retained for backwards compatibility.
+  map<string, int32> talent_ranks = 49;
 }
