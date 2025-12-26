@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshFactory } from '../utils/MeshFactory.js';
 
 // Shared temp objects to reduce allocations during instancing
 const TEMP_BOX = new THREE.Box3();
@@ -14,18 +15,29 @@ export class WorldGenerator {
         this.scene = scene;
         this.collisionManager = collisionManager;
 
-        const loader = new THREE.TextureLoader();
-        this.floorTexture = loader.load('./assets/backgrounds/cobblestone.png');
-        this.floorTexture.wrapS = THREE.RepeatWrapping;
-        this.floorTexture.wrapT = THREE.RepeatWrapping;
-
-        this.wallTexture = loader.load('./assets/backgrounds/cobblestone_walls.png');
-        this.wallTexture.wrapS = THREE.RepeatWrapping;
-        this.wallTexture.wrapT = THREE.RepeatWrapping;
+        this.floorTexture = null;
+        this.wallTexture = null;
     }
 
-    createTown(centerX, centerZ, size) {
+    async preloadTextures() {
+        if (this.floorTexture && this.wallTexture) return;
+        const loader = new THREE.TextureLoader();
+
+        const floor = await loader.loadAsync('./assets/backgrounds/cobblestone.png');
+        floor.wrapS = THREE.RepeatWrapping;
+        floor.wrapT = THREE.RepeatWrapping;
+        this.floorTexture = floor;
+
+        const wall = await loader.loadAsync('./assets/backgrounds/cobblestone_walls.png');
+        wall.wrapS = THREE.RepeatWrapping;
+        wall.wrapT = THREE.RepeatWrapping;
+        this.wallTexture = wall;
+    }
+
+    async createTown(centerX, centerZ, size) {
         console.log(`Generating town at ${centerX},${centerZ} size ${size}`);
+
+        await this.preloadTextures();
         
         // Use the passed size as radius (should be 100)
         // const radius = size;
@@ -35,12 +47,13 @@ export class WorldGenerator {
         
         // this.createCircularFence(centerX, centerZ, radius);
         this.createRectangularFence(centerX, centerZ, size * 2, size * 2);
-        this.loadBuildings(centerX, centerZ);
-        this.loadTrees(centerX, centerZ);
+        await Promise.all([
+            this.loadBuildings(centerX, centerZ),
+            this.loadTrees(centerX, centerZ)
+        ]);
     }
 
-    loadTrees(cx, cz) {
-        const loader = new GLTFLoader();
+    async loadTrees(cx, cz) {
         const treeTypes = [
             { file: 'birch.glb', count: 150, scaleMin: 4, scaleMax: 7 },
             { file: 'pine.glb', count: 150, scaleMin: 4, scaleMax: 7 },
@@ -96,71 +109,68 @@ export class WorldGenerator {
             return parts;
         };
 
-        treeTypes.forEach(type => {
-            loader.load(`./assets/plants/${type.file}`, (gltf) => {
-                const model = gltf.scene;
-                model.updateMatrixWorld(true);
+        await Promise.all(treeTypes.map(async (type) => {
+            const gltf = await MeshFactory.loadModel(`./assets/plants/${type.file}`);
+            const model = gltf.scene;
+            model.updateMatrixWorld(true);
 
-                // Compute a base bottom offset once (approx) so instances sit on the ground.
-                TEMP_BOX.setFromObject(model);
-                const baseBottomY = TEMP_BOX.min.y;
+            // Compute a base bottom offset once (approx) so instances sit on the ground.
+            TEMP_BOX.setFromObject(model);
+            const baseBottomY = TEMP_BOX.min.y;
 
-                const placements = pickTreePlacements(type.count);
-                if (placements.length === 0) return;
+            const placements = pickTreePlacements(type.count);
+            if (placements.length === 0) return;
 
-                const parts = extractMeshParts(model);
-                if (parts.length === 0) return;
+            const parts = extractMeshParts(model);
+            if (parts.length === 0) return;
 
-                const group = new THREE.Group();
-                group.name = `trees:${type.file}`;
+            const group = new THREE.Group();
+            group.name = `trees:${type.file}`;
 
-                // One InstancedMesh per mesh-part in the GLB.
-                // This preserves multi-mesh tree models (trunk + leaves etc.) without hundreds of scene nodes.
-                const instancedMeshes = [];
-                for (const part of parts) {
-                    const material = Array.isArray(part.material)
-                        ? part.material.map(m => m.clone())
-                        : part.material.clone();
-                    const inst = new THREE.InstancedMesh(part.geometry, material, placements.length);
-                    inst.castShadow = true;
-                    inst.receiveShadow = true;
-                    instancedMeshes.push(inst);
-                    group.add(inst);
-                }
+            // One InstancedMesh per mesh-part in the GLB.
+            // This preserves multi-mesh tree models (trunk + leaves etc.) without hundreds of scene nodes.
+            const instancedMeshes = [];
+            for (const part of parts) {
+                const material = Array.isArray(part.material)
+                    ? part.material.map(m => m.clone())
+                    : part.material.clone();
+                const inst = new THREE.InstancedMesh(part.geometry, material, placements.length);
+                inst.castShadow = true;
+                inst.receiveShadow = true;
+                instancedMeshes.push(inst);
+                group.add(inst);
+            }
 
-                for (let i = 0; i < placements.length; i++) {
-                    const { x, z } = placements[i];
-                    const scale = type.scaleMin + Math.random() * (type.scaleMax - type.scaleMin);
-                    const rotation = Math.random() * Math.PI * 2;
+            for (let i = 0; i < placements.length; i++) {
+                const { x, z } = placements[i];
+                const scale = type.scaleMin + Math.random() * (type.scaleMax - type.scaleMin);
+                const rotation = Math.random() * Math.PI * 2;
 
-                    TEMP_POS.set(x, (-baseBottomY) * scale, z);
-                    TEMP_SCALE.set(scale, scale, scale);
-                    TEMP_QUAT.setFromAxisAngle(TEMP_UP, rotation);
-                    TEMP_MAT4.compose(TEMP_POS, TEMP_QUAT, TEMP_SCALE);
-
-                    for (const inst of instancedMeshes) {
-                        inst.setMatrixAt(i, TEMP_MAT4);
-                    }
-
-                    // Trunk Collider (keep as before)
-                    const colliderSize = new THREE.Vector3(2, 10, 2);
-                    const colliderCenter = new THREE.Vector3(x, 5, z);
-                    const collider = new THREE.Box3().setFromCenterAndSize(colliderCenter, colliderSize);
-                    this.collisionManager.addCollider(collider);
-                }
+                TEMP_POS.set(x, (-baseBottomY) * scale, z);
+                TEMP_SCALE.set(scale, scale, scale);
+                TEMP_QUAT.setFromAxisAngle(TEMP_UP, rotation);
+                TEMP_MAT4.compose(TEMP_POS, TEMP_QUAT, TEMP_SCALE);
 
                 for (const inst of instancedMeshes) {
-                    inst.instanceMatrix.needsUpdate = true;
+                    inst.setMatrixAt(i, TEMP_MAT4);
                 }
 
-                this.scene.add(group);
-            }, undefined, (err) => console.error(`Failed to load ${type.file}:`, err));
-        });
+                // Trunk Collider (keep as before)
+                const colliderSize = new THREE.Vector3(2, 10, 2);
+                const colliderCenter = new THREE.Vector3(x, 5, z);
+                const collider = new THREE.Box3().setFromCenterAndSize(colliderCenter, colliderSize);
+                this.collisionManager.addCollider(collider);
+            }
+
+            for (const inst of instancedMeshes) {
+                inst.instanceMatrix.needsUpdate = true;
+            }
+
+            this.scene.add(group);
+        }));
     }
 
-    loadBuildings(cx, cz) {
-        const loader = new GLTFLoader();
-        
+    async loadBuildings(cx, cz) {
         const setupBuilding = (mesh, scale, x, z, rotationY = 0, targetY = -0.5, customCollider = null) => {
             mesh.scale.set(scale, scale, scale);
             mesh.rotation.y = rotationY;
@@ -199,73 +209,57 @@ export class WorldGenerator {
             }
         };
 
-        // Two Story Building (North) - Scaled 12x
-        loader.load('./assets/buildings/two_story_building.glb', (gltf) => {
-            // Move to North (z - 30)
-            setupBuilding(gltf.scene, 12, cx, cz - 30, 0);
-        }, undefined, (err) => console.error("Failed to load two_story_building:", err));
+        const twoStory = await MeshFactory.loadModel('./assets/buildings/two_story_building.glb');
+        setupBuilding(twoStory.scene.clone(), 12, cx, cz - 30, 0);
 
-        // Trading Post (East) - Scaled 6x
-        loader.load('./assets/buildings/trading_post.glb', (gltf) => {
-            setupBuilding(gltf.scene, 6, cx + 30, cz, -Math.PI / 2);
-        }, undefined, (err) => console.error("Failed to load trading_post:", err));
+        const tradingPost = await MeshFactory.loadModel('./assets/buildings/trading_post.glb');
+        setupBuilding(tradingPost.scene.clone(), 6, cx + 30, cz, -Math.PI / 2);
 
-        // Blacksmith (West) - Scaled 7.8x
-        loader.load('./assets/buildings/blacksmith.glb', (gltf) => {
-            setupBuilding(gltf.scene, 7.8, cx - 30, cz, Math.PI / 2);
-        }, undefined, (err) => console.error("Failed to load blacksmith:", err));
+        const blacksmith = await MeshFactory.loadModel('./assets/buildings/blacksmith.glb');
+        setupBuilding(blacksmith.scene.clone(), 7.8, cx - 30, cz, Math.PI / 2);
 
         // Trading House is now an Entity (loaded in MeshFactory) to handle interaction/collision better
 
-        // Camp Sites (Randomly distributed outside center)
-        loader.load('./assets/buildings/camp_site.glb', (gltf) => {
-            const campModel = gltf.scene;
-            const count = 15;
-            const exclusionRadius = 50; // Keep away from center buildings
-            const townRadius = 85; // Stay within fences (size 100)
-            const placedCamps = [];
-            const minCampDist = 20; // Minimum distance between camps
+        const camp = await MeshFactory.loadModel('./assets/buildings/camp_site.glb');
+        const campModel = camp.scene;
+        const count = 15;
+        const exclusionRadius = 50;
+        const townRadius = 85;
+        const placedCamps = [];
+        const minCampDist = 20;
 
-            for (let i = 0; i < count; i++) {
-                let x, z, dist;
-                let attempts = 0;
-                let valid = false;
+        for (let i = 0; i < count; i++) {
+            let x, z, dist;
+            let attempts = 0;
+            let valid = false;
 
-                do {
-                    // Random point in square town
-                    x = cx + (Math.random() * 2 - 1) * townRadius;
-                    z = cz + (Math.random() * 2 - 1) * townRadius;
-                    
-                    // Check distance from center
-                    dist = Math.sqrt(Math.pow(x - cx, 2) + Math.pow(z - cz, 2));
-                    
-                    if (dist >= exclusionRadius) {
-                        // Check distance from other camps
-                        let tooClose = false;
-                        for (const camp of placedCamps) {
-                            const d = Math.sqrt(Math.pow(x - camp.x, 2) + Math.pow(z - camp.z, 2));
-                            if (d < minCampDist) {
-                                tooClose = true;
-                                break;
-                            }
-                        }
-                        if (!tooClose) {
-                            valid = true;
+            do {
+                x = cx + (Math.random() * 2 - 1) * townRadius;
+                z = cz + (Math.random() * 2 - 1) * townRadius;
+
+                dist = Math.sqrt(Math.pow(x - cx, 2) + Math.pow(z - cz, 2));
+
+                if (dist >= exclusionRadius) {
+                    let tooClose = false;
+                    for (const placed of placedCamps) {
+                        const d = Math.sqrt(Math.pow(x - placed.x, 2) + Math.pow(z - placed.z, 2));
+                        if (d < minCampDist) {
+                            tooClose = true;
+                            break;
                         }
                     }
-                    attempts++;
-                } while (!valid && attempts < 50);
-
-                if (valid) {
-                    placedCamps.push({x, z});
-                    const instance = campModel.clone();
-                    const rotation = Math.random() * Math.PI * 2;
-                    // Scale 4x, Lower slightly to -0.65 to blend ground
-                    // Custom collider: Small box in center (2x2) to allow walking on dirt
-                    setupBuilding(instance, 4, x, z, rotation, -0.65, new THREE.Vector3(2, 10, 2));
+                    if (!tooClose) valid = true;
                 }
+                attempts++;
+            } while (!valid && attempts < 50);
+
+            if (valid) {
+                placedCamps.push({ x, z });
+                const instance = campModel.clone();
+                const rotation = Math.random() * Math.PI * 2;
+                setupBuilding(instance, 4, x, z, rotation, -0.65, new THREE.Vector3(2, 10, 2));
             }
-        }, undefined, (err) => console.error("Failed to load camp_site:", err));
+        }
     }
 
     createRectangularFence(cx, cz, width, depth) {
@@ -343,8 +337,10 @@ export class WorldGenerator {
         group.add(post);
     }
 
-    createDungeon(centerX, centerZ, size) {
+    async createDungeon(centerX, centerZ, size) {
         console.log(`Generating dungeon at ${centerX},${centerZ}`);
+
+        await this.preloadTextures();
 
         // Simple room for now
         const floorGeo = new THREE.PlaneGeometry(size, size);
@@ -378,13 +374,12 @@ export class WorldGenerator {
         }
     }
 
-    createOverworldStructures() {
-        const loader = new GLTFLoader();
-        
+    async createOverworldStructures() {
         // The Verdant Bastion (Level 40-50 Dungeon)
         // Location: X=800, Z=200 (In the InfernoTitan area)
-        loader.load('./assets/buildings/dungeons/the_verdant_bastion.glb', (gltf) => {
-            const mesh = gltf.scene;
+        const gltf = await MeshFactory.loadModel('./assets/buildings/dungeons/the_verdant_bastion.glb');
+        {
+            const mesh = gltf.scene.clone();
             mesh.name = 'DungeonEntrance'; // Tag for interaction
             const scale = 40; // "Very large"
             mesh.scale.set(scale, scale, scale);
@@ -421,11 +416,13 @@ export class WorldGenerator {
             console.log(`Loaded The Verdant Bastion at 800, 200 with radius ${radius}`);
             
             console.log("Loaded The Verdant Bastion at 800, 200");
-        }, undefined, (err) => console.error("Failed to load the_verdant_bastion:", err));
+        }
     }
 
-    createVerdantBastionCatacombs(centerX, centerZ, layout) {
+    async createVerdantBastionCatacombs(centerX, centerZ, layout) {
         console.log(`Generating Verdant Bastion Catacombs at ${centerX},${centerZ}`);
+
+        await this.preloadTextures();
         
         if (layout && layout.rooms && layout.rooms.length > 0) {
             let prevRoom = null;
