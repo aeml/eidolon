@@ -38,6 +38,7 @@ import { LevelUpEffect } from '../ui/LevelUpEffect.js';
 import { AquaGolem } from '../entities/AquaGolem.js';
 import { MountainTroll } from '../entities/MountainTroll.js';
 import { eidolon as eidolonProto } from '../proto/state_pb.js';
+import { MeshFactory } from '../utils/MeshFactory.js';
 
 export class GameEngine {
     constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null) {
@@ -474,7 +475,26 @@ export class GameEngine {
             }
         };
 
-        if (onProgress) onProgress(50, "Generating World...");
+        if (onProgress) onProgress(40, "Loading environment...");
+        await this.renderSystem.preloadEnvironment((p, text) => {
+            if (!onProgress) return;
+            // Map 0..100 -> 40..55
+            const mapped = 40 + Math.round((p / 100) * 15);
+            onProgress(mapped, text);
+        });
+
+        if (onProgress) onProgress(55, "Preloading models...");
+        await MeshFactory.preloadAllModels({
+            concurrency: 4,
+            onProgress: (p, text) => {
+                if (!onProgress) return;
+                // Map 0..100 -> 55..75
+                const mapped = 55 + Math.round((p / 100) * 20);
+                onProgress(mapped, text);
+            }
+        });
+
+        if (onProgress) onProgress(75, "Generating World...");
         await new Promise(r => setTimeout(r, 50));
 
         console.log("GameEngine: Forcing initial chunk update");
@@ -482,14 +502,14 @@ export class GameEngine {
 
         // In multiplayer, we still need to render the static town
         // Town Center: (0, 200), Radius: 100
-        this.worldGenerator.createTown(0, 200, 100);
-        this.worldGenerator.createOverworldStructures();
+        await this.worldGenerator.createTown(0, 200, 100);
+        await this.worldGenerator.createOverworldStructures();
         // this.spawnTownEntities();
 
-        if (onProgress) onProgress(70, "Spawning Enemies...");
+        if (onProgress) onProgress(90, "Spawning Enemies...");
         await new Promise(r => setTimeout(r, 50));
 
-        if (onProgress) onProgress(90, "Setting up Controls...");
+        if (onProgress) onProgress(95, "Setting up Controls...");
         await new Promise(r => setTimeout(r, 50));
 
         this.inputManager.subscribe('onClick', () => {
@@ -1014,7 +1034,7 @@ export class GameEngine {
         return item;
     }
 
-    enterInstance(instanceId, type, layout) {
+    async enterInstance(instanceId, type, layout) {
         console.log(`Entering instance: ${instanceId} (${type})`);
         this.currentInstanceId = instanceId;
 
@@ -1046,14 +1066,15 @@ export class GameEngine {
         // Generate new world
         const worldGen = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         if (type === 'crypt') {
-            worldGen.createDungeon(0, 0, 100);
+            await worldGen.createDungeon(0, 0, 100);
         } else if (type === 'verdant_bastion_catacombs') {
-            worldGen.createVerdantBastionCatacombs(0, 0, layout);
+            await worldGen.createVerdantBastionCatacombs(0, 0, layout);
         } else {
-            // Returning to overworld - re-setup ground textures
-            this.renderSystem.setupGround();
-            worldGen.createTown(0, 0, 100);
-            worldGen.createOverworldStructures();
+            // Returning to overworld - ensure persistent environment meshes are re-added
+            // after the scene was cleared.
+            await this.renderSystem.preloadEnvironment();
+            await worldGen.createTown(0, 0, 100);
+            await worldGen.createOverworldStructures();
         }
 
         // Reset player position and state
@@ -1212,7 +1233,8 @@ export class GameEngine {
         } else if (msg.type === 'enter_instance') {
             const instanceData = msg.payload;
             console.log(`GameEngine: Received enter_instance. ID: ${instanceData.instanceId}, Type: ${instanceData.type}`);
-            this.enterInstance(instanceData.instanceId, instanceData.type, instanceData.layout);
+            void this.enterInstance(instanceData.instanceId, instanceData.type, instanceData.layout)
+                .catch(e => console.error('Failed to enter instance:', e));
         } else if (msg.type === 'get_dungeon_status') {
             if (this.uiManager) {
                 this.uiManager.showDungeonMenu(msg.payload);

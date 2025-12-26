@@ -4,22 +4,13 @@ import { CONSTANTS } from './Constants.js';
 export class RenderSystem {
     constructor(isMobile = false) {
         this.scene = new THREE.Scene();
-        
-        // Load Background Texture
-        const loader = new THREE.TextureLoader();
-        loader.load('./assets/backgrounds/underground.png', (texture) => {
-            this.scene.background = texture;
-        }, undefined, () => {
-            // Fallback if texture fails
-            this.scene.background = new THREE.Color(0x220033); 
-        });
+        // Background/ground/water assets are loaded via `preloadEnvironment()`.
+        // Keep a non-black fallback so the scene isn't empty if loading fails.
+        this.scene.background = new THREE.Color(0x220033);
         
         // Optimization: Mobile Settings
         this.isMobile = isMobile;
         console.log(`RenderSystem initialized. Mobile Mode: ${this.isMobile}`);
-
-        // Setup Water (Background)
-        this.setupWater();
 
         // Camera Setup (Isometric Orthographic)
         const aspect = window.innerWidth / window.innerHeight;
@@ -66,12 +57,116 @@ export class RenderSystem {
 
         // Lighting
         this.setupLights();
-        
-        // Ground Plane
-        this.setupGround();
+
+        // Water/Ground are created via `preloadEnvironment()` so the loading screen
+        // can reliably wait for textures before gameplay begins.
 
         // Handle Resize
         window.addEventListener('resize', () => this.onWindowResize(), false);
+    }
+
+    async preloadEnvironment(onProgress) {
+        const loader = new THREE.TextureLoader();
+
+        const report = (p, text) => {
+            if (onProgress) onProgress(p, text);
+        };
+
+        report(0, 'Loading background...');
+        try {
+            const texture = await loader.loadAsync('./assets/backgrounds/underground.png');
+            this.scene.background = texture;
+        } catch {
+            this.scene.background = new THREE.Color(0x220033);
+        }
+
+        report(33, 'Loading water...');
+        try {
+            if (!this.waterTexture) {
+                const texture = await loader.loadAsync('./assets/backgrounds/water_texture.png');
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set(500, 500);
+                texture.colorSpace = THREE.SRGBColorSpace;
+                this.waterTexture = texture;
+            }
+
+            if (!this.waterPlane) {
+                const geo = new THREE.PlaneGeometry(10000, 10000);
+                const mat = new THREE.MeshBasicMaterial({
+                    map: this.waterTexture,
+                    color: 0x88ccff,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                this.waterPlane = new THREE.Mesh(geo, mat);
+                this.waterPlane.rotation.x = -Math.PI / 2;
+                this.waterPlane.position.y = -5;
+            }
+
+            if (!this.waterPlane.parent) {
+                this.scene.add(this.waterPlane);
+            }
+        } catch {
+            // Water is optional; skip on failure.
+        }
+
+        report(66, 'Loading ground...');
+        // Note: query params are generated once (original behavior), but we avoid re-downloading
+        // on every instance transition.
+        if (!this._groundTextureUrl) {
+            this._groundTextureUrl = `./assets/backgrounds/ground_texture.png?v=${Date.now()}`;
+        }
+        if (!this._snowTextureUrl) {
+            this._snowTextureUrl = `./assets/backgrounds/abyssal_well_floor.png?v=${Date.now()}`;
+        }
+
+        if (!this.groundTexture) {
+            this.groundTexture = await loader.loadAsync(this._groundTextureUrl);
+            this.setupTexture(this.groundTexture, 80, 64);
+        }
+        if (!this.snowTexture) {
+            this.snowTexture = await loader.loadAsync(this._snowTextureUrl);
+            this.setupTexture(this.snowTexture, 80, 64);
+        }
+
+        if (!this.groundEarth) {
+            const earthGeo = new THREE.PlaneGeometry(2000, 1600);
+            const earthMat = new THREE.MeshStandardMaterial({
+                map: this.groundTexture,
+                color: 0xffffff,
+                roughness: 0.8,
+                metalness: 0.2
+            });
+            this.groundEarth = new THREE.Mesh(earthGeo, earthMat);
+            this.groundEarth.rotation.x = -Math.PI / 2;
+            this.groundEarth.position.set(0, 0, 200);
+            this.groundEarth.receiveShadow = true;
+        }
+
+        if (!this.groundEarth.parent) {
+            this.scene.add(this.groundEarth);
+        }
+
+        if (!this.groundSnow) {
+            const snowGeo = new THREE.PlaneGeometry(2000, 1600);
+            const snowMat = new THREE.MeshStandardMaterial({
+                map: this.snowTexture,
+                color: 0xffffff,
+                roughness: 0.8,
+                metalness: 0.2
+            });
+            this.groundSnow = new THREE.Mesh(snowGeo, snowMat);
+            this.groundSnow.rotation.x = -Math.PI / 2;
+            this.groundSnow.position.set(0, 0, -1400);
+            this.groundSnow.receiveShadow = true;
+        }
+
+        if (!this.groundSnow.parent) {
+            this.scene.add(this.groundSnow);
+        }
+
+        report(100, 'Environment ready');
     }
 
     setupLights() {
@@ -97,75 +192,7 @@ export class RenderSystem {
         this.scene.add(dirLight);
     }
 
-    setupWater() {
-        console.log("RenderSystem: Setting up water plane...");
-        const loader = new THREE.TextureLoader();
-        loader.load('./assets/backgrounds/water_texture.png', (texture) => {
-            texture.wrapS = THREE.RepeatWrapping;
-            texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set(500, 500); // High repeat for large plane
-            texture.colorSpace = THREE.SRGBColorSpace;
-            
-            this.waterTexture = texture;
-            
-            // Huge plane to cover the world
-            const geo = new THREE.PlaneGeometry(10000, 10000);
-            const mat = new THREE.MeshBasicMaterial({ 
-                map: texture, 
-                color: 0x88ccff, // Tint it blueish
-                transparent: true,
-                opacity: 0.8
-            });
-            
-            this.waterPlane = new THREE.Mesh(geo, mat);
-            this.waterPlane.rotation.x = -Math.PI / 2;
-            this.waterPlane.position.y = -5; // Below ground
-            this.scene.add(this.waterPlane);
-        });
-    }
-
-    setupGround() {
-        console.log("RenderSystem: Loading ground textures...");
-        const loader = new THREE.TextureLoader();
-        
-        // Load Grass Texture
-        this.groundTexture = loader.load(`./assets/backgrounds/ground_texture.png?v=${Date.now()}`);
-        this.setupTexture(this.groundTexture, 80, 64);
-
-        // Load Snow Texture
-        this.snowTexture = loader.load(`./assets/backgrounds/abyssal_well_floor.png?v=${Date.now()}`);
-        this.setupTexture(this.snowTexture, 80, 64);
-
-        // Earth Ground (Z > -600)
-        // Center at Z = 200 (covering -600 to 1000) -> Size 1600 (Height)
-        const earthGeo = new THREE.PlaneGeometry(2000, 1600);
-        const earthMat = new THREE.MeshStandardMaterial({ 
-            map: this.groundTexture,
-            color: 0xffffff,
-            roughness: 0.8,
-            metalness: 0.2
-        });
-        this.groundEarth = new THREE.Mesh(earthGeo, earthMat);
-        this.groundEarth.rotation.x = -Math.PI / 2;
-        this.groundEarth.position.set(0, 0, 200); // Center at 200. Top: -600, Bottom: 1000.
-        this.groundEarth.receiveShadow = true;
-        this.scene.add(this.groundEarth);
-
-        // Snow Ground (Z < -600)
-        // Covers -600 to -2200. Center: -1400. Height: 1600.
-        const snowGeo = new THREE.PlaneGeometry(2000, 1600);
-        const snowMat = new THREE.MeshStandardMaterial({ 
-            map: this.snowTexture,
-            color: 0xffffff,
-            roughness: 0.8,
-            metalness: 0.2
-        });
-        this.groundSnow = new THREE.Mesh(snowGeo, snowMat);
-        this.groundSnow.rotation.x = -Math.PI / 2;
-        this.groundSnow.position.set(0, 0, -1400); // Center at -1400. Top: -2200, Bottom: -600.
-        this.groundSnow.receiveShadow = true;
-        this.scene.add(this.groundSnow);
-    }
+    // setupWater/setupGround were replaced by `preloadEnvironment()`.
 
     setupTexture(tex, repeatX = 80, repeatY = 80) {
         tex.wrapS = THREE.RepeatWrapping;
