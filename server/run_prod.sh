@@ -16,6 +16,6 @@ if [ ! -f "$CERT_PATH" ] || [ ! -f "$KEY_PATH" ]; then
     exit 1
 fi
 
-echo "Starting Eidolon Server on eserver.mendola.tech:443..."
+echo "Starting Eidolon Server on eserver.mendola.tech:8080..."
 # Need sudo to read /etc/letsencrypt usually, or copy them out
-sudo go run . --addr=":443" --cert="$CERT_PATH" --key="$KEY_PATH" --log-file="logs/server.log" --log-stdout=false --log-http-errors=false --suspicious-stdout=true
+sudo go run . --addr=":8080" --cert="$CERT_PATH" --key="$KEY_PATH" --log-file="logs/server.log" --log-stdout=false --log-http-errors=false --suspicious-stdout=true
