@@ -473,6 +473,23 @@ export class UIManager {
         });
     }
 
+    resolveAssetUrl(path) {
+        if (!path) return null;
+
+        // Already absolute or special schemes
+        if (/^(https?:|data:|blob:)/i.test(path)) return path;
+
+        // Root-relative
+        if (path.startsWith('/')) {
+            return new URL(path, window.location.origin).toString();
+        }
+
+        // Most of our asset paths are workspace-root relative like `assets/...`.
+        // Resolve them relative to this module location so they keep working
+        // even if the document is served from a sub-path.
+        return new URL(`../../${path}`, import.meta.url).toString();
+    }
+
     createDeathScreen() {
         const div = document.createElement('div');
         div.id = 'death-screen';
@@ -605,22 +622,22 @@ export class UIManager {
             .replace(/['’]/g, '')
             .replace(/ /g, '_');
         const formattedClass = classType.toLowerCase();
-        return `assets/icons/${formattedClass}/${formattedName}.png`;
+        return this.resolveAssetUrl(`assets/icons/${formattedClass}/${formattedName}.png`);
     }
 
     getItemIconPath(item) {
         if (!item) return null;
         
         if (item.icon) {
-            return item.icon;
+            return this.resolveAssetUrl(item.icon);
         }
 
         // Specific overrides for known items that might be missing icons
         if (item.name === 'Shard' || item.name === 'Eidolon Shard') {
-            return 'assets/items/eidolon_shard/eidolon_shard.png';
+            return this.resolveAssetUrl('assets/items/eidolon_shard/eidolon_shard.png');
         }
         if (item.name === 'Heart' || item.name === 'Eidolon Heart') {
-            return 'assets/items/eidolon_heart/eidolon_heart.png';
+            return this.resolveAssetUrl('assets/items/eidolon_heart/eidolon_heart.png');
         }
         
         let nameToUse = item.baseName;
@@ -645,7 +662,7 @@ export class UIManager {
         const formattedName = nameToUse.toLowerCase()
             .replace(/['’]/g, '')
             .replace(/ /g, '_');
-        return `assets/icons/equipment/${formattedName}.png`;
+        return this.resolveAssetUrl(`assets/icons/equipment/${formattedName}.png`);
     }
 
     getRarityColor(rarity) {

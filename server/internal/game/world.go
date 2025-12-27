@@ -2004,8 +2004,7 @@ func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
 	player.Gold += value * stackSize
 
 	// Add to buyback (Legendary only)
-	// Debug log
-	fmt.Printf("Selling item: %s, Rarity: %s\n", itemToSell.Name, itemToSell.Rarity)
+	log.Printf("Selling item: %s, Rarity: %s", itemToSell.Name, itemToSell.Rarity)
 
 	if strings.EqualFold(string(itemToSell.Rarity), string(RarityLegendary)) {
 		player.Buyback = append(player.Buyback, *itemToSell)
@@ -2160,7 +2159,7 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 	// Check if already generated today
 	loc, err := time.LoadLocation("America/New_York")
 	if err != nil {
-		fmt.Printf("Error loading timezone America/New_York: %v. Defaulting to UTC.\n", err)
+		log.Printf("Error loading timezone America/New_York: %v. Defaulting to UTC.", err)
 		loc = time.UTC
 	}
 
@@ -2239,12 +2238,12 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 		})
 
 		if updated {
-			fmt.Printf("Updated daily quest rewards/list for %s\n", player.Name)
+			log.Printf("Updated daily quest rewards/list for %s", player.Name)
 		}
 		return player // Already has quests for today
 	}
 
-	fmt.Printf("Generating daily quests for %s (Last: %v, Now: %v)\n", player.Name, player.LastDailyQuest, now)
+	log.Printf("Generating daily quests for %s (Last: %v, Now: %v)", player.Name, player.LastDailyQuest, now)
 
 	// Generate 9 Daily Quests
 	player.Quests = []Quest{

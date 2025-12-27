@@ -5,12 +5,15 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"math"
 	"math/rand"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"sort"
 	"strings"
 	"sync"
@@ -43,6 +46,12 @@ var addr = flag.String("addr", ":8080", "http service address")
 var mongoURI = flag.String("mongo-uri", "mongodb://localhost:27017", "MongoDB connection URI")
 var certFile = flag.String("cert", "", "Path to SSL certificate file")
 var keyFile = flag.String("key", "", "Path to SSL key file")
+
+var logFilePath = flag.String("log-file", "server.log", "Path to server log file (empty disables file logging)")
+var logStdout = flag.Bool("log-stdout", true, "Also write logs to stdout")
+var logHTTPErrors = flag.Bool("log-http-errors", false, "Log noisy HTTP/TLS handshake errors (can be very noisy on public servers)")
+var suspiciousStdout = flag.Bool("suspicious-stdout", true, "Print suspicious/non-client connections to stdout")
+var suspiciousCooldown = flag.Duration("suspicious-cooldown", 30*time.Second, "Minimum time between suspicious logs per IP")
 
 var stateProtoMagic = []byte{'E', 'D', 'P', 'B'}
 
@@ -351,11 +360,128 @@ var broadcast = make(chan BroadcastMessage)
 var register = make(chan *Client)
 var unregister = make(chan *Client)
 
-func main() {
-	flag.Parse()
+var httpErrLogger *log.Logger
+var suspiciousLogger *log.Logger
+var suspiciousLogThrottle = newIPThrottle()
+
+type ipThrottle struct {
+	mu   sync.Mutex
+	last map[string]time.Time
+}
+
+func newIPThrottle() *ipThrottle {
+	return &ipThrottle{last: make(map[string]time.Time)}
+}
+
+func (t *ipThrottle) allow(ip string, cooldown time.Duration) bool {
+	if cooldown <= 0 {
+		return true
+	}
+	now := time.Now()
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	if last, ok := t.last[ip]; ok && now.Sub(last) < cooldown {
+		return false
+	}
+	t.last[ip] = now
+	return true
+}
+
+func requestIP(r *http.Request) string {
+	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
+		parts := strings.Split(xff, ",")
+		if len(parts) > 0 {
+			return strings.TrimSpace(parts[0])
+		}
+	}
+	if xr := r.Header.Get("X-Real-IP"); xr != "" {
+		return strings.TrimSpace(xr)
+	}
+	host, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err == nil {
+		return host
+	}
+	return r.RemoteAddr
+}
+
+func logSuspicious(r *http.Request, reason string, err error) {
+	ip := requestIP(r)
+	ua := r.UserAgent()
+	if suspiciousLogger != nil && *suspiciousStdout && suspiciousLogThrottle.allow(ip, *suspiciousCooldown) {
+		if err != nil {
+			suspiciousLogger.Printf("%s %s %s reason=%q ua=%q err=%v", ip, r.Method, r.URL.Path, reason, ua, err)
+		} else {
+			suspiciousLogger.Printf("%s %s %s reason=%q ua=%q", ip, r.Method, r.URL.Path, reason, ua)
+		}
+	}
+	// Always log suspicious traffic to the main logger (file/stdout depending on config)
+	if err != nil {
+		log.Printf("SUSPICIOUS %s %s %s reason=%q ua=%q err=%v", ip, r.Method, r.URL.Path, reason, ua, err)
+	} else {
+		log.Printf("SUSPICIOUS %s %s %s reason=%q ua=%q", ip, r.Method, r.URL.Path, reason, ua)
+	}
+}
+
+func setupLogging() (*os.File, error) {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	var err error
+	// Suspicious logger always targets stdout (and is separately throttle-controlled)
+	suspiciousLogger = log.New(os.Stdout, "SUSPICIOUS ", log.LstdFlags)
+
+	var file *os.File
+	var fileWriter io.Writer = io.Discard
+	if *logFilePath != "" {
+		// Ensure directory exists
+		dir := filepath.Dir(*logFilePath)
+		if dir != "." {
+			if err := os.MkdirAll(dir, 0o755); err != nil {
+				return nil, err
+			}
+		}
+		f, err := os.OpenFile(*logFilePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o644)
+		if err != nil {
+			return nil, err
+		}
+		file = f
+		fileWriter = f
+	}
+
+	var writers []io.Writer
+	if *logStdout {
+		writers = append(writers, os.Stdout)
+	}
+	if fileWriter != io.Discard {
+		writers = append(writers, fileWriter)
+	}
+	if len(writers) == 0 {
+		log.SetOutput(io.Discard)
+	} else if len(writers) == 1 {
+		log.SetOutput(writers[0])
+	} else {
+		log.SetOutput(io.MultiWriter(writers...))
+	}
+
+	if *logHTTPErrors {
+		httpErrLogger = log.New(fileWriter, "http: ", log.LstdFlags)
+	} else {
+		httpErrLogger = log.New(io.Discard, "http: ", log.LstdFlags)
+	}
+
+	return file, nil
+}
+
+func main() {
+	flag.Parse()
+	logFile, err := setupLogging()
+	if err != nil {
+		// Logging isn't ready; fall back to stderr.
+		fmt.Fprintf(os.Stderr, "failed to set up logging: %v\n", err)
+		os.Exit(1)
+	}
+	if logFile != nil {
+		defer logFile.Close()
+	}
+
 	db, err = database.New(*mongoURI)
 	if err != nil {
 		log.Fatal(err)
@@ -553,15 +679,28 @@ func main() {
 		os.Exit(0)
 	}()
 
-	http.HandleFunc("/ws", serveWs)
-	log.Printf("Server started on %s", *addr)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/ws", serveWs)
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// Anything that isn't the game's websocket endpoint is almost always noise on a public IP.
+		logSuspicious(r, "non-ws request", nil)
+		http.NotFound(w, r)
+	})
 
+	srv := &http.Server{
+		Addr:              *addr,
+		Handler:           mux,
+		ErrorLog:          httpErrLogger,
+		ReadHeaderTimeout: 5 * time.Second,
+	}
+
+	log.Printf("Server started on %s", *addr)
 	if *certFile != "" && *keyFile != "" {
 		log.Printf("Serving with SSL/TLS")
-		log.Fatal(http.ListenAndServeTLS(*addr, *certFile, *keyFile, nil))
+		log.Fatal(srv.ListenAndServeTLS(*certFile, *keyFile))
 	} else {
 		log.Printf("Serving without SSL (HTTP)")
-		log.Fatal(http.ListenAndServe(*addr, nil))
+		log.Fatal(srv.ListenAndServe())
 	}
 }
 
@@ -638,9 +777,15 @@ func cleanupClient(client *Client) {
 }
 
 func serveWs(w http.ResponseWriter, r *http.Request) {
+	if !websocket.IsWebSocketUpgrade(r) {
+		logSuspicious(r, "non-websocket request to /ws", nil)
+		http.Error(w, "websocket upgrade required", http.StatusBadRequest)
+		return
+	}
+
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Print("upgrade:", err)
+		logSuspicious(r, "websocket upgrade failed", err)
 		return
 	}
 

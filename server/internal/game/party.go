@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"log"
 	"sync"
 )
 
@@ -19,11 +20,11 @@ func (w *World) CreateParty(leaderID string) *Party {
 
 	leader, exists := w.Entities[leaderID]
 	if !exists {
-		fmt.Printf("CreateParty Failed: Leader %s not found\n", leaderID)
+		log.Printf("CreateParty Failed: Leader %s not found", leaderID)
 		return nil
 	}
 	if leader.PartyID != "" {
-		fmt.Printf("CreateParty Failed: Leader %s already in party %s\n", leaderID, leader.PartyID)
+		log.Printf("CreateParty Failed: Leader %s already in party %s", leaderID, leader.PartyID)
 		return nil
 	}
 
