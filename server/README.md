@@ -24,17 +24,17 @@ To run the server locally with SSL (Secure WebSockets `wss://`), you need to gen
 
 3.  **Trust the Certificate**:
     Since it is self-signed, your browser will reject the connection initially.
-    *   Open `https://localhost:8080/ws` in your browser.
+    *   Open `https://localhost:443/ws` in your browser (or run with `--addr=":8080"` for non-privileged local dev).
     *   You will see a "Not Secure" warning.
     *   Click "Advanced" -> "Proceed to localhost (unsafe)".
-    *   Now your game client can connect via `wss://localhost:8080/ws`.
+    *   Now your game client can connect via `wss://localhost/ws` (or `wss://localhost:443/ws`).
 
 ## Running Locally without SSL
 
 ```bash
 go run main.go
 ```
-The server will start on port 8080 (HTTP). Use `ws://localhost:8080/ws` in the client.
+The server port is configurable via `--addr`. For local dev you can use `--addr=":8080"` (HTTP) and connect with `ws://localhost:8080/ws`. For production TLS you typically use `--addr=":443"`.
 
 ## Deployment Options
 
