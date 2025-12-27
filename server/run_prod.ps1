@@ -16,6 +16,5 @@ if (!(Test-Path $CertPath) -or !(Test-Path $KeyPath)) {
     exit 1
 }
 
-Write-Host "Starting Eidolon Server on eserver.mendola.tech:443..." -ForegroundColor Green
-Write-Host "Note: Binding to 443 may require an elevated PowerShell (Run as Administrator)." -ForegroundColor Yellow
-go run . --addr=":443" --cert=$CertPath --key=$KeyPath --log-file="logs/server.log" --log-stdout=false --log-http-errors=false --suspicious-stdout=true
+Write-Host "Starting Eidolon Server on eserver.mendola.tech:8080..." -ForegroundColor Green
+go run . --addr=":8080" --cert=$CertPath --key=$KeyPath --log-file="logs/server.log" --log-stdout=false --log-http-errors=false --suspicious-stdout=true

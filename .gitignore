@@ -3,3 +3,8 @@ node_modules/
 *.exe
 server/bug_reports.json
 tools/
+
+# Server logs
+server.log
+logs/
+server/logs/

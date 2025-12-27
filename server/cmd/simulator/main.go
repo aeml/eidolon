@@ -65,7 +65,7 @@ type Entity struct {
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
-	serverAddr := flag.String("addr", "eserver.mendola.tech:443", "Server address")
+	serverAddr := flag.String("addr", "eserver.mendola.tech:8080", "Server address")
 	insecure := flag.Bool("insecure", false, "Skip SSL verification")
 	flag.Parse()
 
