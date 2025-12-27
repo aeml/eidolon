@@ -99,7 +99,7 @@
    go run main.go
    ```
    The server typically uses port `8080` (WebSocket endpoint: `ws://localhost:8080/ws`).
-   Production (via `server/run_prod.ps1`) also binds on port `8080` by default (WebSocket endpoint: `wss://eserver.mendola.tech:8080/ws`).
+   Production is typically run behind a reverse proxy on `443` (WebSocket endpoint: `wss://eserver.mendola.tech/ws`).
 
 4. **Serve the Client:**
    ```bash
@@ -112,10 +112,9 @@
 
 ### Production Deployment
 
-For SSL/TLS (required for `wss://`):
-```bash
-go run main.go --cert=cert.pem --key=key.pem --mongo-uri="mongodb+srv://..."
-```
+For SSL/TLS (required for `wss://`), the recommended setup is:
+- Run the Go server over HTTP on `127.0.0.1:8080`
+- Use Caddy to terminate TLS on `:443` and reverse proxy to `:8080`
 
 See [server/README.md](server/README.md) for detailed deployment options including Let's Encrypt setup.
 

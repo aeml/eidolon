@@ -8,3 +8,4 @@ tools/
 server.log
 logs/
 server/logs/
+Caddyfile

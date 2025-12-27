@@ -59,6 +59,33 @@ go build -o eidolon-server-arm64 main.go
 
 Since you are using `eserver.mendola.tech`, you can set up a valid SSL certificate using Let's Encrypt so players don't get security warnings.
 
+#### Recommended: Caddy reverse proxy on 443
+
+This repo includes a ready-to-use reverse proxy config via Caddy so clients can connect on the standard HTTPS/WebSocket port (`443`) while the Go server continues to run on `127.0.0.1:8080`.
+
+1. Port Forwarding
+    Forward ports **80** (HTTP) and **443** (HTTPS) to this machine.
+    - Port 80 is strongly recommended for Caddy's first-time certificate issuance/renewal.
+    - Port 443 is what players will connect to (via `wss://eserver.mendola.tech/ws`).
+
+2. Run the Go server (HTTP on localhost)
+    From the repo root:
+    ```powershell
+    .\server\run_prod_caddy.ps1
+    ```
+
+3. Run Caddy (HTTPS on 443 -> localhost:8080)
+    From the repo root:
+    ```powershell
+    .\server\run_caddy.ps1
+    ```
+
+With this setup:
+- Public endpoint: `wss://eserver.mendola.tech/ws` (port 443)
+- Private backend: `http://127.0.0.1:8080/ws`
+
+If you previously used `server/run_prod.ps1` with Certbot and TLS on `:8080`, you don't need that when Caddy is terminating TLS on `:443`.
+
 #### 1. Port Forwarding
 Ensure ports **80** (HTTP) and **8080** (Game Server) are forwarded on your router to your computer's local IP address.
 - Port 80 is required for Let's Encrypt validation.
