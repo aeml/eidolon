@@ -2050,6 +2050,60 @@ export class GameEngine {
     }
 
     pickupLoot(lootId) {
+        const entity = this.remotePlayers.get(lootId);
+
+        // Decide whether we can safely do optimistic pickup.
+        // Only do it when the *entire* stack can fit in the current inventory state.
+        const canOptimisticPickup = (() => {
+            if (!entity || !entity.item || !this.player || !this.player.inventory) return false;
+
+            const item = this.hydrateItem({ ...entity.item });
+            const inventory = this.player.inventory;
+
+            const maxStack = item.maxStack || 1;
+            let remaining = item.stack || 1;
+
+            if (maxStack > 1) {
+                // First, see how much can be absorbed into existing partial stacks.
+                for (let i = 0; i < inventory.length && remaining > 0; i++) {
+                    const invItem = inventory[i];
+                    if (invItem && invItem.name === item.name && (invItem.maxStack || 1) > 1) {
+                        const invMax = invItem.maxStack || maxStack;
+                        if ((invItem.stack || 1) < invMax) {
+                            const space = invMax - (invItem.stack || 1);
+                            remaining -= Math.min(space, remaining);
+                        }
+                    }
+                }
+
+                if (remaining <= 0) return true;
+
+                // Then we need empty slots for whatever is left.
+                let emptySlots = 0;
+                for (let i = 0; i < inventory.length; i++) {
+                    if (!inventory[i]) emptySlots++;
+                }
+
+                // One empty slot can take up to maxStack items of this type.
+                return emptySlots * maxStack >= remaining;
+            }
+
+            // Non-stackable: must have at least one empty slot.
+            for (let i = 0; i < inventory.length; i++) {
+                if (!inventory[i]) return true;
+            }
+            return false;
+        })();
+
+        if (!canOptimisticPickup) {
+            // No point sending a request the server must reject.
+            if (this.floatingTextManager && this.player && this.player.position) {
+                this.floatingTextManager.spawn("INVENTORY FULL", this.player.position, '#ff4444');
+            }
+            return;
+        }
+
+        // Send pickup request (we expect success since it fits).
         const msg = {
             type: 'pickup',
             payload: { lootId: lootId }
@@ -2070,14 +2124,13 @@ export class GameEngine {
         }
 
         // Optimistic removal to prevent "ghost items"
-        const entity = this.remotePlayers.get(lootId);
         if (entity) {
             console.log(`Optimistically removing loot ${lootId}`);
-            
+
             // Optimistic inventory update - add item to bag instantly
             if (entity.item && this.player && this.player.inventory) {
                 const item = this.hydrateItem({ ...entity.item });
-                
+
                 // Handle stackable items
                 if (item.maxStack && item.maxStack > 1) {
                     // Try to stack with existing items first
@@ -2091,15 +2144,15 @@ export class GameEngine {
                             remainingStack -= toAdd;
                         }
                     }
-                    
-                    // If remaining, find empty slot
+
+                    // If remaining, find empty slot(s)
                     if (remainingStack > 0) {
-                        for (let i = 0; i < this.player.inventory.length; i++) {
+                        for (let i = 0; i < this.player.inventory.length && remainingStack > 0; i++) {
                             if (!this.player.inventory[i]) {
-                                item.stack = remainingStack;
-                                this.player.inventory[i] = item;
-                                remainingStack = 0;
-                                break;
+                                const stackHere = Math.min(item.maxStack, remainingStack);
+                                const newItem = { ...item, stack: stackHere };
+                                this.player.inventory[i] = newItem;
+                                remainingStack -= stackHere;
                             }
                         }
                     }
@@ -2112,25 +2165,24 @@ export class GameEngine {
                         }
                     }
                 }
-                
+
                 // Immediately update UI
                 this.uiManager.updateInventory(this.player);
-                console.log(`Optimistically added item to inventory: ${item.name}`);
             }
-            
+
             entity.isActive = false;
             if (entity.dispose) {
                 entity.dispose();
             } else if (entity.mesh) {
                 this.renderSystem.remove(entity.mesh);
             }
-            
+
             const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
             if (this.chunkManager.chunks.has(key)) {
                 this.chunkManager.chunks.get(key).delete(entity);
             }
             this.remotePlayers.delete(lootId);
-            
+
             if (this.pendingInteraction === entity) {
                 this.pendingInteraction = null;
             }

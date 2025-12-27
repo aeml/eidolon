@@ -2879,7 +2879,9 @@ export class UIManager {
             } else {
                 slotEl.textContent = placeholder;
                 slotEl.style.color = '#666';
+                slotEl.style.border = '1px solid #444';
                 slotEl.style.borderColor = '#444';
+                slotEl.style.boxShadow = 'none';
                 slotEl.title = 'Empty Slot';
                 slotEl.onclick = null;
                 this.setupItemDragAndDrop(slotEl, 'equipment', slotId, null);
@@ -3032,6 +3034,8 @@ export class UIManager {
                 slots[i].textContent = '';
                 slots[i].title = 'Empty';
                 slots[i].style.border = '1px solid #444';
+                slots[i].style.boxShadow = 'none';
+                slots[i].style.color = '#ffffff';
                 slots[i].style.backgroundColor = 'rgba(0,0,0,0.3)';
                 slots[i].onclick = null;
                 slots[i].oncontextmenu = null;
@@ -3101,6 +3105,8 @@ export class UIManager {
             } else {
                 slots[i].textContent = '';
                 slots[i].style.border = '1px solid #444';
+                slots[i].style.boxShadow = 'none';
+                slots[i].style.color = '#ffffff';
                 slots[i].style.backgroundColor = 'rgba(0,0,0,0.3)';
                 slots[i].oncontextmenu = null;
                 slots[i].onmousemove = null;

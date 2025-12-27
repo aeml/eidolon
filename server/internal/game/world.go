@@ -1455,17 +1455,17 @@ func (w *World) GetPlayerInstance(id string) string {
 	return ""
 }
 
-func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool) {
+func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool, string) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
-		return nil, false
+		return nil, false, "player_not_found"
 	}
 	loot, ok := w.Entities[lootID]
 	if !ok || loot.Type != TypeLoot {
-		return nil, false
+		return nil, false, "loot_not_found"
 	}
 
 	dx := player.X - loot.X
@@ -1479,14 +1479,18 @@ func (w *World) PerformPickup(playerID, lootID string) (*Entity, bool) {
 			if remaining == 0 {
 				w.Grid.Remove(loot)
 				delete(w.Entities, lootID)
-				return player, true
+				return player, true, ""
 			} else if remaining < originalStack {
 				loot.LootItem.Stack = remaining
-				return player, true
+				return player, true, ""
+			} else {
+				// Inventory was full (or otherwise unable to accept any of this stack).
+				// Do not delete the loot; leave it in the world.
+				return player, false, "inventory_full"
 			}
 		}
 	}
-	return nil, false
+	return nil, false, "out_of_range"
 }
 
 func (w *World) PerformSplitStack(playerID string, slot int, amount int) (*Entity, bool) {
