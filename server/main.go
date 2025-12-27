@@ -52,6 +52,7 @@ var logStdout = flag.Bool("log-stdout", true, "Also write logs to stdout")
 var logHTTPErrors = flag.Bool("log-http-errors", false, "Log noisy HTTP/TLS handshake errors (can be very noisy on public servers)")
 var suspiciousStdout = flag.Bool("suspicious-stdout", true, "Print suspicious/non-client connections to stdout")
 var suspiciousCooldown = flag.Duration("suspicious-cooldown", 30*time.Second, "Minimum time between suspicious logs per IP")
+var suspiciousLogFilePath = flag.String("suspicious-log-file", "logs/junk.log", "Path to log suspicious/non-client connections (empty disables file logging)")
 
 var stateProtoMagic = []byte{'E', 'D', 'P', 'B'}
 
@@ -361,7 +362,8 @@ var register = make(chan *Client)
 var unregister = make(chan *Client)
 
 var httpErrLogger *log.Logger
-var suspiciousLogger *log.Logger
+var suspiciousStdoutLogger *log.Logger
+var suspiciousFileLogger *log.Logger
 var suspiciousLogThrottle = newIPThrottle()
 
 type ipThrottle struct {
@@ -407,26 +409,45 @@ func requestIP(r *http.Request) string {
 func logSuspicious(r *http.Request, reason string, err error) {
 	ip := requestIP(r)
 	ua := r.UserAgent()
-	if suspiciousLogger != nil && *suspiciousStdout && suspiciousLogThrottle.allow(ip, *suspiciousCooldown) {
+	// Always write suspicious traffic to the dedicated junk log (if configured).
+	if suspiciousFileLogger != nil {
 		if err != nil {
-			suspiciousLogger.Printf("%s %s %s reason=%q ua=%q err=%v", ip, r.Method, r.URL.Path, reason, ua, err)
+			suspiciousFileLogger.Printf("%s %s %s reason=%q ua=%q err=%v", ip, r.Method, r.URL.Path, reason, ua, err)
 		} else {
-			suspiciousLogger.Printf("%s %s %s reason=%q ua=%q", ip, r.Method, r.URL.Path, reason, ua)
+			suspiciousFileLogger.Printf("%s %s %s reason=%q ua=%q", ip, r.Method, r.URL.Path, reason, ua)
 		}
 	}
-	// Always log suspicious traffic to the main logger (file/stdout depending on config)
-	if err != nil {
-		log.Printf("SUSPICIOUS %s %s %s reason=%q ua=%q err=%v", ip, r.Method, r.URL.Path, reason, ua, err)
-	} else {
-		log.Printf("SUSPICIOUS %s %s %s reason=%q ua=%q", ip, r.Method, r.URL.Path, reason, ua)
+
+	// Optionally print suspicious traffic to stdout, throttle-controlled.
+	if suspiciousStdoutLogger != nil && *suspiciousStdout && suspiciousLogThrottle.allow(ip, *suspiciousCooldown) {
+		if err != nil {
+			suspiciousStdoutLogger.Printf("%s %s %s reason=%q ua=%q err=%v", ip, r.Method, r.URL.Path, reason, ua, err)
+		} else {
+			suspiciousStdoutLogger.Printf("%s %s %s reason=%q ua=%q", ip, r.Method, r.URL.Path, reason, ua)
+		}
 	}
 }
 
-func setupLogging() (*os.File, error) {
+func setupLogging() ([]io.Closer, error) {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	// Suspicious logger always targets stdout (and is separately throttle-controlled)
-	suspiciousLogger = log.New(os.Stdout, "SUSPICIOUS ", log.LstdFlags)
+	// Suspicious loggers: file is always-on (if configured); stdout is optional + throttle-controlled.
+	suspiciousStdoutLogger = log.New(os.Stdout, "SUSPICIOUS ", log.LstdFlags)
+	var closers []io.Closer
+	if *suspiciousLogFilePath != "" {
+		dir := filepath.Dir(*suspiciousLogFilePath)
+		if dir != "." {
+			if err := os.MkdirAll(dir, 0o755); err != nil {
+				return nil, err
+			}
+		}
+		f, err := os.OpenFile(*suspiciousLogFilePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o644)
+		if err != nil {
+			return nil, err
+		}
+		closers = append(closers, f)
+		suspiciousFileLogger = log.New(f, "SUSPICIOUS ", log.LstdFlags)
+	}
 
 	var file *os.File
 	var fileWriter io.Writer = io.Discard
@@ -443,6 +464,7 @@ func setupLogging() (*os.File, error) {
 			return nil, err
 		}
 		file = f
+		closers = append(closers, f)
 		fileWriter = f
 	}
 
@@ -467,19 +489,20 @@ func setupLogging() (*os.File, error) {
 		httpErrLogger = log.New(io.Discard, "http: ", log.LstdFlags)
 	}
 
-	return file, nil
+	_ = file
+	return closers, nil
 }
 
 func main() {
 	flag.Parse()
-	logFile, err := setupLogging()
+	closers, err := setupLogging()
 	if err != nil {
 		// Logging isn't ready; fall back to stderr.
 		fmt.Fprintf(os.Stderr, "failed to set up logging: %v\n", err)
 		os.Exit(1)
 	}
-	if logFile != nil {
-		defer logFile.Close()
+	for i := len(closers) - 1; i >= 0; i-- {
+		defer closers[i].Close()
 	}
 
 	db, err = database.New(*mongoURI)
