@@ -18,4 +18,4 @@ fi
 
 echo "Starting Eidolon Server on eserver.mendola.tech:443..."
 # Need sudo to read /etc/letsencrypt usually, or copy them out
-sudo go run . --addr=":443" --cert="$CERT_PATH" --key="$KEY_PATH"
+sudo go run . --addr=":443" --cert="$CERT_PATH" --key="$KEY_PATH" --log-file="logs/server.log" --log-stdout=false --log-http-errors=false --suspicious-stdout=true
