@@ -275,6 +275,32 @@ func TestEntityRecalculateStatsWizard(t *testing.T) {
 	}
 }
 
+func TestPerformPickup_InventoryFull_DoesNotDeleteLoot(t *testing.T) {
+	w := NewWorld(nil)
+
+	player := &Entity{ID: "player-1", Type: TypePlayer, X: 0, Z: 0}
+	player.Inventory = make([]Item, MaxInventorySize)
+	for i := 0; i < len(player.Inventory); i++ {
+		player.Inventory[i] = Item{ID: "filled"}
+	}
+	w.AddEntity(player)
+
+	loot := &Entity{ID: "loot-1", Type: TypeLoot, X: 0, Z: 0}
+	loot.LootItem = &Item{ID: "item-1", Name: "Test Item", Stack: 1, MaxStack: 1}
+	w.AddEntity(loot)
+
+	_, success, reason := w.PerformPickup(player.ID, loot.ID)
+	if success {
+		t.Fatalf("expected pickup to fail due to full inventory")
+	}
+	if reason != "inventory_full" {
+		t.Fatalf("expected reason inventory_full, got %q", reason)
+	}
+	if got := w.GetEntity(loot.ID); got == nil {
+		t.Fatalf("expected loot to remain in world, but it was deleted")
+	}
+}
+
 func TestEntityRecalculateStatsCleric(t *testing.T) {
 	e := &Entity{
 		ID:      "player-1",

@@ -1643,7 +1643,7 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 
-		player, success := world.PerformPickup(c.playerID, payload.LootID)
+		player, success, reason := world.PerformPickup(c.playerID, payload.LootID)
 		if success {
 			// Send inventory update to player
 			invPayload, _ := json.Marshal(player.Inventory)
@@ -1653,6 +1653,8 @@ func (c *Client) handleMessage(msg Message) {
 			}
 			b, _ := json.Marshal(msg)
 			c.sendSafe(b)
+		} else if reason == "inventory_full" {
+			c.sendError("Inventory full")
 		}
 
 	case MsgAbility:
