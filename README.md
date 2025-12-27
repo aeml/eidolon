@@ -98,7 +98,8 @@
    cd server
    go run main.go
    ```
-   The server starts on port `8080` (WebSocket endpoint: `ws://localhost:8080/ws`).
+   Local dev typically uses port `8080` (WebSocket endpoint: `ws://localhost:8080/ws`).
+   Production (via `server/run_prod.ps1`) binds on port `443` (WebSocket endpoint: `wss://eserver.mendola.tech/ws`).
 
 4. **Serve the Client:**
    ```bash
