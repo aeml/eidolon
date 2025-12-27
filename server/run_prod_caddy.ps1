@@ -16,7 +16,7 @@ if (!(Test-Path $logDir)) {
 Write-Host "Starting Eidolon Server (HTTP) on 127.0.0.1:8080..." -ForegroundColor Green
 Push-Location (Join-Path $repoRoot "server")
 try {
-    go run . --addr="127.0.0.1:8080" --log-file="logs/server.log" --log-stdout=false --log-http-errors=false --suspicious-stdout=true
+    go run . --addr="127.0.0.1:8080" --log-file="logs/server.log" --log-stdout=true --log-http-errors=false --suspicious-log-file="logs/junk.log" --suspicious-stdout=false
 } finally {
     Pop-Location
 }
