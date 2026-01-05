@@ -2107,7 +2107,7 @@ export class GameEngine {
             if (this.floatingTextManager && this.player && this.player.position) {
                 this.floatingTextManager.spawn("INVENTORY FULL", this.player.position, '#ff4444');
             }
-            return;
+            return false;
         }
 
         // Send pickup request (we expect success since it fits).
@@ -2194,6 +2194,8 @@ export class GameEngine {
                 this.pendingInteraction = null;
             }
         }
+
+        return true;
     }
 
     sendEquipMessage(item, targetSlot) {
@@ -3213,7 +3215,14 @@ export class GameEngine {
                                     this.lastPickupTime = now;
                                     
                                     if (this.isMultiplayer && this.pendingInteraction.onClick) {
-                                        this.pendingInteraction.onClick();
+                                        const didSendPickup = this.pendingInteraction.onClick();
+                                        if (didSendPickup === false) {
+                                            // Inventory is full; stop the retry loop.
+                                            this.pendingInteraction = null;
+                                            this.player.targetPosition = null;
+                                            this.player.state = 'IDLE';
+                                            this.player.playAnimation('Idle');
+                                        }
                                         // Do NOT clear pendingInteraction immediately.
                                         // We wait for the server to remove the item (via state update).
                                         // This ensures we keep trying or stay close until it's actually gone.
