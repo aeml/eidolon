@@ -83,6 +83,11 @@ export class GameEngine {
                 };
                 this.socket.send(JSON.stringify(msg));
             }
+
+            // Optimistic client-side removal so inventory space frees immediately.
+            // Server will correct us via an incoming inventory update if needed.
+            this.player.inventory[index] = null;
+            this.uiManager.updateInventory(this.player);
         };
         this.uiManager.onBuyback = (itemId) => {
             if (this.socket && this.socket.readyState === WebSocket.OPEN) {
@@ -2052,6 +2057,8 @@ export class GameEngine {
     pickupLoot(lootId) {
         const entity = this.remotePlayers.get(lootId);
 
+        const isEmptyInventorySlot = (slot) => !slot || !slot.id;
+
         // Decide whether we can safely do optimistic pickup.
         // Only do it when the *entire* stack can fit in the current inventory state.
         const canOptimisticPickup = (() => {
@@ -2067,7 +2074,7 @@ export class GameEngine {
                 // First, see how much can be absorbed into existing partial stacks.
                 for (let i = 0; i < inventory.length && remaining > 0; i++) {
                     const invItem = inventory[i];
-                    if (invItem && invItem.name === item.name && (invItem.maxStack || 1) > 1) {
+                    if (invItem && invItem.id && invItem.name === item.name && (invItem.maxStack || 1) > 1) {
                         const invMax = invItem.maxStack || maxStack;
                         if ((invItem.stack || 1) < invMax) {
                             const space = invMax - (invItem.stack || 1);
@@ -2081,7 +2088,7 @@ export class GameEngine {
                 // Then we need empty slots for whatever is left.
                 let emptySlots = 0;
                 for (let i = 0; i < inventory.length; i++) {
-                    if (!inventory[i]) emptySlots++;
+                    if (isEmptyInventorySlot(inventory[i])) emptySlots++;
                 }
 
                 // One empty slot can take up to maxStack items of this type.
@@ -2090,7 +2097,7 @@ export class GameEngine {
 
             // Non-stackable: must have at least one empty slot.
             for (let i = 0; i < inventory.length; i++) {
-                if (!inventory[i]) return true;
+                if (isEmptyInventorySlot(inventory[i])) return true;
             }
             return false;
         })();
@@ -2137,7 +2144,7 @@ export class GameEngine {
                     let remainingStack = item.stack || 1;
                     for (let i = 0; i < this.player.inventory.length && remainingStack > 0; i++) {
                         const invItem = this.player.inventory[i];
-                        if (invItem && invItem.name === item.name && invItem.stack < invItem.maxStack) {
+                        if (invItem && invItem.id && invItem.name === item.name && invItem.stack < invItem.maxStack) {
                             const spaceAvailable = invItem.maxStack - invItem.stack;
                             const toAdd = Math.min(spaceAvailable, remainingStack);
                             invItem.stack += toAdd;
@@ -2148,7 +2155,7 @@ export class GameEngine {
                     // If remaining, find empty slot(s)
                     if (remainingStack > 0) {
                         for (let i = 0; i < this.player.inventory.length && remainingStack > 0; i++) {
-                            if (!this.player.inventory[i]) {
+                            if (isEmptyInventorySlot(this.player.inventory[i])) {
                                 const stackHere = Math.min(item.maxStack, remainingStack);
                                 const newItem = { ...item, stack: stackHere };
                                 this.player.inventory[i] = newItem;
@@ -2159,7 +2166,7 @@ export class GameEngine {
                 } else {
                     // Non-stackable: find empty slot
                     for (let i = 0; i < this.player.inventory.length; i++) {
-                        if (!this.player.inventory[i]) {
+                        if (isEmptyInventorySlot(this.player.inventory[i])) {
                             this.player.inventory[i] = item;
                             break;
                         }

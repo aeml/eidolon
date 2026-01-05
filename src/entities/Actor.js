@@ -1236,8 +1236,8 @@ export class Actor extends Entity {
     }
 
     addToInventory(item) {
-        // Find first empty slot
-        const index = this.inventory.findIndex(slot => slot === null);
+        // Find first empty slot. Treat null/undefined and placeholder objects without id as empty.
+        const index = this.inventory.findIndex(slot => !slot || !slot.id);
         if (index !== -1) {
             this.inventory[index] = item;
             return true;
