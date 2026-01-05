@@ -321,6 +321,7 @@ export class GameEngine {
         this.nextEliteSpawnTime = 180;
         this.lastPickupTime = 0; // Throttle for pickup attempts
         this.lastInventoryFullTime = 0; // Throttle for inventory-full messaging
+        this.lastServerInventoryFullTime = 0; // Throttle for server-side inventory-full errors
 
         this.raycastTimer = 0;
         this.mousePosition = new THREE.Vector2();
@@ -1229,6 +1230,32 @@ export class GameEngine {
             this.uiManager.handleTradingSearch();
         } else if (msg.type === 'error') {
             console.error("Server Error:", msg.payload);
+
+            // Special-case: Inventory full is a common, non-fatal error.
+            // If we're in the middle of an auto-retry pickup interaction, stop retrying.
+            if (typeof msg.payload === 'string' && msg.payload.toLowerCase().includes('inventory full')) {
+                const now = Date.now();
+
+                // Stop the pickup retry loop (auto-walk interact) immediately.
+                if (this.pendingInteraction instanceof LootDrop) {
+                    this.pendingInteraction = null;
+                    if (this.player) {
+                        this.player.targetPosition = null;
+                        this.player.state = 'IDLE';
+                        if (this.player.playAnimation) this.player.playAnimation('Idle');
+                    }
+                }
+
+                // Show a single, throttled message instead of spamming alert().
+                if (this.floatingTextManager && this.player && this.player.position) {
+                    if (now - (this.lastServerInventoryFullTime || 0) > 1000) {
+                        this.lastServerInventoryFullTime = now;
+                        this.floatingTextManager.spawn("INVENTORY FULL", this.player.position, '#ff4444');
+                    }
+                }
+                return;
+            }
+
             if (typeof alert !== 'undefined') {
                 alert(`Server Error: ${msg.payload}`);
             }
