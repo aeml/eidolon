@@ -320,6 +320,7 @@ export class GameEngine {
         this.gameTime = 0;
         this.nextEliteSpawnTime = 180;
         this.lastPickupTime = 0; // Throttle for pickup attempts
+        this.lastInventoryFullTime = 0; // Throttle for inventory-full messaging
 
         this.raycastTimer = 0;
         this.mousePosition = new THREE.Vector2();
@@ -2105,7 +2106,11 @@ export class GameEngine {
         if (!canOptimisticPickup) {
             // No point sending a request the server must reject.
             if (this.floatingTextManager && this.player && this.player.position) {
-                this.floatingTextManager.spawn("INVENTORY FULL", this.player.position, '#ff4444');
+                const now = Date.now();
+                if (now - (this.lastInventoryFullTime || 0) > 1000) {
+                    this.lastInventoryFullTime = now;
+                    this.floatingTextManager.spawn("INVENTORY FULL", this.player.position, '#ff4444');
+                }
             }
             return false;
         }
@@ -2938,7 +2943,7 @@ export class GameEngine {
                     remoteEntity.id = pData.id;
                     // Add click handler for pickup
                     remoteEntity.onClick = () => {
-                        this.pickupLoot(pData.id);
+                        return this.pickupLoot(pData.id);
                     };
                 } else if (pData.type === 'Projectile') {
                     // Skip creating server projectile if it belongs to local player (avoid duplicates)
