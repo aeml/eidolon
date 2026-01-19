@@ -2,6 +2,10 @@ import { GameEngine } from './core/GameEngine.js';
 
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800);
+const urlParams = new URLSearchParams(window.location.search);
+const debugMode = urlParams.get('debug') === '1' || isLocalhost;
+const perfOverlayEnabled = urlParams.get('perf') === '1' || debugMode;
+
 
 const debugConsole = document.getElementById('debug-console');
 function logToScreen(msg, type = 'INFO') {
@@ -45,16 +49,19 @@ window.addEventListener('unhandledrejection', function(event) {
     logToScreen(`Unhandled Rejection: ${event.reason}`, 'CRITICAL');
 });
 
-if (!isLocalhost && !isMobile) {
+if (!debugMode && !isMobile) {
     console.log = function() {};
 } else {
     console.log("Debug Mode Enabled (Localhost or Mobile detected)");
 }
 
+
 window.addEventListener('DOMContentLoaded', () => {
     const debugConsole = document.getElementById('debug-console');
+    const perfOverlay = document.getElementById('perf-overlay');
     
     const startScreen = document.getElementById('start-screen');
+
     const loadingScreen = document.getElementById('loading-screen');
     const loadingBarFill = document.getElementById('loading-bar-fill');
     const loadingText = document.getElementById('loading-text');
@@ -240,6 +247,14 @@ window.addEventListener('DOMContentLoaded', () => {
             });
             console.log("loadGame finished.");
 
+            if (perfOverlayEnabled && window.game.renderSystem && perfOverlay) {
+                try {
+                    window.game.renderSystem.enablePerfOverlay(perfOverlay);
+                } catch (error) {
+                    console.warn("Perf overlay failed to initialize", error);
+                }
+            }
+
             loadingScreen.style.display = 'none';
             
             // window.game.uiManager.togglePatchNotes(); // Disabled auto-show
@@ -250,6 +265,7 @@ window.addEventListener('DOMContentLoaded', () => {
             alert("Error starting game. Check console for details.");
         }
     };
+
 
     buttons.forEach(btn => {
         btn.addEventListener('click', (e) => {

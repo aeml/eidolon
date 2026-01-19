@@ -103,7 +103,26 @@
             white-space: pre-wrap;
         }
 
+        #perf-overlay {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 6px 8px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #e6f1ff;
+            font-family: "Consolas", "Courier New", monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            z-index: 20000;
+            pointer-events: none;
+            white-space: pre;
+            display: none;
+        }
+
         /* Player HUD */
+
         #player-hud {
             position: absolute;
             bottom: 20px;
@@ -1101,8 +1120,9 @@
     <script type="importmap">
         {
             "imports": {
-                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+                "three": "https://unpkg.com/three@0.181.2/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.181.2/examples/jsm/"
+
             }
         }
     </script>
@@ -1125,7 +1145,9 @@
         })();
     </script>
     <div id="debug-console"></div>
+    <div id="perf-overlay"></div>
     <div id="ui-layer">
+
         <div id="game-timer">00:00</div>
         <!-- Mobile UI Overlay -->
         <div id="mobile-ui">

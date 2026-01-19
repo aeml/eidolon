@@ -2799,6 +2799,10 @@ export class GameEngine {
             this.animationFrameId = null;
         }
         
+        if (this.inputManager) {
+            this.inputManager.dispose();
+        }
+
         if (this.renderSystem) {
             this.renderSystem.dispose();
         }
@@ -2807,6 +2811,7 @@ export class GameEngine {
         // But here we usually pass it in. If we want to reuse it, we shouldn't close it.
         // The main.js logic reuses the socket.
     }
+
 
     update(dt) {
         this.frameCount++;

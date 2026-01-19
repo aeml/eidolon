@@ -9,13 +9,22 @@ export class InputManager {
         this.groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0); // Plane at Y=0
         this._intersectionTarget = new THREE.Vector3(); // Reusable vector
         
-        // Event Listeners
-        window.addEventListener('mousemove', (e) => this.onMouseMove(e));
-        window.addEventListener('mousedown', (e) => this.onMouseDown(e));
-        window.addEventListener('contextmenu', (e) => e.preventDefault()); // Disable context menu
-        window.addEventListener('wheel', (e) => this.onWheel(e), { passive: false });
+        this._listeners = [];
+        this._onMouseMove = (e) => this.onMouseMove(e);
+        this._onMouseDown = (e) => this.onMouseDown(e);
+        this._onContextMenu = (e) => e.preventDefault();
+        this._onWheel = (e) => this.onWheel(e);
+        this._onKeyDown = (e) => this.onKeyDown(e);
+        this._onKeyUp = (e) => this.onKeyUp(e);
+        this._onMouseUp = (e) => this.onMouseUp(e);
+
+        this._registerListener(window, 'mousemove', this._onMouseMove);
+        this._registerListener(window, 'mousedown', this._onMouseDown);
+        this._registerListener(window, 'contextmenu', this._onContextMenu);
+        this._registerListener(window, 'wheel', this._onWheel, { passive: false });
         
         this.callbacks = {
+
             onClick: [],
             onRightClick: [],
             onZoom: [],
@@ -47,13 +56,14 @@ export class InputManager {
         this.joystickVector = new THREE.Vector2(0, 0);
         this.isMobile = false;
 
-        window.addEventListener('keydown', (e) => this.onKeyDown(e));
-        window.addEventListener('keyup', (e) => this.onKeyUp(e));
-        window.addEventListener('mouseup', (e) => this.onMouseUp(e));
+        this._registerListener(window, 'keydown', this._onKeyDown);
+        this._registerListener(window, 'keyup', this._onKeyUp);
+        this._registerListener(window, 'mouseup', this._onMouseUp);
         
         this.isMouseDown = false;
         this.isRightMouseDown = false;
     }
+
 
     setupMobileControls() {
         this.isMobile = true;
@@ -92,14 +102,14 @@ export class InputManager {
                 this.joystickVector.y = dy / maxDist;
             };
 
-            zone.addEventListener('touchstart', (e) => {
+            const onZoneTouchStart = (e) => {
                 e.preventDefault();
                 const touch = e.changedTouches[0];
                 joystickTouchId = touch.identifier;
                 handleJoystick(touch);
-            }, { passive: false });
+            };
 
-            zone.addEventListener('touchmove', (e) => {
+            const onZoneTouchMove = (e) => {
                 e.preventDefault();
                 for (let i = 0; i < e.changedTouches.length; i++) {
                     if (e.changedTouches[i].identifier === joystickTouchId) {
@@ -107,9 +117,9 @@ export class InputManager {
                         break;
                     }
                 }
-            }, { passive: false });
+            };
 
-            const endHandler = (e) => {
+            const onZoneTouchEnd = (e) => {
                 e.preventDefault();
                 for (let i = 0; i < e.changedTouches.length; i++) {
                     if (e.changedTouches[i].identifier === joystickTouchId) {
@@ -121,8 +131,10 @@ export class InputManager {
                 }
             };
 
-            zone.addEventListener('touchend', endHandler);
-            zone.addEventListener('touchcancel', endHandler);
+            this._registerListener(zone, 'touchstart', onZoneTouchStart, { passive: false });
+            this._registerListener(zone, 'touchmove', onZoneTouchMove, { passive: false });
+            this._registerListener(zone, 'touchend', onZoneTouchEnd);
+            this._registerListener(zone, 'touchcancel', onZoneTouchEnd);
         }
 
         // Buttons
@@ -134,8 +146,8 @@ export class InputManager {
                     e.stopPropagation(); // Prevent click-through
                     this.callbacks[callbackName].forEach(cb => cb());
                 };
-                btn.addEventListener('touchstart', handler, { passive: false });
-                btn.addEventListener('mousedown', handler);
+                this._registerListener(btn, 'touchstart', handler, { passive: false });
+                this._registerListener(btn, 'mousedown', handler);
             }
         };
 
@@ -165,15 +177,15 @@ export class InputManager {
         // Pinch to Zoom Logic
         let initialPinchDist = null;
         
-        window.addEventListener('touchstart', (e) => {
+        const onPinchStart = (e) => {
             if (e.touches.length === 2) {
                 const dx = e.touches[0].clientX - e.touches[1].clientX;
                 const dy = e.touches[0].clientY - e.touches[1].clientY;
                 initialPinchDist = Math.sqrt(dx * dx + dy * dy);
             }
-        }, { passive: false });
+        };
 
-        window.addEventListener('touchmove', (e) => {
+        const onPinchMove = (e) => {
             if (e.touches.length === 2 && initialPinchDist) {
                 const dx = e.touches[0].clientX - e.touches[1].clientX;
                 const dy = e.touches[0].clientY - e.touches[1].clientY;
@@ -193,14 +205,19 @@ export class InputManager {
                     initialPinchDist = dist;
                 }
             }
-        }, { passive: false });
+        };
 
-        window.addEventListener('touchend', (e) => {
+        const onPinchEnd = (e) => {
             if (e.touches.length < 2) {
                 initialPinchDist = null;
             }
-        });
+        };
+
+        this._registerListener(window, 'touchstart', onPinchStart, { passive: false });
+        this._registerListener(window, 'touchmove', onPinchMove, { passive: false });
+        this._registerListener(window, 'touchend', onPinchEnd);
     }
+
 
     getMovementDirection() {
         const dir = new THREE.Vector3(0, 0, 0);
@@ -347,5 +364,18 @@ export class InputManager {
         if (this.callbacks[event]) {
             this.callbacks[event].push(callback);
         }
+    }
+
+    _registerListener(target, event, handler, options) {
+        if (!target || !target.addEventListener) return;
+        target.addEventListener(event, handler, options);
+        this._listeners.push({ target, event, handler, options });
+    }
+
+    dispose() {
+        for (const listener of this._listeners) {
+            listener.target.removeEventListener(listener.event, listener.handler, listener.options);
+        }
+        this._listeners = [];
     }
 }
