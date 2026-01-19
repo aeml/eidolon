@@ -47,8 +47,18 @@ export class RenderSystem {
         // Firefox: Use Basic shadows to reduce GPU load
         this.renderer.shadowMap.type = (this.isMobile || isFirefox) ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
         
+        this.perfOverlay = null;
+        this.perfStats = {
+            lastTime: performance.now(),
+            lastUpdate: performance.now(),
+            fps: 0,
+            frameTime: 0,
+            frames: 0
+        };
+
         // Ensure canvas is behind UI but visible
         this.renderer.domElement.style.position = 'absolute';
+
         this.renderer.domElement.style.top = '0';
         this.renderer.domElement.style.left = '0';
         this.renderer.domElement.style.zIndex = '1'; // Behind UI (which is 10)
@@ -261,7 +271,50 @@ export class RenderSystem {
             this.waterTexture.offset.y = time;
         }
         this.renderer.render(this.scene, this.camera);
+        this.updatePerfOverlay();
     }
+
+    enablePerfOverlay(element) {
+        if (!element) return;
+        this.perfOverlay = element;
+        this.perfOverlay.style.display = 'block';
+        this.updatePerfOverlay(true);
+    }
+
+    updatePerfOverlay(force = false) {
+        if (!this.perfOverlay) return;
+
+        const now = performance.now();
+        const stats = this.perfStats;
+        stats.frames += 1;
+        stats.frameTime = now - stats.lastTime;
+        stats.lastTime = now;
+
+        const interval = force ? 0 : 250;
+        if (now - stats.lastUpdate < interval) {
+            return;
+        }
+
+        stats.fps = Math.round(1000 / Math.max(stats.frameTime, 0.001));
+        stats.lastUpdate = now;
+
+        const info = this.renderer.info;
+        const mem = info.memory || {};
+        const render = info.render || {};
+
+        const memoryLine = (performance && performance.memory)
+            ? `heap ${(performance.memory.usedJSHeapSize / 1048576).toFixed(1)} MB`
+            : 'heap n/a';
+
+        this.perfOverlay.textContent =
+            `fps ${stats.fps}\n` +
+            `frame ${stats.frameTime.toFixed(1)} ms\n` +
+            `calls ${render.calls ?? 0}\n` +
+            `tris ${render.triangles ?? 0}\n` +
+            `geo ${mem.geometries ?? 0} tex ${mem.textures ?? 0}\n` +
+            memoryLine;
+    }
+
 
     dispose() {
         if (this.renderer) {
@@ -269,6 +322,10 @@ export class RenderSystem {
             if (this.renderer.domElement && this.renderer.domElement.parentNode) {
                 this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
             }
+        }
+
+        if (this.perfOverlay) {
+            this.perfOverlay.style.display = 'none';
         }
         
         this.scene.traverse((object) => {
@@ -282,4 +339,5 @@ export class RenderSystem {
             }
         });
     }
+
 }

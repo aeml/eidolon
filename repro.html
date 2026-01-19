@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Eidolon Repro Scene</title>
+    <style>
+        html, body {
+            margin: 0;
+            height: 100%;
+            background: #0b0e13;
+            color: #d7e4ff;
+            overflow: hidden;
+            font-family: "Consolas", "Courier New", monospace;
+        }
+        #repro-hud {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            padding: 10px 12px;
+            background: rgba(8, 12, 18, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            z-index: 10;
+            max-width: 360px;
+        }
+        #repro-hud .title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #f2f6ff;
+        }
+        #repro-hud .line {
+            font-size: 12px;
+            line-height: 1.4;
+            color: #bcd0ff;
+        }
+        #repro-readout {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #d9f2c7;
+        }
+        #perf-overlay {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            padding: 6px 8px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #e6f1ff;
+            font-size: 12px;
+            line-height: 1.4;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            white-space: pre;
+            z-index: 10;
+            display: none;
+            pointer-events: none;
+        }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.181.2/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.181.2/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="repro-hud">
+        <div class="title">Eidolon Repro Scene</div>
+        <div class="line">Drag to orbit. Scroll to zoom. Click ground to place marker.</div>
+        <div class="line">Params: ?perf=1&amp;instances=500&amp;instancing=1</div>
+        <div class="line">Keys: P toggle perf, G toggle grid, L toggle light</div>
+        <div id="repro-readout">Last pick: none</div>
+    </div>
+    <div id="perf-overlay"></div>
+    <script type="module" src="./src/repro.js"></script>
+</body>
+</html>
