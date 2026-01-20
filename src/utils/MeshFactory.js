@@ -184,6 +184,135 @@ export class MeshFactory {
         seraph: new THREE.CylinderGeometry(0.5, 0.5, 2, 8)
     };
 
+    /**
+     * Helper to load skeleton model with a color tint for placeholder enemies.
+     * This allows us to use the skeleton model/animations for all enemies until
+     * we have unique models for each enemy type.
+     * @param {number} color - Hex color to tint the skeleton
+     * @param {number} scale - Scale multiplier (default 2.5)
+     * @param {number} emissive - Emissive color (default 0x000000)
+     * @param {number} emissiveIntensity - Emissive intensity (default 0)
+     * @returns {Promise<THREE.Object3D>} The tinted skeleton mesh
+     */
+    static async loadSkeletonWithTint(color, scale = 2.5, emissive = 0x000000, emissiveIntensity = 0) {
+        try {
+            const idleGltf = await this.loadModel('./assets/enemies/undead/skeleton/idle.glb');
+            const mesh = SkeletonUtils.clone(idleGltf.scene);
+            
+            mesh.userData.animations = [];
+            const addAnim = (clip, name) => {
+                if (clip) {
+                    const newClip = clip.clone();
+                    newClip.name = name;
+                    newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
+                    mesh.userData.animations.push(newClip);
+                }
+            };
+
+            if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
+
+            try {
+                const walkGltf = await this.loadModel('./assets/enemies/undead/skeleton/walk.glb');
+                if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
+            } catch (e) {}
+
+            try {
+                const runGltf = await this.loadModel('./assets/enemies/undead/skeleton/run.glb');
+                if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
+            } catch (e) {}
+
+            try {
+                const attackGltf = await this.loadModel('./assets/enemies/undead/skeleton/attack.glb');
+                if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
+            } catch (e) {}
+
+            try {
+                const deathGltf = await this.loadModel('./assets/enemies/undead/skeleton/death.glb');
+                if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
+            } catch (e) {}
+
+            mesh.scale.set(scale, scale, scale);
+            
+            // Apply color tint to all mesh materials
+            mesh.traverse(c => {
+                if (c.isMesh) {
+                    c.castShadow = true;
+                    c.receiveShadow = true;
+                    // Clone material to avoid affecting other skeletons
+                    if (c.material) {
+                        c.material = c.material.clone();
+                        c.material.color.setHex(color);
+                        if (emissive !== 0x000000) {
+                            c.material.emissive = new THREE.Color(emissive);
+                            c.material.emissiveIntensity = emissiveIntensity;
+                        }
+                    }
+                }
+            });
+
+            // Hitbox scaled to match
+            const hitSize = scale * 0.8;
+            const hitGeo = new THREE.BoxGeometry(hitSize, hitSize * 1.25, hitSize);
+            const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+            const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+            hitMesh.position.y = hitSize * 0.5;
+            mesh.add(hitMesh);
+            
+            return mesh;
+        } catch (e) {
+            console.error("Failed to load skeleton with tint:", e);
+            // Fallback to colored box
+            const geometry = new THREE.BoxGeometry(1, 2, 1);
+            const material = new THREE.MeshStandardMaterial({ color: color });
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.y = 1;
+            return mesh;
+        }
+    }
+
+    /**
+     * Helper to load quest_man model for NPC placeholders.
+     * Uses the same model/animations as QuestNPC.
+     * @param {string} name - NPC name for debugging
+     * @returns {Promise<THREE.Object3D>} The NPC mesh
+     */
+    static async loadQuestManModel(name = 'NPC') {
+        try {
+            const gltf = await this.loadModel('./assets/npc/quest_man/idle.glb');
+            const mesh = SkeletonUtils.clone(gltf.scene);
+            
+            mesh.userData.animations = [];
+            if (gltf.animations.length > 0) {
+                const clip = gltf.animations[0].clone();
+                clip.name = 'Idle';
+                mesh.userData.animations.push(clip);
+            }
+
+            mesh.scale.set(2.0, 2.0, 2.0);
+            
+            mesh.traverse(c => {
+                if (c.isMesh) {
+                    c.castShadow = true;
+                    c.receiveShadow = true;
+                }
+            });
+
+            const hitGeo = new THREE.BoxGeometry(1.5, 3.5, 1.5);
+            const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+            const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+            hitMesh.position.y = 1.75;
+            mesh.add(hitMesh);
+
+            return mesh;
+        } catch (err) {
+            console.error(`Failed to load ${name} model:`, err);
+            const geometry = new THREE.BoxGeometry(1, 2, 1);
+            const material = new THREE.MeshStandardMaterial({ color: 0x0000FF });
+            const mesh = new THREE.Mesh(geometry, material);
+            return mesh;
+        }
+    }
+
     static getPooledMesh(type) {
         if (this.pool[type] && this.pool[type].length > 0) {
             const mesh = this.pool[type].pop();
@@ -1448,6 +1577,9 @@ export class MeshFactory {
                 mesh = new THREE.Mesh(geometry, material);
                 return mesh;
             }
+        } else if (type === 'RespecNPC') {
+            // RespecNPC uses the same quest_man model as QuestNPC
+            return await this.loadQuestManModel('RespecNPC');
         } else if (type === 'TradingHouse') {
             try {
                 const gltf = await this.loadModel('./assets/buildings/trading_house.glb');
@@ -1573,6 +1705,88 @@ export class MeshFactory {
                 mesh = new THREE.Mesh(geometry, material);
                 return mesh;
             }
+        }
+        // ========================================================================
+        // FIRE REALM ENEMIES (West Zone - Scorched Wastes)
+        // Using skeleton model with fire-themed color tints as placeholders
+        // ========================================================================
+        else if (type === 'SandstormDjinn') {
+            // Sandstorm Djinn - Level 70-75 - Sandy/tan color
+            return await this.loadSkeletonWithTint(0xD2B48C, 2.5, 0x000000, 0);
+        } else if (type === 'MagmaGolem') {
+            // Magma Golem - Level 75-80 - Glowing orange/red
+            return await this.loadSkeletonWithTint(0xFF4500, 3.0, 0xFF2200, 0.4);
+        } else if (type === 'ScorchedWraith') {
+            // Scorched Wraith - Level 80-85 - Ghostly fire spirit
+            return await this.loadSkeletonWithTint(0xFF6600, 2.5, 0xFF4400, 0.5);
+        } else if (type === 'InfernalBehemoth') {
+            // Infernal Behemoth - Level 85-90 - Massive fire demon
+            return await this.loadSkeletonWithTint(0x8B0000, 4.0, 0xFF0000, 0.3);
+        } else if (type === 'PhoenixSentinel') {
+            // Phoenix Sentinel - Level 90-95 - Fiery bird-like guardian
+            return await this.loadSkeletonWithTint(0xFFD700, 3.0, 0xFF8C00, 0.6);
+        }
+        // ========================================================================
+        // AIR REALM ENEMIES (East Zone - Skyward Peaks)
+        // Using skeleton model with air-themed color tints as placeholders
+        // ========================================================================
+        else if (type === 'StormHarpy') {
+            // Storm Harpy - Level 70-75 - Sky blue
+            return await this.loadSkeletonWithTint(0x87CEEB, 2.5, 0x000000, 0);
+        } else if (type === 'CloudElemental') {
+            // Cloud Elemental - Level 75-80 - Misty white
+            return await this.loadSkeletonWithTint(0xE0E0E0, 2.8, 0xCCCCCC, 0.2);
+        } else if (type === 'ThunderRoc') {
+            // Thunder Roc - Level 80-85 - Royal blue with lightning
+            return await this.loadSkeletonWithTint(0x4169E1, 3.0, 0xFFFF00, 0.3);
+        } else if (type === 'TempestGiant') {
+            // Tempest Giant - Level 85-90 - Dark slate blue
+            return await this.loadSkeletonWithTint(0x483D8B, 4.5, 0x00BFFF, 0.2);
+        } else if (type === 'CycloneAvatar') {
+            // Cyclone Avatar - Level 90-95 - Dark turquoise
+            return await this.loadSkeletonWithTint(0x00CED1, 3.5, 0x00FFFF, 0.4);
+        }
+
+        // ========================================================================
+        // MOLTEN CORE DUNGEON BOSSES (Fire Dungeon)
+        // Using skeleton model with fire-themed color tints as placeholders
+        // ========================================================================
+        else if (type === 'Cindermaw') {
+            // Cindermaw - Boss 1 - Fire Elemental (3M HP)
+            return await this.loadSkeletonWithTint(0xFF4500, 4.0, 0xFF2200, 0.6);
+        } else if (type === 'ScorchedTwins') {
+            // Scorched Twins - Boss 2 - Duo Fight (2M HP each)
+            return await this.loadSkeletonWithTint(0xFF6347, 3.5, 0xFF4500, 0.5);
+        } else if (type === 'ForgemasterPyrax') {
+            // Forgemaster Pyrax - Boss 3 - Forge mechanics (4M HP)
+            return await this.loadSkeletonWithTint(0xB22222, 4.5, 0xFF4500, 0.4);
+        } else if (type === 'ObsidianGuardian') {
+            // Obsidian Guardian - Boss 4 - DPS Check (5M HP)
+            return await this.loadSkeletonWithTint(0x1C1C1C, 5.0, 0xFF0000, 0.2);
+        } else if (type === 'LordInfernax') {
+            // Lord Infernax - Final Boss - Multi-phase (8M HP)
+            return await this.loadSkeletonWithTint(0x8B0000, 6.0, 0xFF4500, 0.7);
+        }
+
+        // ========================================================================
+        // TEMPEST SPIRE DUNGEON BOSSES (Air Dungeon)
+        // Using skeleton model with air-themed color tints as placeholders
+        // ========================================================================
+        else if (type === 'Windshear') {
+            // Windshear - Boss 1 - Wind elemental (2.8M HP)
+            return await this.loadSkeletonWithTint(0x87CEEB, 4.0, 0x00BFFF, 0.4);
+        } else if (type === 'Stormcallers') {
+            // Stormcallers - Boss 2 - Duo Fight (3.6M HP total)
+            return await this.loadSkeletonWithTint(0x9370DB, 3.5, 0xFFFF00, 0.3);
+        } else if (type === 'RocMatriarch') {
+            // Roc Matriarch - Boss 3 - Flying boss (3.8M HP)
+            return await this.loadSkeletonWithTint(0x4682B4, 4.5, 0x00CED1, 0.3);
+        } else if (type === 'ThunderlordKaelix') {
+            // Thunderlord Kaelix - Boss 4 - Storm Giant (4.8M HP)
+            return await this.loadSkeletonWithTint(0x483D8B, 5.5, 0xFFFF00, 0.5);
+        } else if (type === 'Zephyrion') {
+            // Zephyrion, the Eternal Gale - Final Boss (7.5M HP)
+            return await this.loadSkeletonWithTint(0x00CED1, 6.5, 0x00FFFF, 0.6);
         }
 
         switch (type) {

@@ -101,49 +101,57 @@ type Client struct {
 
 // Message types
 const (
-	MsgJoin          = "join"
-	MsgLogin         = "login"
-	MsgRegister      = "register"
-	MsgMove          = "move"
-	MsgAttack        = "attack"
-	MsgDamage        = "damage"
-	MsgChat          = "chat"
-	MsgState         = "state"
-	MsgError         = "error"
-	MsgPickup        = "pickup"
-	MsgInventory     = "inventory"
-	MsgAbility       = "ability"
-	MsgEquip         = "equip"
-	MsgBuyGamble     = "buy_gamble"
-	MsgSell          = "sell"
-	MsgSocial        = "social"
-	MsgRespawn       = "respawn"
-	MsgRecall        = "recall"
-	MsgReport        = "report"
-	MsgStashDeposit  = "stash_deposit"
-	MsgStashWithdraw = "stash_withdraw"
-	MsgStash         = "stash"
-	MsgQuestUpdate   = "quest_update"
-	MsgAcceptQuest   = "accept_quest"
-	MsgCompleteQuest = "complete_quest"
-	MsgSelectBranch  = "selectBranch"
-	MsgUnlockSkill   = "unlockSkill"
-	MsgUnlockTalent  = "unlockTalent"
-	MsgResetTalents  = "resetTalents"
-	MsgForgeUpgrade  = "forge_upgrade"
-	MsgForgePotency  = "forge_potency"
-	MsgForgeSocket   = "forge_socket"
-	MsgPartyInvite   = "party_invite"
-	MsgPartyResponse = "party_response"
-	MsgPartyRequest  = "party_request"
-	MsgPartyJoinResp = "party_join_resp"
-	MsgPartyKick     = "party_kick"
-	MsgPartyPromote  = "party_promote"
-	MsgPartyLeave    = "party_leave"
-	MsgPartyUpdate   = "party_update"
-	MsgBuyback       = "buyback"
-	MsgBuybackList   = "buyback_list"
-	MsgUnequip       = "unequip"
+	MsgJoin            = "join"
+	MsgLogin           = "login"
+	MsgRegister        = "register"
+	MsgMove            = "move"
+	MsgAttack          = "attack"
+	MsgDamage          = "damage"
+	MsgChat            = "chat"
+	MsgState           = "state"
+	MsgError           = "error"
+	MsgPickup          = "pickup"
+	MsgInventory       = "inventory"
+	MsgAbility         = "ability"
+	MsgEquip           = "equip"
+	MsgBuyGamble       = "buy_gamble"
+	MsgSell            = "sell"
+	MsgSocial          = "social"
+	MsgRespawn         = "respawn"
+	MsgRecall          = "recall"
+	MsgReport          = "report"
+	MsgStashDeposit    = "stash_deposit"
+	MsgStashWithdraw   = "stash_withdraw"
+	MsgStash           = "stash"
+	MsgQuestUpdate     = "quest_update"
+	MsgAcceptQuest     = "accept_quest"
+	MsgCompleteQuest   = "complete_quest"
+	MsgSelectBranch    = "selectBranch"
+	MsgUnlockSkill     = "unlockSkill"
+	MsgUnlockTalent    = "unlockTalent"
+	MsgResetTalents    = "resetTalents"
+	MsgRespec          = "respec"
+	MsgRespecCost      = "respec_cost"
+	MsgSelectRune      = "select_rune"
+	MsgGetRunes        = "get_runes"
+	MsgCombo           = "combo"
+	MsgForgeUpgrade    = "forge_upgrade"
+	MsgForgePotency    = "forge_potency"
+	MsgForgeSocket     = "forge_socket"
+	MsgForgeInsertGem  = "forge_insert_gem"
+	MsgForgeCombineGem = "forge_combine_gem"
+	MsgForgeRemoveGem  = "forge_remove_gem"
+	MsgPartyInvite     = "party_invite"
+	MsgPartyResponse   = "party_response"
+	MsgPartyRequest    = "party_request"
+	MsgPartyJoinResp   = "party_join_resp"
+	MsgPartyKick       = "party_kick"
+	MsgPartyPromote    = "party_promote"
+	MsgPartyLeave      = "party_leave"
+	MsgPartyUpdate     = "party_update"
+	MsgBuyback         = "buyback"
+	MsgBuybackList     = "buyback_list"
+	MsgUnequip         = "unequip"
 
 	// Trading
 	MsgTradingSearch     = "trading_search"
@@ -173,6 +181,10 @@ type Message struct {
 
 type UnlockTalentPayload struct {
 	TalentId string `json:"talentId"`
+}
+
+type RespecPayload struct {
+	RespecType string `json:"respecType"` // "talents", "skills", or "both"
 }
 
 type TradingBidPayload struct {
@@ -250,6 +262,21 @@ type ForgeSocketPayload struct {
 	Slot string `json:"slot"`
 }
 
+type ForgeInsertGemPayload struct {
+	EquipSlot   string `json:"equipSlot"`
+	GemInvIndex int    `json:"gemInvIndex"`
+	SocketIndex int    `json:"socketIndex"`
+}
+
+type ForgeCombineGemPayload struct {
+	GemIndices [3]int `json:"gemIndices"`
+}
+
+type ForgeRemoveGemPayload struct {
+	EquipSlot   string `json:"equipSlot"`
+	SocketIndex int    `json:"socketIndex"`
+}
+
 type AcceptQuestPayload struct {
 	QuestID string `json:"questId"`
 }
@@ -302,6 +329,12 @@ type DamagePayload struct {
 	TargetID string `json:"targetId"`
 	Amount   int    `json:"amount"`
 	SourceID string `json:"sourceId"`
+}
+
+type ComboPayload struct {
+	PlayerID  string `json:"playerId"`
+	ComboID   string `json:"comboId"`
+	ComboName string `json:"comboName"`
 }
 
 type ChatPayload struct {
@@ -625,6 +658,62 @@ func main() {
 
 			go func() {
 				broadcast <- BroadcastMessage{Type: MsgDamage, Data: dataBytes}
+			}()
+		case "hazard_damage":
+			evt, ok := data.(game.HazardDamageEvent)
+			if !ok {
+				return
+			}
+			// Send hazard damage as a damage event so client shows floating text
+			payload := DamagePayload{
+				TargetID: evt.PlayerID,
+				Amount:   evt.Damage,
+				SourceID: evt.HazardID, // e.g. "hazard-lava-5"
+			}
+			b, _ := json.Marshal(payload)
+			outMsg := Message{
+				Type:    MsgDamage,
+				Payload: b,
+			}
+			dataBytes, _ := json.Marshal(outMsg)
+
+			go func() {
+				broadcast <- BroadcastMessage{Type: MsgDamage, Data: dataBytes}
+			}()
+		case "combo":
+			evtData, ok := data.(map[string]interface{})
+			if !ok {
+				return
+			}
+			playerID, _ := evtData["playerID"].(string)
+			comboID, _ := evtData["comboID"].(string)
+			comboName, _ := evtData["comboName"].(string)
+
+			payload := ComboPayload{
+				PlayerID:  playerID,
+				ComboID:   comboID,
+				ComboName: comboName,
+			}
+			b, _ := json.Marshal(payload)
+			outMsg := Message{
+				Type:    MsgCombo,
+				Payload: b,
+			}
+			dataBytes, _ := json.Marshal(outMsg)
+
+			// Send to the specific player who triggered the combo
+			username := playerID
+			if strings.HasPrefix(playerID, "player-") {
+				username = strings.TrimPrefix(playerID, "player-")
+			}
+
+			go func() {
+				sessionsMu.Lock()
+				client, exists := activeSessions[username]
+				sessionsMu.Unlock()
+				if exists {
+					client.sendSafe(dataBytes)
+				}
 			}()
 		}
 	}
@@ -1144,6 +1233,14 @@ func (c *Client) handleMessage(msg Message) {
 		// Helpful debug line for shipping confidence: shows what we loaded from DB.
 		log.Printf("Login %s: TalentRanks=%d, TalentPoints=%d (Level=%d)", c.username, len(entity.TalentRanks), entity.TalentPoints, entity.Level)
 
+		// Load Skill Runes
+		if char.SkillRunes != nil {
+			entity.SkillRunes = make(map[string]string, len(char.SkillRunes))
+			for k, v := range char.SkillRunes {
+				entity.SkillRunes[k] = v
+			}
+		}
+
 		// Auto-Unlock Skills based on Level and Branch
 		world.UpdateUnlockedSkills(entity)
 
@@ -1399,6 +1496,19 @@ func (c *Client) handleMessage(msg Message) {
 			c.sendSafe(b)
 		}
 
+		// Send initial skill runes
+		if len(entity.SkillRunes) > 0 {
+			runesPayload, _ := json.Marshal(map[string]interface{}{
+				"skillRunes": entity.SkillRunes,
+			})
+			msg := Message{
+				Type:    MsgSelectRune,
+				Payload: runesPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
+
 		// If reconnecting to an instance, send the layout
 		if instanceID != "" {
 			layout, hasLayout := world.GetInstanceLayout(instanceID)
@@ -1427,6 +1537,7 @@ func (c *Client) handleMessage(msg Message) {
 
 		var req struct {
 			DungeonType string `json:"dungeonType"`
+			Difficulty  string `json:"difficulty"`
 		}
 		if len(msg.Payload) > 0 {
 			json.Unmarshal(msg.Payload, &req)
@@ -1434,6 +1545,15 @@ func (c *Client) handleMessage(msg Message) {
 		dungeonType := req.DungeonType
 		if dungeonType == "" {
 			dungeonType = "crypt"
+		}
+
+		// Parse difficulty
+		difficulty := game.DifficultyNormal
+		switch req.Difficulty {
+		case "heroic":
+			difficulty = game.DifficultyHeroic
+		case "mythic":
+			difficulty = game.DifficultyMythic
 		}
 
 		player := world.GetEntityCopy(c.playerID)
@@ -1446,9 +1566,16 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 
+		// Check minimum level requirement
+		minLevel := game.MinLevelForDifficulty(difficulty, dungeonType)
+		if player.Level < minLevel {
+			c.sendError(fmt.Sprintf("You need to be level %d to enter %s on %s difficulty.", minLevel, dungeonType, req.Difficulty))
+			return
+		}
+
 		// Create Dungeon
-		log.Printf("Creating dungeon for party %s (Player: %s)", player.PartyID, c.playerID)
-		instanceID := world.CreateDungeon(player.PartyID, dungeonType)
+		log.Printf("Creating dungeon for party %s (Player: %s, Difficulty: %s)", player.PartyID, c.playerID, difficulty)
+		instanceID := world.CreateDungeon(player.PartyID, dungeonType, difficulty)
 		log.Printf("Dungeon created: %s", instanceID)
 		// c.sendError(fmt.Sprintf("Debug: Dungeon Created %s", instanceID))
 
@@ -2624,6 +2751,78 @@ func (c *Client) handleMessage(msg Message) {
 			c.sendError(msgStr)
 		}
 
+	case MsgForgeInsertGem:
+		if c.playerID == "" {
+			return
+		}
+		var payload ForgeInsertGemPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success, msgStr := world.PerformForgeInsertGem(c.playerID, payload.EquipSlot, payload.GemInvIndex, payload.SocketIndex)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msgInv := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			bInv, _ := json.Marshal(msgInv)
+			c.sendSafe(bInv)
+			savePlayer(c) // Persist gem insertion
+		} else {
+			c.sendError(msgStr)
+		}
+
+	case MsgForgeCombineGem:
+		if c.playerID == "" {
+			return
+		}
+		var payload ForgeCombineGemPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success, msgStr := world.PerformForgeCombineGems(c.playerID, payload.GemIndices)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msgInv := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			bInv, _ := json.Marshal(msgInv)
+			c.sendSafe(bInv)
+			savePlayer(c) // Persist gem combining
+		} else {
+			c.sendError(msgStr)
+		}
+
+	case MsgForgeRemoveGem:
+		if c.playerID == "" {
+			return
+		}
+		var payload ForgeRemoveGemPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+
+		player, success, msgStr := world.PerformForgeRemoveGem(c.playerID, payload.EquipSlot, payload.SocketIndex)
+		if success {
+			// Send Inventory Update
+			invPayload, _ := json.Marshal(player.Inventory)
+			msgInv := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			bInv, _ := json.Marshal(msgInv)
+			c.sendSafe(bInv)
+			savePlayer(c) // Persist gem removal
+		} else {
+			c.sendError(msgStr)
+		}
+
 	case MsgSelectBranch:
 		if c.playerID == "" {
 			return
@@ -2671,6 +2870,173 @@ func (c *Client) handleMessage(msg Message) {
 		} else {
 			c.sendError(msgStr)
 		}
+
+	case MsgRespec:
+		if c.playerID == "" {
+			return
+		}
+		var payload RespecPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			c.sendError("Invalid respec payload")
+			return
+		}
+		if player, success, msgStr := world.PerformRespec(c.playerID, payload.RespecType); success {
+			// Send Inventory Update (includes gold)
+			player.Mu.RLock()
+			invPayload, _ := json.Marshal(player.Inventory)
+			player.Mu.RUnlock()
+			invMsg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			b, _ := json.Marshal(invMsg)
+			c.sendSafe(b)
+			savePlayer(c) // Persist immediately
+		} else {
+			c.sendError(msgStr)
+		}
+
+	case MsgRespecCost:
+		if c.playerID == "" {
+			return
+		}
+		var payload RespecPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			c.sendError("Invalid respec payload")
+			return
+		}
+		cost := world.GetRespecCost(c.playerID, payload.RespecType)
+		// Send cost response
+		response := map[string]interface{}{
+			"type":      payload.RespecType,
+			"cost":      cost,
+			"canAfford": false,
+		}
+		if player := world.GetEntity(c.playerID); player != nil {
+			player.Mu.RLock()
+			response["canAfford"] = player.Gold >= cost
+			player.Mu.RUnlock()
+		}
+		respBytes, _ := json.Marshal(response)
+		costMsg := Message{
+			Type:    MsgRespecCost,
+			Payload: respBytes,
+		}
+		msgBytes, _ := json.Marshal(costMsg)
+		c.sendSafe(msgBytes)
+
+	case MsgSelectRune:
+		if c.playerID == "" {
+			return
+		}
+		var payload struct {
+			Skill  string `json:"skill"`
+			RuneID string `json:"runeId"` // Empty string to unequip
+		}
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			c.sendError("Invalid rune payload")
+			return
+		}
+
+		player := world.GetEntity(c.playerID)
+		if player == nil {
+			return
+		}
+
+		player.Mu.Lock()
+		// Validate the rune if one is being equipped
+		if payload.RuneID != "" {
+			runeDef, ok := game.GetRuneDef(payload.RuneID)
+			if !ok {
+				player.Mu.Unlock()
+				c.sendError("Invalid rune ID")
+				return
+			}
+			// Check level requirement
+			if player.Level < runeDef.UnlockLevel {
+				player.Mu.Unlock()
+				c.sendError(fmt.Sprintf("You need to be level %d to use this rune", runeDef.UnlockLevel))
+				return
+			}
+			// Check that the rune matches the skill
+			if runeDef.Skill != payload.Skill {
+				player.Mu.Unlock()
+				c.sendError("This rune doesn't work with that skill")
+				return
+			}
+			// Verify player has this skill unlocked
+			hasSkill := false
+			for _, s := range player.UnlockedSkills {
+				if s == payload.Skill {
+					hasSkill = true
+					break
+				}
+			}
+			if !hasSkill {
+				player.Mu.Unlock()
+				c.sendError("You don't have this skill unlocked")
+				return
+			}
+		}
+
+		// Initialize map if needed
+		if player.SkillRunes == nil {
+			player.SkillRunes = make(map[string]string)
+		}
+
+		// Set or clear the rune
+		if payload.RuneID == "" {
+			delete(player.SkillRunes, payload.Skill)
+		} else {
+			player.SkillRunes[payload.Skill] = payload.RuneID
+		}
+		player.Mu.Unlock()
+
+		// Send updated runes to client
+		player.Mu.RLock()
+		runesPayload, _ := json.Marshal(map[string]interface{}{
+			"skillRunes": player.SkillRunes,
+		})
+		player.Mu.RUnlock()
+		runeMsg := Message{
+			Type:    MsgSelectRune,
+			Payload: runesPayload,
+		}
+		b, _ := json.Marshal(runeMsg)
+		c.sendSafe(b)
+		savePlayer(c)
+
+	case MsgGetRunes:
+		if c.playerID == "" {
+			return
+		}
+		player := world.GetEntity(c.playerID)
+		if player == nil {
+			return
+		}
+
+		player.Mu.RLock()
+		classType := player.SubType
+		level := player.Level
+		equippedRunes := player.SkillRunes
+		player.Mu.RUnlock()
+
+		// Get all available runes for this class
+		allRunes := game.GetAllRunesForClass(classType)
+		unlockedRunes := game.GetUnlockedRunes(classType, level)
+
+		response := map[string]interface{}{
+			"allRunes":      allRunes,
+			"unlockedRunes": unlockedRunes,
+			"equippedRunes": equippedRunes,
+		}
+		respBytes, _ := json.Marshal(response)
+		runeMsg := Message{
+			Type:    MsgGetRunes,
+			Payload: respBytes,
+		}
+		msgBytes, _ := json.Marshal(runeMsg)
+		c.sendSafe(msgBytes)
 	}
 }
 
@@ -3197,6 +3563,7 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 		SkillPoints:     entity.SkillPoints,
 		SelectedBranch:  entity.SelectedBranch,
 		UnlockedSkills:  entity.UnlockedSkills,
+		SkillRunes:      entity.SkillRunes,
 		UnlockedTalents: unlockedTalents,
 		TalentRanks:     normalizedRanks,
 	}

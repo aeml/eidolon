@@ -242,25 +242,25 @@ export const CONSTANTS = {
 
             const entries = [];
             for (const s of skills) {
-                entries.push({ name: `${s} - Mastery`, desc: `Improves ${s} power.`, maxRank: 5 });
-                entries.push({ name: `${s} - Technique`, desc: `Improves ${s} utility and reliability.`, maxRank: 5 });
+                entries.push({ name: `${s} - Mastery`, desc: `+4% ${s} damage per rank (20% max).`, maxRank: 5 });
+                entries.push({ name: `${s} - Technique`, desc: `+3% ${s} CDR, +2% range/AoE per rank.`, maxRank: 5 });
             }
 
             entries.push(
-                { name: "Combat Discipline", desc: "Minor improvements to Fighter ability uptime.", maxRank: 5 },
-                { name: "Battle Breathing", desc: "Minor improvements to Fighter mana efficiency.", maxRank: 5 },
-                { name: "Threat Mastery", desc: "Minor improvements to threat generation from abilities.", maxRank: 5 },
-                { name: "Crowd Control Drills", desc: "Minor improvements to stun/slow effectiveness.", maxRank: 5 },
-                { name: "Frontliner Routine", desc: "Minor improvements to survivability while fighting.", maxRank: 5 },
-                { name: "Heavy Weapon Technique", desc: "Minor improvements to Fighter damage patterns.", maxRank: 5 },
-                { name: "Lineholder Instinct", desc: "Minor improvements to area coverage in fights.", maxRank: 5 },
-                { name: "Rally Presence", desc: "Minor improvements to party-support effects.", maxRank: 5 },
-                { name: "Aggressor Footwork", desc: "Minor improvements to repositioning after skills.", maxRank: 5 },
-                { name: "Shieldwall Training", desc: "Minor improvements to defensive effects.", maxRank: 5 },
-                { name: "Breakthrough", desc: "Minor improvements to debuffs applied by skills.", maxRank: 5 },
-                { name: "Enduring Rhythm", desc: "Minor improvements to sustained AoE output.", maxRank: 5 },
-                { name: "Battlefield Awareness", desc: "Minor improvements to targeting and consistency.", maxRank: 5 },
-                { name: "Vanguard Momentum", desc: "Minor improvements to chaining abilities smoothly.", maxRank: 5 },
+                { name: "Combat Discipline", desc: "+2% global CDR per rank (10% max).", maxRank: 5 },
+                { name: "Battle Breathing", desc: "-3% mana cost per rank (15% max).", maxRank: 5 },
+                { name: "Threat Mastery", desc: "+5% threat generation per rank (25% max).", maxRank: 5 },
+                { name: "Crowd Control Drills", desc: "+0.2s stun/slow duration per rank (+1s max).", maxRank: 5 },
+                { name: "Frontliner Routine", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
+                { name: "Heavy Weapon Technique", desc: "+3 flat damage per rank (+15 max).", maxRank: 5 },
+                { name: "Lineholder Instinct", desc: "+3% AoE radius per rank (15% max).", maxRank: 5 },
+                { name: "Rally Presence", desc: "+2% party buff effectiveness per rank (10% max).", maxRank: 5 },
+                { name: "Aggressor Footwork", desc: "+2% movement speed per rank (10% max).", maxRank: 5 },
+                { name: "Shieldwall Training", desc: "+3% armor per rank (15% max).", maxRank: 5 },
+                { name: "Breakthrough", desc: "+2% armor penetration per rank (10% max).", maxRank: 5 },
+                { name: "Enduring Rhythm", desc: "+2% sustained damage per rank (10% max).", maxRank: 5 },
+                { name: "Battlefield Awareness", desc: "+2% crit chance per rank (10% max).", maxRank: 5 },
+                { name: "Vanguard Momentum", desc: "+1% all damage per rank (5% max).", maxRank: 5 },
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `FTR_${String(i + 1).padStart(2, '0')}`, ...t }));
@@ -284,25 +284,25 @@ export const CONSTANTS = {
 
             const entries = [];
             for (const s of skills) {
-                entries.push({ name: `${s} - Mastery`, desc: `Improves ${s} power.`, maxRank: 5 });
-                entries.push({ name: `${s} - Technique`, desc: `Improves ${s} utility and reliability.`, maxRank: 5 });
+                entries.push({ name: `${s} - Mastery`, desc: `+4% ${s} damage per rank (20% max).`, maxRank: 5 });
+                entries.push({ name: `${s} - Technique`, desc: `+3% ${s} CDR, +2% range/AoE per rank.`, maxRank: 5 });
             }
 
             entries.push(
-                { name: "Opportunist's Flow", desc: "Minor improvements to chaining Rogue abilities.", maxRank: 5 },
-                { name: "Dirty Tricks", desc: "Minor improvements to debuffs applied by abilities.", maxRank: 5 },
-                { name: "Quickhands", desc: "Minor improvements to responsiveness and animation flow.", maxRank: 5 },
-                { name: "Shadow Poise", desc: "Minor improvements to survivability while engaging.", maxRank: 5 },
-                { name: "Silent Balance", desc: "Minor improvements to mobility in combat.", maxRank: 5 },
-                { name: "Needle Precision", desc: "Minor improvements to single-target reliability.", maxRank: 5 },
-                { name: "Lightstep", desc: "Minor improvements to escape tools.", maxRank: 5 },
-                { name: "Fine Motor", desc: "Minor improvements to multi-target consistency.", maxRank: 5 },
-                { name: "Catlike Reflexes", desc: "Minor improvements to cooldown flow.", maxRank: 5 },
-                { name: "Quick Draw", desc: "Minor improvements to throw-based skills.", maxRank: 5 },
-                { name: "Evasive Flow", desc: "Minor improvements to defensive windows.", maxRank: 5 },
-                { name: "Close-Quarters Grace", desc: "Minor improvements to melee ability effectiveness.", maxRank: 5 },
-                { name: "Edge Awareness", desc: "Minor improvements to positioning and target selection.", maxRank: 5 },
-                { name: "Wrist Control", desc: "Minor improvements to burst combos.", maxRank: 5 },
+                { name: "Opportunist's Flow", desc: "+2% global CDR per rank (10% max).", maxRank: 5 },
+                { name: "Dirty Tricks", desc: "+4% bleed/poison damage per rank (20% max).", maxRank: 5 },
+                { name: "Quickhands", desc: "+3% attack speed per rank (15% max).", maxRank: 5 },
+                { name: "Shadow Poise", desc: "+2% evasion per rank (10% max).", maxRank: 5 },
+                { name: "Silent Balance", desc: "+3% movement speed per rank (15% max).", maxRank: 5 },
+                { name: "Needle Precision", desc: "+2% crit chance per rank (10% max).", maxRank: 5 },
+                { name: "Lightstep", desc: "-5% escape cooldowns per rank (25% max).", maxRank: 5 },
+                { name: "Fine Motor", desc: "+2% multi-hit damage per rank (10% max).", maxRank: 5 },
+                { name: "Catlike Reflexes", desc: "+1% dodge per rank (5% max).", maxRank: 5 },
+                { name: "Quick Draw", desc: "+3% projectile damage per rank (15% max).", maxRank: 5 },
+                { name: "Evasive Flow", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
+                { name: "Close-Quarters Grace", desc: "+3% melee damage per rank (15% max).", maxRank: 5 },
+                { name: "Edge Awareness", desc: "+4% crit damage per rank (20% max).", maxRank: 5 },
+                { name: "Wrist Control", desc: "+1% all damage per rank (5% max).", maxRank: 5 },
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `ROG_${String(i + 1).padStart(2, '0')}`, ...t }));
@@ -326,25 +326,25 @@ export const CONSTANTS = {
 
             const entries = [];
             for (const s of skills) {
-                entries.push({ name: `${s} - Mastery`, desc: `Improves ${s} power.`, maxRank: 5 });
-                entries.push({ name: `${s} - Technique`, desc: `Improves ${s} utility and reliability.`, maxRank: 5 });
+                entries.push({ name: `${s} - Mastery`, desc: `+4% ${s} damage per rank (20% max).`, maxRank: 5 });
+                entries.push({ name: `${s} - Technique`, desc: `+3% ${s} CDR, +2% range/AoE per rank.`, maxRank: 5 });
             }
 
             entries.push(
-                { name: "Efficient Casting", desc: "Minor improvements to mana efficiency.", maxRank: 5 },
-                { name: "Quickened Formulae", desc: "Minor improvements to cooldown flow.", maxRank: 5 },
-                { name: "Runic Precision", desc: "Minor improvements to projectile reliability.", maxRank: 5 },
-                { name: "Leyline Recall", desc: "Minor improvements to mobility tools.", maxRank: 5 },
-                { name: "Overchannel", desc: "Minor improvements to burst windows.", maxRank: 5 },
-                { name: "Arcane Stability", desc: "Minor improvements to defensive spells.", maxRank: 5 },
-                { name: "Elemental Rhythm", desc: "Minor improvements to chaining spells.", maxRank: 5 },
-                { name: "Prismatic Control", desc: "Minor improvements to crowd control.", maxRank: 5 },
-                { name: "Aether Reach", desc: "Minor improvements to range and coverage.", maxRank: 5 },
-                { name: "Volatile Insight", desc: "Minor improvements to AoE effectiveness.", maxRank: 5 },
-                { name: "Channel Discipline", desc: "Minor improvements to channel/cast reliability.", maxRank: 5 },
-                { name: "Mana Geometry", desc: "Minor improvements to spell placement and spacing.", maxRank: 5 },
-                { name: "Sigil Mastery", desc: "Minor improvements to consistent spell output.", maxRank: 5 },
-                { name: "Contingency Wards", desc: "Minor improvements to survivability while casting.", maxRank: 5 },
+                { name: "Efficient Casting", desc: "-4% mana cost per rank (20% max).", maxRank: 5 },
+                { name: "Quickened Formulae", desc: "+2% global CDR per rank (10% max).", maxRank: 5 },
+                { name: "Runic Precision", desc: "+3% projectile speed per rank (15% max).", maxRank: 5 },
+                { name: "Leyline Recall", desc: "-5% Teleport cooldown per rank (25% max).", maxRank: 5 },
+                { name: "Overchannel", desc: "+3% burst damage per rank (15% max).", maxRank: 5 },
+                { name: "Arcane Stability", desc: "+4% shield effectiveness per rank (20% max).", maxRank: 5 },
+                { name: "Elemental Rhythm", desc: "+2% DoT damage per rank (10% max).", maxRank: 5 },
+                { name: "Prismatic Control", desc: "+0.2s CC duration per rank (+1s max).", maxRank: 5 },
+                { name: "Aether Reach", desc: "+3% spell range per rank (15% max).", maxRank: 5 },
+                { name: "Volatile Insight", desc: "+3% AoE radius per rank (15% max).", maxRank: 5 },
+                { name: "Channel Discipline", desc: "+2% channeled spell damage per rank (10% max).", maxRank: 5 },
+                { name: "Mana Geometry", desc: "+2% Intelligence per rank (10% max).", maxRank: 5 },
+                { name: "Sigil Mastery", desc: "+2% crit chance per rank (10% max).", maxRank: 5 },
+                { name: "Contingency Wards", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `WIZ_${String(i + 1).padStart(2, '0')}`, ...t }));
@@ -368,28 +368,156 @@ export const CONSTANTS = {
 
             const entries = [];
             for (const s of skills) {
-                entries.push({ name: `${s} - Mastery`, desc: `Improves ${s} power.`, maxRank: 5 });
-                entries.push({ name: `${s} - Technique`, desc: `Improves ${s} utility and reliability.`, maxRank: 5 });
+                entries.push({ name: `${s} - Mastery`, desc: `+4% ${s} power per rank (20% max).`, maxRank: 5 });
+                entries.push({ name: `${s} - Technique`, desc: `+3% ${s} CDR, +2% duration/range per rank.`, maxRank: 5 });
             }
 
             entries.push(
-                { name: "Efficient Rites", desc: "Minor improvements to mana efficiency.", maxRank: 5 },
-                { name: "Rites of Haste", desc: "Minor improvements to cooldown flow.", maxRank: 5 },
-                { name: "Mercy Routine", desc: "Minor improvements to sustained healing output.", maxRank: 5 },
-                { name: "Sanctuary Practice", desc: "Minor improvements to protective effects.", maxRank: 5 },
-                { name: "Radiant Doctrine", desc: "Minor improvements to damage-oriented rites.", maxRank: 5 },
-                { name: "Cleanse Discipline", desc: "Minor improvements to cleansing reliability.", maxRank: 5 },
-                { name: "Chorus of Faith", desc: "Minor improvements to party-wide buffs.", maxRank: 5 },
-                { name: "Battlefield Ministry", desc: "Minor improvements to area effects.", maxRank: 5 },
-                { name: "Warden's Instinct", desc: "Minor improvements to survivability while casting.", maxRank: 5 },
-                { name: "Blessed Footwork", desc: "Minor improvements to repositioning after casts.", maxRank: 5 },
-                { name: "Hymncraft", desc: "Minor improvements to chaining support abilities.", maxRank: 5 },
-                { name: "Pilgrim Patience", desc: "Minor improvements to long-fight sustain.", maxRank: 5 },
-                { name: "Mercy Doctrine", desc: "Minor improvements to supportive play patterns.", maxRank: 5 },
-                { name: "Ritekeeper", desc: "Minor improvements to consistency in rotations.", maxRank: 5 },
+                { name: "Efficient Rites", desc: "-4% mana cost per rank (20% max).", maxRank: 5 },
+                { name: "Rites of Haste", desc: "+2% global CDR per rank (10% max).", maxRank: 5 },
+                { name: "Mercy Routine", desc: "+3% healing done per rank (15% max).", maxRank: 5 },
+                { name: "Sanctuary Practice", desc: "+3% shield/absorb effectiveness per rank (15% max).", maxRank: 5 },
+                { name: "Radiant Doctrine", desc: "+3% holy damage per rank (15% max).", maxRank: 5 },
+                { name: "Cleanse Discipline", desc: "-5% cleanse cooldown per rank (25% max).", maxRank: 5 },
+                { name: "Chorus of Faith", desc: "+2% party buff duration per rank (10% max).", maxRank: 5 },
+                { name: "Battlefield Ministry", desc: "+3% AoE heal radius per rank (15% max).", maxRank: 5 },
+                { name: "Warden's Instinct", desc: "+2% damage reduction per rank (10% max).", maxRank: 5 },
+                { name: "Blessed Footwork", desc: "+2% movement speed per rank (10% max).", maxRank: 5 },
+                { name: "Hymncraft", desc: "+2% HoT effectiveness per rank (10% max).", maxRank: 5 },
+                { name: "Pilgrim Patience", desc: "+3% mana regen per rank (15% max).", maxRank: 5 },
+                { name: "Mercy Doctrine", desc: "+2% Wisdom per rank (10% max).", maxRank: 5 },
+                { name: "Ritekeeper", desc: "+1% all healing/damage per rank (5% max).", maxRank: 5 },
             );
 
             return entries.slice(0, 40).map((t, i) => ({ id: `CLR_${String(i + 1).padStart(2, '0')}`, ...t }));
         })(),
+    },
+
+    // ================================================================
+    // SKILL RUNES
+    // Each skill can have one rune equipped from 3 options
+    // Runes unlock at levels 50, 70, and 90
+    // ================================================================
+    SKILL_RUNES: {
+        Fighter: [
+            // Charge Runes
+            { id: "charge_momentum", name: "Momentum", skill: "Charge", unlockLevel: 50, description: "+50% range, damage scales with distance traveled" },
+            { id: "charge_shockwave", name: "Shockwave", skill: "Charge", unlockLevel: 70, description: "Ends with knockback AoE (5 unit radius)" },
+            { id: "charge_unstoppable", name: "Unstoppable", skill: "Charge", unlockLevel: 90, description: "CC immune during charge, +20% armor for 5s after" },
+            // Whirlwind Runes
+            { id: "whirlwind_extended", name: "Extended", skill: "Whirlwind", unlockLevel: 50, description: "+100% duration, -50% damage" },
+            { id: "whirlwind_bladestorm", name: "Bladestorm", skill: "Whirlwind", unlockLevel: 70, description: "Pulls enemies toward you" },
+            { id: "whirlwind_bloodwhirl", name: "Bloodwhirl", skill: "Whirlwind", unlockLevel: 90, description: "Heals 2% HP per enemy hit" },
+            // Shield Slam Runes
+            { id: "shieldslam_concussion", name: "Concussion", skill: "Shield Slam", unlockLevel: 50, description: "Stun duration +1s" },
+            { id: "shieldslam_reverberation", name: "Reverberation", skill: "Shield Slam", unlockLevel: 70, description: "Hits twice" },
+            { id: "shieldslam_fortify", name: "Fortify", skill: "Shield Slam", unlockLevel: 90, description: "Grants shield equal to damage dealt" },
+            // Iron Fortress Runes
+            { id: "ironfortress_extended", name: "Extended", skill: "Iron Fortress", unlockLevel: 50, description: "+50% duration" },
+            { id: "ironfortress_thorns", name: "Thorns", skill: "Iron Fortress", unlockLevel: 70, description: "Reflect 20% damage while active" },
+            { id: "ironfortress_immovable", name: "Immovable", skill: "Iron Fortress", unlockLevel: 90, description: "Cannot be knocked back or pulled" },
+            // Earthshaker Runes
+            { id: "earthshaker_fissure", name: "Fissure", skill: "Earthshaker", unlockLevel: 50, description: "Creates line AoE instead of circle" },
+            { id: "earthshaker_aftershock", name: "Aftershock", skill: "Earthshaker", unlockLevel: 70, description: "Second smaller quake after 1s" },
+            { id: "earthshaker_seismic", name: "Seismic", skill: "Earthshaker", unlockLevel: 90, description: "+100% knockdown duration" },
+        ],
+        Rogue: [
+            // Piercing Throw Runes
+            { id: "piercingthrow_ricochet", name: "Ricochet", skill: "Piercing Throw", unlockLevel: 50, description: "Bounces to 2 additional targets" },
+            { id: "piercingthrow_serrated", name: "Serrated", skill: "Piercing Throw", unlockLevel: 70, description: "Applies bleed (5s DoT)" },
+            { id: "piercingthrow_executioner", name: "Executioner", skill: "Piercing Throw", unlockLevel: 90, description: "+100% damage to targets below 30% HP" },
+            // Backstab Runes
+            { id: "backstab_ambush", name: "Ambush", skill: "Backstab", unlockLevel: 50, description: "+50% crit chance" },
+            { id: "backstab_eviscerate", name: "Eviscerate", skill: "Backstab", unlockLevel: 70, description: "Ignores 50% armor" },
+            { id: "backstab_shadowstep", name: "Shadowstep", skill: "Backstab", unlockLevel: 90, description: "Teleport behind target before striking" },
+            // Fan of Knives Runes
+            { id: "fanofknives_weighted", name: "Weighted", skill: "Fan of Knives", unlockLevel: 50, description: "Slows enemies hit by 30% for 3s" },
+            { id: "fanofknives_poisoned", name: "Poisoned", skill: "Fan of Knives", unlockLevel: 70, description: "Applies poison DoT" },
+            { id: "fanofknives_fury", name: "Bladed Fury", skill: "Fan of Knives", unlockLevel: 90, description: "Double the number of knives" },
+            // Shadow Lunge Runes
+            { id: "shadowlunge_extended", name: "Extended", skill: "Shadow Lunge", unlockLevel: 50, description: "+50% range" },
+            { id: "shadowlunge_cripple", name: "Cripple", skill: "Shadow Lunge", unlockLevel: 70, description: "Slows target by 50% for 3s" },
+            { id: "shadowlunge_shadow", name: "Shadow Clone", skill: "Shadow Lunge", unlockLevel: 90, description: "Creates illusion that attacks once" },
+            // Cloak and Vanish Runes
+            { id: "cloak_swift", name: "Swift", skill: "Cloak & Vanish", unlockLevel: 50, description: "+30% movement speed while invisible" },
+            { id: "cloak_longer", name: "Lasting Shadow", skill: "Cloak & Vanish", unlockLevel: 70, description: "+100% invisibility duration" },
+            { id: "cloak_ambush", name: "Prepared Ambush", skill: "Cloak & Vanish", unlockLevel: 90, description: "Next attack deals +100% damage" },
+        ],
+        Wizard: [
+            // Fireball Runes
+            { id: "fireball_magma", name: "Magma Orb", skill: "Fireball", unlockLevel: 50, description: "Slower projectile, leaves burning ground for 3s" },
+            { id: "fireball_chain", name: "Chain Reaction", skill: "Fireball", unlockLevel: 70, description: "Bounces to 3 additional targets at 50% damage" },
+            { id: "fireball_empowered", name: "Empowered", skill: "Fireball", unlockLevel: 90, description: "+100% damage, +3s cooldown" },
+            // Meteor Drop Runes
+            { id: "meteor_cluster", name: "Cluster", skill: "Meteor Drop", unlockLevel: 50, description: "3 smaller meteors instead of 1" },
+            { id: "meteor_extinction", name: "Extinction", skill: "Meteor Drop", unlockLevel: 70, description: "+50% explosion radius" },
+            { id: "meteor_apocalypse", name: "Apocalypse", skill: "Meteor Drop", unlockLevel: 90, description: "Meteors continue for 5s after cast" },
+            // Teleport Runes
+            { id: "teleport_blink", name: "Blink", skill: "Teleport", unlockLevel: 50, description: "+50% range" },
+            { id: "teleport_phase", name: "Phase", skill: "Teleport", unlockLevel: 70, description: "Invulnerable for 1s after teleport" },
+            { id: "teleport_warp", name: "Warp", skill: "Teleport", unlockLevel: 90, description: "Damages enemies at start and end location" },
+            // Arcane Shield Runes
+            { id: "arcaneshield_extended", name: "Extended", skill: "Arcane Shield", unlockLevel: 50, description: "+50% duration" },
+            { id: "arcaneshield_reflective", name: "Reflective", skill: "Arcane Shield", unlockLevel: 70, description: "Reflects 30% of absorbed damage" },
+            { id: "arcaneshield_explosive", name: "Explosive", skill: "Arcane Shield", unlockLevel: 90, description: "Explodes when broken dealing absorbed amount" },
+            // Gravity Well Runes
+            { id: "gravitywell_expanded", name: "Expanded", skill: "Gravity Well", unlockLevel: 50, description: "+50% radius" },
+            { id: "gravitywell_crushing", name: "Crushing", skill: "Gravity Well", unlockLevel: 70, description: "+100% damage" },
+            { id: "gravitywell_blackhole", name: "Black Hole", skill: "Gravity Well", unlockLevel: 90, description: "Enemies cannot escape while active" },
+        ],
+        Cleric: [
+            // Spirit Guardians Runes
+            { id: "spirits_expanded", name: "Expanded", skill: "Spirit Guardians", unlockLevel: 50, description: "+50% radius" },
+            { id: "spirits_vengeful", name: "Vengeful", skill: "Spirit Guardians", unlockLevel: 70, description: "+50% damage, -25% healing" },
+            { id: "spirits_sanctuary", name: "Sanctuary", skill: "Spirit Guardians", unlockLevel: 90, description: "Also reduces damage taken by 20%" },
+            // Healing Light Runes
+            { id: "healinglight_beacon", name: "Beacon", skill: "Healing Light", unlockLevel: 50, description: "Heals in AoE around target (5 unit radius)" },
+            { id: "healinglight_renewal", name: "Renewal", skill: "Healing Light", unlockLevel: 70, description: "Adds HoT for 5s (20% of initial heal)" },
+            { id: "healinglight_divine", name: "Divine", skill: "Healing Light", unlockLevel: 90, description: "Also cleanses 1 debuff" },
+            // Divine Intervention Runes
+            { id: "divineintervention_quick", name: "Quick Save", skill: "Divine Intervention", unlockLevel: 50, description: "Cooldown reduced by 50%" },
+            { id: "divineintervention_guardian", name: "Guardian Angel", skill: "Divine Intervention", unlockLevel: 70, description: "Target gains 50% damage reduction for 5s" },
+            { id: "divineintervention_miracle", name: "Miracle", skill: "Divine Intervention", unlockLevel: 90, description: "Can affect 2 targets" },
+            // Radiant Strike Runes
+            { id: "radiantstrike_smite", name: "Smite", skill: "Radiant Strike", unlockLevel: 50, description: "+50% damage" },
+            { id: "radiantstrike_chains", name: "Chains of Light", skill: "Radiant Strike", unlockLevel: 70, description: "Roots target for 2s" },
+            { id: "radiantstrike_purge", name: "Purge", skill: "Radiant Strike", unlockLevel: 90, description: "Removes 1 buff from target" },
+            // Consecrated Ground Runes
+            { id: "consecratedground_expanded", name: "Expanded", skill: "Consecrated Ground", unlockLevel: 50, description: "+50% radius" },
+            { id: "consecratedground_lingering", name: "Lingering", skill: "Consecrated Ground", unlockLevel: 70, description: "+100% duration" },
+            { id: "consecratedground_sanctuary", name: "Holy Ground", skill: "Consecrated Ground", unlockLevel: 90, description: "Allies in area take 30% less damage" },
+        ],
+    },
+
+    // ================================================================
+    // SKILL COMBOS
+    // Using specific skill sequences within 3 seconds triggers bonus effects
+    // Each class has 4 unique combos
+    // ================================================================
+    SKILL_COMBOS: {
+        Fighter: [
+            { id: "momentum_strike", name: "Momentum Strike", firstSkill: "Charge", secondSkill: "Whirlwind", description: "+50% Whirlwind damage" },
+            { id: "tremor_rush", name: "Tremor Rush", firstSkill: "Earthshaker", secondSkill: "Charge", description: "+2s knockdown on Charge" },
+            { id: "guardian_combo", name: "Guardian Combo", firstSkill: "Shield Slam", secondSkill: "Guardian Roar", description: "+50% taunt duration" },
+            { id: "iron_will", name: "Iron Will", firstSkill: "Iron Fortress", secondSkill: "Last Stand Rampage", description: "Damage reduction persists during rampage" },
+        ],
+        Rogue: [
+            { id: "ambush", name: "Ambush", firstSkill: "Cloak & Vanish", secondSkill: "Backstab", description: "Guaranteed critical hit" },
+            { id: "venom_burst", name: "Venom Burst", firstSkill: "Poison Coating", secondSkill: "Death Spiral", description: "+100% poison damage" },
+            { id: "blade_tornado", name: "Blade Tornado", firstSkill: "Fan of Knives", secondSkill: "Phantom Volley", description: "Volley pierces all targets" },
+            { id: "shadow_dance", name: "Shadow Dance", firstSkill: "Shadow Lunge", secondSkill: "Smoke Bomb", description: "Smoke bomb instant cast" },
+        ],
+        Wizard: [
+            { id: "implosion", name: "Implosion", firstSkill: "Gravity Well", secondSkill: "Fireball", description: "+100% Fireball damage in gravity well" },
+            { id: "arcane_barrage", name: "Arcane Barrage", firstSkill: "Arcane Shield", secondSkill: "Meteor Drop", description: "Shield explodes on meteor impact" },
+            { id: "time_burn", name: "Time Burn", firstSkill: "Time Warp", secondSkill: "Inferno Cataclysm", description: "Cataclysm ticks twice as fast" },
+            { id: "nova_cascade", name: "Nova Cascade", firstSkill: "Teleport", secondSkill: "Flame Whip", description: "360° Flame Whip" },
+        ],
+        Cleric: [
+            { id: "divine_storm", name: "Divine Storm", firstSkill: "Heaven's Trumpet", secondSkill: "Spirit Guardians", description: "Guardians deal holy damage" },
+            { id: "sanctuary_combo", name: "Sanctuary", firstSkill: "Consecrated Ground", secondSkill: "Guardian Embrace", description: "Ground also provides damage immunity" },
+            { id: "holy_fury", name: "Holy Fury", firstSkill: "Mark of Weakness", secondSkill: "Radiant Strike", description: "+100% Radiant Strike damage" },
+            { id: "mass_revival", name: "Mass Revival", firstSkill: "Divine Intervention", secondSkill: "Healing Light", description: "Healing Light heals entire party" },
+        ],
     }
 };
