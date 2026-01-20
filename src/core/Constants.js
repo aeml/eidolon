@@ -10,7 +10,7 @@ export const CONSTANTS = {
             MAX_Z: 50000
         },
         CHUNK_SIZE: 50,
-        LOAD_DISTANCE: 1,
+        LOAD_DISTANCE: 2,
         GROUND_COLOR: 0x333333,
     },
     CAMERA: {
