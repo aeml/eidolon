@@ -107,11 +107,13 @@ export class RenderSystem {
                     map: this.waterTexture,
                     color: 0x88ccff,
                     transparent: true,
-                    opacity: 0.8
+                    opacity: 0.8,
+                    depthWrite: false // Prevent water from occluding ground planes above it
                 });
                 this.waterPlane = new THREE.Mesh(geo, mat);
                 this.waterPlane.rotation.x = -Math.PI / 2;
                 this.waterPlane.position.y = -5;
+                this.waterPlane.renderOrder = -1; // Render water first (behind everything)
             }
 
             if (!this.waterPlane.parent) {
@@ -176,10 +178,11 @@ export class RenderSystem {
             this.scene.add(this.groundSnow);
         }
 
-        // Fire Realm ground (West Zone: X -3000 to -1000)
+        // Fire Realm ground (West Zone: X -3000 to -1000, Z: -600 to 1000)
         // Uses ground texture with red/orange tint
         if (!this.groundFire) {
-            const fireGeo = new THREE.PlaneGeometry(2000, 2600);
+            // Width: 2000 (X axis), Depth: 1600 (Z axis from -600 to 1000)
+            const fireGeo = new THREE.PlaneGeometry(2000, 1600);
             const fireMat = new THREE.MeshStandardMaterial({
                 map: this.groundTexture,
                 color: 0xFF6633, // Orange-red tint for scorched earth
@@ -188,7 +191,8 @@ export class RenderSystem {
             });
             this.groundFire = new THREE.Mesh(fireGeo, fireMat);
             this.groundFire.rotation.x = -Math.PI / 2;
-            this.groundFire.position.set(-2000, -0.1, 200); // West of main area
+            // Center: X=-2000 (middle of -3000 to -1000), Z=200 (middle of -600 to 1000)
+            this.groundFire.position.set(-2000, 0, 200);
             this.groundFire.receiveShadow = true;
         }
 
@@ -196,10 +200,11 @@ export class RenderSystem {
             this.scene.add(this.groundFire);
         }
 
-        // Air Realm ground (East Zone: X 1000 to 3000)
+        // Air Realm ground (East Zone: X 1000 to 3000, Z: -600 to 1000)
         // Uses ground texture with blue/white tint
         if (!this.groundAir) {
-            const airGeo = new THREE.PlaneGeometry(2000, 2600);
+            // Width: 2000 (X axis), Depth: 1600 (Z axis from -600 to 1000)
+            const airGeo = new THREE.PlaneGeometry(2000, 1600);
             const airMat = new THREE.MeshStandardMaterial({
                 map: this.groundTexture,
                 color: 0x99BBCC, // Light blue tint for sky/cloud realm
@@ -208,7 +213,8 @@ export class RenderSystem {
             });
             this.groundAir = new THREE.Mesh(airGeo, airMat);
             this.groundAir.rotation.x = -Math.PI / 2;
-            this.groundAir.position.set(2000, -0.1, 200); // East of main area
+            // Center: X=2000 (middle of 1000 to 3000), Z=200 (middle of -600 to 1000)
+            this.groundAir.position.set(2000, 0, 200);
             this.groundAir.receiveShadow = true;
         }
 
