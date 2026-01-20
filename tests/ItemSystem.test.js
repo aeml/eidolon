@@ -313,7 +313,8 @@ describe('ItemGenerator', () => {
         test('Elite loot has higher minimum rarity', () => {
             const item = ItemGenerator.generateEliteLoot(10);
             
-            const eliteRarities = [RARITY.UNCOMMON, RARITY.RARE, RARITY.LEGENDARY];
+            // Elite loot should never be Common - can be Uncommon, Rare, Legendary, or Eidolic
+            const eliteRarities = [RARITY.UNCOMMON, RARITY.RARE, RARITY.LEGENDARY, RARITY.EIDOLIC];
             expect(eliteRarities).toContain(item.rarity);
         });
     });
