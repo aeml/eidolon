@@ -136,4 +136,7 @@ message Entity {
   // Ranked passive talents: talentId -> rank.
   // New clients should use this; unlocked_talents is retained for backwards compatibility.
   map<string, int32> talent_ranks = 49;
+
+  // Skill runes: skillName -> runeId
+  map<string, string> skill_runes = 50;
 }

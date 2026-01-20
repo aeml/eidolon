@@ -1,4 +1,4 @@
-import { ItemGenerator, SLOTS, Item, BASE_ITEMS, RARITY } from '../core/ItemSystem.js';
+import { ItemGenerator, SLOTS, Item, BASE_ITEMS, RARITY, SET_DEFINITIONS, UNIQUE_EFFECTS, GEM_TYPES, GEM_QUALITIES, getGemStats } from '../core/ItemSystem.js';
 import { CONSTANTS } from '../core/Constants.js';
 
 export class UIManager {
@@ -184,13 +184,16 @@ export class UIManager {
         this.tabForgeUpgrade = document.getElementById('tab-forge-upgrade');
         this.tabForgePotency = document.getElementById('tab-forge-potency');
         this.tabForgeSocket = document.getElementById('tab-forge-socket');
+        this.tabForgeGems = document.getElementById('tab-forge-gems');
         this.forgePanelUpgrade = document.getElementById('forge-panel-upgrade');
         this.forgePanelPotency = document.getElementById('forge-panel-potency');
         this.forgePanelSocket = document.getElementById('forge-panel-socket');
+        this.forgePanelGems = document.getElementById('forge-panel-gems');
 
         if (this.tabForgeUpgrade) this.tabForgeUpgrade.addEventListener('click', () => this.switchForgeTab('upgrade'));
         if (this.tabForgePotency) this.tabForgePotency.addEventListener('click', () => this.switchForgeTab('potency'));
         if (this.tabForgeSocket) this.tabForgeSocket.addEventListener('click', () => this.switchForgeTab('socket'));
+        if (this.tabForgeGems) this.tabForgeGems.addEventListener('click', () => this.switchForgeTab('gems'));
 
         // Forge Socket UI
         this.forgeSocketList = document.getElementById('forge-socket-list');
@@ -203,6 +206,57 @@ export class UIManager {
 
         if (this.btnForgeSocket) this.btnForgeSocket.addEventListener('click', () => this.handleForgeSocket());
         this.selectedForgeSocketSlot = null;
+        
+        // Forge Gems UI
+        this.forgeGemEquipment = document.getElementById('forge-gem-equipment');
+        this.forgeGemInventory = document.getElementById('forge-gem-inventory');
+        this.forgeGemInfo = document.getElementById('forge-gem-info');
+        this.forgeGemEquipName = document.getElementById('forge-gem-equip-name');
+        this.forgeGemSocketSlots = document.getElementById('forge-gem-socket-slots');
+        this.forgeGemSelectedName = document.getElementById('forge-gem-selected-name');
+        this.forgeGemPreview = document.getElementById('forge-gem-preview');
+        this.btnForgeInsertGem = document.getElementById('btn-forge-insert-gem');
+        
+        if (this.btnForgeInsertGem) this.btnForgeInsertGem.addEventListener('click', () => this.handleForgeInsertGem());
+        this.selectedGemEquipSlot = null;
+        this.selectedGemSocketIndex = null;
+        this.selectedGemInvIndex = null;
+        
+        // Gem sub-tabs
+        this.tabGemInsert = document.getElementById('tab-gem-insert');
+        this.tabGemCombine = document.getElementById('tab-gem-combine');
+        this.tabGemRemove = document.getElementById('tab-gem-remove');
+        this.gemPanelInsert = document.getElementById('gem-panel-insert');
+        this.gemPanelCombine = document.getElementById('gem-panel-combine');
+        this.gemPanelRemove = document.getElementById('gem-panel-remove');
+        
+        if (this.tabGemInsert) this.tabGemInsert.addEventListener('click', () => this.switchGemSubTab('insert'));
+        if (this.tabGemCombine) this.tabGemCombine.addEventListener('click', () => this.switchGemSubTab('combine'));
+        if (this.tabGemRemove) this.tabGemRemove.addEventListener('click', () => this.switchGemSubTab('remove'));
+        
+        // Gem combine UI
+        this.forgeGemCombineInventory = document.getElementById('forge-gem-combine-inventory');
+        this.forgeGemCombineSlots = document.getElementById('forge-gem-combine-slots');
+        this.forgeGemCombineResult = document.getElementById('forge-gem-combine-result');
+        this.forgeGemCombinePreview = document.getElementById('forge-gem-combine-preview');
+        this.btnForgeCombineGem = document.getElementById('btn-forge-combine-gem');
+        
+        if (this.btnForgeCombineGem) this.btnForgeCombineGem.addEventListener('click', () => this.handleForgeCombineGem());
+        this.selectedCombineGemIndices = []; // Array of up to 3 inventory indices
+        
+        // Gem remove UI
+        this.forgeGemRemoveEquipment = document.getElementById('forge-gem-remove-equipment');
+        this.forgeGemRemoveInfo = document.getElementById('forge-gem-remove-info');
+        this.forgeGemRemoveEquipName = document.getElementById('forge-gem-remove-equip-name');
+        this.forgeGemRemoveSlots = document.getElementById('forge-gem-remove-slots');
+        this.forgeGemRemovePreview = document.getElementById('forge-gem-remove-preview');
+        this.btnForgeRemoveGem = document.getElementById('btn-forge-remove-gem');
+        
+        if (this.btnForgeRemoveGem) this.btnForgeRemoveGem.addEventListener('click', () => this.handleForgeRemoveGem());
+        this.selectedRemoveEquipSlot = null;
+        this.selectedRemoveSocketIndex = null;
+        
+        this.currentGemSubTab = 'insert';
 
         if (this.btnCloseForge) this.btnCloseForge.addEventListener('click', () => this.toggleForge());
         if (this.btnCloseTradingHouse) this.btnCloseTradingHouse.addEventListener('click', () => this.toggleTradingHouse());
@@ -943,14 +997,19 @@ export class UIManager {
                 this.updateForgeUI(this.lastPlayerRef);
                 this.updateForgePotencyUI(this.lastPlayerRef);
                 this.updateForgeSocketUI(this.lastPlayerRef);
+                this.updateForgeGemsUI(this.lastPlayerRef);
             }
         } else {
             this.selectedForgeSlot = null;
             this.selectedForgePotencySlot = null;
             this.selectedForgeSocketSlot = null;
+            this.selectedGemEquipSlot = null;
+            this.selectedGemSocketIndex = null;
+            this.selectedGemInvIndex = null;
             this.forgeUpgradeInfo.style.display = 'none';
             this.forgePotencyInfo.style.display = 'none';
             this.forgeSocketInfo.style.display = 'none';
+            if (this.forgeGemInfo) this.forgeGemInfo.style.display = 'none';
         }
     }
 
@@ -1256,10 +1315,12 @@ export class UIManager {
         if (this.tabForgeUpgrade) this.tabForgeUpgrade.style.background = '#111';
         if (this.tabForgePotency) this.tabForgePotency.style.background = '#111';
         if (this.tabForgeSocket) this.tabForgeSocket.style.background = '#111';
+        if (this.tabForgeGems) this.tabForgeGems.style.background = '#111';
         
         if (this.forgePanelUpgrade) this.forgePanelUpgrade.style.display = 'none';
         if (this.forgePanelPotency) this.forgePanelPotency.style.display = 'none';
         if (this.forgePanelSocket) this.forgePanelSocket.style.display = 'none';
+        if (this.forgePanelGems) this.forgePanelGems.style.display = 'none';
 
         if (tab === 'upgrade') {
             if (this.tabForgeUpgrade) this.tabForgeUpgrade.style.background = '#333';
@@ -1270,6 +1331,10 @@ export class UIManager {
         } else if (tab === 'socket') {
             if (this.tabForgeSocket) this.tabForgeSocket.style.background = '#333';
             if (this.forgePanelSocket) this.forgePanelSocket.style.display = 'flex';
+        } else if (tab === 'gems') {
+            if (this.tabForgeGems) this.tabForgeGems.style.background = '#333';
+            if (this.forgePanelGems) this.forgePanelGems.style.display = 'flex';
+            if (this.lastPlayerRef) this.updateForgeGemsUI(this.lastPlayerRef);
         }
     }
 
@@ -1763,6 +1828,644 @@ export class UIManager {
             this.onForgeSocket(this.selectedForgeSocketSlot);
         }
     }
+    
+    updateForgeGemsUI(player) {
+        if (!this.forgeGemEquipment || !this.forgeGemInventory) return;
+        
+        // Clear existing content
+        this.forgeGemEquipment.innerHTML = '';
+        this.forgeGemInventory.innerHTML = '';
+        
+        const slots = ['mainHand', 'offHand', 'head', 'chest', 'legs', 'feet', 'gloves', 'shoulders', 'belt', 'ring1', 'ring2', 'trinket1', 'trinket2', 'neck'];
+        
+        // Show equipment with sockets
+        slots.forEach(slot => {
+            const item = player.equipment ? player.equipment[slot] : null;
+            if (item && item.sockets && item.sockets > 0) {
+                const el = document.createElement('div');
+                el.className = 'inv-slot';
+                el.style.position = 'relative';
+                el.style.cursor = 'pointer';
+                el.style.width = '48px';
+                el.style.height = '48px';
+                
+                const iconPath = this.getItemIconPath(item);
+                el.style.backgroundImage = `url('${iconPath}')`;
+                el.style.backgroundSize = 'contain';
+                el.style.backgroundRepeat = 'no-repeat';
+                el.style.backgroundPosition = 'center';
+                
+                const color = item.rarity ? item.rarity.color : '#ffffff';
+                el.style.border = `1px solid ${color}`;
+                
+                // Socket indicator
+                const socketDiv = document.createElement('div');
+                socketDiv.style.position = 'absolute';
+                socketDiv.style.bottom = '2px';
+                socketDiv.style.left = '2px';
+                socketDiv.style.display = 'flex';
+                socketDiv.style.gap = '2px';
+                
+                const usedSockets = item.gems ? item.gems.length : 0;
+                for (let i = 0; i < item.sockets; i++) {
+                    const dot = document.createElement('div');
+                    dot.style.width = '6px';
+                    dot.style.height = '6px';
+                    dot.style.borderRadius = '50%';
+                    if (i < usedSockets) {
+                        // Filled socket - show gem color
+                        const gem = item.gems[i];
+                        const gemType = GEM_TYPES[gem.type];
+                        dot.style.backgroundColor = gemType ? gemType.color : '#ff00ff';
+                        dot.style.boxShadow = `0 0 3px ${gemType ? gemType.color : '#ff00ff'}`;
+                    } else {
+                        // Empty socket
+                        dot.style.backgroundColor = '#333';
+                        dot.style.border = '1px solid #666';
+                    }
+                    socketDiv.appendChild(dot);
+                }
+                el.appendChild(socketDiv);
+                
+                // Highlight selected
+                if (this.selectedGemEquipSlot === slot) {
+                    el.style.boxShadow = '0 0 10px #ff00ff';
+                    el.style.borderColor = '#ff00ff';
+                }
+                
+                el.onclick = () => {
+                    this.selectedGemEquipSlot = slot;
+                    this.selectedGemSocketIndex = null; // Reset socket selection
+                    this.updateForgeGemsUI(player);
+                    this.updateForgeGemInfo(item, player);
+                };
+                
+                el.title = `${item.name} (${usedSockets}/${item.sockets} gems)`;
+                this.forgeGemEquipment.appendChild(el);
+            }
+        });
+        
+        // Show gems in inventory
+        if (player.inventory) {
+            player.inventory.forEach((item, index) => {
+                if (item && item.type === 'Gem') {
+                    const el = document.createElement('div');
+                    el.className = 'inv-slot';
+                    el.style.cursor = 'pointer';
+                    el.style.width = '48px';
+                    el.style.height = '48px';
+                    el.style.display = 'flex';
+                    el.style.alignItems = 'center';
+                    el.style.justifyContent = 'center';
+                    
+                    const gemType = GEM_TYPES[item.gemType];
+                    const gemQuality = GEM_QUALITIES[item.gemQuality];
+                    const gemColor = gemType ? gemType.color : '#ff00ff';
+                    
+                    el.style.backgroundColor = '#1a1a1a';
+                    el.style.border = `1px solid ${gemColor}`;
+                    
+                    // Gem icon (diamond shape)
+                    el.innerHTML = `<div style="color: ${gemColor}; font-size: 24px; text-shadow: 0 0 5px ${gemColor};">◆</div>`;
+                    
+                    // Highlight selected
+                    if (this.selectedGemInvIndex === index) {
+                        el.style.boxShadow = '0 0 10px #ff00ff';
+                        el.style.borderColor = '#ff00ff';
+                    }
+                    
+                    el.onclick = () => {
+                        this.selectedGemInvIndex = index;
+                        this.updateForgeGemsUI(player);
+                        this.updateForgeGemInfo(null, player);
+                    };
+                    
+                    el.title = `${gemQuality ? gemQuality.name : ''} ${gemType ? gemType.name : 'Gem'}`;
+                    this.forgeGemInventory.appendChild(el);
+                }
+            });
+        }
+        
+        // Show message if no gems
+        if (this.forgeGemInventory.children.length === 0) {
+            const msg = document.createElement('div');
+            msg.style.color = '#666';
+            msg.style.padding = '10px';
+            msg.style.textAlign = 'center';
+            msg.style.gridColumn = '1 / -1';
+            msg.textContent = 'No gems in inventory';
+            this.forgeGemInventory.appendChild(msg);
+        }
+        
+        // Show message if no socketed equipment
+        if (this.forgeGemEquipment.children.length === 0) {
+            const msg = document.createElement('div');
+            msg.style.color = '#666';
+            msg.style.padding = '10px';
+            msg.style.textAlign = 'center';
+            msg.style.gridColumn = '1 / -1';
+            msg.textContent = 'No equipment with sockets';
+            this.forgeGemEquipment.appendChild(msg);
+        }
+    }
+    
+    updateForgeGemInfo(item, player) {
+        if (!this.forgeGemInfo) return;
+        
+        // Get selected equipment item
+        const equipItem = item || (this.selectedGemEquipSlot && player.equipment ? player.equipment[this.selectedGemEquipSlot] : null);
+        
+        // Get selected gem from inventory
+        const gemItem = this.selectedGemInvIndex !== null && player.inventory ? player.inventory[this.selectedGemInvIndex] : null;
+        
+        if (!equipItem || !this.selectedGemEquipSlot) {
+            this.forgeGemInfo.style.display = 'none';
+            return;
+        }
+        
+        this.forgeGemInfo.style.display = 'flex';
+        
+        // Update equipment name
+        if (this.forgeGemEquipName) {
+            this.forgeGemEquipName.textContent = equipItem.name;
+            this.forgeGemEquipName.style.color = equipItem.rarity ? equipItem.rarity.color : '#fff';
+        }
+        
+        // Update socket slots display
+        if (this.forgeGemSocketSlots) {
+            this.forgeGemSocketSlots.innerHTML = '';
+            const usedSockets = equipItem.gems ? equipItem.gems.length : 0;
+            
+            for (let i = 0; i < equipItem.sockets; i++) {
+                const socketEl = document.createElement('div');
+                socketEl.style.width = '20px';
+                socketEl.style.height = '20px';
+                socketEl.style.borderRadius = '3px';
+                socketEl.style.cursor = 'pointer';
+                socketEl.style.display = 'flex';
+                socketEl.style.alignItems = 'center';
+                socketEl.style.justifyContent = 'center';
+                
+                if (i < usedSockets) {
+                    // Filled socket
+                    const gem = equipItem.gems[i];
+                    const gemType = GEM_TYPES[gem.type];
+                    const gemColor = gemType ? gemType.color : '#ff00ff';
+                    socketEl.style.backgroundColor = '#222';
+                    socketEl.style.border = `2px solid ${gemColor}`;
+                    socketEl.innerHTML = `<span style="color: ${gemColor};">◆</span>`;
+                    socketEl.title = `${gem.quality || ''} ${gemType ? gemType.name : 'Gem'} (filled)`;
+                } else {
+                    // Empty socket
+                    socketEl.style.backgroundColor = '#111';
+                    socketEl.style.border = '2px dashed #444';
+                    socketEl.title = 'Empty socket';
+                    
+                    // Highlight if this is the selected socket for insertion
+                    if (this.selectedGemSocketIndex === i) {
+                        socketEl.style.borderColor = '#ff00ff';
+                        socketEl.style.boxShadow = '0 0 5px #ff00ff';
+                    }
+                    
+                    // Click to select this socket
+                    socketEl.onclick = () => {
+                        this.selectedGemSocketIndex = i;
+                        this.updateForgeGemInfo(equipItem, player);
+                    };
+                }
+                
+                this.forgeGemSocketSlots.appendChild(socketEl);
+            }
+        }
+        
+        // Update selected gem name
+        if (this.forgeGemSelectedName) {
+            if (gemItem) {
+                const gemType = GEM_TYPES[gemItem.gemType];
+                const gemQuality = GEM_QUALITIES[gemItem.gemQuality];
+                this.forgeGemSelectedName.textContent = `${gemQuality ? gemQuality.name : ''} ${gemType ? gemType.name : 'Gem'}`;
+                this.forgeGemSelectedName.style.color = gemType ? gemType.color : '#ff00ff';
+            } else {
+                this.forgeGemSelectedName.textContent = 'Select a gem';
+                this.forgeGemSelectedName.style.color = '#666';
+            }
+        }
+        
+        // Update preview
+        if (this.forgeGemPreview) {
+            if (gemItem) {
+                const gemStats = getGemStats(gemItem.gemType, gemItem.gemQuality);
+                let preview = 'Stats: ';
+                for (const stat in gemStats) {
+                    preview += `+${gemStats[stat]} ${this.formatStatName(stat)} `;
+                }
+                this.forgeGemPreview.textContent = preview;
+            } else {
+                this.forgeGemPreview.textContent = '';
+            }
+        }
+        
+        // Enable/disable insert button
+        if (this.btnForgeInsertGem) {
+            const usedSockets = equipItem.gems ? equipItem.gems.length : 0;
+            const hasEmptySocket = usedSockets < equipItem.sockets;
+            const canInsert = gemItem && hasEmptySocket && this.selectedGemSocketIndex !== null;
+            this.btnForgeInsertGem.disabled = !canInsert;
+        }
+    }
+    
+    handleForgeInsertGem() {
+        if (!this.selectedGemEquipSlot || this.selectedGemInvIndex === null || this.selectedGemSocketIndex === null) return;
+        
+        if (this.onForgeInsertGem) {
+            this.onForgeInsertGem(this.selectedGemEquipSlot, this.selectedGemInvIndex, this.selectedGemSocketIndex);
+        }
+        
+        // Reset selection
+        this.selectedGemInvIndex = null;
+        this.selectedGemSocketIndex = null;
+        
+        // Refresh UI
+        if (this.lastPlayerRef) {
+            this.updateForgeGemsUI(this.lastPlayerRef);
+            this.updateForgeGemInfo(null, this.lastPlayerRef);
+        }
+    }
+    
+    switchGemSubTab(tab) {
+        this.currentGemSubTab = tab;
+        
+        // Update tab buttons
+        if (this.tabGemInsert) this.tabGemInsert.style.background = tab === 'insert' ? '#333' : '#111';
+        if (this.tabGemCombine) this.tabGemCombine.style.background = tab === 'combine' ? '#333' : '#111';
+        if (this.tabGemRemove) this.tabGemRemove.style.background = tab === 'remove' ? '#333' : '#111';
+        
+        // Update panels
+        if (this.gemPanelInsert) this.gemPanelInsert.style.display = tab === 'insert' ? 'flex' : 'none';
+        if (this.gemPanelCombine) this.gemPanelCombine.style.display = tab === 'combine' ? 'flex' : 'none';
+        if (this.gemPanelRemove) this.gemPanelRemove.style.display = tab === 'remove' ? 'flex' : 'none';
+        
+        // Reset selections
+        this.selectedCombineGemIndices = [];
+        this.selectedRemoveEquipSlot = null;
+        this.selectedRemoveSocketIndex = null;
+        
+        // Update UI for current tab
+        if (this.lastPlayerRef) {
+            if (tab === 'combine') {
+                this.updateGemCombineUI(this.lastPlayerRef);
+            } else if (tab === 'remove') {
+                this.updateGemRemoveUI(this.lastPlayerRef);
+            }
+        }
+    }
+    
+    updateGemCombineUI(player) {
+        if (!this.forgeGemCombineInventory) return;
+        
+        this.forgeGemCombineInventory.innerHTML = '';
+        
+        // Group gems by type and quality
+        const gemGroups = {};
+        if (player.inventory) {
+            player.inventory.forEach((item, index) => {
+                if (item && item.type === 'Gem') {
+                    const key = `${item.gemType}-${item.gemQuality}`;
+                    if (!gemGroups[key]) {
+                        gemGroups[key] = [];
+                    }
+                    gemGroups[key].push({ item, index });
+                }
+            });
+        }
+        
+        // Show all gems, grouped
+        if (player.inventory) {
+            player.inventory.forEach((item, index) => {
+                if (item && item.type === 'Gem') {
+                    const el = document.createElement('div');
+                    el.className = 'inv-slot';
+                    el.style.cursor = 'pointer';
+                    el.style.width = '40px';
+                    el.style.height = '40px';
+                    el.style.display = 'flex';
+                    el.style.alignItems = 'center';
+                    el.style.justifyContent = 'center';
+                    el.style.position = 'relative';
+                    
+                    const gemType = GEM_TYPES[item.gemType];
+                    const gemQuality = GEM_QUALITIES[item.gemQuality];
+                    const gemColor = gemType ? gemType.color : '#ff00ff';
+                    
+                    el.style.backgroundColor = '#1a1a1a';
+                    el.style.border = `1px solid ${gemColor}`;
+                    
+                    // Gem icon
+                    el.innerHTML = `<div style="color: ${gemColor}; font-size: 20px; text-shadow: 0 0 5px ${gemColor};">◆</div>`;
+                    
+                    // Check if selected
+                    const isSelected = this.selectedCombineGemIndices.includes(index);
+                    if (isSelected) {
+                        el.style.boxShadow = '0 0 10px #ff00ff';
+                        el.style.borderColor = '#ff00ff';
+                        // Show selection number
+                        const num = this.selectedCombineGemIndices.indexOf(index) + 1;
+                        el.innerHTML += `<div style="position: absolute; top: 2px; right: 2px; color: #ff00ff; font-size: 10px; font-weight: bold;">${num}</div>`;
+                    }
+                    
+                    // Check if gem can be combined (same type/quality as first selected)
+                    let canSelect = true;
+                    if (this.selectedCombineGemIndices.length > 0 && !isSelected) {
+                        const firstGem = player.inventory[this.selectedCombineGemIndices[0]];
+                        if (firstGem.gemType !== item.gemType || firstGem.gemQuality !== item.gemQuality) {
+                            canSelect = false;
+                            el.style.opacity = '0.4';
+                        }
+                    }
+                    
+                    // Check if already at max quality
+                    if (item.gemQuality === 'Radiant') {
+                        el.style.opacity = '0.4';
+                        canSelect = false;
+                    }
+                    
+                    el.onclick = () => {
+                        if (!canSelect && !isSelected) return;
+                        
+                        if (isSelected) {
+                            // Deselect
+                            this.selectedCombineGemIndices = this.selectedCombineGemIndices.filter(i => i !== index);
+                        } else if (this.selectedCombineGemIndices.length < 3) {
+                            // Select
+                            this.selectedCombineGemIndices.push(index);
+                        }
+                        
+                        this.updateGemCombineUI(player);
+                    };
+                    
+                    el.title = `${gemQuality ? gemQuality.name : ''} ${gemType ? gemType.name : 'Gem'}`;
+                    this.forgeGemCombineInventory.appendChild(el);
+                }
+            });
+        }
+        
+        // Show message if no gems
+        if (this.forgeGemCombineInventory.children.length === 0) {
+            const msg = document.createElement('div');
+            msg.style.color = '#666';
+            msg.style.padding = '10px';
+            msg.style.textAlign = 'center';
+            msg.style.gridColumn = '1 / -1';
+            msg.textContent = 'No gems in inventory';
+            this.forgeGemCombineInventory.appendChild(msg);
+        }
+        
+        // Update combine slots display
+        this.updateGemCombineSlots(player);
+    }
+    
+    updateGemCombineSlots(player) {
+        if (!this.forgeGemCombineSlots || !this.forgeGemCombineResult) return;
+        
+        // Update the 3 combine slots
+        const slots = this.forgeGemCombineSlots.children;
+        for (let i = 0; i < 3; i++) {
+            const slot = slots[i];
+            if (!slot) continue;
+            
+            if (this.selectedCombineGemIndices[i] !== undefined) {
+                const gem = player.inventory[this.selectedCombineGemIndices[i]];
+                const gemType = GEM_TYPES[gem.gemType];
+                const gemColor = gemType ? gemType.color : '#ff00ff';
+                slot.innerHTML = `<div style="color: ${gemColor}; font-size: 20px; text-shadow: 0 0 5px ${gemColor};">◆</div>`;
+                slot.style.border = `2px solid ${gemColor}`;
+            } else {
+                slot.innerHTML = `${i + 1}`;
+                slot.style.border = '2px dashed #444';
+                slot.style.color = '#666';
+            }
+        }
+        
+        // Update result preview
+        if (this.selectedCombineGemIndices.length === 3) {
+            const firstGem = player.inventory[this.selectedCombineGemIndices[0]];
+            const gemType = GEM_TYPES[firstGem.gemType];
+            const gemColor = gemType ? gemType.color : '#ff00ff';
+            
+            // Get next quality
+            const qualityOrder = ['Chipped', 'Flawed', 'Normal', 'Flawless', 'Perfect', 'Radiant'];
+            const currentIdx = qualityOrder.indexOf(firstGem.gemQuality);
+            const nextQuality = qualityOrder[currentIdx + 1];
+            
+            this.forgeGemCombineResult.innerHTML = `<div style="color: ${gemColor}; font-size: 24px; text-shadow: 0 0 8px ${gemColor};">◆</div>`;
+            this.forgeGemCombineResult.style.border = `2px solid ${gemColor}`;
+            
+            if (this.forgeGemCombinePreview) {
+                const nextQualityObj = GEM_QUALITIES[nextQuality];
+                this.forgeGemCombinePreview.textContent = `Result: ${nextQualityObj ? nextQualityObj.name : nextQuality} ${gemType ? gemType.name : 'Gem'}`;
+            }
+        } else {
+            this.forgeGemCombineResult.innerHTML = '?';
+            this.forgeGemCombineResult.style.border = '2px solid #444';
+            this.forgeGemCombineResult.style.color = '#666';
+            
+            if (this.forgeGemCombinePreview) {
+                this.forgeGemCombinePreview.textContent = 'Select 3 gems of the same type and quality';
+            }
+        }
+        
+        // Enable/disable combine button
+        if (this.btnForgeCombineGem) {
+            this.btnForgeCombineGem.disabled = this.selectedCombineGemIndices.length !== 3;
+        }
+    }
+    
+    handleForgeCombineGem() {
+        if (this.selectedCombineGemIndices.length !== 3) return;
+        
+        if (this.onForgeCombineGem) {
+            this.onForgeCombineGem(this.selectedCombineGemIndices);
+        }
+        
+        // Reset selection
+        this.selectedCombineGemIndices = [];
+        
+        // Refresh UI
+        if (this.lastPlayerRef) {
+            this.updateGemCombineUI(this.lastPlayerRef);
+        }
+    }
+    
+    updateGemRemoveUI(player) {
+        if (!this.forgeGemRemoveEquipment) return;
+        
+        this.forgeGemRemoveEquipment.innerHTML = '';
+        
+        const slots = ['mainHand', 'offHand', 'head', 'chest', 'legs', 'feet', 'gloves', 'shoulders', 'belt', 'ring1', 'ring2', 'trinket1', 'trinket2', 'neck'];
+        
+        // Show equipment with socketed gems
+        slots.forEach(slot => {
+            const item = player.equipment ? player.equipment[slot] : null;
+            if (item && item.gems && item.gems.length > 0) {
+                const el = document.createElement('div');
+                el.className = 'inv-slot';
+                el.style.position = 'relative';
+                el.style.cursor = 'pointer';
+                el.style.width = '48px';
+                el.style.height = '48px';
+                
+                const iconPath = this.getItemIconPath(item);
+                el.style.backgroundImage = `url('${iconPath}')`;
+                el.style.backgroundSize = 'contain';
+                el.style.backgroundRepeat = 'no-repeat';
+                el.style.backgroundPosition = 'center';
+                
+                const color = item.rarity ? item.rarity.color : '#ffffff';
+                el.style.border = `1px solid ${color}`;
+                
+                // Socket indicator
+                const socketDiv = document.createElement('div');
+                socketDiv.style.position = 'absolute';
+                socketDiv.style.bottom = '2px';
+                socketDiv.style.left = '2px';
+                socketDiv.style.display = 'flex';
+                socketDiv.style.gap = '2px';
+                
+                for (let i = 0; i < item.gems.length; i++) {
+                    const dot = document.createElement('div');
+                    dot.style.width = '6px';
+                    dot.style.height = '6px';
+                    dot.style.borderRadius = '50%';
+                    const gem = item.gems[i];
+                    const gemType = GEM_TYPES[gem.type];
+                    dot.style.backgroundColor = gemType ? gemType.color : '#ff00ff';
+                    dot.style.boxShadow = `0 0 3px ${gemType ? gemType.color : '#ff00ff'}`;
+                    socketDiv.appendChild(dot);
+                }
+                el.appendChild(socketDiv);
+                
+                // Highlight selected
+                if (this.selectedRemoveEquipSlot === slot) {
+                    el.style.boxShadow = '0 0 10px #ff4444';
+                    el.style.borderColor = '#ff4444';
+                }
+                
+                el.onclick = () => {
+                    this.selectedRemoveEquipSlot = slot;
+                    this.selectedRemoveSocketIndex = null;
+                    this.updateGemRemoveUI(player);
+                    this.updateGemRemoveInfo(item, player);
+                };
+                
+                el.title = `${item.name} (${item.gems.length} gems)`;
+                this.forgeGemRemoveEquipment.appendChild(el);
+            }
+        });
+        
+        // Show message if no equipment with gems
+        if (this.forgeGemRemoveEquipment.children.length === 0) {
+            const msg = document.createElement('div');
+            msg.style.color = '#666';
+            msg.style.padding = '10px';
+            msg.style.textAlign = 'center';
+            msg.style.gridColumn = '1 / -1';
+            msg.textContent = 'No equipment with socketed gems';
+            this.forgeGemRemoveEquipment.appendChild(msg);
+        }
+        
+        // Update info panel
+        if (this.selectedRemoveEquipSlot && player.equipment) {
+            this.updateGemRemoveInfo(player.equipment[this.selectedRemoveEquipSlot], player);
+        } else if (this.forgeGemRemoveInfo) {
+            this.forgeGemRemoveInfo.style.display = 'none';
+        }
+    }
+    
+    updateGemRemoveInfo(item, player) {
+        if (!this.forgeGemRemoveInfo || !item || !item.gems || item.gems.length === 0) {
+            if (this.forgeGemRemoveInfo) this.forgeGemRemoveInfo.style.display = 'none';
+            return;
+        }
+        
+        this.forgeGemRemoveInfo.style.display = 'flex';
+        
+        // Update equipment name
+        if (this.forgeGemRemoveEquipName) {
+            this.forgeGemRemoveEquipName.textContent = item.name;
+            this.forgeGemRemoveEquipName.style.color = item.rarity ? item.rarity.color : '#fff';
+        }
+        
+        // Update gem slots display
+        if (this.forgeGemRemoveSlots) {
+            this.forgeGemRemoveSlots.innerHTML = '';
+            
+            for (let i = 0; i < item.gems.length; i++) {
+                const gem = item.gems[i];
+                const gemType = GEM_TYPES[gem.type];
+                const gemColor = gemType ? gemType.color : '#ff00ff';
+                
+                const socketEl = document.createElement('div');
+                socketEl.style.width = '30px';
+                socketEl.style.height = '30px';
+                socketEl.style.borderRadius = '3px';
+                socketEl.style.cursor = 'pointer';
+                socketEl.style.display = 'flex';
+                socketEl.style.alignItems = 'center';
+                socketEl.style.justifyContent = 'center';
+                socketEl.style.backgroundColor = '#222';
+                socketEl.style.border = `2px solid ${gemColor}`;
+                socketEl.innerHTML = `<span style="color: ${gemColor}; font-size: 18px;">◆</span>`;
+                
+                // Highlight if selected
+                if (this.selectedRemoveSocketIndex === i) {
+                    socketEl.style.boxShadow = '0 0 8px #ff4444';
+                    socketEl.style.borderColor = '#ff4444';
+                }
+                
+                socketEl.onclick = () => {
+                    this.selectedRemoveSocketIndex = i;
+                    this.updateGemRemoveInfo(item, player);
+                };
+                
+                const gemQualityObj = GEM_QUALITIES[gem.quality];
+                socketEl.title = `${gemQualityObj ? gemQualityObj.name : gem.quality} ${gemType ? gemType.name : 'Gem'}`;
+                this.forgeGemRemoveSlots.appendChild(socketEl);
+            }
+        }
+        
+        // Update preview
+        if (this.forgeGemRemovePreview) {
+            if (this.selectedRemoveSocketIndex !== null && item.gems[this.selectedRemoveSocketIndex]) {
+                const gem = item.gems[this.selectedRemoveSocketIndex];
+                const gemType = GEM_TYPES[gem.type];
+                const gemQualityObj = GEM_QUALITIES[gem.quality];
+                this.forgeGemRemovePreview.textContent = `Will destroy: ${gemQualityObj ? gemQualityObj.name : gem.quality} ${gemType ? gemType.name : 'Gem'}`;
+            } else {
+                this.forgeGemRemovePreview.textContent = 'Click a gem above to select for removal';
+            }
+        }
+        
+        // Enable/disable remove button
+        if (this.btnForgeRemoveGem) {
+            this.btnForgeRemoveGem.disabled = this.selectedRemoveSocketIndex === null;
+        }
+    }
+    
+    handleForgeRemoveGem() {
+        if (!this.selectedRemoveEquipSlot || this.selectedRemoveSocketIndex === null) return;
+        
+        if (this.onForgeRemoveGem) {
+            this.onForgeRemoveGem(this.selectedRemoveEquipSlot, this.selectedRemoveSocketIndex);
+        }
+        
+        // Reset selection
+        this.selectedRemoveSocketIndex = null;
+        
+        // Refresh UI
+        if (this.lastPlayerRef) {
+            this.updateGemRemoveUI(this.lastPlayerRef);
+        }
+    }
 
     toggleQuestWindow() {
         const isHidden = this.questWindow.style.display === 'none' || this.questWindow.style.display === '';
@@ -1811,6 +2514,16 @@ export class UIManager {
             return;
         }
 
+        if (this.skillTreeMode === 'runes') {
+            this.renderRunesTab(classType);
+            return;
+        }
+
+        if (this.skillTreeMode === 'combos') {
+            this.renderCombosTab(classType);
+            return;
+        }
+
         this.renderActiveSkillTree(classType);
     }
 
@@ -1838,6 +2551,8 @@ export class UIManager {
 
         wrap.appendChild(makeBtn('Skills', 'skills'));
         wrap.appendChild(makeBtn('Talents', 'talents'));
+        wrap.appendChild(makeBtn('Runes', 'runes'));
+        wrap.appendChild(makeBtn('Combos', 'combos'));
         return wrap;
     }
 
@@ -2129,6 +2844,345 @@ export class UIManager {
         }
 
         this.skillTreeContent.appendChild(list);
+    }
+
+    // ================================================================
+    // SKILL RUNES TAB
+    // ================================================================
+    renderRunesTab(classType) {
+        const player = this.lastPlayerRef;
+        const playerLevel = player ? player.level : 1;
+        const unlockedSkills = player ? (player.unlockedSkills || []) : [];
+        const equippedRunes = player ? (player.skillRunes || {}) : {};
+
+        // Get skill tree data to find all skills for this class
+        const treeData = CONSTANTS.SKILL_TREES[classType];
+        if (!treeData) {
+            const empty = document.createElement('div');
+            empty.style.textAlign = 'center';
+            empty.style.color = '#aaa';
+            empty.style.marginTop = '50px';
+            empty.textContent = `No skill data for ${classType}`;
+            this.skillTreeContent.appendChild(empty);
+            return;
+        }
+
+        const header = document.createElement('h2');
+        header.style.textAlign = 'center';
+        header.style.color = '#ffd700';
+        header.style.margin = '5px 0';
+        header.textContent = `${classType} Skill Runes`;
+        this.skillTreeContent.appendChild(header);
+
+        const sub = document.createElement('div');
+        sub.style.textAlign = 'center';
+        sub.style.fontSize = '12px';
+        sub.style.color = '#aaa';
+        sub.style.marginBottom = '10px';
+        sub.textContent = `Runes unlock at levels 50, 70, and 90. Each skill can have one rune equipped.`;
+        this.skillTreeContent.appendChild(sub);
+
+        // Gather all skills from the tree
+        const allSkills = [];
+        if (treeData.Tier1) allSkills.push(treeData.Tier1.name);
+        for (const branchKey of ['BranchA', 'BranchB', 'BranchC']) {
+            const branch = treeData[branchKey];
+            if (branch) {
+                for (let i = 2; i <= 5; i++) {
+                    const tier = branch[`Tier${i}`];
+                    if (tier && tier.name && !allSkills.includes(tier.name)) {
+                        allSkills.push(tier.name);
+                    }
+                }
+            }
+        }
+
+        // Get rune definitions from Constants (we'll define them there)
+        const runeData = CONSTANTS.SKILL_RUNES ? CONSTANTS.SKILL_RUNES[classType] : null;
+
+        const list = document.createElement('div');
+        list.style.display = 'flex';
+        list.style.flexDirection = 'column';
+        list.style.gap = '12px';
+
+        for (const skillName of allSkills) {
+            // Only show skills that have runes defined
+            const skillRunes = runeData ? runeData.filter(r => r.skill === skillName) : [];
+            if (skillRunes.length === 0) continue;
+
+            const isUnlocked = unlockedSkills.includes(skillName) || skillName === treeData.Tier1?.name;
+            const equippedRuneId = equippedRunes[skillName] || '';
+
+            const skillCard = document.createElement('div');
+            skillCard.style.background = 'rgba(30, 30, 30, 0.9)';
+            skillCard.style.border = '1px solid #444';
+            skillCard.style.borderRadius = '6px';
+            skillCard.style.padding = '10px';
+            skillCard.style.opacity = isUnlocked ? '1' : '0.5';
+
+            const skillTitle = document.createElement('div');
+            skillTitle.style.fontSize = '14px';
+            skillTitle.style.fontWeight = 'bold';
+            skillTitle.style.color = isUnlocked ? '#ffd700' : '#888';
+            skillTitle.style.marginBottom = '8px';
+            skillTitle.textContent = skillName + (isUnlocked ? '' : ' (Skill Locked)');
+            skillCard.appendChild(skillTitle);
+
+            const runesContainer = document.createElement('div');
+            runesContainer.style.display = 'flex';
+            runesContainer.style.gap = '8px';
+            runesContainer.style.flexWrap = 'wrap';
+
+            for (const rune of skillRunes) {
+                const canEquip = isUnlocked && playerLevel >= rune.unlockLevel;
+                const isEquipped = equippedRuneId === rune.id;
+
+                const runeBtn = document.createElement('div');
+                runeBtn.style.flex = '1';
+                runeBtn.style.minWidth = '120px';
+                runeBtn.style.padding = '8px';
+                runeBtn.style.background = isEquipped ? 'rgba(0, 128, 0, 0.4)' : 'rgba(50, 50, 50, 0.8)';
+                runeBtn.style.border = isEquipped ? '2px solid #00ff00' : '1px solid #666';
+                runeBtn.style.borderRadius = '4px';
+                runeBtn.style.cursor = canEquip ? 'pointer' : 'default';
+                runeBtn.style.opacity = canEquip ? '1' : '0.6';
+
+                const runeName = document.createElement('div');
+                runeName.style.fontSize = '12px';
+                runeName.style.fontWeight = 'bold';
+                runeName.style.color = isEquipped ? '#00ff00' : (canEquip ? '#fff' : '#888');
+                runeName.textContent = rune.name;
+
+                const runeLevel = document.createElement('div');
+                runeLevel.style.fontSize = '10px';
+                runeLevel.style.color = playerLevel >= rune.unlockLevel ? '#888' : '#ff6666';
+                runeLevel.textContent = `Level ${rune.unlockLevel}`;
+
+                const runeDesc = document.createElement('div');
+                runeDesc.style.fontSize = '10px';
+                runeDesc.style.color = '#aaa';
+                runeDesc.style.marginTop = '4px';
+                runeDesc.textContent = rune.description;
+
+                runeBtn.appendChild(runeName);
+                runeBtn.appendChild(runeLevel);
+                runeBtn.appendChild(runeDesc);
+
+                if (canEquip) {
+                    runeBtn.addEventListener('click', () => {
+                        // Toggle: if already equipped, unequip; otherwise equip
+                        const newRuneId = isEquipped ? '' : rune.id;
+                        if (this.onSelectRune) {
+                            this.onSelectRune(skillName, newRuneId);
+                        }
+                        // Optimistic UI update
+                        if (player) {
+                            if (!player.skillRunes) player.skillRunes = {};
+                            if (newRuneId) {
+                                player.skillRunes[skillName] = newRuneId;
+                            } else {
+                                delete player.skillRunes[skillName];
+                            }
+                        }
+                        this.renderSkillTree(classType);
+                    });
+                    runeBtn.addEventListener('mouseenter', () => {
+                        runeBtn.style.background = isEquipped ? 'rgba(0, 150, 0, 0.5)' : 'rgba(70, 70, 70, 0.9)';
+                    });
+                    runeBtn.addEventListener('mouseleave', () => {
+                        runeBtn.style.background = isEquipped ? 'rgba(0, 128, 0, 0.4)' : 'rgba(50, 50, 50, 0.8)';
+                    });
+                }
+
+                runesContainer.appendChild(runeBtn);
+            }
+
+            skillCard.appendChild(runesContainer);
+            list.appendChild(skillCard);
+        }
+
+        if (list.children.length === 0) {
+            const empty = document.createElement('div');
+            empty.style.textAlign = 'center';
+            empty.style.color = '#aaa';
+            empty.style.marginTop = '20px';
+            empty.textContent = 'No runes available for this class yet.';
+            this.skillTreeContent.appendChild(empty);
+            return;
+        }
+
+        this.skillTreeContent.appendChild(list);
+    }
+
+    renderCombosTab(classType) {
+        const combos = CONSTANTS.SKILL_COMBOS[classType];
+        
+        const header = document.createElement('h2');
+        header.style.textAlign = 'center';
+        header.style.color = '#ffd700';
+        header.style.margin = '5px 0 15px 0';
+        header.textContent = `${classType} Combos`;
+        this.skillTreeContent.appendChild(header);
+
+        const instructions = document.createElement('div');
+        instructions.style.textAlign = 'center';
+        instructions.style.color = '#aaa';
+        instructions.style.marginBottom = '15px';
+        instructions.style.fontSize = '12px';
+        instructions.innerHTML = 'Use skills in sequence within <span style="color: #ffd700;">3 seconds</span> to trigger combo effects.';
+        this.skillTreeContent.appendChild(instructions);
+
+        if (!combos || combos.length === 0) {
+            const empty = document.createElement('div');
+            empty.style.textAlign = 'center';
+            empty.style.color = '#aaa';
+            empty.style.marginTop = '20px';
+            empty.textContent = 'No combos available for this class yet.';
+            this.skillTreeContent.appendChild(empty);
+            return;
+        }
+
+        const list = document.createElement('div');
+        list.style.display = 'flex';
+        list.style.flexDirection = 'column';
+        list.style.gap = '12px';
+        list.style.padding = '0 10px';
+
+        for (const combo of combos) {
+            const comboCard = document.createElement('div');
+            comboCard.style.background = 'rgba(30, 30, 30, 0.9)';
+            comboCard.style.border = '2px solid #555';
+            comboCard.style.borderRadius = '8px';
+            comboCard.style.padding = '12px';
+            comboCard.style.transition = 'border-color 0.2s';
+
+            comboCard.addEventListener('mouseenter', () => {
+                comboCard.style.borderColor = '#ffd700';
+            });
+            comboCard.addEventListener('mouseleave', () => {
+                comboCard.style.borderColor = '#555';
+            });
+
+            // Combo name
+            const nameDiv = document.createElement('div');
+            nameDiv.style.color = '#ffd700';
+            nameDiv.style.fontWeight = 'bold';
+            nameDiv.style.fontSize = '14px';
+            nameDiv.style.marginBottom = '8px';
+            nameDiv.textContent = combo.name;
+            comboCard.appendChild(nameDiv);
+
+            // Skill sequence
+            const sequenceDiv = document.createElement('div');
+            sequenceDiv.style.display = 'flex';
+            sequenceDiv.style.alignItems = 'center';
+            sequenceDiv.style.gap = '8px';
+            sequenceDiv.style.marginBottom = '8px';
+
+            const firstSkill = document.createElement('span');
+            firstSkill.style.background = 'rgba(60, 60, 60, 0.8)';
+            firstSkill.style.padding = '4px 8px';
+            firstSkill.style.borderRadius = '4px';
+            firstSkill.style.color = '#88ccff';
+            firstSkill.style.fontSize = '12px';
+            firstSkill.textContent = combo.firstSkill;
+
+            const arrow = document.createElement('span');
+            arrow.style.color = '#ffd700';
+            arrow.style.fontSize = '16px';
+            arrow.textContent = '→';
+
+            const secondSkill = document.createElement('span');
+            secondSkill.style.background = 'rgba(60, 60, 60, 0.8)';
+            secondSkill.style.padding = '4px 8px';
+            secondSkill.style.borderRadius = '4px';
+            secondSkill.style.color = '#ffcc88';
+            secondSkill.style.fontSize = '12px';
+            secondSkill.textContent = combo.secondSkill;
+
+            sequenceDiv.appendChild(firstSkill);
+            sequenceDiv.appendChild(arrow);
+            sequenceDiv.appendChild(secondSkill);
+            comboCard.appendChild(sequenceDiv);
+
+            // Effect description
+            const descDiv = document.createElement('div');
+            descDiv.style.color = '#00ff00';
+            descDiv.style.fontSize = '12px';
+            descDiv.style.fontStyle = 'italic';
+            descDiv.textContent = combo.description;
+            comboCard.appendChild(descDiv);
+
+            list.appendChild(comboCard);
+        }
+
+        this.skillTreeContent.appendChild(list);
+    }
+
+    showComboNotification(comboName, comboId) {
+        // Create a centered screen notification for combo triggers
+        const notification = document.createElement('div');
+        notification.style.position = 'fixed';
+        notification.style.top = '30%';
+        notification.style.left = '50%';
+        notification.style.transform = 'translate(-50%, -50%)';
+        notification.style.background = 'linear-gradient(135deg, rgba(40, 40, 40, 0.95), rgba(20, 20, 20, 0.95))';
+        notification.style.border = '3px solid #ffd700';
+        notification.style.borderRadius = '12px';
+        notification.style.padding = '20px 40px';
+        notification.style.zIndex = '10000';
+        notification.style.textAlign = 'center';
+        notification.style.boxShadow = '0 0 30px rgba(255, 215, 0, 0.5)';
+        notification.style.animation = 'comboNotificationPulse 0.5s ease-out';
+
+        // Add combo label
+        const label = document.createElement('div');
+        label.style.color = '#ffd700';
+        label.style.fontSize = '12px';
+        label.style.textTransform = 'uppercase';
+        label.style.letterSpacing = '3px';
+        label.style.marginBottom = '8px';
+        label.textContent = 'COMBO!';
+
+        // Add combo name
+        const name = document.createElement('div');
+        name.style.color = '#ffffff';
+        name.style.fontSize = '24px';
+        name.style.fontWeight = 'bold';
+        name.style.textShadow = '0 0 10px #ffd700';
+        name.textContent = comboName;
+
+        notification.appendChild(label);
+        notification.appendChild(name);
+        document.body.appendChild(notification);
+
+        // Add animation keyframes if not already added
+        if (!document.getElementById('combo-notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'combo-notification-styles';
+            style.textContent = `
+                @keyframes comboNotificationPulse {
+                    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+                    50% { transform: translate(-50%, -50%) scale(1.1); }
+                    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                }
+                @keyframes comboNotificationFadeOut {
+                    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                    100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Remove after 1.5 seconds with fade animation
+        setTimeout(() => {
+            notification.style.animation = 'comboNotificationFadeOut 0.3s ease-out forwards';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 1500);
     }
 
     updateHotbar(player) {
@@ -3307,6 +4361,25 @@ export class UIManager {
             .map(w => w.charAt(0).toUpperCase() + w.slice(1))
             .join(' ');
     }
+    
+    formatSetBonus(bonus) {
+        if (!bonus) return '';
+        const parts = [];
+        for (const key in bonus) {
+            const val = bonus[key];
+            // Handle special set bonuses (non-stat bonuses)
+            if (typeof val === 'number' && val === 1) {
+                // Boolean special effect
+                parts.push(this.formatStatName(key));
+            } else if (typeof val === 'number') {
+                // Stat bonus with value
+                parts.push(`+${val}% ${this.formatStatName(key)}`);
+            } else {
+                parts.push(`${this.formatStatName(key)}: ${val}`);
+            }
+        }
+        return parts.join(', ');
+    }
 
     getOrderedItemStatKeys(stats) {
         if (!stats) return [];
@@ -3368,6 +4441,73 @@ export class UIManager {
                 const val = item.stats[stat];
                 desc += `<div style="color: #fff;">+${val} ${this.formatStatName(stat)}</div>`;
             }
+        }
+        
+        // Show Socketed Gems
+        if (item.gems && item.gems.length > 0) {
+            desc += `<div style="color: #888; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">Socketed Gems:</div>`;
+            for (const gem of item.gems) {
+                if (gem) {
+                    const gemType = GEM_TYPES[gem.type] || { name: gem.type, color: '#fff' };
+                    const gemQuality = GEM_QUALITIES[gem.quality] || { name: gem.quality };
+                    desc += `<div style="color: ${gemType.color};">◆ ${gemQuality.name} ${gemType.name}</div>`;
+                }
+            }
+        }
+        
+        // Show available sockets
+        if (item.sockets !== undefined && item.sockets > 0) {
+            const usedSockets = item.gems ? item.gems.length : 0;
+            const emptySockets = item.sockets - usedSockets;
+            if (emptySockets > 0) {
+                desc += `<div style="color: #666; margin-top: 3px;">◇ ${emptySockets} Empty Socket${emptySockets > 1 ? 's' : ''}</div>`;
+            }
+        }
+        
+        // Show Set Item Info
+        if (item.setId && SET_DEFINITIONS[item.setId]) {
+            const setDef = SET_DEFINITIONS[item.setId];
+            desc += `<div style="color: #00ff00; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">`;
+            desc += `<div style="font-weight: bold;">${setDef.name}</div>`;
+            
+            // Count equipped pieces if player is available
+            let equippedCount = 0;
+            if (this.lastPlayerRef && this.lastPlayerRef.equipment) {
+                for (const slot in this.lastPlayerRef.equipment) {
+                    const equipped = this.lastPlayerRef.equipment[slot];
+                    if (equipped && equipped.setId === item.setId) {
+                        equippedCount++;
+                    }
+                }
+            }
+            
+            // Show set bonuses with active highlighting
+            const bonusLevels = [
+                { pieces: 2, bonus: setDef.bonus2 },
+                { pieces: 4, bonus: setDef.bonus4 },
+                { pieces: 6, bonus: setDef.bonus6 }
+            ];
+            
+            for (const bl of bonusLevels) {
+                if (bl.bonus) {
+                    const isActive = equippedCount >= bl.pieces;
+                    const color = isActive ? '#00ff00' : '#555';
+                    const bonusText = this.formatSetBonus(bl.bonus);
+                    desc += `<div style="color: ${color};">(${bl.pieces}) ${bonusText}</div>`;
+                }
+            }
+            
+            desc += `<div style="color: #888; font-size: 0.9em; margin-top: 3px;">${equippedCount}/${setDef.slots.length} pieces</div>`;
+            desc += `</div>`;
+        }
+        
+        // Show Unique Effect
+        if (item.uniqueEffect && UNIQUE_EFFECTS[item.uniqueEffect]) {
+            const effect = UNIQUE_EFFECTS[item.uniqueEffect];
+            desc += `<div style="color: ${effect.color}; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">`;
+            desc += `<div style="font-weight: bold;">★ ${effect.name}</div>`;
+            desc += `<div style="color: #ccc; font-style: italic;">${effect.description}</div>`;
+            desc += `</div>`;
         }
 
         // Show Sell Price if Shop is Open
@@ -3459,6 +4599,34 @@ export class UIManager {
                         const val = equippedItem.stats[stat];
                         compDesc += `<div style="color: #fff;">+${val} ${this.formatStatName(stat)}</div>`;
                     }
+                }
+                
+                // Show Socketed Gems in comparison
+                if (equippedItem.gems && equippedItem.gems.length > 0) {
+                    compDesc += `<div style="color: #888; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">Socketed Gems:</div>`;
+                    for (const gem of equippedItem.gems) {
+                        if (gem) {
+                            const gemType = GEM_TYPES[gem.type] || { name: gem.type, color: '#fff' };
+                            const gemQuality = GEM_QUALITIES[gem.quality] || { name: gem.quality };
+                            compDesc += `<div style="color: ${gemType.color};">◆ ${gemQuality.name} ${gemType.name}</div>`;
+                        }
+                    }
+                }
+                
+                // Show Set Item Info in comparison
+                if (equippedItem.setId && SET_DEFINITIONS[equippedItem.setId]) {
+                    const setDef = SET_DEFINITIONS[equippedItem.setId];
+                    compDesc += `<div style="color: #00ff00; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">`;
+                    compDesc += `<div style="font-weight: bold;">${setDef.name}</div>`;
+                    compDesc += `</div>`;
+                }
+                
+                // Show Unique Effect in comparison
+                if (equippedItem.uniqueEffect && UNIQUE_EFFECTS[equippedItem.uniqueEffect]) {
+                    const effect = UNIQUE_EFFECTS[equippedItem.uniqueEffect];
+                    compDesc += `<div style="color: ${effect.color}; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">`;
+                    compDesc += `<div style="font-weight: bold;">★ ${effect.name}</div>`;
+                    compDesc += `</div>`;
                 }
                 
                 this.compareTooltipDesc.innerHTML = compDesc;
@@ -3851,10 +5019,10 @@ export class UIManager {
         menu.style.color = '#fff';
         menu.style.zIndex = '1000';
         menu.style.textAlign = 'center';
-        menu.style.minWidth = '300px';
+        menu.style.minWidth = '400px';
 
         const title = document.createElement('h2');
-        title.innerText = 'Dungeon Entrance';
+        title.innerText = 'Dungeon Portal';
         title.style.marginTop = '0';
         menu.appendChild(title);
 
@@ -3875,17 +5043,145 @@ export class UIManager {
             menu.appendChild(status);
         }
 
+        // Dungeon Selection
+        const dungeonInfo = {
+            verdant_bastion_catacombs: { name: 'Verdant Bastion Catacombs', baseLevel: 30, color: '#4a4' },
+            molten_core: { name: 'Molten Core', baseLevel: 70, color: '#f64' },
+            tempest_spire: { name: 'Tempest Spire', baseLevel: 70, color: '#6af' }
+        };
+
+        const difficultyInfo = {
+            normal: { name: 'Normal', color: '#aaa', hp: '1x', dmg: '1x', loot: '1x', levelAdd: 0 },
+            heroic: { name: 'Heroic', color: '#ff0', hp: '2x', dmg: '1.5x', loot: '2x', levelAdd: 20 },
+            mythic: { name: 'Mythic', color: '#f60', hp: '4x', dmg: '2.5x', loot: '4x', levelAdd: 40 }
+        };
+
+        // Dungeon Type Label
+        const dungeonLabel = document.createElement('label');
+        dungeonLabel.innerText = 'Select Dungeon:';
+        dungeonLabel.style.display = 'block';
+        dungeonLabel.style.marginTop = '15px';
+        dungeonLabel.style.fontWeight = 'bold';
+        menu.appendChild(dungeonLabel);
+
+        // Dungeon Type Dropdown
+        const dungeonSelect = document.createElement('select');
+        dungeonSelect.id = 'dungeon-type-select';
+        dungeonSelect.style.margin = '5px';
+        dungeonSelect.style.padding = '8px';
+        dungeonSelect.style.fontSize = '14px';
+        dungeonSelect.style.backgroundColor = '#222';
+        dungeonSelect.style.color = '#fff';
+        dungeonSelect.style.border = '1px solid #555';
+        dungeonSelect.style.cursor = 'pointer';
+        dungeonSelect.style.width = '250px';
+
+        for (const [key, info] of Object.entries(dungeonInfo)) {
+            const option = document.createElement('option');
+            option.value = key;
+            option.innerText = `${info.name} (Lv ${info.baseLevel}+)`;
+            option.style.color = info.color;
+            dungeonSelect.appendChild(option);
+        }
+        menu.appendChild(dungeonSelect);
+
+        // Difficulty Label
+        const diffLabel = document.createElement('label');
+        diffLabel.innerText = 'Select Difficulty:';
+        diffLabel.style.display = 'block';
+        diffLabel.style.marginTop = '15px';
+        diffLabel.style.fontWeight = 'bold';
+        menu.appendChild(diffLabel);
+
+        // Difficulty Buttons Container
+        const diffContainer = document.createElement('div');
+        diffContainer.style.display = 'flex';
+        diffContainer.style.justifyContent = 'center';
+        diffContainer.style.gap = '10px';
+        diffContainer.style.margin = '10px 0';
+
+        let selectedDifficulty = 'normal';
+
+        for (const [key, info] of Object.entries(difficultyInfo)) {
+            const btn = document.createElement('button');
+            btn.id = `diff-btn-${key}`;
+            btn.innerText = info.name;
+            btn.style.padding = '8px 16px';
+            btn.style.cursor = 'pointer';
+            btn.style.backgroundColor = key === 'normal' ? info.color : '#333';
+            btn.style.color = key === 'normal' ? '#000' : info.color;
+            btn.style.border = `2px solid ${info.color}`;
+            btn.style.fontWeight = 'bold';
+            btn.style.transition = 'all 0.2s';
+
+            btn.onclick = () => {
+                selectedDifficulty = key;
+                // Update button styles
+                for (const [k, i] of Object.entries(difficultyInfo)) {
+                    const b = document.getElementById(`diff-btn-${k}`);
+                    if (b) {
+                        b.style.backgroundColor = k === key ? i.color : '#333';
+                        b.style.color = k === key ? '#000' : i.color;
+                    }
+                }
+                // Update info display
+                updateDifficultyInfo();
+            };
+            diffContainer.appendChild(btn);
+        }
+        menu.appendChild(diffContainer);
+
+        // Difficulty Info Display
+        const diffInfoBox = document.createElement('div');
+        diffInfoBox.id = 'difficulty-info-box';
+        diffInfoBox.style.backgroundColor = '#1a1a1a';
+        diffInfoBox.style.border = '1px solid #444';
+        diffInfoBox.style.padding = '10px';
+        diffInfoBox.style.margin = '10px 0';
+        diffInfoBox.style.borderRadius = '4px';
+        diffInfoBox.style.fontSize = '12px';
+        diffInfoBox.style.textAlign = 'left';
+        menu.appendChild(diffInfoBox);
+
+        const updateDifficultyInfo = () => {
+            const dungeonKey = dungeonSelect.value;
+            const dungeon = dungeonInfo[dungeonKey];
+            const diff = difficultyInfo[selectedDifficulty];
+            const reqLevel = dungeon.baseLevel + diff.levelAdd;
+
+            diffInfoBox.innerHTML = `
+                <div style="color: ${diff.color}; font-weight: bold; font-size: 14px; margin-bottom: 8px;">${diff.name} Mode</div>
+                <div><span style="color: #888;">Required Level:</span> <span style="color: #fff;">${reqLevel}</span></div>
+                <div><span style="color: #888;">Enemy HP:</span> <span style="color: #f66;">${diff.hp}</span></div>
+                <div><span style="color: #888;">Enemy Damage:</span> <span style="color: #f66;">${diff.dmg}</span></div>
+                <div><span style="color: #888;">Loot & XP:</span> <span style="color: #6f6;">${diff.loot}</span></div>
+                ${selectedDifficulty === 'heroic' ? '<div style="color: #ff0; margin-top: 5px;">+ Rare Gems & Better Drops</div>' : ''}
+                ${selectedDifficulty === 'mythic' ? '<div style="color: #f60; margin-top: 5px;">+ Unique Items & Titles</div>' : ''}
+            `;
+        };
+
+        dungeonSelect.onchange = updateDifficultyInfo;
+        updateDifficultyInfo(); // Initial update
+
         // Enter Button
         const enterBtn = document.createElement('button');
-        enterBtn.innerText = 'Enter Instance';
+        enterBtn.innerText = 'Enter Dungeon';
         enterBtn.style.margin = '10px';
-        enterBtn.style.padding = '10px 20px';
+        enterBtn.style.padding = '12px 30px';
         enterBtn.style.cursor = 'pointer';
+        enterBtn.style.backgroundColor = '#2a6';
+        enterBtn.style.color = '#fff';
+        enterBtn.style.border = 'none';
+        enterBtn.style.fontWeight = 'bold';
+        enterBtn.style.fontSize = '16px';
         enterBtn.onclick = () => {
             if (window.game && window.game.socket) {
                 window.game.socket.send(JSON.stringify({
                     type: 'enter_dungeon',
-                    payload: { dungeonType: 'verdant_bastion_catacombs' }
+                    payload: { 
+                        dungeonType: dungeonSelect.value,
+                        difficulty: selectedDifficulty
+                    }
                 }));
             }
             menu.remove();
@@ -3901,6 +5197,7 @@ export class UIManager {
             resetBtn.style.cursor = 'pointer';
             resetBtn.style.backgroundColor = '#800';
             resetBtn.style.color = '#fff';
+            resetBtn.style.border = 'none';
             resetBtn.onclick = () => {
                 if (window.game && window.game.socket) {
                     window.game.socket.send(JSON.stringify({
@@ -3919,6 +5216,130 @@ export class UIManager {
         closeBtn.style.margin = '10px';
         closeBtn.style.padding = '5px 10px';
         closeBtn.style.cursor = 'pointer';
+        closeBtn.style.backgroundColor = '#444';
+        closeBtn.style.color = '#fff';
+        closeBtn.style.border = 'none';
+        closeBtn.onclick = () => menu.remove();
+        menu.appendChild(closeBtn);
+
+        document.body.appendChild(menu);
+    }
+
+    showRespecMenu() {
+        // Remove existing if any
+        const existing = document.getElementById('respec-menu');
+        if (existing) existing.remove();
+
+        const menu = document.createElement('div');
+        menu.id = 'respec-menu';
+        menu.style.position = 'absolute';
+        menu.style.top = '50%';
+        menu.style.left = '50%';
+        menu.style.transform = 'translate(-50%, -50%)';
+        menu.style.backgroundColor = 'rgba(0, 0, 0, 0.95)';
+        menu.style.border = '2px solid #6a4';
+        menu.style.padding = '20px';
+        menu.style.color = '#fff';
+        menu.style.zIndex = '1000';
+        menu.style.textAlign = 'center';
+        menu.style.minWidth = '350px';
+        menu.style.borderRadius = '8px';
+
+        const title = document.createElement('h2');
+        title.innerText = 'Talent Master';
+        title.style.marginTop = '0';
+        title.style.color = '#6a4';
+        menu.appendChild(title);
+
+        const desc = document.createElement('p');
+        desc.innerText = 'Reset your talents or skills for a gold fee based on your level.';
+        desc.style.color = '#aaa';
+        desc.style.fontSize = '12px';
+        desc.style.marginBottom = '15px';
+        menu.appendChild(desc);
+
+        // Get player level and gold for cost calculation
+        const player = window.game?.player;
+        const playerLevel = player?.level || 1;
+        const playerGold = player?.gold || 0;
+
+        // Cost formula: level * 100 for talents, level * 50 for skills, level * 125 for both
+        const talentCost = playerLevel * 100;
+        const skillCost = playerLevel * 50;
+        const bothCost = playerLevel * 125;
+
+        // Helper to create respec button
+        const createRespecButton = (label, type, cost, color) => {
+            const container = document.createElement('div');
+            container.style.margin = '10px 0';
+            container.style.padding = '10px';
+            container.style.backgroundColor = '#1a1a1a';
+            container.style.border = `1px solid ${color}`;
+            container.style.borderRadius = '4px';
+
+            const btn = document.createElement('button');
+            btn.innerText = label;
+            btn.style.width = '100%';
+            btn.style.padding = '10px';
+            btn.style.cursor = playerGold >= cost ? 'pointer' : 'not-allowed';
+            btn.style.backgroundColor = playerGold >= cost ? color : '#333';
+            btn.style.color = playerGold >= cost ? '#000' : '#666';
+            btn.style.border = 'none';
+            btn.style.fontWeight = 'bold';
+            btn.style.fontSize = '14px';
+            btn.style.borderRadius = '4px';
+            btn.disabled = playerGold < cost;
+
+            btn.onclick = () => {
+                if (playerGold < cost) return;
+                if (window.game && window.game.socket) {
+                    window.game.socket.send(JSON.stringify({
+                        type: 'respec',
+                        payload: { respecType: type }
+                    }));
+                }
+                menu.remove();
+            };
+            container.appendChild(btn);
+
+            const costText = document.createElement('div');
+            costText.style.marginTop = '5px';
+            costText.style.fontSize = '12px';
+            costText.style.color = playerGold >= cost ? '#fc0' : '#f44';
+            costText.innerText = `Cost: ${cost.toLocaleString()} gold`;
+            container.appendChild(costText);
+
+            return container;
+        };
+
+        // Respec Talents Button
+        menu.appendChild(createRespecButton('Reset Talents', 'talents', talentCost, '#6af'));
+        
+        // Respec Skills Button  
+        menu.appendChild(createRespecButton('Reset Skills', 'skills', skillCost, '#f6a'));
+        
+        // Respec Both Button
+        menu.appendChild(createRespecButton('Reset Both', 'both', bothCost, '#6a4'));
+
+        // Player Gold Display
+        const goldDisplay = document.createElement('div');
+        goldDisplay.style.marginTop = '15px';
+        goldDisplay.style.padding = '8px';
+        goldDisplay.style.backgroundColor = '#222';
+        goldDisplay.style.borderRadius = '4px';
+        goldDisplay.innerHTML = `<span style="color: #888;">Your Gold:</span> <span style="color: #fc0; font-weight: bold;">${playerGold.toLocaleString()}</span>`;
+        menu.appendChild(goldDisplay);
+
+        // Close Button
+        const closeBtn = document.createElement('button');
+        closeBtn.innerText = 'Close';
+        closeBtn.style.marginTop = '15px';
+        closeBtn.style.padding = '8px 20px';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.style.backgroundColor = '#444';
+        closeBtn.style.color = '#fff';
+        closeBtn.style.border = 'none';
+        closeBtn.style.borderRadius = '4px';
         closeBtn.onclick = () => menu.remove();
         menu.appendChild(closeBtn);
 

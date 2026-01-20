@@ -16,6 +16,7 @@ import (
 )
 
 type TalentBonus struct {
+	// Generic stat bonuses (applied to all abilities)
 	FlatStrength     int
 	FlatDexterity    int
 	FlatIntelligence int
@@ -27,6 +28,17 @@ type TalentBonus struct {
 	PctDamage        float64
 	PctSpeed         float64
 	AddCdr           float64
+
+	// Skill-specific bonuses
+	SkillName       string  // Which skill this bonus applies to (empty = generic)
+	SkillDamage     float64 // +X% damage for this skill
+	SkillCdr        float64 // +X% CDR for this skill
+	SkillRange      float64 // +X% range for this skill
+	SkillDuration   float64 // +X% duration for this skill
+	SkillAoe        float64 // +X% AoE radius for this skill
+	SkillManaCost   float64 // -X% mana cost for this skill (negative = reduction)
+	SkillCritChance float64 // +X% crit chance for this skill
+	SkillHealing    float64 // +X% healing for this skill (Cleric)
 }
 
 type TalentDef struct {
@@ -57,67 +69,260 @@ func talentDefForID(classType, talentID string) (TalentDef, bool) {
 		return TalentDef{}, false
 	}
 
-	// Keep bonuses small; stackable but bounded by normal stat scaling and existing caps.
-	// The design is "one talent entry with ranks" (e.g. 0/5) rather than duplicate talents per rank.
+	// Talents 1-26: Skill-specific (13 skills × 2 talents each: Mastery=+damage, Technique=+utility)
+	// Talents 27-40: Generic class talents
 	switch classType {
 	case "Fighter":
-		switch {
-		case n <= 10:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatVitality: 2}}, true
-		case n <= 20:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatStrength: 2}}, true
-		case n <= 25:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctMaxHealth: 0.02}}, true
-		case n <= 30:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctDamage: 0.02}}, true
-		case n <= 35:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctSpeed: 0.01}}, true
-		case n <= 38:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.01}}, true
-		default:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatDefense: 1}}, true
-		}
+		return fighterTalentDef(n)
 	case "Rogue":
-		switch {
-		case n <= 14:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatDexterity: 2}}, true
-		case n <= 22:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctSpeed: 0.02}}, true
-		case n <= 30:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctDamage: 0.02}}, true
-		case n <= 36:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.01}}, true
-		default:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatDefense: 1}}, true
-		}
+		return rogueTalentDef(n)
 	case "Wizard":
-		switch {
-		case n <= 14:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatIntelligence: 2}}, true
-		case n <= 22:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.015}}, true
-		case n <= 32:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctDamage: 0.02}}, true
-		case n <= 36:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatWisdom: 1}}, true
-		default:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatVitality: 1, PctMaxHealth: 0.01}}, true
-		}
+		return wizardTalentDef(n)
 	case "Cleric":
-		switch {
-		case n <= 14:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatWisdom: 2}}, true
-		case n <= 22:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctMaxHealth: 0.02}}, true
-		case n <= 30:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.01}}, true
-		case n <= 36:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctDamage: 0.01}}, true
-		default:
-			return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatDefense: 1}}, true
+		return clericTalentDef(n)
+	}
+
+	return TalentDef{}, false
+}
+
+// Fighter skill order: Charge, Whirlwind, Shield Slam, Iron Fortress, Guardian Roar,
+// Sweeping Strike, Earthshaker, Unbreakable Grip, Juggernaut Charge, Berserker Edge,
+// Shattering Charge, Executioner Spin, Last Stand Rampage
+var fighterSkills = []string{
+	"Charge", "Whirlwind", "Shield Slam", "Iron Fortress", "Guardian Roar",
+	"Sweeping Strike", "Earthshaker", "Unbreakable Grip", "Juggernaut Charge", "Berserker Edge",
+	"Shattering Charge", "Executioner Spin", "Last Stand Rampage",
+}
+
+func fighterTalentDef(n int) (TalentDef, bool) {
+	// Talents 1-26: Skill-specific (odd=Mastery +damage, even=Technique +utility)
+	if n <= 26 {
+		skillIdx := (n - 1) / 2
+		if skillIdx >= len(fighterSkills) {
+			return TalentDef{}, false
+		}
+		skillName := fighterSkills[skillIdx]
+		isMastery := (n % 2) == 1
+
+		if isMastery {
+			// Mastery: +4% skill damage per rank (max 20% at rank 5)
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: skillName, SkillDamage: 0.04}}, true
+		} else {
+			// Technique: +3% CDR and +2% AoE/range per rank
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: skillName, SkillCdr: 0.03, SkillAoe: 0.02}}, true
 		}
 	}
 
+	// Talents 27-40: Generic Fighter talents
+	switch n {
+	case 27: // Combat Discipline - ability uptime
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.01}}, true
+	case 28: // Battle Breathing - mana efficiency
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillManaCost: -0.03}}, true
+	case 29: // Threat Mastery - damage
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctDamage: 0.02}}, true
+	case 30: // Crowd Control Drills - stun effectiveness (duration via generic)
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillDuration: 0.04}}, true
+	case 31: // Frontliner Routine - survivability
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctMaxHealth: 0.02}}, true
+	case 32: // Heavy Weapon Technique - damage patterns
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatStrength: 3}}, true
+	case 33: // Lineholder Instinct - area coverage
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillAoe: 0.03}}, true
+	case 34: // Rally Presence - party support
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatVitality: 2, PctMaxHealth: 0.01}}, true
+	case 35: // Aggressor Footwork - repositioning
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctSpeed: 0.02}}, true
+	case 36: // Shieldwall Training - defensive
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatDefense: 2}}, true
+	case 37: // Breakthrough - debuffs
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillDuration: 0.03}}, true
+	case 38: // Enduring Rhythm - sustained AoE
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillDamage: 0.02, SkillAoe: 0.02}}, true
+	case 39: // Battlefield Awareness - consistency
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillCritChance: 0.02}}, true
+	case 40: // Vanguard Momentum - chaining
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.015}}, true
+	}
+	return TalentDef{}, false
+}
+
+// Rogue skill order: Piercing Throw, Backstab, Weak Point Mark, Shadow Lunge, Death Spiral,
+// Fan of Knives, Serrated Edges, Blade Storm, Phantom Volley, Smoke Bomb,
+// Poison Coating, Tripwire, Cloak & Vanish
+var rogueSkills = []string{
+	"Piercing Throw", "Backstab", "Weak Point Mark", "Shadow Lunge", "Death Spiral",
+	"Fan of Knives", "Serrated Edges", "Blade Storm", "Phantom Volley", "Smoke Bomb",
+	"Poison Coating", "Tripwire", "Cloak & Vanish",
+}
+
+func rogueTalentDef(n int) (TalentDef, bool) {
+	if n <= 26 {
+		skillIdx := (n - 1) / 2
+		if skillIdx >= len(rogueSkills) {
+			return TalentDef{}, false
+		}
+		skillName := rogueSkills[skillIdx]
+		isMastery := (n % 2) == 1
+
+		if isMastery {
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: skillName, SkillDamage: 0.04}}, true
+		} else {
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: skillName, SkillCdr: 0.03, SkillCritChance: 0.02}}, true
+		}
+	}
+
+	switch n {
+	case 27: // Opportunist's Flow - chaining
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.015}}, true
+	case 28: // Dirty Tricks - debuffs
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillDuration: 0.04}}, true
+	case 29: // Quickhands - responsiveness
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctSpeed: 0.02}}, true
+	case 30: // Shadow Poise - survivability
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatDefense: 1, PctMaxHealth: 0.01}}, true
+	case 31: // Silent Balance - mobility
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctSpeed: 0.02}}, true
+	case 32: // Needle Precision - single target
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillCritChance: 0.03}}, true
+	case 33: // Lightstep - escape tools
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillCdr: 0.02, PctSpeed: 0.01}}, true
+	case 34: // Fine Motor - multi-target
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillAoe: 0.03}}, true
+	case 35: // Catlike Reflexes - cooldowns
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.01}}, true
+	case 36: // Quick Draw - throws
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillRange: 0.03}}, true
+	case 37: // Evasive Flow - defensive
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatDexterity: 3}}, true
+	case 38: // Close-Quarters Grace - melee
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillDamage: 0.02}}, true
+	case 39: // Edge Awareness - positioning
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillCritChance: 0.02}}, true
+	case 40: // Wrist Control - burst
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctDamage: 0.02}}, true
+	}
+	return TalentDef{}, false
+}
+
+// Wizard skill order: Fireball, Flame Whip, Flame Tornado, Meteor Drop, Inferno Cataclysm,
+// Scorch Beam, Arcane Missiles, Spell Focus, Dragonfire Lance, Teleport,
+// Arcane Shield, Gravity Well, Time Warp
+var wizardSkills = []string{
+	"Fireball", "Flame Whip", "Flame Tornado", "Meteor Drop", "Inferno Cataclysm",
+	"Scorch Beam", "Arcane Missiles", "Spell Focus", "Dragonfire Lance", "Teleport",
+	"Arcane Shield", "Gravity Well", "Time Warp",
+}
+
+func wizardTalentDef(n int) (TalentDef, bool) {
+	if n <= 26 {
+		skillIdx := (n - 1) / 2
+		if skillIdx >= len(wizardSkills) {
+			return TalentDef{}, false
+		}
+		skillName := wizardSkills[skillIdx]
+		isMastery := (n % 2) == 1
+
+		if isMastery {
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: skillName, SkillDamage: 0.04}}, true
+		} else {
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: skillName, SkillCdr: 0.03, SkillManaCost: -0.02}}, true
+		}
+	}
+
+	switch n {
+	case 27: // Efficient Casting - mana
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillManaCost: -0.04}}, true
+	case 28: // Quickened Formulae - CDR
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.015}}, true
+	case 29: // Runic Precision - projectiles
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillRange: 0.03}}, true
+	case 30: // Leyline Recall - mobility
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: "Teleport", SkillCdr: 0.05}}, true
+	case 31: // Overchannel - burst
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctDamage: 0.02}}, true
+	case 32: // Arcane Stability - defensive
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: "Arcane Shield", SkillDuration: 0.05}}, true
+	case 33: // Elemental Rhythm - chaining
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.01}}, true
+	case 34: // Prismatic Control - CC
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillDuration: 0.04}}, true
+	case 35: // Aether Reach - range
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillRange: 0.04}}, true
+	case 36: // Volatile Insight - AoE
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillAoe: 0.03}}, true
+	case 37: // Channel Discipline - reliability
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatIntelligence: 3}}, true
+	case 38: // Mana Geometry - placement
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillAoe: 0.02, SkillRange: 0.02}}, true
+	case 39: // Sigil Mastery - consistency
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillCritChance: 0.02}}, true
+	case 40: // Contingency Wards - survivability
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctMaxHealth: 0.02, FlatWisdom: 2}}, true
+	}
+	return TalentDef{}, false
+}
+
+// Cleric skill order: Spirit Guardians, Healing Light, Guardian Embrace, Purifying Wave, Divine Intervention,
+// Radiant Strike, Consecrated Ground, Spirit Guardians Boost, Avenging Seraph, Blessing of Resolve,
+// Blessing of Zeal, Mark of Weakness, Heaven's Trumpet
+var clericSkills = []string{
+	"Spirit Guardians", "Healing Light", "Guardian Embrace", "Purifying Wave", "Divine Intervention",
+	"Radiant Strike", "Consecrated Ground", "Spirit Guardians Boost", "Avenging Seraph", "Blessing of Resolve",
+	"Blessing of Zeal", "Mark of Weakness", "Heaven's Trumpet",
+}
+
+func clericTalentDef(n int) (TalentDef, bool) {
+	if n <= 26 {
+		skillIdx := (n - 1) / 2
+		if skillIdx >= len(clericSkills) {
+			return TalentDef{}, false
+		}
+		skillName := clericSkills[skillIdx]
+		isMastery := (n % 2) == 1
+
+		if isMastery {
+			// Cleric mastery: +healing or +damage depending on skill
+			if skillName == "Healing Light" || skillName == "Guardian Embrace" ||
+				skillName == "Divine Intervention" || skillName == "Purifying Wave" {
+				return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: skillName, SkillHealing: 0.04}}, true
+			}
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: skillName, SkillDamage: 0.04}}, true
+		} else {
+			return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: skillName, SkillCdr: 0.03, SkillDuration: 0.02}}, true
+		}
+	}
+
+	switch n {
+	case 27: // Efficient Rites - mana
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillManaCost: -0.04}}, true
+	case 28: // Rites of Haste - CDR
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.015}}, true
+	case 29: // Mercy Routine - sustained healing
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillHealing: 0.03}}, true
+	case 30: // Sanctuary Practice - protective
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillDuration: 0.04}}, true
+	case 31: // Radiant Doctrine - damage
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctDamage: 0.02}}, true
+	case 32: // Cleanse Discipline - cleansing
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillName: "Purifying Wave", SkillCdr: 0.05}}, true
+	case 33: // Chorus of Faith - party buffs
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillDuration: 0.03}}, true
+	case 34: // Battlefield Ministry - area effects
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillAoe: 0.03}}, true
+	case 35: // Warden's Instinct - survivability
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctMaxHealth: 0.02}}, true
+	case 36: // Blessed Footwork - repositioning
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{PctSpeed: 0.02}}, true
+	case 37: // Hymncraft - chaining
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{AddCdr: 0.01}}, true
+	case 38: // Pilgrim Patience - sustain
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatWisdom: 3}}, true
+	case 39: // Mercy Doctrine - support
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{SkillHealing: 0.02, SkillDuration: 0.02}}, true
+	case 40: // Ritekeeper - consistency
+		return TalentDef{MaxRank: 5, PerRank: TalentBonus{FlatDefense: 2, AddCdr: 0.01}}, true
+	}
 	return TalentDef{}, false
 }
 
@@ -191,6 +396,66 @@ func CanonicalizeTalentID(classType, talentID string) (string, bool) {
 	return fmt.Sprintf("%s%02d", prefix, n), true
 }
 
+// GetSkillBonus returns the total skill-specific bonus for a given skill from an entity's talents.
+// Returns the accumulated bonuses from all relevant talents.
+func (e *Entity) GetSkillBonus(skillName string) TalentBonus {
+	if e == nil || e.TalentRanks == nil {
+		return TalentBonus{}
+	}
+
+	var total TalentBonus
+	for talentID, rank := range e.TalentRanks {
+		if rank <= 0 {
+			continue
+		}
+		def, ok := talentDefForID(e.SubType, talentID)
+		if !ok {
+			continue
+		}
+		bonus := def.PerRank
+		// Only apply skill-specific bonuses if the skill matches
+		if bonus.SkillName != "" && bonus.SkillName != skillName {
+			continue
+		}
+		// Accumulate bonuses (multiply by rank)
+		total.FlatStrength += bonus.FlatStrength * rank
+		total.FlatDexterity += bonus.FlatDexterity * rank
+		total.FlatIntelligence += bonus.FlatIntelligence * rank
+		total.FlatWisdom += bonus.FlatWisdom * rank
+		total.FlatVitality += bonus.FlatVitality * rank
+		total.FlatDamage += bonus.FlatDamage * rank
+		total.FlatDefense += bonus.FlatDefense * rank
+		total.PctMaxHealth += bonus.PctMaxHealth * float64(rank)
+		total.PctDamage += bonus.PctDamage * float64(rank)
+		total.PctSpeed += bonus.PctSpeed * float64(rank)
+		total.AddCdr += bonus.AddCdr * float64(rank)
+		// Skill-specific
+		if bonus.SkillName == skillName || bonus.SkillName == "" {
+			total.SkillDamage += bonus.SkillDamage * float64(rank)
+			total.SkillCdr += bonus.SkillCdr * float64(rank)
+			total.SkillRange += bonus.SkillRange * float64(rank)
+			total.SkillDuration += bonus.SkillDuration * float64(rank)
+			total.SkillAoe += bonus.SkillAoe * float64(rank)
+			total.SkillManaCost += bonus.SkillManaCost * float64(rank)
+			total.SkillCritChance += bonus.SkillCritChance * float64(rank)
+			total.SkillHealing += bonus.SkillHealing * float64(rank)
+		}
+	}
+	return total
+}
+
+// GetSkillDamageMultiplier returns 1.0 + skill damage bonus for a given skill
+func (e *Entity) GetSkillDamageMultiplier(skillName string) float64 {
+	bonus := e.GetSkillBonus(skillName)
+	return 1.0 + bonus.SkillDamage
+}
+
+// GetSkillCdrBonus returns the CDR bonus for a given skill (0.0 to 1.0)
+func (e *Entity) GetSkillCdrBonus(skillName string) float64 {
+	bonus := e.GetSkillBonus(skillName)
+	return bonus.SkillCdr
+}
+
 func (e *Entity) maxTalentPoints() int {
 	if e == nil {
 		return 0
@@ -218,6 +483,445 @@ func (e *Entity) recomputeTalentPoints() {
 		available = 0
 	}
 	e.TalentPoints = available
+}
+
+// ============================================================
+// SKILL RUNE SYSTEM
+// Each skill can have one rune equipped from 3 options
+// Runes unlock at levels 50, 70, and 90
+// ============================================================
+
+// SkillRuneDef defines a single rune option for a skill
+type SkillRuneDef struct {
+	ID          string `json:"id"`          // Unique rune ID e.g. "charge_momentum"
+	Name        string `json:"name"`        // Display name e.g. "Momentum"
+	Skill       string `json:"skill"`       // Skill this modifies e.g. "Charge"
+	UnlockLevel int    `json:"unlockLevel"` // 50, 70, or 90
+	Description string `json:"description"` // Effect description
+}
+
+// GetAllRunesForClass returns all rune definitions for a class
+func GetAllRunesForClass(classType string) []SkillRuneDef {
+	switch classType {
+	case "Fighter":
+		return fighterRunes
+	case "Rogue":
+		return rogueRunes
+	case "Wizard":
+		return wizardRunes
+	case "Cleric":
+		return clericRunes
+	default:
+		return nil
+	}
+}
+
+// GetRunesForSkill returns available runes for a specific skill
+func GetRunesForSkill(classType, skillName string) []SkillRuneDef {
+	allRunes := GetAllRunesForClass(classType)
+	var result []SkillRuneDef
+	for _, r := range allRunes {
+		if r.Skill == skillName {
+			result = append(result, r)
+		}
+	}
+	return result
+}
+
+// GetRuneDef returns the rune definition for a given rune ID
+func GetRuneDef(runeID string) (SkillRuneDef, bool) {
+	allRunes := append(fighterRunes, rogueRunes...)
+	allRunes = append(allRunes, wizardRunes...)
+	allRunes = append(allRunes, clericRunes...)
+	for _, r := range allRunes {
+		if r.ID == runeID {
+			return r, true
+		}
+	}
+	return SkillRuneDef{}, false
+}
+
+// GetUnlockedRunes returns runes the player can equip based on their level
+func GetUnlockedRunes(classType string, level int) []SkillRuneDef {
+	allRunes := GetAllRunesForClass(classType)
+	var result []SkillRuneDef
+	for _, r := range allRunes {
+		if level >= r.UnlockLevel {
+			result = append(result, r)
+		}
+	}
+	return result
+}
+
+// HasRune checks if the entity has a specific rune equipped
+func (e *Entity) HasRune(runeID string) bool {
+	if e == nil || e.SkillRunes == nil {
+		return false
+	}
+	for _, r := range e.SkillRunes {
+		if r == runeID {
+			return true
+		}
+	}
+	return false
+}
+
+// GetRuneForSkill returns the equipped rune ID for a skill (empty if none)
+func (e *Entity) GetRuneForSkill(skillName string) string {
+	if e == nil || e.SkillRunes == nil {
+		return ""
+	}
+	runeID, ok := e.SkillRunes[skillName]
+	if !ok {
+		return ""
+	}
+	return runeID
+}
+
+// Fighter Runes (9 skills × 3 runes = 27 runes, but we'll focus on key skills)
+var fighterRunes = []SkillRuneDef{
+	// Charge Runes
+	{ID: "charge_momentum", Name: "Momentum", Skill: "Charge", UnlockLevel: 50, Description: "+50% range, damage scales with distance traveled"},
+	{ID: "charge_shockwave", Name: "Shockwave", Skill: "Charge", UnlockLevel: 70, Description: "Ends with knockback AoE (5 unit radius)"},
+	{ID: "charge_unstoppable", Name: "Unstoppable", Skill: "Charge", UnlockLevel: 90, Description: "CC immune during charge, +20% armor for 5s after"},
+	// Whirlwind Runes
+	{ID: "whirlwind_extended", Name: "Extended", Skill: "Whirlwind", UnlockLevel: 50, Description: "+100% duration, -50% damage"},
+	{ID: "whirlwind_bladestorm", Name: "Bladestorm", Skill: "Whirlwind", UnlockLevel: 70, Description: "Pulls enemies toward you"},
+	{ID: "whirlwind_bloodwhirl", Name: "Bloodwhirl", Skill: "Whirlwind", UnlockLevel: 90, Description: "Heals 2% HP per enemy hit"},
+	// Shield Slam Runes
+	{ID: "shieldslam_concussion", Name: "Concussion", Skill: "ShieldSlam", UnlockLevel: 50, Description: "Stun duration +1s"},
+	{ID: "shieldslam_reverberation", Name: "Reverberation", Skill: "ShieldSlam", UnlockLevel: 70, Description: "Hits twice"},
+	{ID: "shieldslam_fortify", Name: "Fortify", Skill: "ShieldSlam", UnlockLevel: 90, Description: "Grants shield equal to damage dealt"},
+	// Iron Fortress Runes
+	{ID: "ironfortress_extended", Name: "Extended", Skill: "IronFortress", UnlockLevel: 50, Description: "+50% duration"},
+	{ID: "ironfortress_thorns", Name: "Thorns", Skill: "IronFortress", UnlockLevel: 70, Description: "Reflect 20% damage while active"},
+	{ID: "ironfortress_immovable", Name: "Immovable", Skill: "IronFortress", UnlockLevel: 90, Description: "Cannot be knocked back or pulled"},
+	// Earthshaker Runes
+	{ID: "earthshaker_fissure", Name: "Fissure", Skill: "Earthshaker", UnlockLevel: 50, Description: "Creates line AoE instead of circle"},
+	{ID: "earthshaker_aftershock", Name: "Aftershock", Skill: "Earthshaker", UnlockLevel: 70, Description: "Second smaller quake after 1s"},
+	{ID: "earthshaker_seismic", Name: "Seismic", Skill: "Earthshaker", UnlockLevel: 90, Description: "+100% knockdown duration"},
+}
+
+// Rogue Runes
+var rogueRunes = []SkillRuneDef{
+	// Piercing Throw Runes
+	{ID: "piercingthrow_ricochet", Name: "Ricochet", Skill: "PiercingThrow", UnlockLevel: 50, Description: "Bounces to 2 additional targets"},
+	{ID: "piercingthrow_serrated", Name: "Serrated", Skill: "PiercingThrow", UnlockLevel: 70, Description: "Applies bleed (5s DoT)"},
+	{ID: "piercingthrow_executioner", Name: "Executioner", Skill: "PiercingThrow", UnlockLevel: 90, Description: "+100% damage to targets below 30% HP"},
+	// Backstab Runes
+	{ID: "backstab_ambush", Name: "Ambush", Skill: "Backstab", UnlockLevel: 50, Description: "+50% crit chance"},
+	{ID: "backstab_eviscerate", Name: "Eviscerate", Skill: "Backstab", UnlockLevel: 70, Description: "Ignores 50% armor"},
+	{ID: "backstab_shadowstep", Name: "Shadowstep", Skill: "Backstab", UnlockLevel: 90, Description: "Teleport behind target before striking"},
+	// Fan of Knives Runes
+	{ID: "fanofknives_weighted", Name: "Weighted", Skill: "FanOfKnives", UnlockLevel: 50, Description: "Slows enemies hit by 30% for 3s"},
+	{ID: "fanofknives_poisoned", Name: "Poisoned", Skill: "FanOfKnives", UnlockLevel: 70, Description: "Applies poison DoT"},
+	{ID: "fanofknives_fury", Name: "Bladed Fury", Skill: "FanOfKnives", UnlockLevel: 90, Description: "Double the number of knives"},
+	// Shadow Lunge Runes
+	{ID: "shadowlunge_extended", Name: "Extended", Skill: "ShadowLunge", UnlockLevel: 50, Description: "+50% range"},
+	{ID: "shadowlunge_cripple", Name: "Cripple", Skill: "ShadowLunge", UnlockLevel: 70, Description: "Slows target by 50% for 3s"},
+	{ID: "shadowlunge_shadow", Name: "Shadow Clone", Skill: "ShadowLunge", UnlockLevel: 90, Description: "Creates illusion that attacks once"},
+	// Cloak and Vanish Runes
+	{ID: "cloak_swift", Name: "Swift", Skill: "CloakVanish", UnlockLevel: 50, Description: "+30% movement speed while invisible"},
+	{ID: "cloak_longer", Name: "Lasting Shadow", Skill: "CloakVanish", UnlockLevel: 70, Description: "+100% invisibility duration"},
+	{ID: "cloak_ambush", Name: "Prepared Ambush", Skill: "CloakVanish", UnlockLevel: 90, Description: "Next attack deals +100% damage"},
+}
+
+// Wizard Runes
+var wizardRunes = []SkillRuneDef{
+	// Fireball Runes
+	{ID: "fireball_magma", Name: "Magma Orb", Skill: "Fireball", UnlockLevel: 50, Description: "Slower projectile, leaves burning ground for 3s"},
+	{ID: "fireball_chain", Name: "Chain Reaction", Skill: "Fireball", UnlockLevel: 70, Description: "Bounces to 3 additional targets at 50% damage"},
+	{ID: "fireball_empowered", Name: "Empowered", Skill: "Fireball", UnlockLevel: 90, Description: "+100% damage, +3s cooldown"},
+	// Meteor Drop Runes
+	{ID: "meteor_cluster", Name: "Cluster", Skill: "MeteorDrop", UnlockLevel: 50, Description: "3 smaller meteors instead of 1"},
+	{ID: "meteor_extinction", Name: "Extinction", Skill: "MeteorDrop", UnlockLevel: 70, Description: "+50% explosion radius"},
+	{ID: "meteor_apocalypse", Name: "Apocalypse", Skill: "MeteorDrop", UnlockLevel: 90, Description: "Meteors continue for 5s after cast"},
+	// Teleport Runes
+	{ID: "teleport_blink", Name: "Blink", Skill: "Teleport", UnlockLevel: 50, Description: "+50% range"},
+	{ID: "teleport_phase", Name: "Phase", Skill: "Teleport", UnlockLevel: 70, Description: "Invulnerable for 1s after teleport"},
+	{ID: "teleport_warp", Name: "Warp", Skill: "Teleport", UnlockLevel: 90, Description: "Damages enemies at start and end location"},
+	// Arcane Shield Runes
+	{ID: "arcaneshield_extended", Name: "Extended", Skill: "ArcaneShield", UnlockLevel: 50, Description: "+50% duration"},
+	{ID: "arcaneshield_reflective", Name: "Reflective", Skill: "ArcaneShield", UnlockLevel: 70, Description: "Reflects 30% of absorbed damage"},
+	{ID: "arcaneshield_explosive", Name: "Explosive", Skill: "ArcaneShield", UnlockLevel: 90, Description: "Explodes when broken dealing absorbed amount"},
+	// Gravity Well Runes
+	{ID: "gravitywell_expanded", Name: "Expanded", Skill: "GravityWell", UnlockLevel: 50, Description: "+50% radius"},
+	{ID: "gravitywell_crushing", Name: "Crushing", Skill: "GravityWell", UnlockLevel: 70, Description: "+100% damage"},
+	{ID: "gravitywell_blackhole", Name: "Black Hole", Skill: "GravityWell", UnlockLevel: 90, Description: "Enemies cannot escape while active"},
+}
+
+// Cleric Runes
+var clericRunes = []SkillRuneDef{
+	// Spirit Guardians Runes
+	{ID: "spirits_expanded", Name: "Expanded", Skill: "SpiritGuardians", UnlockLevel: 50, Description: "+50% radius"},
+	{ID: "spirits_vengeful", Name: "Vengeful", Skill: "SpiritGuardians", UnlockLevel: 70, Description: "+50% damage, -25% healing"},
+	{ID: "spirits_sanctuary", Name: "Sanctuary", Skill: "SpiritGuardians", UnlockLevel: 90, Description: "Also reduces damage taken by 20%"},
+	// Healing Light Runes
+	{ID: "healinglight_beacon", Name: "Beacon", Skill: "HealingLight", UnlockLevel: 50, Description: "Heals in AoE around target (5 unit radius)"},
+	{ID: "healinglight_renewal", Name: "Renewal", Skill: "HealingLight", UnlockLevel: 70, Description: "Adds HoT for 5s (20% of initial heal)"},
+	{ID: "healinglight_divine", Name: "Divine", Skill: "HealingLight", UnlockLevel: 90, Description: "Also cleanses 1 debuff"},
+	// Divine Intervention Runes
+	{ID: "divineintervention_quick", Name: "Quick Save", Skill: "DivineIntervention", UnlockLevel: 50, Description: "Cooldown reduced by 50%"},
+	{ID: "divineintervention_guardian", Name: "Guardian Angel", Skill: "DivineIntervention", UnlockLevel: 70, Description: "Target gains 50% damage reduction for 5s"},
+	{ID: "divineintervention_miracle", Name: "Miracle", Skill: "DivineIntervention", UnlockLevel: 90, Description: "Can affect 2 targets"},
+	// Radiant Strike Runes
+	{ID: "radiantstrike_smite", Name: "Smite", Skill: "RadiantStrike", UnlockLevel: 50, Description: "+50% damage"},
+	{ID: "radiantstrike_chains", Name: "Chains of Light", Skill: "RadiantStrike", UnlockLevel: 70, Description: "Roots target for 2s"},
+	{ID: "radiantstrike_purge", Name: "Purge", Skill: "RadiantStrike", UnlockLevel: 90, Description: "Removes 1 buff from target"},
+	// Consecrated Ground Runes
+	{ID: "consecratedground_expanded", Name: "Expanded", Skill: "ConsecratedGround", UnlockLevel: 50, Description: "+50% radius"},
+	{ID: "consecratedground_lingering", Name: "Lingering", Skill: "ConsecratedGround", UnlockLevel: 70, Description: "+100% duration"},
+	{ID: "consecratedground_sanctuary", Name: "Holy Ground", Skill: "ConsecratedGround", UnlockLevel: 90, Description: "Allies in area take 30% less damage"},
+}
+
+// Combo System - Skill sequences that trigger bonus effects within 3 seconds
+type ComboDef struct {
+	ID          string // Unique combo identifier
+	Name        string // Display name
+	Class       string // Fighter, Rogue, Wizard, Cleric
+	FirstSkill  string // First skill in sequence
+	SecondSkill string // Second skill that completes the combo
+	Effect      string // Effect identifier for application
+	Description string // What the combo does
+}
+
+// ComboWindow is the time window for combo detection (3 seconds)
+const ComboWindow = 3 * time.Second
+
+// Fighter Combos
+var fighterCombos = []ComboDef{
+	{ID: "momentum_strike", Name: "Momentum Strike", Class: "Fighter", FirstSkill: "Charge", SecondSkill: "Whirlwind", Effect: "whirlwind_damage_boost", Description: "+50% Whirlwind damage"},
+	{ID: "tremor_rush", Name: "Tremor Rush", Class: "Fighter", FirstSkill: "Earthshaker", SecondSkill: "Charge", Effect: "charge_extended_knockdown", Description: "+2s knockdown on Charge"},
+	{ID: "guardian_combo", Name: "Guardian Combo", Class: "Fighter", FirstSkill: "Shield Slam", SecondSkill: "Guardian Roar", Effect: "guardian_roar_extended", Description: "+50% taunt duration"},
+	{ID: "iron_will", Name: "Iron Will", Class: "Fighter", FirstSkill: "Iron Fortress", SecondSkill: "Last Stand Rampage", Effect: "rampage_damage_reduction", Description: "Damage reduction persists during rampage"},
+}
+
+// Rogue Combos
+var rogueCombos = []ComboDef{
+	{ID: "ambush", Name: "Ambush", Class: "Rogue", FirstSkill: "Cloak & Vanish", SecondSkill: "Backstab", Effect: "backstab_guaranteed_crit", Description: "Guaranteed critical hit"},
+	{ID: "venom_burst", Name: "Venom Burst", Class: "Rogue", FirstSkill: "Poison Coating", SecondSkill: "Death Spiral", Effect: "death_spiral_poison_boost", Description: "+100% poison damage"},
+	{ID: "blade_tornado", Name: "Blade Tornado", Class: "Rogue", FirstSkill: "Fan of Knives", SecondSkill: "Phantom Volley", Effect: "volley_pierce", Description: "Volley pierces all targets"},
+	{ID: "shadow_dance", Name: "Shadow Dance", Class: "Rogue", FirstSkill: "Shadow Lunge", SecondSkill: "Smoke Bomb", Effect: "smoke_bomb_instant", Description: "Smoke bomb instant cast"},
+}
+
+// Wizard Combos
+var wizardCombos = []ComboDef{
+	{ID: "implosion", Name: "Implosion", Class: "Wizard", FirstSkill: "Gravity Well", SecondSkill: "Fireball", Effect: "fireball_well_boost", Description: "+100% Fireball damage in well"},
+	{ID: "arcane_barrage", Name: "Arcane Barrage", Class: "Wizard", FirstSkill: "Arcane Shield", SecondSkill: "Meteor Drop", Effect: "shield_meteor_explosion", Description: "Shield explodes on meteor impact"},
+	{ID: "time_burn", Name: "Time Burn", Class: "Wizard", FirstSkill: "Time Warp", SecondSkill: "Inferno Cataclysm", Effect: "cataclysm_double_tick", Description: "Cataclysm ticks twice as fast"},
+	{ID: "nova_cascade", Name: "Nova Cascade", Class: "Wizard", FirstSkill: "Teleport", SecondSkill: "Flame Whip", Effect: "flame_whip_360", Description: "360° Flame Whip"},
+}
+
+// Cleric Combos
+var clericCombos = []ComboDef{
+	{ID: "divine_storm", Name: "Divine Storm", Class: "Cleric", FirstSkill: "Heaven's Trumpet", SecondSkill: "Spirit Guardians", Effect: "spirits_holy_damage", Description: "Guardians deal holy damage"},
+	{ID: "sanctuary_combo", Name: "Sanctuary", Class: "Cleric", FirstSkill: "Consecrated Ground", SecondSkill: "Guardian Embrace", Effect: "ground_damage_immunity", Description: "Ground also provides damage immunity"},
+	{ID: "holy_fury", Name: "Holy Fury", Class: "Cleric", FirstSkill: "Mark of Weakness", SecondSkill: "Radiant Strike", Effect: "radiant_strike_boost", Description: "+100% Radiant Strike damage"},
+	{ID: "mass_revival", Name: "Mass Revival", Class: "Cleric", FirstSkill: "Divine Intervention", SecondSkill: "Healing Light", Effect: "healing_light_party", Description: "Healing Light heals entire party"},
+}
+
+// GetComboForSkills checks if using secondSkill after firstSkill triggers a combo
+func GetComboForSkills(class, firstSkill, secondSkill string) *ComboDef {
+	var combos []ComboDef
+	switch class {
+	case "Fighter":
+		combos = fighterCombos
+	case "Rogue":
+		combos = rogueCombos
+	case "Wizard":
+		combos = wizardCombos
+	case "Cleric":
+		combos = clericCombos
+	default:
+		return nil
+	}
+
+	for i := range combos {
+		if combos[i].FirstSkill == firstSkill && combos[i].SecondSkill == secondSkill {
+			return &combos[i]
+		}
+	}
+	return nil
+}
+
+// HasSetBonus checks if the entity has a specific set bonus active.
+// Example: e.HasSetBonus("warlordsFury", "chargeReset")
+func (e *Entity) HasSetBonus(setID, bonusKey string) bool {
+	if e == nil || e.ActiveSetBonuses == nil {
+		return false
+	}
+	bonuses, ok := e.ActiveSetBonuses[setID]
+	if !ok {
+		return false
+	}
+	_, hasBonusKey := bonuses[bonusKey]
+	return hasBonusKey
+}
+
+// HasAnySetBonus checks if any active set provides a specific bonus key.
+// Example: e.HasAnySetBonus("chargeReset") - returns true if any set has this bonus
+func (e *Entity) HasAnySetBonus(bonusKey string) bool {
+	if e == nil || e.ActiveSetBonuses == nil {
+		return false
+	}
+	for _, bonuses := range e.ActiveSetBonuses {
+		if _, ok := bonuses[bonusKey]; ok {
+			return true
+		}
+	}
+	return false
+}
+
+// GetSetBonusValue returns the value of a specific set bonus, or 0 if not found.
+// Example: e.GetSetBonusValue("warlordsFury", "armor") returns the armor bonus value
+func (e *Entity) GetSetBonusValue(setID, bonusKey string) int {
+	if e == nil || e.ActiveSetBonuses == nil {
+		return 0
+	}
+	bonuses, ok := e.ActiveSetBonuses[setID]
+	if !ok {
+		return 0
+	}
+	return bonuses[bonusKey]
+}
+
+// HasUniqueEffect checks if the entity has a specific unique effect from equipment.
+// Example: e.HasUniqueEffect("vampiric")
+func (e *Entity) HasUniqueEffect(effectID string) bool {
+	if e == nil || e.ActiveUniqueEffects == nil {
+		return false
+	}
+	for _, effect := range e.ActiveUniqueEffects {
+		if effect == effectID {
+			return true
+		}
+	}
+	return false
+}
+
+// CalculateFinalDamage applies unique effects and set bonuses to outgoing damage.
+// Parameters:
+//   - attacker: the entity dealing damage (must have lock held or be safe to read)
+//   - target: the entity receiving damage (must have lock held or be safe to read)
+//   - baseDamage: the raw damage amount before modifiers
+//   - damageType: type of damage ("physical", "fire", "poison", "holy", "arcane", etc.)
+//
+// Returns the final damage amount and whether it was a lucky crit.
+func CalculateFinalDamage(attacker, target *Entity, baseDamage int, damageType string) (int, bool) {
+	if attacker == nil || baseDamage <= 0 {
+		return baseDamage, false
+	}
+
+	finalDamage := baseDamage
+	isLucky := false
+
+	// Unique Effect: lucky - 10% chance for double damage
+	if attacker.HasUniqueEffect("lucky") {
+		if rand.Float64() < 0.10 {
+			finalDamage *= 2
+			isLucky = true
+		}
+	}
+
+	// Unique Effect: executioner - +25% damage vs targets below 25% HP
+	if attacker.HasUniqueEffect("executioner") && target != nil {
+		if target.MaxHealth > 0 && target.Health <= target.MaxHealth/4 {
+			finalDamage = finalDamage * 125 / 100
+		}
+	}
+
+	// Set Bonus: Warlord's Fury 6pc (ironFortressDamage) - Double damage during Iron Fortress
+	if attacker.HasAnySetBonus("ironFortressDamage") && attacker.IronFortressActive {
+		finalDamage *= 2
+	}
+
+	// Set Bonus: Shadow's Embrace 4pc (backstabAnyAngle) is handled in Backstab ability itself
+
+	// Apply damage type bonuses from set bonuses
+	for _, bonuses := range attacker.ActiveSetBonuses {
+		switch damageType {
+		case "poison":
+			if pct, ok := bonuses["poisonDamage"]; ok {
+				finalDamage = finalDamage * (100 + pct) / 100
+			}
+		case "fire":
+			if pct, ok := bonuses["fireDamage"]; ok {
+				finalDamage = finalDamage * (100 + pct) / 100
+			}
+		case "holy":
+			if pct, ok := bonuses["holyDamage"]; ok {
+				finalDamage = finalDamage * (100 + pct) / 100
+			}
+		}
+	}
+
+	return finalDamage, isLucky
+}
+
+// ApplyDamageReflect handles damage reflection from set bonuses and unique effects.
+// Call this after damage is dealt to reflect damage back to attacker.
+// Returns the reflected damage amount.
+func ApplyDamageReflect(attacker, defender *Entity, damageDealt int) int {
+	if defender == nil || attacker == nil || damageDealt <= 0 {
+		return 0
+	}
+
+	reflectedDamage := 0
+
+	// Unique Effect: thorns - Reflect 10% damage taken
+	if defender.HasUniqueEffect("thorns") {
+		reflectedDamage += damageDealt * 10 / 100
+	}
+
+	// Set Bonus: Bulwark of Ages 4pc (damageReflect) - 5% damage reflect
+	if defender.HasAnySetBonus("damageReflect") {
+		reflectedDamage += damageDealt * 5 / 100
+	}
+
+	return reflectedDamage
+}
+
+// GetEffectiveManaCost calculates the mana cost after applying unique effect: efficient (-10% mana cost)
+func (e *Entity) GetEffectiveManaCost(baseCost int) int {
+	if e == nil || baseCost <= 0 {
+		return baseCost
+	}
+	if e.HasUniqueEffect("efficient") {
+		return baseCost * 90 / 100 // -10% mana cost
+	}
+	return baseCost
+}
+
+// ActivateSwiftIfEquipped activates the swift buff if the entity has the unique effect
+// Call this after any skill usage
+func (e *Entity) ActivateSwiftIfEquipped() {
+	if e == nil {
+		return
+	}
+	if e.HasUniqueEffect("swift") {
+		e.SwiftActive = true
+		e.SwiftEndTime = time.Now().Add(3 * time.Second)
+	}
+}
+
+// GetEffectiveSpeed returns the entity's speed accounting for swift buff and slow debuff
+func (e *Entity) GetEffectiveSpeed() float64 {
+	if e == nil {
+		return 0
+	}
+	speed := e.Speed
+
+	// Unique Effect: swift - +20% speed for 3s after skill
+	if e.SwiftActive && time.Now().Before(e.SwiftEndTime) {
+		speed *= 1.20
+	}
+
+	// Apply slow debuff
+	if e.Slowed && time.Now().Before(e.SlowEndTime) {
+		speed *= e.SlowFactor
+	}
+
+	return speed
 }
 
 func (w *World) PerformUnlockTalent(playerID, talentID string) (*Entity, bool, string) {
@@ -297,6 +1001,120 @@ func (w *World) PerformResetTalents(playerID string) (*Entity, bool, string) {
 	return player, true, ""
 }
 
+// PerformRespec resets talents and/or skills for a gold cost.
+// respecType: "talents", "skills", or "both"
+// Cost: 1000 gold for talents, 1000 gold for skills, 1500 for both
+func (w *World) PerformRespec(playerID string, respecType string) (*Entity, bool, string) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false, "respec: player not found"
+	}
+	if player.Type != TypePlayer {
+		return nil, false, "respec: not a player"
+	}
+
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+
+	// Calculate cost based on respec type and player level
+	baseCost := 1000
+	levelMultiplier := 1 + (player.Level / 20) // 1x at level 1-19, 2x at 20-39, etc.
+	var cost int
+
+	switch respecType {
+	case "talents":
+		cost = baseCost * levelMultiplier
+	case "skills":
+		cost = baseCost * levelMultiplier
+	case "both":
+		cost = baseCost * levelMultiplier * 3 / 2 // 50% discount for both
+	default:
+		return nil, false, "respec: invalid respec type"
+	}
+
+	// Check if player has enough gold
+	if player.Gold < cost {
+		return nil, false, fmt.Sprintf("respec: need %d gold (have %d)", cost, player.Gold)
+	}
+
+	// Deduct gold
+	player.Gold -= cost
+
+	// Reset based on type
+	if respecType == "talents" || respecType == "both" {
+		player.TalentRanks = make(map[string]int)
+		player.recomputeTalentPoints()
+	}
+
+	if respecType == "skills" || respecType == "both" {
+		// Reset skills - keep only the base skill for the class
+		baseSkills := w.getBaseSkillsForClass(player.SubType)
+		player.UnlockedSkills = baseSkills
+		// Refund skill points based on level
+		player.SkillPoints = player.Level / 10 // 1 point per 10 levels
+		if player.SkillPoints < 0 {
+			player.SkillPoints = 0
+		}
+		// Reset branch selection
+		player.SelectedBranch = ""
+	}
+
+	player.RecalculateStats()
+	if player.Health > player.MaxHealth {
+		player.Health = player.MaxHealth
+	}
+	if player.Mana > player.MaxMana {
+		player.Mana = player.MaxMana
+	}
+
+	log.Printf("Player %s (%s) respecced %s for %d gold", player.Name, player.ID, respecType, cost)
+	return player, true, ""
+}
+
+// getBaseSkillsForClass returns the default skills a class starts with
+func (w *World) getBaseSkillsForClass(classType string) []string {
+	switch classType {
+	case "Fighter":
+		return []string{"Charge"}
+	case "Rogue":
+		return []string{"Piercing Throw"}
+	case "Wizard":
+		return []string{"Fireball"}
+	case "Cleric":
+		return []string{"Spirit Guardians"}
+	default:
+		return []string{}
+	}
+}
+
+// GetRespecCost calculates the respec cost for a player (for UI display)
+func (w *World) GetRespecCost(playerID string, respecType string) int {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok || player.Type != TypePlayer {
+		return 0
+	}
+
+	baseCost := 1000
+	levelMultiplier := 1 + (player.Level / 20)
+
+	switch respecType {
+	case "talents":
+		return baseCost * levelMultiplier
+	case "skills":
+		return baseCost * levelMultiplier
+	case "both":
+		return baseCost * levelMultiplier * 3 / 2
+	default:
+		return 0
+	}
+}
+
 func hashAngle(key string) float64 {
 	h := fnv.New32a()
 	_, _ = h.Write([]byte(key))
@@ -347,6 +1165,7 @@ const (
 	TypeStash        EntityType = "Stash"
 	TypeForge        EntityType = "Forge"
 	TypeTradingHouse EntityType = "TradingHouse"
+	TypeHazard       EntityType = "Hazard"
 
 	MaxInventorySize = 25
 	MaxStashSize     = 100
@@ -400,9 +1219,10 @@ type Entity struct {
 	LastDailyQuest time.Time       `json:"-"`
 
 	// Skills
-	SkillPoints    int      `json:"skillPoints"`
-	SelectedBranch string   `json:"selectedBranch"` // "A", "B", or "C"
-	UnlockedSkills []string `json:"unlockedSkills"`
+	SkillPoints    int               `json:"skillPoints"`
+	SelectedBranch string            `json:"selectedBranch"` // "A", "B", or "C"
+	UnlockedSkills []string          `json:"unlockedSkills"`
+	SkillRunes     map[string]string `json:"skillRunes"` // skill name -> rune ID
 
 	// Passive Talents
 	TalentPoints int            `json:"talentPoints"`
@@ -452,6 +1272,15 @@ type Entity struct {
 	VelZ    float64         `json:"velZ"`
 	Radius  float64         `json:"-"`
 	HitList map[string]bool `json:"-"`
+
+	// Projectile Rune Effects
+	ProjectileRuneID    string `json:"-"` // Rune applied to this projectile
+	ProjectileBounces   int    `json:"-"` // Remaining bounces for ricochet-type runes
+	ProjectileSkill     string `json:"-"` // Skill that created this projectile
+	ProjectilePierce    bool   `json:"-"` // Whether projectile pierces through enemies (combo effect)
+	FireballWellBoost   bool   `json:"-"` // Combo: Implosion - Fireball does +100% damage to slowed targets
+	MeteorShieldExplode bool   `json:"-"` // Combo: Arcane Barrage - Meteor explodes shield on impact
+	ZoneDoubleTick      bool   `json:"-"` // Combo: Time Burn - Zone ticks twice as fast
 
 	// Abilities
 	SpiritsActive  bool      `json:"spiritsActive"`
@@ -519,6 +1348,57 @@ type Entity struct {
 
 	// Party
 	PartyID string `json:"partyId,omitempty"`
+
+	// Unique Effect: swift - Speed boost after skill use
+	SwiftActive  bool      `json:"swiftActive,omitempty"`
+	SwiftEndTime time.Time `json:"-"`
+
+	// Rune Effects
+	ChargeStartX          float64   `json:"-"` // For momentum rune distance calculation
+	ChargeStartZ          float64   `json:"-"`
+	ChargeRuneID          string    `json:"-"` // Which rune is active for current charge
+	CCImmune              bool      `json:"ccImmune,omitempty"`
+	CCImmuneEndTime       time.Time `json:"-"`
+	RuneArmorBuff         float64   `json:"-"` // Temporary armor buff from runes
+	RuneArmorBuffEndTime  time.Time `json:"-"`
+	WhirlwindTickCount    int       `json:"-"` // For extended whirlwind duration
+	WhirlwindActive       bool      `json:"whirlwindActive,omitempty"`
+	WhirlwindEndTime      time.Time `json:"-"`
+	WhirlwindRuneID       string    `json:"-"`
+	IronFortressRuneID    string    `json:"-"` // For thorns/immovable effects
+	IronFortressThorns    bool      `json:"-"`
+	IronFortressImmovable bool      `json:"-"`
+	ArcaneShieldRuneID    string    `json:"-"` // For reflective/explosive effects
+	ArcaneShieldAbsorbed  int       `json:"-"` // Track absorbed damage for explosive rune
+	InvulnerableEndTime   time.Time `json:"-"` // For teleport phase rune
+	CloakNextAttackBonus  float64   `json:"-"` // For cloak prepared ambush rune
+	CloakSwiftSpeedBonus  bool      `json:"-"` // For cloak swift rune
+
+	// Cleric Rune Effects
+	SpiritGuardiansRuneID       string    `json:"-"` // For spirit guardian rune effects
+	SanctuaryDamageReduction    bool      `json:"-"` // Sanctuary rune: 20% damage reduction
+	SanctuaryEndTime            time.Time `json:"-"`
+	HealingLightHoTActive       bool      `json:"-"` // Renewal rune HoT
+	HealingLightHoTAmount       int       `json:"-"` // HoT amount per tick
+	HealingLightHoTEndTime      time.Time `json:"-"`
+	LastHealingLightHoTTick     time.Time `json:"-"`
+	DivineInterventionGuardian  bool      `json:"-"` // Guardian Angel rune: 50% damage reduction
+	DivineInterventionGuardTime time.Time `json:"-"`
+	ConsecratedGroundRuneID     string    `json:"-"` // Track which rune was used
+	ConsecratedGroundEndTime    time.Time `json:"-"` // For lingering rune extended duration
+	ConsecratedGroundSanctuary  bool      `json:"-"` // Sanctuary rune: allies take 30% less damage
+
+	// Combo System
+	LastSkillUsed      string    `json:"-"` // Last skill used for combo detection
+	LastSkillTime      time.Time `json:"-"` // When the last skill was used
+	ActiveCombo        string    `json:"-"` // Currently active combo effect
+	ActiveComboEndTime time.Time `json:"-"` // When the combo effect expires
+
+	// Set Bonuses (calculated from equipment)
+	ActiveSetBonuses map[string]map[string]int `json:"activeSetBonuses,omitempty"` // setID -> bonusKey -> value
+
+	// Unique Effects (collected from equipment)
+	ActiveUniqueEffects []string `json:"activeUniqueEffects,omitempty"` // List of active unique effect IDs
 }
 
 type DungeonRoom struct {
@@ -627,6 +1507,50 @@ func (sm *SpatialMap) Nearby(x, z, radius float64, instanceID string) []*Entity 
 	return result
 }
 
+type DungeonDifficulty string
+
+const (
+	DifficultyNormal DungeonDifficulty = "normal"
+	DifficultyHeroic DungeonDifficulty = "heroic"
+	DifficultyMythic DungeonDifficulty = "mythic"
+)
+
+// DifficultyMultipliers returns (healthMult, damageMult, lootMult, xpMult) for a difficulty
+func DifficultyMultipliers(difficulty DungeonDifficulty) (float64, float64, float64, float64) {
+	switch difficulty {
+	case DifficultyHeroic:
+		return 2.0, 1.5, 2.0, 2.0 // 2x health, 1.5x damage, 2x loot/xp
+	case DifficultyMythic:
+		return 4.0, 2.5, 4.0, 4.0 // 4x health, 2.5x damage, 4x loot/xp
+	default:
+		return 1.0, 1.0, 1.0, 1.0 // Normal
+	}
+}
+
+// MinLevelForDifficulty returns the minimum party level required for a difficulty
+func MinLevelForDifficulty(difficulty DungeonDifficulty, dungeonType string) int {
+	baseLevel := 1
+	switch dungeonType {
+	case "verdant_bastion_catacombs":
+		baseLevel = 30
+	case "molten_core":
+		baseLevel = 70
+	case "tempest_spire":
+		baseLevel = 70
+	default:
+		baseLevel = 1
+	}
+
+	switch difficulty {
+	case DifficultyHeroic:
+		return baseLevel + 20
+	case DifficultyMythic:
+		return baseLevel + 40
+	default:
+		return baseLevel
+	}
+}
+
 type DungeonInstance struct {
 	ID          string
 	Layout      DungeonLayout
@@ -634,6 +1558,8 @@ type DungeonInstance struct {
 	CreatedAt   time.Time
 	EmptySince  time.Time
 	PlayerCount int
+	Difficulty  DungeonDifficulty
+	DungeonType string
 }
 
 type World struct {
@@ -650,12 +1576,23 @@ type World struct {
 	// Global Regen Timer
 	RegenTimer float64
 
+	// Environmental Hazards
+	Hazards           map[string]*Hazard
+	HazardDamageTimer float64                       // Accumulator for hazard damage ticks
+	PlayerHazardTicks map[string]map[string]float64 // PlayerID -> HazardID -> time since last tick
+
 	// Event Callback
 	OnEvent       func(eventType string, data interface{})
 	OnQuestUpdate func(playerID string, quests []Quest)
 }
 
 type DamageEvent struct {
+	TargetID string
+	SourceID string
+	Amount   int
+}
+
+type HealEvent struct {
 	TargetID string
 	SourceID string
 	Amount   int
@@ -669,17 +1606,50 @@ type AbilityEvent struct {
 	TargetZ   float64 `json:"targetZ"`
 }
 
+// HazardType defines the type of environmental hazard
+type HazardType string
+
+const (
+	HazardLavaPool    HazardType = "lava_pool"      // Fire Realm - % health damage per second
+	HazardSandstorm   HazardType = "sandstorm"      // Earth Realm - % health damage per second
+	HazardLightning   HazardType = "lightning_zone" // Water Realm - % health damage per second
+	HazardWindGust    HazardType = "wind_gust"      // Air Realm - % health damage per second
+	HazardPoisonCloud HazardType = "poison_cloud"   // Future use
+)
+
+// Hazard represents an environmental hazard zone that deals % max health damage
+type Hazard struct {
+	ID           string     `json:"id"`
+	HazardType   HazardType `json:"hazardType"`
+	X            float64    `json:"x"`
+	Z            float64    `json:"z"`
+	Radius       float64    `json:"radius"`
+	DamagePct    float64    `json:"damagePct"`    // % of max health per tick (0.05 = 5%)
+	TickInterval float64    `json:"tickInterval"` // Seconds between damage ticks
+}
+
+// HazardDamageEvent is emitted when a player takes hazard damage
+type HazardDamageEvent struct {
+	PlayerID   string     `json:"playerId"`
+	HazardID   string     `json:"hazardId"`
+	HazardType HazardType `json:"hazardType"`
+	Damage     int        `json:"damage"`
+}
+
 func NewWorld(db *database.DB) *World {
 	w := &World{
-		Entities:        make(map[string]*Entity),
-		Parties:         make(map[string]*Party),
-		Trading:         NewTradingSystem(db),
-		Grid:            NewSpatialMap(50.0), // 50 unit cell size
-		InstanceLayouts: make(map[string]*DungeonInstance),
-		EliteSpawnTimer: time.Now(),
-		RegenTimer:      0,
-		OnEvent:         func(eventType string, data interface{}) {}, // Default no-op
-		OnQuestUpdate:   func(playerID string, quests []Quest) {},
+		Entities:          make(map[string]*Entity),
+		Parties:           make(map[string]*Party),
+		Trading:           NewTradingSystem(db),
+		Grid:              NewSpatialMap(50.0), // 50 unit cell size
+		InstanceLayouts:   make(map[string]*DungeonInstance),
+		EliteSpawnTimer:   time.Now(),
+		RegenTimer:        0,
+		Hazards:           make(map[string]*Hazard),
+		HazardDamageTimer: 0,
+		PlayerHazardTicks: make(map[string]map[string]float64),
+		OnEvent:           func(eventType string, data interface{}) {}, // Default no-op
+		OnQuestUpdate:     func(playerID string, quests []Quest) {},
 	}
 	w.initWorld()
 	return w
@@ -699,6 +1669,7 @@ func (w *World) GetAllParties() []*Party {
 func (w *World) initWorld() {
 	w.spawnMerchant()
 	w.spawnQuestNPC()
+	w.spawnRespecNPC()
 	w.spawnStash()
 	w.spawnForge()
 	w.spawnTradingHouse()
@@ -706,6 +1677,9 @@ func (w *World) initWorld() {
 	w.spawnInitialElites()
 	w.spawnFence()
 	w.spawnSnowWorld()
+	w.spawnFireRealm()
+	w.spawnAirRealm()
+	w.spawnEnvironmentalHazards()
 }
 
 func (w *World) spawnFence() {
@@ -718,6 +1692,16 @@ func (w *World) spawnFence() {
 	// Small opening (-20 to 20)
 	gapMinX := -20.0
 	gapMaxX := 20.0
+
+	// Gap in the West Wall (X = -1000) for access to Fire Realm (Lv 70+)
+	// At Z = 200 (+/- 20)
+	westGapMinZ := 180.0
+	westGapMaxZ := 220.0
+
+	// Gap in the East Wall (X = 1000) for access to Air Realm (Lv 70+)
+	// At Z = 200 (+/- 20)
+	eastGapMinZ := 180.0
+	eastGapMaxZ := 220.0
 
 	// Helper to create fence segment
 	createSegment := func(x, z, rot float64) {
@@ -747,12 +1731,18 @@ func (w *World) spawnFence() {
 	for x := minX; x <= maxX; x += segmentLen {
 		createSegment(x, maxZ, 0)
 	}
-	// West Wall
+	// West Wall (with gap for Fire Realm)
 	for z := minZ; z <= maxZ; z += segmentLen {
+		if z > westGapMinZ && z < westGapMaxZ {
+			continue // Gap for Fire Realm entrance
+		}
 		createSegment(minX, z, math.Pi/2)
 	}
-	// East Wall
+	// East Wall (with gap for Air Realm)
 	for z := minZ; z <= maxZ; z += segmentLen {
+		if z > eastGapMinZ && z < eastGapMaxZ {
+			continue // Gap for Air Realm entrance
+		}
 		createSegment(maxX, z, math.Pi/2)
 	}
 
@@ -807,6 +1797,46 @@ func (w *World) spawnFence() {
 		createSegment(snowMaxX, z, math.Pi/2)
 	}
 	// South is open to Earth Realm (handled by gap above)
+
+	// 4. Fire Realm Fence (West Zone - Scorched Wastes)
+	// Bounds: X: -3000 to -1000, Z: -600 to 1000
+	// Entrance at X: -1000, Z: 200 (gap in Earth Realm West Wall)
+	fireMinX, fireMaxX := -3000.0, -1000.0
+	fireMinZ, fireMaxZ := -600.0, 1000.0
+
+	// Fire North Wall
+	for x := fireMinX; x <= fireMaxX; x += segmentLen {
+		createSegment(x, fireMinZ, 0)
+	}
+	// Fire South Wall
+	for x := fireMinX; x <= fireMaxX; x += segmentLen {
+		createSegment(x, fireMaxZ, 0)
+	}
+	// Fire West Wall
+	for z := fireMinZ; z <= fireMaxZ; z += segmentLen {
+		createSegment(fireMinX, z, math.Pi/2)
+	}
+	// Fire East Wall connects to Earth Realm gap (no fence needed on east side)
+
+	// 5. Air Realm Fence (East Zone - Skyward Peaks)
+	// Bounds: X: 1000 to 3000, Z: -600 to 1000
+	// Entrance at X: 1000, Z: 200 (gap in Earth Realm East Wall)
+	airMinX, airMaxX := 1000.0, 3000.0
+	airMinZ, airMaxZ := -600.0, 1000.0
+
+	// Air North Wall
+	for x := airMinX; x <= airMaxX; x += segmentLen {
+		createSegment(x, airMinZ, 0)
+	}
+	// Air South Wall
+	for x := airMinX; x <= airMaxX; x += segmentLen {
+		createSegment(x, airMaxZ, 0)
+	}
+	// Air East Wall
+	for z := airMinZ; z <= airMaxZ; z += segmentLen {
+		createSegment(airMaxX, z, math.Pi/2)
+	}
+	// Air West Wall connects to Earth Realm gap (no fence needed on west side)
 }
 
 func (w *World) spawnSnowWorld() {
@@ -1005,6 +2035,359 @@ func (w *World) spawnSnowWorld() {
 	}
 }
 
+// spawnFireRealm spawns enemies in the Fire Realm (West Zone - Scorched Wastes)
+// Level Range: 70-95
+// Bounds: X: -3000 to -1000, Z: -600 to 1000
+func (w *World) spawnFireRealm() {
+	// Fire Realm Enemy Types by Area (from IMPROVEMENT_PLAN.md):
+	// Area 1: X -1400 to -1000, Lv 70-75, Sandstorm Djinn
+	// Area 2: X -1800 to -1400, Lv 75-80, Magma Golem
+	// Area 3: X -2200 to -1800, Lv 80-85, Scorched Wraith
+	// Area 4: X -2600 to -2200, Lv 85-90, Infernal Behemoth
+	// Area 5: X -3000 to -2600, Lv 90-95, Phoenix Sentinel
+
+	minZ := -600.0 + 5.0
+	maxZ := 1000.0 - 5.0
+	count := 200 // Per area
+
+	// Helper to spawn enemies in a Fire Realm area
+	spawnFireArea := func(subType string, minX, maxX float64, baseLevel int, stats Stats) {
+		for i := 0; i < count; i++ {
+			x := minX + rand.Float64()*(maxX-minX)
+			z := minZ + rand.Float64()*(maxZ-minZ)
+
+			maxHealth := stats.Vitality * 10
+			damage := stats.Strength * 2
+
+			speedMult := 1.0 + (float64(stats.Dexterity) * 0.02)
+			cooldown := 5.0 / speedMult
+			if cooldown < 1.0 {
+				cooldown = 1.0
+			}
+
+			enemy := &Entity{
+				ID:             fmt.Sprintf("%s-%d", subType, i),
+				Type:           TypeEnemy,
+				SubType:        subType,
+				X:              x,
+				Y:              0,
+				Z:              z,
+				SpawnX:         x,
+				SpawnZ:         z,
+				BaseStats:      stats,
+				Health:         maxHealth,
+				MaxHealth:      maxHealth,
+				Damage:         damage,
+				Level:          baseLevel + rand.Intn(6),
+				Speed:          5.0,
+				State:          "IDLE",
+				AttackSpeed:    cooldown,
+				AttackCooldown: time.Duration(cooldown * float64(time.Second)),
+				Scale:          1.0,
+			}
+			w.AddEntity(enemy)
+		}
+	}
+
+	// Area 1: Sandstorm Djinn (Lv 70-75) - AoE slow
+	spawnFireArea("SandstormDjinn", -1400.0+5.0, -1000.0-5.0, 70,
+		Stats{Strength: 4000, Intelligence: 1200, Dexterity: 1000, Wisdom: 1200, Vitality: 4500})
+
+	// Area 2: Magma Golem (Lv 75-80) - Ground DoT zone
+	spawnFireArea("MagmaGolem", -1800.0+5.0, -1400.0-5.0, 75,
+		Stats{Strength: 5000, Intelligence: 500, Dexterity: 400, Wisdom: 500, Vitality: 6000})
+
+	// Area 3: Scorched Wraith (Lv 80-85) - Phase shift invulnerable
+	spawnFireArea("ScorchedWraith", -2200.0+5.0, -1800.0-5.0, 80,
+		Stats{Strength: 4500, Intelligence: 2000, Dexterity: 1500, Wisdom: 2000, Vitality: 4500})
+
+	// Area 4: Infernal Behemoth (Lv 85-90) - AoE stun
+	spawnFireArea("InfernalBehemoth", -2600.0+5.0, -2200.0-5.0, 85,
+		Stats{Strength: 6000, Intelligence: 1000, Dexterity: 600, Wisdom: 1000, Vitality: 7000})
+
+	// Area 5: Phoenix Sentinel (Lv 90-95) - Rebirth (heals 50% HP once)
+	spawnFireArea("PhoenixSentinel", -3000.0+5.0, -2600.0-5.0, 90,
+		Stats{Strength: 5500, Intelligence: 2500, Dexterity: 1200, Wisdom: 2500, Vitality: 5500})
+}
+
+// spawnAirRealm spawns enemies in the Air Realm (East Zone - Skyward Peaks)
+// Level Range: 70-95
+// Bounds: X: 1000 to 3000, Z: -600 to 1000
+func (w *World) spawnAirRealm() {
+	// Air Realm Enemy Types by Area (from IMPROVEMENT_PLAN.md):
+	// Area 1: X 1000 to 1400, Lv 70-75, Storm Harpy
+	// Area 2: X 1400 to 1800, Lv 75-80, Cloud Elemental
+	// Area 3: X 1800 to 2200, Lv 80-85, Thunder Roc
+	// Area 4: X 2200 to 2600, Lv 85-90, Tempest Giant
+	// Area 5: X 2600 to 3000, Lv 90-95, Cyclone Avatar
+
+	minZ := -600.0 + 5.0
+	maxZ := 1000.0 - 5.0
+	count := 200 // Per area
+
+	// Helper to spawn enemies in an Air Realm area
+	spawnAirArea := func(subType string, minX, maxX float64, baseLevel int, stats Stats) {
+		for i := 0; i < count; i++ {
+			x := minX + rand.Float64()*(maxX-minX)
+			z := minZ + rand.Float64()*(maxZ-minZ)
+
+			maxHealth := stats.Vitality * 10
+			damage := stats.Strength * 2
+
+			speedMult := 1.0 + (float64(stats.Dexterity) * 0.02)
+			cooldown := 5.0 / speedMult
+			if cooldown < 1.0 {
+				cooldown = 1.0
+			}
+
+			enemy := &Entity{
+				ID:             fmt.Sprintf("%s-%d", subType, i),
+				Type:           TypeEnemy,
+				SubType:        subType,
+				X:              x,
+				Y:              0,
+				Z:              z,
+				SpawnX:         x,
+				SpawnZ:         z,
+				BaseStats:      stats,
+				Health:         maxHealth,
+				MaxHealth:      maxHealth,
+				Damage:         damage,
+				Level:          baseLevel + rand.Intn(6),
+				Speed:          5.5,
+				State:          "IDLE",
+				AttackSpeed:    cooldown,
+				AttackCooldown: time.Duration(cooldown * float64(time.Second)),
+				Scale:          1.0,
+			}
+			w.AddEntity(enemy)
+		}
+	}
+
+	// Area 1: Storm Harpy (Lv 70-75) - Knockback
+	spawnAirArea("StormHarpy", 1000.0+5.0, 1400.0-5.0, 70,
+		Stats{Strength: 3800, Intelligence: 1000, Dexterity: 1500, Wisdom: 1000, Vitality: 4200})
+
+	// Area 2: Cloud Elemental (Lv 75-80) - Mist form (50% miss chance)
+	spawnAirArea("CloudElemental", 1400.0+5.0, 1800.0-5.0, 75,
+		Stats{Strength: 4200, Intelligence: 1500, Dexterity: 800, Wisdom: 1500, Vitality: 5500})
+
+	// Area 3: Thunder Roc (Lv 80-85) - Chain lightning
+	spawnAirArea("ThunderRoc", 1800.0+5.0, 2200.0-5.0, 80,
+		Stats{Strength: 5000, Intelligence: 1800, Dexterity: 1200, Wisdom: 1800, Vitality: 5000})
+
+	// Area 4: Tempest Giant (Lv 85-90) - Tornado pull
+	spawnAirArea("TempestGiant", 2200.0+5.0, 2600.0-5.0, 85,
+		Stats{Strength: 5800, Intelligence: 1200, Dexterity: 700, Wisdom: 1200, Vitality: 6500})
+
+	// Area 5: Cyclone Avatar (Lv 90-95) - Eye of storm safe zone
+	spawnAirArea("CycloneAvatar", 2600.0+5.0, 3000.0-5.0, 90,
+		Stats{Strength: 5200, Intelligence: 2200, Dexterity: 1400, Wisdom: 2200, Vitality: 5800})
+}
+
+// spawnEnvironmentalHazards creates hazard zones in each realm
+// Hazards deal % max health damage per second, making them equally dangerous to all players
+func (w *World) spawnEnvironmentalHazards() {
+	// Hazard damage: 3% max health per second (0.03)
+	// Tick interval: 1.0 second
+	// This means standing in a hazard for 33 seconds = death from full health
+
+	// ==========================================================================
+	// FIRE REALM HAZARDS: Lava Pools (X: -3000 to -1000)
+	// Scattered throughout the Fire Realm
+	// ==========================================================================
+	fireHazards := []struct {
+		x, z   float64
+		radius float64
+	}{
+		// Area 1: Near entrance (X -1400 to -1000)
+		{-1150, 100, 6.0},
+		{-1250, 350, 7.0},
+		{-1350, -100, 5.0},
+		// Area 2: Mid Fire Realm (X -1800 to -1400)
+		{-1550, 200, 8.0},
+		{-1650, 500, 6.0},
+		{-1500, -300, 7.0},
+		{-1750, 0, 6.0},
+		// Area 3: Deep Fire Realm (X -2200 to -1800)
+		{-1950, 300, 9.0},
+		{-2050, -200, 7.0},
+		{-2100, 600, 8.0},
+		{-1900, -400, 6.0},
+		// Area 4: Far Fire Realm (X -2600 to -2200)
+		{-2350, 150, 8.0},
+		{-2450, 400, 9.0},
+		{-2300, -300, 7.0},
+		{-2550, 700, 8.0},
+		// Area 5: Edge of Fire Realm (X -3000 to -2600)
+		{-2750, 200, 10.0},
+		{-2850, 500, 9.0},
+		{-2700, -100, 8.0},
+		{-2950, 350, 10.0},
+	}
+
+	for i, h := range fireHazards {
+		hazard := &Hazard{
+			ID:           fmt.Sprintf("hazard-lava-%d", i),
+			HazardType:   HazardLavaPool,
+			X:            h.x,
+			Z:            h.z,
+			Radius:       h.radius,
+			DamagePct:    0.03, // 3% max health per tick
+			TickInterval: 1.0,
+		}
+		w.Hazards[hazard.ID] = hazard
+	}
+
+	// ==========================================================================
+	// EARTH REALM HAZARDS: Sandstorms (X: -1000 to 1000, outside town)
+	// Near the edges of the Earth Realm
+	// ==========================================================================
+	earthHazards := []struct {
+		x, z   float64
+		radius float64
+	}{
+		// Northwest corner
+		{-800, -450, 10.0},
+		{-650, -350, 8.0},
+		// Northeast corner
+		{800, -450, 10.0},
+		{650, -350, 8.0},
+		// Southwest corner
+		{-800, 850, 9.0},
+		{-600, 750, 7.0},
+		// Southeast corner
+		{800, 850, 9.0},
+		{600, 750, 7.0},
+		// West side (away from Fire entrance)
+		{-900, 500, 8.0},
+		{-850, -200, 7.0},
+		// East side (away from Air entrance)
+		{900, 500, 8.0},
+		{850, -200, 7.0},
+	}
+
+	for i, h := range earthHazards {
+		hazard := &Hazard{
+			ID:           fmt.Sprintf("hazard-sandstorm-%d", i),
+			HazardType:   HazardSandstorm,
+			X:            h.x,
+			Z:            h.z,
+			Radius:       h.radius,
+			DamagePct:    0.02, // 2% max health per tick (slightly less than lava)
+			TickInterval: 1.0,
+		}
+		w.Hazards[hazard.ID] = hazard
+	}
+
+	// ==========================================================================
+	// WATER REALM HAZARDS: Lightning Zones (Z: -600 to -2200)
+	// Scattered throughout the snowy Water Realm
+	// ==========================================================================
+	waterHazards := []struct {
+		x, z   float64
+		radius float64
+	}{
+		// Near entrance from Earth Realm (Z -600 to -900)
+		{-50, -750, 7.0},
+		{100, -850, 6.0},
+		{-150, -700, 5.0},
+		// Mid Water Realm (Z -900 to -1400)
+		{0, -1000, 8.0},
+		{200, -1150, 7.0},
+		{-200, -1100, 6.0},
+		{50, -1300, 8.0},
+		// Deep Water Realm (Z -1400 to -1800)
+		{-100, -1550, 9.0},
+		{150, -1650, 8.0},
+		{-50, -1750, 7.0},
+		{250, -1500, 6.0},
+		// Far Water Realm (Z -1800 to -2200)
+		{0, -1950, 10.0},
+		{-200, -2050, 9.0},
+		{200, -2100, 8.0},
+		{100, -1900, 7.0},
+	}
+
+	for i, h := range waterHazards {
+		hazard := &Hazard{
+			ID:           fmt.Sprintf("hazard-lightning-%d", i),
+			HazardType:   HazardLightning,
+			X:            h.x,
+			Z:            h.z,
+			Radius:       h.radius,
+			DamagePct:    0.04, // 4% max health per tick (lightning is dangerous!)
+			TickInterval: 1.0,
+		}
+		w.Hazards[hazard.ID] = hazard
+	}
+
+	// ==========================================================================
+	// AIR REALM HAZARDS: Wind Gusts (X: 1000 to 3000)
+	// Scattered throughout the Air Realm
+	// ==========================================================================
+	airHazards := []struct {
+		x, z   float64
+		radius float64
+	}{
+		// Area 1: Near entrance (X 1000 to 1400)
+		{1150, 100, 6.0},
+		{1250, 350, 7.0},
+		{1350, -100, 5.0},
+		// Area 2: Mid Air Realm (X 1400 to 1800)
+		{1550, 200, 8.0},
+		{1650, 500, 6.0},
+		{1500, -300, 7.0},
+		{1750, 0, 6.0},
+		// Area 3: Deep Air Realm (X 1800 to 2200)
+		{1950, 300, 9.0},
+		{2050, -200, 7.0},
+		{2100, 600, 8.0},
+		{1900, -400, 6.0},
+		// Area 4: Far Air Realm (X 2200 to 2600)
+		{2350, 150, 8.0},
+		{2450, 400, 9.0},
+		{2300, -300, 7.0},
+		{2550, 700, 8.0},
+		// Area 5: Edge of Air Realm (X 2600 to 3000)
+		{2750, 200, 10.0},
+		{2850, 500, 9.0},
+		{2700, -100, 8.0},
+		{2950, 350, 10.0},
+	}
+
+	for i, h := range airHazards {
+		hazard := &Hazard{
+			ID:           fmt.Sprintf("hazard-wind-%d", i),
+			HazardType:   HazardWindGust,
+			X:            h.x,
+			Z:            h.z,
+			Radius:       h.radius,
+			DamagePct:    0.025, // 2.5% max health per tick
+			TickInterval: 1.0,
+		}
+		w.Hazards[hazard.ID] = hazard
+	}
+
+	// Create Entity objects for each hazard so they get broadcast to clients
+	// The client uses: Type=Hazard, SubType=hazardType, Scale=radius
+	for _, hazard := range w.Hazards {
+		entity := &Entity{
+			ID:      hazard.ID,
+			Type:    TypeHazard,
+			SubType: string(hazard.HazardType),
+			X:       hazard.X,
+			Y:       0,
+			Z:       hazard.Z,
+			Scale:   hazard.Radius, // Use Scale to store radius for client rendering
+			State:   "IDLE",
+		}
+		w.AddEntity(entity)
+	}
+
+	log.Printf("Spawned %d environmental hazards", len(w.Hazards))
+}
+
 func (w *World) spawnInitialElites() {
 	// Spawn one elite in each rectangular sector
 	// Sector 3 (Center): Lv 1-10 (-200 to 200)
@@ -1069,6 +2452,28 @@ func (w *World) spawnEliteInRect(level int, minX, maxX, minZ, maxZ float64) {
 		baseStats = Stats{Strength: 4000, Intelligence: 2000, Dexterity: 1000, Wisdom: 2000, Vitality: 4000}
 	case "FrostGuardian":
 		baseStats = Stats{Strength: 5000, Intelligence: 1000, Dexterity: 800, Wisdom: 1000, Vitality: 6500}
+	// Fire Realm enemies
+	case "SandstormDjinn":
+		baseStats = Stats{Strength: 4000, Intelligence: 1200, Dexterity: 1000, Wisdom: 1200, Vitality: 4500}
+	case "MagmaGolem":
+		baseStats = Stats{Strength: 5000, Intelligence: 500, Dexterity: 400, Wisdom: 500, Vitality: 6000}
+	case "ScorchedWraith":
+		baseStats = Stats{Strength: 4500, Intelligence: 2000, Dexterity: 1500, Wisdom: 2000, Vitality: 4500}
+	case "InfernalBehemoth":
+		baseStats = Stats{Strength: 6000, Intelligence: 1000, Dexterity: 600, Wisdom: 1000, Vitality: 7000}
+	case "PhoenixSentinel":
+		baseStats = Stats{Strength: 5500, Intelligence: 2500, Dexterity: 1200, Wisdom: 2500, Vitality: 5500}
+	// Air Realm enemies
+	case "StormHarpy":
+		baseStats = Stats{Strength: 3800, Intelligence: 1000, Dexterity: 1500, Wisdom: 1000, Vitality: 4200}
+	case "CloudElemental":
+		baseStats = Stats{Strength: 4200, Intelligence: 1500, Dexterity: 800, Wisdom: 1500, Vitality: 5500}
+	case "ThunderRoc":
+		baseStats = Stats{Strength: 5000, Intelligence: 1800, Dexterity: 1200, Wisdom: 1800, Vitality: 5000}
+	case "TempestGiant":
+		baseStats = Stats{Strength: 5800, Intelligence: 1200, Dexterity: 700, Wisdom: 1200, Vitality: 6500}
+	case "CycloneAvatar":
+		baseStats = Stats{Strength: 5200, Intelligence: 2200, Dexterity: 1400, Wisdom: 2200, Vitality: 5800}
 	}
 
 	maxHealth := int(float64(baseStats.Vitality*10) * mult)
@@ -1191,6 +2596,21 @@ func (w *World) spawnMerchant() {
 	}
 	// Merchant doesn't need combat stats for now
 	w.AddEntity(merchant)
+}
+
+func (w *World) spawnRespecNPC() {
+	respecNPC := &Entity{
+		ID:       "respec-npc-1",
+		Type:     TypeNPC,
+		SubType:  "RespecNPC",
+		X:        0, // Center of safe zone
+		Y:        0,
+		Z:        220, // Between merchant and quest NPC
+		Rotation: 0,   // Face south
+		State:    "IDLE",
+		Scale:    1.0,
+	}
+	w.AddEntity(respecNPC)
 }
 
 func (w *World) spawnEnemies() {
@@ -1938,6 +3358,181 @@ func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string
 	return player, true, "Socket added successfully"
 }
 
+// PerformForgeInsertGem inserts a gem from inventory into an equipment socket
+func (w *World) PerformForgeInsertGem(playerID, equipSlot string, gemInvIndex, socketIndex int) (*Entity, bool, string) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false, "Player not found"
+	}
+
+	// Get equipment item
+	equipItem, ok := player.Equipment[equipSlot]
+	if !ok {
+		return nil, false, "No item in equipment slot"
+	}
+
+	// Check if equipment has sockets
+	if equipItem.Sockets <= 0 {
+		return nil, false, "Equipment has no sockets"
+	}
+
+	// Check socket index is valid
+	usedSockets := len(equipItem.Gems)
+	if socketIndex < 0 || socketIndex >= equipItem.Sockets {
+		return nil, false, "Invalid socket index"
+	}
+
+	// Check if socket is already filled
+	if socketIndex < usedSockets {
+		return nil, false, "Socket already has a gem"
+	}
+
+	// Check we're inserting into the next available socket
+	if socketIndex != usedSockets {
+		return nil, false, "Must fill sockets in order"
+	}
+
+	// Get gem from inventory
+	if gemInvIndex < 0 || gemInvIndex >= len(player.Inventory) {
+		return nil, false, "Invalid inventory slot"
+	}
+
+	gemItem := player.Inventory[gemInvIndex]
+	if gemItem.Type != ItemGem {
+		return nil, false, "Item is not a gem"
+	}
+
+	// Create socketed gem from gem item
+	socketedGem := SocketedGem{
+		Type:    gemItem.GemType,
+		Quality: gemItem.GemQuality,
+		Stats:   gemItem.Stats,
+	}
+
+	// Add gem to equipment
+	newEquipItem := equipItem
+	if newEquipItem.Gems == nil {
+		newEquipItem.Gems = make([]SocketedGem, 0)
+	}
+	newEquipItem.Gems = append(newEquipItem.Gems, socketedGem)
+	player.Equipment[equipSlot] = newEquipItem
+
+	// Remove gem from inventory
+	player.Inventory = append(player.Inventory[:gemInvIndex], player.Inventory[gemInvIndex+1:]...)
+
+	return player, true, "Gem inserted successfully"
+}
+
+// PerformForgeCombineGems combines 3 gems of same type and quality into 1 gem of next quality
+func (w *World) PerformForgeCombineGems(playerID string, gemIndices [3]int) (*Entity, bool, string) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false, "Player not found"
+	}
+
+	// Validate indices are unique and in range
+	indexMap := make(map[int]bool)
+	for _, idx := range gemIndices {
+		if idx < 0 || idx >= len(player.Inventory) {
+			return nil, false, "Invalid inventory slot"
+		}
+		if indexMap[idx] {
+			return nil, false, "Duplicate gem slot selected"
+		}
+		indexMap[idx] = true
+	}
+
+	// Get the three gems and validate they're all gems of same type and quality
+	gems := make([]Item, 3)
+	for i, idx := range gemIndices {
+		gems[i] = player.Inventory[idx]
+		if gems[i].Type != ItemGem {
+			return nil, false, "Item is not a gem"
+		}
+	}
+
+	// Check all gems are same type and quality
+	gemType := gems[0].GemType
+	gemQuality := gems[0].GemQuality
+	for i := 1; i < 3; i++ {
+		if gems[i].GemType != gemType {
+			return nil, false, "All gems must be the same type"
+		}
+		if gems[i].GemQuality != gemQuality {
+			return nil, false, "All gems must be the same quality"
+		}
+	}
+
+	// Check if we can upgrade (not already max quality)
+	nextQuality := GetNextGemQuality(gemQuality)
+	if nextQuality == "" {
+		return nil, false, "Gems are already maximum quality"
+	}
+
+	// Create the upgraded gem
+	upgradedGem := GenerateGem(gemType, nextQuality)
+
+	// Remove the 3 gems from inventory (remove from highest index first to preserve indices)
+	sortedIndices := make([]int, 3)
+	copy(sortedIndices, gemIndices[:])
+	// Sort descending
+	for i := 0; i < 2; i++ {
+		for j := i + 1; j < 3; j++ {
+			if sortedIndices[i] < sortedIndices[j] {
+				sortedIndices[i], sortedIndices[j] = sortedIndices[j], sortedIndices[i]
+			}
+		}
+	}
+	for _, idx := range sortedIndices {
+		player.Inventory = append(player.Inventory[:idx], player.Inventory[idx+1:]...)
+	}
+
+	// Add upgraded gem to inventory
+	player.Inventory = append(player.Inventory, *upgradedGem)
+
+	return player, true, "Gems combined successfully"
+}
+
+// PerformForgeRemoveGem removes a gem from an equipment socket (gem is destroyed)
+func (w *World) PerformForgeRemoveGem(playerID, equipSlot string, socketIndex int) (*Entity, bool, string) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false, "Player not found"
+	}
+
+	// Get equipment item
+	equipItem, ok := player.Equipment[equipSlot]
+	if !ok {
+		return nil, false, "No item in equipment slot"
+	}
+
+	// Check if equipment has gems
+	if len(equipItem.Gems) == 0 {
+		return nil, false, "Equipment has no socketed gems"
+	}
+
+	// Check socket index is valid
+	if socketIndex < 0 || socketIndex >= len(equipItem.Gems) {
+		return nil, false, "Invalid socket index"
+	}
+
+	// Remove gem from equipment (gem is destroyed)
+	newEquipItem := equipItem
+	newEquipItem.Gems = append(newEquipItem.Gems[:socketIndex], newEquipItem.Gems[socketIndex+1:]...)
+	player.Equipment[equipSlot] = newEquipItem
+
+	return player, true, "Gem removed (destroyed)"
+}
+
 func (w *World) PerformBuyGamble(playerID, slot string) (*Entity, bool) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
@@ -2249,17 +3844,32 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 
 	log.Printf("Generating daily quests for %s (Last: %v, Now: %v)", player.Name, player.LastDailyQuest, now)
 
-	// Generate 9 Daily Quests
+	// Generate Daily Quests - All zones
 	player.Quests = []Quest{
+		// Earth Realm (Lv 1-50)
 		{ID: "daily_skeleton", Type: "KILL", Target: "Skeleton", Count: 0, MaxCount: 100, RewardXP: 50000, Completed: false, Accepted: false},
 		{ID: "daily_imp", Type: "KILL", Target: "Imp", Count: 0, MaxCount: 100, RewardXP: 150000, Completed: false, Accepted: false},
 		{ID: "daily_demonorc", Type: "KILL", Target: "DemonOrc", Count: 0, MaxCount: 100, RewardXP: 300000, Completed: false, Accepted: false},
 		{ID: "daily_construct", Type: "KILL", Target: "Construct", Count: 0, MaxCount: 100, RewardXP: 500000, Completed: false, Accepted: false},
 		{ID: "daily_infernotitan", Type: "KILL", Target: "InfernoTitan", Count: 0, MaxCount: 100, RewardXP: 800000, Completed: false, Accepted: false},
+		// Water Realm (Lv 50-70)
 		{ID: "daily_mountaintroll", Type: "KILL", Target: "MountainTroll", Count: 0, MaxCount: 100, RewardXP: 1200000, Completed: false, Accepted: false},
 		{ID: "daily_aquagolem", Type: "KILL", Target: "AquaGolem", Count: 0, MaxCount: 100, RewardXP: 1600000, Completed: false, Accepted: false},
 		{ID: "daily_siren", Type: "KILL", Target: "Siren", Count: 0, MaxCount: 100, RewardXP: 2200000, Completed: false, Accepted: false},
 		{ID: "daily_frostguardian", Type: "KILL", Target: "FrostGuardian", Count: 0, MaxCount: 100, RewardXP: 3000000, Completed: false, Accepted: false},
+		// Fire Realm (Lv 70-95)
+		{ID: "daily_sandstormdjinn", Type: "KILL", Target: "SandstormDjinn", Count: 0, MaxCount: 100, RewardXP: 4000000, Completed: false, Accepted: false},
+		{ID: "daily_magmagolem", Type: "KILL", Target: "MagmaGolem", Count: 0, MaxCount: 100, RewardXP: 5000000, Completed: false, Accepted: false},
+		{ID: "daily_scorchedwraith", Type: "KILL", Target: "ScorchedWraith", Count: 0, MaxCount: 100, RewardXP: 6500000, Completed: false, Accepted: false},
+		{ID: "daily_infernalbehemoth", Type: "KILL", Target: "InfernalBehemoth", Count: 0, MaxCount: 100, RewardXP: 8000000, Completed: false, Accepted: false},
+		{ID: "daily_phoenixsentinel", Type: "KILL", Target: "PhoenixSentinel", Count: 0, MaxCount: 100, RewardXP: 10000000, Completed: false, Accepted: false},
+		// Air Realm (Lv 70-95)
+		{ID: "daily_stormharpy", Type: "KILL", Target: "StormHarpy", Count: 0, MaxCount: 100, RewardXP: 4000000, Completed: false, Accepted: false},
+		{ID: "daily_cloudelemental", Type: "KILL", Target: "CloudElemental", Count: 0, MaxCount: 100, RewardXP: 5000000, Completed: false, Accepted: false},
+		{ID: "daily_thunderroc", Type: "KILL", Target: "ThunderRoc", Count: 0, MaxCount: 100, RewardXP: 6500000, Completed: false, Accepted: false},
+		{ID: "daily_tempestgiant", Type: "KILL", Target: "TempestGiant", Count: 0, MaxCount: 100, RewardXP: 8000000, Completed: false, Accepted: false},
+		{ID: "daily_cycloneavatar", Type: "KILL", Target: "CycloneAvatar", Count: 0, MaxCount: 100, RewardXP: 10000000, Completed: false, Accepted: false},
+		// Dungeon Bosses
 		{ID: "daily_dungeon_bosses", Type: "KILL", Target: "DungeonBoss", Count: 0, MaxCount: 4, RewardXP: 5000000, Completed: false, Accepted: false},
 	}
 	player.LastDailyQuest = now
@@ -2462,14 +4072,26 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 		// Zone Logic
 		if e.SubType == "Zone" {
-			if time.Since(e.CreatedAt) > 8*time.Second {
+			// Check zone expiration - use ConsecratedGroundEndTime if set, otherwise 8s default
+			zoneExpired := false
+			if !e.ConsecratedGroundEndTime.IsZero() {
+				zoneExpired = time.Now().After(e.ConsecratedGroundEndTime)
+			} else {
+				zoneExpired = time.Since(e.CreatedAt) > 8*time.Second
+			}
+
+			if zoneExpired {
 				deferred.addRemoval(e.ID)
 				e.Mu.Unlock()
 				return
 			}
 			// Zone doesn't move
-			// Periodic Effect (e.g. every 1s)
-			if time.Since(e.LastAttackTime) >= 1*time.Second {
+			// Periodic Effect (e.g. every 1s, or 0.5s if double tick from combo)
+			tickInterval := 1 * time.Second
+			if e.ZoneDoubleTick {
+				tickInterval = 500 * time.Millisecond // Combo: Time Burn - double tick rate
+			}
+			if time.Since(e.LastAttackTime) >= tickInterval {
 				e.LastAttackTime = time.Now()
 
 				radius := e.Radius
@@ -2480,20 +4102,25 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				ownerID := e.OwnerID
 				owner := w.GetEntity(ownerID)
 				ownerIsPlayer := owner != nil && owner.Type == TypePlayer
+				isSanctuary := e.ConsecratedGroundSanctuary
 				e.Mu.Unlock() // Unlock to query grid
 
 				nearby := w.Grid.Nearby(e.X, e.Z, radius, e.InstanceID)
 				for _, target := range nearby {
 					target.Mu.RLock()
-					if target.Type != TypeEnemy || target.State == "DEAD" {
-						target.Mu.RUnlock()
-						continue
-					}
+					targetType := target.Type
+					targetState := target.State
 					dx := e.X - target.X
 					dz := e.Z - target.Z
 					target.Mu.RUnlock()
 
-					if (dx*dx + dz*dz) <= radius*radius {
+					inRadius := (dx*dx + dz*dz) <= radius*radius
+					if !inRadius {
+						continue
+					}
+
+					// Damage enemies
+					if targetType == TypeEnemy && targetState != "DEAD" {
 						target.Mu.Lock()
 						target.Health -= damage
 						if ownerIsPlayer {
@@ -2512,6 +4139,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							w.handleDeath(target, owner, deferred)
 							target.Mu.Unlock()
 						}
+					}
+
+					// consecratedground_sanctuary: Allies in area take 30% less damage
+					// Apply a buff to allies in the zone
+					if isSanctuary && (targetType == TypePlayer || targetType == TypeNPC) {
+						target.Mu.Lock()
+						target.SanctuaryDamageReduction = true
+						target.SanctuaryEndTime = time.Now().Add(2 * time.Second) // Refresh every tick
+						target.Mu.Unlock()
 					}
 				}
 				return
@@ -2527,6 +4163,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				radius := e.Radius
 				damage := e.Damage
 				ownerID := e.OwnerID
+				meteorShieldExplode := e.MeteorShieldExplode
 				owner := w.GetEntity(ownerID)
 				ownerIsPlayer := owner != nil && owner.Type == TypePlayer
 
@@ -2562,6 +4199,54 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							w.handleDeath(target, owner, deferred)
 							target.Mu.Unlock()
 						}
+					}
+				}
+
+				// Combo: Arcane Barrage - Shield explodes on meteor impact
+				if meteorShieldExplode && owner != nil {
+					owner.Mu.Lock()
+					if owner.ArcaneShieldActive && owner.ArcaneShieldHP > 0 {
+						shieldExplosionDamage := owner.ArcaneShieldHP
+						// Consume the shield
+						owner.ArcaneShieldActive = false
+						owner.ArcaneShieldHP = 0
+						owner.Mu.Unlock()
+
+						// Deal shield HP as AoE damage at meteor impact location
+						explosionRadius := radius * 1.5 // Slightly larger than meteor
+						explosionNearby := w.Grid.Nearby(e.X, e.Z, explosionRadius, e.InstanceID)
+						for _, target := range explosionNearby {
+							target.Mu.RLock()
+							if target.Type != TypeEnemy || target.State == "DEAD" {
+								target.Mu.RUnlock()
+								continue
+							}
+							dx := e.X - target.X
+							dz := e.Z - target.Z
+							target.Mu.RUnlock()
+
+							if (dx*dx + dz*dz) <= explosionRadius*explosionRadius {
+								target.Mu.Lock()
+								target.Health -= shieldExplosionDamage
+								if ownerIsPlayer {
+									addThreatLocked(target, ownerID, float64(shieldExplosionDamage))
+								}
+								isDead := target.Health <= 0
+								target.Mu.Unlock()
+
+								if w.OnEvent != nil {
+									w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: shieldExplosionDamage})
+								}
+
+								if isDead {
+									target.Mu.Lock()
+									w.handleDeath(target, owner, deferred)
+									target.Mu.Unlock()
+								}
+							}
+						}
+					} else {
+						owner.Mu.Unlock()
 					}
 				}
 
@@ -2624,13 +4309,42 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					continue
 				}
 				e.HitList[target.ID] = true
+				projRuneID := e.ProjectileRuneID
+				projSkill := e.ProjectileSkill
+				projBounces := e.ProjectileBounces
 				e.Mu.Unlock()
+
+				// Calculate final damage with rune modifications
+				finalDamage := damage
+
+				// Combo: Implosion (Gravity Well → Fireball) = +100% damage to slowed targets
+				if projSkill == "Fireball" && e.FireballWellBoost {
+					target.Mu.RLock()
+					isSlowed := target.Slowed
+					target.Mu.RUnlock()
+					if isSlowed {
+						finalDamage *= 2
+					}
+				}
+
+				// Piercing Throw runes
+				if projSkill == "PiercingThrow" {
+					// Executioner rune: +100% damage to targets below 30% HP
+					if projRuneID == "piercingthrow_executioner" {
+						target.Mu.RLock()
+						hpPercent := float64(target.Health) / float64(target.MaxHealth)
+						target.Mu.RUnlock()
+						if hpPercent < 0.30 {
+							finalDamage *= 2
+						}
+					}
+				}
 
 				// Hit!
 				target.Mu.Lock()
-				target.Health -= damage
+				target.Health -= finalDamage
 				if ownerIsPlayer {
-					addThreatLocked(target, ownerID, float64(damage))
+					addThreatLocked(target, ownerID, float64(finalDamage))
 				}
 				isDead := target.Health <= 0
 
@@ -2640,10 +4354,30 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					target.RootEndTime = time.Now().Add(3 * time.Second)
 				}
 
+				// Piercing Throw: Serrated rune applies bleed
+				if projSkill == "PiercingThrow" && projRuneID == "piercingthrow_serrated" && !isDead {
+					target.Bleeding = true
+					target.BleedDamage = finalDamage / 5 // 20% of damage per tick
+					target.BleedEndTime = time.Now().Add(5 * time.Second)
+				}
+
+				// Fan of Knives rune effects
+				if projSkill == "FanOfKnives" && !isDead {
+					if projRuneID == "fanofknives_weighted" {
+						target.Slowed = true
+						target.SlowFactor = 0.30
+						target.SlowEndTime = time.Now().Add(3 * time.Second)
+					} else if projRuneID == "fanofknives_poisoned" {
+						target.Poisoned = true
+						target.PoisonDamage = finalDamage / 4
+						target.PoisonEndTime = time.Now().Add(5 * time.Second)
+					}
+				}
+
 				target.Mu.Unlock()
 
 				if w.OnEvent != nil {
-					w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: damage})
+					w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage})
 				}
 
 				if isDead {
@@ -2652,6 +4386,50 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					target.Mu.Lock()              // Lock target for handleDeath
 					w.handleDeath(target, owner, deferred)
 					target.Mu.Unlock()
+				}
+
+				// Piercing Throw: Ricochet rune - bounce to additional targets
+				if projSkill == "PiercingThrow" && projRuneID == "piercingthrow_ricochet" && projBounces > 0 {
+					// Find nearest enemy that hasn't been hit
+					var nextTarget *Entity
+					minNextDist := 15.0 // Max bounce range
+					bounceNearby := w.Grid.Nearby(target.X, target.Z, minNextDist, e.InstanceID)
+					for _, bt := range bounceNearby {
+						bt.Mu.RLock()
+						if bt.Type != TypeEnemy || bt.State == "DEAD" || e.HitList[bt.ID] {
+							bt.Mu.RUnlock()
+							continue
+						}
+						bdx := target.X - bt.X
+						bdz := target.Z - bt.Z
+						bdist := math.Sqrt(bdx*bdx + bdz*bdz)
+						bt.Mu.RUnlock()
+
+						if bdist > 0.5 && bdist < minNextDist {
+							minNextDist = bdist
+							nextTarget = bt
+						}
+					}
+
+					if nextTarget != nil {
+						// Redirect projectile to next target
+						e.Mu.Lock()
+						nextTarget.Mu.RLock()
+						ntx, ntz := nextTarget.X, nextTarget.Z
+						nextTarget.Mu.RUnlock()
+
+						ndx := ntx - e.X
+						ndz := ntz - e.Z
+						ndist := math.Sqrt(ndx*ndx + ndz*ndz)
+						if ndist > 0 {
+							speed := 35.0
+							e.VelX = (ndx / ndist) * speed
+							e.VelZ = (ndz / ndist) * speed
+							e.ProjectileBounces--
+							e.Rotation = math.Atan2(e.VelX, e.VelZ)
+						}
+						e.Mu.Unlock()
+					}
 				}
 
 				// Splash Damage (Fireball / Explosive Trap)
@@ -2678,7 +4456,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						sdist := math.Sqrt(sdx*sdx + sdz*sdz)
 						if sdist < 10.0 {
 							splashTarget.Mu.Lock()
-							splashDmg := int(float64(damage) * 0.4)
+							splashDmg := int(float64(finalDamage) * 0.4)
 							splashTarget.Health -= splashDmg
 							if ownerIsPlayer {
 								addThreatLocked(splashTarget, ownerID, float64(splashDmg))
@@ -2700,7 +4478,85 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					}
 				}
 
-				if subType != "Dagger" && subType != "FlameTornado" {
+				// Fireball Chain Reaction rune: bounce to additional targets at 50% damage
+				if projSkill == "Fireball" && projRuneID == "fireball_chain" && projBounces > 0 {
+					// Find nearest enemy that hasn't been hit
+					var nextTarget *Entity
+					minNextDist := 15.0
+					chainNearby := w.Grid.Nearby(target.X, target.Z, minNextDist, e.InstanceID)
+					for _, ct := range chainNearby {
+						ct.Mu.RLock()
+						if ct.Type != TypeEnemy || ct.State == "DEAD" || e.HitList[ct.ID] {
+							ct.Mu.RUnlock()
+							continue
+						}
+						cdx := target.X - ct.X
+						cdz := target.Z - ct.Z
+						cdist := math.Sqrt(cdx*cdx + cdz*cdz)
+						ct.Mu.RUnlock()
+
+						if cdist > 0.5 && cdist < minNextDist {
+							minNextDist = cdist
+							nextTarget = ct
+						}
+					}
+
+					if nextTarget != nil {
+						e.Mu.Lock()
+						nextTarget.Mu.RLock()
+						ntx, ntz := nextTarget.X, nextTarget.Z
+						nextTarget.Mu.RUnlock()
+
+						ndx := ntx - e.X
+						ndz := ntz - e.Z
+						ndist := math.Sqrt(ndx*ndx + ndz*ndz)
+						if ndist > 0 {
+							speed := 20.0
+							e.VelX = (ndx / ndist) * speed
+							e.VelZ = (ndz / ndist) * speed
+							e.ProjectileBounces--
+							e.Damage = e.Damage / 2 // 50% damage on bounce
+							e.Rotation = math.Atan2(e.VelX, e.VelZ)
+						}
+						e.Mu.Unlock()
+					}
+				}
+
+				// Fireball Magma rune: leave burning ground (handled via event for now)
+				// The burning ground effect would be client-side visual + periodic damage
+				// For simplicity, we apply a burn DoT to all enemies in the splash area
+				if projSkill == "Fireball" && projRuneID == "fireball_magma" {
+					burnRadius := 5.0
+					burnTargets := w.Grid.Nearby(projX, projZ, burnRadius, e.InstanceID)
+					for _, bt := range burnTargets {
+						bt.Mu.RLock()
+						if bt.Type != TypeEnemy || bt.State == "DEAD" {
+							bt.Mu.RUnlock()
+							continue
+						}
+						bdx := projX - bt.X
+						bdz := projZ - bt.Z
+						bt.Mu.RUnlock()
+
+						if (bdx*bdx + bdz*bdz) <= burnRadius*burnRadius {
+							bt.Mu.Lock()
+							// Apply burning ground DoT (reuse Bleeding for simplicity)
+							bt.Bleeding = true
+							bt.BleedDamage = finalDamage / 6 // ~17% per tick
+							bt.BleedEndTime = time.Now().Add(3 * time.Second)
+							bt.Mu.Unlock()
+						}
+					}
+				}
+
+				// Determine if projectile should pierce
+				// Set Bonus: Inferno's Heart 4pc (fireballPierce) - Fireball pierces enemies
+				shouldPierce := subType == "Dagger" || subType == "FlameTornado" || e.ProjectilePierce
+				if subType == "Fireball" && owner != nil && owner.HasAnySetBonus("fireballPierce") {
+					shouldPierce = true
+				}
+
+				if !shouldPierce {
 					deferred.addRemoval(e.ID)
 					break
 				}
@@ -2737,11 +4593,36 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.State = "IDLE"
 				w.Grid.Update(e, oldX, oldZ)
 
-				// Impact Damage
-				damage := int(float64(e.Damage) * 1.5 * 1.3)
+				// Calculate charge distance for momentum rune
+				chargeDistTraveled := math.Sqrt(
+					(e.X-e.ChargeStartX)*(e.X-e.ChargeStartX) +
+						(e.Z-e.ChargeStartZ)*(e.Z-e.ChargeStartZ),
+				)
+
+				// Impact Damage - base calculation with talent bonus
+				damage := int(float64(e.Damage) * 1.5 * 1.3 * e.GetSkillDamageMultiplier("Charge"))
+
+				// Rune effects
+				runeID := e.ChargeRuneID
+
+				// Momentum rune: damage scales with distance (up to +100% at max range)
+				if runeID == "charge_momentum" {
+					distanceBonus := math.Min(chargeDistTraveled/30.0, 1.0) // Max bonus at 30 units
+					damage = int(float64(damage) * (1.0 + distanceBonus))
+				}
+
+				// Unstoppable rune: clear CC immunity, grant +20% armor for 5s
+				if runeID == "charge_unstoppable" {
+					e.CCImmune = false
+					e.RuneArmorBuff = 0.20
+					e.RuneArmorBuffEndTime = time.Now().Add(5 * time.Second)
+				}
+
 				e.Mu.Unlock() // Unlock before interaction
 
 				nearby := w.Grid.Nearby(e.ChargeTargetX, e.ChargeTargetZ, 16.0, e.InstanceID)
+				hitTargets := make([]*Entity, 0)
+
 				for _, target := range nearby {
 					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
@@ -2757,7 +4638,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						target.Mu.Lock()
 						target.Health -= damage
 						isDead := target.Health <= 0
+
+						// Combo: Tremor Rush (Earthshaker → Charge) = +2s knockdown
+						if e.ActiveCombo == "charge_extended_knockdown" {
+							target.Stunned = true
+							target.StunEndTime = time.Now().Add(2 * time.Second)
+						}
 						target.Mu.Unlock()
+
+						hitTargets = append(hitTargets, target)
 
 						if w.OnEvent != nil {
 							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: damage})
@@ -2770,6 +4659,48 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						}
 					}
 				}
+
+				// Consume the combo after use
+				if e.ActiveCombo == "charge_extended_knockdown" {
+					e.ActiveCombo = ""
+				}
+
+				// Shockwave rune: knockback AoE at end of charge (5 unit radius)
+				if runeID == "charge_shockwave" {
+					shockwaveRadius := 5.0
+					knockbackDist := 4.0
+					shockwaveNearby := w.Grid.Nearby(e.X, e.Z, shockwaveRadius, e.InstanceID)
+					for _, target := range shockwaveNearby {
+						target.Mu.RLock()
+						if target.Type != TypeEnemy || target.State == "DEAD" {
+							target.Mu.RUnlock()
+							continue
+						}
+						tx, tz := target.X, target.Z
+						target.Mu.RUnlock()
+
+						knockDx := tx - e.X
+						knockDz := tz - e.Z
+						knockDist := math.Sqrt(knockDx*knockDx + knockDz*knockDz)
+						if knockDist > 0 && knockDist <= shockwaveRadius {
+							// Normalize and apply knockback
+							knockDx = (knockDx / knockDist) * knockbackDist
+							knockDz = (knockDz / knockDist) * knockbackDist
+
+							target.Mu.Lock()
+							oldTX, oldTZ := target.X, target.Z
+							target.X += knockDx
+							target.Z += knockDz
+							w.Grid.Update(target, oldTX, oldTZ)
+							target.Mu.Unlock()
+						}
+					}
+				}
+
+				// Clear charge rune ID
+				e.Mu.Lock()
+				e.ChargeRuneID = ""
+				e.Mu.Unlock()
 			} else {
 				e.X += (dx / dist) * moveDist
 				e.Z += (dz / dist) * moveDist
@@ -2789,12 +4720,17 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 			if e.StealthActive && now.After(e.StealthEndTime) {
 				e.StealthActive = false
+				e.CloakSwiftSpeedBonus = false
+				// Don't clear CloakNextAttackBonus here - it persists until next attack
 			}
 			if e.ZealActive && now.After(e.ZealEndTime) {
 				e.ZealActive = false
 			}
 			if e.IronFortressActive && now.After(e.IronFortressEndTime) {
 				e.IronFortressActive = false
+				e.IronFortressThorns = false
+				e.IronFortressImmovable = false
+				e.IronFortressRuneID = ""
 			}
 			if e.GuardianRoarActive && now.After(e.GuardianRoarEndTime) {
 				e.GuardianRoarActive = false
@@ -2835,6 +4771,66 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.MarkWeakness = false
 			}
 
+			// Rune buff expirations
+			if e.CCImmune && now.After(e.CCImmuneEndTime) {
+				e.CCImmune = false
+			}
+			if e.RuneArmorBuff > 0 && now.After(e.RuneArmorBuffEndTime) {
+				e.RuneArmorBuff = 0
+			}
+			if now.After(e.InvulnerableEndTime) && !e.InvulnerableEndTime.IsZero() {
+				e.InvulnerableEndTime = time.Time{}
+			}
+
+			// Extended Whirlwind tick (from rune)
+			if e.WhirlwindActive {
+				if now.After(e.WhirlwindEndTime) {
+					e.WhirlwindActive = false
+					e.WhirlwindRuneID = ""
+				} else if now.Sub(e.LastSpiritTick) >= 500*time.Millisecond {
+					// Tick every 0.5s
+					e.LastSpiritTick = now // Reuse this timer
+					radius := 6.0
+					damage := int((float64(e.Damage)*0.8 + float64(e.Stats.Strength)*2) * 1.3 * 0.5) // -50% damage
+					e.Mu.Unlock()
+
+					nearby := w.Grid.Nearby(e.X, e.Z, radius, e.InstanceID)
+					for _, target := range nearby {
+						if target.ID == e.ID {
+							continue
+						}
+						target.Mu.RLock()
+						if target.Type != TypeEnemy || target.State == "DEAD" {
+							target.Mu.RUnlock()
+							continue
+						}
+						dx := e.X - target.X
+						dz := e.Z - target.Z
+						target.Mu.RUnlock()
+
+						if (dx*dx + dz*dz) <= radius*radius {
+							target.Mu.Lock()
+							target.Health -= damage
+							addThreatLocked(target, e.ID, float64(damage))
+							isDead := target.Health <= 0
+							target.Mu.Unlock()
+
+							if w.OnEvent != nil {
+								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: damage})
+							}
+
+							if isDead {
+								target.Mu.Lock()
+								w.handleDeath(target, e, deferred)
+								target.Mu.Unlock()
+							}
+						}
+					}
+
+					e.Mu.Lock()
+				}
+			}
+
 			// DoT Ticks
 			if e.Bleeding {
 				if now.After(e.BleedEndTime) {
@@ -2868,6 +4864,32 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						e.Mu.Lock()
 					}
 				}
+			}
+
+			// Healing Light HoT (Renewal Rune)
+			if e.HealingLightHoTActive {
+				if now.After(e.HealingLightHoTEndTime) {
+					e.HealingLightHoTActive = false
+				} else if time.Since(e.LastHealingLightHoTTick) >= 1*time.Second {
+					e.LastHealingLightHoTTick = now
+					e.Health += e.HealingLightHoTAmount
+					if e.Health > e.MaxHealth {
+						e.Health = e.MaxHealth
+					}
+					if w.OnEvent != nil {
+						w.OnEvent("heal", HealEvent{TargetID: e.ID, SourceID: "healinglight_hot", Amount: e.HealingLightHoTAmount})
+					}
+				}
+			}
+
+			// Sanctuary Damage Reduction expiry check
+			if e.SanctuaryDamageReduction && now.After(e.SanctuaryEndTime) {
+				e.SanctuaryDamageReduction = false
+			}
+
+			// Divine Intervention Guardian Angel expiry check
+			if e.DivineInterventionGuardian && now.After(e.DivineInterventionGuardTime) {
+				e.DivineInterventionGuardian = false
 			}
 
 			// HoT Ticks (Guardian Embrace)
@@ -2912,6 +4934,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				// Cleric Spirits
 				if now.After(e.SpiritEndTime) {
 					e.SpiritsActive = false
+					e.SpiritGuardiansRuneID = ""
 					e.Mu.Unlock()
 				} else {
 					if time.Since(e.LastSpiritTick) >= 500*time.Millisecond {
@@ -2922,7 +4945,24 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							damage = 20 + int(float64(e.Stats.Wisdom)*1.5)
 							radius = 20.0
 						}
+
+						// Spirit Guardians Rune Effects
+						spiritRuneID := e.SpiritGuardiansRuneID
+
+						// spirits_expanded: +50% radius
+						if spiritRuneID == "spirits_expanded" {
+							radius *= 1.5
+						}
+
+						// spirits_vengeful: +50% damage, -25% healing
+						healReduction := 1.0
+						if spiritRuneID == "spirits_vengeful" {
+							damage = int(float64(damage) * 1.5)
+							healReduction = 0.75
+						}
+
 						pX, pZ := e.X, e.Z
+						hasSpiritHeal := e.HasAnySetBonus("spiritGuardiansHeal")
 						e.Mu.Unlock() // Unlock before interaction
 
 						nearby := w.Grid.Nearby(pX, pZ, radius, e.InstanceID)
@@ -2931,28 +4971,41 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 								continue
 							}
 							target.Mu.RLock()
-							if target.Type != TypeEnemy || target.State == "DEAD" {
-								target.Mu.RUnlock()
-								continue
-							}
+							targetType := target.Type
+							targetState := target.State
+							targetID := target.ID
 							tdx := pX - target.X
 							tdz := pZ - target.Z
 							target.Mu.RUnlock()
 
 							tdist := math.Sqrt(tdx*tdx + tdz*tdz)
 							if tdist < radius {
-								target.Mu.Lock()
-								target.Health -= damage
-								isDead := target.Health <= 0
-								target.Mu.Unlock()
+								// Damage enemies
+								if targetType == TypeEnemy && targetState != "DEAD" {
+									target.Mu.Lock()
+									target.Health -= damage
+									isDead := target.Health <= 0
+									target.Mu.Unlock()
 
-								if w.OnEvent != nil {
-									w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: damage})
+									if w.OnEvent != nil {
+										w.OnEvent("damage", DamageEvent{TargetID: targetID, SourceID: e.ID, Amount: damage})
+									}
+
+									if isDead {
+										target.Mu.Lock()
+										w.handleDeath(target, e, deferred)
+										target.Mu.Unlock()
+									}
 								}
 
-								if isDead {
+								// Set Bonus: Divine Light 4pc (spiritGuardiansHeal) - Heal allies
+								if hasSpiritHeal && targetType == TypePlayer && targetID != e.ID {
+									healAmount := int(float64(5+(e.Stats.Wisdom/2)) * healReduction) // Apply vengeful rune reduction
 									target.Mu.Lock()
-									w.handleDeath(target, e, deferred)
+									target.Health += healAmount
+									if target.Health > target.MaxHealth {
+										target.Health = target.MaxHealth
+									}
 									target.Mu.Unlock()
 								}
 							}
@@ -2969,16 +5022,27 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 	if e.SubType == "AvengingSeraph" {
 		e.Mu.Lock()
-		// Duration Check (15s)
-		if time.Since(e.CreatedAt) > 15*time.Second {
+
+		// Owner Check (needed for both duration and bonus check)
+		owner := w.GetEntity(e.OwnerID)
+		if owner == nil {
 			e.Mu.Unlock()
 			deferred.addRemoval(e.ID)
 			return
 		}
 
-		// Owner Check
-		owner := w.GetEntity(e.OwnerID)
-		if owner == nil {
+		// Duration Check - Set Bonus: Crusader's Zeal 6pc (permanentSeraph) extends duration
+		// Normal duration: 15s, with set bonus: permanent while in combat (300s max)
+		owner.Mu.RLock()
+		hasPermanentSeraph := owner.HasAnySetBonus("permanentSeraph")
+		owner.Mu.RUnlock()
+
+		maxDuration := 15 * time.Second
+		if hasPermanentSeraph {
+			maxDuration = 300 * time.Second // 5 minutes - effectively permanent in combat
+		}
+
+		if time.Since(e.CreatedAt) > maxDuration {
 			e.Mu.Unlock()
 			deferred.addRemoval(e.ID)
 			return
@@ -3411,7 +5475,11 @@ func (w *World) Update(dt float64) {
 
 	w.Mu.Unlock()
 
-	// 4. Elite Spawning Logic (Every 5 minutes)
+	// 4. Environmental Hazard Damage (% max health per tick)
+	// Process hazard damage for players standing in hazard zones
+	w.processHazardDamage(dt, players)
+
+	// 5. Elite Spawning Logic (Every 5 minutes)
 	// Note: w.EliteSpawnTimer is accessed without lock here.
 	// Strictly speaking, we should lock it. But it's only used in Update loop (single threaded relative to itself).
 	// However, if we want to be safe, we can lock just for the check.
@@ -3433,6 +5501,102 @@ func (w *World) Update(dt float64) {
 		}
 		area := areas[rand.Intn(len(areas))]
 		w.spawnEliteInRect(area.Level, area.MinX, area.MaxX, area.MinZ, area.MaxZ)
+	}
+}
+
+// processHazardDamage checks if players are standing in hazard zones and applies % max health damage
+func (w *World) processHazardDamage(dt float64, players []*Entity) {
+	if len(w.Hazards) == 0 || len(players) == 0 {
+		return
+	}
+
+	// Lock for hazard tick tracking modifications
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	for _, player := range players {
+		if player.State == "DEAD" || player.Health <= 0 {
+			continue
+		}
+
+		// Players in town are safe (Town: X -100 to 100, Z 100 to 300)
+		if player.X > -100 && player.X < 100 && player.Z > 100 && player.Z < 300 {
+			continue
+		}
+
+		// Players in dungeon instances don't get world hazard damage
+		if player.InstanceID != "" {
+			continue
+		}
+
+		player.Mu.RLock()
+		px, pz := player.X, player.Z
+		playerID := player.ID
+		maxHealth := player.MaxHealth
+		player.Mu.RUnlock()
+
+		// Initialize player's hazard tick map if needed
+		if w.PlayerHazardTicks[playerID] == nil {
+			w.PlayerHazardTicks[playerID] = make(map[string]float64)
+		}
+
+		// Check each hazard
+		for hazardID, hazard := range w.Hazards {
+			// Calculate distance from player to hazard center
+			dx := px - hazard.X
+			dz := pz - hazard.Z
+			dist := math.Sqrt(dx*dx + dz*dz)
+
+			if dist <= hazard.Radius {
+				// Player is inside hazard zone
+				// Accumulate time since last tick
+				w.PlayerHazardTicks[playerID][hazardID] += dt
+
+				// Check if we should apply damage
+				if w.PlayerHazardTicks[playerID][hazardID] >= hazard.TickInterval {
+					w.PlayerHazardTicks[playerID][hazardID] -= hazard.TickInterval
+
+					// Calculate % health damage
+					damage := int(float64(maxHealth) * hazard.DamagePct)
+					if damage < 1 {
+						damage = 1
+					}
+
+					// Apply damage
+					player.Mu.Lock()
+					player.Health -= damage
+					if player.Health < 0 {
+						player.Health = 0
+					}
+					player.Mu.Unlock()
+
+					// Emit damage event
+					w.OnEvent("hazard_damage", HazardDamageEvent{
+						PlayerID:   playerID,
+						HazardID:   hazardID,
+						HazardType: hazard.HazardType,
+						Damage:     damage,
+					})
+
+					// Check for death
+					if player.Health <= 0 {
+						player.Mu.Lock()
+						player.State = "DEAD"
+						player.Mu.Unlock()
+
+						// Emit death event (player died to hazard)
+						w.OnEvent("death", map[string]interface{}{
+							"entityId":  playerID,
+							"killedBy":  hazardID,
+							"wasPlayer": true,
+						})
+					}
+				}
+			} else {
+				// Player left hazard zone, reset their tick for this hazard
+				delete(w.PlayerHazardTicks[playerID], hazardID)
+			}
+		}
 	}
 }
 
@@ -3549,7 +5713,111 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		if damage < 1 {
 			damage = 1
 		}
-		tgt.Health -= damage
+
+		// Cloak Prepared Ambush rune: next attack deals +100% damage
+		if att.Type == TypePlayer && att.CloakNextAttackBonus > 0 {
+			damage = int(float64(damage) * (1.0 + att.CloakNextAttackBonus))
+			att.Mu.Lock()
+			att.CloakNextAttackBonus = 0
+			att.StealthActive = false // Break stealth on attack
+			att.CloakSwiftSpeedBonus = false
+			att.Mu.Unlock()
+		}
+
+		// Iron Fortress Thorns rune: reflect 20% damage back to attacker
+		if tgt.Type == TypePlayer && tgt.IronFortressActive && tgt.IronFortressThorns {
+			thornsDamage := damage / 5 // 20%
+			if thornsDamage > 0 {
+				att.Health -= thornsDamage
+				if w.OnEvent != nil {
+					w.OnEvent("damage", DamageEvent{TargetID: att.ID, SourceID: tgt.ID, Amount: thornsDamage})
+				}
+			}
+		}
+
+		// Invulnerability check (from teleport phase rune)
+		if tgt.Type == TypePlayer && !tgt.InvulnerableEndTime.IsZero() && time.Now().Before(tgt.InvulnerableEndTime) {
+			damage = 0
+		}
+
+		// Sanctuary damage reduction (Spirit Guardians rune or Consecrated Ground rune): 20-30% less damage
+		if tgt.Type == TypePlayer && tgt.SanctuaryDamageReduction && time.Now().Before(tgt.SanctuaryEndTime) {
+			// Sanctuary gives 20% reduction (spirits_sanctuary) or 30% (consecratedground_sanctuary)
+			// We use 25% as a middle ground since both can stack
+			damage = int(float64(damage) * 0.75)
+		}
+
+		// Divine Intervention Guardian Angel rune: 50% damage reduction
+		if tgt.Type == TypePlayer && tgt.DivineInterventionGuardian && time.Now().Before(tgt.DivineInterventionGuardTime) {
+			damage = int(float64(damage) * 0.5)
+		}
+
+		// Arcane Shield absorption
+		actualDamage := damage
+		if tgt.Type == TypePlayer && tgt.ArcaneShieldActive && tgt.ArcaneShieldHP > 0 && damage > 0 {
+			absorbed := damage
+			if absorbed > tgt.ArcaneShieldHP {
+				absorbed = tgt.ArcaneShieldHP
+			}
+			tgt.ArcaneShieldHP -= absorbed
+			tgt.ArcaneShieldAbsorbed += absorbed
+			actualDamage = damage - absorbed
+
+			// Reflective rune: reflect 30% of absorbed damage
+			if tgt.ArcaneShieldRuneID == "arcaneshield_reflective" {
+				reflectDamage := absorbed * 30 / 100
+				if reflectDamage > 0 {
+					att.Health -= reflectDamage
+					if w.OnEvent != nil {
+						w.OnEvent("damage", DamageEvent{TargetID: att.ID, SourceID: tgt.ID, Amount: reflectDamage})
+					}
+				}
+			}
+
+			// Shield broken - check for explosive rune
+			if tgt.ArcaneShieldHP <= 0 {
+				if tgt.ArcaneShieldRuneID == "arcaneshield_explosive" {
+					// Explode dealing absorbed amount to nearby enemies
+					explosionDamage := tgt.ArcaneShieldAbsorbed
+					explosionRadius := 6.0
+					tgt.Mu.Unlock() // Unlock for grid search
+					explosionNearby := w.Grid.Nearby(tgt.X, tgt.Z, explosionRadius, tgt.InstanceID)
+					for _, et := range explosionNearby {
+						et.Mu.RLock()
+						if et.Type != TypeEnemy || et.State == "DEAD" {
+							et.Mu.RUnlock()
+							continue
+						}
+						edx := tgt.X - et.X
+						edz := tgt.Z - et.Z
+						et.Mu.RUnlock()
+
+						if (edx*edx + edz*edz) <= explosionRadius*explosionRadius {
+							et.Mu.Lock()
+							et.Health -= explosionDamage
+							isDead := et.Health <= 0
+							et.Mu.Unlock()
+
+							if w.OnEvent != nil {
+								w.OnEvent("damage", DamageEvent{TargetID: et.ID, SourceID: tgt.ID, Amount: explosionDamage})
+							}
+							if isDead {
+								et.Mu.Lock()
+								w.handleDeath(et, tgt, nil)
+								et.Mu.Unlock()
+							}
+						}
+					}
+					tgt.Mu.Lock() // Relock
+				}
+
+				tgt.ArcaneShieldActive = false
+				tgt.ArcaneShieldRuneID = ""
+				tgt.ArcaneShieldAbsorbed = 0
+			}
+		}
+
+		tgt.Health -= actualDamage
 		if att.Type == TypePlayer && tgt.Type == TypeEnemy {
 			addThreatLocked(tgt, att.ID, float64(damage))
 		}
@@ -3663,6 +5931,27 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 		return
 	}
 
+	// Combo System: Check if this skill completes a combo
+	now := time.Now()
+	if player.LastSkillUsed != "" && now.Sub(player.LastSkillTime) <= ComboWindow {
+		combo := GetComboForSkills(player.SubType, player.LastSkillUsed, skillName)
+		if combo != nil {
+			player.ActiveCombo = combo.Effect
+			player.ActiveComboEndTime = now.Add(10 * time.Second) // Combo effect lasts 10 seconds or until consumed
+			if w.OnEvent != nil {
+				w.OnEvent("combo", map[string]interface{}{
+					"playerID":  player.ID,
+					"comboID":   combo.ID,
+					"comboName": combo.Name,
+				})
+			}
+		}
+	}
+
+	// Record this skill for combo tracking (after checking, so we don't self-combo)
+	player.LastSkillUsed = skillName
+	player.LastSkillTime = now
+
 	// Class Specific Logic
 	switch player.SubType {
 	case "Fighter":
@@ -3671,13 +5960,37 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			cost := 20
 			if player.Mana >= cost {
 				player.Mana -= cost
+
+				// Check for rune effects
+				runeID := player.GetRuneForSkill("Charge")
+				player.ChargeRuneID = runeID
+				player.ChargeStartX = player.X
+				player.ChargeStartZ = player.Z
+
+				// Momentum rune: +50% range
+				finalTargetX := targetX
+				finalTargetZ := targetZ
+				if runeID == "charge_momentum" {
+					// Extend range by 50%
+					dx := targetX - player.X
+					dz := targetZ - player.Z
+					finalTargetX = player.X + dx*1.5
+					finalTargetZ = player.Z + dz*1.5
+				}
+
+				// Unstoppable rune: CC immune during charge
+				if runeID == "charge_unstoppable" {
+					player.CCImmune = true
+					player.CCImmuneEndTime = time.Now().Add(10 * time.Second) // Will be cleared on charge end
+				}
+
 				player.IsCharging = true
-				player.ChargeTargetX = targetX
-				player.ChargeTargetZ = targetZ
-				player.State = "ATTACKING" // Or special state?
+				player.ChargeTargetX = finalTargetX
+				player.ChargeTargetZ = finalTargetZ
+				player.State = "ATTACKING"
 				setCooldown(5 * time.Second)
 				if w.OnEvent != nil {
-					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
+					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: finalTargetX, TargetZ: finalTargetZ})
 				}
 			}
 		} else if skillName == "Whirlwind" {
@@ -3686,10 +5999,25 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
-				// AoE Damage around player
-				radius := 6.0
-				damage := int((float64(player.Damage)*0.8 + float64(player.Stats.Strength)*2) * 1.3)
+				// Check for rune effects
+				runeID := player.GetRuneForSkill("Whirlwind")
 
+				// AoE Damage around player with talent bonus
+				radius := 6.0
+				damage := int((float64(player.Damage)*0.8 + float64(player.Stats.Strength)*2) * 1.3 * player.GetSkillDamageMultiplier("Whirlwind"))
+
+				// Extended rune: -50% damage
+				if runeID == "whirlwind_extended" {
+					damage = damage / 2
+				}
+
+				// Combo: Momentum Strike (Charge → Whirlwind) = +50% damage
+				if player.ActiveCombo == "whirlwind_damage_boost" {
+					damage = int(float64(damage) * 1.5)
+					player.ActiveCombo = "" // Consume the combo
+				}
+
+				hitCount := 0
 				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
 					// Skip self
@@ -3705,14 +6033,32 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					// Distance check
 					dx := player.X - target.X
 					dz := player.Z - target.Z
+					tx, tz := target.X, target.Z
 					target.Mu.RUnlock()
 
-					if (dx*dx + dz*dz) <= radius*radius {
+					distSq := dx*dx + dz*dz
+					if distSq <= radius*radius {
 						target.Mu.Lock()
 						target.Health -= damage
 						addThreatLocked(target, player.ID, float64(damage))
 						isDead := target.Health <= 0
+
+						// Bladestorm rune: pull enemies toward player
+						if runeID == "whirlwind_bladestorm" && !isDead {
+							dist := math.Sqrt(distSq)
+							if dist > 1.0 {
+								pullDist := 2.0 // Pull 2 units toward player
+								pullDx := (player.X - tx) / dist * pullDist
+								pullDz := (player.Z - tz) / dist * pullDist
+								oldTX, oldTZ := target.X, target.Z
+								target.X += pullDx
+								target.Z += pullDz
+								w.Grid.Update(target, oldTX, oldTZ)
+							}
+						}
 						target.Mu.Unlock()
+
+						hitCount++
 
 						if w.OnEvent != nil {
 							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
@@ -3724,6 +6070,26 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 							target.Mu.Unlock()
 						}
 					}
+				}
+
+				// Bloodwhirl rune: heal 2% HP per enemy hit
+				if runeID == "whirlwind_bloodwhirl" && hitCount > 0 {
+					healAmount := int(float64(player.MaxHealth) * 0.02 * float64(hitCount))
+					player.Health += healAmount
+					if player.Health > player.MaxHealth {
+						player.Health = player.MaxHealth
+					}
+					if w.OnEvent != nil {
+						w.OnEvent("heal", HealEvent{TargetID: player.ID, SourceID: player.ID, Amount: healAmount})
+					}
+				}
+
+				// Extended rune: set up for additional tick (handled in Update)
+				if runeID == "whirlwind_extended" {
+					player.WhirlwindActive = true
+					player.WhirlwindEndTime = time.Now().Add(2 * time.Second) // Extra 2 seconds of spinning
+					player.WhirlwindRuneID = runeID
+					player.WhirlwindTickCount = 0
 				}
 
 				player.State = "ATTACKING"
@@ -3738,52 +6104,85 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
+				// Check for rune effects
+				runeID := player.GetRuneForSkill("ShieldSlam")
+
 				rangeDist := 4.0
 				angleThreshold := math.Pi / 4 // 45 degrees
-				damage := int(float64(player.Stats.Strength) * 1.5 * 1.3)
+				damage := int(float64(player.Stats.Strength) * 1.5 * 1.3 * player.GetSkillDamageMultiplier("Shield Slam"))
 
 				pDirX := math.Sin(player.Rotation)
 				pDirZ := math.Cos(player.Rotation)
 
-				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist, player.InstanceID)
-				for _, target := range nearby {
-					if target.ID == player.ID {
-						continue
-					}
+				totalDamageDealt := 0
+				hitCount := 1
+				// Reverberation rune: hits twice
+				if runeID == "shieldslam_reverberation" {
+					hitCount = 2
+				}
 
-					target.Mu.RLock()
-					if target.Type != TypeEnemy || target.State == "DEAD" {
+				for hit := 0; hit < hitCount; hit++ {
+					nearby := w.Grid.Nearby(player.X, player.Z, rangeDist, player.InstanceID)
+					for _, target := range nearby {
+						if target.ID == player.ID {
+							continue
+						}
+
+						target.Mu.RLock()
+						if target.Type != TypeEnemy || target.State == "DEAD" {
+							target.Mu.RUnlock()
+							continue
+						}
+						dx := target.X - player.X
+						dz := target.Z - player.Z
 						target.Mu.RUnlock()
-						continue
-					}
-					dx := target.X - player.X
-					dz := target.Z - player.Z
-					target.Mu.RUnlock()
 
-					dist := math.Sqrt(dx*dx + dz*dz)
-					if dist <= rangeDist {
-						dirX := dx / dist
-						dirZ := dz / dist
+						dist := math.Sqrt(dx*dx + dz*dz)
+						if dist <= rangeDist {
+							dirX := dx / dist
+							dirZ := dz / dist
 
-						dot := pDirX*dirX + pDirZ*dirZ
-						if dot > math.Cos(angleThreshold) {
-							target.Mu.Lock()
-							target.Health -= damage
-							addThreatLocked(target, player.ID, float64(damage))
-							isDead := target.Health <= 0
-							target.Mu.Unlock()
-
-							if w.OnEvent != nil {
-								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
-							}
-							if isDead {
+							dot := pDirX*dirX + pDirZ*dirZ
+							if dot > math.Cos(angleThreshold) {
 								target.Mu.Lock()
-								w.handleDeath(target, player, nil)
+								target.Health -= damage
+								addThreatLocked(target, player.ID, float64(damage))
+								isDead := target.Health <= 0
+
+								// Concussion rune: stun for 1s (or +1s if already has stun)
+								if runeID == "shieldslam_concussion" && !isDead {
+									target.Stunned = true
+									if target.StunEndTime.Before(time.Now()) {
+										target.StunEndTime = time.Now().Add(1 * time.Second)
+									} else {
+										target.StunEndTime = target.StunEndTime.Add(1 * time.Second)
+									}
+								}
+
 								target.Mu.Unlock()
+
+								totalDamageDealt += damage
+
+								if w.OnEvent != nil {
+									w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+								}
+								if isDead {
+									target.Mu.Lock()
+									w.handleDeath(target, player, nil)
+									target.Mu.Unlock()
+								}
 							}
 						}
 					}
 				}
+
+				// Fortify rune: grants shield equal to damage dealt
+				if runeID == "shieldslam_fortify" && totalDamageDealt > 0 {
+					player.ArcaneShieldActive = true
+					player.ArcaneShieldHP += totalDamageDealt
+					player.ArcaneShieldEndTime = time.Now().Add(10 * time.Second)
+				}
+
 				setCooldown(6 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
@@ -3797,7 +6196,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				rangeDist := 5.0
 				angleThreshold := math.Pi / 2 // 90 degrees
-				damage := int(float64(player.Stats.Strength) * 1.2 * 1.3)
+				damage := int(float64(player.Stats.Strength) * 1.2 * 1.3 * player.GetSkillDamageMultiplier("Sweeping Strike"))
 
 				pDirX := math.Sin(player.Rotation)
 				pDirZ := math.Cos(player.Rotation)
@@ -3852,10 +6251,31 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
-				radius := 6.0
-				damage := int(float64(player.Stats.Strength) * 2 * 1.3)
+				// Check for rune effects
+				runeID := player.GetRuneForSkill("Earthshaker")
 
-				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
+				radius := 6.0
+				damage := int(float64(player.Stats.Strength) * 2 * 1.3 * player.GetSkillDamageMultiplier("Earthshaker"))
+
+				// Fissure rune: line AoE instead of circle
+				isFissure := runeID == "earthshaker_fissure"
+				fissureLength := 12.0
+				fissureWidth := 3.0
+				pDirX := math.Sin(player.Rotation)
+				pDirZ := math.Cos(player.Rotation)
+
+				// Seismic rune: +100% knockdown duration
+				stunDuration := 1 * time.Second
+				if runeID == "earthshaker_seismic" {
+					stunDuration = 2 * time.Second
+				}
+
+				searchRadius := radius
+				if isFissure {
+					searchRadius = fissureLength
+				}
+
+				nearby := w.Grid.Nearby(player.X, player.Z, searchRadius, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -3870,10 +6290,36 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					dz := target.Z - player.Z
 					target.Mu.RUnlock()
 
-					if (dx*dx + dz*dz) <= radius*radius {
+					inRange := false
+					if isFissure {
+						// Check if target is within the line AoE
+						// Project target onto line direction
+						dot := dx*pDirX + dz*pDirZ
+						if dot > 0 && dot < fissureLength {
+							// Perpendicular distance from line
+							perpDist := math.Abs(dx*pDirZ - dz*pDirX)
+							if perpDist < fissureWidth/2 {
+								inRange = true
+							}
+						}
+					} else {
+						// Normal circle AoE
+						if (dx*dx + dz*dz) <= radius*radius {
+							inRange = true
+						}
+					}
+
+					if inRange {
 						target.Mu.Lock()
 						target.Health -= damage
 						addThreatLocked(target, player.ID, float64(damage))
+						// Apply knockdown (stun)
+						target.Stunned = true
+						if target.StunEndTime.Before(time.Now()) {
+							target.StunEndTime = time.Now().Add(stunDuration)
+						} else {
+							target.StunEndTime = target.StunEndTime.Add(stunDuration)
+						}
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
@@ -3887,6 +6333,42 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						}
 					}
 				}
+
+				// Aftershock rune: schedule second quake after 1s
+				if runeID == "earthshaker_aftershock" {
+					playerID := player.ID
+					px, pz := player.X, player.Z
+					instanceID := player.InstanceID
+					aftershockDamage := damage / 2
+					aftershockRadius := radius * 0.7
+					go func() {
+						time.Sleep(1 * time.Second)
+						nearby := w.Grid.Nearby(px, pz, aftershockRadius, instanceID)
+						for _, target := range nearby {
+							target.Mu.RLock()
+							if target.Type != TypeEnemy || target.State == "DEAD" {
+								target.Mu.RUnlock()
+								continue
+							}
+							dx := target.X - px
+							dz := target.Z - pz
+							target.Mu.RUnlock()
+
+							if (dx*dx + dz*dz) <= aftershockRadius*aftershockRadius {
+								target.Mu.Lock()
+								target.Health -= aftershockDamage
+								addThreatLocked(target, playerID, float64(aftershockDamage))
+								target.Mu.Unlock()
+
+								if w.OnEvent != nil {
+									w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: playerID, Amount: aftershockDamage})
+								}
+								// Death will be handled by main game loop when health <= 0
+							}
+						}
+					}()
+				}
+
 				setCooldown(12 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
@@ -3949,7 +6431,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				radius := 10.0
-				damage := int(float64(player.Stats.Strength) * 1 * 1.3)
+				damage := int(float64(player.Stats.Strength) * 1 * 1.3 * player.GetSkillDamageMultiplier("Juggernaut Charge"))
 
 				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
@@ -4009,7 +6491,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				radius := 6.0
-				damage := int((float64(player.Damage)*1.0 + float64(player.Stats.Strength)*3) * 1.3)
+				damage := int((float64(player.Damage)*1.0 + float64(player.Stats.Strength)*3) * 1.3 * player.GetSkillDamageMultiplier("Executioner Spin"))
 
 				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
@@ -4056,8 +6538,34 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			cost := 40
 			if player.Mana >= cost {
 				player.Mana -= cost
+
+				// Check for rune effects
+				runeID := player.GetRuneForSkill("IronFortress")
+
+				// Extended rune: +50% duration (30s -> 45s)
+				duration := 30 * time.Second
+				if runeID == "ironfortress_extended" {
+					duration = 45 * time.Second
+				}
+
 				player.IronFortressActive = true
-				player.IronFortressEndTime = time.Now().Add(30 * time.Second)
+				player.IronFortressEndTime = time.Now().Add(duration)
+				player.IronFortressRuneID = runeID
+
+				// Thorns rune: reflect 20% damage while active
+				if runeID == "ironfortress_thorns" {
+					player.IronFortressThorns = true
+				} else {
+					player.IronFortressThorns = false
+				}
+
+				// Immovable rune: cannot be knocked back or pulled
+				if runeID == "ironfortress_immovable" {
+					player.IronFortressImmovable = true
+				} else {
+					player.IronFortressImmovable = false
+				}
+
 				setCooldown(60 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
@@ -4068,8 +6576,16 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			cost := 35
 			if player.Mana >= cost {
 				player.Mana -= cost
+
+				// Combo: Guardian Combo (Shield Slam → Guardian Roar) = +50% buff/taunt duration
+				buffDuration := 10 * time.Second
+				if player.ActiveCombo == "guardian_roar_extended" {
+					buffDuration = 15 * time.Second // +50% duration
+					player.ActiveCombo = ""         // Consume the combo
+				}
+
 				player.GuardianRoarActive = true
-				player.GuardianRoarEndTime = time.Now().Add(10 * time.Second)
+				player.GuardianRoarEndTime = time.Now().Add(buffDuration)
 
 				// Taunt Logic
 				radius := 15.0
@@ -4149,6 +6665,19 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.LastStandActive = true
 				player.LastStandEndTime = time.Now().Add(10 * time.Second)
 
+				// Combo: Iron Will (Iron Fortress → Last Stand Rampage) = Damage reduction persists
+				if player.ActiveCombo == "rampage_damage_reduction" {
+					// Extend Iron Fortress to match Last Stand duration
+					if player.IronFortressActive {
+						player.IronFortressEndTime = player.LastStandEndTime
+					} else {
+						// Reactivate Iron Fortress if it just expired
+						player.IronFortressActive = true
+						player.IronFortressEndTime = player.LastStandEndTime
+					}
+					player.ActiveCombo = "" // Consume combo
+				}
+
 				setCooldown(120 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
@@ -4174,9 +6703,22 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			cost := 40
 			if player.Mana >= cost {
 				player.Mana -= cost
+
+				// Check for rune effects
+				runeID := player.GetRuneForSkill("ArcaneShield")
+
+				// Extended rune: +50% duration (20s -> 30s)
+				duration := 20 * time.Second
+				if runeID == "arcaneshield_extended" {
+					duration = 30 * time.Second
+				}
+
 				player.ArcaneShieldActive = true
 				player.ArcaneShieldHP = 100 + (player.Stats.Intelligence * 5)
-				player.ArcaneShieldEndTime = time.Now().Add(20 * time.Second)
+				player.ArcaneShieldEndTime = time.Now().Add(duration)
+				player.ArcaneShieldRuneID = runeID
+				player.ArcaneShieldAbsorbed = 0
+
 				setCooldown(30 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
@@ -4200,7 +6742,23 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
+				// Check for rune effects
+				runeID := player.GetRuneForSkill("GravityWell")
+
+				// Expanded rune: +50% radius
 				radius := 8.0
+				if runeID == "gravitywell_expanded" {
+					radius = 12.0
+				}
+
+				// Base damage with talent bonus
+				baseDamage := int(float64(20+player.Stats.Intelligence) * player.GetSkillDamageMultiplier("Gravity Well"))
+
+				// Crushing rune: +100% damage
+				if runeID == "gravitywell_crushing" {
+					baseDamage *= 2
+				}
+
 				nearby := w.Grid.Nearby(targetX, targetZ, radius, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
@@ -4212,18 +6770,47 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						dx := targetX - target.X
 						dz := targetZ - target.Z
 						dist := math.Sqrt(dx*dx + dz*dz)
-						if dist > 0.5 {
-							target.X += dx * 0.5 // Move halfway to center
-							target.Z += dz * 0.5
-							w.Grid.Update(target, target.X-dx*0.5, target.Z-dz*0.5)
+
+						// Black Hole rune: enemies cannot escape (stronger pull)
+						pullStrength := 0.5
+						if runeID == "gravitywell_blackhole" {
+							pullStrength = 0.8 // Stronger pull
+							// Also root enemies briefly
+							target.Rooted = true
+							target.RootEndTime = time.Now().Add(2 * time.Second)
 						}
+
+						if dist > 0.5 {
+							oldX, oldZ := target.X, target.Z
+							target.X += dx * pullStrength
+							target.Z += dz * pullStrength
+							w.Grid.Update(target, oldX, oldZ)
+						}
+
+						// Apply damage
+						target.Health -= baseDamage
+						addThreatLocked(target, player.ID, float64(baseDamage))
+						isDead := target.Health <= 0
 
 						// Apply Slow
 						target.Slowed = true
 						target.SlowFactor = 0.5
 						target.SlowEndTime = time.Now().Add(3 * time.Second)
+
+						target.Mu.Unlock()
+
+						if w.OnEvent != nil {
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: baseDamage})
+						}
+
+						if isDead {
+							target.Mu.Lock()
+							w.handleDeath(target, player, nil)
+							target.Mu.Unlock()
+						}
+					} else {
+						target.Mu.Unlock()
 					}
-					target.Mu.Unlock()
 				}
 
 				setCooldown(20 * time.Second)
@@ -4234,6 +6821,22 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 		} else if skillName == "Fireball" {
 			// Fireball
 			cost := 30
+
+			// Check for rune effects
+			runeID := player.GetRuneForSkill("Fireball")
+
+			// Combo: Implosion (Gravity Well → Fireball) = +100% damage to slowed targets
+			wellBoostActive := player.ActiveCombo == "fireball_well_boost"
+			if wellBoostActive {
+				player.ActiveCombo = "" // Consume combo
+			}
+
+			// Empowered rune: +3s cooldown
+			cooldown := 2 * time.Second
+			if runeID == "fireball_empowered" {
+				cooldown = 5 * time.Second
+			}
+
 			if player.Mana >= cost {
 				player.Mana -= cost
 
@@ -4245,32 +6848,54 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					dist = 1 // Avoid div by zero
 				}
 
-				velX := (dx / dist) * 20.0 // Speed 20
-				velZ := (dz / dist) * 20.0
+				// Magma rune: slower projectile
+				speed := 20.0
+				if runeID == "fireball_magma" {
+					speed = 12.0
+				}
 
-				damage := 20 + (player.Stats.Wisdom * 2)
+				velX := (dx / dist) * speed
+				velZ := (dz / dist) * speed
+
+				damage := int(float64(20+(player.Stats.Wisdom*2)) * player.GetSkillDamageMultiplier("Fireball"))
+
+				// Empowered rune: +100% damage
+				if runeID == "fireball_empowered" {
+					damage *= 2
+				}
+
+				// Chain rune: set bounces
+				bounces := 0
+				if runeID == "fireball_chain" {
+					bounces = 3
+				}
 
 				proj := &Entity{
-					ID:        fmt.Sprintf("proj-%d", time.Now().UnixNano()),
-					Type:      TypeProjectile,
-					SubType:   "Fireball",
-					X:         player.X,
-					Y:         1.5,
-					Z:         player.Z,
-					VelX:      velX,
-					VelZ:      velZ,
-					Radius:    2.0,
-					Damage:    damage,
-					OwnerID:   player.ID,
-					Rotation:  math.Atan2(velX, velZ),
-					CreatedAt: time.Now(),
-					Scale:     1.0,
+					ID:                fmt.Sprintf("proj-%d", time.Now().UnixNano()),
+					InstanceID:        player.InstanceID,
+					Type:              TypeProjectile,
+					SubType:           "Fireball",
+					X:                 player.X,
+					Y:                 1.5,
+					Z:                 player.Z,
+					VelX:              velX,
+					VelZ:              velZ,
+					Radius:            2.0,
+					Damage:            damage,
+					OwnerID:           player.ID,
+					Rotation:          math.Atan2(velX, velZ),
+					CreatedAt:         time.Now(),
+					Scale:             1.0,
+					ProjectileRuneID:  runeID,
+					ProjectileBounces: bounces,
+					ProjectileSkill:   "Fireball",
+					FireballWellBoost: wellBoostActive, // Combo: Implosion
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
 
 				player.State = "ATTACKING"
-				setCooldown(2 * time.Second)
+				setCooldown(cooldown)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -4281,9 +6906,15 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
+				// Combo: Nova Cascade (Teleport → Flame Whip) = 360° cone
+				novaCascadeActive := player.ActiveCombo == "flame_whip_360"
+				if novaCascadeActive {
+					player.ActiveCombo = "" // Consume combo
+				}
+
 				rangeDist := 12.0
 				angleThreshold := math.Pi / 4 // 45 degrees
-				damage := 25 + (player.Stats.Intelligence * 2)
+				damage := int(float64(25+(player.Stats.Intelligence*2)) * player.GetSkillDamageMultiplier("Flame Whip"))
 
 				pDirX := math.Sin(player.Rotation)
 				pDirZ := math.Cos(player.Rotation)
@@ -4309,7 +6940,8 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						dirZ := dz / dist
 
 						dot := pDirX*dirX + pDirZ*dirZ
-						if dot > math.Cos(angleThreshold) {
+						// Nova Cascade combo: skip angle check (360° AoE)
+						if novaCascadeActive || dot > math.Cos(angleThreshold) {
 							target.Mu.Lock()
 							target.Health -= damage
 							addThreatLocked(target, player.ID, float64(damage))
@@ -4362,7 +6994,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				velX := (dx / dist) * 10.0 // Slow speed
 				velZ := (dz / dist) * 10.0
 
-				damage := 30 + (player.Stats.Intelligence * 3)
+				damage := int(float64(30+(player.Stats.Intelligence*3)) * player.GetSkillDamageMultiplier("Flame Tornado"))
 
 				proj := &Entity{
 					ID:        fmt.Sprintf("proj-%d", time.Now().UnixNano()),
@@ -4405,41 +7037,119 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
-				// Spawn Projectile instead of async sleep
-				// Target is fixed location
-				damage := 50 + (player.Stats.Intelligence * 3)
+				// Check for rune effects
+				runeID := player.GetRuneForSkill("MeteorDrop")
 
-				// Actually, Meteor falls from sky.
-				// We can simulate it as a projectile that starts high up at targetX, targetZ and falls down.
-				// Or a projectile that travels from player to target.
-				// Client visual: "Spawn Meteor high above target".
-				// So server should do the same.
-
-				proj := &Entity{
-					ID:      fmt.Sprintf("proj-meteor-%d", time.Now().UnixNano()),
-					Type:    TypeProjectile,
-					SubType: "Meteor",
-					X:       targetX,
-					Y:       30.0, // High up
-					Z:       targetZ,
-					VelX:    0,
-					VelZ:    0, // Only falls? Server doesn't simulate Y gravity usually.
-					// But we can simulate "Time to Impact" by using a timer or just velocity if we had Y.
-					// Since server is 2D mostly, we can just use a timer-based projectile or a "Zone" that explodes later.
-					// But to match client "projectile", let's use a Zone that triggers after 1.5s.
-					// Wait, I said I'd use a projectile.
-					// If I use a Zone with 1.5s delay, it's same as sleep but managed in update loop.
-					// Let's use a "Meteor" entity that counts down.
-					Radius:    8.0,
-					Damage:    damage,
-					OwnerID:   player.ID,
-					CreatedAt: time.Now(),
-					// Use LastAttackTime as "Impact Time"
-					LastAttackTime: time.Now().Add(1500 * time.Millisecond),
-					Scale:          1.0,
+				// Combo: Arcane Barrage (Arcane Shield → Meteor Drop) = Shield explodes on impact
+				shieldExplodeActive := player.ActiveCombo == "shield_meteor_explosion"
+				if shieldExplodeActive {
+					player.ActiveCombo = "" // Consume combo
 				}
-				w.Entities[proj.ID] = proj
-				w.Grid.Add(proj)
+
+				damage := int(float64(50+(player.Stats.Intelligence*3)) * player.GetSkillDamageMultiplier("Meteor Drop"))
+
+				// Extinction rune: +50% explosion radius
+				radius := 8.0
+				if runeID == "meteor_extinction" {
+					radius = 12.0
+				}
+
+				// Cluster rune: 3 smaller meteors instead of 1
+				if runeID == "meteor_cluster" {
+					// Spawn 3 smaller meteors in a triangle pattern
+					offsets := []struct{ dx, dz float64 }{
+						{0, 0},
+						{-3, -2},
+						{3, -2},
+					}
+					clusterDamage := damage * 2 / 3 // Each does ~67% damage
+					clusterRadius := radius * 0.6
+
+					for i, offset := range offsets {
+						proj := &Entity{
+							ID:                  fmt.Sprintf("proj-meteor-%d-%d", time.Now().UnixNano(), i),
+							InstanceID:          player.InstanceID,
+							Type:                TypeProjectile,
+							SubType:             "Meteor",
+							X:                   targetX + offset.dx,
+							Y:                   30.0,
+							Z:                   targetZ + offset.dz,
+							VelX:                0,
+							VelZ:                0,
+							Radius:              clusterRadius,
+							Damage:              clusterDamage,
+							OwnerID:             player.ID,
+							CreatedAt:           time.Now(),
+							LastAttackTime:      time.Now().Add(time.Duration(1500+i*200) * time.Millisecond), // Stagger impact
+							Scale:               0.7,
+							ProjectileRuneID:    runeID,
+							ProjectileSkill:     "MeteorDrop",
+							MeteorShieldExplode: shieldExplodeActive && i == 0, // Only first meteor triggers explosion
+						}
+						w.Entities[proj.ID] = proj
+						w.Grid.Add(proj)
+					}
+				} else {
+					// Single meteor
+					proj := &Entity{
+						ID:                  fmt.Sprintf("proj-meteor-%d", time.Now().UnixNano()),
+						InstanceID:          player.InstanceID,
+						Type:                TypeProjectile,
+						SubType:             "Meteor",
+						X:                   targetX,
+						Y:                   30.0,
+						Z:                   targetZ,
+						VelX:                0,
+						VelZ:                0,
+						Radius:              radius,
+						Damage:              damage,
+						OwnerID:             player.ID,
+						CreatedAt:           time.Now(),
+						LastAttackTime:      time.Now().Add(1500 * time.Millisecond),
+						Scale:               1.0,
+						ProjectileRuneID:    runeID,
+						ProjectileSkill:     "MeteorDrop",
+						MeteorShieldExplode: shieldExplodeActive, // Combo: Arcane Barrage
+					}
+					w.Entities[proj.ID] = proj
+					w.Grid.Add(proj)
+
+					// Apocalypse rune: meteors continue for 5s after cast
+					if runeID == "meteor_apocalypse" {
+						playerID := player.ID
+						px, pz := targetX, targetZ
+						instanceID := player.InstanceID
+						go func() {
+							for i := 0; i < 5; i++ {
+								time.Sleep(1 * time.Second)
+								// Spawn additional meteor at random offset
+								offsetX := (rand.Float64() - 0.5) * 10
+								offsetZ := (rand.Float64() - 0.5) * 10
+								apocProj := &Entity{
+									ID:             fmt.Sprintf("proj-meteor-apoc-%d-%d", time.Now().UnixNano(), i),
+									InstanceID:     instanceID,
+									Type:           TypeProjectile,
+									SubType:        "Meteor",
+									X:              px + offsetX,
+									Y:              30.0,
+									Z:              pz + offsetZ,
+									VelX:           0,
+									VelZ:           0,
+									Radius:         radius * 0.7,
+									Damage:         damage / 2,
+									OwnerID:        playerID,
+									CreatedAt:      time.Now(),
+									LastAttackTime: time.Now().Add(1500 * time.Millisecond),
+									Scale:          0.7,
+								}
+								w.Mu.Lock()
+								w.Entities[apocProj.ID] = apocProj
+								w.Grid.Add(apocProj)
+								w.Mu.Unlock()
+							}
+						}()
+					}
+				}
 
 				player.State = "ATTACKING"
 				setCooldown(15 * time.Second)
@@ -4453,19 +7163,26 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
+				// Combo: Time Burn (Time Warp → Inferno Cataclysm) = Double tick rate
+				doubleTickActive := player.ActiveCombo == "cataclysm_double_tick"
+				if doubleTickActive {
+					player.ActiveCombo = "" // Consume combo
+				}
+
 				// Spawn Zone
 				zone := &Entity{
-					ID:        fmt.Sprintf("zone-inferno-%d", time.Now().UnixNano()),
-					Type:      TypeProjectile,
-					SubType:   "Zone", // Needs to handle damage ticks in updateEntity
-					X:         targetX,
-					Y:         0.1,
-					Z:         targetZ,
-					Radius:    12.0,
-					Damage:    30 + player.Stats.Intelligence,
-					OwnerID:   player.ID,
-					CreatedAt: time.Now(),
-					Scale:     1.0,
+					ID:             fmt.Sprintf("zone-inferno-%d", time.Now().UnixNano()),
+					Type:           TypeProjectile,
+					SubType:        "Zone", // Needs to handle damage ticks in updateEntity
+					X:              targetX,
+					Y:              0.1,
+					Z:              targetZ,
+					Radius:         12.0,
+					Damage:         int(float64(30+player.Stats.Intelligence) * player.GetSkillDamageMultiplier("Inferno Cataclysm")),
+					OwnerID:        player.ID,
+					CreatedAt:      time.Now(),
+					Scale:          1.0,
+					ZoneDoubleTick: doubleTickActive, // Combo: Time Burn
 				}
 				w.Entities[zone.ID] = zone
 				w.Grid.Add(zone)
@@ -4493,7 +7210,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				rangeDist := 15.0
 				width := 1.0
-				damage := 25 + (player.Stats.Intelligence * 2)
+				damage := int(float64(25+(player.Stats.Intelligence*2)) * player.GetSkillDamageMultiplier("Scorch Beam"))
 
 				// Line Check
 				// Vector from player to target
@@ -4576,7 +7293,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
-				damage := 100 + (player.Stats.Intelligence * 5)
+				damage := int(float64(100+(player.Stats.Intelligence*5)) * player.GetSkillDamageMultiplier("Dragonfire Lance"))
 
 				// Projectile
 				dx := targetX - player.X
@@ -4629,7 +7346,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				radius := 8.0
-				damage := 25 + (player.Stats.Intelligence * 2)
+				damage := int(float64(25+(player.Stats.Intelligence*2)) * player.GetSkillDamageMultiplier("Frost Nova"))
 
 				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
@@ -4699,7 +7416,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					velX := math.Cos(angle) * 25.0
 					velZ := math.Sin(angle) * 25.0
 
-					damage := 15 + player.Stats.Intelligence
+					damage := int(float64(15+player.Stats.Intelligence) * player.GetSkillDamageMultiplier("Arcane Missiles"))
 
 					proj := &Entity{
 						ID:         fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
@@ -4732,15 +7449,56 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			// Teleport
 			cost := 40
 			if player.Mana >= cost {
-				// Max Range Check
+				// Check for rune effects
+				runeID := player.GetRuneForSkill("Teleport")
+
+				// Blink rune: +50% range
+				maxRange := 15.0
+				if runeID == "teleport_blink" {
+					maxRange = 22.5
+				}
+
 				dx := targetX - player.X
 				dz := targetZ - player.Z
 				dist := math.Sqrt(dx*dx + dz*dz)
-				maxRange := 15.0
 
 				if dist <= maxRange {
 					player.Mana -= cost
 					oldX, oldZ := player.X, player.Z
+
+					// Warp rune: damage enemies at start location
+					if runeID == "teleport_warp" {
+						warpDamage := 15 + player.Stats.Intelligence
+						warpRadius := 4.0
+						startNearby := w.Grid.Nearby(oldX, oldZ, warpRadius, player.InstanceID)
+						for _, target := range startNearby {
+							target.Mu.RLock()
+							if target.Type != TypeEnemy || target.State == "DEAD" {
+								target.Mu.RUnlock()
+								continue
+							}
+							tdx := oldX - target.X
+							tdz := oldZ - target.Z
+							target.Mu.RUnlock()
+
+							if (tdx*tdx + tdz*tdz) <= warpRadius*warpRadius {
+								target.Mu.Lock()
+								target.Health -= warpDamage
+								addThreatLocked(target, player.ID, float64(warpDamage))
+								isDead := target.Health <= 0
+								target.Mu.Unlock()
+
+								if w.OnEvent != nil {
+									w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: warpDamage})
+								}
+								if isDead {
+									target.Mu.Lock()
+									w.handleDeath(target, player, nil)
+									target.Mu.Unlock()
+								}
+							}
+						}
+					}
 
 					// Clamp to bounds
 					if targetX < -1000 {
@@ -4768,6 +7526,45 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					player.X = targetX
 					player.Z = targetZ
 					w.Grid.Update(player, oldX, oldZ)
+
+					// Warp rune: damage enemies at end location
+					if runeID == "teleport_warp" {
+						warpDamage := 15 + player.Stats.Intelligence
+						warpRadius := 4.0
+						endNearby := w.Grid.Nearby(targetX, targetZ, warpRadius, player.InstanceID)
+						for _, target := range endNearby {
+							target.Mu.RLock()
+							if target.Type != TypeEnemy || target.State == "DEAD" {
+								target.Mu.RUnlock()
+								continue
+							}
+							tdx := targetX - target.X
+							tdz := targetZ - target.Z
+							target.Mu.RUnlock()
+
+							if (tdx*tdx + tdz*tdz) <= warpRadius*warpRadius {
+								target.Mu.Lock()
+								target.Health -= warpDamage
+								addThreatLocked(target, player.ID, float64(warpDamage))
+								isDead := target.Health <= 0
+								target.Mu.Unlock()
+
+								if w.OnEvent != nil {
+									w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: warpDamage})
+								}
+								if isDead {
+									target.Mu.Lock()
+									w.handleDeath(target, player, nil)
+									target.Mu.Unlock()
+								}
+							}
+						}
+					}
+
+					// Phase rune: invulnerable for 1s after teleport
+					if runeID == "teleport_phase" {
+						player.InvulnerableEndTime = time.Now().Add(1 * time.Second)
+					}
 
 					setCooldown(12 * time.Second)
 					if w.OnEvent != nil {
@@ -4816,8 +7613,8 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					player.Z = destZ
 					w.Grid.Update(player, oldX, oldZ)
 
-					// Deal Damage
-					damage := int(float64(player.Damage) * 2.0)
+					// Deal Damage with talent bonus
+					damage := int(float64(player.Damage) * 2.0 * player.GetSkillDamageMultiplier("Shadow Strike"))
 					if player.StealthActive {
 						damage = int(float64(damage) * 1.5)
 						player.StealthActive = false // Break stealth
@@ -4913,7 +7710,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				velX := (dx / dist) * 25.0
 				velZ := (dz / dist) * 25.0
 
-				damage := 15 + int(float64(player.Stats.Dexterity)*1.2)
+				damage := int(float64(15+int(float64(player.Stats.Dexterity)*1.2)) * player.GetSkillDamageMultiplier("Ricochet Blades"))
 
 				proj := &Entity{
 					ID:         fmt.Sprintf("proj-%d", time.Now().UnixNano()),
@@ -5021,7 +7818,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 				// Target area
 				radius := 6.0
-				damage := 20 + (player.Stats.Dexterity * 2)
+				damage := int(float64(20+(player.Stats.Dexterity*2)) * player.GetSkillDamageMultiplier("Rain of Arrows"))
 
 				nearby := w.Grid.Nearby(targetX, targetZ, radius, player.InstanceID)
 				for _, target := range nearby {
@@ -5057,6 +7854,9 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
+				// Check for rune effects
+				runeID := player.GetRuneForSkill("PiercingThrow")
+
 				dx := targetX - player.X
 				dz := targetZ - player.Z
 				dist := math.Sqrt(dx*dx + dz*dz)
@@ -5067,24 +7867,38 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				velX := (dx / dist) * 35.0 // Speed 35
 				velZ := (dz / dist) * 35.0
 
-				damage := 15 + int(float64(player.Stats.Dexterity)*1.5)
+				damage := int(float64(15+int(float64(player.Stats.Dexterity)*1.5)) * player.GetSkillDamageMultiplier("Piercing Throw"))
+
+				// Empowered rune: +100% damage
+				if runeID == "piercingthrow_empowered" {
+					damage *= 2
+				}
+
+				// Calculate bounces for ricochet rune
+				bounces := 0
+				if runeID == "piercingthrow_ricochet" {
+					bounces = 2
+				}
 
 				proj := &Entity{
-					ID:         fmt.Sprintf("proj-%d", time.Now().UnixNano()),
-					InstanceID: player.InstanceID,
-					Type:       TypeProjectile,
-					SubType:    "Dagger",
-					X:          player.X,
-					Y:          1.0,
-					Z:          player.Z,
-					VelX:       velX,
-					VelZ:       velZ,
-					Radius:     1.5,
-					Damage:     damage,
-					OwnerID:    player.ID,
-					Rotation:   math.Atan2(velX, velZ),
-					CreatedAt:  time.Now(),
-					Scale:      1.0,
+					ID:                fmt.Sprintf("proj-%d", time.Now().UnixNano()),
+					InstanceID:        player.InstanceID,
+					Type:              TypeProjectile,
+					SubType:           "Dagger",
+					X:                 player.X,
+					Y:                 1.0,
+					Z:                 player.Z,
+					VelX:              velX,
+					VelZ:              velZ,
+					Radius:            1.5,
+					Damage:            damage,
+					OwnerID:           player.ID,
+					Rotation:          math.Atan2(velX, velZ),
+					CreatedAt:         time.Now(),
+					Scale:             1.0,
+					ProjectileRuneID:  runeID,
+					ProjectileBounces: bounces,
+					ProjectileSkill:   "PiercingThrow",
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
@@ -5099,7 +7913,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
+				// Check for rune effects
+				runeID := player.GetRuneForSkill("FanOfKnives")
+
+				// Bladed Fury rune: double the number of knives
 				projectileCount := 12
+				if runeID == "fanofknives_fury" {
+					projectileCount = 24
+				}
 				angleStep := (2 * math.Pi) / float64(projectileCount)
 
 				for i := 0; i < projectileCount; i++ {
@@ -5107,23 +7928,26 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					velX := math.Cos(angle) * 25.0
 					velZ := math.Sin(angle) * 25.0
 
-					damage := 10 + player.Stats.Dexterity
+					damage := int(float64(10+player.Stats.Dexterity) * player.GetSkillDamageMultiplier("Fan of Knives"))
 
 					proj := &Entity{
-						ID:        fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
-						Type:      TypeProjectile,
-						SubType:   "Dagger",
-						X:         player.X,
-						Y:         1.0,
-						Z:         player.Z,
-						VelX:      velX,
-						VelZ:      velZ,
-						Radius:    1.0,
-						Damage:    damage,
-						OwnerID:   player.ID,
-						Rotation:  angle,
-						CreatedAt: time.Now(),
-						Scale:     1.0,
+						ID:               fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
+						InstanceID:       player.InstanceID,
+						Type:             TypeProjectile,
+						SubType:          "Dagger",
+						X:                player.X,
+						Y:                1.0,
+						Z:                player.Z,
+						VelX:             velX,
+						VelZ:             velZ,
+						Radius:           1.0,
+						Damage:           damage,
+						OwnerID:          player.ID,
+						Rotation:         angle,
+						CreatedAt:        time.Now(),
+						Scale:            1.0,
+						ProjectileRuneID: runeID,
+						ProjectileSkill:  "FanOfKnives",
 					}
 					w.Entities[proj.ID] = proj
 					w.Grid.Add(proj)
@@ -5140,8 +7964,11 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
+				// Check for rune effects
+				runeID := player.GetRuneForSkill("Backstab")
+
 				rangeDist := 2.5
-				damage := int(float64(player.Damage) * 1.5)
+				damage := int(float64(player.Damage) * 1.5 * player.GetSkillDamageMultiplier("Backstab"))
 
 				// Find target
 				var bestTarget *Entity
@@ -5169,9 +7996,30 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				if bestTarget != nil {
+					// Shadowstep rune: teleport behind target before striking
+					if runeID == "backstab_shadowstep" {
+						bestTarget.Mu.RLock()
+						tRot := bestTarget.Rotation
+						tx, tz := bestTarget.X, bestTarget.Z
+						bestTarget.Mu.RUnlock()
+
+						// Teleport behind
+						tDirX := math.Sin(tRot)
+						tDirZ := math.Cos(tRot)
+						teleX := tx - tDirX*1.5
+						teleZ := tz - tDirZ*1.5
+
+						oldX, oldZ := player.X, player.Z
+						player.X = teleX
+						player.Z = teleZ
+						player.Rotation = tRot
+						w.Grid.Update(player, oldX, oldZ)
+					}
+
 					// Check angle for backstab
 					bestTarget.Mu.RLock()
 					tRot := bestTarget.Rotation
+					tDefense := bestTarget.Defense
 					bestTarget.Mu.RUnlock()
 
 					tDirX := math.Sin(tRot)
@@ -5182,18 +8030,43 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 					dot := tDirX*pDirX + tDirZ*pDirZ
 
-					if dot > 0.5 { // Same direction -> Behind
+					// Set Bonus: Shadow's Embrace 4pc (backstabAnyAngle) - Backstab from any angle
+					// Shadowstep rune always counts as from behind
+					if dot > 0.5 || player.HasAnySetBonus("backstabAnyAngle") || runeID == "backstab_shadowstep" {
 						damage = int(float64(damage) * 2.5)
 					}
 
+					// Combo: Ambush (Cloak & Vanish → Backstab) = Guaranteed critical hit
+					if player.ActiveCombo == "backstab_guaranteed_crit" {
+						damage = damage * 2     // 2x crit damage
+						player.ActiveCombo = "" // Consume combo
+					}
+
+					// Ambush rune: +50% crit chance (simplified as +25% damage on average)
+					if runeID == "backstab_ambush" {
+						// Simulate 50% crit chance with 2x crit damage = +50% average damage
+						damage = int(float64(damage) * 1.5)
+					}
+
+					// Eviscerate rune: ignores 50% armor
+					armorReduction := 0
+					if runeID == "backstab_eviscerate" {
+						armorReduction = tDefense / 2
+					}
+
+					finalDamage := damage - (tDefense - armorReduction)
+					if finalDamage < 1 {
+						finalDamage = 1
+					}
+
 					bestTarget.Mu.Lock()
-					bestTarget.Health -= damage
-					addThreatLocked(bestTarget, player.ID, float64(damage))
+					bestTarget.Health -= finalDamage
+					addThreatLocked(bestTarget, player.ID, float64(finalDamage))
 					isDead := bestTarget.Health <= 0
 					bestTarget.Mu.Unlock()
 
 					if w.OnEvent != nil {
-						w.OnEvent("damage", DamageEvent{TargetID: bestTarget.ID, SourceID: player.ID, Amount: damage})
+						w.OnEvent("damage", DamageEvent{TargetID: bestTarget.ID, SourceID: player.ID, Amount: finalDamage})
 					}
 					if isDead {
 						bestTarget.Mu.Lock()
@@ -5213,11 +8086,20 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
+				// Check for rune effects
+				runeID := player.GetRuneForSkill("ShadowLunge")
+
+				// Extended rune: +50% range
+				maxRange := 10.0
+				if runeID == "shadowlunge_extended" {
+					maxRange = 15.0
+				}
+
 				// Find target
 				var bestTarget *Entity
-				minDist := 10.0 // Range
+				minDist := maxRange
 
-				nearby := w.Grid.Nearby(targetX, targetZ, 5.0, player.InstanceID)
+				nearby := w.Grid.Nearby(targetX, targetZ, maxRange, player.InstanceID)
 				for _, target := range nearby {
 					if target.ID == player.ID {
 						continue
@@ -5256,6 +8138,35 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					player.Z = teleZ
 					player.Rotation = tRot
 					w.Grid.Update(player, oldX, oldZ)
+
+					// Cripple rune: slow target by 50% for 3s
+					if runeID == "shadowlunge_cripple" {
+						bestTarget.Mu.Lock()
+						bestTarget.Slowed = true
+						bestTarget.SlowFactor = 0.50
+						bestTarget.SlowEndTime = time.Now().Add(3 * time.Second)
+						bestTarget.Mu.Unlock()
+					}
+
+					// Shadow Clone rune: create illusion that attacks once
+					if runeID == "shadowlunge_shadow" {
+						// Create a temporary "illusion" that deals one attack worth of damage
+						cloneDamage := player.Damage
+						bestTarget.Mu.Lock()
+						bestTarget.Health -= cloneDamage
+						addThreatLocked(bestTarget, player.ID, float64(cloneDamage))
+						isDead := bestTarget.Health <= 0
+						bestTarget.Mu.Unlock()
+
+						if w.OnEvent != nil {
+							w.OnEvent("damage", DamageEvent{TargetID: bestTarget.ID, SourceID: player.ID, Amount: cloneDamage})
+						}
+						if isDead {
+							bestTarget.Mu.Lock()
+							w.handleDeath(bestTarget, player, nil)
+							bestTarget.Mu.Unlock()
+						}
+					}
 				}
 
 				setCooldown(10 * time.Second)
@@ -5279,7 +8190,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					velX := math.Sin(angle) * 35.0
 					velZ := math.Cos(angle) * 35.0
 
-					damage := 10 + player.Stats.Dexterity
+					damage := int(float64(10+player.Stats.Dexterity) * player.GetSkillDamageMultiplier("Blade Storm"))
 
 					proj := &Entity{
 						ID:        fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
@@ -5313,7 +8224,13 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				radius := 4.0
-				damage := player.Damage * 2
+				damage := int(float64(player.Damage*2) * player.GetSkillDamageMultiplier("Death Spiral"))
+
+				// Combo: Venom Burst (Poison Coating → Death Spiral) = +100% poison damage
+				venomBurstActive := player.ActiveCombo == "death_spiral_poison_boost"
+				if venomBurstActive {
+					player.ActiveCombo = "" // Consume combo
+				}
 
 				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
@@ -5327,16 +8244,23 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					}
 					dx := target.X - player.X
 					dz := target.Z - player.Z
+					isPoisoned := target.Poisoned
 					target.Mu.RUnlock()
 
 					if (dx*dx + dz*dz) <= radius*radius {
 						target.Mu.Lock()
-						target.Health -= damage
+						// Calculate final damage
+						finalDamage := damage
+						// Venom Burst: +100% damage to poisoned targets
+						if venomBurstActive && isPoisoned {
+							finalDamage = damage * 2
+						}
+						target.Health -= finalDamage
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
-							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: damage})
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: player.ID, Amount: finalDamage})
 						}
 						if isDead {
 							target.Mu.Lock()
@@ -5356,8 +8280,27 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
+				// Check for rune effects
+				runeID := player.GetRuneForSkill("CloakVanish")
+
+				// Lasting Shadow rune: +100% duration (5s -> 10s)
+				duration := 5 * time.Second
+				if runeID == "cloak_longer" {
+					duration = 10 * time.Second
+				}
+
 				player.StealthActive = true
-				player.StealthEndTime = time.Now().Add(5 * time.Second)
+				player.StealthEndTime = time.Now().Add(duration)
+
+				// Swift rune: +30% movement speed while invisible
+				if runeID == "cloak_swift" {
+					player.CloakSwiftSpeedBonus = true
+				}
+
+				// Prepared Ambush rune: next attack deals +100% damage
+				if runeID == "cloak_ambush" {
+					player.CloakNextAttackBonus = 1.0 // 100% bonus
+				}
 
 				setCooldown(30 * time.Second)
 				if w.OnEvent != nil {
@@ -5367,6 +8310,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 		} else if skillName == "Smoke Bomb" {
 			// Smoke Bomb (AoE Slow)
 			cost := 35
+
+			// Combo: Shadow Dance (Shadow Lunge → Smoke Bomb) = Instant cast (no cooldown, reduced mana)
+			shadowDanceActive := player.ActiveCombo == "smoke_bomb_instant"
+			if shadowDanceActive {
+				cost = cost / 2         // Half mana cost
+				player.ActiveCombo = "" // Consume combo
+			}
+
 			if player.Mana >= cost {
 				player.Mana -= cost
 
@@ -5381,7 +8332,10 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					}
 				}
 
-				setCooldown(20 * time.Second)
+				// Shadow Dance combo: no cooldown
+				if !shadowDanceActive {
+					setCooldown(20 * time.Second)
+				}
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -5420,6 +8374,12 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
+				// Combo: Blade Tornado (Fan of Knives → Phantom Volley) = Pierces all targets
+				shouldPierce := player.ActiveCombo == "volley_pierce"
+				if shouldPierce {
+					player.ActiveCombo = "" // Consume combo
+				}
+
 				dx := targetX - player.X
 				dz := targetZ - player.Z
 				dist := math.Sqrt(dx*dx + dz*dz)
@@ -5436,21 +8396,22 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					offset := float64(i) * -5.0
 
 					proj := &Entity{
-						ID:         fmt.Sprintf("proj-phantom-%d-%d", time.Now().UnixNano(), i),
-						InstanceID: player.InstanceID,
-						Type:       TypeProjectile,
-						SubType:    "PhantomArrow",
-						X:          player.X + (dirX * offset),
-						Y:          1.0,
-						Z:          player.Z + (dirZ * offset),
-						VelX:       dirX * 35.0,
-						VelZ:       dirZ * 35.0,
-						Radius:     0.5,
-						Damage:     25 + (player.Stats.Dexterity * 2),
-						OwnerID:    player.ID,
-						Rotation:   math.Atan2(dirX, dirZ),
-						CreatedAt:  time.Now(),
-						Scale:      1.0,
+						ID:               fmt.Sprintf("proj-phantom-%d-%d", time.Now().UnixNano(), i),
+						InstanceID:       player.InstanceID,
+						Type:             TypeProjectile,
+						SubType:          "PhantomArrow",
+						X:                player.X + (dirX * offset),
+						Y:                1.0,
+						Z:                player.Z + (dirZ * offset),
+						VelX:             dirX * 35.0,
+						VelZ:             dirZ * 35.0,
+						Radius:           0.5,
+						Damage:           int(float64(25+(player.Stats.Dexterity*2)) * player.GetSkillDamageMultiplier("Phantom Volley")),
+						OwnerID:          player.ID,
+						Rotation:         math.Atan2(dirX, dirZ),
+						CreatedAt:        time.Now(),
+						Scale:            1.0,
+						ProjectilePierce: shouldPierce, // Blade Tornado combo effect
 					}
 					w.Entities[proj.ID] = proj
 					w.Grid.Add(proj)
@@ -5469,6 +8430,10 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			cost := 60
 			if player.Mana >= cost {
 				player.Mana -= cost
+
+				// Divine Intervention Rune Effects
+				runeID := player.GetRuneForSkill("DivineIntervention")
+
 				player.DivineInterventionActive = true
 				player.DivineInterventionEndTime = time.Now().Add(5 * time.Second)
 
@@ -5479,7 +8444,53 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					player.Health = player.MaxHealth
 				}
 
-				setCooldown(120 * time.Second)
+				// divineintervention_guardian: Target gains 50% damage reduction for 5s
+				if runeID == "divineintervention_guardian" {
+					player.DivineInterventionGuardian = true
+					player.DivineInterventionGuardTime = time.Now().Add(5 * time.Second)
+				}
+
+				// divineintervention_miracle: Can affect 2 targets (heal nearest ally too)
+				if runeID == "divineintervention_miracle" {
+					minDist := 15.0
+					var nearestAlly *Entity
+					nearby := w.Grid.Nearby(player.X, player.Z, 15.0, player.InstanceID)
+					for _, t := range nearby {
+						if t.ID == player.ID {
+							continue
+						}
+						if t.Type == TypePlayer {
+							dx := t.X - player.X
+							dz := t.Z - player.Z
+							d := math.Sqrt(dx*dx + dz*dz)
+							if d < minDist {
+								minDist = d
+								nearestAlly = t
+							}
+						}
+					}
+					if nearestAlly != nil {
+						nearestAlly.Mu.Lock()
+						nearestAlly.DivineInterventionActive = true
+						nearestAlly.DivineInterventionEndTime = time.Now().Add(5 * time.Second)
+						allyHeal := nearestAlly.MaxHealth / 2
+						nearestAlly.Health += allyHeal
+						if nearestAlly.Health > nearestAlly.MaxHealth {
+							nearestAlly.Health = nearestAlly.MaxHealth
+						}
+						nearestAlly.Mu.Unlock()
+						if w.OnEvent != nil {
+							w.OnEvent("heal", HealEvent{TargetID: nearestAlly.ID, SourceID: player.ID, Amount: allyHeal})
+						}
+					}
+				}
+
+				// divineintervention_quick: Cooldown reduced by 50%
+				if runeID == "divineintervention_quick" {
+					setCooldown(60 * time.Second) // 120s * 0.5 = 60s
+				} else {
+					setCooldown(120 * time.Second)
+				}
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -5491,6 +8502,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 				player.GuardianEmbraceActive = true
 				player.GuardianEmbraceEndTime = time.Now().Add(10 * time.Second)
+
+				// Combo: Sanctuary (Consecrated Ground → Guardian Embrace) = Damage immunity
+				if player.ActiveCombo == "ground_damage_immunity" {
+					// Grant brief damage immunity (3s)
+					player.InvulnerableEndTime = time.Now().Add(3 * time.Second)
+					player.ActiveCombo = "" // Consume combo
+				}
+
 				setCooldown(30 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
@@ -5574,7 +8593,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
-				damage := 30 + (player.Stats.Wisdom * 2)
+				damage := int(float64(30+(player.Stats.Wisdom*2)) * player.GetSkillDamageMultiplier("Smite"))
 
 				// Single Target
 				var target *Entity
@@ -5641,6 +8660,23 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.SpiritsBoosted = false
 				player.SpiritEndTime = time.Now().Add(8 * time.Second)
 				player.State = "ATTACKING"
+
+				// Spirit Guardians Rune Effects
+				runeID := player.GetRuneForSkill("SpiritGuardians")
+				player.SpiritGuardiansRuneID = runeID
+
+				// Combo: Divine Storm (Heaven's Trumpet → Spirit Guardians) = +50% holy damage bonus
+				if player.ActiveCombo == "spirits_holy_damage" {
+					player.SpiritsBoosted = true // Repurpose SpiritsBoosted for combo bonus
+					player.ActiveCombo = ""      // Consume combo
+				}
+
+				// spirits_sanctuary: Also reduces damage taken by 20%
+				if runeID == "spirits_sanctuary" {
+					player.SanctuaryDamageReduction = true
+					player.SanctuaryEndTime = player.SpiritEndTime
+				}
+
 				setCooldown(10 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
@@ -5653,43 +8689,125 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 				healAmount := 30 + (player.Stats.Wisdom * 3)
 
-				var target *Entity
-				// Find target near cursor if targetID not set
-				if targetID != "" {
-					if t, ok := w.Entities[targetID]; ok {
-						target = t
-					}
-				} else {
-					// Find closest ally
-					minDist := 3.0
-					nearby := w.Grid.Nearby(targetX, targetZ, 5.0, player.InstanceID)
-					for _, t := range nearby {
-						if t.Type == TypePlayer || t.Type == TypeNPC { // Ally
-							dx := t.X - targetX
-							dz := t.Z - targetZ
-							d := math.Sqrt(dx*dx + dz*dz)
-							if d < minDist {
-								minDist = d
-								target = t
+				// Healing Light Rune Effects
+				runeID := player.GetRuneForSkill("HealingLight")
+
+				// Combo: Mass Revival (Divine Intervention → Healing Light) = Party-wide heal
+				massRevivalActive := player.ActiveCombo == "healing_light_party"
+				if massRevivalActive {
+					player.ActiveCombo = "" // Consume combo
+
+					// Heal all allies in large radius around player
+					partyRadius := 20.0
+					nearby := w.Grid.Nearby(player.X, player.Z, partyRadius, player.InstanceID)
+					for _, ally := range nearby {
+						if ally.Type == TypePlayer || ally.Type == TypeNPC {
+							ally.Mu.Lock()
+							ally.Health += healAmount
+							if ally.Health > ally.MaxHealth {
+								ally.Health = ally.MaxHealth
+							}
+							ally.Mu.Unlock()
+							if w.OnEvent != nil {
+								w.OnEvent("heal", HealEvent{TargetID: ally.ID, SourceID: player.ID, Amount: healAmount})
 							}
 						}
 					}
-				}
 
-				if target == nil {
-					target = player
-				}
+					setCooldown(8 * time.Second)
+					if w.OnEvent != nil {
+						w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
+					}
+				} else {
+					// Normal Healing Light behavior
+					var target *Entity
+					// Find target near cursor if targetID not set
+					if targetID != "" {
+						if t, ok := w.Entities[targetID]; ok {
+							target = t
+						}
+					} else {
+						// Find closest ally
+						minDist := 3.0
+						nearby := w.Grid.Nearby(targetX, targetZ, 5.0, player.InstanceID)
+						for _, t := range nearby {
+							if t.Type == TypePlayer || t.Type == TypeNPC { // Ally
+								dx := t.X - targetX
+								dz := t.Z - targetZ
+								d := math.Sqrt(dx*dx + dz*dz)
+								if d < minDist {
+									minDist = d
+									target = t
+								}
+							}
+						}
+					}
 
-				target.Mu.Lock()
-				target.Health += healAmount
-				if target.Health > target.MaxHealth {
-					target.Health = target.MaxHealth
-				}
-				target.Mu.Unlock()
+					if target == nil {
+						target = player
+					}
 
-				setCooldown(5 * time.Second)
-				if w.OnEvent != nil {
-					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
+					// healinglight_beacon: Heals in AoE (5 unit radius) around target
+					if runeID == "healinglight_beacon" {
+						tX, tZ := target.X, target.Z
+						aoeRadius := 5.0
+						nearby := w.Grid.Nearby(tX, tZ, aoeRadius, player.InstanceID)
+						for _, ally := range nearby {
+							if ally.Type == TypePlayer || ally.Type == TypeNPC {
+								ally.Mu.Lock()
+								ally.Health += healAmount
+								if ally.Health > ally.MaxHealth {
+									ally.Health = ally.MaxHealth
+								}
+								ally.Mu.Unlock()
+								if w.OnEvent != nil {
+									w.OnEvent("heal", HealEvent{TargetID: ally.ID, SourceID: player.ID, Amount: healAmount})
+								}
+							}
+						}
+					} else {
+						// Normal single-target heal
+						target.Mu.Lock()
+						target.Health += healAmount
+						if target.Health > target.MaxHealth {
+							target.Health = target.MaxHealth
+						}
+						target.Mu.Unlock()
+					}
+
+					// healinglight_renewal: Adds HoT for 5s (20% of initial heal)
+					if runeID == "healinglight_renewal" {
+						hotAmount := healAmount / 5 // 20% over 5 ticks = 4% per tick, total 20%
+						target.Mu.Lock()
+						target.HealingLightHoTActive = true
+						target.HealingLightHoTAmount = hotAmount
+						target.HealingLightHoTEndTime = time.Now().Add(5 * time.Second)
+						target.LastHealingLightHoTTick = time.Now()
+						target.Mu.Unlock()
+					}
+
+					// healinglight_divine: Also cleanses 1 debuff
+					if runeID == "healinglight_divine" {
+						target.Mu.Lock()
+						// Cleanse one debuff in priority order
+						if target.Stunned {
+							target.Stunned = false
+						} else if target.Rooted {
+							target.Rooted = false
+						} else if target.Slowed {
+							target.Slowed = false
+						} else if target.Bleeding {
+							target.Bleeding = false
+						} else if target.Poisoned {
+							target.Poisoned = false
+						}
+						target.Mu.Unlock()
+					}
+
+					setCooldown(8 * time.Second)
+					if w.OnEvent != nil {
+						w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
+					}
 				}
 			}
 		} else if skillName == "Radiant Strike" {
@@ -5698,12 +8816,29 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
+				// Radiant Strike Rune Effects
+				runeID := player.GetRuneForSkill("RadiantStrike")
+
+				// Combo: Holy Fury (Mark of Weakness → Radiant Strike) = +100% damage to marked targets
+				holyFuryActive := player.ActiveCombo == "radiant_strike_boost"
+				if holyFuryActive {
+					player.ActiveCombo = "" // Consume combo
+				}
+
 				rangeDist := 3.0
 				angleThreshold := math.Pi / 3 // 60 degrees
-				damage := player.Damage + (player.Stats.Wisdom * 2)
+				baseDamage := int(float64(player.Damage+(player.Stats.Wisdom*2)) * player.GetSkillDamageMultiplier("Radiant Strike"))
+
+				// radiantstrike_smite: +50% damage
+				if runeID == "radiantstrike_smite" {
+					baseDamage = int(float64(baseDamage) * 1.5)
+				}
 
 				pDirX := math.Sin(player.Rotation)
 				pDirZ := math.Cos(player.Rotation)
+
+				// Track total damage for lifesteal
+				totalDamageDealt := 0
 
 				nearby := w.Grid.Nearby(player.X, player.Z, rangeDist, player.InstanceID)
 				for _, target := range nearby {
@@ -5718,6 +8853,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					}
 					dx := target.X - player.X
 					dz := target.Z - player.Z
+					isMarked := target.WeakPointMarked
 					target.Mu.RUnlock()
 
 					dist := math.Sqrt(dx*dx + dz*dz)
@@ -5727,9 +8863,39 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 						dot := pDirX*dirX + pDirZ*dirZ
 						if dot > math.Cos(angleThreshold) {
+							// Calculate final damage
+							damage := baseDamage
+							// Holy Fury combo: +100% damage to marked targets
+							if holyFuryActive && isMarked {
+								damage = baseDamage * 2
+							}
+
 							target.Mu.Lock()
 							target.Health -= damage
+							totalDamageDealt += damage
 							addThreatLocked(target, player.ID, float64(damage))
+
+							// radiantstrike_chains: Roots target for 2s
+							if runeID == "radiantstrike_chains" {
+								target.Rooted = true
+								target.RootEndTime = time.Now().Add(2 * time.Second)
+							}
+
+							// radiantstrike_purge: Removes 1 buff from target
+							if runeID == "radiantstrike_purge" {
+								// Remove buffs in priority order
+								if target.ZealActive {
+									target.ZealActive = false
+								} else if target.ArcaneShieldActive && target.ArcaneShieldHP > 0 {
+									target.ArcaneShieldActive = false
+									target.ArcaneShieldHP = 0
+								} else if target.BerserkerModeActive {
+									target.BerserkerModeActive = false
+								} else if target.IronFortressActive {
+									target.IronFortressActive = false
+								}
+							}
+
 							isDead := target.Health <= 0
 							target.Mu.Unlock()
 
@@ -5744,6 +8910,15 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						}
 					}
 				}
+
+				// Set Bonus: Crusader's Zeal 4pc (radiantStrikeLifesteal) - Heal for 100% of damage dealt
+				if player.HasAnySetBonus("radiantStrikeLifesteal") && totalDamageDealt > 0 {
+					player.Health += totalDamageDealt
+					if player.Health > player.MaxHealth {
+						player.Health = player.MaxHealth
+					}
+				}
+
 				setCooldown(4 * time.Second)
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
@@ -5756,7 +8931,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				radius := 12.0
-				damage := player.Stats.Wisdom * 3
+				damage := int(float64(player.Stats.Wisdom*3) * player.GetSkillDamageMultiplier("Heaven's Trumpet"))
 
 				nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
 				for _, target := range nearby {
@@ -5802,20 +8977,38 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			if player.Mana >= cost {
 				player.Mana -= cost
 
+				// Consecrated Ground Rune Effects
+				runeID := player.GetRuneForSkill("ConsecratedGround")
+
+				radius := 5.0
+				// consecratedground_expanded: +50% radius
+				if runeID == "consecratedground_expanded" {
+					radius = 7.5
+				}
+
 				// Spawn Zone Entity
 				zone := &Entity{
-					ID:        fmt.Sprintf("zone-%d", time.Now().UnixNano()),
-					Type:      TypeProjectile, // Reuse projectile for now
-					SubType:   "Zone",
-					X:         player.X,
-					Y:         0.1,
-					Z:         player.Z,
-					Radius:    5.0,
-					Damage:    20 + (player.Stats.Wisdom * 1),
-					OwnerID:   player.ID,
-					CreatedAt: time.Now(),
-					// Zone specific data could be stored in fields or inferred from SubType
+					ID:                         fmt.Sprintf("zone-%d", time.Now().UnixNano()),
+					Type:                       TypeProjectile, // Reuse projectile for now
+					SubType:                    "Zone",
+					X:                          player.X,
+					Y:                          0.1,
+					Z:                          player.Z,
+					Radius:                     radius,
+					Damage:                     int(float64(20+(player.Stats.Wisdom*1)) * player.GetSkillDamageMultiplier("Consecrated Ground")),
+					OwnerID:                    player.ID,
+					CreatedAt:                  time.Now(),
+					ConsecratedGroundRuneID:    runeID,
+					ConsecratedGroundSanctuary: runeID == "consecratedground_sanctuary",
 				}
+
+				// consecratedground_lingering: +100% duration (8s -> 16s)
+				if runeID == "consecratedground_lingering" {
+					zone.ConsecratedGroundEndTime = time.Now().Add(16 * time.Second)
+				} else {
+					zone.ConsecratedGroundEndTime = time.Now().Add(8 * time.Second)
+				}
+
 				w.Entities[zone.ID] = zone
 				w.Grid.Add(zone)
 
@@ -6054,16 +9247,72 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 	target.State = "DEAD"
 	target.LastAttackTime = time.Now()
 
+	// === ON-KILL EFFECTS (Unique Effects & Set Bonuses) ===
+	if attacker != nil && attacker.Type == TypePlayer && target.Type == TypeEnemy {
+		// Unique Effect: vampiric - Restore 5% max HP on kill
+		if attacker.HasUniqueEffect("vampiric") {
+			healAmount := attacker.MaxHealth / 20 // 5%
+			attacker.Health += healAmount
+			if attacker.Health > attacker.MaxHealth {
+				attacker.Health = attacker.MaxHealth
+			}
+		}
+
+		// Unique Effect: explosive - AoE damage on kill (15% of attacker's damage in 5 unit radius)
+		if attacker.HasUniqueEffect("explosive") {
+			explosionDamage := attacker.Damage * 15 / 100
+			if explosionDamage < 1 {
+				explosionDamage = 1
+			}
+			// Find nearby enemies (not the target itself)
+			nearbyTargets := w.Grid.Nearby(target.X, target.Z, 5.0, target.InstanceID)
+			for _, nearby := range nearbyTargets {
+				if nearby.ID == target.ID || nearby.Type != TypeEnemy || nearby.State == "DEAD" {
+					continue
+				}
+				nearby.Mu.Lock()
+				nearby.Health -= explosionDamage
+				if nearby.Health <= 0 {
+					nearby.Mu.Unlock()
+					w.handleDeath(nearby, attacker, deferred) // Recursive, could chain explosions!
+				} else {
+					nearby.Mu.Unlock()
+				}
+			}
+		}
+
+		// Set Bonus: Warlord's Fury 4pc (chargeReset) - Reset Charge cooldown on kill
+		if attacker.HasAnySetBonus("chargeReset") {
+			if attacker.Cooldowns != nil {
+				delete(attacker.Cooldowns, "Charge")
+			}
+		}
+
+		// Set Bonus: Inferno's Heart 6pc (meteorReset) - Fire kill resets Meteor CD
+		// Note: This should only trigger on fire damage kills, but we track it simply here
+		if attacker.HasAnySetBonus("meteorReset") {
+			if attacker.Cooldowns != nil {
+				delete(attacker.Cooldowns, "Meteor")
+			}
+		}
+	}
+
 	if attacker != nil && attacker.Type == TypePlayer && target.Type == TypeEnemy {
 		// Capture data for async processing to avoid deadlocks
 		tLevel := target.Level
 		tSubType := target.SubType
 		tID := target.ID
 		tX, tZ := target.X, target.Z
+		tInstanceID := target.InstanceID
 
 		go func() {
-			// XP
+			// Get difficulty multipliers for dungeon enemies
+			_, _, lootMult, xpMult := DifficultyMultipliers(w.GetInstanceDifficulty(tInstanceID))
+
+			// XP - Base XP scales with level
 			baseXpReward := tLevel*10 + 10
+
+			// Water Realm enemies (Lv 50-70)
 			if tSubType == "InfernoTitan" {
 				baseXpReward *= 3
 			}
@@ -6078,6 +9327,40 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			}
 			if tSubType == "AquaGolem" {
 				baseXpReward *= 2
+			}
+
+			// Fire Realm enemies (Lv 70-95) - Higher XP multipliers
+			if tSubType == "SandstormDjinn" {
+				baseXpReward *= 4
+			}
+			if tSubType == "MagmaGolem" {
+				baseXpReward *= 5
+			}
+			if tSubType == "ScorchedWraith" {
+				baseXpReward *= 6
+			}
+			if tSubType == "InfernalBehemoth" {
+				baseXpReward *= 7
+			}
+			if tSubType == "PhoenixSentinel" {
+				baseXpReward *= 8
+			}
+
+			// Air Realm enemies (Lv 70-95) - Higher XP multipliers
+			if tSubType == "StormHarpy" {
+				baseXpReward *= 4
+			}
+			if tSubType == "CloudElemental" {
+				baseXpReward *= 5
+			}
+			if tSubType == "ThunderRoc" {
+				baseXpReward *= 6
+			}
+			if tSubType == "TempestGiant" {
+				baseXpReward *= 7
+			}
+			if tSubType == "CycloneAvatar" {
+				baseXpReward *= 8
 			}
 
 			// Gold
@@ -6136,8 +9419,9 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			if len(partyMembers) > 0 {
 				// Calculate Bonus
 				bonusMultiplier := 1.0 + (float64(len(partyMembers)) * 0.10)
-				totalXP := int(float64(baseXpReward) * bonusMultiplier)
-				totalGold := int(float64(baseGold) * bonusMultiplier)
+				// Apply difficulty multipliers
+				totalXP := int(float64(baseXpReward) * bonusMultiplier * xpMult)
+				totalGold := int(float64(baseGold) * bonusMultiplier * lootMult)
 
 				xpPerMember := totalXP / len(partyMembers)
 				goldPerMember := totalGold / len(partyMembers)
@@ -6209,13 +9493,14 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				// Solo Logic
 				attacker.Mu.Lock()
 
-				finalXp := baseXpReward
+				// Apply difficulty multipliers
+				finalXp := int(float64(baseXpReward) * xpMult)
 				if isBoss {
 					finalXp += 2000000
 				}
 
 				attacker.Experience += finalXp
-				attacker.Gold += baseGold
+				attacker.Gold += int(float64(baseGold) * lootMult)
 				if attacker.MaxExperience == 0 {
 					attacker.MaxExperience = 100
 				}
@@ -6299,6 +9584,18 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			// 2. Shard/Heart Loot (Eidolic)
 			eidolicLoot := GenerateShardLoot(isElite)
 			lootItems = append(lootItems, eidolicLoot...)
+
+			// 3. Gem Loot - 10% base chance (30% for elites)
+			gemChance := 0.10
+			if isElite {
+				gemChance = 0.30
+			}
+			if rand.Float64() < gemChance && tLevel >= 20 {
+				// Only drop gems from level 20+ enemies
+				// Quality scales with level
+				gem := GenerateRandomGemByLevel(tLevel, isElite)
+				lootItems = append(lootItems, gem)
+			}
 
 			if len(lootItems) > 0 {
 				w.Mu.Lock() // Lock world to add entities
@@ -6652,6 +9949,53 @@ func (e *Entity) RecalculateStats() {
 		flatDefense += item.Stats["defense"]
 	}
 
+	// Calculate and Apply Set Bonuses
+	e.ActiveSetBonuses = CalculateSetBonuses(e.Equipment)
+	pctArmor := 0.0
+	pctMaxHealthFromSets := 0.0
+	pctCritChance := 0.0
+	pctPoisonDamage := 0.0
+	pctFireDamage := 0.0
+	pctCdr := 0.0
+	pctHealingDone := 0.0
+	pctHolyDamage := 0.0
+
+	for _, bonuses := range e.ActiveSetBonuses {
+		for bonusKey, value := range bonuses {
+			switch bonusKey {
+			case "armor":
+				pctArmor += float64(value) / 100.0
+			case "maxHealth":
+				pctMaxHealthFromSets += float64(value) / 100.0
+			case "critChance":
+				pctCritChance += float64(value) / 100.0
+			case "poisonDamage":
+				pctPoisonDamage += float64(value) / 100.0
+			case "fireDamage":
+				pctFireDamage += float64(value) / 100.0
+			case "cdr":
+				pctCdr += float64(value) / 100.0
+			case "healingDone":
+				pctHealingDone += float64(value) / 100.0
+			case "holyDamage":
+				pctHolyDamage += float64(value) / 100.0
+				// Special set bonuses are handled in combat logic, not stats:
+				// chargeReset, ironFortressDamage, damageReflect, bossTaunt,
+				// backstabAnyAngle, phantomVolleyDouble, poisonSpread, deathSpiralConsume,
+				// fireballPierce, meteorReset, teleportCharges, timeWarpZone,
+				// spiritGuardiansHeal, divineInterventionCD, radiantStrikeLifesteal, permanentSeraph
+			}
+		}
+	}
+
+	// Collect Active Unique Effects from equipment
+	e.ActiveUniqueEffects = nil
+	for _, item := range e.Equipment {
+		if item.UniqueEffect != "" {
+			e.ActiveUniqueEffects = append(e.ActiveUniqueEffects, item.UniqueEffect)
+		}
+	}
+
 	// Apply Passive Talents (server-authoritative)
 	if e.Type == TypePlayer {
 		pctMaxHealth := 0.0
@@ -6694,6 +10038,7 @@ func (e *Entity) RecalculateStats() {
 		_ = addCdr
 		// Apply after derived stats calculation (see below).
 		defer func() {
+			// Talent bonuses
 			if pctMaxHealth != 0 {
 				e.MaxHealth = int(float64(e.MaxHealth) * (1.0 + pctMaxHealth))
 			}
@@ -6706,6 +10051,19 @@ func (e *Entity) RecalculateStats() {
 			if addCdr != 0 {
 				e.CooldownReduction = math.Min(0.5, e.CooldownReduction+addCdr)
 			}
+
+			// Set bonuses (percentage-based)
+			if pctMaxHealthFromSets != 0 {
+				e.MaxHealth = int(float64(e.MaxHealth) * (1.0 + pctMaxHealthFromSets))
+			}
+			if pctArmor != 0 {
+				e.Defense = int(float64(e.Defense) * (1.0 + pctArmor))
+			}
+			if pctCdr != 0 {
+				e.CooldownReduction = math.Min(0.5, e.CooldownReduction+pctCdr)
+			}
+			// Store percentage bonuses for use in combat calculations
+			// These are applied dynamically: critChance, poisonDamage, fireDamage, healingDone, holyDamage
 		}()
 	}
 
@@ -6802,8 +10160,36 @@ func (e *Entity) RecalculateStats() {
 	if e.BlessingResolveActive {
 		e.Defense = int(float64(e.Defense) * 1.2)
 	}
+	// Cloak Swift Rune: +30% movement speed while invisible
+	if e.CloakSwiftSpeedBonus && e.StealthActive {
+		e.Speed *= 1.3
+	}
 	if e.Slowed {
 		e.Speed *= (1.0 - e.SlowFactor)
+	}
+
+	// Apply Unique Effect passive bonuses
+	for _, effect := range e.ActiveUniqueEffects {
+		switch effect {
+		case "regenerative":
+			// +1% HP regen per second (additive to base HpRegen)
+			e.HpRegen += float64(e.MaxHealth) * 0.01
+		case "guardian":
+			// Above 80% HP, +20% armor
+			if e.Health > int(float64(e.MaxHealth)*0.8) {
+				e.Defense = int(float64(e.Defense) * 1.2)
+			}
+		case "berserker":
+			// Below 30% HP, +30% damage (this is separate from BerserkerMode skill)
+			if e.Health < int(float64(e.MaxHealth)*0.3) {
+				e.Damage = int(float64(e.Damage) * 1.3)
+			}
+			// "efficient" reduces mana costs - handled in ability usage
+			// "vampiric", "explosive" - handled on kill
+			// "lucky", "executioner" - handled on hit
+			// "swift" - handled on skill use
+			// "thorns" - handled on damage taken
+		}
 	}
 }
 
@@ -6840,7 +10226,7 @@ func (w *World) DropLootInInstance(item Item, x, y float64, instanceID string) {
 	w.AddEntity(loot)
 }
 
-func (w *World) CreateDungeon(partyID string, dungeonType string) string {
+func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty DungeonDifficulty) string {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -6863,20 +10249,32 @@ func (w *World) CreateDungeon(partyID string, dungeonType string) string {
 		}
 	*/
 
+	// Default to normal if not specified
+	if difficulty == "" {
+		difficulty = DifficultyNormal
+	}
+
 	instanceID := fmt.Sprintf("dungeon_%s_%d_%d", partyID, time.Now().UnixNano(), rand.Intn(10000))
 
 	dungeon := &DungeonInstance{
-		ID:        instanceID,
-		PartyID:   partyID,
-		CreatedAt: time.Now(),
-		// EmptySince is zero initially, but since no players are in yet, maybe it should be Now?
-		// But we are about to enter it. Let's leave it zero or handle it in EnterInstance.
-		// Actually, if we create it and nobody enters for 5 mins, it should expire.
-		EmptySince: time.Now(),
+		ID:          instanceID,
+		PartyID:     partyID,
+		CreatedAt:   time.Now(),
+		EmptySince:  time.Now(),
+		Difficulty:  difficulty,
+		DungeonType: dungeonType,
 	}
 
 	if dungeonType == "verdant_bastion_catacombs" {
-		layout := w.generateVerdantBastionLayout(instanceID)
+		layout := w.generateVerdantBastionLayout(instanceID, difficulty)
+		dungeon.Layout = layout
+		w.InstanceLayouts[instanceID] = dungeon
+	} else if dungeonType == "molten_core" {
+		layout := w.generateMoltenCoreLayout(instanceID, difficulty)
+		dungeon.Layout = layout
+		w.InstanceLayouts[instanceID] = dungeon
+	} else if dungeonType == "tempest_spire" {
+		layout := w.generateTempestSpireLayout(instanceID, difficulty)
 		dungeon.Layout = layout
 		w.InstanceLayouts[instanceID] = dungeon
 	} else {
@@ -6894,7 +10292,7 @@ func (w *World) CreateDungeon(partyID string, dungeonType string) string {
 		for i := 0; i < 20; i++ {
 			x := (rand.Float64() * 40) - 20
 			z := (rand.Float64() * 40) - 20
-			w.spawnEnemyInInstance("Skeleton", x, z, instanceID)
+			w.spawnEnemyInInstance("Skeleton", x, z, instanceID, difficulty)
 		}
 	}
 
@@ -6942,7 +10340,18 @@ func (w *World) GetInstanceLayout(instanceID string) (DungeonLayout, bool) {
 	return inst.Layout, true
 }
 
-func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
+// GetInstanceDifficulty returns the difficulty of a dungeon instance
+func (w *World) GetInstanceDifficulty(instanceID string) DungeonDifficulty {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+	inst, ok := w.InstanceLayouts[instanceID]
+	if !ok {
+		return DifficultyNormal
+	}
+	return inst.Difficulty
+}
+
+func (w *World) generateVerdantBastionLayout(instanceID string, difficulty DungeonDifficulty) DungeonLayout {
 	layout := DungeonLayout{
 		Rooms: []DungeonRoom{},
 	}
@@ -7009,13 +10418,13 @@ func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
 			// Spawn Mobs
 			if roomType == "elite" {
 				// Spawn Elite
-				w.spawnEnemyInInstance("DemonOrc", nextX, nextZ, instanceID) // Placeholder Elite
+				w.spawnEnemyInInstance("DemonOrc", nextX, nextZ, instanceID, difficulty) // Placeholder Elite
 			} else {
 				// Spawn Trash
 				for k := 0; k < 3; k++ {
 					ox := (rand.Float64() * 10) - 5
 					oz := (rand.Float64() * 10) - 5
-					w.spawnEnemyInInstance("Skeleton", nextX+ox, nextZ+oz, instanceID)
+					w.spawnEnemyInInstance("Skeleton", nextX+ox, nextZ+oz, instanceID, difficulty)
 				}
 			}
 
@@ -7033,15 +10442,315 @@ func (w *World) generateVerdantBastionLayout(instanceID string) DungeonLayout {
 			X: currentX, Z: currentZ, Width: 120, Height: 120, Type: "boss", Color: 0x222222,
 		})
 
-		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats)
+		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats, difficulty)
 	}
 
 	return layout
 }
 
-func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID string, stats Stats) {
+// generateMoltenCoreLayout creates the Fire Dungeon layout (Level 80-90)
+// Location: X: -2400, Z: 200 (Fire Realm)
+// 5 Bosses: Cindermaw, Scorched Twins, Forgemaster Pyrax, Obsidian Guardian, Lord Infernax
+func (w *World) generateMoltenCoreLayout(instanceID string, difficulty DungeonDifficulty) DungeonLayout {
+	layout := DungeonLayout{
+		Rooms: []DungeonRoom{},
+	}
+
+	// Offset coordinates to avoid overworld overlap (Fire dungeon at 30000, 20000)
+	offsetX := 30000.0
+	offsetZ := 20000.0
+
+	// Start Room (Lava-themed entrance)
+	layout.Rooms = append(layout.Rooms, DungeonRoom{X: offsetX, Z: offsetZ, Width: 140, Height: 140, Type: "start", Color: 0x8B0000})
+
+	// Molten Core Bosses (5 bosses)
+	bosses := []struct {
+		Name  string
+		Stats Stats
+	}{
+		// Boss 1: Cindermaw (Fire Elemental) - Normal: 3,000,000 HP
+		{"Cindermaw", Stats{Strength: 4000, Vitality: 3000000, Dexterity: 200}},
+		// Boss 2: ScorchedTwins (Duo Fight) - Actually one entity, but represents duo
+		{"ScorchedTwins", Stats{Strength: 3500, Vitality: 4000000, Dexterity: 250}},
+		// Boss 3: ForgemasterPyrax - Normal: 4,000,000 HP
+		{"ForgemasterPyrax", Stats{Strength: 4500, Vitality: 4000000, Dexterity: 220}},
+		// Boss 4: ObsidianGuardian - Normal: 5,000,000 HP
+		{"ObsidianGuardian", Stats{Strength: 5000, Vitality: 5000000, Dexterity: 180}},
+		// Boss 5: LordInfernax (Final Boss) - Normal: 8,000,000 HP
+		{"LordInfernax", Stats{Strength: 6000, Vitality: 8000000, Dexterity: 300}},
+	}
+
+	currentX := offsetX
+	currentZ := offsetZ
+
+	// Fire-themed trash mobs for the dungeon
+	fireTrash := []string{"MagmaGolem", "ScorchedWraith", "InfernalBehemoth"}
+
+	for i, boss := range bosses {
+		// Generate 1-2 intermediate rooms between bosses
+		numIntermediate := 1 + rand.Intn(2)
+		stepZ := -200.0
+		targetZ := currentZ + (stepZ * float64(numIntermediate+1))
+
+		for j := 0; j < numIntermediate; j++ {
+			nextZ := currentZ + stepZ
+			offset := (rand.Float64() * 160) - 80
+			if math.Abs(offset) < 45 {
+				offset = 0
+			}
+			nextX := currentX + offset
+
+			roomType := "normal"
+			if rand.Float64() < 0.35 {
+				roomType = "elite"
+			}
+
+			// Lava-themed room colors
+			roomColor := 0x4a0000
+			if roomType == "elite" {
+				roomColor = 0x6a0000
+			}
+
+			layout.Rooms = append(layout.Rooms, DungeonRoom{
+				X: nextX, Z: nextZ, Width: 110, Height: 110, Type: roomType, Color: roomColor,
+			})
+
+			// Spawn Fire Realm Mobs
+			if roomType == "elite" {
+				// Spawn Elite fire enemy
+				w.spawnFireDungeonEnemy("InfernalBehemoth", nextX, nextZ, instanceID, true, difficulty)
+			} else {
+				// Spawn 3-4 trash mobs
+				numTrash := 3 + rand.Intn(2)
+				for k := 0; k < numTrash; k++ {
+					ox := (rand.Float64() * 15) - 7.5
+					oz := (rand.Float64() * 15) - 7.5
+					trashType := fireTrash[rand.Intn(len(fireTrash))]
+					w.spawnFireDungeonEnemy(trashType, nextX+ox, nextZ+oz, instanceID, false, difficulty)
+				}
+			}
+
+			currentX = nextX
+			currentZ = nextZ
+		}
+
+		// Place Boss Room
+		currentX = 30000.0 + (currentX-30000.0)*0.5
+		currentZ = targetZ
+
+		// Boss room is larger and darker
+		bossRoomSize := 140.0
+		if i == len(bosses)-1 {
+			bossRoomSize = 180.0 // Final boss room is biggest
+		}
+
+		layout.Rooms = append(layout.Rooms, DungeonRoom{
+			X: currentX, Z: currentZ, Width: bossRoomSize, Height: bossRoomSize, Type: "boss", Color: 0x2a0000,
+		})
+
+		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats, difficulty)
+	}
+
+	return layout
+}
+
+// generateTempestSpireLayout creates the Air Dungeon layout (Level 80-90)
+// Location: X: 2400, Z: 200 (Air Realm)
+// 5 Bosses: Windshear, Stormcallers, Roc Matriarch, Thunderlord Kaelix, Zephyrion
+func (w *World) generateTempestSpireLayout(instanceID string, difficulty DungeonDifficulty) DungeonLayout {
+	layout := DungeonLayout{
+		Rooms: []DungeonRoom{},
+	}
+
+	// Offset coordinates to avoid overworld overlap (Air dungeon at 40000, 20000)
+	offsetX := 40000.0
+	offsetZ := 20000.0
+
+	// Start Room (Storm-themed entrance)
+	layout.Rooms = append(layout.Rooms, DungeonRoom{X: offsetX, Z: offsetZ, Width: 140, Height: 140, Type: "start", Color: 0x1a1a4a})
+
+	// Tempest Spire Bosses (5 bosses)
+	bosses := []struct {
+		Name  string
+		Stats Stats
+	}{
+		// Boss 1: Windshear - Normal: 2,800,000 HP
+		{"Windshear", Stats{Strength: 3800, Vitality: 2800000, Dexterity: 350}},
+		// Boss 2: Stormcallers (Duo Fight) - Combined 3,600,000 HP
+		{"Stormcallers", Stats{Strength: 3500, Vitality: 3600000, Dexterity: 280}},
+		// Boss 3: RocMatriarch (Flying Boss) - Normal: 3,800,000 HP
+		{"RocMatriarch", Stats{Strength: 4200, Vitality: 3800000, Dexterity: 400}},
+		// Boss 4: ThunderlordKaelix - Normal: 4,800,000 HP
+		{"ThunderlordKaelix", Stats{Strength: 4800, Vitality: 4800000, Dexterity: 320}},
+		// Boss 5: Zephyrion (Final Boss) - Normal: 7,500,000 HP
+		{"Zephyrion", Stats{Strength: 5500, Vitality: 7500000, Dexterity: 380}},
+	}
+
+	currentX := offsetX
+	currentZ := offsetZ
+
+	// Air-themed trash mobs for the dungeon
+	airTrash := []string{"StormHarpy", "CloudElemental", "ThunderRoc"}
+
+	for i, boss := range bosses {
+		// Generate 1-2 intermediate rooms between bosses
+		numIntermediate := 1 + rand.Intn(2)
+		stepZ := -200.0
+		targetZ := currentZ + (stepZ * float64(numIntermediate+1))
+
+		for j := 0; j < numIntermediate; j++ {
+			nextZ := currentZ + stepZ
+			offset := (rand.Float64() * 160) - 80
+			if math.Abs(offset) < 45 {
+				offset = 0
+			}
+			nextX := currentX + offset
+
+			roomType := "normal"
+			if rand.Float64() < 0.35 {
+				roomType = "elite"
+			}
+
+			// Storm-themed room colors
+			roomColor := 0x1a1a3a
+			if roomType == "elite" {
+				roomColor = 0x2a2a5a
+			}
+
+			layout.Rooms = append(layout.Rooms, DungeonRoom{
+				X: nextX, Z: nextZ, Width: 110, Height: 110, Type: roomType, Color: roomColor,
+			})
+
+			// Spawn Air Realm Mobs
+			if roomType == "elite" {
+				// Spawn Elite air enemy
+				w.spawnAirDungeonEnemy("TempestGiant", nextX, nextZ, instanceID, true, difficulty)
+			} else {
+				// Spawn 3-4 trash mobs
+				numTrash := 3 + rand.Intn(2)
+				for k := 0; k < numTrash; k++ {
+					ox := (rand.Float64() * 15) - 7.5
+					oz := (rand.Float64() * 15) - 7.5
+					trashType := airTrash[rand.Intn(len(airTrash))]
+					w.spawnAirDungeonEnemy(trashType, nextX+ox, nextZ+oz, instanceID, false, difficulty)
+				}
+			}
+
+			currentX = nextX
+			currentZ = nextZ
+		}
+
+		// Place Boss Room
+		currentX = 40000.0 + (currentX-40000.0)*0.5
+		currentZ = targetZ
+
+		// Boss room is larger
+		bossRoomSize := 140.0
+		if i == len(bosses)-1 {
+			bossRoomSize = 180.0 // Final boss room is biggest
+		}
+
+		layout.Rooms = append(layout.Rooms, DungeonRoom{
+			X: currentX, Z: currentZ, Width: bossRoomSize, Height: bossRoomSize, Type: "boss", Color: 0x0a0a2a,
+		})
+
+		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats, difficulty)
+	}
+
+	return layout
+}
+
+// spawnFireDungeonEnemy spawns a fire-themed enemy in the Molten Core dungeon
+func (w *World) spawnFireDungeonEnemy(subType string, x, z float64, instanceID string, isElite bool, difficulty DungeonDifficulty) {
+	// Scaled for Level 80-90 dungeon
+	vitality := 200000
+	strength := 6000
+
+	if isElite {
+		vitality = 300000
+		strength = 8000
+	}
+
+	// Apply difficulty multipliers
+	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
+	vitality = int(float64(vitality) * healthMult)
+	strength = int(float64(strength) * damageMult)
+
+	enemy := &Entity{
+		ID:             fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000)),
+		InstanceID:     instanceID,
+		Type:           TypeEnemy,
+		SubType:        subType,
+		X:              x,
+		Y:              0,
+		Z:              z,
+		SpawnX:         x,
+		SpawnZ:         z,
+		BaseStats:      Stats{Strength: strength, Vitality: vitality},
+		Health:         vitality * 10,
+		MaxHealth:      vitality * 10,
+		Damage:         strength * 2,
+		State:          "IDLE",
+		Speed:          3.0,
+		AttackSpeed:    2.0,
+		AttackCooldown: 2 * time.Second,
+		Scale:          1.2,
+	}
+	w.Entities[enemy.ID] = enemy
+	w.Grid.Add(enemy)
+}
+
+// spawnAirDungeonEnemy spawns an air-themed enemy in the Tempest Spire dungeon
+func (w *World) spawnAirDungeonEnemy(subType string, x, z float64, instanceID string, isElite bool, difficulty DungeonDifficulty) {
+	// Scaled for Level 80-90 dungeon
+	vitality := 180000
+	strength := 5500
+
+	if isElite {
+		vitality = 280000
+		strength = 7500
+	}
+
+	// Apply difficulty multipliers
+	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
+	vitality = int(float64(vitality) * healthMult)
+	strength = int(float64(strength) * damageMult)
+
+	enemy := &Entity{
+		ID:             fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000)),
+		InstanceID:     instanceID,
+		Type:           TypeEnemy,
+		SubType:        subType,
+		X:              x,
+		Y:              0,
+		Z:              z,
+		SpawnX:         x,
+		SpawnZ:         z,
+		BaseStats:      Stats{Strength: strength, Vitality: vitality},
+		Health:         vitality * 10,
+		MaxHealth:      vitality * 10,
+		Damage:         strength * 2,
+		State:          "IDLE",
+		Speed:          3.5, // Air enemies are faster
+		AttackSpeed:    1.8,
+		AttackCooldown: time.Duration(1.8 * float64(time.Second)),
+		Scale:          1.1,
+	}
+	w.Entities[enemy.ID] = enemy
+	w.Grid.Add(enemy)
+}
+
+func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID string, stats Stats, difficulty DungeonDifficulty) {
+	// Apply difficulty multipliers
+	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
+	scaledStats := Stats{
+		Strength:  int(float64(stats.Strength) * damageMult),
+		Vitality:  int(float64(stats.Vitality) * healthMult),
+		Dexterity: stats.Dexterity,
+	}
+
 	// Calculate Attack Speed
-	speedMult := 1.0 + (float64(stats.Dexterity) * 0.02)
+	speedMult := 1.0 + (float64(scaledStats.Dexterity) * 0.02)
 	cooldown := 5.0 / speedMult
 	if cooldown < 0.5 {
 		cooldown = 0.5
@@ -7057,21 +10766,21 @@ func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID str
 		Z:              z,
 		SpawnX:         x,
 		SpawnZ:         z,
-		BaseStats:      stats,
-		Health:         stats.Vitality * 10,
-		MaxHealth:      stats.Vitality * 10,
+		BaseStats:      scaledStats,
+		Health:         scaledStats.Vitality * 10,
+		MaxHealth:      scaledStats.Vitality * 10,
 		State:          "IDLE",
 		Speed:          2.5,
 		AttackSpeed:    cooldown,
 		AttackCooldown: time.Duration(cooldown * float64(time.Second)),
 		Scale:          4.0,
-		Damage:         stats.Strength * 10,
+		Damage:         scaledStats.Strength * 10,
 	}
 	w.Entities[boss.ID] = boss
 	w.Grid.Add(boss)
 }
 
-func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID string) {
+func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID string, difficulty DungeonDifficulty) {
 	// "25x normal hp"
 	// Assuming "normal hp" refers to a standard enemy at the dungeon's level (Level 70).
 	// If a Level 70 enemy has ~50,000 HP (5000 Vitality), then 25x is 1,250,000 HP (125,000 Vitality).
@@ -7084,6 +10793,11 @@ func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID st
 		vitality = 150000
 		strength = 5000
 	}
+
+	// Apply difficulty multipliers
+	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
+	vitality = int(float64(vitality) * healthMult)
+	strength = int(float64(strength) * damageMult)
 
 	enemy := &Entity{
 		ID:             fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000)),

@@ -6,6 +6,292 @@ export const RARITY = {
     EIDOLIC: { name: 'Eidolic', color: '#A020F0', multiplier: 1.0, statCount: 0 } // Purple
 };
 
+// ============================================================================
+// GEM TYPES AND QUALITIES
+// ============================================================================
+export const GEM_TYPES = {
+    RUBY: { name: 'Ruby', color: '#FF0000', primaryStat: 'strength', secondaryStat: 'fireDamage' },
+    SAPPHIRE: { name: 'Sapphire', color: '#0000FF', primaryStat: 'intelligence', secondaryStat: 'manaRegen' },
+    EMERALD: { name: 'Emerald', color: '#00FF00', primaryStat: 'dexterity', secondaryStat: 'critChance' },
+    TOPAZ: { name: 'Topaz', color: '#FFD700', primaryStat: 'wisdom', secondaryStat: 'healingDone' },
+    DIAMOND: { name: 'Diamond', color: '#E0E0E0', primaryStat: 'vitality', secondaryStat: 'allResist' },
+    ONYX: { name: 'Onyx', color: '#1C1C1C', primaryStat: 'damage', secondaryStat: 'lifesteal' },
+    OPAL: { name: 'Opal', color: '#A8C8F8', primaryStat: 'moveSpeed', secondaryStat: 'cdr' }
+};
+
+export const GEM_QUALITIES = {
+    CHIPPED: { name: 'Chipped', value: 10 },
+    FLAWED: { name: 'Flawed', value: 25 },
+    NORMAL: { name: 'Normal', value: 50 },
+    FLAWLESS: { name: 'Flawless', value: 100 },
+    PERFECT: { name: 'Perfect', value: 200 },
+    RADIANT: { name: 'Radiant', value: 400 }
+};
+
+// Calculate gem stats based on type and quality
+export function getGemStats(gemType, quality) {
+    const typeInfo = GEM_TYPES[gemType] || GEM_TYPES.RUBY;
+    const qualityInfo = GEM_QUALITIES[quality] || GEM_QUALITIES.CHIPPED;
+    const baseValue = qualityInfo.value;
+    
+    const stats = {};
+    stats[typeInfo.primaryStat] = baseValue;
+    
+    // Secondary stat is usually a percentage (divided by 10 or 20)
+    if (typeInfo.secondaryStat === 'critChance' || typeInfo.secondaryStat === 'lifesteal' || typeInfo.secondaryStat === 'cdr') {
+        stats[typeInfo.secondaryStat] = Math.floor(baseValue / 20);
+    } else {
+        stats[typeInfo.secondaryStat] = Math.floor(baseValue / 10);
+    }
+    
+    return stats;
+}
+
+// ============================================================================
+// SET ITEM DEFINITIONS
+// ============================================================================
+export const SET_DEFINITIONS = {
+    // Fighter Sets
+    warlord_fury: {
+        id: 'warlord_fury',
+        name: "Warlord's Fury",
+        class: 'Fighter',
+        slots: ['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders'],
+        bonus2: { armor: 15 },
+        bonus4: { chargeReset: 1 },           // Special: charge CD reset on kill
+        bonus6: { ironFortressDamage: 100 },  // Double damage during Iron Fortress
+        description: "The armor of ancient warlords who knew no defeat."
+    },
+    bulwark_ages: {
+        id: 'bulwark_ages',
+        name: "Bulwark of Ages",
+        class: 'Fighter',
+        slots: ['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders'],
+        bonus2: { maxHealth: 20 },
+        bonus4: { damageReflect: 5 },  // 5% damage reflect on block
+        bonus6: { bossTaunt: 1 },      // Guardian Roar taunts bosses
+        description: "Forged in an age when titans walked the earth."
+    },
+    // Rogue Sets
+    shadow_embrace: {
+        id: 'shadow_embrace',
+        name: "Shadow's Embrace",
+        class: 'Rogue',
+        slots: ['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders'],
+        bonus2: { critChance: 15 },
+        bonus4: { backstabAnyAngle: 1 },     // Backstab from any angle
+        bonus6: { phantomVolleyDouble: 1 },  // Phantom Volley fires 6x
+        description: "Worn by assassins who became one with darkness."
+    },
+    venom_lord: {
+        id: 'venom_lord',
+        name: "Venom Lord",
+        class: 'Rogue',
+        slots: ['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders'],
+        bonus2: { poisonDamage: 20 },
+        bonus4: { poisonSpread: 1 },        // Poison spreads to nearby
+        bonus6: { deathSpiralConsume: 1 },  // Death Spiral consumes DoTs for burst
+        description: "The regalia of those who mastered venom."
+    },
+    // Wizard Sets
+    inferno_heart: {
+        id: 'inferno_heart',
+        name: "Inferno's Heart",
+        class: 'Wizard',
+        slots: ['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders'],
+        bonus2: { fireDamage: 15 },
+        bonus4: { fireballPierce: 1 },  // Fireball pierces
+        bonus6: { meteorReset: 1 },     // Fire kill resets Meteor CD
+        description: "Contains the fury of a dying star."
+    },
+    temporal_weave: {
+        id: 'temporal_weave',
+        name: "Temporal Weave",
+        class: 'Wizard',
+        slots: ['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders'],
+        bonus2: { cdr: 15 },
+        bonus4: { teleportCharges: 2 },  // Teleport has 2 charges
+        bonus6: { timeWarpZone: 1 },     // Time Warp affects entire zone
+        description: "Threads of time woven into fabric."
+    },
+    // Cleric Sets
+    divine_light: {
+        id: 'divine_light',
+        name: "Divine Light",
+        class: 'Cleric',
+        slots: ['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders'],
+        bonus2: { healingDone: 15 },
+        bonus4: { spiritGuardiansHeal: 1 },    // Spirit Guardians heals allies
+        bonus6: { divineInterventionCD: 60 },  // Divine Intervention 60s CD
+        description: "Blessed by celestial beings of pure light."
+    },
+    crusader_zeal: {
+        id: 'crusader_zeal',
+        name: "Crusader's Zeal",
+        class: 'Cleric',
+        slots: ['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders'],
+        bonus2: { holyDamage: 15 },
+        bonus4: { radiantStrikeLifesteal: 100 },  // Radiant Strike heals for damage
+        bonus6: { permanentSeraph: 1 },            // Avenging Seraph permanent in combat
+        description: "The armor of holy warriors who smite evil."
+    }
+};
+
+// Calculate active set bonuses from equipped items
+export function calculateSetBonuses(equipment) {
+    // Count pieces per set
+    const setCounts = {};
+    for (const slot in equipment) {
+        const item = equipment[slot];
+        if (item && item.setId) {
+            setCounts[item.setId] = (setCounts[item.setId] || 0) + 1;
+        }
+    }
+    
+    // Calculate bonuses
+    const bonuses = {};
+    for (const setId in setCounts) {
+        const count = setCounts[setId];
+        const setDef = SET_DEFINITIONS[setId];
+        if (!setDef) continue;
+        
+        const setBonus = { count, setName: setDef.name, stats: {}, specials: {} };
+        
+        if (count >= 2) {
+            for (const k in setDef.bonus2) {
+                if (typeof setDef.bonus2[k] === 'number' && setDef.bonus2[k] <= 100) {
+                    setBonus.stats[k] = setDef.bonus2[k];
+                } else {
+                    setBonus.specials[k] = setDef.bonus2[k];
+                }
+            }
+        }
+        if (count >= 4) {
+            for (const k in setDef.bonus4) {
+                if (typeof setDef.bonus4[k] === 'number' && k.match(/^(armor|maxHealth|critChance|poisonDamage|fireDamage|cdr|healingDone|holyDamage)$/)) {
+                    setBonus.stats[k] = (setBonus.stats[k] || 0) + setDef.bonus4[k];
+                } else {
+                    setBonus.specials[k] = setDef.bonus4[k];
+                }
+            }
+        }
+        if (count >= 6) {
+            for (const k in setDef.bonus6) {
+                if (typeof setDef.bonus6[k] === 'number' && k.match(/^(armor|maxHealth|critChance|poisonDamage|fireDamage|cdr|healingDone|holyDamage)$/)) {
+                    setBonus.stats[k] = (setBonus.stats[k] || 0) + setDef.bonus6[k];
+                } else {
+                    setBonus.specials[k] = setDef.bonus6[k];
+                }
+            }
+        }
+        
+        bonuses[setId] = setBonus;
+    }
+    
+    return bonuses;
+}
+
+// ============================================================================
+// UNIQUE ITEM EFFECTS
+// ============================================================================
+export const UNIQUE_EFFECTS = {
+    vampiric: {
+        id: 'vampiric',
+        name: 'Vampiric',
+        description: 'On kill, restore 5% HP',
+        triggerType: 'onKill',
+        chance: 1.0,
+        color: '#8B0000'
+    },
+    efficient: {
+        id: 'efficient',
+        name: 'Efficient',
+        description: 'Skills cost 10% less mana',
+        triggerType: 'always',
+        chance: 1.0,
+        color: '#4169E1'
+    },
+    lucky: {
+        id: 'lucky',
+        name: 'Lucky',
+        description: '10% chance to deal double damage',
+        triggerType: 'onHit',
+        chance: 0.10,
+        color: '#FFD700'
+    },
+    explosive: {
+        id: 'explosive',
+        name: 'Explosive',
+        description: 'Enemies killed explode for 50% damage to nearby',
+        triggerType: 'onKill',
+        chance: 1.0,
+        color: '#FF4500'
+    },
+    swift: {
+        id: 'swift',
+        name: 'Swift',
+        description: '+20% move speed for 3s after using a skill',
+        triggerType: 'onSkill',
+        chance: 1.0,
+        color: '#00CED1'
+    },
+    thorns: {
+        id: 'thorns',
+        name: 'Thorns',
+        description: 'Reflect 10% of damage taken',
+        triggerType: 'onDamage',
+        chance: 1.0,
+        color: '#9932CC'
+    },
+    berserker: {
+        id: 'berserker',
+        name: 'Berserker',
+        description: 'Below 30% HP, +30% damage',
+        triggerType: 'always',
+        chance: 1.0,
+        color: '#DC143C'
+    },
+    guardian: {
+        id: 'guardian',
+        name: 'Guardian',
+        description: 'Above 80% HP, +20% armor',
+        triggerType: 'always',
+        chance: 1.0,
+        color: '#4682B4'
+    },
+    executioner: {
+        id: 'executioner',
+        name: 'Executioner',
+        description: '+25% damage to enemies below 25% HP',
+        triggerType: 'onHit',
+        chance: 1.0,
+        color: '#800000'
+    },
+    regenerative: {
+        id: 'regenerative',
+        name: 'Regenerative',
+        description: '+1% HP regen per second',
+        triggerType: 'always',
+        chance: 1.0,
+        color: '#32CD32'
+    }
+};
+
+// Get all unique effects from equipped items
+export function getEquippedUniqueEffects(equipment) {
+    const effects = [];
+    for (const slot in equipment) {
+        const item = equipment[slot];
+        if (item && item.uniqueEffect) {
+            const effectDef = UNIQUE_EFFECTS[item.uniqueEffect];
+            if (effectDef) {
+                effects.push({ ...effectDef, sourceItem: item.name });
+            }
+        }
+    }
+    return effects;
+}
+
 export const SLOTS = {
     HEAD: 'head',
     CHEST: 'chest',

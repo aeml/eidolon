@@ -228,6 +228,19 @@ export class WorldMap {
         const earthLabelPos = worldToScreen(0, 200);
         ctx.fillText("The Iron Weald (Earth Realm)", earthLabelPos.x, earthLabelPos.y - 100 * this.scale);
 
+        // Verdant Bastion Dungeon Marker (X: 800, Z: 200 - in Earth Realm)
+        const verdantBastionPos = worldToScreen(800, 600);
+        ctx.fillStyle = '#00aa00';
+        ctx.beginPath();
+        ctx.arc(verdantBastionPos.x, verdantBastionPos.y, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ffd700';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = '#ffd700';
+        ctx.font = `${28 * (this.scale / 2)}px Arial`;
+        ctx.fillText("★ Verdant Bastion", verdantBastionPos.x, verdantBastionPos.y - 15 * this.scale);
+
         // Siren Zone (Lv 60-65) - Moved Deeper
         drawRotatedRect(-1000, -1800, 2000, 400, 'rgba(0, 100, 255, 0.15)', 'rgba(0, 200, 255, 0.5)', 1);
 
@@ -264,6 +277,131 @@ export class WorldMap {
         ctx.font = `${36 * (this.scale / 2)}px Arial`;
         ctx.fillText("Aqua Golems (Lv 55-60)", golemLabelPos.x, golemLabelPos.y);
 
+        // ================================================================
+        // FIRE REALM (West Zone - Scorched Wastes)
+        // Bounds: X: -3000 to -1000, Z: -600 to 1000
+        // ================================================================
+        const fireMinX = -3000;
+        const fireMaxX = -1000;
+        const fireMinZ = -600;
+        const fireMaxZ = 1000;
+        
+        // Fire Realm Background
+        drawRotatedRect(fireMinX, fireMinZ, fireMaxX - fireMinX, fireMaxZ - fireMinZ, 'rgba(255, 100, 0, 0.15)');
+        
+        // Fire Realm Label
+        ctx.fillStyle = '#ff6600';
+        ctx.font = `${48 * (this.scale / 2)}px Arial`;
+        const fireLabelPos = worldToScreen(-2000, 200);
+        ctx.fillText("The Scorched Wastes (Fire Realm)", fireLabelPos.x, fireLabelPos.y);
+
+        // Fire Realm Enemy Zones
+        // Area 1: Sandstorm Djinn (Lv 70-75) - X: -1400 to -1000
+        drawRotatedRect(-1400, fireMinZ, 400, fireMaxZ - fireMinZ, 'rgba(255, 200, 100, 0.1)', 'rgba(255, 200, 100, 0.3)', 1);
+        ctx.fillStyle = '#ffcc66';
+        ctx.font = `${32 * (this.scale / 2)}px Arial`;
+        const djinnPos = worldToScreen(-1200, 200);
+        ctx.fillText("Djinn (70-75)", djinnPos.x, djinnPos.y);
+
+        // Area 2: Magma Golem (Lv 75-80) - X: -1800 to -1400
+        drawRotatedRect(-1800, fireMinZ, 400, fireMaxZ - fireMinZ, 'rgba(255, 150, 50, 0.1)', 'rgba(255, 150, 50, 0.3)', 1);
+        ctx.fillStyle = '#ff9933';
+        const magmaPos = worldToScreen(-1600, 200);
+        ctx.fillText("Magma (75-80)", magmaPos.x, magmaPos.y);
+
+        // Area 3: Scorched Wraith (Lv 80-85) - X: -2200 to -1800
+        drawRotatedRect(-2200, fireMinZ, 400, fireMaxZ - fireMinZ, 'rgba(255, 100, 0, 0.1)', 'rgba(255, 100, 0, 0.3)', 1);
+        ctx.fillStyle = '#ff6600';
+        const wraithPos = worldToScreen(-2000, 200);
+        ctx.fillText("Wraith (80-85)", wraithPos.x, wraithPos.y + 60 * this.scale);
+
+        // Area 4: Infernal Behemoth (Lv 85-90) - X: -2600 to -2200
+        drawRotatedRect(-2600, fireMinZ, 400, fireMaxZ - fireMinZ, 'rgba(255, 50, 0, 0.1)', 'rgba(255, 50, 0, 0.3)', 1);
+        ctx.fillStyle = '#ff3300';
+        const behemothPos = worldToScreen(-2400, 200);
+        ctx.fillText("Behemoth (85-90)", behemothPos.x, behemothPos.y);
+
+        // Area 5: Phoenix Sentinel (Lv 90-95) - X: -3000 to -2600
+        drawRotatedRect(-3000, fireMinZ, 400, fireMaxZ - fireMinZ, 'rgba(255, 0, 0, 0.1)', 'rgba(255, 0, 0, 0.3)', 1);
+        ctx.fillStyle = '#ff0000';
+        const phoenixPos = worldToScreen(-2800, 200);
+        ctx.fillText("Phoenix (90-95)", phoenixPos.x, phoenixPos.y);
+
+        // Molten Core Dungeon Marker (X: -2400, Z: 200)
+        const moltenCorePos = worldToScreen(-2400, 200);
+        ctx.fillStyle = '#ff4400';
+        ctx.beginPath();
+        ctx.arc(moltenCorePos.x, moltenCorePos.y - 40 * this.scale, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ffd700';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = '#ffd700';
+        ctx.font = `${28 * (this.scale / 2)}px Arial`;
+        ctx.fillText("★ Molten Core", moltenCorePos.x, moltenCorePos.y - 60 * this.scale);
+
+        // ================================================================
+        // AIR REALM (East Zone - Skyward Peaks)
+        // Bounds: X: 1000 to 3000, Z: -600 to 1000
+        // ================================================================
+        const airMinX = 1000;
+        const airMaxX = 3000;
+        const airMinZ = -600;
+        const airMaxZ = 1000;
+        
+        // Air Realm Background
+        drawRotatedRect(airMinX, airMinZ, airMaxX - airMinX, airMaxZ - airMinZ, 'rgba(150, 200, 255, 0.15)');
+        
+        // Air Realm Label
+        ctx.fillStyle = '#88ccff';
+        ctx.font = `${48 * (this.scale / 2)}px Arial`;
+        const airLabelPos = worldToScreen(2000, 200);
+        ctx.fillText("The Skyward Peaks (Air Realm)", airLabelPos.x, airLabelPos.y);
+
+        // Air Realm Enemy Zones
+        // Area 1: Storm Harpy (Lv 70-75) - X: 1000 to 1400
+        drawRotatedRect(1000, airMinZ, 400, airMaxZ - airMinZ, 'rgba(200, 230, 255, 0.1)', 'rgba(200, 230, 255, 0.3)', 1);
+        ctx.fillStyle = '#aaddff';
+        ctx.font = `${32 * (this.scale / 2)}px Arial`;
+        const harpyPos = worldToScreen(1200, 200);
+        ctx.fillText("Harpy (70-75)", harpyPos.x, harpyPos.y);
+
+        // Area 2: Cloud Elemental (Lv 75-80) - X: 1400 to 1800
+        drawRotatedRect(1400, airMinZ, 400, airMaxZ - airMinZ, 'rgba(150, 200, 255, 0.1)', 'rgba(150, 200, 255, 0.3)', 1);
+        ctx.fillStyle = '#88bbff';
+        const cloudPos = worldToScreen(1600, 200);
+        ctx.fillText("Cloud (75-80)", cloudPos.x, cloudPos.y);
+
+        // Area 3: Thunder Roc (Lv 80-85) - X: 1800 to 2200
+        drawRotatedRect(1800, airMinZ, 400, airMaxZ - airMinZ, 'rgba(100, 150, 255, 0.1)', 'rgba(100, 150, 255, 0.3)', 1);
+        ctx.fillStyle = '#6699ff';
+        const rocPos = worldToScreen(2000, 200);
+        ctx.fillText("Roc (80-85)", rocPos.x, rocPos.y + 60 * this.scale);
+
+        // Area 4: Tempest Giant (Lv 85-90) - X: 2200 to 2600
+        drawRotatedRect(2200, airMinZ, 400, airMaxZ - airMinZ, 'rgba(50, 100, 255, 0.1)', 'rgba(50, 100, 255, 0.3)', 1);
+        ctx.fillStyle = '#4488ff';
+        const giantPos = worldToScreen(2400, 200);
+        ctx.fillText("Giant (85-90)", giantPos.x, giantPos.y);
+
+        // Area 5: Cyclone Avatar (Lv 90-95) - X: 2600 to 3000
+        drawRotatedRect(2600, airMinZ, 400, airMaxZ - airMinZ, 'rgba(0, 50, 255, 0.1)', 'rgba(0, 50, 255, 0.3)', 1);
+        ctx.fillStyle = '#2266ff';
+        const cyclonePos = worldToScreen(2800, 200);
+        ctx.fillText("Cyclone (90-95)", cyclonePos.x, cyclonePos.y);
+
+        // Tempest Spire Dungeon Marker (X: 2400, Z: 200)
+        const tempestSpirePos = worldToScreen(2400, 200);
+        ctx.fillStyle = '#4488ff';
+        ctx.beginPath();
+        ctx.arc(tempestSpirePos.x, tempestSpirePos.y - 40 * this.scale, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ffd700';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = '#ffd700';
+        ctx.font = `${28 * (this.scale / 2)}px Arial`;
+        ctx.fillText("★ Tempest Spire", tempestSpirePos.x, tempestSpirePos.y - 60 * this.scale);
 
         // Fence Line (Rectangular)
         // Bounds: X: -1000 to 1000, Z: -600 to 1000
@@ -340,6 +478,56 @@ export class WorldMap {
         
         ctx.stroke();
 
+        // Fire Realm Fence (West Zone - Scorched Wastes)
+        // Bounds: X: -3000 to -1000, Z: -600 to 1000
+        ctx.strokeStyle = '#8B4513';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        
+        // North Wall
+        start = worldToScreen(-3000, -600);
+        end = worldToScreen(-1000, -600);
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        
+        // West Wall
+        start = worldToScreen(-3000, -600);
+        end = worldToScreen(-3000, 1000);
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        
+        // South Wall
+        start = worldToScreen(-3000, 1000);
+        end = worldToScreen(-1000, 1000);
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        
+        ctx.stroke();
+
+        // Air Realm Fence (East Zone - Skyward Peaks)
+        // Bounds: X: 1000 to 3000, Z: -600 to 1000
+        ctx.beginPath();
+        
+        // North Wall
+        start = worldToScreen(1000, -600);
+        end = worldToScreen(3000, -600);
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        
+        // East Wall
+        start = worldToScreen(3000, -600);
+        end = worldToScreen(3000, 1000);
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        
+        // South Wall
+        start = worldToScreen(3000, 1000);
+        end = worldToScreen(1000, 1000);
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        
+        ctx.stroke();
+
         // 2.1 Draw Level Rectangles (Vertical Strips)
         const drawLevelRect = (minX, maxX, label, color) => {
             const minZ = -600;
@@ -393,6 +581,7 @@ export class WorldMap {
                     color = '#00ffff'; // Cyan for Players
                     size = 4;
                 } else if (['Skeleton', 'Imp', 'DemonOrc', 'Construct', 'InfernoTitan'].includes(type) || ['Skeleton', 'Imp', 'DemonOrc', 'Construct', 'InfernoTitan'].includes(meshType)) {
+                    // Earth Realm enemies
                     if (entity.isElite) {
                         color = '#ffffff'; // White for Elites
                         size = 6;
@@ -402,7 +591,33 @@ export class WorldMap {
                     } else {
                         color = '#ff0000'; // Red for Enemies
                     }
-                } else if (type === 'DwarfSalesman' || meshType === 'DwarfSalesman') {
+                } else if (['MountainTroll', 'AquaGolem', 'Siren', 'FrostGuardian'].includes(type) || ['MountainTroll', 'AquaGolem', 'Siren', 'FrostGuardian'].includes(meshType)) {
+                    // Water Realm enemies
+                    if (entity.isElite) {
+                        color = '#ffffff';
+                        size = 6;
+                    } else {
+                        color = '#00aaff'; // Light blue for Water enemies
+                    }
+                } else if (['SandstormDjinn', 'MagmaGolem', 'ScorchedWraith', 'InfernalBehemoth', 'PhoenixSentinel'].includes(type) || ['SandstormDjinn', 'MagmaGolem', 'ScorchedWraith', 'InfernalBehemoth', 'PhoenixSentinel'].includes(meshType)) {
+                    // Fire Realm enemies
+                    if (entity.isElite) {
+                        color = '#ffffff';
+                        size = 6;
+                    } else {
+                        color = '#ff6600'; // Orange for Fire enemies
+                        size = 4;
+                    }
+                } else if (['StormHarpy', 'CloudElemental', 'ThunderRoc', 'TempestGiant', 'CycloneAvatar'].includes(type) || ['StormHarpy', 'CloudElemental', 'ThunderRoc', 'TempestGiant', 'CycloneAvatar'].includes(meshType)) {
+                    // Air Realm enemies
+                    if (entity.isElite) {
+                        color = '#ffffff';
+                        size = 6;
+                    } else {
+                        color = '#88ccff'; // Light cyan for Air enemies
+                        size = 4;
+                    }
+                } else if (type === 'DwarfSalesman' || meshType === 'DwarfSalesman' || type === 'RespecNPC' || meshType === 'RespecNPC') {
                     color = '#00ff00'; // Green for NPC
                 }
 

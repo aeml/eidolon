@@ -176,6 +176,46 @@ export class RenderSystem {
             this.scene.add(this.groundSnow);
         }
 
+        // Fire Realm ground (West Zone: X -3000 to -1000)
+        // Uses ground texture with red/orange tint
+        if (!this.groundFire) {
+            const fireGeo = new THREE.PlaneGeometry(2000, 2600);
+            const fireMat = new THREE.MeshStandardMaterial({
+                map: this.groundTexture,
+                color: 0xFF6633, // Orange-red tint for scorched earth
+                roughness: 0.9,
+                metalness: 0.1
+            });
+            this.groundFire = new THREE.Mesh(fireGeo, fireMat);
+            this.groundFire.rotation.x = -Math.PI / 2;
+            this.groundFire.position.set(-2000, -0.1, 200); // West of main area
+            this.groundFire.receiveShadow = true;
+        }
+
+        if (!this.groundFire.parent) {
+            this.scene.add(this.groundFire);
+        }
+
+        // Air Realm ground (East Zone: X 1000 to 3000)
+        // Uses ground texture with blue/white tint
+        if (!this.groundAir) {
+            const airGeo = new THREE.PlaneGeometry(2000, 2600);
+            const airMat = new THREE.MeshStandardMaterial({
+                map: this.groundTexture,
+                color: 0x99BBCC, // Light blue tint for sky/cloud realm
+                roughness: 0.7,
+                metalness: 0.3
+            });
+            this.groundAir = new THREE.Mesh(airGeo, airMat);
+            this.groundAir.rotation.x = -Math.PI / 2;
+            this.groundAir.position.set(2000, -0.1, 200); // East of main area
+            this.groundAir.receiveShadow = true;
+        }
+
+        if (!this.groundAir.parent) {
+            this.scene.add(this.groundAir);
+        }
+
         report(100, 'Environment ready');
     }
 

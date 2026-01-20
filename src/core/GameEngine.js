@@ -26,6 +26,7 @@ import { Siren } from '../entities/Siren.js';
 import { FrostGuardian } from '../entities/FrostGuardian.js';
 import { Fence } from '../entities/Fence.js';
 import { QuestNPC } from '../entities/QuestNPC.js';
+import { RespecNPC } from '../entities/RespecNPC.js';
 import { Stash } from '../entities/Stash.js';
 import { Forge } from '../entities/Forge.js';
 import { RootboundWarden } from '../entities/RootboundWarden.js';
@@ -37,6 +38,31 @@ import { AvengingSeraph } from '../entities/AvengingSeraph.js';
 import { LevelUpEffect } from '../ui/LevelUpEffect.js';
 import { AquaGolem } from '../entities/AquaGolem.js';
 import { MountainTroll } from '../entities/MountainTroll.js';
+// Fire Realm enemies
+import { SandstormDjinn } from '../entities/SandstormDjinn.js';
+import { MagmaGolem } from '../entities/MagmaGolem.js';
+import { ScorchedWraith } from '../entities/ScorchedWraith.js';
+import { InfernalBehemoth } from '../entities/InfernalBehemoth.js';
+import { PhoenixSentinel } from '../entities/PhoenixSentinel.js';
+// Air Realm enemies
+import { StormHarpy } from '../entities/StormHarpy.js';
+import { CloudElemental } from '../entities/CloudElemental.js';
+import { ThunderRoc } from '../entities/ThunderRoc.js';
+import { TempestGiant } from '../entities/TempestGiant.js';
+import { CycloneAvatar } from '../entities/CycloneAvatar.js';
+// Molten Core dungeon bosses (Fire)
+import { Cindermaw } from '../entities/Cindermaw.js';
+import { ScorchedTwins } from '../entities/ScorchedTwins.js';
+import { ForgemasterPyrax } from '../entities/ForgemasterPyrax.js';
+import { ObsidianGuardian } from '../entities/ObsidianGuardian.js';
+import { LordInfernax } from '../entities/LordInfernax.js';
+// Tempest Spire dungeon bosses (Air)
+import { Windshear } from '../entities/Windshear.js';
+import { Stormcallers } from '../entities/Stormcallers.js';
+import { RocMatriarch } from '../entities/RocMatriarch.js';
+import { ThunderlordKaelix } from '../entities/ThunderlordKaelix.js';
+import { Zephyrion } from '../entities/Zephyrion.js';
+import { EnvironmentalHazard } from '../entities/EnvironmentalHazard.js';
 import { eidolon as eidolonProto } from '../proto/state_pb.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 
@@ -59,6 +85,7 @@ export class GameEngine {
         this.collisionManager = new CollisionManager();
         this.uiManager = new UIManager(this.isMobile);
         this.effects = []; // Active visual effects
+        this.hazards = new Map(); // Environmental hazards (id -> EnvironmentalHazard)
         this.currentInstanceId = null; // Track current instance to prevent state desync
         this.uiManager.onBuyGamble = (slot) => {
             if (this.socket && this.socket.readyState === WebSocket.OPEN) {
@@ -226,6 +253,14 @@ export class GameEngine {
                 }));
             }
         };
+        this.uiManager.onSelectRune = (skill, runeId) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(JSON.stringify({
+                    type: 'select_rune',
+                    payload: { skill, runeId }
+                }));
+            }
+        };
         this.uiManager.onStashDeposit = (itemId) => {
             if (this.socket && this.socket.readyState === WebSocket.OPEN) {
                 const msg = {
@@ -258,6 +293,33 @@ export class GameEngine {
                 const msg = {
                     type: 'forge_socket',
                     payload: { slot }
+                };
+                this.socket.send(JSON.stringify(msg));
+            }
+        };
+        this.uiManager.onForgeInsertGem = (equipSlot, gemInvIndex, socketIndex) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'forge_insert_gem',
+                    payload: { equipSlot, gemInvIndex, socketIndex }
+                };
+                this.socket.send(JSON.stringify(msg));
+            }
+        };
+        this.uiManager.onForgeCombineGem = (gemIndices) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'forge_combine_gem',
+                    payload: { gemIndices }
+                };
+                this.socket.send(JSON.stringify(msg));
+            }
+        };
+        this.uiManager.onForgeRemoveGem = (equipSlot, socketIndex) => {
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: 'forge_remove_gem',
+                    payload: { equipSlot, socketIndex }
                 };
                 this.socket.send(JSON.stringify(msg));
             }
@@ -1183,13 +1245,27 @@ export class GameEngine {
             }
 
             if (target) {
-                // Only show if player is source or target, or if it's a DoT effect
-                if (this.player && (dmgData.sourceId === this.player.id || dmgData.targetId === this.player.id || dmgData.sourceId === 'bleed' || dmgData.sourceId === 'poison')) {
+                // Only show if player is source or target, or if it's a DoT/hazard effect
+                const isHazardDamage = dmgData.sourceId && dmgData.sourceId.startsWith('hazard-');
+                if (this.player && (dmgData.sourceId === this.player.id || dmgData.targetId === this.player.id || dmgData.sourceId === 'bleed' || dmgData.sourceId === 'poison' || isHazardDamage)) {
                     let color = '#ffffff';
                     if (dmgData.sourceId === 'bleed') {
                         color = '#8b0000'; // Dark Red for Bleed
                     } else if (dmgData.sourceId === 'poison') {
                         color = '#00ff00'; // Green for Poison
+                    } else if (isHazardDamage) {
+                        // Color based on hazard type
+                        if (dmgData.sourceId.includes('lava')) {
+                            color = '#ff4500'; // Orange-Red for Lava
+                        } else if (dmgData.sourceId.includes('lightning')) {
+                            color = '#00bfff'; // Electric Blue for Lightning
+                        } else if (dmgData.sourceId.includes('sandstorm')) {
+                            color = '#d2b48c'; // Tan for Sandstorm
+                        } else if (dmgData.sourceId.includes('wind')) {
+                            color = '#87ceeb'; // Sky Blue for Wind
+                        } else {
+                            color = '#ff6600'; // Default hazard orange
+                        }
                     } else if (target === this.player) {
                         color = '#ff0000'; // Red if player takes damage
                     } else {
@@ -1228,6 +1304,35 @@ export class GameEngine {
             }
         } else if (msg.type === 'trading_refresh') {
             this.uiManager.handleTradingSearch();
+        } else if (msg.type === 'select_rune') {
+            // Server sends updated runes after select_rune
+            if (this.player && msg.payload && msg.payload.skillRunes) {
+                this.player.skillRunes = msg.payload.skillRunes;
+                // Refresh runes tab if open
+                if (this.uiManager.skillTreeWindow && 
+                    this.uiManager.skillTreeWindow.style.display === 'flex' && 
+                    this.uiManager.skillTreeMode === 'runes') {
+                    const classType = this.player.subType || this.playerType;
+                    this.uiManager.renderSkillTree(classType);
+                }
+            }
+        } else if (msg.type === 'combo') {
+            // Combo triggered notification
+            if (this.player && msg.payload) {
+                const { playerId, comboId, comboName } = msg.payload;
+                // Only show for local player
+                if (playerId === this.player.id) {
+                    // Show floating text notification
+                    if (this.floatingTextManager && this.player.position) {
+                        this.floatingTextManager.spawn(`COMBO: ${comboName}!`, this.player.position, '#ffd700');
+                    }
+                    // Trigger UI notification
+                    if (this.uiManager) {
+                        this.uiManager.showComboNotification(comboName, comboId);
+                    }
+                    console.log(`[Combo] Triggered: ${comboName} (${comboId})`);
+                }
+            }
         } else if (msg.type === 'error') {
             console.error("Server Error:", msg.payload);
 
@@ -1443,6 +1548,9 @@ export class GameEngine {
                         // (Proto3 defaults will decode as 0/empty when truly unset.)
                         if (pData.talentPoints !== undefined) this.player.talentPoints = pData.talentPoints;
                         if (pData.talentRanks !== undefined) this.player.talentRanks = pData.talentRanks || {};
+
+                        // Server-authoritative skill runes
+                        if (pData.skillRunes !== undefined) this.player.skillRunes = pData.skillRunes || {};
 
                         const currUnlocked = this.player.unlockedSkills ? this.player.unlockedSkills.length : 0;
 
@@ -2009,6 +2117,15 @@ export class GameEngine {
 
             // Process removed entities
             for (const id of removed) {
+                // Check if it's a hazard first
+                if (this.hazards.has(id)) {
+                    const hazard = this.hazards.get(id);
+                    hazard.removeFromScene(this.renderSystem.scene);
+                    hazard.dispose();
+                    this.hazards.delete(id);
+                    continue;
+                }
+
                 const entity = this.remotePlayers.get(id);
                 if (entity) {
                     entity.isActive = false;
@@ -2280,6 +2397,8 @@ export class GameEngine {
                 p = new DwarfSalesman(id);
             } else if (subType === 'QuestNPC') {
                 p = new QuestNPC(id);
+            } else if (subType === 'RespecNPC') {
+                p = new RespecNPC(id);
             } else if (subType === 'AvengingSeraph') {
                 console.log(`GameEngine: Creating AvengingSeraph ${id}`);
                 p = new AvengingSeraph(id);
@@ -2302,6 +2421,30 @@ export class GameEngine {
                 case 'BriarMatron': p = new BriarMatron(id); break;
                 case 'RustboundColossus': p = new RustboundColossus(id); break;
                 case 'HollowSentinel': p = new HollowSentinel(id); break;
+                // Fire Realm enemies (West Zone - Scorched Wastes)
+                case 'SandstormDjinn': p = new SandstormDjinn(id); break;
+                case 'MagmaGolem': p = new MagmaGolem(id); break;
+                case 'ScorchedWraith': p = new ScorchedWraith(id); break;
+                case 'InfernalBehemoth': p = new InfernalBehemoth(id); break;
+                case 'PhoenixSentinel': p = new PhoenixSentinel(id); break;
+                // Air Realm enemies (East Zone - Skyward Peaks)
+                case 'StormHarpy': p = new StormHarpy(id); break;
+                case 'CloudElemental': p = new CloudElemental(id); break;
+                case 'ThunderRoc': p = new ThunderRoc(id); break;
+                case 'TempestGiant': p = new TempestGiant(id); break;
+                case 'CycloneAvatar': p = new CycloneAvatar(id); break;
+                // Molten Core dungeon bosses (Fire)
+                case 'Cindermaw': p = new Cindermaw(id); break;
+                case 'ScorchedTwins': p = new ScorchedTwins(id); break;
+                case 'ForgemasterPyrax': p = new ForgemasterPyrax(id); break;
+                case 'ObsidianGuardian': p = new ObsidianGuardian(id); break;
+                case 'LordInfernax': p = new LordInfernax(id); break;
+                // Tempest Spire dungeon bosses (Air)
+                case 'Windshear': p = new Windshear(id); break;
+                case 'Stormcallers': p = new Stormcallers(id); break;
+                case 'RocMatriarch': p = new RocMatriarch(id); break;
+                case 'ThunderlordKaelix': p = new ThunderlordKaelix(id); break;
+                case 'Zephyrion': p = new Zephyrion(id); break;
                 default: p = new Skeleton(id); break;
             }
 
@@ -2360,6 +2503,38 @@ export class GameEngine {
         } else {
              console.log(`GameEngine: Entity ${entity.id} already has mesh`);
         }
+        
+        // Set up explosive death callback for unique effect
+        if (entity.triggerOnKillEffects) {
+            entity.onExplosiveDeath = (position, damage, killer) => {
+                this.handleExplosiveDeath(position, damage, killer);
+            };
+        }
+    }
+    
+    // Handle explosive death effect - damages nearby enemies
+    handleExplosiveDeath(position, damage, killer) {
+        if (!position || !this.chunkManager) return;
+        
+        const explosionRadius = 8.0; // 8 unit radius explosion
+        
+        this.chunkManager.getActiveEntities().forEach(entity => {
+            // Don't damage the killer, dead entities, or entities without stats
+            if (entity === killer || entity.state === 'DEAD' || !entity.stats || !entity.isActive) return;
+            // Only damage enemies (not players or friendly NPCs)
+            if (entity.id && entity.id.startsWith('player')) return;
+            
+            const dist = entity.position.distanceTo(position);
+            if (dist < explosionRadius) {
+                // Damage falls off with distance
+                const falloff = 1 - (dist / explosionRadius);
+                const finalDamage = Math.floor(damage * falloff);
+                if (finalDamage > 0) {
+                    entity.takeDamage(finalDamage, killer);
+                    console.log(`Explosive death dealt ${finalDamage} damage to ${entity.id}`);
+                }
+            }
+        });
     }
 
     moveToAndInteract(entity) {
@@ -3010,6 +3185,20 @@ export class GameEngine {
                     // Height 8, Center Y 4
                     box.setFromCenterAndSize(new THREE.Vector3(pData.x, 4.0, pData.z), new THREE.Vector3(newWidth, 8, newDepth));
                     this.collisionManager.addCollider(box);
+                } else if (pData.type === 'Hazard') {
+                    // Environmental hazards - create visual effect
+                    // SubType is the hazard type (lava_pool, sandstorm, lightning_zone, wind_gust)
+                    // Scale contains the radius
+                    const hazardType = pData.subType || 'lava_pool';
+                    const radius = pData.scale || 5.0;
+                    const position = { x: pData.x, y: 0, z: pData.z };
+                    
+                    const hazard = new EnvironmentalHazard(pData.id, hazardType, position, { radius });
+                    hazard.addToScene(this.renderSystem.scene);
+                    this.hazards.set(pData.id, hazard);
+                    
+                    // Skip adding to remotePlayers/entities - hazards are managed separately
+                    continue;
                 } else {
                     remoteEntity = this.createRemotePlayer(pData.type || 'Enemy', pData.id, pData.subType); 
                     // console.log(`Created remote entity: ${pData.id} (${pData.type}/${pData.subType})`);
@@ -3319,6 +3508,15 @@ export class GameEngine {
                             this.uiManager.toggleQuestWindow();
                             this.pendingInteraction = null;
 
+                        } else if (this.pendingInteraction instanceof RespecNPC) {
+                            this.player.targetPosition = null;
+                            if (this.player.state === 'MOVING') {
+                                this.player.state = 'IDLE';
+                                this.player.playAnimation('Idle');
+                            }
+                            this.uiManager.showRespecMenu();
+                            this.pendingInteraction = null;
+
                         } else if (this.pendingInteraction instanceof Stash) {
                             this.player.targetPosition = null;
                             if (this.player.state === 'MOVING') {
@@ -3547,6 +3745,11 @@ export class GameEngine {
             if (!effect.isActive) {
                 this.effects.splice(i, 1);
             }
+        }
+
+        // Update Environmental Hazards
+        for (const hazard of this.hazards.values()) {
+            hazard.update(dt);
         }
     }
 

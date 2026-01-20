@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Entity } from './Entity.js';
+import { calculateSetBonuses, getEquippedUniqueEffects, getGemStats, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
 
 // Optimization: Reusable temporary objects to avoid GC
 const TEMP_VEC = new THREE.Vector3();
@@ -131,6 +132,9 @@ export class Actor extends Entity {
         this.shieldHP = 0; // Absorbs damage
         this.hasteTimer = 0; // Speed + CDR
         this.hasteFactor = 0;
+        
+        // Unique Effect Timers
+        this.swiftBuffTimer = 0; // Swift effect: +20% speed for 3s after skill use
 
         // Hotbar & Skills
         this.hotbar = [null, null, null, null];
@@ -351,6 +355,12 @@ export class Actor extends Entity {
             this.abilityCooldown = maxCd;
         }
         
+        // Unique Effect: Swift - +20% move speed for 3s after using a skill
+        if (this.hasSwiftEffect) {
+            this.swiftBuffTimer = 3.0; // 3 seconds duration
+            console.log(`${this.id} Swift effect triggered! +20% move speed for 3s`);
+        }
+        
         // Subclasses implement actual logic
         return true;
     }
@@ -564,6 +574,11 @@ export class Actor extends Entity {
             if (this.hasteTimer <= 0) {
                 this.hasteFactor = 0;
             }
+        }
+        
+        // Swift unique effect timer
+        if (this.swiftBuffTimer > 0) {
+            this.swiftBuffTimer -= dt;
         }
 
         if (this.isRemote) {
@@ -847,7 +862,7 @@ export class Actor extends Entity {
         console.log(`${this.id} was cleansed!`);
     }
 
-    takeDamage(amount) {
+    takeDamage(amount, attacker = null) {
         if (this.state === 'DEAD' || this.isMultiplayer || this.isRemote) return;
         
         let finalAmount = amount;
@@ -884,8 +899,42 @@ export class Actor extends Entity {
 
         this.stats.hp -= finalAmount;
         console.log(`${this.id} took ${finalAmount} damage (was ${amount}). HP: ${this.stats.hp}`);
+        
+        // Thorns unique effect - reflect 10% damage back to attacker
+        if (this.hasThornsEffect && attacker && attacker.stats && attacker !== this) {
+            const reflectDamage = Math.floor(finalAmount * 0.1);
+            if (reflectDamage > 0) {
+                console.log(`${this.id} reflects ${reflectDamage} damage to ${attacker.id} (Thorns)`);
+                attacker.takeDamage(reflectDamage, null); // null to prevent infinite loop
+            }
+        }
+        
         if (this.stats.hp <= 0) {
+            // Trigger onKill effects for the attacker before dying
+            if (attacker && attacker !== this) {
+                this.triggerOnKillEffects(attacker);
+            }
             this.die();
+        }
+    }
+    
+    // Called when this entity is killed by an attacker
+    triggerOnKillEffects(killer) {
+        if (!killer) return;
+        
+        // Vampiric effect - restore 5% HP on kill
+        if (killer.hasVampiricEffect) {
+            const healAmount = Math.floor(killer.stats.maxHp * 0.05);
+            killer.stats.hp = Math.min(killer.stats.maxHp, killer.stats.hp + healAmount);
+            console.log(`${killer.id} healed ${healAmount} HP from Vampiric effect`);
+        }
+        
+        // Explosive effect - dealt via callback if set (GameEngine sets this)
+        // This needs access to nearby entities, so we use a callback pattern
+        if (killer.hasExplosiveEffect && this.onExplosiveDeath) {
+            const explosionDamage = Math.floor(killer.stats.damage * 0.5);
+            this.onExplosiveDeath(this.position, explosionDamage, killer);
+            console.log(`${this.id} exploded for ${explosionDamage} damage (Explosive effect)`);
         }
     }
 
@@ -982,8 +1031,27 @@ export class Actor extends Entity {
             if (target && target.stats.hp > 0) {
                 const baseDmg = this.stats.damage;
                 const variance = (Math.random() * 0.4) + 0.8;
-                const finalDmg = Math.floor(baseDmg * variance);
-                target.takeDamage(finalDmg);
+                let finalDmg = Math.floor(baseDmg * variance);
+                
+                // Unique Effect: Berserker - +30% damage when below 30% HP
+                if (this.hasBerserkerEffect && this.stats.hp < this.stats.maxHp * 0.3) {
+                    finalDmg = Math.floor(finalDmg * 1.3);
+                    console.log(`${this.id} Berserker proc! +30% damage`);
+                }
+                
+                // Unique Effect: Executioner - +25% damage to enemies below 25% HP
+                if (this.hasExecutionerEffect && target.stats.hp < target.stats.maxHp * 0.25) {
+                    finalDmg = Math.floor(finalDmg * 1.25);
+                    console.log(`${this.id} Executioner proc! +25% damage to low HP target`);
+                }
+                
+                // Unique Effect: Lucky - 10% chance to deal double damage
+                if (this.hasLuckyEffect && Math.random() < 0.1) {
+                    finalDmg = Math.floor(finalDmg * 2);
+                    console.log(`${this.id} Lucky proc! Double damage!`);
+                }
+                
+                target.takeDamage(finalDmg, this);
                 
                 if (onHit) onHit(finalDmg, target);
             }
@@ -1123,8 +1191,49 @@ export class Actor extends Entity {
                         if (stat === 'defense') totalStats.defense += item.stats.defense;
                     }
                 }
+                
+                // Add socketed gem stats
+                if (item.gems && Array.isArray(item.gems)) {
+                    for (const gem of item.gems) {
+                        if (gem && gem.stats) {
+                            for (const stat in gem.stats) {
+                                if (totalStats[stat] !== undefined) {
+                                    totalStats[stat] += gem.stats[stat];
+                                } else if (stat === 'damage') {
+                                    totalStats.damage += gem.stats.damage;
+                                } else if (stat === 'defense') {
+                                    totalStats.defense += gem.stats.defense;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
+
+        // Calculate Set Bonuses
+        this.activeSetBonuses = calculateSetBonuses(this.equipment);
+        for (const setId in this.activeSetBonuses) {
+            const setBonus = this.activeSetBonuses[setId];
+            if (setBonus.stats) {
+                for (const stat in setBonus.stats) {
+                    // Handle percentage-based bonuses
+                    if (stat === 'maxHealth') {
+                        // Applied later as percentage
+                    } else if (stat === 'armor') {
+                        totalStats.defense += setBonus.stats[stat];
+                    } else if (stat === 'critChance') {
+                        // Stored separately for combat calculations
+                        this.stats.critChanceBonus = (this.stats.critChanceBonus || 0) + setBonus.stats[stat];
+                    } else if (totalStats[stat] !== undefined) {
+                        totalStats[stat] += setBonus.stats[stat];
+                    }
+                }
+            }
+        }
+
+        // Get Unique Effects from equipment
+        this.activeUniqueEffects = getEquippedUniqueEffects(this.equipment);
 
         // Update Total Stats in this.stats
         this.stats.strength = totalStats.strength;
@@ -1137,8 +1246,27 @@ export class Actor extends Entity {
         const levelBonus = (this.level - 1) * 5; 
         
         // Vit: Increase health and health regen
-        this.stats.maxHp = (totalStats.vitality * 10) + levelBonus;
+        let baseMaxHp = (totalStats.vitality * 10) + levelBonus;
+        
+        // Apply maxHealth percentage bonus from set bonuses
+        for (const setId in this.activeSetBonuses) {
+            const setBonus = this.activeSetBonuses[setId];
+            if (setBonus.stats && setBonus.stats.maxHealth) {
+                baseMaxHp = Math.floor(baseMaxHp * (1 + setBonus.stats.maxHealth / 100));
+            }
+        }
+        
+        this.stats.maxHp = baseMaxHp;
         this.stats.hpRegen = totalStats.vitality * 0.5;
+        
+        // Apply regenerative unique effect
+        if (this.activeUniqueEffects) {
+            for (const effect of this.activeUniqueEffects) {
+                if (effect.id === 'regenerative') {
+                    this.stats.hpRegen += this.stats.maxHp * 0.01; // +1% HP regen per second
+                }
+            }
+        }
 
         // Int: Increase max mana and reduces ability cooldown (up to 50% max)
         this.stats.maxMana = (totalStats.intelligence * 10) + levelBonus;
@@ -1147,9 +1275,39 @@ export class Actor extends Entity {
         // Strength: Melee damage increase
         // Base Damage from Stats + Weapon Damage
         this.stats.damage = (totalStats.strength * 2) + totalStats.damage;
+        
+        // Apply berserker unique effect (checked during combat, but flag here)
+        this.hasBerserkerEffect = false;
+        this.hasGuardianEffect = false;
+        this.hasExecutionerEffect = false;
+        this.hasLuckyEffect = false;
+        this.hasEfficientEffect = false;
+        this.hasSwiftEffect = false;
+        this.hasThornsEffect = false;
+        this.hasVampiricEffect = false;
+        this.hasExplosiveEffect = false;
+        
+        if (this.activeUniqueEffects) {
+            for (const effect of this.activeUniqueEffects) {
+                if (effect.id === 'berserker') this.hasBerserkerEffect = true;
+                if (effect.id === 'guardian') this.hasGuardianEffect = true;
+                if (effect.id === 'executioner') this.hasExecutionerEffect = true;
+                if (effect.id === 'lucky') this.hasLuckyEffect = true;
+                if (effect.id === 'efficient') this.hasEfficientEffect = true;
+                if (effect.id === 'swift') this.hasSwiftEffect = true;
+                if (effect.id === 'thorns') this.hasThornsEffect = true;
+                if (effect.id === 'vampiric') this.hasVampiricEffect = true;
+                if (effect.id === 'explosive') this.hasExplosiveEffect = true;
+            }
+        }
 
         // Defense
         this.stats.defense = totalStats.defense;
+        
+        // Apply guardian effect if above 80% HP
+        if (this.hasGuardianEffect && this.stats.hp > this.stats.maxHp * 0.8) {
+            this.stats.defense = Math.floor(this.stats.defense * 1.2); // +20% armor
+        }
 
         // Dex: Movement speed and melee attack speed
         // Cap movement speed at 300% of base movement (derived from base stats)
@@ -1161,6 +1319,11 @@ export class Actor extends Entity {
         if (this.hasteTimer > 0) {
             this.stats.speed *= (1 + this.hasteFactor);
             this.stats.cooldownReduction = Math.min(0.8, this.stats.cooldownReduction + 0.2); // +20% CDR
+        }
+        
+        // Swift Unique Effect - +20% move speed for 3s after skill use
+        if (this.swiftBuffTimer > 0) {
+            this.stats.speed *= 1.2;
         }
 
         // Cap Speed (Max = 3x Speed at 10 Dex)
@@ -1184,7 +1347,8 @@ export class Actor extends Entity {
         this.stats.manaRegen = totalStats.wisdom * 0.5;
         this.stats.castSpeed = 1 + (totalStats.wisdom / 5) * 0.01;
         
-        this.stats.manaCostReduction = 0;
+        // Mana cost reduction from efficient effect
+        this.stats.manaCostReduction = this.hasEfficientEffect ? 0.1 : 0;
 
         // Clamp current HP/Mana
         if (this.stats.hp > this.stats.maxHp) this.stats.hp = this.stats.maxHp;

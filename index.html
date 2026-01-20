@@ -1372,7 +1372,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.19</span> 
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.20</span> 
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
             
@@ -1465,6 +1465,84 @@
                 </span>
             </div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.20 (Combos, Realms & Talent Bonuses)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Combo System:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>16 Skill Combos:</strong> Each class now has 4 unique combos that trigger when you chain specific skills together within 3 seconds.</li>
+                                <li><strong>Combo Effects:</strong> Combos grant powerful bonuses like +50% damage, extended CC duration, 360° AoE, piercing projectiles, and more.</li>
+                                <li><strong>Visual Feedback:</strong> Floating text and screen notifications appear when you trigger a combo successfully.</li>
+                                <li><strong>Combos Tab:</strong> New "Combos" tab in the Skill Tree (K menu) shows all available combos for your class with descriptions.</li>
+                            </ul>
+                        </li>
+                        <li><strong>New Realms:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Fire Realm (The Scorched Wastes):</strong> New western zone (Lv 70-95) with Djinn, Magma Elementals, Fire Wraiths, Flame Behemoths, and Phoenix enemies.</li>
+                                <li><strong>Air Realm (The Skyward Peaks):</strong> New eastern zone (Lv 70-95) with Harpies, Cloud Serpents, Rocs, Storm Giants, and Cyclone Elementals.</li>
+                                <li><strong>Molten Core Dungeon:</strong> New endgame dungeon in the Fire Realm.</li>
+                                <li><strong>Tempest Spire Dungeon:</strong> New endgame dungeon in the Air Realm.</li>
+                                <li><strong>Verdant Bastion Dungeon:</strong> New dungeon marker added in Earth Realm.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Skill-Specific Talent Bonuses:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Mastery Talents:</strong> Odd talents (1, 3, 5...) now grant +4% damage per rank (20% max) to their specific skill.</li>
+                                <li><strong>Technique Talents:</strong> Even talents (2, 4, 6...) now grant +3% CDR and +2% range/AoE per rank to their specific skill.</li>
+                                <li><strong>Generic Talents:</strong> Talents 27-40 provide class-wide bonuses like global CDR, mana efficiency, crit chance, etc.</li>
+                                <li><strong>Server Integration:</strong> Talent bonuses are now properly applied to skill damage calculations on the server.</li>
+                                <li><strong>Clear Descriptions:</strong> Talent tooltips now show exact percentages instead of vague "Minor improvements" text.</li>
+                            </ul>
+                        </li>
+                        <li><strong>World Map Updates:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Fire Realm Overlay:</strong> Orange background with zone label and enemy markers for all 5 fire enemy types.</li>
+                                <li><strong>Air Realm Overlay:</strong> Light blue background with zone label and enemy markers for all 5 air enemy types.</li>
+                                <li><strong>Dungeon Markers:</strong> Three new ★ dungeon markers (Molten Core, Tempest Spire, Verdant Bastion).</li>
+                                <li><strong>Entity Colors:</strong> Updated detection for Water, Fire, and Air realm enemies plus RespecNPC.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.20 - Full Combo List</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Fighter Combos:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><em>Momentum Strike:</em> Charge → Whirlwind = +50% Whirlwind damage</li>
+                                <li><em>Tremor Rush:</em> Earthshaker → Charge = +2s knockdown on Charge impact</li>
+                                <li><em>Fortress Breaker:</em> Shield Slam → Earthshaker = Earthshaker ignores armor</li>
+                                <li><em>Iron Will:</em> Iron Fortress → Last Stand Rampage = Damage reduction persists</li>
+                            </ul>
+                        </li>
+                        <li><strong>Rogue Combos:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><em>Ambush Protocol:</em> Cloak &amp; Vanish → Backstab = +100% Backstab crit damage</li>
+                                <li><em>Venom Burst:</em> Poison Coating → Death Spiral = +100% poison damage to poisoned targets</li>
+                                <li><em>Blade Tornado:</em> Fan of Knives → Phantom Volley = Phantom Volley pierces all targets</li>
+                                <li><em>Shadow Dance:</em> Shadow Lunge → Fan of Knives = Fan of Knives gains +50% range</li>
+                            </ul>
+                        </li>
+                        <li><strong>Wizard Combos:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><em>Implosion:</em> Gravity Well → Fireball = +100% Fireball damage to slowed targets</li>
+                                <li><em>Time Burn:</em> Time Warp → Inferno Cataclysm = Double tick rate on Inferno Cataclysm</li>
+                                <li><em>Nova Cascade:</em> Teleport → Flame Whip = Flame Whip becomes 360° cone</li>
+                                <li><em>Arcane Barrage:</em> Arcane Shield → Meteor Drop = Shield explodes on meteor impact</li>
+                            </ul>
+                        </li>
+                        <li><strong>Cleric Combos:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                <li><em>Purifying Flames:</em> Consecrated Ground → Radiant Strike = Radiant Strike cleanses allies</li>
+                                <li><em>Divine Storm:</em> Heaven's Trumpet → Spirit Guardians = +50% holy damage bonus</li>
+                                <li><em>Holy Fury:</em> Mark of Weakness → Radiant Strike = +100% damage to marked targets</li>
+                                <li><em>Martyr's Blessing:</em> Guardian Embrace → Divine Intervention = Heals party members too</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
                 <div style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.19 (Passive Talents: Persistence & UX)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
@@ -2046,6 +2124,7 @@
                 <button id="tab-forge-upgrade" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #333;">Upgrade</button>
                 <button id="tab-forge-potency" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">Potency</button>
                 <button id="tab-forge-socket" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">Sockets</button>
+                <button id="tab-forge-gems" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">Gems</button>
             </div>
 
             <div style="display: flex; flex-grow: 1; padding: 10px; flex-direction: column;">
@@ -2096,6 +2175,100 @@
                             <span id="forge-socket-cost-shards" style="color: #ffd700;">0</span> Shards
                         </div>
                         <button id="btn-forge-socket" class="btn-menu" style="width: 100%;">ADD SOCKET</button>
+                    </div>
+                </div>
+
+                <!-- Panel 4: Gems -->
+                <div id="forge-panel-gems" style="flex: 1; display: none; flex-direction: column;">
+                    <!-- Sub-tabs for Gem operations -->
+                    <div style="display: flex; border-bottom: 1px solid #444; margin-bottom: 10px;">
+                        <button id="tab-gem-insert" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #333;">Insert</button>
+                        <button id="tab-gem-combine" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">Combine</button>
+                        <button id="tab-gem-remove" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">Remove</button>
+                    </div>
+                    
+                    <!-- Sub-panel: Insert Gems -->
+                    <div id="gem-panel-insert" style="flex: 1; display: flex; flex-direction: column;">
+                        <div style="display: flex; gap: 10px; flex: 1;">
+                            <!-- Equipment with sockets -->
+                            <div style="flex: 1; display: flex; flex-direction: column;">
+                                <div style="color: #aaa; margin-bottom: 5px; font-size: 12px;">Equipment with Sockets:</div>
+                                <div id="forge-gem-equipment" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 10px;">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                            <!-- Gems in inventory -->
+                            <div style="flex: 1; display: flex; flex-direction: column;">
+                                <div style="color: #aaa; margin-bottom: 5px; font-size: 12px;">Your Gems:</div>
+                                <div id="forge-gem-inventory" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; max-height: 200px; overflow-y: auto;">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                        <div id="forge-gem-info" style="border-top: 1px solid #444; padding-top: 10px; display: none; flex-direction: column; align-items: center;">
+                            <div style="display: flex; gap: 20px; margin-bottom: 10px; align-items: center;">
+                                <div style="text-align: center;">
+                                    <div style="color: #aaa; font-size: 11px;">Equipment</div>
+                                    <div id="forge-gem-equip-name" style="color: white; font-weight: bold;"></div>
+                                    <div id="forge-gem-socket-slots" style="display: flex; gap: 5px; justify-content: center; margin-top: 5px;"></div>
+                                </div>
+                                <div style="color: #ff00ff; font-size: 24px;">➔</div>
+                                <div style="text-align: center;">
+                                    <div style="color: #aaa; font-size: 11px;">Gem</div>
+                                    <div id="forge-gem-selected-name" style="color: white; font-weight: bold;"></div>
+                                </div>
+                            </div>
+                            <div id="forge-gem-preview" style="color: #0f0; font-size: 12px; margin-bottom: 10px;"></div>
+                            <button id="btn-forge-insert-gem" class="btn-menu" style="width: 100%;">INSERT GEM</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Sub-panel: Combine Gems -->
+                    <div id="gem-panel-combine" style="flex: 1; display: none; flex-direction: column;">
+                        <div style="color: #aaa; margin-bottom: 10px; text-align: center; font-size: 12px;">
+                            Select 3 gems of the same type and quality to combine into 1 higher quality gem
+                        </div>
+                        <div id="forge-gem-combine-inventory" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; max-height: 200px; overflow-y: auto; margin-bottom: 10px;">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div id="forge-gem-combine-info" style="border-top: 1px solid #444; padding-top: 10px; display: flex; flex-direction: column; align-items: center;">
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+                                <div id="forge-gem-combine-slots" style="display: flex; gap: 5px;">
+                                    <div class="combine-slot" style="width: 40px; height: 40px; border: 2px dashed #444; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #666;">1</div>
+                                    <div class="combine-slot" style="width: 40px; height: 40px; border: 2px dashed #444; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #666;">2</div>
+                                    <div class="combine-slot" style="width: 40px; height: 40px; border: 2px dashed #444; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #666;">3</div>
+                                </div>
+                                <div style="color: #ff00ff; font-size: 24px;">➔</div>
+                                <div id="forge-gem-combine-result" style="width: 40px; height: 40px; border: 2px solid #444; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #666;">?</div>
+                            </div>
+                            <div id="forge-gem-combine-preview" style="color: #0f0; font-size: 12px; margin-bottom: 10px;"></div>
+                            <button id="btn-forge-combine-gem" class="btn-menu" style="width: 100%;" disabled>COMBINE GEMS</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Sub-panel: Remove Gems -->
+                    <div id="gem-panel-remove" style="flex: 1; display: none; flex-direction: column;">
+                        <div style="color: #ff4444; margin-bottom: 10px; text-align: center; font-size: 12px;">
+                            Warning: Removed gems are destroyed permanently!
+                        </div>
+                        <div style="display: flex; gap: 10px; flex: 1;">
+                            <!-- Equipment with socketed gems -->
+                            <div style="flex: 1; display: flex; flex-direction: column;">
+                                <div style="color: #aaa; margin-bottom: 5px; font-size: 12px;">Equipment with Gems:</div>
+                                <div id="forge-gem-remove-equipment" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 10px;">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                        <div id="forge-gem-remove-info" style="border-top: 1px solid #444; padding-top: 10px; display: none; flex-direction: column; align-items: center;">
+                            <div id="forge-gem-remove-equip-name" style="color: white; font-weight: bold; margin-bottom: 5px;"></div>
+                            <div style="color: #aaa; font-size: 11px; margin-bottom: 5px;">Click a gem to select for removal:</div>
+                            <div id="forge-gem-remove-slots" style="display: flex; gap: 5px; margin-bottom: 10px;">
+                                <!-- Populated by JS -->
+                            </div>
+                            <div id="forge-gem-remove-preview" style="color: #ff4444; font-size: 12px; margin-bottom: 10px;"></div>
+                            <button id="btn-forge-remove-gem" class="btn-menu" style="width: 100%; background: #661111;" disabled>REMOVE GEM (DESTROYS IT)</button>
+                        </div>
                     </div>
                 </div>
 
