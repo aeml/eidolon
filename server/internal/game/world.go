@@ -589,13 +589,13 @@ var fighterRunes = []SkillRuneDef{
 	{ID: "whirlwind_bladestorm", Name: "Bladestorm", Skill: "Whirlwind", UnlockLevel: 70, Description: "Pulls enemies toward you"},
 	{ID: "whirlwind_bloodwhirl", Name: "Bloodwhirl", Skill: "Whirlwind", UnlockLevel: 90, Description: "Heals 2% HP per enemy hit"},
 	// Shield Slam Runes
-	{ID: "shieldslam_concussion", Name: "Concussion", Skill: "ShieldSlam", UnlockLevel: 50, Description: "Stun duration +1s"},
-	{ID: "shieldslam_reverberation", Name: "Reverberation", Skill: "ShieldSlam", UnlockLevel: 70, Description: "Hits twice"},
-	{ID: "shieldslam_fortify", Name: "Fortify", Skill: "ShieldSlam", UnlockLevel: 90, Description: "Grants shield equal to damage dealt"},
+	{ID: "shieldslam_concussion", Name: "Concussion", Skill: "Shield Slam", UnlockLevel: 50, Description: "Stun duration +1s"},
+	{ID: "shieldslam_reverberation", Name: "Reverberation", Skill: "Shield Slam", UnlockLevel: 70, Description: "Hits twice"},
+	{ID: "shieldslam_fortify", Name: "Fortify", Skill: "Shield Slam", UnlockLevel: 90, Description: "Grants shield equal to damage dealt"},
 	// Iron Fortress Runes
-	{ID: "ironfortress_extended", Name: "Extended", Skill: "IronFortress", UnlockLevel: 50, Description: "+50% duration"},
-	{ID: "ironfortress_thorns", Name: "Thorns", Skill: "IronFortress", UnlockLevel: 70, Description: "Reflect 20% damage while active"},
-	{ID: "ironfortress_immovable", Name: "Immovable", Skill: "IronFortress", UnlockLevel: 90, Description: "Cannot be knocked back or pulled"},
+	{ID: "ironfortress_extended", Name: "Extended", Skill: "Iron Fortress", UnlockLevel: 50, Description: "+50% duration"},
+	{ID: "ironfortress_thorns", Name: "Thorns", Skill: "Iron Fortress", UnlockLevel: 70, Description: "Reflect 20% damage while active"},
+	{ID: "ironfortress_immovable", Name: "Immovable", Skill: "Iron Fortress", UnlockLevel: 90, Description: "Cannot be knocked back or pulled"},
 	// Earthshaker Runes
 	{ID: "earthshaker_fissure", Name: "Fissure", Skill: "Earthshaker", UnlockLevel: 50, Description: "Creates line AoE instead of circle"},
 	{ID: "earthshaker_aftershock", Name: "Aftershock", Skill: "Earthshaker", UnlockLevel: 70, Description: "Second smaller quake after 1s"},
@@ -605,25 +605,25 @@ var fighterRunes = []SkillRuneDef{
 // Rogue Runes
 var rogueRunes = []SkillRuneDef{
 	// Piercing Throw Runes
-	{ID: "piercingthrow_ricochet", Name: "Ricochet", Skill: "PiercingThrow", UnlockLevel: 50, Description: "Bounces to 2 additional targets"},
-	{ID: "piercingthrow_serrated", Name: "Serrated", Skill: "PiercingThrow", UnlockLevel: 70, Description: "Applies bleed (5s DoT)"},
-	{ID: "piercingthrow_executioner", Name: "Executioner", Skill: "PiercingThrow", UnlockLevel: 90, Description: "+100% damage to targets below 30% HP"},
+	{ID: "piercingthrow_ricochet", Name: "Ricochet", Skill: "Piercing Throw", UnlockLevel: 50, Description: "Bounces to 2 additional targets"},
+	{ID: "piercingthrow_serrated", Name: "Serrated", Skill: "Piercing Throw", UnlockLevel: 70, Description: "Applies bleed (5s DoT)"},
+	{ID: "piercingthrow_executioner", Name: "Executioner", Skill: "Piercing Throw", UnlockLevel: 90, Description: "+100% damage to targets below 30% HP"},
 	// Backstab Runes
 	{ID: "backstab_ambush", Name: "Ambush", Skill: "Backstab", UnlockLevel: 50, Description: "+50% crit chance"},
 	{ID: "backstab_eviscerate", Name: "Eviscerate", Skill: "Backstab", UnlockLevel: 70, Description: "Ignores 50% armor"},
 	{ID: "backstab_shadowstep", Name: "Shadowstep", Skill: "Backstab", UnlockLevel: 90, Description: "Teleport behind target before striking"},
 	// Fan of Knives Runes
-	{ID: "fanofknives_weighted", Name: "Weighted", Skill: "FanOfKnives", UnlockLevel: 50, Description: "Slows enemies hit by 30% for 3s"},
-	{ID: "fanofknives_poisoned", Name: "Poisoned", Skill: "FanOfKnives", UnlockLevel: 70, Description: "Applies poison DoT"},
-	{ID: "fanofknives_fury", Name: "Bladed Fury", Skill: "FanOfKnives", UnlockLevel: 90, Description: "Double the number of knives"},
+	{ID: "fanofknives_weighted", Name: "Weighted", Skill: "Fan of Knives", UnlockLevel: 50, Description: "Slows enemies hit by 30% for 3s"},
+	{ID: "fanofknives_poisoned", Name: "Poisoned", Skill: "Fan of Knives", UnlockLevel: 70, Description: "Applies poison DoT"},
+	{ID: "fanofknives_fury", Name: "Bladed Fury", Skill: "Fan of Knives", UnlockLevel: 90, Description: "Double the number of knives"},
 	// Shadow Lunge Runes
-	{ID: "shadowlunge_extended", Name: "Extended", Skill: "ShadowLunge", UnlockLevel: 50, Description: "+50% range"},
-	{ID: "shadowlunge_cripple", Name: "Cripple", Skill: "ShadowLunge", UnlockLevel: 70, Description: "Slows target by 50% for 3s"},
-	{ID: "shadowlunge_shadow", Name: "Shadow Clone", Skill: "ShadowLunge", UnlockLevel: 90, Description: "Creates illusion that attacks once"},
+	{ID: "shadowlunge_extended", Name: "Extended", Skill: "Shadow Lunge", UnlockLevel: 50, Description: "+50% range"},
+	{ID: "shadowlunge_cripple", Name: "Cripple", Skill: "Shadow Lunge", UnlockLevel: 70, Description: "Slows target by 50% for 3s"},
+	{ID: "shadowlunge_shadow", Name: "Shadow Clone", Skill: "Shadow Lunge", UnlockLevel: 90, Description: "Creates illusion that attacks once"},
 	// Cloak and Vanish Runes
-	{ID: "cloak_swift", Name: "Swift", Skill: "CloakVanish", UnlockLevel: 50, Description: "+30% movement speed while invisible"},
-	{ID: "cloak_longer", Name: "Lasting Shadow", Skill: "CloakVanish", UnlockLevel: 70, Description: "+100% invisibility duration"},
-	{ID: "cloak_ambush", Name: "Prepared Ambush", Skill: "CloakVanish", UnlockLevel: 90, Description: "Next attack deals +100% damage"},
+	{ID: "cloak_swift", Name: "Swift", Skill: "Cloak & Vanish", UnlockLevel: 50, Description: "+30% movement speed while invisible"},
+	{ID: "cloak_longer", Name: "Lasting Shadow", Skill: "Cloak & Vanish", UnlockLevel: 70, Description: "+100% invisibility duration"},
+	{ID: "cloak_ambush", Name: "Prepared Ambush", Skill: "Cloak & Vanish", UnlockLevel: 90, Description: "Next attack deals +100% damage"},
 }
 
 // Wizard Runes
@@ -633,45 +633,45 @@ var wizardRunes = []SkillRuneDef{
 	{ID: "fireball_chain", Name: "Chain Reaction", Skill: "Fireball", UnlockLevel: 70, Description: "Bounces to 3 additional targets at 50% damage"},
 	{ID: "fireball_empowered", Name: "Empowered", Skill: "Fireball", UnlockLevel: 90, Description: "+100% damage, +3s cooldown"},
 	// Meteor Drop Runes
-	{ID: "meteor_cluster", Name: "Cluster", Skill: "MeteorDrop", UnlockLevel: 50, Description: "3 smaller meteors instead of 1"},
-	{ID: "meteor_extinction", Name: "Extinction", Skill: "MeteorDrop", UnlockLevel: 70, Description: "+50% explosion radius"},
-	{ID: "meteor_apocalypse", Name: "Apocalypse", Skill: "MeteorDrop", UnlockLevel: 90, Description: "Meteors continue for 5s after cast"},
+	{ID: "meteor_cluster", Name: "Cluster", Skill: "Meteor Drop", UnlockLevel: 50, Description: "3 smaller meteors instead of 1"},
+	{ID: "meteor_extinction", Name: "Extinction", Skill: "Meteor Drop", UnlockLevel: 70, Description: "+50% explosion radius"},
+	{ID: "meteor_apocalypse", Name: "Apocalypse", Skill: "Meteor Drop", UnlockLevel: 90, Description: "Meteors continue for 5s after cast"},
 	// Teleport Runes
 	{ID: "teleport_blink", Name: "Blink", Skill: "Teleport", UnlockLevel: 50, Description: "+50% range"},
 	{ID: "teleport_phase", Name: "Phase", Skill: "Teleport", UnlockLevel: 70, Description: "Invulnerable for 1s after teleport"},
 	{ID: "teleport_warp", Name: "Warp", Skill: "Teleport", UnlockLevel: 90, Description: "Damages enemies at start and end location"},
 	// Arcane Shield Runes
-	{ID: "arcaneshield_extended", Name: "Extended", Skill: "ArcaneShield", UnlockLevel: 50, Description: "+50% duration"},
-	{ID: "arcaneshield_reflective", Name: "Reflective", Skill: "ArcaneShield", UnlockLevel: 70, Description: "Reflects 30% of absorbed damage"},
-	{ID: "arcaneshield_explosive", Name: "Explosive", Skill: "ArcaneShield", UnlockLevel: 90, Description: "Explodes when broken dealing absorbed amount"},
+	{ID: "arcaneshield_extended", Name: "Extended", Skill: "Arcane Shield", UnlockLevel: 50, Description: "+50% duration"},
+	{ID: "arcaneshield_reflective", Name: "Reflective", Skill: "Arcane Shield", UnlockLevel: 70, Description: "Reflects 30% of absorbed damage"},
+	{ID: "arcaneshield_explosive", Name: "Explosive", Skill: "Arcane Shield", UnlockLevel: 90, Description: "Explodes when broken dealing absorbed amount"},
 	// Gravity Well Runes
-	{ID: "gravitywell_expanded", Name: "Expanded", Skill: "GravityWell", UnlockLevel: 50, Description: "+50% radius"},
-	{ID: "gravitywell_crushing", Name: "Crushing", Skill: "GravityWell", UnlockLevel: 70, Description: "+100% damage"},
-	{ID: "gravitywell_blackhole", Name: "Black Hole", Skill: "GravityWell", UnlockLevel: 90, Description: "Enemies cannot escape while active"},
+	{ID: "gravitywell_expanded", Name: "Expanded", Skill: "Gravity Well", UnlockLevel: 50, Description: "+50% radius"},
+	{ID: "gravitywell_crushing", Name: "Crushing", Skill: "Gravity Well", UnlockLevel: 70, Description: "+100% damage"},
+	{ID: "gravitywell_blackhole", Name: "Black Hole", Skill: "Gravity Well", UnlockLevel: 90, Description: "Enemies cannot escape while active"},
 }
 
 // Cleric Runes
 var clericRunes = []SkillRuneDef{
 	// Spirit Guardians Runes
-	{ID: "spirits_expanded", Name: "Expanded", Skill: "SpiritGuardians", UnlockLevel: 50, Description: "+50% radius"},
-	{ID: "spirits_vengeful", Name: "Vengeful", Skill: "SpiritGuardians", UnlockLevel: 70, Description: "+50% damage, -25% healing"},
-	{ID: "spirits_sanctuary", Name: "Sanctuary", Skill: "SpiritGuardians", UnlockLevel: 90, Description: "Also reduces damage taken by 20%"},
+	{ID: "spirits_expanded", Name: "Expanded", Skill: "Spirit Guardians", UnlockLevel: 50, Description: "+50% radius"},
+	{ID: "spirits_vengeful", Name: "Vengeful", Skill: "Spirit Guardians", UnlockLevel: 70, Description: "+50% damage, -25% healing"},
+	{ID: "spirits_sanctuary", Name: "Sanctuary", Skill: "Spirit Guardians", UnlockLevel: 90, Description: "Also reduces damage taken by 20%"},
 	// Healing Light Runes
-	{ID: "healinglight_beacon", Name: "Beacon", Skill: "HealingLight", UnlockLevel: 50, Description: "Heals in AoE around target (5 unit radius)"},
-	{ID: "healinglight_renewal", Name: "Renewal", Skill: "HealingLight", UnlockLevel: 70, Description: "Adds HoT for 5s (20% of initial heal)"},
-	{ID: "healinglight_divine", Name: "Divine", Skill: "HealingLight", UnlockLevel: 90, Description: "Also cleanses 1 debuff"},
+	{ID: "healinglight_beacon", Name: "Beacon", Skill: "Healing Light", UnlockLevel: 50, Description: "Heals in AoE around target (5 unit radius)"},
+	{ID: "healinglight_renewal", Name: "Renewal", Skill: "Healing Light", UnlockLevel: 70, Description: "Adds HoT for 5s (20% of initial heal)"},
+	{ID: "healinglight_divine", Name: "Divine", Skill: "Healing Light", UnlockLevel: 90, Description: "Also cleanses 1 debuff"},
 	// Divine Intervention Runes
-	{ID: "divineintervention_quick", Name: "Quick Save", Skill: "DivineIntervention", UnlockLevel: 50, Description: "Cooldown reduced by 50%"},
-	{ID: "divineintervention_guardian", Name: "Guardian Angel", Skill: "DivineIntervention", UnlockLevel: 70, Description: "Target gains 50% damage reduction for 5s"},
-	{ID: "divineintervention_miracle", Name: "Miracle", Skill: "DivineIntervention", UnlockLevel: 90, Description: "Can affect 2 targets"},
+	{ID: "divineintervention_quick", Name: "Quick Save", Skill: "Divine Intervention", UnlockLevel: 50, Description: "Cooldown reduced by 50%"},
+	{ID: "divineintervention_guardian", Name: "Guardian Angel", Skill: "Divine Intervention", UnlockLevel: 70, Description: "Target gains 50% damage reduction for 5s"},
+	{ID: "divineintervention_miracle", Name: "Miracle", Skill: "Divine Intervention", UnlockLevel: 90, Description: "Can affect 2 targets"},
 	// Radiant Strike Runes
-	{ID: "radiantstrike_smite", Name: "Smite", Skill: "RadiantStrike", UnlockLevel: 50, Description: "+50% damage"},
-	{ID: "radiantstrike_chains", Name: "Chains of Light", Skill: "RadiantStrike", UnlockLevel: 70, Description: "Roots target for 2s"},
-	{ID: "radiantstrike_purge", Name: "Purge", Skill: "RadiantStrike", UnlockLevel: 90, Description: "Removes 1 buff from target"},
+	{ID: "radiantstrike_smite", Name: "Smite", Skill: "Radiant Strike", UnlockLevel: 50, Description: "+50% damage"},
+	{ID: "radiantstrike_chains", Name: "Chains of Light", Skill: "Radiant Strike", UnlockLevel: 70, Description: "Roots target for 2s"},
+	{ID: "radiantstrike_purge", Name: "Purge", Skill: "Radiant Strike", UnlockLevel: 90, Description: "Removes 1 buff from target"},
 	// Consecrated Ground Runes
-	{ID: "consecratedground_expanded", Name: "Expanded", Skill: "ConsecratedGround", UnlockLevel: 50, Description: "+50% radius"},
-	{ID: "consecratedground_lingering", Name: "Lingering", Skill: "ConsecratedGround", UnlockLevel: 70, Description: "+100% duration"},
-	{ID: "consecratedground_sanctuary", Name: "Holy Ground", Skill: "ConsecratedGround", UnlockLevel: 90, Description: "Allies in area take 30% less damage"},
+	{ID: "consecratedground_expanded", Name: "Expanded", Skill: "Consecrated Ground", UnlockLevel: 50, Description: "+50% radius"},
+	{ID: "consecratedground_lingering", Name: "Lingering", Skill: "Consecrated Ground", UnlockLevel: 70, Description: "+100% duration"},
+	{ID: "consecratedground_sanctuary", Name: "Holy Ground", Skill: "Consecrated Ground", UnlockLevel: 90, Description: "Allies in area take 30% less damage"},
 }
 
 // Combo System - Skill sequences that trigger bonus effects within 3 seconds
@@ -4328,7 +4328,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 
 				// Piercing Throw runes
-				if projSkill == "PiercingThrow" {
+				if projSkill == "Piercing Throw" {
 					// Executioner rune: +100% damage to targets below 30% HP
 					if projRuneID == "piercingthrow_executioner" {
 						target.Mu.RLock()
@@ -4355,14 +4355,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 
 				// Piercing Throw: Serrated rune applies bleed
-				if projSkill == "PiercingThrow" && projRuneID == "piercingthrow_serrated" && !isDead {
+				if projSkill == "Piercing Throw" && projRuneID == "piercingthrow_serrated" && !isDead {
 					target.Bleeding = true
 					target.BleedDamage = finalDamage / 5 // 20% of damage per tick
 					target.BleedEndTime = time.Now().Add(5 * time.Second)
 				}
 
 				// Fan of Knives rune effects
-				if projSkill == "FanOfKnives" && !isDead {
+				if projSkill == "Fan of Knives" && !isDead {
 					if projRuneID == "fanofknives_weighted" {
 						target.Slowed = true
 						target.SlowFactor = 0.30
@@ -4389,7 +4389,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 
 				// Piercing Throw: Ricochet rune - bounce to additional targets
-				if projSkill == "PiercingThrow" && projRuneID == "piercingthrow_ricochet" && projBounces > 0 {
+				if projSkill == "Piercing Throw" && projRuneID == "piercingthrow_ricochet" && projBounces > 0 {
 					// Find nearest enemy that hasn't been hit
 					var nextTarget *Entity
 					minNextDist := 15.0 // Max bounce range
@@ -6105,7 +6105,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				// Check for rune effects
-				runeID := player.GetRuneForSkill("ShieldSlam")
+				runeID := player.GetRuneForSkill("Shield Slam")
 
 				rangeDist := 4.0
 				angleThreshold := math.Pi / 4 // 45 degrees
@@ -6540,7 +6540,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				// Check for rune effects
-				runeID := player.GetRuneForSkill("IronFortress")
+				runeID := player.GetRuneForSkill("Iron Fortress")
 
 				// Extended rune: +50% duration (30s -> 45s)
 				duration := 30 * time.Second
@@ -6705,7 +6705,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				// Check for rune effects
-				runeID := player.GetRuneForSkill("ArcaneShield")
+				runeID := player.GetRuneForSkill("Arcane Shield")
 
 				// Extended rune: +50% duration (20s -> 30s)
 				duration := 20 * time.Second
@@ -6743,7 +6743,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				// Check for rune effects
-				runeID := player.GetRuneForSkill("GravityWell")
+				runeID := player.GetRuneForSkill("Gravity Well")
 
 				// Expanded rune: +50% radius
 				radius := 8.0
@@ -7038,7 +7038,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				// Check for rune effects
-				runeID := player.GetRuneForSkill("MeteorDrop")
+				runeID := player.GetRuneForSkill("Meteor Drop")
 
 				// Combo: Arcane Barrage (Arcane Shield → Meteor Drop) = Shield explodes on impact
 				shieldExplodeActive := player.ActiveCombo == "shield_meteor_explosion"
@@ -7083,7 +7083,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 							LastAttackTime:      time.Now().Add(time.Duration(1500+i*200) * time.Millisecond), // Stagger impact
 							Scale:               0.7,
 							ProjectileRuneID:    runeID,
-							ProjectileSkill:     "MeteorDrop",
+							ProjectileSkill:     "Meteor Drop",
 							MeteorShieldExplode: shieldExplodeActive && i == 0, // Only first meteor triggers explosion
 						}
 						w.Entities[proj.ID] = proj
@@ -7108,7 +7108,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						LastAttackTime:      time.Now().Add(1500 * time.Millisecond),
 						Scale:               1.0,
 						ProjectileRuneID:    runeID,
-						ProjectileSkill:     "MeteorDrop",
+						ProjectileSkill:     "Meteor Drop",
 						MeteorShieldExplode: shieldExplodeActive, // Combo: Arcane Barrage
 					}
 					w.Entities[proj.ID] = proj
@@ -7855,7 +7855,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				// Check for rune effects
-				runeID := player.GetRuneForSkill("PiercingThrow")
+				runeID := player.GetRuneForSkill("Piercing Throw")
 
 				dx := targetX - player.X
 				dz := targetZ - player.Z
@@ -7898,7 +7898,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					Scale:             1.0,
 					ProjectileRuneID:  runeID,
 					ProjectileBounces: bounces,
-					ProjectileSkill:   "PiercingThrow",
+					ProjectileSkill:   "Piercing Throw",
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
@@ -7914,7 +7914,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				// Check for rune effects
-				runeID := player.GetRuneForSkill("FanOfKnives")
+				runeID := player.GetRuneForSkill("Fan of Knives")
 
 				// Bladed Fury rune: double the number of knives
 				projectileCount := 12
@@ -7947,7 +7947,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						CreatedAt:        time.Now(),
 						Scale:            1.0,
 						ProjectileRuneID: runeID,
-						ProjectileSkill:  "FanOfKnives",
+						ProjectileSkill:  "Fan of Knives",
 					}
 					w.Entities[proj.ID] = proj
 					w.Grid.Add(proj)
@@ -8087,7 +8087,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				// Check for rune effects
-				runeID := player.GetRuneForSkill("ShadowLunge")
+				runeID := player.GetRuneForSkill("Shadow Lunge")
 
 				// Extended rune: +50% range
 				maxRange := 10.0
@@ -8281,7 +8281,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				// Check for rune effects
-				runeID := player.GetRuneForSkill("CloakVanish")
+				runeID := player.GetRuneForSkill("Cloak & Vanish")
 
 				// Lasting Shadow rune: +100% duration (5s -> 10s)
 				duration := 5 * time.Second
@@ -8432,7 +8432,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				// Divine Intervention Rune Effects
-				runeID := player.GetRuneForSkill("DivineIntervention")
+				runeID := player.GetRuneForSkill("Divine Intervention")
 
 				player.DivineInterventionActive = true
 				player.DivineInterventionEndTime = time.Now().Add(5 * time.Second)
@@ -8662,7 +8662,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.State = "ATTACKING"
 
 				// Spirit Guardians Rune Effects
-				runeID := player.GetRuneForSkill("SpiritGuardians")
+				runeID := player.GetRuneForSkill("Spirit Guardians")
 				player.SpiritGuardiansRuneID = runeID
 
 				// Combo: Divine Storm (Heaven's Trumpet → Spirit Guardians) = +50% holy damage bonus
@@ -8690,7 +8690,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				healAmount := 30 + (player.Stats.Wisdom * 3)
 
 				// Healing Light Rune Effects
-				runeID := player.GetRuneForSkill("HealingLight")
+				runeID := player.GetRuneForSkill("Healing Light")
 
 				// Combo: Mass Revival (Divine Intervention → Healing Light) = Party-wide heal
 				massRevivalActive := player.ActiveCombo == "healing_light_party"
@@ -8817,7 +8817,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				// Radiant Strike Rune Effects
-				runeID := player.GetRuneForSkill("RadiantStrike")
+				runeID := player.GetRuneForSkill("Radiant Strike")
 
 				// Combo: Holy Fury (Mark of Weakness → Radiant Strike) = +100% damage to marked targets
 				holyFuryActive := player.ActiveCombo == "radiant_strike_boost"
@@ -8978,7 +8978,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.Mana -= cost
 
 				// Consecrated Ground Rune Effects
-				runeID := player.GetRuneForSkill("ConsecratedGround")
+				runeID := player.GetRuneForSkill("Consecrated Ground")
 
 				radius := 5.0
 				// consecratedground_expanded: +50% radius

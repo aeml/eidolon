@@ -142,8 +142,12 @@ export class RenderSystem {
             this.setupTexture(this.snowTexture, 80, 64);
         }
 
+        const fenceInset = 0.75; // Match fence thickness so water shows beyond bounds
+        const realmWidth = 2000 - fenceInset * 2;
+        const realmDepth = 1600 - fenceInset * 2;
+
         if (!this.groundEarth) {
-            const earthGeo = new THREE.PlaneGeometry(2000, 1600);
+            const earthGeo = new THREE.PlaneGeometry(realmWidth, realmDepth);
             const earthMat = new THREE.MeshStandardMaterial({
                 map: this.groundTexture,
                 color: 0xffffff,
@@ -161,7 +165,7 @@ export class RenderSystem {
         }
 
         if (!this.groundSnow) {
-            const snowGeo = new THREE.PlaneGeometry(2000, 1600);
+            const snowGeo = new THREE.PlaneGeometry(realmWidth, realmDepth);
             const snowMat = new THREE.MeshStandardMaterial({
                 map: this.snowTexture,
                 color: 0xffffff,
@@ -181,8 +185,7 @@ export class RenderSystem {
         // Fire Realm ground (West Zone: X -3000 to -1000, Z: -600 to 1000)
         // Uses ground texture with red/orange tint
         if (!this.groundFire) {
-            // Width: 2000 (X axis), Depth: 1600 (Z axis from -600 to 1000)
-            const fireGeo = new THREE.PlaneGeometry(2000, 1600);
+            const fireGeo = new THREE.PlaneGeometry(realmWidth, realmDepth);
             const fireMat = new THREE.MeshStandardMaterial({
                 map: this.groundTexture,
                 color: 0xFF6633, // Orange-red tint for scorched earth
@@ -203,8 +206,7 @@ export class RenderSystem {
         // Air Realm ground (East Zone: X 1000 to 3000, Z: -600 to 1000)
         // Uses ground texture with blue/white tint
         if (!this.groundAir) {
-            // Width: 2000 (X axis), Depth: 1600 (Z axis from -600 to 1000)
-            const airGeo = new THREE.PlaneGeometry(2000, 1600);
+            const airGeo = new THREE.PlaneGeometry(realmWidth, realmDepth);
             const airMat = new THREE.MeshStandardMaterial({
                 map: this.groundTexture,
                 color: 0x99BBCC, // Light blue tint for sky/cloud realm
