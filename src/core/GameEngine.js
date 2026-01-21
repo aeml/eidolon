@@ -62,6 +62,11 @@ import { Stormcallers } from '../entities/Stormcallers.js';
 import { RocMatriarch } from '../entities/RocMatriarch.js';
 import { ThunderlordKaelix } from '../entities/ThunderlordKaelix.js';
 import { Zephyrion } from '../entities/Zephyrion.js';
+import { TiderendLeviathan } from '../entities/TiderendLeviathan.js';
+import { DrownedChoir } from '../entities/DrownedChoir.js';
+import { AbyssalGoliath } from '../entities/AbyssalGoliath.js';
+import { MaelstromWarden } from '../entities/MaelstromWarden.js';
+import { Thalorath } from '../entities/Thalorath.js';
 import { EnvironmentalHazard } from '../entities/EnvironmentalHazard.js';
 import { eidolon as eidolonProto } from '../proto/state_pb.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
@@ -1138,6 +1143,8 @@ export class GameEngine {
             await worldGen.createDungeon(0, 0, 100);
         } else if (type === 'verdant_bastion_catacombs') {
             await worldGen.createVerdantBastionCatacombs(0, 0, layout);
+        } else if (type === 'abyssal_well') {
+            await worldGen.createAbyssalWell(0, 0, layout);
         } else {
             // Returning to overworld - ensure persistent environment meshes are re-added
             // after the scene was cleared.
@@ -2445,6 +2452,12 @@ export class GameEngine {
                 case 'RocMatriarch': p = new RocMatriarch(id); break;
                 case 'ThunderlordKaelix': p = new ThunderlordKaelix(id); break;
                 case 'Zephyrion': p = new Zephyrion(id); break;
+                // Abyssal Well dungeon bosses (Water)
+                case 'TiderendLeviathan': p = new TiderendLeviathan(id); break;
+                case 'DrownedChoir': p = new DrownedChoir(id); break;
+                case 'AbyssalGoliath': p = new AbyssalGoliath(id); break;
+                case 'MaelstromWarden': p = new MaelstromWarden(id); break;
+                case 'Thalorath': p = new Thalorath(id); break;
                 default: p = new Skeleton(id); break;
             }
 

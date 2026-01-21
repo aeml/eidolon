@@ -229,7 +229,7 @@ export class WorldMap {
         ctx.fillText("The Iron Weald (Earth Realm)", earthLabelPos.x, earthLabelPos.y - 100 * this.scale);
 
         // Verdant Bastion Dungeon Marker (X: 800, Z: 200 - in Earth Realm)
-        const verdantBastionPos = worldToScreen(800, 600);
+        const verdantBastionPos = worldToScreen(800, 200);
         ctx.fillStyle = '#00aa00';
         ctx.beginPath();
         ctx.arc(verdantBastionPos.x, verdantBastionPos.y, 8, 0, Math.PI * 2);
@@ -240,6 +240,45 @@ export class WorldMap {
         ctx.fillStyle = '#ffd700';
         ctx.font = `${28 * (this.scale / 2)}px Arial`;
         ctx.fillText("★ Verdant Bastion", verdantBastionPos.x, verdantBastionPos.y - 15 * this.scale);
+
+        // Molten Core Dungeon Marker (X: -2400, Z: 200 - in Fire Realm)
+        const moltenCorePos = worldToScreen(-2400, 200);
+        ctx.fillStyle = '#cc4400';
+        ctx.beginPath();
+        ctx.arc(moltenCorePos.x, moltenCorePos.y, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ffd700';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = '#ffd700';
+        ctx.font = `${28 * (this.scale / 2)}px Arial`;
+        ctx.fillText("★ Molten Core", moltenCorePos.x, moltenCorePos.y - 15 * this.scale);
+
+        // Tempest Spire Dungeon Marker (X: 2400, Z: 200 - in Air Realm)
+        const tempestSpirePos = worldToScreen(2400, 200);
+        ctx.fillStyle = '#3399ff';
+        ctx.beginPath();
+        ctx.arc(tempestSpirePos.x, tempestSpirePos.y, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ffd700';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = '#ffd700';
+        ctx.font = `${28 * (this.scale / 2)}px Arial`;
+        ctx.fillText("★ Tempest Spire", tempestSpirePos.x, tempestSpirePos.y - 15 * this.scale);
+
+        // Abyssal Well Dungeon Marker (X: 0, Z: -1400 - in Water Realm)
+        const abyssalWellPos = worldToScreen(0, -1400);
+        ctx.fillStyle = '#1aa3c8';
+        ctx.beginPath();
+        ctx.arc(abyssalWellPos.x, abyssalWellPos.y, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ffd700';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = '#ffd700';
+        ctx.font = `${28 * (this.scale / 2)}px Arial`;
+        ctx.fillText("★ Abyssal Well", abyssalWellPos.x, abyssalWellPos.y - 15 * this.scale);
 
         // Siren Zone (Lv 60-65) - Moved Deeper
         drawRotatedRect(-1000, -1800, 2000, 400, 'rgba(0, 100, 255, 0.15)', 'rgba(0, 200, 255, 0.5)', 1);

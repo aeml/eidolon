@@ -1537,6 +1537,8 @@ func MinLevelForDifficulty(difficulty DungeonDifficulty, dungeonType string) int
 		baseLevel = 70
 	case "tempest_spire":
 		baseLevel = 70
+	case "abyssal_well":
+		baseLevel = 60
 	default:
 		baseLevel = 1
 	}
@@ -9371,7 +9373,12 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 			// Boss Check
 			isBoss := false
-			bosses := []string{"RootboundWarden", "BriarMatron", "RustboundColossus", "HollowSentinel", "AvengingSeraph"}
+			bosses := []string{
+				"RootboundWarden", "BriarMatron", "RustboundColossus", "HollowSentinel", "AvengingSeraph",
+				"Cindermaw", "ScorchedTwins", "ForgemasterPyrax", "ObsidianGuardian", "LordInfernax",
+				"Windshear", "Stormcallers", "RocMatriarch", "ThunderlordKaelix", "Zephyrion",
+				"TiderendLeviathan", "DrownedChoir", "AbyssalGoliath", "MaelstromWarden", "Thalorath",
+			}
 			for _, b := range bosses {
 				if tSubType == b {
 					isBoss = true
@@ -9385,7 +9392,12 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 			// Dungeon Boss Check
 			isDungeonBoss := false
-			dungeonBosses := []string{"RootboundWarden", "BriarMatron", "RustboundColossus", "HollowSentinel"}
+			dungeonBosses := []string{
+				"RootboundWarden", "BriarMatron", "RustboundColossus", "HollowSentinel",
+				"Cindermaw", "ScorchedTwins", "ForgemasterPyrax", "ObsidianGuardian", "LordInfernax",
+				"Windshear", "Stormcallers", "RocMatriarch", "ThunderlordKaelix", "Zephyrion",
+				"TiderendLeviathan", "DrownedChoir", "AbyssalGoliath", "MaelstromWarden", "Thalorath",
+			}
 			for _, b := range dungeonBosses {
 				if tSubType == b {
 					isDungeonBoss = true
@@ -10277,6 +10289,10 @@ func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty Dun
 		layout := w.generateTempestSpireLayout(instanceID, difficulty)
 		dungeon.Layout = layout
 		w.InstanceLayouts[instanceID] = dungeon
+	} else if dungeonType == "abyssal_well" {
+		layout := w.generateAbyssalWellLayout(instanceID, difficulty)
+		dungeon.Layout = layout
+		w.InstanceLayouts[instanceID] = dungeon
 	} else {
 		// Default Crypt
 		// Generate a simple layout for the crypt too, so we have a start point
@@ -10652,6 +10668,106 @@ func (w *World) generateTempestSpireLayout(instanceID string, difficulty Dungeon
 
 		layout.Rooms = append(layout.Rooms, DungeonRoom{
 			X: currentX, Z: currentZ, Width: bossRoomSize, Height: bossRoomSize, Type: "boss", Color: 0x0a0a2a,
+		})
+
+		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats, difficulty)
+	}
+
+	return layout
+}
+
+// generateAbyssalWellLayout creates the Water Dungeon layout (Level 60-70)
+// Location: X: 0, Z: -1400 (Water Realm center)
+// 5 Bosses: Tiderend Leviathan, Drowned Choir, Abyssal Goliath, Maelstrom Warden, Thalorath
+func (w *World) generateAbyssalWellLayout(instanceID string, difficulty DungeonDifficulty) DungeonLayout {
+	layout := DungeonLayout{
+		Rooms: []DungeonRoom{},
+	}
+
+	// Offset coordinates to avoid overworld overlap (Water dungeon at 50000, 20000)
+	offsetX := 50000.0
+	offsetZ := 20000.0
+
+	// Start Room (Abyssal-themed entrance)
+	layout.Rooms = append(layout.Rooms, DungeonRoom{X: offsetX, Z: offsetZ, Width: 130, Height: 130, Type: "start", Color: 0x0a2a4a})
+
+	// Abyssal Well Bosses (5 bosses)
+	bosses := []struct {
+		Name  string
+		Stats Stats
+	}{
+		// Boss 1: Tiderend Leviathan - Normal: 2,600,000 HP
+		{"TiderendLeviathan", Stats{Strength: 3600, Vitality: 2600000, Dexterity: 240}},
+		// Boss 2: DrownedChoir (Duo Fight) - Combined 3,400,000 HP
+		{"DrownedChoir", Stats{Strength: 3300, Vitality: 3400000, Dexterity: 220}},
+		// Boss 3: AbyssalGoliath - Normal: 3,800,000 HP
+		{"AbyssalGoliath", Stats{Strength: 4200, Vitality: 3800000, Dexterity: 200}},
+		// Boss 4: MaelstromWarden - Normal: 4,500,000 HP
+		{"MaelstromWarden", Stats{Strength: 4700, Vitality: 4500000, Dexterity: 260}},
+		// Boss 5: Thalorath (Final Boss) - Normal: 7,000,000 HP
+		{"Thalorath", Stats{Strength: 5400, Vitality: 7000000, Dexterity: 300}},
+	}
+
+	currentX := offsetX
+	currentZ := offsetZ
+
+	// Water-themed trash mobs for the dungeon
+	waterTrash := []string{"AquaGolem", "Siren", "FrostGuardian"}
+
+	for i, boss := range bosses {
+		// Generate 1-2 intermediate rooms between bosses
+		numIntermediate := 1 + rand.Intn(2)
+		stepZ := -190.0
+		targetZ := currentZ + (stepZ * float64(numIntermediate+1))
+
+		for j := 0; j < numIntermediate; j++ {
+			nextZ := currentZ + stepZ
+			offset := (rand.Float64() * 160) - 80
+			if math.Abs(offset) < 45 {
+				offset = 0
+			}
+			nextX := currentX + offset
+
+			roomType := "normal"
+			if rand.Float64() < 0.35 {
+				roomType = "elite"
+			}
+
+			roomColor := 0x0a3555
+			if roomType == "elite" {
+				roomColor = 0x0f4466
+			}
+
+			layout.Rooms = append(layout.Rooms, DungeonRoom{
+				X: nextX, Z: nextZ, Width: 110, Height: 110, Type: roomType, Color: roomColor,
+			})
+
+			if roomType == "elite" {
+				w.spawnEnemyInInstance("FrostGuardian", nextX, nextZ, instanceID, difficulty)
+			} else {
+				numTrash := 3 + rand.Intn(2)
+				for k := 0; k < numTrash; k++ {
+					ox := (rand.Float64() * 15) - 7.5
+					oz := (rand.Float64() * 15) - 7.5
+					trashType := waterTrash[rand.Intn(len(waterTrash))]
+					w.spawnEnemyInInstance(trashType, nextX+ox, nextZ+oz, instanceID, difficulty)
+				}
+			}
+
+			currentX = nextX
+			currentZ = nextZ
+		}
+
+		currentX = 50000.0 + (currentX-50000.0)*0.5
+		currentZ = targetZ
+
+		bossRoomSize := 140.0
+		if i == len(bosses)-1 {
+			bossRoomSize = 175.0
+		}
+
+		layout.Rooms = append(layout.Rooms, DungeonRoom{
+			X: currentX, Z: currentZ, Width: bossRoomSize, Height: bossRoomSize, Type: "boss", Color: 0x061a2a,
 		})
 
 		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats, difficulty)

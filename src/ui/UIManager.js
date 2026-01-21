@@ -5047,7 +5047,8 @@ export class UIManager {
         const dungeonInfo = {
             verdant_bastion_catacombs: { name: 'Verdant Bastion Catacombs', baseLevel: 30, color: '#4a4' },
             molten_core: { name: 'Molten Core', baseLevel: 70, color: '#f64' },
-            tempest_spire: { name: 'Tempest Spire', baseLevel: 70, color: '#6af' }
+            tempest_spire: { name: 'Tempest Spire', baseLevel: 70, color: '#6af' },
+            abyssal_well: { name: 'Abyssal Well', baseLevel: 60, color: '#4ad' }
         };
 
         const difficultyInfo = {
