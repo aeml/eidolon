@@ -194,8 +194,7 @@ npm install
 npm test
 
 # Server tests
-cd server
-go test ./...
+go test ./server/...
 ```
 
 ## 📄 License
