@@ -27,6 +27,7 @@ import { FrostGuardian } from '../entities/FrostGuardian.js';
 import { Fence } from '../entities/Fence.js';
 import { QuestNPC } from '../entities/QuestNPC.js';
 import { RespecNPC } from '../entities/RespecNPC.js';
+import { DungeonNPC } from '../entities/DungeonNPC.js';
 import { Stash } from '../entities/Stash.js';
 import { Forge } from '../entities/Forge.js';
 import { RootboundWarden } from '../entities/RootboundWarden.js';
@@ -2354,6 +2355,27 @@ export class GameEngine {
         return true;
     }
 
+    isInteractableEntity(entity) {
+        if (!entity) return false;
+        if (entity.name === 'DungeonEntrance') return true;
+        return entity instanceof DwarfSalesman
+            || entity instanceof QuestNPC
+            || entity instanceof RespecNPC
+            || entity instanceof DungeonNPC
+            || entity instanceof Stash
+            || entity instanceof Forge
+            || entity instanceof TradingHouse;
+    }
+
+    requestDungeonStatus(dungeonType = null) {
+        if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
+        const payload = dungeonType ? { dungeonType } : {};
+        this.socket.send(JSON.stringify({
+            type: 'get_dungeon_status',
+            payload
+        }));
+    }
+
     sendEquipMessage(item, targetSlot) {
         if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
         const msg = {
@@ -2404,6 +2426,8 @@ export class GameEngine {
                 p = new DwarfSalesman(id);
             } else if (subType === 'QuestNPC') {
                 p = new QuestNPC(id);
+            } else if (subType === 'DungeonNPC') {
+                p = new DungeonNPC(id);
             } else if (subType === 'RespecNPC') {
                 p = new RespecNPC(id);
             } else if (subType === 'AvengingSeraph') {
@@ -2588,9 +2612,14 @@ export class GameEngine {
             .map(e => e.mesh);
         
         // Add Dungeon Entrance to raycast list
-        const dungeonEntrance = this.renderSystem.scene.getObjectByName('DungeonEntrance');
-        if (dungeonEntrance) {
-            meshes.push(dungeonEntrance);
+        const dungeonEntrances = [];
+        this.renderSystem.scene.traverse(obj => {
+            if (obj.name === 'DungeonEntrance') {
+                dungeonEntrances.push(obj);
+            }
+        });
+        if (dungeonEntrances.length > 0) {
+            meshes.push(...dungeonEntrances);
         }
 
         // Use inputManager.mouse directly to ensure we use the latest cursor position
@@ -3275,7 +3304,6 @@ export class GameEngine {
             }
 
             if (!this.isMobile && this.inputManager.isMouseDown && !this.uiManager.isEscMenuOpen && !this.uiManager.isShopOpen) {
-                
                 if (this.inputManager.keys.control) {
                     this.player.targetPosition = null;
                     this.pendingInteraction = null;
@@ -3344,13 +3372,9 @@ export class GameEngine {
                             });
                         }, 500);
                     }
-                } 
-                else if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
-                    if (this.hoveredEntity instanceof DwarfSalesman) {
-                        this.player.move(this.hoveredEntity.position);
-                        return;
-                    }
-
+                } else if (this.isInteractableEntity(this.hoveredEntity)) {
+                    this.moveToAndInteract(this.hoveredEntity);
+                } else if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
                     const dist = this.player.position.distanceTo(this.hoveredEntity.position);
                     const range = (this.player instanceof Wizard || this.player instanceof Rogue) ? 16.0 : 4.0;
 
@@ -3373,12 +3397,10 @@ export class GameEngine {
                     } else {
                         this.player.move(this.hoveredEntity.position);
                     }
-                }
-                else {
+                } else {
                     if (!this.hoveredEntity || this.hoveredEntity === this.player) {
                         const point = this.inputManager.getGroundIntersection();
                         if (point) {
-                            
                             if (!this.pendingInteraction) {
                                 this.player.move(point);
                             }
@@ -3494,13 +3516,18 @@ export class GameEngine {
                             this.player.state = 'IDLE';
                             this.player.playAnimation('Idle');
                             
-                            // Request Dungeon Status
-                            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                                this.socket.send(JSON.stringify({
-                                    type: 'get_dungeon_status',
-                                    payload: {}
-                                }));
-                            }
+                            const dungeonType = this.pendingInteraction.userData
+                                ? this.pendingInteraction.userData.dungeonType
+                                : null;
+                            this.requestDungeonStatus(dungeonType);
+                            this.pendingInteraction = null;
+
+                        } else if (this.pendingInteraction instanceof DungeonNPC) {
+                            this.player.targetPosition = null;
+                            this.player.state = 'IDLE';
+                            this.player.playAnimation('Idle');
+
+                            this.requestDungeonStatus();
                             this.pendingInteraction = null;
 
                         } else if (this.pendingInteraction instanceof DwarfSalesman) {

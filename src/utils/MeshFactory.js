@@ -1580,6 +1580,9 @@ export class MeshFactory {
                 mesh = new THREE.Mesh(geometry, material);
                 return mesh;
             }
+        } else if (type === 'DungeonNPC') {
+            // DungeonNPC uses the same quest_man model as QuestNPC
+            return await this.loadQuestManModel('DungeonNPC');
         } else if (type === 'RespecNPC') {
             // RespecNPC uses the same quest_man model as QuestNPC
             return await this.loadQuestManModel('RespecNPC');

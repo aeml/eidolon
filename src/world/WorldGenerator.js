@@ -409,6 +409,7 @@ export class WorldGenerator {
             
             // Store radius for interaction range
             mesh.userData.interactionRadius = radius;
+            mesh.userData.dungeonType = 'verdant_bastion_catacombs';
 
             console.log(`Bastion Size: ${size.x}x${size.z}, Radius: ${radius}`);
             this.collisionManager.addCircularCollider(800, 200, radius);
@@ -443,6 +444,7 @@ export class WorldGenerator {
             collisionBox.getSize(size);
             const radius = (Math.min(size.x, size.z) / 2) * 0.9;
             mesh.userData.interactionRadius = radius;
+            mesh.userData.dungeonType = 'molten_core';
 
             this.collisionManager.addCircularCollider(-2400, 200, radius);
             console.log(`Loaded The Molten Core at -2400, 200 with radius ${radius}`);
@@ -473,6 +475,7 @@ export class WorldGenerator {
             collisionBox.getSize(size);
             const radius = (Math.min(size.x, size.z) / 2) * 0.9;
             mesh.userData.interactionRadius = radius;
+            mesh.userData.dungeonType = 'tempest_spire';
 
             this.collisionManager.addCircularCollider(2400, 200, radius);
             console.log(`Loaded The Tempest Spire at 2400, 200 with radius ${radius}`);
@@ -503,6 +506,7 @@ export class WorldGenerator {
             collisionBox.getSize(size);
             const radius = (Math.min(size.x, size.z) / 2) * 0.9;
             mesh.userData.interactionRadius = radius;
+            mesh.userData.dungeonType = 'abyssal_well';
 
             this.collisionManager.addCircularCollider(0, -1400, radius);
             console.log(`Loaded The Abyssal Well at 0, -1400 with radius ${radius}`);
