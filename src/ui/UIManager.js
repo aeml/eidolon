@@ -3436,6 +3436,29 @@ export class UIManager {
         });
     }
 
+    formatQuestTarget(target, maxCount) {
+        const targetMap = {
+            DungeonBoss: 'Dungeon Boss',
+            DungeonBossNormal: 'Dungeon Boss (Normal)',
+            DungeonBossHeroic: 'Dungeon Boss (Heroic)',
+            DungeonBossMythic: 'Dungeon Boss (Mythic)',
+            VerdantBastionBoss: 'Verdant Bastion Boss',
+            MoltenCoreBoss: 'Molten Core Boss',
+            TempestSpireBoss: 'Tempest Spire Boss',
+            AbyssalWellBoss: 'Abyssal Well Boss'
+        };
+
+        const label = targetMap[target] || target;
+        if (maxCount === 1) return label;
+
+        if (label.includes('Boss')) {
+            return label.replace('Boss', 'Bosses');
+        }
+
+        if (label.endsWith('s')) return label;
+        return `${label}s`;
+    }
+
     updateQuestWindow(quests) {
         this.questList.innerHTML = '';
         if (!quests) return;
@@ -3469,15 +3492,16 @@ export class UIManager {
 
             let btnHtml = '';
             let statusText = '';
+            const targetLabel = this.formatQuestTarget(q.target, q.maxCount);
 
             if (!q.accepted) {
-                statusText = `<div style="color: #ffd700; font-weight: bold;">Daily: Kill ${q.maxCount} ${q.target}s</div>`;
+                statusText = `<div style="color: #ffd700; font-weight: bold;">Daily: Kill ${q.maxCount} ${targetLabel}</div>`;
                 btnHtml = `<button class="menu-btn" style="margin-top: 5px; background: #4CAF50; border-color: #45a049;">Accept Quest</button>`;
             } else if (q.accepted && !q.completed && q.count >= q.maxCount) {
                 // Ready to turn in (Client side check, server sets completed on turn in)
                 // Wait, server sets Completed=true ONLY when PerformCompleteQuest is called.
                 // So here q.completed is false, but count >= maxCount.
-                statusText = `<div style="color: #4CAF50; font-weight: bold;">COMPLETE: Kill ${q.maxCount} ${q.target}s</div>`;
+                statusText = `<div style="color: #4CAF50; font-weight: bold;">COMPLETE: Kill ${q.maxCount} ${targetLabel}</div>`;
                 btnHtml = `<button class="menu-btn" style="margin-top: 5px; background: #FFD700; color: #000; border-color: #FFA000;">Claim Reward</button>`;
             } else {
                 return; // Should be covered by top check
@@ -3538,10 +3562,11 @@ export class UIManager {
             const pct = Math.min(100, (q.count / q.maxCount) * 100);
             const color = q.completed ? '#4CAF50' : '#ffd700';
             const status = q.completed ? 'COMPLETED' : 'IN PROGRESS';
+            const targetLabel = this.formatQuestTarget(q.target, q.maxCount);
 
             div.innerHTML = `
                 <div style="display: flex; justify-content: space-between;">
-                    <span style="color: #fff; font-weight: bold;">Kill ${q.target}s</span>
+                    <span style="color: #fff; font-weight: bold;">Kill ${targetLabel}</span>
                     <span style="color: ${color}; font-size: 12px;">${status}</span>
                 </div>
                 <div style="background: #111; height: 10px; border: 1px solid #444; position: relative;">
@@ -5051,6 +5076,14 @@ export class UIManager {
             abyssal_well: { name: 'Abyssal Well', baseLevel: 60, color: '#4ad' }
         };
 
+        const lockedDungeonType = data && data.dungeonType && dungeonInfo[data.dungeonType]
+            ? data.dungeonType
+            : null;
+
+        if (lockedDungeonType) {
+            title.innerText = dungeonInfo[lockedDungeonType].name;
+        }
+
         const difficultyInfo = {
             normal: { name: 'Normal', color: '#aaa', hp: '1x', dmg: '1x', loot: '1x', levelAdd: 0 },
             heroic: { name: 'Heroic', color: '#ff0', hp: '2x', dmg: '1.5x', loot: '2x', levelAdd: 20 },
@@ -5059,7 +5092,7 @@ export class UIManager {
 
         // Dungeon Type Label
         const dungeonLabel = document.createElement('label');
-        dungeonLabel.innerText = 'Select Dungeon:';
+        dungeonLabel.innerText = lockedDungeonType ? 'Dungeon:' : 'Select Dungeon:';
         dungeonLabel.style.display = 'block';
         dungeonLabel.style.marginTop = '15px';
         dungeonLabel.style.fontWeight = 'bold';
@@ -5077,12 +5110,22 @@ export class UIManager {
         dungeonSelect.style.cursor = 'pointer';
         dungeonSelect.style.width = '250px';
 
-        for (const [key, info] of Object.entries(dungeonInfo)) {
+        const availableDungeons = lockedDungeonType
+            ? { [lockedDungeonType]: dungeonInfo[lockedDungeonType] }
+            : dungeonInfo;
+
+        for (const [key, info] of Object.entries(availableDungeons)) {
             const option = document.createElement('option');
             option.value = key;
             option.innerText = `${info.name} (Lv ${info.baseLevel}+)`;
             option.style.color = info.color;
             dungeonSelect.appendChild(option);
+        }
+        if (lockedDungeonType) {
+            dungeonSelect.value = lockedDungeonType;
+            dungeonSelect.disabled = true;
+            dungeonSelect.style.cursor = 'default';
+            dungeonSelect.style.opacity = '0.8';
         }
         menu.appendChild(dungeonSelect);
 

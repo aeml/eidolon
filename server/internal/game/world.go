@@ -1672,6 +1672,7 @@ func (w *World) initWorld() {
 	w.spawnMerchant()
 	w.spawnQuestNPC()
 	w.spawnRespecNPC()
+	w.spawnDungeonNPC()
 	w.spawnStash()
 	w.spawnForge()
 	w.spawnTradingHouse()
@@ -2578,6 +2579,21 @@ func (w *World) spawnQuestNPC() {
 		Y:        0.5,         // Slightly above ground
 		Z:        200,         // Center Z
 		Rotation: math.Pi / 2, // Face East (towards center)
+		State:    "IDLE",
+		Scale:    1.0,
+	}
+	w.AddEntity(npc)
+}
+
+func (w *World) spawnDungeonNPC() {
+	npc := &Entity{
+		ID:       "dungeon-npc-1",
+		Type:     TypeNPC,
+		SubType:  "DungeonNPC",
+		X:        0,
+		Y:        0.5,
+		Z:        240,
+		Rotation: math.Pi,
 		State:    "IDLE",
 		Scale:    1.0,
 	}
@@ -3771,6 +3787,14 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 	if y == ly && m == lm && d == ld && len(player.Quests) > 0 {
 		// Hotfix: Update rewards if they don't match the current values
 		updated := false
+		hasQuestID := func(id string) bool {
+			for _, q := range player.Quests {
+				if q.ID == id {
+					return true
+				}
+			}
+			return false
+		}
 		for i := range player.Quests {
 			q := &player.Quests[i]
 			var expectedXP int
@@ -3793,6 +3817,40 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 				expectedXP = 2200000
 			case "FrostGuardian":
 				expectedXP = 3000000
+			case "SandstormDjinn":
+				expectedXP = 4000000
+			case "MagmaGolem":
+				expectedXP = 5000000
+			case "ScorchedWraith":
+				expectedXP = 6500000
+			case "InfernalBehemoth":
+				expectedXP = 8000000
+			case "PhoenixSentinel":
+				expectedXP = 10000000
+			case "StormHarpy":
+				expectedXP = 4000000
+			case "CloudElemental":
+				expectedXP = 5000000
+			case "ThunderRoc":
+				expectedXP = 6500000
+			case "TempestGiant":
+				expectedXP = 8000000
+			case "CycloneAvatar":
+				expectedXP = 10000000
+			case "VerdantBastionBoss":
+				expectedXP = 3000000
+			case "AbyssalWellBoss":
+				expectedXP = 6000000
+			case "MoltenCoreBoss":
+				expectedXP = 9000000
+			case "TempestSpireBoss":
+				expectedXP = 9000000
+			case "DungeonBoss":
+				expectedXP = 5000000
+			case "DungeonBossHeroic":
+				expectedXP = 10000000
+			case "DungeonBossMythic":
+				expectedXP = 15000000
 			}
 			if expectedXP > 0 && q.RewardXP != expectedXP {
 				q.RewardXP = expectedXP
@@ -3831,6 +3889,22 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 		if !hasDungeonBosses {
 			player.Quests = append(player.Quests, Quest{ID: "daily_dungeon_bosses", Type: "KILL", Target: "DungeonBoss", Count: 0, MaxCount: 4, RewardXP: 5000000, Completed: false, Accepted: false})
 			updated = true
+		}
+
+		additionalQuests := []Quest{
+			{ID: "daily_verdant_bastion_bosses", Type: "KILL", Target: "VerdantBastionBoss", Count: 0, MaxCount: 4, RewardXP: 3000000, Completed: false, Accepted: false},
+			{ID: "daily_abyssal_well_bosses", Type: "KILL", Target: "AbyssalWellBoss", Count: 0, MaxCount: 5, RewardXP: 6000000, Completed: false, Accepted: false},
+			{ID: "daily_molten_core_bosses", Type: "KILL", Target: "MoltenCoreBoss", Count: 0, MaxCount: 5, RewardXP: 9000000, Completed: false, Accepted: false},
+			{ID: "daily_tempest_spire_bosses", Type: "KILL", Target: "TempestSpireBoss", Count: 0, MaxCount: 5, RewardXP: 9000000, Completed: false, Accepted: false},
+			{ID: "daily_dungeon_bosses_heroic", Type: "KILL", Target: "DungeonBossHeroic", Count: 0, MaxCount: 4, RewardXP: 10000000, Completed: false, Accepted: false},
+			{ID: "daily_dungeon_bosses_mythic", Type: "KILL", Target: "DungeonBossMythic", Count: 0, MaxCount: 4, RewardXP: 15000000, Completed: false, Accepted: false},
+		}
+
+		for _, quest := range additionalQuests {
+			if !hasQuestID(quest.ID) {
+				player.Quests = append(player.Quests, quest)
+				updated = true
+			}
 		}
 
 		// Sort quests by RewardXP to ensure they are in order of difficulty
@@ -3873,6 +3947,12 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 		{ID: "daily_cycloneavatar", Type: "KILL", Target: "CycloneAvatar", Count: 0, MaxCount: 100, RewardXP: 10000000, Completed: false, Accepted: false},
 		// Dungeon Bosses
 		{ID: "daily_dungeon_bosses", Type: "KILL", Target: "DungeonBoss", Count: 0, MaxCount: 4, RewardXP: 5000000, Completed: false, Accepted: false},
+		{ID: "daily_verdant_bastion_bosses", Type: "KILL", Target: "VerdantBastionBoss", Count: 0, MaxCount: 4, RewardXP: 3000000, Completed: false, Accepted: false},
+		{ID: "daily_abyssal_well_bosses", Type: "KILL", Target: "AbyssalWellBoss", Count: 0, MaxCount: 5, RewardXP: 6000000, Completed: false, Accepted: false},
+		{ID: "daily_molten_core_bosses", Type: "KILL", Target: "MoltenCoreBoss", Count: 0, MaxCount: 5, RewardXP: 9000000, Completed: false, Accepted: false},
+		{ID: "daily_tempest_spire_bosses", Type: "KILL", Target: "TempestSpireBoss", Count: 0, MaxCount: 5, RewardXP: 9000000, Completed: false, Accepted: false},
+		{ID: "daily_dungeon_bosses_heroic", Type: "KILL", Target: "DungeonBossHeroic", Count: 0, MaxCount: 4, RewardXP: 10000000, Completed: false, Accepted: false},
+		{ID: "daily_dungeon_bosses_mythic", Type: "KILL", Target: "DungeonBossMythic", Count: 0, MaxCount: 4, RewardXP: 15000000, Completed: false, Accepted: false},
 	}
 	player.LastDailyQuest = now
 
@@ -9309,7 +9389,9 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 		go func() {
 			// Get difficulty multipliers for dungeon enemies
-			_, _, lootMult, xpMult := DifficultyMultipliers(w.GetInstanceDifficulty(tInstanceID))
+			instanceDifficulty := w.GetInstanceDifficulty(tInstanceID)
+			instanceType := w.GetInstanceType(tInstanceID)
+			_, _, lootMult, xpMult := DifficultyMultipliers(instanceDifficulty)
 
 			// XP - Base XP scales with level
 			baseXpReward := tLevel*10 + 10
@@ -9451,6 +9533,22 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					w.UpdateQuestProgress(member, tSubType)
 					if isDungeonBoss {
 						w.UpdateQuestProgress(member, "DungeonBoss")
+						if instanceDifficulty == DifficultyHeroic {
+							w.UpdateQuestProgress(member, "DungeonBossHeroic")
+						} else if instanceDifficulty == DifficultyMythic {
+							w.UpdateQuestProgress(member, "DungeonBossMythic")
+						}
+
+						switch instanceType {
+						case "verdant_bastion_catacombs":
+							w.UpdateQuestProgress(member, "VerdantBastionBoss")
+						case "molten_core":
+							w.UpdateQuestProgress(member, "MoltenCoreBoss")
+						case "tempest_spire":
+							w.UpdateQuestProgress(member, "TempestSpireBoss")
+						case "abyssal_well":
+							w.UpdateQuestProgress(member, "AbyssalWellBoss")
+						}
 					}
 
 					// Level Up Logic
@@ -9521,6 +9619,22 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				w.UpdateQuestProgress(attacker, tSubType)
 				if isDungeonBoss {
 					w.UpdateQuestProgress(attacker, "DungeonBoss")
+					if instanceDifficulty == DifficultyHeroic {
+						w.UpdateQuestProgress(attacker, "DungeonBossHeroic")
+					} else if instanceDifficulty == DifficultyMythic {
+						w.UpdateQuestProgress(attacker, "DungeonBossMythic")
+					}
+
+					switch instanceType {
+					case "verdant_bastion_catacombs":
+						w.UpdateQuestProgress(attacker, "VerdantBastionBoss")
+					case "molten_core":
+						w.UpdateQuestProgress(attacker, "MoltenCoreBoss")
+					case "tempest_spire":
+						w.UpdateQuestProgress(attacker, "TempestSpireBoss")
+					case "abyssal_well":
+						w.UpdateQuestProgress(attacker, "AbyssalWellBoss")
+					}
 				}
 
 				for attacker.Experience >= attacker.MaxExperience {
@@ -10365,6 +10479,17 @@ func (w *World) GetInstanceDifficulty(instanceID string) DungeonDifficulty {
 		return DifficultyNormal
 	}
 	return inst.Difficulty
+}
+
+// GetInstanceType returns the dungeon type of an instance
+func (w *World) GetInstanceType(instanceID string) string {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+	inst, ok := w.InstanceLayouts[instanceID]
+	if !ok {
+		return ""
+	}
+	return inst.DungeonType
 }
 
 func (w *World) generateVerdantBastionLayout(instanceID string, difficulty DungeonDifficulty) DungeonLayout {

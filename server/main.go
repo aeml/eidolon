@@ -1638,6 +1638,13 @@ func (c *Client) handleMessage(msg Message) {
 		if c.playerID == "" {
 			return
 		}
+
+		var statusReq struct {
+			DungeonType string `json:"dungeonType"`
+		}
+		if len(msg.Payload) > 0 {
+			_ = json.Unmarshal(msg.Payload, &statusReq)
+		}
 		player := world.GetEntityCopy(c.playerID)
 		if player == nil {
 			return
@@ -1683,6 +1690,9 @@ func (c *Client) handleMessage(msg Message) {
 			"hasInstance": hasInstance,
 			"timeLeft":    timeLeft,
 			"isLeader":    isLeader,
+		}
+		if statusReq.DungeonType != "" {
+			resp["dungeonType"] = statusReq.DungeonType
 		}
 		payloadBytes, _ := json.Marshal(resp)
 		log.Printf("Sending Dungeon Menu to %s: %+v", c.username, resp)
