@@ -128,7 +128,10 @@ export class MeshFactory {
             './assets/buildings/trading_post.glb',
             './assets/buildings/blacksmith.glb',
             './assets/buildings/camp_site.glb',
-            './assets/buildings/dungeons/the_verdant_bastion.glb'
+            './assets/buildings/dungeons/the_verdant_bastion.glb',
+            './assets/buildings/dungeons/the_molten_core.glb',
+            './assets/buildings/dungeons/the_tempest_spire.glb',
+            './assets/buildings/dungeons/the_abyssal_well.glb'
         ];
     }
 
@@ -1787,6 +1790,26 @@ export class MeshFactory {
         } else if (type === 'Zephyrion') {
             // Zephyrion, the Eternal Gale - Final Boss (7.5M HP)
             return await this.loadSkeletonWithTint(0x00CED1, 6.5, 0x00FFFF, 0.6);
+        }
+        // ========================================================================
+        // ABYSSAL WELL DUNGEON BOSSES (Water Dungeon)
+        // Using skeleton model with water-themed color tints as placeholders
+        // ========================================================================
+        else if (type === 'TiderendLeviathan') {
+            // Tiderend Leviathan - Boss 1 - Deep sea serpent (2.6M HP)
+            return await this.loadSkeletonWithTint(0x0aa0b8, 4.0, 0x3de7ff, 0.4);
+        } else if (type === 'DrownedChoir') {
+            // Drowned Choir - Boss 2 - Duo fight (3.4M HP total)
+            return await this.loadSkeletonWithTint(0x1e6f9f, 3.6, 0x6fd8ff, 0.3);
+        } else if (type === 'AbyssalGoliath') {
+            // Abyssal Goliath - Boss 3 - Crustacean titan (3.8M HP)
+            return await this.loadSkeletonWithTint(0x0d3d5c, 4.6, 0x2bb4cc, 0.2);
+        } else if (type === 'MaelstromWarden') {
+            // Maelstrom Warden - Boss 4 - Tidal guardian (4.5M HP)
+            return await this.loadSkeletonWithTint(0x0a3a6b, 5.2, 0x4dd2ff, 0.4);
+        } else if (type === 'Thalorath') {
+            // Thalorath - Final Boss - Ocean deity (7M HP)
+            return await this.loadSkeletonWithTint(0x003b6f, 6.2, 0x4ef2ff, 0.5);
         }
 
         switch (type) {

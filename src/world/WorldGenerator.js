@@ -417,6 +417,96 @@ export class WorldGenerator {
             
             console.log("Loaded The Verdant Bastion at 800, 200");
         }
+
+        // The Molten Core (Level 80-90 Dungeon)
+        // Location: X=-2400, Z=200 (Fire Realm)
+        const moltenGltf = await MeshFactory.loadModel('./assets/buildings/dungeons/the_molten_core.glb');
+        {
+            const mesh = moltenGltf.scene.clone();
+            mesh.name = 'DungeonEntrance';
+            const scale = 40;
+            mesh.scale.set(scale, scale, scale);
+            mesh.position.set(-2400, 0, 200);
+
+            mesh.updateMatrixWorld(true);
+            const box = new THREE.Box3().setFromObject(mesh);
+            const bottomY = box.min.y;
+            mesh.position.y += (0 - bottomY);
+
+            mesh.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+            this.scene.add(mesh);
+
+            mesh.updateMatrixWorld(true);
+
+            const collisionBox = new THREE.Box3().setFromObject(mesh);
+            const size = new THREE.Vector3();
+            collisionBox.getSize(size);
+            const radius = (Math.min(size.x, size.z) / 2) * 0.9;
+            mesh.userData.interactionRadius = radius;
+
+            this.collisionManager.addCircularCollider(-2400, 200, radius);
+            console.log(`Loaded The Molten Core at -2400, 200 with radius ${radius}`);
+        }
+
+        // The Tempest Spire (Level 80-90 Dungeon)
+        // Location: X=2400, Z=200 (Air Realm)
+        const tempestGltf = await MeshFactory.loadModel('./assets/buildings/dungeons/the_tempest_spire.glb');
+        {
+            const mesh = tempestGltf.scene.clone();
+            mesh.name = 'DungeonEntrance';
+            const scale = 40;
+            mesh.scale.set(scale, scale, scale);
+            mesh.position.set(2400, 0, 200);
+
+            mesh.updateMatrixWorld(true);
+            const box = new THREE.Box3().setFromObject(mesh);
+            const bottomY = box.min.y;
+            mesh.position.y += (0 - bottomY);
+
+            mesh.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+            this.scene.add(mesh);
+
+            mesh.updateMatrixWorld(true);
+
+            const collisionBox = new THREE.Box3().setFromObject(mesh);
+            const size = new THREE.Vector3();
+            collisionBox.getSize(size);
+            const radius = (Math.min(size.x, size.z) / 2) * 0.9;
+            mesh.userData.interactionRadius = radius;
+
+            this.collisionManager.addCircularCollider(2400, 200, radius);
+            console.log(`Loaded The Tempest Spire at 2400, 200 with radius ${radius}`);
+        }
+
+        // The Abyssal Well (Level 60-70 Dungeon)
+        // Location: X=0, Z=-1400 (Water Realm center)
+        const abyssalGltf = await MeshFactory.loadModel('./assets/buildings/dungeons/the_abyssal_well.glb');
+        {
+            const mesh = abyssalGltf.scene.clone();
+            mesh.name = 'DungeonEntrance';
+            const scale = 40;
+            mesh.scale.set(scale, scale, scale);
+            mesh.position.set(0, 0, -1400);
+
+            mesh.updateMatrixWorld(true);
+            const box = new THREE.Box3().setFromObject(mesh);
+            const bottomY = box.min.y;
+            mesh.position.y += (0 - bottomY);
+
+            mesh.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+            this.scene.add(mesh);
+
+            mesh.updateMatrixWorld(true);
+
+            const collisionBox = new THREE.Box3().setFromObject(mesh);
+            const size = new THREE.Vector3();
+            collisionBox.getSize(size);
+            const radius = (Math.min(size.x, size.z) / 2) * 0.9;
+            mesh.userData.interactionRadius = radius;
+
+            this.collisionManager.addCircularCollider(0, -1400, radius);
+            console.log(`Loaded The Abyssal Well at 0, -1400 with radius ${radius}`);
+        }
     }
 
     async createVerdantBastionCatacombs(centerX, centerZ, layout) {
@@ -544,10 +634,10 @@ export class WorldGenerator {
                     }
                 }
                 
-                prevRoom = room;
-            });
-            return;
-        }
+            prevRoom = room;
+        });
+        return;
+    }
 
         const roomSize = 80;
         const corridorWidth = 20;
@@ -582,6 +672,117 @@ export class WorldGenerator {
             
             prevX = x;
             prevZ = z;
+        }
+    }
+
+    async createAbyssalWell(centerX, centerZ, layout) {
+        console.log(`Generating Abyssal Well at ${centerX},${centerZ}`);
+
+        await this.preloadTextures();
+
+        if (layout && layout.rooms && layout.rooms.length > 0) {
+            let prevRoom = null;
+
+            layout.rooms.forEach((room, index) => {
+                const nextRoom = layout.rooms[index + 1];
+
+                // Determine openings based on neighbors
+                const openings = {};
+                const checkOpening = (target) => {
+                    if (!target) return;
+                    const dx = target.x - room.x;
+                    const dz = target.z - room.z;
+
+                    if (Math.abs(dz) > Math.abs(dx)) {
+                        if (dz < 0) openings.north = true;
+                        else openings.south = true;
+                    } else {
+                        if (dx > 0) openings.east = true;
+                        else openings.west = true;
+                    }
+                };
+
+                checkOpening(prevRoom);
+                checkOpening(nextRoom);
+
+                this.createRoom(room.x, room.z, room.width, room.color, openings);
+
+                // Corridor to previous (Manhattan Routing)
+                if (prevRoom) {
+                    const corridorWidth = 40;
+                    const halfWidth = corridorWidth / 2;
+
+                    const dx = room.x - prevRoom.x;
+                    const dz = room.z - prevRoom.z;
+
+                    const prevSize = prevRoom.width;
+                    const currentSize = room.width;
+
+                    if (Math.abs(dz) > Math.abs(dx)) {
+                        if (Math.abs(dx) < corridorWidth) {
+                            this.createCorridor(prevRoom.x, prevRoom.z, room.x, room.z, corridorWidth, prevSize / 2, currentSize / 2);
+                        } else {
+                            const midZ = (prevRoom.z + room.z) / 2;
+
+                            this.createCorridor(prevRoom.x, prevRoom.z, prevRoom.x, midZ, corridorWidth, prevSize / 2, halfWidth);
+
+                            const c1Openings = {};
+                            if (prevRoom.z < midZ) c1Openings.north = true;
+                            else c1Openings.south = true;
+
+                            if (room.x > prevRoom.x) c1Openings.east = true;
+                            else c1Openings.west = true;
+
+                            this.createCorner(prevRoom.x, midZ, corridorWidth, c1Openings);
+
+                            this.createCorridor(prevRoom.x, midZ, room.x, midZ, corridorWidth, halfWidth, halfWidth);
+
+                            const c2Openings = {};
+                            if (prevRoom.x < room.x) c2Openings.west = true;
+                            else c2Openings.east = true;
+
+                            if (room.z < midZ) c2Openings.north = true;
+                            else c2Openings.south = true;
+
+                            this.createCorner(room.x, midZ, corridorWidth, c2Openings);
+
+                            this.createCorridor(room.x, midZ, room.x, room.z, corridorWidth, halfWidth, currentSize / 2);
+                        }
+                    } else {
+                        if (Math.abs(dz) < corridorWidth) {
+                            this.createCorridor(prevRoom.x, prevRoom.z, room.x, room.z, corridorWidth, prevSize / 2, currentSize / 2);
+                        } else {
+                            const midX = (prevRoom.x + room.x) / 2;
+
+                            this.createCorridor(prevRoom.x, prevRoom.z, midX, prevRoom.z, corridorWidth, prevSize / 2, halfWidth);
+
+                            const c1Openings = {};
+                            if (prevRoom.x < midX) c1Openings.west = true;
+                            else c1Openings.east = true;
+
+                            if (room.z > prevRoom.z) c1Openings.south = true;
+                            else c1Openings.north = true;
+
+                            this.createCorner(midX, prevRoom.z, corridorWidth, c1Openings);
+
+                            this.createCorridor(midX, prevRoom.z, midX, room.z, corridorWidth, halfWidth, halfWidth);
+
+                            const c2Openings = {};
+                            if (prevRoom.z < room.z) c2Openings.north = true;
+                            else c2Openings.south = true;
+
+                            if (room.x > midX) c2Openings.east = true;
+                            else c2Openings.west = true;
+
+                            this.createCorner(midX, room.z, corridorWidth, c2Openings);
+
+                            this.createCorridor(midX, room.z, room.x, room.z, corridorWidth, halfWidth, currentSize / 2);
+                        }
+                    }
+                }
+
+                prevRoom = room;
+            });
         }
     }
 
