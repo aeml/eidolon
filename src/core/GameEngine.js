@@ -71,6 +71,7 @@ import { Thalorath } from '../entities/Thalorath.js';
 import { EnvironmentalHazard } from '../entities/EnvironmentalHazard.js';
 import { eidolon as eidolonProto } from '../proto/state_pb.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
+import { createTransientEffect } from './TransientEffects.js';
 
 export class GameEngine {
     constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null) {
@@ -90,6 +91,10 @@ export class GameEngine {
         this.chunkManager = new ChunkManager(this.renderSystem.scene);
         this.collisionManager = new CollisionManager();
         this.uiManager = new UIManager(this.isMobile);
+        this.uiManager.onGraphicsQualityChange = (quality) => {
+            return this.renderSystem.setGraphicsQuality(quality);
+        };
+        this.renderSystem.setGraphicsQuality(this.uiManager.getGraphicsQuality());
         this.effects = []; // Active visual effects
         this.hazards = new Map(); // Environmental hazards (id -> EnvironmentalHazard)
         this.currentInstanceId = null; // Track current instance to prevent state desync
@@ -417,6 +422,18 @@ export class GameEngine {
 
     get scene() {
         return this.renderSystem.scene;
+    }
+
+    spawnTransientEffect(type, position, color, options = {}) {
+        const mergedOptions = {
+            quality: this.uiManager ? this.uiManager.getGraphicsQuality() : 'high',
+            effectScale: this.renderSystem.getEffectQualityScale(),
+            ...options
+        };
+        const effect = createTransientEffect(this.renderSystem.scene, type, position, color, mergedOptions);
+        if (!effect) return false;
+        this.effects.push(effect);
+        return true;
     }
 
     async loadGame(onProgress) {
@@ -3767,13 +3784,9 @@ export class GameEngine {
             }
         }
         
-        // Update Ground Texture based on position
+        // Update realm lighting based on player position
         if (this.player) {
-            if (this.player.position.z < -600) {
-                this.renderSystem.setGroundTexture('snow');
-            } else {
-                this.renderSystem.setGroundTexture('ground');
-            }
+            this.renderSystem.updateEnvironmentLighting(this.player.position, dt);
         }
 
         this.floatingTextManager.update(dt);

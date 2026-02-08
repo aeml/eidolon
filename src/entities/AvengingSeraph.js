@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import { Actor } from './Actor.js';
 
 export class AvengingSeraph extends Actor {
@@ -12,19 +11,10 @@ export class AvengingSeraph extends Actor {
 
     spawnVisualEffect(gameEngine, position, color, type) {
         if (!gameEngine || !gameEngine.scene) return;
-        
-        if (type === "impact") {
-            const geometry = new THREE.SphereGeometry(0.5, 8, 8);
-            const material = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.8 });
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.copy(position);
-            gameEngine.scene.add(mesh);
-            
-            setTimeout(() => {
-                gameEngine.scene.remove(mesh);
-                geometry.dispose();
-                material.dispose();
-            }, 200);
+        if (typeof gameEngine.spawnTransientEffect === 'function' && gameEngine.spawnTransientEffect(type, position, color, { source: this })) {
+            return;
         }
+
+        gameEngine.spawnTransientEffect?.('impact', position, color, { source: this });
     }
 }

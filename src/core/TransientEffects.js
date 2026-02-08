@@ -1,0 +1,530 @@
+import * as THREE from 'three';
+
+class TransientEffect {
+    constructor(scene, meshes, duration, updateFn = null) {
+        this.scene = scene;
+        this.meshes = Array.isArray(meshes) ? meshes : [meshes];
+        this.duration = duration;
+        this.updateFn = updateFn;
+        this.elapsed = 0;
+        this.isActive = true;
+    }
+
+    update(dt) {
+        if (!this.isActive) return;
+
+        this.elapsed += dt;
+        const t = Math.min(1, this.elapsed / this.duration);
+
+        if (this.updateFn) {
+            this.updateFn({ meshes: this.meshes, elapsed: this.elapsed, t, dt });
+        }
+
+        if (this.elapsed >= this.duration) {
+            this.isActive = false;
+            this.dispose();
+        }
+    }
+
+    dispose() {
+        const geometries = new Set();
+        const materials = new Set();
+
+        for (const mesh of this.meshes) {
+            this.scene.remove(mesh);
+            mesh.traverse((child) => {
+                if (child.geometry) geometries.add(child.geometry);
+                if (child.material) {
+                    if (Array.isArray(child.material)) {
+                        for (const mat of child.material) materials.add(mat);
+                    } else {
+                        materials.add(child.material);
+                    }
+                }
+            });
+        }
+
+        geometries.forEach((geo) => geo.dispose());
+        materials.forEach((mat) => mat.dispose());
+        this.meshes.length = 0;
+    }
+}
+
+function addToScene(scene, meshOrMeshes) {
+    const meshes = Array.isArray(meshOrMeshes) ? meshOrMeshes : [meshOrMeshes];
+    for (const mesh of meshes) {
+        scene.add(mesh);
+    }
+    return meshes;
+}
+
+function getForwardVector(options = {}) {
+    if (options.direction && options.direction.isVector3) {
+        return options.direction.clone().normalize();
+    }
+    if (options.source && options.source.mesh && options.source.mesh.quaternion) {
+        return new THREE.Vector3(0, 0, 1).applyQuaternion(options.source.mesh.quaternion).normalize();
+    }
+    return new THREE.Vector3(0, 0, 1);
+}
+
+function createPulseRingMaterial(color, opacity = 0.55) {
+    return new THREE.ShaderMaterial({
+        uniforms: {
+            uTime: { value: 0 },
+            uOpacity: { value: opacity },
+            uColor: { value: new THREE.Color(color) }
+        },
+        vertexShader: `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            uniform float uTime;
+            uniform float uOpacity;
+            uniform vec3 uColor;
+            varying vec2 vUv;
+
+            void main() {
+                vec2 p = vUv - 0.5;
+                float radial = length(p) * 2.0;
+                float ringMask = smoothstep(1.0, 0.78, radial) * (1.0 - smoothstep(0.68, 0.58, radial));
+                float pulse = 0.65 + 0.35 * sin(uTime * 11.0 + radial * 20.0);
+                float shimmer = 0.8 + 0.2 * sin(uTime * 19.0 + p.x * 35.0 + p.y * 28.0);
+                vec3 col = uColor + vec3(0.18, 0.15, 0.1) * pulse;
+                gl_FragColor = vec4(col, ringMask * uOpacity * pulse * shimmer);
+            }
+        `,
+        transparent: true,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
+}
+
+function createEnergySphereMaterial(color, opacity = 0.5) {
+    return new THREE.ShaderMaterial({
+        uniforms: {
+            uTime: { value: 0 },
+            uOpacity: { value: opacity },
+            uColor: { value: new THREE.Color(color) }
+        },
+        vertexShader: `
+            varying vec3 vNormalW;
+            varying vec3 vWorldPos;
+            void main() {
+                vec4 worldPos = modelMatrix * vec4(position, 1.0);
+                vWorldPos = worldPos.xyz;
+                vNormalW = normalize(mat3(modelMatrix) * normal);
+                gl_Position = projectionMatrix * viewMatrix * worldPos;
+            }
+        `,
+        fragmentShader: `
+            uniform float uTime;
+            uniform float uOpacity;
+            uniform vec3 uColor;
+            varying vec3 vNormalW;
+            varying vec3 vWorldPos;
+
+            void main() {
+                vec3 viewDir = normalize(cameraPosition - vWorldPos);
+                float fresnel = pow(1.0 - max(dot(vNormalW, viewDir), 0.0), 2.2);
+                float ripple = 0.7 + 0.3 * sin(uTime * 12.0 + vWorldPos.y * 2.5 + vWorldPos.x * 1.7);
+                vec3 glow = uColor + vec3(0.12, 0.18, 0.2) * ripple;
+                gl_FragColor = vec4(glow, uOpacity * fresnel * ripple);
+            }
+        `,
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
+}
+
+function createBeamMaterial(color, opacity = 0.82) {
+    return new THREE.ShaderMaterial({
+        uniforms: {
+            uTime: { value: 0 },
+            uOpacity: { value: opacity },
+            uColor: { value: new THREE.Color(color) }
+        },
+        vertexShader: `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            uniform float uTime;
+            uniform float uOpacity;
+            uniform vec3 uColor;
+            varying vec2 vUv;
+
+            void main() {
+                float core = smoothstep(0.5, 0.18, abs(vUv.x - 0.5));
+                float arc = 0.55 + 0.45 * sin(vUv.y * 28.0 - uTime * 24.0);
+                float flare = 0.75 + 0.25 * sin(vUv.y * 52.0 + uTime * 19.0);
+                float alpha = core * arc * flare * uOpacity;
+                vec3 col = uColor + vec3(0.3, 0.25, 0.18) * (arc * core);
+                gl_FragColor = vec4(col, alpha);
+            }
+        `,
+        transparent: true,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending
+    });
+}
+
+function createEnergyShardMaterial(color, opacity = 0.95) {
+    return new THREE.ShaderMaterial({
+        uniforms: {
+            uTime: { value: 0 },
+            uOpacity: { value: opacity },
+            uColor: { value: new THREE.Color(color) }
+        },
+        vertexShader: `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            uniform float uTime;
+            uniform float uOpacity;
+            uniform vec3 uColor;
+            varying vec2 vUv;
+
+            void main() {
+                float edgeX = smoothstep(0.0, 0.2, vUv.x) * (1.0 - smoothstep(0.8, 1.0, vUv.x));
+                float edgeY = smoothstep(0.0, 0.18, vUv.y) * (1.0 - smoothstep(0.82, 1.0, vUv.y));
+                float energy = edgeX * edgeY;
+                float flicker = 0.75 + 0.25 * sin(uTime * 21.0 + vUv.y * 35.0);
+                vec3 col = uColor + vec3(0.2, 0.2, 0.2) * (energy * flicker);
+                gl_FragColor = vec4(col, uOpacity * energy * flicker);
+            }
+        `,
+        transparent: true,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending
+    });
+}
+
+export function createTransientEffect(scene, type, position, color = 0xffffff, options = {}) {
+    if (!scene || !position) return null;
+    const effectScale = Number.isFinite(options.effectScale) ? options.effectScale : 1.0;
+    const quality = options.quality || 'high';
+
+    if (type === 'impact') {
+        const group = new THREE.Group();
+        const mesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.5, 10, 10),
+            new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.85, depthWrite: false })
+        );
+        mesh.position.copy(position);
+        group.add(mesh);
+
+        if (quality !== 'low') {
+            const halo = new THREE.Mesh(
+                new THREE.SphereGeometry(0.35, 10, 10),
+                new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.7, depthWrite: false, blending: THREE.AdditiveBlending })
+            );
+            halo.position.copy(position);
+            halo.userData.isHalo = true;
+            group.add(halo);
+        }
+
+        addToScene(scene, group);
+        return new TransientEffect(scene, group, 0.28, ({ meshes, t }) => {
+            const g = meshes[0];
+            const m = g.children[0];
+            m.scale.setScalar(1 + t * 1.7);
+            m.material.opacity = 0.85 * (1 - t);
+            if (g.children[1]) {
+                g.children[1].scale.setScalar(1 + t * 2.5);
+                g.children[1].material.opacity = 0.7 * (1 - t);
+            }
+        });
+    }
+
+    if (type === 'spin') {
+        const mesh = new THREE.Mesh(
+            new THREE.RingGeometry(0.5, 3.5, 32),
+            createPulseRingMaterial(color, 0.55)
+        );
+        mesh.rotation.x = Math.PI / 2;
+        mesh.position.copy(position);
+        mesh.position.y += 0.5;
+        addToScene(scene, mesh);
+        return new TransientEffect(scene, mesh, 0.85, ({ meshes, dt, t }) => {
+            const m = meshes[0];
+            m.rotation.z += dt * 10.5;
+            m.material.uniforms.uTime.value += dt;
+            m.material.uniforms.uOpacity.value = (0.55 + (quality === 'high' ? 0.08 : 0.0)) * (1 - t);
+        });
+    }
+
+    if (type === 'wave' || type === 'ring') {
+        const isBigRing = type === 'ring';
+        const mesh = new THREE.Mesh(
+            new THREE.RingGeometry(0.5, isBigRing ? 8.0 : 1.0, 32),
+            createPulseRingMaterial(color, 0.5)
+        );
+        mesh.rotation.x = -Math.PI / 2;
+        mesh.position.copy(position);
+        mesh.position.y += 0.1;
+        addToScene(scene, mesh);
+        return new TransientEffect(scene, mesh, isBigRing ? 0.5 : 1.0, ({ meshes, t }) => {
+            const m = meshes[0];
+            m.scale.setScalar(1 + t * (isBigRing ? 1.0 : 9.0));
+            m.material.uniforms.uTime.value = t * 2.0;
+            m.material.uniforms.uOpacity.value = (0.5 + (quality === 'high' ? 0.06 : 0.0)) * (1 - t);
+        });
+    }
+
+    if (type === 'buff') {
+        const mesh = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.5, 0.5, 2, 8),
+            new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.5, depthWrite: false })
+        );
+        mesh.position.copy(position);
+        mesh.position.y += 1.0;
+        addToScene(scene, mesh);
+        return new TransientEffect(scene, mesh, 1.0, ({ meshes, dt, t }) => {
+            const m = meshes[0];
+            m.position.y += dt * 4.8;
+            m.material.opacity = (0.5 + (quality === 'high' ? 0.08 : 0.0)) * (1 - t);
+        });
+    }
+
+    if (type === 'burst') {
+        const mesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.9, 8, 8),
+            new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.8, depthWrite: false })
+        );
+        mesh.position.copy(position);
+        addToScene(scene, mesh);
+        return new TransientEffect(scene, mesh, 0.22, ({ meshes, t }) => {
+            const m = meshes[0];
+            m.scale.setScalar(1 + t * 0.8);
+            m.material.opacity = (0.8 + (quality === 'high' ? 0.1 : 0.0)) * (1 - t);
+        });
+    }
+
+    if (type === 'pillar') {
+        const mesh = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.5, 0.5, 4, 8),
+            new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.5, depthWrite: false })
+        );
+        mesh.position.copy(position);
+        mesh.position.y = 2;
+        addToScene(scene, mesh);
+        return new TransientEffect(scene, mesh, 1.0, ({ meshes, t }) => {
+            const m = meshes[0];
+            m.material.opacity = 0.5 * (1 - t);
+            m.scale.setScalar(1 + t);
+        });
+    }
+
+    if (type === 'smoke') {
+        const mesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.5, 8, 8),
+            new THREE.MeshBasicMaterial({ color: 0x111111, transparent: true, opacity: 0.8, depthWrite: false })
+        );
+        mesh.position.copy(position);
+        addToScene(scene, mesh);
+        return new TransientEffect(scene, mesh, 0.95, ({ meshes, t }) => {
+            const m = meshes[0];
+            m.scale.setScalar(1 + t * 1.4);
+            m.material.opacity = 0.8 * (1 - t);
+        });
+    }
+
+    if (type === 'mark') {
+        const mesh = new THREE.Mesh(
+            new THREE.TorusGeometry(0.5, 0.05, 8, 16),
+            new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.75, depthWrite: false })
+        );
+        mesh.position.copy(position);
+        mesh.position.y += 2.0;
+        mesh.rotation.x = Math.PI / 2;
+        addToScene(scene, mesh);
+        return new TransientEffect(scene, mesh, 1.0, ({ meshes, dt, t }) => {
+            const m = meshes[0];
+            m.rotation.z += dt * 2.5;
+            m.material.opacity = 0.75 * (1 - t * 0.9);
+        });
+    }
+
+    if (type === 'blood') {
+        const group = new THREE.Group();
+        const dropletCount = Math.max(3, Math.round(5 * effectScale));
+        for (let i = 0; i < dropletCount; i += 1) {
+            const mesh = new THREE.Mesh(
+                new THREE.SphereGeometry(0.2, 4, 4),
+                new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.95, depthWrite: false })
+            );
+            mesh.position.set(
+                position.x + (Math.random() - 0.5),
+                position.y + Math.random(),
+                position.z + (Math.random() - 0.5)
+            );
+            mesh.userData.velocity = new THREE.Vector3(
+                (Math.random() - 0.5) * 2.0,
+                1.0 + Math.random() * 1.2,
+                (Math.random() - 0.5) * 2.0
+            );
+            group.add(mesh);
+        }
+        addToScene(scene, group);
+        return new TransientEffect(scene, group, 0.35, ({ meshes, dt, t }) => {
+            const g = meshes[0];
+            g.children.forEach((child) => {
+                child.userData.velocity.y -= 8.0 * dt;
+                child.position.addScaledVector(child.userData.velocity, dt);
+                child.material.opacity = 0.95 * (1 - t);
+            });
+        });
+    }
+
+    if (type === 'smoke_cloud') {
+        const group = new THREE.Group();
+        const cloudCount = Math.max(4, Math.round(10 * effectScale));
+        for (let i = 0; i < cloudCount; i += 1) {
+            const mesh = new THREE.Mesh(
+                new THREE.SphereGeometry(0.5, 8, 8),
+                new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.8, depthWrite: false })
+            );
+            mesh.position.set(
+                position.x + (Math.random() - 0.5) * 4.0,
+                position.y + Math.random() * 2.0,
+                position.z + (Math.random() - 0.5) * 4.0
+            );
+            mesh.userData.drift = new THREE.Vector3(
+                (Math.random() - 0.5) * 0.35,
+                0.6 + Math.random() * 0.9,
+                (Math.random() - 0.5) * 0.35
+            );
+            group.add(mesh);
+        }
+        addToScene(scene, group);
+        return new TransientEffect(scene, group, 1.15, ({ meshes, dt, t }) => {
+            const g = meshes[0];
+            g.children.forEach((child) => {
+                child.position.addScaledVector(child.userData.drift, dt);
+                child.scale.multiplyScalar(1 + dt * 0.7);
+                child.material.opacity = 0.8 * (1 - t);
+            });
+        });
+    }
+
+    if (type === 'ground_circle') {
+        const mesh = new THREE.Mesh(
+            new THREE.CircleGeometry(5.0, 32),
+            new THREE.MeshBasicMaterial({
+                color,
+                transparent: true,
+                opacity: 0.3,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            })
+        );
+        mesh.rotation.x = -Math.PI / 2;
+        mesh.position.copy(position);
+        mesh.position.y += 0.05;
+        addToScene(scene, mesh);
+        return new TransientEffect(scene, mesh, 8.0, ({ meshes, t }) => {
+            const m = meshes[0];
+            m.material.opacity = 0.3 * (1 - t * 0.2);
+        });
+    }
+
+    if (type === 'sphere') {
+        const mesh = new THREE.Mesh(
+            new THREE.SphereGeometry(1.0, 16, 16),
+            createEnergySphereMaterial(color, 0.5)
+        );
+        mesh.position.copy(position);
+        mesh.position.y += 1.0;
+        addToScene(scene, mesh);
+        return new TransientEffect(scene, mesh, 0.8, ({ meshes, t }) => {
+            const m = meshes[0];
+            m.scale.setScalar(1 + t * 2.2);
+            m.material.uniforms.uTime.value = t * 3.0;
+            m.material.uniforms.uOpacity.value = 0.5 * (1 - t);
+        });
+    }
+
+    if (type === 'beam') {
+        const start = options.source && options.source.position
+            ? options.source.position.clone().add(new THREE.Vector3(0, 1.5, 0))
+            : position.clone().add(new THREE.Vector3(0, 1.0, 0));
+        const end = position.clone();
+        if (end.y < start.y - 0.5) end.y = start.y;
+        const direction = end.clone().sub(start);
+        const range = Math.max(0.001, direction.length());
+        direction.normalize();
+
+        const beamGeo = new THREE.CylinderGeometry(0.22, 0.22, range, 10);
+        beamGeo.rotateX(-Math.PI / 2);
+        const beamMat = createBeamMaterial(color, 0.82);
+        const beamMesh = new THREE.Mesh(beamGeo, beamMat);
+        const midPoint = start.clone().add(direction.multiplyScalar(range / 2));
+        beamMesh.position.copy(midPoint);
+        beamMesh.lookAt(end);
+        addToScene(scene, beamMesh);
+
+        return new TransientEffect(scene, beamMesh, 0.35, ({ meshes, t }) => {
+            const m = meshes[0];
+            const shrink = 1 - t * 0.85;
+            m.scale.set(Math.max(0.08, shrink), 1, Math.max(0.08, shrink));
+            m.material.uniforms.uTime.value = t * 2.0;
+            m.material.uniforms.uOpacity.value = (0.82 + (quality === 'high' ? 0.1 : 0.0)) * (1 - t);
+        });
+    }
+
+    if (type === 'cone' || type === 'cone_large') {
+        const forward = getForwardVector(options);
+        const isLarge = type === 'cone_large';
+        const baseCount = isLarge ? 30 : 6;
+        const count = Math.max(isLarge ? 12 : 4, Math.round(baseCount * effectScale));
+        const speed = isLarge ? 20.0 : 10.0;
+        const life = isLarge ? 0.9 : 0.65;
+        const totalArc = isLarge ? Math.PI / 2 : Math.PI / 4;
+        const group = new THREE.Group();
+
+        for (let i = 0; i < count; i += 1) {
+            const mesh = new THREE.Mesh(
+                new THREE.BoxGeometry(isLarge ? 0.5 : 0.2, isLarge ? 0.5 : 0.2, isLarge ? 1.5 : 0.5),
+                createEnergyShardMaterial(color, 0.95)
+            );
+            mesh.position.copy(position);
+            mesh.position.y += 1.0;
+
+            const angle = count <= 1 ? 0 : ((i / (count - 1)) - 0.5) * totalArc;
+            const dir = forward.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), angle).normalize();
+            mesh.lookAt(mesh.position.clone().add(dir));
+            mesh.userData.dir = dir;
+            mesh.userData.speed = speed * (0.85 + Math.random() * 0.3);
+            group.add(mesh);
+        }
+
+        addToScene(scene, group);
+        return new TransientEffect(scene, group, life, ({ meshes, dt, t }) => {
+            const g = meshes[0];
+            g.children.forEach((child) => {
+                child.position.addScaledVector(child.userData.dir, child.userData.speed * dt);
+                child.scale.multiplyScalar(1 - dt * (isLarge ? 1.4 : 1.8));
+                child.material.uniforms.uTime.value += dt;
+                child.material.uniforms.uOpacity.value = 0.95 * (1 - t);
+            });
+        });
+    }
+
+    return null;
+}

@@ -1413,10 +1413,31 @@
             <div style="padding: 20px;">
                 <button id="btn-resume" class="menu-btn">Resume Game</button>
                 <button id="btn-help" class="menu-btn">Help</button>
+                <button id="btn-settings" class="menu-btn">Settings</button>
                 <button id="btn-patch-notes" class="menu-btn">Patch Notes</button>
                 <button id="btn-report" class="menu-btn" style="border-color: #ffd700; color: #ffd700;">Report Bug / Feature</button>
                 <button id="btn-respawn" class="menu-btn" style="border-color: #ff4444; color: #ff4444;">Unstuck / Respawn</button>
                 <button id="btn-menu" class="menu-btn">Return to Menu</button>
+            </div>
+        </div>
+
+        <div id="settings-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 360px; z-index: 102;">
+            <div class="window-header">SETTINGS</div>
+            <div style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
+                    <label for="graphics-quality" style="color: #ffd700; font-size: 13px;">Graphics Quality</label>
+                    <select id="graphics-quality" style="padding: 10px; background: #333; color: #fff; border: 1px solid #666; font-family: inherit;">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high" selected>High</option>
+                    </select>
+                    <div style="font-size: 12px; color: #aaa; line-height: 1.4;">
+                        High is the default target and enables full effects. Lower settings reduce post-processing and shadow cost.
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button id="btn-close-settings" class="menu-btn">Close</button>
+                </div>
             </div>
         </div>
 
