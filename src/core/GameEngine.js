@@ -583,7 +583,7 @@ export class GameEngine {
         await MeshFactory.preloadAllModels({
             phase: 'all',
             concurrency: 1,
-            timeoutMs: 45000,
+            failFast: true,
             onProgress: (p, text) => {
                 if (!onProgress) return;
                 // Map 0..100 -> 55..75
@@ -1474,6 +1474,10 @@ export class GameEngine {
                             } else {
                                 this.player.state = pData.state;
                             }
+                        } else if (pData.health !== undefined && pData.health <= 0 && this.player.state !== 'DEAD') {
+                            // Some delta/full packets can arrive with HP updates before/without state.
+                            // Ensure local death presentation still triggers when health reaches zero.
+                            this.player.die();
                         }
 
                         // Check for forced teleport (large distance discrepancy)
@@ -1700,13 +1704,13 @@ export class GameEngine {
                 if (remoteEntity) {
                     // Interpolation / Correction
                     if (pData.type === 'Projectile') {
-                        remoteEntity.position.set(pData.x, pData.y, pData.z);
+                        remoteEntity.position.set(pData.x, pData.y ?? 0, pData.z);
                         if (pData.velX !== undefined && pData.velZ !== undefined) {
                             remoteEntity.velocity.set(pData.velX, 0, pData.velZ);
                         }
                     } else {
                         // Interpolation Setup
-                        const newPos = new THREE.Vector3(pData.x, pData.y, pData.z);
+                        const newPos = new THREE.Vector3(pData.x, pData.y ?? 0, pData.z);
                         if (!remoteEntity.targetServerPosition) {
                             // First update or no previous target, snap immediately
                             remoteEntity.position.copy(newPos);
@@ -1869,10 +1873,24 @@ export class GameEngine {
                 if (pData.id === this.player.id) {
                     // Still update critical player state from delta
                     if (this.player && this.player.stats) {
+                        if (pData.state !== undefined) {
+                            if (this.player.state !== 'DEAD' && pData.state === 'DEAD') {
+                                this.player.die();
+                            } else if (this.player.state === 'DEAD' && pData.state !== 'DEAD') {
+                                this.player.state = pData.state;
+                            } else {
+                                this.player.state = pData.state;
+                            }
+                        }
+
                         if (pData.health !== undefined) this.player.stats.hp = pData.health;
                         if (pData.maxHealth !== undefined) this.player.stats.maxHp = pData.maxHealth;
                         if (pData.mana !== undefined) this.player.stats.mana = pData.mana;
                         if (pData.maxMana !== undefined) this.player.stats.maxMana = pData.maxMana;
+
+                        if (pData.state === undefined && pData.health !== undefined && pData.health <= 0 && this.player.state !== 'DEAD') {
+                            this.player.die();
+                        }
                         
                         // Sync Attributes from Server
                         if (pData.stats) {
@@ -2041,13 +2059,13 @@ export class GameEngine {
 
                 // Update existing remote entity
                 if (pData.type === 'Projectile') {
-                    remoteEntity.position.set(pData.x, pData.y, pData.z);
+                    remoteEntity.position.set(pData.x, pData.y ?? 0, pData.z);
                     if (pData.velX !== undefined && pData.velZ !== undefined) {
                         remoteEntity.velocity.set(pData.velX, 0, pData.velZ);
                     }
                 } else {
                     // Interpolation Setup
-                    const newPos = new THREE.Vector3(pData.x, pData.y, pData.z);
+                    const newPos = new THREE.Vector3(pData.x, pData.y ?? 0, pData.z);
                     if (!remoteEntity.targetServerPosition) {
                         remoteEntity.position.copy(newPos);
                         remoteEntity.targetServerPosition = newPos;
@@ -3222,8 +3240,9 @@ export class GameEngine {
                     if (pData.ownerId === this.player.id) continue;
 
                     // Create Projectile
-                    const start = new THREE.Vector3(pData.x, pData.y, pData.z);
-                    const target = new THREE.Vector3(pData.x + (pData.velX || 1), pData.y, pData.z + (pData.velZ || 0));
+                    const y = pData.y ?? 0;
+                    const start = new THREE.Vector3(pData.x, y, pData.z);
+                    const target = new THREE.Vector3(pData.x + (pData.velX || 1), y, pData.z + (pData.velZ || 0));
                     
                     const owner = this.remotePlayers.get(pData.ownerId) || (pData.ownerId === this.player.id ? this.player : null);
                     const dummyOwner = { stats: { intelligence: 10, dexterity: 10 }, isRemote: true, isMultiplayer: true };
@@ -3271,7 +3290,7 @@ export class GameEngine {
                 
                 if (remoteEntity) {
                     // Set initial position immediately
-                    remoteEntity.position.set(pData.x, pData.y, pData.z);
+                    remoteEntity.position.set(pData.x, pData.y ?? 0, pData.z);
 
                     // Set initial scale
                     if (pData.scale !== undefined) {

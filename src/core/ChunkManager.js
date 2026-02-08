@@ -68,6 +68,22 @@ export class ChunkManager {
                     if (entity._lastUpdateFrame === this.frameCount) continue;
                     entity._lastUpdateFrame = this.frameCount;
 
+                    // Robust mesh recovery: if a previous mesh load failed/transiently stalled,
+                    // retry for active entities every ~30 frames.
+                    if (!entity.mesh && !entity.isMeshLoading && entity.ensureMesh) {
+                        if (!entity._nextMeshRetryFrame || this.frameCount >= entity._nextMeshRetryFrame) {
+                            entity._nextMeshRetryFrame = this.frameCount + 30;
+                            entity.ensureMesh().then(() => {
+                                const currentKey = this.getChunkKey(entity.position.x, entity.position.z);
+                                if (this.activeChunkKeys.has(currentKey) && entity.mesh && entity.mesh.parent !== this.scene) {
+                                    this.scene.add(entity.mesh);
+                                }
+                            }).catch((err) => {
+                                console.warn(`ChunkManager: mesh retry failed for ${entity.id}`, err);
+                            });
+                        }
+                    }
+
                     // Pass 'this' (ChunkManager) instead of activeEntities for collision optimization
                     // But we also pass activeEntities for legacy support if needed by other systems
                     // Actually, we need to update Entity.update signature or just pass both?
