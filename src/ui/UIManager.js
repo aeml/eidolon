@@ -618,7 +618,6 @@ export class UIManager {
             if (this.onRespawn) {
                 this.onRespawn();
             }
-            this.hideDeathScreen();
         };
         
         this.deathScreen = div;

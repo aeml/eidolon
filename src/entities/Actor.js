@@ -950,6 +950,11 @@ export class Actor extends Entity {
     die() {
         if (this.state === 'DEAD') return;
         this.state = 'DEAD';
+        this.targetPosition = null;
+        if (this.attackTimer) {
+            clearTimeout(this.attackTimer);
+            this.attackTimer = null;
+        }
         this.playAnimation('Death', false); 
         // timeSinceDeath is managed by GameEngine
         this.cancelAbilities();

@@ -360,6 +360,15 @@ export class InputManager {
         return intersection ? this._intersectionTarget : null;
     }
 
+    clearInputState() {
+        this.isMouseDown = false;
+        this.isRightMouseDown = false;
+        this.joystickVector.set(0, 0);
+        Object.keys(this.keys).forEach((key) => {
+            this.keys[key] = false;
+        });
+    }
+
     subscribe(event, callback) {
         if (this.callbacks[event]) {
             this.callbacks[event].push(callback);
