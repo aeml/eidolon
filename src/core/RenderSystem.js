@@ -48,7 +48,7 @@ export class RenderSystem {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.outputColorSpace = THREE.SRGBColorSpace;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.05;
+        this.renderer.toneMappingExposure = 1.18;
         // Mobile preset: shadows are a major GPU cost; disable entirely on mobile.
         this.renderer.shadowMap.enabled = !this.isMobile;
         // Optimization: Use PCFSoftShadowMap for better look, or Basic for performance
@@ -68,69 +68,69 @@ export class RenderSystem {
         this.currentRealm = null;
         this.targetLighting = null;
         this.currentLighting = {
-            ambientIntensity: 1.6,
-            keyIntensity: 1.7,
+            ambientIntensity: 1.95,
+            keyIntensity: 2.1,
             keyColor: new THREE.Color(0xffffff),
-            fillColor: new THREE.Color(0x9ab7ff),
-            fillIntensity: 0.35,
-            fogColor: new THREE.Color(0x3a2f4f),
-            fogNear: 260,
-            fogFar: 1200
+            fillColor: new THREE.Color(0xb6cfff),
+            fillIntensity: 0.44,
+            fogColor: new THREE.Color(0x8d93a8),
+            fogNear: 520,
+            fogFar: 2200
         };
 
         this.realmLightingPresets = {
             earth: {
-                ambientIntensity: 1.65,
-                keyIntensity: 1.8,
+                ambientIntensity: 2.0,
+                keyIntensity: 2.2,
                 keyColor: 0xfff2d9,
-                fillColor: 0xb8d8ff,
-                fillIntensity: 0.32,
-                fogColor: 0x6f7b6f,
-                fogNear: 340,
-                fogFar: 1300,
-                exposure: 1.0,
+                fillColor: 0xc8ddff,
+                fillIntensity: 0.4,
+                fogColor: 0x97a18f,
+                fogNear: 600,
+                fogFar: 2400,
+                exposure: 1.2,
                 bloomStrength: 0.2,
                 bloomRadius: 0.25,
                 bloomThreshold: 0.84
             },
             water: {
-                ambientIntensity: 1.45,
-                keyIntensity: 1.55,
+                ambientIntensity: 1.82,
+                keyIntensity: 1.95,
                 keyColor: 0xcde8ff,
-                fillColor: 0x88d7ff,
-                fillIntensity: 0.45,
-                fogColor: 0x32586d,
-                fogNear: 260,
-                fogFar: 980,
-                exposure: 0.96,
+                fillColor: 0x9ee4ff,
+                fillIntensity: 0.5,
+                fogColor: 0x5f8ca3,
+                fogNear: 520,
+                fogFar: 1800,
+                exposure: 1.12,
                 bloomStrength: 0.28,
                 bloomRadius: 0.35,
                 bloomThreshold: 0.78
             },
             fire: {
-                ambientIntensity: 1.7,
-                keyIntensity: 2.05,
+                ambientIntensity: 2.05,
+                keyIntensity: 2.35,
                 keyColor: 0xffc29a,
-                fillColor: 0xff8e63,
-                fillIntensity: 0.38,
-                fogColor: 0x5a3426,
-                fogNear: 240,
-                fogFar: 920,
-                exposure: 1.08,
+                fillColor: 0xffa877,
+                fillIntensity: 0.44,
+                fogColor: 0x8a5a42,
+                fogNear: 460,
+                fogFar: 1650,
+                exposure: 1.22,
                 bloomStrength: 0.34,
                 bloomRadius: 0.3,
                 bloomThreshold: 0.74
             },
             air: {
-                ambientIntensity: 1.55,
-                keyIntensity: 1.9,
+                ambientIntensity: 1.95,
+                keyIntensity: 2.15,
                 keyColor: 0xe8f8ff,
-                fillColor: 0x9bd8ff,
-                fillIntensity: 0.42,
-                fogColor: 0x92b7cc,
-                fogNear: 360,
-                fogFar: 1450,
-                exposure: 1.03,
+                fillColor: 0xb8e7ff,
+                fillIntensity: 0.48,
+                fogColor: 0xb9d0de,
+                fogNear: 700,
+                fogFar: 2600,
+                exposure: 1.18,
                 bloomStrength: 0.24,
                 bloomRadius: 0.3,
                 bloomThreshold: 0.82
