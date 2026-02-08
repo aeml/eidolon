@@ -128,7 +128,7 @@ export class UIManager {
         }
 
         const storedBrightness = Number(localStorage.getItem('eidolon.graphicsBrightness'));
-        this.graphicsBrightness = Number.isFinite(storedBrightness) ? Math.max(0, Math.min(100, storedBrightness)) : 100;
+        this.graphicsBrightness = Number.isFinite(storedBrightness) ? Math.max(0, Math.min(100, storedBrightness)) : 50;
         if (this.graphicsBrightnessSlider) {
             this.graphicsBrightnessSlider.value = String(this.graphicsBrightness);
             this.graphicsBrightnessSlider.addEventListener('input', () => {
