@@ -590,17 +590,23 @@ export class GameEngine {
         this.uiManager.onRespawn = () => {
             if (this.player) {
                 console.log("Player requested respawn.");
+                const x = -1.25;
+                const z = 200;
                 
                 if (this.isMultiplayer && this.socket && this.socket.readyState === WebSocket.OPEN) {
                     this.socket.send(JSON.stringify({ type: 'respawn', payload: {} }));
-                    // Wait for server state update to handle actual respawn
-                } else {
-                    this.player.respawn(-1.25, 200);
-                    this.player.timeSinceDeath = null;
-                    this.chunkManager.updateEntityChunk(this.player);
-                    this.renderSystem.setCameraTarget(this.player.position);
-                    this.chunkManager.update(this.player, 0, this.collisionManager);
                 }
+
+                // Apply immediate local respawn so death->town transition is always visible,
+                // even if the server sends only a delta update without position fields.
+                this.player.respawn(x, z);
+                this.player.timeSinceDeath = null;
+                this.player.targetPosition = null;
+                this.pendingInteraction = null;
+                this.pendingAbilityTarget = null;
+                this.chunkManager.updateEntityChunk(this.player);
+                this.renderSystem.setCameraTarget(this.player.position);
+                this.chunkManager.update(this.player, 0, this.collisionManager);
             }
         };
 
@@ -1921,10 +1927,29 @@ export class GameEngine {
                                 if (nextHp !== undefined && nextHp <= 0) {
                                     this.handlePlayerDeathTransition();
                                 } else {
+                                    const x = pData.x !== undefined ? pData.x : -1.25;
+                                    const z = pData.z !== undefined ? pData.z : 200;
+                                    console.log(`GameEngine: Respawn detected from delta. Teleporting to (${x}, ${z})`);
+                                    this.player.respawn(x, z);
                                     this.player.state = pData.state;
+                                    this.chunkManager.updateEntityChunk(this.player);
+                                    this.renderSystem.setCameraTarget(this.player.position);
+                                    this.chunkManager.update(this.player, 0, this.collisionManager);
                                 }
                             } else {
                                 this.player.state = pData.state;
+                            }
+                        }
+
+                        if (pData.x !== undefined && pData.z !== undefined) {
+                            const serverPos = new THREE.Vector3(pData.x, pData.y || 0, pData.z);
+                            const dist = this.player.position.distanceTo(serverPos);
+                            if (dist > 20.0) {
+                                console.log(`GameEngine: Detected self teleport from delta, syncing position. Dist: ${dist}`);
+                                this.player.position.copy(serverPos);
+                                this.player.targetPosition = null;
+                                this.chunkManager.updateEntityChunk(this.player);
+                                this.renderSystem.setCameraTarget(this.player.position);
                             }
                         }
 
