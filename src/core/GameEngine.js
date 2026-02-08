@@ -428,6 +428,38 @@ export class GameEngine {
         return this.renderSystem.scene;
     }
 
+    isPlayerDead() {
+        if (!this.player) return false;
+        const hp = this.player.stats ? this.player.stats.hp : undefined;
+        return this.player.state === 'DEAD' || (hp !== undefined && hp <= 0);
+    }
+
+    handlePlayerDeathTransition() {
+        if (!this.player) return;
+
+        this.player.die();
+        this.player.targetPosition = null;
+
+        this.pendingInteraction = null;
+        this.pendingAbilityTarget = null;
+        this.player.targetEntity = null;
+
+        if (this.inputManager && this.inputManager.clearInputState) {
+            this.inputManager.clearInputState();
+        }
+
+        this.syncDeathScreen();
+    }
+
+    syncDeathScreen() {
+        if (!this.uiManager || !this.player) return;
+        if (this.isPlayerDead()) {
+            this.uiManager.showDeathScreen();
+        } else {
+            this.uiManager.hideDeathScreen();
+        }
+    }
+
     spawnTransientEffect(type, position, color, options = {}) {
         const mergedOptions = {
             quality: this.uiManager ? this.uiManager.getGraphicsQuality() : 'high',
@@ -476,6 +508,7 @@ export class GameEngine {
         this.player.isMultiplayer = true;
 
         this.addEntity(this.player);
+        this.syncDeathScreen();
 
         // Hook equipItem for multiplayer
         // Completely override equipItem to only send message
@@ -1456,9 +1489,13 @@ export class GameEngine {
 
                         // Sync State
                         if (pData.state) {
-                            if (this.player.state !== 'DEAD' && pData.state === 'DEAD') {
-                                this.player.die();
+                            const nextHp = pData.health !== undefined ? pData.health : this.player.stats?.hp;
+                            if (this.player.state !== 'DEAD' && (pData.state === 'DEAD' || (nextHp !== undefined && nextHp <= 0))) {
+                                this.handlePlayerDeathTransition();
                             } else if (this.player.state === 'DEAD' && pData.state !== 'DEAD') {
+                                if (nextHp !== undefined && nextHp <= 0) {
+                                    this.handlePlayerDeathTransition();
+                                } else {
                                 // Revived?
                                 // Force town spawn (-1.25, 200) to ensure immediate visual feedback
                                 const x = -1.25;
@@ -1471,13 +1508,14 @@ export class GameEngine {
                                 this.chunkManager.updateEntityChunk(this.player);
                                 this.renderSystem.setCameraTarget(this.player.position);
                                 justRespawned = true;
+                                }
                             } else {
                                 this.player.state = pData.state;
                             }
                         } else if (pData.health !== undefined && pData.health <= 0 && this.player.state !== 'DEAD') {
                             // Some delta/full packets can arrive with HP updates before/without state.
                             // Ensure local death presentation still triggers when health reaches zero.
-                            this.player.die();
+                            this.handlePlayerDeathTransition();
                         }
 
                         // Check for forced teleport (large distance discrepancy)
@@ -1676,6 +1714,7 @@ export class GameEngine {
                             this.lastGold = pData.gold;
                         }
                     }
+                    this.syncDeathScreen();
                     return; // Skip self
                 }
 
@@ -1698,6 +1737,7 @@ export class GameEngine {
                         }
                     }
                     // Skip update for now, wait for creation
+                    this.syncDeathScreen();
                     return;
                 }
                 
@@ -1873,11 +1913,16 @@ export class GameEngine {
                 if (pData.id === this.player.id) {
                     // Still update critical player state from delta
                     if (this.player && this.player.stats) {
+                        const nextHp = pData.health !== undefined ? pData.health : this.player.stats.hp;
                         if (pData.state !== undefined) {
-                            if (this.player.state !== 'DEAD' && pData.state === 'DEAD') {
-                                this.player.die();
+                            if (this.player.state !== 'DEAD' && (pData.state === 'DEAD' || (nextHp !== undefined && nextHp <= 0))) {
+                                this.handlePlayerDeathTransition();
                             } else if (this.player.state === 'DEAD' && pData.state !== 'DEAD') {
-                                this.player.state = pData.state;
+                                if (nextHp !== undefined && nextHp <= 0) {
+                                    this.handlePlayerDeathTransition();
+                                } else {
+                                    this.player.state = pData.state;
+                                }
                             } else {
                                 this.player.state = pData.state;
                             }
@@ -1889,7 +1934,7 @@ export class GameEngine {
                         if (pData.maxMana !== undefined) this.player.stats.maxMana = pData.maxMana;
 
                         if (pData.state === undefined && pData.health !== undefined && pData.health <= 0 && this.player.state !== 'DEAD') {
-                            this.player.die();
+                            this.handlePlayerDeathTransition();
                         }
                         
                         // Sync Attributes from Server
@@ -3708,7 +3753,10 @@ export class GameEngine {
                 }
             }
 
-            if (this.player.state === 'DEAD') {
+            if (this.isPlayerDead()) {
+                this.pendingInteraction = null;
+                this.pendingAbilityTarget = null;
+                this.player.targetPosition = null;
                 this.uiManager.showDeathScreen();
             } else {
                 this.uiManager.hideDeathScreen();
@@ -3717,7 +3765,16 @@ export class GameEngine {
         }
 
         if (this.player) {
+            if (this.isPlayerDead()) {
+                this.inputManager.clearInputState();
+            }
             if (this.isMobile) {
+                if (this.isPlayerDead()) {
+                    this.player.targetPosition = null;
+                    if (this.player.state !== 'DEAD') {
+                        this.player.state = 'DEAD';
+                    }
+                } else {
                 const moveDir = this.inputManager.getMovementDirection();
                 if (moveDir.lengthSq() > 0) {
                     const speed = this.player.stats.speed;
@@ -3751,6 +3808,7 @@ export class GameEngine {
                         this.player.state = 'IDLE';
                         this.player.playAnimation('Idle');
                     }
+                }
                 }
             }
 
