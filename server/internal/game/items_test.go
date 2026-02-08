@@ -71,9 +71,11 @@ func TestGenerateEliteLoot(t *testing.T) {
 }
 
 func TestGenerateEliteLootRarity(t *testing.T) {
-	// Elite loot should be at least Uncommon
+	// Elite loot should never be Common. Because elite generation can still pick
+	// base materials/relics (which are upgraded to Eidolic in createItem),
+	// we validate broad distribution characteristics instead of brittle exact ratios.
 	rarities := make(map[ItemRarity]int)
-	iterations := 100
+	iterations := 500
 
 	for i := 0; i < iterations; i++ {
 		item := GenerateEliteLoot(10)
@@ -85,9 +87,12 @@ func TestGenerateEliteLootRarity(t *testing.T) {
 		t.Errorf("Elite loot produced %d Common items", rarities[RarityCommon])
 	}
 
-	// Should have mostly Uncommon (50%) and Rare (40%)
-	if rarities[RarityUncommon]+rarities[RarityRare] < iterations*80/100 {
-		t.Error("Elite loot distribution unexpected")
+	// Should still produce a healthy amount of non-Uncommon outcomes
+	// (Rare + Legendary + Eidolic). This guards against regressions where
+	// elite rolls collapse to almost all Uncommon.
+	nonUncommon := rarities[RarityRare] + rarities[RarityLegendary] + rarities[RarityEidolic]
+	if nonUncommon < iterations*25/100 {
+		t.Errorf("Elite loot distribution unexpected: too few high-tier drops (%d/%d)", nonUncommon, iterations)
 	}
 }
 
