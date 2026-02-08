@@ -67,6 +67,9 @@ export class RenderSystem {
         this.graphicsQuality = 'high';
         this.bloomQualityScale = 1.0;
         this.effectQualityScale = 1.0;
+        this.brightnessLevel = 100;
+        this.minBrightnessScale = 1.18 / 1.45;
+        this.brightnessScale = 1.0;
         this.currentRealm = null;
         this.targetLighting = null;
         this.currentLighting = {
@@ -160,6 +163,7 @@ export class RenderSystem {
         this.applyLightingPreset('earth', true);
         this.setupPostProcessing();
         this.setGraphicsQuality('high');
+        this.setBrightnessLevel(100);
 
         // Water/Ground are created via `preloadEnvironment()` so the loading screen
         // can reliably wait for textures before gameplay begins.
@@ -443,7 +447,7 @@ export class RenderSystem {
             this.currentLighting.fogColor.copy(this.targetLighting.fogColor);
             this.currentLighting.fogNear = this.targetLighting.fogNear;
             this.currentLighting.fogFar = this.targetLighting.fogFar;
-            this.renderer.toneMappingExposure = this.targetLighting.exposure;
+            this.renderer.toneMappingExposure = this.targetLighting.exposure * this.brightnessScale;
             this.applyLightingState();
             this.applyPostProcessingPreset(this.targetLighting);
         }
@@ -460,6 +464,20 @@ export class RenderSystem {
         if (this.isMobile || this.graphicsQuality === 'low') return 512;
         if (this.graphicsQuality === 'medium') return 768;
         return 1024;
+    }
+
+    getBrightnessScale(level = 100) {
+        const clamped = Math.max(0, Math.min(100, Number(level) || 0));
+        return this.minBrightnessScale + (clamped / 100) * (1 - this.minBrightnessScale);
+    }
+
+    setBrightnessLevel(level = 100) {
+        const clamped = Math.max(0, Math.min(100, Number(level) || 0));
+        this.brightnessLevel = clamped;
+        this.brightnessScale = this.getBrightnessScale(clamped);
+        if (this.targetLighting) {
+            this.renderer.toneMappingExposure = this.targetLighting.exposure * this.brightnessScale;
+        }
     }
 
     setGraphicsQuality(quality = 'high') {
@@ -536,7 +554,8 @@ export class RenderSystem {
         this.currentLighting.keyColor.lerp(this.targetLighting.keyColor, blend);
         this.currentLighting.fillColor.lerp(this.targetLighting.fillColor, blend);
         this.currentLighting.fogColor.lerp(this.targetLighting.fogColor, blend);
-        this.renderer.toneMappingExposure = THREE.MathUtils.lerp(this.renderer.toneMappingExposure, this.targetLighting.exposure, blend);
+        const targetExposure = this.targetLighting.exposure * this.brightnessScale;
+        this.renderer.toneMappingExposure = THREE.MathUtils.lerp(this.renderer.toneMappingExposure, targetExposure, blend);
 
         this.applyLightingState();
 

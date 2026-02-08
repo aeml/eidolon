@@ -1435,6 +1435,16 @@
                         High is the default target and enables full effects. Lower settings reduce post-processing and shadow cost.
                     </div>
                 </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <label for="graphics-brightness" style="color: #ffd700; font-size: 13px;">Brightness</label>
+                        <span id="graphics-brightness-value" style="color: #ddd; font-size: 12px;">100%</span>
+                    </div>
+                    <input id="graphics-brightness" type="range" min="0" max="100" step="1" value="100" style="width: 100%;" />
+                    <div style="font-size: 12px; color: #aaa; line-height: 1.4;">
+                        100% is the new brightest look. 0% matches the earlier darker lighting baseline.
+                    </div>
+                </div>
                 <div style="text-align: center;">
                     <button id="btn-close-settings" class="menu-btn">Close</button>
                 </div>
