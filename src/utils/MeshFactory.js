@@ -202,7 +202,7 @@ export class MeshFactory {
                 } catch (e) {
                     console.warn(`MeshFactory: Failed to preload model ${path}`, e);
                     failures.push({ path, error: e });
-                    if (failFast) {
+                    if (failFast && this.isFatalPreloadError(e)) {
                         throw e;
                     }
                 } finally {
@@ -223,9 +223,53 @@ export class MeshFactory {
         await Promise.all(workers);
 
         if (failures.length > 0 && failFast) {
-            const first = failures[0];
+            const first = failures.find(f => this.isFatalPreloadError(f.error));
+            if (!first) {
+                return;
+            }
             throw new Error(`Model preload failed for ${first.path}: ${first.error?.message || first.error}`);
         }
+    }
+
+    static isFatalPreloadError(error) {
+        const msg = String(error?.message || error || '').toLowerCase();
+
+        // Fatal: true fetch/path/time failures that indicate asset is unavailable.
+        if (msg.includes('404') || msg.includes('timed out') || msg.includes('failed to fetch')) {
+            return true;
+        }
+
+        // Non-fatal: texture decode errors from embedded GLB blobs.
+        // We still keep preloading moving and allow runtime fallback materials.
+        if (msg.includes("couldn't load texture blob") || msg.includes('could not load texture blob')) {
+            return false;
+        }
+
+        // Default to non-fatal to avoid hard lock on renderer-specific decode edge cases.
+        return false;
+    }
+
+    static shouldRetryLoadError(error) {
+        const msg = String(error?.message || error || '').toLowerCase();
+
+        if (msg.includes('404') || msg.includes('not found')) return false;
+
+        if (
+            msg.includes('failed to fetch') ||
+            msg.includes('networkerror') ||
+            msg.includes("couldn't load texture blob") ||
+            msg.includes('could not load texture blob') ||
+            msg.includes('decode') ||
+            msg.includes('aborted')
+        ) {
+            return true;
+        }
+
+        return true;
+    }
+
+    static async sleep(ms) {
+        await new Promise(resolve => setTimeout(resolve, ms));
     }
 
     static async preloadAllModels(options = {}) {
@@ -423,27 +467,39 @@ export class MeshFactory {
         if (this.cache[path]) return this.cache[path];
         if (this.inflight[path]) return this.inflight[path];
 
-        const promise = new Promise((resolve, reject) => {
-            // Use a dedicated loader per request to avoid any shared internal state issues
-            // when we preload concurrently.
-            const loader = new GLTFLoader();
-            loader.load(
-                path,
-                (gltf) => {
+        const maxRetries = 2;
+        const promise = (async () => {
+            let attempt = 0;
+            while (attempt <= maxRetries) {
+                try {
+                    const gltf = await new Promise((resolve, reject) => {
+                        // Use a dedicated loader per request to avoid any shared internal state issues
+                        // when we preload concurrently.
+                        const loader = new GLTFLoader();
+                        loader.load(path, resolve, undefined, reject);
+                    });
                     this.cache[path] = gltf;
-                    delete this.inflight[path];
-                    resolve(gltf);
-                },
-                undefined,
-                (err) => {
-                    delete this.inflight[path];
-                    reject(err);
-                }
-            );
-        });
+                    return gltf;
+                } catch (err) {
+                    const canRetry = attempt < maxRetries && this.shouldRetryLoadError(err);
+                    if (!canRetry) {
+                        throw err;
+                    }
 
-        this.inflight[path] = promise;
-        return promise;
+                    const delayMs = 120 * Math.pow(2, attempt);
+                    console.warn(`MeshFactory: retrying model load (${attempt + 1}/${maxRetries}) for ${path}`, err);
+                    await this.sleep(delayMs);
+                    attempt += 1;
+                }
+            }
+
+            throw new Error(`Failed to load model after retries: ${path}`);
+        })();
+
+        this.inflight[path] = promise.finally(() => {
+            delete this.inflight[path];
+        });
+        return this.inflight[path];
     }
 
     static async createMeshForType(type) {

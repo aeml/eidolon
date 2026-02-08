@@ -50,8 +50,8 @@ describe('MeshFactory.loadModel', () => {
         loadSpy.mockRestore();
     });
 
-    test('clears inflight entry after loader error so retry can proceed', async () => {
-        const expectedError = new Error('load failed');
+    test('clears inflight entry after non-retriable error so next call can retry', async () => {
+        const expectedError = new Error('404 not found');
         const fakeGltf = { scene: { name: 'retry' }, animations: [] };
         let attempt = 0;
         const loadSpy = jest.spyOn(GLTFLoader.prototype, 'load').mockImplementation((path, onLoad, onProgress, onError) => {
@@ -63,10 +63,29 @@ describe('MeshFactory.loadModel', () => {
             }
         });
 
-        await expect(MeshFactory.loadModel('./assets/retry.glb')).rejects.toThrow('load failed');
+        await expect(MeshFactory.loadModel('./assets/retry.glb')).rejects.toThrow('404 not found');
         await expect(MeshFactory.loadModel('./assets/retry.glb')).resolves.toBe(fakeGltf);
 
         expect(loadSpy).toHaveBeenCalledTimes(2);
+
+        loadSpy.mockRestore();
+    });
+
+    test('retries transient loader failures before rejecting', async () => {
+        const transientError = new Error("Couldn't load texture blob:foo");
+        const fakeGltf = { scene: { name: 'retry-transient' }, animations: [] };
+        let attempt = 0;
+        const loadSpy = jest.spyOn(GLTFLoader.prototype, 'load').mockImplementation((path, onLoad, onProgress, onError) => {
+            attempt += 1;
+            if (attempt < 3) {
+                setTimeout(() => onError(transientError), 0);
+            } else {
+                setTimeout(() => onLoad(fakeGltf), 0);
+            }
+        });
+
+        await expect(MeshFactory.loadModel('./assets/retry-transient.glb')).resolves.toBe(fakeGltf);
+        expect(loadSpy).toHaveBeenCalledTimes(3);
 
         loadSpy.mockRestore();
     });
