@@ -119,7 +119,8 @@ export class MeshFactory {
             './assets/summons/avenging_seraph/run.glb',
             './assets/summons/avenging_seraph/attack.glb',
             './assets/summons/avenging_seraph/death.glb',
-            './assets/summons/avenging_seraph.glb',
+            // Do not preload the legacy single-file fallback path.
+            // Some deployments only ship the folder-based assets above.
 
             // World assets (loaded by WorldGenerator)
             './assets/plants/birch.glb',
