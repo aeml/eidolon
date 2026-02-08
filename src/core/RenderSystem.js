@@ -67,7 +67,7 @@ export class RenderSystem {
         this.graphicsQuality = 'high';
         this.bloomQualityScale = 1.0;
         this.effectQualityScale = 1.0;
-        this.brightnessLevel = 100;
+        this.brightnessLevel = 50;
         this.minBrightnessScale = 1.18 / 1.45;
         this.brightnessScale = 1.0;
         this.currentRealm = null;
@@ -163,7 +163,7 @@ export class RenderSystem {
         this.applyLightingPreset('earth', true);
         this.setupPostProcessing();
         this.setGraphicsQuality('high');
-        this.setBrightnessLevel(100);
+        this.setBrightnessLevel(50);
 
         // Water/Ground are created via `preloadEnvironment()` so the loading screen
         // can reliably wait for textures before gameplay begins.
