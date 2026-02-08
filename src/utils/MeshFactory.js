@@ -135,7 +135,44 @@ export class MeshFactory {
         ];
     }
 
-    static async preloadModels(paths, { concurrency = 4, onProgress } = {}) {
+    static isBackgroundPreloadPath(path) {
+        if (!path) return false;
+        return (
+            path.startsWith('./assets/plants/') ||
+            path === './assets/buildings/two_story_building.glb' ||
+            path === './assets/buildings/trading_post.glb' ||
+            path === './assets/buildings/blacksmith.glb' ||
+            path === './assets/buildings/camp_site.glb' ||
+            path.startsWith('./assets/buildings/dungeons/')
+        );
+    }
+
+    static getStartupPreloadModelPaths() {
+        return this.getPreloadModelPaths().filter(path => !this.isBackgroundPreloadPath(path));
+    }
+
+    static getBackgroundPreloadModelPaths() {
+        return this.getPreloadModelPaths().filter(path => this.isBackgroundPreloadPath(path));
+    }
+
+    static async loadModelWithTimeout(path, timeoutMs = 30000) {
+        let timeoutId = null;
+        try {
+            return await Promise.race([
+                this.loadModel(path),
+                new Promise((_, reject) => {
+                    timeoutId = setTimeout(() => {
+                        delete this.inflight[path];
+                        reject(new Error(`Timed out after ${timeoutMs}ms: ${path}`));
+                    }, timeoutMs);
+                })
+            ]);
+        } finally {
+            if (timeoutId) clearTimeout(timeoutId);
+        }
+    }
+
+    static async preloadModels(paths, { concurrency = 2, onProgress, timeoutMs = 30000 } = {}) {
         const unique = Array.from(new Set(paths)).filter(Boolean);
         const total = unique.length;
         let completed = 0;
@@ -155,14 +192,20 @@ export class MeshFactory {
                 if (current >= total) return;
                 const path = unique[current];
                 try {
-                    await this.loadModel(path);
+                    await this.loadModelWithTimeout(path, timeoutMs);
                 } catch (e) {
                     console.warn(`MeshFactory: Failed to preload model ${path}`, e);
                 } finally {
                     completed++;
-                    report();
+                    if (onProgress) {
+                        onProgress(
+                            total === 0 ? 100 : Math.round((completed / total) * 100),
+                            `Loading models (${completed}/${total})`,
+                            { currentPath: path, completed, total }
+                        );
+                    }
                     // Yield to keep UI responsive.
-                    await new Promise(r => setTimeout(r, 0));
+                    await new Promise(r => setTimeout(r, 8));
                 }
             }
         });
@@ -171,6 +214,13 @@ export class MeshFactory {
     }
 
     static async preloadAllModels(options = {}) {
+        const phase = options.phase || 'all';
+        if (phase === 'startup') {
+            return this.preloadModels(this.getStartupPreloadModelPaths(), options);
+        }
+        if (phase === 'background') {
+            return this.preloadModels(this.getBackgroundPreloadModelPaths(), options);
+        }
         return this.preloadModels(this.getPreloadModelPaths(), options);
     }
 

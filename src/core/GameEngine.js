@@ -577,7 +577,9 @@ export class GameEngine {
 
         if (onProgress) onProgress(55, "Preloading models...");
         await MeshFactory.preloadAllModels({
-            concurrency: 4,
+            phase: 'all',
+            concurrency: 1,
+            timeoutMs: 45000,
             onProgress: (p, text) => {
                 if (!onProgress) return;
                 // Map 0..100 -> 55..75

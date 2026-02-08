@@ -71,3 +71,18 @@ describe('MeshFactory.loadModel', () => {
         loadSpy.mockRestore();
     });
 });
+
+describe('MeshFactory preload phases', () => {
+    test('startup preload excludes heavy world assets', () => {
+        const startup = MeshFactory.getStartupPreloadModelPaths();
+        expect(startup).not.toContain('./assets/buildings/trading_post.glb');
+        expect(startup).not.toContain('./assets/buildings/dungeons/the_verdant_bastion.glb');
+        expect(startup).toContain('./assets/archetypes/Fighter/idle.glb');
+    });
+
+    test('background preload contains world assets', () => {
+        const background = MeshFactory.getBackgroundPreloadModelPaths();
+        expect(background).toContain('./assets/buildings/trading_post.glb');
+        expect(background).toContain('./assets/buildings/dungeons/the_verdant_bastion.glb');
+    });
+});

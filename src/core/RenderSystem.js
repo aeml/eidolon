@@ -3,6 +3,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
 
@@ -11,7 +12,7 @@ export class RenderSystem {
         this.scene = new THREE.Scene();
         // Background/ground/water assets are loaded via `preloadEnvironment()`.
         // Keep a non-black fallback so the scene isn't empty if loading fails.
-        this.scene.background = new THREE.Color(0x220033);
+        this.scene.background = new THREE.Color(0x9eb4c9);
         
         // Optimization: Mobile Settings
         this.isMobile = isMobile;
@@ -60,6 +61,7 @@ export class RenderSystem {
         this.renderPass = null;
         this.bloomPass = null;
         this.fxaaPass = null;
+        this.outputPass = null;
         this.usePostProcessing = false;
         this.postProcessingInitFailed = false;
         this.graphicsQuality = 'high';
@@ -83,9 +85,9 @@ export class RenderSystem {
                 ambientIntensity: 2.2,
                 keyIntensity: 2.25,
                 keyColor: 0xffffff,
-                fillColor: 0xdce6ff,
-                fillIntensity: 0.34,
-                fogColor: 0xb7bda7,
+                fillColor: 0xe6eeff,
+                fillIntensity: 0.28,
+                fogColor: 0xc6ccd4,
                 fogNear: 1300,
                 fogFar: 4300,
                 exposure: 1.45,
@@ -97,9 +99,9 @@ export class RenderSystem {
                 ambientIntensity: 2.05,
                 keyIntensity: 2.1,
                 keyColor: 0xf6fbff,
-                fillColor: 0xcbefff,
-                fillIntensity: 0.38,
-                fogColor: 0x86a9bc,
+                fillColor: 0xdbefff,
+                fillIntensity: 0.3,
+                fogColor: 0xb6c8d5,
                 fogNear: 1150,
                 fogFar: 3900,
                 exposure: 1.42,
@@ -110,10 +112,10 @@ export class RenderSystem {
             fire: {
                 ambientIntensity: 2.15,
                 keyIntensity: 2.2,
-                keyColor: 0xfff8f0,
-                fillColor: 0xffdec6,
-                fillIntensity: 0.36,
-                fogColor: 0xbe9a82,
+                keyColor: 0xffffff,
+                fillColor: 0xfff2e8,
+                fillIntensity: 0.28,
+                fogColor: 0xd6c4b6,
                 fogNear: 1050,
                 fogFar: 3600,
                 exposure: 1.44,
@@ -125,9 +127,9 @@ export class RenderSystem {
                 ambientIntensity: 2.2,
                 keyIntensity: 2.2,
                 keyColor: 0xfcfeff,
-                fillColor: 0xd7edff,
-                fillIntensity: 0.34,
-                fogColor: 0xc9d9e3,
+                fillColor: 0xe7f1ff,
+                fillIntensity: 0.28,
+                fogColor: 0xd5dde5,
                 fogNear: 1400,
                 fogFar: 4600,
                 exposure: 1.46,
@@ -178,7 +180,7 @@ export class RenderSystem {
             const texture = await loader.loadAsync('./assets/backgrounds/underground.png');
             this.scene.background = texture;
         } catch {
-            this.scene.background = new THREE.Color(0x220033);
+            this.scene.background = new THREE.Color(0x9eb4c9);
         }
 
         report(33, 'Loading water...');
@@ -380,6 +382,9 @@ export class RenderSystem {
             this.updateFxaaResolution();
             this.composer.addPass(this.fxaaPass);
 
+            this.outputPass = new OutputPass();
+            this.composer.addPass(this.outputPass);
+
             this.usePostProcessing = true;
             this.postProcessingInitFailed = false;
             this.applyPostProcessingPreset(this.targetLighting || this.realmLightingPresets.earth);
@@ -391,6 +396,7 @@ export class RenderSystem {
             this.renderPass = null;
             this.bloomPass = null;
             this.fxaaPass = null;
+            this.outputPass = null;
         }
     }
 
@@ -510,17 +516,7 @@ export class RenderSystem {
         this.fillLight.intensity = this.currentLighting.fillIntensity;
         this.fillLight.color.copy(this.currentLighting.fillColor);
 
-        if (!this.scene.fog) {
-            this.scene.fog = new THREE.Fog(
-                this.currentLighting.fogColor,
-                this.currentLighting.fogNear,
-                this.currentLighting.fogFar
-            );
-        } else {
-            this.scene.fog.color.copy(this.currentLighting.fogColor);
-            this.scene.fog.near = this.currentLighting.fogNear;
-            this.scene.fog.far = this.currentLighting.fogFar;
-        }
+        this.scene.fog = null;
     }
 
     updateEnvironmentLighting(position, dt = 1 / 60) {
