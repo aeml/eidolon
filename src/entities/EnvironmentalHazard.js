@@ -33,6 +33,111 @@ export class EnvironmentalHazard extends Entity {
         
         this.createVisual();
     }
+
+    createLavaMaterial(isInner = false) {
+        const baseColor = isInner ? new THREE.Color(0xffaa00) : new THREE.Color(0xff4500);
+        const hotColor = isInner ? new THREE.Color(0xffdd55) : new THREE.Color(0xff7a2f);
+        return new THREE.ShaderMaterial({
+            uniforms: {
+                uTime: { value: 0 },
+                uBaseColor: { value: baseColor },
+                uHotColor: { value: hotColor },
+                uOpacity: { value: isInner ? 0.9 : 0.8 },
+                uPulse: { value: isInner ? 1.2 : 0.9 },
+                uInnerBoost: { value: isInner ? 1.0 : 0.0 }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform float uTime;
+                uniform vec3 uBaseColor;
+                uniform vec3 uHotColor;
+                uniform float uOpacity;
+                uniform float uPulse;
+                uniform float uInnerBoost;
+                varying vec2 vUv;
+
+                float hash(vec2 p) {
+                    p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+                    return -1.0 + 2.0 * fract(sin(p.x + p.y) * 43758.5453123);
+                }
+
+                float noise(vec2 p) {
+                    vec2 i = floor(p);
+                    vec2 f = fract(p);
+                    vec2 u = f * f * (3.0 - 2.0 * f);
+                    return mix(mix(hash(i + vec2(0.0, 0.0)), hash(i + vec2(1.0, 0.0)), u.x),
+                               mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y) * 0.5 + 0.5;
+                }
+
+                void main() {
+                    vec2 p = (vUv - 0.5) * 3.0;
+                    float radius = length(p);
+                    float edgeMask = smoothstep(1.0, 0.76, radius);
+
+                    float n1 = noise(p * 2.5 + vec2(uTime * 0.9, -uTime * 0.6));
+                    float n2 = noise(p * 5.0 + vec2(-uTime * 1.4, uTime * 1.0));
+                    float lava = n1 * 0.65 + n2 * 0.35;
+
+                    float pulse = 0.8 + sin(uTime * 4.5) * 0.15 * uPulse;
+                    float heatBand = smoothstep(0.55, 0.95, lava + uInnerBoost * 0.1);
+
+                    vec3 color = mix(uBaseColor, uHotColor, heatBand);
+                    color += vec3(0.16, 0.08, 0.0) * (lava * pulse);
+
+                    gl_FragColor = vec4(color, edgeMask * uOpacity * pulse);
+                }
+            `,
+            transparent: true,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+            blending: isInner ? THREE.AdditiveBlending : THREE.NormalBlending
+        });
+    }
+
+    createLightningRingMaterial() {
+        return new THREE.ShaderMaterial({
+            uniforms: {
+                uTime: { value: 0 },
+                uOpacity: { value: 0.45 },
+                uColor: { value: new THREE.Color(0x00bfff) }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform float uTime;
+                uniform float uOpacity;
+                uniform vec3 uColor;
+                varying vec2 vUv;
+
+                void main() {
+                    vec2 p = vUv - 0.5;
+                    float a = atan(p.y, p.x);
+                    float radial = length(p);
+                    float arc = sin(a * 22.0 + uTime * 12.0) * 0.5 + 0.5;
+                    float flicker = sin(uTime * 26.0 + a * 15.0) * 0.5 + 0.5;
+                    float ring = smoothstep(0.53, 0.47, abs(radial - 0.5));
+                    float energy = ring * (0.55 + arc * 0.45) * (0.75 + flicker * 0.25);
+                    vec3 color = uColor + vec3(0.35, 0.35, 0.35) * (arc * flicker * ring);
+                    gl_FragColor = vec4(color, energy * uOpacity);
+                }
+            `,
+            transparent: true,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+        });
+    }
     
     createVisual() {
         switch (this.hazardType) {
@@ -62,13 +167,7 @@ export class EnvironmentalHazard extends Entity {
     createLavaPool() {
         // Base lava pool (glowing ground circle)
         const poolGeo = new THREE.CircleGeometry(this.radius, 32);
-        const poolMat = new THREE.MeshBasicMaterial({
-            color: 0xFF4500,
-            transparent: true,
-            opacity: 0.8,
-            side: THREE.DoubleSide,
-            depthWrite: false
-        });
+        const poolMat = this.createLavaMaterial(false);
         this.groundMesh = new THREE.Mesh(poolGeo, poolMat);
         this.groundMesh.rotation.x = -Math.PI / 2;
         this.groundMesh.position.copy(this.position);
@@ -77,14 +176,7 @@ export class EnvironmentalHazard extends Entity {
         
         // Inner glow (brighter center)
         const innerGeo = new THREE.CircleGeometry(this.radius * 0.6, 32);
-        const innerMat = new THREE.MeshBasicMaterial({
-            color: 0xFFAA00,
-            transparent: true,
-            opacity: 0.9,
-            side: THREE.DoubleSide,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending
-        });
+        const innerMat = this.createLavaMaterial(true);
         this.innerGlow = new THREE.Mesh(innerGeo, innerMat);
         this.innerGlow.rotation.x = -Math.PI / 2;
         this.innerGlow.position.copy(this.position);
@@ -207,13 +299,7 @@ export class EnvironmentalHazard extends Entity {
     createLightningZone() {
         // Ground warning circle
         const ringGeo = new THREE.RingGeometry(this.radius * 0.9, this.radius, 32);
-        const ringMat = new THREE.MeshBasicMaterial({
-            color: 0x00BFFF,
-            transparent: true,
-            opacity: 0.4,
-            side: THREE.DoubleSide,
-            depthWrite: false
-        });
+        const ringMat = this.createLightningRingMaterial();
         this.groundMesh = new THREE.Mesh(ringGeo, ringMat);
         this.groundMesh.rotation.x = -Math.PI / 2;
         this.groundMesh.position.copy(this.position);
@@ -453,12 +539,25 @@ export class EnvironmentalHazard extends Entity {
     }
     
     updateLavaPool(dt) {
+        if (this.groundMesh && this.groundMesh.material.uniforms && this.groundMesh.material.uniforms.uTime) {
+            this.groundMesh.material.uniforms.uTime.value = this.time;
+            this.groundMesh.material.uniforms.uPulse.value = 0.9 + Math.sin(this.time * 3) * 0.2;
+        }
+        if (this.innerGlow && this.innerGlow.material.uniforms && this.innerGlow.material.uniforms.uTime) {
+            this.innerGlow.material.uniforms.uTime.value = this.time * 1.25;
+            this.innerGlow.material.uniforms.uPulse.value = 1.1 + Math.sin(this.time * 4 + 1) * 0.25;
+        }
+
         // Pulse ground glow
         if (this.groundMesh) {
-            this.groundMesh.material.opacity = 0.7 + Math.sin(this.time * 3) * 0.15;
+            if (this.groundMesh.material.opacity !== undefined) {
+                this.groundMesh.material.opacity = 0.7 + Math.sin(this.time * 3) * 0.15;
+            }
         }
         if (this.innerGlow) {
-            this.innerGlow.material.opacity = 0.8 + Math.sin(this.time * 4 + 1) * 0.15;
+            if (this.innerGlow.material.opacity !== undefined) {
+                this.innerGlow.material.opacity = 0.8 + Math.sin(this.time * 4 + 1) * 0.15;
+            }
             this.innerGlow.scale.setScalar(1 + Math.sin(this.time * 2) * 0.1);
         }
         
@@ -537,9 +636,16 @@ export class EnvironmentalHazard extends Entity {
     }
     
     updateLightningZone(dt) {
+        if (this.groundMesh && this.groundMesh.material.uniforms && this.groundMesh.material.uniforms.uTime) {
+            this.groundMesh.material.uniforms.uTime.value = this.time;
+            this.groundMesh.material.uniforms.uOpacity.value = 0.32 + Math.sin(this.time * 5) * 0.18;
+        }
+
         // Pulse warning ring
         if (this.groundMesh) {
-            this.groundMesh.material.opacity = 0.3 + Math.sin(this.time * 5) * 0.2;
+            if (this.groundMesh.material.opacity !== undefined) {
+                this.groundMesh.material.opacity = 0.3 + Math.sin(this.time * 5) * 0.2;
+            }
         }
         
         // Erratic spark particles

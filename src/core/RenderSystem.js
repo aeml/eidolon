@@ -1,4 +1,9 @@
 import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
 
 export class RenderSystem {
@@ -41,6 +46,9 @@ export class RenderSystem {
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
         
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.05;
         // Mobile preset: shadows are a major GPU cost; disable entirely on mobile.
         this.renderer.shadowMap.enabled = !this.isMobile;
         // Optimization: Use PCFSoftShadowMap for better look, or Basic for performance
@@ -48,6 +56,86 @@ export class RenderSystem {
         this.renderer.shadowMap.type = (this.isMobile || isFirefox) ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
         
         this.perfOverlay = null;
+        this.composer = null;
+        this.renderPass = null;
+        this.bloomPass = null;
+        this.fxaaPass = null;
+        this.usePostProcessing = false;
+        this.postProcessingInitFailed = false;
+        this.graphicsQuality = 'high';
+        this.bloomQualityScale = 1.0;
+        this.effectQualityScale = 1.0;
+        this.currentRealm = null;
+        this.targetLighting = null;
+        this.currentLighting = {
+            ambientIntensity: 1.6,
+            keyIntensity: 1.7,
+            keyColor: new THREE.Color(0xffffff),
+            fillColor: new THREE.Color(0x9ab7ff),
+            fillIntensity: 0.35,
+            fogColor: new THREE.Color(0x3a2f4f),
+            fogNear: 260,
+            fogFar: 1200
+        };
+
+        this.realmLightingPresets = {
+            earth: {
+                ambientIntensity: 1.65,
+                keyIntensity: 1.8,
+                keyColor: 0xfff2d9,
+                fillColor: 0xb8d8ff,
+                fillIntensity: 0.32,
+                fogColor: 0x6f7b6f,
+                fogNear: 340,
+                fogFar: 1300,
+                exposure: 1.0,
+                bloomStrength: 0.2,
+                bloomRadius: 0.25,
+                bloomThreshold: 0.84
+            },
+            water: {
+                ambientIntensity: 1.45,
+                keyIntensity: 1.55,
+                keyColor: 0xcde8ff,
+                fillColor: 0x88d7ff,
+                fillIntensity: 0.45,
+                fogColor: 0x32586d,
+                fogNear: 260,
+                fogFar: 980,
+                exposure: 0.96,
+                bloomStrength: 0.28,
+                bloomRadius: 0.35,
+                bloomThreshold: 0.78
+            },
+            fire: {
+                ambientIntensity: 1.7,
+                keyIntensity: 2.05,
+                keyColor: 0xffc29a,
+                fillColor: 0xff8e63,
+                fillIntensity: 0.38,
+                fogColor: 0x5a3426,
+                fogNear: 240,
+                fogFar: 920,
+                exposure: 1.08,
+                bloomStrength: 0.34,
+                bloomRadius: 0.3,
+                bloomThreshold: 0.74
+            },
+            air: {
+                ambientIntensity: 1.55,
+                keyIntensity: 1.9,
+                keyColor: 0xe8f8ff,
+                fillColor: 0x9bd8ff,
+                fillIntensity: 0.42,
+                fogColor: 0x92b7cc,
+                fogNear: 360,
+                fogFar: 1450,
+                exposure: 1.03,
+                bloomStrength: 0.24,
+                bloomRadius: 0.3,
+                bloomThreshold: 0.82
+            }
+        };
         this.perfStats = {
             lastTime: performance.now(),
             lastUpdate: performance.now(),
@@ -67,6 +155,9 @@ export class RenderSystem {
 
         // Lighting
         this.setupLights();
+        this.applyLightingPreset('earth', true);
+        this.setupPostProcessing();
+        this.setGraphicsQuality('high');
 
         // Water/Ground are created via `preloadEnvironment()` so the loading screen
         // can reliably wait for textures before gameplay begins.
@@ -103,13 +194,7 @@ export class RenderSystem {
 
             if (!this.waterPlane) {
                 const geo = new THREE.PlaneGeometry(10000, 10000);
-                const mat = new THREE.MeshBasicMaterial({
-                    map: this.waterTexture,
-                    color: 0x88ccff,
-                    transparent: true,
-                    opacity: 0.8,
-                    depthWrite: false // Prevent water from occluding ground planes above it
-                });
+                const mat = this.createWaterMaterial(this.waterTexture);
                 this.waterPlane = new THREE.Mesh(geo, mat);
                 this.waterPlane.rotation.x = -Math.PI / 2;
                 this.waterPlane.position.y = -5;
@@ -228,6 +313,16 @@ export class RenderSystem {
     }
 
     setupLights() {
+        if (this.ambientLight && this.ambientLight.parent) {
+            this.scene.remove(this.ambientLight);
+        }
+        if (this.keyLight && this.keyLight.parent) {
+            this.scene.remove(this.keyLight);
+        }
+        if (this.fillLight && this.fillLight.parent) {
+            this.scene.remove(this.fillLight);
+        }
+
         const ambientLight = new THREE.AmbientLight(0x404040, 2); // Soft white light
         this.scene.add(ambientLight);
 
@@ -238,7 +333,7 @@ export class RenderSystem {
         // Optimization: Reduce Shadow Map Size on Mobile
         // 512 is much lighter on VRAM than 1024/2048
         // Reduced desktop to 1024 for better performance
-        const shadowSize = this.isMobile ? 512 : 1024;
+        const shadowSize = this.getShadowMapSize();
         dirLight.shadow.mapSize.width = shadowSize;
         dirLight.shadow.mapSize.height = shadowSize;
         
@@ -248,6 +343,213 @@ export class RenderSystem {
         dirLight.shadow.camera.top = d;
         dirLight.shadow.camera.bottom = -d;
         this.scene.add(dirLight);
+
+        const fillLight = new THREE.DirectionalLight(0x99b7ff, 0.35);
+        fillLight.position.set(-14, 12, -8);
+        fillLight.castShadow = false;
+        this.scene.add(fillLight);
+
+        this.ambientLight = ambientLight;
+        this.keyLight = dirLight;
+        this.fillLight = fillLight;
+    }
+
+    setupPostProcessing() {
+        const params = new URLSearchParams(window.location.search);
+        const forcePost = params.get('post') === '1';
+        const disablePost = params.get('post') === '0';
+        if (disablePost || this.graphicsQuality === 'low' || (this.isMobile && !forcePost)) {
+            this.usePostProcessing = false;
+            return;
+        }
+
+        try {
+            this.composer = new EffectComposer(this.renderer);
+            this.renderPass = new RenderPass(this.scene, this.camera);
+            this.composer.addPass(this.renderPass);
+
+            this.bloomPass = new UnrealBloomPass(
+                new THREE.Vector2(window.innerWidth, window.innerHeight),
+                0.24,
+                0.3,
+                0.82
+            );
+            this.composer.addPass(this.bloomPass);
+
+            this.fxaaPass = new ShaderPass(FXAAShader);
+            this.updateFxaaResolution();
+            this.composer.addPass(this.fxaaPass);
+
+            this.usePostProcessing = true;
+            this.postProcessingInitFailed = false;
+            this.applyPostProcessingPreset(this.targetLighting || this.realmLightingPresets.earth);
+        } catch (error) {
+            console.warn('RenderSystem: Post-processing disabled due to setup failure.', error);
+            this.usePostProcessing = false;
+            this.postProcessingInitFailed = true;
+            this.composer = null;
+            this.renderPass = null;
+            this.bloomPass = null;
+            this.fxaaPass = null;
+        }
+    }
+
+    updateFxaaResolution() {
+        if (!this.fxaaPass) return;
+        const pixelRatio = this.renderer.getPixelRatio();
+        this.fxaaPass.material.uniforms.resolution.value.set(
+            1 / (window.innerWidth * pixelRatio),
+            1 / (window.innerHeight * pixelRatio)
+        );
+    }
+
+    getRealmForPosition(position) {
+        if (!position) return 'earth';
+        if (position.z < -600) return 'water';
+        if (position.x < -1000) return 'fire';
+        if (position.x > 1000) return 'air';
+        return 'earth';
+    }
+
+    applyLightingPreset(realm, immediate = false) {
+        const preset = this.realmLightingPresets[realm] || this.realmLightingPresets.earth;
+        this.targetLighting = {
+            ambientIntensity: preset.ambientIntensity,
+            keyIntensity: preset.keyIntensity,
+            keyColor: new THREE.Color(preset.keyColor),
+            fillColor: new THREE.Color(preset.fillColor),
+            fillIntensity: preset.fillIntensity,
+            fogColor: new THREE.Color(preset.fogColor),
+            fogNear: preset.fogNear,
+            fogFar: preset.fogFar,
+            exposure: preset.exposure,
+            bloomStrength: preset.bloomStrength,
+            bloomRadius: preset.bloomRadius,
+            bloomThreshold: preset.bloomThreshold
+        };
+
+        if (immediate) {
+            this.currentLighting.ambientIntensity = this.targetLighting.ambientIntensity;
+            this.currentLighting.keyIntensity = this.targetLighting.keyIntensity;
+            this.currentLighting.keyColor.copy(this.targetLighting.keyColor);
+            this.currentLighting.fillColor.copy(this.targetLighting.fillColor);
+            this.currentLighting.fillIntensity = this.targetLighting.fillIntensity;
+            this.currentLighting.fogColor.copy(this.targetLighting.fogColor);
+            this.currentLighting.fogNear = this.targetLighting.fogNear;
+            this.currentLighting.fogFar = this.targetLighting.fogFar;
+            this.renderer.toneMappingExposure = this.targetLighting.exposure;
+            this.applyLightingState();
+            this.applyPostProcessingPreset(this.targetLighting);
+        }
+    }
+
+    applyPostProcessingPreset(preset) {
+        if (!this.bloomPass) return;
+        this.bloomPass.strength = preset.bloomStrength * this.bloomQualityScale;
+        this.bloomPass.radius = preset.bloomRadius;
+        this.bloomPass.threshold = preset.bloomThreshold;
+    }
+
+    getShadowMapSize() {
+        if (this.isMobile || this.graphicsQuality === 'low') return 512;
+        if (this.graphicsQuality === 'medium') return 768;
+        return 1024;
+    }
+
+    setGraphicsQuality(quality = 'high') {
+        const normalized = (quality === 'low' || quality === 'medium' || quality === 'high') ? quality : 'high';
+        const previousQuality = this.graphicsQuality;
+        this.graphicsQuality = normalized;
+        this.bloomQualityScale = normalized === 'high' ? 1.0 : (normalized === 'medium' ? 0.66 : 0.0);
+        this.effectQualityScale = normalized === 'high' ? 1.0 : (normalized === 'medium' ? 0.78 : 0.52);
+
+        const isFirefox = /firefox/i.test(navigator.userAgent);
+        const allowShadows = normalized !== 'low' && !this.isMobile;
+        this.renderer.shadowMap.enabled = allowShadows;
+        this.renderer.shadowMap.type = (allowShadows && !isFirefox && normalized === 'high')
+            ? THREE.PCFSoftShadowMap
+            : THREE.BasicShadowMap;
+
+        if (this.keyLight) {
+            this.keyLight.castShadow = allowShadows;
+            const shadowSize = this.getShadowMapSize();
+            this.keyLight.shadow.mapSize.width = shadowSize;
+            this.keyLight.shadow.mapSize.height = shadowSize;
+            this.keyLight.shadow.needsUpdate = true;
+        }
+
+        if (normalized === 'low') {
+            this.usePostProcessing = false;
+        } else {
+            if (!this.composer) {
+                this.setupPostProcessing();
+            }
+            this.usePostProcessing = !!this.composer;
+        }
+
+        if (this.targetLighting) {
+            this.applyPostProcessingPreset(this.targetLighting);
+        }
+
+        const reloadRequired = normalized !== 'low' && !this.composer && this.postProcessingInitFailed;
+        return {
+            changed: previousQuality !== normalized,
+            reloadRequired
+        };
+    }
+
+    getEffectQualityScale() {
+        return this.effectQualityScale;
+    }
+
+    applyLightingState() {
+        if (!this.ambientLight || !this.keyLight || !this.fillLight) return;
+        this.ambientLight.intensity = this.currentLighting.ambientIntensity;
+        this.keyLight.intensity = this.currentLighting.keyIntensity;
+        this.keyLight.color.copy(this.currentLighting.keyColor);
+        this.fillLight.intensity = this.currentLighting.fillIntensity;
+        this.fillLight.color.copy(this.currentLighting.fillColor);
+
+        if (!this.scene.fog) {
+            this.scene.fog = new THREE.Fog(
+                this.currentLighting.fogColor,
+                this.currentLighting.fogNear,
+                this.currentLighting.fogFar
+            );
+        } else {
+            this.scene.fog.color.copy(this.currentLighting.fogColor);
+            this.scene.fog.near = this.currentLighting.fogNear;
+            this.scene.fog.far = this.currentLighting.fogFar;
+        }
+    }
+
+    updateEnvironmentLighting(position, dt = 1 / 60) {
+        const realm = this.getRealmForPosition(position);
+        if (realm !== this.currentRealm || !this.targetLighting) {
+            this.currentRealm = realm;
+            this.applyLightingPreset(realm, false);
+        }
+        if (!this.targetLighting) return;
+
+        const blend = Math.min(1, dt * 2.8);
+        this.currentLighting.ambientIntensity = THREE.MathUtils.lerp(this.currentLighting.ambientIntensity, this.targetLighting.ambientIntensity, blend);
+        this.currentLighting.keyIntensity = THREE.MathUtils.lerp(this.currentLighting.keyIntensity, this.targetLighting.keyIntensity, blend);
+        this.currentLighting.fillIntensity = THREE.MathUtils.lerp(this.currentLighting.fillIntensity, this.targetLighting.fillIntensity, blend);
+        this.currentLighting.fogNear = THREE.MathUtils.lerp(this.currentLighting.fogNear, this.targetLighting.fogNear, blend);
+        this.currentLighting.fogFar = THREE.MathUtils.lerp(this.currentLighting.fogFar, this.targetLighting.fogFar, blend);
+        this.currentLighting.keyColor.lerp(this.targetLighting.keyColor, blend);
+        this.currentLighting.fillColor.lerp(this.targetLighting.fillColor, blend);
+        this.currentLighting.fogColor.lerp(this.targetLighting.fogColor, blend);
+        this.renderer.toneMappingExposure = THREE.MathUtils.lerp(this.renderer.toneMappingExposure, this.targetLighting.exposure, blend);
+
+        this.applyLightingState();
+
+        if (this.bloomPass) {
+            const targetStrength = this.targetLighting.bloomStrength * this.bloomQualityScale;
+            this.bloomPass.strength = THREE.MathUtils.lerp(this.bloomPass.strength, targetStrength, blend);
+            this.bloomPass.radius = THREE.MathUtils.lerp(this.bloomPass.radius, this.targetLighting.bloomRadius, blend);
+            this.bloomPass.threshold = THREE.MathUtils.lerp(this.bloomPass.threshold, this.targetLighting.bloomThreshold, blend);
+        }
     }
 
     // setupWater/setupGround were replaced by `preloadEnvironment()`.
@@ -266,6 +568,83 @@ export class RenderSystem {
         // Deprecated: Ground is now split
     }
 
+    createWaterMaterial(texture) {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('waterShader') === '0') {
+            return new THREE.MeshBasicMaterial({
+                map: texture,
+                color: 0x88ccff,
+                transparent: true,
+                opacity: 0.8,
+                depthWrite: false
+            });
+        }
+
+        return new THREE.ShaderMaterial({
+            uniforms: {
+                uMap: { value: texture },
+                uTime: { value: 0 },
+                uFlowSpeed: { value: 0.03 },
+                uDistortion: { value: 0.025 },
+                uColorNear: { value: new THREE.Color(0x4d8bb0) },
+                uColorFar: { value: new THREE.Color(0x8ed0f0) },
+                uOpacity: { value: 0.78 }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                varying vec3 vWorldPos;
+                varying vec3 vNormalW;
+
+                void main() {
+                    vUv = uv;
+                    vec4 worldPos = modelMatrix * vec4(position, 1.0);
+                    vWorldPos = worldPos.xyz;
+                    vNormalW = normalize(mat3(modelMatrix) * normal);
+                    gl_Position = projectionMatrix * viewMatrix * worldPos;
+                }
+            `,
+            fragmentShader: `
+                uniform sampler2D uMap;
+                uniform float uTime;
+                uniform float uFlowSpeed;
+                uniform float uDistortion;
+                uniform vec3 uColorNear;
+                uniform vec3 uColorFar;
+                uniform float uOpacity;
+
+                varying vec2 vUv;
+                varying vec3 vWorldPos;
+                varying vec3 vNormalW;
+
+                void main() {
+                    vec2 flowA = vec2(uTime * uFlowSpeed, uTime * uFlowSpeed * 0.65);
+                    vec2 flowB = vec2(-uTime * uFlowSpeed * 0.42, uTime * uFlowSpeed * 0.31);
+                    vec2 sampleUvA = vUv * 6.0 + flowA;
+                    vec2 sampleUvB = vUv * 9.5 + flowB;
+
+                    float waveA = texture2D(uMap, sampleUvA).r;
+                    float waveB = texture2D(uMap, sampleUvB).g;
+                    float waves = (waveA * 0.6 + waveB * 0.4);
+
+                    vec2 distortUv = vUv * 4.0 + vec2(waveB, waveA) * uDistortion;
+                    vec3 baseTex = texture2D(uMap, distortUv).rgb;
+
+                    vec3 viewDir = normalize(cameraPosition - vWorldPos);
+                    float fresnel = pow(1.0 - max(dot(normalize(vNormalW), viewDir), 0.0), 2.0);
+
+                    vec3 waterColor = mix(uColorNear, uColorFar, fresnel);
+                    waterColor = mix(waterColor, baseTex, 0.35);
+                    waterColor += vec3(0.08, 0.14, 0.18) * waves;
+
+                    float alpha = uOpacity + fresnel * 0.12;
+                    gl_FragColor = vec4(waterColor, alpha);
+                }
+            `,
+            transparent: true,
+            depthWrite: false
+        });
+    }
+
     onWindowResize() {
         const aspect = window.innerWidth / window.innerHeight;
         const d = this.currentZoom;
@@ -277,6 +656,10 @@ export class RenderSystem {
         
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+        if (this.composer) {
+            this.composer.setSize(window.innerWidth, window.innerHeight);
+        }
+        this.updateFxaaResolution();
     }
 
     setZoom(zoomLevel) {
@@ -315,10 +698,18 @@ export class RenderSystem {
     render() {
         if (this.waterTexture) {
             const time = performance.now() * 0.0001;
-            this.waterTexture.offset.x = time;
-            this.waterTexture.offset.y = time;
+            if (this.waterPlane && this.waterPlane.material && this.waterPlane.material.uniforms && this.waterPlane.material.uniforms.uTime) {
+                this.waterPlane.material.uniforms.uTime.value = time;
+            } else {
+                this.waterTexture.offset.x = time;
+                this.waterTexture.offset.y = time;
+            }
         }
-        this.renderer.render(this.scene, this.camera);
+        if (this.usePostProcessing && this.composer) {
+            this.composer.render();
+        } else {
+            this.renderer.render(this.scene, this.camera);
+        }
         this.updatePerfOverlay();
     }
 
@@ -365,6 +756,9 @@ export class RenderSystem {
 
 
     dispose() {
+        if (this.composer) {
+            this.composer.dispose();
+        }
         if (this.renderer) {
             this.renderer.dispose();
             if (this.renderer.domElement && this.renderer.domElement.parentNode) {

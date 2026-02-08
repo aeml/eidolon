@@ -38,14 +38,17 @@ export class UIManager {
         // Escape Menu & Help
         this.escMenu = document.getElementById('esc-menu');
         this.helpScreen = document.getElementById('help-screen');
+        this.settingsScreen = document.getElementById('settings-screen');
         this.patchNotesScreen = document.getElementById('patch-notes-screen');
 
         this.btnResume = document.getElementById('btn-resume');
         this.btnHelp = document.getElementById('btn-help');
+        this.btnSettings = document.getElementById('btn-settings');
         this.btnPatchNotes = document.getElementById('btn-patch-notes');
         this.btnReport = document.getElementById('btn-report');
         this.btnMenu = document.getElementById('btn-menu');
         this.btnCloseHelp = document.getElementById('btn-close-help');
+        this.btnCloseSettings = document.getElementById('btn-close-settings');
         this.btnClosePatchNotes = document.getElementById('btn-close-patch-notes');
         this.btnRespawn = document.getElementById('btn-respawn');
         this.btnCloseShop = document.getElementById('btn-close-shop');
@@ -91,6 +94,7 @@ export class UIManager {
         this.btnSubmitReport = document.getElementById('btn-submit-report');
         this.reportType = document.getElementById('report-type');
         this.reportText = document.getElementById('report-text');
+        this.graphicsQualitySelect = document.getElementById('graphics-quality');
 
         this.btnSellCommon = document.getElementById('btn-sell-common');
         this.btnSellUncommon = document.getElementById('btn-sell-uncommon');
@@ -98,15 +102,27 @@ export class UIManager {
 
         if (this.btnResume) this.btnResume.addEventListener('click', () => this.toggleEscMenu());
         if (this.btnHelp) this.btnHelp.addEventListener('click', () => this.toggleHelp());
+        if (this.btnSettings) this.btnSettings.addEventListener('click', () => this.toggleSettings());
         if (this.btnPatchNotes) this.btnPatchNotes.addEventListener('click', () => this.togglePatchNotes());
         if (this.btnReport) this.btnReport.addEventListener('click', () => this.toggleReport());
         if (this.btnMenu) this.btnMenu.addEventListener('click', () => location.reload());
         if (this.btnCloseHelp) this.btnCloseHelp.addEventListener('click', () => this.toggleHelp());
+        if (this.btnCloseSettings) this.btnCloseSettings.addEventListener('click', () => this.toggleSettings());
         if (this.btnClosePatchNotes) this.btnClosePatchNotes.addEventListener('click', (e) => {
             console.log("Close Patch Notes Button Clicked");
             this.togglePatchNotes();
             e.stopPropagation();
         });
+
+        this.onGraphicsQualityChange = null;
+        this.graphicsQuality = localStorage.getItem('eidolon.graphicsQuality') || 'high';
+        if (this.graphicsQualitySelect) {
+            this.graphicsQualitySelect.value = this.graphicsQuality;
+            this.graphicsQualitySelect.addEventListener('change', () => {
+                const nextQuality = this.graphicsQualitySelect.value;
+                this.setGraphicsQuality(nextQuality);
+            });
+        }
         if (this.btnCloseShop) this.btnCloseShop.addEventListener('click', () => this.toggleShop());
         if (this.btnCloseStash) this.btnCloseStash.addEventListener('click', () => this.toggleStash());
         
@@ -3602,6 +3618,7 @@ export class UIManager {
         // If closing menu, also close help/patch notes if open
         if (!isHidden) {
             this.helpScreen.style.display = 'none';
+            if (this.settingsScreen) this.settingsScreen.style.display = 'none';
             this.patchNotesScreen.style.display = 'none';
             this.reportScreen.style.display = 'none';
         }
@@ -3611,16 +3628,30 @@ export class UIManager {
         const isHidden = this.helpScreen.style.display === 'none' || this.helpScreen.style.display === '';
         this.helpScreen.style.display = isHidden ? 'block' : 'none';
         if (!isHidden) {
+            if (this.settingsScreen) this.settingsScreen.style.display = 'none';
             this.patchNotesScreen.style.display = 'none'; // Close other windows
             this.reportScreen.style.display = 'none';
         }
     }
+
+    toggleSettings() {
+        if (!this.settingsScreen) return;
+        const isHidden = this.settingsScreen.style.display === 'none' || this.settingsScreen.style.display === '';
+        this.settingsScreen.style.display = isHidden ? 'block' : 'none';
+        if (isHidden) {
+            this.helpScreen.style.display = 'none';
+            this.patchNotesScreen.style.display = 'none';
+            this.reportScreen.style.display = 'none';
+        }
+    }
+
     togglePatchNotes() {
         console.log("Toggling Patch Notes");
         const isHidden = this.patchNotesScreen.style.display === 'none' || this.patchNotesScreen.style.display === '';
         this.patchNotesScreen.style.display = isHidden ? 'flex' : 'none'; // Flex for layout
         if (isHidden) {
             this.helpScreen.style.display = 'none'; // Close other windows
+            if (this.settingsScreen) this.settingsScreen.style.display = 'none';
             this.reportScreen.style.display = 'none';
         }
     }
@@ -3630,8 +3661,32 @@ export class UIManager {
         this.reportScreen.style.display = isHidden ? 'block' : 'none';
         if (isHidden) {
             this.helpScreen.style.display = 'none';
+            if (this.settingsScreen) this.settingsScreen.style.display = 'none';
             this.patchNotesScreen.style.display = 'none';
         }
+    }
+
+    setGraphicsQuality(quality) {
+        const valid = quality === 'low' || quality === 'medium' || quality === 'high';
+        const nextQuality = valid ? quality : 'high';
+        this.graphicsQuality = nextQuality;
+        localStorage.setItem('eidolon.graphicsQuality', nextQuality);
+        if (this.graphicsQualitySelect && this.graphicsQualitySelect.value !== nextQuality) {
+            this.graphicsQualitySelect.value = nextQuality;
+        }
+        if (this.onGraphicsQualityChange) {
+            const applyResult = this.onGraphicsQualityChange(nextQuality);
+            if (applyResult && applyResult.reloadRequired) {
+                const shouldReload = window.confirm('Some graphics features need a reload to fully apply. Reload now?');
+                if (shouldReload) {
+                    window.location.reload();
+                }
+            }
+        }
+    }
+
+    getGraphicsQuality() {
+        return this.graphicsQuality || 'high';
     }
 
     toggleShop() {
@@ -3799,6 +3854,10 @@ export class UIManager {
         // 2. Close Help/Patch Screens
         if (this.patchNotesScreen.style.display === 'flex') {
             this.patchNotesScreen.style.display = 'none';
+            closedSomething = true;
+        }
+        if (this.settingsScreen && this.settingsScreen.style.display === 'block') {
+            this.settingsScreen.style.display = 'none';
             closedSomething = true;
         }
         if (this.reportScreen.style.display === 'block') {
