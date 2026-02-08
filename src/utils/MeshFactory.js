@@ -157,6 +157,9 @@ export class MeshFactory {
     }
 
     static async loadModelWithTimeout(path, timeoutMs = 30000) {
+        if (!timeoutMs || timeoutMs <= 0) {
+            return this.loadModel(path);
+        }
         let timeoutId = null;
         try {
             return await Promise.race([
@@ -173,10 +176,11 @@ export class MeshFactory {
         }
     }
 
-    static async preloadModels(paths, { concurrency = 2, onProgress, timeoutMs = 30000 } = {}) {
+    static async preloadModels(paths, { concurrency = 2, onProgress, timeoutMs = 0, failFast = false } = {}) {
         const unique = Array.from(new Set(paths)).filter(Boolean);
         const total = unique.length;
         let completed = 0;
+        const failures = [];
 
         const report = () => {
             if (!onProgress) return;
@@ -196,6 +200,10 @@ export class MeshFactory {
                     await this.loadModelWithTimeout(path, timeoutMs);
                 } catch (e) {
                     console.warn(`MeshFactory: Failed to preload model ${path}`, e);
+                    failures.push({ path, error: e });
+                    if (failFast) {
+                        throw e;
+                    }
                 } finally {
                     completed++;
                     if (onProgress) {
@@ -212,6 +220,11 @@ export class MeshFactory {
         });
 
         await Promise.all(workers);
+
+        if (failures.length > 0 && failFast) {
+            const first = failures[0];
+            throw new Error(`Model preload failed for ${first.path}: ${first.error?.message || first.error}`);
+        }
     }
 
     static async preloadAllModels(options = {}) {
