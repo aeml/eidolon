@@ -55,6 +55,7 @@ export class MeshFactory {
 
             './assets/enemies/undead/construct/idle.glb',
             './assets/enemies/undead/construct/walk.glb',
+            './assets/enemies/undead/construct/run.glb',
             './assets/enemies/undead/construct/attack.glb',
             './assets/enemies/undead/construct/death.glb',
 
@@ -983,6 +984,11 @@ export class MeshFactory {
                 } catch (e) {}
 
                 try {
+                    const runGltf = await this.loadModel('./assets/enemies/undead/construct/run.glb');
+                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
+                } catch (e) {}
+
+                try {
                     const attackGltf = await this.loadModel('./assets/enemies/undead/construct/attack.glb');
                     if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
                 } catch (e) {}
@@ -1469,6 +1475,11 @@ export class MeshFactory {
                 try {
                     const walkGltf = await this.loadModel('./assets/enemies/undead/construct/walk.glb');
                     if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
+                } catch (e) {}
+
+                try {
+                    const runGltf = await this.loadModel('./assets/enemies/undead/construct/run.glb');
+                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
                 } catch (e) {}
 
                 try {
