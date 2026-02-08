@@ -237,13 +237,22 @@ export class Actor extends Entity {
             } else if (this.state === 'ATTACKING') {
                 this.playAnimation('Attack', false);
             } else if (this.state === 'MOVING') {
-                this.playAnimation('Run');
+                const moveAnim = this.getMovementAnimationName(this.isRunning);
+                if (moveAnim) this.playAnimation(moveAnim);
             } else {
                 if (this.animations['Idle']) {
                     this.playAnimation('Idle');
                 }
             }
         }
+    }
+
+    getMovementAnimationName(preferRun = true) {
+        if (preferRun && this.animations['Run']) return 'Run';
+        if (this.animations['Walk']) return 'Walk';
+        if (this.animations['Run']) return 'Run';
+        if (this.animations['Idle']) return 'Idle';
+        return null;
     }
 
     playAnimation(name, loop = true, force = false) {
@@ -304,7 +313,8 @@ export class Actor extends Entity {
         // Only trigger animation if changing state
         if (this.state !== 'MOVING') {
             this.state = 'MOVING';
-            this.playAnimation('Walk'); // Or 'Run'
+            const moveAnim = this.getMovementAnimationName(this.isRunning);
+            if (moveAnim) this.playAnimation(moveAnim);
         }
     }
 
@@ -688,9 +698,11 @@ export class Actor extends Entity {
                     this.currentAction.setEffectiveTimeScale(timeScale);
                 }
             } else if (this.isCharging) {
-                this.playAnimation('Run');
+                const moveAnim = this.getMovementAnimationName(true);
+                if (moveAnim) this.playAnimation(moveAnim);
             } else if (this.state === 'MOVING') {
-                this.playAnimation('Run');
+                const moveAnim = this.getMovementAnimationName(this.isRunning);
+                if (moveAnim) this.playAnimation(moveAnim);
             } else {
                 this.playAnimation('Idle');
             }
@@ -833,11 +845,8 @@ export class Actor extends Entity {
                 }
                 
                 // Update Animation Speed based on movement type
-                if (this.isRunning) {
-                     this.playAnimation('Run');
-                } else {
-                     this.playAnimation('Walk');
-                }
+                const moveAnim = this.getMovementAnimationName(this.isRunning);
+                if (moveAnim) this.playAnimation(moveAnim);
 
                 // Scale animation speed with movement speed
                 if (this.currentAction && this.scaleAnimSpeed) {
