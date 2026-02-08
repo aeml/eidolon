@@ -95,6 +95,8 @@ export class UIManager {
         this.reportType = document.getElementById('report-type');
         this.reportText = document.getElementById('report-text');
         this.graphicsQualitySelect = document.getElementById('graphics-quality');
+        this.graphicsBrightnessSlider = document.getElementById('graphics-brightness');
+        this.graphicsBrightnessValue = document.getElementById('graphics-brightness-value');
 
         this.btnSellCommon = document.getElementById('btn-sell-common');
         this.btnSellUncommon = document.getElementById('btn-sell-uncommon');
@@ -115,6 +117,7 @@ export class UIManager {
         });
 
         this.onGraphicsQualityChange = null;
+        this.onBrightnessChange = null;
         this.graphicsQuality = localStorage.getItem('eidolon.graphicsQuality') || 'high';
         if (this.graphicsQualitySelect) {
             this.graphicsQualitySelect.value = this.graphicsQuality;
@@ -123,6 +126,16 @@ export class UIManager {
                 this.setGraphicsQuality(nextQuality);
             });
         }
+
+        const storedBrightness = Number(localStorage.getItem('eidolon.graphicsBrightness'));
+        this.graphicsBrightness = Number.isFinite(storedBrightness) ? Math.max(0, Math.min(100, storedBrightness)) : 100;
+        if (this.graphicsBrightnessSlider) {
+            this.graphicsBrightnessSlider.value = String(this.graphicsBrightness);
+            this.graphicsBrightnessSlider.addEventListener('input', () => {
+                this.setBrightnessLevel(Number(this.graphicsBrightnessSlider.value));
+            });
+        }
+        this.updateBrightnessLabel();
         if (this.btnCloseShop) this.btnCloseShop.addEventListener('click', () => this.toggleShop());
         if (this.btnCloseStash) this.btnCloseStash.addEventListener('click', () => this.toggleStash());
         
@@ -3687,6 +3700,30 @@ export class UIManager {
 
     getGraphicsQuality() {
         return this.graphicsQuality || 'high';
+    }
+
+    updateBrightnessLabel() {
+        if (this.graphicsBrightnessValue) {
+            this.graphicsBrightnessValue.textContent = `${Math.round(this.graphicsBrightness)}%`;
+        }
+    }
+
+    setBrightnessLevel(level) {
+        const numericLevel = Number.isFinite(level) ? level : 100;
+        const clamped = Math.max(0, Math.min(100, numericLevel));
+        this.graphicsBrightness = clamped;
+        localStorage.setItem('eidolon.graphicsBrightness', String(clamped));
+        if (this.graphicsBrightnessSlider && Number(this.graphicsBrightnessSlider.value) !== clamped) {
+            this.graphicsBrightnessSlider.value = String(clamped);
+        }
+        this.updateBrightnessLabel();
+        if (this.onBrightnessChange) {
+            this.onBrightnessChange(clamped);
+        }
+    }
+
+    getBrightnessLevel() {
+        return this.graphicsBrightness;
     }
 
     toggleShop() {

@@ -94,7 +94,11 @@ export class GameEngine {
         this.uiManager.onGraphicsQualityChange = (quality) => {
             return this.renderSystem.setGraphicsQuality(quality);
         };
+        this.uiManager.onBrightnessChange = (level) => {
+            this.renderSystem.setBrightnessLevel(level);
+        };
         this.renderSystem.setGraphicsQuality(this.uiManager.getGraphicsQuality());
+        this.renderSystem.setBrightnessLevel(this.uiManager.getBrightnessLevel());
         this.effects = []; // Active visual effects
         this.hazards = new Map(); // Environmental hazards (id -> EnvironmentalHazard)
         this.currentInstanceId = null; // Track current instance to prevent state desync
