@@ -68,7 +68,9 @@ export class RenderSystem {
         this.bloomQualityScale = 1.0;
         this.effectQualityScale = 1.0;
         this.brightnessLevel = 50;
-        this.minBrightnessScale = 1.18 / 1.45;
+        const legacyMinBrightnessScale = 1.18 / 1.45;
+        this.minBrightnessScale = 0.6;
+        this.midBrightnessScale = legacyMinBrightnessScale + 0.5 * (1 - legacyMinBrightnessScale);
         this.brightnessScale = 1.0;
         this.currentRealm = null;
         this.targetLighting = null;
@@ -113,18 +115,18 @@ export class RenderSystem {
                 bloomThreshold: 0.78
             },
             fire: {
-                ambientIntensity: 2.15,
-                keyIntensity: 2.2,
+                ambientIntensity: 2.05,
+                keyIntensity: 2.1,
                 keyColor: 0xffffff,
                 fillColor: 0xfff2e8,
-                fillIntensity: 0.28,
+                fillIntensity: 0.24,
                 fogColor: 0xd6c4b6,
                 fogNear: 1050,
                 fogFar: 3600,
-                exposure: 1.44,
-                bloomStrength: 0.34,
-                bloomRadius: 0.3,
-                bloomThreshold: 0.74
+                exposure: 1.36,
+                bloomStrength: 0.26,
+                bloomRadius: 0.28,
+                bloomThreshold: 0.8
             },
             air: {
                 ambientIntensity: 2.2,
@@ -279,7 +281,7 @@ export class RenderSystem {
             const fireGeo = new THREE.PlaneGeometry(realmWidth, realmDepth);
             const fireMat = new THREE.MeshStandardMaterial({
                 map: this.groundTexture,
-                color: 0xFF6633, // Orange-red tint for scorched earth
+                color: 0xD1542A, // Orange-red tint for scorched earth
                 roughness: 0.9,
                 metalness: 0.1
             });
@@ -468,7 +470,12 @@ export class RenderSystem {
 
     getBrightnessScale(level = 100) {
         const clamped = Math.max(0, Math.min(100, Number(level) || 0));
-        return this.minBrightnessScale + (clamped / 100) * (1 - this.minBrightnessScale);
+        if (clamped <= 50) {
+            const t = clamped / 50;
+            return this.minBrightnessScale + t * (this.midBrightnessScale - this.minBrightnessScale);
+        }
+        const t = (clamped - 50) / 50;
+        return this.midBrightnessScale + t * (1 - this.midBrightnessScale);
     }
 
     setBrightnessLevel(level = 100) {
@@ -533,8 +540,17 @@ export class RenderSystem {
         this.keyLight.color.copy(this.currentLighting.keyColor);
         this.fillLight.intensity = this.currentLighting.fillIntensity;
         this.fillLight.color.copy(this.currentLighting.fillColor);
-
-        this.scene.fog = null;
+        if (!this.scene.fog) {
+            this.scene.fog = new THREE.Fog(
+                this.currentLighting.fogColor.clone(),
+                this.currentLighting.fogNear,
+                this.currentLighting.fogFar
+            );
+        } else {
+            this.scene.fog.color.copy(this.currentLighting.fogColor);
+            this.scene.fog.near = this.currentLighting.fogNear;
+            this.scene.fog.far = this.currentLighting.fogFar;
+        }
     }
 
     updateEnvironmentLighting(position, dt = 1 / 60) {
@@ -589,8 +605,7 @@ export class RenderSystem {
             return new THREE.MeshBasicMaterial({
                 map: texture,
                 color: 0x88ccff,
-                transparent: true,
-                opacity: 0.8,
+                transparent: false,
                 depthWrite: false
             });
         }
@@ -603,7 +618,7 @@ export class RenderSystem {
                 uDistortion: { value: 0.025 },
                 uColorNear: { value: new THREE.Color(0x4d8bb0) },
                 uColorFar: { value: new THREE.Color(0x8ed0f0) },
-                uOpacity: { value: 0.78 }
+                uOpacity: { value: 1.0 }
             },
             vertexShader: `
                 varying vec2 vUv;
@@ -651,11 +666,11 @@ export class RenderSystem {
                     waterColor = mix(waterColor, baseTex, 0.35);
                     waterColor += vec3(0.08, 0.14, 0.18) * waves;
 
-                    float alpha = uOpacity + fresnel * 0.12;
+                    float alpha = min(1.0, uOpacity + fresnel * 0.08);
                     gl_FragColor = vec4(waterColor, alpha);
                 }
             `,
-            transparent: true,
+            transparent: false,
             depthWrite: false
         });
     }

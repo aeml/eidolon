@@ -23,6 +23,8 @@ export class EnvironmentalHazard extends Entity {
         this.position.set(position.x, position.y || 0, position.z);
         
         this.radius = config.radius || 5.0;
+        this.visualScale = config.visualScale || 1.2;
+        this.visualRadius = this.radius * this.visualScale;
         this.intensity = config.intensity || 1.0;
         this.duration = config.duration || -1; // -1 = permanent
         this.elapsedTime = 0;
@@ -42,8 +44,8 @@ export class EnvironmentalHazard extends Entity {
                 uTime: { value: 0 },
                 uBaseColor: { value: baseColor },
                 uHotColor: { value: hotColor },
-                uOpacity: { value: isInner ? 0.9 : 0.8 },
-                uPulse: { value: isInner ? 1.2 : 0.9 },
+                uOpacity: { value: isInner ? 0.95 : 0.88 },
+                uPulse: { value: isInner ? 1.3 : 1.0 },
                 uInnerBoost: { value: isInner ? 1.0 : 0.0 }
             },
             vertexShader: `
@@ -104,7 +106,7 @@ export class EnvironmentalHazard extends Entity {
         return new THREE.ShaderMaterial({
             uniforms: {
                 uTime: { value: 0 },
-                uOpacity: { value: 0.45 },
+                uOpacity: { value: 0.55 },
                 uColor: { value: new THREE.Color(0x00bfff) }
             },
             vertexShader: `
@@ -166,7 +168,7 @@ export class EnvironmentalHazard extends Entity {
     // ========================================================================
     createLavaPool() {
         // Base lava pool (glowing ground circle)
-        const poolGeo = new THREE.CircleGeometry(this.radius, 32);
+        const poolGeo = new THREE.CircleGeometry(this.visualRadius, 32);
         const poolMat = this.createLavaMaterial(false);
         this.groundMesh = new THREE.Mesh(poolGeo, poolMat);
         this.groundMesh.rotation.x = -Math.PI / 2;
@@ -175,7 +177,7 @@ export class EnvironmentalHazard extends Entity {
         this.meshes.push(this.groundMesh);
         
         // Inner glow (brighter center)
-        const innerGeo = new THREE.CircleGeometry(this.radius * 0.6, 32);
+        const innerGeo = new THREE.CircleGeometry(this.visualRadius * 0.62, 32);
         const innerMat = this.createLavaMaterial(true);
         this.innerGlow = new THREE.Mesh(innerGeo, innerMat);
         this.innerGlow.rotation.x = -Math.PI / 2;
@@ -184,7 +186,7 @@ export class EnvironmentalHazard extends Entity {
         this.meshes.push(this.innerGlow);
         
         // Rising ember particles
-        const particleCount = 30;
+        const particleCount = 45;
         const particleGeo = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const speeds = new Float32Array(particleCount);
@@ -192,7 +194,7 @@ export class EnvironmentalHazard extends Entity {
         
         for (let i = 0; i < particleCount; i++) {
             const angle = Math.random() * Math.PI * 2;
-            const dist = Math.random() * this.radius * 0.8;
+            const dist = Math.random() * this.visualRadius * 0.8;
             positions[i * 3] = this.position.x + Math.cos(angle) * dist;
             positions[i * 3 + 1] = this.position.y + Math.random() * 2;
             positions[i * 3 + 2] = this.position.z + Math.sin(angle) * dist;
@@ -203,9 +205,9 @@ export class EnvironmentalHazard extends Entity {
         particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         const particleMat = new THREE.PointsMaterial({
             color: 0xFFDD00,
-            size: 0.3,
+            size: 0.45,
             transparent: true,
-            opacity: 0.8,
+            opacity: 0.9,
             blending: THREE.AdditiveBlending,
             depthWrite: false
         });
@@ -217,7 +219,7 @@ export class EnvironmentalHazard extends Entity {
         // Bubbling spheres (simulated bubbles)
         this.bubbles = [];
         for (let i = 0; i < 5; i++) {
-            const bubbleGeo = new THREE.SphereGeometry(0.2 + Math.random() * 0.3, 8, 8);
+            const bubbleGeo = new THREE.SphereGeometry(0.28 + Math.random() * 0.35, 8, 8);
             const bubbleMat = new THREE.MeshBasicMaterial({
                 color: 0xFF6600,
                 transparent: true,
@@ -227,7 +229,7 @@ export class EnvironmentalHazard extends Entity {
             });
             const bubble = new THREE.Mesh(bubbleGeo, bubbleMat);
             const angle = Math.random() * Math.PI * 2;
-            const dist = Math.random() * this.radius * 0.7;
+            const dist = Math.random() * this.visualRadius * 0.7;
             bubble.position.set(
                 this.position.x + Math.cos(angle) * dist,
                 this.position.y + 0.1,
@@ -248,7 +250,7 @@ export class EnvironmentalHazard extends Entity {
     // ========================================================================
     createSandstorm() {
         // Dust particle cloud
-        const particleCount = 100;
+        const particleCount = 140;
         const particleGeo = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const speeds = new Float32Array(particleCount);
@@ -256,9 +258,9 @@ export class EnvironmentalHazard extends Entity {
         
         for (let i = 0; i < particleCount; i++) {
             const angle = Math.random() * Math.PI * 2;
-            const dist = Math.random() * this.radius;
+            const dist = Math.random() * this.visualRadius;
             positions[i * 3] = this.position.x + Math.cos(angle) * dist;
-            positions[i * 3 + 1] = this.position.y + Math.random() * 4;
+            positions[i * 3 + 1] = this.position.y + Math.random() * 5;
             positions[i * 3 + 2] = this.position.z + Math.sin(angle) * dist;
             speeds[i] = 2.0 + Math.random() * 3.0;
             offsets[i] = angle;
@@ -267,9 +269,9 @@ export class EnvironmentalHazard extends Entity {
         particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         const particleMat = new THREE.PointsMaterial({
             color: 0xD2B48C, // Tan/sand color
-            size: 0.4,
+            size: 0.55,
             transparent: true,
-            opacity: 0.6,
+            opacity: 0.7,
             depthWrite: false
         });
         
@@ -278,11 +280,11 @@ export class EnvironmentalHazard extends Entity {
         this.meshes.push(this.particles);
         
         // Swirling cone (wind visual)
-        const coneGeo = new THREE.CylinderGeometry(this.radius * 0.3, this.radius, 5, 16, 1, true);
+        const coneGeo = new THREE.CylinderGeometry(this.visualRadius * 0.35, this.visualRadius * 1.1, 6, 18, 1, true);
         const coneMat = new THREE.MeshBasicMaterial({
             color: 0xC4A574,
             transparent: true,
-            opacity: 0.3,
+            opacity: 0.35,
             side: THREE.DoubleSide,
             depthWrite: false,
             wireframe: true
@@ -298,7 +300,7 @@ export class EnvironmentalHazard extends Entity {
     // ========================================================================
     createLightningZone() {
         // Ground warning circle
-        const ringGeo = new THREE.RingGeometry(this.radius * 0.9, this.radius, 32);
+        const ringGeo = new THREE.RingGeometry(this.visualRadius * 0.78, this.visualRadius, 40);
         const ringMat = this.createLightningRingMaterial();
         this.groundMesh = new THREE.Mesh(ringGeo, ringMat);
         this.groundMesh.rotation.x = -Math.PI / 2;
@@ -307,7 +309,7 @@ export class EnvironmentalHazard extends Entity {
         this.meshes.push(this.groundMesh);
         
         // Electric spark particles
-        const particleCount = 40;
+        const particleCount = 60;
         const particleGeo = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const speeds = new Float32Array(particleCount);
@@ -315,7 +317,7 @@ export class EnvironmentalHazard extends Entity {
         
         for (let i = 0; i < particleCount; i++) {
             const angle = Math.random() * Math.PI * 2;
-            const dist = Math.random() * this.radius;
+            const dist = Math.random() * this.visualRadius;
             positions[i * 3] = this.position.x + Math.cos(angle) * dist;
             positions[i * 3 + 1] = this.position.y + Math.random() * 3;
             positions[i * 3 + 2] = this.position.z + Math.sin(angle) * dist;
@@ -326,9 +328,9 @@ export class EnvironmentalHazard extends Entity {
         particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         const particleMat = new THREE.PointsMaterial({
             color: 0xFFFF00,
-            size: 0.25,
+            size: 0.38,
             transparent: true,
-            opacity: 0.9,
+            opacity: 1.0,
             blending: THREE.AdditiveBlending,
             depthWrite: false
         });
@@ -386,26 +388,26 @@ export class EnvironmentalHazard extends Entity {
     // ========================================================================
     createWindGust() {
         // Wind streak particles (moving in a direction)
-        const particleCount = 60;
+        const particleCount = 90;
         const particleGeo = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const speeds = new Float32Array(particleCount);
         const offsets = new Float32Array(particleCount);
         
         for (let i = 0; i < particleCount; i++) {
-            positions[i * 3] = this.position.x + (Math.random() - 0.5) * this.radius * 2;
+            positions[i * 3] = this.position.x + (Math.random() - 0.5) * this.visualRadius * 2;
             positions[i * 3 + 1] = this.position.y + Math.random() * 3;
-            positions[i * 3 + 2] = this.position.z + (Math.random() - 0.5) * this.radius * 2;
+            positions[i * 3 + 2] = this.position.z + (Math.random() - 0.5) * this.visualRadius * 2;
             speeds[i] = 8.0 + Math.random() * 4.0;
             offsets[i] = Math.random();
         }
         
         particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         const particleMat = new THREE.PointsMaterial({
-            color: 0xCCEEFF,
-            size: 0.15,
+            color: 0xDDF4FF,
+            size: 0.24,
             transparent: true,
-            opacity: 0.5,
+            opacity: 0.65,
             blending: THREE.AdditiveBlending,
             depthWrite: false
         });
@@ -415,11 +417,11 @@ export class EnvironmentalHazard extends Entity {
         this.meshes.push(this.particles);
         
         // Wind direction indicator (arrow-like streaks)
-        const arrowGeo = new THREE.ConeGeometry(0.3, 2, 8);
+        const arrowGeo = new THREE.ConeGeometry(0.45, 2.6, 8);
         const arrowMat = new THREE.MeshBasicMaterial({
             color: 0xAADDFF,
             transparent: true,
-            opacity: 0.3,
+            opacity: 0.4,
             depthWrite: false
         });
         
@@ -427,8 +429,8 @@ export class EnvironmentalHazard extends Entity {
             const arrow = new THREE.Mesh(arrowGeo, arrowMat.clone());
             arrow.rotation.x = Math.PI / 2; // Point forward
             arrow.position.set(
-                this.position.x + (i - 1) * 2,
-                this.position.y + 1,
+                this.position.x + (i - 1) * 2.6,
+                this.position.y + 1.4,
                 this.position.z
             );
             arrow.userData = { phase: i * 0.3 };
@@ -441,11 +443,11 @@ export class EnvironmentalHazard extends Entity {
     // ========================================================================
     createPoisonCloud() {
         // Ground mist circle
-        const mistGeo = new THREE.CircleGeometry(this.radius, 32);
+        const mistGeo = new THREE.CircleGeometry(this.visualRadius, 32);
         const mistMat = new THREE.MeshBasicMaterial({
             color: 0x44FF44,
             transparent: true,
-            opacity: 0.4,
+            opacity: 0.5,
             side: THREE.DoubleSide,
             depthWrite: false
         });
@@ -456,7 +458,7 @@ export class EnvironmentalHazard extends Entity {
         this.meshes.push(this.groundMesh);
         
         // Rising poison particles
-        const particleCount = 50;
+        const particleCount = 70;
         const particleGeo = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const speeds = new Float32Array(particleCount);
@@ -464,7 +466,7 @@ export class EnvironmentalHazard extends Entity {
         
         for (let i = 0; i < particleCount; i++) {
             const angle = Math.random() * Math.PI * 2;
-            const dist = Math.random() * this.radius;
+            const dist = Math.random() * this.visualRadius;
             positions[i * 3] = this.position.x + Math.cos(angle) * dist;
             positions[i * 3 + 1] = this.position.y + Math.random() * 2;
             positions[i * 3 + 2] = this.position.z + Math.sin(angle) * dist;
@@ -475,9 +477,9 @@ export class EnvironmentalHazard extends Entity {
         particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         const particleMat = new THREE.PointsMaterial({
             color: 0x88FF88,
-            size: 0.5,
+            size: 0.65,
             transparent: true,
-            opacity: 0.6,
+            opacity: 0.7,
             depthWrite: false
         });
         
@@ -490,11 +492,11 @@ export class EnvironmentalHazard extends Entity {
     // GENERIC HAZARD - Fallback red warning zone
     // ========================================================================
     createGenericHazard() {
-        const ringGeo = new THREE.RingGeometry(this.radius * 0.9, this.radius, 32);
+        const ringGeo = new THREE.RingGeometry(this.visualRadius * 0.78, this.visualRadius, 32);
         const ringMat = new THREE.MeshBasicMaterial({
             color: 0xFF0000,
             transparent: true,
-            opacity: 0.5,
+            opacity: 0.6,
             side: THREE.DoubleSide,
             depthWrite: false
         });
@@ -579,7 +581,7 @@ export class EnvironmentalHazard extends Entity {
                 // Reset if too high
                 if (positions[i * 3 + 1] > baseY + 5) {
                     const resetAngle = Math.random() * Math.PI * 2;
-                    const dist = Math.random() * this.radius * 0.8;
+                    const dist = Math.random() * this.visualRadius * 0.8;
                     positions[i * 3] = this.position.x + Math.cos(resetAngle) * dist;
                     positions[i * 3 + 1] = baseY;
                     positions[i * 3 + 2] = this.position.z + Math.sin(resetAngle) * dist;
@@ -620,18 +622,18 @@ export class EnvironmentalHazard extends Entity {
                 // Spiral motion
                 const angle = this.time * speeds[i] * 0.5 + offsets[i];
                 const height = positions[i * 3 + 1] - baseY;
-                const radius = this.radius * (1 - height / 6); // Narrow as it goes up
+                const radius = this.visualRadius * (1 - height / 6); // Narrow as it goes up
                 
                 positions[i * 3] = this.position.x + Math.cos(angle) * radius;
                 positions[i * 3 + 2] = this.position.z + Math.sin(angle) * radius;
                 
                 // Reset if too high
-                if (positions[i * 3 + 1] > baseY + 5) {
+                if (positions[i * 3 + 1] > baseY + 6) {
                     positions[i * 3 + 1] = baseY;
                 }
             }
             this.particles.geometry.attributes.position.needsUpdate = true;
-            this.particles.material.opacity = 0.5 + Math.sin(this.time * 3) * 0.2;
+            this.particles.material.opacity = 0.6 + Math.sin(this.time * 3) * 0.2;
         }
     }
     
@@ -665,10 +667,10 @@ export class EnvironmentalHazard extends Entity {
                 const dx = positions[i * 3] - this.position.x;
                 const dz = positions[i * 3 + 2] - this.position.z;
                 const dist = Math.sqrt(dx * dx + dz * dz);
-                if (dist > this.radius) {
+                if (dist > this.visualRadius) {
                     const angle = Math.atan2(dz, dx);
-                    positions[i * 3] = this.position.x + Math.cos(angle) * this.radius * 0.9;
-                    positions[i * 3 + 2] = this.position.z + Math.sin(angle) * this.radius * 0.9;
+                    positions[i * 3] = this.position.x + Math.cos(angle) * this.visualRadius * 0.9;
+                    positions[i * 3 + 2] = this.position.z + Math.sin(angle) * this.visualRadius * 0.9;
                 }
                 if (positions[i * 3 + 1] < baseY) positions[i * 3 + 1] = baseY;
                 if (positions[i * 3 + 1] > baseY + 4) positions[i * 3 + 1] = baseY + 4;
@@ -701,8 +703,8 @@ export class EnvironmentalHazard extends Entity {
             const points = [];
             const startY = 15;
             const segments = 8;
-            let x = this.position.x + (Math.random() - 0.5) * this.radius;
-            let z = this.position.z + (Math.random() - 0.5) * this.radius;
+            let x = this.position.x + (Math.random() - 0.5) * this.visualRadius;
+            let z = this.position.z + (Math.random() - 0.5) * this.visualRadius;
             const endX = x;
             const endZ = z;
             
@@ -735,21 +737,21 @@ export class EnvironmentalHazard extends Entity {
                 positions[i * 3 + 1] += Math.sin(this.time * 5 + i) * dt;
                 
                 // Reset if out of bounds
-                if (positions[i * 3] > this.position.x + this.radius) {
-                    positions[i * 3] = this.position.x - this.radius;
+                if (positions[i * 3] > this.position.x + this.visualRadius) {
+                    positions[i * 3] = this.position.x - this.visualRadius;
                     positions[i * 3 + 1] = this.position.y + Math.random() * 3;
-                    positions[i * 3 + 2] = this.position.z + (Math.random() - 0.5) * this.radius * 2;
+                    positions[i * 3 + 2] = this.position.z + (Math.random() - 0.5) * this.visualRadius * 2;
                 }
             }
             this.particles.geometry.attributes.position.needsUpdate = true;
-            this.particles.material.opacity = 0.4 + Math.sin(this.time * 4) * 0.2;
+            this.particles.material.opacity = 0.5 + Math.sin(this.time * 4) * 0.2;
         }
         
         // Animate arrow indicators
         for (const mesh of this.meshes) {
             if (mesh.userData && mesh.userData.phase !== undefined) {
                 mesh.position.x = this.position.x + Math.sin(this.time * 3 + mesh.userData.phase) * 2;
-                mesh.material.opacity = 0.2 + Math.sin(this.time * 5 + mesh.userData.phase) * 0.15;
+                mesh.material.opacity = 0.3 + Math.sin(this.time * 5 + mesh.userData.phase) * 0.2;
             }
         }
     }
@@ -757,7 +759,7 @@ export class EnvironmentalHazard extends Entity {
     updatePoisonCloud(dt) {
         // Pulse ground
         if (this.groundMesh) {
-            this.groundMesh.material.opacity = 0.35 + Math.sin(this.time * 2) * 0.1;
+            this.groundMesh.material.opacity = 0.45 + Math.sin(this.time * 2) * 0.12;
         }
         
         // Float particles upward slowly
@@ -778,7 +780,7 @@ export class EnvironmentalHazard extends Entity {
                 // Reset
                 if (positions[i * 3 + 1] > baseY + 3) {
                     const resetAngle = Math.random() * Math.PI * 2;
-                    const dist = Math.random() * this.radius;
+                    const dist = Math.random() * this.visualRadius;
                     positions[i * 3] = this.position.x + Math.cos(resetAngle) * dist;
                     positions[i * 3 + 1] = baseY;
                     positions[i * 3 + 2] = this.position.z + Math.sin(resetAngle) * dist;
