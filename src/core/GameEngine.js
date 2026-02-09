@@ -2635,9 +2635,19 @@ export class GameEngine {
                 
                 // Add Collision for static structures
                 if (entity.type === 'TradingHouse') {
+                     mesh.position.copy(entity.position);
+                     mesh.quaternion.copy(entity.rotation);
+                     mesh.updateMatrixWorld(true);
                      const box = new THREE.Box3().setFromObject(mesh);
                      this.collisionManager.addCollider(box);
                      console.log(`Added collision for TradingHouse ${entity.id}`);
+                } else if (entity.type === 'Stash' || entity.type === 'Forge') {
+                     mesh.position.copy(entity.position);
+                     mesh.quaternion.copy(entity.rotation);
+                     mesh.updateMatrixWorld(true);
+                     const box = new THREE.Box3().setFromObject(mesh);
+                     this.collisionManager.addCollider(box);
+                     console.log(`Added collision for ${entity.type} ${entity.id}`);
                 }
 
                 const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
