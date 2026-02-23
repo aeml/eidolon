@@ -4536,7 +4536,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						splashTarget.Mu.RUnlock()
 
 						sdist := math.Sqrt(sdx*sdx + sdz*sdz)
-						if sdist < 10.0 {
+						if sdist < splashRadius {
 							splashTarget.Mu.Lock()
 							splashDmg := int(float64(finalDamage) * 0.4)
 							splashTarget.Health -= splashDmg
@@ -6770,19 +6770,19 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	case "Wizard":
 		if skillName == "Spell Focus" {
 			// Spell Focus (Buff)
-			cost := 30
+			cost := resolveAbilityManaCost(player, skillName, 30)
 			if player.Mana >= cost {
 				player.Mana -= cost
 				player.SpellFocusActive = true
 				player.SpellFocusEndTime = time.Now().Add(15 * time.Second)
-				setCooldown(45 * time.Second)
+				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 45*time.Second))
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
 			}
 		} else if skillName == "Arcane Shield" {
 			// Arcane Shield (Buff/Shield)
-			cost := 40
+			cost := resolveAbilityManaCost(player, skillName, 40)
 			if player.Mana >= cost {
 				player.Mana -= cost
 
@@ -6801,26 +6801,26 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				player.ArcaneShieldRuneID = runeID
 				player.ArcaneShieldAbsorbed = 0
 
-				setCooldown(30 * time.Second)
+				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 30*time.Second))
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
 			}
 		} else if skillName == "Time Warp" {
 			// Time Warp (Buff)
-			cost := 50
+			cost := resolveAbilityManaCost(player, skillName, 50)
 			if player.Mana >= cost {
 				player.Mana -= cost
 				player.TimeWarpActive = true
 				player.TimeWarpEndTime = time.Now().Add(8 * time.Second)
-				setCooldown(60 * time.Second)
+				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
 			}
 		} else if skillName == "Gravity Well" {
 			// Gravity Well (AoE Pull + Slow)
-			cost := 60
+			cost := resolveAbilityManaCost(player, skillName, 60)
 			if player.Mana >= cost {
 				player.Mana -= cost
 
@@ -6895,14 +6895,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					}
 				}
 
-				setCooldown(20 * time.Second)
+				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
 			}
 		} else if skillName == "Fireball" {
 			// Fireball
-			cost := 30
+			cost := resolveAbilityManaCost(player, skillName, 30)
 
 			// Check for rune effects
 			runeID := player.GetRuneForSkill("Fireball")
@@ -6984,7 +6984,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			}
 		} else if skillName == "Flame Whip" {
 			// Flame Whip (Cone Stun)
-			cost := 35
+			cost := resolveAbilityManaCost(player, skillName, 35)
 			if player.Mana >= cost {
 				player.Mana -= cost
 
@@ -7046,7 +7046,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				player.State = "ATTACKING"
-				setCooldown(10 * time.Second)
+				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 10*time.Second))
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -7062,7 +7062,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			}
 		} else if skillName == "Flame Tornado" {
 			// Flame Tornado
-			cost := 50
+			cost := resolveAbilityManaCost(player, skillName, 50)
 			if player.Mana >= cost {
 				player.Mana -= cost
 
@@ -7099,7 +7099,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				w.Grid.Add(proj)
 
 				player.State = "ATTACKING"
-				setCooldown(8 * time.Second)
+				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 8*time.Second))
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -7115,7 +7115,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			}
 		} else if skillName == "Meteor Drop" {
 			// Meteor Drop
-			cost := 60
+			cost := resolveAbilityManaCost(player, skillName, 60)
 			if player.Mana >= cost {
 				player.Mana -= cost
 
@@ -7234,14 +7234,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				player.State = "ATTACKING"
-				setCooldown(15 * time.Second)
+				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 15*time.Second))
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
 			}
 		} else if skillName == "Inferno Cataclysm" {
 			// Inferno Cataclysm (AoE Zone)
-			cost := 60
+			cost := resolveAbilityManaCost(player, skillName, 60)
 			if player.Mana >= cost {
 				player.Mana -= cost
 
@@ -7270,7 +7270,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				w.Grid.Add(zone)
 
 				player.State = "ATTACKING"
-				setCooldown(60 * time.Second)
+				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -7286,7 +7286,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			}
 		} else if skillName == "Scorch Beam" {
 			// Scorch Beam (Line Damage)
-			cost := 40
+			cost := resolveAbilityManaCost(player, skillName, 40)
 			if player.Mana >= cost {
 				player.Mana -= cost
 
@@ -7355,7 +7355,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				player.State = "ATTACKING"
-				setCooldown(8 * time.Second)
+				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 8*time.Second))
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -7371,7 +7371,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			}
 		} else if skillName == "Dragonfire Lance" {
 			// Dragonfire Lance (Single Target Nuke)
-			cost := 50
+			cost := resolveAbilityManaCost(player, skillName, 50)
 			if player.Mana >= cost {
 				player.Mana -= cost
 
@@ -7407,7 +7407,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				w.Grid.Add(proj)
 
 				player.State = "ATTACKING"
-				setCooldown(20 * time.Second)
+				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -7423,7 +7423,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			}
 		} else if skillName == "Frost Nova" {
 			// Frost Nova
-			cost := 40
+			cost := resolveAbilityManaCost(player, skillName, 40)
 			if player.Mana >= cost {
 				player.Mana -= cost
 
@@ -7464,7 +7464,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				player.State = "ATTACKING"
-				setCooldown(10 * time.Second)
+				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 10*time.Second))
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
@@ -7480,7 +7480,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			}
 		} else if skillName == "Arcane Missiles" {
 			// Arcane Missiles
-			cost := 30
+			cost := resolveAbilityManaCost(player, skillName, 30)
 			if player.Mana >= cost {
 				player.Mana -= cost
 
@@ -7522,14 +7522,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				}
 
 				player.State = "ATTACKING"
-				setCooldown(4 * time.Second)
+				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 4*time.Second))
 				if w.OnEvent != nil {
 					w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 				}
 			}
 		} else if skillName == "Teleport" {
 			// Teleport
-			cost := 40
+			cost := resolveAbilityManaCost(player, skillName, 40)
 			if player.Mana >= cost {
 				// Check for rune effects
 				runeID := player.GetRuneForSkill("Teleport")
@@ -7648,7 +7648,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 						player.InvulnerableEndTime = time.Now().Add(1 * time.Second)
 					}
 
-					setCooldown(12 * time.Second)
+					setCooldown(resolveAbilityCooldown(player.SubType, skillName, 12*time.Second))
 					if w.OnEvent != nil {
 						w.OnEvent("ability", AbilityEvent{SourceID: player.ID, TargetID: targetID, SkillName: skillName, TargetX: targetX, TargetZ: targetZ})
 					}
@@ -9374,7 +9374,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 		// Note: This should only trigger on fire damage kills, but we track it simply here
 		if attacker.HasAnySetBonus("meteorReset") {
 			if attacker.Cooldowns != nil {
-				delete(attacker.Cooldowns, "Meteor")
+				delete(attacker.Cooldowns, "Meteor Drop")
 			}
 		}
 	}
