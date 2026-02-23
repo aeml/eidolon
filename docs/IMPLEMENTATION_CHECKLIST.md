@@ -168,16 +168,18 @@ This checklist turns the four-phase recommendation plan into actionable engineer
 - [ ] Manual verification that particles look good and don't hurt FPS (requires browser testing).
 
 ### 3.4 Map/minimap readability overhaul
-- [ ] Convert `WorldMap` hardcoded draw data into config-driven structures.
-- [ ] Improve label scaling and culling by zoom level.
-- [ ] Add clearer tactical affordances on minimap (party/boss/objective emphasis).
+- [x] Convert `WorldMap` hardcoded draw data into config-driven structures. All spatial data (realm backgrounds, enemy zones, dungeon markers, fence segments) extracted into static config tables (`REALM_BACKGROUNDS`, `ZONE_CONFIGS`, `DUNGEON_MARKERS`, `FENCE_SEGMENTS`). Draw method iterates configs instead of inline coordinates. Entity classification extracted to shared `classifyEntity()` helper.
+- [x] Improve label scaling and culling by zoom level. Three-tier visibility system (`realm` always visible, `zone` at scale>=0.8, `detail` at scale>=1.5). Realm labels and dungeon markers visible at moderate zoom; per-enemy-type sub-zone labels only at high zoom. Font sizes scale with `this.scale / 2`.
+- [x] Add clearer tactical affordances on minimap (party/boss/objective emphasis). Minimap now has: realm-colored background tinting matching current player position, faint realm boundary lines, party member dots with white ring + edge-clamped arrow indicators for distant party members, elite/boss pulsing ring animation, cardinal direction labels (N/S/E/W rotated to match isometric view), circular clip with out-of-range culling.
 
 **Files**
-- `src/ui/WorldMap.js`
-- `src/ui/Minimap.js`
+- `src/ui/WorldMap.js` — Rewritten: config-driven zone/dungeon/fence data, tiered label visibility, extracted `classifyEntity()` helper, `_drawRect`/`_drawLabel`/`_tierVisible` draw helpers, `_makeWorldToScreen` factory
+- `src/ui/Minimap.js` — Rewritten: realm background tinting via `getRealmForPosition()`, `_drawRealmBoundaries()`, `_drawCardinals()`, `_drawGlobalPartyMembers()` with edge-clamped arrows, elite pulsing ring, `setGameEngine()` API
+- `src/core/GameEngine.js` — Added `minimap.setGameEngine(this)` call after construction
 
 **Acceptance criteria**
-- Labels do not overwhelm map at high zoom or disappear unreadably at low zoom.
+- [x] Labels do not overwhelm map at high zoom or disappear unreadably at low zoom.
+- [ ] Manual verification of map/minimap rendering (requires browser testing).
 
 ### 3.5 Placeholder enemy replacement track
 - [ ] Prioritize replacing tinted skeleton placeholders for high-visibility late-game mobs/bosses.

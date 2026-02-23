@@ -378,6 +378,7 @@ export class GameEngine {
         };
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         this.minimap = new Minimap();
+        this.minimap.setGameEngine(this);
         this.worldMap = new WorldMap(this);
         this.uiManager.onMapToggle = () => this.worldMap.toggle();
         this.floatingTextManager = new FloatingTextManager(this.renderSystem.camera);
