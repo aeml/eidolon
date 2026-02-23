@@ -526,5 +526,51 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         });
     }
 
+    if (type === 'telegraph') {
+        const radius = (options && options.radius) || 10.0;
+        const telegraphDuration = (options && options.telegraphDuration) || 2.0;
+
+        // Outer warning ring
+        const ringGeo = new THREE.RingGeometry(radius * 0.92, radius, 48);
+        const ringMat = new THREE.MeshBasicMaterial({
+            color: 0xff2200,
+            transparent: true,
+            opacity: 0.55,
+            side: THREE.DoubleSide,
+            depthWrite: false
+        });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = -Math.PI / 2;
+        ring.position.copy(position);
+        ring.position.y += 0.06;
+
+        // Inner fill disc
+        const fillGeo = new THREE.CircleGeometry(radius, 48);
+        const fillMat = new THREE.MeshBasicMaterial({
+            color: 0xff4400,
+            transparent: true,
+            opacity: 0.12,
+            side: THREE.DoubleSide,
+            depthWrite: false
+        });
+        const fill = new THREE.Mesh(fillGeo, fillMat);
+        fill.rotation.x = -Math.PI / 2;
+        fill.position.copy(position);
+        fill.position.y += 0.05;
+
+        addToScene(scene, [ring, fill]);
+        return new TransientEffect(scene, [ring, fill], telegraphDuration, ({ meshes, t }) => {
+            const [r, f] = meshes;
+            // Pulsing opacity — gets more urgent near the end
+            const pulse = 0.5 + 0.5 * Math.sin(t * Math.PI * 6);
+            r.material.opacity = (0.35 + 0.45 * t) * pulse;
+            // Fill grows more opaque as impact approaches
+            f.material.opacity = 0.08 + 0.35 * t;
+            // Slight scale pulse
+            const s = 1.0 - 0.04 * Math.sin(t * Math.PI * 8);
+            r.scale.set(s, s, s);
+        });
+    }
+
     return null;
 }

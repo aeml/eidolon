@@ -167,6 +167,7 @@ const (
 	MsgSplitStack        = "split_stack"
 	MsgGetDungeonStatus  = "get_dungeon_status"
 	MsgResetDungeon      = "reset_dungeon"
+	MsgTelegraph         = "telegraph"
 )
 
 type SplitStackPayload struct {
@@ -335,6 +336,14 @@ type ComboPayload struct {
 	PlayerID  string `json:"playerId"`
 	ComboID   string `json:"comboId"`
 	ComboName string `json:"comboName"`
+}
+
+type TelegraphPayload struct {
+	SourceID string  `json:"sourceId"`
+	X        float64 `json:"x"`
+	Z        float64 `json:"z"`
+	Radius   float64 `json:"radius"`
+	Duration float64 `json:"duration"`
 }
 
 type ChatPayload struct {
@@ -714,6 +723,27 @@ func main() {
 				if exists {
 					client.sendSafe(dataBytes)
 				}
+			}()
+		case "telegraph":
+			evt, ok := data.(game.TelegraphEvent)
+			if !ok {
+				return
+			}
+			payload := TelegraphPayload{
+				SourceID: evt.SourceID,
+				X:        evt.X,
+				Z:        evt.Z,
+				Radius:   evt.Radius,
+				Duration: evt.Duration,
+			}
+			b, _ := json.Marshal(payload)
+			outMsg := Message{
+				Type:    MsgTelegraph,
+				Payload: b,
+			}
+			dataBytes, _ := json.Marshal(outMsg)
+			go func() {
+				broadcast <- BroadcastMessage{Type: MsgTelegraph, Data: dataBytes}
 			}()
 		}
 	}
