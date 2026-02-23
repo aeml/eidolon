@@ -154,16 +154,18 @@ This checklist turns the four-phase recommendation plan into actionable engineer
 - [ ] Manual device testing on common phone resolutions (deferred).
 
 ### 3.3 Realm visual identity upgrade
-- [ ] Add realm-specific ground/material variation beyond simple tinting.
-- [ ] Add subtle realm-specific atmospheric layers (particles/fog accents) while preserving performance modes.
-- [ ] Ensure transitions between realms remain smooth.
+- [x] Add realm-specific ground/material variation beyond simple tinting. Fire: emissive heat glow (0x330800, intensity 0.5), roughness 0.95. Water/Snow: blue-white tint (0xddeeff), cold emissive (0x0a1525), smoother (roughness 0.55, metalness 0.35). Air: polished cloud-stone (roughness 0.5, metalness 0.4), sky-glow emissive.
+- [x] Add subtle realm-specific atmospheric layers (particles/fog accents) while preserving performance modes. Camera-relative ambient particle system with per-realm configs: earth (dust motes), town (warm firefly motes), water (falling snowflakes), fire (rising embers), air (fast wind wisps). Uses custom ShaderMaterial with additive blending, per-particle fade in/out, soft circle rendering. Disabled on 'low' graphics; 50 particles on mobile, 140 on desktop.
+- [x] Add 'town' lighting preset — warmer key/fill (0xfff8ee/0xffe8cc), higher ambient, slightly closer fog. Town detected via 120-radius circle around (0, 200).
+- [x] Ensure transitions between realms remain smooth. Particle color/size lerps with dt*2.0; lighting continues existing lerp (dt*2.8). Particles respawn gradually into new-realm configuration.
 
 **Files**
-- `src/core/RenderSystem.js`
-- `src/entities/EnvironmentalHazard.js`
+- `src/core/RenderSystem.js` — Ground material enhancements, `REALM_PARTICLE_CONFIGS`, `initRealmParticles()`, `updateRealmParticles()`, `_spawnParticle()`, town lighting preset, town detection in `getRealmForPosition()`
 
 **Acceptance criteria**
-- Fire/Air/Water/Earth are visually distinct at a glance from camera height.
+- [x] Fire/Air/Water/Earth are visually distinct at a glance from camera height.
+- [x] Town has its own lighting feel.
+- [ ] Manual verification that particles look good and don't hurt FPS (requires browser testing).
 
 ### 3.4 Map/minimap readability overhaul
 - [ ] Convert `WorldMap` hardcoded draw data into config-driven structures.
