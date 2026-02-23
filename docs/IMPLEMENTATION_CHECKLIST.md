@@ -1,0 +1,244 @@
+# Eidolon Implementation Checklist
+
+This checklist turns the four-phase recommendation plan into actionable engineering tasks with concrete acceptance criteria.
+
+## Phase 1 - Quick Wins (Correctness + Readability)
+
+### 1.1 Remote ability VFX name sync
+- [x] Replace legacy skill names in `triggerRemoteAbilityVisuals` with current canonical names from `Constants.js`/server events.
+- [x] Add a default fallback visual per class when a skill name is unknown.
+- [x] Add a dev-only warning log for unmapped remote skills to catch regressions.
+
+**Files**
+- `src/core/GameEngine.js`
+- `src/core/Constants.js`
+
+**Acceptance criteria**
+- Remote casts for all current Fighter/Rogue/Wizard/Cleric skills show the intended effect.
+- No silent "missing visual" cases for valid skills.
+
+### 1.2 Cooldown key mismatch fix (Meteor)
+- [x] Change server cooldown reset from `"Meteor"` to `"Meteor Drop"`.
+- [x] Audit nearby set-bonus and combo code for other string-key mismatches.
+
+**Files**
+- `server/internal/game/world.go`
+
+**Acceptance criteria**
+- Meteor cooldown reset effects consistently reset the actual skill cooldown.
+
+### 1.3 Projectile splash radius bug fix
+- [x] Replace hardcoded splash distance check with the computed `splashRadius` variable.
+- [x] Verify all projectile AoE branches use their local radius variables consistently.
+
+**Files**
+- `server/internal/game/world.go`
+
+**Acceptance criteria**
+- Fireball/ExplosiveTrap splash hit area matches configured design values.
+
+### 1.4 Known client logic correctness fixes
+- [x] Fix Wizard meteor burning-ground gate to use an existing skill/rune flag (or remove dead gate).
+- [x] Fix Cleric Spirit Guardians tick path so damage/heal outcomes are applied and visible.
+- [x] Remove stale inline comments that contradict current behavior.
+
+**Files**
+- `src/entities/Wizard.js`
+- `src/entities/Cleric.js`
+
+**Acceptance criteria**
+- No dead references to nonexistent skill tree nodes.
+- Spirit Guardians clearly apply periodic combat impact in live play.
+
+### 1.5 Validation for Phase 1
+- [x] Run JS tests: `npm test`
+- [x] Run Go tests: `go test ./...` (from `server/`)
+- [ ] Multiplayer smoke check: two clients in same zone; verify remote cast VFX for each class.
+
+---
+
+## Phase 2 - Gameplay Feel + Combat Consistency
+
+### 2.1 Shared ability config source
+- [x] Introduce a canonical ability config table (name, cooldown, mana, range, tags).
+- [ ] Use it from server ability execution and client UI/hotbar display. (Client UI/hotbar wired; server integration started for Wizard ability mana/cooldown resolution.)
+- [ ] Remove duplicated magic numbers where practical. (In progress: Wizard skill cost/cooldown paths now resolve via shared server config helpers.)
+
+**Files (initial targets)**
+- `src/core/Constants.js`
+- `src/core/GameEngine.js`
+- `src/entities/Fighter.js`
+- `src/entities/Rogue.js`
+- `src/entities/Wizard.js`
+- `src/entities/Cleric.js`
+- `server/internal/game/world.go`
+
+**Acceptance criteria**
+- Cooldown/mana/range behavior matches between client prediction and server authority.
+
+### 2.2 Range normalization pass
+- [x] Remove effectively infinite fallback ranges for normal combat actions.
+- [x] Define explicit default attack ranges by archetype and per-skill overrides.
+- [x] Add clamp rules for mobile auto-targeting so it does not select off-intent targets.
+
+**Files**
+- `src/core/GameEngine.js`
+- `server/internal/game/world.go`
+
+**Acceptance criteria**
+- Combat engagement distance feels intentional and consistent across classes and input modes.
+
+### 2.3 Zone/AoE semantic split
+- [ ] Split generic `Zone` behavior into clear types (damage zone, healing zone, buff zone, control zone).
+- [ ] Ensure each skill's zone type applies only intended effects (ally vs enemy).
+- [ ] Keep visual indicators distinct per zone category.
+
+**Files**
+- `server/internal/game/world.go`
+- `src/entities/AreaOfEffect.js`
+- `src/core/TransientEffects.js`
+
+**Acceptance criteria**
+- Consecrated Ground and Inferno-style zones have non-overlapping, predictable behavior.
+
+### 2.4 Telegraph and readability improvements
+- [ ] Add cast-start/cast-impact event support for major enemy and boss abilities.
+- [ ] Add persistent warning indicators for delayed/high-damage AoE.
+- [ ] Tune indicator timing to match server hit timing.
+
+**Files (initial targets)**
+- `server/internal/game/world.go`
+- `src/core/GameEngine.js`
+- `src/core/TransientEffects.js`
+
+**Acceptance criteria**
+- Players can react to dangerous attacks from telegraphs before damage resolves.
+
+### 2.5 Validation for Phase 2
+- [ ] Run JS and Go test suites.
+- [ ] Manual balancing pass in Earth/Water/Fire/Air zones with at least one run per class.
+- [ ] Verify no new client/server desync logs for ability outcomes.
+
+---
+
+## Phase 3 - Visual + UI Polish
+
+### 3.1 CSS extraction and cleanup
+- [ ] Move inline `<style>` and inline element styles from `index.html` into modular CSS files.
+- [ ] Introduce CSS variables for shared spacing/color/typography tokens.
+- [ ] Keep behavior identical before style redesign changes.
+
+**Files**
+- `index.html`
+- `src/ui/*` (if JS toggles class names)
+- new CSS files under a dedicated style path
+
+**Acceptance criteria**
+- `index.html` is significantly reduced in style complexity.
+- No visual regressions in core HUD/menu screens.
+
+### 3.2 Responsive/mobile layout rework
+- [ ] Replace hard pixel-position overrides with responsive anchors and scale rules.
+- [ ] Remove duplicated mobile override blocks where possible.
+- [ ] Validate portrait and landscape touch UX.
+
+**Files**
+- `index.html` (or extracted CSS files)
+
+**Acceptance criteria**
+- Core HUD, minimap, chat, and action controls remain usable on common phone resolutions.
+
+### 3.3 Realm visual identity upgrade
+- [ ] Add realm-specific ground/material variation beyond simple tinting.
+- [ ] Add subtle realm-specific atmospheric layers (particles/fog accents) while preserving performance modes.
+- [ ] Ensure transitions between realms remain smooth.
+
+**Files**
+- `src/core/RenderSystem.js`
+- `src/entities/EnvironmentalHazard.js`
+
+**Acceptance criteria**
+- Fire/Air/Water/Earth are visually distinct at a glance from camera height.
+
+### 3.4 Map/minimap readability overhaul
+- [ ] Convert `WorldMap` hardcoded draw data into config-driven structures.
+- [ ] Improve label scaling and culling by zoom level.
+- [ ] Add clearer tactical affordances on minimap (party/boss/objective emphasis).
+
+**Files**
+- `src/ui/WorldMap.js`
+- `src/ui/Minimap.js`
+
+**Acceptance criteria**
+- Labels do not overwhelm map at high zoom or disappear unreadably at low zoom.
+
+### 3.5 Placeholder enemy replacement track
+- [ ] Prioritize replacing tinted skeleton placeholders for high-visibility late-game mobs/bosses.
+- [ ] Keep fallback mesh path but mark with explicit TODO tags for remaining types.
+
+**Files**
+- `src/utils/MeshFactory.js`
+- asset/model pipeline files
+
+**Acceptance criteria**
+- Top-priority Fire/Air dungeon bosses no longer use generic tinted skeleton stand-ins.
+
+### 3.6 Validation for Phase 3
+- [ ] Desktop + mobile visual smoke test.
+- [ ] Performance check on low/medium/high graphics presets.
+- [ ] Verify no console spam from missing assets/materials.
+
+---
+
+## Phase 4 - Stability + Refactor
+
+### 4.1 GameEngine responsibility split
+- [ ] Extract networking message handling into a dedicated module.
+- [ ] Extract ability input/targeting orchestration into its own controller.
+- [ ] Keep render/update loop in `GameEngine` focused on lifecycle and tick orchestration.
+
+**Files**
+- `src/core/GameEngine.js`
+- new modules under `src/core/` or `src/systems/`
+
+**Acceptance criteria**
+- `GameEngine.js` reduced in size and concern count, with no behavior regressions.
+
+### 4.2 UIManager decomposition
+- [ ] Split quest/journal, inventory/equipment, party/social, forge/trading into dedicated UI modules.
+- [ ] Keep a thin facade for cross-module wiring and callbacks.
+
+**Files**
+- `src/ui/UIManager.js`
+- new modules under `src/ui/`
+
+**Acceptance criteria**
+- UI modules are independently readable and testable; no monolithic 5k-line single file dependency.
+
+### 4.3 Server ability handler modularization
+- [ ] Break `PerformAbility` class blocks into class-specific handlers.
+- [ ] Introduce shared helper primitives for cone/AoE/line and effect application.
+- [ ] Add regression tests for representative skills per class.
+
+**Files**
+- `server/internal/game/world.go`
+- `server/internal/game/world_test.go`
+
+**Acceptance criteria**
+- Ability logic remains server-authoritative with lower maintenance overhead and clearer diff surface.
+
+### 4.4 Validation for Phase 4
+- [ ] Full JS + Go test passes.
+- [ ] Multiplayer soak run (long session) without crash/desync/memory-growth anomalies.
+- [ ] Review logs for deadlock/panic warnings in server update loop.
+
+---
+
+## Suggested Delivery Cadence
+
+- Phase 1: 1-2 sessions
+- Phase 2: 2-4 sessions
+- Phase 3: 3-6 sessions
+- Phase 4: 3-6 sessions
+
+If needed, split each phase into PR-sized vertical slices (one gameplay slice + one UI/visual slice) to keep review and rollback safe.
