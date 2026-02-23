@@ -4357,9 +4357,9 @@ export class UIManager {
             element.style.bottom = 'auto';
 
             // Check for mobile scale
-            // We assume mobile if width < 800 OR if we detect a scale transform
-            // But simpler is to just check window width as per CSS media query
-            const isMobile = window.innerWidth <= 800 || document.body.classList.contains('mobile-mode');
+            // .mobile-mode is kept in sync with viewport width via matchMedia
+            // listener in main.js, so checking the class is sufficient.
+            const isMobile = document.body.classList.contains('mobile-mode');
             
             if (isMobile) {
                 // Preserve scale but move origin to top-left for easy dragging

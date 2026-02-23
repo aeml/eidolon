@@ -138,15 +138,20 @@ This checklist turns the four-phase recommendation plan into actionable engineer
 - [ ] No visual regressions in core HUD/menu screens (requires manual browser verification).
 
 ### 3.2 Responsive/mobile layout rework
-- [ ] Replace hard pixel-position overrides with responsive anchors and scale rules.
-- [ ] Remove duplicated mobile override blocks where possible.
-- [ ] Validate portrait and landscape touch UX.
+- [x] Replace hard pixel-position overrides with responsive anchors and scale rules. Minimap, HUD width, timer, and chat use `clamp()`/`min()` viewport-relative units.
+- [x] Remove duplicated mobile override blocks. Added `matchMedia('(max-width: 800px)')` listener in `main.js` that toggles `.mobile-mode` dynamically; removed the duplicate `@media (max-width: 800px)` CSS block (28 duplicate rules eliminated).
+- [x] Simplify UIManager drag handler mobile check to rely solely on `.mobile-mode` class (now kept in sync by matchMedia listener).
+- [ ] Validate portrait and landscape touch UX (requires manual device testing).
 
 **Files**
-- `index.html` (or extracted CSS files)
+- `src/main.js` — `matchMedia` listener for `.mobile-mode` class toggle
+- `src/styles/responsive.css` — Deduplicated; `.mobile-mode` rules only + landscape `@media`
+- `src/ui/UIManager.js` — Simplified drag handler mobile detection
 
 **Acceptance criteria**
-- Core HUD, minimap, chat, and action controls remain usable on common phone resolutions.
+- [x] Core HUD, minimap, chat, and action controls scale with viewport via `clamp()`/`min()`.
+- [x] Single source of truth for mobile layout rules (no duplicated blocks).
+- [ ] Manual device testing on common phone resolutions (deferred).
 
 ### 3.3 Realm visual identity upgrade
 - [ ] Add realm-specific ground/material variation beyond simple tinting.
