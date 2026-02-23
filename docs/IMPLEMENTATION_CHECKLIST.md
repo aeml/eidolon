@@ -61,8 +61,8 @@ This checklist turns the four-phase recommendation plan into actionable engineer
 
 ### 2.1 Shared ability config source
 - [x] Introduce a canonical ability config table (name, cooldown, mana, range, tags).
-- [ ] Use it from server ability execution and client UI/hotbar display. (Client UI/hotbar wired; server integration started for Wizard ability mana/cooldown resolution.)
-- [ ] Remove duplicated magic numbers where practical. (In progress: Wizard skill cost/cooldown paths now resolve via shared server config helpers.)
+- [x] Use it from server ability execution and client UI/hotbar display.
+- [x] Remove duplicated magic numbers where practical. All four classes (Wizard, Fighter, Rogue, Cleric) now resolve mana cost and cooldown via shared config helpers on both client and server.
 
 **Files (initial targets)**
 - `src/core/Constants.js`
