@@ -1,0 +1,23 @@
+/* ============================================================
+   Floating Health Bars
+   ============================================================
+   Canvas-positioned HP bars above entities (enemies, NPCs, etc.)
+   ------------------------------------------------------------ */
+
+.floating-bar {
+    position: absolute;
+    width: 60px;
+    height: 6px;
+    background: var(--bg-dark);
+    border: 1px solid #000;
+    pointer-events: none;
+    display: none; /* Hidden by default */
+    transform: translate(-50%, -50%);
+}
+
+.floating-fill {
+    height: 100%;
+    background: #ff0000;
+    width: 100%;
+    transition: width var(--transition-fast);
+}

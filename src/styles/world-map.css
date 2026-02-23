@@ -1,0 +1,39 @@
+/* ============================================================
+   World Map
+   ============================================================
+   Full-screen overlay showing the zone map / world navigation.
+   ------------------------------------------------------------ */
+
+#world-map {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    background: var(--bg-panel);
+    border: 2px solid var(--color-gold);
+    z-index: var(--z-world-map);
+    display: none;
+    flex-direction: column;
+    pointer-events: auto;
+}
+
+#world-map-header {
+    height: 40px;
+    border-bottom: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-gold);
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: var(--bg-surface);
+}
+
+#world-map-canvas {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    background: #111;
+}

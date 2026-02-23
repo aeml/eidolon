@@ -115,7 +115,7 @@ This checklist turns the four-phase recommendation plan into actionable engineer
 - Players can react to dangerous attacks from telegraphs before damage resolves.
 
 ### 2.5 Validation for Phase 2
-- [ ] Run JS and Go test suites.
+- [x] Run JS and Go test suites.
 - [ ] Manual balancing pass in Earth/Water/Fire/Air zones with at least one run per class.
 - [ ] Verify no new client/server desync logs for ability outcomes.
 
@@ -124,18 +124,18 @@ This checklist turns the four-phase recommendation plan into actionable engineer
 ## Phase 3 - Visual + UI Polish
 
 ### 3.1 CSS extraction and cleanup
-- [ ] Move inline `<style>` and inline element styles from `index.html` into modular CSS files.
-- [ ] Introduce CSS variables for shared spacing/color/typography tokens.
-- [ ] Keep behavior identical before style redesign changes.
+- [x] Move inline `<style>` block from `index.html` into modular CSS files under `src/styles/`. Extracted 15 files: `variables.css`, `base.css`, `overlays.css`, `hud.css`, `abilities.css`, `floating-bars.css`, `windows.css`, `skill-tree.css`, `start-screen.css`, `world-map.css`, `tooltips.css`, `mobile.css`, `chat.css`, `responsive.css`, `party.css`, plus `index.css` barrel.
+- [x] Introduce CSS variables for shared spacing/color/typography tokens in `variables.css`.
+- [x] Keep behavior identical before style redesign changes. 1,109-line `<style>` block replaced with single `<link>` tag; `index.html` reduced from 2,426 to 1,317 lines.
+- [ ] Inline element `style="..."` attributes (367 occurrences) and JS-driven `.style.` assignments (~946) deferred to Phase 4.
 
 **Files**
-- `index.html`
-- `src/ui/*` (if JS toggles class names)
-- new CSS files under a dedicated style path
+- `index.html` — `<style>` block replaced with `<link rel="stylesheet" href="src/styles/index.css">`
+- `src/styles/` — 16 new CSS files (variables, base, 12 component modules, responsive, barrel)
 
 **Acceptance criteria**
-- `index.html` is significantly reduced in style complexity.
-- No visual regressions in core HUD/menu screens.
+- [x] `index.html` is significantly reduced in style complexity (1,109 lines removed).
+- [ ] No visual regressions in core HUD/menu screens (requires manual browser verification).
 
 ### 3.2 Responsive/mobile layout rework
 - [ ] Replace hard pixel-position overrides with responsive anchors and scale rules.

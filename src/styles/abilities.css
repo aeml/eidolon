@@ -1,0 +1,121 @@
+/* ============================================================
+   Abilities — Ability Icon, Cooldown, Tooltip, Hotbar
+   ============================================================ */
+
+/* ---- Ability Container (single-ability icon) ---- */
+#ability-container {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 64px;
+    height: 64px;
+    background: var(--bg-dark);
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+#ability-icon {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23444" stroke="%23888" stroke-width="5"/><text x="50" y="55" font-size="40" text-anchor="middle" fill="white" font-family="sans-serif">?</text></svg>');
+}
+
+#ability-cooldown {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-dark-medium);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    display: none;
+}
+
+#ability-tooltip {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 200px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-light);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    display: none;
+    pointer-events: none;
+}
+
+/* ---- Hotbar ---- */
+#hotbar-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    gap: var(--spacing-md);
+    pointer-events: auto;
+}
+
+.hotbar-slot {
+    width: 50px;
+    height: 50px;
+    background: var(--bg-dark);
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-md);
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hotbar-slot:hover {
+    border-color: var(--color-gold);
+}
+
+.hotbar-key {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 10px;
+    color: var(--color-text-muted);
+    font-weight: bold;
+}
+
+.hotbar-icon {
+    width: 40px;
+    height: 40px;
+    background-size: cover;
+    background-position: center;
+}
+
+/* ---- Ability Items (draggable tiles in skill panel) ---- */
+.ability-item {
+    width: 60px;
+    height: 60px;
+    background: var(--bg-surface-hover);
+    border: 1px solid var(--border-heavy);
+    border-radius: var(--radius-md);
+    cursor: grab;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    text-align: center;
+    color: var(--color-white);
+    user-select: none;
+}
+
+.ability-item:active {
+    cursor: grabbing;
+}

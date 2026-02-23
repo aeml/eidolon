@@ -1,0 +1,38 @@
+/* ============================================================
+   Chat Box
+   ============================================================
+   In-game chat panel with message list and input field.
+   ------------------------------------------------------------ */
+
+#chat-box {
+    display: none;
+    position: fixed;
+    bottom: 80px; /* Moved up above HUD */
+    left: 20px;
+    width: 300px;
+    height: 200px;
+    background: var(--bg-dark-medium);
+    border: 1px solid var(--border-default);
+    z-index: var(--z-hud);
+    flex-direction: column;
+    pointer-events: auto;
+}
+
+#chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: var(--spacing-md);
+    color: var(--color-white-bright);
+    font-size: 12px;
+    font-family: monospace;
+}
+
+#chat-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--color-white-bright);
+    border: none;
+    border-top: 1px solid var(--border-default);
+}

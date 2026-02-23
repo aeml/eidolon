@@ -1,0 +1,92 @@
+/* ============================================================
+   Responsive / Mobile Overrides
+   ============================================================
+   Media queries for small viewports and the `.mobile-mode`
+   class used for localhost testing without a real touch device.
+   ------------------------------------------------------------ */
+
+/* ---- Portrait Mode (narrow viewports) ---- */
+@media (max-width: 800px) {
+    #minimap-canvas { width: 120px !important; height: 120px !important; top: 70px !important; right: 10px !important; }
+    #game-timer { font-size: 18px !important; padding: 5px 10px !important; min-width: 80px !important; top: 10px !important; left: 10px !important; }
+    #player-hud { width: 150px !important; top: 10px !important; left: 220px !important; bottom: auto !important; }
+    .bar-container { height: 15px !important; }
+    .bar-text { font-size: 10px !important; }
+    #ability-container { top: 10px !important; left: 380px !important; right: auto !important; bottom: auto !important; width: 40px !important; height: 40px !important; }
+    #chat-box { top: 60px !important; left: 10px !important; bottom: auto !important; width: 250px !important; height: 120px !important; font-size: 10px !important; }
+    #mobile-actions { width: 120px !important; height: 120px !important; bottom: 20px !important; right: 20px !important; }
+    #btn-mobile-attack { width: 60px !important; height: 60px !important; font-size: 12px !important; }
+    #btn-mobile-ability { width: 45px !important; height: 45px !important; bottom: 70px !important; right: 15px !important; font-size: 10px !important; }
+    #btn-mobile-interact { width: 45px !important; height: 45px !important; bottom: 15px !important; right: 70px !important; font-size: 10px !important; }
+    #joystick-zone { width: 100px !important; height: 100px !important; bottom: 30px !important; left: 30px !important; }
+    #joystick-knob { width: 40px !important; height: 40px !important; }
+    .window { transform-origin: center center; transform: translate(-50%, -50%) scale(0.5); }
+    #character-sheet { transform: translate(-50%, -50%) scale(0.5); left: 50%; }
+    #inventory-screen {
+        left: auto;
+        right: 5px;
+        transform-origin: right center;
+        transform: translate(0, -50%) scale(0.5);
+    }
+    #shop-screen {
+        left: 5px;
+        transform-origin: left center;
+        transform: translate(0, -50%) scale(0.5);
+    }
+}
+
+/* ---- Force Mobile Mode (localhost testing) ---- */
+.mobile-mode #minimap-canvas { width: 120px !important; height: 120px !important; top: 70px !important; right: 10px !important; }
+.mobile-mode #game-timer { font-size: 18px !important; padding: 5px 10px !important; min-width: 80px !important; top: 10px !important; left: 10px !important; }
+.mobile-mode #player-hud { width: 150px !important; top: 10px !important; left: 220px !important; bottom: auto !important; }
+.mobile-mode .bar-container { height: 15px !important; }
+.mobile-mode .bar-text { font-size: 10px !important; }
+.mobile-mode #ability-container { top: 10px !important; left: 380px !important; right: auto !important; bottom: auto !important; width: 40px !important; height: 40px !important; }
+.mobile-mode #chat-box { top: 60px !important; left: 10px !important; bottom: auto !important; width: 250px !important; height: 120px !important; font-size: 10px !important; }
+.mobile-mode #mobile-actions { width: 120px !important; height: 120px !important; bottom: 20px !important; right: 20px !important; }
+.mobile-mode #btn-mobile-attack { width: 60px !important; height: 60px !important; font-size: 12px !important; }
+.mobile-mode #btn-mobile-ability { width: 45px !important; height: 45px !important; bottom: 70px !important; right: 15px !important; font-size: 10px !important; }
+.mobile-mode #btn-mobile-interact { width: 45px !important; height: 45px !important; bottom: 15px !important; right: 70px !important; font-size: 10px !important; }
+.mobile-mode #joystick-zone { width: 100px !important; height: 100px !important; bottom: 30px !important; left: 30px !important; }
+.mobile-mode #joystick-knob { width: 40px !important; height: 40px !important; }
+.mobile-mode .window { transform-origin: center center; transform: translate(-50%, -50%) scale(0.5); }
+.mobile-mode #character-sheet { transform: translate(-50%, -50%) scale(0.5); left: 50%; }
+.mobile-mode #inventory-screen {
+    left: auto;
+    right: 5px;
+    transform-origin: right center;
+    transform: translate(0, -50%) scale(0.5);
+}
+.mobile-mode #shop-screen {
+    left: 5px;
+    transform-origin: left center;
+    transform: translate(0, -50%) scale(0.5);
+}
+
+/* ---- Landscape Mode (short viewports) ---- */
+@media (max-height: 600px) {
+    #minimap-canvas {
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    #game-timer {
+        font-size: 16px !important;
+        padding: 4px 8px !important;
+    }
+
+    #mobile-actions {
+        transform: scale(0.8);
+        transform-origin: bottom right;
+    }
+
+    #joystick-zone {
+        transform: scale(0.8);
+        transform-origin: bottom left;
+    }
+
+    /* Ensure windows fit vertically */
+    .window {
+        transform: translate(-50%, -50%) scale(0.6) !important;
+    }
+}

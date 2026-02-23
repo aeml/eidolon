@@ -1,0 +1,39 @@
+/* ============================================================
+   Base & Layout
+   ============================================================ */
+
+body { 
+    margin: 0; 
+    overflow: hidden; 
+    background-color: #000; 
+    font-family: var(--font-primary);
+    background: url('../../assets/backgrounds/mainbg.png') no-repeat center center fixed; 
+    background-size: cover;
+}
+
+canvas { display: block; }
+
+.hidden {
+    display: none !important;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: var(--z-ui-layer);
+    background: transparent;
+}
+
+/* ---- Keyframe Animations ---- */
+
+@keyframes slideIn {
+    to { transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
