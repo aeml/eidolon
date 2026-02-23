@@ -100,6 +100,20 @@ export class RenderSystem {
                 bloomRadius: 0.25,
                 bloomThreshold: 0.84
             },
+            town: {
+                ambientIntensity: 2.35,
+                keyIntensity: 2.15,
+                keyColor: 0xfff8ee,   // warm lantern-like key
+                fillColor: 0xffe8cc,  // warm amber fill
+                fillIntensity: 0.35,
+                fogColor: 0xcfc8be,
+                fogNear: 1400,
+                fogFar: 4000,
+                exposure: 1.48,
+                bloomStrength: 0.22,
+                bloomRadius: 0.3,
+                bloomThreshold: 0.82
+            },
             water: {
                 ambientIntensity: 2.05,
                 keyIntensity: 2.1,
@@ -261,9 +275,11 @@ export class RenderSystem {
             const snowGeo = new THREE.PlaneGeometry(realmWidth, realmDepth);
             const snowMat = new THREE.MeshStandardMaterial({
                 map: this.snowTexture,
-                color: 0xffffff,
-                roughness: 0.8,
-                metalness: 0.2
+                color: 0xddeeff,       // slight blue-white for icy feel
+                roughness: 0.55,       // smoother (ice/frost reflections)
+                metalness: 0.35,       // reflective ice sheen
+                emissive: 0x0a1525,    // faint cold blue glow
+                emissiveIntensity: 0.3
             });
             this.groundSnow = new THREE.Mesh(snowGeo, snowMat);
             this.groundSnow.rotation.x = -Math.PI / 2;
@@ -281,9 +297,11 @@ export class RenderSystem {
             const fireGeo = new THREE.PlaneGeometry(realmWidth, realmDepth);
             const fireMat = new THREE.MeshStandardMaterial({
                 map: this.groundTexture,
-                color: 0xD1542A, // Orange-red tint for scorched earth
-                roughness: 0.9,
-                metalness: 0.1
+                color: 0xD1542A,       // Orange-red tint for scorched earth
+                roughness: 0.95,       // very rough cracked/scorched surface
+                metalness: 0.05,
+                emissive: 0x330800,    // dark red heat glow from below
+                emissiveIntensity: 0.5
             });
             this.groundFire = new THREE.Mesh(fireGeo, fireMat);
             this.groundFire.rotation.x = -Math.PI / 2;
@@ -302,9 +320,11 @@ export class RenderSystem {
             const airGeo = new THREE.PlaneGeometry(realmWidth, realmDepth);
             const airMat = new THREE.MeshStandardMaterial({
                 map: this.groundTexture,
-                color: 0x99BBCC, // Light blue tint for sky/cloud realm
-                roughness: 0.7,
-                metalness: 0.3
+                color: 0x99BBCC,       // Light blue tint for sky/cloud realm
+                roughness: 0.5,        // smooth, polished cloud-stone
+                metalness: 0.4,        // reflective sky sheen
+                emissive: 0x0c1520,    // subtle sky-light glow from below
+                emissiveIntensity: 0.25
             });
             this.groundAir = new THREE.Mesh(airGeo, airMat);
             this.groundAir.rotation.x = -Math.PI / 2;
@@ -318,6 +338,208 @@ export class RenderSystem {
         }
 
         report(100, 'Environment ready');
+
+        // Realm particles are loaded after the ground so they render above it.
+        this.initRealmParticles();
+    }
+
+    /* ----------------------------------------------------------------
+       Realm Ambient Particles
+       ----------------------------------------------------------------
+       Lightweight camera-relative particle system that gives each realm
+       a distinct atmospheric feel:
+         earth — gentle floating dust motes
+         town  — warm firefly-like motes
+         water — falling snowflakes
+         fire  — rising embers
+         air   — fast horizontal wind wisps
+       ---------------------------------------------------------------- */
+
+    static REALM_PARTICLE_CONFIGS = {
+        earth: {
+            color: 0xc8b89a,
+            size: 3.0,
+            velY: [0.15, 0.6],       // gentle upward drift
+            velXZ: [-0.3, 0.3],
+            life: [4, 8],
+            spread: [55, 25, 55],
+            spawnY: [-3, 20]
+        },
+        town: {
+            color: 0xffe4a0,
+            size: 2.5,
+            velY: [0.1, 0.4],        // lazy floating
+            velXZ: [-0.15, 0.15],
+            life: [5, 10],
+            spread: [40, 15, 40],
+            spawnY: [0, 12]
+        },
+        water: {
+            color: 0xe0eaff,
+            size: 3.5,
+            velY: [-1.4, -0.5],      // falling snow
+            velXZ: [-0.35, 0.35],
+            life: [5, 9],
+            spread: [55, 35, 55],
+            spawnY: [18, 38]
+        },
+        fire: {
+            color: 0xff6622,
+            size: 2.0,
+            velY: [1.2, 3.0],        // rising fast
+            velXZ: [-0.5, 0.5],
+            life: [2, 4],
+            spread: [55, 15, 55],
+            spawnY: [-2, 8]
+        },
+        air: {
+            color: 0xc0d8ff,
+            size: 2.8,
+            velY: [-0.1, 0.25],      // mostly horizontal
+            velXZ: [-2.5, 2.5],      // fast wind
+            life: [2, 5],
+            spread: [65, 25, 65],
+            spawnY: [0, 28]
+        }
+    };
+
+    initRealmParticles() {
+        const count = this.isMobile ? 50 : 140;
+        this._pCount = count;
+
+        const positions = new Float32Array(count * 3);
+        const alphas = new Float32Array(count);
+
+        // Initialize all below ground (invisible)
+        for (let i = 0; i < count; i++) {
+            positions[i * 3 + 1] = -200;
+            alphas[i] = 0;
+        }
+
+        const geom = new THREE.BufferGeometry();
+        geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geom.setAttribute('alpha', new THREE.BufferAttribute(alphas, 1));
+
+        const mat = new THREE.ShaderMaterial({
+            uniforms: {
+                uColor: { value: new THREE.Color(0xc8b89a) },
+                uSize: { value: 3.0 }
+            },
+            vertexShader: `
+                attribute float alpha;
+                varying float vAlpha;
+                uniform float uSize;
+                void main() {
+                    vAlpha = alpha;
+                    gl_PointSize = uSize;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 uColor;
+                varying float vAlpha;
+                void main() {
+                    float d = length(gl_PointCoord - vec2(0.5));
+                    if (d > 0.5) discard;
+                    float soft = 1.0 - smoothstep(0.25, 0.5, d);
+                    gl_FragColor = vec4(uColor, vAlpha * soft);
+                }
+            `,
+            transparent: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+        });
+
+        this._pMesh = new THREE.Points(geom, mat);
+        this._pMesh.frustumCulled = false;
+        this.scene.add(this._pMesh);
+
+        // Internal per-particle state (plain arrays, not GPU attributes)
+        this._pVel = new Float32Array(count * 3);
+        this._pLife = new Float32Array(count);     // remaining life
+        this._pMaxLife = new Float32Array(count);  // total life (for fade calc)
+        this._pRealm = null;                       // currently-configured realm
+        this._pTargetColor = new THREE.Color(0xc8b89a);
+    }
+
+    /** Spawn / reset a single particle at `index` using `cfg` around `center`. */
+    _spawnParticle(index, cfg, center) {
+        const pos = this._pMesh.geometry.attributes.position.array;
+        const i3 = index * 3;
+
+        const rand = (min, max) => min + Math.random() * (max - min);
+
+        pos[i3]     = center.x + rand(-cfg.spread[0], cfg.spread[0]);
+        pos[i3 + 1] = rand(cfg.spawnY[0], cfg.spawnY[1]);
+        pos[i3 + 2] = center.z + rand(-cfg.spread[2], cfg.spread[2]);
+
+        this._pVel[i3]     = rand(cfg.velXZ[0], cfg.velXZ[1]);
+        this._pVel[i3 + 1] = rand(cfg.velY[0], cfg.velY[1]);
+        this._pVel[i3 + 2] = rand(cfg.velXZ[0], cfg.velXZ[1]);
+
+        const life = rand(cfg.life[0], cfg.life[1]);
+        this._pLife[index] = life;
+        this._pMaxLife[index] = life;
+    }
+
+    /**
+     * Called every frame from `updateEnvironmentLighting`.
+     * Moves particles, recycles dead ones, and transitions color/size on realm change.
+     */
+    updateRealmParticles(dt, cameraTarget) {
+        if (!this._pMesh) return;
+        if (this.graphicsQuality === 'low') {
+            this._pMesh.visible = false;
+            return;
+        }
+        this._pMesh.visible = true;
+
+        const realm = this.currentRealm || 'earth';
+        // Town shares earth particles when no town config (but we do have one)
+        const cfg = RenderSystem.REALM_PARTICLE_CONFIGS[realm]
+            || RenderSystem.REALM_PARTICLE_CONFIGS.earth;
+
+        // On realm change, update target color/size (particles respawn gradually)
+        if (realm !== this._pRealm) {
+            this._pRealm = realm;
+            this._pTargetColor.set(cfg.color);
+        }
+
+        // Lerp material color/size toward target
+        const mat = this._pMesh.material;
+        mat.uniforms.uColor.value.lerp(this._pTargetColor, Math.min(1, dt * 2.0));
+        mat.uniforms.uSize.value = THREE.MathUtils.lerp(
+            mat.uniforms.uSize.value, cfg.size, Math.min(1, dt * 2.0)
+        );
+
+        const pos = this._pMesh.geometry.attributes.position.array;
+        const alphas = this._pMesh.geometry.attributes.alpha.array;
+        const count = this._pCount;
+        const center = cameraTarget || this.cameraTarget;
+
+        for (let i = 0; i < count; i++) {
+            this._pLife[i] -= dt;
+            if (this._pLife[i] <= 0) {
+                // Respawn
+                this._spawnParticle(i, cfg, center);
+                alphas[i] = 0; // fade in from zero
+            } else {
+                // Move
+                const i3 = i * 3;
+                pos[i3]     += this._pVel[i3] * dt;
+                pos[i3 + 1] += this._pVel[i3 + 1] * dt;
+                pos[i3 + 2] += this._pVel[i3 + 2] * dt;
+
+                // Fade: ramp up in first 20% of life, ramp down in last 30%
+                const t = this._pLife[i] / this._pMaxLife[i]; // 1→0
+                const fadeIn = Math.min(1, (1 - t) / 0.2);    // 0→1 in first 20%
+                const fadeOut = Math.min(1, t / 0.3);          // 1→0 in last 30%
+                alphas[i] = fadeIn * fadeOut * 0.6;             // cap at 0.6 opacity
+            }
+        }
+
+        this._pMesh.geometry.attributes.position.needsUpdate = true;
+        this._pMesh.geometry.attributes.alpha.needsUpdate = true;
     }
 
     setupLights() {
@@ -420,6 +642,10 @@ export class RenderSystem {
         if (position.z < -600) return 'water';
         if (position.x < -1000) return 'fire';
         if (position.x > 1000) return 'air';
+        // Town is a ~100-radius area centered at (0, 200) within Earth
+        const dx = position.x;
+        const dz = position.z - 200;
+        if (dx * dx + dz * dz < 120 * 120) return 'town';
         return 'earth';
     }
 
@@ -581,6 +807,9 @@ export class RenderSystem {
             this.bloomPass.radius = THREE.MathUtils.lerp(this.bloomPass.radius, this.targetLighting.bloomRadius, blend);
             this.bloomPass.threshold = THREE.MathUtils.lerp(this.bloomPass.threshold, this.targetLighting.bloomThreshold, blend);
         }
+
+        // Update ambient particles (follows camera, realm-dependent)
+        this.updateRealmParticles(dt, position ? { x: position.x, z: position.z } : null);
     }
 
     // setupWater/setupGround were replaced by `preloadEnvironment()`.
@@ -786,6 +1015,12 @@ export class RenderSystem {
 
 
     dispose() {
+        if (this._pMesh) {
+            this._pMesh.geometry.dispose();
+            this._pMesh.material.dispose();
+            this.scene.remove(this._pMesh);
+            this._pMesh = null;
+        }
         if (this.composer) {
             this.composer.dispose();
         }
