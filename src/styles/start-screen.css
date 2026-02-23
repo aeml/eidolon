@@ -1,0 +1,145 @@
+/* ============================================================
+   Start Screen — Login Panel, Class Selection
+   ============================================================ */
+
+#start-screen {
+    pointer-events: auto;
+    background: rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: var(--z-start-screen);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#game-title {
+    font-size: 5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    transform: translateX(-100vw);
+    animation: slideIn 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    text-shadow: 0 0 20px var(--color-gold-dim);
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 3rem;
+    color: var(--color-text-muted);
+    opacity: 0;
+    animation: fadeIn 1s ease-out 1s forwards;
+}
+
+#login-panel {
+    background: rgba(20, 20, 20, 0.9);
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-2xl);
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    box-shadow: var(--shadow-heavy);
+    opacity: 0;
+    animation: fadeIn 1s ease-out 1.5s forwards;
+}
+
+.auth-input {
+    padding: 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-default);
+    background: var(--bg-input);
+    color: var(--color-white-bright);
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color var(--transition-default);
+}
+
+.auth-input:focus {
+    border-color: var(--color-gold);
+    outline: none;
+}
+
+.auth-btn {
+    padding: 12px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all var(--transition-default);
+    text-transform: uppercase;
+}
+
+#btn-login {
+    background: var(--color-login);
+    color: white;
+}
+#btn-login:hover { background: var(--color-login-hover); }
+
+#btn-register {
+    background: var(--color-register);
+    color: white;
+}
+#btn-register:hover { background: var(--color-register-hover); }
+
+.class-selection {
+    display: none;
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-xl);
+}
+
+/* Duplicate .menu-btn definition from start-screen context
+   (more specific than the generic .menu-btn in hud.css) */
+.class-selection ~ .menu-btn,
+#start-screen .menu-btn {
+    display: block;
+    width: 100%;
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    font-size: 1rem;
+    cursor: pointer;
+    background: var(--bg-surface-hover);
+    color: var(--color-white);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-default);
+}
+.class-selection ~ .menu-btn:hover,
+#start-screen .menu-btn:hover {
+    background: var(--border-heavy);
+    border-color: var(--color-white-bright);
+}
+
+.class-btn {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    background: var(--bg-surface);
+    color: var(--color-white);
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-default);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.class-btn:hover {
+    background: var(--border-default);
+    border-color: var(--color-white-bright);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(255,255,255,0.1);
+}
+
+.class-btn[data-type="Fighter"]:hover { border-color: var(--color-fighter); color: var(--color-fighter); }
+.class-btn[data-type="Rogue"]:hover   { border-color: var(--color-rogue);   color: var(--color-rogue);   }
+.class-btn[data-type="Wizard"]:hover  { border-color: var(--color-wizard);  color: var(--color-wizard);  }
+.class-btn[data-type="Cleric"]:hover  { border-color: var(--color-cleric);  color: var(--color-cleric);  }

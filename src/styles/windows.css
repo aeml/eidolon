@@ -1,0 +1,104 @@
+/* ============================================================
+   Windows — Base window/modal, Character Sheet, Inventory
+   ============================================================ */
+
+/* ---- Base Window ---- */
+.window {
+    position: absolute;
+    background: var(--bg-panel);
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-md);
+    color: var(--color-white);
+    padding: var(--spacing-md);
+    display: none;
+    pointer-events: auto;
+    box-shadow: var(--shadow-panel);
+}
+
+.window-header {
+    font-size: 1.2rem;
+    border-bottom: 1px solid var(--border-default);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    color: var(--color-gold);
+}
+
+/* ---- Character Sheet ---- */
+#character-sheet {
+    top: 50%;
+    left: 50%;
+    transform: translate(-150%, -50%);
+    width: 380px;
+    height: 560px;
+}
+
+.char-sheet-body {
+    display: flex;
+    gap: var(--spacing-lg);
+    height: calc(100% - 40px);
+}
+
+#stats-content {
+    flex: 1;
+    min-width: 180px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xs);
+    font-size: 0.85rem;
+}
+
+.equipment-slots {
+    margin-top: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 60px);
+    gap: 8px;
+    justify-content: center;
+    align-content: start;
+}
+
+.equip-slot {
+    background: var(--bg-input);
+    border: 1px solid var(--border-default);
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    color: var(--color-text-dim);
+    position: relative;
+    text-align: center;
+    word-break: break-word;
+    padding: var(--spacing-xs);
+}
+
+/* ---- Inventory ---- */
+#inventory-screen {
+    top: 50%;
+    left: 50%;
+    transform: translate(100%, -50%);
+    width: 300px;
+    height: 400px;
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--spacing-sm);
+}
+
+.inv-slot {
+    background: var(--bg-input);
+    border: 1px solid var(--border-default);
+    aspect-ratio: 1;
+    cursor: pointer;
+    position: relative;
+}
+
+.inv-slot:hover { border-color: #888; }

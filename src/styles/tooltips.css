@@ -1,0 +1,19 @@
+/* ============================================================
+   Compare Tooltip
+   ============================================================
+   Side-by-side item comparison tooltip shown on hover.
+   ------------------------------------------------------------ */
+
+#compare-tooltip {
+    position: absolute;
+    display: none;
+    background: var(--bg-panel);
+    border: 1px solid var(--color-gold);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    color: var(--color-white);
+    font-size: 12px;
+    pointer-events: none;
+    z-index: var(--z-tooltip);
+    max-width: 200px;
+}

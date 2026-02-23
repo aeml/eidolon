@@ -1,0 +1,125 @@
+/* ============================================================
+   Mobile UI
+   ============================================================
+   Touch controls: virtual joystick, action buttons, top-right
+   quick-access icons.  Hidden by default; shown via JS on
+   mobile / touch devices.
+   ------------------------------------------------------------ */
+
+#mobile-ui {
+    display: none; /* Hidden by default, shown via JS on mobile */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: var(--z-mobile-ui);
+    touch-action: none; /* Prevent browser zooming/scrolling */
+}
+
+.mobile-btn {
+    pointer-events: auto;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid #888;
+    border-radius: var(--radius-round);
+    color: var(--color-white-bright);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.mobile-btn:active {
+    background: var(--color-gold-dim);
+    border-color: var(--color-gold);
+}
+
+/* ---- Joystick ---- */
+
+#joystick-zone {
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    width: 120px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-round);
+    pointer-events: auto;
+}
+
+#joystick-knob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-round);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+/* ---- Action Buttons ---- */
+
+#mobile-actions {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    width: 150px;
+    height: 150px;
+    pointer-events: none;
+}
+
+#btn-mobile-attack {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 80px;
+    height: 80px;
+    background: var(--color-mobile-attack);
+    border-color: var(--color-fighter);
+    font-size: 14px;
+}
+
+#btn-mobile-ability {
+    position: absolute;
+    bottom: 90px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: var(--color-mobile-ability);
+    border-color: #4444ff;
+    font-size: 12px;
+}
+
+#btn-mobile-interact {
+    position: absolute;
+    bottom: 20px;
+    right: 90px;
+    width: 60px;
+    height: 60px;
+    background: var(--color-mobile-interact);
+    border-color: #44ff44;
+    font-size: 12px;
+}
+
+/* ---- Top-Right Quick Icons ---- */
+
+#mobile-top-right {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: var(--spacing-md);
+    pointer-events: auto;
+}
+
+.mobile-icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    font-size: 20px;
+}

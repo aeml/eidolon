@@ -1,0 +1,85 @@
+/* ============================================================
+   Party Panel
+   ============================================================
+   Left-side party roster showing member names, HP bars,
+   and action buttons (kick, leave, etc.).
+   ------------------------------------------------------------ */
+
+#party-panel {
+    position: absolute;
+    top: 150px;
+    left: 20px;
+    width: 220px;
+    background: var(--bg-dark-medium);
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-md);
+    pointer-events: auto;
+    display: none; /* Shown when in party */
+    color: var(--color-white-bright);
+    font-family: var(--font-primary);
+    z-index: var(--z-hud);
+}
+
+.party-member {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.1);
+    padding: var(--spacing-sm);
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.party-member-info {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.party-name {
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.party-hp-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--border-dim);
+    margin-top: var(--spacing-xs);
+    position: relative;
+}
+
+.party-hp-fill {
+    height: 100%;
+    background: var(--color-party-hp);
+    width: 100%;
+    transition: width var(--transition-default);
+}
+
+.party-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-left: var(--spacing-sm);
+}
+
+.party-btn {
+    background: var(--border-default);
+    border: 1px solid var(--border-light);
+    color: var(--color-white-bright);
+    cursor: pointer;
+    font-size: 10px;
+    padding: var(--spacing-xs) 4px;
+    border-radius: var(--radius-sm);
+}
+
+.party-btn:hover {
+    background: var(--border-light);
+}
+
+.party-leader-icon {
+    color: var(--color-gold);
+    margin-right: 4px;
+    font-size: 10px;
+}

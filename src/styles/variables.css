@@ -1,0 +1,103 @@
+/* ============================================================
+   Eidolon Design Tokens
+   ============================================================
+   Single source of truth for colors, spacing, typography, and
+   z-index layering used across all UI modules.
+   ------------------------------------------------------------ */
+
+:root {
+    /* ---- Color Palette ---- */
+    --color-gold:           #ffd700;
+    --color-gold-dim:       rgba(255, 215, 0, 0.5);
+    --color-white:          #eee;
+    --color-white-bright:   #fff;
+    --color-text-muted:     #aaa;
+    --color-text-dim:       #666;
+
+    /* Backgrounds */
+    --bg-panel:             rgba(20, 20, 20, 0.95);
+    --bg-panel-light:       rgba(0, 0, 0, 0.3);
+    --bg-dark:              rgba(0, 0, 0, 0.8);
+    --bg-dark-medium:       rgba(0, 0, 0, 0.7);
+    --bg-input:             #111;
+    --bg-surface:           #222;
+    --bg-surface-hover:     #333;
+    --bg-surface-active:    #2a2a10;
+    --bg-surface-mid:       rgba(50, 50, 50, 0.9);
+
+    /* Borders */
+    --border-default:       #444;
+    --border-light:         #666;
+    --border-heavy:         #555;
+    --border-dim:           #333;
+
+    /* Health / Mana / XP fills */
+    --color-health-start:   #8b0000;
+    --color-health-end:     #ff0000;
+    --color-mana-start:     #00008b;
+    --color-mana-end:       #0000ff;
+    --color-xp:             #ffd700;
+    --color-party-hp:       #d32f2f;
+
+    /* Class accent colors */
+    --color-fighter:        #ff4444;
+    --color-rogue:          #44ff44;
+    --color-wizard:         #4444ff;
+    --color-cleric:         #ffd700;
+
+    /* Auth buttons */
+    --color-login:          #4CAF50;
+    --color-login-hover:    #45a049;
+    --color-register:       #2196F3;
+    --color-register-hover: #1e88e5;
+
+    /* Mobile */
+    --color-mobile-attack:  rgba(139, 0, 0, 0.6);
+    --color-mobile-ability: rgba(0, 0, 139, 0.6);
+    --color-mobile-interact:rgba(0, 100, 0, 0.6);
+
+    /* Misc */
+    --color-warning:        #e6a23c;
+    --color-warning-border: #d48806;
+    --color-error:          #ff4444;
+    --color-debug:          #ff4444;
+
+    /* ---- Typography ---- */
+    --font-primary:         'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-display:         'Cinzel', serif;
+    --font-mono:            'Consolas', 'Courier New', monospace;
+
+    /* ---- Spacing ---- */
+    --spacing-xs:           2px;
+    --spacing-sm:           5px;
+    --spacing-md:           10px;
+    --spacing-lg:           15px;
+    --spacing-xl:           20px;
+    --spacing-2xl:          30px;
+
+    /* ---- Border Radius ---- */
+    --radius-sm:            2px;
+    --radius-md:            4px;
+    --radius-lg:            8px;
+    --radius-round:         50%;
+
+    /* ---- Shadows ---- */
+    --shadow-panel:         0 0 20px rgba(0, 0, 0, 0.8);
+    --shadow-heavy:         0 0 30px rgba(0, 0, 0, 0.8);
+
+    /* ---- Z-Index Scale ---- */
+    --z-ui-layer:           10;
+    --z-start-screen:       20;
+    --z-mobile-ui:          50;
+    --z-hud:                100;
+    --z-tooltip:            200;
+    --z-game-timer:         9999;
+    --z-debug:              10000;
+    --z-browser-warning:    20000;
+    --z-perf:               20000;
+    --z-world-map:          25000;
+
+    /* ---- Transitions ---- */
+    --transition-fast:      0.1s;
+    --transition-default:   0.2s;
+}
