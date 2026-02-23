@@ -425,6 +425,294 @@ export class MeshFactory {
         }
     }
 
+    // ====================================================================
+    // Procedural enemy mesh specs
+    // ====================================================================
+    // Each spec defines a distinct silhouette built from primitive Three.js
+    // geometries so Fire/Air/Water enemies are visually distinguishable
+    // at a glance, rather than all appearing as tinted skeletons.
+    //
+    // Shape legend:
+    //   'humanoid'  – capsule body + sphere head
+    //   'golem'     – wide box torso + sphere joints
+    //   'wraith'    – inverted cone (robed ghost)
+    //   'beast'     – low wide box body + cone head (quadruped)
+    //   'elemental' – stacked spheres with glow
+    //   'titan'     – very large humanoid with wide shoulders
+    //   'bird'      – cone body + wing planes
+    //   'serpent'   – chain of spheres (sinuous)
+    // ====================================================================
+    static PROCEDURAL_ENEMY_SPECS = {
+        // ---- Fire realm overworld ----
+        SandstormDjinn:    { shape: 'wraith',    scale: 2.5, color: 0xD2B48C, emissive: 0x332200, emissiveI: 0.15 },
+        MagmaGolem:        { shape: 'golem',     scale: 3.0, color: 0xFF4500, emissive: 0xFF2200, emissiveI: 0.4 },
+        ScorchedWraith:    { shape: 'wraith',    scale: 2.5, color: 0xFF6600, emissive: 0xFF4400, emissiveI: 0.5 },
+        InfernalBehemoth:  { shape: 'titan',     scale: 4.0, color: 0x8B0000, emissive: 0xFF0000, emissiveI: 0.3 },
+        PhoenixSentinel:   { shape: 'bird',      scale: 3.0, color: 0xFFD700, emissive: 0xFF8C00, emissiveI: 0.6 },
+
+        // ---- Air realm overworld ----
+        StormHarpy:        { shape: 'bird',      scale: 2.5, color: 0x87CEEB, emissive: 0x000000, emissiveI: 0 },
+        CloudElemental:    { shape: 'elemental', scale: 2.8, color: 0xE0E0E0, emissive: 0xCCCCCC, emissiveI: 0.2 },
+        ThunderRoc:        { shape: 'bird',      scale: 3.0, color: 0x4169E1, emissive: 0xFFFF00, emissiveI: 0.3 },
+        TempestGiant:      { shape: 'titan',     scale: 4.5, color: 0x483D8B, emissive: 0x00BFFF, emissiveI: 0.2 },
+        CycloneAvatar:     { shape: 'elemental', scale: 3.5, color: 0x00CED1, emissive: 0x00FFFF, emissiveI: 0.4 },
+
+        // ---- Fire dungeon bosses ----
+        Cindermaw:         { shape: 'beast',     scale: 4.0, color: 0xFF4500, emissive: 0xFF2200, emissiveI: 0.6 },
+        ScorchedTwins:     { shape: 'humanoid',  scale: 3.5, color: 0xFF6347, emissive: 0xFF4500, emissiveI: 0.5 },
+        ForgemasterPyrax:  { shape: 'golem',     scale: 4.5, color: 0xB22222, emissive: 0xFF4500, emissiveI: 0.4 },
+        ObsidianGuardian:  { shape: 'titan',     scale: 5.0, color: 0x1C1C1C, emissive: 0xFF0000, emissiveI: 0.2 },
+        LordInfernax:      { shape: 'titan',     scale: 6.0, color: 0x8B0000, emissive: 0xFF4500, emissiveI: 0.7 },
+
+        // ---- Air dungeon bosses ----
+        Windshear:         { shape: 'elemental', scale: 4.0, color: 0x87CEEB, emissive: 0x00BFFF, emissiveI: 0.4 },
+        Stormcallers:      { shape: 'humanoid',  scale: 3.5, color: 0x9370DB, emissive: 0xFFFF00, emissiveI: 0.3 },
+        RocMatriarch:      { shape: 'bird',      scale: 4.5, color: 0x4682B4, emissive: 0x00CED1, emissiveI: 0.3 },
+        ThunderlordKaelix: { shape: 'titan',     scale: 5.5, color: 0x483D8B, emissive: 0xFFFF00, emissiveI: 0.5 },
+        Zephyrion:         { shape: 'elemental', scale: 6.5, color: 0x00CED1, emissive: 0x00FFFF, emissiveI: 0.6 },
+
+        // ---- Water dungeon bosses ----
+        TiderendLeviathan: { shape: 'serpent',   scale: 4.0, color: 0x0AA0B8, emissive: 0x3DE7FF, emissiveI: 0.4 },
+        DrownedChoir:      { shape: 'wraith',    scale: 3.6, color: 0x1E6F9F, emissive: 0x6FD8FF, emissiveI: 0.3 },
+        AbyssalGoliath:    { shape: 'golem',     scale: 4.6, color: 0x0D3D5C, emissive: 0x2BB4CC, emissiveI: 0.2 },
+        MaelstromWarden:   { shape: 'titan',     scale: 5.2, color: 0x0A3A6B, emissive: 0x4DD2FF, emissiveI: 0.4 },
+        Thalorath:         { shape: 'titan',     scale: 6.2, color: 0x003B6F, emissive: 0x4EF2FF, emissiveI: 0.5 },
+    };
+
+    /**
+     * Build a procedural enemy mesh from a spec.
+     * Each shape creates a distinct silhouette using composite primitives.
+     * Falls back to loadSkeletonWithTint if anything goes wrong.
+     * @param {string} type - Enemy type name
+     * @param {Object} spec - Entry from PROCEDURAL_ENEMY_SPECS
+     * @returns {THREE.Object3D}
+     */
+    static createProceduralEnemy(type, spec) {
+        const { shape, scale, color, emissive, emissiveI } = spec;
+        const mat = () => new THREE.MeshStandardMaterial({
+            color,
+            emissive: new THREE.Color(emissive),
+            emissiveIntensity: emissiveI,
+            roughness: 0.6,
+            metalness: 0.2,
+        });
+
+        const group = new THREE.Group();
+        const s = scale;
+
+        switch (shape) {
+            case 'humanoid': {
+                // Capsule body + sphere head
+                const body = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.3, 1.4, 8), mat());
+                body.position.y = 0.7;
+                group.add(body);
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 8, 8), mat());
+                head.position.y = 1.55;
+                group.add(head);
+                // Arms
+                const armGeo = new THREE.CylinderGeometry(0.1, 0.08, 0.8, 6);
+                const leftArm = new THREE.Mesh(armGeo, mat());
+                leftArm.position.set(-0.45, 0.9, 0);
+                leftArm.rotation.z = 0.3;
+                group.add(leftArm);
+                const rightArm = new THREE.Mesh(armGeo, mat());
+                rightArm.position.set(0.45, 0.9, 0);
+                rightArm.rotation.z = -0.3;
+                group.add(rightArm);
+                break;
+            }
+            case 'golem': {
+                // Wide box torso + sphere joints + thick legs
+                const torso = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.8, 0.6), mat());
+                torso.position.y = 1.0;
+                group.add(torso);
+                const head = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.35, 0.35), mat());
+                head.position.y = 1.55;
+                group.add(head);
+                // Shoulder joints
+                [-0.55, 0.55].forEach(x => {
+                    const joint = new THREE.Mesh(new THREE.SphereGeometry(0.18, 6, 6), mat());
+                    joint.position.set(x, 1.2, 0);
+                    group.add(joint);
+                    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.15, 0.7, 6), mat());
+                    arm.position.set(x, 0.7, 0);
+                    group.add(arm);
+                });
+                // Legs
+                [-0.25, 0.25].forEach(x => {
+                    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.18, 0.6, 6), mat());
+                    leg.position.set(x, 0.3, 0);
+                    group.add(leg);
+                });
+                break;
+            }
+            case 'wraith': {
+                // Inverted cone robe + floating head
+                const robe = new THREE.Mesh(new THREE.ConeGeometry(0.6, 1.6, 8), mat());
+                robe.position.y = 0.8;
+                robe.rotation.x = Math.PI; // Inverted
+                group.add(robe);
+                // Translucent head orb
+                const headMat = mat();
+                headMat.transparent = true;
+                headMat.opacity = 0.7;
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 8), headMat);
+                head.position.y = 1.7;
+                group.add(head);
+                // Wispy tendrils (thin cones pointing down)
+                for (let i = 0; i < 3; i++) {
+                    const tendril = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.5, 4), mat());
+                    tendril.position.set(Math.cos(i * 2.1) * 0.3, 0.1, Math.sin(i * 2.1) * 0.3);
+                    group.add(tendril);
+                }
+                break;
+            }
+            case 'beast': {
+                // Low wide body + cone head (quadruped look)
+                const body = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.5, 1.2), mat());
+                body.position.y = 0.5;
+                group.add(body);
+                // Head (forward cone)
+                const head = new THREE.Mesh(new THREE.ConeGeometry(0.25, 0.5, 6), mat());
+                head.position.set(0, 0.6, 0.7);
+                head.rotation.x = -Math.PI / 2;
+                group.add(head);
+                // Four legs
+                [[-0.3, 0.4], [0.3, 0.4], [-0.3, -0.4], [0.3, -0.4]].forEach(([x, z]) => {
+                    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 0.5, 6), mat());
+                    leg.position.set(x, 0.15, z);
+                    group.add(leg);
+                });
+                // Tail
+                const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.02, 0.6, 4), mat());
+                tail.position.set(0, 0.4, -0.8);
+                tail.rotation.x = 0.5;
+                group.add(tail);
+                break;
+            }
+            case 'elemental': {
+                // Stacked spheres of varying size with glow
+                const sizes = [0.35, 0.28, 0.2, 0.14];
+                let y = 0;
+                sizes.forEach((r, i) => {
+                    y += r;
+                    const orb = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 10), mat());
+                    orb.position.y = y;
+                    group.add(orb);
+                    y += r * 0.8;
+                });
+                // Orbiting ring (torus)
+                const ringMat = mat();
+                ringMat.transparent = true;
+                ringMat.opacity = 0.5;
+                const ring = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.04, 8, 16), ringMat);
+                ring.position.y = 0.6;
+                ring.rotation.x = Math.PI / 3;
+                group.add(ring);
+                break;
+            }
+            case 'titan': {
+                // Very large humanoid — wide shoulders, thick limbs
+                const torso = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.2, 0.5), mat());
+                torso.position.y = 1.0;
+                group.add(torso);
+                // Broad shoulders
+                const shoulders = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.2, 0.5), mat());
+                shoulders.position.y = 1.55;
+                group.add(shoulders);
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 8), mat());
+                head.position.y = 1.85;
+                group.add(head);
+                // Arms
+                [-0.65, 0.65].forEach(x => {
+                    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.12, 1.0, 6), mat());
+                    arm.position.set(x, 0.8, 0);
+                    group.add(arm);
+                    // Fist
+                    const fist = new THREE.Mesh(new THREE.SphereGeometry(0.15, 6, 6), mat());
+                    fist.position.set(x, 0.25, 0);
+                    group.add(fist);
+                });
+                // Legs
+                [-0.25, 0.25].forEach(x => {
+                    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.2, 0.8, 6), mat());
+                    leg.position.set(x, 0.25, 0);
+                    group.add(leg);
+                });
+                break;
+            }
+            case 'bird': {
+                // Cone body + flat wing planes
+                const body = new THREE.Mesh(new THREE.ConeGeometry(0.3, 1.0, 8), mat());
+                body.position.y = 0.8;
+                group.add(body);
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 8), mat());
+                head.position.y = 1.4;
+                group.add(head);
+                // Beak
+                const beak = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.2, 4), mat());
+                beak.position.set(0, 1.4, 0.22);
+                beak.rotation.x = -Math.PI / 2;
+                group.add(beak);
+                // Wings
+                [-1, 1].forEach(side => {
+                    const wing = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.4), mat());
+                    wing.position.set(side * 0.6, 1.0, 0);
+                    wing.rotation.z = side * 0.3;
+                    wing.rotation.y = side * 0.2;
+                    group.add(wing);
+                });
+                // Tail feathers
+                const tail = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.4), mat());
+                tail.position.set(0, 0.5, -0.3);
+                tail.rotation.x = 0.5;
+                group.add(tail);
+                break;
+            }
+            case 'serpent': {
+                // Chain of spheres (sinuous body)
+                const segCount = 8;
+                for (let i = 0; i < segCount; i++) {
+                    const t = i / (segCount - 1);
+                    const r = 0.2 * (1 - t * 0.5); // Taper toward tail
+                    const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 8, 8), mat());
+                    seg.position.set(
+                        Math.sin(i * 0.6) * 0.3,
+                        0.3 + i * 0.18,
+                        Math.cos(i * 0.6) * 0.15
+                    );
+                    group.add(seg);
+                }
+                // Head (larger sphere at top)
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 8), mat());
+                head.position.set(Math.sin((segCount - 1) * 0.6) * 0.3, 0.3 + segCount * 0.18, 0);
+                group.add(head);
+                break;
+            }
+        }
+
+        // Scale the whole group
+        group.scale.set(s, s, s);
+
+        // Enable shadows on all children
+        group.traverse(c => {
+            if (c.isMesh) {
+                c.castShadow = true;
+                c.receiveShadow = true;
+            }
+        });
+
+        // Hitbox
+        const hitSize = s * 0.8;
+        const hitGeo = new THREE.BoxGeometry(hitSize, hitSize * 1.25, hitSize);
+        const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+        const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+        hitMesh.position.y = hitSize * 0.5;
+        group.add(hitMesh);
+
+        return group;
+    }
+
     static getPooledMesh(type) {
         if (this.pool[type] && this.pool[type].length > 0) {
             const mesh = this.pool[type].pop();
@@ -1844,106 +2132,20 @@ export class MeshFactory {
             }
         }
         // ========================================================================
-        // FIRE REALM ENEMIES (West Zone - Scorched Wastes)
-        // Using skeleton model with fire-themed color tints as placeholders
+        // PROCEDURAL ENEMIES (Fire / Air / Water realms + dungeon bosses)
+        // Each type uses a distinct procedural silhouette from PROCEDURAL_ENEMY_SPECS.
+        // Falls back to tinted skeleton if procedural build fails.
+        // TODO: Replace with proper GLB models when assets are available.
         // ========================================================================
-        else if (type === 'SandstormDjinn') {
-            // Sandstorm Djinn - Level 70-75 - Sandy/tan color
-            return await this.loadSkeletonWithTint(0xD2B48C, 2.5, 0x000000, 0);
-        } else if (type === 'MagmaGolem') {
-            // Magma Golem - Level 75-80 - Glowing orange/red
-            return await this.loadSkeletonWithTint(0xFF4500, 3.0, 0xFF2200, 0.4);
-        } else if (type === 'ScorchedWraith') {
-            // Scorched Wraith - Level 80-85 - Ghostly fire spirit
-            return await this.loadSkeletonWithTint(0xFF6600, 2.5, 0xFF4400, 0.5);
-        } else if (type === 'InfernalBehemoth') {
-            // Infernal Behemoth - Level 85-90 - Massive fire demon
-            return await this.loadSkeletonWithTint(0x8B0000, 4.0, 0xFF0000, 0.3);
-        } else if (type === 'PhoenixSentinel') {
-            // Phoenix Sentinel - Level 90-95 - Fiery bird-like guardian
-            return await this.loadSkeletonWithTint(0xFFD700, 3.0, 0xFF8C00, 0.6);
-        }
-        // ========================================================================
-        // AIR REALM ENEMIES (East Zone - Skyward Peaks)
-        // Using skeleton model with air-themed color tints as placeholders
-        // ========================================================================
-        else if (type === 'StormHarpy') {
-            // Storm Harpy - Level 70-75 - Sky blue
-            return await this.loadSkeletonWithTint(0x87CEEB, 2.5, 0x000000, 0);
-        } else if (type === 'CloudElemental') {
-            // Cloud Elemental - Level 75-80 - Misty white
-            return await this.loadSkeletonWithTint(0xE0E0E0, 2.8, 0xCCCCCC, 0.2);
-        } else if (type === 'ThunderRoc') {
-            // Thunder Roc - Level 80-85 - Royal blue with lightning
-            return await this.loadSkeletonWithTint(0x4169E1, 3.0, 0xFFFF00, 0.3);
-        } else if (type === 'TempestGiant') {
-            // Tempest Giant - Level 85-90 - Dark slate blue
-            return await this.loadSkeletonWithTint(0x483D8B, 4.5, 0x00BFFF, 0.2);
-        } else if (type === 'CycloneAvatar') {
-            // Cyclone Avatar - Level 90-95 - Dark turquoise
-            return await this.loadSkeletonWithTint(0x00CED1, 3.5, 0x00FFFF, 0.4);
-        }
-
-        // ========================================================================
-        // MOLTEN CORE DUNGEON BOSSES (Fire Dungeon)
-        // Using skeleton model with fire-themed color tints as placeholders
-        // ========================================================================
-        else if (type === 'Cindermaw') {
-            // Cindermaw - Boss 1 - Fire Elemental (3M HP)
-            return await this.loadSkeletonWithTint(0xFF4500, 4.0, 0xFF2200, 0.6);
-        } else if (type === 'ScorchedTwins') {
-            // Scorched Twins - Boss 2 - Duo Fight (2M HP each)
-            return await this.loadSkeletonWithTint(0xFF6347, 3.5, 0xFF4500, 0.5);
-        } else if (type === 'ForgemasterPyrax') {
-            // Forgemaster Pyrax - Boss 3 - Forge mechanics (4M HP)
-            return await this.loadSkeletonWithTint(0xB22222, 4.5, 0xFF4500, 0.4);
-        } else if (type === 'ObsidianGuardian') {
-            // Obsidian Guardian - Boss 4 - DPS Check (5M HP)
-            return await this.loadSkeletonWithTint(0x1C1C1C, 5.0, 0xFF0000, 0.2);
-        } else if (type === 'LordInfernax') {
-            // Lord Infernax - Final Boss - Multi-phase (8M HP)
-            return await this.loadSkeletonWithTint(0x8B0000, 6.0, 0xFF4500, 0.7);
-        }
-
-        // ========================================================================
-        // TEMPEST SPIRE DUNGEON BOSSES (Air Dungeon)
-        // Using skeleton model with air-themed color tints as placeholders
-        // ========================================================================
-        else if (type === 'Windshear') {
-            // Windshear - Boss 1 - Wind elemental (2.8M HP)
-            return await this.loadSkeletonWithTint(0x87CEEB, 4.0, 0x00BFFF, 0.4);
-        } else if (type === 'Stormcallers') {
-            // Stormcallers - Boss 2 - Duo Fight (3.6M HP total)
-            return await this.loadSkeletonWithTint(0x9370DB, 3.5, 0xFFFF00, 0.3);
-        } else if (type === 'RocMatriarch') {
-            // Roc Matriarch - Boss 3 - Flying boss (3.8M HP)
-            return await this.loadSkeletonWithTint(0x4682B4, 4.5, 0x00CED1, 0.3);
-        } else if (type === 'ThunderlordKaelix') {
-            // Thunderlord Kaelix - Boss 4 - Storm Giant (4.8M HP)
-            return await this.loadSkeletonWithTint(0x483D8B, 5.5, 0xFFFF00, 0.5);
-        } else if (type === 'Zephyrion') {
-            // Zephyrion, the Eternal Gale - Final Boss (7.5M HP)
-            return await this.loadSkeletonWithTint(0x00CED1, 6.5, 0x00FFFF, 0.6);
-        }
-        // ========================================================================
-        // ABYSSAL WELL DUNGEON BOSSES (Water Dungeon)
-        // Using skeleton model with water-themed color tints as placeholders
-        // ========================================================================
-        else if (type === 'TiderendLeviathan') {
-            // Tiderend Leviathan - Boss 1 - Deep sea serpent (2.6M HP)
-            return await this.loadSkeletonWithTint(0x0aa0b8, 4.0, 0x3de7ff, 0.4);
-        } else if (type === 'DrownedChoir') {
-            // Drowned Choir - Boss 2 - Duo fight (3.4M HP total)
-            return await this.loadSkeletonWithTint(0x1e6f9f, 3.6, 0x6fd8ff, 0.3);
-        } else if (type === 'AbyssalGoliath') {
-            // Abyssal Goliath - Boss 3 - Crustacean titan (3.8M HP)
-            return await this.loadSkeletonWithTint(0x0d3d5c, 4.6, 0x2bb4cc, 0.2);
-        } else if (type === 'MaelstromWarden') {
-            // Maelstrom Warden - Boss 4 - Tidal guardian (4.5M HP)
-            return await this.loadSkeletonWithTint(0x0a3a6b, 5.2, 0x4dd2ff, 0.4);
-        } else if (type === 'Thalorath') {
-            // Thalorath - Final Boss - Ocean deity (7M HP)
-            return await this.loadSkeletonWithTint(0x003b6f, 6.2, 0x4ef2ff, 0.5);
+        else if (this.PROCEDURAL_ENEMY_SPECS[type]) {
+            try {
+                return this.createProceduralEnemy(type, this.PROCEDURAL_ENEMY_SPECS[type]);
+            } catch (e) {
+                console.warn(`MeshFactory: Procedural mesh failed for ${type}, falling back to skeleton.`, e);
+                const spec = this.PROCEDURAL_ENEMY_SPECS[type];
+                // TODO: Replace this skeleton fallback with a proper GLB model for ${type}
+                return await this.loadSkeletonWithTint(spec.color, spec.scale, spec.emissive, spec.emissiveI);
+            }
         }
 
         switch (type) {

@@ -182,15 +182,15 @@ This checklist turns the four-phase recommendation plan into actionable engineer
 - [ ] Manual verification of map/minimap rendering (requires browser testing).
 
 ### 3.5 Placeholder enemy replacement track
-- [ ] Prioritize replacing tinted skeleton placeholders for high-visibility late-game mobs/bosses.
-- [ ] Keep fallback mesh path but mark with explicit TODO tags for remaining types.
+- [x] Prioritize replacing tinted skeleton placeholders for high-visibility late-game mobs/bosses. All 25 placeholder enemy types (10 Fire/Air overworld + 15 dungeon bosses across Fire/Air/Water) now use procedural meshes with 8 distinct silhouette shapes (humanoid, golem, wraith, beast, elemental, titan, bird, serpent). Each shape is built from composite Three.js primitives with per-enemy color/emissive tuning via a `PROCEDURAL_ENEMY_SPECS` config table.
+- [x] Keep fallback mesh path but mark with explicit TODO tags for remaining types. If procedural build fails, falls back to `loadSkeletonWithTint()` with a `// TODO: Replace this skeleton fallback with a proper GLB model` comment. The `PROCEDURAL_ENEMY_SPECS` table itself is marked with a top-level `// TODO: Replace with proper GLB models when assets are available` tag.
 
 **Files**
-- `src/utils/MeshFactory.js`
-- asset/model pipeline files
+- `src/utils/MeshFactory.js` — Added `PROCEDURAL_ENEMY_SPECS` static config table (25 entries), `createProceduralEnemy()` static method (8 shape builders), replaced 25 `loadSkeletonWithTint()` calls with single config-driven branch + fallback
 
 **Acceptance criteria**
-- Top-priority Fire/Air dungeon bosses no longer use generic tinted skeleton stand-ins.
+- [x] Top-priority Fire/Air/Water dungeon bosses no longer use generic tinted skeleton stand-ins.
+- [ ] Manual verification that procedural meshes render correctly and look distinct (requires browser testing).
 
 ### 3.6 Validation for Phase 3
 - [ ] Desktop + mobile visual smoke test.
