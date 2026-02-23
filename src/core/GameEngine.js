@@ -4,6 +4,7 @@ import { InputManager } from './InputManager.js';
 import { ChunkManager } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
 import { NetworkManager } from './NetworkManager.js';
+import { AbilityController } from './AbilityController.js';
 import { CONSTANTS } from './Constants.js';
 import { RARITY } from './ItemSystem.js';
 import { UIManager } from '../ui/UIManager.js';
@@ -104,7 +105,7 @@ export class GameEngine {
         this.renderSystem.setBrightnessLevel(this.uiManager.getBrightnessLevel());
         this.effects = []; // Active visual effects
         this.hazards = new Map(); // Environmental hazards (id -> EnvironmentalHazard)
-        this.unmappedRemoteAbilityVisuals = new Set();
+        this.abilityController = new AbilityController(this);
         this.currentInstanceId = null; // Track current instance to prevent state desync
         this.uiManager.onBuyGamble = (slot) => {
             this.network.send('buy_gamble', { slot });
@@ -233,7 +234,6 @@ export class GameEngine {
         this.lootDrops = [];
         this.cameraLocked = true;
         this.pendingInteraction = null;
-        this.pendingAbilityTarget = null;
         
         this.lastTime = 0;
         this.accumulator = 0;
@@ -258,10 +258,6 @@ export class GameEngine {
         // Track recently picked up loot IDs to prevent phantom item recreation
         this.recentlyPickedUpLoot = new Set();
         this.recentlyPickedUpLootTimeout = 5000; // 5 seconds
-
-        // Input Buffering
-        this.inputBuffer = [];
-        this.inputBufferWindow = 0.4; // 400ms buffer window
     }
 
     get scene() {
@@ -281,7 +277,7 @@ export class GameEngine {
         this.player.targetPosition = null;
 
         this.pendingInteraction = null;
-        this.pendingAbilityTarget = null;
+        this.abilityController.pendingAbilityTarget = null;
         this.player.targetEntity = null;
 
         if (this.inputManager && this.inputManager.clearInputState) {
@@ -422,7 +418,7 @@ export class GameEngine {
                 this.player.timeSinceDeath = null;
                 this.player.targetPosition = null;
                 this.pendingInteraction = null;
-                this.pendingAbilityTarget = null;
+                this.abilityController.pendingAbilityTarget = null;
                 this.chunkManager.updateEntityChunk(this.player);
                 this.renderSystem.setCameraTarget(this.player.position);
                 this.chunkManager.update(this.player, 0, this.collisionManager);
@@ -534,7 +530,7 @@ export class GameEngine {
                         // Or if we explicitly clicked ground.
                         // Since we force raycast above, if hoveredEntity is null, we definitely missed the entity.
                         this.pendingInteraction = null;
-                        this.pendingAbilityTarget = null;
+                        this.abilityController.pendingAbilityTarget = null;
                         this.player.move(point);
                     }
                 }
@@ -542,7 +538,7 @@ export class GameEngine {
         });
 
         this.inputManager.subscribe('onRightClick', () => {
-            this.performAbility();
+            this.abilityController.performAbility();
         });
 
         this.inputManager.subscribe('onMouseMove', (mouse) => {
@@ -572,7 +568,7 @@ export class GameEngine {
         });
 
         this.inputManager.subscribe('onHotbar', (slotIndex) => {
-            this.performHotbarAbility(slotIndex);
+            this.abilityController.performHotbarAbility(slotIndex);
         });
 
         this.uiManager.onHotbarAssign = (slotIndex, skillName) => {
@@ -585,7 +581,7 @@ export class GameEngine {
 
         // Mobile: tap hotbar slots to cast (pages still map to slots 1-4)
         this.uiManager.onHotbarCast = (slotIndex) => {
-            this.performHotbarAbility(slotIndex);
+            this.abilityController.performHotbarAbility(slotIndex);
         };
 
         this.inputManager.subscribe('onInteract', () => {
@@ -724,251 +720,6 @@ export class GameEngine {
         this.enemies.push(elite);
         this.addEntity(elite);
         return elite;
-    }
-
-    triggerRemoteAbilityVisuals(entity, skillName, targetX, targetZ) {
-        if (!entity || !entity.spawnVisualEffect) return;
-
-        const targetPos = new THREE.Vector3(targetX, 0, targetZ);
-        const position = entity.position.clone();
-        let handled = false;
-
-        const spawn = (at, color, type) => {
-            entity.spawnVisualEffect(this, at, color, type);
-            handled = true;
-        };
-
-        // Fighter
-        if (entity instanceof Fighter) {
-            switch (skillName) {
-                case "Charge":
-                    spawn(position, 0xff5500, "wave");
-                    break;
-                case "Whirlwind":
-                    spawn(position, 0xaaaaaa, "spin");
-                    break;
-                case "Shield Slam":
-                    spawn(position, 0xffff00, "impact");
-                    break;
-                case "Iron Fortress":
-                    spawn(position, 0x808080, "buff");
-                    break;
-                case "Guardian Roar":
-                    spawn(position, 0xff0000, "wave");
-                    break;
-                case "Sweeping Strike":
-                    spawn(position, 0xffffff, "cone");
-                    break;
-                case "Earthshaker":
-                    spawn(position, 0x8b4513, "wave");
-                    break;
-                case "Unbreakable Grip":
-                    spawn(targetPos, 0x0000ff, "impact");
-                    break;
-                case "Juggernaut Charge":
-                    spawn(position, 0xff0000, "wave");
-                    break;
-                case "Berserker Edge":
-                    spawn(position, 0xff0000, "buff");
-                    break;
-                case "Shattering Charge":
-                    spawn(position, 0xffffff, "wave");
-                    break;
-                case "Executioner Spin":
-                    spawn(position, 0xff0000, "spin");
-                    break;
-                case "Last Stand Rampage":
-                    spawn(position, 0xff0000, "buff");
-                    break;
-            }
-        }
-        // Rogue
-        else if (entity instanceof Rogue) {
-            switch (skillName) {
-                case "Piercing Throw":
-                case "Ricochet Blades":
-                    spawn(position, 0xdddddd, "burst");
-                    break;
-                case "Shadow Step":
-                case "Shadow Lunge":
-                    spawn(position, 0x000000, "smoke");
-                    break;
-                case "Fan of Knives":
-                    spawn(position, 0x333333, "spin");
-                    break;
-                case "Venomous Strike":
-                case "Weak Point Mark":
-                    spawn(targetPos, 0xff0000, "mark");
-                    break;
-                case "Assassinate":
-                case "Backstab":
-                case "Shadow Strike":
-                    spawn(targetPos, 0xff0000, "blood");
-                    break;
-                case "Death Spiral":
-                    spawn(position, 0x333333, "spin");
-                    break;
-                case "Serrated Edges":
-                    spawn(position, 0xff0000, "buff");
-                    break;
-                case "Blade Storm":
-                    spawn(position, 0xcccccc, "cone");
-                    break;
-                case "Phantom Volley":
-                    spawn(position, 0x8800ff, "burst");
-                    break;
-                case "Smoke Bomb":
-                    spawn(position, 0x555555, "smoke_cloud");
-                    break;
-                case "Poison Coating":
-                    spawn(position, 0x00ff00, "buff");
-                    break;
-                case "Tripwire":
-                case "Snare Trap":
-                case "Explosive Trap":
-                    spawn(position, 0xaaaaaa, "impact");
-                    break;
-                case "Adrenaline Rush":
-                case "Stealth":
-                case "Cloak & Vanish":
-                    spawn(position, 0x000000, "smoke");
-                    break;
-                case "Rain of Arrows":
-                    spawn(targetPos, 0xffffff, "ring");
-                    break;
-            }
-        }
-        // Wizard
-        else if (entity instanceof Wizard) {
-            switch (skillName) {
-                case "Frost Nova":
-                    spawn(position, 0x00ffff, "ring");
-                    break;
-                case "Blink":
-                case "Teleport":
-                    spawn(position, 0x00ffff, "burst");
-                    break;
-                case "Fireball":
-                    spawn(position, 0xff4500, "burst");
-                    break;
-                case "Flame Whip":
-                    spawn(position, 0xff4500, "cone");
-                    break;
-                case "Flame Tornado":
-                    spawn(position, 0xff5500, "spin");
-                    break;
-                case "Meteor":
-                case "Meteor Drop":
-                    spawn(targetPos, 0xff4500, "ring");
-                    break;
-                case "Ice Barrier":
-                case "Arcane Shield":
-                    spawn(position, 0x0088ff, "sphere");
-                    break;
-                case "Scorch Beam":
-                case "Dragonfire Lance":
-                    spawn(targetPos, 0xffaa00, "beam");
-                    break;
-                case "Arcane Missiles":
-                    spawn(position, 0xaa00ff, "burst");
-                    break;
-                case "Spell Focus":
-                    spawn(position, 0x8800ff, "buff");
-                    break;
-                case "Gravity Well":
-                    spawn(targetPos, 0x440088, "ring");
-                    break;
-                case "Inferno Cataclysm":
-                    spawn(targetPos, 0xff2200, "ring");
-                    break;
-                case "Time Warp":
-                    spawn(position, 0xffd700, "ring");
-                    break;
-            }
-        }
-        // Cleric
-        else if (entity instanceof Cleric) {
-            switch (skillName) {
-                case "Spirit Guardians":
-                case "Spirit Guardians Boost":
-                    spawn(position, 0xffff66, "buff");
-                    break;
-                case "Smite":
-                    spawn(targetPos, 0xffff00, "impact");
-                    break;
-                case "Healing Light":
-                    spawn(targetPos, 0x00ff88, "pillar");
-                    break;
-                case "Guardian Embrace":
-                    spawn(position, 0xffff00, "buff");
-                    break;
-                case "Purifying Wave":
-                case "Holy Nova":
-                    spawn(position, 0x00ffff, "ring");
-                    break;
-                case "Divine Protection":
-                case "Divine Intervention":
-                    spawn(targetPos, 0xffd700, "pillar");
-                    break;
-                case "Sacred Ground":
-                case "Consecrated Ground":
-                    spawn(position, 0xffd700, "ground_circle");
-                    break;
-                case "Radiant Strike":
-                    spawn(position, 0xffff00, "burst");
-                    break;
-                case "Blessing of Resolve":
-                case "Blessing of Zeal":
-                    spawn(position, 0xffff00, "ring");
-                    break;
-                case "Mark of Weakness":
-                    spawn(targetPos, 0x800080, "pillar");
-                    break;
-                case "Heaven's Trumpet":
-                    spawn(position, 0xffd700, "ring");
-                    break;
-                case "Resurrection":
-                    spawn(targetPos, 0xffffff, "beam");
-                    break;
-            }
-        }
-        // Avenging Seraph
-        else if (entity instanceof AvengingSeraph) {
-            switch (skillName) {
-                case "Smite":
-                    spawn(targetPos, 0xffff00, "impact");
-                    break;
-            }
-        }
-
-        if (!handled) {
-            let fallbackColor = 0xffffff;
-            let fallbackType = 'impact';
-
-            if (entity instanceof Fighter) {
-                fallbackColor = 0xffaa55;
-                fallbackType = 'wave';
-            } else if (entity instanceof Rogue) {
-                fallbackColor = 0xaaaaaa;
-                fallbackType = 'smoke';
-            } else if (entity instanceof Wizard) {
-                fallbackColor = 0x66bbff;
-                fallbackType = 'ring';
-            } else if (entity instanceof Cleric || entity instanceof AvengingSeraph) {
-                fallbackColor = 0xffff99;
-                fallbackType = 'buff';
-            }
-
-            spawn(position, fallbackColor, fallbackType);
-
-            const host = (typeof window !== 'undefined' && window.location) ? window.location.hostname : '';
-            const isDevHost = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
-            const key = `${entity.constructor.name}:${skillName || '(none)'}`;
-            if (isDevHost && !this.unmappedRemoteAbilityVisuals.has(key)) {
-                this.unmappedRemoteAbilityVisuals.add(key);
-                console.warn(`[Remote VFX] Unmapped skill visual for ${key}; used ${fallbackType} fallback.`);
-            }
-        }
     }
 
     hydrateItem(item) {
@@ -1136,7 +887,7 @@ export class GameEngine {
 
             const source = this.remotePlayers.get(abilityData.sourceId);
             if (source) {
-                this.triggerRemoteAbilityVisuals(source, abilityData.skillName, abilityData.targetX, abilityData.targetZ);
+                this.abilityController.triggerRemoteAbilityVisuals(source, abilityData.skillName, abilityData.targetX, abilityData.targetZ);
             }
         } else if (msg.type === 'damage') {
             const dmgData = msg.payload;
@@ -2281,19 +2032,6 @@ export class GameEngine {
         return true;
     }
 
-    getAbilityCastRange(skillName = null) {
-        const className = this.player && this.player.constructor ? this.player.constructor.name : '';
-        const classAbilityConfig = CONSTANTS.ABILITY_CONFIG ? CONSTANTS.ABILITY_CONFIG[className] : null;
-        const defaultRange = classAbilityConfig && classAbilityConfig.default ? classAbilityConfig.default.range : null;
-        const skillRange = (classAbilityConfig && classAbilityConfig.skills && skillName)
-            ? classAbilityConfig.skills[skillName]?.range
-            : null;
-
-        if (typeof skillRange === 'number') return skillRange;
-        if (typeof defaultRange === 'number') return defaultRange;
-        return 12.0;
-    }
-
     requestDungeonStatus(dungeonType = null) {
         this.network.send('get_dungeon_status', dungeonType ? { dungeonType } : {});
     }
@@ -2493,7 +2231,7 @@ export class GameEngine {
     moveToAndInteract(entity) {
         if (!entity) return;
         this.pendingInteraction = entity;
-        this.pendingAbilityTarget = null;
+        this.abilityController.pendingAbilityTarget = null;
         
         // Check if already in range to avoid unnecessary movement start
         const dist = new THREE.Vector2(this.player.position.x, this.player.position.z)
@@ -2605,282 +2343,6 @@ export class GameEngine {
         }
     }
 
-    performHotbarAbility(slotIndex) {
-        if (!this.player || !this.player.hotbar) {
-            console.warn("Player or hotbar not initialized.");
-            return;
-        }
-        const skillName = this.player.hotbar[slotIndex];
-        if (!skillName) {
-            console.log(`Hotbar slot ${slotIndex + 1} is empty.`);
-            return;
-        }
-
-        // Mobile uses auto-targeting logic inside performAbility().
-        if (this.isMobile) {
-            this.performAbility(null, skillName);
-            return;
-        }
-
-        // Determine target (mouse cursor)
-        let targetPos = null;
-        if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD' && !(this.hoveredEntity instanceof DwarfSalesman)) {
-            targetPos = this.hoveredEntity.position;
-        } else {
-            targetPos = this.inputManager.getGroundIntersection();
-        }
-
-        if (targetPos) {
-            this.performAbility(targetPos, skillName);
-        }
-    }
-
-    performAbility(targetVectorOverride = null, skillNameOverride = null) {
-        if (!this.player) return;
-        if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen || this.uiManager.reportScreen.style.display === 'block') return;
-
-        // Rotate to face cursor/target immediately (even if on cooldown)
-        if (!this.isMobile) {
-            let lookAtPos = null;
-            if (targetVectorOverride) {
-                lookAtPos = targetVectorOverride;
-            } else if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD' && !(this.hoveredEntity instanceof DwarfSalesman)) {
-                lookAtPos = this.hoveredEntity.position;
-            } else {
-                const point = this.inputManager.getGroundIntersection();
-                if (point) {
-                    lookAtPos = point;
-                }
-            }
-
-            if (lookAtPos) {
-                const lookTarget = new THREE.Vector3(lookAtPos.x, this.player.position.y, lookAtPos.z);
-                if (this.player.mesh) {
-                    this.player.mesh.lookAt(lookTarget);
-                    this.player.rotation.copy(this.player.mesh.quaternion);
-                }
-            }
-        }
-
-        // Check Cooldown and Mana before proceeding
-        let onCooldown = false;
-        if (!skillNameOverride) {
-            if (this.player.abilityCooldown > 0) {
-                onCooldown = true;
-            }
-        } else {
-            if (this.player.cooldowns && this.player.cooldowns[skillNameOverride] > 0) {
-                onCooldown = true;
-            }
-        }
-
-        if (onCooldown) {
-            // Buffer the input
-            const existing = this.inputBuffer.find(b => b.skillName === skillNameOverride);
-            if (!existing) {
-                // Only buffer if not already buffered to avoid duplicates
-                this.inputBuffer.push({
-                    skillName: skillNameOverride,
-                    target: targetVectorOverride,
-                    timestamp: Date.now() / 1000
-                });
-                console.log(`Buffered ability: ${skillNameOverride || 'Primary'} (CD)`);
-            }
-            return;
-        }
-
-        // Mana Check
-        const className = this.player && this.player.constructor ? this.player.constructor.name : '';
-        const classAbilityConfig = CONSTANTS.ABILITY_CONFIG ? CONSTANTS.ABILITY_CONFIG[className] : null;
-        const defaultAbilityConfig = classAbilityConfig ? classAbilityConfig.default : null;
-        const castSkillName = skillNameOverride || this.player.abilityName;
-        const skillAbilityConfig = (classAbilityConfig && classAbilityConfig.skills && castSkillName)
-            ? classAbilityConfig.skills[castSkillName]
-            : null;
-        const manaCostBase = (skillAbilityConfig && typeof skillAbilityConfig.mana === 'number')
-            ? skillAbilityConfig.mana
-            : (defaultAbilityConfig && typeof defaultAbilityConfig.mana === 'number')
-                ? defaultAbilityConfig.mana
-                : this.player.abilityManaCost;
-        const cost = manaCostBase * (1 - (this.player.stats.manaCostReduction || 0));
-        if (this.player.stats.mana < cost) {
-            return;
-        }
-        
-        if (this.isMobile && !targetVectorOverride) {
-            // Auto-target nearest enemy for mobile ability
-            let nearest = null;
-            let minDst = 1000;
-            const activeEntities = this.chunkManager.getActiveEntities();
-
-            activeEntities.forEach(e => {
-                if (this.isHostileActorTarget(e)) {
-                    const d = this.player.position.distanceTo(e.position);
-                    if (d < minDst) {
-                        minDst = d;
-                        nearest = e;
-                    }
-                }
-            });
-
-            let targetPos = null;
-            let targetId = "";
-
-            const autoAimRange = this.getAbilityCastRange(skillNameOverride || this.player.abilityName);
-            if (nearest && minDst < autoAimRange) {
-                targetPos = nearest.position;
-                targetId = nearest.id;
-
-                // Turn towards enemy
-                const lookTarget = new THREE.Vector3(nearest.position.x, this.player.position.y, nearest.position.z);
-                if (this.player.mesh) {
-                    this.player.mesh.lookAt(lookTarget);
-                    this.player.rotation.copy(this.player.mesh.quaternion);
-                }
-            } else {
-                // Cast in front of player if no enemy
-                // Assuming player mesh rotation is valid
-                if (this.player.mesh) {
-                    const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.player.mesh.quaternion);
-                    targetPos = this.player.position.clone().add(forward.multiplyScalar(5));
-                } else {
-                    // Fallback
-                    targetPos = this.player.position.clone();
-                    targetPos.z += 5;
-                }
-            }
-
-            if (this.isMultiplayer) {
-                this.network.send('ability', {
-                    targetX: targetPos.x,
-                    targetZ: targetPos.z,
-                    targetId: targetId,
-                    skillName: skillNameOverride || this.player.abilityName
-                });
-            }
-            
-            // Client-side prediction
-            if (skillNameOverride && this.player.useSkill) {
-                this.player.useSkill(skillNameOverride, targetPos, this);
-            } else {
-                this.player.useAbility(targetPos, this, skillNameOverride);
-            }
-            return;
-        }
-
-        if (targetVectorOverride) {
-             if (this.isMultiplayer) {
-                this.network.send('ability', {
-                    targetX: targetVectorOverride.x,
-                    targetZ: targetVectorOverride.z,
-                    targetId: "",
-                    skillName: skillNameOverride || this.player.abilityName
-                });
-            }
-            
-            if (skillNameOverride && this.player.useSkill) {
-                this.player.useSkill(skillNameOverride, targetVectorOverride, this);
-            } else {
-                this.player.useAbility(targetVectorOverride, this, skillNameOverride);
-            }
-            return;
-        }
-
-        if (this.hoveredEntity && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
-            if (this.hoveredEntity instanceof DwarfSalesman) return;
-
-            const dist = this.player.position.distanceTo(this.hoveredEntity.position);
-            const abilityRange = this.getAbilityCastRange(skillNameOverride || this.player.abilityName);
-
-            // Check if we are in range
-            if (dist <= abilityRange) {
-                // Multiplayer Ability Logic (Targeted)
-                if (this.isMultiplayer) {
-                    this.network.send('ability', {
-                        targetX: this.hoveredEntity.position.x,
-                        targetZ: this.hoveredEntity.position.z,
-                        targetId: this.hoveredEntity.id,
-                        skillName: skillNameOverride || this.player.abilityName
-                    });
-                }
-                
-                // Client-side prediction
-                if (skillNameOverride && this.player.useSkill) {
-                    this.player.useSkill(skillNameOverride, this.hoveredEntity.position, this);
-                } else {
-                    this.player.useAbility(this.hoveredEntity.position, this);
-                }
-            } else {
-                // Move closer first
-                this.pendingAbilityTarget = this.hoveredEntity;
-                this.pendingInteraction = null;
-                this.player.move(this.hoveredEntity.position);
-            }
-        } else {
-            // Ground click (Movement or Skillshot)
-            const targetPoint = this.inputManager.getGroundIntersection();
-            if (targetPoint) {
-                // Multiplayer Ability Logic (Skillshot)
-                if (this.isMultiplayer) {
-                    this.network.send('ability', {
-                        targetX: targetPoint.x,
-                        targetZ: targetPoint.z,
-                        targetId: "",
-                        skillName: skillNameOverride || this.player.abilityName
-                    });
-                }
-                
-                // Client-side prediction
-                if (skillNameOverride && this.player.useSkill) {
-                    this.player.useSkill(skillNameOverride, targetPoint, this);
-                } else {
-                    this.player.useAbility(targetPoint, this);
-                }
-            }
-        }
-    }
-
-    performAttack(target) {
-        if (!this.player || !target) return;
-
-        // Send to Server
-        this.network.send('attack', { targetId: target.id });
-
-        // Visuals
-        const lookTarget = new THREE.Vector3(target.position.x, this.player.position.y, target.position.z);
-        if (this.player.mesh) {
-            this.player.mesh.lookAt(lookTarget);
-            this.player.rotation.copy(this.player.mesh.quaternion);
-        }
-
-        this.player.setAttackingState();
-
-        // Client-Side Prediction
-        // Sync with Actor.js setAttackingState timing
-        // Animation duration = cooldown * 1000
-        // Hit point assumed at 35%
-        // const hitDelay = this.player.getAttackHitDelay();
-
-        // setTimeout(() => {
-        //     // Check if target is still valid
-        //     if (target && target.stats && target.stats.hp > 0) {
-        //         // Predict damage
-        //         // We use base damage as a guess. Server is authoritative.
-        //         // const predictedDmg = this.player.stats.damage;
-        //         // target.stats.hp -= predictedDmg;
-                
-        //         // Visual feedback immediately
-        //         // If it goes below 0, UI will hide it next frame
-        //         // if (target.stats.hp < 0) target.stats.hp = 0;
-
-        //         // Spawn Damage Text
-        //         // if (!this.isMultiplayer) {
-        //         //    this.floatingTextManager.spawn(predictedDmg, target.position, '#ffffff');
-        //         // }
-        //     }
-        // }, hitDelay);
-    }
-
     loop(time) {
         try {
             const seconds = time * 0.001;
@@ -2939,41 +2401,7 @@ export class GameEngine {
         this.frameCount++;
 
         // Process Input Buffer
-        if (this.inputBuffer.length > 0) {
-            const now = Date.now() / 1000;
-            // Remove expired
-            this.inputBuffer = this.inputBuffer.filter(b => now - b.timestamp < this.inputBufferWindow);
-            
-            // Try to execute oldest
-            if (this.inputBuffer.length > 0) {
-                const buffered = this.inputBuffer[0];
-                
-                // Check if ready
-                let ready = false;
-                if (!buffered.skillName) {
-                    if (this.player.abilityCooldown <= 0) ready = true;
-                } else {
-                    if (!this.player.cooldowns || this.player.cooldowns[buffered.skillName] <= 0) ready = true;
-                }
-
-                if (ready) {
-                    console.log(`Executing buffered ability: ${buffered.skillName || 'Primary'}`);
-                    // Remove BEFORE executing to prevent infinite recursion if performAbility re-buffers (though we check ready first)
-                    this.inputBuffer.shift();
-                    
-                    // Re-determine target if not overridden (to aim at current mouse pos)
-                    let target = buffered.target;
-                    if (!target) {
-                         // If it was a ground click or hover that wasn't captured in targetVectorOverride,
-                         // we might want to re-evaluate current mouse pos?
-                         // But performAbility logic handles null target by checking mouse.
-                         // So passing null is fine.
-                    }
-                    
-                    this.performAbility(target, buffered.skillName);
-                }
-            }
-        }
+        this.abilityController.processInputBuffer();
 
         // Cleanup Rogue Stashes and Quest NPCs (Fix for extra entities at 0,0,0)
         if (this.frameCount % 60 === 0) {
@@ -3209,14 +2637,14 @@ export class GameEngine {
         if (this.player) {
             if (this.inputManager.isRightMouseDown) {
                 this.needsRaycast = true;
-                this.performAbility();
+                this.abilityController.performAbility();
             }
 
             if (!this.isMobile && this.inputManager.isMouseDown && !this.uiManager.isEscMenuOpen && !this.uiManager.isShopOpen) {
                 if (this.inputManager.keys.control) {
                     this.player.targetPosition = null;
                     this.pendingInteraction = null;
-                    this.pendingAbilityTarget = null;
+                    this.abilityController.pendingAbilityTarget = null;
 
                     let lookTarget = null;
                     if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player) {
@@ -3298,7 +2726,7 @@ export class GameEngine {
                                 // Just skip the attack logic for this frame.
                             } else {
                                 this.player.lastAttackTime = now;
-                                this.performAttack(this.hoveredEntity);
+                                this.abilityController.performAttack(this.hoveredEntity);
                             }
                         } else {
                             this.player.attack(this.hoveredEntity);
@@ -3502,7 +2930,7 @@ export class GameEngine {
                                 if (now - this.player.lastAttackTime >= cooldownMs) {
                                     this.player.lastAttackTime = now;
 
-                                    this.performAttack(this.pendingInteraction);
+                                    this.abilityController.performAttack(this.pendingInteraction);
                                     attacked = true;
                                     
                                     // Do NOT clear pendingInteraction to enable Auto-Attack / Chase
@@ -3547,33 +2975,11 @@ export class GameEngine {
                 }
             }
 
-            if (this.pendingAbilityTarget) {
-                if (!this.pendingAbilityTarget.isActive || this.pendingAbilityTarget.state === 'DEAD') {
-                    this.pendingAbilityTarget = null;
-                } else {
-                    this.player.targetPosition = this.pendingAbilityTarget.position.clone();
-                    
-                    const dist = this.player.position.distanceTo(this.pendingAbilityTarget.position);
-                    const range = 10.0;
-
-                    if (dist < range) {
-                        if (this.isMultiplayer) {
-                            this.network.send('ability', {
-                                targetX: this.pendingAbilityTarget.position.x,
-                                targetZ: this.pendingAbilityTarget.position.z,
-                                targetId: this.pendingAbilityTarget.id
-                            });
-                            this.player.playAnimation('Attack', false);
-                        } else {
-                            this.player.useAbility(this.pendingAbilityTarget.position, this);
-                        }
-                    }
-                }
-            }
+            this.abilityController.updatePendingTarget();
 
             if (this.isPlayerDead()) {
                 this.pendingInteraction = null;
-                this.pendingAbilityTarget = null;
+                this.abilityController.pendingAbilityTarget = null;
                 this.player.targetPosition = null;
                 this.uiManager.showDeathScreen();
             } else {
