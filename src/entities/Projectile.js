@@ -35,7 +35,8 @@ const EXPLOSIVE_MAT = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 const SNARE_MAT = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
 const ZONE_GEO = new THREE.CylinderGeometry(5.0, 5.0, 0.1, 32);
-const ZONE_MAT = new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.3 });
+const ZONE_DAMAGE_MAT = new THREE.MeshBasicMaterial({ color: 0xff4400, transparent: true, opacity: 0.25 });
+const ZONE_HOLY_MAT = new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.3 });
 
 // =====================================================
 // Particle Pool Manager - Centralized for performance
@@ -238,9 +239,22 @@ export class Projectile extends Entity {
             this.damage = 10;
             this.speed = 0;
             this.velocity.set(0,0,0);
-        } else if (this.type === 'Zone') {
+        } else if (this.type === 'ZoneDamage') {
             geometry = ZONE_GEO;
-            material = ZONE_MAT;
+            material = ZONE_DAMAGE_MAT;
+            this.damage = 30 + (this.owner.stats.intelligence * 1);
+            this.speed = 0;
+            this.velocity.set(0,0,0);
+        } else if (this.type === 'ZoneHoly') {
+            geometry = ZONE_GEO;
+            material = ZONE_HOLY_MAT;
+            this.damage = 20 + (this.owner.stats.wisdom * 1);
+            this.speed = 0;
+            this.velocity.set(0,0,0);
+        } else if (this.type === 'Zone') {
+            // Legacy fallback
+            geometry = ZONE_GEO;
+            material = ZONE_HOLY_MAT;
             this.damage = 20 + (this.owner.stats.wisdom * 1);
             this.speed = 0;
             this.velocity.set(0,0,0);

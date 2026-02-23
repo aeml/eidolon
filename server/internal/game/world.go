@@ -4152,8 +4152,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 	if e.Type == TypeProjectile {
 		e.Mu.Lock()
 
-		// Zone Logic
-		if e.SubType == "Zone" {
+		// Zone Logic (ZoneDamage, ZoneHoly, etc.)
+		if strings.HasPrefix(e.SubType, "Zone") {
 			// Check zone expiration - use ConsecratedGroundEndTime if set, otherwise 8s default
 			zoneExpired := false
 			if !e.ConsecratedGroundEndTime.IsZero() {
@@ -4167,11 +4167,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.Mu.Unlock()
 				return
 			}
-			// Zone doesn't move
-			// Periodic Effect (e.g. every 1s, or 0.5s if double tick from combo)
+
+			// Periodic tick interval (1s default, 500ms with Time Burn combo)
 			tickInterval := 1 * time.Second
 			if e.ZoneDoubleTick {
-				tickInterval = 500 * time.Millisecond // Combo: Time Burn - double tick rate
+				tickInterval = 500 * time.Millisecond
 			}
 			if time.Since(e.LastAttackTime) >= tickInterval {
 				e.LastAttackTime = time.Now()
@@ -4184,6 +4184,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				ownerID := e.OwnerID
 				owner := w.GetEntity(ownerID)
 				ownerIsPlayer := owner != nil && owner.Type == TypePlayer
+				zoneSubType := e.SubType
 				isSanctuary := e.ConsecratedGroundSanctuary
 				e.Mu.Unlock() // Unlock to query grid
 
@@ -4201,7 +4202,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						continue
 					}
 
-					// Damage enemies
+					// --- Damage enemies (all zone types) ---
 					if targetType == TypeEnemy && targetState != "DEAD" {
 						target.Mu.Lock()
 						target.Health -= damage
@@ -4223,13 +4224,28 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						}
 					}
 
-					// consecratedground_sanctuary: Allies in area take 30% less damage
-					// Apply a buff to allies in the zone
-					if isSanctuary && (targetType == TypePlayer || targetType == TypeNPC) {
+					// --- ZoneHoly: heal allies + sanctuary buff ---
+					if zoneSubType == "ZoneHoly" && (targetType == TypePlayer || targetType == TypeNPC) && targetState != "DEAD" {
+						// Heal allies (15 + owner_wisdom*0.5)
+						healAmount := 15
+						if owner != nil {
+							healAmount += owner.Stats.Wisdom / 2
+						}
 						target.Mu.Lock()
-						target.SanctuaryDamageReduction = true
-						target.SanctuaryEndTime = time.Now().Add(2 * time.Second) // Refresh every tick
+						target.Health += healAmount
+						if target.Health > target.MaxHealth {
+							target.Health = target.MaxHealth
+						}
+						// Sanctuary rune: allies in area take 30% less damage
+						if isSanctuary {
+							target.SanctuaryDamageReduction = true
+							target.SanctuaryEndTime = time.Now().Add(2 * time.Second)
+						}
 						target.Mu.Unlock()
+
+						if w.OnEvent != nil && healAmount > 0 {
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: -healAmount})
+						}
 					}
 				}
 				return
@@ -6864,7 +6880,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				zone := &Entity{
 					ID:             fmt.Sprintf("zone-inferno-%d", time.Now().UnixNano()),
 					Type:           TypeProjectile,
-					SubType:        "Zone", // Needs to handle damage ticks in updateEntity
+					SubType:        "ZoneDamage",
 					X:              targetX,
 					Y:              0.1,
 					Z:              targetZ,
@@ -6872,7 +6888,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 					Damage:         int(float64(30+player.Stats.Intelligence) * player.GetSkillDamageMultiplier("Inferno Cataclysm")),
 					OwnerID:        player.ID,
 					CreatedAt:      time.Now(),
-					Scale:          1.0,
+					Scale:          12.0 / 5.0,       // Encode radius for client rendering (base geometry is 5.0)
 					ZoneDoubleTick: doubleTickActive, // Combo: Time Burn
 				}
 				w.Entities[zone.ID] = zone
@@ -8681,12 +8697,13 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 				// Spawn Zone Entity
 				zone := &Entity{
 					ID:                         fmt.Sprintf("zone-%d", time.Now().UnixNano()),
-					Type:                       TypeProjectile, // Reuse projectile for now
-					SubType:                    "Zone",
+					Type:                       TypeProjectile,
+					SubType:                    "ZoneHoly",
 					X:                          player.X,
 					Y:                          0.1,
 					Z:                          player.Z,
 					Radius:                     radius,
+					Scale:                      radius / 5.0, // Encode radius for client rendering (base geometry is 5.0)
 					Damage:                     int(float64(20+(player.Stats.Wisdom*1)) * player.GetSkillDamageMultiplier("Consecrated Ground")),
 					OwnerID:                    player.ID,
 					CreatedAt:                  time.Now(),
