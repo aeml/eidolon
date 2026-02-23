@@ -3,6 +3,7 @@ import { RenderSystem } from './RenderSystem.js';
 import { InputManager } from './InputManager.js';
 import { ChunkManager } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
+import { NetworkManager } from './NetworkManager.js';
 import { CONSTANTS } from './Constants.js';
 import { RARITY } from './ItemSystem.js';
 import { UIManager } from '../ui/UIManager.js';
@@ -70,7 +71,6 @@ import { AbyssalGoliath } from '../entities/AbyssalGoliath.js';
 import { MaelstromWarden } from '../entities/MaelstromWarden.js';
 import { Thalorath } from '../entities/Thalorath.js';
 import { EnvironmentalHazard } from '../entities/EnvironmentalHazard.js';
-import { eidolon as eidolonProto } from '../proto/state_pb.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { createTransientEffect } from './TransientEffects.js';
 
@@ -80,6 +80,8 @@ export class GameEngine {
         this.isMultiplayer = true;
         this.serverAddress = serverAddress;
         this.username = username;
+        this.network = new NetworkManager(socket);
+        /** @deprecated Use this.network instead. Kept for any external code. */
         this.socket = socket;
         this.remotePlayers = new Map();
         this.renderSystem = new RenderSystem(isMobile);
@@ -105,28 +107,13 @@ export class GameEngine {
         this.unmappedRemoteAbilityVisuals = new Set();
         this.currentInstanceId = null; // Track current instance to prevent state desync
         this.uiManager.onBuyGamble = (slot) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'buy_gamble',
-                    payload: { slot }
-                };
-                this.socket.send(JSON.stringify(msg));
-            }
+            this.network.send('buy_gamble', { slot });
         };
         this.uiManager.onSellItem = (index) => {
             const item = this.player.inventory[index];
             if (!item) return;
 
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'sell',
-                    payload: { 
-                        itemId: item.id,
-                        slotIndex: index // Optional, but might help debugging
-                    }
-                };
-                this.socket.send(JSON.stringify(msg));
-            }
+            this.network.send('sell', { itemId: item.id, slotIndex: index });
 
             // Optimistic client-side removal so inventory space frees immediately.
             // Server will correct us via an incoming inventory update if needed.
@@ -134,13 +121,7 @@ export class GameEngine {
             this.uiManager.updateInventory(this.player);
         };
         this.uiManager.onBuyback = (itemId) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'buyback',
-                    payload: { itemId }
-                };
-                this.socket.send(JSON.stringify(msg));
-            }
+            this.network.send('buyback', { itemId });
         };
         this.uiManager.onSellAll = (rarityName) => {
             if (!this.player) return;
@@ -154,79 +135,31 @@ export class GameEngine {
             }
         };
         this.uiManager.onSocialOpen = () => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                this.socket.send(JSON.stringify({ type: 'social', payload: {} }));
-            }
+            this.network.send('social', {});
         };
         this.uiManager.onTradingSearch = (query) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                this.socket.send(JSON.stringify({ 
-                    type: 'trading_search', 
-                    payload: { query } 
-                }));
-            }
+            this.network.send('trading_search', { query });
         };
         this.uiManager.onTradingCreate = (slotIndex, bid, buyout, duration) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                this.socket.send(JSON.stringify({ 
-                    type: 'trading_create', 
-                    payload: { slotIndex, bid, buyout, duration } 
-                }));
-            }
+            this.network.send('trading_create', { slotIndex, bid, buyout, duration });
         };
         this.uiManager.onTradingMyAuctions = () => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                this.socket.send(JSON.stringify({ 
-                    type: 'trading_my_auctions', 
-                    payload: {} 
-                }));
-            }
+            this.network.send('trading_my_auctions', {});
         };
         this.uiManager.onTradingBuyout = (auctionId) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                this.socket.send(JSON.stringify({ 
-                    type: 'trading_buyout', 
-                    payload: { auctionId } 
-                }));
-            }
+            this.network.send('trading_buyout', { auctionId });
         };
         this.uiManager.onTradingBid = (auctionId, amount) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                this.socket.send(JSON.stringify({ 
-                    type: 'trading_bid', 
-                    payload: { auctionId, amount } 
-                }));
-            }
+            this.network.send('trading_bid', { auctionId, amount });
         };
         this.uiManager.onTradingCollect = (auctionId) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                this.socket.send(JSON.stringify({ 
-                    type: 'trading_collect', 
-                    payload: { auctionId } 
-                }));
-            }
+            this.network.send('trading_collect', { auctionId });
         };
         this.uiManager.onTradingCancel = (auctionId) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                this.socket.send(JSON.stringify({ 
-                    type: 'trading_cancel', 
-                    payload: { auctionId } 
-                }));
-            }
+            this.network.send('trading_cancel', { auctionId });
         };
         this.uiManager.onReportSubmit = (type, text) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'report',
-                    payload: {
-                        reportType: type,
-                        text: text
-                    }
-                };
-                this.socket.send(JSON.stringify(msg));
-            } else {
-                console.warn("Cannot submit report: Not connected to server.");
-            }
+            this.network.send('report', { reportType: type, text: text });
         };
         this.uiManager.onPartyInvite = (targetName) => {
             this.sendPartyMessage('party_invite', { targetName });
@@ -238,144 +171,53 @@ export class GameEngine {
             this.sendPartyMessage('party_response', { inviterName, accepted });
         };
         this.uiManager.onSelectBranch = (branch) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                this.socket.send(JSON.stringify({
-                    type: 'selectBranch',
-                    payload: { branch }
-                }));
-            }
+            this.network.send('selectBranch', { branch });
         };
         this.uiManager.onUnlockSkill = (skillName) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                this.socket.send(JSON.stringify({
-                    type: 'unlockSkill',
-                    payload: { skillName }
-                }));
-            }
+            this.network.send('unlockSkill', { skillName });
         };
         this.uiManager.onUnlockTalent = (talentId) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                this.socket.send(JSON.stringify({
-                    type: 'unlockTalent',
-                    payload: { talentId }
-                }));
-            }
+            this.network.send('unlockTalent', { talentId });
         };
 
         this.uiManager.onResetTalents = () => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                this.socket.send(JSON.stringify({
-                    type: 'resetTalents',
-                    payload: {}
-                }));
-            }
+            this.network.send('resetTalents', {});
         };
         this.uiManager.onSelectRune = (skill, runeId) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                this.socket.send(JSON.stringify({
-                    type: 'select_rune',
-                    payload: { skill, runeId }
-                }));
-            }
+            this.network.send('select_rune', { skill, runeId });
         };
         this.uiManager.onStashDeposit = (itemId) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'stash_deposit',
-                    payload: { itemId }
-                };
-                this.socket.send(JSON.stringify(msg));
-            }
+            this.network.send('stash_deposit', { itemId });
         };
         this.uiManager.onForgeUpgrade = (slot, amount) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'forge_upgrade',
-                    payload: { slot, amount }
-                };
-                this.socket.send(JSON.stringify(msg));
-            }
+            this.network.send('forge_upgrade', { slot, amount });
         };
         this.uiManager.onForgePotency = (slot) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'forge_potency',
-                    payload: { slot }
-                };
-                this.socket.send(JSON.stringify(msg));
-            }
+            this.network.send('forge_potency', { slot });
         };
         this.uiManager.onForgeSocket = (slot) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'forge_socket',
-                    payload: { slot }
-                };
-                this.socket.send(JSON.stringify(msg));
-            }
+            this.network.send('forge_socket', { slot });
         };
         this.uiManager.onForgeInsertGem = (equipSlot, gemInvIndex, socketIndex) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'forge_insert_gem',
-                    payload: { equipSlot, gemInvIndex, socketIndex }
-                };
-                this.socket.send(JSON.stringify(msg));
-            }
+            this.network.send('forge_insert_gem', { equipSlot, gemInvIndex, socketIndex });
         };
         this.uiManager.onForgeCombineGem = (gemIndices) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'forge_combine_gem',
-                    payload: { gemIndices }
-                };
-                this.socket.send(JSON.stringify(msg));
-            }
+            this.network.send('forge_combine_gem', { gemIndices });
         };
         this.uiManager.onForgeRemoveGem = (equipSlot, socketIndex) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'forge_remove_gem',
-                    payload: { equipSlot, socketIndex }
-                };
-                this.socket.send(JSON.stringify(msg));
-            }
+            this.network.send('forge_remove_gem', { equipSlot, socketIndex });
         };
         this.uiManager.onStashWithdraw = (itemId) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'stash_withdraw',
-                    payload: { itemId }
-                };
-                this.socket.send(JSON.stringify(msg));
-            }
+            this.network.send('stash_withdraw', { itemId });
         };
         this.uiManager.onAcceptQuest = (questId) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'accept_quest',
-                    payload: { questId }
-                };
-                this.socket.send(JSON.stringify(msg));
-            }
+            this.network.send('accept_quest', { questId });
         };
         this.uiManager.onCompleteQuest = (questId) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'complete_quest',
-                    payload: { questId }
-                };
-                this.socket.send(JSON.stringify(msg));
-            }
+            this.network.send('complete_quest', { questId });
         };
         this.uiManager.onUnequipRequest = (slot) => {
-            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const msg = {
-                    type: 'unequip',
-                    payload: { slot }
-                };
-                this.socket.send(JSON.stringify(msg));
-            }
+            this.network.send('unequip', { slot });
         };
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         this.minimap = new Minimap();
@@ -417,11 +259,6 @@ export class GameEngine {
         this.recentlyPickedUpLoot = new Set();
         this.recentlyPickedUpLootTimeout = 5000; // 5 seconds
 
-        // Network Message Buffering
-        this.latestServerState = null;
-        this.latestServerTime = null;
-        this.messageQueue = [];
-        
         // Input Buffering
         this.inputBuffer = [];
         this.inputBufferWindow = 0.4; // 400ms buffer window
@@ -554,21 +391,7 @@ export class GameEngine {
         // Connect to server
         this.uiManager.toggleChat(true);
         this.uiManager.onChatSend = (msg) => {
-                // Check socket state directly or try to reconnect?
-                // For now, just check state.
-                if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                    const chatMsg = {
-                        type: "chat",
-                        payload: {
-                            message: msg,
-                            sender: this.username
-                        }
-                    };
-                    this.socket.send(JSON.stringify(chatMsg));
-                } else {
-                    console.warn("Chat send failed: Socket not open");
-                    this.uiManager.addChatMessage("System", "Not connected to server.");
-                }
+                this.network.send('chat', { message: msg, sender: this.username });
             };
             this.connectToServer();
         
@@ -579,14 +402,7 @@ export class GameEngine {
 
         this.uiManager.onStatUpgrade = (stat) => {
             if (this.player) {
-                // Send upgrade request to server
-                if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                    const msg = {
-                        type: 'upgrade_stat',
-                        payload: { stat }
-                    };
-                    this.socket.send(JSON.stringify(msg));
-                }
+                this.network.send('upgrade_stat', { stat });
             }
         };
 
@@ -596,8 +412,8 @@ export class GameEngine {
                 const x = -1.25;
                 const z = 200;
                 
-                if (this.isMultiplayer && this.socket && this.socket.readyState === WebSocket.OPEN) {
-                    this.socket.send(JSON.stringify({ type: 'respawn', payload: {} }));
+                if (this.isMultiplayer) {
+                    this.network.send('respawn', {});
                 }
 
                 // Apply immediate local respawn so death->town transition is always visible,
@@ -809,9 +625,7 @@ export class GameEngine {
             if (this.player) {
                 console.log("Teleporting to town...");
                 // Send recall request to server to ensure sync
-                if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                    this.socket.send(JSON.stringify({ type: 'recall', payload: {} }));
-                }
+                this.network.send('recall', {});
                 
                 // Optimistic update
                 this.player.position.set(0, 0, 200);
@@ -900,137 +714,7 @@ export class GameEngine {
     }
 
     connectToServer() {
-        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            console.log("Reusing existing auth socket connection...");
-            this.setupSocketListeners();
-            // Send join message immediately
-            const joinMsg = {
-                type: "join",
-                payload: {
-                    type: this.playerType
-                }
-            };
-            this.socket.send(JSON.stringify(joinMsg));
-            return;
-        }
-
-        // If we are here, it means we don't have an open authenticated socket.
-        // Since we need to be logged in to join, we cannot just open a new connection.
-        console.error("Connection lost or not authenticated. Please refresh and login.");
-        if (typeof alert !== 'undefined') {
-            alert("Connection lost! Please refresh the page and login again.");
-        }
-        
-        /* 
-        // Old logic - removed because it bypasses auth
-        console.log(`Connecting to server at ${this.serverAddress}...`);
-        this.socket = new WebSocket(this.serverAddress);
-
-        this.socket.onopen = () => {
-            console.log("Connected to server!");
-            this.setupSocketListeners();
-            // Send join message
-            const joinMsg = {
-                type: "join",
-                payload: {
-                    type: this.playerType
-                }
-            };
-            this.socket.send(JSON.stringify(joinMsg));
-        };
-        */
-    }
-
-    setupSocketListeners() {
-        this.socket.onmessage = (event) => {
-            try {
-                let data = event.data;
-                
-                // Check for binary data (Compressed State)
-                if (data instanceof Blob) {
-                    const reader = new FileReader();
-                    reader.onload = () => {
-                        try {
-                            const compressed = new Uint8Array(reader.result);
-
-                            // Protobuf path: "EDPB" + version byte + protobuf payload
-                            if (
-                                compressed.length > 5 &&
-                                compressed[0] === 0x45 && // E
-                                compressed[1] === 0x44 && // D
-                                compressed[2] === 0x50 && // P
-                                compressed[3] === 0x42    // B
-                            ) {
-                                const wireVersion = compressed[4];
-                                if (wireVersion !== 1) {
-                                    console.warn('Unsupported state proto wire version:', wireVersion);
-                                    return;
-                                }
-
-                                const payloadBytes = compressed.subarray(5);
-                                const env = eidolonProto.state.StateEnvelope.decode(payloadBytes);
-
-                                if (env.full) {
-                                    const entities = env.full.entities || [];
-                                    const payload = {};
-                                    for (const e of entities) payload[e.id] = e;
-                                    this.handleServerMessage({ type: 'state', payload });
-                                    return;
-                                }
-
-                                if (env.delta) {
-                                    const entities = env.delta.entities || [];
-                                    const u = {};
-                                    for (const e of entities) u[e.id] = e;
-                                    const r = env.delta.removedIds || [];
-                                    this.handleServerMessage({ type: 'delta', payload: { u, r } });
-                                    return;
-                                }
-
-                                return;
-                            }
-
-                            console.warn('Unknown binary payload; ignoring (expected EDPB protobuf)');
-                        } catch (e) {
-                            console.error("Decompression error:", e);
-                        }
-                    };
-                    reader.readAsArrayBuffer(data);
-                    return;
-                }
-
-                // Optimization: Check for time messages without full parse
-                if (typeof data === 'string') {
-                    if (data.includes('"type":"time"')) {
-                        this.latestServerTime = data;
-                        return;
-                    }
-                }
-
-                const msg = JSON.parse(data);
-                if (msg.type === 'time') {
-                    this.latestServerTime = JSON.stringify(msg.payload);
-                } else {
-                    this.messageQueue.push(msg);
-                }
-            } catch (e) {
-                console.error("Failed to parse server message:", e);
-            }
-        };
-
-        this.socket.onclose = () => {
-            console.log("Disconnected from server.");
-            if (!this.isExpectedDisconnect) {
-                if (typeof alert !== 'undefined') {
-                    alert("Disconnected from server. Returning to menu.");
-                }
-                window.location.reload();
-            }
-        };
-        
-        this.socket.onerror = (error) => {
-            console.error("WebSocket error:", error);
-        };
+        this.network.connect(this.playerType);
     }
 
     spawnEliteEnemy() {
@@ -1596,7 +1280,7 @@ export class GameEngine {
                 alert(`Server Error: ${msg.payload}`);
             }
             if (typeof msg.payload === 'string' && msg.payload.includes("Logged in from another location")) {
-                this.isExpectedDisconnect = true;
+                this.network.isExpectedDisconnect = true;
                 window.location.reload();
             }
         } else if (msg.type === 'enter_instance') {
@@ -1721,16 +1405,10 @@ export class GameEngine {
                                 );
 
                                 // Chat Notification
-                                if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                                    const chatMsg = {
-                                        type: "chat",
-                                        payload: {
-                                            message: `* has reached level ${pData.level}! *`,
-                                            sender: this.username || "Player"
-                                        }
-                                    };
-                                    this.socket.send(JSON.stringify(chatMsg));
-                                }
+                                this.network.send('chat', {
+                                    message: `* has reached level ${pData.level}! *`,
+                                    sender: this.username || "Player"
+                                });
                             }
                             this.player.level = pData.level;
                         } else {
@@ -2220,16 +1898,10 @@ export class GameEngine {
                                     '#ffd700'
                                 );
 
-                                if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-                                    const chatMsg = {
-                                        type: "chat",
-                                        payload: {
-                                            message: `* has reached level ${pData.level}! *`,
-                                            sender: this.username || "Player"
-                                        }
-                                    };
-                                    this.socket.send(JSON.stringify(chatMsg));
-                                }
+                                this.network.send('chat', {
+                                    message: `* has reached level ${pData.level}! *`,
+                                    sender: this.username || "Player"
+                                });
                             }
                             this.player.level = pData.level;
                         } else {
@@ -2496,11 +2168,7 @@ export class GameEngine {
         }
 
         // Send pickup request (we expect success since it fits).
-        const msg = {
-            type: 'pickup',
-            payload: { lootId: lootId }
-        };
-        this.socket.send(JSON.stringify(msg));
+        this.network.send('pickup', { lootId: lootId });
 
         // Track this loot as recently picked up to prevent phantom recreation
         this.recentlyPickedUpLoot.add(lootId);
@@ -2627,36 +2295,15 @@ export class GameEngine {
     }
 
     requestDungeonStatus(dungeonType = null) {
-        if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
-        const payload = dungeonType ? { dungeonType } : {};
-        this.socket.send(JSON.stringify({
-            type: 'get_dungeon_status',
-            payload
-        }));
+        this.network.send('get_dungeon_status', dungeonType ? { dungeonType } : {});
     }
 
     sendEquipMessage(item, targetSlot) {
-        if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
-        const msg = {
-            type: 'equip',
-            payload: {
-                itemId: item.id,
-                slot: targetSlot || item.slot
-            }
-        };
-        this.socket.send(JSON.stringify(msg));
+        this.network.send('equip', { itemId: item.id, slot: targetSlot || item.slot });
     }
 
     sendSplitStackMessage(slotIndex, amount) {
-        if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
-        const msg = {
-            type: 'split_stack',
-            payload: {
-                slot: slotIndex,
-                amount: amount
-            }
-        };
-        this.socket.send(JSON.stringify(msg));
+        this.network.send('split_stack', { slot: slotIndex, amount: amount });
     }
 
     createRemotePlayer(type, id, subType) {
@@ -3103,17 +2750,13 @@ export class GameEngine {
                 }
             }
 
-            if (this.isMultiplayer && this.socket && this.socket.readyState === WebSocket.OPEN) {
-                const abilityMsg = {
-                    type: "ability",
-                    payload: {
-                        targetX: targetPos.x,
-                        targetZ: targetPos.z,
-                        targetId: targetId,
-                        skillName: skillNameOverride || this.player.abilityName
-                    }
-                };
-                this.socket.send(JSON.stringify(abilityMsg));
+            if (this.isMultiplayer) {
+                this.network.send('ability', {
+                    targetX: targetPos.x,
+                    targetZ: targetPos.z,
+                    targetId: targetId,
+                    skillName: skillNameOverride || this.player.abilityName
+                });
             }
             
             // Client-side prediction
@@ -3126,17 +2769,13 @@ export class GameEngine {
         }
 
         if (targetVectorOverride) {
-             if (this.isMultiplayer && this.socket && this.socket.readyState === WebSocket.OPEN) {
-                 const abilityMsg = {
-                    type: "ability",
-                    payload: {
-                        targetX: targetVectorOverride.x,
-                        targetZ: targetVectorOverride.z,
-                        targetId: "",
-                        skillName: skillNameOverride || this.player.abilityName
-                    }
-                };
-                this.socket.send(JSON.stringify(abilityMsg));
+             if (this.isMultiplayer) {
+                this.network.send('ability', {
+                    targetX: targetVectorOverride.x,
+                    targetZ: targetVectorOverride.z,
+                    targetId: "",
+                    skillName: skillNameOverride || this.player.abilityName
+                });
             }
             
             if (skillNameOverride && this.player.useSkill) {
@@ -3156,17 +2795,13 @@ export class GameEngine {
             // Check if we are in range
             if (dist <= abilityRange) {
                 // Multiplayer Ability Logic (Targeted)
-                if (this.isMultiplayer && this.socket && this.socket.readyState === WebSocket.OPEN) {
-                    const abilityMsg = {
-                        type: "ability",
-                        payload: {
-                            targetX: this.hoveredEntity.position.x,
-                            targetZ: this.hoveredEntity.position.z,
-                            targetId: this.hoveredEntity.id,
-                            skillName: skillNameOverride || this.player.abilityName
-                        }
-                    };
-                    this.socket.send(JSON.stringify(abilityMsg));
+                if (this.isMultiplayer) {
+                    this.network.send('ability', {
+                        targetX: this.hoveredEntity.position.x,
+                        targetZ: this.hoveredEntity.position.z,
+                        targetId: this.hoveredEntity.id,
+                        skillName: skillNameOverride || this.player.abilityName
+                    });
                 }
                 
                 // Client-side prediction
@@ -3186,17 +2821,13 @@ export class GameEngine {
             const targetPoint = this.inputManager.getGroundIntersection();
             if (targetPoint) {
                 // Multiplayer Ability Logic (Skillshot)
-                if (this.isMultiplayer && this.socket && this.socket.readyState === WebSocket.OPEN) {
-                    const abilityMsg = {
-                        type: "ability",
-                        payload: {
-                            targetX: targetPoint.x,
-                            targetZ: targetPoint.z,
-                            targetId: "",
-                            skillName: skillNameOverride || this.player.abilityName
-                        }
-                    };
-                    this.socket.send(JSON.stringify(abilityMsg));
+                if (this.isMultiplayer) {
+                    this.network.send('ability', {
+                        targetX: targetPoint.x,
+                        targetZ: targetPoint.z,
+                        targetId: "",
+                        skillName: skillNameOverride || this.player.abilityName
+                    });
                 }
                 
                 // Client-side prediction
@@ -3213,13 +2844,7 @@ export class GameEngine {
         if (!this.player || !target) return;
 
         // Send to Server
-        const attackMsg = {
-            type: "attack",
-            payload: {
-                targetId: target.id
-            }
-        };
-        this.socket.send(JSON.stringify(attackMsg));
+        this.network.send('attack', { targetId: target.id });
 
         // Visuals
         const lookTarget = new THREE.Vector3(target.position.x, this.player.position.y, target.position.z);
@@ -3404,13 +3029,15 @@ export class GameEngine {
         const maxMessages = 200; 
         let msgCount = 0;
         
+        const pendingMessages = this.network.drainMessages();
+
         // Debug queue size if it gets large
-        if (this.messageQueue.length > 100 && this.frameCount % 60 === 0) {
-            console.warn(`Message Queue Backlog: ${this.messageQueue.length}`);
+        if (pendingMessages.length > 100 && this.frameCount % 60 === 0) {
+            console.warn(`Message Queue Backlog: ${pendingMessages.length}`);
         }
 
-        while (this.messageQueue.length > 0 && msgCount < maxMessages) {
-            const msg = this.messageQueue.shift();
+        for (let i = 0; i < pendingMessages.length && msgCount < maxMessages; i++) {
+            const msg = pendingMessages[i];
             try {
                 this.handleServerMessage(msg);
             } catch (e) {
@@ -3423,24 +3050,25 @@ export class GameEngine {
         // if (this.latestServerState) { ... }
 
         // 3. Handle latest time update (Coalesced)
-        if (this.latestServerTime) {
+        if (this.network.latestServerTime) {
             try {
                 let payload;
-                if (typeof this.latestServerTime === 'string') {
-                    if (this.latestServerTime.startsWith('{')) {
-                        const msg = JSON.parse(this.latestServerTime);
+                const rawTime = this.network.latestServerTime;
+                if (typeof rawTime === 'string') {
+                    if (rawTime.startsWith('{')) {
+                        const msg = JSON.parse(rawTime);
                         payload = msg.payload;
                     } else {
-                        payload = JSON.parse(this.latestServerTime);
+                        payload = JSON.parse(rawTime);
                     }
                 } else {
-                    payload = this.latestServerTime;
+                    payload = rawTime;
                 }
                 this.handleServerMessage({ type: 'time', payload: payload });
             } catch (e) {
                 console.error("Error handling server time:", e);
             } finally {
-                this.latestServerTime = null;
+                this.network.latestServerTime = null;
             }
         }
 
@@ -3930,15 +3558,11 @@ export class GameEngine {
 
                     if (dist < range) {
                         if (this.isMultiplayer) {
-                            const abilityMsg = {
-                                type: "ability",
-                                payload: {
-                                    targetX: this.pendingAbilityTarget.position.x,
-                                    targetZ: this.pendingAbilityTarget.position.z,
-                                    targetId: this.pendingAbilityTarget.id
-                                }
-                            };
-                            this.socket.send(JSON.stringify(abilityMsg));
+                            this.network.send('ability', {
+                                targetX: this.pendingAbilityTarget.position.x,
+                                targetZ: this.pendingAbilityTarget.position.z,
+                                targetId: this.pendingAbilityTarget.id
+                            });
                             this.player.playAnimation('Attack', false);
                         } else {
                             this.player.useAbility(this.pendingAbilityTarget.position, this);
@@ -4043,21 +3667,17 @@ export class GameEngine {
         }
 
         // Network Update
-        if (this.isMultiplayer && this.socket && this.socket.readyState === WebSocket.OPEN && this.player) {
+        if (this.isMultiplayer && this.player) {
             // Don't send move updates if dead
             if (this.player.state !== 'DEAD' && this.frameCount % 3 === 0) {
                 const euler = new THREE.Euler().setFromQuaternion(this.player.rotation);
-                const moveMsg = {
-                    type: "move",
-                    payload: {
-                        x: this.player.position.x,
-                        y: this.player.position.y,
-                        z: this.player.position.z,
-                        rotation: euler.y,
-                        state: this.player.state
-                    }
-                };
-                this.socket.send(JSON.stringify(moveMsg));
+                this.network.send('move', {
+                    x: this.player.position.x,
+                    y: this.player.position.y,
+                    z: this.player.position.z,
+                    rotation: euler.y,
+                    state: this.player.state
+                });
             }
         }
         
@@ -4084,9 +3704,7 @@ export class GameEngine {
     }
 
     sendPartyMessage(type, payload) {
-        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            this.socket.send(JSON.stringify({ type, payload }));
-        }
+        this.network.send(type, payload);
     }
 
     kickPartyMember(targetId) {
