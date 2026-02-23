@@ -16,7 +16,6 @@ export class RenderSystem {
         
         // Optimization: Mobile Settings
         this.isMobile = isMobile;
-        console.log(`RenderSystem initialized. Mobile Mode: ${this.isMobile}`);
 
         // Camera Setup (Isometric Orthographic)
         const aspect = window.innerWidth / window.innerHeight;
@@ -642,7 +641,7 @@ export class RenderSystem {
         if (position.z < -600) return 'water';
         if (position.x < -1000) return 'fire';
         if (position.x > 1000) return 'air';
-        // Town is a ~100-radius area centered at (0, 200) within Earth
+        // Town is a ~120-radius area centered at (0, 200) within Earth
         const dx = position.x;
         const dz = position.z - 200;
         if (dx * dx + dz * dz < 120 * 120) return 'town';
@@ -822,10 +821,6 @@ export class RenderSystem {
         tex.anisotropy = this.isMobile ? 1 : Math.min(this.renderer.capabilities.getMaxAnisotropy(), 4);
         tex.repeat.set(repeatX, repeatY); 
         tex.colorSpace = THREE.SRGBColorSpace;
-    }
-
-    setGroundTexture(type) {
-        // Deprecated: Ground is now split
     }
 
     createWaterMaterial(texture) {
@@ -1021,6 +1016,27 @@ export class RenderSystem {
             this.scene.remove(this._pMesh);
             this._pMesh = null;
         }
+
+        // Dispose loaded textures (material.dispose() does NOT release these)
+        if (this.waterTexture) { this.waterTexture.dispose(); this.waterTexture = null; }
+        if (this.groundTexture) { this.groundTexture.dispose(); this.groundTexture = null; }
+        if (this.snowTexture) { this.snowTexture.dispose(); this.snowTexture = null; }
+        if (this.scene.background && this.scene.background.isTexture) {
+            this.scene.background.dispose();
+        }
+
+        // Traverse scene BEFORE renderer.dispose() so GPU resources are freed while context exists
+        this.scene.traverse((object) => {
+            if (object.geometry) object.geometry.dispose();
+            if (object.material) {
+                if (Array.isArray(object.material)) {
+                    object.material.forEach(material => material.dispose());
+                } else {
+                    object.material.dispose();
+                }
+            }
+        });
+
         if (this.composer) {
             this.composer.dispose();
         }
@@ -1034,17 +1050,6 @@ export class RenderSystem {
         if (this.perfOverlay) {
             this.perfOverlay.style.display = 'none';
         }
-        
-        this.scene.traverse((object) => {
-            if (object.geometry) object.geometry.dispose();
-            if (object.material) {
-                if (Array.isArray(object.material)) {
-                    object.material.forEach(material => material.dispose());
-                } else {
-                    object.material.dispose();
-                }
-            }
-        });
     }
 
 }

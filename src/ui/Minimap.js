@@ -60,7 +60,7 @@ function classifyEntity(entity) {
 export class Minimap {
     constructor(size = 200) {
         this.baseSize = size;
-        this.scale = 4; // World units per pixel
+        this.scale = 4; // Pixels per world unit
 
         this.canvas = document.createElement('canvas');
         this.canvas.id = 'minimap-canvas';
@@ -85,6 +85,7 @@ export class Minimap {
 
     update(player, entities) {
         if (!player) return;
+        if (!entities) entities = [];
         this._tick++;
 
         const ctx = this.ctx;
@@ -194,17 +195,22 @@ export class Minimap {
     // Internal helpers
     // -----------------------------------------------------------------------
 
-    /** Get a Set of party member IDs (excluding self). */
+    /** Get a Set of party member IDs (excluding self). Cached per-frame. */
     _getPartyMemberIds() {
-        const ids = new Set();
-        if (this.gameEngine && this.gameEngine.uiManager &&
+        const members = this.gameEngine && this.gameEngine.uiManager &&
             this.gameEngine.uiManager.partyData &&
-            this.gameEngine.uiManager.partyData.members) {
-            for (const m of this.gameEngine.uiManager.partyData.members) {
-                ids.add(m.id);
-            }
+            this.gameEngine.uiManager.partyData.members;
+        if (!members) {
+            if (this._partyIdCache) this._partyIdCache.clear();
+            else this._partyIdCache = new Set();
+            return this._partyIdCache;
         }
-        return ids;
+        if (!this._partyIdCache) this._partyIdCache = new Set();
+        else this._partyIdCache.clear();
+        for (const m of members) {
+            this._partyIdCache.add(m.id);
+        }
+        return this._partyIdCache;
     }
 
     /** Draw global party members that may be out of chunk range. */
@@ -212,7 +218,7 @@ export class Minimap {
         const pd = this.gameEngine.uiManager && this.gameEngine.uiManager.partyData;
         if (!pd || !pd.members) return;
         for (const member of pd.members) {
-            if (member.id === player.id) return;
+            if (member.id === player.id) continue;
             if (member.x === undefined || member.z === undefined) continue;
             const pos = toMap(member.x, member.z);
             const dx = pos.x - half;
@@ -254,12 +260,7 @@ export class Minimap {
         ctx.lineWidth = 1;
 
         // Key boundaries: z=-600 (water/earth), x=-1000 (fire/earth), x=1000 (earth/air)
-        const boundaries = [
-            // [x1, z1, x2, z2]
-            [-3000, -600, 3000, -600],  // Water ↔ Earth/Fire/Air
-            [-1000, -2200, -1000, 1000], // Fire ↔ Earth/Water
-            [1000, -2200, 1000, 1000],   // Earth/Water ↔ Air
-        ];
+        const boundaries = Minimap._REALM_BOUNDARIES;
 
         for (const [x1, z1, x2, z2] of boundaries) {
             const start = toMap(x1, z1);
@@ -298,3 +299,10 @@ export class Minimap {
         }
     }
 }
+
+/** Pre-allocated realm boundary line segments [x1, z1, x2, z2]. */
+Minimap._REALM_BOUNDARIES = Object.freeze([
+    [-3000, -600, 3000, -600],   // Water ↔ Earth/Fire/Air
+    [-1000, -2200, -1000, 1000], // Fire ↔ Earth/Water
+    [1000, -2200, 1000, 1000],   // Earth/Water ↔ Air
+]);
