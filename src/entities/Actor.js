@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Entity } from './Entity.js';
 import { calculateSetBonuses, getEquippedUniqueEffects, getGemStats, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
+import { CONSTANTS } from '../core/Constants.js';
 
 // Optimization: Reusable temporary objects to avoid GC
 const TEMP_VEC = new THREE.Vector3();
@@ -328,6 +329,20 @@ export class Actor extends Entity {
         }
 
         const skillName = skillNameOverride || this.abilityName;
+        const className = this.meshType || this.subType || this.constructor.name;
+        const classAbilityConfig = CONSTANTS.ABILITY_CONFIG ? CONSTANTS.ABILITY_CONFIG[className] : null;
+        const defaultAbilityConfig = classAbilityConfig ? classAbilityConfig.default : null;
+        const skillAbilityConfig = (classAbilityConfig && classAbilityConfig.skills && skillName) ? classAbilityConfig.skills[skillName] : null;
+        const manaCostBase = (skillAbilityConfig && typeof skillAbilityConfig.mana === 'number')
+            ? skillAbilityConfig.mana
+            : (defaultAbilityConfig && typeof defaultAbilityConfig.mana === 'number')
+                ? defaultAbilityConfig.mana
+                : this.abilityManaCost;
+        const cooldownBase = (skillAbilityConfig && typeof skillAbilityConfig.cooldown === 'number')
+            ? skillAbilityConfig.cooldown
+            : (defaultAbilityConfig && typeof defaultAbilityConfig.cooldown === 'number')
+                ? defaultAbilityConfig.cooldown
+                : this.abilityMaxCooldown;
 
         // Check specific cooldown
         if (this.cooldowns[skillName] > 0) {
@@ -342,7 +357,7 @@ export class Actor extends Entity {
         }
         
         // Apply Mana Cost Reduction
-        const cost = this.abilityManaCost * (1 - (this.stats.manaCostReduction || 0));
+        const cost = manaCostBase * (1 - (this.stats.manaCostReduction || 0));
         
         if (this.stats.mana < cost) {
             console.log("Not enough mana");
@@ -353,7 +368,7 @@ export class Actor extends Entity {
         
         // Apply Cooldown Reduction
         const cdr = this.stats.cooldownReduction || 0;
-        const maxCd = this.abilityMaxCooldown * (1 - cdr);
+        const maxCd = cooldownBase * (1 - cdr);
         
         // Set Cooldown
         if (skillName) {

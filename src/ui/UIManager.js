@@ -3358,9 +3358,37 @@ export class UIManager {
             });
         }
 
+        const classAbilityConfig = CONSTANTS.ABILITY_CONFIG ? CONSTANTS.ABILITY_CONFIG[classType] : null;
+        const defaultAbilityConfig = classAbilityConfig ? classAbilityConfig.default : null;
+        const skillAbilityConfig = (classAbilityConfig && classAbilityConfig.skills) ? classAbilityConfig.skills[skillName] : null;
+
+        const mana = (skillAbilityConfig && typeof skillAbilityConfig.mana === 'number')
+            ? skillAbilityConfig.mana
+            : (defaultAbilityConfig && typeof defaultAbilityConfig.mana === 'number')
+                ? defaultAbilityConfig.mana
+                : null;
+        const cooldown = (skillAbilityConfig && typeof skillAbilityConfig.cooldown === 'number')
+            ? skillAbilityConfig.cooldown
+            : (defaultAbilityConfig && typeof defaultAbilityConfig.cooldown === 'number')
+                ? defaultAbilityConfig.cooldown
+                : null;
+        const range = (skillAbilityConfig && typeof skillAbilityConfig.range === 'number')
+            ? skillAbilityConfig.range
+            : (defaultAbilityConfig && typeof defaultAbilityConfig.range === 'number')
+                ? defaultAbilityConfig.range
+                : null;
+
+        const details = [];
+        if (typeof mana === 'number') details.push(`Mana: ${mana}`);
+        if (typeof cooldown === 'number') details.push(`CD: ${cooldown.toFixed(1)}s`);
+        if (typeof range === 'number') details.push(`Range: ${range.toFixed(1)}`);
+        const detailHtml = details.length > 0
+            ? `<div style="color: #9aa0a6; margin-top: 6px; font-size: 12px;">${details.join(' | ')}</div>`
+            : '';
+
         this.statTooltipTitle.textContent = skillName;
         this.statTooltipTitle.style.color = '#ffd700';
-        this.statTooltipDesc.innerHTML = `<div style="color: #ccc;">${desc}</div>`;
+        this.statTooltipDesc.innerHTML = `<div style="color: #ccc;">${desc}</div>${detailHtml}`;
         
         this.statTooltip.style.display = 'block';
         this.statTooltip.style.left = `${x}px`;
