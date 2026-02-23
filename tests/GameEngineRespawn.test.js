@@ -1,13 +1,18 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 
-jest.unstable_mockModule('../src/proto/state_pb.js', () => ({
-    eidolon: {
-        StateEnvelope: {
-            decode: jest.fn()
+jest.unstable_mockModule('../src/proto/state_pb.js', () => {
+    const mock = {
+        eidolon: {
+            state: {
+                StateEnvelope: {
+                    decode: jest.fn()
+                }
+            }
         }
-    }
-}));
+    };
+    return { default: mock, ...mock };
+});
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
 
