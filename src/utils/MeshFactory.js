@@ -689,6 +689,17 @@ export class MeshFactory {
                 group.add(head);
                 break;
             }
+            default: {
+                // Unknown shape — create a visible placeholder so it's debuggable
+                console.warn(`MeshFactory.createProceduralEnemy: unknown shape "${shape}" for type "${type}"`);
+                const placeholder = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.6, 1.2, 0.6),
+                    new THREE.MeshStandardMaterial({ color: 0xff00ff, wireframe: true })
+                );
+                placeholder.position.y = 0.6;
+                group.add(placeholder);
+                break;
+            }
         }
 
         // Scale the whole group
@@ -735,7 +746,9 @@ export class MeshFactory {
             this.pool[type].push(mesh);
         } else {
             // Pool is full, dispose of the mesh resources
-            // We only dispose materials, as geometries are either shared (GLTF) or cached (Primitives)
+            // Dispose materials always; dispose geometry only for procedural enemies
+            // (GLTF/cached geometries are shared and must NOT be disposed here)
+            const isProceduralType = !!this.PROCEDURAL_ENEMY_SPECS[type];
             mesh.traverse((child) => {
                 if (child.isMesh) {
                     if (child.material) {
@@ -745,7 +758,9 @@ export class MeshFactory {
                             child.material.dispose();
                         }
                     }
-                    // DO NOT dispose geometry as it is likely shared
+                    if (isProceduralType && child.geometry) {
+                        child.geometry.dispose();
+                    }
                 }
             });
         }
@@ -802,15 +817,6 @@ export class MeshFactory {
             try {
                 const idleGltf = await this.loadModel('./assets/archetypes/Fighter/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);
-                
-                console.log("Structure of loaded mesh:");
-                mesh.traverse((node) => {
-                    console.log(` - ${node.name} [${node.type}]`);
-                    if (node.isMesh) {
-                        console.log(`   > Material: ${node.material ? node.material.name : 'none'}`);
-                        console.log(`   > Geometry: ${node.geometry.type}`);
-                    }
-                });
 
                 mesh.userData.animations = [];
 
@@ -853,7 +859,7 @@ export class MeshFactory {
                         }
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        // c.frustumCulled = false;
+
                     }
                 });
                 
@@ -925,7 +931,7 @@ export class MeshFactory {
                         }
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        // c.frustumCulled = false;
+
                     }
                 });
                 
@@ -993,7 +999,7 @@ export class MeshFactory {
                         }
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        // c.frustumCulled = false;
+
                     }
                 });
                 
@@ -1061,7 +1067,7 @@ export class MeshFactory {
                         }
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        // c.frustumCulled = false;
+
                     }
                 });
                 
@@ -1134,7 +1140,7 @@ export class MeshFactory {
                     if (c.isMesh) {
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        // c.frustumCulled = false;
+
                     }
                 });
 
@@ -1147,6 +1153,8 @@ export class MeshFactory {
                 return mesh;
             } catch (e) {
                 console.error("Failed to load Skeleton:", e);
+                // Return a visible fallback instead of falling through to the default tiny box
+                return await this.loadSkeletonWithTint(0xcccccc, 2.5, 0x444444, 0.3);
             }
         }
 
@@ -1196,7 +1204,7 @@ export class MeshFactory {
                         }
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        // c.frustumCulled = false;
+
                     }
                 });
 
@@ -1263,7 +1271,7 @@ export class MeshFactory {
                         }
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        // c.frustumCulled = false;
+
                     }
                 });
 
@@ -1365,7 +1373,7 @@ export class MeshFactory {
                         }
                         c.castShadow = true;
                         c.receiveShadow = true;
-                        // c.frustumCulled = false;
+
                     }
                 });
 
@@ -1883,11 +1891,9 @@ export class MeshFactory {
                 return mesh;
             }
         } else if (type === 'AvengingSeraph') {
-            console.log("MeshFactory: Loading AvengingSeraph model...");
             try {
                 // Try loading from folder structure first
                 const idleGltf = await this.loadModel('./assets/summons/avenging_seraph/idle.glb');
-                console.log("MeshFactory: Loaded AvengingSeraph idle.glb");
                 mesh = SkeletonUtils.clone(idleGltf.scene);
                 
                 mesh.userData.animations = [];
@@ -1942,7 +1948,6 @@ export class MeshFactory {
                 try {
                     // Try single file
                     const gltf = await this.loadModel('./assets/summons/avenging_seraph.glb');
-                    console.log("MeshFactory: Loaded AvengingSeraph single file");
                     mesh = SkeletonUtils.clone(gltf.scene);
                     mesh.scale.set(2.5, 2.5, 2.5);
                     return mesh;

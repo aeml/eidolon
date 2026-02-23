@@ -79,7 +79,7 @@ const DUNGEON_MARKERS = [
 /**
  * Fence segments (boundary walls).
  * Each entry is an array of line segments: [[x1,z1, x2,z2], ...].
- * `gap` optionally splits a wall segment into two parts around a gap.
+ * Gaps are achieved by splitting a wall into separate line segments.
  */
 const FENCE_SEGMENTS = [
     // Earth realm fence — rectangular with a gap on the north wall

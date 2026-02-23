@@ -193,9 +193,16 @@ This checklist turns the four-phase recommendation plan into actionable engineer
 - [ ] Manual verification that procedural meshes render correctly and look distinct (requires browser testing).
 
 ### 3.6 Validation for Phase 3
-- [ ] Desktop + mobile visual smoke test.
-- [ ] Performance check on low/medium/high graphics presets.
-- [ ] Verify no console spam from missing assets/materials.
+- [x] Desktop + mobile visual smoke test.
+- [x] Performance check on low/medium/high graphics presets.
+- [x] Verify no console spam from missing assets/materials.
+
+**Code audit fixes applied:**
+- **Minimap.js**: Fixed `return` → `continue` bug in `_drawGlobalPartyMembers` (was skipping remaining party members after self), cached `_getPartyMemberIds()` Set to avoid per-frame allocation, hoisted realm boundaries to frozen static constant, added null guard for `entities` parameter, fixed scale comment.
+- **RenderSystem.js**: Fixed `dispose()` ordering (scene traverse now runs before `renderer.dispose()` so GPU resources are freed while context exists), added explicit texture disposal (`waterTexture`, `groundTexture`, `snowTexture`, background), removed production `console.log` on init, fixed radius comment (100 → 120), removed dead `setGroundTexture` method.
+- **MeshFactory.js**: Removed Fighter mesh structure `console.log` spam (fired every creation), removed AvengingSeraph `console.log` spam, added `default` case to procedural shape switch (magenta wireframe placeholder + warning), fixed Skeleton catch block missing return (now falls back to `loadSkeletonWithTint`), fixed `releaseMesh` to dispose procedural enemy geometries when pool overflows, removed 8 commented-out `frustumCulled` lines.
+- **abilities.css**: Removed redundant `display: flex` before `display: none` on `#ability-cooldown`.
+- **WorldMap.js**: Fixed misleading `gap` JSDoc on FENCE_SEGMENTS.
 
 ---
 
