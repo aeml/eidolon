@@ -101,14 +101,15 @@ This checklist turns the four-phase recommendation plan into actionable engineer
 - Consecrated Ground and Inferno-style zones have non-overlapping, predictable behavior.
 
 ### 2.4 Telegraph and readability improvements
-- [ ] Add cast-start/cast-impact event support for major enemy and boss abilities.
-- [ ] Add persistent warning indicators for delayed/high-damage AoE.
-- [ ] Tune indicator timing to match server hit timing.
+- [x] Add cast-start/cast-impact event support for major enemy and boss abilities. Server emits `TelegraphEvent` with position/radius/duration; boss AoE slam fires every 10s with 2s warning.
+- [x] Add persistent warning indicators for delayed/high-damage AoE. Client `TransientEffects.js` renders a pulsing red/orange ring+fill disc that grows more urgent as impact approaches.
+- [x] Tune indicator timing to match server hit timing. Telegraph duration (2s) matches the goroutine sleep before AoE damage resolves.
 
 **Files (initial targets)**
-- `server/internal/game/world.go`
-- `src/core/GameEngine.js`
-- `src/core/TransientEffects.js`
+- `server/internal/game/world.go` — `TelegraphEvent` struct, `LastSpecialAttack` entity field, boss AoE slam logic in enemy AI update
+- `server/main.go` — `MsgTelegraph` constant, `TelegraphPayload` struct, `"telegraph"` event handler in OnEvent
+- `src/core/GameEngine.js` — `'telegraph'` case in `handleServerMessage()`
+- `src/core/TransientEffects.js` — `'telegraph'` effect type (ring + fill disc, pulsing opacity)
 
 **Acceptance criteria**
 - Players can react to dangerous attacks from telegraphs before damage resolves.

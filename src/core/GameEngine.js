@@ -1539,6 +1539,16 @@ export class GameEngine {
                     console.log(`[Combo] Triggered: ${comboName} (${comboId})`);
                 }
             }
+        } else if (msg.type === 'telegraph') {
+            // Boss AoE telegraph — show a warning circle on the ground
+            const data = msg.payload;
+            if (data) {
+                const pos = new THREE.Vector3(data.x, 0, data.z);
+                this.spawnTransientEffect('telegraph', pos, 0xff2200, {
+                    radius: data.radius || 10,
+                    telegraphDuration: data.duration || 2.0
+                });
+            }
         } else if (msg.type === 'error') {
             console.error("Server Error:", msg.payload);
 

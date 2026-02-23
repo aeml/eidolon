@@ -1251,12 +1251,13 @@ type Entity struct {
 	State    string  `json:"state"` // IDLE, MOVING, ATTACKING, DEAD
 
 	// Combat
-	LastAttackTime  time.Time            `json:"-"`
-	AttackCooldown  time.Duration        `json:"-"`
-	LastAbilityTime time.Time            `json:"-"`
-	AbilityCooldown time.Duration        `json:"-"`
-	Cooldowns       map[string]time.Time `json:"-"`
-	LastRespawnTime time.Time            `json:"-"`
+	LastAttackTime    time.Time            `json:"-"`
+	AttackCooldown    time.Duration        `json:"-"`
+	LastAbilityTime   time.Time            `json:"-"`
+	AbilityCooldown   time.Duration        `json:"-"`
+	Cooldowns         map[string]time.Time `json:"-"`
+	LastRespawnTime   time.Time            `json:"-"`
+	LastSpecialAttack time.Time            `json:"-"` // Boss AoE slam cooldown
 
 	// Threat (server-side only): playerID -> threat
 	Threat map[string]float64 `json:"-"`
@@ -1636,6 +1637,17 @@ type HazardDamageEvent struct {
 	HazardID   string     `json:"hazardId"`
 	HazardType HazardType `json:"hazardType"`
 	Damage     int        `json:"damage"`
+}
+
+// TelegraphEvent is emitted when a boss telegraphs an incoming AoE attack.
+// Clients render a warning indicator at (X, Z) with the given Radius for
+// Duration seconds before the damage lands.
+type TelegraphEvent struct {
+	SourceID string  `json:"sourceId"`
+	X        float64 `json:"x"`
+	Z        float64 `json:"z"`
+	Radius   float64 `json:"radius"`
+	Duration float64 `json:"duration"` // seconds before impact
 }
 
 func NewWorld(db *database.DB) *World {
@@ -5384,9 +5396,76 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if minDist <= attackRange {
 				// Attack (if off cooldown). If still on cooldown, stay IDLE in-place.
 				if !cooldownActive {
-					e.Mu.Unlock() // Unlock self before interaction
-					w.PerformAttack(e.ID, target.ID)
-					e.Mu.Lock() // Relock self
+					// Boss AoE Slam: bosses (Scale >= 4.0) periodically use a
+					// telegraphed ground slam instead of their normal attack.
+					// Cooldown: 10 seconds.  Telegraph: 2 seconds warning.
+					if e.Scale >= 4.0 && time.Since(e.LastSpecialAttack) >= 10*time.Second {
+						e.LastSpecialAttack = time.Now()
+						e.LastAttackTime = time.Now() // put normal attack on cooldown too
+						e.State = "ATTACKING"
+
+						slamX := e.X
+						slamZ := e.Z
+						slamRadius := 8.0 + (e.Scale-1.0)*1.5 // ~12.5 for Scale 4
+						slamDelay := 2.0                      // seconds
+						bossID := e.ID
+						bossDamage := e.Damage
+						instanceID := e.InstanceID
+
+						// Emit telegraph event so clients show a warning circle
+						if w.OnEvent != nil {
+							w.OnEvent("telegraph", TelegraphEvent{
+								SourceID: bossID,
+								X:        slamX,
+								Z:        slamZ,
+								Radius:   slamRadius,
+								Duration: slamDelay,
+							})
+						}
+
+						// Schedule AoE damage after the telegraph delay
+						go func(x, z, radius float64, delay time.Duration, dmg int, instID, srcID string) {
+							time.Sleep(delay)
+
+							w.Mu.Lock()
+							defer w.Mu.Unlock()
+
+							src := w.Entities[srcID]
+							if src == nil || src.State == "DEAD" {
+								return
+							}
+
+							for _, p := range w.Entities {
+								if p.Type != TypePlayer || p.InstanceID != instID || p.State == "DEAD" {
+									continue
+								}
+								p.Mu.Lock()
+								dx := p.X - x
+								dz := p.Z - z
+								if math.Sqrt(dx*dx+dz*dz) <= radius {
+									damage := dmg - p.Defense/2
+									if damage < 1 {
+										damage = 1
+									}
+									p.Health -= damage
+									if p.Health < 0 {
+										p.Health = 0
+									}
+									if w.OnEvent != nil {
+										w.OnEvent("damage", DamageEvent{TargetID: p.ID, SourceID: srcID, Amount: damage})
+									}
+									if p.Health <= 0 {
+										p.State = "DEAD"
+									}
+								}
+								p.Mu.Unlock()
+							}
+						}(slamX, slamZ, slamRadius, time.Duration(slamDelay*float64(time.Second)), bossDamage, instanceID, bossID)
+					} else {
+						e.Mu.Unlock() // Unlock self before interaction
+						w.PerformAttack(e.ID, target.ID)
+						e.Mu.Lock() // Relock self
+					}
 				}
 			} else {
 				// Chase
