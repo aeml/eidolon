@@ -3,6 +3,7 @@ import { RenderSystem } from './RenderSystem.js';
 import { InputManager } from './InputManager.js';
 import { ChunkManager } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
+import { CONSTANTS } from './Constants.js';
 import { RARITY } from './ItemSystem.js';
 import { UIManager } from '../ui/UIManager.js';
 import { WorldGenerator } from '../world/WorldGenerator.js';
@@ -1405,12 +1406,25 @@ export class GameEngine {
             const chatData = msg.payload;
             this.uiManager.addChatMessage(chatData.sender, chatData.message);
         } else if (msg.type === 'inventory') {
-            console.log("GameEngine: Received inventory update. Items:", msg.payload.length);
-            this.player.inventory = msg.payload.map(item => this.hydrateItem(item));
-            this.uiManager.updateInventory(this.player);
+            const inventory = msg.payload.map(item => this.hydrateItem(item));
+            if (this.player) {
+                // Pad with nulls to maintain fixed 25-slot size
+                while (inventory.length < 25) {
+                    inventory.push(null);
+                }
+                this.player.inventory = inventory;
+                this.uiManager.updateInventory(this.player);
+            }
         } else if (msg.type === 'stash') {
-            this.player.stash = msg.payload.map(item => this.hydrateItem(item));
-            this.uiManager.updateStash(this.player);
+            const stash = msg.payload.map(item => this.hydrateItem(item));
+            if (this.player) {
+                // Pad with nulls to maintain fixed 100-slot size
+                while (stash.length < 100) {
+                    stash.push(null);
+                }
+                this.player.stash = stash;
+                this.uiManager.updateStash(this.player);
+            }
         } else if (msg.type === 'buyback_list') {
             if (msg.payload) {
                 const buybackItems = msg.payload.map(item => this.hydrateItem(item));
@@ -2408,50 +2422,6 @@ export class GameEngine {
                     }
                     this.remotePlayers.delete(id);
                 }
-            }
-        } else if (msg.type === 'inventory') {
-            const inventory = msg.payload;
-            // Hydrate rarity from string to object for UI
-            inventory.forEach(item => {
-                if (item && typeof item.rarity === 'string') {
-                    for (const key in RARITY) {
-                        if (RARITY[key].name === item.rarity) {
-                            item.rarity = RARITY[key];
-                            break;
-                        }
-                    }
-                }
-            });
-
-            if (this.player) {
-                // Pad with nulls to maintain fixed size
-                while (inventory.length < 25) {
-                    inventory.push(null);
-                }
-                this.player.inventory = inventory;
-                this.uiManager.updateInventory(this.player);
-            }
-        } else if (msg.type === 'stash') {
-            const stash = msg.payload;
-            // Hydrate rarity from string to object for UI
-            stash.forEach(item => {
-                if (item && typeof item.rarity === 'string') {
-                    for (const key in RARITY) {
-                        if (RARITY[key].name === item.rarity) {
-                            item.rarity = RARITY[key];
-                            break;
-                        }
-                    }
-                }
-            });
-
-            if (this.player) {
-                // Pad with nulls to maintain fixed size (100)
-                while (stash.length < 100) {
-                    stash.push(null);
-                }
-                this.player.stash = stash;
-                this.uiManager.updateStash(this.player);
             }
         } else if (msg.type === 'social') {
             this.uiManager.updateSocialList(msg.payload);
