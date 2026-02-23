@@ -89,14 +89,13 @@ This checklist turns the four-phase recommendation plan into actionable engineer
 - Combat engagement distance feels intentional and consistent across classes and input modes.
 
 ### 2.3 Zone/AoE semantic split
-- [ ] Split generic `Zone` behavior into clear types (damage zone, healing zone, buff zone, control zone).
-- [ ] Ensure each skill's zone type applies only intended effects (ally vs enemy).
-- [ ] Keep visual indicators distinct per zone category.
+- [x] Split generic `Zone` behavior into clear types (damage zone, healing zone, buff zone, control zone). Server SubType split: `ZoneDamage` (Inferno Cataclysm) and `ZoneHoly` (Consecrated Ground).
+- [x] Ensure each skill's zone type applies only intended effects (ally vs enemy). ZoneDamage only damages enemies; ZoneHoly damages enemies + heals allies + applies sanctuary buff.
+- [x] Keep visual indicators distinct per zone category. Client renders ZoneDamage as red/orange, ZoneHoly as gold. Server encodes radius via Scale field for correct client geometry scaling.
 
 **Files**
 - `server/internal/game/world.go`
-- `src/entities/AreaOfEffect.js`
-- `src/core/TransientEffects.js`
+- `src/entities/Projectile.js`
 
 **Acceptance criteria**
 - Consecrated Ground and Inferno-style zones have non-overlapping, predictable behavior.
