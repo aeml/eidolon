@@ -169,11 +169,6 @@ export class Wizard extends Actor {
             meteor.explosionRadius = 8.0; // Big radius
             meteor.speed = 20.0; // Fast fall
             
-            // Synergy: Meteor also leaves burning ground if unlocked
-            if (this.skillLevels.pyromancer.burningGround > 0) {
-                meteor.leaveBurningGround = true;
-            }
-            
             gameEngine.addEntity(meteor);
             
             // Ground indicator

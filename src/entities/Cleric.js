@@ -366,9 +366,9 @@ export class Cleric extends Actor {
             return;
         }
 
-        // Default: Guardian Spirits
-        if (skill === "Guardian Spirits" || skill === this.abilityName) {
-            console.log("Cleric used Guardian Spirits!");
+        // Default: Spirit Guardians
+        if (skill === "Spirit Guardians" || skill === "Guardian Spirits" || skill === this.abilityName) {
+            console.log("Cleric used Spirit Guardians!");
             this.playAnimation('Attack', false, true); 
             
             this.spiritsActive = true;
@@ -594,20 +594,28 @@ export class Cleric extends Actor {
                         const damageRadius = this.spiritBoosted ? 5.5 : 3.5;
                         let damage = 10 + (this.stats.wisdom * 1.0);
                         if (this.spiritBoosted) damage *= 1.5;
+                        const textManager = (this.gameEngine && this.gameEngine.floatingTextManager) || floatingTextManager;
 
                         const entities = chunkManager.getActiveEntities();
                         for (const entity of entities) {
                             if (entity === this || entity.state === 'DEAD' || !entity.isActive) continue;
                             if (entity.constructor.name === 'LootDrop') continue;
                             if (entity.constructor.name === 'DwarfSalesman') continue;
+                            if (['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(entity.constructor.name)) continue;
                             
                             const d = this.position.distanceTo(entity.position);
                             if (d < damageRadius) {
-                                 if (this.spiritBoosted && entity.slowTimer !== undefined) {
-                                     entity.slowTimer = 1.0;
-                                     entity.slowFactor = 0.3;
-                                 }
-                            }
+                                if (entity.takeDamage) {
+                                    entity.takeDamage(damage);
+                                }
+                                if (textManager) {
+                                    textManager.spawn(Math.floor(damage), entity.position, '#ffff66');
+                                }
+                                if (this.spiritBoosted && entity.slowTimer !== undefined) {
+                                    entity.slowTimer = 1.0;
+                                    entity.slowFactor = 0.3;
+                                }
+                             }
                         }
                     }
                 }

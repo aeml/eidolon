@@ -101,6 +101,7 @@ export class GameEngine {
         this.renderSystem.setBrightnessLevel(this.uiManager.getBrightnessLevel());
         this.effects = []; // Active visual effects
         this.hazards = new Map(); // Environmental hazards (id -> EnvironmentalHazard)
+        this.unmappedRemoteAbilityVisuals = new Set();
         this.currentInstanceId = null; // Track current instance to prevent state desync
         this.uiManager.onBuyGamble = (slot) => {
             if (this.socket && this.socket.readyState === WebSocket.OPEN) {
@@ -662,7 +663,7 @@ export class GameEngine {
                 const activeEntities = this.chunkManager.getActiveEntities();
 
                 activeEntities.forEach(e => {
-                    if (e instanceof Actor && e !== this.player && !(e instanceof DwarfSalesman) && e.isActive && e.state !== 'DEAD') {
+                    if (this.isHostileActorTarget(e)) {
                         const d = this.player.position.distanceTo(e.position);
                         if (d < minDst) {
                             minDst = d;
@@ -1044,55 +1045,110 @@ export class GameEngine {
 
         const targetPos = new THREE.Vector3(targetX, 0, targetZ);
         const position = entity.position.clone();
+        let handled = false;
+
+        const spawn = (at, color, type) => {
+            entity.spawnVisualEffect(this, at, color, type);
+            handled = true;
+        };
 
         // Fighter
         if (entity instanceof Fighter) {
             switch (skillName) {
+                case "Charge":
+                    spawn(position, 0xff5500, "wave");
+                    break;
                 case "Whirlwind":
-                    entity.spawnVisualEffect(this, position, 0xaaaaaa, "spin");
+                    spawn(position, 0xaaaaaa, "spin");
                     break;
                 case "Shield Slam":
-                    // Calculate impact position in front
-                    const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(entity.mesh.quaternion);
-                    entity.spawnVisualEffect(this, position.clone().add(forward), 0xffff00, "impact");
+                    spawn(position, 0xffff00, "impact");
                     break;
                 case "Iron Fortress":
-                    entity.spawnVisualEffect(this, position, 0x808080, "buff");
+                    spawn(position, 0x808080, "buff");
+                    break;
+                case "Guardian Roar":
+                    spawn(position, 0xff0000, "wave");
                     break;
                 case "Sweeping Strike":
-                    entity.spawnVisualEffect(this, position, 0xffffff, "cone");
+                    spawn(position, 0xffffff, "cone");
                     break;
                 case "Earthshaker":
-                    entity.spawnVisualEffect(this, position, 0x8b4513, "wave");
+                    spawn(position, 0x8b4513, "wave");
                     break;
                 case "Unbreakable Grip":
-                    entity.spawnVisualEffect(this, targetPos, 0x0000ff, "impact");
+                    spawn(targetPos, 0x0000ff, "impact");
                     break;
                 case "Juggernaut Charge":
-                    entity.spawnVisualEffect(this, position, 0xff0000, "wave");
+                    spawn(position, 0xff0000, "wave");
+                    break;
+                case "Berserker Edge":
+                    spawn(position, 0xff0000, "buff");
+                    break;
+                case "Shattering Charge":
+                    spawn(position, 0xffffff, "wave");
+                    break;
+                case "Executioner Spin":
+                    spawn(position, 0xff0000, "spin");
+                    break;
+                case "Last Stand Rampage":
+                    spawn(position, 0xff0000, "buff");
                     break;
             }
         }
         // Rogue
         else if (entity instanceof Rogue) {
             switch (skillName) {
+                case "Piercing Throw":
+                case "Ricochet Blades":
+                    spawn(position, 0xdddddd, "burst");
+                    break;
                 case "Shadow Step":
-                    entity.spawnVisualEffect(this, position, 0x000000, "smoke");
+                case "Shadow Lunge":
+                    spawn(position, 0x000000, "smoke");
                     break;
                 case "Fan of Knives":
-                    entity.spawnVisualEffect(this, position, 0x333333, "spin");
+                    spawn(position, 0x333333, "spin");
                     break;
                 case "Venomous Strike":
-                    entity.spawnVisualEffect(this, targetPos, 0x00ff00, "mark");
+                case "Weak Point Mark":
+                    spawn(targetPos, 0xff0000, "mark");
                     break;
                 case "Assassinate":
-                    entity.spawnVisualEffect(this, targetPos, 0xff0000, "blood");
+                case "Backstab":
+                case "Shadow Strike":
+                    spawn(targetPos, 0xff0000, "blood");
+                    break;
+                case "Death Spiral":
+                    spawn(position, 0x333333, "spin");
+                    break;
+                case "Serrated Edges":
+                    spawn(position, 0xff0000, "buff");
+                    break;
+                case "Blade Storm":
+                    spawn(position, 0xcccccc, "cone");
+                    break;
+                case "Phantom Volley":
+                    spawn(position, 0x8800ff, "burst");
                     break;
                 case "Smoke Bomb":
-                    entity.spawnVisualEffect(this, position, 0x555555, "smoke_cloud");
+                    spawn(position, 0x555555, "smoke_cloud");
+                    break;
+                case "Poison Coating":
+                    spawn(position, 0x00ff00, "buff");
+                    break;
+                case "Tripwire":
+                case "Snare Trap":
+                case "Explosive Trap":
+                    spawn(position, 0xaaaaaa, "impact");
                     break;
                 case "Adrenaline Rush":
-                    entity.spawnVisualEffect(this, position, 0xff0000, "buff");
+                case "Stealth":
+                case "Cloak & Vanish":
+                    spawn(position, 0x000000, "smoke");
+                    break;
+                case "Rain of Arrows":
+                    spawn(targetPos, 0xffffff, "ring");
                     break;
             }
         }
@@ -1100,42 +1156,93 @@ export class GameEngine {
         else if (entity instanceof Wizard) {
             switch (skillName) {
                 case "Frost Nova":
-                    entity.spawnVisualEffect(this, position, 0x00ffff, "ring");
+                    spawn(position, 0x00ffff, "ring");
                     break;
                 case "Blink":
-                    entity.spawnVisualEffect(this, position, 0xff00ff, "ring");
+                case "Teleport":
+                    spawn(position, 0x00ffff, "burst");
+                    break;
+                case "Fireball":
+                    spawn(position, 0xff4500, "burst");
+                    break;
+                case "Flame Whip":
+                    spawn(position, 0xff4500, "cone");
+                    break;
+                case "Flame Tornado":
+                    spawn(position, 0xff5500, "spin");
                     break;
                 case "Meteor":
-                    entity.spawnVisualEffect(this, targetPos, 0xff4500, "burst");
+                case "Meteor Drop":
+                    spawn(targetPos, 0xff4500, "ring");
                     break;
                 case "Ice Barrier":
-                    entity.spawnVisualEffect(this, position, 0x00ffff, "buff");
+                case "Arcane Shield":
+                    spawn(position, 0x0088ff, "sphere");
+                    break;
+                case "Scorch Beam":
+                case "Dragonfire Lance":
+                    spawn(targetPos, 0xffaa00, "beam");
+                    break;
+                case "Arcane Missiles":
+                    spawn(position, 0xaa00ff, "burst");
+                    break;
+                case "Spell Focus":
+                    spawn(position, 0x8800ff, "buff");
+                    break;
+                case "Gravity Well":
+                    spawn(targetPos, 0x440088, "ring");
+                    break;
+                case "Inferno Cataclysm":
+                    spawn(targetPos, 0xff2200, "ring");
                     break;
                 case "Time Warp":
-                    entity.spawnVisualEffect(this, position, 0xffd700, "ring");
+                    spawn(position, 0xffd700, "ring");
                     break;
             }
         }
         // Cleric
         else if (entity instanceof Cleric) {
             switch (skillName) {
+                case "Spirit Guardians":
+                case "Spirit Guardians Boost":
+                    spawn(position, 0xffff66, "buff");
+                    break;
                 case "Smite":
-                    entity.spawnVisualEffect(this, targetPos, 0xffff00, "impact");
+                    spawn(targetPos, 0xffff00, "impact");
                     break;
                 case "Healing Light":
-                    entity.spawnVisualEffect(this, targetPos, 0xffff00, "beam"); 
+                    spawn(targetPos, 0x00ff88, "pillar");
                     break;
+                case "Guardian Embrace":
+                    spawn(position, 0xffff00, "buff");
+                    break;
+                case "Purifying Wave":
                 case "Holy Nova":
-                    entity.spawnVisualEffect(this, position, 0xffff00, "ring");
+                    spawn(position, 0x00ffff, "ring");
                     break;
                 case "Divine Protection":
-                    entity.spawnVisualEffect(this, position, 0xffff00, "buff");
+                case "Divine Intervention":
+                    spawn(targetPos, 0xffd700, "pillar");
                     break;
                 case "Sacred Ground":
-                    entity.spawnVisualEffect(this, targetPos, 0xffffff, "ring");
+                case "Consecrated Ground":
+                    spawn(position, 0xffd700, "ground_circle");
+                    break;
+                case "Radiant Strike":
+                    spawn(position, 0xffff00, "burst");
+                    break;
+                case "Blessing of Resolve":
+                case "Blessing of Zeal":
+                    spawn(position, 0xffff00, "ring");
+                    break;
+                case "Mark of Weakness":
+                    spawn(targetPos, 0x800080, "pillar");
+                    break;
+                case "Heaven's Trumpet":
+                    spawn(position, 0xffd700, "ring");
                     break;
                 case "Resurrection":
-                    entity.spawnVisualEffect(this, targetPos, 0xffffff, "beam");
+                    spawn(targetPos, 0xffffff, "beam");
                     break;
             }
         }
@@ -1143,8 +1250,37 @@ export class GameEngine {
         else if (entity instanceof AvengingSeraph) {
             switch (skillName) {
                 case "Smite":
-                    entity.spawnVisualEffect(this, targetPos, 0xffff00, "impact");
+                    spawn(targetPos, 0xffff00, "impact");
                     break;
+            }
+        }
+
+        if (!handled) {
+            let fallbackColor = 0xffffff;
+            let fallbackType = 'impact';
+
+            if (entity instanceof Fighter) {
+                fallbackColor = 0xffaa55;
+                fallbackType = 'wave';
+            } else if (entity instanceof Rogue) {
+                fallbackColor = 0xaaaaaa;
+                fallbackType = 'smoke';
+            } else if (entity instanceof Wizard) {
+                fallbackColor = 0x66bbff;
+                fallbackType = 'ring';
+            } else if (entity instanceof Cleric || entity instanceof AvengingSeraph) {
+                fallbackColor = 0xffff99;
+                fallbackType = 'buff';
+            }
+
+            spawn(position, fallbackColor, fallbackType);
+
+            const host = (typeof window !== 'undefined' && window.location) ? window.location.hostname : '';
+            const isDevHost = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
+            const key = `${entity.constructor.name}:${skillName || '(none)'}`;
+            if (isDevHost && !this.unmappedRemoteAbilityVisuals.has(key)) {
+                this.unmappedRemoteAbilityVisuals.add(key);
+                console.warn(`[Remote VFX] Unmapped skill visual for ${key}; used ${fallbackType} fallback.`);
             }
         }
     }
@@ -2478,6 +2614,37 @@ export class GameEngine {
             || entity instanceof TradingHouse;
     }
 
+    isPlayerClassEntity(entity) {
+        const name = entity && entity.constructor ? entity.constructor.name : '';
+        return name === 'Fighter'
+            || name === 'Rogue'
+            || name === 'Wizard'
+            || name === 'Cleric'
+            || name === 'AvengingSeraph';
+    }
+
+    isHostileActorTarget(entity) {
+        if (!entity || !(entity instanceof Actor)) return false;
+        if (entity === this.player) return false;
+        if (!entity.isActive || entity.state === 'DEAD') return false;
+        if (entity instanceof DwarfSalesman) return false;
+        if (this.isPlayerClassEntity(entity)) return false;
+        return true;
+    }
+
+    getAbilityCastRange(skillName = null) {
+        const className = this.player && this.player.constructor ? this.player.constructor.name : '';
+        const classAbilityConfig = CONSTANTS.ABILITY_CONFIG ? CONSTANTS.ABILITY_CONFIG[className] : null;
+        const defaultRange = classAbilityConfig && classAbilityConfig.default ? classAbilityConfig.default.range : null;
+        const skillRange = (classAbilityConfig && classAbilityConfig.skills && skillName)
+            ? classAbilityConfig.skills[skillName]?.range
+            : null;
+
+        if (typeof skillRange === 'number') return skillRange;
+        if (typeof defaultRange === 'number') return defaultRange;
+        return 12.0;
+    }
+
     requestDungeonStatus(dungeonType = null) {
         if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
         const payload = dungeonType ? { dungeonType } : {};
@@ -2895,10 +3062,20 @@ export class GameEngine {
         }
 
         // Mana Check
-        const cost = (skillNameOverride ? 0 : this.player.abilityManaCost) * (1 - (this.player.stats.manaCostReduction || 0));
-        // Note: Specific skills might have their own mana costs checked in useAbility, 
-        // but for primary ability we check here.
-        if (!skillNameOverride && this.player.stats.mana < cost) {
+        const className = this.player && this.player.constructor ? this.player.constructor.name : '';
+        const classAbilityConfig = CONSTANTS.ABILITY_CONFIG ? CONSTANTS.ABILITY_CONFIG[className] : null;
+        const defaultAbilityConfig = classAbilityConfig ? classAbilityConfig.default : null;
+        const castSkillName = skillNameOverride || this.player.abilityName;
+        const skillAbilityConfig = (classAbilityConfig && classAbilityConfig.skills && castSkillName)
+            ? classAbilityConfig.skills[castSkillName]
+            : null;
+        const manaCostBase = (skillAbilityConfig && typeof skillAbilityConfig.mana === 'number')
+            ? skillAbilityConfig.mana
+            : (defaultAbilityConfig && typeof defaultAbilityConfig.mana === 'number')
+                ? defaultAbilityConfig.mana
+                : this.player.abilityManaCost;
+        const cost = manaCostBase * (1 - (this.player.stats.manaCostReduction || 0));
+        if (this.player.stats.mana < cost) {
             return;
         }
         
@@ -2909,7 +3086,7 @@ export class GameEngine {
             const activeEntities = this.chunkManager.getActiveEntities();
 
             activeEntities.forEach(e => {
-                if (e instanceof Actor && e !== this.player && !(e instanceof DwarfSalesman) && e.isActive && e.state !== 'DEAD') {
+                if (this.isHostileActorTarget(e)) {
                     const d = this.player.position.distanceTo(e.position);
                     if (d < minDst) {
                         minDst = d;
@@ -2921,7 +3098,8 @@ export class GameEngine {
             let targetPos = null;
             let targetId = "";
 
-            if (nearest && minDst < 15.0) { // Generous auto-aim range
+            const autoAimRange = this.getAbilityCastRange(skillNameOverride || this.player.abilityName);
+            if (nearest && minDst < autoAimRange) {
                 targetPos = nearest.position;
                 targetId = nearest.id;
 
@@ -2992,7 +3170,7 @@ export class GameEngine {
             if (this.hoveredEntity instanceof DwarfSalesman) return;
 
             const dist = this.player.position.distanceTo(this.hoveredEntity.position);
-            const abilityRange = 100.0; // Effectively infinite range as requested
+            const abilityRange = this.getAbilityCastRange(skillNameOverride || this.player.abilityName);
 
             // Check if we are in range
             if (dist <= abilityRange) {

@@ -35,4 +35,73 @@ describe('Cleric Multiplayer Logic', () => {
 
         expect(cleric.spiritDuration).toBeLessThan(5.0);
     });
+
+    test('spirit guardians tick damages nearby enemies', () => {
+        cleric.spiritsActive = true;
+        cleric.spiritBoosted = false;
+        cleric.spiritDuration = 5.0;
+        cleric.spiritDamageTimer = 0;
+        cleric.spirits = [
+            { mesh: { position: new THREE.Vector3(), parent: null } }
+        ];
+
+        const enemy = {
+            isActive: true,
+            state: 'IDLE',
+            constructor: { name: 'Skeleton' },
+            position: new THREE.Vector3(2, 0, 0),
+            takeDamage: jest.fn()
+        };
+
+        const chunkManager = {
+            getActiveEntities: () => [enemy]
+        };
+
+        const floatingTextManager = {
+            spawn: jest.fn()
+        };
+
+        cleric.update(0.6, null, null, chunkManager, floatingTextManager);
+
+        expect(enemy.takeDamage).toHaveBeenCalledTimes(1);
+        expect(floatingTextManager.spawn).toHaveBeenCalled();
+    });
+
+    test('spirit guardians do not damage player classes', () => {
+        cleric.spiritsActive = true;
+        cleric.spiritBoosted = true;
+        cleric.spiritDuration = 5.0;
+        cleric.spiritDamageTimer = 0;
+        cleric.spirits = [
+            { mesh: { position: new THREE.Vector3(), parent: null } }
+        ];
+
+        const ally = {
+            isActive: true,
+            state: 'IDLE',
+            constructor: { name: 'Fighter' },
+            position: new THREE.Vector3(1, 0, 0),
+            takeDamage: jest.fn()
+        };
+
+        const chunkManager = {
+            getActiveEntities: () => [ally]
+        };
+
+        cleric.update(0.6, null, null, chunkManager, { spawn: jest.fn() });
+
+        expect(ally.takeDamage).not.toHaveBeenCalled();
+    });
+
+    test('Spirit Guardians skill name activates guardian state', () => {
+        const gameEngine = {
+            chunkManager: { getActiveEntities: () => [] },
+            floatingTextManager: { spawn: jest.fn() }
+        };
+
+        cleric.useAbility(new THREE.Vector3(1, 0, 1), gameEngine, 'Spirit Guardians');
+
+        expect(cleric.spiritsActive).toBe(true);
+        expect(cleric.spiritDuration).toBeGreaterThan(0);
+    });
 });
