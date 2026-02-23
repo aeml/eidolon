@@ -40,6 +40,21 @@ if (isMobile) {
     };
 }
 
+// Keep .mobile-mode class in sync with viewport width so CSS rules apply
+// even when the browser is resized after initial load.
+const mobileMediaQuery = window.matchMedia('(max-width: 800px)');
+function handleMobileMediaChange(e) {
+    if (e.matches) {
+        document.body.classList.add('mobile-mode');
+    } else if (!isMobile) {
+        // Only remove if not a genuine mobile device (UA detected).
+        // This preserves .mobile-mode on real mobile devices that might
+        // temporarily report a wider viewport (e.g. landscape iPad).
+        document.body.classList.remove('mobile-mode');
+    }
+}
+mobileMediaQuery.addEventListener('change', handleMobileMediaChange);
+
 window.onerror = function(message, source, lineno, colno, error) {
     logToScreen(`${message} at ${source}:${lineno}:${colno}`, 'CRITICAL');
     return false; 
