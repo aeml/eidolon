@@ -190,22 +190,22 @@ export class GameEngine {
         this.uiManager.onStashDeposit = (itemId) => {
             this.network.send('stash_deposit', { itemId });
         };
-        this.uiManager.onForgeUpgrade = (slot, amount) => {
+        this.uiManager.forge.onForgeUpgrade = (slot, amount) => {
             this.network.send('forge_upgrade', { slot, amount });
         };
-        this.uiManager.onForgePotency = (slot) => {
+        this.uiManager.forge.onForgePotency = (slot) => {
             this.network.send('forge_potency', { slot });
         };
-        this.uiManager.onForgeSocket = (slot) => {
+        this.uiManager.forge.onForgeSocket = (slot) => {
             this.network.send('forge_socket', { slot });
         };
-        this.uiManager.onForgeInsertGem = (equipSlot, gemInvIndex, socketIndex) => {
+        this.uiManager.forge.onForgeInsertGem = (equipSlot, gemInvIndex, socketIndex) => {
             this.network.send('forge_insert_gem', { equipSlot, gemInvIndex, socketIndex });
         };
-        this.uiManager.onForgeCombineGem = (gemIndices) => {
+        this.uiManager.forge.onForgeCombineGem = (gemIndices) => {
             this.network.send('forge_combine_gem', { gemIndices });
         };
-        this.uiManager.onForgeRemoveGem = (equipSlot, socketIndex) => {
+        this.uiManager.forge.onForgeRemoveGem = (equipSlot, socketIndex) => {
             this.network.send('forge_remove_gem', { equipSlot, socketIndex });
         };
         this.uiManager.onStashWithdraw = (itemId) => {
@@ -1236,23 +1236,23 @@ export class GameEngine {
                             }
                             
                             // Force UI Update if Forge is open
-                            if (this.uiManager.forgeScreen.style.display === 'flex') {
-                                this.uiManager.updateForgeUI(this.player);
-                                this.uiManager.updateForgePotencyUI(this.player);
-                                this.uiManager.updateForgeSocketUI(this.player);
+                            if (this.uiManager.forge.isOpen) {
+                                this.uiManager.forge.updateForgeUI(this.player);
+                                this.uiManager.forge.updateForgePotencyUI(this.player);
+                                this.uiManager.forge.updateForgeSocketUI(this.player);
                                 
                                 // Update selected item info if any
-                                if (this.uiManager.selectedForgeSlot) {
-                                    const item = this.player.equipment[this.uiManager.selectedForgeSlot];
-                                    this.uiManager.updateForgeInfo(item);
+                                if (this.uiManager.forge.selectedForgeSlot) {
+                                    const item = this.player.equipment[this.uiManager.forge.selectedForgeSlot];
+                                    this.uiManager.forge.updateForgeInfo(item);
                                 }
-                                if (this.uiManager.selectedForgePotencySlot) {
-                                    const item = this.player.equipment[this.uiManager.selectedForgePotencySlot];
-                                    this.uiManager.updateForgePotencyInfo(item);
+                                if (this.uiManager.forge.selectedForgePotencySlot) {
+                                    const item = this.player.equipment[this.uiManager.forge.selectedForgePotencySlot];
+                                    this.uiManager.forge.updateForgePotencyInfo(item);
                                 }
-                                if (this.uiManager.selectedForgeSocketSlot) {
-                                    const item = this.player.equipment[this.uiManager.selectedForgeSocketSlot];
-                                    this.uiManager.updateForgeSocketInfo(item);
+                                if (this.uiManager.forge.selectedForgeSocketSlot) {
+                                    const item = this.player.equipment[this.uiManager.forge.selectedForgeSocketSlot];
+                                    this.uiManager.forge.updateForgeSocketInfo(item);
                                 }
                             }
                         }
