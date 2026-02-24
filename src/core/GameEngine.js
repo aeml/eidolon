@@ -1054,22 +1054,7 @@ export class GameEngine {
 
             // Update remote players
             Object.values(state).forEach(pData => {
-                // Hack: Force Quest NPC position if server is outdated
-                if (pData.id === 'quest-npc-1') {
-                    pData.x = -25;
-                    pData.z = 200;
-                    pData.rotation = Math.PI / 2;
-                }
-                // Hack: Force Stash position if server is outdated
-                if (pData.id === 'stash-1') {
-                    pData.x = 0;
-                    pData.z = 185;
-                }
-                // Hack: Force Merchant position if server is outdated
-                if (pData.id === 'merchant-1') {
-                    pData.x = 22.5;
-                    pData.z = 200;
-                }
+                this.applyPositionHacks(pData);
 
                 seenIds.add(pData.id);
 
@@ -1316,159 +1301,18 @@ export class GameEngine {
 
                 let remoteEntity = this.remotePlayers.get(pData.id);
                 if (!remoteEntity) {
-                    // Skip loot that was recently picked up (prevents phantom items from stale state)
-                    if (pData.type === 'Loot' && this.recentlyPickedUpLoot.has(pData.id)) {
-                        return;
-                    }
-                    
-                    // Check if already pending creation
-                    if (!this.pendingEntityIds.has(pData.id)) {
-                        this.pendingEntityIds.add(pData.id);
-                        this.entityCreationQueue.push(pData);
-                    } else {
-                        // Update pending creation with latest data to prevent state jumps/glitches upon spawn
-                        const idx = this.entityCreationQueue.findIndex(e => e.id === pData.id);
-                        if (idx !== -1) {
-                            this.entityCreationQueue[idx] = { ...this.entityCreationQueue[idx], ...pData };
-                        }
-                    }
-                    // Skip update for now, wait for creation
+                    this.queueEntityCreation(pData);
                     this.syncDeathScreen();
                     return;
                 }
                 
-                if (remoteEntity) {
-                    // Interpolation / Correction
-                    if (pData.type === 'Projectile') {
-                        remoteEntity.position.set(pData.x, pData.y ?? 0, pData.z);
-                        if (pData.velX !== undefined && pData.velZ !== undefined) {
-                            remoteEntity.velocity.set(pData.velX, 0, pData.velZ);
-                        }
-                    } else {
-                        // Interpolation Setup
-                        const newPos = new THREE.Vector3(pData.x, pData.y ?? 0, pData.z);
-                        if (!remoteEntity.targetServerPosition) {
-                            // First update or no previous target, snap immediately
-                            remoteEntity.position.copy(newPos);
-                            remoteEntity.targetServerPosition = newPos;
-                        } else {
-                            // Check for teleport (large distance)
-                            if (remoteEntity.position.distanceTo(newPos) > 10.0) {
-                                remoteEntity.position.copy(newPos);
-                            }
-                            remoteEntity.targetServerPosition = newPos;
-                        }
-                    }
-
-                    // Force update chunk for remote entities to handle visibility culling
-                    this.chunkManager.updateEntityChunk(remoteEntity);
-
-                    // Sync Name
-                    if (pData.name && remoteEntity.name !== pData.name) {
-                        remoteEntity.setName(pData.name);
-                    }
-
-                    // Sync Scale
-                    if (pData.scale !== undefined && remoteEntity.scale !== pData.scale) {
-                        remoteEntity.setScale(pData.scale);
-                    }
-                    
-                    // Handle Spirits (Cleric)
-                    if (pData.spiritsActive !== undefined) {
-                        if (pData.spiritsActive && !remoteEntity.spiritsActive) {
-                            if (remoteEntity instanceof Cleric) {
-                                remoteEntity.useAbility(null, this); 
-                            }
-                        } else if (!pData.spiritsActive && remoteEntity.spiritsActive) {
-                            if (remoteEntity instanceof Cleric) {
-                                remoteEntity.cancelAbilities();
-                            }
-                        }
-                    }
-
-                    // Handle Death State
-                    if (pData.state === 'DEAD') {
-                        if (!remoteEntity.isDead) {
-                            remoteEntity.isDead = true;
-                            remoteEntity.deadTimer = 0;
-                            // Trigger death animation
-                            if (remoteEntity.updateState) {
-                                remoteEntity.updateState('DEAD');
-                            } else {
-                                remoteEntity.state = 'DEAD';
-                            }
-                            // Play death animation
-                            if (remoteEntity.playAnimation) {
-                                remoteEntity.playAnimation('Death', false);
-                            }
-                        }
-                    } else {
-                        remoteEntity.isDead = false;
-                        remoteEntity.deadTimer = 0;
-                        if (remoteEntity.mesh) remoteEntity.mesh.visible = true;
-                        
-                        // Sync Health/Stats for Remote Entities (Enemies/Players)
-                        if (remoteEntity.stats) {
-                            if (pData.health !== undefined) remoteEntity.stats.hp = pData.health;
-                            if (pData.maxHealth !== undefined) remoteEntity.stats.maxHp = pData.maxHealth;
-                            if (pData.mana !== undefined) remoteEntity.stats.mana = pData.mana;
-                            if (pData.maxMana !== undefined) remoteEntity.stats.maxMana = pData.maxMana;
-                            if (pData.attackSpeed !== undefined) remoteEntity.stats.attackSpeed = pData.attackSpeed;
-                        }
-
-                        // Update State and Animation
-                        if (remoteEntity.state !== pData.state || (pData.isCharging !== undefined && remoteEntity.isCharging !== pData.isCharging)) {
-                            if (remoteEntity.updateState) {
-                                remoteEntity.updateState(pData.state);
-                            } else {
-                                remoteEntity.state = pData.state;
-                            }
-                            
-                            if (pData.isCharging !== undefined) remoteEntity.isCharging = pData.isCharging;
-                        } else if (pData.state === 'ATTACKING' && remoteEntity.updateState) {
-                            // Force update for ATTACKING state to refresh timer/animation
-                            remoteEntity.updateState(pData.state);
-                        }
-
-                        // Update Rotation
-                        if (pData.rotation !== undefined) {
-                            remoteEntity.targetServerRotation = pData.rotation;
-                        }
-
-                        // Remote Level Up Detection
-                        if (pData.level !== undefined) {
-                            if (!remoteEntity.hasSyncedLevel) {
-                                remoteEntity.level = pData.level;
-                                remoteEntity.hasSyncedLevel = true;
-                            } else if (remoteEntity.level < pData.level) {
-                                console.log(`Remote Entity ${remoteEntity.id} Level Up! ${remoteEntity.level} -> ${pData.level}`);
-                                remoteEntity.level = pData.level;
-                                
-                                // Trigger Effect
-                                const effect = new LevelUpEffect(this.renderSystem.scene, remoteEntity.position);
-                                this.effects.push(effect);
-                            }
-                        }
-                    }
-                }
+                this.syncRemoteEntity(remoteEntity, pData);
             });
 
             // Cleanup removed entities
-            for (const [id, entity] of this.remotePlayers) {
+            for (const [id] of this.remotePlayers) {
                 if (!seenIds.has(id)) {
-                    entity.isActive = false;
-                    
-                    if (entity.dispose) {
-                        entity.dispose();
-                    } else if (entity.mesh) {
-                        this.renderSystem.remove(entity.mesh);
-                    }
-
-                    const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
-                    if (this.chunkManager.chunks.has(key)) {
-                        this.chunkManager.chunks.get(key).delete(entity);
-                    }
-                    this.remotePlayers.delete(id);
+                    this.removeRemoteEntity(id);
                 }
             }
         } else if (msg.type === 'delta') {
@@ -1477,33 +1321,9 @@ export class GameEngine {
             const updates = delta.u || {};  // Updated/new entities
             const removed = delta.r || [];  // Removed entity IDs
 
-            // Debug log for delta stats (throttled)
-            if (this.frameCount % 300 === 0) {
-                console.log(`Delta: ${Object.keys(updates).length} updates, ${removed.length} removed`);
-                // Log entity states for debugging
-                Object.values(updates).forEach(e => {
-                    if (e.type === 'Enemy') {
-                        console.log(`  Enemy ${e.id}: state=${e.state}, hp=${e.health}/${e.maxHealth}, pos=(${e.x?.toFixed(1)}, ${e.z?.toFixed(1)})`);
-                    }
-                });
-            }
-
             // Process updated entities
             Object.values(updates).forEach(pData => {
-                // Apply same position hacks as full state
-                if (pData.id === 'quest-npc-1') {
-                    pData.x = -25;
-                    pData.z = 200;
-                    pData.rotation = Math.PI / 2;
-                }
-                if (pData.id === 'stash-1') {
-                    pData.x = 0;
-                    pData.z = 185;
-                }
-                if (pData.id === 'merchant-1') {
-                    pData.x = 22.5;
-                    pData.z = 200;
-                }
+                this.applyPositionHacks(pData);
 
                 // Skip self - local player updates come through full state messages
                 if (pData.id === this.player.id) {
@@ -1691,131 +1511,13 @@ export class GameEngine {
                     return;
                 }
 
-                let remoteEntity = this.remotePlayers.get(pData.id);
+                const remoteEntity = this.remotePlayers.get(pData.id);
                 if (!remoteEntity) {
-                    // Skip loot that was recently picked up (prevents phantom items from stale delta)
-                    if (pData.type === 'Loot' && this.recentlyPickedUpLoot.has(pData.id)) {
-                        return;
-                    }
-                    
-                    // New entity - queue for creation
-                    if (!this.pendingEntityIds.has(pData.id)) {
-                        this.pendingEntityIds.add(pData.id);
-                        this.entityCreationQueue.push(pData);
-                    } else {
-                        const idx = this.entityCreationQueue.findIndex(e => e.id === pData.id);
-                        if (idx !== -1) {
-                            this.entityCreationQueue[idx] = { ...this.entityCreationQueue[idx], ...pData };
-                        }
-                    }
+                    this.queueEntityCreation(pData);
                     return;
                 }
 
-                // Update existing remote entity
-                if (pData.type === 'Projectile') {
-                    remoteEntity.position.set(pData.x, pData.y ?? 0, pData.z);
-                    if (pData.velX !== undefined && pData.velZ !== undefined) {
-                        remoteEntity.velocity.set(pData.velX, 0, pData.velZ);
-                    }
-                } else {
-                    // Interpolation Setup
-                    const newPos = new THREE.Vector3(pData.x, pData.y ?? 0, pData.z);
-                    if (!remoteEntity.targetServerPosition) {
-                        remoteEntity.position.copy(newPos);
-                        remoteEntity.targetServerPosition = newPos;
-                    } else {
-                        if (remoteEntity.position.distanceTo(newPos) > 10.0) {
-                            remoteEntity.position.copy(newPos);
-                        }
-                        remoteEntity.targetServerPosition = newPos;
-                    }
-                }
-
-                // Update chunk for visibility
-                this.chunkManager.updateEntityChunk(remoteEntity);
-
-                // Sync Name
-                if (pData.name && remoteEntity.name !== pData.name) {
-                    remoteEntity.setName(pData.name);
-                }
-
-                // Sync Scale
-                if (pData.scale !== undefined && remoteEntity.scale !== pData.scale) {
-                    remoteEntity.setScale(pData.scale);
-                }
-
-                // Handle Spirits (Cleric)
-                if (pData.spiritsActive !== undefined) {
-                    if (pData.spiritsActive && !remoteEntity.spiritsActive) {
-                        if (remoteEntity instanceof Cleric) {
-                            remoteEntity.useAbility(null, this);
-                        }
-                    } else if (!pData.spiritsActive && remoteEntity.spiritsActive) {
-                        if (remoteEntity instanceof Cleric) {
-                            remoteEntity.cancelAbilities();
-                        }
-                    }
-                }
-
-                // Handle Death State
-                if (pData.state === 'DEAD') {
-                    if (!remoteEntity.isDead) {
-                        remoteEntity.isDead = true;
-                        remoteEntity.deadTimer = 0;
-                        // Trigger death animation
-                        if (remoteEntity.updateState) {
-                            remoteEntity.updateState('DEAD');
-                        } else {
-                            remoteEntity.state = 'DEAD';
-                        }
-                        // Play death animation
-                        if (remoteEntity.playAnimation) {
-                            remoteEntity.playAnimation('Death', false);
-                        }
-                    }
-                } else {
-                    remoteEntity.isDead = false;
-                    remoteEntity.deadTimer = 0;
-                    if (remoteEntity.mesh) remoteEntity.mesh.visible = true;
-
-                    // Sync Health/Stats
-                    if (remoteEntity.stats) {
-                        if (pData.health !== undefined) remoteEntity.stats.hp = pData.health;
-                        if (pData.maxHealth !== undefined) remoteEntity.stats.maxHp = pData.maxHealth;
-                        if (pData.mana !== undefined) remoteEntity.stats.mana = pData.mana;
-                        if (pData.maxMana !== undefined) remoteEntity.stats.maxMana = pData.maxMana;
-                        if (pData.attackSpeed !== undefined) remoteEntity.stats.attackSpeed = pData.attackSpeed;
-                    }
-
-                    // Update State and Animation
-                    if (remoteEntity.state !== pData.state || (pData.isCharging !== undefined && remoteEntity.isCharging !== pData.isCharging)) {
-                        if (remoteEntity.updateState) {
-                            remoteEntity.updateState(pData.state);
-                        } else {
-                            remoteEntity.state = pData.state;
-                        }
-                        if (pData.isCharging !== undefined) remoteEntity.isCharging = pData.isCharging;
-                    } else if (pData.state === 'ATTACKING' && remoteEntity.updateState) {
-                        remoteEntity.updateState(pData.state);
-                    }
-
-                    // Update Rotation
-                    if (pData.rotation !== undefined) {
-                        remoteEntity.targetServerRotation = pData.rotation;
-                    }
-
-                    // Remote Level Up Detection
-                    if (pData.level !== undefined) {
-                        if (!remoteEntity.hasSyncedLevel) {
-                            remoteEntity.level = pData.level;
-                            remoteEntity.hasSyncedLevel = true;
-                        } else if (remoteEntity.level < pData.level) {
-                            remoteEntity.level = pData.level;
-                            const effect = new LevelUpEffect(this.renderSystem.scene, remoteEntity.position);
-                            this.effects.push(effect);
-                        }
-                    }
-                }
+                this.syncRemoteEntity(remoteEntity, pData);
             });
 
             // Process removed entities
@@ -1829,22 +1531,7 @@ export class GameEngine {
                     continue;
                 }
 
-                const entity = this.remotePlayers.get(id);
-                if (entity) {
-                    entity.isActive = false;
-                    
-                    if (entity.dispose) {
-                        entity.dispose();
-                    } else if (entity.mesh) {
-                        this.renderSystem.remove(entity.mesh);
-                    }
-
-                    const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
-                    if (this.chunkManager.chunks.has(key)) {
-                        this.chunkManager.chunks.get(key).delete(entity);
-                    }
-                    this.remotePlayers.delete(id);
-                }
+                this.removeRemoteEntity(id);
             }
         } else if (msg.type === 'social') {
             this.uiManager.updateSocialList(msg.payload);
@@ -1856,6 +1543,194 @@ export class GameEngine {
                 this.uiManager.updateJournal(quests);
             }
         }
+    }
+
+    // ------------------------------------------------------------------
+    // Shared helpers for state/delta remote-entity sync
+    // ------------------------------------------------------------------
+
+    /**
+     * Apply position-override hacks for entities whose server coords
+     * are known to be stale / incorrect.
+     * @param {Object} pData  Entity payload (mutated in-place)
+     */
+    applyPositionHacks(pData) {
+        if (pData.id === 'quest-npc-1') {
+            pData.x = -25;
+            pData.z = 200;
+            pData.rotation = Math.PI / 2;
+        }
+        if (pData.id === 'stash-1') {
+            pData.x = 0;
+            pData.z = 185;
+        }
+        if (pData.id === 'merchant-1') {
+            pData.x = 22.5;
+            pData.z = 200;
+        }
+    }
+
+    /**
+     * Queue a new remote entity for batched creation when it hasn't been
+     * seen before.  Returns true if the entity was queued (caller should
+     * skip the rest of the update for this entity).
+     *
+     * @param {Object} pData  Entity payload
+     * @returns {boolean}
+     */
+    queueEntityCreation(pData) {
+        if (pData.type === 'Loot' && this.recentlyPickedUpLoot.has(pData.id)) {
+            return true; // skip phantom loot
+        }
+
+        if (!this.pendingEntityIds.has(pData.id)) {
+            this.pendingEntityIds.add(pData.id);
+            this.entityCreationQueue.push(pData);
+        } else {
+            // Update pending creation with latest data
+            const idx = this.entityCreationQueue.findIndex(e => e.id === pData.id);
+            if (idx !== -1) {
+                this.entityCreationQueue[idx] = { ...this.entityCreationQueue[idx], ...pData };
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Synchronise a remote entity's position, state, health, animation,
+     * rotation, and level from a server payload (used by both `state` and
+     * `delta` message handlers).
+     *
+     * @param {import('../entities/Actor.js').Actor} remoteEntity
+     * @param {Object} pData  Entity payload from server
+     */
+    syncRemoteEntity(remoteEntity, pData) {
+        // --- Position / Interpolation ---
+        if (pData.type === 'Projectile') {
+            remoteEntity.position.set(pData.x, pData.y ?? 0, pData.z);
+            if (pData.velX !== undefined && pData.velZ !== undefined) {
+                remoteEntity.velocity.set(pData.velX, 0, pData.velZ);
+            }
+        } else {
+            const newPos = new THREE.Vector3(pData.x, pData.y ?? 0, pData.z);
+            if (!remoteEntity.targetServerPosition) {
+                remoteEntity.position.copy(newPos);
+                remoteEntity.targetServerPosition = newPos;
+            } else {
+                if (remoteEntity.position.distanceTo(newPos) > 10.0) {
+                    remoteEntity.position.copy(newPos);
+                }
+                remoteEntity.targetServerPosition = newPos;
+            }
+        }
+
+        // Chunk visibility
+        this.chunkManager.updateEntityChunk(remoteEntity);
+
+        // Name
+        if (pData.name && remoteEntity.name !== pData.name) {
+            remoteEntity.setName(pData.name);
+        }
+
+        // Scale
+        if (pData.scale !== undefined && remoteEntity.scale !== pData.scale) {
+            remoteEntity.setScale(pData.scale);
+        }
+
+        // Spirits (Cleric)
+        if (pData.spiritsActive !== undefined) {
+            if (pData.spiritsActive && !remoteEntity.spiritsActive) {
+                if (remoteEntity instanceof Cleric) {
+                    remoteEntity.useAbility(null, this);
+                }
+            } else if (!pData.spiritsActive && remoteEntity.spiritsActive) {
+                if (remoteEntity instanceof Cleric) {
+                    remoteEntity.cancelAbilities();
+                }
+            }
+        }
+
+        // --- Death handling ---
+        if (pData.state === 'DEAD') {
+            if (!remoteEntity.isDead) {
+                remoteEntity.isDead = true;
+                remoteEntity.deadTimer = 0;
+                if (remoteEntity.updateState) {
+                    remoteEntity.updateState('DEAD');
+                } else {
+                    remoteEntity.state = 'DEAD';
+                }
+                if (remoteEntity.playAnimation) {
+                    remoteEntity.playAnimation('Death', false);
+                }
+            }
+        } else {
+            remoteEntity.isDead = false;
+            remoteEntity.deadTimer = 0;
+            if (remoteEntity.mesh) remoteEntity.mesh.visible = true;
+
+            // Stats
+            if (remoteEntity.stats) {
+                if (pData.health !== undefined) remoteEntity.stats.hp = pData.health;
+                if (pData.maxHealth !== undefined) remoteEntity.stats.maxHp = pData.maxHealth;
+                if (pData.mana !== undefined) remoteEntity.stats.mana = pData.mana;
+                if (pData.maxMana !== undefined) remoteEntity.stats.maxMana = pData.maxMana;
+                if (pData.attackSpeed !== undefined) remoteEntity.stats.attackSpeed = pData.attackSpeed;
+            }
+
+            // State / Animation
+            if (remoteEntity.state !== pData.state || (pData.isCharging !== undefined && remoteEntity.isCharging !== pData.isCharging)) {
+                if (remoteEntity.updateState) {
+                    remoteEntity.updateState(pData.state);
+                } else {
+                    remoteEntity.state = pData.state;
+                }
+                if (pData.isCharging !== undefined) remoteEntity.isCharging = pData.isCharging;
+            } else if (pData.state === 'ATTACKING' && remoteEntity.updateState) {
+                remoteEntity.updateState(pData.state);
+            }
+
+            // Rotation
+            if (pData.rotation !== undefined) {
+                remoteEntity.targetServerRotation = pData.rotation;
+            }
+
+            // Remote level-up detection
+            if (pData.level !== undefined) {
+                if (!remoteEntity.hasSyncedLevel) {
+                    remoteEntity.level = pData.level;
+                    remoteEntity.hasSyncedLevel = true;
+                } else if (remoteEntity.level < pData.level) {
+                    remoteEntity.level = pData.level;
+                    const effect = new LevelUpEffect(this.renderSystem.scene, remoteEntity.position);
+                    this.effects.push(effect);
+                }
+            }
+        }
+    }
+
+    /**
+     * Remove an entity by id — disposes mesh, removes from chunk and
+     * remotePlayers map.
+     * @param {string} id
+     */
+    removeRemoteEntity(id) {
+        const entity = this.remotePlayers.get(id);
+        if (!entity) return;
+
+        entity.isActive = false;
+
+        if (entity.dispose) {
+            entity.dispose();
+        } else if (entity.mesh) {
+            this.renderSystem.remove(entity.mesh);
+        }
+
+        const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
+        if (this.chunkManager.chunks.has(key)) {
+            this.chunkManager.chunks.get(key).delete(entity);
+        }
+        this.remotePlayers.delete(id);
     }
 
     pickupLoot(lootId) {
