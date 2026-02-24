@@ -138,25 +138,25 @@ export class GameEngine {
         this.uiManager.onSocialOpen = () => {
             this.network.send('social', {});
         };
-        this.uiManager.onTradingSearch = (query) => {
+        this.uiManager.trading.onTradingSearch = (query) => {
             this.network.send('trading_search', { query });
         };
-        this.uiManager.onTradingCreate = (slotIndex, bid, buyout, duration) => {
+        this.uiManager.trading.onTradingCreate = (slotIndex, bid, buyout, duration) => {
             this.network.send('trading_create', { slotIndex, bid, buyout, duration });
         };
-        this.uiManager.onTradingMyAuctions = () => {
+        this.uiManager.trading.onTradingMyAuctions = () => {
             this.network.send('trading_my_auctions', {});
         };
-        this.uiManager.onTradingBuyout = (auctionId) => {
+        this.uiManager.trading.onTradingBuyout = (auctionId) => {
             this.network.send('trading_buyout', { auctionId });
         };
-        this.uiManager.onTradingBid = (auctionId, amount) => {
+        this.uiManager.trading.onTradingBid = (auctionId, amount) => {
             this.network.send('trading_bid', { auctionId, amount });
         };
-        this.uiManager.onTradingCollect = (auctionId) => {
+        this.uiManager.trading.onTradingCollect = (auctionId) => {
             this.network.send('trading_collect', { auctionId });
         };
-        this.uiManager.onTradingCancel = (auctionId) => {
+        this.uiManager.trading.onTradingCancel = (auctionId) => {
             this.network.send('trading_cancel', { auctionId });
         };
         this.uiManager.onReportSubmit = (type, text) => {
@@ -948,7 +948,7 @@ export class GameEngine {
                     ...auction,
                     item: this.hydrateItem(auction.item)
                 }));
-                this.uiManager.renderAuctionList(auctions);
+                this.uiManager.trading.renderAuctionList(auctions);
             }
         } else if (msg.type === 'trading_my_list') {
             if (msg.payload) {
@@ -956,10 +956,10 @@ export class GameEngine {
                     ...auction,
                     item: this.hydrateItem(auction.item)
                 }));
-                this.uiManager.renderMyAuctions(auctions);
+                this.uiManager.trading.renderMyAuctions(auctions);
             }
         } else if (msg.type === 'trading_refresh') {
-            this.uiManager.handleTradingSearch();
+            this.uiManager.trading.handleSearch();
         } else if (msg.type === 'select_rune') {
             // Server sends updated runes after select_rune
             if (this.player && msg.payload && msg.payload.skillRunes) {

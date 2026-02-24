@@ -110,6 +110,19 @@ function createEngineHarness() {
             updateForgePotencyInfo: jest.fn(),
             updateForgeSocketInfo: jest.fn()
         },
+        trading: {
+            isOpen: false,
+            onTradingSearch: null,
+            onTradingCreate: null,
+            onTradingMyAuctions: null,
+            onTradingBuyout: null,
+            onTradingBid: null,
+            onTradingCollect: null,
+            onTradingCancel: null,
+            renderAuctionList: jest.fn(),
+            renderMyAuctions: jest.fn(),
+            handleSearch: jest.fn()
+        },
         forgeScreen: { style: { display: 'none' } },
         selectedForgeSlot: null,
         selectedForgePotencySlot: null,
