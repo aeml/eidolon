@@ -2,6 +2,7 @@ import { ItemGenerator, SLOTS, Item, BASE_ITEMS, RARITY, SET_DEFINITIONS, UNIQUE
 import { CONSTANTS } from '../core/Constants.js';
 import { ForgeUI } from './ForgeUI.js';
 import { SkillTreeUI } from './SkillTreeUI.js';
+import { TradingUI } from './TradingUI.js';
 
 export class UIManager {
     constructor(isMobile = false) {
@@ -152,31 +153,15 @@ export class UIManager {
             inventoryScreen: document.getElementById('inventory-screen'),
         });
 
-        this.tradingHouseScreen = document.getElementById('trading-house-screen');
-        this.btnCloseTradingHouse = document.getElementById('btn-close-trading-house');
-        
-        // Trading House UI Elements
-        this.tabTradingBid = document.getElementById('tab-trading-bid');
-        this.tabTradingList = document.getElementById('tab-trading-list');
-        this.tabTradingMy = document.getElementById('tab-trading-my');
-        this.panelTradingBid = document.getElementById('trading-panel-bid');
-        this.panelTradingList = document.getElementById('trading-panel-list');
-        this.panelTradingMy = document.getElementById('trading-panel-my');
-        
-        this.tradingSearchInput = document.getElementById('trading-search-input');
-        this.btnTradingSearch = document.getElementById('btn-trading-search');
-        this.tradingListContainer = document.getElementById('trading-list-container');
-        
-        this.tradingSellSlot = document.getElementById('trading-sell-slot');
-        this.tradingInputBid = document.getElementById('trading-input-bid');
-        this.tradingInputBuyout = document.getElementById('trading-input-buyout');
-        this.tradingInputDuration = document.getElementById('trading-input-duration');
-        this.btnTradingCreate = document.getElementById('btn-trading-create');
-        this.tradingInventoryList = document.getElementById('trading-inventory-list');
-        
-        this.tradingMyList = document.getElementById('trading-my-list');
-        
-        this.selectedTradingItem = null; // Item selected to sell
+        // Trading House UI — delegated to TradingUI module
+        this.trading = new TradingUI({
+            getLastPlayer: () => this.lastPlayerRef,
+            getItemIconPath: (item) => this.getItemIconPath(item),
+            getRarityColor: (rarity) => this.getRarityColor(rarity),
+            showItemTooltip: (item, x, y) => this.showItemTooltip(item, x, y),
+            hideTooltips: () => this.hideTooltips(),
+            addChatMessage: (sender, msg) => this.addChatMessage(sender, msg),
+        });
 
         // Split Stack UI
         this.splitStackWindow = document.getElementById('split-stack-window');
@@ -201,16 +186,6 @@ export class UIManager {
                 if (this.splitAmountRange) this.splitAmountRange.value = e.target.value;
             });
         }
-
-        if (this.btnCloseTradingHouse) this.btnCloseTradingHouse.addEventListener('click', () => this.toggleTradingHouse());
-
-        // Trading House Listeners
-        if (this.tabTradingBid) this.tabTradingBid.addEventListener('click', () => this.switchTradingTab('bid'));
-        if (this.tabTradingList) this.tabTradingList.addEventListener('click', () => this.switchTradingTab('list'));
-        if (this.tabTradingMy) this.tabTradingMy.addEventListener('click', () => this.switchTradingTab('my'));
-        
-        if (this.btnTradingSearch) this.btnTradingSearch.addEventListener('click', () => this.handleTradingSearch());
-        if (this.btnTradingCreate) this.btnTradingCreate.addEventListener('click', () => this.handleTradingCreate());
 
         if (this.btnCloseQuest) this.btnCloseQuest.addEventListener('click', () => this.toggleQuestWindow());
         if (this.btnCloseJournal) this.btnCloseJournal.addEventListener('click', () => this.toggleJournal());
@@ -247,6 +222,7 @@ export class UIManager {
         this.setupWindow(this.shopScreen);
         this.setupWindow(this.stashScreen);
         this.setupWindow(this.forge.forgeScreen);
+        this.setupWindow(this.trading.tradingHouseScreen);
         this.setupWindow(this.questWindow);
         this.setupWindow(this.questJournal);
         this.setupWindow(this.helpScreen);
@@ -942,302 +918,15 @@ export class UIManager {
     updateGemRemoveInfo(item, player) { this.forge.updateGemRemoveInfo(item, player); }
     handleForgeRemoveGem() { this.forge.handleForgeRemoveGem(); }
 
-    toggleQuestWindow() {
-        if (this.tradingHouseScreen) {
-            const isHidden = this.tradingHouseScreen.style.display === 'none' || this.tradingHouseScreen.style.display === '';
-            this.tradingHouseScreen.style.display = isHidden ? 'flex' : 'none';
-            
-            if (isHidden) {
-                this.switchTradingTab('bid'); // Default to bid tab
-                if (this.lastPlayerRef) {
-                    // Initial search or load?
-                    this.handleTradingSearch(); // Load initial list
-                }
-            } else {
-                this.selectedTradingItem = null;
-            }
-        }
-    }
-
-    switchTradingTab(tab) {
-        // Reset styles
-        if (this.tabTradingBid) this.tabTradingBid.style.background = '#111';
-        if (this.tabTradingList) this.tabTradingList.style.background = '#111';
-        if (this.tabTradingMy) this.tabTradingMy.style.background = '#111';
-        
-        // Reset Panels
-        if (this.panelTradingBid) this.panelTradingBid.style.display = 'none';
-        if (this.panelTradingList) this.panelTradingList.style.display = 'none';
-        if (this.panelTradingMy) this.panelTradingMy.style.display = 'none';
-        
-        // Activate
-        if (tab === 'bid') {
-            if (this.tabTradingBid) this.tabTradingBid.style.background = '#333';
-            if (this.panelTradingBid) this.panelTradingBid.style.display = 'flex';
-            this.handleTradingSearch();
-        } else if (tab === 'list') {
-            if (this.tabTradingList) this.tabTradingList.style.background = '#333';
-            if (this.panelTradingList) this.panelTradingList.style.display = 'flex';
-            if (this.lastPlayerRef) {
-                this.updateTradingInventory(this.lastPlayerRef);
-            }
-        } else if (tab === 'my') {
-            if (this.tabTradingMy) this.tabTradingMy.style.background = '#333';
-            if (this.panelTradingMy) this.panelTradingMy.style.display = 'flex';
-            // Request my auctions
-            if (this.onTradingMyAuctions) this.onTradingMyAuctions();
-        }
-    }
-
-    handleTradingSearch() {
-        const query = this.tradingSearchInput ? this.tradingSearchInput.value : '';
-        if (this.onTradingSearch) {
-            this.onTradingSearch(query);
-        }
-    }
-
-    handleTradingCreate() {
-        if (!this.selectedTradingItem) {
-            this.addChatMessage("System", "Select an item to sell first.");
-            return;
-        }
-        
-        const bid = parseInt(this.tradingInputBid.value);
-        const buyout = parseInt(this.tradingInputBuyout.value);
-        const duration = parseInt(this.tradingInputDuration.value);
-        
-        if (isNaN(bid) || isNaN(buyout) || bid <= 0 || buyout <= 0) {
-            this.addChatMessage("System", "Invalid price.");
-            return;
-        }
-        
-        if (buyout < bid) {
-            this.addChatMessage("System", "Buyout cannot be less than starting bid.");
-            return;
-        }
-
-        if (this.onTradingCreate) {
-            this.onTradingCreate(this.selectedTradingItem.slot, bid, buyout, duration);
-            // Reset selection
-            this.selectedTradingItem = null;
-            this.tradingSellSlot.innerHTML = '<span style="font-size: 30px; color: #444;">+</span>';
-            this.tradingSellSlot.style.backgroundImage = 'none';
-            this.switchTradingTab('my'); // Switch to my auctions to see it
-        }
-    }
-
-    updateTradingInventory(player) {
-        if (!this.tradingInventoryList) return;
-        this.tradingInventoryList.innerHTML = '';
-        
-        player.inventory.forEach((item, index) => {
-            const el = document.createElement('div');
-            el.className = 'inv-slot';
-            el.style.width = '40px';
-            el.style.height = '40px';
-            
-            if (item && item.id) {
-                el.style.cursor = 'pointer';
-                
-                const iconPath = this.getItemIconPath(item);
-                el.style.backgroundImage = `url('${iconPath}')`;
-                el.style.backgroundSize = 'contain';
-                el.style.backgroundRepeat = 'no-repeat';
-                el.style.backgroundPosition = 'center';
-                
-                // Rarity Border
-                if (item.rarity) {
-                    const color = this.getRarityColor(item.rarity);
-                    el.style.border = `1px solid ${color}`;
-                    el.style.boxShadow = `inset 0 0 5px ${color}40`;
-                } else {
-                    el.style.border = '1px solid #666';
-                }
-
-                el.onclick = () => this.selectTradingItem(item, index);
-                
-                // Tooltip
-                el.onmouseenter = (e) => this.showItemTooltip(item, e.clientX, e.clientY);
-                el.onmouseleave = () => this.hideTooltips();
-            } else {
-                el.style.border = '1px solid #444';
-            }
-            
-            this.tradingInventoryList.appendChild(el);
-        });
-    }
-
-    selectTradingItem(item, slotIndex) {
-        this.selectedTradingItem = { ...item, slot: slotIndex };
-        
-        // Update Sell Slot Visual
-        const iconPath = this.getItemIconPath(item);
-        this.tradingSellSlot.innerHTML = '';
-        this.tradingSellSlot.style.backgroundImage = `url('${iconPath}')`;
-        this.tradingSellSlot.style.backgroundSize = 'contain';
-        this.tradingSellSlot.style.backgroundRepeat = 'no-repeat';
-        this.tradingSellSlot.style.backgroundPosition = 'center';
-        
-        if (item.rarity) {
-            const color = this.getRarityColor(item.rarity);
-            this.tradingSellSlot.style.border = `2px solid ${color}`;
-        }
-    }
-
-    renderAuctionList(auctions) {
-        if (!this.tradingListContainer) return;
-        this.tradingListContainer.innerHTML = '';
-        
-        if (!auctions || auctions.length === 0) {
-            this.tradingListContainer.innerHTML = '<div style="padding: 10px; color: #888; text-align: center;">No auctions found.</div>';
-            return;
-        }
-
-        auctions.forEach(auction => {
-            const row = document.createElement('div');
-            row.style.display = 'grid';
-            row.style.gridTemplateColumns = '2fr 1fr 1fr 1fr';
-            row.style.padding = '5px';
-            row.style.borderBottom = '1px solid #444';
-            row.style.alignItems = 'center';
-            row.style.fontSize = '12px';
-            
-            // Item Name (with color)
-            const nameSpan = document.createElement('span');
-            nameSpan.textContent = auction.item.name;
-            nameSpan.style.color = this.getRarityColor(auction.item.rarity);
-            nameSpan.style.cursor = 'pointer';
-            nameSpan.onmouseenter = (e) => this.showItemTooltip(auction.item, e.clientX, e.clientY);
-            nameSpan.onmouseleave = () => this.hideTooltips();
-            row.appendChild(nameSpan);
-            
-            // Seller
-            const sellerSpan = document.createElement('span');
-            sellerSpan.textContent = auction.sellerName;
-            sellerSpan.style.color = '#aaa';
-            row.appendChild(sellerSpan);
-            
-            // Price
-            const priceSpan = document.createElement('span');
-            priceSpan.innerHTML = `<span style="color: #ffd700;">${auction.currentBid}</span> / <span style="color: #ffd700;">${auction.buyoutPrice}</span>`;
-            row.appendChild(priceSpan);
-            
-            // Action
-            const actionDiv = document.createElement('div');
-            actionDiv.style.display = 'flex';
-            actionDiv.style.gap = '5px';
-            
-            const btnBid = document.createElement('button');
-            btnBid.textContent = 'Bid';
-            btnBid.className = 'btn-menu';
-            btnBid.style.fontSize = '10px';
-            btnBid.style.padding = '2px 5px';
-            btnBid.onclick = () => {
-                let minBid = auction.currentBid + Math.ceil(auction.currentBid * 0.05);
-                if (minBid < auction.currentBid + 1) minBid = auction.currentBid + 1;
-                // If no bids yet, start at currentBid (starting bid)
-                if (!auction.bidderId) minBid = auction.currentBid;
-
-                const amount = prompt(`Enter bid amount (Minimum: ${minBid})`, minBid);
-                if (amount !== null) {
-                    const val = parseInt(amount);
-                    if (!isNaN(val)) {
-                        if (this.onTradingBid) this.onTradingBid(auction.id, val);
-                    }
-                }
-            };
-            actionDiv.appendChild(btnBid);
-
-            const btnBuy = document.createElement('button');
-            btnBuy.textContent = 'Buyout';
-            btnBuy.className = 'btn-menu';
-            btnBuy.style.fontSize = '10px';
-            btnBuy.style.padding = '2px 5px';
-            btnBuy.onclick = () => {
-                if (this.onTradingBuyout) this.onTradingBuyout(auction.id);
-            };
-            actionDiv.appendChild(btnBuy);
-            
-            row.appendChild(actionDiv);
-            this.tradingListContainer.appendChild(row);
-        });
-    }
-
-    renderMyAuctions(auctions) {
-        if (!this.tradingMyList) return;
-        this.tradingMyList.innerHTML = '';
-        
-        if (!auctions || auctions.length === 0) {
-            this.tradingMyList.innerHTML = '<div style="padding: 10px; color: #888; text-align: center;">You have no active auctions.</div>';
-            return;
-        }
-
-        auctions.forEach(auction => {
-            const row = document.createElement('div');
-            row.style.display = 'grid';
-            row.style.gridTemplateColumns = '2fr 1fr 1fr 1fr';
-            row.style.padding = '5px';
-            row.style.borderBottom = '1px solid #444';
-            row.style.alignItems = 'center';
-            row.style.fontSize = '12px';
-            
-            // Item Name
-            const nameSpan = document.createElement('span');
-            nameSpan.textContent = auction.item.name;
-            nameSpan.style.color = this.getRarityColor(auction.item.rarity);
-            row.appendChild(nameSpan);
-            
-            // Status
-            const statusSpan = document.createElement('span');
-            statusSpan.textContent = auction.status; // ACTIVE, SOLD, EXPIRED
-            statusSpan.style.color = auction.status === 'SOLD' ? '#0f0' : (auction.status === 'EXPIRED' ? '#f00' : '#fff');
-            row.appendChild(statusSpan);
-            
-            // Price
-            const priceSpan = document.createElement('span');
-            priceSpan.innerHTML = `<span style="color: #ffd700;">${auction.currentBid}</span>`;
-            row.appendChild(priceSpan);
-            
-            // Action
-            const actionDiv = document.createElement('div');
-            
-            if (auction.status === 'SOLD') {
-                const btnCollect = document.createElement('button');
-                btnCollect.textContent = 'Collect Gold';
-                btnCollect.className = 'btn-menu';
-                btnCollect.style.fontSize = '10px';
-                btnCollect.style.padding = '2px 5px';
-                btnCollect.onclick = () => {
-                    if (this.onTradingCollect) this.onTradingCollect(auction.id);
-                };
-                actionDiv.appendChild(btnCollect);
-            } else if (auction.status === 'EXPIRED' || auction.status === 'CANCELLED') {
-                const btnReclaim = document.createElement('button');
-                btnReclaim.textContent = 'Reclaim Item';
-                btnReclaim.className = 'btn-menu';
-                btnReclaim.style.fontSize = '10px';
-                btnReclaim.style.padding = '2px 5px';
-                btnReclaim.onclick = () => {
-                    if (this.onTradingCollect) this.onTradingCollect(auction.id);
-                };
-                actionDiv.appendChild(btnReclaim);
-            } else {
-                const btnCancel = document.createElement('button');
-                btnCancel.textContent = 'Cancel';
-                btnCancel.className = 'btn-menu';
-                btnCancel.style.fontSize = '10px';
-                btnCancel.style.padding = '2px 5px';
-                btnCancel.style.background = '#500';
-                btnCancel.onclick = () => {
-                    if (this.onTradingCancel) this.onTradingCancel(auction.id);
-                };
-                actionDiv.appendChild(btnCancel);
-            }
-            
-            row.appendChild(actionDiv);
-            this.tradingMyList.appendChild(row);
-        });
-    }
+    // --- Trading House delegates (TradingUI module) ---
+    toggleTradingHouse() { this.trading.toggle(); }
+    switchTradingTab(tab) { this.trading.switchTab(tab); }
+    handleTradingSearch() { this.trading.handleSearch(); }
+    handleTradingCreate() { this.trading.handleCreate(); }
+    updateTradingInventory(player) { this.trading.updateInventory(player); }
+    selectTradingItem(item, slotIndex) { this.trading.selectItem(item, slotIndex); }
+    renderAuctionList(auctions) { this.trading.renderAuctionList(auctions); }
+    renderMyAuctions(auctions) { this.trading.renderMyAuctions(auctions); }
 
     toggleQuestWindow() {
         const isHidden = this.questWindow.style.display === 'none' || this.questWindow.style.display === '';
@@ -1942,20 +1631,14 @@ export class UIManager {
         }
 
         // Close Trading House
-        if (this.tradingHouseScreen && this.tradingHouseScreen.style.display === 'flex') {
-            this.tradingHouseScreen.style.display = 'none';
+        if (this.trading.isOpen) {
+            this.trading.close();
             closedSomething = true;
         }
 
         // Close Forge
         if (this.forge.isOpen) {
             this.forge.close();
-            closedSomething = true;
-        }
-
-        // Close Trading House
-        if (this.tradingHouseScreen.style.display === 'flex') {
-            this.tradingHouseScreen.style.display = 'none';
             closedSomething = true;
         }
 
@@ -2264,12 +1947,12 @@ export class UIManager {
                         }
                     } else {
                         // Check if Trading House is open
-                        if (this.tradingHouseScreen && this.tradingHouseScreen.style.display === 'flex') {
+                        if (this.trading.isOpen) {
                             // Switch to List tab if not active
-                            if (this.panelTradingList.style.display === 'none') {
-                                this.switchTradingTab('list');
+                            if (this.trading.panelTradingList && this.trading.panelTradingList.style.display === 'none') {
+                                this.trading.switchTab('list');
                             }
-                            this.selectTradingItem(item, i);
+                            this.trading.selectItem(item, i);
                             return;
                         }
 
