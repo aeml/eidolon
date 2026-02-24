@@ -171,20 +171,20 @@ export class GameEngine {
         this.uiManager.onPartyResponse = (inviterName, accepted) => {
             this.sendPartyMessage('party_response', { inviterName, accepted });
         };
-        this.uiManager.onSelectBranch = (branch) => {
+        this.uiManager.skillTree.onSelectBranch = (branch) => {
             this.network.send('selectBranch', { branch });
         };
-        this.uiManager.onUnlockSkill = (skillName) => {
+        this.uiManager.skillTree.onUnlockSkill = (skillName) => {
             this.network.send('unlockSkill', { skillName });
         };
-        this.uiManager.onUnlockTalent = (talentId) => {
+        this.uiManager.skillTree.onUnlockTalent = (talentId) => {
             this.network.send('unlockTalent', { talentId });
         };
 
-        this.uiManager.onResetTalents = () => {
+        this.uiManager.skillTree.onResetTalents = () => {
             this.network.send('resetTalents', {});
         };
-        this.uiManager.onSelectRune = (skill, runeId) => {
+        this.uiManager.skillTree.onSelectRune = (skill, runeId) => {
             this.network.send('select_rune', { skill, runeId });
         };
         this.uiManager.onStashDeposit = (itemId) => {
@@ -965,11 +965,10 @@ export class GameEngine {
             if (this.player && msg.payload && msg.payload.skillRunes) {
                 this.player.skillRunes = msg.payload.skillRunes;
                 // Refresh runes tab if open
-                if (this.uiManager.skillTreeWindow && 
-                    this.uiManager.skillTreeWindow.style.display === 'flex' && 
-                    this.uiManager.skillTreeMode === 'runes') {
+                if (this.uiManager.skillTree.isOpen && 
+                    this.uiManager.skillTree.skillTreeMode === 'runes') {
                     const classType = this.player.subType || this.playerType;
-                    this.uiManager.renderSkillTree(classType);
+                    this.uiManager.skillTree.renderSkillTree(classType);
                 }
             }
         } else if (msg.type === 'combo') {
@@ -1216,14 +1215,14 @@ export class GameEngine {
                         }
 
                         // Refresh Skill Tree if open and data changed
-                        if (this.uiManager.skillTreeWindow && this.uiManager.skillTreeWindow.style.display === 'flex') {
+                        if (this.uiManager.skillTree.isOpen) {
                              if (prevBranch !== this.player.selectedBranch || 
                                  prevPoints !== this.player.skillPoints || 
                                  prevUnlocked !== currUnlocked ||
                                  prevTalentPoints !== (this.player.talentPoints || 0) ||
                                  prevTalentSig !== talentSig(this.player.talentRanks)) {
                                      const classType = this.player.subType || this.playerType;
-                                     this.uiManager.renderSkillTree(classType);
+                                     this.uiManager.skillTree.renderSkillTree(classType);
                              }
                         }
 
@@ -1409,12 +1408,12 @@ export class GameEngine {
                         }
                         
                         // Refresh Skill Tree if open
-                        if (this.uiManager.skillTreeWindow && this.uiManager.skillTreeWindow.style.display === 'flex') {
+                        if (this.uiManager.skillTree.isOpen) {
                             if (prevBranch !== this.player.selectedBranch || 
                                 prevPoints !== this.player.skillPoints || 
                                 prevUnlocked !== currUnlocked) {
                                 const classType = this.player.subType || this.playerType;
-                                this.uiManager.renderSkillTree(classType);
+                                this.uiManager.skillTree.renderSkillTree(classType);
                             }
                         }
                     }
@@ -1438,11 +1437,11 @@ export class GameEngine {
                         if (pData.talentPoints !== undefined) this.player.talentPoints = pData.talentPoints;
                         if (pData.talentRanks !== undefined) this.player.talentRanks = pData.talentRanks || {};
 
-                        if (this.uiManager.skillTreeWindow && this.uiManager.skillTreeWindow.style.display === 'flex') {
+                        if (this.uiManager.skillTree.isOpen) {
                             if (prevTalentPoints !== (this.player.talentPoints || 0) ||
                                 prevTalentSig !== talentSig(this.player.talentRanks)) {
                                 const classType = this.player.subType || this.playerType;
-                                this.uiManager.renderSkillTree(classType);
+                                this.uiManager.skillTree.renderSkillTree(classType);
                             }
                         }
                     }
