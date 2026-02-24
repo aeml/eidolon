@@ -92,7 +92,24 @@ function createEngineHarness() {
         updateForgePotencyInfo: jest.fn(),
         updateForgeSocketInfo: jest.fn(),
         renderSkillTree: jest.fn(),
-        skillTreeWindow: { style: { display: 'none' } },
+        skillTree: {
+            isOpen: false,
+            skillTreeMode: 'skills',
+            renderSkillTree: jest.fn()
+        },
+        forge: {
+            isOpen: false,
+            forgeScreen: { style: { display: 'none' } },
+            selectedForgeSlot: null,
+            selectedForgePotencySlot: null,
+            selectedForgeSocketSlot: null,
+            updateForgeUI: jest.fn(),
+            updateForgePotencyUI: jest.fn(),
+            updateForgeSocketUI: jest.fn(),
+            updateForgeInfo: jest.fn(),
+            updateForgePotencyInfo: jest.fn(),
+            updateForgeSocketInfo: jest.fn()
+        },
         forgeScreen: { style: { display: 'none' } },
         selectedForgeSlot: null,
         selectedForgePotencySlot: null,
