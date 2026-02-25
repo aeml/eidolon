@@ -9,3 +9,4 @@ server.log
 logs/
 server/logs/
 Caddyfile
+server/.env

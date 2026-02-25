@@ -1,0 +1,50 @@
+name: eidolon
+
+services:
+  mongo:
+    image: mongo:7.0.14
+    restart: unless-stopped
+    env_file:
+      - .env
+    command:
+      - --auth
+      - --bind_ip_all
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "echo 'db.runCommand({ ping: 1 }).ok' | mongosh mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@localhost:27017/admin --quiet | grep 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      mongo:
+        condition: service_healthy
+    command:
+      - --addr=:8080
+      - --mongo-uri=${MONGO_URI}
+      - --log-file=${LOG_FILE:-logs/server.log}
+      - --log-stdout=${LOG_STDOUT:-true}
+      - --log-http-errors=${LOG_HTTP_ERRORS:-false}
+      - --suspicious-log-file=${SUSPICIOUS_LOG_FILE:-logs/junk.log}
+      - --suspicious-stdout=${SUSPICIOUS_STDOUT:-false}
+    ports:
+      - 127.0.0.1:${APP_HOST_PORT:-18082}:8080
+    volumes:
+      - ./logs:/app/logs
+      - ./bug_reports.json:/app/bug_reports.json
+
+volumes:
+  mongo_data:
