@@ -107,10 +107,10 @@ export class GameEngine {
         this.hazards = new Map(); // Environmental hazards (id -> EnvironmentalHazard)
         this.abilityController = new AbilityController(this);
         this.currentInstanceId = null; // Track current instance to prevent state desync
-        this.uiManager.onBuyGamble = (slot) => {
+        this.uiManager.inventory.onBuyGamble = (slot) => {
             this.network.send('buy_gamble', { slot });
         };
-        this.uiManager.onSellItem = (index) => {
+        this.uiManager.inventory.onSellItem = (index) => {
             const item = this.player.inventory[index];
             if (!item) return;
 
@@ -119,19 +119,19 @@ export class GameEngine {
             // Optimistic client-side removal so inventory space frees immediately.
             // Server will correct us via an incoming inventory update if needed.
             this.player.inventory[index] = null;
-            this.uiManager.updateInventory(this.player);
+            this.uiManager.inventory.updateInventory(this.player);
         };
-        this.uiManager.onBuyback = (itemId) => {
+        this.uiManager.inventory.onBuyback = (itemId) => {
             this.network.send('buyback', { itemId });
         };
-        this.uiManager.onSellAll = (rarityName) => {
+        this.uiManager.inventory.onSellAll = (rarityName) => {
             if (!this.player) return;
             
             // Iterate backwards to avoid potential index issues
             for (let i = this.player.inventory.length - 1; i >= 0; i--) {
                 const item = this.player.inventory[i];
                 if (item && item.rarity && item.rarity.name === rarityName) {
-                    this.uiManager.onSellItem(i);
+                    this.uiManager.inventory.onSellItem(i);
                 }
             }
         };
@@ -187,7 +187,7 @@ export class GameEngine {
         this.uiManager.skillTree.onSelectRune = (skill, runeId) => {
             this.network.send('select_rune', { skill, runeId });
         };
-        this.uiManager.onStashDeposit = (itemId) => {
+        this.uiManager.inventory.onStashDeposit = (itemId) => {
             this.network.send('stash_deposit', { itemId });
         };
         this.uiManager.forge.onForgeUpgrade = (slot, amount) => {
@@ -208,7 +208,7 @@ export class GameEngine {
         this.uiManager.forge.onForgeRemoveGem = (equipSlot, socketIndex) => {
             this.network.send('forge_remove_gem', { equipSlot, socketIndex });
         };
-        this.uiManager.onStashWithdraw = (itemId) => {
+        this.uiManager.inventory.onStashWithdraw = (itemId) => {
             this.network.send('stash_withdraw', { itemId });
         };
         this.uiManager.quest.onAcceptQuest = (questId) => {
@@ -217,7 +217,7 @@ export class GameEngine {
         this.uiManager.quest.onCompleteQuest = (questId) => {
             this.network.send('complete_quest', { questId });
         };
-        this.uiManager.onUnequipRequest = (slot) => {
+        this.uiManager.inventory.onUnequipRequest = (slot) => {
             this.network.send('unequip', { slot });
         };
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
