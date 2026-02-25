@@ -209,42 +209,60 @@ This checklist turns the four-phase recommendation plan into actionable engineer
 ## Phase 4 - Stability + Refactor
 
 ### 4.1 GameEngine responsibility split
-- [ ] Extract networking message handling into a dedicated module.
-- [ ] Extract ability input/targeting orchestration into its own controller.
-- [ ] Keep render/update loop in `GameEngine` focused on lifecycle and tick orchestration.
+- [x] Extract networking message handling into a dedicated module. Created `src/core/NetworkManager.js` (192 lines) — WebSocket lifecycle, binary decode, message queue, `send(type, payload)` API. All 35+ `this.socket.send(JSON.stringify(...))` calls replaced. GameEngine: 4,143 → 3,760 lines (-383).
+- [x] Extract ability input/targeting orchestration into its own controller. Created `src/core/AbilityController.js` (676 lines) — `triggerRemoteAbilityVisuals`, `performAbility`, `performHotbarAbility`, `performAttack`, `getAbilityCastRange`, `processInputBuffer`, `updatePendingTarget`. GameEngine: 3,760 → 3,166 lines (-594).
+- [x] Deduplicate state/delta handlers. 4 shared helpers (`applyPositionHacks`, `queueEntityCreation`, `syncRemoteEntity`, `removeRemoteEntity`), delta debug spam removed. GameEngine: 3,166 → 3,041 lines (-125).
+- [x] Keep render/update loop in `GameEngine` focused on lifecycle and tick orchestration.
 
 **Files**
-- `src/core/GameEngine.js`
-- new modules under `src/core/` or `src/systems/`
+- `src/core/GameEngine.js` — Reduced from 4,172 to ~3,041 lines
+- `src/core/NetworkManager.js` — New (192 lines)
+- `src/core/AbilityController.js` — New (676 lines)
 
 **Acceptance criteria**
-- `GameEngine.js` reduced in size and concern count, with no behavior regressions.
+- [x] `GameEngine.js` reduced in size and concern count, with no behavior regressions.
 
 ### 4.2 UIManager decomposition
-- [ ] Split quest/journal, inventory/equipment, party/social, forge/trading into dedicated UI modules.
-- [ ] Keep a thin facade for cross-module wiring and callbacks.
+- [x] Split quest/journal, inventory/equipment, party/social, forge/trading into dedicated UI modules.
+  - `src/ui/ForgeUI.js` (1,224 lines) — Forge upgrade/potency/socket/gem. UIManager: 5,523 → 4,256 (-1,267).
+  - `src/ui/SkillTreeUI.js` (878 lines) — Skill tree, talent tree, runes, combos, respec. UIManager: 4,256 → 3,473 (-783).
+  - `src/ui/TradingUI.js` (391 lines) — Trading house. Fixed misnamed toggleQuestWindow→toggleTradingHouse. UIManager: 3,473 → 3,156 (-317).
+  - `src/ui/QuestUI.js` (227 lines) — Quest NPC window + journal. UIManager: 3,156 → 2,791 (combined with SocialUI: -366).
+  - `src/ui/SocialUI.js` (258 lines) — Social window, party panel, invite/leave/kick/promote.
+  - `src/ui/InventoryUI.js` (1,045 lines) — Inventory/equipment/shop/stash grids, tooltips, drag-and-drop, split stack. UIManager: 2,791 → ~1,774 (-1,017).
+- [x] Keep a thin facade for cross-module wiring and callbacks. UIManager retains thin delegate methods for each sub-module + `partyData` getter for WorldMap/Minimap.
 
 **Files**
-- `src/ui/UIManager.js`
-- new modules under `src/ui/`
+- `src/ui/UIManager.js` — Reduced from 5,523 to ~1,774 lines
+- `src/ui/ForgeUI.js` — New (1,224 lines)
+- `src/ui/SkillTreeUI.js` — New (878 lines)
+- `src/ui/TradingUI.js` — New (391 lines)
+- `src/ui/QuestUI.js` — New (227 lines)
+- `src/ui/SocialUI.js` — New (258 lines)
+- `src/ui/InventoryUI.js` — New (1,045 lines)
 
 **Acceptance criteria**
-- UI modules are independently readable and testable; no monolithic 5k-line single file dependency.
+- [x] UI modules are independently readable and testable; no monolithic 5k-line single file dependency.
 
 ### 4.3 Server ability handler modularization
-- [ ] Break `PerformAbility` class blocks into class-specific handlers.
-- [ ] Introduce shared helper primitives for cone/AoE/line and effect application.
-- [ ] Add regression tests for representative skills per class.
+- [x] Break `PerformAbility` class blocks into class-specific handlers. Four handler files: `ability_fighter.go` (~333 lines, 9 skills), `ability_wizard.go` (~817 lines, 12 skills), `ability_rogue.go` (~812 lines, 17 skills), `ability_cleric.go` (~626 lines, 13 skills). `world.go` switch body replaced with 4 one-line delegation calls. world.go: 10,917 → 8,190 lines (-2,727).
+- [x] Introduce shared helper primitives for event firing and state management. Created `ability_helpers.go` (52 lines): `fireAbilityEvent`, `fireDamageEvent`, `fireHealEvent`, `delayedIdleReset`. Replaces ~50+ identical event emission patterns and 6 goroutine reset blocks.
+- [x] Add regression tests for representative skills per class. `ability_handlers_test.go` (17 tests): mana deduction, cooldown setting, event firing, health capping, insufficient mana rejection, dead player rejection, locked skill rejection, base skill fallback — all 4 classes covered. Fixed Death Spiral bug (now uses `resolveAbilityCooldown`).
 
 **Files**
-- `server/internal/game/world.go`
-- `server/internal/game/world_test.go`
+- `server/internal/game/world.go` — Reduced from 10,917 to 8,190 lines
+- `server/internal/game/ability_helpers.go` — New (52 lines)
+- `server/internal/game/ability_fighter.go` — New (~333 lines)
+- `server/internal/game/ability_wizard.go` — New (~817 lines)
+- `server/internal/game/ability_rogue.go` — New (~812 lines)
+- `server/internal/game/ability_cleric.go` — New (~626 lines)
+- `server/internal/game/ability_handlers_test.go` — New (17 tests)
 
 **Acceptance criteria**
-- Ability logic remains server-authoritative with lower maintenance overhead and clearer diff surface.
+- [x] Ability logic remains server-authoritative with lower maintenance overhead and clearer diff surface.
 
 ### 4.4 Validation for Phase 4
-- [ ] Full JS + Go test passes.
+- [x] Full JS + Go test passes. 10 JS suites (141 tests), all Go packages pass.
 - [ ] Multiplayer soak run (long session) without crash/desync/memory-growth anomalies.
 - [ ] Review logs for deadlock/panic warnings in server update loop.
 
