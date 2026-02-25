@@ -1,10 +1,11 @@
-import { ItemGenerator, SLOTS, Item, BASE_ITEMS, RARITY, SET_DEFINITIONS, UNIQUE_EFFECTS, GEM_TYPES, GEM_QUALITIES } from '../core/ItemSystem.js';
+import { BASE_ITEMS, RARITY } from '../core/ItemSystem.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { ForgeUI } from './ForgeUI.js';
 import { SkillTreeUI } from './SkillTreeUI.js';
 import { TradingUI } from './TradingUI.js';
 import { QuestUI } from './QuestUI.js';
 import { SocialUI } from './SocialUI.js';
+import { InventoryUI } from './InventoryUI.js';
 
 export class UIManager {
     constructor(isMobile = false) {
@@ -24,13 +25,6 @@ export class UIManager {
         this.xpText = document.getElementById('xp-text');
         this.characterSheet = document.getElementById('character-sheet');
         this.statsContent = document.getElementById('stats-content');
-        this.inventoryScreen = document.getElementById('inventory-screen');
-        this.inventoryGrid = document.getElementById('inventory-grid');
-        this.goldDisplay = document.getElementById('gold-display');
-        this.shopScreen = document.getElementById('shop-screen');
-        this.shopGambleTitle = document.getElementById('shop-gamble-title');
-        this.stashScreen = document.getElementById('stash-screen');
-        this.stashGrid = document.getElementById('stash-grid');
 
         // Quest UI (extracted module)
         this.quest = new QuestUI({
@@ -53,18 +47,6 @@ export class UIManager {
         this.btnCloseSettings = document.getElementById('btn-close-settings');
         this.btnClosePatchNotes = document.getElementById('btn-close-patch-notes');
         this.btnRespawn = document.getElementById('btn-respawn');
-        this.btnCloseShop = document.getElementById('btn-close-shop');
-        this.btnCloseStash = document.getElementById('btn-close-stash');
-
-        // Shop Tabs
-        this.tabShopMain = document.getElementById('tab-shop-main');
-        this.tabShopBuyback = document.getElementById('tab-shop-buyback');
-        this.shopContentMain = document.getElementById('shop-content-main');
-        this.shopContentBuyback = document.getElementById('shop-content-buyback');
-        this.buybackGrid = document.getElementById('buyback-grid');
-
-        if (this.tabShopMain) this.tabShopMain.addEventListener('click', () => this.switchShopTab('main'));
-        if (this.tabShopBuyback) this.tabShopBuyback.addEventListener('click', () => this.switchShopTab('buyback'));
 
         // Skill Tree UI (extracted module)
         this.skillTree = new SkillTreeUI({
@@ -103,10 +85,6 @@ export class UIManager {
         this.graphicsBrightnessSlider = document.getElementById('graphics-brightness');
         this.graphicsBrightnessValue = document.getElementById('graphics-brightness-value');
 
-        this.btnSellCommon = document.getElementById('btn-sell-common');
-        this.btnSellUncommon = document.getElementById('btn-sell-uncommon');
-        this.btnSellRare = document.getElementById('btn-sell-rare');
-
         if (this.btnResume) this.btnResume.addEventListener('click', () => this.toggleEscMenu());
         if (this.btnHelp) this.btnHelp.addEventListener('click', () => this.toggleHelp());
         if (this.btnSettings) this.btnSettings.addEventListener('click', () => this.toggleSettings());
@@ -141,8 +119,7 @@ export class UIManager {
             });
         }
         this.updateBrightnessLabel();
-        if (this.btnCloseShop) this.btnCloseShop.addEventListener('click', () => this.toggleShop());
-        if (this.btnCloseStash) this.btnCloseStash.addEventListener('click', () => this.toggleStash());
+        // Shop/Stash close buttons are handled inside InventoryUI
         
         // Forge UI — delegated to ForgeUI module
         this.forge = new ForgeUI({
@@ -157,34 +134,23 @@ export class UIManager {
             getLastPlayer: () => this.lastPlayerRef,
             getItemIconPath: (item) => this.getItemIconPath(item),
             getRarityColor: (rarity) => this.getRarityColor(rarity),
-            showItemTooltip: (item, x, y) => this.showItemTooltip(item, x, y),
-            hideTooltips: () => this.hideTooltips(),
+            showItemTooltip: (item, x, y) => this.inventory.showItemTooltip(item, x, y),
+            hideTooltips: () => this.inventory.hideTooltips(),
             addChatMessage: (sender, msg) => this.addChatMessage(sender, msg),
         });
 
-        // Split Stack UI
-        this.splitStackWindow = document.getElementById('split-stack-window');
-        this.btnCloseSplit = document.getElementById('btn-close-split');
-        this.splitItemName = document.getElementById('split-item-name');
-        this.splitAmountRange = document.getElementById('split-amount-range');
-        this.splitAmountInput = document.getElementById('split-amount-input');
-        this.btnConfirmSplit = document.getElementById('btn-confirm-split');
-        this.btnCancelSplit = document.getElementById('btn-cancel-split');
-
-        if (this.btnCloseSplit) this.btnCloseSplit.addEventListener('click', () => this.hideSplitWindow());
-        if (this.btnCancelSplit) this.btnCancelSplit.addEventListener('click', () => this.hideSplitWindow());
-        if (this.btnConfirmSplit) this.btnConfirmSplit.addEventListener('click', () => this.confirmSplit());
-        
-        if (this.splitAmountRange) {
-            this.splitAmountRange.addEventListener('input', (e) => {
-                if (this.splitAmountInput) this.splitAmountInput.value = e.target.value;
-            });
-        }
-        if (this.splitAmountInput) {
-            this.splitAmountInput.addEventListener('input', (e) => {
-                if (this.splitAmountRange) this.splitAmountRange.value = e.target.value;
-            });
-        }
+        // Inventory UI (extracted module) — handles inventory grid, equip slots,
+        // shop/gamble, stash, item tooltips, drag-and-drop, split-stack, buyback, sell
+        this.inventory = new InventoryUI({
+            isMobile: this.isMobile,
+            getLastPlayer: () => this.lastPlayerRef,
+            getItemIconPath: (item) => this.getItemIconPath(item),
+            formatStatName: (key) => this.formatStatName(key),
+            getRarityColor: (rarity) => this.getRarityColor(rarity),
+            addChatMessage: (sender, msg) => this.addChatMessage(sender, msg),
+            updateCharacterSheet: (player) => this.updateCharacterSheet(player),
+            trading: this.trading,
+        });
 
         if (this.btnRespawn) this.btnRespawn.addEventListener('click', () => {
             if (this.onRespawn) {
@@ -205,11 +171,6 @@ export class UIManager {
             }
         });
 
-        if (this.btnSellCommon) this.btnSellCommon.addEventListener('click', () => this.handleSellAll('Common'));
-        if (this.btnSellUncommon) this.btnSellUncommon.addEventListener('click', () => this.handleSellAll('Uncommon'));
-        if (this.btnSellRare) this.btnSellRare.addEventListener('click', () => this.handleSellAll('Rare'));
-
-        this.setupShop();
         // Social UI (extracted module) — must come before setupWindow block
         this.social = new SocialUI({
             getLastPlayer: () => this.lastPlayerRef,
@@ -219,9 +180,9 @@ export class UIManager {
 
         // Setup Windows (Drag & Click Blocking)
         this.setupWindow(this.characterSheet);
-        this.setupWindow(this.inventoryScreen);
-        this.setupWindow(this.shopScreen);
-        this.setupWindow(this.stashScreen);
+        this.setupWindow(this.inventory.inventoryScreen);
+        this.setupWindow(this.inventory.shopScreen);
+        this.setupWindow(this.inventory.stashScreen);
         this.setupWindow(this.forge.forgeScreen);
         this.setupWindow(this.trading.tradingHouseScreen);
         this.setupWindow(this.quest.questWindow);
@@ -304,56 +265,6 @@ export class UIManager {
             this.statTooltip.style.display = 'none';
         });
 
-        // Inventory Tooltips
-        this.inventoryGrid.addEventListener('mousemove', (e) => {
-            if (this.selectedSlot !== -1) return; // Don't override selection with hover
-            const slot = e.target.closest('.inv-slot');
-            if (slot && slot._item) {
-                this.showItemTooltip(slot._item, e.clientX, e.clientY, e);
-            } else {
-                this.hideTooltips();
-            }
-        });
-        
-        this.inventoryGrid.addEventListener('mouseleave', () => {
-            if (this.selectedSlot === -1) { // Only hide if nothing selected (allows moving mouse to tooltip)
-                this.hideTooltips();
-            }
-        });
-
-        // Equipment Tooltips
-        const equipContainer = this.characterSheet.querySelector('.equipment-slots');
-        if (equipContainer) {
-            equipContainer.addEventListener('mousemove', (e) => {
-                const slot = e.target.closest('.equip-slot');
-                if (slot && slot._item) {
-                    this.showItemTooltip(slot._item, e.clientX, e.clientY, e);
-                } else {
-                    this.hideTooltips();
-                }
-            });
-            equipContainer.addEventListener('mouseleave', () => this.hideTooltips());
-        }
-
-        // Compare Mode Toggle
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Shift') {
-                this.compareMode = true;
-                if (this.hoveredItem) {
-                    this.showItemTooltip(this.hoveredItem, this.lastMouseX, this.lastMouseY);
-                }
-            }
-        });
-
-        window.addEventListener('keyup', (e) => {
-            if (e.key === 'Shift') {
-                this.compareMode = false;
-                if (this.hoveredItem) {
-                    this.showItemTooltip(this.hoveredItem, this.lastMouseX, this.lastMouseY);
-                }
-            }
-        });
-
         // Chat UI
         this.chatBox = document.getElementById('chat-box');
         this.chatMessages = document.getElementById('chat-messages');
@@ -385,25 +296,11 @@ export class UIManager {
         });
 
         this.isHelpOpen = false;
-        // this.isShopOpen is a getter now
         
         this.onStatUpgrade = null;
         this.onRespawn = null;
         this.onChatSend = null;
-        this.onSellItem = null;
-        this.onSellAll = null;
         this.onReportSubmit = null;
-        
-        this.selectedSlot = -1; // Track selected inventory slot
-        this.statTooltip.style.pointerEvents = 'auto'; // Allow clicking buttons in tooltip
-        
-        // Close tooltip/selection when clicking outside
-        window.addEventListener('click', (e) => {
-            if (this.selectedSlot !== -1 && !e.target.closest('#stat-tooltip') && !e.target.closest('.inv-slot')) {
-                this.selectedSlot = -1;
-                this.hideTooltips();
-            }
-        });
     }
 
     resolveAssetUrl(path) {
@@ -485,11 +382,7 @@ export class UIManager {
         }
     }
 
-    handleSellAll(rarityName) {
-        if (this.onSellAll) {
-            this.onSellAll(rarityName);
-        }
-    }
+    handleSellAll(rarityName) { this.inventory.handleSellAll(rarityName); }
 
     addChatMessage(sender, message) {
         if (!this.chatBox) return;
@@ -771,21 +664,14 @@ export class UIManager {
         return this.patchNotesScreen.style.display === 'flex';
     }
 
-    get isInventoryOpen() {
-        return this.inventoryScreen.style.display === 'block';
-    }
+    get isInventoryOpen() { return this.inventory.isInventoryOpen; }
 
     get isCharacterSheetOpen() {
         return this.characterSheet.style.display === 'block';
     }
 
-    get isShopOpen() {
-        return this.shopScreen.style.display === 'flex';
-    }
-
-    get isStashOpen() {
-        return this.stashScreen.style.display === 'flex';
-    }
+    get isShopOpen() { return this.inventory.isShopOpen; }
+    get isStashOpen() { return this.inventory.isStashOpen; }
 
     toggleCharacterSheet() {
         const isHidden = this.characterSheet.style.display === 'none' || this.characterSheet.style.display === '';
@@ -796,73 +682,12 @@ export class UIManager {
         }
     }
 
-    toggleInventory() {
-        const isHidden = this.inventoryScreen.style.display === 'none' || this.inventoryScreen.style.display === '';
-        this.inventoryScreen.style.display = isHidden ? 'block' : 'none';
-        
-        if (isHidden && this.lastPlayerRef) {
-            console.log("UIManager: Opening inventory, refreshing...");
-            this.updateInventory(this.lastPlayerRef);
-        }
-    }
-
-    showSplitWindow(item, slotIndex) {
-        if (!this.splitStackWindow) return;
-        
-        this.pendingSplitItem = item;
-        this.pendingSplitSlot = slotIndex;
-        
-        this.splitItemName.textContent = item.name;
-        
-        // Allow splitting 1 to stack-1
-        const maxSplit = item.stack - 1;
-        
-        if (maxSplit < 1) return; 
-        
-        this.splitAmountRange.min = 1;
-        this.splitAmountRange.max = maxSplit;
-        this.splitAmountRange.value = Math.floor(item.stack / 2) || 1;
-        
-        this.splitAmountInput.min = 1;
-        this.splitAmountInput.max = maxSplit;
-        this.splitAmountInput.value = Math.floor(item.stack / 2) || 1;
-        
-        this.splitStackWindow.style.display = 'block';
-    }
-
-    hideSplitWindow() {
-        if (this.splitStackWindow) {
-            this.splitStackWindow.style.display = 'none';
-        }
-        this.pendingSplitItem = null;
-        this.pendingSplitSlot = -1;
-    }
-
-    confirmSplit() {
-        if (!this.pendingSplitItem || this.pendingSplitSlot === -1) return;
-        
-        const amount = parseInt(this.splitAmountInput.value);
-        if (isNaN(amount) || amount < 1) return;
-        
-        if (window.game) {
-            window.game.sendSplitStackMessage(this.pendingSplitSlot, amount);
-        }
-        
-        this.hideSplitWindow();
-    }
-
-    toggleStash() {
-        const isHidden = this.stashScreen.style.display === 'none' || this.stashScreen.style.display === '';
-        this.stashScreen.style.display = isHidden ? 'flex' : 'none';
-        
-        if (isHidden) {
-            this.inventoryScreen.style.display = 'block'; // Open inventory too
-            if (this.lastPlayerRef) {
-                this.updateInventory(this.lastPlayerRef);
-                this.updateStash(this.lastPlayerRef);
-            }
-        }
-    }
+    // --- Inventory delegates (InventoryUI module) ---
+    toggleInventory() { this.inventory.toggleInventory(); }
+    showSplitWindow(item, slotIndex) { this.inventory.showSplitWindow(item, slotIndex); }
+    hideSplitWindow() { this.inventory.hideSplitWindow(); }
+    confirmSplit() { this.inventory.confirmSplit(); }
+    toggleStash() { this.inventory.toggleStash(); }
 
     toggleForge() { this.forge.toggle(); }
     switchForgeTab(tab) { this.forge.switchForgeTab(tab); }
@@ -1315,87 +1140,9 @@ export class UIManager {
         return this.graphicsBrightness;
     }
 
-    toggleShop() {
-        const isHidden = this.shopScreen.style.display === 'none' || this.shopScreen.style.display === '';
-        this.shopScreen.style.display = isHidden ? 'flex' : 'none';
-        
-        // Open inventory when shop opens
-        if (isHidden) {
-            this.inventoryScreen.style.display = 'block';
-            if (this.lastPlayerRef) {
-                this.updateInventory(this.lastPlayerRef);
-
-                // Update Gamble Cost Title
-                if (this.shopGambleTitle) {
-                    const cost = Math.ceil(34.68 * this.lastPlayerRef.level);
-                    this.shopGambleTitle.textContent = `MYSTERY BOXES (${cost}g)`;
-                }
-            }
-        }
-    }
-
-    switchShopTab(tab) {
-        if (tab === 'main') {
-            this.shopContentMain.style.display = 'flex';
-            this.shopContentBuyback.style.display = 'none';
-            this.tabShopMain.style.background = '#333';
-            this.tabShopBuyback.style.background = '#111';
-        } else {
-            this.shopContentMain.style.display = 'none';
-            this.shopContentBuyback.style.display = 'flex';
-            this.tabShopMain.style.background = '#111';
-            this.tabShopBuyback.style.background = '#333';
-        }
-    }
-
-    updateBuybackList(items) {
-        if (!this.buybackGrid) return;
-        this.buybackGrid.innerHTML = '';
-        if (!items) return;
-
-        // Reverse order to show newest first
-        const reversedItems = [...items].reverse();
-
-        reversedItems.forEach(item => {
-            if (!item || !item.id) return;
-            const el = document.createElement('div');
-            el.className = 'inv-slot';
-            const iconPath = this.getItemIconPath(item);
-            el.style.backgroundImage = `url('${iconPath}')`;
-            el.style.backgroundSize = 'contain';
-            el.style.backgroundRepeat = 'no-repeat';
-            el.style.backgroundPosition = 'center';
-            const color = item.rarity ? item.rarity.color : '#ffffff';
-            el.style.border = `1px solid ${color}`;
-            el.style.position = 'relative';
-            el.style.cursor = 'pointer';
-            
-            // Tooltip
-            el.title = `${item.name}\nBuyback Price: ${item.value * (item.stack || 1)}g`;
-
-            if (item.stack > 1) {
-                const stackCount = document.createElement('div');
-                stackCount.className = 'item-stack';
-                stackCount.innerText = item.stack;
-                stackCount.style.position = 'absolute';
-                stackCount.style.bottom = '2px';
-                stackCount.style.right = '2px';
-                stackCount.style.fontSize = '10px';
-                stackCount.style.color = 'white';
-                stackCount.style.textShadow = '1px 1px 0 #000';
-                stackCount.style.fontWeight = 'bold';
-                el.appendChild(stackCount);
-            }
-
-            el.onclick = () => {
-                if (this.onBuyback) {
-                    this.onBuyback(item.id);
-                }
-            };
-
-            this.buybackGrid.appendChild(el);
-        });
-    }
+    toggleShop() { this.inventory.toggleShop(); }
+    switchShopTab(tab) { this.inventory.switchShopTab(tab); }
+    updateBuybackList(items) { this.inventory.updateBuybackList(items); }
 
     handleEscape() {
         let closedSomething = false;
@@ -1405,8 +1152,8 @@ export class UIManager {
             this.characterSheet.style.display = 'none';
             closedSomething = true;
         }
-        if (this.inventoryScreen.style.display === 'block') {
-            this.inventoryScreen.style.display = 'none';
+        if (this.inventory.inventoryScreen.style.display === 'block') {
+            this.inventory.inventoryScreen.style.display = 'none';
             closedSomething = true;
         }
         
@@ -1418,14 +1165,14 @@ export class UIManager {
         }
 
         // Close Shop
-        if (this.shopScreen.style.display === 'flex') {
-            this.shopScreen.style.display = 'none';
+        if (this.inventory.shopScreen.style.display === 'flex') {
+            this.inventory.shopScreen.style.display = 'none';
             closedSomething = true;
         }
 
         // Close Stash
-        if (this.stashScreen.style.display === 'flex') {
-            this.stashScreen.style.display = 'none';
+        if (this.inventory.stashScreen.style.display === 'flex') {
+            this.inventory.stashScreen.style.display = 'none';
             closedSomething = true;
         }
 
@@ -1548,339 +1295,30 @@ export class UIManager {
             </div>
         `;
 
-        this.updateEquipSlot('slot-head', player.equipment.head, 'HEAD');
-        this.updateEquipSlot('slot-shoulders', player.equipment.shoulders, 'SHOULDERS');
-        this.updateEquipSlot('slot-chest', player.equipment.chest, 'CHEST');
-        this.updateEquipSlot('slot-belt', player.equipment.belt, 'BELT');
-        this.updateEquipSlot('slot-legs', player.equipment.legs, 'LEGS');
-        this.updateEquipSlot('slot-feet', player.equipment.feet, 'FEET');
-        this.updateEquipSlot('slot-gloves', player.equipment.gloves, 'GLOVES');
-        this.updateEquipSlot('slot-neck', player.equipment.neck, 'NECK');
-        this.updateEquipSlot('slot-mainhand', player.equipment.mainHand, 'MAIN HAND', 'mainHand');
-        this.updateEquipSlot('slot-offhand', player.equipment.offHand, 'OFF HAND', 'offHand');
-        this.updateEquipSlot('slot-ring1', player.equipment.ring1, 'RING 1');
-        this.updateEquipSlot('slot-ring2', player.equipment.ring2, 'RING 2');
-        this.updateEquipSlot('slot-trinket1', player.equipment.trinket1, 'TRINKET 1');
-        this.updateEquipSlot('slot-trinket2', player.equipment.trinket2, 'TRINKET 2');
+        this.inventory.updateEquipSlot('slot-head', player.equipment.head, 'HEAD');
+        this.inventory.updateEquipSlot('slot-shoulders', player.equipment.shoulders, 'SHOULDERS');
+        this.inventory.updateEquipSlot('slot-chest', player.equipment.chest, 'CHEST');
+        this.inventory.updateEquipSlot('slot-belt', player.equipment.belt, 'BELT');
+        this.inventory.updateEquipSlot('slot-legs', player.equipment.legs, 'LEGS');
+        this.inventory.updateEquipSlot('slot-feet', player.equipment.feet, 'FEET');
+        this.inventory.updateEquipSlot('slot-gloves', player.equipment.gloves, 'GLOVES');
+        this.inventory.updateEquipSlot('slot-neck', player.equipment.neck, 'NECK');
+        this.inventory.updateEquipSlot('slot-mainhand', player.equipment.mainHand, 'MAIN HAND', 'mainHand');
+        this.inventory.updateEquipSlot('slot-offhand', player.equipment.offHand, 'OFF HAND', 'offHand');
+        this.inventory.updateEquipSlot('slot-ring1', player.equipment.ring1, 'RING 1');
+        this.inventory.updateEquipSlot('slot-ring2', player.equipment.ring2, 'RING 2');
+        this.inventory.updateEquipSlot('slot-trinket1', player.equipment.trinket1, 'TRINKET 1');
+        this.inventory.updateEquipSlot('slot-trinket2', player.equipment.trinket2, 'TRINKET 2');
     }
 
-    updateEquipSlot(id, item, placeholder, serverSlotName) {
-        const el = document.getElementById(id);
-        if (el) {
-            el._item = (item && item.id) ? item : null; // Store item for tooltip
-            el.innerHTML = ''; // Clear text/children
-            
-            // Remove old event listeners (by cloning and replacing)
-            const newEl = el.cloneNode(true);
-            el.parentNode.replaceChild(newEl, el);
-            
-            // Re-assign to new element
-            const slotEl = newEl;
-            slotEl._item = (item && item.id) ? item : null; // Re-attach item data
+    updateEquipSlot(id, item, placeholder, serverSlotName) { this.inventory.updateEquipSlot(id, item, placeholder, serverSlotName); }
 
-            const slotId = serverSlotName || id.replace('slot-', '');
+    updateInventory(player) { this.inventory.updateInventory(player); }
 
-            if (item && item.id) {
-                const iconPath = this.getItemIconPath(item);
-                const color = item.rarity ? item.rarity.color : '#ffffff';
-                const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
-                
-                if (isEidolic) {
-                    slotEl.innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
-                    slotEl.style.border = `2px solid ${color}`;
-                    slotEl.style.boxShadow = `0 0 5px ${color}`;
-                } else {
-                    // Use multiply blend mode to tint the background
-                    slotEl.innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
-                    slotEl.style.border = `1px solid ${color}`;
-                    slotEl.style.boxShadow = 'none';
-                }
-                
-                slotEl.style.color = color;
-                slotEl.style.borderColor = color;
-                // slotEl.title = this.getItemTooltipText(item); // Disable native tooltip
-                slotEl.removeAttribute('title');
-                
-                this.setupItemDragAndDrop(slotEl, 'equipment', slotId, item);
+    updateStash(player) { this.inventory.updateStash(player); }
 
-                // Potency Indicator
-                if (item.potency > 0) {
-                    const potencyDiv = document.createElement('div');
-                    potencyDiv.style.position = 'absolute';
-                    potencyDiv.style.top = '2px';
-                    potencyDiv.style.right = '2px';
-                    potencyDiv.style.color = '#00ff00';
-                    potencyDiv.style.fontWeight = 'bold';
-                    potencyDiv.style.fontSize = '12px';
-                    potencyDiv.style.textShadow = '1px 1px 0 #000';
-                    potencyDiv.textContent = `+${item.potency}`;
-                    slotEl.appendChild(potencyDiv);
-                }
+    getItemTooltipText(item) { return this.inventory.getItemTooltipText(item); }
 
-                // Add click handler for unequipping
-                slotEl.onclick = (e) => {
-                    e.stopPropagation();
-                    if (this.onUnequipRequest) {
-                        this.onUnequipRequest(slotId);
-                    }
-                };
-
-                // Tooltip handlers
-                slotEl.addEventListener('mouseenter', (e) => {
-                    const rect = slotEl.getBoundingClientRect();
-                    this.showItemTooltip(item, rect.right + 10, rect.top);
-                });
-                slotEl.addEventListener('mouseleave', () => {
-                    this.hideTooltips();
-                });
-
-            } else {
-                slotEl.textContent = placeholder;
-                slotEl.style.color = '#666';
-                slotEl.style.border = '1px solid #444';
-                slotEl.style.borderColor = '#444';
-                slotEl.style.boxShadow = 'none';
-                slotEl.title = 'Empty Slot';
-                slotEl.onclick = null;
-                this.setupItemDragAndDrop(slotEl, 'equipment', slotId, null);
-            }
-        }
-    }
-
-    updateInventory(player) {
-        if (!player) return;
-        this.lastPlayerRef = player;
-        // console.log("UIManager: Updating inventory UI. Items:", player.inventory.length);
-
-        // Update Gold
-        if (this.goldDisplay) {
-            this.goldDisplay.textContent = `GOLD: ${player.gold || 0}`;
-        }
-
-        const slots = this.inventoryGrid.children;
-        for (let i = 0; i < slots.length; i++) {
-            const item = player.inventory[i];
-            slots[i]._item = (item && item.id) ? item : null; // Store item for tooltip
-            slots[i].innerHTML = ''; // Clear
-            
-            if (item && item.id) {
-                const iconPath = this.getItemIconPath(item);
-                const color = item.rarity ? item.rarity.color : '#ffffff';
-                const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
-                
-                let stackHtml = '';
-                if (item.stack > 1) {
-                    stackHtml = `<div style="position:absolute; bottom:2px; right:2px; font-size:10px; color:white; text-shadow:1px 1px 0 #000; font-weight:bold;">${item.stack}</div>`;
-                }
-
-                let potencyHtml = '';
-                if (item.potency > 0) {
-                    potencyHtml = `<div style="position:absolute; top:2px; right:2px; font-size:10px; color:#00ff00; text-shadow:1px 1px 0 #000; font-weight:bold;">+${item.potency}</div>`;
-                }
-
-                let socketHtml = '';
-                if (item.sockets > 0) {
-                    let dots = '';
-                    for(let k=0; k<item.sockets; k++) {
-                        dots += `<div style="width:3px; height:3px; border-radius:50%; background-color:#00ffff; box-shadow:0 0 2px #00ffff;"></div>`;
-                    }
-                    socketHtml = `<div style="position:absolute; bottom:2px; left:2px; display:flex; gap:1px;">${dots}</div>`;
-                }
-
-                // For Eidolic, we do NOT tint the background, only the border.
-                // For others, we use multiply blend mode.
-                if (isEidolic) {
-                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}${potencyHtml}${socketHtml}`;
-                    slots[i].style.border = `2px solid ${color}`; // Thicker border for Eidolic?
-                    slots[i].style.boxShadow = `0 0 5px ${color}`; // Glow
-                } else {
-                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}${potencyHtml}${socketHtml}`;
-                    slots[i].style.border = `1px solid ${color}`;
-                    slots[i].style.boxShadow = 'none';
-                }
-                
-                slots[i].style.color = color;
-                // slots[i].title = this.getItemTooltipText(item); // Disable native tooltip
-                slots[i].removeAttribute('title');
-                slots[i].style.backgroundColor = '#222';
-                
-                this.setupItemDragAndDrop(slots[i], 'inventory', i, item);
-
-                // Add click handler for equipping (simple toggle for now)
-                slots[i].onclick = (e) => {
-                    e.stopPropagation();
-
-                    // Shift+Click to Split Stack
-                    if (e.shiftKey && item.stack > 1) {
-                        this.showSplitWindow(item, i);
-                        return;
-                    }
-                    
-                    // Prevent equipping non-equippable items
-                    if (item.type === 'MATERIAL' || item.type === 'RELIC' || item.slot === 'material' || item.slot === 'relic') {
-                        return;
-                    }
-
-                    // Mobile/Desktop Selection Logic
-                    if (this.isMobile) {
-                        if (this.selectedSlot === i) {
-                            // Already selected -> Equip
-                            if (player.level < item.level) {
-                                console.log("Level too low to equip!");
-                                return;
-                            }
-                            if (player.equipItem(item)) {
-                                this.selectedSlot = -1; // Reset
-                                this.hideTooltips();
-                                this.updateInventory(player);
-                                this.updateCharacterSheet(player);
-                            }
-                        } else {
-                            // Select it
-                            this.selectedSlot = i;
-                            const rect = slots[i].getBoundingClientRect();
-                            // Show tooltip to the right or left depending on screen position
-                            let x = rect.right;
-                            if (x + 220 > window.innerWidth) x = rect.left - 220;
-                            this.showItemTooltip(item, x, rect.top);
-                        }
-                    } else {
-                        // Check if Trading House is open
-                        if (this.trading.isOpen) {
-                            // Switch to List tab if not active
-                            if (this.trading.panelTradingList && this.trading.panelTradingList.style.display === 'none') {
-                                this.trading.switchTab('list');
-                            }
-                            this.trading.selectItem(item, i);
-                            return;
-                        }
-
-                        // Desktop: Instant Equip
-                        if (player.level < item.level) {
-                            console.log("Level too low to equip!");
-                            return;
-                        }
-
-                        // Remove from inventory temporarily to allow swapping
-                        player.inventory[i] = null;
-
-                        if (player.equipItem(item)) {
-                            this.selectedSlot = -1;
-                            this.hideTooltips();
-                            this.updateInventory(player);
-                            this.updateCharacterSheet(player);
-                        } else {
-                            // Failed to equip, put it back
-                            player.inventory[i] = item;
-                        }
-                    }
-                };
-
-                // Right-click to sell if shop is open
-                slots[i].oncontextmenu = (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (this.shopScreen.style.display === 'flex') {
-                        this.sellItem(player, i);
-                    } else if (this.stashScreen.style.display === 'flex') {
-                        if (this.onStashDeposit) {
-                            this.onStashDeposit(item.id);
-                        }
-                    }
-                };
-            } else {
-                slots[i].textContent = '';
-                slots[i].title = 'Empty';
-                slots[i].style.border = '1px solid #444';
-                slots[i].style.boxShadow = 'none';
-                slots[i].style.color = '#ffffff';
-                slots[i].style.backgroundColor = 'rgba(0,0,0,0.3)';
-                slots[i].onclick = null;
-                slots[i].oncontextmenu = null;
-                this.setupItemDragAndDrop(slots[i], 'inventory', i, null);
-            }
-        }
-    }
-
-    updateStash(player) {
-        if (!player) return;
-        this.lastPlayerRef = player;
-        
-        // Ensure grid has 100 slots
-        if (this.stashGrid.children.length === 0) {
-            for (let i = 0; i < 100; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'inv-slot';
-                this.stashGrid.appendChild(slot);
-            }
-        }
-        
-        const slots = this.stashGrid.children;
-        for (let i = 0; i < slots.length; i++) {
-            const item = player.stash ? player.stash[i] : null;
-            slots[i]._item = (item && item.id) ? item : null;
-            slots[i].innerHTML = '';
-            
-            if (item && item.id) {
-                const iconPath = this.getItemIconPath(item);
-                const color = item.rarity ? item.rarity.color : '#ffffff';
-                const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
-                
-                let stackHtml = '';
-                if (item.stack > 1) {
-                    stackHtml = `<div style="position:absolute; bottom:2px; right:2px; font-size:10px; color:white; text-shadow:1px 1px 0 #000; font-weight:bold;">${item.stack}</div>`;
-                }
-
-                if (isEidolic) {
-                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}`;
-                    slots[i].style.border = `2px solid ${color}`;
-                    slots[i].style.boxShadow = `0 0 5px ${color}`;
-                } else {
-                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}`;
-                    slots[i].style.border = `1px solid ${color}`;
-                    slots[i].style.boxShadow = 'none';
-                }
-                
-                slots[i].style.color = color;
-                slots[i].style.backgroundColor = '#222';
-                
-                // Right-click to withdraw
-                slots[i].oncontextmenu = (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (this.onStashWithdraw) {
-                        this.onStashWithdraw(item.id);
-                    }
-                };
-                
-                // Tooltip
-                slots[i].onmousemove = (e) => {
-                    this.showItemTooltip(item, e.clientX, e.clientY, e);
-                };
-                slots[i].onmouseleave = () => {
-                    this.hideTooltips();
-                };
-            } else {
-                slots[i].textContent = '';
-                slots[i].style.border = '1px solid #444';
-                slots[i].style.boxShadow = 'none';
-                slots[i].style.color = '#ffffff';
-                slots[i].style.backgroundColor = 'rgba(0,0,0,0.3)';
-                slots[i].oncontextmenu = null;
-                slots[i].onmousemove = null;
-            }
-        }
-    }
-
-    getItemTooltipText(item) {
-        let text = `${item.name}\n${item.rarity.name} ${item.type}\nLevel ${item.level}\n\n`;
-        if (item.stats) {
-            for (const stat of this.getOrderedItemStatKeys(item.stats)) {
-                text += `+${item.stats[stat]} ${this.formatStatName(stat)}\n`;
-            }
-        }
-        return text;
-    }
 
     setupWindow(element) {
         // Stop clicks from reaching the game
@@ -2066,393 +1504,13 @@ export class UIManager {
             .join(' ');
     }
     
-    formatSetBonus(bonus) {
-        if (!bonus) return '';
-        const parts = [];
-        for (const key in bonus) {
-            const val = bonus[key];
-            // Handle special set bonuses (non-stat bonuses)
-            if (typeof val === 'number' && val === 1) {
-                // Boolean special effect
-                parts.push(this.formatStatName(key));
-            } else if (typeof val === 'number') {
-                // Stat bonus with value
-                parts.push(`+${val}% ${this.formatStatName(key)}`);
-            } else {
-                parts.push(`${this.formatStatName(key)}: ${val}`);
-            }
-        }
-        return parts.join(', ');
-    }
-
-    getOrderedItemStatKeys(stats) {
-        if (!stats) return [];
-
-        // Render item stats in a stable order to prevent tooltip lines from "moving around"
-        // when incoming item payloads reconstruct the stats object with different key orders.
-        const preferredOrder = [
-            'damage',
-            'defense',
-            'strength',
-            'dexterity',
-            'intelligence',
-            'wisdom',
-            'vitality'
-        ];
-
-        const keys = Object.keys(stats);
-        const ordered = [];
-
-        for (const k of preferredOrder) {
-            if (Object.prototype.hasOwnProperty.call(stats, k)) ordered.push(k);
-        }
-
-        const remaining = keys.filter(k => !preferredOrder.includes(k));
-        remaining.sort((a, b) => String(a).localeCompare(String(b)));
-
-        return ordered.concat(remaining);
-    }
-
-    showItemTooltip(item, x, y, event) {
-        // Store hover state for toggle update
-        this.hoveredItem = item;
-        this.lastMouseX = x;
-        this.lastMouseY = y;
-
-        this.statTooltipTitle.textContent = item.name;
-        this.statTooltipTitle.style.color = item.rarity.color;
-        
-        // Format slot name
-        let slotName = item.slot;
-        if (slotName === 'mainHand') slotName = 'Main Hand';
-        else if (slotName === 'offHand') slotName = 'Off Hand';
-        else slotName = slotName.charAt(0).toUpperCase() + slotName.slice(1);
-
-        // Level Requirement Color
-        let levelColor = '#aaa';
-        if (this.lastPlayerRef && this.lastPlayerRef.level < item.level) {
-            levelColor = '#ff0000';
-        }
-
-        let desc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${item.rarity.name} ${item.type} (${slotName}) - <span style="color: ${levelColor}">Lvl ${item.level}</span></div>`;
-        
-        if (item.stack > 1) {
-            desc += `<div style="color: #fff; margin-bottom: 5px;">Stack Size: ${item.stack} / ${item.maxStack || 1000}</div>`;
-        }
-        
-        if (item.stats) {
-            for (const stat of this.getOrderedItemStatKeys(item.stats)) {
-                const val = item.stats[stat];
-                desc += `<div style="color: #fff;">+${val} ${this.formatStatName(stat)}</div>`;
-            }
-        }
-        
-        // Show Socketed Gems
-        if (item.gems && item.gems.length > 0) {
-            desc += `<div style="color: #888; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">Socketed Gems:</div>`;
-            for (const gem of item.gems) {
-                if (gem) {
-                    const gemType = GEM_TYPES[gem.type] || { name: gem.type, color: '#fff' };
-                    const gemQuality = GEM_QUALITIES[gem.quality] || { name: gem.quality };
-                    desc += `<div style="color: ${gemType.color};">◆ ${gemQuality.name} ${gemType.name}</div>`;
-                }
-            }
-        }
-        
-        // Show available sockets
-        if (item.sockets !== undefined && item.sockets > 0) {
-            const usedSockets = item.gems ? item.gems.length : 0;
-            const emptySockets = item.sockets - usedSockets;
-            if (emptySockets > 0) {
-                desc += `<div style="color: #666; margin-top: 3px;">◇ ${emptySockets} Empty Socket${emptySockets > 1 ? 's' : ''}</div>`;
-            }
-        }
-        
-        // Show Set Item Info
-        if (item.setId && SET_DEFINITIONS[item.setId]) {
-            const setDef = SET_DEFINITIONS[item.setId];
-            desc += `<div style="color: #00ff00; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">`;
-            desc += `<div style="font-weight: bold;">${setDef.name}</div>`;
-            
-            // Count equipped pieces if player is available
-            let equippedCount = 0;
-            if (this.lastPlayerRef && this.lastPlayerRef.equipment) {
-                for (const slot in this.lastPlayerRef.equipment) {
-                    const equipped = this.lastPlayerRef.equipment[slot];
-                    if (equipped && equipped.setId === item.setId) {
-                        equippedCount++;
-                    }
-                }
-            }
-            
-            // Show set bonuses with active highlighting
-            const bonusLevels = [
-                { pieces: 2, bonus: setDef.bonus2 },
-                { pieces: 4, bonus: setDef.bonus4 },
-                { pieces: 6, bonus: setDef.bonus6 }
-            ];
-            
-            for (const bl of bonusLevels) {
-                if (bl.bonus) {
-                    const isActive = equippedCount >= bl.pieces;
-                    const color = isActive ? '#00ff00' : '#555';
-                    const bonusText = this.formatSetBonus(bl.bonus);
-                    desc += `<div style="color: ${color};">(${bl.pieces}) ${bonusText}</div>`;
-                }
-            }
-            
-            desc += `<div style="color: #888; font-size: 0.9em; margin-top: 3px;">${equippedCount}/${setDef.slots.length} pieces</div>`;
-            desc += `</div>`;
-        }
-        
-        // Show Unique Effect
-        if (item.uniqueEffect && UNIQUE_EFFECTS[item.uniqueEffect]) {
-            const effect = UNIQUE_EFFECTS[item.uniqueEffect];
-            desc += `<div style="color: ${effect.color}; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">`;
-            desc += `<div style="font-weight: bold;">★ ${effect.name}</div>`;
-            desc += `<div style="color: #ccc; font-style: italic;">${effect.description}</div>`;
-            desc += `</div>`;
-        }
-
-        // Show Sell Price if Shop is Open
-        if (this.shopScreen.style.display === 'flex') {
-            const value = Item.getValue(item);
-            desc += `<div style="color: #ffd700; margin-top: 10px; border-top: 1px solid #444; padding-top: 5px;">Sell Value: ${value} Gold</div>`;
-            
-            // Add Sell Button ONLY on Mobile
-            if (this.isMobile) {
-                desc += `<button id="btn-tooltip-sell" style="width:100%; margin-top:10px; padding: 8px; background:#333; color:#ffd700; border:1px solid #ffd700; cursor:pointer; font-weight:bold;">SELL ITEM</button>`;
-            }
-        }
-        
-        // Add Equip Button ONLY on Mobile
-        if (this.isMobile) {
-            desc += `<button id="btn-tooltip-equip" style="width:100%; margin-top:5px; padding: 8px; background:#222; color:#fff; border:1px solid #666; cursor:pointer;">EQUIP</button>`;
-        }
-        
-        this.statTooltipDesc.innerHTML = desc;
-        
-        // Bind Button Events
-        setTimeout(() => { // Timeout to ensure DOM is updated
-            const btnSell = document.getElementById('btn-tooltip-sell');
-            if (btnSell) {
-                btnSell.onclick = (e) => {
-                    e.stopPropagation();
-                    // Use captured item/index if possible, or fallback to selectedSlot
-                    // Since we are in showItemTooltip, we know 'item'. We need index for sellItem.
-                    // We can find index from inventory.
-                    if (this.lastPlayerRef) {
-                        const index = this.lastPlayerRef.inventory.indexOf(item);
-                        if (index !== -1) {
-                            this.sellItem(this.lastPlayerRef, index);
-                            this.selectedSlot = -1;
-                            this.hideTooltips();
-                        }
-                    }
-                };
-            }
-            
-            const btnEquip = document.getElementById('btn-tooltip-equip');
-            if (btnEquip) {
-                btnEquip.onclick = (e) => {
-                    e.stopPropagation();
-                    if (this.lastPlayerRef) {
-                        // Use the item passed to showItemTooltip directly
-                        if (this.lastPlayerRef.level < item.level) {
-                            console.log("Level too low!");
-                            return;
-                        }
-                        if (this.lastPlayerRef.equipItem(item)) {
-                            this.selectedSlot = -1;
-                            this.hideTooltips();
-                            this.updateInventory(this.lastPlayerRef);
-                            this.updateCharacterSheet(this.lastPlayerRef);
-                        }
-                    }
-                };
-            }
-        }, 0);
-        
-        this.statTooltip.style.display = 'block';
-        this.statTooltip.style.left = `${x + 15}px`;
-        this.statTooltip.style.top = `${y + 15}px`;
-        
-        // Ensure it stays on screen
-        const rect = this.statTooltip.getBoundingClientRect();
-        if (rect.right > window.innerWidth) {
-            this.statTooltip.style.left = `${window.innerWidth - rect.width - 10}px`;
-        }
-
-        // Comparison Tooltip Logic
-        this.compareTooltip.style.display = 'none'; // Default to hidden
-        
-        // Check compareMode OR shiftKey (support both just in case, but user asked for toggle)
-        // Actually user said "shift just toggles on compare", so we rely on this.compareMode
-        if (this.compareMode && this.lastPlayerRef) {
-            const equippedItem = this.lastPlayerRef.equipment[item.slot];
-            
-            // Only show if there is an equipped item and it's not the same item we are hovering
-            if (equippedItem && equippedItem !== item) {
-                this.compareTooltipTitle.textContent = equippedItem.name;
-                this.compareTooltipTitle.style.color = equippedItem.rarity.color;
-                
-                let compDesc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${equippedItem.rarity.name} ${equippedItem.type} (${slotName}) - Lvl ${equippedItem.level}</div>`;
-                
-                if (equippedItem.stats) {
-                    for (const stat of this.getOrderedItemStatKeys(equippedItem.stats)) {
-                        const val = equippedItem.stats[stat];
-                        compDesc += `<div style="color: #fff;">+${val} ${this.formatStatName(stat)}</div>`;
-                    }
-                }
-                
-                // Show Socketed Gems in comparison
-                if (equippedItem.gems && equippedItem.gems.length > 0) {
-                    compDesc += `<div style="color: #888; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">Socketed Gems:</div>`;
-                    for (const gem of equippedItem.gems) {
-                        if (gem) {
-                            const gemType = GEM_TYPES[gem.type] || { name: gem.type, color: '#fff' };
-                            const gemQuality = GEM_QUALITIES[gem.quality] || { name: gem.quality };
-                            compDesc += `<div style="color: ${gemType.color};">◆ ${gemQuality.name} ${gemType.name}</div>`;
-                        }
-                    }
-                }
-                
-                // Show Set Item Info in comparison
-                if (equippedItem.setId && SET_DEFINITIONS[equippedItem.setId]) {
-                    const setDef = SET_DEFINITIONS[equippedItem.setId];
-                    compDesc += `<div style="color: #00ff00; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">`;
-                    compDesc += `<div style="font-weight: bold;">${setDef.name}</div>`;
-                    compDesc += `</div>`;
-                }
-                
-                // Show Unique Effect in comparison
-                if (equippedItem.uniqueEffect && UNIQUE_EFFECTS[equippedItem.uniqueEffect]) {
-                    const effect = UNIQUE_EFFECTS[equippedItem.uniqueEffect];
-                    compDesc += `<div style="color: ${effect.color}; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">`;
-                    compDesc += `<div style="font-weight: bold;">★ ${effect.name}</div>`;
-                    compDesc += `</div>`;
-                }
-                
-                this.compareTooltipDesc.innerHTML = compDesc;
-                
-                this.compareTooltip.style.display = 'block';
-                
-                // Position logic
-                const mainRect = this.statTooltip.getBoundingClientRect();
-                this.compareTooltip.style.left = `${mainRect.right + 10}px`;
-                this.compareTooltip.style.top = `${mainRect.top}px`;
-                
-                const compRect = this.compareTooltip.getBoundingClientRect();
-                if (compRect.right > window.innerWidth) {
-                    // Move to left of main tooltip
-                    this.compareTooltip.style.left = `${mainRect.left - compRect.width - 10}px`;
-                }
-            }
-        }
-    }
-
-    sellItem(player, index) {
-        if (this.onSellItem) {
-            this.onSellItem(index);
-        } else {
-            // Fallback for local testing if engine not hooked up
-            const item = player.inventory[index];
-            if (!item) return;
-
-            const value = Item.getValue(item);
-            
-            player.gold += value;
-            player.inventory[index] = null;
-            
-            console.log(`Sold ${item.name} for ${value} gold.`);
-            
-            this.updateInventory(player);
-        }
-    }
-
-    setupShop() {
-        const grid = document.getElementById('shop-grid');
-        if (!grid) return;
-        
-        grid.innerHTML = ''; // Clear existing
-
-        const gambleOptions = [
-            { name: 'Mystery Helm', slot: SLOTS.HEAD, icon: 'H' },
-            { name: 'Mystery Chest', slot: SLOTS.CHEST, icon: 'C' },
-            { name: 'Mystery Legs', slot: SLOTS.LEGS, icon: 'L' },
-            { name: 'Mystery Boots', slot: SLOTS.FEET, icon: 'B' },
-            { name: 'Mystery Gloves', slot: SLOTS.GLOVES, icon: 'G' },
-            { name: 'Mystery Shoulders', slot: SLOTS.SHOULDERS, icon: 'S' },
-            { name: 'Mystery Belt', slot: SLOTS.BELT, icon: 'Be' },
-            { name: 'Mystery Ring', slot: SLOTS.RING, icon: 'Ri' },
-            { name: 'Mystery Neck', slot: SLOTS.NECK, icon: 'N' },
-            { name: 'Mystery Trinket', slot: SLOTS.TRINKET, icon: 'T' },
-            { name: 'Mystery Weapon', slot: SLOTS.MAIN_HAND, icon: 'W' },
-            { name: 'Mystery Offhand', slot: SLOTS.OFF_HAND, icon: 'O' }
-        ];
-
-        gambleOptions.forEach(opt => {
-            const btn = document.createElement('button');
-            btn.className = 'shop-item';
-            btn.style.cssText = `
-                background: #222;
-                border: 1px solid #444;
-                padding: 10px;
-                cursor: pointer;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                transition: background 0.2s;
-                user-select: none;
-                -webkit-user-select: none;
-                width: 100%;
-                font-family: inherit;
-                color: inherit;
-            `;
-            btn.innerHTML = `
-                <div style="font-size: 24px; color: #ffd700; margin-bottom: 5px; pointer-events: none;">?</div>
-                <div style="font-size: 12px; font-weight: bold; pointer-events: none;">${opt.name}</div>
-                <div style="font-size: 10px; color: #aaa; pointer-events: none;">${opt.slot}</div>
-            `;
-
-            btn.onmouseover = () => {
-                btn.style.background = '#333';
-                btn.style.borderColor = '#ffd700';
-            };
-            btn.onmouseout = () => {
-                btn.style.background = '#222';
-                btn.style.borderColor = '#444';
-            };
-
-            btn.onclick = () => this.buyGambleItem(opt.slot);
-
-            grid.appendChild(btn);
-        });
-    }
-
-    buyGambleItem(slot) {
-        if (!this.lastPlayerRef) return;
-
-        let cost = Math.ceil(35 * this.lastPlayerRef.level);
-
-        if (this.lastPlayerRef.gold < cost) {
-            this.addChatMessage("System", `Not sufficient gold! Cost: ${cost}`);
-            return;
-        }
-
-        if (this.onBuyGamble) {
-            this.onBuyGamble(slot);
-        } else {
-            console.warn("onBuyGamble callback not defined");
-        }
-    }
-
-    hideTooltips() {
-        this.statTooltip.style.display = 'none';
-        this.compareTooltip.style.display = 'none';
-        this.hoveredItem = null;
-    }
+    formatSetBonus(bonus) { return this.inventory.formatSetBonus(bonus); }
+    getOrderedItemStatKeys(stats) { return this.inventory.getOrderedItemStatKeys(stats); }
+    showItemTooltip(item, x, y, event) { this.inventory.showItemTooltip(item, x, y, event); }
+    sellItem(player, index) { this.inventory.sellItem(player, index); }
+    setupShop() { this.inventory.setupShop(); }
+    buyGambleItem(slot) { this.inventory.buyGambleItem(slot); }
+    hideTooltips() { this.inventory.hideTooltips(); }
 
     // --- Social delegates (SocialUI module) ---
     /** @returns {Object|null} current party data (used by WorldMap / Minimap) */
@@ -2463,83 +1521,8 @@ export class UIManager {
     showPartyRequest(inviterName) { this.social.showPartyRequest(inviterName); }
     hidePartyRequest() { this.social.hidePartyRequest(); }
 
-    setupItemDragAndDrop(element, type, indexOrSlot, item) {
-        if (!element) return;
-
-        // Always allow dropping onto this slot (even if empty)
-        element.ondragover = (e) => {
-            e.preventDefault();
-            if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
-        };
-        element.ondrop = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            try {
-                const raw = e.dataTransfer ? e.dataTransfer.getData('text/plain') : '';
-                if (!raw) return;
-                const data = JSON.parse(raw);
-                this.handleItemDrop(data, { type, id: indexOrSlot });
-            } catch (err) {
-                console.error('Drop error', err);
-            }
-        };
-
-        // Source behavior (only if this slot has an item)
-        element.draggable = !!item;
-        element.ondragstart = null;
-        element.ondragend = null;
-
-        if (!item) return;
-
-        element.ondragstart = (e) => {
-            if (!e.dataTransfer) return;
-            e.dataTransfer.setData('text/plain', JSON.stringify({ type, id: indexOrSlot }));
-            e.dataTransfer.effectAllowed = 'move';
-        };
-    }
-
-    handleItemDrop(source, target) {
-        console.log("handleItemDrop", source, target);
-        if (source.type === target.type && source.id === target.id) return;
-
-        const player = this.lastPlayerRef;
-        if (!player) return;
-
-        // Inventory -> Inventory (Move/Swap)
-        if (source.type === 'inventory' && target.type === 'inventory') {
-            if (window.game && window.game.socket && window.game.socket.readyState === WebSocket.OPEN) {
-                window.game.socket.send(JSON.stringify({
-                    type: 'inventory_move',
-                    payload: {
-                        fromIndex: source.id,
-                        toIndex: target.id
-                    }
-                }));
-            }
-        } 
-        // Inventory -> Equipment (Equip)
-        else if (source.type === 'inventory' && target.type === 'equipment') {
-            const item = player.inventory[source.id];
-            if (item) {
-                if (window.game) {
-                    // Map slot name to internal slot ID if needed, but usually they match or are handled
-                    // target.id is passed as 'head', 'ring1' etc from updateEquipSlot
-                    window.game.sendEquipMessage(item, target.id);
-                }
-            }
-        }
-        // Equipment -> Inventory (Unequip)
-        else if (source.type === 'equipment' && target.type === 'inventory') {
-            if (window.game && window.game.socket && window.game.socket.readyState === WebSocket.OPEN) {
-                window.game.socket.send(JSON.stringify({
-                    type: 'unequip',
-                    payload: {
-                        slot: source.id
-                    }
-                }));
-            }
-        }
-    }
+    setupItemDragAndDrop(element, type, indexOrSlot, item) { this.inventory.setupItemDragAndDrop(element, type, indexOrSlot, item); }
+    handleItemDrop(source, target) { this.inventory.handleItemDrop(source, target); }
 
     showDungeonMenu(data) {
         console.log("Showing Dungeon Menu:", data);

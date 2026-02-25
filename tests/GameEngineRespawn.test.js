@@ -123,6 +123,34 @@ function createEngineHarness() {
             renderMyAuctions: jest.fn(),
             handleSearch: jest.fn()
         },
+        inventory: {
+            onBuyGamble: null,
+            onSellItem: null,
+            onSellAll: null,
+            onBuyback: null,
+            onStashDeposit: null,
+            onStashWithdraw: null,
+            onUnequipRequest: null,
+            updateInventory: jest.fn(),
+            updateStash: jest.fn(),
+            updateBuybackList: jest.fn(),
+            updateEquipSlot: jest.fn(),
+            inventoryScreen: { style: { display: 'none' } },
+            shopScreen: { style: { display: 'none' } },
+            stashScreen: { style: { display: 'none' } }
+        },
+        quest: {
+            onAcceptQuest: null,
+            onCompleteQuest: null,
+            isOpen: false
+        },
+        social: {
+            onSocialOpen: null,
+            onPartyInvite: null,
+            onPartyLeave: null,
+            onPartyResponse: null,
+            partyData: null
+        },
         forgeScreen: { style: { display: 'none' } },
         selectedForgeSlot: null,
         selectedForgePotencySlot: null,
