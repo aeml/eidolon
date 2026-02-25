@@ -3,6 +3,8 @@ import { CONSTANTS } from '../core/Constants.js';
 import { ForgeUI } from './ForgeUI.js';
 import { SkillTreeUI } from './SkillTreeUI.js';
 import { TradingUI } from './TradingUI.js';
+import { QuestUI } from './QuestUI.js';
+import { SocialUI } from './SocialUI.js';
 
 export class UIManager {
     constructor(isMobile = false) {
@@ -30,13 +32,10 @@ export class UIManager {
         this.stashScreen = document.getElementById('stash-screen');
         this.stashGrid = document.getElementById('stash-grid');
 
-        // Quest UI
-        this.questWindow = document.getElementById('quest-window');
-        this.questList = document.getElementById('quest-list');
-        this.questJournal = document.getElementById('quest-journal');
-        this.journalList = document.getElementById('journal-list');
-        this.btnCloseQuest = document.getElementById('btn-close-quest');
-        this.btnCloseJournal = document.getElementById('btn-close-journal');
+        // Quest UI (extracted module)
+        this.quest = new QuestUI({
+            getLastPlayer: () => this.lastPlayerRef,
+        });
 
         // Escape Menu & Help
         this.escMenu = document.getElementById('esc-menu');
@@ -187,8 +186,6 @@ export class UIManager {
             });
         }
 
-        if (this.btnCloseQuest) this.btnCloseQuest.addEventListener('click', () => this.toggleQuestWindow());
-        if (this.btnCloseJournal) this.btnCloseJournal.addEventListener('click', () => this.toggleJournal());
         if (this.btnRespawn) this.btnRespawn.addEventListener('click', () => {
             if (this.onRespawn) {
                 this.onRespawn();
@@ -213,7 +210,11 @@ export class UIManager {
         if (this.btnSellRare) this.btnSellRare.addEventListener('click', () => this.handleSellAll('Rare'));
 
         this.setupShop();
-        this.createSocialWindow();
+        // Social UI (extracted module) — must come before setupWindow block
+        this.social = new SocialUI({
+            getLastPlayer: () => this.lastPlayerRef,
+            addChatMessage: (sender, msg) => this.addChatMessage(sender, msg),
+        });
         this.createDeathScreen();
 
         // Setup Windows (Drag & Click Blocking)
@@ -223,49 +224,16 @@ export class UIManager {
         this.setupWindow(this.stashScreen);
         this.setupWindow(this.forge.forgeScreen);
         this.setupWindow(this.trading.tradingHouseScreen);
-        this.setupWindow(this.questWindow);
-        this.setupWindow(this.questJournal);
+        this.setupWindow(this.quest.questWindow);
+        this.setupWindow(this.quest.questJournal);
         this.setupWindow(this.helpScreen);
         this.setupWindow(this.patchNotesScreen);
         this.setupWindow(this.reportScreen);
-        this.setupWindow(this.socialWindow);
+        this.setupWindow(this.social.socialWindow);
         this.setupWindow(this.skillTree.skillTreeWindow);
         this.setupWindow(this.abilitiesMenu);
 
-        // Party UI
-        this.partyPanel = document.getElementById('party-panel');
-        this.partyList = document.getElementById('party-list');
-        this.partyInviteInput = document.getElementById('party-invite-input');
-        this.btnInviteParty = document.getElementById('btn-invite-party');
-        this.btnLeaveParty = document.getElementById('btn-leave-party');
-        this.partyRequestModal = document.getElementById('party-request-modal');
-        this.partyInviterName = document.getElementById('party-inviter-name');
-        this.btnAcceptParty = document.getElementById('btn-accept-party');
-        this.btnDeclineParty = document.getElementById('btn-decline-party');
-
-        if (this.btnInviteParty) this.btnInviteParty.addEventListener('click', () => {
-            const name = this.partyInviteInput.value.trim();
-            if (name && this.onPartyInvite) {
-                this.onPartyInvite(name);
-                this.partyInviteInput.value = '';
-            }
-        });
-
-        if (this.btnLeaveParty) this.btnLeaveParty.addEventListener('click', () => {
-            if (this.onPartyLeave) this.onPartyLeave();
-        });
-
-        if (this.btnAcceptParty) this.btnAcceptParty.addEventListener('click', () => {
-            if (this.onPartyResponse) this.onPartyResponse(this.currentInviter, true);
-            this.hidePartyRequest();
-        });
-
-        if (this.btnDeclineParty) this.btnDeclineParty.addEventListener('click', () => {
-            if (this.onPartyResponse) this.onPartyResponse(this.currentInviter, false);
-            this.hidePartyRequest();
-        });
-        
-        if (this.partyPanel) this.setupWindow(this.partyPanel);
+        if (this.social.partyPanel) this.setupWindow(this.social.partyPanel);
 
         // Ability UI
         this.abilityContainer = document.getElementById('ability-container');
@@ -928,21 +896,11 @@ export class UIManager {
     renderAuctionList(auctions) { this.trading.renderAuctionList(auctions); }
     renderMyAuctions(auctions) { this.trading.renderMyAuctions(auctions); }
 
-    toggleQuestWindow() {
-        const isHidden = this.questWindow.style.display === 'none' || this.questWindow.style.display === '';
-        this.questWindow.style.display = isHidden ? 'flex' : 'none';
-        if (isHidden && this.lastPlayerRef && this.lastPlayerRef.quests) {
-            this.updateQuestWindow(this.lastPlayerRef.quests);
-        }
-    }
-
-    toggleJournal() {
-        const isHidden = this.questJournal.style.display === 'none' || this.questJournal.style.display === '';
-        this.questJournal.style.display = isHidden ? 'flex' : 'none';
-        if (isHidden && this.lastPlayerRef && this.lastPlayerRef.quests) {
-            this.updateJournal(this.lastPlayerRef.quests);
-        }
-    }
+    // --- Quest delegates (QuestUI module) ---
+    toggleQuestWindow() { this.quest.toggleQuestWindow(); }
+    toggleJournal() { this.quest.toggleJournal(); }
+    updateQuestWindow(quests) { this.quest.updateQuestWindow(quests); }
+    updateJournal(quests) { this.quest.updateJournal(quests); }
 
     toggleSkillTree() {
         this.skillTree.toggle();
@@ -1255,165 +1213,6 @@ export class UIManager {
         });
     }
 
-    formatQuestTarget(target, maxCount) {
-        const targetMap = {
-            DungeonBoss: 'Dungeon Boss',
-            DungeonBossNormal: 'Dungeon Boss (Normal)',
-            DungeonBossHeroic: 'Dungeon Boss (Heroic)',
-            DungeonBossMythic: 'Dungeon Boss (Mythic)',
-            VerdantBastionBoss: 'Verdant Bastion Boss',
-            MoltenCoreBoss: 'Molten Core Boss',
-            TempestSpireBoss: 'Tempest Spire Boss',
-            AbyssalWellBoss: 'Abyssal Well Boss'
-        };
-
-        const label = targetMap[target] || target;
-        if (maxCount === 1) return label;
-
-        if (label.includes('Boss')) {
-            return label.replace('Boss', 'Bosses');
-        }
-
-        if (label.endsWith('s')) return label;
-        return `${label}s`;
-    }
-
-    updateQuestWindow(quests) {
-        this.questList.innerHTML = '';
-        if (!quests) return;
-
-        quests.forEach(q => {
-            // Show if:
-            // 1. Not accepted (Available)
-            // 2. Accepted AND Completed (Ready to Turn In)
-            // Hide if Accepted and Not Completed (In Progress - check Journal)
-            
-            if (q.accepted && !q.completed && q.count < q.maxCount) return; 
-            if (q.completed && q.accepted) {
-                 // Ready to turn in
-            } else if (q.accepted && q.completed) {
-                // Already turned in? Wait, my logic in server sets Completed=true.
-                // I need a way to know if reward is claimed?
-                // Server logic: PerformCompleteQuest sets Completed=true and gives XP.
-                // So if Completed=true, it's done.
-                // I should probably filter out completed quests from the "Available" list unless I want to show history.
-                // Let's hide completed quests.
-                return;
-            }
-
-            const div = document.createElement('div');
-            div.style.background = '#222';
-            div.style.border = '1px solid #444';
-            div.style.padding = '10px';
-            div.style.display = 'flex';
-            div.style.flexDirection = 'column';
-            div.style.gap = '5px';
-
-            let btnHtml = '';
-            let statusText = '';
-            const targetLabel = this.formatQuestTarget(q.target, q.maxCount);
-
-            if (!q.accepted) {
-                statusText = `<div style="color: #ffd700; font-weight: bold;">Daily: Kill ${q.maxCount} ${targetLabel}</div>`;
-                btnHtml = `<button class="menu-btn" style="margin-top: 5px; background: #4CAF50; border-color: #45a049;">Accept Quest</button>`;
-            } else if (q.accepted && !q.completed && q.count >= q.maxCount) {
-                // Ready to turn in (Client side check, server sets completed on turn in)
-                // Wait, server sets Completed=true ONLY when PerformCompleteQuest is called.
-                // So here q.completed is false, but count >= maxCount.
-                statusText = `<div style="color: #4CAF50; font-weight: bold;">COMPLETE: Kill ${q.maxCount} ${targetLabel}</div>`;
-                btnHtml = `<button class="menu-btn" style="margin-top: 5px; background: #FFD700; color: #000; border-color: #FFA000;">Claim Reward</button>`;
-            } else {
-                return; // Should be covered by top check
-            }
-
-            div.innerHTML = `
-                ${statusText}
-                <div style="color: #aaa; font-size: 12px;">Reward: ${q.rewardXP} XP</div>
-                ${btnHtml}
-            `;
-
-            const btn = div.querySelector('button');
-            btn.onclick = () => {
-                if (!q.accepted) {
-                    if (this.onAcceptQuest) this.onAcceptQuest(q.id);
-                } else {
-                    if (this.onCompleteQuest) this.onCompleteQuest(q.id);
-                }
-            };
-
-            this.questList.appendChild(div);
-        });
-
-        if (this.questList.children.length === 0) {
-            this.questList.innerHTML = '<div style="color: #888; text-align: center; margin-top: 20px;">No available quests. Check your Journal (J) for active quests.</div>';
-        }
-    }
-
-    updateJournal(quests) {
-        this.journalList.innerHTML = '';
-
-        // Add Reset Time Info
-        const infoDiv = document.createElement('div');
-        infoDiv.style.color = '#888';
-        infoDiv.style.fontSize = '12px';
-        infoDiv.style.marginBottom = '15px';
-        infoDiv.style.textAlign = 'center';
-        infoDiv.style.borderBottom = '1px solid #444';
-        infoDiv.style.paddingBottom = '10px';
-        infoDiv.textContent = `Daily quests reset at 12:00 AM Eastern Time`;
-        this.journalList.appendChild(infoDiv);
-
-        if (!quests) return;
-
-        let hasActive = false;
-        quests.forEach(q => {
-            if (!q.accepted) return; // Only show accepted
-
-            hasActive = true;
-            const div = document.createElement('div');
-            div.style.background = '#222';
-            div.style.border = '1px solid #444';
-            div.style.padding = '10px';
-            div.style.display = 'flex';
-            div.style.flexDirection = 'column';
-            div.style.gap = '5px';
-
-            const pct = Math.min(100, (q.count / q.maxCount) * 100);
-            const color = q.completed ? '#4CAF50' : '#ffd700';
-            const status = q.completed ? 'COMPLETED' : 'IN PROGRESS';
-            const targetLabel = this.formatQuestTarget(q.target, q.maxCount);
-
-            div.innerHTML = `
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: #fff; font-weight: bold;">Kill ${targetLabel}</span>
-                    <span style="color: ${color}; font-size: 12px;">${status}</span>
-                </div>
-                <div style="background: #111; height: 10px; border: 1px solid #444; position: relative;">
-                    <div style="background: ${color}; width: ${pct}%; height: 100%;"></div>
-                    <div style="position: absolute; top: 0; left: 0; width: 100%; text-align: center; font-size: 8px; line-height: 10px; color: #fff;">${q.count} / ${q.maxCount}</div>
-                </div>
-                <div style="color: #aaa; font-size: 12px;">Reward: ${q.rewardXP} XP</div>
-            `;
-
-            if (q.completed) {
-                // Auto-complete or button? Let's add a button to claim if we want, or just show completed.
-                // Requirement was "quest journal... lists the quest and your progress".
-                // Usually you turn in at NPC.
-                // Let's assume turn in at NPC for now, but maybe add a "Claim" button here for convenience?
-                // User said "Quest Window... offer daily quest".
-                // Let's stick to NPC interaction for turn-in.
-                // But wait, if I close the quest window, how do I turn it in?
-                // I should add "Turn In" button to the Quest Window (NPC) if completed.
-            }
-
-            this.journalList.appendChild(div);
-        });
-
-        if (!hasActive) {
-            this.journalList.innerHTML = '<div style="color: #888; text-align: center; margin-top: 20px;">No active quests.</div>';
-        }
-    }
-
     toggleEscMenu() {
         const isHidden = this.escMenu.style.display === 'none' || this.escMenu.style.display === '';
         this.escMenu.style.display = isHidden ? 'block' : 'none';
@@ -1643,14 +1442,14 @@ export class UIManager {
         }
 
         // Close Quest Window (NPC)
-        if (this.questWindow.style.display === 'flex') {
-            this.questWindow.style.display = 'none';
+        if (this.quest.isQuestWindowOpen) {
+            this.quest.closeQuestWindow();
             closedSomething = true;
         }
 
         // Close Quest Journal
-        if (this.questJournal.style.display === 'flex') {
-            this.questJournal.style.display = 'none';
+        if (this.quest.isJournalOpen) {
+            this.quest.closeJournal();
             closedSomething = true;
         }
 
@@ -1667,8 +1466,8 @@ export class UIManager {
         }
 
         // Close Social
-        if (this.socialWindow.style.display === 'block') {
-            this.socialWindow.style.display = 'none';
+        if (this.social.isOpen) {
+            this.social.close();
             closedSomething = true;
         }
 
@@ -2655,178 +2454,14 @@ export class UIManager {
         this.hoveredItem = null;
     }
 
-    createSocialWindow() {
-        const div = document.createElement('div');
-        div.id = 'social-window';
-        div.className = 'window'; // Add window class for styling/scaling
-        div.style.display = 'none';
-        div.style.position = 'absolute';
-        div.style.top = '50%';
-        div.style.left = '50%';
-        div.style.transform = 'translate(-50%, -50%)';
-        div.style.width = '400px';
-        div.style.height = '500px';
-        div.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
-        div.style.border = '2px solid #444';
-        div.style.color = 'white';
-        div.style.padding = '20px';
-        div.style.zIndex = '1000';
-        div.style.fontFamily = 'Arial, sans-serif';
-        
-        div.innerHTML = `
-            <div class="window-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid #666; padding-bottom:10px;">
-                <h2 style="margin:0;">Social</h2>
-                <button id="close-social" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">X</button>
-            </div>
-            <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; font-weight:bold; margin-bottom:10px; color:#aaa;">
-                <span>Name</span>
-                <span>Class</span>
-                <span>Level</span>
-                <span>Action</span>
-            </div>
-            <div id="social-list" style="overflow-y:auto; height:380px;">
-                <!-- Players go here -->
-            </div>
-        `;
-        
-        document.body.appendChild(div);
-        
-        document.getElementById('close-social').onclick = () => this.toggleSocial(false);
-        this.socialWindow = div;
-        this.socialList = document.getElementById('social-list');
-    }
-
-    toggleSocial(show) {
-        if (show === undefined) {
-            show = this.socialWindow.style.display === 'none';
-        }
-        this.socialWindow.style.display = show ? 'block' : 'none';
-        
-        // Also toggle Party Panel if opening Social, or ensure it's visible if in party
-        if (show) {
-            // Trigger refresh callback if needed, or GameEngine handles it
-            if (this.onSocialOpen) this.onSocialOpen();
-            
-            // Show Party Panel alongside Social Window for easy access
-            if (this.partyPanel) {
-                this.partyPanel.style.display = 'block';
-            }
-        } else {
-            // Closing social
-            // Only hide party panel if NOT in a party
-            if (this.partyPanel && !this.inParty) {
-                this.partyPanel.style.display = 'none';
-            }
-        }
-    }
-
-    updateSocialList(players) {
-        this.socialList.innerHTML = '';
-        players.forEach(p => {
-            const row = document.createElement('div');
-            row.style.display = 'grid';
-            row.style.gridTemplateColumns = '2fr 1fr 1fr 1fr'; // Added column for Invite
-            row.style.padding = '5px 0';
-            row.style.borderBottom = '1px solid #333';
-            
-            // Use lastPlayerRef to check self name if available, otherwise just white
-            const isSelf = this.lastPlayerRef && this.lastPlayerRef.name === p.name;
-
-            row.innerHTML = `
-                <span style="color:${isSelf ? '#4CAF50' : 'white'}">${p.name}</span>
-                <span style="color:#aaa">${p.class}</span>
-                <span style="color:#FFD700">${p.level}</span>
-                ${!isSelf ? `<button class="btn-invite" data-name="${p.name}" style="background:#2e7d32; border:none; color:white; cursor:pointer; font-size:10px; padding:2px 5px;">INVITE</button>` : '<span></span>'}
-            `;
-            this.socialList.appendChild(row);
-        });
-
-        // Add event listeners to invite buttons
-        const inviteBtns = this.socialList.querySelectorAll('.btn-invite');
-        inviteBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const name = e.target.getAttribute('data-name');
-                if (this.onPartyInvite) {
-                    this.onPartyInvite(name);
-                    this.addChatMessage("System", `Invited ${name} to party.`);
-                }
-            });
-        });
-    }
-
-    updateParty(partyData) {
-        this.partyData = partyData; // Store for WorldMap access
-        if (!this.partyPanel || !this.partyList) return;
-
-        const inParty = !!(partyData && partyData.partyId);
-        this.inParty = inParty;
-
-        if (!inParty) {
-            // Not in party
-            if (this.socialWindow.style.display === 'none') {
-                 this.partyPanel.style.display = 'none';
-            } else {
-                 // Keep it open if social window is open, so they can see the invite box
-                 this.partyPanel.style.display = 'block';
-            }
-            this.partyList.innerHTML = '<div style="color:#aaa; font-style:italic; padding:5px;">No party. Invite someone!</div>';
-            return;
-        }
-
-        this.partyPanel.style.display = 'block';
-        this.partyList.innerHTML = '';
-
-        const members = partyData.members || [];
-        const leaderId = partyData.leaderId;
-        const myId = this.lastPlayerRef ? this.lastPlayerRef.id : null;
-        const amILeader = myId === leaderId;
-
-        members.forEach(member => {
-            const div = document.createElement('div');
-            div.className = 'party-member';
-            
-            const hpPercent = (member.hp / member.maxHp) * 100;
-            const isLeader = member.isLeader;
-            const isMe = member.id === myId;
-
-            let actionsHtml = '';
-            if (amILeader && !isMe) {
-                actionsHtml = `
-                    <div class="party-actions">
-                        <button class="party-btn" onclick="window.game.kickPartyMember('${member.id}')" title="Kick">K</button>
-                        <button class="party-btn" onclick="window.game.promotePartyMember('${member.id}')" title="Promote">P</button>
-                    </div>
-                `;
-            }
-
-            div.innerHTML = `
-                <div class="party-member-info">
-                    <div class="party-name">
-                        ${isLeader ? '<span class="party-leader-icon">★</span>' : ''}
-                        ${member.name} <span style="color: #aaa; font-size: 10px;">(Lvl ${member.level} ${member.class})</span>
-                    </div>
-                    <div class="party-hp-bar">
-                        <div class="party-hp-fill" style="width: ${hpPercent}%"></div>
-                    </div>
-                </div>
-                ${actionsHtml}
-            `;
-            this.partyList.appendChild(div);
-        });
-    }
-
-    showPartyRequest(inviterName) {
-        if (!this.partyRequestModal) return;
-        this.currentInviter = inviterName;
-        if (this.partyInviterName) this.partyInviterName.textContent = inviterName;
-        this.partyRequestModal.style.display = 'block';
-    }
-
-    hidePartyRequest() {
-        if (!this.partyRequestModal) return;
-        this.partyRequestModal.style.display = 'none';
-        this.currentInviter = null;
-    }
+    // --- Social delegates (SocialUI module) ---
+    /** @returns {Object|null} current party data (used by WorldMap / Minimap) */
+    get partyData() { return this.social.partyData; }
+    toggleSocial(show) { this.social.toggleSocial(show); }
+    updateSocialList(players) { this.social.updateSocialList(players); }
+    updateParty(partyData) { this.social.updateParty(partyData); }
+    showPartyRequest(inviterName) { this.social.showPartyRequest(inviterName); }
+    hidePartyRequest() { this.social.hidePartyRequest(); }
 
     setupItemDragAndDrop(element, type, indexOrSlot, item) {
         if (!element) return;
