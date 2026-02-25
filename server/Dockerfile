@@ -10,15 +10,16 @@ RUN go mod download
 COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o /out/eidolon-server ./main.go
+RUN printf '[]\n' > /out/bug_reports.json
 
 FROM gcr.io/distroless/base-debian12:nonroot
 
 WORKDIR /app
 
 COPY --from=builder /out/eidolon-server /app/eidolon-server
+COPY --from=builder /out/bug_reports.json /app/bug_reports.json
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
-COPY bug_reports.json /app/bug_reports.json
 
 EXPOSE 8080
 
