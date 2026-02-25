@@ -2,7 +2,7 @@
 // NetworkManager — owns WebSocket lifecycle, binary decode, message queue
 // ============================================================================
 
-import eidolonProto from '../proto/state_pb.js';
+import { eidolon as eidolonProto } from '../proto/state_pb.js';
 
 export class NetworkManager {
     /**
