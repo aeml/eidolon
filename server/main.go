@@ -1099,6 +1099,14 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 
+		// Defensive re-join: clean up previous entity if this client already joined
+		if c.playerID != "" {
+			log.Printf("Re-join detected for %s (old playerID: %s) – removing stale entity", c.username, c.playerID)
+			world.RemoveEntity(c.playerID)
+			c.seenIDs = make(map[string]bool)
+			c.lastState = make(map[string]*EntitySnapshot)
+		}
+
 		log.Printf("Player joining: %s (Class: %s)", c.username, payload.Type)
 
 		// Load user from DB to check for existing character

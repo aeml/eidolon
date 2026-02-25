@@ -385,12 +385,11 @@ export class GameEngine {
             return true; // Assume success, server will correct if not
         };
         
-        // Connect to server
+        // Wire up chat UI (server connection happens at end of loadGame)
         this.uiManager.toggleChat(true);
         this.uiManager.onChatSend = (msg) => {
-                this.network.send('chat', { message: msg, sender: this.username });
-            };
-            this.connectToServer();
+            this.network.send('chat', { message: msg, sender: this.username });
+        };
         
         if (onProgress) onProgress(30, "Initializing UI...");
         await new Promise(r => setTimeout(r, 50));
@@ -1049,6 +1048,15 @@ this.abilityController.pendingAbilityTarget = null;
             const state = msg.payload;
             const seenIds = new Set();
             
+            // One-time log on first state message received
+            if (!this._firstStateReceived) {
+                this._firstStateReceived = true;
+                const entityCount = Object.keys(state).length;
+                const types = {};
+                Object.values(state).forEach(e => { types[e.type] = (types[e.type] || 0) + 1; });
+                console.log(`First state received: ${entityCount} entities`, types);
+            }
+
             // Debug log for entity count (throttled)
             if (this.frameCount % 600 === 0) {
                 console.log(`Received state with ${Object.keys(state).length} entities`);
@@ -2334,23 +2342,21 @@ this.abilityController.pendingAbilityTarget = null;
         // 1. Handle critical messages (Chat, Inventory, etc.)
         // Increased limit to clear backlog faster
         const maxMessages = 200; 
-        let msgCount = 0;
         
-        const pendingMessages = this.network.drainMessages();
+        const pendingMessages = this.network.drainMessages(maxMessages);
 
-        // Debug queue size if it gets large
-        if (pendingMessages.length > 100 && this.frameCount % 60 === 0) {
-            console.warn(`Message Queue Backlog: ${pendingMessages.length}`);
+        // Debug queue size if backlog persists across frames
+        if (this.network.messageQueue.length > 100 && this.frameCount % 60 === 0) {
+            console.warn(`Message Queue Backlog: ${this.network.messageQueue.length} remaining`);
         }
 
-        for (let i = 0; i < pendingMessages.length && msgCount < maxMessages; i++) {
+        for (let i = 0; i < pendingMessages.length; i++) {
             const msg = pendingMessages[i];
             try {
                 this.handleServerMessage(msg);
             } catch (e) {
                 console.error("Error handling message:", msg.type, e);
             }
-            msgCount++;
         }
 
         // 2. Handle latest state update (Coalesced) - REMOVED to ensure all state transitions (like Attacks) are processed
@@ -2459,7 +2465,7 @@ this.abilityController.pendingAbilityTarget = null;
                     continue;
                 } else {
                     remoteEntity = this.createRemotePlayer(pData.type || 'Enemy', pData.id, pData.subType); 
-                    // console.log(`Created remote entity: ${pData.id} (${pData.type}/${pData.subType})`);
+                    console.log(`Created remote entity: ${pData.id} (${pData.type}/${pData.subType})`);
                 }
                 
                 if (remoteEntity) {

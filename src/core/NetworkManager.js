@@ -167,14 +167,20 @@ export class NetworkManager {
     // ------------------------------------------------------------------
 
     /**
-     * Returns all queued messages and clears the queue.
+     * Returns queued messages up to `limit` and removes them from the queue.
+     * Remaining messages are preserved for the next drain call.
+     * @param {number} [limit=Infinity] - Maximum number of messages to return.
      * @returns {Object[]}
      */
-    drainMessages() {
-        if (this.messageQueue.length === 0) return this.messageQueue;
-        const msgs = this.messageQueue;
-        this.messageQueue = [];
-        return msgs;
+    drainMessages(limit = Infinity) {
+        if (this.messageQueue.length === 0) return [];
+        if (this.messageQueue.length <= limit) {
+            const msgs = this.messageQueue;
+            this.messageQueue = [];
+            return msgs;
+        }
+        // Take only `limit` messages; keep the rest for next frame
+        return this.messageQueue.splice(0, limit);
     }
 
     // ------------------------------------------------------------------

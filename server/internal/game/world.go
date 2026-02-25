@@ -2747,6 +2747,10 @@ func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ
 func (w *World) AddEntity(e *Entity) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
+	// Remove stale grid entry if entity ID already exists (e.g. re-join)
+	if old, exists := w.Entities[e.ID]; exists {
+		w.Grid.Remove(old)
+	}
 	w.Entities[e.ID] = e
 	w.Grid.Add(e)
 }
@@ -6128,7 +6132,6 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	// Record this skill for combo tracking (after checking, so we don't self-combo)
 	player.LastSkillUsed = skillName
 	player.LastSkillTime = now
-
 
 	// Class Specific Logic
 	switch player.SubType {
