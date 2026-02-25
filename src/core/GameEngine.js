@@ -2595,8 +2595,6 @@ this.abilityController.pendingAbilityTarget = null;
                             });
                         }, 500);
                     }
-                } else if (this.isInteractableEntity(this.hoveredEntity)) {
-                    this.moveToAndInteract(this.hoveredEntity);
                 } else if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
                     const dist = this.player.position.distanceTo(this.hoveredEntity.position);
                     const range = (this.player instanceof Wizard || this.player instanceof Rogue) ? 16.0 : 4.0;
@@ -2621,12 +2619,10 @@ this.abilityController.pendingAbilityTarget = null;
                         this.player.move(this.hoveredEntity.position);
                     }
                 } else {
-                    if (!this.hoveredEntity || this.hoveredEntity === this.player) {
-                        const point = this.inputManager.getGroundIntersection();
-                        if (point) {
-                            if (!this.pendingInteraction) {
-                                this.player.move(point);
-                            }
+                    const point = this.inputManager.getGroundIntersection();
+                    if (point) {
+                        if (!this.pendingInteraction) {
+                            this.player.move(point);
                         }
                     }
                 }
