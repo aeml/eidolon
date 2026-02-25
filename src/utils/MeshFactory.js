@@ -479,245 +479,237 @@ export class MeshFactory {
         Thalorath:         { shape: 'titan',     scale: 6.2, color: 0x003B6F, emissive: 0x4EF2FF, emissiveI: 0.5 },
     };
 
+    // ---- Procedural enemy caches ----
+    // Geometry templates: keyed by shape name -> array of { geo, pos, rot } descriptors
+    static _proceduralShapeCache = {};
+    // Material cache: keyed by enemy type name -> MeshStandardMaterial
+    static _proceduralMatCache = {};
+    // Transparent material variants: keyed by enemy type name + suffix -> MeshStandardMaterial
+    static _proceduralMatTransCache = {};
+    // Hitbox geometry cache: keyed by scale -> BoxGeometry
+    static _proceduralHitboxCache = {};
+    // Invisible hitbox material (shared singleton)
+    static _hitboxMat = null;
+
+    /**
+     * Get or create the cached material for a procedural enemy type.
+     * @param {string} type - Enemy type name
+     * @param {Object} spec - Spec with color, emissive, emissiveI
+     * @returns {THREE.MeshStandardMaterial}
+     */
+    static _getProceduralMat(type, { color, emissive, emissiveI }) {
+        if (!this._proceduralMatCache[type]) {
+            this._proceduralMatCache[type] = new THREE.MeshStandardMaterial({
+                color,
+                emissive: new THREE.Color(emissive),
+                emissiveIntensity: emissiveI,
+                roughness: 0.6,
+                metalness: 0.2,
+            });
+        }
+        return this._proceduralMatCache[type];
+    }
+
+    /**
+     * Get or create a transparent variant of the cached material.
+     * @param {string} key - Cache key (e.g. "type:head", "type:ring")
+     * @param {Object} spec - Spec with color, emissive, emissiveI
+     * @param {number} opacity - Opacity value
+     * @returns {THREE.MeshStandardMaterial}
+     */
+    static _getProceduralTransMat(key, { color, emissive, emissiveI }, opacity) {
+        if (!this._proceduralMatTransCache[key]) {
+            this._proceduralMatTransCache[key] = new THREE.MeshStandardMaterial({
+                color,
+                emissive: new THREE.Color(emissive),
+                emissiveIntensity: emissiveI,
+                roughness: 0.6,
+                metalness: 0.2,
+                transparent: true,
+                opacity,
+            });
+        }
+        return this._proceduralMatTransCache[key];
+    }
+
+    /**
+     * Build (or retrieve from cache) the geometry descriptors for a given shape.
+     * Each descriptor is { geo: BufferGeometry, pos: [x,y,z], rot: [x,y,z], transparent: bool, opacity: number }.
+     * Geometries are created once and reused across all instances of the same shape.
+     * @param {string} shape - Shape name
+     * @returns {Array<Object>} Array of mesh descriptors
+     */
+    static _getShapeDescriptors(shape) {
+        if (this._proceduralShapeCache[shape]) return this._proceduralShapeCache[shape];
+
+        const descs = [];
+        const add = (geo, pos, rot = [0, 0, 0], opts = {}) => {
+            descs.push({ geo, pos, rot, transparent: opts.transparent || false, opacity: opts.opacity || 1.0 });
+        };
+
+        switch (shape) {
+            case 'humanoid': {
+                add(new THREE.CylinderGeometry(0.35, 0.3, 1.4, 8), [0, 0.7, 0]);
+                add(new THREE.SphereGeometry(0.25, 8, 8), [0, 1.55, 0]);
+                const armGeo = new THREE.CylinderGeometry(0.1, 0.08, 0.8, 6);
+                add(armGeo, [-0.45, 0.9, 0], [0, 0, 0.3]);
+                add(armGeo, [0.45, 0.9, 0], [0, 0, -0.3]);
+                break;
+            }
+            case 'golem': {
+                add(new THREE.BoxGeometry(0.9, 0.8, 0.6), [0, 1.0, 0]);
+                add(new THREE.BoxGeometry(0.4, 0.35, 0.35), [0, 1.55, 0]);
+                const jointGeo = new THREE.SphereGeometry(0.18, 6, 6);
+                const armGeo = new THREE.CylinderGeometry(0.13, 0.15, 0.7, 6);
+                const legGeo = new THREE.CylinderGeometry(0.15, 0.18, 0.6, 6);
+                [-0.55, 0.55].forEach(x => {
+                    add(jointGeo, [x, 1.2, 0]);
+                    add(armGeo, [x, 0.7, 0]);
+                });
+                [-0.25, 0.25].forEach(x => {
+                    add(legGeo, [x, 0.3, 0]);
+                });
+                break;
+            }
+            case 'wraith': {
+                add(new THREE.ConeGeometry(0.6, 1.6, 8), [0, 0.8, 0], [Math.PI, 0, 0]);
+                add(new THREE.SphereGeometry(0.2, 8, 8), [0, 1.7, 0], [0, 0, 0], { transparent: true, opacity: 0.7 });
+                const tendrilGeo = new THREE.ConeGeometry(0.05, 0.5, 4);
+                for (let i = 0; i < 3; i++) {
+                    add(tendrilGeo, [Math.cos(i * 2.1) * 0.3, 0.1, Math.sin(i * 2.1) * 0.3]);
+                }
+                break;
+            }
+            case 'beast': {
+                add(new THREE.BoxGeometry(0.7, 0.5, 1.2), [0, 0.5, 0]);
+                add(new THREE.ConeGeometry(0.25, 0.5, 6), [0, 0.6, 0.7], [-Math.PI / 2, 0, 0]);
+                const legGeo = new THREE.CylinderGeometry(0.08, 0.1, 0.5, 6);
+                [[-0.3, 0.4], [0.3, 0.4], [-0.3, -0.4], [0.3, -0.4]].forEach(([x, z]) => {
+                    add(legGeo, [x, 0.15, z]);
+                });
+                add(new THREE.CylinderGeometry(0.05, 0.02, 0.6, 4), [0, 0.4, -0.8], [0.5, 0, 0]);
+                break;
+            }
+            case 'elemental': {
+                const sizes = [0.35, 0.28, 0.2, 0.14];
+                let y = 0;
+                sizes.forEach(r => {
+                    y += r;
+                    add(new THREE.SphereGeometry(r, 10, 10), [0, y, 0]);
+                    y += r * 0.8;
+                });
+                add(new THREE.TorusGeometry(0.5, 0.04, 8, 16), [0, 0.6, 0], [Math.PI / 3, 0, 0], { transparent: true, opacity: 0.5 });
+                break;
+            }
+            case 'titan': {
+                add(new THREE.BoxGeometry(0.8, 1.2, 0.5), [0, 1.0, 0]);
+                add(new THREE.BoxGeometry(1.2, 0.2, 0.5), [0, 1.55, 0]);
+                add(new THREE.SphereGeometry(0.22, 8, 8), [0, 1.85, 0]);
+                const armGeo = new THREE.CylinderGeometry(0.14, 0.12, 1.0, 6);
+                const fistGeo = new THREE.SphereGeometry(0.15, 6, 6);
+                [-0.65, 0.65].forEach(x => {
+                    add(armGeo, [x, 0.8, 0]);
+                    add(fistGeo, [x, 0.25, 0]);
+                });
+                const legGeo = new THREE.CylinderGeometry(0.18, 0.2, 0.8, 6);
+                [-0.25, 0.25].forEach(x => {
+                    add(legGeo, [x, 0.25, 0]);
+                });
+                break;
+            }
+            case 'bird': {
+                add(new THREE.ConeGeometry(0.3, 1.0, 8), [0, 0.8, 0]);
+                add(new THREE.SphereGeometry(0.18, 8, 8), [0, 1.4, 0]);
+                add(new THREE.ConeGeometry(0.06, 0.2, 4), [0, 1.4, 0.22], [-Math.PI / 2, 0, 0]);
+                const wingGeo = new THREE.PlaneGeometry(0.8, 0.4);
+                [-1, 1].forEach(side => {
+                    add(wingGeo, [side * 0.6, 1.0, 0], [0, side * 0.2, side * 0.3]);
+                });
+                add(new THREE.PlaneGeometry(0.3, 0.4), [0, 0.5, -0.3], [0.5, 0, 0]);
+                break;
+            }
+            case 'serpent': {
+                const segCount = 8;
+                for (let i = 0; i < segCount; i++) {
+                    const t = i / (segCount - 1);
+                    const r = 0.2 * (1 - t * 0.5);
+                    add(new THREE.SphereGeometry(r, 8, 8), [
+                        Math.sin(i * 0.6) * 0.3,
+                        0.3 + i * 0.18,
+                        Math.cos(i * 0.6) * 0.15
+                    ]);
+                }
+                add(new THREE.SphereGeometry(0.22, 8, 8), [
+                    Math.sin((segCount - 1) * 0.6) * 0.3,
+                    0.3 + segCount * 0.18,
+                    0
+                ]);
+                break;
+            }
+            // No default — unknown shapes handled in createProceduralEnemy
+        }
+
+        this._proceduralShapeCache[shape] = descs;
+        return descs;
+    }
+
     /**
      * Build a procedural enemy mesh from a spec.
-     * Each shape creates a distinct silhouette using composite primitives.
+     * Uses cached geometries (shared per shape) and cached materials (shared per type)
+     * to avoid redundant GPU allocations. Each instance gets its own Group with shared
+     * geometry/material references — no cloning needed since they're read-only.
      * Falls back to loadSkeletonWithTint if anything goes wrong.
      * @param {string} type - Enemy type name
      * @param {Object} spec - Entry from PROCEDURAL_ENEMY_SPECS
      * @returns {THREE.Object3D}
      */
     static createProceduralEnemy(type, spec) {
-        const { shape, scale, color, emissive, emissiveI } = spec;
-        const mat = () => new THREE.MeshStandardMaterial({
-            color,
-            emissive: new THREE.Color(emissive),
-            emissiveIntensity: emissiveI,
-            roughness: 0.6,
-            metalness: 0.2,
-        });
+        const { shape, scale: s, color, emissive, emissiveI } = spec;
 
         const group = new THREE.Group();
-        const s = scale;
 
-        switch (shape) {
-            case 'humanoid': {
-                // Capsule body + sphere head
-                const body = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.3, 1.4, 8), mat());
-                body.position.y = 0.7;
-                group.add(body);
-                const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 8, 8), mat());
-                head.position.y = 1.55;
-                group.add(head);
-                // Arms
-                const armGeo = new THREE.CylinderGeometry(0.1, 0.08, 0.8, 6);
-                const leftArm = new THREE.Mesh(armGeo, mat());
-                leftArm.position.set(-0.45, 0.9, 0);
-                leftArm.rotation.z = 0.3;
-                group.add(leftArm);
-                const rightArm = new THREE.Mesh(armGeo, mat());
-                rightArm.position.set(0.45, 0.9, 0);
-                rightArm.rotation.z = -0.3;
-                group.add(rightArm);
-                break;
-            }
-            case 'golem': {
-                // Wide box torso + sphere joints + thick legs
-                const torso = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.8, 0.6), mat());
-                torso.position.y = 1.0;
-                group.add(torso);
-                const head = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.35, 0.35), mat());
-                head.position.y = 1.55;
-                group.add(head);
-                // Shoulder joints
-                [-0.55, 0.55].forEach(x => {
-                    const joint = new THREE.Mesh(new THREE.SphereGeometry(0.18, 6, 6), mat());
-                    joint.position.set(x, 1.2, 0);
-                    group.add(joint);
-                    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.15, 0.7, 6), mat());
-                    arm.position.set(x, 0.7, 0);
-                    group.add(arm);
-                });
-                // Legs
-                [-0.25, 0.25].forEach(x => {
-                    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.18, 0.6, 6), mat());
-                    leg.position.set(x, 0.3, 0);
-                    group.add(leg);
-                });
-                break;
-            }
-            case 'wraith': {
-                // Inverted cone robe + floating head
-                const robe = new THREE.Mesh(new THREE.ConeGeometry(0.6, 1.6, 8), mat());
-                robe.position.y = 0.8;
-                robe.rotation.x = Math.PI; // Inverted
-                group.add(robe);
-                // Translucent head orb
-                const headMat = mat();
-                headMat.transparent = true;
-                headMat.opacity = 0.7;
-                const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 8), headMat);
-                head.position.y = 1.7;
-                group.add(head);
-                // Wispy tendrils (thin cones pointing down)
-                for (let i = 0; i < 3; i++) {
-                    const tendril = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.5, 4), mat());
-                    tendril.position.set(Math.cos(i * 2.1) * 0.3, 0.1, Math.sin(i * 2.1) * 0.3);
-                    group.add(tendril);
+        // Try cached shape path
+        const descs = this._getShapeDescriptors(shape);
+        if (descs.length > 0) {
+            const baseMat = this._getProceduralMat(type, spec);
+            descs.forEach((d, i) => {
+                let material = baseMat;
+                if (d.transparent) {
+                    material = this._getProceduralTransMat(`${type}:${i}`, spec, d.opacity);
                 }
-                break;
-            }
-            case 'beast': {
-                // Low wide body + cone head (quadruped look)
-                const body = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.5, 1.2), mat());
-                body.position.y = 0.5;
-                group.add(body);
-                // Head (forward cone)
-                const head = new THREE.Mesh(new THREE.ConeGeometry(0.25, 0.5, 6), mat());
-                head.position.set(0, 0.6, 0.7);
-                head.rotation.x = -Math.PI / 2;
-                group.add(head);
-                // Four legs
-                [[-0.3, 0.4], [0.3, 0.4], [-0.3, -0.4], [0.3, -0.4]].forEach(([x, z]) => {
-                    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 0.5, 6), mat());
-                    leg.position.set(x, 0.15, z);
-                    group.add(leg);
-                });
-                // Tail
-                const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.02, 0.6, 4), mat());
-                tail.position.set(0, 0.4, -0.8);
-                tail.rotation.x = 0.5;
-                group.add(tail);
-                break;
-            }
-            case 'elemental': {
-                // Stacked spheres of varying size with glow
-                const sizes = [0.35, 0.28, 0.2, 0.14];
-                let y = 0;
-                sizes.forEach((r, i) => {
-                    y += r;
-                    const orb = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 10), mat());
-                    orb.position.y = y;
-                    group.add(orb);
-                    y += r * 0.8;
-                });
-                // Orbiting ring (torus)
-                const ringMat = mat();
-                ringMat.transparent = true;
-                ringMat.opacity = 0.5;
-                const ring = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.04, 8, 16), ringMat);
-                ring.position.y = 0.6;
-                ring.rotation.x = Math.PI / 3;
-                group.add(ring);
-                break;
-            }
-            case 'titan': {
-                // Very large humanoid — wide shoulders, thick limbs
-                const torso = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.2, 0.5), mat());
-                torso.position.y = 1.0;
-                group.add(torso);
-                // Broad shoulders
-                const shoulders = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.2, 0.5), mat());
-                shoulders.position.y = 1.55;
-                group.add(shoulders);
-                const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 8), mat());
-                head.position.y = 1.85;
-                group.add(head);
-                // Arms
-                [-0.65, 0.65].forEach(x => {
-                    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.12, 1.0, 6), mat());
-                    arm.position.set(x, 0.8, 0);
-                    group.add(arm);
-                    // Fist
-                    const fist = new THREE.Mesh(new THREE.SphereGeometry(0.15, 6, 6), mat());
-                    fist.position.set(x, 0.25, 0);
-                    group.add(fist);
-                });
-                // Legs
-                [-0.25, 0.25].forEach(x => {
-                    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.2, 0.8, 6), mat());
-                    leg.position.set(x, 0.25, 0);
-                    group.add(leg);
-                });
-                break;
-            }
-            case 'bird': {
-                // Cone body + flat wing planes
-                const body = new THREE.Mesh(new THREE.ConeGeometry(0.3, 1.0, 8), mat());
-                body.position.y = 0.8;
-                group.add(body);
-                const head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 8), mat());
-                head.position.y = 1.4;
-                group.add(head);
-                // Beak
-                const beak = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.2, 4), mat());
-                beak.position.set(0, 1.4, 0.22);
-                beak.rotation.x = -Math.PI / 2;
-                group.add(beak);
-                // Wings
-                [-1, 1].forEach(side => {
-                    const wing = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.4), mat());
-                    wing.position.set(side * 0.6, 1.0, 0);
-                    wing.rotation.z = side * 0.3;
-                    wing.rotation.y = side * 0.2;
-                    group.add(wing);
-                });
-                // Tail feathers
-                const tail = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.4), mat());
-                tail.position.set(0, 0.5, -0.3);
-                tail.rotation.x = 0.5;
-                group.add(tail);
-                break;
-            }
-            case 'serpent': {
-                // Chain of spheres (sinuous body)
-                const segCount = 8;
-                for (let i = 0; i < segCount; i++) {
-                    const t = i / (segCount - 1);
-                    const r = 0.2 * (1 - t * 0.5); // Taper toward tail
-                    const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 8, 8), mat());
-                    seg.position.set(
-                        Math.sin(i * 0.6) * 0.3,
-                        0.3 + i * 0.18,
-                        Math.cos(i * 0.6) * 0.15
-                    );
-                    group.add(seg);
-                }
-                // Head (larger sphere at top)
-                const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 8), mat());
-                head.position.set(Math.sin((segCount - 1) * 0.6) * 0.3, 0.3 + segCount * 0.18, 0);
-                group.add(head);
-                break;
-            }
-            default: {
-                // Unknown shape — create a visible placeholder so it's debuggable
-                console.warn(`MeshFactory.createProceduralEnemy: unknown shape "${shape}" for type "${type}"`);
-                const placeholder = new THREE.Mesh(
-                    new THREE.BoxGeometry(0.6, 1.2, 0.6),
-                    new THREE.MeshStandardMaterial({ color: 0xff00ff, wireframe: true })
-                );
-                placeholder.position.y = 0.6;
-                group.add(placeholder);
-                break;
-            }
+                const mesh = new THREE.Mesh(d.geo, material);
+                mesh.position.set(d.pos[0], d.pos[1], d.pos[2]);
+                mesh.rotation.set(d.rot[0], d.rot[1], d.rot[2]);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                group.add(mesh);
+            });
+        } else {
+            // Unknown shape — create a visible placeholder so it's debuggable
+            console.warn(`MeshFactory.createProceduralEnemy: unknown shape "${shape}" for type "${type}"`);
+            const placeholder = new THREE.Mesh(
+                new THREE.BoxGeometry(0.6, 1.2, 0.6),
+                new THREE.MeshStandardMaterial({ color: 0xff00ff, wireframe: true })
+            );
+            placeholder.position.y = 0.6;
+            placeholder.castShadow = true;
+            placeholder.receiveShadow = true;
+            group.add(placeholder);
         }
 
         // Scale the whole group
         group.scale.set(s, s, s);
 
-        // Enable shadows on all children
-        group.traverse(c => {
-            if (c.isMesh) {
-                c.castShadow = true;
-                c.receiveShadow = true;
-            }
-        });
-
-        // Hitbox
+        // Hitbox — cached per scale value
+        if (!this._proceduralHitboxCache[s]) {
+            const hitSize = s * 0.8;
+            this._proceduralHitboxCache[s] = new THREE.BoxGeometry(hitSize, hitSize * 1.25, hitSize);
+        }
+        if (!this._hitboxMat) {
+            this._hitboxMat = new THREE.MeshBasicMaterial({ visible: false });
+        }
         const hitSize = s * 0.8;
-        const hitGeo = new THREE.BoxGeometry(hitSize, hitSize * 1.25, hitSize);
-        const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-        const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+        const hitMesh = new THREE.Mesh(this._proceduralHitboxCache[s], this._hitboxMat);
         hitMesh.position.y = hitSize * 0.5;
         group.add(hitMesh);
 
@@ -745,24 +737,26 @@ export class MeshFactory {
         if (this.pool[type].length < 50) {
             this.pool[type].push(mesh);
         } else {
-            // Pool is full, dispose of the mesh resources
-            // Dispose materials always; dispose geometry only for procedural enemies
-            // (GLTF/cached geometries are shared and must NOT be disposed here)
+            // Pool is full, dispose of the mesh resources.
+            // Procedural enemies now use shared/cached geometries and materials —
+            // do NOT dispose them (they are singletons). Only dispose non-cached
+            // GLTF materials whose geometry is also shared.
             const isProceduralType = !!this.PROCEDURAL_ENEMY_SPECS[type];
-            mesh.traverse((child) => {
-                if (child.isMesh) {
-                    if (child.material) {
-                        if (Array.isArray(child.material)) {
-                            child.material.forEach(m => m.dispose());
-                        } else {
-                            child.material.dispose();
+            if (!isProceduralType) {
+                mesh.traverse((child) => {
+                    if (child.isMesh) {
+                        if (child.material) {
+                            if (Array.isArray(child.material)) {
+                                child.material.forEach(m => m.dispose());
+                            } else {
+                                child.material.dispose();
+                            }
                         }
+                        // GLTF geometries are shared via loadModel cache — don't dispose
                     }
-                    if (isProceduralType && child.geometry) {
-                        child.geometry.dispose();
-                    }
-                }
-            });
+                });
+            }
+            // For procedural types: geometry + material are cached singletons, nothing to dispose
         }
     }
 

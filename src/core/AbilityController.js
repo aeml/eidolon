@@ -21,6 +21,8 @@ export class AbilityController {
 
         /** Pending target entity to chase before casting */
         this.pendingAbilityTarget = null;
+        /** Skill name associated with the pending chase target */
+        this.pendingAbilitySkill = null;
 
         /** Input buffer for abilities pressed during cooldown */
         this.inputBuffer = [];
@@ -541,6 +543,7 @@ export class AbilityController {
             } else {
                 // Move closer first
                 this.pendingAbilityTarget = engine.hoveredEntity;
+                this.pendingAbilitySkill = skillNameOverride || player.abilityName;
                 engine.pendingInteraction = null;
                 player.move(engine.hoveredEntity.position);
             }
@@ -650,25 +653,31 @@ export class AbilityController {
 
         if (!this.pendingAbilityTarget.isActive || this.pendingAbilityTarget.state === 'DEAD') {
             this.pendingAbilityTarget = null;
+            this.pendingAbilitySkill = null;
             return false;
         }
 
         player.targetPosition = this.pendingAbilityTarget.position.clone();
         
         const dist = player.position.distanceTo(this.pendingAbilityTarget.position);
-        const range = 10.0;
+        const skillName = this.pendingAbilitySkill || player.abilityName;
+        const range = this.getAbilityCastRange(skillName);
 
         if (dist < range) {
             if (this.engine.isMultiplayer) {
                 this.engine.network.send('ability', {
                     targetX: this.pendingAbilityTarget.position.x,
                     targetZ: this.pendingAbilityTarget.position.z,
-                    targetId: this.pendingAbilityTarget.id
+                    targetId: this.pendingAbilityTarget.id,
+                    skillName: skillName
                 });
                 player.playAnimation('Attack', false);
             } else {
                 player.useAbility(this.pendingAbilityTarget.position, this.engine);
             }
+            // Clear after casting so we don't re-fire every frame
+            this.pendingAbilityTarget = null;
+            this.pendingAbilitySkill = null;
         }
 
         return true;
