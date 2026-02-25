@@ -762,6 +762,9 @@ export class UIManager {
     updateHotbar(player) {
         if (!player) return;
 
+        // Ensure lastPlayerRef is set so assignSkillToSlot can resolve icon paths
+        this.lastPlayerRef = player;
+
         // Slot 0 (Key 1) is always Tier 1 skill (Base Ability)
         // User requested NOT to put Tier 1 on hotbar as it is already Right Click.
         // So we skip Tier 1 assignment to Slot 0.

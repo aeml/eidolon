@@ -278,6 +278,7 @@ export class GameEngine {
 
         this.pendingInteraction = null;
         this.abilityController.pendingAbilityTarget = null;
+        this.abilityController.pendingAbilitySkill = null;
         this.player.targetEntity = null;
 
         if (this.inputManager && this.inputManager.clearInputState) {
@@ -419,6 +420,7 @@ export class GameEngine {
                 this.player.targetPosition = null;
                 this.pendingInteraction = null;
                 this.abilityController.pendingAbilityTarget = null;
+        this.abilityController.pendingAbilitySkill = null;
                 this.chunkManager.updateEntityChunk(this.player);
                 this.renderSystem.setCameraTarget(this.player.position);
                 this.chunkManager.update(this.player, 0, this.collisionManager);
@@ -530,7 +532,8 @@ export class GameEngine {
                         // Or if we explicitly clicked ground.
                         // Since we force raycast above, if hoveredEntity is null, we definitely missed the entity.
                         this.pendingInteraction = null;
-                        this.abilityController.pendingAbilityTarget = null;
+this.abilityController.pendingAbilityTarget = null;
+        this.abilityController.pendingAbilitySkill = null;
                         this.player.move(point);
                     }
                 }
@@ -1167,10 +1170,10 @@ export class GameEngine {
                             }
 
                             // Sync Derived Stats
-                            this.player.stats.damage = pData.damage;
-                            this.player.stats.defense = pData.defense;
-                            if (pData.speed) this.player.stats.speed = pData.speed;
-                            if (pData.attackSpeed) this.player.stats.attackSpeed = pData.attackSpeed;
+                            if (pData.damage !== undefined) this.player.stats.damage = pData.damage;
+                            if (pData.defense !== undefined) this.player.stats.defense = pData.defense;
+                            if (pData.speed !== undefined) this.player.stats.speed = pData.speed;
+                            if (pData.attackSpeed !== undefined) this.player.stats.attackSpeed = pData.attackSpeed;
                             if (pData.cooldownReduction !== undefined) this.player.stats.cooldownReduction = pData.cooldownReduction;
                         }
 
@@ -1383,8 +1386,8 @@ export class GameEngine {
                         // Sync Derived Stats
                         if (pData.damage !== undefined) this.player.stats.damage = pData.damage;
                         if (pData.defense !== undefined) this.player.stats.defense = pData.defense;
-                        if (pData.speed) this.player.stats.speed = pData.speed;
-                        if (pData.attackSpeed) this.player.stats.attackSpeed = pData.attackSpeed;
+                        if (pData.speed !== undefined) this.player.stats.speed = pData.speed;
+                        if (pData.attackSpeed !== undefined) this.player.stats.attackSpeed = pData.attackSpeed;
                         if (pData.cooldownReduction !== undefined) this.player.stats.cooldownReduction = pData.cooldownReduction;
                     }
                     
@@ -1674,6 +1677,7 @@ export class GameEngine {
                 if (pData.maxHealth !== undefined) remoteEntity.stats.maxHp = pData.maxHealth;
                 if (pData.mana !== undefined) remoteEntity.stats.mana = pData.mana;
                 if (pData.maxMana !== undefined) remoteEntity.stats.maxMana = pData.maxMana;
+                if (pData.speed !== undefined) remoteEntity.stats.speed = pData.speed;
                 if (pData.attackSpeed !== undefined) remoteEntity.stats.attackSpeed = pData.attackSpeed;
             }
 
@@ -2106,6 +2110,7 @@ export class GameEngine {
         if (!entity) return;
         this.pendingInteraction = entity;
         this.abilityController.pendingAbilityTarget = null;
+        this.abilityController.pendingAbilitySkill = null;
         
         // Check if already in range to avoid unnecessary movement start
         const dist = new THREE.Vector2(this.player.position.x, this.player.position.z)
@@ -2519,6 +2524,7 @@ export class GameEngine {
                     this.player.targetPosition = null;
                     this.pendingInteraction = null;
                     this.abilityController.pendingAbilityTarget = null;
+        this.abilityController.pendingAbilitySkill = null;
 
                     let lookTarget = null;
                     if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player) {
@@ -2854,6 +2860,7 @@ export class GameEngine {
             if (this.isPlayerDead()) {
                 this.pendingInteraction = null;
                 this.abilityController.pendingAbilityTarget = null;
+        this.abilityController.pendingAbilitySkill = null;
                 this.player.targetPosition = null;
                 this.uiManager.showDeathScreen();
             } else {
