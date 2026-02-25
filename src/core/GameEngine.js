@@ -135,7 +135,7 @@ export class GameEngine {
                 }
             }
         };
-        this.uiManager.onSocialOpen = () => {
+        this.uiManager.social.onSocialOpen = () => {
             this.network.send('social', {});
         };
         this.uiManager.trading.onTradingSearch = (query) => {
@@ -162,13 +162,13 @@ export class GameEngine {
         this.uiManager.onReportSubmit = (type, text) => {
             this.network.send('report', { reportType: type, text: text });
         };
-        this.uiManager.onPartyInvite = (targetName) => {
+        this.uiManager.social.onPartyInvite = (targetName) => {
             this.sendPartyMessage('party_invite', { targetName });
         };
-        this.uiManager.onPartyLeave = () => {
+        this.uiManager.social.onPartyLeave = () => {
             this.sendPartyMessage('party_leave', {});
         };
-        this.uiManager.onPartyResponse = (inviterName, accepted) => {
+        this.uiManager.social.onPartyResponse = (inviterName, accepted) => {
             this.sendPartyMessage('party_response', { inviterName, accepted });
         };
         this.uiManager.skillTree.onSelectBranch = (branch) => {
@@ -211,10 +211,10 @@ export class GameEngine {
         this.uiManager.onStashWithdraw = (itemId) => {
             this.network.send('stash_withdraw', { itemId });
         };
-        this.uiManager.onAcceptQuest = (questId) => {
+        this.uiManager.quest.onAcceptQuest = (questId) => {
             this.network.send('accept_quest', { questId });
         };
-        this.uiManager.onCompleteQuest = (questId) => {
+        this.uiManager.quest.onCompleteQuest = (questId) => {
             this.network.send('complete_quest', { questId });
         };
         this.uiManager.onUnequipRequest = (slot) => {
