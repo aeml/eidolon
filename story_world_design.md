@@ -169,4 +169,4 @@ Prompt: "Low poly 3D character model of an athletic wiry human base body, standi
 
 The Cleric (Feeling/Water)
 
-Prompt: "Low poly 3D character model of a soft-featured human base body, standing in A-pose. Style: Stylized fantasy, hand-painted texture aesthetic. Features: Wearing a plain, unadorned gown or vestment. Deep ocean blue and teal fabric colors. No religious symbols, no staff, no heavy robes. Smooth, curved silhouette. Bare hands."
+Prompt: "Low poly 3D character model of a soft-featured human base body, standing in A-pose. Style: Stylized fantasy, hand-painted texture aesthetic. Features: Wearing a plain, unadorned gown or vestment. Deep ocean blue and teal fabric colors. No religious symbols, no staff, no heavy robes. Smooth, curved silhouette. Bare hands." deploy push
