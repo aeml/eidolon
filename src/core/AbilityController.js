@@ -541,11 +541,16 @@ export class AbilityController {
                     player.useAbility(engine.hoveredEntity.position, engine);
                 }
             } else {
-                // Move closer first
+                // Out of range – move to edge of ability range, not to the enemy
                 this.pendingAbilityTarget = engine.hoveredEntity;
                 this.pendingAbilitySkill = skillNameOverride || player.abilityName;
                 engine.pendingInteraction = null;
-                player.move(engine.hoveredEntity.position);
+                const direction = new THREE.Vector3()
+                    .subVectors(engine.hoveredEntity.position, player.position)
+                    .normalize();
+                const stopPoint = engine.hoveredEntity.position.clone()
+                    .sub(direction.multiplyScalar(abilityRange * 0.9));
+                player.move(stopPoint);
             }
         } else {
             // Ground click (Movement or Skillshot)
@@ -657,13 +662,27 @@ export class AbilityController {
             return false;
         }
 
-        player.targetPosition = this.pendingAbilityTarget.position.clone();
-        
         const dist = player.position.distanceTo(this.pendingAbilityTarget.position);
         const skillName = this.pendingAbilitySkill || player.abilityName;
         const range = this.getAbilityCastRange(skillName);
 
-        if (dist < range) {
+        if (dist <= range) {
+            // In range – stop moving and cast
+            player.targetPosition = null;
+            player.state = 'IDLE';
+            player.velocity.set(0, 0, 0);
+
+            // Face the target
+            const lookTarget = new THREE.Vector3(
+                this.pendingAbilityTarget.position.x,
+                player.position.y,
+                this.pendingAbilityTarget.position.z
+            );
+            if (player.mesh) {
+                player.mesh.lookAt(lookTarget);
+                player.rotation.copy(player.mesh.quaternion);
+            }
+
             if (this.engine.isMultiplayer) {
                 this.engine.network.send('ability', {
                     targetX: this.pendingAbilityTarget.position.x,
@@ -678,6 +697,20 @@ export class AbilityController {
             // Clear after casting so we don't re-fire every frame
             this.pendingAbilityTarget = null;
             this.pendingAbilitySkill = null;
+        } else {
+            // Out of range – move to edge of ability range
+            const direction = new THREE.Vector3()
+                .subVectors(this.pendingAbilityTarget.position, player.position)
+                .normalize();
+            const stopPoint = this.pendingAbilityTarget.position.clone()
+                .sub(direction.multiplyScalar(range * 0.9));
+            player.targetPosition = stopPoint;
+
+            if (player.state !== 'MOVING') {
+                player.state = 'MOVING';
+                const moveAnim = player.getMovementAnimationName(player.isRunning);
+                if (moveAnim) player.playAnimation(moveAnim);
+            }
         }
 
         return true;
