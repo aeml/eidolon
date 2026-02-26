@@ -234,9 +234,8 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ssh.mendola.tech
-          username: deploy
+          username: aeml
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script_stop: true
           script: |
             cd /home/aeml/eidolon
             git pull origin master
