@@ -222,3 +222,24 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # Deploy server via SSH to remote host
+  deploy-server:
+    name: Deploy Server (SSH)
+    needs: [client-tests, server-tests]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ssh.mendola.tech
+          username: deploy
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            cd /home/aeml/eidolon
+            git pull origin master
+            cd server
+            docker compose build api
+            docker compose up -d api
