@@ -17,6 +17,11 @@ export class InventoryUI {
         this.goldDisplay = document.getElementById('gold-display');
         this.shopScreen = document.getElementById('shop-screen');
         this.shopGambleTitle = document.getElementById('shop-gamble-title');
+        this.shopContentMain = document.getElementById('shop-content-main');
+        this.shopContentBuyback = document.getElementById('shop-content-buyback');
+        this.tabShopMain = document.getElementById('tab-shop-main');
+        this.tabShopBuyback = document.getElementById('tab-shop-buyback');
+        this.btnCloseShop = document.getElementById('btn-close-shop');
         this.btnSellCommon = document.getElementById('btn-sell-common');
         this.btnSellUncommon = document.getElementById('btn-sell-uncommon');
         this.btnSellRare = document.getElementById('btn-sell-rare');
@@ -102,6 +107,15 @@ export class InventoryUI {
     }
 
     _bindShopEvents() {
+        if (this.tabShopMain) {
+            this.tabShopMain.addEventListener('click', () => this.switchShopTab('main'));
+        }
+        if (this.tabShopBuyback) {
+            this.tabShopBuyback.addEventListener('click', () => this.switchShopTab('buyback'));
+        }
+        if (this.btnCloseShop) {
+            this.btnCloseShop.addEventListener('click', () => this.toggleShop());
+        }
         if (this.btnSellCommon) {
             this.btnSellCommon.addEventListener('click', () => this.handleSellAll('Common'));
         }
@@ -191,6 +205,7 @@ export class InventoryUI {
         this.shopScreen.style.display = isHidden ? 'flex' : 'none';
 
         if (isHidden) {
+            this.switchShopTab('main');
             this.inventoryScreen.style.display = 'block';
             const player = this._getLastPlayer();
             if (player) {
@@ -266,21 +281,20 @@ export class InventoryUI {
     // ================================================================
 
     switchShopTab(tab) {
-        const shopContentMain = document.getElementById('shop-content-main');
-        const shopContentBuyback = document.getElementById('shop-content-buyback');
-        const tabShopMain = document.getElementById('tab-shop-main');
-        const tabShopBuyback = document.getElementById('tab-shop-buyback');
+        if (!this.shopContentMain || !this.shopContentBuyback || !this.tabShopMain || !this.tabShopBuyback) {
+            return;
+        }
 
         if (tab === 'main') {
-            shopContentMain.style.display = 'flex';
-            shopContentBuyback.style.display = 'none';
-            tabShopMain.style.background = '#333';
-            tabShopBuyback.style.background = '#111';
+            this.shopContentMain.style.display = 'flex';
+            this.shopContentBuyback.style.display = 'none';
+            this.tabShopMain.style.background = '#333';
+            this.tabShopBuyback.style.background = '#111';
         } else {
-            shopContentMain.style.display = 'none';
-            shopContentBuyback.style.display = 'flex';
-            tabShopMain.style.background = '#111';
-            tabShopBuyback.style.background = '#333';
+            this.shopContentMain.style.display = 'none';
+            this.shopContentBuyback.style.display = 'flex';
+            this.tabShopMain.style.background = '#111';
+            this.tabShopBuyback.style.background = '#333';
         }
     }
 
