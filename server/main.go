@@ -1523,6 +1523,17 @@ func (c *Client) handleMessage(msg Message) {
 			c.sendSafe(b)
 		}
 
+		// Send initial buyback list
+		if len(entity.Buyback) > 0 {
+			buybackPayload, _ := json.Marshal(entity.Buyback)
+			msg := Message{
+				Type:    MsgBuybackList,
+				Payload: buybackPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
+
 		// Send initial quests
 		if len(entity.Quests) > 0 {
 			questPayload, _ := json.Marshal(entity.Quests)
