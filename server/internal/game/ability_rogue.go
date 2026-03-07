@@ -233,18 +233,17 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 
 			// Target area
 			radius := 6.0
+			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			damage := int(float64(20+(player.Stats.Dexterity*2)) * player.GetSkillDamageMultiplier("Rain of Arrows"))
 
-			nearby := w.Grid.Nearby(targetX, targetZ, radius, player.InstanceID)
+			nearby := w.Grid.Nearby(targetX, targetZ, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
 				if target.ID == player.ID {
 					continue
 				}
 				target.Mu.Lock()
 				if target.Type == TypeEnemy && target.State != "DEAD" {
-					dx := target.X - targetX
-					dz := target.Z - targetZ
-					if (dx*dx + dz*dz) <= radius*radius {
+					if withinAbilityRadius(skillName, targetX, targetZ, target, radius) {
 						target.Health -= damage
 						addThreatLocked(target, player.ID, float64(damage))
 						w.fireDamageEvent(player.ID, target.ID, damage)
@@ -621,6 +620,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			player.Mana -= cost
 
 			radius := 4.0
+			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			damage := int(float64(player.Damage*2) * player.GetSkillDamageMultiplier("Death Spiral"))
 
 			// Combo: Venom Burst (Poison Coating → Death Spiral) = +100% poison damage
@@ -629,7 +629,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				player.ActiveCombo = "" // Consume combo
 			}
 
-			nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
+			nearby := w.Grid.Nearby(player.X, player.Z, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
 				if target.ID == player.ID {
 					continue
@@ -639,12 +639,10 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					target.Mu.RUnlock()
 					continue
 				}
-				dx := target.X - player.X
-				dz := target.Z - player.Z
 				isPoisoned := target.Poisoned
 				target.Mu.RUnlock()
 
-				if (dx*dx + dz*dz) <= radius*radius {
+				if withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.Mu.Lock()
 					// Calculate final damage
 					finalDamage := damage
@@ -714,9 +712,10 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			player.Mana -= cost
 
 			radius := 5.0
-			nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
+			effectiveRadius := expandedAbilityRadius(skillName, radius)
+			nearby := w.Grid.Nearby(player.X, player.Z, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
-				if target.Type == TypeEnemy && target.State != "DEAD" {
+				if target.Type == TypeEnemy && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.Mu.Lock()
 					target.Slowed = true
 					target.SlowEndTime = time.Now().Add(5 * time.Second)

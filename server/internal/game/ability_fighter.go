@@ -56,6 +56,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 
 			// AoE Damage around player with talent bonus
 			radius := 6.0
+			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			damage := int((float64(player.Damage)*0.8 + float64(player.Stats.Strength)*2) * 1.3 * player.GetSkillDamageMultiplier("Whirlwind"))
 
 			// Extended rune: -50% damage
@@ -70,7 +71,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			}
 
 			hitCount := 0
-			nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
+			nearby := w.Grid.Nearby(player.X, player.Z, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
 				// Skip self
 				if target.ID == player.ID {
@@ -89,7 +90,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				target.Mu.RUnlock()
 
 				distSq := dx*dx + dz*dz
-				if distSq <= radius*radius {
+				if withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.Mu.Lock()
 					target.Health -= damage
 					addThreatLocked(target, player.ID, float64(damage))
@@ -144,9 +145,10 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			player.Mana -= cost
 
 			radius := 6.0
+			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			damage := int((float64(player.Damage)*1.0 + float64(player.Stats.Strength)*3) * 1.3 * player.GetSkillDamageMultiplier("Executioner Spin"))
 
-			nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
+			nearby := w.Grid.Nearby(player.X, player.Z, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
 				if target.ID == player.ID {
 					continue
@@ -157,11 +159,9 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					target.Mu.RUnlock()
 					continue
 				}
-				dx := player.X - target.X
-				dz := player.Z - target.Z
 				target.Mu.RUnlock()
 
-				if (dx*dx + dz*dz) <= radius*radius {
+				if withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.Mu.Lock()
 					target.Health -= damage
 					addThreatLocked(target, player.ID, float64(damage))

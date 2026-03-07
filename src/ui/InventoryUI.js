@@ -17,6 +17,9 @@ export class InventoryUI {
         this.goldDisplay = document.getElementById('gold-display');
         this.shopScreen = document.getElementById('shop-screen');
         this.shopGambleTitle = document.getElementById('shop-gamble-title');
+        this.btnSellCommon = document.getElementById('btn-sell-common');
+        this.btnSellUncommon = document.getElementById('btn-sell-uncommon');
+        this.btnSellRare = document.getElementById('btn-sell-rare');
         this.stashScreen = document.getElementById('stash-screen');
         this.stashGrid = document.getElementById('stash-grid');
         this.buybackGrid = document.getElementById('buyback-grid');
@@ -58,6 +61,7 @@ export class InventoryUI {
 
         // --- Event listeners ---
         this._bindSplitEvents();
+        this._bindShopEvents();
         this._bindTooltipEvents();
         this._bindCompareMode();
 
@@ -94,6 +98,18 @@ export class InventoryUI {
             this.splitAmountInput.addEventListener('input', (e) => {
                 if (this.splitAmountRange) this.splitAmountRange.value = e.target.value;
             });
+        }
+    }
+
+    _bindShopEvents() {
+        if (this.btnSellCommon) {
+            this.btnSellCommon.addEventListener('click', () => this.handleSellAll('Common'));
+        }
+        if (this.btnSellUncommon) {
+            this.btnSellUncommon.addEventListener('click', () => this.handleSellAll('Uncommon'));
+        }
+        if (this.btnSellRare) {
+            this.btnSellRare.addEventListener('click', () => this.handleSellAll('Rare'));
         }
     }
 

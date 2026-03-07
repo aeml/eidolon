@@ -2,6 +2,11 @@ package game
 
 import "time"
 
+const (
+	baseActorVisualRadius        = 1.25
+	maxAbilityTargetVisualRadius = 5.0
+)
+
 // fireAbilityEvent emits an "ability" event if a listener is registered.
 // This replaces the repeated `if w.OnEvent != nil { w.OnEvent("ability", ...) }` pattern.
 func (w *World) fireAbilityEvent(sourceID, targetID, skillName string, targetX, targetZ float64) {
@@ -49,4 +54,40 @@ func (w *World) delayedIdleReset(playerID string) {
 		}
 		w.Mu.Unlock()
 	}(playerID)
+}
+
+// expandedAbilityRadius increases the grid query for AoEs so we do not miss
+// large targets whose centers sit just outside the VFX edge.
+func expandedAbilityRadius(effectName string, radius float64) float64 {
+	if radius <= 0 {
+		return radius
+	}
+	return radius + maxAbilityTargetVisualRadius
+}
+
+func entityVisualRadius(target *Entity) float64 {
+	if target == nil {
+		return 0
+	}
+	if target.Radius > 0 {
+		return target.Radius
+	}
+	if target.Type != TypeEnemy && target.Type != TypePlayer && target.Type != TypeNPC {
+		return 0
+	}
+	scale := target.Scale
+	if scale <= 0 {
+		scale = 1.0
+	}
+	return baseActorVisualRadius * scale
+}
+
+func withinAbilityRadius(effectName string, originX, originZ float64, target *Entity, radius float64) bool {
+	if target == nil {
+		return false
+	}
+	effectiveRadius := radius + entityVisualRadius(target)
+	dx := originX - target.X
+	dz := originZ - target.Z
+	return (dx*dx + dz*dz) <= effectiveRadius*effectiveRadius
 }

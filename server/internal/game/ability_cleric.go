@@ -484,9 +484,10 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 
 			radius := 12.0
+			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			damage := int(float64(player.Stats.Wisdom*3) * player.GetSkillDamageMultiplier("Heaven's Trumpet"))
 
-			nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
+			nearby := w.Grid.Nearby(player.X, player.Z, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
 				if target.ID == player.ID {
 					continue
@@ -497,11 +498,9 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					target.Mu.RUnlock()
 					continue
 				}
-				dx := target.X - player.X
-				dz := target.Z - player.Z
 				target.Mu.RUnlock()
 
-				if (dx*dx + dz*dz) <= radius*radius {
+				if withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.Mu.Lock()
 					target.Health -= damage
 					addThreatLocked(target, player.ID, float64(damage))

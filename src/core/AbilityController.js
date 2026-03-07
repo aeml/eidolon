@@ -690,7 +690,10 @@ export class AbilityController {
                     targetId: this.pendingAbilityTarget.id,
                     skillName: skillName
                 });
-                player.playAnimation('Attack', false);
+            }
+
+            if (skillName !== player.abilityName && player.useSkill) {
+                player.useSkill(skillName, this.pendingAbilityTarget.position, this.engine);
             } else {
                 player.useAbility(this.pendingAbilityTarget.position, this.engine);
             }
