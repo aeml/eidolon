@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+import * as SkeletonUtils from './SkeletonUtils.js';
 import { CONSTANTS } from '../core/Constants.js';
 
 export class MeshFactory {
