@@ -4204,16 +4204,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				isSanctuary := e.ConsecratedGroundSanctuary
 				e.Mu.Unlock() // Unlock to query grid
 
-				nearby := w.Grid.Nearby(e.X, e.Z, radius, e.InstanceID)
+				effectiveRadius := expandedAbilityRadius(zoneSubType, radius)
+				nearby := w.Grid.Nearby(e.X, e.Z, effectiveRadius, e.InstanceID)
 				for _, target := range nearby {
 					target.Mu.RLock()
 					targetType := target.Type
 					targetState := target.State
-					dx := e.X - target.X
-					dz := e.Z - target.Z
 					target.Mu.RUnlock()
 
-					inRadius := (dx*dx + dz*dz) <= radius*radius
+					inRadius := withinAbilityRadius(zoneSubType, e.X, e.Z, target, radius)
 					if !inRadius {
 						continue
 					}
@@ -4275,6 +4274,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if time.Now().After(e.LastAttackTime) {
 				// Impact!
 				radius := e.Radius
+				impactName := e.ProjectileSkill
+				if impactName == "" {
+					impactName = e.SubType
+				}
+				effectiveRadius := expandedAbilityRadius(impactName, radius)
 				damage := e.Damage
 				ownerID := e.OwnerID
 				meteorShieldExplode := e.MeteorShieldExplode
@@ -4283,18 +4287,16 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				e.Mu.Unlock() // Unlock to query grid
 
-				nearby := w.Grid.Nearby(e.X, e.Z, radius, e.InstanceID)
+				nearby := w.Grid.Nearby(e.X, e.Z, effectiveRadius, e.InstanceID)
 				for _, target := range nearby {
 					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
 						target.Mu.RUnlock()
 						continue
 					}
-					dx := e.X - target.X
-					dz := e.Z - target.Z
 					target.Mu.RUnlock()
 
-					if (dx*dx + dz*dz) <= radius*radius {
+					if withinAbilityRadius(impactName, e.X, e.Z, target, radius) {
 						target.Mu.Lock()
 						target.Health -= damage
 						if ownerIsPlayer {
@@ -4328,18 +4330,17 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 						// Deal shield HP as AoE damage at meteor impact location
 						explosionRadius := radius * 1.5 // Slightly larger than meteor
-						explosionNearby := w.Grid.Nearby(e.X, e.Z, explosionRadius, e.InstanceID)
+						effectiveExplosionRadius := expandedAbilityRadius(impactName, explosionRadius)
+						explosionNearby := w.Grid.Nearby(e.X, e.Z, effectiveExplosionRadius, e.InstanceID)
 						for _, target := range explosionNearby {
 							target.Mu.RLock()
 							if target.Type != TypeEnemy || target.State == "DEAD" {
 								target.Mu.RUnlock()
 								continue
 							}
-							dx := e.X - target.X
-							dz := e.Z - target.Z
 							target.Mu.RUnlock()
 
-							if (dx*dx + dz*dz) <= explosionRadius*explosionRadius {
+							if withinAbilityRadius(impactName, e.X, e.Z, target, explosionRadius) {
 								target.Mu.Lock()
 								target.Health -= shieldExplosionDamage
 								if ownerIsPlayer {
@@ -4552,8 +4553,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					if subType == "ExplosiveTrap" {
 						splashRadius = 6.0
 					}
+					effectiveSplashRadius := expandedAbilityRadius(subType, splashRadius)
 
-					splashTargets := w.Grid.Nearby(projX, projZ, splashRadius, e.InstanceID)
+					splashTargets := w.Grid.Nearby(projX, projZ, effectiveSplashRadius, e.InstanceID)
 					for _, splashTarget := range splashTargets {
 						if splashTarget.InstanceID != e.InstanceID {
 							continue
@@ -4563,12 +4565,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							splashTarget.Mu.RUnlock()
 							continue
 						}
-						sdx := projX - splashTarget.X
-						sdz := projZ - splashTarget.Z
 						splashTarget.Mu.RUnlock()
 
-						sdist := math.Sqrt(sdx*sdx + sdz*sdz)
-						if sdist < splashRadius {
+						if withinAbilityRadius(subType, projX, projZ, splashTarget, splashRadius) {
 							splashTarget.Mu.Lock()
 							splashDmg := int(float64(finalDamage) * 0.4)
 							splashTarget.Health -= splashDmg
@@ -4905,10 +4904,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					// Tick every 0.5s
 					e.LastSpiritTick = now // Reuse this timer
 					radius := 6.0
+					effectiveRadius := expandedAbilityRadius("Whirlwind", radius)
 					damage := int((float64(e.Damage)*0.8 + float64(e.Stats.Strength)*2) * 1.3 * 0.5) // -50% damage
 					e.Mu.Unlock()
 
-					nearby := w.Grid.Nearby(e.X, e.Z, radius, e.InstanceID)
+					nearby := w.Grid.Nearby(e.X, e.Z, effectiveRadius, e.InstanceID)
 					for _, target := range nearby {
 						if target.ID == e.ID {
 							continue
@@ -4918,11 +4918,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							target.Mu.RUnlock()
 							continue
 						}
-						dx := e.X - target.X
-						dz := e.Z - target.Z
 						target.Mu.RUnlock()
 
-						if (dx*dx + dz*dz) <= radius*radius {
+						if withinAbilityRadius("Whirlwind", e.X, e.Z, target, radius) {
 							target.Mu.Lock()
 							target.Health -= damage
 							addThreatLocked(target, e.ID, float64(damage))
@@ -5079,7 +5077,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						hasSpiritHeal := e.HasAnySetBonus("spiritGuardiansHeal")
 						e.Mu.Unlock() // Unlock before interaction
 
-						nearby := w.Grid.Nearby(pX, pZ, radius, e.InstanceID)
+						effectiveRadius := expandedAbilityRadius("Spirit Guardians", radius)
+						nearby := w.Grid.Nearby(pX, pZ, effectiveRadius, e.InstanceID)
 						for _, target := range nearby {
 							if target.InstanceID != e.InstanceID {
 								continue
@@ -5088,12 +5087,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							targetType := target.Type
 							targetState := target.State
 							targetID := target.ID
-							tdx := pX - target.X
-							tdz := pZ - target.Z
 							target.Mu.RUnlock()
 
-							tdist := math.Sqrt(tdx*tdx + tdz*tdz)
-							if tdist < radius {
+							if withinAbilityRadius("Spirit Guardians", pX, pZ, target, radius) {
 								// Damage enemies
 								if targetType == TypeEnemy && targetState != "DEAD" {
 									target.Mu.Lock()

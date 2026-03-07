@@ -69,6 +69,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			if runeID == "gravitywell_expanded" {
 				radius = 12.0
 			}
+			effectiveRadius := expandedAbilityRadius(skillName, radius)
 
 			// Base damage with talent bonus
 			baseDamage := int(float64(20+player.Stats.Intelligence) * player.GetSkillDamageMultiplier("Gravity Well"))
@@ -78,13 +79,17 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				baseDamage *= 2
 			}
 
-			nearby := w.Grid.Nearby(targetX, targetZ, radius, player.InstanceID)
+			nearby := w.Grid.Nearby(targetX, targetZ, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
 				if target.ID == player.ID {
 					continue
 				}
 				target.Mu.Lock()
 				if target.Type == TypeEnemy && target.State != "DEAD" {
+					if !withinAbilityRadius(skillName, targetX, targetZ, target, radius) {
+						target.Mu.Unlock()
+						continue
+					}
 					// Pull towards center
 					dx := targetX - target.X
 					dz := targetZ - target.Z
@@ -605,9 +610,10 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 
 			radius := 8.0
+			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			damage := int(float64(25+(player.Stats.Intelligence*2)) * player.GetSkillDamageMultiplier("Frost Nova"))
 
-			nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
+			nearby := w.Grid.Nearby(player.X, player.Z, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
 				if target.ID == player.ID {
 					continue
@@ -617,11 +623,9 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					target.Mu.RUnlock()
 					continue
 				}
-				dx := player.X - target.X
-				dz := player.Z - target.Z
 				target.Mu.RUnlock()
 
-				if (dx*dx + dz*dz) <= radius*radius {
+				if withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.Mu.Lock()
 					target.Health -= damage
 					addThreatLocked(target, player.ID, float64(damage))
@@ -716,18 +720,17 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				if runeID == "teleport_warp" {
 					warpDamage := 15 + player.Stats.Intelligence
 					warpRadius := 4.0
-					startNearby := w.Grid.Nearby(oldX, oldZ, warpRadius, player.InstanceID)
+					effectiveWarpRadius := expandedAbilityRadius(skillName, warpRadius)
+					startNearby := w.Grid.Nearby(oldX, oldZ, effectiveWarpRadius, player.InstanceID)
 					for _, target := range startNearby {
 						target.Mu.RLock()
 						if target.Type != TypeEnemy || target.State == "DEAD" {
 							target.Mu.RUnlock()
 							continue
 						}
-						tdx := oldX - target.X
-						tdz := oldZ - target.Z
 						target.Mu.RUnlock()
 
-						if (tdx*tdx + tdz*tdz) <= warpRadius*warpRadius {
+						if withinAbilityRadius(skillName, oldX, oldZ, target, warpRadius) {
 							target.Mu.Lock()
 							target.Health -= warpDamage
 							addThreatLocked(target, player.ID, float64(warpDamage))
@@ -775,18 +778,17 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				if runeID == "teleport_warp" {
 					warpDamage := 15 + player.Stats.Intelligence
 					warpRadius := 4.0
-					endNearby := w.Grid.Nearby(targetX, targetZ, warpRadius, player.InstanceID)
+					effectiveWarpRadius := expandedAbilityRadius(skillName, warpRadius)
+					endNearby := w.Grid.Nearby(targetX, targetZ, effectiveWarpRadius, player.InstanceID)
 					for _, target := range endNearby {
 						target.Mu.RLock()
 						if target.Type != TypeEnemy || target.State == "DEAD" {
 							target.Mu.RUnlock()
 							continue
 						}
-						tdx := targetX - target.X
-						tdz := targetZ - target.Z
 						target.Mu.RUnlock()
 
-						if (tdx*tdx + tdz*tdz) <= warpRadius*warpRadius {
+						if withinAbilityRadius(skillName, targetX, targetZ, target, warpRadius) {
 							target.Mu.Lock()
 							target.Health -= warpDamage
 							addThreatLocked(target, player.ID, float64(warpDamage))
