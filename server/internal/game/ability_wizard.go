@@ -346,10 +346,11 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 			damage := int(float64(50+(player.Stats.Intelligence*3)) * player.GetSkillDamageMultiplier("Meteor Drop"))
 
-			// Extinction rune: +50% explosion radius
-			radius := 8.0
+			// Match the large ground ring the client shows for Meteor Drop.
+			// Extinction keeps its +50% bonus on top of that visual radius.
+			radius := 16.0
 			if runeID == "meteor_extinction" {
-				radius = 12.0
+				radius = 24.0
 			}
 
 			// Cluster rune: 3 smaller meteors instead of 1
