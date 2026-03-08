@@ -451,7 +451,7 @@ export class Projectile extends Entity {
                         if (this.mesh) this.mesh.visible = false; // Hide immediately to prevent visual piercing
                         
                         // Splash Damage
-                        const splashRadius = this.explosionRadius || (this.type === 'Meteor' ? 8.0 : 4.0);
+                        const splashRadius = this.explosionRadius || (this.type === 'Meteor' ? 16.0 : 4.0);
                         // Find all entities in splash radius
                         for (const splashTarget of activeEntities) {
                             if (splashTarget.state === 'DEAD' || !splashTarget.isActive) continue;

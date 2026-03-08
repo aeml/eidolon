@@ -202,7 +202,30 @@ export class AbilityController {
                     break;
                 case "Meteor":
                 case "Meteor Drop":
-                    spawn(targetPos, 0xff4500, "ring");
+                    {
+                        const meteorRuneId = entity.skillRunes?.["Meteor Drop"];
+                        const meteorRadius = meteorRuneId === 'meteor_extinction' ? 24.0 : 16.0;
+                        const spawnMeteorTelegraph = (at, radius) => {
+                            this.engine.spawnTransientEffect?.('telegraph', at, 0xff2200, {
+                                radius,
+                                telegraphDuration: 1.5
+                            });
+                        };
+
+                        if (meteorRuneId === 'meteor_cluster') {
+                            const clusterRadius = meteorRadius * 0.6;
+                            const offsets = [
+                                new THREE.Vector3(0, 0, 0),
+                                new THREE.Vector3(-3, 0, -2),
+                                new THREE.Vector3(3, 0, -2)
+                            ];
+                            offsets.forEach((offset) => spawnMeteorTelegraph(targetPos.clone().add(offset), clusterRadius));
+                        } else {
+                            spawnMeteorTelegraph(targetPos, meteorRadius);
+                        }
+
+                        handled = true;
+                    }
                     break;
                 case "Ice Barrier":
                 case "Arcane Shield":

@@ -154,25 +154,55 @@ export class Wizard extends Actor {
             if (!this.unlockedSkills.includes("Meteor Drop")) return;
             console.log("Wizard used Meteor Drop!");
             this.playAnimation('Attack', false, true);
+
+            const meteorRuneId = this.skillRunes?.["Meteor Drop"] || null;
+            const meteorRadius = meteorRuneId === 'meteor_extinction' ? 24.0 : 16.0;
+            const isClusterMeteor = meteorRuneId === 'meteor_cluster';
             
             // Cooldown 15s
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Meteor Drop"] = 15.0 * (1 - cdr);
-            
-            // Spawn Meteor high above target
-            const startPos = targetVector.clone();
-            startPos.y += 30.0; // High up
-            
-            // It's a projectile, but big
-            const meteor = new Projectile(null, this, 'Meteor', startPos, targetVector);
-            meteor.damage = (50 + (this.stats.intelligence * 3.0)) * damageMultiplier;
-            meteor.explosionRadius = 8.0; // Big radius
-            meteor.speed = 20.0; // Fast fall
-            
-            gameEngine.addEntity(meteor);
-            
-            // Ground indicator
-            this.spawnVisualEffect(gameEngine, targetVector, 0xff0000, "ring");
+
+            const spawnMeteorTelegraph = (impactPos, radius) => {
+                if (typeof gameEngine.spawnTransientEffect === 'function') {
+                    gameEngine.spawnTransientEffect('telegraph', impactPos, 0xff2200, {
+                        radius,
+                        telegraphDuration: 1.5
+                    });
+                } else {
+                    this.spawnVisualEffect(gameEngine, impactPos, 0xff0000, "ring");
+                }
+            };
+
+            const spawnMeteor = (impactPos, radius, damage) => {
+                const startPos = impactPos.clone();
+                startPos.y += 30.0;
+
+                const meteor = new Projectile(null, this, 'Meteor', startPos, impactPos);
+                meteor.damage = damage;
+                meteor.explosionRadius = radius;
+                meteor.speed = 20.0;
+                gameEngine.addEntity(meteor);
+                spawnMeteorTelegraph(impactPos, radius);
+            };
+
+            const baseDamage = (50 + (this.stats.intelligence * 3.0)) * damageMultiplier;
+            if (isClusterMeteor) {
+                const clusterRadius = meteorRadius * 0.6;
+                const clusterDamage = baseDamage * (2 / 3);
+                const offsets = [
+                    new THREE.Vector3(0, 0, 0),
+                    new THREE.Vector3(-3, 0, -2),
+                    new THREE.Vector3(3, 0, -2)
+                ];
+
+                offsets.forEach((offset) => {
+                    const impactPos = targetVector.clone().add(offset);
+                    spawnMeteor(impactPos, clusterRadius, clusterDamage);
+                });
+            } else {
+                spawnMeteor(targetVector.clone(), meteorRadius, baseDamage);
+            }
             return;
         }
 
