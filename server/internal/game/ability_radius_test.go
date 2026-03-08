@@ -55,7 +55,7 @@ func TestMeteorDrop_HitsTargetNearRingEdge(t *testing.T) {
 		ID:        "enemy-meteor",
 		Type:      TypeEnemy,
 		SubType:   "Skeleton",
-		X:         15.0,
+		X:         19.0,
 		Z:         0,
 		Health:    400,
 		MaxHealth: 400,
