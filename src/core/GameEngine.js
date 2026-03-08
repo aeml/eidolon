@@ -2127,20 +2127,7 @@ this.abilityController.pendingAbilityTarget = null;
         const dist = new THREE.Vector2(this.player.position.x, this.player.position.z)
             .distanceTo(new THREE.Vector2(entity.position.x, entity.position.z));
         
-        let range = 5.0;
-        if (entity instanceof DwarfSalesman) {
-            range = 4.0;
-        } else if (entity instanceof Forge) {
-            range = 4.0;
-        } else if (entity instanceof TradingHouse) {
-            range = 20.0; // Large building radius
-        } else if (entity instanceof Actor && entity !== this.player) {
-            if (this.player.constructor.name === 'Wizard') {
-                range = 16.0;
-            } else {
-                range = 5.0;
-            }
-        }
+        const range = this.getInteractionRangeForEntity(entity);
 
         if (dist > range) {
             // Flatten move target
@@ -2231,6 +2218,42 @@ this.abilityController.pendingAbilityTarget = null;
             this.hoveredEntity = null;
             document.body.style.cursor = 'default';
         }
+    }
+
+    getInteractionRangeForEntity(entity) {
+        let range = 5.0;
+
+        if (entity instanceof DwarfSalesman || entity instanceof Forge) {
+            return 4.0;
+        }
+
+        if (entity instanceof TradingHouse) {
+            return 20.0;
+        }
+
+        if (entity && entity.userData && entity.userData.interactionRadius) {
+            return entity.userData.interactionRadius + 10.0;
+        }
+
+        if (this.isHostileActorTarget(entity)) {
+            range = this.abilityController.getAbilityCastRange(
+                this.abilityController.pendingAbilitySkill || this.player?.abilityName
+            );
+
+            if (entity.scale && entity.scale > 1.0) {
+                range += (entity.scale - 1.0) * 1.5;
+            }
+
+            return range;
+        }
+
+        if (entity instanceof Actor && entity !== this.player) {
+            if (entity.scale && entity.scale > 1.0) {
+                range += (entity.scale - 1.0) * 1.5;
+            }
+        }
+
+        return range;
     }
 
     loop(time) {
@@ -2648,32 +2671,11 @@ this.abilityController.pendingAbilityTarget = null;
                     const dz = this.player.position.z - this.pendingInteraction.position.z;
                     const dist = Math.sqrt(dx * dx + dz * dz);
                     
-                    let range = 5.0; // Tight range for reliable interactions
-                    
-                    // Use custom interaction radius if available (e.g. large buildings)
-                    if (this.pendingInteraction.userData && this.pendingInteraction.userData.interactionRadius) {
-                        range = this.pendingInteraction.userData.interactionRadius + 10.0; // Radius + Buffer
-                    }
+                    let range = this.getInteractionRangeForEntity(this.pendingInteraction);
 
-                    if (this.pendingInteraction instanceof DwarfSalesman) {
-                        range = 4.0;
-                    } else if (this.pendingInteraction instanceof TradingHouse) {
-                        range = 20.0;
-                    } else if (this.pendingInteraction.name === 'DungeonEntrance') {
+                    if (this.pendingInteraction.name === 'DungeonEntrance') {
                         // Fallback if userData not set, or override
                         if (range < 60.0) range = 60.0; 
-                    } else if (this.pendingInteraction instanceof Actor && this.pendingInteraction !== this.player) {
-                        // Dynamic Attack Range based on class
-                        // Wizard is the only true ranged class for now
-                        if (this.player.constructor.name === 'Wizard') {
-                            range = 16.0;
-                        } else {
-                            range = 5.0; // Melee range (Fighter, Rogue, Cleric) - tighter to ensure server hit
-                        }
-                        // Adjust range for target's scale (allows melee to hit large bosses)
-                        if (this.pendingInteraction.scale && this.pendingInteraction.scale > 1.0) {
-                            range += (this.pendingInteraction.scale - 1.0) * 1.5;
-                        }
                     }
 
                     // 3. Execute Logic

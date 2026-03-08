@@ -222,11 +222,11 @@ export const CONSTANTS = {
             }
         }
     },
-    ABILITY_CONFIG: {
+        ABILITY_CONFIG: {
         Fighter: {
-            default: { mana: 20, cooldown: 5.0, range: 10.0 },
+            default: { mana: 20, cooldown: 5.0, range: 28.0 },
             skills: {
-                Charge: { mana: 20, cooldown: 5.0, range: 14.0 },
+                Charge: { mana: 20, cooldown: 5.0, range: 28.0 },
                 Whirlwind: { mana: 30, cooldown: 8.0, range: 5.0 },
                 "Shield Slam": { mana: 25, cooldown: 6.0, range: 4.0 },
                 "Iron Fortress": { mana: 40, cooldown: 60.0, range: 0.0 },
@@ -234,17 +234,17 @@ export const CONSTANTS = {
                 "Sweeping Strike": { mana: 30, cooldown: 4.0, range: 4.0 },
                 Earthshaker: { mana: 40, cooldown: 12.0, range: 6.0 },
                 "Unbreakable Grip": { mana: 35, cooldown: 15.0, range: 10.0 },
-                "Juggernaut Charge": { mana: 30, cooldown: 20.0, range: 14.0 },
+                "Juggernaut Charge": { mana: 30, cooldown: 20.0, range: 28.0 },
                 "Berserker Edge": { mana: 0, cooldown: 45.0, range: 0.0 },
-                "Shattering Charge": { mana: 30, cooldown: 12.0, range: 14.0 },
+                "Shattering Charge": { mana: 30, cooldown: 12.0, range: 28.0 },
                 "Executioner Spin": { mana: 40, cooldown: 15.0, range: 5.0 },
                 "Last Stand Rampage": { mana: 0, cooldown: 120.0, range: 0.0 },
             },
         },
         Rogue: {
-            default: { mana: 15, cooldown: 1.0, range: 12.0 },
+            default: { mana: 15, cooldown: 1.0, range: 24.0 },
             skills: {
-                "Piercing Throw": { mana: 15, cooldown: 1.0, range: 12.0 },
+                "Piercing Throw": { mana: 15, cooldown: 1.0, range: 24.0 },
                 Backstab: { mana: 20, cooldown: 6.0, range: 3.0 },
                 "Weak Point Mark": { mana: 25, cooldown: 12.0, range: 10.0 },
                 "Shadow Lunge": { mana: 25, cooldown: 10.0, range: 12.0 },
@@ -260,9 +260,9 @@ export const CONSTANTS = {
             },
         },
         Wizard: {
-            default: { mana: 30, cooldown: 2.0, range: 15.0 },
+            default: { mana: 30, cooldown: 2.0, range: 36.0 },
             skills: {
-                Fireball: { mana: 30, cooldown: 2.0, range: 18.0 },
+                Fireball: { mana: 30, cooldown: 2.0, range: 36.0 },
                 "Flame Whip": { mana: 35, cooldown: 10.0, range: 12.0 },
                 "Flame Tornado": { mana: 50, cooldown: 8.0, range: 15.0 },
                 Meteor: { mana: 60, cooldown: 15.0, range: 20.0 },
