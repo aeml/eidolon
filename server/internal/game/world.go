@@ -813,14 +813,19 @@ func CalculateFinalDamage(attacker, target *Entity, baseDamage int, damageType s
 	}
 
 	finalDamage := baseDamage
-	isLucky := false
+	isCrit := false
 
 	// Unique Effect: lucky - 10% chance for double damage
 	if attacker.HasUniqueEffect("lucky") {
 		if rand.Float64() < 0.10 {
 			finalDamage *= 2
-			isLucky = true
+			isCrit = true
 		}
+	}
+
+	if attacker.CritChanceBonus > 0 && rand.Float64() < attacker.CritChanceBonus {
+		finalDamage *= 2
+		isCrit = true
 	}
 
 	// Unique Effect: executioner - +25% damage vs targets below 25% HP
@@ -837,25 +842,23 @@ func CalculateFinalDamage(attacker, target *Entity, baseDamage int, damageType s
 
 	// Set Bonus: Shadow's Embrace 4pc (backstabAnyAngle) is handled in Backstab ability itself
 
-	// Apply damage type bonuses from set bonuses
-	for _, bonuses := range attacker.ActiveSetBonuses {
-		switch damageType {
-		case "poison":
-			if pct, ok := bonuses["poisonDamage"]; ok {
-				finalDamage = finalDamage * (100 + pct) / 100
-			}
-		case "fire":
-			if pct, ok := bonuses["fireDamage"]; ok {
-				finalDamage = finalDamage * (100 + pct) / 100
-			}
-		case "holy":
-			if pct, ok := bonuses["holyDamage"]; ok {
-				finalDamage = finalDamage * (100 + pct) / 100
-			}
+	// Apply damage type bonuses from socketed gems and set bonuses.
+	switch damageType {
+	case "poison":
+		if attacker.PoisonDamageBonus > 0 {
+			finalDamage = int(float64(finalDamage) * (1.0 + attacker.PoisonDamageBonus))
+		}
+	case "fire":
+		if attacker.FireDamageBonus > 0 {
+			finalDamage = int(float64(finalDamage) * (1.0 + attacker.FireDamageBonus))
+		}
+	case "holy":
+		if attacker.HolyDamageBonus > 0 {
+			finalDamage = int(float64(finalDamage) * (1.0 + attacker.HolyDamageBonus))
 		}
 	}
 
-	return finalDamage, isLucky
+	return finalDamage, isCrit
 }
 
 // ApplyDamageReflect handles damage reflection from set bonuses and unique effects.
@@ -1242,6 +1245,13 @@ type Entity struct {
 	ManaRegen         float64 `json:"manaRegen"`
 	CastSpeed         float64 `json:"castSpeed"`
 	Scale             float64 `json:"scale,omitempty"` // Visual scale multiplier
+	CritChanceBonus   float64 `json:"-"`
+	FireDamageBonus   float64 `json:"-"`
+	PoisonDamageBonus float64 `json:"-"`
+	HolyDamageBonus   float64 `json:"-"`
+	HealingDoneBonus  float64 `json:"-"`
+	LifestealBonus    float64 `json:"-"`
+	AllResistBonus    float64 `json:"-"`
 
 	TargetX  float64 `json:"-"`
 	TargetZ  float64 `json:"-"`
@@ -3089,6 +3099,113 @@ func (w *World) PerformInventoryMove(playerID string, from, to int) (*Entity, bo
 	return player, true
 }
 
+func inventorySortCategory(item Item) int {
+	if isForgeHeartItem(item) {
+		return 0
+	}
+	if isForgeShardItem(item) {
+		return 1
+	}
+	if item.Type == ItemGem {
+		return 2
+	}
+	return 3
+}
+
+func inventoryTypeRank(item Item) int {
+	switch item.Type {
+	case ItemWeapon:
+		return 0
+	case ItemArmor:
+		return 1
+	case ItemAccessory:
+		return 2
+	case ItemNeck:
+		return 3
+	case ItemGloves:
+		return 4
+	case ItemMaterial:
+		return 5
+	case ItemRelic:
+		return 6
+	case ItemGem:
+		return 7
+	default:
+		return 99
+	}
+}
+
+func inventoryGemQualityRank(item Item) int {
+	switch item.GemQuality {
+	case GemChipped:
+		return 0
+	case GemFlawed:
+		return 1
+	case GemNormal:
+		return 2
+	case GemFlawless:
+		return 3
+	case GemPerfect:
+		return 4
+	case GemRadiant:
+		return 5
+	default:
+		return 99
+	}
+}
+
+func (w *World) PerformInventorySort(playerID string) (*Entity, bool) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+
+	items := make([]Item, 0, len(player.Inventory))
+	for _, item := range player.Inventory {
+		if item.ID != "" {
+			items = append(items, item)
+		}
+	}
+
+	sort.SliceStable(items, func(i, j int) bool {
+		a := items[i]
+		b := items[j]
+
+		if diff := inventorySortCategory(a) - inventorySortCategory(b); diff != 0 {
+			return diff < 0
+		}
+
+		if inventorySortCategory(a) == 2 {
+			if a.GemType != b.GemType {
+				return a.GemType < b.GemType
+			}
+			if diff := inventoryGemQualityRank(a) - inventoryGemQualityRank(b); diff != 0 {
+				return diff < 0
+			}
+		}
+
+		if diff := inventoryTypeRank(a) - inventoryTypeRank(b); diff != 0 {
+			return diff < 0
+		}
+		if a.Rarity != b.Rarity {
+			return a.Rarity < b.Rarity
+		}
+		if a.Level != b.Level {
+			return a.Level < b.Level
+		}
+		return a.Name < b.Name
+	})
+
+	sortedInventory := make([]Item, len(player.Inventory))
+	copy(sortedInventory, items)
+	player.Inventory = sortedInventory
+
+	return player, true
+}
+
 func (w *World) PerformUnequip(playerID, slot string) (*Entity, bool) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
@@ -4238,16 +4355,25 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 					// --- Damage enemies (all zone types) ---
 					if targetType == TypeEnemy && targetState != "DEAD" {
+						damageType := "arcane"
+						switch zoneSubType {
+						case "ZoneFire":
+							damageType = "fire"
+						case "ZoneHoly":
+							damageType = "holy"
+						case "ZonePoison":
+							damageType = "poison"
+						}
 						target.Mu.Lock()
-						target.Health -= damage
+						finalDamage := applyFinalDamage(owner, target, damage, damageType)
 						if ownerIsPlayer {
-							addThreatLocked(target, ownerID, float64(damage))
+							addThreatLocked(target, ownerID, float64(finalDamage))
 						}
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
-							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: damage})
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage})
 						}
 
 						if isDead {
@@ -4264,6 +4390,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						healAmount := 15
 						if owner != nil {
 							healAmount += owner.Stats.Wisdom / 2
+							healAmount = applyHealingDoneBonus(owner, healAmount)
 						}
 						target.Mu.Lock()
 						target.Health += healAmount
@@ -4317,15 +4444,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 					if withinAbilityRadius(impactName, e.X, e.Z, target, radius) {
 						target.Mu.Lock()
-						target.Health -= damage
+						finalDamage := applyFinalDamage(owner, target, damage, "fire")
 						if ownerIsPlayer {
-							addThreatLocked(target, ownerID, float64(damage))
+							addThreatLocked(target, ownerID, float64(finalDamage))
 						}
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
-							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: damage})
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage})
 						}
 
 						if isDead {
@@ -4361,15 +4488,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 							if withinAbilityRadius(impactName, e.X, e.Z, target, explosionRadius) {
 								target.Mu.Lock()
-								target.Health -= shieldExplosionDamage
+								finalDamage := applyFinalDamage(owner, target, shieldExplosionDamage, "arcane")
 								if ownerIsPlayer {
-									addThreatLocked(target, ownerID, float64(shieldExplosionDamage))
+									addThreatLocked(target, ownerID, float64(finalDamage))
 								}
 								isDead := target.Health <= 0
 								target.Mu.Unlock()
 
 								if w.OnEvent != nil {
-									w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: shieldExplosionDamage})
+									w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage})
 								}
 
 								if isDead {
@@ -4475,8 +4602,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 
 				// Hit!
+				damageType := "physical"
+				if subType == "Fireball" || subType == "ExplosiveTrap" {
+					damageType = "fire"
+				} else if subType == "ArcaneMissile" {
+					damageType = "arcane"
+				}
 				target.Mu.Lock()
-				target.Health -= finalDamage
+				finalDamage = applyFinalDamage(owner, target, finalDamage, damageType)
 				if ownerIsPlayer {
 					addThreatLocked(target, ownerID, float64(finalDamage))
 				}
@@ -4589,7 +4722,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						if withinAbilityRadius(subType, projX, projZ, splashTarget, splashRadius) {
 							splashTarget.Mu.Lock()
 							splashDmg := int(float64(finalDamage) * 0.4)
-							splashTarget.Health -= splashDmg
+							splashDmg = applyFinalDamage(owner, splashTarget, splashDmg, "fire")
 							if ownerIsPlayer {
 								addThreatLocked(splashTarget, ownerID, float64(splashDmg))
 							}
@@ -4768,7 +4901,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					tdist := math.Sqrt(tdx*tdx + tdz*tdz)
 					if tdist < 16.0 {
 						target.Mu.Lock()
-						target.Health -= damage
+						finalDamage := applyFinalDamage(e, target, damage, "physical")
 						isDead := target.Health <= 0
 
 						// Combo: Tremor Rush (Earthshaker → Charge) = +2s knockdown
@@ -4781,7 +4914,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						hitTargets = append(hitTargets, target)
 
 						if w.OnEvent != nil {
-							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: damage})
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: finalDamage})
 						}
 
 						if isDead {
@@ -4941,13 +5074,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 						if withinAbilityRadius("Whirlwind", e.X, e.Z, target, radius) {
 							target.Mu.Lock()
-							target.Health -= damage
-							addThreatLocked(target, e.ID, float64(damage))
+							finalDamage := applyFinalDamage(e, target, damage, "physical")
+							addThreatLocked(target, e.ID, float64(finalDamage))
 							isDead := target.Health <= 0
 							target.Mu.Unlock()
 
 							if w.OnEvent != nil {
-								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: damage})
+								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: finalDamage})
 							}
 
 							if isDead {
@@ -5130,6 +5263,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 								// Set Bonus: Divine Light 4pc (spiritGuardiansHeal) - Heal allies
 								if hasSpiritHeal && targetType == TypePlayer && targetID != e.ID {
 									healAmount := int(float64(5+(e.Stats.Wisdom/2)) * healReduction) // Apply vengeful rune reduction
+									healAmount = applyHealingDoneBonus(e, healAmount)
 									target.Mu.Lock()
 									target.Health += healAmount
 									if target.Health > target.MaxHealth {
@@ -5235,15 +5369,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				ownerIsPlayer := owner.Type == TypePlayer
 				ownerID := e.OwnerID
 				target.Mu.Lock()
-				target.Health -= damage
+				finalDamage := applyFinalDamage(owner, target, damage, "holy")
 				if ownerIsPlayer {
-					addThreatLocked(target, ownerID, float64(damage))
+					addThreatLocked(target, ownerID, float64(finalDamage))
 				}
 				isDead := target.Health <= 0
 				target.Mu.Unlock()
 
 				if w.OnEvent != nil {
-					w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: damage})
+					w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: finalDamage})
 					// Visual Beam event? Or just rely on attack animation
 					w.OnEvent("ability", AbilityEvent{SourceID: e.ID, TargetID: target.ID, SkillName: "Smite", TargetX: tx, TargetZ: tz})
 				}
@@ -6013,9 +6147,9 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 			}
 		}
 
-		tgt.Health -= actualDamage
+		actualDamage = applyFinalDamage(att, tgt, actualDamage, "physical")
 		if att.Type == TypePlayer && tgt.Type == TypeEnemy {
-			addThreatLocked(tgt, att.ID, float64(damage))
+			addThreatLocked(tgt, att.ID, float64(actualDamage))
 		}
 
 		// Apply On-Hit Effects
@@ -6330,7 +6464,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 	if attacker != nil && attacker.Type == TypePlayer && target.Type == TypeEnemy {
 		// Unique Effect: vampiric - Restore 5% max HP on kill
 		if attacker.HasUniqueEffect("vampiric") {
-			healAmount := attacker.MaxHealth / 20 // 5%
+			healAmount := applyHealingDoneBonus(attacker, attacker.MaxHealth/20) // 5%
 			attacker.Health += healAmount
 			if attacker.Health > attacker.MaxHealth {
 				attacker.Health = attacker.MaxHealth
@@ -6713,9 +6847,8 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			if isElite {
 				gemChance = 0.30
 			}
-			if rand.Float64() < gemChance && tLevel >= 20 {
-				// Only drop gems from level 20+ enemies
-				// Quality scales with level
+			if rand.Float64() < gemChance {
+				// Quality still scales with level, but gems can now drop at any level.
 				gem := GenerateRandomGemByLevel(tLevel, isElite)
 				lootItems = append(lootItems, gem)
 			}
@@ -7059,21 +7192,6 @@ func (e *Entity) RecalculateStats() {
 
 	flatDamage := 0
 	flatDefense := 0
-
-	// Add Equipment Stats
-	for _, item := range e.Equipment {
-		totalStr += item.Stats["strength"]
-		totalDex += item.Stats["dexterity"]
-		totalInt += item.Stats["intelligence"]
-		totalWis += item.Stats["wisdom"]
-		totalVit += item.Stats["vitality"]
-
-		flatDamage += item.Stats["damage"]
-		flatDefense += item.Stats["defense"]
-	}
-
-	// Calculate and Apply Set Bonuses
-	e.ActiveSetBonuses = CalculateSetBonuses(e.Equipment)
 	pctArmor := 0.0
 	pctMaxHealthFromSets := 0.0
 	pctCritChance := 0.0
@@ -7082,6 +7200,62 @@ func (e *Entity) RecalculateStats() {
 	pctCdr := 0.0
 	pctHealingDone := 0.0
 	pctHolyDamage := 0.0
+	pctManaRegen := 0.0
+	pctMoveSpeed := 0.0
+	pctAllResist := 0.0
+	pctLifesteal := 0.0
+
+	applyItemStats := func(stats map[string]int) {
+		for stat, value := range stats {
+			switch stat {
+			case "strength":
+				totalStr += value
+			case "dexterity":
+				totalDex += value
+			case "intelligence":
+				totalInt += value
+			case "wisdom":
+				totalWis += value
+			case "vitality":
+				totalVit += value
+			case "damage":
+				flatDamage += value
+			case "defense":
+				flatDefense += value
+			case "critChance":
+				pctCritChance += float64(value) / 100.0
+			case "poisonDamage":
+				pctPoisonDamage += float64(value) / 100.0
+			case "fireDamage":
+				pctFireDamage += float64(value) / 100.0
+			case "cdr":
+				pctCdr += float64(value) / 100.0
+			case "manaRegen":
+				pctManaRegen += float64(value) / 100.0
+			case "healingDone":
+				pctHealingDone += float64(value) / 100.0
+			case "holyDamage":
+				pctHolyDamage += float64(value) / 100.0
+			case "moveSpeed":
+				pctMoveSpeed += float64(value) / 100.0
+			case "allResist":
+				pctAllResist += float64(value) / 100.0
+			case "lifesteal":
+				pctLifesteal += float64(value) / 100.0
+			}
+		}
+	}
+
+	// Add Equipment Stats
+	for _, item := range e.Equipment {
+		applyItemStats(item.Stats)
+		for _, gem := range item.Gems {
+			applyItemStats(gem.Stats)
+		}
+	}
+
+	// Calculate and Apply Set Bonuses
+	e.ActiveSetBonuses = CalculateSetBonuses(e.Equipment)
 
 	for _, bonuses := range e.ActiveSetBonuses {
 		for bonusKey, value := range bonuses {
@@ -7182,11 +7356,6 @@ func (e *Entity) RecalculateStats() {
 			if pctArmor != 0 {
 				e.Defense = int(float64(e.Defense) * (1.0 + pctArmor))
 			}
-			if pctCdr != 0 {
-				e.CooldownReduction = math.Min(0.5, e.CooldownReduction+pctCdr)
-			}
-			// Store percentage bonuses for use in combat calculations
-			// These are applied dynamically: critChance, poisonDamage, fireDamage, healingDone, holyDamage
 		}()
 	}
 
@@ -7208,6 +7377,9 @@ func (e *Entity) RecalculateStats() {
 
 	e.MaxMana = (totalInt * 10) + levelBonus
 	e.CooldownReduction = math.Min(0.5, float64(totalInt)*0.01)
+	if pctCdr != 0 {
+		e.CooldownReduction = math.Min(0.5, e.CooldownReduction+pctCdr)
+	}
 
 	if e.Type == TypePlayer {
 		switch e.SubType {
@@ -7225,9 +7397,15 @@ func (e *Entity) RecalculateStats() {
 	}
 
 	e.Defense = flatDefense
+	if pctAllResist != 0 {
+		e.Defense = int(float64(e.Defense) * (1.0 + pctAllResist))
+	}
 
 	// Speed Calculation
 	e.Speed = (3.0 + (float64(totalDex) * 0.5)) * 1.2
+	if pctMoveSpeed != 0 {
+		e.Speed *= (1.0 + pctMoveSpeed)
+	}
 
 	// Cap Speed (Max = 3x Speed at 10 Dex)
 	refDex := 10.0
@@ -7249,7 +7427,17 @@ func (e *Entity) RecalculateStats() {
 	e.AttackCooldown = time.Duration(cooldown * float64(time.Second))
 
 	e.ManaRegen = float64(totalWis) * 0.5
+	if pctManaRegen != 0 {
+		e.ManaRegen *= (1.0 + pctManaRegen)
+	}
 	e.CastSpeed = 1.0 + (float64(totalWis)/5.0)*0.01
+	e.CritChanceBonus = pctCritChance
+	e.PoisonDamageBonus = pctPoisonDamage
+	e.FireDamageBonus = pctFireDamage
+	e.HealingDoneBonus = pctHealingDone
+	e.HolyDamageBonus = pctHolyDamage
+	e.LifestealBonus = pctLifesteal
+	e.AllResistBonus = pctAllResist
 
 	if e.Mana > e.MaxMana {
 		e.Mana = e.MaxMana

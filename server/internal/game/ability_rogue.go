@@ -60,15 +60,15 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					}
 					target.Mu.Lock()
 					if target.Type == TypeEnemy && target.State != "DEAD" {
-						target.Health -= damage
-						addThreatLocked(target, player.ID, float64(damage))
+						finalDamage := applyFinalDamage(player, target, damage, "physical")
+						addThreatLocked(target, player.ID, float64(finalDamage))
 
 						// Apply Bleed
 						target.Bleeding = true
 						target.BleedDamage = 10 + (player.Stats.Dexterity / 2)
 						target.BleedEndTime = time.Now().Add(10 * time.Second)
 
-						w.fireDamageEvent(player.ID, target.ID, damage)
+						w.fireDamageEvent(player.ID, target.ID, finalDamage)
 						if target.Health <= 0 {
 							w.handleDeath(target, player, nil)
 						}
@@ -244,9 +244,9 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				target.Mu.Lock()
 				if target.Type == TypeEnemy && target.State != "DEAD" {
 					if withinAbilityRadius(skillName, targetX, targetZ, target, radius) {
-						target.Health -= damage
-						addThreatLocked(target, player.ID, float64(damage))
-						w.fireDamageEvent(player.ID, target.ID, damage)
+						finalDamage := applyFinalDamage(player, target, damage, "physical")
+						addThreatLocked(target, player.ID, float64(finalDamage))
+						w.fireDamageEvent(player.ID, target.ID, finalDamage)
 						if target.Health <= 0 {
 							w.handleDeath(target, player, nil)
 						}
@@ -466,7 +466,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				}
 
 				bestTarget.Mu.Lock()
-				bestTarget.Health -= finalDamage
+				finalDamage = applyFinalDamage(player, bestTarget, finalDamage, "physical")
 				addThreatLocked(bestTarget, player.ID, float64(finalDamage))
 				isDead := bestTarget.Health <= 0
 				bestTarget.Mu.Unlock()
@@ -555,7 +555,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					// Create a temporary "illusion" that deals one attack worth of damage
 					cloneDamage := player.Damage
 					bestTarget.Mu.Lock()
-					bestTarget.Health -= cloneDamage
+					cloneDamage = applyFinalDamage(player, bestTarget, cloneDamage, "physical")
 					addThreatLocked(bestTarget, player.ID, float64(cloneDamage))
 					isDead := bestTarget.Health <= 0
 					bestTarget.Mu.Unlock()
@@ -650,7 +650,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					if venomBurstActive && isPoisoned {
 						finalDamage = damage * 2
 					}
-					target.Health -= finalDamage
+					finalDamage = applyFinalDamage(player, target, finalDamage, "physical")
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
 

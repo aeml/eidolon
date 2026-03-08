@@ -44,6 +44,12 @@ message Quest {
   bool accepted = 8;
 }
 
+message SocketedGem {
+  string type = 1;
+  string quality = 2;
+  map<string, int32> stats = 3;
+}
+
 message Item {
   string id = 1;
   string name = 2;
@@ -59,6 +65,9 @@ message Item {
   int32 max_stack = 12;
   int32 potency = 13;
   int32 sockets = 14;
+  string gem_type = 15;
+  string gem_quality = 16;
+  repeated SocketedGem gems = 17;
 }
 
 message Entity {

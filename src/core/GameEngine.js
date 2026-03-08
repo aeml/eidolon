@@ -220,6 +220,9 @@ export class GameEngine {
         this.uiManager.inventory.onUnequipRequest = (slot) => {
             this.network.send('unequip', { slot });
         };
+        this.uiManager.inventory.onSortInventory = () => {
+            this.network.send('inventory_sort', {});
+        };
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         this.minimap = new Minimap();
         this.minimap.setGameEngine(this);

@@ -57,7 +57,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					nearestAlly.Mu.Lock()
 					nearestAlly.DivineInterventionActive = true
 					nearestAlly.DivineInterventionEndTime = time.Now().Add(5 * time.Second)
-					allyHeal := nearestAlly.MaxHealth / 2
+					allyHeal := applyHealingDoneBonus(player, nearestAlly.MaxHealth/2)
 					nearestAlly.Health += allyHeal
 					if nearestAlly.Health > nearestAlly.MaxHealth {
 						nearestAlly.Health = nearestAlly.MaxHealth
@@ -193,12 +193,12 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 
 			if target != nil {
 				target.Mu.Lock()
-				target.Health -= damage
-				addThreatLocked(target, player.ID, float64(damage))
+				finalDamage := applyFinalDamage(player, target, damage, "holy")
+				addThreatLocked(target, player.ID, float64(finalDamage))
 				target.Stunned = true
 				target.StunEndTime = time.Now().Add(2 * time.Second)
 
-				w.fireDamageEvent(player.ID, target.ID, damage)
+				w.fireDamageEvent(player.ID, target.ID, finalDamage)
 				if target.Health <= 0 {
 					w.handleDeath(target, player, nil)
 				}
@@ -252,7 +252,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 25)
 		if player.Mana >= cost {
 			player.Mana -= cost
-			healAmount := 30 + (player.Stats.Wisdom * 3)
+			healAmount := applyHealingDoneBonus(player, 30+(player.Stats.Wisdom*3))
 
 			// Healing Light Rune Effects
 			runeID := player.GetRuneForSkill("Healing Light")
@@ -428,9 +428,9 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 						}
 
 						target.Mu.Lock()
-						target.Health -= damage
-						totalDamageDealt += damage
-						addThreatLocked(target, player.ID, float64(damage))
+						finalDamage := applyFinalDamage(player, target, damage, "holy")
+						totalDamageDealt += finalDamage
+						addThreatLocked(target, player.ID, float64(finalDamage))
 
 						// radiantstrike_chains: Roots target for 2s
 						if runeID == "radiantstrike_chains" {
@@ -456,7 +456,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
-						w.fireDamageEvent(player.ID, target.ID, damage)
+						w.fireDamageEvent(player.ID, target.ID, finalDamage)
 						if isDead {
 							target.Mu.Lock()
 							w.handleDeath(target, player, nil)
@@ -502,13 +502,13 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 
 				if withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.Mu.Lock()
-					target.Health -= damage
-					addThreatLocked(target, player.ID, float64(damage))
+					finalDamage := applyFinalDamage(player, target, damage, "holy")
+					addThreatLocked(target, player.ID, float64(finalDamage))
 					// Stun logic would go here
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
 
-					w.fireDamageEvent(player.ID, target.ID, damage)
+					w.fireDamageEvent(player.ID, target.ID, finalDamage)
 					if isDead {
 						target.Mu.Lock()
 						w.handleDeath(target, player, nil)

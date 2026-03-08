@@ -37,6 +37,18 @@ func (w *World) fireAbilityEvent(sourceID, targetID, skillName string, targetX, 
 
 // fireDamageEvent emits a "damage" event if a listener is registered.
 func (w *World) fireDamageEvent(sourceID, targetID string, amount int) {
+	if amount > 0 && sourceID != "" {
+		if source, ok := w.Entities[sourceID]; ok && source != nil && source.LifestealBonus > 0 {
+			healAmount := int(float64(amount) * source.LifestealBonus)
+			if healAmount > 0 {
+				source.Health += healAmount
+				if source.Health > source.MaxHealth {
+					source.Health = source.MaxHealth
+				}
+			}
+		}
+	}
+
 	if w.OnEvent != nil {
 		w.OnEvent("damage", DamageEvent{
 			TargetID: targetID,
@@ -55,6 +67,26 @@ func (w *World) fireHealEvent(sourceID, targetID string, amount int) {
 			Amount:   amount,
 		})
 	}
+}
+
+func applyHealingDoneBonus(source *Entity, amount int) int {
+	if source == nil || amount <= 0 || source.HealingDoneBonus <= 0 {
+		return amount
+	}
+	boosted := int(float64(amount) * (1.0 + source.HealingDoneBonus))
+	if boosted < 1 {
+		return 1
+	}
+	return boosted
+}
+
+func applyFinalDamage(attacker, target *Entity, baseDamage int, damageType string) int {
+	if target == nil || baseDamage <= 0 {
+		return 0
+	}
+	finalDamage, _ := CalculateFinalDamage(attacker, target, baseDamage, damageType)
+	target.Health -= finalDamage
+	return finalDamage
 }
 
 func (w *World) fireTelegraphEvent(sourceID string, x, z, radius float64, duration time.Duration) {
