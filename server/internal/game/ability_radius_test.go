@@ -21,6 +21,14 @@ func TestWithinAbilityRadius_UsesTargetVisualRadius(t *testing.T) {
 	}
 }
 
+func TestWithinAbilityRadius_MeteorUsesExpandedVisualSize(t *testing.T) {
+	target := &Entity{Type: TypeEnemy, X: 26.0, Z: 0, Scale: 1.0}
+
+	if !withinAbilityRadius("Meteor Drop", 0, 0, target, 16.0) {
+		t.Fatal("expected meteor drop to use the full expanded impact visual radius")
+	}
+}
+
 func TestGravityWell_HitsTargetInsideVisualEdge(t *testing.T) {
 	w := newTestWorld()
 	player := newTestPlayer("wizard", "Wizard")
@@ -55,7 +63,7 @@ func TestMeteorDrop_HitsTargetNearRingEdge(t *testing.T) {
 		ID:        "enemy-meteor",
 		Type:      TypeEnemy,
 		SubType:   "Skeleton",
-		X:         19.0,
+		X:         26.0,
 		Z:         0,
 		Health:    400,
 		MaxHealth: 400,

@@ -655,9 +655,13 @@ export class Actor extends Entity {
                         const rx = this.position.x - player.position.x;
                         const rz = this.position.z - player.position.z;
                         const distSq = rx * rx + rz * rz;
+                        let offsetStrength = 7.5;
+                        let maxVisualOffset = 2.0;
 
                         // Apply only when near the player (combat cluster).
                         if (distSq < 9.0 * 9.0 && distSq > 0.0001) {
+                            offsetStrength = 3.0;
+                            maxVisualOffset = 0.6;
                             const invLen = 1.0 / Math.sqrt(distSq);
                             const ux = rx * invLen;
                             const uz = rz * invLen;
@@ -671,13 +675,18 @@ export class Actor extends Entity {
                                 separation.z -= uz * dot * 0.75;
                             }
                         }
-                    }
 
-                    // Add to visual offset instead of position to avoid fighting Lerp
-                    this.visualOffset.add(separation.multiplyScalar(7.5 * dt));
-                    // Clamp to avoid extreme offsets
-                    if (this.visualOffset.length() > 2.0) {
-                        this.visualOffset.setLength(2.0);
+                        // Add to visual offset instead of position to avoid fighting Lerp
+                        this.visualOffset.add(separation.multiplyScalar(offsetStrength * dt));
+                        // Clamp to avoid extreme offsets
+                        if (this.visualOffset.length() > maxVisualOffset) {
+                            this.visualOffset.setLength(maxVisualOffset);
+                        }
+                    } else {
+                        this.visualOffset.add(separation.multiplyScalar(7.5 * dt));
+                        if (this.visualOffset.length() > 2.0) {
+                            this.visualOffset.setLength(2.0);
+                        }
                     }
                 }
             }

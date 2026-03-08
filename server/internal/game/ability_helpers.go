@@ -5,15 +5,19 @@ import "time"
 const (
 	baseActorVisualRadius        = 1.25
 	maxAbilityTargetVisualRadius = 5.0
-	meteorDropServerRadiusPad    = 4.0
+	meteorImpactVisualScale      = 1.65
 )
 
-func bonusAbilityRadius(effectName string) float64 {
+func visualAbilityRadius(effectName string, radius float64) float64 {
+	if radius <= 0 {
+		return radius
+	}
+
 	switch effectName {
 	case "Meteor Drop", "Meteor":
-		return meteorDropServerRadiusPad
+		return radius * meteorImpactVisualScale
 	default:
-		return 0
+		return radius
 	}
 }
 
@@ -53,6 +57,18 @@ func (w *World) fireHealEvent(sourceID, targetID string, amount int) {
 	}
 }
 
+func (w *World) fireTelegraphEvent(sourceID string, x, z, radius float64, duration time.Duration) {
+	if w.OnEvent != nil {
+		w.OnEvent("telegraph", TelegraphEvent{
+			SourceID: sourceID,
+			X:        x,
+			Z:        z,
+			Radius:   radius,
+			Duration: duration.Seconds(),
+		})
+	}
+}
+
 // delayedIdleReset schedules a goroutine that resets the given entity's state
 // from "ATTACKING" back to "IDLE" after 1 second. Used by Wizard cast animations.
 func (w *World) delayedIdleReset(playerID string) {
@@ -72,7 +88,7 @@ func expandedAbilityRadius(effectName string, radius float64) float64 {
 	if radius <= 0 {
 		return radius
 	}
-	return radius + bonusAbilityRadius(effectName) + maxAbilityTargetVisualRadius
+	return visualAbilityRadius(effectName, radius) + maxAbilityTargetVisualRadius
 }
 
 func entityVisualRadius(target *Entity) float64 {
@@ -96,7 +112,7 @@ func withinAbilityRadius(effectName string, originX, originZ float64, target *En
 	if target == nil {
 		return false
 	}
-	effectiveRadius := radius + bonusAbilityRadius(effectName) + entityVisualRadius(target)
+	effectiveRadius := visualAbilityRadius(effectName, radius) + entityVisualRadius(target)
 	dx := originX - target.X
 	dz := originZ - target.Z
 	return (dx*dx + dz*dz) <= effectiveRadius*effectiveRadius
