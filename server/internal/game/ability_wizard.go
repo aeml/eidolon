@@ -365,21 +365,24 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				clusterRadius := radius * 0.6
 
 				for i, offset := range offsets {
+					impactDelay := time.Duration(1500+i*200) * time.Millisecond
+					impactX := targetX + offset.dx
+					impactZ := targetZ + offset.dz
 					proj := &Entity{
 						ID:                  fmt.Sprintf("proj-meteor-%d-%d", time.Now().UnixNano(), i),
 						InstanceID:          player.InstanceID,
 						Type:                TypeProjectile,
 						SubType:             "Meteor",
-						X:                   targetX + offset.dx,
+						X:                   impactX,
 						Y:                   30.0,
-						Z:                   targetZ + offset.dz,
+						Z:                   impactZ,
 						VelX:                0,
 						VelZ:                0,
 						Radius:              clusterRadius,
 						Damage:              clusterDamage,
 						OwnerID:             player.ID,
 						CreatedAt:           time.Now(),
-						LastAttackTime:      time.Now().Add(time.Duration(1500+i*200) * time.Millisecond), // Stagger impact
+						LastAttackTime:      time.Now().Add(impactDelay), // Stagger impact
 						Scale:               0.7,
 						ProjectileRuneID:    runeID,
 						ProjectileSkill:     "Meteor Drop",
@@ -387,9 +390,11 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					}
 					w.Entities[proj.ID] = proj
 					w.Grid.Add(proj)
+					w.fireTelegraphEvent(player.ID, impactX, impactZ, visualAbilityRadius(skillName, clusterRadius), impactDelay)
 				}
 			} else {
 				// Single meteor
+				impactDelay := 1500 * time.Millisecond
 				proj := &Entity{
 					ID:                  fmt.Sprintf("proj-meteor-%d", time.Now().UnixNano()),
 					InstanceID:          player.InstanceID,
@@ -404,7 +409,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					Damage:              damage,
 					OwnerID:             player.ID,
 					CreatedAt:           time.Now(),
-					LastAttackTime:      time.Now().Add(1500 * time.Millisecond),
+					LastAttackTime:      time.Now().Add(impactDelay),
 					Scale:               1.0,
 					ProjectileRuneID:    runeID,
 					ProjectileSkill:     "Meteor Drop",
@@ -412,6 +417,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
+				w.fireTelegraphEvent(player.ID, targetX, targetZ, visualAbilityRadius(skillName, radius), impactDelay)
 
 				// Apocalypse rune: meteors continue for 5s after cast
 				if runeID == "meteor_apocalypse" {
@@ -424,27 +430,30 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 							// Spawn additional meteor at random offset
 							offsetX := (rand.Float64() - 0.5) * 10
 							offsetZ := (rand.Float64() - 0.5) * 10
+							impactDelay := 1500 * time.Millisecond
 							apocProj := &Entity{
-								ID:             fmt.Sprintf("proj-meteor-apoc-%d-%d", time.Now().UnixNano(), i),
-								InstanceID:     instanceID,
-								Type:           TypeProjectile,
-								SubType:        "Meteor",
-								X:              px + offsetX,
-								Y:              30.0,
-								Z:              pz + offsetZ,
-								VelX:           0,
-								VelZ:           0,
-								Radius:         radius * 0.7,
-								Damage:         damage / 2,
-								OwnerID:        playerID,
-								CreatedAt:      time.Now(),
-								LastAttackTime: time.Now().Add(1500 * time.Millisecond),
-								Scale:          0.7,
+								ID:              fmt.Sprintf("proj-meteor-apoc-%d-%d", time.Now().UnixNano(), i),
+								InstanceID:      instanceID,
+								Type:            TypeProjectile,
+								SubType:         "Meteor",
+								X:               px + offsetX,
+								Y:               30.0,
+								Z:               pz + offsetZ,
+								VelX:            0,
+								VelZ:            0,
+								Radius:          radius * 0.7,
+								Damage:          damage / 2,
+								OwnerID:         playerID,
+								CreatedAt:       time.Now(),
+								LastAttackTime:  time.Now().Add(impactDelay),
+								Scale:           0.7,
+								ProjectileSkill: "Meteor Drop",
 							}
 							w.Mu.Lock()
 							w.Entities[apocProj.ID] = apocProj
 							w.Grid.Add(apocProj)
 							w.Mu.Unlock()
+							w.fireTelegraphEvent(playerID, apocProj.X, apocProj.Z, visualAbilityRadius("Meteor Drop", apocProj.Radius), impactDelay)
 						}
 					}()
 				}

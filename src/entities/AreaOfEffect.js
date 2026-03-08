@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Entity } from './Entity.js';
+import { Actor } from './Actor.js';
 
 export class AreaOfEffect extends Entity {
     constructor(gameEngine, owner, position, config) {
@@ -89,6 +90,8 @@ export class AreaOfEffect extends Entity {
             for (const entity of entities) {
                 if (!entity.isActive || entity.state === 'DEAD') continue;
                 if (entity === this.owner) continue;
+                if (!(entity instanceof Actor)) continue;
+                if (typeof entity.takeDamage !== 'function') continue;
                 if (entity.constructor.name === 'LootDrop') continue;
                 if (entity.constructor.name === 'AreaOfEffect') continue;
                 if (entity.constructor.name === 'Projectile') continue;

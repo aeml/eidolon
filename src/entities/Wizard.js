@@ -164,6 +164,9 @@ export class Wizard extends Actor {
             this.cooldowns["Meteor Drop"] = 15.0 * (1 - cdr);
 
             const spawnMeteorTelegraph = (impactPos, radius) => {
+                if (gameEngine.isMultiplayer) {
+                    return;
+                }
                 if (typeof gameEngine.spawnTransientEffect === 'function') {
                     gameEngine.spawnTransientEffect('telegraph', impactPos, 0xff2200, {
                         radius,

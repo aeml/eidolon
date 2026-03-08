@@ -3178,8 +3178,8 @@ func (w *World) PerformForgeUpgrade(playerID, slot string, amount int) (*Entity,
 	// Check Shards
 	shardCount := 0
 	for _, invItem := range player.Inventory {
-		if invItem.Name == "Eidolon Shard" {
-			shardCount += invItem.Stack
+		if isForgeShardItem(invItem) {
+			shardCount += forgeInventoryStackCount(invItem)
 		}
 	}
 
@@ -3191,10 +3191,11 @@ func (w *World) PerformForgeUpgrade(playerID, slot string, amount int) (*Entity,
 	remainingCost := cost
 	// Iterate backwards to safely remove empty stacks
 	for i := len(player.Inventory) - 1; i >= 0; i-- {
-		if player.Inventory[i].Name == "Eidolon Shard" {
+		if isForgeShardItem(player.Inventory[i]) {
 			take := remainingCost
-			if player.Inventory[i].Stack <= take {
-				take = player.Inventory[i].Stack
+			stackCount := forgeInventoryStackCount(player.Inventory[i])
+			if stackCount <= take {
+				take = stackCount
 				// Remove item
 				player.Inventory = append(player.Inventory[:i], player.Inventory[i+1:]...)
 			} else {
@@ -3229,6 +3230,21 @@ func (w *World) PerformForgeUpgrade(playerID, slot string, amount int) (*Entity,
 	return player, true, "Upgrade successful"
 }
 
+func forgeInventoryStackCount(item Item) int {
+	if item.Stack > 0 {
+		return item.Stack
+	}
+	return 1
+}
+
+func isForgeHeartItem(item Item) bool {
+	return strings.EqualFold(item.Name, "Eidolon Heart") || strings.EqualFold(item.Name, "Heart")
+}
+
+func isForgeShardItem(item Item) bool {
+	return strings.EqualFold(item.Name, "Eidolon Shard") || strings.EqualFold(item.Name, "Shard")
+}
+
 func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, string) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
@@ -3254,8 +3270,8 @@ func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, strin
 	// Check Hearts
 	heartCount := 0
 	for _, invItem := range player.Inventory {
-		if invItem.Name == "Eidolon Heart" {
-			heartCount += invItem.Stack
+		if isForgeHeartItem(invItem) {
+			heartCount += forgeInventoryStackCount(invItem)
 		}
 	}
 
@@ -3266,10 +3282,11 @@ func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, strin
 	// Deduct Hearts
 	remainingCost := cost
 	for i := len(player.Inventory) - 1; i >= 0; i-- {
-		if player.Inventory[i].Name == "Eidolon Heart" {
+		if isForgeHeartItem(player.Inventory[i]) {
 			take := remainingCost
-			if player.Inventory[i].Stack <= take {
-				take = player.Inventory[i].Stack
+			stackCount := forgeInventoryStackCount(player.Inventory[i])
+			if stackCount <= take {
+				take = stackCount
 				player.Inventory = append(player.Inventory[:i], player.Inventory[i+1:]...)
 			} else {
 				player.Inventory[i].Stack -= take
@@ -3333,11 +3350,11 @@ func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string
 	shardCount := 0
 	heartCount := 0
 	for _, invItem := range player.Inventory {
-		if invItem.Name == "Eidolon Shard" {
-			shardCount += invItem.Stack
+		if isForgeShardItem(invItem) {
+			shardCount += forgeInventoryStackCount(invItem)
 		}
-		if invItem.Name == "Eidolon Heart" {
-			heartCount += invItem.Stack
+		if isForgeHeartItem(invItem) {
+			heartCount += forgeInventoryStackCount(invItem)
 		}
 	}
 
@@ -3351,10 +3368,11 @@ func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string
 	// Deduct Shards
 	remainingShards := shardCost
 	for i := len(player.Inventory) - 1; i >= 0; i-- {
-		if player.Inventory[i].Name == "Eidolon Shard" {
+		if isForgeShardItem(player.Inventory[i]) {
 			take := remainingShards
-			if player.Inventory[i].Stack <= take {
-				take = player.Inventory[i].Stack
+			stackCount := forgeInventoryStackCount(player.Inventory[i])
+			if stackCount <= take {
+				take = stackCount
 				player.Inventory = append(player.Inventory[:i], player.Inventory[i+1:]...)
 			} else {
 				player.Inventory[i].Stack -= take
@@ -3369,10 +3387,11 @@ func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string
 	// Deduct Hearts
 	remainingHearts := heartCost
 	for i := len(player.Inventory) - 1; i >= 0; i-- {
-		if player.Inventory[i].Name == "Eidolon Heart" {
+		if isForgeHeartItem(player.Inventory[i]) {
 			take := remainingHearts
-			if player.Inventory[i].Stack <= take {
-				take = player.Inventory[i].Stack
+			stackCount := forgeInventoryStackCount(player.Inventory[i])
+			if stackCount <= take {
+				take = stackCount
 				player.Inventory = append(player.Inventory[:i], player.Inventory[i+1:]...)
 			} else {
 				player.Inventory[i].Stack -= take

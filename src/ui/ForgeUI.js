@@ -232,6 +232,30 @@ export class ForgeUI {
         return ['mainHand', 'offHand', 'head', 'chest', 'legs', 'feet', 'gloves', 'shoulders', 'belt', 'ring1', 'ring2', 'trinket1', 'trinket2', 'neck'];
     }
 
+    _getInventoryStackCount(item) {
+        if (!item) return 0;
+        return item.stack && item.stack > 0 ? item.stack : 1;
+    }
+
+    _isHeartItem(item) {
+        if (!item) return false;
+        return item.name === 'Eidolon Heart' || item.name === 'Heart';
+    }
+
+    _isShardItem(item) {
+        if (!item) return false;
+        return item.name === 'Eidolon Shard' || item.name === 'Shard';
+    }
+
+    _countInventoryItems(player, matcher) {
+        if (!player || !player.inventory) return 0;
+
+        return player.inventory.reduce((total, item) => {
+            if (!matcher(item)) return total;
+            return total + this._getInventoryStackCount(item);
+        }, 0);
+    }
+
     updateForgeUI(player) {
         if (!this.forgeEquipmentList) return;
 
@@ -491,7 +515,7 @@ export class ForgeUI {
         });
     }
 
-    updateForgePotencyInfo(item) {
+    updateForgePotencyInfo(item, player = this.ctx.getLastPlayer()) {
         if (!item) return;
         this.forgePotencyInfo.style.display = 'flex';
         if (this.forgePotencyItemName) {
@@ -508,10 +532,15 @@ export class ForgeUI {
         }
 
         const cost = Math.pow(2, currentPotency);
+        const availableHearts = this._countInventoryItems(player, (invItem) => this._isHeartItem(invItem));
+        const hasEnoughHearts = availableHearts >= cost;
         if (this.forgePotencyCostValue) this.forgePotencyCostValue.textContent = cost;
+        if (this.forgePotencyCostValue) this.forgePotencyCostValue.style.color = hasEnoughHearts ? '#00ff88' : '#ff4444';
         if (this.btnForgePotency) {
-            this.btnForgePotency.disabled = false;
-            this.btnForgePotency.textContent = `Empower to +${currentPotency + 1}`;
+            this.btnForgePotency.disabled = !hasEnoughHearts;
+            this.btnForgePotency.textContent = hasEnoughHearts
+                ? `Empower to +${currentPotency + 1}`
+                : `Need ${cost - availableHearts} More Hearts`;
         }
 
         if (this.forgePotencyStats) {
@@ -526,6 +555,8 @@ export class ForgeUI {
                     statsHtml += `<div>${stat}: ${value} <span style="color: #0f0;">-> ${nextValue}</span></div>`;
                 }
             }
+            const resourceColor = hasEnoughHearts ? '#00ff88' : '#ff6666';
+            statsHtml += `<div style="color: ${resourceColor}; margin-top: 8px;">Hearts Available: ${availableHearts} / ${cost}</div>`;
             statsHtml += '</div>';
             this.forgePotencyStats.innerHTML = statsHtml;
         }
@@ -637,7 +668,7 @@ export class ForgeUI {
         });
     }
 
-    updateForgeSocketInfo(item) {
+    updateForgeSocketInfo(item, player = this.ctx.getLastPlayer()) {
         if (!item) return;
         this.forgeSocketInfo.style.display = 'flex';
         if (this.forgeSocketItemName) {
@@ -656,17 +687,28 @@ export class ForgeUI {
 
         const shardCost = 250 * Math.pow(2, currentSockets);
         const heartCost = 25;
+        const availableHearts = this._countInventoryItems(player, (invItem) => this._isHeartItem(invItem));
+        const availableShards = this._countInventoryItems(player, (invItem) => this._isShardItem(invItem));
+        const hasEnoughHearts = availableHearts >= heartCost;
+        const hasEnoughShards = availableShards >= shardCost;
+        const hasEnoughResources = hasEnoughHearts && hasEnoughShards;
 
         if (this.forgeSocketCostHearts) this.forgeSocketCostHearts.textContent = heartCost;
         if (this.forgeSocketCostShards) this.forgeSocketCostShards.textContent = shardCost;
+        if (this.forgeSocketCostHearts) this.forgeSocketCostHearts.style.color = hasEnoughHearts ? '#00ff88' : '#ff4444';
+        if (this.forgeSocketCostShards) this.forgeSocketCostShards.style.color = hasEnoughShards ? '#00ff88' : '#ffd700';
         if (this.btnForgeSocket) {
-            this.btnForgeSocket.disabled = false;
-            this.btnForgeSocket.textContent = `Add Socket (${currentSockets + 1}/4)`;
+            this.btnForgeSocket.disabled = !hasEnoughResources;
+            this.btnForgeSocket.textContent = hasEnoughResources
+                ? `Add Socket (${currentSockets + 1}/4)`
+                : 'Missing Forge Materials';
         }
 
         if (this.forgeSocketStats) {
             let statsHtml = '<div style="margin-top: 10px; font-size: 12px;">';
             statsHtml += `<div style="color: #aaa; margin-bottom: 5px;">Sockets: ${currentSockets} <span style="color: #0f0;">-> ${currentSockets + 1}</span></div>`;
+            statsHtml += `<div style="color: ${hasEnoughHearts ? '#00ff88' : '#ff6666'}; margin-top: 8px;">Hearts Available: ${availableHearts} / ${heartCost}</div>`;
+            statsHtml += `<div style="color: ${hasEnoughShards ? '#00ff88' : '#ffdd66'};">Shards Available: ${availableShards} / ${shardCost}</div>`;
             statsHtml += '</div>';
             this.forgeSocketStats.innerHTML = statsHtml;
         }
