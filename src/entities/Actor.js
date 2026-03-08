@@ -70,7 +70,14 @@ export class Actor extends Entity {
             attackSpeed: 1 + (this.baseStats.dexterity / 5) * 0.05,
             cooldownReduction: Math.min(0.5, this.baseStats.intelligence * 0.01),
             manaCostReduction: 0, 
-            castSpeed: 1 + (this.baseStats.wisdom / 5) * 0.01
+            castSpeed: 1 + (this.baseStats.wisdom / 5) * 0.01,
+            critChanceBonus: 0,
+            poisonDamageBonus: 0,
+            fireDamageBonus: 0,
+            healingDoneBonus: 0,
+            holyDamageBonus: 0,
+            lifestealBonus: 0,
+            allResistBonus: 0
         };
 
         // Progression
@@ -1205,6 +1212,34 @@ export class Actor extends Entity {
             damage: 0, defense: 0
         };
         this._tempStats = totalStats;
+        const bonusStats = {
+            critChance: 0,
+            poisonDamage: 0,
+            fireDamage: 0,
+            cdr: 0,
+            manaRegen: 0,
+            healingDone: 0,
+            holyDamage: 0,
+            moveSpeed: 0,
+            allResist: 0,
+            lifesteal: 0
+        };
+
+        const applyItemStats = (statsMap) => {
+            if (!statsMap) return;
+
+            for (const [stat, value] of Object.entries(statsMap)) {
+                if (totalStats[stat] !== undefined) {
+                    totalStats[stat] += value;
+                } else if (stat === 'damage') {
+                    totalStats.damage += value;
+                } else if (stat === 'defense') {
+                    totalStats.defense += value;
+                } else if (bonusStats[stat] !== undefined) {
+                    bonusStats[stat] += value;
+                }
+            }
+        };
         
         totalStats.strength = this.baseStats.strength;
         totalStats.intelligence = this.baseStats.intelligence;
@@ -1219,31 +1254,13 @@ export class Actor extends Entity {
         // Add Equipment Stats
         for (const slot in this.equipment) {
             const item = this.equipment[slot];
-            if (item && item.stats) {
-                for (const stat in item.stats) {
-                    if (totalStats[stat] !== undefined) {
-                        totalStats[stat] += item.stats[stat];
-                    } else {
-                        // Handle direct damage/defense stats on items
-                        if (stat === 'damage') totalStats.damage += item.stats.damage;
-                        if (stat === 'defense') totalStats.defense += item.stats.defense;
-                    }
-                }
-                
+            if (item) {
+                applyItemStats(item.stats);
+
                 // Add socketed gem stats
                 if (item.gems && Array.isArray(item.gems)) {
                     for (const gem of item.gems) {
-                        if (gem && gem.stats) {
-                            for (const stat in gem.stats) {
-                                if (totalStats[stat] !== undefined) {
-                                    totalStats[stat] += gem.stats[stat];
-                                } else if (stat === 'damage') {
-                                    totalStats.damage += gem.stats.damage;
-                                } else if (stat === 'defense') {
-                                    totalStats.defense += gem.stats.defense;
-                                }
-                            }
-                        }
+                        if (gem) applyItemStats(gem.stats);
                     }
                 }
             }
@@ -1260,9 +1277,8 @@ export class Actor extends Entity {
                         // Applied later as percentage
                     } else if (stat === 'armor') {
                         totalStats.defense += setBonus.stats[stat];
-                    } else if (stat === 'critChance') {
-                        // Stored separately for combat calculations
-                        this.stats.critChanceBonus = (this.stats.critChanceBonus || 0) + setBonus.stats[stat];
+                    } else if (bonusStats[stat] !== undefined) {
+                        bonusStats[stat] += setBonus.stats[stat];
                     } else if (totalStats[stat] !== undefined) {
                         totalStats[stat] += setBonus.stats[stat];
                     }
@@ -1308,7 +1324,7 @@ export class Actor extends Entity {
 
         // Int: Increase max mana and reduces ability cooldown (up to 50% max)
         this.stats.maxMana = (totalStats.intelligence * 10) + levelBonus;
-        this.stats.cooldownReduction = Math.min(0.5, totalStats.intelligence * 0.01);
+        this.stats.cooldownReduction = Math.min(0.5, (totalStats.intelligence * 0.01) + (bonusStats.cdr / 100));
 
         // Strength: Melee damage increase
         // Base Damage from Stats + Weapon Damage
@@ -1341,6 +1357,9 @@ export class Actor extends Entity {
 
         // Defense
         this.stats.defense = totalStats.defense;
+        if (bonusStats.allResist > 0) {
+            this.stats.defense = Math.floor(this.stats.defense * (1 + (bonusStats.allResist / 100)));
+        }
         
         // Apply guardian effect if above 80% HP
         if (this.hasGuardianEffect && this.stats.hp > this.stats.maxHp * 0.8) {
@@ -1352,6 +1371,9 @@ export class Actor extends Entity {
         
         // Calculate Speed
         this.stats.speed = (3 + (totalStats.dexterity * 0.5)) * 1.2;
+        if (bonusStats.moveSpeed > 0) {
+            this.stats.speed *= (1 + (bonusStats.moveSpeed / 100));
+        }
         
         // Haste Buff
         if (this.hasteTimer > 0) {
@@ -1383,7 +1405,17 @@ export class Actor extends Entity {
 
         // Wisdom: Mana regen and cast speed
         this.stats.manaRegen = totalStats.wisdom * 0.5;
+        if (bonusStats.manaRegen > 0) {
+            this.stats.manaRegen *= (1 + (bonusStats.manaRegen / 100));
+        }
         this.stats.castSpeed = 1 + (totalStats.wisdom / 5) * 0.01;
+        this.stats.critChanceBonus = bonusStats.critChance / 100;
+        this.stats.poisonDamageBonus = bonusStats.poisonDamage / 100;
+        this.stats.fireDamageBonus = bonusStats.fireDamage / 100;
+        this.stats.healingDoneBonus = bonusStats.healingDone / 100;
+        this.stats.holyDamageBonus = bonusStats.holyDamage / 100;
+        this.stats.lifestealBonus = bonusStats.lifesteal / 100;
+        this.stats.allResistBonus = bonusStats.allResist / 100;
         
         // Mana cost reduction from efficient effect
         this.stats.manaCostReduction = this.hasEfficientEffect ? 0.1 : 0;

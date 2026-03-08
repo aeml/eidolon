@@ -92,8 +92,8 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				distSq := dx*dx + dz*dz
 				if withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.Mu.Lock()
-					target.Health -= damage
-					addThreatLocked(target, player.ID, float64(damage))
+					finalDamage := applyFinalDamage(player, target, damage, "physical")
+					addThreatLocked(target, player.ID, float64(finalDamage))
 					isDead := target.Health <= 0
 
 					// Bladestorm rune: pull enemies toward player
@@ -113,7 +113,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 
 					hitCount++
 
-					w.fireDamageEvent(player.ID, target.ID, damage)
+					w.fireDamageEvent(player.ID, target.ID, finalDamage)
 
 					if isDead {
 						target.Mu.Lock()
@@ -163,12 +163,12 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 
 				if withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.Mu.Lock()
-					target.Health -= damage
-					addThreatLocked(target, player.ID, float64(damage))
+					finalDamage := applyFinalDamage(player, target, damage, "physical")
+					addThreatLocked(target, player.ID, float64(finalDamage))
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
 
-					w.fireDamageEvent(player.ID, target.ID, damage)
+					w.fireDamageEvent(player.ID, target.ID, finalDamage)
 
 					if isDead {
 						target.Mu.Lock()

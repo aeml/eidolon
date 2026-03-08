@@ -15,6 +15,7 @@ export class InventoryUI {
         this.inventoryScreen = document.getElementById('inventory-screen');
         this.inventoryGrid = document.getElementById('inventory-grid');
         this.goldDisplay = document.getElementById('gold-display');
+        this.btnSortInventory = document.getElementById('btn-sort-inventory');
         this.shopScreen = document.getElementById('shop-screen');
         this.shopGambleTitle = document.getElementById('shop-gamble-title');
         this.shopContentMain = document.getElementById('shop-content-main');
@@ -63,9 +64,11 @@ export class InventoryUI {
         this.onStashDeposit = null;
         this.onStashWithdraw = null;
         this.onUnequipRequest = null;
+        this.onSortInventory = null;
 
         // --- Event listeners ---
         this._bindSplitEvents();
+        this._bindInventoryEvents();
         this._bindShopEvents();
         this._bindTooltipEvents();
         this._bindCompareMode();
@@ -81,6 +84,156 @@ export class InventoryUI {
     _getRarityColor(rarity) { return this.ctx.getRarityColor(rarity); }
     _addChatMessage(sender, msg) { return this.ctx.addChatMessage(sender, msg); }
     _updateCharacterSheet(player) { return this.ctx.updateCharacterSheet(player); }
+    _isGemItem(item) { return !!item && (item.type === 'GEM' || item.type === 'Gem'); }
+    _getGemTypeInfo(itemOrGem) {
+        if (!itemOrGem) return null;
+        const gemType = itemOrGem.gemType || itemOrGem.type;
+        return GEM_TYPES[gemType] || GEM_TYPES[String(gemType || '').toUpperCase()] || null;
+    }
+    _getGemQualityInfo(itemOrGem) {
+        if (!itemOrGem) return null;
+        const gemQuality = itemOrGem.gemQuality || itemOrGem.quality;
+        return GEM_QUALITIES[gemQuality] || GEM_QUALITIES[String(gemQuality || '').toUpperCase()] || null;
+    }
+    _getGemTooltipHeader(item) {
+        const gemType = this._getGemTypeInfo(item);
+        const gemQuality = this._getGemQualityInfo(item);
+        if (!gemType || !gemQuality) return '';
+        return `<div style="margin-bottom: 6px;"><span style="color: ${gemQuality.color}; font-weight: bold;">${gemQuality.name}</span> <span style="color: ${gemType.color}; font-weight: bold;">${gemType.name}</span> <span style="color: #aaa;">Gem</span></div>`;
+    }
+    _formatSocketedGemLine(gem) {
+        const gemType = this._getGemTypeInfo(gem) || { name: gem?.type || 'Gem', color: '#fff' };
+        const gemQuality = this._getGemQualityInfo(gem) || { name: gem?.quality || 'Unknown', color: '#fff' };
+        return `<div><span style="color: ${gemQuality.color}; font-weight: bold;">◆ ${gemQuality.name}</span> <span style="color: ${gemType.color};">${gemType.name}</span></div>`;
+    }
+    _getGemSlotStyle(item) {
+        const gemQuality = this._getGemQualityInfo(item);
+        if (!this._isGemItem(item) || !gemQuality) return null;
+        return {
+            border: `2px solid ${gemQuality.color}`,
+            boxShadow: `0 0 10px ${gemQuality.color}`,
+            backgroundColor: 'rgba(255,255,255,0.08)',
+            overlay: `linear-gradient(180deg, ${gemQuality.color}22 0%, rgba(0,0,0,0) 70%)`
+        };
+    }
+    _getGemIndicatorStyle(item) {
+        const gemQuality = this._getGemQualityInfo(item);
+        if (!this._isGemItem(item) || !gemQuality) return null;
+        return {
+            color: gemQuality.color,
+            textShadow: `0 0 4px ${gemQuality.color}, 1px 1px 0 #000`,
+            badgeBackground: 'rgba(8,12,18,0.85)',
+            badgeBorder: `1px solid ${gemQuality.color}`,
+            dotShadow: `0 0 4px ${gemQuality.color}`
+        };
+    }
+    _getInventorySortCategory(item) {
+        if (!item) return 99;
+        if (item.name === 'Eidolon Heart' || item.name === 'Heart') return 0;
+        if (item.name === 'Eidolon Shard' || item.name === 'Shard') return 1;
+        if (this._isGemItem(item)) return 2;
+        return 3;
+    }
+    _getInventoryTypeRank(item) {
+        const type = item?.type || '';
+        const ranks = {
+            WEAPON: 0,
+            ARMOR: 1,
+            ACCESSORY: 2,
+            NECK: 3,
+            GLOVES: 4,
+            MATERIAL: 5,
+            RELIC: 6,
+            GEM: 7
+        };
+        return Object.prototype.hasOwnProperty.call(ranks, type) ? ranks[type] : 99;
+    }
+    sortInventoryItems(items) {
+        const source = Array.isArray(items) ? items : [];
+        const size = source.length;
+        const populated = source.filter((item) => item && item.id);
+
+        populated.sort((a, b) => {
+            const categoryDiff = this._getInventorySortCategory(a) - this._getInventorySortCategory(b);
+            if (categoryDiff !== 0) return categoryDiff;
+
+            if (this._getInventorySortCategory(a) === 2) {
+                const gemTypeDiff = String(a.gemType || '').localeCompare(String(b.gemType || ''));
+                if (gemTypeDiff !== 0) return gemTypeDiff;
+
+                const qualityDiff = (GEM_QUALITIES[String(a.gemQuality || '').toUpperCase()]?.value || 0) - (GEM_QUALITIES[String(b.gemQuality || '').toUpperCase()]?.value || 0);
+                if (qualityDiff !== 0) return qualityDiff;
+            }
+
+            const typeDiff = this._getInventoryTypeRank(a) - this._getInventoryTypeRank(b);
+            if (typeDiff !== 0) return typeDiff;
+
+            const rarityDiff = String(a.rarity?.name || a.rarity || '').localeCompare(String(b.rarity?.name || b.rarity || ''));
+            if (rarityDiff !== 0) return rarityDiff;
+
+            const levelDiff = (a.level || 0) - (b.level || 0);
+            if (levelDiff !== 0) return levelDiff;
+
+            return String(a.name || '').localeCompare(String(b.name || ''));
+        });
+
+        const sorted = new Array(size).fill(null);
+        for (let i = 0; i < populated.length && i < size; i++) {
+            sorted[i] = populated[i];
+        }
+        return sorted;
+    }
+    handleSortInventory() {
+        const player = this._getLastPlayer();
+        if (!player || !Array.isArray(player.inventory)) return;
+
+        player.inventory = this.sortInventoryItems(player.inventory);
+        this.updateInventory(player);
+
+        if (this.onSortInventory) {
+            this.onSortInventory();
+        }
+    }
+    _getItemInnerHtml(item, iconPath) {
+        const color = item.rarity ? item.rarity.color : '#ffffff';
+        const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
+        const gemSlotStyle = this._getGemSlotStyle(item);
+
+        if (isEidolic) {
+            return `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
+        }
+
+        if (gemSlotStyle) {
+            return `<div style="width:100%; height:100%; background-image:${gemSlotStyle.overlay}, url('${iconPath}'); background-color:${gemSlotStyle.backgroundColor}; background-size:cover, contain; background-repeat:no-repeat; background-position:center;"></div>`;
+        }
+
+        return `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
+    }
+    _applyItemSlotVisual(slotEl, item, iconPath, extraHtml = '') {
+        const color = item.rarity ? item.rarity.color : '#ffffff';
+        const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
+        const gemSlotStyle = this._getGemSlotStyle(item);
+
+        slotEl.innerHTML = `${this._getItemInnerHtml(item, iconPath)}${extraHtml}`;
+
+        if (gemSlotStyle) {
+            slotEl.style.border = gemSlotStyle.border;
+            slotEl.style.boxShadow = gemSlotStyle.boxShadow;
+            slotEl.style.backgroundColor = gemSlotStyle.backgroundColor;
+        } else if (isEidolic) {
+            slotEl.style.border = `2px solid ${color}`;
+            slotEl.style.boxShadow = `0 0 5px ${color}`;
+            slotEl.style.backgroundColor = '#222';
+        } else {
+            slotEl.style.border = `1px solid ${color}`;
+            slotEl.style.boxShadow = 'none';
+            slotEl.style.backgroundColor = '#222';
+        }
+
+        slotEl.style.color = color;
+        slotEl.style.borderColor = gemSlotStyle ? this._getGemQualityInfo(item).color : color;
+        slotEl.removeAttribute('title');
+    }
 
     // ---- getters ----
     get isInventoryOpen() { return this.inventoryScreen.style.display === 'block'; }
@@ -103,6 +256,12 @@ export class InventoryUI {
             this.splitAmountInput.addEventListener('input', (e) => {
                 if (this.splitAmountRange) this.splitAmountRange.value = e.target.value;
             });
+        }
+    }
+
+    _bindInventoryEvents() {
+        if (this.btnSortInventory) {
+            this.btnSortInventory.addEventListener('click', () => this.handleSortInventory());
         }
     }
 
@@ -319,22 +478,7 @@ export class InventoryUI {
 
         if (item && item.id) {
             const iconPath = this._getItemIconPath(item);
-            const color = item.rarity ? item.rarity.color : '#ffffff';
-            const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
-
-            if (isEidolic) {
-                slotEl.innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
-                slotEl.style.border = `2px solid ${color}`;
-                slotEl.style.boxShadow = `0 0 5px ${color}`;
-            } else {
-                slotEl.innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>`;
-                slotEl.style.border = `1px solid ${color}`;
-                slotEl.style.boxShadow = 'none';
-            }
-
-            slotEl.style.color = color;
-            slotEl.style.borderColor = color;
-            slotEl.removeAttribute('title');
+            this._applyItemSlotVisual(slotEl, item, iconPath);
 
             this.setupItemDragAndDrop(slotEl, 'equipment', slotId, item);
 
@@ -394,42 +538,41 @@ export class InventoryUI {
             slots[i].innerHTML = '';
 
             if (item && item.id) {
-                const iconPath = this._getItemIconPath(item);
-                const color = item.rarity ? item.rarity.color : '#ffffff';
-                const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
+            const iconPath = this._getItemIconPath(item);
+            const gemIndicatorStyle = this._getGemIndicatorStyle(item);
 
-                let stackHtml = '';
-                if (item.stack > 1) {
+            let stackHtml = '';
+            if (item.stack > 1) {
+                if (gemIndicatorStyle) {
+                    stackHtml = `<div style="position:absolute; bottom:2px; right:2px; min-width:12px; padding:0 3px; border-radius:9px; font-size:10px; color:${gemIndicatorStyle.color}; background:${gemIndicatorStyle.badgeBackground}; border:${gemIndicatorStyle.badgeBorder}; text-shadow:${gemIndicatorStyle.textShadow}; font-weight:bold; text-align:center;">${item.stack}</div>`;
+                } else {
                     stackHtml = `<div style="position:absolute; bottom:2px; right:2px; font-size:10px; color:white; text-shadow:1px 1px 0 #000; font-weight:bold;">${item.stack}</div>`;
                 }
+            }
 
-                let potencyHtml = '';
-                if (item.potency > 0) {
+            let potencyHtml = '';
+            if (item.potency > 0) {
+                if (gemIndicatorStyle) {
+                    potencyHtml = `<div style="position:absolute; top:2px; right:2px; min-width:16px; padding:0 3px; border-radius:9px; font-size:10px; color:${gemIndicatorStyle.color}; background:${gemIndicatorStyle.badgeBackground}; border:${gemIndicatorStyle.badgeBorder}; text-shadow:${gemIndicatorStyle.textShadow}; font-weight:bold; text-align:center;">+${item.potency}</div>`;
+                } else {
                     potencyHtml = `<div style="position:absolute; top:2px; right:2px; font-size:10px; color:#00ff00; text-shadow:1px 1px 0 #000; font-weight:bold;">+${item.potency}</div>`;
                 }
+            }
 
-                let socketHtml = '';
-                if (item.sockets > 0) {
-                    let dots = '';
-                    for (let k = 0; k < item.sockets; k++) {
+            let socketHtml = '';
+            if (item.sockets > 0) {
+                let dots = '';
+                for (let k = 0; k < item.sockets; k++) {
+                    if (gemIndicatorStyle) {
+                        dots += `<div style="width:4px; height:4px; border-radius:50%; background-color:${gemIndicatorStyle.color}; box-shadow:${gemIndicatorStyle.dotShadow}; border:1px solid rgba(255,255,255,0.5);"></div>`;
+                    } else {
                         dots += `<div style="width:3px; height:3px; border-radius:50%; background-color:#00ffff; box-shadow:0 0 2px #00ffff;"></div>`;
                     }
-                    socketHtml = `<div style="position:absolute; bottom:2px; left:2px; display:flex; gap:1px;">${dots}</div>`;
                 }
+                socketHtml = `<div style="position:absolute; bottom:2px; left:2px; display:flex; gap:1px;">${dots}</div>`;
+            }
 
-                if (isEidolic) {
-                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}${potencyHtml}${socketHtml}`;
-                    slots[i].style.border = `2px solid ${color}`;
-                    slots[i].style.boxShadow = `0 0 5px ${color}`;
-                } else {
-                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}${potencyHtml}${socketHtml}`;
-                    slots[i].style.border = `1px solid ${color}`;
-                    slots[i].style.boxShadow = 'none';
-                }
-
-                slots[i].style.color = color;
-                slots[i].removeAttribute('title');
-                slots[i].style.backgroundColor = '#222';
+                this._applyItemSlotVisual(slots[i], item, iconPath, `${stackHtml}${potencyHtml}${socketHtml}`);
 
                 this.setupItemDragAndDrop(slots[i], 'inventory', i, item);
 
@@ -536,26 +679,18 @@ export class InventoryUI {
 
             if (item && item.id) {
                 const iconPath = this._getItemIconPath(item);
-                const color = item.rarity ? item.rarity.color : '#ffffff';
-                const isEidolic = item.rarity && item.rarity.name === 'Eidolic';
+                const gemIndicatorStyle = this._getGemIndicatorStyle(item);
 
                 let stackHtml = '';
                 if (item.stack > 1) {
-                    stackHtml = `<div style="position:absolute; bottom:2px; right:2px; font-size:10px; color:white; text-shadow:1px 1px 0 #000; font-weight:bold;">${item.stack}</div>`;
+                    if (gemIndicatorStyle) {
+                        stackHtml = `<div style="position:absolute; bottom:2px; right:2px; min-width:12px; padding:0 3px; border-radius:9px; font-size:10px; color:${gemIndicatorStyle.color}; background:${gemIndicatorStyle.badgeBackground}; border:${gemIndicatorStyle.badgeBorder}; text-shadow:${gemIndicatorStyle.textShadow}; font-weight:bold; text-align:center;">${item.stack}</div>`;
+                    } else {
+                        stackHtml = `<div style="position:absolute; bottom:2px; right:2px; font-size:10px; color:white; text-shadow:1px 1px 0 #000; font-weight:bold;">${item.stack}</div>`;
+                    }
                 }
 
-                if (isEidolic) {
-                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}`;
-                    slots[i].style.border = `2px solid ${color}`;
-                    slots[i].style.boxShadow = `0 0 5px ${color}`;
-                } else {
-                    slots[i].innerHTML = `<div style="width:100%; height:100%; background-image:url('${iconPath}'); background-color:${color}; background-blend-mode:multiply; background-size:contain; background-repeat:no-repeat; background-position:center;"></div>${stackHtml}`;
-                    slots[i].style.border = `1px solid ${color}`;
-                    slots[i].style.boxShadow = 'none';
-                }
-
-                slots[i].style.color = color;
-                slots[i].style.backgroundColor = '#222';
+                this._applyItemSlotVisual(slots[i], item, iconPath, stackHtml);
 
                 // Right-click to withdraw
                 slots[i].oncontextmenu = (e) => {
@@ -597,14 +732,11 @@ export class InventoryUI {
             const el = document.createElement('div');
             el.className = 'inv-slot';
             const iconPath = this._getItemIconPath(item);
-            el.style.backgroundImage = `url('${iconPath}')`;
-            el.style.backgroundSize = 'contain';
-            el.style.backgroundRepeat = 'no-repeat';
-            el.style.backgroundPosition = 'center';
-            const color = item.rarity ? item.rarity.color : '#ffffff';
-            el.style.border = `1px solid ${color}`;
+            const gemIndicatorStyle = this._getGemIndicatorStyle(item);
             el.style.position = 'relative';
             el.style.cursor = 'pointer';
+
+            this._applyItemSlotVisual(el, item, iconPath);
 
             el.title = `${item.name}\nBuyback Price: ${item.value * (item.stack || 1)}g`;
 
@@ -616,8 +748,19 @@ export class InventoryUI {
                 stackCount.style.bottom = '2px';
                 stackCount.style.right = '2px';
                 stackCount.style.fontSize = '10px';
-                stackCount.style.color = 'white';
-                stackCount.style.textShadow = '1px 1px 0 #000';
+                if (gemIndicatorStyle) {
+                    stackCount.style.minWidth = '12px';
+                    stackCount.style.padding = '0 3px';
+                    stackCount.style.borderRadius = '9px';
+                    stackCount.style.background = gemIndicatorStyle.badgeBackground;
+                    stackCount.style.border = gemIndicatorStyle.badgeBorder;
+                    stackCount.style.color = gemIndicatorStyle.color;
+                    stackCount.style.textShadow = gemIndicatorStyle.textShadow;
+                    stackCount.style.textAlign = 'center';
+                } else {
+                    stackCount.style.color = 'white';
+                    stackCount.style.textShadow = '1px 1px 0 #000';
+                }
                 stackCount.style.fontWeight = 'bold';
                 el.appendChild(stackCount);
             }
@@ -783,8 +926,10 @@ export class InventoryUI {
         this.lastMouseX = x;
         this.lastMouseY = y;
 
+        const isGemItem = this._isGemItem(item);
+        const gemQualityInfo = isGemItem ? this._getGemQualityInfo(item) : null;
         this.statTooltipTitle.textContent = item.name;
-        this.statTooltipTitle.style.color = item.rarity.color;
+        this.statTooltipTitle.style.color = gemQualityInfo?.color || item.rarity.color;
 
         // Format slot name
         let slotName = item.slot;
@@ -800,6 +945,7 @@ export class InventoryUI {
         }
 
         let desc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${item.rarity.name} ${item.type} (${slotName}) - <span style="color: ${levelColor}">Lvl ${item.level}</span></div>`;
+        if (isGemItem) desc += this._getGemTooltipHeader(item);
 
         if (item.stack > 1) {
             desc += `<div style="color: #fff; margin-bottom: 5px;">Stack Size: ${item.stack} / ${item.maxStack || 1000}</div>`;
@@ -817,9 +963,7 @@ export class InventoryUI {
             desc += `<div style="color: #888; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">Socketed Gems:</div>`;
             for (const gem of item.gems) {
                 if (gem) {
-                    const gemType = GEM_TYPES[gem.type] || { name: gem.type, color: '#fff' };
-                    const gemQuality = GEM_QUALITIES[gem.quality] || { name: gem.quality };
-                    desc += `<div style="color: ${gemType.color};">◆ ${gemQuality.name} ${gemType.name}</div>`;
+                    desc += this._formatSocketedGemLine(gem);
                 }
             }
         }
@@ -945,10 +1089,12 @@ export class InventoryUI {
             const equippedItem = player.equipment[item.slot];
 
             if (equippedItem && equippedItem !== item) {
+                const compareGemQuality = this._isGemItem(equippedItem) ? this._getGemQualityInfo(equippedItem) : null;
                 this.compareTooltipTitle.textContent = equippedItem.name;
-                this.compareTooltipTitle.style.color = equippedItem.rarity.color;
+                this.compareTooltipTitle.style.color = compareGemQuality?.color || equippedItem.rarity.color;
 
                 let compDesc = `<div style="color: #aaa; font-style: italic; margin-bottom: 5px;">${equippedItem.rarity.name} ${equippedItem.type} (${slotName}) - Lvl ${equippedItem.level}</div>`;
+                if (this._isGemItem(equippedItem)) compDesc += this._getGemTooltipHeader(equippedItem);
 
                 if (equippedItem.stats) {
                     for (const stat of this.getOrderedItemStatKeys(equippedItem.stats)) {
@@ -961,9 +1107,7 @@ export class InventoryUI {
                     compDesc += `<div style="color: #888; margin-top: 8px; border-top: 1px solid #333; padding-top: 5px;">Socketed Gems:</div>`;
                     for (const gem of equippedItem.gems) {
                         if (gem) {
-                            const gemType = GEM_TYPES[gem.type] || { name: gem.type, color: '#fff' };
-                            const gemQuality = GEM_QUALITIES[gem.quality] || { name: gem.quality };
-                            compDesc += `<div style="color: ${gemType.color};">◆ ${gemQuality.name} ${gemType.name}</div>`;
+                            compDesc += this._formatSocketedGemLine(gem);
                         }
                     }
                 }

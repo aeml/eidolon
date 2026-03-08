@@ -162,6 +162,7 @@ const (
 	MsgTradingCancel     = "trading_cancel"
 	MsgTradingBid        = "trading_bid"
 	MsgInventoryMove     = "inventory_move"
+	MsgInventorySort     = "inventory_sort"
 	MsgEnterDungeon      = "enter_dungeon"
 	MsgEnterInstance     = "enter_instance"
 	MsgSplitStack        = "split_stack"
@@ -1938,6 +1939,22 @@ func (c *Client) handleMessage(msg Message) {
 			c.sendSafe(b)
 		}
 
+	case MsgInventorySort:
+		if c.playerID == "" {
+			return
+		}
+
+		player, success := world.PerformInventorySort(c.playerID)
+		if success {
+			invPayload, _ := json.Marshal(player.Inventory)
+			msg := Message{
+				Type:    MsgInventory,
+				Payload: invPayload,
+			}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
+		}
+
 	case MsgSplitStack:
 		if c.playerID == "" {
 			return
@@ -3398,6 +3415,18 @@ func itemToProto(i *game.Item) *statepb.Item {
 	for k, v := range i.Stats {
 		stats[k] = int32(v)
 	}
+	gems := make([]*statepb.SocketedGem, 0, len(i.Gems))
+	for _, gem := range i.Gems {
+		gemStats := make(map[string]int32, len(gem.Stats))
+		for k, v := range gem.Stats {
+			gemStats[k] = int32(v)
+		}
+		gems = append(gems, &statepb.SocketedGem{
+			Type:    string(gem.Type),
+			Quality: string(gem.Quality),
+			Stats:   gemStats,
+		})
+	}
 	return &statepb.Item{
 		Id:          i.ID,
 		Name:        i.Name,
@@ -3413,6 +3442,9 @@ func itemToProto(i *game.Item) *statepb.Item {
 		MaxStack:    int32(i.MaxStack),
 		Potency:     int32(i.Potency),
 		Sockets:     int32(i.Sockets),
+		GemType:     string(i.GemType),
+		GemQuality:  string(i.GemQuality),
+		Gems:        gems,
 	}
 }
 

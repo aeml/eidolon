@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 )
 
 type ItemRarity string
@@ -124,6 +125,7 @@ func GemStats(gemType GemType, quality GemQuality) map[string]int {
 func GenerateGem(gemType GemType, quality GemQuality) *Item {
 	name := fmt.Sprintf("%s %s", quality, gemType)
 	stats := GemStats(gemType, quality)
+	icon := fmt.Sprintf("assets/icons/gems/%s_%s.svg", strings.ToLower(string(quality)), strings.ToLower(string(gemType)))
 
 	value := 100
 	switch quality {
@@ -148,6 +150,7 @@ func GenerateGem(gemType GemType, quality GemQuality) *Item {
 		Level:       1,
 		Stats:       stats,
 		Value:       value,
+		Icon:        icon,
 		Description: fmt.Sprintf("A %s %s that can be socketed into equipment.", quality, gemType),
 		Stack:       1,
 		MaxStack:    99,

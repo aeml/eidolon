@@ -20,13 +20,23 @@ export const GEM_TYPES = {
 };
 
 export const GEM_QUALITIES = {
-    CHIPPED: { name: 'Chipped', value: 10 },
-    FLAWED: { name: 'Flawed', value: 25 },
-    NORMAL: { name: 'Normal', value: 50 },
-    FLAWLESS: { name: 'Flawless', value: 100 },
-    PERFECT: { name: 'Perfect', value: 200 },
-    RADIANT: { name: 'Radiant', value: 400 }
+    CHIPPED: { name: 'Chipped', value: 10, color: '#8b6b4c' },
+    FLAWED: { name: 'Flawed', value: 25, color: '#9aa4b2' },
+    NORMAL: { name: 'Normal', value: 50, color: '#d9e1e8' },
+    FLAWLESS: { name: 'Flawless', value: 100, color: '#ffd54f' },
+    PERFECT: { name: 'Perfect', value: 200, color: '#7ee7ff' },
+    RADIANT: { name: 'Radiant', value: 400, color: '#ff8cff' }
 };
+
+for (const key of Object.keys(GEM_TYPES)) {
+    const entry = GEM_TYPES[key];
+    GEM_TYPES[entry.name] = entry;
+}
+
+for (const key of Object.keys(GEM_QUALITIES)) {
+    const entry = GEM_QUALITIES[key];
+    GEM_QUALITIES[entry.name] = entry;
+}
 
 // Calculate gem stats based on type and quality
 export function getGemStats(gemType, quality) {

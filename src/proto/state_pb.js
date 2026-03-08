@@ -1474,6 +1474,294 @@ export const eidolon = $root.eidolon = (() => {
             return Quest;
         })();
 
+        state.SocketedGem = (function() {
+
+            /**
+             * Properties of a SocketedGem.
+             * @memberof eidolon.state
+             * @interface ISocketedGem
+             * @property {string|null} [type] SocketedGem type
+             * @property {string|null} [quality] SocketedGem quality
+             * @property {Object.<string,number>|null} [stats] SocketedGem stats
+             */
+
+            /**
+             * Constructs a new SocketedGem.
+             * @memberof eidolon.state
+             * @classdesc Represents a SocketedGem.
+             * @implements ISocketedGem
+             * @constructor
+             * @param {eidolon.state.ISocketedGem=} [properties] Properties to set
+             */
+            function SocketedGem(properties) {
+                this.stats = {};
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * SocketedGem type.
+             * @member {string} type
+             * @memberof eidolon.state.SocketedGem
+             * @instance
+             */
+            SocketedGem.prototype.type = "";
+
+            /**
+             * SocketedGem quality.
+             * @member {string} quality
+             * @memberof eidolon.state.SocketedGem
+             * @instance
+             */
+            SocketedGem.prototype.quality = "";
+
+            /**
+             * SocketedGem stats.
+             * @member {Object.<string,number>} stats
+             * @memberof eidolon.state.SocketedGem
+             * @instance
+             */
+            SocketedGem.prototype.stats = $util.emptyObject;
+
+            /**
+             * Creates a new SocketedGem instance using the specified properties.
+             * @function create
+             * @memberof eidolon.state.SocketedGem
+             * @static
+             * @param {eidolon.state.ISocketedGem=} [properties] Properties to set
+             * @returns {eidolon.state.SocketedGem} SocketedGem instance
+             */
+            SocketedGem.create = function create(properties) {
+                return new SocketedGem(properties);
+            };
+
+            /**
+             * Encodes the specified SocketedGem message. Does not implicitly {@link eidolon.state.SocketedGem.verify|verify} messages.
+             * @function encode
+             * @memberof eidolon.state.SocketedGem
+             * @static
+             * @param {eidolon.state.ISocketedGem} message SocketedGem message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SocketedGem.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.type);
+                if (message.quality != null && Object.hasOwnProperty.call(message, "quality"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.quality);
+                if (message.stats != null && Object.hasOwnProperty.call(message, "stats"))
+                    for (let keys = Object.keys(message.stats), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.stats[keys[i]]).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SocketedGem message, length delimited. Does not implicitly {@link eidolon.state.SocketedGem.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof eidolon.state.SocketedGem
+             * @static
+             * @param {eidolon.state.ISocketedGem} message SocketedGem message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SocketedGem.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a SocketedGem message from the specified reader or buffer.
+             * @function decode
+             * @memberof eidolon.state.SocketedGem
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {eidolon.state.SocketedGem} SocketedGem
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SocketedGem.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.eidolon.state.SocketedGem(), key, value;
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.type = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.quality = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            if (message.stats === $util.emptyObject)
+                                message.stats = {};
+                            let end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = 0;
+                            while (reader.pos < end2) {
+                                let tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.int32();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.stats[key] = value;
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a SocketedGem message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof eidolon.state.SocketedGem
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {eidolon.state.SocketedGem} SocketedGem
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SocketedGem.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SocketedGem message.
+             * @function verify
+             * @memberof eidolon.state.SocketedGem
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SocketedGem.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.type != null && message.hasOwnProperty("type"))
+                    if (!$util.isString(message.type))
+                        return "type: string expected";
+                if (message.quality != null && message.hasOwnProperty("quality"))
+                    if (!$util.isString(message.quality))
+                        return "quality: string expected";
+                if (message.stats != null && message.hasOwnProperty("stats")) {
+                    if (!$util.isObject(message.stats))
+                        return "stats: object expected";
+                    let key = Object.keys(message.stats);
+                    for (let i = 0; i < key.length; ++i)
+                        if (!$util.isInteger(message.stats[key[i]]))
+                            return "stats: integer{k:string} expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates a SocketedGem message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof eidolon.state.SocketedGem
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {eidolon.state.SocketedGem} SocketedGem
+             */
+            SocketedGem.fromObject = function fromObject(object) {
+                if (object instanceof $root.eidolon.state.SocketedGem)
+                    return object;
+                let message = new $root.eidolon.state.SocketedGem();
+                if (object.type != null)
+                    message.type = String(object.type);
+                if (object.quality != null)
+                    message.quality = String(object.quality);
+                if (object.stats) {
+                    if (typeof object.stats !== "object")
+                        throw TypeError(".eidolon.state.SocketedGem.stats: object expected");
+                    message.stats = {};
+                    for (let keys = Object.keys(object.stats), i = 0; i < keys.length; ++i)
+                        message.stats[keys[i]] = object.stats[keys[i]] | 0;
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SocketedGem message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof eidolon.state.SocketedGem
+             * @static
+             * @param {eidolon.state.SocketedGem} message SocketedGem
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SocketedGem.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.objects || options.defaults)
+                    object.stats = {};
+                if (options.defaults) {
+                    object.type = "";
+                    object.quality = "";
+                }
+                if (message.type != null && message.hasOwnProperty("type"))
+                    object.type = message.type;
+                if (message.quality != null && message.hasOwnProperty("quality"))
+                    object.quality = message.quality;
+                let keys2;
+                if (message.stats && (keys2 = Object.keys(message.stats)).length) {
+                    object.stats = {};
+                    for (let j = 0; j < keys2.length; ++j)
+                        object.stats[keys2[j]] = message.stats[keys2[j]];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this SocketedGem to JSON.
+             * @function toJSON
+             * @memberof eidolon.state.SocketedGem
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SocketedGem.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the default type url for SocketedGem
+             * @function getTypeUrl
+             * @memberof eidolon.state.SocketedGem
+             * @static
+             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns {string} The default type url
+             */
+            SocketedGem.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                if (typeUrlPrefix === undefined) {
+                    typeUrlPrefix = "type.googleapis.com";
+                }
+                return typeUrlPrefix + "/eidolon.state.SocketedGem";
+            };
+
+            return SocketedGem;
+        })();
+
         state.Item = (function() {
 
             /**
@@ -1494,6 +1782,9 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [maxStack] Item maxStack
              * @property {number|null} [potency] Item potency
              * @property {number|null} [sockets] Item sockets
+             * @property {string|null} [gemType] Item gemType
+             * @property {string|null} [gemQuality] Item gemQuality
+             * @property {Array.<eidolon.state.ISocketedGem>|null} [gems] Item gems
              */
 
             /**
@@ -1506,6 +1797,7 @@ export const eidolon = $root.eidolon = (() => {
              */
             function Item(properties) {
                 this.stats = {};
+                this.gems = [];
                 if (properties)
                     for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -1625,6 +1917,30 @@ export const eidolon = $root.eidolon = (() => {
             Item.prototype.sockets = 0;
 
             /**
+             * Item gemType.
+             * @member {string} gemType
+             * @memberof eidolon.state.Item
+             * @instance
+             */
+            Item.prototype.gemType = "";
+
+            /**
+             * Item gemQuality.
+             * @member {string} gemQuality
+             * @memberof eidolon.state.Item
+             * @instance
+             */
+            Item.prototype.gemQuality = "";
+
+            /**
+             * Item gems.
+             * @member {Array.<eidolon.state.ISocketedGem>} gems
+             * @memberof eidolon.state.Item
+             * @instance
+             */
+            Item.prototype.gems = $util.emptyArray;
+
+            /**
              * Creates a new Item instance using the specified properties.
              * @function create
              * @memberof eidolon.state.Item
@@ -1677,6 +1993,13 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 13, wireType 0 =*/104).int32(message.potency);
                 if (message.sockets != null && Object.hasOwnProperty.call(message, "sockets"))
                     writer.uint32(/* id 14, wireType 0 =*/112).int32(message.sockets);
+                if (message.gemType != null && Object.hasOwnProperty.call(message, "gemType"))
+                    writer.uint32(/* id 15, wireType 2 =*/122).string(message.gemType);
+                if (message.gemQuality != null && Object.hasOwnProperty.call(message, "gemQuality"))
+                    writer.uint32(/* id 16, wireType 2 =*/130).string(message.gemQuality);
+                if (message.gems != null && message.gems.length)
+                    for (let i = 0; i < message.gems.length; ++i)
+                        $root.eidolon.state.SocketedGem.encode(message.gems[i], writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
                 return writer;
             };
 
@@ -1788,6 +2111,20 @@ export const eidolon = $root.eidolon = (() => {
                             message.sockets = reader.int32();
                             break;
                         }
+                    case 15: {
+                            message.gemType = reader.string();
+                            break;
+                        }
+                    case 16: {
+                            message.gemQuality = reader.string();
+                            break;
+                        }
+                    case 17: {
+                            if (!(message.gems && message.gems.length))
+                                message.gems = [];
+                            message.gems.push($root.eidolon.state.SocketedGem.decode(reader, reader.uint32()));
+                            break;
+                        }
                     default:
                         reader.skipType(tag & 7);
                         break;
@@ -1870,6 +2207,21 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.sockets != null && message.hasOwnProperty("sockets"))
                     if (!$util.isInteger(message.sockets))
                         return "sockets: integer expected";
+                if (message.gemType != null && message.hasOwnProperty("gemType"))
+                    if (!$util.isString(message.gemType))
+                        return "gemType: string expected";
+                if (message.gemQuality != null && message.hasOwnProperty("gemQuality"))
+                    if (!$util.isString(message.gemQuality))
+                        return "gemQuality: string expected";
+                if (message.gems != null && message.hasOwnProperty("gems")) {
+                    if (!Array.isArray(message.gems))
+                        return "gems: array expected";
+                    for (let i = 0; i < message.gems.length; ++i) {
+                        let error = $root.eidolon.state.SocketedGem.verify(message.gems[i]);
+                        if (error)
+                            return "gems." + error;
+                    }
+                }
                 return null;
             };
 
@@ -1918,6 +2270,20 @@ export const eidolon = $root.eidolon = (() => {
                     message.potency = object.potency | 0;
                 if (object.sockets != null)
                     message.sockets = object.sockets | 0;
+                if (object.gemType != null)
+                    message.gemType = String(object.gemType);
+                if (object.gemQuality != null)
+                    message.gemQuality = String(object.gemQuality);
+                if (object.gems) {
+                    if (!Array.isArray(object.gems))
+                        throw TypeError(".eidolon.state.Item.gems: array expected");
+                    message.gems = [];
+                    for (let i = 0; i < object.gems.length; ++i) {
+                        if (typeof object.gems[i] !== "object")
+                            throw TypeError(".eidolon.state.Item.gems: object expected");
+                        message.gems[i] = $root.eidolon.state.SocketedGem.fromObject(object.gems[i]);
+                    }
+                }
                 return message;
             };
 
@@ -1934,6 +2300,8 @@ export const eidolon = $root.eidolon = (() => {
                 if (!options)
                     options = {};
                 let object = {};
+                if (options.arrays || options.defaults)
+                    object.gems = [];
                 if (options.objects || options.defaults)
                     object.stats = {};
                 if (options.defaults) {
@@ -1950,6 +2318,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.maxStack = 0;
                     object.potency = 0;
                     object.sockets = 0;
+                    object.gemType = "";
+                    object.gemQuality = "";
                 }
                 if (message.id != null && message.hasOwnProperty("id"))
                     object.id = message.id;
@@ -1983,6 +2353,15 @@ export const eidolon = $root.eidolon = (() => {
                     object.potency = message.potency;
                 if (message.sockets != null && message.hasOwnProperty("sockets"))
                     object.sockets = message.sockets;
+                if (message.gemType != null && message.hasOwnProperty("gemType"))
+                    object.gemType = message.gemType;
+                if (message.gemQuality != null && message.hasOwnProperty("gemQuality"))
+                    object.gemQuality = message.gemQuality;
+                if (message.gems && message.gems.length) {
+                    object.gems = [];
+                    for (let j = 0; j < message.gems.length; ++j)
+                        object.gems[j] = $root.eidolon.state.SocketedGem.toObject(message.gems[j], options);
+                }
                 return object;
             };
 
@@ -2070,6 +2449,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [talentPoints] Entity talentPoints
              * @property {Array.<string>|null} [unlockedTalents] Entity unlockedTalents
              * @property {Object.<string,number>|null} [talentRanks] Entity talentRanks
+             * @property {Object.<string,string>|null} [skillRunes] Entity skillRunes
              */
 
             /**
@@ -2086,6 +2466,7 @@ export const eidolon = $root.eidolon = (() => {
                 this.quests = [];
                 this.unlockedTalents = [];
                 this.talentRanks = {};
+                this.skillRunes = {};
                 if (properties)
                     for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -2485,6 +2866,14 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.talentRanks = $util.emptyObject;
 
             /**
+             * Entity skillRunes.
+             * @member {Object.<string,string>} skillRunes
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.skillRunes = $util.emptyObject;
+
+            /**
              * Creates a new Entity instance using the specified properties.
              * @function create
              * @memberof eidolon.state.Entity
@@ -2613,6 +3002,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.talentRanks != null && Object.hasOwnProperty.call(message, "talentRanks"))
                     for (let keys = Object.keys(message.talentRanks), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 49, wireType 2 =*/394).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.talentRanks[keys[i]]).ldelim();
+                if (message.skillRunes != null && Object.hasOwnProperty.call(message, "skillRunes"))
+                    for (let keys = Object.keys(message.skillRunes), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 50, wireType 2 =*/402).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.skillRunes[keys[i]]).ldelim();
                 return writer;
             };
 
@@ -2889,6 +3281,29 @@ export const eidolon = $root.eidolon = (() => {
                             message.talentRanks[key] = value;
                             break;
                         }
+                    case 50: {
+                            if (message.skillRunes === $util.emptyObject)
+                                message.skillRunes = {};
+                            let end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = "";
+                            while (reader.pos < end2) {
+                                let tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.string();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.skillRunes[key] = value;
+                            break;
+                        }
                     default:
                         reader.skipType(tag & 7);
                         break;
@@ -3103,6 +3518,14 @@ export const eidolon = $root.eidolon = (() => {
                         if (!$util.isInteger(message.talentRanks[key[i]]))
                             return "talentRanks: integer{k:string} expected";
                 }
+                if (message.skillRunes != null && message.hasOwnProperty("skillRunes")) {
+                    if (!$util.isObject(message.skillRunes))
+                        return "skillRunes: object expected";
+                    let key = Object.keys(message.skillRunes);
+                    for (let i = 0; i < key.length; ++i)
+                        if (!$util.isString(message.skillRunes[key[i]]))
+                            return "skillRunes: string{k:string} expected";
+                }
                 return null;
             };
 
@@ -3256,6 +3679,13 @@ export const eidolon = $root.eidolon = (() => {
                     for (let keys = Object.keys(object.talentRanks), i = 0; i < keys.length; ++i)
                         message.talentRanks[keys[i]] = object.talentRanks[keys[i]] | 0;
                 }
+                if (object.skillRunes) {
+                    if (typeof object.skillRunes !== "object")
+                        throw TypeError(".eidolon.state.Entity.skillRunes: object expected");
+                    message.skillRunes = {};
+                    for (let keys = Object.keys(object.skillRunes), i = 0; i < keys.length; ++i)
+                        message.skillRunes[keys[i]] = String(object.skillRunes[keys[i]]);
+                }
                 return message;
             };
 
@@ -3280,6 +3710,7 @@ export const eidolon = $root.eidolon = (() => {
                 if (options.objects || options.defaults) {
                     object.equipment = {};
                     object.talentRanks = {};
+                    object.skillRunes = {};
                 }
                 if (options.defaults) {
                     object.id = "";
@@ -3440,6 +3871,11 @@ export const eidolon = $root.eidolon = (() => {
                     object.talentRanks = {};
                     for (let j = 0; j < keys2.length; ++j)
                         object.talentRanks[keys2[j]] = message.talentRanks[keys2[j]];
+                }
+                if (message.skillRunes && (keys2 = Object.keys(message.skillRunes)).length) {
+                    object.skillRunes = {};
+                    for (let j = 0; j < keys2.length; ++j)
+                        object.skillRunes[keys2[j]] = message.skillRunes[keys2[j]];
                 }
                 return object;
             };

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Entity } from './Entity.js';
+import { GEM_QUALITIES } from '../core/ItemSystem.js';
 
 // Optimization: Shared Geometries and Materials
 const SHARED_GEOMETRY = new THREE.SphereGeometry(0.2, 8, 8); // Reduced detail
@@ -27,7 +28,8 @@ export class LootDrop extends Entity {
         this.bobOffset = Math.random() * Math.PI * 2;
         this.textDelay = Math.random() * 0.5; // Stagger text generation
         
-        this.itemColor = item.rarity.color;
+        const gemQuality = item.gemQuality ? (GEM_QUALITIES[item.gemQuality] || GEM_QUALITIES[String(item.gemQuality).toUpperCase()]) : null;
+        this.itemColor = gemQuality?.color || item.rarity.color;
         this.itemName = item.name;
         this.textGenerated = false;
 

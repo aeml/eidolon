@@ -247,6 +247,11 @@ export class ForgeUI {
         return item.name === 'Eidolon Shard' || item.name === 'Shard';
     }
 
+    _isGemItem(item) {
+        if (!item) return false;
+        return item.type === 'Gem' || item.type === 'GEM';
+    }
+
     _countInventoryItems(player, matcher) {
         if (!player || !player.inventory) return 0;
 
@@ -796,7 +801,7 @@ export class ForgeUI {
         // Gems in inventory
         if (player.inventory) {
             player.inventory.forEach((item, index) => {
-                if (item && item.type === 'Gem') {
+                if (this._isGemItem(item)) {
                     const el = document.createElement('div');
                     el.className = 'inv-slot';
                     el.style.cursor = 'pointer';
@@ -973,7 +978,7 @@ export class ForgeUI {
 
         if (player.inventory) {
             player.inventory.forEach((item, index) => {
-                if (item && item.type === 'Gem') {
+                if (this._isGemItem(item)) {
                     const el = document.createElement('div');
                     el.className = 'inv-slot';
                     el.style.cursor = 'pointer';

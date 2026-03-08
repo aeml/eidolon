@@ -457,6 +457,11 @@ export class UIManager {
             return this.resolveAssetUrl(item.icon);
         }
 
+        const gemIconPath = this.getGemIconPath(item);
+        if (gemIconPath) {
+            return gemIconPath;
+        }
+
         // Specific overrides for known items that might be missing icons
         if (item.name === 'Shard' || item.name === 'Eidolon Shard') {
             return this.resolveAssetUrl('assets/items/eidolon_shard/eidolon_shard.png');
@@ -488,6 +493,23 @@ export class UIManager {
             .replace(/['’]/g, '')
             .replace(/ /g, '_');
         return this.resolveAssetUrl(`assets/icons/equipment/${formattedName}.png`);
+    }
+
+    getGemIconPath(item) {
+        if (!item) return null;
+
+        const gemType = item.gemType || (item.type === 'GEM' || item.type === 'Gem' ? item.name.split(' ').slice(-1)[0] : null);
+        const gemQuality = item.gemQuality || (item.type === 'GEM' || item.type === 'Gem' ? item.name.split(' ')[0] : null);
+        if (!gemType) return null;
+
+        const formattedGemType = gemType.toLowerCase().replace(/[^a-z]/g, '');
+        const formattedGemQuality = gemQuality ? gemQuality.toLowerCase().replace(/[^a-z]/g, '') : '';
+        if (!formattedGemType) return null;
+        if (formattedGemQuality) {
+            return this.resolveAssetUrl(`assets/icons/gems/${formattedGemQuality}_${formattedGemType}.svg`);
+        }
+
+        return this.resolveAssetUrl(`assets/icons/gems/${formattedGemType}.svg`);
     }
 
     getRarityColor(rarity) {
