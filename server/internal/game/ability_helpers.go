@@ -5,7 +5,17 @@ import "time"
 const (
 	baseActorVisualRadius        = 1.25
 	maxAbilityTargetVisualRadius = 5.0
+	meteorDropServerRadiusPad    = 4.0
 )
+
+func bonusAbilityRadius(effectName string) float64 {
+	switch effectName {
+	case "Meteor Drop", "Meteor":
+		return meteorDropServerRadiusPad
+	default:
+		return 0
+	}
+}
 
 // fireAbilityEvent emits an "ability" event if a listener is registered.
 // This replaces the repeated `if w.OnEvent != nil { w.OnEvent("ability", ...) }` pattern.
@@ -62,7 +72,7 @@ func expandedAbilityRadius(effectName string, radius float64) float64 {
 	if radius <= 0 {
 		return radius
 	}
-	return radius + maxAbilityTargetVisualRadius
+	return radius + bonusAbilityRadius(effectName) + maxAbilityTargetVisualRadius
 }
 
 func entityVisualRadius(target *Entity) float64 {
@@ -86,7 +96,7 @@ func withinAbilityRadius(effectName string, originX, originZ float64, target *En
 	if target == nil {
 		return false
 	}
-	effectiveRadius := radius + entityVisualRadius(target)
+	effectiveRadius := radius + bonusAbilityRadius(effectName) + entityVisualRadius(target)
 	dx := originX - target.X
 	dz := originZ - target.Z
 	return (dx*dx + dz*dz) <= effectiveRadius*effectiveRadius
