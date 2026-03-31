@@ -21,6 +21,10 @@ describe('CollisionManager', () => {
         test('Initializes with empty safe zones', () => {
             expect(manager.safeZones).toHaveLength(0);
         });
+
+        test('initializes with no active dungeon walkable geometry', () => {
+            expect(manager.isPositionInDungeonWalkableArea(0, 0)).toBe(false);
+        });
     });
 
     describe('Box Colliders', () => {
@@ -128,16 +132,65 @@ describe('CollisionManager', () => {
             manager.addCollider(new THREE.Box3());
             manager.addCircularCollider(0, 0, 5);
             manager.addSafeZone(new THREE.Box3());
+            manager.setDungeonWalkableGeometry([
+                { x: 0, z: 0, width: 10, height: 10, kind: 'room' }
+            ]);
             
             expect(manager.colliders.length).toBeGreaterThan(0);
             expect(manager.circularColliders.length).toBeGreaterThan(0);
             expect(manager.safeZones.length).toBeGreaterThan(0);
+            expect(manager.isPositionInDungeonWalkableArea(0, 0)).toBe(true);
             
             manager.clear();
             
             expect(manager.colliders).toHaveLength(0);
             expect(manager.circularColliders).toHaveLength(0);
             expect(manager.safeZones).toHaveLength(0);
+            expect(manager.isPositionInDungeonWalkableArea(0, 0)).toBe(false);
+        });
+    });
+
+    describe('Dungeon Walkable Geometry', () => {
+        test('setDungeonWalkableGeometry activates canonical walk rect containment and clear removes it', () => {
+            manager.setDungeonWalkableGeometry([
+                { x: 0, z: 0, width: 10, height: 10, kind: 'room' },
+                { x: 15, z: 0, width: 10, height: 6, kind: 'corridor' }
+            ]);
+
+            expect(manager.isPositionInDungeonWalkableArea(0, 0)).toBe(true);
+            expect(manager.isPositionInDungeonWalkableArea(15, 0)).toBe(true);
+            expect(manager.isPositionInDungeonWalkableArea(30, 0)).toBe(false);
+
+            manager.clearDungeonWalkableGeometry();
+
+            expect(manager.isPositionInDungeonWalkableArea(0, 0)).toBe(false);
+            expect(manager.isPositionInDungeonWalkableArea(15, 0)).toBe(false);
+        });
+
+        test('checkCollision clamps local movement to active dungeon walk rects', () => {
+            manager.setDungeonWalkableGeometry([
+                { x: 0, z: 0, width: 10, height: 10, kind: 'room' }
+            ]);
+
+            const result = manager.checkCollision(
+                new THREE.Vector3(6, 0, 0),
+                1.0,
+                new THREE.Vector3(0, 0, 0)
+            );
+
+            expect(result).not.toBeNull();
+            expect(result.x).toBeCloseTo(4);
+            expect(result.z).toBeCloseTo(0);
+        });
+
+        test('checkCollision does not apply dungeon containment when inactive', () => {
+            const result = manager.checkCollision(
+                new THREE.Vector3(6, 0, 0),
+                1.0,
+                new THREE.Vector3(0, 0, 0)
+            );
+
+            expect(result).toBeNull();
         });
     });
 
@@ -193,10 +246,9 @@ describe('CollisionManager', () => {
 
     describe('Box Collision Detection', () => {
         test('checkCollision returns null when no colliders', () => {
-            const currentPos = new THREE.Vector3(0, 0, 0);
             const nextPos = new THREE.Vector3(5, 0, 5);
             
-            const result = manager.checkCollision(currentPos, nextPos, 1.0);
+            const result = manager.checkCollision(nextPos, 1.0, new THREE.Vector3(0, 0, 0));
             
             expect(result).toBeNull();
         });
@@ -209,10 +261,9 @@ describe('CollisionManager', () => {
             );
             manager.addCollider(box);
             
-            const currentPos = new THREE.Vector3(0, 0, 0);
             const nextPos = new THREE.Vector3(5, 0, 5);
             
-            const result = manager.checkCollision(currentPos, nextPos, 1.0);
+            const result = manager.checkCollision(nextPos, 1.0, new THREE.Vector3(0, 0, 0));
             
             expect(result).toBeNull();
         });
