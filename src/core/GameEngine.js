@@ -608,6 +608,19 @@ this.abilityController.pendingAbilityTarget = null;
         // Clear collisions
         this.collisionManager.clear();
 
+        const hasCanonicalDungeonWalkRects = !!(
+            layout &&
+            Array.isArray(layout.walkRects) &&
+            layout.walkRects.length > 0 &&
+            (type === 'verdant_bastion_catacombs' || type === 'abyssal_well')
+        );
+
+        if (hasCanonicalDungeonWalkRects) {
+            this.collisionManager.setDungeonWalkableGeometry(layout.walkRects);
+        } else {
+            this.collisionManager.clearDungeonWalkableGeometry();
+        }
+
         // Generate new world
         const worldGen = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         if (type === 'crypt') {

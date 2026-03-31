@@ -1422,7 +1422,9 @@ type DungeonRoom struct {
 }
 
 type DungeonLayout struct {
-	Rooms []DungeonRoom `json:"rooms"`
+	Rooms     []DungeonRoom     `json:"rooms"`
+	WalkRects []DungeonWalkRect `json:"walkRects,omitempty"`
+	Corridors []DungeonCorridor `json:"corridors,omitempty"`
 }
 
 type SpatialMap struct {
@@ -7575,31 +7577,56 @@ func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty Dun
 		Difficulty:  difficulty,
 		DungeonType: dungeonType,
 	}
+	buildLayout := func(generator func(string, DungeonDifficulty) DungeonLayout) DungeonLayout {
+		const maxLayoutAttempts = 8
+		cleanupGeneratedEntities := func() {
+			toRemove := []string{}
+			for id, entity := range w.Entities {
+				if entity.InstanceID == instanceID {
+					toRemove = append(toRemove, id)
+				}
+			}
+			for _, id := range toRemove {
+				if entity, ok := w.Entities[id]; ok {
+					w.Grid.Remove(entity)
+					delete(w.Entities, id)
+				}
+			}
+		}
+		var lastLayout DungeonLayout
+		var lastErr error
+		for attempt := 0; attempt < maxLayoutAttempts; attempt++ {
+			lastLayout = generator(instanceID, difficulty)
+			lastErr = ValidateDungeonLayout(lastLayout)
+			if lastErr == nil {
+				return lastLayout
+			}
+			cleanupGeneratedEntities()
+		}
+		log.Printf("CreateDungeon: failed to generate valid %s layout for instance %s after %d attempts: %v", dungeonType, instanceID, maxLayoutAttempts, lastErr)
+		return fallbackDungeonLayout(dungeonType)
+	}
 
 	if dungeonType == "verdant_bastion_catacombs" {
-		layout := w.generateVerdantBastionLayout(instanceID, difficulty)
+		layout := buildLayout(w.generateVerdantBastionLayout)
 		dungeon.Layout = layout
 		w.InstanceLayouts[instanceID] = dungeon
 	} else if dungeonType == "molten_core" {
-		layout := w.generateMoltenCoreLayout(instanceID, difficulty)
+		layout := buildLayout(w.generateMoltenCoreLayout)
 		dungeon.Layout = layout
 		w.InstanceLayouts[instanceID] = dungeon
 	} else if dungeonType == "tempest_spire" {
-		layout := w.generateTempestSpireLayout(instanceID, difficulty)
+		layout := buildLayout(w.generateTempestSpireLayout)
 		dungeon.Layout = layout
 		w.InstanceLayouts[instanceID] = dungeon
 	} else if dungeonType == "abyssal_well" {
-		layout := w.generateAbyssalWellLayout(instanceID, difficulty)
+		layout := buildLayout(w.generateAbyssalWellLayout)
 		dungeon.Layout = layout
 		w.InstanceLayouts[instanceID] = dungeon
 	} else {
 		// Default Crypt
 		// Generate a simple layout for the crypt too, so we have a start point
-		layout := DungeonLayout{
-			Rooms: []DungeonRoom{
-				{X: 0, Z: 0, Width: 40, Height: 40, Type: "start"},
-			},
-		}
+		layout := fallbackDungeonLayout(dungeonType)
 		dungeon.Layout = layout
 		w.InstanceLayouts[instanceID] = dungeon
 
@@ -7677,6 +7704,24 @@ func (w *World) GetInstanceType(instanceID string) string {
 	return inst.DungeonType
 }
 
+func fallbackDungeonLayout(dungeonType string) DungeonLayout {
+	startX, startZ := 0.0, 0.0
+	switch dungeonType {
+	case "verdant_bastion_catacombs":
+		startX, startZ = 20000.0, 20000.0
+	case "molten_core":
+		startX, startZ = 30000.0, 20000.0
+	case "tempest_spire":
+		startX, startZ = 40000.0, 20000.0
+	case "abyssal_well":
+		startX, startZ = 50000.0, 20000.0
+	}
+
+	layout := DungeonLayout{}
+	appendDungeonRoom(&layout, DungeonRoom{X: startX, Z: startZ, Width: 40, Height: 40, Type: "start"})
+	return layout
+}
+
 func (w *World) generateVerdantBastionLayout(instanceID string, difficulty DungeonDifficulty) DungeonLayout {
 	layout := DungeonLayout{
 		Rooms: []DungeonRoom{},
@@ -7687,7 +7732,7 @@ func (w *World) generateVerdantBastionLayout(instanceID string, difficulty Dunge
 	offsetZ := 20000.0
 
 	// Start Room
-	layout.Rooms = append(layout.Rooms, DungeonRoom{X: offsetX, Z: offsetZ, Width: 120, Height: 120, Type: "start", Color: 0x444444})
+	appendDungeonRoom(&layout, DungeonRoom{X: offsetX, Z: offsetZ, Width: 120, Height: 120, Type: "start", Color: 0x444444})
 
 	// Boss Milestones
 	bosses := []struct {
@@ -7737,9 +7782,9 @@ func (w *World) generateVerdantBastionLayout(instanceID string, difficulty Dunge
 				roomType = "elite"
 			}
 
-			layout.Rooms = append(layout.Rooms, DungeonRoom{
+			appendDungeonRoomAndConnect(&layout, DungeonRoom{
 				X: nextX, Z: nextZ, Width: 100, Height: 100, Type: roomType, Color: 0x333333,
-			})
+			}, canonicalDungeonCorridorWidth)
 
 			// Spawn Mobs
 			if roomType == "elite" {
@@ -7764,9 +7809,9 @@ func (w *World) generateVerdantBastionLayout(instanceID string, difficulty Dunge
 		currentX = 20000.0 + (currentX-20000.0)*0.5
 		currentZ = targetZ
 
-		layout.Rooms = append(layout.Rooms, DungeonRoom{
+		appendDungeonRoomAndConnect(&layout, DungeonRoom{
 			X: currentX, Z: currentZ, Width: 120, Height: 120, Type: "boss", Color: 0x222222,
-		})
+		}, canonicalDungeonCorridorWidth)
 
 		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats, difficulty)
 	}
@@ -7787,7 +7832,7 @@ func (w *World) generateMoltenCoreLayout(instanceID string, difficulty DungeonDi
 	offsetZ := 20000.0
 
 	// Start Room (Lava-themed entrance)
-	layout.Rooms = append(layout.Rooms, DungeonRoom{X: offsetX, Z: offsetZ, Width: 140, Height: 140, Type: "start", Color: 0x8B0000})
+	appendDungeonRoom(&layout, DungeonRoom{X: offsetX, Z: offsetZ, Width: 140, Height: 140, Type: "start", Color: 0x8B0000})
 
 	// Molten Core Bosses (5 bosses)
 	bosses := []struct {
@@ -7837,9 +7882,9 @@ func (w *World) generateMoltenCoreLayout(instanceID string, difficulty DungeonDi
 				roomColor = 0x6a0000
 			}
 
-			layout.Rooms = append(layout.Rooms, DungeonRoom{
+			appendDungeonRoomAndConnect(&layout, DungeonRoom{
 				X: nextX, Z: nextZ, Width: 110, Height: 110, Type: roomType, Color: roomColor,
-			})
+			}, canonicalDungeonCorridorWidth)
 
 			// Spawn Fire Realm Mobs
 			if roomType == "elite" {
@@ -7870,9 +7915,9 @@ func (w *World) generateMoltenCoreLayout(instanceID string, difficulty DungeonDi
 			bossRoomSize = 180.0 // Final boss room is biggest
 		}
 
-		layout.Rooms = append(layout.Rooms, DungeonRoom{
+		appendDungeonRoomAndConnect(&layout, DungeonRoom{
 			X: currentX, Z: currentZ, Width: bossRoomSize, Height: bossRoomSize, Type: "boss", Color: 0x2a0000,
-		})
+		}, canonicalDungeonCorridorWidth)
 
 		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats, difficulty)
 	}
@@ -7893,7 +7938,7 @@ func (w *World) generateTempestSpireLayout(instanceID string, difficulty Dungeon
 	offsetZ := 20000.0
 
 	// Start Room (Storm-themed entrance)
-	layout.Rooms = append(layout.Rooms, DungeonRoom{X: offsetX, Z: offsetZ, Width: 140, Height: 140, Type: "start", Color: 0x1a1a4a})
+	appendDungeonRoom(&layout, DungeonRoom{X: offsetX, Z: offsetZ, Width: 140, Height: 140, Type: "start", Color: 0x1a1a4a})
 
 	// Tempest Spire Bosses (5 bosses)
 	bosses := []struct {
@@ -7943,9 +7988,9 @@ func (w *World) generateTempestSpireLayout(instanceID string, difficulty Dungeon
 				roomColor = 0x2a2a5a
 			}
 
-			layout.Rooms = append(layout.Rooms, DungeonRoom{
+			appendDungeonRoomAndConnect(&layout, DungeonRoom{
 				X: nextX, Z: nextZ, Width: 110, Height: 110, Type: roomType, Color: roomColor,
-			})
+			}, canonicalDungeonCorridorWidth)
 
 			// Spawn Air Realm Mobs
 			if roomType == "elite" {
@@ -7976,9 +8021,9 @@ func (w *World) generateTempestSpireLayout(instanceID string, difficulty Dungeon
 			bossRoomSize = 180.0 // Final boss room is biggest
 		}
 
-		layout.Rooms = append(layout.Rooms, DungeonRoom{
+		appendDungeonRoomAndConnect(&layout, DungeonRoom{
 			X: currentX, Z: currentZ, Width: bossRoomSize, Height: bossRoomSize, Type: "boss", Color: 0x0a0a2a,
-		})
+		}, canonicalDungeonCorridorWidth)
 
 		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats, difficulty)
 	}
@@ -7999,7 +8044,7 @@ func (w *World) generateAbyssalWellLayout(instanceID string, difficulty DungeonD
 	offsetZ := 20000.0
 
 	// Start Room (Abyssal-themed entrance)
-	layout.Rooms = append(layout.Rooms, DungeonRoom{X: offsetX, Z: offsetZ, Width: 130, Height: 130, Type: "start", Color: 0x0a2a4a})
+	appendDungeonRoom(&layout, DungeonRoom{X: offsetX, Z: offsetZ, Width: 130, Height: 130, Type: "start", Color: 0x0a2a4a})
 
 	// Abyssal Well Bosses (5 bosses)
 	bosses := []struct {
@@ -8048,9 +8093,9 @@ func (w *World) generateAbyssalWellLayout(instanceID string, difficulty DungeonD
 				roomColor = 0x0f4466
 			}
 
-			layout.Rooms = append(layout.Rooms, DungeonRoom{
+			appendDungeonRoomAndConnect(&layout, DungeonRoom{
 				X: nextX, Z: nextZ, Width: 110, Height: 110, Type: roomType, Color: roomColor,
-			})
+			}, canonicalDungeonCorridorWidth)
 
 			if roomType == "elite" {
 				w.spawnEnemyInInstance("FrostGuardian", nextX, nextZ, instanceID, difficulty)
@@ -8076,9 +8121,9 @@ func (w *World) generateAbyssalWellLayout(instanceID string, difficulty DungeonD
 			bossRoomSize = 175.0
 		}
 
-		layout.Rooms = append(layout.Rooms, DungeonRoom{
+		appendDungeonRoomAndConnect(&layout, DungeonRoom{
 			X: currentX, Z: currentZ, Width: bossRoomSize, Height: bossRoomSize, Type: "boss", Color: 0x061a2a,
-		})
+		}, canonicalDungeonCorridorWidth)
 
 		w.spawnBossInInstance(boss.Name, currentX, currentZ, instanceID, boss.Stats, difficulty)
 	}
@@ -8270,14 +8315,10 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 		if inst, ok := w.InstanceLayouts[instanceID]; ok && len(inst.Layout.Rooms) > 0 {
 			startX = inst.Layout.Rooms[0].X
 			startZ = inst.Layout.Rooms[0].Z
-		} else {
-			// Fallback if no layout found (shouldn't happen with recent fix, but safe default)
-			// If it's a crypt, maybe 0,0 is fine.
-			// If it's verdant bastion, we need 20000, 20000
-			if strings.Contains(instanceID, "verdant") { // Heuristic
-				startX = 20000.0
-				startZ = 20000.0
-			}
+		} else if inst, ok := w.InstanceLayouts[instanceID]; ok {
+			fallback := fallbackDungeonLayout(inst.DungeonType)
+			startX = fallback.Rooms[0].X
+			startZ = fallback.Rooms[0].Z
 		}
 	}
 	player.X = startX
@@ -8343,54 +8384,19 @@ func (w *World) IsLocationInDungeon(instanceID string, x, z float64) bool {
 	if !ok {
 		return false
 	}
-	if layout.Layout.Rooms == nil {
-		return true // Default open dungeon
+	if len(layout.Layout.WalkRects) == 0 {
+		if layout.Layout.Rooms == nil {
+			return true // Default open dungeon
+		}
+		for _, r := range layout.Layout.Rooms {
+			halfW := r.Width / 2
+			halfH := r.Height / 2
+			if x >= r.X-halfW && x <= r.X+halfW && z >= r.Z-halfH && z <= r.Z+halfH {
+				return true
+			}
+		}
+		return false
 	}
 
-	// Check Rooms
-	for _, r := range layout.Layout.Rooms {
-		halfW := r.Width / 2
-		halfH := r.Height / 2
-		if x >= r.X-halfW && x <= r.X+halfW && z >= r.Z-halfH && z <= r.Z+halfH {
-			return true
-		}
-	}
-
-	// Check Corridors
-	// Assuming rooms are in order
-	corridorWidth := 40.0 // Match client
-	halfCW := corridorWidth / 2
-
-	for i := 0; i < len(layout.Layout.Rooms)-1; i++ {
-		r1 := layout.Layout.Rooms[i]
-		r2 := layout.Layout.Rooms[i+1]
-
-		midZ := (r1.Z + r2.Z) / 2
-
-		// Segment 1: Vertical from r1 to midZ (at r1.X)
-		// Bounds: X = r1.X +/- halfCW, Z = r1.Z to midZ
-		minX1, maxX1 := r1.X-halfCW, r1.X+halfCW
-		minZ1, maxZ1 := math.Min(r1.Z, midZ), math.Max(r1.Z, midZ)
-		if x >= minX1 && x <= maxX1 && z >= minZ1 && z <= maxZ1 {
-			return true
-		}
-
-		// Segment 2: Horizontal at midZ (from r1.X to r2.X)
-		// Bounds: X = r1.X to r2.X, Z = midZ +/- halfCW
-		minX2, maxX2 := math.Min(r1.X, r2.X), math.Max(r1.X, r2.X)
-		minZ2, maxZ2 := midZ-halfCW, midZ+halfCW
-		if x >= minX2 && x <= maxX2 && z >= minZ2 && z <= maxZ2 {
-			return true
-		}
-
-		// Segment 3: Vertical from midZ to r2 (at r2.X)
-		// Bounds: X = r2.X +/- halfCW, Z = midZ to r2.Z
-		minX3, maxX3 := r2.X-halfCW, r2.X+halfCW
-		minZ3, maxZ3 := math.Min(midZ, r2.Z), math.Max(midZ, r2.Z)
-		if x >= minX3 && x <= maxX3 && z >= minZ3 && z <= maxZ3 {
-			return true
-		}
-	}
-
-	return false
+	return isPointInDungeonLayout(layout.Layout, x, z)
 }
