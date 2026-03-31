@@ -11,6 +11,7 @@ import { Wizard } from '../entities/Wizard.js';
 import { Cleric } from '../entities/Cleric.js';
 import { AvengingSeraph } from '../entities/AvengingSeraph.js';
 import { DwarfSalesman } from '../entities/DwarfSalesman.js';
+import { resolveRemoteSkillVisual } from '../skills/skillVisuals.js';
 
 export class AbilityController {
     /**
@@ -72,244 +73,20 @@ export class AbilityController {
     triggerRemoteAbilityVisuals(entity, skillName, targetX, targetZ) {
         if (!entity || !entity.spawnVisualEffect) return;
 
-        const targetPos = new THREE.Vector3(targetX, 0, targetZ);
-        const position = entity.position.clone();
-        let handled = false;
-
-        const spawn = (at, color, type) => {
-            entity.spawnVisualEffect(this.engine, at, color, type);
-            handled = true;
-        };
-
-        // Fighter
-        if (entity instanceof Fighter) {
-            switch (skillName) {
-                case "Charge":
-                    spawn(position, 0xff5500, "wave");
-                    break;
-                case "Whirlwind":
-                    spawn(position, 0xaaaaaa, "spin");
-                    break;
-                case "Shield Slam":
-                    spawn(position, 0xffff00, "impact");
-                    break;
-                case "Iron Fortress":
-                    spawn(position, 0x808080, "buff");
-                    break;
-                case "Guardian Roar":
-                    spawn(position, 0xff0000, "wave");
-                    break;
-                case "Sweeping Strike":
-                    spawn(position, 0xffffff, "cone");
-                    break;
-                case "Earthshaker":
-                    spawn(position, 0x8b4513, "wave");
-                    break;
-                case "Unbreakable Grip":
-                    spawn(targetPos, 0x0000ff, "impact");
-                    break;
-                case "Juggernaut Charge":
-                    spawn(position, 0xff0000, "wave");
-                    break;
-                case "Berserker Edge":
-                    spawn(position, 0xff0000, "buff");
-                    break;
-                case "Shattering Charge":
-                    spawn(position, 0xffffff, "wave");
-                    break;
-                case "Executioner Spin":
-                    spawn(position, 0xff0000, "spin");
-                    break;
-                case "Last Stand Rampage":
-                    spawn(position, 0xff0000, "buff");
-                    break;
-            }
-        }
-        // Rogue
-        else if (entity instanceof Rogue) {
-            switch (skillName) {
-                case "Piercing Throw":
-                case "Ricochet Blades":
-                    spawn(position, 0xdddddd, "burst");
-                    break;
-                case "Shadow Step":
-                case "Shadow Lunge":
-                    spawn(position, 0x000000, "smoke");
-                    break;
-                case "Fan of Knives":
-                    spawn(position, 0x333333, "spin");
-                    break;
-                case "Venomous Strike":
-                case "Weak Point Mark":
-                    spawn(targetPos, 0xff0000, "mark");
-                    break;
-                case "Assassinate":
-                case "Backstab":
-                case "Shadow Strike":
-                    spawn(targetPos, 0xff0000, "blood");
-                    break;
-                case "Death Spiral":
-                    spawn(position, 0x333333, "spin");
-                    break;
-                case "Serrated Edges":
-                    spawn(position, 0xff0000, "buff");
-                    break;
-                case "Blade Storm":
-                    spawn(position, 0xcccccc, "cone");
-                    break;
-                case "Phantom Volley":
-                    spawn(position, 0x8800ff, "burst");
-                    break;
-                case "Smoke Bomb":
-                    spawn(position, 0x555555, "smoke_cloud");
-                    break;
-                case "Poison Coating":
-                    spawn(position, 0x00ff00, "buff");
-                    break;
-                case "Tripwire":
-                case "Snare Trap":
-                case "Explosive Trap":
-                    spawn(position, 0xaaaaaa, "impact");
-                    break;
-                case "Adrenaline Rush":
-                case "Stealth":
-                case "Cloak & Vanish":
-                    spawn(position, 0x000000, "smoke");
-                    break;
-                case "Rain of Arrows":
-                    spawn(targetPos, 0xffffff, "ring");
-                    break;
-            }
-        }
-        // Wizard
-        else if (entity instanceof Wizard) {
-            switch (skillName) {
-                case "Frost Nova":
-                    spawn(position, 0x00ffff, "ring");
-                    break;
-                case "Blink":
-                case "Teleport":
-                    spawn(position, 0x00ffff, "burst");
-                    break;
-                case "Fireball":
-                    spawn(position, 0xff4500, "burst");
-                    break;
-                case "Flame Whip":
-                    spawn(position, 0xff4500, "cone");
-                    break;
-                case "Flame Tornado":
-                    spawn(position, 0xff5500, "spin");
-                    break;
-                case "Meteor":
-                case "Meteor Drop":
-                    handled = true;
-                    break;
-                case "Ice Barrier":
-                case "Arcane Shield":
-                    spawn(position, 0x0088ff, "sphere");
-                    break;
-                case "Scorch Beam":
-                case "Dragonfire Lance":
-                    spawn(targetPos, 0xffaa00, "beam");
-                    break;
-                case "Arcane Missiles":
-                    spawn(position, 0xaa00ff, "burst");
-                    break;
-                case "Spell Focus":
-                    spawn(position, 0x8800ff, "buff");
-                    break;
-                case "Gravity Well":
-                    spawn(targetPos, 0x440088, "ring");
-                    break;
-                case "Inferno Cataclysm":
-                    spawn(targetPos, 0xff2200, "ring");
-                    break;
-                case "Time Warp":
-                    spawn(position, 0xffd700, "ring");
-                    break;
-            }
-        }
-        // Cleric
-        else if (entity instanceof Cleric) {
-            switch (skillName) {
-                case "Spirit Guardians":
-                case "Spirit Guardians Boost":
-                    spawn(position, 0xffff66, "buff");
-                    break;
-                case "Smite":
-                    spawn(targetPos, 0xffff00, "impact");
-                    break;
-                case "Healing Light":
-                    spawn(targetPos, 0x00ff88, "pillar");
-                    break;
-                case "Guardian Embrace":
-                    spawn(position, 0xffff00, "buff");
-                    break;
-                case "Purifying Wave":
-                case "Holy Nova":
-                    spawn(position, 0x00ffff, "ring");
-                    break;
-                case "Divine Protection":
-                case "Divine Intervention":
-                    spawn(targetPos, 0xffd700, "pillar");
-                    break;
-                case "Sacred Ground":
-                case "Consecrated Ground":
-                    spawn(position, 0xffd700, "ground_circle");
-                    break;
-                case "Radiant Strike":
-                    spawn(position, 0xffff00, "burst");
-                    break;
-                case "Blessing of Resolve":
-                case "Blessing of Zeal":
-                    spawn(position, 0xffff00, "ring");
-                    break;
-                case "Mark of Weakness":
-                    spawn(targetPos, 0x800080, "pillar");
-                    break;
-                case "Heaven's Trumpet":
-                    spawn(position, 0xffd700, "ring");
-                    break;
-                case "Resurrection":
-                    spawn(targetPos, 0xffffff, "beam");
-                    break;
-            }
-        }
-        // Avenging Seraph
-        else if (entity instanceof AvengingSeraph) {
-            switch (skillName) {
-                case "Smite":
-                    spawn(targetPos, 0xffff00, "impact");
-                    break;
-            }
+        const visual = resolveRemoteSkillVisual(entity, skillName, new THREE.Vector3(targetX, 0, targetZ));
+        if (visual.handled) {
+            return;
         }
 
-        if (!handled) {
-            let fallbackColor = 0xffffff;
-            let fallbackType = 'impact';
+        entity.spawnVisualEffect(this.engine, visual.origin, visual.color, visual.type);
 
-            if (entity instanceof Fighter) {
-                fallbackColor = 0xffaa55;
-                fallbackType = 'wave';
-            } else if (entity instanceof Rogue) {
-                fallbackColor = 0xaaaaaa;
-                fallbackType = 'smoke';
-            } else if (entity instanceof Wizard) {
-                fallbackColor = 0x66bbff;
-                fallbackType = 'ring';
-            } else if (entity instanceof Cleric || entity instanceof AvengingSeraph) {
-                fallbackColor = 0xffff99;
-                fallbackType = 'buff';
-            }
-
-            spawn(position, fallbackColor, fallbackType);
-
+        if (visual.fallback) {
             const host = (typeof window !== 'undefined' && window.location) ? window.location.hostname : '';
             const isDevHost = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
             const key = `${entity.constructor.name}:${skillName || '(none)'}`;
             if (isDevHost && !this.unmappedRemoteAbilityVisuals.has(key)) {
                 this.unmappedRemoteAbilityVisuals.add(key);
-                console.warn(`[Remote VFX] Unmapped skill visual for ${key}; used ${fallbackType} fallback.`);
+                console.warn(`[Remote VFX] Unmapped skill visual for ${key}; used ${visual.type} fallback.`);
             }
         }
     }
