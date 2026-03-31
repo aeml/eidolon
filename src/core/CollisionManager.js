@@ -24,6 +24,7 @@ export class CollisionManager {
         this.colliders = []; // Array of THREE.Box3
         this.circularColliders = []; // Array of {x, z, radius}
         this.safeZones = []; // Array of THREE.Box3
+        this.dungeonWalkableRects = []; // Canonical server-provided walk rects for local containment
     }
 
     addCollider(box) {
@@ -39,6 +40,7 @@ export class CollisionManager {
         this.colliders = [];
         this.circularColliders = [];
         this.safeZones = [];
+        this.clearDungeonWalkableGeometry();
     }
 
     addSafeZone(box) {
@@ -54,6 +56,88 @@ export class CollisionManager {
             }
         }
         return false;
+    }
+
+    setDungeonWalkableGeometry(walkRects = []) {
+        if (!Array.isArray(walkRects)) {
+            this.dungeonWalkableRects = [];
+            return;
+        }
+
+        this.dungeonWalkableRects = walkRects
+            .filter((rect) => rect && Number.isFinite(rect.x) && Number.isFinite(rect.z) && Number.isFinite(rect.width) && Number.isFinite(rect.height) && rect.width > 0 && rect.height > 0)
+            .map((rect) => ({
+                x: rect.x,
+                z: rect.z,
+                width: rect.width,
+                height: rect.height,
+                kind: rect.kind,
+                minX: rect.x - (rect.width / 2),
+                maxX: rect.x + (rect.width / 2),
+                minZ: rect.z - (rect.height / 2),
+                maxZ: rect.z + (rect.height / 2)
+            }));
+    }
+
+    clearDungeonWalkableGeometry() {
+        this.dungeonWalkableRects = [];
+    }
+
+    isPositionInDungeonWalkableArea(x, z, radius = 0) {
+        if (this.dungeonWalkableRects.length === 0) return false;
+
+        for (let i = 0; i < this.dungeonWalkableRects.length; i++) {
+            const rect = this.dungeonWalkableRects[i];
+            if (
+                x >= rect.minX + radius &&
+                x <= rect.maxX - radius &&
+                z >= rect.minZ + radius &&
+                z <= rect.maxZ - radius
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    constrainToDungeonWalkableArea(position, radius) {
+        if (this.dungeonWalkableRects.length === 0) return false;
+        if (this.isPositionInDungeonWalkableArea(position.x, position.z, radius)) return false;
+
+        let bestRect = null;
+        let bestX = position.x;
+        let bestZ = position.z;
+        let bestDistSq = Infinity;
+
+        for (let i = 0; i < this.dungeonWalkableRects.length; i++) {
+            const rect = this.dungeonWalkableRects[i];
+            const minX = rect.minX + radius;
+            const maxX = rect.maxX - radius;
+            const minZ = rect.minZ + radius;
+            const maxZ = rect.maxZ - radius;
+
+            if (minX > maxX || minZ > maxZ) continue;
+
+            const clampedX = Math.max(minX, Math.min(maxX, position.x));
+            const clampedZ = Math.max(minZ, Math.min(maxZ, position.z));
+            const dx = position.x - clampedX;
+            const dz = position.z - clampedZ;
+            const distSq = dx * dx + dz * dz;
+
+            if (distSq < bestDistSq) {
+                bestDistSq = distSq;
+                bestRect = rect;
+                bestX = clampedX;
+                bestZ = clampedZ;
+            }
+        }
+
+        if (!bestRect) return false;
+
+        position.x = bestX;
+        position.z = bestZ;
+        return true;
     }
 
     // Check collision against other entities
@@ -249,6 +333,10 @@ export class CollisionManager {
                     TEMP_VEC3.z += pushZ;
                 }
             }
+        }
+
+        if (this.constrainToDungeonWalkableArea(TEMP_VEC3, radius)) {
+            collided = true;
         }
 
         return collided ? TEMP_VEC3.clone() : null;

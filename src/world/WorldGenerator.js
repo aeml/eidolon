@@ -513,135 +513,340 @@ export class WorldGenerator {
         }
     }
 
+    hasCanonicalDungeonGeometry(layout) {
+        return !!(
+            layout &&
+            Array.isArray(layout.rooms) &&
+            layout.rooms.length > 0 &&
+            Array.isArray(layout.walkRects) &&
+            layout.walkRects.length > 0 &&
+            Array.isArray(layout.corridors) &&
+            layout.corridors.length > 0
+        );
+    }
+
+    createLayoutDrivenDungeon(layout) {
+        if (!layout || !Array.isArray(layout.rooms) || layout.rooms.length === 0) {
+            return false;
+        }
+
+        if (this.hasCanonicalDungeonGeometry(layout)) {
+            this.createCanonicalLayoutDungeon(layout);
+            return true;
+        }
+
+        this.createLegacyLayoutDungeon(layout);
+        return true;
+    }
+
+    createCanonicalLayoutDungeon(layout) {
+        const roomOpenings = this.buildCanonicalRoomOpenings(layout);
+
+        layout.rooms.forEach((room, index) => {
+            this.createRoom(room.x, room.z, room.width, room.color, roomOpenings[index] || {});
+        });
+
+        layout.corridors.forEach((corridor) => {
+            const corridorRects = this.getCanonicalCorridorRects(layout, corridor);
+            if (corridorRects.length === 0) return;
+
+            const fromRoom = layout.rooms[corridor.fromRoomIndex];
+            const toRoom = layout.rooms[corridor.toRoomIndex];
+            if (!fromRoom || !toRoom) return;
+
+            const points = [this.getRoomAttachmentPoint(fromRoom, corridorRects[0])];
+
+            for (let i = 0; i < corridorRects.length - 1; i++) {
+                const cornerPoint = this.getCorridorConnectionPoint(corridorRects[i], corridorRects[i + 1]);
+                if (cornerPoint) {
+                    points.push(cornerPoint);
+                }
+            }
+
+            points.push(this.getRoomAttachmentPoint(toRoom, corridorRects[corridorRects.length - 1]));
+
+            const corridorWidth = corridor.width || this.getWalkRectThickness(corridorRects[0]) || 40;
+            for (let i = 0; i < points.length - 1; i++) {
+                const start = points[i];
+                const end = points[i + 1];
+                if (this.getPointDistance(start, end) < 0.1) continue;
+                this.createCorridor(start.x, start.z, end.x, end.z, corridorWidth, 0, 0);
+            }
+
+            for (let i = 1; i < points.length - 1; i++) {
+                this.createCorner(
+                    points[i].x,
+                    points[i].z,
+                    corridorWidth,
+                    this.buildCornerOpenings(points[i - 1], points[i], points[i + 1])
+                );
+            }
+        });
+    }
+
+    createLegacyLayoutDungeon(layout) {
+        let prevRoom = null;
+
+        layout.rooms.forEach((room, index) => {
+            const openings = this.buildLegacyRoomOpenings(layout.rooms, index);
+            this.createRoom(room.x, room.z, room.width, room.color, openings);
+
+            if (prevRoom) {
+                this.createLegacyCorridorBetweenRooms(prevRoom, room);
+            }
+
+            prevRoom = room;
+        });
+    }
+
+    buildLegacyRoomOpenings(rooms, index) {
+        const room = rooms[index];
+        const openings = {};
+        const checkOpening = (target) => {
+            if (!target) return;
+
+            const dx = target.x - room.x;
+            const dz = target.z - room.z;
+
+            if (Math.abs(dz) > Math.abs(dx)) {
+                if (dz < 0) openings.north = true;
+                else openings.south = true;
+            } else {
+                if (dx > 0) openings.east = true;
+                else openings.west = true;
+            }
+        };
+
+        checkOpening(rooms[index - 1]);
+        checkOpening(rooms[index + 1]);
+        return openings;
+    }
+
+    createLegacyCorridorBetweenRooms(prevRoom, room) {
+        const corridorWidth = 40;
+        const halfWidth = corridorWidth / 2;
+
+        const dx = room.x - prevRoom.x;
+        const dz = room.z - prevRoom.z;
+
+        const prevSize = prevRoom.width;
+        const currentSize = room.width;
+
+        if (Math.abs(dz) > Math.abs(dx)) {
+            if (Math.abs(dx) < corridorWidth) {
+                this.createCorridor(prevRoom.x, prevRoom.z, room.x, room.z, corridorWidth, prevSize / 2, currentSize / 2);
+            } else {
+                const midZ = (prevRoom.z + room.z) / 2;
+
+                this.createCorridor(prevRoom.x, prevRoom.z, prevRoom.x, midZ, corridorWidth, prevSize / 2, halfWidth);
+
+                const c1Openings = {};
+                if (prevRoom.z < midZ) c1Openings.north = true;
+                else c1Openings.south = true;
+
+                if (room.x > prevRoom.x) c1Openings.east = true;
+                else c1Openings.west = true;
+
+                this.createCorner(prevRoom.x, midZ, corridorWidth, c1Openings);
+
+                this.createCorridor(prevRoom.x, midZ, room.x, midZ, corridorWidth, halfWidth, halfWidth);
+
+                const c2Openings = {};
+                if (prevRoom.x < room.x) c2Openings.west = true;
+                else c2Openings.east = true;
+
+                if (room.z < midZ) c2Openings.north = true;
+                else c2Openings.south = true;
+
+                this.createCorner(room.x, midZ, corridorWidth, c2Openings);
+
+                this.createCorridor(room.x, midZ, room.x, room.z, corridorWidth, halfWidth, currentSize / 2);
+            }
+        } else if (Math.abs(dz) < corridorWidth) {
+            this.createCorridor(prevRoom.x, prevRoom.z, room.x, room.z, corridorWidth, prevSize / 2, currentSize / 2);
+        } else {
+            const midX = (prevRoom.x + room.x) / 2;
+
+            this.createCorridor(prevRoom.x, prevRoom.z, midX, prevRoom.z, corridorWidth, prevSize / 2, halfWidth);
+
+            const c1Openings = {};
+            if (prevRoom.x < midX) c1Openings.west = true;
+            else c1Openings.east = true;
+
+            if (room.z > prevRoom.z) c1Openings.south = true;
+            else c1Openings.north = true;
+
+            this.createCorner(midX, prevRoom.z, corridorWidth, c1Openings);
+
+            this.createCorridor(midX, prevRoom.z, midX, room.z, corridorWidth, halfWidth, halfWidth);
+
+            const c2Openings = {};
+            if (prevRoom.z < room.z) c2Openings.north = true;
+            else c2Openings.south = true;
+
+            if (room.x > midX) c2Openings.east = true;
+            else c2Openings.west = true;
+
+            this.createCorner(midX, room.z, corridorWidth, c2Openings);
+
+            this.createCorridor(midX, room.z, room.x, room.z, corridorWidth, halfWidth, currentSize / 2);
+        }
+    }
+
+    buildCanonicalRoomOpenings(layout) {
+        const roomOpenings = layout.rooms.map(() => ({}));
+
+        layout.corridors.forEach((corridor) => {
+            const corridorRects = this.getCanonicalCorridorRects(layout, corridor);
+            if (corridorRects.length === 0) return;
+
+            const fromRoom = layout.rooms[corridor.fromRoomIndex];
+            const toRoom = layout.rooms[corridor.toRoomIndex];
+            if (!fromRoom || !toRoom) return;
+
+            this.addRoomOpeningFromCorridor(roomOpenings[corridor.fromRoomIndex], fromRoom, corridorRects[0]);
+            this.addRoomOpeningFromCorridor(roomOpenings[corridor.toRoomIndex], toRoom, corridorRects[corridorRects.length - 1]);
+        });
+
+        return roomOpenings;
+    }
+
+    addRoomOpeningFromCorridor(openings, room, rect) {
+        const side = this.getRoomAttachmentSide(room, rect);
+        if (side) {
+            openings[side] = true;
+        }
+    }
+
+    getCanonicalCorridorRects(layout, corridor) {
+        if (!layout || !Array.isArray(layout.walkRects) || !corridor || !Array.isArray(corridor.walkRectIndices)) {
+            return [];
+        }
+
+        return corridor.walkRectIndices
+            .map((index) => layout.walkRects[index])
+            .filter((rect) => rect && rect.kind === 'corridor');
+    }
+
+    getRoomAttachmentSide(room, rect) {
+        const orientation = this.getWalkRectOrientation(rect);
+        if (orientation === 'horizontal') {
+            return rect.x >= room.x ? 'east' : 'west';
+        }
+        if (orientation === 'vertical') {
+            return rect.z >= room.z ? 'south' : 'north';
+        }
+
+        const dx = rect.x - room.x;
+        const dz = rect.z - room.z;
+        if (Math.abs(dx) >= Math.abs(dz)) {
+            return dx >= 0 ? 'east' : 'west';
+        }
+        return dz >= 0 ? 'south' : 'north';
+    }
+
+    getRoomAttachmentPoint(room, rect) {
+        const roomHalfWidth = (room.width || 0) / 2;
+        const roomHalfHeight = (room.height || room.width || 0) / 2;
+        const orientation = this.getWalkRectOrientation(rect);
+
+        if (orientation === 'horizontal') {
+            return {
+                x: rect.x >= room.x ? room.x + roomHalfWidth : room.x - roomHalfWidth,
+                z: this.clampToRange(rect.z, room.z - roomHalfHeight, room.z + roomHalfHeight)
+            };
+        }
+
+        if (orientation === 'vertical') {
+            return {
+                x: this.clampToRange(rect.x, room.x - roomHalfWidth, room.x + roomHalfWidth),
+                z: rect.z >= room.z ? room.z + roomHalfHeight : room.z - roomHalfHeight
+            };
+        }
+
+        return { x: room.x, z: room.z };
+    }
+
+    getWalkRectOrientation(rect) {
+        if (!rect) return 'unknown';
+
+        if (rect.width > rect.height) return 'horizontal';
+        if (rect.height > rect.width) return 'vertical';
+        return 'unknown';
+    }
+
+    getWalkRectThickness(rect) {
+        const orientation = this.getWalkRectOrientation(rect);
+        if (orientation === 'horizontal') return rect.height;
+        if (orientation === 'vertical') return rect.width;
+        return Math.min(rect.width || 0, rect.height || 0);
+    }
+
+    getCorridorConnectionPoint(a, b) {
+        const aOrientation = this.getWalkRectOrientation(a);
+        const bOrientation = this.getWalkRectOrientation(b);
+
+        if (aOrientation === 'horizontal' && bOrientation === 'vertical') {
+            return { x: b.x, z: a.z };
+        }
+        if (aOrientation === 'vertical' && bOrientation === 'horizontal') {
+            return { x: a.x, z: b.z };
+        }
+
+        const minX = Math.max(a.x - a.width / 2, b.x - b.width / 2);
+        const maxX = Math.min(a.x + a.width / 2, b.x + b.width / 2);
+        const minZ = Math.max(a.z - a.height / 2, b.z - b.height / 2);
+        const maxZ = Math.min(a.z + a.height / 2, b.z + b.height / 2);
+
+        if (maxX <= minX || maxZ <= minZ) {
+            return null;
+        }
+
+        return {
+            x: (minX + maxX) / 2,
+            z: (minZ + maxZ) / 2
+        };
+    }
+
+    buildCornerOpenings(prevPoint, cornerPoint, nextPoint) {
+        const openings = {};
+        const applyDirection = (target) => {
+            const dx = target.x - cornerPoint.x;
+            const dz = target.z - cornerPoint.z;
+
+            if (Math.abs(dx) >= Math.abs(dz)) {
+                if (dx > 0) openings.east = true;
+                else if (dx < 0) openings.west = true;
+            } else if (dz > 0) {
+                openings.south = true;
+            } else if (dz < 0) {
+                openings.north = true;
+            }
+        };
+
+        applyDirection(prevPoint);
+        applyDirection(nextPoint);
+        return openings;
+    }
+
+    getPointDistance(a, b) {
+        const dx = b.x - a.x;
+        const dz = b.z - a.z;
+        return Math.sqrt((dx * dx) + (dz * dz));
+    }
+
+    clampToRange(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
     async createVerdantBastionCatacombs(centerX, centerZ, layout) {
         console.log(`Generating Verdant Bastion Catacombs at ${centerX},${centerZ}`);
 
         await this.preloadTextures();
         
-        if (layout && layout.rooms && layout.rooms.length > 0) {
-            let prevRoom = null;
-            
-            layout.rooms.forEach((room, index) => {
-                const nextRoom = layout.rooms[index + 1];
-                
-                // Determine openings based on neighbors
-                const openings = {};
-                const checkOpening = (target) => {
-                    if (!target) return;
-                    const dx = target.x - room.x;
-                    const dz = target.z - room.z;
-                    
-                    if (Math.abs(dz) > Math.abs(dx)) {
-                        // Mostly vertical
-                        if (dz < 0) openings.north = true;
-                        else openings.south = true;
-                    } else {
-                        // Mostly horizontal
-                        if (dx > 0) openings.east = true;
-                        else openings.west = true;
-                    }
-                };
-                
-                checkOpening(prevRoom);
-                checkOpening(nextRoom);
-                
-                this.createRoom(room.x, room.z, room.width, room.color, openings);
-                
-                // Corridor to previous (Manhattan Routing)
-                if (prevRoom) {
-                    const corridorWidth = 40;
-                    const halfWidth = corridorWidth / 2;
-                    
-                    const dx = room.x - prevRoom.x;
-                    const dz = room.z - prevRoom.z;
-                    
-                    // Use width for size since rooms are square
-                    const prevSize = prevRoom.width; 
-                    const currentSize = room.width;
-
-                    if (Math.abs(dz) > Math.abs(dx)) {
-                        // Vertical -> Horizontal -> Vertical
-                        
-                        // Check for straight line (or very close)
-                        if (Math.abs(dx) < corridorWidth) {
-                             this.createCorridor(prevRoom.x, prevRoom.z, room.x, room.z, corridorWidth, prevSize/2, currentSize/2);
-                        } else {
-                            const midZ = (prevRoom.z + room.z) / 2;
-                            
-                            // 1. Vertical from Prev
-                            this.createCorridor(prevRoom.x, prevRoom.z, prevRoom.x, midZ, corridorWidth, prevSize/2, halfWidth);
-
-                            // Corner 1
-                            const c1Openings = {};
-                            if (prevRoom.z < midZ) c1Openings.north = true;
-                            else c1Openings.south = true;
-                            
-                            if (room.x > prevRoom.x) c1Openings.east = true;
-                            else c1Openings.west = true;
-
-                            this.createCorner(prevRoom.x, midZ, corridorWidth, c1Openings);
-
-                            // 2. Horizontal
-                            this.createCorridor(prevRoom.x, midZ, room.x, midZ, corridorWidth, halfWidth, halfWidth);
-
-                            // Corner 2
-                            const c2Openings = {};
-                            if (prevRoom.x < room.x) c2Openings.west = true;
-                            else c2Openings.east = true;
-                            
-                            if (room.z < midZ) c2Openings.north = true;
-                            else c2Openings.south = true;
-
-                            this.createCorner(room.x, midZ, corridorWidth, c2Openings);
-
-                            // 3. Vertical to Room
-                            this.createCorridor(room.x, midZ, room.x, room.z, corridorWidth, halfWidth, currentSize/2);
-                        }
-                    } else {
-                        // Horizontal -> Vertical -> Horizontal
-                        
-                        // Check for straight line
-                        if (Math.abs(dz) < corridorWidth) {
-                             this.createCorridor(prevRoom.x, prevRoom.z, room.x, room.z, corridorWidth, prevSize/2, currentSize/2);
-                        } else {
-                            const midX = (prevRoom.x + room.x) / 2;
-                            
-                            // 1. Horizontal from Prev
-                            this.createCorridor(prevRoom.x, prevRoom.z, midX, prevRoom.z, corridorWidth, prevSize/2, halfWidth);
-
-                            // Corner 1
-                            const c1Openings = {};
-                            if (prevRoom.x < midX) c1Openings.west = true;
-                            else c1Openings.east = true;
-                            
-                            if (room.z > prevRoom.z) c1Openings.south = true;
-                            else c1Openings.north = true;
-
-                            this.createCorner(midX, prevRoom.z, corridorWidth, c1Openings);
-
-                            // 2. Vertical
-                            this.createCorridor(midX, prevRoom.z, midX, room.z, corridorWidth, halfWidth, halfWidth);
-
-                            // Corner 2
-                            const c2Openings = {};
-                            if (prevRoom.z < room.z) c2Openings.north = true;
-                            else c2Openings.south = true;
-                            
-                            if (room.x > midX) c2Openings.east = true;
-                            else c2Openings.west = true;
-
-                            this.createCorner(midX, room.z, corridorWidth, c2Openings);
-
-                            // 3. Horizontal to Room
-                            this.createCorridor(midX, room.z, room.x, room.z, corridorWidth, halfWidth, currentSize/2);
-                        }
-                    }
-                }
-                
-            prevRoom = room;
-        });
-        return;
-    }
+        if (this.createLayoutDrivenDungeon(layout)) {
+            return;
+        }
 
         const roomSize = 80;
         const corridorWidth = 20;
@@ -684,109 +889,8 @@ export class WorldGenerator {
 
         await this.preloadTextures();
 
-        if (layout && layout.rooms && layout.rooms.length > 0) {
-            let prevRoom = null;
-
-            layout.rooms.forEach((room, index) => {
-                const nextRoom = layout.rooms[index + 1];
-
-                // Determine openings based on neighbors
-                const openings = {};
-                const checkOpening = (target) => {
-                    if (!target) return;
-                    const dx = target.x - room.x;
-                    const dz = target.z - room.z;
-
-                    if (Math.abs(dz) > Math.abs(dx)) {
-                        if (dz < 0) openings.north = true;
-                        else openings.south = true;
-                    } else {
-                        if (dx > 0) openings.east = true;
-                        else openings.west = true;
-                    }
-                };
-
-                checkOpening(prevRoom);
-                checkOpening(nextRoom);
-
-                this.createRoom(room.x, room.z, room.width, room.color, openings);
-
-                // Corridor to previous (Manhattan Routing)
-                if (prevRoom) {
-                    const corridorWidth = 40;
-                    const halfWidth = corridorWidth / 2;
-
-                    const dx = room.x - prevRoom.x;
-                    const dz = room.z - prevRoom.z;
-
-                    const prevSize = prevRoom.width;
-                    const currentSize = room.width;
-
-                    if (Math.abs(dz) > Math.abs(dx)) {
-                        if (Math.abs(dx) < corridorWidth) {
-                            this.createCorridor(prevRoom.x, prevRoom.z, room.x, room.z, corridorWidth, prevSize / 2, currentSize / 2);
-                        } else {
-                            const midZ = (prevRoom.z + room.z) / 2;
-
-                            this.createCorridor(prevRoom.x, prevRoom.z, prevRoom.x, midZ, corridorWidth, prevSize / 2, halfWidth);
-
-                            const c1Openings = {};
-                            if (prevRoom.z < midZ) c1Openings.north = true;
-                            else c1Openings.south = true;
-
-                            if (room.x > prevRoom.x) c1Openings.east = true;
-                            else c1Openings.west = true;
-
-                            this.createCorner(prevRoom.x, midZ, corridorWidth, c1Openings);
-
-                            this.createCorridor(prevRoom.x, midZ, room.x, midZ, corridorWidth, halfWidth, halfWidth);
-
-                            const c2Openings = {};
-                            if (prevRoom.x < room.x) c2Openings.west = true;
-                            else c2Openings.east = true;
-
-                            if (room.z < midZ) c2Openings.north = true;
-                            else c2Openings.south = true;
-
-                            this.createCorner(room.x, midZ, corridorWidth, c2Openings);
-
-                            this.createCorridor(room.x, midZ, room.x, room.z, corridorWidth, halfWidth, currentSize / 2);
-                        }
-                    } else {
-                        if (Math.abs(dz) < corridorWidth) {
-                            this.createCorridor(prevRoom.x, prevRoom.z, room.x, room.z, corridorWidth, prevSize / 2, currentSize / 2);
-                        } else {
-                            const midX = (prevRoom.x + room.x) / 2;
-
-                            this.createCorridor(prevRoom.x, prevRoom.z, midX, prevRoom.z, corridorWidth, prevSize / 2, halfWidth);
-
-                            const c1Openings = {};
-                            if (prevRoom.x < midX) c1Openings.west = true;
-                            else c1Openings.east = true;
-
-                            if (room.z > prevRoom.z) c1Openings.south = true;
-                            else c1Openings.north = true;
-
-                            this.createCorner(midX, prevRoom.z, corridorWidth, c1Openings);
-
-                            this.createCorridor(midX, prevRoom.z, midX, room.z, corridorWidth, halfWidth, halfWidth);
-
-                            const c2Openings = {};
-                            if (prevRoom.z < room.z) c2Openings.north = true;
-                            else c2Openings.south = true;
-
-                            if (room.x > midX) c2Openings.east = true;
-                            else c2Openings.west = true;
-
-                            this.createCorner(midX, room.z, corridorWidth, c2Openings);
-
-                            this.createCorridor(midX, room.z, room.x, room.z, corridorWidth, halfWidth, currentSize / 2);
-                        }
-                    }
-                }
-
-                prevRoom = room;
-            });
+        if (this.createLayoutDrivenDungeon(layout)) {
+            return;
         }
     }
 
