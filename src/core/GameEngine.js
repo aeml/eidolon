@@ -5,6 +5,7 @@ import { ChunkManager } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
 import { NetworkManager } from './NetworkManager.js';
 import { AbilityController } from './AbilityController.js';
+import { UIBindings } from './UIBindings.js';
 import { CONSTANTS } from './Constants.js';
 import { RARITY } from './ItemSystem.js';
 import { UIManager } from '../ui/UIManager.js';
@@ -95,139 +96,16 @@ export class GameEngine {
         this.chunkManager = new ChunkManager(this.renderSystem.scene);
         this.collisionManager = new CollisionManager();
         this.uiManager = new UIManager(this.isMobile);
-        this.uiManager.onGraphicsQualityChange = (quality) => {
-            return this.renderSystem.setGraphicsQuality(quality);
-        };
-        this.uiManager.onBrightnessChange = (level) => {
-            this.renderSystem.setBrightnessLevel(level);
-        };
-        this.renderSystem.setGraphicsQuality(this.uiManager.getGraphicsQuality());
-        this.renderSystem.setBrightnessLevel(this.uiManager.getBrightnessLevel());
         this.effects = []; // Active visual effects
         this.hazards = new Map(); // Environmental hazards (id -> EnvironmentalHazard)
         this.abilityController = new AbilityController(this);
         this.currentInstanceId = null; // Track current instance to prevent state desync
-        this.uiManager.inventory.onBuyGamble = (slot) => {
-            this.network.send('buy_gamble', { slot });
-        };
-        this.uiManager.inventory.onSellItem = (index) => {
-            const item = this.player.inventory[index];
-            if (!item) return;
-
-            this.network.send('sell', { itemId: item.id, slotIndex: index });
-
-            // Optimistic client-side removal so inventory space frees immediately.
-            // Server will correct us via an incoming inventory update if needed.
-            this.player.inventory[index] = null;
-            this.uiManager.inventory.updateInventory(this.player);
-        };
-        this.uiManager.inventory.onBuyback = (itemId) => {
-            this.network.send('buyback', { itemId });
-        };
-        this.uiManager.inventory.onSellAll = (rarityName) => {
-            if (!this.player) return;
-            
-            // Iterate backwards to avoid potential index issues
-            for (let i = this.player.inventory.length - 1; i >= 0; i--) {
-                const item = this.player.inventory[i];
-                if (item && item.rarity && item.rarity.name === rarityName) {
-                    this.uiManager.inventory.onSellItem(i);
-                }
-            }
-        };
-        this.uiManager.social.onSocialOpen = () => {
-            this.network.send('social', {});
-        };
-        this.uiManager.trading.onTradingSearch = (query) => {
-            this.network.send('trading_search', { query });
-        };
-        this.uiManager.trading.onTradingCreate = (slotIndex, bid, buyout, duration) => {
-            this.network.send('trading_create', { slotIndex, bid, buyout, duration });
-        };
-        this.uiManager.trading.onTradingMyAuctions = () => {
-            this.network.send('trading_my_auctions', {});
-        };
-        this.uiManager.trading.onTradingBuyout = (auctionId) => {
-            this.network.send('trading_buyout', { auctionId });
-        };
-        this.uiManager.trading.onTradingBid = (auctionId, amount) => {
-            this.network.send('trading_bid', { auctionId, amount });
-        };
-        this.uiManager.trading.onTradingCollect = (auctionId) => {
-            this.network.send('trading_collect', { auctionId });
-        };
-        this.uiManager.trading.onTradingCancel = (auctionId) => {
-            this.network.send('trading_cancel', { auctionId });
-        };
-        this.uiManager.onReportSubmit = (type, text) => {
-            this.network.send('report', { reportType: type, text: text });
-        };
-        this.uiManager.social.onPartyInvite = (targetName) => {
-            this.sendPartyMessage('party_invite', { targetName });
-        };
-        this.uiManager.social.onPartyLeave = () => {
-            this.sendPartyMessage('party_leave', {});
-        };
-        this.uiManager.social.onPartyResponse = (inviterName, accepted) => {
-            this.sendPartyMessage('party_response', { inviterName, accepted });
-        };
-        this.uiManager.skillTree.onSelectBranch = (branch) => {
-            this.network.send('selectBranch', { branch });
-        };
-        this.uiManager.skillTree.onUnlockSkill = (skillName) => {
-            this.network.send('unlockSkill', { skillName });
-        };
-        this.uiManager.skillTree.onUnlockTalent = (talentId) => {
-            this.network.send('unlockTalent', { talentId });
-        };
-
-        this.uiManager.skillTree.onResetTalents = () => {
-            this.network.send('resetTalents', {});
-        };
-        this.uiManager.skillTree.onSelectRune = (skill, runeId) => {
-            this.network.send('select_rune', { skill, runeId });
-        };
-        this.uiManager.inventory.onStashDeposit = (itemId) => {
-            this.network.send('stash_deposit', { itemId });
-        };
-        this.uiManager.forge.onForgeUpgrade = (slot, amount) => {
-            this.network.send('forge_upgrade', { slot, amount });
-        };
-        this.uiManager.forge.onForgePotency = (slot) => {
-            this.network.send('forge_potency', { slot });
-        };
-        this.uiManager.forge.onForgeSocket = (slot) => {
-            this.network.send('forge_socket', { slot });
-        };
-        this.uiManager.forge.onForgeInsertGem = (equipSlot, gemInvIndex, socketIndex) => {
-            this.network.send('forge_insert_gem', { equipSlot, gemInvIndex, socketIndex });
-        };
-        this.uiManager.forge.onForgeCombineGem = (gemIndices) => {
-            this.network.send('forge_combine_gem', { gemIndices });
-        };
-        this.uiManager.forge.onForgeRemoveGem = (equipSlot, socketIndex) => {
-            this.network.send('forge_remove_gem', { equipSlot, socketIndex });
-        };
-        this.uiManager.inventory.onStashWithdraw = (itemId) => {
-            this.network.send('stash_withdraw', { itemId });
-        };
-        this.uiManager.quest.onAcceptQuest = (questId) => {
-            this.network.send('accept_quest', { questId });
-        };
-        this.uiManager.quest.onCompleteQuest = (questId) => {
-            this.network.send('complete_quest', { questId });
-        };
-        this.uiManager.inventory.onUnequipRequest = (slot) => {
-            this.network.send('unequip', { slot });
-        };
-        this.uiManager.inventory.onSortInventory = () => {
-            this.network.send('inventory_sort', {});
-        };
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         this.minimap = new Minimap();
         this.minimap.setGameEngine(this);
         this.worldMap = new WorldMap(this);
-        this.uiManager.onMapToggle = () => this.worldMap.toggle();
+        this.uiBindings = new UIBindings(this);
+        this.uiBindings.bindConstructorCallbacks();
         this.floatingTextManager = new FloatingTextManager(this.renderSystem.camera);
         
         this.player = null;
@@ -388,46 +266,10 @@ export class GameEngine {
             return true; // Assume success, server will correct if not
         };
         
-        // Wire up chat UI (server connection happens at end of loadGame)
-        this.uiManager.toggleChat(true);
-        this.uiManager.onChatSend = (msg) => {
-            this.network.send('chat', { message: msg, sender: this.username });
-        };
+        this.uiBindings.bindSessionCallbacks();
         
         if (onProgress) onProgress(30, "Initializing UI...");
         await new Promise(r => setTimeout(r, 50));
-
-        this.uiManager.showHUD();
-
-        this.uiManager.onStatUpgrade = (stat) => {
-            if (this.player) {
-                this.network.send('upgrade_stat', { stat });
-            }
-        };
-
-        this.uiManager.onRespawn = () => {
-            if (this.player) {
-                console.log("Player requested respawn.");
-                const x = -1.25;
-                const z = 200;
-                
-                if (this.isMultiplayer) {
-                    this.network.send('respawn', {});
-                }
-
-                // Apply immediate local respawn so death->town transition is always visible,
-                // even if the server sends only a delta update without position fields.
-                this.player.respawn(x, z);
-                this.player.timeSinceDeath = null;
-                this.player.targetPosition = null;
-                this.pendingInteraction = null;
-                this.abilityController.pendingAbilityTarget = null;
-        this.abilityController.pendingAbilitySkill = null;
-                this.chunkManager.updateEntityChunk(this.player);
-                this.renderSystem.setCameraTarget(this.player.position);
-                this.chunkManager.update(this.player, 0, this.collisionManager);
-            }
-        };
 
         if (onProgress) onProgress(40, "Loading environment...");
         await this.renderSystem.preloadEnvironment((p, text) => {
@@ -576,18 +418,6 @@ this.abilityController.pendingAbilityTarget = null;
             this.abilityController.performHotbarAbility(slotIndex);
         });
 
-        this.uiManager.onHotbarAssign = (slotIndex, skillName) => {
-            if (this.player) {
-                if (!this.player.hotbar) this.player.hotbar = [null, null, null, null];
-                this.player.hotbar[slotIndex] = skillName;
-                console.log(`Assigned ${skillName} to slot ${slotIndex + 1}`);
-            }
-        };
-
-        // Mobile: tap hotbar slots to cast (pages still map to slots 1-4)
-        this.uiManager.onHotbarCast = (slotIndex) => {
-            this.abilityController.performHotbarAbility(slotIndex);
-        };
 
         this.inputManager.subscribe('onInteract', () => {
             if (!this.player || !this.isMobile) return;
