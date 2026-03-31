@@ -19,9 +19,15 @@
 .mobile-mode #game-timer {
     font-size: clamp(14px, 2.5vw, 18px) !important;
     padding: 5px 10px !important;
-    min-width: 80px !important;
+    min-width: 90px !important;
     top: 10px !important;
     left: 10px !important;
+}
+
+.mobile-mode #objectives-panel {
+    top: 62px !important;
+    left: 10px !important;
+    width: min(280px, calc(100vw - 20px)) !important;
 }
 
 .mobile-mode #player-hud {

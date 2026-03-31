@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
-	"strings"
 	"time"
 )
 
@@ -108,6 +107,10 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						oldX, oldZ := target.X, target.Z
 						target.X += dx * pullStrength
 						target.Z += dz * pullStrength
+						if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(target, target.X, target.Z); ok {
+							target.X = constrainedX
+							target.Z = constrainedZ
+						}
 						w.Grid.Update(target, oldX, oldZ)
 					}
 
@@ -771,13 +774,9 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					targetZ = 1000
 				}
 
-				// Dungeon Bounds Check
-				if strings.HasPrefix(player.InstanceID, "dungeon_") {
-					if !w.IsLocationInDungeon(player.InstanceID, targetX, targetZ) {
-						// Teleported out of bounds -> Exit Instance
-						w.PerformRecall(player.ID)
-						return
-					}
+				if constrainedX, constrainedZ, ok := w.constrainPlayerPointToDungeon(player.InstanceID, targetX, targetZ); ok {
+					targetX = constrainedX
+					targetZ = constrainedZ
 				}
 
 				player.X = targetX

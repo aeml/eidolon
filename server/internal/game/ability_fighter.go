@@ -37,6 +37,11 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				player.CCImmuneEndTime = time.Now().Add(10 * time.Second) // Will be cleared on charge end
 			}
 
+			if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(player, finalTargetX, finalTargetZ); ok {
+				finalTargetX = constrainedX
+				finalTargetZ = constrainedZ
+			}
+
 			player.IsCharging = true
 			player.ChargeTargetX = finalTargetX
 			player.ChargeTargetZ = finalTargetZ
@@ -106,6 +111,10 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 							oldTX, oldTZ := target.X, target.Z
 							target.X += pullDx
 							target.Z += pullDz
+							if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(target, target.X, target.Z); ok {
+								target.X = constrainedX
+								target.Z = constrainedZ
+							}
 							w.Grid.Update(target, oldTX, oldTZ)
 						}
 					}

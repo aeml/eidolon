@@ -40,6 +40,11 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				destX := targetX + dirX*1.0
 				destZ := targetZ + dirZ*1.0
 
+				if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(player, destX, destZ); ok {
+					destX = constrainedX
+					destZ = constrainedZ
+				}
+
 				oldX, oldZ := player.X, player.Z
 				player.X = destX
 				player.Z = destZ
@@ -415,6 +420,11 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					teleX := tx - tDirX*1.5
 					teleZ := tz - tDirZ*1.5
 
+					if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(player, teleX, teleZ); ok {
+						teleX = constrainedX
+						teleZ = constrainedZ
+					}
+
 					oldX, oldZ := player.X, player.Z
 					player.X = teleX
 					player.Z = teleZ
@@ -534,6 +544,11 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 
 				teleX := tx - tDirX*1.5
 				teleZ := tz - tDirZ*1.5
+
+				if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(player, teleX, teleZ); ok {
+					teleX = constrainedX
+					teleZ = constrainedZ
+				}
 
 				oldX, oldZ := player.X, player.Z
 				player.X = teleX

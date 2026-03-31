@@ -1,6 +1,7 @@
 package game
 
 import (
+	"math"
 	"testing"
 	"time"
 )
@@ -32,6 +33,12 @@ func newTestPlayer(id, class string) *Entity {
 		Equipment:      make(map[string]Item),
 		TalentRanks:    make(map[string]int),
 	}
+}
+
+func singleRoomDungeonLayout() DungeonLayout {
+	layout := DungeonLayout{}
+	appendDungeonRoom(&layout, DungeonRoom{X: 0, Z: 0, Width: 40, Height: 40, Type: "start"})
+	return layout
 }
 
 // --- Fighter tests ---
@@ -379,5 +386,109 @@ func TestPerformAbility_BaseSkillAlwaysAllowed(t *testing.T) {
 
 	if p.Mana >= startMana {
 		t.Fatal("base skill Charge should work even with empty UnlockedSkills")
+	}
+}
+
+func TestWizardTeleport_ClampsOutOfBoundsTargetInsideDungeon(t *testing.T) {
+	w := newTestWorld()
+	w.InstanceLayouts["dungeon_test"] = &DungeonInstance{ID: "dungeon_test", Layout: singleRoomDungeonLayout()}
+	p := newTestPlayer("p1", "Wizard")
+	p.InstanceID = "dungeon_test"
+	p.X = 10
+	p.Z = 0
+	w.AddEntity(p)
+
+	setCooldown := func(d time.Duration) {}
+	w.performWizardAbility(p, 24, 0, "", "Teleport", setCooldown)
+
+	if p.InstanceID != "dungeon_test" {
+		t.Fatalf("expected teleport to remain in dungeon instance, got %q", p.InstanceID)
+	}
+	if math.Abs(p.X-20) > 0.001 || math.Abs(p.Z) > 0.001 {
+		t.Fatalf("expected teleport to clamp to room boundary (20,0), got (%.2f, %.2f)", p.X, p.Z)
+	}
+}
+
+func TestFighterCharge_ClampsDungeonTargetToWalkableArea(t *testing.T) {
+	w := newTestWorld()
+	w.InstanceLayouts["dungeon_test"] = &DungeonInstance{ID: "dungeon_test", Layout: singleRoomDungeonLayout()}
+	p := newTestPlayer("p1", "Fighter")
+	p.InstanceID = "dungeon_test"
+	p.X = 0
+	p.Z = 0
+	w.AddEntity(p)
+
+	setCooldown := func(d time.Duration) {}
+	w.performFighterAbility(p, 200, 0, "", "Charge", setCooldown)
+
+	if p.ChargeTargetX != 20 || p.ChargeTargetZ != 0 {
+		t.Fatalf("expected charge target to clamp to room boundary (20,0), got (%.2f, %.2f)", p.ChargeTargetX, p.ChargeTargetZ)
+	}
+}
+
+func TestRogueBackstabShadowstep_ClampsInsideDungeon(t *testing.T) {
+	w := newTestWorld()
+	w.InstanceLayouts["dungeon_test"] = &DungeonInstance{ID: "dungeon_test", Layout: singleRoomDungeonLayout()}
+	p := newTestPlayer("p1", "Rogue")
+	p.InstanceID = "dungeon_test"
+	p.X = 17.5
+	p.Z = 0
+	p.SkillRunes = map[string]string{"Backstab": "backstab_shadowstep"}
+	w.AddEntity(p)
+
+	enemy := &Entity{
+		ID:         "enemy-1",
+		InstanceID: "dungeon_test",
+		Type:       TypeEnemy,
+		SubType:    "Skeleton",
+		State:      "IDLE",
+		Health:     100,
+		MaxHealth:  100,
+		Defense:    0,
+		X:          19,
+		Z:          0,
+		Rotation:   -math.Pi / 2,
+	}
+	w.AddEntity(enemy)
+
+	setCooldown := func(d time.Duration) {}
+	w.performRogueAbility(p, 0, 0, "", "Backstab", setCooldown)
+
+	if p.X > 20.001 || math.Abs(p.Z) > 0.001 {
+		t.Fatalf("expected shadowstep to clamp inside dungeon boundary, got (%.2f, %.2f)", p.X, p.Z)
+	}
+}
+
+func TestChargeShockwave_ClampsForcedMovementInsideDungeon(t *testing.T) {
+	w := newTestWorld()
+	w.InstanceLayouts["dungeon_test"] = &DungeonInstance{ID: "dungeon_test", Layout: singleRoomDungeonLayout()}
+	fighter := newTestPlayer("fighter-1", "Fighter")
+	fighter.InstanceID = "dungeon_test"
+	fighter.X = 15
+	fighter.Z = 0
+	fighter.IsCharging = true
+	fighter.ChargeTargetX = 15
+	fighter.ChargeTargetZ = 0
+	fighter.ChargeRuneID = "charge_shockwave"
+	fighter.State = "ATTACKING"
+	w.AddEntity(fighter)
+
+	enemy := &Entity{
+		ID:         "enemy-1",
+		InstanceID: "dungeon_test",
+		Type:       TypeEnemy,
+		SubType:    "Skeleton",
+		State:      "IDLE",
+		Health:     100,
+		MaxHealth:  100,
+		X:          19,
+		Z:          0,
+	}
+	w.AddEntity(enemy)
+
+	w.Update(0.1)
+
+	if enemy.X > 20.001 || enemy.Z != 0 {
+		t.Fatalf("expected knockback to remain inside dungeon boundary, got (%.2f, %.2f)", enemy.X, enemy.Z)
 	}
 }
