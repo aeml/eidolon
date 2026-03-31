@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from './SkeletonUtils.js';
+import { MeshCatalog } from './MeshCatalog.js';
 import { CONSTANTS } from '../core/Constants.js';
 
 export class MeshFactory {
@@ -10,151 +11,19 @@ export class MeshFactory {
     static inflight = {};
 
     static getPreloadModelPaths() {
-        // Keep this list in sync with the paths used in `createMeshForType`.
-        // Preloading prevents long background model downloads/parsing after the loading screen clears.
-        return [
-            // Archetypes
-            './assets/archetypes/Fighter/idle.glb',
-            './assets/archetypes/Fighter/walk.glb',
-            './assets/archetypes/Fighter/run.glb',
-            './assets/archetypes/Fighter/attack.glb',
-
-            './assets/archetypes/Wizard/idle.glb',
-            './assets/archetypes/Wizard/walk.glb',
-            './assets/archetypes/Wizard/run.glb',
-            './assets/archetypes/Wizard/attack.glb',
-
-            './assets/archetypes/Rogue/idle.glb',
-            './assets/archetypes/Rogue/walk.glb',
-            './assets/archetypes/Rogue/run.glb',
-            './assets/archetypes/Rogue/attack.glb',
-
-            './assets/archetypes/Cleric/idle.glb',
-            './assets/archetypes/Cleric/walk.glb',
-            './assets/archetypes/Cleric/run.glb',
-            './assets/archetypes/Cleric/attack.glb',
-
-            // Enemies
-            './assets/enemies/undead/skeleton/idle.glb',
-            './assets/enemies/undead/skeleton/walk.glb',
-            './assets/enemies/undead/skeleton/run.glb',
-            './assets/enemies/undead/skeleton/attack.glb',
-            './assets/enemies/undead/skeleton/death.glb',
-
-            './assets/enemies/demons/demon_orc/idle.glb',
-            './assets/enemies/demons/demon_orc/walk.glb',
-            './assets/enemies/demons/demon_orc/run.glb',
-            './assets/enemies/demons/demon_orc/attack.glb',
-            './assets/enemies/demons/demon_orc/death.glb',
-
-            './assets/enemies/demons/imp/idle.glb',
-            './assets/enemies/demons/imp/walk.glb',
-            './assets/enemies/demons/imp/run.glb',
-            './assets/enemies/demons/imp/attack.glb',
-            './assets/enemies/demons/imp/death.glb',
-
-            './assets/enemies/undead/construct/idle.glb',
-            './assets/enemies/undead/construct/walk.glb',
-            './assets/enemies/undead/construct/run.glb',
-            './assets/enemies/undead/construct/attack.glb',
-            './assets/enemies/undead/construct/death.glb',
-
-            './assets/enemies/demons/inferno_titan/idle.glb',
-            './assets/enemies/demons/inferno_titan/walk.glb',
-            './assets/enemies/demons/inferno_titan/run.glb',
-            './assets/enemies/demons/inferno_titan/attack.glb',
-            './assets/enemies/demons/inferno_titan/death.glb',
-
-            './assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/idle.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/walk.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/run.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/attack.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/death.glb',
-
-            './assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/idle.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/walk.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/run.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/attack.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/death.glb',
-
-            './assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/idle.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/walk.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/run.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/attack.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/death.glb',
-
-            './assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/idle.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/walk.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/run.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/attack.glb',
-            './assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/death.glb',
-
-            './assets/enemies/snow/siren/idle.glb',
-            './assets/enemies/snow/siren/walk.glb',
-            './assets/enemies/snow/siren/run.glb',
-            './assets/enemies/snow/siren/attack.glb',
-            './assets/enemies/snow/siren/death.glb',
-
-            './assets/enemies/golems/aqua_golem/idle.glb',
-            './assets/enemies/golems/aqua_golem/walk.glb',
-            './assets/enemies/golems/aqua_golem/run.glb',
-            './assets/enemies/golems/aqua_golem/attack.glb',
-            './assets/enemies/golems/aqua_golem/death.glb',
-
-            './assets/enemies/humanoid/mountain_troll/idle.glb',
-            './assets/enemies/humanoid/mountain_troll/walk.glb',
-            './assets/enemies/humanoid/mountain_troll/run.glb',
-            './assets/enemies/humanoid/mountain_troll/attack.glb',
-            './assets/enemies/humanoid/mountain_troll/death.glb',
-
-            // NPCs / objects / buildings / summons
-            './assets/npc/dwarf_salesman/idle.glb',
-            './assets/npc/quest_man/idle.glb',
-            './assets/buildings/trading_house.glb',
-            './assets/buildings/blacksmith_forge.glb',
-            './assets/objects/chests/stash_base.glb',
-
-            './assets/summons/avenging_seraph/idle.glb',
-            './assets/summons/avenging_seraph/walk.glb',
-            './assets/summons/avenging_seraph/run.glb',
-            './assets/summons/avenging_seraph/attack.glb',
-            './assets/summons/avenging_seraph/death.glb',
-            // Do not preload the legacy single-file fallback path.
-            // Some deployments only ship the folder-based assets above.
-
-            // World assets (loaded by WorldGenerator)
-            './assets/plants/birch.glb',
-            './assets/plants/pine.glb',
-            './assets/plants/willow.glb',
-            './assets/buildings/two_story_building.glb',
-            './assets/buildings/trading_post.glb',
-            './assets/buildings/blacksmith.glb',
-            './assets/buildings/camp_site.glb',
-            './assets/buildings/dungeons/the_verdant_bastion.glb',
-            './assets/buildings/dungeons/the_molten_core.glb',
-            './assets/buildings/dungeons/the_tempest_spire.glb',
-            './assets/buildings/dungeons/the_abyssal_well.glb'
-        ];
+        return MeshCatalog.getPreloadModelPaths();
     }
 
     static isBackgroundPreloadPath(path) {
-        if (!path) return false;
-        return (
-            path.startsWith('./assets/plants/') ||
-            path === './assets/buildings/two_story_building.glb' ||
-            path === './assets/buildings/trading_post.glb' ||
-            path === './assets/buildings/blacksmith.glb' ||
-            path === './assets/buildings/camp_site.glb' ||
-            path.startsWith('./assets/buildings/dungeons/')
-        );
+        return MeshCatalog.isBackgroundPreloadPath(path);
     }
 
     static getStartupPreloadModelPaths() {
-        return this.getPreloadModelPaths().filter(path => !this.isBackgroundPreloadPath(path));
+        return MeshCatalog.getStartupPreloadModelPaths();
     }
 
     static getBackgroundPreloadModelPaths() {
-        return this.getPreloadModelPaths().filter(path => this.isBackgroundPreloadPath(path));
+        return MeshCatalog.getBackgroundPreloadModelPaths();
     }
 
     static async loadModelWithTimeout(path, timeoutMs = 30000) {
