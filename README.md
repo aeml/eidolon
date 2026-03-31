@@ -192,6 +192,8 @@ The Go server is fully authoritative:
 # Client tests (Jest)
 npm install
 npm test
+npm run test:smoke
+npm run lint
 
 # Server tests
 go test ./server/...
