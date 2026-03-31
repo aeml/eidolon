@@ -92,6 +92,7 @@ export class UIManager {
         this.graphicsQualitySelect = document.getElementById('graphics-quality');
         this.graphicsBrightnessSlider = document.getElementById('graphics-brightness');
         this.graphicsBrightnessValue = document.getElementById('graphics-brightness-value');
+        this.autoLootToggle = document.getElementById('auto-loot-enabled');
 
         if (this.btnResume) this.btnResume.addEventListener('click', () => this.toggleEscMenu());
         if (this.btnHelp) this.btnHelp.addEventListener('click', () => this.toggleHelp());
@@ -109,6 +110,7 @@ export class UIManager {
 
         this.onGraphicsQualityChange = null;
         this.onBrightnessChange = null;
+        this.onAutoLootChange = null;
         this.graphicsQuality = localStorage.getItem('eidolon.graphicsQuality') || 'high';
         if (this.graphicsQualitySelect) {
             this.graphicsQualitySelect.value = this.graphicsQuality;
@@ -127,6 +129,15 @@ export class UIManager {
             });
         }
         this.updateBrightnessLabel();
+
+        const storedAutoLoot = localStorage.getItem('eidolon.autoLootEnabled');
+        this.autoLootEnabled = storedAutoLoot === null ? false : storedAutoLoot === 'true';
+        if (this.autoLootToggle) {
+            this.autoLootToggle.checked = this.autoLootEnabled;
+            this.autoLootToggle.addEventListener('change', () => {
+                this.setAutoLootEnabled(this.autoLootToggle.checked);
+            });
+        }
         // Shop/Stash close buttons are handled inside InventoryUI
         
         // Forge UI — delegated to ForgeUI module
@@ -400,6 +411,12 @@ export class UIManager {
         div.innerHTML = `<strong style="color: #ffd700;">${sender}:</strong> <span style="color: #fff;">${message}</span>`;
         this.chatMessages.appendChild(div);
         this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+    }
+
+    showLootPickupToast(message, options = {}) {
+        if (!message) return;
+        const sender = options.sender || 'Loot';
+        this.addChatMessage(sender, message);
     }
 
     toggleChat(show) {
@@ -1233,6 +1250,22 @@ export class UIManager {
 
     getBrightnessLevel() {
         return this.graphicsBrightness;
+    }
+
+    setAutoLootEnabled(enabled) {
+        const nextValue = Boolean(enabled);
+        this.autoLootEnabled = nextValue;
+        localStorage.setItem('eidolon.autoLootEnabled', String(nextValue));
+        if (this.autoLootToggle) {
+            this.autoLootToggle.checked = nextValue;
+        }
+        if (this.onAutoLootChange) {
+            this.onAutoLootChange(nextValue);
+        }
+    }
+
+    getAutoLootEnabled() {
+        return Boolean(this.autoLootEnabled);
     }
 
     toggleShop() { this.inventory.toggleShop(); }
