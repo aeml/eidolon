@@ -32,6 +32,8 @@ export class LootDrop extends Entity {
         this.itemColor = gemQuality?.color || item.rarity.color;
         this.itemName = item.name;
         this.textGenerated = false;
+        this.visualState = 'default';
+        this.baseScale = 1.0;
 
         this.createMesh();
     }
@@ -55,17 +57,46 @@ export class LootDrop extends Entity {
         this.mesh.position.copy(this.position);
         this.mesh.userData.entityId = this.id;
         this.mesh.userData.type = 'LOOT';
+        this.baseScale = 1.0;
+        this.mesh.scale.setScalar(this.baseScale);
         
         // Add Hitbox for easier clicking
         const hitMesh = new THREE.Mesh(HITBOX_GEOMETRY, HITBOX_MATERIAL);
         hitMesh.position.y = 0.0; // Centered on orb
         this.mesh.add(hitMesh);
+        this.applyPickupVisualState();
     }
 
     async ensureMesh() {
         if (!this.mesh) {
             this.createMesh();
         }
+    }
+
+    setPickupVisualState(state = 'default') {
+        const nextState = state || 'default';
+        if (this.visualState === nextState) return;
+        this.visualState = nextState;
+        this.applyPickupVisualState();
+    }
+
+    applyPickupVisualState() {
+        if (!this.mesh || !this.mesh.material) return;
+
+        let scaleMultiplier = 1.0;
+        let opacity = 0.9;
+
+        if (this.visualState === 'in_range') {
+            scaleMultiplier = 1.15;
+            opacity = 1.0;
+        } else if (this.visualState === 'targeted') {
+            scaleMultiplier = 1.3;
+            opacity = 1.0;
+        }
+
+        this.mesh.scale.setScalar(this.baseScale * scaleMultiplier);
+        this.mesh.material.opacity = opacity;
+        this.mesh.material.transparent = opacity < 1.0;
     }
 
     createTextSprite(message, color) {

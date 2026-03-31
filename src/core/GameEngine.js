@@ -96,6 +96,10 @@ export class GameEngine {
         this.chunkManager = new ChunkManager(this.renderSystem.scene);
         this.collisionManager = new CollisionManager();
         this.uiManager = new UIManager(this.isMobile);
+        this.autoLootEnabled = this.uiManager.getAutoLootEnabled();
+        this.uiManager.onAutoLootChange = (enabled) => {
+            this.autoLootEnabled = enabled;
+        };
         this.effects = []; // Active visual effects
         this.hazards = new Map(); // Environmental hazards (id -> EnvironmentalHazard)
         this.abilityController = new AbilityController(this);
@@ -129,6 +133,10 @@ export class GameEngine {
         this.lastPickupTime = 0; // Throttle for pickup attempts
         this.lastInventoryFullTime = 0; // Throttle for inventory-full messaging
         this.lastServerInventoryFullTime = 0; // Throttle for server-side inventory-full errors
+        this.lastLootFeedbackTime = 0;
+        this.lastAutoLootAttemptTime = 0;
+        this.autoLootAttemptCooldownMs = 250;
+        this.autoLootEnabled = false;
 
         this.raycastTimer = 0;
         this.mousePosition = new THREE.Vector2();
@@ -870,11 +878,9 @@ this.abilityController.pendingAbilityTarget = null;
                 }
 
                 // Show a single, throttled message instead of spamming alert().
-                if (this.floatingTextManager && this.player && this.player.position) {
-                    if (now - (this.lastServerInventoryFullTime || 0) > 1000) {
-                        this.lastServerInventoryFullTime = now;
-                        this.floatingTextManager.spawn("INVENTORY FULL", this.player.position, '#ff4444');
-                    }
+                if (now - (this.lastServerInventoryFullTime || 0) > 1000) {
+                    this.lastServerInventoryFullTime = now;
+                    this.showLootFailureFeedback('inventory_full');
                 }
                 return;
             }
@@ -1595,6 +1601,106 @@ this.abilityController.pendingAbilityTarget = null;
         this.remotePlayers.delete(id);
     }
 
+    isLootEntity(entity) {
+        return entity instanceof LootDrop;
+    }
+
+    getLootPickupRadius(entity = null) {
+        const radius = this.getInteractionRangeForEntity ? this.getInteractionRangeForEntity(entity) : 5.0;
+        return Math.max(2.5, radius);
+    }
+
+    canAttemptLootPickup(entity) {
+        if (!this.player || !this.isLootEntity(entity) || !entity?.isActive || !entity?.position) return false;
+        const dx = this.player.position.x - entity.position.x;
+        const dz = this.player.position.z - entity.position.z;
+        return Math.sqrt(dx * dx + dz * dz) <= this.getLootPickupRadius(entity);
+    }
+
+    formatLootPickupMessage(entity) {
+        const item = entity?.item;
+        if (!item) return 'Picked up loot';
+        const rarityName = typeof item.rarity === 'string'
+            ? item.rarity
+            : (item.rarity?.name || item.gemQuality || 'Loot');
+        return `${rarityName}: ${item.name}`;
+    }
+
+    showLootPickupFeedback(entity, result = 'picked_up') {
+        if (!entity || result !== 'picked_up') return;
+        const message = this.formatLootPickupMessage(entity);
+        const color = this.uiManager?.getRarityColor?.(entity.item?.rarity) || entity.itemColor || '#ffd700';
+
+        if (this.floatingTextManager && this.player?.position) {
+            this.floatingTextManager.spawn(message.toUpperCase(), this.player.position, color);
+        }
+        if (this.uiManager?.showLootPickupToast) {
+            this.uiManager.showLootPickupToast(message, { sender: 'Loot' });
+        }
+    }
+
+    showLootFailureFeedback(reason = 'inventory_full') {
+        if (!this.player?.position) return;
+        const now = Date.now();
+        if (reason === 'inventory_full') {
+            if (now - (this.lastInventoryFullTime || 0) <= 1000) return;
+            this.lastInventoryFullTime = now;
+            this.floatingTextManager?.spawn('INVENTORY FULL', this.player.position, '#ff4444');
+            this.uiManager?.showLootPickupToast?.('Inventory full', { sender: 'Loot' });
+        }
+    }
+
+    findNearestLootInRange(radius = this.getLootPickupRadius()) {
+        if (!this.player || !this.activeEntitiesCache) return null;
+        let nearest = null;
+        let nearestDistance = radius;
+
+        for (const entity of this.activeEntitiesCache) {
+            if (!this.isLootEntity(entity) || !entity.isActive || this.recentlyPickedUpLoot.has(entity.id)) continue;
+            const dx = this.player.position.x - entity.position.x;
+            const dz = this.player.position.z - entity.position.z;
+            const dist = Math.sqrt(dx * dx + dz * dz);
+            if (dist <= nearestDistance) {
+                nearest = entity;
+                nearestDistance = dist;
+            }
+        }
+
+        return nearest;
+    }
+
+    shouldAutoLootEntity(entity) {
+        return Boolean(this.autoLootEnabled && this.canAttemptLootPickup(entity));
+    }
+
+    processAutoLoot() {
+        if (!this.autoLootEnabled || !this.player || this.isPlayerDead?.()) return;
+        const now = Date.now();
+        if (now - (this.lastAutoLootAttemptTime || 0) < this.autoLootAttemptCooldownMs) return;
+
+        const nearestLoot = this.findNearestLootInRange();
+        if (!nearestLoot) return;
+
+        this.lastAutoLootAttemptTime = now;
+        this.pickupLoot(nearestLoot.id);
+    }
+
+    updateLootVisualFeedback() {
+        if (!this.activeEntitiesCache) return;
+        const targetLoot = this.isLootEntity(this.pendingInteraction) ? this.pendingInteraction : null;
+
+        for (const entity of this.activeEntitiesCache) {
+            if (!this.isLootEntity(entity) || typeof entity.setPickupVisualState !== 'function') continue;
+            if (entity === targetLoot) {
+                entity.setPickupVisualState('targeted');
+            } else if (this.canAttemptLootPickup(entity)) {
+                entity.setPickupVisualState('in_range');
+            } else {
+                entity.setPickupVisualState('default');
+            }
+        }
+    }
+
     pickupLoot(lootId) {
         const entity = this.remotePlayers.get(lootId);
 
@@ -1645,13 +1751,7 @@ this.abilityController.pendingAbilityTarget = null;
 
         if (!canOptimisticPickup) {
             // No point sending a request the server must reject.
-            if (this.floatingTextManager && this.player && this.player.position) {
-                const now = Date.now();
-                if (now - (this.lastInventoryFullTime || 0) > 1000) {
-                    this.lastInventoryFullTime = now;
-                    this.floatingTextManager.spawn("INVENTORY FULL", this.player.position, '#ff4444');
-                }
-            }
+            this.showLootFailureFeedback('inventory_full');
             return false;
         }
 
@@ -1717,6 +1817,8 @@ this.abilityController.pendingAbilityTarget = null;
                 // Immediately update UI
                 this.uiManager.updateInventory(this.player);
             }
+
+            this.showLootPickupFeedback(entity, 'picked_up');
 
             entity.isActive = false;
             if (entity.dispose) {
@@ -2546,6 +2648,8 @@ this.abilityController.pendingAbilityTarget = null;
         }
 
         this.activeEntitiesCache = this.chunkManager.getActiveEntities();
+        this.updateLootVisualFeedback();
+        this.processAutoLoot();
 
         this.raycastTimer += dt;
         if (this.needsRaycast && this.raycastTimer > 0.05) {
