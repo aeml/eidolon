@@ -1,0 +1,99 @@
+import { jest } from '@jest/globals';
+import { UIBindings } from '../src/core/UIBindings.js';
+
+describe('UIBindings', () => {
+    function createEngine() {
+        return {
+            player: {
+                inventory: [{ id: 'item-1', rarity: { name: 'Rare' } }, null],
+                hotbar: [null, null, null, null],
+                respawn: jest.fn(),
+                timeSinceDeath: 3,
+                targetPosition: { x: 1, z: 2 }
+            },
+            username: 'tester',
+            isMultiplayer: true,
+            pendingInteraction: { id: 'enemy-1' },
+            collisionManager: {},
+            network: { send: jest.fn() },
+            renderSystem: {
+                setGraphicsQuality: jest.fn(),
+                setBrightnessLevel: jest.fn(),
+                setCameraTarget: jest.fn()
+            },
+            chunkManager: {
+                updateEntityChunk: jest.fn(),
+                update: jest.fn()
+            },
+            abilityController: {
+                performHotbarAbility: jest.fn(),
+                pendingAbilityTarget: { id: 'enemy-2' },
+                pendingAbilitySkill: 'Fireball'
+            },
+            worldMap: { toggle: jest.fn() },
+            sendPartyMessage: jest.fn(),
+            uiManager: {
+                getGraphicsQuality: jest.fn(() => 'medium'),
+                getBrightnessLevel: jest.fn(() => 0.75),
+                inventory: {
+                    updateInventory: jest.fn()
+                },
+                social: {},
+                trading: {},
+                skillTree: {},
+                forge: {},
+                quest: {},
+                toggleChat: jest.fn(),
+                showHUD: jest.fn(),
+                reportScreen: { style: { display: 'none' } }
+            }
+        };
+    }
+
+    test('bindConstructorCallbacks wires representative UI actions to engine behavior', () => {
+        const engine = createEngine();
+        const bindings = new UIBindings(engine);
+
+        bindings.bindConstructorCallbacks();
+
+        expect(engine.renderSystem.setGraphicsQuality).toHaveBeenCalledWith('medium');
+        expect(engine.renderSystem.setBrightnessLevel).toHaveBeenCalledWith(0.75);
+
+        engine.uiManager.inventory.onSellItem(0);
+        expect(engine.network.send).toHaveBeenCalledWith('sell', { itemId: 'item-1', slotIndex: 0 });
+        expect(engine.player.inventory[0]).toBeNull();
+        expect(engine.uiManager.inventory.updateInventory).toHaveBeenCalledWith(engine.player);
+
+        engine.uiManager.social.onPartyInvite('alice');
+        expect(engine.sendPartyMessage).toHaveBeenCalledWith('party_invite', { targetName: 'alice' });
+
+        engine.uiManager.onMapToggle();
+        expect(engine.worldMap.toggle).toHaveBeenCalled();
+    });
+
+    test('bindSessionCallbacks wires chat, respawn, and hotbar actions', () => {
+        const engine = createEngine();
+        const bindings = new UIBindings(engine);
+
+        bindings.bindSessionCallbacks();
+
+        engine.uiManager.onChatSend('hello');
+        expect(engine.network.send).toHaveBeenCalledWith('chat', { message: 'hello', sender: 'tester' });
+
+        engine.uiManager.onHotbarAssign(2, 'Meteor Drop');
+        expect(engine.player.hotbar[2]).toBe('Meteor Drop');
+
+        engine.uiManager.onHotbarCast(1);
+        expect(engine.abilityController.performHotbarAbility).toHaveBeenCalledWith(1);
+
+        engine.uiManager.onRespawn();
+        expect(engine.network.send).toHaveBeenCalledWith('respawn', {});
+        expect(engine.player.respawn).toHaveBeenCalledWith(-1.25, 200);
+        expect(engine.pendingInteraction).toBeNull();
+        expect(engine.abilityController.pendingAbilityTarget).toBeNull();
+        expect(engine.abilityController.pendingAbilitySkill).toBeNull();
+        expect(engine.chunkManager.updateEntityChunk).toHaveBeenCalledWith(engine.player);
+        expect(engine.chunkManager.update).toHaveBeenCalledWith(engine.player, 0, engine.collisionManager);
+        expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.player.position);
+    });
+});
