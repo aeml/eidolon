@@ -4854,8 +4854,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 			oldX, oldZ := e.X, e.Z
 			if moveDist >= dist {
-				e.X = e.ChargeTargetX
-				e.Z = e.ChargeTargetZ
+				endX, endZ := e.ChargeTargetX, e.ChargeTargetZ
+				if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(e, endX, endZ); ok {
+					endX = constrainedX
+					endZ = constrainedZ
+					e.ChargeTargetX = endX
+					e.ChargeTargetZ = endZ
+				}
+				e.X = endX
+				e.Z = endZ
 				e.IsCharging = false
 				e.State = "IDLE"
 				w.Grid.Update(e, oldX, oldZ)
@@ -4958,6 +4965,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							oldTX, oldTZ := target.X, target.Z
 							target.X += knockDx
 							target.Z += knockDz
+							if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(target, target.X, target.Z); ok {
+								target.X = constrainedX
+								target.Z = constrainedZ
+							}
 							w.Grid.Update(target, oldTX, oldTZ)
 							target.Mu.Unlock()
 						}
@@ -4969,8 +4980,14 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.ChargeRuneID = ""
 				e.Mu.Unlock()
 			} else {
-				e.X += (dx / dist) * moveDist
-				e.Z += (dz / dist) * moveDist
+				nextX := e.X + (dx / dist) * moveDist
+				nextZ := e.Z + (dz / dist) * moveDist
+				if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(e, nextX, nextZ); ok {
+					nextX = constrainedX
+					nextZ = constrainedZ
+				}
+				e.X = nextX
+				e.Z = nextZ
 				e.Rotation = math.Atan2(dx, dz)
 				w.Grid.Update(e, oldX, oldZ)
 				e.Mu.Unlock()

@@ -12,12 +12,15 @@ export class QuestUI {
      */
     constructor(ctx) {
         this.ctx = ctx;
+        this.activeQuestSummary = [];
 
         // --- DOM refs ---
         this.questWindow = document.getElementById('quest-window');
         this.questList = document.getElementById('quest-list');
         this.questJournal = document.getElementById('quest-journal');
         this.journalList = document.getElementById('journal-list');
+        this.objectivesPanel = document.getElementById('objectives-panel');
+        this.objectivesList = document.getElementById('objectives-list');
         this.btnCloseQuest = document.getElementById('btn-close-quest');
         this.btnCloseJournal = document.getElementById('btn-close-journal');
 
@@ -105,6 +108,50 @@ export class QuestUI {
         return `${label}s`;
     }
 
+    buildObjectiveSummary(quests) {
+        if (!Array.isArray(quests)) return [];
+
+        return quests
+            .filter((q) => q && q.accepted)
+            .map((q) => {
+                const targetLabel = this.formatQuestTarget(q.target, q.maxCount);
+                const remaining = Math.max(0, (q.maxCount || 0) - (q.count || 0));
+                return {
+                    id: q.id,
+                    title: `Kill ${targetLabel}`,
+                    progressLabel: `${q.count || 0} / ${q.maxCount || 0}`,
+                    progressPct: q.maxCount > 0 ? Math.min(100, ((q.count || 0) / q.maxCount) * 100) : 0,
+                    rewardXP: q.rewardXP || 0,
+                    completed: Boolean(q.completed || ((q.count || 0) >= (q.maxCount || 0))),
+                    hint: remaining > 0 ? `${remaining} remaining` : 'Return to the quest NPC for your reward'
+                };
+            });
+    }
+
+    renderObjectivesPanel(summary) {
+        if (!this.objectivesPanel || !this.objectivesList) return;
+
+        this.activeQuestSummary = Array.isArray(summary) ? summary : [];
+        this.objectivesPanel.style.display = this.activeQuestSummary.length > 0 ? 'flex' : 'none';
+        this.objectivesList.innerHTML = '';
+
+        this.activeQuestSummary.forEach((objective) => {
+            const item = document.createElement('div');
+            item.className = 'objective-entry';
+            item.innerHTML = `
+                <div class="objective-entry__header">
+                    <span class="objective-entry__title">${objective.title}</span>
+                    <span class="objective-entry__status ${objective.completed ? 'is-complete' : ''}">${objective.completed ? 'Ready' : objective.progressLabel}</span>
+                </div>
+                <div class="objective-entry__progress">
+                    <div class="objective-entry__progress-fill ${objective.completed ? 'is-complete' : ''}" style="width: ${objective.progressPct}%;"></div>
+                </div>
+                <div class="objective-entry__hint">${objective.completed ? `Reward: ${objective.rewardXP} XP` : objective.hint}</div>
+            `;
+            this.objectivesList.appendChild(item);
+        });
+    }
+
     // ================================================================
     // QUEST NPC WINDOW
     // ================================================================
@@ -170,6 +217,7 @@ export class QuestUI {
     // ================================================================
 
     updateJournal(quests) {
+        this.renderObjectivesPanel(this.buildObjectiveSummary(quests));
         this.journalList.innerHTML = '';
 
         const infoDiv = document.createElement('div');
