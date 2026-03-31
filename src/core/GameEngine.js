@@ -110,6 +110,10 @@ export class GameEngine {
         
         this.player = null;
         this.hoveredEntity = null;
+        this.combatIntent = null;
+        this.combatIntentSignature = '';
+        this.highlightedCombatTarget = null;
+        this.combatTargetHighlight = null;
         this.playerType = playerType || 'Fighter';
         this.enemies = [];
         this.lootDrops = [];
@@ -582,6 +586,7 @@ this.abilityController.pendingAbilityTarget = null;
     async enterInstance(instanceId, type, layout) {
         console.log(`Entering instance: ${instanceId} (${type})`);
         this.currentInstanceId = instanceId;
+        this.clearCombatIntentState();
 
         // Clear current entities
         this.remotePlayers.forEach(entity => {
@@ -1764,6 +1769,166 @@ this.abilityController.pendingAbilityTarget = null;
         return true;
     }
 
+    getBasicAttackRangeForPlayer(player = this.player) {
+        if (!player) return 0;
+        if (player instanceof Wizard || player instanceof Rogue) return 16.0;
+        return 4.0;
+    }
+
+    getEffectiveCombatTarget() {
+        const pendingTarget = this.abilityController?.pendingAbilityTarget;
+        if (this.isHostileActorTarget(pendingTarget)) return pendingTarget;
+        if (this.isHostileActorTarget(this.hoveredEntity)) return this.hoveredEntity;
+        return null;
+    }
+
+    serializeCombatIntent(intent) {
+        if (!intent) return '';
+        return [
+            intent.entityId || '',
+            intent.status || '',
+            Math.round((intent.distance || 0) * 10) / 10,
+            intent.inBasicRange ? 1 : 0,
+            intent.inAbilityRange ? 1 : 0,
+            intent.preview?.basicAttack ?? '',
+            intent.preview?.ability ?? '',
+            intent.preview?.abilityName ?? ''
+        ].join('|');
+    }
+
+    buildCombatIntentState() {
+        const player = this.player;
+        const entity = this.getEffectiveCombatTarget();
+        if (!player || !entity || !entity.position) return null;
+
+        const skillName = this.abilityController?.getAbilityIntentSkillName?.() || player.abilityName || null;
+        const distance = player.position.distanceTo(entity.position);
+        const basicAttackRange = this.getBasicAttackRangeForPlayer(player);
+        const abilityRange = this.abilityController?.getAbilityIntentRange?.(skillName)
+            || this.abilityController?.getAbilityCastRange?.(skillName)
+            || 0;
+        const inBasicRange = distance <= basicAttackRange;
+        const inAbilityRange = distance <= abilityRange;
+        const preview = this.abilityController?.buildSoftDamagePreview?.(entity, skillName) || {
+            basicAttack: Math.max(0, Math.round(player?.stats?.damage || 0)),
+            ability: Math.max(0, Math.round(player?.stats?.damage || 0)),
+            abilityName: skillName || 'Ability',
+            isEstimate: true
+        };
+
+        return {
+            entity,
+            entityId: entity.id || null,
+            name: entity.name || entity.displayName || entity.subType || entity.constructor?.name || 'Enemy',
+            targetType: entity.subType || entity.type || entity.constructor?.name || 'Enemy',
+            distance,
+            basicAttackRange,
+            abilityRange,
+            inBasicRange,
+            inAbilityRange,
+            status: inAbilityRange ? 'in_range' : 'move_into_range',
+            preview
+        };
+    }
+
+    createCombatTargetHighlight() {
+        if (this.combatTargetHighlight) return this.combatTargetHighlight;
+
+        const ring = new THREE.Mesh(
+            new THREE.RingGeometry(0.7, 0.95, 32),
+            new THREE.MeshBasicMaterial({
+                color: 0xffd966,
+                transparent: true,
+                opacity: 0.85,
+                side: THREE.DoubleSide
+            })
+        );
+        ring.name = 'CombatTargetHighlight';
+        ring.rotation.x = -Math.PI / 2;
+        ring.position.y = 0.08;
+        ring.visible = false;
+        this.combatTargetHighlight = ring;
+        return ring;
+    }
+
+    positionCombatTargetHighlight(entity) {
+        const ring = this.combatTargetHighlight;
+        if (!ring || !entity?.position) return;
+
+        const targetScale = Number.isFinite(entity.scale) ? entity.scale : 1;
+        ring.position.set(entity.position.x, (entity.position.y || 0) + 0.08, entity.position.z);
+        ring.scale.setScalar(Math.max(1, targetScale));
+    }
+
+    attachCombatTargetHighlight(entity) {
+        if (!entity?.position) return;
+        const ring = this.createCombatTargetHighlight();
+        if (!ring.parent && this.renderSystem?.scene?.add) {
+            this.renderSystem.scene.add(ring);
+        }
+        this.highlightedCombatTarget = entity;
+        ring.visible = true;
+        this.positionCombatTargetHighlight(entity);
+    }
+
+    detachCombatTargetHighlight() {
+        const ring = this.combatTargetHighlight;
+        if (ring) {
+            ring.visible = false;
+            if (ring.parent?.remove) {
+                ring.parent.remove(ring);
+            } else if (this.renderSystem?.scene?.remove) {
+                this.renderSystem.scene.remove(ring);
+            }
+        }
+        this.highlightedCombatTarget = null;
+    }
+
+    updateCombatTargetHighlight() {
+        const target = this.combatIntent?.entity;
+        if (!this.isHostileActorTarget(target)) {
+            this.detachCombatTargetHighlight();
+            return;
+        }
+
+        if (this.highlightedCombatTarget !== target || !this.combatTargetHighlight?.parent) {
+            this.attachCombatTargetHighlight(target);
+            return;
+        }
+
+        this.positionCombatTargetHighlight(target);
+    }
+
+    refreshCombatIntentState() {
+        const nextIntent = this.buildCombatIntentState();
+        const nextSignature = this.serializeCombatIntent(nextIntent);
+        const changed = nextSignature !== this.combatIntentSignature;
+
+        this.combatIntent = nextIntent;
+        this.combatIntentSignature = nextSignature;
+        this.updateCombatTargetHighlight();
+
+        if (changed) {
+            if (nextIntent) {
+                this.uiManager?.updateCombatIntent?.(nextIntent);
+            } else {
+                this.uiManager?.clearCombatIntent?.();
+            }
+        }
+
+        return nextIntent;
+    }
+
+    clearCombatIntentState() {
+        const hadIntent = Boolean(this.combatIntentSignature);
+        this.combatIntent = null;
+        this.combatIntentSignature = '';
+        this.detachCombatTargetHighlight();
+        if (hadIntent) {
+            this.uiManager?.clearCombatIntent?.();
+        }
+    }
+
     requestDungeonStatus(dungeonType = null) {
         this.network.send('get_dungeon_status', dungeonType ? { dungeonType } : {});
     }
@@ -2019,6 +2184,7 @@ this.abilityController.pendingAbilityTarget = null;
                         };
                         this.hoveredEntity = proxy;
                         document.body.style.cursor = 'pointer';
+                        this.refreshCombatIntentState();
                         return; // Prioritize entrance
                     }
                     current = current.parent;
@@ -2061,6 +2227,8 @@ this.abilityController.pendingAbilityTarget = null;
             this.hoveredEntity = null;
             document.body.style.cursor = 'default';
         }
+
+        this.refreshCombatIntentState();
     }
 
     getInteractionRangeForEntity(entity) {
@@ -2134,6 +2302,7 @@ this.abilityController.pendingAbilityTarget = null;
 
     destroy() {
         console.log("GameEngine: Destroying instance...");
+        this.clearCombatIntentState();
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
             this.animationFrameId = null;
@@ -2706,11 +2875,13 @@ this.abilityController.pendingAbilityTarget = null;
             }
 
             this.abilityController.updatePendingTarget();
+            this.refreshCombatIntentState();
 
             if (this.isPlayerDead()) {
                 this.pendingInteraction = null;
                 this.abilityController.pendingAbilityTarget = null;
-        this.abilityController.pendingAbilitySkill = null;
+                this.abilityController.pendingAbilitySkill = null;
+                this.clearCombatIntentState();
                 this.player.targetPosition = null;
                 this.uiManager.showDeathScreen();
             } else {

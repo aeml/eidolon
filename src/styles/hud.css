@@ -86,6 +86,64 @@
     z-index: calc(var(--z-hud) + 1);
 }
 
+#combat-intent-panel {
+    display: none;
+    position: fixed;
+    top: 88px;
+    right: 20px;
+    width: min(280px, calc(100vw - 40px));
+    padding: 12px 14px;
+    border: 1px solid rgba(255, 215, 0, 0.35);
+    border-radius: var(--radius-md);
+    background: linear-gradient(180deg, rgba(18, 20, 28, 0.96) 0%, rgba(10, 12, 18, 0.92) 100%);
+    color: #f4f4f4;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    z-index: calc(var(--z-hud) + 1);
+}
+
+.combat-intent__name {
+    color: #ffd966;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.combat-intent__meta {
+    margin-top: 4px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 12px;
+}
+
+.combat-intent__status {
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.combat-intent__status.is-in-range {
+    color: #7dffb3;
+}
+
+.combat-intent__status.is-move-into-range {
+    color: #ffd966;
+}
+
+.combat-intent__status.is-invalid {
+    color: #ff8f8f;
+}
+
+.combat-intent__preview-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 12px;
+}
+
 .objectives-panel__header {
     padding: 8px 12px;
     border: 1px solid rgba(255, 215, 0, 0.45);

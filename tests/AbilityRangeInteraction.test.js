@@ -58,4 +58,20 @@ describe('Ability range interaction', () => {
         expect(controller.updatePendingTarget()).toBe(true);
         expect(player.targetPosition.x).toBeCloseTo(78.4, 5);
     });
+
+    test('buildSoftDamagePreview returns deterministic estimated basic and ability damage', () => {
+        const player = {
+            constructor: { name: 'Wizard' },
+            abilityName: 'Fireball',
+            stats: { damage: 40 }
+        };
+        const controller = new AbilityController({ player });
+
+        const preview = controller.buildSoftDamagePreview({ id: 'enemy-1' });
+
+        expect(preview.basicAttack).toBe(40);
+        expect(preview.abilityName).toBe('Fireball');
+        expect(preview.ability).toBe(60);
+        expect(preview.isEstimate).toBe(true);
+    });
 });

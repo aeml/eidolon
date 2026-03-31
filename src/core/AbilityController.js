@@ -58,6 +58,73 @@ export class AbilityController {
         return 12.0;
     }
 
+    getAbilityIntentSkillName(skillNameOverride = null) {
+        const player = this.engine.player;
+        return skillNameOverride || this.pendingAbilitySkill || player?.abilityName || null;
+    }
+
+    getAbilityIntentRange(skillNameOverride = null) {
+        return this.getAbilityCastRange(this.getAbilityIntentSkillName(skillNameOverride));
+    }
+
+    buildSoftDamagePreview(target = null, skillNameOverride = null) {
+        const player = this.engine.player;
+        const className = player && player.constructor ? player.constructor.name : '';
+        const abilityName = this.getAbilityIntentSkillName(skillNameOverride);
+        const basicAttack = Math.max(0, Math.round(player?.stats?.damage || 0));
+
+        const previewMultipliers = {
+            Fighter: {
+                default: 1.2,
+                skills: {
+                    Charge: 1.35,
+                    'Piercing Throw': 1.2
+                }
+            },
+            Rogue: {
+                default: 1.3,
+                skills: {
+                    'Piercing Throw': 1.25,
+                    'Shadow Lunge': 1.45,
+                    'Shadow Strike': 1.35,
+                    Backstab: 1.4
+                }
+            },
+            Wizard: {
+                default: 1.4,
+                skills: {
+                    Fireball: 1.5,
+                    Blizzard: 1.6,
+                    Meteor: 1.75,
+                    Teleport: 0
+                }
+            },
+            Cleric: {
+                default: 1.25,
+                skills: {
+                    Smite: 1.35,
+                    'Spirit Guardians': 1.5
+                }
+            }
+        };
+
+        const classPreview = previewMultipliers[className] || {};
+        const abilityMultiplier = abilityName && classPreview.skills && Object.prototype.hasOwnProperty.call(classPreview.skills, abilityName)
+            ? classPreview.skills[abilityName]
+            : (classPreview.default || 1.25);
+        const ability = abilityMultiplier === 0
+            ? 0
+            : Math.max(basicAttack, Math.round(basicAttack * abilityMultiplier));
+
+        return {
+            targetId: target?.id || null,
+            basicAttack,
+            ability,
+            abilityName: abilityName || 'Ability',
+            isEstimate: true
+        };
+    }
+
     // ------------------------------------------------------------------
     // Remote ability VFX
     // ------------------------------------------------------------------
