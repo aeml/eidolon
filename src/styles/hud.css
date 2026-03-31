@@ -76,6 +76,95 @@
     filter: drop-shadow(0 0 2px var(--color-gold));
 }
 
+#objectives-panel {
+    display: none;
+    position: fixed;
+    top: 88px;
+    left: 20px;
+    width: min(320px, calc(100vw - 40px));
+    pointer-events: none;
+    z-index: calc(var(--z-hud) + 1);
+}
+
+.objectives-panel__header {
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 215, 0, 0.45);
+    border-radius: var(--radius-md);
+    background: linear-gradient(180deg, rgba(44, 24, 8, 0.95) 0%, rgba(20, 12, 6, 0.92) 100%);
+    color: var(--color-gold);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.objectives-panel__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.objective-entry {
+    background: rgba(10, 12, 18, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 3px solid rgba(255, 215, 0, 0.6);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+}
+
+.objective-entry__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.objective-entry__title {
+    color: #f2f2f2;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.objective-entry__status {
+    color: #ffd966;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+}
+
+.objective-entry__status.is-complete {
+    color: #7dffb3;
+}
+
+.objective-entry__progress {
+    margin-top: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.objective-entry__progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #c18b2d 0%, #ffd966 100%);
+}
+
+.objective-entry__progress-fill.is-complete {
+    background: linear-gradient(90deg, #2fb870 0%, #7dffb3 100%);
+}
+
+.objective-entry__hint {
+    margin-top: 7px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 11px;
+}
+
 /* ---- XP Bar ---- */
 #xp-bar-container {
     width: 100%;
