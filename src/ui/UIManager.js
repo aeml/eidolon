@@ -19,6 +19,14 @@ export class UIManager {
         this.floatingBars = new Map(); // Entity ID -> DOM Element
         this.uiLayer = document.getElementById('ui-layer');
         this.gameTimer = document.getElementById('game-timer');
+        this.combatIntentPanel = document.getElementById('combat-intent-panel');
+        this.combatIntentName = document.getElementById('combat-intent-name');
+        this.combatIntentMeta = document.getElementById('combat-intent-meta');
+        this.combatIntentStatus = document.getElementById('combat-intent-status');
+        this.combatIntentPreviewBasic = document.getElementById('combat-intent-preview-basic');
+        this.combatIntentPreviewAbility = document.getElementById('combat-intent-preview-ability');
+        this.combatIntentPreviewAbilityLabel = document.getElementById('combat-intent-preview-ability-label');
+        this.lastCombatIntentSignature = '';
 
         // New UI Elements
         this.xpBar = document.getElementById('xp-bar-fill');
@@ -410,6 +418,68 @@ export class UIManager {
         // Show XP Bar
         const xpContainer = document.getElementById('xp-bar-container');
         if (xpContainer) xpContainer.style.display = 'block';
+    }
+
+    formatCombatIntentStatus(status) {
+        if (status === 'in_range') return 'In Range';
+        if (status === 'move_into_range') return 'Move Into Range';
+        return 'Invalid';
+    }
+
+    getCombatIntentStatusClass(status) {
+        if (status === 'in_range') return 'is-in-range';
+        if (status === 'move_into_range') return 'is-move-into-range';
+        return 'is-invalid';
+    }
+
+    serializeCombatIntent(intent) {
+        if (!intent) return '';
+        return [
+            intent.entityId || '',
+            intent.status || '',
+            Math.round((intent.distance || 0) * 10) / 10,
+            intent.preview?.basicAttack ?? '',
+            intent.preview?.ability ?? '',
+            intent.preview?.abilityName ?? ''
+        ].join('|');
+    }
+
+    updateCombatIntent(intent) {
+        if (!this.combatIntentPanel || !intent) return;
+
+        const signature = this.serializeCombatIntent(intent);
+        if (signature === this.lastCombatIntentSignature) return;
+        this.lastCombatIntentSignature = signature;
+
+        const distanceLabel = `${(intent.distance || 0).toFixed(1)}m`;
+        const typeLabel = intent.targetType || 'Enemy';
+        const preview = intent.preview || {};
+
+        this.combatIntentPanel.style.display = 'block';
+        if (this.combatIntentName) this.combatIntentName.textContent = intent.name || 'Enemy';
+        if (this.combatIntentMeta) this.combatIntentMeta.textContent = `${typeLabel} • ${distanceLabel}`;
+        if (this.combatIntentStatus) {
+            this.combatIntentStatus.textContent = this.formatCombatIntentStatus(intent.status);
+            this.combatIntentStatus.className = `combat-intent__status ${this.getCombatIntentStatusClass(intent.status)}`;
+        }
+        if (this.combatIntentPreviewBasic) this.combatIntentPreviewBasic.textContent = `~${preview.basicAttack ?? 0}`;
+        if (this.combatIntentPreviewAbilityLabel) this.combatIntentPreviewAbilityLabel.textContent = preview.abilityName || 'Ability';
+        if (this.combatIntentPreviewAbility) this.combatIntentPreviewAbility.textContent = `~${preview.ability ?? 0}`;
+    }
+
+    clearCombatIntent() {
+        this.lastCombatIntentSignature = '';
+        if (!this.combatIntentPanel) return;
+        this.combatIntentPanel.style.display = 'none';
+        if (this.combatIntentName) this.combatIntentName.textContent = '';
+        if (this.combatIntentMeta) this.combatIntentMeta.textContent = '';
+        if (this.combatIntentStatus) {
+            this.combatIntentStatus.textContent = '';
+            this.combatIntentStatus.className = 'combat-intent__status';
+        }
+        if (this.combatIntentPreviewBasic) this.combatIntentPreviewBasic.textContent = '';
+        if (this.combatIntentPreviewAbilityLabel) this.combatIntentPreviewAbilityLabel.textContent = 'Ability';
+        if (this.combatIntentPreviewAbility) this.combatIntentPreviewAbility.textContent = '';
     }
 
     updateTimer(seconds) {
