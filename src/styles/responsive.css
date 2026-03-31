@@ -30,6 +30,12 @@
     width: min(280px, calc(100vw - 20px)) !important;
 }
 
+.mobile-mode #combat-intent-panel {
+    top: 62px !important;
+    right: 10px !important;
+    width: min(260px, calc(100vw - 20px)) !important;
+}
+
 .mobile-mode #player-hud {
     width: clamp(120px, 20vw, 150px) !important;
     top: 10px !important;
