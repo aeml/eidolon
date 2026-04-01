@@ -6,6 +6,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
+import { resolveAssetPath } from '../assets/assetManifest.js';
 
 export class RenderSystem {
     constructor(isMobile = false) {
@@ -230,13 +231,11 @@ export class RenderSystem {
         }
 
         report(66, 'Loading ground...');
-        // Note: query params are generated once (original behavior), but we avoid re-downloading
-        // on every instance transition.
         if (!this._groundTextureUrl) {
-            this._groundTextureUrl = `./assets/backgrounds/ground_texture.png?v=${Date.now()}`;
+            this._groundTextureUrl = this.getVersionedEnvironmentTextureUrl('./assets/backgrounds/ground_texture.png');
         }
         if (!this._snowTextureUrl) {
-            this._snowTextureUrl = `./assets/backgrounds/abyssal_well_floor.png?v=${Date.now()}`;
+            this._snowTextureUrl = this.getVersionedEnvironmentTextureUrl('./assets/backgrounds/abyssal_well_floor.png');
         }
 
         if (!this.groundTexture) {
@@ -813,14 +812,19 @@ export class RenderSystem {
 
     // setupWater/setupGround were replaced by `preloadEnvironment()`.
 
-    setupTexture(tex, repeatX = 80, repeatY = 80) {
-        tex.wrapS = THREE.RepeatWrapping;
-        tex.wrapT = THREE.RepeatWrapping;
-        tex.minFilter = THREE.LinearMipmapLinearFilter;
-        tex.magFilter = THREE.LinearFilter;
-        tex.anisotropy = this.isMobile ? 1 : Math.min(this.renderer.capabilities.getMaxAnisotropy(), 4);
-        tex.repeat.set(repeatX, repeatY); 
-        tex.colorSpace = THREE.SRGBColorSpace;
+    setupTexture(texture, repeatX = 80, repeatY = 80) {
+        if (!texture) return;
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.anisotropy = this.isMobile ? 1 : Math.min(this.renderer.capabilities.getMaxAnisotropy(), 4);
+        texture.repeat.set(repeatX, repeatY);
+        texture.colorSpace = THREE.SRGBColorSpace;
+    }
+
+    getVersionedEnvironmentTextureUrl(path) {
+        return resolveAssetPath(path);
     }
 
     createWaterMaterial(texture) {

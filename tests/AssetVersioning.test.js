@@ -1,0 +1,62 @@
+import { jest } from '@jest/globals';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshFactory } from '../src/utils/MeshFactory.js';
+import { RenderSystem } from '../src/core/RenderSystem.js';
+import { DEFAULT_ASSET_VERSION, resolveAssetPath } from '../src/assets/assetManifest.js';
+
+describe('asset URL versioning', () => {
+    const originalCache = MeshFactory.cache;
+    const originalInflight = MeshFactory.inflight;
+
+    beforeEach(() => {
+        MeshFactory.cache = {};
+        MeshFactory.inflight = {};
+    });
+
+    afterAll(() => {
+        MeshFactory.cache = originalCache;
+        MeshFactory.inflight = originalInflight;
+    });
+
+    test('resolveAssetPath appends a stable version query to local model assets', () => {
+        expect(resolveAssetPath('./assets/archetypes/Fighter/idle.glb')).toBe(
+            `./assets/archetypes/Fighter/idle.glb?v=${DEFAULT_ASSET_VERSION}`
+        );
+    });
+
+    test('resolveAssetPath preserves existing query params while adding the asset version', () => {
+        expect(resolveAssetPath('./assets/example.glb?quality=high')).toBe(
+            `./assets/example.glb?quality=high&v=${DEFAULT_ASSET_VERSION}`
+        );
+    });
+
+    test('resolveAssetPath supports per-asset version overrides so only changed assets need new versions', () => {
+        expect(resolveAssetPath('./assets/buildings/dungeons/the_verdant_bastion.glb')).toBe(
+            './assets/buildings/dungeons/the_verdant_bastion.glb?v=dungeon-verdant-v2'
+        );
+    });
+
+    test('MeshFactory.loadModel requests the versioned asset URL', async () => {
+        const fakeGltf = { scene: { name: 'scene' }, animations: [] };
+        const loadSpy = jest.spyOn(GLTFLoader.prototype, 'load').mockImplementation((path, onLoad) => {
+            setTimeout(() => onLoad(fakeGltf), 0);
+        });
+
+        await expect(MeshFactory.loadModel('./assets/archetypes/Fighter/idle.glb')).resolves.toBe(fakeGltf);
+        expect(loadSpy).toHaveBeenCalledWith(
+            `./assets/archetypes/Fighter/idle.glb?v=${DEFAULT_ASSET_VERSION}`,
+            expect.any(Function),
+            undefined,
+            expect.any(Function)
+        );
+
+        loadSpy.mockRestore();
+    });
+
+    test('RenderSystem uses stable versioned texture URLs instead of runtime timestamps', () => {
+        const renderSystem = Object.create(RenderSystem.prototype);
+        expect(renderSystem.getVersionedEnvironmentTextureUrl('./assets/backgrounds/ground_texture.png')).toBe(
+            `./assets/backgrounds/ground_texture.png?v=${DEFAULT_ASSET_VERSION}`
+        );
+    });
+});

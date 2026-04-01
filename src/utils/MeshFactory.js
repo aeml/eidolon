@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from './SkeletonUtils.js';
 import { MeshCatalog } from './MeshCatalog.js';
 import { CONSTANTS } from '../core/Constants.js';
+import { resolveAssetPath } from '../assets/assetManifest.js';
 
 export class MeshFactory {
     static loader = new GLTFLoader();
@@ -633,6 +634,7 @@ export class MeshFactory {
         if (this.cache[path]) return this.cache[path];
         if (this.inflight[path]) return this.inflight[path];
 
+        const versionedPath = resolveAssetPath(path);
         const maxRetries = 2;
         const promise = (async () => {
             let attempt = 0;
@@ -642,7 +644,7 @@ export class MeshFactory {
                         // Use a dedicated loader per request to avoid any shared internal state issues
                         // when we preload concurrently.
                         const loader = new GLTFLoader();
-                        loader.load(path, resolve, undefined, reject);
+                        loader.load(versionedPath, resolve, undefined, reject);
                     });
                     this.cache[path] = gltf;
                     return gltf;

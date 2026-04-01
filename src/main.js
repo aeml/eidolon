@@ -1,4 +1,5 @@
 import { GameEngine } from './core/GameEngine.js';
+import { AssetCacheManager } from './assets/AssetCacheManager.js';
 
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800);
@@ -72,6 +73,10 @@ if (!debugMode && !isMobile) {
 
 
 window.addEventListener('DOMContentLoaded', () => {
+    void AssetCacheManager.registerServiceWorker().catch((error) => {
+        console.warn('Asset service worker registration failed', error);
+    });
+
     const debugConsole = document.getElementById('debug-console');
     const perfOverlay = document.getElementById('perf-overlay');
     
