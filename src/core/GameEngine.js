@@ -137,7 +137,6 @@ export class GameEngine {
         this.lastLootFeedbackTime = 0;
         this.lastAutoLootAttemptTime = 0;
         this.autoLootAttemptCooldownMs = 250;
-        this.autoLootEnabled = false;
 
         this.raycastTimer = 0;
         this.mousePosition = new THREE.Vector2();
@@ -928,10 +927,16 @@ export class GameEngine {
                         // Check for forced teleport (large distance discrepancy)
                         // This handles portals or admin teleports where state might not change from DEAD
     
+                        if (pData.state === 'JUMPING') {
+                            this.syncAuthoritativeJumpState(this.player, pData);
+                        } else {
+                            this.clearAuthoritativeJumpState(this.player);
+                        }
+
                         if (!justRespawned && pData.x !== undefined && pData.z !== undefined) {
                             const serverPos = new THREE.Vector3(pData.x, pData.y || 0, pData.z);
                             const dist = this.player.position.distanceTo(serverPos);
-                            if (dist > 20.0) { // Threshold for teleport (larger than normal lag correction)
+                            if (pData.state === 'JUMPING' || dist > 20.0) { // Threshold for teleport (larger than normal lag correction)
                                 console.log(`GameEngine: Detected server teleport, syncing position. Dist: ${dist}, Server: ${serverPos.x},${serverPos.z}, Client: ${this.player.position.x},${this.player.position.z}`);
                                 this.player.position.copy(serverPos);
                                 this.player.targetPosition = null;
@@ -1171,10 +1176,16 @@ export class GameEngine {
                             }
                         }
 
+                        if (pData.state === 'JUMPING') {
+                            this.syncAuthoritativeJumpState(this.player, pData);
+                        } else {
+                            this.clearAuthoritativeJumpState(this.player);
+                        }
+
                         if (pData.x !== undefined && pData.z !== undefined) {
                             const serverPos = new THREE.Vector3(pData.x, pData.y || 0, pData.z);
                             const dist = this.player.position.distanceTo(serverPos);
-                            if (dist > 20.0) {
+                            if (pData.state === 'JUMPING' || dist > 20.0) {
                                 console.log(`GameEngine: Detected self teleport from delta, syncing position. Dist: ${dist}`);
                                 this.player.position.copy(serverPos);
                                 this.player.targetPosition = null;
@@ -1442,6 +1453,12 @@ export class GameEngine {
                 }
                 remoteEntity.targetServerPosition = newPos;
             }
+        }
+
+        if (pData.state === 'JUMPING') {
+            this.syncAuthoritativeJumpState(remoteEntity, pData);
+        } else {
+            this.clearAuthoritativeJumpState(remoteEntity);
         }
 
         // Chunk visibility
@@ -2246,7 +2263,7 @@ export class GameEngine {
         if (this.inputManager?.keys?.control) {
             const point = this.inputManager.getGroundIntersection();
             if (!point) return false;
-            return this.startPlayerJump(point);
+            return this.requestPlayerJump(point);
         }
 
         if (this.isMobile) {
@@ -2312,6 +2329,34 @@ export class GameEngine {
         return true;
     }
 
+    requestPlayerJump(destination) {
+        if (!this.player || !destination) return false;
+
+        const end = destination.clone();
+        end.y = this.player.position.y;
+
+        if (this.collisionManager?.constrainToDungeonWalkableArea) {
+            this.collisionManager.constrainToDungeonWalkableArea(end, this.player.radius || 0);
+        }
+
+        this.player.targetPosition = null;
+        this.pendingInteraction = null;
+        this.abilityController.pendingAbilityTarget = null;
+        this.abilityController.pendingAbilitySkill = null;
+        this.clearCombatIntentState?.();
+
+        if (this.isMultiplayer && this.network?.send) {
+            this.network.send('jump', {
+                x: end.x,
+                y: end.y,
+                z: end.z
+            });
+            return true;
+        }
+
+        return this.startPlayerJump(end);
+    }
+
     startPlayerJump(destination) {
         if (!this.player || !destination) return false;
 
@@ -2345,7 +2390,8 @@ export class GameEngine {
             end,
             elapsed: 0,
             duration,
-            height
+            height,
+            serverDriven: false
         };
         this.playerJumpVisualHeight = 0;
         this.chunkManager?.updateEntityChunk?.(this.player);
@@ -2353,10 +2399,70 @@ export class GameEngine {
         return true;
     }
 
+    syncAuthoritativeJumpState(entity, pData) {
+        if (!entity || pData?.state !== 'JUMPING') return false;
+
+        const start = new THREE.Vector3(
+            pData.jumpStartX ?? pData.x ?? entity.position.x,
+            pData.jumpStartY ?? pData.y ?? entity.position.y,
+            pData.jumpStartZ ?? pData.z ?? entity.position.z
+        );
+        const end = new THREE.Vector3(
+            pData.jumpTargetX ?? pData.x ?? entity.position.x,
+            pData.jumpTargetY ?? pData.y ?? entity.position.y,
+            pData.jumpTargetZ ?? pData.z ?? entity.position.z
+        );
+        const progress = Math.max(0, Math.min(1, pData.jumpProgress ?? 0));
+        const duration = Math.max(0.001, pData.jumpDuration ?? 1);
+        const height = pData.jumpHeight ?? 0;
+        const visualHeight = Math.sin(progress * Math.PI) * height;
+
+        if (entity === this.player) {
+            this.playerJumpState = {
+                start,
+                end,
+                elapsed: progress,
+                duration,
+                height,
+                serverDriven: true,
+                visualHeight
+            };
+            this.playerJumpVisualHeight = 0;
+            this.player.targetPosition = null;
+        } else {
+            entity.jumpVisualState = {
+                start,
+                end,
+                progress,
+                duration,
+                height,
+                visualHeight
+            };
+        }
+
+        return true;
+    }
+
+    clearAuthoritativeJumpState(entity) {
+        if (!entity) return;
+        if (entity === this.player) {
+            if (this.playerJumpState?.serverDriven) {
+                this.playerJumpState = null;
+                this.playerJumpVisualHeight = 0;
+            }
+            return;
+        }
+        entity.jumpVisualState = null;
+    }
+
     updatePlayerJump(dt) {
         if (!this.playerJumpState || !this.player) return false;
 
         const jump = this.playerJumpState;
+        if (jump.serverDriven) {
+            this.playerJumpVisualHeight = jump.visualHeight || 0;
+            return true;
+        }
         jump.elapsed = Math.min(jump.duration, jump.elapsed + dt);
         const progress = jump.duration > 0 ? jump.elapsed / jump.duration : 1;
         const arc = Math.sin(progress * Math.PI) * jump.height;
@@ -3246,7 +3352,7 @@ export class GameEngine {
         // Network Update
         if (this.isMultiplayer && this.player) {
             // Don't send move updates if dead
-            if (this.player.state !== 'DEAD' && this.frameCount % 3 === 0) {
+            if (this.player.state !== 'DEAD' && this.player.state !== 'JUMPING' && this.frameCount % 3 === 0) {
                 const euler = new THREE.Euler().setFromQuaternion(this.player.rotation);
                 this.network.send('move', {
                     x: this.player.position.x,

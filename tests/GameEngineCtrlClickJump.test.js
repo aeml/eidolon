@@ -146,6 +146,7 @@ describe('GameEngine ctrl-click jump', () => {
 
     test('jump landing is clamped back inside dungeon walkable geometry', () => {
         const engine = createEngineHarness();
+        engine.isMultiplayer = false;
         engine.inputManager.keys.control = true;
         engine.inputManager.getGroundIntersection.mockReturnValue(new THREE.Vector3(30, 0, 30));
         engine.collisionManager.constrainToDungeonWalkableArea.mockImplementation((position) => {
@@ -156,7 +157,7 @@ describe('GameEngine ctrl-click jump', () => {
 
         engine.handlePrimaryClick();
 
-        expect(engine.collisionManager.constrainToDungeonWalkableArea).toHaveBeenCalledTimes(1);
+        expect(engine.collisionManager.constrainToDungeonWalkableArea).toHaveBeenCalledTimes(2);
         expect(engine.playerJumpState.end.x).toBe(7);
         expect(engine.playerJumpState.end.z).toBe(5);
     });

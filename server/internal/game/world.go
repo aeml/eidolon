@@ -1301,6 +1301,16 @@ type Entity struct {
 	IsCharging     bool      `json:"isCharging,omitempty"`
 	ChargeTargetX  float64   `json:"-"`
 	ChargeTargetZ  float64   `json:"-"`
+	JumpStartX     float64   `json:"jumpStartX,omitempty"`
+	JumpStartY     float64   `json:"jumpStartY,omitempty"`
+	JumpStartZ     float64   `json:"jumpStartZ,omitempty"`
+	JumpTargetX    float64   `json:"jumpTargetX,omitempty"`
+	JumpTargetY    float64   `json:"jumpTargetY,omitempty"`
+	JumpTargetZ    float64   `json:"jumpTargetZ,omitempty"`
+	JumpDuration   float64   `json:"jumpDuration,omitempty"`
+	JumpElapsed    float64   `json:"jumpElapsed,omitempty"`
+	JumpHeight     float64   `json:"jumpHeight,omitempty"`
+	JumpProgress   float64   `json:"jumpProgress,omitempty"`
 
 	// Buffs
 	BerserkerModeActive  bool      `json:"berserkerModeActive,omitempty"`
@@ -2873,9 +2883,51 @@ func (w *World) UpdateEntityPosition(id string, x, y, z, rotation float64) {
 	e.Y = y
 	e.Z = z
 	e.Rotation = rotation
-	e.State = "MOVING" // Default to moving if position updates
+	if e.State != "JUMPING" {
+		e.State = "MOVING" // Default to moving if position updates
+	}
 
 	w.Grid.Update(e, oldX, oldZ)
+}
+
+func (w *World) StartPlayerJump(id string, x, y, z float64) bool {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	e, ok := w.Entities[id]
+	if !ok || e.Type != TypePlayer {
+		return false
+	}
+
+	if constrainedX, constrainedZ, ok := w.constrainPlayerPointToDungeon(e.InstanceID, x, z); ok {
+		x = constrainedX
+		z = constrainedZ
+	}
+
+	dx := x - e.X
+	dz := z - e.Z
+	travelDistance := math.Sqrt(dx*dx + dz*dz)
+	duration := math.Max(0.35, math.Min(0.9, travelDistance/18.0))
+	height := math.Max(3.5, math.Min(8.0, travelDistance*0.2+2.5))
+
+	e.TargetX = x
+	e.TargetZ = z
+	e.JumpStartX = e.X
+	e.JumpStartY = e.Y
+	e.JumpStartZ = e.Z
+	e.JumpTargetX = x
+	e.JumpTargetY = y
+	e.JumpTargetZ = z
+	e.JumpDuration = duration
+	e.JumpElapsed = 0
+	e.JumpHeight = height
+	e.JumpProgress = 0
+	e.State = "JUMPING"
+	if travelDistance > 0 {
+		e.Rotation = math.Atan2(dx, dz)
+	}
+
+	return true
 }
 
 func (w *World) GetEntity(id string) *Entity {
@@ -2947,6 +2999,16 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		IsCharging:        e.IsCharging,
 		ChargeTargetX:     e.ChargeTargetX,
 		ChargeTargetZ:     e.ChargeTargetZ,
+		JumpStartX:        e.JumpStartX,
+		JumpStartY:        e.JumpStartY,
+		JumpStartZ:        e.JumpStartZ,
+		JumpTargetX:       e.JumpTargetX,
+		JumpTargetY:       e.JumpTargetY,
+		JumpTargetZ:       e.JumpTargetZ,
+		JumpDuration:      e.JumpDuration,
+		JumpElapsed:       e.JumpElapsed,
+		JumpHeight:        e.JumpHeight,
+		JumpProgress:      e.JumpProgress,
 		SkillPoints:       e.SkillPoints,
 		SelectedBranch:    e.SelectedBranch,
 		TalentPoints:      e.TalentPoints,
@@ -4922,6 +4984,36 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 	// --- Player Abilities ---
 	if e.Type == TypePlayer {
 		e.Mu.Lock()
+		if e.State == "JUMPING" {
+			jumpDuration := e.JumpDuration
+			if jumpDuration <= 0 {
+				jumpDuration = 0.35
+			}
+			e.JumpElapsed = math.Min(jumpDuration, e.JumpElapsed+dt)
+			progress := e.JumpElapsed / jumpDuration
+			if progress < 0 {
+				progress = 0
+			} else if progress > 1 {
+				progress = 1
+			}
+			oldX, oldZ := e.X, e.Z
+			e.JumpProgress = progress
+			e.X = e.JumpStartX + (e.JumpTargetX-e.JumpStartX)*progress
+			e.Z = e.JumpStartZ + (e.JumpTargetZ-e.JumpStartZ)*progress
+			e.Y = e.JumpStartY + math.Sin(progress*math.Pi)*e.JumpHeight
+			if progress >= 1 {
+				e.X = e.JumpTargetX
+				e.Y = e.JumpTargetY
+				e.Z = e.JumpTargetZ
+				e.State = "IDLE"
+				w.Grid.Update(e, oldX, oldZ)
+				e.Mu.Unlock()
+				return
+			}
+			w.Grid.Update(e, oldX, oldZ)
+			e.Mu.Unlock()
+			return
+		}
 		// Fighter Charge
 		if e.IsCharging {
 			dx := e.ChargeTargetX - e.X
@@ -7108,6 +7200,16 @@ func (w *World) GetState() map[string]*Entity {
 			IsCharging:        v.IsCharging,
 			ChargeTargetX:     v.ChargeTargetX,
 			ChargeTargetZ:     v.ChargeTargetZ,
+			JumpStartX:        v.JumpStartX,
+			JumpStartY:        v.JumpStartY,
+			JumpStartZ:        v.JumpStartZ,
+			JumpTargetX:       v.JumpTargetX,
+			JumpTargetY:       v.JumpTargetY,
+			JumpTargetZ:       v.JumpTargetZ,
+			JumpDuration:      v.JumpDuration,
+			JumpElapsed:       v.JumpElapsed,
+			JumpHeight:        v.JumpHeight,
+			JumpProgress:      v.JumpProgress,
 			Equipment:         v.Equipment, // Shallow copy of map is fine if we don't modify it
 		}
 

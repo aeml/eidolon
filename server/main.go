@@ -84,6 +84,7 @@ type EntitySnapshot struct {
 	State        string
 	Level        int
 	IsCharging   bool
+	JumpProgress float64
 	TalentPoints int
 	TalentKeys   int
 	TalentSpent  int
@@ -105,6 +106,7 @@ const (
 	MsgLogin           = "login"
 	MsgRegister        = "register"
 	MsgMove            = "move"
+	MsgJump            = "jump"
 	MsgAttack          = "attack"
 	MsgDamage          = "damage"
 	MsgChat            = "chat"
@@ -222,6 +224,12 @@ type MovePayload struct {
 	Z        float64 `json:"z"`
 	Rotation float64 `json:"rotation"`
 	State    string  `json:"state"`
+}
+
+type JumpPayload struct {
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
+	Z float64 `json:"z"`
 }
 
 type AttackPayload struct {
@@ -1840,6 +1848,9 @@ func (c *Client) handleMessage(msg Message) {
 			if time.Since(e.LastRespawnTime) < 1*time.Second {
 				return
 			}
+			if e.State == "JUMPING" {
+				return
+			}
 
 			// Basic distance validation to prevent teleporting across map due to lag/race conditions
 			// e.g. Client sends (0,0) after server moved player to (20000, 20000)
@@ -1861,6 +1872,21 @@ func (c *Client) handleMessage(msg Message) {
 				e.State = "MOVING" // Fallback
 			}
 		}
+
+	case MsgJump:
+		if c.playerID == "" {
+			return
+		}
+		var payload JumpPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		if e := world.GetEntity(c.playerID); e != nil {
+			if time.Since(e.LastRespawnTime) < 1*time.Second {
+				return
+			}
+		}
+		world.StartPlayerJump(c.playerID, payload.X, payload.Y, payload.Z)
 
 	case MsgAttack:
 		if c.playerID == "" {
@@ -3227,6 +3253,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		State:        e.State,
 		Level:        e.Level,
 		IsCharging:   e.IsCharging,
+		JumpProgress: e.JumpProgress,
 		TalentPoints: derivedTalentPoints,
 		TalentKeys:   keys,
 		TalentSpent:  spent,
@@ -3252,6 +3279,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	clevel := current.Level
 	cisCharging := current.IsCharging
 	ctalentPoints := current.TalentPoints
+	cjumpProgress := current.JumpProgress
 	ctalentKeys := 0
 	ctalentSpent := 0
 	for tid, r := range current.TalentRanks {
@@ -3305,13 +3333,11 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cstate != last.State {
 		return true
 	}
-
-	// Level ups are significant
-	if clevel != last.Level {
+	if cstate == "JUMPING" && math.Abs(cjumpProgress-last.JumpProgress) > 0.01 {
 		return true
 	}
 
-	// Charging state for enemies
+	// Charging state changes are always significant
 	if cisCharging != last.IsCharging {
 		return true
 	}
