@@ -105,6 +105,7 @@ export class UIManager {
         this.assetDownloadStatus = document.getElementById('asset-download-status');
         this.assetDownloadProgress = document.getElementById('asset-download-progress');
         this.assetDownloadProgressBar = document.getElementById('asset-download-progress-bar');
+        this.assetCacheStateDetail = document.getElementById('asset-cache-state-detail');
         this.assetPackCoreStatus = document.getElementById('asset-pack-core-status');
         this.assetPackDungeonStatus = document.getElementById('asset-pack-dungeon-status');
 
@@ -176,6 +177,7 @@ export class UIManager {
         }
         this.updateAssetDownloadProgress({ completed: 0, total: 0, percent: 0 });
         this.refreshAssetDownloadStatus();
+        void this.refreshAssetCacheState();
         // Shop/Stash close buttons are handled inside InventoryUI
         
         // Forge UI — delegated to ForgeUI module
@@ -1389,6 +1391,42 @@ export class UIManager {
         }
     }
 
+    async refreshAssetCacheState() {
+        try {
+            const inspections = await Promise.all([
+                this.assetCacheManager.inspectPack('core-models'),
+                this.assetCacheManager.inspectPack('dungeon-models')
+            ]);
+
+            for (const inspection of inspections) {
+                if (inspection.cached) {
+                    this.setAssetPackStatus(inspection.packName, 'cached');
+                } else if (inspection.cachedCount > 0) {
+                    this.assetPackStatuses[inspection.packName] = 'partial';
+                } else {
+                    this.assetPackStatuses[inspection.packName] = 'not-downloaded';
+                }
+
+                if (inspection.packName === 'core-models' && !inspection.cached && inspection.cachedCount > 0 && this.assetPackCoreStatus) {
+                    this.assetPackCoreStatus.textContent = `${inspection.cachedCount}/${inspection.total} cached`;
+                }
+                if (inspection.packName === 'dungeon-models' && !inspection.cached && inspection.cachedCount > 0 && this.assetPackDungeonStatus) {
+                    this.assetPackDungeonStatus.textContent = `${inspection.cachedCount}/${inspection.total} cached`;
+                }
+            }
+
+            if (this.assetCacheStateDetail) {
+                this.assetCacheStateDetail.textContent = inspections.some((inspection) => inspection.updateAvailable)
+                    ? 'Update available for cached assets'
+                    : 'Assets are up to date';
+            }
+        } catch (error) {
+            if (this.assetCacheStateDetail) {
+                this.assetCacheStateDetail.textContent = 'Cache inspection unavailable';
+            }
+        }
+    }
+
     refreshAssetDownloadStatus() {
         if (this.assetPackCoreStatus) {
             this.assetPackCoreStatus.textContent = this.assetPackStatuses['core-models'] === 'cached'
@@ -1434,6 +1472,7 @@ export class UIManager {
             if (!this.onAssetDownloadRequest) {
                 this.updateAssetDownloadProgress({ completed: 1, total: 1, percent: 100 });
             }
+            await this.refreshAssetCacheState();
         } catch (error) {
             this.setAssetPackStatus(packName, 'not-downloaded');
             this.updateAssetDownloadProgress({ completed: 0, total: 0, percent: 0 });
@@ -1450,6 +1489,9 @@ export class UIManager {
         this.updateAssetDownloadProgress({ completed: 0, total: 0, percent: 0 });
         if (this.assetDownloadStatus) {
             this.assetDownloadStatus.textContent = result?.cleared > 0 ? 'Cache cleared' : 'Nothing to clear';
+        }
+        if (this.assetCacheStateDetail) {
+            this.assetCacheStateDetail.textContent = 'Assets are up to date';
         }
         return result;
     }

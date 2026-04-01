@@ -4,6 +4,9 @@ export class AssetCacheManager {
     constructor() {
         this.manifest = getVersionedAssetManifest();
         this.cacheName = this.manifest.cacheName;
+        this.progressListeners = new Map();
+        this.handleServiceWorkerMessage = this.handleServiceWorkerMessage.bind(this);
+        globalThis.navigator?.serviceWorker?.addEventListener?.('message', this.handleServiceWorkerMessage);
     }
 
     static isSupported() {
@@ -20,6 +23,18 @@ export class AssetCacheManager {
 
     getPackAssets(packName) {
         return this.manifest.packs[packName] || [];
+    }
+
+    handleServiceWorkerMessage(event) {
+        if (event?.data?.type !== 'asset-pack-progress') {
+            return;
+        }
+
+        const payload = event.data.payload || {};
+        const listener = this.progressListeners.get(payload.packName);
+        if (listener) {
+            listener(payload);
+        }
     }
 
     async warmPack(packName, { preferServiceWorker = true, onProgress = null } = {}) {
@@ -39,6 +54,9 @@ export class AssetCacheManager {
 
         const serviceWorker = globalThis.navigator?.serviceWorker;
         if (preferServiceWorker && serviceWorker?.controller?.postMessage) {
+            if (onProgress) {
+                this.progressListeners.set(packName, onProgress);
+            }
             serviceWorker.controller.postMessage({
                 type: 'warm-asset-pack',
                 payload: {
@@ -47,7 +65,6 @@ export class AssetCacheManager {
                     assets
                 }
             });
-            reportProgress(assets.length);
             return { mode: 'service-worker', cacheName: this.cacheName, assets };
         }
 
@@ -61,6 +78,34 @@ export class AssetCacheManager {
             reportProgress(index + 1);
         }
         return { mode: 'cache-storage', cacheName: this.cacheName, assets };
+    }
+
+    async inspectPack(packName) {
+        const assets = this.getPackAssets(packName);
+        const cacheApi = globalThis.caches;
+        if (!cacheApi?.open || !cacheApi?.keys) {
+            throw new Error('Cache Storage is not available');
+        }
+
+        const cache = await cacheApi.open(this.cacheName);
+        let cachedCount = 0;
+        for (const asset of assets) {
+            const cached = await cache.match(asset);
+            if (cached) {
+                cachedCount += 1;
+            }
+        }
+
+        const cacheNames = await cacheApi.keys();
+        const updateAvailable = cacheNames.some((name) => name.startsWith('eidolon-assets-') && name !== this.cacheName);
+        return {
+            packName,
+            total: assets.length,
+            cachedCount,
+            cached: assets.length > 0 && cachedCount === assets.length,
+            updateAvailable,
+            cacheName: this.cacheName
+        };
     }
 
     async clearAll() {

@@ -67,6 +67,7 @@ function buildDom() {
         <div id="asset-download-status"></div>
         <div id="asset-download-progress"></div>
         <div id="asset-download-progress-bar"></div>
+        <div id="asset-cache-state-detail"></div>
         <div id="asset-pack-core-status"></div>
         <div id="asset-pack-dungeon-status"></div>
         <div id="inventory-screen"></div>
@@ -217,5 +218,22 @@ describe('UIManager asset download settings', () => {
         expect(ui.assetDownloadStatus.textContent).toContain('Cache cleared');
         expect(ui.assetPackCoreStatus.textContent).toContain('Core models not downloaded');
         expect(ui.assetPackDungeonStatus.textContent).toContain('Dungeon models not downloaded');
+    });
+
+    test('reflects real cache inspection results in status labels', async () => {
+        const ui = new UIManager(false);
+        ui.assetCacheManager.inspectPack = jest.fn(async (packName) => ({
+            packName,
+            cached: packName === 'core-models',
+            cachedCount: packName === 'core-models' ? 4 : 1,
+            total: packName === 'core-models' ? 4 : 4,
+            updateAvailable: packName === 'dungeon-models'
+        }));
+
+        await ui.refreshAssetCacheState();
+
+        expect(ui.assetPackCoreStatus.textContent).toContain('Core models cached');
+        expect(ui.assetPackDungeonStatus.textContent).toContain('1/4 cached');
+        expect(ui.assetCacheStateDetail.textContent).toContain('Update available');
     });
 });
