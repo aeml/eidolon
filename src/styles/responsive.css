@@ -36,6 +36,12 @@
     width: min(260px, calc(100vw - 20px)) !important;
 }
 
+.mobile-mode #dungeon-entrance-hint {
+    top: 184px !important;
+    right: 10px !important;
+    width: min(260px, calc(100vw - 20px)) !important;
+}
+
 .mobile-mode #player-hud {
     width: clamp(120px, 20vw, 150px) !important;
     top: 10px !important;

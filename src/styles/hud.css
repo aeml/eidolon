@@ -101,6 +101,44 @@
     z-index: calc(var(--z-hud) + 1);
 }
 
+#dungeon-entrance-hint {
+    display: none;
+    position: fixed;
+    top: 224px;
+    right: 20px;
+    width: min(280px, calc(100vw - 40px));
+    padding: 12px 14px;
+    border: 1px solid rgba(120, 190, 255, 0.35);
+    border-radius: var(--radius-md);
+    background: linear-gradient(180deg, rgba(10, 18, 32, 0.96) 0%, rgba(8, 12, 22, 0.92) 100%);
+    color: #f4f4f4;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    z-index: calc(var(--z-hud) + 1);
+}
+
+.dungeon-entrance-hint__name {
+    color: #9ad8ff;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.dungeon-entrance-hint__status {
+    margin-top: 5px;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.dungeon-entrance-hint__prompt {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 12px;
+}
+
 .combat-intent__name {
     color: #ffd966;
     font-size: 15px;
