@@ -884,6 +884,26 @@ export class WorldGenerator {
         }
     }
 
+    async createMoltenCore(centerX, centerZ, layout) {
+        console.log(`Generating Molten Core at ${centerX},${centerZ}`);
+
+        await this.preloadTextures();
+
+        if (this.createLayoutDrivenDungeon(layout)) {
+            return;
+        }
+    }
+
+    async createTempestSpire(centerX, centerZ, layout) {
+        console.log(`Generating Tempest Spire at ${centerX},${centerZ}`);
+
+        await this.preloadTextures();
+
+        if (this.createLayoutDrivenDungeon(layout)) {
+            return;
+        }
+    }
+
     async createAbyssalWell(centerX, centerZ, layout) {
         console.log(`Generating Abyssal Well at ${centerX},${centerZ}`);
 

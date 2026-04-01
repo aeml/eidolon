@@ -627,7 +627,12 @@ this.abilityController.pendingAbilityTarget = null;
             layout &&
             Array.isArray(layout.walkRects) &&
             layout.walkRects.length > 0 &&
-            (type === 'verdant_bastion_catacombs' || type === 'abyssal_well')
+            (
+                type === 'verdant_bastion_catacombs' ||
+                type === 'molten_core' ||
+                type === 'tempest_spire' ||
+                type === 'abyssal_well'
+            )
         );
 
         if (hasCanonicalDungeonWalkRects) {
@@ -642,6 +647,10 @@ this.abilityController.pendingAbilityTarget = null;
             await worldGen.createDungeon(0, 0, 100);
         } else if (type === 'verdant_bastion_catacombs') {
             await worldGen.createVerdantBastionCatacombs(0, 0, layout);
+        } else if (type === 'molten_core') {
+            await worldGen.createMoltenCore(0, 0, layout);
+        } else if (type === 'tempest_spire') {
+            await worldGen.createTempestSpire(0, 0, layout);
         } else if (type === 'abyssal_well') {
             await worldGen.createAbyssalWell(0, 0, layout);
         } else {

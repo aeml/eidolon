@@ -23,6 +23,8 @@ jest.unstable_mockModule('../src/world/WorldGenerator.js', () => ({
             this.collisionManager = collisionManager;
             this.createDungeon = jest.fn().mockResolvedValue();
             this.createVerdantBastionCatacombs = jest.fn().mockResolvedValue();
+            this.createMoltenCore = jest.fn().mockResolvedValue();
+            this.createTempestSpire = jest.fn().mockResolvedValue();
             this.createAbyssalWell = jest.fn().mockResolvedValue();
             this.createTown = jest.fn().mockResolvedValue();
             this.createOverworldStructures = jest.fn().mockResolvedValue();
@@ -87,7 +89,12 @@ beforeEach(() => {
 });
 
 describe('GameEngine dungeon containment wiring', () => {
-    test('enterInstance activates canonical dungeon containment for layout-driven dungeons', async () => {
+    test.each([
+        ['verdant_bastion_catacombs', 'createVerdantBastionCatacombs'],
+        ['molten_core', 'createMoltenCore'],
+        ['tempest_spire', 'createTempestSpire'],
+        ['abyssal_well', 'createAbyssalWell']
+    ])('enterInstance activates canonical dungeon containment for %s', async (instanceType, generatorMethod) => {
         const engine = createEngineHarness();
         const layout = {
             rooms: [{ x: 12, z: 34, width: 80 }],
@@ -97,13 +104,13 @@ describe('GameEngine dungeon containment wiring', () => {
             ]
         };
 
-        await engine.enterInstance('instance-1', 'verdant_bastion_catacombs', layout);
+        await engine.enterInstance('instance-1', instanceType, layout);
 
         expect(engine.collisionManager.clear).toHaveBeenCalled();
         expect(engine.collisionManager.setDungeonWalkableGeometry).toHaveBeenCalledWith(layout.walkRects);
         expect(engine.collisionManager.clearDungeonWalkableGeometry).not.toHaveBeenCalled();
         expect(worldGeneratorInstances).toHaveLength(1);
-        expect(worldGeneratorInstances[0].createVerdantBastionCatacombs).toHaveBeenCalledWith(0, 0, layout);
+        expect(worldGeneratorInstances[0][generatorMethod]).toHaveBeenCalledWith(0, 0, layout);
         expect(engine.player.position.x).toBe(12);
         expect(engine.player.position.z).toBe(34);
     });

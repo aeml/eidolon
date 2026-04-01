@@ -8,6 +8,11 @@ Architecture: Treat this as two linked tracks. Track A improves player-facing ga
 
 Tech Stack: Vanilla JavaScript client, Three.js rendering/collision helpers, Go authoritative server, Jest for client tests, Go tests for server validation.
 
+Status update as of `master` @ `cc0c5e9` (`feat: add dungeon entrance context hints (#18)`)
+- Done: canonical dungeon geometry, layout validation, client containment, most server-side ability/displacement clamping, combat intent, objective tracker, loot feedback/auto-loot, boss reward summaries, dungeon entrance hints.
+- Partial: dungeon objective guidance is missing clear evidence of minimap room markers/cleared-room tracking; dungeon reward feedback is stronger for bosses than for generic room-clear moments; canonical coverage appears strongest for `verdant_bastion_catacombs` and `abyssal_well` on the client wiring.
+- Still open: authoritative handling of raw `move` packets in `server/main.go`, scene-group instance transition cleanup, pacing/encounter-role work, balancing/telemetry instrumentation, and likely dynamic enemy scaling.
+
 ---
 
 ## Why this plan exists

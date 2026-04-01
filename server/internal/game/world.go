@@ -2861,6 +2861,13 @@ func (w *World) UpdateEntityPosition(id string, x, y, z, rotation float64) {
 		return
 	}
 
+	if e.Type == TypePlayer {
+		if constrainedX, constrainedZ, ok := w.constrainPlayerPointToDungeon(e.InstanceID, x, z); ok {
+			x = constrainedX
+			z = constrainedZ
+		}
+	}
+
 	oldX, oldZ := e.X, e.Z
 	e.X = x
 	e.Y = y
@@ -5491,9 +5498,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				dirX := dx / dist
 				dirZ := dz / dist
 				speed := 6.0 * dt
+				newX := e.X + dirX*speed
+				newZ := e.Z + dirZ*speed
+				if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(e, newX, newZ); ok {
+					newX = constrainedX
+					newZ = constrainedZ
+				}
 
-				e.X += dirX * speed
-				e.Z += dirZ * speed
+				e.X = newX
+				e.Z = newZ
 				e.Rotation = math.Atan2(dirX, dirZ)
 
 				// Update Grid
@@ -5733,6 +5746,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				e.TargetX = tx + math.Cos(angle)*offset
 				e.TargetZ = tz + math.Sin(angle)*offset
+				if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(e, e.TargetX, e.TargetZ); ok {
+					e.TargetX = constrainedX
+					e.TargetZ = constrainedZ
+				}
 				e.State = "MOVING"
 
 				dx := e.TargetX - e.X
@@ -5746,6 +5763,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					oldX, oldZ := e.X, e.Z
 					newX := e.X + (dx/dist)*moveDist
 					newZ := e.Z + (dz/dist)*moveDist
+					if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(e, newX, newZ); ok {
+						newX = constrainedX
+						newZ = constrainedZ
+					}
 
 					if newX > -100 && newX < 100 && newZ > 100 && newZ < 300 {
 						e.State = "IDLE"
@@ -5768,6 +5789,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				dist := rand.Float64() * roamRadius
 				e.TargetX = e.SpawnX + math.Cos(angle)*dist
 				e.TargetZ = e.SpawnZ + math.Sin(angle)*dist
+				if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(e, e.TargetX, e.TargetZ); ok {
+					e.TargetX = constrainedX
+					e.TargetZ = constrainedZ
+				}
 				e.State = "MOVING"
 			}
 
@@ -5783,6 +5808,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				oldX, oldZ := e.X, e.Z
 				newX := e.X + (dx/dist)*moveDist
 				newZ := e.Z + (dz/dist)*moveDist
+				if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(e, newX, newZ); ok {
+					newX = constrainedX
+					newZ = constrainedZ
+				}
 
 				if newX > -100 && newX < 100 && newZ > 100 && newZ < 300 {
 					e.TargetX = e.SpawnX

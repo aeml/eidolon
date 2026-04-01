@@ -40,6 +40,8 @@ function buildCanonicalLayout() {
 
 describe.each([
     ['createVerdantBastionCatacombs'],
+    ['createMoltenCore'],
+    ['createTempestSpire'],
     ['createAbyssalWell']
 ])('%s', (methodName) => {
     test('uses canonical corridor walk rects and corridor attachments when present', async () => {
