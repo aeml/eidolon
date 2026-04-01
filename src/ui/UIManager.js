@@ -101,7 +101,10 @@ export class UIManager {
         this.autoLootToggle = document.getElementById('auto-loot-enabled');
         this.btnDownloadCoreAssets = document.getElementById('btn-download-core-assets');
         this.btnDownloadDungeonAssets = document.getElementById('btn-download-dungeon-assets');
+        this.btnClearCachedAssets = document.getElementById('btn-clear-cached-assets');
         this.assetDownloadStatus = document.getElementById('asset-download-status');
+        this.assetDownloadProgress = document.getElementById('asset-download-progress');
+        this.assetDownloadProgressBar = document.getElementById('asset-download-progress-bar');
         this.assetPackCoreStatus = document.getElementById('asset-pack-core-status');
         this.assetPackDungeonStatus = document.getElementById('asset-pack-dungeon-status');
 
@@ -123,6 +126,7 @@ export class UIManager {
         this.onBrightnessChange = null;
         this.onAutoLootChange = null;
         this.onAssetDownloadRequest = null;
+        this.onAssetCacheClearRequest = null;
         this.assetCacheManager = new AssetCacheManager();
         this.assetPackStatuses = {
             'core-models': localStorage.getItem('eidolon.assetPack.core-models') || 'not-downloaded',
@@ -165,6 +169,12 @@ export class UIManager {
                 void this.requestAssetDownload('dungeon-models');
             });
         }
+        if (this.btnClearCachedAssets) {
+            this.btnClearCachedAssets.addEventListener('click', () => {
+                void this.clearCachedAssets();
+            });
+        }
+        this.updateAssetDownloadProgress({ completed: 0, total: 0, percent: 0 });
         this.refreshAssetDownloadStatus();
         // Shop/Stash close buttons are handled inside InventoryUI
         
@@ -1365,6 +1375,20 @@ export class UIManager {
         this.refreshAssetDownloadStatus();
     }
 
+    updateAssetDownloadProgress({ completed = 0, total = 0, percent = 0 } = {}) {
+        const clampedPercent = Math.max(0, Math.min(100, Math.round(percent)));
+        if (this.assetDownloadProgress) {
+            if (total > 0) {
+                this.assetDownloadProgress.textContent = `${clampedPercent}% (${completed}/${total})`;
+            } else {
+                this.assetDownloadProgress.textContent = `${clampedPercent}%`;
+            }
+        }
+        if (this.assetDownloadProgressBar) {
+            this.assetDownloadProgressBar.style.width = `${clampedPercent}%`;
+        }
+    }
+
     refreshAssetDownloadStatus() {
         if (this.assetPackCoreStatus) {
             this.assetPackCoreStatus.textContent = this.assetPackStatuses['core-models'] === 'cached'
@@ -1399,15 +1423,35 @@ export class UIManager {
 
     async requestAssetDownload(packName) {
         this.setAssetPackStatus(packName, 'downloading');
-        const handler = this.onAssetDownloadRequest || ((nextPack) => this.assetCacheManager.warmPack(nextPack));
+        this.updateAssetDownloadProgress({ completed: 0, total: 0, percent: 0 });
+        const defaultHandler = (nextPack) => this.assetCacheManager.warmPack(nextPack, {
+            onProgress: (progress) => this.updateAssetDownloadProgress(progress)
+        });
+        const handler = this.onAssetDownloadRequest || defaultHandler;
         try {
             await handler(packName);
             this.setAssetPackStatus(packName, 'cached');
+            if (!this.onAssetDownloadRequest) {
+                this.updateAssetDownloadProgress({ completed: 1, total: 1, percent: 100 });
+            }
         } catch (error) {
             this.setAssetPackStatus(packName, 'not-downloaded');
+            this.updateAssetDownloadProgress({ completed: 0, total: 0, percent: 0 });
             this.addChatMessage('System', `Failed to cache ${this.getAssetPackLabel(packName).toLowerCase()}.`);
             throw error;
         }
+    }
+
+    async clearCachedAssets() {
+        const handler = this.onAssetCacheClearRequest || (() => this.assetCacheManager.clearAll());
+        const result = await handler();
+        this.setAssetPackStatus('core-models', 'not-downloaded');
+        this.setAssetPackStatus('dungeon-models', 'not-downloaded');
+        this.updateAssetDownloadProgress({ completed: 0, total: 0, percent: 0 });
+        if (this.assetDownloadStatus) {
+            this.assetDownloadStatus.textContent = result?.cleared > 0 ? 'Cache cleared' : 'Nothing to clear';
+        }
+        return result;
     }
 
     toggleShop() { this.inventory.toggleShop(); }

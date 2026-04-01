@@ -37,7 +37,12 @@ describe('asset pack manifest', () => {
 describe('AssetCacheManager', () => {
     beforeEach(() => {
         global.caches = {
-            open: jest.fn(async () => ({ addAll: jest.fn(async () => undefined) }))
+            open: jest.fn(async () => ({
+                addAll: jest.fn(async () => undefined),
+                add: jest.fn(async () => undefined)
+            })),
+            keys: jest.fn(async () => []),
+            delete: jest.fn(async () => true)
         };
         Object.defineProperty(globalThis, 'navigator', {
             configurable: true,
@@ -56,7 +61,8 @@ describe('AssetCacheManager', () => {
 
         expect(caches.open).toHaveBeenCalledWith(`eidolon-assets-${DEFAULT_ASSET_VERSION}`);
         const cache = await caches.open.mock.results[0].value;
-        expect(cache.addAll).toHaveBeenCalledWith(ASSET_PACKS['core-models'].map((path) => expect.stringContaining(path.replace('./', ''))));
+        expect(cache.add).toHaveBeenCalledTimes(ASSET_PACKS['core-models'].length);
+        expect(cache.add.mock.calls[0][0]).toEqual(expect.stringContaining(ASSET_PACKS['core-models'][0].replace('./', '')));
     });
 
     test('registerServiceWorker registers the root asset service worker', async () => {

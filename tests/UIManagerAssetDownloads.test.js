@@ -63,7 +63,10 @@ function buildDom() {
         <input id="auto-loot-enabled" type="checkbox" />
         <button id="btn-download-core-assets"></button>
         <button id="btn-download-dungeon-assets"></button>
+        <button id="btn-clear-cached-assets"></button>
         <div id="asset-download-status"></div>
+        <div id="asset-download-progress"></div>
+        <div id="asset-download-progress-bar"></div>
         <div id="asset-pack-core-status"></div>
         <div id="asset-pack-dungeon-status"></div>
         <div id="inventory-screen"></div>
@@ -189,5 +192,30 @@ describe('UIManager asset download settings', () => {
 
         ui.setAssetPackStatus('core-models', 'cached');
         expect(ui.assetDownloadStatus.textContent).toContain('All selected packs ready offline');
+    });
+
+    test('progress updates render percent text and progress bar width', () => {
+        const ui = new UIManager(false);
+
+        ui.updateAssetDownloadProgress({ completed: 2, total: 4, percent: 50 });
+
+        expect(ui.assetDownloadProgress.textContent).toContain('50%');
+        expect(ui.assetDownloadProgressBar.style.width).toBe('50%');
+    });
+
+    test('clear cache button invokes callback and resets statuses', async () => {
+        const ui = new UIManager(false);
+        ui.setAssetPackStatus('core-models', 'cached');
+        ui.setAssetPackStatus('dungeon-models', 'cached');
+        ui.onAssetCacheClearRequest = jest.fn(async () => ({ cleared: 2 }));
+
+        document.getElementById('btn-clear-cached-assets').click();
+        await Promise.resolve();
+        await Promise.resolve();
+
+        expect(ui.onAssetCacheClearRequest).toHaveBeenCalled();
+        expect(ui.assetDownloadStatus.textContent).toContain('Cache cleared');
+        expect(ui.assetPackCoreStatus.textContent).toContain('Core models not downloaded');
+        expect(ui.assetPackDungeonStatus.textContent).toContain('Dungeon models not downloaded');
     });
 });

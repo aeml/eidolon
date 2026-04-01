@@ -266,7 +266,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.20</span> 
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.21.1</span> 
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
             
@@ -356,6 +356,10 @@
                         </div>
                         <div id="asset-download-status" style="font-size: 12px; color: #9ad06f; text-align: right;">Not downloaded</div>
                     </div>
+                    <div id="asset-download-progress" style="font-size: 12px; color: #aaa;">0%</div>
+                    <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden;">
+                        <div id="asset-download-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #5bbd6a 0%, #9ad06f 100%); transition: width 0.2s ease;"></div>
+                    </div>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
                             <div>
@@ -371,6 +375,9 @@
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button">Download Dungeons</button>
                         </div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
+                        <button id="btn-clear-cached-assets" class="menu-btn" type="button" style="border-color: #aa6666; color: #ffb7b7;">Clear Cached Assets</button>
                     </div>
                 </div>
                 <div style="text-align: center;">
@@ -425,80 +432,26 @@
             </div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.20 (Combos, Realms & Talent Bonuses)</h3>
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.1 (Combat readability, dungeon flow, and client polish)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
-                        <li><strong>Combo System:</strong>
-                            <ul style="padding-left: 20px; margin-top: 5px;">
-                                <li><strong>16 Skill Combos:</strong> Each class now has 4 unique combos that trigger when you chain specific skills together within 3 seconds.</li>
-                                <li><strong>Combo Effects:</strong> Combos grant powerful bonuses like +50% damage, extended CC duration, 360° AoE, piercing projectiles, and more.</li>
-                                <li><strong>Visual Feedback:</strong> Floating text and screen notifications appear when you trigger a combo successfully.</li>
-                                <li><strong>Combos Tab:</strong> New "Combos" tab in the Skill Tree (K menu) shows all available combos for your class with descriptions.</li>
-                            </ul>
-                        </li>
-                        <li><strong>New Realms:</strong>
-                            <ul style="padding-left: 20px; margin-top: 5px;">
-                                <li><strong>Fire Realm (The Scorched Wastes):</strong> New western zone (Lv 70-95) with Djinn, Magma Elementals, Fire Wraiths, Flame Behemoths, and Phoenix enemies.</li>
-                                <li><strong>Air Realm (The Skyward Peaks):</strong> New eastern zone (Lv 70-95) with Harpies, Cloud Serpents, Rocs, Storm Giants, and Cyclone Elementals.</li>
-                                <li><strong>Molten Core Dungeon:</strong> New endgame dungeon in the Fire Realm.</li>
-                                <li><strong>Tempest Spire Dungeon:</strong> New endgame dungeon in the Air Realm.</li>
-                                <li><strong>Verdant Bastion Dungeon:</strong> New dungeon marker added in Earth Realm.</li>
-                            </ul>
-                        </li>
-                        <li><strong>Skill-Specific Talent Bonuses:</strong>
-                            <ul style="padding-left: 20px; margin-top: 5px;">
-                                <li><strong>Mastery Talents:</strong> Odd talents (1, 3, 5...) now grant +4% damage per rank (20% max) to their specific skill.</li>
-                                <li><strong>Technique Talents:</strong> Even talents (2, 4, 6...) now grant +3% CDR and +2% range/AoE per rank to their specific skill.</li>
-                                <li><strong>Generic Talents:</strong> Talents 27-40 provide class-wide bonuses like global CDR, mana efficiency, crit chance, etc.</li>
-                                <li><strong>Server Integration:</strong> Talent bonuses are now properly applied to skill damage calculations on the server.</li>
-                                <li><strong>Clear Descriptions:</strong> Talent tooltips now show exact percentages instead of vague "Minor improvements" text.</li>
-                            </ul>
-                        </li>
-                        <li><strong>World Map Updates:</strong>
-                            <ul style="padding-left: 20px; margin-top: 5px;">
-                                <li><strong>Fire Realm Overlay:</strong> Orange background with zone label and enemy markers for all 5 fire enemy types.</li>
-                                <li><strong>Air Realm Overlay:</strong> Light blue background with zone label and enemy markers for all 5 air enemy types.</li>
-                                <li><strong>Dungeon Markers:</strong> Three new ★ dungeon markers (Molten Core, Tempest Spire, Verdant Bastion).</li>
-                                <li><strong>Entity Colors:</strong> Updated detection for Water, Fire, and Air realm enemies plus RespecNPC.</li>
-                            </ul>
-                        </li>
+                        <li><strong>Combat readability and dungeon guidance:</strong> Added clearer enemy combat intent UI, objective tracking, and contextual dungeon entrance hints so it is easier to understand what to do next.</li>
+                        <li><strong>Movement and dungeon feel:</strong> Improved authoritative jump handling, ctrl-click traversal behavior, dungeon containment, and reward feedback for dungeon play.</li>
+                        <li><strong>Loot quality-of-life:</strong> Added persistent auto-loot settings and clearer pickup/reward messaging during play.</li>
+                        <li><strong>Menus and window polish:</strong> Cleaned up menu interactions, improved close behavior, reduced accidental text selection on chrome/buttons, and made modal overlays feel more consistent.</li>
+                        <li><strong>Keep Assets on This Device:</strong> Added version-aware asset caching, downloadable model packs, cache progress UI, and a clear-cache action so unchanged assets stay on-device between sessions.</li>
+                        <li><strong>Under-the-hood stability:</strong> Replaced timestamp cache busting with deterministic asset versioning and added broader regression coverage around UI, assets, and gameplay flows.</li>
                     </ul>
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.20 - Full Combo List</h3>
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.1 - Details since 0.20</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
-                        <li><strong>Fighter Combos:</strong>
-                            <ul style="padding-left: 20px; margin-top: 5px;">
-                                <li><em>Momentum Strike:</em> Charge → Whirlwind = +50% Whirlwind damage</li>
-                                <li><em>Tremor Rush:</em> Earthshaker → Charge = +2s knockdown on Charge impact</li>
-                                <li><em>Fortress Breaker:</em> Shield Slam → Earthshaker = Earthshaker ignores armor</li>
-                                <li><em>Iron Will:</em> Iron Fortress → Last Stand Rampage = Damage reduction persists</li>
-                            </ul>
-                        </li>
-                        <li><strong>Rogue Combos:</strong>
-                            <ul style="padding-left: 20px; margin-top: 5px;">
-                                <li><em>Ambush Protocol:</em> Cloak &amp; Vanish → Backstab = +100% Backstab crit damage</li>
-                                <li><em>Venom Burst:</em> Poison Coating → Death Spiral = +100% poison damage to poisoned targets</li>
-                                <li><em>Blade Tornado:</em> Fan of Knives → Phantom Volley = Phantom Volley pierces all targets</li>
-                                <li><em>Shadow Dance:</em> Shadow Lunge → Fan of Knives = Fan of Knives gains +50% range</li>
-                            </ul>
-                        </li>
-                        <li><strong>Wizard Combos:</strong>
-                            <ul style="padding-left: 20px; margin-top: 5px;">
-                                <li><em>Implosion:</em> Gravity Well → Fireball = +100% Fireball damage to slowed targets</li>
-                                <li><em>Time Burn:</em> Time Warp → Inferno Cataclysm = Double tick rate on Inferno Cataclysm</li>
-                                <li><em>Nova Cascade:</em> Teleport → Flame Whip = Flame Whip becomes 360° cone</li>
-                                <li><em>Arcane Barrage:</em> Arcane Shield → Meteor Drop = Shield explodes on meteor impact</li>
-                            </ul>
-                        </li>
-                        <li><strong>Cleric Combos:</strong>
-                            <ul style="padding-left: 20px; margin-top: 5px;">
-                                <li><em>Purifying Flames:</em> Consecrated Ground → Radiant Strike = Radiant Strike cleanses allies</li>
-                                <li><em>Divine Storm:</em> Heaven's Trumpet → Spirit Guardians = +50% holy damage bonus</li>
-                                <li><em>Holy Fury:</em> Mark of Weakness → Radiant Strike = +100% damage to marked targets</li>
-                                <li><em>Martyr's Blessing:</em> Guardian Embrace → Divine Intervention = Heals party members too</li>
-                            </ul>
-                        </li>
+                        <li><strong>UI readability:</strong> Combat intent previews now surface expected enemy attacks/abilities, and dungeon entrance prompts better explain when you can enter or need a party leader.</li>
+                        <li><strong>Dungeon updates:</strong> Added boss reward summaries, stronger geometry/containment validation, and better dungeon context hints across current instance content.</li>
+                        <li><strong>Client persistence:</strong> Asset packs now use stable logical paths with versioned requests, allowing selective redownloads only when content changes.</li>
+                        <li><strong>Offline-style cache controls:</strong> Settings now expose core and dungeon pack downloads, progress feedback, and cache clearing without forcing players to redownload everything every refresh.</li>
+                        <li><strong>Menu UX:</strong> Close buttons, draggable headers, backdrop dismissal, focus states, touch interactions, and HUD/menu button polish were all tightened up.</li>
+                        <li><strong>Still alpha:</strong> We are continuing to improve dungeon pacing, minimap guidance, room-clear reward cadence, and deeper asset-management controls in upcoming .21.x updates.</li>
                     </ul>
                 </div>
 
