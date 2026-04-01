@@ -56,7 +56,8 @@ function createEngineHarness() {
     };
     engine.inputManager = {
         keys: { control: false, alt: false },
-        getGroundIntersection: jest.fn(() => new THREE.Vector3(12, 0, 8))
+        getGroundIntersection: jest.fn(() => new THREE.Vector3(12, 0, 8)),
+        getGroundIntersectionFromEvent: jest.fn(() => new THREE.Vector3(12, 0, 8))
     };
     engine.collisionManager = {
         constrainToDungeonWalkableArea: jest.fn(() => false),
@@ -84,12 +85,18 @@ function createEngineHarness() {
 }
 
 describe('GameEngine ctrl-click jump', () => {
-    test('ctrl-left-click starts a jump instead of normal click-to-move', () => {
+    test('ctrl-left-click starts a jump from the click event coordinates instead of normal click-to-move', () => {
         const engine = createEngineHarness();
+        engine.inputManager.getGroundIntersectionFromEvent.mockReturnValue(new THREE.Vector3(-6, 0, 14));
 
-        engine.handlePrimaryClick({ ctrlKey: true });
+        engine.handlePrimaryClick({ ctrlKey: true, clientX: 123, clientY: 456 });
 
         expect(engine.performRaycast).toHaveBeenCalledTimes(1);
+        expect(engine.inputManager.getGroundIntersectionFromEvent).toHaveBeenCalledWith(expect.objectContaining({
+            ctrlKey: true,
+            clientX: 123,
+            clientY: 456
+        }));
         expect(engine.player.move).not.toHaveBeenCalled();
         expect(engine.pendingInteraction).toBeNull();
         expect(engine.abilityController.pendingAbilityTarget).toBeNull();
@@ -100,8 +107,8 @@ describe('GameEngine ctrl-click jump', () => {
             end: expect.any(THREE.Vector3),
             duration: expect.any(Number)
         }));
-        expect(engine.playerJumpState.end.x).toBeCloseTo(12, 5);
-        expect(engine.playerJumpState.end.z).toBeCloseTo(8, 5);
+        expect(engine.playerJumpState.end.x).toBeCloseTo(-6, 5);
+        expect(engine.playerJumpState.end.z).toBeCloseTo(14, 5);
     });
 
     test('plain left click keeps existing ground move behavior', () => {

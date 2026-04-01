@@ -2262,7 +2262,9 @@ export class GameEngine {
 
         const ctrlHeld = Boolean(event?.ctrlKey || event?.metaKey || this.inputManager?.keys?.control);
         if (ctrlHeld) {
-            const point = this.inputManager.getGroundIntersection();
+            const point = this.inputManager?.getGroundIntersectionFromEvent
+                ? this.inputManager.getGroundIntersectionFromEvent(event)
+                : this.inputManager.getGroundIntersection();
             if (!point) return false;
             return this.requestPlayerJump(point);
         }
@@ -2350,6 +2352,7 @@ export class GameEngine {
         this.clearCombatIntentState?.();
 
         if (this.isMultiplayer && this.network?.send) {
+            this.startPlayerJump(end);
             this.network.send('jump', {
                 x: end.x,
                 y: end.y,
@@ -2406,19 +2409,21 @@ export class GameEngine {
     syncAuthoritativeJumpState(entity, pData) {
         if (!entity || pData?.state !== 'JUMPING') return false;
 
+        const existingJump = entity === this.player ? this.playerJumpState : entity.jumpVisualState;
+        const hasJumpEndpoints = pData.jumpStartX !== undefined || pData.jumpTargetX !== undefined || pData.jumpHeight !== undefined || pData.jumpDuration !== undefined;
         const start = new THREE.Vector3(
-            pData.jumpStartX ?? pData.x ?? entity.position.x,
-            pData.jumpStartY ?? pData.y ?? entity.position.y,
-            pData.jumpStartZ ?? pData.z ?? entity.position.z
+            pData.jumpStartX ?? existingJump?.start?.x ?? pData.x ?? entity.position.x,
+            pData.jumpStartY ?? existingJump?.start?.y ?? pData.y ?? entity.position.y,
+            pData.jumpStartZ ?? existingJump?.start?.z ?? pData.z ?? entity.position.z
         );
         const end = new THREE.Vector3(
-            pData.jumpTargetX ?? pData.x ?? entity.position.x,
-            pData.jumpTargetY ?? pData.y ?? entity.position.y,
-            pData.jumpTargetZ ?? pData.z ?? entity.position.z
+            pData.jumpTargetX ?? existingJump?.end?.x ?? pData.x ?? entity.position.x,
+            pData.jumpTargetY ?? existingJump?.end?.y ?? pData.y ?? entity.position.y,
+            pData.jumpTargetZ ?? existingJump?.end?.z ?? pData.z ?? entity.position.z
         );
-        const progress = Math.max(0, Math.min(1, pData.jumpProgress ?? 0));
-        const duration = Math.max(0.001, pData.jumpDuration ?? 1);
-        const height = pData.jumpHeight ?? 0;
+        const progress = Math.max(0, Math.min(1, pData.jumpProgress ?? existingJump?.progress ?? existingJump?.elapsed ?? 0));
+        const duration = Math.max(0.001, pData.jumpDuration ?? existingJump?.duration ?? 1);
+        const height = pData.jumpHeight ?? existingJump?.height ?? (hasJumpEndpoints ? 0 : Math.max(3.5, Math.min(8.0, start.distanceTo(end) * 0.2 + 2.5)));
         const visualHeight = Math.sin(progress * Math.PI) * height;
 
         if (entity === this.player) {

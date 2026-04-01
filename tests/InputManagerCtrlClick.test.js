@@ -54,4 +54,26 @@ describe('InputManager ctrl-click propagation', () => {
         }));
         manager.dispose();
     });
+
+    test('ground intersection can be resolved directly from click coordinates without a prior mousemove', () => {
+        const manager = new InputManager(new THREE.PerspectiveCamera(), {});
+        manager.mouse.set(-0.9, -0.9);
+        manager.raycaster.setFromCamera = jest.fn();
+        manager.raycaster.ray.intersectPlane = jest.fn((plane, target) => {
+            target.set(5, 0, 7);
+            return target;
+        });
+
+        const point = manager.getGroundIntersectionFromEvent({
+            clientX: window.innerWidth * 0.75,
+            clientY: window.innerHeight * 0.25
+        });
+
+        expect(manager.raycaster.setFromCamera).toHaveBeenCalledWith(
+            expect.objectContaining({ x: 0.5, y: 0.5 }),
+            manager.camera
+        );
+        expect(point).toEqual(expect.objectContaining({ x: 5, y: 0, z: 7 }));
+        manager.dispose();
+    });
 });

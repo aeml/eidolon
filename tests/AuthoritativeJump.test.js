@@ -96,20 +96,32 @@ function createEngineHarness() {
 }
 
 describe('authoritative jump flow', () => {
-    test('ctrl-left-click sends a jump request instead of starting a local jump arc', () => {
+    test('ctrl-left-click sends a jump request from the click coordinates and seeds a local predicted jump immediately', () => {
         const engine = createEngineHarness();
+        engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(33, 0, -4));
 
-        const handled = engine.handlePrimaryClick({ ctrlKey: true });
+        const handled = engine.handlePrimaryClick({ ctrlKey: true, clientX: 640, clientY: 120 });
 
         expect(handled).toBe(true);
         expect(engine.performRaycast).toHaveBeenCalledTimes(1);
+        expect(engine.inputManager.getGroundIntersectionFromEvent).toHaveBeenCalledWith(expect.objectContaining({
+            ctrlKey: true,
+            clientX: 640,
+            clientY: 120
+        }));
         expect(engine.network.send).toHaveBeenCalledWith('jump', {
-            x: 12,
+            x: 33,
             y: 0,
-            z: 8
+            z: -4
         });
         expect(engine.player.move).not.toHaveBeenCalled();
-        expect(engine.playerJumpState).toBeNull();
+        expect(engine.playerJumpState).toEqual(expect.objectContaining({
+            start: expect.any(THREE.Vector3),
+            end: expect.any(THREE.Vector3),
+            duration: expect.any(Number)
+        }));
+        expect(engine.playerJumpState.end.x).toBe(33);
+        expect(engine.playerJumpState.end.z).toBe(-4);
         expect(engine.pendingInteraction).toBeNull();
         expect(engine.abilityController.pendingAbilityTarget).toBeNull();
         expect(engine.abilityController.pendingAbilitySkill).toBeNull();
@@ -161,6 +173,47 @@ describe('authoritative jump flow', () => {
         expect(engine.playerJumpState.end.x).toBe(18);
         expect(engine.playerJumpState.elapsed).toBeCloseTo(0.25, 5);
         expect(engine.player.state).toBe('JUMPING');
+    });
+
+    test('predicted jump arc is preserved while awaiting server updates that only include jumping state and position', () => {
+        const engine = createEngineHarness();
+        engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(20, 0, 6));
+
+        engine.handlePrimaryClick({ ctrlKey: true, clientX: 500, clientY: 220 });
+        expect(engine.playerJumpState).toEqual(expect.objectContaining({
+            end: expect.objectContaining({ x: 20, z: 6 }),
+            serverDriven: false
+        }));
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        state: 'JUMPING',
+                        health: 100,
+                        maxHealth: 100,
+                        mana: 100,
+                        maxMana: 100,
+                        x: 4,
+                        y: 1,
+                        z: 2,
+                        jumpProgress: 0.2
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.position).toEqual(expect.objectContaining({ x: 4, y: 1, z: 2 }));
+        expect(engine.playerJumpState).toEqual(expect.objectContaining({
+            end: expect.objectContaining({ x: 20, z: 6 }),
+            height: expect.any(Number),
+            serverDriven: true
+        }));
+        expect(engine.playerJumpState.height).toBeGreaterThan(0);
+        expect(engine.playerJumpVisualHeight).toBe(0);
     });
 
     test('remote authoritative jump updates mesh arc from replicated jump fields', () => {

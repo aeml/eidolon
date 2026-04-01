@@ -360,6 +360,19 @@ export class InputManager {
         return intersection ? this._intersectionTarget : null;
     }
 
+    getGroundIntersectionFromEvent(event) {
+        if (!event || typeof event.clientX !== 'number' || typeof event.clientY !== 'number') {
+            return this.getGroundIntersection();
+        }
+
+        const pointer = this._eventMouse || (this._eventMouse = new THREE.Vector2());
+        pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+        pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        this.raycaster.setFromCamera(pointer, this.camera);
+        const intersection = this.raycaster.ray.intersectPlane(this.groundPlane, this._intersectionTarget);
+        return intersection ? this._intersectionTarget : null;
+    }
+
     clearInputState() {
         this.isMouseDown = false;
         this.isRightMouseDown = false;
