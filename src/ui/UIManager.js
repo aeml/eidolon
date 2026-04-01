@@ -1513,6 +1513,8 @@ export class UIManager {
 
 
     setupWindow(element) {
+        if (!element) return;
+
         // Stop clicks from reaching the game
         element.addEventListener('mousedown', (e) => e.stopPropagation());
         element.addEventListener('click', (e) => e.stopPropagation()); // Also stop click events
@@ -1521,6 +1523,11 @@ export class UIManager {
         // Drag Logic
         const header = element.querySelector('.window-header');
         if (!header) return;
+
+        const isCloseControl = (target) => {
+            if (!target || !(target instanceof Element)) return false;
+            return Boolean(target.closest('.close-btn, [data-window-close], #btn-close-abilities, #btn-close-skills, #btn-close-split, #btn-close-stash, #btn-close-forge, #btn-close-trading-house, #btn-close-quest, #btn-close-journal'));
+        };
         
         header.style.cursor = 'move';
         header.style.touchAction = 'none'; // Prevent browser handling (scrolling/swiping)
@@ -1605,6 +1612,9 @@ export class UIManager {
 
         // Mouse Events
         header.addEventListener('mousedown', (e) => {
+            if (isCloseControl(e.target)) {
+                return;
+            }
             startDrag(e.clientX, e.clientY);
             e.preventDefault(); // Prevent selection
         });
@@ -1617,8 +1627,8 @@ export class UIManager {
 
         // Touch Events
         header.addEventListener('touchstart', (e) => {
-            // Allow buttons to work
-            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+            // Allow close controls and buttons to work without triggering drag
+            if (isCloseControl(e.target) || e.target.tagName === 'BUTTON' || e.target.closest('button')) {
                 return;
             }
 
@@ -1721,25 +1731,66 @@ export class UIManager {
         // Remove existing if any
         const existing = document.getElementById('dungeon-menu');
         if (existing) existing.remove();
+        const existingBackdrop = document.getElementById('dungeon-menu-backdrop');
+        if (existingBackdrop) existingBackdrop.remove();
+
+        const backdrop = document.createElement('div');
+        backdrop.id = 'dungeon-menu-backdrop';
+        backdrop.style.position = 'fixed';
+        backdrop.style.inset = '0';
+        backdrop.style.background = 'rgba(3, 5, 10, 0.72)';
+        backdrop.style.backdropFilter = 'blur(8px)';
+        backdrop.style.webkitBackdropFilter = 'blur(8px)';
+        backdrop.style.zIndex = '1090';
+        backdrop.style.pointerEvents = 'auto';
 
         const menu = document.createElement('div');
         menu.id = 'dungeon-menu';
-        menu.style.position = 'absolute';
+        menu.style.position = 'fixed';
         menu.style.top = '50%';
         menu.style.left = '50%';
         menu.style.transform = 'translate(-50%, -50%)';
-        menu.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
-        menu.style.border = '2px solid #444';
+        menu.style.background = 'linear-gradient(180deg, rgba(24, 28, 35, 0.96) 0%, rgba(11, 14, 18, 0.96) 100%)';
+        menu.style.border = '1px solid rgba(255, 215, 0, 0.4)';
+        menu.style.borderRadius = '16px';
         menu.style.padding = '20px';
         menu.style.color = '#fff';
-        menu.style.zIndex = '1000';
+        menu.style.zIndex = '1100';
         menu.style.textAlign = 'center';
         menu.style.minWidth = '400px';
+        menu.style.maxWidth = 'min(92vw, 540px)';
+        menu.style.boxShadow = '0 28px 80px rgba(0, 0, 0, 0.55)';
+        menu.style.userSelect = 'none';
+        menu.style.pointerEvents = 'auto';
+        menu.addEventListener('click', (e) => e.stopPropagation());
+
+        const removeMenu = () => {
+            menu.remove();
+            backdrop.remove();
+        };
+
+        backdrop.addEventListener('click', removeMenu);
+
+        const header = document.createElement('div');
+        header.className = 'window-header';
+        header.style.marginBottom = '18px';
 
         const title = document.createElement('h2');
         title.innerText = 'Dungeon Portal';
-        title.style.marginTop = '0';
-        menu.appendChild(title);
+        title.style.margin = '0';
+        title.style.fontSize = '1.5rem';
+
+        const closeBtn = document.createElement('button');
+        closeBtn.id = 'btn-close-dungeon-menu';
+        closeBtn.className = 'close-btn';
+        closeBtn.type = 'button';
+        closeBtn.setAttribute('aria-label', 'Close dungeon menu');
+        closeBtn.innerText = '×';
+        closeBtn.onclick = removeMenu;
+
+        header.appendChild(title);
+        header.appendChild(closeBtn);
+        menu.appendChild(header);
 
         if (data.hasInstance && data.timeLeft > 0) {
             const timer = document.createElement('p');
@@ -1918,7 +1969,7 @@ export class UIManager {
                     }
                 }));
             }
-            menu.remove();
+            removeMenu();
         };
         menu.appendChild(enterBtn);
 
@@ -1939,23 +1990,28 @@ export class UIManager {
                         payload: {}
                     }));
                 }
-                menu.remove();
+                removeMenu();
             };
             menu.appendChild(resetBtn);
         }
 
         // Close Button
-        const closeBtn = document.createElement('button');
-        closeBtn.innerText = 'Close';
-        closeBtn.style.margin = '10px';
-        closeBtn.style.padding = '5px 10px';
-        closeBtn.style.cursor = 'pointer';
-        closeBtn.style.backgroundColor = '#444';
-        closeBtn.style.color = '#fff';
-        closeBtn.style.border = 'none';
-        closeBtn.onclick = () => menu.remove();
-        menu.appendChild(closeBtn);
+        const actions = document.createElement('div');
+        actions.style.display = 'flex';
+        actions.style.justifyContent = 'center';
+        actions.style.gap = '10px';
+        actions.style.flexWrap = 'wrap';
+        actions.style.marginTop = '12px';
 
+        const footerCloseBtn = document.createElement('button');
+        footerCloseBtn.innerText = 'Close';
+        footerCloseBtn.className = 'menu-btn';
+        footerCloseBtn.type = 'button';
+        footerCloseBtn.onclick = removeMenu;
+        actions.appendChild(footerCloseBtn);
+        menu.appendChild(actions);
+
+        document.body.appendChild(backdrop);
         document.body.appendChild(menu);
     }
 

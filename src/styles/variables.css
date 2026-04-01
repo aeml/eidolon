@@ -30,6 +30,7 @@
     --border-light:         #666;
     --border-heavy:         #555;
     --border-dim:           #333;
+    --border-window-active: rgba(255, 215, 0, 0.55);
 
     /* Health / Mana / XP fills */
     --color-health-start:   #8b0000;
@@ -84,6 +85,7 @@
     /* ---- Shadows ---- */
     --shadow-panel:         0 0 20px rgba(0, 0, 0, 0.8);
     --shadow-heavy:         0 0 30px rgba(0, 0, 0, 0.8);
+    --shadow-window-focused: 0 20px 45px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 215, 0, 0.14);
 
     /* ---- Z-Index Scale ---- */
     --z-ui-layer:           10;

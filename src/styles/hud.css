@@ -316,6 +316,8 @@
     font-weight: bold;
     transition: background var(--transition-default);
     user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
     text-transform: uppercase;
 }
 
@@ -333,12 +335,20 @@
     padding: 10px 20px;
     cursor: pointer;
     font-size: 14px;
-    transition: background var(--transition-default);
+    transition: background var(--transition-default), border-color var(--transition-default), transform var(--transition-fast), box-shadow var(--transition-default);
     user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
     text-align: center;
 }
 
 .menu-btn:hover {
     background: var(--bg-surface-mid);
     border-color: var(--color-gold);
+    box-shadow: 0 0 0 1px rgba(255, 215, 0, 0.12);
+}
+
+.menu-btn:active,
+.hud-menu-btn:active {
+    transform: translateY(1px);
 }

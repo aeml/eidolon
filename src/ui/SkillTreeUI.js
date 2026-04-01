@@ -772,27 +772,65 @@ export class SkillTreeUI {
         // Remove existing if any
         const existing = document.getElementById('respec-menu');
         if (existing) existing.remove();
+        const existingBackdrop = document.getElementById('respec-menu-backdrop');
+        if (existingBackdrop) existingBackdrop.remove();
+
+        const removeMenu = () => {
+            menu.remove();
+            backdrop.remove();
+        };
+
+        const backdrop = document.createElement('div');
+        backdrop.id = 'respec-menu-backdrop';
+        backdrop.style.position = 'fixed';
+        backdrop.style.inset = '0';
+        backdrop.style.background = 'rgba(3, 5, 10, 0.72)';
+        backdrop.style.backdropFilter = 'blur(8px)';
+        backdrop.style.webkitBackdropFilter = 'blur(8px)';
+        backdrop.style.zIndex = '1090';
+        backdrop.style.pointerEvents = 'auto';
+        backdrop.addEventListener('click', removeMenu);
 
         const menu = document.createElement('div');
         menu.id = 'respec-menu';
-        menu.style.position = 'absolute';
+        menu.style.position = 'fixed';
         menu.style.top = '50%';
         menu.style.left = '50%';
         menu.style.transform = 'translate(-50%, -50%)';
-        menu.style.backgroundColor = 'rgba(0, 0, 0, 0.95)';
-        menu.style.border = '2px solid #6a4';
+        menu.style.background = 'linear-gradient(180deg, rgba(23, 30, 24, 0.96) 0%, rgba(12, 18, 14, 0.98) 100%)';
+        menu.style.border = '1px solid rgba(106, 170, 68, 0.7)';
         menu.style.padding = '20px';
         menu.style.color = '#fff';
-        menu.style.zIndex = '1000';
+        menu.style.zIndex = '1100';
         menu.style.textAlign = 'center';
         menu.style.minWidth = '350px';
-        menu.style.borderRadius = '8px';
+        menu.style.maxWidth = 'min(92vw, 460px)';
+        menu.style.borderRadius = '16px';
+        menu.style.boxShadow = '0 28px 80px rgba(0, 0, 0, 0.55)';
+        menu.style.userSelect = 'none';
+        menu.style.pointerEvents = 'auto';
+        menu.addEventListener('click', (e) => e.stopPropagation());
+
+        const header = document.createElement('div');
+        header.className = 'window-header';
+        header.style.marginBottom = '18px';
 
         const title = document.createElement('h2');
         title.innerText = 'Talent Master';
-        title.style.marginTop = '0';
+        title.style.margin = '0';
         title.style.color = '#6a4';
-        menu.appendChild(title);
+
+        const closeBtn = document.createElement('button');
+        closeBtn.id = 'btn-close-respec-menu';
+        closeBtn.className = 'close-btn';
+        closeBtn.type = 'button';
+        closeBtn.setAttribute('aria-label', 'Close respec menu');
+        closeBtn.innerText = '×';
+        closeBtn.onclick = removeMenu;
+
+        header.appendChild(title);
+        header.appendChild(closeBtn);
+        menu.appendChild(header);
 
         const desc = document.createElement('p');
         desc.innerText = 'Reset your talents or skills for a gold fee based on your level.';
@@ -835,7 +873,7 @@ export class SkillTreeUI {
                 if (this.ctx.sendRespec) {
                     this.ctx.sendRespec(type);
                 }
-                menu.remove();
+                removeMenu();
             };
             container.appendChild(btn);
 
@@ -861,18 +899,15 @@ export class SkillTreeUI {
         goldDisplay.innerHTML = `<span style="color: #888;">Your Gold:</span> <span style="color: #fc0; font-weight: bold;">${playerGold.toLocaleString()}</span>`;
         menu.appendChild(goldDisplay);
 
-        const closeBtn = document.createElement('button');
-        closeBtn.innerText = 'Close';
-        closeBtn.style.marginTop = '15px';
-        closeBtn.style.padding = '8px 20px';
-        closeBtn.style.cursor = 'pointer';
-        closeBtn.style.backgroundColor = '#444';
-        closeBtn.style.color = '#fff';
-        closeBtn.style.border = 'none';
-        closeBtn.style.borderRadius = '4px';
-        closeBtn.onclick = () => menu.remove();
-        menu.appendChild(closeBtn);
+        const footerCloseBtn = document.createElement('button');
+        footerCloseBtn.innerText = 'Close';
+        footerCloseBtn.className = 'menu-btn';
+        footerCloseBtn.type = 'button';
+        footerCloseBtn.style.marginTop = '15px';
+        footerCloseBtn.onclick = removeMenu;
+        menu.appendChild(footerCloseBtn);
 
+        document.body.appendChild(backdrop);
         document.body.appendChild(menu);
     }
 }
