@@ -11,7 +11,9 @@ describe('version presentation', () => {
 
     test('includes player-facing patch 0.21.1 notes', () => {
         expect(indexHtml).toContain('Patch 0.21.1');
-        expect(indexHtml).toContain('Combat readability and dungeon guidance');
+        expect(indexHtml).toContain('Jump / ctrl-click fixes');
         expect(indexHtml).toContain('Keep Assets on This Device');
+        expect(indexHtml).toContain('Clear Cached Assets');
+        expect(indexHtml).toContain('persistent auto-loot');
     });
 });

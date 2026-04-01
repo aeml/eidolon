@@ -432,26 +432,29 @@
             </div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.1 (Combat readability, dungeon flow, and client polish)</h3>
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.1 (Big alpha polish pass since 0.20)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
-                        <li><strong>Combat readability and dungeon guidance:</strong> Added clearer enemy combat intent UI, objective tracking, and contextual dungeon entrance hints so it is easier to understand what to do next.</li>
-                        <li><strong>Movement and dungeon feel:</strong> Improved authoritative jump handling, ctrl-click traversal behavior, dungeon containment, and reward feedback for dungeon play.</li>
-                        <li><strong>Loot quality-of-life:</strong> Added persistent auto-loot settings and clearer pickup/reward messaging during play.</li>
-                        <li><strong>Menus and window polish:</strong> Cleaned up menu interactions, improved close behavior, reduced accidental text selection on chrome/buttons, and made modal overlays feel more consistent.</li>
-                        <li><strong>Keep Assets on This Device:</strong> Added version-aware asset caching, downloadable model packs, cache progress UI, and a clear-cache action so unchanged assets stay on-device between sessions.</li>
-                        <li><strong>Under-the-hood stability:</strong> Replaced timestamp cache busting with deterministic asset versioning and added broader regression coverage around UI, assets, and gameplay flows.</li>
+                        <li><strong>Combat readability and objective guidance:</strong> New enemy combat intent UI, a clearer objectives panel, and improved dungeon entrance hints make it much easier to understand threats and what to do next.</li>
+                        <li><strong>Jumping and movement feel better:</strong> Authoritative jump behavior, ctrl-click traversal, and jump targeting were tightened up so movement feels more reliable during real play.</li>
+                        <li><strong>Dungeons got a quality pass:</strong> Better dungeon containment, stronger instance guidance, and boss reward summaries make runs feel more stable and easier to follow.</li>
+                        <li><strong>Loot flow is smoother:</strong> Auto-loot can now be saved in settings, nearby pickup behavior is clearer, and loot/reward feedback is more readable during gameplay.</li>
+                        <li><strong>Menus and windows feel much better:</strong> Close buttons behave properly, overlays dismiss more cleanly, accidental text selection is reduced, and menu interactions are more polished across HUD and popups.</li>
+                        <li><strong>New settings options:</strong> Settings now include persistent auto-loot, graphics quality, brightness, and the new <strong>Keep Assets on This Device</strong> controls for downloading and managing cached art packs.</li>
+                        <li><strong>Client asset persistence:</strong> Core and dungeon assets can now be kept on-device with version-aware caching, visible download progress, and one-click cache clearing.</li>
                     </ul>
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.1 - Details since 0.20</h3>
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.1 - More detail</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
-                        <li><strong>UI readability:</strong> Combat intent previews now surface expected enemy attacks/abilities, and dungeon entrance prompts better explain when you can enter or need a party leader.</li>
-                        <li><strong>Dungeon updates:</strong> Added boss reward summaries, stronger geometry/containment validation, and better dungeon context hints across current instance content.</li>
-                        <li><strong>Client persistence:</strong> Asset packs now use stable logical paths with versioned requests, allowing selective redownloads only when content changes.</li>
-                        <li><strong>Offline-style cache controls:</strong> Settings now expose core and dungeon pack downloads, progress feedback, and cache clearing without forcing players to redownload everything every refresh.</li>
-                        <li><strong>Menu UX:</strong> Close buttons, draggable headers, backdrop dismissal, focus states, touch interactions, and HUD/menu button polish were all tightened up.</li>
-                        <li><strong>Still alpha:</strong> We are continuing to improve dungeon pacing, minimap guidance, room-clear reward cadence, and deeper asset-management controls in upcoming .21.x updates.</li>
+                        <li><strong>Combat intent:</strong> Enemies now communicate expected attacks/abilities more clearly so target priority and incoming danger are easier to read.</li>
+                        <li><strong>Objectives panel:</strong> Objective tracking is surfaced more clearly during play so dungeon and quest flow is less ambiguous.</li>
+                        <li><strong>Dungeon entrance hints:</strong> Entrance prompts now better explain availability, readiness, and party-leader requirements.</li>
+                        <li><strong>Jump / ctrl-click fixes:</strong> Multiple fixes landed around jump authority, ctrl-click jump behavior, held-input edge cases, and traversal reliability.</li>
+                        <li><strong>Reward feedback:</strong> Boss reward summaries and loot feedback make dungeon completion and pickups feel more explicit.</li>
+                        <li><strong>Asset settings:</strong> Players can now download <strong>Core Models</strong> and <strong>Dungeon Models</strong>, watch progress, and use <strong>Clear Cached Assets</strong> when they want a fresh sync.</li>
+                        <li><strong>Smarter updates:</strong> Asset versioning now prefers keeping unchanged content on-device instead of forcing blanket redownloads.</li>
+                        <li><strong>Still alpha:</strong> We are continuing to improve minimap room guidance, room-clear reward cadence, deeper cache controls, and additional .21.x polish.</li>
                     </ul>
                 </div>
 
