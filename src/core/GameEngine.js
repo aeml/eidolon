@@ -144,6 +144,8 @@ export class GameEngine {
         this.needsRaycast = false;
         this.activeEntitiesCache = [];
         this.frameCount = 0;
+        this.playerJumpState = null;
+        this.playerJumpVisualHeight = 0;
 
         // Entity Creation Throttling
         this.entityCreationQueue = [];
@@ -324,77 +326,7 @@ export class GameEngine {
         await new Promise(r => setTimeout(r, 50));
 
         this.inputManager.subscribe('onClick', () => {
-            if (!this.player) return;
-            if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen || this.uiManager.reportScreen.style.display === 'block') return;
-
-            // Force raycast to ensure hoveredEntity is up to date with exact click position
-            this.performRaycast();
-
-            if (this.isMobile) {
-                let nearest = null;
-                let minDst = 1000;
-                const activeEntities = this.chunkManager.getActiveEntities();
-
-                activeEntities.forEach(e => {
-                    if (this.isHostileActorTarget(e)) {
-                        const d = this.player.position.distanceTo(e.position);
-                        if (d < minDst) {
-                            minDst = d;
-                            nearest = e;
-                        }
-                    }
-                });
-
-                if (nearest && minDst < 8.0) {
-                    // Turn towards enemy
-                    const lookTarget = new THREE.Vector3(nearest.position.x, this.player.position.y, nearest.position.z);
-                    if (this.player.mesh) {
-                        this.player.mesh.lookAt(lookTarget);
-                        this.player.rotation.copy(this.player.mesh.quaternion);
-                    }
-
-                    this.pendingInteraction = nearest;
-                    this.player.move(nearest.position);
-                } else {
-                    this.player.playAnimation('Attack', false);
-                }
-                return;
-            }
-
-            if (this.hoveredEntity && this.hoveredEntity !== this.player) {
-                this.moveToAndInteract(this.hoveredEntity);
-            } else {
-                const point = this.inputManager.getGroundIntersection();
-                if (point) {
-                    // Smart Click: Check for nearby loot if we clicked ground
-                    // This handles cases where the click slightly missed the item or hitbox issues
-                    let nearestLoot = null;
-                    let minLootDist = 3.0; // Increased search radius around click point
-
-                    const activeEntities = this.chunkManager.getActiveEntities();
-                    for (const entity of activeEntities) {
-                        if (entity instanceof LootDrop && entity.isActive) {
-                            const d = new THREE.Vector2(point.x, point.z).distanceTo(new THREE.Vector2(entity.position.x, entity.position.z));
-                            if (d < minLootDist) {
-                                minLootDist = d;
-                                nearestLoot = entity;
-                            }
-                        }
-                    }
-
-                    if (nearestLoot) {
-                        this.moveToAndInteract(nearestLoot);
-                    } else {
-                        // Only clear pending interaction if we are clicking significantly far away from it?
-                        // Or if we explicitly clicked ground.
-                        // Since we force raycast above, if hoveredEntity is null, we definitely missed the entity.
-                        this.pendingInteraction = null;
-this.abilityController.pendingAbilityTarget = null;
-        this.abilityController.pendingAbilitySkill = null;
-                        this.player.move(point);
-                    }
-                }
-            }
+            this.handlePrimaryClick();
         });
 
         this.inputManager.subscribe('onRightClick', () => {
@@ -2305,6 +2237,154 @@ this.abilityController.pendingAbilityTarget = null;
         });
     }
 
+    handlePrimaryClick() {
+        if (!this.player) return false;
+        if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen || this.uiManager.reportScreen.style.display === 'block') return false;
+
+        this.performRaycast();
+
+        if (this.inputManager?.keys?.control) {
+            const point = this.inputManager.getGroundIntersection();
+            if (!point) return false;
+            return this.startPlayerJump(point);
+        }
+
+        if (this.isMobile) {
+            let nearest = null;
+            let minDst = 1000;
+            const activeEntities = this.chunkManager.getActiveEntities();
+
+            activeEntities.forEach(e => {
+                if (this.isHostileActorTarget(e)) {
+                    const d = this.player.position.distanceTo(e.position);
+                    if (d < minDst) {
+                        minDst = d;
+                        nearest = e;
+                    }
+                }
+            });
+
+            if (nearest && minDst < 8.0) {
+                const lookTarget = new THREE.Vector3(nearest.position.x, this.player.position.y, nearest.position.z);
+                if (this.player.mesh) {
+                    this.player.mesh.lookAt(lookTarget);
+                    this.player.rotation.copy(this.player.mesh.quaternion);
+                }
+
+                this.pendingInteraction = nearest;
+                this.player.move(nearest.position);
+            } else {
+                this.player.playAnimation('Attack', false);
+            }
+            return true;
+        }
+
+        if (this.hoveredEntity && this.hoveredEntity !== this.player) {
+            this.moveToAndInteract(this.hoveredEntity);
+            return true;
+        }
+
+        const point = this.inputManager.getGroundIntersection();
+        if (!point) return false;
+
+        let nearestLoot = null;
+        let minLootDist = 3.0;
+        const activeEntities = this.chunkManager.getActiveEntities();
+        for (const entity of activeEntities) {
+            if (entity instanceof LootDrop && entity.isActive) {
+                const d = new THREE.Vector2(point.x, point.z).distanceTo(new THREE.Vector2(entity.position.x, entity.position.z));
+                if (d < minLootDist) {
+                    minLootDist = d;
+                    nearestLoot = entity;
+                }
+            }
+        }
+
+        if (nearestLoot) {
+            this.moveToAndInteract(nearestLoot);
+        } else {
+            this.pendingInteraction = null;
+            this.abilityController.pendingAbilityTarget = null;
+            this.abilityController.pendingAbilitySkill = null;
+            this.player.move(point);
+        }
+
+        return true;
+    }
+
+    startPlayerJump(destination) {
+        if (!this.player || !destination) return false;
+
+        const start = this.player.position.clone();
+        const end = destination.clone();
+        end.y = start.y;
+
+        if (this.collisionManager?.constrainToDungeonWalkableArea) {
+            this.collisionManager.constrainToDungeonWalkableArea(end, this.player.radius || 0);
+        }
+
+        const travelDistance = start.distanceTo(end);
+        const duration = Math.max(0.35, Math.min(0.9, travelDistance / 18));
+        const height = Math.max(3.5, Math.min(8.0, travelDistance * 0.2 + 2.5));
+
+        this.player.targetPosition = null;
+        this.pendingInteraction = null;
+        this.abilityController.pendingAbilityTarget = null;
+        this.abilityController.pendingAbilitySkill = null;
+        this.clearCombatIntentState?.();
+        this.player.state = 'MOVING';
+        this.player.playAnimation?.('Run');
+
+        if (this.player.mesh) {
+            this.player.mesh.lookAt(new THREE.Vector3(end.x, this.player.position.y, end.z));
+            this.player.rotation.copy(this.player.mesh.quaternion);
+        }
+
+        this.playerJumpState = {
+            start,
+            end,
+            elapsed: 0,
+            duration,
+            height
+        };
+        this.playerJumpVisualHeight = 0;
+        this.chunkManager?.updateEntityChunk?.(this.player);
+        this.renderSystem?.setCameraTarget?.(this.player.position);
+        return true;
+    }
+
+    updatePlayerJump(dt) {
+        if (!this.playerJumpState || !this.player) return false;
+
+        const jump = this.playerJumpState;
+        jump.elapsed = Math.min(jump.duration, jump.elapsed + dt);
+        const progress = jump.duration > 0 ? jump.elapsed / jump.duration : 1;
+        const arc = Math.sin(progress * Math.PI) * jump.height;
+
+        this.player.position.lerpVectors(jump.start, jump.end, progress);
+        this.player.position.y = jump.start.y;
+        this.playerJumpVisualHeight = arc;
+        this.chunkManager?.updateEntityChunk?.(this.player);
+        this.renderSystem?.setCameraTarget?.(this.player.position);
+
+        if (progress >= 1) {
+            this.player.position.copy(jump.end);
+            this.player.position.y = jump.end.y;
+            this.playerJumpState = null;
+            this.playerJumpVisualHeight = 0;
+            this.player.state = 'IDLE';
+            this.player.playAnimation?.('Idle');
+        }
+
+        return true;
+    }
+
+    applyPlayerJumpVisuals() {
+        if (!this.player?.mesh) return;
+        this.player.mesh.position.copy(this.player.position);
+        this.player.mesh.position.y += this.playerJumpVisualHeight || 0;
+    }
+
     moveToAndInteract(entity) {
         if (!entity) return;
         this.pendingInteraction = entity;
@@ -2740,6 +2820,8 @@ this.abilityController.pendingAbilityTarget = null;
 
         this.gameTime += dt;
         // Timer updated by server message
+
+        this.updatePlayerJump(dt);
 
         if (this.player) {
             if (this.inputManager.isRightMouseDown) {
@@ -3222,6 +3304,8 @@ this.abilityController.pendingAbilityTarget = null;
                 entity.render(alpha);
             }
         }
+
+        this.applyPlayerJumpVisuals();
 
         this.renderSystem.render();
 
