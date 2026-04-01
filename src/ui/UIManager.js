@@ -26,7 +26,12 @@ export class UIManager {
         this.combatIntentPreviewBasic = document.getElementById('combat-intent-preview-basic');
         this.combatIntentPreviewAbility = document.getElementById('combat-intent-preview-ability');
         this.combatIntentPreviewAbilityLabel = document.getElementById('combat-intent-preview-ability-label');
+        this.dungeonEntranceHint = document.getElementById('dungeon-entrance-hint');
+        this.dungeonEntranceHintName = document.getElementById('dungeon-entrance-hint-name');
+        this.dungeonEntranceHintStatus = document.getElementById('dungeon-entrance-hint-status');
+        this.dungeonEntranceHintPrompt = document.getElementById('dungeon-entrance-hint-prompt');
         this.lastCombatIntentSignature = '';
+        this.lastDungeonEntranceHintSignature = '';
 
         // New UI Elements
         this.xpBar = document.getElementById('xp-bar-fill');
@@ -523,6 +528,39 @@ export class UIManager {
         if (this.combatIntentPreviewBasic) this.combatIntentPreviewBasic.textContent = '';
         if (this.combatIntentPreviewAbilityLabel) this.combatIntentPreviewAbilityLabel.textContent = 'Ability';
         if (this.combatIntentPreviewAbility) this.combatIntentPreviewAbility.textContent = '';
+    }
+
+    serializeDungeonEntranceHint(hint) {
+        if (!hint) return '';
+        return [
+            hint.dungeonType || '',
+            hint.dungeonName || '',
+            hint.inRange ? 1 : 0,
+            hint.statusLabel || '',
+            hint.promptLabel || ''
+        ].join('|');
+    }
+
+    updateDungeonEntranceHint(hint) {
+        if (!this.dungeonEntranceHint || !hint) return;
+
+        const signature = this.serializeDungeonEntranceHint(hint);
+        if (signature === this.lastDungeonEntranceHintSignature) return;
+        this.lastDungeonEntranceHintSignature = signature;
+
+        this.dungeonEntranceHint.style.display = 'block';
+        if (this.dungeonEntranceHintName) this.dungeonEntranceHintName.textContent = hint.dungeonName || 'Dungeon Portal';
+        if (this.dungeonEntranceHintStatus) this.dungeonEntranceHintStatus.textContent = hint.statusLabel || '';
+        if (this.dungeonEntranceHintPrompt) this.dungeonEntranceHintPrompt.textContent = hint.promptLabel || '';
+    }
+
+    clearDungeonEntranceHint() {
+        this.lastDungeonEntranceHintSignature = '';
+        if (!this.dungeonEntranceHint) return;
+        this.dungeonEntranceHint.style.display = 'none';
+        if (this.dungeonEntranceHintName) this.dungeonEntranceHintName.textContent = '';
+        if (this.dungeonEntranceHintStatus) this.dungeonEntranceHintStatus.textContent = '';
+        if (this.dungeonEntranceHintPrompt) this.dungeonEntranceHintPrompt.textContent = '';
     }
 
     updateTimer(seconds) {

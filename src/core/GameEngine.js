@@ -114,6 +114,7 @@ export class GameEngine {
         
         this.player = null;
         this.hoveredEntity = null;
+        this.dungeonEntranceHint = null;
         this.combatIntent = null;
         this.combatIntentSignature = '';
         this.highlightedCombatTarget = null;
@@ -595,6 +596,7 @@ this.abilityController.pendingAbilityTarget = null;
         console.log(`Entering instance: ${instanceId} (${type})`);
         this.currentInstanceId = instanceId;
         this.clearCombatIntentState();
+        this.refreshDungeonEntranceHint();
 
         // Clear current entities
         this.remotePlayers.forEach(entity => {
@@ -1881,6 +1883,54 @@ this.abilityController.pendingAbilityTarget = null;
         return true;
     }
 
+    getDungeonEntranceName(entity) {
+        const dungeonType = entity?.userData?.dungeonType;
+        switch (dungeonType) {
+        case 'verdant_bastion_catacombs':
+            return 'Verdant Bastion Catacombs';
+        case 'molten_core':
+            return 'Molten Core';
+        case 'tempest_spire':
+            return 'Tempest Spire';
+        case 'abyssal_well':
+            return 'Abyssal Well';
+        default:
+            return 'Dungeon Portal';
+        }
+    }
+
+    buildDungeonEntranceHint(entity = this.hoveredEntity) {
+        if (!entity || entity.name !== 'DungeonEntrance' || !entity.position || !this.player?.position) {
+            return null;
+        }
+
+        const interactionRange = Math.max(60.0, this.getInteractionRangeForEntity(entity));
+        const distance = this.player.position.distanceTo(entity.position);
+        const inRange = distance <= interactionRange;
+        const dungeonName = this.getDungeonEntranceName(entity);
+
+        return {
+            dungeonType: entity.userData?.dungeonType || '',
+            dungeonName,
+            inRange,
+            distance,
+            statusLabel: inRange ? 'Dungeon Portal • In range' : 'Dungeon Portal • Move closer',
+            promptLabel: inRange
+                ? 'Click to open the dungeon portal.'
+                : 'Move closer to interact with this dungeon portal.'
+        };
+    }
+
+    refreshDungeonEntranceHint() {
+        const hint = this.buildDungeonEntranceHint();
+        this.dungeonEntranceHint = hint;
+        if (hint) {
+            this.uiManager?.updateDungeonEntranceHint?.(hint);
+        } else {
+            this.uiManager?.clearDungeonEntranceHint?.();
+        }
+    }
+
     getBasicAttackRangeForPlayer(player = this.player) {
         if (!player) return 0;
         if (player instanceof Wizard || player instanceof Rogue) return 16.0;
@@ -2032,16 +2082,25 @@ this.abilityController.pendingAbilityTarget = null;
     }
 
     clearCombatIntentState() {
-        const hadIntent = Boolean(this.combatIntentSignature);
+        const hadIntent = !!this.combatIntent || !!this.highlightedCombatTarget;
         this.combatIntent = null;
         this.combatIntentSignature = '';
-        this.detachCombatTargetHighlight();
+        if (this.abilityController) {
+            this.abilityController.pendingAbilityTarget = null;
+            this.abilityController.pendingAbilitySkill = null;
+        }
+        if (this.clearCombatTargetHighlight) {
+            this.clearCombatTargetHighlight();
+        }
         if (hadIntent) {
             this.uiManager?.clearCombatIntent?.();
         }
+        this.dungeonEntranceHint = null;
+        this.uiManager?.clearDungeonEntranceHint?.();
     }
 
     requestDungeonStatus(dungeonType = null) {
+        this.uiManager?.clearDungeonEntranceHint?.();
         this.network.send('get_dungeon_status', dungeonType ? { dungeonType } : {});
     }
 
@@ -2296,6 +2355,7 @@ this.abilityController.pendingAbilityTarget = null;
                         };
                         this.hoveredEntity = proxy;
                         document.body.style.cursor = 'pointer';
+                        this.refreshDungeonEntranceHint();
                         this.refreshCombatIntentState();
                         return; // Prioritize entrance
                     }
@@ -2340,6 +2400,7 @@ this.abilityController.pendingAbilityTarget = null;
             document.body.style.cursor = 'default';
         }
 
+        this.refreshDungeonEntranceHint();
         this.refreshCombatIntentState();
     }
 
@@ -2801,7 +2862,9 @@ this.abilityController.pendingAbilityTarget = null;
 
                     if (this.pendingInteraction.name === 'DungeonEntrance') {
                         // Fallback if userData not set, or override
-                        if (range < 60.0) range = 60.0; 
+                        if (range < 60.0) range = 60.0;
+                        this.hoveredEntity = this.pendingInteraction;
+                        this.refreshDungeonEntranceHint();
                     }
 
                     // 3. Execute Logic
@@ -2871,6 +2934,7 @@ this.abilityController.pendingAbilityTarget = null;
                                 : null;
                             this.requestDungeonStatus(dungeonType);
                             this.pendingInteraction = null;
+                            this.refreshDungeonEntranceHint();
 
                         } else if (this.pendingInteraction instanceof DungeonNPC) {
                             this.player.targetPosition = null;
