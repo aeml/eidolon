@@ -59,6 +59,7 @@ function createEngineHarness() {
     };
     engine.inputManager = {
         keys: { control: false, alt: false },
+        isMouseDown: false,
         getGroundIntersection: jest.fn(() => new THREE.Vector3(12, 0, 8))
     };
     engine.collisionManager = {
@@ -113,6 +114,7 @@ describe('authoritative jump flow', () => {
         expect(engine.abilityController.pendingAbilityTarget).toBeNull();
         expect(engine.abilityController.pendingAbilitySkill).toBeNull();
         expect(engine.player.targetPosition).toBeNull();
+        expect(engine.inputManager.isMouseDown).toBe(false);
     });
 
     test('self delta jump state seeds authoritative jump visuals from server state', () => {

@@ -2344,6 +2344,9 @@ export class GameEngine {
         this.pendingInteraction = null;
         this.abilityController.pendingAbilityTarget = null;
         this.abilityController.pendingAbilitySkill = null;
+        if (this.inputManager) {
+            this.inputManager.isMouseDown = false;
+        }
         this.clearCombatIntentState?.();
 
         if (this.isMultiplayer && this.network?.send) {
