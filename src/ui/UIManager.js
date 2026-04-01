@@ -6,6 +6,7 @@ import { TradingUI } from './TradingUI.js';
 import { QuestUI } from './QuestUI.js';
 import { SocialUI } from './SocialUI.js';
 import { InventoryUI } from './InventoryUI.js';
+import { AssetCacheManager } from '../assets/AssetCacheManager.js';
 
 export class UIManager {
     constructor(isMobile = false) {
@@ -98,6 +99,11 @@ export class UIManager {
         this.graphicsBrightnessSlider = document.getElementById('graphics-brightness');
         this.graphicsBrightnessValue = document.getElementById('graphics-brightness-value');
         this.autoLootToggle = document.getElementById('auto-loot-enabled');
+        this.btnDownloadCoreAssets = document.getElementById('btn-download-core-assets');
+        this.btnDownloadDungeonAssets = document.getElementById('btn-download-dungeon-assets');
+        this.assetDownloadStatus = document.getElementById('asset-download-status');
+        this.assetPackCoreStatus = document.getElementById('asset-pack-core-status');
+        this.assetPackDungeonStatus = document.getElementById('asset-pack-dungeon-status');
 
         if (this.btnResume) this.btnResume.addEventListener('click', () => this.toggleEscMenu());
         if (this.btnHelp) this.btnHelp.addEventListener('click', () => this.toggleHelp());
@@ -116,6 +122,12 @@ export class UIManager {
         this.onGraphicsQualityChange = null;
         this.onBrightnessChange = null;
         this.onAutoLootChange = null;
+        this.onAssetDownloadRequest = null;
+        this.assetCacheManager = new AssetCacheManager();
+        this.assetPackStatuses = {
+            'core-models': localStorage.getItem('eidolon.assetPack.core-models') || 'not-downloaded',
+            'dungeon-models': localStorage.getItem('eidolon.assetPack.dungeon-models') || 'not-downloaded'
+        };
         this.graphicsQuality = localStorage.getItem('eidolon.graphicsQuality') || 'high';
         if (this.graphicsQualitySelect) {
             this.graphicsQualitySelect.value = this.graphicsQuality;
@@ -143,6 +155,17 @@ export class UIManager {
                 this.setAutoLootEnabled(this.autoLootToggle.checked);
             });
         }
+        if (this.btnDownloadCoreAssets) {
+            this.btnDownloadCoreAssets.addEventListener('click', () => {
+                void this.requestAssetDownload('core-models');
+            });
+        }
+        if (this.btnDownloadDungeonAssets) {
+            this.btnDownloadDungeonAssets.addEventListener('click', () => {
+                void this.requestAssetDownload('dungeon-models');
+            });
+        }
+        this.refreshAssetDownloadStatus();
         // Shop/Stash close buttons are handled inside InventoryUI
         
         // Forge UI — delegated to ForgeUI module
@@ -1330,6 +1353,61 @@ export class UIManager {
 
     getAutoLootEnabled() {
         return Boolean(this.autoLootEnabled);
+    }
+
+    getAssetPackLabel(packName) {
+        return packName === 'dungeon-models' ? 'Dungeon models' : 'Core models';
+    }
+
+    setAssetPackStatus(packName, status) {
+        this.assetPackStatuses[packName] = status;
+        localStorage.setItem(`eidolon.assetPack.${packName}`, status);
+        this.refreshAssetDownloadStatus();
+    }
+
+    refreshAssetDownloadStatus() {
+        if (this.assetPackCoreStatus) {
+            this.assetPackCoreStatus.textContent = this.assetPackStatuses['core-models'] === 'cached'
+                ? 'Core models cached'
+                : this.assetPackStatuses['core-models'] === 'downloading'
+                    ? 'Downloading core models...'
+                    : 'Core models not downloaded';
+        }
+        if (this.assetPackDungeonStatus) {
+            this.assetPackDungeonStatus.textContent = this.assetPackStatuses['dungeon-models'] === 'cached'
+                ? 'Dungeon models cached'
+                : this.assetPackStatuses['dungeon-models'] === 'downloading'
+                    ? 'Downloading dungeon models...'
+                    : 'Dungeon models not downloaded';
+        }
+        if (this.assetDownloadStatus) {
+            if (this.assetPackStatuses['core-models'] === 'downloading') {
+                this.assetDownloadStatus.textContent = 'Downloading core models';
+            } else if (this.assetPackStatuses['dungeon-models'] === 'downloading') {
+                this.assetDownloadStatus.textContent = 'Downloading dungeon models';
+            } else if (this.assetPackStatuses['core-models'] === 'cached' && this.assetPackStatuses['dungeon-models'] === 'cached') {
+                this.assetDownloadStatus.textContent = 'All selected packs ready offline';
+            } else if (this.assetPackStatuses['dungeon-models'] === 'cached') {
+                this.assetDownloadStatus.textContent = 'Dungeon models ready offline';
+            } else if (this.assetPackStatuses['core-models'] === 'cached') {
+                this.assetDownloadStatus.textContent = 'Core models ready offline';
+            } else {
+                this.assetDownloadStatus.textContent = 'Not downloaded';
+            }
+        }
+    }
+
+    async requestAssetDownload(packName) {
+        this.setAssetPackStatus(packName, 'downloading');
+        const handler = this.onAssetDownloadRequest || ((nextPack) => this.assetCacheManager.warmPack(nextPack));
+        try {
+            await handler(packName);
+            this.setAssetPackStatus(packName, 'cached');
+        } catch (error) {
+            this.setAssetPackStatus(packName, 'not-downloaded');
+            this.addChatMessage('System', `Failed to cache ${this.getAssetPackLabel(packName).toLowerCase()}.`);
+            throw error;
+        }
     }
 
     toggleShop() { this.inventory.toggleShop(); }

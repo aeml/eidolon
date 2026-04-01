@@ -348,6 +348,31 @@
                         Automatically attempts to pick up nearby loot while you move through it.
                     </div>
                 </div>
+                <div style="display: flex; flex-direction: column; gap: 10px; text-align: left; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                        <div>
+                            <div style="color: #ffd700; font-size: 13px;">Keep Assets on This Device</div>
+                            <div style="font-size: 12px; color: #aaa; line-height: 1.4;">Download model packs once so refreshes can reuse them offline-style.</div>
+                        </div>
+                        <div id="asset-download-status" style="font-size: 12px; color: #9ad06f; text-align: right;">Not downloaded</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                            <div>
+                                <div style="color: #fff; font-size: 13px;">Core Models</div>
+                                <div id="asset-pack-core-status" style="font-size: 12px; color: #aaa;">Core models not downloaded</div>
+                            </div>
+                            <button id="btn-download-core-assets" class="menu-btn" type="button">Download Core</button>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                            <div>
+                                <div style="color: #fff; font-size: 13px;">Dungeon Models</div>
+                                <div id="asset-pack-dungeon-status" style="font-size: 12px; color: #aaa;">Dungeon models not downloaded</div>
+                            </div>
+                            <button id="btn-download-dungeon-assets" class="menu-btn" type="button">Download Dungeons</button>
+                        </div>
+                    </div>
+                </div>
                 <div style="text-align: center;">
                     <button id="btn-close-settings" class="menu-btn">Close</button>
                 </div>
