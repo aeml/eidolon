@@ -849,6 +849,16 @@ this.abilityController.pendingAbilityTarget = null;
                     console.log(`[Combo] Triggered: ${comboName} (${comboId})`);
                 }
             }
+        } else if (msg.type === 'reward_summary') {
+            const summary = msg.payload;
+            if (this.player && summary && summary.playerId === this.player.id) {
+                if (this.floatingTextManager && this.player.position) {
+                    this.floatingTextManager.spawn('BOSS DEFEATED!', this.player.position, '#ffd700', '32px');
+                }
+                if (this.uiManager && this.uiManager.showRewardSummary) {
+                    this.uiManager.showRewardSummary(summary);
+                }
+            }
         } else if (msg.type === 'telegraph') {
             // Boss AoE telegraph — show a warning circle on the ground
             const data = msg.payload;

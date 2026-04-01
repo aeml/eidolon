@@ -169,6 +169,7 @@ const (
 	MsgGetDungeonStatus  = "get_dungeon_status"
 	MsgResetDungeon      = "reset_dungeon"
 	MsgTelegraph         = "telegraph"
+	MsgRewardSummary     = "reward_summary"
 )
 
 type SplitStackPayload struct {
@@ -345,6 +346,20 @@ type TelegraphPayload struct {
 	Z        float64 `json:"z"`
 	Radius   float64 `json:"radius"`
 	Duration float64 `json:"duration"`
+}
+
+type RewardSummaryPayload struct {
+	PlayerID     string `json:"playerId"`
+	Title        string `json:"title"`
+	Subtitle     string `json:"subtitle,omitempty"`
+	Gold         int    `json:"gold"`
+	XP           int    `json:"xp"`
+	ItemCount    int    `json:"itemCount"`
+	GemCount     int    `json:"gemCount"`
+	HeartCount   int    `json:"heartCount"`
+	BossName     string `json:"bossName,omitempty"`
+	InstanceType string `json:"instanceType,omitempty"`
+	Difficulty   string `json:"difficulty,omitempty"`
 }
 
 type ChatPayload struct {
@@ -745,6 +760,44 @@ func main() {
 			dataBytes, _ := json.Marshal(outMsg)
 			go func() {
 				broadcast <- BroadcastMessage{Type: MsgTelegraph, Data: dataBytes}
+			}()
+		case "reward_summary":
+			evt, ok := data.(game.RewardSummaryEvent)
+			if !ok {
+				return
+			}
+			payload := RewardSummaryPayload{
+				PlayerID:     evt.PlayerID,
+				Title:        evt.Title,
+				Subtitle:     evt.Subtitle,
+				Gold:         evt.Gold,
+				XP:           evt.XP,
+				ItemCount:    evt.ItemCount,
+				GemCount:     evt.GemCount,
+				HeartCount:   evt.HeartCount,
+				BossName:     evt.BossName,
+				InstanceType: evt.InstanceType,
+				Difficulty:   evt.Difficulty,
+			}
+			b, _ := json.Marshal(payload)
+			outMsg := Message{
+				Type:    MsgRewardSummary,
+				Payload: b,
+			}
+			dataBytes, _ := json.Marshal(outMsg)
+
+			username := evt.PlayerID
+			if strings.HasPrefix(username, "player-") {
+				username = strings.TrimPrefix(username, "player-")
+			}
+
+			go func() {
+				sessionsMu.Lock()
+				client, exists := activeSessions[username]
+				sessionsMu.Unlock()
+				if exists {
+					client.sendSafe(dataBytes)
+				}
 			}()
 		}
 	}
