@@ -86,9 +86,8 @@ function createEngineHarness() {
 describe('GameEngine ctrl-click jump', () => {
     test('ctrl-left-click starts a jump instead of normal click-to-move', () => {
         const engine = createEngineHarness();
-        engine.inputManager.keys.control = true;
 
-        engine.handlePrimaryClick();
+        engine.handlePrimaryClick({ ctrlKey: true });
 
         expect(engine.performRaycast).toHaveBeenCalledTimes(1);
         expect(engine.player.move).not.toHaveBeenCalled();
@@ -147,7 +146,6 @@ describe('GameEngine ctrl-click jump', () => {
     test('jump landing is clamped back inside dungeon walkable geometry', () => {
         const engine = createEngineHarness();
         engine.isMultiplayer = false;
-        engine.inputManager.keys.control = true;
         engine.inputManager.getGroundIntersection.mockReturnValue(new THREE.Vector3(30, 0, 30));
         engine.collisionManager.constrainToDungeonWalkableArea.mockImplementation((position) => {
             position.x = 7;
@@ -155,7 +153,7 @@ describe('GameEngine ctrl-click jump', () => {
             return true;
         });
 
-        engine.handlePrimaryClick();
+        engine.handlePrimaryClick({ ctrlKey: true });
 
         expect(engine.collisionManager.constrainToDungeonWalkableArea).toHaveBeenCalledTimes(2);
         expect(engine.playerJumpState.end.x).toBe(7);

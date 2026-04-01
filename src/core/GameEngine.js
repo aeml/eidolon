@@ -324,8 +324,8 @@ export class GameEngine {
         if (onProgress) onProgress(95, "Setting up Controls...");
         await new Promise(r => setTimeout(r, 50));
 
-        this.inputManager.subscribe('onClick', () => {
-            this.handlePrimaryClick();
+        this.inputManager.subscribe('onClick', (event) => {
+            this.handlePrimaryClick(event);
         });
 
         this.inputManager.subscribe('onRightClick', () => {
@@ -2254,13 +2254,14 @@ export class GameEngine {
         });
     }
 
-    handlePrimaryClick() {
+    handlePrimaryClick(event = null) {
         if (!this.player) return false;
         if (this.uiManager.isEscMenuOpen || this.uiManager.isPatchNotesOpen || this.uiManager.reportScreen.style.display === 'block') return false;
 
         this.performRaycast();
 
-        if (this.inputManager?.keys?.control) {
+        const ctrlHeld = Boolean(event?.ctrlKey || event?.metaKey || this.inputManager?.keys?.control);
+        if (ctrlHeld) {
             const point = this.inputManager.getGroundIntersection();
             if (!point) return false;
             return this.requestPlayerJump(point);

@@ -31,13 +31,13 @@
 }
 
 .mobile-mode #combat-intent-panel {
-    top: 62px !important;
+    top: 198px !important;
     right: 10px !important;
     width: min(260px, calc(100vw - 20px)) !important;
 }
 
 .mobile-mode #dungeon-entrance-hint {
-    top: 184px !important;
+    top: 332px !important;
     right: 10px !important;
     width: min(260px, calc(100vw - 20px)) !important;
 }

@@ -97,9 +97,8 @@ function createEngineHarness() {
 describe('authoritative jump flow', () => {
     test('ctrl-left-click sends a jump request instead of starting a local jump arc', () => {
         const engine = createEngineHarness();
-        engine.inputManager.keys.control = true;
 
-        const handled = engine.handlePrimaryClick();
+        const handled = engine.handlePrimaryClick({ ctrlKey: true });
 
         expect(handled).toBe(true);
         expect(engine.performRaycast).toHaveBeenCalledTimes(1);

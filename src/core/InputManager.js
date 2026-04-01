@@ -339,10 +339,10 @@ export class InputManager {
 
         if (event.button === 0) { // Left Click
             this.isMouseDown = true;
-            this.callbacks.onClick.forEach(cb => cb());
+            this.callbacks.onClick.forEach(cb => cb(event));
         } else if (event.button === 2) { // Right Click
             this.isRightMouseDown = true;
-            this.callbacks.onRightClick.forEach(cb => cb());
+            this.callbacks.onRightClick.forEach(cb => cb(event));
         }
     }
 

@@ -89,7 +89,7 @@
 #combat-intent-panel {
     display: none;
     position: fixed;
-    top: 88px;
+    top: 232px;
     right: 20px;
     width: min(280px, calc(100vw - 40px));
     padding: 12px 14px;
@@ -104,7 +104,7 @@
 #dungeon-entrance-hint {
     display: none;
     position: fixed;
-    top: 224px;
+    top: 376px;
     right: 20px;
     width: min(280px, calc(100vw - 40px));
     padding: 12px 14px;
