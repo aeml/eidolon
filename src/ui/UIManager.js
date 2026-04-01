@@ -419,6 +419,32 @@ export class UIManager {
         this.addChatMessage(sender, message);
     }
 
+    formatRewardSummary(summary = {}) {
+        const parts = [];
+
+        if (summary.gold) parts.push(`+${summary.gold} gold`);
+        if (summary.xp) parts.push(`+${summary.xp} XP`);
+        if (summary.itemCount) parts.push(`${summary.itemCount} item${summary.itemCount === 1 ? '' : 's'}`);
+        if (summary.gemCount) parts.push(`${summary.gemCount} gem${summary.gemCount === 1 ? '' : 's'}`);
+        if (summary.heartCount) parts.push(`${summary.heartCount} heart${summary.heartCount === 1 ? '' : 's'}`);
+
+        return parts.join(', ');
+    }
+
+    showRewardSummary(summary = {}) {
+        if (!summary.title) return;
+
+        this.addChatMessage('Rewards', summary.title);
+        if (summary.subtitle) {
+            this.addChatMessage('Rewards', summary.subtitle);
+        }
+
+        const rewardLine = this.formatRewardSummary(summary);
+        if (rewardLine) {
+            this.addChatMessage('Rewards', rewardLine);
+        }
+    }
+
     toggleChat(show) {
         if (this.chatBox) {
             this.chatBox.style.display = show ? 'flex' : 'none';

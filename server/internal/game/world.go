@@ -1662,6 +1662,77 @@ type TelegraphEvent struct {
 	Duration float64 `json:"duration"` // seconds before impact
 }
 
+type RewardSummaryEvent struct {
+	PlayerID    string `json:"playerId"`
+	Title       string `json:"title"`
+	Subtitle    string `json:"subtitle,omitempty"`
+	Gold        int    `json:"gold"`
+	XP          int    `json:"xp"`
+	ItemCount   int    `json:"itemCount"`
+	GemCount    int    `json:"gemCount"`
+	HeartCount  int    `json:"heartCount"`
+	BossName    string `json:"bossName,omitempty"`
+	InstanceType string `json:"instanceType,omitempty"`
+	Difficulty  string `json:"difficulty,omitempty"`
+}
+
+func formatDungeonLabel(instanceType string) string {
+	switch instanceType {
+	case "verdant_bastion_catacombs":
+		return "Verdant Bastion Catacombs"
+	case "molten_core":
+		return "Molten Core"
+	case "tempest_spire":
+		return "Tempest Spire"
+	case "abyssal_well":
+		return "Abyssal Well"
+	default:
+		return "Dungeon"
+	}
+}
+
+func formatDungeonDifficultyLabel(difficulty DungeonDifficulty) string {
+	switch difficulty {
+	case DifficultyHeroic:
+		return "Heroic"
+	case DifficultyMythic:
+		return "Mythic"
+	default:
+		return "Normal"
+	}
+}
+
+func countRewardDrops(items []*Item) (itemCount, gemCount int) {
+	for _, item := range items {
+		if item == nil {
+			continue
+		}
+		if item.Type == ItemGem {
+			gemCount++
+			continue
+		}
+		itemCount++
+	}
+	return itemCount, gemCount
+}
+
+func buildBossRewardSummary(playerID, bossName, instanceType string, difficulty DungeonDifficulty, gold, xp, heartCount int, lootItems []*Item) RewardSummaryEvent {
+	itemCount, gemCount := countRewardDrops(lootItems)
+	return RewardSummaryEvent{
+		PlayerID:     playerID,
+		Title:        fmt.Sprintf("Boss Defeated: %s", bossName),
+		Subtitle:     fmt.Sprintf("%s • %s", formatDungeonLabel(instanceType), formatDungeonDifficultyLabel(difficulty)),
+		Gold:         gold,
+		XP:           xp,
+		ItemCount:    itemCount,
+		GemCount:     gemCount,
+		HeartCount:   heartCount,
+		BossName:     bossName,
+		InstanceType: instanceType,
+		Difficulty:   string(difficulty),
+	}
+}
+
 func NewWorld(db *database.DB) *World {
 	w := &World{
 		Entities:          make(map[string]*Entity),
@@ -6637,6 +6708,45 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				}
 			}
 
+			// Loot
+			// Check if Elite
+			isElite := strings.HasPrefix(tID, "elite-")
+
+			// 1. Equipment Loot
+			dropCount := 0
+			if isElite {
+				dropCount = 3 // Elites drop 3 items guaranteed
+			} else if rand.Float64() < 0.5 && tLevel > 0 {
+				dropCount = 1 // Normal enemies have 50% chance for 1 item
+			}
+
+			var lootItems []*Item
+
+			if dropCount > 0 {
+				for i := 0; i < dropCount; i++ {
+					if isElite {
+						lootItems = append(lootItems, GenerateEliteLoot(tLevel))
+					} else {
+						lootItems = append(lootItems, GenerateLoot(tLevel))
+					}
+				}
+			}
+
+			// 2. Shard/Heart Loot (Eidolic)
+			eidolicLoot := GenerateShardLoot(isElite)
+			lootItems = append(lootItems, eidolicLoot...)
+
+			// 3. Gem Loot - 10% base chance (30% for elites)
+			gemChance := 0.10
+			if isElite {
+				gemChance = 0.30
+			}
+			if rand.Float64() < gemChance {
+				// Quality still scales with level, but gems can now drop at any level.
+				gem := GenerateRandomGemByLevel(tLevel, isElite)
+				lootItems = append(lootItems, gem)
+			}
+
 			// Party Logic
 			var partyMembers []*Entity
 
@@ -6678,6 +6788,8 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					member.Mu.Lock()
 					member.Experience += xpPerMember
 					member.Gold += goldPerMember
+					memberRewardItemCount := 0
+					memberRewardGemCount := 0
 
 					// Update Quests for all party members
 					w.UpdateQuestProgress(member, tSubType)
@@ -6728,9 +6840,10 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 						member.Health = member.MaxHealth
 					}
 
-					// Boss Loot
+					heartCount := 0
 					if isBoss {
 						hearts := GenerateBossHearts()
+						heartCount = len(hearts)
 						log.Printf("Party Boss Loot: Generated %d hearts for member %s", len(hearts), member.ID)
 						for _, heart := range hearts {
 							rem := member.AddItemToInventory(*heart)
@@ -6740,13 +6853,29 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 						}
 					}
 
+					memberID := member.ID
+					rewardSummary := RewardSummaryEvent{}
+					hasRewardSummary := false
+					if isBoss {
+						rewardSummary = buildBossRewardSummary(memberID, tSubType, instanceType, instanceDifficulty, goldPerMember, xpPerMember, heartCount, nil)
+						if memberRewardItemCount > 0 {
+							rewardSummary.ItemCount = memberRewardItemCount
+						}
+						if memberRewardGemCount > 0 {
+							rewardSummary.GemCount = memberRewardGemCount
+						}
+						hasRewardSummary = true
+					}
+
 					member.Mu.Unlock()
 
 					if isBoss && w.OnEvent != nil {
-						// Use a goroutine to avoid blocking the world lock
-						go func(pid string) {
+						go func(pid string, summary RewardSummaryEvent, sendSummary bool) {
 							w.OnEvent("inventory_update", pid)
-						}(member.ID)
+							if sendSummary {
+								w.OnEvent("reward_summary", summary)
+							}
+						}(memberID, rewardSummary, hasRewardSummary)
 					}
 				}
 			} else {
@@ -6758,9 +6887,12 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				if isBoss {
 					finalXp += 2000000
 				}
+				finalGold := int(float64(baseGold) * lootMult)
 
 				attacker.Experience += finalXp
-				attacker.Gold += int(float64(baseGold) * lootMult)
+				attacker.Gold += finalGold
+				attackerRewardItemCount := 0
+				attackerRewardGemCount := 0
 				if attacker.MaxExperience == 0 {
 					attacker.MaxExperience = 100
 				}
@@ -6812,9 +6944,10 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					attacker.Health = attacker.MaxHealth
 				}
 
-				// Boss Loot
+				heartCount := 0
 				if isBoss {
 					hearts := GenerateBossHearts()
+					heartCount = len(hearts)
 					log.Printf("Solo Boss Loot: Generated %d hearts for %s", len(hearts), attacker.ID)
 					for _, heart := range hearts {
 						rem := attacker.AddItemToInventory(*heart)
@@ -6824,52 +6957,30 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					}
 				}
 
+				attackerID := attacker.ID
+				rewardSummary := RewardSummaryEvent{}
+				hasRewardSummary := false
+				if isBoss {
+					rewardSummary = buildBossRewardSummary(attackerID, tSubType, instanceType, instanceDifficulty, finalGold, finalXp, heartCount, nil)
+					if attackerRewardItemCount > 0 {
+						rewardSummary.ItemCount = attackerRewardItemCount
+					}
+					if attackerRewardGemCount > 0 {
+						rewardSummary.GemCount = attackerRewardGemCount
+					}
+					hasRewardSummary = true
+				}
+
 				attacker.Mu.Unlock()
 
 				if isBoss && w.OnEvent != nil {
-					go func(pid string) {
+					go func(pid string, summary RewardSummaryEvent, sendSummary bool) {
 						w.OnEvent("inventory_update", pid)
-					}(attacker.ID)
+						if sendSummary {
+							w.OnEvent("reward_summary", summary)
+						}
+					}(attackerID, rewardSummary, hasRewardSummary)
 				}
-			}
-
-			// Loot
-			// Check if Elite
-			isElite := strings.HasPrefix(tID, "elite-")
-
-			// 1. Equipment Loot
-			dropCount := 0
-			if isElite {
-				dropCount = 3 // Elites drop 3 items guaranteed
-			} else if rand.Float64() < 0.5 && tLevel > 0 {
-				dropCount = 1 // Normal enemies have 50% chance for 1 item
-			}
-
-			var lootItems []*Item
-
-			if dropCount > 0 {
-				for i := 0; i < dropCount; i++ {
-					if isElite {
-						lootItems = append(lootItems, GenerateEliteLoot(tLevel))
-					} else {
-						lootItems = append(lootItems, GenerateLoot(tLevel))
-					}
-				}
-			}
-
-			// 2. Shard/Heart Loot (Eidolic)
-			eidolicLoot := GenerateShardLoot(isElite)
-			lootItems = append(lootItems, eidolicLoot...)
-
-			// 3. Gem Loot - 10% base chance (30% for elites)
-			gemChance := 0.10
-			if isElite {
-				gemChance = 0.30
-			}
-			if rand.Float64() < gemChance {
-				// Quality still scales with level, but gems can now drop at any level.
-				gem := GenerateRandomGemByLevel(tLevel, isElite)
-				lootItems = append(lootItems, gem)
 			}
 
 			if len(lootItems) > 0 {
@@ -6899,6 +7010,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				w.Mu.Unlock()
 			}
 		}()
+
 	}
 }
 
