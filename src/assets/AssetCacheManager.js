@@ -1,4 +1,4 @@
-import { getVersionedAssetManifest } from './assetManifest.js';
+import { getAssetPackNames, getVersionedAssetManifest } from './assetManifest.js';
 
 export class AssetCacheManager {
     constructor() {
@@ -106,6 +106,14 @@ export class AssetCacheManager {
             updateAvailable,
             cacheName: this.cacheName
         };
+    }
+
+    async getOutdatedPacks() {
+        const packNames = getAssetPackNames();
+        const inspections = await Promise.all(packNames.map((packName) => this.inspectPack(packName)));
+        return inspections
+            .filter((inspection) => inspection.updateAvailable && inspection.cachedCount > 0)
+            .map((inspection) => inspection.packName);
     }
 
     async clearAll() {

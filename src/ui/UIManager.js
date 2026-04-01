@@ -101,6 +101,8 @@ export class UIManager {
         this.autoLootToggle = document.getElementById('auto-loot-enabled');
         this.btnDownloadCoreAssets = document.getElementById('btn-download-core-assets');
         this.btnDownloadDungeonAssets = document.getElementById('btn-download-dungeon-assets');
+        this.btnDownloadEnvironmentAssets = document.getElementById('btn-download-environment-assets');
+        this.btnRefreshOutdatedAssets = document.getElementById('btn-refresh-outdated-assets');
         this.btnClearCachedAssets = document.getElementById('btn-clear-cached-assets');
         this.assetDownloadStatus = document.getElementById('asset-download-status');
         this.assetDownloadProgress = document.getElementById('asset-download-progress');
@@ -108,6 +110,7 @@ export class UIManager {
         this.assetCacheStateDetail = document.getElementById('asset-cache-state-detail');
         this.assetPackCoreStatus = document.getElementById('asset-pack-core-status');
         this.assetPackDungeonStatus = document.getElementById('asset-pack-dungeon-status');
+        this.assetPackEnvironmentStatus = document.getElementById('asset-pack-environment-status');
 
         if (this.btnResume) this.btnResume.addEventListener('click', () => this.toggleEscMenu());
         if (this.btnHelp) this.btnHelp.addEventListener('click', () => this.toggleHelp());
@@ -131,7 +134,8 @@ export class UIManager {
         this.assetCacheManager = new AssetCacheManager();
         this.assetPackStatuses = {
             'core-models': localStorage.getItem('eidolon.assetPack.core-models') || 'not-downloaded',
-            'dungeon-models': localStorage.getItem('eidolon.assetPack.dungeon-models') || 'not-downloaded'
+            'dungeon-models': localStorage.getItem('eidolon.assetPack.dungeon-models') || 'not-downloaded',
+            'environment-textures': localStorage.getItem('eidolon.assetPack.environment-textures') || 'not-downloaded'
         };
         this.graphicsQuality = localStorage.getItem('eidolon.graphicsQuality') || 'high';
         if (this.graphicsQualitySelect) {
@@ -168,6 +172,16 @@ export class UIManager {
         if (this.btnDownloadDungeonAssets) {
             this.btnDownloadDungeonAssets.addEventListener('click', () => {
                 void this.requestAssetDownload('dungeon-models');
+            });
+        }
+        if (this.btnDownloadEnvironmentAssets) {
+            this.btnDownloadEnvironmentAssets.addEventListener('click', () => {
+                void this.requestAssetDownload('environment-textures');
+            });
+        }
+        if (this.btnRefreshOutdatedAssets) {
+            this.btnRefreshOutdatedAssets.addEventListener('click', () => {
+                void this.refreshOutdatedAssets();
             });
         }
         if (this.btnClearCachedAssets) {
@@ -1395,7 +1409,8 @@ export class UIManager {
         try {
             const inspections = await Promise.all([
                 this.assetCacheManager.inspectPack('core-models'),
-                this.assetCacheManager.inspectPack('dungeon-models')
+                this.assetCacheManager.inspectPack('dungeon-models'),
+                this.assetCacheManager.inspectPack('environment-textures')
             ]);
 
             for (const inspection of inspections) {
@@ -1412,6 +1427,9 @@ export class UIManager {
                 }
                 if (inspection.packName === 'dungeon-models' && !inspection.cached && inspection.cachedCount > 0 && this.assetPackDungeonStatus) {
                     this.assetPackDungeonStatus.textContent = `${inspection.cachedCount}/${inspection.total} cached`;
+                }
+                if (inspection.packName === 'environment-textures' && !inspection.cached && inspection.cachedCount > 0 && this.assetPackEnvironmentStatus) {
+                    this.assetPackEnvironmentStatus.textContent = `${inspection.cachedCount}/${inspection.total} cached`;
                 }
             }
 
@@ -1441,6 +1459,13 @@ export class UIManager {
                 : this.assetPackStatuses['dungeon-models'] === 'downloading'
                     ? 'Downloading dungeon models...'
                     : 'Dungeon models not downloaded';
+        }
+        if (this.assetPackEnvironmentStatus) {
+            this.assetPackEnvironmentStatus.textContent = this.assetPackStatuses['environment-textures'] === 'cached'
+                ? 'Environment textures cached'
+                : this.assetPackStatuses['environment-textures'] === 'downloading'
+                    ? 'Downloading environment textures...'
+                    : 'Environment textures not downloaded';
         }
         if (this.assetDownloadStatus) {
             if (this.assetPackStatuses['core-models'] === 'downloading') {
@@ -1481,11 +1506,23 @@ export class UIManager {
         }
     }
 
+    async refreshOutdatedAssets() {
+        const outdatedPacks = await this.assetCacheManager.getOutdatedPacks();
+        for (const packName of outdatedPacks) {
+            await this.requestAssetDownload(packName);
+        }
+        if (this.assetDownloadStatus && outdatedPacks.length === 0) {
+            this.assetDownloadStatus.textContent = 'Assets already up to date';
+        }
+        return outdatedPacks;
+    }
+
     async clearCachedAssets() {
         const handler = this.onAssetCacheClearRequest || (() => this.assetCacheManager.clearAll());
         const result = await handler();
         this.setAssetPackStatus('core-models', 'not-downloaded');
         this.setAssetPackStatus('dungeon-models', 'not-downloaded');
+        this.setAssetPackStatus('environment-textures', 'not-downloaded');
         this.updateAssetDownloadProgress({ completed: 0, total: 0, percent: 0 });
         if (this.assetDownloadStatus) {
             this.assetDownloadStatus.textContent = result?.cleared > 0 ? 'Cache cleared' : 'Nothing to clear';

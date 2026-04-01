@@ -63,6 +63,8 @@ function buildDom() {
         <input id="auto-loot-enabled" type="checkbox" />
         <button id="btn-download-core-assets"></button>
         <button id="btn-download-dungeon-assets"></button>
+        <button id="btn-download-environment-assets"></button>
+        <button id="btn-refresh-outdated-assets"></button>
         <button id="btn-clear-cached-assets"></button>
         <div id="asset-download-status"></div>
         <div id="asset-download-progress"></div>
@@ -70,6 +72,7 @@ function buildDom() {
         <div id="asset-cache-state-detail"></div>
         <div id="asset-pack-core-status"></div>
         <div id="asset-pack-dungeon-status"></div>
+        <div id="asset-pack-environment-status"></div>
         <div id="inventory-screen"></div>
         <div id="inventory-grid"></div>
         <button id="btn-sort-inventory"></button>
@@ -225,15 +228,45 @@ describe('UIManager asset download settings', () => {
         ui.assetCacheManager.inspectPack = jest.fn(async (packName) => ({
             packName,
             cached: packName === 'core-models',
-            cachedCount: packName === 'core-models' ? 4 : 1,
-            total: packName === 'core-models' ? 4 : 4,
-            updateAvailable: packName === 'dungeon-models'
+            cachedCount: packName === 'core-models' ? 4 : packName === 'environment-textures' ? 2 : 1,
+            total: 4,
+            updateAvailable: packName !== 'core-models'
         }));
 
         await ui.refreshAssetCacheState();
 
         expect(ui.assetPackCoreStatus.textContent).toContain('Core models cached');
         expect(ui.assetPackDungeonStatus.textContent).toContain('1/4 cached');
+        expect(ui.assetPackEnvironmentStatus.textContent).toContain('2/4 cached');
         expect(ui.assetCacheStateDetail.textContent).toContain('Update available');
+    });
+
+    test('environment asset button requests environment textures pack', async () => {
+        const ui = new UIManager(false);
+        ui.onAssetDownloadRequest = jest.fn(async () => undefined);
+
+        document.getElementById('btn-download-environment-assets').click();
+        await Promise.resolve();
+        await Promise.resolve();
+
+        expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('environment-textures');
+    });
+
+    test('refresh outdated assets requests only stale packs', async () => {
+        const ui = new UIManager(false);
+        ui.assetCacheManager.inspectPack = jest.fn(async (packName) => ({
+            packName,
+            cached: false,
+            cachedCount: packName === 'core-models' ? 4 : 1,
+            total: 4,
+            updateAvailable: packName !== 'core-models'
+        }));
+        ui.onAssetDownloadRequest = jest.fn(async () => undefined);
+
+        await ui.refreshOutdatedAssets();
+
+        expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('dungeon-models');
+        expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('environment-textures');
+        expect(ui.onAssetDownloadRequest).not.toHaveBeenCalledWith('core-models');
     });
 });
