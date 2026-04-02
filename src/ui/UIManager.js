@@ -504,28 +504,64 @@ export class UIManager {
     }
 
     formatRewardSummary(summary = {}) {
+        const currencyParts = [];
+        const lootParts = [];
+
+        if (summary.gold) currencyParts.push(`+${summary.gold} gold`);
+        if (summary.xp) currencyParts.push(`+${summary.xp} XP`);
+        if (summary.itemCount) lootParts.push(`${summary.itemCount} item${summary.itemCount === 1 ? '' : 's'}`);
+        if (summary.gemCount) lootParts.push(`${summary.gemCount} gem${summary.gemCount === 1 ? '' : 's'}`);
+        if (summary.heartCount) lootParts.push(`${summary.heartCount} heart${summary.heartCount === 1 ? '' : 's'}`);
+
+        return {
+            currencyLine: currencyParts.join(', '),
+            lootLine: lootParts.join(', ')
+        };
+    }
+
+    formatRewardSummarySubtitle(summary = {}) {
         const parts = [];
+        if (summary.subtitle) parts.push(summary.subtitle);
+        if (summary.runLevel) parts.push(`Level ${summary.runLevel}`);
+        return parts.join(' • ');
+    }
 
-        if (summary.gold) parts.push(`+${summary.gold} gold`);
-        if (summary.xp) parts.push(`+${summary.xp} XP`);
-        if (summary.itemCount) parts.push(`${summary.itemCount} item${summary.itemCount === 1 ? '' : 's'}`);
-        if (summary.gemCount) parts.push(`${summary.gemCount} gem${summary.gemCount === 1 ? '' : 's'}`);
-        if (summary.heartCount) parts.push(`${summary.heartCount} heart${summary.heartCount === 1 ? '' : 's'}`);
-
-        return parts.join(', ');
+    formatRewardSummaryCompletion(summary = {}) {
+        const parts = [];
+        if (summary.roomsCleared || summary.totalRooms) {
+            parts.push(`${summary.roomsCleared || 0} / ${summary.totalRooms || 0} rooms`);
+        }
+        if (summary.eliteRoomsCleared || summary.totalEliteRooms) {
+            parts.push(`${summary.eliteRoomsCleared || 0} / ${summary.totalEliteRooms || 0} elite rooms`);
+        }
+        if (parts.length === 0) return '';
+        return `Dungeon complete • ${parts.join(' • ')}`;
     }
 
     showRewardSummary(summary = {}) {
         if (!summary.title) return;
 
         this.addChatMessage('Rewards', summary.title);
-        if (summary.subtitle) {
-            this.addChatMessage('Rewards', summary.subtitle);
+
+        const subtitleLine = this.formatRewardSummarySubtitle(summary);
+        if (subtitleLine) {
+            this.addChatMessage('Rewards', subtitleLine);
         }
 
-        const rewardLine = this.formatRewardSummary(summary);
-        if (rewardLine) {
-            this.addChatMessage('Rewards', rewardLine);
+        const completionLine = this.formatRewardSummaryCompletion(summary);
+        if (completionLine) {
+            this.addChatMessage('Rewards', completionLine);
+        }
+
+        const { currencyLine, lootLine } = this.formatRewardSummary(summary);
+        if (currencyLine) {
+            this.addChatMessage('Rewards', currencyLine);
+        }
+        if (lootLine) {
+            this.addChatMessage('Rewards', lootLine);
+        }
+        if (summary.exitHint) {
+            this.addChatMessage('Rewards', summary.exitHint);
         }
     }
 

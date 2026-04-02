@@ -164,6 +164,14 @@ function createRewardSummary(overrides = {}) {
         gemCount: 1,
         heartCount: 2,
         bossName: 'Zephyrion',
+        instanceType: 'tempest_spire',
+        difficulty: 'heroic',
+        runLevel: 100,
+        roomsCleared: 6,
+        totalRooms: 6,
+        eliteRoomsCleared: 2,
+        totalEliteRooms: 2,
+        exitHint: 'Return to the entrance to leave the dungeon.',
         ...overrides
     };
 }
@@ -186,22 +194,26 @@ function createEngineHarness() {
 }
 
 describe('Dungeon reward feedback', () => {
-    test('UIManager.showRewardSummary emits concise reward messages', () => {
+    test('UIManager.showRewardSummary emits a stronger dungeon completion summary', () => {
         buildDom();
         const ui = new UIManager(false);
 
         ui.showRewardSummary(createRewardSummary());
 
         const chatMessages = Array.from(document.querySelectorAll('#chat-messages > div')).map(node => node.textContent);
-        expect(chatMessages).toHaveLength(3);
+        expect(chatMessages).toHaveLength(6);
         expect(chatMessages[0]).toContain('Rewards');
         expect(chatMessages[0]).toContain('Boss Defeated: Zephyrion');
-        expect(chatMessages[1]).toContain('Tempest Spire • Heroic');
-        expect(chatMessages[2]).toContain('+4200 gold');
-        expect(chatMessages[2]).toContain('+900000 XP');
-        expect(chatMessages[2]).toContain('3 items');
-        expect(chatMessages[2]).toContain('1 gem');
-        expect(chatMessages[2]).toContain('2 hearts');
+        expect(chatMessages[1]).toContain('Tempest Spire • Heroic • Level 100');
+        expect(chatMessages[2]).toContain('Dungeon complete');
+        expect(chatMessages[2]).toContain('6 / 6 rooms');
+        expect(chatMessages[2]).toContain('2 / 2 elite rooms');
+        expect(chatMessages[3]).toContain('+4200 gold');
+        expect(chatMessages[3]).toContain('+900000 XP');
+        expect(chatMessages[4]).toContain('3 items');
+        expect(chatMessages[4]).toContain('1 gem');
+        expect(chatMessages[4]).toContain('2 hearts');
+        expect(chatMessages[5]).toContain('Return to the entrance to leave the dungeon.');
     });
 
     test('GameEngine reward_summary handling spawns floating text and forwards summary to UI', () => {

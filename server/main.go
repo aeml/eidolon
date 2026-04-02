@@ -370,6 +370,12 @@ type RewardSummaryPayload struct {
 	BossName     string `json:"bossName,omitempty"`
 	InstanceType string `json:"instanceType,omitempty"`
 	Difficulty   string `json:"difficulty,omitempty"`
+	RunLevel     int    `json:"runLevel,omitempty"`
+	RoomsCleared int    `json:"roomsCleared,omitempty"`
+	TotalRooms   int    `json:"totalRooms,omitempty"`
+	EliteRoomsCleared int `json:"eliteRoomsCleared,omitempty"`
+	TotalEliteRooms int `json:"totalEliteRooms,omitempty"`
+	ExitHint     string `json:"exitHint,omitempty"`
 }
 
 type RoomClearRewardPayload struct {
@@ -802,6 +808,12 @@ func main() {
 				BossName:     evt.BossName,
 				InstanceType: evt.InstanceType,
 				Difficulty:   evt.Difficulty,
+				RunLevel:     evt.RunLevel,
+				RoomsCleared: evt.RoomsCleared,
+				TotalRooms:   evt.TotalRooms,
+				EliteRoomsCleared: evt.EliteRoomsCleared,
+				TotalEliteRooms:   evt.TotalEliteRooms,
+				ExitHint:     evt.ExitHint,
 			}
 			b, _ := json.Marshal(payload)
 			outMsg := Message{

@@ -1781,6 +1781,12 @@ type RewardSummaryEvent struct {
 	BossName    string `json:"bossName,omitempty"`
 	InstanceType string `json:"instanceType,omitempty"`
 	Difficulty  string `json:"difficulty,omitempty"`
+	RunLevel    int    `json:"runLevel,omitempty"`
+	RoomsCleared int   `json:"roomsCleared,omitempty"`
+	TotalRooms  int    `json:"totalRooms,omitempty"`
+	EliteRoomsCleared int `json:"eliteRoomsCleared,omitempty"`
+	TotalEliteRooms int `json:"totalEliteRooms,omitempty"`
+	ExitHint    string `json:"exitHint,omitempty"`
 }
 
 type DungeonRoomClearRewardEvent struct {
@@ -1837,7 +1843,7 @@ func countRewardDrops(items []*Item) (itemCount, gemCount int) {
 	return itemCount, gemCount
 }
 
-func buildBossRewardSummary(playerID, bossName, instanceType string, difficulty DungeonDifficulty, gold, xp, heartCount int, lootItems []*Item) RewardSummaryEvent {
+func buildBossRewardSummary(playerID, bossName, instanceType string, difficulty DungeonDifficulty, runLevel, roomsCleared, eliteRoomsCleared, totalRooms, totalEliteRooms, gold, xp, heartCount int, lootItems []*Item) RewardSummaryEvent {
 	itemCount, gemCount := countRewardDrops(lootItems)
 	return RewardSummaryEvent{
 		PlayerID:     playerID,
@@ -1851,6 +1857,12 @@ func buildBossRewardSummary(playerID, bossName, instanceType string, difficulty 
 		BossName:     bossName,
 		InstanceType: instanceType,
 		Difficulty:   string(difficulty),
+		RunLevel:     runLevel,
+		RoomsCleared: roomsCleared,
+		TotalRooms:   totalRooms,
+		EliteRoomsCleared: eliteRoomsCleared,
+		TotalEliteRooms:   totalEliteRooms,
+		ExitHint:     "Return to the entrance to leave the dungeon.",
 	}
 }
 
@@ -6890,9 +6902,36 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 		tInstanceID := target.InstanceID
 
 		go func() {
-			// Get difficulty multipliers for dungeon enemies
+			// Get difficulty multipliers and current dungeon completion state for dungeon enemies
 			instanceDifficulty := w.GetInstanceDifficulty(tInstanceID)
 			instanceType := w.GetInstanceType(tInstanceID)
+			runLevel := 0
+			roomsCleared := 0
+			eliteRoomsCleared := 0
+			totalRooms := 0
+			totalEliteRooms := 0
+			if tInstanceID != "" {
+				w.Mu.RLock()
+				if inst, ok := w.InstanceLayouts[tInstanceID]; ok {
+					runLevel = inst.RunLevel
+					for idx, layoutRoom := range inst.Layout.Rooms {
+						if layoutRoom.Type == "start" {
+							continue
+						}
+						totalRooms++
+						if layoutRoom.Type == "elite" {
+							totalEliteRooms++
+						}
+						if inst.RoomState != nil && idx < len(inst.RoomState.Rooms) && inst.RoomState.Rooms[idx].Cleared {
+							roomsCleared++
+							if layoutRoom.Type == "elite" {
+								eliteRoomsCleared++
+							}
+						}
+					}
+				}
+				w.Mu.RUnlock()
+			}
 			_, _, lootMult, xpMult := DifficultyMultipliers(instanceDifficulty)
 
 			// XP - Base XP scales with level
@@ -7138,7 +7177,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					rewardSummary := RewardSummaryEvent{}
 					hasRewardSummary := false
 					if isBoss {
-						rewardSummary = buildBossRewardSummary(memberID, tSubType, instanceType, instanceDifficulty, goldPerMember, xpPerMember, heartCount, nil)
+						rewardSummary = buildBossRewardSummary(memberID, tSubType, instanceType, instanceDifficulty, runLevel, roomsCleared, eliteRoomsCleared, totalRooms, totalEliteRooms, goldPerMember, xpPerMember, heartCount, nil)
 						if memberRewardItemCount > 0 {
 							rewardSummary.ItemCount = memberRewardItemCount
 						}
@@ -7242,7 +7281,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				rewardSummary := RewardSummaryEvent{}
 				hasRewardSummary := false
 				if isBoss {
-					rewardSummary = buildBossRewardSummary(attackerID, tSubType, instanceType, instanceDifficulty, finalGold, finalXp, heartCount, nil)
+					rewardSummary = buildBossRewardSummary(attackerID, tSubType, instanceType, instanceDifficulty, runLevel, roomsCleared, eliteRoomsCleared, totalRooms, totalEliteRooms, finalGold, finalXp, heartCount, nil)
 					if attackerRewardItemCount > 0 {
 						rewardSummary.ItemCount = attackerRewardItemCount
 					}
@@ -8173,6 +8212,25 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 	inst.RoomState.MarkRoomCleared(roomIndex)
 	for playerID := range inst.PlayerRoomSummary {
 		inst.PlayerRoomSummary[playerID] = inst.RoomState.Summary(0, 0)
+	}
+	roomsCleared := 0
+	eliteRoomsCleared := 0
+	totalRooms := 0
+	totalEliteRooms := 0
+	for idx, layoutRoom := range inst.Layout.Rooms {
+		if layoutRoom.Type == "start" {
+			continue
+		}
+		totalRooms++
+		if layoutRoom.Type == "elite" {
+			totalEliteRooms++
+		}
+		if idx < len(inst.RoomState.Rooms) && inst.RoomState.Rooms[idx].Cleared {
+			roomsCleared++
+			if layoutRoom.Type == "elite" {
+				eliteRoomsCleared++
+			}
+		}
 	}
 
 	shouldReward := room.Type != "start" && room.Type != "boss" && !progress.Rewarded

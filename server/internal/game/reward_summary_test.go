@@ -24,6 +24,11 @@ func TestBuildBossRewardSummaryFormatsBossRewards(t *testing.T) {
 		"Zephyrion",
 		"tempest_spire",
 		DifficultyHeroic,
+		100,
+		6,
+		2,
+		6,
+		2,
 		4200,
 		900000,
 		2,
@@ -52,6 +57,18 @@ func TestBuildBossRewardSummaryFormatsBossRewards(t *testing.T) {
 	if summary.Difficulty != string(DifficultyHeroic) {
 		t.Fatalf("unexpected difficulty: %s", summary.Difficulty)
 	}
+	if summary.RunLevel != 100 {
+		t.Fatalf("unexpected run level: %d", summary.RunLevel)
+	}
+	if summary.RoomsCleared != 6 || summary.TotalRooms != 6 {
+		t.Fatalf("unexpected room completion summary: cleared=%d total=%d", summary.RoomsCleared, summary.TotalRooms)
+	}
+	if summary.EliteRoomsCleared != 2 || summary.TotalEliteRooms != 2 {
+		t.Fatalf("unexpected elite room summary: cleared=%d total=%d", summary.EliteRoomsCleared, summary.TotalEliteRooms)
+	}
+	if summary.ExitHint == "" {
+		t.Fatalf("expected exit hint to be populated")
+	}
 }
 
 func TestBuildBossRewardSummaryCanBeOverriddenForDirectRewards(t *testing.T) {
@@ -60,6 +77,11 @@ func TestBuildBossRewardSummaryCanBeOverriddenForDirectRewards(t *testing.T) {
 		"HollowSentinel",
 		"verdant_bastion_catacombs",
 		DifficultyNormal,
+		30,
+		1,
+		0,
+		1,
+		0,
 		120,
 		800,
 		1,
