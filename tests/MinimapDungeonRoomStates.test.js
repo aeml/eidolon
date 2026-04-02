@@ -72,7 +72,28 @@ describe('Minimap dungeon room states', () => {
 
         expect(fillRects.some((entry) => entry.fillStyle === 'rgba(90, 160, 255, 0.18)')).toBe(true);
         expect(fillRects.some((entry) => entry.fillStyle === 'rgba(120, 255, 160, 0.22)')).toBe(true);
-        expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 215, 90, 0.95)')).toBe(true);
-        expect(texts.some((entry) => String(entry.args[0]).includes('Objective'))).toBe(true);
+        expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 110, 110, 0.95)')).toBe(true);
+        expect(texts.some((entry) => String(entry.args[0]).includes('Boss'))).toBe(true);
+    });
+
+    test('renders boss objective rooms with a distinct boss marker', () => {
+        const minimap = new Minimap(200);
+        minimap.gameEngine = {
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, x: 0, z: 0, width: 40, height: 40, type: 'start', explored: true, cleared: true },
+                    { index: 1, x: 50, z: 0, width: 40, height: 40, type: 'elite', explored: true, cleared: true },
+                    { index: 2, x: 100, z: 0, width: 40, height: 40, type: 'boss', explored: true, cleared: false }
+                ]
+            }),
+            uiManager: { partyData: { members: [] } }
+        };
+
+        minimap.update({ position: { x: 50, z: 0 }, id: 'player-1' }, []);
+
+        expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 110, 110, 0.95)')).toBe(true);
+        expect(texts.some((entry) => String(entry.args[0]).includes('Boss'))).toBe(true);
     });
 });

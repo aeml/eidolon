@@ -138,9 +138,15 @@ export class QuestUI {
         this.activeQuestSummary.forEach((objective) => {
             const item = document.createElement('div');
             item.className = 'objective-entry';
+            const badgeMarkup = objective.badge
+                ? `<span class="objective-entry__badge ${objective.badgeClass || ''}">${objective.badge}</span>`
+                : '';
             item.innerHTML = `
                 <div class="objective-entry__header">
-                    <span class="objective-entry__title">${objective.title}</span>
+                    <span class="objective-entry__title-wrap">
+                        ${badgeMarkup}
+                        <span class="objective-entry__title">${objective.title}</span>
+                    </span>
                     <span class="objective-entry__status ${objective.completed ? 'is-complete' : ''}">${objective.completed ? 'Ready' : objective.progressLabel}</span>
                 </div>
                 <div class="objective-entry__progress">

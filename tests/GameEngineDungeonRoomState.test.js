@@ -180,4 +180,53 @@ describe('GameEngine dungeon room state', () => {
             objectiveRoomIndex: 3
         }));
     });
+
+    test('updates tracked room progress when room_clear_reward advances the objective', () => {
+        const engine = new GameEngine('Fighter', false, true, '', 'tester', null);
+        engine.player = {
+            id: 'player-1',
+            position: { x: 0, z: 0, set(x, y, z) { this.x = x; this.y = y; this.z = z; } },
+            mesh: { position: { set() {} }, visible: true },
+            playAnimation() {},
+            quests: [],
+            state: 'IDLE'
+        };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.uiManager = {
+            showRoomClearReward: jest.fn(),
+            updateQuestWindow: jest.fn(),
+            updateJournal: jest.fn()
+        };
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 1,
+            objectiveRoomIndex: 1,
+            rooms: [
+                { index: 0, explored: true, cleared: true, type: 'start', x: 0, z: 0, width: 40, height: 40 },
+                { index: 1, explored: true, cleared: false, type: 'normal', x: 50, z: 0, width: 40, height: 40 },
+                { index: 2, explored: false, cleared: false, type: 'boss', x: 100, z: 0, width: 40, height: 40 }
+            ]
+        };
+
+        engine.handleServerMessage({
+            type: 'room_clear_reward',
+            payload: {
+                playerId: 'player-1',
+                roomIndex: 1,
+                objectiveRoomIndex: 2,
+                roomType: 'normal',
+                title: 'Room Cleared: Hall 2',
+                hint: 'Boss room discovered',
+                gold: 50,
+                xp: 120
+            }
+        });
+
+        expect(engine.getDungeonRoomSummary()).toEqual(expect.objectContaining({
+            objectiveRoomIndex: 2,
+            rooms: expect.arrayContaining([
+                expect.objectContaining({ index: 1, explored: true, cleared: true }),
+                expect.objectContaining({ index: 2, explored: true, cleared: false, type: 'boss' })
+            ])
+        }));
+    });
 });

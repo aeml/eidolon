@@ -218,6 +218,41 @@
     gap: 10px;
 }
 
+.objective-entry__title-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.objective-entry__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 7px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 217, 102, 0.45);
+    background: rgba(255, 217, 102, 0.12);
+    color: #ffe7a6;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.objective-entry__badge.is-objective {
+    border-color: rgba(255, 217, 102, 0.55);
+    background: rgba(255, 217, 102, 0.14);
+    color: #ffe7a6;
+}
+
+.objective-entry__badge.is-boss {
+    border-color: rgba(255, 110, 110, 0.55);
+    background: rgba(255, 110, 110, 0.14);
+    color: #ffb0b0;
+}
+
 .objective-entry__title {
     color: #f2f2f2;
     font-size: 13px;

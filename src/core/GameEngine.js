@@ -809,10 +809,26 @@ export class GameEngine {
                 if (this.floatingTextManager && this.player.position) {
                     this.floatingTextManager.spawn('ROOM CLEARED!', this.player.position, '#7CFFB2', '26px');
                 }
-                if (typeof summary.objectiveRoomIndex === 'number' && this.currentDungeonRoomState) {
+                if (this.currentDungeonRoomState) {
+                    const updatedRooms = Array.isArray(this.currentDungeonRoomState.rooms)
+                        ? this.currentDungeonRoomState.rooms.map((room) => {
+                            if (!room || typeof room.index !== 'number') return room;
+                            if (typeof summary.roomIndex === 'number' && room.index === summary.roomIndex) {
+                                return { ...room, explored: true, cleared: true };
+                            }
+                            if (typeof summary.objectiveRoomIndex === 'number' && room.index === summary.objectiveRoomIndex) {
+                                return { ...room, explored: true };
+                            }
+                            return room;
+                        })
+                        : this.currentDungeonRoomState.rooms;
+
                     this.currentDungeonRoomState = {
                         ...this.currentDungeonRoomState,
-                        objectiveRoomIndex: summary.objectiveRoomIndex
+                        objectiveRoomIndex: typeof summary.objectiveRoomIndex === 'number'
+                            ? summary.objectiveRoomIndex
+                            : this.currentDungeonRoomState.objectiveRoomIndex,
+                        rooms: updatedRooms
                     };
                 }
                 if (this.uiManager && this.uiManager.showRoomClearReward) {

@@ -119,4 +119,45 @@ describe('QuestUI objectives panel', () => {
         expect(document.getElementById('objectives-panel').style.display).toBe('none');
         expect(document.getElementById('objectives-list').children).toHaveLength(0);
     });
+
+    test('renders dungeon objective entries with status badges for routing states', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] })
+        });
+
+        questUI.renderObjectivesPanel([
+            {
+                id: 'dungeon-route-open',
+                title: 'Push deeper into Tempest Spire',
+                progressLabel: '2 / 4',
+                progressPct: 50,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Objective',
+                badgeClass: 'is-objective',
+                hint: 'Boss path open — one room remains'
+            },
+            {
+                id: 'dungeon-route-boss',
+                title: 'Confront the boss',
+                progressLabel: '3 / 4',
+                progressPct: 75,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Boss',
+                badgeClass: 'is-boss',
+                hint: 'Boss room discovered'
+            }
+        ]);
+
+        const badges = Array.from(document.querySelectorAll('.objective-entry__badge')).map((node) => ({
+            text: node.textContent,
+            className: node.className
+        }));
+        expect(badges).toEqual([
+            expect.objectContaining({ text: 'Objective', className: expect.stringContaining('is-objective') }),
+            expect.objectContaining({ text: 'Boss', className: expect.stringContaining('is-boss') })
+        ]);
+    });
 });

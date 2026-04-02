@@ -294,13 +294,14 @@ export class Minimap {
             }
 
             if (room.index === summary.objectiveRoomIndex) {
-                ctx.strokeStyle = 'rgba(255, 215, 90, 0.95)';
-                ctx.lineWidth = 2;
+                const isBossObjective = room.type === 'boss';
+                ctx.strokeStyle = isBossObjective ? 'rgba(255, 110, 110, 0.95)' : 'rgba(255, 215, 90, 0.95)';
+                ctx.lineWidth = isBossObjective ? 2.5 : 2;
                 ctx.beginPath();
                 ctx.arc(center.x, center.y, Math.max(roomWidth, roomHeight) * 0.35, 0, Math.PI * 2);
                 ctx.stroke();
-                ctx.fillStyle = 'rgba(255, 215, 90, 0.95)';
-                ctx.fillText('Objective', center.x, center.y - Math.max(8, roomHeight * 0.5));
+                ctx.fillStyle = isBossObjective ? 'rgba(255, 110, 110, 0.95)' : 'rgba(255, 215, 90, 0.95)';
+                ctx.fillText(isBossObjective ? 'Boss' : 'Objective', center.x, center.y - Math.max(8, roomHeight * 0.5));
             }
         });
     }
