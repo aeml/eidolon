@@ -172,6 +172,7 @@ const (
 	MsgResetDungeon      = "reset_dungeon"
 	MsgTelegraph         = "telegraph"
 	MsgRewardSummary     = "reward_summary"
+	MsgRoomClearReward   = "room_clear_reward"
 	MsgDungeonRoomState  = "dungeon_room_state"
 )
 
@@ -369,6 +370,20 @@ type RewardSummaryPayload struct {
 	BossName     string `json:"bossName,omitempty"`
 	InstanceType string `json:"instanceType,omitempty"`
 	Difficulty   string `json:"difficulty,omitempty"`
+}
+
+type RoomClearRewardPayload struct {
+	PlayerID           string `json:"playerId"`
+	Title              string `json:"title"`
+	Subtitle           string `json:"subtitle,omitempty"`
+	Gold               int    `json:"gold"`
+	XP                 int    `json:"xp"`
+	Hint               string `json:"hint,omitempty"`
+	RoomIndex          int    `json:"roomIndex"`
+	ObjectiveRoomIndex int    `json:"objectiveRoomIndex"`
+	RoomType           string `json:"roomType,omitempty"`
+	InstanceType       string `json:"instanceType,omitempty"`
+	Difficulty         string `json:"difficulty,omitempty"`
 }
 
 type ChatPayload struct {
@@ -791,6 +806,44 @@ func main() {
 			b, _ := json.Marshal(payload)
 			outMsg := Message{
 				Type:    MsgRewardSummary,
+				Payload: b,
+			}
+			dataBytes, _ := json.Marshal(outMsg)
+
+			username := evt.PlayerID
+			if strings.HasPrefix(username, "player-") {
+				username = strings.TrimPrefix(username, "player-")
+			}
+
+			go func() {
+				sessionsMu.Lock()
+				client, exists := activeSessions[username]
+				sessionsMu.Unlock()
+				if exists {
+					client.sendSafe(dataBytes)
+				}
+			}()
+		case "room_clear_reward":
+			evt, ok := data.(game.DungeonRoomClearRewardEvent)
+			if !ok {
+				return
+			}
+			payload := RoomClearRewardPayload{
+				PlayerID:           evt.PlayerID,
+				Title:              evt.Title,
+				Subtitle:           evt.Subtitle,
+				Gold:               evt.Gold,
+				XP:                 evt.XP,
+				Hint:               evt.Hint,
+				RoomIndex:          evt.RoomIndex,
+				ObjectiveRoomIndex: evt.ObjectiveRoomIndex,
+				RoomType:           evt.RoomType,
+				InstanceType:       evt.InstanceType,
+				Difficulty:         evt.Difficulty,
+			}
+			b, _ := json.Marshal(payload)
+			outMsg := Message{
+				Type:    MsgRoomClearReward,
 				Payload: b,
 			}
 			dataBytes, _ := json.Marshal(outMsg)

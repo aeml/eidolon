@@ -803,6 +803,22 @@ export class GameEngine {
                     this.uiManager.showRewardSummary(summary);
                 }
             }
+        } else if (msg.type === 'room_clear_reward') {
+            const summary = msg.payload;
+            if (this.player && summary && summary.playerId === this.player.id) {
+                if (this.floatingTextManager && this.player.position) {
+                    this.floatingTextManager.spawn('ROOM CLEARED!', this.player.position, '#7CFFB2', '26px');
+                }
+                if (typeof summary.objectiveRoomIndex === 'number' && this.currentDungeonRoomState) {
+                    this.currentDungeonRoomState = {
+                        ...this.currentDungeonRoomState,
+                        objectiveRoomIndex: summary.objectiveRoomIndex
+                    };
+                }
+                if (this.uiManager && this.uiManager.showRoomClearReward) {
+                    this.uiManager.showRoomClearReward(summary);
+                }
+            }
         } else if (msg.type === 'telegraph') {
             // Boss AoE telegraph — show a warning circle on the ground
             const data = msg.payload;

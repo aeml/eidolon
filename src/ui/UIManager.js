@@ -526,6 +526,23 @@ export class UIManager {
         }
     }
 
+    showRoomClearReward(summary = {}) {
+        if (!summary.title) return;
+
+        this.addChatMessage('Room', summary.title);
+        if (summary.subtitle) {
+            this.addChatMessage('Room', summary.subtitle);
+        }
+
+        const parts = [];
+        if (summary.gold) parts.push(`+${summary.gold} gold`);
+        if (summary.xp) parts.push(`+${summary.xp} XP`);
+        if (summary.hint) parts.push(summary.hint);
+        if (parts.length > 0) {
+            this.addChatMessage('Room', parts.join(' • '));
+        }
+    }
+
     toggleChat(show) {
         if (this.chatBox) {
             this.chatBox.style.display = show ? 'flex' : 'none';

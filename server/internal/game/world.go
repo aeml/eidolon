@@ -1440,6 +1440,7 @@ type DungeonLayout struct {
 type DungeonRoomProgress struct {
 	Explored bool `json:"explored"`
 	Cleared  bool `json:"cleared"`
+	Rewarded bool `json:"-"`
 }
 
 type DungeonRoomSummaryEntry struct {
@@ -1782,6 +1783,20 @@ type RewardSummaryEvent struct {
 	Difficulty  string `json:"difficulty,omitempty"`
 }
 
+type DungeonRoomClearRewardEvent struct {
+	PlayerID           string `json:"playerId"`
+	Title              string `json:"title"`
+	Subtitle           string `json:"subtitle,omitempty"`
+	Gold               int    `json:"gold"`
+	XP                 int    `json:"xp"`
+	Hint               string `json:"hint,omitempty"`
+	RoomIndex          int    `json:"roomIndex"`
+	ObjectiveRoomIndex int    `json:"objectiveRoomIndex"`
+	RoomType           string `json:"roomType,omitempty"`
+	InstanceType       string `json:"instanceType,omitempty"`
+	Difficulty         string `json:"difficulty,omitempty"`
+}
+
 func formatDungeonLabel(instanceType string) string {
 	switch instanceType {
 	case "verdant_bastion_catacombs":
@@ -1836,6 +1851,44 @@ func buildBossRewardSummary(playerID, bossName, instanceType string, difficulty 
 		BossName:     bossName,
 		InstanceType: instanceType,
 		Difficulty:   string(difficulty),
+	}
+}
+
+func formatDungeonRoomLabel(roomType string, roomIndex int) string {
+	switch roomType {
+	case "elite":
+		return fmt.Sprintf("Elite Chamber %d", roomIndex)
+	case "boss":
+		return "Boss Chamber"
+	case "start":
+		return "Entry Hall"
+	default:
+		return fmt.Sprintf("Room %d", roomIndex)
+	}
+}
+
+func buildDungeonRoomClearRewardSummary(playerID string, roomIndex, objectiveRoomIndex, gold, xp int, instanceType string, difficulty DungeonDifficulty, roomType string) DungeonRoomClearRewardEvent {
+	hint := "Path opened deeper into the dungeon"
+	if objectiveRoomIndex >= 0 {
+		if roomType == "elite" {
+			hint = "Elite cleared — push toward the next objective"
+		} else {
+			hint = "Path opened to the boss room"
+		}
+	}
+
+	return DungeonRoomClearRewardEvent{
+		PlayerID:           playerID,
+		Title:              fmt.Sprintf("Room Cleared: %s", formatDungeonRoomLabel(roomType, roomIndex)),
+		Subtitle:           fmt.Sprintf("%s • %s", formatDungeonLabel(instanceType), formatDungeonDifficultyLabel(difficulty)),
+		Gold:               gold,
+		XP:                 xp,
+		Hint:               hint,
+		RoomIndex:          roomIndex,
+		ObjectiveRoomIndex: objectiveRoomIndex,
+		RoomType:           roomType,
+		InstanceType:       instanceType,
+		Difficulty:         string(difficulty),
 	}
 }
 
@@ -8100,15 +8153,53 @@ func (w *World) UpdateDungeonRoomProgress(playerID string, x, z float64) {
 
 func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 	w.Mu.Lock()
-	defer w.Mu.Unlock()
-
 	inst, ok := w.InstanceLayouts[instanceID]
 	if !ok || inst.RoomState == nil {
+		w.Mu.Unlock()
 		return
 	}
+	if roomIndex < 0 || roomIndex >= len(inst.Layout.Rooms) || roomIndex >= len(inst.RoomState.Rooms) {
+		w.Mu.Unlock()
+		return
+	}
+
+	room := inst.Layout.Rooms[roomIndex]
+	progress := inst.RoomState.Rooms[roomIndex]
+	if progress.Cleared {
+		w.Mu.Unlock()
+		return
+	}
+
 	inst.RoomState.MarkRoomCleared(roomIndex)
 	for playerID := range inst.PlayerRoomSummary {
 		inst.PlayerRoomSummary[playerID] = inst.RoomState.Summary(0, 0)
+	}
+
+	shouldReward := room.Type != "start" && room.Type != "boss" && !progress.Rewarded
+	playerRewards := make([]DungeonRoomClearRewardEvent, 0)
+	if shouldReward {
+		inst.RoomState.Rooms[roomIndex].Rewarded = true
+		objectiveRoomIndex := inst.RoomState.ObjectiveRoomIndex()
+		for _, entity := range w.Entities {
+			if entity == nil || entity.Type != TypePlayer || entity.InstanceID != instanceID || entity.State == "DEAD" {
+				continue
+			}
+			xpReward := max(50, inst.RunLevel*10)
+			goldReward := max(25, inst.RunLevel*3)
+			entity.Experience += xpReward
+			entity.Gold += goldReward
+			if entity.MaxExperience == 0 {
+				entity.MaxExperience = 100
+			}
+			playerRewards = append(playerRewards, buildDungeonRoomClearRewardSummary(entity.ID, roomIndex, objectiveRoomIndex, goldReward, xpReward, inst.DungeonType, inst.Difficulty, room.Type))
+		}
+	}
+	w.Mu.Unlock()
+
+	if w.OnEvent != nil {
+		for _, reward := range playerRewards {
+			w.OnEvent("room_clear_reward", reward)
+		}
 	}
 }
 
