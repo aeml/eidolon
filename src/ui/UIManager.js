@@ -111,12 +111,15 @@ export class UIManager {
         this.assetDownloadProgressBar = document.getElementById('asset-download-progress-bar');
         this.assetCacheStateDetail = document.getElementById('asset-cache-state-detail');
         this.assetLastSyncedVersion = document.getElementById('asset-last-synced-version');
+        this.assetPackCoreBadge = document.getElementById('asset-pack-core-badge');
         this.assetPackCoreStatus = document.getElementById('asset-pack-core-status');
         this.assetPackCoreSize = document.getElementById('asset-pack-core-size');
         this.assetPackCoreVersion = document.getElementById('asset-pack-core-version');
+        this.assetPackDungeonBadge = document.getElementById('asset-pack-dungeon-badge');
         this.assetPackDungeonStatus = document.getElementById('asset-pack-dungeon-status');
         this.assetPackDungeonSize = document.getElementById('asset-pack-dungeon-size');
         this.assetPackDungeonVersion = document.getElementById('asset-pack-dungeon-version');
+        this.assetPackEnvironmentBadge = document.getElementById('asset-pack-environment-badge');
         this.assetPackEnvironmentStatus = document.getElementById('asset-pack-environment-status');
         this.assetPackEnvironmentSize = document.getElementById('asset-pack-environment-size');
         this.assetPackEnvironmentVersion = document.getElementById('asset-pack-environment-version');
@@ -1417,6 +1420,9 @@ export class UIManager {
         this.renderAssetPackVersion('core-models');
         this.renderAssetPackVersion('dungeon-models');
         this.renderAssetPackVersion('environment-textures');
+        this.renderAssetPackBadge('core-models', 'not-cached');
+        this.renderAssetPackBadge('dungeon-models', 'not-cached');
+        this.renderAssetPackBadge('environment-textures', 'not-cached');
     }
 
     renderLastSyncedVersion() {
@@ -1432,6 +1438,13 @@ export class UIManager {
         this.assetLastSyncedVersionValue = version;
         localStorage.setItem('eidolon.assetLastSyncedVersion', version);
         this.renderLastSyncedVersion();
+    }
+
+    getAssetPackBadgeElement(packName) {
+        if (packName === 'core-models') return this.assetPackCoreBadge;
+        if (packName === 'dungeon-models') return this.assetPackDungeonBadge;
+        if (packName === 'environment-textures') return this.assetPackEnvironmentBadge;
+        return null;
     }
 
     getAssetPackVersionElement(packName) {
@@ -1451,9 +1464,64 @@ export class UIManager {
             : 'Cached version: Not cached';
     }
 
+    renderAssetPackBadge(packName, state = 'not-cached') {
+        const element = this.getAssetPackBadgeElement(packName);
+        if (!element) {
+            return;
+        }
+
+        const badgeMap = {
+            'not-cached': {
+                label: 'Not cached',
+                background: 'rgba(140, 148, 163, 0.18)',
+                color: '#c7d0dc',
+                borderColor: 'rgba(140, 148, 163, 0.35)'
+            },
+            downloading: {
+                label: 'Downloading',
+                background: 'rgba(111, 168, 220, 0.18)',
+                color: '#cfe9ff',
+                borderColor: 'rgba(111, 168, 220, 0.4)'
+            },
+            partial: {
+                label: 'Partial',
+                background: 'rgba(224, 188, 92, 0.18)',
+                color: '#ffe7a6',
+                borderColor: 'rgba(224, 188, 92, 0.42)'
+            },
+            current: {
+                label: 'Current',
+                background: 'rgba(91, 189, 106, 0.18)',
+                color: '#d6ffd6',
+                borderColor: 'rgba(91, 189, 106, 0.42)'
+            },
+            outdated: {
+                label: 'Outdated',
+                background: 'rgba(214, 111, 111, 0.18)',
+                color: '#ffc7c7',
+                borderColor: 'rgba(214, 111, 111, 0.42)'
+            }
+        };
+
+        const resolved = badgeMap[state] || badgeMap['not-cached'];
+        element.dataset.state = state;
+        element.textContent = resolved.label;
+        element.style.background = resolved.background;
+        element.style.color = resolved.color;
+        element.style.borderColor = resolved.borderColor;
+    }
+
     setAssetPackStatus(packName, status) {
         this.assetPackStatuses[packName] = status;
         localStorage.setItem(`eidolon.assetPack.${packName}`, status);
+        const badgeState = status === 'cached'
+            ? 'current'
+            : status === 'downloading'
+                ? 'downloading'
+                : status === 'partial'
+                    ? 'partial'
+                    : 'not-cached';
+        this.renderAssetPackBadge(packName, badgeState);
         this.refreshAssetDownloadStatus();
     }
 
@@ -1487,6 +1555,15 @@ export class UIManager {
                 } else {
                     this.assetPackStatuses[inspection.packName] = 'not-downloaded';
                 }
+
+                const badgeState = inspection.updateAvailable && inspection.cachedCount > 0
+                    ? 'outdated'
+                    : inspection.cached
+                        ? 'current'
+                        : inspection.cachedCount > 0
+                            ? 'partial'
+                            : 'not-cached';
+                this.renderAssetPackBadge(inspection.packName, badgeState);
 
                 if (inspection.packName === 'core-models' && !inspection.cached && inspection.cachedCount > 0 && this.assetPackCoreStatus) {
                     this.assetPackCoreStatus.textContent = `${inspection.cachedCount}/${inspection.total} cached`;

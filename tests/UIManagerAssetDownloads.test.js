@@ -72,12 +72,15 @@ function buildDom() {
         <div id="asset-download-progress-bar"></div>
         <div id="asset-cache-state-detail"></div>
         <div id="asset-last-synced-version"></div>
+        <div id="asset-pack-core-badge"></div>
         <div id="asset-pack-core-status"></div>
         <div id="asset-pack-core-size"></div>
         <div id="asset-pack-core-version"></div>
+        <div id="asset-pack-dungeon-badge"></div>
         <div id="asset-pack-dungeon-status"></div>
         <div id="asset-pack-dungeon-size"></div>
         <div id="asset-pack-dungeon-version"></div>
+        <div id="asset-pack-environment-badge"></div>
         <div id="asset-pack-environment-status"></div>
         <div id="asset-pack-environment-size"></div>
         <div id="asset-pack-environment-version"></div>
@@ -176,6 +179,9 @@ describe('UIManager asset download settings', () => {
         expect(ui.assetPackCoreSize.textContent).toContain('MB');
         expect(ui.assetPackEnvironmentSize.textContent).toContain('MB');
         expect(document.getElementById('asset-pack-core-version').textContent).toContain('Not cached');
+        expect(document.getElementById('asset-pack-core-badge').textContent).toContain('Not cached');
+        expect(document.getElementById('asset-pack-core-badge').dataset.state).toBe('not-cached');
+        expect(document.getElementById('asset-pack-core-badge').style.color).toBe('rgb(199, 208, 220)');
         expect(ui.assetLastSyncedVersion.textContent).toContain('Not yet synced');
     });
 
@@ -204,6 +210,9 @@ describe('UIManager asset download settings', () => {
         await Promise.resolve();
 
         expect(ui.assetPackDungeonStatus.textContent).toContain('Dungeon models cached');
+        expect(document.getElementById('asset-pack-dungeon-badge').textContent).toContain('Current');
+        expect(document.getElementById('asset-pack-dungeon-badge').dataset.state).toBe('current');
+        expect(document.getElementById('asset-pack-dungeon-badge').style.color).toBe('rgb(214, 255, 214)');
         expect(ui.assetDownloadStatus.textContent).toContain('Dungeon models ready offline');
 
         ui.setAssetPackStatus('core-models', 'cached');
@@ -242,7 +251,7 @@ describe('UIManager asset download settings', () => {
             cached: packName === 'core-models',
             cachedCount: packName === 'core-models' ? 4 : packName === 'environment-textures' ? 2 : 1,
             total: 4,
-            updateAvailable: packName !== 'core-models',
+            updateAvailable: packName === 'dungeon-models',
             cachedVersion: packName === 'core-models' ? '2026-04-01' : packName === 'dungeon-models' ? 'legacy-build' : null
         }));
 
@@ -254,7 +263,16 @@ describe('UIManager asset download settings', () => {
         expect(document.getElementById('asset-pack-core-version').textContent).toContain('2026-04-01');
         expect(document.getElementById('asset-pack-dungeon-version').textContent).toContain('legacy-build');
         expect(document.getElementById('asset-pack-environment-version').textContent).toContain('Not cached');
-        expect(ui.assetCacheStateDetail.textContent).toContain('2 packs need refresh');
+        expect(document.getElementById('asset-pack-core-badge').textContent).toContain('Current');
+        expect(document.getElementById('asset-pack-core-badge').dataset.state).toBe('current');
+        expect(document.getElementById('asset-pack-core-badge').style.color).toBe('rgb(214, 255, 214)');
+        expect(document.getElementById('asset-pack-dungeon-badge').textContent).toContain('Outdated');
+        expect(document.getElementById('asset-pack-dungeon-badge').dataset.state).toBe('outdated');
+        expect(document.getElementById('asset-pack-dungeon-badge').style.color).toBe('rgb(255, 199, 199)');
+        expect(document.getElementById('asset-pack-environment-badge').textContent).toContain('Partial');
+        expect(document.getElementById('asset-pack-environment-badge').dataset.state).toBe('partial');
+        expect(document.getElementById('asset-pack-environment-badge').style.color).toBe('rgb(255, 231, 166)');
+        expect(ui.assetCacheStateDetail.textContent).toContain('1 pack need refresh');
     });
 
     test('environment asset button requests environment textures pack', async () => {
