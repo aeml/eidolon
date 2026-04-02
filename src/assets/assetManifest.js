@@ -19,6 +19,14 @@ const ASSET_PACKS = {
     ]
 };
 
+const ASSET_PACK_SIZE_ESTIMATES_MB = {
+    'core-models': 18,
+    'dungeon-models': 24,
+    'environment-textures': 9
+};
+
+const RECOMMENDED_ASSET_PACKS = ['core-models', 'environment-textures'];
+
 function shouldVersionAsset(path) {
     return typeof path === 'string' && /^\.\/assets\//.test(path);
 }
@@ -56,6 +64,15 @@ function getAssetPackEntries(name) {
     }));
 }
 
+function getAssetPackEstimateMb(name) {
+    const estimate = ASSET_PACK_SIZE_ESTIMATES_MB[name];
+    return typeof estimate === 'number' ? `${estimate} MB` : 'Unknown size';
+}
+
+function getRecommendedAssetPackNames() {
+    return [...RECOMMENDED_ASSET_PACKS];
+}
+
 function getVersionedAssetManifest() {
     const packs = Object.fromEntries(
         getAssetPackNames().map((name) => [
@@ -73,12 +90,16 @@ function getVersionedAssetManifest() {
 
 export {
     ASSET_PACKS,
+    ASSET_PACK_SIZE_ESTIMATES_MB,
     ASSET_VERSION_OVERRIDES,
     DEFAULT_ASSET_VERSION,
+    RECOMMENDED_ASSET_PACKS,
     getAssetPack,
     getAssetPackEntries,
+    getAssetPackEstimateMb,
     getAssetPackNames,
     getAssetVersion,
+    getRecommendedAssetPackNames,
     getVersionedAssetManifest,
     resolveAssetPath,
     shouldVersionAsset

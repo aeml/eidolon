@@ -64,6 +64,7 @@ function buildDom() {
         <button id="btn-download-core-assets"></button>
         <button id="btn-download-dungeon-assets"></button>
         <button id="btn-download-environment-assets"></button>
+        <button id="btn-download-recommended-assets"></button>
         <button id="btn-refresh-outdated-assets"></button>
         <button id="btn-clear-cached-assets"></button>
         <div id="asset-download-status"></div>
@@ -71,8 +72,11 @@ function buildDom() {
         <div id="asset-download-progress-bar"></div>
         <div id="asset-cache-state-detail"></div>
         <div id="asset-pack-core-status"></div>
+        <div id="asset-pack-core-size"></div>
         <div id="asset-pack-dungeon-status"></div>
+        <div id="asset-pack-dungeon-size"></div>
         <div id="asset-pack-environment-status"></div>
+        <div id="asset-pack-environment-size"></div>
         <div id="inventory-screen"></div>
         <div id="inventory-grid"></div>
         <button id="btn-sort-inventory"></button>
@@ -165,6 +169,8 @@ describe('UIManager asset download settings', () => {
         expect(ui.assetDownloadStatus.textContent).toContain('Not downloaded');
         expect(ui.assetPackCoreStatus.textContent).toContain('Core models not downloaded');
         expect(ui.assetPackDungeonStatus.textContent).toContain('Dungeon models not downloaded');
+        expect(ui.assetPackCoreSize.textContent).toContain('MB');
+        expect(ui.assetPackEnvironmentSize.textContent).toContain('MB');
     });
 
     test('core asset download button invokes callback and updates busy state', async () => {
@@ -268,5 +274,21 @@ describe('UIManager asset download settings', () => {
         expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('dungeon-models');
         expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('environment-textures');
         expect(ui.onAssetDownloadRequest).not.toHaveBeenCalledWith('core-models');
+    });
+
+    test('recommended assets button downloads core and environment packs', async () => {
+        const ui = new UIManager(false);
+        ui.onAssetDownloadRequest = jest.fn(async () => undefined);
+
+        document.getElementById('btn-download-recommended-assets').click();
+        await Promise.resolve();
+        await Promise.resolve();
+        await Promise.resolve();
+        await Promise.resolve();
+        await Promise.resolve();
+
+        expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('core-models');
+        expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('environment-textures');
+        expect(ui.onAssetDownloadRequest).not.toHaveBeenCalledWith('dungeon-models');
     });
 });

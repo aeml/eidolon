@@ -7,6 +7,7 @@ import { QuestUI } from './QuestUI.js';
 import { SocialUI } from './SocialUI.js';
 import { InventoryUI } from './InventoryUI.js';
 import { AssetCacheManager } from '../assets/AssetCacheManager.js';
+import { getAssetPackEstimateMb, getRecommendedAssetPackNames } from '../assets/assetManifest.js';
 
 export class UIManager {
     constructor(isMobile = false) {
@@ -102,6 +103,7 @@ export class UIManager {
         this.btnDownloadCoreAssets = document.getElementById('btn-download-core-assets');
         this.btnDownloadDungeonAssets = document.getElementById('btn-download-dungeon-assets');
         this.btnDownloadEnvironmentAssets = document.getElementById('btn-download-environment-assets');
+        this.btnDownloadRecommendedAssets = document.getElementById('btn-download-recommended-assets');
         this.btnRefreshOutdatedAssets = document.getElementById('btn-refresh-outdated-assets');
         this.btnClearCachedAssets = document.getElementById('btn-clear-cached-assets');
         this.assetDownloadStatus = document.getElementById('asset-download-status');
@@ -109,8 +111,11 @@ export class UIManager {
         this.assetDownloadProgressBar = document.getElementById('asset-download-progress-bar');
         this.assetCacheStateDetail = document.getElementById('asset-cache-state-detail');
         this.assetPackCoreStatus = document.getElementById('asset-pack-core-status');
+        this.assetPackCoreSize = document.getElementById('asset-pack-core-size');
         this.assetPackDungeonStatus = document.getElementById('asset-pack-dungeon-status');
+        this.assetPackDungeonSize = document.getElementById('asset-pack-dungeon-size');
         this.assetPackEnvironmentStatus = document.getElementById('asset-pack-environment-status');
+        this.assetPackEnvironmentSize = document.getElementById('asset-pack-environment-size');
 
         if (this.btnResume) this.btnResume.addEventListener('click', () => this.toggleEscMenu());
         if (this.btnHelp) this.btnHelp.addEventListener('click', () => this.toggleHelp());
@@ -179,6 +184,11 @@ export class UIManager {
                 void this.requestAssetDownload('environment-textures');
             });
         }
+        if (this.btnDownloadRecommendedAssets) {
+            this.btnDownloadRecommendedAssets.addEventListener('click', () => {
+                void this.downloadRecommendedAssets();
+            });
+        }
         if (this.btnRefreshOutdatedAssets) {
             this.btnRefreshOutdatedAssets.addEventListener('click', () => {
                 void this.refreshOutdatedAssets();
@@ -189,6 +199,7 @@ export class UIManager {
                 void this.clearCachedAssets();
             });
         }
+        this.renderAssetPackEstimates();
         this.updateAssetDownloadProgress({ completed: 0, total: 0, percent: 0 });
         this.refreshAssetDownloadStatus();
         void this.refreshAssetCacheState();
@@ -1382,7 +1393,21 @@ export class UIManager {
     }
 
     getAssetPackLabel(packName) {
-        return packName === 'dungeon-models' ? 'Dungeon models' : 'Core models';
+        if (packName === 'dungeon-models') return 'Dungeon models';
+        if (packName === 'environment-textures') return 'Environment textures';
+        return 'Core models';
+    }
+
+    renderAssetPackEstimates() {
+        if (this.assetPackCoreSize) {
+            this.assetPackCoreSize.textContent = `Estimated download: ${getAssetPackEstimateMb('core-models')}`;
+        }
+        if (this.assetPackDungeonSize) {
+            this.assetPackDungeonSize.textContent = `Estimated download: ${getAssetPackEstimateMb('dungeon-models')}`;
+        }
+        if (this.assetPackEnvironmentSize) {
+            this.assetPackEnvironmentSize.textContent = `Estimated download: ${getAssetPackEstimateMb('environment-textures')}`;
+        }
     }
 
     setAssetPackStatus(packName, status) {
@@ -1504,6 +1529,14 @@ export class UIManager {
             this.addChatMessage('System', `Failed to cache ${this.getAssetPackLabel(packName).toLowerCase()}.`);
             throw error;
         }
+    }
+
+    async downloadRecommendedAssets() {
+        const recommendedPacks = getRecommendedAssetPackNames();
+        for (const packName of recommendedPacks) {
+            await this.requestAssetDownload(packName);
+        }
+        return recommendedPacks;
     }
 
     async refreshOutdatedAssets() {
