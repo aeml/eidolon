@@ -266,7 +266,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.21.1</span> 
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.21.2</span> 
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
             
@@ -446,29 +446,26 @@
             </div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.1 (Big alpha polish pass since 0.20)</h3>
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.2 (Asset caching controls, sync clarity, and device-ready polish)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
-                        <li><strong>Combat readability and objective guidance:</strong> New enemy combat intent UI, a clearer objectives panel, and improved dungeon entrance hints make it much easier to understand threats and what to do next.</li>
-                        <li><strong>Jumping and movement feel better:</strong> Authoritative jump behavior, ctrl-click traversal, and jump targeting were tightened up so movement feels more reliable during real play.</li>
-                        <li><strong>Dungeons got a quality pass:</strong> Better dungeon containment, stronger instance guidance, and boss reward summaries make runs feel more stable and easier to follow.</li>
-                        <li><strong>Loot flow is smoother:</strong> Auto-loot can now be saved in settings, nearby pickup behavior is clearer, and loot/reward feedback is more readable during gameplay.</li>
-                        <li><strong>Menus and windows feel much better:</strong> Close buttons behave properly, overlays dismiss more cleanly, accidental text selection is reduced, and menu interactions are more polished across HUD and popups.</li>
-                        <li><strong>New settings options:</strong> Settings now include persistent auto-loot, graphics quality, brightness, and the new <strong>Keep Assets on This Device</strong> controls for downloading and managing cached art packs.</li>
-                        <li><strong>Client asset persistence:</strong> Core and dungeon assets can now be kept on-device with version-aware caching, visible download progress, and one-click cache clearing.</li>
+                        <li><strong>Download Recommended Assets:</strong> There is now a one-click option to cache the most useful packs for everyday play without forcing the largest possible download.</li>
+                        <li><strong>Environment Textures pack:</strong> Environment art is now its own downloadable pack, so players can cache more of the world without bundling everything together.</li>
+                        <li><strong>Live cache progress:</strong> Asset downloads now surface clearer progress updates while packs are being cached onto the device.</li>
+                        <li><strong>Refresh stale content faster:</strong> The settings menu now detects when cached content is outdated and can tell you how many packs need refresh.</li>
+                        <li><strong>Last synced asset version:</strong> Players can now see the last asset version synced on the current device, making it much easier to tell whether local content is current.</li>
+                        <li><strong>Clearer asset settings:</strong> Keep Assets on This Device now includes pack size estimates, recommended download flow, environment textures, refresh controls, and cache clearing in one place.</li>
                     </ul>
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.1 - More detail</h3>
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.2 - More detail</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
-                        <li><strong>Combat intent:</strong> Enemies now communicate expected attacks/abilities more clearly so target priority and incoming danger are easier to read.</li>
-                        <li><strong>Objectives panel:</strong> Objective tracking is surfaced more clearly during play so dungeon and quest flow is less ambiguous.</li>
-                        <li><strong>Dungeon entrance hints:</strong> Entrance prompts now better explain availability, readiness, and party-leader requirements.</li>
-                        <li><strong>Jump / ctrl-click fixes:</strong> Multiple fixes landed around jump authority, ctrl-click jump behavior, held-input edge cases, and traversal reliability.</li>
-                        <li><strong>Reward feedback:</strong> Boss reward summaries and loot feedback make dungeon completion and pickups feel more explicit.</li>
-                        <li><strong>Asset settings:</strong> Players can now download <strong>Core Models</strong> and <strong>Dungeon Models</strong>, watch progress, and use <strong>Clear Cached Assets</strong> when they want a fresh sync.</li>
-                        <li><strong>Smarter updates:</strong> Asset versioning now prefers keeping unchanged content on-device instead of forcing blanket redownloads.</li>
-                        <li><strong>Still alpha:</strong> We are continuing to improve minimap room guidance, room-clear reward cadence, deeper cache controls, and additional .21.x polish.</li>
+                        <li><strong>Recommended setup flow:</strong> <strong>Download Recommended Assets</strong> now targets the most helpful packs for fast setup on a fresh device.</li>
+                        <li><strong>Pack visibility:</strong> <strong>Core Models</strong>, <strong>Dungeon Models</strong>, and <strong>Environment Textures</strong> each show clearer status and estimated download size.</li>
+                        <li><strong>Smarter update UX:</strong> Instead of a vague warning, the client now surfaces concrete refresh messaging like <strong>packs need refresh</strong> when stale cached content is detected.</li>
+                        <li><strong>Version awareness:</strong> <strong>Last synced asset version</strong> is now shown directly in settings and updates after successful downloads.</li>
+                        <li><strong>Selective refresh:</strong> <strong>Refresh Outdated Assets</strong> continues to target only stale cached packs instead of forcing every asset to redownload.</li>
+                        <li><strong>Alpha direction:</strong> We are continuing to improve cache truthfulness, pack update flows, and broader .21.x usability/polish in upcoming releases.</li>
                     </ul>
                 </div>
 
