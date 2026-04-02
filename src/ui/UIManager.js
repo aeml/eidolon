@@ -8,6 +8,7 @@ import { SocialUI } from './SocialUI.js';
 import { InventoryUI } from './InventoryUI.js';
 import { AssetCacheManager } from '../assets/AssetCacheManager.js';
 import { DEFAULT_ASSET_VERSION, getAssetPackEstimateMb, getRecommendedAssetPackNames } from '../assets/assetManifest.js';
+import { DUNGEON_RUN_LEVEL_BANDS, availableDungeonRunLevelsForPlayer, isEndgameDifficultyUnlocked } from '../data/dungeonProgression.js';
 
 export class UIManager {
     constructor(isMobile = false) {
@@ -2210,9 +2211,9 @@ export class UIManager {
         }
 
         const difficultyInfo = {
-            normal: { name: 'Normal', color: '#aaa', hp: '1x', dmg: '1x', loot: '1x', levelAdd: 0 },
-            heroic: { name: 'Heroic', color: '#ff0', hp: '2x', dmg: '1.5x', loot: '2x', levelAdd: 20 },
-            mythic: { name: 'Mythic', color: '#f60', hp: '4x', dmg: '2.5x', loot: '4x', levelAdd: 40 }
+            normal: { name: 'Normal', color: '#aaa', hp: '1x', dmg: '1x', loot: '1x' },
+            heroic: { name: 'Heroic', color: '#ff0', hp: '2x', dmg: '1.5x', loot: '2x' },
+            mythic: { name: 'Mythic', color: '#f60', hp: '4x', dmg: '2.5x', loot: '4x' }
         };
 
         // Dungeon Type Label
@@ -2254,6 +2255,46 @@ export class UIManager {
         }
         menu.appendChild(dungeonSelect);
 
+        const playerLevel = Number(data.playerLevel) || 0;
+        const availableRunLevels = Array.isArray(data.availableRunLevels) && data.availableRunLevels.length > 0
+            ? data.availableRunLevels
+            : availableDungeonRunLevelsForPlayer(playerLevel);
+        const endgameUnlocked = isEndgameDifficultyUnlocked(playerLevel);
+
+        const runLevelLabel = document.createElement('label');
+        runLevelLabel.innerText = 'Select Run Level:';
+        runLevelLabel.style.display = 'block';
+        runLevelLabel.style.marginTop = '15px';
+        runLevelLabel.style.fontWeight = 'bold';
+        menu.appendChild(runLevelLabel);
+
+        const runLevelSelect = document.createElement('select');
+        runLevelSelect.id = 'dungeon-run-level-select';
+        runLevelSelect.style.margin = '5px';
+        runLevelSelect.style.padding = '8px';
+        runLevelSelect.style.fontSize = '14px';
+        runLevelSelect.style.backgroundColor = '#222';
+        runLevelSelect.style.color = '#fff';
+        runLevelSelect.style.border = '1px solid #555';
+        runLevelSelect.style.cursor = 'pointer';
+        runLevelSelect.style.width = '250px';
+        for (const runLevel of availableRunLevels.length > 0 ? availableRunLevels : DUNGEON_RUN_LEVEL_BANDS) {
+            const option = document.createElement('option');
+            option.value = String(runLevel);
+            option.innerText = `Level ${runLevel}`;
+            runLevelSelect.appendChild(option);
+        }
+        menu.appendChild(runLevelSelect);
+
+        const unlockNote = document.createElement('div');
+        unlockNote.style.marginTop = '10px';
+        unlockNote.style.fontSize = '12px';
+        unlockNote.style.color = '#aab6c8';
+        unlockNote.textContent = endgameUnlocked
+            ? `All run levels unlocked. Heroic and Mythic are now available at level ${data.endgameDifficultyUnlockLevel || 100}.`
+            : `All dungeons unlock at level ${data.dungeonUnlockLevel || 30}. Heroic and Mythic unlock at level ${data.endgameDifficultyUnlockLevel || 100}.`;
+        menu.appendChild(unlockNote);
+
         // Difficulty Label
         const diffLabel = document.createElement('label');
         diffLabel.innerText = 'Select Difficulty:';
@@ -2282,8 +2323,17 @@ export class UIManager {
             btn.style.border = `2px solid ${info.color}`;
             btn.style.fontWeight = 'bold';
             btn.style.transition = 'all 0.2s';
+            if (key !== 'normal' && !endgameUnlocked) {
+                btn.disabled = true;
+                btn.style.opacity = '0.45';
+                btn.style.cursor = 'not-allowed';
+                btn.title = `Unlocks at level ${data.endgameDifficultyUnlockLevel || 100}`;
+            }
 
             btn.onclick = () => {
+                if (btn.disabled) {
+                    return;
+                }
                 selectedDifficulty = key;
                 // Update button styles
                 for (const [k, i] of Object.entries(difficultyInfo)) {
@@ -2316,24 +2366,28 @@ export class UIManager {
             const dungeonKey = dungeonSelect.value;
             const dungeon = dungeonInfo[dungeonKey];
             const diff = difficultyInfo[selectedDifficulty];
-            const reqLevel = dungeon.baseLevel + diff.levelAdd;
+            const selectedRunLevel = Number(runLevelSelect.value) || availableRunLevels[0] || 30;
 
             diffInfoBox.innerHTML = `
                 <div style="color: ${diff.color}; font-weight: bold; font-size: 14px; margin-bottom: 8px;">${diff.name} Mode</div>
-                <div><span style="color: #888;">Required Level:</span> <span style="color: #fff;">${reqLevel}</span></div>
+                <div><span style="color: #888;">Dungeon:</span> <span style="color: #fff;">${dungeon.name}</span></div>
+                <div><span style="color: #888;">Run Level:</span> <span style="color: #fff;">${selectedRunLevel}</span></div>
                 <div><span style="color: #888;">Enemy HP:</span> <span style="color: #f66;">${diff.hp}</span></div>
                 <div><span style="color: #888;">Enemy Damage:</span> <span style="color: #f66;">${diff.dmg}</span></div>
                 <div><span style="color: #888;">Loot & XP:</span> <span style="color: #6f6;">${diff.loot}</span></div>
+                <div style="color: #8ea8d1; margin-top: 6px;">All dungeons unlock at level ${data.dungeonUnlockLevel || 30}. Heroic and Mythic unlock at level ${data.endgameDifficultyUnlockLevel || 100}.</div>
                 ${selectedDifficulty === 'heroic' ? '<div style="color: #ff0; margin-top: 5px;">+ Rare Gems & Better Drops</div>' : ''}
                 ${selectedDifficulty === 'mythic' ? '<div style="color: #f60; margin-top: 5px;">+ Unique Items & Titles</div>' : ''}
             `;
         };
 
         dungeonSelect.onchange = updateDifficultyInfo;
+        runLevelSelect.onchange = updateDifficultyInfo;
         updateDifficultyInfo(); // Initial update
 
         // Enter Button
         const enterBtn = document.createElement('button');
+        enterBtn.id = 'btn-enter-dungeon';
         enterBtn.innerText = 'Enter Dungeon';
         enterBtn.style.margin = '10px';
         enterBtn.style.padding = '12px 30px';
@@ -2349,7 +2403,8 @@ export class UIManager {
                     type: 'enter_dungeon',
                     payload: { 
                         dungeonType: dungeonSelect.value,
-                        difficulty: selectedDifficulty
+                        difficulty: selectedDifficulty,
+                        runLevel: Number(runLevelSelect.value) || availableRunLevels[0] || 30
                     }
                 }));
             }

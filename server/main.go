@@ -1649,6 +1649,7 @@ func (c *Client) handleMessage(msg Message) {
 		var req struct {
 			DungeonType string `json:"dungeonType"`
 			Difficulty  string `json:"difficulty"`
+			RunLevel    int    `json:"runLevel"`
 		}
 		if len(msg.Payload) > 0 {
 			json.Unmarshal(msg.Payload, &req)
@@ -1677,16 +1678,18 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 
-		// Check minimum level requirement
-		minLevel := game.MinLevelForDifficulty(difficulty, dungeonType)
-		if player.Level < minLevel {
-			c.sendError(fmt.Sprintf("You need to be level %d to enter %s on %s difficulty.", minLevel, dungeonType, req.Difficulty))
+		runLevel := req.RunLevel
+		if runLevel == 0 {
+			runLevel = game.DungeonUnlockLevel
+		}
+		if err := game.ValidateDungeonEntrySelection(player.Level, runLevel, difficulty); err != nil {
+			c.sendError(err.Error())
 			return
 		}
 
 		// Create Dungeon
-		log.Printf("Creating dungeon for party %s (Player: %s, Difficulty: %s)", player.PartyID, c.playerID, difficulty)
-		instanceID := world.CreateDungeon(player.PartyID, dungeonType, difficulty)
+		log.Printf("Creating dungeon for party %s (Player: %s, Difficulty: %s, RunLevel: %d)", player.PartyID, c.playerID, difficulty, runLevel)
+		instanceID := world.CreateDungeon(player.PartyID, dungeonType, difficulty, runLevel)
 		log.Printf("Dungeon created: %s", instanceID)
 		// c.sendError(fmt.Sprintf("Debug: Dungeon Created %s", instanceID))
 
@@ -1798,9 +1801,14 @@ func (c *Client) handleMessage(msg Message) {
 		}
 
 		resp := map[string]interface{}{
-			"hasInstance": hasInstance,
-			"timeLeft":    timeLeft,
-			"isLeader":    isLeader,
+			"hasInstance":                hasInstance,
+			"timeLeft":                   timeLeft,
+			"isLeader":                   isLeader,
+			"playerLevel":                player.Level,
+			"maxPlayerLevel":             game.MaxPlayerLevel,
+			"dungeonUnlockLevel":         game.DungeonUnlockLevel,
+			"endgameDifficultyUnlockLevel": game.EndgameDifficultyUnlockLevel,
+			"availableRunLevels":         game.AvailableDungeonRunLevelsForPlayer(player.Level),
 		}
 		if statusReq.DungeonType != "" {
 			resp["dungeonType"] = statusReq.DungeonType

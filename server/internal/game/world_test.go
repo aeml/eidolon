@@ -91,6 +91,18 @@ func TestGetState(t *testing.T) {
 	}
 }
 
+func TestDungeonDifficultyMinLevelsUseProgressionRules(t *testing.T) {
+	if got := MinLevelForDifficulty(DifficultyNormal, "verdant_bastion_catacombs"); got != 30 {
+		t.Fatalf("expected normal dungeon access at 30, got %d", got)
+	}
+	if got := MinLevelForDifficulty(DifficultyHeroic, "verdant_bastion_catacombs"); got != 100 {
+		t.Fatalf("expected heroic unlock at 100, got %d", got)
+	}
+	if got := MinLevelForDifficulty(DifficultyMythic, "verdant_bastion_catacombs"); got != 100 {
+		t.Fatalf("expected mythic unlock at 100, got %d", got)
+	}
+}
+
 func TestEntityRecalculateStats(t *testing.T) {
 	e := &Entity{
 		ID:    "player-1",

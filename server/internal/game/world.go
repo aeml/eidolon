@@ -1552,27 +1552,11 @@ func DifficultyMultipliers(difficulty DungeonDifficulty) (float64, float64, floa
 
 // MinLevelForDifficulty returns the minimum party level required for a difficulty
 func MinLevelForDifficulty(difficulty DungeonDifficulty, dungeonType string) int {
-	baseLevel := 1
-	switch dungeonType {
-	case "verdant_bastion_catacombs":
-		baseLevel = 30
-	case "molten_core":
-		baseLevel = 70
-	case "tempest_spire":
-		baseLevel = 70
-	case "abyssal_well":
-		baseLevel = 60
-	default:
-		baseLevel = 1
-	}
-
 	switch difficulty {
-	case DifficultyHeroic:
-		return baseLevel + 20
-	case DifficultyMythic:
-		return baseLevel + 40
+	case DifficultyHeroic, DifficultyMythic:
+		return EndgameDifficultyUnlockLevel
 	default:
-		return baseLevel
+		return DungeonUnlockLevel
 	}
 }
 
@@ -1585,6 +1569,7 @@ type DungeonInstance struct {
 	PlayerCount int
 	Difficulty  DungeonDifficulty
 	DungeonType string
+	RunLevel    int
 }
 
 type World struct {
@@ -7799,7 +7784,7 @@ func (w *World) DropLootInInstance(item Item, x, y float64, instanceID string) {
 	w.AddEntity(loot)
 }
 
-func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty DungeonDifficulty) string {
+func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty DungeonDifficulty, runLevel int) string {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
@@ -7829,6 +7814,10 @@ func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty Dun
 
 	instanceID := fmt.Sprintf("dungeon_%s_%d_%d", partyID, time.Now().UnixNano(), rand.Intn(10000))
 
+	if runLevel == 0 {
+		runLevel = DungeonUnlockLevel
+	}
+
 	dungeon := &DungeonInstance{
 		ID:          instanceID,
 		PartyID:     partyID,
@@ -7836,6 +7825,7 @@ func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty Dun
 		EmptySince:  time.Now(),
 		Difficulty:  difficulty,
 		DungeonType: dungeonType,
+		RunLevel:    runLevel,
 	}
 	buildLayout := func(generator func(string, DungeonDifficulty) DungeonLayout) DungeonLayout {
 		const maxLayoutAttempts = 8
