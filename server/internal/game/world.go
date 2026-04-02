@@ -1428,6 +1428,7 @@ type DungeonRoom struct {
 	Width  float64 `json:"width"`
 	Height float64 `json:"height"`
 	Type   string  `json:"type"` // "start", "boss", "normal", "elite"
+	Hook   string  `json:"hook,omitempty"`
 	Color  int     `json:"color"`
 }
 
@@ -1450,6 +1451,7 @@ type DungeonRoomSummaryEntry struct {
 	Width    float64 `json:"width"`
 	Height   float64 `json:"height"`
 	Type     string  `json:"type"`
+	Hook     string  `json:"hook,omitempty"`
 	Explored bool    `json:"explored"`
 	Cleared  bool    `json:"cleared"`
 }
@@ -1536,6 +1538,7 @@ func (s *DungeonRoomState) Summary(x, z float64) DungeonRoomSummary {
 			Width:    room.Width,
 			Height:   room.Height,
 			Type:     room.Type,
+			Hook:     room.Hook,
 			Explored: progress.Explored,
 			Cleared:  progress.Cleared,
 		})
@@ -8064,12 +8067,15 @@ func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty Dun
 			lastLayout = generator(instanceID, difficulty)
 			lastErr = ValidateDungeonLayout(lastLayout)
 			if lastErr == nil {
+				assignDungeonRoomHooks(&lastLayout)
 				return lastLayout
 			}
 			cleanupGeneratedEntities()
 		}
 		log.Printf("CreateDungeon: failed to generate valid %s layout for instance %s after %d attempts: %v", dungeonType, instanceID, maxLayoutAttempts, lastErr)
-		return fallbackDungeonLayout(dungeonType)
+		layout := fallbackDungeonLayout(dungeonType)
+		assignDungeonRoomHooks(&layout)
+		return layout
 	}
 
 	if dungeonType == "verdant_bastion_catacombs" {
@@ -8096,6 +8102,7 @@ func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty Dun
 		// Default Crypt
 		// Generate a simple layout for the crypt too, so we have a start point
 		layout := fallbackDungeonLayout(dungeonType)
+		assignDungeonRoomHooks(&layout)
 		dungeon.Layout = layout
 		dungeon.RoomState = NewDungeonRoomState(layout)
 		w.InstanceLayouts[instanceID] = dungeon

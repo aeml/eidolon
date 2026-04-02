@@ -141,6 +141,51 @@ export class QuestUI {
             };
         }
 
+        if (objectiveRoom.hook === 'shrine') {
+            return {
+                id: `dungeon-route-${instanceType}`,
+                title: 'Reach the shrine room',
+                progressLabel,
+                progressPct,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Shrine',
+                badgeClass: 'is-shrine',
+                routeTone: 'support',
+                hint: objectiveRoom.explored ? 'Shrine discovered' : 'A restorative shrine lies ahead'
+            };
+        }
+
+        if (objectiveRoom.hook === 'chest') {
+            return {
+                id: `dungeon-route-${instanceType}`,
+                title: 'Secure the treasure room',
+                progressLabel,
+                progressPct,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Chest',
+                badgeClass: 'is-chest',
+                routeTone: 'support',
+                hint: objectiveRoom.explored ? 'Treasure room discovered' : 'Treasure cache detected deeper inside'
+            };
+        }
+
+        if (objectiveRoom.hook === 'elite_ambush') {
+            return {
+                id: `dungeon-route-${instanceType}`,
+                title: 'Survive the ambush room',
+                progressLabel,
+                progressPct,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Ambush',
+                badgeClass: 'is-ambush',
+                routeTone: 'warning',
+                hint: objectiveRoom.explored ? 'Elite ambush discovered' : 'Ambush signatures ahead'
+            };
+        }
+
         if (objectiveRoom.type === 'boss') {
             return {
                 id: `dungeon-route-${instanceType}`,

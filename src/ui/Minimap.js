@@ -284,7 +284,11 @@ export class Minimap {
             const top = center.y - roomHeight / 2;
 
             let fill = 'rgba(255, 255, 255, 0.08)';
-            if (room.cleared && room.type === 'elite') {
+            if (room.hook === 'shrine') {
+                fill = room.cleared ? 'rgba(120, 255, 220, 0.18)' : 'rgba(120, 255, 220, 0.12)';
+            } else if (room.hook === 'chest') {
+                fill = room.cleared ? 'rgba(255, 220, 120, 0.18)' : 'rgba(255, 220, 120, 0.12)';
+            } else if (room.cleared && room.type === 'elite') {
                 fill = 'rgba(255, 190, 90, 0.18)';
             } else if (room.cleared) {
                 fill = 'rgba(120, 255, 160, 0.22)';
@@ -311,8 +315,11 @@ export class Minimap {
             if (room.index === summary.objectiveRoomIndex) {
                 const isBossObjective = room.type === 'boss';
                 const isEliteObjective = room.type === 'elite';
+                const isAmbushObjective = room.hook === 'elite_ambush';
                 const objectiveStroke = isBossObjective
                     ? 'rgba(255, 110, 110, 0.95)'
+                    : isAmbushObjective
+                        ? 'rgba(255, 145, 90, 0.95)'
                     : isEliteObjective
                         ? 'rgba(255, 190, 90, 0.95)'
                         : 'rgba(255, 215, 90, 0.95)';
@@ -322,7 +329,21 @@ export class Minimap {
                 ctx.arc(center.x, center.y, Math.max(roomWidth, roomHeight) * 0.35, 0, Math.PI * 2);
                 ctx.stroke();
                 ctx.fillStyle = objectiveStroke;
-                ctx.fillText(isBossObjective ? 'Boss' : isEliteObjective ? 'Elite' : 'Objective', center.x, center.y - Math.max(8, roomHeight * 0.5));
+                ctx.fillText(
+                    isBossObjective
+                        ? 'Boss'
+                        : isAmbushObjective
+                            ? 'Ambush'
+                            : isEliteObjective
+                                ? 'Elite'
+                                : room.hook === 'shrine'
+                                    ? 'Shrine'
+                                    : room.hook === 'chest'
+                                        ? 'Chest'
+                                        : 'Objective',
+                    center.x,
+                    center.y - Math.max(8, roomHeight * 0.5)
+                );
             }
         });
 

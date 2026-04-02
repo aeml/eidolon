@@ -45,6 +45,34 @@ func appendDungeonRoomAndConnect(layout *DungeonLayout, room DungeonRoom, corrid
 	return roomIndex
 }
 
+func assignDungeonRoomHooks(layout *DungeonLayout) {
+	if layout == nil || len(layout.Rooms) == 0 {
+		return
+	}
+
+	normalIndices := make([]int, 0)
+	eliteIndices := make([]int, 0)
+	for idx := range layout.Rooms {
+		layout.Rooms[idx].Hook = ""
+		switch layout.Rooms[idx].Type {
+		case "normal":
+			normalIndices = append(normalIndices, idx)
+		case "elite":
+			eliteIndices = append(eliteIndices, idx)
+		}
+	}
+
+	if len(normalIndices) > 0 {
+		layout.Rooms[normalIndices[0]].Hook = "shrine"
+	}
+	if len(eliteIndices) > 0 {
+		layout.Rooms[eliteIndices[0]].Hook = "elite_ambush"
+	}
+	if len(normalIndices) > 1 {
+		layout.Rooms[normalIndices[len(normalIndices)-1]].Hook = "chest"
+	}
+}
+
 func connectDungeonRooms(layout *DungeonLayout, fromRoomIndex, toRoomIndex int, corridorWidth float64) {
 	if layout == nil || fromRoomIndex < 0 || toRoomIndex < 0 || fromRoomIndex >= len(layout.Rooms) || toRoomIndex >= len(layout.Rooms) {
 		return

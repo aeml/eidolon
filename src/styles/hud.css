@@ -265,6 +265,24 @@
     color: #ffd7a3;
 }
 
+.objective-entry__badge.is-shrine {
+    border-color: rgba(120, 255, 220, 0.55);
+    background: rgba(120, 255, 220, 0.14);
+    color: #bcfff1;
+}
+
+.objective-entry__badge.is-chest {
+    border-color: rgba(255, 220, 120, 0.55);
+    background: rgba(255, 220, 120, 0.14);
+    color: #ffe9b0;
+}
+
+.objective-entry__badge.is-ambush {
+    border-color: rgba(255, 145, 90, 0.55);
+    background: rgba(255, 145, 90, 0.14);
+    color: #ffc4a3;
+}
+
 .objective-entry__badge.is-exit {
     border-color: rgba(120, 220, 255, 0.55);
     background: rgba(120, 220, 255, 0.14);
