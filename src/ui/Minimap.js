@@ -61,6 +61,7 @@ export class Minimap {
     constructor(size = 200) {
         this.baseSize = size;
         this.scale = 4; // Pixels per world unit
+        this.dungeonDebugOverlayEnabled = false;
 
         this.canvas = document.createElement('canvas');
         this.canvas.id = 'minimap-canvas';
@@ -127,6 +128,7 @@ export class Minimap {
         // ---- Dungeon room overlays ----
         if (this.gameEngine?.getDungeonRoomSummary) {
             this._drawDungeonRoomStates(ctx, toMap, player, half, scale);
+            this._drawDungeonDebugOverlay(ctx, toMap, scale);
         }
 
         // ---- Entities ----
@@ -194,6 +196,15 @@ export class Minimap {
     /** Inject gameEngine ref so we can read partyData. Called from GameEngine constructor. */
     setGameEngine(ge) {
         this.gameEngine = ge;
+    }
+
+    setDungeonDebugOverlayEnabled(enabled) {
+        this.dungeonDebugOverlayEnabled = !!enabled;
+    }
+
+    toggleDungeonDebugOverlay() {
+        this.dungeonDebugOverlayEnabled = !this.dungeonDebugOverlayEnabled;
+        return this.dungeonDebugOverlayEnabled;
     }
 
     // -----------------------------------------------------------------------
@@ -320,6 +331,77 @@ export class Minimap {
             ctx.fillStyle = 'rgba(120, 220, 255, 0.95)';
             ctx.fillText('Exit', center.x, center.y - radius - 4);
         }
+    }
+
+    _drawDungeonDebugOverlay(ctx, toMap, scale) {
+        if (!this.dungeonDebugOverlayEnabled) {
+            return;
+        }
+
+        const overlay = this.gameEngine?.getDungeonDebugOverlayData?.();
+        if (!overlay || !Array.isArray(overlay.walkRects) || overlay.walkRects.length === 0) {
+            return;
+        }
+
+        ctx.save();
+        ctx.font = '10px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        overlay.walkRects.forEach((rect) => {
+            const center = toMap(rect.x, rect.z);
+            const width = Math.max(4, rect.width * scale * 0.5);
+            const height = Math.max(4, rect.height * scale * 0.5);
+            const left = center.x - width / 2;
+            const top = center.y - height / 2;
+            const isCorridor = rect.kind === 'corridor';
+
+            ctx.strokeStyle = isCorridor ? 'rgba(255, 180, 90, 0.82)' : 'rgba(120, 220, 255, 0.72)';
+            ctx.lineWidth = isCorridor ? 1.5 : 1.25;
+            ctx.beginPath();
+            ctx.moveTo(left, top);
+            ctx.lineTo(left + width, top);
+            ctx.lineTo(left + width, top + height);
+            ctx.lineTo(left, top + height);
+            ctx.lineTo(left, top);
+            ctx.stroke();
+        });
+
+        const corridors = Array.isArray(overlay.corridors) ? overlay.corridors : [];
+        corridors.forEach((corridor, index) => {
+            const walkRectIndices = Array.isArray(corridor.walkRectIndices) ? corridor.walkRectIndices : [];
+            for (let i = 0; i < walkRectIndices.length - 1; i++) {
+                const current = overlay.walkRects[walkRectIndices[i]];
+                const next = overlay.walkRects[walkRectIndices[i + 1]];
+                if (!current || !next) continue;
+
+                const dx = next.x - current.x;
+                const dz = next.z - current.z;
+                const joinX = Math.abs(dx) >= Math.abs(dz) ? (current.x + next.x) / 2 : current.x;
+                const joinZ = Math.abs(dz) >= Math.abs(dx) ? (current.z + next.z) / 2 : current.z;
+                const join = toMap(joinX, joinZ);
+
+                ctx.strokeStyle = 'rgba(255, 180, 90, 0.82)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(join.x, join.y, 3.5, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.fillStyle = 'rgba(255, 235, 180, 0.96)';
+                ctx.fillText(`J${i + 1}`, join.x, join.y - 9);
+            }
+
+            const corridorRects = walkRectIndices
+                .map((rectIndex) => overlay.walkRects[rectIndex])
+                .filter((rect) => rect && rect.kind === 'corridor');
+            if (corridorRects.length > 0) {
+                const firstRect = corridorRects[0];
+                const labelPoint = toMap(firstRect.x, firstRect.z);
+                ctx.fillStyle = 'rgba(120, 220, 255, 0.96)';
+                ctx.fillText(index === 0 ? 'DBG WALK' : `DBG WALK ${index + 1}`, labelPoint.x, labelPoint.y - 16);
+            }
+        });
+
+        ctx.restore();
     }
 
     /** Draw faint realm boundary lines. */

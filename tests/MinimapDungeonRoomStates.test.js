@@ -117,4 +117,43 @@ describe('Minimap dungeon room states', () => {
         expect(strokes.some((entry) => entry.strokeStyle === 'rgba(120, 220, 255, 0.95)')).toBe(true);
         expect(texts.some((entry) => String(entry.args[0]).includes('Exit'))).toBe(true);
     });
+
+    test('renders canonical walk rects and join markers when dungeon debug overlay is enabled', () => {
+        const minimap = new Minimap(200);
+        minimap.setDungeonDebugOverlayEnabled(true);
+        minimap.gameEngine = {
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 0,
+                objectiveRoomIndex: 1,
+                rooms: [
+                    { index: 0, x: 0, z: 0, width: 80, height: 80, type: 'start', explored: true, cleared: false },
+                    { index: 1, x: 80, z: -120, width: 120, height: 120, type: 'boss', explored: true, cleared: false }
+                ]
+            }),
+            getDungeonDebugOverlayData: () => ({
+                walkRects: [
+                    { x: 0, z: 0, width: 80, height: 80, kind: 'room' },
+                    { x: 0, z: -60, width: 40, height: 40, kind: 'corridor' },
+                    { x: 40, z: -60, width: 80, height: 40, kind: 'corridor' },
+                    { x: 80, z: -90, width: 40, height: 60, kind: 'corridor' },
+                    { x: 80, z: -120, width: 120, height: 120, kind: 'room' }
+                ],
+                rooms: [
+                    { index: 0, x: 0, z: 0, width: 80, height: 80, type: 'start' },
+                    { index: 1, x: 80, z: -120, width: 120, height: 120, type: 'boss' }
+                ],
+                corridors: [
+                    { fromRoomIndex: 0, toRoomIndex: 1, walkRectIndices: [1, 2, 3] }
+                ]
+            }),
+            uiManager: { partyData: { members: [] } }
+        };
+
+        minimap.update({ position: { x: 0, z: 0 }, id: 'player-1' }, []);
+
+        expect(strokes.some((entry) => entry.strokeStyle === 'rgba(120, 220, 255, 0.72)')).toBe(true);
+        expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 180, 90, 0.82)')).toBe(true);
+        expect(texts.some((entry) => String(entry.args[0]).includes('DBG WALK'))).toBe(true);
+        expect(texts.some((entry) => String(entry.args[0]).includes('J1'))).toBe(true);
+    });
 });

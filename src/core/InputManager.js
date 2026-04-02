@@ -41,7 +41,8 @@ export class InputManager {
             onSocial: [], // New callback for Social Window
             onSkills: [], // New callback for Skill Tree
             onAbilities: [], // New callback for Abilities Menu (P)
-            onHotbar: [] // New callback for Hotbar (1-4)
+            onHotbar: [], // New callback for Hotbar (1-4)
+            onDebugOverlay: [] // Toggle dungeon debug overlay (F2)
         };
 
         this.keys = {
@@ -304,6 +305,9 @@ export class InputManager {
         }
         if (e.key === 'Enter') {
             this.callbacks.onChat.forEach(cb => cb());
+        }
+        if (e.code === 'F2') {
+            this.callbacks.onDebugOverlay.forEach(cb => cb());
         }
     }
 

@@ -104,7 +104,9 @@ export class GameEngine {
         this.hazards = new Map(); // Environmental hazards (id -> EnvironmentalHazard)
         this.abilityController = new AbilityController(this);
         this.currentInstanceId = null; // Track current instance to prevent state desync
+        this.currentInstanceType = null;
         this.currentDungeonRoomState = null;
+        this.currentDungeonLayout = null;
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         this.minimap = new Minimap();
         this.minimap.setGameEngine(this);
@@ -445,6 +447,10 @@ export class GameEngine {
             this.uiManager.toggleSocial();
         });
 
+        this.inputManager.subscribe('onDebugOverlay', () => {
+            const enabled = this.minimap.toggleDungeonDebugOverlay();
+            this.uiManager?.addChatMessage?.(`Dungeon debug overlay ${enabled ? 'enabled' : 'disabled'}.`, 'system');
+        });
 
         if (onProgress) onProgress(95, "Waiting for silicon...");
         await new Promise(r => setTimeout(r, 1000));
@@ -527,7 +533,9 @@ export class GameEngine {
     async enterInstance(instanceId, type, layout, roomState = null) {
         console.log(`Entering instance: ${instanceId} (${type})`);
         this.currentInstanceId = instanceId;
+        this.currentInstanceType = type;
         this.currentDungeonRoomState = roomState;
+        this.currentDungeonLayout = layout || null;
         this.clearCombatIntentState();
         this.refreshDungeonEntranceHint();
 
@@ -2100,6 +2108,18 @@ export class GameEngine {
 
     getDungeonRoomSummary() {
         return this.currentDungeonRoomState;
+    }
+
+    getDungeonDebugOverlayData() {
+        if (!this.currentDungeonLayout || !Array.isArray(this.currentDungeonLayout.walkRects) || this.currentDungeonLayout.walkRects.length === 0) {
+            return null;
+        }
+
+        return {
+            walkRects: this.currentDungeonLayout.walkRects,
+            rooms: Array.isArray(this.currentDungeonLayout.rooms) ? this.currentDungeonLayout.rooms : [],
+            corridors: Array.isArray(this.currentDungeonLayout.corridors) ? this.currentDungeonLayout.corridors : []
+        };
     }
 
     sendEquipMessage(item, targetSlot) {

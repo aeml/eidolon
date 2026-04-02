@@ -76,4 +76,15 @@ describe('InputManager ctrl-click propagation', () => {
         expect(point).toEqual(expect.objectContaining({ x: 5, y: 0, z: 7 }));
         manager.dispose();
     });
+
+    test('F2 forwards dungeon debug overlay toggles to subscribers', () => {
+        const manager = new InputManager({}, {});
+        const callback = jest.fn();
+        manager.subscribe('onDebugOverlay', callback);
+
+        manager.onKeyDown({ key: 'F2', code: 'F2' });
+
+        expect(callback).toHaveBeenCalledTimes(1);
+        manager.dispose();
+    });
 });
