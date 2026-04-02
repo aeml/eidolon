@@ -253,6 +253,21 @@ describe('Dungeon room clear feedback', () => {
         expect(chatMessages[2]).toContain('Path opened to the boss room');
     });
 
+    test('UIManager.showRoomClearReward surfaces elite room urgency in messaging', () => {
+        buildDom();
+        const ui = new UIManager(false);
+
+        ui.showRoomClearReward(createRoomClearSummary({
+            title: 'Room Cleared: Elite Chamber 2',
+            roomType: 'elite',
+            hint: 'Elite cleared — push toward the next objective'
+        }));
+
+        const chatMessages = Array.from(document.querySelectorAll('#chat-messages > div')).map(node => node.textContent);
+        expect(chatMessages[0]).toContain('Elite Chamber 2');
+        expect(chatMessages[2]).toContain('Elite cleared — push toward the next objective');
+    });
+
     test('QuestUI renders objective entries with dungeon routing hints', () => {
         buildDom();
         const questUI = new QuestUI({
@@ -273,5 +288,37 @@ describe('Dungeon room clear feedback', () => {
 
         expect(document.getElementById('objectives-panel').style.display).toBe('flex');
         expect(document.querySelector('.objective-entry__hint').textContent).toContain('Path opened to the boss room');
+    });
+
+    test('QuestUI renders richer objective panel hints for dungeon progress states', () => {
+        buildDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] })
+        });
+
+        questUI.renderObjectivesPanel([
+            {
+                id: 'dungeon-route-open',
+                title: 'Push deeper into Tempest Spire',
+                progressLabel: '2 / 4',
+                progressPct: 50,
+                rewardXP: 0,
+                completed: false,
+                hint: 'Boss path open — one room remains'
+            },
+            {
+                id: 'dungeon-route-ready',
+                title: 'Confront the boss',
+                progressLabel: '4 / 4',
+                progressPct: 100,
+                rewardXP: 1200,
+                completed: true,
+                hint: 'Boss room unlocked'
+            }
+        ]);
+
+        const hints = Array.from(document.querySelectorAll('.objective-entry__hint')).map(node => node.textContent);
+        expect(hints[0]).toContain('Boss path open — one room remains');
+        expect(hints[1]).toContain('Reward: 1200 XP');
     });
 });

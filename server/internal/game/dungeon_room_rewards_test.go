@@ -83,3 +83,61 @@ func TestMarkDungeonRoomClearedAwardsNonBossRoomsOnce(t *testing.T) {
 		t.Fatalf("expected duplicate/boss clears not to grant extra rewards, got xp=%d gold=%d", player.Experience, player.Gold)
 	}
 }
+
+func TestMarkDungeonRoomClearedEmitsEventRewardsForEliteAndNormalRooms(t *testing.T) {
+	w := NewWorld(nil)
+	player := &Entity{
+		ID:            "player-1",
+		Type:          TypePlayer,
+		Level:         60,
+		MaxExperience: 100,
+	}
+	w.AddEntity(player)
+
+	layout := DungeonLayout{
+		Rooms: []DungeonRoom{
+			{X: 0, Z: 0, Width: 40, Height: 40, Type: "start"},
+			{X: 100, Z: 0, Width: 40, Height: 40, Type: "elite"},
+			{X: 200, Z: 0, Width: 40, Height: 40, Type: "normal"},
+			{X: 300, Z: 0, Width: 40, Height: 40, Type: "boss"},
+		},
+	}
+
+	instanceID := "instance-room-events"
+	w.InstanceLayouts[instanceID] = &DungeonInstance{
+		ID:                instanceID,
+		Layout:            layout,
+		Difficulty:        DifficultyHeroic,
+		DungeonType:       "tempest_spire",
+		RunLevel:          60,
+		RoomState:         NewDungeonRoomState(layout),
+		PlayerRoomSummary: map[string]DungeonRoomSummary{},
+	}
+	w.Entities[player.ID].InstanceID = instanceID
+
+	rewards := make([]DungeonRoomClearRewardEvent, 0)
+	w.OnEvent = func(eventType string, data interface{}) {
+		if eventType == "room_clear_reward" {
+			rewards = append(rewards, data.(DungeonRoomClearRewardEvent))
+		}
+	}
+
+	w.MarkDungeonRoomCleared(instanceID, 1)
+	w.MarkDungeonRoomCleared(instanceID, 2)
+
+	if len(rewards) != 2 {
+		t.Fatalf("expected 2 room-clear reward events, got %d", len(rewards))
+	}
+	if rewards[0].RoomType != "elite" {
+		t.Fatalf("expected first event to be elite, got %s", rewards[0].RoomType)
+	}
+	if rewards[0].Hint == "" || rewards[1].Hint == "" {
+		t.Fatalf("expected room-clear events to include hint text, got %+v %+v", rewards[0], rewards[1])
+	}
+	if rewards[0].Title == rewards[1].Title {
+		t.Fatalf("expected elite and normal room rewards to have distinct titles, got %q", rewards[0].Title)
+	}
+	if rewards[0].Gold <= rewards[1].Gold || rewards[0].XP <= rewards[1].XP {
+		t.Fatalf("expected elite room rewards to exceed normal room rewards, got elite=%+v normal=%+v", rewards[0], rewards[1])
+	}
+}

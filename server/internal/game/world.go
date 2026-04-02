@@ -8180,12 +8180,16 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 	if shouldReward {
 		inst.RoomState.Rooms[roomIndex].Rewarded = true
 		objectiveRoomIndex := inst.RoomState.ObjectiveRoomIndex()
+		rewardScale := 1.0
+		if room.Type == "elite" {
+			rewardScale = 1.5
+		}
 		for _, entity := range w.Entities {
 			if entity == nil || entity.Type != TypePlayer || entity.InstanceID != instanceID || entity.State == "DEAD" {
 				continue
 			}
-			xpReward := max(50, inst.RunLevel*10)
-			goldReward := max(25, inst.RunLevel*3)
+			xpReward := int(float64(max(50, inst.RunLevel*10)) * rewardScale)
+			goldReward := int(float64(max(25, inst.RunLevel*3)) * rewardScale)
 			entity.Experience += xpReward
 			entity.Gold += goldReward
 			if entity.MaxExperience == 0 {
