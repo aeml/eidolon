@@ -266,7 +266,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.21.2</span> 
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.21.3</span> 
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
             
@@ -403,6 +403,7 @@
                     <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; flex-wrap: wrap;">
                         <button id="btn-download-recommended-assets" class="menu-btn" type="button" style="border-color: #5f8f5f; color: #d6ffd6;">Download Recommended Assets</button>
                         <button id="btn-refresh-outdated-assets" class="menu-btn" type="button" style="border-color: #6d8fb5; color: #c4dcff;">Refresh Outdated Assets</button>
+                        <button id="btn-update-cached-assets" class="menu-btn" type="button" style="border-color: #7d75c7; color: #ddd4ff;">Update Cached Assets</button>
                         <button id="btn-clear-cached-assets" class="menu-btn" type="button" style="border-color: #aa6666; color: #ffb7b7;">Clear Cached Assets</button>
                     </div>
                 </div>
@@ -458,26 +459,24 @@
             </div>
             <div style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.2 (Asset caching controls, sync clarity, and device-ready polish)</h3>
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.3 (Asset pack caching finished for this release line)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
-                        <li><strong>Download Recommended Assets:</strong> There is now a one-click option to cache the most useful packs for everyday play without forcing the largest possible download.</li>
-                        <li><strong>Environment Textures pack:</strong> Environment art is now its own downloadable pack, so players can cache more of the world without bundling everything together.</li>
-                        <li><strong>Live cache progress:</strong> Asset downloads now surface clearer progress updates while packs are being cached onto the device.</li>
-                        <li><strong>Refresh stale content faster:</strong> The settings menu now detects when cached content is outdated and can tell you how many packs need refresh.</li>
-                        <li><strong>Last synced asset version:</strong> Players can now see the last asset version synced on the current device, making it much easier to tell whether local content is current.</li>
-                        <li><strong>Clearer asset settings:</strong> Keep Assets on This Device now includes pack size estimates, recommended download flow, environment textures, refresh controls, and cache clearing in one place.</li>
+                        <li><strong>Cached version visibility:</strong> Every downloadable pack now shows its <strong>Cached version</strong> directly in settings so it is obvious what is stored on this device.</li>
+                        <li><strong>Service-worker metadata:</strong> Cached pack versions now stay in sync whether assets are warmed directly or through the live service-worker path.</li>
+                        <li><strong>At-a-glance state badges:</strong> Packs now surface clear labels for <strong>Current</strong>, <strong>Outdated</strong>, <strong>Partial</strong>, <strong>Downloading</strong>, and not-yet-cached states.</li>
+                        <li><strong>Update Cached Assets:</strong> There is now a one-click maintenance action to refresh every pack you already keep on the device, without forcing unnecessary first-time downloads for packs you never chose.</li>
+                        <li><strong>Finished cache management pass:</strong> Keep Assets on This Device now covers recommended downloads, stale refreshes, cached version visibility, state badges, selective updates, and cache clearing in one complete flow.</li>
                     </ul>
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.2 - More detail</h3>
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.3 - Final asset cache pass</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
-                        <li><strong>Recommended setup flow:</strong> <strong>Download Recommended Assets</strong> now targets the most helpful packs for fast setup on a fresh device.</li>
-                        <li><strong>Pack visibility:</strong> <strong>Core Models</strong>, <strong>Dungeon Models</strong>, and <strong>Environment Textures</strong> each show clearer status and estimated download size.</li>
-                        <li><strong>Smarter update UX:</strong> Instead of a vague warning, the client now surfaces concrete refresh messaging like <strong>packs need refresh</strong> when stale cached content is detected.</li>
-                        <li><strong>Version awareness:</strong> <strong>Last synced asset version</strong> is now shown directly in settings and updates after successful downloads.</li>
-                        <li><strong>Selective refresh:</strong> <strong>Refresh Outdated Assets</strong> continues to target only stale cached packs instead of forcing every asset to redownload.</li>
-                        <li><strong>Alpha direction:</strong> We are continuing to improve cache truthfulness, pack update flows, and broader .21.x usability/polish in upcoming releases.</li>
+                        <li><strong>Recommended setup remains lightweight:</strong> <strong>Download Recommended Assets</strong> still focuses on the most useful day-to-day packs.</li>
+                        <li><strong>Selective stale refresh remains available:</strong> <strong>Refresh Outdated Assets</strong> still targets only stale cached packs when you want the narrowest update path.</li>
+                        <li><strong>Bulk maintenance is now easier:</strong> <strong>Update Cached Assets</strong> refreshes all packs already present on the current device in one pass.</li>
+                        <li><strong>Truthful cache status:</strong> Per-pack badges and <strong>Cached version</strong> lines make it much easier to tell whether a device is current, stale, partial, or empty.</li>
+                        <li><strong>Asset caching feature status:</strong> This closes out the current asset pack caching push so upcoming work can move on to the next gameplay and systems features.</li>
                     </ul>
                 </div>
 

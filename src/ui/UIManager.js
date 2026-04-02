@@ -105,6 +105,7 @@ export class UIManager {
         this.btnDownloadEnvironmentAssets = document.getElementById('btn-download-environment-assets');
         this.btnDownloadRecommendedAssets = document.getElementById('btn-download-recommended-assets');
         this.btnRefreshOutdatedAssets = document.getElementById('btn-refresh-outdated-assets');
+        this.btnUpdateCachedAssets = document.getElementById('btn-update-cached-assets');
         this.btnClearCachedAssets = document.getElementById('btn-clear-cached-assets');
         this.assetDownloadStatus = document.getElementById('asset-download-status');
         this.assetDownloadProgress = document.getElementById('asset-download-progress');
@@ -200,6 +201,11 @@ export class UIManager {
         if (this.btnRefreshOutdatedAssets) {
             this.btnRefreshOutdatedAssets.addEventListener('click', () => {
                 void this.refreshOutdatedAssets();
+            });
+        }
+        if (this.btnUpdateCachedAssets) {
+            this.btnUpdateCachedAssets.addEventListener('click', () => {
+                void this.updateCachedAssets();
             });
         }
         if (this.btnClearCachedAssets) {
@@ -1669,6 +1675,29 @@ export class UIManager {
             this.assetDownloadStatus.textContent = 'Assets already up to date';
         }
         return outdatedPacks;
+    }
+
+    async updateCachedAssets() {
+        const inspections = await Promise.all([
+            this.assetCacheManager.inspectPack('core-models'),
+            this.assetCacheManager.inspectPack('dungeon-models'),
+            this.assetCacheManager.inspectPack('environment-textures')
+        ]);
+        const cachedPacks = inspections
+            .filter((inspection) => inspection.cached || inspection.cachedCount > 0)
+            .map((inspection) => inspection.packName);
+
+        for (const packName of cachedPacks) {
+            await this.requestAssetDownload(packName);
+        }
+
+        if (this.assetDownloadStatus) {
+            this.assetDownloadStatus.textContent = cachedPacks.length > 0
+                ? 'Updated cached asset packs'
+                : 'No cached asset packs to update';
+        }
+
+        return cachedPacks;
     }
 
     async clearCachedAssets() {

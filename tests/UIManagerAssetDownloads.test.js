@@ -66,6 +66,7 @@ function buildDom() {
         <button id="btn-download-environment-assets"></button>
         <button id="btn-download-recommended-assets"></button>
         <button id="btn-refresh-outdated-assets"></button>
+        <button id="btn-update-cached-assets"></button>
         <button id="btn-clear-cached-assets"></button>
         <div id="asset-download-status"></div>
         <div id="asset-download-progress"></div>
@@ -302,6 +303,25 @@ describe('UIManager asset download settings', () => {
         expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('dungeon-models');
         expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('environment-textures');
         expect(ui.onAssetDownloadRequest).not.toHaveBeenCalledWith('core-models');
+    });
+
+    test('update cached assets refreshes every cached pack', async () => {
+        const ui = new UIManager(false);
+        ui.assetCacheManager.inspectPack = jest.fn(async (packName) => ({
+            packName,
+            cached: packName === 'core-models',
+            cachedCount: packName === 'dungeon-models' ? 0 : 2,
+            total: 4,
+            updateAvailable: packName === 'environment-textures'
+        }));
+        ui.onAssetDownloadRequest = jest.fn(async () => undefined);
+
+        await ui.updateCachedAssets();
+
+        expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('core-models');
+        expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('environment-textures');
+        expect(ui.onAssetDownloadRequest).not.toHaveBeenCalledWith('dungeon-models');
+        expect(ui.assetDownloadStatus.textContent).toContain('Updated cached asset packs');
     });
 
     test('recommended assets button downloads core and environment packs', async () => {
