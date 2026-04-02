@@ -112,7 +112,7 @@ export class QuestUI {
         if (!Array.isArray(quests)) return [];
 
         return quests
-            .filter((q) => q && q.accepted)
+            .filter((q) => q && q.accepted && !q.completed)
             .map((q) => {
                 const targetLabel = this.formatQuestTarget(q.target, q.maxCount);
                 const remaining = Math.max(0, (q.maxCount || 0) - (q.count || 0));
@@ -234,7 +234,7 @@ export class QuestUI {
         let hasActive = false;
 
         quests.forEach(q => {
-            if (!q.accepted) return;
+            if (!q.accepted || q.completed) return;
             hasActive = true;
 
             const div = document.createElement('div');
