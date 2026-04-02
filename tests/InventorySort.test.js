@@ -77,7 +77,7 @@ describe('Inventory sorting', () => {
         expect(sorted[4]).toBeNull();
     });
 
-    test('sort button reorders the player inventory and triggers callback', () => {
+    test('sort button only requests authoritative sorting and does not mutate local inventory before server response', () => {
         buildDom();
         const player = {
             level: 10,
@@ -90,13 +90,13 @@ describe('Inventory sorting', () => {
                 null
             ]
         };
+        const originalInventory = [...player.inventory];
         const inventory = createInventory(player);
         inventory.onSortInventory = jest.fn();
 
         document.getElementById('btn-sort-inventory').click();
 
-        expect(player.inventory[0].name).toBe('Eidolon Heart');
-        expect(player.inventory[1].name).toBe('Iron Sword');
-        expect(inventory.onSortInventory).toHaveBeenCalled();
+        expect(player.inventory).toEqual(originalInventory);
+        expect(inventory.onSortInventory).toHaveBeenCalledTimes(1);
     });
 });

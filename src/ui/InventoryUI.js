@@ -188,9 +188,6 @@ export class InventoryUI {
         const player = this._getLastPlayer();
         if (!player || !Array.isArray(player.inventory)) return;
 
-        player.inventory = this.sortInventoryItems(player.inventory);
-        this.updateInventory(player);
-
         if (this.onSortInventory) {
             this.onSortInventory();
         }
