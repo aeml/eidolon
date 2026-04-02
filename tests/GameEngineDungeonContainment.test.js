@@ -124,7 +124,7 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(engine.collisionManager.clearDungeonWalkableGeometry).toHaveBeenCalled();
         expect(engine.collisionManager.setDungeonWalkableGeometry).not.toHaveBeenCalled();
         expect(worldGeneratorInstances).toHaveLength(1);
-        expect(worldGeneratorInstances[0].createTown).toHaveBeenCalledWith(0, 0, 100);
+        expect(worldGeneratorInstances[0].createTown).toHaveBeenCalledWith(0, 200, 100);
         expect(worldGeneratorInstances[0].createOverworldStructures).toHaveBeenCalled();
     });
 });

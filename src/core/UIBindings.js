@@ -25,8 +25,6 @@ export class UIBindings {
             if (!item) return;
 
             engine.network.send('sell', { itemId: item.id, slotIndex: index });
-            engine.player.inventory[index] = null;
-            ui.inventory.updateInventory(engine.player);
         };
         ui.inventory.onBuyback = (itemId) => {
             engine.network.send('buyback', { itemId });

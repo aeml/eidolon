@@ -4023,6 +4023,17 @@ func (w *World) PerformSell(playerID, itemID string) (*Entity, bool) {
 	// Clear slot
 	player.Inventory[invIndex] = Item{}
 
+	compacted := make([]Item, len(player.Inventory))
+	next := 0
+	for _, item := range player.Inventory {
+		if item.ID == "" {
+			continue
+		}
+		compacted[next] = item
+		next++
+	}
+	player.Inventory = compacted
+
 	return player, true
 }
 

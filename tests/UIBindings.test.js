@@ -5,7 +5,7 @@ describe('UIBindings', () => {
     function createEngine() {
         return {
             player: {
-                inventory: [{ id: 'item-1', rarity: { name: 'Rare' } }, null],
+                inventory: [{ id: 'item-1', name: 'Test Blade', rarity: { name: 'Rare' } }, null],
                 hotbar: [null, null, null, null],
                 respawn: jest.fn(),
                 timeSinceDeath: 3,
@@ -59,10 +59,11 @@ describe('UIBindings', () => {
         expect(engine.renderSystem.setGraphicsQuality).toHaveBeenCalledWith('medium');
         expect(engine.renderSystem.setBrightnessLevel).toHaveBeenCalledWith(0.75);
 
+        const originalItem = engine.player.inventory[0];
         engine.uiManager.inventory.onSellItem(0);
         expect(engine.network.send).toHaveBeenCalledWith('sell', { itemId: 'item-1', slotIndex: 0 });
-        expect(engine.player.inventory[0]).toBeNull();
-        expect(engine.uiManager.inventory.updateInventory).toHaveBeenCalledWith(engine.player);
+        expect(engine.player.inventory[0]).toBe(originalItem);
+        expect(engine.uiManager.inventory.updateInventory).not.toHaveBeenCalledWith(engine.player);
 
         engine.uiManager.social.onPartyInvite('alice');
         expect(engine.sendPartyMessage).toHaveBeenCalledWith('party_invite', { targetName: 'alice' });

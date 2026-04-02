@@ -27,6 +27,7 @@ export class InventoryUI {
         this.btnSellUncommon = document.getElementById('btn-sell-uncommon');
         this.btnSellRare = document.getElementById('btn-sell-rare');
         this.stashScreen = document.getElementById('stash-screen');
+        this.btnCloseStash = document.getElementById('btn-close-stash');
         this.stashGrid = document.getElementById('stash-grid');
         this.buybackGrid = document.getElementById('buyback-grid');
 
@@ -274,6 +275,9 @@ export class InventoryUI {
         }
         if (this.btnCloseShop) {
             this.btnCloseShop.addEventListener('click', () => this.toggleShop());
+        }
+        if (this.btnCloseStash) {
+            this.btnCloseStash.addEventListener('click', () => this.toggleStash());
         }
         if (this.btnSellCommon) {
             this.btnSellCommon.addEventListener('click', () => this.handleSellAll('Common'));

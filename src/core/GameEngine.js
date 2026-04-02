@@ -590,7 +590,7 @@ export class GameEngine {
             // Returning to overworld - ensure persistent environment meshes are re-added
             // after the scene was cleared.
             await this.renderSystem.preloadEnvironment();
-            await worldGen.createTown(0, 0, 100);
+            await worldGen.createTown(0, 200, 100);
             await worldGen.createOverworldStructures();
         }
 

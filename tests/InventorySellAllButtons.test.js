@@ -18,6 +18,7 @@ function buildInventoryDom() {
         <button id="btn-close-shop"></button>
         <div id="shop-grid"></div>
         <div id="stash-screen"></div>
+        <button id="btn-close-stash"></button>
         <div id="stash-grid"></div>
         <div id="buyback-grid"></div>
         <div id="stat-tooltip"></div>
@@ -118,5 +119,25 @@ describe('Inventory sell-all buttons', () => {
 
         document.getElementById('buyback-grid').children[0].click();
         expect(inventory.onBuyback).toHaveBeenCalledWith('legendary-1');
+    });
+
+    test('close stash button hides the stash window', () => {
+        buildInventoryDom();
+
+        const inventory = new InventoryUI({
+            isMobile: false,
+            getLastPlayer: () => ({ level: 1, inventory: [], stash: [] }),
+            getItemIconPath: () => '',
+            formatStatName: (key) => key,
+            getRarityColor: () => '#fff',
+            addChatMessage: jest.fn(),
+            updateCharacterSheet: jest.fn()
+        });
+
+        inventory.toggleStash();
+        expect(document.getElementById('stash-screen').style.display).toBe('flex');
+
+        document.getElementById('btn-close-stash').click();
+        expect(document.getElementById('stash-screen').style.display).toBe('none');
     });
 });
