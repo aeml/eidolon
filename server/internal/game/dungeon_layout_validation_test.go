@@ -1,6 +1,7 @@
 package game
 
 import (
+	"math"
 	"math/rand"
 	"strings"
 	"testing"
@@ -121,6 +122,59 @@ func TestGeneratedDungeonLayoutsPopulateCanonicalGeometryAndValidate(t *testing.
 			}
 			if err := ValidateDungeonLayout(layout); err != nil {
 				t.Fatalf("%s: generated layout failed validation: %v", name, err)
+			}
+		}
+	}
+}
+
+func TestGeneratedDungeonLayoutsKeepBossApproachLongEnoughForCanonicalCorridors(t *testing.T) {
+	w := NewWorld(nil)
+
+	generators := map[string]func(string, DungeonDifficulty) DungeonLayout{
+		"verdant_bastion": w.generateVerdantBastionLayout,
+		"molten_core":     w.generateMoltenCoreLayout,
+		"tempest_spire":   w.generateTempestSpireLayout,
+		"abyssal_well":    w.generateAbyssalWellLayout,
+	}
+
+	seed := int64(7)
+	rand.Seed(seed)
+	for name, generator := range generators {
+		for i := 0; i < 5; i++ {
+			layout := generator(name, DifficultyNormal)
+			for corridorIndex, corridor := range layout.Corridors {
+				if corridor.ToRoomIndex <= 0 || corridor.ToRoomIndex >= len(layout.Rooms) {
+					continue
+				}
+				toRoom := layout.Rooms[corridor.ToRoomIndex]
+				if toRoom.Type != "boss" {
+					continue
+				}
+				corridorRects := make([]DungeonWalkRect, 0, len(corridor.WalkRectIndices))
+				for _, rectIndex := range corridor.WalkRectIndices {
+					if rectIndex < 0 || rectIndex >= len(layout.WalkRects) {
+						t.Fatalf("%s: corridor %d references invalid walk rect %d", name, corridorIndex, rectIndex)
+					}
+					corridorRects = append(corridorRects, layout.WalkRects[rectIndex])
+				}
+				if len(corridorRects) == 0 {
+					t.Fatalf("%s: boss corridor %d has no canonical walk rects", name, corridorIndex)
+				}
+
+				approachRect := corridorRects[len(corridorRects)-1]
+				if nearlyEqual(approachRect.X, toRoom.X) {
+					approachLen := math.Abs(approachRect.Height-toRoom.Height) / 2
+					if approachLen+0.001 < corridor.Width/2 {
+						t.Fatalf("%s: boss corridor %d vertical approach %.2f is shorter than half corridor width %.2f for room width %.2f", name, corridorIndex, approachLen, corridor.Width/2, toRoom.Width)
+					}
+				} else if nearlyEqual(approachRect.Z, toRoom.Z) {
+					approachLen := math.Abs(approachRect.Width-toRoom.Width) / 2
+					if approachLen+0.001 < corridor.Width/2 {
+						t.Fatalf("%s: boss corridor %d horizontal approach %.2f is shorter than half corridor width %.2f for room width %.2f", name, corridorIndex, approachLen, corridor.Width/2, toRoom.Width)
+					}
+				} else {
+					t.Fatalf("%s: boss corridor %d terminal rect does not align with target room center axis", name, corridorIndex)
+				}
 			}
 		}
 	}

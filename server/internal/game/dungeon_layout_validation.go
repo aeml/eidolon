@@ -95,27 +95,39 @@ func buildCanonicalCorridorWalkRects(fromRoom, toRoom DungeonRoom, corridorWidth
 		}}
 	}
 
-	midZ := (fromRoom.Z + toRoom.Z) / 2
+	verticalDirection := 1.0
+	if toRoom.Z < fromRoom.Z {
+		verticalDirection = -1.0
+	}
+
+	fromEdgeZ := fromRoom.Z + (verticalDirection * fromRoom.Height / 2)
+	toEdgeZ := toRoom.Z - (verticalDirection * toRoom.Height / 2)
+	availableVertical := math.Abs(toEdgeZ - fromEdgeZ)
+	if availableVertical+0.001 < corridorWidth {
+		return nil
+	}
+
+	elbowZ := (fromEdgeZ + toEdgeZ) / 2
 	return []DungeonWalkRect{
 		{
 			X:      fromRoom.X,
-			Z:      (fromRoom.Z + midZ) / 2,
+			Z:      (fromEdgeZ + elbowZ) / 2,
 			Width:  corridorWidth,
-			Height: math.Abs(midZ-fromRoom.Z) + corridorWidth,
+			Height: math.Abs(elbowZ-fromEdgeZ) + corridorWidth,
 			Kind:   "corridor",
 		},
 		{
 			X:      (fromRoom.X + toRoom.X) / 2,
-			Z:      midZ,
+			Z:      elbowZ,
 			Width:  math.Abs(toRoom.X-fromRoom.X) + corridorWidth,
 			Height: corridorWidth,
 			Kind:   "corridor",
 		},
 		{
 			X:      toRoom.X,
-			Z:      (midZ + toRoom.Z) / 2,
+			Z:      (elbowZ + toEdgeZ) / 2,
 			Width:  corridorWidth,
-			Height: math.Abs(toRoom.Z-midZ) + corridorWidth,
+			Height: math.Abs(toEdgeZ-elbowZ) + corridorWidth,
 			Kind:   "corridor",
 		},
 	}
