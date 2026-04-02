@@ -333,6 +333,52 @@ export class Minimap {
         }
     }
 
+    _getDungeonDebugRiskSegments(overlay) {
+        const rooms = Array.isArray(overlay?.rooms) ? overlay.rooms : [];
+        const corridors = Array.isArray(overlay?.corridors) ? overlay.corridors : [];
+        const walkRects = Array.isArray(overlay?.walkRects) ? overlay.walkRects : [];
+        const riskSegments = [];
+
+        corridors.forEach((corridor) => {
+            const targetRoom = rooms[corridor?.toRoomIndex];
+            if (!targetRoom || targetRoom.type !== 'boss') {
+                return;
+            }
+
+            const walkRectIndices = Array.isArray(corridor.walkRectIndices) ? corridor.walkRectIndices : [];
+            const corridorRects = walkRectIndices
+                .map((rectIndex) => ({ rectIndex, rect: walkRects[rectIndex] }))
+                .filter(({ rect }) => rect && rect.kind === 'corridor');
+            if (corridorRects.length === 0) {
+                return;
+            }
+
+            const finalSegment = corridorRects[corridorRects.length - 1];
+            const corridorWidth = Number.isFinite(corridor.width) && corridor.width > 0
+                ? corridor.width
+                : Math.min(finalSegment.rect.width, finalSegment.rect.height);
+            const widthDelta = Math.abs(finalSegment.rect.width - corridorWidth);
+            const heightDelta = Math.abs(finalSegment.rect.height - corridorWidth);
+            const finalLength = widthDelta <= heightDelta
+                ? finalSegment.rect.height
+                : finalSegment.rect.width;
+            if (!(finalLength < corridorWidth / 2)) {
+                return;
+            }
+
+            riskSegments.push({
+                corridor,
+                rectIndex: finalSegment.rectIndex,
+                rect: finalSegment.rect,
+                joinOrdinal: Math.max(1, corridorRects.length - 1),
+                finalLength,
+                corridorWidth
+            });
+        });
+
+        return riskSegments;
+    }
+
     _drawDungeonDebugOverlay(ctx, toMap, scale) {
         if (!this.dungeonDebugOverlayEnabled) {
             return;
@@ -343,21 +389,25 @@ export class Minimap {
             return;
         }
 
+        const riskSegments = this._getDungeonDebugRiskSegments(overlay);
         ctx.save();
         ctx.font = '10px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        overlay.walkRects.forEach((rect) => {
+        overlay.walkRects.forEach((rect, rectIndex) => {
             const center = toMap(rect.x, rect.z);
             const width = Math.max(4, rect.width * scale * 0.5);
             const height = Math.max(4, rect.height * scale * 0.5);
             const left = center.x - width / 2;
             const top = center.y - height / 2;
             const isCorridor = rect.kind === 'corridor';
+            const isRiskRect = riskSegments.some((segment) => segment.rectIndex === rectIndex);
 
-            ctx.strokeStyle = isCorridor ? 'rgba(255, 180, 90, 0.82)' : 'rgba(120, 220, 255, 0.72)';
-            ctx.lineWidth = isCorridor ? 1.5 : 1.25;
+            ctx.strokeStyle = isRiskRect
+                ? 'rgba(255, 90, 90, 0.95)'
+                : (isCorridor ? 'rgba(255, 180, 90, 0.82)' : 'rgba(120, 220, 255, 0.72)');
+            ctx.lineWidth = isRiskRect ? 2.25 : (isCorridor ? 1.5 : 1.25);
             ctx.beginPath();
             ctx.moveTo(left, top);
             ctx.lineTo(left + width, top);
@@ -380,13 +430,14 @@ export class Minimap {
                 const joinX = Math.abs(dx) >= Math.abs(dz) ? (current.x + next.x) / 2 : current.x;
                 const joinZ = Math.abs(dz) >= Math.abs(dx) ? (current.z + next.z) / 2 : current.z;
                 const join = toMap(joinX, joinZ);
+                const isRiskJoin = riskSegments.some((segment) => segment.joinOrdinal === i + 1 && segment.corridor === corridor);
 
-                ctx.strokeStyle = 'rgba(255, 180, 90, 0.82)';
-                ctx.lineWidth = 2;
+                ctx.strokeStyle = isRiskJoin ? 'rgba(255, 90, 90, 0.95)' : 'rgba(255, 180, 90, 0.82)';
+                ctx.lineWidth = isRiskJoin ? 2.5 : 2;
                 ctx.beginPath();
-                ctx.arc(join.x, join.y, 3.5, 0, Math.PI * 2);
+                ctx.arc(join.x, join.y, isRiskJoin ? 4.5 : 3.5, 0, Math.PI * 2);
                 ctx.stroke();
-                ctx.fillStyle = 'rgba(255, 235, 180, 0.96)';
+                ctx.fillStyle = isRiskJoin ? 'rgba(255, 200, 200, 0.98)' : 'rgba(255, 235, 180, 0.96)';
                 ctx.fillText(`J${i + 1}`, join.x, join.y - 9);
             }
 
@@ -399,6 +450,12 @@ export class Minimap {
                 ctx.fillStyle = 'rgba(120, 220, 255, 0.96)';
                 ctx.fillText(index === 0 ? 'DBG WALK' : `DBG WALK ${index + 1}`, labelPoint.x, labelPoint.y - 16);
             }
+        });
+
+        riskSegments.forEach((segment) => {
+            const point = toMap(segment.rect.x, segment.rect.z);
+            ctx.fillStyle = 'rgba(255, 120, 120, 0.98)';
+            ctx.fillText('RISK', point.x, point.y + 14);
         });
 
         ctx.restore();
