@@ -17,8 +17,9 @@ describe('AssetCacheManager progress and clearing', () => {
 
     test('reports progress while warming a pack through Cache Storage', async () => {
         const add = jest.fn(async () => undefined);
+        const put = jest.fn(async () => undefined);
         global.caches = {
-            open: jest.fn(async () => ({ add })),
+            open: jest.fn(async (name) => (name.endsWith('-meta') ? { put } : { add })),
             keys: jest.fn(async () => [])
         };
 

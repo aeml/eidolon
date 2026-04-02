@@ -456,8 +456,9 @@ export class ItemGenerator {
         let rarity = RARITY.UNCOMMON;
         if (roll < 0.10) rarity = RARITY.LEGENDARY;
         else if (roll < 0.50) rarity = RARITY.RARE;
-        
-        const baseItem = BASE_ITEMS[Math.floor(Math.random() * BASE_ITEMS.length)];
+
+        const eliteBaseItems = BASE_ITEMS.filter((item) => item.type !== 'MATERIAL' && item.type !== 'RELIC');
+        const baseItem = eliteBaseItems[Math.floor(Math.random() * eliteBaseItems.length)];
         return this.createItem(baseItem, rarity, level);
     }
 

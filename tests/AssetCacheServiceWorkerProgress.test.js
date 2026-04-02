@@ -65,6 +65,26 @@ describe('AssetCacheManager service worker progress and inspection', () => {
     });
 
     test('inspects current cache coverage and detects legacy caches', async () => {
+        global.caches.open = jest.fn(async (name) => {
+            if (name.endsWith('-meta')) {
+                return {
+                    match: jest.fn(async () => ({
+                        json: async () => ({ packName: 'core-models', version: 'legacy-build' })
+                    }))
+                };
+            }
+            let seenMatch = false;
+            return {
+                match: jest.fn(async () => {
+                    if (seenMatch) {
+                        return undefined;
+                    }
+                    seenMatch = true;
+                    return { ok: true };
+                })
+            };
+        });
+
         const manager = new AssetCacheManager();
         const status = await manager.inspectPack('core-models');
 
@@ -72,6 +92,7 @@ describe('AssetCacheManager service worker progress and inspection', () => {
         expect(status.cached).toBe(false);
         expect(status.cachedCount).toBe(1);
         expect(status.total).toBeGreaterThan(1);
+        expect(status.cachedVersion).toBe('legacy-build');
         expect(status.updateAvailable).toBe(true);
     });
 });

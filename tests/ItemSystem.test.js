@@ -317,6 +317,19 @@ describe('ItemGenerator', () => {
             const eliteRarities = [RARITY.UNCOMMON, RARITY.RARE, RARITY.LEGENDARY, RARITY.EIDOLIC];
             expect(eliteRarities).toContain(item.rarity);
         });
+
+        test('Elite loot does not roll material or relic drops', () => {
+            const randomSpy = jest.spyOn(Math, 'random')
+                .mockReturnValueOnce(0.2)
+                .mockReturnValueOnce(0.999999);
+
+            const item = ItemGenerator.generateEliteLoot(15);
+
+            expect(item.type).not.toBe('MATERIAL');
+            expect(item.type).not.toBe('RELIC');
+            expect(item.level).toBe(15);
+            randomSpy.mockRestore();
+        });
     });
 
     describe('createItem', () => {

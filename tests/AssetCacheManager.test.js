@@ -56,13 +56,21 @@ describe('AssetCacheManager', () => {
     });
 
     test('warms a pack directly through Cache Storage when requested', async () => {
+        const metadataCache = { put: jest.fn(async () => undefined) };
+        const assetCache = { addAll: jest.fn(async () => undefined), add: jest.fn(async () => undefined) };
+        caches.open = jest.fn(async (name) => (name === `eidolon-assets-${DEFAULT_ASSET_VERSION}-meta` ? metadataCache : assetCache));
+
         const manager = new AssetCacheManager();
         await manager.warmPack('core-models', { preferServiceWorker: false });
 
         expect(caches.open).toHaveBeenCalledWith(`eidolon-assets-${DEFAULT_ASSET_VERSION}`);
-        const cache = await caches.open.mock.results[0].value;
-        expect(cache.add).toHaveBeenCalledTimes(ASSET_PACKS['core-models'].length);
-        expect(cache.add.mock.calls[0][0]).toEqual(expect.stringContaining(ASSET_PACKS['core-models'][0].replace('./', '')));
+        expect(caches.open).toHaveBeenCalledWith(`eidolon-assets-${DEFAULT_ASSET_VERSION}-meta`);
+        expect(assetCache.add).toHaveBeenCalledTimes(ASSET_PACKS['core-models'].length);
+        expect(assetCache.add.mock.calls[0][0]).toEqual(expect.stringContaining(ASSET_PACKS['core-models'][0].replace('./', '')));
+        expect(metadataCache.put).toHaveBeenCalledWith(
+            'eidolon-meta://packs/core-models',
+            expect.objectContaining({ json: expect.any(Function) })
+        );
     });
 
     test('registerServiceWorker registers the root asset service worker', async () => {

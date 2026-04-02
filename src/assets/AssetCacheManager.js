@@ -4,6 +4,7 @@ export class AssetCacheManager {
     constructor() {
         this.manifest = getVersionedAssetManifest();
         this.cacheName = this.manifest.cacheName;
+        this.metadataCacheName = `${this.cacheName}-meta`;
         this.progressListeners = new Map();
         this.handleServiceWorkerMessage = this.handleServiceWorkerMessage.bind(this);
         globalThis.navigator?.serviceWorker?.addEventListener?.('message', this.handleServiceWorkerMessage);
@@ -35,6 +36,36 @@ export class AssetCacheManager {
         if (listener) {
             listener(payload);
         }
+    }
+
+    async writePackMetadata(packName, version = this.manifest.version) {
+        const cacheApi = globalThis.caches;
+        if (!cacheApi?.open) {
+            return;
+        }
+
+        const metadataCache = await cacheApi.open(this.metadataCacheName);
+        await metadataCache.put(
+            `eidolon-meta://packs/${packName}`,
+            {
+                json: async () => ({ packName, version })
+            }
+        );
+    }
+
+    async readPackMetadata(packName) {
+        const cacheApi = globalThis.caches;
+        if (!cacheApi?.open) {
+            return null;
+        }
+
+        const metadataCache = await cacheApi.open(this.metadataCacheName);
+        const response = await metadataCache.match(`eidolon-meta://packs/${packName}`);
+        if (!response?.json) {
+            return null;
+        }
+
+        return response.json();
     }
 
     async warmPack(packName, { preferServiceWorker = true, onProgress = null } = {}) {
@@ -77,6 +108,7 @@ export class AssetCacheManager {
             await cache.add(assets[index]);
             reportProgress(index + 1);
         }
+        await this.writePackMetadata(packName);
         return { mode: 'cache-storage', cacheName: this.cacheName, assets };
     }
 
@@ -96,14 +128,21 @@ export class AssetCacheManager {
             }
         }
 
+        const metadata = await this.readPackMetadata(packName);
+        const cachedVersion = metadata?.version;
         const cacheNames = await cacheApi.keys();
-        const updateAvailable = cacheNames.some((name) => name.startsWith('eidolon-assets-') && name !== this.cacheName);
+        const hasLegacyCache = cacheNames.some((name) => name.startsWith('eidolon-assets-') && !name.endsWith('-meta') && name !== this.cacheName);
+        const updateAvailable = cachedCount > 0 && (
+            (cachedVersion && cachedVersion !== this.manifest.version)
+            || (!cachedVersion && hasLegacyCache)
+        );
         return {
             packName,
             total: assets.length,
             cachedCount,
             cached: assets.length > 0 && cachedCount === assets.length,
             updateAvailable,
+            cachedVersion,
             cacheName: this.cacheName
         };
     }
