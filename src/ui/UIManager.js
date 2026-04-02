@@ -7,7 +7,7 @@ import { QuestUI } from './QuestUI.js';
 import { SocialUI } from './SocialUI.js';
 import { InventoryUI } from './InventoryUI.js';
 import { AssetCacheManager } from '../assets/AssetCacheManager.js';
-import { getAssetPackEstimateMb, getRecommendedAssetPackNames } from '../assets/assetManifest.js';
+import { DEFAULT_ASSET_VERSION, getAssetPackEstimateMb, getRecommendedAssetPackNames } from '../assets/assetManifest.js';
 
 export class UIManager {
     constructor(isMobile = false) {
@@ -110,6 +110,7 @@ export class UIManager {
         this.assetDownloadProgress = document.getElementById('asset-download-progress');
         this.assetDownloadProgressBar = document.getElementById('asset-download-progress-bar');
         this.assetCacheStateDetail = document.getElementById('asset-cache-state-detail');
+        this.assetLastSyncedVersion = document.getElementById('asset-last-synced-version');
         this.assetPackCoreStatus = document.getElementById('asset-pack-core-status');
         this.assetPackCoreSize = document.getElementById('asset-pack-core-size');
         this.assetPackDungeonStatus = document.getElementById('asset-pack-dungeon-status');
@@ -137,6 +138,7 @@ export class UIManager {
         this.onAssetDownloadRequest = null;
         this.onAssetCacheClearRequest = null;
         this.assetCacheManager = new AssetCacheManager();
+        this.assetLastSyncedVersionValue = localStorage.getItem('eidolon.assetLastSyncedVersion') || null;
         this.assetPackStatuses = {
             'core-models': localStorage.getItem('eidolon.assetPack.core-models') || 'not-downloaded',
             'dungeon-models': localStorage.getItem('eidolon.assetPack.dungeon-models') || 'not-downloaded',
@@ -200,6 +202,7 @@ export class UIManager {
             });
         }
         this.renderAssetPackEstimates();
+        this.renderLastSyncedVersion();
         this.updateAssetDownloadProgress({ completed: 0, total: 0, percent: 0 });
         this.refreshAssetDownloadStatus();
         void this.refreshAssetCacheState();
@@ -1410,6 +1413,21 @@ export class UIManager {
         }
     }
 
+    renderLastSyncedVersion() {
+        if (!this.assetLastSyncedVersion) {
+            return;
+        }
+        this.assetLastSyncedVersion.textContent = this.assetLastSyncedVersionValue
+            ? `Last synced asset version: ${this.assetLastSyncedVersionValue}`
+            : 'Last synced asset version: Not yet synced';
+    }
+
+    markAssetsSynced(version = DEFAULT_ASSET_VERSION) {
+        this.assetLastSyncedVersionValue = version;
+        localStorage.setItem('eidolon.assetLastSyncedVersion', version);
+        this.renderLastSyncedVersion();
+    }
+
     setAssetPackStatus(packName, status) {
         this.assetPackStatuses[packName] = status;
         localStorage.setItem(`eidolon.assetPack.${packName}`, status);
@@ -1458,9 +1476,10 @@ export class UIManager {
                 }
             }
 
+            const staleCount = inspections.filter((inspection) => inspection.updateAvailable && inspection.cachedCount > 0).length;
             if (this.assetCacheStateDetail) {
-                this.assetCacheStateDetail.textContent = inspections.some((inspection) => inspection.updateAvailable)
-                    ? 'Update available for cached assets'
+                this.assetCacheStateDetail.textContent = staleCount > 0
+                    ? `${staleCount} pack${staleCount === 1 ? '' : 's'} need refresh`
                     : 'Assets are up to date';
             }
         } catch (error) {
@@ -1519,6 +1538,7 @@ export class UIManager {
         try {
             await handler(packName);
             this.setAssetPackStatus(packName, 'cached');
+            this.markAssetsSynced();
             if (!this.onAssetDownloadRequest) {
                 this.updateAssetDownloadProgress({ completed: 1, total: 1, percent: 100 });
             }

@@ -71,6 +71,7 @@ function buildDom() {
         <div id="asset-download-progress"></div>
         <div id="asset-download-progress-bar"></div>
         <div id="asset-cache-state-detail"></div>
+        <div id="asset-last-synced-version"></div>
         <div id="asset-pack-core-status"></div>
         <div id="asset-pack-core-size"></div>
         <div id="asset-pack-dungeon-status"></div>
@@ -171,6 +172,7 @@ describe('UIManager asset download settings', () => {
         expect(ui.assetPackDungeonStatus.textContent).toContain('Dungeon models not downloaded');
         expect(ui.assetPackCoreSize.textContent).toContain('MB');
         expect(ui.assetPackEnvironmentSize.textContent).toContain('MB');
+        expect(ui.assetLastSyncedVersion.textContent).toContain('Not yet synced');
     });
 
     test('core asset download button invokes callback and updates busy state', async () => {
@@ -244,7 +246,7 @@ describe('UIManager asset download settings', () => {
         expect(ui.assetPackCoreStatus.textContent).toContain('Core models cached');
         expect(ui.assetPackDungeonStatus.textContent).toContain('1/4 cached');
         expect(ui.assetPackEnvironmentStatus.textContent).toContain('2/4 cached');
-        expect(ui.assetCacheStateDetail.textContent).toContain('Update available');
+        expect(ui.assetCacheStateDetail.textContent).toContain('2 packs need refresh');
     });
 
     test('environment asset button requests environment textures pack', async () => {
@@ -290,5 +292,15 @@ describe('UIManager asset download settings', () => {
         expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('core-models');
         expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('environment-textures');
         expect(ui.onAssetDownloadRequest).not.toHaveBeenCalledWith('dungeon-models');
+    });
+
+    test('successful downloads update last synced asset version', async () => {
+        const ui = new UIManager(false);
+        ui.onAssetDownloadRequest = jest.fn(async () => undefined);
+
+        await ui.requestAssetDownload('core-models');
+
+        expect(ui.assetLastSyncedVersion.textContent).toContain('2026-04-01');
+        expect(localStorage.getItem('eidolon.assetLastSyncedVersion')).toBe('2026-04-01');
     });
 });
