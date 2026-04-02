@@ -38,6 +38,30 @@ function buildCanonicalLayout() {
     };
 }
 
+function buildLargeBossApproachLayout() {
+    return {
+        rooms: [
+            { x: 0, z: 0, width: 100, height: 100, color: 0x111111, type: 'start' },
+            { x: 80, z: -180, width: 180, height: 180, color: 0x222222, type: 'boss' }
+        ],
+        walkRects: [
+            { x: 0, z: 0, width: 100, height: 100, kind: 'room', roomIndex: 0 },
+            { x: 80, z: -180, width: 180, height: 180, kind: 'room', roomIndex: 1 },
+            { x: 0, z: -60, width: 40, height: 60, kind: 'corridor' },
+            { x: 40, z: -70, width: 120, height: 40, kind: 'corridor' },
+            { x: 80, z: -80, width: 40, height: 60, kind: 'corridor' }
+        ],
+        corridors: [
+            {
+                fromRoomIndex: 0,
+                toRoomIndex: 1,
+                width: 40,
+                walkRectIndices: [2, 3, 4]
+            }
+        ]
+    };
+}
+
 describe.each([
     ['createVerdantBastionCatacombs'],
     ['createMoltenCore'],
@@ -71,6 +95,41 @@ describe.each([
             80,
             0x222222,
             { north: true }
+        ]);
+    });
+
+    test('uses canonical boss approaches that leave a non-zero final segment into large rooms', async () => {
+        const generator = createGenerator();
+
+        await generator[methodName](0, 0, buildLargeBossApproachLayout());
+
+        expect(generator.createCorridor.mock.calls).toEqual([
+            [0, -50, 0, -70, 40, 0, 0],
+            [0, -70, 80, -70, 40, 0, 0],
+            [80, -70, 80, -90, 40, 0, 0]
+        ]);
+
+        expect(generator.createCorner.mock.calls).toEqual([
+            [0, -70, 40, { south: true, east: true }],
+            [80, -70, 40, { west: true, north: true }]
+        ]);
+
+        const finalSegment = generator.createCorridor.mock.calls[2];
+        expect(Math.abs(finalSegment[3] - finalSegment[1])).toBeGreaterThan(0);
+
+        expect(generator.createRoom.mock.calls[0]).toEqual([
+            0,
+            0,
+            100,
+            0x111111,
+            { north: true }
+        ]);
+        expect(generator.createRoom.mock.calls[1]).toEqual([
+            80,
+            -180,
+            180,
+            0x222222,
+            { south: true }
         ]);
     });
 
