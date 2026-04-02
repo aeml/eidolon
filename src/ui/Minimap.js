@@ -124,6 +124,11 @@ export class Minimap {
         // can see when they're approaching a transition.
         this._drawRealmBoundaries(ctx, toMap, half);
 
+        // ---- Dungeon room overlays ----
+        if (this.gameEngine?.getDungeonRoomSummary) {
+            this._drawDungeonRoomStates(ctx, toMap, player, half, scale);
+        }
+
         // ---- Entities ----
         const partyIds = this._getPartyMemberIds();
 
@@ -252,6 +257,52 @@ export class Minimap {
                 ctx.stroke();
             }
         }
+    }
+
+    _drawDungeonRoomStates(ctx, toMap, player, half, scale) {
+        const summary = this.gameEngine?.getDungeonRoomSummary?.();
+        if (!summary || !Array.isArray(summary.rooms) || summary.rooms.length === 0) {
+            return;
+        }
+
+        summary.rooms.forEach((room) => {
+            const center = toMap(room.x, room.z);
+            const roomWidth = Math.max(6, room.width * scale * 0.5);
+            const roomHeight = Math.max(6, room.height * scale * 0.5);
+            const left = center.x - roomWidth / 2;
+            const top = center.y - roomHeight / 2;
+
+            let fill = 'rgba(255, 255, 255, 0.08)';
+            if (room.cleared) {
+                fill = 'rgba(120, 255, 160, 0.22)';
+            } else if (room.explored) {
+                fill = 'rgba(90, 160, 255, 0.18)';
+            }
+            ctx.fillStyle = fill;
+            ctx.fillRect(left, top, roomWidth, roomHeight);
+
+            if (room.index === summary.currentRoomIndex) {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(left, top);
+                ctx.lineTo(left + roomWidth, top);
+                ctx.lineTo(left + roomWidth, top + roomHeight);
+                ctx.lineTo(left, top + roomHeight);
+                ctx.lineTo(left, top);
+                ctx.stroke();
+            }
+
+            if (room.index === summary.objectiveRoomIndex) {
+                ctx.strokeStyle = 'rgba(255, 215, 90, 0.95)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(center.x, center.y, Math.max(roomWidth, roomHeight) * 0.35, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.fillStyle = 'rgba(255, 215, 90, 0.95)';
+                ctx.fillText('Objective', center.x, center.y - Math.max(8, roomHeight * 0.5));
+            }
+        });
     }
 
     /** Draw faint realm boundary lines. */

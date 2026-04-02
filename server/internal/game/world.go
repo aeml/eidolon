@@ -1437,6 +1437,115 @@ type DungeonLayout struct {
 	Corridors []DungeonCorridor `json:"corridors,omitempty"`
 }
 
+type DungeonRoomProgress struct {
+	Explored bool `json:"explored"`
+	Cleared  bool `json:"cleared"`
+}
+
+type DungeonRoomSummaryEntry struct {
+	Index    int     `json:"index"`
+	X        float64 `json:"x"`
+	Z        float64 `json:"z"`
+	Width    float64 `json:"width"`
+	Height   float64 `json:"height"`
+	Type     string  `json:"type"`
+	Explored bool    `json:"explored"`
+	Cleared  bool    `json:"cleared"`
+}
+
+type DungeonRoomSummary struct {
+	Rooms              []DungeonRoomSummaryEntry `json:"rooms"`
+	CurrentRoomIndex   int                       `json:"currentRoomIndex"`
+	ObjectiveRoomIndex int                       `json:"objectiveRoomIndex"`
+}
+
+type DungeonRoomState struct {
+	Layout                DungeonLayout
+	Rooms                 []DungeonRoomProgress
+	CurrentRoomIndexValue int
+}
+
+func NewDungeonRoomState(layout DungeonLayout) *DungeonRoomState {
+	rooms := make([]DungeonRoomProgress, len(layout.Rooms))
+	return &DungeonRoomState{
+		Layout:                layout,
+		Rooms:                 rooms,
+		CurrentRoomIndexValue: -1,
+	}
+}
+
+func (s *DungeonRoomState) CurrentRoomIndexForPosition(x, z float64) int {
+	for idx, room := range s.Layout.Rooms {
+		halfW := room.Width / 2
+		halfH := room.Height / 2
+		if x >= room.X-halfW && x <= room.X+halfW && z >= room.Z-halfH && z <= room.Z+halfH {
+			return idx
+		}
+	}
+	return -1
+}
+
+func (s *DungeonRoomState) CurrentRoomIndex(x, z float64) int {
+	return s.CurrentRoomIndexForPosition(x, z)
+}
+
+func (s *DungeonRoomState) MarkExploredAt(x, z float64) {
+	idx := s.CurrentRoomIndexForPosition(x, z)
+	if idx < 0 || idx >= len(s.Rooms) {
+		return
+	}
+	s.Rooms[idx].Explored = true
+	s.CurrentRoomIndexValue = idx
+}
+
+func (s *DungeonRoomState) MarkRoomCleared(index int) {
+	if index < 0 || index >= len(s.Rooms) {
+		return
+	}
+	s.Rooms[index].Explored = true
+	s.Rooms[index].Cleared = true
+}
+
+func (s *DungeonRoomState) ObjectiveRoomIndex() int {
+	for idx, room := range s.Layout.Rooms {
+		if room.Type == "start" {
+			continue
+		}
+		if idx >= len(s.Rooms) || !s.Rooms[idx].Cleared {
+			return idx
+		}
+	}
+	return -1
+}
+
+func (s *DungeonRoomState) Summary(x, z float64) DungeonRoomSummary {
+	if x != 0 || z != 0 {
+		s.MarkExploredAt(x, z)
+	}
+	entries := make([]DungeonRoomSummaryEntry, 0, len(s.Layout.Rooms))
+	for idx, room := range s.Layout.Rooms {
+		progress := DungeonRoomProgress{}
+		if idx < len(s.Rooms) {
+			progress = s.Rooms[idx]
+		}
+		entries = append(entries, DungeonRoomSummaryEntry{
+			Index:    idx,
+			X:        room.X,
+			Z:        room.Z,
+			Width:    room.Width,
+			Height:   room.Height,
+			Type:     room.Type,
+			Explored: progress.Explored,
+			Cleared:  progress.Cleared,
+		})
+	}
+	return DungeonRoomSummary{
+		Rooms:              entries,
+		CurrentRoomIndex:   s.CurrentRoomIndexValue,
+		ObjectiveRoomIndex: s.ObjectiveRoomIndex(),
+	}
+}
+
 type SpatialMap struct {
 	cellSize float64
 	cells    map[string]map[string]*Entity
@@ -1561,15 +1670,17 @@ func MinLevelForDifficulty(difficulty DungeonDifficulty, dungeonType string) int
 }
 
 type DungeonInstance struct {
-	ID          string
-	Layout      DungeonLayout
-	PartyID     string
-	CreatedAt   time.Time
-	EmptySince  time.Time
-	PlayerCount int
-	Difficulty  DungeonDifficulty
-	DungeonType string
-	RunLevel    int
+	ID                string
+	Layout            DungeonLayout
+	PartyID           string
+	CreatedAt         time.Time
+	EmptySince        time.Time
+	PlayerCount       int
+	Difficulty        DungeonDifficulty
+	DungeonType       string
+	RunLevel          int
+	RoomState         *DungeonRoomState
+	PlayerRoomSummary map[string]DungeonRoomSummary
 }
 
 type World struct {
@@ -7819,13 +7930,14 @@ func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty Dun
 	}
 
 	dungeon := &DungeonInstance{
-		ID:          instanceID,
-		PartyID:     partyID,
-		CreatedAt:   time.Now(),
-		EmptySince:  time.Now(),
-		Difficulty:  difficulty,
-		DungeonType: dungeonType,
-		RunLevel:    runLevel,
+		ID:                instanceID,
+		PartyID:           partyID,
+		CreatedAt:         time.Now(),
+		EmptySince:        time.Now(),
+		Difficulty:        difficulty,
+		DungeonType:       dungeonType,
+		RunLevel:          runLevel,
+		PlayerRoomSummary: make(map[string]DungeonRoomSummary),
 	}
 	buildLayout := func(generator func(string, DungeonDifficulty) DungeonLayout) DungeonLayout {
 		const maxLayoutAttempts = 8
@@ -7860,24 +7972,29 @@ func (w *World) CreateDungeon(partyID string, dungeonType string, difficulty Dun
 	if dungeonType == "verdant_bastion_catacombs" {
 		layout := buildLayout(w.generateVerdantBastionLayout)
 		dungeon.Layout = layout
+		dungeon.RoomState = NewDungeonRoomState(layout)
 		w.InstanceLayouts[instanceID] = dungeon
 	} else if dungeonType == "molten_core" {
 		layout := buildLayout(w.generateMoltenCoreLayout)
 		dungeon.Layout = layout
+		dungeon.RoomState = NewDungeonRoomState(layout)
 		w.InstanceLayouts[instanceID] = dungeon
 	} else if dungeonType == "tempest_spire" {
 		layout := buildLayout(w.generateTempestSpireLayout)
 		dungeon.Layout = layout
+		dungeon.RoomState = NewDungeonRoomState(layout)
 		w.InstanceLayouts[instanceID] = dungeon
 	} else if dungeonType == "abyssal_well" {
 		layout := buildLayout(w.generateAbyssalWellLayout)
 		dungeon.Layout = layout
+		dungeon.RoomState = NewDungeonRoomState(layout)
 		w.InstanceLayouts[instanceID] = dungeon
 	} else {
 		// Default Crypt
 		// Generate a simple layout for the crypt too, so we have a start point
 		layout := fallbackDungeonLayout(dungeonType)
 		dungeon.Layout = layout
+		dungeon.RoomState = NewDungeonRoomState(layout)
 		w.InstanceLayouts[instanceID] = dungeon
 
 		// Spawn Dungeon Entities (Example: 20 Skeletons)
@@ -7952,6 +8069,50 @@ func (w *World) GetInstanceType(instanceID string) string {
 		return ""
 	}
 	return inst.DungeonType
+}
+
+func (w *World) UpdateDungeonRoomProgress(playerID string, x, z float64) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok || player.InstanceID == "" {
+		return
+	}
+	inst, ok := w.InstanceLayouts[player.InstanceID]
+	if !ok || inst.RoomState == nil {
+		return
+	}
+	inst.RoomState.MarkExploredAt(x, z)
+	inst.PlayerRoomSummary[playerID] = inst.RoomState.Summary(x, z)
+}
+
+func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	inst, ok := w.InstanceLayouts[instanceID]
+	if !ok || inst.RoomState == nil {
+		return
+	}
+	inst.RoomState.MarkRoomCleared(roomIndex)
+	for playerID := range inst.PlayerRoomSummary {
+		inst.PlayerRoomSummary[playerID] = inst.RoomState.Summary(0, 0)
+	}
+}
+
+func (w *World) GetDungeonRoomSummary(instanceID string, playerID string) (DungeonRoomSummary, bool) {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+
+	inst, ok := w.InstanceLayouts[instanceID]
+	if !ok || inst.RoomState == nil {
+		return DungeonRoomSummary{}, false
+	}
+	if summary, ok := inst.PlayerRoomSummary[playerID]; ok {
+		return summary, true
+	}
+	return inst.RoomState.Summary(0, 0), true
 }
 
 func fallbackDungeonLayout(dungeonType string) DungeonLayout {
@@ -8587,6 +8748,10 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 	if strings.HasPrefix(instanceID, "dungeon_") {
 		if inst, ok := w.InstanceLayouts[instanceID]; ok {
 			inst.EmptySince = time.Time{} // Reset empty timer
+			if inst.RoomState != nil {
+				inst.RoomState.MarkExploredAt(startX, startZ)
+				inst.PlayerRoomSummary[playerID] = inst.RoomState.Summary(startX, startZ)
+			}
 		}
 	}
 

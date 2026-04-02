@@ -172,6 +172,7 @@ const (
 	MsgResetDungeon      = "reset_dungeon"
 	MsgTelegraph         = "telegraph"
 	MsgRewardSummary     = "reward_summary"
+	MsgDungeonRoomState  = "dungeon_room_state"
 )
 
 type SplitStackPayload struct {
@@ -1630,6 +1631,9 @@ func (c *Client) handleMessage(msg Message) {
 					"type":       "verdant_bastion", // TODO: Store dungeon type in DB if we have multiple
 				}
 				resp["layout"] = layout
+				if roomState, ok := world.GetDungeonRoomSummary(instanceID, c.playerID); ok {
+					resp["roomState"] = roomState
+				}
 				payloadBytes, _ := json.Marshal(resp)
 
 				instMsg := Message{
@@ -1735,6 +1739,9 @@ func (c *Client) handleMessage(msg Message) {
 				}
 				if hasLayout {
 					resp["layout"] = layout
+				}
+				if roomState, ok := world.GetDungeonRoomSummary(instanceID, memberID); ok {
+					resp["roomState"] = roomState
 				}
 				payloadBytes, _ := json.Marshal(resp)
 
@@ -3379,6 +3386,10 @@ func broadcastState() {
 
 			// Get current state (100 unit radius)
 			currentState := world.GetStateForPlayer(c.playerID, 100.0)
+			playerEntity := world.GetEntityCopy(c.playerID)
+			if playerEntity != nil && playerEntity.InstanceID != "" {
+				world.UpdateDungeonRoomProgress(c.playerID, playerEntity.X, playerEntity.Z)
+			}
 
 			// Initialize lastState if nil (shouldn't happen, but safety check)
 			if c.lastState == nil {
@@ -3478,6 +3489,19 @@ func broadcastState() {
 			select {
 			case c.send <- data:
 			default:
+			}
+
+			if playerEntity != nil && playerEntity.InstanceID != "" {
+				if roomState, ok := world.GetDungeonRoomSummary(playerEntity.InstanceID, c.playerID); ok {
+					payloadBytes, _ := json.Marshal(roomState)
+					roomStateMsg := Message{Type: MsgDungeonRoomState, Payload: payloadBytes}
+					if roomStateData, err := json.Marshal(roomStateMsg); err == nil {
+						select {
+						case c.send <- roomStateData:
+						default:
+						}
+					}
+				}
 			}
 		}(client)
 	}

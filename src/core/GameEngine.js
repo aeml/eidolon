@@ -104,6 +104,7 @@ export class GameEngine {
         this.hazards = new Map(); // Environmental hazards (id -> EnvironmentalHazard)
         this.abilityController = new AbilityController(this);
         this.currentInstanceId = null; // Track current instance to prevent state desync
+        this.currentDungeonRoomState = null;
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         this.minimap = new Minimap();
         this.minimap.setGameEngine(this);
@@ -523,9 +524,10 @@ export class GameEngine {
         return item;
     }
 
-    async enterInstance(instanceId, type, layout) {
+    async enterInstance(instanceId, type, layout, roomState = null) {
         console.log(`Entering instance: ${instanceId} (${type})`);
         this.currentInstanceId = instanceId;
+        this.currentDungeonRoomState = roomState;
         this.clearCombatIntentState();
         this.refreshDungeonEntranceHint();
 
@@ -847,8 +849,10 @@ export class GameEngine {
         } else if (msg.type === 'enter_instance') {
             const instanceData = msg.payload;
             console.log(`GameEngine: Received enter_instance. ID: ${instanceData.instanceId}, Type: ${instanceData.type}`);
-            void this.enterInstance(instanceData.instanceId, instanceData.type, instanceData.layout)
+            void this.enterInstance(instanceData.instanceId, instanceData.type, instanceData.layout, instanceData.roomState || null)
                 .catch(e => console.error('Failed to enter instance:', e));
+        } else if (msg.type === 'dungeon_room_state') {
+            this.currentDungeonRoomState = msg.payload || null;
         } else if (msg.type === 'get_dungeon_status') {
             if (this.uiManager) {
                 this.uiManager.showDungeonMenu(msg.payload);
@@ -2060,6 +2064,10 @@ export class GameEngine {
     requestDungeonStatus(dungeonType = null) {
         this.uiManager?.clearDungeonEntranceHint?.();
         this.network.send('get_dungeon_status', dungeonType ? { dungeonType } : {});
+    }
+
+    getDungeonRoomSummary() {
+        return this.currentDungeonRoomState;
     }
 
     sendEquipMessage(item, targetSlot) {
