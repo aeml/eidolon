@@ -2366,6 +2366,12 @@ export class GameEngine {
             this.collisionManager.constrainToDungeonWalkableArea(end, this.player.radius || 0);
         }
 
+        if (this.playerJumpState) {
+            this.playerQueuedJump = true;
+            return true;
+        }
+
+        this.playerQueuedJump = false;
         this.player.targetPosition = null;
         this.pendingInteraction = null;
         this.abilityController.pendingAbilityTarget = null;
@@ -2496,6 +2502,10 @@ export class GameEngine {
             this.playerJumpVisualHeight = jump.visualHeight || 0;
             return true;
         }
+        if (this.inputManager?.keys?.control && this.inputManager?.primaryMouseButtonDown) {
+            this.playerQueuedJump = true;
+        }
+
         jump.elapsed = Math.min(jump.duration, jump.elapsed + dt);
         const progress = jump.duration > 0 ? jump.elapsed / jump.duration : 1;
         const arc = Math.sin(progress * Math.PI) * jump.height;
@@ -2513,6 +2523,16 @@ export class GameEngine {
             this.playerJumpVisualHeight = 0;
             this.player.state = 'IDLE';
             this.player.playAnimation?.('Idle');
+
+            if (this.playerQueuedJump && this.inputManager?.keys?.control && this.inputManager?.primaryMouseButtonDown) {
+                this.playerQueuedJump = false;
+                const queuedDestination = this.inputManager.getGroundIntersection?.();
+                if (queuedDestination) {
+                    return this.requestPlayerJump(queuedDestination);
+                }
+            }
+
+            this.playerQueuedJump = false;
         }
 
         return true;

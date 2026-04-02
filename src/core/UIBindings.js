@@ -1,3 +1,5 @@
+const SELLABLE_GEAR_TYPES = new Set(['WEAPON', 'ARMOR', 'ACCESSORY']);
+
 export class UIBindings {
     constructor(engine) {
         this.engine = engine;
@@ -33,7 +35,7 @@ export class UIBindings {
             if (!engine.player) return;
             for (let i = engine.player.inventory.length - 1; i >= 0; i--) {
                 const item = engine.player.inventory[i];
-                if (item && item.rarity && item.rarity.name === rarityName) {
+                if (item && item.rarity && item.rarity.name === rarityName && SELLABLE_GEAR_TYPES.has(item.type)) {
                     ui.inventory.onSellItem(i);
                 }
             }

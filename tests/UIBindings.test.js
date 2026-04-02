@@ -72,6 +72,25 @@ describe('UIBindings', () => {
         expect(engine.worldMap.toggle).toHaveBeenCalled();
     });
 
+    test('sell-all only forwards gear items of the requested rarity and skips gems/materials/relics', () => {
+        const engine = createEngine();
+        engine.player.inventory = [
+            { id: 'gear-common', name: 'Rusty Sword', type: 'WEAPON', rarity: { name: 'Common' } },
+            { id: 'gem-common', name: 'Flawed Ruby', type: 'GEM', rarity: { name: 'Common' } },
+            { id: 'mat-common', name: 'Eidolon Shard', type: 'MATERIAL', rarity: { name: 'Common' } },
+            { id: 'relic-common', name: 'Eidolon Heart', type: 'RELIC', rarity: { name: 'Common' } },
+            { id: 'gear-rare', name: 'Knight Blade', type: 'WEAPON', rarity: { name: 'Rare' } }
+        ];
+        const bindings = new UIBindings(engine);
+
+        bindings.bindConstructorCallbacks();
+
+        engine.uiManager.inventory.onSellAll('Common');
+
+        expect(engine.network.send).toHaveBeenCalledTimes(1);
+        expect(engine.network.send).toHaveBeenCalledWith('sell', { itemId: 'gear-common', slotIndex: 0 });
+    });
+
     test('bindSessionCallbacks wires chat, respawn, and hotbar actions', () => {
         const engine = createEngine();
         const bindings = new UIBindings(engine);

@@ -61,6 +61,7 @@ export class InputManager {
         this._registerListener(window, 'mouseup', this._onMouseUp);
         
         this.isMouseDown = false;
+        this.primaryMouseButtonDown = false;
         this.isRightMouseDown = false;
     }
 
@@ -338,6 +339,7 @@ export class InputManager {
         if (event.target.tagName !== 'CANVAS') return;
 
         if (event.button === 0) { // Left Click
+            this.primaryMouseButtonDown = true;
             this.isMouseDown = true;
             this.callbacks.onClick.forEach(cb => cb(event));
         } else if (event.button === 2) { // Right Click
@@ -348,6 +350,7 @@ export class InputManager {
 
     onMouseUp(event) {
         if (event.button === 0) {
+            this.primaryMouseButtonDown = false;
             this.isMouseDown = false;
         } else if (event.button === 2) {
             this.isRightMouseDown = false;
@@ -375,6 +378,7 @@ export class InputManager {
 
     clearInputState() {
         this.isMouseDown = false;
+        this.primaryMouseButtonDown = false;
         this.isRightMouseDown = false;
         this.joystickVector.set(0, 0);
         Object.keys(this.keys).forEach((key) => {

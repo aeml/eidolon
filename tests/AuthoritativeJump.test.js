@@ -216,6 +216,30 @@ describe('authoritative jump flow', () => {
         expect(engine.playerJumpVisualHeight).toBe(0);
     });
 
+    test('holding ctrl-click queues the next jump until landing and uses the current mouse position at takeoff time', () => {
+        const engine = createEngineHarness();
+        engine.isMultiplayer = false;
+        engine.inputManager.keys.control = true;
+        engine.inputManager.primaryMouseButtonDown = true;
+        engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(10, 0, 0));
+        engine.inputManager.getGroundIntersection = jest.fn(() => new THREE.Vector3(18, 0, 4));
+
+        engine.handlePrimaryClick({ ctrlKey: true, clientX: 100, clientY: 100 });
+        const firstDuration = engine.playerJumpState.duration;
+
+        engine.updatePlayerJump(firstDuration / 2);
+        expect(engine.playerJumpState.end).toEqual(expect.objectContaining({ x: 10, z: 0 }));
+        expect(engine.playerQueuedJump).toBe(true);
+
+        engine.inputManager.getGroundIntersection.mockReturnValue(new THREE.Vector3(24, 0, 12));
+        engine.updatePlayerJump(firstDuration / 2);
+        expect(engine.playerJumpState).toEqual(expect.objectContaining({
+            start: expect.any(THREE.Vector3),
+            end: expect.objectContaining({ x: 24, z: 12 })
+        }));
+        expect(engine.playerQueuedJump).toBe(false);
+    });
+
     test('remote authoritative jump updates mesh arc from replicated jump fields', () => {
         const engine = createEngineHarness();
         const remoteEntity = {
