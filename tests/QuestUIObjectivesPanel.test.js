@@ -170,7 +170,7 @@ describe('QuestUI objectives panel', () => {
                 objectiveRoomIndex: 2,
                 rooms: [
                     { index: 0, type: 'start', explored: true, cleared: true },
-                    { index: 1, type: 'normal', explored: true, cleared: true },
+                    { index: 1, type: 'elite', explored: true, cleared: true },
                     { index: 2, type: 'boss', explored: true, cleared: false }
                 ]
             }),
@@ -196,7 +196,8 @@ describe('QuestUI objectives panel', () => {
                 title: 'Confront the boss',
                 badge: 'Boss',
                 badgeClass: 'is-boss',
-                hint: 'Boss room discovered'
+                hint: 'Boss room discovered',
+                routeTone: 'danger'
             }),
             expect.objectContaining({
                 id: 'q1',
@@ -233,7 +234,40 @@ describe('QuestUI objectives panel', () => {
                 badge: 'Exit',
                 badgeClass: 'is-exit',
                 completed: true,
-                hint: 'Dungeon cleared — head back to the entrance'
+                hint: 'Dungeon cleared — head back to the entrance',
+                routeTone: 'support'
+            })
+        ]);
+    });
+
+    test('builds an elite routing objective when the next discovered room is elite', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', explored: true, cleared: true },
+                    { index: 2, type: 'elite', explored: true, cleared: false },
+                    { index: 3, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'molten_core'
+        });
+
+        const summary = questUI.buildObjectiveSummary([]);
+
+        expect(summary).toEqual([
+            expect.objectContaining({
+                id: 'dungeon-route-molten_core',
+                title: 'Clear the elite room',
+                badge: 'Elite',
+                badgeClass: 'is-elite',
+                hint: 'Elite room discovered',
+                routeTone: 'warning'
             })
         ]);
     });

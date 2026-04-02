@@ -61,7 +61,7 @@ describe('Minimap dungeon room states', () => {
                 objectiveRoomIndex: 2,
                 rooms: [
                     { index: 0, x: 0, z: 0, width: 40, height: 40, type: 'start', explored: true, cleared: false },
-                    { index: 1, x: 50, z: 0, width: 40, height: 40, type: 'normal', explored: true, cleared: true },
+                    { index: 1, x: 50, z: 0, width: 40, height: 40, type: 'elite', explored: true, cleared: true },
                     { index: 2, x: 100, z: 0, width: 40, height: 40, type: 'boss', explored: false, cleared: false }
                 ]
             }),
@@ -71,7 +71,7 @@ describe('Minimap dungeon room states', () => {
         minimap.update({ position: { x: 50, z: 0 }, id: 'player-1' }, []);
 
         expect(fillRects.some((entry) => entry.fillStyle === 'rgba(90, 160, 255, 0.18)')).toBe(true);
-        expect(fillRects.some((entry) => entry.fillStyle === 'rgba(120, 255, 160, 0.22)')).toBe(true);
+        expect(fillRects.some((entry) => entry.fillStyle === 'rgba(255, 190, 90, 0.18)')).toBe(true);
         expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 110, 110, 0.95)')).toBe(true);
         expect(texts.some((entry) => String(entry.args[0]).includes('Boss'))).toBe(true);
     });
@@ -95,6 +95,28 @@ describe('Minimap dungeon room states', () => {
 
         expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 110, 110, 0.95)')).toBe(true);
         expect(texts.some((entry) => String(entry.args[0]).includes('Boss'))).toBe(true);
+    });
+
+    test('renders elite objective rooms with a distinct elite marker', () => {
+        const minimap = new Minimap(200);
+        minimap.gameEngine = {
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, x: 0, z: 0, width: 40, height: 40, type: 'start', explored: true, cleared: true },
+                    { index: 1, x: 50, z: 0, width: 40, height: 40, type: 'normal', explored: true, cleared: true },
+                    { index: 2, x: 100, z: 0, width: 40, height: 40, type: 'elite', explored: true, cleared: false },
+                    { index: 3, x: 150, z: 0, width: 40, height: 40, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            uiManager: { partyData: { members: [] } }
+        };
+
+        minimap.update({ position: { x: 50, z: 0 }, id: 'player-1' }, []);
+
+        expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 190, 90, 0.95)')).toBe(true);
+        expect(texts.some((entry) => String(entry.args[0]).includes('Elite'))).toBe(true);
     });
 
     test('renders a distinct exit marker when the dungeon objective is complete', () => {

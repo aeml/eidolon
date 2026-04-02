@@ -136,6 +136,7 @@ export class QuestUI {
                 completed: true,
                 badge: 'Exit',
                 badgeClass: 'is-exit',
+                routeTone: 'support',
                 hint: 'Dungeon cleared — head back to the entrance'
             };
         }
@@ -150,7 +151,23 @@ export class QuestUI {
                 completed: false,
                 badge: 'Boss',
                 badgeClass: 'is-boss',
+                routeTone: 'danger',
                 hint: objectiveRoom.explored ? 'Boss room discovered' : 'Push toward the boss room'
+            };
+        }
+
+        if (objectiveRoom.type === 'elite') {
+            return {
+                id: `dungeon-route-${instanceType}`,
+                title: 'Clear the elite room',
+                progressLabel,
+                progressPct,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Elite',
+                badgeClass: 'is-elite',
+                routeTone: 'warning',
+                hint: objectiveRoom.explored ? 'Elite room discovered' : 'Elite threat ahead'
             };
         }
 
@@ -164,6 +181,7 @@ export class QuestUI {
             completed: false,
             badge: 'Objective',
             badgeClass: 'is-objective',
+            routeTone: 'neutral',
             hint: remainingRooms === 1 ? 'Boss path open — one room remains' : `Clear ${remainingRooms} more rooms`
         };
     }
@@ -200,7 +218,7 @@ export class QuestUI {
 
         this.activeQuestSummary.forEach((objective) => {
             const item = document.createElement('div');
-            item.className = 'objective-entry';
+            item.className = `objective-entry ${objective.routeTone ? `is-${objective.routeTone}` : ''}`.trim();
             const badgeMarkup = objective.badge
                 ? `<span class="objective-entry__badge ${objective.badgeClass || ''}">${objective.badge}</span>`
                 : '';
