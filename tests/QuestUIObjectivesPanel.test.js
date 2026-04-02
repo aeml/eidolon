@@ -160,4 +160,48 @@ describe('QuestUI objectives panel', () => {
             expect.objectContaining({ text: 'Boss', className: expect.stringContaining('is-boss') })
         ]);
     });
+
+    test('builds dungeon routing objectives from live room state alongside quests', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', explored: true, cleared: true },
+                    { index: 2, type: 'boss', explored: true, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'tempest_spire'
+        });
+
+        const summary = questUI.buildObjectiveSummary([
+            {
+                id: 'q1',
+                target: 'TempestSpireBoss',
+                accepted: true,
+                completed: false,
+                count: 0,
+                maxCount: 1,
+                rewardXP: 900
+            }
+        ]);
+
+        expect(summary).toEqual(expect.arrayContaining([
+            expect.objectContaining({
+                id: 'dungeon-route-tempest_spire',
+                title: 'Confront the boss',
+                badge: 'Boss',
+                badgeClass: 'is-boss',
+                hint: 'Boss room discovered'
+            }),
+            expect.objectContaining({
+                id: 'q1',
+                title: 'Kill Tempest Spire Boss'
+            })
+        ]));
+    });
 });

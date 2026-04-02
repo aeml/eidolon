@@ -45,6 +45,9 @@ export class UIManager {
         // Quest UI (extracted module)
         this.quest = new QuestUI({
             getLastPlayer: () => this.lastPlayerRef,
+            getDungeonRoomSummary: () => window.game?.getDungeonRoomSummary?.() || null,
+            getCurrentInstanceId: () => window.game?.currentInstanceId || null,
+            getCurrentInstanceType: () => window.game?.currentInstanceType || null,
         });
 
         // Escape Menu & Help

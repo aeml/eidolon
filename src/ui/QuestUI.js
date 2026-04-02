@@ -108,24 +108,76 @@ export class QuestUI {
         return `${label}s`;
     }
 
-    buildObjectiveSummary(quests) {
-        if (!Array.isArray(quests)) return [];
+    buildDungeonRoutingObjective() {
+        const instanceId = this.ctx.getCurrentInstanceId?.();
+        const summary = this.ctx.getDungeonRoomSummary?.();
+        if (!instanceId || !summary || !Array.isArray(summary.rooms) || summary.rooms.length === 0) {
+            return null;
+        }
 
-        return quests
-            .filter((q) => q && q.accepted && !q.completed)
-            .map((q) => {
-                const targetLabel = this.formatQuestTarget(q.target, q.maxCount);
-                const remaining = Math.max(0, (q.maxCount || 0) - (q.count || 0));
-                return {
-                    id: q.id,
-                    title: `Kill ${targetLabel}`,
-                    progressLabel: `${q.count || 0} / ${q.maxCount || 0}`,
-                    progressPct: q.maxCount > 0 ? Math.min(100, ((q.count || 0) / q.maxCount) * 100) : 0,
-                    rewardXP: q.rewardXP || 0,
-                    completed: Boolean(q.completed || ((q.count || 0) >= (q.maxCount || 0))),
-                    hint: remaining > 0 ? `${remaining} remaining` : 'Return to the quest NPC for your reward'
-                };
-            });
+        const instanceType = this.ctx.getCurrentInstanceType?.() || 'dungeon';
+        const objectiveRoom = typeof summary.objectiveRoomIndex === 'number'
+            ? summary.rooms.find((room) => room && room.index === summary.objectiveRoomIndex)
+            : null;
+        if (!objectiveRoom) {
+            return null;
+        }
+
+        const clearedCount = summary.rooms.filter((room) => room?.cleared).length;
+        const traversableRooms = summary.rooms.filter((room) => room && room.type !== 'start');
+        const totalProgressRooms = Math.max(1, traversableRooms.length);
+        const progressLabel = `${Math.min(clearedCount, totalProgressRooms)} / ${totalProgressRooms}`;
+        const progressPct = Math.min(100, (Math.min(clearedCount, totalProgressRooms) / totalProgressRooms) * 100);
+
+        if (objectiveRoom.type === 'boss') {
+            return {
+                id: `dungeon-route-${instanceType}`,
+                title: 'Confront the boss',
+                progressLabel,
+                progressPct,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Boss',
+                badgeClass: 'is-boss',
+                hint: objectiveRoom.explored ? 'Boss room discovered' : 'Push toward the boss room'
+            };
+        }
+
+        const remainingRooms = Math.max(1, traversableRooms.filter((room) => !room.cleared && room.type !== 'boss').length);
+        return {
+            id: `dungeon-route-${instanceType}`,
+            title: 'Push deeper into the dungeon',
+            progressLabel,
+            progressPct,
+            rewardXP: 0,
+            completed: false,
+            badge: 'Objective',
+            badgeClass: 'is-objective',
+            hint: remainingRooms === 1 ? 'Boss path open — one room remains' : `Clear ${remainingRooms} more rooms`
+        };
+    }
+
+    buildObjectiveSummary(quests) {
+        const questObjectives = Array.isArray(quests)
+            ? quests
+                .filter((q) => q && q.accepted && !q.completed)
+                .map((q) => {
+                    const targetLabel = this.formatQuestTarget(q.target, q.maxCount);
+                    const remaining = Math.max(0, (q.maxCount || 0) - (q.count || 0));
+                    return {
+                        id: q.id,
+                        title: `Kill ${targetLabel}`,
+                        progressLabel: `${q.count || 0} / ${q.maxCount || 0}`,
+                        progressPct: q.maxCount > 0 ? Math.min(100, ((q.count || 0) / q.maxCount) * 100) : 0,
+                        rewardXP: q.rewardXP || 0,
+                        completed: Boolean(q.completed || ((q.count || 0) >= (q.maxCount || 0))),
+                        hint: remaining > 0 ? `${remaining} remaining` : 'Return to the quest NPC for your reward'
+                    };
+                })
+            : [];
+
+        const dungeonObjective = this.buildDungeonRoutingObjective();
+        return dungeonObjective ? [dungeonObjective, ...questObjectives] : questObjectives;
     }
 
     renderObjectivesPanel(summary) {
