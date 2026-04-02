@@ -36,6 +36,14 @@ export class AssetCacheManager {
         if (listener) {
             listener(payload);
         }
+
+        if (payload.packName && payload.cachedVersion && payload.percent === 100) {
+            void this.writePackMetadata(payload.packName, payload.cachedVersion);
+        }
+
+        if (payload.packName && payload.percent === 100) {
+            this.progressListeners.delete(payload.packName);
+        }
     }
 
     async writePackMetadata(packName, version = this.manifest.version) {
@@ -45,6 +53,9 @@ export class AssetCacheManager {
         }
 
         const metadataCache = await cacheApi.open(this.metadataCacheName);
+        if (!metadataCache?.put) {
+            return;
+        }
         await metadataCache.put(
             `eidolon-meta://packs/${packName}`,
             {
@@ -88,14 +99,28 @@ export class AssetCacheManager {
             if (onProgress) {
                 this.progressListeners.set(packName, onProgress);
             }
+            const completionPromise = new Promise((resolve) => {
+                const baseListener = this.progressListeners.get(packName);
+                this.progressListeners.set(packName, (payload) => {
+                    if (baseListener) {
+                        baseListener(payload);
+                    }
+                    if (payload?.percent === 100) {
+                        resolve();
+                    }
+                });
+            });
             serviceWorker.controller.postMessage({
                 type: 'warm-asset-pack',
                 payload: {
                     cacheName: this.cacheName,
+                    metadataCacheName: this.metadataCacheName,
                     packName,
+                    version: this.manifest.version,
                     assets
                 }
             });
+            await completionPromise;
             return { mode: 'service-worker', cacheName: this.cacheName, assets };
         }
 

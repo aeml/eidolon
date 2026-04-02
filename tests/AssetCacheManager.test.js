@@ -79,17 +79,61 @@ describe('AssetCacheManager', () => {
         expect(registration).toEqual(expect.objectContaining({ scope: '/' }));
     });
 
-    test('warmPack can delegate to an active service worker controller', async () => {
+    test('warmPack can delegate to an active service worker controller and await completion', async () => {
+        const assetCache = { match: jest.fn(async () => undefined) };
+        const metadataCache = { put: jest.fn(async () => undefined), match: jest.fn(async () => undefined) };
+        global.caches = {
+            open: jest.fn(async (name) => (name.endsWith('-meta') ? metadataCache : assetCache)),
+            keys: jest.fn(async () => []),
+            delete: jest.fn(async () => true)
+        };
+        Object.defineProperty(globalThis, 'navigator', {
+            configurable: true,
+            value: {
+                serviceWorker: {
+                    controller: { postMessage: jest.fn() },
+                    register: jest.fn(async () => ({ scope: '/', active: {} })),
+                    addEventListener: jest.fn(),
+                    removeEventListener: jest.fn()
+                }
+            }
+        });
+
         const manager = new AssetCacheManager();
-        await manager.warmPack('dungeon-models', { preferServiceWorker: true });
+        const warmPromise = manager.warmPack('dungeon-models', { preferServiceWorker: true });
 
         expect(navigator.serviceWorker.controller.postMessage).toHaveBeenCalledWith({
             type: 'warm-asset-pack',
             payload: {
                 cacheName: `eidolon-assets-${DEFAULT_ASSET_VERSION}`,
+                metadataCacheName: `eidolon-assets-${DEFAULT_ASSET_VERSION}-meta`,
                 packName: 'dungeon-models',
+                version: DEFAULT_ASSET_VERSION,
                 assets: getVersionedAssetManifest().packs['dungeon-models']
             }
         });
+
+        manager.handleServiceWorkerMessage({
+            data: {
+                type: 'asset-pack-progress',
+                payload: {
+                    packName: 'dungeon-models',
+                    completed: getVersionedAssetManifest().packs['dungeon-models'].length,
+                    total: getVersionedAssetManifest().packs['dungeon-models'].length,
+                    percent: 100,
+                    cachedVersion: DEFAULT_ASSET_VERSION
+                }
+            }
+        });
+
+        await expect(warmPromise).resolves.toEqual({
+            mode: 'service-worker',
+            cacheName: `eidolon-assets-${DEFAULT_ASSET_VERSION}`,
+            assets: getVersionedAssetManifest().packs['dungeon-models']
+        });
+        expect(metadataCache.put).toHaveBeenCalledWith(
+            'eidolon-meta://packs/dungeon-models',
+            expect.objectContaining({ json: expect.any(Function) })
+        );
     });
 });

@@ -113,10 +113,13 @@ export class UIManager {
         this.assetLastSyncedVersion = document.getElementById('asset-last-synced-version');
         this.assetPackCoreStatus = document.getElementById('asset-pack-core-status');
         this.assetPackCoreSize = document.getElementById('asset-pack-core-size');
+        this.assetPackCoreVersion = document.getElementById('asset-pack-core-version');
         this.assetPackDungeonStatus = document.getElementById('asset-pack-dungeon-status');
         this.assetPackDungeonSize = document.getElementById('asset-pack-dungeon-size');
+        this.assetPackDungeonVersion = document.getElementById('asset-pack-dungeon-version');
         this.assetPackEnvironmentStatus = document.getElementById('asset-pack-environment-status');
         this.assetPackEnvironmentSize = document.getElementById('asset-pack-environment-size');
+        this.assetPackEnvironmentVersion = document.getElementById('asset-pack-environment-version');
 
         if (this.btnResume) this.btnResume.addEventListener('click', () => this.toggleEscMenu());
         if (this.btnHelp) this.btnHelp.addEventListener('click', () => this.toggleHelp());
@@ -1411,6 +1414,9 @@ export class UIManager {
         if (this.assetPackEnvironmentSize) {
             this.assetPackEnvironmentSize.textContent = `Estimated download: ${getAssetPackEstimateMb('environment-textures')}`;
         }
+        this.renderAssetPackVersion('core-models');
+        this.renderAssetPackVersion('dungeon-models');
+        this.renderAssetPackVersion('environment-textures');
     }
 
     renderLastSyncedVersion() {
@@ -1426,6 +1432,23 @@ export class UIManager {
         this.assetLastSyncedVersionValue = version;
         localStorage.setItem('eidolon.assetLastSyncedVersion', version);
         this.renderLastSyncedVersion();
+    }
+
+    getAssetPackVersionElement(packName) {
+        if (packName === 'core-models') return this.assetPackCoreVersion;
+        if (packName === 'dungeon-models') return this.assetPackDungeonVersion;
+        if (packName === 'environment-textures') return this.assetPackEnvironmentVersion;
+        return null;
+    }
+
+    renderAssetPackVersion(packName, version = null) {
+        const element = this.getAssetPackVersionElement(packName);
+        if (!element) {
+            return;
+        }
+        element.textContent = version
+            ? `Cached version: ${version}`
+            : 'Cached version: Not cached';
     }
 
     setAssetPackStatus(packName, status) {
@@ -1474,6 +1497,7 @@ export class UIManager {
                 if (inspection.packName === 'environment-textures' && !inspection.cached && inspection.cachedCount > 0 && this.assetPackEnvironmentStatus) {
                     this.assetPackEnvironmentStatus.textContent = `${inspection.cachedCount}/${inspection.total} cached`;
                 }
+                this.renderAssetPackVersion(inspection.packName, inspection.cachedVersion || null);
             }
 
             const staleCount = inspections.filter((inspection) => inspection.updateAvailable && inspection.cachedCount > 0).length;

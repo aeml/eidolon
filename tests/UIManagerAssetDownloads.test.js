@@ -74,10 +74,13 @@ function buildDom() {
         <div id="asset-last-synced-version"></div>
         <div id="asset-pack-core-status"></div>
         <div id="asset-pack-core-size"></div>
+        <div id="asset-pack-core-version"></div>
         <div id="asset-pack-dungeon-status"></div>
         <div id="asset-pack-dungeon-size"></div>
+        <div id="asset-pack-dungeon-version"></div>
         <div id="asset-pack-environment-status"></div>
         <div id="asset-pack-environment-size"></div>
+        <div id="asset-pack-environment-version"></div>
         <div id="inventory-screen"></div>
         <div id="inventory-grid"></div>
         <button id="btn-sort-inventory"></button>
@@ -172,6 +175,7 @@ describe('UIManager asset download settings', () => {
         expect(ui.assetPackDungeonStatus.textContent).toContain('Dungeon models not downloaded');
         expect(ui.assetPackCoreSize.textContent).toContain('MB');
         expect(ui.assetPackEnvironmentSize.textContent).toContain('MB');
+        expect(document.getElementById('asset-pack-core-version').textContent).toContain('Not cached');
         expect(ui.assetLastSyncedVersion.textContent).toContain('Not yet synced');
     });
 
@@ -238,7 +242,8 @@ describe('UIManager asset download settings', () => {
             cached: packName === 'core-models',
             cachedCount: packName === 'core-models' ? 4 : packName === 'environment-textures' ? 2 : 1,
             total: 4,
-            updateAvailable: packName !== 'core-models'
+            updateAvailable: packName !== 'core-models',
+            cachedVersion: packName === 'core-models' ? '2026-04-01' : packName === 'dungeon-models' ? 'legacy-build' : null
         }));
 
         await ui.refreshAssetCacheState();
@@ -246,6 +251,9 @@ describe('UIManager asset download settings', () => {
         expect(ui.assetPackCoreStatus.textContent).toContain('Core models cached');
         expect(ui.assetPackDungeonStatus.textContent).toContain('1/4 cached');
         expect(ui.assetPackEnvironmentStatus.textContent).toContain('2/4 cached');
+        expect(document.getElementById('asset-pack-core-version').textContent).toContain('2026-04-01');
+        expect(document.getElementById('asset-pack-dungeon-version').textContent).toContain('legacy-build');
+        expect(document.getElementById('asset-pack-environment-version').textContent).toContain('Not cached');
         expect(ui.assetCacheStateDetail.textContent).toContain('2 packs need refresh');
     });
 

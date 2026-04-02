@@ -25,11 +25,23 @@ async function broadcastProgress(payload) {
     }
 }
 
+async function writePackMetadata(metadataCacheName, packName, version) {
+    const metadataCache = await caches.open(metadataCacheName);
+    await metadataCache.put(
+        `eidolon-meta://packs/${packName}`,
+        new Response(JSON.stringify({ packName, version }), {
+            headers: { 'Content-Type': 'application/json' }
+        })
+    );
+}
+
 self.addEventListener('message', (event) => {
     if (event.data?.type !== 'warm-asset-pack') return;
     const payload = event.data.payload || {};
     const cacheName = payload.cacheName || DEFAULT_CACHE_NAME;
+    const metadataCacheName = payload.metadataCacheName || `${cacheName}-meta`;
     const packName = payload.packName || 'unknown-pack';
+    const version = payload.version || DEFAULT_ASSET_VERSION;
     const assets = Array.isArray(payload.assets) ? payload.assets : [];
     event.waitUntil((async () => {
         if (assets.length === 0) return;
@@ -37,11 +49,17 @@ self.addEventListener('message', (event) => {
         await broadcastProgress({ packName, completed: 0, total: assets.length, percent: 0 });
         for (let index = 0; index < assets.length; index += 1) {
             await cache.add(assets[index]);
+            const completed = index + 1;
+            const percent = Math.round((completed / assets.length) * 100);
+            if (completed === assets.length) {
+                await writePackMetadata(metadataCacheName, packName, version);
+            }
             await broadcastProgress({
                 packName,
-                completed: index + 1,
+                completed,
                 total: assets.length,
-                percent: Math.round(((index + 1) / assets.length) * 100)
+                percent,
+                cachedVersion: completed === assets.length ? version : undefined
             });
         }
     })());

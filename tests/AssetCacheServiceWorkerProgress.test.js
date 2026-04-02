@@ -38,7 +38,7 @@ describe('AssetCacheManager service worker progress and inspection', () => {
         const manager = new AssetCacheManager();
         const updates = [];
 
-        await manager.warmPack('core-models', {
+        const warmPromise = manager.warmPack('core-models', {
             preferServiceWorker: true,
             onProgress: (update) => updates.push(update)
         });
@@ -55,6 +55,20 @@ describe('AssetCacheManager service worker progress and inspection', () => {
                 }
             }
         });
+        messageHandler({
+            data: {
+                type: 'asset-pack-progress',
+                payload: {
+                    packName: 'core-models',
+                    completed: 4,
+                    total: 4,
+                    percent: 100,
+                    cachedVersion: '2026-04-01'
+                }
+            }
+        });
+
+        await warmPromise;
 
         expect(updates).toContainEqual(expect.objectContaining({
             packName: 'core-models',
