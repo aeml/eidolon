@@ -810,13 +810,13 @@ export class GameEngine {
                     this.floatingTextManager.spawn('ROOM CLEARED!', this.player.position, '#7CFFB2', '26px');
                 }
                 if (this.currentDungeonRoomState) {
-                    const updatedRooms = Array.isArray(this.currentDungeonRoomState.rooms)
-                        ? this.currentDungeonRoomState.rooms.map((room) => {
+                        const updatedRooms = Array.isArray(this.currentDungeonRoomState.rooms)
+                            ? this.currentDungeonRoomState.rooms.map((room) => {
                             if (!room || typeof room.index !== 'number') return room;
                             if (typeof summary.roomIndex === 'number' && room.index === summary.roomIndex) {
                                 return { ...room, explored: true, cleared: true };
                             }
-                            if (typeof summary.objectiveRoomIndex === 'number' && room.index === summary.objectiveRoomIndex) {
+                            if (typeof summary.objectiveRoomIndex === 'number' && summary.objectiveRoomIndex >= 0 && room.index === summary.objectiveRoomIndex) {
                                 return { ...room, explored: true };
                             }
                             return room;

@@ -116,18 +116,29 @@ export class QuestUI {
         }
 
         const instanceType = this.ctx.getCurrentInstanceType?.() || 'dungeon';
-        const objectiveRoom = typeof summary.objectiveRoomIndex === 'number'
+        const objectiveRoom = typeof summary.objectiveRoomIndex === 'number' && summary.objectiveRoomIndex >= 0
             ? summary.rooms.find((room) => room && room.index === summary.objectiveRoomIndex)
             : null;
-        if (!objectiveRoom) {
-            return null;
-        }
 
-        const clearedCount = summary.rooms.filter((room) => room?.cleared).length;
+        const clearedCount = summary.rooms.filter((room) => room?.cleared && room.type !== 'start').length;
         const traversableRooms = summary.rooms.filter((room) => room && room.type !== 'start');
         const totalProgressRooms = Math.max(1, traversableRooms.length);
         const progressLabel = `${Math.min(clearedCount, totalProgressRooms)} / ${totalProgressRooms}`;
         const progressPct = Math.min(100, (Math.min(clearedCount, totalProgressRooms) / totalProgressRooms) * 100);
+
+        if (!objectiveRoom) {
+            return {
+                id: `dungeon-route-${instanceType}`,
+                title: 'Return to the entrance',
+                progressLabel,
+                progressPct,
+                rewardXP: 0,
+                completed: true,
+                badge: 'Exit',
+                badgeClass: 'is-exit',
+                hint: 'Dungeon cleared — head back to the entrance'
+            };
+        }
 
         if (objectiveRoom.type === 'boss') {
             return {

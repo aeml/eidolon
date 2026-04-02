@@ -304,6 +304,22 @@ export class Minimap {
                 ctx.fillText(isBossObjective ? 'Boss' : 'Objective', center.x, center.y - Math.max(8, roomHeight * 0.5));
             }
         });
+
+        if (summary.objectiveRoomIndex < 0) {
+            const exitRoom = summary.rooms.find((room) => room && room.type === 'start');
+            if (!exitRoom) {
+                return;
+            }
+            const center = toMap(exitRoom.x, exitRoom.z);
+            const radius = Math.max(8, Math.min(18, Math.max(exitRoom.width, exitRoom.height) * scale * 0.25));
+            ctx.strokeStyle = 'rgba(120, 220, 255, 0.95)';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillStyle = 'rgba(120, 220, 255, 0.95)';
+            ctx.fillText('Exit', center.x, center.y - radius - 4);
+        }
     }
 
     /** Draw faint realm boundary lines. */
