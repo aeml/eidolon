@@ -132,8 +132,8 @@ export class WorldGenerator {
             const instancedMeshes = [];
             for (const part of parts) {
                 const material = Array.isArray(part.material)
-                    ? part.material.map(m => m.clone())
-                    : part.material.clone();
+                    ? part.material.map(m => MeshFactory.configureShadowCastingForMaterial(m.clone(), { isFoliage: true }))
+                    : MeshFactory.configureShadowCastingForMaterial(part.material.clone(), { isFoliage: true });
                 const inst = new THREE.InstancedMesh(part.geometry, material, placements.length);
                 inst.castShadow = true;
                 inst.receiveShadow = true;
@@ -185,7 +185,7 @@ export class WorldGenerator {
             // Shift so the bottom aligns with targetY
             mesh.position.y += (targetY - bottomY);
             
-            mesh.traverse(c => { if(c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+            mesh.traverse(c => { if(c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: false }); } });
             this.scene.add(mesh);
             
             if (customCollider) {
@@ -266,13 +266,10 @@ export class WorldGenerator {
         // Taller fence: Post height 8, Rail height adjusted
         const postGeo = new THREE.BoxGeometry(0.8, 8, 0.8);
         const railGeo = new THREE.BoxGeometry(4, 0.4, 0.2);
-        const createFenceMaterial = () => new THREE.MeshStandardMaterial({
-            color: 0x8B4513,
-            shadowSide: THREE.FrontSide,
-            polygonOffset: true,
-            polygonOffsetFactor: 1,
-            polygonOffsetUnits: 1
-        });
+        const createFenceMaterial = () => MeshFactory.configureShadowCastingForMaterial(
+            new THREE.MeshStandardMaterial({ color: 0x8B4513 }),
+            { stableFrontShadows: true }
+        );
 
         const group = new THREE.Group();
         
@@ -400,7 +397,7 @@ export class WorldGenerator {
             const bottomY = box.min.y;
             mesh.position.y += (0 - bottomY); // Ground it
 
-            mesh.traverse(c => { if(c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+            mesh.traverse(c => { if(c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: false }); } });
             this.scene.add(mesh);
 
             // Update matrix again to account for the Y shift
@@ -444,7 +441,7 @@ export class WorldGenerator {
             const bottomY = box.min.y;
             mesh.position.y += (0 - bottomY);
 
-            mesh.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+            mesh.traverse(c => { if (c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: false }); } });
             this.scene.add(mesh);
 
             mesh.updateMatrixWorld(true);
@@ -475,7 +472,7 @@ export class WorldGenerator {
             const bottomY = box.min.y;
             mesh.position.y += (0 - bottomY);
 
-            mesh.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+            mesh.traverse(c => { if (c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: false }); } });
             this.scene.add(mesh);
 
             mesh.updateMatrixWorld(true);
@@ -506,7 +503,7 @@ export class WorldGenerator {
             const bottomY = box.min.y;
             mesh.position.y += (0 - bottomY);
 
-            mesh.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+            mesh.traverse(c => { if (c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: false }); } });
             this.scene.add(mesh);
 
             mesh.updateMatrixWorld(true);

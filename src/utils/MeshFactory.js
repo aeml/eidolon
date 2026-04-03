@@ -630,6 +630,45 @@ export class MeshFactory {
         }
     }
 
+    static configureShadowCastingForMaterial(material, { isFoliage = false, stableFrontShadows = false } = {}) {
+        if (!material) return material;
+
+        if (material.map && (material.transparent || isFoliage)) {
+            material.transparent = false;
+            material.alphaTest = Math.max(material.alphaTest || 0, 0.35);
+            material.depthWrite = true;
+            material.side = material.side ?? THREE.DoubleSide;
+            material.shadowSide = THREE.DoubleSide;
+            material.alphaToCoverage = true;
+        }
+
+        if (stableFrontShadows) {
+            material.shadowSide = THREE.FrontSide;
+            material.polygonOffset = true;
+            material.polygonOffsetFactor = 1;
+            material.polygonOffsetUnits = 1;
+        }
+
+        material.needsUpdate = true;
+        return material;
+    }
+
+    static configureShadowCastingForObject(object, options = {}) {
+        if (!object) return object;
+        object.castShadow = true;
+        object.receiveShadow = true;
+
+        if (object.material) {
+            if (Array.isArray(object.material)) {
+                object.material = object.material.map(material => this.configureShadowCastingForMaterial(material, options));
+            } else {
+                object.material = this.configureShadowCastingForMaterial(object.material, options);
+            }
+        }
+
+        return object;
+    }
+
     static async loadModel(path) {
         if (this.cache[path]) return this.cache[path];
         if (this.inflight[path]) return this.inflight[path];

@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { MeshFactory } from '../src/utils/MeshFactory.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { jest } from '@jest/globals';
@@ -88,6 +89,24 @@ describe('MeshFactory.loadModel', () => {
         expect(loadSpy).toHaveBeenCalledTimes(3);
 
         loadSpy.mockRestore();
+    });
+
+    test('configures alpha-cutout shadow settings for foliage-like materials', () => {
+        const material = new THREE.MeshStandardMaterial({
+            map: { isTexture: true },
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
+
+        MeshFactory.configureShadowCastingForObject(mesh, { isFoliage: true });
+
+        expect(mesh.castShadow).toBe(true);
+        expect(mesh.receiveShadow).toBe(true);
+        expect(mesh.material.transparent).toBe(false);
+        expect(mesh.material.alphaTest).toBeGreaterThanOrEqual(0.35);
+        expect(mesh.material.shadowSide).toBe(THREE.DoubleSide);
+        expect(mesh.material.alphaToCoverage).toBe(true);
     });
 });
 

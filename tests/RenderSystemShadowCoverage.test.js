@@ -15,11 +15,15 @@ describe('RenderSystem shadow coverage', () => {
         expect(renderSystem.keyLight.shadow.camera.right).toBeGreaterThanOrEqual(240);
     });
 
-    test('uses filtered shadow maps and an expanded frustum on high quality', () => {
+    test('uses filtered shadow maps and softer high-quality filtering settings', () => {
         const renderSystem = new RenderSystem(false);
 
         expect(renderSystem.renderer.shadowMap.type).toBe(THREE.PCFSoftShadowMap);
+        expect(renderSystem.renderer.shadowMap.enabled).toBe(true);
+        expect(renderSystem.renderer.shadowMap.autoUpdate).toBe(false);
         expect(renderSystem.keyLight.shadow.mapSize.width).toBeGreaterThanOrEqual(1536);
+        expect(renderSystem.keyLight.shadow.radius).toBeGreaterThanOrEqual(2);
+        expect(renderSystem.keyLight.shadow.blurSamples).toBeGreaterThanOrEqual(6);
         expect(renderSystem.keyLight.shadow.camera.left).toBeLessThanOrEqual(-240);
         expect(renderSystem.keyLight.shadow.camera.right).toBeGreaterThanOrEqual(240);
         expect(renderSystem.keyLight.shadow.normalBias).toBeGreaterThanOrEqual(0.03);

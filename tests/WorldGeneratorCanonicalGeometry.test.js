@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
+import { MeshFactory } from '../src/utils/MeshFactory.js';
 import { WorldGenerator } from '../src/world/WorldGenerator.js';
 
 function createGenerator() {
@@ -173,7 +174,7 @@ describe.each([
     });
 });
 
-describe('WorldGenerator fence shadow setup', () => {
+describe('WorldGenerator shadow setup', () => {
     test('creates fence pieces with stable shadow-casting settings', () => {
         const generator = createGenerator();
 
@@ -189,5 +190,33 @@ describe('WorldGenerator fence shadow setup', () => {
             expect(mesh.material.shadowSide).toBe(THREE.FrontSide);
             expect(mesh.material.polygonOffset).toBe(true);
         }
+    });
+
+    test('configures instanced foliage materials for alpha-cutout silhouettes', async () => {
+        const generator = createGenerator();
+        const foliageMaterial = new THREE.MeshStandardMaterial({
+            map: { isTexture: true },
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+        const leafMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), foliageMaterial);
+        const scene = new THREE.Group();
+        scene.add(leafMesh);
+        const loadModelSpy = jest.spyOn(MeshFactory, 'loadModel').mockResolvedValue({ scene, animations: [] });
+
+        await generator.loadTrees(0, 200);
+
+        const addedTreeGroup = generator.scene.add.mock.calls.find(([obj]) => obj?.name?.startsWith('trees:'))?.[0];
+        expect(addedTreeGroup).toBeTruthy();
+        const instancedMesh = addedTreeGroup.children[0];
+        const material = Array.isArray(instancedMesh.material) ? instancedMesh.material[0] : instancedMesh.material;
+        expect(instancedMesh.castShadow).toBe(true);
+        expect(instancedMesh.receiveShadow).toBe(true);
+        expect(material.transparent).toBe(false);
+        expect(material.alphaTest).toBeGreaterThanOrEqual(0.35);
+        expect(material.shadowSide).toBe(THREE.DoubleSide);
+        expect(material.alphaToCoverage).toBe(true);
+
+        loadModelSpy.mockRestore();
     });
 });
