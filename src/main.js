@@ -110,6 +110,12 @@ window.addEventListener('DOMContentLoaded', () => {
     const patchNotesScreen = document.getElementById('patch-notes-screen');
     const btnClosePatchNotes = document.getElementById('btn-close-patch-notes');
 
+    const closePatchNotes = () => {
+        if (patchNotesScreen) {
+            patchNotesScreen.style.display = 'none';
+        }
+    };
+
     if (loginPatchNotesLink) {
         loginPatchNotesLink.addEventListener('click', () => {
             if (patchNotesScreen) {
@@ -124,12 +130,14 @@ window.addEventListener('DOMContentLoaded', () => {
         const newBtn = btnClosePatchNotes.cloneNode(true);
         btnClosePatchNotes.parentNode.replaceChild(newBtn, btnClosePatchNotes);
         
-        newBtn.addEventListener('click', () => {
-            if (patchNotesScreen) {
-                patchNotesScreen.style.display = 'none';
-            }
-        });
+        newBtn.addEventListener('click', closePatchNotes);
     }
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && patchNotesScreen && patchNotesScreen.style.display === 'flex') {
+            closePatchNotes();
+        }
+    });
 
     let savedCharacterType = null;
 

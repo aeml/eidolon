@@ -48,7 +48,7 @@ describe('asset persistence boot wiring', () => {
         expect(register).toHaveBeenCalledWith('./sw.js', { scope: './' });
     });
 
-    test('login patch notes link and close button toggle the patch notes history screen', async () => {
+    test('login patch notes link, close button, and Escape toggle the patch notes history screen', async () => {
         document.body.innerHTML = `
             <div id="debug-console"></div>
             <div id="start-screen"></div>
@@ -89,6 +89,11 @@ describe('asset persistence boot wiring', () => {
         document.getElementById('login-patch-notes-link').click();
         expect(patchNotesScreen.style.display).toBe('flex');
         document.getElementById('btn-close-patch-notes').click();
+        expect(patchNotesScreen.style.display).toBe('none');
+
+        document.getElementById('login-patch-notes-link').click();
+        expect(patchNotesScreen.style.display).toBe('flex');
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
         expect(patchNotesScreen.style.display).toBe('none');
     });
 });

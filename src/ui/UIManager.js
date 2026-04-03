@@ -2266,12 +2266,24 @@ export class UIManager {
         menu.style.pointerEvents = 'auto';
         menu.addEventListener('click', (e) => e.stopPropagation());
 
+        let isMenuClosed = false;
+        const handleMenuEscape = (event) => {
+            if (event.key === 'Escape') {
+                removeMenu();
+            }
+        };
         const removeMenu = () => {
+            if (isMenuClosed) {
+                return;
+            }
+            isMenuClosed = true;
+            window.removeEventListener('keydown', handleMenuEscape);
             menu.remove();
             backdrop.remove();
         };
 
         backdrop.addEventListener('click', removeMenu);
+        window.addEventListener('keydown', handleMenuEscape);
 
         const header = document.createElement('div');
         header.className = 'window-header';

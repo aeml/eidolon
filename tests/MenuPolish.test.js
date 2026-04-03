@@ -123,6 +123,34 @@ describe('menu polish regressions', () => {
         expect(document.getElementById('respec-menu-backdrop')).toBeNull();
     });
 
+    test('dungeon and respec menus close on Escape and mark body text as non-selectable', () => {
+        const uiManager = Object.create(UIManager.prototype);
+        window.game = { socket: { send: jest.fn() } };
+
+        uiManager.showDungeonMenu({ hasInstance: false, isLeader: false });
+        const dungeonMenu = document.getElementById('dungeon-menu');
+        expect(dungeonMenu).not.toBeNull();
+        expect(dungeonMenu.style.userSelect).toBe('none');
+
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        expect(document.getElementById('dungeon-menu')).toBeNull();
+        expect(document.getElementById('dungeon-menu-backdrop')).toBeNull();
+
+        const skillTree = new SkillTreeUI({
+            getLastPlayer: () => ({ level: 12, gold: 9999 }),
+            sendRespec: jest.fn()
+        });
+        skillTree.showRespecMenu();
+
+        const respecMenu = document.getElementById('respec-menu');
+        expect(respecMenu).not.toBeNull();
+        expect(respecMenu.style.userSelect).toBe('none');
+
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        expect(document.getElementById('respec-menu')).toBeNull();
+        expect(document.getElementById('respec-menu-backdrop')).toBeNull();
+    });
+
     test('window chrome disables accidental selection while preserving text selection inside form fields', () => {
         const css = readFileSync(windowsCssPath, 'utf8');
 

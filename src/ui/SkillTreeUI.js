@@ -775,7 +775,18 @@ export class SkillTreeUI {
         const existingBackdrop = document.getElementById('respec-menu-backdrop');
         if (existingBackdrop) existingBackdrop.remove();
 
+        let isMenuClosed = false;
+        const handleMenuEscape = (event) => {
+            if (event.key === 'Escape') {
+                removeMenu();
+            }
+        };
         const removeMenu = () => {
+            if (isMenuClosed) {
+                return;
+            }
+            isMenuClosed = true;
+            window.removeEventListener('keydown', handleMenuEscape);
             menu.remove();
             backdrop.remove();
         };
@@ -790,6 +801,7 @@ export class SkillTreeUI {
         backdrop.style.zIndex = '1090';
         backdrop.style.pointerEvents = 'auto';
         backdrop.addEventListener('click', removeMenu);
+        window.addEventListener('keydown', handleMenuEscape);
 
         const menu = document.createElement('div');
         menu.id = 'respec-menu';
