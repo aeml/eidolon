@@ -187,10 +187,27 @@ export class GameEngine {
         this.syncDeathScreen();
     }
 
+    getDeathScreenDetails() {
+        const elapsedSeconds = Number(this.player?.timeSinceDeath || 0);
+        return {
+            title: 'You Died',
+            hint: 'Respawn in town to recover, repair, and re-enter the fight.',
+            elapsedSeconds
+        };
+    }
+
+    announceRespawnRecovery(source = 'town') {
+        if (!this.uiManager?.addChatMessage) return;
+        const locationLabel = source === 'delta'
+            ? 'Recovered in town from the last defeat.'
+            : 'Recovered in town.';
+        this.uiManager.addChatMessage('System', `${locationLabel} Visit repair and vendor stations before pushing back out.`);
+    }
+
     syncDeathScreen() {
         if (!this.uiManager || !this.player) return;
         if (this.isPlayerDead()) {
-            this.uiManager.showDeathScreen();
+            this.uiManager.showDeathScreen(this.getDeathScreenDetails());
         } else {
             this.uiManager.hideDeathScreen();
         }
@@ -979,9 +996,11 @@ export class GameEngine {
                                 console.log(`GameEngine: Respawn detected. Teleporting to Town (${x}, ${z})`);
                                 this.player.respawn(x, z);
                                 this.player.state = pData.state; // Ensure state matches server
+                                this.player.timeSinceDeath = null;
                                 
                                 this.chunkManager.updateEntityChunk(this.player);
                                 this.renderSystem.setCameraTarget(this.player.position);
+                                this.announceRespawnRecovery('state');
                                 justRespawned = true;
                                 }
                             } else {
@@ -1236,9 +1255,11 @@ export class GameEngine {
                                     console.log(`GameEngine: Respawn detected from delta. Teleporting to (${x}, ${z})`);
                                     this.player.respawn(x, z);
                                     this.player.state = pData.state;
+                                    this.player.timeSinceDeath = null;
                                     this.chunkManager.updateEntityChunk(this.player);
                                     this.renderSystem.setCameraTarget(this.player.position);
                                     this.chunkManager.update(this.player, 0, this.collisionManager);
+                                    this.announceRespawnRecovery('delta');
                                 }
                             } else {
                                 this.player.state = pData.state;

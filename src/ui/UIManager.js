@@ -424,7 +424,8 @@ export class UIManager {
     }
 
     createDeathScreen() {
-        const div = document.createElement('div');
+        const existing = document.getElementById('death-screen');
+        const div = existing || document.createElement('div');
         div.id = 'death-screen';
         div.style.display = 'none';
         div.style.position = 'absolute';
@@ -439,9 +440,11 @@ export class UIManager {
         div.style.justifyContent = 'center';
         div.style.color = '#ff0000';
         div.style.fontFamily = 'Arial, sans-serif';
-        
+
         div.innerHTML = `
-            <h1 style="font-size: 72px; margin-bottom: 20px; text-shadow: 0 0 10px #000;">YOU DIED</h1>
+            <h1 id="death-screen-title" style="font-size: 72px; margin-bottom: 20px; text-shadow: 0 0 10px #000;">YOU DIED</h1>
+            <div id="death-screen-hint" style="max-width: 520px; margin: 0 0 18px; color: #f4e6d2; font-size: 18px; line-height: 1.45; text-align: center;"></div>
+            <div id="death-screen-meta" style="margin: 0 0 20px; color: #d6d9e6; font-size: 15px; letter-spacing: 0.02em;"></div>
             <button id="btn-death-respawn" style="
                 padding: 15px 40px; 
                 font-size: 24px; 
@@ -452,10 +455,12 @@ export class UIManager {
                 transition: all 0.2s;
             ">Respawn in Town</button>
         `;
-        
-        document.body.appendChild(div);
-        
-        const btn = document.getElementById('btn-death-respawn');
+
+        if (!existing) {
+            document.body.appendChild(div);
+        }
+
+        const btn = div.querySelector('#btn-death-respawn');
         btn.onmouseover = () => {
             btn.style.background = '#444';
             btn.style.borderColor = '#fff';
@@ -469,12 +474,29 @@ export class UIManager {
                 this.onRespawn();
             }
         };
-        
+
         this.deathScreen = div;
+        this.deathScreenTitle = div.querySelector('#death-screen-title');
+        this.deathScreenHint = div.querySelector('#death-screen-hint');
+        this.deathScreenMeta = div.querySelector('#death-screen-meta');
     }
 
-    showDeathScreen() {
+    showDeathScreen(details = {}) {
         if (this.deathScreen) {
+            const title = details.title || 'YOU DIED';
+            const hint = details.hint || 'Respawn in town to recover, repair, and re-enter the fight.';
+            const elapsedSeconds = Number(details.elapsedSeconds || 0);
+            if (this.deathScreenTitle) {
+                this.deathScreenTitle.textContent = title;
+            }
+            if (this.deathScreenHint) {
+                this.deathScreenHint.textContent = hint;
+            }
+            if (this.deathScreenMeta) {
+                this.deathScreenMeta.textContent = elapsedSeconds > 0
+                    ? `Down for ${elapsedSeconds.toFixed(1)}s • Town respawn restores your footing fast.`
+                    : 'Town respawn restores your footing fast.';
+            }
             this.deathScreen.style.display = 'flex';
         }
     }
