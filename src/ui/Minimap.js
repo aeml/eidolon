@@ -226,17 +226,41 @@ export class Minimap {
         this.buffList.innerHTML = '';
         const buffs = Array.isArray(this.gameEngine?.getActiveBuffs?.()) ? this.gameEngine.getActiveBuffs() : [];
         this.buffList.style.display = buffs.length > 0 ? 'flex' : 'none';
-        buffs.forEach((buff) => {
-            const icon = document.createElement('button');
-            icon.type = 'button';
-            icon.className = 'minimap-buff-icon';
-            icon.dataset.buffId = buff.id;
-            icon.textContent = buff.icon || '✨';
-            icon.setAttribute('aria-label', `${buff.name} (${buff.remainingSeconds?.toFixed?.(1) || '0.0'}s)`);
-            icon.addEventListener('mouseenter', (event) => this._showBuffTooltip(buff, event));
-            icon.addEventListener('mousemove', (event) => this._showBuffTooltip(buff, event));
-            icon.addEventListener('mouseleave', () => this._hideBuffTooltip());
-            this.buffList.appendChild(icon);
+        if (buffs.length === 0) {
+            return;
+        }
+
+        const buffRows = [
+            {
+                key: 'buffs',
+                items: buffs.filter((buff) => !buff?.isDebuff)
+            },
+            {
+                key: 'debuffs',
+                items: buffs.filter((buff) => buff?.isDebuff)
+            }
+        ].filter((row) => row.items.length > 0);
+
+        buffRows.forEach((row) => {
+            const rowElement = document.createElement('div');
+            rowElement.className = `minimap-buff-row minimap-buff-row--${row.key}`;
+            rowElement.dataset.rowType = row.key;
+
+            row.items.forEach((buff) => {
+                const icon = document.createElement('button');
+                icon.type = 'button';
+                icon.className = `minimap-buff-icon ${buff.isDebuff ? 'is-debuff' : 'is-buff'}`;
+                icon.dataset.buffId = buff.id;
+                icon.dataset.buffType = buff.isDebuff ? 'debuff' : 'buff';
+                icon.textContent = buff.icon || '✨';
+                icon.setAttribute('aria-label', `${buff.name} (${buff.remainingSeconds?.toFixed?.(1) || '0.0'}s)`);
+                icon.addEventListener('mouseenter', (event) => this._showBuffTooltip(buff, event));
+                icon.addEventListener('mousemove', (event) => this._showBuffTooltip(buff, event));
+                icon.addEventListener('mouseleave', () => this._hideBuffTooltip());
+                rowElement.appendChild(icon);
+            });
+
+            this.buffList.appendChild(rowElement);
         });
     }
 

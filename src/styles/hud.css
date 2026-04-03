@@ -119,9 +119,30 @@
 .minimap-buff-list {
     display: none;
     flex-direction: column;
-    align-items: center;
-    gap: 8px;
+    align-items: flex-end;
+    gap: 6px;
     min-width: 44px;
+    padding: 8px;
+    border: 1px solid rgba(255, 215, 120, 0.18);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(10, 14, 22, 0.82) 0%, rgba(6, 10, 16, 0.72) 100%);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(4px);
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.minimap-buff-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+    width: min(132px, calc(100vw - 140px));
+}
+
+.minimap-buff-row--debuffs {
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 120, 120, 0.18);
 }
 
 .minimap-buff-icon {
@@ -139,12 +160,35 @@
     cursor: default;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease, background 120ms ease;
+    outline: none;
 }
 
 .minimap-buff-icon:hover {
     border-color: rgba(120, 220, 255, 0.65);
     box-shadow: 0 0 0 1px rgba(120, 220, 255, 0.18), 0 8px 18px rgba(0, 0, 0, 0.34);
     transform: translateY(-1px);
+}
+
+.minimap-buff-icon.is-buff {
+    border-color: rgba(255, 215, 120, 0.45);
+    background: linear-gradient(180deg, rgba(18, 26, 38, 0.96) 0%, rgba(10, 14, 22, 0.92) 100%);
+}
+
+.minimap-buff-icon.is-debuff {
+    border-color: rgba(255, 120, 120, 0.5);
+    background: linear-gradient(180deg, rgba(42, 18, 22, 0.96) 0%, rgba(24, 10, 14, 0.92) 100%);
+    color: #ffe6e6;
+}
+
+.minimap-buff-icon.is-debuff:hover {
+    border-color: rgba(255, 150, 150, 0.78);
+    box-shadow: 0 0 0 1px rgba(255, 120, 120, 0.18), 0 8px 18px rgba(0, 0, 0, 0.34);
+}
+
+.minimap-buff-icon:focus-visible {
+    box-shadow: 0 0 0 2px rgba(120, 220, 255, 0.32), 0 8px 18px rgba(0, 0, 0, 0.34);
 }
 
 .minimap-buff-tooltip {

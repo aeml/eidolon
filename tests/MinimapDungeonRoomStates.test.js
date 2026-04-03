@@ -159,7 +159,8 @@ describe('Minimap dungeon room states', () => {
                     icon: '🩸',
                     detail: '2 bleed stacks',
                     remainingSeconds: 5.0,
-                    durationSeconds: 8
+                    durationSeconds: 8,
+                    isDebuff: true
                 },
                 {
                     id: 'blessing_zeal',
@@ -178,15 +179,23 @@ describe('Minimap dungeon room states', () => {
         const wrapper = document.getElementById('minimap-hud');
         const buffList = document.getElementById('minimap-buff-list');
         const tooltip = document.getElementById('minimap-buff-tooltip');
-        const icon = buffList?.querySelector('.minimap-buff-icon');
+        const buffRows = buffList?.querySelectorAll('.minimap-buff-row');
+        const topRowIcons = buffRows?.[0]?.querySelectorAll('.minimap-buff-icon');
+        const bottomRowIcons = buffRows?.[1]?.querySelectorAll('.minimap-buff-icon');
+        const icon = topRowIcons?.[0];
 
         expect(wrapper).not.toBeNull();
         expect(wrapper.firstElementChild?.id).toBe('minimap-buff-list');
+        expect(buffRows).toHaveLength(2);
+        expect(topRowIcons).toHaveLength(2);
+        expect(bottomRowIcons).toHaveLength(1);
+        expect(buffRows[0].dataset.rowType).toBe('buffs');
+        expect(buffRows[1].dataset.rowType).toBe('debuffs');
         expect(icon).not.toBeNull();
-        expect(buffList.querySelectorAll('.minimap-buff-icon')).toHaveLength(3);
-        expect(icon.textContent).toContain('🛡️');
-        expect(buffList.textContent).toContain('🩸');
-        expect(buffList.textContent).toContain('✨');
+        expect(topRowIcons[0].textContent).toContain('🛡️');
+        expect(topRowIcons[1].textContent).toContain('✨');
+        expect(bottomRowIcons[0].textContent).toContain('🩸');
+        expect(bottomRowIcons[0].className).toContain('is-debuff');
 
         icon.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true, clientX: 120, clientY: 60 }));
         expect(tooltip.style.display).toBe('block');

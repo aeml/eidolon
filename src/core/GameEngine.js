@@ -2194,7 +2194,8 @@ export class GameEngine {
                 icon: '🛡️',
                 name: 'Guardian Roar',
                 durationSeconds: Number(actor.guardianRoarTimer || 0),
-                detail: `${Math.round(Number(actor.guardianRoarReduction || 0) * 100)}% damage reduction`
+                detail: `${Math.round(Number(actor.guardianRoarReduction || 0) * 100)}% damage reduction`,
+                isDebuff: false
             },
             {
                 id: 'blessing_resolve',
@@ -2202,7 +2203,8 @@ export class GameEngine {
                 icon: '✝️',
                 name: 'Blessing of Resolve',
                 durationSeconds: Number(actor.blessingResolveTimer || 0),
-                detail: `${Math.round(Number(actor.blessingResolveReduction || 0) * 100)}% damage reduction`
+                detail: `${Math.round(Number(actor.blessingResolveReduction || 0) * 100)}% damage reduction`,
+                isDebuff: false
             },
             {
                 id: 'blessing_zeal',
@@ -2210,7 +2212,8 @@ export class GameEngine {
                 icon: '✨',
                 name: 'Blessing of Zeal',
                 durationSeconds: Number(actor.blessingZealTimer || 0),
-                detail: `+${Math.round(Number(actor.blessingZealFactor || 0) * 100)}% damage and healing`
+                detail: `+${Math.round(Number(actor.blessingZealFactor || 0) * 100)}% damage and healing`,
+                isDebuff: false
             },
             {
                 id: 'time_warp',
@@ -2218,7 +2221,8 @@ export class GameEngine {
                 icon: '⏩',
                 name: 'Time Warp',
                 durationSeconds: Number(actor.hasteTimer || 0),
-                detail: `+${Math.round(Number(actor.hasteFactor || 0) * 100)}% haste`
+                detail: `+${Math.round(Number(actor.hasteFactor || 0) * 100)}% haste`,
+                isDebuff: false
             },
             {
                 id: 'arcane_shield',
@@ -2226,7 +2230,8 @@ export class GameEngine {
                 icon: '🔷',
                 name: 'Arcane Shield',
                 durationSeconds: Number(actor.hasteTimer || 0),
-                detail: `${Math.round(Number(actor.shieldHP || 0))} shield remaining`
+                detail: `${Math.round(Number(actor.shieldHP || 0))} shield remaining`,
+                isDebuff: false
             },
             {
                 id: 'vanish',
@@ -2234,7 +2239,8 @@ export class GameEngine {
                 icon: '💨',
                 name: 'Vanish',
                 durationSeconds: Number(actor.speedBoostTimer || 0),
-                detail: `+${Math.round(Number(actor.speedBoostFactor || 0) * 100)}% speed`
+                detail: `+${Math.round(Number(actor.speedBoostFactor || 0) * 100)}% speed`,
+                isDebuff: false
             },
             {
                 id: 'last_stand',
@@ -2242,7 +2248,8 @@ export class GameEngine {
                 icon: '🔥',
                 name: 'Last Stand',
                 durationSeconds: Number(actor.lastStandTimer || 0),
-                detail: `+${Math.round(Number(actor.lastStandDamageBoost || 0) * 100)}% damage`
+                detail: `+${Math.round(Number(actor.lastStandDamageBoost || 0) * 100)}% damage`,
+                isDebuff: false
             },
             {
                 id: 'swift',
@@ -2250,7 +2257,8 @@ export class GameEngine {
                 icon: '⚡',
                 name: 'Swift',
                 durationSeconds: Number(actor.swiftBuffTimer || 0),
-                detail: '+20% move speed'
+                detail: '+20% move speed',
+                isDebuff: false
             },
             {
                 id: 'mark_weakness',
@@ -2258,7 +2266,8 @@ export class GameEngine {
                 icon: '🎯',
                 name: 'Marked',
                 durationSeconds: Number(actor.markWeaknessTimer || 0),
-                detail: `+${Math.round(Number(actor.markWeaknessFactor || 0) * 100)}% damage taken`
+                detail: `+${Math.round(Number(actor.markWeaknessFactor || 0) * 100)}% damage taken`,
+                isDebuff: true
             },
             {
                 id: 'bleed',
@@ -2266,7 +2275,8 @@ export class GameEngine {
                 icon: '🩸',
                 name: 'Bleeding',
                 durationSeconds: Number(actor.bleedTimer || 0),
-                detail: `${Math.max(1, Math.round(Number(actor.bleedStacks || 0)))} bleed stacks`
+                detail: `${Math.max(1, Math.round(Number(actor.bleedStacks || 0)))} bleed stacks`,
+                isDebuff: true
             },
             {
                 id: 'poison',
@@ -2274,7 +2284,8 @@ export class GameEngine {
                 icon: '☠️',
                 name: 'Poisoned',
                 durationSeconds: Number(actor.poisonTimer || 0),
-                detail: `${Math.max(1, Math.round(Number(actor.poisonStacks || 0)))} poison stacks`
+                detail: `${Math.max(1, Math.round(Number(actor.poisonStacks || 0)))} poison stacks`,
+                isDebuff: true
             },
             {
                 id: 'root',
@@ -2282,7 +2293,8 @@ export class GameEngine {
                 icon: '🪤',
                 name: 'Rooted',
                 durationSeconds: Number(actor.rootTimer || 0),
-                detail: 'Movement locked'
+                detail: 'Movement locked',
+                isDebuff: true
             },
             {
                 id: 'slow',
@@ -2290,7 +2302,8 @@ export class GameEngine {
                 icon: '🐢',
                 name: 'Slowed',
                 durationSeconds: Number(actor.slowTimer || 0),
-                detail: `${Math.round(Number(actor.slowFactor || 0) * 100)}% slow`
+                detail: `${Math.round(Number(actor.slowFactor || 0) * 100)}% slow`,
+                isDebuff: true
             },
             {
                 id: 'spirit_guardians',
@@ -2298,7 +2311,8 @@ export class GameEngine {
                 icon: '👻',
                 name: 'Spirit Guardians',
                 durationSeconds: Number(actor.spiritDuration || 0),
-                detail: actor.spiritBoosted ? 'Boosted guardians active' : 'Guardians active'
+                detail: actor.spiritBoosted ? 'Boosted guardians active' : 'Guardians active',
+                isDebuff: false
             }
         ];
 
@@ -2310,7 +2324,8 @@ export class GameEngine {
                     name: buff.name,
                     detail: buff.detail,
                     durationSeconds: buff.durationSeconds,
-                    remainingSeconds: buff.durationSeconds
+                    remainingSeconds: buff.durationSeconds,
+                    isDebuff: Boolean(buff.isDebuff)
                 });
             } else {
                 this.removeActiveBuff(buff.id);

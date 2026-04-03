@@ -60,97 +60,111 @@ describe('GameEngine active buff tracker', () => {
                 name: 'Guardian Roar',
                 icon: '🛡️',
                 detail: '30% damage reduction',
-                durationSeconds: 9.5
+                durationSeconds: 9.5,
+                isDebuff: false
             }),
             expect.objectContaining({
                 id: 'blessing_resolve',
                 name: 'Blessing of Resolve',
                 icon: '✝️',
                 detail: '25% damage reduction',
-                durationSeconds: 6.2
+                durationSeconds: 6.2,
+                isDebuff: false
             }),
             expect.objectContaining({
                 id: 'time_warp',
                 name: 'Time Warp',
                 icon: '⏩',
                 detail: '+50% haste',
-                durationSeconds: 10
+                durationSeconds: 10,
+                isDebuff: false
             }),
             expect.objectContaining({
                 id: 'arcane_shield',
                 name: 'Arcane Shield',
                 icon: '🔷',
-                detail: '420 shield remaining'
+                detail: '420 shield remaining',
+                isDebuff: false
             }),
             expect.objectContaining({
                 id: 'vanish',
                 name: 'Vanish',
                 icon: '💨',
                 detail: '+100% speed',
-                durationSeconds: 2.7
+                durationSeconds: 2.7,
+                isDebuff: false
             }),
             expect.objectContaining({
                 id: 'spirit_guardians',
                 name: 'Spirit Guardians',
                 icon: '👻',
                 detail: 'Boosted guardians active',
-                durationSeconds: 7.9
+                durationSeconds: 7.9,
+                isDebuff: false
             }),
             expect.objectContaining({
                 id: 'blessing_zeal',
                 name: 'Blessing of Zeal',
                 icon: '✨',
                 detail: '+35% damage and healing',
-                durationSeconds: 11.4
+                durationSeconds: 11.4,
+                isDebuff: false
             }),
             expect.objectContaining({
                 id: 'last_stand',
                 name: 'Last Stand',
                 icon: '🔥',
                 detail: '+45% damage',
-                durationSeconds: 4.8
+                durationSeconds: 4.8,
+                isDebuff: false
             }),
             expect.objectContaining({
                 id: 'swift',
                 name: 'Swift',
                 icon: '⚡',
                 detail: '+20% move speed',
-                durationSeconds: 3.0
+                durationSeconds: 3.0,
+                isDebuff: false
             }),
             expect.objectContaining({
                 id: 'mark_weakness',
                 name: 'Marked',
                 icon: '🎯',
                 detail: '+20% damage taken',
-                durationSeconds: 5.2
+                durationSeconds: 5.2,
+                isDebuff: true
             }),
             expect.objectContaining({
                 id: 'bleed',
                 name: 'Bleeding',
                 icon: '🩸',
                 detail: '2 bleed stacks',
-                durationSeconds: 8.0
+                durationSeconds: 8.0,
+                isDebuff: true
             }),
             expect.objectContaining({
                 id: 'poison',
                 name: 'Poisoned',
                 icon: '☠️',
                 detail: '3 poison stacks',
-                durationSeconds: 6.0
+                durationSeconds: 6.0,
+                isDebuff: true
             }),
             expect.objectContaining({
                 id: 'root',
                 name: 'Rooted',
                 icon: '🪤',
                 detail: 'Movement locked',
-                durationSeconds: 2.2
+                durationSeconds: 2.2,
+                isDebuff: true
             }),
             expect.objectContaining({
                 id: 'slow',
                 name: 'Slowed',
                 icon: '🐢',
                 detail: '50% slow',
-                durationSeconds: 4.5
+                durationSeconds: 4.5,
+                isDebuff: true
             })
         ]));
     });

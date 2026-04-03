@@ -23,6 +23,12 @@
 .mobile-mode .minimap-buff-list {
     gap: 6px !important;
     min-width: 34px !important;
+    padding: 6px !important;
+}
+
+.mobile-mode .minimap-buff-row {
+    gap: 4px !important;
+    width: min(98px, calc(100vw - 110px)) !important;
 }
 
 .mobile-mode .minimap-buff-icon {
