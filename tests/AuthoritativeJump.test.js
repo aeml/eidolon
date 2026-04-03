@@ -79,6 +79,8 @@ function createEngineHarness() {
             position: new THREE.Vector3(0, 0, 0),
             lookAt: jest.fn(),
             quaternion: new THREE.Quaternion(),
+            scale: new THREE.Vector3(1, 1, 1),
+            userData: {},
             visible: true
         },
         render: jest.fn(function render() {
@@ -251,7 +253,13 @@ describe('authoritative jump flow', () => {
             isCharging: false,
             isDead: false,
             deadTimer: 0,
-            mesh: { visible: true, position: new THREE.Vector3(0, 0, 0), quaternion: new THREE.Quaternion() },
+            mesh: {
+                visible: true,
+                position: new THREE.Vector3(0, 0, 0),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            },
             stats: { hp: 100, maxHp: 100, mana: 10, maxMana: 10, speed: 3, attackSpeed: 1 },
             updateState: jest.fn(function updateState(nextState) {
                 this.state = nextState;
@@ -294,5 +302,6 @@ describe('authoritative jump flow', () => {
 
         expect(remoteEntity.mesh.position.y).toBeGreaterThan(remoteEntity.position.y);
         expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(1.0);
+        expect(remoteEntity.mesh.scale.y).toBeGreaterThan(1.01);
     });
 });

@@ -2718,6 +2718,7 @@ export class GameEngine {
             height,
             serverDriven: false
         };
+        this.playerJumpLandingVisual = null;
         this.playerJumpVisualHeight = 0;
         this.chunkManager?.updateEntityChunk?.(this.player);
         this.renderSystem?.setCameraTarget?.(this.player.position);
@@ -2763,7 +2764,8 @@ export class GameEngine {
                 progress,
                 duration,
                 height,
-                visualHeight
+                visualHeight,
+                landingVisual: entity.jumpLandingVisual || null
             };
         }
 
@@ -2776,8 +2778,20 @@ export class GameEngine {
             if (this.playerJumpState?.serverDriven) {
                 this.playerJumpState = null;
                 this.playerJumpVisualHeight = 0;
+                this.playerJumpLandingVisual = {
+                    startTime: Date.now(),
+                    duration: 180,
+                    impact: 0.85
+                };
             }
             return;
+        }
+        if (entity.jumpVisualState) {
+            entity.jumpLandingVisual = {
+                startTime: Date.now(),
+                duration: 180,
+                impact: 0.85
+            };
         }
         entity.jumpVisualState = null;
     }
@@ -2809,6 +2823,11 @@ export class GameEngine {
             this.player.position.y = jump.end.y;
             this.playerJumpState = null;
             this.playerJumpVisualHeight = 0;
+            this.playerJumpLandingVisual = {
+                startTime: Date.now(),
+                duration: 180,
+                impact: 0.9
+            };
             this.player.state = 'IDLE';
             this.player.playAnimation?.('Idle');
 
@@ -2826,6 +2845,32 @@ export class GameEngine {
         return true;
     }
 
+    getJumpStyleProfile(entity) {
+        const className = entity?.constructor?.name || '';
+        const baseProfile = {
+            flip: 1.18,
+            roll: 0.16,
+            anticipation: 0.12,
+            squash: 0.14,
+            stretch: 0.1
+        };
+
+        if (className === 'Wizard') {
+            return { ...baseProfile, flip: 0.82, roll: 0.26, anticipation: 0.09, squash: 0.1, stretch: 0.14 };
+        }
+        if (className === 'Rogue') {
+            return { ...baseProfile, flip: 1.34, roll: 0.24, anticipation: 0.1, squash: 0.12, stretch: 0.12 };
+        }
+        if (className === 'Cleric') {
+            return { ...baseProfile, flip: 0.94, roll: 0.18, anticipation: 0.08, squash: 0.11, stretch: 0.13 };
+        }
+        if (className === 'Fighter') {
+            return { ...baseProfile, flip: 1.26, roll: 0.1, anticipation: 0.15, squash: 0.17, stretch: 0.08 };
+        }
+
+        return baseProfile;
+    }
+
     getJumpVisualProgress(jumpState) {
         if (!jumpState) return 0;
         if (typeof jumpState.progress === 'number') {
@@ -2841,23 +2886,77 @@ export class GameEngine {
         return 0;
     }
 
+    applyJumpVisualScale(entity, jumpState, progress, styleProfile) {
+        const mesh = entity?.mesh;
+        if (!mesh?.scale) return;
+
+        if (!mesh.userData.baseScale) {
+            mesh.userData.baseScale = mesh.scale.clone();
+        }
+
+        mesh.scale.copy(mesh.userData.baseScale);
+
+        const anticipationWindow = 0.12;
+        if (progress <= anticipationWindow) {
+            const anticipationT = 1 - (progress / anticipationWindow);
+            const anticipation = anticipationT * styleProfile.anticipation;
+            mesh.scale.x *= 1 + anticipation * 0.55;
+            mesh.scale.z *= 1 + anticipation * 0.55;
+            mesh.scale.y *= 1 - anticipation;
+            return;
+        }
+
+        const airborneLift = Math.sin(progress * Math.PI) * styleProfile.stretch;
+        mesh.scale.x *= 1 - airborneLift * 0.35;
+        mesh.scale.z *= 1 - airborneLift * 0.35;
+        mesh.scale.y *= 1 + airborneLift;
+
+        const landingVisual = jumpState?.landingVisual;
+        if (landingVisual) {
+            const elapsed = Date.now() - landingVisual.startTime;
+            const landingT = Math.max(0, Math.min(1, elapsed / landingVisual.duration));
+            if (landingT >= 1) {
+                if (entity === this.player) {
+                    this.playerJumpLandingVisual = null;
+                } else {
+                    entity.jumpLandingVisual = null;
+                }
+                mesh.scale.copy(mesh.userData.baseScale);
+                return;
+            }
+
+            const impact = (1 - landingT) * landingVisual.impact;
+            const squash = styleProfile.squash * impact;
+            mesh.scale.x *= 1 + squash * 0.85;
+            mesh.scale.z *= 1 + squash * 0.85;
+            mesh.scale.y *= 1 - squash;
+        }
+    }
+
     applyEntityJumpVisuals(entity, jumpState) {
         if (!entity?.mesh) return;
 
         entity.mesh.position.copy(entity.position);
         entity.mesh.quaternion.copy(entity.rotation);
 
-        if (!jumpState) return;
+        if (!jumpState) {
+            if (entity.mesh.scale && entity.mesh.userData?.baseScale) {
+                entity.mesh.scale.copy(entity.mesh.userData.baseScale);
+            }
+            return;
+        }
 
         const visualHeight = jumpState.visualHeight ?? 0;
         entity.mesh.position.y += visualHeight;
 
         const progress = this.getJumpVisualProgress(jumpState);
-        const flipAmount = Math.sin(progress * Math.PI) * 1.18;
-        const rollAmount = Math.sin(progress * Math.PI * 2) * 0.16;
+        const styleProfile = this.getJumpStyleProfile(entity);
+        const flipAmount = Math.sin(progress * Math.PI) * styleProfile.flip;
+        const rollAmount = Math.sin(progress * Math.PI * 2) * styleProfile.roll;
         const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), flipAmount);
         const rollQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), rollAmount);
         entity.mesh.quaternion.multiply(flipQuaternion).multiply(rollQuaternion);
+        this.applyJumpVisualScale(entity, jumpState, progress, styleProfile);
     }
 
     applyPlayerJumpVisuals() {
@@ -2866,9 +2965,16 @@ export class GameEngine {
             ? {
                 ...this.playerJumpState,
                 progress: this.getJumpVisualProgress(this.playerJumpState),
-                visualHeight: this.playerJumpVisualHeight || 0
+                visualHeight: this.playerJumpVisualHeight || 0,
+                landingVisual: this.playerJumpLandingVisual || null
             }
-            : null;
+            : (this.playerJumpLandingVisual
+                ? {
+                    progress: 1,
+                    visualHeight: 0,
+                    landingVisual: this.playerJumpLandingVisual
+                }
+                : null);
         this.applyEntityJumpVisuals(this.player, jumpState);
     }
 

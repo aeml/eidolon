@@ -74,7 +74,9 @@ function createEngineHarness() {
         mesh: {
             position: new THREE.Vector3(0, 0, 0),
             lookAt: jest.fn(),
-            quaternion: new THREE.Quaternion()
+            quaternion: new THREE.Quaternion(),
+            scale: new THREE.Vector3(1, 1, 1),
+            userData: {}
         },
         render: jest.fn(function render() {
             this.mesh.position.copy(this.position);
@@ -167,6 +169,50 @@ describe('GameEngine ctrl-click jump', () => {
         engine.applyPlayerJumpVisuals();
 
         expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeCloseTo(0, 5);
+    });
+
+    test('jump visuals build anticipation at takeoff and landing squash before settling', () => {
+        const engine = createEngineHarness();
+        const destination = new THREE.Vector3(20, 0, 0);
+
+        expect(engine.startPlayerJump(destination)).toBe(true);
+
+        engine.applyPlayerJumpVisuals();
+        expect(engine.player.mesh.scale.y).toBeLessThan(1);
+        expect(engine.player.mesh.scale.x).toBeGreaterThan(1);
+
+        const duration = engine.playerJumpState.duration;
+        engine.updatePlayerJump(duration * 0.55);
+        engine.applyPlayerJumpVisuals();
+        expect(engine.player.mesh.scale.y).toBeGreaterThan(1.04);
+
+        engine.updatePlayerJump(duration * 0.45);
+        engine.playerJumpLandingVisual = {
+            startTime: Date.now(),
+            duration: 180,
+            impact: 0.9,
+            baseScale: new THREE.Vector3(1, 1, 1)
+        };
+        engine.applyPlayerJumpVisuals();
+        expect(engine.player.mesh.scale.y).toBeLessThan(1);
+
+        engine.playerJumpLandingVisual.startTime = Date.now() - 250;
+        engine.applyPlayerJumpVisuals();
+        expect(engine.player.mesh.scale.x).toBeCloseTo(1, 5);
+        expect(engine.player.mesh.scale.y).toBeCloseTo(1, 5);
+    });
+
+    test('jump style profile varies by class identity', () => {
+        const engine = createEngineHarness();
+        engine.player.constructor = { name: 'Wizard' };
+        const wizardStyle = engine.getJumpStyleProfile(engine.player);
+
+        engine.player.constructor = { name: 'Fighter' };
+        const fighterStyle = engine.getJumpStyleProfile(engine.player);
+
+        expect(wizardStyle.flip).toBeLessThan(fighterStyle.flip);
+        expect(wizardStyle.roll).toBeGreaterThan(fighterStyle.roll);
+        expect(wizardStyle.stretch).toBeGreaterThan(fighterStyle.stretch);
     });
 
     test('jump landing is clamped back inside dungeon walkable geometry', () => {
