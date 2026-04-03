@@ -581,6 +581,12 @@ export class UIManager {
         if (summary.heartCount) parts.push(`+${summary.heartCount} heart${summary.heartCount === 1 ? '' : 's'}`);
         if (summary.healthRestored) parts.push(`+${summary.healthRestored} health`);
         if (summary.manaRestored) parts.push(`+${summary.manaRestored} mana`);
+        if (summary.buffName && summary.buffDurationSeconds) {
+            const buffDetail = summary.damageReductionPct
+                ? `${summary.buffName} for ${summary.buffDurationSeconds}s (${summary.damageReductionPct}% DR)`
+                : `${summary.buffName} for ${summary.buffDurationSeconds}s`;
+            parts.push(buffDetail);
+        }
         if (summary.hint) parts.push(summary.hint);
         if (parts.length > 0) {
             this.addChatMessage('Room', parts.join(' • '));

@@ -107,6 +107,7 @@ export class GameEngine {
         this.currentInstanceType = null;
         this.currentDungeonRoomState = null;
         this.currentDungeonLayout = null;
+        this.activeBuffs = [];
         this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
         this.minimap = new Minimap();
         this.minimap.setGameEngine(this);
@@ -816,6 +817,18 @@ export class GameEngine {
             if (this.player && summary && summary.playerId === this.player.id) {
                 if (this.floatingTextManager && this.player.position) {
                     this.floatingTextManager.spawn('ROOM CLEARED!', this.player.position, '#7CFFB2', '26px');
+                }
+                if (summary?.buffName && Number(summary.buffDurationSeconds) > 0) {
+                    this.upsertActiveBuff({
+                        id: String(summary.buffName).toLowerCase().replace(/[^a-z0-9]+/g, '_'),
+                        name: summary.buffName,
+                        icon: summary.buffName === 'Sanctuary' ? '🛡️' : '✨',
+                        detail: summary.damageReductionPct
+                            ? `${summary.damageReductionPct}% DR from shrine blessing`
+                            : summary.hint || '',
+                        durationSeconds: Number(summary.buffDurationSeconds),
+                        expiresAt: Date.now() + (Number(summary.buffDurationSeconds) * 1000)
+                    });
                 }
                 if (this.currentDungeonRoomState) {
                         const updatedRooms = Array.isArray(this.currentDungeonRoomState.rooms)
@@ -2108,6 +2121,49 @@ export class GameEngine {
 
     getDungeonRoomSummary() {
         return this.currentDungeonRoomState;
+    }
+
+    upsertActiveBuff(buff) {
+        if (!buff || !buff.id) {
+            return;
+        }
+        if (!Array.isArray(this.activeBuffs)) {
+            this.activeBuffs = [];
+        }
+        const normalized = {
+            ...buff,
+            remainingSeconds: Math.max(0, Number(buff.remainingSeconds ?? buff.durationSeconds ?? 0))
+        };
+        const index = this.activeBuffs.findIndex((entry) => entry?.id === normalized.id);
+        if (index >= 0) {
+            this.activeBuffs[index] = { ...this.activeBuffs[index], ...normalized };
+        } else {
+            this.activeBuffs.push(normalized);
+        }
+    }
+
+    getActiveBuffs() {
+        const now = Date.now();
+        if (!Array.isArray(this.activeBuffs) || this.activeBuffs.length === 0) {
+            this.activeBuffs = [];
+            return this.activeBuffs;
+        }
+        this.activeBuffs = this.activeBuffs
+            .map((buff) => {
+                if (!buff) return null;
+                const remainingSeconds = buff.expiresAt
+                    ? Math.max(0, (buff.expiresAt - now) / 1000)
+                    : Math.max(0, Number(buff.remainingSeconds ?? buff.durationSeconds ?? 0));
+                if (remainingSeconds <= 0) {
+                    return null;
+                }
+                return {
+                    ...buff,
+                    remainingSeconds
+                };
+            })
+            .filter(Boolean);
+        return this.activeBuffs;
     }
 
     getDungeonDebugOverlayData() {

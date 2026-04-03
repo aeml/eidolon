@@ -379,23 +379,26 @@ type RewardSummaryPayload struct {
 }
 
 type RoomClearRewardPayload struct {
-	PlayerID           string `json:"playerId"`
-	Title              string `json:"title"`
-	Subtitle           string `json:"subtitle,omitempty"`
-	Gold               int    `json:"gold"`
-	XP                 int    `json:"xp"`
-	ItemCount          int    `json:"itemCount,omitempty"`
-	GemCount           int    `json:"gemCount,omitempty"`
-	HeartCount         int    `json:"heartCount,omitempty"`
-	Hint               string `json:"hint,omitempty"`
-	RoomIndex          int    `json:"roomIndex"`
-	ObjectiveRoomIndex int    `json:"objectiveRoomIndex"`
-	RoomType           string `json:"roomType,omitempty"`
-	RoomHook           string `json:"roomHook,omitempty"`
-	InstanceType       string `json:"instanceType,omitempty"`
-	Difficulty         string `json:"difficulty,omitempty"`
-	HealthRestored     int    `json:"healthRestored,omitempty"`
-	ManaRestored       int    `json:"manaRestored,omitempty"`
+	PlayerID             string `json:"playerId"`
+	Title                string `json:"title"`
+	Subtitle             string `json:"subtitle,omitempty"`
+	Gold                 int    `json:"gold"`
+	XP                   int    `json:"xp"`
+	ItemCount            int    `json:"itemCount,omitempty"`
+	GemCount             int    `json:"gemCount,omitempty"`
+	HeartCount           int    `json:"heartCount,omitempty"`
+	Hint                 string `json:"hint,omitempty"`
+	RoomIndex            int    `json:"roomIndex"`
+	ObjectiveRoomIndex   int    `json:"objectiveRoomIndex"`
+	RoomType             string `json:"roomType,omitempty"`
+	RoomHook             string `json:"roomHook,omitempty"`
+	InstanceType         string `json:"instanceType,omitempty"`
+	Difficulty           string `json:"difficulty,omitempty"`
+	HealthRestored       int    `json:"healthRestored,omitempty"`
+	ManaRestored         int    `json:"manaRestored,omitempty"`
+	BuffName             string `json:"buffName,omitempty"`
+	BuffDurationSeconds  int    `json:"buffDurationSeconds,omitempty"`
+	DamageReductionPct   int    `json:"damageReductionPct,omitempty"`
 }
 
 type ChatPayload struct {
@@ -847,23 +850,26 @@ func main() {
 				return
 			}
 			payload := RoomClearRewardPayload{
-				PlayerID:           evt.PlayerID,
-				Title:              evt.Title,
-				Subtitle:           evt.Subtitle,
-				Gold:               evt.Gold,
-				XP:                 evt.XP,
-				ItemCount:          evt.ItemCount,
-				GemCount:           evt.GemCount,
-				HeartCount:         evt.HeartCount,
-				Hint:               evt.Hint,
-				RoomIndex:          evt.RoomIndex,
-				ObjectiveRoomIndex: evt.ObjectiveRoomIndex,
-				RoomType:           evt.RoomType,
-				RoomHook:           evt.RoomHook,
-				InstanceType:       evt.InstanceType,
-				Difficulty:         evt.Difficulty,
-				HealthRestored:     evt.HealthRestored,
-				ManaRestored:       evt.ManaRestored,
+				PlayerID:            evt.PlayerID,
+				Title:               evt.Title,
+				Subtitle:            evt.Subtitle,
+				Gold:                evt.Gold,
+				XP:                  evt.XP,
+				ItemCount:           evt.ItemCount,
+				GemCount:            evt.GemCount,
+				HeartCount:          evt.HeartCount,
+				Hint:                evt.Hint,
+				RoomIndex:           evt.RoomIndex,
+				ObjectiveRoomIndex:  evt.ObjectiveRoomIndex,
+				RoomType:            evt.RoomType,
+				RoomHook:            evt.RoomHook,
+				InstanceType:        evt.InstanceType,
+				Difficulty:          evt.Difficulty,
+				HealthRestored:      evt.HealthRestored,
+				ManaRestored:        evt.ManaRestored,
+				BuffName:            evt.BuffName,
+				BuffDurationSeconds: evt.BuffDurationSeconds,
+				DamageReductionPct:  evt.DamageReductionPct,
 			}
 			b, _ := json.Marshal(payload)
 			outMsg := Message{

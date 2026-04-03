@@ -140,6 +140,45 @@ describe('Minimap dungeon room states', () => {
         expect(texts.some((entry) => String(entry.args[0]).includes('Exit'))).toBe(true);
     });
 
+    test('renders active buff icons to the left of the minimap and shows tooltip details on hover', () => {
+        const minimap = new Minimap(200);
+        minimap.gameEngine = {
+            getDungeonRoomSummary: () => null,
+            getActiveBuffs: () => ([
+                {
+                    id: 'sanctuary',
+                    name: 'Sanctuary',
+                    icon: '🛡️',
+                    detail: '25% DR from shrine blessing',
+                    remainingSeconds: 7.4,
+                    durationSeconds: 8
+                }
+            ]),
+            uiManager: { partyData: { members: [] } }
+        };
+
+        minimap.update({ position: { x: 0, z: 0 }, id: 'player-1' }, []);
+
+        const wrapper = document.getElementById('minimap-hud');
+        const buffList = document.getElementById('minimap-buff-list');
+        const tooltip = document.getElementById('minimap-buff-tooltip');
+        const icon = buffList?.querySelector('.minimap-buff-icon');
+
+        expect(wrapper).not.toBeNull();
+        expect(wrapper.firstElementChild?.id).toBe('minimap-buff-list');
+        expect(icon).not.toBeNull();
+        expect(icon.textContent).toContain('🛡️');
+
+        icon.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true, clientX: 120, clientY: 60 }));
+        expect(tooltip.style.display).toBe('block');
+        expect(tooltip.textContent).toContain('Sanctuary');
+        expect(tooltip.textContent).toContain('7.4s');
+        expect(tooltip.textContent).toContain('25% DR from shrine blessing');
+
+        icon.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+        expect(tooltip.style.display).toBe('none');
+    });
+
     test('renders canonical walk rects and join markers when dungeon debug overlay is enabled', () => {
         const minimap = new Minimap(200);
         minimap.setDungeonDebugOverlayEnabled(true);

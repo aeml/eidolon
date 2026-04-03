@@ -63,21 +63,41 @@ export class Minimap {
         this.scale = 4; // Pixels per world unit
         this.dungeonDebugOverlayEnabled = false;
 
+        this.wrapper = document.createElement('div');
+        this.wrapper.id = 'minimap-hud';
+        this.wrapper.style.position = 'absolute';
+        this.wrapper.style.top = '20px';
+        this.wrapper.style.right = '20px';
+        this.wrapper.style.display = 'flex';
+        this.wrapper.style.alignItems = 'center';
+        this.wrapper.style.gap = '10px';
+        this.wrapper.style.zIndex = '100';
+
+        this.buffList = document.createElement('div');
+        this.buffList.id = 'minimap-buff-list';
+        this.buffList.className = 'minimap-buff-list';
+
         this.canvas = document.createElement('canvas');
         this.canvas.id = 'minimap-canvas';
         this.canvas.width = size;
         this.canvas.height = size;
 
         // Default inline styles (CSS can override)
-        this.canvas.style.position = 'absolute';
-        this.canvas.style.top = '20px';
-        this.canvas.style.right = '20px';
+        this.canvas.style.position = 'relative';
         this.canvas.style.border = '2px solid #444';
         this.canvas.style.borderRadius = '50%';
         this.canvas.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
         this.canvas.style.zIndex = '100';
 
-        document.body.appendChild(this.canvas);
+        this.buffTooltip = document.createElement('div');
+        this.buffTooltip.id = 'minimap-buff-tooltip';
+        this.buffTooltip.className = 'minimap-buff-tooltip';
+        this.buffTooltip.style.display = 'none';
+
+        this.wrapper.appendChild(this.buffList);
+        this.wrapper.appendChild(this.canvas);
+        document.body.appendChild(this.wrapper);
+        document.body.appendChild(this.buffTooltip);
         this.ctx = this.canvas.getContext('2d');
 
         // Animation tick counter for pulsing effects
@@ -88,6 +108,7 @@ export class Minimap {
         if (!player) return;
         if (!entities) entities = [];
         this._tick++;
+        this._renderBuffList();
 
         const ctx = this.ctx;
         const size = this.canvas.width;
@@ -196,6 +217,45 @@ export class Minimap {
     /** Inject gameEngine ref so we can read partyData. Called from GameEngine constructor. */
     setGameEngine(ge) {
         this.gameEngine = ge;
+    }
+
+    _renderBuffList() {
+        if (!this.buffList) {
+            return;
+        }
+        this.buffList.innerHTML = '';
+        const buffs = Array.isArray(this.gameEngine?.getActiveBuffs?.()) ? this.gameEngine.getActiveBuffs() : [];
+        this.buffList.style.display = buffs.length > 0 ? 'flex' : 'none';
+        buffs.forEach((buff) => {
+            const icon = document.createElement('button');
+            icon.type = 'button';
+            icon.className = 'minimap-buff-icon';
+            icon.dataset.buffId = buff.id;
+            icon.textContent = buff.icon || '✨';
+            icon.setAttribute('aria-label', `${buff.name} (${buff.remainingSeconds?.toFixed?.(1) || '0.0'}s)`);
+            icon.addEventListener('mouseenter', (event) => this._showBuffTooltip(buff, event));
+            icon.addEventListener('mousemove', (event) => this._showBuffTooltip(buff, event));
+            icon.addEventListener('mouseleave', () => this._hideBuffTooltip());
+            this.buffList.appendChild(icon);
+        });
+    }
+
+    _showBuffTooltip(buff, event) {
+        if (!this.buffTooltip || !buff) {
+            return;
+        }
+        const remaining = Number(buff.remainingSeconds || 0).toFixed(1);
+        const duration = Number(buff.durationSeconds || 0).toFixed(0);
+        this.buffTooltip.textContent = `${buff.name} • ${remaining}s left${duration !== '0' ? ` / ${duration}s` : ''} • ${buff.detail || ''}`;
+        this.buffTooltip.style.display = 'block';
+        this.buffTooltip.style.left = `${(event?.clientX || 0) + 12}px`;
+        this.buffTooltip.style.top = `${(event?.clientY || 0) + 12}px`;
+    }
+
+    _hideBuffTooltip() {
+        if (this.buffTooltip) {
+            this.buffTooltip.style.display = 'none';
+        }
     }
 
     setDungeonDebugOverlayEnabled(enabled) {

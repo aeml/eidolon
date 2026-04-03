@@ -202,6 +202,9 @@ function createRoomClearSummary(overrides = {}) {
         heartCount: 0,
         healthRestored: 0,
         manaRestored: 0,
+        buffName: '',
+        buffDurationSeconds: 0,
+        damageReductionPct: 0,
         ...overrides
     };
 }
@@ -274,7 +277,7 @@ describe('Dungeon room clear feedback', () => {
         expect(chatMessages[2]).toContain('Elite cleared — push toward the next objective');
     });
 
-    test('UIManager.showRoomClearReward surfaces shrine restoration and treasure/ambush beats', () => {
+    test('UIManager.showRoomClearReward surfaces shrine restoration, buff, and treasure/ambush beats', () => {
         buildDom();
         const ui = new UIManager(false);
 
@@ -282,7 +285,10 @@ describe('Dungeon room clear feedback', () => {
             title: 'Room Cleared: Shrine Room',
             hint: 'Shrine restored your strength for the next push',
             healthRestored: 300,
-            manaRestored: 90
+            manaRestored: 90,
+            buffName: 'Sanctuary',
+            buffDurationSeconds: 8,
+            damageReductionPct: 25
         }));
         ui.showRoomClearReward(createRoomClearSummary({
             title: 'Room Cleared: Treasure Room',
@@ -301,6 +307,8 @@ describe('Dungeon room clear feedback', () => {
         const chatMessages = Array.from(document.querySelectorAll('#chat-messages > div')).map(node => node.textContent);
         expect(chatMessages.some((line) => line.includes('+300 health'))).toBe(true);
         expect(chatMessages.some((line) => line.includes('+90 mana'))).toBe(true);
+        expect(chatMessages.some((line) => line.includes('Sanctuary for 8s'))).toBe(true);
+        expect(chatMessages.some((line) => line.includes('25% DR'))).toBe(true);
         expect(chatMessages.some((line) => line.includes('Treasure secured — cash in before the boss'))).toBe(true);
         expect(chatMessages.some((line) => line.includes('Ambush survived — momentum and spoils increased'))).toBe(true);
     });
@@ -316,8 +324,9 @@ describe('Dungeon room clear feedback', () => {
             currentRoomIndex: 1,
             objectiveRoomIndex: 2,
             rooms: [
-                { index: 1, explored: true, cleared: false, type: 'normal', hook: 'chest' },
-                { index: 2, explored: false, cleared: false, type: 'elite', hook: 'elite_ambush' }
+                { index: 0, explored: true, cleared: false, type: 'start' },
+                { index: 1, explored: true, cleared: false, type: 'normal' },
+                { index: 2, explored: false, cleared: false, type: 'boss' }
             ]
         };
         engine.uiManager = {
@@ -329,7 +338,6 @@ describe('Dungeon room clear feedback', () => {
         engine.floatingTextManager = {
             spawn: jest.fn()
         };
-        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
 
         const summary = createRoomClearSummary({
             roomHook: 'chest',
@@ -346,6 +354,53 @@ describe('Dungeon room clear feedback', () => {
             itemCount: 0,
             heartCount: 0
         }));
+    });
+
+    test('GameEngine room_clear_reward handling tracks active shrine buffs for the HUD', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = {
+            id: 'player-1',
+            position: new THREE.Vector3(5, 0, 10),
+            quests: []
+        };
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 1,
+            objectiveRoomIndex: 2,
+            rooms: [
+                { index: 0, explored: true, cleared: false, type: 'start' },
+                { index: 1, explored: true, cleared: false, type: 'normal' },
+                { index: 2, explored: false, cleared: false, type: 'boss' }
+            ]
+        };
+        engine.uiManager = {
+            showRewardSummary: jest.fn(),
+            showRoomClearReward: jest.fn(),
+            updateQuestWindow: jest.fn(),
+            updateJournal: jest.fn()
+        };
+        engine.floatingTextManager = {
+            spawn: jest.fn()
+        };
+
+        const summary = createRoomClearSummary({
+            roomHook: 'shrine',
+            hint: 'Shrine restored your strength for the next push',
+            buffName: 'Sanctuary',
+            buffDurationSeconds: 8,
+            damageReductionPct: 25
+        });
+        engine.handleServerMessage({ type: 'room_clear_reward', payload: summary });
+
+        expect(engine.getActiveBuffs()).toEqual(expect.arrayContaining([
+            expect.objectContaining({
+                id: 'sanctuary',
+                name: 'Sanctuary',
+                icon: '🛡️',
+                durationSeconds: 8,
+                remainingSeconds: expect.any(Number),
+                detail: expect.stringContaining('25%')
+            })
+        ]));
     });
 
     test('UIManager.showRoomClearReward surfaces chest gem and ambush loot beats', () => {

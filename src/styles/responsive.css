@@ -9,11 +9,26 @@
    ------------------------------------------------------------ */
 
 /* ---- Mobile Layout ---- */
+.mobile-mode #minimap-hud {
+    top: 70px !important;
+    right: 10px !important;
+    gap: 6px !important;
+}
+
 .mobile-mode #minimap-canvas {
     width: clamp(80px, 15vw, 120px) !important;
     height: clamp(80px, 15vw, 120px) !important;
-    top: 70px !important;
-    right: 10px !important;
+}
+
+.mobile-mode .minimap-buff-list {
+    gap: 6px !important;
+    min-width: 34px !important;
+}
+
+.mobile-mode .minimap-buff-icon {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 15px !important;
 }
 
 .mobile-mode #game-timer {

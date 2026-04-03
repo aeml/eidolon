@@ -1793,23 +1793,26 @@ type RewardSummaryEvent struct {
 }
 
 type DungeonRoomClearRewardEvent struct {
-	PlayerID           string `json:"playerId"`
-	Title              string `json:"title"`
-	Subtitle           string `json:"subtitle,omitempty"`
-	Gold               int    `json:"gold"`
-	XP                 int    `json:"xp"`
-	ItemCount          int    `json:"itemCount,omitempty"`
-	GemCount           int    `json:"gemCount,omitempty"`
-	HeartCount         int    `json:"heartCount,omitempty"`
-	Hint               string `json:"hint,omitempty"`
-	RoomIndex          int    `json:"roomIndex"`
-	ObjectiveRoomIndex int    `json:"objectiveRoomIndex"`
-	RoomType           string `json:"roomType,omitempty"`
-	RoomHook           string `json:"roomHook,omitempty"`
-	InstanceType       string `json:"instanceType,omitempty"`
-	Difficulty         string `json:"difficulty,omitempty"`
-	HealthRestored     int    `json:"healthRestored,omitempty"`
-	ManaRestored       int    `json:"manaRestored,omitempty"`
+	PlayerID             string `json:"playerId"`
+	Title                string `json:"title"`
+	Subtitle             string `json:"subtitle,omitempty"`
+	Gold                 int    `json:"gold"`
+	XP                   int    `json:"xp"`
+	ItemCount            int    `json:"itemCount,omitempty"`
+	GemCount             int    `json:"gemCount,omitempty"`
+	HeartCount           int    `json:"heartCount,omitempty"`
+	Hint                 string `json:"hint,omitempty"`
+	RoomIndex            int    `json:"roomIndex"`
+	ObjectiveRoomIndex   int    `json:"objectiveRoomIndex"`
+	RoomType             string `json:"roomType,omitempty"`
+	RoomHook             string `json:"roomHook,omitempty"`
+	InstanceType         string `json:"instanceType,omitempty"`
+	Difficulty           string `json:"difficulty,omitempty"`
+	HealthRestored       int    `json:"healthRestored,omitempty"`
+	ManaRestored         int    `json:"manaRestored,omitempty"`
+	BuffName             string `json:"buffName,omitempty"`
+	BuffDurationSeconds  int    `json:"buffDurationSeconds,omitempty"`
+	DamageReductionPct   int    `json:"damageReductionPct,omitempty"`
 }
 
 func formatDungeonLabel(instanceType string) string {
@@ -1890,8 +1893,14 @@ func formatDungeonRoomLabel(roomType string, roomIndex int) string {
 
 func buildDungeonRoomClearRewardSummary(playerID string, roomIndex, objectiveRoomIndex, gold, xp, itemCount, gemCount, heartCount int, instanceType string, difficulty DungeonDifficulty, roomType, roomHook string, healthRestored, manaRestored int) DungeonRoomClearRewardEvent {
 	hint := "Path opened deeper into the dungeon"
+	buffName := ""
+	buffDurationSeconds := 0
+	damageReductionPct := 0
 	if roomHook == "shrine" {
 		hint = "Shrine restored your strength for the next push"
+		buffName = "Sanctuary"
+		buffDurationSeconds = 8
+		damageReductionPct = 25
 	} else if roomHook == "chest" {
 		hint = "Treasure secured — cash in before the boss"
 	} else if roomHook == "elite_ambush" {
@@ -1905,23 +1914,26 @@ func buildDungeonRoomClearRewardSummary(playerID string, roomIndex, objectiveRoo
 	}
 
 	return DungeonRoomClearRewardEvent{
-		PlayerID:           playerID,
-		Title:              fmt.Sprintf("Room Cleared: %s", formatDungeonRoomLabel(roomType, roomIndex)),
-		Subtitle:           fmt.Sprintf("%s • %s", formatDungeonLabel(instanceType), formatDungeonDifficultyLabel(difficulty)),
-		Gold:               gold,
-		XP:                 xp,
-		ItemCount:          itemCount,
-		GemCount:           gemCount,
-		HeartCount:         heartCount,
-		Hint:               hint,
-		RoomIndex:          roomIndex,
-		ObjectiveRoomIndex: objectiveRoomIndex,
-		RoomType:           roomType,
-		RoomHook:           roomHook,
-		InstanceType:       instanceType,
-		Difficulty:         string(difficulty),
-		HealthRestored:     healthRestored,
-		ManaRestored:       manaRestored,
+		PlayerID:            playerID,
+		Title:               fmt.Sprintf("Room Cleared: %s", formatDungeonRoomLabel(roomType, roomIndex)),
+		Subtitle:            fmt.Sprintf("%s • %s", formatDungeonLabel(instanceType), formatDungeonDifficultyLabel(difficulty)),
+		Gold:                gold,
+		XP:                  xp,
+		ItemCount:           itemCount,
+		GemCount:            gemCount,
+		HeartCount:          heartCount,
+		Hint:                hint,
+		RoomIndex:           roomIndex,
+		ObjectiveRoomIndex:  objectiveRoomIndex,
+		RoomType:            roomType,
+		RoomHook:            roomHook,
+		InstanceType:        instanceType,
+		Difficulty:          string(difficulty),
+		HealthRestored:      healthRestored,
+		ManaRestored:        manaRestored,
+		BuffName:            buffName,
+		BuffDurationSeconds: buffDurationSeconds,
+		DamageReductionPct:  damageReductionPct,
 	}
 }
 
@@ -8289,6 +8301,8 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 				manaRestored = max(1, int(float64(entity.MaxMana)*0.30))
 				entity.Health = min(entity.MaxHealth, entity.Health+healthRestored)
 				entity.Mana = min(entity.MaxMana, entity.Mana+manaRestored)
+				entity.SanctuaryDamageReduction = true
+				entity.SanctuaryEndTime = time.Now().Add(8 * time.Second)
 			}
 			if room.Hook == "chest" {
 				if gem := GenerateRandomGemByLevel(max(20, inst.RunLevel), false); gem != nil {

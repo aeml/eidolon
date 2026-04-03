@@ -1,6 +1,9 @@
 package game
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func TestMarkDungeonRoomClearedAwardsNonBossRoomsOnce(t *testing.T) {
 	w := NewWorld(nil)
@@ -192,6 +195,12 @@ func TestMarkDungeonRoomClearedAppliesHookRewardsAndHints(t *testing.T) {
 	if rewards[0].Hint != "Shrine restored your strength for the next push" {
 		t.Fatalf("expected shrine hint, got %q", rewards[0].Hint)
 	}
+	if rewards[0].BuffName != "Sanctuary" || rewards[0].BuffDurationSeconds != 8 || rewards[0].DamageReductionPct != 25 {
+		t.Fatalf("expected shrine reward buff metadata, got %+v", rewards[0])
+	}
+	if !player.SanctuaryDamageReduction {
+		t.Fatalf("expected shrine to grant temporary damage reduction buff")
+	}
 
 	w.MarkDungeonRoomCleared(instanceID, 2)
 	if rewards[1].Gold <= rewards[0].Gold || rewards[1].XP <= rewards[0].XP {
@@ -276,5 +285,52 @@ func TestMarkDungeonRoomClearedHookLootRewardsPopulateCountsAndInventory(t *test
 	}
 	if player.Inventory[1].ID == "" || player.Inventory[1].Type == ItemGem {
 		t.Fatalf("expected ambush reward item added to inventory, got %+v", player.Inventory[1])
+	}
+}
+
+func TestMarkDungeonRoomClearedShrineBuffExpiresAfterDuration(t *testing.T) {
+	w := NewWorld(nil)
+	player := &Entity{
+		ID:            "player-1",
+		Type:          TypePlayer,
+		Level:         55,
+		Health:        700,
+		MaxHealth:     1000,
+		Mana:          200,
+		MaxMana:       300,
+		MaxExperience: 100,
+		InstanceID:    "instance-shrine-buff-expiry",
+		State:         "IDLE",
+	}
+	w.AddEntity(player)
+
+	layout := DungeonLayout{
+		Rooms: []DungeonRoom{
+			{X: 0, Z: 0, Width: 40, Height: 40, Type: "start"},
+			{X: 100, Z: 0, Width: 40, Height: 40, Type: "normal", Hook: "shrine"},
+			{X: 200, Z: 0, Width: 40, Height: 40, Type: "boss"},
+		},
+	}
+
+	instanceID := "instance-shrine-buff-expiry"
+	w.InstanceLayouts[instanceID] = &DungeonInstance{
+		ID:                instanceID,
+		Layout:            layout,
+		Difficulty:        DifficultyNormal,
+		DungeonType:       "verdant_bastion_catacombs",
+		RunLevel:          55,
+		RoomState:         NewDungeonRoomState(layout),
+		PlayerRoomSummary: map[string]DungeonRoomSummary{"player-1": {}},
+	}
+
+	w.MarkDungeonRoomCleared(instanceID, 1)
+	if !player.SanctuaryDamageReduction {
+		t.Fatalf("expected shrine buff to be active immediately after room clear")
+	}
+
+	player.SanctuaryEndTime = time.Now().Add(-1 * time.Second)
+	w.Update(0.016)
+	if player.SanctuaryDamageReduction {
+		t.Fatalf("expected shrine buff to expire after duration")
 	}
 }
