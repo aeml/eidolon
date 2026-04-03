@@ -2851,7 +2851,7 @@ export class GameEngine {
     getJumpStyleProfile(entity) {
         const className = entity?.constructor?.name || '';
         const baseProfile = {
-            flip: 1.18,
+            flip: Math.PI,
             roll: 0.16,
             anticipation: 0.12,
             squash: 0.14,
@@ -2859,16 +2859,16 @@ export class GameEngine {
         };
 
         if (className === 'Wizard') {
-            return { ...baseProfile, flip: 0.82, roll: 0.26, anticipation: 0.09, squash: 0.1, stretch: 0.14 };
+            return { ...baseProfile, flip: Math.PI * 0.85, roll: 0.26, anticipation: 0.09, squash: 0.1, stretch: 0.14 };
         }
         if (className === 'Rogue') {
-            return { ...baseProfile, flip: 1.34, roll: 0.24, anticipation: 0.1, squash: 0.12, stretch: 0.12 };
+            return { ...baseProfile, flip: Math.PI * 1.08, roll: 0.24, anticipation: 0.1, squash: 0.12, stretch: 0.12 };
         }
         if (className === 'Cleric') {
-            return { ...baseProfile, flip: 0.94, roll: 0.18, anticipation: 0.08, squash: 0.11, stretch: 0.13 };
+            return { ...baseProfile, flip: Math.PI * 0.92, roll: 0.18, anticipation: 0.08, squash: 0.11, stretch: 0.13 };
         }
         if (className === 'Fighter') {
-            return { ...baseProfile, flip: 1.26, roll: 0.1, anticipation: 0.15, squash: 0.17, stretch: 0.08 };
+            return { ...baseProfile, flip: Math.PI * 1.02, roll: 0.1, anticipation: 0.15, squash: 0.17, stretch: 0.08 };
         }
 
         return baseProfile;

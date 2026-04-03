@@ -266,7 +266,13 @@ export class WorldGenerator {
         // Taller fence: Post height 8, Rail height adjusted
         const postGeo = new THREE.BoxGeometry(0.8, 8, 0.8);
         const railGeo = new THREE.BoxGeometry(4, 0.4, 0.2);
-        const material = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
+        const createFenceMaterial = () => new THREE.MeshStandardMaterial({
+            color: 0x8B4513,
+            shadowSide: THREE.FrontSide,
+            polygonOffset: true,
+            polygonOffsetFactor: 1,
+            polygonOffsetUnits: 1
+        });
 
         const group = new THREE.Group();
         
@@ -281,12 +287,14 @@ export class WorldGenerator {
         // Helper to create segment
         const createSegment = (x, z, rotation) => {
             // Post
-            this.addPost(group, postGeo, material, x, z);
+            this.addPost(group, postGeo, createFenceMaterial(), x, z);
 
             // Rails
             const railHeights = [2, 4, 6];
             for (let h of railHeights) {
-                const rail = new THREE.Mesh(railGeo, material);
+                const rail = new THREE.Mesh(railGeo, createFenceMaterial());
+                rail.castShadow = true;
+                rail.receiveShadow = true;
                 rail.position.set(x, h, z);
                 rail.rotation.y = rotation;
                 group.add(rail);
@@ -333,6 +341,8 @@ export class WorldGenerator {
 
     addPost(group, geo, mat, x, z) {
         const post = new THREE.Mesh(geo, mat);
+        post.castShadow = true;
+        post.receiveShadow = true;
         post.position.set(x, 4, z); // Center at y=4 for height 8
         group.add(post);
     }

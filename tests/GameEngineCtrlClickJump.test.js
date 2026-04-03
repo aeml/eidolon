@@ -153,7 +153,7 @@ describe('GameEngine ctrl-click jump', () => {
         expect(engine.player.state).toBe('IDLE');
     });
 
-    test('jump visuals apply a distinct airborne flip and reset to facing rotation on landing', () => {
+    test('jump visuals perform a real front flip midair and reset to facing rotation on landing', () => {
         const engine = createEngineHarness();
         const destination = new THREE.Vector3(20, 0, 0);
 
@@ -163,8 +163,10 @@ describe('GameEngine ctrl-click jump', () => {
         engine.updatePlayerJump(duration / 2);
         engine.applyPlayerJumpVisuals();
 
+        const upVector = new THREE.Vector3(0, 1, 0).applyQuaternion(engine.player.mesh.quaternion);
         expect(engine.player.mesh.position.y).toBeGreaterThan(engine.player.position.y);
-        expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(1.0);
+        expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(2.5);
+        expect(upVector.y).toBeLessThan(-0.75);
 
         engine.updatePlayerJump(duration / 2);
         engine.applyPlayerJumpVisuals();

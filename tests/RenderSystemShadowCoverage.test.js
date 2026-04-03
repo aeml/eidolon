@@ -11,8 +11,18 @@ describe('RenderSystem shadow coverage', () => {
         expect(renderSystem.keyLight.position.z).toBeLessThan(-1200);
         expect(renderSystem.keyLight.target.position.x).toBeCloseTo(2200, 5);
         expect(renderSystem.keyLight.target.position.z).toBeCloseTo(-1400, 5);
-        expect(renderSystem.keyLight.shadow.camera.left).toBeLessThanOrEqual(-180);
-        expect(renderSystem.keyLight.shadow.camera.right).toBeGreaterThanOrEqual(180);
+        expect(renderSystem.keyLight.shadow.camera.left).toBeLessThanOrEqual(-240);
+        expect(renderSystem.keyLight.shadow.camera.right).toBeGreaterThanOrEqual(240);
+    });
+
+    test('uses filtered shadow maps and an expanded frustum on high quality', () => {
+        const renderSystem = new RenderSystem(false);
+
+        expect(renderSystem.renderer.shadowMap.type).toBe(THREE.PCFSoftShadowMap);
+        expect(renderSystem.keyLight.shadow.mapSize.width).toBeGreaterThanOrEqual(1536);
+        expect(renderSystem.keyLight.shadow.camera.left).toBeLessThanOrEqual(-240);
+        expect(renderSystem.keyLight.shadow.camera.right).toBeGreaterThanOrEqual(240);
+        expect(renderSystem.keyLight.shadow.normalBias).toBeGreaterThanOrEqual(0.03);
     });
 
     test('refreshes shadow frustum after graphics quality changes', () => {
@@ -22,8 +32,8 @@ describe('RenderSystem shadow coverage', () => {
         renderSystem.setGraphicsQuality('medium');
 
         expect(renderSystem.keyLight.castShadow).toBe(true);
-        expect(renderSystem.keyLight.shadow.camera.left).toBeLessThanOrEqual(-180);
-        expect(renderSystem.keyLight.shadow.camera.right).toBeGreaterThanOrEqual(180);
+        expect(renderSystem.keyLight.shadow.camera.left).toBeLessThanOrEqual(-240);
+        expect(renderSystem.keyLight.shadow.camera.right).toBeGreaterThanOrEqual(240);
         expect(renderSystem.keyLight.target.position.x).toBeCloseTo(-1900, 5);
         expect(renderSystem.keyLight.target.position.z).toBeCloseTo(900, 5);
     });

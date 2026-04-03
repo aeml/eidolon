@@ -74,9 +74,9 @@ export class RenderSystem {
         this.brightnessScale = 1.0;
         this.currentRealm = null;
         this.targetLighting = null;
-        this.shadowFollowOffset = new THREE.Vector3(320, 420, 180);
+        this.shadowFollowOffset = new THREE.Vector3(340, 460, 180);
         this.shadowTarget = new THREE.Vector3();
-        this.shadowCoverageRadius = 220;
+        this.shadowCoverageRadius = 260;
         this.currentLighting = {
             ambientIntensity: 2.25,
             keyIntensity: 2.25,
@@ -562,13 +562,12 @@ export class RenderSystem {
         dirLight.castShadow = this.renderer.shadowMap.enabled;
         
         // Optimization: Reduce Shadow Map Size on Mobile
-        // 512 is much lighter on VRAM than 1024/2048
-        // Reduced desktop to 1024 for better performance
+        // Keep high quality sharper now that the shadow frustum follows the player.
         const shadowSize = this.getShadowMapSize();
         dirLight.shadow.mapSize.width = shadowSize;
         dirLight.shadow.mapSize.height = shadowSize;
-        dirLight.shadow.bias = -0.00012;
-        dirLight.shadow.normalBias = 0.02;
+        dirLight.shadow.bias = -0.00008;
+        dirLight.shadow.normalBias = 0.035;
         dirLight.shadow.camera.near = 1;
         dirLight.shadow.camera.far = 1400;
         this.configureShadowFrustum(dirLight, this.shadowCoverageRadius);
@@ -692,8 +691,8 @@ export class RenderSystem {
 
     getShadowMapSize() {
         if (this.isMobile || this.graphicsQuality === 'low') return 512;
-        if (this.graphicsQuality === 'medium') return 768;
-        return 1024;
+        if (this.graphicsQuality === 'medium') return 1024;
+        return 2048;
     }
 
     configureShadowFrustum(light, radius = this.shadowCoverageRadius) {

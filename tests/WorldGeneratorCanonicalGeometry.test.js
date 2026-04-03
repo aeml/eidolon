@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { WorldGenerator } from '../src/world/WorldGenerator.js';
 
@@ -169,5 +170,24 @@ describe.each([
             0x222222,
             { west: true }
         ]);
+    });
+});
+
+describe('WorldGenerator fence shadow setup', () => {
+    test('creates fence pieces with stable shadow-casting settings', () => {
+        const generator = createGenerator();
+
+        generator.createRectangularFence(0, 0, 24, 24);
+
+        expect(generator.scene.add).toHaveBeenCalledTimes(1);
+        const group = generator.scene.add.mock.calls[0][0];
+        const meshes = group.children.filter(child => child.isMesh);
+        expect(meshes.length).toBeGreaterThan(0);
+        for (const mesh of meshes) {
+            expect(mesh.castShadow).toBe(true);
+            expect(mesh.receiveShadow).toBe(true);
+            expect(mesh.material.shadowSide).toBe(THREE.FrontSide);
+            expect(mesh.material.polygonOffset).toBe(true);
+        }
     });
 });
