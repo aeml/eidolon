@@ -196,6 +196,8 @@ function createRoomClearSummary(overrides = {}) {
         roomIndex: 1,
         objectiveRoomIndex: 2,
         roomType: 'normal',
+        healthRestored: 0,
+        manaRestored: 0,
         ...overrides
     };
 }
@@ -266,6 +268,37 @@ describe('Dungeon room clear feedback', () => {
         const chatMessages = Array.from(document.querySelectorAll('#chat-messages > div')).map(node => node.textContent);
         expect(chatMessages[0]).toContain('Elite Chamber 2');
         expect(chatMessages[2]).toContain('Elite cleared — push toward the next objective');
+    });
+
+    test('UIManager.showRoomClearReward surfaces shrine restoration and treasure/ambush beats', () => {
+        buildDom();
+        const ui = new UIManager(false);
+
+        ui.showRoomClearReward(createRoomClearSummary({
+            title: 'Room Cleared: Shrine Room',
+            hint: 'Shrine restored your strength for the next push',
+            healthRestored: 300,
+            manaRestored: 90
+        }));
+        ui.showRoomClearReward(createRoomClearSummary({
+            title: 'Room Cleared: Treasure Room',
+            hint: 'Treasure secured — cash in before the boss',
+            gold: 220,
+            xp: 520
+        }));
+        ui.showRoomClearReward(createRoomClearSummary({
+            title: 'Room Cleared: Ambush Room',
+            roomType: 'elite',
+            hint: 'Ambush survived — momentum and spoils increased',
+            gold: 320,
+            xp: 760
+        }));
+
+        const chatMessages = Array.from(document.querySelectorAll('#chat-messages > div')).map(node => node.textContent);
+        expect(chatMessages.some((line) => line.includes('+300 health'))).toBe(true);
+        expect(chatMessages.some((line) => line.includes('+90 mana'))).toBe(true);
+        expect(chatMessages.some((line) => line.includes('Treasure secured — cash in before the boss'))).toBe(true);
+        expect(chatMessages.some((line) => line.includes('Ambush survived — momentum and spoils increased'))).toBe(true);
     });
 
     test('QuestUI renders objective entries with dungeon routing hints', () => {

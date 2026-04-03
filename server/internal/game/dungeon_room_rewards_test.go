@@ -141,3 +141,74 @@ func TestMarkDungeonRoomClearedEmitsEventRewardsForEliteAndNormalRooms(t *testin
 		t.Fatalf("expected elite room rewards to exceed normal room rewards, got elite=%+v normal=%+v", rewards[0], rewards[1])
 	}
 }
+
+func TestMarkDungeonRoomClearedAppliesHookRewardsAndHints(t *testing.T) {
+	w := NewWorld(nil)
+	player := &Entity{
+		ID:            "player-1",
+		Type:          TypePlayer,
+		Level:         55,
+		Health:        400,
+		MaxHealth:     1000,
+		Mana:          120,
+		MaxMana:       300,
+		MaxExperience: 100,
+	}
+	w.AddEntity(player)
+
+	layout := DungeonLayout{
+		Rooms: []DungeonRoom{
+			{X: 0, Z: 0, Width: 40, Height: 40, Type: "start"},
+			{X: 100, Z: 0, Width: 40, Height: 40, Type: "normal", Hook: "shrine"},
+			{X: 200, Z: 0, Width: 40, Height: 40, Type: "normal", Hook: "chest"},
+			{X: 300, Z: 0, Width: 40, Height: 40, Type: "elite", Hook: "elite_ambush"},
+			{X: 400, Z: 0, Width: 40, Height: 40, Type: "boss"},
+		},
+	}
+
+	instanceID := "instance-room-hook-rewards"
+	w.InstanceLayouts[instanceID] = &DungeonInstance{
+		ID:                instanceID,
+		Layout:            layout,
+		Difficulty:        DifficultyHeroic,
+		DungeonType:       "tempest_spire",
+		RunLevel:          55,
+		RoomState:         NewDungeonRoomState(layout),
+		PlayerRoomSummary: map[string]DungeonRoomSummary{"player-1": {}},
+	}
+	w.Entities[player.ID].InstanceID = instanceID
+
+	rewards := make([]DungeonRoomClearRewardEvent, 0)
+	w.OnEvent = func(eventType string, data interface{}) {
+		if eventType == "room_clear_reward" {
+			rewards = append(rewards, data.(DungeonRoomClearRewardEvent))
+		}
+	}
+
+	w.MarkDungeonRoomCleared(instanceID, 1)
+	if player.Health != 700 || player.Mana != 210 {
+		t.Fatalf("expected shrine to restore 30%% health/mana, got health=%d mana=%d", player.Health, player.Mana)
+	}
+	if rewards[0].Hint != "Shrine restored your strength for the next push" {
+		t.Fatalf("expected shrine hint, got %q", rewards[0].Hint)
+	}
+
+	w.MarkDungeonRoomCleared(instanceID, 2)
+	if rewards[1].Gold <= rewards[0].Gold || rewards[1].XP <= rewards[0].XP {
+		t.Fatalf("expected chest room to pay more than shrine room, got shrine=%+v chest=%+v", rewards[0], rewards[1])
+	}
+	if rewards[1].Hint != "Treasure secured — cash in before the boss" {
+		t.Fatalf("expected chest hint, got %q", rewards[1].Hint)
+	}
+
+	w.MarkDungeonRoomCleared(instanceID, 3)
+	if rewards[2].Gold <= rewards[1].Gold || rewards[2].XP <= rewards[1].XP {
+		t.Fatalf("expected ambush room to pay more than chest room, got chest=%+v ambush=%+v", rewards[1], rewards[2])
+	}
+	if rewards[2].Hint != "Ambush survived — momentum and spoils increased" {
+		t.Fatalf("expected ambush hint, got %q", rewards[2].Hint)
+	}
+	if rewards[2].RoomType != "elite" {
+		t.Fatalf("expected elite room type for ambush, got %q", rewards[2].RoomType)
+	}
+}

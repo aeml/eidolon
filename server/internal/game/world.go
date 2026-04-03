@@ -1802,8 +1802,11 @@ type DungeonRoomClearRewardEvent struct {
 	RoomIndex          int    `json:"roomIndex"`
 	ObjectiveRoomIndex int    `json:"objectiveRoomIndex"`
 	RoomType           string `json:"roomType,omitempty"`
+	RoomHook           string `json:"roomHook,omitempty"`
 	InstanceType       string `json:"instanceType,omitempty"`
 	Difficulty         string `json:"difficulty,omitempty"`
+	HealthRestored     int    `json:"healthRestored,omitempty"`
+	ManaRestored       int    `json:"manaRestored,omitempty"`
 }
 
 func formatDungeonLabel(instanceType string) string {
@@ -1882,9 +1885,15 @@ func formatDungeonRoomLabel(roomType string, roomIndex int) string {
 	}
 }
 
-func buildDungeonRoomClearRewardSummary(playerID string, roomIndex, objectiveRoomIndex, gold, xp int, instanceType string, difficulty DungeonDifficulty, roomType string) DungeonRoomClearRewardEvent {
+func buildDungeonRoomClearRewardSummary(playerID string, roomIndex, objectiveRoomIndex, gold, xp int, instanceType string, difficulty DungeonDifficulty, roomType, roomHook string, healthRestored, manaRestored int) DungeonRoomClearRewardEvent {
 	hint := "Path opened deeper into the dungeon"
-	if objectiveRoomIndex >= 0 {
+	if roomHook == "shrine" {
+		hint = "Shrine restored your strength for the next push"
+	} else if roomHook == "chest" {
+		hint = "Treasure secured — cash in before the boss"
+	} else if roomHook == "elite_ambush" {
+		hint = "Ambush survived — momentum and spoils increased"
+	} else if objectiveRoomIndex >= 0 {
 		if roomType == "elite" {
 			hint = "Elite cleared — push toward the next objective"
 		} else {
@@ -1902,8 +1911,11 @@ func buildDungeonRoomClearRewardSummary(playerID string, roomIndex, objectiveRoo
 		RoomIndex:          roomIndex,
 		ObjectiveRoomIndex: objectiveRoomIndex,
 		RoomType:           roomType,
+		RoomHook:           roomHook,
 		InstanceType:       instanceType,
 		Difficulty:         string(difficulty),
+		HealthRestored:     healthRestored,
+		ManaRestored:       manaRestored,
 	}
 }
 
@@ -8249,18 +8261,32 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 		if room.Type == "elite" {
 			rewardScale = 1.5
 		}
+		if room.Hook == "chest" {
+			rewardScale += 0.35
+		}
+		if room.Hook == "elite_ambush" {
+			rewardScale += 0.45
+		}
 		for _, entity := range w.Entities {
 			if entity == nil || entity.Type != TypePlayer || entity.InstanceID != instanceID || entity.State == "DEAD" {
 				continue
 			}
 			xpReward := int(float64(max(50, inst.RunLevel*10)) * rewardScale)
 			goldReward := int(float64(max(25, inst.RunLevel*3)) * rewardScale)
+			healthRestored := 0
+			manaRestored := 0
+			if room.Hook == "shrine" {
+				healthRestored = max(1, int(float64(entity.MaxHealth)*0.30))
+				manaRestored = max(1, int(float64(entity.MaxMana)*0.30))
+				entity.Health = min(entity.MaxHealth, entity.Health+healthRestored)
+				entity.Mana = min(entity.MaxMana, entity.Mana+manaRestored)
+			}
 			entity.Experience += xpReward
 			entity.Gold += goldReward
 			if entity.MaxExperience == 0 {
 				entity.MaxExperience = 100
 			}
-			playerRewards = append(playerRewards, buildDungeonRoomClearRewardSummary(entity.ID, roomIndex, objectiveRoomIndex, goldReward, xpReward, inst.DungeonType, inst.Difficulty, room.Type))
+			playerRewards = append(playerRewards, buildDungeonRoomClearRewardSummary(entity.ID, roomIndex, objectiveRoomIndex, goldReward, xpReward, inst.DungeonType, inst.Difficulty, room.Type, room.Hook, healthRestored, manaRestored))
 		}
 	}
 	w.Mu.Unlock()
