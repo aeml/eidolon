@@ -869,6 +869,14 @@ export class GameEngine {
                     threatTier,
                     label
                 });
+                if (this.uiManager?.showCombatCallout) {
+                    this.uiManager.showCombatCallout({
+                        title: label,
+                        tone: threatTier,
+                        duration: Number(data.duration || 2.0),
+                        subtitle: threatTier === 'boss' ? 'Brace for impact' : 'Incoming attack'
+                    });
+                }
             }
         } else if (msg.type === 'error') {
             console.error("Server Error:", msg.payload);

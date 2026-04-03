@@ -635,6 +635,34 @@ export class UIManager {
         ].join('|');
     }
 
+    showCombatCallout(callout = {}) {
+        if (!this.combatIntentPanel || !callout?.title) return;
+
+        const tone = callout.tone || 'warning';
+        const duration = Number(callout.duration || 0);
+        this.combatIntentPanel.style.display = 'block';
+        this.combatIntentPanel.dataset.calloutTone = tone;
+
+        if (this.combatIntentName) {
+            this.combatIntentName.textContent = callout.title;
+        }
+        if (this.combatIntentMeta) {
+            this.combatIntentMeta.textContent = duration > 0 ? `Incoming in ${duration.toFixed(1)}s` : '';
+        }
+        if (this.combatIntentStatus) {
+            this.combatIntentStatus.textContent = callout.subtitle || 'Brace for impact';
+        }
+        if (this.combatIntentPreviewBasic) {
+            this.combatIntentPreviewBasic.textContent = '';
+        }
+        if (this.combatIntentPreviewAbility) {
+            this.combatIntentPreviewAbility.textContent = '';
+        }
+        if (this.combatIntentPreviewAbilityLabel) {
+            this.combatIntentPreviewAbilityLabel.textContent = tone === 'boss' ? 'Boss Telegraph' : 'Threat Warning';
+        }
+    }
+
     updateCombatIntent(intent) {
         if (!this.combatIntentPanel || !intent) return;
 
