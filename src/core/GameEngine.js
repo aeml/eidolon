@@ -2146,10 +2146,94 @@ export class GameEngine {
         }
     }
 
+    removeActiveBuff(buffId) {
+        if (!Array.isArray(this.activeBuffs) || !buffId) {
+            return;
+        }
+        this.activeBuffs = this.activeBuffs.filter((entry) => entry?.id !== buffId);
+    }
+
+    syncTrackedActorBuffs(actor = null) {
+        if (!actor) {
+            return;
+        }
+
+        const trackedBuffs = [
+            {
+                id: 'guardian_roar',
+                active: Number(actor.guardianRoarTimer) > 0,
+                icon: '🛡️',
+                name: 'Guardian Roar',
+                durationSeconds: Number(actor.guardianRoarTimer || 0),
+                detail: `${Math.round(Number(actor.guardianRoarReduction || 0) * 100)}% damage reduction`
+            },
+            {
+                id: 'blessing_resolve',
+                active: Number(actor.blessingResolveTimer) > 0,
+                icon: '✝️',
+                name: 'Blessing of Resolve',
+                durationSeconds: Number(actor.blessingResolveTimer || 0),
+                detail: `${Math.round(Number(actor.blessingResolveReduction || 0) * 100)}% damage reduction`
+            },
+            {
+                id: 'time_warp',
+                active: Number(actor.hasteTimer) > 0,
+                icon: '⏩',
+                name: 'Time Warp',
+                durationSeconds: Number(actor.hasteTimer || 0),
+                detail: `+${Math.round(Number(actor.hasteFactor || 0) * 100)}% haste`
+            },
+            {
+                id: 'arcane_shield',
+                active: Number(actor.shieldHP) > 0,
+                icon: '🔷',
+                name: 'Arcane Shield',
+                durationSeconds: Number(actor.hasteTimer || 0),
+                detail: `${Math.round(Number(actor.shieldHP || 0))} shield remaining`
+            },
+            {
+                id: 'vanish',
+                active: Number(actor.speedBoostTimer) > 0,
+                icon: '💨',
+                name: 'Vanish',
+                durationSeconds: Number(actor.speedBoostTimer || 0),
+                detail: `+${Math.round(Number(actor.speedBoostFactor || 0) * 100)}% speed`
+            },
+            {
+                id: 'spirit_guardians',
+                active: Boolean(actor.spiritsActive) && Number(actor.spiritDuration) > 0,
+                icon: '👻',
+                name: 'Spirit Guardians',
+                durationSeconds: Number(actor.spiritDuration || 0),
+                detail: actor.spiritBoosted ? 'Boosted guardians active' : 'Guardians active'
+            }
+        ];
+
+        trackedBuffs.forEach((buff) => {
+            if (buff.active) {
+                this.upsertActiveBuff({
+                    id: buff.id,
+                    icon: buff.icon,
+                    name: buff.name,
+                    detail: buff.detail,
+                    durationSeconds: buff.durationSeconds,
+                    remainingSeconds: buff.durationSeconds
+                });
+            } else {
+                this.removeActiveBuff(buff.id);
+            }
+        });
+    }
+
     getActiveBuffs() {
         const now = Date.now();
-        if (!Array.isArray(this.activeBuffs) || this.activeBuffs.length === 0) {
+        if (!Array.isArray(this.activeBuffs)) {
             this.activeBuffs = [];
+        }
+        if (this.player) {
+            this.syncTrackedActorBuffs(this.player);
+        }
+        if (this.activeBuffs.length === 0) {
             return this.activeBuffs;
         }
         this.activeBuffs = this.activeBuffs
