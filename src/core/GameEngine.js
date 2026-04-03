@@ -2205,6 +2205,14 @@ export class GameEngine {
                 detail: `${Math.round(Number(actor.blessingResolveReduction || 0) * 100)}% damage reduction`
             },
             {
+                id: 'blessing_zeal',
+                active: Number(actor.blessingZealTimer) > 0,
+                icon: '✨',
+                name: 'Blessing of Zeal',
+                durationSeconds: Number(actor.blessingZealTimer || 0),
+                detail: `+${Math.round(Number(actor.blessingZealFactor || 0) * 100)}% damage and healing`
+            },
+            {
                 id: 'time_warp',
                 active: Number(actor.hasteTimer) > 0,
                 icon: '⏩',
@@ -2227,6 +2235,62 @@ export class GameEngine {
                 name: 'Vanish',
                 durationSeconds: Number(actor.speedBoostTimer || 0),
                 detail: `+${Math.round(Number(actor.speedBoostFactor || 0) * 100)}% speed`
+            },
+            {
+                id: 'last_stand',
+                active: Number(actor.lastStandTimer) > 0,
+                icon: '🔥',
+                name: 'Last Stand',
+                durationSeconds: Number(actor.lastStandTimer || 0),
+                detail: `+${Math.round(Number(actor.lastStandDamageBoost || 0) * 100)}% damage`
+            },
+            {
+                id: 'swift',
+                active: Number(actor.swiftBuffTimer) > 0,
+                icon: '⚡',
+                name: 'Swift',
+                durationSeconds: Number(actor.swiftBuffTimer || 0),
+                detail: '+20% move speed'
+            },
+            {
+                id: 'mark_weakness',
+                active: Number(actor.markWeaknessTimer) > 0,
+                icon: '🎯',
+                name: 'Marked',
+                durationSeconds: Number(actor.markWeaknessTimer || 0),
+                detail: `+${Math.round(Number(actor.markWeaknessFactor || 0) * 100)}% damage taken`
+            },
+            {
+                id: 'bleed',
+                active: Number(actor.bleedTimer) > 0,
+                icon: '🩸',
+                name: 'Bleeding',
+                durationSeconds: Number(actor.bleedTimer || 0),
+                detail: `${Math.max(1, Math.round(Number(actor.bleedStacks || 0)))} bleed stacks`
+            },
+            {
+                id: 'poison',
+                active: Number(actor.poisonTimer) > 0,
+                icon: '☠️',
+                name: 'Poisoned',
+                durationSeconds: Number(actor.poisonTimer || 0),
+                detail: `${Math.max(1, Math.round(Number(actor.poisonStacks || 0)))} poison stacks`
+            },
+            {
+                id: 'root',
+                active: Number(actor.rootTimer) > 0,
+                icon: '🪤',
+                name: 'Rooted',
+                durationSeconds: Number(actor.rootTimer || 0),
+                detail: 'Movement locked'
+            },
+            {
+                id: 'slow',
+                active: Number(actor.slowTimer) > 0,
+                icon: '🐢',
+                name: 'Slowed',
+                durationSeconds: Number(actor.slowTimer || 0),
+                detail: `${Math.round(Number(actor.slowFactor || 0) * 100)}% slow`
             },
             {
                 id: 'spirit_guardians',

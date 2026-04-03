@@ -152,6 +152,22 @@ describe('Minimap dungeon room states', () => {
                     detail: '25% DR from shrine blessing',
                     remainingSeconds: 7.4,
                     durationSeconds: 8
+                },
+                {
+                    id: 'bleed',
+                    name: 'Bleeding',
+                    icon: '🩸',
+                    detail: '2 bleed stacks',
+                    remainingSeconds: 5.0,
+                    durationSeconds: 8
+                },
+                {
+                    id: 'blessing_zeal',
+                    name: 'Blessing of Zeal',
+                    icon: '✨',
+                    detail: '+35% damage and healing',
+                    remainingSeconds: 11.4,
+                    durationSeconds: 12
                 }
             ]),
             uiManager: { partyData: { members: [] } }
@@ -167,7 +183,10 @@ describe('Minimap dungeon room states', () => {
         expect(wrapper).not.toBeNull();
         expect(wrapper.firstElementChild?.id).toBe('minimap-buff-list');
         expect(icon).not.toBeNull();
+        expect(buffList.querySelectorAll('.minimap-buff-icon')).toHaveLength(3);
         expect(icon.textContent).toContain('🛡️');
+        expect(buffList.textContent).toContain('🩸');
+        expect(buffList.textContent).toContain('✨');
 
         icon.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true, clientX: 120, clientY: 60 }));
         expect(tooltip.style.display).toBe('block');

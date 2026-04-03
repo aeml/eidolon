@@ -28,11 +28,25 @@ describe('GameEngine active buff tracker', () => {
             guardianRoarReduction: 0.3,
             blessingResolveTimer: 6.2,
             blessingResolveReduction: 0.25,
+            blessingZealTimer: 11.4,
+            blessingZealFactor: 0.35,
             hasteTimer: 10.0,
             hasteFactor: 0.5,
             shieldHP: 420,
             speedBoostTimer: 2.7,
             speedBoostFactor: 1.0,
+            lastStandTimer: 4.8,
+            lastStandDamageBoost: 0.45,
+            swiftBuffTimer: 3.0,
+            markWeaknessTimer: 5.2,
+            markWeaknessFactor: 0.2,
+            bleedTimer: 8.0,
+            bleedStacks: 2,
+            poisonTimer: 6.0,
+            poisonStacks: 3,
+            rootTimer: 2.2,
+            slowTimer: 4.5,
+            slowFactor: 0.5,
             spiritsActive: true,
             spiritDuration: 7.9,
             spiritBoosted: true
@@ -81,6 +95,62 @@ describe('GameEngine active buff tracker', () => {
                 icon: '👻',
                 detail: 'Boosted guardians active',
                 durationSeconds: 7.9
+            }),
+            expect.objectContaining({
+                id: 'blessing_zeal',
+                name: 'Blessing of Zeal',
+                icon: '✨',
+                detail: '+35% damage and healing',
+                durationSeconds: 11.4
+            }),
+            expect.objectContaining({
+                id: 'last_stand',
+                name: 'Last Stand',
+                icon: '🔥',
+                detail: '+45% damage',
+                durationSeconds: 4.8
+            }),
+            expect.objectContaining({
+                id: 'swift',
+                name: 'Swift',
+                icon: '⚡',
+                detail: '+20% move speed',
+                durationSeconds: 3.0
+            }),
+            expect.objectContaining({
+                id: 'mark_weakness',
+                name: 'Marked',
+                icon: '🎯',
+                detail: '+20% damage taken',
+                durationSeconds: 5.2
+            }),
+            expect.objectContaining({
+                id: 'bleed',
+                name: 'Bleeding',
+                icon: '🩸',
+                detail: '2 bleed stacks',
+                durationSeconds: 8.0
+            }),
+            expect.objectContaining({
+                id: 'poison',
+                name: 'Poisoned',
+                icon: '☠️',
+                detail: '3 poison stacks',
+                durationSeconds: 6.0
+            }),
+            expect.objectContaining({
+                id: 'root',
+                name: 'Rooted',
+                icon: '🪤',
+                detail: 'Movement locked',
+                durationSeconds: 2.2
+            }),
+            expect.objectContaining({
+                id: 'slow',
+                name: 'Slowed',
+                icon: '🐢',
+                detail: '50% slow',
+                durationSeconds: 4.5
             })
         ]));
     });
@@ -92,7 +162,11 @@ describe('GameEngine active buff tracker', () => {
             guardianRoarTimer: 8,
             guardianRoarReduction: 0.3,
             hasteTimer: 5,
-            hasteFactor: 0.5
+            hasteFactor: 0.5,
+            blessingZealTimer: 9,
+            blessingZealFactor: 0.25,
+            bleedTimer: 4,
+            bleedStacks: 2
         };
         engine.upsertActiveBuff = GameEngine.prototype.upsertActiveBuff;
         engine.removeActiveBuff = GameEngine.prototype.removeActiveBuff;
@@ -103,7 +177,9 @@ describe('GameEngine active buff tracker', () => {
 
         expect(buffs).toEqual(expect.arrayContaining([
             expect.objectContaining({ id: 'guardian_roar', name: 'Guardian Roar' }),
-            expect.objectContaining({ id: 'time_warp', name: 'Time Warp' })
+            expect.objectContaining({ id: 'time_warp', name: 'Time Warp' }),
+            expect.objectContaining({ id: 'blessing_zeal', name: 'Blessing of Zeal' }),
+            expect.objectContaining({ id: 'bleed', name: 'Bleeding' })
         ]));
     });
 
