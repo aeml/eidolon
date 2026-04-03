@@ -74,6 +74,9 @@ export class RenderSystem {
         this.brightnessScale = 1.0;
         this.currentRealm = null;
         this.targetLighting = null;
+        this.shadowFollowOffset = new THREE.Vector3(320, 420, 180);
+        this.shadowTarget = new THREE.Vector3();
+        this.shadowCoverageRadius = 220;
         this.currentLighting = {
             ambientIntensity: 2.25,
             keyIntensity: 2.25,
@@ -564,12 +567,13 @@ export class RenderSystem {
         const shadowSize = this.getShadowMapSize();
         dirLight.shadow.mapSize.width = shadowSize;
         dirLight.shadow.mapSize.height = shadowSize;
-        
-        const d = 40; // Reduced shadow frustum slightly to increase effective resolution
-        dirLight.shadow.camera.left = -d;
-        dirLight.shadow.camera.right = d;
-        dirLight.shadow.camera.top = d;
-        dirLight.shadow.camera.bottom = -d;
+        dirLight.shadow.bias = -0.00012;
+        dirLight.shadow.normalBias = 0.02;
+        dirLight.shadow.camera.near = 1;
+        dirLight.shadow.camera.far = 1400;
+        this.configureShadowFrustum(dirLight, this.shadowCoverageRadius);
+        dirLight.target.position.copy(this.shadowTarget);
+        this.scene.add(dirLight.target);
         this.scene.add(dirLight);
 
         const fillLight = new THREE.DirectionalLight(0x99b7ff, 0.35);
@@ -692,6 +696,27 @@ export class RenderSystem {
         return 1024;
     }
 
+    configureShadowFrustum(light, radius = this.shadowCoverageRadius) {
+        if (!light?.shadow?.camera) return;
+        const coverage = Math.max(180, Number(radius) || this.shadowCoverageRadius || 220);
+        light.shadow.camera.left = -coverage;
+        light.shadow.camera.right = coverage;
+        light.shadow.camera.top = coverage;
+        light.shadow.camera.bottom = -coverage;
+        light.shadow.camera.updateProjectionMatrix();
+        light.shadow.needsUpdate = true;
+    }
+
+    updateShadowFocus(position = null) {
+        if (!this.keyLight || !position) return;
+        this.shadowTarget.set(position.x, 0, position.z);
+        this.keyLight.target.position.copy(this.shadowTarget);
+        this.keyLight.position.copy(this.shadowTarget).add(this.shadowFollowOffset);
+        this.keyLight.target.updateMatrixWorld?.();
+        this.keyLight.shadow.camera.updateProjectionMatrix();
+        this.keyLight.shadow.needsUpdate = true;
+    }
+
     getBrightnessScale(level = 100) {
         const clamped = Math.max(0, Math.min(100, Number(level) || 0));
         if (clamped <= 50) {
@@ -730,6 +755,7 @@ export class RenderSystem {
             const shadowSize = this.getShadowMapSize();
             this.keyLight.shadow.mapSize.width = shadowSize;
             this.keyLight.shadow.mapSize.height = shadowSize;
+            this.configureShadowFrustum(this.keyLight, this.shadowCoverageRadius);
             this.keyLight.shadow.needsUpdate = true;
         }
 
@@ -805,6 +831,8 @@ export class RenderSystem {
             this.bloomPass.radius = THREE.MathUtils.lerp(this.bloomPass.radius, this.targetLighting.bloomRadius, blend);
             this.bloomPass.threshold = THREE.MathUtils.lerp(this.bloomPass.threshold, this.targetLighting.bloomThreshold, blend);
         }
+
+        this.updateShadowFocus(position);
 
         // Update ambient particles (follows camera, realm-dependent)
         this.updateRealmParticles(dt, position ? { x: position.x, z: position.z } : null);
