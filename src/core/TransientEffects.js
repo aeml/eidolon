@@ -215,6 +215,82 @@ function createEnergyShardMaterial(color, opacity = 0.95) {
     });
 }
 
+function getTelegraphTheme(options = {}) {
+    const tier = options.threatTier || 'danger';
+
+    if (tier === 'minor') {
+        return {
+            ringColor: 0xffd54a,
+            fillColor: 0xfff0a8,
+            ringOpacity: 0.42,
+            fillOpacity: 0.08,
+            ringPulseBoost: 0.24,
+            fillPulseBoost: 0.16,
+            labelColor: '#fff1b8'
+        };
+    }
+
+    if (tier === 'boss' || tier === 'lethal') {
+        return {
+            ringColor: 0xff3b30,
+            fillColor: 0xff6b57,
+            ringOpacity: 0.7,
+            fillOpacity: 0.22,
+            ringPulseBoost: 0.32,
+            fillPulseBoost: 0.24,
+            labelColor: '#ffd7cf'
+        };
+    }
+
+    return {
+        ringColor: 0xff7a1a,
+        fillColor: 0xffaa5c,
+        ringOpacity: 0.55,
+        fillOpacity: 0.14,
+        ringPulseBoost: 0.28,
+        fillPulseBoost: 0.2,
+        labelColor: '#ffe1bf'
+    };
+}
+
+function createTelegraphLabelSprite(text, color = '#ffffff') {
+    if (!text) return null;
+
+    let texture = null;
+    if (typeof document !== 'undefined' && typeof document.createElement === 'function') {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 64;
+        const ctx = canvas.getContext?.('2d');
+        if (ctx && typeof ctx.clearRect === 'function') {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(12, 16, 24, 0.72)';
+            ctx.fillRect(0, 8, canvas.width, 48);
+            ctx.strokeStyle = 'rgba(255, 215, 140, 0.65)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(1, 9, canvas.width - 2, 46);
+            ctx.font = 'bold 28px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = color;
+            ctx.fillText(text, canvas.width / 2, canvas.height / 2 + 2);
+            texture = new THREE.CanvasTexture(canvas);
+            texture.needsUpdate = true;
+        }
+    }
+
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: texture,
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.92,
+        depthWrite: false
+    }));
+    sprite.scale.set(6.5, 1.8, 1);
+    sprite.userData.text = text;
+    return sprite;
+}
+
 export function createTransientEffect(scene, type, position, color = 0xffffff, options = {}) {
     if (!scene || !position) return null;
     const effectScale = Number.isFinite(options.effectScale) ? options.effectScale : 1.0;
@@ -529,13 +605,14 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
     if (type === 'telegraph') {
         const radius = (options && options.radius) || 10.0;
         const telegraphDuration = (options && options.telegraphDuration) || 2.0;
+        const theme = getTelegraphTheme(options);
 
         // Outer warning ring
         const ringGeo = new THREE.RingGeometry(radius * 0.92, radius, 48);
         const ringMat = new THREE.MeshBasicMaterial({
-            color: 0xff2200,
+            color: theme.ringColor,
             transparent: true,
-            opacity: 0.55,
+            opacity: theme.ringOpacity,
             side: THREE.DoubleSide,
             depthWrite: false
         });
@@ -547,9 +624,9 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         // Inner fill disc
         const fillGeo = new THREE.CircleGeometry(radius, 48);
         const fillMat = new THREE.MeshBasicMaterial({
-            color: 0xff4400,
+            color: theme.fillColor,
             transparent: true,
-            opacity: 0.12,
+            opacity: theme.fillOpacity,
             side: THREE.DoubleSide,
             depthWrite: false
         });
@@ -558,17 +635,28 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         fill.position.copy(position);
         fill.position.y += 0.05;
 
-        addToScene(scene, [ring, fill]);
-        return new TransientEffect(scene, [ring, fill], telegraphDuration, ({ meshes, t }) => {
-            const [r, f] = meshes;
+        const label = createTelegraphLabelSprite(options.label, theme.labelColor);
+        if (label) {
+            label.position.copy(position);
+            label.position.y += 2.6;
+        }
+
+        const telegraphMeshes = label ? [ring, fill, label] : [ring, fill];
+        addToScene(scene, telegraphMeshes);
+        return new TransientEffect(scene, telegraphMeshes, telegraphDuration, ({ meshes, t }) => {
+            const [r, f, l] = meshes;
             // Pulsing opacity — gets more urgent near the end
             const pulse = 0.5 + 0.5 * Math.sin(t * Math.PI * 6);
-            r.material.opacity = (0.35 + 0.45 * t) * pulse;
+            r.material.opacity = (theme.ringOpacity + theme.ringPulseBoost * t) * pulse;
             // Fill grows more opaque as impact approaches
-            f.material.opacity = 0.08 + 0.35 * t;
+            f.material.opacity = theme.fillOpacity + theme.fillPulseBoost * t;
             // Slight scale pulse
             const s = 1.0 - 0.04 * Math.sin(t * Math.PI * 8);
             r.scale.set(s, s, s);
+            if (l?.material) {
+                l.material.opacity = 0.72 + 0.2 * pulse;
+                l.scale.setScalar(1.0 + 0.04 * pulse);
+            }
         });
     }
 

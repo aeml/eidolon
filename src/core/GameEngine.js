@@ -861,9 +861,13 @@ export class GameEngine {
             const data = msg.payload;
             if (data) {
                 const pos = new THREE.Vector3(data.x, 0, data.z);
+                const threatTier = data.threatTier || 'boss';
+                const label = data.label || (threatTier === 'boss' ? 'BOSS' : threatTier === 'lethal' ? 'DANGER' : 'WATCH');
                 this.spawnTransientEffect('telegraph', pos, 0xff2200, {
                     radius: data.radius || 10,
-                    telegraphDuration: data.duration || 2.0
+                    telegraphDuration: data.duration || 2.0,
+                    threatTier,
+                    label
                 });
             }
         } else if (msg.type === 'error') {
