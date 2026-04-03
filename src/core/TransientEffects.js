@@ -363,6 +363,56 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         });
     }
 
+    if (type === 'jump_land') {
+        const impact = Math.max(0.5, Math.min(1.2, Number.isFinite(options.impact) ? options.impact : 0.9));
+        const className = options.className || '';
+        const classTint = className === 'Wizard'
+            ? 0xbcdcff
+            : className === 'Rogue'
+                ? 0xcfd6df
+                : className === 'Cleric'
+                    ? 0xf3e7bd
+                    : color;
+        const group = new THREE.Group();
+
+        const ring = new THREE.Mesh(
+            new THREE.RingGeometry(0.85, 1.25, 32),
+            createPulseRingMaterial(classTint, 0.52)
+        );
+        ring.rotation.x = -Math.PI / 2;
+        ring.position.copy(position);
+        ring.position.y += 0.08;
+        group.add(ring);
+
+        const dust = new THREE.Mesh(
+            new THREE.CircleGeometry(1.25, 28),
+            new THREE.MeshBasicMaterial({
+                color: 0xb7aa94,
+                transparent: true,
+                opacity: 0.42,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            })
+        );
+        dust.rotation.x = -Math.PI / 2;
+        dust.position.copy(position);
+        dust.position.y += 0.04;
+        group.add(dust);
+
+        addToScene(scene, group);
+        return new TransientEffect(scene, group, 0.42, ({ meshes, t }) => {
+            const g = meshes[0];
+            const [ringMesh, dustMesh] = g.children;
+            const burstScale = 1 + t * (3.2 * impact);
+            ringMesh.scale.setScalar(burstScale);
+            ringMesh.material.uniforms.uTime.value = t * 2.4;
+            ringMesh.material.uniforms.uOpacity.value = (0.52 + (quality === 'high' ? 0.08 : 0.0)) * (1 - t);
+
+            dustMesh.scale.setScalar(1 + t * (2.3 * impact));
+            dustMesh.material.opacity = 0.42 * (1 - t);
+        });
+    }
+
     if (type === 'buff') {
         const mesh = new THREE.Mesh(
             new THREE.CylinderGeometry(0.5, 0.5, 2, 8),

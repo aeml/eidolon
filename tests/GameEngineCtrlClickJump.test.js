@@ -28,6 +28,7 @@ function createEngineHarness() {
     engine.clearCombatIntentState = jest.fn();
     engine.refreshCombatIntentState = jest.fn();
     engine.refreshDungeonEntranceHint = jest.fn();
+    engine.spawnTransientEffect = jest.fn(() => true);
     engine.chunkManager = {
         updateEntityChunk: jest.fn(),
         getActiveEntities: jest.fn(() => [engine.player])
@@ -213,6 +214,23 @@ describe('GameEngine ctrl-click jump', () => {
         expect(wizardStyle.flip).toBeLessThan(fighterStyle.flip);
         expect(wizardStyle.roll).toBeGreaterThan(fighterStyle.roll);
         expect(wizardStyle.stretch).toBeGreaterThan(fighterStyle.stretch);
+    });
+
+    test('jump landing triggers a dust-ring impact effect', () => {
+        const engine = createEngineHarness();
+        const destination = new THREE.Vector3(20, 0, 0);
+
+        expect(engine.startPlayerJump(destination)).toBe(true);
+        const duration = engine.playerJumpState.duration;
+
+        engine.updatePlayerJump(duration);
+
+        expect(engine.spawnTransientEffect).toHaveBeenCalledWith(
+            'jump_land',
+            expect.objectContaining({ x: 20, y: 0, z: 0 }),
+            0xd8d2c4,
+            expect.objectContaining({ impact: 0.9, className: 'Object' })
+        );
     });
 
     test('jump landing is clamped back inside dungeon walkable geometry', () => {

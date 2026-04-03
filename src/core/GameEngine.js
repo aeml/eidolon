@@ -2783,6 +2783,7 @@ export class GameEngine {
                     duration: 180,
                     impact: 0.85
                 };
+                this.applyJumpImpactEffect(entity, 0.85);
             }
             return;
         }
@@ -2792,6 +2793,7 @@ export class GameEngine {
                 duration: 180,
                 impact: 0.85
             };
+            this.applyJumpImpactEffect(entity, 0.85);
         }
         entity.jumpVisualState = null;
     }
@@ -2828,6 +2830,7 @@ export class GameEngine {
                 duration: 180,
                 impact: 0.9
             };
+            this.applyJumpImpactEffect(this.player, 0.9);
             this.player.state = 'IDLE';
             this.player.playAnimation?.('Idle');
 
@@ -2884,6 +2887,17 @@ export class GameEngine {
             return Math.max(0, Math.min(1, jumpState.elapsed / jumpState.duration));
         }
         return 0;
+    }
+
+    applyJumpImpactEffect(entity, impact = 0.9) {
+        if (!entity?.position || !this.spawnTransientEffect) return;
+        const className = entity?.constructor?.name || 'Unknown';
+        const impactPosition = entity.position.clone();
+        impactPosition.y = entity.position.y;
+        this.spawnTransientEffect('jump_land', impactPosition, 0xd8d2c4, {
+            impact,
+            className
+        });
     }
 
     applyJumpVisualScale(entity, jumpState, progress, styleProfile) {

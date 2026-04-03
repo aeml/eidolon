@@ -29,6 +29,7 @@ function createEngineHarness() {
     engine.clearCombatIntentState = jest.fn();
     engine.refreshCombatIntentState = jest.fn();
     engine.refreshDungeonEntranceHint = jest.fn();
+    engine.spawnTransientEffect = jest.fn(() => true);
     engine.chunkManager = {
         updateEntityChunk: jest.fn(),
         update: jest.fn(),
@@ -303,5 +304,14 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.mesh.position.y).toBeGreaterThan(remoteEntity.position.y);
         expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(1.0);
         expect(remoteEntity.mesh.scale.y).toBeGreaterThan(1.01);
+
+        engine.clearAuthoritativeJumpState(remoteEntity);
+
+        expect(engine.spawnTransientEffect).toHaveBeenCalledWith(
+            'jump_land',
+            expect.objectContaining({ x: 4, y: 0, z: 0 }),
+            0xd8d2c4,
+            expect.objectContaining({ impact: 0.85, className: 'Object' })
+        );
     });
 });

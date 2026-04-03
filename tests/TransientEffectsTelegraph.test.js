@@ -52,4 +52,29 @@ describe('Transient telegraph readability', () => {
         expect(ring.material.opacity).toBeLessThan(0.5);
         expect(fill.material.opacity).toBeLessThan(0.12);
     });
+
+    test('creates a grounded dust-ring impact for jump landings', () => {
+        const scene = new THREE.Scene();
+        const effect = createTransientEffect(
+            scene,
+            'jump_land',
+            new THREE.Vector3(2, 0, -3),
+            0xd8d2c4,
+            {
+                impact: 0.9,
+                className: 'Rogue'
+            }
+        );
+
+        expect(effect).not.toBeNull();
+        expect(effect.meshes).toHaveLength(1);
+
+        const group = effect.meshes[0];
+        expect(group.children).toHaveLength(2);
+        const [ring, dust] = group.children;
+        expect(ring.rotation.x).toBeCloseTo(-Math.PI / 2, 5);
+        expect(ring.position.y).toBeGreaterThan(0);
+        expect(dust.position.y).toBeGreaterThan(0);
+        expect(dust.material.opacity).toBeGreaterThan(0.3);
+    });
 });
