@@ -104,8 +104,9 @@ describe('MeshFactory.loadModel', () => {
         expect(mesh.castShadow).toBe(true);
         expect(mesh.receiveShadow).toBe(true);
         expect(mesh.material.transparent).toBe(false);
-        expect(mesh.material.alphaTest).toBeGreaterThanOrEqual(0.45);
+        expect(mesh.material.alphaTest).toBeGreaterThanOrEqual(0.5);
         expect(mesh.material.shadowSide).toBe(THREE.DoubleSide);
+        expect(mesh.material.forceSinglePass).toBe(true);
         expect(mesh.material.alphaToCoverage).toBe(false);
     });
 });

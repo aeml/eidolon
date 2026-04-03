@@ -131,6 +131,7 @@ describe('GameEngine ctrl-click jump', () => {
 
         expect(engine.startPlayerJump(destination)).toBe(true);
         const duration = engine.playerJumpState.duration;
+        expect(duration).toBeGreaterThanOrEqual(0.95);
 
         engine.updatePlayerJump(duration / 2);
         engine.applyPlayerJumpVisuals();
@@ -170,13 +171,13 @@ describe('GameEngine ctrl-click jump', () => {
         expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(2.5);
         expect(upVector.y).toBeLessThan(-0.75);
 
-        engine.updatePlayerJump(duration * 0.3);
+        engine.updatePlayerJump(duration * 0.25);
         engine.applyPlayerJumpVisuals();
 
         const lateAirAngle = engine.player.mesh.quaternion.angleTo(engine.player.rotation);
-        expect(lateAirAngle).toBeGreaterThan(1.2);
+        expect(lateAirAngle).toBeGreaterThan(1.5);
 
-        engine.updatePlayerJump(duration * 0.2);
+        engine.updatePlayerJump(duration * 0.25);
         engine.applyPlayerJumpVisuals();
 
         expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeCloseTo(0, 5);

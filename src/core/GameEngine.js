@@ -2694,8 +2694,8 @@ export class GameEngine {
         }
 
         const travelDistance = start.distanceTo(end);
-        const duration = Math.max(0.35, Math.min(0.9, travelDistance / 18));
-        const height = Math.max(4.5, Math.min(10.5, travelDistance * 0.24 + 3.0));
+        const duration = Math.max(0.4, Math.min(1.05, travelDistance / 16));
+        const height = Math.max(4.5, Math.min(11.5, travelDistance * 0.26 + 3.2));
 
         this.player.targetPosition = null;
         this.pendingInteraction = null;
@@ -2852,23 +2852,23 @@ export class GameEngine {
         const className = entity?.constructor?.name || '';
         const baseProfile = {
             flip: Math.PI * 2,
-            roll: 0.16,
+            roll: 0.12,
             anticipation: 0.12,
             squash: 0.14,
             stretch: 0.1
         };
 
         if (className === 'Wizard') {
-            return { ...baseProfile, flip: Math.PI * 1.7, roll: 0.26, anticipation: 0.09, squash: 0.1, stretch: 0.14 };
+            return { ...baseProfile, flip: Math.PI * 1.78, roll: 0.18, anticipation: 0.09, squash: 0.1, stretch: 0.16 };
         }
         if (className === 'Rogue') {
-            return { ...baseProfile, flip: Math.PI * 2.16, roll: 0.24, anticipation: 0.1, squash: 0.12, stretch: 0.12 };
+            return { ...baseProfile, flip: Math.PI * 2.2, roll: 0.16, anticipation: 0.1, squash: 0.12, stretch: 0.14 };
         }
         if (className === 'Cleric') {
-            return { ...baseProfile, flip: Math.PI * 1.84, roll: 0.18, anticipation: 0.08, squash: 0.11, stretch: 0.13 };
+            return { ...baseProfile, flip: Math.PI * 1.9, roll: 0.14, anticipation: 0.08, squash: 0.11, stretch: 0.14 };
         }
         if (className === 'Fighter') {
-            return { ...baseProfile, flip: Math.PI * 2.04, roll: 0.1, anticipation: 0.15, squash: 0.17, stretch: 0.08 };
+            return { ...baseProfile, flip: Math.PI * 2.08, roll: 0.08, anticipation: 0.15, squash: 0.17, stretch: 0.1 };
         }
 
         return baseProfile;

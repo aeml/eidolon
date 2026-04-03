@@ -213,8 +213,9 @@ describe('WorldGenerator shadow setup', () => {
         expect(instancedMesh.castShadow).toBe(true);
         expect(instancedMesh.receiveShadow).toBe(true);
         expect(material.transparent).toBe(false);
-        expect(material.alphaTest).toBeGreaterThanOrEqual(0.45);
+        expect(material.alphaTest).toBeGreaterThanOrEqual(0.5);
         expect(material.shadowSide).toBe(THREE.DoubleSide);
+        expect(material.forceSinglePass).toBe(true);
         expect(material.alphaToCoverage).toBe(false);
 
         loadModelSpy.mockRestore();

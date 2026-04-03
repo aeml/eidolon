@@ -76,9 +76,9 @@ export class RenderSystem {
         this.brightnessScale = 1.0;
         this.currentRealm = null;
         this.targetLighting = null;
-        this.shadowFollowOffset = new THREE.Vector3(340, 460, 180);
+        this.shadowFollowOffset = new THREE.Vector3(360, 500, 220);
         this.shadowTarget = new THREE.Vector3();
-        this.shadowCoverageRadius = 260;
+        this.shadowCoverageRadius = 280;
         this.currentLighting = {
             ambientIntensity: 2.25,
             keyIntensity: 2.25,
@@ -569,9 +569,9 @@ export class RenderSystem {
         dirLight.shadow.mapSize.width = shadowSize;
         dirLight.shadow.mapSize.height = shadowSize;
         dirLight.shadow.autoUpdate = true;
-        dirLight.shadow.radius = this.graphicsQuality === 'high' ? 2.5 : 1.5;
-        dirLight.shadow.bias = -0.00008;
-        dirLight.shadow.normalBias = 0.035;
+        dirLight.shadow.radius = this.graphicsQuality === 'high' ? 3.25 : 1.85;
+        dirLight.shadow.bias = -0.00012;
+        dirLight.shadow.normalBias = 0.045;
         dirLight.shadow.camera.near = 1;
         dirLight.shadow.camera.far = 1400;
         this.configureShadowFrustum(dirLight, this.shadowCoverageRadius);
@@ -761,7 +761,9 @@ export class RenderSystem {
             this.keyLight.shadow.mapSize.width = shadowSize;
             this.keyLight.shadow.mapSize.height = shadowSize;
             this.keyLight.shadow.autoUpdate = true;
-            this.keyLight.shadow.radius = normalized === 'high' ? 2.5 : 1.5;
+            this.keyLight.shadow.radius = normalized === 'high' ? 3.25 : 1.85;
+            this.keyLight.shadow.bias = normalized === 'high' ? -0.00012 : -0.0001;
+            this.keyLight.shadow.normalBias = normalized === 'high' ? 0.045 : 0.04;
             this.configureShadowFrustum(this.keyLight, this.shadowCoverageRadius);
             this.keyLight.shadow.needsUpdate = true;
         }

@@ -8,7 +8,7 @@ describe('RenderSystem shadow coverage', () => {
         renderSystem.updateEnvironmentLighting(new THREE.Vector3(2200, 0, -1400), 0.016);
 
         expect(renderSystem.keyLight.position.x).toBeGreaterThan(2000);
-        expect(renderSystem.keyLight.position.z).toBeLessThan(-1200);
+        expect(renderSystem.keyLight.position.z).toBeLessThan(-1150);
         expect(renderSystem.keyLight.target.position.x).toBeCloseTo(2200, 5);
         expect(renderSystem.keyLight.target.position.z).toBeCloseTo(-1400, 5);
         expect(renderSystem.keyLight.shadow.camera.left).toBeLessThanOrEqual(-240);
@@ -23,9 +23,11 @@ describe('RenderSystem shadow coverage', () => {
         expect(renderSystem.renderer.shadowMap.autoUpdate).toBe(true);
         expect(renderSystem.renderer.shadowMap.needsUpdate).toBe(true);
         expect(renderSystem.keyLight.shadow.autoUpdate).toBe(true);
-        expect(renderSystem.keyLight.shadow.mapSize.width).toBeGreaterThanOrEqual(1536);
-        expect(renderSystem.keyLight.shadow.radius).toBeGreaterThanOrEqual(2);
-        expect(renderSystem.keyLight.shadow.camera.left).toBeLessThanOrEqual(-240);
+        expect(renderSystem.keyLight.shadow.mapSize.width).toBeGreaterThanOrEqual(2048);
+        expect(renderSystem.keyLight.shadow.radius).toBeGreaterThanOrEqual(3);
+        expect(renderSystem.keyLight.shadow.bias).toBeLessThanOrEqual(-0.0001);
+        expect(renderSystem.keyLight.shadow.normalBias).toBeGreaterThanOrEqual(0.04);
+        expect(renderSystem.keyLight.shadow.camera.left).toBeLessThanOrEqual(-260);
         expect(renderSystem.keyLight.shadow.camera.right).toBeGreaterThanOrEqual(240);
         expect(renderSystem.keyLight.shadow.normalBias).toBeGreaterThanOrEqual(0.03);
     });
