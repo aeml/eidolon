@@ -212,3 +212,69 @@ func TestMarkDungeonRoomClearedAppliesHookRewardsAndHints(t *testing.T) {
 		t.Fatalf("expected elite room type for ambush, got %q", rewards[2].RoomType)
 	}
 }
+
+func TestMarkDungeonRoomClearedHookLootRewardsPopulateCountsAndInventory(t *testing.T) {
+	w := NewWorld(nil)
+	player := &Entity{
+		ID:            "player-1",
+		Type:          TypePlayer,
+		Level:         65,
+		Health:        900,
+		MaxHealth:     1000,
+		Mana:          250,
+		MaxMana:       300,
+		MaxExperience: 100,
+		Inventory:     make([]Item, MaxInventorySize),
+	}
+	w.AddEntity(player)
+
+	layout := DungeonLayout{
+		Rooms: []DungeonRoom{
+			{X: 0, Z: 0, Width: 40, Height: 40, Type: "start"},
+			{X: 100, Z: 0, Width: 40, Height: 40, Type: "normal", Hook: "chest"},
+			{X: 200, Z: 0, Width: 40, Height: 40, Type: "elite", Hook: "elite_ambush"},
+			{X: 300, Z: 0, Width: 40, Height: 40, Type: "boss"},
+		},
+	}
+
+	instanceID := "instance-room-hook-loot"
+	w.InstanceLayouts[instanceID] = &DungeonInstance{
+		ID:                instanceID,
+		Layout:            layout,
+		Difficulty:        DifficultyHeroic,
+		DungeonType:       "tempest_spire",
+		RunLevel:          65,
+		RoomState:         NewDungeonRoomState(layout),
+		PlayerRoomSummary: map[string]DungeonRoomSummary{"player-1": {}},
+	}
+	w.Entities[player.ID].InstanceID = instanceID
+
+	rewards := make([]DungeonRoomClearRewardEvent, 0)
+	w.OnEvent = func(eventType string, data interface{}) {
+		if eventType == "room_clear_reward" {
+			rewards = append(rewards, data.(DungeonRoomClearRewardEvent))
+		}
+	}
+
+	w.MarkDungeonRoomCleared(instanceID, 1)
+	if rewards[0].RoomHook != "chest" {
+		t.Fatalf("expected chest hook in reward, got %q", rewards[0].RoomHook)
+	}
+	if rewards[0].GemCount != 1 || rewards[0].ItemCount != 0 {
+		t.Fatalf("expected chest reward to include exactly one gem, got %+v", rewards[0])
+	}
+	if player.Inventory[0].ID == "" || player.Inventory[0].Type != ItemGem {
+		t.Fatalf("expected chest reward gem added to inventory, got %+v", player.Inventory[0])
+	}
+
+	w.MarkDungeonRoomCleared(instanceID, 2)
+	if rewards[1].RoomHook != "elite_ambush" {
+		t.Fatalf("expected ambush hook in reward, got %q", rewards[1].RoomHook)
+	}
+	if rewards[1].ItemCount != 1 || rewards[1].GemCount != 0 {
+		t.Fatalf("expected ambush reward to include exactly one item, got %+v", rewards[1])
+	}
+	if player.Inventory[1].ID == "" || player.Inventory[1].Type == ItemGem {
+		t.Fatalf("expected ambush reward item added to inventory, got %+v", player.Inventory[1])
+	}
+}

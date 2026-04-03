@@ -196,6 +196,10 @@ function createRoomClearSummary(overrides = {}) {
         roomIndex: 1,
         objectiveRoomIndex: 2,
         roomType: 'normal',
+        roomHook: '',
+        itemCount: 0,
+        gemCount: 0,
+        heartCount: 0,
         healthRestored: 0,
         manaRestored: 0,
         ...overrides
@@ -299,6 +303,72 @@ describe('Dungeon room clear feedback', () => {
         expect(chatMessages.some((line) => line.includes('+90 mana'))).toBe(true);
         expect(chatMessages.some((line) => line.includes('Treasure secured — cash in before the boss'))).toBe(true);
         expect(chatMessages.some((line) => line.includes('Ambush survived — momentum and spoils increased'))).toBe(true);
+    });
+
+    test('GameEngine room_clear_reward handling preserves hook loot counts for UI summaries', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = {
+            id: 'player-1',
+            position: new THREE.Vector3(5, 0, 10),
+            quests: []
+        };
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 1,
+            objectiveRoomIndex: 2,
+            rooms: [
+                { index: 1, explored: true, cleared: false, type: 'normal', hook: 'chest' },
+                { index: 2, explored: false, cleared: false, type: 'elite', hook: 'elite_ambush' }
+            ]
+        };
+        engine.uiManager = {
+            showRewardSummary: jest.fn(),
+            showRoomClearReward: jest.fn(),
+            updateQuestWindow: jest.fn(),
+            updateJournal: jest.fn()
+        };
+        engine.floatingTextManager = {
+            spawn: jest.fn()
+        };
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+
+        const summary = createRoomClearSummary({
+            roomHook: 'chest',
+            gemCount: 1,
+            itemCount: 0,
+            heartCount: 0,
+            hint: 'Treasure secured — cash in before the boss'
+        });
+        engine.handleServerMessage({ type: 'room_clear_reward', payload: summary });
+
+        expect(engine.uiManager.showRoomClearReward).toHaveBeenCalledWith(expect.objectContaining({
+            roomHook: 'chest',
+            gemCount: 1,
+            itemCount: 0,
+            heartCount: 0
+        }));
+    });
+
+    test('UIManager.showRoomClearReward surfaces chest gem and ambush loot beats', () => {
+        buildDom();
+        const ui = new UIManager(false);
+
+        ui.showRoomClearReward(createRoomClearSummary({
+            title: 'Room Cleared: Treasure Room',
+            roomHook: 'chest',
+            gemCount: 1,
+            hint: 'Treasure secured — cash in before the boss'
+        }));
+        ui.showRoomClearReward(createRoomClearSummary({
+            title: 'Room Cleared: Ambush Room',
+            roomType: 'elite',
+            roomHook: 'elite_ambush',
+            itemCount: 1,
+            hint: 'Ambush survived — momentum and spoils increased'
+        }));
+
+        const chatMessages = Array.from(document.querySelectorAll('#chat-messages > div')).map(node => node.textContent);
+        expect(chatMessages.some((line) => line.includes('+1 gem'))).toBe(true);
+        expect(chatMessages.some((line) => line.includes('+1 item'))).toBe(true);
     });
 
     test('QuestUI renders objective entries with dungeon routing hints', () => {

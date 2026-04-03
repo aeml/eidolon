@@ -1798,6 +1798,9 @@ type DungeonRoomClearRewardEvent struct {
 	Subtitle           string `json:"subtitle,omitempty"`
 	Gold               int    `json:"gold"`
 	XP                 int    `json:"xp"`
+	ItemCount          int    `json:"itemCount,omitempty"`
+	GemCount           int    `json:"gemCount,omitempty"`
+	HeartCount         int    `json:"heartCount,omitempty"`
 	Hint               string `json:"hint,omitempty"`
 	RoomIndex          int    `json:"roomIndex"`
 	ObjectiveRoomIndex int    `json:"objectiveRoomIndex"`
@@ -1885,7 +1888,7 @@ func formatDungeonRoomLabel(roomType string, roomIndex int) string {
 	}
 }
 
-func buildDungeonRoomClearRewardSummary(playerID string, roomIndex, objectiveRoomIndex, gold, xp int, instanceType string, difficulty DungeonDifficulty, roomType, roomHook string, healthRestored, manaRestored int) DungeonRoomClearRewardEvent {
+func buildDungeonRoomClearRewardSummary(playerID string, roomIndex, objectiveRoomIndex, gold, xp, itemCount, gemCount, heartCount int, instanceType string, difficulty DungeonDifficulty, roomType, roomHook string, healthRestored, manaRestored int) DungeonRoomClearRewardEvent {
 	hint := "Path opened deeper into the dungeon"
 	if roomHook == "shrine" {
 		hint = "Shrine restored your strength for the next push"
@@ -1907,6 +1910,9 @@ func buildDungeonRoomClearRewardSummary(playerID string, roomIndex, objectiveRoo
 		Subtitle:           fmt.Sprintf("%s • %s", formatDungeonLabel(instanceType), formatDungeonDifficultyLabel(difficulty)),
 		Gold:               gold,
 		XP:                 xp,
+		ItemCount:          itemCount,
+		GemCount:           gemCount,
+		HeartCount:         heartCount,
 		Hint:               hint,
 		RoomIndex:          roomIndex,
 		ObjectiveRoomIndex: objectiveRoomIndex,
@@ -8273,6 +8279,9 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 			}
 			xpReward := int(float64(max(50, inst.RunLevel*10)) * rewardScale)
 			goldReward := int(float64(max(25, inst.RunLevel*3)) * rewardScale)
+			itemCount := 0
+			gemCount := 0
+			heartCount := 0
 			healthRestored := 0
 			manaRestored := 0
 			if room.Hook == "shrine" {
@@ -8281,12 +8290,26 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 				entity.Health = min(entity.MaxHealth, entity.Health+healthRestored)
 				entity.Mana = min(entity.MaxMana, entity.Mana+manaRestored)
 			}
+			if room.Hook == "chest" {
+				if gem := GenerateRandomGemByLevel(max(20, inst.RunLevel), false); gem != nil {
+					if entity.AddItemToInventory(*gem) == 0 {
+						gemCount = 1
+					}
+				}
+			}
+			if room.Hook == "elite_ambush" {
+				if loot := GenerateEliteLoot(max(20, inst.RunLevel)); loot != nil {
+					if entity.AddItemToInventory(*loot) == 0 {
+						itemCount = 1
+					}
+				}
+			}
 			entity.Experience += xpReward
 			entity.Gold += goldReward
 			if entity.MaxExperience == 0 {
 				entity.MaxExperience = 100
 			}
-			playerRewards = append(playerRewards, buildDungeonRoomClearRewardSummary(entity.ID, roomIndex, objectiveRoomIndex, goldReward, xpReward, inst.DungeonType, inst.Difficulty, room.Type, room.Hook, healthRestored, manaRestored))
+			playerRewards = append(playerRewards, buildDungeonRoomClearRewardSummary(entity.ID, roomIndex, objectiveRoomIndex, goldReward, xpReward, itemCount, gemCount, heartCount, inst.DungeonType, inst.Difficulty, room.Type, room.Hook, healthRestored, manaRestored))
 		}
 	}
 	w.Mu.Unlock()

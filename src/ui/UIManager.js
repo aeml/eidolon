@@ -576,6 +576,9 @@ export class UIManager {
         const parts = [];
         if (summary.gold) parts.push(`+${summary.gold} gold`);
         if (summary.xp) parts.push(`+${summary.xp} XP`);
+        if (summary.itemCount) parts.push(`+${summary.itemCount} item${summary.itemCount === 1 ? '' : 's'}`);
+        if (summary.gemCount) parts.push(`+${summary.gemCount} gem${summary.gemCount === 1 ? '' : 's'}`);
+        if (summary.heartCount) parts.push(`+${summary.heartCount} heart${summary.heartCount === 1 ? '' : 's'}`);
         if (summary.healthRestored) parts.push(`+${summary.healthRestored} health`);
         if (summary.manaRestored) parts.push(`+${summary.manaRestored} mana`);
         if (summary.hint) parts.push(summary.hint);
