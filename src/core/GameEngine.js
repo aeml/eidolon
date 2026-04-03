@@ -2694,8 +2694,8 @@ export class GameEngine {
         }
 
         const travelDistance = start.distanceTo(end);
-        const duration = Math.max(0.4, Math.min(1.05, travelDistance / 16));
-        const height = Math.max(4.5, Math.min(11.5, travelDistance * 0.26 + 3.2));
+        const duration = Math.max(0.42, Math.min(1.15, travelDistance / 15));
+        const height = Math.max(5.5, Math.min(13.5, travelDistance * 0.32 + 3.8));
 
         this.player.targetPosition = null;
         this.pendingInteraction = null;
@@ -2855,20 +2855,23 @@ export class GameEngine {
             roll: 0.12,
             anticipation: 0.12,
             squash: 0.14,
-            stretch: 0.1
+            stretch: 0.1,
+            tuck: 0.18,
+            untuck: 0.14,
+            landingLean: 0.16
         };
 
         if (className === 'Wizard') {
-            return { ...baseProfile, flip: Math.PI * 1.78, roll: 0.18, anticipation: 0.09, squash: 0.1, stretch: 0.16 };
+            return { ...baseProfile, flip: Math.PI * 1.78, roll: 0.18, anticipation: 0.09, squash: 0.1, stretch: 0.16, tuck: 0.14, untuck: 0.12, landingLean: 0.14 };
         }
         if (className === 'Rogue') {
-            return { ...baseProfile, flip: Math.PI * 2.2, roll: 0.16, anticipation: 0.1, squash: 0.12, stretch: 0.14 };
+            return { ...baseProfile, flip: Math.PI * 2.2, roll: 0.16, anticipation: 0.1, squash: 0.12, stretch: 0.14, tuck: 0.22, untuck: 0.15, landingLean: 0.18 };
         }
         if (className === 'Cleric') {
-            return { ...baseProfile, flip: Math.PI * 1.9, roll: 0.14, anticipation: 0.08, squash: 0.11, stretch: 0.14 };
+            return { ...baseProfile, flip: Math.PI * 1.9, roll: 0.14, anticipation: 0.08, squash: 0.11, stretch: 0.14, tuck: 0.16, untuck: 0.13, landingLean: 0.15 };
         }
         if (className === 'Fighter') {
-            return { ...baseProfile, flip: Math.PI * 2.08, roll: 0.08, anticipation: 0.15, squash: 0.17, stretch: 0.1 };
+            return { ...baseProfile, flip: Math.PI * 2.08, roll: 0.08, anticipation: 0.15, squash: 0.17, stretch: 0.1, tuck: 0.24, untuck: 0.18, landingLean: 0.2 };
         }
 
         return baseProfile;
@@ -2921,9 +2924,13 @@ export class GameEngine {
         }
 
         const airborneLift = Math.sin(progress * Math.PI) * styleProfile.stretch;
-        mesh.scale.x *= 1 - airborneLift * 0.35;
-        mesh.scale.z *= 1 - airborneLift * 0.35;
-        mesh.scale.y *= 1 + airborneLift;
+        const tuckWindow = Math.max(0, Math.sin(progress * Math.PI));
+        const tuckStrength = progress < 0.5
+            ? THREE.MathUtils.smoothstep(progress, 0.12, 0.36) * styleProfile.tuck
+            : (1 - THREE.MathUtils.smoothstep(progress, 0.56, 0.88)) * styleProfile.untuck;
+        mesh.scale.x *= 1 - airborneLift * 0.2;
+        mesh.scale.z *= 1 + tuckStrength * 1.2 + airborneLift * 0.08;
+        mesh.scale.y *= 1 + airborneLift * 0.55 - tuckWindow * tuckStrength * 1.25;
 
         const landingVisual = jumpState?.landingVisual;
         if (landingVisual) {
@@ -2967,7 +2974,18 @@ export class GameEngine {
         const styleProfile = this.getJumpStyleProfile(entity);
         const flipAmount = progress * styleProfile.flip;
         const rollAmount = Math.sin(progress * Math.PI * 2) * styleProfile.roll;
-        const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), flipAmount);
+        const tuckPitch = progress < 0.45
+            ? THREE.MathUtils.smoothstep(progress, 0.06, 0.3) * styleProfile.tuck
+            : -THREE.MathUtils.smoothstep(progress, 0.72, 0.9)
+                * (1 - THREE.MathUtils.smoothstep(progress, 0.9, 1.0))
+                * styleProfile.landingLean;
+        let landingPitch = 0;
+        if (jumpState?.landingVisual) {
+            const landingElapsed = Date.now() - jumpState.landingVisual.startTime;
+            const landingT = Math.max(0, Math.min(1, landingElapsed / jumpState.landingVisual.duration));
+            landingPitch = -Math.sin((1 - landingT) * Math.PI * 0.5) * styleProfile.landingLean * jumpState.landingVisual.impact;
+        }
+        const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), flipAmount + tuckPitch + landingPitch);
         const rollQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), rollAmount);
         entity.mesh.quaternion.multiply(flipQuaternion).multiply(rollQuaternion);
         this.applyJumpVisualScale(entity, jumpState, progress, styleProfile);

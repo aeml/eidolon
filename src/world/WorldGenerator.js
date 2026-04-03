@@ -185,7 +185,7 @@ export class WorldGenerator {
             // Shift so the bottom aligns with targetY
             mesh.position.y += (targetY - bottomY);
             
-            mesh.traverse(c => { if(c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: false }); } });
+            mesh.traverse(c => { if(c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: true }); } });
             this.scene.add(mesh);
             
             if (customCollider) {
@@ -397,7 +397,7 @@ export class WorldGenerator {
             const bottomY = box.min.y;
             mesh.position.y += (0 - bottomY); // Ground it
 
-            mesh.traverse(c => { if(c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: false }); } });
+            mesh.traverse(c => { if(c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: true }); } });
             this.scene.add(mesh);
 
             // Update matrix again to account for the Y shift
@@ -441,7 +441,7 @@ export class WorldGenerator {
             const bottomY = box.min.y;
             mesh.position.y += (0 - bottomY);
 
-            mesh.traverse(c => { if (c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: false }); } });
+            mesh.traverse(c => { if (c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: true }); } });
             this.scene.add(mesh);
 
             mesh.updateMatrixWorld(true);
@@ -472,7 +472,7 @@ export class WorldGenerator {
             const bottomY = box.min.y;
             mesh.position.y += (0 - bottomY);
 
-            mesh.traverse(c => { if (c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: false }); } });
+            mesh.traverse(c => { if (c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: true }); } });
             this.scene.add(mesh);
 
             mesh.updateMatrixWorld(true);
@@ -503,7 +503,7 @@ export class WorldGenerator {
             const bottomY = box.min.y;
             mesh.position.y += (0 - bottomY);
 
-            mesh.traverse(c => { if (c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: false }); } });
+            mesh.traverse(c => { if (c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: true }); } });
             this.scene.add(mesh);
 
             mesh.updateMatrixWorld(true);

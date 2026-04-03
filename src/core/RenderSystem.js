@@ -79,6 +79,7 @@ export class RenderSystem {
         this.shadowFollowOffset = new THREE.Vector3(360, 500, 220);
         this.shadowTarget = new THREE.Vector3();
         this.shadowCoverageRadius = 280;
+        this.shadowTexelSnap = true;
         this.currentLighting = {
             ambientIntensity: 2.25,
             keyIntensity: 2.25,
@@ -710,9 +711,29 @@ export class RenderSystem {
         light.shadow.needsUpdate = true;
     }
 
+    getShadowWorldTexelSize() {
+        const mapSize = this.keyLight?.shadow?.mapSize?.width || this.getShadowMapSize();
+        const coverage = Math.max(180, Number(this.shadowCoverageRadius) || 220);
+        return (coverage * 2) / Math.max(1, mapSize);
+    }
+
+    getShadowSnappedTarget(position) {
+        if (!this.shadowTexelSnap || !position) {
+            return new THREE.Vector3(position?.x || 0, 0, position?.z || 0);
+        }
+
+        const texelSize = this.getShadowWorldTexelSize();
+        return new THREE.Vector3(
+            Math.round(position.x / texelSize) * texelSize,
+            0,
+            Math.round(position.z / texelSize) * texelSize
+        );
+    }
+
     updateShadowFocus(position = null) {
         if (!this.keyLight || !position) return;
-        this.shadowTarget.set(position.x, 0, position.z);
+        const snappedTarget = this.getShadowSnappedTarget(position);
+        this.shadowTarget.copy(snappedTarget);
         this.keyLight.target.position.copy(this.shadowTarget);
         this.keyLight.position.copy(this.shadowTarget).add(this.shadowFollowOffset);
         this.keyLight.target.updateMatrixWorld?.();

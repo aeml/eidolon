@@ -220,4 +220,28 @@ describe('WorldGenerator shadow setup', () => {
 
         loadModelSpy.mockRestore();
     });
+
+    test('configures building meshes with stable front-sided shadows to avoid bleed through walls', async () => {
+        const generator = createGenerator();
+        const buildingScene = new THREE.Group();
+        buildingScene.add(new THREE.Mesh(
+            new THREE.BoxGeometry(4, 4, 4),
+            new THREE.MeshStandardMaterial({ color: 0x888888 })
+        ));
+        const loadModelSpy = jest.spyOn(MeshFactory, 'loadModel').mockResolvedValue({ scene: buildingScene, animations: [] });
+
+        await generator.loadBuildings(0, 0);
+
+        const addedBuilding = generator.scene.add.mock.calls[0][0];
+        const mesh = addedBuilding.children.find(child => child.isMesh);
+        expect(mesh).toBeTruthy();
+        expect(mesh.castShadow).toBe(true);
+        expect(mesh.receiveShadow).toBe(true);
+        expect(mesh.material.shadowSide).toBe(THREE.FrontSide);
+        expect(mesh.material.polygonOffset).toBe(true);
+        expect(mesh.material.polygonOffsetFactor).toBe(1);
+        expect(mesh.material.polygonOffsetUnits).toBe(1);
+
+        loadModelSpy.mockRestore();
+    });
 });

@@ -9,8 +9,9 @@ describe('RenderSystem shadow coverage', () => {
 
         expect(renderSystem.keyLight.position.x).toBeGreaterThan(2000);
         expect(renderSystem.keyLight.position.z).toBeLessThan(-1150);
-        expect(renderSystem.keyLight.target.position.x).toBeCloseTo(2200, 5);
-        expect(renderSystem.keyLight.target.position.z).toBeCloseTo(-1400, 5);
+        const texelSize = renderSystem.getShadowWorldTexelSize();
+        expect(Math.abs(renderSystem.keyLight.target.position.x - 2200)).toBeLessThanOrEqual(texelSize / 2);
+        expect(Math.abs(renderSystem.keyLight.target.position.z + 1400)).toBeLessThanOrEqual(texelSize / 2);
         expect(renderSystem.keyLight.shadow.camera.left).toBeLessThanOrEqual(-240);
         expect(renderSystem.keyLight.shadow.camera.right).toBeGreaterThanOrEqual(240);
     });
@@ -41,7 +42,25 @@ describe('RenderSystem shadow coverage', () => {
         expect(renderSystem.keyLight.castShadow).toBe(true);
         expect(renderSystem.keyLight.shadow.camera.left).toBeLessThanOrEqual(-240);
         expect(renderSystem.keyLight.shadow.camera.right).toBeGreaterThanOrEqual(240);
-        expect(renderSystem.keyLight.target.position.x).toBeCloseTo(-1900, 5);
-        expect(renderSystem.keyLight.target.position.z).toBeCloseTo(900, 5);
+        const texelSize = renderSystem.getShadowWorldTexelSize();
+        expect(Math.abs(renderSystem.keyLight.target.position.x + 1900)).toBeLessThanOrEqual(texelSize / 2);
+        expect(Math.abs(renderSystem.keyLight.target.position.z - 900)).toBeLessThanOrEqual(texelSize / 2);
+    });
+
+    test('snaps shadow focus to the shadow texel grid to reduce jitter on thin geometry while moving', () => {
+        const renderSystem = new RenderSystem(false);
+
+        renderSystem.updateEnvironmentLighting(new THREE.Vector3(125.11, 0, -43.08), 0.016);
+        const firstTargetX = renderSystem.keyLight.target.position.x;
+        const firstTargetZ = renderSystem.keyLight.target.position.z;
+        const firstLightX = renderSystem.keyLight.position.x;
+        const firstLightZ = renderSystem.keyLight.position.z;
+
+        renderSystem.updateEnvironmentLighting(new THREE.Vector3(125.19, 0, -43.12), 0.016);
+
+        expect(renderSystem.keyLight.target.position.x).toBeCloseTo(firstTargetX, 6);
+        expect(renderSystem.keyLight.target.position.z).toBeCloseTo(firstTargetZ, 6);
+        expect(renderSystem.keyLight.position.x).toBeCloseTo(firstLightX, 6);
+        expect(renderSystem.keyLight.position.z).toBeCloseTo(firstLightZ, 6);
     });
 });

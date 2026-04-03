@@ -307,7 +307,8 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.mesh.position.y - remoteEntity.position.y).toBeGreaterThanOrEqual(7);
         expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(2.5);
         expect(upVector.y).toBeLessThan(-0.75);
-        expect(remoteEntity.mesh.scale.y).toBeGreaterThan(1.01);
+        expect(remoteEntity.mesh.scale.y).toBeLessThan(1.01);
+        expect(remoteEntity.mesh.scale.z).toBeGreaterThan(1.05);
 
         remoteEntity.jumpVisualState.progress = 0.8;
         remoteEntity.jumpVisualState.visualHeight = Math.sin(0.8 * Math.PI) * remoteEntity.jumpVisualState.height;

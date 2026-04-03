@@ -138,9 +138,9 @@ describe('GameEngine ctrl-click jump', () => {
 
         expect(engine.player.position.x).toBeCloseTo(10, 1);
         expect(engine.player.position.z).toBeCloseTo(0, 5);
-        expect(engine.playerJumpState.height).toBeGreaterThanOrEqual(7);
+        expect(engine.playerJumpState.height).toBeGreaterThanOrEqual(9);
         expect(engine.playerJumpVisualHeight).toBeGreaterThan(0);
-        expect(engine.playerJumpVisualHeight).toBeGreaterThanOrEqual(7);
+        expect(engine.playerJumpVisualHeight).toBeGreaterThanOrEqual(9);
         expect(engine.player.mesh.position.y).toBeCloseTo(engine.playerJumpVisualHeight, 5);
         expect(engine.chunkManager.updateEntityChunk).toHaveBeenCalled();
         expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.player.position);
@@ -180,6 +180,10 @@ describe('GameEngine ctrl-click jump', () => {
         engine.updatePlayerJump(duration * 0.25);
         engine.applyPlayerJumpVisuals();
 
+        expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(0.1);
+
+        engine.playerJumpLandingVisual.startTime = Date.now() - 250;
+        engine.applyPlayerJumpVisuals();
         expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeCloseTo(0, 5);
     });
 
@@ -194,9 +198,16 @@ describe('GameEngine ctrl-click jump', () => {
         expect(engine.player.mesh.scale.x).toBeGreaterThan(1);
 
         const duration = engine.playerJumpState.duration;
-        engine.updatePlayerJump(duration * 0.55);
+        engine.updatePlayerJump(duration * 0.28);
         engine.applyPlayerJumpVisuals();
-        expect(engine.player.mesh.scale.y).toBeGreaterThan(1.04);
+        expect(engine.player.mesh.scale.y).toBeLessThan(0.98);
+        expect(engine.player.mesh.scale.z).toBeGreaterThan(1.06);
+
+        engine.playerJumpState.elapsed = duration * 0.55;
+        engine.playerJumpVisualHeight = Math.sin(0.55 * Math.PI) * engine.playerJumpState.height;
+        engine.applyPlayerJumpVisuals();
+        expect(engine.player.mesh.scale.y).toBeLessThan(0.95);
+        expect(engine.player.mesh.scale.z).toBeGreaterThan(1.08);
 
         engine.updatePlayerJump(duration * 0.45);
         engine.playerJumpLandingVisual = {
@@ -207,6 +218,7 @@ describe('GameEngine ctrl-click jump', () => {
         };
         engine.applyPlayerJumpVisuals();
         expect(engine.player.mesh.scale.y).toBeLessThan(1);
+        expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(0.1);
 
         engine.playerJumpLandingVisual.startTime = Date.now() - 250;
         engine.applyPlayerJumpVisuals();
