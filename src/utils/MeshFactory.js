@@ -635,11 +635,11 @@ export class MeshFactory {
 
         if (material.map && (material.transparent || isFoliage)) {
             material.transparent = false;
-            material.alphaTest = Math.max(material.alphaTest || 0, 0.35);
+            material.alphaTest = Math.max(material.alphaTest || 0, 0.45);
             material.depthWrite = true;
             material.side = material.side ?? THREE.DoubleSide;
             material.shadowSide = THREE.DoubleSide;
-            material.alphaToCoverage = true;
+            material.alphaToCoverage = false;
         }
 
         if (stableFrontShadows) {

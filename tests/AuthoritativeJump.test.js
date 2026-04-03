@@ -303,9 +303,16 @@ describe('authoritative jump flow', () => {
 
         const upVector = new THREE.Vector3(0, 1, 0).applyQuaternion(remoteEntity.mesh.quaternion);
         expect(remoteEntity.mesh.position.y).toBeGreaterThan(remoteEntity.position.y);
+        expect(remoteEntity.jumpVisualState.height).toBeGreaterThanOrEqual(7);
+        expect(remoteEntity.mesh.position.y - remoteEntity.position.y).toBeGreaterThanOrEqual(7);
         expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(2.5);
         expect(upVector.y).toBeLessThan(-0.75);
         expect(remoteEntity.mesh.scale.y).toBeGreaterThan(1.01);
+
+        remoteEntity.jumpVisualState.progress = 0.8;
+        remoteEntity.jumpVisualState.visualHeight = Math.sin(0.8 * Math.PI) * remoteEntity.jumpVisualState.height;
+        engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
+        expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(1.2);
 
         engine.clearAuthoritativeJumpState(remoteEntity);
 

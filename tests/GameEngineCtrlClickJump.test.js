@@ -137,7 +137,9 @@ describe('GameEngine ctrl-click jump', () => {
 
         expect(engine.player.position.x).toBeCloseTo(10, 1);
         expect(engine.player.position.z).toBeCloseTo(0, 5);
+        expect(engine.playerJumpState.height).toBeGreaterThanOrEqual(7);
         expect(engine.playerJumpVisualHeight).toBeGreaterThan(0);
+        expect(engine.playerJumpVisualHeight).toBeGreaterThanOrEqual(7);
         expect(engine.player.mesh.position.y).toBeCloseTo(engine.playerJumpVisualHeight, 5);
         expect(engine.chunkManager.updateEntityChunk).toHaveBeenCalled();
         expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.player.position);
@@ -153,7 +155,7 @@ describe('GameEngine ctrl-click jump', () => {
         expect(engine.player.state).toBe('IDLE');
     });
 
-    test('jump visuals perform a real front flip midair and reset to facing rotation on landing', () => {
+    test('jump visuals complete a full 360 front flip over the course of the jump', () => {
         const engine = createEngineHarness();
         const destination = new THREE.Vector3(20, 0, 0);
 
@@ -168,7 +170,13 @@ describe('GameEngine ctrl-click jump', () => {
         expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(2.5);
         expect(upVector.y).toBeLessThan(-0.75);
 
-        engine.updatePlayerJump(duration / 2);
+        engine.updatePlayerJump(duration * 0.3);
+        engine.applyPlayerJumpVisuals();
+
+        const lateAirAngle = engine.player.mesh.quaternion.angleTo(engine.player.rotation);
+        expect(lateAirAngle).toBeGreaterThan(1.2);
+
+        engine.updatePlayerJump(duration * 0.2);
         engine.applyPlayerJumpVisuals();
 
         expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeCloseTo(0, 5);

@@ -2695,7 +2695,7 @@ export class GameEngine {
 
         const travelDistance = start.distanceTo(end);
         const duration = Math.max(0.35, Math.min(0.9, travelDistance / 18));
-        const height = Math.max(3.5, Math.min(8.0, travelDistance * 0.2 + 2.5));
+        const height = Math.max(4.5, Math.min(10.5, travelDistance * 0.24 + 3.0));
 
         this.player.targetPosition = null;
         this.pendingInteraction = null;
@@ -2851,7 +2851,7 @@ export class GameEngine {
     getJumpStyleProfile(entity) {
         const className = entity?.constructor?.name || '';
         const baseProfile = {
-            flip: Math.PI,
+            flip: Math.PI * 2,
             roll: 0.16,
             anticipation: 0.12,
             squash: 0.14,
@@ -2859,16 +2859,16 @@ export class GameEngine {
         };
 
         if (className === 'Wizard') {
-            return { ...baseProfile, flip: Math.PI * 0.85, roll: 0.26, anticipation: 0.09, squash: 0.1, stretch: 0.14 };
+            return { ...baseProfile, flip: Math.PI * 1.7, roll: 0.26, anticipation: 0.09, squash: 0.1, stretch: 0.14 };
         }
         if (className === 'Rogue') {
-            return { ...baseProfile, flip: Math.PI * 1.08, roll: 0.24, anticipation: 0.1, squash: 0.12, stretch: 0.12 };
+            return { ...baseProfile, flip: Math.PI * 2.16, roll: 0.24, anticipation: 0.1, squash: 0.12, stretch: 0.12 };
         }
         if (className === 'Cleric') {
-            return { ...baseProfile, flip: Math.PI * 0.92, roll: 0.18, anticipation: 0.08, squash: 0.11, stretch: 0.13 };
+            return { ...baseProfile, flip: Math.PI * 1.84, roll: 0.18, anticipation: 0.08, squash: 0.11, stretch: 0.13 };
         }
         if (className === 'Fighter') {
-            return { ...baseProfile, flip: Math.PI * 1.02, roll: 0.1, anticipation: 0.15, squash: 0.17, stretch: 0.08 };
+            return { ...baseProfile, flip: Math.PI * 2.04, roll: 0.1, anticipation: 0.15, squash: 0.17, stretch: 0.08 };
         }
 
         return baseProfile;
@@ -2965,7 +2965,7 @@ export class GameEngine {
 
         const progress = this.getJumpVisualProgress(jumpState);
         const styleProfile = this.getJumpStyleProfile(entity);
-        const flipAmount = Math.sin(progress * Math.PI) * styleProfile.flip;
+        const flipAmount = progress * styleProfile.flip;
         const rollAmount = Math.sin(progress * Math.PI * 2) * styleProfile.roll;
         const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), flipAmount);
         const rollQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), rollAmount);

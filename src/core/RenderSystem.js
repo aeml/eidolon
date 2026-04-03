@@ -52,7 +52,8 @@ export class RenderSystem {
         this.renderer.toneMappingExposure = 1.45;
         // Mobile preset: shadows are a major GPU cost; disable entirely on mobile.
         this.renderer.shadowMap.enabled = !this.isMobile;
-        this.renderer.shadowMap.autoUpdate = false;
+        this.renderer.shadowMap.autoUpdate = true;
+        this.renderer.shadowMap.needsUpdate = true;
         // Optimization: Use PCFSoftShadowMap for better look, or Basic for performance
         // Firefox: Use Basic shadows to reduce GPU load
         this.renderer.shadowMap.type = (this.isMobile || isFirefox) ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
@@ -567,8 +568,8 @@ export class RenderSystem {
         const shadowSize = this.getShadowMapSize();
         dirLight.shadow.mapSize.width = shadowSize;
         dirLight.shadow.mapSize.height = shadowSize;
+        dirLight.shadow.autoUpdate = true;
         dirLight.shadow.radius = this.graphicsQuality === 'high' ? 2.5 : 1.5;
-        dirLight.shadow.blurSamples = this.graphicsQuality === 'high' ? 8 : 4;
         dirLight.shadow.bias = -0.00008;
         dirLight.shadow.normalBias = 0.035;
         dirLight.shadow.camera.near = 1;
@@ -748,7 +749,8 @@ export class RenderSystem {
         const isFirefox = /firefox/i.test(navigator.userAgent);
         const allowShadows = normalized !== 'low' && !this.isMobile;
         this.renderer.shadowMap.enabled = allowShadows;
-        this.renderer.shadowMap.autoUpdate = false;
+        this.renderer.shadowMap.autoUpdate = true;
+        this.renderer.shadowMap.needsUpdate = true;
         this.renderer.shadowMap.type = (allowShadows && !isFirefox && normalized === 'high')
             ? THREE.PCFSoftShadowMap
             : THREE.BasicShadowMap;
@@ -758,8 +760,8 @@ export class RenderSystem {
             const shadowSize = this.getShadowMapSize();
             this.keyLight.shadow.mapSize.width = shadowSize;
             this.keyLight.shadow.mapSize.height = shadowSize;
+            this.keyLight.shadow.autoUpdate = true;
             this.keyLight.shadow.radius = normalized === 'high' ? 2.5 : 1.5;
-            this.keyLight.shadow.blurSamples = normalized === 'high' ? 8 : 4;
             this.configureShadowFrustum(this.keyLight, this.shadowCoverageRadius);
             this.keyLight.shadow.needsUpdate = true;
         }
