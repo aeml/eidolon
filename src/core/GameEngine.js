@@ -2826,10 +2826,50 @@ export class GameEngine {
         return true;
     }
 
+    getJumpVisualProgress(jumpState) {
+        if (!jumpState) return 0;
+        if (typeof jumpState.progress === 'number') {
+            return Math.max(0, Math.min(1, jumpState.progress));
+        }
+        if (jumpState.serverDriven && typeof jumpState.visualHeight === 'number' && jumpState.height > 0) {
+            const normalizedHeight = Math.max(0, Math.min(1, jumpState.visualHeight / jumpState.height));
+            return Math.asin(normalizedHeight) / Math.PI;
+        }
+        if (typeof jumpState.elapsed === 'number' && typeof jumpState.duration === 'number' && jumpState.duration > 0) {
+            return Math.max(0, Math.min(1, jumpState.elapsed / jumpState.duration));
+        }
+        return 0;
+    }
+
+    applyEntityJumpVisuals(entity, jumpState) {
+        if (!entity?.mesh) return;
+
+        entity.mesh.position.copy(entity.position);
+        entity.mesh.quaternion.copy(entity.rotation);
+
+        if (!jumpState) return;
+
+        const visualHeight = jumpState.visualHeight ?? 0;
+        entity.mesh.position.y += visualHeight;
+
+        const progress = this.getJumpVisualProgress(jumpState);
+        const flipAmount = Math.sin(progress * Math.PI) * 1.18;
+        const rollAmount = Math.sin(progress * Math.PI * 2) * 0.16;
+        const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), flipAmount);
+        const rollQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), rollAmount);
+        entity.mesh.quaternion.multiply(flipQuaternion).multiply(rollQuaternion);
+    }
+
     applyPlayerJumpVisuals() {
         if (!this.player?.mesh) return;
-        this.player.mesh.position.copy(this.player.position);
-        this.player.mesh.position.y += this.playerJumpVisualHeight || 0;
+        const jumpState = this.playerJumpState
+            ? {
+                ...this.playerJumpState,
+                progress: this.getJumpVisualProgress(this.playerJumpState),
+                visualHeight: this.playerJumpVisualHeight || 0
+            }
+            : null;
+        this.applyEntityJumpVisuals(this.player, jumpState);
     }
 
     moveToAndInteract(entity) {
@@ -3749,6 +3789,9 @@ export class GameEngine {
             const entity = activeEntities[i];
             if (entity.isActive) {
                 entity.render(alpha);
+                if (entity !== this.player && entity.jumpVisualState) {
+                    this.applyEntityJumpVisuals(entity, entity.jumpVisualState);
+                }
             }
         }
 

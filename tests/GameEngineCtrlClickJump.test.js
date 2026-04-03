@@ -150,6 +150,25 @@ describe('GameEngine ctrl-click jump', () => {
         expect(engine.player.state).toBe('IDLE');
     });
 
+    test('jump visuals apply a distinct airborne flip and reset to facing rotation on landing', () => {
+        const engine = createEngineHarness();
+        const destination = new THREE.Vector3(20, 0, 0);
+
+        expect(engine.startPlayerJump(destination)).toBe(true);
+        const duration = engine.playerJumpState.duration;
+
+        engine.updatePlayerJump(duration / 2);
+        engine.applyPlayerJumpVisuals();
+
+        expect(engine.player.mesh.position.y).toBeGreaterThan(engine.player.position.y);
+        expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(1.0);
+
+        engine.updatePlayerJump(duration / 2);
+        engine.applyPlayerJumpVisuals();
+
+        expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeCloseTo(0, 5);
+    });
+
     test('jump landing is clamped back inside dungeon walkable geometry', () => {
         const engine = createEngineHarness();
         engine.isMultiplayer = false;

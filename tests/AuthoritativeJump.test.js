@@ -251,7 +251,7 @@ describe('authoritative jump flow', () => {
             isCharging: false,
             isDead: false,
             deadTimer: 0,
-            mesh: { visible: true, position: new THREE.Vector3(0, 0, 0) },
+            mesh: { visible: true, position: new THREE.Vector3(0, 0, 0), quaternion: new THREE.Quaternion() },
             stats: { hp: 100, maxHp: 100, mana: 10, maxMana: 10, speed: 3, attackSpeed: 1 },
             updateState: jest.fn(function updateState(nextState) {
                 this.state = nextState;
@@ -289,5 +289,10 @@ describe('authoritative jump flow', () => {
             height: 8
         }));
         expect(remoteEntity.jumpVisualState.visualHeight).toBeCloseTo(8, 5);
+
+        engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
+
+        expect(remoteEntity.mesh.position.y).toBeGreaterThan(remoteEntity.position.y);
+        expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(1.0);
     });
 });
