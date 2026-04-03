@@ -80,3 +80,25 @@ func TestCreateDungeonStoresRunLevel(t *testing.T) {
 		t.Fatalf("expected run level 40, got %d", inst.RunLevel)
 	}
 }
+
+func TestDungeonRunLevelStatMultipliersScaleByTier(t *testing.T) {
+	health30, damage30 := DungeonRunLevelStatMultipliers(30)
+	if health30 != 1.0 || damage30 != 1.0 {
+		t.Fatalf("expected run level 30 to be baseline scaling, got health=%.2f damage=%.2f", health30, damage30)
+	}
+
+	health60, damage60 := DungeonRunLevelStatMultipliers(60)
+	if health60 <= health30 || damage60 <= damage30 {
+		t.Fatalf("expected run level 60 to scale above baseline, got health=%.2f damage=%.2f", health60, damage60)
+	}
+
+	health100, damage100 := DungeonRunLevelStatMultipliers(100)
+	if health100 <= health60 || damage100 <= damage60 {
+		t.Fatalf("expected run level 100 to scale above run level 60, got health=%.2f damage=%.2f", health100, damage100)
+	}
+
+	healthLow, damageLow := DungeonRunLevelStatMultipliers(1)
+	if healthLow != 1.0 || damageLow != 1.0 {
+		t.Fatalf("expected values below dungeon unlock level to clamp to baseline, got health=%.2f damage=%.2f", healthLow, damageLow)
+	}
+}

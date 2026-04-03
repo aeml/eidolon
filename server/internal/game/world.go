@@ -8211,6 +8211,20 @@ func (w *World) GetInstanceType(instanceID string) string {
 	return inst.DungeonType
 }
 
+func (w *World) getInstanceRunLevelUnsafe(instanceID string) int {
+	inst, ok := w.InstanceLayouts[instanceID]
+	if !ok || inst.RunLevel <= 0 {
+		return DungeonUnlockLevel
+	}
+	return inst.RunLevel
+}
+
+func (w *World) GetInstanceRunLevel(instanceID string) int {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+	return w.getInstanceRunLevelUnsafe(instanceID)
+}
+
 func (w *World) UpdateDungeonRoomProgress(playerID string, x, z float64) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
@@ -8787,10 +8801,12 @@ func (w *World) spawnFireDungeonEnemy(subType string, x, z float64, instanceID s
 		strength = 8000
 	}
 
+	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(w.getInstanceRunLevelUnsafe(instanceID))
+
 	// Apply difficulty multipliers
 	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
-	vitality = int(float64(vitality) * healthMult)
-	strength = int(float64(strength) * damageMult)
+	vitality = int(float64(vitality) * healthMult * runLevelHealthMult)
+	strength = int(float64(strength) * damageMult * runLevelDamageMult)
 
 	enemy := &Entity{
 		ID:             fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000)),
@@ -8827,10 +8843,12 @@ func (w *World) spawnAirDungeonEnemy(subType string, x, z float64, instanceID st
 		strength = 7500
 	}
 
+	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(w.getInstanceRunLevelUnsafe(instanceID))
+
 	// Apply difficulty multipliers
 	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
-	vitality = int(float64(vitality) * healthMult)
-	strength = int(float64(strength) * damageMult)
+	vitality = int(float64(vitality) * healthMult * runLevelHealthMult)
+	strength = int(float64(strength) * damageMult * runLevelDamageMult)
 
 	enemy := &Entity{
 		ID:             fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000)),
@@ -8857,11 +8875,13 @@ func (w *World) spawnAirDungeonEnemy(subType string, x, z float64, instanceID st
 }
 
 func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID string, stats Stats, difficulty DungeonDifficulty) {
+	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(w.getInstanceRunLevelUnsafe(instanceID))
+
 	// Apply difficulty multipliers
 	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
 	scaledStats := Stats{
-		Strength:  int(float64(stats.Strength) * damageMult),
-		Vitality:  int(float64(stats.Vitality) * healthMult),
+		Strength:  int(float64(stats.Strength) * damageMult * runLevelDamageMult),
+		Vitality:  int(float64(stats.Vitality) * healthMult * runLevelHealthMult),
 		Dexterity: stats.Dexterity,
 	}
 
@@ -8910,10 +8930,12 @@ func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID st
 		strength = 5000
 	}
 
+	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(w.getInstanceRunLevelUnsafe(instanceID))
+
 	// Apply difficulty multipliers
 	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
-	vitality = int(float64(vitality) * healthMult)
-	strength = int(float64(strength) * damageMult)
+	vitality = int(float64(vitality) * healthMult * runLevelHealthMult)
+	strength = int(float64(strength) * damageMult * runLevelDamageMult)
 
 	enemy := &Entity{
 		ID:             fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000)),

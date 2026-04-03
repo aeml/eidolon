@@ -86,3 +86,18 @@ func ValidateDungeonEntrySelection(playerLevel int, runLevel int, difficulty Dun
 	}
 	return nil
 }
+
+func DungeonRunLevelStatMultipliers(runLevel int) (healthMult float64, damageMult float64) {
+	if runLevel <= DungeonUnlockLevel {
+		return 1.0, 1.0
+	}
+
+	stepsAboveBaseline := float64(runLevel-DungeonUnlockLevel) / 10.0
+	if stepsAboveBaseline < 0 {
+		stepsAboveBaseline = 0
+	}
+
+	healthMult = 1.0 + (stepsAboveBaseline * 0.22)
+	damageMult = 1.0 + (stepsAboveBaseline * 0.12)
+	return healthMult, damageMult
+}
