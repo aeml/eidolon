@@ -2694,8 +2694,8 @@ export class GameEngine {
         }
 
         const travelDistance = start.distanceTo(end);
-        const duration = Math.max(0.42, Math.min(1.15, travelDistance / 15));
-        const height = Math.max(5.5, Math.min(13.5, travelDistance * 0.32 + 3.8));
+        const duration = Math.max(0.46, Math.min(1.28, travelDistance / 13.5));
+        const height = Math.max(6.5, Math.min(16.5, travelDistance * 0.38 + 4.2));
 
         this.player.targetPosition = null;
         this.pendingInteraction = null;
@@ -2900,6 +2900,12 @@ export class GameEngine {
         this.spawnTransientEffect('jump_land', impactPosition, 0xd8d2c4, {
             impact,
             className
+        });
+        this.renderSystem?.applyCameraPunch?.({
+            intensity: 0.9 * impact,
+            duration: 0.18,
+            vertical: 1.1,
+            horizontal: 0.5
         });
     }
 

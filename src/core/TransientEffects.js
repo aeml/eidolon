@@ -399,17 +399,35 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         dust.position.y += 0.04;
         group.add(dust);
 
-        addToScene(scene, group);
-        return new TransientEffect(scene, group, 0.42, ({ meshes, t }) => {
-            const g = meshes[0];
-            const [ringMesh, dustMesh] = g.children;
-            const burstScale = 1 + t * (3.2 * impact);
-            ringMesh.scale.setScalar(burstScale);
-            ringMesh.material.uniforms.uTime.value = t * 2.4;
-            ringMesh.material.uniforms.uOpacity.value = (0.52 + (quality === 'high' ? 0.08 : 0.0)) * (1 - t);
+        const burstDust = new THREE.Mesh(
+            new THREE.RingGeometry(0.35, 0.95, 24),
+            new THREE.MeshBasicMaterial({
+                color: 0xc7b8a0,
+                transparent: true,
+                opacity: 0.28,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            })
+        );
+        burstDust.rotation.x = -Math.PI / 2;
+        burstDust.position.copy(position);
+        burstDust.position.y += 0.06;
+        group.add(burstDust);
 
-            dustMesh.scale.setScalar(1 + t * (2.3 * impact));
+        addToScene(scene, group);
+        return new TransientEffect(scene, group, 0.48, ({ meshes, t }) => {
+            const g = meshes[0];
+            const [ringMesh, dustMesh, burstDustMesh] = g.children;
+            const burstScale = 1 + t * (3.8 * impact);
+            ringMesh.scale.setScalar(burstScale);
+            ringMesh.material.uniforms.uTime.value = t * 2.8;
+            ringMesh.material.uniforms.uOpacity.value = (0.56 + (quality === 'high' ? 0.1 : 0.0)) * (1 - t);
+
+            dustMesh.scale.setScalar(1 + t * (2.8 * impact));
             dustMesh.material.opacity = 0.42 * (1 - t);
+
+            burstDustMesh.scale.setScalar(1 + t * (4.2 * impact));
+            burstDustMesh.material.opacity = 0.28 * (1 - t);
         });
     }
 

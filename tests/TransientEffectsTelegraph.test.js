@@ -70,11 +70,13 @@ describe('Transient telegraph readability', () => {
         expect(effect.meshes).toHaveLength(1);
 
         const group = effect.meshes[0];
-        expect(group.children).toHaveLength(2);
-        const [ring, dust] = group.children;
+        expect(group.children).toHaveLength(3);
+        const [ring, dust, burstDust] = group.children;
         expect(ring.rotation.x).toBeCloseTo(-Math.PI / 2, 5);
         expect(ring.position.y).toBeGreaterThan(0);
         expect(dust.position.y).toBeGreaterThan(0);
+        expect(burstDust.position.y).toBeGreaterThan(0);
         expect(dust.material.opacity).toBeGreaterThan(0.3);
+        expect(burstDust.material.opacity).toBeGreaterThan(0.2);
     });
 });

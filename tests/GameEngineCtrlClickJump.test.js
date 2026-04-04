@@ -37,6 +37,7 @@ function createEngineHarness() {
         camera: {},
         scene: { add: jest.fn(), remove: jest.fn(), traverse: jest.fn() },
         setCameraTarget: jest.fn(),
+        applyCameraPunch: jest.fn(),
         render: jest.fn()
     };
     engine.uiManager = {
@@ -138,9 +139,9 @@ describe('GameEngine ctrl-click jump', () => {
 
         expect(engine.player.position.x).toBeCloseTo(10, 1);
         expect(engine.player.position.z).toBeCloseTo(0, 5);
-        expect(engine.playerJumpState.height).toBeGreaterThanOrEqual(9);
+        expect(engine.playerJumpState.height).toBeGreaterThanOrEqual(11);
         expect(engine.playerJumpVisualHeight).toBeGreaterThan(0);
-        expect(engine.playerJumpVisualHeight).toBeGreaterThanOrEqual(9);
+        expect(engine.playerJumpVisualHeight).toBeGreaterThanOrEqual(11);
         expect(engine.player.mesh.position.y).toBeCloseTo(engine.playerJumpVisualHeight, 5);
         expect(engine.chunkManager.updateEntityChunk).toHaveBeenCalled();
         expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.player.position);
@@ -254,6 +255,10 @@ describe('GameEngine ctrl-click jump', () => {
             0xd8d2c4,
             expect.objectContaining({ impact: 0.9, className: 'Object' })
         );
+        expect(engine.renderSystem.applyCameraPunch).toHaveBeenCalledWith(expect.objectContaining({
+            intensity: expect.any(Number),
+            duration: expect.any(Number)
+        }));
     });
 
     test('jump landing is clamped back inside dungeon walkable geometry', () => {

@@ -54,9 +54,9 @@ export class RenderSystem {
         this.renderer.shadowMap.enabled = !this.isMobile;
         this.renderer.shadowMap.autoUpdate = true;
         this.renderer.shadowMap.needsUpdate = true;
-        // Optimization: Use PCFSoftShadowMap for better look, or Basic for performance
-        // Firefox: Use Basic shadows to reduce GPU load
-        this.renderer.shadowMap.type = (this.isMobile || isFirefox) ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
+        // Optimization: Prefer filtered soft shadows for readable shape fidelity.
+        // Firefox keeps PCF shadows here too because the visual quality loss from BasicShadowMap was too severe.
+        this.renderer.shadowMap.type = this.isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
         
         this.perfOverlay = null;
         this.composer = null;
@@ -80,6 +80,7 @@ export class RenderSystem {
         this.shadowTarget = new THREE.Vector3();
         this.shadowCoverageRadius = 280;
         this.shadowTexelSnap = true;
+        this.cameraPunch = null;
         this.currentLighting = {
             ambientIntensity: 2.25,
             keyIntensity: 2.25,
@@ -570,9 +571,9 @@ export class RenderSystem {
         dirLight.shadow.mapSize.width = shadowSize;
         dirLight.shadow.mapSize.height = shadowSize;
         dirLight.shadow.autoUpdate = true;
-        dirLight.shadow.radius = this.graphicsQuality === 'high' ? 3.25 : 1.85;
-        dirLight.shadow.bias = -0.00012;
-        dirLight.shadow.normalBias = 0.045;
+        dirLight.shadow.radius = this.graphicsQuality === 'high' ? 4.5 : 3.0;
+        dirLight.shadow.bias = -0.00014;
+        dirLight.shadow.normalBias = 0.05;
         dirLight.shadow.camera.near = 1;
         dirLight.shadow.camera.far = 1400;
         this.configureShadowFrustum(dirLight, this.shadowCoverageRadius);
@@ -696,8 +697,8 @@ export class RenderSystem {
 
     getShadowMapSize() {
         if (this.isMobile || this.graphicsQuality === 'low') return 512;
-        if (this.graphicsQuality === 'medium') return 1024;
-        return 2048;
+        if (this.graphicsQuality === 'medium') return 2048;
+        return 4096;
     }
 
     configureShadowFrustum(light, radius = this.shadowCoverageRadius) {
@@ -772,7 +773,7 @@ export class RenderSystem {
         this.renderer.shadowMap.enabled = allowShadows;
         this.renderer.shadowMap.autoUpdate = true;
         this.renderer.shadowMap.needsUpdate = true;
-        this.renderer.shadowMap.type = (allowShadows && !isFirefox && normalized === 'high')
+        this.renderer.shadowMap.type = allowShadows
             ? THREE.PCFSoftShadowMap
             : THREE.BasicShadowMap;
 
@@ -782,9 +783,9 @@ export class RenderSystem {
             this.keyLight.shadow.mapSize.width = shadowSize;
             this.keyLight.shadow.mapSize.height = shadowSize;
             this.keyLight.shadow.autoUpdate = true;
-            this.keyLight.shadow.radius = normalized === 'high' ? 3.25 : 1.85;
-            this.keyLight.shadow.bias = normalized === 'high' ? -0.00012 : -0.0001;
-            this.keyLight.shadow.normalBias = normalized === 'high' ? 0.045 : 0.04;
+            this.keyLight.shadow.radius = normalized === 'high' ? 4.5 : 3.0;
+            this.keyLight.shadow.bias = normalized === 'high' ? -0.00014 : -0.00012;
+            this.keyLight.shadow.normalBias = normalized === 'high' ? 0.05 : 0.045;
             this.configureShadowFrustum(this.keyLight, this.shadowCoverageRadius);
             this.keyLight.shadow.needsUpdate = true;
         }
@@ -985,6 +986,19 @@ export class RenderSystem {
 
     updateCamera() {
         this.camera.position.copy(this.cameraTarget).add(this.cameraOffset);
+
+        if (this.cameraPunch) {
+            const elapsed = (performance.now() - this.cameraPunch.startTime) / this.cameraPunch.duration;
+            if (elapsed >= 1) {
+                this.cameraPunch = null;
+            } else {
+                const damping = 1 - elapsed;
+                const oscillation = Math.sin(elapsed * Math.PI * 6);
+                this.camera.position.y += oscillation * this.cameraPunch.vertical * this.cameraPunch.intensity * damping;
+                this.camera.position.x += Math.cos(elapsed * Math.PI * 4) * this.cameraPunch.horizontal * this.cameraPunch.intensity * damping;
+            }
+        }
+
         this.camera.lookAt(this.cameraTarget);
     }
 
@@ -996,6 +1010,17 @@ export class RenderSystem {
 
     setCameraTarget(target) {
         this.cameraTarget.copy(target);
+        this.updateCamera();
+    }
+
+    applyCameraPunch({ intensity = 0.8, duration = 0.16, vertical = 1.0, horizontal = 0.45 } = {}) {
+        this.cameraPunch = {
+            startTime: performance.now(),
+            duration: Math.max(0.05, duration),
+            intensity: Math.max(0, intensity),
+            vertical,
+            horizontal
+        };
         this.updateCamera();
     }
 

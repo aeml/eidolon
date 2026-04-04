@@ -34,10 +34,10 @@ func TestStartPlayerJumpClampsTargetInsideCanonicalDungeon(t *testing.T) {
 	if player.JumpProgress != 0 {
 		t.Fatalf("expected jump progress to start at 0, got %.2f", player.JumpProgress)
 	}
-	if player.JumpHeight < 11 {
+	if player.JumpHeight < 14 {
 		t.Fatalf("expected higher jump arc for long jumps, got height %.2f", player.JumpHeight)
 	}
-	if player.JumpDuration < 1 {
+	if player.JumpDuration < 1.1 {
 		t.Fatalf("expected longer airtime for long jumps, got duration %.2f", player.JumpDuration)
 	}
 }

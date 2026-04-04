@@ -3101,8 +3101,8 @@ func (w *World) StartPlayerJump(id string, x, y, z float64) bool {
 	dx := x - e.X
 	dz := z - e.Z
 	travelDistance := math.Sqrt(dx*dx + dz*dz)
-	duration := math.Max(0.42, math.Min(1.15, travelDistance/15.0))
-	height := math.Max(5.5, math.Min(13.5, travelDistance*0.32+3.8))
+	duration := math.Max(0.46, math.Min(1.28, travelDistance/13.5))
+	height := math.Max(6.5, math.Min(16.5, travelDistance*0.38+4.2))
 
 	e.TargetX = x
 	e.TargetZ = z
