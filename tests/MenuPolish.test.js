@@ -494,6 +494,22 @@ describe('menu polish regressions', () => {
         expect(tradingBidTab.classList.contains('is-active')).toBe(false);
     });
 
+    test('forge trading quest and journal markup reuse shared body and form layout classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+
+        expect(html).toContain('class="window-body"');
+        expect(html).toContain('class="window-panel"');
+        expect(html).toContain('class="window-list"');
+        expect(html).toContain('class="window-data-header"');
+        expect(html).toContain('class="window-split-row"');
+        expect(html).toContain('class="window-form-column"');
+        expect(html).toContain('class="window-form-row"');
+        expect(html).not.toContain('style="display: flex; flex-grow: 1; padding: 10px; flex-direction: column;"');
+        expect(html).not.toContain('style="flex-grow: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px;"');
+        expect(html).not.toContain('style="display: flex; gap: 20px; padding: 10px; border-bottom: 1px solid #444;"');
+        expect(html).not.toContain('style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 5px; background: #333; font-weight: bold; font-size: 12px; color: #ccc;"');
+    });
+
     test('social window uses reusable class-based chrome', () => {
         buildStaticWindowDom();
         const ui = new UIManager(false);

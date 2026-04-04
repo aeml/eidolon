@@ -1066,10 +1066,10 @@
                 <button id="tab-forge-gems" class="menu-btn window-tab" type="button">Gems</button>
             </div>
 
-            <div style="display: flex; flex-grow: 1; padding: 10px; flex-direction: column;">
+            <div class="window-body">
                 
                 <!-- Panel 1: Upgrade -->
-                <div id="forge-panel-upgrade" style="flex: 1; display: flex; flex-direction: column;">
+                <div id="forge-panel-upgrade" class="window-panel" style="display: flex;">
                     <h3 style="margin: 0 0 10px 0; color: #ffd700; text-align: center;">Upgrade Equipment</h3>
                     <div id="forge-equipment-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
                         <!-- Populated by JS -->
@@ -1087,7 +1087,7 @@
                 </div>
 
                 <!-- Panel 2: Potency -->
-                <div id="forge-panel-potency" style="flex: 1; display: none; flex-direction: column;">
+                <div id="forge-panel-potency" class="window-panel" style="display: none;">
                     <h3 style="margin: 0 0 10px 0; color: #ff4444; text-align: center;">Increase Potency</h3>
                     <div id="forge-potency-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
                         <!-- Populated by JS -->
@@ -1101,7 +1101,7 @@
                 </div>
 
                 <!-- Panel 3: Sockets -->
-                <div id="forge-panel-socket" style="flex: 1; display: none; flex-direction: column;">
+                <div id="forge-panel-socket" class="window-panel" style="display: none;">
                     <h3 style="margin: 0 0 10px 0; color: #00ffff; text-align: center;">Add Sockets</h3>
                     <div id="forge-socket-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
                         <!-- Populated by JS -->
@@ -1118,7 +1118,7 @@
                 </div>
 
                 <!-- Panel 4: Gems -->
-                <div id="forge-panel-gems" style="flex: 1; display: none; flex-direction: column;">
+                <div id="forge-panel-gems" class="window-panel" style="display: none;">
                     <!-- Sub-tabs for Gem operations -->
                     <div class="window-tabs window-tabs--spaced">
                         <button id="tab-gem-insert" class="menu-btn window-tab is-active" type="button">Insert</button>
@@ -1228,41 +1228,41 @@
                 <button id="tab-trading-my" class="menu-btn window-tab" type="button">My Auctions</button>
             </div>
 
-            <div style="display: flex; flex-grow: 1; padding: 10px; flex-direction: column; overflow: hidden;">
+            <div class="window-body window-body--scroll-hidden">
                 
                 <!-- Panel 1: Bid (Search) -->
-                <div id="trading-panel-bid" style="flex: 1; display: flex; flex-direction: column;">
-                    <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                <div id="trading-panel-bid" class="window-panel" style="display: flex;">
+                    <div class="window-action-row window-action-row--tight">
                         <input id="trading-search-input" type="text" placeholder="Search items..." style="flex: 1; background: #222; color: white; border: 1px solid #444; padding: 5px;">
                         <button id="btn-trading-search" class="btn-menu" style="width: auto; padding: 0 20px;">Search</button>
                     </div>
-                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 5px; background: #333; font-weight: bold; font-size: 12px; color: #ccc;">
+                    <div class="window-data-header">
                         <span>Item</span><span>Seller</span><span>Bid / Buyout</span><span>Action</span>
                     </div>
-                    <div id="trading-list-container" style="flex: 1; overflow-y: auto; background: rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 2px;">
+                    <div id="trading-list-container" class="window-panel" style="overflow-y: auto; background: rgba(0,0,0,0.3); gap: 2px;">
                         <!-- Populated by JS -->
                     </div>
                 </div>
 
                 <!-- Panel 2: List (Sell) -->
-                <div id="trading-panel-list" style="display: none; flex: 1; flex-direction: column;">
-                    <div style="display: flex; gap: 20px; padding: 10px; border-bottom: 1px solid #444;">
+                <div id="trading-panel-list" class="window-panel" style="display: none;">
+                    <div class="window-split-row">
                         <div style="display: flex; flex-direction: column; align-items: center;">
                             <div style="margin-bottom: 5px; color: #aaa;">Item to Sell</div>
                             <div id="trading-sell-slot" class="inv-slot" style="width: 64px; height: 64px; border: 2px dashed #666; display: flex; align-items: center; justify-content: center;">
                                 <span style="font-size: 30px; color: #444;">+</span>
                             </div>
                         </div>
-                        <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="window-form-column">
+                            <div class="window-form-row">
                                 <span>Starting Bid:</span>
                                 <input id="trading-input-bid" type="number" value="100" style="width: 120px; background: #222; color: #ffd700; border: 1px solid #444; padding: 5px;">
                             </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="window-form-row">
                                 <span>Buyout Price:</span>
                                 <input id="trading-input-buyout" type="number" value="500" style="width: 120px; background: #222; color: #ffd700; border: 1px solid #444; padding: 5px;">
                             </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="window-form-row">
                                 <span>Duration:</span>
                                 <select id="trading-input-duration" style="width: 120px; background: #222; color: white; border: 1px solid #444; padding: 5px;">
                                     <option value="12">12 Hours</option>
@@ -1273,7 +1273,7 @@
                             <button id="btn-trading-create" class="btn-menu" style="margin-top: 10px;">CREATE AUCTION</button>
                         </div>
                     </div>
-                    <div style="flex: 1; display: flex; flex-direction: column; padding-top: 10px;">
+                    <div class="window-panel" style="padding-top: 10px;">
                         <h4 style="margin: 0 0 10px 0; color: #aaa;">Select Item from Inventory</h4>
                         <div id="trading-inventory-list" style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; overflow-y: auto;">
                             <!-- Populated by JS -->
@@ -1282,11 +1282,11 @@
                 </div>
 
                 <!-- Panel 3: My Auctions -->
-                <div id="trading-panel-my" style="display: none; flex: 1; flex-direction: column;">
-                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 5px; background: #333; font-weight: bold; font-size: 12px; color: #ccc;">
+                <div id="trading-panel-my" class="window-panel" style="display: none;">
+                    <div class="window-data-header">
                         <span>Item</span><span>Status</span><span>Price</span><span>Action</span>
                     </div>
-                    <div id="trading-my-list" style="flex: 1; overflow-y: auto; background: rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 2px;">
+                    <div id="trading-my-list" class="window-panel" style="overflow-y: auto; background: rgba(0,0,0,0.3); gap: 2px;">
                         <!-- Populated by JS -->
                     </div>
                 </div>
@@ -1300,7 +1300,7 @@
                 <span>AVAILABLE QUESTS</span>
                 <button id="btn-close-quest" class="close-btn" type="button" aria-label="Close quest window">×</button>
             </div>
-            <div id="quest-list" style="flex-grow: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px;">
+                <div id="quest-list" class="window-list">
                 <!-- Populated by JS -->
             </div>
         </div>
@@ -1311,7 +1311,7 @@
                 <span>QUEST JOURNAL</span>
                 <button id="btn-close-journal" class="close-btn" type="button" aria-label="Close quest journal">×</button>
             </div>
-            <div id="journal-list" style="flex-grow: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px;">
+            <div id="journal-list" class="window-list">
                 <!-- Populated by JS -->
             </div>
         </div>

@@ -122,6 +122,51 @@
     overflow: hidden;
 }
 
+.window-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.window-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.window-data-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    padding: 5px;
+    background: #333;
+    font-weight: bold;
+    font-size: 12px;
+    color: #ccc;
+}
+
+.window-split-row {
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+    border-bottom: 1px solid #444;
+}
+
+.window-form-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.window-form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .window-action-row {
     display: flex;
     gap: 10px;
