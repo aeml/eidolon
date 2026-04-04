@@ -1,85 +1,85 @@
 # Eidolon Architecture
 
-## Current architecture (observed)
+Last refreshed: April 2026
 
-```
+## Current architecture
+
+```text
 Client
   index.html
     -> src/main.js
         -> GameEngine
-           - RenderSystem (Three.js scene, camera, renderer)
-           - InputManager (mouse/keyboard/touch)
-           - ChunkManager (entity spatial loading)
-           - CollisionManager (world + entity collisions)
-           - UIManager (all UI panels)
-           - WorldGenerator (terrain/props/dungeons)
-           - MeshFactory (GLTF load/cache/pool)
-           - Entities (Actor, NPCs, Projectiles, Loot)
-           - Networking (WebSocket + protobuf state)
+           - RenderSystem
+           - InputManager
+           - ChunkManager
+           - CollisionManager
+           - NetworkManager
+           - AbilityController
+           - UIManager facade
+             - InventoryUI
+             - SkillTreeUI
+             - ForgeUI
+             - TradingUI
+             - QuestUI
+             - SocialUI
+           - WorldGenerator
+           - MeshFactory / MeshCatalog helpers
+           - Entities / transient effects / maps / HUD
 
 Server
   server/main.go
-    -> internal/game/world.go
-       - World state + spatial grid + dungeons
-       - Parties, trading, quests
-       - WebSocket hub + state broadcast
-    -> internal/database (MongoDB persistence)
+    -> internal/game/
+       - world state
+       - parties / quests / dungeons / rewards / progression
+       - protobuf envelope production
+    -> internal/database/
+       - MongoDB persistence
 ```
 
-Main loop
-- `GameEngine.loop()` fixed timestep update + render.
-- `ChunkManager.update()` iterates active entities.
-- `RenderSystem.render()` draws scene; UI updated every frame in `GameEngine.render()`.
+## Main runtime responsibilities
 
-Render pipeline
-- Orthographic camera + directional light + shadow map.
-- Environment/ground textures loaded in `RenderSystem.preloadEnvironment()`.
-- Entities loaded through `MeshFactory` (GLTF + fallback primitives).
+### `GameEngine`
+- Orchestrates update/render lifecycle
+- Holds high-level player state, authoritative sync handling, and interaction flow
+- Coordinates rendering, collision, UI, networking, dungeon entry, loot flow, and transient effects
 
-Asset loading
-- `MeshFactory` manages GLTF caching, preloading, pooling.
-- `WorldGenerator` loads static GLTFs (buildings/trees).
+### `RenderSystem`
+- Owns Three.js renderer, camera, scene, lighting, shadows, environment textures, and quality settings
+- Handles current lighting/shadow-follow behavior and camera punch support
+- Still needs explicit scene groups for cleaner instance transitions
 
-Input
-- `InputManager` handles mouse, keyboard, touch; subscribes via callbacks.
+### `NetworkManager`
+- Wraps socket message flow and protobuf state decoding
+- Keeps WebSocket logic out of most UI wiring paths
 
-Networking
-- Client uses authenticated WebSocket (`GameEngine.connectToServer()`).
-- Server sends state deltas and protobuf envelopes.
+### `AbilityController`
+- Owns ability-targeting/orchestration logic that used to live directly inside `GameEngine`
+- Reduces core-engine sprawl around skills and input-to-ability flow
 
-Persistence
-- Server writes MongoDB user/character data. Client is stateless.
+### `UIManager` facade + feature modules
+- `UIManager` still handles cross-surface wiring and shared helpers
+- Heavy feature surfaces have been split into dedicated modules:
+  - `InventoryUI`
+  - `SkillTreeUI`
+  - `ForgeUI`
+  - `TradingUI`
+  - `QuestUI`
+  - `SocialUI`
 
-## Target architecture (incremental)
+### Server `world.go`
+- Still the main authoritative gameplay hub for combat, movement, dungeon logic, rewards, and progression
+- It is far more capable than earlier versions, but remains a major future refactor target because so much game logic still concentrates there
 
-Increment 1: Separate orchestration
-- `GameEngine` remains coordinator but delegates to:
-  - `NetworkClient` (WebSocket + message routing)
-  - `EntityFactory` (maps server entity types to constructors)
-  - `UIBindings` (registers UI callbacks without networking logic)
+## Data flow notes
+- Client receives protobuf state envelopes (`EDPB` + version byte + payload)
+- Server remains authoritative for movement, combat, progression, and dungeon entry validation
+- Client adds prediction/presentation layers for responsiveness and readability, then reconciles to server truth
 
-Increment 2: Data-driven content
-- `MeshFactory` reads a `meshCatalog` (path + animations + scale).
-- Skill visuals and behaviors move to `skillRegistry` + `SkillStrategy` subclasses.
+## What changed since earlier architecture docs
+- Networking is no longer best described as “GameEngine directly owns the socket everywhere”
+- UI is no longer best described as “one class owns everything”
+- Protobuf networking is no longer a future architecture target; it is current architecture
+- Current design work is less about first extraction and more about finishing the remaining heavy seams cleanly
 
-Increment 3: Scene organization
-- `RenderSystem` owns `sceneGroups`:
-  - `environmentGroup` (terrain/buildings)
-  - `entityGroup` (actors/loot/projectiles)
-  - `effectGroup` (VFX/floating text)
-- Instance transitions clear only `entityGroup` and `effectGroup`.
-
-Increment 4: UI modularization
-- Split `UIManager` into focused modules with a shared `UIBus`:
-  - HUD, Inventory, Social, Quests, Trading, Map.
-
-## Recommended interfaces
-- `NetworkClient.on('state', ...)` / `on('delta', ...)` events.
-- `EntityFactory.create(type, data)` for server-driven spawn.
-- `SkillRegistry.get(class, skillName)` returns `SkillStrategy`.
-- `SceneGroups.addToGroup(name, object)` to avoid direct scene manipulation.
-
-## Verification steps
-- Use `repro.html` to sanity-check perf/input changes quickly.
-- Add a smoke test that loads a minimal scene and runs 1–2 simulation ticks.
-- Use perf overlay (FPS, frame time, draw calls) after each architectural change.
+## Most important next architectural step
+Introduce explicit scene groups for environment, entities, and transient effects so instance transitions stop relying on broad scene rebuild behavior.

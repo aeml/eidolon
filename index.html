@@ -266,7 +266,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.21.3</span> 
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.21.4</span> 
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
             
@@ -458,6 +458,18 @@
                 </span>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.21.4" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.4 (Dungeon/menu/game-feel polish)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Dungeon portal UX:</strong> The dungeon menu now behaves like a cleaner modal with reliable header close, footer close, backdrop close, and Escape handling.</li>
+                        <li><strong>Respec modal polish:</strong> The respec flow follows the same close behavior so dismiss actions feel consistent instead of brittle.</li>
+                        <li><strong>Less accidental text selection:</strong> Menu/window chrome is now non-selectable while inputs still preserve normal text selection where typing/editing matters.</li>
+                        <li><strong>Sharper shadows:</strong> World shadows now use higher-resolution soft shadow settings and more stable follow behavior so buildings, fences, and thin shapes read more like the objects casting them.</li>
+                        <li><strong>Bigger jump feel:</strong> Ctrl+click jumps now have a more exaggerated arc, stronger airborne presentation, and more satisfying landing feedback.</li>
+                        <li><strong>Landing impact:</strong> Jump landings now kick up a richer dust burst and apply a small camera punch to make touchdown feel heavier.</li>
+                    </ul>
+                </div>
+
                 <div class="patch-note-entry" data-version="0.21.3" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.3 (Asset pack caching finished for this release line)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
@@ -466,17 +478,6 @@
                         <li><strong>At-a-glance state badges:</strong> Packs now surface clear labels for <strong>Current</strong>, <strong>Outdated</strong>, <strong>Partial</strong>, <strong>Downloading</strong>, and not-yet-cached states.</li>
                         <li><strong>Update Cached Assets:</strong> There is now a one-click maintenance action to refresh every pack you already keep on the device, without forcing unnecessary first-time downloads for packs you never chose.</li>
                         <li><strong>Finished cache management pass:</strong> Keep Assets on This Device now covers recommended downloads, stale refreshes, cached version visibility, state badges, selective updates, and cache clearing in one complete flow.</li>
-                    </ul>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.3 - Final asset cache pass</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
-                        <li><strong>Recommended setup remains lightweight:</strong> <strong>Download Recommended Assets</strong> still focuses on the most useful day-to-day packs.</li>
-                        <li><strong>Selective stale refresh remains available:</strong> <strong>Refresh Outdated Assets</strong> still targets only stale cached packs when you want the narrowest update path.</li>
-                        <li><strong>Bulk maintenance is now easier:</strong> <strong>Update Cached Assets</strong> refreshes all packs already present on the current device in one pass.</li>
-                        <li><strong>Truthful cache status:</strong> Per-pack badges and <strong>Cached version</strong> lines make it much easier to tell whether a device is current, stale, partial, or empty.</li>
-                        <li><strong>Asset caching feature status:</strong> This closes out the current asset pack caching push so upcoming work can move on to the next gameplay and systems features.</li>
                     </ul>
                 </div>
 

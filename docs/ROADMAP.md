@@ -1,76 +1,101 @@
-# Eidolon Roadmap (2–6 weeks)
+# Eidolon Engineering Roadmap
 
-## Phase 0: Stabilize & instrument (1–2 days)
-- Tasks
-  - Add a minimal perf overlay toggled by query param (`?perf=1`) showing FPS, frame time, draw calls, triangle count. Done in `src/core/RenderSystem.js`, `src/main.js`, `index.html`.
-  - Add `InputManager.dispose()` and call from `GameEngine.destroy()` to prevent listener leaks.
-  - Align Three.js versions between runtime and tests (update `index.html` importmap to 0.181 or downgrade `package.json`).
-  - Add a `npm run test:smoke` that runs a fast subset of tests. Done in `package.json`.
-- Expected payoff
-  - Faster issue triage and reliable local profiling; fewer intermittent input bugs.
-- Estimated complexity
-  - Low.
-- Dependencies
-  - None.
-- Definition of done
-  - Perf overlay visible with `?perf=1`, smoke tests pass, and Three.js versions are consistent.
+Last refreshed: April 2026
 
-## Phase 1: Core gameplay loop improvements (3–7 days)
-- Tasks
-  - Add "combat intent" feedback: highlight hovered target and show damage preview (`src/core/GameEngine.js`, `src/ui/UIManager.js`).
-  - Add quest markers and context hints for dungeon entrance (`src/world/WorldGenerator.js`, `src/ui/UIManager.js`).
-  - Improve loot pickup feedback: range indicators + error throttling + optional auto-loot toggle (`src/core/GameEngine.js`, `src/ui/UIManager.js`).
-  - Introduce a basic objectives panel (current quest + daily progress) (`src/ui/UIManager.js`).
-- Expected payoff
-  - Clearer moment-to-moment goals, reduced click friction, and better player feedback.
-- Estimated complexity
-  - Medium.
-- Dependencies
-  - Phase 0 instrumentation to validate changes.
-- Definition of done
-  - Players can identify targets and objectives without opening menus, and loot pickup is reliable and responsive.
+This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, and movement/render polish passes already landed on `master`.
 
-## Phase 2: Architecture & scalability (1–2 weeks)
-- Tasks
-  - Extract networking into `NetworkClient` (`src/core/NetworkClient.js`) with clean event hooks; remove direct socket use from UI callbacks in `GameEngine`.
-  - Split `UIManager` into feature modules with shared UI bus (InventoryUI, QuestUI, SocialUI, TradeUI).
-  - Convert `MeshFactory` to data-driven definitions (`src/utils/meshCatalog.js`) with shared animation loader helper.
-  - Replace hard-coded skill visuals with a registry (`src/skills/skillVisuals.js`) and small `SkillStrategy` subclasses.
-- Expected payoff
-  - Smaller, testable units and faster iteration on content without touching core engine code.
-- Estimated complexity
-  - Medium-high.
-- Dependencies
-  - Phase 0 instrumentation and Phase 1 feedback improvements.
-- Definition of done
-  - New NPC/skill added by updating catalogs only; GameEngine no longer owns UI/network wiring.
+## Recently completed
 
-## Phase 3: Content/tools/polish (ongoing)
-- Tasks
-  - Expand repro scene into a tiny sandbox level with toggleable enemies/loot (`repro.html`, `src/repro.js`).
-  - Add optional art-free VFX library (mesh-based trails, simple decals) with pooled resources.
-  - Add dev convenience: a small local dev server script with cache-busting disabled.
-  - Create lightweight linting (ESLint + basic rules) and formatting presets.
-- Expected payoff
-  - Faster debugging and smoother dev loops with small, safe tooling.
-- Estimated complexity
-  - Low-medium.
-- Dependencies
-  - Phase 2 module splits.
-- Definition of done
-  - Repro scene runs deterministically; lint runs in CI; simple VFX are reusable.
+### Core loop clarity
+- Combat intent HUD and target clarity
+- Loot feedback improvements and optional auto-loot
+- Objective tracker and dungeon entrance context hints
+- Dungeon room-state, room-clear, and reward-summary feedback
 
-## Prioritized backlog
-1) Align Three.js runtime/test versions (`index.html`, `package.json`). Done.
-2) Add InputManager teardown + lifecycle guardrails (`src/core/InputManager.js`, `src/core/GameEngine.js`). Done.
-3) Extract skill visuals to registry (`src/skills/skillVisuals.js`, `src/core/GameEngine.js`).
-4) Data-drive MeshFactory asset definitions (`src/utils/meshCatalog.js`, `src/utils/MeshFactory.js`).
-5) Reduce UI update frequency and add diffing to avoid DOM churn (`src/core/GameEngine.js`, `src/ui/UIManager.js`).
-6) Scene grouping for instances (`src/core/RenderSystem.js`, `src/world/WorldGenerator.js`).
-7) Add quest/dungeon hints in HUD (`src/ui/UIManager.js`).
-8) Add dynamic enemy scaling on server (`server/internal/game/world.go`).
+### Architecture and tooling progress
+- Runtime/test Three.js alignment at 0.181.2
+- `InputManager.dispose()` lifecycle cleanup
+- `NetworkManager` extraction
+- `AbilityController` extraction
+- UI module extraction across inventory, forge, skill tree, quest, social, and trading surfaces
+- Protobuf state streaming already live in production code
+- ESLint and smoke-test script in place
 
-## Next 3 commits (suggested)
-1) Add minimal repro scene + document how to run it.
-2) Extract skill visuals to registry and remove switch chains.
-3) Data-drive MeshFactory asset definitions with shared loader.
+### Recent polish slices
+- Death/respawn feedback improvements
+- Grouped buff/debuff tracker
+- Modal close interaction fixes for menus
+- Sharper/stabler shadows
+- Exaggerated ctrl-click jump visuals with landing dust and camera punch
+
+## Highest-value next slices
+
+### 1. Scene-group instance transitions
+Why now:
+- Instance entry/exit still relies on broad scene rebuild behavior
+- This is one of the largest remaining correctness/perf footguns in the client
+
+Targets:
+- `src/core/RenderSystem.js`
+- `src/core/GameEngine.js`
+- `src/world/WorldGenerator.js`
+- tests around instance transitions and cleanup
+
+Definition of done:
+- Environment, entities, and transient effects live in explicit scene groups
+- Dungeon transitions stop depending on clearing broadly across unrelated scene content
+
+### 2. UI diffing and throttling
+Why now:
+- A lot of the remaining frame-time waste is DOM churn rather than headline rendering features
+
+Targets:
+- `src/core/GameEngine.js`
+- `src/ui/UIManager.js`
+- extracted UI modules where live updates are frequent
+
+Definition of done:
+- HUD, XP, buff tracker, and related panels update on meaningful changes or throttled cadence instead of unnecessary per-frame churn
+
+### 3. Data-driven mesh/content expansion
+Why now:
+- The codebase is much safer when new content is catalog-driven instead of switch-driven
+
+Targets:
+- `src/utils/MeshFactory.js`
+- `src/utils/MeshCatalog.js`
+- relevant tests under `tests/`
+
+Definition of done:
+- High-traffic entity and environment definitions are catalog-backed and easier to extend with lower regression risk
+
+### 4. Dungeon satisfaction pass
+Why now:
+- Core dungeon progression is in, but replayability and room identity can still improve a lot
+
+Targets:
+- `server/internal/game/world.go`
+- `server/main.go`
+- `src/core/GameEngine.js`
+- `src/ui/QuestUI.js`
+- `src/ui/Minimap.js`
+
+Definition of done:
+- Rooms feel more intentionally paced and endgame difficulties feel distinct beyond number inflation
+
+### 5. Repro/sandbox QA tooling
+Why now:
+- Fast manual QA makes polish slices much safer and cheaper
+
+Targets:
+- `repro.html`
+- `src/repro.js`
+- supporting docs/checklists under `docs/plans/`
+
+Definition of done:
+- There is a tiny deterministic sandbox for testing rendering, movement, VFX, and menu regressions without a full live run
+
+## Recommended next 3 implementation slices
+1. `refactor: add scene groups for instance transitions`
+2. `perf: throttle and diff high-frequency HUD updates`
+3. `feat: add dungeon room-role pacing metadata`

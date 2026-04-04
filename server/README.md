@@ -1,126 +1,62 @@
 # Eidolon Multiplayer Server
 
-This is the multiplayer server for Eidolon, written in Go.
+This is the authoritative multiplayer server for Eidolon, written in Go.
+
+## Current runtime notes
+- Go module version: `go 1.23`
+- Toolchain declared in `go.mod`: `go1.24.5`
+- Persistence: MongoDB
+- Networking: Gorilla WebSocket + protobuf state envelopes
 
 ## Prerequisites
+- Go 1.23+
+- MongoDB (local or Atlas)
 
-- Go 1.21 or later
-- MongoDB (Local or Atlas)
-
-## Running Locally with SSL (Recommended)
-
-To run the server locally with SSL (Secure WebSockets `wss://`), you need to generate a self-signed certificate.
-
-1.  **Generate Certificates** (using OpenSSL):
-    ```bash
-    openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
-    ```
-    This will create `cert.pem` and `key.pem` in your current directory.
-
-2.  **Run the Server**:
-    ```bash
-    go run main.go --cert=cert.pem --key=key.pem
-    ```
-
-3.  **Trust the Certificate**:
-    Since it is self-signed, your browser will reject the connection initially.
-    *   Open `https://localhost:8080/ws` in your browser.
-    *   You will see a "Not Secure" warning.
-    *   Click "Advanced" -> "Proceed to localhost (unsafe)".
-    *   Now your game client can connect via `wss://localhost:8080/ws`.
-
-## Running Locally without SSL
+## Run locally without TLS
+From `server/`:
 
 ```bash
 go run main.go
 ```
-The server port is configurable via `--addr`. For local dev you can use `--addr=":8080"` (HTTP) and connect with `ws://localhost:8080/ws`. For production TLS you can still use `--addr=":8080"` if you prefer.
 
-## Deployment Options
+Default local endpoint:
+- `ws://localhost:8080/ws`
 
-### Option 1: Google Cloud "Always Free" (Recommended Alternative)
+The listen address can be changed with `--addr` if needed.
 
-To build a binary for Linux ARM64 (which is what Oracle Cloud Ampere instances use):
+## Run locally with self-signed TLS
+If you want local `wss://` for browser testing, generate a self-signed cert:
 
 ```bash
-set GOOS=linux
-set GOARCH=arm64
-go build -o eidolon-server-arm64 main.go
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
+go run main.go --cert=cert.pem --key=key.pem
 ```
 
-(On PowerShell):
-```powershell
-$env:GOOS = "linux"
-$env:GOARCH = "arm64"
-go build -o eidolon-server-arm64 main.go
+Then trust the certificate in your browser before testing `wss://localhost:8080/ws`.
+
+## Tests
+From `server/`:
+
+```bash
+go test ./...
 ```
 
-### Option 2: Local Hosting with Dynamic DNS (eserver.mendola.tech)
+## Production notes
+Typical production shape:
+- Go server runs on localhost/HTTP
+- Reverse proxy terminates TLS and forwards WebSocket traffic
+- MongoDB runs alongside the server environment
 
-Since you are using `eserver.mendola.tech`, you can set up a valid SSL certificate using Let's Encrypt so players don't get security warnings.
+See these docs for deployment details:
+- `server/deploy/README_LINUX.md`
+- repo-level infra/deploy workflow files under `.github/workflows/`
 
-#### Recommended: Caddy reverse proxy on 443
+## Build
+Example Linux build:
 
-This repo includes a ready-to-use reverse proxy config via Caddy so clients can connect on the standard HTTPS/WebSocket port (`443`) while the Go server continues to run on `127.0.0.1:8080`.
-
-1. Port Forwarding
-    Forward ports **80** (HTTP) and **443** (HTTPS) to this machine.
-    - Port 80 is strongly recommended for Caddy's first-time certificate issuance/renewal.
-    - Port 443 is what players will connect to (via `wss://eserver.mendola.tech/ws`).
-
-2. Run the Go server (HTTP on localhost)
-    From the repo root:
-    ```powershell
-    .\server\run_prod_caddy.ps1
-    ```
-
-3. Run Caddy (HTTPS on 443 -> localhost:8080)
-    From the repo root:
-    ```powershell
-    .\server\run_caddy.ps1
-    ```
-
-With this setup:
-- Public endpoint: `wss://eserver.mendola.tech/ws` (port 443)
-- Private backend: `http://127.0.0.1:8080/ws`
-
-If you previously used `server/run_prod.ps1` with Certbot and TLS on `:8080`, you don't need that when Caddy is terminating TLS on `:443`.
-
-#### 1. Port Forwarding
-Ensure ports **80** (HTTP) and **8080** (Game Server) are forwarded on your router to your computer's local IP address.
-- Port 80 is required for Let's Encrypt validation.
-- Port 8080 is required for the game connection.
-
-#### 2. Install Certbot (Windows)
-1. Download the Certbot installer from [https://dl.eff.org/certbot-beta-installer-win32.exe](https://dl.eff.org/certbot-beta-installer-win32.exe).
-2. Run the installer.
-
-#### 3. Generate Certificate
-Open PowerShell as Administrator and run:
-```powershell
-certbot certonly --standalone -d eserver.mendola.tech
+```bash
+go build -o eidolon-server main.go
 ```
-*   This spins up a temporary web server on port 80 to prove you own the domain.
-*   If successful, your certificates will be saved in `C:\Certbot\live\eserver.mendola.tech\`.
-
-#### 4. Run the Server
-You can now run the server pointing to these certificates. Note that you might need to copy them to your project folder if permission issues arise, or run the server as Administrator.
-
-```powershell
-# Example (Adjust paths if necessary)
-go run main.go --cert="C:\Certbot\live\eserver.mendola.tech\fullchain.pem" --key="C:\Certbot\live\eserver.mendola.tech\privkey.pem"
-```
-
-**Note:** Let's Encrypt certificates expire every 90 days. You can renew them by running `certbot renew`.
-
-## Deployment
-
-1. Upload `eidolon-server-arm64` to your server.
-2. Make it executable: `chmod +x eidolon-server-arm64`
-3. Run it: `./eidolon-server-arm64 --mongo-uri="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/"`
-
-You may want to run it in the background using `nohup` or a systemd service.
 
 ## Database
-
-The server uses MongoDB. It will automatically create a database named `eidolon` and a collection `users` with a unique index on `username`.
+The server uses MongoDB for user and character persistence.
