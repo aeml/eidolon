@@ -109,6 +109,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const loginPatchNotesLink = document.getElementById('login-patch-notes-link');
     const patchNotesScreen = document.getElementById('patch-notes-screen');
     const btnClosePatchNotes = document.getElementById('btn-close-patch-notes');
+    const browserWarning = document.getElementById('browser-warning');
+    const btnCloseBrowserWarning = document.getElementById('btn-close-browser-warning');
 
     const closePatchNotes = () => {
         if (patchNotesScreen) {
@@ -120,6 +122,14 @@ window.addEventListener('DOMContentLoaded', () => {
         loginPatchNotesLink.addEventListener('click', () => {
             if (patchNotesScreen) {
                 patchNotesScreen.style.display = 'flex';
+            }
+        });
+    }
+
+    if (btnCloseBrowserWarning) {
+        btnCloseBrowserWarning.addEventListener('click', () => {
+            if (browserWarning) {
+                browserWarning.style.display = 'none';
             }
         });
     }

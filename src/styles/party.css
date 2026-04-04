@@ -10,15 +10,46 @@
     top: 150px;
     left: 20px;
     width: 220px;
+    display: none; /* Shown when in party */
+    padding: var(--spacing-md);
     background: var(--bg-dark-medium);
     border: 2px solid var(--border-default);
     border-radius: var(--radius-sm);
-    padding: var(--spacing-md);
-    pointer-events: auto;
-    display: none; /* Shown when in party */
     color: var(--color-white-bright);
     font-family: var(--font-primary);
+    pointer-events: auto;
     z-index: var(--z-hud);
+}
+
+.party-panel__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #444;
+}
+
+.party-panel__title {
+    color: var(--color-gold);
+    font-weight: bold;
+}
+
+.party-panel__footer {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #444;
+}
+
+.party-panel__invite-input {
+    width: 100px;
+    padding: 2px;
+    background: #222;
+    border: 1px solid #444;
+    color: white;
+    font-size: 12px;
 }
 
 .party-member {
@@ -67,15 +98,64 @@
 .party-btn {
     background: var(--border-default);
     border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
     color: var(--color-white-bright);
     cursor: pointer;
     font-size: 10px;
     padding: var(--spacing-xs) 4px;
-    border-radius: var(--radius-sm);
 }
 
 .party-btn:hover {
     background: var(--border-light);
+}
+
+.party-btn--danger {
+    background: #c62828;
+}
+
+.party-btn--success {
+    background: #2e7d32;
+}
+
+.party-btn--large {
+    padding: 5px 15px;
+    font-size: 14px;
+}
+
+.party-request-modal {
+    display: none;
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background: rgba(0,0,0,0.9);
+    border: 2px solid #ffd700;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    color: white;
+    text-align: center;
+    pointer-events: auto;
+    z-index: 2000;
+}
+
+.party-request-modal__title {
+    margin-top: 0;
+    color: #ffd700;
+}
+
+.party-request-modal__body {
+    margin-bottom: 15px;
+}
+
+.party-request-modal__inviter {
+    color: #fff;
+    font-weight: bold;
+}
+
+.party-request-modal__actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
 .party-leader-icon {

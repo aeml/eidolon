@@ -27,6 +27,7 @@
 @import './mobile.css';
 @import './chat.css';
 @import './party.css';
+@import './social.css';
 
 /* 4. Responsive overrides (must come last) */
 @import './responsive.css';

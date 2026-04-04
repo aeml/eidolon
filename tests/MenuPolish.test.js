@@ -449,6 +449,29 @@ describe('menu polish regressions', () => {
         });
     });
 
+    test('browser warning and party markup use reusable classes instead of inline close hacks', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+
+        expect(html).toContain('id="btn-close-browser-warning"');
+        expect(html).not.toContain('onclick="this.parentElement.style.display=\'none\'"');
+        expect(html).toContain('class="party-panel__header"');
+        expect(html).toContain('class="party-panel__footer"');
+        expect(html).toContain('class="party-request-modal"');
+        expect(html).toContain('class="party-request-modal__actions"');
+    });
+
+    test('social window uses reusable class-based chrome', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+        const socialWindow = document.getElementById('social-window');
+
+        expect(socialWindow.classList.contains('social-window')).toBe(true);
+        expect(socialWindow.querySelector('.social-window__header')).not.toBeNull();
+        expect(socialWindow.querySelector('.social-window__title')).not.toBeNull();
+        expect(socialWindow.querySelector('.social-window__columns')).not.toBeNull();
+        expect(socialWindow.querySelector('.social-window__list')).not.toBeNull();
+    });
+
     test('older static window markup uses consistent close button chrome', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
 

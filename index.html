@@ -20,8 +20,8 @@
 </head>
 <body>
     <div id="browser-warning">
-        ⚠️ For the best experience, please use Google Chrome, Microsoft Edge, or Firefox.
-        <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+        <span class="browser-warning__text">⚠️ For the best experience, please use Google Chrome, Microsoft Edge, or Firefox.</span>
+        <button id="btn-close-browser-warning" class="close-btn" type="button" aria-label="Dismiss browser warning">×</button>
     </div>
     <script>
         (function() {
@@ -209,28 +209,28 @@
 
         <!-- Party Panel -->
         <div id="party-panel">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #444; padding-bottom: 5px;">
-                <span style="font-weight: bold; color: #ffd700;">PARTY</span>
-                <button id="btn-leave-party" class="party-btn" style="background: #c62828;">Leave</button>
+            <div class="party-panel__header">
+                <span class="party-panel__title">PARTY</span>
+                <button id="btn-leave-party" class="party-btn party-btn--danger" type="button">Leave</button>
             </div>
             <div id="party-list">
                 <!-- Members go here -->
             </div>
-            <div style="margin-top: 10px; display: flex; gap: 5px; border-top: 1px solid #444; padding-top: 10px;">
-                <input type="text" id="party-invite-input" placeholder="Player Name" style="width: 100px; background: #222; border: 1px solid #444; color: white; padding: 2px; font-size: 12px;">
-                <button id="btn-invite-party" class="party-btn" style="background: #2e7d32;">Invite</button>
+            <div class="party-panel__footer">
+                <input type="text" id="party-invite-input" class="party-panel__invite-input" placeholder="Player Name">
+                <button id="btn-invite-party" class="party-btn party-btn--success" type="button">Invite</button>
             </div>
         </div>
 
         <!-- Party Request Modal -->
-        <div id="party-request-modal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); border: 2px solid #ffd700; padding: 20px; z-index: 2000; text-align: center; color: white; box-shadow: 0 0 20px rgba(0,0,0,0.8); pointer-events: auto;">
-            <h3 id="party-request-text" style="margin-top: 0; color: #ffd700;">Party Invite</h3>
-            <div style="margin-bottom: 15px;">
-                <span id="party-inviter-name" style="font-weight: bold; color: #fff;">Player</span> wants to invite you to a party.
+        <div id="party-request-modal" class="party-request-modal">
+            <h3 id="party-request-text" class="party-request-modal__title">Party Invite</h3>
+            <div class="party-request-modal__body">
+                <span id="party-inviter-name" class="party-request-modal__inviter">Player</span> wants to invite you to a party.
             </div>
-            <div style="display: flex; justify-content: center; gap: 10px;">
-                <button id="btn-accept-party" class="party-btn" style="font-size: 14px; padding: 5px 15px; background: #2e7d32;">Accept</button>
-                <button id="btn-decline-party" class="party-btn" style="font-size: 14px; padding: 5px 15px; background: #c62828;">Decline</button>
+            <div class="party-request-modal__actions">
+                <button id="btn-accept-party" class="party-btn party-btn--success party-btn--large" type="button">Accept</button>
+                <button id="btn-decline-party" class="party-btn party-btn--danger party-btn--large" type="button">Decline</button>
             </div>
         </div>
 

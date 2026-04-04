@@ -219,35 +219,27 @@ export class SocialUI {
     _createSocialWindow() {
         const div = document.getElementById('social-window') || document.createElement('div');
         div.id = 'social-window';
-        div.className = 'window';
+        div.className = 'window social-window';
         div.style.display = 'none';
         div.style.position = 'absolute';
         div.style.top = '50%';
         div.style.left = '50%';
         div.style.transform = 'translate(-50%, -50%)';
-        div.style.width = '400px';
-        div.style.height = '500px';
-        div.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
-        div.style.border = '2px solid #444';
-        div.style.color = 'white';
-        div.style.padding = '20px';
-        div.style.zIndex = '1000';
-        div.style.fontFamily = 'Arial, sans-serif';
         div.style.userSelect = 'none';
         div.style.webkitUserSelect = 'none';
 
         div.innerHTML = `
-            <div class="window-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid #666; padding-bottom:10px;">
-                <span style="margin:0; font-size:24px; font-weight:bold;">SOCIAL</span>
+            <div class="window-header social-window__header">
+                <span class="social-window__title">SOCIAL</span>
                 <button id="close-social" class="close-btn" type="button" aria-label="Close social window">×</button>
             </div>
-            <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; font-weight:bold; margin-bottom:10px; color:#aaa;">
+            <div class="social-window__columns">
                 <span>Name</span>
                 <span>Class</span>
                 <span>Level</span>
                 <span>Action</span>
             </div>
-            <div id="social-list" style="overflow-y:auto; height:380px;">
+            <div id="social-list" class="social-window__list">
             </div>
         `;
 
