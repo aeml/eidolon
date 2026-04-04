@@ -133,7 +133,7 @@
         </div>
 
         <div id="character-sheet" class="window">
-            <div class="window-header">CHARACTER STATS</div>
+            <div class="window-header"><span>CHARACTER STATS</span><button id="btn-close-character" class="close-btn" type="button" aria-label="Close character sheet">×</button></div>
             <div class="char-sheet-body">
                 <div id="stats-content">
                     <!-- Populated by JS -->
@@ -171,7 +171,7 @@
         </div>
 
         <div id="inventory-screen" class="window">
-            <div class="window-header">INVENTORY</div>
+            <div class="window-header"><span>INVENTORY</span><button id="btn-close-inventory" class="close-btn" type="button" aria-label="Close inventory">×</button></div>
             <div class="inventory-grid" id="inventory-grid">
                 <!-- 25 Slots -->
                 <div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div>
@@ -316,7 +316,7 @@
         </div>
 
         <div id="settings-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 360px; z-index: 102;">
-            <div class="window-header">SETTINGS</div>
+            <div class="window-header"><span>SETTINGS</span><button id="btn-close-settings-header" class="close-btn" type="button" aria-label="Close settings">×</button></div>
             <div style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
                 <div style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
                     <label for="graphics-quality" style="color: #ffd700; font-size: 13px;">Graphics Quality</label>
@@ -415,7 +415,7 @@
 
         <!-- Report Screen -->
         <div id="report-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; z-index: 102;">
-            <div class="window-header">SUBMIT REPORT</div>
+            <div class="window-header"><span>SUBMIT REPORT</span><button id="btn-close-report-header" class="close-btn" type="button" aria-label="Close report form">×</button></div>
             <div style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
                 <select id="report-type" style="padding: 10px; background: #333; color: white; border: 1px solid #666; font-family: inherit;">
                     <option value="Bug Report">Bug Report</option>
@@ -431,7 +431,7 @@
 
         <!-- Help Screen -->
         <div id="help-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; z-index: 101;">
-            <div class="window-header">CONTROLS</div>
+            <div class="window-header"><span>CONTROLS</span><button id="btn-close-help-header" class="close-btn" type="button" aria-label="Close help">×</button></div>
             <div style="padding: 20px; text-align: left; line-height: 1.8; font-size: 14px;">
                 <div><strong style="color: #ffd700;">Left Click:</strong> Move / Melee Attack</div>
                 <div><strong style="color: #ffd700;">Right Click:</strong> Use Ability</div>
@@ -456,6 +456,7 @@
                         (Click <a href="https://github.com/aeml/eidolon/commits/master/" target="_blank" style="color: #ffd700; text-decoration: underline; cursor: pointer;">here</a> for full commit history)
                     </span>
                 </span>
+                <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
                 <div class="patch-note-entry" data-version="0.21.4" style="margin-bottom: 20px;">
@@ -998,7 +999,7 @@
 
         <!-- Shop Screen -->
         <div id="shop-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: auto; z-index: 101; flex-direction: column;">
-            <div class="window-header">MERCHANT</div>
+            <div class="window-header"><span>MERCHANT</span><button id="btn-close-shop-header" class="close-btn" type="button" aria-label="Close merchant window">×</button></div>
             
             <!-- Tabs -->
             <div style="display: flex; border-bottom: 1px solid #444;">
@@ -1040,7 +1041,7 @@
         <div id="stash-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: auto; z-index: 101; flex-direction: column;">
             <div class="window-header">
                 <span>STASH</span>
-                <button id="btn-close-stash" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">X</button>
+                <button id="btn-close-stash" class="close-btn" type="button" aria-label="Close stash">×</button>
             </div>
             <div class="inventory-grid" id="stash-grid" style="grid-template-columns: repeat(10, 1fr); padding: 10px;">
                 <!-- Populated by JS -->
@@ -1054,7 +1055,7 @@
         <div id="forge-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 700px; z-index: 101; flex-direction: column;">
             <div class="window-header">
                 <span>FORGE</span>
-                <button id="btn-close-forge" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">X</button>
+                <button id="btn-close-forge" class="close-btn" type="button" aria-label="Close forge">×</button>
             </div>
             
             <!-- Tabs -->
@@ -1217,7 +1218,7 @@
         <div id="trading-house-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 500px; z-index: 101; flex-direction: column;">
             <div class="window-header">
                 <span>TRADING HOUSE</span>
-                <button id="btn-close-trading-house" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">X</button>
+                <button id="btn-close-trading-house" class="close-btn" type="button" aria-label="Close trading house">×</button>
             </div>
             
             <!-- Tabs -->
@@ -1297,7 +1298,7 @@
         <div id="quest-window" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 500px; z-index: 101; flex-direction: column;">
             <div class="window-header">
                 <span>AVAILABLE QUESTS</span>
-                <button id="btn-close-quest" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">X</button>
+                <button id="btn-close-quest" class="close-btn" type="button" aria-label="Close quest window">×</button>
             </div>
             <div id="quest-list" style="flex-grow: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px;">
                 <!-- Populated by JS -->
@@ -1308,7 +1309,7 @@
         <div id="quest-journal" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 500px; z-index: 100; flex-direction: column;">
             <div class="window-header">
                 <span>QUEST JOURNAL</span>
-                <button id="btn-close-journal" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">X</button>
+                <button id="btn-close-journal" class="close-btn" type="button" aria-label="Close quest journal">×</button>
             </div>
             <div id="journal-list" style="flex-grow: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px;">
                 <!-- Populated by JS -->

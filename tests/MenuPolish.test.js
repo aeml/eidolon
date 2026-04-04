@@ -4,6 +4,7 @@ import { UIManager } from '../src/ui/UIManager.js';
 import { SkillTreeUI } from '../src/ui/SkillTreeUI.js';
 
 const windowsCssPath = new URL('../src/styles/windows.css', import.meta.url).pathname;
+const indexHtmlPath = new URL('../index.html', import.meta.url).pathname;
 
 function createTouchLikeEvent(type, options = {}) {
     const event = new Event(type, { bubbles: true, cancelable: true });
@@ -12,6 +13,199 @@ function createTouchLikeEvent(type, options = {}) {
         value: options.touches || [{ clientX: 100, clientY: 120 }]
     });
     return event;
+}
+
+function buildStaticWindowDom() {
+    document.body.innerHTML = `
+        <div id="player-hud"></div>
+        <div id="player-hp-bar"></div>
+        <div id="player-hp-text"></div>
+        <div id="player-mana-bar"></div>
+        <div id="player-mana-text"></div>
+        <div id="ui-layer"></div>
+        <div id="game-timer"></div>
+        <div id="combat-intent-panel" style="display:none"></div>
+        <div id="combat-intent-name"></div>
+        <div id="combat-intent-meta"></div>
+        <div id="combat-intent-status"></div>
+        <div id="combat-intent-preview-basic"></div>
+        <div id="combat-intent-preview-ability"></div>
+        <div id="combat-intent-preview-ability-label"></div>
+        <div id="dungeon-entrance-hint" style="display:none"></div>
+        <div id="dungeon-entrance-hint-name"></div>
+        <div id="dungeon-entrance-hint-status"></div>
+        <div id="dungeon-entrance-hint-prompt"></div>
+        <div id="xp-bar-fill"></div>
+        <div id="xp-text"></div>
+        <div id="character-sheet" style="display:none"></div>
+        <button id="btn-close-character"></button>
+        <div id="stats-content"></div>
+        <div id="quest-window" style="display:none"></div>
+        <div id="quest-list"></div>
+        <div id="quest-journal" style="display:none"></div>
+        <div id="journal-list"></div>
+        <div id="objectives-panel"></div>
+        <div id="objectives-list"></div>
+        <button id="btn-close-quest"></button>
+        <button id="btn-close-journal"></button>
+        <div id="esc-menu" style="display:none"></div>
+        <div id="help-screen" style="display:none"></div>
+        <button id="btn-close-help-header"></button>
+        <div id="settings-screen" style="display:none"></div>
+        <button id="btn-close-settings-header"></button>
+        <div id="patch-notes-screen" style="display:none"></div>
+        <button id="btn-close-patch-notes-header"></button>
+        <button id="btn-resume"></button>
+        <button id="btn-help"></button>
+        <button id="btn-settings"></button>
+        <button id="btn-patch-notes"></button>
+        <button id="btn-report"></button>
+        <button id="btn-menu"></button>
+        <button id="btn-close-help"></button>
+        <button id="btn-close-settings"></button>
+        <button id="btn-close-patch-notes"></button>
+        <button id="btn-respawn"></button>
+        <div id="abilities-menu" style="display:none"></div>
+        <div id="abilities-content"></div>
+        <button id="btn-close-abilities"></button>
+        <div id="hotbar-container"></div>
+        <div class="hotbar-slot"><div class="hotbar-icon"></div></div>
+        <div id="report-screen" style="display:none"></div>
+        <button id="btn-close-report-header"></button>
+        <button id="btn-cancel-report"></button>
+        <button id="btn-submit-report"></button>
+        <select id="report-type"></select>
+        <textarea id="report-text"></textarea>
+        <select id="graphics-quality"></select>
+        <input id="graphics-brightness" />
+        <div id="graphics-brightness-value"></div>
+        <input id="auto-loot-enabled" type="checkbox" />
+        <button id="btn-download-core-assets"></button>
+        <button id="btn-download-dungeon-assets"></button>
+        <button id="btn-download-environment-assets"></button>
+        <button id="btn-download-recommended-assets"></button>
+        <button id="btn-refresh-outdated-assets"></button>
+        <button id="btn-update-cached-assets"></button>
+        <button id="btn-clear-cached-assets"></button>
+        <div id="asset-download-status"></div>
+        <div id="asset-download-progress"></div>
+        <div id="asset-download-progress-bar"></div>
+        <div id="asset-cache-state-detail"></div>
+        <div id="asset-last-synced-version"></div>
+        <div id="asset-pack-core-badge"></div>
+        <div id="asset-pack-core-status"></div>
+        <div id="asset-pack-core-size"></div>
+        <div id="asset-pack-core-version"></div>
+        <div id="asset-pack-dungeon-badge"></div>
+        <div id="asset-pack-dungeon-status"></div>
+        <div id="asset-pack-dungeon-size"></div>
+        <div id="asset-pack-dungeon-version"></div>
+        <div id="asset-pack-environment-badge"></div>
+        <div id="asset-pack-environment-status"></div>
+        <div id="asset-pack-environment-size"></div>
+        <div id="asset-pack-environment-version"></div>
+        <div id="inventory-screen" style="display:none"></div>
+        <button id="btn-close-inventory"></button>
+        <div id="inventory-grid"></div>
+        <button id="btn-sort-inventory"></button>
+        <div id="gold-display"></div>
+        <div id="shop-screen" style="display:none"></div>
+        <button id="btn-close-shop"></button>
+        <button id="btn-close-shop-header"></button>
+        <div id="shop-gamble-title"></div>
+        <div id="shop-content-main"></div>
+        <div id="shop-content-buyback"></div>
+        <button id="tab-shop-main"></button>
+        <button id="tab-shop-buyback"></button>
+        <button id="btn-sell-common"></button>
+        <button id="btn-sell-uncommon"></button>
+        <button id="btn-sell-rare"></button>
+        <div id="shop-grid"></div>
+        <div id="stash-screen" style="display:none"></div>
+        <button id="btn-close-stash"></button>
+        <div id="stash-grid"></div>
+        <div id="buyback-grid"></div>
+        <div id="split-stack-window" style="display:none"></div>
+        <button id="btn-close-split"></button>
+        <div id="split-item-name"></div>
+        <input id="split-amount-range" />
+        <input id="split-amount-input" />
+        <button id="btn-confirm-split"></button>
+        <button id="btn-cancel-split"></button>
+        <div id="forge-screen" style="display:none"></div>
+        <button id="btn-close-forge"></button>
+        <button id="tab-forge-upgrade"></button>
+        <button id="tab-forge-potency"></button>
+        <button id="tab-forge-socket"></button>
+        <button id="tab-forge-gems"></button>
+        <button id="tab-gem-insert"></button>
+        <button id="tab-gem-combine"></button>
+        <button id="tab-gem-remove"></button>
+        <button id="btn-forge-upgrade"></button>
+        <button id="btn-forge-upgrade-1"></button>
+        <button id="btn-forge-upgrade-10"></button>
+        <button id="btn-forge-potency"></button>
+        <button id="btn-forge-socket"></button>
+        <button id="btn-forge-insert-gem"></button>
+        <button id="btn-forge-combine-gem"></button>
+        <button id="btn-forge-remove-gem"></button>
+        <div id="forge-potency-info"></div>
+        <div id="forge-potency-item-name"></div>
+        <div id="forge-potency-stats"></div>
+        <div id="forge-potency-cost-value"></div>
+        <div id="forge-socket-info"></div>
+        <div id="forge-socket-item-name"></div>
+        <div id="forge-socket-stats"></div>
+        <div id="forge-socket-cost-hearts"></div>
+        <div id="forge-socket-cost-shards"></div>
+        <div id="trading-house-screen" style="display:none"></div>
+        <button id="btn-close-trading-house"></button>
+        <button id="tab-trading-bid"></button>
+        <button id="tab-trading-list"></button>
+        <button id="tab-trading-my"></button>
+        <div id="trading-panel-bid"></div>
+        <div id="trading-panel-list"></div>
+        <div id="trading-panel-my"></div>
+        <input id="trading-search-input" />
+        <button id="btn-trading-search"></button>
+        <div id="trading-list-container"></div>
+        <div id="trading-sell-slot"></div>
+        <input id="trading-input-bid" />
+        <input id="trading-input-buyout" />
+        <select id="trading-input-duration"></select>
+        <button id="btn-trading-create"></button>
+        <div id="trading-inventory-list"></div>
+        <div id="trading-my-list"></div>
+        <div id="social-window" style="display:none"></div>
+        <div id="party-panel"></div>
+        <div id="skill-tree-window" style="display:none"></div>
+        <button id="btn-close-skills"></button>
+        <div id="menu-bar"></div>
+        <button id="btn-menu-map"></button>
+        <button id="btn-menu-social"></button>
+        <button id="btn-menu-inventory"></button>
+        <button id="btn-menu-character"></button>
+        <button id="btn-menu-quest"></button>
+        <button id="btn-menu-skills"></button>
+        <div id="ability-container"></div>
+        <div id="ability-icon"></div>
+        <div id="ability-cooldown"></div>
+        <div id="ability-tooltip"></div>
+        <div id="ability-name"></div>
+        <div id="ability-desc"></div>
+        <div id="ability-cost"></div>
+        <div id="stat-tooltip"></div>
+        <div id="stat-tooltip-title"></div>
+        <div id="stat-tooltip-desc"></div>
+        <div id="compare-tooltip"></div>
+        <div id="compare-tooltip-title"></div>
+        <div id="compare-tooltip-desc"></div>
+        <div id="chat-box"></div>
+        <div id="chat-messages"></div>
+        <input id="chat-input" />
+        <div id="death-screen"></div>
+        <div id="xp-bar-container"></div>
+    `;
 }
 
 describe('menu polish regressions', () => {
@@ -187,6 +381,62 @@ describe('menu polish regressions', () => {
         respecFooterCloseBtn.click();
         expect(document.getElementById('respec-menu')).toBeNull();
         expect(document.getElementById('respec-menu-backdrop')).toBeNull();
+    });
+
+    test('static windows expose header close buttons and backdrop dismissal for older menu screens', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+
+        ui.toggleHelp();
+        expect(document.getElementById('help-screen').style.display).toBe('block');
+        expect(document.getElementById('ui-static-modal-backdrop')).not.toBeNull();
+        document.getElementById('btn-close-help-header').click();
+        expect(document.getElementById('help-screen').style.display).toBe('none');
+        expect(document.getElementById('ui-static-modal-backdrop')).toBeNull();
+
+        ui.togglePatchNotes();
+        expect(document.getElementById('patch-notes-screen').style.display).toBe('flex');
+        expect(document.getElementById('ui-static-modal-backdrop')).not.toBeNull();
+        document.getElementById('ui-static-modal-backdrop').click();
+        expect(document.getElementById('patch-notes-screen').style.display).toBe('none');
+        expect(document.getElementById('ui-static-modal-backdrop')).toBeNull();
+    });
+
+    test('character and inventory windows close from dedicated header controls', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+
+        ui.toggleCharacterSheet();
+        expect(document.getElementById('character-sheet').style.display).toBe('block');
+        document.getElementById('btn-close-character').click();
+        expect(document.getElementById('character-sheet').style.display).toBe('none');
+
+        ui.toggleInventory();
+        expect(document.getElementById('inventory-screen').style.display).toBe('block');
+        document.getElementById('btn-close-inventory').click();
+        expect(document.getElementById('inventory-screen').style.display).toBe('none');
+    });
+
+    test('older static window markup uses consistent close button chrome', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+
+        [
+            'btn-close-help-header',
+            'btn-close-settings-header',
+            'btn-close-patch-notes-header',
+            'btn-close-report-header',
+            'btn-close-shop-header',
+            'btn-close-stash',
+            'btn-close-forge',
+            'btn-close-trading-house',
+            'btn-close-quest',
+            'btn-close-journal'
+        ].forEach((buttonId) => {
+            expect(html).toMatch(new RegExp(`id="${buttonId}"[^>]*class="close-btn"`));
+        });
+
+        expect(html).toContain('id="btn-close-character"');
+        expect(html).toContain('id="btn-close-inventory"');
     });
 
     test('window chrome disables accidental selection while preserving text selection inside form fields', () => {

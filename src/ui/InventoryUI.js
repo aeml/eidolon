@@ -16,13 +16,16 @@ export class InventoryUI {
         this.inventoryGrid = document.getElementById('inventory-grid');
         this.goldDisplay = document.getElementById('gold-display');
         this.btnSortInventory = document.getElementById('btn-sort-inventory');
+        this.btnCloseInventory = document.getElementById('btn-close-inventory');
         this.shopScreen = document.getElementById('shop-screen');
+
         this.shopGambleTitle = document.getElementById('shop-gamble-title');
         this.shopContentMain = document.getElementById('shop-content-main');
         this.shopContentBuyback = document.getElementById('shop-content-buyback');
         this.tabShopMain = document.getElementById('tab-shop-main');
         this.tabShopBuyback = document.getElementById('tab-shop-buyback');
         this.btnCloseShop = document.getElementById('btn-close-shop');
+        this.btnCloseShopHeader = document.getElementById('btn-close-shop-header');
         this.btnSellCommon = document.getElementById('btn-sell-common');
         this.btnSellUncommon = document.getElementById('btn-sell-uncommon');
         this.btnSellRare = document.getElementById('btn-sell-rare');
@@ -261,6 +264,9 @@ export class InventoryUI {
         if (this.btnSortInventory) {
             this.btnSortInventory.addEventListener('click', () => this.handleSortInventory());
         }
+        if (this.btnCloseInventory) {
+            this.btnCloseInventory.addEventListener('click', () => this.toggleInventory());
+        }
     }
 
     _bindShopEvents() {
@@ -272,6 +278,9 @@ export class InventoryUI {
         }
         if (this.btnCloseShop) {
             this.btnCloseShop.addEventListener('click', () => this.toggleShop());
+        }
+        if (this.btnCloseShopHeader) {
+            this.btnCloseShopHeader.addEventListener('click', () => this.toggleShop());
         }
         if (this.btnCloseStash) {
             this.btnCloseStash.addEventListener('click', () => this.toggleStash());

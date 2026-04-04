@@ -63,8 +63,13 @@ export class UIManager {
         this.btnReport = document.getElementById('btn-report');
         this.btnMenu = document.getElementById('btn-menu');
         this.btnCloseHelp = document.getElementById('btn-close-help');
+        this.btnCloseHelpHeader = document.getElementById('btn-close-help-header');
         this.btnCloseSettings = document.getElementById('btn-close-settings');
+        this.btnCloseSettingsHeader = document.getElementById('btn-close-settings-header');
         this.btnClosePatchNotes = document.getElementById('btn-close-patch-notes');
+        this.btnClosePatchNotesHeader = document.getElementById('btn-close-patch-notes-header');
+        this.btnCloseReportHeader = document.getElementById('btn-close-report-header');
+        this.btnCloseCharacter = document.getElementById('btn-close-character');
         this.btnRespawn = document.getElementById('btn-respawn');
 
         // Skill Tree UI (extracted module)
@@ -136,12 +141,13 @@ export class UIManager {
         if (this.btnReport) this.btnReport.addEventListener('click', () => this.toggleReport());
         if (this.btnMenu) this.btnMenu.addEventListener('click', () => location.reload());
         if (this.btnCloseHelp) this.btnCloseHelp.addEventListener('click', () => this.toggleHelp());
+        if (this.btnCloseHelpHeader) this.btnCloseHelpHeader.addEventListener('click', () => this.toggleHelp());
         if (this.btnCloseSettings) this.btnCloseSettings.addEventListener('click', () => this.toggleSettings());
-        if (this.btnClosePatchNotes) this.btnClosePatchNotes.addEventListener('click', (e) => {
-            console.log("Close Patch Notes Button Clicked");
-            this.togglePatchNotes();
-            e.stopPropagation();
-        });
+        if (this.btnCloseSettingsHeader) this.btnCloseSettingsHeader.addEventListener('click', () => this.toggleSettings());
+        if (this.btnClosePatchNotes) this.btnClosePatchNotes.addEventListener('click', () => this.togglePatchNotes());
+        if (this.btnClosePatchNotesHeader) this.btnClosePatchNotesHeader.addEventListener('click', () => this.togglePatchNotes());
+        if (this.btnCloseReportHeader) this.btnCloseReportHeader.addEventListener('click', () => this.toggleReport());
+        if (this.btnCloseCharacter) this.btnCloseCharacter.addEventListener('click', () => this.toggleCharacterSheet());
 
         this.onGraphicsQualityChange = null;
         this.onBrightnessChange = null;
@@ -1048,6 +1054,96 @@ export class UIManager {
         }
     }
 
+    isElementVisible(element) {
+        return Boolean(element && element.style.display !== 'none' && element.style.display !== '');
+    }
+
+    getStaticModalWindows() {
+        return [this.patchNotesScreen, this.settingsScreen, this.reportScreen, this.helpScreen].filter(Boolean);
+    }
+
+    ensureStaticModalBackdrop() {
+        let backdrop = document.getElementById('ui-static-modal-backdrop');
+        if (backdrop) {
+            return backdrop;
+        }
+
+        backdrop = document.createElement('div');
+        backdrop.id = 'ui-static-modal-backdrop';
+        backdrop.style.position = 'fixed';
+        backdrop.style.inset = '0';
+        backdrop.style.background = 'rgba(3, 5, 10, 0.58)';
+        backdrop.style.backdropFilter = 'blur(6px)';
+        backdrop.style.webkitBackdropFilter = 'blur(6px)';
+        backdrop.style.zIndex = '100';
+        backdrop.style.pointerEvents = 'auto';
+        backdrop.addEventListener('click', () => this.closeOpenStaticModal());
+        document.body.appendChild(backdrop);
+        return backdrop;
+    }
+
+    syncStaticModalBackdrop() {
+        const backdrop = document.getElementById('ui-static-modal-backdrop');
+        if (this.getStaticModalWindows().some((windowElement) => this.isElementVisible(windowElement))) {
+            this.ensureStaticModalBackdrop();
+            return;
+        }
+
+        backdrop?.remove();
+    }
+
+    closeStaticModal(element) {
+        if (!this.isElementVisible(element)) {
+            return false;
+        }
+
+        element.style.display = 'none';
+        this.syncStaticModalBackdrop();
+        return true;
+    }
+
+    closeAllStaticModals() {
+        let closedAny = false;
+        this.getStaticModalWindows().forEach((windowElement) => {
+            if (this.isElementVisible(windowElement)) {
+                windowElement.style.display = 'none';
+                closedAny = true;
+            }
+        });
+        this.syncStaticModalBackdrop();
+        return closedAny;
+    }
+
+    closeOpenStaticModal() {
+        for (const windowElement of this.getStaticModalWindows()) {
+            if (this.closeStaticModal(windowElement)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    toggleStaticModal(element, openDisplay = 'block') {
+        if (!element) {
+            return;
+        }
+
+        const isHidden = !this.isElementVisible(element);
+        if (isHidden) {
+            this.getStaticModalWindows().forEach((windowElement) => {
+                if (windowElement && windowElement !== element) {
+                    windowElement.style.display = 'none';
+                }
+            });
+            element.style.display = openDisplay;
+        } else {
+            element.style.display = 'none';
+        }
+
+        this.syncStaticModalBackdrop();
+    }
+
     // --- Inventory delegates (InventoryUI module) ---
     toggleInventory() { this.inventory.toggleInventory(); }
     showSplitWindow(item, slotIndex) { this.inventory.showSplitWindow(item, slotIndex); }
@@ -1413,53 +1509,24 @@ export class UIManager {
         
         // If closing menu, also close help/patch notes if open
         if (!isHidden) {
-            this.helpScreen.style.display = 'none';
-            if (this.settingsScreen) this.settingsScreen.style.display = 'none';
-            this.patchNotesScreen.style.display = 'none';
-            this.reportScreen.style.display = 'none';
+            this.closeAllStaticModals();
         }
     }
 
     toggleHelp() {
-        const isHidden = this.helpScreen.style.display === 'none' || this.helpScreen.style.display === '';
-        this.helpScreen.style.display = isHidden ? 'block' : 'none';
-        if (!isHidden) {
-            if (this.settingsScreen) this.settingsScreen.style.display = 'none';
-            this.patchNotesScreen.style.display = 'none'; // Close other windows
-            this.reportScreen.style.display = 'none';
-        }
+        this.toggleStaticModal(this.helpScreen, 'block');
     }
 
     toggleSettings() {
-        if (!this.settingsScreen) return;
-        const isHidden = this.settingsScreen.style.display === 'none' || this.settingsScreen.style.display === '';
-        this.settingsScreen.style.display = isHidden ? 'block' : 'none';
-        if (isHidden) {
-            this.helpScreen.style.display = 'none';
-            this.patchNotesScreen.style.display = 'none';
-            this.reportScreen.style.display = 'none';
-        }
+        this.toggleStaticModal(this.settingsScreen, 'block');
     }
 
     togglePatchNotes() {
-        console.log("Toggling Patch Notes");
-        const isHidden = this.patchNotesScreen.style.display === 'none' || this.patchNotesScreen.style.display === '';
-        this.patchNotesScreen.style.display = isHidden ? 'flex' : 'none'; // Flex for layout
-        if (isHidden) {
-            this.helpScreen.style.display = 'none'; // Close other windows
-            if (this.settingsScreen) this.settingsScreen.style.display = 'none';
-            this.reportScreen.style.display = 'none';
-        }
+        this.toggleStaticModal(this.patchNotesScreen, 'flex');
     }
 
     toggleReport() {
-        const isHidden = this.reportScreen.style.display === 'none' || this.reportScreen.style.display === '';
-        this.reportScreen.style.display = isHidden ? 'block' : 'none';
-        if (isHidden) {
-            this.helpScreen.style.display = 'none';
-            if (this.settingsScreen) this.settingsScreen.style.display = 'none';
-            this.patchNotesScreen.style.display = 'none';
-        }
+        this.toggleStaticModal(this.reportScreen, 'block');
     }
 
     setGraphicsQuality(quality) {
