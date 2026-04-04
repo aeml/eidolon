@@ -769,11 +769,14 @@ export class SkillTreeUI {
     // ================================================================
 
     showRespecMenu() {
-        // Remove existing if any
-        const existing = document.getElementById('respec-menu');
-        if (existing) existing.remove();
         const existingBackdrop = document.getElementById('respec-menu-backdrop');
-        if (existingBackdrop) existingBackdrop.remove();
+        if (existingBackdrop && typeof existingBackdrop.__closeMenu === 'function') {
+            existingBackdrop.__closeMenu();
+        } else {
+            const existing = document.getElementById('respec-menu');
+            if (existing) existing.remove();
+            if (existingBackdrop) existingBackdrop.remove();
+        }
 
         let isMenuClosed = false;
         const handleMenuEscape = (event) => {
@@ -787,6 +790,7 @@ export class SkillTreeUI {
             }
             isMenuClosed = true;
             window.removeEventListener('keydown', handleMenuEscape);
+            delete backdrop.__closeMenu;
             menu.remove();
             backdrop.remove();
         };
@@ -800,6 +804,7 @@ export class SkillTreeUI {
         backdrop.style.webkitBackdropFilter = 'blur(8px)';
         backdrop.style.zIndex = '1090';
         backdrop.style.pointerEvents = 'auto';
+        backdrop.__closeMenu = removeMenu;
         backdrop.addEventListener('click', removeMenu);
         window.addEventListener('keydown', handleMenuEscape);
 
@@ -820,6 +825,7 @@ export class SkillTreeUI {
         menu.style.borderRadius = '16px';
         menu.style.boxShadow = '0 28px 80px rgba(0, 0, 0, 0.55)';
         menu.style.userSelect = 'none';
+        menu.style.webkitUserSelect = 'none';
         menu.style.pointerEvents = 'auto';
         menu.addEventListener('click', (e) => e.stopPropagation());
 
@@ -911,13 +917,20 @@ export class SkillTreeUI {
         goldDisplay.innerHTML = `<span style="color: #888;">Your Gold:</span> <span style="color: #fc0; font-weight: bold;">${playerGold.toLocaleString()}</span>`;
         menu.appendChild(goldDisplay);
 
+        const footerActions = document.createElement('div');
+        footerActions.style.display = 'flex';
+        footerActions.style.justifyContent = 'center';
+        footerActions.style.marginTop = '16px';
+
         const footerCloseBtn = document.createElement('button');
+        footerCloseBtn.id = 'btn-close-respec-menu-footer';
         footerCloseBtn.innerText = 'Close';
         footerCloseBtn.className = 'menu-btn';
         footerCloseBtn.type = 'button';
-        footerCloseBtn.style.marginTop = '15px';
+        footerCloseBtn.style.minWidth = '120px';
         footerCloseBtn.onclick = removeMenu;
-        menu.appendChild(footerCloseBtn);
+        footerActions.appendChild(footerCloseBtn);
+        menu.appendChild(footerActions);
 
         document.body.appendChild(backdrop);
         document.body.appendChild(menu);

@@ -2229,12 +2229,14 @@ export class UIManager {
     handleItemDrop(source, target) { this.inventory.handleItemDrop(source, target); }
 
     showDungeonMenu(data) {
-        console.log("Showing Dungeon Menu:", data);
-        // Remove existing if any
-        const existing = document.getElementById('dungeon-menu');
-        if (existing) existing.remove();
         const existingBackdrop = document.getElementById('dungeon-menu-backdrop');
-        if (existingBackdrop) existingBackdrop.remove();
+        if (existingBackdrop && typeof existingBackdrop.__closeMenu === 'function') {
+            existingBackdrop.__closeMenu();
+        } else {
+            const existing = document.getElementById('dungeon-menu');
+            if (existing) existing.remove();
+            if (existingBackdrop) existingBackdrop.remove();
+        }
 
         const backdrop = document.createElement('div');
         backdrop.id = 'dungeon-menu-backdrop';
@@ -2263,6 +2265,7 @@ export class UIManager {
         menu.style.maxWidth = 'min(92vw, 540px)';
         menu.style.boxShadow = '0 28px 80px rgba(0, 0, 0, 0.55)';
         menu.style.userSelect = 'none';
+        menu.style.webkitUserSelect = 'none';
         menu.style.pointerEvents = 'auto';
         menu.addEventListener('click', (e) => e.stopPropagation());
 
@@ -2278,10 +2281,12 @@ export class UIManager {
             }
             isMenuClosed = true;
             window.removeEventListener('keydown', handleMenuEscape);
+            delete backdrop.__closeMenu;
             menu.remove();
             backdrop.remove();
         };
 
+        backdrop.__closeMenu = removeMenu;
         backdrop.addEventListener('click', removeMenu);
         window.addEventListener('keydown', handleMenuEscape);
 
@@ -2364,6 +2369,8 @@ export class UIManager {
         dungeonSelect.style.border = '1px solid #555';
         dungeonSelect.style.cursor = 'pointer';
         dungeonSelect.style.width = '250px';
+        dungeonSelect.style.userSelect = 'text';
+        dungeonSelect.style.webkitUserSelect = 'text';
 
         const availableDungeons = lockedDungeonType
             ? { [lockedDungeonType]: dungeonInfo[lockedDungeonType] }
@@ -2407,6 +2414,8 @@ export class UIManager {
         runLevelSelect.style.border = '1px solid #555';
         runLevelSelect.style.cursor = 'pointer';
         runLevelSelect.style.width = '250px';
+        runLevelSelect.style.userSelect = 'text';
+        runLevelSelect.style.webkitUserSelect = 'text';
         for (const runLevel of availableRunLevels.length > 0 ? availableRunLevels : DUNGEON_RUN_LEVEL_BANDS) {
             const option = document.createElement('option');
             option.value = String(runLevel);
@@ -2515,17 +2524,26 @@ export class UIManager {
         updateDifficultyInfo(); // Initial update
 
         // Enter Button
+        const actions = document.createElement('div');
+        actions.style.display = 'flex';
+        actions.style.justifyContent = 'center';
+        actions.style.gap = '10px';
+        actions.style.flexWrap = 'wrap';
+        actions.style.marginTop = '16px';
+
         const enterBtn = document.createElement('button');
         enterBtn.id = 'btn-enter-dungeon';
         enterBtn.innerText = 'Enter Dungeon';
-        enterBtn.style.margin = '10px';
+        enterBtn.className = 'menu-btn';
+        enterBtn.type = 'button';
+        enterBtn.style.minWidth = '160px';
         enterBtn.style.padding = '12px 30px';
-        enterBtn.style.cursor = 'pointer';
         enterBtn.style.backgroundColor = '#2a6';
         enterBtn.style.color = '#fff';
-        enterBtn.style.border = 'none';
+        enterBtn.style.border = '1px solid rgba(126, 247, 182, 0.45)';
         enterBtn.style.fontWeight = 'bold';
         enterBtn.style.fontSize = '16px';
+        enterBtn.style.boxShadow = '0 10px 24px rgba(12, 38, 24, 0.35)';
         enterBtn.onclick = () => {
             if (window.game && window.game.socket) {
                 window.game.socket.send(JSON.stringify({
@@ -2539,18 +2557,21 @@ export class UIManager {
             }
             removeMenu();
         };
-        menu.appendChild(enterBtn);
+        actions.appendChild(enterBtn);
 
         // Reset Button (Leader Only)
         if (data.isLeader) {
             const resetBtn = document.createElement('button');
+            resetBtn.id = 'btn-reset-dungeon';
             resetBtn.innerText = 'Reset Instance';
-            resetBtn.style.margin = '10px';
-            resetBtn.style.padding = '10px 20px';
-            resetBtn.style.cursor = 'pointer';
+            resetBtn.className = 'menu-btn';
+            resetBtn.type = 'button';
+            resetBtn.style.minWidth = '160px';
+            resetBtn.style.padding = '12px 24px';
             resetBtn.style.backgroundColor = '#800';
             resetBtn.style.color = '#fff';
-            resetBtn.style.border = 'none';
+            resetBtn.style.border = '1px solid rgba(255, 138, 138, 0.35)';
+            resetBtn.style.boxShadow = '0 10px 24px rgba(48, 10, 10, 0.3)';
             resetBtn.onclick = () => {
                 if (window.game && window.game.socket) {
                     window.game.socket.send(JSON.stringify({
@@ -2560,21 +2581,15 @@ export class UIManager {
                 }
                 removeMenu();
             };
-            menu.appendChild(resetBtn);
+            actions.appendChild(resetBtn);
         }
 
-        // Close Button
-        const actions = document.createElement('div');
-        actions.style.display = 'flex';
-        actions.style.justifyContent = 'center';
-        actions.style.gap = '10px';
-        actions.style.flexWrap = 'wrap';
-        actions.style.marginTop = '12px';
-
         const footerCloseBtn = document.createElement('button');
+        footerCloseBtn.id = 'btn-close-dungeon-menu-footer';
         footerCloseBtn.innerText = 'Close';
         footerCloseBtn.className = 'menu-btn';
         footerCloseBtn.type = 'button';
+        footerCloseBtn.style.minWidth = '120px';
         footerCloseBtn.onclick = removeMenu;
         actions.appendChild(footerCloseBtn);
         menu.appendChild(actions);

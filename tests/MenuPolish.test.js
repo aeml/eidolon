@@ -123,14 +123,18 @@ describe('menu polish regressions', () => {
         expect(document.getElementById('respec-menu-backdrop')).toBeNull();
     });
 
-    test('dungeon and respec menus close on Escape and mark body text as non-selectable', () => {
+    test('dungeon and respec menus close on Escape and keep chrome non-selectable while fields stay interactive', () => {
         const uiManager = Object.create(UIManager.prototype);
         window.game = { socket: { send: jest.fn() } };
 
         uiManager.showDungeonMenu({ hasInstance: false, isLeader: false });
         const dungeonMenu = document.getElementById('dungeon-menu');
+        const dungeonSelect = document.getElementById('dungeon-type-select');
+        const runLevelSelect = document.getElementById('dungeon-run-level-select');
         expect(dungeonMenu).not.toBeNull();
         expect(dungeonMenu.style.userSelect).toBe('none');
+        expect(dungeonSelect.style.userSelect).toBe('text');
+        expect(runLevelSelect.style.userSelect).toBe('text');
 
         window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
         expect(document.getElementById('dungeon-menu')).toBeNull();
@@ -147,6 +151,40 @@ describe('menu polish regressions', () => {
         expect(respecMenu.style.userSelect).toBe('none');
 
         window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        expect(document.getElementById('respec-menu')).toBeNull();
+        expect(document.getElementById('respec-menu-backdrop')).toBeNull();
+    });
+
+    test('dungeon and respec menus keep inside clicks open but footer close buttons dismiss them', () => {
+        const uiManager = Object.create(UIManager.prototype);
+        window.game = { socket: { send: jest.fn() } };
+
+        uiManager.showDungeonMenu({ hasInstance: false, isLeader: false });
+        const dungeonMenu = document.getElementById('dungeon-menu');
+        const dungeonFooterCloseBtn = document.getElementById('btn-close-dungeon-menu-footer');
+        expect(dungeonMenu).not.toBeNull();
+        expect(dungeonFooterCloseBtn).not.toBeNull();
+
+        dungeonMenu.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        expect(document.getElementById('dungeon-menu')).not.toBeNull();
+        dungeonFooterCloseBtn.click();
+        expect(document.getElementById('dungeon-menu')).toBeNull();
+        expect(document.getElementById('dungeon-menu-backdrop')).toBeNull();
+
+        const skillTree = new SkillTreeUI({
+            getLastPlayer: () => ({ level: 12, gold: 9999 }),
+            sendRespec: jest.fn()
+        });
+        skillTree.showRespecMenu();
+
+        const respecMenu = document.getElementById('respec-menu');
+        const respecFooterCloseBtn = document.getElementById('btn-close-respec-menu-footer');
+        expect(respecMenu).not.toBeNull();
+        expect(respecFooterCloseBtn).not.toBeNull();
+
+        respecMenu.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        expect(document.getElementById('respec-menu')).not.toBeNull();
+        respecFooterCloseBtn.click();
         expect(document.getElementById('respec-menu')).toBeNull();
         expect(document.getElementById('respec-menu-backdrop')).toBeNull();
     });
