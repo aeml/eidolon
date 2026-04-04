@@ -217,7 +217,7 @@ export class SocialUI {
 
     /** Create the social window DOM element (called from constructor). */
     _createSocialWindow() {
-        const div = document.createElement('div');
+        const div = document.getElementById('social-window') || document.createElement('div');
         div.id = 'social-window';
         div.className = 'window';
         div.style.display = 'none';
@@ -233,11 +233,13 @@ export class SocialUI {
         div.style.padding = '20px';
         div.style.zIndex = '1000';
         div.style.fontFamily = 'Arial, sans-serif';
+        div.style.userSelect = 'none';
+        div.style.webkitUserSelect = 'none';
 
         div.innerHTML = `
             <div class="window-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid #666; padding-bottom:10px;">
-                <h2 style="margin:0;">Social</h2>
-                <button id="close-social" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">X</button>
+                <span style="margin:0; font-size:24px; font-weight:bold;">SOCIAL</span>
+                <button id="close-social" class="close-btn" type="button" aria-label="Close social window">×</button>
             </div>
             <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; font-weight:bold; margin-bottom:10px; color:#aaa;">
                 <span>Name</span>
@@ -249,10 +251,13 @@ export class SocialUI {
             </div>
         `;
 
-        document.body.appendChild(div);
-        document.getElementById('close-social').onclick = () => this.toggleSocial(false);
+        if (!div.parentElement) {
+            document.body.appendChild(div);
+        }
+
+        div.querySelector('#close-social')?.addEventListener('click', () => this.toggleSocial(false));
 
         this.socialWindow = div;
-        this.socialList = document.getElementById('social-list');
+        this.socialList = div.querySelector('#social-list');
     }
 }

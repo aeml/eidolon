@@ -1267,12 +1267,23 @@ export class UIManager {
     }
 
     toggleAbilitiesMenu() {
-        // Deprecated / Removed
-        console.log("Abilities menu is deprecated.");
+        if (!this.abilitiesMenu) {
+            return;
+        }
+
+        const isHidden = this.abilitiesMenu.style.display === 'none' || this.abilitiesMenu.style.display === '';
+        this.abilitiesMenu.style.display = isHidden ? 'flex' : 'none';
+
+        if (isHidden && this.lastPlayerRef) {
+            const classType = this.lastPlayerRef.subType || this.lastPlayerRef.meshType;
+            if (classType) {
+                this.renderAbilitiesMenu(classType);
+            }
+        }
     }
 
     renderAbilitiesMenu(classType) {
-        // Deprecated / Removed
+        void classType;
     }
 
     setupDragAndDrop() {

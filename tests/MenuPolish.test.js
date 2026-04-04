@@ -417,6 +417,38 @@ describe('menu polish regressions', () => {
         expect(document.getElementById('inventory-screen').style.display).toBe('none');
     });
 
+    test('abilities and social windows reuse shared chrome and close cleanly', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+
+        expect(document.querySelectorAll('#social-window')).toHaveLength(1);
+
+        ui.toggleAbilitiesMenu();
+        expect(document.getElementById('abilities-menu').style.display).toBe('flex');
+        document.getElementById('btn-close-abilities').click();
+        expect(document.getElementById('abilities-menu').style.display).toBe('none');
+
+        ui.toggleSocial(true);
+        const socialWindow = document.getElementById('social-window');
+        expect(socialWindow.style.display).toBe('block');
+        expect(document.getElementById('party-panel').style.display).toBe('block');
+        socialWindow.querySelector('#close-social').click();
+        expect(socialWindow.style.display).toBe('none');
+        expect(document.getElementById('party-panel').style.display).toBe('none');
+    });
+
+    test('legacy button markup uses close-btn chrome for remaining windows', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+
+        [
+            'btn-close-abilities',
+            'btn-close-skills',
+            'btn-close-split'
+        ].forEach((buttonId) => {
+            expect(html).toMatch(new RegExp(`id="${buttonId}"[^>]*class="close-btn"`));
+        });
+    });
+
     test('older static window markup uses consistent close button chrome', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
 
