@@ -510,6 +510,23 @@ describe('menu polish regressions', () => {
         expect(html).not.toContain('style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 5px; background: #333; font-weight: bold; font-size: 12px; color: #ccc;"');
     });
 
+    test('forge gem markup reuses shared split/grid/detail layout classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+
+        expect(html).toContain('class="window-split-row window-split-row--tight"');
+        expect(html).toContain('class="window-panel window-panel--centered"');
+        expect(html).toContain('class="window-grid window-grid--triple"');
+        expect(html).toContain('class="window-grid window-grid--triple window-grid--scroll-sm"');
+        expect(html).toContain('class="window-detail-card"');
+        expect(html).toContain('class="window-detail-compare"');
+        expect(html).toContain('class="window-detail-slots"');
+        expect(html).not.toContain('style="display: flex; gap: 10px; flex: 1;"');
+        expect(html).not.toContain('style="flex: 1; display: flex; flex-direction: column;"');
+        expect(html).not.toContain('style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 10px;"');
+        expect(html).not.toContain('style="border-top: 1px solid #444; padding-top: 10px; display: none; flex-direction: column; align-items: center;"');
+        expect(html).not.toContain('style="display: flex; gap: 20px; margin-bottom: 10px; align-items: center;"');
+    });
+
     test('social window uses reusable class-based chrome', () => {
         buildStaticWindowDom();
         const ui = new UIManager(false);
