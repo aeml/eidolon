@@ -1171,14 +1171,14 @@
                             <!-- Populated by JS -->
                         </div>
                         <div id="forge-gem-combine-info" class="window-detail-card" style="display: flex;">
-                            <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
-                                <div id="forge-gem-combine-slots" style="display: flex; gap: 5px;">
-                                    <div class="combine-slot" style="width: 40px; height: 40px; border: 2px dashed #444; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #666;">1</div>
-                                    <div class="combine-slot" style="width: 40px; height: 40px; border: 2px dashed #444; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #666;">2</div>
-                                    <div class="combine-slot" style="width: 40px; height: 40px; border: 2px dashed #444; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #666;">3</div>
+                            <div class="window-inline-stack">
+                                <div id="forge-gem-combine-slots" class="window-token-row">
+                                    <div class="combine-slot window-token-slot window-token-slot--empty">1</div>
+                                    <div class="combine-slot window-token-slot window-token-slot--empty">2</div>
+                                    <div class="combine-slot window-token-slot window-token-slot--empty">3</div>
                                 </div>
                                 <div style="color: #ff00ff; font-size: 24px;">➔</div>
-                                <div id="forge-gem-combine-result" style="width: 40px; height: 40px; border: 2px solid #444; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #666;">?</div>
+                                <div id="forge-gem-combine-result" class="window-token-slot window-token-slot--result">?</div>
                             </div>
                             <div id="forge-gem-combine-preview" style="color: #0f0; font-size: 12px; margin-bottom: 10px;"></div>
                             <button id="btn-forge-combine-gem" class="btn-menu" style="width: 100%;" disabled>COMBINE GEMS</button>
@@ -1202,11 +1202,11 @@
                         <div id="forge-gem-remove-info" class="window-detail-card" style="display: none;">
                             <div id="forge-gem-remove-equip-name" style="color: white; font-weight: bold; margin-bottom: 5px;"></div>
                             <div style="color: #aaa; font-size: 11px; margin-bottom: 5px;">Click a gem to select for removal:</div>
-                            <div id="forge-gem-remove-slots" style="display: flex; gap: 5px; margin-bottom: 10px;">
+                            <div id="forge-gem-remove-slots" class="window-token-row" style="margin-bottom: 10px;">
                                 <!-- Populated by JS -->
                             </div>
                             <div id="forge-gem-remove-preview" style="color: #ff4444; font-size: 12px; margin-bottom: 10px;"></div>
-                            <button id="btn-forge-remove-gem" class="btn-menu" style="width: 100%; background: #661111;" disabled>REMOVE GEM (DESTROYS IT)</button>
+                            <button id="btn-forge-remove-gem" class="btn-menu btn-menu--danger" style="width: 100%;" disabled>REMOVE GEM (DESTROYS IT)</button>
                         </div>
                     </div>
                 </div>
@@ -1234,7 +1234,7 @@
                 <div id="trading-panel-bid" class="window-panel" style="display: flex;">
                     <div class="window-action-row window-action-row--tight">
                         <input id="trading-search-input" type="text" placeholder="Search items..." style="flex: 1; background: #222; color: white; border: 1px solid #444; padding: 5px;">
-                        <button id="btn-trading-search" class="btn-menu" style="width: auto; padding: 0 20px;">Search</button>
+                        <button id="btn-trading-search" class="btn-menu menu-btn--auto-width menu-btn--wide-padding">Search</button>
                     </div>
                     <div class="window-data-header">
                         <span>Item</span><span>Seller</span><span>Bid / Buyout</span><span>Action</span>

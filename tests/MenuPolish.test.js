@@ -527,6 +527,22 @@ describe('menu polish regressions', () => {
         expect(html).not.toContain('style="display: flex; gap: 20px; margin-bottom: 10px; align-items: center;"');
     });
 
+    test('forge combine and trading controls reuse shared compact control classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+
+        expect(html).toContain('class="window-inline-stack"');
+        expect(html).toContain('class="combine-slot window-token-slot window-token-slot--empty"');
+        expect(html).toContain('class="window-token-slot window-token-slot--result"');
+        expect(html).toContain('class="btn-menu menu-btn--auto-width menu-btn--wide-padding"');
+        expect(html).toContain('class="btn-menu btn-menu--danger"');
+        expect(html).not.toContain('style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;"');
+        expect(html).not.toContain('style="display: flex; gap: 5px;"');
+        expect(html).not.toContain('style="width: 40px; height: 40px; border: 2px dashed #444; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #666;"');
+        expect(html).not.toContain('style="width: 40px; height: 40px; border: 2px solid #444; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #666;"');
+        expect(html).not.toContain('style="width: auto; padding: 0 20px;"');
+        expect(html).not.toContain('style="width: 100%; background: #661111;"');
+    });
+
     test('social window uses reusable class-based chrome', () => {
         buildStaticWindowDom();
         const ui = new UIManager(false);
