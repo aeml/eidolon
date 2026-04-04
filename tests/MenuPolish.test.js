@@ -460,6 +460,40 @@ describe('menu polish regressions', () => {
         expect(html).toContain('class="party-request-modal__actions"');
     });
 
+    test('shop forge and trading markup reuse shared tab and footer layout classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+
+        expect(html).toContain('class="window-tabs"');
+        expect(html).toContain('class="menu-btn window-tab is-active"');
+        expect(html).toContain('class="window-action-row"');
+        expect(html).toContain('class="window-footer"');
+        expect(html).not.toContain('style="display: flex; border-bottom: 1px solid #444;"');
+        expect(html).not.toContain('style="text-align: center; padding: 10px; border-top: 1px solid #444;"');
+    });
+
+    test('shop forge and trading tabs toggle shared active-tab chrome', () => {
+        buildStaticWindowDom();
+        new UIManager(false);
+
+        const shopMainTab = document.getElementById('tab-shop-main');
+        const shopBuybackTab = document.getElementById('tab-shop-buyback');
+        shopBuybackTab.click();
+        expect(shopBuybackTab.classList.contains('is-active')).toBe(true);
+        expect(shopMainTab.classList.contains('is-active')).toBe(false);
+
+        const forgeUpgradeTab = document.getElementById('tab-forge-upgrade');
+        const forgeGemsTab = document.getElementById('tab-forge-gems');
+        forgeGemsTab.click();
+        expect(forgeGemsTab.classList.contains('is-active')).toBe(true);
+        expect(forgeUpgradeTab.classList.contains('is-active')).toBe(false);
+
+        const tradingBidTab = document.getElementById('tab-trading-bid');
+        const tradingMyTab = document.getElementById('tab-trading-my');
+        tradingMyTab.click();
+        expect(tradingMyTab.classList.contains('is-active')).toBe(true);
+        expect(tradingBidTab.classList.contains('is-active')).toBe(false);
+    });
+
     test('social window uses reusable class-based chrome', () => {
         buildStaticWindowDom();
         const ui = new UIManager(false);

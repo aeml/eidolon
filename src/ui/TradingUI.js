@@ -104,30 +104,24 @@ export class TradingUI {
     // ================================================================
 
     switchTab(tab) {
-        // Reset styles
-        if (this.tabTradingBid) this.tabTradingBid.style.background = '#111';
-        if (this.tabTradingList) this.tabTradingList.style.background = '#111';
-        if (this.tabTradingMy) this.tabTradingMy.style.background = '#111';
+        if (this.tabTradingBid) this.tabTradingBid.classList.toggle('is-active', tab === 'bid');
+        if (this.tabTradingList) this.tabTradingList.classList.toggle('is-active', tab === 'list');
+        if (this.tabTradingMy) this.tabTradingMy.classList.toggle('is-active', tab === 'my');
 
-        // Reset Panels
         if (this.panelTradingBid) this.panelTradingBid.style.display = 'none';
         if (this.panelTradingList) this.panelTradingList.style.display = 'none';
         if (this.panelTradingMy) this.panelTradingMy.style.display = 'none';
 
-        // Activate
         if (tab === 'bid') {
-            if (this.tabTradingBid) this.tabTradingBid.style.background = '#333';
             if (this.panelTradingBid) this.panelTradingBid.style.display = 'flex';
             this.handleSearch();
         } else if (tab === 'list') {
-            if (this.tabTradingList) this.tabTradingList.style.background = '#333';
             if (this.panelTradingList) this.panelTradingList.style.display = 'flex';
             const player = this.ctx.getLastPlayer();
             if (player) {
                 this.updateInventory(player);
             }
         } else if (tab === 'my') {
-            if (this.tabTradingMy) this.tabTradingMy.style.background = '#333';
             if (this.panelTradingMy) this.panelTradingMy.style.display = 'flex';
             if (this.onTradingMyAuctions) this.onTradingMyAuctions();
         }

@@ -87,6 +87,62 @@
     outline-offset: 2px;
 }
 
+.window-tabs {
+    display: flex;
+    border-bottom: 1px solid #444;
+}
+
+.window-tabs--spaced {
+    margin-bottom: 10px;
+}
+
+.window-tab {
+    flex: 1;
+    border: none;
+    border-radius: 0;
+    background: #111;
+}
+
+.window-tab.is-active {
+    background: #333;
+}
+
+.window-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.window-body--centered {
+    text-align: center;
+}
+
+.window-body--scroll-hidden {
+    overflow: hidden;
+}
+
+.window-action-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.window-action-row--full {
+    width: 100%;
+}
+
+.window-action-row--tight {
+    gap: 5px;
+}
+
+.window-footer {
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid #444;
+}
+
 /* ---- Character Sheet ---- */
 #character-sheet {
     top: 50%;

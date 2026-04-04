@@ -174,10 +174,10 @@ export class ForgeUI {
     // ------------------------------------------------------------------
 
     switchForgeTab(tab) {
-        if (this.tabForgeUpgrade) this.tabForgeUpgrade.style.background = '#111';
-        if (this.tabForgePotency) this.tabForgePotency.style.background = '#111';
-        if (this.tabForgeSocket) this.tabForgeSocket.style.background = '#111';
-        if (this.tabForgeGems) this.tabForgeGems.style.background = '#111';
+        if (this.tabForgeUpgrade) this.tabForgeUpgrade.classList.toggle('is-active', tab === 'upgrade');
+        if (this.tabForgePotency) this.tabForgePotency.classList.toggle('is-active', tab === 'potency');
+        if (this.tabForgeSocket) this.tabForgeSocket.classList.toggle('is-active', tab === 'socket');
+        if (this.tabForgeGems) this.tabForgeGems.classList.toggle('is-active', tab === 'gems');
 
         if (this.forgePanelUpgrade) this.forgePanelUpgrade.style.display = 'none';
         if (this.forgePanelPotency) this.forgePanelPotency.style.display = 'none';
@@ -185,16 +185,12 @@ export class ForgeUI {
         if (this.forgePanelGems) this.forgePanelGems.style.display = 'none';
 
         if (tab === 'upgrade') {
-            if (this.tabForgeUpgrade) this.tabForgeUpgrade.style.background = '#333';
             if (this.forgePanelUpgrade) this.forgePanelUpgrade.style.display = 'flex';
         } else if (tab === 'potency') {
-            if (this.tabForgePotency) this.tabForgePotency.style.background = '#333';
             if (this.forgePanelPotency) this.forgePanelPotency.style.display = 'flex';
         } else if (tab === 'socket') {
-            if (this.tabForgeSocket) this.tabForgeSocket.style.background = '#333';
             if (this.forgePanelSocket) this.forgePanelSocket.style.display = 'flex';
         } else if (tab === 'gems') {
-            if (this.tabForgeGems) this.tabForgeGems.style.background = '#333';
             if (this.forgePanelGems) this.forgePanelGems.style.display = 'flex';
             const player = this.ctx.getLastPlayer();
             if (player) this.updateForgeGemsUI(player);
@@ -204,9 +200,9 @@ export class ForgeUI {
     switchGemSubTab(tab) {
         this.currentGemSubTab = tab;
 
-        if (this.tabGemInsert) this.tabGemInsert.style.background = tab === 'insert' ? '#333' : '#111';
-        if (this.tabGemCombine) this.tabGemCombine.style.background = tab === 'combine' ? '#333' : '#111';
-        if (this.tabGemRemove) this.tabGemRemove.style.background = tab === 'remove' ? '#333' : '#111';
+        if (this.tabGemInsert) this.tabGemInsert.classList.toggle('is-active', tab === 'insert');
+        if (this.tabGemCombine) this.tabGemCombine.classList.toggle('is-active', tab === 'combine');
+        if (this.tabGemRemove) this.tabGemRemove.classList.toggle('is-active', tab === 'remove');
 
         if (this.gemPanelInsert) this.gemPanelInsert.style.display = tab === 'insert' ? 'flex' : 'none';
         if (this.gemPanelCombine) this.gemPanelCombine.style.display = tab === 'combine' ? 'flex' : 'none';

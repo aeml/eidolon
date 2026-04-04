@@ -454,16 +454,15 @@ export class InventoryUI {
             return;
         }
 
+        this.tabShopMain.classList.toggle('is-active', tab === 'main');
+        this.tabShopBuyback.classList.toggle('is-active', tab === 'buyback');
+
         if (tab === 'main') {
             this.shopContentMain.style.display = 'flex';
             this.shopContentBuyback.style.display = 'none';
-            this.tabShopMain.style.background = '#333';
-            this.tabShopBuyback.style.background = '#111';
         } else {
             this.shopContentMain.style.display = 'none';
             this.shopContentBuyback.style.display = 'flex';
-            this.tabShopMain.style.background = '#111';
-            this.tabShopBuyback.style.background = '#333';
         }
     }
 

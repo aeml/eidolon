@@ -992,8 +992,8 @@
                     </ul>
                 </div>
             </div>
-            <div style="text-align: center; padding: 10px; border-top: 1px solid #444;">
-                <button id="btn-close-patch-notes" class="menu-btn">Close</button>
+            <div class="window-footer">
+                <button id="btn-close-patch-notes" class="menu-btn" type="button">Close</button>
             </div>
         </div>
 
@@ -1002,16 +1002,16 @@
             <div class="window-header"><span>MERCHANT</span><button id="btn-close-shop-header" class="close-btn" type="button" aria-label="Close merchant window">×</button></div>
             
             <!-- Tabs -->
-            <div style="display: flex; border-bottom: 1px solid #444;">
-                <button id="tab-shop-main" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #333;">Shop</button>
-                <button id="tab-shop-buyback" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">Buyback</button>
+            <div class="window-tabs">
+                <button id="tab-shop-main" class="menu-btn window-tab is-active" type="button">Shop</button>
+                <button id="tab-shop-buyback" class="menu-btn window-tab" type="button">Buyback</button>
             </div>
 
             <!-- Main Shop Content -->
             <div id="shop-content-main" style="padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column;">
                 <p style="color: #aaa; font-size: 14px; margin-bottom: 15px;">Right-click items in your inventory to sell them.</p>
                 
-                <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
+                <div class="window-action-row">
                     <button id="btn-sell-common" class="menu-btn" style="background: #333; color: #fff; border-color: #fff; font-size: 12px; padding: 5px 10px;">Sell All Common</button>
                     <button id="btn-sell-uncommon" class="menu-btn" style="background: #1a331a; color: #1eff00; border-color: #1eff00; font-size: 12px; padding: 5px 10px;">Sell All Uncommon</button>
                     <button id="btn-sell-rare" class="menu-btn" style="background: #1a1a33; color: #0070dd; border-color: #0070dd; font-size: 12px; padding: 5px 10px;">Sell All Rare</button>
@@ -1032,8 +1032,8 @@
                 </div>
             </div>
 
-            <div style="text-align: center; padding: 10px; border-top: 1px solid #444;">
-                <button id="btn-close-shop" class="menu-btn">Close</button>
+            <div class="window-footer">
+                <button id="btn-close-shop" class="menu-btn" type="button">Close</button>
             </div>
         </div>
 
@@ -1059,11 +1059,11 @@
             </div>
             
             <!-- Tabs -->
-            <div style="display: flex; border-bottom: 1px solid #444;">
-                <button id="tab-forge-upgrade" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #333;">Upgrade</button>
-                <button id="tab-forge-potency" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">Potency</button>
-                <button id="tab-forge-socket" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">Sockets</button>
-                <button id="tab-forge-gems" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">Gems</button>
+            <div class="window-tabs">
+                <button id="tab-forge-upgrade" class="menu-btn window-tab is-active" type="button">Upgrade</button>
+                <button id="tab-forge-potency" class="menu-btn window-tab" type="button">Potency</button>
+                <button id="tab-forge-socket" class="menu-btn window-tab" type="button">Sockets</button>
+                <button id="tab-forge-gems" class="menu-btn window-tab" type="button">Gems</button>
             </div>
 
             <div style="display: flex; flex-grow: 1; padding: 10px; flex-direction: column;">
@@ -1120,10 +1120,10 @@
                 <!-- Panel 4: Gems -->
                 <div id="forge-panel-gems" style="flex: 1; display: none; flex-direction: column;">
                     <!-- Sub-tabs for Gem operations -->
-                    <div style="display: flex; border-bottom: 1px solid #444; margin-bottom: 10px;">
-                        <button id="tab-gem-insert" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #333;">Insert</button>
-                        <button id="tab-gem-combine" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">Combine</button>
-                        <button id="tab-gem-remove" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">Remove</button>
+                    <div class="window-tabs window-tabs--spaced">
+                        <button id="tab-gem-insert" class="menu-btn window-tab is-active" type="button">Insert</button>
+                        <button id="tab-gem-combine" class="menu-btn window-tab" type="button">Combine</button>
+                        <button id="tab-gem-remove" class="menu-btn window-tab" type="button">Remove</button>
                     </div>
                     
                     <!-- Sub-panel: Insert Gems -->
@@ -1222,10 +1222,10 @@
             </div>
             
             <!-- Tabs -->
-            <div style="display: flex; border-bottom: 1px solid #444;">
-                <button id="tab-trading-bid" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #333;">Bid</button>
-                <button id="tab-trading-list" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">List</button>
-                <button id="tab-trading-my" class="menu-btn" style="flex: 1; border: none; border-radius: 0; background: #111;">My Auctions</button>
+            <div class="window-tabs">
+                <button id="tab-trading-bid" class="menu-btn window-tab is-active" type="button">Bid</button>
+                <button id="tab-trading-list" class="menu-btn window-tab" type="button">List</button>
+                <button id="tab-trading-my" class="menu-btn window-tab" type="button">My Auctions</button>
             </div>
 
             <div style="display: flex; flex-grow: 1; padding: 10px; flex-direction: column; overflow: hidden;">
