@@ -76,6 +76,15 @@ export class RenderSystem {
         this.brightnessScale = 1.0;
         this.currentRealm = null;
         this.targetLighting = null;
+        this.environmentGroup = new THREE.Group();
+        this.environmentGroup.name = 'EnvironmentGroup';
+        this.entityGroup = new THREE.Group();
+        this.entityGroup.name = 'EntityGroup';
+        this.effectGroup = new THREE.Group();
+        this.effectGroup.name = 'EffectGroup';
+        this.scene.add(this.environmentGroup);
+        this.scene.add(this.entityGroup);
+        this.scene.add(this.effectGroup);
         this.shadowFollowOffset = new THREE.Vector3(360, 500, 220);
         this.shadowTarget = new THREE.Vector3();
         this.shadowCoverageRadius = 280;
@@ -231,7 +240,7 @@ export class RenderSystem {
             }
 
             if (!this.waterPlane.parent) {
-                this.scene.add(this.waterPlane);
+                this.environmentGroup.add(this.waterPlane);
             }
         } catch {
             // Water is optional; skip on failure.
@@ -273,7 +282,7 @@ export class RenderSystem {
         }
 
         if (!this.groundEarth.parent) {
-            this.scene.add(this.groundEarth);
+            this.environmentGroup.add(this.groundEarth);
         }
 
         if (!this.groundSnow) {
@@ -293,7 +302,7 @@ export class RenderSystem {
         }
 
         if (!this.groundSnow.parent) {
-            this.scene.add(this.groundSnow);
+            this.environmentGroup.add(this.groundSnow);
         }
 
         // Fire Realm ground (West Zone: X -3000 to -1000, Z: -600 to 1000)
@@ -316,7 +325,7 @@ export class RenderSystem {
         }
 
         if (!this.groundFire.parent) {
-            this.scene.add(this.groundFire);
+            this.environmentGroup.add(this.groundFire);
         }
 
         // Air Realm ground (East Zone: X 1000 to 3000, Z: -600 to 1000)
@@ -339,7 +348,7 @@ export class RenderSystem {
         }
 
         if (!this.groundAir.parent) {
-            this.scene.add(this.groundAir);
+            this.environmentGroup.add(this.groundAir);
         }
 
         report(100, 'Environment ready');
@@ -457,7 +466,7 @@ export class RenderSystem {
 
         this._pMesh = new THREE.Points(geom, mat);
         this._pMesh.frustumCulled = false;
-        this.scene.add(this._pMesh);
+        this.environmentGroup.add(this._pMesh);
 
         // Internal per-particle state (plain arrays, not GPU attributes)
         this._pVel = new Float32Array(count * 3);
@@ -1026,14 +1035,42 @@ export class RenderSystem {
 
     add(mesh) {
         if (mesh) {
-            this.scene.add(mesh);
+            this.entityGroup.add(mesh);
         } else {
             console.warn("RenderSystem: Attempted to add null/undefined mesh to scene.");
         }
     }
 
     remove(mesh) {
-        this.scene.remove(mesh);
+        if (mesh?.parent?.remove) {
+            mesh.parent.remove(mesh);
+        } else {
+            this.scene.remove(mesh);
+        }
+    }
+
+    addToEnvironment(mesh) {
+        if (mesh) {
+            this.environmentGroup.add(mesh);
+        }
+    }
+
+    addToEffects(mesh) {
+        if (mesh) {
+            this.effectGroup.add(mesh);
+        }
+    }
+
+    clearInstanceScene() {
+        this.clearGroupChildren(this.entityGroup);
+        this.clearGroupChildren(this.effectGroup);
+    }
+
+    clearGroupChildren(group) {
+        if (!group) return;
+        while (group.children.length > 0) {
+            group.remove(group.children[0]);
+        }
     }
 
     render() {

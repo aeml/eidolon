@@ -93,7 +93,7 @@ export class GameEngine {
             this.cameraLocked = true;
         }
 
-        this.chunkManager = new ChunkManager(this.renderSystem.scene);
+        this.chunkManager = new ChunkManager(this.renderSystem.entityGroup);
         this.collisionManager = new CollisionManager();
         this.uiManager = new UIManager(this.isMobile);
         this.autoLootEnabled = this.uiManager.getAutoLootEnabled();
@@ -108,7 +108,7 @@ export class GameEngine {
         this.currentDungeonRoomState = null;
         this.currentDungeonLayout = null;
         this.activeBuffs = [];
-        this.worldGenerator = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
+        this.worldGenerator = new WorldGenerator(this.renderSystem.environmentGroup, this.collisionManager);
         this.minimap = new Minimap();
         this.minimap.setGameEngine(this);
         this.worldMap = new WorldMap(this);
@@ -160,7 +160,11 @@ export class GameEngine {
     }
 
     get scene() {
-        return this.renderSystem.scene;
+        return this.renderSystem.entityGroup;
+    }
+
+    get effectScene() {
+        return this.renderSystem.effectGroup;
     }
 
     isPlayerDead() {
@@ -219,7 +223,7 @@ export class GameEngine {
             effectScale: this.renderSystem.getEffectQualityScale(),
             ...options
         };
-        const effect = createTransientEffect(this.renderSystem.scene, type, position, color, mergedOptions);
+        const effect = createTransientEffect(this.renderSystem.effectGroup, type, position, color, mergedOptions);
         if (!effect) return false;
         this.effects.push(effect);
         return true;
@@ -571,13 +575,16 @@ export class GameEngine {
         this.lootDrops.forEach(e => this.chunkManager.removeEntity(e));
         this.lootDrops = [];
 
-        // Force Clear Scene (Safer than selective removal)
-        while(this.renderSystem.scene.children.length > 0){ 
-            this.renderSystem.scene.remove(this.renderSystem.scene.children[0]); 
+        if (typeof this.renderSystem.clearInstanceScene === 'function') {
+            this.renderSystem.clearInstanceScene();
+        } else if (this.renderSystem.scene) {
+            while (this.renderSystem.scene.children?.length > 0) {
+                this.renderSystem.scene.remove(this.renderSystem.scene.children[0]);
+            }
+            if (typeof this.renderSystem.setupLights === 'function') {
+                this.renderSystem.setupLights();
+            }
         }
-
-        // Re-setup Lights
-        this.renderSystem.setupLights();
 
         // Clear collisions
         this.collisionManager.clear();
@@ -601,7 +608,7 @@ export class GameEngine {
         }
 
         // Generate new world
-        const worldGen = new WorldGenerator(this.renderSystem.scene, this.collisionManager);
+        const worldGen = new WorldGenerator(this.renderSystem.environmentGroup, this.collisionManager);
         if (type === 'crypt') {
             await worldGen.createDungeon(0, 0, 100);
         } else if (type === 'verdant_bastion_catacombs') {
@@ -643,7 +650,7 @@ export class GameEngine {
 
         if (this.player.mesh) {
             this.player.mesh.position.set(startX, 0.5, startZ);
-            this.renderSystem.scene.add(this.player.mesh); // Ensure player is in scene
+            this.renderSystem.add(this.player.mesh); // Ensure player is in scene
             this.player.mesh.visible = true;
             console.log(`Player mesh re-added to scene at ${startX},0.5,${startZ}`);
         } else {
@@ -1044,7 +1051,7 @@ export class GameEngine {
                                 console.log(`Level Up! ${this.player.level} -> ${pData.level}`);
                                 
                                 // Trigger Effect
-                                const effect = new LevelUpEffect(this.renderSystem.scene, this.player.position);
+                                const effect = new LevelUpEffect(this.renderSystem.effectGroup, this.player.position);
                                 this.effects.push(effect);
                                 
                                 // Floating Text
@@ -1381,7 +1388,7 @@ export class GameEngine {
                             if (this.player.hasSyncedLevel) {
                                 console.log(`Level Up! ${this.player.level} -> ${pData.level}`);
 
-                                const effect = new LevelUpEffect(this.renderSystem.scene, this.player.position);
+                                const effect = new LevelUpEffect(this.renderSystem.effectGroup, this.player.position);
                                 this.effects.push(effect);
 
                                 this.floatingTextManager.spawn(
@@ -1446,7 +1453,7 @@ export class GameEngine {
                 // Check if it's a hazard first
                 if (this.hazards.has(id)) {
                     const hazard = this.hazards.get(id);
-                    hazard.removeFromScene(this.renderSystem.scene);
+                    hazard.removeFromScene(this.renderSystem.environmentGroup);
                     hazard.dispose();
                     this.hazards.delete(id);
                     continue;
@@ -1630,7 +1637,7 @@ export class GameEngine {
                     remoteEntity.hasSyncedLevel = true;
                 } else if (remoteEntity.level < pData.level) {
                     remoteEntity.level = pData.level;
-                    const effect = new LevelUpEffect(this.renderSystem.scene, remoteEntity.position);
+                    const effect = new LevelUpEffect(this.renderSystem.effectGroup, remoteEntity.position);
                     this.effects.push(effect);
                 }
             }
@@ -2073,8 +2080,8 @@ export class GameEngine {
     attachCombatTargetHighlight(entity) {
         if (!entity?.position) return;
         const ring = this.createCombatTargetHighlight();
-        if (!ring.parent && this.renderSystem?.scene?.add) {
-            this.renderSystem.scene.add(ring);
+        if (!ring.parent && this.renderSystem?.effectGroup?.add) {
+            this.renderSystem.effectGroup.add(ring);
         }
         this.highlightedCombatTarget = entity;
         ring.visible = true;
@@ -2087,8 +2094,8 @@ export class GameEngine {
             ring.visible = false;
             if (ring.parent?.remove) {
                 ring.parent.remove(ring);
-            } else if (this.renderSystem?.scene?.remove) {
-                this.renderSystem.scene.remove(ring);
+            } else if (this.renderSystem?.effectGroup?.remove) {
+                this.renderSystem.effectGroup.remove(ring);
             }
         }
         this.highlightedCombatTarget = null;
@@ -3043,7 +3050,7 @@ export class GameEngine {
         
         // Add Dungeon Entrance to raycast list
         const dungeonEntrances = [];
-        this.renderSystem.scene.traverse(obj => {
+        this.renderSystem.environmentGroup.traverse(obj => {
             if (obj.name === 'DungeonEntrance') {
                 dungeonEntrances.push(obj);
             }
@@ -3389,7 +3396,7 @@ export class GameEngine {
                     const position = { x: pData.x, y: 0, z: pData.z };
                     
                     const hazard = new EnvironmentalHazard(pData.id, hazardType, position, { radius });
-                    hazard.addToScene(this.renderSystem.scene);
+                    hazard.addToScene(this.renderSystem.environmentGroup);
                     this.hazards.set(pData.id, hazard);
                     
                     // Skip adding to remotePlayers/entities - hazards are managed separately

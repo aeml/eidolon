@@ -37,12 +37,44 @@ const { GameEngine } = await import('../src/core/GameEngine.js');
 
 function createScene() {
     return {
-        children: [{ id: 'existing-1' }, { id: 'existing-2' }],
-        add: jest.fn(),
+        children: [],
+        add(child) {
+            if (!child) return;
+            if (!this.children.includes(child)) {
+                this.children.push(child);
+            }
+            child.parent = this;
+        },
         remove(child) {
             const index = this.children.indexOf(child);
             if (index >= 0) {
                 this.children.splice(index, 1);
+                child.parent = null;
+            }
+        }
+    };
+}
+
+function createGroup(name) {
+    return {
+        name,
+        parent: null,
+        children: [],
+        add(child) {
+            if (!child) return;
+            if (child.parent && child.parent !== this && typeof child.parent.remove === 'function') {
+                child.parent.remove(child);
+            }
+            if (!this.children.includes(child)) {
+                this.children.push(child);
+            }
+            child.parent = this;
+        },
+        remove(child) {
+            const index = this.children.indexOf(child);
+            if (index >= 0) {
+                this.children.splice(index, 1);
+                child.parent = null;
             }
         }
     };
@@ -51,15 +83,38 @@ function createScene() {
 function createEngineHarness() {
     const engine = Object.create(GameEngine.prototype);
     const scene = createScene();
-    const playerMesh = { position: new THREE.Vector3(), visible: false };
+    const playerMesh = { position: new THREE.Vector3(), visible: false, parent: null };
+    const environmentGroup = createGroup('environment');
+    const entityGroup = createGroup('entities');
+    const effectGroup = createGroup('effects');
+    const keyLight = { id: 'key-light', parent: null };
+
+    scene.add(environmentGroup);
+    scene.add(entityGroup);
+    scene.add(effectGroup);
+    scene.add(keyLight);
+    environmentGroup.add({ id: 'persistent-tree', parent: null });
+    entityGroup.add({ id: 'stale-enemy-mesh', parent: null });
+    effectGroup.add({ id: 'stale-effect-mesh', parent: null });
 
     engine.currentInstanceId = null;
     engine.remotePlayers = new Map();
     engine.enemies = [];
     engine.lootDrops = [];
     engine.cameraLocked = true;
+    engine.clearCombatIntentState = jest.fn();
+    engine.refreshDungeonEntranceHint = jest.fn();
     engine.renderSystem = {
         scene,
+        environmentGroup,
+        entityGroup,
+        effectGroup,
+        keyLight,
+        add: jest.fn(mesh => entityGroup.add(mesh)),
+        clearInstanceScene: jest.fn(() => {
+            entityGroup.children.slice().forEach(child => entityGroup.remove(child));
+            effectGroup.children.slice().forEach(child => effectGroup.remove(child));
+        }),
         setupLights: jest.fn(),
         setCameraTarget: jest.fn(),
         preloadEnvironment: jest.fn().mockResolvedValue()
@@ -126,5 +181,22 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(worldGeneratorInstances).toHaveLength(1);
         expect(worldGeneratorInstances[0].createTown).toHaveBeenCalledWith(0, 200, 100);
         expect(worldGeneratorInstances[0].createOverworldStructures).toHaveBeenCalled();
+    });
+
+    test('enterInstance preserves environment scene content and clears only dynamic groups', async () => {
+        const engine = createEngineHarness();
+
+        await engine.enterInstance('instance-3', 'overworld', null);
+
+        expect(engine.renderSystem.clearInstanceScene).toHaveBeenCalled();
+        expect(engine.renderSystem.environmentGroup.parent).toBe(engine.renderSystem.scene);
+        expect(engine.renderSystem.entityGroup.parent).toBe(engine.renderSystem.scene);
+        expect(engine.renderSystem.effectGroup.parent).toBe(engine.renderSystem.scene);
+        expect(engine.renderSystem.scene.children).toContain(engine.renderSystem.keyLight);
+        expect(engine.renderSystem.environmentGroup.children.map(child => child.id)).toContain('persistent-tree');
+        expect(engine.renderSystem.entityGroup.children).toHaveLength(1);
+        expect(engine.renderSystem.effectGroup.children).toHaveLength(0);
+        expect(engine.player.mesh.parent).toBe(engine.renderSystem.entityGroup);
+        expect(engine.renderSystem.scene.children).not.toContain(engine.player.mesh);
     });
 });

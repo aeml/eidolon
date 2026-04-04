@@ -19,13 +19,34 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 jest.unstable_mockModule('../src/core/RenderSystem.js', () => ({
     RenderSystem: class RenderSystem {
         constructor() {
+            const makeGroup = () => ({
+                children: [],
+                add(child) {
+                    this.children.push(child);
+                    child.parent = this;
+                },
+                remove(child) {
+                    this.children = this.children.filter(entry => entry !== child);
+                    if (child) child.parent = null;
+                },
+                traverse(callback) {
+                    this.children.forEach(callback);
+                }
+            });
             this.camera = {};
             this.scene = {
                 children: [],
                 remove() {},
                 add() {}
             };
+            this.environmentGroup = makeGroup();
+            this.entityGroup = makeGroup();
+            this.effectGroup = makeGroup();
         }
+        add(mesh) {
+            this.entityGroup.add(mesh);
+        }
+        clearInstanceScene() {}
         setupLights() {}
         setCameraTarget() {}
     }
