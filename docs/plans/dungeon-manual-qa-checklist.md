@@ -1,19 +1,25 @@
-# Dungeon Manual QA Checklist
+# Dungeon and 0.21 Closeout Manual QA Checklist
 
-Goal: Validate dungeon reliability after canonical geometry and containment changes, while keeping the server authoritative.
+Goal: validate the 0.21 closeout build across dungeon reliability, menu polish, HUD sanity, loot/combat readability, and basic release readiness without depending entirely on ad hoc memory.
 
 Scope:
+- login/start flow basics
 - verdant_bastion_catacombs
 - abyssal_well
 - molten_core
 - tempest_spire
 - crypt fallback behavior where applicable
+- menu/modal/window flows touched in 0.21
+- auto-loot/inventory behavior
+- combat readability surfaces changed in 0.21
 
 Core principles to verify:
 - client visuals match server-authoritative walkable space
 - players cannot locally drift into inaccessible outside-dungeon space
 - server still authoritatively rejects/corrects illegal teleport/forced movement
 - room and corridor joins are traversable without invisible blockers or gaps
+- menu close behavior stays consistent and non-brittle
+- HUD updates feel responsive without obviously wasting work or flickering
 
 ## Pre-check
 - Pull latest master
@@ -22,11 +28,40 @@ Core principles to verify:
   - go test ./internal/game
   - npm test -- --runInBand
   - npm run lint
+- Open `repro.html` first for quick smoke checks before full live QA
 - Use a character/build that can exercise movement edge cases:
   - Wizard teleport/blink
   - Fighter charge
   - Rogue shadowstep/backstab-shadowstep if available
 - If possible, have one second player/client for multiplayer desync checks
+
+## Repro-first smoke pass
+Before full live login, use `repro.html` to sanity-check:
+- telegraph preview readability
+- loot burst readability
+- jump landing impact preview
+- menu/window close chrome preview
+- Esc close on preview window
+- perf overlay toggle if needed
+
+Pass criteria:
+- repro controls work without console errors
+- preview window opens/closes cleanly
+- preview text is non-selectable where intended
+- quick visual checks can be done in under 2 minutes
+
+## Login/start flow basics
+- Load the main game start screen
+- Verify current alpha version text matches intended release state
+- Open patch notes from login screen
+- Verify latest patch notes entry appears first and older entries remain intact
+- Close patch notes using header close, backdrop click, and Escape
+- Log in and enter world normally
+
+Pass criteria:
+- start screen is usable and version presentation is coherent
+- patch notes history is preserved and latest entry is visible
+- close interactions all behave consistently
 
 ## Test matrix
 For each dungeon type and at least 3 generated instances per type:
@@ -41,16 +76,19 @@ For each dungeon type and at least 3 generated instances per type:
 
 ## Checklist
 
-### 1. Instance entry / spawn
+### 1. Dungeon enter/exit
 - Enter dungeon from overworld
 - Verify spawn lands in the intended start room
 - Verify player is not embedded in wall/collider
 - Verify camera, entity visibility, and controls are normal
-- Verify minimap / objective context does not point outside the playable footprint
+- Verify objective/minimap/room-state behavior does not point outside the playable footprint
+- Exit/recall back to overworld
+- Re-enter and confirm state is still sane
 
 Pass criteria:
 - start position is valid and stable
 - no immediate correction jitter or snap loop
+- no broken transition cleanup artifacts
 
 ### 2. Room-to-corridor connectivity
 For every room transition in the run:
@@ -123,7 +161,66 @@ Pass criteria:
 - no clipping through wall seams
 - no server/client disagreement that leaves player stranded or rubber-banding excessively
 
-### 7. Multiplayer authority / correction sanity
+### 7. Objective/minimap/room-state behavior
+- Enter a dungeon and confirm objective panel reflects current goal
+- Clear a room and verify room-state messaging/feedback updates
+- Check minimap room markers if applicable
+- Verify objective context stays aligned after movement and transitions
+
+Pass criteria:
+- dungeon progression is legible room to room
+- UI guidance does not drift or show stale state
+
+### 8. Menu close interactions
+Exercise:
+- ESC menu
+- settings
+- help
+- patch notes
+- report window
+- inventory
+- character
+- social
+- quests/journal
+- skills
+- world map
+
+Checks:
+- close buttons work
+- Escape closes the topmost expected thing first
+- opening one primary HUD window does not leave unrelated peer windows piled open
+- non-input text does not behave like accidental selectable junk
+
+Pass criteria:
+- all close paths work
+- no modal layering/input traps
+- window chrome feels consistent
+
+### 9. Auto-loot/inventory behavior
+- Enable auto-loot
+- Kill enemies and verify nearby loot pickup behaves consistently
+- Continue playing long enough to cross normal runtime sync/update activity
+- Open inventory and confirm bag state still looks sane
+- Verify sort / gold display / inventory update behavior after loot changes
+
+Pass criteria:
+- auto-loot continues working after runtime sync
+- inventory state remains coherent
+- no repeated failure spam or stale UI state
+
+### 10. Combat readability surfaces changed in 0.21
+- Trigger major enemy telegraphs
+- Check combat-intent / target feedback
+- Observe buff/debuff tracker behavior during combat
+- Trigger loot burst / room-clear / death-respawn feedback where possible
+- Watch for HUD flicker or obviously redundant updates
+
+Pass criteria:
+- dangerous attacks are readable before impact
+- target/intent feedback remains understandable
+- feedback surfaces feel responsive but not noisy
+
+### 11. Multiplayer authority / correction sanity
 If two clients are available:
 - Have one player stand near a boundary while the other observes
 - Use teleport/dash near edges
@@ -134,7 +231,7 @@ Pass criteria:
 - no persistent desync where one client sees out-of-bounds and the other does not
 - corrections converge quickly
 
-### 8. Boss room transitions
+### 12. Boss room transitions
 For each boss room:
 - Enter boss room hugging left side
 - Enter boss room hugging right side
@@ -147,7 +244,7 @@ Pass criteria:
 - perimeter does not leak into outside space
 - post-fight traversal still works
 
-### 9. Failure/recovery behavior
+### 13. Failure/recovery behavior
 - Attempt obviously invalid teleport target outside the dungeon
 - Attempt movement spam against boundary seams
 - If a correction occurs, verify player remains in valid reachable space
@@ -174,9 +271,12 @@ Pass criteria:
 - Teleport authority mismatch
 - Dash/charge displacement bug
 - Multiplayer desync near boundary
+- Menu/modal close regression
+- HUD churn / flicker / stale state
+- Loot/inventory regression
 
 ## Recommended immediate follow-up if any bug is found
 1. Capture the exact repro path and ability used
-2. Identify whether canonical walkRects are wrong, client geometry is wrong, or movement validation path is incomplete
+2. Identify whether canonical walkRects are wrong, client geometry is wrong, movement validation path is incomplete, or UI state/update logic is wrong
 3. Add a regression test before fixing
 4. Preserve server authority — fix legality at the server path first, then align client prediction
