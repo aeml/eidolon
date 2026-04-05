@@ -3351,11 +3351,17 @@ func (c *Client) handleChatCommand(raw string) bool {
 			}
 		}
 
-		c.sendError(fmt.Sprintf("Level set to %d.", level))
+		c.sendSystemChat(fmt.Sprintf("Level set to %d.", level))
 		return true
 	default:
 		return false
 	}
+}
+
+func (c *Client) sendSystemChat(message string) {
+	payload, _ := json.Marshal(ChatPayload{Message: message, Sender: "System"})
+	msg, _ := json.Marshal(Message{Type: MsgChat, Payload: payload})
+	c.sendSafe(msg)
 }
 
 func (c *Client) sendSafe(data []byte) {

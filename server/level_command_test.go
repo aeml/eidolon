@@ -34,6 +34,15 @@ func messagePayloadString(t *testing.T, msg Message) string {
 	return s
 }
 
+func messagePayloadChat(t *testing.T, msg Message) ChatPayload {
+	t.Helper()
+	var payload ChatPayload
+	if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+		t.Fatalf("failed to unmarshal chat payload: %v", err)
+	}
+	return payload
+}
+
 func newLevelCommandClient() *Client {
 	return &Client{
 		send:     make(chan []byte, 32),
@@ -115,17 +124,17 @@ func TestHandleMessageLevelCommandSetsPlayerLevelAndResponds(t *testing.T) {
 	}
 	found := false
 	for _, msg := range msgs {
-		if msg.Type != MsgError {
+		if msg.Type != MsgChat {
 			continue
 		}
-		payload := messagePayloadString(t, msg)
-		if strings.Contains(payload, "Level set to 30") {
+		payload := messagePayloadChat(t, msg)
+		if payload.Sender == "System" && strings.Contains(payload.Message, "Level set to 30") {
 			found = true
 			break
 		}
 	}
 	if !found {
-		t.Fatalf("expected success response in sent messages, got %+v", msgs)
+		t.Fatalf("expected system chat success response in sent messages, got %+v", msgs)
 	}
 }
 
