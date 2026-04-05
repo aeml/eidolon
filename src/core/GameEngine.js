@@ -559,9 +559,15 @@ export class GameEngine {
         this.clearCombatIntentState();
         this.refreshDungeonEntranceHint();
 
-        // Clear current entities
+        // Clear current dynamic entities through explicit render ownership paths.
         this.remotePlayers.forEach(entity => {
-            this.renderSystem.scene.remove(entity.mesh);
+            if (entity.mesh) {
+                if (typeof this.renderSystem.remove === 'function') {
+                    this.renderSystem.remove(entity.mesh);
+                } else if (entity.mesh.parent?.remove) {
+                    entity.mesh.parent.remove(entity.mesh);
+                }
+            }
             if (entity.healthBar) entity.healthBar.remove();
             this.chunkManager.removeEntity(entity);
         });
@@ -575,13 +581,13 @@ export class GameEngine {
 
         if (typeof this.renderSystem.clearInstanceScene === 'function') {
             this.renderSystem.clearInstanceScene();
-        } else if (this.renderSystem.scene) {
-            while (this.renderSystem.scene.children?.length > 0) {
-                this.renderSystem.scene.remove(this.renderSystem.scene.children[0]);
-            }
-            if (typeof this.renderSystem.setupLights === 'function') {
-                this.renderSystem.setupLights();
-            }
+        } else {
+            this.renderSystem.entityGroup?.children?.slice().forEach(child => {
+                this.renderSystem.entityGroup.remove(child);
+            });
+            this.renderSystem.effectGroup?.children?.slice().forEach(child => {
+                this.renderSystem.effectGroup.remove(child);
+            });
         }
 
         // Clear collisions

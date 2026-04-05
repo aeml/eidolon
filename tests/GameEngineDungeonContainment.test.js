@@ -111,6 +111,7 @@ function createEngineHarness() {
         effectGroup,
         keyLight,
         add: jest.fn(mesh => entityGroup.add(mesh)),
+        remove: jest.fn(mesh => mesh?.parent?.remove?.(mesh)),
         clearInstanceScene: jest.fn(() => {
             entityGroup.children.slice().forEach(child => entityGroup.remove(child));
             effectGroup.children.slice().forEach(child => effectGroup.remove(child));
@@ -198,5 +199,32 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(engine.renderSystem.effectGroup.children).toHaveLength(0);
         expect(engine.player.mesh.parent).toBe(engine.renderSystem.entityGroup);
         expect(engine.renderSystem.scene.children).not.toContain(engine.player.mesh);
+    });
+
+    test('enterInstance removes remote player meshes through render-system ownership helpers', async () => {
+        const engine = createEngineHarness();
+        const remoteMesh = { id: 'remote-player-mesh', parent: null };
+        const healthBar = { remove: jest.fn() };
+        engine.renderSystem.entityGroup.add(remoteMesh);
+        engine.remotePlayers.set('remote-1', { mesh: remoteMesh, healthBar });
+
+        await engine.enterInstance('instance-4', 'overworld', null);
+
+        expect(engine.renderSystem.remove).toHaveBeenCalledWith(remoteMesh);
+        expect(healthBar.remove).toHaveBeenCalled();
+    });
+
+    test('enterInstance preserves scene groups when clearInstanceScene helper is unavailable', async () => {
+        const engine = createEngineHarness();
+        delete engine.renderSystem.clearInstanceScene;
+
+        await engine.enterInstance('instance-5', 'overworld', null);
+
+        expect(engine.renderSystem.environmentGroup.parent).toBe(engine.renderSystem.scene);
+        expect(engine.renderSystem.entityGroup.parent).toBe(engine.renderSystem.scene);
+        expect(engine.renderSystem.effectGroup.parent).toBe(engine.renderSystem.scene);
+        expect(engine.renderSystem.scene.children).toContain(engine.renderSystem.keyLight);
+        expect(engine.renderSystem.environmentGroup.children.map(child => child.id)).toContain('persistent-tree');
+        expect(engine.player.mesh.parent).toBe(engine.renderSystem.entityGroup);
     });
 });
