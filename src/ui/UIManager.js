@@ -1991,20 +1991,7 @@ export class UIManager {
         }
 
         // 2. Close Help/Patch Screens
-        if (this.patchNotesScreen.style.display === 'flex') {
-            this.patchNotesScreen.style.display = 'none';
-            closedSomething = true;
-        }
-        if (this.settingsScreen && this.settingsScreen.style.display === 'block') {
-            this.settingsScreen.style.display = 'none';
-            closedSomething = true;
-        }
-        if (this.reportScreen.style.display === 'block') {
-            this.reportScreen.style.display = 'none';
-            closedSomething = true;
-        }
-        if (this.helpScreen.style.display === 'flex') {
-            this.helpScreen.style.display = 'none';
+        if (this.closeOpenStaticModal()) {
             closedSomething = true;
         }
 

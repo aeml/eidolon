@@ -416,6 +416,31 @@ describe('menu polish regressions', () => {
         expect(Number(backdrop.style.zIndex)).toBeLessThan(Number(settingsScreen.style.zIndex));
     });
 
+    test('escape closes static modal first and keeps esc menu open', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+
+        ui.toggleEscMenu();
+        ui.toggleHelp();
+        expect(document.getElementById('esc-menu').style.display).toBe('block');
+        expect(document.getElementById('help-screen').style.display).toBe('block');
+        expect(document.getElementById('ui-static-modal-backdrop')).not.toBeNull();
+
+        ui.handleEscape();
+        expect(document.getElementById('help-screen').style.display).toBe('none');
+        expect(document.getElementById('esc-menu').style.display).toBe('block');
+        expect(document.getElementById('ui-static-modal-backdrop')).toBeNull();
+
+        ui.toggleSettings();
+        expect(document.getElementById('settings-screen').style.display).toBe('block');
+        expect(document.getElementById('ui-static-modal-backdrop')).not.toBeNull();
+
+        ui.handleEscape();
+        expect(document.getElementById('settings-screen').style.display).toBe('none');
+        expect(document.getElementById('esc-menu').style.display).toBe('block');
+        expect(document.getElementById('ui-static-modal-backdrop')).toBeNull();
+    });
+
     test('character and inventory windows close from dedicated header controls', () => {
         buildStaticWindowDom();
         const ui = new UIManager(false);
