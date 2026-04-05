@@ -237,8 +237,10 @@ jobs:
           username: aeml
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            set -euo pipefail
             cd /home/aeml/eidolon
-            git pull origin master
+            git fetch origin master
+            git checkout -f origin/master -- server
             cd server
             docker compose build api
             docker compose up -d api
