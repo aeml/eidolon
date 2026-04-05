@@ -126,4 +126,38 @@ describe('GameEngine auto-loot persistence', () => {
         expect(mockSetAutoLootEnabled).toHaveBeenCalledWith(false);
         expect(engine.autoLootEnabled).toBe(false);
     });
+
+    test('delta self inventory sync pads server updates so auto-loot keeps empty slots', () => {
+        const engine = new GameEngine('Fighter', false, true, '', 'tester', null);
+        engine.player = {
+            id: 'player-1',
+            inventory: new Array(25).fill(null),
+            stats: { hp: 100, maxHp: 100, mana: 50, maxMana: 50, strength: 10 },
+            xp: 0,
+            xpToNextLevel: 100,
+            level: 1
+        };
+        engine.uiManager.updateXP = jest.fn();
+        engine.uiManager.updateCharacterSheet = jest.fn();
+        engine.uiManager.updatePlayerStats = jest.fn();
+        engine.uiManager.updateInventory = jest.fn();
+        engine.syncDeathScreen = jest.fn();
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        inventory: [{ id: 'loot-1', name: 'Iron Sword', stack: 1, maxStack: 1 }]
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.inventory).toHaveLength(25);
+        expect(engine.player.inventory[0]).toMatchObject({ id: 'loot-1', name: 'Iron Sword' });
+        expect(engine.player.inventory[24]).toBeNull();
+    });
 });

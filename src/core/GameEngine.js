@@ -1422,10 +1422,15 @@ export class GameEngine {
                     
                     // Sync Inventory
                     if (pData.inventory !== undefined) {
-                        this.player.inventory = pData.inventory;
+                        const inventory = Array.isArray(pData.inventory) ? [...pData.inventory] : [];
+                        while (inventory.length < 25) {
+                            inventory.push(null);
+                        }
+                        this.player.inventory = inventory;
                         for (let i = 0; i < this.player.inventory.length; i++) {
                             this.player.inventory[i] = this.hydrateItem(this.player.inventory[i]);
                         }
+                        this.uiManager.updateInventory(this.player);
                     }
                     
                     // Sync Equipment

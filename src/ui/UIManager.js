@@ -1075,10 +1075,10 @@ export class UIManager {
         backdrop.style.background = 'rgba(3, 5, 10, 0.58)';
         backdrop.style.backdropFilter = 'blur(6px)';
         backdrop.style.webkitBackdropFilter = 'blur(6px)';
-        backdrop.style.zIndex = '100';
+        backdrop.style.zIndex = '99';
         backdrop.style.pointerEvents = 'auto';
         backdrop.addEventListener('click', () => this.closeOpenStaticModal());
-        document.body.appendChild(backdrop);
+        (this.uiLayer || document.getElementById('ui-layer') || document.body).appendChild(backdrop);
         return backdrop;
     }
 

@@ -48,12 +48,12 @@ function buildStaticWindowDom() {
         <div id="objectives-list"></div>
         <button id="btn-close-quest"></button>
         <button id="btn-close-journal"></button>
-        <div id="esc-menu" style="display:none"></div>
-        <div id="help-screen" style="display:none"></div>
+        <div id="esc-menu" class="window" style="display:none; z-index: 100;"></div>
+        <div id="help-screen" class="window" style="display:none; z-index: 101;"></div>
         <button id="btn-close-help-header"></button>
-        <div id="settings-screen" style="display:none"></div>
+        <div id="settings-screen" class="window" style="display:none; z-index: 102;"></div>
         <button id="btn-close-settings-header"></button>
-        <div id="patch-notes-screen" style="display:none"></div>
+        <div id="patch-notes-screen" class="window" style="display:none; z-index: 101;"></div>
         <button id="btn-close-patch-notes-header"></button>
         <button id="btn-resume"></button>
         <button id="btn-help"></button>
@@ -70,7 +70,7 @@ function buildStaticWindowDom() {
         <button id="btn-close-abilities"></button>
         <div id="hotbar-container"></div>
         <div class="hotbar-slot"><div class="hotbar-icon"></div></div>
-        <div id="report-screen" style="display:none"></div>
+        <div id="report-screen" class="window" style="display:none; z-index: 102;"></div>
         <button id="btn-close-report-header"></button>
         <button id="btn-cancel-report"></button>
         <button id="btn-submit-report"></button>
@@ -400,6 +400,20 @@ describe('menu polish regressions', () => {
         document.getElementById('ui-static-modal-backdrop').click();
         expect(document.getElementById('patch-notes-screen').style.display).toBe('none');
         expect(document.getElementById('ui-static-modal-backdrop')).toBeNull();
+    });
+
+    test('static modal backdrop stays beneath modal windows inside ui-layer', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+
+        ui.toggleSettings();
+
+        const backdrop = document.getElementById('ui-static-modal-backdrop');
+        const settingsScreen = document.getElementById('settings-screen');
+
+        expect(backdrop).not.toBeNull();
+        expect(backdrop.parentElement).toBe(document.getElementById('ui-layer'));
+        expect(Number(backdrop.style.zIndex)).toBeLessThan(Number(settingsScreen.style.zIndex));
     });
 
     test('character and inventory windows close from dedicated header controls', () => {
