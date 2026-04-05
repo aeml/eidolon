@@ -462,6 +462,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.21.5" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.5 (Closeout stability and HUD sanity)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Safer instance transitions:</strong> Entering or leaving dungeons now respects the shared scene-group boundaries instead of relying on broad scene cleanup that could disturb unrelated runtime state.</li>
+                        <li><strong>Dynamic scene ownership cleanup:</strong> Remote player meshes and transient instance content now clear through the render system's explicit ownership paths, making transition behavior easier to reason about and less brittle.</li>
+                        <li><strong>HUD update sanity pass:</strong> Core HUD state like health, mana, XP, and cooldown overlays now avoids unnecessary re-renders when nothing visible actually changed.</li>
+                        <li><strong>World map throttling:</strong> The world map no longer redraws every render frame while hidden, cutting wasted UI work during normal play.</li>
+                        <li><strong>Regression coverage:</strong> Added focused tests around instance-transition scene ownership and render-time HUD throttling so these closeout fixes stay locked in.</li>
+                    </ul>
+                </div>
+
                 <div class="patch-note-entry" data-version="0.21.4" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.4 (Dungeon/menu/game-feel polish)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

@@ -149,6 +149,9 @@ export class GameEngine {
         this.frameCount = 0;
         this.playerJumpState = null;
         this.playerJumpVisualHeight = 0;
+        this.lastRenderHudSignature = '';
+        this.lastRenderXpSignature = '';
+        this.lastRenderHotbarCooldownSignature = '';
 
         // Entity Creation Throttling
         this.entityCreationQueue = [];
@@ -3943,7 +3946,7 @@ export class GameEngine {
         // Optimization: Use cached active entities from ChunkManager
         // This avoids re-iterating chunks just for rendering if update() already did it
         const activeEntities = this.chunkManager.getActiveEntities();
-        
+
         // Use a simple for loop for performance instead of forEach
         for (let i = 0; i < activeEntities.length; i++) {
             const entity = activeEntities[i];
@@ -3964,11 +3967,46 @@ export class GameEngine {
             if (this.frameCount % 3 === 0) {
                 this.minimap.update(this.player, activeEntities);
             }
-            
-            this.uiManager.updatePlayerStats(this.player);
-            this.uiManager.updateXP(this.player);
-            this.uiManager.updateHotbarCooldowns(this.player);
-            
+
+            const playerStats = this.player.stats || {};
+            const hudSignature = [
+                Math.ceil(playerStats.hp ?? 0),
+                playerStats.maxHp ?? 0,
+                Math.floor(playerStats.mana ?? 0),
+                playerStats.maxMana ?? 0,
+                this.player.abilityName || '',
+                this.player.abilityDescription || '',
+                this.player.abilityCooldown > 0 ? Math.ceil(this.player.abilityCooldown) : 0,
+                this.player.abilityManaCost ?? 0,
+                playerStats.manaCostReduction ?? 0
+            ].join('|');
+            if (hudSignature !== this.lastRenderHudSignature) {
+                this.uiManager.updatePlayerStats(this.player);
+                this.lastRenderHudSignature = hudSignature;
+            }
+
+            const xpSignature = [
+                this.player.level ?? 0,
+                this.player.xp ?? 0,
+                this.player.xpToNextLevel ?? 0
+            ].join('|');
+            if (xpSignature !== this.lastRenderXpSignature) {
+                this.uiManager.updateXP(this.player);
+                this.lastRenderXpSignature = xpSignature;
+            }
+
+            const hotbarCooldownSignature = (this.player.hotbar || []).map((skillName, index) => {
+                if (!skillName) return `${index}:empty`;
+                const mappedCooldown = this.player.cooldowns?.[skillName] ?? 0;
+                const fallbackCooldown = skillName === this.player.abilityName ? (this.player.abilityCooldown ?? 0) : 0;
+                const displayedCooldown = Math.max(mappedCooldown, fallbackCooldown);
+                return `${index}:${skillName}:${displayedCooldown > 0 ? Math.ceil(displayedCooldown) : 0}`;
+            }).join('|');
+            if (hotbarCooldownSignature !== this.lastRenderHotbarCooldownSignature) {
+                this.uiManager.updateHotbarCooldowns(this.player);
+                this.lastRenderHotbarCooldownSignature = hotbarCooldownSignature;
+            }
+
             // Dynamic UI Updates (Throttled)
             if (this.frameCount % 10 === 0) {
                 if (this.uiManager.isCharacterSheetOpen) {
@@ -3977,12 +4015,14 @@ export class GameEngine {
             }
 
             this.uiManager.updateEnemyBars(
-                activeEntities, 
-                this.renderSystem.camera, 
-                this.hoveredEntity, 
+                activeEntities,
+                this.renderSystem.camera,
+                this.hoveredEntity,
                 this.inputManager.keys.alt
             );
-            this.worldMap.update(this.player);
+            if (this.worldMap?.isVisible?.()) {
+                this.worldMap.update(this.player);
+            }
         }
     }
 
