@@ -15,6 +15,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"syscall"
@@ -2039,6 +2040,9 @@ func (c *Client) handleMessage(msg Message) {
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
 			return
 		}
+		if handled := c.handleChatCommand(strings.TrimSpace(payload.Message)); handled {
+			return
+		}
 
 		// Broadcast chat
 		outPayload := ChatPayload{
@@ -3290,6 +3294,67 @@ func (c *Client) handleMessage(msg Message) {
 		}
 		msgBytes, _ := json.Marshal(runeMsg)
 		c.sendSafe(msgBytes)
+	}
+}
+
+func (c *Client) handleChatCommand(raw string) bool {
+	if raw == "" || !strings.HasPrefix(raw, "/") {
+		return false
+	}
+
+	fields := strings.Fields(raw)
+	if len(fields) == 0 {
+		return false
+	}
+
+	switch fields[0] {
+	case "/level":
+		if len(fields) != 2 {
+			c.sendError("Usage: /level <1-100>")
+			return true
+		}
+
+		level, err := strconv.Atoi(fields[1])
+		if err != nil || level < 1 || level > game.MaxPlayerLevel {
+			c.sendError(fmt.Sprintf("Usage: /level <1-%d>", game.MaxPlayerLevel))
+			return true
+		}
+		if c.playerID == "" || world == nil {
+			c.sendError("No active character to level.")
+			return true
+		}
+
+		player, ok := world.SetPlayerLevel(c.playerID, level)
+		if !ok || player == nil {
+			c.sendError("No active character to level.")
+			return true
+		}
+
+		if db != nil {
+			char, err := db.GetCharacter(c.username, c.username)
+			if err == nil && char != nil {
+				char.Level = player.Level
+				char.XP = player.Experience
+				char.SkillPoints = player.SkillPoints
+				char.SelectedBranch = player.SelectedBranch
+				char.UnlockedSkills = append([]string(nil), player.UnlockedSkills...)
+				char.Stats = database.Stats{
+					Vitality:     player.BaseStats.Vitality,
+					Strength:     player.BaseStats.Strength,
+					Dexterity:    player.BaseStats.Dexterity,
+					Intelligence: player.BaseStats.Intelligence,
+					Wisdom:       player.BaseStats.Wisdom,
+				}
+				if err := db.SaveCharacter(c.username, char); err != nil {
+					log.Printf("Failed to persist /level for %s: %v", c.username, err)
+				}
+			}
+		}
+
+		c.sendError(fmt.Sprintf("Level set to %d.", level))
+		return true
+	default:
+		return false
 	}
 }
 

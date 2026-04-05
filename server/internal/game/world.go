@@ -485,6 +485,44 @@ func (e *Entity) recomputeTalentPoints() {
 	e.TalentPoints = available
 }
 
+func experienceRequiredForLevel(level int) int {
+	if level <= 1 {
+		return 100
+	}
+	return int(100 * math.Pow(1.2, float64(level-1)))
+}
+
+func (w *World) SetPlayerLevel(playerID string, level int) (*Entity, bool) {
+	if level < 1 || level > MaxPlayerLevel {
+		return nil, false
+	}
+
+	w.Mu.Lock()
+	player, ok := w.Entities[playerID]
+	if !ok {
+		w.Mu.Unlock()
+		return nil, false
+	}
+
+	player.Level = level
+	player.Experience = 0
+	player.MaxExperience = experienceRequiredForLevel(level)
+	player.SkillPoints = max(0, level/10)
+	w.Mu.Unlock()
+
+	player.recomputeTalentPoints()
+	if player.SelectedBranch != "" {
+		w.UpdateUnlockedSkills(player)
+	}
+	player.RecalculateStats()
+	player.Mu.Lock()
+	player.Health = player.MaxHealth
+	player.Mana = player.MaxMana
+	player.Mu.Unlock()
+
+	return player, true
+}
+
 // ============================================================
 // SKILL RUNE SYSTEM
 // Each skill can have one rune equipped from 3 options
