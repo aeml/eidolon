@@ -359,6 +359,9 @@ export class InventoryUI {
 
     toggleInventory() {
         const isHidden = this.inventoryScreen.style.display === 'none' || this.inventoryScreen.style.display === '';
+        if (isHidden) {
+            this.ctx.closePrimaryHudMenus?.({ except: 'inventory' });
+        }
         this.inventoryScreen.style.display = isHidden ? 'block' : 'none';
 
         if (isHidden) {

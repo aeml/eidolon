@@ -13,10 +13,17 @@
     height: 80%;
     background: var(--bg-panel);
     border: 2px solid var(--color-gold);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-window-focused);
     z-index: var(--z-world-map);
     display: none;
     flex-direction: column;
     pointer-events: auto;
+    user-select: none;
+    -webkit-user-select: none;
+    overflow: hidden;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 }
 
 #world-map-header {
@@ -24,11 +31,15 @@
     border-bottom: 1px solid var(--border-default);
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    padding: 0 14px;
     color: var(--color-gold);
     font-size: 1.5rem;
     font-weight: bold;
     background: var(--bg-surface);
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 #world-map-canvas {

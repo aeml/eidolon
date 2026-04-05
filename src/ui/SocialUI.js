@@ -83,6 +83,9 @@ export class SocialUI {
         if (show === undefined) {
             show = this.socialWindow.style.display === 'none';
         }
+        if (show) {
+            this.ctx.closePrimaryHudMenus?.({ except: 'social' });
+        }
         this.socialWindow.style.display = show ? 'block' : 'none';
 
         if (show) {

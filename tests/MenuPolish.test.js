@@ -4,6 +4,8 @@ import { UIManager } from '../src/ui/UIManager.js';
 import { SkillTreeUI } from '../src/ui/SkillTreeUI.js';
 
 const windowsCssPath = new URL('../src/styles/windows.css', import.meta.url).pathname;
+const worldMapCssPath = new URL('../src/styles/world-map.css', import.meta.url).pathname;
+const partyCssPath = new URL('../src/styles/party.css', import.meta.url).pathname;
 const indexHtmlPath = new URL('../index.html', import.meta.url).pathname;
 
 function createTouchLikeEvent(type, options = {}) {
@@ -176,6 +178,13 @@ function buildStaticWindowDom() {
         <button id="btn-trading-create"></button>
         <div id="trading-inventory-list"></div>
         <div id="trading-my-list"></div>
+        <div id="world-map" class="window" style="display:none">
+            <div id="world-map-header" class="window-header">
+                <span class="world-map__title">WORLD MAP</span>
+                <button id="btn-close-world-map" class="close-btn" type="button">×</button>
+            </div>
+            <canvas id="world-map-canvas"></canvas>
+        </div>
         <div id="social-window" style="display:none"></div>
         <div id="party-panel"></div>
         <div id="skill-tree-window" style="display:none"></div>
@@ -476,16 +485,58 @@ describe('menu polish regressions', () => {
         expect(document.getElementById('party-panel').style.display).toBe('none');
     });
 
+    test('primary hud menus open one at a time and world map header close works', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+
+        ui.onMapToggle = jest.fn(() => {
+            const worldMap = document.getElementById('world-map');
+            const isHidden = worldMap.style.display === 'none' || worldMap.style.display === '';
+            worldMap.style.display = isHidden ? 'flex' : 'none';
+        });
+
+        ui.toggleInventory();
+        expect(document.getElementById('inventory-screen').style.display).toBe('block');
+
+        ui.toggleSocial(true);
+        expect(document.getElementById('inventory-screen').style.display).toBe('none');
+        expect(document.getElementById('social-window').style.display).toBe('block');
+        expect(document.getElementById('party-panel').style.display).toBe('block');
+
+        ui.toggleJournal();
+        expect(document.getElementById('social-window').style.display).toBe('none');
+        expect(document.getElementById('party-panel').style.display).toBe('none');
+        expect(document.getElementById('quest-journal').style.display).toBe('flex');
+
+        ui.toggleWorldMap();
+        expect(ui.onMapToggle).toHaveBeenCalledTimes(1);
+        expect(document.getElementById('quest-journal').style.display).toBe('none');
+        expect(document.getElementById('world-map').style.display).toBe('flex');
+
+        document.getElementById('btn-close-world-map').click();
+        expect(ui.onMapToggle).toHaveBeenCalledTimes(2);
+        expect(document.getElementById('world-map').style.display).toBe('none');
+    });
+
     test('legacy button markup uses close-btn chrome for remaining windows', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
 
         [
             'btn-close-abilities',
             'btn-close-skills',
-            'btn-close-split'
+            'btn-close-split',
+            'btn-close-world-map'
         ].forEach((buttonId) => {
             expect(html).toMatch(new RegExp(`id="${buttonId}"[^>]*class="close-btn"`));
         });
+    });
+
+    test('world map and party panel styles prevent accidental text selection', () => {
+        const worldMapCss = readFileSync(worldMapCssPath, 'utf8');
+        const partyCss = readFileSync(partyCssPath, 'utf8');
+
+        expect(worldMapCss).toMatch(/#world-map\s*\{[^}]*user-select:\s*none;/s);
+        expect(partyCss).toMatch(/#party-panel\s*\{[^}]*user-select:\s*none;/s);
     });
 
     test('browser warning and party markup use reusable classes instead of inline close hacks', () => {

@@ -439,9 +439,7 @@ export class GameEngine {
         });
 
         this.inputManager.subscribe('onMap', () => {
-            if (this.worldMap) {
-                this.worldMap.toggle();
-            }
+            this.uiManager.toggleWorldMap();
         });
 
         this.inputManager.subscribe('onQuest', () => {

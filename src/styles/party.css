@@ -19,6 +19,11 @@
     font-family: var(--font-primary);
     pointer-events: auto;
     z-index: var(--z-hud);
+    user-select: none;
+    -webkit-user-select: none;
+    box-shadow: var(--shadow-panel);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .party-panel__header {

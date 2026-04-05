@@ -64,6 +64,9 @@ export class QuestUI {
     /** Toggle the quest journal. */
     toggleJournal() {
         const isHidden = this.questJournal.style.display === 'none' || this.questJournal.style.display === '';
+        if (isHidden) {
+            this.ctx.closePrimaryHudMenus?.({ except: 'journal' });
+        }
         this.questJournal.style.display = isHidden ? 'flex' : 'none';
         if (isHidden) {
             const player = this.ctx.getLastPlayer();

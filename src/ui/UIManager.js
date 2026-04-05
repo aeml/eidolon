@@ -48,6 +48,7 @@ export class UIManager {
             getDungeonRoomSummary: () => window.game?.getDungeonRoomSummary?.() || null,
             getCurrentInstanceId: () => window.game?.currentInstanceId || null,
             getCurrentInstanceType: () => window.game?.currentInstanceType || null,
+            closePrimaryHudMenus: (options) => this.closePrimaryHudMenus(options),
         });
 
         // Escape Menu & Help
@@ -258,6 +259,7 @@ export class UIManager {
             getRarityColor: (rarity) => this.getRarityColor(rarity),
             addChatMessage: (sender, msg) => this.addChatMessage(sender, msg),
             updateCharacterSheet: (player) => this.updateCharacterSheet(player),
+            closePrimaryHudMenus: (options) => this.closePrimaryHudMenus(options),
             trading: this.trading,
         });
 
@@ -284,6 +286,7 @@ export class UIManager {
         this.social = new SocialUI({
             getLastPlayer: () => this.lastPlayerRef,
             addChatMessage: (sender, msg) => this.addChatMessage(sender, msg),
+            closePrimaryHudMenus: (options) => this.closePrimaryHudMenus(options),
         });
         this.createDeathScreen();
 
@@ -341,14 +344,14 @@ export class UIManager {
         this.btnMenuQuest = document.getElementById('btn-menu-quest');
         this.btnMenuSkills = document.getElementById('btn-menu-skills');
 
-        if (this.btnMenuMap) this.btnMenuMap.addEventListener('click', () => {
-            if (this.onMapToggle) this.onMapToggle();
-        });
+        if (this.btnMenuMap) this.btnMenuMap.addEventListener('click', () => this.toggleWorldMap());
         if (this.btnMenuSocial) this.btnMenuSocial.addEventListener('click', () => this.toggleSocial());
         if (this.btnMenuInventory) this.btnMenuInventory.addEventListener('click', () => this.toggleInventory());
         if (this.btnMenuCharacter) this.btnMenuCharacter.addEventListener('click', () => this.toggleCharacterSheet());
         if (this.btnMenuQuest) this.btnMenuQuest.addEventListener('click', () => this.toggleJournal());
         if (this.btnMenuSkills) this.btnMenuSkills.addEventListener('click', () => this.toggleSkillTree());
+        const btnCloseWorldMap = document.getElementById('btn-close-world-map');
+        if (btnCloseWorldMap) btnCloseWorldMap.addEventListener('click', () => this.toggleWorldMap());
 
         // Event Delegation for Stat Buttons & Tooltips
         this.statsContent.addEventListener('click', (e) => {
@@ -1045,8 +1048,38 @@ export class UIManager {
     get isShopOpen() { return this.inventory.isShopOpen; }
     get isStashOpen() { return this.inventory.isStashOpen; }
 
+    closePrimaryHudMenus({ except = null } = {}) {
+        const inventoryScreen = this.inventory?.inventoryScreen;
+        const worldMap = document.getElementById('world-map');
+
+        if (except !== 'character' && this.characterSheet?.style.display === 'block') {
+            this.characterSheet.style.display = 'none';
+        }
+        if (except !== 'inventory' && inventoryScreen?.style.display === 'block') {
+            inventoryScreen.style.display = 'none';
+        }
+        if (except !== 'social' && this.social?.isOpen) {
+            this.social.toggleSocial(false);
+        }
+        if (except !== 'journal' && this.quest?.isJournalOpen) {
+            this.quest.closeJournal();
+        }
+        if (except !== 'skills' && this.skillTree?.isOpen) {
+            this.skillTree.close();
+        }
+        if (except !== 'abilities' && this.abilitiesMenu?.style.display === 'flex') {
+            this.abilitiesMenu.style.display = 'none';
+        }
+        if (except !== 'map' && worldMap && (worldMap.style.display === 'flex' || worldMap.style.display === 'block')) {
+            worldMap.style.display = 'none';
+        }
+    }
+
     toggleCharacterSheet() {
         const isHidden = this.characterSheet.style.display === 'none' || this.characterSheet.style.display === '';
+        if (isHidden) {
+            this.closePrimaryHudMenus({ except: 'character' });
+        }
         this.characterSheet.style.display = isHidden ? 'block' : 'none';
         
         if (isHidden && this.lastPlayerRef) {
@@ -1190,7 +1223,24 @@ export class UIManager {
     updateJournal(quests) { this.quest.updateJournal(quests); }
 
     toggleSkillTree() {
+        const isOpening = !this.skillTree.isOpen;
+        if (isOpening) {
+            this.closePrimaryHudMenus({ except: 'skills' });
+        }
         this.skillTree.toggle();
+    }
+
+    toggleWorldMap() {
+        const worldMap = document.getElementById('world-map');
+        if (!worldMap || !this.onMapToggle) {
+            return;
+        }
+
+        const isOpening = worldMap.style.display === 'none' || worldMap.style.display === '';
+        if (isOpening) {
+            this.closePrimaryHudMenus({ except: 'map' });
+        }
+        this.onMapToggle();
     }
 
     renderSkillTree(classType) {
@@ -1272,6 +1322,9 @@ export class UIManager {
         }
 
         const isHidden = this.abilitiesMenu.style.display === 'none' || this.abilitiesMenu.style.display === '';
+        if (isHidden) {
+            this.closePrimaryHudMenus({ except: 'abilities' });
+        }
         this.abilitiesMenu.style.display = isHidden ? 'flex' : 'none';
 
         if (isHidden && this.lastPlayerRef) {
