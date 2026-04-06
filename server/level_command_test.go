@@ -111,8 +111,8 @@ func TestHandleMessageLevelCommandSetsPlayerLevelAndResponds(t *testing.T) {
 	if updated.MaxExperience != expectedMaxXP {
 		t.Fatalf("expected max experience %d, got %d", expectedMaxXP, updated.MaxExperience)
 	}
-	if updated.BaseStats.Strength != 68 || updated.BaseStats.Vitality != 68 {
-		t.Fatalf("expected level command to scale fighter primary stats to 68 at level 30, got str=%d vit=%d", updated.BaseStats.Strength, updated.BaseStats.Vitality)
+	if updated.BaseStats.Strength != 78 || updated.BaseStats.Vitality != 68 {
+		t.Fatalf("expected level command to scale fighter primary stats to 78/68 at level 30, got str=%d vit=%d", updated.BaseStats.Strength, updated.BaseStats.Vitality)
 	}
 	if updated.Damage <= 2 {
 		t.Fatalf("expected level command to recalculate useful damage, got %d", updated.Damage)

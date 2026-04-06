@@ -492,6 +492,34 @@ func experienceRequiredForLevel(level int) int {
 	return int(100 * math.Pow(1.2, float64(level-1)))
 }
 
+func canonicalBaseStatsForClass(classType string) Stats {
+	switch classType {
+	case "Fighter":
+		return Stats{Strength: 20, Dexterity: 10, Intelligence: 10, Wisdom: 10, Vitality: 10}
+	case "Rogue":
+		return Stats{Strength: 10, Dexterity: 20, Intelligence: 10, Wisdom: 10, Vitality: 10}
+	case "Wizard":
+		return Stats{Strength: 10, Dexterity: 10, Intelligence: 20, Wisdom: 10, Vitality: 10}
+	case "Cleric":
+		return Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Wisdom: 20, Vitality: 10}
+	default:
+		return Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Wisdom: 10, Vitality: 10}
+	}
+}
+
+func applyLevelGrowth(base Stats, level int) Stats {
+	if level <= 1 {
+		return base
+	}
+	growth := level - 1
+	base.Vitality += growth * 2
+	base.Strength += growth * 2
+	base.Dexterity += growth
+	base.Intelligence += growth
+	base.Wisdom += growth
+	return base
+}
+
 func (w *World) SetPlayerLevel(playerID string, level int) (*Entity, bool) {
 	if level < 1 || level > MaxPlayerLevel {
 		return nil, false
@@ -504,14 +532,7 @@ func (w *World) SetPlayerLevel(playerID string, level int) (*Entity, bool) {
 		return nil, false
 	}
 
-	levelDelta := level - player.Level
-	if levelDelta != 0 {
-		player.BaseStats.Vitality += levelDelta * 2
-		player.BaseStats.Strength += levelDelta * 2
-		player.BaseStats.Dexterity += levelDelta
-		player.BaseStats.Intelligence += levelDelta
-		player.BaseStats.Wisdom += levelDelta
-	}
+	player.BaseStats = applyLevelGrowth(canonicalBaseStatsForClass(player.SubType), level)
 	player.Level = level
 	player.Experience = 0
 	player.MaxExperience = experienceRequiredForLevel(level)
