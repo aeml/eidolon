@@ -63,7 +63,9 @@ describe('WorldMap town wayfinding', () => {
 
         expect(texts).toEqual(expect.arrayContaining([
             'Quest Giver',
-            'Stash'
+            'Stash',
+            'Forge',
+            'Vendor / Repair'
         ]));
     });
 });

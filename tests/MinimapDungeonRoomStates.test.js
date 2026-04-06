@@ -219,6 +219,8 @@ describe('Minimap dungeon room states', () => {
 
         expect(texts.some((entry) => String(entry.args[0]).includes('Quest'))).toBe(true);
         expect(texts.some((entry) => String(entry.args[0]).includes('Stash'))).toBe(true);
+        expect(texts.some((entry) => String(entry.args[0]).includes('Forge'))).toBe(true);
+        expect(texts.some((entry) => String(entry.args[0]).includes('Vendor'))).toBe(true);
         expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 215, 90, 0.95)')).toBe(true);
     });
 

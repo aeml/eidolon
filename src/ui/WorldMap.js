@@ -78,7 +78,9 @@ const DUNGEON_MARKERS = [
 
 const TOWN_POIS = [
     { wx: -25, wz: 200, name: 'Quest Giver', dotColor: '#ffd700', minScale: 0.75, labelOffsetY: -20 },
-    { wx: 0, wz: 185, name: 'Stash', dotColor: '#8fd3ff', minScale: 0.75, labelOffsetY: 18 }
+    { wx: 0, wz: 185, name: 'Stash', dotColor: '#8fd3ff', minScale: 0.75, labelOffsetY: 18 },
+    { wx: -30, wz: 200, name: 'Forge', dotColor: '#ff9b4a', minScale: 0.75, labelOffsetY: 26 },
+    { wx: 30, wz: 200, name: 'Vendor / Repair', dotColor: '#78e08f', minScale: 0.75, labelOffsetY: -26 }
 ];
 
 /**
