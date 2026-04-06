@@ -257,12 +257,45 @@ export class QuestUI {
         return dungeonObjective ? [dungeonObjective, ...questObjectives] : questObjectives;
     }
 
+    renderObjectiveGuidance(objective) {
+        if (!this.objectivesPanel || !objective) return;
+
+        const existing = this.objectivesPanel.querySelector('.objective-guidance');
+        if (existing) existing.remove();
+
+        const guidance = document.createElement('div');
+        guidance.className = 'objective-guidance';
+        guidance.style.marginBottom = '10px';
+        guidance.style.padding = '10px 12px';
+        guidance.style.border = '1px solid rgba(255, 215, 90, 0.35)';
+        guidance.style.background = 'linear-gradient(180deg, rgba(38, 32, 18, 0.92), rgba(24, 20, 12, 0.92))';
+        guidance.style.color = '#ddd';
+        guidance.style.fontSize = '12px';
+        guidance.style.lineHeight = '1.5';
+        guidance.innerHTML = `
+            <div style="color: #ffd700; font-size: 11px; font-weight: bold; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px;">Next Step</div>
+            <div style="color: #fff; font-size: 13px; font-weight: bold; margin-bottom: 4px;">${objective.title}</div>
+            <div>${objective.completed ? `Turn this in for ${objective.rewardXP || 0} XP.` : objective.hint}</div>
+            <div style="color: #aaa; margin-top: 6px;">Open Journal (J) for details or World Map (M) if you need to re-orient.</div>
+        `;
+        if (this.objectivesList.parentNode === this.objectivesPanel) {
+            this.objectivesPanel.insertBefore(guidance, this.objectivesList);
+        } else {
+            this.objectivesPanel.appendChild(guidance);
+        }
+    }
+
     renderObjectivesPanel(summary) {
         if (!this.objectivesPanel || !this.objectivesList) return;
 
         this.activeQuestSummary = Array.isArray(summary) ? summary : [];
         this.objectivesPanel.style.display = this.activeQuestSummary.length > 0 ? 'flex' : 'none';
         this.objectivesList.innerHTML = '';
+        this.objectivesPanel.querySelector('.objective-guidance')?.remove();
+
+        if (this.activeQuestSummary.length > 0) {
+            this.renderObjectiveGuidance(this.activeQuestSummary[0]);
+        }
 
         this.activeQuestSummary.forEach((objective) => {
             const item = document.createElement('div');

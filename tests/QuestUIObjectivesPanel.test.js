@@ -98,6 +98,36 @@ describe('QuestUI objectives panel', () => {
         expect(journalList.textContent).not.toContain('Tempest Spire Boss');
     });
 
+    test('renders a next-step handoff above active objectives for first-session guidance', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getCurrentInstanceId: () => null,
+            getCurrentInstanceType: () => 'overworld'
+        });
+
+        questUI.updateJournal([
+            {
+                id: 'q1',
+                target: 'DungeonBoss',
+                accepted: true,
+                completed: false,
+                count: 0,
+                maxCount: 3,
+                rewardXP: 250
+            }
+        ]);
+
+        const panel = document.getElementById('objectives-panel');
+        const guidance = panel.querySelector('.objective-guidance');
+        expect(panel.style.display).toBe('flex');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Next Step');
+        expect(guidance.textContent).toContain('Kill Dungeon Bosses');
+        expect(guidance.textContent).toContain('Open Journal (J)');
+        expect(guidance.textContent).toContain('World Map (M)');
+    });
+
     test('hides objectives panel when there are no accepted quests', () => {
         buildQuestDom();
         const questUI = new QuestUI({
@@ -118,6 +148,7 @@ describe('QuestUI objectives panel', () => {
 
         expect(document.getElementById('objectives-panel').style.display).toBe('none');
         expect(document.getElementById('objectives-list').children).toHaveLength(0);
+        expect(document.querySelector('.objective-guidance')).toBeNull();
     });
 
     test('renders dungeon objective entries with status badges for routing states', () => {
