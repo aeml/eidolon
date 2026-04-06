@@ -55,6 +55,15 @@ func TestSetPlayerLevelUpdatesDerivedState(t *testing.T) {
 	if updated.TalentPoints != 6 {
 		t.Fatalf("expected 6 talent points at level 30, got %d", updated.TalentPoints)
 	}
+	if updated.BaseStats.Strength != 68 || updated.BaseStats.Vitality != 68 {
+		t.Fatalf("expected fighter base strength/vitality to scale to 68 at level 30, got str=%d vit=%d", updated.BaseStats.Strength, updated.BaseStats.Vitality)
+	}
+	if updated.BaseStats.Dexterity != 39 || updated.BaseStats.Intelligence != 39 || updated.BaseStats.Wisdom != 39 {
+		t.Fatalf("expected secondary stats to scale to 39 at level 30, got dex=%d int=%d wis=%d", updated.BaseStats.Dexterity, updated.BaseStats.Intelligence, updated.BaseStats.Wisdom)
+	}
+	if updated.Damage <= 2 {
+		t.Fatalf("expected derived damage to grow with level override, got %d", updated.Damage)
+	}
 	if updated.Health != updated.MaxHealth {
 		t.Fatalf("expected health refill to max, got health=%d max=%d", updated.Health, updated.MaxHealth)
 	}

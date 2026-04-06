@@ -504,6 +504,14 @@ func (w *World) SetPlayerLevel(playerID string, level int) (*Entity, bool) {
 		return nil, false
 	}
 
+	levelDelta := level - player.Level
+	if levelDelta != 0 {
+		player.BaseStats.Vitality += levelDelta * 2
+		player.BaseStats.Strength += levelDelta * 2
+		player.BaseStats.Dexterity += levelDelta
+		player.BaseStats.Intelligence += levelDelta
+		player.BaseStats.Wisdom += levelDelta
+	}
 	player.Level = level
 	player.Experience = 0
 	player.MaxExperience = experienceRequiredForLevel(level)
