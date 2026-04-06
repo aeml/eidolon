@@ -2764,7 +2764,7 @@ export class GameEngine {
         this.abilityController.pendingAbilityTarget = null;
         this.abilityController.pendingAbilitySkill = null;
         this.clearCombatIntentState?.();
-        this.player.state = 'MOVING';
+        this.player.state = 'JUMPING';
         this.player.playAnimation?.('Run');
 
         if (this.player.mesh) {

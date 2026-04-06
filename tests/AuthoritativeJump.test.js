@@ -125,6 +125,7 @@ describe('authoritative jump flow', () => {
         }));
         expect(engine.playerJumpState.end.x).toBe(33);
         expect(engine.playerJumpState.end.z).toBe(-4);
+        expect(engine.player.state).toBe('JUMPING');
         expect(engine.pendingInteraction).toBeNull();
         expect(engine.abilityController.pendingAbilityTarget).toBeNull();
         expect(engine.abilityController.pendingAbilitySkill).toBeNull();

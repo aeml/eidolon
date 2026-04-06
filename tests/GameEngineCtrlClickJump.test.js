@@ -131,6 +131,7 @@ describe('GameEngine ctrl-click jump', () => {
         const destination = new THREE.Vector3(20, 0, 0);
 
         expect(engine.startPlayerJump(destination)).toBe(true);
+        expect(engine.player.state).toBe('JUMPING');
         const duration = engine.playerJumpState.duration;
         expect(duration).toBeGreaterThanOrEqual(0.95);
 
@@ -143,6 +144,7 @@ describe('GameEngine ctrl-click jump', () => {
         expect(engine.playerJumpVisualHeight).toBeGreaterThan(0);
         expect(engine.playerJumpVisualHeight).toBeGreaterThanOrEqual(11);
         expect(engine.player.mesh.position.y).toBeCloseTo(engine.playerJumpVisualHeight, 5);
+        expect(engine.player.state).toBe('JUMPING');
         expect(engine.chunkManager.updateEntityChunk).toHaveBeenCalled();
         expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.player.position);
 
