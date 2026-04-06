@@ -2811,6 +2811,7 @@ export class GameEngine {
             this.playerJumpState = {
                 start,
                 end,
+                progress,
                 elapsed: progress,
                 duration,
                 height,
@@ -2838,8 +2839,14 @@ export class GameEngine {
         if (!entity) return;
         if (entity === this.player) {
             if (this.playerJumpState?.serverDriven) {
+                const landingEnd = this.playerJumpState.end?.clone() || this.player.position.clone();
+                this.player.position.copy(landingEnd);
+                this.player.position.y = landingEnd.y;
                 this.playerJumpState = null;
                 this.playerJumpVisualHeight = 0;
+                this.player.targetPosition = null;
+                this.chunkManager?.updateEntityChunk?.(this.player);
+                this.renderSystem?.setCameraTarget?.(this.player.position);
                 this.playerJumpLandingVisual = {
                     startTime: Date.now(),
                     duration: 180,

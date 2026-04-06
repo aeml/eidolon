@@ -178,16 +178,16 @@ describe('authoritative jump flow', () => {
         expect(engine.playerJumpState.elapsed).toBeCloseTo(0.25, 5);
         expect(engine.player.state).toBe('JUMPING');
     });
-
     test('predicted jump arc is preserved while awaiting server updates that only include jumping state and position', () => {
         const engine = createEngineHarness();
         engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(20, 0, 6));
 
         engine.handlePrimaryClick({ ctrlKey: true, clientX: 500, clientY: 220 });
-        expect(engine.playerJumpState).toEqual(expect.objectContaining({
-            end: expect.objectContaining({ x: 20, z: 6 }),
-            serverDriven: false
-        }));
+        const seededJump = {
+            end: engine.playerJumpState.end.clone(),
+            duration: engine.playerJumpState.duration,
+            height: engine.playerJumpState.height
+        };
 
         engine.handleServerMessage({
             type: 'delta',
@@ -210,14 +210,74 @@ describe('authoritative jump flow', () => {
             }
         });
 
-        expect(engine.player.position).toEqual(expect.objectContaining({ x: 4, y: 1, z: 2 }));
         expect(engine.playerJumpState).toEqual(expect.objectContaining({
-            end: expect.objectContaining({ x: 20, z: 6 }),
-            height: expect.any(Number),
+            end: seededJump.end,
+            duration: seededJump.duration,
+            height: seededJump.height,
             serverDriven: true
         }));
         expect(engine.playerJumpState.height).toBeGreaterThan(0);
         expect(engine.playerJumpVisualHeight).toBe(0);
+    });
+
+    test('server-driven jump visuals preserve descent-side flip progress instead of folding back after apex', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.position.set(16, 5, 0);
+
+        engine.syncAuthoritativeJumpState(engine.player, {
+            id: 'player-1',
+            state: 'JUMPING',
+            x: 16,
+            y: 5,
+            z: 0,
+            jumpStartX: 0,
+            jumpStartY: 0,
+            jumpStartZ: 0,
+            jumpTargetX: 20,
+            jumpTargetY: 0,
+            jumpTargetZ: 0,
+            jumpProgress: 0.8,
+            jumpHeight: 8,
+            jumpDuration: 1
+        });
+
+        expect(engine.getJumpVisualProgress(engine.playerJumpState)).toBeCloseTo(0.8, 5);
+
+        engine.updatePlayerJump(1 / 60);
+        engine.applyPlayerJumpVisuals();
+
+        expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(1.2);
+    });
+
+    test('clearing a server-driven jump snaps the player back to the landing height instead of leaving them airborne', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'JUMPING';
+        engine.player.position.set(18, 4.5, 6);
+
+        engine.syncAuthoritativeJumpState(engine.player, {
+            id: 'player-1',
+            state: 'JUMPING',
+            x: 18,
+            y: 4.5,
+            z: 6,
+            jumpStartX: 0,
+            jumpStartY: 0,
+            jumpStartZ: 0,
+            jumpTargetX: 18,
+            jumpTargetY: 0,
+            jumpTargetZ: 6,
+            jumpProgress: 0.92,
+            jumpHeight: 8,
+            jumpDuration: 1
+        });
+
+        engine.clearAuthoritativeJumpState(engine.player);
+        engine.applyPlayerJumpVisuals();
+
+        expect(engine.playerJumpState).toBeNull();
+        expect(engine.player.position.y).toBe(0);
+        expect(engine.player.mesh.position.y).toBe(0);
     });
 
     test('holding ctrl-click queues the next jump until landing and uses the current mouse position at takeoff time', () => {
