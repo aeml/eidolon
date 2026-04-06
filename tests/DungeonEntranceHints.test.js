@@ -172,6 +172,15 @@ function createEntrance(overrides = {}) {
     };
 }
 
+function createTownInteractable(overrides = {}) {
+    return {
+        constructor: { name: 'QuestNPC' },
+        position: new THREE.Vector3(0, 0, 0),
+        isActive: true,
+        ...overrides
+    };
+}
+
 function createEngineHarness() {
     const engine = Object.create(GameEngine.prototype);
     engine.player = {
@@ -192,7 +201,9 @@ function createEngineHarness() {
     };
     engine.getInteractionRangeForEntity = GameEngine.prototype.getInteractionRangeForEntity;
     engine.isHostileActorTarget = jest.fn(() => false);
+    engine.isInteractableEntity = GameEngine.prototype.isInteractableEntity;
     engine.getDungeonEntranceName = GameEngine.prototype.getDungeonEntranceName;
+    engine.getInteractableEntityLabel = GameEngine.prototype.getInteractableEntityLabel;
     engine.buildDungeonEntranceHint = GameEngine.prototype.buildDungeonEntranceHint;
     engine.refreshDungeonEntranceHint = GameEngine.prototype.refreshDungeonEntranceHint;
     engine.clearCombatIntentState = GameEngine.prototype.clearCombatIntentState;
@@ -272,5 +283,50 @@ describe('Dungeon entrance hints', () => {
 
         expect(engine.uiManager.updateDungeonEntranceHint).not.toHaveBeenCalled();
         expect(engine.uiManager.clearDungeonEntranceHint).toHaveBeenCalled();
+    });
+
+    test('GameEngine builds named interact hint for hovered forge in range', () => {
+        const engine = createEngineHarness();
+        engine.player.position = new THREE.Vector3(0, 0, 0);
+        engine.hoveredEntity = createTownInteractable({
+            constructor: { name: 'Forge' },
+            position: new THREE.Vector3(3, 0, 0)
+        });
+
+        engine.refreshDungeonEntranceHint();
+
+        expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
+            dungeonName: 'Forge',
+            inRange: true,
+            statusLabel: expect.stringContaining('In range'),
+            promptLabel: expect.stringContaining('Forge')
+        }));
+    });
+
+    test('GameEngine builds named interact hint for hovered vendor out of range', () => {
+        const engine = createEngineHarness();
+        engine.player.position = new THREE.Vector3(0, 0, 0);
+        engine.hoveredEntity = createTownInteractable({
+            constructor: { name: 'TradingHouse' },
+            position: new THREE.Vector3(12, 0, 0)
+        });
+
+        engine.refreshDungeonEntranceHint();
+
+        expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
+            dungeonName: 'Vendor / Repair',
+            inRange: false,
+            statusLabel: expect.stringContaining('Move closer'),
+            promptLabel: expect.stringContaining('Vendor / Repair')
+        }));
+    });
+
+    test('GameEngine maps town interactables to the same labels used by map guidance', () => {
+        const engine = createEngineHarness();
+
+        expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'QuestNPC' } }))).toBe('Quest Giver');
+        expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'Stash' } }))).toBe('Stash');
+        expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'Forge' } }))).toBe('Forge');
+        expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'TradingHouse' } }))).toBe('Vendor / Repair');
     });
 });

@@ -1923,13 +1923,22 @@ export class GameEngine {
     isInteractableEntity(entity) {
         if (!entity) return false;
         if (entity.name === 'DungeonEntrance') return true;
+
+        const type = entity.constructor?.name || entity.type || entity.meshType || entity.name || '';
         return entity instanceof DwarfSalesman
             || entity instanceof QuestNPC
             || entity instanceof RespecNPC
             || entity instanceof DungeonNPC
             || entity instanceof Stash
             || entity instanceof Forge
-            || entity instanceof TradingHouse;
+            || entity instanceof TradingHouse
+            || type === 'DwarfSalesman'
+            || type === 'QuestNPC'
+            || type === 'RespecNPC'
+            || type === 'DungeonNPC'
+            || type === 'Stash'
+            || type === 'Forge'
+            || type === 'TradingHouse';
     }
 
     isPlayerClassEntity(entity) {
@@ -1966,25 +1975,59 @@ export class GameEngine {
         }
     }
 
+    getInteractableEntityLabel(entity) {
+        if (!entity) return null;
+        if (entity.name === 'DungeonEntrance') return this.getDungeonEntranceName(entity);
+
+        const type = entity.constructor?.name || entity.type || entity.meshType || entity.name || '';
+        switch (type) {
+        case 'QuestNPC':
+            return 'Quest Giver';
+        case 'Stash':
+            return 'Stash';
+        case 'Forge':
+            return 'Forge';
+        case 'TradingHouse':
+        case 'DwarfSalesman':
+            return 'Vendor / Repair';
+        case 'RespecNPC':
+            return 'Respec';
+        case 'DungeonNPC':
+            return 'Dungeon Guide';
+        default:
+            return entity.displayName || entity.name || type || null;
+        }
+    }
+
     buildDungeonEntranceHint(entity = this.hoveredEntity) {
-        if (!entity || entity.name !== 'DungeonEntrance' || !entity.position || !this.player?.position) {
+        if (!entity || !entity.position || !this.player?.position) {
             return null;
         }
 
-        const interactionRange = Math.max(60.0, this.getInteractionRangeForEntity(entity));
+        if (entity.name !== 'DungeonEntrance' && !this.isInteractableEntity(entity)) {
+            return null;
+        }
+
+        const isDungeonEntrance = entity.name === 'DungeonEntrance';
+        const interactionRange = Math.max(isDungeonEntrance ? 60.0 : 0, this.getInteractionRangeForEntity(entity));
         const distance = this.player.position.distanceTo(entity.position);
         const inRange = distance <= interactionRange;
-        const dungeonName = this.getDungeonEntranceName(entity);
+        const dungeonName = this.getInteractableEntityLabel(entity);
+        const entityLabel = isDungeonEntrance ? 'Dungeon Portal' : dungeonName;
 
         return {
-            dungeonType: entity.userData?.dungeonType || '',
+            dungeonType: isDungeonEntrance ? (entity.userData?.dungeonType || '') : '',
             dungeonName,
             inRange,
             distance,
-            statusLabel: inRange ? 'Dungeon Portal • In range' : 'Dungeon Portal • Move closer',
-            promptLabel: inRange
-                ? 'Click to open the dungeon portal.'
-                : 'Move closer to interact with this dungeon portal.'
+            statusLabel: inRange ? `${entityLabel} • In range` : `${entityLabel} • Move closer`,
+            promptLabel: isDungeonEntrance
+                ? (inRange
+                    ? 'Click to open the dungeon portal.'
+                    : 'Move closer to interact with this dungeon portal.')
+                : (inRange
+                    ? `Click to interact with ${dungeonName}.`
+                    : `Move closer to interact with ${dungeonName}.`)
         };
     }
 
