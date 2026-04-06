@@ -269,8 +269,17 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.21.4</span> 
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.0</span> 
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
+            </div>
+
+            <div id="start-flow-panel" class="window" style="position: relative; top: auto; left: auto; transform: none; width: min(560px, calc(100vw - 40px)); margin: 0 auto 20px auto; display: flex; flex-direction: column; gap: 10px;">
+                <div class="window-header"><span>FIRST STEPS</span></div>
+                <div style="padding: 16px; display: flex; flex-direction: column; gap: 10px; text-align: left;">
+                    <div id="start-flow-title" style="color: #ffd700; font-size: 20px; font-weight: bold;">Login to continue your run</div>
+                    <div id="start-flow-copy" style="color: #ddd; line-height: 1.5;">Returning players can jump straight back in. New players will pick a class, enter town, and follow the quest tracker to their first objectives.</div>
+                    <div id="start-flow-steps" style="color: #aaa; font-size: 14px; line-height: 1.6;">1. Login or register. 2. Enter world or create a character. 3. Open Quests (J) and follow the objective tracker.</div>
+                </div>
             </div>
             
             <!-- Hidden inputs for game logic -->
@@ -297,9 +306,13 @@
 
             <div id="class-selection-container" class="class-selection">
                 <div style="width: 100%; text-align: center; color: #aaa; margin-bottom: 10px;">Create New Character</div>
+                <div id="class-fighter-description" style="width: 100%; text-align: center; color: #8ec5ff; margin-bottom: 6px; font-size: 13px;">Fighter — durable melee bruiser with the safest first-hour path.</div>
                 <button class="class-btn" data-type="Fighter">Fighter</button>
+                <div id="class-rogue-description" style="width: 100%; text-align: center; color: #9ee6a0; margin-bottom: 6px; font-size: 13px;">Rogue — mobile skirmisher that rewards timing and repositioning.</div>
                 <button class="class-btn" data-type="Rogue">Rogue</button>
+                <div id="class-wizard-description" style="width: 100%; text-align: center; color: #caa8ff; margin-bottom: 6px; font-size: 13px;">Wizard — ranged caster with strong burst and more mana management.</div>
                 <button class="class-btn" data-type="Wizard">Wizard</button>
+                <div id="class-cleric-description" style="width: 100%; text-align: center; color: #ffd27a; margin-bottom: 6px; font-size: 13px;">Cleric — sustain-focused hybrid with forgiving recovery tools.</div>
                 <button class="class-btn" data-type="Cleric">Cleric</button>
             </div>
         </div>
@@ -462,6 +475,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.22.0" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.0 (First-session onboarding and start-screen clarity)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>First Steps panel:</strong> The login screen now explains the immediate path for both returning players and first-time characters instead of dumping you into a blank decision wall.</li>
+                        <li><strong>Smarter enter-world guidance:</strong> Logging into an existing character now shifts the start-screen copy toward resuming your run, opening quests, and using the tracker to find your next stop.</li>
+                        <li><strong>Clearer new-player funnel:</strong> Fresh accounts now get explicit character-creation guidance before entering the world, including what happens right after class selection.</li>
+                        <li><strong>Class role blurbs:</strong> Fighter, Rogue, Wizard, and Cleric now each get a short role description so picking a class is less blind.</li>
+                        <li><strong>Regression coverage:</strong> Added tests around start-screen onboarding copy, login-state transitions, version presentation, and patch-notes history so the 0.22 entry path stays locked down.</li>
+                    </ul>
+                </div>
+
                 <div class="patch-note-entry" data-version="0.21.5" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.5 (Closeout stability and HUD sanity)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

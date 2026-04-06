@@ -151,6 +151,32 @@ window.addEventListener('DOMContentLoaded', () => {
 
     let savedCharacterType = null;
 
+    const startFlowTitle = document.getElementById('start-flow-title');
+    const startFlowCopy = document.getElementById('start-flow-copy');
+    const startFlowSteps = document.getElementById('start-flow-steps');
+
+    const updateStartFlow = ({ title, copy, steps } = {}) => {
+        if (startFlowTitle && title) startFlowTitle.textContent = title;
+        if (startFlowCopy && copy) startFlowCopy.textContent = copy;
+        if (startFlowSteps && steps) startFlowSteps.textContent = steps;
+    };
+
+    const showReturningPlayerFlow = (characterType) => {
+        updateStartFlow({
+            title: 'Continue your character',
+            copy: `Enter world as ${characterType}, get your bearings in town, then push back into quests or dungeons.`,
+            steps: '1. Enter world. 2. Open quests (J). 3. Follow the objective tracker or world map to your next stop.'
+        });
+    };
+
+    const showNewPlayerFlow = () => {
+        updateStartFlow({
+            title: 'Create your first character',
+            copy: 'Choose a class, enter town, and follow the quest tracker for your first combat and dungeon steps.',
+            steps: 'Recommended starter picks: Fighter for the cleanest first run, Rogue for mobility, Wizard for ranged burst, Cleric for sustain.'
+        });
+    };
+
     // Simple Auth Logic
     const connectAuth = () => {
         if (authSocket && (authSocket.readyState === WebSocket.OPEN || authSocket.readyState === WebSocket.CONNECTING)) return;
@@ -181,9 +207,11 @@ window.addEventListener('DOMContentLoaded', () => {
                     playContainer.style.display = 'block';
                     classSelectionContainer.style.display = 'none';
                     btnPlayCharacter.textContent = `ENTER WORLD (${savedCharacterType})`;
+                    showReturningPlayerFlow(savedCharacterType);
                 } else {
                     playContainer.style.display = 'none';
                     classSelectionContainer.style.display = 'flex';
+                    showNewPlayerFlow();
                 }
             }
         };

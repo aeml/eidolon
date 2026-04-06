@@ -8,9 +8,10 @@ jest.unstable_mockModule('../src/core/GameEngine.js', () => ({
 }));
 
 describe('asset persistence boot wiring', () => {
-    test('main module registers the asset service worker on DOMContentLoaded', async () => {
+    const buildStartDom = () => {
         document.body.innerHTML = `
             <div id="debug-console"></div>
+            <div id="perf-overlay"></div>
             <div id="start-screen"></div>
             <div id="loading-screen"></div>
             <div id="loading-bar-fill"></div>
@@ -29,7 +30,14 @@ describe('asset persistence boot wiring', () => {
             <button id="login-patch-notes-link"></button>
             <div id="patch-notes-screen"></div>
             <button id="btn-close-patch-notes"></button>
+            <div id="start-flow-title"></div>
+            <div id="start-flow-copy"></div>
+            <div id="start-flow-steps"></div>
         `;
+    };
+
+    test('main module registers the asset service worker on DOMContentLoaded', async () => {
+        buildStartDom();
 
         const register = jest.fn(async () => ({ scope: './' }));
         Object.defineProperty(globalThis, 'navigator', {
@@ -49,27 +57,8 @@ describe('asset persistence boot wiring', () => {
     });
 
     test('login patch notes link, close button, and Escape toggle the patch notes history screen', async () => {
-        document.body.innerHTML = `
-            <div id="debug-console"></div>
-            <div id="start-screen"></div>
-            <div id="loading-screen"></div>
-            <div id="loading-bar-fill"></div>
-            <div id="loading-text"></div>
-            <input id="server-address" value="ws://localhost:8080/ws" />
-            <input id="auth-username" value="test" />
-            <input id="auth-email" value="test@example.com" />
-            <input id="auth-password" value="secret" />
-            <button id="btn-login"></button>
-            <button id="btn-register"></button>
-            <div id="auth-status"></div>
-            <div id="login-panel"></div>
-            <div id="class-selection-container"></div>
-            <div id="play-container"></div>
-            <button id="btn-play-character"></button>
-            <button id="login-patch-notes-link"></button>
-            <div id="patch-notes-screen" style="display:none"></div>
-            <button id="btn-close-patch-notes"></button>
-        `;
+        buildStartDom();
+        document.getElementById('patch-notes-screen').style.display = 'none';
 
         const register = jest.fn(async () => ({ scope: './' }));
         Object.defineProperty(globalThis, 'navigator', {
@@ -95,5 +84,110 @@ describe('asset persistence boot wiring', () => {
         expect(patchNotesScreen.style.display).toBe('flex');
         window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
         expect(patchNotesScreen.style.display).toBe('none');
+    });
+
+    test('shows returning-player first steps guidance when login succeeds with an existing character', async () => {
+        buildStartDom();
+
+        const register = jest.fn(async () => ({ scope: './' }));
+        const sockets = [];
+        class MockWebSocket {
+            static OPEN = 1;
+            constructor() {
+                this.readyState = MockWebSocket.OPEN;
+                this.sent = [];
+                sockets.push(this);
+            }
+            send(message) {
+                this.sent.push(JSON.parse(message));
+            }
+        }
+
+        Object.defineProperty(globalThis, 'navigator', {
+            configurable: true,
+            value: {
+                userAgent: 'jest',
+                serviceWorker: { register }
+            }
+        });
+        Object.defineProperty(globalThis, 'WebSocket', {
+            configurable: true,
+            value: MockWebSocket
+        });
+        window.matchMedia = jest.fn().mockReturnValue({ addEventListener: jest.fn(), matches: false });
+
+        await import('../src/main.js');
+        window.dispatchEvent(new Event('DOMContentLoaded'));
+        await Promise.resolve();
+
+        document.getElementById('btn-login').click();
+        expect(sockets).toHaveLength(1);
+        sockets[0].onmessage({
+            data: JSON.stringify({
+                type: 'login_success',
+                payload: {
+                    hasCharacter: true,
+                    characterType: 'Fighter',
+                    message: 'Logged in!'
+                }
+            })
+        });
+
+        expect(document.getElementById('start-flow-title').textContent).toContain('Continue your character');
+        expect(document.getElementById('start-flow-copy').textContent).toContain('Enter world as Fighter');
+        expect(document.getElementById('start-flow-steps').textContent).toContain('Open quests');
+        expect(document.getElementById('btn-play-character').textContent).toContain('ENTER WORLD (Fighter)');
+    });
+
+    test('shows new-player first steps guidance when login succeeds without a character', async () => {
+        buildStartDom();
+
+        const register = jest.fn(async () => ({ scope: './' }));
+        const sockets = [];
+        class MockWebSocket {
+            static OPEN = 1;
+            constructor() {
+                this.readyState = MockWebSocket.OPEN;
+                this.sent = [];
+                sockets.push(this);
+            }
+            send(message) {
+                this.sent.push(JSON.parse(message));
+            }
+        }
+
+        Object.defineProperty(globalThis, 'navigator', {
+            configurable: true,
+            value: {
+                userAgent: 'jest',
+                serviceWorker: { register }
+            }
+        });
+        Object.defineProperty(globalThis, 'WebSocket', {
+            configurable: true,
+            value: MockWebSocket
+        });
+        window.matchMedia = jest.fn().mockReturnValue({ addEventListener: jest.fn(), matches: false });
+
+        await import('../src/main.js');
+        window.dispatchEvent(new Event('DOMContentLoaded'));
+        await Promise.resolve();
+
+        document.getElementById('btn-login').click();
+        expect(sockets).toHaveLength(1);
+        sockets[0].onmessage({
+            data: JSON.stringify({
+                type: 'login_success',
+                payload: {
+                    hasCharacter: false,
+                    message: 'Logged in!'
+                }
+            })
+        });
+
+        expect(document.getElementById('start-flow-title').textContent).toContain('Create your first character');
+        expect(document.getElementById('start-flow-copy').textContent).toContain('Choose a class');
+        expect(document.getElementById('start-flow-steps').textContent).toContain('Fighter');
+        expect(document.getElementById('start-flow-steps').textContent).toContain('Rogue');
     });
 });

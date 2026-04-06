@@ -5,19 +5,30 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('keeps the login screen on alpha 0.21.x until the closeout is complete', () => {
-        expect(indexHtml).toContain('Alpha 0.21.4');
+    test('advances the login screen to alpha 0.22.x after the 0.21 closeout', () => {
+        expect(indexHtml).toContain('Alpha 0.22.0');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.21.5', () => {
-        expect(indexHtml).toContain('Patch 0.21.5');
-        expect(indexHtml).toContain('Closeout stability and HUD sanity');
-        expect(indexHtml).toContain('HUD update sanity pass');
-        expect(indexHtml).toContain('World map throttling');
+    test('includes first-session onboarding guidance on the start screen', () => {
+        expect(indexHtml).toContain('id="start-flow-title"');
+        expect(indexHtml).toContain('id="start-flow-copy"');
+        expect(indexHtml).toContain('id="start-flow-steps"');
+        expect(indexHtml).toContain('id="class-fighter-description"');
+        expect(indexHtml).toContain('id="class-rogue-description"');
+        expect(indexHtml).toContain('id="class-wizard-description"');
+        expect(indexHtml).toContain('id="class-cleric-description"');
+    });
+
+    test('includes the latest player-facing patch notes entry for 0.22.0', () => {
+        expect(indexHtml).toContain('Patch 0.22.0');
+        expect(indexHtml).toContain('First-session onboarding and start-screen clarity');
+        expect(indexHtml).toContain('First Steps panel');
+        expect(indexHtml).toContain('Class role blurbs');
     });
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.22.0');
         expect(indexHtml).toContain('Patch 0.21.5');
         expect(indexHtml).toContain('Patch 0.21.4');
         expect(indexHtml).toContain('Patch 0.21.3');
@@ -30,6 +41,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.22.0"');
         expect(indexHtml).toContain('data-version="0.21.5"');
         expect(indexHtml).toContain('data-version="0.21.4"');
         expect(indexHtml).toContain('data-version="0.21.3"');
