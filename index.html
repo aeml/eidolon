@@ -1047,7 +1047,8 @@
 
             <!-- Main Shop Content -->
             <div id="shop-content-main" style="padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column;">
-                <p style="color: #aaa; font-size: 14px; margin-bottom: 15px;">Right-click items in your inventory to sell them.</p>
+                <p id="shop-service-guidance" style="color: #aaa; font-size: 14px; margin-bottom: 10px;">Right-click items in your inventory to sell them. Use this merchant to clear junk, stock basic upgrades, and keep gold moving.</p>
+                <p style="color: #8fb7d9; font-size: 12px; margin: 0 0 15px 0;">Sell All buttons are fastest for low-rarity cleanup. Buyback is for "shit, I sold the wrong thing."</p>
                 
                 <div class="window-action-row">
                     <button id="btn-sell-common" class="menu-btn" style="background: #333; color: #fff; border-color: #fff; font-size: 12px; padding: 5px 10px;">Sell All Common</button>
@@ -1064,7 +1065,7 @@
 
             <!-- Buyback Content -->
             <div id="shop-content-buyback" style="padding: 10px; text-align: center; flex-grow: 1; display: none; flex-direction: column;">
-                <p style="color: #aaa; font-size: 14px; margin-bottom: 15px;">Click items to buy them back.</p>
+                <p id="shop-buyback-guidance" style="color: #aaa; font-size: 14px; margin-bottom: 15px;">Buyback lets you recover something you just sold before it is gone for good.</p>
                 <div id="buyback-grid" class="inventory-grid" style="grid-template-columns: repeat(5, 1fr); padding: 10px; max-height: 300px; overflow-y: auto;">
                     <!-- Populated by JS -->
                 </div>
@@ -1084,8 +1085,8 @@
             <div class="inventory-grid" id="stash-grid" style="grid-template-columns: repeat(10, 1fr); padding: 10px;">
                 <!-- Populated by JS -->
             </div>
-            <div style="padding: 10px; color: #aaa; font-size: 12px; text-align: center;">
-                Right-click to move items between Inventory and Stash.
+            <div id="stash-guidance" style="padding: 10px; color: #aaa; font-size: 12px; text-align: center;">
+                Right-click to move items between Inventory and Stash. Use the Stash to park spare gear, gems, Hearts, and Shards without clogging your bag.
             </div>
         </div>
 
@@ -1109,6 +1110,7 @@
                 <!-- Panel 1: Upgrade -->
                 <div id="forge-panel-upgrade" class="window-panel" style="display: flex;">
                     <h3 style="margin: 0 0 10px 0; color: #ffd700; text-align: center;">Upgrade Equipment</h3>
+                    <p id="forge-upgrade-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Spend Shards to raise item level. This is the straight upgrade path when a good drop is worth keeping.</p>
                     <div id="forge-equipment-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
                         <!-- Populated by JS -->
                     </div>
@@ -1127,6 +1129,7 @@
                 <!-- Panel 2: Potency -->
                 <div id="forge-panel-potency" class="window-panel" style="display: none;">
                     <h3 style="margin: 0 0 10px 0; color: #ff4444; text-align: center;">Increase Potency</h3>
+                    <p id="forge-potency-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Spend Hearts to permanently boost an equipped item when you want stronger stats without replacing it.</p>
                     <div id="forge-potency-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
                         <!-- Populated by JS -->
                     </div>
@@ -1141,6 +1144,7 @@
                 <!-- Panel 3: Sockets -->
                 <div id="forge-panel-socket" class="window-panel" style="display: none;">
                     <h3 style="margin: 0 0 10px 0; color: #00ffff; text-align: center;">Add Sockets</h3>
+                    <p id="forge-socket-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Spend Hearts and Shards to add gem slots to equipped gear so one strong item can scale further.</p>
                     <div id="forge-socket-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
                         <!-- Populated by JS -->
                     </div>
@@ -1157,6 +1161,7 @@
 
                 <!-- Panel 4: Gems -->
                 <div id="forge-panel-gems" class="window-panel" style="display: none;">
+                    <p id="forge-gems-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Insert gems for bonuses, combine extras into stronger gems, or remove them when you want to rebuild a piece.</p>
                     <!-- Sub-tabs for Gem operations -->
                     <div class="window-tabs window-tabs--spaced">
                         <button id="tab-gem-insert" class="menu-btn window-tab is-active" type="button">Insert</button>

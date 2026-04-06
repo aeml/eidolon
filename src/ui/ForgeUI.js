@@ -546,6 +546,7 @@ export class ForgeUI {
 
         if (this.forgePotencyStats) {
             let statsHtml = '<div style="margin-top: 10px; font-size: 12px;">';
+            statsHtml += '<div style="color: #8fb7d9; margin-bottom: 6px;">Potency permanently boosts this item. Hearts are the fuel for each rank.</div>';
             statsHtml += `<div style="color: #aaa; margin-bottom: 5px;">Potency: +${currentPotency} <span style="color: #0f0;">-> +${currentPotency + 1}</span></div>`;
             if (item.stats) {
                 const currentMult = 1.0 + (currentPotency * 0.1);
@@ -707,6 +708,7 @@ export class ForgeUI {
 
         if (this.forgeSocketStats) {
             let statsHtml = '<div style="margin-top: 10px; font-size: 12px;">';
+            statsHtml += '<div style="color: #8fb7d9; margin-bottom: 6px;">Sockets let this item hold gems. Opening one costs Hearts and Shards.</div>';
             statsHtml += `<div style="color: #aaa; margin-bottom: 5px;">Sockets: ${currentSockets} <span style="color: #0f0;">-> ${currentSockets + 1}</span></div>`;
             statsHtml += `<div style="color: ${hasEnoughHearts ? '#00ff88' : '#ff6666'}; margin-top: 8px;">Hearts Available: ${availableHearts} / ${heartCost}</div>`;
             statsHtml += `<div style="color: ${hasEnoughShards ? '#00ff88' : '#ffdd66'};">Shards Available: ${availableShards} / ${shardCost}</div>`;

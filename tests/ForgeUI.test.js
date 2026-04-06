@@ -67,6 +67,25 @@ describe('ForgeUI resource detection', () => {
         expect(document.getElementById('forge-potency-stats').innerHTML).toContain('Hearts Available: 1 / 1');
     });
 
+    test('shows potency guidance in plain language alongside heart costs', () => {
+        buildForgeDom();
+
+        const player = {
+            inventory: [{ name: 'Eidolon Heart', stack: 5 }]
+        };
+        const forge = createForge(player);
+
+        forge.updateForgePotencyInfo({
+            name: 'Wizard Staff',
+            potency: 2,
+            stats: { damage: 20 },
+            rarity: { color: '#ffffff' }
+        });
+
+        expect(document.getElementById('forge-potency-stats').innerHTML).toContain('Potency permanently boosts this item');
+        expect(document.getElementById('forge-potency-stats').innerHTML).toContain('Hearts are the fuel for each rank');
+    });
+
     test('shows socket material counts and blocks upgrades when short', () => {
         buildForgeDom();
 
@@ -85,6 +104,8 @@ describe('ForgeUI resource detection', () => {
         });
 
         expect(document.getElementById('btn-forge-socket').disabled).toBe(true);
+        expect(document.getElementById('forge-socket-stats').innerHTML).toContain('Sockets let this item hold gems');
+        expect(document.getElementById('forge-socket-stats').innerHTML).toContain('Opening one costs Hearts and Shards');
         expect(document.getElementById('forge-socket-stats').innerHTML).toContain('Hearts Available: 5 / 25');
         expect(document.getElementById('forge-socket-stats').innerHTML).toContain('Shards Available: 100 / 250');
     });

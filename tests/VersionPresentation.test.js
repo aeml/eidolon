@@ -19,6 +19,22 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('id="class-cleric-description"');
     });
 
+    test('includes plain-language starter service guidance on merchant stash and forge windows', () => {
+        expect(indexHtml).toContain('id="shop-service-guidance"');
+        expect(indexHtml).toContain('id="shop-buyback-guidance"');
+        expect(indexHtml).toContain('id="stash-guidance"');
+        expect(indexHtml).toContain('id="forge-upgrade-guidance"');
+        expect(indexHtml).toContain('id="forge-potency-guidance"');
+        expect(indexHtml).toContain('id="forge-socket-guidance"');
+        expect(indexHtml).toContain('id="forge-gems-guidance"');
+        expect(indexHtml).toContain('Buyback lets you recover something you just sold');
+        expect(indexHtml).toContain('park spare gear, gems, Hearts, and Shards');
+        expect(indexHtml).toContain('Spend Shards to raise item level');
+        expect(indexHtml).toContain('Spend Hearts to permanently boost an equipped item');
+        expect(indexHtml).toContain('add gem slots to equipped gear');
+        expect(indexHtml).toContain('Insert gems for bonuses, combine extras into stronger gems, or remove them');
+    });
+
     test('includes the latest player-facing patch notes entry for 0.22.0', () => {
         expect(indexHtml).toContain('Patch 0.22.0');
         expect(indexHtml).toContain('First-session onboarding and start-screen clarity');
