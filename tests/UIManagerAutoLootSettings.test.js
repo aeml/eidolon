@@ -57,6 +57,7 @@ function buildDom() {
         <input id="graphics-brightness" />
         <div id="graphics-brightness-value"></div>
         <input id="auto-loot-enabled" type="checkbox" />
+        <input id="camera-shake-enabled" type="checkbox" />
         <div id="inventory-screen"></div>
         <div id="inventory-grid"></div>
         <button id="btn-sort-inventory"></button>
@@ -137,7 +138,7 @@ function buildDom() {
     `;
 }
 
-describe('UIManager auto-loot settings', () => {
+describe('UIManager settings', () => {
     beforeEach(() => {
         localStorage.clear();
     });
@@ -175,5 +176,39 @@ describe('UIManager auto-loot settings', () => {
 
         expect(ui.getAutoLootEnabled()).toBe(true);
         expect(localStorage.getItem('eidolon.autoLootEnabled')).toBe('true');
+    });
+
+    test('camera shake defaults off when no setting is stored', () => {
+        buildDom();
+
+        const ui = new UIManager(false);
+
+        expect(ui.getCameraShakeEnabled()).toBe(false);
+        expect(document.getElementById('camera-shake-enabled').checked).toBe(false);
+    });
+
+    test('setCameraShakeEnabled persists and invokes callback', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        ui.onCameraShakeChange = jest.fn();
+
+        ui.setCameraShakeEnabled(true);
+
+        expect(localStorage.getItem('eidolon.cameraShakeEnabled')).toBe('true');
+        expect(ui.getCameraShakeEnabled()).toBe(true);
+        expect(document.getElementById('camera-shake-enabled').checked).toBe(true);
+        expect(ui.onCameraShakeChange).toHaveBeenCalledWith(true);
+    });
+
+    test('camera shake checkbox change updates setting', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const checkbox = document.getElementById('camera-shake-enabled');
+
+        checkbox.checked = true;
+        checkbox.dispatchEvent(new Event('change'));
+
+        expect(ui.getCameraShakeEnabled()).toBe(true);
+        expect(localStorage.getItem('eidolon.cameraShakeEnabled')).toBe('true');
     });
 });

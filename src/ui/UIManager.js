@@ -110,6 +110,7 @@ export class UIManager {
         this.graphicsBrightnessSlider = document.getElementById('graphics-brightness');
         this.graphicsBrightnessValue = document.getElementById('graphics-brightness-value');
         this.autoLootToggle = document.getElementById('auto-loot-enabled');
+        this.cameraShakeToggle = document.getElementById('camera-shake-enabled');
         this.btnDownloadCoreAssets = document.getElementById('btn-download-core-assets');
         this.btnDownloadDungeonAssets = document.getElementById('btn-download-dungeon-assets');
         this.btnDownloadEnvironmentAssets = document.getElementById('btn-download-environment-assets');
@@ -153,6 +154,7 @@ export class UIManager {
         this.onGraphicsQualityChange = null;
         this.onBrightnessChange = null;
         this.onAutoLootChange = null;
+        this.onCameraShakeChange = null;
         this.onAssetDownloadRequest = null;
         this.onAssetCacheClearRequest = null;
         this.assetCacheManager = new AssetCacheManager();
@@ -187,6 +189,15 @@ export class UIManager {
             this.autoLootToggle.checked = this.autoLootEnabled;
             this.autoLootToggle.addEventListener('change', () => {
                 this.setAutoLootEnabled(this.autoLootToggle.checked);
+            });
+        }
+
+        const storedCameraShake = localStorage.getItem('eidolon.cameraShakeEnabled');
+        this.cameraShakeEnabled = storedCameraShake === null ? false : storedCameraShake === 'true';
+        if (this.cameraShakeToggle) {
+            this.cameraShakeToggle.checked = this.cameraShakeEnabled;
+            this.cameraShakeToggle.addEventListener('change', () => {
+                this.setCameraShakeEnabled(this.cameraShakeToggle.checked);
             });
         }
         if (this.btnDownloadCoreAssets) {
@@ -1654,6 +1665,22 @@ export class UIManager {
 
     getAutoLootEnabled() {
         return Boolean(this.autoLootEnabled);
+    }
+
+    setCameraShakeEnabled(enabled) {
+        const nextValue = Boolean(enabled);
+        this.cameraShakeEnabled = nextValue;
+        localStorage.setItem('eidolon.cameraShakeEnabled', String(nextValue));
+        if (this.cameraShakeToggle) {
+            this.cameraShakeToggle.checked = nextValue;
+        }
+        if (this.onCameraShakeChange) {
+            this.onCameraShakeChange(nextValue);
+        }
+    }
+
+    getCameraShakeEnabled() {
+        return Boolean(this.cameraShakeEnabled);
     }
 
     getAssetPackLabel(packName) {

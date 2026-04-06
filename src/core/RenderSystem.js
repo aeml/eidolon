@@ -89,6 +89,7 @@ export class RenderSystem {
         this.shadowTarget = new THREE.Vector3();
         this.shadowCoverageRadius = 280;
         this.shadowTexelSnap = true;
+        this.cameraShakeEnabled = false;
         this.cameraPunch = null;
         this.currentLighting = {
             ambientIntensity: 2.25,
@@ -1022,7 +1023,20 @@ export class RenderSystem {
         this.updateCamera();
     }
 
+    setCameraShakeEnabled(enabled) {
+        this.cameraShakeEnabled = Boolean(enabled);
+        if (!this.cameraShakeEnabled) {
+            this.cameraPunch = null;
+            this.updateCamera();
+        }
+    }
+
     applyCameraPunch({ intensity = 0.8, duration = 0.16, vertical = 1.0, horizontal = 0.45 } = {}) {
+        if (!this.cameraShakeEnabled) {
+            this.cameraPunch = null;
+            return;
+        }
+
         this.cameraPunch = {
             startTime: performance.now(),
             duration: Math.max(0.05, duration),

@@ -101,6 +101,7 @@ jest.unstable_mockModule('../src/ui/UIManager.js', () => ({
     UIManager: class UIManager {
         constructor() {}
         getAutoLootEnabled() { return false; }
+        getCameraShakeEnabled() { return false; }
         updateQuestWindow() {}
         updateJournal() {}
     }

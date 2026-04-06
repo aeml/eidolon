@@ -19,6 +19,7 @@ describe('UIBindings', () => {
             renderSystem: {
                 setGraphicsQuality: jest.fn(),
                 setBrightnessLevel: jest.fn(),
+                setCameraShakeEnabled: jest.fn(),
                 setCameraTarget: jest.fn()
             },
             chunkManager: {
@@ -35,6 +36,7 @@ describe('UIBindings', () => {
             uiManager: {
                 getGraphicsQuality: jest.fn(() => 'medium'),
                 getBrightnessLevel: jest.fn(() => 0.75),
+                getCameraShakeEnabled: jest.fn(() => false),
                 inventory: {
                     updateInventory: jest.fn()
                 },
@@ -58,6 +60,7 @@ describe('UIBindings', () => {
 
         expect(engine.renderSystem.setGraphicsQuality).toHaveBeenCalledWith('medium');
         expect(engine.renderSystem.setBrightnessLevel).toHaveBeenCalledWith(0.75);
+        expect(engine.renderSystem.setCameraShakeEnabled).toHaveBeenCalledWith(false);
 
         const originalItem = engine.player.inventory[0];
         engine.uiManager.inventory.onSellItem(0);

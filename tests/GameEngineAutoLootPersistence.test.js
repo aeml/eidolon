@@ -61,11 +61,14 @@ jest.unstable_mockModule('../src/core/UIBindings.js', () => ({
 
 const mockGetAutoLootEnabled = jest.fn(() => true);
 const mockSetAutoLootEnabled = jest.fn();
+const mockGetCameraShakeEnabled = jest.fn(() => false);
+const mockSetCameraShakeEnabled = jest.fn();
 
 jest.unstable_mockModule('../src/ui/UIManager.js', () => ({
     UIManager: class UIManager {
         constructor() {
             this.onAutoLootChange = null;
+            this.onCameraShakeChange = null;
         }
 
         getAutoLootEnabled() {
@@ -75,6 +78,15 @@ jest.unstable_mockModule('../src/ui/UIManager.js', () => ({
         setAutoLootEnabled(enabled) {
             mockSetAutoLootEnabled(enabled);
             this.onAutoLootChange?.(enabled);
+        }
+
+        getCameraShakeEnabled() {
+            return mockGetCameraShakeEnabled();
+        }
+
+        setCameraShakeEnabled(enabled) {
+            mockSetCameraShakeEnabled(enabled);
+            this.onCameraShakeChange?.(enabled);
         }
     }
 }));
@@ -105,10 +117,12 @@ jest.unstable_mockModule('../src/ui/FloatingTextManager.js', () => ({
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
 
-describe('GameEngine auto-loot persistence', () => {
+describe('GameEngine settings persistence', () => {
     beforeEach(() => {
         mockGetAutoLootEnabled.mockClear();
         mockSetAutoLootEnabled.mockClear();
+        mockGetCameraShakeEnabled.mockClear();
+        mockSetCameraShakeEnabled.mockClear();
     });
 
     test('constructor keeps persisted auto-loot enabled state after relog', () => {
@@ -125,6 +139,22 @@ describe('GameEngine auto-loot persistence', () => {
 
         expect(mockSetAutoLootEnabled).toHaveBeenCalledWith(false);
         expect(engine.autoLootEnabled).toBe(false);
+    });
+
+    test('constructor keeps camera shake disabled by default after relog', () => {
+        const engine = new GameEngine('Fighter', false, true, '', 'tester', null);
+
+        expect(mockGetCameraShakeEnabled).toHaveBeenCalledTimes(1);
+        expect(engine.cameraShakeEnabled).toBe(false);
+    });
+
+    test('camera shake runtime state still follows later UI toggles', () => {
+        const engine = new GameEngine('Fighter', false, true, '', 'tester', null);
+
+        engine.uiManager.setCameraShakeEnabled(true);
+
+        expect(mockSetCameraShakeEnabled).toHaveBeenCalledWith(true);
+        expect(engine.cameraShakeEnabled).toBe(true);
     });
 
     test('delta self inventory sync pads server updates so auto-loot keeps empty slots', () => {

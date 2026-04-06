@@ -100,6 +100,10 @@ export class GameEngine {
         this.uiManager.onAutoLootChange = (enabled) => {
             this.autoLootEnabled = enabled;
         };
+        this.cameraShakeEnabled = this.uiManager.getCameraShakeEnabled();
+        this.uiManager.onCameraShakeChange = (enabled) => {
+            this.cameraShakeEnabled = enabled;
+        };
         this.effects = []; // Active visual effects
         this.hazards = new Map(); // Environmental hazards (id -> EnvironmentalHazard)
         this.abilityController = new AbilityController(this);

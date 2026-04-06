@@ -49,6 +49,27 @@ describe('RenderSystem shadow coverage', () => {
         expect(Math.abs(renderSystem.keyLight.target.position.z - 900)).toBeLessThanOrEqual(texelSize / 2);
     });
 
+    test('camera punch stays disabled until players opt in', () => {
+        const renderSystem = new RenderSystem(false);
+        const baseline = renderSystem.camera.position.clone();
+
+        renderSystem.setCameraTarget(new THREE.Vector3(0, 0, 0));
+        renderSystem.applyCameraPunch({ intensity: 1, duration: 0.25, vertical: 1, horizontal: 1 });
+
+        expect(renderSystem.cameraPunch).toBeNull();
+        expect(renderSystem.camera.position.x).toBeCloseTo(baseline.x, 6);
+        expect(renderSystem.camera.position.y).toBeCloseTo(baseline.y, 6);
+    });
+
+    test('camera punch resumes when players enable it', () => {
+        const renderSystem = new RenderSystem(false);
+
+        renderSystem.setCameraShakeEnabled(true);
+        renderSystem.applyCameraPunch({ intensity: 1, duration: 0.25, vertical: 1, horizontal: 1 });
+
+        expect(renderSystem.cameraPunch).toEqual(expect.objectContaining({ intensity: 1, duration: 0.25 }));
+    });
+
     test('snaps shadow focus to the shadow texel grid to reduce jitter on thin geometry while moving', () => {
         const renderSystem = new RenderSystem(false);
 
