@@ -8961,9 +8961,11 @@ func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID st
 
 	vitality := 125000
 	strength := 4000 // Scaled up damage for Level 70
+	isElite := false
 
 	if subType == "DemonOrc" {
-		// Elite
+		// Verdant elite-room placeholder until elite dungeon variants get distinct subtype plumbing.
+		isElite = true
 		vitality = 150000
 		strength = 5000
 	}
@@ -8975,8 +8977,13 @@ func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID st
 	vitality = int(float64(vitality) * healthMult * runLevelHealthMult)
 	strength = int(float64(strength) * damageMult * runLevelDamageMult)
 
+	enemyID := fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000))
+	if isElite {
+		enemyID = fmt.Sprintf("elite-%s-%s-%d", subType, instanceID, rand.Intn(10000))
+	}
+
 	enemy := &Entity{
-		ID:             fmt.Sprintf("%s-%s-%d", subType, instanceID, rand.Intn(10000)),
+		ID:             enemyID,
 		InstanceID:     instanceID,
 		Type:           TypeEnemy,
 		SubType:        subType,

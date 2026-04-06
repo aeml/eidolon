@@ -58,3 +58,18 @@ func TestDungeonRunLevelScalingIncreasesBossStats(t *testing.T) {
 		t.Fatalf("expected run level 100 boss damage to exceed run level 30, got low=%d high=%d", lowBoss.Damage, highBoss.Damage)
 	}
 }
+
+func TestVerdantEliteRoomSpawnUsesEliteIDPrefixForLootLogic(t *testing.T) {
+	w := NewWorld(nil)
+	w.InstanceLayouts["verdant-elite"] = &DungeonInstance{ID: "verdant-elite", Difficulty: DifficultyNormal, RunLevel: 30}
+
+	w.spawnEnemyInInstance("DemonOrc", 0, 0, "verdant-elite", DifficultyNormal)
+
+	enemy := findOnlyEnemyForInstance(t, w, "verdant-elite")
+	if enemy.SubType != "DemonOrc" {
+		t.Fatalf("expected DemonOrc elite placeholder, got %s", enemy.SubType)
+	}
+	if got := enemy.ID; len(got) < len("elite-") || got[:len("elite-")] != "elite-" {
+		t.Fatalf("expected Verdant elite-room enemy id to use elite prefix for loot logic, got %s", got)
+	}
+}
