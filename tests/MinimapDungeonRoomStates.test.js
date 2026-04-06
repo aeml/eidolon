@@ -207,6 +207,21 @@ describe('Minimap dungeon room states', () => {
         expect(tooltip.style.display).toBe('none');
     });
 
+    test('renders named town-service markers on the minimap when the player is in town', () => {
+        const minimap = new Minimap(200);
+        minimap.gameEngine = {
+            getDungeonRoomSummary: () => null,
+            getActiveBuffs: () => ([]),
+            uiManager: { partyData: { members: [] } }
+        };
+
+        minimap.update({ position: { x: 0, z: 200 }, id: 'player-1' }, []);
+
+        expect(texts.some((entry) => String(entry.args[0]).includes('Quest'))).toBe(true);
+        expect(texts.some((entry) => String(entry.args[0]).includes('Stash'))).toBe(true);
+        expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 215, 90, 0.95)')).toBe(true);
+    });
+
     test('renders canonical walk rects and join markers when dungeon debug overlay is enabled', () => {
         const minimap = new Minimap(200);
         minimap.setDungeonDebugOverlayEnabled(true);

@@ -17,6 +17,11 @@ const REALM_COLORS = {
     air:   'rgba(50, 70, 110, 0.35)',
 };
 
+const TOWN_SERVICE_MARKERS = [
+    { x: -25, z: 200, label: 'Quest', color: 'rgba(255, 215, 90, 0.95)', ring: true },
+    { x: 0, z: 185, label: 'Stash', color: 'rgba(143, 211, 255, 0.95)', ring: false }
+];
+
 /**
  * Determine which realm a world position falls in.
  * Mirrors RenderSystem.getRealmForPosition() logic.
@@ -145,6 +150,7 @@ export class Minimap {
         // Draw faint boundary lines for nearby realm edges so the player
         // can see when they're approaching a transition.
         this._drawRealmBoundaries(ctx, toMap, half);
+        this._drawTownServiceMarkers(ctx, toMap, player, half);
 
         // ---- Dungeon room overlays ----
         if (this.gameEngine?.getDungeonRoomSummary) {
@@ -352,6 +358,36 @@ export class Minimap {
                 ctx.stroke();
             }
         }
+    }
+
+    _drawTownServiceMarkers(ctx, toMap, player, half) {
+        if (getRealmForPosition(player.position.x, player.position.z) !== 'town') {
+            return;
+        }
+
+        TOWN_SERVICE_MARKERS.forEach((marker) => {
+            const pos = toMap(marker.x, marker.z);
+            const dx = pos.x - half;
+            const dy = pos.y - half;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const maxRadius = half - 12;
+            const drawX = dist > maxRadius ? half + (dx / dist) * maxRadius : pos.x;
+            const drawY = dist > maxRadius ? half + (dy / dist) * maxRadius : pos.y;
+
+            ctx.strokeStyle = marker.color;
+            ctx.lineWidth = marker.ring ? 2 : 1.5;
+            ctx.beginPath();
+            ctx.arc(drawX, drawY, marker.ring ? 8 : 6, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.fillStyle = marker.color;
+            ctx.beginPath();
+            ctx.arc(drawX, drawY, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#f2f2f2';
+            ctx.fillText(marker.label, drawX, drawY - 10);
+        });
     }
 
     _drawDungeonRoomStates(ctx, toMap, player, half, scale) {
