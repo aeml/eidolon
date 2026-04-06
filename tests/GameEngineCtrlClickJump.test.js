@@ -132,6 +132,7 @@ describe('GameEngine ctrl-click jump', () => {
 
         expect(engine.startPlayerJump(destination)).toBe(true);
         expect(engine.player.state).toBe('JUMPING');
+        expect(engine.player.playAnimation).not.toHaveBeenCalledWith('Run');
         const duration = engine.playerJumpState.duration;
         expect(duration).toBeGreaterThanOrEqual(0.95);
 

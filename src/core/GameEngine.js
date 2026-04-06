@@ -2779,7 +2779,10 @@ export class GameEngine {
         this.abilityController.pendingAbilitySkill = null;
         this.clearCombatIntentState?.();
         this.player.state = 'JUMPING';
-        this.player.playAnimation?.('Run');
+
+        if (this.player.animations?.Jump) {
+            this.player.playAnimation?.('Jump', false, true);
+        }
 
         if (this.player.mesh) {
             this.player.mesh.lookAt(new THREE.Vector3(end.x, this.player.position.y, end.z));
@@ -2816,8 +2819,11 @@ export class GameEngine {
             pData.jumpTargetY ?? existingJump?.end?.y ?? start.y,
             pData.jumpTargetZ ?? existingJump?.end?.z ?? pData.z ?? entity.position.z
         );
-        const progress = Math.max(0, Math.min(1, pData.jumpProgress ?? existingJump?.progress ?? existingJump?.elapsed ?? 0));
         const duration = Math.max(0.001, pData.jumpDuration ?? existingJump?.duration ?? 1);
+        const fallbackProgress = typeof existingJump?.progress === 'number'
+            ? existingJump.progress
+            : (typeof existingJump?.elapsed === 'number' ? (existingJump.elapsed / duration) : 0);
+        const progress = Math.max(0, Math.min(1, pData.jumpProgress ?? fallbackProgress));
         const height = pData.jumpHeight ?? existingJump?.height ?? (hasJumpEndpoints ? 0 : Math.max(3.5, Math.min(8.0, start.distanceTo(end) * 0.2 + 2.5)));
         const visualHeight = Math.sin(progress * Math.PI) * height;
         const baseY = THREE.MathUtils.lerp(start.y, end.y, progress);

@@ -233,6 +233,35 @@ describe('authoritative jump flow', () => {
         expect(engine.playerJumpVisualHeight).toBe(0);
     });
 
+    test('authoritative jump updates without explicit jump metadata still preserve the seeded arc progress and height', () => {
+        const engine = createEngineHarness();
+        engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(20, 0, 0));
+
+        engine.handlePrimaryClick({ ctrlKey: true, clientX: 500, clientY: 220 });
+        const seededHeight = engine.playerJumpState.height;
+        const seededDuration = engine.playerJumpState.duration;
+
+        engine.playerJumpState.elapsed = seededDuration / 2;
+
+        engine.syncAuthoritativeJumpState(engine.player, {
+            id: 'player-1',
+            state: 'JUMPING',
+            x: 10,
+            y: 0,
+            z: 0
+        });
+
+        expect(engine.playerJumpState.serverDriven).toBe(true);
+        expect(engine.playerJumpState.height).toBeCloseTo(seededHeight, 5);
+        expect(engine.getJumpVisualProgress(engine.playerJumpState)).toBeCloseTo(0.5, 2);
+
+        engine.updatePlayerJump(1 / 60);
+        engine.applyPlayerJumpVisuals();
+
+        expect(engine.player.mesh.position.y).toBeGreaterThan(seededHeight * 0.9);
+        expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(2.5);
+    });
+
     test('predicted local jump is not cleared by self deltas that omit state', () => {
         const engine = createEngineHarness();
         engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(20, 0, 6));
