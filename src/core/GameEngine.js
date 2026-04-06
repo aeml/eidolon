@@ -1559,6 +1559,8 @@ export class GameEngine {
      * @param {Object} pData  Entity payload from server
      */
     syncRemoteEntity(remoteEntity, pData) {
+        const previousRemotePosition = remoteEntity.position?.clone?.() || new THREE.Vector3();
+
         // --- Position / Interpolation ---
         if (pData.type === 'Projectile') {
             remoteEntity.position.set(pData.x, pData.y ?? 0, pData.z);
@@ -1579,7 +1581,10 @@ export class GameEngine {
         }
 
         if (pData.state === 'JUMPING') {
-            this.syncAuthoritativeJumpState(remoteEntity, pData);
+            this.syncAuthoritativeJumpState(remoteEntity, {
+                ...pData,
+                _previousPosition: previousRemotePosition
+            });
         } else {
             this.clearAuthoritativeJumpState(remoteEntity);
         }
@@ -2808,29 +2813,56 @@ export class GameEngine {
         if (!entity || pData?.state !== 'JUMPING') return false;
 
         const existingJump = entity === this.player ? this.playerJumpState : entity.jumpVisualState;
-        const hasJumpEndpoints = pData.jumpStartX !== undefined || pData.jumpTargetX !== undefined || pData.jumpHeight !== undefined || pData.jumpDuration !== undefined;
-        const start = new THREE.Vector3(
-            pData.jumpStartX ?? existingJump?.start?.x ?? pData.x ?? entity.position.x,
-            pData.jumpStartY ?? existingJump?.start?.y ?? entity.position.y,
-            pData.jumpStartZ ?? existingJump?.start?.z ?? pData.z ?? entity.position.z
+        const hasJumpMetadata = pData.jumpStartX !== undefined
+            || pData.jumpTargetX !== undefined
+            || pData.jumpHeight !== undefined
+            || pData.jumpDuration !== undefined
+            || pData.jumpProgress !== undefined;
+        const previousPosition = pData._previousPosition?.clone?.() || entity.position.clone();
+        const currentPosition = new THREE.Vector3(
+            pData.x ?? entity.position.x,
+            pData.y ?? entity.position.y,
+            pData.z ?? entity.position.z
         );
-        const end = new THREE.Vector3(
-            pData.jumpTargetX ?? existingJump?.end?.x ?? pData.x ?? entity.position.x,
-            pData.jumpTargetY ?? existingJump?.end?.y ?? start.y,
-            pData.jumpTargetZ ?? existingJump?.end?.z ?? pData.z ?? entity.position.z
-        );
-        const duration = Math.max(0.001, pData.jumpDuration ?? existingJump?.duration ?? 1);
-        const fallbackProgress = typeof existingJump?.progress === 'number'
-            ? existingJump.progress
-            : (typeof existingJump?.elapsed === 'number' ? (existingJump.elapsed / duration) : 0);
-        const progress = Math.max(0, Math.min(1, pData.jumpProgress ?? fallbackProgress));
-        const height = pData.jumpHeight ?? existingJump?.height ?? (hasJumpEndpoints ? 0 : Math.max(3.5, Math.min(8.0, start.distanceTo(end) * 0.2 + 2.5)));
-        const visualHeight = Math.sin(progress * Math.PI) * height;
-        const baseY = THREE.MathUtils.lerp(start.y, end.y, progress);
 
-        entity.position.x = pData.x ?? entity.position.x;
+        let start = new THREE.Vector3(
+            pData.jumpStartX ?? existingJump?.start?.x ?? previousPosition.x,
+            pData.jumpStartY ?? existingJump?.start?.y ?? previousPosition.y,
+            pData.jumpStartZ ?? existingJump?.start?.z ?? previousPosition.z
+        );
+        let end = new THREE.Vector3(
+            pData.jumpTargetX ?? existingJump?.end?.x ?? currentPosition.x,
+            pData.jumpTargetY ?? existingJump?.end?.y ?? start.y,
+            pData.jumpTargetZ ?? existingJump?.end?.z ?? currentPosition.z
+        );
+
+        const horizontalTravel = new THREE.Vector3(currentPosition.x - start.x, 0, currentPosition.z - start.z);
+        if (!hasJumpMetadata && (!existingJump?.end || start.distanceTo(end) < 0.01) && horizontalTravel.lengthSq() > 0.0001) {
+            const inferredTotalDistance = horizontalTravel.length() / 0.2;
+            end = start.clone().add(horizontalTravel.clone().normalize().multiplyScalar(inferredTotalDistance));
+            end.y = start.y;
+        }
+
+        const duration = Math.max(0.001, pData.jumpDuration ?? existingJump?.duration ?? Math.max(0.46, Math.min(1.28, start.distanceTo(end) / 13.5 || 0.46)));
+        const jumpVector = new THREE.Vector3(end.x - start.x, 0, end.z - start.z);
+        const jumpDistanceSq = jumpVector.lengthSq();
+        const projectedProgress = jumpDistanceSq > 0.0001
+            ? Math.max(0, Math.min(1, new THREE.Vector3(currentPosition.x - start.x, 0, currentPosition.z - start.z).dot(jumpVector) / jumpDistanceSq))
+            : undefined;
+        const fallbackProgress = projectedProgress ?? (typeof existingJump?.progress === 'number'
+            ? existingJump.progress
+            : (typeof existingJump?.elapsed === 'number' ? (existingJump.elapsed / duration) : 0));
+        const progress = Math.max(0, Math.min(1, pData.jumpProgress ?? fallbackProgress));
+        const inferredHeight = Math.max(6.5, Math.min(16.5, start.distanceTo(end) * 0.38 + 4.2));
+        const height = pData.jumpHeight ?? existingJump?.height ?? inferredHeight;
+        const baseY = THREE.MathUtils.lerp(start.y, end.y, progress);
+        const computedArcHeight = Math.sin(progress * Math.PI) * height;
+        const replicatedArcHeight = Math.max(0, (pData.y ?? currentPosition.y) - baseY);
+        const visualHeight = Math.max(computedArcHeight, replicatedArcHeight);
+
+        entity.position.x = currentPosition.x;
         entity.position.y = baseY;
-        entity.position.z = pData.z ?? entity.position.z;
+        entity.position.z = currentPosition.z;
 
         if (entity === this.player) {
             this.playerJumpState = {
@@ -2850,9 +2882,11 @@ export class GameEngine {
                 start,
                 end,
                 progress,
+                elapsed: progress * duration,
                 duration,
                 height,
                 visualHeight,
+                serverDriven: true,
                 landingVisual: entity.jumpLandingVisual || null
             };
         }

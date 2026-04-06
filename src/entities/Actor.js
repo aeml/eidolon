@@ -728,6 +728,10 @@ export class Actor extends Entity {
                     const timeScale = clipDuration / (cooldown * speedFactor);
                     this.currentAction.setEffectiveTimeScale(timeScale);
                 }
+            } else if (this.state === 'JUMPING') {
+                if (this.animations['Jump']) {
+                    this.playAnimation('Jump', false);
+                }
             } else if (this.isCharging) {
                 const moveAnim = this.getMovementAnimationName(true);
                 if (moveAnim) this.playAnimation(moveAnim);

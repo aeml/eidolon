@@ -262,6 +262,39 @@ describe('authoritative jump flow', () => {
         expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(2.5);
     });
 
+    test('authoritative jump without explicit metadata keeps advancing progress from replicated travel instead of freezing into hover-glide', () => {
+        const engine = createEngineHarness();
+        engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(20, 0, 0));
+
+        engine.handlePrimaryClick({ ctrlKey: true, clientX: 500, clientY: 220 });
+
+        engine.syncAuthoritativeJumpState(engine.player, {
+            id: 'player-1',
+            state: 'JUMPING',
+            x: 4,
+            y: 2.5,
+            z: 0
+        });
+        expect(engine.getJumpVisualProgress(engine.playerJumpState)).toBeCloseTo(0.2, 2);
+
+        engine.syncAuthoritativeJumpState(engine.player, {
+            id: 'player-1',
+            state: 'JUMPING',
+            x: 12,
+            y: 5.5,
+            z: 0
+        });
+
+        expect(engine.getJumpVisualProgress(engine.playerJumpState)).toBeCloseTo(0.6, 2);
+        expect(engine.playerJumpState.visualHeight).toBeGreaterThan(5);
+
+        engine.updatePlayerJump(1 / 60);
+        engine.applyPlayerJumpVisuals();
+
+        expect(engine.player.mesh.position.y).toBeGreaterThan(5);
+        expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(2.5);
+    });
+
     test('predicted local jump is not cleared by self deltas that omit state', () => {
         const engine = createEngineHarness();
         engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(20, 0, 6));
@@ -518,5 +551,70 @@ describe('authoritative jump flow', () => {
             0xd8d2c4,
             expect.objectContaining({ impact: 0.85, className: 'Object' })
         );
+    });
+
+    test('remote authoritative jump without explicit metadata still builds a visible airborne arc from replicated travel', () => {
+        const engine = createEngineHarness();
+        const remoteEntity = {
+            position: new THREE.Vector3(0, 0, 0),
+            targetServerPosition: null,
+            targetServerRotation: undefined,
+            rotation: new THREE.Quaternion(),
+            state: 'IDLE',
+            isCharging: false,
+            isDead: false,
+            deadTimer: 0,
+            visualOffset: new THREE.Vector3(0, 0, 0),
+            mesh: {
+                visible: true,
+                position: new THREE.Vector3(0, 0, 0),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            },
+            stats: { hp: 100, maxHp: 100, mana: 10, maxMana: 10, speed: 3, attackSpeed: 1 },
+            updateState: jest.fn(function updateState(nextState) {
+                this.state = nextState;
+            })
+        };
+
+        engine.syncRemoteEntity(remoteEntity, {
+            id: 'remote-1',
+            type: 'Player',
+            state: 'JUMPING',
+            x: 4,
+            y: 2.5,
+            z: 0,
+            rotation: 0.3,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+        engine.syncRemoteEntity(remoteEntity, {
+            id: 'remote-1',
+            type: 'Player',
+            state: 'JUMPING',
+            x: 12,
+            y: 5.5,
+            z: 0,
+            rotation: 0.3,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+
+        expect(remoteEntity.jumpVisualState).toEqual(expect.objectContaining({
+            start: expect.any(THREE.Vector3),
+            end: expect.any(THREE.Vector3)
+        }));
+        expect(remoteEntity.jumpVisualState.progress).toBeGreaterThan(0.5);
+        expect(remoteEntity.jumpVisualState.visualHeight).toBeGreaterThan(5);
+
+        engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
+
+        expect(remoteEntity.mesh.position.y).toBeGreaterThan(5);
+        expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(2.5);
     });
 });
