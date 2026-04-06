@@ -76,6 +76,11 @@ const DUNGEON_MARKERS = [
     { wx: 2400, wz: 200, name: 'Tempest Spire', dotColor: '#4488ff', tier: 'zone', labelOffsetY: -40 },
 ];
 
+const TOWN_POIS = [
+    { wx: -25, wz: 200, name: 'Quest Giver', dotColor: '#ffd700', minScale: 0.75, labelOffsetY: -20 },
+    { wx: 0, wz: 185, name: 'Stash', dotColor: '#8fd3ff', minScale: 0.75, labelOffsetY: 18 }
+];
+
 /**
  * Fence segments (boundary walls).
  * Each entry is an array of line segments: [[x1,z1, x2,z2], ...].
@@ -435,6 +440,20 @@ export class WorldMap {
             ctx.font = `${28 * (this.scale / 2)}px Arial`;
             ctx.textAlign = 'center';
             ctx.fillText(`\u2605 ${dg.name}`, pos.x, pos.y + yOff);
+        }
+
+        // 6b. Town points of interest
+        for (const poi of TOWN_POIS) {
+            if (this.scale < (poi.minScale || 0)) continue;
+            const pos = w2s(poi.wx, poi.wz);
+            ctx.fillStyle = poi.dotColor;
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#f2f2f2';
+            ctx.font = `${18 * (this.scale / 2)}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText(poi.name, pos.x, pos.y + ((poi.labelOffsetY || -16) * this.scale));
         }
 
         // 7. Fences

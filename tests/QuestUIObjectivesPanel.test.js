@@ -128,10 +128,40 @@ describe('QuestUI objectives panel', () => {
         expect(guidance.textContent).toContain('World Map (M)');
     });
 
-    test('hides objectives panel when there are no accepted quests', () => {
+    test('renders a starter town objective when the player has no active quests in town', () => {
         buildQuestDom();
         const questUI = new QuestUI({
-            getLastPlayer: () => ({ quests: [] })
+            getLastPlayer: () => ({
+                quests: [],
+                position: { x: 0, z: 200 }
+            }),
+            getCurrentInstanceId: () => null,
+            getCurrentInstanceType: () => 'overworld'
+        });
+
+        questUI.updateJournal([]);
+
+        const panel = document.getElementById('objectives-panel');
+        const guidance = panel.querySelector('.objective-guidance');
+        const list = document.getElementById('objectives-list');
+        expect(panel.style.display).toBe('flex');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Meet the Quest Giver');
+        expect(guidance.textContent).toContain('Quest Giver');
+        expect(guidance.textContent).toContain('World Map (M)');
+        expect(list.textContent).toContain('Meet the Quest Giver');
+        expect(list.textContent).toContain('Head to the Quest Giver');
+    });
+
+    test('hides objectives panel when there are no accepted quests outside town', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({
+                quests: [],
+                position: { x: 800, z: -400 }
+            }),
+            getCurrentInstanceId: () => null,
+            getCurrentInstanceType: () => 'overworld'
         });
 
         questUI.updateJournal([

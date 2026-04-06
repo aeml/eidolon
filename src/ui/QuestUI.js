@@ -111,6 +111,35 @@ export class QuestUI {
         return `${label}s`;
     }
 
+    isPlayerInTown(player = this.ctx.getLastPlayer?.()) {
+        if (!player?.position) return false;
+        const x = Number(player.position.x);
+        const z = Number(player.position.z);
+        if (!Number.isFinite(x) || !Number.isFinite(z)) return false;
+        return x >= -100 && x <= 100 && z >= 100 && z <= 300;
+    }
+
+    buildStarterTownObjective(quests) {
+        const hasAcceptedQuest = Array.isArray(quests) && quests.some((q) => q?.accepted && !q?.completed);
+        if (hasAcceptedQuest) return null;
+        if (this.ctx.getCurrentInstanceId?.()) return null;
+        if ((this.ctx.getCurrentInstanceType?.() || 'overworld') !== 'overworld') return null;
+        if (!this.isPlayerInTown()) return null;
+
+        return {
+            id: 'starter-town-quest-giver',
+            title: 'Meet the Quest Giver',
+            progressLabel: 'Town',
+            progressPct: 5,
+            rewardXP: 0,
+            completed: false,
+            badge: 'Town',
+            badgeClass: 'is-objective',
+            routeTone: 'support',
+            hint: 'Head to the Quest Giver near the blacksmith to pick up your first quest.'
+        };
+    }
+
     buildDungeonRoutingObjective() {
         const instanceId = this.ctx.getCurrentInstanceId?.();
         const summary = this.ctx.getDungeonRoomSummary?.();
@@ -254,7 +283,12 @@ export class QuestUI {
             : [];
 
         const dungeonObjective = this.buildDungeonRoutingObjective();
-        return dungeonObjective ? [dungeonObjective, ...questObjectives] : questObjectives;
+        if (dungeonObjective) {
+            return [dungeonObjective, ...questObjectives];
+        }
+
+        const starterTownObjective = this.buildStarterTownObjective(quests);
+        return starterTownObjective ? [starterTownObjective, ...questObjectives] : questObjectives;
     }
 
     renderObjectiveGuidance(objective) {
