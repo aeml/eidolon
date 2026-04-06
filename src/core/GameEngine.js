@@ -198,7 +198,7 @@ export class GameEngine {
         const elapsedSeconds = Number(this.player?.timeSinceDeath || 0);
         return {
             title: 'You Died',
-            hint: 'Respawn in town to recover, repair, and re-enter the fight.',
+            hint: 'Respawn in town, recover at the Stash, then hit Vendor / Repair or Forge before heading back out.',
             elapsedSeconds
         };
     }
@@ -208,7 +208,7 @@ export class GameEngine {
         const locationLabel = source === 'delta'
             ? 'Recovered in town from the last defeat.'
             : 'Recovered in town.';
-        this.uiManager.addChatMessage('System', `${locationLabel} Visit repair and vendor stations before pushing back out.`);
+        this.uiManager.addChatMessage('System', `${locationLabel} Hit Vendor / Repair, Forge, or the Stash before pushing back out.`);
     }
 
     syncDeathScreen() {

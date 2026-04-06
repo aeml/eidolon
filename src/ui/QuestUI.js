@@ -136,7 +136,7 @@ export class QuestUI {
             badge: 'Town',
             badgeClass: 'is-objective',
             routeTone: 'support',
-            hint: 'Head to the Quest Giver near the blacksmith to pick up your first quest.'
+            hint: 'Head to the Quest Giver by the Forge, then use the Stash if you need to sort gear before heading out.'
         };
     }
 

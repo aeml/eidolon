@@ -148,9 +148,13 @@ describe('QuestUI objectives panel', () => {
         expect(guidance).not.toBeNull();
         expect(guidance.textContent).toContain('Meet the Quest Giver');
         expect(guidance.textContent).toContain('Quest Giver');
+        expect(guidance.textContent).toContain('Forge');
+        expect(guidance.textContent).toContain('Stash');
         expect(guidance.textContent).toContain('World Map (M)');
         expect(list.textContent).toContain('Meet the Quest Giver');
         expect(list.textContent).toContain('Head to the Quest Giver');
+        expect(list.textContent).toContain('Forge');
+        expect(list.textContent).toContain('Stash');
     });
 
     test('hides objectives panel when there are no accepted quests outside town', () => {

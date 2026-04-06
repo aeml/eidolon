@@ -157,12 +157,15 @@ describe('Death and respawn polish', () => {
         const ui = new UIManager(false);
         ui.showDeathScreen({
             title: 'You Died',
-            hint: 'Respawn in town to recover, repair, and re-enter the fight.'
+            hint: 'Respawn in town, recover at the Stash, then hit Vendor / Repair or Forge before heading back out.'
         });
 
         const deathScreen = document.getElementById('death-screen');
         expect(deathScreen.style.display).toBe('flex');
-        expect(deathScreen.textContent).toContain('Respawn in town to recover, repair, and re-enter the fight.');
+        expect(deathScreen.textContent).toContain('Respawn in town, recover at the Stash, then hit Vendor / Repair or Forge before heading back out.');
+        expect(deathScreen.textContent).toContain('Stash');
+        expect(deathScreen.textContent).toContain('Vendor / Repair');
+        expect(deathScreen.textContent).toContain('Forge');
         expect(deathScreen.textContent).toContain('Respawn in Town');
     });
 
@@ -185,7 +188,7 @@ describe('Death and respawn polish', () => {
 
         expect(engine.uiManager.showDeathScreen).toHaveBeenCalledWith(expect.objectContaining({
             title: 'You Died',
-            hint: 'Respawn in town to recover, repair, and re-enter the fight.',
+            hint: 'Respawn in town, recover at the Stash, then hit Vendor / Repair or Forge before heading back out.',
             elapsedSeconds: 4.2
         }));
     });
@@ -270,6 +273,7 @@ describe('Death and respawn polish', () => {
         });
 
         expect(engine.uiManager.addChatMessage).toHaveBeenCalledWith('System', expect.stringContaining('Recovered in town'));
-        expect(engine.uiManager.addChatMessage).toHaveBeenCalledWith('System', expect.stringContaining('repair'));
+        expect(engine.uiManager.addChatMessage).toHaveBeenCalledWith('System', expect.stringContaining('Vendor / Repair'));
+        expect(engine.uiManager.addChatMessage).toHaveBeenCalledWith('System', expect.stringContaining('Forge'));
     });
 });
