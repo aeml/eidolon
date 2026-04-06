@@ -1037,10 +1037,16 @@ export class GameEngine {
 
                         if (!justRespawned && pData.x !== undefined && pData.z !== undefined) {
                             const serverPos = new THREE.Vector3(pData.x, pData.y || 0, pData.z);
-                            const dist = this.player.position.distanceTo(serverPos);
+                            const horizontalPos = new THREE.Vector3(pData.x, this.player.position.y, pData.z);
+                            const dist = this.player.position.distanceTo(horizontalPos);
                             if (pData.state === 'JUMPING' || dist > 20.0) { // Threshold for teleport (larger than normal lag correction)
                                 console.log(`GameEngine: Detected server teleport, syncing position. Dist: ${dist}, Server: ${serverPos.x},${serverPos.z}, Client: ${this.player.position.x},${this.player.position.z}`);
-                                this.player.position.copy(serverPos);
+                                if (pData.state === 'JUMPING') {
+                                    this.player.position.x = serverPos.x;
+                                    this.player.position.z = serverPos.z;
+                                } else {
+                                    this.player.position.copy(serverPos);
+                                }
                                 this.player.targetPosition = null;
                                 this.chunkManager.updateEntityChunk(this.player);
                                 this.renderSystem.setCameraTarget(this.player.position);
@@ -1288,10 +1294,16 @@ export class GameEngine {
 
                         if (pData.x !== undefined && pData.z !== undefined) {
                             const serverPos = new THREE.Vector3(pData.x, pData.y || 0, pData.z);
-                            const dist = this.player.position.distanceTo(serverPos);
+                            const horizontalPos = new THREE.Vector3(pData.x, this.player.position.y, pData.z);
+                            const dist = this.player.position.distanceTo(horizontalPos);
                             if (pData.state === 'JUMPING' || dist > 20.0) {
                                 console.log(`GameEngine: Detected self teleport from delta, syncing position. Dist: ${dist}`);
-                                this.player.position.copy(serverPos);
+                                if (pData.state === 'JUMPING') {
+                                    this.player.position.x = serverPos.x;
+                                    this.player.position.z = serverPos.z;
+                                } else {
+                                    this.player.position.copy(serverPos);
+                                }
                                 this.player.targetPosition = null;
                                 this.chunkManager.updateEntityChunk(this.player);
                                 this.renderSystem.setCameraTarget(this.player.position);
@@ -2794,18 +2806,23 @@ export class GameEngine {
         const hasJumpEndpoints = pData.jumpStartX !== undefined || pData.jumpTargetX !== undefined || pData.jumpHeight !== undefined || pData.jumpDuration !== undefined;
         const start = new THREE.Vector3(
             pData.jumpStartX ?? existingJump?.start?.x ?? pData.x ?? entity.position.x,
-            pData.jumpStartY ?? existingJump?.start?.y ?? pData.y ?? entity.position.y,
+            pData.jumpStartY ?? existingJump?.start?.y ?? entity.position.y,
             pData.jumpStartZ ?? existingJump?.start?.z ?? pData.z ?? entity.position.z
         );
         const end = new THREE.Vector3(
             pData.jumpTargetX ?? existingJump?.end?.x ?? pData.x ?? entity.position.x,
-            pData.jumpTargetY ?? existingJump?.end?.y ?? pData.y ?? entity.position.y,
+            pData.jumpTargetY ?? existingJump?.end?.y ?? start.y,
             pData.jumpTargetZ ?? existingJump?.end?.z ?? pData.z ?? entity.position.z
         );
         const progress = Math.max(0, Math.min(1, pData.jumpProgress ?? existingJump?.progress ?? existingJump?.elapsed ?? 0));
         const duration = Math.max(0.001, pData.jumpDuration ?? existingJump?.duration ?? 1);
         const height = pData.jumpHeight ?? existingJump?.height ?? (hasJumpEndpoints ? 0 : Math.max(3.5, Math.min(8.0, start.distanceTo(end) * 0.2 + 2.5)));
         const visualHeight = Math.sin(progress * Math.PI) * height;
+        const baseY = THREE.MathUtils.lerp(start.y, end.y, progress);
+
+        entity.position.x = pData.x ?? entity.position.x;
+        entity.position.y = baseY;
+        entity.position.z = pData.z ?? entity.position.z;
 
         if (entity === this.player) {
             this.playerJumpState = {

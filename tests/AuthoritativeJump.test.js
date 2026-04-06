@@ -133,7 +133,7 @@ describe('authoritative jump flow', () => {
         expect(engine.inputManager.isMouseDown).toBe(false);
     });
 
-    test('self delta jump state seeds authoritative jump visuals from server state', () => {
+    test('self delta jump state seeds authoritative jump visuals from server state without double-applying server airborne height', () => {
         const engine = createEngineHarness();
         engine.player.state = 'IDLE';
         engine.player.position.set(0, 0, 0);
@@ -150,8 +150,8 @@ describe('authoritative jump flow', () => {
                         maxHealth: 100,
                         mana: 100,
                         maxMana: 100,
-                        x: 0,
-                        y: 0,
+                        x: 4.5,
+                        y: 4.242640687,
                         z: 0,
                         jumpStartX: 0,
                         jumpStartY: 0,
@@ -177,6 +177,12 @@ describe('authoritative jump flow', () => {
         expect(engine.playerJumpState.end.x).toBe(18);
         expect(engine.playerJumpState.elapsed).toBeCloseTo(0.25, 5);
         expect(engine.player.state).toBe('JUMPING');
+
+        engine.updatePlayerJump(1 / 60);
+        engine.applyPlayerJumpVisuals();
+
+        expect(engine.player.position.y).toBe(0);
+        expect(engine.player.mesh.position.y).toBeCloseTo(4.242640687, 5);
     });
     test('predicted jump arc is preserved while awaiting server updates that only include jumping state and position', () => {
         const engine = createEngineHarness();
