@@ -994,30 +994,31 @@ export class GameEngine {
                         let justRespawned = false;
 
                         // Sync State
-                        if (pData.state) {
-                            const nextHp = pData.health !== undefined ? pData.health : this.player.stats?.hp;
+                        const nextHp = pData.health !== undefined ? pData.health : this.player.stats?.hp;
+                        const hasPredictedJump = !!this.playerJumpState && !this.playerJumpState.serverDriven;
+                        if (pData.state !== undefined) {
                             if (this.player.state !== 'DEAD' && (pData.state === 'DEAD' || (nextHp !== undefined && nextHp <= 0))) {
                                 this.handlePlayerDeathTransition();
                             } else if (this.player.state === 'DEAD' && pData.state !== 'DEAD') {
                                 if (nextHp !== undefined && nextHp <= 0) {
                                     this.handlePlayerDeathTransition();
                                 } else {
-                                // Revived?
-                                // Force town spawn (-1.25, 200) to ensure immediate visual feedback
-                                const x = -1.25;
-                                const z = 200;
-                                
-                                console.log(`GameEngine: Respawn detected. Teleporting to Town (${x}, ${z})`);
-                                this.player.respawn(x, z);
-                                this.player.state = pData.state; // Ensure state matches server
-                                this.player.timeSinceDeath = null;
-                                
-                                this.chunkManager.updateEntityChunk(this.player);
-                                this.renderSystem.setCameraTarget(this.player.position);
-                                this.announceRespawnRecovery('state');
-                                justRespawned = true;
+                                    // Revived?
+                                    // Force town spawn (-1.25, 200) to ensure immediate visual feedback
+                                    const x = -1.25;
+                                    const z = 200;
+
+                                    console.log(`GameEngine: Respawn detected. Teleporting to Town (${x}, ${z})`);
+                                    this.player.respawn(x, z);
+                                    this.player.state = pData.state; // Ensure state matches server
+                                    this.player.timeSinceDeath = null;
+
+                                    this.chunkManager.updateEntityChunk(this.player);
+                                    this.renderSystem.setCameraTarget(this.player.position);
+                                    this.announceRespawnRecovery('state');
+                                    justRespawned = true;
                                 }
-                            } else {
+                            } else if (!(hasPredictedJump && pData.state !== 'JUMPING')) {
                                 this.player.state = pData.state;
                             }
                         } else if (pData.health !== undefined && pData.health <= 0 && this.player.state !== 'DEAD') {
@@ -1031,7 +1032,7 @@ export class GameEngine {
     
                         if (pData.state === 'JUMPING') {
                             this.syncAuthoritativeJumpState(this.player, pData);
-                        } else {
+                        } else if (pData.state !== undefined) {
                             this.clearAuthoritativeJumpState(this.player);
                         }
 
@@ -1263,6 +1264,7 @@ export class GameEngine {
                     // Still update critical player state from delta
                     if (this.player && this.player.stats) {
                         const nextHp = pData.health !== undefined ? pData.health : this.player.stats.hp;
+                        const hasPredictedJump = !!this.playerJumpState && !this.playerJumpState.serverDriven;
                         if (pData.state !== undefined) {
                             if (this.player.state !== 'DEAD' && (pData.state === 'DEAD' || (nextHp !== undefined && nextHp <= 0))) {
                                 this.handlePlayerDeathTransition();
@@ -1281,14 +1283,14 @@ export class GameEngine {
                                     this.chunkManager.update(this.player, 0, this.collisionManager);
                                     this.announceRespawnRecovery('delta');
                                 }
-                            } else {
+                            } else if (!(hasPredictedJump && pData.state !== 'JUMPING')) {
                                 this.player.state = pData.state;
                             }
                         }
 
                         if (pData.state === 'JUMPING') {
                             this.syncAuthoritativeJumpState(this.player, pData);
-                        } else {
+                        } else if (pData.state !== undefined) {
                             this.clearAuthoritativeJumpState(this.player);
                         }
 
@@ -3886,7 +3888,7 @@ export class GameEngine {
                     if (this.player.state !== 'DEAD') {
                         this.player.state = 'DEAD';
                     }
-                } else {
+                } else if (!this.playerJumpState) {
                 const moveDir = this.inputManager.getMovementDirection();
                 if (moveDir.lengthSq() > 0) {
                     const speed = this.player.stats.speed;

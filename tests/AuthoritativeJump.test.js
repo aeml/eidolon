@@ -23,6 +23,7 @@ function createEngineHarness() {
     engine.hoveredEntity = null;
     engine.pendingInteraction = { id: 'pending-loot' };
     engine.activeEntitiesCache = [];
+    engine.remotePlayers = new Map();
     engine.playerJumpState = null;
     engine.playerJumpVisualHeight = 0;
     engine.performRaycast = jest.fn();
@@ -46,10 +47,16 @@ function createEngineHarness() {
         isPatchNotesOpen: false,
         isShopOpen: false,
         reportScreen: { style: { display: 'none' } },
+        skillTree: { isOpen: false },
+        showDeathScreen: jest.fn(),
+        hideDeathScreen: jest.fn(),
         updatePlayerStats: jest.fn(),
         updateXP: jest.fn(),
         updateHotbarCooldowns: jest.fn(),
-        updateEnemyBars: jest.fn()
+        updateEnemyBars: jest.fn(),
+        updateSkillTreeResources: jest.fn(),
+        refreshSkillTreeTalents: jest.fn(),
+        updateCharacterSheet: jest.fn()
     };
     engine.minimap = { update: jest.fn() };
     engine.worldMap = { update: jest.fn() };
@@ -224,6 +231,98 @@ describe('authoritative jump flow', () => {
         }));
         expect(engine.playerJumpState.height).toBeGreaterThan(0);
         expect(engine.playerJumpVisualHeight).toBe(0);
+    });
+
+    test('predicted local jump is not cleared by self deltas that omit state', () => {
+        const engine = createEngineHarness();
+        engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(20, 0, 6));
+
+        engine.handlePrimaryClick({ ctrlKey: true, clientX: 500, clientY: 220 });
+        const seededEnd = engine.playerJumpState.end.clone();
+        const seededDuration = engine.playerJumpState.duration;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        health: 100,
+                        maxHealth: 100,
+                        mana: 100,
+                        maxMana: 100,
+                        x: 2,
+                        z: 1
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.playerJumpState).toEqual(expect.objectContaining({
+            end: seededEnd,
+            duration: seededDuration,
+            serverDriven: false
+        }));
+        expect(engine.player.state).toBe('JUMPING');
+    });
+
+    test('predicted local jump is not stomped by stale self moving state before authoritative jump arrives', () => {
+        const engine = createEngineHarness();
+        engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(20, 0, 6));
+
+        engine.handlePrimaryClick({ ctrlKey: true, clientX: 500, clientY: 220 });
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        state: 'MOVING',
+                        health: 100,
+                        maxHealth: 100,
+                        mana: 100,
+                        maxMana: 100,
+                        x: 2,
+                        z: 1
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.playerJumpState).not.toBeNull();
+        expect(engine.playerJumpState.serverDriven).toBe(false);
+        expect(engine.player.state).toBe('JUMPING');
+    });
+
+    test('predicted local jump is not stomped by stale self moving state from full snapshots before authoritative jump arrives', () => {
+        const engine = createEngineHarness();
+        engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(20, 0, 6));
+
+        engine.handlePrimaryClick({ ctrlKey: true, clientX: 500, clientY: 220 });
+
+        engine.handleServerMessage({
+            type: 'state',
+            payload: [{
+                id: 'player-1',
+                state: 'MOVING',
+                health: 100,
+                maxHealth: 100,
+                mana: 100,
+                maxMana: 100,
+                x: 2,
+                z: 1,
+                level: 1,
+                experience: 0,
+                maxExperience: 100
+            }]
+        });
+
+        expect(engine.playerJumpState).not.toBeNull();
+        expect(engine.playerJumpState.serverDriven).toBe(false);
+        expect(engine.player.state).toBe('JUMPING');
     });
 
     test('server-driven jump visuals preserve descent-side flip progress instead of folding back after apex', () => {

@@ -81,4 +81,33 @@ describe('AbilityController pending target casting', () => {
         expect(player.useAbility).not.toHaveBeenCalled();
         expect(engine.network.send).not.toHaveBeenCalled();
     });
+
+    test('does not stomp state or consume a pending cast while the player is jumping', () => {
+        const player = createPlayer();
+        player.state = 'JUMPING';
+
+        const target = {
+            id: 'enemy-3',
+            isActive: true,
+            state: 'IDLE',
+            position: new THREE.Vector3(6, 0, 0)
+        };
+        const engine = {
+            player,
+            isMultiplayer: true,
+            playerJumpState: { serverDriven: false },
+            network: { send: jest.fn() }
+        };
+
+        const controller = new AbilityController(engine);
+        controller.pendingAbilityTarget = target;
+        controller.pendingAbilitySkill = 'Fireball';
+
+        expect(controller.updatePendingTarget()).toBe(false);
+        expect(player.state).toBe('JUMPING');
+        expect(controller.pendingAbilityTarget).toBe(target);
+        expect(controller.pendingAbilitySkill).toBe('Fireball');
+        expect(player.useAbility).not.toHaveBeenCalled();
+        expect(engine.network.send).not.toHaveBeenCalled();
+    });
 });

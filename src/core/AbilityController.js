@@ -499,6 +499,9 @@ export class AbilityController {
         if (!this.pendingAbilityTarget) return false;
 
         const player = this.engine.player;
+        if (!player || player.state === 'JUMPING' || this.engine.playerJumpState) {
+            return false;
+        }
 
         if (!this.pendingAbilityTarget.isActive || this.pendingAbilityTarget.state === 'DEAD') {
             this.pendingAbilityTarget = null;
