@@ -124,8 +124,8 @@ describe('QuestUI objectives panel', () => {
         expect(guidance).not.toBeNull();
         expect(guidance.textContent).toContain('Next Step');
         expect(guidance.textContent).toContain('Kill Dungeon Bosses');
-        expect(guidance.textContent).toContain('Open Journal (J)');
         expect(guidance.textContent).toContain('World Map (M)');
+        expect(guidance.textContent).toContain('Journal (J)');
     });
 
     test('renders a starter town objective when the player has no active quests in town', () => {
@@ -151,10 +151,11 @@ describe('QuestUI objectives panel', () => {
         expect(guidance.textContent).toContain('Forge');
         expect(guidance.textContent).toContain('Stash');
         expect(guidance.textContent).toContain('World Map (M)');
+        expect(guidance.textContent).toContain('Quest Giver by the Forge');
         expect(list.textContent).toContain('Meet the Quest Giver');
-        expect(list.textContent).toContain('Head to the Quest Giver');
-        expect(list.textContent).toContain('Forge');
+        expect(list.textContent).toContain('Head to the Quest Giver by the Forge');
         expect(list.textContent).toContain('Stash');
+        expect(list.textContent).toContain('sort gear');
     });
 
     test('hides objectives panel when there are no accepted quests outside town', () => {

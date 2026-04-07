@@ -269,7 +269,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.1</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.2</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -484,6 +484,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.22.2" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.2 (First-step copy consistency and quest-funnel clarity)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Same next step everywhere:</strong> Start-screen copy, the objectives panel, and town onboarding now all point you to the Quest Giver by the Forge instead of drifting between vague phrases.</li>
+                        <li><strong>Map and journal handoff:</strong> First-session guidance now explicitly calls out World Map (M) and Journal (J) together so the next action is easier to recover after loading in.</li>
+                        <li><strong>Cleaner starter funnel:</strong> New players now get a more direct start-screen explanation of class pick -> town -> Quest Giver -> first quest flow.</li>
+                        <li><strong>Regression coverage:</strong> Added tests around start-flow wording, starter-town objective wording, and version / patch-notes presentation for the 0.22.2 slice.</li>
+                    </ul>
+                </div>
+
                 <div class="patch-note-entry" data-version="0.22.1" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.1 (Starter-town wayfinding and service prompts)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

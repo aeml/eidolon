@@ -193,7 +193,11 @@ describe('asset persistence boot wiring', () => {
 
         expect(document.getElementById('start-flow-title').textContent).toContain('Create your first character');
         expect(document.getElementById('start-flow-copy').textContent).toContain('Choose a class');
+        expect(document.getElementById('start-flow-copy').textContent).toContain('Quest Giver');
+        expect(document.getElementById('start-flow-copy').textContent).toContain('Forge');
         expect(document.getElementById('start-flow-steps').textContent).toContain('Fighter');
         expect(document.getElementById('start-flow-steps').textContent).toContain('Rogue');
+        expect(document.getElementById('start-flow-steps').textContent).toContain('World Map (M)');
+        expect(document.getElementById('start-flow-steps').textContent).toContain('Quest Giver by the Forge');
     });
 });

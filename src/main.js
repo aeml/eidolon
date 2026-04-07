@@ -170,8 +170,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const showNewPlayerFlow = () => {
         updateStartFlow({
             title: 'Create your first character',
-            copy: 'Choose a class, enter town, and follow the quest tracker for your first combat and dungeon steps.',
-            steps: 'Recommended starter picks: Fighter for the cleanest first run, Rogue for mobility, Wizard for ranged burst, Cleric for sustain.'
+            copy: 'Choose a class, enter town, head to the Quest Giver by the Forge, and follow the quest tracker through your first combat and dungeon steps.',
+            steps: 'Recommended starter picks: Fighter for the cleanest first run, Rogue for mobility, Wizard for ranged burst, Cleric for sustain. Then open World Map (M) or Journal (J) and head to the Quest Giver by the Forge.'
         });
     };
 

@@ -136,7 +136,7 @@ export class QuestUI {
             badge: 'Town',
             badgeClass: 'is-objective',
             routeTone: 'support',
-            hint: 'Head to the Quest Giver by the Forge, then use the Stash if you need to sort gear before heading out.'
+            hint: 'Head to the Quest Giver by the Forge. Open World Map (M) or Journal (J) if you need a reminder, then use the Stash to sort gear before heading out.'
         };
     }
 
@@ -310,7 +310,7 @@ export class QuestUI {
             <div style="color: #ffd700; font-size: 11px; font-weight: bold; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px;">Next Step</div>
             <div style="color: #fff; font-size: 13px; font-weight: bold; margin-bottom: 4px;">${objective.title}</div>
             <div>${objective.completed ? `Turn this in for ${objective.rewardXP || 0} XP.` : objective.hint}</div>
-            <div style="color: #aaa; margin-top: 6px;">Open Journal (J) for details or World Map (M) if you need to re-orient.</div>
+            <div style="color: #aaa; margin-top: 6px;">Open World Map (M) and Journal (J) if you need to re-orient.</div>
         `;
         if (this.objectivesList.parentNode === this.objectivesPanel) {
             this.objectivesPanel.insertBefore(guidance, this.objectivesList);
