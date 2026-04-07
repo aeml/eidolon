@@ -77,9 +77,9 @@ const DUNGEON_MARKERS = [
 ];
 
 const TOWN_POIS = [
-    { wx: -25, wz: 200, name: 'Quest Giver', dotColor: '#ffd700', minScale: 0.75, labelOffsetY: -20 },
+    { wx: -25, wz: 200, name: 'Quest Giver', dotColor: '#ffd700', strokeColor: '#ffd700', minScale: 0.75, labelOffsetY: -20 },
+    { wx: -30, wz: 200, name: 'Forge', dotColor: '#ff9b4a', strokeColor: '#ff9b4a', minScale: 0.75, labelOffsetY: 26 },
     { wx: 0, wz: 185, name: 'Stash', dotColor: '#8fd3ff', minScale: 0.75, labelOffsetY: 18 },
-    { wx: -30, wz: 200, name: 'Forge', dotColor: '#ff9b4a', minScale: 0.75, labelOffsetY: 26 },
     { wx: 30, wz: 200, name: 'Vendor / Repair', dotColor: '#78e08f', minScale: 0.75, labelOffsetY: -26 }
 ];
 
@@ -452,6 +452,13 @@ export class WorldMap {
             ctx.beginPath();
             ctx.arc(pos.x, pos.y, 5, 0, Math.PI * 2);
             ctx.fill();
+            if (poi.strokeColor) {
+                ctx.strokeStyle = poi.strokeColor;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 8, 0, Math.PI * 2);
+                ctx.stroke();
+            }
             ctx.fillStyle = '#f2f2f2';
             ctx.font = `${18 * (this.scale / 2)}px Arial`;
             ctx.textAlign = 'center';

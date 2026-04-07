@@ -19,8 +19,8 @@ const REALM_COLORS = {
 
 const TOWN_SERVICE_MARKERS = [
     { x: -25, z: 200, label: 'Quest', color: 'rgba(255, 215, 90, 0.95)', ring: true },
+    { x: -30, z: 200, label: 'Forge', color: 'rgba(255, 155, 74, 0.95)', ring: true },
     { x: 0, z: 185, label: 'Stash', color: 'rgba(143, 211, 255, 0.95)', ring: false },
-    { x: -30, z: 200, label: 'Forge', color: 'rgba(255, 155, 74, 0.95)', ring: false },
     { x: 30, z: 200, label: 'Vendor', color: 'rgba(120, 224, 143, 0.95)', ring: false }
 ];
 

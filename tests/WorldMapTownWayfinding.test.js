@@ -2,16 +2,18 @@ import { WorldMap } from '../src/ui/WorldMap.js';
 
 describe('WorldMap town wayfinding', () => {
     let texts;
+    let strokes;
     let ctx;
 
     beforeEach(() => {
         texts = [];
+        strokes = [];
         ctx = {
             fillRect: () => {},
             beginPath: () => {},
             arc: () => {},
             fill: () => {},
-            stroke: () => {},
+            stroke: () => strokes.push({ strokeStyle: ctx.strokeStyle, lineWidth: ctx.lineWidth }),
             moveTo: () => {},
             lineTo: () => {},
             closePath: () => {},
@@ -66,6 +68,33 @@ describe('WorldMap town wayfinding', () => {
             'Stash',
             'Forge',
             'Vendor / Repair'
+        ]));
+    });
+
+    test('prioritizes starter-route POIs in onboarding order and emphasizes quest and forge markers', () => {
+        const worldMap = new WorldMap({
+            player: { position: { x: 0, z: 200 }, id: 'player-1' },
+            chunkManager: { getActiveEntities: () => [] },
+            uiManager: { partyData: { members: [] } }
+        });
+
+        worldMap.draw({ position: { x: 0, z: 200 }, id: 'player-1' });
+
+        const questIndex = texts.indexOf('Quest Giver');
+        const forgeIndex = texts.indexOf('Forge');
+        const stashIndex = texts.indexOf('Stash');
+        const vendorIndex = texts.indexOf('Vendor / Repair');
+
+        expect(questIndex).toBeGreaterThanOrEqual(0);
+        expect(forgeIndex).toBeGreaterThanOrEqual(0);
+        expect(stashIndex).toBeGreaterThanOrEqual(0);
+        expect(vendorIndex).toBeGreaterThanOrEqual(0);
+        expect(questIndex).toBeLessThan(forgeIndex);
+        expect(forgeIndex).toBeLessThan(stashIndex);
+        expect(stashIndex).toBeLessThan(vendorIndex);
+        expect(strokes).toEqual(expect.arrayContaining([
+            expect.objectContaining({ strokeStyle: '#ffd700' }),
+            expect.objectContaining({ strokeStyle: '#ff9b4a' })
         ]));
     });
 });

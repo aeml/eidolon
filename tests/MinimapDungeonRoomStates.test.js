@@ -224,6 +224,28 @@ describe('Minimap dungeon room states', () => {
         expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 215, 90, 0.95)')).toBe(true);
     });
 
+    test('renders starter-route services in onboarding order and highlights forge alongside the quest marker', () => {
+        const minimap = new Minimap(200);
+        minimap.gameEngine = {
+            getDungeonRoomSummary: () => null,
+            getActiveBuffs: () => ([]),
+            uiManager: { partyData: { members: [] } }
+        };
+
+        minimap.update({ position: { x: 0, z: 200 }, id: 'player-1' }, []);
+
+        const labels = texts.map((entry) => String(entry.args[0]));
+        const questIndex = labels.findIndex((label) => label.includes('Quest'));
+        const forgeIndex = labels.findIndex((label) => label.includes('Forge'));
+        const stashIndex = labels.findIndex((label) => label.includes('Stash'));
+        const vendorIndex = labels.findIndex((label) => label.includes('Vendor'));
+
+        expect(questIndex).toBeLessThan(forgeIndex);
+        expect(forgeIndex).toBeLessThan(stashIndex);
+        expect(stashIndex).toBeLessThan(vendorIndex);
+        expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 155, 74, 0.95)')).toBe(true);
+    });
+
     test('renders canonical walk rects and join markers when dungeon debug overlay is enabled', () => {
         const minimap = new Minimap(200);
         minimap.setDungeonDebugOverlayEnabled(true);
