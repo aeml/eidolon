@@ -136,7 +136,7 @@ export class QuestUI {
             badge: 'Town',
             badgeClass: 'is-objective',
             routeTone: 'support',
-            hint: 'Head to the Quest Giver by the Forge. Open World Map (M) or Journal (J) if you need a reminder, then use the Stash to sort gear before heading out.'
+            hint: 'Head to the Quest Giver by the Forge. Open World Map (M) or Journal (J) if you need a reminder, use the Stash to sort gear, sell junk to Vendor / Repair, and save valuable drops for the Trading House before heading out.'
         };
     }
 

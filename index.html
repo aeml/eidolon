@@ -269,7 +269,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.6</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.7</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -277,8 +277,8 @@
                 <div class="window-header"><span>FIRST STEPS</span></div>
                 <div style="padding: 16px; display: flex; flex-direction: column; gap: 10px; text-align: left;">
                     <div id="start-flow-title" style="color: #ffd700; font-size: 20px; font-weight: bold;">Login to continue your run</div>
-                    <div id="start-flow-copy" style="color: #ddd; line-height: 1.5;">Returning players can jump straight back in. New players will pick a class, enter town, and follow the quest tracker to their first objectives.</div>
-                    <div id="start-flow-steps" style="color: #aaa; font-size: 14px; line-height: 1.6;">1. Login or register. 2. Enter world or create a character. 3. Open Quests (J) and follow the objective tracker.</div>
+                        <div id="start-flow-copy" style="color: #ddd; line-height: 1.5;">Returning players can jump straight back in. New players will pick a class, enter town, follow the quest tracker to their first objectives, sell junk to Vendor / Repair, and save valuable drops for the Trading House.</div>
+                        <div id="start-flow-steps" style="color: #aaa; font-size: 14px; line-height: 1.6;">1. Login or register. 2. Enter world or create a character. 3. Open Quests (J), follow the objective tracker, sell junk to Vendor / Repair, and save valuable drops for the Trading House.</div>
                 </div>
             </div>
             
@@ -484,6 +484,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.22.7" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.7 (Economy onboarding tells you what to sell where)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Starter economy guidance:</strong> The new-player flow now tells you to dump junk at Vendor / Repair instead of leaving early inventory cleanup implied.</li>
+                        <li><strong>Market handoff:</strong> First-session guidance now tells you to save market-worthy drops for the Trading House once you start finding gear worth listing.</li>
+                        <li><strong>Town objective clarity:</strong> Starter town objectives now reinforce Stash, Vendor / Repair, and Trading House together so the economy loop is readable before leaving town.</li>
+                        <li><strong>Regression coverage:</strong> Added tests around start-flow copy, town-objective economy guidance, and 0.22.7 version / patch-note presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.22.6" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.6 (Trading House and Vendor guidance split)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

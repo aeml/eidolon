@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.22.6 for the latest shipped onboarding slice', () => {
-        expect(indexHtml).toContain('Alpha 0.22.6');
+    test('advances the login screen to alpha 0.22.7 for the latest shipped onboarding slice', () => {
+        expect(indexHtml).toContain('Alpha 0.22.7');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -17,6 +17,10 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('id="class-rogue-description"');
         expect(indexHtml).toContain('id="class-wizard-description"');
         expect(indexHtml).toContain('id="class-cleric-description"');
+        expect(indexHtml).toContain('Vendor / Repair');
+        expect(indexHtml).toContain('Trading House');
+        expect(indexHtml).toContain('sell junk to Vendor / Repair');
+        expect(indexHtml).toContain('save valuable drops for the Trading House');
     });
 
     test('includes plain-language starter service guidance on merchant stash forge and trading house windows', () => {
@@ -37,15 +41,16 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Buy from other players, list your own gear, and use auctions when an item is worth selling to the market');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.22.6', () => {
-        expect(indexHtml).toContain('Patch 0.22.6');
-        expect(indexHtml).toContain('Trading House and Vendor guidance split');
-        expect(indexHtml).toContain('Trading House now shows up separately for player-to-player buying and selling');
-        expect(indexHtml).toContain('Vendor / Repair now stays focused on gambling and unloading unwanted gear');
+    test('includes the latest player-facing patch notes entry for 0.22.7', () => {
+        expect(indexHtml).toContain('Patch 0.22.7');
+        expect(indexHtml).toContain('Economy onboarding tells you what to sell where');
+        expect(indexHtml).toContain('new-player flow now tells you to dump junk at Vendor / Repair');
+        expect(indexHtml).toContain('save market-worthy drops for the Trading House');
     });
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.22.7');
         expect(indexHtml).toContain('Patch 0.22.6');
         expect(indexHtml).toContain('Patch 0.22.5');
         expect(indexHtml).toContain('Patch 0.22.4');
@@ -65,6 +70,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.22.7"');
         expect(indexHtml).toContain('data-version="0.22.6"');
         expect(indexHtml).toContain('data-version="0.22.5"');
         expect(indexHtml).toContain('data-version="0.22.4"');

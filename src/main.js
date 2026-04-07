@@ -170,8 +170,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const showNewPlayerFlow = () => {
         updateStartFlow({
             title: 'Create your first character',
-            copy: 'Choose a class, enter town, head to the Quest Giver by the Forge, and follow the quest tracker through your first combat and dungeon steps.',
-            steps: 'Recommended starter picks: Fighter for the cleanest first run, Rogue for mobility, Wizard for ranged burst, Cleric for sustain. Then open World Map (M) or Journal (J) and head to the Quest Giver by the Forge.'
+            copy: 'Choose a class, enter town, head to the Quest Giver by the Forge, and follow the quest tracker through your first combat and dungeon steps. Sell junk to Vendor / Repair, and save valuable drops for the Trading House once you start finding gear worth listing.',
+            steps: 'Recommended starter picks: Fighter for the cleanest first run, Rogue for mobility, Wizard for ranged burst, Cleric for sustain. Then open World Map (M) or Journal (J), head to the Quest Giver by the Forge, sell junk to Vendor / Repair, and save valuable drops for the Trading House.'
         });
     };
 

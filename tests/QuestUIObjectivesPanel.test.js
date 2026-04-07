@@ -150,12 +150,16 @@ describe('QuestUI objectives panel', () => {
         expect(guidance.textContent).toContain('Quest Giver');
         expect(guidance.textContent).toContain('Forge');
         expect(guidance.textContent).toContain('Stash');
+        expect(guidance.textContent).toContain('Vendor / Repair');
+        expect(guidance.textContent).toContain('Trading House');
         expect(guidance.textContent).toContain('World Map (M)');
         expect(guidance.textContent).toContain('Quest Giver by the Forge');
         expect(list.textContent).toContain('Meet the Quest Giver');
         expect(list.textContent).toContain('Head to the Quest Giver by the Forge');
         expect(list.textContent).toContain('Stash');
         expect(list.textContent).toContain('sort gear');
+        expect(list.textContent).toContain('sell junk to Vendor / Repair');
+        expect(list.textContent).toContain('save valuable drops for the Trading House');
     });
 
     test('hides objectives panel when there are no accepted quests outside town', () => {
