@@ -259,8 +259,10 @@ describe('GameEngine ctrl-click jump', () => {
             expect.objectContaining({ impact: 0.9, className: 'Object' })
         );
         expect(engine.renderSystem.applyCameraPunch).toHaveBeenCalledWith(expect.objectContaining({
-            intensity: expect.any(Number),
-            duration: expect.any(Number)
+            intensity: 0.81,
+            duration: 0.18,
+            vertical: 1.1,
+            horizontal: 0.5
         }));
     });
 

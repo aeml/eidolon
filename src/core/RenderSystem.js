@@ -1037,12 +1037,17 @@ export class RenderSystem {
             return;
         }
 
+        const scaledIntensity = Math.max(0, intensity) * 0.35;
+        const scaledDuration = Math.max(0.05, duration * 0.56);
+        const scaledVertical = vertical * 0.55;
+        const scaledHorizontal = horizontal * 0.3;
+
         this.cameraPunch = {
             startTime: performance.now(),
-            duration: Math.max(0.05, duration),
-            intensity: Math.max(0, intensity),
-            vertical,
-            horizontal
+            duration: scaledDuration,
+            intensity: scaledIntensity,
+            vertical: scaledVertical,
+            horizontal: scaledHorizontal
         };
         this.updateCamera();
     }
