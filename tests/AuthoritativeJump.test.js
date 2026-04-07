@@ -369,6 +369,51 @@ describe('authoritative jump flow', () => {
         expect(engine.player.mesh.position.x).toBeGreaterThanOrEqual(forwardVisualX);
     });
 
+    test('server-driven player jumps advance smoothed display position during update before render', () => {
+        const engine = createEngineHarness();
+        engine.player.position.set(12, 0, 8);
+        engine.playerJumpState = {
+            start: new THREE.Vector3(0, 0, 0),
+            end: new THREE.Vector3(20, 0, 12),
+            progress: 0.6,
+            elapsed: 0.6,
+            duration: 0.8,
+            height: 8,
+            serverDriven: true,
+            visualHeight: 4,
+            displayPosition: new THREE.Vector3(6, 0, 4)
+        };
+
+        engine.updatePlayerJump(1 / 60);
+
+        expect(engine.playerJumpState.displayPosition.x).toBeGreaterThan(6);
+        expect(engine.playerJumpState.displayPosition.x).toBeLessThan(12);
+        expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.playerJumpState.displayPosition);
+    });
+
+    test('player jump render path does not apply a second interpolation pass after update smoothing', () => {
+        const engine = createEngineHarness();
+        engine.player.position.set(12, 0, 8);
+        engine.playerJumpState = {
+            start: new THREE.Vector3(0, 0, 0),
+            end: new THREE.Vector3(20, 0, 12),
+            progress: 0.6,
+            elapsed: 0.6,
+            duration: 0.8,
+            height: 8,
+            serverDriven: true,
+            visualHeight: 4,
+            displayPosition: new THREE.Vector3(6, 0, 4)
+        };
+
+        engine.updatePlayerJump(1 / 60);
+        const displayXAfterUpdate = engine.playerJumpState.displayPosition.x;
+
+        engine.applyPlayerJumpVisuals();
+
+        expect(engine.playerJumpState.displayPosition.x).toBeCloseTo(displayXAfterUpdate, 5);
+    });
+
     test('predicted local jump is not cleared by self deltas that omit state', () => {
         const engine = createEngineHarness();
         engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(20, 0, 6));

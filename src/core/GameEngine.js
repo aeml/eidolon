@@ -2944,7 +2944,14 @@ export class GameEngine {
 
         const jump = this.playerJumpState;
         if (jump.serverDriven) {
+            if (!jump.displayPosition) {
+                jump.displayPosition = this.player.position.clone();
+            }
+            const displayTarget = this.getAuthoritativeJumpDisplayTarget(this.player, jump) || this.player.position;
+            jump.displayPosition.lerp(displayTarget, 0.35);
+            jump.displayPosition.y = this.player.position.y;
             this.playerJumpVisualHeight = jump.visualHeight || 0;
+            this.renderSystem?.setCameraTarget?.(jump.displayPosition);
             return true;
         }
         if (this.inputManager?.keys?.control && this.inputManager?.primaryMouseButtonDown) {
@@ -3147,9 +3154,12 @@ export class GameEngine {
             if (!jumpState.displayPosition) {
                 jumpState.displayPosition = entity.position.clone();
             }
-            const displayTarget = this.getAuthoritativeJumpDisplayTarget(entity, jumpState) || entity.position;
-            jumpState.displayPosition.lerp(displayTarget, 0.35);
-            jumpState.displayPosition.y = entity.position.y;
+            const shouldSmoothDisplayPosition = entity !== this.player;
+            if (shouldSmoothDisplayPosition) {
+                const displayTarget = this.getAuthoritativeJumpDisplayTarget(entity, jumpState) || entity.position;
+                jumpState.displayPosition.lerp(displayTarget, 0.35);
+                jumpState.displayPosition.y = entity.position.y;
+            }
             entity.mesh.position.copy(jumpState.displayPosition);
         } else {
             entity.mesh.position.copy(entity.position);
