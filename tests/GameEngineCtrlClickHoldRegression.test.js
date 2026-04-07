@@ -132,4 +132,20 @@ describe('GameEngine ctrl-click hold regression', () => {
         expect(engine.player.playAnimation).not.toHaveBeenCalledWith('Attack', false);
         expect(engine.player.state).not.toBe('ATTACKING');
     });
+
+    test('spamming ctrl-click while airborne still clears held mouse state instead of leaking into attack logic', () => {
+        const engine = createEngineHarness();
+
+        engine.handlePrimaryClick({ ctrlKey: true });
+        expect(engine.playerJumpState).not.toBeNull();
+
+        engine.inputManager.isMouseDown = true;
+        engine.handlePrimaryClick({ ctrlKey: true });
+        engine.update(1 / 60);
+
+        expect(engine.playerQueuedJump).toBe(true);
+        expect(engine.inputManager.isMouseDown).toBe(false);
+        expect(engine.player.playAnimation).not.toHaveBeenCalledWith('Attack', false);
+        expect(engine.player.state).not.toBe('ATTACKING');
+    });
 });

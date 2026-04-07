@@ -329,6 +329,46 @@ describe('authoritative jump flow', () => {
         expect(engine.player.mesh.position.x).toBeLessThan(snappedLogicalX);
     });
 
+    test('self authoritative jump interpolation does not jitter backward on tiny correction packets', () => {
+        const engine = createEngineHarness();
+        engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(20, 0, 0));
+
+        engine.handlePrimaryClick({ ctrlKey: true, clientX: 500, clientY: 220 });
+
+        engine.syncAuthoritativeJumpState(engine.player, {
+            id: 'player-1',
+            state: 'JUMPING',
+            x: 4,
+            y: 2.5,
+            z: 0
+        });
+        engine.applyPlayerJumpVisuals();
+
+        engine.syncAuthoritativeJumpState(engine.player, {
+            id: 'player-1',
+            state: 'JUMPING',
+            x: 12,
+            y: 5.5,
+            z: 0
+        });
+        for (let i = 0; i < 20; i += 1) {
+            engine.applyPlayerJumpVisuals();
+        }
+        const forwardVisualX = engine.player.mesh.position.x;
+
+        engine.syncAuthoritativeJumpState(engine.player, {
+            id: 'player-1',
+            state: 'JUMPING',
+            x: 11.95,
+            y: 5.45,
+            z: 0
+        });
+        engine.applyPlayerJumpVisuals();
+
+        expect(engine.player.position.x).toBeCloseTo(11.95, 5);
+        expect(engine.player.mesh.position.x).toBeGreaterThanOrEqual(forwardVisualX);
+    });
+
     test('predicted local jump is not cleared by self deltas that omit state', () => {
         const engine = createEngineHarness();
         engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(20, 0, 6));
@@ -713,5 +753,82 @@ describe('authoritative jump flow', () => {
         expect(snappedLogicalX).toBe(12);
         expect(remoteEntity.mesh.position.x).toBeGreaterThan(firstVisualX);
         expect(remoteEntity.mesh.position.x).toBeLessThan(snappedLogicalX);
+    });
+
+    test('remote authoritative jump interpolation does not jitter backward on tiny correction packets', () => {
+        const engine = createEngineHarness();
+        const remoteEntity = {
+            position: new THREE.Vector3(0, 0, 0),
+            targetServerPosition: null,
+            targetServerRotation: undefined,
+            rotation: new THREE.Quaternion(),
+            state: 'IDLE',
+            isCharging: false,
+            isDead: false,
+            deadTimer: 0,
+            visualOffset: new THREE.Vector3(0, 0, 0),
+            mesh: {
+                visible: true,
+                position: new THREE.Vector3(0, 0, 0),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            },
+            stats: { hp: 100, maxHp: 100, mana: 10, maxMana: 10, speed: 3, attackSpeed: 1 },
+            updateState: jest.fn(function updateState(nextState) {
+                this.state = nextState;
+            })
+        };
+
+        engine.syncRemoteEntity(remoteEntity, {
+            id: 'remote-1',
+            type: 'Player',
+            state: 'JUMPING',
+            x: 4,
+            y: 2.5,
+            z: 0,
+            rotation: 0.3,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+        engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
+
+        engine.syncRemoteEntity(remoteEntity, {
+            id: 'remote-1',
+            type: 'Player',
+            state: 'JUMPING',
+            x: 12,
+            y: 5.5,
+            z: 0,
+            rotation: 0.3,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+        for (let i = 0; i < 20; i += 1) {
+            engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
+        }
+        const forwardVisualX = remoteEntity.mesh.position.x;
+
+        engine.syncRemoteEntity(remoteEntity, {
+            id: 'remote-1',
+            type: 'Player',
+            state: 'JUMPING',
+            x: 11.95,
+            y: 5.45,
+            z: 0,
+            rotation: 0.3,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+        engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
+
+        expect(remoteEntity.position.x).toBeCloseTo(11.95, 5);
+        expect(remoteEntity.mesh.position.x).toBeGreaterThanOrEqual(forwardVisualX);
     });
 });

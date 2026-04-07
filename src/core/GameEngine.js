@@ -2741,6 +2741,9 @@ export class GameEngine {
 
         if (this.playerJumpState) {
             this.playerQueuedJump = true;
+            if (this.inputManager) {
+                this.inputManager.isMouseDown = false;
+            }
             return true;
         }
 
@@ -3098,6 +3101,45 @@ export class GameEngine {
         }
     }
 
+    getAuthoritativeJumpDisplayTarget(entity, jumpState) {
+        const currentDisplayPosition = jumpState?.displayPosition?.clone?.() || entity?.position?.clone?.();
+        const targetPosition = entity?.position?.clone?.();
+        if (!currentDisplayPosition || !targetPosition) return targetPosition || currentDisplayPosition || null;
+
+        currentDisplayPosition.y = targetPosition.y;
+        if (!jumpState?.serverDriven) {
+            return targetPosition;
+        }
+
+        const jumpVector = jumpState?.start && jumpState?.end
+            ? new THREE.Vector3(jumpState.end.x - jumpState.start.x, 0, jumpState.end.z - jumpState.start.z)
+            : new THREE.Vector3();
+        if (jumpVector.lengthSq() <= 0.0001) {
+            return targetPosition;
+        }
+
+        const jumpDirection = jumpVector.normalize();
+        const horizontalDelta = new THREE.Vector3(
+            targetPosition.x - currentDisplayPosition.x,
+            0,
+            targetPosition.z - currentDisplayPosition.z
+        );
+        const forwardDelta = horizontalDelta.dot(jumpDirection);
+        const lateralDelta = horizontalDelta.clone().sub(jumpDirection.clone().multiplyScalar(forwardDelta));
+        const microCorrectionTolerance = 0.08;
+
+        if (forwardDelta < 0 && Math.abs(forwardDelta) <= microCorrectionTolerance) {
+            targetPosition.x -= jumpDirection.x * forwardDelta;
+            targetPosition.z -= jumpDirection.z * forwardDelta;
+        }
+        if (lateralDelta.lengthSq() <= microCorrectionTolerance * microCorrectionTolerance) {
+            targetPosition.x -= lateralDelta.x;
+            targetPosition.z -= lateralDelta.z;
+        }
+
+        return targetPosition;
+    }
+
     applyEntityJumpVisuals(entity, jumpState) {
         if (!entity?.mesh) return;
 
@@ -3105,7 +3147,8 @@ export class GameEngine {
             if (!jumpState.displayPosition) {
                 jumpState.displayPosition = entity.position.clone();
             }
-            jumpState.displayPosition.lerp(entity.position, 0.35);
+            const displayTarget = this.getAuthoritativeJumpDisplayTarget(entity, jumpState) || entity.position;
+            jumpState.displayPosition.lerp(displayTarget, 0.35);
             jumpState.displayPosition.y = entity.position.y;
             entity.mesh.position.copy(jumpState.displayPosition);
         } else {
