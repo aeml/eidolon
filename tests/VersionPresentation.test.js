@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.22.3 for the latest shipped onboarding slice', () => {
-        expect(indexHtml).toContain('Alpha 0.22.3');
+    test('advances the login screen to alpha 0.22.4 for the latest shipped onboarding slice', () => {
+        expect(indexHtml).toContain('Alpha 0.22.4');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -35,15 +35,16 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Insert gems for bonuses, combine extras into stronger gems, or remove them');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.22.3', () => {
-        expect(indexHtml).toContain('Patch 0.22.3');
-        expect(indexHtml).toContain('Starter-route map priority and visual ordering');
-        expect(indexHtml).toContain('Quest Giver and Forge now draw first in the town route');
-        expect(indexHtml).toContain('world map and minimap both prioritize the same starter route');
+    test('includes the latest player-facing patch notes entry for 0.22.4', () => {
+        expect(indexHtml).toContain('Patch 0.22.4');
+        expect(indexHtml).toContain('Canonical town-service labels and exact marker anchors');
+        expect(indexHtml).toContain('world map and minimap now use the same exact service names');
+        expect(indexHtml).toContain('Forge and Vendor / Repair markers now sit on the real interactable anchors');
     });
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.22.4');
         expect(indexHtml).toContain('Patch 0.22.3');
         expect(indexHtml).toContain('Patch 0.22.2');
         expect(indexHtml).toContain('Patch 0.22.1');
@@ -60,6 +61,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.22.4"');
         expect(indexHtml).toContain('data-version="0.22.3"');
         expect(indexHtml).toContain('data-version="0.22.2"');
         expect(indexHtml).toContain('data-version="0.22.1"');

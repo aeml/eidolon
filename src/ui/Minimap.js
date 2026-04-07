@@ -1,3 +1,5 @@
+import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
+
 // ============================================================================
 // Minimap — player-centered radar with realm coloring & tactical emphasis
 // ============================================================================
@@ -17,12 +19,28 @@ const REALM_COLORS = {
     air:   'rgba(50, 70, 110, 0.35)',
 };
 
-const TOWN_SERVICE_MARKERS = [
-    { x: -25, z: 200, label: 'Quest', color: 'rgba(255, 215, 90, 0.95)', ring: true },
-    { x: -30, z: 200, label: 'Forge', color: 'rgba(255, 155, 74, 0.95)', ring: true },
-    { x: 0, z: 185, label: 'Stash', color: 'rgba(143, 211, 255, 0.95)', ring: false },
-    { x: 30, z: 200, label: 'Vendor', color: 'rgba(120, 224, 143, 0.95)', ring: false }
-];
+const toMarkerColor = (hexColor) => {
+    switch (hexColor) {
+    case '#ffd700':
+        return 'rgba(255, 215, 90, 0.95)';
+    case '#ff9b4a':
+        return 'rgba(255, 155, 74, 0.95)';
+    case '#8fd3ff':
+        return 'rgba(143, 211, 255, 0.95)';
+    case '#78e08f':
+        return 'rgba(120, 224, 143, 0.95)';
+    default:
+        return 'rgba(242, 242, 242, 0.95)';
+    }
+};
+
+const TOWN_SERVICE_MARKERS = TOWN_SERVICE_POINTS.map((point) => ({
+    x: point.x,
+    z: point.z,
+    label: point.shortLabel,
+    color: toMarkerColor(point.color),
+    ring: point.ring
+}));
 
 /**
  * Determine which realm a world position falls in.

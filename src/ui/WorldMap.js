@@ -6,6 +6,8 @@
 // coordinates, making it easy to add new zones or adjust layout.
 // ============================================================================
 
+import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
+
 // ---------------------------------------------------------------------------
 // Config tables
 // ---------------------------------------------------------------------------
@@ -76,12 +78,15 @@ const DUNGEON_MARKERS = [
     { wx: 2400, wz: 200, name: 'Tempest Spire', dotColor: '#4488ff', tier: 'zone', labelOffsetY: -40 },
 ];
 
-const TOWN_POIS = [
-    { wx: -25, wz: 200, name: 'Quest Giver', dotColor: '#ffd700', strokeColor: '#ffd700', minScale: 0.75, labelOffsetY: -20 },
-    { wx: -30, wz: 200, name: 'Forge', dotColor: '#ff9b4a', strokeColor: '#ff9b4a', minScale: 0.75, labelOffsetY: 26 },
-    { wx: 0, wz: 185, name: 'Stash', dotColor: '#8fd3ff', minScale: 0.75, labelOffsetY: 18 },
-    { wx: 30, wz: 200, name: 'Vendor / Repair', dotColor: '#78e08f', minScale: 0.75, labelOffsetY: -26 }
-];
+const TOWN_POIS = TOWN_SERVICE_POINTS.map((point) => ({
+    wx: point.x,
+    wz: point.z,
+    name: point.label,
+    dotColor: point.color,
+    strokeColor: point.strokeColor,
+    minScale: point.minScale,
+    labelOffsetY: point.labelOffsetY
+}));
 
 /**
  * Fence segments (boundary walls).

@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import { Minimap } from '../src/ui/Minimap.js';
+import { TOWN_SERVICE_POINTS } from '../src/ui/townServiceConfig.js';
 
 describe('Minimap dungeon room states', () => {
     let fillRects;
@@ -207,6 +208,15 @@ describe('Minimap dungeon room states', () => {
         expect(tooltip.style.display).toBe('none');
     });
 
+    test('uses exact canonical town-service anchor positions for minimap markers', () => {
+        expect(TOWN_SERVICE_POINTS).toEqual(expect.arrayContaining([
+            expect.objectContaining({ id: 'quest-giver', label: 'Quest Giver', x: -25, z: 200 }),
+            expect.objectContaining({ id: 'forge', label: 'Forge', x: -28, z: 218 }),
+            expect.objectContaining({ id: 'stash', label: 'Stash', x: 0, z: 185 }),
+            expect.objectContaining({ id: 'vendor-repair', label: 'Vendor / Repair', x: 22.5, z: 200 })
+        ]));
+    });
+
     test('renders named town-service markers on the minimap when the player is in town', () => {
         const minimap = new Minimap(200);
         minimap.gameEngine = {
@@ -217,10 +227,10 @@ describe('Minimap dungeon room states', () => {
 
         minimap.update({ position: { x: 0, z: 200 }, id: 'player-1' }, []);
 
-        expect(texts.some((entry) => String(entry.args[0]).includes('Quest'))).toBe(true);
+        expect(texts.some((entry) => String(entry.args[0]).includes('Quest Giver'))).toBe(true);
         expect(texts.some((entry) => String(entry.args[0]).includes('Stash'))).toBe(true);
         expect(texts.some((entry) => String(entry.args[0]).includes('Forge'))).toBe(true);
-        expect(texts.some((entry) => String(entry.args[0]).includes('Vendor'))).toBe(true);
+        expect(texts.some((entry) => String(entry.args[0]).includes('Vendor / Repair'))).toBe(true);
         expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 215, 90, 0.95)')).toBe(true);
     });
 
@@ -235,10 +245,10 @@ describe('Minimap dungeon room states', () => {
         minimap.update({ position: { x: 0, z: 200 }, id: 'player-1' }, []);
 
         const labels = texts.map((entry) => String(entry.args[0]));
-        const questIndex = labels.findIndex((label) => label.includes('Quest'));
+        const questIndex = labels.findIndex((label) => label.includes('Quest Giver'));
         const forgeIndex = labels.findIndex((label) => label.includes('Forge'));
         const stashIndex = labels.findIndex((label) => label.includes('Stash'));
-        const vendorIndex = labels.findIndex((label) => label.includes('Vendor'));
+        const vendorIndex = labels.findIndex((label) => label.includes('Vendor / Repair'));
 
         expect(questIndex).toBeLessThan(forgeIndex);
         expect(forgeIndex).toBeLessThan(stashIndex);

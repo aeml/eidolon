@@ -1,4 +1,5 @@
 import { WorldMap } from '../src/ui/WorldMap.js';
+import { TOWN_SERVICE_POINTS } from '../src/ui/townServiceConfig.js';
 
 describe('WorldMap town wayfinding', () => {
     let texts;
@@ -52,6 +53,15 @@ describe('WorldMap town wayfinding', () => {
             observe() {}
             disconnect() {}
         };
+    });
+
+    test('uses exact canonical town-service anchor positions for world-map wayfinding', () => {
+        expect(TOWN_SERVICE_POINTS).toEqual(expect.arrayContaining([
+            expect.objectContaining({ id: 'quest-giver', label: 'Quest Giver', x: -25, z: 200 }),
+            expect.objectContaining({ id: 'forge', label: 'Forge', x: -28, z: 218 }),
+            expect.objectContaining({ id: 'stash', label: 'Stash', x: 0, z: 185 }),
+            expect.objectContaining({ id: 'vendor-repair', label: 'Vendor / Repair', x: 22.5, z: 200 })
+        ]));
     });
 
     test('renders named town POIs for new-player wayfinding', () => {
