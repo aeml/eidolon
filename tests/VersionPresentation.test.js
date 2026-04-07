@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.22.5 for the latest shipped onboarding slice', () => {
-        expect(indexHtml).toContain('Alpha 0.22.5');
+    test('advances the login screen to alpha 0.22.6 for the latest shipped onboarding slice', () => {
+        expect(indexHtml).toContain('Alpha 0.22.6');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -19,7 +19,7 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('id="class-cleric-description"');
     });
 
-    test('includes plain-language starter service guidance on merchant stash and forge windows', () => {
+    test('includes plain-language starter service guidance on merchant stash forge and trading house windows', () => {
         expect(indexHtml).toContain('id="shop-service-guidance"');
         expect(indexHtml).toContain('id="shop-buyback-guidance"');
         expect(indexHtml).toContain('id="stash-guidance"');
@@ -27,23 +27,26 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('id="forge-potency-guidance"');
         expect(indexHtml).toContain('id="forge-socket-guidance"');
         expect(indexHtml).toContain('id="forge-gems-guidance"');
+        expect(indexHtml).toContain('id="trading-house-guidance"');
         expect(indexHtml).toContain('Buyback lets you recover something you just sold');
         expect(indexHtml).toContain('park spare gear, gems, Hearts, and Shards');
         expect(indexHtml).toContain('Spend Shards to raise item level');
         expect(indexHtml).toContain('Spend Hearts to permanently boost an equipped item');
         expect(indexHtml).toContain('add gem slots to equipped gear');
         expect(indexHtml).toContain('Insert gems for bonuses, combine extras into stronger gems, or remove them');
+        expect(indexHtml).toContain('Buy from other players, list your own gear, and use auctions when an item is worth selling to the market');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.22.5', () => {
-        expect(indexHtml).toContain('Patch 0.22.5');
-        expect(indexHtml).toContain('Dungeon Guide wayfinding and first-dungeon handoff');
-        expect(indexHtml).toContain('Dungeon Guide now appears on the world map and minimap at the real town anchor');
-        expect(indexHtml).toContain('Hovering the Dungeon Guide now explains how to start your first dungeon run');
+    test('includes the latest player-facing patch notes entry for 0.22.6', () => {
+        expect(indexHtml).toContain('Patch 0.22.6');
+        expect(indexHtml).toContain('Trading House and Vendor guidance split');
+        expect(indexHtml).toContain('Trading House now shows up separately for player-to-player buying and selling');
+        expect(indexHtml).toContain('Vendor / Repair now stays focused on gambling and unloading unwanted gear');
     });
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.22.6');
         expect(indexHtml).toContain('Patch 0.22.5');
         expect(indexHtml).toContain('Patch 0.22.4');
         expect(indexHtml).toContain('Patch 0.22.3');
@@ -62,6 +65,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.22.6"');
         expect(indexHtml).toContain('data-version="0.22.5"');
         expect(indexHtml).toContain('data-version="0.22.4"');
         expect(indexHtml).toContain('data-version="0.22.3"');

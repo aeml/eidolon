@@ -60,6 +60,7 @@ describe('WorldMap town wayfinding', () => {
             expect.objectContaining({ id: 'quest-giver', label: 'Quest Giver', x: -25, z: 200 }),
             expect.objectContaining({ id: 'forge', label: 'Forge', x: -28, z: 218 }),
             expect.objectContaining({ id: 'stash', label: 'Stash', x: 0, z: 185 }),
+            expect.objectContaining({ id: 'trading-house', label: 'Trading House', x: -22, z: 185 }),
             expect.objectContaining({ id: 'vendor-repair', label: 'Vendor / Repair', x: 22.5, z: 200 }),
             expect.objectContaining({ id: 'dungeon-guide', label: 'Dungeon Guide', x: 0, z: 240 })
         ]));
@@ -78,6 +79,7 @@ describe('WorldMap town wayfinding', () => {
             'Quest Giver',
             'Stash',
             'Forge',
+            'Trading House',
             'Vendor / Repair',
             'Dungeon Guide'
         ]));

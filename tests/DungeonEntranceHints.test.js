@@ -321,7 +321,7 @@ describe('Dungeon entrance hints', () => {
         }));
     });
 
-    test('GameEngine builds named interact hint for hovered vendor out of range', () => {
+    test('GameEngine builds trading-house hint for hovered auction house out of range', () => {
         const engine = createEngineHarness();
         engine.player.position = new THREE.Vector3(0, 0, 0);
         engine.hoveredEntity = createTownInteractable({
@@ -332,10 +332,10 @@ describe('Dungeon entrance hints', () => {
         engine.refreshDungeonEntranceHint();
 
         expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
-            dungeonName: 'Vendor / Repair',
+            dungeonName: 'Trading House',
             inRange: false,
             statusLabel: expect.stringContaining('Move closer'),
-            promptLabel: expect.stringContaining('Vendor / Repair')
+            promptLabel: expect.stringContaining('buy or sell items with other players')
         }));
     });
 
@@ -357,13 +357,32 @@ describe('Dungeon entrance hints', () => {
         }));
     });
 
+    test('GameEngine builds vendor hint for hovered merchant out of range', () => {
+        const engine = createEngineHarness();
+        engine.player.position = new THREE.Vector3(0, 0, 0);
+        engine.hoveredEntity = createTownInteractable({
+            constructor: { name: 'DwarfSalesman' },
+            position: new THREE.Vector3(12, 0, 0)
+        });
+
+        engine.refreshDungeonEntranceHint();
+
+        expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
+            dungeonName: 'Vendor / Repair',
+            inRange: false,
+            statusLabel: expect.stringContaining('Move closer'),
+            promptLabel: expect.stringContaining('gamble or sell unwanted gear')
+        }));
+    });
+
     test('GameEngine maps town interactables to the same labels used by map guidance', () => {
         const engine = createEngineHarness();
 
         expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'QuestNPC' } }))).toBe('Quest Giver');
         expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'Stash' } }))).toBe('Stash');
         expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'Forge' } }))).toBe('Forge');
-        expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'TradingHouse' } }))).toBe('Vendor / Repair');
+        expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'TradingHouse' } }))).toBe('Trading House');
+        expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'DwarfSalesman' } }))).toBe('Vendor / Repair');
         expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'DungeonNPC' } }))).toBe('Dungeon Guide');
     });
 });

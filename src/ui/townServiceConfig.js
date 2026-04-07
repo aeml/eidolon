@@ -36,6 +36,18 @@ export const TOWN_SERVICE_POINTS = [
         labelOffsetY: 18
     },
     {
+        id: 'trading-house',
+        label: 'Trading House',
+        shortLabel: 'Trading House',
+        x: -22,
+        z: 185,
+        color: '#5ec8ff',
+        strokeColor: '#5ec8ff',
+        ring: true,
+        minScale: 0.75,
+        labelOffsetY: -22
+    },
+    {
         id: 'vendor-repair',
         label: 'Vendor / Repair',
         shortLabel: 'Vendor / Repair',

@@ -2015,6 +2015,7 @@ export class GameEngine {
         case 'Forge':
             return 'Forge';
         case 'TradingHouse':
+            return 'Trading House';
         case 'DwarfSalesman':
             return 'Vendor / Repair';
         case 'RespecNPC':
@@ -2060,10 +2061,14 @@ export class GameEngine {
             promptLabel = inRange
                 ? 'Click to open the Stash and sort spare gear.'
                 : 'Move closer to open the Stash and sort spare gear.';
-        } else if (interactableType === 'TradingHouse' || interactableType === 'DwarfSalesman') {
+        } else if (interactableType === 'TradingHouse') {
             promptLabel = inRange
-                ? 'Click to open Vendor / Repair and clean out or recover gear.'
-                : 'Move closer to open Vendor / Repair and clean out or recover gear.';
+                ? 'Click to open the Trading House and buy or sell items with other players.'
+                : 'Move closer to open the Trading House and buy or sell items with other players.';
+        } else if (interactableType === 'DwarfSalesman') {
+            promptLabel = inRange
+                ? 'Click to open Vendor / Repair and gamble or sell unwanted gear.'
+                : 'Move closer to open Vendor / Repair and gamble or sell unwanted gear.';
         } else if (interactableType === 'DungeonNPC') {
             promptLabel = inRange
                 ? 'Click to talk to the Dungeon Guide and start your first dungeon run.'
