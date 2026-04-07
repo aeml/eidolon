@@ -29,6 +29,8 @@ const toMarkerColor = (hexColor) => {
         return 'rgba(143, 211, 255, 0.95)';
     case '#78e08f':
         return 'rgba(120, 224, 143, 0.95)';
+    case '#c88cff':
+        return 'rgba(200, 140, 255, 0.95)';
     default:
         return 'rgba(242, 242, 242, 0.95)';
     }

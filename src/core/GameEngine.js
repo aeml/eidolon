@@ -2064,6 +2064,10 @@ export class GameEngine {
             promptLabel = inRange
                 ? 'Click to open Vendor / Repair and clean out or recover gear.'
                 : 'Move closer to open Vendor / Repair and clean out or recover gear.';
+        } else if (interactableType === 'DungeonNPC') {
+            promptLabel = inRange
+                ? 'Click to talk to the Dungeon Guide and start your first dungeon run.'
+                : 'Move closer to talk to the Dungeon Guide and start your first dungeon run.';
         } else {
             promptLabel = inRange
                 ? `Click to interact with ${dungeonName}.`

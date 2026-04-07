@@ -339,6 +339,24 @@ describe('Dungeon entrance hints', () => {
         }));
     });
 
+    test('GameEngine builds first-dungeon hint for hovered dungeon guide in range', () => {
+        const engine = createEngineHarness();
+        engine.player.position = new THREE.Vector3(0, 0, 0);
+        engine.hoveredEntity = createTownInteractable({
+            constructor: { name: 'DungeonNPC' },
+            position: new THREE.Vector3(3, 0, 0)
+        });
+
+        engine.refreshDungeonEntranceHint();
+
+        expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
+            dungeonName: 'Dungeon Guide',
+            inRange: true,
+            statusLabel: expect.stringContaining('In range'),
+            promptLabel: expect.stringContaining('start your first dungeon run')
+        }));
+    });
+
     test('GameEngine maps town interactables to the same labels used by map guidance', () => {
         const engine = createEngineHarness();
 
@@ -346,5 +364,6 @@ describe('Dungeon entrance hints', () => {
         expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'Stash' } }))).toBe('Stash');
         expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'Forge' } }))).toBe('Forge');
         expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'TradingHouse' } }))).toBe('Vendor / Repair');
+        expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'DungeonNPC' } }))).toBe('Dungeon Guide');
     });
 });

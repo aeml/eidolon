@@ -269,7 +269,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.4</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.5</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -484,6 +484,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.22.5" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.5 (Dungeon Guide wayfinding and first-dungeon handoff)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Dungeon Guide on the route:</strong> Dungeon Guide now appears on the world map and minimap at the real town anchor so the first dungeon handoff is visible instead of implied.</li>
+                        <li><strong>Exact town anchor:</strong> The Dungeon Guide wayfinding marker now uses the real town-service position at the guide NPC instead of leaving the first dungeon step off the route.</li>
+                        <li><strong>Clear hover prompt:</strong> Hovering the Dungeon Guide now explains how to start your first dungeon run instead of falling back to generic interact text.</li>
+                        <li><strong>Regression coverage:</strong> Added tests around Dungeon Guide anchor coverage, map/minimap visibility, hover hint copy, and 0.22.5 version / patch-note presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.22.4" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.4 (Canonical town-service labels and exact marker anchors)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

@@ -46,5 +46,17 @@ export const TOWN_SERVICE_POINTS = [
         ring: false,
         minScale: 0.75,
         labelOffsetY: -26
+    },
+    {
+        id: 'dungeon-guide',
+        label: 'Dungeon Guide',
+        shortLabel: 'Dungeon Guide',
+        x: 0,
+        z: 240,
+        color: '#c88cff',
+        strokeColor: '#c88cff',
+        ring: true,
+        minScale: 0.75,
+        labelOffsetY: 28
     }
 ];
