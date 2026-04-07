@@ -2041,6 +2041,34 @@ export class GameEngine {
         const inRange = distance <= interactionRange;
         const dungeonName = this.getInteractableEntityLabel(entity);
         const entityLabel = isDungeonEntrance ? 'Dungeon Portal' : dungeonName;
+        const interactableType = entity.constructor?.name || entity.type || entity.meshType || entity.name || '';
+        let promptLabel;
+
+        if (isDungeonEntrance) {
+            promptLabel = inRange
+                ? 'Click to open the dungeon portal.'
+                : 'Move closer to interact with this dungeon portal.';
+        } else if (interactableType === 'QuestNPC') {
+            promptLabel = inRange
+                ? 'Click to talk to the Quest Giver and pick up your first quest.'
+                : 'Move closer to talk to the Quest Giver and pick up your first quest.';
+        } else if (interactableType === 'Forge') {
+            promptLabel = inRange
+                ? 'Click to use the Forge and upgrade or socket gear.'
+                : 'Move closer to use the Forge and upgrade or socket gear.';
+        } else if (interactableType === 'Stash') {
+            promptLabel = inRange
+                ? 'Click to open the Stash and sort spare gear.'
+                : 'Move closer to open the Stash and sort spare gear.';
+        } else if (interactableType === 'TradingHouse' || interactableType === 'DwarfSalesman') {
+            promptLabel = inRange
+                ? 'Click to open Vendor / Repair and clean out or recover gear.'
+                : 'Move closer to open Vendor / Repair and clean out or recover gear.';
+        } else {
+            promptLabel = inRange
+                ? `Click to interact with ${dungeonName}.`
+                : `Move closer to interact with ${dungeonName}.`;
+        }
 
         return {
             dungeonType: isDungeonEntrance ? (entity.userData?.dungeonType || '') : '',
@@ -2048,13 +2076,7 @@ export class GameEngine {
             inRange,
             distance,
             statusLabel: inRange ? `${entityLabel} • In range` : `${entityLabel} • Move closer`,
-            promptLabel: isDungeonEntrance
-                ? (inRange
-                    ? 'Click to open the dungeon portal.'
-                    : 'Move closer to interact with this dungeon portal.')
-                : (inRange
-                    ? `Click to interact with ${dungeonName}.`
-                    : `Move closer to interact with ${dungeonName}.`)
+            promptLabel
         };
     }
 

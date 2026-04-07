@@ -269,7 +269,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.0</span> 
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.1</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -484,6 +484,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.22.1" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.1 (Starter-town wayfinding and service prompts)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Quest Giver prompt:</strong> Hovering the Quest Giver now tells first-session players exactly that this is where they pick up the first quest.</li>
+                        <li><strong>Town service hover hints:</strong> Forge, Stash, and Vendor / Repair now explain what they are for instead of just saying "interact".</li>
+                        <li><strong>Overworld re-entry onboarding:</strong> Returning to town refreshes the objective panel immediately so the starter funnel does not wait on a later quest packet.</li>
+                        <li><strong>Regression coverage:</strong> Added tests around overworld onboarding refresh, town hover hints, and version / patch-notes presentation for the new 0.22.1 patch.</li>
+                    </ul>
+                </div>
+
                 <div class="patch-note-entry" data-version="0.22.0" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.0 (First-session onboarding and start-screen clarity)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

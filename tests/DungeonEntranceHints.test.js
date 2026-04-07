@@ -285,6 +285,24 @@ describe('Dungeon entrance hints', () => {
         expect(engine.uiManager.clearDungeonEntranceHint).toHaveBeenCalled();
     });
 
+    test('GameEngine builds onboarding talk hint for hovered quest giver in range', () => {
+        const engine = createEngineHarness();
+        engine.player.position = new THREE.Vector3(0, 0, 0);
+        engine.hoveredEntity = createTownInteractable({
+            constructor: { name: 'QuestNPC' },
+            position: new THREE.Vector3(3, 0, 0)
+        });
+
+        engine.refreshDungeonEntranceHint();
+
+        expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
+            dungeonName: 'Quest Giver',
+            inRange: true,
+            statusLabel: expect.stringContaining('In range'),
+            promptLabel: expect.stringContaining('pick up your first quest')
+        }));
+    });
+
     test('GameEngine builds named interact hint for hovered forge in range', () => {
         const engine = createEngineHarness();
         engine.player.position = new THREE.Vector3(0, 0, 0);
@@ -299,7 +317,7 @@ describe('Dungeon entrance hints', () => {
             dungeonName: 'Forge',
             inRange: true,
             statusLabel: expect.stringContaining('In range'),
-            promptLabel: expect.stringContaining('Forge')
+            promptLabel: expect.stringContaining('upgrade or socket gear')
         }));
     });
 
