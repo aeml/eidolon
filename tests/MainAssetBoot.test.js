@@ -29,6 +29,7 @@ describe('asset persistence boot wiring', () => {
             <button id="btn-play-character"></button>
             <button id="login-patch-notes-link"></button>
             <div id="patch-notes-screen"></div>
+            <button id="btn-close-patch-notes-header"></button>
             <button id="btn-close-patch-notes"></button>
             <div id="start-flow-title"></div>
             <div id="start-flow-copy"></div>
@@ -56,7 +57,7 @@ describe('asset persistence boot wiring', () => {
         expect(register).toHaveBeenCalledWith('./sw.js', { scope: './' });
     });
 
-    test('login patch notes link, close button, and Escape toggle the patch notes history screen', async () => {
+    test('login patch notes link, both close buttons, and Escape toggle the patch notes history screen', async () => {
         buildStartDom();
         document.getElementById('patch-notes-screen').style.display = 'none';
 
@@ -75,6 +76,11 @@ describe('asset persistence boot wiring', () => {
         await Promise.resolve();
 
         const patchNotesScreen = document.getElementById('patch-notes-screen');
+        document.getElementById('login-patch-notes-link').click();
+        expect(patchNotesScreen.style.display).toBe('flex');
+        document.getElementById('btn-close-patch-notes-header').click();
+        expect(patchNotesScreen.style.display).toBe('none');
+
         document.getElementById('login-patch-notes-link').click();
         expect(patchNotesScreen.style.display).toBe('flex');
         document.getElementById('btn-close-patch-notes').click();

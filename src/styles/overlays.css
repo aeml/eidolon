@@ -18,6 +18,8 @@
     font-family: 'Segoe UI', sans-serif;
     font-weight: bold;
     text-align: center;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .browser-warning__text {

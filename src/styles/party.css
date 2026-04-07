@@ -55,6 +55,8 @@
     border: 1px solid #444;
     color: white;
     font-size: 12px;
+    user-select: text;
+    -webkit-user-select: text;
 }
 
 .party-member {
@@ -141,6 +143,8 @@
     text-align: center;
     pointer-events: auto;
     z-index: 2000;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .party-request-modal__title {

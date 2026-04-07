@@ -77,6 +77,9 @@
     cursor: pointer;
     transition: all var(--transition-default);
     text-transform: uppercase;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
 }
 
 #btn-login {
@@ -130,6 +133,9 @@
     transition: all var(--transition-default);
     text-transform: uppercase;
     letter-spacing: 1px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
 }
 
 .class-btn:hover {

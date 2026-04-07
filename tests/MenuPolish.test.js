@@ -645,6 +645,29 @@ describe('menu polish regressions', () => {
         expect(socialWindow.querySelector('.social-window__list')).not.toBeNull();
     });
 
+    test('social list renders polished reusable rows and invite actions', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+        const inviteSpy = jest.fn();
+        ui.social.onPartyInvite = inviteSpy;
+        ui.lastPlayerRef = { name: 'Rob' };
+
+        ui.updateSocialList([
+            { name: 'Rob', class: 'Wizard', level: 12 },
+            { name: 'Alice', class: 'Rogue', level: 18 }
+        ]);
+
+        const rows = document.querySelectorAll('.social-window__row');
+        expect(rows).toHaveLength(2);
+        expect(rows[0].querySelector('.social-window__name--self')).not.toBeNull();
+        expect(rows[0].querySelector('.social-window__self-badge')).not.toBeNull();
+
+        const inviteBtn = rows[1].querySelector('.social-window__invite-btn');
+        expect(inviteBtn).not.toBeNull();
+        inviteBtn.click();
+        expect(inviteSpy).toHaveBeenCalledWith('Alice');
+    });
+
     test('older static window markup uses consistent close button chrome', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
 

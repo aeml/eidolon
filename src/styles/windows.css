@@ -47,6 +47,16 @@
     -webkit-user-select: text;
 }
 
+.window button,
+.window label,
+.window .window-tabs,
+.window .window-footer,
+.window .window-data-header,
+.window .window-action-row {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
 .close-btn {
     display: inline-flex;
     align-items: center;

@@ -109,6 +109,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const loginPatchNotesLink = document.getElementById('login-patch-notes-link');
     const patchNotesScreen = document.getElementById('patch-notes-screen');
     const btnClosePatchNotes = document.getElementById('btn-close-patch-notes');
+    const btnClosePatchNotesHeader = document.getElementById('btn-close-patch-notes-header');
     const browserWarning = document.getElementById('browser-warning');
     const btnCloseBrowserWarning = document.getElementById('btn-close-browser-warning');
 
@@ -134,14 +135,11 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Ensure close button works even before game starts
-    if (btnClosePatchNotes) {
-        // Remove old listeners to avoid duplicates if any (though this runs once)
-        const newBtn = btnClosePatchNotes.cloneNode(true);
-        btnClosePatchNotes.parentNode.replaceChild(newBtn, btnClosePatchNotes);
-        
-        newBtn.addEventListener('click', closePatchNotes);
-    }
+    [btnClosePatchNotes, btnClosePatchNotesHeader].forEach((button) => {
+        if (button) {
+            button.addEventListener('click', closePatchNotes);
+        }
+    });
 
     window.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && patchNotesScreen && patchNotesScreen.style.display === 'flex') {

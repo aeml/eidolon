@@ -110,30 +110,51 @@ export class SocialUI {
 
         players.forEach(p => {
             const row = document.createElement('div');
-            row.style.display = 'grid';
-            row.style.gridTemplateColumns = '2fr 1fr 1fr 1fr';
-            row.style.padding = '5px 0';
-            row.style.borderBottom = '1px solid #333';
+            row.className = 'social-window__row';
 
             const isSelf = player && player.name === p.name;
-            row.innerHTML = `
-                <span style="color:${isSelf ? '#4CAF50' : 'white'}">${p.name}</span>
-                <span style="color:#aaa">${p.class}</span>
-                <span style="color:#FFD700">${p.level}</span>
-                ${!isSelf ? `<button class="btn-invite" data-name="${p.name}" style="background:#2e7d32; border:none; color:white; cursor:pointer; font-size:10px; padding:2px 5px;">INVITE</button>` : '<span></span>'}
-            `;
-            this.socialList.appendChild(row);
-        });
 
-        const inviteBtns = this.socialList.querySelectorAll('.btn-invite');
-        inviteBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const name = e.target.getAttribute('data-name');
-                if (this.onPartyInvite) {
-                    this.onPartyInvite(name);
-                    if (this.ctx.addChatMessage) this.ctx.addChatMessage("System", `Invited ${name} to party.`);
-                }
-            });
+            const name = document.createElement('span');
+            name.className = `social-window__cell social-window__name${isSelf ? ' social-window__name--self' : ''}`;
+            name.textContent = p.name;
+            row.appendChild(name);
+
+            const className = document.createElement('span');
+            className.className = 'social-window__cell social-window__class';
+            className.textContent = p.class;
+            row.appendChild(className);
+
+            const level = document.createElement('span');
+            level.className = 'social-window__cell social-window__level';
+            level.textContent = String(p.level);
+            row.appendChild(level);
+
+            const action = document.createElement('div');
+            action.className = 'social-window__cell social-window__action';
+            if (!isSelf) {
+                const inviteButton = document.createElement('button');
+                inviteButton.className = 'social-window__invite-btn';
+                inviteButton.type = 'button';
+                inviteButton.dataset.name = p.name;
+                inviteButton.textContent = 'Invite';
+                inviteButton.setAttribute('aria-label', `Invite ${p.name} to party`);
+                inviteButton.addEventListener('click', (e) => {
+                    const nameToInvite = e.currentTarget?.getAttribute('data-name');
+                    if (nameToInvite && this.onPartyInvite) {
+                        this.onPartyInvite(nameToInvite);
+                        if (this.ctx.addChatMessage) this.ctx.addChatMessage('System', `Invited ${nameToInvite} to party.`);
+                    }
+                });
+                action.appendChild(inviteButton);
+            } else {
+                const selfBadge = document.createElement('span');
+                selfBadge.className = 'social-window__self-badge';
+                selfBadge.textContent = 'You';
+                action.appendChild(selfBadge);
+            }
+            row.appendChild(action);
+
+            this.socialList.appendChild(row);
         });
     }
 
