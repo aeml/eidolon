@@ -681,6 +681,10 @@ export class GameEngine {
         if (this.cameraLocked) {
             this.renderSystem.setCameraTarget(this.player.position);
         }
+
+        const currentQuests = Array.isArray(this.player.quests) ? this.player.quests : [];
+        this.uiManager?.updateQuestWindow?.(currentQuests);
+        this.uiManager?.updateJournal?.(currentQuests);
     }
 
     handleServerMessage(msg) {

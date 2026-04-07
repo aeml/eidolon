@@ -184,6 +184,20 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(worldGeneratorInstances[0].createOverworldStructures).toHaveBeenCalled();
     });
 
+    test('enterInstance refreshes onboarding objectives after entering the overworld with no active quests', async () => {
+        const engine = createEngineHarness();
+        engine.player.quests = [];
+        engine.uiManager = {
+            updateQuestWindow: jest.fn(),
+            updateJournal: jest.fn()
+        };
+
+        await engine.enterInstance('instance-2b', 'overworld', null);
+
+        expect(engine.uiManager.updateQuestWindow).toHaveBeenCalledWith([]);
+        expect(engine.uiManager.updateJournal).toHaveBeenCalledWith([]);
+    });
+
     test('enterInstance preserves environment scene content and clears only dynamic groups', async () => {
         const engine = createEngineHarness();
 
