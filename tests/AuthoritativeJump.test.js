@@ -295,6 +295,40 @@ describe('authoritative jump flow', () => {
         expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(2.5);
     });
 
+    test('self authoritative jump visually interpolates toward new server jump packets instead of snapping mesh horizontally', () => {
+        const engine = createEngineHarness();
+        engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(20, 0, 0));
+
+        engine.handlePrimaryClick({ ctrlKey: true, clientX: 500, clientY: 220 });
+
+        engine.syncAuthoritativeJumpState(engine.player, {
+            id: 'player-1',
+            state: 'JUMPING',
+            x: 4,
+            y: 2.5,
+            z: 0
+        });
+        engine.updatePlayerJump(1 / 60);
+        engine.applyPlayerJumpVisuals();
+        const previousVisualX = engine.player.mesh.position.x;
+
+        engine.syncAuthoritativeJumpState(engine.player, {
+            id: 'player-1',
+            state: 'JUMPING',
+            x: 12,
+            y: 5.5,
+            z: 0
+        });
+        const snappedLogicalX = engine.player.position.x;
+
+        engine.updatePlayerJump(1 / 60);
+        engine.applyPlayerJumpVisuals();
+
+        expect(snappedLogicalX).toBe(12);
+        expect(engine.player.mesh.position.x).toBeGreaterThan(previousVisualX);
+        expect(engine.player.mesh.position.x).toBeLessThan(snappedLogicalX);
+    });
+
     test('predicted local jump is not cleared by self deltas that omit state', () => {
         const engine = createEngineHarness();
         engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(20, 0, 6));
@@ -616,5 +650,68 @@ describe('authoritative jump flow', () => {
 
         expect(remoteEntity.mesh.position.y).toBeGreaterThan(5);
         expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(2.5);
+    });
+
+    test('remote authoritative jump visually interpolates mesh travel between replicated jump packets', () => {
+        const engine = createEngineHarness();
+        const remoteEntity = {
+            position: new THREE.Vector3(0, 0, 0),
+            targetServerPosition: null,
+            targetServerRotation: undefined,
+            rotation: new THREE.Quaternion(),
+            state: 'IDLE',
+            isCharging: false,
+            isDead: false,
+            deadTimer: 0,
+            visualOffset: new THREE.Vector3(0, 0, 0),
+            mesh: {
+                visible: true,
+                position: new THREE.Vector3(0, 0, 0),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            },
+            stats: { hp: 100, maxHp: 100, mana: 10, maxMana: 10, speed: 3, attackSpeed: 1 },
+            updateState: jest.fn(function updateState(nextState) {
+                this.state = nextState;
+            })
+        };
+
+        engine.syncRemoteEntity(remoteEntity, {
+            id: 'remote-1',
+            type: 'Player',
+            state: 'JUMPING',
+            x: 4,
+            y: 2.5,
+            z: 0,
+            rotation: 0.3,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+        engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
+        const firstVisualX = remoteEntity.mesh.position.x;
+
+        engine.syncRemoteEntity(remoteEntity, {
+            id: 'remote-1',
+            type: 'Player',
+            state: 'JUMPING',
+            x: 12,
+            y: 5.5,
+            z: 0,
+            rotation: 0.3,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+        const snappedLogicalX = remoteEntity.position.x;
+
+        engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
+
+        expect(snappedLogicalX).toBe(12);
+        expect(remoteEntity.mesh.position.x).toBeGreaterThan(firstVisualX);
+        expect(remoteEntity.mesh.position.x).toBeLessThan(snappedLogicalX);
     });
 });

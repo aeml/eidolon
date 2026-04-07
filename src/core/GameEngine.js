@@ -2863,6 +2863,10 @@ export class GameEngine {
         const computedArcHeight = Math.sin(progress * Math.PI) * height;
         const replicatedArcHeight = Math.max(0, (pData.y ?? currentPosition.y) - baseY);
         const visualHeight = Math.max(computedArcHeight, replicatedArcHeight);
+        const previousDisplayPosition = existingJump?.displayPosition?.clone?.()
+            || entity.mesh?.position?.clone?.()
+            || previousPosition.clone();
+        const displayPosition = new THREE.Vector3(previousDisplayPosition.x, baseY, previousDisplayPosition.z);
 
         entity.position.x = currentPosition.x;
         entity.position.y = baseY;
@@ -2877,7 +2881,8 @@ export class GameEngine {
                 duration,
                 height,
                 serverDriven: true,
-                visualHeight
+                visualHeight,
+                displayPosition
             };
             this.playerJumpVisualHeight = 0;
             this.player.targetPosition = null;
@@ -2891,6 +2896,7 @@ export class GameEngine {
                 height,
                 visualHeight,
                 serverDriven: true,
+                displayPosition,
                 landingVisual: entity.jumpLandingVisual || null
             };
         }
@@ -3095,7 +3101,16 @@ export class GameEngine {
     applyEntityJumpVisuals(entity, jumpState) {
         if (!entity?.mesh) return;
 
-        entity.mesh.position.copy(entity.position);
+        if (jumpState?.serverDriven) {
+            if (!jumpState.displayPosition) {
+                jumpState.displayPosition = entity.position.clone();
+            }
+            jumpState.displayPosition.lerp(entity.position, 0.35);
+            jumpState.displayPosition.y = entity.position.y;
+            entity.mesh.position.copy(jumpState.displayPosition);
+        } else {
+            entity.mesh.position.copy(entity.position);
+        }
         entity.mesh.quaternion.copy(entity.rotation);
 
         if (!jumpState) {

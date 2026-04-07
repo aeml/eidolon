@@ -75,14 +75,25 @@ describe('UIBindings', () => {
         expect(engine.worldMap.toggle).toHaveBeenCalled();
     });
 
-    test('sell-all only forwards gear items of the requested rarity and skips gems/materials/relics', () => {
+    test('sell-all only forwards merchant equipment slots of the requested rarity and skips gems/materials/relics', () => {
         const engine = createEngine();
         engine.player.inventory = [
-            { id: 'gear-common', name: 'Rusty Sword', type: 'WEAPON', rarity: { name: 'Common' } },
-            { id: 'gem-common', name: 'Flawed Ruby', type: 'GEM', rarity: { name: 'Common' } },
-            { id: 'mat-common', name: 'Eidolon Shard', type: 'MATERIAL', rarity: { name: 'Common' } },
-            { id: 'relic-common', name: 'Eidolon Heart', type: 'RELIC', rarity: { name: 'Common' } },
-            { id: 'gear-rare', name: 'Knight Blade', type: 'WEAPON', rarity: { name: 'Rare' } }
+            { id: 'weapon-main', name: 'Rusty Sword', type: 'WEAPON', slot: 'mainHand', rarity: { name: 'Common' } },
+            { id: 'weapon-off', name: 'Wooden Shield', type: 'ARMOR', slot: 'offHand', rarity: { name: 'Common' } },
+            { id: 'helm', name: 'Leather Cap', type: 'ARMOR', slot: 'head', rarity: { name: 'Common' } },
+            { id: 'chest', name: 'Leather Tunic', type: 'ARMOR', slot: 'chest', rarity: { name: 'Common' } },
+            { id: 'legs', name: 'Leather Pants', type: 'ARMOR', slot: 'legs', rarity: { name: 'Common' } },
+            { id: 'boots', name: 'Leather Boots', type: 'ARMOR', slot: 'feet', rarity: { name: 'Common' } },
+            { id: 'gloves', name: 'Leather Gloves', type: 'ARMOR', slot: 'gloves', rarity: { name: 'Common' } },
+            { id: 'shoulders', name: 'Reinforced Spaulders', type: 'ARMOR', slot: 'shoulders', rarity: { name: 'Common' } },
+            { id: 'belt', name: 'Studded Belt', type: 'ARMOR', slot: 'belt', rarity: { name: 'Common' } },
+            { id: 'ring', name: 'Gold Ring', type: 'ACCESSORY', slot: 'ring', rarity: { name: 'Common' } },
+            { id: 'neck', name: 'Silver Necklace', type: 'ACCESSORY', slot: 'neck', rarity: { name: 'Common' } },
+            { id: 'trinket', name: 'Amulet of Power', type: 'ACCESSORY', slot: 'trinket', rarity: { name: 'Common' } },
+            { id: 'gem-common', name: 'Flawed Ruby', type: 'GEM', slot: 'gem', rarity: { name: 'Common' } },
+            { id: 'mat-common', name: 'Eidolon Shard', type: 'MATERIAL', slot: 'material', rarity: { name: 'Common' } },
+            { id: 'relic-common', name: 'Eidolon Heart', type: 'RELIC', slot: 'relic', rarity: { name: 'Common' } },
+            { id: 'gear-rare', name: 'Knight Blade', type: 'WEAPON', slot: 'mainHand', rarity: { name: 'Rare' } }
         ];
         const bindings = new UIBindings(engine);
 
@@ -90,8 +101,25 @@ describe('UIBindings', () => {
 
         engine.uiManager.inventory.onSellAll('Common');
 
-        expect(engine.network.send).toHaveBeenCalledTimes(1);
-        expect(engine.network.send).toHaveBeenCalledWith('sell', { itemId: 'gear-common', slotIndex: 0 });
+        expect(engine.network.send).toHaveBeenCalledTimes(12);
+        const soldItemIds = engine.network.send.mock.calls
+            .filter(([type]) => type === 'sell')
+            .map(([, payload]) => payload.itemId)
+            .sort();
+        expect(soldItemIds).toEqual([
+            'belt',
+            'boots',
+            'chest',
+            'gloves',
+            'helm',
+            'legs',
+            'neck',
+            'ring',
+            'shoulders',
+            'trinket',
+            'weapon-main',
+            'weapon-off'
+        ].sort());
     });
 
     test('bindSessionCallbacks wires chat, respawn, and hotbar actions', () => {
