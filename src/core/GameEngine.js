@@ -2947,6 +2947,9 @@ export class GameEngine {
         if (entity === this.player) {
             if (this.playerJumpState?.serverDriven) {
                 const landingEnd = this.playerJumpState.end?.clone() || this.player.position.clone();
+                const shouldConsumeQueuedJump = !!this.playerQueuedJump
+                    && !!this.inputManager?.keys?.control
+                    && !!this.inputManager?.primaryMouseButtonDown;
                 this.player.position.copy(landingEnd);
                 this.player.position.y = landingEnd.y;
                 this.playerJumpState = null;
@@ -2960,6 +2963,15 @@ export class GameEngine {
                     impact: 0.85
                 };
                 this.applyJumpImpactEffect(entity, 0.85);
+                if (shouldConsumeQueuedJump) {
+                    this.playerQueuedJump = false;
+                    const queuedDestination = this.inputManager.getGroundIntersection?.();
+                    if (queuedDestination) {
+                        this.requestPlayerJump(queuedDestination);
+                        return;
+                    }
+                }
+                this.playerQueuedJump = false;
             }
             return;
         }
