@@ -148,4 +148,49 @@ describe('GameEngine ctrl-click hold regression', () => {
         expect(engine.player.playAnimation).not.toHaveBeenCalledWith('Attack', false);
         expect(engine.player.state).not.toBe('ATTACKING');
     });
+
+    test('ctrl-hold during a jump does not early-return the whole update loop on attack cooldown', () => {
+        const engine = createEngineHarness();
+        engine.cameraLocked = true;
+        engine.playerJumpState = {
+            start: new THREE.Vector3(0, 0, 0),
+            end: new THREE.Vector3(12, 0, 8),
+            elapsed: 0.2,
+            duration: 0.8,
+            height: 8,
+            serverDriven: false
+        };
+        engine.inputManager.isMouseDown = true;
+        engine.inputManager.keys.control = true;
+        engine.player.lastAttackTime = Date.now();
+
+        engine.update(1 / 60);
+
+        expect(engine.chunkManager.update).toHaveBeenCalled();
+        expect(engine.renderSystem.setCameraTarget).toHaveBeenCalled();
+        expect(engine.player.state).not.toBe('ATTACKING');
+    });
+
+    test('camera follows smoothed jump display position during authoritative jumps instead of snapped logical position', () => {
+        const engine = createEngineHarness();
+        engine.cameraLocked = true;
+        engine.player.position.set(12, 0, 8);
+        engine.playerJumpState = {
+            start: new THREE.Vector3(0, 0, 0),
+            end: new THREE.Vector3(20, 0, 12),
+            elapsed: 0.25,
+            duration: 0.8,
+            height: 8,
+            serverDriven: true,
+            visualHeight: 4,
+            displayPosition: new THREE.Vector3(6, 0, 4)
+        };
+        engine.inputManager.isMouseDown = false;
+        engine.updatePlayerJump = jest.fn(() => true);
+
+        engine.update(1 / 60);
+
+        expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.playerJumpState.displayPosition);
+        expect(engine.renderSystem.setCameraTarget).not.toHaveBeenCalledWith(engine.player.position);
+    });
 });

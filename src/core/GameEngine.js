@@ -3644,6 +3644,12 @@ export class GameEngine {
 
         this.updatePlayerJump(dt);
 
+        const cameraFollowTarget = this.cameraLocked
+            ? (this.playerJumpState?.serverDriven && this.playerJumpState?.displayPosition
+                ? this.playerJumpState.displayPosition
+                : this.player?.position)
+            : null;
+
         if (this.player) {
             if (this.inputManager.isRightMouseDown) {
                 this.needsRaycast = true;
@@ -3676,49 +3682,48 @@ export class GameEngine {
                         // Check Attack Speed Cooldown
                         const now = Date.now();
                         const cooldownMs = this.player.stats.attackSpeed * 1000;
-                        if (now - this.player.lastAttackTime < cooldownMs) {
-                            return;
-                        }
-                        this.player.lastAttackTime = now;
+                        if (now - this.player.lastAttackTime >= cooldownMs) {
+                            this.player.lastAttackTime = now;
 
-                        this.player.state = 'ATTACKING';
-                        this.player.playAnimation('Attack', false);
-                        
-                        const hitDelay = this.player.getAttackHitDelay();
+                            this.player.state = 'ATTACKING';
+                            this.player.playAnimation('Attack', false);
 
-                        setTimeout(() => {
-                            if (this.player.state === 'DEAD') return;
-                            
-                            const attackRange = 6.0;
-                            const attackAngle = Math.PI / 3;
-                            const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.player.mesh.quaternion);
-                            
-                            this.chunkManager.getActiveEntities().forEach(entity => {
-                                if (entity !== this.player && entity.isActive && entity.state !== 'DEAD' && entity.stats && entity.stats.hp > 0) {
-                                    const dirToEntity = new THREE.Vector3().subVectors(entity.position, this.player.position);
-                                    const dist = dirToEntity.length();
-                                    
-                                    if (dist < attackRange) {
-                                        dirToEntity.normalize();
-                                        const angle = forward.angleTo(dirToEntity);
-                                        if (angle < attackAngle / 2) {
-                                            const baseDmg = this.player.stats.damage;
-                                            const variance = (Math.random() * 0.4) + 0.8;
-                                            const finalDmg = Math.floor(baseDmg * variance);
-                                            
-                                            // In multiplayer, we should send an attack event to server
-                                            // For now, we only apply damage locally if singleplayer
-                                            if (!this.isMultiplayer) {
-                                                entity.takeDamage(finalDmg);
-                                                if (entity.stats.hp <= 0) {
-                                                    this.handleEnemyDeath(entity);
+                            const hitDelay = this.player.getAttackHitDelay();
+
+                            setTimeout(() => {
+                                if (this.player.state === 'DEAD') return;
+
+                                const attackRange = 6.0;
+                                const attackAngle = Math.PI / 3;
+                                const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(this.player.mesh.quaternion);
+
+                                this.chunkManager.getActiveEntities().forEach(entity => {
+                                    if (entity !== this.player && entity.isActive && entity.state !== 'DEAD' && entity.stats && entity.stats.hp > 0) {
+                                        const dirToEntity = new THREE.Vector3().subVectors(entity.position, this.player.position);
+                                        const dist = dirToEntity.length();
+
+                                        if (dist < attackRange) {
+                                            dirToEntity.normalize();
+                                            const angle = forward.angleTo(dirToEntity);
+                                            if (angle < attackAngle / 2) {
+                                                const baseDmg = this.player.stats.damage;
+                                                const variance = (Math.random() * 0.4) + 0.8;
+                                                const finalDmg = Math.floor(baseDmg * variance);
+
+                                                // In multiplayer, we should send an attack event to server
+                                                // For now, we only apply damage locally if singleplayer
+                                                if (!this.isMultiplayer) {
+                                                    entity.takeDamage(finalDmg);
+                                                    if (entity.stats.hp <= 0) {
+                                                        this.handleEnemyDeath(entity);
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-                                }
-                            });
-                        }, 500);
+                                });
+                            }, 500);
+                        }
                     }
                 } else if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
                     const dist = this.player.position.distanceTo(this.hoveredEntity.position);
@@ -4029,7 +4034,9 @@ export class GameEngine {
             }
 
             if (this.cameraLocked) {
-                this.renderSystem.setCameraTarget(this.player.position);
+                if (cameraFollowTarget) {
+                    this.renderSystem.setCameraTarget(cameraFollowTarget);
+                }
             } else {
                 const panSpeed = 30;
                 const keys = this.inputManager.keys;
