@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#1a1325"/>
+  <rect x="40" y="40" width="1200" height="640" rx="18" fill="#231934" stroke="#f59e0b" stroke-width="3" stroke-dasharray="12 10"/>
+  <text x="640" y="210" text-anchor="middle" fill="#fff7ed" font-size="42" font-family="Arial, sans-serif">Eidolon README Placeholder</text>
+  <text x="640" y="280" text-anchor="middle" fill="#fdba74" font-size="28" font-family="Arial, sans-serif">Replace with dungeon screenshot</text>
+  <text x="640" y="330" text-anchor="middle" fill="#fdba74" font-size="28" font-family="Arial, sans-serif">Show room identity, objective/reward UI, party state, or encounter context</text>
+  <text x="640" y="600" text-anchor="middle" fill="#fcd34d" font-size="24" font-family="Arial, sans-serif">docs/media/dungeon-run.svg → replace with real capture</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#101820"/>
+  <rect x="40" y="40" width="1200" height="640" rx="18" fill="#162635" stroke="#5eead4" stroke-width="3" stroke-dasharray="12 10"/>
+  <text x="640" y="210" text-anchor="middle" fill="#e6fffb" font-size="42" font-family="Arial, sans-serif">Eidolon README Placeholder</text>
+  <text x="640" y="280" text-anchor="middle" fill="#9bded7" font-size="28" font-family="Arial, sans-serif">Replace with overworld combat screenshot</text>
+  <text x="640" y="330" text-anchor="middle" fill="#9bded7" font-size="28" font-family="Arial, sans-serif">Show HUD, hotbar, target clarity, and readable combat state</text>
+  <text x="640" y="600" text-anchor="middle" fill="#7dd3fc" font-size="24" font-family="Arial, sans-serif">docs/media/gameplay-overworld.svg → replace with real capture</text>
+</svg>
