@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"math"
+	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
@@ -178,5 +179,34 @@ func TestHandleMessageLevelCommandRejectsInvalidInput(t *testing.T) {
 	}
 	if !found {
 		t.Fatalf("expected usage error in sent messages, got %+v", msgs)
+	}
+}
+
+func TestCheckOriginAllowsKnownLocalAndProductionOrigins(t *testing.T) {
+	cases := []struct {
+		name   string
+		origin string
+		want   bool
+	}{
+		{name: "missing origin", origin: "", want: true},
+		{name: "localhost client", origin: "http://localhost:8000", want: true},
+		{name: "localhost secure dev", origin: "https://localhost:8080", want: true},
+		{name: "loopback client", origin: "http://127.0.0.1:8000", want: true},
+		{name: "production client", origin: "https://eidolon.mendola.tech", want: true},
+		{name: "production websocket host page", origin: "https://eserver.mendola.tech", want: true},
+		{name: "evil origin", origin: "https://evil.example", want: false},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			req := httptest.NewRequest("GET", "http://example.com/ws", nil)
+			if tc.origin != "" {
+				req.Header.Set("Origin", tc.origin)
+			}
+			got := upgrader.CheckOrigin(req)
+			if got != tc.want {
+				t.Fatalf("CheckOrigin(%q) = %v, want %v", tc.origin, got, tc.want)
+			}
+		})
 	}
 }

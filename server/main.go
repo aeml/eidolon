@@ -11,6 +11,7 @@ import (
 	"math/rand"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -59,9 +60,33 @@ var stateProtoMagic = []byte{'E', 'D', 'P', 'B'}
 
 const stateProtoWireVersion byte = 1
 
+var allowedWebsocketOriginHosts = map[string]struct{}{
+	"localhost":            {},
+	"127.0.0.1":            {},
+	"eidolon.mendola.tech": {},
+	"eserver.mendola.tech": {},
+}
+
+func isAllowedWebsocketOrigin(origin string) bool {
+	origin = strings.TrimSpace(origin)
+	if origin == "" {
+		return true
+	}
+	parsed, err := url.Parse(origin)
+	if err != nil {
+		return false
+	}
+	hostname := strings.ToLower(strings.TrimSpace(parsed.Hostname()))
+	if hostname == "" {
+		return false
+	}
+	_, ok := allowedWebsocketOriginHosts[hostname]
+	return ok
+}
+
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
-		return true
+		return isAllowedWebsocketOrigin(r.Header.Get("Origin"))
 	},
 	// EnableCompression: true, // Disabled, using manual GZIP
 }
