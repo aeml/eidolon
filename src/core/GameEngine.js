@@ -2692,8 +2692,13 @@ export class GameEngine {
 
         this.performRaycast();
 
-        const ctrlHeld = Boolean(event?.ctrlKey || event?.metaKey || this.inputManager?.keys?.control);
-        if (ctrlHeld) {
+        const jumpModifierHeld = Boolean(
+            event?.ctrlKey
+            || event?.metaKey
+            || this.inputManager?.keys?.control
+            || this.inputManager?.keys?.meta
+        );
+        if (jumpModifierHeld) {
             const point = this.inputManager?.getGroundIntersectionFromEvent
                 ? this.inputManager.getGroundIntersectionFromEvent(event)
                 : this.inputManager.getGroundIntersection();
@@ -2948,7 +2953,7 @@ export class GameEngine {
             if (this.playerJumpState?.serverDriven) {
                 const landingEnd = this.playerJumpState.end?.clone() || this.player.position.clone();
                 const shouldConsumeQueuedJump = !!this.playerQueuedJump
-                    && !!this.inputManager?.keys?.control
+                    && !!(this.inputManager?.keys?.control || this.inputManager?.keys?.meta)
                     && !!this.inputManager?.primaryMouseButtonDown;
                 this.player.position.copy(landingEnd);
                 this.player.position.y = landingEnd.y;
@@ -3001,7 +3006,7 @@ export class GameEngine {
             this.renderSystem?.setCameraTarget?.(jump.displayPosition);
             return true;
         }
-        if (this.inputManager?.keys?.control && this.inputManager?.primaryMouseButtonDown) {
+        if ((this.inputManager?.keys?.control || this.inputManager?.keys?.meta) && this.inputManager?.primaryMouseButtonDown) {
             this.playerQueuedJump = true;
         }
 
@@ -3029,7 +3034,7 @@ export class GameEngine {
             this.player.state = 'IDLE';
             this.player.playAnimation?.('Idle');
 
-            if (this.playerQueuedJump && this.inputManager?.keys?.control && this.inputManager?.primaryMouseButtonDown) {
+            if (this.playerQueuedJump && (this.inputManager?.keys?.control || this.inputManager?.keys?.meta) && this.inputManager?.primaryMouseButtonDown) {
                 this.playerQueuedJump = false;
                 const queuedDestination = this.inputManager.getGroundIntersection?.();
                 if (queuedDestination) {

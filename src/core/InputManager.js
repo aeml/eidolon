@@ -51,7 +51,8 @@ export class InputManager {
             s: false,
             d: false,
             alt: false, // Track Alt
-            control: false // Track Control
+            control: false, // Track Control
+            meta: false // Track Command/Meta
         };
         
         this.joystickVector = new THREE.Vector2(0, 0);
@@ -266,6 +267,7 @@ export class InputManager {
         }
         if (e.key === 'Alt') this.keys.alt = true; // Handle Alt specifically
         if (e.key === 'Control') this.keys.control = true; // Handle Control specifically
+        if (e.key === 'Meta') this.keys.meta = true; // Handle Command/Meta specifically
         
         if (e.code === 'Space') {
             this.callbacks.onSpace.forEach(cb => cb());
@@ -318,6 +320,7 @@ export class InputManager {
         }
         if (e.key === 'Alt') this.keys.alt = false;
         if (e.key === 'Control') this.keys.control = false;
+        if (e.key === 'Meta') this.keys.meta = false;
     }
 
     onMouseMove(event) {

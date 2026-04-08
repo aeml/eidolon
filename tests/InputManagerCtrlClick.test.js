@@ -77,6 +77,17 @@ describe('InputManager ctrl-click propagation', () => {
         manager.dispose();
     });
 
+    test('meta key state is tracked so mac-style jump holds can continue queueing', () => {
+        const manager = new InputManager({}, {});
+
+        manager.onKeyDown({ key: 'Meta', code: 'MetaLeft' });
+        expect(manager.keys.meta).toBe(true);
+
+        manager.onKeyUp({ key: 'Meta', code: 'MetaLeft' });
+        expect(manager.keys.meta).toBe(false);
+        manager.dispose();
+    });
+
     test('F2 forwards dungeon debug overlay toggles to subscribers', () => {
         const manager = new InputManager({}, {});
         const callback = jest.fn();
