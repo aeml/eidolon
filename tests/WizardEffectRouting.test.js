@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { Wizard } from '../src/entities/Wizard.js';
+import { spawnSceneFallbackBeam } from '../src/entities/EffectSceneFallback.js';
 
 describe('Wizard combat effect routing', () => {
     test('Scorch Beam routes the beam telegraph through transient effects without direct scene writes', () => {
@@ -100,5 +101,41 @@ describe('Wizard combat effect routing', () => {
 
         expect(effectScene.children).toHaveLength(1);
         expect(effectScene.children[0].material.color.getHex()).toBe(0x33bbff);
+    });
+
+    test('shared beam fallback creates and cleans up a parent-safe beam mesh', () => {
+        const firstEffectScene = new THREE.Group();
+        const secondEffectScene = new THREE.Group();
+        const queuedFrames = [];
+        const originalRaf = global.requestAnimationFrame;
+        global.requestAnimationFrame = (callback) => {
+            queuedFrames.push(callback);
+            return queuedFrames.length;
+        };
+
+        try {
+            const created = spawnSceneFallbackBeam(
+                firstEffectScene,
+                new THREE.Vector3(0, 1.5, 0),
+                new THREE.Vector3(12, 1.5, 0),
+                0xffaa00
+            );
+
+            expect(created).toBe(true);
+            expect(firstEffectScene.children).toHaveLength(1);
+            const beamMesh = firstEffectScene.children[0];
+            firstEffectScene.remove(beamMesh);
+            secondEffectScene.add(beamMesh);
+
+            while (queuedFrames.length > 0) {
+                const frame = queuedFrames.shift();
+                frame();
+            }
+
+            expect(secondEffectScene.children).toHaveLength(0);
+            expect(beamMesh.parent).toBeNull();
+        } finally {
+            global.requestAnimationFrame = originalRaf;
+        }
     });
 });

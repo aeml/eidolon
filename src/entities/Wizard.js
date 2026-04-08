@@ -4,7 +4,7 @@ import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { Projectile } from './Projectile.js';
 import { AreaOfEffect } from './AreaOfEffect.js';
-import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
+import { spawnEffectSceneFallback, spawnSceneFallbackBeam } from './EffectSceneFallback.js';
 
 export class Wizard extends Actor {
     constructor(id) {
@@ -272,27 +272,14 @@ export class Wizard extends Actor {
             } else {
                 const effectScene = gameEngine?.effectScene || gameEngine?.scene;
                 if (effectScene) {
-                    const beamGeo = new THREE.CylinderGeometry(0.2, 0.2, range, 8);
-                    beamGeo.rotateX(-Math.PI / 2);
-                    const beamMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.8 });
-                    const beamMesh = new THREE.Mesh(beamGeo, beamMat);
-                    beamMesh.position.copy(midPoint);
-                    beamMesh.lookAt(endPos);
-
-                    effectScene.add(beamMesh);
-                    const animateBeam = () => {
-                        if (beamMesh.material.opacity <= 0) {
-                            beamMesh.parent?.remove(beamMesh);
-                            beamGeo.dispose();
-                            beamMat.dispose();
-                            return;
-                        }
-                        beamMesh.material.opacity -= 0.05;
-                        beamMesh.scale.x *= 0.9;
-                        beamMesh.scale.z *= 0.9;
-                        requestAnimationFrame(animateBeam);
-                    };
-                    animateBeam();
+                    spawnSceneFallbackBeam(effectScene, startPos, endPos, 0xffaa00, {
+                        radius: 0.2,
+                        segments: 8,
+                        opacity: 0.8,
+                        fadeStep: 0.05,
+                        scaleXStep: 0.9,
+                        scaleZStep: 0.9
+                    });
                 }
             }
             

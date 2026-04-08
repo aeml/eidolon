@@ -62,6 +62,44 @@ export function spawnSceneFallbackBurst(scene, position, color, options = {}) {
     return true;
 }
 
+export function spawnSceneFallbackBeam(scene, start, end, color, options = {}) {
+    if (!scene) {
+        return false;
+    }
+
+    const direction = end.clone().sub(start);
+    const range = Math.max(0.001, direction.length());
+    direction.normalize();
+
+    const beamGeo = new THREE.CylinderGeometry(options.radius ?? 0.2, options.radius ?? 0.2, range, options.segments ?? 8);
+    beamGeo.rotateX(-Math.PI / 2);
+    const beamMat = new THREE.MeshBasicMaterial({
+        color,
+        transparent: true,
+        opacity: options.opacity ?? 0.8
+    });
+    const beamMesh = new THREE.Mesh(beamGeo, beamMat);
+    const midPoint = start.clone().add(direction.multiplyScalar(range / 2));
+    beamMesh.position.copy(midPoint);
+    beamMesh.lookAt(end);
+    scene.add(beamMesh);
+
+    const animateBeam = () => {
+        if (beamMesh.material.opacity <= 0) {
+            disposeSceneMesh(beamMesh);
+            return;
+        }
+
+        beamMesh.material.opacity -= options.fadeStep ?? 0.05;
+        beamMesh.scale.x *= options.scaleXStep ?? 0.9;
+        beamMesh.scale.z *= options.scaleZStep ?? 0.9;
+        requestAnimationFrame(animateBeam);
+    };
+
+    animateBeam();
+    return true;
+}
+
 export function spawnEffectSceneFallback(gameEngine, position, color, type = 'impact') {
     const scene = gameEngine?.effectScene || gameEngine?.scene;
     if (!scene) {
