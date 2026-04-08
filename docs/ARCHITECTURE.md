@@ -91,4 +91,5 @@ Server
 - Rogue `Tripwire` now plants its persistent trap mesh in `effectScene` and uses the same effect lane for trigger smoke, so trap readability no longer depends on the entity scene surviving untouched.
 - Fighter, Cleric, and AvengingSeraph transient class visuals now accept `effectScene`-only game-engine contexts instead of bailing out just because the entity scene is absent. That keeps multiplayer/alternate runtime paths on the same effect lane.
 - Projectile fallback bursts for Arcane Missile and Fireball/Meteor explosions now use the same resolved effect scene (`effectScene` first, then `scene`) instead of writing directly to `gameEngine.scene`. That keeps even non-transient fallback visuals inside the same runtime lane.
+- Projectile meteor trail particles now reparent pooled meshes when the effect scene changes, so reused trail visuals do not stick to a stale scene group across combat/runtime transitions.
 - Most important next architectural step: finish burning down the remaining direct `gameEngine.scene` gameplay visuals still hiding in projectile/utility fallback paths so transient combat readability no longer depends on ad hoc scene writes.

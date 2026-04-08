@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
-import { Projectile } from '../src/entities/Projectile.js';
+import { Projectile, resetProjectileParticlePoolForTests } from '../src/entities/Projectile.js';
 
 function createOwner() {
     return {
@@ -27,6 +27,10 @@ function createEnemy(position = new THREE.Vector3(0, 0, 0)) {
 }
 
 describe('Projectile combat effect routing', () => {
+    beforeEach(() => {
+        resetProjectileParticlePoolForTests();
+    });
+
     test('ArcaneMissile impact routes readability burst through transient effects without entity scene access', () => {
         const owner = createOwner();
         const enemy = createEnemy(new THREE.Vector3(0.25, 0, 0));
@@ -152,5 +156,59 @@ describe('Projectile combat effect routing', () => {
         expect(effectScene.children[0].material.color.getHex()).toBe(0xffaa00);
         expect(effectScene.children[1].position).toEqual(projectile.position);
         expect(effectScene.children[1].material.color.getHex()).toBe(0xff2200);
+    });
+
+    test('Meteor trail particles reparent to the current effectScene when the particle pool reuses an inactive mesh', () => {
+        const owner = createOwner();
+        const projectileA = new Projectile('meteor-reparent-a', owner, 'Meteor', new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0));
+        const projectileB = new Projectile('meteor-reparent-b', owner, 'Meteor', new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0));
+        const firstEffectScene = new THREE.Group();
+        const secondEffectScene = new THREE.Group();
+        const queuedFrames = [];
+        const originalRaf = global.requestAnimationFrame;
+        const originalNow = global.performance.now;
+        global.requestAnimationFrame = (callback) => {
+            queuedFrames.push(callback);
+            return queuedFrames.length;
+        };
+
+        let now = 0;
+        global.performance.now = () => now;
+
+        try {
+            projectileA.update(
+                0.016,
+                null,
+                null,
+                { getActiveEntities: () => [] },
+                { spawn: jest.fn() },
+                { scene: null, effectScene: firstEffectScene, spawnTransientEffect: undefined }
+            );
+
+            expect(firstEffectScene.children).toHaveLength(1);
+            const pooledMesh = firstEffectScene.children[0];
+
+            now = 300;
+            const firstFrame = queuedFrames.shift();
+            expect(typeof firstFrame).toBe('function');
+            firstFrame();
+            expect(pooledMesh.visible).toBe(false);
+
+            projectileB.update(
+                0.016,
+                null,
+                null,
+                { getActiveEntities: () => [] },
+                { spawn: jest.fn() },
+                { scene: null, effectScene: secondEffectScene, spawnTransientEffect: undefined }
+            );
+
+            expect(firstEffectScene.children).toHaveLength(0);
+            expect(secondEffectScene.children).toContain(pooledMesh);
+            expect(pooledMesh.parent).toBe(secondEffectScene);
+        } finally {
+            global.requestAnimationFrame = originalRaf;
+            global.performance.now = originalNow;
+        }
     });
 });

@@ -84,6 +84,10 @@ class ParticlePool {
         particle.active = true;
         particle.opacity = 0.6;
         particle.scale = 1.0;
+
+        if (particle.mesh.parent && particle.mesh.parent !== scene) {
+            particle.mesh.parent.remove(particle.mesh);
+        }
         particle.scene = scene;
         
         if (!particle.mesh.parent) {
@@ -151,6 +155,14 @@ class ParticlePool {
 
 // Global particle pool instance
 const particlePool = new ParticlePool();
+
+export function resetProjectileParticlePoolForTests() {
+    particlePool.dispose();
+    particlePool.particles = [];
+    particlePool.activeCount = 0;
+    particlePool.isUpdating = false;
+    particlePool.lastUpdateTime = 0;
+}
 
 function spawnTransientCombatEffect(gameEngine, type, position, color, options = {}) {
     if (typeof gameEngine?.spawnTransientEffect !== 'function') {
