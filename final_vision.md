@@ -76,6 +76,57 @@ Not the other way around.
 
 A clever system that slows down content or makes behavior opaque is a bad trade.
 
+## Milestones to final vision
+
+### Milestone 1: Core feel and readability pass
+Goal:
+Make the minute-to-minute experience feel intentional.
+
+Success looks like:
+- movement, attacks, jump timing, hit response, and enemy telegraphs feel authored
+- combat state is easier to read during crowded fights
+- menu and HUD feedback feel fast and consistent
+
+### Milestone 2: Technical runtime cleanup
+Goal:
+Remove the biggest architecture and performance footguns before content scale makes them worse.
+
+Success looks like:
+- scene-group based instance transitions replace broad scene reset behavior
+- high-frequency HUD/UI paths are diffed or throttled
+- more content definitions move into catalogs/registries instead of hard-coded switch logic
+- repro/sandbox QA tooling becomes a normal part of iteration
+
+### Milestone 3: Dungeon depth and replayability
+Goal:
+Turn dungeons from "working content" into authored repeatable content.
+
+Success looks like:
+- room roles and pacing are intentional
+- elite/event/reward cadence is meaningfully better
+- endgame difficulty identity is based on mechanics and pacing, not just number inflation
+- dungeon-specific rewards and run satisfaction hooks are stronger
+
+### Milestone 4: Social, economy, and long-tail retention
+Goal:
+Make the world feel inhabited and sticky.
+
+Success looks like:
+- party play is smoother and more rewarding
+- the trading house supports a genuinely useful economy loop
+- social systems become strong enough to keep players engaged between runs
+- longer-term account goals start to matter
+
+### Milestone 5: Full presentation and onboarding pass
+Goal:
+Make the game feel complete to a new player and rewarding to a returning one.
+
+Success looks like:
+- stronger combat/menu/audio feedback
+- clearer onboarding and first-session understanding
+- accessibility options for readability and controls
+- a level of polish where the game feels surprisingly finished for a browser MMO
+
 ## The north star
 The north star is simple:
 
