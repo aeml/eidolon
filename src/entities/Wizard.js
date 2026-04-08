@@ -281,7 +281,7 @@ export class Wizard extends Actor {
                     effectScene.add(beamMesh);
                     const animateBeam = () => {
                         if (beamMesh.material.opacity <= 0) {
-                            effectScene.remove(beamMesh);
+                            beamMesh.parent?.remove(beamMesh);
                             beamGeo.dispose();
                             beamMat.dispose();
                             return;

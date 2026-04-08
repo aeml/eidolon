@@ -29,4 +29,50 @@ describe('Wizard combat effect routing', () => {
         expect(position.y).toBeCloseTo(1.5, 5);
         expect(options.source).toBe(wizard);
     });
+
+    test('Scorch Beam fallback cleans up from the current parent after the beam mesh is reparented', () => {
+        const wizard = new Wizard('test-wizard');
+        wizard.mesh = new THREE.Group();
+        wizard.position.set(0, 0, 0);
+        wizard.unlockedSkills.push('Scorch Beam');
+
+        const firstEffectScene = new THREE.Group();
+        const secondEffectScene = new THREE.Group();
+        const queuedFrames = [];
+        const originalRaf = global.requestAnimationFrame;
+        global.requestAnimationFrame = (callback) => {
+            queuedFrames.push(callback);
+            return queuedFrames.length;
+        };
+
+        try {
+            wizard.useAbility(
+                new THREE.Vector3(8, 0, 0),
+                {
+                    chunkManager: { getActiveEntities: () => [] },
+                    floatingTextManager: { spawn: jest.fn() },
+                    spawnTransientEffect: undefined,
+                    effectScene: firstEffectScene,
+                    scene: null
+                },
+                'Scorch Beam'
+            );
+
+            expect(firstEffectScene.children).toHaveLength(1);
+            const beamMesh = firstEffectScene.children[0];
+            firstEffectScene.remove(beamMesh);
+            secondEffectScene.add(beamMesh);
+            expect(beamMesh.parent).toBe(secondEffectScene);
+
+            while (queuedFrames.length > 0) {
+                const frame = queuedFrames.shift();
+                frame();
+            }
+
+            expect(secondEffectScene.children).toHaveLength(0);
+            expect(beamMesh.parent).toBeNull();
+        } finally {
+            global.requestAnimationFrame = originalRaf;
+        }
+    });
 });
