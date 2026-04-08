@@ -211,4 +211,49 @@ describe('Projectile combat effect routing', () => {
             global.performance.now = originalNow;
         }
     });
+
+    test('ArcaneMissile fallback burst cleans up from the current parent after reparenting', () => {
+        const owner = createOwner();
+        const enemy = createEnemy(new THREE.Vector3(0.25, 0, 0));
+        const projectile = new Projectile('arcane-reparent-cleanup-1', owner, 'ArcaneMissile', new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0));
+        const firstEffectScene = new THREE.Group();
+        const secondEffectScene = new THREE.Group();
+        const queuedFrames = [];
+        const originalRaf = global.requestAnimationFrame;
+        global.requestAnimationFrame = (callback) => {
+            queuedFrames.push(callback);
+            return queuedFrames.length;
+        };
+
+        try {
+            projectile.update(
+                0,
+                null,
+                null,
+                { getActiveEntities: () => [enemy] },
+                { spawn: jest.fn() },
+                {
+                    scene: null,
+                    effectScene: firstEffectScene,
+                    spawnTransientEffect: undefined
+                }
+            );
+
+            expect(firstEffectScene.children).toHaveLength(1);
+            const burstMesh = firstEffectScene.children[0];
+            firstEffectScene.remove(burstMesh);
+            secondEffectScene.add(burstMesh);
+            expect(burstMesh.parent).toBe(secondEffectScene);
+
+            while (queuedFrames.length > 0) {
+                const frame = queuedFrames.shift();
+                frame();
+            }
+
+            expect(secondEffectScene.children).toHaveLength(0);
+            expect(burstMesh.parent).toBeNull();
+        } finally {
+            global.requestAnimationFrame = originalRaf;
+        }
+    });
 });

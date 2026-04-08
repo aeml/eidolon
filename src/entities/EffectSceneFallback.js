@@ -10,18 +10,18 @@ const TYPE_CONFIG = {
     smoke_cloud: { radius: 1.1, opacity: 0.35, scaleStep: 1.07, fadeStep: 0.04, segments: 12 }
 };
 
-export function spawnEffectSceneFallback(gameEngine, position, color, type = 'impact') {
-    const scene = gameEngine?.effectScene || gameEngine?.scene;
+export function spawnSceneFallbackBurst(scene, position, color, options = {}) {
     if (!scene) {
         return false;
     }
 
-    const config = TYPE_CONFIG[type] || {};
-    const geometry = new THREE.SphereGeometry(config.radius || 0.5, config.segments || 8, config.segments || 8);
+    const radius = options.radius ?? 0.5;
+    const segments = options.segments ?? 8;
+    const geometry = new THREE.SphereGeometry(radius, segments, segments);
     const material = new THREE.MeshBasicMaterial({
         color,
         transparent: true,
-        opacity: config.opacity || 0.8
+        opacity: options.opacity ?? 0.8
     });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.copy(position);
@@ -35,11 +35,20 @@ export function spawnEffectSceneFallback(gameEngine, position, color, type = 'im
             return;
         }
 
-        mesh.scale.multiplyScalar(config.scaleStep || 1.1);
-        mesh.material.opacity -= config.fadeStep || 0.1;
+        mesh.scale.multiplyScalar(options.scaleStep ?? 1.1);
+        mesh.material.opacity -= options.fadeStep ?? 0.1;
         requestAnimationFrame(animate);
     };
 
     animate();
     return true;
+}
+
+export function spawnEffectSceneFallback(gameEngine, position, color, type = 'impact') {
+    const scene = gameEngine?.effectScene || gameEngine?.scene;
+    if (!scene) {
+        return false;
+    }
+
+    return spawnSceneFallbackBurst(scene, position, color, TYPE_CONFIG[type] || {});
 }
