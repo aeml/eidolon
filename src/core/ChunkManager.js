@@ -173,7 +173,7 @@ export class ChunkManager {
         const isActiveNew = this.activeChunkKeys.has(newKey);
 
         if (isActiveOld && !isActiveNew) {
-            if (entity.mesh) this.scene.remove(entity.mesh);
+            if (entity.mesh?.parent?.remove) entity.mesh.parent.remove(entity.mesh);
         } else if (!isActiveOld && isActiveNew) {
             if (entity.mesh) {
                 this.scene.add(entity.mesh);
@@ -231,8 +231,8 @@ export class ChunkManager {
 
                 if (entity.dispose) {
                     entity.dispose();
-                } else if (entity.mesh) {
-                    this.scene.remove(entity.mesh);
+                } else if (entity.mesh?.parent?.remove) {
+                    entity.mesh.parent.remove(entity.mesh);
                 }
                 
                 // Ensure state is reset for reloading
@@ -277,8 +277,8 @@ export class ChunkManager {
         
         if (entity.dispose) {
             entity.dispose();
-        } else if (entity.mesh) {
-            this.scene.remove(entity.mesh);
+        } else if (entity.mesh?.parent?.remove) {
+            entity.mesh.parent.remove(entity.mesh);
         }
     }
 }

@@ -83,4 +83,20 @@ describe('ChunkManager scene residency', () => {
         expect(entity.ensureMesh).toHaveBeenCalledTimes(1);
         expect(scene.add).toHaveBeenCalledWith(mesh);
     });
+
+    test('removeEntity detaches non-disposable meshes from their current parent after reparenting', () => {
+        const scene = createSceneHarness();
+        const manager = new ChunkManager(scene);
+        const otherParent = { remove: jest.fn() };
+        const mesh = { parent: otherParent };
+        const entity = createEntity({ mesh, ensureMesh: null });
+        delete entity.dispose;
+        const key = manager.getChunkKey(entity.position.x, entity.position.z);
+        manager.chunks.set(key, new Set([entity]));
+
+        manager.removeEntity(entity);
+
+        expect(otherParent.remove).toHaveBeenCalledWith(mesh);
+        expect(scene.remove).not.toHaveBeenCalled();
+    });
 });
