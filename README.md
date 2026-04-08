@@ -7,6 +7,11 @@
 
 Eidolon is a browser-based isometric action RPG MMO with a vanilla JavaScript + Three.js client, an authoritative Go WebSocket server, and MongoDB persistence.
 
+## Recommended visuals to add
+- Gameplay screenshot: overworld combat with HUD, target highlight, and hotbar visible
+- Dungeon screenshot: room objective / party / reward-summary UI in one frame
+- Short GIF: movement + combat + loot + menu polish in a 10-20 second loop
+
 ## Why this project matters
 - Real-time browser multiplayer with server authority and synchronization
 - A broad shipped gameplay surface: combat, progression, loot, crafting, quests, dungeons, parties, economy, and live UX polish
@@ -23,6 +28,22 @@ Eidolon is a browser-based isometric action RPG MMO with a vanilla JavaScript + 
 - Data: MongoDB persistence
 - State transport: protobuf envelopes (`EDPB`)
 - Delivery: static client + separate WebSocket backend + service-worker-managed asset packs
+
+## System architecture
+
+```mermaid
+graph LR
+    Player[Player Browser] --> Client[Vanilla JS + Three.js Client]
+    Client --> UI[Gameplay + UI Systems]
+    Client --> Cache[Service Worker + Asset Cache]
+    Client --> NM[NetworkManager]
+    NM --> WS[WebSocket]
+    WS --> Server[Authoritative Go Game Server]
+    Server --> Sim[Combat / Movement / Dungeon Simulation]
+    Server --> PB[Protobuf EDPB State Stream]
+    Server --> DB[(MongoDB Persistence)]
+    PB --> Client
+```
 
 ## Current shipped state
 
