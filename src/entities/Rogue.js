@@ -3,7 +3,7 @@ import { Actor } from './Actor.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { Projectile } from './Projectile.js';
-import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
+import { disposeSceneMesh, spawnEffectSceneFallback } from './EffectSceneFallback.js';
 
 export class Rogue extends Actor {
     constructor(id) {
@@ -77,7 +77,7 @@ export class Rogue extends Actor {
                 }
                 
                 if (triggered) {
-                    if (trap.mesh && trap.mesh.parent) trap.mesh.parent.remove(trap.mesh);
+                    disposeSceneMesh(trap.mesh);
                     this.traps.splice(i, 1);
                 }
             }

@@ -10,6 +10,26 @@ const TYPE_CONFIG = {
     smoke_cloud: { radius: 1.1, opacity: 0.35, scaleStep: 1.07, fadeStep: 0.04, segments: 12 }
 };
 
+export function disposeSceneMesh(mesh) {
+    if (!mesh) {
+        return;
+    }
+
+    mesh.parent?.remove(mesh);
+
+    if (mesh.geometry) {
+        mesh.geometry.dispose();
+    }
+
+    if (Array.isArray(mesh.material)) {
+        for (const material of mesh.material) {
+            material?.dispose?.();
+        }
+    } else if (mesh.material) {
+        mesh.material.dispose();
+    }
+}
+
 export function spawnSceneFallbackBurst(scene, position, color, options = {}) {
     if (!scene) {
         return false;
@@ -29,9 +49,7 @@ export function spawnSceneFallbackBurst(scene, position, color, options = {}) {
 
     const animate = () => {
         if (mesh.material.opacity <= 0) {
-            mesh.parent?.remove(mesh);
-            geometry.dispose();
-            material.dispose();
+            disposeSceneMesh(mesh);
             return;
         }
 
