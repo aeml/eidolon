@@ -5,7 +5,24 @@
 
 > Brought to you by [Robert Mendola](https://mendola.tech)
 
-Eidolon is a browser-based isometric action RPG MMO built with vanilla JavaScript, Three.js, and an authoritative Go WebSocket server. The current game already ships a large playable foundation: four classes, four overworld realms, four instanced dungeons, scalable dungeon progression, multiplayer combat, loot/forge/trading systems, and a steadily improving UI/UX polish layer.
+Eidolon is a browser-based isometric action RPG MMO with a vanilla JavaScript + Three.js client, an authoritative Go WebSocket server, and MongoDB persistence.
+
+## Why this project matters
+- Real-time browser multiplayer with server authority and synchronization
+- A broad shipped gameplay surface: combat, progression, loot, crafting, quests, dungeons, parties, economy, and live UX polish
+- Full-stack execution across client runtime, backend services, persistence, asset delivery, testing, and deployment
+
+## Current shipped highlights
+- 4 playable classes, 4 overworld realms, and 4 instanced dungeons
+- Multiplayer combat, skill trees, passive talents, runes, combos, buffs/debuffs, stash, forge, gambling NPC, and trading house
+- Ongoing UX and technical improvements including asset caching, modularized client systems, CI linting, and client/server test coverage
+
+## Architecture at a glance
+- Client: vanilla JavaScript ES modules + Three.js runtime and UI systems
+- Server: authoritative Go WebSocket simulation and state authority
+- Data: MongoDB persistence
+- State transport: protobuf envelopes (`EDPB`)
+- Delivery: static client + separate WebSocket backend + service-worker-managed asset packs
 
 ## Current shipped state
 
