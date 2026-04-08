@@ -265,33 +265,34 @@ export class Wizard extends Actor {
             const dir = new THREE.Vector3().subVectors(targetVector, this.position).normalize();
             const endPos = startPos.clone().add(dir.clone().multiplyScalar(range));
             
-            // Visual Beam
-            const beamGeo = new THREE.CylinderGeometry(0.2, 0.2, range, 8);
-            beamGeo.rotateX(-Math.PI / 2);
-            const beamMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.8 });
-            const beamMesh = new THREE.Mesh(beamGeo, beamMat);
-            
-            // Position beam center
             const midPoint = startPos.clone().add(dir.clone().multiplyScalar(range / 2));
-            beamMesh.position.copy(midPoint);
-            beamMesh.lookAt(endPos);
-            
-            if (gameEngine.scene) {
-                gameEngine.scene.add(beamMesh);
-                // Fade out
-                const animateBeam = () => {
-                    if (beamMesh.material.opacity <= 0) {
-                        gameEngine.scene.remove(beamMesh);
-                        beamGeo.dispose();
-                        beamMat.dispose();
-                        return;
-                    }
-                    beamMesh.material.opacity -= 0.05;
-                    beamMesh.scale.x *= 0.9;
-                    beamMesh.scale.z *= 0.9;
-                    requestAnimationFrame(animateBeam);
-                };
-                animateBeam();
+            if (typeof gameEngine?.spawnTransientEffect === 'function') {
+                gameEngine.spawnTransientEffect('beam', endPos, 0xffaa00, { source: this });
+            } else {
+                const effectScene = gameEngine?.effectScene || gameEngine?.scene;
+                if (effectScene) {
+                    const beamGeo = new THREE.CylinderGeometry(0.2, 0.2, range, 8);
+                    beamGeo.rotateX(-Math.PI / 2);
+                    const beamMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.8 });
+                    const beamMesh = new THREE.Mesh(beamGeo, beamMat);
+                    beamMesh.position.copy(midPoint);
+                    beamMesh.lookAt(endPos);
+
+                    effectScene.add(beamMesh);
+                    const animateBeam = () => {
+                        if (beamMesh.material.opacity <= 0) {
+                            effectScene.remove(beamMesh);
+                            beamGeo.dispose();
+                            beamMat.dispose();
+                            return;
+                        }
+                        beamMesh.material.opacity -= 0.05;
+                        beamMesh.scale.x *= 0.9;
+                        beamMesh.scale.z *= 0.9;
+                        requestAnimationFrame(animateBeam);
+                    };
+                    animateBeam();
+                }
             }
             
             // Hit Logic (Raycast-ish)
@@ -598,7 +599,7 @@ export class Wizard extends Actor {
     }
 
     spawnVisualEffect(gameEngine, position, color, type, direction = null) {
-        if (!gameEngine || !gameEngine.scene) return;
+        if (!gameEngine || (!gameEngine.effectScene && !gameEngine.scene && typeof gameEngine.spawnTransientEffect !== 'function')) return;
         if (typeof gameEngine.spawnTransientEffect === 'function' && gameEngine.spawnTransientEffect(type, position, color, { source: this, direction })) {
             return;
         }

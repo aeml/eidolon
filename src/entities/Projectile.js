@@ -152,6 +152,14 @@ class ParticlePool {
 // Global particle pool instance
 const particlePool = new ParticlePool();
 
+function spawnTransientCombatEffect(gameEngine, type, position, color, options = {}) {
+    if (typeof gameEngine?.spawnTransientEffect !== 'function') {
+        return false;
+    }
+
+    return gameEngine.spawnTransientEffect(type, position, color, options);
+}
+
 export class Projectile extends Entity {
     constructor(id, owner, type, startPos, targetPos) {
         super(id);
@@ -278,9 +286,11 @@ export class Projectile extends Entity {
     update(dt, collisionManager, player, chunkManager, floatingTextManager, gameEngine) { 
         if (!this.isActive) return;
 
+        const effectScene = gameEngine?.effectScene || gameEngine?.scene;
+
         // Meteor Trail - Using centralized particle pool for performance
-        if (this.type === 'Meteor' && gameEngine && gameEngine.scene) {
-            particlePool.spawn(gameEngine.scene, this.position, 0xffaa00);
+        if (this.type === 'Meteor' && effectScene) {
+            particlePool.spawn(effectScene, this.position, 0xffaa00);
         }
 
         if (this.type === 'FlameTornado' && this.mesh) {
@@ -423,25 +433,25 @@ export class Projectile extends Entity {
                         }
                         
                         // Visual Hit
-                        if (gameEngine && gameEngine.scene) {
-                             const geometry = new THREE.SphereGeometry(0.5, 8, 8);
-                             const material = new THREE.MeshBasicMaterial({ color: 0xaa00ff, transparent: true, opacity: 0.8 });
-                             const mesh = new THREE.Mesh(geometry, material);
-                             mesh.position.copy(this.position);
-                             gameEngine.scene.add(mesh);
-                             
-                             const animate = () => {
-                                 if (mesh.material.opacity <= 0) {
-                                     gameEngine.scene.remove(mesh);
-                                     geometry.dispose();
-                                     material.dispose();
-                                     return;
-                                 }
-                                 mesh.scale.multiplyScalar(1.1);
-                                 mesh.material.opacity -= 0.1;
-                                 requestAnimationFrame(animate);
-                             };
-                             animate();
+                        if (!spawnTransientCombatEffect(gameEngine, 'impact', this.position, 0xaa00ff, { source: this.owner }) && gameEngine && gameEngine.scene) {
+                            const geometry = new THREE.SphereGeometry(0.5, 8, 8);
+                            const material = new THREE.MeshBasicMaterial({ color: 0xaa00ff, transparent: true, opacity: 0.8 });
+                            const mesh = new THREE.Mesh(geometry, material);
+                            mesh.position.copy(this.position);
+                            gameEngine.scene.add(mesh);
+
+                            const animate = () => {
+                                if (mesh.material.opacity <= 0) {
+                                    gameEngine.scene.remove(mesh);
+                                    geometry.dispose();
+                                    material.dispose();
+                                    return;
+                                }
+                                mesh.scale.multiplyScalar(1.1);
+                                mesh.material.opacity -= 0.1;
+                                requestAnimationFrame(animate);
+                            };
+                            animate();
                         }
                         break;
 
@@ -475,26 +485,30 @@ export class Projectile extends Entity {
                         }
                         
                         // Visual Explosion
-                        if (gameEngine && gameEngine.scene) {
-                             const geometry = new THREE.SphereGeometry(splashRadius, 16, 16);
-                             const color = this.type === 'Meteor' ? 0xff2200 : 0xff4500;
-                             const material = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.5 });
-                             const mesh = new THREE.Mesh(geometry, material);
-                             mesh.position.copy(this.position);
-                             gameEngine.scene.add(mesh);
-                             
-                             const animate = () => {
-                                 if (mesh.material.opacity <= 0) {
-                                     gameEngine.scene.remove(mesh);
-                                     geometry.dispose();
-                                     material.dispose();
-                                     return;
-                                 }
-                                 mesh.scale.multiplyScalar(1.05);
-                                 mesh.material.opacity -= 0.05;
-                                 requestAnimationFrame(animate);
-                             };
-                             animate();
+                        const explosionColor = this.type === 'Meteor' ? 0xff2200 : 0xff4500;
+                        if (!spawnTransientCombatEffect(gameEngine, 'sphere', this.position, explosionColor, {
+                            source: this.owner,
+                            radius: splashRadius,
+                            duration: 0.45
+                        }) && gameEngine && gameEngine.scene) {
+                            const geometry = new THREE.SphereGeometry(splashRadius, 16, 16);
+                            const material = new THREE.MeshBasicMaterial({ color: explosionColor, transparent: true, opacity: 0.5 });
+                            const mesh = new THREE.Mesh(geometry, material);
+                            mesh.position.copy(this.position);
+                            gameEngine.scene.add(mesh);
+
+                            const animate = () => {
+                                if (mesh.material.opacity <= 0) {
+                                    gameEngine.scene.remove(mesh);
+                                    geometry.dispose();
+                                    material.dispose();
+                                    return;
+                                }
+                                mesh.scale.multiplyScalar(1.05);
+                                mesh.material.opacity -= 0.05;
+                                requestAnimationFrame(animate);
+                            };
+                            animate();
                         }
                         
                         break; // Stop checking other entities since we exploded

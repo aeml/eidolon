@@ -79,4 +79,23 @@ describe('Transient telegraph readability', () => {
         expect(dust.material.opacity).toBeGreaterThan(0.3);
         expect(burstDust.material.opacity).toBeGreaterThan(0.2);
     });
+
+    test('scales sphere effects from projectile-provided radius and duration', () => {
+        const scene = new THREE.Scene();
+        const effect = createTransientEffect(
+            scene,
+            'sphere',
+            new THREE.Vector3(1, 0, 2),
+            0xff4500,
+            {
+                radius: 7,
+                duration: 0.45
+            }
+        );
+
+        expect(effect).not.toBeNull();
+        expect(effect.duration).toBeCloseTo(0.45, 5);
+        expect(effect.meshes).toHaveLength(1);
+        expect(effect.meshes[0].geometry.parameters.radius).toBeCloseTo(7, 5);
+    });
 });

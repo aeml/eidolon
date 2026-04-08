@@ -589,14 +589,16 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
     }
 
     if (type === 'sphere') {
+        const radius = Math.max(0.25, Number.isFinite(options.radius) ? options.radius : 1.0);
+        const duration = Math.max(0.1, Number.isFinite(options.duration) ? options.duration : 0.8);
         const mesh = new THREE.Mesh(
-            new THREE.SphereGeometry(1.0, 16, 16),
+            new THREE.SphereGeometry(radius, 16, 16),
             createEnergySphereMaterial(color, 0.5)
         );
         mesh.position.copy(position);
         mesh.position.y += 1.0;
         addToScene(scene, mesh);
-        return new TransientEffect(scene, mesh, 0.8, ({ meshes, t }) => {
+        return new TransientEffect(scene, mesh, duration, ({ meshes, t }) => {
             const m = meshes[0];
             m.scale.setScalar(1 + t * 2.2);
             m.material.uniforms.uTime.value = t * 3.0;

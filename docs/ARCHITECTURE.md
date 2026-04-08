@@ -85,6 +85,7 @@ Server
 - UI is no longer best described as “one class owns everything”
 - Protobuf networking is no longer a future architecture target; it is current architecture
 - Current design work is less about first extraction and more about finishing the remaining heavy seams cleanly
-
-## Most important next architectural step
-Finish routing the remaining direct `gameEngine.scene` gameplay visuals into explicit entity/effect helpers so combat readability effects no longer depend on ad hoc scene writes.
+- `ChunkManager` and `GameEngine.addEntity()` now share a single always-resident town-service allowlist (`DwarfSalesman`, `Stash`, `QuestNPC`, `RespecNPC`, `Forge`, `TradingHouse`) so active chunk logic and delayed mesh attach decisions do not drift apart.
+- Installing the `onMeshReady` hook before chunk registration closes the immediate mesh creation race where service structures or live chunk spawns could skip render attach or collider setup.
+- Wizard `Scorch Beam` and projectile impact/explosion readability bursts now route through `spawnTransientEffect`/`effectScene` first, instead of writing temporary combat meshes straight into the entity scene. That keeps combat telegraphs inside the effect lane and makes transition cleanup deterministic.
+- Most important next architectural step: finish burning down the remaining direct `gameEngine.scene` gameplay visuals in classes like `Rogue` and any leftover projectile/utility fallbacks so transient combat readability no longer depends on ad hoc scene writes.
