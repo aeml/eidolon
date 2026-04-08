@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Entity } from './Entity.js';
 import { Actor } from './Actor.js';
+import { disposeSceneMesh } from './EffectSceneFallback.js';
 
 export class AreaOfEffect extends Entity {
     constructor(gameEngine, owner, position, config) {
@@ -105,7 +106,7 @@ export class AreaOfEffect extends Entity {
                 // If owner is player (or friendly), hit enemies.
                 // If owner is enemy, hit players.
                 
-                // Simplified: If owner exists, check if target is different "team"
+                // Simplified: If owner is defined, check if target is different "team"
                 // For this codebase, usually Players vs everything else.
                 // But we have PVP potentially?
                 // Let's stick to: If owner is defined, don't hit owner.
@@ -141,6 +142,13 @@ export class AreaOfEffect extends Entity {
         
         if (this.onTick) {
             this.onTick(this.gameEngine, this);
+        }
+    }
+
+    dispose() {
+        if (this.mesh) {
+            disposeSceneMesh(this.mesh);
+            this.mesh = null;
         }
     }
 }
