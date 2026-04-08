@@ -614,7 +614,7 @@ export class Fighter extends Actor {
     }
 
     spawnVisualEffect(gameEngine, position, color, type) {
-        if (!gameEngine || !gameEngine.scene) return;
+        if (!gameEngine || (!gameEngine.effectScene && !gameEngine.scene && typeof gameEngine.spawnTransientEffect !== 'function')) return;
         if (typeof gameEngine.spawnTransientEffect === 'function' && gameEngine.spawnTransientEffect(type, position, color, { source: this })) {
             return;
         }
