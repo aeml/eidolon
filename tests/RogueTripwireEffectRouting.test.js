@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { Rogue } from '../src/entities/Rogue.js';
 import { Actor } from '../src/entities/Actor.js';
+import { createPersistentSceneMesh } from '../src/entities/EffectSceneFallback.js';
 
 function createRogue() {
     const rogue = new Rogue('rogue-1');
@@ -81,5 +82,33 @@ describe('Rogue Tripwire effect routing', () => {
 
         expect(effectScene.children).toHaveLength(1);
         expect(effectScene.children[0].material.color.getHex()).toBe(0x8844ff);
+    });
+
+    test('shared persistent scene helper creates a parented trap mesh and disposes immediately when no scene exists', () => {
+        const effectScene = new THREE.Group();
+        const mesh = createPersistentSceneMesh(effectScene, {
+            geometry: new THREE.CylinderGeometry(0.5, 0.5, 0.1, 8),
+            material: new THREE.MeshBasicMaterial({ color: 0x888888 }),
+            position: new THREE.Vector3(4, 0.05, 6)
+        });
+
+        expect(mesh).toBeTruthy();
+        expect(mesh.parent).toBe(effectScene);
+        expect(effectScene.children).toContain(mesh);
+
+        const strayGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.1, 8);
+        const strayMaterial = new THREE.MeshBasicMaterial({ color: 0x888888 });
+        const geometryDispose = jest.spyOn(strayGeometry, 'dispose');
+        const materialDispose = jest.spyOn(strayMaterial, 'dispose');
+
+        const missingSceneMesh = createPersistentSceneMesh(null, {
+            geometry: strayGeometry,
+            material: strayMaterial,
+            position: new THREE.Vector3(4, 0.05, 6)
+        });
+
+        expect(missingSceneMesh).toBeNull();
+        expect(geometryDispose).toHaveBeenCalledTimes(1);
+        expect(materialDispose).toHaveBeenCalledTimes(1);
     });
 });

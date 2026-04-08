@@ -3,7 +3,7 @@ import { Actor } from './Actor.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { Projectile } from './Projectile.js';
-import { disposeSceneMesh, spawnEffectSceneFallback } from './EffectSceneFallback.js';
+import { createPersistentSceneMesh, disposeSceneMesh, spawnEffectSceneFallback } from './EffectSceneFallback.js';
 
 export class Rogue extends Actor {
     constructor(id) {
@@ -434,19 +434,15 @@ export class Rogue extends Actor {
             const trapPos = this.position.clone();
             
             // Visual
-            const geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.1, 8);
-            const material = new THREE.MeshBasicMaterial({ color: 0x888888 });
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.copy(trapPos);
-            mesh.position.y += 0.05;
-
             const trapScene = gameEngine?.effectScene || gameEngine?.scene;
-            if (!trapScene) {
-                geometry.dispose();
-                material.dispose();
+            const mesh = createPersistentSceneMesh(trapScene, {
+                geometry: new THREE.CylinderGeometry(0.5, 0.5, 0.1, 8),
+                material: new THREE.MeshBasicMaterial({ color: 0x888888 }),
+                position: trapPos.clone().add(new THREE.Vector3(0, 0.05, 0))
+            });
+            if (!mesh) {
                 return;
             }
-            trapScene.add(mesh);
             
             this.traps.push({
                 position: trapPos,

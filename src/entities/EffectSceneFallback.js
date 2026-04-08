@@ -30,6 +30,25 @@ export function disposeSceneMesh(mesh) {
     }
 }
 
+export function createPersistentSceneMesh(scene, { geometry, material, position }) {
+    if (!scene) {
+        geometry?.dispose?.();
+        if (Array.isArray(material)) {
+            for (const entry of material) {
+                entry?.dispose?.();
+            }
+        } else {
+            material?.dispose?.();
+        }
+        return null;
+    }
+
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.copy(position);
+    scene.add(mesh);
+    return mesh;
+}
+
 export function spawnSceneFallbackBurst(scene, position, color, options = {}) {
     if (!scene) {
         return false;
