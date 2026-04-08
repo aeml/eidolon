@@ -4,6 +4,7 @@ import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { Projectile } from './Projectile.js';
 import { AreaOfEffect } from './AreaOfEffect.js';
+import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
 
 export class Wizard extends Actor {
     constructor(id) {
@@ -604,6 +605,6 @@ export class Wizard extends Actor {
             return;
         }
 
-        gameEngine.spawnTransientEffect?.('impact', position, color, { source: this, direction });
+        spawnEffectSceneFallback(gameEngine, position, color, type);
     }
 }

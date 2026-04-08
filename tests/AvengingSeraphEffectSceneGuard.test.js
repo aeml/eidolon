@@ -26,4 +26,30 @@ describe('AvengingSeraph visual effectScene guard', () => {
             { source: seraph }
         );
     });
+
+    test('falls back to an effectScene mesh when transient effects are unavailable', () => {
+        const seraph = new AvengingSeraph('seraph-1');
+        seraph.mesh = new THREE.Group();
+        const effectScene = new THREE.Group();
+        const originalRaf = global.requestAnimationFrame;
+        global.requestAnimationFrame = () => 0;
+
+        try {
+            seraph.spawnVisualEffect(
+                {
+                    scene: null,
+                    effectScene,
+                    spawnTransientEffect: undefined
+                },
+                new THREE.Vector3(2, 0, 5),
+                0xffdd88,
+                'pillar'
+            );
+        } finally {
+            global.requestAnimationFrame = originalRaf;
+        }
+
+        expect(effectScene.children).toHaveLength(1);
+        expect(effectScene.children[0].material.color.getHex()).toBe(0xffdd88);
+    });
 });

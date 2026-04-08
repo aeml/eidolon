@@ -1,4 +1,5 @@
 import { Actor } from './Actor.js';
+import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
 
 export class AvengingSeraph extends Actor {
     constructor(id) {
@@ -15,6 +16,6 @@ export class AvengingSeraph extends Actor {
             return;
         }
 
-        gameEngine.spawnTransientEffect?.('impact', position, color, { source: this });
+        spawnEffectSceneFallback(gameEngine, position, color, type);
     }
 }

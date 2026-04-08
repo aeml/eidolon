@@ -3,6 +3,7 @@ import { Actor } from './Actor.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { Projectile } from './Projectile.js';
+import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
 
 export class Rogue extends Actor {
     constructor(id) {
@@ -519,6 +520,6 @@ export class Rogue extends Actor {
             return;
         }
 
-        gameEngine.spawnTransientEffect?.('impact', position, color, { source: this });
+        spawnEffectSceneFallback(gameEngine, position, color, type);
     }
 }

@@ -75,4 +75,30 @@ describe('Wizard combat effect routing', () => {
             global.requestAnimationFrame = originalRaf;
         }
     });
+
+    test('generic Wizard fallback visuals create an effectScene mesh when transient effects are unavailable', () => {
+        const wizard = new Wizard('test-wizard');
+        wizard.mesh = new THREE.Group();
+        const effectScene = new THREE.Group();
+        const originalRaf = global.requestAnimationFrame;
+        global.requestAnimationFrame = () => 0;
+
+        try {
+            wizard.spawnVisualEffect(
+                {
+                    scene: null,
+                    effectScene,
+                    spawnTransientEffect: undefined
+                },
+                new THREE.Vector3(4, 0, 1),
+                0x33bbff,
+                'impact'
+            );
+        } finally {
+            global.requestAnimationFrame = originalRaf;
+        }
+
+        expect(effectScene.children).toHaveLength(1);
+        expect(effectScene.children[0].material.color.getHex()).toBe(0x33bbff);
+    });
 });

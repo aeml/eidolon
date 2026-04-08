@@ -52,4 +52,29 @@ describe('Rogue Tripwire effect routing', () => {
         expect(effectScene.children).toHaveLength(0);
         expect(spawnTransientEffect).toHaveBeenCalledWith('smoke', expect.any(THREE.Vector3), 0xaaaaaa, { source: rogue });
     });
+
+    test('generic Rogue fallback visuals create an effectScene mesh when transient effects are unavailable', () => {
+        const rogue = createRogue();
+        const effectScene = new THREE.Group();
+        const originalRaf = global.requestAnimationFrame;
+        global.requestAnimationFrame = () => 0;
+
+        try {
+            rogue.spawnVisualEffect(
+                {
+                    scene: null,
+                    effectScene,
+                    spawnTransientEffect: undefined
+                },
+                new THREE.Vector3(4, 0, 6),
+                0x8844ff,
+                'burst'
+            );
+        } finally {
+            global.requestAnimationFrame = originalRaf;
+        }
+
+        expect(effectScene.children).toHaveLength(1);
+        expect(effectScene.children[0].material.color.getHex()).toBe(0x8844ff);
+    });
 });
