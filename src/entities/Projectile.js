@@ -160,6 +160,34 @@ function spawnTransientCombatEffect(gameEngine, type, position, color, options =
     return gameEngine.spawnTransientEffect(type, position, color, options);
 }
 
+function spawnSceneFallbackBurst(scene, position, { radius = 0.5, color = 0xffffff, opacity = 0.8, scaleStep = 1.1, fadeStep = 0.1, segments = 8 } = {}) {
+    if (!scene) {
+        return false;
+    }
+
+    const geometry = new THREE.SphereGeometry(radius, segments, segments);
+    const material = new THREE.MeshBasicMaterial({ color, transparent: true, opacity });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.copy(position);
+    scene.add(mesh);
+
+    const animate = () => {
+        if (mesh.material.opacity <= 0) {
+            scene.remove(mesh);
+            geometry.dispose();
+            material.dispose();
+            return;
+        }
+
+        mesh.scale.multiplyScalar(scaleStep);
+        mesh.material.opacity -= fadeStep;
+        requestAnimationFrame(animate);
+    };
+
+    animate();
+    return true;
+}
+
 export class Projectile extends Entity {
     constructor(id, owner, type, startPos, targetPos) {
         super(id);
@@ -433,25 +461,8 @@ export class Projectile extends Entity {
                         }
                         
                         // Visual Hit
-                        if (!spawnTransientCombatEffect(gameEngine, 'impact', this.position, 0xaa00ff, { source: this.owner }) && gameEngine && gameEngine.scene) {
-                            const geometry = new THREE.SphereGeometry(0.5, 8, 8);
-                            const material = new THREE.MeshBasicMaterial({ color: 0xaa00ff, transparent: true, opacity: 0.8 });
-                            const mesh = new THREE.Mesh(geometry, material);
-                            mesh.position.copy(this.position);
-                            gameEngine.scene.add(mesh);
-
-                            const animate = () => {
-                                if (mesh.material.opacity <= 0) {
-                                    gameEngine.scene.remove(mesh);
-                                    geometry.dispose();
-                                    material.dispose();
-                                    return;
-                                }
-                                mesh.scale.multiplyScalar(1.1);
-                                mesh.material.opacity -= 0.1;
-                                requestAnimationFrame(animate);
-                            };
-                            animate();
+                        if (!spawnTransientCombatEffect(gameEngine, 'impact', this.position, 0xaa00ff, { source: this.owner })) {
+                            spawnSceneFallbackBurst(effectScene, this.position, { color: 0xaa00ff });
                         }
                         break;
 
@@ -490,25 +501,15 @@ export class Projectile extends Entity {
                             source: this.owner,
                             radius: splashRadius,
                             duration: 0.45
-                        }) && gameEngine && gameEngine.scene) {
-                            const geometry = new THREE.SphereGeometry(splashRadius, 16, 16);
-                            const material = new THREE.MeshBasicMaterial({ color: explosionColor, transparent: true, opacity: 0.5 });
-                            const mesh = new THREE.Mesh(geometry, material);
-                            mesh.position.copy(this.position);
-                            gameEngine.scene.add(mesh);
-
-                            const animate = () => {
-                                if (mesh.material.opacity <= 0) {
-                                    gameEngine.scene.remove(mesh);
-                                    geometry.dispose();
-                                    material.dispose();
-                                    return;
-                                }
-                                mesh.scale.multiplyScalar(1.05);
-                                mesh.material.opacity -= 0.05;
-                                requestAnimationFrame(animate);
-                            };
-                            animate();
+                        })) {
+                            spawnSceneFallbackBurst(effectScene, this.position, {
+                                radius: splashRadius,
+                                color: explosionColor,
+                                opacity: 0.5,
+                                scaleStep: 1.05,
+                                fadeStep: 0.05,
+                                segments: 16
+                            });
                         }
                         
                         break; // Stop checking other entities since we exploded

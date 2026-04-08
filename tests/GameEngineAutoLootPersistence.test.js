@@ -33,7 +33,8 @@ jest.unstable_mockModule('../src/core/InputManager.js', () => ({
 jest.unstable_mockModule('../src/core/ChunkManager.js', () => ({
     ChunkManager: class ChunkManager {
         constructor() {}
-    }
+    },
+    isAlwaysResidentEntityType: jest.fn(() => false)
 }));
 
 jest.unstable_mockModule('../src/core/CollisionManager.js', () => ({

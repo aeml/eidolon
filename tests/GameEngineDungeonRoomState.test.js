@@ -66,7 +66,8 @@ jest.unstable_mockModule('../src/core/ChunkManager.js', () => ({
         getActiveEntities() { return []; }
         removeEntity() {}
         updateEntityChunk() {}
-    }
+    },
+    isAlwaysResidentEntityType: jest.fn(() => false)
 }));
 
 jest.unstable_mockModule('../src/core/CollisionManager.js', () => ({

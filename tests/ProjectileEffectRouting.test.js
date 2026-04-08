@@ -87,4 +87,70 @@ describe('Projectile combat effect routing', () => {
         expect(position).toBe(projectile.position);
         expect(options).toEqual({ source: owner, radius: 9, duration: 0.45 });
     });
+
+    test('ArcaneMissile impact falls back to effectScene instead of entity scene when transient effects are unavailable', () => {
+        const owner = createOwner();
+        const enemy = createEnemy(new THREE.Vector3(0.25, 0, 0));
+        const projectile = new Projectile('arcane-fallback-1', owner, 'ArcaneMissile', new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0));
+        const effectScene = new THREE.Group();
+        const gameEngine = {
+            scene: null,
+            effectScene,
+            spawnTransientEffect: undefined
+        };
+
+        const originalRaf = global.requestAnimationFrame;
+        global.requestAnimationFrame = () => 0;
+        try {
+            projectile.update(
+                0,
+                null,
+                null,
+                { getActiveEntities: () => [enemy] },
+                { spawn: jest.fn() },
+                gameEngine
+            );
+        } finally {
+            global.requestAnimationFrame = originalRaf;
+        }
+
+        expect(projectile.isActive).toBe(false);
+        expect(effectScene.children).toHaveLength(1);
+        expect(effectScene.children[0].position).toEqual(projectile.position);
+        expect(effectScene.children[0].material.color.getHex()).toBe(0xaa00ff);
+    });
+
+    test('Meteor explosion falls back to effectScene instead of entity scene when transient effects are unavailable', () => {
+        const owner = createOwner();
+        const primaryEnemy = createEnemy(new THREE.Vector3(0.1, 0, 0));
+        const projectile = new Projectile('meteor-fallback-1', owner, 'Meteor', new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0));
+        projectile.explosionRadius = 6;
+        const effectScene = new THREE.Group();
+        const gameEngine = {
+            scene: null,
+            effectScene,
+            spawnTransientEffect: undefined
+        };
+
+        const originalRaf = global.requestAnimationFrame;
+        global.requestAnimationFrame = () => 0;
+        try {
+            projectile.update(
+                0,
+                null,
+                null,
+                { getActiveEntities: () => [primaryEnemy] },
+                { spawn: jest.fn() },
+                gameEngine
+            );
+        } finally {
+            global.requestAnimationFrame = originalRaf;
+        }
+
+        expect(projectile.isActive).toBe(false);
+        expect(effectScene.children).toHaveLength(2);
+        expect(effectScene.children[0].material.color.getHex()).toBe(0xffaa00);
+        expect(effectScene.children[1].position).toEqual(projectile.position);
+        expect(effectScene.children[1].material.color.getHex()).toBe(0xff2200);
+    });
 });
