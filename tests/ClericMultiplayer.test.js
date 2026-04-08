@@ -104,4 +104,46 @@ describe('Cleric Multiplayer Logic', () => {
         expect(cleric.spiritsActive).toBe(true);
         expect(cleric.spiritDuration).toBeGreaterThan(0);
     });
+
+    test('cancelAbilities disposes spirit meshes even after reparenting', () => {
+        const spiritMesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.3, 8, 8),
+            new THREE.MeshStandardMaterial({ color: 0xffff00 })
+        );
+        const otherParent = new THREE.Group();
+        otherParent.add(spiritMesh);
+        const geometryDispose = jest.spyOn(spiritMesh.geometry, 'dispose');
+        const materialDispose = jest.spyOn(spiritMesh.material, 'dispose');
+        cleric.spirits = [{ mesh: spiritMesh, angle: 0 }];
+        cleric.spiritsActive = true;
+
+        cleric.cancelAbilities();
+
+        expect(otherParent.children).toHaveLength(0);
+        expect(geometryDispose).toHaveBeenCalledTimes(1);
+        expect(materialDispose).toHaveBeenCalledTimes(1);
+        expect(cleric.spirits).toHaveLength(0);
+    });
+
+    test('spirit expiry disposes meshes from their current parent', () => {
+        const spiritMesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.3, 8, 8),
+            new THREE.MeshStandardMaterial({ color: 0xffff00 })
+        );
+        const otherParent = new THREE.Group();
+        otherParent.add(spiritMesh);
+        const geometryDispose = jest.spyOn(spiritMesh.geometry, 'dispose');
+        const materialDispose = jest.spyOn(spiritMesh.material, 'dispose');
+        cleric.spirits = [{ mesh: spiritMesh, angle: 0 }];
+        cleric.spiritsActive = true;
+        cleric.spiritDuration = 0.05;
+
+        cleric.update(0.1, null, null, null, { spawn: jest.fn() });
+
+        expect(otherParent.children).toHaveLength(0);
+        expect(geometryDispose).toHaveBeenCalledTimes(1);
+        expect(materialDispose).toHaveBeenCalledTimes(1);
+        expect(cleric.spiritsActive).toBe(false);
+        expect(cleric.spirits).toHaveLength(0);
+    });
 });

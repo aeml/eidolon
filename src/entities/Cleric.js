@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Actor } from './Actor.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
-import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
+import { disposeSceneMesh, spawnEffectSceneFallback } from './EffectSceneFallback.js';
 
 export class Cleric extends Actor {
     constructor(id) {
@@ -416,12 +416,16 @@ export class Cleric extends Actor {
         }
     }
 
-    cancelAbilities() {
-        this.spiritsActive = false;
+    clearSpiritMeshes() {
         this.spirits.forEach(s => {
-            if (this.mesh) this.mesh.remove(s.mesh);
+            disposeSceneMesh(s.mesh);
         });
         this.spirits = [];
+    }
+
+    cancelAbilities() {
+        this.spiritsActive = false;
+        this.clearSpiritMeshes();
         this.guardianEmbraceActive = false;
         this.guardianEmbraceTimer = 0;
         this.seraphActive = false;
@@ -560,14 +564,7 @@ export class Cleric extends Actor {
             // Check if spirits should expire
             if (this.spiritDuration <= 0) {
                 this.spiritsActive = false;
-                this.spirits.forEach(s => {
-                    if (s.mesh && s.mesh.parent) {
-                        s.mesh.parent.remove(s.mesh);
-                    }
-                    if (s.mesh && s.mesh.geometry) s.mesh.geometry.dispose();
-                    if (s.mesh && s.mesh.material) s.mesh.material.dispose();
-                });
-                this.spirits = [];
+                this.clearSpiritMeshes();
                 // Return to idle animation
                 if (this.state !== 'DEAD') {
                     this.playAnimation('Idle', true);
