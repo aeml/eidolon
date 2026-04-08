@@ -256,4 +256,41 @@ describe('Projectile combat effect routing', () => {
             global.requestAnimationFrame = originalRaf;
         }
     });
+
+    test('resetProjectileParticlePoolForTests removes pooled particles from their current parent after reparenting', () => {
+        const owner = createOwner();
+        const projectile = new Projectile('meteor-dispose-reparent-1', owner, 'Meteor', new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0));
+        const firstEffectScene = new THREE.Group();
+        const secondEffectScene = new THREE.Group();
+        const queuedFrames = [];
+        const originalRaf = global.requestAnimationFrame;
+        global.requestAnimationFrame = (callback) => {
+            queuedFrames.push(callback);
+            return queuedFrames.length;
+        };
+
+        try {
+            projectile.update(
+                0.016,
+                null,
+                null,
+                { getActiveEntities: () => [] },
+                { spawn: jest.fn() },
+                { scene: null, effectScene: firstEffectScene, spawnTransientEffect: undefined }
+            );
+
+            expect(firstEffectScene.children).toHaveLength(1);
+            const pooledMesh = firstEffectScene.children[0];
+            firstEffectScene.remove(pooledMesh);
+            secondEffectScene.add(pooledMesh);
+            expect(pooledMesh.parent).toBe(secondEffectScene);
+
+            resetProjectileParticlePoolForTests();
+
+            expect(secondEffectScene.children).toHaveLength(0);
+            expect(pooledMesh.parent).toBeNull();
+        } finally {
+            global.requestAnimationFrame = originalRaf;
+        }
+    });
 });

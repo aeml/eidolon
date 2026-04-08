@@ -97,4 +97,5 @@ Server
 - Projectile fallback bursts now use the same shared parent-safe burst helper as other effect-scene fallbacks, so impact/explosion cleanup survives mesh reparenting instead of assuming the original scene still owns the effect.
 - Rogue Tripwire now disposes its planted trap mesh resources on trigger via the shared scene-mesh disposal helper instead of only detaching the mesh. That closes a small but real leak in repeated trap-heavy fights.
 - Wizard Scorch Beam fallback now uses the shared parent-safe beam helper instead of carrying its own bespoke cylinder/add/fade/remove lifecycle. That removes another duplicated temporary-visual path and keeps cleanup rules consistent.
+- Projectile particle-pool disposal now removes pooled meshes from their current parent instead of a stale recorded scene, so teardown stays correct after effect-scene reparenting and test resets.
 - Most important next architectural step: finish burning down the remaining direct `gameEngine.scene` gameplay visuals still hiding in projectile/utility fallback paths so transient combat readability no longer depends on ad hoc scene writes.

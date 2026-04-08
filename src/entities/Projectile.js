@@ -144,9 +144,7 @@ class ParticlePool {
     
     dispose() {
         for (const p of this.particles) {
-            if (p.scene && p.mesh.parent) {
-                p.scene.remove(p.mesh);
-            }
+            p.mesh.parent?.remove(p.mesh);
             p.material.dispose();
         }
         this.particles = [];
