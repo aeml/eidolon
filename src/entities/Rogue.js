@@ -25,7 +25,7 @@ export class Rogue extends Actor {
         this.traps = []; // Array of active traps
     }
 
-    update(dt, collisionManager, player, chunkManager, floatingTextManager) {
+    update(dt, collisionManager, player, chunkManager, floatingTextManager, gameEngine = null) {
         super.update(dt, collisionManager, player, chunkManager);
 
         if (this.serratedEdgesActive) {
@@ -59,8 +59,13 @@ export class Rogue extends Actor {
                             if (floatingTextManager) floatingTextManager.spawn("ROOTED!", entity.position, '#ffff00');
                             
                             // Visual Effect (Need scene)
-                            if (this.mesh && this.mesh.parent) {
-                                const mockGameEngine = { scene: this.mesh.parent };
+                            const trapScene = trap.mesh?.parent || gameEngine?.effectScene || gameEngine?.scene || this.mesh?.parent || null;
+                            if (trapScene) {
+                                const mockGameEngine = {
+                                    scene: trapScene,
+                                    effectScene: gameEngine?.effectScene || trapScene,
+                                    spawnTransientEffect: gameEngine?.spawnTransientEffect
+                                };
                                 this.spawnVisualEffect(mockGameEngine, trap.position, 0xaaaaaa, "smoke");
                             }
                             
@@ -433,7 +438,14 @@ export class Rogue extends Actor {
             const mesh = new THREE.Mesh(geometry, material);
             mesh.position.copy(trapPos);
             mesh.position.y += 0.05;
-            gameEngine.scene.add(mesh);
+
+            const trapScene = gameEngine?.effectScene || gameEngine?.scene;
+            if (!trapScene) {
+                geometry.dispose();
+                material.dispose();
+                return;
+            }
+            trapScene.add(mesh);
             
             this.traps.push({
                 position: trapPos,
@@ -502,7 +514,7 @@ export class Rogue extends Actor {
     }
 
     spawnVisualEffect(gameEngine, position, color, type) {
-        if (!gameEngine || !gameEngine.scene) return;
+        if (!gameEngine || (!gameEngine.effectScene && !gameEngine.scene && typeof gameEngine.spawnTransientEffect !== 'function')) return;
         if (typeof gameEngine.spawnTransientEffect === 'function' && gameEngine.spawnTransientEffect(type, position, color, { source: this })) {
             return;
         }
