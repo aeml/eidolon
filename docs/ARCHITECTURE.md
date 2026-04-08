@@ -46,7 +46,11 @@ Server
 ### `RenderSystem`
 - Owns Three.js renderer, camera, scene, lighting, shadows, environment textures, and quality settings
 - Handles current lighting/shadow-follow behavior and camera punch support
-- Still needs explicit scene groups for cleaner instance transitions
+- Uses explicit scene groups so environment content survives instance changes while entity/effect content is cleared separately
+
+### Instance transition runtime hygiene
+- `GameEngine.enterInstance()` now clears pending interactions, active transient effects, hazard visuals, and combat-target highlight state before rebuilding the next scene
+- This keeps dungeon/overworld swaps from carrying stale combat readability artifacts into the next space
 
 ### `NetworkManager`
 - Wraps socket message flow and protobuf state decoding

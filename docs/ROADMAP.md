@@ -34,6 +34,7 @@ This is the engineering-facing roadmap. It focuses on the slices still worth bui
 Why now:
 - Instance entry/exit still relies on broad scene rebuild behavior
 - This is one of the largest remaining correctness/perf footguns in the client
+- Recent runtime hygiene landed: instance transitions now clear stale transient combat/effect/hazard state before rebuilding, so the remaining work is narrower and safer
 
 Targets:
 - `src/core/RenderSystem.js`

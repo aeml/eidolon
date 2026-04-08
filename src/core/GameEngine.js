@@ -565,6 +565,18 @@ export class GameEngine {
         this.currentDungeonLayout = layout || null;
         this.clearCombatIntentState();
         this.refreshDungeonEntranceHint();
+        this.pendingInteraction = null;
+
+        for (const effect of this.effects) {
+            effect?.dispose?.();
+        }
+        this.effects = [];
+
+        for (const hazard of this.hazards.values()) {
+            hazard?.removeFromScene?.(this.renderSystem.environmentGroup);
+            hazard?.dispose?.();
+        }
+        this.hazards.clear();
 
         // Clear current dynamic entities through explicit render ownership paths.
         this.remotePlayers.forEach(entity => {
@@ -2212,6 +2224,10 @@ export class GameEngine {
             }
         }
         this.highlightedCombatTarget = null;
+    }
+
+    clearCombatTargetHighlight() {
+        this.detachCombatTargetHighlight();
     }
 
     updateCombatTargetHighlight() {

@@ -101,9 +101,14 @@ function createEngineHarness() {
     engine.remotePlayers = new Map();
     engine.enemies = [];
     engine.lootDrops = [];
+    engine.effects = [];
+    engine.hazards = new Map();
+    engine.pendingInteraction = null;
+    engine.combatIntent = null;
+    engine.combatIntentSignature = '';
+    engine.combatTargetHighlight = null;
+    engine.highlightedCombatTarget = null;
     engine.cameraLocked = true;
-    engine.clearCombatIntentState = jest.fn();
-    engine.refreshDungeonEntranceHint = jest.fn();
     engine.renderSystem = {
         scene,
         environmentGroup,
@@ -124,6 +129,10 @@ function createEngineHarness() {
         removeEntity: jest.fn(),
         updateEntityChunk: jest.fn()
     };
+    engine.clearCombatTargetHighlight = GameEngine.prototype.clearCombatTargetHighlight;
+    engine.detachCombatTargetHighlight = GameEngine.prototype.detachCombatTargetHighlight;
+    engine.clearCombatIntentState = GameEngine.prototype.clearCombatIntentState;
+    engine.refreshDungeonEntranceHint = jest.fn();
     engine.collisionManager = {
         clear: jest.fn(),
         setDungeonWalkableGeometry: jest.fn(),
@@ -136,6 +145,15 @@ function createEngineHarness() {
         state: 'MOVING',
         playAnimation: jest.fn()
     };
+    engine.uiManager = {
+        clearCombatIntent: jest.fn(),
+        clearDungeonEntranceHint: jest.fn()
+    };
+    engine.abilityController = {
+        pendingAbilityTarget: null,
+        pendingAbilitySkill: null
+    };
+    engine.dungeonEntranceHint = null;
 
     return engine;
 }
@@ -240,5 +258,31 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(engine.renderSystem.scene.children).toContain(engine.renderSystem.keyLight);
         expect(engine.renderSystem.environmentGroup.children.map(child => child.id)).toContain('persistent-tree');
         expect(engine.player.mesh.parent).toBe(engine.renderSystem.entityGroup);
+    });
+
+    test('enterInstance clears stale transient combat/runtime state before rebuilding the next scene', async () => {
+        const engine = createEngineHarness();
+        const effect = { isActive: true, dispose: jest.fn() };
+        const hazard = { removeFromScene: jest.fn(), dispose: jest.fn() };
+        const pendingLoot = { id: 'pending-loot' };
+        const targetRing = { parent: engine.renderSystem.effectGroup, visible: true };
+        engine.renderSystem.effectGroup.add(targetRing);
+        engine.effects = [effect];
+        engine.hazards.set('hazard-1', hazard);
+        engine.pendingInteraction = pendingLoot;
+        engine.combatTargetHighlight = targetRing;
+        engine.highlightedCombatTarget = { id: 'enemy-1' };
+
+        await engine.enterInstance('instance-6', 'overworld', null);
+
+        expect(effect.dispose).toHaveBeenCalledTimes(1);
+        expect(engine.effects).toEqual([]);
+        expect(hazard.removeFromScene).toHaveBeenCalledWith(engine.renderSystem.environmentGroup);
+        expect(hazard.dispose).toHaveBeenCalledTimes(1);
+        expect(engine.hazards.size).toBe(0);
+        expect(engine.pendingInteraction).toBeNull();
+        expect(engine.highlightedCombatTarget).toBeNull();
+        expect(engine.combatTargetHighlight.visible).toBe(false);
+        expect(engine.combatTargetHighlight.parent).toBeNull();
     });
 });

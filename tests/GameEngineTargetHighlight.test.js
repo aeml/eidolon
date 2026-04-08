@@ -36,6 +36,16 @@ function createEngineHarness() {
     engine.attachCombatTargetHighlight = GameEngine.prototype.attachCombatTargetHighlight;
     engine.detachCombatTargetHighlight = GameEngine.prototype.detachCombatTargetHighlight;
     engine.updateCombatTargetHighlight = GameEngine.prototype.updateCombatTargetHighlight;
+    engine.clearCombatIntentState = GameEngine.prototype.clearCombatIntentState;
+    engine.uiManager = {
+        clearCombatIntent: jest.fn(),
+        clearDungeonEntranceHint: jest.fn()
+    };
+    engine.abilityController = {
+        pendingAbilityTarget: { id: 'target' },
+        pendingAbilitySkill: 'Fireball'
+    };
+    engine.dungeonEntranceHint = { text: 'hint' };
     return engine;
 }
 
@@ -76,5 +86,26 @@ describe('GameEngine combat target highlight', () => {
 
         expect(engine.highlightedCombatTarget).toBeNull();
         expect(engine.combatTargetHighlight.visible).toBe(false);
+    });
+
+    test('clearCombatIntentState detaches the highlight and clears queued combat hint state', () => {
+        const engine = createEngineHarness();
+        const target = createTarget('enemy-1', 10, 4);
+        engine.combatIntent = { entity: target };
+        engine.combatIntentSignature = 'enemy-1';
+        engine.updateCombatTargetHighlight();
+
+        engine.clearCombatIntentState();
+
+        expect(engine.combatIntent).toBeNull();
+        expect(engine.combatIntentSignature).toBe('');
+        expect(engine.highlightedCombatTarget).toBeNull();
+        expect(engine.combatTargetHighlight.visible).toBe(false);
+        expect(engine.combatTargetHighlight.parent).toBeNull();
+        expect(engine.abilityController.pendingAbilityTarget).toBeNull();
+        expect(engine.abilityController.pendingAbilitySkill).toBeNull();
+        expect(engine.dungeonEntranceHint).toBeNull();
+        expect(engine.uiManager.clearCombatIntent).toHaveBeenCalledTimes(1);
+        expect(engine.uiManager.clearDungeonEntranceHint).toHaveBeenCalledTimes(1);
     });
 });
