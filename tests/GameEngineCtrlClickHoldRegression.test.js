@@ -193,4 +193,22 @@ describe('GameEngine ctrl-click hold regression', () => {
         expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.playerJumpState.displayPosition);
         expect(engine.renderSystem.setCameraTarget).not.toHaveBeenCalledWith(engine.player.position);
     });
+
+    test('meta-hold uses the same modifier-held branch as ctrl-hold instead of falling back to click-to-move', () => {
+        const engine = createEngineHarness();
+        engine.cameraLocked = true;
+        engine.playerJumpState = null;
+        engine.inputManager.isMouseDown = true;
+        engine.inputManager.keys.control = false;
+        engine.inputManager.keys.meta = true;
+        engine.player.lastAttackTime = Date.now();
+
+        engine.update(1 / 60);
+
+        expect(engine.chunkManager.update).toHaveBeenCalled();
+        expect(engine.renderSystem.setCameraTarget).toHaveBeenCalled();
+        expect(engine.player.move).not.toHaveBeenCalled();
+        expect(engine.player.playAnimation).not.toHaveBeenCalledWith('Attack', false);
+        expect(engine.player.state).not.toBe('ATTACKING');
+    });
 });

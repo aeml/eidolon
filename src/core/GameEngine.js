@@ -3719,7 +3719,7 @@ export class GameEngine {
             }
 
             if (!this.isMobile && this.inputManager.isMouseDown && !this.uiManager.isEscMenuOpen && !this.uiManager.isShopOpen) {
-                if (this.inputManager.keys.control) {
+                if (this.inputManager.keys.control || this.inputManager.keys.meta) {
                     this.player.targetPosition = null;
                     this.pendingInteraction = null;
                     this.abilityController.pendingAbilityTarget = null;
