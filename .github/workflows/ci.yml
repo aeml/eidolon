@@ -239,8 +239,8 @@ jobs:
           script: |
             set -euo pipefail
             cd /home/aeml/eidolon
-            git fetch origin master
-            git checkout -f origin/master -- server
+            git fetch origin ${{ github.ref_name }}
+            git checkout -f origin/${{ github.ref_name }} -- server
             cd server
             docker compose build api
             docker compose up -d api

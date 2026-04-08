@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { RenderSystem } from './RenderSystem.js';
 import { InputManager } from './InputManager.js';
-import { ChunkManager } from './ChunkManager.js';
+import { ChunkManager, isAlwaysResidentEntityType } from './ChunkManager.js';
 import { CollisionManager } from './CollisionManager.js';
 import { NetworkManager } from './NetworkManager.js';
 import { AbilityController } from './AbilityController.js';
@@ -2624,49 +2624,50 @@ export class GameEngine {
 
     addEntity(entity = null) {
         if (!entity) return;
-        
+
+        const originalOnMeshReady = entity.onMeshReady;
+        entity.onMeshReady = (mesh) => {
+            console.log(`GameEngine: Mesh ready for ${entity.id}`);
+
+            if (!entity.isActive) {
+                console.log(`GameEngine: Entity ${entity.id} is inactive, discarding mesh.`);
+                this.renderSystem.remove(mesh);
+                return;
+            }
+
+            if (originalOnMeshReady) originalOnMeshReady.call(entity, mesh);
+
+            // Add Collision for static structures
+            if (entity.type === 'TradingHouse') {
+                mesh.position.copy(entity.position);
+                mesh.quaternion.copy(entity.rotation);
+                mesh.updateMatrixWorld(true);
+                const box = new THREE.Box3().setFromObject(mesh);
+                this.collisionManager.addCollider(box);
+                console.log(`Added collision for TradingHouse ${entity.id}`);
+            } else if (entity.type === 'Stash' || entity.type === 'Forge') {
+                mesh.position.copy(entity.position);
+                mesh.quaternion.copy(entity.rotation);
+                mesh.updateMatrixWorld(true);
+                const box = new THREE.Box3().setFromObject(mesh);
+                this.collisionManager.addCollider(box);
+                console.log(`Added collision for ${entity.type} ${entity.id}`);
+            }
+
+            const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
+            if (this.chunkManager.activeChunkKeys.has(key) || isAlwaysResidentEntityType(entity.type)) {
+                console.log(`GameEngine: Adding mesh for ${entity.id} to scene (delayed)`);
+                this.renderSystem.add(mesh);
+            } else {
+                console.log(`GameEngine: Chunk ${key} not active, mesh not added yet`);
+            }
+        };
+
         this.chunkManager.addEntity(entity);
-        
-        if (!entity.mesh) {
-            const originalOnMeshReady = entity.onMeshReady;
-            entity.onMeshReady = (mesh) => {
-                console.log(`GameEngine: Mesh ready for ${entity.id}`);
-                
-                if (!entity.isActive) {
-                    console.log(`GameEngine: Entity ${entity.id} is inactive, discarding mesh.`);
-                    this.renderSystem.remove(mesh);
-                    return;
-                }
 
-                if (originalOnMeshReady) originalOnMeshReady.call(entity, mesh);
-                
-                // Add Collision for static structures
-                if (entity.type === 'TradingHouse') {
-                     mesh.position.copy(entity.position);
-                     mesh.quaternion.copy(entity.rotation);
-                     mesh.updateMatrixWorld(true);
-                     const box = new THREE.Box3().setFromObject(mesh);
-                     this.collisionManager.addCollider(box);
-                     console.log(`Added collision for TradingHouse ${entity.id}`);
-                } else if (entity.type === 'Stash' || entity.type === 'Forge') {
-                     mesh.position.copy(entity.position);
-                     mesh.quaternion.copy(entity.rotation);
-                     mesh.updateMatrixWorld(true);
-                     const box = new THREE.Box3().setFromObject(mesh);
-                     this.collisionManager.addCollider(box);
-                     console.log(`Added collision for ${entity.type} ${entity.id}`);
-                }
-
-                const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
-                if (this.chunkManager.activeChunkKeys.has(key) || entity.type === 'DwarfSalesman') {
-                    console.log(`GameEngine: Adding mesh for ${entity.id} to scene (delayed)`);
-                    this.renderSystem.add(mesh);
-                } else {
-                    console.log(`GameEngine: Chunk ${key} not active, mesh not added yet`);
-                }
-            };
-        } else {
-             console.log(`GameEngine: Entity ${entity.id} already has mesh`);
+        if (entity.mesh && entity.onMeshReady) {
+            entity.onMeshReady(entity.mesh);
+            entity.onMeshReady = null;
         }
         
         // Set up explosive death callback for unique effect

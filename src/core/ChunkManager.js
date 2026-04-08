@@ -2,6 +2,19 @@ import { MeshFactory } from '../utils/MeshFactory.js';
 import * as THREE from 'three';
 import { CONSTANTS } from './Constants.js';
 
+export const ALWAYS_RESIDENT_ENTITY_TYPES = new Set([
+    'DwarfSalesman',
+    'Stash',
+    'QuestNPC',
+    'RespecNPC',
+    'Forge',
+    'TradingHouse'
+]);
+
+export function isAlwaysResidentEntityType(type) {
+    return ALWAYS_RESIDENT_ENTITY_TYPES.has(type);
+}
+
 export class ChunkManager {
     constructor(scene) {
         this.scene = scene;
@@ -125,11 +138,11 @@ export class ChunkManager {
         }
         this.chunks.get(key).add(entity);
         
-        if (this.activeChunkKeys.has(key) || entity.type === 'DwarfSalesman' || entity.type === 'Stash' || entity.type === 'QuestNPC' || entity.type === 'RespecNPC' || entity.type === 'Forge' || entity.type === 'TradingHouse') {
+        if (this.activeChunkKeys.has(key) || isAlwaysResidentEntityType(entity.type)) {
             if (!entity.mesh && entity.ensureMesh) {
                 entity.ensureMesh().then(() => {
                     const currentKey = this.getChunkKey(entity.position.x, entity.position.z);
-                    if ((this.activeChunkKeys.has(currentKey) || entity.type === 'DwarfSalesman' || entity.type === 'Stash' || entity.type === 'QuestNPC' || entity.type === 'RespecNPC' || entity.type === 'Forge' || entity.type === 'TradingHouse') && entity.mesh) {
+                    if ((this.activeChunkKeys.has(currentKey) || isAlwaysResidentEntityType(entity.type)) && entity.mesh) {
                         this.scene.add(entity.mesh);
                     }
                 });
@@ -197,7 +210,7 @@ export class ChunkManager {
                 if (!entity.mesh && entity.ensureMesh) {
                     entity.ensureMesh().then(() => {
                         const currentKey = this.getChunkKey(entity.position.x, entity.position.z);
-                        if ((this.activeChunkKeys.has(currentKey) || entity.type === 'DwarfSalesman') && entity.mesh) {
+                        if ((this.activeChunkKeys.has(currentKey) || isAlwaysResidentEntityType(entity.type)) && entity.mesh) {
                             this.scene.add(entity.mesh);
                         }
                     });
@@ -214,7 +227,7 @@ export class ChunkManager {
     unloadChunk(key) {
         if (this.chunks.has(key)) {
             for (const entity of this.chunks.get(key)) {
-                if (entity.type === 'DwarfSalesman' || entity.type === 'Stash' || entity.type === 'QuestNPC' || entity.type === 'RespecNPC' || entity.type === 'Forge' || entity.type === 'TradingHouse') continue;
+                if (isAlwaysResidentEntityType(entity.type)) continue;
 
                 if (entity.dispose) {
                     entity.dispose();

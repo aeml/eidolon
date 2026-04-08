@@ -50,7 +50,8 @@ Server
 
 ### Instance transition runtime hygiene
 - `GameEngine.enterInstance()` now clears pending interactions, active transient effects, hazard visuals, and combat-target highlight state before rebuilding the next scene
-- This keeps dungeon/overworld swaps from carrying stale combat readability artifacts into the next space
+- `ChunkManager` and `GameEngine.addEntity()` now agree on a single always-resident town-service list (`DwarfSalesman`, `Stash`, `QuestNPC`, `RespecNPC`, `Forge`, `TradingHouse`) so immediate mesh loads do not silently skip render/collision setup
+- This keeps dungeon/overworld swaps from carrying stale combat readability artifacts into the next space and closes a real async mesh-load footgun around town services and active-chunk spawns
 
 ### `NetworkManager`
 - Wraps socket message flow and protobuf state decoding
@@ -86,4 +87,4 @@ Server
 - Current design work is less about first extraction and more about finishing the remaining heavy seams cleanly
 
 ## Most important next architectural step
-Introduce explicit scene groups for environment, entities, and transient effects so instance transitions stop relying on broad scene rebuild behavior.
+Finish routing the remaining direct `gameEngine.scene` gameplay visuals into explicit entity/effect helpers so combat readability effects no longer depend on ad hoc scene writes.
