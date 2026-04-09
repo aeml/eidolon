@@ -423,16 +423,22 @@ export class Cleric extends Actor {
         this.spirits = [];
     }
 
+    clearSeraphMesh() {
+        if (!this.seraphMesh) {
+            return;
+        }
+
+        disposeSceneMesh(this.seraphMesh);
+        this.seraphMesh = null;
+    }
+
     cancelAbilities() {
         this.spiritsActive = false;
         this.clearSpiritMeshes();
         this.guardianEmbraceActive = false;
         this.guardianEmbraceTimer = 0;
         this.seraphActive = false;
-        if (this.seraphMesh && this.mesh) {
-            this.mesh.remove(this.seraphMesh);
-            this.seraphMesh = null;
-        }
+        this.clearSeraphMesh();
     }
 
     update(dt, collisionManager, player, chunkManager, floatingTextManager) {
@@ -486,10 +492,7 @@ export class Cleric extends Actor {
             this.seraphDuration -= dt;
             if (this.seraphDuration <= 0) {
                 this.seraphActive = false;
-                if (this.seraphMesh && this.mesh) {
-                    this.mesh.remove(this.seraphMesh);
-                    this.seraphMesh = null;
-                }
+                this.clearSeraphMesh();
             } else {
                 // Seraph Attacks (every 1.5s)
                 if (!this.seraphAttackTimer) this.seraphAttackTimer = 0;

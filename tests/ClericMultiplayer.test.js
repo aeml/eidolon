@@ -146,4 +146,25 @@ describe('Cleric Multiplayer Logic', () => {
         expect(cleric.spiritsActive).toBe(false);
         expect(cleric.spirits).toHaveLength(0);
     });
+
+    test('cancelAbilities disposes seraph mesh even after reparenting', () => {
+        const seraphMesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.6, 8, 8),
+            new THREE.MeshStandardMaterial({ color: 0xffffff })
+        );
+        const otherParent = new THREE.Group();
+        otherParent.add(seraphMesh);
+        const geometryDispose = jest.spyOn(seraphMesh.geometry, 'dispose');
+        const materialDispose = jest.spyOn(seraphMesh.material, 'dispose');
+        cleric.seraphMesh = seraphMesh;
+        cleric.seraphActive = true;
+
+        cleric.cancelAbilities();
+
+        expect(otherParent.children).toHaveLength(0);
+        expect(geometryDispose).toHaveBeenCalledTimes(1);
+        expect(materialDispose).toHaveBeenCalledTimes(1);
+        expect(cleric.seraphActive).toBe(false);
+        expect(cleric.seraphMesh).toBeNull();
+    });
 });
