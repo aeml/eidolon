@@ -121,4 +121,5 @@ Server
 - Dungeon room hook pacing now stages treasure before the elite spike and reserves the restorative shrine for the deeper pre-boss reset, so runs build momentum instead of front-loading safety.
 - Dungeon objective guidance now exposes the upcoming hooked beat sequence (for example `Chest -> Ambush -> Shrine -> Boss`) directly in the objectives panel, so room metadata reads like an actual run plan instead of isolated labels.
 - Minimap dungeon overlays now preview the next uncleared beat after the current objective with a softer marker/label, so players can read the immediate route plan at a glance while moving instead of only from the objectives panel.
+- World-map dungeon markers now mirror that same beat readability for the active instance by annotating the current dungeon marker with the active objective beat and a next-beat preview, keeping the big map and minimap honest with each other.
 - Most important next architectural step: finish burning down the remaining direct `gameEngine.scene` gameplay visuals still hiding in projectile/utility fallback paths so transient combat readability no longer depends on ad hoc scene writes.

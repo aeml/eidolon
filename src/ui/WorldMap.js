@@ -88,6 +88,13 @@ const TOWN_POIS = TOWN_SERVICE_POINTS.map((point) => ({
     labelOffsetY: point.labelOffsetY
 }));
 
+const DUNGEON_MARKER_LOOKUP = Object.freeze({
+    verdant_bastion_catacombs: 'Verdant Bastion',
+    abyssal_well: 'Abyssal Well',
+    molten_core: 'Molten Core',
+    tempest_spire: 'Tempest Spire'
+});
+
 /**
  * Fence segments (boundary walls).
  * Each entry is an array of line segments: [[x1,z1, x2,z2], ...].
@@ -374,6 +381,51 @@ export class WorldMap {
         ctx.fillText(text, pos.x, pos.y + (offsetY || 0) * this.scale);
     }
 
+    _buildDungeonBeatPreview() {
+        const instanceType = this.gameEngine?.currentInstanceType;
+        const dungeonName = DUNGEON_MARKER_LOOKUP[instanceType];
+        const summary = this.gameEngine?.getDungeonRoomSummary?.();
+        if (!dungeonName || !summary || !Array.isArray(summary.rooms) || typeof summary.objectiveRoomIndex !== 'number' || summary.objectiveRoomIndex < 0) {
+            return null;
+        }
+
+        const objectiveRoom = summary.rooms.find((room) => room && room.index === summary.objectiveRoomIndex);
+        if (!objectiveRoom) {
+            return null;
+        }
+
+        const labelForRoom = (room) => {
+            if (!room) return null;
+            if (room.hook === 'chest') return 'Chest';
+            if (room.hook === 'elite_ambush') return 'Ambush';
+            if (room.hook === 'shrine') return 'Shrine';
+            if (room.type === 'boss') return 'Boss';
+            if (room.type === 'elite') return 'Elite';
+            return 'Objective';
+        };
+
+        const nextRoom = summary.rooms.find((room) => room
+            && typeof room.index === 'number'
+            && room.index > summary.objectiveRoomIndex
+            && !room.cleared
+            && (room.hook === 'elite_ambush' || room.hook === 'shrine' || room.hook === 'chest' || room.type === 'elite' || room.type === 'boss'));
+
+        const previewColor = nextRoom?.hook === 'elite_ambush'
+            ? 'rgba(255, 145, 90, 0.6)'
+            : nextRoom?.type === 'boss'
+                ? 'rgba(255, 110, 110, 0.6)'
+                : nextRoom?.type === 'elite'
+                    ? 'rgba(255, 190, 90, 0.6)'
+                    : 'rgba(255, 215, 90, 0.6)';
+
+        return {
+            dungeonName,
+            objectiveLabel: labelForRoom(objectiveRoom),
+            nextLabel: nextRoom ? labelForRoom(nextRoom) : '',
+            previewColor
+        };
+    }
+
     // -----------------------------------------------------------------------
     // Main draw
     // -----------------------------------------------------------------------
@@ -429,10 +481,12 @@ export class WorldMap {
         }
 
         // 6. Dungeon markers (zoom-culled)
+        const dungeonBeatPreview = this._buildDungeonBeatPreview();
         for (const dg of DUNGEON_MARKERS) {
             if (!this._tierVisible(dg.tier)) continue;
             const pos = w2s(dg.wx, dg.wz);
             const yOff = (dg.labelOffsetY || -15) * this.scale;
+            const isActiveDungeon = dungeonBeatPreview && dungeonBeatPreview.dungeonName === dg.name;
             // Dot
             ctx.fillStyle = dg.dotColor;
             ctx.beginPath();
@@ -440,13 +494,29 @@ export class WorldMap {
             ctx.fill();
             // Gold ring
             ctx.strokeStyle = '#ffd700';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = isActiveDungeon ? 3 : 2;
             ctx.stroke();
             // Label
             ctx.fillStyle = '#ffd700';
             ctx.font = `${28 * (this.scale / 2)}px Arial`;
             ctx.textAlign = 'center';
-            ctx.fillText(`\u2605 ${dg.name}`, pos.x, pos.y + yOff);
+            ctx.fillText(
+                isActiveDungeon
+                    ? `\u2605 ${dg.name} [${dungeonBeatPreview.objectiveLabel}]`
+                    : `\u2605 ${dg.name}`,
+                pos.x,
+                pos.y + yOff
+            );
+            if (isActiveDungeon && dungeonBeatPreview.nextLabel) {
+                ctx.strokeStyle = dungeonBeatPreview.previewColor;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 13, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.fillStyle = dungeonBeatPreview.previewColor;
+                ctx.font = `${18 * (this.scale / 2)}px Arial`;
+                ctx.fillText(`Next: ${dungeonBeatPreview.nextLabel}`, pos.x, pos.y + ((dg.labelOffsetY || 18) * this.scale));
+            }
         }
 
         // 6b. Town points of interest

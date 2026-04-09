@@ -111,4 +111,35 @@ describe('WorldMap town wayfinding', () => {
             expect.objectContaining({ strokeStyle: '#ff9b4a' })
         ]));
     });
+
+    test('renders current and next dungeon beat markers for the active instance', () => {
+        const worldMap = new WorldMap({
+            player: { position: { x: 2400, z: 200 }, id: 'player-1' },
+            chunkManager: { getActiveEntities: () => [] },
+            uiManager: { partyData: { members: [] } },
+            currentInstanceType: 'tempest_spire',
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 0,
+                objectiveRoomIndex: 1,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: false },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: false, cleared: false },
+                    { index: 3, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ]
+            })
+        });
+
+        worldMap.draw({ position: { x: 2400, z: 200 }, id: 'player-1' });
+
+        expect(texts).toEqual(expect.arrayContaining([
+            '★ Tempest Spire [Chest]',
+            'Next: Ambush'
+        ]));
+        expect(strokes).toEqual(expect.arrayContaining([
+            expect.objectContaining({ strokeStyle: '#ffd700' }),
+            expect.objectContaining({ strokeStyle: 'rgba(255, 145, 90, 0.6)' })
+        ]));
+    });
 });
