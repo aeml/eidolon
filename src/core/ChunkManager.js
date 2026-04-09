@@ -152,8 +152,8 @@ export class ChunkManager {
                 this.scene.add(entity.mesh);
             }
         } else {
-            if (entity.mesh && entity.mesh.parent === this.scene) {
-                this.scene.remove(entity.mesh);
+            if (entity.mesh?.parent?.remove) {
+                entity.mesh.parent.remove(entity.mesh);
             }
         }
     }

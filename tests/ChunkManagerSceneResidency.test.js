@@ -99,4 +99,17 @@ describe('ChunkManager scene residency', () => {
         expect(otherParent.remove).toHaveBeenCalledWith(mesh);
         expect(scene.remove).not.toHaveBeenCalled();
     });
+
+    test('addEntity detaches meshes from their current parent when the chunk is inactive', () => {
+        const scene = createSceneHarness();
+        const manager = new ChunkManager(scene);
+        const otherParent = { remove: jest.fn() };
+        const mesh = { parent: otherParent };
+        const entity = createEntity({ mesh, ensureMesh: null, x: 9999, z: 9999 });
+
+        manager.addEntity(entity);
+
+        expect(otherParent.remove).toHaveBeenCalledWith(mesh);
+        expect(scene.remove).not.toHaveBeenCalled();
+    });
 });

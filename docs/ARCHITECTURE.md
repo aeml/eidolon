@@ -113,4 +113,5 @@ Server
 - LootDrop.dispose now detaches from the current parent and only disposes its owned sprite materials, keeping cached text textures and shared orb/hitbox resources intact while honoring the same parent-safe teardown contract.
 - RenderSystem.setupLights now removes existing ambient/directional lights and their targets from their current parent before installing replacements, keeping lighting resets resilient if scene ownership changes.
 - RenderSystem particle-overlay disposal now also detaches the internal points mesh from its current parent before teardown, so environment-particle cleanup matches the same parent-safe ownership contract.
+- ChunkManager now also detaches inactive-chunk meshes from their current parent during addEntity residency decisions, removing the last stale special-case branch that still assumed scene ownership there.
 - Most important next architectural step: finish burning down the remaining direct `gameEngine.scene` gameplay visuals still hiding in projectile/utility fallback paths so transient combat readability no longer depends on ad hoc scene writes.
