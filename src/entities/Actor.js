@@ -326,6 +326,38 @@ export class Actor extends Entity {
         }
     }
 
+    playJumpAnimation(jumpState = null) {
+        const walkAction = this.animations?.Walk;
+        if (!walkAction) {
+            if (this.animations?.Jump) {
+                this.playAnimation('Jump', false, true);
+            }
+            return false;
+        }
+
+        const duration = Math.max(0.001, Number.isFinite(jumpState?.duration) ? jumpState.duration : 0.8);
+        this.playAnimation('Walk', false, true);
+        const clipDuration = this.currentAction?.getClip?.()?.duration || duration;
+        const timeScale = Math.max(0.01, clipDuration / duration);
+        this.currentAction?.setEffectiveTimeScale?.(timeScale);
+        this.jumpAnimationRestore = {
+            name: 'Walk',
+            timeScale
+        };
+        return true;
+    }
+
+    clearJumpAnimation() {
+        if (!this.jumpAnimationRestore) {
+            return;
+        }
+
+        if (this.currentAction?.setEffectiveTimeScale) {
+            this.currentAction.setEffectiveTimeScale(1.0);
+        }
+        this.jumpAnimationRestore = null;
+    }
+
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
         // Base implementation checks costs
         if (this.state === 'DEAD' || this.stunTimer > 0) return false;
