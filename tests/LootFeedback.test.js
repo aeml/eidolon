@@ -152,6 +152,29 @@ describe('GameEngine loot pickup feedback', () => {
         expect(engine.remotePlayers.has(loot.id)).toBe(false);
     });
 
+    test('LootDrop.dispose removes reparented meshes and cleans up owned materials without disposing cached textures', () => {
+        const loot = new LootDrop(createItem('Radiant Ruby', 'Rare', '#a855f7'), 0, 0, 'loot-dispose');
+        const otherParent = new THREE.Group();
+        otherParent.add(loot.mesh);
+
+        const spriteMaterial = new THREE.SpriteMaterial({ map: new THREE.Texture(), transparent: true });
+        const sprite = new THREE.Sprite(spriteMaterial);
+        loot.mesh.add(sprite);
+        const meshMaterialDispose = jest.spyOn(loot.mesh.material, 'dispose');
+        const hitboxMaterialDispose = jest.spyOn(loot.mesh.children[0].material, 'dispose');
+        const spriteMaterialDispose = jest.spyOn(sprite.material, 'dispose');
+        const textureDispose = jest.spyOn(sprite.material.map, 'dispose');
+
+        loot.dispose();
+
+        expect(otherParent.children).toHaveLength(0);
+        expect(meshMaterialDispose).not.toHaveBeenCalled();
+        expect(hitboxMaterialDispose).not.toHaveBeenCalled();
+        expect(spriteMaterialDispose).toHaveBeenCalledTimes(1);
+        expect(textureDispose).not.toHaveBeenCalled();
+        expect(loot.mesh).toBeNull();
+    });
+
     test('processAutoLoot picks nearest eligible loot when enabled', () => {
         const engine = createEngineHarness();
         engine.autoLootEnabled = true;

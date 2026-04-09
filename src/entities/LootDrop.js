@@ -200,7 +200,12 @@ export class LootDrop extends Entity {
                     child.material.dispose();
                 }
             });
+
+            if (this.mesh.parent?.remove) {
+                this.mesh.parent.remove(this.mesh);
+            }
+
+            this.mesh = null;
         }
-        super.dispose();
     }
 }
