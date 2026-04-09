@@ -22,6 +22,8 @@ function createEngineHarness() {
     engine.lastRenderHudSignature = '';
     engine.lastRenderXpSignature = '';
     engine.lastRenderHotbarCooldownSignature = '';
+    engine.lastRenderEnemyBarSignature = '';
+    engine.lastRenderCharacterSheetSignature = '';
     engine.hoveredEntity = null;
     engine.playerJumpState = null;
     engine.playerJumpVisualHeight = 0;
@@ -138,5 +140,56 @@ describe('GameEngine render-time HUD throttling', () => {
         engine.render(1);
 
         expect(engine.uiManager.updateEnemyBars).toHaveBeenCalledTimes(2);
+    });
+
+    test('render does not spam open character sheet updates when tracked sheet data is unchanged', () => {
+        const engine = createEngineHarness();
+        engine.frameCount = 10;
+        engine.uiManager.isCharacterSheetOpen = true;
+        engine.player.stats = {
+            ...engine.player.stats,
+            strength: 12,
+            dexterity: 9,
+            intelligence: 7,
+            vitality: 11,
+            wisdom: 6,
+            damage: 18,
+            defense: 9
+        };
+        engine.player.baseStats = {
+            strength: 10,
+            dexterity: 8,
+            intelligence: 7,
+            vitality: 10,
+            wisdom: 6
+        };
+        engine.player.equipment = {
+            head: null,
+            shoulders: null,
+            chest: null,
+            belt: null,
+            legs: null,
+            feet: null,
+            gloves: null,
+            neck: null,
+            mainHand: null,
+            offHand: null,
+            ring1: null,
+            ring2: null,
+            trinket1: null,
+            trinket2: null
+        };
+        engine.player.statPoints = 0;
+        engine.player.isMultiplayer = false;
+
+        engine.render(1);
+        engine.render(1);
+
+        expect(engine.uiManager.updateCharacterSheet).toHaveBeenCalledTimes(1);
+
+        engine.player.stats.damage = 21;
+        engine.render(1);
+
+        expect(engine.uiManager.updateCharacterSheet).toHaveBeenCalledTimes(2);
     });
 });
