@@ -111,4 +111,5 @@ Server
 - Optimistic loot pickup cleanup in GameEngine now removes fallback meshes from their current parent before falling back to render-system removal, so remote loot teardown matches the same parent-safe contract as the rest of runtime cleanup.
 - Core TransientEffects cleanup now also detaches effect meshes from their current parent before disposing them, so reparented telegraphs and burst visuals obey the same ownership contract as the newer fallback helpers.
 - LootDrop.dispose now detaches from the current parent and only disposes its owned sprite materials, keeping cached text textures and shared orb/hitbox resources intact while honoring the same parent-safe teardown contract.
+- RenderSystem.setupLights now removes existing ambient/directional lights and their targets from their current parent before installing replacements, keeping lighting resets resilient if scene ownership changes.
 - Most important next architectural step: finish burning down the remaining direct `gameEngine.scene` gameplay visuals still hiding in projectile/utility fallback paths so transient combat readability no longer depends on ad hoc scene writes.

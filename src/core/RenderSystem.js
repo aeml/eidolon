@@ -558,14 +558,20 @@ export class RenderSystem {
     }
 
     setupLights() {
-        if (this.ambientLight && this.ambientLight.parent) {
-            this.scene.remove(this.ambientLight);
+        if (this.ambientLight?.parent?.remove) {
+            this.ambientLight.parent.remove(this.ambientLight);
         }
-        if (this.keyLight && this.keyLight.parent) {
-            this.scene.remove(this.keyLight);
+        if (this.keyLight?.parent?.remove) {
+            this.keyLight.parent.remove(this.keyLight);
         }
-        if (this.fillLight && this.fillLight.parent) {
-            this.scene.remove(this.fillLight);
+        if (this.keyLight?.target?.parent?.remove) {
+            this.keyLight.target.parent.remove(this.keyLight.target);
+        }
+        if (this.fillLight?.parent?.remove) {
+            this.fillLight.parent.remove(this.fillLight);
+        }
+        if (this.fillLight?.target?.parent?.remove) {
+            this.fillLight.target.parent.remove(this.fillLight.target);
         }
 
         const ambientLight = new THREE.AmbientLight(0x404040, 2); // Soft white light

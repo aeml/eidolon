@@ -49,6 +49,36 @@ describe('RenderSystem shadow coverage', () => {
         expect(Math.abs(renderSystem.keyLight.target.position.z - 900)).toBeLessThanOrEqual(texelSize / 2);
     });
 
+    test('setupLights removes reparented old lights and old directional targets before installing replacements', () => {
+        const renderSystem = new RenderSystem(false);
+        const oldAmbient = renderSystem.ambientLight;
+        const oldKey = renderSystem.keyLight;
+        const oldFill = renderSystem.fillLight;
+        const oldTarget = renderSystem.keyLight.target;
+        const otherParent = new THREE.Group();
+
+        renderSystem.scene.remove(oldAmbient);
+        renderSystem.scene.remove(oldKey);
+        renderSystem.scene.remove(oldFill);
+        renderSystem.scene.remove(oldTarget);
+        otherParent.add(oldAmbient);
+        otherParent.add(oldKey);
+        otherParent.add(oldFill);
+        otherParent.add(oldTarget);
+
+        renderSystem.setupLights();
+
+        expect(otherParent.children).toHaveLength(0);
+        expect(renderSystem.ambientLight).not.toBe(oldAmbient);
+        expect(renderSystem.keyLight).not.toBe(oldKey);
+        expect(renderSystem.fillLight).not.toBe(oldFill);
+        expect(renderSystem.keyLight.target).not.toBe(oldTarget);
+        expect(renderSystem.scene.children).toContain(renderSystem.ambientLight);
+        expect(renderSystem.scene.children).toContain(renderSystem.keyLight);
+        expect(renderSystem.scene.children).toContain(renderSystem.fillLight);
+        expect(renderSystem.scene.children).toContain(renderSystem.keyLight.target);
+    });
+
     test('camera punch stays disabled until players opt in', () => {
         const renderSystem = new RenderSystem(false);
         const baseline = renderSystem.camera.position.clone();
