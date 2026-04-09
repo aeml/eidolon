@@ -7,11 +7,13 @@ describe('Minimap dungeon room states', () => {
     let strokes;
     let texts;
     let ctx;
+    let buffListWrites;
 
     beforeEach(() => {
         fillRects = [];
         strokes = [];
         texts = [];
+        buffListWrites = [];
         ctx = {
             save: () => {},
             restore: () => {},
@@ -47,6 +49,25 @@ describe('Minimap dungeon room states', () => {
                 el.getContext = () => ctx;
             }
             return el;
+        });
+
+        const originalInnerHTMLDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+        jest.spyOn(Element.prototype, 'appendChild');
+        Object.defineProperty(Element.prototype, 'innerHTML', {
+            configurable: true,
+            get() {
+                return originalInnerHTMLDescriptor?.get ? originalInnerHTMLDescriptor.get.call(this) : this.textContent;
+            },
+            set(value) {
+                if (this.id === 'minimap-buff-list') {
+                    buffListWrites.push(value);
+                }
+                if (originalInnerHTMLDescriptor?.set) {
+                    originalInnerHTMLDescriptor.set.call(this, value);
+                    return;
+                }
+                this.textContent = value;
+            }
         });
     });
 
@@ -143,38 +164,40 @@ describe('Minimap dungeon room states', () => {
 
     test('renders active buff icons to the left of the minimap and shows tooltip details on hover', () => {
         const minimap = new Minimap(200);
+        const activeBuffs = [
+            {
+                id: 'sanctuary',
+                name: 'Sanctuary',
+                icon: '🛡️',
+                detail: '25% DR from shrine blessing',
+                remainingSeconds: 7.4,
+                durationSeconds: 8
+            },
+            {
+                id: 'bleed',
+                name: 'Bleeding',
+                icon: '🩸',
+                detail: '2 bleed stacks',
+                remainingSeconds: 5.0,
+                durationSeconds: 8,
+                isDebuff: true
+            },
+            {
+                id: 'blessing_zeal',
+                name: 'Blessing of Zeal',
+                icon: '✨',
+                detail: '+35% damage and healing',
+                remainingSeconds: 11.4,
+                durationSeconds: 12
+            }
+        ];
         minimap.gameEngine = {
             getDungeonRoomSummary: () => null,
-            getActiveBuffs: () => ([
-                {
-                    id: 'sanctuary',
-                    name: 'Sanctuary',
-                    icon: '🛡️',
-                    detail: '25% DR from shrine blessing',
-                    remainingSeconds: 7.4,
-                    durationSeconds: 8
-                },
-                {
-                    id: 'bleed',
-                    name: 'Bleeding',
-                    icon: '🩸',
-                    detail: '2 bleed stacks',
-                    remainingSeconds: 5.0,
-                    durationSeconds: 8,
-                    isDebuff: true
-                },
-                {
-                    id: 'blessing_zeal',
-                    name: 'Blessing of Zeal',
-                    icon: '✨',
-                    detail: '+35% damage and healing',
-                    remainingSeconds: 11.4,
-                    durationSeconds: 12
-                }
-            ]),
+            getActiveBuffs: () => activeBuffs,
             uiManager: { partyData: { members: [] } }
         };
 
+        minimap.update({ position: { x: 0, z: 0 }, id: 'player-1' }, []);
         minimap.update({ position: { x: 0, z: 0 }, id: 'player-1' }, []);
 
         const wrapper = document.getElementById('minimap-hud');
@@ -197,6 +220,7 @@ describe('Minimap dungeon room states', () => {
         expect(topRowIcons[1].textContent).toContain('✨');
         expect(bottomRowIcons[0].textContent).toContain('🩸');
         expect(bottomRowIcons[0].className).toContain('is-debuff');
+        expect(buffListWrites.length).toBeGreaterThan(0);
 
         icon.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true, clientX: 120, clientY: 60 }));
         expect(tooltip.style.display).toBe('block');
@@ -206,6 +230,11 @@ describe('Minimap dungeon room states', () => {
 
         icon.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
         expect(tooltip.style.display).toBe('none');
+
+        const writesBeforeBuffChange = buffListWrites.length;
+        activeBuffs[0].remainingSeconds = 6.9;
+        minimap.update({ position: { x: 0, z: 0 }, id: 'player-1' }, []);
+        expect(buffListWrites.length).toBeGreaterThan(writesBeforeBuffChange);
     });
 
     test('uses exact canonical town-service anchor positions for minimap markers', () => {

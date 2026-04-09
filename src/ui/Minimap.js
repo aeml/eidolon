@@ -131,6 +131,7 @@ export class Minimap {
 
         // Animation tick counter for pulsing effects
         this._tick = 0;
+        this.lastBuffListSignature = '';
     }
 
     update(player, entities) {
@@ -253,12 +254,29 @@ export class Minimap {
         if (!this.buffList) {
             return;
         }
-        this.buffList.innerHTML = '';
         const buffs = Array.isArray(this.gameEngine?.getActiveBuffs?.()) ? this.gameEngine.getActiveBuffs() : [];
+        const buffListSignature = buffs.map((buff) => [
+            buff?.id || '',
+            buff?.name || '',
+            buff?.icon || '',
+            buff?.detail || '',
+            buff?.isDebuff ? 1 : 0,
+            Number(buff?.remainingSeconds || 0).toFixed(1),
+            Number(buff?.durationSeconds || 0).toFixed(0)
+        ].join(':')).join('|');
         this.buffList.style.display = buffs.length > 0 ? 'flex' : 'none';
         if (buffs.length === 0) {
+            if (this.lastBuffListSignature !== '') {
+                this.buffList.innerHTML = '';
+                this.lastBuffListSignature = '';
+            }
             return;
         }
+        if (buffListSignature === this.lastBuffListSignature) {
+            return;
+        }
+        this.buffList.innerHTML = '';
+        this.lastBuffListSignature = buffListSignature;
 
         const buffRows = [
             {

@@ -117,4 +117,5 @@ Server
 - GameEngine render-time HUD throttling now also diffs enemy-bar visibility/health inputs, so stable hover/Alt target states stop forcing high-frequency enemy-bar DOM work every frame.
 - Open character-sheet refreshes now also diff tracked stat/equipment inputs before rebuilding the sheet, so leaving the panel open no longer causes redundant heavy DOM/equipment-slot churn every throttle tick.
 - Visible world-map refreshes now diff coarse player position and instance context before redrawing, so leaving the map open no longer repaints the whole canvas every render when nothing meaningful changed.
+- Minimap buff/debuff icon rows now diff their displayed buff state before rebuilding the DOM, so stable timed effects stop churning button/list markup every minimap tick.
 - Most important next architectural step: finish burning down the remaining direct `gameEngine.scene` gameplay visuals still hiding in projectile/utility fallback paths so transient combat readability no longer depends on ad hoc scene writes.
