@@ -73,8 +73,6 @@ function createEngineHarness() {
         targetPosition: new THREE.Vector3(2, 0, 2),
         move: jest.fn(),
         playAnimation: jest.fn(),
-        playJumpAnimation: jest.fn(),
-        clearJumpAnimation: jest.fn(),
         mesh: {
             position: new THREE.Vector3(0, 0, 0),
             lookAt: jest.fn(),
@@ -134,10 +132,6 @@ describe('GameEngine ctrl-click jump', () => {
 
         expect(engine.startPlayerJump(destination)).toBe(true);
         expect(engine.player.state).toBe('JUMPING');
-        expect(engine.player.playJumpAnimation).toHaveBeenCalledWith(expect.objectContaining({
-            duration: expect.any(Number),
-            serverDriven: false
-        }));
         expect(engine.player.playAnimation).not.toHaveBeenCalledWith('Run');
         const duration = engine.playerJumpState.duration;
         expect(duration).toBeGreaterThanOrEqual(0.95);
@@ -163,7 +157,6 @@ describe('GameEngine ctrl-click jump', () => {
         expect(engine.playerJumpState).toBeNull();
         expect(engine.playerJumpVisualHeight).toBe(0);
         expect(engine.player.mesh.position.y).toBeCloseTo(engine.player.position.y, 5);
-        expect(engine.player.clearJumpAnimation).toHaveBeenCalledTimes(1);
         expect(engine.player.state).toBe('IDLE');
     });
 

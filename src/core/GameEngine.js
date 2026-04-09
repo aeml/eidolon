@@ -2849,11 +2849,9 @@ export class GameEngine {
         this.clearCombatIntentState?.();
         this.player.state = 'JUMPING';
 
-        this.player.playJumpAnimation?.({
-            duration,
-            height,
-            serverDriven: false
-        });
+        if (this.player.animations?.Jump) {
+            this.player.playAnimation?.('Jump', false, true);
+        }
 
         if (this.player.mesh) {
             this.player.mesh.lookAt(new THREE.Vector3(end.x, this.player.position.y, end.z));
@@ -2946,9 +2944,6 @@ export class GameEngine {
                 visualHeight,
                 displayPosition
             };
-            if (!existingJump || !existingJump.serverDriven || existingJump.duration !== duration) {
-                this.player.playJumpAnimation?.(this.playerJumpState);
-            }
             this.playerJumpVisualHeight = 0;
             this.player.targetPosition = null;
         } else {
@@ -2980,7 +2975,6 @@ export class GameEngine {
                 this.player.position.copy(landingEnd);
                 this.player.position.y = landingEnd.y;
                 this.playerJumpState = null;
-                this.player.clearJumpAnimation?.();
                 this.playerJumpVisualHeight = 0;
                 this.player.targetPosition = null;
                 this.chunkManager?.updateEntityChunk?.(this.player);
@@ -3047,7 +3041,6 @@ export class GameEngine {
             this.player.position.copy(jump.end);
             this.player.position.y = jump.end.y;
             this.playerJumpState = null;
-            this.player.clearJumpAnimation?.();
             this.playerJumpVisualHeight = 0;
             this.playerJumpLandingVisual = {
                 startTime: Date.now(),

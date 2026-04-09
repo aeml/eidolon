@@ -83,8 +83,6 @@ function createEngineHarness() {
         targetPosition: new THREE.Vector3(2, 0, 2),
         move: jest.fn(),
         playAnimation: jest.fn(),
-        playJumpAnimation: jest.fn(),
-        clearJumpAnimation: jest.fn(),
         mesh: {
             position: new THREE.Vector3(0, 0, 0),
             lookAt: jest.fn(),
@@ -135,10 +133,6 @@ describe('authoritative jump flow', () => {
         expect(engine.playerJumpState.end.x).toBe(33);
         expect(engine.playerJumpState.end.z).toBe(-4);
         expect(engine.player.state).toBe('JUMPING');
-        expect(engine.player.playJumpAnimation).toHaveBeenCalledWith(expect.objectContaining({
-            duration: expect.any(Number),
-            serverDriven: false
-        }));
         expect(engine.pendingInteraction).toBeNull();
         expect(engine.abilityController.pendingAbilityTarget).toBeNull();
         expect(engine.abilityController.pendingAbilitySkill).toBeNull();
@@ -184,10 +178,6 @@ describe('authoritative jump flow', () => {
         expect(engine.playerJumpState).toEqual(expect.objectContaining({
             start: expect.any(THREE.Vector3),
             end: expect.any(THREE.Vector3),
-            height: 6,
-            serverDriven: true
-        }));
-        expect(engine.player.playJumpAnimation).toHaveBeenCalledWith(expect.objectContaining({
             height: 6,
             serverDriven: true
         }));
@@ -572,7 +562,6 @@ describe('authoritative jump flow', () => {
         engine.applyPlayerJumpVisuals();
 
         expect(engine.playerJumpState).toBeNull();
-        expect(engine.player.clearJumpAnimation).toHaveBeenCalledTimes(1);
         expect(engine.player.position.y).toBe(0);
         expect(engine.player.mesh.position.y).toBe(0);
     });
