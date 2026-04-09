@@ -71,6 +71,30 @@ describe('GameEngine mesh-ready residency', () => {
         expect(engine.renderSystem.add).toHaveBeenCalledWith(entity.mesh);
     });
 
+    test('addEntity discards inactive meshes from their current parent after reparenting', () => {
+        const engine = createEngineHarness({ activeChunk: true });
+        const entity = createImmediateMeshEntity('Skeleton');
+        const otherParent = new THREE.Group();
+
+        entity.isActive = false;
+        entity.ensureMesh = function ensureMeshWithReparent() {
+            const mesh = createMesh();
+            this.mesh = mesh;
+            otherParent.add(mesh);
+            if (this.onMeshReady) {
+                this.onMeshReady(mesh);
+                this.onMeshReady = null;
+            }
+            return Promise.resolve(mesh);
+        };
+
+        engine.addEntity(entity);
+
+        expect(otherParent.children).toHaveLength(0);
+        expect(engine.renderSystem.remove).not.toHaveBeenCalledWith(entity.mesh);
+        expect(engine.renderSystem.add).not.toHaveBeenCalledWith(entity.mesh);
+    });
+
     test('always-visible town services stay render-resident and get collision setup after immediate mesh load', () => {
         const engine = createEngineHarness({ activeChunk: false });
         const entity = createImmediateMeshEntity('Forge');

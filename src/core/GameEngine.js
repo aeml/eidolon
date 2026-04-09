@@ -2639,7 +2639,11 @@ export class GameEngine {
 
             if (!entity.isActive) {
                 console.log(`GameEngine: Entity ${entity.id} is inactive, discarding mesh.`);
-                this.renderSystem.remove(mesh);
+                if (mesh.parent?.remove) {
+                    mesh.parent.remove(mesh);
+                } else {
+                    this.renderSystem.remove(mesh);
+                }
                 return;
             }
 

@@ -107,4 +107,5 @@ Server
 - Cleric seraph cleanup now follows the same shared parent-safe disposal path as Spirit Guardians, so cancel/expiry teardown no longer assumes the seraph mesh still lives under the Cleric root mesh.
 - GameEngine remote-entity fallback teardown now detaches meshes from their current parent before falling back to render-system removal, so stale ownership assumptions no longer leak into remote entity cleanup.
 - GameEngine local pending-interaction pickup cleanup now follows the same parent-safe fallback rule, so reparented loot meshes detach correctly even when no entity-level dispose hook exists.
+- GameEngine now also discards immediately-created inactive meshes from their current parent during onMeshReady handling, so stale ownership assumptions do not survive entity invalidation races.
 - Most important next architectural step: finish burning down the remaining direct `gameEngine.scene` gameplay visuals still hiding in projectile/utility fallback paths so transient combat readability no longer depends on ad hoc scene writes.
