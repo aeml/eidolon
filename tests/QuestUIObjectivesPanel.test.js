@@ -370,8 +370,36 @@ describe('QuestUI objectives panel', () => {
                 badge: 'Chest',
                 badgeClass: 'is-chest',
                 hint: 'Treasure cache detected deeper inside',
-                routeTone: 'support'
+                routeTone: 'support',
+                sequenceHint: 'Route: Chest -> Ambush -> Shrine -> Boss'
             })
         ]);
+    });
+
+    test('renders route preview guidance for staged dungeon beats', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 0,
+                objectiveRoomIndex: 1,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: false, cleared: false },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: false, cleared: false },
+                    { index: 3, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'verdant_bastion_catacombs'
+        });
+
+        questUI.updateJournal([]);
+
+        const guidance = document.querySelector('.objective-guidance');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Secure the treasure room');
+        expect(guidance.textContent).toContain('Route: Chest -> Ambush -> Shrine -> Boss');
     });
 });

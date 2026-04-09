@@ -140,6 +140,37 @@ export class QuestUI {
         };
     }
 
+    buildDungeonRouteSequenceHint(summary, objectiveRoom) {
+        if (!summary || !Array.isArray(summary.rooms) || !objectiveRoom) {
+            return '';
+        }
+
+        const currentObjectiveIndex = typeof objectiveRoom.index === 'number'
+            ? objectiveRoom.index
+            : Number(summary.objectiveRoomIndex);
+        if (!Number.isFinite(currentObjectiveIndex)) {
+            return '';
+        }
+
+        const labelForRoom = (room) => {
+            if (!room) return null;
+            if (room.hook === 'chest') return 'Chest';
+            if (room.hook === 'elite_ambush') return 'Ambush';
+            if (room.hook === 'shrine') return 'Shrine';
+            if (room.type === 'boss') return 'Boss';
+            if (room.type === 'elite') return 'Elite';
+            return null;
+        };
+
+        const orderedBeats = summary.rooms
+            .filter((room) => room && typeof room.index === 'number' && room.index >= currentObjectiveIndex && !room.cleared)
+            .map((room) => labelForRoom(room))
+            .filter(Boolean)
+            .filter((label, index, labels) => labels.indexOf(label) === index);
+
+        return orderedBeats.length >= 2 ? `Route: ${orderedBeats.join(' -> ')}` : '';
+    }
+
     buildDungeonRoutingObjective() {
         const instanceId = this.ctx.getCurrentInstanceId?.();
         const summary = this.ctx.getDungeonRoomSummary?.();
@@ -157,6 +188,7 @@ export class QuestUI {
         const totalProgressRooms = Math.max(1, traversableRooms.length);
         const progressLabel = `${Math.min(clearedCount, totalProgressRooms)} / ${totalProgressRooms}`;
         const progressPct = Math.min(100, (Math.min(clearedCount, totalProgressRooms) / totalProgressRooms) * 100);
+        const sequenceHint = this.buildDungeonRouteSequenceHint(summary, objectiveRoom);
 
         if (!objectiveRoom) {
             return {
@@ -169,7 +201,8 @@ export class QuestUI {
                 badge: 'Exit',
                 badgeClass: 'is-exit',
                 routeTone: 'support',
-                hint: 'Dungeon cleared — head back to the entrance'
+                hint: 'Dungeon cleared — head back to the entrance',
+                sequenceHint
             };
         }
 
@@ -184,7 +217,8 @@ export class QuestUI {
                 badge: 'Shrine',
                 badgeClass: 'is-shrine',
                 routeTone: 'support',
-                hint: objectiveRoom.explored ? 'Shrine discovered' : 'A restorative shrine lies ahead'
+                hint: objectiveRoom.explored ? 'Shrine discovered' : 'A restorative shrine lies ahead',
+                sequenceHint
             };
         }
 
@@ -199,7 +233,8 @@ export class QuestUI {
                 badge: 'Chest',
                 badgeClass: 'is-chest',
                 routeTone: 'support',
-                hint: objectiveRoom.explored ? 'Treasure room discovered' : 'Treasure cache detected deeper inside'
+                hint: objectiveRoom.explored ? 'Treasure room discovered' : 'Treasure cache detected deeper inside',
+                sequenceHint
             };
         }
 
@@ -214,7 +249,8 @@ export class QuestUI {
                 badge: 'Ambush',
                 badgeClass: 'is-ambush',
                 routeTone: 'warning',
-                hint: objectiveRoom.explored ? 'Elite ambush discovered' : 'Ambush signatures ahead'
+                hint: objectiveRoom.explored ? 'Elite ambush discovered' : 'Ambush signatures ahead',
+                sequenceHint
             };
         }
 
@@ -229,7 +265,8 @@ export class QuestUI {
                 badge: 'Boss',
                 badgeClass: 'is-boss',
                 routeTone: 'danger',
-                hint: objectiveRoom.explored ? 'Boss room discovered' : 'Push toward the boss room'
+                hint: objectiveRoom.explored ? 'Boss room discovered' : 'Push toward the boss room',
+                sequenceHint
             };
         }
 
@@ -244,7 +281,8 @@ export class QuestUI {
                 badge: 'Elite',
                 badgeClass: 'is-elite',
                 routeTone: 'warning',
-                hint: objectiveRoom.explored ? 'Elite room discovered' : 'Elite threat ahead'
+                hint: objectiveRoom.explored ? 'Elite room discovered' : 'Elite threat ahead',
+                sequenceHint
             };
         }
 
@@ -259,7 +297,8 @@ export class QuestUI {
             badge: 'Objective',
             badgeClass: 'is-objective',
             routeTone: 'neutral',
-            hint: remainingRooms === 1 ? 'Boss path open — one room remains' : `Clear ${remainingRooms} more rooms`
+            hint: remainingRooms === 1 ? 'Boss path open — one room remains' : `Clear ${remainingRooms} more rooms`,
+            sequenceHint
         };
     }
 
@@ -310,6 +349,7 @@ export class QuestUI {
             <div style="color: #ffd700; font-size: 11px; font-weight: bold; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px;">Next Step</div>
             <div style="color: #fff; font-size: 13px; font-weight: bold; margin-bottom: 4px;">${objective.title}</div>
             <div>${objective.completed ? `Turn this in for ${objective.rewardXP || 0} XP.` : objective.hint}</div>
+            ${objective.sequenceHint ? `<div style="color: #ffdf8a; margin-top: 6px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;">${objective.sequenceHint}</div>` : ''}
             <div style="color: #aaa; margin-top: 6px;">Open World Map (M) and Journal (J) if you need to re-orient.</div>
         `;
         if (this.objectivesList.parentNode === this.objectivesPanel) {

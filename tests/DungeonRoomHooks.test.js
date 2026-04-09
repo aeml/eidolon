@@ -68,7 +68,8 @@ describe('Dungeon room hooks', () => {
                 badge: 'Chest',
                 badgeClass: 'is-chest',
                 routeTone: 'support',
-                hint: 'Treasure room discovered'
+                hint: 'Treasure room discovered',
+                sequenceHint: 'Route: Chest -> Boss'
             })
         ]);
     });
