@@ -3920,7 +3920,11 @@ export class GameEngine {
                                         if (this.pendingInteraction.dispose) {
                                             this.pendingInteraction.dispose();
                                         } else if (this.pendingInteraction.mesh) {
-                                            this.renderSystem.remove(this.pendingInteraction.mesh);
+                                            if (this.pendingInteraction.mesh.parent?.remove) {
+                                                this.pendingInteraction.mesh.parent.remove(this.pendingInteraction.mesh);
+                                            } else {
+                                                this.renderSystem.remove(this.pendingInteraction.mesh);
+                                            }
                                         }
                                         
                                         const key = this.chunkManager.getChunkKey(this.pendingInteraction.position.x, this.pendingInteraction.position.z);

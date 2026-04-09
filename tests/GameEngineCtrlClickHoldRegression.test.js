@@ -15,6 +15,7 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 });
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
+const { LootDrop } = await import('../src/entities/LootDrop.js');
 
 function createEngineHarness() {
     const engine = Object.create(GameEngine.prototype);
@@ -70,7 +71,8 @@ function createEngineHarness() {
         updatePlayerStats: jest.fn(),
         updateXP: jest.fn(),
         updateHotbarCooldowns: jest.fn(),
-        updateEnemyBars: jest.fn()
+        updateEnemyBars: jest.fn(),
+        updateInventory: jest.fn()
     };
     engine.minimap = { update: jest.fn() };
     engine.worldMap = { update: jest.fn() };
@@ -97,6 +99,7 @@ function createEngineHarness() {
     engine.floatingTextManager = { update: jest.fn() };
     engine.effects = [];
     engine.hazards = new Map();
+    engine.lastPickupTime = 0;
     engine.player = {
         id: 'player-1',
         position: new THREE.Vector3(0, 0, 0),
@@ -192,6 +195,64 @@ describe('GameEngine ctrl-click hold regression', () => {
 
         expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.playerJumpState.displayPosition);
         expect(engine.renderSystem.setCameraTarget).not.toHaveBeenCalledWith(engine.player.position);
+    });
+
+    test('local loot pickup fallback removes a reparented pendingInteraction mesh from its current parent', () => {
+        const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(1000);
+        const engine = createEngineHarness();
+        const pendingMesh = { children: [], parent: null };
+        const otherParent = {
+            children: [],
+            add(mesh) {
+                if (!this.children.includes(mesh)) {
+                    this.children.push(mesh);
+                }
+                mesh.parent = this;
+            },
+            remove: jest.fn(function (mesh) {
+                this.children = this.children.filter(child => child !== mesh);
+                if (mesh.parent === this) {
+                    mesh.parent = null;
+                }
+            })
+        };
+        const pendingInteraction = Object.create(LootDrop.prototype);
+        pendingInteraction.id = 'loot-local-1';
+        pendingInteraction.isActive = true;
+        pendingInteraction.position = new THREE.Vector3(0, 0.5, 0);
+        pendingInteraction.item = { name: 'Radiant Ruby' };
+        pendingInteraction.mesh = pendingMesh;
+        pendingInteraction.dispose = undefined;
+
+        otherParent.add(pendingMesh);
+        engine.pendingInteraction = pendingInteraction;
+        engine.isMultiplayer = false;
+        engine.chunkManager = {
+            getActiveEntities: jest.fn(() => [engine.player]),
+            update: jest.fn(),
+            updateEntityChunk: jest.fn(),
+            getChunkKey: jest.fn(() => '0:0'),
+            chunks: new Map([['0:0', new Set([pendingInteraction])]])
+        };
+        engine.player.targetPosition = new THREE.Vector3(0, 0, 0);
+        engine.player.state = 'MOVING';
+        engine.player.addToInventory = jest.fn(() => true);
+        engine.player.getAttackHitDelay = jest.fn(() => Infinity);
+        engine.inputManager.isMouseDown = false;
+        engine.inputManager.keys.control = false;
+        engine.inputManager.keys.meta = false;
+        engine.getInteractionRangeForEntity = jest.fn(() => 5);
+
+        engine.update(1 / 60);
+
+        // Sanity: pickup path should have run and cleared the interaction.
+        expect(engine.player.addToInventory).toHaveBeenCalledWith(pendingInteraction.item);
+        expect(otherParent.remove).toHaveBeenCalledWith(pendingMesh);
+        expect(otherParent.children).toHaveLength(0);
+        expect(engine.renderSystem.scene.remove).not.toHaveBeenCalledWith(pendingMesh);
+        expect(engine.pendingInteraction).toBeNull();
+        expect(engine.chunkManager.chunks.get('0:0').has(pendingInteraction)).toBe(false);
+        dateNowSpy.mockRestore();
     });
 
     test('meta-hold uses the same modifier-held branch as ctrl-hold instead of falling back to click-to-move', () => {
