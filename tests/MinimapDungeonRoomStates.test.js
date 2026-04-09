@@ -141,6 +141,29 @@ describe('Minimap dungeon room states', () => {
         expect(texts.some((entry) => String(entry.args[0]).includes('Elite'))).toBe(true);
     });
 
+    test('renders a preview marker for the next uncleared dungeon beat after the current objective', () => {
+        const minimap = new Minimap(200);
+        minimap.gameEngine = {
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 0,
+                objectiveRoomIndex: 1,
+                rooms: [
+                    { index: 0, x: 0, z: 0, width: 40, height: 40, type: 'start', explored: true, cleared: true },
+                    { index: 1, x: 50, z: 0, width: 40, height: 40, type: 'normal', hook: 'chest', explored: true, cleared: false },
+                    { index: 2, x: 100, z: 0, width: 40, height: 40, type: 'elite', hook: 'elite_ambush', explored: false, cleared: false },
+                    { index: 3, x: 150, z: 0, width: 40, height: 40, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 4, x: 200, z: 0, width: 40, height: 40, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            uiManager: { partyData: { members: [] } }
+        };
+
+        minimap.update({ position: { x: 0, z: 0 }, id: 'player-1' }, []);
+
+        expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 145, 90, 0.55)')).toBe(true);
+        expect(texts.some((entry) => String(entry.args[0]).includes('Next Ambush'))).toBe(true);
+    });
+
     test('renders a distinct exit marker when the dungeon objective is complete', () => {
         const minimap = new Minimap(200);
         minimap.gameEngine = {

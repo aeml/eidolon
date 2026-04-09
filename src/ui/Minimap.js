@@ -438,6 +438,41 @@ export class Minimap {
             return;
         }
 
+        const getObjectiveMarkerStyle = (room, alpha = 0.95) => {
+            const isBossObjective = room?.type === 'boss';
+            const isEliteObjective = room?.type === 'elite';
+            const isAmbushObjective = room?.hook === 'elite_ambush';
+            return {
+                isBossObjective,
+                stroke: isBossObjective
+                    ? `rgba(255, 110, 110, ${alpha})`
+                    : isAmbushObjective
+                        ? `rgba(255, 145, 90, ${alpha})`
+                        : isEliteObjective
+                            ? `rgba(255, 190, 90, ${alpha})`
+                            : `rgba(255, 215, 90, ${alpha})`,
+                label: isBossObjective
+                    ? 'Boss'
+                    : isAmbushObjective
+                        ? 'Ambush'
+                        : isEliteObjective
+                            ? 'Elite'
+                            : room?.hook === 'shrine'
+                                ? 'Shrine'
+                                : room?.hook === 'chest'
+                                    ? 'Chest'
+                                    : 'Objective'
+            };
+        };
+
+        const nextBeatRoom = typeof summary.objectiveRoomIndex === 'number' && summary.objectiveRoomIndex >= 0
+            ? summary.rooms.find((room) => room
+                && typeof room.index === 'number'
+                && room.index > summary.objectiveRoomIndex
+                && !room.cleared
+                && (room.hook === 'elite_ambush' || room.hook === 'shrine' || room.hook === 'chest' || room.type === 'elite' || room.type === 'boss'))
+            : null;
+
         summary.rooms.forEach((room) => {
             const center = toMap(room.x, room.z);
             const roomWidth = Math.max(6, room.width * scale * 0.5);
@@ -475,36 +510,32 @@ export class Minimap {
             }
 
             if (room.index === summary.objectiveRoomIndex) {
-                const isBossObjective = room.type === 'boss';
-                const isEliteObjective = room.type === 'elite';
-                const isAmbushObjective = room.hook === 'elite_ambush';
-                const objectiveStroke = isBossObjective
-                    ? 'rgba(255, 110, 110, 0.95)'
-                    : isAmbushObjective
-                        ? 'rgba(255, 145, 90, 0.95)'
-                    : isEliteObjective
-                        ? 'rgba(255, 190, 90, 0.95)'
-                        : 'rgba(255, 215, 90, 0.95)';
-                ctx.strokeStyle = objectiveStroke;
-                ctx.lineWidth = isBossObjective ? 2.5 : 2;
+                const objectiveMarker = getObjectiveMarkerStyle(room);
+                ctx.strokeStyle = objectiveMarker.stroke;
+                ctx.lineWidth = objectiveMarker.isBossObjective ? 2.5 : 2;
                 ctx.beginPath();
                 ctx.arc(center.x, center.y, Math.max(roomWidth, roomHeight) * 0.35, 0, Math.PI * 2);
                 ctx.stroke();
-                ctx.fillStyle = objectiveStroke;
+                ctx.fillStyle = objectiveMarker.stroke;
                 ctx.fillText(
-                    isBossObjective
-                        ? 'Boss'
-                        : isAmbushObjective
-                            ? 'Ambush'
-                            : isEliteObjective
-                                ? 'Elite'
-                                : room.hook === 'shrine'
-                                    ? 'Shrine'
-                                    : room.hook === 'chest'
-                                        ? 'Chest'
-                                        : 'Objective',
+                    objectiveMarker.label,
                     center.x,
                     center.y - Math.max(8, roomHeight * 0.5)
+                );
+            }
+
+            if (nextBeatRoom && room.index === nextBeatRoom.index) {
+                const nextBeatMarker = getObjectiveMarkerStyle(room, 0.55);
+                ctx.strokeStyle = nextBeatMarker.stroke;
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.arc(center.x, center.y, Math.max(roomWidth, roomHeight) * 0.24, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.fillStyle = nextBeatMarker.stroke;
+                ctx.fillText(
+                    `Next ${nextBeatMarker.label}`,
+                    center.x,
+                    center.y + Math.max(10, roomHeight * 0.55)
                 );
             }
         });
