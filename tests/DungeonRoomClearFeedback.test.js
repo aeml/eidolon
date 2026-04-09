@@ -235,6 +235,9 @@ describe('Dungeon room clear feedback', () => {
             spawn: jest.fn()
         };
         engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+        engine.getDungeonRoomSummary = GameEngine.prototype.getDungeonRoomSummary;
+        engine.buildDungeonBeatAdvanceCallout = GameEngine.prototype.buildDungeonBeatAdvanceCallout;
+        engine.getDungeonBeatLabel = GameEngine.prototype.getDungeonBeatLabel;
 
         const summary = createRoomClearSummary();
         engine.handleServerMessage({ type: 'room_clear_reward', payload: summary });
@@ -243,6 +246,51 @@ describe('Dungeon room clear feedback', () => {
         expect(engine.uiManager.showRoomClearReward).toHaveBeenCalledWith(summary);
         expect(engine.getDungeonRoomSummary()).toEqual(expect.objectContaining({
             objectiveRoomIndex: 2
+        }));
+    });
+
+    test('GameEngine room_clear_reward handling raises a boss warning when the next objective becomes the boss room', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = {
+            id: 'player-1',
+            position: new THREE.Vector3(5, 0, 10),
+            quests: []
+        };
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 1,
+            objectiveRoomIndex: 1,
+            rooms: [
+                { index: 0, type: 'start', explored: true, cleared: true },
+                { index: 1, type: 'normal', hook: 'shrine', explored: true, cleared: false },
+                { index: 2, type: 'boss', explored: false, cleared: false }
+            ]
+        };
+        engine.uiManager = {
+            showRewardSummary: jest.fn(),
+            showRoomClearReward: jest.fn(),
+            showCombatCallout: jest.fn(),
+            updateQuestWindow: jest.fn(),
+            updateJournal: jest.fn()
+        };
+        engine.floatingTextManager = {
+            spawn: jest.fn()
+        };
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+        engine.getDungeonRoomSummary = GameEngine.prototype.getDungeonRoomSummary;
+        engine.buildDungeonBeatAdvanceCallout = GameEngine.prototype.buildDungeonBeatAdvanceCallout;
+        engine.getDungeonBeatLabel = GameEngine.prototype.getDungeonBeatLabel;
+
+        const summary = createRoomClearSummary({
+            roomIndex: 1,
+            objectiveRoomIndex: 2,
+            hint: 'Path opened to the boss room'
+        });
+        engine.handleServerMessage({ type: 'room_clear_reward', payload: summary });
+
+        expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
+            title: 'Next: Boss',
+            tone: 'boss',
+            subtitle: 'Boss room ahead — reset and commit'
         }));
     });
 

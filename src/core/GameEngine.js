@@ -884,9 +884,10 @@ export class GameEngine {
                         expiresAt: Date.now() + (Number(summary.buffDurationSeconds) * 1000)
                     });
                 }
+                const previousDungeonRoomState = this.currentDungeonRoomState;
                 if (this.currentDungeonRoomState) {
-                        const updatedRooms = Array.isArray(this.currentDungeonRoomState.rooms)
-                            ? this.currentDungeonRoomState.rooms.map((room) => {
+                    const updatedRooms = Array.isArray(this.currentDungeonRoomState.rooms)
+                        ? this.currentDungeonRoomState.rooms.map((room) => {
                             if (!room || typeof room.index !== 'number') return room;
                             if (typeof summary.roomIndex === 'number' && room.index === summary.roomIndex) {
                                 return { ...room, explored: true, cleared: true };
@@ -908,6 +909,10 @@ export class GameEngine {
                 }
                 if (this.uiManager && this.uiManager.showRoomClearReward) {
                     this.uiManager.showRoomClearReward(summary);
+                }
+                const beatAdvanceCallout = this.buildDungeonBeatAdvanceCallout(previousDungeonRoomState, this.currentDungeonRoomState);
+                if (beatAdvanceCallout) {
+                    this.uiManager?.showCombatCallout?.(beatAdvanceCallout);
                 }
             }
         } else if (msg.type === 'telegraph') {

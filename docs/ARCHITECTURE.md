@@ -124,4 +124,5 @@ Server
 - World-map dungeon markers now mirror that same beat readability for the active instance by annotating the current dungeon marker with the active objective beat and a next-beat preview, keeping the big map and minimap honest with each other.
 - Render-time world-map throttling now keys off dungeon beat state as well as player movement/instance identity, so route-readability markers stay truthful when the objective advances in-place instead of waiting for the player to move.
 - Dungeon room-state advances can now raise a small combat callout for the newly exposed dangerous beat (for example `Next: Ambush`), so the pacing plan shows up as an actionable warning instead of only map chrome.
+- Room-clear progression now reuses that same beat-advance callout path, so the moment a shrine or mid-run room opens the boss objective the client immediately surfaces `Next: Boss` instead of burying it only in reward text.
 - Most important next architectural step: finish burning down the remaining direct `gameEngine.scene` gameplay visuals still hiding in projectile/utility fallback paths so transient combat readability no longer depends on ad hoc scene writes.
