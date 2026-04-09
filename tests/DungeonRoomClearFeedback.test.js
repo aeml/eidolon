@@ -294,6 +294,52 @@ describe('Dungeon room clear feedback', () => {
         }));
     });
 
+    test('GameEngine room_clear_reward handling frames shrine unlocks as the last reset before boss', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = {
+            id: 'player-1',
+            position: new THREE.Vector3(5, 0, 10),
+            quests: []
+        };
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 1,
+            objectiveRoomIndex: 1,
+            rooms: [
+                { index: 0, type: 'start', explored: true, cleared: true },
+                { index: 1, type: 'elite', hook: 'elite_ambush', explored: true, cleared: false },
+                { index: 2, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                { index: 3, type: 'boss', explored: false, cleared: false }
+            ]
+        };
+        engine.uiManager = {
+            showRewardSummary: jest.fn(),
+            showRoomClearReward: jest.fn(),
+            showCombatCallout: jest.fn(),
+            updateQuestWindow: jest.fn(),
+            updateJournal: jest.fn()
+        };
+        engine.floatingTextManager = {
+            spawn: jest.fn()
+        };
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+        engine.getDungeonRoomSummary = GameEngine.prototype.getDungeonRoomSummary;
+        engine.buildDungeonBeatAdvanceCallout = GameEngine.prototype.buildDungeonBeatAdvanceCallout;
+        engine.getDungeonBeatLabel = GameEngine.prototype.getDungeonBeatLabel;
+
+        const summary = createRoomClearSummary({
+            roomIndex: 1,
+            objectiveRoomIndex: 2,
+            hint: 'Shrine restored your strength for the next push'
+        });
+        engine.handleServerMessage({ type: 'room_clear_reward', payload: summary });
+
+        expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
+            title: 'Next: Shrine',
+            tone: 'support',
+            subtitle: 'Last reset before the boss push'
+        }));
+    });
+
     test('UIManager.showRoomClearReward emits concise reward and hint messages', () => {
         buildDom();
         const ui = new UIManager(false);

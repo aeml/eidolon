@@ -2348,6 +2348,7 @@ export class GameEngine {
         }
 
         const beatLabel = this.getDungeonBeatLabel(objectiveRoom);
+        const nextRoomAfterObjective = nextSummary.rooms.find((room) => room && typeof room.index === 'number' && room.index > nextObjective && !room.cleared);
         let subtitle = 'Next room marked on the route';
         let tone = 'support';
         if (objectiveRoom.hook === 'elite_ambush') {
@@ -2357,7 +2358,9 @@ export class GameEngine {
             subtitle = 'Boss room ahead — reset and commit';
             tone = 'boss';
         } else if (objectiveRoom.hook === 'shrine') {
-            subtitle = 'Shrine ahead — brief reset before the push';
+            subtitle = nextRoomAfterObjective?.type === 'boss'
+                ? 'Last reset before the boss push'
+                : 'Shrine ahead — brief reset before the push';
         } else if (objectiveRoom.hook === 'chest') {
             subtitle = 'Treasure room ahead — quick reward before danger';
         }
