@@ -63,13 +63,13 @@ func assignDungeonRoomHooks(layout *DungeonLayout) {
 	}
 
 	if len(normalIndices) > 0 {
-		layout.Rooms[normalIndices[0]].Hook = "shrine"
+		layout.Rooms[normalIndices[0]].Hook = "chest"
 	}
 	if len(eliteIndices) > 0 {
 		layout.Rooms[eliteIndices[0]].Hook = "elite_ambush"
 	}
 	if len(normalIndices) > 1 {
-		layout.Rooms[normalIndices[len(normalIndices)-1]].Hook = "chest"
+		layout.Rooms[normalIndices[len(normalIndices)-1]].Hook = "shrine"
 	}
 }
 

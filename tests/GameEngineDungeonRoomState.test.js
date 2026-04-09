@@ -221,12 +221,14 @@ describe('GameEngine dungeon room state', () => {
             updateJournal: jest.fn()
         };
         engine.currentDungeonRoomState = {
-            currentRoomIndex: 1,
+            currentRoomIndex: 0,
             objectiveRoomIndex: 1,
             rooms: [
                 { index: 0, explored: true, cleared: true, type: 'start', x: 0, z: 0, width: 40, height: 40 },
-                { index: 1, explored: true, cleared: false, type: 'normal', x: 50, z: 0, width: 40, height: 40 },
-                { index: 2, explored: false, cleared: false, type: 'boss', x: 100, z: 0, width: 40, height: 40 }
+                { index: 1, explored: true, cleared: false, type: 'normal', hook: 'chest', x: 50, z: 0, width: 40, height: 40 },
+                { index: 2, explored: false, cleared: false, type: 'elite', hook: 'elite_ambush', x: 100, z: 0, width: 40, height: 40 },
+                { index: 3, explored: false, cleared: false, type: 'normal', hook: 'shrine', x: 150, z: 0, width: 40, height: 40 },
+                { index: 4, explored: false, cleared: false, type: 'boss', x: 200, z: 0, width: 40, height: 40 }
             ]
         };
 
@@ -237,8 +239,9 @@ describe('GameEngine dungeon room state', () => {
                 roomIndex: 1,
                 objectiveRoomIndex: 2,
                 roomType: 'normal',
+                roomHook: 'chest',
                 title: 'Room Cleared: Hall 2',
-                hint: 'Boss room discovered',
+                hint: 'Elite ambush discovered',
                 gold: 50,
                 xp: 120
             }
@@ -247,8 +250,9 @@ describe('GameEngine dungeon room state', () => {
         expect(engine.getDungeonRoomSummary()).toEqual(expect.objectContaining({
             objectiveRoomIndex: 2,
             rooms: expect.arrayContaining([
-                expect.objectContaining({ index: 1, explored: true, cleared: true }),
-                expect.objectContaining({ index: 2, explored: true, cleared: false, type: 'boss' })
+                expect.objectContaining({ index: 1, explored: true, cleared: true, hook: 'chest' }),
+                expect.objectContaining({ index: 2, explored: true, cleared: false, type: 'elite', hook: 'elite_ambush' }),
+                expect.objectContaining({ index: 3, explored: false, cleared: false, type: 'normal', hook: 'shrine' })
             ])
         }));
     });

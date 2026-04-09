@@ -341,4 +341,37 @@ describe('QuestUI objectives panel', () => {
             })
         ]);
     });
+
+    test('builds a treasure-room routing objective before the deeper shrine reset room', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 0,
+                objectiveRoomIndex: 1,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: false, cleared: false },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: false, cleared: false },
+                    { index: 3, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'verdant_bastion_catacombs'
+        });
+
+        const summary = questUI.buildObjectiveSummary([]);
+
+        expect(summary).toEqual([
+            expect.objectContaining({
+                id: 'dungeon-route-verdant_bastion_catacombs',
+                title: 'Secure the treasure room',
+                badge: 'Chest',
+                badgeClass: 'is-chest',
+                hint: 'Treasure cache detected deeper inside',
+                routeTone: 'support'
+            })
+        ]);
+    });
 });

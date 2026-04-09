@@ -162,9 +162,9 @@ func TestMarkDungeonRoomClearedAppliesHookRewardsAndHints(t *testing.T) {
 	layout := DungeonLayout{
 		Rooms: []DungeonRoom{
 			{X: 0, Z: 0, Width: 40, Height: 40, Type: "start"},
-			{X: 100, Z: 0, Width: 40, Height: 40, Type: "normal", Hook: "shrine"},
-			{X: 200, Z: 0, Width: 40, Height: 40, Type: "normal", Hook: "chest"},
-			{X: 300, Z: 0, Width: 40, Height: 40, Type: "elite", Hook: "elite_ambush"},
+			{X: 100, Z: 0, Width: 40, Height: 40, Type: "normal", Hook: "chest"},
+			{X: 200, Z: 0, Width: 40, Height: 40, Type: "elite", Hook: "elite_ambush"},
+			{X: 300, Z: 0, Width: 40, Height: 40, Type: "normal", Hook: "shrine"},
 			{X: 400, Z: 0, Width: 40, Height: 40, Type: "boss"},
 		},
 	}
@@ -189,36 +189,39 @@ func TestMarkDungeonRoomClearedAppliesHookRewardsAndHints(t *testing.T) {
 	}
 
 	w.MarkDungeonRoomCleared(instanceID, 1)
-	if player.Health != 700 || player.Mana != 210 {
-		t.Fatalf("expected shrine to restore 30%% health/mana, got health=%d mana=%d", player.Health, player.Mana)
+	if rewards[0].Hint != "Treasure secured — cash in before the boss" {
+		t.Fatalf("expected chest hint, got %q", rewards[0].Hint)
 	}
-	if rewards[0].Hint != "Shrine restored your strength for the next push" {
-		t.Fatalf("expected shrine hint, got %q", rewards[0].Hint)
+	if rewards[0].RoomHook != "chest" {
+		t.Fatalf("expected chest hook metadata, got %+v", rewards[0])
 	}
-	if rewards[0].BuffName != "Sanctuary" || rewards[0].BuffDurationSeconds != 8 || rewards[0].DamageReductionPct != 25 {
-		t.Fatalf("expected shrine reward buff metadata, got %+v", rewards[0])
-	}
-	if !player.SanctuaryDamageReduction {
-		t.Fatalf("expected shrine to grant temporary damage reduction buff")
+	if player.Health != 400 || player.Mana != 120 {
+		t.Fatalf("expected chest room not to restore resources, got health=%d mana=%d", player.Health, player.Mana)
 	}
 
 	w.MarkDungeonRoomCleared(instanceID, 2)
 	if rewards[1].Gold <= rewards[0].Gold || rewards[1].XP <= rewards[0].XP {
-		t.Fatalf("expected chest room to pay more than shrine room, got shrine=%+v chest=%+v", rewards[0], rewards[1])
+		t.Fatalf("expected ambush room to pay more than chest room, got chest=%+v ambush=%+v", rewards[0], rewards[1])
 	}
-	if rewards[1].Hint != "Treasure secured — cash in before the boss" {
-		t.Fatalf("expected chest hint, got %q", rewards[1].Hint)
+	if rewards[1].Hint != "Ambush survived — momentum and spoils increased" {
+		t.Fatalf("expected ambush hint, got %q", rewards[1].Hint)
+	}
+	if rewards[1].RoomType != "elite" {
+		t.Fatalf("expected elite room type for ambush, got %q", rewards[1].RoomType)
 	}
 
 	w.MarkDungeonRoomCleared(instanceID, 3)
-	if rewards[2].Gold <= rewards[1].Gold || rewards[2].XP <= rewards[1].XP {
-		t.Fatalf("expected ambush room to pay more than chest room, got chest=%+v ambush=%+v", rewards[1], rewards[2])
+	if player.Health != 700 || player.Mana != 210 {
+		t.Fatalf("expected shrine to restore 30%% health/mana, got health=%d mana=%d", player.Health, player.Mana)
 	}
-	if rewards[2].Hint != "Ambush survived — momentum and spoils increased" {
-		t.Fatalf("expected ambush hint, got %q", rewards[2].Hint)
+	if rewards[2].Hint != "Shrine restored your strength for the next push" {
+		t.Fatalf("expected shrine hint, got %q", rewards[2].Hint)
 	}
-	if rewards[2].RoomType != "elite" {
-		t.Fatalf("expected elite room type for ambush, got %q", rewards[2].RoomType)
+	if rewards[2].BuffName != "Sanctuary" || rewards[2].BuffDurationSeconds != 8 || rewards[2].DamageReductionPct != 25 {
+		t.Fatalf("expected shrine reward buff metadata, got %+v", rewards[2])
+	}
+	if !player.SanctuaryDamageReduction {
+		t.Fatalf("expected shrine to grant temporary damage reduction buff")
 	}
 }
 
