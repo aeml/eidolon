@@ -116,4 +116,5 @@ Server
 - ChunkManager now also detaches inactive-chunk meshes from their current parent during addEntity residency decisions, removing the last stale special-case branch that still assumed scene ownership there.
 - GameEngine render-time HUD throttling now also diffs enemy-bar visibility/health inputs, so stable hover/Alt target states stop forcing high-frequency enemy-bar DOM work every frame.
 - Open character-sheet refreshes now also diff tracked stat/equipment inputs before rebuilding the sheet, so leaving the panel open no longer causes redundant heavy DOM/equipment-slot churn every throttle tick.
+- Visible world-map refreshes now diff coarse player position and instance context before redrawing, so leaving the map open no longer repaints the whole canvas every render when nothing meaningful changed.
 - Most important next architectural step: finish burning down the remaining direct `gameEngine.scene` gameplay visuals still hiding in projectile/utility fallback paths so transient combat readability no longer depends on ad hoc scene writes.

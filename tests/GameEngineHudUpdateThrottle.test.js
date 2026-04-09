@@ -24,6 +24,7 @@ function createEngineHarness() {
     engine.lastRenderHotbarCooldownSignature = '';
     engine.lastRenderEnemyBarSignature = '';
     engine.lastRenderCharacterSheetSignature = '';
+    engine.lastRenderWorldMapSignature = '';
     engine.hoveredEntity = null;
     engine.playerJumpState = null;
     engine.playerJumpVisualHeight = 0;
@@ -97,6 +98,11 @@ describe('GameEngine render-time HUD throttling', () => {
         engine.worldMap.isVisible.mockReturnValue(true);
 
         engine.render(1);
+        engine.render(1);
+
+        expect(engine.worldMap.update).toHaveBeenCalledTimes(1);
+
+        engine.player.position.x = 75;
         engine.render(1);
 
         expect(engine.worldMap.update).toHaveBeenCalledTimes(2);

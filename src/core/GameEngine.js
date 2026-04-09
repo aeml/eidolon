@@ -158,6 +158,7 @@ export class GameEngine {
         this.lastRenderHotbarCooldownSignature = '';
         this.lastRenderEnemyBarSignature = '';
         this.lastRenderCharacterSheetSignature = '';
+        this.lastRenderWorldMapSignature = '';
 
         // Entity Creation Throttling
         this.entityCreationQueue = [];
@@ -4353,7 +4354,16 @@ export class GameEngine {
                 this.lastRenderEnemyBarSignature = enemyBarSignature;
             }
             if (this.worldMap?.isVisible?.()) {
-                this.worldMap.update(this.player);
+                const worldMapSignature = [
+                    Math.floor(this.player.position.x ?? 0),
+                    Math.floor(this.player.position.z ?? 0),
+                    this.currentInstanceId || '',
+                    this.currentInstanceType || ''
+                ].join('|');
+                if (worldMapSignature !== this.lastRenderWorldMapSignature) {
+                    this.worldMap.update(this.player);
+                    this.lastRenderWorldMapSignature = worldMapSignature;
+                }
             }
         }
     }
