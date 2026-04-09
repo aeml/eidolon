@@ -133,6 +133,25 @@ describe('GameEngine loot pickup feedback', () => {
         expect(engine.remotePlayers.has(loot.id)).toBe(false);
     });
 
+    test('pickupLoot detaches fallback loot meshes from their current parent after reparenting', () => {
+        const engine = createEngineHarness();
+        const loot = createLootEntity({ id: 'loot-reparented', item: createItem('Radiant Ruby', 'Rare', '#a855f7') });
+        const otherParent = new THREE.Group();
+        otherParent.add(loot.mesh);
+        loot.dispose = undefined;
+        engine.remotePlayers.set(loot.id, loot);
+        engine.activeEntitiesCache = [loot];
+        engine.chunkManager.chunks.set('0:0', new Set([loot]));
+
+        const didPickup = engine.pickupLoot(loot.id);
+
+        expect(didPickup).toBe(true);
+        expect(otherParent.children).toHaveLength(0);
+        expect(engine.renderSystem.remove).not.toHaveBeenCalledWith(loot.mesh);
+        expect(engine.chunkManager.chunks.get('0:0').has(loot)).toBe(false);
+        expect(engine.remotePlayers.has(loot.id)).toBe(false);
+    });
+
     test('processAutoLoot picks nearest eligible loot when enabled', () => {
         const engine = createEngineHarness();
         engine.autoLootEnabled = true;

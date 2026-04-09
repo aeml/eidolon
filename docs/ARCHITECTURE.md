@@ -108,4 +108,5 @@ Server
 - GameEngine remote-entity fallback teardown now detaches meshes from their current parent before falling back to render-system removal, so stale ownership assumptions no longer leak into remote entity cleanup.
 - GameEngine local pending-interaction pickup cleanup now follows the same parent-safe fallback rule, so reparented loot meshes detach correctly even when no entity-level dispose hook exists.
 - GameEngine now also discards immediately-created inactive meshes from their current parent during onMeshReady handling, so stale ownership assumptions do not survive entity invalidation races.
+- Optimistic loot pickup cleanup in GameEngine now removes fallback meshes from their current parent before falling back to render-system removal, so remote loot teardown matches the same parent-safe contract as the rest of runtime cleanup.
 - Most important next architectural step: finish burning down the remaining direct `gameEngine.scene` gameplay visuals still hiding in projectile/utility fallback paths so transient combat readability no longer depends on ad hoc scene writes.
