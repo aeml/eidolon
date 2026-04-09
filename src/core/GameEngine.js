@@ -1709,7 +1709,15 @@ export class GameEngine {
         if (entity.dispose) {
             entity.dispose();
         } else if (entity.mesh) {
-            this.renderSystem.remove(entity.mesh);
+            if (entity.mesh.parent?.remove) {
+                entity.mesh.parent.remove(entity.mesh);
+            } else {
+                this.renderSystem.remove(entity.mesh);
+            }
+        }
+
+        if (entity.healthBar?.remove) {
+            entity.healthBar.remove();
         }
 
         const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);

@@ -247,6 +247,34 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(healthBar.remove).toHaveBeenCalled();
     });
 
+    test('removeRemoteEntity detaches fallback meshes from their current parent after reparenting', () => {
+        const engine = createEngineHarness();
+        const remoteMesh = { id: 'remote-player-mesh', parent: null };
+        const otherParent = createGroup('other-parent');
+        const healthBar = { remove: jest.fn() };
+        const remoteEntity = {
+            id: 'remote-2',
+            mesh: remoteMesh,
+            healthBar,
+            position: { x: 12, z: 34 }
+        };
+
+        engine.chunkManager = {
+            getChunkKey: jest.fn(() => '12,34'),
+            chunks: new Map([['12,34', new Set([remoteEntity])]])
+        };
+        otherParent.add(remoteMesh);
+        engine.remotePlayers.set('remote-2', remoteEntity);
+
+        engine.removeRemoteEntity('remote-2');
+
+        expect(otherParent.children).not.toContain(remoteMesh);
+        expect(engine.renderSystem.remove).not.toHaveBeenCalledWith(remoteMesh);
+        expect(healthBar.remove).toHaveBeenCalledTimes(1);
+        expect(engine.chunkManager.chunks.get('12,34').has(remoteEntity)).toBe(false);
+        expect(engine.remotePlayers.has('remote-2')).toBe(false);
+    });
+
     test('enterInstance preserves scene groups when clearInstanceScene helper is unavailable', async () => {
         const engine = createEngineHarness();
         delete engine.renderSystem.clearInstanceScene;
