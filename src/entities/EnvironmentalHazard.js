@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Entity } from './Entity.js';
+import { disposeSceneMesh } from './EffectSceneFallback.js';
 
 /**
  * EnvironmentalHazard - Visual effects for world hazards
@@ -808,20 +809,17 @@ export class EnvironmentalHazard extends Entity {
     
     removeFromScene(scene) {
         for (const mesh of this.meshes) {
-            scene.remove(mesh);
+            if (mesh.parent?.remove) {
+                mesh.parent.remove(mesh);
+            } else if (scene?.remove) {
+                scene.remove(mesh);
+            }
         }
     }
     
     dispose() {
         for (const mesh of this.meshes) {
-            if (mesh.geometry) mesh.geometry.dispose();
-            if (mesh.material) {
-                if (Array.isArray(mesh.material)) {
-                    mesh.material.forEach(m => m.dispose());
-                } else {
-                    mesh.material.dispose();
-                }
-            }
+            disposeSceneMesh(mesh);
         }
         this.meshes = [];
         this.isActive = false;

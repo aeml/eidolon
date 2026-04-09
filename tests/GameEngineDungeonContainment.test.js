@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
+import { EnvironmentalHazard } from '../src/entities/EnvironmentalHazard.js';
 
 const worldGeneratorInstances = [];
 
@@ -284,5 +285,34 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(engine.highlightedCombatTarget).toBeNull();
         expect(engine.combatTargetHighlight.visible).toBe(false);
         expect(engine.combatTargetHighlight.parent).toBeNull();
+    });
+
+    test('environmental hazards remove and dispose meshes from their current parent during instance teardown', async () => {
+        const engine = createEngineHarness();
+        const hazard = new EnvironmentalHazard('hazard-2', 'generic', { x: 0, y: 0, z: 0 }, { radius: 2 });
+        const otherParent = new THREE.Group();
+        const removedMeshes = [];
+        otherParent.remove = jest.fn((mesh) => {
+            removedMeshes.push(mesh);
+            THREE.Group.prototype.remove.call(otherParent, mesh);
+        });
+        const meshCount = hazard.meshes.length;
+        const geometryDisposals = hazard.meshes.map((mesh) => jest.spyOn(mesh.geometry, 'dispose'));
+        const materialDisposals = hazard.meshes.map((mesh) => jest.spyOn(mesh.material, 'dispose'));
+
+        hazard.meshes.forEach((mesh) => otherParent.add(mesh));
+        engine.hazards.set(hazard.id, hazard);
+
+        await engine.enterInstance('instance-7', 'overworld', null);
+
+        expect(otherParent.remove).toHaveBeenCalledTimes(meshCount);
+        expect(removedMeshes).toHaveLength(meshCount);
+        geometryDisposals.forEach((disposeSpy) => {
+            expect(disposeSpy).toHaveBeenCalledTimes(1);
+        });
+        materialDisposals.forEach((disposeSpy) => {
+            expect(disposeSpy).toHaveBeenCalledTimes(1);
+        });
+        expect(engine.hazards.size).toBe(0);
     });
 });

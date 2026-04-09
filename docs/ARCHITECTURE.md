@@ -103,4 +103,5 @@ Server
 - ChunkManager direct fallback removal paths now detach meshes from their current parent instead of assuming `this.scene` still owns them. That keeps non-disposable entities safe under reparenting and matches the rest of the parent-safe cleanup work.
 - Cleric Spirit Guardians now use shared spirit-mesh cleanup for both cancellation and expiry, so orbiting spirits dispose correctly even if ownership changes before teardown.
 - Player jumps now drive the Walk GLB during airtime as a single timed cycle instead of freezing into an idle pose, and the jump lifecycle explicitly restores normal animation timing on landing/authoritative clear.
+- Environmental hazards now detach and dispose their meshes from the current parent during teardown, so instance cleanup stays correct even if hazard visuals have been reparented before removal.
 - Most important next architectural step: finish burning down the remaining direct `gameEngine.scene` gameplay visuals still hiding in projectile/utility fallback paths so transient combat readability no longer depends on ad hoc scene writes.
