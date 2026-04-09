@@ -46,4 +46,43 @@ describe('GameEngine encounter callouts', () => {
             subtitle: 'Brace for impact'
         }));
     });
+
+    test('announces the next dangerous dungeon beat when room state advances', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 0,
+            objectiveRoomIndex: 1,
+            rooms: [
+                { index: 0, type: 'start', explored: true, cleared: true },
+                { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: false },
+                { index: 2, type: 'elite', hook: 'elite_ambush', explored: false, cleared: false },
+                { index: 3, type: 'boss', explored: false, cleared: false }
+            ]
+        };
+        engine.uiManager = {
+            showCombatCallout: jest.fn()
+        };
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+
+        engine.handleServerMessage({
+            type: 'dungeon_room_state',
+            payload: {
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: true },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: true, cleared: false },
+                    { index: 3, type: 'boss', explored: false, cleared: false }
+                ]
+            }
+        });
+
+        expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
+            title: 'Next: Ambush',
+            tone: 'warning',
+            subtitle: 'Elite room ahead — pressure spike incoming'
+        }));
+    });
 });

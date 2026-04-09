@@ -971,7 +971,12 @@ export class GameEngine {
             void this.enterInstance(instanceData.instanceId, instanceData.type, instanceData.layout, instanceData.roomState || null)
                 .catch(e => console.error('Failed to enter instance:', e));
         } else if (msg.type === 'dungeon_room_state') {
+            const previousDungeonRoomState = this.currentDungeonRoomState;
             this.currentDungeonRoomState = msg.payload || null;
+            const beatAdvanceCallout = this.buildDungeonBeatAdvanceCallout(previousDungeonRoomState, this.currentDungeonRoomState);
+            if (beatAdvanceCallout) {
+                this.uiManager?.showCombatCallout?.(beatAdvanceCallout);
+            }
         } else if (msg.type === 'get_dungeon_status') {
             if (this.uiManager) {
                 this.uiManager.showDungeonMenu(msg.payload);
@@ -2305,6 +2310,59 @@ export class GameEngine {
 
     getDungeonRoomSummary() {
         return this.currentDungeonRoomState;
+    }
+
+    getDungeonBeatLabel(room) {
+        if (!room) return '';
+        if (room.hook === 'chest') return 'Chest';
+        if (room.hook === 'elite_ambush') return 'Ambush';
+        if (room.hook === 'shrine') return 'Shrine';
+        if (room.type === 'boss') return 'Boss';
+        if (room.type === 'elite') return 'Elite';
+        return 'Objective';
+    }
+
+    buildDungeonBeatAdvanceCallout(previousSummary, nextSummary) {
+        if (!previousSummary || !nextSummary || !Array.isArray(nextSummary.rooms)) {
+            return null;
+        }
+
+        const previousObjective = Number(previousSummary.objectiveRoomIndex);
+        const nextObjective = Number(nextSummary.objectiveRoomIndex);
+        const previousRoom = Number(previousSummary.currentRoomIndex);
+        const nextRoom = Number(nextSummary.currentRoomIndex);
+        const progressedObjective = Number.isFinite(nextObjective) && nextObjective >= 0 && nextObjective !== previousObjective;
+        const progressedRoom = Number.isFinite(nextRoom) && nextRoom >= 0 && nextRoom !== previousRoom;
+        if (!progressedObjective && !progressedRoom) {
+            return null;
+        }
+
+        const objectiveRoom = nextSummary.rooms.find((room) => room && room.index === nextObjective);
+        if (!objectiveRoom) {
+            return null;
+        }
+
+        const beatLabel = this.getDungeonBeatLabel(objectiveRoom);
+        let subtitle = 'Next room marked on the route';
+        let tone = 'support';
+        if (objectiveRoom.hook === 'elite_ambush') {
+            subtitle = 'Elite room ahead — pressure spike incoming';
+            tone = 'warning';
+        } else if (objectiveRoom.type === 'boss') {
+            subtitle = 'Boss room ahead — reset and commit';
+            tone = 'boss';
+        } else if (objectiveRoom.hook === 'shrine') {
+            subtitle = 'Shrine ahead — brief reset before the push';
+        } else if (objectiveRoom.hook === 'chest') {
+            subtitle = 'Treasure room ahead — quick reward before danger';
+        }
+
+        return {
+            title: `Next: ${beatLabel}`,
+            tone,
+            duration: 2.4,
+            subtitle
+        };
     }
 
     upsertActiveBuff(buff) {
@@ -4354,11 +4412,25 @@ export class GameEngine {
                 this.lastRenderEnemyBarSignature = enemyBarSignature;
             }
             if (this.worldMap?.isVisible?.()) {
+                const dungeonBeatSignature = this.currentDungeonRoomState
+                    ? [
+                        this.currentDungeonRoomState.currentRoomIndex ?? '',
+                        this.currentDungeonRoomState.objectiveRoomIndex ?? '',
+                        Array.isArray(this.currentDungeonRoomState.rooms)
+                            ? this.currentDungeonRoomState.rooms
+                                .map((room) => room
+                                    ? `${room.index ?? ''}:${room.cleared ? 1 : 0}:${room.explored ? 1 : 0}:${room.hook ?? ''}:${room.type ?? ''}`
+                                    : '')
+                                .join(',')
+                            : ''
+                    ].join('::')
+                    : '';
                 const worldMapSignature = [
                     Math.floor(this.player.position.x ?? 0),
                     Math.floor(this.player.position.z ?? 0),
                     this.currentInstanceId || '',
-                    this.currentInstanceType || ''
+                    this.currentInstanceType || '',
+                    dungeonBeatSignature
                 ].join('|');
                 if (worldMapSignature !== this.lastRenderWorldMapSignature) {
                     this.worldMap.update(this.player);

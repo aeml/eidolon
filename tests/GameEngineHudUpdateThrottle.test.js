@@ -108,6 +108,42 @@ describe('GameEngine render-time HUD throttling', () => {
         expect(engine.worldMap.update).toHaveBeenCalledTimes(2);
     });
 
+    test('render refreshes visible world map when dungeon beat state changes without movement', () => {
+        const engine = createEngineHarness();
+        engine.worldMap.isVisible.mockReturnValue(true);
+        engine.currentInstanceId = 'tempest-instance';
+        engine.currentInstanceType = 'tempest_spire';
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 0,
+            objectiveRoomIndex: 1,
+            rooms: [
+                { index: 0, type: 'start', explored: true, cleared: true },
+                { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: false },
+                { index: 2, type: 'elite', hook: 'elite_ambush', explored: false, cleared: false },
+                { index: 3, type: 'boss', explored: false, cleared: false }
+            ]
+        };
+
+        engine.render(1);
+        engine.render(1);
+
+        expect(engine.worldMap.update).toHaveBeenCalledTimes(1);
+
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 1,
+            objectiveRoomIndex: 2,
+            rooms: [
+                { index: 0, type: 'start', explored: true, cleared: true },
+                { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: true },
+                { index: 2, type: 'elite', hook: 'elite_ambush', explored: true, cleared: false },
+                { index: 3, type: 'boss', explored: false, cleared: false }
+            ]
+        };
+        engine.render(1);
+
+        expect(engine.worldMap.update).toHaveBeenCalledTimes(2);
+    });
+
     test('render throttles hotbar cooldown updates when displayed values are unchanged', () => {
         const engine = createEngineHarness();
         engine.player.cooldowns = { Slash: 3.2 };
