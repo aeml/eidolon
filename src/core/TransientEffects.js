@@ -31,7 +31,11 @@ class TransientEffect {
         const materials = new Set();
 
         for (const mesh of this.meshes) {
-            this.scene.remove(mesh);
+            if (mesh.parent?.remove) {
+                mesh.parent.remove(mesh);
+            } else if (this.scene?.remove) {
+                this.scene.remove(mesh);
+            }
             mesh.traverse((child) => {
                 if (child.geometry) geometries.add(child.geometry);
                 if (child.material) {

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { jest } from '@jest/globals';
 import { createTransientEffect } from '../src/core/TransientEffects.js';
 
 describe('Transient telegraph readability', () => {
@@ -97,5 +98,32 @@ describe('Transient telegraph readability', () => {
         expect(effect.duration).toBeCloseTo(0.45, 5);
         expect(effect.meshes).toHaveLength(1);
         expect(effect.meshes[0].geometry.parameters.radius).toBeCloseTo(7, 5);
+    });
+
+    test('disposes transient meshes from their current parent after reparenting', () => {
+        const scene = new THREE.Scene();
+        const otherParent = new THREE.Group();
+        const effect = createTransientEffect(
+            scene,
+            'sphere',
+            new THREE.Vector3(1, 0, 2),
+            0xff4500,
+            {
+                radius: 3,
+                duration: 0.1
+            }
+        );
+
+        const mesh = effect.meshes[0];
+        const geometryDispose = jest.spyOn(mesh.geometry, 'dispose');
+        const materialDispose = jest.spyOn(mesh.material, 'dispose');
+        otherParent.add(mesh);
+
+        effect.update(0.2);
+
+        expect(otherParent.children).toHaveLength(0);
+        expect(geometryDispose).toHaveBeenCalledTimes(1);
+        expect(materialDispose).toHaveBeenCalledTimes(1);
+        expect(effect.isActive).toBe(false);
     });
 });
