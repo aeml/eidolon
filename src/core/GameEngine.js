@@ -156,6 +156,7 @@ export class GameEngine {
         this.lastRenderHudSignature = '';
         this.lastRenderXpSignature = '';
         this.lastRenderHotbarCooldownSignature = '';
+        this.lastRenderEnemyBarSignature = '';
 
         // Entity Creation Throttling
         this.entityCreationQueue = [];
@@ -4298,12 +4299,23 @@ export class GameEngine {
                 }
             }
 
-            this.uiManager.updateEnemyBars(
-                activeEntities,
-                this.renderSystem.camera,
-                this.hoveredEntity,
-                this.inputManager.keys.alt
-            );
+            const enemyBarSignature = [
+                this.hoveredEntity?.id || '',
+                this.inputManager.keys.alt ? '1' : '0',
+                activeEntities
+                    .filter((entity) => !entity.id.startsWith('player') && entity.stats && entity.stats.hp > 0 && entity.mesh)
+                    .map((entity) => `${entity.id}:${Math.ceil(entity.stats.hp ?? 0)}/${entity.stats.maxHp ?? 0}`)
+                    .join('|')
+            ].join('::');
+            if (enemyBarSignature !== this.lastRenderEnemyBarSignature) {
+                this.uiManager.updateEnemyBars(
+                    activeEntities,
+                    this.renderSystem.camera,
+                    this.hoveredEntity,
+                    this.inputManager.keys.alt
+                );
+                this.lastRenderEnemyBarSignature = enemyBarSignature;
+            }
             if (this.worldMap?.isVisible?.()) {
                 this.worldMap.update(this.player);
             }

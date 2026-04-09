@@ -41,12 +41,14 @@ function createEngineHarness() {
         updateHotbarCooldowns: jest.fn(),
         updateEnemyBars: jest.fn(),
         updateCharacterSheet: jest.fn(),
-        isCharacterSheetOpen: false
+        isCharacterSheetOpen: false,
+        floatingBars: new Map()
     };
     engine.inputManager = { keys: { alt: false } };
     engine.minimap = { update: jest.fn() };
     engine.worldMap = { update: jest.fn(), isVisible: jest.fn(() => false) };
     engine.player = {
+        id: 'player-local',
         position: new THREE.Vector3(0, 0, 0),
         rotation: new THREE.Quaternion(),
         stats: { hp: 100, maxHp: 100, mana: 50, maxMana: 50 },
@@ -73,7 +75,7 @@ describe('GameEngine render-time HUD throttling', () => {
         expect(engine.uiManager.updateXP).toHaveBeenCalledTimes(1);
         expect(engine.worldMap.update).not.toHaveBeenCalled();
         expect(engine.uiManager.updateHotbarCooldowns).toHaveBeenCalledTimes(1);
-        expect(engine.uiManager.updateEnemyBars).toHaveBeenCalledTimes(2);
+        expect(engine.uiManager.updateEnemyBars).toHaveBeenCalledTimes(1);
     });
 
     test('render refreshes stats and xp when values change', () => {
@@ -111,5 +113,30 @@ describe('GameEngine render-time HUD throttling', () => {
         engine.render(1);
 
         expect(engine.uiManager.updateHotbarCooldowns).toHaveBeenCalledTimes(2);
+    });
+
+    test('render does not spam enemy bar updates when hover, alt state, and tracked enemies are unchanged', () => {
+        const engine = createEngineHarness();
+        const enemy = {
+            id: 'enemy-1',
+            stats: { hp: 100, maxHp: 100 },
+            position: new THREE.Vector3(5, 0, 0),
+            mesh: {},
+            render: jest.fn()
+        };
+        engine.activeEntitiesCache = [enemy];
+        engine.chunkManager.getActiveEntities.mockReturnValue([engine.player, enemy]);
+        engine.hoveredEntity = enemy;
+        engine.uiManager.floatingBars.set(enemy.id, { style: { display: 'block' } });
+
+        engine.render(1);
+        engine.render(1);
+
+        expect(engine.uiManager.updateEnemyBars).toHaveBeenCalledTimes(1);
+
+        engine.inputManager.keys.alt = true;
+        engine.render(1);
+
+        expect(engine.uiManager.updateEnemyBars).toHaveBeenCalledTimes(2);
     });
 });
