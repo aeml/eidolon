@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { jest } from '@jest/globals';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
 describe('RenderSystem shadow coverage', () => {
@@ -77,6 +78,25 @@ describe('RenderSystem shadow coverage', () => {
         expect(renderSystem.scene.children).toContain(renderSystem.keyLight);
         expect(renderSystem.scene.children).toContain(renderSystem.fillLight);
         expect(renderSystem.scene.children).toContain(renderSystem.keyLight.target);
+    });
+
+    test('dispose removes reparented particle overlay from its current parent before disposing resources', () => {
+        const renderSystem = new RenderSystem(false);
+        renderSystem.initRealmParticles();
+        const particleMesh = renderSystem._pMesh;
+        const otherParent = new THREE.Group();
+        const geometryDispose = jest.spyOn(particleMesh.geometry, 'dispose');
+        const materialDispose = jest.spyOn(particleMesh.material, 'dispose');
+
+        renderSystem.environmentGroup.remove(particleMesh);
+        otherParent.add(particleMesh);
+
+        renderSystem.dispose();
+
+        expect(otherParent.children).toHaveLength(0);
+        expect(geometryDispose).toHaveBeenCalledTimes(1);
+        expect(materialDispose).toHaveBeenCalledTimes(1);
+        expect(renderSystem._pMesh).toBeNull();
     });
 
     test('camera punch stays disabled until players opt in', () => {

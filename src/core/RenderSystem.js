@@ -1162,7 +1162,11 @@ export class RenderSystem {
         if (this._pMesh) {
             this._pMesh.geometry.dispose();
             this._pMesh.material.dispose();
-            this.scene.remove(this._pMesh);
+            if (this._pMesh.parent?.remove) {
+                this._pMesh.parent.remove(this._pMesh);
+            } else {
+                this.scene.remove(this._pMesh);
+            }
             this._pMesh = null;
         }
 
