@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.22.12 for the latest shipped dungeon-readability slice', () => {
-        expect(indexHtml).toContain('Alpha 0.22.12');
+    test('advances the login screen to alpha 0.22.13 for the latest shipped dungeon-readability slice', () => {
+        expect(indexHtml).toContain('Alpha 0.22.13');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -41,16 +41,17 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Buy from other players, list your own gear, and use auctions when an item is worth selling to the market');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.22.12', () => {
-        expect(indexHtml).toContain('Patch 0.22.12');
-        expect(indexHtml).toContain('Dungeon objective fallback guidance now describes transitional approach beats instead of generic push deeper copy');
-        expect(indexHtml).toContain('One-room bridge states now call out the last approach room before the boss');
-        expect(indexHtml).toContain('Longer neutral stretches now point cleanly toward the shrine reset');
-        expect(indexHtml).toContain('Added regression coverage for transitional objective summaries, journal guidance rendering, and 0.22.12 version presentation');
+    test('includes the latest player-facing patch notes entry for 0.22.13', () => {
+        expect(indexHtml).toContain('Patch 0.22.13');
+        expect(indexHtml).toContain('Cleared dungeons now shift the objective panel into extraction language instead of a generic completed turn-in state');
+        expect(indexHtml).toContain('Exit objectives now tell you to backtrack out with the loot after the boss is down');
+        expect(indexHtml).toContain('Cleared dungeon guidance no longer falls back to Turn this in for 0 XP in the journal panel');
+        expect(indexHtml).toContain('Added regression coverage for cleared-dungeon extraction guidance and 0.22.13 version presentation');
     });
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.22.13');
         expect(indexHtml).toContain('Patch 0.22.12');
         expect(indexHtml).toContain('Patch 0.22.11');
         expect(indexHtml).toContain('Patch 0.22.10');
@@ -76,6 +77,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.22.13"');
         expect(indexHtml).toContain('data-version="0.22.12"');
         expect(indexHtml).toContain('data-version="0.22.11"');
         expect(indexHtml).toContain('data-version="0.22.10"');

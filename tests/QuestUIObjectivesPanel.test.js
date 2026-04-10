@@ -368,7 +368,7 @@ describe('QuestUI objectives panel', () => {
         ]);
     });
 
-    test('builds an exit objective when the dungeon is fully cleared', () => {
+    test('builds an extraction objective when the dungeon is fully cleared', () => {
         buildQuestDom();
         const questUI = new QuestUI({
             getLastPlayer: () => ({ quests: [] }),
@@ -390,16 +390,42 @@ describe('QuestUI objectives panel', () => {
         expect(summary).toEqual([
             expect.objectContaining({
                 id: 'dungeon-route-tempest_spire',
-                title: 'Return to the entrance',
+                title: 'Extract through the entrance',
                 progressLabel: '2 / 2',
                 progressPct: 100,
                 badge: 'Exit',
                 badgeClass: 'is-exit',
                 completed: true,
-                hint: 'Dungeon cleared — head back to the entrance',
+                hint: 'Boss down — backtrack to the entrance and leave with the loot',
                 routeTone: 'support'
             })
         ]);
+    });
+
+    test('renders extraction guidance instead of generic completed turn-in copy for a cleared dungeon', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 2,
+                objectiveRoomIndex: -1,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', explored: true, cleared: true },
+                    { index: 2, type: 'boss', explored: true, cleared: true }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'tempest_spire'
+        });
+
+        questUI.updateJournal([]);
+
+        const guidance = document.querySelector('.objective-guidance');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Extract through the entrance');
+        expect(guidance.textContent).toContain('Boss down — backtrack to the entrance and leave with the loot');
+        expect(guidance.textContent).not.toContain('Turn this in for 0 XP');
     });
 
     test('builds an elite routing objective when the next discovered room is elite', () => {

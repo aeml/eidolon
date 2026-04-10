@@ -208,7 +208,7 @@ export class QuestUI {
         if (!objectiveRoom) {
             return {
                 id: `dungeon-route-${instanceType}`,
-                title: 'Return to the entrance',
+                title: 'Extract through the entrance',
                 progressLabel,
                 progressPct,
                 rewardXP: 0,
@@ -216,8 +216,8 @@ export class QuestUI {
                 badge: 'Exit',
                 badgeClass: 'is-exit',
                 routeTone: 'support',
-                hint: 'Dungeon cleared — head back to the entrance',
-                sequenceHint
+                hint: 'Boss down — backtrack to the entrance and leave with the loot',
+                sequenceHint: ''
             };
         }
 
@@ -397,10 +397,15 @@ export class QuestUI {
         guidance.style.color = '#ddd';
         guidance.style.fontSize = '12px';
         guidance.style.lineHeight = '1.5';
+        const guidanceBody = objective.badgeClass === 'is-exit'
+            ? objective.hint
+            : objective.completed
+                ? `Turn this in for ${objective.rewardXP || 0} XP.`
+                : objective.hint;
         guidance.innerHTML = `
             <div style="color: #ffd700; font-size: 11px; font-weight: bold; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px;">Next Step</div>
             <div style="color: #fff; font-size: 13px; font-weight: bold; margin-bottom: 4px;">${objective.title}</div>
-            <div>${objective.completed ? `Turn this in for ${objective.rewardXP || 0} XP.` : objective.hint}</div>
+            <div>${guidanceBody}</div>
             ${objective.sequenceHint ? `<div style="color: #ffdf8a; margin-top: 6px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;">${objective.sequenceHint}</div>` : ''}
             <div style="color: #aaa; margin-top: 6px;">Open World Map (M) and Journal (J) if you need to re-orient.</div>
         `;
