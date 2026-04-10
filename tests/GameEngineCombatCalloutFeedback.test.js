@@ -163,4 +163,41 @@ describe('GameEngine encounter callouts', () => {
             subtitle: 'Quick score before the ambush spike'
         }));
     });
+
+    test('distinguishes boss rooms that are live now from bosses that are only unlocked ahead', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 1,
+            objectiveRoomIndex: 2,
+            rooms: [
+                { index: 0, type: 'start', explored: true, cleared: true },
+                { index: 1, type: 'normal', hook: 'shrine', explored: true, cleared: true },
+                { index: 2, type: 'boss', explored: true, cleared: false }
+            ]
+        };
+        engine.uiManager = {
+            showCombatCallout: jest.fn()
+        };
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+
+        engine.handleServerMessage({
+            type: 'dungeon_room_state',
+            payload: {
+                currentRoomIndex: 2,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'shrine', explored: true, cleared: true },
+                    { index: 2, type: 'boss', explored: true, cleared: false }
+                ]
+            }
+        });
+
+        expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
+            title: 'Boss Now',
+            tone: 'boss',
+            subtitle: 'You are in the boss room — commit and survive'
+        }));
+    });
 });

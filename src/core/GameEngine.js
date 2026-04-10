@@ -901,6 +901,9 @@ export class GameEngine {
 
                     this.currentDungeonRoomState = {
                         ...this.currentDungeonRoomState,
+                        currentRoomIndex: typeof summary.currentRoomIndex === 'number'
+                            ? summary.currentRoomIndex
+                            : this.currentDungeonRoomState.currentRoomIndex,
                         objectiveRoomIndex: typeof summary.objectiveRoomIndex === 'number'
                             ? summary.objectiveRoomIndex
                             : this.currentDungeonRoomState.objectiveRoomIndex,
@@ -2338,7 +2341,11 @@ export class GameEngine {
         const nextRoom = Number(nextSummary.currentRoomIndex);
         const progressedObjective = Number.isFinite(nextObjective) && nextObjective >= 0 && nextObjective !== previousObjective;
         const progressedRoom = Number.isFinite(nextRoom) && nextRoom >= 0 && nextRoom !== previousRoom;
-        if (!progressedObjective && !progressedRoom) {
+        const bossWentLive = Number.isFinite(nextRoom)
+            && nextRoom >= 0
+            && nextRoom === nextObjective
+            && (previousRoom !== nextRoom || previousObjective !== nextObjective);
+        if (!progressedObjective && !progressedRoom && !bossWentLive) {
             return null;
         }
 
@@ -2349,13 +2356,18 @@ export class GameEngine {
 
         const beatLabel = this.getDungeonBeatLabel(objectiveRoom);
         const nextRoomAfterObjective = nextSummary.rooms.find((room) => room && typeof room.index === 'number' && room.index > nextObjective && !room.cleared);
+        const bossIsLiveNow = objectiveRoom.type === 'boss' && nextRoom === nextObjective;
+        let title = `Next: ${beatLabel}`;
         let subtitle = 'Next room marked on the route';
         let tone = 'support';
         if (objectiveRoom.hook === 'elite_ambush') {
             subtitle = 'Elite room ahead — pressure spike incoming';
             tone = 'warning';
         } else if (objectiveRoom.type === 'boss') {
-            subtitle = 'Boss room ahead — reset and commit';
+            title = bossIsLiveNow ? 'Boss Now' : `Next: ${beatLabel}`;
+            subtitle = bossIsLiveNow
+                ? 'You are in the boss room — commit and survive'
+                : 'Boss room ahead — reset and commit';
             tone = 'boss';
         } else if (objectiveRoom.hook === 'shrine') {
             subtitle = nextRoomAfterObjective?.type === 'boss'
@@ -2368,7 +2380,7 @@ export class GameEngine {
         }
 
         return {
-            title: `Next: ${beatLabel}`,
+            title,
             tone,
             duration: 2.4,
             subtitle
