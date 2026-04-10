@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.22.9 for the latest shipped dungeon-readability slice', () => {
-        expect(indexHtml).toContain('Alpha 0.22.9');
+    test('advances the login screen to alpha 0.22.10 for the latest shipped dungeon-readability slice', () => {
+        expect(indexHtml).toContain('Alpha 0.22.10');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -41,15 +41,16 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Buy from other players, list your own gear, and use auctions when an item is worth selling to the market');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.22.9', () => {
-        expect(indexHtml).toContain('Patch 0.22.9');
-        expect(indexHtml).toContain('Dungeon route guidance now sharpens around the next spike');
-        expect(indexHtml).toContain('Chest objectives now warn when the reward room is just a quick score before the ambush spike');
-        expect(indexHtml).toContain('Shrine objectives now call out the last reset before the boss push');
+    test('includes the latest player-facing patch notes entry for 0.22.10', () => {
+        expect(indexHtml).toContain('Patch 0.22.10');
+        expect(indexHtml).toContain('Dungeon entrance hints now stay truthful to the live beat while you are moving');
+        expect(indexHtml).toContain('Hovered dungeon portals now preview chest, ambush, shrine, and boss urgency using the same authored pacing language as route callouts');
+        expect(indexHtml).toContain('Entrance hints now refresh immediately when dungeon room-state progression changes under the cursor');
     });
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.22.10');
         expect(indexHtml).toContain('Patch 0.22.9');
         expect(indexHtml).toContain('Patch 0.22.8');
         expect(indexHtml).toContain('Patch 0.22.7');
@@ -72,6 +73,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.22.10"');
         expect(indexHtml).toContain('data-version="0.22.9"');
         expect(indexHtml).toContain('data-version="0.22.8"');
         expect(indexHtml).toContain('data-version="0.22.7"');

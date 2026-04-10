@@ -184,15 +184,19 @@ function createTownInteractable(overrides = {}) {
 function createEngineHarness() {
     const engine = Object.create(GameEngine.prototype);
     engine.player = {
+        id: 'player-1',
         position: new THREE.Vector3(0, 0, 0)
     };
     engine.hoveredEntity = null;
     engine.pendingInteraction = null;
     engine.currentInstanceId = 'overworld';
+    engine.currentInstanceType = 'overworld';
+    engine.currentDungeonRoomState = null;
     engine.uiManager = {
         updateDungeonEntranceHint: jest.fn(),
         clearDungeonEntranceHint: jest.fn(),
-        clearCombatIntent: jest.fn()
+        clearCombatIntent: jest.fn(),
+        showCombatCallout: jest.fn()
     };
     engine.abilityController = {
         getAbilityCastRange: jest.fn(() => 4),
@@ -204,8 +208,11 @@ function createEngineHarness() {
     engine.isInteractableEntity = GameEngine.prototype.isInteractableEntity;
     engine.getDungeonEntranceName = GameEngine.prototype.getDungeonEntranceName;
     engine.getInteractableEntityLabel = GameEngine.prototype.getInteractableEntityLabel;
+    engine.getDungeonBeatLabel = GameEngine.prototype.getDungeonBeatLabel;
+    engine.buildDungeonBeatAdvanceCallout = GameEngine.prototype.buildDungeonBeatAdvanceCallout;
     engine.buildDungeonEntranceHint = GameEngine.prototype.buildDungeonEntranceHint;
     engine.refreshDungeonEntranceHint = GameEngine.prototype.refreshDungeonEntranceHint;
+    engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
     engine.clearCombatIntentState = GameEngine.prototype.clearCombatIntentState;
     return engine;
 }
@@ -384,5 +391,118 @@ describe('Dungeon entrance hints', () => {
         expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'TradingHouse' } }))).toBe('Trading House');
         expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'DwarfSalesman' } }))).toBe('Vendor / Repair');
         expect(engine.getInteractableEntityLabel(createTownInteractable({ constructor: { name: 'DungeonNPC' } }))).toBe('Dungeon Guide');
+    });
+
+    test('GameEngine sharpens hovered dungeon entrance hints when the next beat is a chest before an ambush', () => {
+        const engine = createEngineHarness();
+        engine.player.position = new THREE.Vector3(0, 0, 0);
+        engine.currentInstanceType = 'tempest_spire';
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 0,
+            objectiveRoomIndex: 1,
+            rooms: [
+                { index: 0, type: 'start', explored: true, cleared: true },
+                { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: false },
+                { index: 2, type: 'elite', hook: 'elite_ambush', explored: false, cleared: false },
+                { index: 3, type: 'boss', explored: false, cleared: false }
+            ]
+        };
+        engine.hoveredEntity = createEntrance({ position: new THREE.Vector3(20, 0, 0) });
+
+        engine.refreshDungeonEntranceHint();
+
+        expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
+            dungeonName: 'Tempest Spire',
+            inRange: true,
+            statusLabel: 'Dungeon Portal • Next: Chest',
+            promptLabel: 'Quick score before the ambush spike'
+        }));
+    });
+
+    test('GameEngine sharpens hovered dungeon entrance hints when the next beat is the shrine before the boss', () => {
+        const engine = createEngineHarness();
+        engine.player.position = new THREE.Vector3(0, 0, 0);
+        engine.currentInstanceType = 'tempest_spire';
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 1,
+            objectiveRoomIndex: 2,
+            rooms: [
+                { index: 0, type: 'start', explored: true, cleared: true },
+                { index: 1, type: 'elite', hook: 'elite_ambush', explored: true, cleared: true },
+                { index: 2, type: 'normal', hook: 'shrine', explored: true, cleared: false },
+                { index: 3, type: 'boss', explored: false, cleared: false }
+            ]
+        };
+        engine.hoveredEntity = createEntrance({ position: new THREE.Vector3(20, 0, 0) });
+
+        engine.refreshDungeonEntranceHint();
+
+        expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
+            dungeonName: 'Tempest Spire',
+            inRange: true,
+            statusLabel: 'Dungeon Portal • Next: Shrine',
+            promptLabel: 'Last reset before the boss push'
+        }));
+    });
+
+    test('GameEngine sharpens hovered dungeon entrance hints when the boss beat is already live', () => {
+        const engine = createEngineHarness();
+        engine.player.position = new THREE.Vector3(0, 0, 0);
+        engine.currentInstanceType = 'tempest_spire';
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 3,
+            objectiveRoomIndex: 3,
+            rooms: [
+                { index: 0, type: 'start', explored: true, cleared: true },
+                { index: 1, type: 'elite', hook: 'elite_ambush', explored: true, cleared: true },
+                { index: 2, type: 'normal', hook: 'shrine', explored: true, cleared: true },
+                { index: 3, type: 'boss', explored: true, cleared: false }
+            ]
+        };
+        engine.hoveredEntity = createEntrance({ position: new THREE.Vector3(20, 0, 0) });
+
+        engine.refreshDungeonEntranceHint();
+
+        expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
+            dungeonName: 'Tempest Spire',
+            inRange: true,
+            statusLabel: 'Dungeon Portal • Boss Now',
+            promptLabel: 'You are in the boss room — commit and survive'
+        }));
+    });
+
+    test('GameEngine refreshes hovered dungeon entrance hints when dungeon room state changes', () => {
+        const engine = createEngineHarness();
+        engine.currentInstanceType = 'tempest_spire';
+        engine.hoveredEntity = createEntrance({ position: new THREE.Vector3(20, 0, 0) });
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 0,
+            objectiveRoomIndex: 1,
+            rooms: [
+                { index: 0, type: 'start', explored: true, cleared: true },
+                { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: false },
+                { index: 2, type: 'elite', hook: 'elite_ambush', explored: false, cleared: false },
+                { index: 3, type: 'boss', explored: false, cleared: false }
+            ]
+        };
+
+        engine.handleServerMessage({
+            type: 'dungeon_room_state',
+            payload: {
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: true },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: true, cleared: false },
+                    { index: 3, type: 'boss', explored: false, cleared: false }
+                ]
+            }
+        });
+
+        expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
+            statusLabel: 'Dungeon Portal • Next: Ambush',
+            promptLabel: 'Elite room ahead — pressure spike incoming'
+        }));
     });
 });

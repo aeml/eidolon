@@ -985,6 +985,7 @@ export class GameEngine {
             if (beatAdvanceCallout) {
                 this.uiManager?.showCombatCallout?.(beatAdvanceCallout);
             }
+            this.refreshDungeonEntranceHint();
         } else if (msg.type === 'get_dungeon_status') {
             if (this.uiManager) {
                 this.uiManager.showDungeonMenu(msg.payload);
@@ -2084,11 +2085,54 @@ export class GameEngine {
         const entityLabel = isDungeonEntrance ? 'Dungeon Portal' : dungeonName;
         const interactableType = entity.constructor?.name || entity.type || entity.meshType || entity.name || '';
         let promptLabel;
+        let statusLabel = inRange ? `${entityLabel} • In range` : `${entityLabel} • Move closer`;
 
         if (isDungeonEntrance) {
-            promptLabel = inRange
-                ? 'Click to open the dungeon portal.'
-                : 'Move closer to interact with this dungeon portal.';
+            const summary = this.currentDungeonRoomState;
+            const hoveredDungeonType = entity.userData?.dungeonType || '';
+            const isCurrentDungeon = hoveredDungeonType && hoveredDungeonType === this.currentInstanceType;
+            const objectiveRoom = isCurrentDungeon && summary && Array.isArray(summary.rooms) && typeof summary.objectiveRoomIndex === 'number'
+                ? summary.rooms.find((room) => room && room.index === summary.objectiveRoomIndex)
+                : null;
+            const nextRoomAfterObjective = objectiveRoom && Array.isArray(summary?.rooms)
+                ? summary.rooms.find((room) => room && typeof room.index === 'number' && room.index > objectiveRoom.index && !room.cleared)
+                : null;
+            const bossIsLiveNow = objectiveRoom?.type === 'boss'
+                && typeof summary?.currentRoomIndex === 'number'
+                && typeof summary?.objectiveRoomIndex === 'number'
+                && summary.currentRoomIndex === objectiveRoom.index
+                && summary.objectiveRoomIndex === objectiveRoom.index;
+
+            if (isCurrentDungeon && objectiveRoom) {
+                const beatLabel = this.getDungeonBeatLabel(objectiveRoom);
+                statusLabel = bossIsLiveNow
+                    ? `${entityLabel} • Boss Now`
+                    : `${entityLabel} • Next: ${beatLabel}`;
+
+                if (bossIsLiveNow) {
+                    promptLabel = 'You are in the boss room — commit and survive';
+                } else if (objectiveRoom.hook === 'elite_ambush') {
+                    promptLabel = 'Elite room ahead — pressure spike incoming';
+                } else if (objectiveRoom.hook === 'shrine') {
+                    promptLabel = nextRoomAfterObjective?.type === 'boss'
+                        ? 'Last reset before the boss push'
+                        : 'Shrine ahead — brief reset before the push';
+                } else if (objectiveRoom.hook === 'chest') {
+                    promptLabel = nextRoomAfterObjective?.hook === 'elite_ambush' || nextRoomAfterObjective?.type === 'elite'
+                        ? 'Quick score before the ambush spike'
+                        : 'Treasure room ahead — quick reward before danger';
+                } else if (objectiveRoom.type === 'boss') {
+                    promptLabel = 'Boss room ahead — reset and commit';
+                } else {
+                    promptLabel = inRange
+                        ? 'Click to open the dungeon portal.'
+                        : 'Move closer to interact with this dungeon portal.';
+                }
+            } else {
+                promptLabel = inRange
+                    ? 'Click to open the dungeon portal.'
+                    : 'Move closer to interact with this dungeon portal.';
+            }
         } else if (interactableType === 'QuestNPC') {
             promptLabel = inRange
                 ? 'Click to talk to the Quest Giver and pick up your first quest.'
@@ -2124,7 +2168,7 @@ export class GameEngine {
             dungeonName,
             inRange,
             distance,
-            statusLabel: inRange ? `${entityLabel} • In range` : `${entityLabel} • Move closer`,
+            statusLabel,
             promptLabel
         };
     }
