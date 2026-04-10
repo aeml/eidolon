@@ -211,6 +211,14 @@ export class QuestUI {
             };
         }
 
+        const nextUnclearedBeat = objectiveRoom
+            ? summary.rooms.find((room) => room
+                && typeof room.index === 'number'
+                && room.index > objectiveRoom.index
+                && !room.cleared
+                && (room.hook === 'elite_ambush' || room.hook === 'shrine' || room.hook === 'chest' || room.type === 'elite' || room.type === 'boss'))
+            : null;
+
         if (objectiveRoom.hook === 'shrine') {
             return {
                 id: `dungeon-route-${instanceType}`,
@@ -222,7 +230,11 @@ export class QuestUI {
                 badge: 'Shrine',
                 badgeClass: 'is-shrine',
                 routeTone: 'support',
-                hint: objectiveRoom.explored ? 'Shrine discovered' : 'A restorative shrine lies ahead',
+                hint: nextUnclearedBeat?.type === 'boss'
+                    ? 'Last reset before the boss push'
+                    : objectiveRoom.explored
+                        ? 'Shrine discovered'
+                        : 'A restorative shrine lies ahead',
                 sequenceHint
             };
         }
@@ -238,7 +250,11 @@ export class QuestUI {
                 badge: 'Chest',
                 badgeClass: 'is-chest',
                 routeTone: 'support',
-                hint: objectiveRoom.explored ? 'Treasure room discovered' : 'Treasure cache detected deeper inside',
+                hint: nextUnclearedBeat?.hook === 'elite_ambush'
+                    ? 'Quick score before the ambush spike'
+                    : objectiveRoom.explored
+                        ? 'Treasure room discovered'
+                        : 'Treasure cache detected deeper inside',
                 sequenceHint
             };
         }

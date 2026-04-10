@@ -401,7 +401,7 @@ describe('QuestUI objectives panel', () => {
                 title: 'Secure the treasure room',
                 badge: 'Chest',
                 badgeClass: 'is-chest',
-                hint: 'Treasure cache detected deeper inside',
+                hint: 'Quick score before the ambush spike',
                 routeTone: 'support',
                 sequenceHint: 'Route: Chest -> Ambush -> Shrine -> Boss'
             })
@@ -432,7 +432,68 @@ describe('QuestUI objectives panel', () => {
         const guidance = document.querySelector('.objective-guidance');
         expect(guidance).not.toBeNull();
         expect(guidance.textContent).toContain('Secure the treasure room');
+        expect(guidance.textContent).toContain('Quick score before the ambush spike');
         expect(guidance.textContent).toContain('Route: Chest -> Ambush -> Shrine -> Boss');
+    });
+
+    test('builds a shrine routing objective as the last reset before a boss push', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'elite', explored: true, cleared: true },
+                    { index: 2, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 3, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'molten_core'
+        });
+
+        const summary = questUI.buildObjectiveSummary([]);
+
+        expect(summary).toEqual([
+            expect.objectContaining({
+                id: 'dungeon-route-molten_core',
+                title: 'Reach the shrine room',
+                badge: 'Shrine',
+                badgeClass: 'is-shrine',
+                hint: 'Last reset before the boss push',
+                routeTone: 'support',
+                sequenceHint: 'Route: Shrine -> Boss'
+            })
+        ]);
+    });
+
+    test('renders last-reset guidance for shrine rooms that directly precede the boss', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'elite', explored: true, cleared: true },
+                    { index: 2, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 3, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'molten_core'
+        });
+
+        questUI.updateJournal([]);
+
+        const guidance = document.querySelector('.objective-guidance');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Reach the shrine room');
+        expect(guidance.textContent).toContain('Last reset before the boss push');
+        expect(guidance.textContent).toContain('Route: Shrine -> Boss');
     });
 
     test('renders execution guidance instead of route preview for a live boss objective', () => {

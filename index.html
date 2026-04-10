@@ -269,7 +269,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.8</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.9</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -484,6 +484,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.22.9" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.9 (Dungeon route guidance now sharpens around the next spike)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Treasure room truth:</strong> Chest objectives now warn when the reward room is just a quick score before the ambush spike instead of staying on generic loot copy.</li>
+                        <li><strong>Shrine timing clarity:</strong> Shrine objectives now call out the last reset before the boss push when the next meaningful beat is the boss room.</li>
+                        <li><strong>Journal guidance sync:</strong> Objective-panel guidance now mirrors the same authored pacing language the combat callouts already use, so route text and in-run warnings stop drifting apart.</li>
+                        <li><strong>Regression coverage:</strong> Added tests around sharpened chest and shrine objective copy, guidance rendering, and 0.22.9 version / patch-note presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.22.8" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.8 (Live boss state stays truthful across dungeon route surfaces)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
