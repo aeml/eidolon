@@ -442,6 +442,11 @@ export class Minimap {
             const isBossObjective = room?.type === 'boss';
             const isEliteObjective = room?.type === 'elite';
             const isAmbushObjective = room?.hook === 'elite_ambush';
+            const isLiveBoss = isBossObjective
+                && typeof summary.currentRoomIndex === 'number'
+                && typeof summary.objectiveRoomIndex === 'number'
+                && summary.currentRoomIndex === room?.index
+                && summary.objectiveRoomIndex === room?.index;
             return {
                 isBossObjective,
                 stroke: isBossObjective
@@ -451,17 +456,19 @@ export class Minimap {
                         : isEliteObjective
                             ? `rgba(255, 190, 90, ${alpha})`
                             : `rgba(255, 215, 90, ${alpha})`,
-                label: isBossObjective
-                    ? 'Boss'
-                    : isAmbushObjective
-                        ? 'Ambush'
-                        : isEliteObjective
-                            ? 'Elite'
-                            : room?.hook === 'shrine'
-                                ? 'Shrine'
-                                : room?.hook === 'chest'
-                                    ? 'Chest'
-                                    : 'Objective'
+                label: isLiveBoss
+                    ? 'Boss Now'
+                    : isBossObjective
+                        ? 'Boss'
+                        : isAmbushObjective
+                            ? 'Ambush'
+                            : isEliteObjective
+                                ? 'Elite'
+                                : room?.hook === 'shrine'
+                                    ? 'Shrine'
+                                    : room?.hook === 'chest'
+                                        ? 'Chest'
+                                        : 'Objective'
             };
         };
 

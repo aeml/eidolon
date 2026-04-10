@@ -142,4 +142,34 @@ describe('WorldMap town wayfinding', () => {
             expect.objectContaining({ strokeStyle: 'rgba(255, 145, 90, 0.6)' })
         ]));
     });
+
+    test('renders a live boss marker when the active dungeon boss is already engaged', () => {
+        const worldMap = new WorldMap({
+            player: { position: { x: 2400, z: 200 }, id: 'player-1' },
+            chunkManager: { getActiveEntities: () => [] },
+            uiManager: { partyData: { members: [] } },
+            currentInstanceType: 'tempest_spire',
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 4,
+                objectiveRoomIndex: 4,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: true },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: true, cleared: true },
+                    { index: 3, type: 'normal', hook: 'shrine', explored: true, cleared: true },
+                    { index: 4, type: 'boss', explored: true, cleared: false }
+                ]
+            })
+        });
+
+        worldMap.draw({ position: { x: 2400, z: 200 }, id: 'player-1' });
+
+        expect(texts).toEqual(expect.arrayContaining([
+            '★ Tempest Spire [Boss Now]'
+        ]));
+        expect(texts).not.toContain('Next: Boss');
+        expect(strokes).toEqual(expect.arrayContaining([
+            expect.objectContaining({ strokeStyle: 'rgba(255, 110, 110, 0.6)' })
+        ]));
+    });
 });

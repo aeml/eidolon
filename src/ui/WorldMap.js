@@ -396,6 +396,11 @@ export class WorldMap {
 
         const labelForRoom = (room) => {
             if (!room) return null;
+            const isLiveBoss = room.type === 'boss'
+                && typeof summary.currentRoomIndex === 'number'
+                && summary.currentRoomIndex === room.index
+                && summary.objectiveRoomIndex === room.index;
+            if (isLiveBoss) return 'Boss Now';
             if (room.hook === 'chest') return 'Chest';
             if (room.hook === 'elite_ambush') return 'Ambush';
             if (room.hook === 'shrine') return 'Shrine';
@@ -422,7 +427,10 @@ export class WorldMap {
             dungeonName,
             objectiveLabel: labelForRoom(objectiveRoom),
             nextLabel: nextRoom ? labelForRoom(nextRoom) : '',
-            previewColor
+            previewColor,
+            objectiveIsLiveBoss: objectiveRoom.type === 'boss'
+                && typeof summary.currentRoomIndex === 'number'
+                && summary.currentRoomIndex === objectiveRoom.index
         };
     }
 
@@ -507,15 +515,19 @@ export class WorldMap {
                 pos.x,
                 pos.y + yOff
             );
-            if (isActiveDungeon && dungeonBeatPreview.nextLabel) {
-                ctx.strokeStyle = dungeonBeatPreview.previewColor;
+            if (isActiveDungeon && (dungeonBeatPreview.nextLabel || dungeonBeatPreview.objectiveIsLiveBoss)) {
+                ctx.strokeStyle = dungeonBeatPreview.objectiveIsLiveBoss
+                    ? 'rgba(255, 110, 110, 0.6)'
+                    : dungeonBeatPreview.previewColor;
                 ctx.lineWidth = 2;
                 ctx.beginPath();
                 ctx.arc(pos.x, pos.y, 13, 0, Math.PI * 2);
                 ctx.stroke();
-                ctx.fillStyle = dungeonBeatPreview.previewColor;
-                ctx.font = `${18 * (this.scale / 2)}px Arial`;
-                ctx.fillText(`Next: ${dungeonBeatPreview.nextLabel}`, pos.x, pos.y + ((dg.labelOffsetY || 18) * this.scale));
+                if (dungeonBeatPreview.nextLabel) {
+                    ctx.fillStyle = dungeonBeatPreview.previewColor;
+                    ctx.font = `${18 * (this.scale / 2)}px Arial`;
+                    ctx.fillText(`Next: ${dungeonBeatPreview.nextLabel}`, pos.x, pos.y + ((dg.labelOffsetY || 18) * this.scale));
+                }
             }
         }
 
