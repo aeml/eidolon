@@ -374,6 +374,68 @@ describe('QuestUI objectives panel', () => {
         ]);
     });
 
+    test('builds an ambush routing objective with pressure-spike guidance', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: true },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: true, cleared: false },
+                    { index: 3, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'molten_core'
+        });
+
+        const summary = questUI.buildObjectiveSummary([]);
+
+        expect(summary).toEqual([
+            expect.objectContaining({
+                id: 'dungeon-route-molten_core',
+                title: 'Survive the ambush room',
+                badge: 'Ambush',
+                badgeClass: 'is-ambush',
+                hint: 'Elite room ahead — pressure spike incoming',
+                routeTone: 'warning',
+                sequenceHint: 'Route: Ambush -> Shrine -> Boss'
+            })
+        ]);
+    });
+
+    test('renders pressure-spike guidance for ambush rooms in the journal', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: true },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: true, cleared: false },
+                    { index: 3, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'molten_core'
+        });
+
+        questUI.updateJournal([]);
+
+        const guidance = document.querySelector('.objective-guidance');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Survive the ambush room');
+        expect(guidance.textContent).toContain('Elite room ahead — pressure spike incoming');
+        expect(guidance.textContent).toContain('Route: Ambush -> Shrine -> Boss');
+    });
+
     test('builds a treasure-room routing objective before the deeper shrine reset room', () => {
         buildQuestDom();
         const questUI = new QuestUI({

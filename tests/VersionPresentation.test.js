@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.22.10 for the latest shipped dungeon-readability slice', () => {
-        expect(indexHtml).toContain('Alpha 0.22.10');
+    test('advances the login screen to alpha 0.22.11 for the latest shipped dungeon-readability slice', () => {
+        expect(indexHtml).toContain('Alpha 0.22.11');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -41,15 +41,16 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Buy from other players, list your own gear, and use auctions when an item is worth selling to the market');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.22.10', () => {
-        expect(indexHtml).toContain('Patch 0.22.10');
-        expect(indexHtml).toContain('Dungeon entrance hints now stay truthful to the live beat while you are moving');
-        expect(indexHtml).toContain('Hovered dungeon portals now preview chest, ambush, shrine, and boss urgency using the same authored pacing language as route callouts');
-        expect(indexHtml).toContain('Entrance hints now refresh immediately when dungeon room-state progression changes under the cursor');
+    test('includes the latest player-facing patch notes entry for 0.22.11', () => {
+        expect(indexHtml).toContain('Patch 0.22.11');
+        expect(indexHtml).toContain('Dungeon objective guidance now gives ambush rooms the same pressure-spike language already used by live callouts');
+        expect(indexHtml).toContain('Ambush objectives and journal guidance now say Elite room ahead — pressure spike incoming instead of drifting back to generic elite-discovered copy');
+        expect(indexHtml).toContain('Added regression coverage for ambush objective summaries, journal guidance rendering, and 0.22.11 version presentation');
     });
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.22.11');
         expect(indexHtml).toContain('Patch 0.22.10');
         expect(indexHtml).toContain('Patch 0.22.9');
         expect(indexHtml).toContain('Patch 0.22.8');
@@ -73,6 +74,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.22.11"');
         expect(indexHtml).toContain('data-version="0.22.10"');
         expect(indexHtml).toContain('data-version="0.22.9"');
         expect(indexHtml).toContain('data-version="0.22.8"');

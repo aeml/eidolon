@@ -270,7 +270,7 @@ export class QuestUI {
                 badge: 'Ambush',
                 badgeClass: 'is-ambush',
                 routeTone: 'warning',
-                hint: objectiveRoom.explored ? 'Elite ambush discovered' : 'Ambush signatures ahead',
+                hint: 'Elite room ahead — pressure spike incoming',
                 sequenceHint
             };
         }

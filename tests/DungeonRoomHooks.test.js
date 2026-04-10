@@ -41,7 +41,8 @@ describe('Dungeon room hooks', () => {
                 badge: 'Shrine',
                 badgeClass: 'is-shrine',
                 routeTone: 'support',
-                hint: 'Shrine discovered'
+                hint: 'Last reset before the boss push',
+                sequenceHint: 'Route: Shrine -> Boss'
             })
         ]);
 
