@@ -643,12 +643,12 @@ describe('Dungeon room clear feedback', () => {
         questUI.renderObjectivesPanel([
             {
                 id: 'dungeon-route-open',
-                title: 'Push deeper into Tempest Spire',
+                title: 'Break through the last approach room',
                 progressLabel: '2 / 4',
                 progressPct: 50,
                 rewardXP: 0,
                 completed: false,
-                hint: 'Boss path open — one room remains'
+                hint: 'Boss path open — one last room before the boss'
             },
             {
                 id: 'dungeon-route-ready',
@@ -662,7 +662,7 @@ describe('Dungeon room clear feedback', () => {
         ]);
 
         const hints = Array.from(document.querySelectorAll('.objective-entry__hint')).map(node => node.textContent);
-        expect(hints[0]).toContain('Boss path open — one room remains');
+        expect(hints[0]).toContain('Boss path open — one last room before the boss');
         expect(hints[1]).toContain('Reward: 1200 XP');
     });
 });

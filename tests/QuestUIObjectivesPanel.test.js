@@ -276,6 +276,66 @@ describe('QuestUI objectives panel', () => {
         ]));
     });
 
+    test('builds a bridge-to-boss routing objective when one approach room remains', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 0,
+                objectiveRoomIndex: 1,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', explored: false, cleared: false },
+                    { index: 2, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'tempest_spire'
+        });
+
+        const summary = questUI.buildObjectiveSummary([]);
+
+        expect(summary).toEqual([
+            expect.objectContaining({
+                id: 'dungeon-route-tempest_spire',
+                title: 'Break through the last approach room',
+                badge: 'Objective',
+                badgeClass: 'is-objective',
+                hint: 'Boss path open — one last room before the boss',
+                routeTone: 'neutral',
+                sequenceHint: 'Route: Approach -> Boss'
+            })
+        ]);
+    });
+
+    test('renders clear-through guidance for transitional rooms before the shrine route', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 0,
+                objectiveRoomIndex: 1,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', explored: false, cleared: false },
+                    { index: 2, type: 'normal', explored: false, cleared: false },
+                    { index: 3, type: 'normal', hook: 'shrine', explored: false, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'molten_core'
+        });
+
+        questUI.updateJournal([]);
+
+        const guidance = document.querySelector('.objective-guidance');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Clear through to the shrine route');
+        expect(guidance.textContent).toContain('3 rooms remain before the shrine reset');
+        expect(guidance.textContent).toContain('Route: Approach -> Shrine -> Boss');
+    });
+
     test('builds a live boss objective when the player is already in the boss room', () => {
         buildQuestDom();
         const questUI = new QuestUI({

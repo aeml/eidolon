@@ -152,6 +152,14 @@ export class QuestUI {
             return '';
         }
 
+        const nextMeaningfulRoom = Array.isArray(summary.rooms)
+            ? summary.rooms.find((room) => room
+                && typeof room.index === 'number'
+                && room.index > currentObjectiveIndex
+                && !room.cleared
+                && (room.hook === 'elite_ambush' || room.hook === 'shrine' || room.hook === 'chest' || room.type === 'elite' || room.type === 'boss'))
+            : null;
+
         const labelForRoom = (room) => {
             if (!room) return null;
             if (room.hook === 'chest') return 'Chest';
@@ -159,6 +167,8 @@ export class QuestUI {
             if (room.hook === 'shrine') return 'Shrine';
             if (room.type === 'boss') return 'Boss';
             if (room.type === 'elite') return 'Elite';
+            if (room.index === currentObjectiveIndex && nextMeaningfulRoom?.hook === 'shrine') return 'Approach';
+            if (room.index === currentObjectiveIndex && nextMeaningfulRoom?.type === 'boss') return 'Approach';
             return null;
         };
 
@@ -311,10 +321,23 @@ export class QuestUI {
             };
         }
 
-        const remainingRooms = Math.max(1, traversableRooms.filter((room) => !room.cleared && room.type !== 'boss').length);
+        const unclearedNonBossRooms = traversableRooms.filter((room) => !room.cleared && room.type !== 'boss');
+        const remainingRooms = Math.max(1, unclearedNonBossRooms.length);
+        const nextMeaningfulRoom = summary.rooms.find((room) => room
+            && typeof room.index === 'number'
+            && room.index > objectiveRoom.index
+            && !room.cleared
+            && (room.hook === 'elite_ambush' || room.hook === 'shrine' || room.hook === 'chest' || room.type === 'elite' || room.type === 'boss'));
+        const isBridgeToBoss = nextMeaningfulRoom?.type === 'boss' && remainingRooms === 1;
+        const isBridgeToShrine = nextMeaningfulRoom?.hook === 'shrine';
+
         return {
             id: `dungeon-route-${instanceType}`,
-            title: 'Push deeper into the dungeon',
+            title: isBridgeToBoss
+                ? 'Break through the last approach room'
+                : isBridgeToShrine
+                    ? 'Clear through to the shrine route'
+                    : 'Push deeper into the dungeon',
             progressLabel,
             progressPct,
             rewardXP: 0,
@@ -322,7 +345,11 @@ export class QuestUI {
             badge: 'Objective',
             badgeClass: 'is-objective',
             routeTone: 'neutral',
-            hint: remainingRooms === 1 ? 'Boss path open — one room remains' : `Clear ${remainingRooms} more rooms`,
+            hint: isBridgeToBoss
+                ? 'Boss path open — one last room before the boss'
+                : isBridgeToShrine
+                    ? `${remainingRooms} rooms remain before the shrine reset`
+                    : `Clear ${remainingRooms} more rooms`,
             sequenceHint
         };
     }
