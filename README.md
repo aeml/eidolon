@@ -8,7 +8,7 @@
 Eidolon is a browser-based isometric action RPG MMO with a vanilla JavaScript + Three.js client, an authoritative Go WebSocket server, and MongoDB persistence.
 
 ## Recommended visuals to add
-- Gameplay screenshot: overworld combat with HUD, target highlight, and hotbar visible
+- Combat screenshot: active target highlight, damage readability, and hotbar usage in one frame
 - Dungeon screenshot: room objective / party / reward-summary UI in one frame
 - Short GIF: movement + combat + loot + menu polish in a 10-20 second loop
 
@@ -16,11 +16,11 @@ Eidolon is a browser-based isometric action RPG MMO with a vanilla JavaScript + 
 - Final vision: [final_vision.md](final_vision.md)
 - Planned media folder: [`docs/media/`](docs/media/)
 
-## Preview placeholders
-![Eidolon gameplay screenshot placeholder](docs/media/gameplay-overworld.svg)
-![Eidolon dungeon screenshot placeholder](docs/media/dungeon-run.svg)
+## Preview
+![Eidolon gameplay screenshot](docs/media/gameplay-overworld.png)
+![Eidolon continue screen screenshot](docs/media/dungeon-run.png)
 
-> Replace the placeholder SVG files in `docs/media/` with real captures from the live game. Add a short GIF as `docs/media/combat-loop.gif` when ready.
+> README visuals use a real live-town gameplay capture plus a real continue/enter-world screen from a disposable demo character on the live game.
 
 ## Why this project matters
 - Real-time browser multiplayer with server authority and synchronization

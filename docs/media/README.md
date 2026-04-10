@@ -2,9 +2,11 @@
 
 Drop README-facing visual assets here.
 
-Recommended files:
-- `gameplay-overworld.png` — combat screenshot with HUD, hotbar, and target clarity visible
-- `dungeon-run.png` — dungeon screenshot showing room context, objective/reward UI, or party state
+Current README assets:
+- `gameplay-overworld.png` — real live-town gameplay capture with HUD, minimap, NPC labels, and town services visible
+- `dungeon-run.png` — real continue/enter-world screen capture used as a complementary branded non-gameplay asset
+
+Recommended next asset:
 - `combat-loop.gif` — short gameplay loop showing movement, combat, loot, and menu polish
 
 Guidelines:
