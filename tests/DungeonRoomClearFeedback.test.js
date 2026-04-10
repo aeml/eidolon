@@ -340,6 +340,52 @@ describe('Dungeon room clear feedback', () => {
         }));
     });
 
+    test('GameEngine room_clear_reward handling frames chest unlocks as a quick score before ambush pressure', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = {
+            id: 'player-1',
+            position: new THREE.Vector3(5, 0, 10),
+            quests: []
+        };
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 0,
+            objectiveRoomIndex: 0,
+            rooms: [
+                { index: 0, type: 'start', explored: true, cleared: true },
+                { index: 1, type: 'normal', hook: 'chest', explored: false, cleared: false },
+                { index: 2, type: 'elite', hook: 'elite_ambush', explored: false, cleared: false },
+                { index: 3, type: 'boss', explored: false, cleared: false }
+            ]
+        };
+        engine.uiManager = {
+            showRewardSummary: jest.fn(),
+            showRoomClearReward: jest.fn(),
+            showCombatCallout: jest.fn(),
+            updateQuestWindow: jest.fn(),
+            updateJournal: jest.fn()
+        };
+        engine.floatingTextManager = {
+            spawn: jest.fn()
+        };
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+        engine.getDungeonRoomSummary = GameEngine.prototype.getDungeonRoomSummary;
+        engine.buildDungeonBeatAdvanceCallout = GameEngine.prototype.buildDungeonBeatAdvanceCallout;
+        engine.getDungeonBeatLabel = GameEngine.prototype.getDungeonBeatLabel;
+
+        const summary = createRoomClearSummary({
+            roomIndex: 0,
+            objectiveRoomIndex: 1,
+            hint: 'Treasure secured — cash in before the boss'
+        });
+        engine.handleServerMessage({ type: 'room_clear_reward', payload: summary });
+
+        expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
+            title: 'Next: Chest',
+            tone: 'support',
+            subtitle: 'Quick score before the ambush spike'
+        }));
+    });
+
     test('UIManager.showRoomClearReward emits concise reward and hint messages', () => {
         buildDom();
         const ui = new UIManager(false);

@@ -126,4 +126,5 @@ Server
 - Dungeon room-state advances can now raise a small combat callout for the newly exposed dangerous beat (for example `Next: Ambush`), so the pacing plan shows up as an actionable warning instead of only map chrome.
 - Room-clear progression now reuses that same beat-advance callout path, so the moment a shrine or mid-run room opens the boss objective the client immediately surfaces `Next: Boss` instead of burying it only in reward text.
 - Shrine objectives now escalate more truthfully when they are the last stop before a boss: the callout subtitle shifts from a generic support beat to `Last reset before the boss push`, reinforcing the authored run cadence at exactly the right moment.
+- Chest objectives also now read against the next beat: when treasure is immediately followed by an elite ambush, the callout sharpens to `Quick score before the ambush spike` instead of generic treasure flavor.
 - Most important next architectural step: finish burning down the remaining direct `gameEngine.scene` gameplay visuals still hiding in projectile/utility fallback paths so transient combat readability no longer depends on ad hoc scene writes.

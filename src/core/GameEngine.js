@@ -2362,7 +2362,9 @@ export class GameEngine {
                 ? 'Last reset before the boss push'
                 : 'Shrine ahead — brief reset before the push';
         } else if (objectiveRoom.hook === 'chest') {
-            subtitle = 'Treasure room ahead — quick reward before danger';
+            subtitle = nextRoomAfterObjective?.hook === 'elite_ambush' || nextRoomAfterObjective?.type === 'elite'
+                ? 'Quick score before the ambush spike'
+                : 'Treasure room ahead — quick reward before danger';
         }
 
         return {
