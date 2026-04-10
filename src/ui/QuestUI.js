@@ -188,7 +188,12 @@ export class QuestUI {
         const totalProgressRooms = Math.max(1, traversableRooms.length);
         const progressLabel = `${Math.min(clearedCount, totalProgressRooms)} / ${totalProgressRooms}`;
         const progressPct = Math.min(100, (Math.min(clearedCount, totalProgressRooms) / totalProgressRooms) * 100);
-        const sequenceHint = this.buildDungeonRouteSequenceHint(summary, objectiveRoom);
+        const isLiveBossObjective = objectiveRoom?.type === 'boss'
+            && typeof summary.currentRoomIndex === 'number'
+            && typeof summary.objectiveRoomIndex === 'number'
+            && summary.currentRoomIndex === objectiveRoom.index
+            && summary.objectiveRoomIndex === objectiveRoom.index;
+        const sequenceHint = isLiveBossObjective ? '' : this.buildDungeonRouteSequenceHint(summary, objectiveRoom);
 
         if (!objectiveRoom) {
             return {
@@ -257,15 +262,19 @@ export class QuestUI {
         if (objectiveRoom.type === 'boss') {
             return {
                 id: `dungeon-route-${instanceType}`,
-                title: 'Confront the boss',
+                title: isLiveBossObjective ? 'Survive the boss fight' : 'Confront the boss',
                 progressLabel,
                 progressPct,
                 rewardXP: 0,
                 completed: false,
-                badge: 'Boss',
+                badge: isLiveBossObjective ? 'Boss Now' : 'Boss',
                 badgeClass: 'is-boss',
                 routeTone: 'danger',
-                hint: objectiveRoom.explored ? 'Boss room discovered' : 'Push toward the boss room',
+                hint: isLiveBossObjective
+                    ? 'You are in the boss room — commit and survive'
+                    : objectiveRoom.explored
+                        ? 'Boss room discovered'
+                        : 'Push toward the boss room',
                 sequenceHint
             };
         }

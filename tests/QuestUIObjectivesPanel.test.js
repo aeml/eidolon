@@ -276,6 +276,38 @@ describe('QuestUI objectives panel', () => {
         ]));
     });
 
+    test('builds a live boss objective when the player is already in the boss room', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 2,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'elite', explored: true, cleared: true },
+                    { index: 2, type: 'boss', explored: true, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'tempest_spire'
+        });
+
+        const summary = questUI.buildObjectiveSummary([]);
+
+        expect(summary).toEqual([
+            expect.objectContaining({
+                id: 'dungeon-route-tempest_spire',
+                title: 'Survive the boss fight',
+                badge: 'Boss Now',
+                badgeClass: 'is-boss',
+                hint: 'You are in the boss room — commit and survive',
+                routeTone: 'danger',
+                sequenceHint: ''
+            })
+        ]);
+    });
+
     test('builds an exit objective when the dungeon is fully cleared', () => {
         buildQuestDom();
         const questUI = new QuestUI({
@@ -401,5 +433,31 @@ describe('QuestUI objectives panel', () => {
         expect(guidance).not.toBeNull();
         expect(guidance.textContent).toContain('Secure the treasure room');
         expect(guidance.textContent).toContain('Route: Chest -> Ambush -> Shrine -> Boss');
+    });
+
+    test('renders execution guidance instead of route preview for a live boss objective', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 2,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'elite', explored: true, cleared: true },
+                    { index: 2, type: 'boss', explored: true, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'tempest_spire'
+        });
+
+        questUI.updateJournal([]);
+
+        const guidance = document.querySelector('.objective-guidance');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Survive the boss fight');
+        expect(guidance.textContent).toContain('You are in the boss room — commit and survive');
+        expect(guidance.textContent).not.toContain('Route:');
     });
 });
