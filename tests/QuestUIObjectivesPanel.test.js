@@ -210,14 +210,14 @@ describe('QuestUI objectives panel', () => {
             },
             {
                 id: 'dungeon-route-boss',
-                title: 'Confront the boss',
+                title: 'Commit to the boss room',
                 progressLabel: '3 / 4',
                 progressPct: 75,
                 rewardXP: 0,
                 completed: false,
                 badge: 'Boss',
                 badgeClass: 'is-boss',
-                hint: 'Boss room discovered'
+                hint: 'Boss room ahead — reset and commit'
             }
         ]);
 
@@ -263,10 +263,10 @@ describe('QuestUI objectives panel', () => {
         expect(summary).toEqual(expect.arrayContaining([
             expect.objectContaining({
                 id: 'dungeon-route-tempest_spire',
-                title: 'Confront the boss',
+                title: 'Commit to the boss room',
                 badge: 'Boss',
                 badgeClass: 'is-boss',
-                hint: 'Boss room discovered',
+                hint: 'Boss room ahead — reset and commit',
                 routeTone: 'danger'
             }),
             expect.objectContaining({
@@ -642,6 +642,32 @@ describe('QuestUI objectives panel', () => {
         expect(guidance.textContent).toContain('Reach the shrine room');
         expect(guidance.textContent).toContain('Last reset before the boss push');
         expect(guidance.textContent).toContain('Route: Shrine -> Boss');
+    });
+
+    test('renders commit guidance for a discovered boss objective before the fight goes live', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 1,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', explored: true, cleared: true },
+                    { index: 2, type: 'boss', explored: true, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'tempest_spire'
+        });
+
+        questUI.updateJournal([]);
+
+        const guidance = document.querySelector('.objective-guidance');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Commit to the boss room');
+        expect(guidance.textContent).toContain('Boss room ahead — reset and commit');
+        expect(guidance.textContent).not.toContain('Boss Now');
     });
 
     test('renders execution guidance instead of route preview for a live boss objective', () => {

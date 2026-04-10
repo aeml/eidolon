@@ -288,7 +288,7 @@ export class QuestUI {
         if (objectiveRoom.type === 'boss') {
             return {
                 id: `dungeon-route-${instanceType}`,
-                title: isLiveBossObjective ? 'Survive the boss fight' : 'Confront the boss',
+                title: isLiveBossObjective ? 'Survive the boss fight' : 'Commit to the boss room',
                 progressLabel,
                 progressPct,
                 rewardXP: 0,
@@ -298,9 +298,7 @@ export class QuestUI {
                 routeTone: 'danger',
                 hint: isLiveBossObjective
                     ? 'You are in the boss room — commit and survive'
-                    : objectiveRoom.explored
-                        ? 'Boss room discovered'
-                        : 'Push toward the boss room',
+                    : 'Boss room ahead — reset and commit',
                 sequenceHint
             };
         }
