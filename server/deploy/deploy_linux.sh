@@ -54,10 +54,9 @@ if [ "${CLEAN_SERVER_TREE:-false}" = "true" ] && git rev-parse --show-toplevel >
   git -C "${SERVER_DIR}" clean -fd
 fi
 
-if command -v systemctl >/dev/null 2>&1; then
-  echo "Ensuring docker starts on reboot..."
-  sudo systemctl enable docker
-  sudo systemctl restart docker
+if ! docker info >/dev/null 2>&1; then
+  echo "docker daemon is not reachable for the current user" >&2
+  exit 1
 fi
 
 echo "Building api image..."
