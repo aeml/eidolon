@@ -34,6 +34,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run lint
+        run: npm run lint
+
       - name: Run tests with coverage
         run: npm test -- --coverage --coverageReporters=lcov --coverageReporters=text
 
@@ -240,7 +243,15 @@ jobs:
             set -euo pipefail
             cd /home/aeml/eidolon
             git fetch origin ${{ github.ref_name }}
-            git checkout -f origin/${{ github.ref_name }} -- server
+            EXPECTED_SHA="$(git rev-parse origin/${{ github.ref_name }})"
+            echo "Expected origin/${{ github.ref_name }}: ${EXPECTED_SHA}"
+            git reset --hard origin/${{ github.ref_name }}
+            git clean -fd
+            ACTUAL_SHA="$(git rev-parse HEAD)"
+            echo "Checked out HEAD: ${ACTUAL_SHA}"
+            if [ "${ACTUAL_SHA}" != "${EXPECTED_SHA}" ]; then
+              echo "Deployed checkout does not match origin/${{ github.ref_name }}" >&2
+              exit 1
+            fi
             cd server
-            docker compose build api
-            docker compose up -d api
+            CLEAN_SERVER_TREE=true ./deploy/deploy_linux.sh

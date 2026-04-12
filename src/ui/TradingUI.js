@@ -65,6 +65,32 @@ export class TradingUI {
         if (this.btnTradingCreate) this.btnTradingCreate.addEventListener('click', () => this.handleCreate());
     }
 
+    clearElement(element) {
+        element?.replaceChildren();
+    }
+
+    createMessage(text, styles = {}) {
+        const message = document.createElement('div');
+        Object.assign(message.style, styles);
+        message.textContent = text;
+        return message;
+    }
+
+    setPriceContent(container, values) {
+        container.replaceChildren();
+
+        values.forEach((value, index) => {
+            const amount = document.createElement('span');
+            amount.style.color = '#ffd700';
+            amount.textContent = String(value);
+            container.appendChild(amount);
+
+            if (index < values.length - 1) {
+                container.appendChild(document.createTextNode(' / '));
+            }
+        });
+    }
+
     // ================================================================
     // PUBLIC API
     // ================================================================
@@ -161,7 +187,12 @@ export class TradingUI {
         if (this.onTradingCreate) {
             this.onTradingCreate(this.selectedTradingItem.slot, bid, buyout, duration);
             this.selectedTradingItem = null;
-            this.tradingSellSlot.innerHTML = '<span style="font-size: 30px; color: #444;">+</span>';
+            this.tradingSellSlot.replaceChildren();
+            const addIcon = document.createElement('span');
+            addIcon.style.fontSize = '30px';
+            addIcon.style.color = '#444';
+            addIcon.textContent = '+';
+            this.tradingSellSlot.appendChild(addIcon);
             this.tradingSellSlot.style.backgroundImage = 'none';
             this.switchTab('my');
         }
@@ -227,10 +258,14 @@ export class TradingUI {
 
     renderAuctionList(auctions) {
         if (!this.tradingListContainer) return;
-        this.tradingListContainer.innerHTML = '';
+        this.clearElement(this.tradingListContainer);
 
         if (!auctions || auctions.length === 0) {
-            this.tradingListContainer.innerHTML = '<div style="padding: 10px; color: #888; text-align: center;">No auctions found.</div>';
+            this.tradingListContainer.appendChild(this.createMessage('No auctions found.', {
+                padding: '10px',
+                color: '#888',
+                textAlign: 'center'
+            }));
             return;
         }
 
@@ -264,7 +299,7 @@ export class TradingUI {
 
             // Price
             const priceSpan = document.createElement('span');
-            priceSpan.innerHTML = `<span style="color: #ffd700;">${auction.currentBid}</span> / <span style="color: #ffd700;">${auction.buyoutPrice}</span>`;
+            this.setPriceContent(priceSpan, [auction.currentBid, auction.buyoutPrice]);
             row.appendChild(priceSpan);
 
             // Action
@@ -309,10 +344,14 @@ export class TradingUI {
 
     renderMyAuctions(auctions) {
         if (!this.tradingMyList) return;
-        this.tradingMyList.innerHTML = '';
+        this.clearElement(this.tradingMyList);
 
         if (!auctions || auctions.length === 0) {
-            this.tradingMyList.innerHTML = '<div style="padding: 10px; color: #888; text-align: center;">You have no active auctions.</div>';
+            this.tradingMyList.appendChild(this.createMessage('You have no active auctions.', {
+                padding: '10px',
+                color: '#888',
+                textAlign: 'center'
+            }));
             return;
         }
 
@@ -339,7 +378,7 @@ export class TradingUI {
 
             // Price
             const priceSpan = document.createElement('span');
-            priceSpan.innerHTML = `<span style="color: #ffd700;">${auction.currentBid}</span>`;
+            this.setPriceContent(priceSpan, [auction.currentBid]);
             row.appendChild(priceSpan);
 
             // Action

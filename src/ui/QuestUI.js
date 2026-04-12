@@ -111,6 +111,17 @@ export class QuestUI {
         return `${label}s`;
     }
 
+    clearElement(element) {
+        element?.replaceChildren();
+    }
+
+    createMessage(text, styles = {}) {
+        const message = document.createElement('div');
+        Object.assign(message.style, styles);
+        message.textContent = text;
+        return message;
+    }
+
     isPlayerInTown(player = this.ctx.getLastPlayer?.()) {
         if (!player?.position) return false;
         const x = Number(player.position.x);
@@ -400,13 +411,41 @@ export class QuestUI {
             : objective.completed
                 ? `Turn this in for ${objective.rewardXP || 0} XP.`
                 : objective.hint;
-        guidance.innerHTML = `
-            <div style="color: #ffd700; font-size: 11px; font-weight: bold; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px;">Next Step</div>
-            <div style="color: #fff; font-size: 13px; font-weight: bold; margin-bottom: 4px;">${objective.title}</div>
-            <div>${guidanceBody}</div>
-            ${objective.sequenceHint ? `<div style="color: #ffdf8a; margin-top: 6px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;">${objective.sequenceHint}</div>` : ''}
-            <div style="color: #aaa; margin-top: 6px;">Open World Map (M) and Journal (J) if you need to re-orient.</div>
-        `;
+        const heading = this.createMessage('Next Step', {
+            color: '#ffd700',
+            fontSize: '11px',
+            fontWeight: 'bold',
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            marginBottom: '4px'
+        });
+        const title = this.createMessage(objective.title, {
+            color: '#fff',
+            fontSize: '13px',
+            fontWeight: 'bold',
+            marginBottom: '4px'
+        });
+        const body = this.createMessage(guidanceBody);
+        const footer = this.createMessage('Open World Map (M) and Journal (J) if you need to re-orient.', {
+            color: '#aaa',
+            marginTop: '6px'
+        });
+
+        guidance.appendChild(heading);
+        guidance.appendChild(title);
+        guidance.appendChild(body);
+
+        if (objective.sequenceHint) {
+            guidance.appendChild(this.createMessage(objective.sequenceHint, {
+                color: '#ffdf8a',
+                marginTop: '6px',
+                fontSize: '11px',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase'
+            }));
+        }
+
+        guidance.appendChild(footer);
         if (this.objectivesList.parentNode === this.objectivesPanel) {
             this.objectivesPanel.insertBefore(guidance, this.objectivesList);
         } else {
@@ -419,7 +458,7 @@ export class QuestUI {
 
         this.activeQuestSummary = Array.isArray(summary) ? summary : [];
         this.objectivesPanel.style.display = this.activeQuestSummary.length > 0 ? 'flex' : 'none';
-        this.objectivesList.innerHTML = '';
+        this.clearElement(this.objectivesList);
         this.objectivesPanel.querySelector('.objective-guidance')?.remove();
 
         if (this.activeQuestSummary.length > 0) {
@@ -429,22 +468,45 @@ export class QuestUI {
         this.activeQuestSummary.forEach((objective) => {
             const item = document.createElement('div');
             item.className = `objective-entry ${objective.routeTone ? `is-${objective.routeTone}` : ''}`.trim();
-            const badgeMarkup = objective.badge
-                ? `<span class="objective-entry__badge ${objective.badgeClass || ''}">${objective.badge}</span>`
-                : '';
-            item.innerHTML = `
-                <div class="objective-entry__header">
-                    <span class="objective-entry__title-wrap">
-                        ${badgeMarkup}
-                        <span class="objective-entry__title">${objective.title}</span>
-                    </span>
-                    <span class="objective-entry__status ${objective.completed ? 'is-complete' : ''}">${objective.completed ? 'Ready' : objective.progressLabel}</span>
-                </div>
-                <div class="objective-entry__progress">
-                    <div class="objective-entry__progress-fill ${objective.completed ? 'is-complete' : ''}" style="width: ${objective.progressPct}%;"></div>
-                </div>
-                <div class="objective-entry__hint">${objective.completed ? `Reward: ${objective.rewardXP} XP` : objective.hint}</div>
-            `;
+            const header = document.createElement('div');
+            header.className = 'objective-entry__header';
+
+            const titleWrap = document.createElement('span');
+            titleWrap.className = 'objective-entry__title-wrap';
+
+            if (objective.badge) {
+                const badge = document.createElement('span');
+                badge.className = `objective-entry__badge ${objective.badgeClass || ''}`.trim();
+                badge.textContent = objective.badge;
+                titleWrap.appendChild(badge);
+            }
+
+            const title = document.createElement('span');
+            title.className = 'objective-entry__title';
+            title.textContent = objective.title;
+            titleWrap.appendChild(title);
+
+            const status = document.createElement('span');
+            status.className = `objective-entry__status ${objective.completed ? 'is-complete' : ''}`.trim();
+            status.textContent = objective.completed ? 'Ready' : objective.progressLabel;
+
+            header.appendChild(titleWrap);
+            header.appendChild(status);
+
+            const progress = document.createElement('div');
+            progress.className = 'objective-entry__progress';
+            const progressFill = document.createElement('div');
+            progressFill.className = `objective-entry__progress-fill ${objective.completed ? 'is-complete' : ''}`.trim();
+            progressFill.style.width = `${Math.max(0, Math.min(100, Number(objective.progressPct) || 0))}%`;
+            progress.appendChild(progressFill);
+
+            const hint = document.createElement('div');
+            hint.className = 'objective-entry__hint';
+            hint.textContent = objective.completed ? `Reward: ${objective.rewardXP} XP` : objective.hint;
+
+            item.appendChild(header);
+            item.appendChild(progress);
+            item.appendChild(hint);
             this.objectivesList.appendChild(item);
         });
     }
@@ -454,7 +516,7 @@ export class QuestUI {
     // ================================================================
 
     updateQuestWindow(quests) {
-        this.questList.innerHTML = '';
+        this.clearElement(this.questList);
         if (!quests) return;
 
         quests.forEach(q => {
@@ -473,39 +535,57 @@ export class QuestUI {
             div.style.flexDirection = 'column';
             div.style.gap = '5px';
 
-            let btnHtml = '';
-            let statusText = '';
             const targetLabel = this.formatQuestTarget(q.target, q.maxCount);
+            const statusText = document.createElement('div');
+            const actionButton = document.createElement('button');
+            actionButton.className = 'menu-btn';
+            actionButton.type = 'button';
+            actionButton.style.marginTop = '5px';
 
             if (!q.accepted) {
-                statusText = `<div style="color: #ffd700; font-weight: bold;">Daily: Kill ${q.maxCount} ${targetLabel}</div>`;
-                btnHtml = `<button class="menu-btn" style="margin-top: 5px; background: #4CAF50; border-color: #45a049;">Accept Quest</button>`;
+                statusText.style.color = '#ffd700';
+                statusText.style.fontWeight = 'bold';
+                statusText.textContent = `Daily: Kill ${q.maxCount} ${targetLabel}`;
+                actionButton.textContent = 'Accept Quest';
+                actionButton.style.background = '#4CAF50';
+                actionButton.style.borderColor = '#45a049';
             } else if (q.accepted && !q.completed && q.count >= q.maxCount) {
-                statusText = `<div style="color: #4CAF50; font-weight: bold;">COMPLETE: Kill ${q.maxCount} ${targetLabel}</div>`;
-                btnHtml = `<button class="menu-btn" style="margin-top: 5px; background: #FFD700; color: #000; border-color: #FFA000;">Claim Reward</button>`;
+                statusText.style.color = '#4CAF50';
+                statusText.style.fontWeight = 'bold';
+                statusText.textContent = `COMPLETE: Kill ${q.maxCount} ${targetLabel}`;
+                actionButton.textContent = 'Claim Reward';
+                actionButton.style.background = '#FFD700';
+                actionButton.style.color = '#000';
+                actionButton.style.borderColor = '#FFA000';
             } else {
                 return;
             }
 
-            div.innerHTML = `
-                ${statusText}
-                <div style="color: #aaa; font-size: 12px;">Reward: ${q.rewardXP} XP</div>
-                ${btnHtml}
-            `;
+            const reward = document.createElement('div');
+            reward.style.color = '#aaa';
+            reward.style.fontSize = '12px';
+            reward.textContent = `Reward: ${q.rewardXP} XP`;
 
-            const btn = div.querySelector('button');
-            btn.onclick = () => {
+            actionButton.addEventListener('click', () => {
                 if (!q.accepted) {
                     if (this.onAcceptQuest) this.onAcceptQuest(q.id);
                 } else {
                     if (this.onCompleteQuest) this.onCompleteQuest(q.id);
                 }
-            };
+            });
+
+            div.appendChild(statusText);
+            div.appendChild(reward);
+            div.appendChild(actionButton);
             this.questList.appendChild(div);
         });
 
         if (this.questList.children.length === 0) {
-            this.questList.innerHTML = '<div style="color: #888; text-align: center; margin-top: 20px;">No available quests. Check your Journal (J) for active quests.</div>';
+            this.questList.appendChild(this.createMessage('No available quests. Check your Journal (J) for active quests.', {
+                color: '#888',
+                textAlign: 'center',
+                marginTop: '20px'
+            }));
         }
     }
 
@@ -515,7 +595,7 @@ export class QuestUI {
 
     updateJournal(quests) {
         this.renderObjectivesPanel(this.buildObjectiveSummary(quests));
-        this.journalList.innerHTML = '';
+        this.clearElement(this.journalList);
 
         const infoDiv = document.createElement('div');
         infoDiv.style.color = '#888';
@@ -547,17 +627,56 @@ export class QuestUI {
             const status = q.completed ? 'COMPLETED' : 'IN PROGRESS';
             const targetLabel = this.formatQuestTarget(q.target, q.maxCount);
 
-            div.innerHTML = `
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="color: #fff; font-weight: bold;">Kill ${targetLabel}</span>
-                    <span style="color: ${color}; font-size: 12px;">${status}</span>
-                </div>
-                <div style="background: #111; height: 10px; border: 1px solid #444; position: relative;">
-                    <div style="background: ${color}; width: ${pct}%; height: 100%;"></div>
-                    <div style="position: absolute; top: 0; left: 0; width: 100%; text-align: center; font-size: 8px; line-height: 10px; color: #fff;">${q.count} / ${q.maxCount}</div>
-                </div>
-                <div style="color: #aaa; font-size: 12px;">Reward: ${q.rewardXP} XP</div>
-            `;
+            const header = document.createElement('div');
+            header.style.display = 'flex';
+            header.style.justifyContent = 'space-between';
+
+            const title = document.createElement('span');
+            title.style.color = '#fff';
+            title.style.fontWeight = 'bold';
+            title.textContent = `Kill ${targetLabel}`;
+
+            const statusEl = document.createElement('span');
+            statusEl.style.color = color;
+            statusEl.style.fontSize = '12px';
+            statusEl.textContent = status;
+
+            header.appendChild(title);
+            header.appendChild(statusEl);
+
+            const progress = document.createElement('div');
+            progress.style.background = '#111';
+            progress.style.height = '10px';
+            progress.style.border = '1px solid #444';
+            progress.style.position = 'relative';
+
+            const progressFill = document.createElement('div');
+            progressFill.style.background = color;
+            progressFill.style.width = `${pct}%`;
+            progressFill.style.height = '100%';
+
+            const progressLabel = document.createElement('div');
+            progressLabel.style.position = 'absolute';
+            progressLabel.style.top = '0';
+            progressLabel.style.left = '0';
+            progressLabel.style.width = '100%';
+            progressLabel.style.textAlign = 'center';
+            progressLabel.style.fontSize = '8px';
+            progressLabel.style.lineHeight = '10px';
+            progressLabel.style.color = '#fff';
+            progressLabel.textContent = `${q.count} / ${q.maxCount}`;
+
+            progress.appendChild(progressFill);
+            progress.appendChild(progressLabel);
+
+            const reward = document.createElement('div');
+            reward.style.color = '#aaa';
+            reward.style.fontSize = '12px';
+            reward.textContent = `Reward: ${q.rewardXP} XP`;
+
+            div.appendChild(header);
+            div.appendChild(progress);
+            div.appendChild(reward);
 
             if (q.completed) {
                 // Turn in at NPC for now
@@ -566,7 +685,12 @@ export class QuestUI {
         });
 
         if (!hasActive) {
-            this.journalList.innerHTML = '<div style="color: #888; text-align: center; margin-top: 20px;">No active quests.</div>';
+            this.clearElement(this.journalList);
+            this.journalList.appendChild(this.createMessage('No active quests.', {
+                color: '#888',
+                textAlign: 'center',
+                marginTop: '20px'
+            }));
         }
     }
 }
