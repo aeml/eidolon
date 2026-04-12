@@ -254,4 +254,4 @@ jobs:
               exit 1
             fi
             cd server
-            CLEAN_SERVER_TREE=true ./deploy/deploy_linux.sh
+            CLEAN_SERVER_TREE=true bash ./deploy/deploy_linux.sh
