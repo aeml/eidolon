@@ -273,6 +273,18 @@ describe('CollisionManager', () => {
 describe('CollisionManager Integration', () => {
     test('Manager can handle typical game scenario', () => {
         const manager = new CollisionManager();
+        const obstacleSeed = [
+            [12, 18, 2.5],
+            [24, 36, 3.2],
+            [38, 14, 4.1],
+            [49, 52, 2.8],
+            [63, 21, 3.6],
+            [71, 47, 4.4],
+            [82, 33, 2.9],
+            [15, 74, 3.7],
+            [56, 68, 2.4],
+            [91, 11, 4.8],
+        ];
         
         // Add world bounds as box colliders
         manager.addCollider(new THREE.Box3(
@@ -281,13 +293,9 @@ describe('CollisionManager Integration', () => {
         ));
         
         // Add circular colliders for trees/obstacles
-        for (let i = 0; i < 10; i++) {
-            manager.addCircularCollider(
-                Math.random() * 100,
-                Math.random() * 100,
-                2 + Math.random() * 3
-            );
-        }
+        obstacleSeed.forEach(([x, z, radius]) => {
+            manager.addCircularCollider(x, z, radius);
+        });
         
         // Add town safe zone
         manager.addSafeZone(new THREE.Box3(

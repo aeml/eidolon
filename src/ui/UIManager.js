@@ -368,7 +368,6 @@ export class UIManager {
         this.statsContent.addEventListener('click', (e) => {
             if (e.target.classList.contains('stat-btn')) {
                 const stat = e.target.dataset.stat;
-                console.log(`Stat button clicked: ${stat}`); // Debug log
                 if (this.onStatUpgrade) {
                     this.onStatUpgrade(stat);
                 }
@@ -534,9 +533,43 @@ export class UIManager {
         this.chatBox.style.display = 'flex';
         const div = document.createElement('div');
         div.style.marginBottom = '4px';
-        div.innerHTML = `<strong style="color: #ffd700;">${sender}:</strong> <span style="color: #fff;">${message}</span>`;
+        const senderEl = document.createElement('strong');
+        senderEl.style.color = '#ffd700';
+        senderEl.textContent = `${sender}:`;
+
+        const messageEl = document.createElement('span');
+        messageEl.style.color = '#fff';
+        messageEl.textContent = ` ${message}`;
+
+        div.appendChild(senderEl);
+        div.appendChild(messageEl);
         this.chatMessages.appendChild(div);
         this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+    }
+
+    setTooltipDescription(lines, detailText = '') {
+        if (!this.statTooltipDesc) return;
+
+        this.statTooltipDesc.replaceChildren();
+
+        lines.forEach((line) => {
+            const text = String(line || '').trim();
+            if (!text) return;
+
+            const lineEl = document.createElement('div');
+            lineEl.style.color = '#ccc';
+            lineEl.textContent = text;
+            this.statTooltipDesc.appendChild(lineEl);
+        });
+
+        if (detailText) {
+            const detailEl = document.createElement('div');
+            detailEl.style.color = '#9aa0a6';
+            detailEl.style.marginTop = '6px';
+            detailEl.style.fontSize = '12px';
+            detailEl.textContent = detailText;
+            this.statTooltipDesc.appendChild(detailEl);
+        }
     }
 
     showLootPickupToast(message, options = {}) {
@@ -1468,13 +1501,9 @@ export class UIManager {
         if (typeof mana === 'number') details.push(`Mana: ${mana}`);
         if (typeof cooldown === 'number') details.push(`CD: ${cooldown.toFixed(1)}s`);
         if (typeof range === 'number') details.push(`Range: ${range.toFixed(1)}`);
-        const detailHtml = details.length > 0
-            ? `<div style="color: #9aa0a6; margin-top: 6px; font-size: 12px;">${details.join(' | ')}</div>`
-            : '';
-
         this.statTooltipTitle.textContent = skillName;
         this.statTooltipTitle.style.color = '#ffd700';
-        this.statTooltipDesc.innerHTML = `<div style="color: #ccc;">${desc}</div>${detailHtml}`;
+        this.setTooltipDescription([desc], details.join(' | '));
         
         this.statTooltip.style.display = 'block';
         this.statTooltip.style.left = `${x}px`;
@@ -2336,7 +2365,7 @@ export class UIManager {
         }
 
         this.statTooltipTitle.textContent = title;
-        this.statTooltipDesc.innerHTML = desc; // Use innerHTML to be consistent
+        this.setTooltipDescription([desc]);
         
         this.statTooltip.style.display = 'block';
         this.statTooltip.style.left = `${x + 15}px`;

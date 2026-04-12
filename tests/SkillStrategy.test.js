@@ -1,6 +1,16 @@
 import { jest } from '@jest/globals';
 import { SkillStrategy } from '../src/skills/SkillStrategy.js';
 
+class TestSkillStrategy extends SkillStrategy {
+    constructor(name = 'Fireball', cooldown = 1000, resourceCost = 25) {
+        super(name, cooldown, resourceCost);
+    }
+
+    perform(owner, targetVector) {
+        this.lastExecution = { owner, targetVector };
+    }
+}
+
 describe('SkillStrategy', () => {
     describe('constructor', () => {
         test('initializes with name, cooldown, and resourceCost', () => {
@@ -77,7 +87,7 @@ describe('SkillStrategy', () => {
 
     describe('execute', () => {
         test('updates lastUsed when executed successfully', () => {
-            const skill = new SkillStrategy('Fireball', 1000, 25);
+            const skill = new TestSkillStrategy('Fireball', 1000, 25);
             const owner = { stats: { mana: 100 } };
             const targetVector = { x: 10, z: 20 };
             
@@ -90,7 +100,7 @@ describe('SkillStrategy', () => {
         });
 
         test('does not update lastUsed when on cooldown', () => {
-            const skill = new SkillStrategy('Fireball', 1000, 25);
+            const skill = new TestSkillStrategy('Fireball', 1000, 25);
             const owner = { stats: { mana: 100 } };
             const targetVector = { x: 10, z: 20 };
             
@@ -106,7 +116,7 @@ describe('SkillStrategy', () => {
         });
 
         test('calls perform when canExecute is true', () => {
-            const skill = new SkillStrategy('Fireball', 1000, 25);
+            const skill = new TestSkillStrategy('Fireball', 1000, 25);
             const owner = { stats: { mana: 100 } };
             const targetVector = { x: 10, z: 20 };
             
@@ -119,7 +129,7 @@ describe('SkillStrategy', () => {
         });
 
         test('does not call perform when on cooldown', () => {
-            const skill = new SkillStrategy('Fireball', 1000, 25);
+            const skill = new TestSkillStrategy('Fireball', 1000, 25);
             const owner = { stats: { mana: 100 } };
             const targetVector = { x: 10, z: 20 };
             
@@ -135,18 +145,14 @@ describe('SkillStrategy', () => {
     });
 
     describe('perform', () => {
-        test('logs warning when called on base class', () => {
+        test('throws when called on base class', () => {
             const skill = new SkillStrategy('Fireball', 1000, 25);
             const owner = { stats: { mana: 100 } };
             const targetVector = { x: 10, z: 20 };
-            
-            const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-            
-            skill.perform(owner, targetVector);
-            
-            expect(warnSpy).toHaveBeenCalledWith('SkillStrategy.perform() must be implemented by subclass');
-            
-            warnSpy.mockRestore();
+
+            expect(() => skill.perform(owner, targetVector)).toThrow(
+                'SkillStrategy.perform() must be implemented by subclass'
+            );
         });
     });
 

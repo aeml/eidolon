@@ -24,6 +24,8 @@ export class SocialUI {
         this.onPartyInvite = null;
         this.onPartyLeave = null;
         this.onPartyResponse = null;
+        this.onPartyKick = null;
+        this.onPartyPromote = null;
 
         // --- Create the social window DOM element ---
         this._createSocialWindow();
@@ -175,12 +177,18 @@ export class SocialUI {
             } else {
                 this.partyPanel.style.display = 'block';
             }
-            this.partyList.innerHTML = '<div style="color:#aaa; font-style:italic; padding:5px;">No party. Invite someone!</div>';
+            this.partyList.replaceChildren();
+            const emptyState = document.createElement('div');
+            emptyState.style.color = '#aaa';
+            emptyState.style.fontStyle = 'italic';
+            emptyState.style.padding = '5px';
+            emptyState.textContent = 'No party. Invite someone!';
+            this.partyList.appendChild(emptyState);
             return;
         }
 
         this.partyPanel.style.display = 'block';
-        this.partyList.innerHTML = '';
+        this.partyList.replaceChildren();
 
         const members = partyData.members || [];
         const leaderId = partyData.leaderId;
@@ -196,28 +204,67 @@ export class SocialUI {
             const isLeader = member.isLeader;
             const isMe = member.id === myId;
 
-            let actionsHtml = '';
-            if (amILeader && !isMe) {
-                actionsHtml = `
-                    <div class="party-actions">
-                        <button class="party-btn" onclick="window.game.kickPartyMember('${member.id}')" title="Kick">K</button>
-                        <button class="party-btn" onclick="window.game.promotePartyMember('${member.id}')" title="Promote">P</button>
-                    </div>
-                `;
+            const info = document.createElement('div');
+            info.className = 'party-member-info';
+
+            const nameRow = document.createElement('div');
+            nameRow.className = 'party-name';
+
+            if (isLeader) {
+                const leaderIcon = document.createElement('span');
+                leaderIcon.className = 'party-leader-icon';
+                leaderIcon.textContent = '★';
+                nameRow.appendChild(leaderIcon);
+                nameRow.appendChild(document.createTextNode(' '));
             }
 
-            div.innerHTML = `
-                <div class="party-member-info">
-                    <div class="party-name">
-                        ${isLeader ? '<span class="party-leader-icon">★</span>' : ''}
-                        ${member.name} <span style="color: #aaa; font-size: 10px;">(Lvl ${member.level} ${member.class})</span>
-                    </div>
-                    <div class="party-hp-bar">
-                        <div class="party-hp-fill" style="width: ${hpPercent}%"></div>
-                    </div>
-                </div>
-                ${actionsHtml}
-            `;
+            nameRow.appendChild(document.createTextNode(member.name));
+
+            const meta = document.createElement('span');
+            meta.style.color = '#aaa';
+            meta.style.fontSize = '10px';
+            meta.textContent = ` (Lvl ${member.level} ${member.class})`;
+            nameRow.appendChild(meta);
+
+            const hpBar = document.createElement('div');
+            hpBar.className = 'party-hp-bar';
+
+            const hpFill = document.createElement('div');
+            hpFill.className = 'party-hp-fill';
+            hpFill.style.width = `${Math.max(0, Math.min(100, hpPercent))}%`;
+            hpBar.appendChild(hpFill);
+
+            info.appendChild(nameRow);
+            info.appendChild(hpBar);
+            div.appendChild(info);
+
+            if (amILeader && !isMe) {
+                const actions = document.createElement('div');
+                actions.className = 'party-actions';
+
+                const kickButton = document.createElement('button');
+                kickButton.className = 'party-btn';
+                kickButton.type = 'button';
+                kickButton.title = 'Kick';
+                kickButton.textContent = 'K';
+                kickButton.addEventListener('click', () => {
+                    this.onPartyKick?.(member.id);
+                });
+
+                const promoteButton = document.createElement('button');
+                promoteButton.className = 'party-btn';
+                promoteButton.type = 'button';
+                promoteButton.title = 'Promote';
+                promoteButton.textContent = 'P';
+                promoteButton.addEventListener('click', () => {
+                    this.onPartyPromote?.(member.id);
+                });
+
+                actions.appendChild(kickButton);
+                actions.appendChild(promoteButton);
+                div.appendChild(actions);
+            }
+
             this.partyList.appendChild(div);
         });
     }

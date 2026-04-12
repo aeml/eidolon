@@ -82,6 +82,12 @@ export class UIBindings {
         ui.social.onPartyResponse = (inviterName, accepted) => {
             engine.sendPartyMessage('party_response', { inviterName, accepted });
         };
+        ui.social.onPartyKick = (targetId) => {
+            engine.kickPartyMember(targetId);
+        };
+        ui.social.onPartyPromote = (targetId) => {
+            engine.promotePartyMember(targetId);
+        };
 
         ui.skillTree.onSelectBranch = (branch) => {
             engine.network.send('selectBranch', { branch });

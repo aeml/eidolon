@@ -20,6 +20,6 @@ export class SkillStrategy {
     }
 
     perform(owner, targetVector) {
-        console.warn('SkillStrategy.perform() must be implemented by subclass');
+        throw new Error('SkillStrategy.perform() must be implemented by subclass');
     }
 }

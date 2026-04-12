@@ -20,6 +20,7 @@ function logToScreen(msg, type = 'INFO') {
     */
 }
 
+const originalConsoleLog = console.log;
 const originalConsoleError = console.error;
 console.error = function(...args) {
     originalConsoleError.apply(console, args);
@@ -34,7 +35,6 @@ console.warn = function(...args) {
 
 if (isMobile) {
     document.body.classList.add('mobile-mode');
-    const originalConsoleLog = console.log;
     console.log = function(...args) {
         originalConsoleLog.apply(console, args);
         logToScreen(args.join(' '), 'LOG');
@@ -64,13 +64,6 @@ window.onerror = function(message, source, lineno, colno, error) {
 window.addEventListener('unhandledrejection', function(event) {
     logToScreen(`Unhandled Rejection: ${event.reason}`, 'CRITICAL');
 });
-
-if (!debugMode && !isMobile) {
-    console.log = function() {};
-} else {
-    console.log("Debug Mode Enabled (Localhost or Mobile detected)");
-}
-
 
 window.addEventListener('DOMContentLoaded', () => {
     void AssetCacheManager.registerServiceWorker().catch((error) => {
