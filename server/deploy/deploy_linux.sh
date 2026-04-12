@@ -6,6 +6,14 @@ SERVER_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 cd "${SERVER_DIR}"
 
+if git rev-parse --show-toplevel >/dev/null 2>&1; then
+  REPO_ROOT="$(git rev-parse --show-toplevel)"
+  echo "Repo root: ${REPO_ROOT}"
+  echo "Server dir: ${SERVER_DIR}"
+  echo "Current repo HEAD: $(git -C "${REPO_ROOT}" rev-parse HEAD)"
+  echo "Current server tree from HEAD"
+fi
+
 if ! command -v docker >/dev/null 2>&1; then
   echo "docker not found" >&2
   exit 1
@@ -41,6 +49,11 @@ done
 mkdir -p logs
 touch bug_reports.json
 
+if [ "${CLEAN_SERVER_TREE:-false}" = "true" ] && git rev-parse --show-toplevel >/dev/null 2>&1; then
+  echo "Cleaning untracked files under server/ before build..."
+  git -C "${SERVER_DIR}" clean -fd
+fi
+
 if command -v systemctl >/dev/null 2>&1; then
   echo "Ensuring docker starts on reboot..."
   sudo systemctl enable docker
@@ -55,6 +68,10 @@ docker compose up -d
 
 echo "Current compose status:"
 docker compose ps
+
+if git rev-parse --show-toplevel >/dev/null 2>&1; then
+  echo "Deployed repo HEAD: $(git -C "${REPO_ROOT}" rev-parse HEAD)"
+fi
 
 echo "Recent api logs:"
 docker compose logs --tail=100 api

@@ -1,0 +1,11 @@
+.git
+.gitignore
+.env
+node_modules
+coverage
+logs
+deploy
+*.archive.gz
+bot_data.json
+server
+eidolon-server
