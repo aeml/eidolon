@@ -109,7 +109,8 @@ if (!global.crypto) {
     global.crypto = {};
 }
 if (!global.crypto.randomUUID) {
-    global.crypto.randomUUID = () => 'uuid-' + Math.random().toString(36).substr(2, 9);
+    let uuidCounter = 0;
+    global.crypto.randomUUID = () => `uuid-${uuidCounter++}`;
 }
 
 // Mock requestAnimationFrame

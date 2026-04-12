@@ -2,7 +2,7 @@
 const $protobuf = globalThis.protobuf;
 
 if (!$protobuf) {
-    throw new Error("protobufjs minimal not found on globalThis.protobuf. Load https://unpkg.com/protobufjs/dist/minimal/protobuf.min.js (or equivalent) before importing state_pb.js.");
+    throw new Error("protobufjs minimal not found on globalThis.protobuf. Load the protobuf runtime before importing state_pb.js.");
 }
 
 // Common aliases

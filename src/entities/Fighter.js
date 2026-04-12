@@ -38,8 +38,7 @@ export class Fighter extends Actor {
             this.playAnimation('Attack'); // Or a spin animation if available
             
             // Override Cooldown for Whirlwind (e.g. 10s)
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Whirlwind"] = 10.0 * (1 - cdr);
+            this.setSkillCooldown("Whirlwind", 10.0);
             
             this.spawnVisualEffect(gameEngine, this.position, 0xaaaaaa, "spin");
             return;
@@ -51,8 +50,7 @@ export class Fighter extends Actor {
             this.playAnimation('Attack', false, true);
             
             // Override Cooldown for Shield Slam (e.g. 6s)
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Shield Slam"] = 6.0 * (1 - cdr);
+            this.setSkillCooldown("Shield Slam", 6.0);
 
             // Cone Logic
             const range = 4.0;
@@ -105,8 +103,7 @@ export class Fighter extends Actor {
             console.log(`Iron Fortress active: ${(this.ironFortressReduction * 100).toFixed(1)}% reduction for 30s`);
             
             // Cooldown 60s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Iron Fortress"] = 60.0 * (1 - cdr);
+            this.setSkillCooldown("Iron Fortress", 60.0);
             
             // Visual Effect
             gameEngine.floatingTextManager.spawn("Iron Fortress!", this.position, '#00ff00');
@@ -120,8 +117,7 @@ export class Fighter extends Actor {
             this.playAnimation('Attack', false, true); // Shout anim?
             
             // Cooldown 30s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Guardian Roar"] = 30.0 * (1 - cdr);
+            this.setSkillCooldown("Guardian Roar", 30.0);
             
             const radius = 15.0;
             const entities = gameEngine.chunkManager.getActiveEntities();
@@ -159,8 +155,7 @@ export class Fighter extends Actor {
             this.playAnimation('Attack', false, true);
             
             // Cooldown 4s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Sweeping Strike"] = 4.0 * (1 - cdr);
+            this.setSkillCooldown("Sweeping Strike", 4.0);
 
             // Cone Logic (Wider than Shield Slam)
             const range = 5.0;
@@ -198,8 +193,7 @@ export class Fighter extends Actor {
             this.playAnimation('Attack', false, true); // Smash anim
             
             // Cooldown 12s
-            const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Earthshaker"] = 12.0 * (1 - cdr);
+            this.setSkillCooldown("Earthshaker", 12.0);
 
             // AoE Circle
             const radius = 6.0;

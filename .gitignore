@@ -1,6 +1,9 @@
 node_modules/
 *.pem
 *.exe
+server/server
+server/eidolon-server
+*.archive.gz
 server/bug_reports.json
 tools/
 

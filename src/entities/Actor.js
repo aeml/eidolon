@@ -43,8 +43,6 @@ export class Actor extends Entity {
         }
 
         this.manaStatName = manaStatName.toLowerCase(); // Store as lowercase for property access in this.stats
-        
-        console.log(`Actor ${id} init: Mana Stat = ${this.manaStatName}, Value = ${manaStatValue}`);
 
         // Base Stats (Permanent)
         this.baseStats = {
@@ -192,8 +190,54 @@ export class Actor extends Entity {
     modifyMesh(mesh) {
         if (this.isElite) {
             mesh.scale.multiplyScalar(2.0);
-            console.log(`Scaled up Elite ${this.id} (${this.constructor.name})`);
         }
+    }
+
+    setSkillCooldown(skillName, seconds) {
+        const cdr = this.stats.cooldownReduction || 0;
+        this.cooldowns[skillName] = seconds * (1 - cdr);
+    }
+
+    updateBasicEnemyAI(dt, player) {
+        if (this.state === 'DEAD') return true;
+
+        if (player && player.state !== 'DEAD') {
+            const dist = this.position.distanceTo(player.position);
+
+            if (dist < this.sightRange) {
+                if (dist < this.attackRange) {
+                    this.attack(player);
+                } else {
+                    this.move(player.position);
+                }
+                return true;
+            }
+        }
+
+        if (this.state === 'IDLE') {
+            this.roamTimer -= dt;
+            if (this.roamTimer <= 0) {
+                this.roamRandomly();
+                this.roamTimer = this.roamInterval + Math.random() * 2;
+            }
+        }
+
+        return false;
+    }
+
+    roamRandomly() {
+        const angle = Math.random() * Math.PI * 2;
+        const radius = Math.random() * this.roamRadius;
+        const dx = Math.cos(angle) * radius;
+        const dz = Math.sin(angle) * radius;
+
+        const target = new THREE.Vector3(
+            this.position.x + dx,
+            this.position.y,
+            this.position.z + dz
+        );
+
+        this.move(target);
     }
 
     setScale(scale) {

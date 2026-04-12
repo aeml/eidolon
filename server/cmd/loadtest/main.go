@@ -25,6 +25,7 @@ var (
 	scheme   = flag.String("scheme", "wss", "websocket scheme (ws or wss)")
 	count    = flag.Int("n", 10, "number of bots")
 	townMode = flag.Bool("town", false, "bots only roam in town")
+	insecure = flag.Bool("insecure-skip-verify", false, "skip TLS certificate verification for local/self-signed testing")
 )
 
 type Message struct {
@@ -89,7 +90,7 @@ func main() {
 			name := generateRandomName()
 			creds = append(creds, BotCredentials{
 				Username: name,
-				Password: "password123",
+				Password: fmt.Sprintf("bot-pass-%06d", len(creds)+1),
 			})
 		}
 		saveCredentials(creds)
@@ -114,7 +115,9 @@ func main() {
 
 func runBot(id int, urlStr string, cred BotCredentials) {
 	dialer := *websocket.DefaultDialer
-	dialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	if *insecure {
+		dialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	}
 
 	c, resp, err := dialer.Dial(urlStr, nil)
 	if err != nil {
@@ -551,44 +554,36 @@ func send(c *websocket.Conn, msgType string, payload interface{}) error {
 
 func generateRandomName() string {
 	names := []string{
-		"HughJanis",
-		"BenDover",
-		"PhilMcCracken",
-		"MikeRotch",
-		"SeymourButts",
-		"AnitaBath",
-		"IvanaTinkle",
-		"OliverClothesoff",
-		"JacquesStrap",
-		"AlCoholic",
-		"AmandaHuggenkiss",
-		"HaywoodJablome",
-		"TessTickles",
-		"BarryMader",
-		"JustinCase",
-		"BarbDwyer",
-		"StanStill",
-		"TerryCloth",
-		"DixieNormous",
-		"YuriNator",
-		"JohnnyBGoode",
-		"MarkMyWords",
-		"WillieStroker",
-		"ChrisP.Bend",
-		"PatMyBack",
-		"OpheliaCrotch",
-		"LotusBlossom",
-		"FannyPack",
-		"BeaO'Problem",
-		"MoLester",
-		"PhilAtio",
-		"AnitaHardcock",
-		"MikeHunt",
-		"OliverKlozoff",
-		"BenDurr",
-		"SaulT.Balls",
-		"WoodyJohnson",
-		"RichardHead",
+		"AmberVale",
+		"AshHarbor",
+		"BramForge",
+		"CinderFox",
+		"CorinVale",
+		"DawnSeeker",
+		"EmberRune",
+		"FrostGlen",
+		"GaleWalker",
+		"GoldenPine",
+		"HarborLight",
+		"HollowStar",
+		"IronWillow",
+		"JuniperSky",
+		"KestrelStone",
+		"LarkSpear",
+		"MiraThorne",
+		"Northwatch",
+		"OakSentinel",
+		"RiverAsh",
+		"RowanField",
+		"SilverBrook",
+		"StoneLantern",
+		"SunwardPath",
+		"ThornKeep",
+		"ValeRunner",
+		"VerdantEcho",
+		"WestGrove",
+		"WillowHart",
+		"WinterMark",
 	}
 
 	name := names[rand.Intn(len(names))]
