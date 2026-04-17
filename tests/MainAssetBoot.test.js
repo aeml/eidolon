@@ -5,7 +5,8 @@ jest.unstable_mockModule('../src/core/GameEngine.js', () => ({
         constructor() {
             this.uiManager = {
                 handleEscape: jest.fn(),
-                onFullscreenChange: null
+                onFullscreenChange: null,
+                onEscMenuChange: null
             };
         }
         async loadGame() {}
@@ -286,5 +287,51 @@ describe('asset persistence boot wiring', () => {
         document.dispatchEvent(new Event('fullscreenchange'));
 
         expect(window.game.uiManager.handleEscape).toHaveBeenCalledTimes(1);
+    });
+
+    test('closing the esc menu re-enters fullscreen when the setting is enabled', async () => {
+        buildStartDom();
+        installBrowserMocks();
+        localStorage.setItem('eidolon.fullscreenEnabled', 'true');
+        const sockets = [];
+
+        class MockWebSocket {
+            static OPEN = 1;
+            constructor() {
+                this.readyState = MockWebSocket.OPEN;
+                sockets.push(this);
+            }
+            send() {}
+        }
+
+        Object.defineProperty(globalThis, 'WebSocket', {
+            configurable: true,
+            value: MockWebSocket
+        });
+
+        await import('../src/main.js');
+        window.dispatchEvent(new Event('DOMContentLoaded'));
+        await Promise.resolve();
+
+        document.getElementById('btn-login').click();
+        sockets[0].onmessage({
+            data: JSON.stringify({
+                type: 'login_success',
+                payload: {
+                    hasCharacter: false,
+                    message: 'Logged in!'
+                }
+            })
+        });
+
+        document.querySelector('.class-btn')?.click();
+        await Promise.resolve();
+        document.documentElement.requestFullscreen.mockClear();
+        document.fullscreenElement = null;
+
+        window.game.uiManager.onEscMenuChange(false);
+        await Promise.resolve();
+
+        expect(document.documentElement.requestFullscreen).toHaveBeenCalledTimes(1);
     });
 });

@@ -157,6 +157,7 @@ export class UIManager {
         this.onAutoLootChange = null;
         this.onCameraShakeChange = null;
         this.onFullscreenChange = null;
+        this.onEscMenuChange = null;
         this.onAssetDownloadRequest = null;
         this.onAssetCacheClearRequest = null;
         this.assetCacheManager = new AssetCacheManager();
@@ -1620,6 +1621,7 @@ export class UIManager {
     toggleEscMenu() {
         const isHidden = this.escMenu.style.display === 'none' || this.escMenu.style.display === '';
         this.escMenu.style.display = isHidden ? 'block' : 'none';
+        this.onEscMenuChange?.(isHidden);
         
         // If closing menu, also close help/patch notes if open
         if (!isHidden) {

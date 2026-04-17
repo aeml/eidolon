@@ -225,4 +225,16 @@ describe('UIManager settings', () => {
         expect(document.getElementById('fullscreen-enabled').checked).toBe(true);
         expect(ui.onFullscreenChange).toHaveBeenCalledWith(true);
     });
+
+    test('esc menu toggle reports open and close state', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        ui.onEscMenuChange = jest.fn();
+
+        ui.toggleEscMenu();
+        ui.toggleEscMenu();
+
+        expect(ui.onEscMenuChange).toHaveBeenNthCalledWith(1, true);
+        expect(ui.onEscMenuChange).toHaveBeenNthCalledWith(2, false);
+    });
 });

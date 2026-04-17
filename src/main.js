@@ -355,12 +355,19 @@ window.addEventListener('DOMContentLoaded', () => {
             window.game = new GameEngine(type, isMobile, isMultiplayer, serverAddress, username, authSocket);
             if (window.game?.uiManager) {
                 const existingFullscreenChange = window.game.uiManager.onFullscreenChange;
+                const existingEscMenuChange = window.game.uiManager.onEscMenuChange;
                 window.game.uiManager.onFullscreenChange = (enabled) => {
                     existingFullscreenChange?.(enabled);
                     if (!enabled && document.fullscreenElement) {
                         suppressNextFullscreenExitMenu = true;
                     }
                     void syncFullscreenPreference(enabled);
+                };
+                window.game.uiManager.onEscMenuChange = (isOpen) => {
+                    existingEscMenuChange?.(isOpen);
+                    if (!isOpen && getStoredFullscreenPreference()) {
+                        void syncFullscreenPreference(true);
+                    }
                 };
             }
             
