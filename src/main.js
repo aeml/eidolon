@@ -356,6 +356,7 @@ window.addEventListener('DOMContentLoaded', () => {
             if (window.game?.uiManager) {
                 const existingFullscreenChange = window.game.uiManager.onFullscreenChange;
                 const existingEscMenuChange = window.game.uiManager.onEscMenuChange;
+                const existingEscMenuClosedByEscape = window.game.uiManager.onEscMenuClosedByEscape;
                 window.game.uiManager.onFullscreenChange = (enabled) => {
                     existingFullscreenChange?.(enabled);
                     if (!enabled && document.fullscreenElement) {
@@ -366,6 +367,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 window.game.uiManager.onEscMenuChange = (isOpen) => {
                     existingEscMenuChange?.(isOpen);
                     if (!isOpen && getStoredFullscreenPreference()) {
+                        void syncFullscreenPreference(true);
+                    }
+                };
+                window.game.uiManager.onEscMenuClosedByEscape = () => {
+                    existingEscMenuClosedByEscape?.();
+                    if (getStoredFullscreenPreference()) {
                         void syncFullscreenPreference(true);
                     }
                 };

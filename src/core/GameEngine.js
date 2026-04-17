@@ -432,7 +432,11 @@ export class GameEngine {
         });
 
         this.inputManager.subscribe('onEscape', () => {
+            const escMenuWasOpen = this.uiManager.isEscMenuOpen;
             this.uiManager.handleEscape();
+            if (escMenuWasOpen && !this.uiManager.isEscMenuOpen) {
+                this.uiManager.onEscMenuClosedByEscape?.();
+            }
         });
 
         this.inputManager.subscribe('onTeleport', () => {

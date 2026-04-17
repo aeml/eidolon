@@ -158,6 +158,7 @@ export class UIManager {
         this.onCameraShakeChange = null;
         this.onFullscreenChange = null;
         this.onEscMenuChange = null;
+        this.onEscMenuClosedByEscape = null;
         this.onAssetDownloadRequest = null;
         this.onAssetCacheClearRequest = null;
         this.assetCacheManager = new AssetCacheManager();
