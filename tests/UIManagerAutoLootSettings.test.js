@@ -58,6 +58,7 @@ function buildDom() {
         <div id="graphics-brightness-value"></div>
         <input id="auto-loot-enabled" type="checkbox" />
         <input id="camera-shake-enabled" type="checkbox" />
+        <input id="fullscreen-enabled" type="checkbox" />
         <div id="inventory-screen"></div>
         <div id="inventory-grid"></div>
         <button id="btn-sort-inventory"></button>
@@ -210,5 +211,18 @@ describe('UIManager settings', () => {
 
         expect(ui.getCameraShakeEnabled()).toBe(true);
         expect(localStorage.getItem('eidolon.cameraShakeEnabled')).toBe('true');
+    });
+
+    test('fullscreen setting persists and invokes callback', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        ui.onFullscreenChange = jest.fn();
+
+        ui.setFullscreenEnabled(true);
+
+        expect(localStorage.getItem('eidolon.fullscreenEnabled')).toBe('true');
+        expect(ui.getFullscreenEnabled()).toBe(true);
+        expect(document.getElementById('fullscreen-enabled').checked).toBe(true);
+        expect(ui.onFullscreenChange).toHaveBeenCalledWith(true);
     });
 });

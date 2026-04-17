@@ -6,6 +6,32 @@ const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini
 const urlParams = new URLSearchParams(window.location.search);
 const debugMode = urlParams.get('debug') === '1' || isLocalhost;
 const perfOverlayEnabled = urlParams.get('perf') === '1' || debugMode;
+const FULLSCREEN_STORAGE_KEY = 'eidolon.fullscreenEnabled';
+
+function getStoredFullscreenPreference() {
+    return localStorage.getItem(FULLSCREEN_STORAGE_KEY) === 'true';
+}
+
+async function syncFullscreenPreference(enabled) {
+    if (enabled) {
+        if (!document.fullscreenElement && document.documentElement?.requestFullscreen) {
+            try {
+                await document.documentElement.requestFullscreen();
+            } catch (error) {
+                console.warn('Fullscreen request failed', error);
+            }
+        }
+        return;
+    }
+
+    if (document.fullscreenElement && document.exitFullscreen) {
+        try {
+            await document.exitFullscreen();
+        } catch (error) {
+            console.warn('Fullscreen exit failed', error);
+        }
+    }
+}
 
 
 const debugConsole = document.getElementById('debug-console');
@@ -66,6 +92,7 @@ window.addEventListener('unhandledrejection', function(event) {
 });
 
 window.addEventListener('DOMContentLoaded', () => {
+    void syncFullscreenPreference(false);
     void AssetCacheManager.registerServiceWorker().catch((error) => {
         console.warn('Asset service worker registration failed', error);
     });
@@ -286,6 +313,9 @@ window.addEventListener('DOMContentLoaded', () => {
             
             startScreen.classList.add('hidden');
             loadingScreen.style.display = 'flex';
+            if (getStoredFullscreenPreference()) {
+                await syncFullscreenPreference(true);
+            }
             
             console.log(`Device Check: Mobile=${isMobile} (UA: ${navigator.userAgent}, Width: ${window.innerWidth})`);
 
@@ -296,6 +326,13 @@ window.addEventListener('DOMContentLoaded', () => {
             }
             // Pass username and socket to GameEngine
             window.game = new GameEngine(type, isMobile, isMultiplayer, serverAddress, username, authSocket);
+            if (window.game?.uiManager) {
+                const existingFullscreenChange = window.game.uiManager.onFullscreenChange;
+                window.game.uiManager.onFullscreenChange = (enabled) => {
+                    existingFullscreenChange?.(enabled);
+                    void syncFullscreenPreference(enabled);
+                };
+            }
             
             console.log("Calling loadGame...");
             await window.game.loadGame((progress, text) => {

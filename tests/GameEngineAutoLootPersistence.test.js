@@ -64,6 +64,8 @@ const mockGetAutoLootEnabled = jest.fn(() => true);
 const mockSetAutoLootEnabled = jest.fn();
 const mockGetCameraShakeEnabled = jest.fn(() => false);
 const mockSetCameraShakeEnabled = jest.fn();
+const mockGetFullscreenEnabled = jest.fn(() => false);
+const mockSetFullscreenEnabled = jest.fn();
 
 jest.unstable_mockModule('../src/ui/UIManager.js', () => ({
     UIManager: class UIManager {
@@ -88,6 +90,15 @@ jest.unstable_mockModule('../src/ui/UIManager.js', () => ({
         setCameraShakeEnabled(enabled) {
             mockSetCameraShakeEnabled(enabled);
             this.onCameraShakeChange?.(enabled);
+        }
+
+        getFullscreenEnabled() {
+            return mockGetFullscreenEnabled();
+        }
+
+        setFullscreenEnabled(enabled) {
+            mockSetFullscreenEnabled(enabled);
+            this.onFullscreenChange?.(enabled);
         }
     }
 }));
@@ -124,6 +135,8 @@ describe('GameEngine settings persistence', () => {
         mockSetAutoLootEnabled.mockClear();
         mockGetCameraShakeEnabled.mockClear();
         mockSetCameraShakeEnabled.mockClear();
+        mockGetFullscreenEnabled.mockClear();
+        mockSetFullscreenEnabled.mockClear();
     });
 
     test('constructor keeps persisted auto-loot enabled state after relog', () => {
@@ -156,6 +169,22 @@ describe('GameEngine settings persistence', () => {
 
         expect(mockSetCameraShakeEnabled).toHaveBeenCalledWith(true);
         expect(engine.cameraShakeEnabled).toBe(true);
+    });
+
+    test('constructor keeps fullscreen disabled by default until a persisted setting says otherwise', () => {
+        const engine = new GameEngine('Fighter', false, true, '', 'tester', null);
+
+        expect(mockGetFullscreenEnabled).toHaveBeenCalledTimes(1);
+        expect(engine.fullscreenEnabled).toBe(false);
+    });
+
+    test('fullscreen runtime state still follows later UI toggles', () => {
+        const engine = new GameEngine('Fighter', false, true, '', 'tester', null);
+
+        engine.uiManager.setFullscreenEnabled(true);
+
+        expect(mockSetFullscreenEnabled).toHaveBeenCalledWith(true);
+        expect(engine.fullscreenEnabled).toBe(true);
     });
 
     test('delta self inventory sync pads server updates so auto-loot keeps empty slots', () => {

@@ -197,6 +197,26 @@ describe('GameEngine ctrl-click hold regression', () => {
         expect(engine.renderSystem.setCameraTarget).not.toHaveBeenCalledWith(engine.player.position);
     });
 
+    test('midair held mouse input does not trigger attack or ability loops', () => {
+        const engine = createEngineHarness();
+        engine.playerJumpState = {
+            start: new THREE.Vector3(0, 0, 0),
+            end: new THREE.Vector3(12, 0, 8),
+            elapsed: 0.25,
+            duration: 0.8,
+            height: 8,
+            serverDriven: false
+        };
+        engine.inputManager.isMouseDown = true;
+        engine.inputManager.isRightMouseDown = true;
+
+        engine.update(1 / 60);
+
+        expect(engine.abilityController.performAbility).not.toHaveBeenCalled();
+        expect(engine.abilityController.performAttack).not.toHaveBeenCalled();
+        expect(engine.player.playAnimation).not.toHaveBeenCalledWith('Attack', false);
+    });
+
     test('local loot pickup fallback removes a reparented pendingInteraction mesh from its current parent', () => {
         const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(1000);
         const engine = createEngineHarness();

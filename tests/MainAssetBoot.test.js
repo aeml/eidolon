@@ -25,6 +25,7 @@ describe('asset persistence boot wiring', () => {
             <div id="auth-status"></div>
             <div id="login-panel"></div>
             <div id="class-selection-container"></div>
+            <button class="class-btn" data-type="Fighter"></button>
             <div id="play-container"></div>
             <button id="btn-play-character"></button>
             <button id="login-patch-notes-link"></button>
@@ -37,9 +38,7 @@ describe('asset persistence boot wiring', () => {
         `;
     };
 
-    test('main module registers the asset service worker on DOMContentLoaded', async () => {
-        buildStartDom();
-
+    const installBrowserMocks = () => {
         const register = jest.fn(async () => ({ scope: './' }));
         Object.defineProperty(globalThis, 'navigator', {
             configurable: true,
@@ -49,6 +48,23 @@ describe('asset persistence boot wiring', () => {
             }
         });
         window.matchMedia = jest.fn().mockReturnValue({ addEventListener: jest.fn(), matches: false });
+        Object.defineProperty(document, 'fullscreenElement', {
+            configurable: true,
+            writable: true,
+            value: null
+        });
+        document.documentElement.requestFullscreen = jest.fn(async () => {
+            document.fullscreenElement = document.documentElement;
+        });
+        document.exitFullscreen = jest.fn(async () => {
+            document.fullscreenElement = null;
+        });
+        return { register };
+    };
+
+    test('main module registers the asset service worker on DOMContentLoaded', async () => {
+        buildStartDom();
+        const { register } = installBrowserMocks();
 
         await import('../src/main.js');
         window.dispatchEvent(new Event('DOMContentLoaded'));
@@ -60,16 +76,7 @@ describe('asset persistence boot wiring', () => {
     test('login patch notes link, both close buttons, and Escape toggle the patch notes history screen', async () => {
         buildStartDom();
         document.getElementById('patch-notes-screen').style.display = 'none';
-
-        const register = jest.fn(async () => ({ scope: './' }));
-        Object.defineProperty(globalThis, 'navigator', {
-            configurable: true,
-            value: {
-                userAgent: 'jest',
-                serviceWorker: { register }
-            }
-        });
-        window.matchMedia = jest.fn().mockReturnValue({ addEventListener: jest.fn(), matches: false });
+        installBrowserMocks();
 
         await import('../src/main.js');
         window.dispatchEvent(new Event('DOMContentLoaded'));
@@ -94,8 +101,7 @@ describe('asset persistence boot wiring', () => {
 
     test('shows returning-player first steps guidance when login succeeds with an existing character', async () => {
         buildStartDom();
-
-        const register = jest.fn(async () => ({ scope: './' }));
+        installBrowserMocks();
         const sockets = [];
         class MockWebSocket {
             static OPEN = 1;
@@ -109,18 +115,10 @@ describe('asset persistence boot wiring', () => {
             }
         }
 
-        Object.defineProperty(globalThis, 'navigator', {
-            configurable: true,
-            value: {
-                userAgent: 'jest',
-                serviceWorker: { register }
-            }
-        });
         Object.defineProperty(globalThis, 'WebSocket', {
             configurable: true,
             value: MockWebSocket
         });
-        window.matchMedia = jest.fn().mockReturnValue({ addEventListener: jest.fn(), matches: false });
 
         await import('../src/main.js');
         window.dispatchEvent(new Event('DOMContentLoaded'));
@@ -147,8 +145,7 @@ describe('asset persistence boot wiring', () => {
 
     test('shows new-player first steps guidance when login succeeds without a character', async () => {
         buildStartDom();
-
-        const register = jest.fn(async () => ({ scope: './' }));
+        installBrowserMocks();
         const sockets = [];
         class MockWebSocket {
             static OPEN = 1;
@@ -162,18 +159,10 @@ describe('asset persistence boot wiring', () => {
             }
         }
 
-        Object.defineProperty(globalThis, 'navigator', {
-            configurable: true,
-            value: {
-                userAgent: 'jest',
-                serviceWorker: { register }
-            }
-        });
         Object.defineProperty(globalThis, 'WebSocket', {
             configurable: true,
             value: MockWebSocket
         });
-        window.matchMedia = jest.fn().mockReturnValue({ addEventListener: jest.fn(), matches: false });
 
         await import('../src/main.js');
         window.dispatchEvent(new Event('DOMContentLoaded'));
@@ -203,5 +192,47 @@ describe('asset persistence boot wiring', () => {
         expect(document.getElementById('start-flow-steps').textContent).toContain('Quest Giver by the Forge');
         expect(document.getElementById('start-flow-steps').textContent).toContain('sell junk to Vendor / Repair');
         expect(document.getElementById('start-flow-steps').textContent).toContain('save valuable drops for the Trading House');
+    });
+
+    test('persisted fullscreen preference applies when the loading screen starts, not on login', async () => {
+        buildStartDom();
+        installBrowserMocks();
+        localStorage.setItem('eidolon.fullscreenEnabled', 'true');
+        const sockets = [];
+
+        class MockWebSocket {
+            static OPEN = 1;
+            constructor() {
+                this.readyState = MockWebSocket.OPEN;
+                sockets.push(this);
+            }
+            send() {}
+        }
+
+        Object.defineProperty(globalThis, 'WebSocket', {
+            configurable: true,
+            value: MockWebSocket
+        });
+
+        await import('../src/main.js');
+        window.dispatchEvent(new Event('DOMContentLoaded'));
+        await Promise.resolve();
+
+        expect(document.documentElement.requestFullscreen).not.toHaveBeenCalled();
+        document.getElementById('btn-login').click();
+        sockets[0].onmessage({
+            data: JSON.stringify({
+                type: 'login_success',
+                payload: {
+                    hasCharacter: false,
+                    message: 'Logged in!'
+                }
+            })
+        });
+
+        document.querySelector('.class-btn')?.click();
+        await Promise.resolve();
+
+        expect(document.documentElement.requestFullscreen).toHaveBeenCalledTimes(1);
     });
 });

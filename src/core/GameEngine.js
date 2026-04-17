@@ -104,6 +104,10 @@ export class GameEngine {
         this.uiManager.onCameraShakeChange = (enabled) => {
             this.cameraShakeEnabled = enabled;
         };
+        this.fullscreenEnabled = this.uiManager.getFullscreenEnabled?.() || false;
+        this.uiManager.onFullscreenChange = (enabled) => {
+            this.fullscreenEnabled = enabled;
+        };
         this.effects = []; // Active visual effects
         this.hazards = new Map(); // Environmental hazards (id -> EnvironmentalHazard)
         this.abilityController = new AbilityController(this);
@@ -2954,6 +2958,7 @@ export class GameEngine {
         this.abilityController.pendingAbilitySkill = null;
         if (this.inputManager) {
             this.inputManager.isMouseDown = false;
+            this.inputManager.isRightMouseDown = false;
         }
         this.clearCombatIntentState?.();
 
@@ -2982,8 +2987,8 @@ export class GameEngine {
         }
 
         const travelDistance = start.distanceTo(end);
-        const duration = Math.max(0.46, Math.min(1.28, travelDistance / 13.5));
-        const height = Math.max(6.5, Math.min(16.5, travelDistance * 0.38 + 4.2));
+        const duration = this.getJumpTravelDuration(travelDistance);
+        const height = this.getJumpArcHeight(travelDistance);
 
         this.player.targetPosition = null;
         this.pendingInteraction = null;
@@ -2991,6 +2996,10 @@ export class GameEngine {
         this.abilityController.pendingAbilitySkill = null;
         this.clearCombatIntentState?.();
         this.player.state = 'JUMPING';
+        if (this.inputManager) {
+            this.inputManager.isMouseDown = false;
+            this.inputManager.isRightMouseDown = false;
+        }
 
         this.player.playJumpAnimation?.({
             duration,
@@ -3052,7 +3061,8 @@ export class GameEngine {
             end.y = start.y;
         }
 
-        const duration = Math.max(0.001, pData.jumpDuration ?? existingJump?.duration ?? Math.max(0.46, Math.min(1.28, start.distanceTo(end) / 13.5 || 0.46)));
+        const travelDistance = start.distanceTo(end);
+        const duration = Math.max(0.001, pData.jumpDuration ?? existingJump?.duration ?? this.getJumpTravelDuration(travelDistance || 0));
         const jumpVector = new THREE.Vector3(end.x - start.x, 0, end.z - start.z);
         const jumpDistanceSq = jumpVector.lengthSq();
         const projectedProgress = jumpDistanceSq > 0.0001
@@ -3062,7 +3072,7 @@ export class GameEngine {
             ? existingJump.progress
             : (typeof existingJump?.elapsed === 'number' ? (existingJump.elapsed / duration) : 0));
         const progress = Math.max(0, Math.min(1, pData.jumpProgress ?? fallbackProgress));
-        const inferredHeight = Math.max(6.5, Math.min(16.5, start.distanceTo(end) * 0.38 + 4.2));
+        const inferredHeight = this.getJumpArcHeight(travelDistance);
         const height = pData.jumpHeight ?? existingJump?.height ?? inferredHeight;
         const baseY = THREE.MathUtils.lerp(start.y, end.y, progress);
         const computedArcHeight = Math.sin(progress * Math.PI) * height;
@@ -3242,6 +3252,16 @@ export class GameEngine {
         }
 
         return baseProfile;
+    }
+
+    getJumpTravelDuration(distance = 0) {
+        const safeDistance = Math.max(0, Number(distance) || 0);
+        return Math.max(0.18, Math.min(1.1, safeDistance / 18));
+    }
+
+    getJumpArcHeight(distance = 0) {
+        const safeDistance = Math.max(0, Number(distance) || 0);
+        return Math.max(6.5, Math.min(16.5, safeDistance * 0.38 + 4.2));
     }
 
     getJumpVisualProgress(jumpState) {
@@ -3880,12 +3900,13 @@ export class GameEngine {
             : null;
 
         if (this.player) {
-            if (this.inputManager.isRightMouseDown) {
+            const playerIsJumping = this.player.state === 'JUMPING' || !!this.playerJumpState;
+            if (!playerIsJumping && this.inputManager.isRightMouseDown) {
                 this.needsRaycast = true;
                 this.abilityController.performAbility();
             }
 
-            if (!this.isMobile && this.inputManager.isMouseDown && !this.uiManager.isEscMenuOpen && !this.uiManager.isShopOpen) {
+            if (!playerIsJumping && !this.isMobile && this.inputManager.isMouseDown && !this.uiManager.isEscMenuOpen && !this.uiManager.isShopOpen) {
                 if (this.inputManager.keys.control || this.inputManager.keys.meta) {
                     this.player.targetPosition = null;
                     this.pendingInteraction = null;

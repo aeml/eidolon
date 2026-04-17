@@ -111,6 +111,7 @@ export class UIManager {
         this.graphicsBrightnessValue = document.getElementById('graphics-brightness-value');
         this.autoLootToggle = document.getElementById('auto-loot-enabled');
         this.cameraShakeToggle = document.getElementById('camera-shake-enabled');
+        this.fullscreenToggle = document.getElementById('fullscreen-enabled');
         this.btnDownloadCoreAssets = document.getElementById('btn-download-core-assets');
         this.btnDownloadDungeonAssets = document.getElementById('btn-download-dungeon-assets');
         this.btnDownloadEnvironmentAssets = document.getElementById('btn-download-environment-assets');
@@ -155,6 +156,7 @@ export class UIManager {
         this.onBrightnessChange = null;
         this.onAutoLootChange = null;
         this.onCameraShakeChange = null;
+        this.onFullscreenChange = null;
         this.onAssetDownloadRequest = null;
         this.onAssetCacheClearRequest = null;
         this.assetCacheManager = new AssetCacheManager();
@@ -198,6 +200,14 @@ export class UIManager {
             this.cameraShakeToggle.checked = this.cameraShakeEnabled;
             this.cameraShakeToggle.addEventListener('change', () => {
                 this.setCameraShakeEnabled(this.cameraShakeToggle.checked);
+            });
+        }
+        const storedFullscreen = localStorage.getItem('eidolon.fullscreenEnabled');
+        this.fullscreenEnabled = storedFullscreen === null ? false : storedFullscreen === 'true';
+        if (this.fullscreenToggle) {
+            this.fullscreenToggle.checked = this.fullscreenEnabled;
+            this.fullscreenToggle.addEventListener('change', () => {
+                this.setFullscreenEnabled(this.fullscreenToggle.checked);
             });
         }
         if (this.btnDownloadCoreAssets) {
@@ -1710,6 +1720,22 @@ export class UIManager {
 
     getCameraShakeEnabled() {
         return Boolean(this.cameraShakeEnabled);
+    }
+
+    setFullscreenEnabled(enabled) {
+        const nextValue = Boolean(enabled);
+        this.fullscreenEnabled = nextValue;
+        localStorage.setItem('eidolon.fullscreenEnabled', String(nextValue));
+        if (this.fullscreenToggle) {
+            this.fullscreenToggle.checked = nextValue;
+        }
+        if (this.onFullscreenChange) {
+            this.onFullscreenChange(nextValue);
+        }
+    }
+
+    getFullscreenEnabled() {
+        return Boolean(this.fullscreenEnabled);
     }
 
     getAssetPackLabel(packName) {

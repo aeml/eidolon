@@ -17,6 +17,12 @@ export class InputManager {
         this._onKeyDown = (e) => this.onKeyDown(e);
         this._onKeyUp = (e) => this.onKeyUp(e);
         this._onMouseUp = (e) => this.onMouseUp(e);
+        this._onWindowBlur = () => this.clearInputState();
+        this._onVisibilityChange = () => {
+            if (document.visibilityState === 'hidden') {
+                this.clearInputState();
+            }
+        };
 
         this._registerListener(window, 'mousemove', this._onMouseMove);
         this._registerListener(window, 'mousedown', this._onMouseDown);
@@ -61,6 +67,8 @@ export class InputManager {
         this._registerListener(window, 'keydown', this._onKeyDown);
         this._registerListener(window, 'keyup', this._onKeyUp);
         this._registerListener(window, 'mouseup', this._onMouseUp);
+        this._registerListener(window, 'blur', this._onWindowBlur);
+        this._registerListener(document, 'visibilitychange', this._onVisibilityChange);
         
         this.isMouseDown = false;
         this.primaryMouseButtonDown = false;

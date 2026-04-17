@@ -167,6 +167,16 @@ describe('GameEngine ctrl-click jump', () => {
         expect(engine.player.state).toBe('IDLE');
     });
 
+    test('shorter jumps finish faster than longer jumps', () => {
+        const engine = createEngineHarness();
+
+        const shortDuration = engine.getJumpTravelDuration(3);
+        const longDuration = engine.getJumpTravelDuration(24);
+
+        expect(shortDuration).toBeLessThan(longDuration);
+        expect(shortDuration).toBe(0.18);
+    });
+
     test('jump visuals complete a full 360 front flip over the course of the jump', () => {
         const engine = createEngineHarness();
         const destination = new THREE.Vector3(20, 0, 0);

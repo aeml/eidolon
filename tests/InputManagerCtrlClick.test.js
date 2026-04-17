@@ -98,4 +98,19 @@ describe('InputManager ctrl-click propagation', () => {
         expect(callback).toHaveBeenCalledTimes(1);
         manager.dispose();
     });
+
+    test('window blur clears held modifier state so ctrl jump does not stick after focus loss', () => {
+        const manager = new InputManager({}, {});
+
+        manager.onKeyDown({ key: 'Control', code: 'ControlLeft' });
+        manager.primaryMouseButtonDown = true;
+        manager.isMouseDown = true;
+
+        window.dispatchEvent(new Event('blur'));
+
+        expect(manager.keys.control).toBe(false);
+        expect(manager.primaryMouseButtonDown).toBe(false);
+        expect(manager.isMouseDown).toBe(false);
+        manager.dispose();
+    });
 });

@@ -213,6 +213,9 @@ export class AbilityController {
         const player = engine.player;
         if (!player) return;
         if (engine.uiManager.isEscMenuOpen || engine.uiManager.isPatchNotesOpen || engine.uiManager.reportScreen.style.display === 'block') return;
+        if (player.state === 'JUMPING' || engine.playerJumpState) {
+            return;
+        }
 
         // Rotate to face cursor/target immediately (even if on cooldown)
         if (!engine.isMobile) {
@@ -431,6 +434,7 @@ export class AbilityController {
     performAttack(target) {
         const player = this.engine.player;
         if (!player || !target) return;
+        if (player.state === 'JUMPING' || this.engine.playerJumpState) return;
 
         // Send to Server
         this.engine.network.send('attack', { targetId: target.id });
