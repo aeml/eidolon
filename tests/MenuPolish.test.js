@@ -690,6 +690,14 @@ describe('menu polish regressions', () => {
         expect(html).toContain('id="btn-close-inventory"');
     });
 
+    test('settings window stays within the viewport and scrolls internally when content is tall', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+
+        expect(html).toMatch(/id="settings-screen"[^>]*max-height: calc\(100vh - 24px\);/);
+        expect(html).toMatch(/id="settings-screen"[^>]*overflow: hidden;/);
+        expect(html).toMatch(/id="settings-screen"[\s\S]*?overflow-y: auto;/);
+    });
+
     test('window chrome disables accidental selection while preserving text selection inside form fields', () => {
         const css = readFileSync(windowsCssPath, 'utf8');
 

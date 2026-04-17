@@ -331,9 +331,9 @@
             </div>
         </div>
 
-        <div id="settings-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 360px; z-index: 102;">
+        <div id="settings-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(360px, calc(100vw - 24px)); max-height: calc(100vh - 24px); z-index: 102; overflow: hidden;">
             <div class="window-header"><span>SETTINGS</span><button id="btn-close-settings-header" class="close-btn" type="button" aria-label="Close settings">×</button></div>
-            <div style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+            <div style="padding: 20px; display: flex; flex-direction: column; gap: 16px; max-height: calc(100vh - 76px); overflow-y: auto; overflow-x: hidden;">
                 <div style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
                     <label for="graphics-quality" style="color: #ffd700; font-size: 13px;">Graphics Quality</label>
                     <select id="graphics-quality" style="padding: 10px; background: #333; color: #fff; border: 1px solid #666; font-family: inherit;">
