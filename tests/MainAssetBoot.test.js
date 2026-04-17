@@ -2,6 +2,12 @@ import { jest } from '@jest/globals';
 
 jest.unstable_mockModule('../src/core/GameEngine.js', () => ({
     GameEngine: class MockGameEngine {
+        constructor() {
+            this.uiManager = {
+                handleEscape: jest.fn(),
+                onFullscreenChange: null
+            };
+        }
         async loadGame() {}
         destroy() {}
     }
@@ -234,5 +240,51 @@ describe('asset persistence boot wiring', () => {
         await Promise.resolve();
 
         expect(document.documentElement.requestFullscreen).toHaveBeenCalledTimes(1);
+    });
+
+    test('browser fullscreen exit during gameplay routes through escape handling so the menu still opens', async () => {
+        buildStartDom();
+        installBrowserMocks();
+        localStorage.setItem('eidolon.fullscreenEnabled', 'true');
+        const sockets = [];
+
+        class MockWebSocket {
+            static OPEN = 1;
+            constructor() {
+                this.readyState = MockWebSocket.OPEN;
+                sockets.push(this);
+            }
+            send() {}
+        }
+
+        Object.defineProperty(globalThis, 'WebSocket', {
+            configurable: true,
+            value: MockWebSocket
+        });
+
+        await import('../src/main.js');
+        window.dispatchEvent(new Event('DOMContentLoaded'));
+        await Promise.resolve();
+
+        document.getElementById('btn-login').click();
+        sockets[0].onmessage({
+            data: JSON.stringify({
+                type: 'login_success',
+                payload: {
+                    hasCharacter: false,
+                    message: 'Logged in!'
+                }
+            })
+        });
+
+        document.querySelector('.class-btn')?.click();
+        await Promise.resolve();
+
+        document.fullscreenElement = document.documentElement;
+        document.dispatchEvent(new Event('fullscreenchange'));
+        document.fullscreenElement = null;
+        document.dispatchEvent(new Event('fullscreenchange'));
+
+        expect(window.game.uiManager.handleEscape).toHaveBeenCalledTimes(1);
     });
 });

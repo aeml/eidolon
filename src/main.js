@@ -33,6 +33,8 @@ async function syncFullscreenPreference(enabled) {
     }
 }
 
+let suppressNextFullscreenExitMenu = false;
+
 
 const debugConsole = document.getElementById('debug-console');
 function logToScreen(msg, type = 'INFO') {
@@ -132,6 +134,31 @@ window.addEventListener('DOMContentLoaded', () => {
     const btnClosePatchNotesHeader = document.getElementById('btn-close-patch-notes-header');
     const browserWarning = document.getElementById('browser-warning');
     const btnCloseBrowserWarning = document.getElementById('btn-close-browser-warning');
+    let hadFullscreen = Boolean(document.fullscreenElement);
+
+    document.addEventListener('fullscreenchange', () => {
+        const isFullscreen = Boolean(document.fullscreenElement);
+        const exitedFullscreen = hadFullscreen && !isFullscreen;
+        hadFullscreen = isFullscreen;
+
+        if (!exitedFullscreen) {
+            return;
+        }
+
+        if (suppressNextFullscreenExitMenu) {
+            suppressNextFullscreenExitMenu = false;
+            return;
+        }
+
+        const game = window.game;
+        const uiManager = game?.uiManager;
+        const gameIsActive = startScreen?.classList?.contains('hidden') && loadingScreen?.style?.display !== 'flex';
+        if (!game || !uiManager || !gameIsActive) {
+            return;
+        }
+
+        uiManager.handleEscape?.();
+    });
 
     const closePatchNotes = () => {
         if (patchNotesScreen) {
@@ -330,6 +357,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 const existingFullscreenChange = window.game.uiManager.onFullscreenChange;
                 window.game.uiManager.onFullscreenChange = (enabled) => {
                     existingFullscreenChange?.(enabled);
+                    if (!enabled && document.fullscreenElement) {
+                        suppressNextFullscreenExitMenu = true;
+                    }
                     void syncFullscreenPreference(enabled);
                 };
             }
