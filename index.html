@@ -270,7 +270,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.20</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.21</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -506,6 +506,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.22.21" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.21 (0.22 is now feature-complete pending live QA sign-off)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Release review:</strong> The `0.22` tracking docs now explicitly mark the release as feature-complete in code and limit any further `0.22.x` work to live-QA findings only.</li>
+                        <li><strong>Honest blocker:</strong> The remaining gate is now clearly recorded as first-hour live QA sign-off rather than missing onboarding or readability systems.</li>
+                        <li><strong>Closeout guidance:</strong> The closeout docs now say to move directly into `0.23` if QA is clean, or ship one final tiny cleanup patch only if QA finds a real dead spot.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for the `0.22.21` version and patch-note presentation update.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.22.20" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.20 (Town guidance now stays useful after the first unlock band)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.22.20 for the latest shipped 0.22 closeout-support slice', () => {
-        expect(indexHtml).toContain('Alpha 0.22.20');
+    test('advances the login screen to alpha 0.22.21 for the latest shipped 0.22 release-review slice', () => {
+        expect(indexHtml).toContain('Alpha 0.22.21');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -56,16 +56,17 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.22.20', () => {
-        expect(indexHtml).toContain('Patch 0.22.20');
-        expect(indexHtml).toContain('When a player is back in town after unlocking base dungeons, the objective panel now points them toward the Dungeon Guide');
-        expect(indexHtml).toContain('Level-100 town guidance now points players toward Heroic and Mythic runs');
-        expect(indexHtml).toContain('Added a written `0.22` first-hour closeout doc');
-        expect(indexHtml).toContain('Added regression coverage for post-level-30 and post-level-100 town guidance plus 0.22.20 version presentation');
+    test('includes the latest player-facing patch notes entry for 0.22.21', () => {
+        expect(indexHtml).toContain('Patch 0.22.21');
+        expect(indexHtml).toContain('tracking docs now explicitly mark the release as feature-complete in code');
+        expect(indexHtml).toContain('remaining gate is now clearly recorded as first-hour live QA sign-off');
+        expect(indexHtml).toContain('move directly into `0.23` if QA is clean');
+        expect(indexHtml).toContain('Added regression coverage for the `0.22.21` version and patch-note presentation update');
     });
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.22.21');
         expect(indexHtml).toContain('Patch 0.22.20');
         expect(indexHtml).toContain('Patch 0.22.19');
         expect(indexHtml).toContain('Patch 0.22.18');
@@ -99,6 +100,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.22.21"');
         expect(indexHtml).toContain('data-version="0.22.20"');
         expect(indexHtml).toContain('data-version="0.22.19"');
         expect(indexHtml).toContain('data-version="0.22.18"');

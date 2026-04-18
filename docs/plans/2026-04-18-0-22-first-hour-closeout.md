@@ -1,6 +1,6 @@
 # Eidolon 0.22 First-Hour Closeout
 
-Last refreshed: April 18, 2026
+Last refreshed: April 18, 2026 (`0.22.21` review)
 
 Purpose: record the explicit closeout checklist for `0.22`, what was shipped during the slice train, what still requires live QA, and the current recommendation on whether `0.22` is ready to close.
 
@@ -122,8 +122,12 @@ Write down:
 
 ## Current recommendation
 
-Recommendation: `0.22` is close to done, but should not be closed until the live QA pass above is completed and recorded.
+Recommendation: `0.22` is feature-complete in code, but should not be formally closed until the live QA pass above is completed and recorded.
 
-If the live QA pass is clean or only reveals tiny wording tweaks, close `0.22` and move on.
+Release review decision:
+
+- no further planned `0.22.x` feature slices are recommended
+- remaining `0.22` work is QA confirmation and any tiny follow-up fixes that QA might reveal
+- if QA is clean, close `0.22` and move directly into `0.23`
 
 If the live QA pass reveals a real onboarding dead spot, ship one last small `0.22.x` cleanup patch and then close it.

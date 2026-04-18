@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.22.20`
+- Current in-game displayed version: `Alpha 0.22.21`
 - `0.21` is closed out and accepted
 - `0.22` is in progress and has shipped meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance work
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.22.20`
+### Shipped through `0.22.21`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -43,6 +43,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.22.18`: nearby remote-player jumps and basic attacks now read more clearly, with named action labels that are easier to parse in motion
 - `0.22.19`: first-hour milestone and unlock guidance is now easier to recover from the start flow and in-client Help screen
 - `0.22.20`: post-level-30 and post-level-100 town states now point players toward the right next loop instead of going quiet
+- `0.22.21`: release-review pass marks `0.22` feature-complete in code and limits further `0.22` work to live-QA findings only
 
 ### What `0.22` has clearly accomplished already
 
@@ -110,8 +111,8 @@ Done:
 Still remains:
 
 - [ ] Final live QA pass to confirm the first-hour route never becomes ambiguous
-- [ ] Better fallback guidance after unusual state changes, recall, death, or returning to town mid-funnel
-- [ ] Better guidance for what to do after the first dungeon path is understood
+- [x] Better fallback guidance after unusual state changes, recall, death, or returning to town mid-funnel
+- [x] Better guidance for what to do after the first dungeon path is understood
 
 #### Objective D: Starter progression clarity
 
@@ -135,7 +136,21 @@ Still remains:
 - [ ] Early combat and interaction feedback feels readable under real play
 - [ ] Early loot, materials, and item decisions are understandable
 - [ ] A targeted first-hour live QA pass is completed and written down
-- [ ] A version review decides whether `0.22` is actually done or still needs another slice
+- [x] A version review decides whether `0.22` is actually done or still needs another slice
+
+### `0.22` release review
+
+Current decision:
+
+- `0.22` is feature-complete in code for its intended scope
+- no additional planned `0.22.x` implementation slices should be added unless live QA finds a real issue
+- the remaining blocker to closing `0.22` is live first-hour QA sign-off, not missing onboarding/readability systems
+
+Recommended next step:
+
+- run the first-hour live QA route from `docs/plans/2026-04-18-0-22-first-hour-closeout.md`
+- if the route is clean or only reveals tiny wording fixes, close `0.22` and move to `0.23`
+- if the route reveals a real onboarding dead spot, ship one final tiny `0.22.x` cleanup patch and then close it
 
 ### `0.22` actionable implementation checklist
 
