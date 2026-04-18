@@ -202,7 +202,8 @@ describe('asset persistence boot wiring', () => {
         expect(document.getElementById('start-flow-steps').textContent).toContain('Quest Giver by the Forge');
         expect(document.getElementById('start-flow-steps').textContent).toContain('vendor obvious junk');
         expect(document.getElementById('start-flow-steps').textContent).toContain('save Shards, Hearts, and Gems');
-        expect(document.getElementById('start-flow-steps').textContent).toContain('Trading House');
+        expect(document.getElementById('start-flow-steps').textContent).toContain('level 30');
+        expect(document.getElementById('start-flow-steps').textContent).toContain('Heroic and Mythic');
     });
 
     test('persisted fullscreen preference applies when the loading screen starts, not on login', async () => {

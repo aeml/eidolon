@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.22.18 for the latest shipped remote-motion-readability slice', () => {
-        expect(indexHtml).toContain('Alpha 0.22.18');
+    test('advances the login screen to alpha 0.22.19 for the latest shipped first-hour-milestone slice', () => {
+        expect(indexHtml).toContain('Alpha 0.22.19');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -21,6 +21,19 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Trading House');
         expect(indexHtml).toContain('vendor obvious junk');
         expect(indexHtml).toContain('keep Shards, Hearts, Gems');
+        expect(indexHtml).toContain('level 30 to unlock all base dungeons');
+        expect(indexHtml).toContain('level 100 for Heroic and Mythic runs');
+    });
+
+    test('includes a first-hour milestone quick-reference in the help screen', () => {
+        expect(indexHtml).toContain('id="help-first-hour-guide"');
+        expect(indexHtml).toContain('First Hour Milestones');
+        expect(indexHtml).toContain('Level 30');
+        expect(indexHtml).toContain('Dungeon Guide');
+        expect(indexHtml).toContain('Level 100');
+        expect(indexHtml).toContain('Heroic');
+        expect(indexHtml).toContain('World Map (M)');
+        expect(indexHtml).toContain('Journal (J)');
     });
 
     test('includes plain-language starter service guidance on merchant stash forge and trading house windows', () => {
@@ -43,16 +56,17 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.22.18', () => {
-        expect(indexHtml).toContain('Patch 0.22.18');
-        expect(indexHtml).toContain('Nearby remote-player abilities now show named action labels, and nearby remote jumps and basic attacks now surface readable motion cues');
-        expect(indexHtml).toContain('Replicated attack and jump states now help broadcast what nearby players are actually doing');
-        expect(indexHtml).toContain('Remote readability labels stay nearby-only and throttled');
-        expect(indexHtml).toContain('Added regression coverage for named remote ability labels, nearby remote jump and attack labels, far-away suppression, and 0.22.18 version presentation');
+    test('includes the latest player-facing patch notes entry for 0.22.19', () => {
+        expect(indexHtml).toContain('Patch 0.22.19');
+        expect(indexHtml).toContain('Start-flow guidance and the Help screen now call out the first-hour progression beats more explicitly');
+        expect(indexHtml).toContain('The in-client Help screen now doubles as a first-hour route refresher');
+        expect(indexHtml).toContain('Quest Giver, Vendor / Repair, Stash, Forge, Dungeon Guide, World Map, and Journal are now framed together');
+        expect(indexHtml).toContain('Added regression coverage for first-hour milestone guidance, Help screen milestone copy, and 0.22.19 version presentation');
     });
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.22.19');
         expect(indexHtml).toContain('Patch 0.22.18');
         expect(indexHtml).toContain('Patch 0.22.17');
         expect(indexHtml).toContain('Patch 0.22.16');
@@ -84,6 +98,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.22.19"');
         expect(indexHtml).toContain('data-version="0.22.18"');
         expect(indexHtml).toContain('data-version="0.22.17"');
         expect(indexHtml).toContain('data-version="0.22.16"');

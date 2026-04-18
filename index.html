@@ -270,7 +270,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.18</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.19</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -279,7 +279,7 @@
                 <div style="padding: 16px; display: flex; flex-direction: column; gap: 10px; text-align: left;">
                     <div id="start-flow-title" style="color: #ffd700; font-size: 20px; font-weight: bold;">Login to continue your run</div>
                         <div id="start-flow-copy" style="color: #ddd; line-height: 1.5;">Returning players can jump straight back in. New players will pick a class, enter town, follow the quest tracker to their first objectives, vendor obvious junk, and keep Shards, Hearts, Gems, and genuinely strong drops.</div>
-                        <div id="start-flow-steps" style="color: #aaa; font-size: 14px; line-height: 1.6;">1. Login or register. 2. Enter world or create a character. 3. Open Quests (J), follow the objective tracker, vendor obvious junk, save forge materials, and only use the Trading House for drops worth listing.</div>
+                            <div id="start-flow-steps" style="color: #aaa; font-size: 14px; line-height: 1.6;">1. Login or register. 2. Enter world or create a character. 3. Open Quests (J), follow the objective tracker, vendor obvious junk, save forge materials, reach level 30 to unlock all base dungeons, and push to level 100 for Heroic and Mythic runs.</div>
                 </div>
             </div>
             
@@ -465,17 +465,29 @@
         </div>
 
         <!-- Help Screen -->
-        <div id="help-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; z-index: 101;">
+        <div id="help-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 460px; z-index: 101;">
             <div class="window-header"><span>CONTROLS</span><button id="btn-close-help-header" class="close-btn" type="button" aria-label="Close help">×</button></div>
-            <div style="padding: 20px; text-align: left; line-height: 1.8; font-size: 14px;">
-                <div><strong style="color: #ffd700;">Left Click:</strong> Move / Melee Attack</div>
-                <div><strong style="color: #ffd700;">Right Click:</strong> Use Ability</div>
-                <div><strong style="color: #ffd700;">Scroll:</strong> Zoom In / Out</div>
-                <div><strong style="color: #ffd700;">WASD:</strong> Pan Camera</div>
-                <div><strong style="color: #ffd700;">Spacebar:</strong> Toggle Camera Lock</div>
-                <div><strong style="color: #ffd700;">C:</strong> Character Sheet</div>
-                <div><strong style="color: #ffd700;">I:</strong> Inventory</div>
-                <div><strong style="color: #ffd700;">M:</strong> World Map</div>
+            <div style="padding: 20px; text-align: left; line-height: 1.8; font-size: 14px; display: flex; flex-direction: column; gap: 12px; max-height: calc(100vh - 160px); overflow-y: auto;">
+                <div>
+                    <div style="color: #ffd700; font-size: 15px; font-weight: bold; margin-bottom: 6px;">Core Controls</div>
+                    <div><strong style="color: #ffd700;">Left Click:</strong> Move / Melee Attack</div>
+                    <div><strong style="color: #ffd700;">Right Click:</strong> Use Ability</div>
+                    <div><strong style="color: #ffd700;">Scroll:</strong> Zoom In / Out</div>
+                    <div><strong style="color: #ffd700;">WASD:</strong> Pan Camera</div>
+                    <div><strong style="color: #ffd700;">Spacebar:</strong> Toggle Camera Lock</div>
+                    <div><strong style="color: #ffd700;">C:</strong> Character Sheet</div>
+                    <div><strong style="color: #ffd700;">I:</strong> Inventory</div>
+                    <div><strong style="color: #ffd700;">M:</strong> World Map</div>
+                    <div><strong style="color: #ffd700;">J:</strong> Journal / current quest route</div>
+                </div>
+                <div id="help-first-hour-guide" style="border-top: 1px solid #444; padding-top: 10px;">
+                    <div style="color: #ffd700; font-size: 15px; font-weight: bold; margin-bottom: 6px;">First Hour Milestones</div>
+                    <div><strong style="color: #ffd700;">1.</strong> Start with the <strong>Quest Giver</strong> by the <strong>Forge</strong> and follow the objective tracker.</div>
+                    <div><strong style="color: #ffd700;">2.</strong> Use <strong>Vendor / Repair</strong> for obvious junk, <strong>Stash</strong> for anything you may keep, and <strong>Forge</strong> for Shards, Hearts, and Gems.</div>
+                    <div><strong style="color: #ffd700;">3.</strong> <strong>Level 30</strong> unlocks all base dungeons through the <strong>Dungeon Guide</strong>.</div>
+                    <div><strong style="color: #ffd700;">4.</strong> <strong>Level 100</strong> unlocks <strong>Heroic</strong> and <strong>Mythic</strong> dungeon difficulties.</div>
+                    <div><strong style="color: #ffd700;">5.</strong> If you get turned around, reopen <strong>World Map (M)</strong> or <strong>Journal (J)</strong> to recover the route.</div>
+                </div>
             </div>
             <div style="text-align: center; padding-bottom: 10px;">
                 <button id="btn-close-help" class="menu-btn">Close</button>
@@ -494,6 +506,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.22.19" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.19 (First-hour milestone guidance is easier to recover in-client)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Milestone visibility:</strong> Start-flow guidance and the Help screen now call out the first-hour progression beats more explicitly, including the level 30 dungeon unlock and level 100 Heroic/Mythic unlock.</li>
+                        <li><strong>Recoverable next steps:</strong> The in-client Help screen now doubles as a first-hour route refresher so players can recover their next step without leaving the game or guessing.</li>
+                        <li><strong>Town-service clarity:</strong> Quest Giver, Vendor / Repair, Stash, Forge, Dungeon Guide, World Map, and Journal are now framed together in one quick-reference path.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for first-hour milestone guidance, Help screen milestone copy, and 0.22.19 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.22.18" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.18 (Nearby remote players now read more clearly in motion)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

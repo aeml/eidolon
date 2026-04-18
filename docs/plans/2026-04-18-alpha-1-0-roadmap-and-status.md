@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.22.18`
+- Current in-game displayed version: `Alpha 0.22.19`
 - `0.21` is closed out and accepted
 - `0.22` is in progress and has shipped meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance work
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.22.18`
+### Shipped through `0.22.19`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -41,6 +41,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.22.16`: failed combat attempts, level-up milestones, and reward moments now explain themselves more clearly in live play
 - `0.22.17`: nearby remote-player actions and damage now read better in crowded multiplayer combat
 - `0.22.18`: nearby remote-player jumps and basic attacks now read more clearly, with named action labels that are easier to parse in motion
+- `0.22.19`: first-hour milestone and unlock guidance is now easier to recover from the start flow and in-client Help screen
 
 ### What `0.22` has clearly accomplished already
 
@@ -78,8 +79,8 @@ Done:
 Still remains:
 
 - [ ] Full fresh-account review from register to first dungeon-ready milestone
-- [ ] Cleaner recovery when a player closes UI and loses the funnel
-- [ ] Better explanation of what level milestones unlock next
+- [x] Cleaner recovery when a player closes UI and loses the funnel
+- [x] Better explanation of what level milestones unlock next
 - [ ] Better first-hour validation on live browser QA instead of only patch-by-patch tuning
 
 #### Objective B: Moment-to-moment combat readability
