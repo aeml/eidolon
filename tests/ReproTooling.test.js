@@ -1,9 +1,10 @@
 import { readFileSync, existsSync } from 'fs';
+import { fileURLToPath } from 'node:url';
 
-const reproHtmlPath = new URL('../repro.html', import.meta.url).pathname;
-const reproJsPath = new URL('../src/repro.js', import.meta.url).pathname;
-const dungeonChecklistPath = new URL('../docs/plans/dungeon-manual-qa-checklist.md', import.meta.url).pathname;
-const releaseChecklistPath = new URL('../docs/plans/0.21-release-checklist.md', import.meta.url).pathname;
+const reproHtmlPath = fileURLToPath(new URL('../repro.html', import.meta.url));
+const reproJsPath = fileURLToPath(new URL('../src/repro.js', import.meta.url));
+const dungeonChecklistPath = fileURLToPath(new URL('../docs/plans/dungeon-manual-qa-checklist.md', import.meta.url));
+const releaseChecklistPath = fileURLToPath(new URL('../docs/plans/0.21-release-checklist.md', import.meta.url));
 
 describe('0.21 repro and QA tooling', () => {
     test('repro scene exposes focused QA controls for 0.21 closeout surfaces', () => {

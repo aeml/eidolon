@@ -1,12 +1,13 @@
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { jest } from '@jest/globals';
 import { UIManager } from '../src/ui/UIManager.js';
 import { SkillTreeUI } from '../src/ui/SkillTreeUI.js';
 
-const windowsCssPath = new URL('../src/styles/windows.css', import.meta.url).pathname;
-const worldMapCssPath = new URL('../src/styles/world-map.css', import.meta.url).pathname;
-const partyCssPath = new URL('../src/styles/party.css', import.meta.url).pathname;
-const indexHtmlPath = new URL('../index.html', import.meta.url).pathname;
+const windowsCssPath = fileURLToPath(new URL('../src/styles/windows.css', import.meta.url));
+const worldMapCssPath = fileURLToPath(new URL('../src/styles/world-map.css', import.meta.url));
+const partyCssPath = fileURLToPath(new URL('../src/styles/party.css', import.meta.url));
+const indexHtmlPath = fileURLToPath(new URL('../index.html', import.meta.url));
 
 function createTouchLikeEvent(type, options = {}) {
     const event = new Event(type, { bubbles: true, cancelable: true });

@@ -198,6 +198,16 @@ describe('Death and respawn polish', () => {
         engine.player = {
             id: 'player-1',
             state: 'DEAD',
+            quests: [
+                {
+                    id: 'q1',
+                    accepted: true,
+                    completed: false,
+                    count: 0,
+                    maxCount: 1,
+                    target: 'DungeonBoss'
+                }
+            ],
             stats: { hp: 0, maxHp: 100, mana: 0, maxMana: 100 },
             position: new THREE.Vector3(50, 0, 50),
             targetPosition: new THREE.Vector3(5, 0, 5),
@@ -220,6 +230,7 @@ describe('Death and respawn polish', () => {
             addChatMessage: jest.fn(),
             showDeathScreen: jest.fn(),
             hideDeathScreen: jest.fn(),
+            updateJournal: jest.fn(),
             updateXP: jest.fn(),
             updateHotbar: jest.fn(),
             updateCharacterSheet: jest.fn(),
@@ -253,6 +264,7 @@ describe('Death and respawn polish', () => {
         engine.clearAuthoritativeJumpState = jest.fn();
         engine.syncAuthoritativeJumpState = jest.fn();
         engine.announceRespawnRecovery = GameEngine.prototype.announceRespawnRecovery;
+        engine.getOnboardingRecoveryContext = GameEngine.prototype.getOnboardingRecoveryContext;
         engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
 
         engine.handleServerMessage({
@@ -275,5 +287,33 @@ describe('Death and respawn polish', () => {
         expect(engine.uiManager.addChatMessage).toHaveBeenCalledWith('System', expect.stringContaining('Recovered in town'));
         expect(engine.uiManager.addChatMessage).toHaveBeenCalledWith('System', expect.stringContaining('Vendor / Repair'));
         expect(engine.uiManager.addChatMessage).toHaveBeenCalledWith('System', expect.stringContaining('Forge'));
+        expect(engine.uiManager.updateJournal).toHaveBeenCalledWith(engine.player.quests);
+        expect(engine.getOnboardingRecoveryContext()).toEqual(expect.objectContaining({ reason: 'respawn' }));
+    });
+
+    test('GameEngine marks recall recovery context and refreshes onboarding guidance on town return', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = {
+            quests: [
+                {
+                    id: 'q1',
+                    accepted: true,
+                    completed: false,
+                    count: 0,
+                    maxCount: 1,
+                    target: 'DungeonBoss'
+                }
+            ],
+            position: new THREE.Vector3(0, 0, 200)
+        };
+        engine.uiManager = {
+            updateJournal: jest.fn()
+        };
+        engine.currentInstanceType = 'overworld';
+        engine.onboardingRecoveryContext = null;
+        engine.syncTownRecoveryGuidance(320, 40, 0, 200, 'recall');
+
+        expect(engine.uiManager.updateJournal).toHaveBeenCalledWith(engine.player.quests);
+        expect(engine.getOnboardingRecoveryContext()).toEqual(expect.objectContaining({ reason: 'recall' }));
     });
 });

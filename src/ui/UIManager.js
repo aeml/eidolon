@@ -48,6 +48,7 @@ export class UIManager {
             getDungeonRoomSummary: () => window.game?.getDungeonRoomSummary?.() || null,
             getCurrentInstanceId: () => window.game?.currentInstanceId || null,
             getCurrentInstanceType: () => window.game?.currentInstanceType || null,
+            getOnboardingRecoveryContext: () => window.game?.getOnboardingRecoveryContext?.() || null,
             closePrimaryHudMenus: (options) => this.closePrimaryHudMenus(options),
         });
 

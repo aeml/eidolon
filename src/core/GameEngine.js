@@ -163,6 +163,7 @@ export class GameEngine {
         this.lastRenderEnemyBarSignature = '';
         this.lastRenderCharacterSheetSignature = '';
         this.lastRenderWorldMapSignature = '';
+        this.onboardingRecoveryContext = null;
 
         // Entity Creation Throttling
         this.entityCreationQueue = [];
@@ -220,6 +221,52 @@ export class GameEngine {
             ? 'Recovered in town from the last defeat.'
             : 'Recovered in town.';
         this.uiManager.addChatMessage('System', `${locationLabel} Hit Vendor / Repair, Forge, or the Stash before pushing back out.`);
+    }
+
+    isTownPosition(x, z) {
+        const px = Number(x);
+        const pz = Number(z);
+        if (!Number.isFinite(px) || !Number.isFinite(pz)) return false;
+        return px >= -100 && px <= 100 && pz >= 100 && pz <= 300;
+    }
+
+    getOnboardingRecoveryContext() {
+        if (!this.onboardingRecoveryContext || !this.player) return null;
+        if (!this.isTownPosition(this.player.position?.x, this.player.position?.z)) return null;
+        if ((this.currentInstanceType || 'overworld') !== 'overworld') return null;
+        return this.onboardingRecoveryContext;
+    }
+
+    clearOnboardingRecoveryContext() {
+        this.onboardingRecoveryContext = null;
+    }
+
+    refreshOnboardingGuidance(reason = null) {
+        if (reason) {
+            this.onboardingRecoveryContext = { reason, updatedAt: Date.now() };
+        }
+        if (!this.player || !this.uiManager?.updateJournal) return;
+        this.uiManager.updateJournal(Array.isArray(this.player.quests) ? this.player.quests : []);
+    }
+
+    syncTownRecoveryGuidance(previousX, previousZ, nextX, nextZ, reason = null) {
+        const wasInTown = this.isTownPosition(previousX, previousZ);
+        const isInTown = this.isTownPosition(nextX, nextZ);
+
+        if (reason && isInTown) {
+            this.refreshOnboardingGuidance(reason);
+            return;
+        }
+
+        if (!wasInTown && isInTown) {
+            this.refreshOnboardingGuidance('town_return');
+            return;
+        }
+
+        if (wasInTown && !isInTown) {
+            this.clearOnboardingRecoveryContext();
+            this.uiManager?.updateJournal?.(Array.isArray(this.player?.quests) ? this.player.quests : []);
+        }
     }
 
     syncDeathScreen() {
@@ -444,6 +491,8 @@ export class GameEngine {
                 console.log("Teleporting to town...");
                 // Send recall request to server to ensure sync
                 this.network.send('recall', {});
+                const previousX = this.player.position.x;
+                const previousZ = this.player.position.z;
                 
                 // Optimistic update
                 this.player.position.set(0, 0, 200);
@@ -453,6 +502,7 @@ export class GameEngine {
                 this.chunkManager.updateEntityChunk(this.player);
                 this.renderSystem.setCameraTarget(this.player.position);
                 this.chunkManager.update(this.player, 0, this.collisionManager);
+                this.syncTownRecoveryGuidance(previousX, previousZ, this.player.position.x, this.player.position.z, 'recall');
             }
         });
 
@@ -570,6 +620,7 @@ export class GameEngine {
 
     async enterInstance(instanceId, type, layout, roomState = null) {
         console.log(`Entering instance: ${instanceId} (${type})`);
+        const previousInstanceType = this.currentInstanceType || 'overworld';
         this.currentInstanceId = instanceId;
         this.currentInstanceType = type;
         this.currentDungeonRoomState = roomState;
@@ -706,6 +757,11 @@ export class GameEngine {
         }
 
         const currentQuests = Array.isArray(this.player.quests) ? this.player.quests : [];
+        if (type === 'overworld' && previousInstanceType !== 'overworld') {
+            this.onboardingRecoveryContext = { reason: 'town_return', updatedAt: Date.now() };
+        } else if (type !== 'overworld') {
+            this.clearOnboardingRecoveryContext();
+        }
         this.uiManager?.updateQuestWindow?.(currentQuests);
         this.uiManager?.updateJournal?.(currentQuests);
     }
@@ -1030,6 +1086,9 @@ export class GameEngine {
                             this.currentInstanceId = pData.instanceId;
                         }
 
+                        const previousX = this.player.position?.x;
+                        const previousZ = this.player.position?.z;
+
                         // Check for instance mismatch (ignore stale state updates during transition)
                         if (pData.instanceId && this.currentInstanceId && pData.instanceId !== this.currentInstanceId) {
                             // console.log(`Ignoring state update from wrong instance: ${pData.instanceId} vs ${this.currentInstanceId}`);
@@ -1061,6 +1120,7 @@ export class GameEngine {
                                     this.chunkManager.updateEntityChunk(this.player);
                                     this.renderSystem.setCameraTarget(this.player.position);
                                     this.announceRespawnRecovery('state');
+                                    this.syncTownRecoveryGuidance(previousX, previousZ, this.player.position.x, this.player.position.z, 'respawn');
                                     justRespawned = true;
                                 }
                             } else if (!(hasPredictedJump && pData.state !== 'JUMPING')) {
@@ -1097,6 +1157,9 @@ export class GameEngine {
                                 this.chunkManager.updateEntityChunk(this.player);
                                 this.renderSystem.setCameraTarget(this.player.position);
                             }
+                        }
+                        if (!justRespawned && pData.x !== undefined && pData.z !== undefined) {
+                            this.syncTownRecoveryGuidance(previousX, previousZ, this.player.position.x, this.player.position.z);
                         }
                         
 
@@ -1308,6 +1371,8 @@ export class GameEngine {
                 if (pData.id === this.player.id) {
                     // Still update critical player state from delta
                     if (this.player && this.player.stats) {
+                        const previousX = this.player.position?.x;
+                        const previousZ = this.player.position?.z;
                         const nextHp = pData.health !== undefined ? pData.health : this.player.stats.hp;
                         const hasPredictedJump = !!this.playerJumpState && !this.playerJumpState.serverDriven;
                         if (pData.state !== undefined) {
@@ -1327,6 +1392,7 @@ export class GameEngine {
                                     this.renderSystem.setCameraTarget(this.player.position);
                                     this.chunkManager.update(this.player, 0, this.collisionManager);
                                     this.announceRespawnRecovery('delta');
+                                    this.syncTownRecoveryGuidance(previousX, previousZ, this.player.position.x, this.player.position.z, 'respawn');
                                 }
                             } else if (!(hasPredictedJump && pData.state !== 'JUMPING')) {
                                 this.player.state = pData.state;
@@ -1355,6 +1421,9 @@ export class GameEngine {
                                 this.chunkManager.updateEntityChunk(this.player);
                                 this.renderSystem.setCameraTarget(this.player.position);
                             }
+                        }
+                        if (pData.x !== undefined && pData.z !== undefined) {
+                            this.syncTownRecoveryGuidance(previousX, previousZ, this.player.position.x, this.player.position.z);
                         }
 
                         if (pData.health !== undefined) this.player.stats.hp = pData.health;

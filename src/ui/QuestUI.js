@@ -130,9 +130,55 @@ export class QuestUI {
         return x >= -100 && x <= 100 && z >= 100 && z <= 300;
     }
 
+    isStarterProgressionWindow(player = this.ctx.getLastPlayer?.()) {
+        const level = Number(player?.level);
+        return !Number.isFinite(level) || level < 30;
+    }
+
+    buildTownRecoveryObjective(quests) {
+        const hasAcceptedQuest = Array.isArray(quests) && quests.some((q) => q?.accepted && !q?.completed);
+        if (!hasAcceptedQuest) return null;
+        if (!this.isStarterProgressionWindow()) return null;
+        if (this.ctx.getCurrentInstanceId?.()) return null;
+        if ((this.ctx.getCurrentInstanceType?.() || 'overworld') !== 'overworld') return null;
+        if (!this.isPlayerInTown()) return null;
+
+        const recovery = this.ctx.getOnboardingRecoveryContext?.() || null;
+        const reason = recovery?.reason || 'town_return';
+        const copyByReason = {
+            respawn: {
+                title: 'Recover in town and re-orient',
+                hint: 'Respawned in town. Recover at the Stash, Vendor / Repair, or Forge, then open World Map (M) or Journal (J) and head back to your next quest stop.'
+            },
+            recall: {
+                title: 'Re-orient after recalling',
+                hint: 'Recalled to town. Sort gear, repair if needed, then open World Map (M) or Journal (J) and pick the route back up.'
+            },
+            town_return: {
+                title: 'Pick up the route again',
+                hint: 'Back in town. Open World Map (M) or Journal (J), get your bearings, then head back to the next quest objective.'
+            }
+        };
+        const details = copyByReason[reason] || copyByReason.town_return;
+
+        return {
+            id: `starter-town-recovery-${reason}`,
+            title: details.title,
+            progressLabel: 'Town',
+            progressPct: 12,
+            rewardXP: 0,
+            completed: false,
+            badge: 'Town',
+            badgeClass: 'is-objective',
+            routeTone: 'support',
+            hint: details.hint
+        };
+    }
+
     buildStarterTownObjective(quests) {
         const hasAcceptedQuest = Array.isArray(quests) && quests.some((q) => q?.accepted && !q?.completed);
         if (hasAcceptedQuest) return null;
+        if (!this.isStarterProgressionWindow()) return null;
         if (this.ctx.getCurrentInstanceId?.()) return null;
         if ((this.ctx.getCurrentInstanceType?.() || 'overworld') !== 'overworld') return null;
         if (!this.isPlayerInTown()) return null;
@@ -387,6 +433,11 @@ export class QuestUI {
             return [dungeonObjective, ...questObjectives];
         }
 
+        const townRecoveryObjective = this.buildTownRecoveryObjective(quests);
+        if (townRecoveryObjective) {
+            return [townRecoveryObjective, ...questObjectives];
+        }
+
         const starterTownObjective = this.buildStarterTownObjective(quests);
         return starterTownObjective ? [starterTownObjective, ...questObjectives] : questObjectives;
     }
@@ -426,7 +477,7 @@ export class QuestUI {
             marginBottom: '4px'
         });
         const body = this.createMessage(guidanceBody);
-        const footer = this.createMessage('Open World Map (M) and Journal (J) if you need to re-orient.', {
+        const footer = this.createMessage('Closed a menu or got turned around? Open World Map (M) and Journal (J) to re-orient.', {
             color: '#aaa',
             marginTop: '6px'
         });

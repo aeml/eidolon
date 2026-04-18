@@ -162,6 +162,49 @@ describe('QuestUI objectives panel', () => {
         expect(list.textContent).toContain('save valuable drops for the Trading House');
     });
 
+    test('renders a town recovery objective above active quests after a starter-town respawn', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({
+                level: 8,
+                quests: [],
+                position: { x: -1.25, z: 200 }
+            }),
+            getCurrentInstanceId: () => null,
+            getCurrentInstanceType: () => 'overworld',
+            getOnboardingRecoveryContext: () => ({ reason: 'respawn' })
+        });
+
+        questUI.updateJournal([
+            {
+                id: 'q1',
+                target: 'DungeonBoss',
+                accepted: true,
+                completed: false,
+                count: 0,
+                maxCount: 3,
+                rewardXP: 250
+            }
+        ]);
+
+        const panel = document.getElementById('objectives-panel');
+        const guidance = panel.querySelector('.objective-guidance');
+        const list = document.getElementById('objectives-list');
+        expect(panel.style.display).toBe('flex');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Recover in town and re-orient');
+        expect(guidance.textContent).toContain('Respawned in town');
+        expect(guidance.textContent).toContain('Stash');
+        expect(guidance.textContent).toContain('Vendor / Repair');
+        expect(guidance.textContent).toContain('Forge');
+        expect(guidance.textContent).toContain('World Map (M)');
+        expect(guidance.textContent).toContain('Journal (J)');
+        expect(guidance.textContent).toContain('Closed a menu or got turned around?');
+        expect(list.children).toHaveLength(2);
+        expect(list.firstChild.textContent).toContain('Recover in town and re-orient');
+        expect(list.textContent).toContain('Kill Dungeon Bosses');
+    });
+
     test('hides objectives panel when there are no accepted quests outside town', () => {
         buildQuestDom();
         const questUI = new QuestUI({
