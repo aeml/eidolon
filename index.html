@@ -186,6 +186,7 @@
                     GOLD: 0
                 </div>
             </div>
+            <div id="inventory-guidance" style="padding: 0 10px 10px 10px; color: #8fb7d9; font-size: 12px; line-height: 1.5; text-align: center; border-top: 1px solid #2a3340;">Common gear is usually vendor junk unless it is an upgrade. Better drops are worth checking, while Shards, Hearts, and Gems should usually be saved for the Forge.</div>
         </div>
 
         <!-- Split Stack Window -->
@@ -269,7 +270,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.14</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.15</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -277,8 +278,8 @@
                 <div class="window-header"><span>FIRST STEPS</span></div>
                 <div style="padding: 16px; display: flex; flex-direction: column; gap: 10px; text-align: left;">
                     <div id="start-flow-title" style="color: #ffd700; font-size: 20px; font-weight: bold;">Login to continue your run</div>
-                        <div id="start-flow-copy" style="color: #ddd; line-height: 1.5;">Returning players can jump straight back in. New players will pick a class, enter town, follow the quest tracker to their first objectives, sell junk to Vendor / Repair, and save valuable drops for the Trading House.</div>
-                        <div id="start-flow-steps" style="color: #aaa; font-size: 14px; line-height: 1.6;">1. Login or register. 2. Enter world or create a character. 3. Open Quests (J), follow the objective tracker, sell junk to Vendor / Repair, and save valuable drops for the Trading House.</div>
+                        <div id="start-flow-copy" style="color: #ddd; line-height: 1.5;">Returning players can jump straight back in. New players will pick a class, enter town, follow the quest tracker to their first objectives, vendor obvious junk, and keep Shards, Hearts, Gems, and genuinely strong drops.</div>
+                        <div id="start-flow-steps" style="color: #aaa; font-size: 14px; line-height: 1.6;">1. Login or register. 2. Enter world or create a character. 3. Open Quests (J), follow the objective tracker, vendor obvious junk, save forge materials, and only use the Trading House for drops worth listing.</div>
                 </div>
             </div>
             
@@ -493,6 +494,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.22.15" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.15 (Starter loot and forge guidance now explains what is worth keeping)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Starter loot truth:</strong> Inventory, start-flow, and town guidance now explain that obvious Common gear is usually vendor cleanup while better drops are worth checking before selling.</li>
+                        <li><strong>Forge-material clarity:</strong> Shards, Hearts, and Gems are now called out more explicitly as forge materials worth saving instead of accidental vendor trash.</li>
+                        <li><strong>Better service handoff:</strong> Merchant, Stash, Forge, and Trading House guidance now do a cleaner job of telling you what belongs where during the first hour.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for starter inventory guidance, starter recovery guidance, and 0.22.15 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.22.14" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.14 (Pre-fight boss objectives now tell you to commit)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
@@ -1194,8 +1204,8 @@
 
             <!-- Main Shop Content -->
             <div id="shop-content-main" style="padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column;">
-                <p id="shop-service-guidance" style="color: #aaa; font-size: 14px; margin-bottom: 10px;">Right-click items in your inventory to sell them. Use this merchant to clear junk, stock basic upgrades, and keep gold moving.</p>
-                <p style="color: #8fb7d9; font-size: 12px; margin: 0 0 15px 0;">Sell All buttons are fastest for low-rarity cleanup. Buyback is for "shit, I sold the wrong thing."</p>
+                <p id="shop-service-guidance" style="color: #aaa; font-size: 14px; margin-bottom: 10px;">Right-click items in your inventory to sell them. Use this merchant for obvious junk and fast gold, not for Shards, Hearts, Gems, or standout upgrades you may want to keep.</p>
+                <p style="color: #8fb7d9; font-size: 12px; margin: 0 0 15px 0;">Sell All buttons are fastest for low-rarity cleanup. Buyback is for "shit, I sold the wrong thing." Common gear is usually safe to clear first once you have upgrades equipped.</p>
                 
                 <div class="window-action-row">
                     <button id="btn-sell-common" class="menu-btn" style="background: #333; color: #fff; border-color: #fff; font-size: 12px; padding: 5px 10px;">Sell All Common</button>
@@ -1233,7 +1243,7 @@
                 <!-- Populated by JS -->
             </div>
             <div id="stash-guidance" style="padding: 10px; color: #aaa; font-size: 12px; text-align: center;">
-                Right-click to move items between Inventory and Stash. Use the Stash to park spare gear, gems, Hearts, and Shards without clogging your bag.
+                Right-click to move items between Inventory and Stash. Use the Stash to park spare gear, gems, Hearts, and Shards without clogging your bag, especially if you are not sure whether something should be forged later.
             </div>
         </div>
 
@@ -1257,7 +1267,7 @@
                 <!-- Panel 1: Upgrade -->
                 <div id="forge-panel-upgrade" class="window-panel" style="display: flex;">
                     <h3 style="margin: 0 0 10px 0; color: #ffd700; text-align: center;">Upgrade Equipment</h3>
-                    <p id="forge-upgrade-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Spend Shards to raise item level. This is the straight upgrade path when a good drop is worth keeping.</p>
+                    <p id="forge-upgrade-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Spend Shards to raise item level. This is the straight upgrade path when a good drop is worth keeping instead of replacing immediately.</p>
                     <div id="forge-equipment-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
                         <!-- Populated by JS -->
                     </div>
@@ -1276,7 +1286,7 @@
                 <!-- Panel 2: Potency -->
                 <div id="forge-panel-potency" class="window-panel" style="display: none;">
                     <h3 style="margin: 0 0 10px 0; color: #ff4444; text-align: center;">Increase Potency</h3>
-                    <p id="forge-potency-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Spend Hearts to permanently boost an equipped item when you want stronger stats without replacing it.</p>
+                    <p id="forge-potency-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Spend Hearts to permanently boost an equipped item when it already feels worth keeping and you want stronger stats without replacing it.</p>
                     <div id="forge-potency-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
                         <!-- Populated by JS -->
                     </div>
@@ -1291,7 +1301,7 @@
                 <!-- Panel 3: Sockets -->
                 <div id="forge-panel-socket" class="window-panel" style="display: none;">
                     <h3 style="margin: 0 0 10px 0; color: #00ffff; text-align: center;">Add Sockets</h3>
-                    <p id="forge-socket-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Spend Hearts and Shards to add gem slots to equipped gear so one strong item can scale further.</p>
+                    <p id="forge-socket-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Spend Hearts and Shards to add gem slots to equipped gear so one strong item can scale further instead of being tossed the moment a new drop appears.</p>
                     <div id="forge-socket-list" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px;">
                         <!-- Populated by JS -->
                     </div>
@@ -1308,7 +1318,7 @@
 
                 <!-- Panel 4: Gems -->
                 <div id="forge-panel-gems" class="window-panel" style="display: none;">
-                    <p id="forge-gems-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Insert gems for bonuses, combine extras into stronger gems, or remove them when you want to rebuild a piece.</p>
+                    <p id="forge-gems-guidance" style="margin: 0 0 10px 0; color: #aaa; text-align: center; font-size: 12px;">Insert gems for bonuses, combine extras into stronger gems, or remove them when you want to rebuild a piece. Gems are build materials, not normal vendor trash.</p>
                     <!-- Sub-tabs for Gem operations -->
                     <div class="window-tabs window-tabs--spaced">
                         <button id="tab-gem-insert" class="menu-btn window-tab is-active" type="button">Insert</button>
@@ -1410,7 +1420,7 @@
                 <span>TRADING HOUSE</span>
                 <button id="btn-close-trading-house" class="close-btn" type="button" aria-label="Close trading house">×</button>
             </div>
-            <p id="trading-house-guidance" style="color: #aaa; font-size: 14px; margin: 10px 16px 0 16px;">Buy from other players, list your own gear, and use auctions when an item is worth selling to the market.</p>
+            <p id="trading-house-guidance" style="color: #aaa; font-size: 14px; margin: 10px 16px 0 16px;">Buy from other players, list your own gear, and use auctions when an item is worth selling to the market instead of being simple vendor cleanup.</p>
             
             <!-- Tabs -->
             <div class="window-tabs">

@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.22.14`
+- Current in-game displayed version: `Alpha 0.22.15`
 - `0.21` is closed out and accepted
 - `0.22` is in progress and has shipped meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance work
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.22.14`
+### Shipped through `0.22.15`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -37,6 +37,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.22.12`: transitional route beats read like real approach states
 - `0.22.13`: cleared dungeons read like extraction instead of fake turn-in
 - `0.22.14`: pre-fight boss objectives tell the player to commit before the encounter goes live
+- `0.22.15`: starter loot, forge-material, and town-service guidance better explain what to vendor, what to keep, and what belongs in the Forge
 
 ### What `0.22` has clearly accomplished already
 
@@ -113,13 +114,14 @@ Done:
 
 - [x] Basic economy guidance around Vendor / Repair, Stash, and Trading House is stronger
 - [x] Auto-loot, loot feedback, and inventory UX already have a decent baseline from earlier patches
+- [x] Clearer early explanation of item rarity and what counts as junk versus worth keeping
+- [x] Clearer explanation of forge, gems, and upgrade expectations for new players
+- [x] Better explanation of early material and gold value
+- [x] Better tooltips/help text for starter buildcraft systems
 
 Still remains:
 
-- [ ] Clearer early explanation of item rarity and what counts as junk versus worth keeping
-- [ ] Clearer explanation of forge, gems, and upgrade expectations for new players
-- [ ] Better explanation of early material and gold value
-- [ ] Better tooltips/help text for starter buildcraft systems
+- [ ] Validate the new loot and forge explanations in a first-hour live QA pass
 
 ### `0.22` release gates still to satisfy
 

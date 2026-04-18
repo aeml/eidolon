@@ -14,6 +14,7 @@ export class InventoryUI {
         // --- DOM refs ---
         this.inventoryScreen = document.getElementById('inventory-screen');
         this.inventoryGrid = document.getElementById('inventory-grid');
+        this.inventoryGuidance = document.getElementById('inventory-guidance');
         this.goldDisplay = document.getElementById('gold-display');
         this.btnSortInventory = document.getElementById('btn-sort-inventory');
         this.btnCloseInventory = document.getElementById('btn-close-inventory');
@@ -151,6 +152,45 @@ export class InventoryUI {
             GEM: 7
         };
         return Object.prototype.hasOwnProperty.call(ranks, type) ? ranks[type] : 99;
+    }
+    _getItemRarityName(item) {
+        if (!item?.rarity) return '';
+        return typeof item.rarity === 'string' ? item.rarity : (item.rarity.name || '');
+    }
+    _isStarterProgressionWindow(player) {
+        const level = Number(player?.level);
+        return !Number.isFinite(level) || level < 30;
+    }
+    _buildInventoryGuidance(player) {
+        if (!this._isStarterProgressionWindow(player)) {
+            return 'Sort your bag often. Shards handle item levels, Hearts handle long-term empowerment and sockets, and gems are worth stashing or forging instead of selling by accident.';
+        }
+
+        return 'Common gear is usually vendor junk unless it is an immediate upgrade. Uncommon and Rare gear are worth checking. Shards raise item level, Hearts empower gear or add sockets, gems are crafting pieces, and the Trading House is for drops actually worth listing.';
+    }
+    _buildStarterItemGuidance(item, player) {
+        if (!item || !this._isStarterProgressionWindow(player)) return '';
+
+        const rarityName = this._getItemRarityName(item);
+        if (this._isGemItem(item)) {
+            return 'Gems are build pieces, not vendor junk. Stash extras, socket good ones into gear, or combine matching gems into stronger versions at the Forge.';
+        }
+        if (item.type === 'MATERIAL' || item.slot === 'material' || item.name === 'Eidolon Shard' || item.name === 'Shard') {
+            return 'Shards are upgrade currency. Save them for raising the item level of gear that is actually worth keeping.';
+        }
+        if (item.type === 'RELIC' || item.slot === 'relic' || item.name === 'Eidolon Heart' || item.name === 'Heart') {
+            return 'Hearts are forge currency. Save them for potency upgrades and adding sockets to gear you plan to keep.';
+        }
+        if (rarityName === 'Common') {
+            return 'Common gear is usually safe vendor junk once you have something better equipped.';
+        }
+        if (rarityName === 'Uncommon') {
+            return 'Uncommon gear is worth a quick stat check. Keep it if it is an upgrade, otherwise vendor it.';
+        }
+        if (rarityName === 'Rare' || rarityName === 'Legendary' || rarityName === 'Eidolic') {
+            return 'Higher-rarity drops are worth comparing carefully before selling. Good upgrades can be forged further, and standout pieces may be worth listing on the Trading House.';
+        }
+        return '';
     }
     sortInventoryItems(items) {
         const source = Array.isArray(items) ? items : [];
@@ -541,6 +581,9 @@ export class InventoryUI {
 
         if (this.goldDisplay) {
             this.goldDisplay.textContent = `GOLD: ${player.gold || 0}`;
+        }
+        if (this.inventoryGuidance) {
+            this.inventoryGuidance.textContent = this._buildInventoryGuidance(player);
         }
 
         const slots = this.inventoryGrid.children;
@@ -1039,6 +1082,11 @@ export class InventoryUI {
             if (this.isMobile) {
                 desc += `<button id="btn-tooltip-sell" style="width:100%; margin-top:10px; padding: 8px; background:#333; color:#ffd700; border:1px solid #ffd700; cursor:pointer; font-weight:bold;">SELL ITEM</button>`;
             }
+        }
+
+        const starterGuidance = this._buildStarterItemGuidance(item, player);
+        if (starterGuidance) {
+            desc += `<div style="color: #8fb7d9; margin-top: 10px; border-top: 1px solid #33485a; padding-top: 6px;">${starterGuidance}</div>`;
         }
 
         // Equip Button on Mobile

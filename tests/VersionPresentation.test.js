@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.22.14 for the latest shipped dungeon-readability slice', () => {
-        expect(indexHtml).toContain('Alpha 0.22.14');
+    test('advances the login screen to alpha 0.22.15 for the latest shipped starter-loot-guidance slice', () => {
+        expect(indexHtml).toContain('Alpha 0.22.15');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -19,8 +19,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('id="class-cleric-description"');
         expect(indexHtml).toContain('Vendor / Repair');
         expect(indexHtml).toContain('Trading House');
-        expect(indexHtml).toContain('sell junk to Vendor / Repair');
-        expect(indexHtml).toContain('save valuable drops for the Trading House');
+        expect(indexHtml).toContain('vendor obvious junk');
+        expect(indexHtml).toContain('keep Shards, Hearts, Gems');
     });
 
     test('includes plain-language starter service guidance on merchant stash forge and trading house windows', () => {
@@ -35,22 +35,25 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Buyback lets you recover something you just sold');
         expect(indexHtml).toContain('park spare gear, gems, Hearts, and Shards');
         expect(indexHtml).toContain('Spend Shards to raise item level');
-        expect(indexHtml).toContain('Spend Hearts to permanently boost an equipped item');
+        expect(indexHtml).toContain('Spend Hearts to permanently boost an equipped item when it already feels worth keeping');
         expect(indexHtml).toContain('add gem slots to equipped gear');
-        expect(indexHtml).toContain('Insert gems for bonuses, combine extras into stronger gems, or remove them');
-        expect(indexHtml).toContain('Buy from other players, list your own gear, and use auctions when an item is worth selling to the market');
+        expect(indexHtml).toContain('Gems are build materials, not normal vendor trash');
+        expect(indexHtml).toContain('Buy from other players, list your own gear, and use auctions when an item is worth selling to the market instead of being simple vendor cleanup');
+        expect(indexHtml).toContain('id="inventory-guidance"');
+        expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.22.14', () => {
-        expect(indexHtml).toContain('Patch 0.22.14');
-        expect(indexHtml).toContain('Pre-fight boss objectives now use commit language instead of flat discovered-room placeholder copy');
-        expect(indexHtml).toContain('Boss guidance now tells you to reset and commit before the fight is live, matching the callout layer');
-        expect(indexHtml).toContain('Boss journal entries now distinguish commit-before-engage from Boss Now execution guidance');
-        expect(indexHtml).toContain('Added regression coverage for pre-live boss objective guidance and 0.22.14 version presentation');
+    test('includes the latest player-facing patch notes entry for 0.22.15', () => {
+        expect(indexHtml).toContain('Patch 0.22.15');
+        expect(indexHtml).toContain('Inventory, start-flow, and town guidance now explain that obvious Common gear is usually vendor cleanup while better drops are worth checking before selling');
+        expect(indexHtml).toContain('Shards, Hearts, and Gems are now called out more explicitly as forge materials worth saving instead of accidental vendor trash');
+        expect(indexHtml).toContain('Merchant, Stash, Forge, and Trading House guidance now do a cleaner job of telling you what belongs where during the first hour');
+        expect(indexHtml).toContain('Added regression coverage for starter inventory guidance, starter recovery guidance, and 0.22.15 version presentation');
     });
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.22.15');
         expect(indexHtml).toContain('Patch 0.22.14');
         expect(indexHtml).toContain('Patch 0.22.13');
         expect(indexHtml).toContain('Patch 0.22.12');
@@ -78,6 +81,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.22.15"');
         expect(indexHtml).toContain('data-version="0.22.14"');
         expect(indexHtml).toContain('data-version="0.22.13"');
         expect(indexHtml).toContain('data-version="0.22.12"');

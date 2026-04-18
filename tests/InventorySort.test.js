@@ -6,6 +6,7 @@ function buildDom(slotCount = 5) {
     document.body.innerHTML = `
         <div id="inventory-screen"></div>
         <div id="inventory-grid">${slots}</div>
+        <div id="inventory-guidance"></div>
         <button id="btn-sort-inventory"></button>
         <div id="gold-display"></div>
         <div id="shop-screen"></div>
@@ -98,5 +99,65 @@ describe('Inventory sorting', () => {
 
         expect(player.inventory).toEqual(originalInventory);
         expect(inventory.onSortInventory).toHaveBeenCalledTimes(1);
+    });
+
+    test('starter inventory guidance explains what to vendor and what to save for the forge', () => {
+        buildDom();
+        const player = {
+            level: 12,
+            gold: 80,
+            inventory: [
+                { id: 'weapon-1', name: 'Iron Sword', type: 'WEAPON', rarity: { name: 'Common', color: '#fff' }, slot: 'mainHand', level: 1, stack: 1 },
+                null,
+                null,
+                null,
+                null
+            ]
+        };
+        const inventory = createInventory(player);
+
+        inventory.updateInventory(player);
+
+        expect(document.getElementById('inventory-guidance').textContent).toContain('Common gear is usually vendor junk unless it is an immediate upgrade');
+        expect(document.getElementById('inventory-guidance').textContent).toContain('Shards raise item level');
+        expect(document.getElementById('inventory-guidance').textContent).toContain('Hearts empower gear or add sockets');
+        expect(document.getElementById('inventory-guidance').textContent).toContain('Trading House');
+    });
+
+    test('starter item tooltips explain why shards and gems should be kept', () => {
+        buildDom();
+        const player = {
+            level: 9,
+            gold: 0,
+            inventory: [],
+            equipment: {}
+        };
+        const inventory = createInventory(player);
+
+        inventory.showItemTooltip({
+            id: 'shard-1',
+            name: 'Eidolon Shard',
+            type: 'MATERIAL',
+            rarity: { name: 'Eidolic', color: '#A020F0' },
+            slot: 'material',
+            level: 1,
+            stack: 4,
+            stats: {}
+        }, 10, 10);
+        expect(document.getElementById('stat-tooltip-desc').innerHTML).toContain('Shards are upgrade currency');
+
+        inventory.showItemTooltip({
+            id: 'gem-1',
+            name: 'Flawed Ruby',
+            type: 'GEM',
+            rarity: { name: 'Rare', color: '#0070dd' },
+            slot: 'gem',
+            level: 1,
+            stack: 1,
+            gemType: 'Ruby',
+            gemQuality: 'Flawed',
+            stats: { strength: 2 }
+        }, 10, 10);
+        expect(document.getElementById('stat-tooltip-desc').innerHTML).toContain('Gems are build pieces, not vendor junk');
     });
 });

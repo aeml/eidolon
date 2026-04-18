@@ -193,13 +193,16 @@ describe('asset persistence boot wiring', () => {
         expect(document.getElementById('start-flow-copy').textContent).toContain('Quest Giver');
         expect(document.getElementById('start-flow-copy').textContent).toContain('Forge');
         expect(document.getElementById('start-flow-copy').textContent).toContain('Vendor / Repair');
-        expect(document.getElementById('start-flow-copy').textContent).toContain('Trading House');
+        expect(document.getElementById('start-flow-copy').textContent).toContain('Shards');
+        expect(document.getElementById('start-flow-copy').textContent).toContain('Hearts');
+        expect(document.getElementById('start-flow-copy').textContent).toContain('Gems');
         expect(document.getElementById('start-flow-steps').textContent).toContain('Fighter');
         expect(document.getElementById('start-flow-steps').textContent).toContain('Rogue');
         expect(document.getElementById('start-flow-steps').textContent).toContain('World Map (M)');
         expect(document.getElementById('start-flow-steps').textContent).toContain('Quest Giver by the Forge');
-        expect(document.getElementById('start-flow-steps').textContent).toContain('sell junk to Vendor / Repair');
-        expect(document.getElementById('start-flow-steps').textContent).toContain('save valuable drops for the Trading House');
+        expect(document.getElementById('start-flow-steps').textContent).toContain('vendor obvious junk');
+        expect(document.getElementById('start-flow-steps').textContent).toContain('save Shards, Hearts, and Gems');
+        expect(document.getElementById('start-flow-steps').textContent).toContain('Trading House');
     });
 
     test('persisted fullscreen preference applies when the loading screen starts, not on login', async () => {

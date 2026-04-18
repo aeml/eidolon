@@ -150,16 +150,18 @@ describe('QuestUI objectives panel', () => {
         expect(guidance.textContent).toContain('Quest Giver');
         expect(guidance.textContent).toContain('Forge');
         expect(guidance.textContent).toContain('Stash');
-        expect(guidance.textContent).toContain('Vendor / Repair');
-        expect(guidance.textContent).toContain('Trading House');
+        expect(guidance.textContent).toContain('vendor obvious Common junk');
+        expect(guidance.textContent).toContain('Shards');
+        expect(guidance.textContent).toContain('Hearts');
+        expect(guidance.textContent).toContain('Gems');
         expect(guidance.textContent).toContain('World Map (M)');
         expect(guidance.textContent).toContain('Quest Giver by the Forge');
         expect(list.textContent).toContain('Meet the Quest Giver');
         expect(list.textContent).toContain('Head to the Quest Giver by the Forge');
         expect(list.textContent).toContain('Stash');
-        expect(list.textContent).toContain('sort gear');
-        expect(list.textContent).toContain('sell junk to Vendor / Repair');
-        expect(list.textContent).toContain('save valuable drops for the Trading House');
+        expect(list.textContent).toContain('vendor obvious Common junk');
+        expect(list.textContent).toContain('check stronger drops before selling');
+        expect(list.textContent).toContain('keep Shards, Hearts, and Gems for the Forge');
     });
 
     test('renders a town recovery objective above active quests after a starter-town respawn', () => {
