@@ -207,6 +207,62 @@ describe('QuestUI objectives panel', () => {
         expect(list.textContent).toContain('Kill Dungeon Bosses');
     });
 
+    test('renders a post-level-30 town objective that points the player toward the Dungeon Guide', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({
+                level: 36,
+                quests: [],
+                position: { x: 2, z: 210 }
+            }),
+            getCurrentInstanceId: () => null,
+            getCurrentInstanceType: () => 'overworld'
+        });
+
+        questUI.updateJournal([]);
+
+        const panel = document.getElementById('objectives-panel');
+        const guidance = panel.querySelector('.objective-guidance');
+        const list = document.getElementById('objectives-list');
+        expect(panel.style.display).toBe('flex');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Check the Dungeon Guide');
+        expect(guidance.textContent).toContain('Level 30 unlocked all base dungeons');
+        expect(guidance.textContent).toContain('Dungeon Guide');
+        expect(guidance.textContent).toContain('World Map (M)');
+        expect(guidance.textContent).toContain('Journal (J)');
+        expect(list.children).toHaveLength(1);
+        expect(list.textContent).toContain('Check the Dungeon Guide');
+    });
+
+    test('renders a post-level-100 town objective that points the player toward Heroic and Mythic runs', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({
+                level: 100,
+                quests: [],
+                position: { x: -8, z: 220 }
+            }),
+            getCurrentInstanceId: () => null,
+            getCurrentInstanceType: () => 'overworld'
+        });
+
+        questUI.updateJournal([]);
+
+        const panel = document.getElementById('objectives-panel');
+        const guidance = panel.querySelector('.objective-guidance');
+        const list = document.getElementById('objectives-list');
+        expect(panel.style.display).toBe('flex');
+        expect(guidance).not.toBeNull();
+        expect(guidance.textContent).toContain('Push Heroic and Mythic runs');
+        expect(guidance.textContent).toContain('Level 100 unlocked Heroic and Mythic');
+        expect(guidance.textContent).toContain('Dungeon Guide');
+        expect(guidance.textContent).toContain('Skills (K)');
+        expect(guidance.textContent).toContain('Forge');
+        expect(list.children).toHaveLength(1);
+        expect(list.textContent).toContain('Push Heroic and Mythic runs');
+    });
+
     test('hides objectives panel when there are no accepted quests outside town', () => {
         buildQuestDom();
         const questUI = new QuestUI({

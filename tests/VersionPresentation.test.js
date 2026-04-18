@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.22.19 for the latest shipped first-hour-milestone slice', () => {
-        expect(indexHtml).toContain('Alpha 0.22.19');
+    test('advances the login screen to alpha 0.22.20 for the latest shipped 0.22 closeout-support slice', () => {
+        expect(indexHtml).toContain('Alpha 0.22.20');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -56,16 +56,17 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.22.19', () => {
-        expect(indexHtml).toContain('Patch 0.22.19');
-        expect(indexHtml).toContain('Start-flow guidance and the Help screen now call out the first-hour progression beats more explicitly');
-        expect(indexHtml).toContain('The in-client Help screen now doubles as a first-hour route refresher');
-        expect(indexHtml).toContain('Quest Giver, Vendor / Repair, Stash, Forge, Dungeon Guide, World Map, and Journal are now framed together');
-        expect(indexHtml).toContain('Added regression coverage for first-hour milestone guidance, Help screen milestone copy, and 0.22.19 version presentation');
+    test('includes the latest player-facing patch notes entry for 0.22.20', () => {
+        expect(indexHtml).toContain('Patch 0.22.20');
+        expect(indexHtml).toContain('When a player is back in town after unlocking base dungeons, the objective panel now points them toward the Dungeon Guide');
+        expect(indexHtml).toContain('Level-100 town guidance now points players toward Heroic and Mythic runs');
+        expect(indexHtml).toContain('Added a written `0.22` first-hour closeout doc');
+        expect(indexHtml).toContain('Added regression coverage for post-level-30 and post-level-100 town guidance plus 0.22.20 version presentation');
     });
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.22.20');
         expect(indexHtml).toContain('Patch 0.22.19');
         expect(indexHtml).toContain('Patch 0.22.18');
         expect(indexHtml).toContain('Patch 0.22.17');
@@ -98,6 +99,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.22.20"');
         expect(indexHtml).toContain('data-version="0.22.19"');
         expect(indexHtml).toContain('data-version="0.22.18"');
         expect(indexHtml).toContain('data-version="0.22.17"');

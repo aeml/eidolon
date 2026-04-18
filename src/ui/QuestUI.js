@@ -197,6 +197,44 @@ export class QuestUI {
         };
     }
 
+    buildTownProgressionObjective(quests) {
+        const hasAcceptedQuest = Array.isArray(quests) && quests.some((q) => q?.accepted && !q?.completed);
+        if (hasAcceptedQuest) return null;
+        if (this.isStarterProgressionWindow()) return null;
+        if (this.ctx.getCurrentInstanceId?.()) return null;
+        if ((this.ctx.getCurrentInstanceType?.() || 'overworld') !== 'overworld') return null;
+        if (!this.isPlayerInTown()) return null;
+
+        const level = Number(this.ctx.getLastPlayer?.()?.level || 0);
+        if (level >= 100) {
+            return {
+                id: 'town-progression-endgame',
+                title: 'Push Heroic and Mythic runs',
+                progressLabel: 'Town',
+                progressPct: 84,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Endgame',
+                badgeClass: 'is-objective',
+                routeTone: 'support',
+                hint: 'Level 100 unlocked Heroic and Mythic. Visit the Dungeon Guide, choose a difficulty, check your build in Skills (K), and use the Forge before your next push.'
+            };
+        }
+
+        return {
+            id: 'town-progression-dungeon-guide',
+            title: 'Check the Dungeon Guide',
+            progressLabel: 'Town',
+            progressPct: 48,
+            rewardXP: 0,
+            completed: false,
+            badge: 'Town',
+            badgeClass: 'is-objective',
+            routeTone: 'support',
+            hint: 'Level 30 unlocked all base dungeons. Visit the Dungeon Guide, choose your next run, and use World Map (M), Journal (J), Stash, and Forge to get ready before leaving town.'
+        };
+    }
+
     buildDungeonRouteSequenceHint(summary, objectiveRoom) {
         if (!summary || !Array.isArray(summary.rooms) || !objectiveRoom) {
             return '';
@@ -439,7 +477,12 @@ export class QuestUI {
         }
 
         const starterTownObjective = this.buildStarterTownObjective(quests);
-        return starterTownObjective ? [starterTownObjective, ...questObjectives] : questObjectives;
+        if (starterTownObjective) {
+            return [starterTownObjective, ...questObjectives];
+        }
+
+        const townProgressionObjective = this.buildTownProgressionObjective(quests);
+        return townProgressionObjective ? [townProgressionObjective, ...questObjectives] : questObjectives;
     }
 
     renderObjectiveGuidance(objective) {

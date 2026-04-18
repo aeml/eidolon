@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.22.19`
+- Current in-game displayed version: `Alpha 0.22.20`
 - `0.21` is closed out and accepted
 - `0.22` is in progress and has shipped meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance work
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.22.19`
+### Shipped through `0.22.20`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -42,6 +42,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.22.17`: nearby remote-player actions and damage now read better in crowded multiplayer combat
 - `0.22.18`: nearby remote-player jumps and basic attacks now read more clearly, with named action labels that are easier to parse in motion
 - `0.22.19`: first-hour milestone and unlock guidance is now easier to recover from the start flow and in-client Help screen
+- `0.22.20`: post-level-30 and post-level-100 town states now point players toward the right next loop instead of going quiet
 
 ### What `0.22` has clearly accomplished already
 
