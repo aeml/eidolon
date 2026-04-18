@@ -157,6 +157,84 @@ export class InventoryUI {
         if (!item?.rarity) return '';
         return typeof item.rarity === 'string' ? item.rarity : (item.rarity.name || '');
     }
+    _getItemRarityMultiplier(item) {
+        const rarity = item?.rarity;
+        if (!rarity) return 0;
+
+        if (typeof rarity === 'string') {
+            const key = rarity.toUpperCase();
+            if (RARITY[key]) return RARITY[key].multiplier || 0;
+            for (const rarityKey of Object.keys(RARITY)) {
+                if (RARITY[rarityKey].name === rarity) {
+                    return RARITY[rarityKey].multiplier || 0;
+                }
+            }
+            return 0;
+        }
+
+        if (typeof rarity.multiplier === 'number') return rarity.multiplier;
+        if (typeof rarity.name === 'string') {
+            const key = rarity.name.toUpperCase();
+            if (RARITY[key]) return RARITY[key].multiplier || 0;
+        }
+
+        return 0;
+    }
+    _isEquippableItem(item) {
+        if (!item?.slot) return false;
+        if (this._isGemItem(item)) return false;
+        if (item.type === 'MATERIAL' || item.type === 'RELIC') return false;
+        if (item.slot === 'material' || item.slot === 'relic' || item.slot === 'gem') return false;
+        return true;
+    }
+    _formatEquipmentSlotLabel(slotKey) {
+        const explicitLabels = {
+            mainHand: 'Main Hand',
+            offHand: 'Off Hand',
+            ring1: 'Ring 1',
+            ring2: 'Ring 2',
+            trinket1: 'Trinket 1',
+            trinket2: 'Trinket 2'
+        };
+
+        if (explicitLabels[slotKey]) return explicitLabels[slotKey];
+        return String(slotKey || '')
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, (match) => match.toUpperCase());
+    }
+    _getWeakerEquipmentSlot(player, slot1, slot2) {
+        const item1 = player?.equipment?.[slot1];
+        const item2 = player?.equipment?.[slot2];
+
+        if (!item1) return slot1;
+        if (!item2) return slot2;
+
+        const level1 = Number(item1.level || 0);
+        const level2 = Number(item2.level || 0);
+        if (level1 !== level2) return level1 < level2 ? slot1 : slot2;
+
+        const rarity1 = this._getItemRarityMultiplier(item1);
+        const rarity2 = this._getItemRarityMultiplier(item2);
+        if (rarity1 !== rarity2) return rarity1 < rarity2 ? slot1 : slot2;
+
+        return slot1;
+    }
+    _getComparisonTarget(player, item) {
+        if (!this._isEquippableItem(item)) return null;
+
+        let slotKey = item.slot;
+        if (item.slot === 'ring') {
+            slotKey = this._getWeakerEquipmentSlot(player, 'ring1', 'ring2');
+        } else if (item.slot === 'trinket') {
+            slotKey = this._getWeakerEquipmentSlot(player, 'trinket1', 'trinket2');
+        }
+
+        return {
+            slotKey,
+            slotLabel: this._formatEquipmentSlotLabel(slotKey),
+            equippedItem: player?.equipment?.[slotKey] || null
+        };
+    }
     _isStarterProgressionWindow(player) {
         const level = Number(player?.level);
         return !Number.isFinite(level) || level < 30;
@@ -172,25 +250,57 @@ export class InventoryUI {
         if (!item || !this._isStarterProgressionWindow(player)) return '';
 
         const rarityName = this._getItemRarityName(item);
+        const comparison = this._getComparisonTarget(player, item);
+        let quickRead = '';
+        if (comparison) {
+            const equippedItem = comparison.equippedItem;
+            if (!equippedItem) {
+                quickRead = `Quick read: open ${comparison.slotLabel}. Free equips are usually worth trying immediately.`;
+            } else {
+                const levelDiff = Number(item.level || 0) - Number(equippedItem.level || 0);
+                const rarityDiff = this._getItemRarityMultiplier(item) - this._getItemRarityMultiplier(equippedItem);
+
+                if (levelDiff > 0 && rarityDiff >= 0) {
+                    quickRead = `Quick read: likely upgrade for ${comparison.slotLabel}. It is higher level and at least matching rarity versus your equipped ${equippedItem.name}.`;
+                } else if (levelDiff === 0 && rarityDiff > 0) {
+                    quickRead = `Quick read: likely upgrade for ${comparison.slotLabel}. It matches your equipped ${equippedItem.name} on level and beats it on rarity.`;
+                } else if (levelDiff < 0 && rarityDiff <= 0) {
+                    quickRead = `Quick read: likely weaker than your equipped ${equippedItem.name}. Keep it only if the stat mix solves a specific gap.`;
+                } else if (levelDiff === 0 && rarityDiff === 0) {
+                    quickRead = `Quick read: sidegrade candidate against your equipped ${equippedItem.name}. Compare the stat mix before swapping.`;
+                } else {
+                    quickRead = `Quick read: mixed signal against your equipped ${equippedItem.name}. Compare the stat mix before deciding.`;
+                }
+            }
+        }
+
         if (this._isGemItem(item)) {
-            return 'Gems are build pieces, not vendor junk. Stash extras, socket good ones into gear, or combine matching gems into stronger versions at the Forge.';
+            return `${quickRead ? `${quickRead} ` : ''}Gems are build pieces, not vendor junk. Stash extras, socket good ones into gear, or combine matching gems into stronger versions at the Forge.`;
         }
         if (item.type === 'MATERIAL' || item.slot === 'material' || item.name === 'Eidolon Shard' || item.name === 'Shard') {
-            return 'Shards are upgrade currency. Save them for raising the item level of gear that is actually worth keeping.';
+            return `${quickRead ? `${quickRead} ` : ''}Shards are upgrade currency. Save them for raising the item level of gear that is actually worth keeping.`;
         }
         if (item.type === 'RELIC' || item.slot === 'relic' || item.name === 'Eidolon Heart' || item.name === 'Heart') {
-            return 'Hearts are forge currency. Save them for potency upgrades and adding sockets to gear you plan to keep.';
+            return `${quickRead ? `${quickRead} ` : ''}Hearts are forge currency. Save them for potency upgrades and adding sockets to gear you plan to keep.`;
         }
         if (rarityName === 'Common') {
-            return 'Common gear is usually safe vendor junk once you have something better equipped.';
+            return `${quickRead ? `${quickRead} ` : ''}Common gear is usually safe vendor junk once you have something better equipped.`;
         }
         if (rarityName === 'Uncommon') {
-            return 'Uncommon gear is worth a quick stat check. Keep it if it is an upgrade, otherwise vendor it.';
+            return `${quickRead ? `${quickRead} ` : ''}Uncommon gear is worth a quick stat check. Keep it if it is an upgrade, otherwise vendor it.`;
         }
         if (rarityName === 'Rare' || rarityName === 'Legendary' || rarityName === 'Eidolic') {
-            return 'Higher-rarity drops are worth comparing carefully before selling. Good upgrades can be forged further, and standout pieces may be worth listing on the Trading House.';
+            return `${quickRead ? `${quickRead} ` : ''}Higher-rarity drops are worth comparing carefully before selling. Good upgrades can be forged further, and standout pieces may be worth listing on the Trading House.`;
         }
-        return '';
+        return quickRead;
+    }
+    _buildCompareHint(item, player) {
+        if (this.isMobile || !item) return '';
+
+        const comparison = this._getComparisonTarget(player, item);
+        if (!comparison?.equippedItem) return '';
+
+        return `Hold Shift to compare with ${comparison.equippedItem.name} in ${comparison.slotLabel}.`;
     }
     sortInventoryItems(items) {
         const source = Array.isArray(items) ? items : [];
@@ -1087,6 +1197,11 @@ export class InventoryUI {
         const starterGuidance = this._buildStarterItemGuidance(item, player);
         if (starterGuidance) {
             desc += `<div style="color: #8fb7d9; margin-top: 10px; border-top: 1px solid #33485a; padding-top: 6px;">${starterGuidance}</div>`;
+        }
+
+        const compareHint = this._buildCompareHint(item, player);
+        if (compareHint && !this.compareMode) {
+            desc += `<div style="color: #c8d6e8; margin-top: 6px;">${compareHint}</div>`;
         }
 
         // Equip Button on Mobile

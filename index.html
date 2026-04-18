@@ -270,7 +270,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.23.1</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.23.2</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -506,6 +506,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.23.2" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.23.2 (Loot decisions now read faster from the tooltip itself)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Quick gear read:</strong> Starter equippable tooltips now call out open-slot items, likely upgrades, likely weaker drops, and mixed-signal sidegrades before you fully parse every stat line.</li>
+                        <li><strong>Visible compare hint:</strong> Desktop item tooltips now explicitly tell you when to hold Shift and which equipped item you are comparing against, including auto-slot ring and trinket cases.</li>
+                        <li><strong>0.23 focus continues:</strong> This keeps the early `0.23` buildcraft pass centered on loot and item-decision readability before the deeper forge and respec coherence work.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for starter equip-read tooltip guidance, compare-target hints, and 0.23.2 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.23.1" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.23.1 (Branch roles now explain how each spec actually plays)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

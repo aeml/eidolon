@@ -160,4 +160,98 @@ describe('Inventory sorting', () => {
         }, 10, 10);
         expect(document.getElementById('stat-tooltip-desc').innerHTML).toContain('Gems are build pieces, not vendor junk');
     });
+
+    test('starter equippable tooltip explains open-slot upgrades and desktop compare hints', () => {
+        buildDom();
+        const player = {
+            level: 12,
+            gold: 0,
+            inventory: [],
+            equipment: {
+                mainHand: null,
+                offHand: {
+                    id: 'offhand-1',
+                    name: 'Training Sigil',
+                    type: 'OFF_HAND',
+                    rarity: { name: 'Common', color: '#fff', multiplier: 1.0 },
+                    slot: 'offHand',
+                    level: 8,
+                    stats: { intelligence: 2 }
+                }
+            }
+        };
+        const inventory = createInventory(player);
+
+        inventory.showItemTooltip({
+            id: 'weapon-1',
+            name: 'Iron Sword',
+            type: 'WEAPON',
+            rarity: { name: 'Uncommon', color: '#1eff00', multiplier: 1.5 },
+            slot: 'mainHand',
+            level: 10,
+            stack: 1,
+            stats: { damage: 5 }
+        }, 10, 10);
+
+        expect(document.getElementById('stat-tooltip-desc').innerHTML).toContain('Quick read: open Main Hand');
+        expect(document.getElementById('stat-tooltip-desc').innerHTML).toContain('Free equips are usually worth trying immediately');
+
+        inventory.showItemTooltip({
+            id: 'offhand-2',
+            name: 'Blessed Tome',
+            type: 'OFF_HAND',
+            rarity: { name: 'Rare', color: '#0070dd', multiplier: 2.0 },
+            slot: 'offHand',
+            level: 8,
+            stack: 1,
+            stats: { intelligence: 4 }
+        }, 10, 10);
+
+        expect(document.getElementById('stat-tooltip-desc').innerHTML).toContain('Quick read: likely upgrade for Off Hand');
+        expect(document.getElementById('stat-tooltip-desc').innerHTML).toContain('Hold Shift to compare with Training Sigil in Off Hand');
+    });
+
+    test('ring tooltip compares against the weaker equipped ring slot', () => {
+        buildDom();
+        const player = {
+            level: 16,
+            gold: 0,
+            inventory: [],
+            equipment: {
+                ring1: {
+                    id: 'ring-1',
+                    name: 'Copper Band',
+                    type: 'ACCESSORY',
+                    rarity: { name: 'Common', color: '#fff', multiplier: 1.0 },
+                    slot: 'ring',
+                    level: 6,
+                    stats: { vitality: 1 }
+                },
+                ring2: {
+                    id: 'ring-2',
+                    name: 'Silver Loop',
+                    type: 'ACCESSORY',
+                    rarity: { name: 'Rare', color: '#0070dd', multiplier: 2.0 },
+                    slot: 'ring',
+                    level: 12,
+                    stats: { vitality: 4 }
+                }
+            }
+        };
+        const inventory = createInventory(player);
+
+        inventory.showItemTooltip({
+            id: 'ring-3',
+            name: 'Bloodsign Ring',
+            type: 'ACCESSORY',
+            rarity: { name: 'Uncommon', color: '#1eff00', multiplier: 1.5 },
+            slot: 'ring',
+            level: 11,
+            stack: 1,
+            stats: { strength: 3 }
+        }, 10, 10);
+
+        expect(document.getElementById('stat-tooltip-desc').innerHTML).toContain('likely upgrade for Ring 1');
+        expect(document.getElementById('stat-tooltip-desc').innerHTML).toContain('Hold Shift to compare with Copper Band in Ring 1');
+    });
 });
