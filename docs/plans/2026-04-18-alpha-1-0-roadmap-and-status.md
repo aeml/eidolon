@@ -12,15 +12,15 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.23.0`
+- Current in-game displayed version: `Alpha 0.23.1`
 - `0.21` is closed out and accepted
-- `0.22` is in progress and has shipped meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance work
+- `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
 - The biggest remaining alpha-wide risks are multiplayer smoothness, remote-action replication quality, server/client architectural concentration, missing social depth, missing guilds, and missing PvP
 
 ## Where we are now
 
-### Shipped through `0.23.0`
+### Shipped through `0.23.1`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -45,6 +45,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.22.20`: post-level-30 and post-level-100 town states now point players toward the right next loop instead of going quiet
 - `0.22.21`: release-review pass marks `0.22` feature-complete in code and limits further `0.22` work to live-QA findings only
 - `0.23.0`: class-select and skill-tree presentation now do a better job of selling class fantasy and branch-role identity
+- `0.23.1`: branch cards now explain each spec's role, preferred loop, and strength profile more clearly
 
 ### What `0.22` has clearly accomplished already
 
@@ -156,7 +157,7 @@ Recommended next step:
 Current status:
 
 - `0.22` is closed for planned implementation work
-- `0.23.0` is now the active version line
+- `0.23.1` is now the active version line
 
 ### `0.22` actionable implementation checklist
 
@@ -307,15 +308,15 @@ Suggested milestone slices:
 - `0.23.3`: forge, gems, respec, and buildcraft coherence pass
 - `0.23.4`: reward-excitement polish, balance pass, and release QA
 
-### `0.23.0` current slice
+### `0.23.1` current slice
 
-Status: in progress
+Status: ready to ship
 
 Current focus:
 
-- class-select messaging should sell fantasy, not only ease-of-use
-- Skill Tree should explain each class role before the player starts reading node names
-- branch columns should communicate what combat role each path is built for
+- branch comparisons should explain how each spec actually wants to play
+- spec choice should communicate preferred loop, pressure pattern, and team role
+- the next buildcraft passes should build on a clearer fantasy baseline instead of vague branch names
 
 ## `0.24` - Dungeon and endgame depth
 

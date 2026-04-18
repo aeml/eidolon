@@ -82,33 +82,93 @@ export class SkillTreeUI {
             Fighter: {
                 summary: 'Frontline bruiser with durable engages, threat control, and a tank-to-brawler spec spread.',
                 branchRoles: {
-                    A: 'Shielded anchor that absorbs pressure and protects the group.',
-                    B: 'Control-heavy fighter that clusters enemies and manages space.',
-                    C: 'Aggressive off-tank that trades safety for momentum and damage.'
+                    A: {
+                        role: 'Shielded anchor that absorbs pressure and protects the group.',
+                        tag: 'Tank Core',
+                        wants: 'durability, group safety, clean pulls',
+                        excelsAt: 'holding packs, reducing incoming pressure, leading the frontline'
+                    },
+                    B: {
+                        role: 'Control-heavy fighter that clusters enemies and manages space.',
+                        tag: 'Control Tank',
+                        wants: 'positioning, grouping, disruption',
+                        excelsAt: 'setting up AoE kills, knockdowns, and enemy movement control'
+                    },
+                    C: {
+                        role: 'Aggressive off-tank that trades safety for momentum and damage.',
+                        tag: 'Bruiser',
+                        wants: 'pressure, tempo, offensive uptime',
+                        excelsAt: 'converting durability into damage and finishing weakened packs'
+                    }
                 }
             },
             Rogue: {
                 summary: 'Mobile skirmisher with burst, bleed setups, and utility-heavy control branches.',
                 branchRoles: {
-                    A: 'Assassin burst path focused on marks, bleeds, and finisher damage.',
-                    B: 'Ranged knife specialist built around repeated projectile pressure.',
-                    C: 'Utility rogue that slows, poisons, traps, and creates openings.'
+                    A: {
+                        role: 'Assassin burst path focused on marks, bleeds, and finisher damage.',
+                        tag: 'Burst Assassin',
+                        wants: 'priority targets, setup windows, bleed finishers',
+                        excelsAt: 'deleting marked enemies and cashing out damage spikes'
+                    },
+                    B: {
+                        role: 'Ranged knife specialist built around repeated projectile pressure.',
+                        tag: 'Throw Specialist',
+                        wants: 'spacing, repeated casts, ranged uptime',
+                        excelsAt: 'keeping constant pressure while staying mobile and safe'
+                    },
+                    C: {
+                        role: 'Utility rogue that slows, poisons, traps, and creates openings.',
+                        tag: 'Control Skirmisher',
+                        wants: 'tempo, debuffs, trap setups',
+                        excelsAt: 'creating chaos, peeling, and opening enemies for the party'
+                    }
                 }
             },
             Wizard: {
                 summary: 'Ranged spellcaster with explosive AoE, single-target nukes, and battlefield control tools.',
                 branchRoles: {
-                    A: 'Pyromancer path for large-area fire damage and explosive clears.',
-                    B: 'Focused caster path built for single-target spikes and beam pressure.',
-                    C: 'Control mage path that repositions fights and supports party tempo.'
+                    A: {
+                        role: 'Pyromancer path for large-area fire damage and explosive clears.',
+                        tag: 'AoE Caster',
+                        wants: 'packed enemies, chain clears, explosive setups',
+                        excelsAt: 'burning grouped packs and controlling space with raw damage'
+                    },
+                    B: {
+                        role: 'Focused caster path built for single-target spikes and beam pressure.',
+                        tag: 'Boss Caster',
+                        wants: 'priority targets, channel windows, damage focus',
+                        excelsAt: 'melting elites and bosses with concentrated spell pressure'
+                    },
+                    C: {
+                        role: 'Control mage path that repositions fights and supports party tempo.',
+                        tag: 'Control Mage',
+                        wants: 'fight shaping, combo setups, cooldown support',
+                        excelsAt: 'pulling packs together, protecting the group, and enabling combos'
+                    }
                 }
             },
             Cleric: {
                 summary: 'Hybrid support with healing, radiant brawling, and teamwide buff/debuff utility.',
                 branchRoles: {
-                    A: 'Pure healer path focused on recovery, cleansing, and rescue tools.',
-                    B: 'Battle cleric path that mixes radiant pressure with sustained support.',
-                    C: 'Buff/debuff support path that amplifies allies and weakens targets.'
+                    A: {
+                        role: 'Pure healer path focused on recovery, cleansing, and rescue tools.',
+                        tag: 'Pure Healer',
+                        wants: 'stability, recovery, team survival',
+                        excelsAt: 'saving runs, recovering mistakes, and smoothing incoming damage'
+                    },
+                    B: {
+                        role: 'Battle cleric path that mixes radiant pressure with sustained support.',
+                        tag: 'Battle Support',
+                        wants: 'midrange pressure, sustained uptime, hybrid play',
+                        excelsAt: 'contributing damage without giving up core support presence'
+                    },
+                    C: {
+                        role: 'Buff/debuff support path that amplifies allies and weakens targets.',
+                        tag: 'Party Support',
+                        wants: 'team synergy, buffs, enemy weakness windows',
+                        excelsAt: 'making the whole party hit harder, survive longer, and chain control'
+                    }
                 }
             }
         };
@@ -265,8 +325,44 @@ export class SkillTreeUI {
             branchRole.style.color = isBranchSelected ? '#d8ffd8' : '#b8c2d3';
             branchRole.style.margin = '4px 0 10px 0';
             branchRole.style.lineHeight = '1.45';
-            branchRole.textContent = identity.branchRoles?.[branchKey] || 'Pick the branch that matches your preferred combat role.';
+            const roleCopy = identity.branchRoles?.[branchKey];
+            branchRole.textContent = roleCopy?.role || 'Pick the branch that matches your preferred combat role.';
             branchDiv.appendChild(branchRole);
+
+            if (roleCopy) {
+                const branchMeta = document.createElement('div');
+                branchMeta.style.display = 'flex';
+                branchMeta.style.flexDirection = 'column';
+                branchMeta.style.gap = '4px';
+                branchMeta.style.margin = '0 0 10px 0';
+                branchMeta.style.padding = '8px';
+                branchMeta.style.border = '1px solid rgba(255,255,255,0.08)';
+                branchMeta.style.background = isBranchSelected ? 'rgba(24, 46, 24, 0.42)' : 'rgba(20, 24, 32, 0.36)';
+                branchMeta.style.borderRadius = '6px';
+
+                const metaTag = document.createElement('div');
+                metaTag.style.fontSize = '10px';
+                metaTag.style.fontWeight = 'bold';
+                metaTag.style.letterSpacing = '0.08em';
+                metaTag.style.textTransform = 'uppercase';
+                metaTag.style.color = isBranchSelected ? '#9cff9c' : '#ffd700';
+                metaTag.textContent = roleCopy.tag;
+
+                const wants = document.createElement('div');
+                wants.style.fontSize = '11px';
+                wants.style.color = '#d7deeb';
+                wants.textContent = `Wants: ${roleCopy.wants}`;
+
+                const excels = document.createElement('div');
+                excels.style.fontSize = '11px';
+                excels.style.color = '#9eb5d5';
+                excels.textContent = `Excels at: ${roleCopy.excelsAt}`;
+
+                branchMeta.appendChild(metaTag);
+                branchMeta.appendChild(wants);
+                branchMeta.appendChild(excels);
+                branchDiv.appendChild(branchMeta);
+            }
 
             // Add 4 tiers (Tier 2 to 5)
             for (let i = 2; i <= 5; i++) {

@@ -427,7 +427,7 @@ describe('menu polish regressions', () => {
         expect(Number(backdrop.style.zIndex)).toBeLessThan(Number(settingsScreen.style.zIndex));
     });
 
-    test('skill tree surfaces class identity and branch role summaries', () => {
+    test('skill tree surfaces class identity and branch role cards', () => {
         buildStaticWindowDom();
         const skillTree = new SkillTreeUI({
             getLastPlayer: () => ({
@@ -448,6 +448,11 @@ describe('menu polish regressions', () => {
         expect(document.getElementById('skill-tree-content').textContent).toContain('Focused caster path built for single-target spikes');
         expect(document.getElementById('skill-tree-content').textContent).toContain('Control mage path that repositions fights');
         expect(document.getElementById('skill-tree-content').textContent).toContain('Single-Target Caster (Active)');
+        expect(document.getElementById('skill-tree-content').textContent).toContain('AoE Caster');
+        expect(document.getElementById('skill-tree-content').textContent).toContain('Boss Caster');
+        expect(document.getElementById('skill-tree-content').textContent).toContain('Control Mage');
+        expect(document.getElementById('skill-tree-content').textContent).toContain('Wants: priority targets, channel windows, damage focus');
+        expect(document.getElementById('skill-tree-content').textContent).toContain('Excels at: melting elites and bosses with concentrated spell pressure');
     });
 
     test('escape closes static modal first and keeps esc menu open', () => {
