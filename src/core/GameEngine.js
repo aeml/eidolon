@@ -312,17 +312,61 @@ export class GameEngine {
         return text.toUpperCase();
     }
 
+    getRemoteActionSourceLabel(entity = null) {
+        const raw = String(entity?.name || entity?.displayName || entity?.subType || entity?.constructor?.name || 'ALLY').trim();
+        if (!raw) return 'ALLY';
+        return raw.toUpperCase();
+    }
+
+    buildRemoteActionReadabilityText(entity, actionLabel) {
+        const action = this.formatRemoteActionLabel(actionLabel);
+        if (!action) return '';
+        return `${this.getRemoteActionSourceLabel(entity)}: ${action}`;
+    }
+
     showRemoteActionReadability(sourceEntity, skillName) {
         if (!sourceEntity?.position || !skillName || !this.floatingTextManager) return false;
         if (!this.isPlayerClassEntity(sourceEntity)) return false;
         if (!this.isPositionNearPlayer(sourceEntity.position, 34)) return false;
 
-        const label = this.formatRemoteActionLabel(skillName);
+        const label = this.buildRemoteActionReadabilityText(sourceEntity, skillName);
         if (!label) return false;
         const key = `remote-action-${sourceEntity.id || sourceEntity.name}-${label}`;
         if (!this.canShowThrottledReadabilityEvent(key, 750)) return false;
 
         this.floatingTextManager.spawn(label, sourceEntity.position, '#8fe7ff', '18px');
+        return true;
+    }
+
+    showRemoteStateReadability(entity, nextState, previousState = '') {
+        if (!entity?.position || !this.floatingTextManager) return false;
+        if (!this.isPlayerClassEntity(entity)) return false;
+        if (!this.isPositionNearPlayer(entity.position, 34)) return false;
+
+        const state = String(nextState || '').trim().toUpperCase();
+        const previous = String(previousState || '').trim().toUpperCase();
+        if (!state || state === previous) return false;
+
+        let actionLabel = '';
+        let color = '#8fe7ff';
+        let fontSize = '16px';
+
+        if (state === 'JUMPING') {
+            actionLabel = 'JUMP';
+            color = '#d3f2ff';
+        } else if (state === 'ATTACKING') {
+            actionLabel = 'ATTACK';
+            color = '#ffd36b';
+        } else {
+            return false;
+        }
+
+        const label = this.buildRemoteActionReadabilityText(entity, actionLabel);
+        if (!label) return false;
+        const key = `remote-state-${entity.id || entity.name}-${state}`;
+        if (!this.canShowThrottledReadabilityEvent(key, state === 'JUMPING' ? 650 : 500)) return false;
+
+        this.floatingTextManager.spawn(label, entity.position, color, fontSize);
         return true;
     }
 
@@ -1768,6 +1812,7 @@ export class GameEngine {
      */
     syncRemoteEntity(remoteEntity, pData) {
         const previousRemotePosition = remoteEntity.position?.clone?.() || new THREE.Vector3();
+        const previousRemoteState = remoteEntity.state || '';
 
         // --- Position / Interpolation ---
         if (pData.type === 'Projectile') {
@@ -1863,6 +1908,7 @@ export class GameEngine {
             } else if (pData.state === 'ATTACKING' && remoteEntity.updateState) {
                 remoteEntity.updateState(pData.state);
             }
+            this.showRemoteStateReadability(remoteEntity, pData.state, previousRemoteState);
 
             // Rotation
             if (pData.rotation !== undefined) {

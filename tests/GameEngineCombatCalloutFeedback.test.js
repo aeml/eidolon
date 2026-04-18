@@ -263,6 +263,7 @@ describe('GameEngine encounter callouts', () => {
         const engine = Object.create(GameEngine.prototype);
         const remotePlayer = {
             id: 'remote-1',
+            name: 'Ayla',
             position: new THREE.Vector3(8, 0, 0),
             state: 'IDLE',
             isRemote: true,
@@ -290,7 +291,7 @@ describe('GameEngine encounter callouts', () => {
 
         expect(engine.abilityController.triggerRemoteAbilityVisuals).toHaveBeenCalledWith(remotePlayer, 'Fireball', 12, 3);
         expect(remotePlayer.updateState).toHaveBeenCalledWith('ATTACKING');
-        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('FIREBALL', remotePlayer.position, '#8fe7ff', '18px');
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: FIREBALL', remotePlayer.position, '#8fe7ff', '18px');
     });
 
     test('shows nearby remote-player damage numbers in crowded fights without requiring the local player to be source or target', () => {
@@ -337,6 +338,7 @@ describe('GameEngine encounter callouts', () => {
         const engine = Object.create(GameEngine.prototype);
         const remotePlayer = {
             id: 'remote-2',
+            name: 'Doran',
             position: new THREE.Vector3(120, 0, 0),
             state: 'IDLE',
             isRemote: true,
@@ -361,5 +363,120 @@ describe('GameEngine encounter callouts', () => {
         });
 
         expect(engine.floatingTextManager.spawn).not.toHaveBeenCalled();
+    });
+
+    test('shows a nearby remote-player jump label when replicated state enters jumping', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remotePlayer = {
+            id: 'remote-jump',
+            name: 'Mira',
+            position: new THREE.Vector3(6, 0, 0),
+            targetServerPosition: null,
+            targetServerRotation: undefined,
+            rotation: new THREE.Quaternion(),
+            state: 'IDLE',
+            isCharging: false,
+            isDead: false,
+            deadTimer: 0,
+            isRemote: true,
+            constructor: { name: 'Rogue' },
+            mesh: {
+                visible: true,
+                position: new THREE.Vector3(6, 0, 0),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            },
+            stats: { hp: 100, maxHp: 100, mana: 10, maxMana: 10, speed: 3, attackSpeed: 1 },
+            updateState: jest.fn(function updateState(nextState) {
+                this.state = nextState;
+            })
+        };
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.remotePlayers = new Map();
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remotePlayer, {
+            id: 'remote-jump',
+            type: 'Player',
+            state: 'JUMPING',
+            x: 10,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+
+        expect(remotePlayer.updateState).toHaveBeenCalledWith('JUMPING');
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('MIRA: JUMP', remotePlayer.position, '#d3f2ff', '16px');
+    });
+
+    test('shows a nearby remote-player attack label when replicated state enters attacking', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remotePlayer = {
+            id: 'remote-attack',
+            name: 'Bram',
+            position: new THREE.Vector3(7, 0, 0),
+            targetServerPosition: null,
+            targetServerRotation: undefined,
+            rotation: new THREE.Quaternion(),
+            state: 'IDLE',
+            isCharging: false,
+            isDead: false,
+            deadTimer: 0,
+            isRemote: true,
+            constructor: { name: 'Fighter' },
+            mesh: null,
+            stats: { hp: 100, maxHp: 100, mana: 10, maxMana: 10, speed: 3, attackSpeed: 1 },
+            updateState: jest.fn(function updateState(nextState) {
+                this.state = nextState;
+            })
+        };
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.renderSystem = { effectGroup: new THREE.Group() };
+        engine.effects = [];
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remotePlayer, {
+            id: 'remote-attack',
+            type: 'Player',
+            state: 'ATTACKING',
+            x: 7,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+
+        expect(remotePlayer.updateState).toHaveBeenCalledWith('ATTACKING');
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('BRAM: ATTACK', remotePlayer.position, '#ffd36b', '16px');
     });
 });

@@ -270,7 +270,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.17</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.18</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -494,6 +494,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.22.18" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.18 (Nearby remote players now read more clearly in motion)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Named remote actions:</strong> Nearby remote-player abilities now show named action labels, and nearby remote jumps and basic attacks now surface readable motion cues instead of blending into movement noise.</li>
+                        <li><strong>Remote motion clarity:</strong> Replicated attack and jump states now help broadcast what nearby players are actually doing, not just where they are standing.</li>
+                        <li><strong>Spam control:</strong> Remote readability labels stay nearby-only and throttled so the extra feedback helps without turning multiplayer fights into constant text spam.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for named remote ability labels, nearby remote jump and attack labels, far-away suppression, and 0.22.18 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.22.17" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.17 (Nearby multiplayer combat reads better in crowded fights)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
