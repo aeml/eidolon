@@ -446,6 +446,9 @@ describe('Dungeon room clear feedback', () => {
         expect(chatMessages[2]).toContain('+120 gold');
         expect(chatMessages[2]).toContain('+450 XP');
         expect(chatMessages[2]).toContain('Path opened to the boss room');
+        expect(document.getElementById('combat-intent-name').textContent).toContain('Room Cleared: Forgotten Hall');
+        expect(document.getElementById('combat-intent-meta').textContent).toContain('Verdant Bastion Catacombs');
+        expect(document.getElementById('combat-intent-status').textContent).toContain('Path opened to the boss room');
     });
 
     test('UIManager.showRoomClearReward surfaces elite room urgency in messaging', () => {

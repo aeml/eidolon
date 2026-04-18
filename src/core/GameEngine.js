@@ -164,6 +164,7 @@ export class GameEngine {
         this.lastRenderCharacterSheetSignature = '';
         this.lastRenderWorldMapSignature = '';
         this.onboardingRecoveryContext = null;
+        this.readabilityFeedbackTimestamps = new Map();
 
         // Entity Creation Throttling
         this.entityCreationQueue = [];
@@ -267,6 +268,58 @@ export class GameEngine {
             this.clearOnboardingRecoveryContext();
             this.uiManager?.updateJournal?.(Array.isArray(this.player?.quests) ? this.player.quests : []);
         }
+    }
+
+    showReadabilityFeedback(key, callout = {}, cooldownMs = 900) {
+        if (!key || !this.uiManager?.showCombatCallout) return false;
+        const now = Date.now();
+        const lastShown = this.readabilityFeedbackTimestamps.get(key) || 0;
+        if (now - lastShown < cooldownMs) return false;
+
+        this.readabilityFeedbackTimestamps.set(key, now);
+        this.uiManager.showCombatCallout({
+            tone: 'warning',
+            duration: 1.6,
+            ...callout
+        });
+        return true;
+    }
+
+    getLevelUpReadabilityHint(previousLevel, nextLevel) {
+        if (previousLevel < 30 && nextLevel >= 30) {
+            return 'All base dungeons are now unlocked. Talk to the Dungeon Guide in town when you are ready.';
+        }
+        if (previousLevel < 100 && nextLevel >= 100) {
+            return 'Heroic and Mythic are now unlocked. Push back into the dungeon menu for endgame runs.';
+        }
+        return 'Open Skills (K) and review your build before pushing deeper.';
+    }
+
+    handleLevelUpFeedback(previousLevel, nextLevel) {
+        if (!this.player || previousLevel >= nextLevel) return;
+
+        const effect = new LevelUpEffect(this.renderSystem.effectGroup, this.player.position);
+        this.effects.push(effect);
+
+        this.floatingTextManager.spawn(
+            'LEVEL UP!',
+            new THREE.Vector3(this.player.position.x, this.player.position.y + 2, this.player.position.z),
+            '#ffd700'
+        );
+
+        const hint = this.getLevelUpReadabilityHint(previousLevel, nextLevel);
+        this.uiManager?.showCombatCallout?.({
+            title: `Level ${nextLevel} Reached`,
+            tone: nextLevel >= 100 ? 'boss' : 'support',
+            metaText: 'Level Up',
+            subtitle: hint,
+            duration: 2.8
+        });
+
+        this.network.send('chat', {
+            message: `* has reached level ${nextLevel}! *`,
+            sender: this.username || 'Player'
+        });
     }
 
     syncDeathScreen() {
@@ -1171,22 +1224,7 @@ export class GameEngine {
                             // Only trigger if we have synced at least once (avoid login level up)
                             if (this.player.hasSyncedLevel) {
                                 console.log(`Level Up! ${this.player.level} -> ${pData.level}`);
-                                
-                                // Trigger Effect
-                                const effect = new LevelUpEffect(this.renderSystem.effectGroup, this.player.position);
-                                this.effects.push(effect);
-                                
-                                // Floating Text
-                                this.floatingTextManager.spawn("LEVEL UP!", 
-                                    new THREE.Vector3(this.player.position.x, this.player.position.y + 2, this.player.position.z), 
-                                    '#ffd700' // Gold
-                                );
-
-                                // Chat Notification
-                                this.network.send('chat', {
-                                    message: `* has reached level ${pData.level}! *`,
-                                    sender: this.username || "Player"
-                                });
+                                this.handleLevelUpFeedback(this.player.level, pData.level);
                             }
                             this.player.level = pData.level;
                         } else {
@@ -1522,20 +1560,7 @@ export class GameEngine {
                         if (this.player.level < pData.level) {
                             if (this.player.hasSyncedLevel) {
                                 console.log(`Level Up! ${this.player.level} -> ${pData.level}`);
-
-                                const effect = new LevelUpEffect(this.renderSystem.effectGroup, this.player.position);
-                                this.effects.push(effect);
-
-                                this.floatingTextManager.spawn(
-                                    "LEVEL UP!",
-                                    new THREE.Vector3(this.player.position.x, this.player.position.y + 2, this.player.position.z),
-                                    '#ffd700'
-                                );
-
-                                this.network.send('chat', {
-                                    message: `* has reached level ${pData.level}! *`,
-                                    sender: this.username || "Player"
-                                });
+                                this.handleLevelUpFeedback(this.player.level, pData.level);
                             }
                             this.player.level = pData.level;
                         } else {
@@ -3541,6 +3566,22 @@ export class GameEngine {
         const range = this.getInteractionRangeForEntity(entity);
 
         if (dist > range) {
+            const label = this.getInteractableEntityLabel(entity) || entity.name || 'target';
+            const tone = this.isHostileActorTarget(entity) ? 'warning' : 'support';
+            const title = this.isHostileActorTarget(entity) ? 'Move into range' : 'Move closer';
+            const subtitle = this.isHostileActorTarget(entity)
+                ? `Basic attacks need ${range.toFixed(1)}m. Closing on ${label}.`
+                : `${label} is ${dist.toFixed(1)}m away. Moving into interaction range.`;
+            this.showReadabilityFeedback(
+                `interact-range-${this.isHostileActorTarget(entity) ? 'hostile' : label}`,
+                {
+                    title,
+                    tone,
+                    metaText: `${dist.toFixed(1)}m away`,
+                    subtitle
+                },
+                900
+            );
             // Flatten move target
             const target = entity.position.clone();
             target.y = this.player.position.y;
@@ -4069,6 +4110,17 @@ export class GameEngine {
                             this.player.attack(this.hoveredEntity);
                         }
                     } else {
+                        const targetLabel = this.hoveredEntity.name || this.hoveredEntity.displayName || this.hoveredEntity.subType || 'target';
+                        this.showReadabilityFeedback(
+                            'basic-attack-range',
+                            {
+                                title: 'Move into range',
+                                tone: 'warning',
+                                metaText: `${dist.toFixed(1)}m away`,
+                                subtitle: `Basic attacks need ${range.toFixed(1)}m. Closing on ${targetLabel}.`
+                            },
+                            900
+                        );
                         this.player.move(this.hoveredEntity.position);
                     }
                 } else {

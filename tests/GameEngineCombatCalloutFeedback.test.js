@@ -200,4 +200,62 @@ describe('GameEngine encounter callouts', () => {
             subtitle: 'You are in the boss room — commit and survive'
         }));
     });
+
+    test('moveToAndInteract surfaces a move-into-range callout for hostile targets', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = {
+            position: new THREE.Vector3(0, 0, 0),
+            move: jest.fn()
+        };
+        engine.abilityController = {
+            pendingAbilityTarget: null,
+            pendingAbilitySkill: null
+        };
+        engine.pendingInteraction = null;
+        engine.getInteractionRangeForEntity = jest.fn(() => 4.0);
+        engine.getInteractableEntityLabel = jest.fn(() => 'Skeleton Archer');
+        engine.isHostileActorTarget = jest.fn(() => true);
+        engine.showReadabilityFeedback = jest.fn();
+        engine.moveToAndInteract = GameEngine.prototype.moveToAndInteract;
+
+        engine.moveToAndInteract({
+            id: 'enemy-1',
+            name: 'Skeleton Archer',
+            position: new THREE.Vector3(10, 0, 0)
+        });
+
+        expect(engine.showReadabilityFeedback).toHaveBeenCalledWith(
+            'interact-range-hostile',
+            expect.objectContaining({
+                title: 'Move into range',
+                metaText: '10.0m away'
+            }),
+            900
+        );
+        expect(engine.player.move).toHaveBeenCalled();
+    });
+
+    test('handleLevelUpFeedback announces milestone unlock guidance', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = {
+            position: new THREE.Vector3(0, 0, 0)
+        };
+        engine.renderSystem = { effectGroup: new THREE.Group() };
+        engine.effects = [];
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.uiManager = { showCombatCallout: jest.fn() };
+        engine.network = { send: jest.fn() };
+        engine.username = 'tester';
+        engine.handleLevelUpFeedback = GameEngine.prototype.handleLevelUpFeedback;
+        engine.getLevelUpReadabilityHint = GameEngine.prototype.getLevelUpReadabilityHint;
+
+        engine.handleLevelUpFeedback(29, 30);
+
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('LEVEL UP!', expect.any(THREE.Vector3), '#ffd700');
+        expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
+            title: 'Level 30 Reached',
+            subtitle: expect.stringContaining('All base dungeons are now unlocked')
+        }));
+        expect(engine.network.send).toHaveBeenCalledWith('chat', expect.objectContaining({ message: expect.stringContaining('level 30') }));
+    });
 });

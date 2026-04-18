@@ -264,6 +264,16 @@ export class AbilityController {
                 });
                 console.log(`Buffered ability: ${skillNameOverride || 'Primary'} (CD)`);
             }
+            engine.showReadabilityFeedback?.(
+                `ability-cooldown-${skillNameOverride || player.abilityName || 'primary'}`,
+                {
+                    title: 'Ability cooling down',
+                    tone: 'warning',
+                    metaText: 'Cooldown',
+                    subtitle: `${skillNameOverride || player.abilityName || 'Ability'} is not ready yet.`
+                },
+                700
+            );
             return;
         }
 
@@ -282,6 +292,16 @@ export class AbilityController {
                 : player.abilityManaCost;
         const cost = manaCostBase * (1 - (player.stats.manaCostReduction || 0));
         if (player.stats.mana < cost) {
+            engine.showReadabilityFeedback?.(
+                `ability-mana-${skillNameOverride || player.abilityName || 'primary'}`,
+                {
+                    title: 'Not enough mana',
+                    tone: 'warning',
+                    metaText: 'Spell blocked',
+                    subtitle: `${skillNameOverride || player.abilityName || 'Ability'} needs more mana before you can cast it.`
+                },
+                900
+            );
             return;
         }
         
@@ -392,6 +412,17 @@ export class AbilityController {
                 this.pendingAbilityTarget = engine.hoveredEntity;
                 this.pendingAbilitySkill = skillNameOverride || player.abilityName;
                 engine.pendingInteraction = null;
+                const targetName = engine.hoveredEntity.name || engine.hoveredEntity.displayName || engine.hoveredEntity.subType || 'target';
+                engine.showReadabilityFeedback?.(
+                    `ability-range-${skillNameOverride || player.abilityName || 'primary'}`,
+                    {
+                        title: 'Move into range',
+                        tone: 'warning',
+                        metaText: `${dist.toFixed(1)}m away`,
+                        subtitle: `${skillNameOverride || player.abilityName || 'Ability'} needs ${abilityRange.toFixed(1)}m. Closing on ${targetName}.`
+                    },
+                    900
+                );
                 const direction = new THREE.Vector3()
                     .subVectors(engine.hoveredEntity.position, player.position)
                     .normalize();

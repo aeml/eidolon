@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.22.15 for the latest shipped starter-loot-guidance slice', () => {
-        expect(indexHtml).toContain('Alpha 0.22.15');
+    test('advances the login screen to alpha 0.22.16 for the latest shipped combat-readability slice', () => {
+        expect(indexHtml).toContain('Alpha 0.22.16');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -43,16 +43,17 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.22.15', () => {
-        expect(indexHtml).toContain('Patch 0.22.15');
-        expect(indexHtml).toContain('Inventory, start-flow, and town guidance now explain that obvious Common gear is usually vendor cleanup while better drops are worth checking before selling');
-        expect(indexHtml).toContain('Shards, Hearts, and Gems are now called out more explicitly as forge materials worth saving instead of accidental vendor trash');
-        expect(indexHtml).toContain('Merchant, Stash, Forge, and Trading House guidance now do a cleaner job of telling you what belongs where during the first hour');
-        expect(indexHtml).toContain('Added regression coverage for starter inventory guidance, starter recovery guidance, and 0.22.15 version presentation');
+    test('includes the latest player-facing patch notes entry for 0.22.16', () => {
+        expect(indexHtml).toContain('Patch 0.22.16');
+        expect(indexHtml).toContain('Out-of-range attacks, out-of-range casts, cooldown attempts, and no-mana casts now surface explicit combat callouts');
+        expect(indexHtml).toContain('Level-up moments now call out milestone unlocks more clearly, including the dungeon unlock at level 30 and endgame difficulty unlocks at level 100');
+        expect(indexHtml).toContain('Boss rewards and room-clear rewards now surface through readable combat callouts as well as chat');
+        expect(indexHtml).toContain('Added regression coverage for failed-cast readability, move-into-range combat feedback, reward callouts, and 0.22.16 version presentation');
     });
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.22.16');
         expect(indexHtml).toContain('Patch 0.22.15');
         expect(indexHtml).toContain('Patch 0.22.14');
         expect(indexHtml).toContain('Patch 0.22.13');
@@ -81,6 +82,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.22.16"');
         expect(indexHtml).toContain('data-version="0.22.15"');
         expect(indexHtml).toContain('data-version="0.22.14"');
         expect(indexHtml).toContain('data-version="0.22.13"');

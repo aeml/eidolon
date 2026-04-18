@@ -214,6 +214,9 @@ describe('Dungeon reward feedback', () => {
         expect(chatMessages[4]).toContain('1 gem');
         expect(chatMessages[4]).toContain('2 hearts');
         expect(chatMessages[5]).toContain('Return to the entrance to leave the dungeon.');
+        expect(document.getElementById('combat-intent-name').textContent).toContain('Boss Defeated: Zephyrion');
+        expect(document.getElementById('combat-intent-meta').textContent).toContain('Tempest Spire');
+        expect(document.getElementById('combat-intent-status').textContent).toContain('Dungeon complete');
     });
 
     test('GameEngine reward_summary handling spawns floating text and forwards summary to UI', () => {

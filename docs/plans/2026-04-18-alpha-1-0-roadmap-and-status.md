@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.22.15`
+- Current in-game displayed version: `Alpha 0.22.16`
 - `0.21` is closed out and accepted
 - `0.22` is in progress and has shipped meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance work
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.22.15`
+### Shipped through `0.22.16`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -38,6 +38,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.22.13`: cleared dungeons read like extraction instead of fake turn-in
 - `0.22.14`: pre-fight boss objectives tell the player to commit before the encounter goes live
 - `0.22.15`: starter loot, forge-material, and town-service guidance better explain what to vendor, what to keep, and what belongs in the Forge
+- `0.22.16`: failed combat attempts, level-up milestones, and reward moments now explain themselves more clearly in live play
 
 ### What `0.22` has clearly accomplished already
 
@@ -89,8 +90,8 @@ Done:
 
 Still remains:
 
-- [ ] Clearer out-of-range, blocked, and failed-interaction messaging in normal play
-- [ ] Stronger level-up, unlock, and reward feedback during the first hour
+- [x] Clearer out-of-range, blocked, and failed-interaction messaging in normal play
+- [x] Stronger level-up, unlock, and reward feedback during the first hour
 - [ ] Better visibility of combat outcomes in crowded multiplayer situations
 - [ ] A deliberate pass on remote-player readability so other players' actions are easier to parse
 

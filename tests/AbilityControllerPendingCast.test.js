@@ -110,4 +110,74 @@ describe('AbilityController pending target casting', () => {
         expect(player.useAbility).not.toHaveBeenCalled();
         expect(engine.network.send).not.toHaveBeenCalled();
     });
+
+    test('shows a readability callout when a cast fails for lack of mana', () => {
+        const player = createPlayer();
+        player.abilityManaCost = 20;
+        player.stats = { mana: 5, manaCostReduction: 0 };
+        const engine = {
+            player,
+            isMobile: false,
+            isMultiplayer: false,
+            uiManager: { isEscMenuOpen: false, isPatchNotesOpen: false, reportScreen: { style: { display: 'none' } } },
+            showReadabilityFeedback: jest.fn(),
+            hoveredEntity: null,
+            inputManager: { getGroundIntersection: jest.fn(() => new THREE.Vector3(4, 0, 0)) }
+        };
+
+        const controller = new AbilityController(engine);
+        controller.performAbility(new THREE.Vector3(4, 0, 0), 'Fireball');
+
+        expect(engine.showReadabilityFeedback).toHaveBeenCalledWith(
+            'ability-mana-Fireball',
+            expect.objectContaining({
+                title: 'Not enough mana',
+                metaText: 'Spell blocked'
+            }),
+            900
+        );
+        expect(player.useSkill).not.toHaveBeenCalled();
+        expect(player.useAbility).not.toHaveBeenCalled();
+    });
+
+    test('shows a readability callout when a targeted cast needs more range', () => {
+        const player = createPlayer();
+        player.move = jest.fn();
+        player.abilityManaCost = 20;
+        player.stats = { mana: 100, manaCostReduction: 0 };
+        const target = {
+            id: 'enemy-4',
+            name: 'Skeleton Archer',
+            isActive: true,
+            state: 'IDLE',
+            position: new THREE.Vector3(20, 0, 0)
+        };
+        const engine = {
+            player,
+            isMobile: false,
+            isMultiplayer: false,
+            uiManager: { isEscMenuOpen: false, isPatchNotesOpen: false, reportScreen: { style: { display: 'none' } } },
+            showReadabilityFeedback: jest.fn(),
+            hoveredEntity: target,
+            pendingInteraction: null,
+            inputManager: { getGroundIntersection: jest.fn(() => null) }
+        };
+
+        const controller = new AbilityController(engine);
+        jest.spyOn(controller, 'getAbilityCastRange').mockReturnValue(12.0);
+
+        controller.performAbility(null, 'Fireball');
+
+        expect(engine.showReadabilityFeedback).toHaveBeenCalledWith(
+            'ability-range-Fireball',
+            expect.objectContaining({
+                title: 'Move into range',
+                metaText: '20.0m away'
+            }),
+            900
+        );
+        expect(controller.pendingAbilityTarget).toBe(target);
+        expect(player.useSkill).not.toHaveBeenCalled();
+        expect(player.useAbility).not.toHaveBeenCalled();
+    });
 });

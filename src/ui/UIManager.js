@@ -629,19 +629,28 @@ export class UIManager {
     showRewardSummary(summary = {}) {
         if (!summary.title) return;
 
+        const subtitleLine = this.formatRewardSummarySubtitle(summary);
+        const completionLine = this.formatRewardSummaryCompletion(summary);
+        const { currencyLine, lootLine } = this.formatRewardSummary(summary);
+
+        this.showCombatCallout({
+            title: summary.title,
+            tone: 'support',
+            metaText: subtitleLine || 'Reward Summary',
+            subtitle: completionLine || currencyLine || lootLine || summary.exitHint || 'Dungeon rewards ready.',
+            duration: 2.4
+        });
+
         this.addChatMessage('Rewards', summary.title);
 
-        const subtitleLine = this.formatRewardSummarySubtitle(summary);
         if (subtitleLine) {
             this.addChatMessage('Rewards', subtitleLine);
         }
 
-        const completionLine = this.formatRewardSummaryCompletion(summary);
         if (completionLine) {
             this.addChatMessage('Rewards', completionLine);
         }
 
-        const { currencyLine, lootLine } = this.formatRewardSummary(summary);
         if (currencyLine) {
             this.addChatMessage('Rewards', currencyLine);
         }
@@ -655,11 +664,6 @@ export class UIManager {
 
     showRoomClearReward(summary = {}) {
         if (!summary.title) return;
-
-        this.addChatMessage('Room', summary.title);
-        if (summary.subtitle) {
-            this.addChatMessage('Room', summary.subtitle);
-        }
 
         const parts = [];
         if (summary.gold) parts.push(`+${summary.gold} gold`);
@@ -676,6 +680,20 @@ export class UIManager {
             parts.push(buffDetail);
         }
         if (summary.hint) parts.push(summary.hint);
+
+        this.showCombatCallout({
+            title: summary.title,
+            tone: summary.roomType === 'elite' ? 'warning' : 'support',
+            metaText: summary.subtitle || 'Room Clear',
+            subtitle: parts.join(' • ') || 'Room rewards secured.',
+            duration: 2.1
+        });
+
+        this.addChatMessage('Room', summary.title);
+        if (summary.subtitle) {
+            this.addChatMessage('Room', summary.subtitle);
+        }
+
         if (parts.length > 0) {
             this.addChatMessage('Room', parts.join(' • '));
         }
@@ -735,7 +753,7 @@ export class UIManager {
             this.combatIntentName.textContent = callout.title;
         }
         if (this.combatIntentMeta) {
-            this.combatIntentMeta.textContent = duration > 0 ? `Incoming in ${duration.toFixed(1)}s` : '';
+            this.combatIntentMeta.textContent = callout.metaText || (duration > 0 ? `Incoming in ${duration.toFixed(1)}s` : '');
         }
         if (this.combatIntentStatus) {
             this.combatIntentStatus.textContent = callout.subtitle || 'Brace for impact';
