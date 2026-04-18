@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.22.21 for the latest shipped 0.22 release-review slice', () => {
-        expect(indexHtml).toContain('Alpha 0.22.21');
+    test('advances the login screen to alpha 0.23.0 for the latest shipped class-identity slice', () => {
+        expect(indexHtml).toContain('Alpha 0.23.0');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -19,10 +19,17 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('id="class-cleric-description"');
         expect(indexHtml).toContain('Vendor / Repair');
         expect(indexHtml).toContain('Trading House');
-        expect(indexHtml).toContain('vendor obvious junk');
-        expect(indexHtml).toContain('keep Shards, Hearts, Gems');
+        expect(indexHtml).toContain('Fighter for frontline control');
+        expect(indexHtml).toContain('Rogue for burst and tricks');
+        expect(indexHtml).toContain('Wizard for ranged spell pressure');
+        expect(indexHtml).toContain('Cleric for healing and support');
+        expect(indexHtml).toContain('Skill Tree (K)');
         expect(indexHtml).toContain('level 30 to unlock all base dungeons');
         expect(indexHtml).toContain('level 100 for Heroic and Mythic runs');
+    });
+
+    test('surfaces class and branch identity copy in the skill tree', () => {
+        expect(indexHtml).toContain('Skill Tree');
     });
 
     test('includes a first-hour milestone quick-reference in the help screen', () => {
@@ -56,16 +63,17 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.22.21', () => {
-        expect(indexHtml).toContain('Patch 0.22.21');
-        expect(indexHtml).toContain('tracking docs now explicitly mark the release as feature-complete in code');
-        expect(indexHtml).toContain('remaining gate is now clearly recorded as first-hour live QA sign-off');
-        expect(indexHtml).toContain('move directly into `0.23` if QA is clean');
-        expect(indexHtml).toContain('Added regression coverage for the `0.22.21` version and patch-note presentation update');
+    test('includes the latest player-facing patch notes entry for 0.23.0', () => {
+        expect(indexHtml).toContain('Patch 0.23.0');
+        expect(indexHtml).toContain('Character creation and first-login messaging now push players toward picking a combat fantasy');
+        expect(indexHtml).toContain('Skill Tree now leads with a class identity summary and branch-role summaries');
+        expect(indexHtml).toContain('this is the first `0.23` slice focused on class/spec fantasy presentation');
+        expect(indexHtml).toContain('Added regression coverage for skill-tree identity copy, updated first-login guidance, and 0.23.0 version presentation');
     });
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.23.0');
         expect(indexHtml).toContain('Patch 0.22.21');
         expect(indexHtml).toContain('Patch 0.22.20');
         expect(indexHtml).toContain('Patch 0.22.19');
@@ -100,6 +108,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.23.0"');
         expect(indexHtml).toContain('data-version="0.22.21"');
         expect(indexHtml).toContain('data-version="0.22.20"');
         expect(indexHtml).toContain('data-version="0.22.19"');

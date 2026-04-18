@@ -77,6 +77,63 @@ export class SkillTreeUI {
     // SKILL TREE RENDERING
     // ================================================================
 
+    getClassIdentityCopy(classType) {
+        const copy = {
+            Fighter: {
+                summary: 'Frontline bruiser with durable engages, threat control, and a tank-to-brawler spec spread.',
+                branchRoles: {
+                    A: 'Shielded anchor that absorbs pressure and protects the group.',
+                    B: 'Control-heavy fighter that clusters enemies and manages space.',
+                    C: 'Aggressive off-tank that trades safety for momentum and damage.'
+                }
+            },
+            Rogue: {
+                summary: 'Mobile skirmisher with burst, bleed setups, and utility-heavy control branches.',
+                branchRoles: {
+                    A: 'Assassin burst path focused on marks, bleeds, and finisher damage.',
+                    B: 'Ranged knife specialist built around repeated projectile pressure.',
+                    C: 'Utility rogue that slows, poisons, traps, and creates openings.'
+                }
+            },
+            Wizard: {
+                summary: 'Ranged spellcaster with explosive AoE, single-target nukes, and battlefield control tools.',
+                branchRoles: {
+                    A: 'Pyromancer path for large-area fire damage and explosive clears.',
+                    B: 'Focused caster path built for single-target spikes and beam pressure.',
+                    C: 'Control mage path that repositions fights and supports party tempo.'
+                }
+            },
+            Cleric: {
+                summary: 'Hybrid support with healing, radiant brawling, and teamwide buff/debuff utility.',
+                branchRoles: {
+                    A: 'Pure healer path focused on recovery, cleansing, and rescue tools.',
+                    B: 'Battle cleric path that mixes radiant pressure with sustained support.',
+                    C: 'Buff/debuff support path that amplifies allies and weakens targets.'
+                }
+            }
+        };
+
+        return copy[classType] || {
+            summary: 'Build around the branch fantasy that best matches how you want to play.',
+            branchRoles: {}
+        };
+    }
+
+    createIdentityCallout(classType) {
+        const identity = this.getClassIdentityCopy(classType);
+        const wrap = document.createElement('div');
+        wrap.style.margin = '0 0 12px 0';
+        wrap.style.padding = '10px 12px';
+        wrap.style.border = '1px solid rgba(255, 215, 0, 0.25)';
+        wrap.style.background = 'rgba(32, 24, 8, 0.45)';
+        wrap.style.borderRadius = '8px';
+        wrap.style.textAlign = 'center';
+        wrap.style.color = '#d9dfeb';
+        wrap.style.lineHeight = '1.5';
+        wrap.innerHTML = `<strong style="color:#ffd700;">${classType} Identity:</strong> ${identity.summary}`;
+        return wrap;
+    }
+
     renderSkillTree(classType) {
         if (!classType) return;
 
@@ -154,6 +211,7 @@ export class SkillTreeUI {
         header.style.margin = '5px 0';
         header.textContent = `${classType} Skill Tree`;
         this.skillTreeContent.appendChild(header);
+        this.skillTreeContent.appendChild(this.createIdentityCallout(classType));
 
         // Tier 1 (Starting Skill)
         if (treeData.Tier1) {
@@ -173,6 +231,7 @@ export class SkillTreeUI {
         container.className = 'skill-branches-container';
 
         const branches = ['A', 'B', 'C'];
+        const identity = this.getClassIdentityCopy(classType);
         branches.forEach(branchKey => {
             const branchData = treeData[`Branch${branchKey}`];
             if (!branchData) return;
@@ -200,6 +259,14 @@ export class SkillTreeUI {
                 title.appendChild(selectBtn);
             }
             branchDiv.appendChild(title);
+
+            const branchRole = document.createElement('div');
+            branchRole.style.fontSize = '12px';
+            branchRole.style.color = isBranchSelected ? '#d8ffd8' : '#b8c2d3';
+            branchRole.style.margin = '4px 0 10px 0';
+            branchRole.style.lineHeight = '1.45';
+            branchRole.textContent = identity.branchRoles?.[branchKey] || 'Pick the branch that matches your preferred combat role.';
+            branchDiv.appendChild(branchRole);
 
             // Add 4 tiers (Tier 2 to 5)
             for (let i = 2; i <= 5; i++) {

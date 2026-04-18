@@ -190,6 +190,7 @@ function buildStaticWindowDom() {
         <div id="party-panel"></div>
         <div id="skill-tree-window" style="display:none"></div>
         <button id="btn-close-skills"></button>
+        <div id="skill-tree-content"></div>
         <div id="menu-bar"></div>
         <button id="btn-menu-map"></button>
         <button id="btn-menu-social"></button>
@@ -424,6 +425,29 @@ describe('menu polish regressions', () => {
         expect(backdrop).not.toBeNull();
         expect(backdrop.parentElement).toBe(document.getElementById('ui-layer'));
         expect(Number(backdrop.style.zIndex)).toBeLessThan(Number(settingsScreen.style.zIndex));
+    });
+
+    test('skill tree surfaces class identity and branch role summaries', () => {
+        buildStaticWindowDom();
+        const skillTree = new SkillTreeUI({
+            getLastPlayer: () => ({
+                level: 25,
+                skillPoints: 2,
+                subType: 'Wizard',
+                selectedBranch: 'B',
+                unlockedSkills: ['Fireball']
+            }),
+            sendRespec: jest.fn()
+        });
+
+        skillTree.renderSkillTree('Wizard');
+
+        expect(document.getElementById('skill-tree-content').textContent).toContain('Wizard Identity:');
+        expect(document.getElementById('skill-tree-content').textContent).toContain('Ranged spellcaster with explosive AoE');
+        expect(document.getElementById('skill-tree-content').textContent).toContain('Pyromancer path for large-area fire damage');
+        expect(document.getElementById('skill-tree-content').textContent).toContain('Focused caster path built for single-target spikes');
+        expect(document.getElementById('skill-tree-content').textContent).toContain('Control mage path that repositions fights');
+        expect(document.getElementById('skill-tree-content').textContent).toContain('Single-Target Caster (Active)');
     });
 
     test('escape closes static modal first and keeps esc menu open', () => {

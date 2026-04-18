@@ -270,7 +270,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.22.21</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.23.0</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -278,8 +278,8 @@
                 <div class="window-header"><span>FIRST STEPS</span></div>
                 <div style="padding: 16px; display: flex; flex-direction: column; gap: 10px; text-align: left;">
                     <div id="start-flow-title" style="color: #ffd700; font-size: 20px; font-weight: bold;">Login to continue your run</div>
-                        <div id="start-flow-copy" style="color: #ddd; line-height: 1.5;">Returning players can jump straight back in. New players will pick a class, enter town, follow the quest tracker to their first objectives, vendor obvious junk, and keep Shards, Hearts, Gems, and genuinely strong drops.</div>
-                            <div id="start-flow-steps" style="color: #aaa; font-size: 14px; line-height: 1.6;">1. Login or register. 2. Enter world or create a character. 3. Open Quests (J), follow the objective tracker, vendor obvious junk, save forge materials, reach level 30 to unlock all base dungeons, and push to level 100 for Heroic and Mythic runs.</div>
+                        <div id="start-flow-copy" style="color: #ddd; line-height: 1.5;">Returning players can jump straight back in. New players should pick a class fantasy first: Fighter for frontline control, Rogue for burst and tricks, Wizard for ranged spell pressure, Cleric for healing and support. Then enter town, head to the Quest Giver by the Forge, and follow the quest tracker through the first combat and dungeon steps.</div>
+                            <div id="start-flow-steps" style="color: #aaa; font-size: 14px; line-height: 1.6;">1. Login or register. 2. Enter world or create a character. 3. Open Skill Tree (K) to review your branches, then use Quests (J), World Map (M), and the Quest Giver by the Forge to start your route. Vendor obvious junk, save forge materials, reach level 30 to unlock all base dungeons, and push to level 100 for Heroic and Mythic runs.</div>
                 </div>
             </div>
             
@@ -506,6 +506,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.23.0" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.23.0 (Class identity and branch fantasy now read more clearly)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Class-select identity:</strong> Character creation and first-login messaging now push players toward picking a combat fantasy, not just the safest starter pick.</li>
+                        <li><strong>Skill Tree identity:</strong> Skill Tree now leads with a class identity summary and branch-role summaries so each path reads like a distinct combat role before you unlock deeper nodes.</li>
+                        <li><strong>0.22 closure:</strong> `0.22` is now closed for planned implementation work, and this is the first `0.23` slice focused on class/spec fantasy presentation.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for skill-tree identity copy, updated first-login guidance, and 0.23.0 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.22.21" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.21 (0.22 is now feature-complete pending live QA sign-off)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

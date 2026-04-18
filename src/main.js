@@ -217,8 +217,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const showNewPlayerFlow = () => {
         updateStartFlow({
             title: 'Create your first character',
-            copy: 'Choose a class, enter town, head to the Quest Giver by the Forge, and follow the quest tracker through your first combat and dungeon steps. Common gear is usually junk to Vendor / Repair, better gear is worth checking, and Shards, Hearts, and Gems are forging materials worth keeping.',
-            steps: 'Recommended starter picks: Fighter for the cleanest first run, Rogue for mobility, Wizard for ranged burst, Cleric for sustain. Then open World Map (M) or Journal (J), head to the Quest Giver by the Forge, vendor obvious junk, save Shards, Hearts, and Gems, reach level 30 to unlock all base dungeons, and push to level 100 for Heroic and Mythic runs.'
+            copy: 'Choose a class fantasy first: Fighter for frontline control, Rogue for burst and tricks, Wizard for ranged spell pressure, Cleric for healing and support. Then enter town, head to the Quest Giver by the Forge, and follow the quest tracker through your first combat and dungeon steps.',
+            steps: 'After you pick a class, use the Skill Tree (K) to understand your branches early. Then open World Map (M) or Journal (J), head to the Quest Giver by the Forge, vendor obvious junk, save Shards, Hearts, and Gems, reach level 30 to unlock all base dungeons, and push to level 100 for Heroic and Mythic runs.'
         });
     };
 

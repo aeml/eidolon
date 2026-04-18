@@ -190,14 +190,13 @@ describe('asset persistence boot wiring', () => {
 
         expect(document.getElementById('start-flow-title').textContent).toContain('Create your first character');
         expect(document.getElementById('start-flow-copy').textContent).toContain('Choose a class');
+        expect(document.getElementById('start-flow-copy').textContent).toContain('Fighter for frontline control');
+        expect(document.getElementById('start-flow-copy').textContent).toContain('Rogue for burst and tricks');
+        expect(document.getElementById('start-flow-copy').textContent).toContain('Wizard for ranged spell pressure');
+        expect(document.getElementById('start-flow-copy').textContent).toContain('Cleric for healing and support');
         expect(document.getElementById('start-flow-copy').textContent).toContain('Quest Giver');
         expect(document.getElementById('start-flow-copy').textContent).toContain('Forge');
-        expect(document.getElementById('start-flow-copy').textContent).toContain('Vendor / Repair');
-        expect(document.getElementById('start-flow-copy').textContent).toContain('Shards');
-        expect(document.getElementById('start-flow-copy').textContent).toContain('Hearts');
-        expect(document.getElementById('start-flow-copy').textContent).toContain('Gems');
-        expect(document.getElementById('start-flow-steps').textContent).toContain('Fighter');
-        expect(document.getElementById('start-flow-steps').textContent).toContain('Rogue');
+        expect(document.getElementById('start-flow-steps').textContent).toContain('Skill Tree (K)');
         expect(document.getElementById('start-flow-steps').textContent).toContain('World Map (M)');
         expect(document.getElementById('start-flow-steps').textContent).toContain('Quest Giver by the Forge');
         expect(document.getElementById('start-flow-steps').textContent).toContain('vendor obvious junk');
