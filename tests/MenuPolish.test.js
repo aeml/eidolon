@@ -317,6 +317,10 @@ describe('menu polish regressions', () => {
         expect(backdrop).not.toBeNull();
         expect(menu).not.toBeNull();
         expect(closeBtn).not.toBeNull();
+        expect(menu.textContent).toContain('Reset talents to fine-tune passives');
+        expect(menu.textContent).toContain('Use this when you want to reroll passive ranks without changing your current spec branch');
+        expect(menu.textContent).toContain('Use this when you want to swap branch path or active skill unlocks without wiping talents');
+        expect(menu.textContent).toContain('Use this for a full rebuild after major gear changes or a new build direction');
 
         closeBtn.click();
         expect(document.getElementById('respec-menu')).toBeNull();

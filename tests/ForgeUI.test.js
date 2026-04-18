@@ -18,11 +18,12 @@ function buildForgeDom() {
     `;
 }
 
-function createForge(player) {
+function createForge(player, showRespecMenu = jest.fn()) {
     return new ForgeUI({
         getItemIconPath: () => '',
         formatStatName: (name) => name,
         getLastPlayer: () => player,
+        showRespecMenu,
         inventoryScreen: { style: { display: 'none' } }
     });
 }

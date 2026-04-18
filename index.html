@@ -270,7 +270,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.23.2</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.23.3</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -506,6 +506,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.23.3" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.23.3 (Forge and respec now explain the buildcraft order more clearly)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Forge action order:</strong> The Forge now spells out the buildcraft sequence up front: use Shards first to test likely keepers, invest Hearts once a piece stays equipped, then open sockets and commit gems.</li>
+                        <li><strong>Upgrade affordability:</strong> Upgrade previews now show current Shard availability and disable actions you cannot afford yet, matching the clearer material checks already present on Potency and Sockets.</li>
+                        <li><strong>Respec intent clarity:</strong> The Talent Master now explains when to reset talents, when to reset skills, and when a full rebuild makes sense, instead of only listing three gold costs.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for forge upgrade material visibility, forge-to-respec handoff, richer respec explanations, and 0.23.3 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.23.2" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.23.2 (Loot decisions now read faster from the tooltip itself)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
@@ -1356,6 +1365,11 @@
             </div>
 
             <div class="window-body">
+                <div id="forge-buildcraft-order" style="margin: 0 0 10px 0; padding: 10px; border: 1px solid rgba(255, 215, 0, 0.2); background: rgba(24, 20, 10, 0.35); border-radius: 8px; text-align: center;">
+                    <div style="color: #ffd700; font-weight: bold; margin-bottom: 4px;">Buildcraft Order</div>
+                    <div style="color: #cfd8dc; font-size: 12px; line-height: 1.5;">1. Spend <strong>Shards</strong> first on drops that look worth keeping. 2. Spend <strong>Hearts</strong> on Potency once the item stays equipped. 3. Add <strong>Sockets</strong>, then commit <strong>Gems</strong>. 4. Open the <strong>Talent Master</strong> when the whole build plan changes.</div>
+                    <button id="btn-open-respec-from-forge" class="menu-btn" type="button" style="margin-top: 8px; min-width: 180px;">Open Talent Master</button>
+                </div>
                 
                 <!-- Panel 1: Upgrade -->
                 <div id="forge-panel-upgrade" class="window-panel" style="display: flex;">

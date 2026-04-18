@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.23.2`
+- Current in-game displayed version: `Alpha 0.23.3`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.23.2`
+### Shipped through `0.23.3`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -47,6 +47,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.23.0`: class-select and skill-tree presentation now do a better job of selling class fantasy and branch-role identity
 - `0.23.1`: branch cards now explain each spec's role, preferred loop, and strength profile more clearly
 - `0.23.2`: inventory tooltips now give faster keep/equip/compare guidance so loot decisions read more clearly at a glance
+- `0.23.3`: forge upgrade, socket, gem, and respec surfaces now explain buildcraft order and material commitments more clearly
 
 ### What `0.22` has clearly accomplished already
 
@@ -158,7 +159,7 @@ Recommended next step:
 Current status:
 
 - `0.22` is closed for planned implementation work
-- `0.23.2` is now the active version line
+- `0.23.3` is now the active version line
 
 ### `0.22` actionable implementation checklist
 
@@ -309,15 +310,15 @@ Suggested milestone slices:
 - `0.23.3`: forge, gems, respec, and buildcraft coherence pass
 - `0.23.4`: reward-excitement polish, balance pass, and release QA
 
-### `0.23.2` current slice
+### `0.23.3` current slice
 
 Status: ready to ship
 
 Current focus:
 
-- loot decisions should read faster from the tooltip itself, not only from raw stat parsing
-- players should not need to discover hidden Shift-compare behavior before understanding what item they are replacing
-- the next forge and respec passes should build on a clearer item-decision baseline
+- forge tabs should explain which buildcraft action comes first instead of assuming the player already knows the order
+- material affordability should read consistently across upgrade, potency, and socket actions
+- respec should read like part of the buildcraft loop when a plan changes, not as a separate unexplained gold sink
 
 ## `0.24` - Dungeon and endgame depth
 

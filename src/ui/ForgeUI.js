@@ -13,6 +13,7 @@ export class ForgeUI {
      * @param {Function} ctx.getItemIconPath
      * @param {Function} ctx.formatStatName
      * @param {Function} ctx.getLastPlayer  – returns current player ref
+     * @param {Function} ctx.showRespecMenu – opens the respec modal
      * @param {HTMLElement} ctx.inventoryScreen – needed to open inventory alongside forge
      */
     constructor(ctx) {
@@ -25,6 +26,7 @@ export class ForgeUI {
         this.forgeSelectedItemName = document.getElementById('forge-selected-item-name');
         this.forgeCostValue = document.getElementById('forge-cost-value');
         this.forgeUpgradeStats = document.getElementById('forge-upgrade-stats');
+        this.btnOpenRespecFromForge = document.getElementById('btn-open-respec-from-forge');
         this.btnForgeUpgrade = document.getElementById('btn-forge-upgrade');
         this.btnForgeUpgrade1 = document.getElementById('btn-forge-upgrade-1');
         this.btnForgeUpgrade10 = document.getElementById('btn-forge-upgrade-10');
@@ -120,6 +122,7 @@ export class ForgeUI {
         if (this.btnForgeInsertGem) this.btnForgeInsertGem.addEventListener('click', () => this.handleForgeInsertGem());
         if (this.btnForgeCombineGem) this.btnForgeCombineGem.addEventListener('click', () => this.handleForgeCombineGem());
         if (this.btnForgeRemoveGem) this.btnForgeRemoveGem.addEventListener('click', () => this.handleForgeRemoveGem());
+        if (this.btnOpenRespecFromForge) this.btnOpenRespecFromForge.addEventListener('click', () => this.handleOpenRespec());
 
         if (this.tabForgeUpgrade) this.tabForgeUpgrade.addEventListener('click', () => this.switchForgeTab('upgrade'));
         if (this.tabForgePotency) this.tabForgePotency.addEventListener('click', () => this.switchForgeTab('potency'));
@@ -257,6 +260,10 @@ export class ForgeUI {
         }, 0);
     }
 
+    handleOpenRespec() {
+        if (this.ctx.showRespecMenu) this.ctx.showRespecMenu();
+    }
+
     updateForgeUI(player) {
         if (!this.forgeEquipmentList) return;
 
@@ -342,7 +349,7 @@ export class ForgeUI {
         });
     }
 
-    updateForgeInfo(item) {
+    updateForgeInfo(item, player = this.ctx.getLastPlayer()) {
         if (!item) return;
         this.forgeUpgradeInfo.style.display = 'flex';
         if (this.forgeSelectedItemName) {
@@ -362,6 +369,7 @@ export class ForgeUI {
 
         const cost1 = perLevelCost;
         const targetLevel1 = item.level + 1;
+        const availableShards = this._countInventoryItems(player, (invItem) => this._isShardItem(invItem));
 
         let cost10 = perLevelCost * 10;
         let targetLevel10 = item.level + 10;
@@ -374,8 +382,10 @@ export class ForgeUI {
         if (this.forgeCostValue) {
             if (item.level >= 100) {
                 this.forgeCostValue.textContent = "MAX";
+                this.forgeCostValue.style.color = '#00ff88';
             } else {
                 this.forgeCostValue.textContent = `${cost1} (1 Lvl) / ${cost10} (10 Lvl)`;
+                this.forgeCostValue.style.color = availableShards >= cost1 ? '#00ff88' : '#ff4444';
             }
         }
 
@@ -386,17 +396,26 @@ export class ForgeUI {
             return;
         }
 
+        const hasEnoughShards1 = availableShards >= cost1;
+        const hasEnoughShards10 = availableShards >= cost10;
+        const actualLevelGain10 = targetLevel10 - item.level;
+
         if (this.btnForgeUpgrade1) {
-            this.btnForgeUpgrade1.disabled = false;
-            this.btnForgeUpgrade1.textContent = `+1 Level (${cost1})`;
+            this.btnForgeUpgrade1.disabled = !hasEnoughShards1;
+            this.btnForgeUpgrade1.textContent = hasEnoughShards1
+                ? `+1 Level (${cost1})`
+                : `Need ${cost1 - availableShards} More Shards`;
         }
         if (this.btnForgeUpgrade10) {
-            this.btnForgeUpgrade10.disabled = false;
-            this.btnForgeUpgrade10.textContent = `+${targetLevel10 - item.level} Levels (${cost10})`;
+            this.btnForgeUpgrade10.disabled = !hasEnoughShards10;
+            this.btnForgeUpgrade10.textContent = hasEnoughShards10
+                ? `+${actualLevelGain10} Levels (${cost10})`
+                : `Need ${cost10 - availableShards} More Shards`;
         }
 
         if (this.forgeUpgradeStats) {
             let statsHtml = '<div style="margin-top: 10px; font-size: 12px;">';
+            statsHtml += '<div style="color: #8fb7d9; margin-bottom: 6px;">Upgrade is the cheapest forge step. Spend Shards first while a piece is still proving it deserves later Heart and socket investment.</div>';
             statsHtml += `<div style="color: #aaa; margin-bottom: 5px;">Level: ${item.level} <span style="color: #0f0;">-> ${targetLevel1} / ${targetLevel10}</span></div>`;
             if (item.stats) {
                 const currentMult = 1.0 + (item.level * 0.15);
@@ -410,6 +429,8 @@ export class ForgeUI {
                     statsHtml += `<div>${stat}: ${value} <span style="color: #0f0;">-> ${nextValue1} / ${nextValue10}</span></div>`;
                 }
             }
+            statsHtml += `<div style="color: ${hasEnoughShards1 ? '#00ff88' : '#ff6666'}; margin-top: 8px;">Shards Available: ${availableShards} / ${cost1} for +1</div>`;
+            statsHtml += `<div style="color: ${hasEnoughShards10 ? '#00ff88' : '#ffdd66'};">Shards Available: ${availableShards} / ${cost10} for +${actualLevelGain10}</div>`;
             statsHtml += '</div>';
             this.forgeUpgradeStats.innerHTML = statsHtml;
         }

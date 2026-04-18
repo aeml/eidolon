@@ -260,6 +260,7 @@ export class UIManager {
             getItemIconPath: (item) => this.getItemIconPath(item),
             formatStatName: (key) => this.formatStatName(key),
             getLastPlayer: () => this.lastPlayerRef,
+            showRespecMenu: () => this.showRespecMenu(),
             inventoryScreen: document.getElementById('inventory-screen'),
         });
 

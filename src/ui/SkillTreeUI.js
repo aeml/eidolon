@@ -997,7 +997,7 @@ export class SkillTreeUI {
         header.style.marginBottom = '18px';
 
         const title = document.createElement('h2');
-        title.innerText = 'Talent Master';
+        title.textContent = 'Talent Master';
         title.style.margin = '0';
         title.style.color = '#6a4';
 
@@ -1006,7 +1006,7 @@ export class SkillTreeUI {
         closeBtn.className = 'close-btn';
         closeBtn.type = 'button';
         closeBtn.setAttribute('aria-label', 'Close respec menu');
-        closeBtn.innerText = '×';
+        closeBtn.textContent = '×';
         closeBtn.onclick = removeMenu;
 
         header.appendChild(title);
@@ -1014,7 +1014,7 @@ export class SkillTreeUI {
         menu.appendChild(header);
 
         const desc = document.createElement('p');
-        desc.innerText = 'Reset your talents or skills for a gold fee based on your level.';
+        desc.textContent = 'Reset talents to fine-tune passives, reset skills to change your branch and active unlock path, or reset both for a full rebuild. Gold cost scales with your level.';
         desc.style.color = '#aaa';
         desc.style.fontSize = '12px';
         desc.style.marginBottom = '15px';
@@ -1028,7 +1028,7 @@ export class SkillTreeUI {
         const skillCost = playerLevel * 50;
         const bothCost = playerLevel * 125;
 
-        const createRespecButton = (label, type, cost, color) => {
+        const createRespecButton = (label, type, cost, color, detail) => {
             const container = document.createElement('div');
             container.style.margin = '10px 0';
             container.style.padding = '10px';
@@ -1037,7 +1037,7 @@ export class SkillTreeUI {
             container.style.borderRadius = '4px';
 
             const btn = document.createElement('button');
-            btn.innerText = label;
+            btn.textContent = label;
             btn.style.width = '100%';
             btn.style.padding = '10px';
             btn.style.cursor = playerGold >= cost ? 'pointer' : 'not-allowed';
@@ -1058,19 +1058,28 @@ export class SkillTreeUI {
             };
             container.appendChild(btn);
 
+            const detailText = document.createElement('div');
+            detailText.style.marginTop = '6px';
+            detailText.style.fontSize = '12px';
+            detailText.style.color = '#cfd8dc';
+            detailText.textContent = detail;
+            container.appendChild(detailText);
+
             const costText = document.createElement('div');
             costText.style.marginTop = '5px';
             costText.style.fontSize = '12px';
             costText.style.color = playerGold >= cost ? '#fc0' : '#f44';
-            costText.innerText = `Cost: ${cost.toLocaleString()} gold`;
+            costText.textContent = playerGold >= cost
+                ? `Cost: ${cost.toLocaleString()} gold`
+                : `Cost: ${cost.toLocaleString()} gold (Need ${(cost - playerGold).toLocaleString()} more)`;
             container.appendChild(costText);
 
             return container;
         };
 
-        menu.appendChild(createRespecButton('Reset Talents', 'talents', talentCost, '#6af'));
-        menu.appendChild(createRespecButton('Reset Skills', 'skills', skillCost, '#f6a'));
-        menu.appendChild(createRespecButton('Reset Both', 'both', bothCost, '#6a4'));
+        menu.appendChild(createRespecButton('Reset Talents', 'talents', talentCost, '#6af', 'Use this when you want to reroll passive ranks without changing your current spec branch.'));
+        menu.appendChild(createRespecButton('Reset Skills', 'skills', skillCost, '#f6a', 'Use this when you want to swap branch path or active skill unlocks without wiping talents.'));
+        menu.appendChild(createRespecButton('Reset Both', 'both', bothCost, '#6a4', 'Use this for a full rebuild after major gear changes or a new build direction.'));
 
         const goldDisplay = document.createElement('div');
         goldDisplay.style.marginTop = '15px';
@@ -1087,7 +1096,7 @@ export class SkillTreeUI {
 
         const footerCloseBtn = document.createElement('button');
         footerCloseBtn.id = 'btn-close-respec-menu-footer';
-        footerCloseBtn.innerText = 'Close';
+        footerCloseBtn.textContent = 'Close';
         footerCloseBtn.className = 'menu-btn';
         footerCloseBtn.type = 'button';
         footerCloseBtn.style.minWidth = '120px';
