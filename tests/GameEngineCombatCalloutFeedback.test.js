@@ -258,4 +258,108 @@ describe('GameEngine encounter callouts', () => {
         }));
         expect(engine.network.send).toHaveBeenCalledWith('chat', expect.objectContaining({ message: expect.stringContaining('level 30') }));
     });
+
+    test('shows a nearby remote-player ability label and forces an attacking state', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remotePlayer = {
+            id: 'remote-1',
+            position: new THREE.Vector3(8, 0, 0),
+            state: 'IDLE',
+            isRemote: true,
+            constructor: { name: 'Wizard' },
+            updateState: jest.fn(function updateState(nextState) {
+                this.state = nextState;
+            })
+        };
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.remotePlayers = new Map([['remote-1', remotePlayer]]);
+        engine.abilityController = { triggerRemoteAbilityVisuals: jest.fn() };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+
+        engine.handleServerMessage({
+            type: 'ability',
+            payload: {
+                sourceId: 'remote-1',
+                skillName: 'Fireball',
+                targetX: 12,
+                targetZ: 3
+            }
+        });
+
+        expect(engine.abilityController.triggerRemoteAbilityVisuals).toHaveBeenCalledWith(remotePlayer, 'Fireball', 12, 3);
+        expect(remotePlayer.updateState).toHaveBeenCalledWith('ATTACKING');
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('FIREBALL', remotePlayer.position, '#8fe7ff', '18px');
+    });
+
+    test('shows nearby remote-player damage numbers in crowded fights without requiring the local player to be source or target', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remotePlayer = {
+            id: 'remote-1',
+            position: new THREE.Vector3(6, 0, 0),
+            state: 'IDLE',
+            isRemote: true,
+            constructor: { name: 'Cleric' },
+            updateState: jest.fn(function updateState(nextState) {
+                this.state = nextState;
+            })
+        };
+        const enemy = {
+            id: 'enemy-1',
+            position: new THREE.Vector3(9, 0, 0),
+            state: 'IDLE',
+            constructor: { name: 'Skeleton' }
+        };
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.remotePlayers = new Map([
+            ['remote-1', remotePlayer],
+            ['enemy-1', enemy]
+        ]);
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+
+        engine.handleServerMessage({
+            type: 'damage',
+            payload: {
+                sourceId: 'remote-1',
+                targetId: 'enemy-1',
+                amount: 182
+            }
+        });
+
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith(182, enemy.position, '#8fe7ff', '20px');
+        expect(remotePlayer.updateState).toHaveBeenCalledWith('ATTACKING');
+    });
+
+    test('does not show remote readability text for faraway remote-player actions', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remotePlayer = {
+            id: 'remote-2',
+            position: new THREE.Vector3(120, 0, 0),
+            state: 'IDLE',
+            isRemote: true,
+            constructor: { name: 'Wizard' },
+            updateState: jest.fn()
+        };
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.remotePlayers = new Map([['remote-2', remotePlayer]]);
+        engine.abilityController = { triggerRemoteAbilityVisuals: jest.fn() };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+
+        engine.handleServerMessage({
+            type: 'ability',
+            payload: {
+                sourceId: 'remote-2',
+                skillName: 'Meteor',
+                targetX: 125,
+                targetZ: 0
+            }
+        });
+
+        expect(engine.floatingTextManager.spawn).not.toHaveBeenCalled();
+    });
 });

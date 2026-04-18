@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.22.16 for the latest shipped combat-readability slice', () => {
-        expect(indexHtml).toContain('Alpha 0.22.16');
+    test('advances the login screen to alpha 0.22.17 for the latest shipped multiplayer-readability slice', () => {
+        expect(indexHtml).toContain('Alpha 0.22.17');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -43,16 +43,17 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.22.16', () => {
-        expect(indexHtml).toContain('Patch 0.22.16');
-        expect(indexHtml).toContain('Out-of-range attacks, out-of-range casts, cooldown attempts, and no-mana casts now surface explicit combat callouts');
-        expect(indexHtml).toContain('Level-up moments now call out milestone unlocks more clearly, including the dungeon unlock at level 30 and endgame difficulty unlocks at level 100');
-        expect(indexHtml).toContain('Boss rewards and room-clear rewards now surface through readable combat callouts as well as chat');
-        expect(indexHtml).toContain('Added regression coverage for failed-cast readability, move-into-range combat feedback, reward callouts, and 0.22.16 version presentation');
+    test('includes the latest player-facing patch notes entry for 0.22.17', () => {
+        expect(indexHtml).toContain('Patch 0.22.17');
+        expect(indexHtml).toContain('Nearby remote-player abilities now surface readable action labels');
+        expect(indexHtml).toContain('Nearby remote-player damage now shows up as readable floating numbers during crowded fights');
+        expect(indexHtml).toContain('Remote player damage and ability events now help force attacking-state presentation');
+        expect(indexHtml).toContain('Added regression coverage for nearby remote action labels, nearby remote damage readability, far-away spam suppression, and 0.22.17 version presentation');
     });
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.22.17');
         expect(indexHtml).toContain('Patch 0.22.16');
         expect(indexHtml).toContain('Patch 0.22.15');
         expect(indexHtml).toContain('Patch 0.22.14');
@@ -82,6 +83,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.22.17"');
         expect(indexHtml).toContain('data-version="0.22.16"');
         expect(indexHtml).toContain('data-version="0.22.15"');
         expect(indexHtml).toContain('data-version="0.22.14"');

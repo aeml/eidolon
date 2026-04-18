@@ -285,6 +285,63 @@ export class GameEngine {
         return true;
     }
 
+    canShowThrottledReadabilityEvent(key, cooldownMs = 900) {
+        if (!key) return false;
+        const now = Date.now();
+        const lastShown = this.readabilityFeedbackTimestamps.get(key) || 0;
+        if (now - lastShown < cooldownMs) return false;
+        this.readabilityFeedbackTimestamps.set(key, now);
+        return true;
+    }
+
+    isPositionNearPlayer(position, radius = 38) {
+        if (!this.player?.position || !position) return false;
+        const dx = this.player.position.x - position.x;
+        const dz = this.player.position.z - position.z;
+        return Math.sqrt(dx * dx + dz * dz) <= radius;
+    }
+
+    isNearbyCombatEvent(sourceEntity = null, targetEntity = null, radius = 38) {
+        return this.isPositionNearPlayer(sourceEntity?.position, radius)
+            || this.isPositionNearPlayer(targetEntity?.position, radius);
+    }
+
+    formatRemoteActionLabel(skillName = '') {
+        const text = String(skillName || '').trim();
+        if (!text) return '';
+        return text.toUpperCase();
+    }
+
+    showRemoteActionReadability(sourceEntity, skillName) {
+        if (!sourceEntity?.position || !skillName || !this.floatingTextManager) return false;
+        if (!this.isPlayerClassEntity(sourceEntity)) return false;
+        if (!this.isPositionNearPlayer(sourceEntity.position, 34)) return false;
+
+        const label = this.formatRemoteActionLabel(skillName);
+        if (!label) return false;
+        const key = `remote-action-${sourceEntity.id || sourceEntity.name}-${label}`;
+        if (!this.canShowThrottledReadabilityEvent(key, 750)) return false;
+
+        this.floatingTextManager.spawn(label, sourceEntity.position, '#8fe7ff', '18px');
+        return true;
+    }
+
+    showNearbyRemoteDamageFeedback(sourceEntity, targetEntity, amount) {
+        if (!targetEntity?.position || !this.floatingTextManager) return false;
+        if (!this.isNearbyCombatEvent(sourceEntity, targetEntity, 38)) return false;
+
+        const sourceIsRemotePlayer = this.isPlayerClassEntity(sourceEntity);
+        const targetIsRemotePlayer = this.isPlayerClassEntity(targetEntity);
+        if (!sourceIsRemotePlayer && !targetIsRemotePlayer) return false;
+
+        const key = `remote-damage-${sourceEntity?.id || 'unknown'}-${targetEntity?.id || 'unknown'}-${amount}`;
+        if (!this.canShowThrottledReadabilityEvent(key, 180)) return false;
+
+        const color = targetIsRemotePlayer ? '#ff8a8a' : '#8fe7ff';
+        this.floatingTextManager.spawn(amount, targetEntity.position, color, '20px');
+        return true;
+    }
+
     getLevelUpReadabilityHint(previousLevel, nextLevel) {
         if (previousLevel < 30 && nextLevel >= 30) {
             return 'All base dungeons are now unlocked. Talk to the Dungeon Guide in town when you are ready.';
@@ -873,6 +930,10 @@ export class GameEngine {
             const source = this.remotePlayers.get(abilityData.sourceId);
             if (source) {
                 this.abilityController.triggerRemoteAbilityVisuals(source, abilityData.skillName, abilityData.targetX, abilityData.targetZ);
+                if (this.isPlayerClassEntity(source) && typeof source.updateState === 'function' && source.state !== 'JUMPING') {
+                    source.updateState('ATTACKING');
+                }
+                this.showRemoteActionReadability(source, abilityData.skillName);
             }
         } else if (msg.type === 'damage') {
             const dmgData = msg.payload;
@@ -884,6 +945,8 @@ export class GameEngine {
             } else {
                 target = this.remotePlayers.get(dmgData.targetId);
             }
+
+            const sourceEntity = this.remotePlayers.get(dmgData.sourceId);
 
             if (target) {
                 // Only show if player is source or target, or if it's a DoT/hazard effect
@@ -914,14 +977,20 @@ export class GameEngine {
                     }
                     
                     this.floatingTextManager.spawn(dmgData.amount, target.position, color);
+                } else {
+                    this.showNearbyRemoteDamageFeedback(sourceEntity, target, dmgData.amount);
                 }
             }
 
             // If target is local player, flash screen or shake camera?
+            if (sourceEntity && sourceEntity.isRemote && typeof sourceEntity.updateState === 'function' && sourceEntity.state !== 'JUMPING') {
+                if (dmgData.targetId === this.player?.id || this.isNearbyCombatEvent(sourceEntity, target, 38)) {
+                    sourceEntity.updateState('ATTACKING');
+                }
+            }
             if (this.player && dmgData.targetId === this.player.id) {
                 // Visual sync: if we took damage from a remote entity, force its ATTACKING animation.
                 // This prevents cases where state updates arrive out-of-sync and enemies appear to "run" while hitting.
-                const sourceEntity = this.remotePlayers.get(dmgData.sourceId);
                 if (sourceEntity && sourceEntity.isRemote && typeof sourceEntity.updateState === 'function') {
                     sourceEntity.updateState('ATTACKING');
                 }
