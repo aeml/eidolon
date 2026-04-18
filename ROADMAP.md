@@ -6,6 +6,8 @@
 
 This file is the high-level product roadmap. It reflects what is already shipped on `master`, what is currently being improved, and what should come next.
 
+For the active long-range tracking document that includes remaining `0.22` work and the roadmap through `alpha 1.0`, see `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md`.
+
 ## Current shipped foundation
 
 ### Core game

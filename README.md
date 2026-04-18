@@ -215,6 +215,7 @@ eidolon/
 - `IMPROVEMENT_PLAN.md` — current improvement tracks and backlog
 - `docs/ARCHITECTURE.md` — current architecture snapshot
 - `docs/ROADMAP.md` — engineering roadmap / next technical slices
+- `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md` — active status tracker for remaining `0.22` work and the roadmap from `0.23` through `alpha 1.0`
 - `docs/plans/2026-04-04-eidolon-current-state-and-next-steps-plan.md` — current implementation plan for the next wave of work
 
 ## License

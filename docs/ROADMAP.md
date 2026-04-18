@@ -4,6 +4,8 @@ Last refreshed: April 2026
 
 This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, and movement/render polish passes already landed on `master`.
 
+For the broader release-status tracker that covers remaining `0.22` work and the roadmap through `alpha 1.0`, see `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md`.
+
 ## Recently completed
 
 ### Core loop clarity
