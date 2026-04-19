@@ -134,7 +134,7 @@ describe('WorldMap town wayfinding', () => {
         worldMap.draw({ position: { x: 2400, z: 200 }, id: 'player-1' });
 
         expect(texts).toEqual(expect.arrayContaining([
-            '★ Tempest Spire [Chest]',
+            '★ Tempest Spire [Chest • Payoff]',
             'Next: Ambush'
         ]));
         expect(strokes).toEqual(expect.arrayContaining([
@@ -165,7 +165,7 @@ describe('WorldMap town wayfinding', () => {
         worldMap.draw({ position: { x: 2400, z: 200 }, id: 'player-1' });
 
         expect(texts).toEqual(expect.arrayContaining([
-            '★ Tempest Spire [Boss Now]'
+            '★ Tempest Spire [Boss Now • Climax]'
         ]));
         expect(texts).not.toContain('Next: Boss');
         expect(strokes).toEqual(expect.arrayContaining([

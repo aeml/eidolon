@@ -7,6 +7,13 @@
 // ============================================================================
 
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
+import {
+    findNextDungeonMeaningfulRoom,
+    getDungeonBeatLabel,
+    getDungeonCadenceLabel,
+    getDungeonRoomRole,
+    isLiveDungeonBossRoom
+} from '../utils/dungeonRoomMetadata.js';
 
 // ---------------------------------------------------------------------------
 // Config tables
@@ -394,43 +401,23 @@ export class WorldMap {
             return null;
         }
 
-        const labelForRoom = (room) => {
-            if (!room) return null;
-            const isLiveBoss = room.type === 'boss'
-                && typeof summary.currentRoomIndex === 'number'
-                && summary.currentRoomIndex === room.index
-                && summary.objectiveRoomIndex === room.index;
-            if (isLiveBoss) return 'Boss Now';
-            if (room.hook === 'chest') return 'Chest';
-            if (room.hook === 'elite_ambush') return 'Ambush';
-            if (room.hook === 'shrine') return 'Shrine';
-            if (room.type === 'boss') return 'Boss';
-            if (room.type === 'elite') return 'Elite';
-            return 'Objective';
-        };
+        const nextRoom = findNextDungeonMeaningfulRoom(summary, summary.objectiveRoomIndex);
 
-        const nextRoom = summary.rooms.find((room) => room
-            && typeof room.index === 'number'
-            && room.index > summary.objectiveRoomIndex
-            && !room.cleared
-            && (room.hook === 'elite_ambush' || room.hook === 'shrine' || room.hook === 'chest' || room.type === 'elite' || room.type === 'boss'));
-
-        const previewColor = nextRoom?.hook === 'elite_ambush'
+        const previewColor = getDungeonRoomRole(nextRoom) === 'event'
             ? 'rgba(255, 145, 90, 0.6)'
-            : nextRoom?.type === 'boss'
+            : getDungeonRoomRole(nextRoom) === 'boss'
                 ? 'rgba(255, 110, 110, 0.6)'
-                : nextRoom?.type === 'elite'
+                : getDungeonRoomRole(nextRoom) === 'elite'
                     ? 'rgba(255, 190, 90, 0.6)'
                     : 'rgba(255, 215, 90, 0.6)';
 
         return {
             dungeonName,
-            objectiveLabel: labelForRoom(objectiveRoom),
-            nextLabel: nextRoom ? labelForRoom(nextRoom) : '',
+            objectiveLabel: getDungeonBeatLabel(objectiveRoom, summary),
+            objectiveCadenceLabel: getDungeonCadenceLabel(objectiveRoom),
+            nextLabel: nextRoom ? getDungeonBeatLabel(nextRoom, summary) : '',
             previewColor,
-            objectiveIsLiveBoss: objectiveRoom.type === 'boss'
-                && typeof summary.currentRoomIndex === 'number'
-                && summary.currentRoomIndex === objectiveRoom.index
+            objectiveIsLiveBoss: isLiveDungeonBossRoom(objectiveRoom, summary)
         };
     }
 
@@ -510,7 +497,7 @@ export class WorldMap {
             ctx.textAlign = 'center';
             ctx.fillText(
                 isActiveDungeon
-                    ? `\u2605 ${dg.name} [${dungeonBeatPreview.objectiveLabel}]`
+                    ? `\u2605 ${dg.name} [${dungeonBeatPreview.objectiveLabel}${dungeonBeatPreview.objectiveCadenceLabel ? ` • ${dungeonBeatPreview.objectiveCadenceLabel}` : ''}]`
                     : `\u2605 ${dg.name}`,
                 pos.x,
                 pos.y + yOff

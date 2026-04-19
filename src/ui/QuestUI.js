@@ -1,3 +1,10 @@
+import {
+    findNextDungeonMeaningfulRoom,
+    getDungeonCadenceLabel,
+    getDungeonRoomRole,
+    isLiveDungeonBossRoom
+} from '../utils/dungeonRoomMetadata.js';
+
 /**
  * Quest UI module — handles the quest NPC window (accept / turn-in)
  * and the quest journal (active quest progress).
@@ -247,23 +254,18 @@ export class QuestUI {
             return '';
         }
 
-        const nextMeaningfulRoom = Array.isArray(summary.rooms)
-            ? summary.rooms.find((room) => room
-                && typeof room.index === 'number'
-                && room.index > currentObjectiveIndex
-                && !room.cleared
-                && (room.hook === 'elite_ambush' || room.hook === 'shrine' || room.hook === 'chest' || room.type === 'elite' || room.type === 'boss'))
-            : null;
+        const nextMeaningfulRoom = findNextDungeonMeaningfulRoom(summary, currentObjectiveIndex);
 
         const labelForRoom = (room) => {
             if (!room) return null;
-            if (room.hook === 'chest') return 'Chest';
-            if (room.hook === 'elite_ambush') return 'Ambush';
-            if (room.hook === 'shrine') return 'Shrine';
-            if (room.type === 'boss') return 'Boss';
-            if (room.type === 'elite') return 'Elite';
-            if (room.index === currentObjectiveIndex && nextMeaningfulRoom?.hook === 'shrine') return 'Approach';
-            if (room.index === currentObjectiveIndex && nextMeaningfulRoom?.type === 'boss') return 'Approach';
+            const role = getDungeonRoomRole(room);
+            if (role === 'reward') return 'Chest';
+            if (role === 'event') return 'Ambush';
+            if (role === 'recovery') return 'Shrine';
+            if (role === 'boss') return 'Boss';
+            if (role === 'elite') return 'Elite';
+            if (room.index === currentObjectiveIndex && getDungeonRoomRole(nextMeaningfulRoom) === 'recovery') return 'Approach';
+            if (room.index === currentObjectiveIndex && getDungeonRoomRole(nextMeaningfulRoom) === 'boss') return 'Approach';
             return null;
         };
 
@@ -293,11 +295,7 @@ export class QuestUI {
         const totalProgressRooms = Math.max(1, traversableRooms.length);
         const progressLabel = `${Math.min(clearedCount, totalProgressRooms)} / ${totalProgressRooms}`;
         const progressPct = Math.min(100, (Math.min(clearedCount, totalProgressRooms) / totalProgressRooms) * 100);
-        const isLiveBossObjective = objectiveRoom?.type === 'boss'
-            && typeof summary.currentRoomIndex === 'number'
-            && typeof summary.objectiveRoomIndex === 'number'
-            && summary.currentRoomIndex === objectiveRoom.index
-            && summary.objectiveRoomIndex === objectiveRoom.index;
+        const isLiveBossObjective = isLiveDungeonBossRoom(objectiveRoom, summary);
         const sequenceHint = isLiveBossObjective ? '' : this.buildDungeonRouteSequenceHint(summary, objectiveRoom);
 
         if (!objectiveRoom) {
@@ -316,15 +314,10 @@ export class QuestUI {
             };
         }
 
-        const nextUnclearedBeat = objectiveRoom
-            ? summary.rooms.find((room) => room
-                && typeof room.index === 'number'
-                && room.index > objectiveRoom.index
-                && !room.cleared
-                && (room.hook === 'elite_ambush' || room.hook === 'shrine' || room.hook === 'chest' || room.type === 'elite' || room.type === 'boss'))
-            : null;
+        const nextUnclearedBeat = objectiveRoom ? findNextDungeonMeaningfulRoom(summary, objectiveRoom.index) : null;
+        const cadenceLabel = getDungeonCadenceLabel(objectiveRoom);
 
-        if (objectiveRoom.hook === 'shrine') {
+        if (getDungeonRoomRole(objectiveRoom) === 'recovery') {
             return {
                 id: `dungeon-route-${instanceType}`,
                 title: 'Reach the shrine room',
@@ -335,16 +328,17 @@ export class QuestUI {
                 badge: 'Shrine',
                 badgeClass: 'is-shrine',
                 routeTone: 'support',
-                hint: nextUnclearedBeat?.type === 'boss'
+                hint: getDungeonRoomRole(nextUnclearedBeat) === 'boss'
                     ? 'Last reset before the boss push'
                     : objectiveRoom.explored
                         ? 'Shrine discovered'
                         : 'A restorative shrine lies ahead',
-                sequenceHint
+                sequenceHint,
+                cadenceLabel
             };
         }
 
-        if (objectiveRoom.hook === 'chest') {
+        if (getDungeonRoomRole(objectiveRoom) === 'reward') {
             return {
                 id: `dungeon-route-${instanceType}`,
                 title: 'Secure the treasure room',
@@ -355,16 +349,17 @@ export class QuestUI {
                 badge: 'Chest',
                 badgeClass: 'is-chest',
                 routeTone: 'support',
-                hint: nextUnclearedBeat?.hook === 'elite_ambush'
+                hint: getDungeonRoomRole(nextUnclearedBeat) === 'event'
                     ? 'Quick score before the ambush spike'
                     : objectiveRoom.explored
                         ? 'Treasure room discovered'
                         : 'Treasure cache detected deeper inside',
-                sequenceHint
+                sequenceHint,
+                cadenceLabel
             };
         }
 
-        if (objectiveRoom.hook === 'elite_ambush') {
+        if (getDungeonRoomRole(objectiveRoom) === 'event') {
             return {
                 id: `dungeon-route-${instanceType}`,
                 title: 'Survive the ambush room',
@@ -376,11 +371,12 @@ export class QuestUI {
                 badgeClass: 'is-ambush',
                 routeTone: 'warning',
                 hint: 'Elite room ahead — pressure spike incoming',
-                sequenceHint
+                sequenceHint,
+                cadenceLabel
             };
         }
 
-        if (objectiveRoom.type === 'boss') {
+        if (getDungeonRoomRole(objectiveRoom) === 'boss') {
             return {
                 id: `dungeon-route-${instanceType}`,
                 title: isLiveBossObjective ? 'Survive the boss fight' : 'Commit to the boss room',
@@ -394,11 +390,12 @@ export class QuestUI {
                 hint: isLiveBossObjective
                     ? 'You are in the boss room — commit and survive'
                     : 'Boss room ahead — reset and commit',
-                sequenceHint
+                sequenceHint,
+                cadenceLabel
             };
         }
 
-        if (objectiveRoom.type === 'elite') {
+        if (getDungeonRoomRole(objectiveRoom) === 'elite') {
             return {
                 id: `dungeon-route-${instanceType}`,
                 title: 'Clear the elite room',
@@ -410,19 +407,16 @@ export class QuestUI {
                 badgeClass: 'is-elite',
                 routeTone: 'warning',
                 hint: objectiveRoom.explored ? 'Elite room discovered' : 'Elite threat ahead',
-                sequenceHint
+                sequenceHint,
+                cadenceLabel
             };
         }
 
         const unclearedNonBossRooms = traversableRooms.filter((room) => !room.cleared && room.type !== 'boss');
         const remainingRooms = Math.max(1, unclearedNonBossRooms.length);
-        const nextMeaningfulRoom = summary.rooms.find((room) => room
-            && typeof room.index === 'number'
-            && room.index > objectiveRoom.index
-            && !room.cleared
-            && (room.hook === 'elite_ambush' || room.hook === 'shrine' || room.hook === 'chest' || room.type === 'elite' || room.type === 'boss'));
-        const isBridgeToBoss = nextMeaningfulRoom?.type === 'boss' && remainingRooms === 1;
-        const isBridgeToShrine = nextMeaningfulRoom?.hook === 'shrine';
+        const nextMeaningfulRoom = findNextDungeonMeaningfulRoom(summary, objectiveRoom.index);
+        const isBridgeToBoss = getDungeonRoomRole(nextMeaningfulRoom) === 'boss' && remainingRooms === 1;
+        const isBridgeToShrine = getDungeonRoomRole(nextMeaningfulRoom) === 'recovery';
 
         return {
             id: `dungeon-route-${instanceType}`,
@@ -443,7 +437,8 @@ export class QuestUI {
                 : isBridgeToShrine
                     ? `${remainingRooms} rooms remain before the shrine reset`
                     : `Clear ${remainingRooms} more rooms`,
-            sequenceHint
+            sequenceHint,
+            cadenceLabel
         };
     }
 
@@ -520,6 +515,15 @@ export class QuestUI {
             marginBottom: '4px'
         });
         const body = this.createMessage(guidanceBody);
+        const cadence = objective.cadenceLabel
+            ? this.createMessage(`Cadence: ${objective.cadenceLabel}`, {
+                color: '#8fd3ff',
+                marginTop: '6px',
+                fontSize: '11px',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase'
+            })
+            : null;
         const footer = this.createMessage('Closed a menu or got turned around? Open World Map (M) and Journal (J) to re-orient.', {
             color: '#aaa',
             marginTop: '6px'
@@ -528,6 +532,10 @@ export class QuestUI {
         guidance.appendChild(heading);
         guidance.appendChild(title);
         guidance.appendChild(body);
+
+        if (cadence) {
+            guidance.appendChild(cadence);
+        }
 
         if (objective.sequenceHint) {
             guidance.appendChild(this.createMessage(objective.sequenceHint, {

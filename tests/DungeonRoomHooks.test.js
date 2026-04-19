@@ -42,7 +42,8 @@ describe('Dungeon room hooks', () => {
                 badgeClass: 'is-shrine',
                 routeTone: 'support',
                 hint: 'Last reset before the boss push',
-                sequenceHint: 'Route: Shrine -> Boss'
+                sequenceHint: 'Route: Shrine -> Boss',
+                cadenceLabel: 'Reset'
             })
         ]);
 
@@ -70,7 +71,8 @@ describe('Dungeon room hooks', () => {
                 badgeClass: 'is-chest',
                 routeTone: 'support',
                 hint: 'Treasure room discovered',
-                sequenceHint: 'Route: Chest -> Boss'
+                sequenceHint: 'Route: Chest -> Boss',
+                cadenceLabel: 'Payoff'
             })
         ]);
     });

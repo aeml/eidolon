@@ -270,7 +270,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.23.4</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.24.0</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -506,6 +506,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.24.0" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.24.0 (Dungeon room roles now read like a pacing plan instead of isolated markers)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Canonical room roles:</strong> Dungeon room state now tags rooms with shared roles like travel, reward, recovery, elite, event, and boss so route surfaces can read from one pacing model instead of scattered hook checks.</li>
+                        <li><strong>Pacing labels on route guidance:</strong> The journal, hovered dungeon portals, minimap markers, and world-map active dungeon marker now surface cadence reads like Payoff, Reset, Spike, Pressure, and Climax alongside the next beat.</li>
+                        <li><strong>0.24 begins:</strong> This starts the dungeon-depth line by making room-role metadata explicit and reusable before the follow-up cadence tuning, endgame identity, and rerun-incentive slices.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for normalized dungeon room metadata, cadence-aware route guidance, entrance hints, minimap overlays, and world-map beat previews.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.23.4" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.23.4 (Reward moments now land harder at the end of the 0.23 line)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

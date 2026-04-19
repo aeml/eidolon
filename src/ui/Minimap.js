@@ -1,4 +1,10 @@
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
+import {
+    findNextDungeonMeaningfulRoom,
+    getDungeonBeatLabel,
+    getDungeonRoomRole,
+    isLiveDungeonBossRoom
+} from '../utils/dungeonRoomMetadata.js';
 
 // ============================================================================
 // Minimap — player-centered radar with realm coloring & tactical emphasis
@@ -439,14 +445,11 @@ export class Minimap {
         }
 
         const getObjectiveMarkerStyle = (room, alpha = 0.95) => {
-            const isBossObjective = room?.type === 'boss';
-            const isEliteObjective = room?.type === 'elite';
-            const isAmbushObjective = room?.hook === 'elite_ambush';
-            const isLiveBoss = isBossObjective
-                && typeof summary.currentRoomIndex === 'number'
-                && typeof summary.objectiveRoomIndex === 'number'
-                && summary.currentRoomIndex === room?.index
-                && summary.objectiveRoomIndex === room?.index;
+            const role = getDungeonRoomRole(room);
+            const isBossObjective = role === 'boss';
+            const isEliteObjective = role === 'elite';
+            const isAmbushObjective = role === 'event';
+            const isLiveBoss = isLiveDungeonBossRoom(room, summary);
             return {
                 isBossObjective,
                 stroke: isBossObjective
@@ -456,28 +459,12 @@ export class Minimap {
                         : isEliteObjective
                             ? `rgba(255, 190, 90, ${alpha})`
                             : `rgba(255, 215, 90, ${alpha})`,
-                label: isLiveBoss
-                    ? 'Boss Now'
-                    : isBossObjective
-                        ? 'Boss'
-                        : isAmbushObjective
-                            ? 'Ambush'
-                            : isEliteObjective
-                                ? 'Elite'
-                                : room?.hook === 'shrine'
-                                    ? 'Shrine'
-                                    : room?.hook === 'chest'
-                                        ? 'Chest'
-                                        : 'Objective'
+                label: getDungeonBeatLabel(room, summary) || 'Objective'
             };
         };
 
         const nextBeatRoom = typeof summary.objectiveRoomIndex === 'number' && summary.objectiveRoomIndex >= 0
-            ? summary.rooms.find((room) => room
-                && typeof room.index === 'number'
-                && room.index > summary.objectiveRoomIndex
-                && !room.cleared
-                && (room.hook === 'elite_ambush' || room.hook === 'shrine' || room.hook === 'chest' || room.type === 'elite' || room.type === 'boss'))
+            ? findNextDungeonMeaningfulRoom(summary, summary.objectiveRoomIndex)
             : null;
 
         summary.rooms.forEach((room) => {
@@ -488,15 +475,15 @@ export class Minimap {
             const top = center.y - roomHeight / 2;
 
             let fill = 'rgba(255, 255, 255, 0.08)';
-            if (room.hook === 'shrine') {
+            if (getDungeonRoomRole(room) === 'recovery') {
                 fill = room.cleared ? 'rgba(120, 255, 220, 0.18)' : 'rgba(120, 255, 220, 0.12)';
-            } else if (room.hook === 'chest') {
+            } else if (getDungeonRoomRole(room) === 'reward') {
                 fill = room.cleared ? 'rgba(255, 220, 120, 0.18)' : 'rgba(255, 220, 120, 0.12)';
-            } else if (room.cleared && room.type === 'elite') {
+            } else if (room.cleared && getDungeonRoomRole(room) === 'elite') {
                 fill = 'rgba(255, 190, 90, 0.18)';
             } else if (room.cleared) {
                 fill = 'rgba(120, 255, 160, 0.22)';
-            } else if (room.explored && room.type === 'elite') {
+            } else if (room.explored && getDungeonRoomRole(room) === 'elite') {
                 fill = 'rgba(255, 190, 90, 0.12)';
             } else if (room.explored) {
                 fill = 'rgba(90, 160, 255, 0.18)';

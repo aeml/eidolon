@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import { decorateDungeonRoomState } from '../src/utils/dungeonRoomMetadata.js';
 
 const mockMinimapSetGameEngine = jest.fn();
 const mockMinimapUpdate = jest.fn();
@@ -200,7 +201,9 @@ describe('GameEngine dungeon room state', () => {
 
         expect(engine.getDungeonRoomSummary()).toEqual(expect.objectContaining({
             currentRoomIndex: 1,
-            objectiveRoomIndex: 3
+            objectiveRoomIndex: 3,
+            objectiveRoomRole: '',
+            nextBeatRole: ''
         }));
     });
 
@@ -220,7 +223,7 @@ describe('GameEngine dungeon room state', () => {
             updateQuestWindow: jest.fn(),
             updateJournal: jest.fn()
         };
-        engine.currentDungeonRoomState = {
+        engine.currentDungeonRoomState = decorateDungeonRoomState({
             currentRoomIndex: 0,
             objectiveRoomIndex: 1,
             rooms: [
@@ -230,7 +233,7 @@ describe('GameEngine dungeon room state', () => {
                 { index: 3, explored: false, cleared: false, type: 'normal', hook: 'shrine', x: 150, z: 0, width: 40, height: 40 },
                 { index: 4, explored: false, cleared: false, type: 'boss', x: 200, z: 0, width: 40, height: 40 }
             ]
-        };
+        });
 
         engine.handleServerMessage({
             type: 'room_clear_reward',
@@ -251,8 +254,8 @@ describe('GameEngine dungeon room state', () => {
             objectiveRoomIndex: 2,
             rooms: expect.arrayContaining([
                 expect.objectContaining({ index: 1, explored: true, cleared: true, hook: 'chest' }),
-                expect.objectContaining({ index: 2, explored: true, cleared: false, type: 'elite', hook: 'elite_ambush' }),
-                expect.objectContaining({ index: 3, explored: false, cleared: false, type: 'normal', hook: 'shrine' })
+                expect.objectContaining({ index: 2, explored: true, cleared: false, type: 'elite', hook: 'elite_ambush', roomRole: 'event', cadenceTag: 'spike' }),
+                expect.objectContaining({ index: 3, explored: false, cleared: false, type: 'normal', hook: 'shrine', roomRole: 'recovery', cadenceTag: 'reset' })
             ])
         }));
     });
@@ -273,7 +276,7 @@ describe('GameEngine dungeon room state', () => {
             updateQuestWindow: jest.fn(),
             updateJournal: jest.fn()
         };
-        engine.currentDungeonRoomState = {
+        engine.currentDungeonRoomState = decorateDungeonRoomState({
             currentRoomIndex: 2,
             objectiveRoomIndex: 2,
             rooms: [
@@ -281,7 +284,7 @@ describe('GameEngine dungeon room state', () => {
                 { index: 1, explored: true, cleared: true, type: 'normal', x: 50, z: 0, width: 40, height: 40 },
                 { index: 2, explored: true, cleared: false, type: 'boss', x: 100, z: 0, width: 40, height: 40 }
             ]
-        };
+        });
 
         engine.handleServerMessage({
             type: 'room_clear_reward',
@@ -299,8 +302,9 @@ describe('GameEngine dungeon room state', () => {
 
         expect(engine.getDungeonRoomSummary()).toEqual(expect.objectContaining({
             objectiveRoomIndex: -1,
+            objectiveRoomRole: '',
             rooms: expect.arrayContaining([
-                expect.objectContaining({ index: 2, explored: true, cleared: true, type: 'boss' })
+                expect.objectContaining({ index: 2, explored: true, cleared: true, type: 'boss', roomRole: 'boss', cadenceTag: 'climax' })
             ])
         }));
     });

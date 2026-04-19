@@ -75,6 +75,14 @@ import { Thalorath } from '../entities/Thalorath.js';
 import { EnvironmentalHazard } from '../entities/EnvironmentalHazard.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { createTransientEffect } from './TransientEffects.js';
+import {
+    decorateDungeonRoomState,
+    findNextDungeonMeaningfulRoom,
+    getDungeonBeatLabel as getSharedDungeonBeatLabel,
+    getDungeonCadenceLabel,
+    getDungeonRoomRole,
+    isLiveDungeonBossRoom
+} from '../utils/dungeonRoomMetadata.js';
 
 export class GameEngine {
     constructor(playerType, isMobile = false, isMultiplayer = true, serverAddress = '', username = '', socket = null) {
@@ -777,7 +785,7 @@ export class GameEngine {
         const previousInstanceType = this.currentInstanceType || 'overworld';
         this.currentInstanceId = instanceId;
         this.currentInstanceType = type;
-        this.currentDungeonRoomState = roomState;
+        this.currentDungeonRoomState = decorateDungeonRoomState(roomState);
         this.currentDungeonLayout = layout || null;
         this.clearCombatIntentState();
         this.refreshDungeonEntranceHint();
@@ -1129,7 +1137,7 @@ export class GameEngine {
                         })
                         : this.currentDungeonRoomState.rooms;
 
-                    this.currentDungeonRoomState = {
+                    this.currentDungeonRoomState = decorateDungeonRoomState({
                         ...this.currentDungeonRoomState,
                         currentRoomIndex: typeof summary.currentRoomIndex === 'number'
                             ? summary.currentRoomIndex
@@ -1138,7 +1146,7 @@ export class GameEngine {
                             ? summary.objectiveRoomIndex
                             : this.currentDungeonRoomState.objectiveRoomIndex,
                         rooms: updatedRooms
-                    };
+                    });
                 }
                 if (this.uiManager && this.uiManager.showRoomClearReward) {
                     this.uiManager.showRoomClearReward(summary);
@@ -1210,7 +1218,7 @@ export class GameEngine {
                 .catch(e => console.error('Failed to enter instance:', e));
         } else if (msg.type === 'dungeon_room_state') {
             const previousDungeonRoomState = this.currentDungeonRoomState;
-            this.currentDungeonRoomState = msg.payload || null;
+            this.currentDungeonRoomState = decorateDungeonRoomState(msg.payload || null);
             const beatAdvanceCallout = this.buildDungeonBeatAdvanceCallout(previousDungeonRoomState, this.currentDungeonRoomState);
             if (beatAdvanceCallout) {
                 this.uiManager?.showCombatCallout?.(beatAdvanceCallout);
@@ -2311,35 +2319,34 @@ export class GameEngine {
             const objectiveRoom = isCurrentDungeon && summary && Array.isArray(summary.rooms) && typeof summary.objectiveRoomIndex === 'number'
                 ? summary.rooms.find((room) => room && room.index === summary.objectiveRoomIndex)
                 : null;
-            const nextRoomAfterObjective = objectiveRoom && Array.isArray(summary?.rooms)
-                ? summary.rooms.find((room) => room && typeof room.index === 'number' && room.index > objectiveRoom.index && !room.cleared)
-                : null;
-            const bossIsLiveNow = objectiveRoom?.type === 'boss'
-                && typeof summary?.currentRoomIndex === 'number'
-                && typeof summary?.objectiveRoomIndex === 'number'
-                && summary.currentRoomIndex === objectiveRoom.index
-                && summary.objectiveRoomIndex === objectiveRoom.index;
+            const nextRoomAfterObjective = objectiveRoom ? findNextDungeonMeaningfulRoom(summary, objectiveRoom.index) : null;
+            const bossIsLiveNow = isLiveDungeonBossRoom(objectiveRoom, summary);
 
             if (isCurrentDungeon && objectiveRoom) {
                 const beatLabel = this.getDungeonBeatLabel(objectiveRoom);
+                const cadenceLabel = getDungeonCadenceLabel(objectiveRoom);
                 statusLabel = bossIsLiveNow
                     ? `${entityLabel} • Boss Now`
-                    : `${entityLabel} • Next: ${beatLabel}`;
+                    : cadenceLabel
+                        ? `${entityLabel} • Next: ${beatLabel} • ${cadenceLabel}`
+                        : `${entityLabel} • Next: ${beatLabel}`;
 
                 if (bossIsLiveNow) {
                     promptLabel = 'You are in the boss room — commit and survive';
-                } else if (objectiveRoom.hook === 'elite_ambush') {
+                } else if (objectiveRoom.roomRole === 'event') {
                     promptLabel = 'Elite room ahead — pressure spike incoming';
-                } else if (objectiveRoom.hook === 'shrine') {
-                    promptLabel = nextRoomAfterObjective?.type === 'boss'
+                } else if (objectiveRoom.roomRole === 'recovery') {
+                    promptLabel = getDungeonRoomRole(nextRoomAfterObjective) === 'boss'
                         ? 'Last reset before the boss push'
                         : 'Shrine ahead — brief reset before the push';
-                } else if (objectiveRoom.hook === 'chest') {
-                    promptLabel = nextRoomAfterObjective?.hook === 'elite_ambush' || nextRoomAfterObjective?.type === 'elite'
+                } else if (objectiveRoom.roomRole === 'reward') {
+                    promptLabel = ['event', 'elite'].includes(getDungeonRoomRole(nextRoomAfterObjective))
                         ? 'Quick score before the ambush spike'
                         : 'Treasure room ahead — quick reward before danger';
-                } else if (objectiveRoom.type === 'boss') {
+                } else if (objectiveRoom.roomRole === 'boss') {
                     promptLabel = 'Boss room ahead — reset and commit';
+                } else if (objectiveRoom.roomRole === 'elite') {
+                    promptLabel = objectiveRoom.explored ? 'Elite room discovered' : 'Elite threat ahead';
                 } else {
                     promptLabel = inRange
                         ? 'Click to open the dungeon portal.'
@@ -2582,13 +2589,7 @@ export class GameEngine {
     }
 
     getDungeonBeatLabel(room) {
-        if (!room) return '';
-        if (room.hook === 'chest') return 'Chest';
-        if (room.hook === 'elite_ambush') return 'Ambush';
-        if (room.hook === 'shrine') return 'Shrine';
-        if (room.type === 'boss') return 'Boss';
-        if (room.type === 'elite') return 'Elite';
-        return 'Objective';
+        return getSharedDungeonBeatLabel(room, this.currentDungeonRoomState);
     }
 
     buildDungeonBeatAdvanceCallout(previousSummary, nextSummary) {
@@ -2616,28 +2617,30 @@ export class GameEngine {
         }
 
         const beatLabel = this.getDungeonBeatLabel(objectiveRoom);
-        const nextRoomAfterObjective = nextSummary.rooms.find((room) => room && typeof room.index === 'number' && room.index > nextObjective && !room.cleared);
-        const bossIsLiveNow = objectiveRoom.type === 'boss' && nextRoom === nextObjective;
+        const nextRoomAfterObjective = findNextDungeonMeaningfulRoom(nextSummary, nextObjective);
+        const bossIsLiveNow = isLiveDungeonBossRoom(objectiveRoom, nextSummary);
         let title = `Next: ${beatLabel}`;
         let subtitle = 'Next room marked on the route';
         let tone = 'support';
-        if (objectiveRoom.hook === 'elite_ambush') {
+        if (objectiveRoom.roomRole === 'event') {
             subtitle = 'Elite room ahead — pressure spike incoming';
             tone = 'warning';
-        } else if (objectiveRoom.type === 'boss') {
+        } else if (objectiveRoom.roomRole === 'boss') {
             title = bossIsLiveNow ? 'Boss Now' : `Next: ${beatLabel}`;
             subtitle = bossIsLiveNow
                 ? 'You are in the boss room — commit and survive'
                 : 'Boss room ahead — reset and commit';
             tone = 'boss';
-        } else if (objectiveRoom.hook === 'shrine') {
-            subtitle = nextRoomAfterObjective?.type === 'boss'
+        } else if (objectiveRoom.roomRole === 'recovery') {
+            subtitle = getDungeonRoomRole(nextRoomAfterObjective) === 'boss'
                 ? 'Last reset before the boss push'
                 : 'Shrine ahead — brief reset before the push';
-        } else if (objectiveRoom.hook === 'chest') {
-            subtitle = nextRoomAfterObjective?.hook === 'elite_ambush' || nextRoomAfterObjective?.type === 'elite'
+        } else if (objectiveRoom.roomRole === 'reward') {
+            subtitle = ['event', 'elite'].includes(getDungeonRoomRole(nextRoomAfterObjective))
                 ? 'Quick score before the ambush spike'
                 : 'Treasure room ahead — quick reward before danger';
+        } else if (objectiveRoom.roomRole === 'elite') {
+            subtitle = objectiveRoom.explored ? 'Elite room discovered' : 'Elite threat ahead';
         }
 
         return {

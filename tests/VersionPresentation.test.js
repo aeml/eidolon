@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.23.4 for the latest shipped reward-closeout slice', () => {
-        expect(indexHtml).toContain('Alpha 0.23.4');
+    test('advances the login screen to alpha 0.24.0 for the latest shipped dungeon-room-role slice', () => {
+        expect(indexHtml).toContain('Alpha 0.24.0');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -63,7 +63,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.23.4', () => {
+    test('includes the latest player-facing patch notes entry for 0.24.0', () => {
+        expect(indexHtml).toContain('Patch 0.24.0');
+        expect(indexHtml).toContain('Dungeon room state now tags rooms with shared roles like travel, reward, recovery, elite, event, and boss');
+        expect(indexHtml).toContain('journal, hovered dungeon portals, minimap markers, and world-map active dungeon marker now surface cadence reads like Payoff, Reset, Spike, Pressure, and Climax');
+        expect(indexHtml).toContain('This starts the dungeon-depth line by making room-role metadata explicit and reusable');
+        expect(indexHtml).toContain('Added regression coverage for normalized dungeon room metadata, cadence-aware route guidance, entrance hints, minimap overlays, and world-map beat previews');
+    });
+
+    test('keeps the prior 0.23.4 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.23.4');
         expect(indexHtml).toContain('Boss-kill and room-clear reward callouts now lead with a payoff read instead of only a ledger');
         expect(indexHtml).toContain('Reward chat now surfaces short punchier lines like boss down, build drops secured, and elite-room payoff');
@@ -105,6 +113,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.24.0');
         expect(indexHtml).toContain('Patch 0.23.4');
         expect(indexHtml).toContain('Patch 0.23.3');
         expect(indexHtml).toContain('Patch 0.23.2');
@@ -144,6 +153,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.24.0"');
         expect(indexHtml).toContain('data-version="0.23.4"');
         expect(indexHtml).toContain('data-version="0.23.3"');
         expect(indexHtml).toContain('data-version="0.23.2"');
