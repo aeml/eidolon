@@ -948,3 +948,17 @@ func GenerateLootWithUniqueEffect(targetLevel int, uniqueChance float64) *Item {
 	}
 	return item
 }
+
+func GenerateGuaranteedUniqueEquipment(targetLevel int) *Item {
+	for attempts := 0; attempts < 12; attempts++ {
+		item := GenerateLootWithUniqueEffect(targetLevel, 1.0)
+		if item == nil {
+			continue
+		}
+		if item.Type == ItemMaterial || item.Type == ItemRelic || item.Type == ItemGem {
+			continue
+		}
+		return item
+	}
+	return nil
+}

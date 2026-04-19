@@ -270,7 +270,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.24.1</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.24.2</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -506,6 +506,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.24.2" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.24.2 (Heroic and Mythic now read like distinct endgame reward lanes)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Endgame reward identity:</strong> Heroic bosses now guarantee a bonus gem drop, while Mythic bosses guarantee both a bonus gem and a unique-effect item on top of the normal boss payout.</li>
+                        <li><strong>Difficulty reads better up front:</strong> The dungeon menu now explains each difficulty as a distinct endgame lane instead of only listing stat multipliers, so Heroic reads like a gem chase and Mythic reads like a capstone build-defining push.</li>
+                        <li><strong>Reward summary tells the truth:</strong> Boss reward summaries now surface the exact Heroic or Mythic bonus rule that paid out on the kill, matching the authoritative server reward logic.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for endgame difficulty reward notes, guaranteed Mythic unique-effect gear, dungeon menu identity copy, and 0.24.2 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.24.1" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.24.1 (Long dungeon runs now cadence reward pockets and pressure spikes more deliberately)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

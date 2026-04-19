@@ -57,6 +57,9 @@ func TestBuildBossRewardSummaryFormatsBossRewards(t *testing.T) {
 	if summary.Difficulty != string(DifficultyHeroic) {
 		t.Fatalf("unexpected difficulty: %s", summary.Difficulty)
 	}
+	if summary.DifficultyNote != "Heroic bosses guarantee one bonus gem drop." {
+		t.Fatalf("unexpected difficulty note: %s", summary.DifficultyNote)
+	}
 	if summary.RunLevel != 100 {
 		t.Fatalf("unexpected run level: %d", summary.RunLevel)
 	}
@@ -92,5 +95,27 @@ func TestBuildBossRewardSummaryCanBeOverriddenForDirectRewards(t *testing.T) {
 
 	if summary.ItemCount != 0 || summary.GemCount != 0 || summary.HeartCount != 1 {
 		t.Fatalf("unexpected direct reward counts: items=%d gems=%d hearts=%d", summary.ItemCount, summary.GemCount, summary.HeartCount)
+	}
+}
+
+func TestBuildBossRewardSummaryAddsMythicDifficultyNote(t *testing.T) {
+	summary := buildBossRewardSummary(
+		"player-1",
+		"Zephyrion",
+		"tempest_spire",
+		DifficultyMythic,
+		100,
+		6,
+		2,
+		6,
+		2,
+		4200,
+		900000,
+		2,
+		nil,
+	)
+
+	if summary.DifficultyNote != "Mythic bosses guarantee one bonus gem and one unique-effect item." {
+		t.Fatalf("unexpected mythic difficulty note: %s", summary.DifficultyNote)
 	}
 }

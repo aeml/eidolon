@@ -1856,6 +1856,7 @@ type RewardSummaryEvent struct {
 	TotalRooms  int    `json:"totalRooms,omitempty"`
 	EliteRoomsCleared int `json:"eliteRoomsCleared,omitempty"`
 	TotalEliteRooms int `json:"totalEliteRooms,omitempty"`
+	DifficultyNote string `json:"difficultyNote,omitempty"`
 	ExitHint    string `json:"exitHint,omitempty"`
 }
 
@@ -1941,7 +1942,19 @@ func buildBossRewardSummary(playerID, bossName, instanceType string, difficulty 
 		TotalRooms:   totalRooms,
 		EliteRoomsCleared: eliteRoomsCleared,
 		TotalEliteRooms:   totalEliteRooms,
+		DifficultyNote: difficultyRewardNote(difficulty),
 		ExitHint:     "Return to the entrance to leave the dungeon.",
+	}
+}
+
+func difficultyRewardNote(difficulty DungeonDifficulty) string {
+	switch difficulty {
+	case DifficultyHeroic:
+		return "Heroic bosses guarantee one bonus gem drop."
+	case DifficultyMythic:
+		return "Mythic bosses guarantee one bonus gem and one unique-effect item."
+	default:
+		return ""
 	}
 }
 
@@ -7210,6 +7223,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					member.Gold += goldPerMember
 					memberRewardItemCount := 0
 					memberRewardGemCount := 0
+					memberRewardItems := []*Item{}
 
 					// Update Quests for all party members
 					w.UpdateQuestProgress(member, tSubType)
@@ -7271,13 +7285,30 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 								log.Printf("Party Boss Loot: Inventory full for %s. Remaining: %d", member.ID, rem)
 							}
 						}
+
+						if instanceDifficulty == DifficultyHeroic || instanceDifficulty == DifficultyMythic {
+							if bonusGem := GenerateRandomGem(true, instanceDifficulty == DifficultyMythic); bonusGem != nil {
+								if member.AddItemToInventory(*bonusGem) == 0 {
+									memberRewardGemCount++
+									memberRewardItems = append(memberRewardItems, bonusGem)
+								}
+							}
+						}
+						if instanceDifficulty == DifficultyMythic {
+							if uniqueItem := GenerateGuaranteedUniqueEquipment(max(runLevel, 100)); uniqueItem != nil {
+								if member.AddItemToInventory(*uniqueItem) == 0 {
+									memberRewardItemCount++
+									memberRewardItems = append(memberRewardItems, uniqueItem)
+								}
+							}
+						}
 					}
 
 					memberID := member.ID
 					rewardSummary := RewardSummaryEvent{}
 					hasRewardSummary := false
 					if isBoss {
-						rewardSummary = buildBossRewardSummary(memberID, tSubType, instanceType, instanceDifficulty, runLevel, roomsCleared, eliteRoomsCleared, totalRooms, totalEliteRooms, goldPerMember, xpPerMember, heartCount, nil)
+						rewardSummary = buildBossRewardSummary(memberID, tSubType, instanceType, instanceDifficulty, runLevel, roomsCleared, eliteRoomsCleared, totalRooms, totalEliteRooms, goldPerMember, xpPerMember, heartCount, memberRewardItems)
 						if memberRewardItemCount > 0 {
 							rewardSummary.ItemCount = memberRewardItemCount
 						}
@@ -7313,6 +7344,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				attacker.Gold += finalGold
 				attackerRewardItemCount := 0
 				attackerRewardGemCount := 0
+				attackerRewardItems := []*Item{}
 				if attacker.MaxExperience == 0 {
 					attacker.MaxExperience = 100
 				}
@@ -7375,13 +7407,30 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 							log.Printf("Solo Boss Loot: Inventory full for %s. Remaining: %d", attacker.ID, rem)
 						}
 					}
+
+					if instanceDifficulty == DifficultyHeroic || instanceDifficulty == DifficultyMythic {
+						if bonusGem := GenerateRandomGem(true, instanceDifficulty == DifficultyMythic); bonusGem != nil {
+							if attacker.AddItemToInventory(*bonusGem) == 0 {
+								attackerRewardGemCount++
+								attackerRewardItems = append(attackerRewardItems, bonusGem)
+							}
+						}
+					}
+					if instanceDifficulty == DifficultyMythic {
+						if uniqueItem := GenerateGuaranteedUniqueEquipment(max(runLevel, 100)); uniqueItem != nil {
+							if attacker.AddItemToInventory(*uniqueItem) == 0 {
+								attackerRewardItemCount++
+								attackerRewardItems = append(attackerRewardItems, uniqueItem)
+							}
+						}
+					}
 				}
 
 				attackerID := attacker.ID
 				rewardSummary := RewardSummaryEvent{}
 				hasRewardSummary := false
 				if isBoss {
-					rewardSummary = buildBossRewardSummary(attackerID, tSubType, instanceType, instanceDifficulty, runLevel, roomsCleared, eliteRoomsCleared, totalRooms, totalEliteRooms, finalGold, finalXp, heartCount, nil)
+					rewardSummary = buildBossRewardSummary(attackerID, tSubType, instanceType, instanceDifficulty, runLevel, roomsCleared, eliteRoomsCleared, totalRooms, totalEliteRooms, finalGold, finalXp, heartCount, attackerRewardItems)
 					if attackerRewardItemCount > 0 {
 						rewardSummary.ItemCount = attackerRewardItemCount
 					}

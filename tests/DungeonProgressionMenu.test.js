@@ -169,6 +169,8 @@ describe('dungeon progression menu', () => {
         expect(runLevelSelect).not.toBeNull();
         expect(Array.from(runLevelSelect.options).map((option) => option.value)).toEqual(['30']);
         expect(infoBox.textContent).toContain('Heroic and Mythic unlock at level 100');
+        expect(infoBox.textContent).toContain('Baseline route for learning layouts, boss kits, and room pacing.');
+        expect(infoBox.textContent).toContain('Boss rewards stay on the standard gold, XP, and heart line.');
     });
 
     test('sends selected run level with enter_dungeon payload', () => {
@@ -187,6 +189,11 @@ describe('dungeon progression menu', () => {
         document.getElementById('dungeon-type-select').value = 'tempest_spire';
         document.getElementById('dungeon-run-level-select').value = '80';
         document.getElementById('diff-btn-mythic').click();
+
+        const infoBox = document.getElementById('difficulty-info-box');
+        expect(infoBox.textContent).toContain('Capstone push where bosses hit hardest and every kill pays out build-defining loot.');
+        expect(infoBox.textContent).toContain('Bosses guarantee one bonus gem and one unique-effect item.');
+
         document.getElementById('btn-enter-dungeon').click();
 
         expect(window.game.socket.send).toHaveBeenCalledWith(JSON.stringify({

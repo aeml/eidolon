@@ -401,6 +401,7 @@ type RewardSummaryPayload struct {
 	TotalRooms   int    `json:"totalRooms,omitempty"`
 	EliteRoomsCleared int `json:"eliteRoomsCleared,omitempty"`
 	TotalEliteRooms int `json:"totalEliteRooms,omitempty"`
+	DifficultyNote string `json:"difficultyNote,omitempty"`
 	ExitHint     string `json:"exitHint,omitempty"`
 }
 
@@ -848,6 +849,7 @@ func main() {
 				TotalRooms:   evt.TotalRooms,
 				EliteRoomsCleared: evt.EliteRoomsCleared,
 				TotalEliteRooms:   evt.TotalEliteRooms,
+				DifficultyNote: evt.DifficultyNote,
 				ExitHint:     evt.ExitHint,
 			}
 			b, _ := json.Marshal(payload)

@@ -171,6 +171,7 @@ function createRewardSummary(overrides = {}) {
         totalRooms: 6,
         eliteRoomsCleared: 2,
         totalEliteRooms: 2,
+        difficultyNote: 'Heroic bosses guarantee one bonus gem drop.',
         exitHint: 'Return to the entrance to leave the dungeon.',
         ...overrides
     };
@@ -201,27 +202,29 @@ describe('Dungeon reward feedback', () => {
         ui.showRewardSummary(createRewardSummary());
 
         const chatMessages = Array.from(document.querySelectorAll('#chat-messages > div')).map(node => node.textContent);
-        expect(chatMessages).toHaveLength(8);
+        expect(chatMessages).toHaveLength(9);
         expect(chatMessages[0]).toContain('Rewards');
         expect(chatMessages[0]).toContain('Boss Defeated: Zephyrion');
         expect(chatMessages[1]).toContain('Tempest Spire • Heroic • Level 100');
         expect(chatMessages[2]).toContain('Dungeon complete');
         expect(chatMessages[2]).toContain('6 / 6 rooms');
         expect(chatMessages[2]).toContain('2 / 2 elite rooms');
-        expect(chatMessages[3]).toContain('Zephyrion down');
-        expect(chatMessages[3]).toContain('3 items secured');
-        expect(chatMessages[3]).toContain('1 gem secured');
-        expect(chatMessages[3]).toContain('2 hearts secured');
-        expect(chatMessages[4]).toContain('+4200 gold');
-        expect(chatMessages[4]).toContain('+900000 XP');
-        expect(chatMessages[5]).toContain('3 items');
-        expect(chatMessages[5]).toContain('1 gem');
-        expect(chatMessages[5]).toContain('2 hearts');
-        expect(chatMessages[6]).toContain('build drops ready');
-        expect(chatMessages[7]).toContain('Return to the entrance to leave the dungeon.');
+        expect(chatMessages[3]).toContain('Heroic bosses guarantee one bonus gem drop.');
+        expect(chatMessages[4]).toContain('Zephyrion down');
+        expect(chatMessages[4]).toContain('3 items secured');
+        expect(chatMessages[4]).toContain('1 gem secured');
+        expect(chatMessages[4]).toContain('2 hearts secured');
+        expect(chatMessages[5]).toContain('+4200 gold');
+        expect(chatMessages[5]).toContain('+900000 XP');
+        expect(chatMessages[6]).toContain('3 items');
+        expect(chatMessages[6]).toContain('1 gem');
+        expect(chatMessages[6]).toContain('2 hearts');
+        expect(chatMessages[7]).toContain('build drops ready');
+        expect(chatMessages[8]).toContain('Return to the entrance to leave the dungeon.');
         expect(document.getElementById('combat-intent-name').textContent).toContain('Boss Defeated: Zephyrion');
         expect(document.getElementById('combat-intent-meta').textContent).toContain('Tempest Spire');
         expect(document.getElementById('combat-intent-status').textContent).toContain('Dungeon complete');
+        expect(document.getElementById('combat-intent-status').textContent).toContain('Heroic bosses guarantee one bonus gem drop.');
         expect(document.getElementById('combat-intent-status').textContent).toContain('Zephyrion down');
     });
 

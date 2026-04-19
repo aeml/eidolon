@@ -628,6 +628,11 @@ export class UIManager {
         return parts.join(' • ');
     }
 
+    formatRewardDifficultyNote(summary = {}) {
+        if (!summary.difficultyNote) return '';
+        return summary.difficultyNote;
+    }
+
     formatRoomClearHeadline(summary = {}) {
         const parts = [];
         if (summary.roomType === 'elite') parts.push('elite room broken');
@@ -664,9 +669,10 @@ export class UIManager {
         const headlineLine = this.formatRewardHeadline(summary);
         const subtitleLine = this.formatRewardSummarySubtitle(summary);
         const completionLine = this.formatRewardSummaryCompletion(summary);
+        const difficultyNoteLine = this.formatRewardDifficultyNote(summary);
         const pulseLine = this.formatRewardPulse(summary);
         const { currencyLine, lootLine } = this.formatRewardSummary(summary);
-        const calloutSubtitle = [completionLine, headlineLine, pulseLine, summary.exitHint || 'Dungeon rewards ready.']
+        const calloutSubtitle = [completionLine, difficultyNoteLine, headlineLine, pulseLine, summary.exitHint || 'Dungeon rewards ready.']
             .filter(Boolean)
             .join(' • ');
 
@@ -686,6 +692,10 @@ export class UIManager {
 
         if (completionLine) {
             this.addChatMessage('Rewards', completionLine);
+        }
+
+        if (difficultyNoteLine) {
+            this.addChatMessage('Rewards', difficultyNoteLine);
         }
 
         if (headlineLine) {
@@ -2616,9 +2626,33 @@ export class UIManager {
         }
 
         const difficultyInfo = {
-            normal: { name: 'Normal', color: '#aaa', hp: '1x', dmg: '1x', loot: '1x' },
-            heroic: { name: 'Heroic', color: '#ff0', hp: '2x', dmg: '1.5x', loot: '2x' },
-            mythic: { name: 'Mythic', color: '#f60', hp: '4x', dmg: '2.5x', loot: '4x' }
+            normal: {
+                name: 'Normal',
+                color: '#aaa',
+                hp: '1x',
+                dmg: '1x',
+                loot: '1x',
+                identity: 'Baseline route for learning layouts, boss kits, and room pacing.',
+                rewardNote: 'Boss rewards stay on the standard gold, XP, and heart line.'
+            },
+            heroic: {
+                name: 'Heroic',
+                color: '#ff0',
+                hp: '2x',
+                dmg: '1.5x',
+                loot: '2x',
+                identity: 'Endgame pressure spike with heavier boss stat checks and a cleaner gem chase.',
+                rewardNote: 'Bosses guarantee one bonus gem drop on top of the normal payout.'
+            },
+            mythic: {
+                name: 'Mythic',
+                color: '#f60',
+                hp: '4x',
+                dmg: '2.5x',
+                loot: '4x',
+                identity: 'Capstone push where bosses hit hardest and every kill pays out build-defining loot.',
+                rewardNote: 'Bosses guarantee one bonus gem and one unique-effect item.'
+            }
         };
 
         // Dungeon Type Label
@@ -2784,9 +2818,9 @@ export class UIManager {
                 <div><span style="color: #888;">Enemy HP:</span> <span style="color: #f66;">${diff.hp}</span></div>
                 <div><span style="color: #888;">Enemy Damage:</span> <span style="color: #f66;">${diff.dmg}</span></div>
                 <div><span style="color: #888;">Loot & XP:</span> <span style="color: #6f6;">${diff.loot}</span></div>
+                <div style="color: #d7dfef; margin-top: 6px; line-height: 1.5;">${diff.identity}</div>
+                <div style="color: ${diff.color}; margin-top: 5px; line-height: 1.5;">${diff.rewardNote}</div>
                 <div style="color: #8ea8d1; margin-top: 6px;">All dungeons unlock at level ${data.dungeonUnlockLevel || 30}. Heroic and Mythic unlock at level ${data.endgameDifficultyUnlockLevel || 100}.</div>
-                ${selectedDifficulty === 'heroic' ? '<div style="color: #ff0; margin-top: 5px;">+ Rare Gems & Better Drops</div>' : ''}
-                ${selectedDifficulty === 'mythic' ? '<div style="color: #f60; margin-top: 5px;">+ Unique Items & Titles</div>' : ''}
             `;
         };
 

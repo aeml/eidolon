@@ -185,6 +185,21 @@ func TestGenerateBossHearts(t *testing.T) {
 	}
 }
 
+func TestGenerateGuaranteedUniqueEquipmentReturnsEquippableItemWithUniqueEffect(t *testing.T) {
+	for i := 0; i < 10; i++ {
+		item := GenerateGuaranteedUniqueEquipment(100)
+		if item == nil {
+			t.Fatal("GenerateGuaranteedUniqueEquipment returned nil")
+		}
+		if item.UniqueEffect == "" {
+			t.Fatalf("expected unique effect on item %+v", item)
+		}
+		if item.Type == ItemMaterial || item.Type == ItemRelic || item.Type == ItemGem {
+			t.Fatalf("expected equippable item type, got %s", item.Type)
+		}
+	}
+}
+
 func TestCreateItemMaterial(t *testing.T) {
 	shard := BaseItem{Name: "Eidolon Shard", Type: ItemMaterial, Slot: "material"}
 	item := createItem(shard, RarityCommon, 1.0, 0, 1)

@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.24.1`
+- Current in-game displayed version: `Alpha 0.24.2`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.24.1`
+### Shipped through `0.24.2`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -51,6 +51,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.23.4`: dungeon reward messaging now lands more like payoff and closes the `0.23` line with stronger release-readability polish
 - `0.24.0`: dungeon room state now exposes canonical room roles and pacing metadata across journal, portal, minimap, and world-map route surfaces
 - `0.24.1`: longer dungeon runs now repeat reward and ambush beats more deliberately while preserving the late shrine reset before boss pressure
+- `0.24.2`: Heroic and Mythic boss clears now advertise and award distinct endgame bonus drops, making endgame difficulty identity visible in both the dungeon menu and live reward summaries
 
 ### What `0.22` has clearly accomplished already
 
@@ -349,15 +350,15 @@ Suggested milestone slices:
 - `0.24.3`: rerun incentive and reward-ladder pass
 - `0.24.4`: party dungeon UX hardening and release QA
 
-### `0.24.1` current slice
+### `0.24.2` current slice
 
 Status: ready to ship
 
 Current focus:
 
-- longer multi-boss dungeon lines should not spend the entire run on only one early chest beat and one early ambush beat
-- longer runs should be able to surface a second reward pocket and a second pressure spike while keeping shrine as the late recovery anchor
-- this slice should make long-run cadence feel more authored before the later Heroic/Mythic identity and rerun-incentive work
+- Heroic and Mythic should read like distinct endgame reward lanes, not only bigger stat multipliers
+- the player should see the difference before entering the run and again when the boss reward lands
+- this slice should keep the change small and authoritative by grounding the identity pass in real boss reward guarantees and matching UI copy
 
 ## `0.25` - Social, economy, and retention foundations
 

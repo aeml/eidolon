@@ -103,6 +103,18 @@ func TestDungeonDifficultyMinLevelsUseProgressionRules(t *testing.T) {
 	}
 }
 
+func TestDifficultyRewardNoteMatchesEndgameIdentityCopy(t *testing.T) {
+	if got := difficultyRewardNote(DifficultyNormal); got != "" {
+		t.Fatalf("expected no normal difficulty note, got %q", got)
+	}
+	if got := difficultyRewardNote(DifficultyHeroic); got != "Heroic bosses guarantee one bonus gem drop." {
+		t.Fatalf("unexpected heroic note: %q", got)
+	}
+	if got := difficultyRewardNote(DifficultyMythic); got != "Mythic bosses guarantee one bonus gem and one unique-effect item." {
+		t.Fatalf("unexpected mythic note: %q", got)
+	}
+}
+
 func TestEntityRecalculateStats(t *testing.T) {
 	e := &Entity{
 		ID:    "player-1",

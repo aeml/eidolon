@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.24.1 for the latest shipped dungeon-cadence slice', () => {
-        expect(indexHtml).toContain('Alpha 0.24.1');
+    test('advances the login screen to alpha 0.24.2 for the latest shipped endgame-identity slice', () => {
+        expect(indexHtml).toContain('Alpha 0.24.2');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -63,7 +63,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.24.1', () => {
+    test('includes the latest player-facing patch notes entry for 0.24.2', () => {
+        expect(indexHtml).toContain('Patch 0.24.2');
+        expect(indexHtml).toContain('Heroic bosses now guarantee a bonus gem drop, while Mythic bosses guarantee both a bonus gem and a unique-effect item');
+        expect(indexHtml).toContain('The dungeon menu now explains each difficulty as a distinct endgame lane instead of only listing stat multipliers');
+        expect(indexHtml).toContain('Boss reward summaries now surface the exact Heroic or Mythic bonus rule that paid out on the kill');
+        expect(indexHtml).toContain('Added regression coverage for endgame difficulty reward notes, guaranteed Mythic unique-effect gear, dungeon menu identity copy, and 0.24.2 version presentation');
+    });
+
+    test('keeps the prior 0.24.1 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.24.1');
         expect(indexHtml).toContain('Longer multi-boss dungeons can now stage a second chest pocket and a second elite ambush deeper in the run');
         expect(indexHtml).toContain('The shrine beat still anchors the deep pre-boss reset');
@@ -121,6 +129,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.24.2');
         expect(indexHtml).toContain('Patch 0.24.1');
         expect(indexHtml).toContain('Patch 0.24.0');
         expect(indexHtml).toContain('Patch 0.23.4');
@@ -162,6 +171,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.24.2"');
         expect(indexHtml).toContain('data-version="0.24.1"');
         expect(indexHtml).toContain('data-version="0.24.0"');
         expect(indexHtml).toContain('data-version="0.23.4"');
