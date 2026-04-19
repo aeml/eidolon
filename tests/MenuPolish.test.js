@@ -162,6 +162,7 @@ function buildStaticWindowDom() {
         <div id="forge-socket-cost-hearts"></div>
         <div id="forge-socket-cost-shards"></div>
         <div id="trading-house-screen" style="display:none"></div>
+        <div id="trading-house-guidance"></div>
         <button id="btn-close-trading-house"></button>
         <button id="tab-trading-bid"></button>
         <button id="tab-trading-list"></button>
@@ -760,6 +761,65 @@ describe('menu polish regressions', () => {
         expect(document.getElementById('party-request-modal').style.display).toBe('block');
         expect(document.getElementById('party-request-benefits').textContent).toContain('share nearby kill rewards');
         expect(document.getElementById('party-request-benefits').textContent).toContain('dungeon boss credit');
+    });
+
+    test('trading house tabs explain browse, listing, and collection intent', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+        ui.lastPlayerRef = { inventory: [] };
+
+        ui.trading.switchTab('bid');
+        expect(document.getElementById('trading-house-guidance').textContent).toContain('watch the time remaining');
+
+        ui.trading.switchTab('list');
+        expect(document.getElementById('trading-house-guidance').textContent).toContain('sales fee plus your deposit');
+
+        ui.trading.switchTab('my');
+        expect(document.getElementById('trading-house-guidance').textContent).toContain('collect gold or reclaim items');
+    });
+
+    test('trading house renders auction timing and collection outcome hints', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+
+        ui.renderAuctionList([
+            {
+                id: 'auction-1',
+                item: { name: 'Stormblade', rarity: 'Rare' },
+                sellerName: 'Alice',
+                currentBid: 1200,
+                buyoutPrice: 2400,
+                bidderName: 'Rob',
+                endTime: new Date(Date.now() + (45 * 60000)).toISOString()
+            }
+        ]);
+
+        const browseRow = document.getElementById('trading-list-container').firstChild;
+        expect(browseRow.textContent).toContain('Stormblade');
+        expect(browseRow.textContent).toContain('Alice');
+        expect(browseRow.textContent).toContain('45m left');
+        expect(browseRow.querySelector('span').title).toContain('High bid: Rob');
+
+        ui.renderMyAuctions([
+            {
+                id: 'auction-2',
+                item: { name: 'Zephyr Bow', rarity: 'Epic' },
+                status: 'SOLD',
+                currentBid: 5000
+            },
+            {
+                id: 'auction-3',
+                item: { name: 'Old Boots', rarity: 'Common' },
+                status: 'EXPIRED',
+                currentBid: 200
+            }
+        ]);
+
+        const myRows = document.getElementById('trading-my-list').children;
+        expect(myRows[0].textContent).toContain('Collect Gold');
+        expect(myRows[0].querySelector('button').title).toContain('deposit refund');
+        expect(myRows[1].textContent).toContain('Reclaim Item');
+        expect(myRows[1].querySelector('button').title).toContain('inventory or stash');
     });
 
     test('older static window markup uses consistent close button chrome', () => {

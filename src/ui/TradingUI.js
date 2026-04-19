@@ -91,6 +91,33 @@ export class TradingUI {
         });
     }
 
+    formatAuctionTimeRemaining(endTime) {
+        const endMs = Number(new Date(endTime));
+        if (!Number.isFinite(endMs)) {
+            return 'Time unknown';
+        }
+
+        const remainingMs = Math.max(0, endMs - Date.now());
+        const totalMinutes = Math.ceil(remainingMs / 60000);
+        if (totalMinutes < 60) {
+            return `${Math.max(1, totalMinutes)}m left`;
+        }
+
+        const totalHours = Math.ceil(totalMinutes / 60);
+        if (totalHours < 48) {
+            return `${totalHours}h left`;
+        }
+
+        return `${Math.ceil(totalHours / 24)}d left`;
+    }
+
+    updateTradingGuidance(text) {
+        const guidance = document.getElementById('trading-house-guidance');
+        if (guidance) {
+            guidance.textContent = text;
+        }
+    }
+
     // ================================================================
     // PUBLIC API
     // ================================================================
@@ -140,15 +167,18 @@ export class TradingUI {
 
         if (tab === 'bid') {
             if (this.panelTradingBid) this.panelTradingBid.style.display = 'flex';
+            this.updateTradingGuidance('Browse live auctions, check the current bid versus buyout, and watch the time remaining before you commit gold.');
             this.handleSearch();
         } else if (tab === 'list') {
             if (this.panelTradingList) this.panelTradingList.style.display = 'flex';
+            this.updateTradingGuidance('List market-worthy gear here. Set a realistic starting bid, a clean buyout, and remember sold auctions return gold after the sales fee plus your deposit.');
             const player = this.ctx.getLastPlayer();
             if (player) {
                 this.updateInventory(player);
             }
         } else if (tab === 'my') {
             if (this.panelTradingMy) this.panelTradingMy.style.display = 'flex';
+            this.updateTradingGuidance('My Auctions separates active listings from sold, expired, and cancelled results so you can collect gold or reclaim items without guessing.');
             if (this.onTradingMyAuctions) this.onTradingMyAuctions();
         }
     }
@@ -250,6 +280,8 @@ export class TradingUI {
             const color = this.ctx.getRarityColor(item.rarity);
             this.tradingSellSlot.style.border = `2px solid ${color}`;
         }
+
+        this.updateTradingGuidance(`Listing ${item.name}. Starting bids open the auction, buyout closes it instantly, and sold auctions return gold after the sales fee plus your deposit.`);
     }
 
     // ================================================================
@@ -289,17 +321,23 @@ export class TradingUI {
             nameSpan.onmouseleave = () => {
                 if (this.ctx.hideTooltips) this.ctx.hideTooltips();
             };
+            const bidState = auction.bidderName
+                ? `High bid: ${auction.bidderName}`
+                : 'No bids yet';
+            const timeState = this.formatAuctionTimeRemaining(auction.endTime);
+            nameSpan.title = `${bidState} • ${timeState}`;
             row.appendChild(nameSpan);
 
             // Seller
             const sellerSpan = document.createElement('span');
-            sellerSpan.textContent = auction.sellerName;
+            sellerSpan.textContent = `${auction.sellerName} • ${timeState}`;
             sellerSpan.style.color = '#aaa';
             row.appendChild(sellerSpan);
 
             // Price
             const priceSpan = document.createElement('span');
             this.setPriceContent(priceSpan, [auction.currentBid, auction.buyoutPrice]);
+            priceSpan.title = bidState;
             row.appendChild(priceSpan);
 
             // Action
@@ -390,6 +428,7 @@ export class TradingUI {
                 btnCollect.className = 'btn-menu';
                 btnCollect.style.fontSize = '10px';
                 btnCollect.style.padding = '2px 5px';
+                btnCollect.title = 'Collect sold gold payout with deposit refund and sales fee already applied.';
                 btnCollect.onclick = () => {
                     if (this.onTradingCollect) this.onTradingCollect(auction.id);
                 };
@@ -400,6 +439,7 @@ export class TradingUI {
                 btnReclaim.className = 'btn-menu';
                 btnReclaim.style.fontSize = '10px';
                 btnReclaim.style.padding = '2px 5px';
+                btnReclaim.title = 'Return the unsold item to your inventory or stash.';
                 btnReclaim.onclick = () => {
                     if (this.onTradingCollect) this.onTradingCollect(auction.id);
                 };
@@ -416,6 +456,12 @@ export class TradingUI {
                 };
                 actionDiv.appendChild(btnCancel);
             }
+
+            actionDiv.title = auction.status === 'ACTIVE'
+                ? 'Listing is still live.'
+                : auction.status === 'SOLD'
+                    ? 'Gold is ready to collect.'
+                    : 'Item is ready to reclaim.';
 
             row.appendChild(actionDiv);
             this.tradingMyList.appendChild(row);

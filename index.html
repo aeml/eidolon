@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.25.0</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.25.1</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -508,6 +508,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.25.1" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.25.1 (Trading House rows now explain what happens next)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Browse rows read better:</strong> Trading House browse rows now surface bid state and time remaining so search results stop reading like bare item ledgers.</li>
+                        <li><strong>Listing intent is clearer:</strong> Listing flow now explains starting bid, buyout, and the sold-auction payout path before you post.</li>
+                        <li><strong>Collection outcome is explicit:</strong> My Auctions now makes it clearer whether you are collecting gold or reclaiming an unsold item.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for trading-house tab guidance, auction timing hints, collection outcome messaging, and 0.25.1 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.25.0" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.25.0 (Party play now does a better job of selling why it matters)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

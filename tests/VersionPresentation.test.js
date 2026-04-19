@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.25.0 for the latest shipped party-importance slice', () => {
-        expect(indexHtml).toContain('Alpha 0.25.0');
+    test('advances the login screen to alpha 0.25.1 for the latest shipped trading-ux slice', () => {
+        expect(indexHtml).toContain('Alpha 0.25.1');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -63,7 +63,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.25.0', () => {
+    test('includes the latest player-facing patch notes entry for 0.25.1', () => {
+        expect(indexHtml).toContain('Patch 0.25.1');
+        expect(indexHtml).toContain('Trading House browse rows now surface bid state and time remaining so search results stop reading like bare item ledgers');
+        expect(indexHtml).toContain('Listing flow now explains starting bid, buyout, and the sold-auction payout path before you post');
+        expect(indexHtml).toContain('My Auctions now makes it clearer whether you are collecting gold or reclaiming an unsold item');
+        expect(indexHtml).toContain('Added regression coverage for trading-house tab guidance, auction timing hints, collection outcome messaging, and 0.25.1 version presentation');
+    });
+
+    test('keeps the prior 0.25.0 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.25.0');
         expect(indexHtml).toContain('The party panel now explains why grouping matters by calling out shared nearby kill rewards, dungeon boss credit, and the live party reward bonus');
         expect(indexHtml).toContain('Party members now show clearer role tags like Leader, You, and Member instead of reading like anonymous HP bars');
@@ -153,6 +161,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.25.1');
         expect(indexHtml).toContain('Patch 0.25.0');
         expect(indexHtml).toContain('Patch 0.24.4');
         expect(indexHtml).toContain('Patch 0.24.3');
@@ -198,6 +207,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.25.1"');
         expect(indexHtml).toContain('data-version="0.25.0"');
         expect(indexHtml).toContain('data-version="0.24.4"');
         expect(indexHtml).toContain('data-version="0.24.3"');
