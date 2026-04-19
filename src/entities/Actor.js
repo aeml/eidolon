@@ -483,9 +483,9 @@ export class Actor extends Entity {
     updateState(newState) {
         if (this.isRemote) {
             if (newState === 'ATTACKING') {
-                // If already attacking, just extend the state without restarting animation
-                const restart = this.state !== 'ATTACKING';
-                this.setAttackingState(restart);
+                if (this.state !== 'ATTACKING') {
+                    this.setAttackingState(true);
+                }
             } else if (newState === 'DEAD') {
                 this.die();
             } else {

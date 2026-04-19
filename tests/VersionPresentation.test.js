@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.27.3 for the latest shipped remote recovery sequencing slice', () => {
-        expect(indexHtml).toContain('Alpha 0.27.3');
+    test('advances the login screen to alpha 0.27.4 for the latest shipped duplicate remote-attack sequencing slice', () => {
+        expect(indexHtml).toContain('Alpha 0.27.4');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.27.3', () => {
+    test('includes the latest player-facing patch notes entry for 0.27.4', () => {
+        expect(indexHtml).toContain('Patch 0.27.4');
+        expect(indexHtml).toContain('Duplicate remote attack confirmations now stop re-extending the same local attack pose when they are only confirming a swing that is already in progress');
+        expect(indexHtml).toContain('This reduces overstretched remote swing visuals when explicit attack events and later replicated <code>ATTACKING</code> state both describe the same melee action');
+        expect(indexHtml).toContain('The client now only starts a fresh remote attack timer when a nearby actor was not already attacking');
+        expect(indexHtml).toContain('Added regression coverage for duplicate remote attack sequencing and 0.27.4 version presentation');
+    });
+
+    test('keeps the prior 0.27.3 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.27.3');
         expect(indexHtml).toContain('Remote players now accept server recovery states immediately after an attack instead of waiting for a client-side attack timer to expire');
         expect(indexHtml).toContain('This reduces cases where nearby actors look stuck swinging after the server has already moved them back to idle or movement');
@@ -146,6 +154,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.27.4');
         expect(indexHtml).toContain('Patch 0.27.3');
         expect(indexHtml).toContain('Patch 0.27.2');
         expect(indexHtml).toContain('Patch 0.27.1');
@@ -244,6 +253,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.27.4');
         expect(indexHtml).toContain('Patch 0.27.3');
         expect(indexHtml).toContain('Patch 0.27.2');
         expect(indexHtml).toContain('Patch 0.27.1');
@@ -297,6 +307,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.27.4"');
         expect(indexHtml).toContain('data-version="0.27.3"');
         expect(indexHtml).toContain('data-version="0.27.2"');
         expect(indexHtml).toContain('data-version="0.27.1"');

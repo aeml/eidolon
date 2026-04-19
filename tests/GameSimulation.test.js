@@ -286,6 +286,32 @@ describe('Actor System', () => {
             jest.runOnlyPendingTimers();
             jest.useRealTimers();
         });
+
+        test('duplicate remote attacking confirmations do not keep extending the same local attack timer', () => {
+            jest.useFakeTimers();
+
+            actor.isRemote = true;
+            actor.playAnimation = jest.fn();
+            actor.currentAction = { setEffectiveTimeScale: jest.fn(), getClip: () => ({ duration: 1 }) };
+            actor.stats.attackSpeed = 1;
+
+            actor.updateState('ATTACKING');
+            const firstTimer = actor.attackTimer;
+
+            jest.advanceTimersByTime(400);
+            actor.updateState('ATTACKING');
+
+            expect(actor.attackTimer).toBe(firstTimer);
+            expect(actor.playAnimation).toHaveBeenCalledTimes(1);
+
+            jest.advanceTimersByTime(600);
+
+            expect(actor.state).toBe('IDLE');
+            expect(actor.attackTimer).toBeNull();
+
+            jest.runOnlyPendingTimers();
+            jest.useRealTimers();
+        });
     });
 
     describe('Inventory System', () => {
