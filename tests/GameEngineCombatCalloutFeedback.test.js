@@ -353,6 +353,49 @@ describe('GameEngine encounter callouts', () => {
         expect(remotePlayer.updateState).toHaveBeenCalledWith('ATTACKING');
     });
 
+    test('explicit remote ability events can restart a new cast presentation even when the actor is already attacking', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remotePlayer = {
+            id: 'remote-ability-refresh',
+            name: 'Tarin',
+            position: new THREE.Vector3(8, 0, 1),
+            state: 'ATTACKING',
+            isRemote: true,
+            constructor: { name: 'Wizard' },
+            rotation: new THREE.Quaternion(),
+            mesh: {
+                quaternion: new THREE.Quaternion(),
+                lookAt: jest.fn(function lookAt() {
+                    this.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 5);
+                })
+            },
+            setAttackingState: jest.fn(function setAttackingState() {
+                this.state = 'ATTACKING';
+            }),
+            updateState: jest.fn()
+        };
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.remotePlayers = new Map([['remote-ability-refresh', remotePlayer]]);
+        engine.abilityController = { triggerRemoteAbilityVisuals: jest.fn() };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+
+        engine.handleServerMessage({
+            type: 'ability',
+            payload: {
+                sourceId: 'remote-ability-refresh',
+                skillName: 'Arcane Missile',
+                targetX: 12,
+                targetZ: 2
+            }
+        });
+
+        expect(remotePlayer.setAttackingState).toHaveBeenCalledWith(true);
+        expect(remotePlayer.updateState).not.toHaveBeenCalled();
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('TARIN: ARCANE MISSILE', remotePlayer.position, '#8fe7ff', '18px');
+    });
+
     test('shows a nearby replicated remote-player basic attack immediately from the explicit attack event', () => {
         const engine = Object.create(GameEngine.prototype);
         const remotePlayer = {

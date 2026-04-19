@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.27.4</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.27.5</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.27.5" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.5 (Explicit remote action starts can refresh a new swing or cast)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Explicit starts can refresh again:</strong> Explicit remote attack and ability events can now restart nearby action presentation even if that actor was already in an <code>ATTACKING</code> pose from the previous action.</li>
+                        <li><strong>Fast sequences stay readable:</strong> This keeps fast back-to-back remote swings and casts readable after the 0.27.4 duplicate-confirmation fix stopped generic sync from stretching one action forever.</li>
+                        <li><strong>Sync confirmations still stay calm:</strong> Later replicated <code>ATTACKING</code> confirmations still stay idempotent, but real explicit action-start messages now re-arm the visual cadence for a new move.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for explicit remote action refresh handling and 0.27.5 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.27.4" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.4 (Duplicate remote attack confirmations no longer overextend the same swing)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

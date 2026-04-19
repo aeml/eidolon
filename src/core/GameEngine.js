@@ -353,6 +353,20 @@ export class GameEngine {
         return this.remotePlayers?.get(entityId) || null;
     }
 
+    beginRemoteActionPresentation(entity) {
+        if (!entity || entity.state === 'JUMPING') return false;
+        if (typeof entity.setAttackingState === 'function') {
+            entity.setAttackingState(true);
+            return true;
+        }
+        if (typeof entity.updateState === 'function') {
+            entity.updateState('ATTACKING');
+            return true;
+        }
+        entity.state = 'ATTACKING';
+        return true;
+    }
+
     showRemoteStateReadability(entity, nextState, previousState = '') {
         if (!entity?.position || !this.floatingTextManager) return false;
         if (!this.isPlayerClassEntity(entity)) return false;
@@ -991,8 +1005,8 @@ export class GameEngine {
                     source.rotation?.copy?.(source.mesh.quaternion);
                 }
                 this.abilityController.triggerRemoteAbilityVisuals(source, abilityData.skillName, abilityData.targetX, abilityData.targetZ);
-                if (this.isPlayerClassEntity(source) && typeof source.updateState === 'function' && source.state !== 'JUMPING') {
-                    source.updateState('ATTACKING');
+                if (this.isPlayerClassEntity(source)) {
+                    this.beginRemoteActionPresentation(source);
                 }
                 this.showRemoteActionReadability(source, abilityData.skillName);
             }
@@ -1010,9 +1024,7 @@ export class GameEngine {
                     source.mesh.lookAt(new THREE.Vector3(lookTarget.x, source.position?.y || 0, lookTarget.z));
                     source.rotation?.copy?.(source.mesh.quaternion);
                 }
-                if (typeof source.updateState === 'function' && source.state !== 'JUMPING') {
-                    source.updateState('ATTACKING');
-                }
+                this.beginRemoteActionPresentation(source);
                 this.showRemoteActionReadability(source, 'ATTACK');
             }
         } else if (msg.type === 'damage') {
