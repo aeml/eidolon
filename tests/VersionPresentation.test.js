@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.27.2 for the latest shipped remote-charge presentation slice', () => {
-        expect(indexHtml).toContain('Alpha 0.27.2');
+    test('advances the login screen to alpha 0.27.3 for the latest shipped remote recovery sequencing slice', () => {
+        expect(indexHtml).toContain('Alpha 0.27.3');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.27.2', () => {
+    test('includes the latest player-facing patch notes entry for 0.27.3', () => {
+        expect(indexHtml).toContain('Patch 0.27.3');
+        expect(indexHtml).toContain('Remote players now accept server recovery states immediately after an attack instead of waiting for a client-side attack timer to expire');
+        expect(indexHtml).toContain('This reduces cases where nearby actors look stuck swinging after the server has already moved them back to idle or movement');
+        expect(indexHtml).toContain('The client now clears local remote attack timers when authoritative non-attack states arrive');
+        expect(indexHtml).toContain('Added regression coverage for remote attack recovery sequencing and 0.27.3 version presentation');
+    });
+
+    test('keeps the prior 0.27.2 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.27.2');
         expect(indexHtml).toContain('Remote charge-state actors now keep their run-style presentation when the server says they are charging instead of falling back to a stationary attack loop');
         expect(indexHtml).toContain('This makes fighter charge-type abilities read more truthfully on nearby clients while the server is still driving the actual movement path');
@@ -138,6 +146,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.27.3');
         expect(indexHtml).toContain('Patch 0.27.2');
         expect(indexHtml).toContain('Patch 0.27.1');
         expect(indexHtml).toContain('Patch 0.27.0');
@@ -235,6 +244,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.27.3');
         expect(indexHtml).toContain('Patch 0.27.2');
         expect(indexHtml).toContain('Patch 0.27.1');
         expect(indexHtml).toContain('Patch 0.27.0');
@@ -287,6 +297,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.27.3"');
         expect(indexHtml).toContain('data-version="0.27.2"');
         expect(indexHtml).toContain('data-version="0.27.1"');
         expect(indexHtml).toContain('data-version="0.27.0"');

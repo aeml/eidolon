@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.27.2</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.27.3</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.27.3" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.3 (Remote attack recovery now follows server states immediately)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Recovery state is authoritative again:</strong> Remote players now accept server recovery states immediately after an attack instead of waiting for a client-side attack timer to expire.</li>
+                        <li><strong>Fewer stuck swing reads:</strong> This reduces cases where nearby actors look stuck swinging after the server has already moved them back to idle or movement.</li>
+                        <li><strong>Client timer stops yielding to stale pose lock:</strong> The client now clears local remote attack timers when authoritative non-attack states arrive.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for remote attack recovery sequencing and 0.27.3 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.27.2" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.2 (Remote charge states now keep charge-style motion presentation)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

@@ -264,6 +264,28 @@ describe('Actor System', () => {
             expect(actor.playAnimation).toHaveBeenCalledWith('Run');
             expect(actor.playAnimation).not.toHaveBeenCalledWith('Attack', false);
         });
+
+        test('remote server recovery state cancels the local attack timer and accepts idle immediately', () => {
+            jest.useFakeTimers();
+
+            actor.isRemote = true;
+            actor.playAnimation = jest.fn();
+            actor.currentAction = { setEffectiveTimeScale: jest.fn(), getClip: () => ({ duration: 1 }) };
+            actor.stats.attackSpeed = 1;
+
+            actor.setAttackingState(true);
+            expect(actor.state).toBe('ATTACKING');
+            expect(actor.attackTimer).not.toBeNull();
+
+            actor.updateState('IDLE');
+
+            expect(actor.state).toBe('IDLE');
+            expect(actor.attackTimer).toBeNull();
+            expect(actor.currentAction.setEffectiveTimeScale).toHaveBeenCalledWith(1.0);
+
+            jest.runOnlyPendingTimers();
+            jest.useRealTimers();
+        });
     });
 
     describe('Inventory System', () => {

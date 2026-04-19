@@ -489,11 +489,14 @@ export class Actor extends Entity {
             } else if (newState === 'DEAD') {
                 this.die();
             } else {
-                // If we are currently attacking, we ignore other state updates 
-                // until the local timer expires to prevent cutting off animations.
-                if (this.state !== 'ATTACKING') {
-                    this.state = newState;
+                if (this.attackTimer) {
+                    clearTimeout(this.attackTimer);
+                    this.attackTimer = null;
                 }
+                if (this.state === 'ATTACKING' && this.currentAction) {
+                    this.currentAction.setEffectiveTimeScale(1.0);
+                }
+                this.state = newState;
             }
         } else {
             this.state = newState;
