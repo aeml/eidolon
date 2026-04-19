@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.27.1 for the latest shipped remote-ability facing slice', () => {
-        expect(indexHtml).toContain('Alpha 0.27.1');
+    test('advances the login screen to alpha 0.27.2 for the latest shipped remote-charge presentation slice', () => {
+        expect(indexHtml).toContain('Alpha 0.27.2');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.27.1', () => {
+    test('includes the latest player-facing patch notes entry for 0.27.2', () => {
+        expect(indexHtml).toContain('Patch 0.27.2');
+        expect(indexHtml).toContain('Remote charge-state actors now keep their run-style presentation when the server says they are charging instead of falling back to a stationary attack loop');
+        expect(indexHtml).toContain('This makes fighter charge-type abilities read more truthfully on nearby clients while the server is still driving the actual movement path');
+        expect(indexHtml).toContain('The client now treats replicated charging as higher-priority presentation than generic <code>ATTACKING</code> for remote actors');
+        expect(indexHtml).toContain('Added regression coverage for remote charge animation priority and 0.27.2 version presentation');
+    });
+
+    test('keeps the prior 0.27.1 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.27.1');
         expect(indexHtml).toContain('Remote ability casts now rotate nearby remote players toward the accepted cast target before later movement or state packets arrive');
         expect(indexHtml).toContain('Projectile shots, support casts, and ground-targeted spells now read with cleaner intent because the caster no longer appears to fire sideways for a beat');
@@ -130,6 +138,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.27.2');
         expect(indexHtml).toContain('Patch 0.27.1');
         expect(indexHtml).toContain('Patch 0.27.0');
         expect(indexHtml).toContain('Patch 0.26.0');
@@ -226,6 +235,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.27.2');
         expect(indexHtml).toContain('Patch 0.27.1');
         expect(indexHtml).toContain('Patch 0.27.0');
         expect(indexHtml).toContain('Patch 0.26.0');
@@ -277,6 +287,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.27.2"');
         expect(indexHtml).toContain('data-version="0.27.1"');
         expect(indexHtml).toContain('data-version="0.27.0"');
         expect(indexHtml).toContain('data-version="0.26.0"');

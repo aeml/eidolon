@@ -241,6 +241,29 @@ describe('Actor System', () => {
         test('Actor has shield HP for absorption', () => {
             expect(actor.shieldHP).toBe(0);
         });
+
+        test('remote charging state prefers movement animation over generic attacking animation', () => {
+            actor.isRemote = true;
+            actor.state = 'ATTACKING';
+            actor.isCharging = true;
+            actor.targetServerPosition = new THREE.Vector3(4, 0, 0);
+            actor.visualOffset = new THREE.Vector3();
+            actor.position.set(0, 0, 0);
+            actor.rotation = new THREE.Quaternion();
+            actor.mesh = {
+                position: new THREE.Vector3(),
+                quaternion: new THREE.Quaternion(),
+                lookAt: jest.fn()
+            };
+            actor.getMovementAnimationName = jest.fn(() => 'Run');
+            actor.playAnimation = jest.fn();
+
+            actor.update(1 / 60, null, null, null);
+
+            expect(actor.getMovementAnimationName).toHaveBeenCalledWith(true);
+            expect(actor.playAnimation).toHaveBeenCalledWith('Run');
+            expect(actor.playAnimation).not.toHaveBeenCalledWith('Attack', false);
+        });
     });
 
     describe('Inventory System', () => {
