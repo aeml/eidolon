@@ -578,6 +578,31 @@ describe('menu polish regressions', () => {
         expect(document.getElementById('world-map').style.display).toBe('none');
     });
 
+    test('server time updates the hud clock and refreshes the open journal with authoritative reset timing', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+        ui.lastPlayerRef = {
+            quests: [
+                {
+                    id: 'daily_molten_core_bosses',
+                    target: 'MoltenCoreBoss',
+                    accepted: false,
+                    completed: false,
+                    count: 0,
+                    maxCount: 5,
+                    rewardXP: 9000000
+                }
+            ]
+        };
+
+        ui.toggleJournal();
+        ui.updateServerTime(Date.UTC(2026, 3, 19, 3, 30, 15) / 1000);
+
+        expect(document.getElementById('game-timer').textContent).toBe('11:30:15 PM');
+        expect(document.getElementById('game-timer').title).toBe('Authoritative server time (ET)');
+        expect(document.getElementById('journal-list').textContent).toContain('Daily reset: 00:29:45 remaining');
+    });
+
     test('legacy button markup uses close-btn chrome for remaining windows', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
 

@@ -160,6 +160,60 @@ export class QuestUI {
         };
     }
 
+    getDailyResetSnapshot() {
+        const serverEpochSeconds = Number(this.ctx.getServerEpochSeconds?.() || 0);
+        if (!Number.isFinite(serverEpochSeconds) || serverEpochSeconds <= 0) {
+            return {
+                statusLine: 'Daily quests reset at 12:00 AM Eastern Time',
+                ladderLine: 'Highest-value dailies reset tomorrow, so this is the fastest XP ladder to pick back up.'
+            };
+        }
+
+        const now = new Date(serverEpochSeconds * 1000);
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/New_York',
+            hour: 'numeric',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true,
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric'
+        });
+        const parts = formatter.formatToParts(now);
+        const part = (type) => parts.find((entry) => entry.type === type)?.value || '';
+        const weekday = part('weekday');
+        const month = part('month');
+        const day = part('day');
+        const hour = part('hour');
+        const minute = Number(part('minute') || 0);
+        const second = Number(part('second') || 0);
+        const dayPeriod = part('dayPeriod');
+        const hour24 = Number(new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/New_York',
+            hour: 'numeric',
+            hourCycle: 'h23'
+        }).format(now));
+
+        let remainingTotalSeconds = (24 * 60 * 60) - ((hour24 * 60 * 60) + (minute * 60) + second);
+        if (remainingTotalSeconds <= 0) {
+            remainingTotalSeconds = 24 * 60 * 60;
+        }
+        const remainingHours = Math.floor(remainingTotalSeconds / 3600);
+        const remainingMinutes = Math.floor((remainingTotalSeconds % 3600) / 60);
+        const remainingSeconds = remainingTotalSeconds % 60;
+
+        const countdown = [remainingHours, remainingMinutes, remainingSeconds]
+            .map((value) => String(Math.max(0, value)).padStart(2, '0'))
+            .join(':');
+        const easternNow = `${weekday} ${month} ${day} • ${hour}:${String(minute).padStart(2, '0')}:${String(second).padStart(2, '0')} ${dayPeriod} ET`.trim();
+
+        return {
+            statusLine: `Daily reset: ${countdown} remaining (${easternNow})`,
+            ladderLine: `Server clock says the daily ladder rolls in ${countdown}, so this is the fastest XP route still paying before reset.`
+        };
+    }
+
     isPlayerInTown(player = this.ctx.getLastPlayer?.()) {
         if (!player?.position) return false;
         const x = Number(player.position.x);
@@ -729,6 +783,7 @@ export class QuestUI {
     updateJournal(quests) {
         this.renderObjectivesPanel(this.buildObjectiveSummary(quests));
         this.clearElement(this.journalList);
+        const resetSnapshot = this.getDailyResetSnapshot();
 
         const infoDiv = document.createElement('div');
         infoDiv.style.color = '#888';
@@ -737,7 +792,7 @@ export class QuestUI {
         infoDiv.style.textAlign = 'center';
         infoDiv.style.borderBottom = '1px solid #444';
         infoDiv.style.paddingBottom = '10px';
-        infoDiv.textContent = `Daily quests reset at 12:00 AM Eastern Time`;
+        infoDiv.textContent = resetSnapshot.statusLine;
         this.journalList.appendChild(infoDiv);
 
         const repeatableLadder = this.buildRepeatableLadderSummary(quests);
@@ -759,7 +814,7 @@ export class QuestUI {
                 textTransform: 'uppercase'
             });
             const body = this.createMessage(
-                `Accepted now: ${repeatableLadder.acceptedCount} • Ready to claim: ${repeatableLadder.readyCount}. Highest-value dailies reset tomorrow, so this is the fastest XP ladder to pick back up.`,
+                `Accepted now: ${repeatableLadder.acceptedCount} • Ready to claim: ${repeatableLadder.readyCount}. ${resetSnapshot.ladderLine}`,
                 { color: '#d7dfef', fontSize: '12px', lineHeight: '1.5' }
             );
 

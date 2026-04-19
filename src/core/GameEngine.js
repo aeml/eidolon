@@ -967,13 +967,7 @@ export class GameEngine {
             this.uiManager.showPartyRequest(msg.payload.targetName);
         } else if (msg.type === 'time') {
             const timeData = msg.payload;
-            // Calculate time since server start or just display server time
-            // For now, let's just display the time component
-            const date = new Date(timeData.time * 1000);
-            const timeString = date.toLocaleTimeString();
-            if (this.uiManager.gameTimer) {
-                this.uiManager.gameTimer.textContent = timeString;
-            }
+            this.uiManager.updateServerTime(timeData.time);
         } else if (msg.type === 'ability') {
             const abilityData = msg.payload;
             // Ignore if source is local player (we already played the effect locally)

@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.25.2 for the latest shipped repeatable-loop slice', () => {
-        expect(indexHtml).toContain('Alpha 0.25.2');
+    test('advances the login screen to alpha 0.25.3 for the latest shipped live-ops slice', () => {
+        expect(indexHtml).toContain('Alpha 0.25.3');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -63,7 +63,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.25.2', () => {
+    test('includes the latest player-facing patch notes entry for 0.25.3', () => {
+        expect(indexHtml).toContain('Patch 0.25.3');
+        expect(indexHtml).toContain('Quest Journal reset messaging now runs off authoritative server time instead of a static daily-reset sentence');
+        expect(indexHtml).toContain('Repeatable ladder copy now shows exactly how long remains before the next reset, giving live-ops and tuning work a truthful clock to point at');
+        expect(indexHtml).toContain('The HUD clock now reads from the same server-time feed, so daily reset messaging and the visible clock stop drifting apart');
+        expect(indexHtml).toContain('Added regression coverage for authoritative reset countdown rendering, journal refresh on server-time ticks, and 0.25.3 version presentation');
+    });
+
+    test('keeps the prior 0.25.2 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.25.2');
         expect(indexHtml).toContain('Quest Journal now surfaces a repeatable ladder summary for the highest-value daily quests instead of hiding the best return loop behind accepted-only entries');
         expect(indexHtml).toContain('The journal now shows which top dailies are Active, Ready, or still Available, along with a quick accepted-versus-ready count');
@@ -80,6 +88,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.25.3');
         expect(indexHtml).toContain('Patch 0.25.2');
         expect(indexHtml).toContain('Patch 0.25.1');
         expect(indexHtml).toContain('Patch 0.25.0');
@@ -171,6 +180,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.25.3');
         expect(indexHtml).toContain('Patch 0.25.1');
         expect(indexHtml).toContain('Patch 0.25.0');
         expect(indexHtml).toContain('Patch 0.24.4');
@@ -217,7 +227,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
-        expect(indexHtml).toContain('data-version="0.25.1"');
+        expect(indexHtml).toContain('data-version="0.25.3"');
         expect(indexHtml).toContain('data-version="0.25.2"');
         expect(indexHtml).toContain('data-version="0.25.1"');
         expect(indexHtml).toContain('data-version="0.25.0"');

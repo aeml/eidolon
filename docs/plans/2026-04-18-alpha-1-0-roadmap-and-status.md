@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.25.2`
+- Current in-game displayed version: `Alpha 0.25.3`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.25.2`
+### Shipped through `0.25.3`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -57,6 +57,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.25.0`: the party panel and invite prompt now make cooperative value more explicit by surfacing party reward-sharing, role visibility, and the nearby party bonus in player-facing UI
 - `0.25.1`: the Trading House now better explains browse timing, listing intent, and collection outcomes so auction flow is easier to read without guessing
 - `0.25.2`: the Quest Journal now surfaces the highest-value daily ladder so repeatable return goals stay visible even before quests are accepted
+- `0.25.3`: the Quest Journal and HUD clock now run off authoritative server time so daily reset messaging stays truthful and live-ops timing is easier to reason about
 
 ### What `0.22` has clearly accomplished already
 

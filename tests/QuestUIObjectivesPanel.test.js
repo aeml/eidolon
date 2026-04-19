@@ -266,7 +266,8 @@ describe('QuestUI objectives panel', () => {
     test('renders a repeatable ladder summary in the journal for the highest-value dailies', () => {
         buildQuestDom();
         const questUI = new QuestUI({
-            getLastPlayer: () => ({ quests: [] })
+            getLastPlayer: () => ({ quests: [] }),
+            getServerEpochSeconds: () => Date.UTC(2026, 3, 19, 3, 30, 15) / 1000
         });
 
         questUI.updateJournal([
@@ -303,16 +304,20 @@ describe('QuestUI objectives panel', () => {
         expect(journal.textContent).toContain('Repeatable Ladder');
         expect(journal.textContent).toContain('Accepted now: 1');
         expect(journal.textContent).toContain('Ready to claim: 1');
+        expect(journal.textContent).toContain('Daily reset:');
+        expect(journal.textContent).toContain('00:29:45 remaining');
         expect(journal.textContent).toContain('Dungeon Boss (Mythic) • Active');
         expect(journal.textContent).toContain('1 / 4 • 15,000,000 XP');
         expect(journal.textContent).toContain('Dungeon Boss (Heroic) • Available');
         expect(journal.textContent).toContain('Tempest Spire Bosses • Ready');
+        expect(journal.textContent).toContain('Server clock says the daily ladder rolls in 00:29:45');
     });
 
     test('keeps the repeatable ladder visible even when no dailies are currently accepted', () => {
         buildQuestDom();
         const questUI = new QuestUI({
-            getLastPlayer: () => ({ quests: [] })
+            getLastPlayer: () => ({ quests: [] }),
+            getServerEpochSeconds: () => Date.UTC(2026, 3, 19, 3, 30, 15) / 1000
         });
 
         questUI.updateJournal([
@@ -332,6 +337,29 @@ describe('QuestUI objectives panel', () => {
         expect(journal.textContent).toContain('Accepted now: 0');
         expect(journal.textContent).toContain('Molten Core Bosses • Available');
         expect(journal.textContent).toContain('No active quests.');
+    });
+
+    test('falls back to static reset guidance when authoritative server time is unavailable', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] })
+        });
+
+        questUI.updateJournal([
+            {
+                id: 'daily_molten_core_bosses',
+                target: 'MoltenCoreBoss',
+                accepted: false,
+                completed: false,
+                count: 0,
+                maxCount: 5,
+                rewardXP: 9000000
+            }
+        ]);
+
+        const journal = document.getElementById('journal-list');
+        expect(journal.textContent).toContain('Daily quests reset at 12:00 AM Eastern Time');
+        expect(journal.textContent).toContain('Highest-value dailies reset tomorrow, so this is the fastest XP ladder to pick back up.');
     });
 
     test('hides objectives panel when there are no accepted quests outside town', () => {

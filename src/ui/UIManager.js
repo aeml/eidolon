@@ -35,6 +35,7 @@ export class UIManager {
         this.dungeonEntranceHintPrompt = document.getElementById('dungeon-entrance-hint-prompt');
         this.lastCombatIntentSignature = '';
         this.lastDungeonEntranceHintSignature = '';
+        this.serverEpochSeconds = 0;
 
         // New UI Elements
         this.xpBar = document.getElementById('xp-bar-fill');
@@ -49,6 +50,7 @@ export class UIManager {
             getCurrentInstanceId: () => window.game?.currentInstanceId || null,
             getCurrentInstanceType: () => window.game?.currentInstanceType || null,
             getOnboardingRecoveryContext: () => window.game?.getOnboardingRecoveryContext?.() || null,
+            getServerEpochSeconds: () => this.serverEpochSeconds,
             closePrimaryHudMenus: (options) => this.closePrimaryHudMenus(options),
         });
 
@@ -951,6 +953,28 @@ export class UIManager {
         const m = Math.floor(seconds / 60);
         const s = Math.floor(seconds % 60);
         this.gameTimer.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    updateServerTime(epochSeconds) {
+        const nextEpochSeconds = Number(epochSeconds) || 0;
+        if (!Number.isFinite(nextEpochSeconds) || nextEpochSeconds <= 0) return;
+
+        this.serverEpochSeconds = nextEpochSeconds;
+
+        const serverDate = new Date(nextEpochSeconds * 1000);
+        if (this.gameTimer) {
+            this.gameTimer.textContent = serverDate.toLocaleTimeString([], {
+                timeZone: 'America/New_York',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            this.gameTimer.title = 'Authoritative server time (ET)';
+        }
+
+        if (this.quest?.isJournalOpen) {
+            this.quest.updateJournal(Array.isArray(this.lastPlayerRef?.quests) ? this.lastPlayerRef.quests : []);
+        }
     }
 
     updatePlayerStats(player) {
