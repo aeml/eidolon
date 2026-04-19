@@ -171,6 +171,37 @@ describe('dungeon progression menu', () => {
         expect(infoBox.textContent).toContain('Heroic and Mythic unlock at level 100');
         expect(infoBox.textContent).toContain('Baseline route for learning layouts, boss kits, and room pacing.');
         expect(infoBox.textContent).toContain('Boss rewards stay on the standard gold, XP, and heart line.');
+        expect(document.getElementById('dungeon-reward-ladder-box').textContent).toContain('Accept dungeon dailies at the Quest Giver');
+    });
+
+    test('shows the daily dungeon reward ladder for the selected dungeon and difficulty', () => {
+        const ui = new UIManager(false);
+
+        ui.showDungeonMenu({
+            hasInstance: false,
+            isLeader: false,
+            playerLevel: 100,
+            maxPlayerLevel: 100,
+            dungeonUnlockLevel: 30,
+            endgameDifficultyUnlockLevel: 100,
+            availableRunLevels: [30, 40, 50, 60, 70, 80, 90, 100],
+            quests: [
+                { id: 'daily_tempest_spire_bosses', count: 2, maxCount: 5, rewardXP: 9000000, accepted: true, completed: false },
+                { id: 'daily_dungeon_bosses_mythic', count: 1, maxCount: 4, rewardXP: 15000000, accepted: true, completed: false }
+            ]
+        });
+
+        document.getElementById('dungeon-type-select').value = 'tempest_spire';
+        document.getElementById('diff-btn-mythic').click();
+
+        const ladderBox = document.getElementById('dungeon-reward-ladder-box');
+        expect(ladderBox.textContent).toContain('Repeat-Run Ladder');
+        expect(ladderBox.textContent).toContain('Tempest Spire bosses');
+        expect(ladderBox.textContent).toContain('2 / 5');
+        expect(ladderBox.textContent).toContain('9,000,000 XP');
+        expect(ladderBox.textContent).toContain('Mythic dungeon bosses');
+        expect(ladderBox.textContent).toContain('1 / 4');
+        expect(ladderBox.textContent).toContain('15,000,000 XP');
     });
 
     test('sends selected run level with enter_dungeon payload', () => {

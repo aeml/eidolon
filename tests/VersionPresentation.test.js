@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.24.2 for the latest shipped endgame-identity slice', () => {
-        expect(indexHtml).toContain('Alpha 0.24.2');
+    test('advances the login screen to alpha 0.24.3 for the latest shipped rerun-incentive slice', () => {
+        expect(indexHtml).toContain('Alpha 0.24.3');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -63,7 +63,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.24.2', () => {
+    test('includes the latest player-facing patch notes entry for 0.24.3', () => {
+        expect(indexHtml).toContain('Patch 0.24.3');
+        expect(indexHtml).toContain('The Dungeon Guide now surfaces a live repeat-run ladder tied to your accepted daily dungeon boss quests');
+        expect(indexHtml).toContain('The ladder updates by selected dungeon and difficulty so players can see which reruns are still paying the strongest daily XP');
+        expect(indexHtml).toContain('This gives max-level dungeon play a visible reward ladder before the later party-flow hardening pass');
+        expect(indexHtml).toContain('Added regression coverage for dungeon menu repeat-run ladder rendering, selected dungeon/difficulty daily quest visibility, and 0.24.3 version presentation');
+    });
+
+    test('keeps the prior 0.24.2 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.24.2');
         expect(indexHtml).toContain('Heroic bosses now guarantee a bonus gem drop, while Mythic bosses guarantee both a bonus gem and a unique-effect item');
         expect(indexHtml).toContain('The dungeon menu now explains each difficulty as a distinct endgame lane instead of only listing stat multipliers');
@@ -129,6 +137,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.24.3');
         expect(indexHtml).toContain('Patch 0.24.2');
         expect(indexHtml).toContain('Patch 0.24.1');
         expect(indexHtml).toContain('Patch 0.24.0');
@@ -171,6 +180,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.24.3"');
         expect(indexHtml).toContain('data-version="0.24.2"');
         expect(indexHtml).toContain('data-version="0.24.1"');
         expect(indexHtml).toContain('data-version="0.24.0"');

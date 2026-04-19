@@ -633,6 +633,53 @@ export class UIManager {
         return summary.difficultyNote;
     }
 
+    getDungeonDailyQuestEntries(dungeonKey, difficultyKey, quests = this.lastPlayerRef?.quests) {
+        if (!Array.isArray(quests)) {
+            return [];
+        }
+
+        const dungeonQuestByType = {
+            verdant_bastion_catacombs: 'daily_verdant_bastion_bosses',
+            abyssal_well: 'daily_abyssal_well_bosses',
+            molten_core: 'daily_molten_core_bosses',
+            tempest_spire: 'daily_tempest_spire_bosses'
+        };
+        const difficultyQuestByType = {
+            normal: 'daily_dungeon_bosses',
+            heroic: 'daily_dungeon_bosses_heroic',
+            mythic: 'daily_dungeon_bosses_mythic'
+        };
+        const labelByQuestId = {
+            daily_dungeon_bosses: 'Any dungeon bosses',
+            daily_verdant_bastion_bosses: 'Verdant Bastion bosses',
+            daily_abyssal_well_bosses: 'Abyssal Well bosses',
+            daily_molten_core_bosses: 'Molten Core bosses',
+            daily_tempest_spire_bosses: 'Tempest Spire bosses',
+            daily_dungeon_bosses_heroic: 'Heroic dungeon bosses',
+            daily_dungeon_bosses_mythic: 'Mythic dungeon bosses'
+        };
+
+        const questIds = [
+            dungeonQuestByType[dungeonKey],
+            difficultyQuestByType[difficultyKey]
+        ].filter(Boolean);
+
+        return questIds
+            .map((id) => quests.find((quest) => quest && quest.id === id))
+            .filter(Boolean)
+            .map((quest) => {
+                const count = Number(quest.count) || 0;
+                const maxCount = Math.max(1, Number(quest.maxCount) || 0);
+                return {
+                    id: quest.id,
+                    label: labelByQuestId[quest.id] || quest.id,
+                    progressText: `${Math.min(count, maxCount)} / ${maxCount}`,
+                    rewardXP: Number(quest.rewardXP) || 0,
+                    complete: Boolean(quest.completed || count >= maxCount)
+                };
+            });
+    }
+
     formatRoomClearHeadline(summary = {}) {
         const parts = [];
         if (summary.roomType === 'elite') parts.push('elite room broken');
@@ -2805,11 +2852,31 @@ export class UIManager {
         diffInfoBox.style.textAlign = 'left';
         menu.appendChild(diffInfoBox);
 
+        const rewardLadderBox = document.createElement('div');
+        rewardLadderBox.id = 'dungeon-reward-ladder-box';
+        rewardLadderBox.style.backgroundColor = '#15181d';
+        rewardLadderBox.style.border = '1px solid #353c47';
+        rewardLadderBox.style.padding = '12px';
+        rewardLadderBox.style.margin = '10px 0 4px 0';
+        rewardLadderBox.style.borderRadius = '4px';
+        rewardLadderBox.style.fontSize = '12px';
+        rewardLadderBox.style.textAlign = 'left';
+        menu.appendChild(rewardLadderBox);
+
         const updateDifficultyInfo = () => {
             const dungeonKey = dungeonSelect.value;
             const dungeon = dungeonInfo[dungeonKey];
             const diff = difficultyInfo[selectedDifficulty];
             const selectedRunLevel = Number(runLevelSelect.value) || availableRunLevels[0] || 30;
+            const dailyQuestEntries = this.getDungeonDailyQuestEntries(dungeonKey, selectedDifficulty, data.quests);
+            const ladderRows = dailyQuestEntries.length > 0
+                ? dailyQuestEntries.map((entry) => `
+                    <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 6px; align-items: baseline;">
+                        <span style="color: ${entry.complete ? '#7cf0a5' : '#d7dfef'};">${entry.label}</span>
+                        <span style="color: ${entry.complete ? '#7cf0a5' : '#ffd36f'}; white-space: nowrap;">${entry.progressText} • ${entry.rewardXP.toLocaleString()} XP</span>
+                    </div>
+                `).join('')
+                : '<div style="color: #8ea8d1; margin-top: 6px;">Accept dungeon dailies at the Quest Giver to turn repeated clears into a live XP ladder.</div>';
 
             diffInfoBox.innerHTML = `
                 <div style="color: ${diff.color}; font-weight: bold; font-size: 14px; margin-bottom: 8px;">${diff.name} Mode</div>
@@ -2821,6 +2888,12 @@ export class UIManager {
                 <div style="color: #d7dfef; margin-top: 6px; line-height: 1.5;">${diff.identity}</div>
                 <div style="color: ${diff.color}; margin-top: 5px; line-height: 1.5;">${diff.rewardNote}</div>
                 <div style="color: #8ea8d1; margin-top: 6px;">All dungeons unlock at level ${data.dungeonUnlockLevel || 30}. Heroic and Mythic unlock at level ${data.endgameDifficultyUnlockLevel || 100}.</div>
+            `;
+
+            rewardLadderBox.innerHTML = `
+                <div style="color: #ffd700; font-size: 11px; font-weight: bold; letter-spacing: 0.08em; text-transform: uppercase;">Repeat-Run Ladder</div>
+                <div style="color: #d7dfef; margin-top: 6px; line-height: 1.5;">This route feeds the daily dungeon boss ladder, so reruns keep paying XP even after a clean clear.</div>
+                ${ladderRows}
             `;
         };
 
