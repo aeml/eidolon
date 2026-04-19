@@ -982,6 +982,14 @@ export class GameEngine {
 
             const source = this.remotePlayers.get(abilityData.sourceId);
             if (source) {
+                const lookTarget = this.getReplicatedEntityById(abilityData.targetId)?.position
+                    || (Number.isFinite(abilityData.targetX) && Number.isFinite(abilityData.targetZ)
+                        ? new THREE.Vector3(abilityData.targetX, source.position?.y || 0, abilityData.targetZ)
+                        : null);
+                if (lookTarget && source.mesh) {
+                    source.mesh.lookAt(new THREE.Vector3(lookTarget.x, source.position?.y || 0, lookTarget.z));
+                    source.rotation?.copy?.(source.mesh.quaternion);
+                }
                 this.abilityController.triggerRemoteAbilityVisuals(source, abilityData.skillName, abilityData.targetX, abilityData.targetZ);
                 if (this.isPlayerClassEntity(source) && typeof source.updateState === 'function' && source.state !== 'JUMPING') {
                     source.updateState('ATTACKING');

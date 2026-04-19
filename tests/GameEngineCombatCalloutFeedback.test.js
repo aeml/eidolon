@@ -268,6 +268,13 @@ describe('GameEngine encounter callouts', () => {
             state: 'IDLE',
             isRemote: true,
             constructor: { name: 'Wizard' },
+            rotation: new THREE.Quaternion(),
+            mesh: {
+                quaternion: new THREE.Quaternion(),
+                lookAt: jest.fn(function lookAt() {
+                    this.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 6);
+                })
+            },
             updateState: jest.fn(function updateState(nextState) {
                 this.state = nextState;
             })
@@ -289,9 +296,61 @@ describe('GameEngine encounter callouts', () => {
             }
         });
 
+        expect(remotePlayer.mesh.lookAt).toHaveBeenCalledWith(expect.any(THREE.Vector3));
         expect(engine.abilityController.triggerRemoteAbilityVisuals).toHaveBeenCalledWith(remotePlayer, 'Fireball', 12, 3);
         expect(remotePlayer.updateState).toHaveBeenCalledWith('ATTACKING');
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: FIREBALL', remotePlayer.position, '#8fe7ff', '18px');
+    });
+
+    test('remote ability casts can face a replicated target entity immediately before later state updates arrive', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remotePlayer = {
+            id: 'remote-ability-facing',
+            name: 'Selene',
+            position: new THREE.Vector3(6, 0, 1),
+            state: 'IDLE',
+            isRemote: true,
+            constructor: { name: 'Cleric' },
+            rotation: new THREE.Quaternion(),
+            mesh: {
+                quaternion: new THREE.Quaternion(),
+                lookAt: jest.fn(function lookAt() {
+                    this.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 3);
+                })
+            },
+            updateState: jest.fn(function updateState(nextState) {
+                this.state = nextState;
+            })
+        };
+        const ally = {
+            id: 'ally-1',
+            position: new THREE.Vector3(10, 0, 4)
+        };
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.remotePlayers = new Map([
+            ['remote-ability-facing', remotePlayer],
+            ['ally-1', ally]
+        ]);
+        engine.abilityController = { triggerRemoteAbilityVisuals: jest.fn() };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+
+        engine.handleServerMessage({
+            type: 'ability',
+            payload: {
+                sourceId: 'remote-ability-facing',
+                targetId: 'ally-1',
+                skillName: 'Healing Light',
+                targetX: 10,
+                targetZ: 4
+            }
+        });
+
+        expect(remotePlayer.mesh.lookAt).toHaveBeenCalledWith(expect.any(THREE.Vector3));
+        expect(engine.abilityController.triggerRemoteAbilityVisuals).toHaveBeenCalledWith(remotePlayer, 'Healing Light', 10, 4);
+        expect(remotePlayer.updateState).toHaveBeenCalledWith('ATTACKING');
     });
 
     test('shows a nearby replicated remote-player basic attack immediately from the explicit attack event', () => {
