@@ -458,12 +458,15 @@ describe('Dungeon room clear feedback', () => {
         ui.showRoomClearReward(createRoomClearSummary({
             title: 'Room Cleared: Elite Chamber 2',
             roomType: 'elite',
+            itemCount: 1,
             hint: 'Elite cleared — push toward the next objective'
         }));
 
         const chatMessages = Array.from(document.querySelectorAll('#chat-messages > div')).map(node => node.textContent);
         expect(chatMessages[0]).toContain('Elite Chamber 2');
-        expect(chatMessages[2]).toContain('Elite cleared — push toward the next objective');
+        expect(chatMessages[2]).toContain('elite room broken');
+        expect(chatMessages[2]).toContain('1 item dropped');
+        expect(chatMessages[3]).toContain('Elite cleared — push toward the next objective');
     });
 
     test('UIManager.showRoomClearReward surfaces shrine restoration, buff, and treasure/ambush beats', () => {

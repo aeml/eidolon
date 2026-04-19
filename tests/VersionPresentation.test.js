@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.23.3 for the latest shipped forge-and-respec clarity slice', () => {
-        expect(indexHtml).toContain('Alpha 0.23.3');
+    test('advances the login screen to alpha 0.23.4 for the latest shipped reward-closeout slice', () => {
+        expect(indexHtml).toContain('Alpha 0.23.4');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -63,7 +63,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.23.3', () => {
+    test('includes the latest player-facing patch notes entry for 0.23.4', () => {
+        expect(indexHtml).toContain('Patch 0.23.4');
+        expect(indexHtml).toContain('Boss-kill and room-clear reward callouts now lead with a payoff read instead of only a ledger');
+        expect(indexHtml).toContain('Reward chat now surfaces short punchier lines like boss down, build drops secured, and elite-room payoff');
+        expect(indexHtml).toContain('This closes the `0.23` line with class identity, loot readability, buildcraft coherence, and stronger reward presentation');
+        expect(indexHtml).toContain('Added regression coverage for stronger reward/chat payoff messaging, updated room-clear summaries, and 0.23.4 version presentation');
+    });
+
+    test('keeps the prior 0.23.3 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.23.3');
         expect(indexHtml).toContain('The Forge now spells out the buildcraft sequence up front');
         expect(indexHtml).toContain('Upgrade previews now show current Shard availability and disable actions you cannot afford yet');
@@ -97,6 +105,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.23.4');
         expect(indexHtml).toContain('Patch 0.23.3');
         expect(indexHtml).toContain('Patch 0.23.2');
         expect(indexHtml).toContain('Patch 0.23.1');
@@ -135,6 +144,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.23.4"');
         expect(indexHtml).toContain('data-version="0.23.3"');
         expect(indexHtml).toContain('data-version="0.23.2"');
         expect(indexHtml).toContain('data-version="0.23.1"');

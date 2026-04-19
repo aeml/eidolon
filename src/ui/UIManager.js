@@ -608,6 +608,37 @@ export class UIManager {
         };
     }
 
+    formatRewardHeadline(summary = {}) {
+        const parts = [];
+        if (summary.bossName) parts.push(`${summary.bossName} down`);
+        if (summary.itemCount) parts.push(`${summary.itemCount} item${summary.itemCount === 1 ? '' : 's'} secured`);
+        if (summary.gemCount) parts.push(`${summary.gemCount} gem${summary.gemCount === 1 ? '' : 's'} secured`);
+        if (summary.heartCount) parts.push(`${summary.heartCount} heart${summary.heartCount === 1 ? '' : 's'} secured`);
+        if (parts.length === 0) return '';
+        return parts.join(' • ');
+    }
+
+    formatRewardPulse(summary = {}) {
+        const parts = [];
+        if (summary.gold) parts.push(`+${summary.gold} gold`);
+        if (summary.xp) parts.push(`+${summary.xp} XP`);
+        if (summary.itemCount || summary.gemCount || summary.heartCount) {
+            parts.push('build drops ready');
+        }
+        return parts.join(' • ');
+    }
+
+    formatRoomClearHeadline(summary = {}) {
+        const parts = [];
+        if (summary.roomType === 'elite') parts.push('elite room broken');
+        if (summary.itemCount) parts.push(`${summary.itemCount} item${summary.itemCount === 1 ? '' : 's'} dropped`);
+        if (summary.gemCount) parts.push(`${summary.gemCount} gem${summary.gemCount === 1 ? '' : 's'} dropped`);
+        if (summary.heartCount) parts.push(`${summary.heartCount} heart${summary.heartCount === 1 ? '' : 's'} dropped`);
+        if (summary.healthRestored || summary.manaRestored) parts.push('reset secured');
+        if (parts.length === 0) return '';
+        return parts.join(' • ');
+    }
+
     formatRewardSummarySubtitle(summary = {}) {
         const parts = [];
         if (summary.subtitle) parts.push(summary.subtitle);
@@ -630,16 +661,21 @@ export class UIManager {
     showRewardSummary(summary = {}) {
         if (!summary.title) return;
 
+        const headlineLine = this.formatRewardHeadline(summary);
         const subtitleLine = this.formatRewardSummarySubtitle(summary);
         const completionLine = this.formatRewardSummaryCompletion(summary);
+        const pulseLine = this.formatRewardPulse(summary);
         const { currencyLine, lootLine } = this.formatRewardSummary(summary);
+        const calloutSubtitle = [completionLine, headlineLine, pulseLine, summary.exitHint || 'Dungeon rewards ready.']
+            .filter(Boolean)
+            .join(' • ');
 
         this.showCombatCallout({
             title: summary.title,
             tone: 'support',
             metaText: subtitleLine || 'Reward Summary',
-            subtitle: completionLine || currencyLine || lootLine || summary.exitHint || 'Dungeon rewards ready.',
-            duration: 2.4
+            subtitle: calloutSubtitle,
+            duration: 2.8
         });
 
         this.addChatMessage('Rewards', summary.title);
@@ -652,11 +688,18 @@ export class UIManager {
             this.addChatMessage('Rewards', completionLine);
         }
 
+        if (headlineLine) {
+            this.addChatMessage('Rewards', headlineLine);
+        }
+
         if (currencyLine) {
             this.addChatMessage('Rewards', currencyLine);
         }
         if (lootLine) {
             this.addChatMessage('Rewards', lootLine);
+        }
+        if (pulseLine && pulseLine !== currencyLine) {
+            this.addChatMessage('Rewards', pulseLine);
         }
         if (summary.exitHint) {
             this.addChatMessage('Rewards', summary.exitHint);
@@ -667,6 +710,7 @@ export class UIManager {
         if (!summary.title) return;
 
         const parts = [];
+        const headlineLine = this.formatRoomClearHeadline(summary);
         if (summary.gold) parts.push(`+${summary.gold} gold`);
         if (summary.xp) parts.push(`+${summary.xp} XP`);
         if (summary.itemCount) parts.push(`+${summary.itemCount} item${summary.itemCount === 1 ? '' : 's'}`);
@@ -686,13 +730,17 @@ export class UIManager {
             title: summary.title,
             tone: summary.roomType === 'elite' ? 'warning' : 'support',
             metaText: summary.subtitle || 'Room Clear',
-            subtitle: parts.join(' • ') || 'Room rewards secured.',
-            duration: 2.1
+            subtitle: [headlineLine, ...parts].filter(Boolean).join(' • ') || 'Room rewards secured.',
+            duration: summary.roomType === 'elite' ? 2.3 : 2.1
         });
 
         this.addChatMessage('Room', summary.title);
         if (summary.subtitle) {
             this.addChatMessage('Room', summary.subtitle);
+        }
+
+        if (headlineLine) {
+            this.addChatMessage('Room', headlineLine);
         }
 
         if (parts.length > 0) {
