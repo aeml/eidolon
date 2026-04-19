@@ -1798,6 +1798,13 @@ type AbilityEvent struct {
 	TargetZ   float64 `json:"targetZ"`
 }
 
+type AttackEvent struct {
+	SourceID string  `json:"sourceId"`
+	TargetID string  `json:"targetId"`
+	TargetX  float64 `json:"targetX"`
+	TargetZ  float64 `json:"targetZ"`
+}
+
 // HazardType defines the type of environmental hazard
 type HazardType string
 
@@ -6495,6 +6502,14 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	// Start Attack State & Cooldown immediately
 	attacker.LastAttackTime = time.Now()
 	attacker.State = "ATTACKING"
+	if w.OnEvent != nil {
+		w.OnEvent("attack", AttackEvent{
+			SourceID: attacker.ID,
+			TargetID: target.ID,
+			TargetX:  target.X,
+			TargetZ:  target.Z,
+		})
+	}
 
 	// Calculate Delay (35% of animation duration)
 	// AttackCooldown IS the duration now.

@@ -294,6 +294,55 @@ describe('GameEngine encounter callouts', () => {
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: FIREBALL', remotePlayer.position, '#8fe7ff', '18px');
     });
 
+    test('shows a nearby replicated remote-player basic attack immediately from the explicit attack event', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remotePlayer = {
+            id: 'remote-attack-event',
+            name: 'Bram',
+            position: new THREE.Vector3(7, 0, 0),
+            state: 'IDLE',
+            isRemote: true,
+            constructor: { name: 'Fighter' },
+            rotation: new THREE.Quaternion(),
+            mesh: {
+                quaternion: new THREE.Quaternion(),
+                lookAt: jest.fn(function lookAt() {
+                    this.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 4);
+                })
+            },
+            updateState: jest.fn(function updateState(nextState) {
+                this.state = nextState;
+            })
+        };
+        const enemy = {
+            id: 'enemy-1',
+            position: new THREE.Vector3(9, 0, 2)
+        };
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.remotePlayers = new Map([
+            ['remote-attack-event', remotePlayer],
+            ['enemy-1', enemy]
+        ]);
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+
+        engine.handleServerMessage({
+            type: 'attack',
+            payload: {
+                sourceId: 'remote-attack-event',
+                targetId: 'enemy-1',
+                targetX: 9,
+                targetZ: 2
+            }
+        });
+
+        expect(remotePlayer.mesh.lookAt).toHaveBeenCalledWith(expect.any(THREE.Vector3));
+        expect(remotePlayer.updateState).toHaveBeenCalledWith('ATTACKING');
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('BRAM: ATTACK', remotePlayer.position, '#8fe7ff', '18px');
+    });
+
     test('shows nearby remote-player damage numbers in crowded fights without requiring the local player to be source or target', () => {
         const engine = Object.create(GameEngine.prototype);
         const remotePlayer = {

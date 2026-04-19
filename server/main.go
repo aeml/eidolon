@@ -264,6 +264,13 @@ type AttackPayload struct {
 	TargetID string `json:"targetId"`
 }
 
+type AttackEventPayload struct {
+	SourceID string  `json:"sourceId"`
+	TargetID string  `json:"targetId"`
+	TargetX  float64 `json:"targetX"`
+	TargetZ  float64 `json:"targetZ"`
+}
+
 type PickupPayload struct {
 	LootID string `json:"lootId"`
 }
@@ -683,6 +690,26 @@ func main() {
 			dataBytes, _ := json.Marshal(outMsg)
 			go func() {
 				broadcast <- BroadcastMessage{Type: MsgAbility, Data: dataBytes}
+			}()
+		case "attack":
+			evt, ok := data.(game.AttackEvent)
+			if !ok {
+				return
+			}
+			payload := AttackEventPayload{
+				SourceID: evt.SourceID,
+				TargetID: evt.TargetID,
+				TargetX:  evt.TargetX,
+				TargetZ:  evt.TargetZ,
+			}
+			b, _ := json.Marshal(payload)
+			outMsg := Message{
+				Type:    MsgAttack,
+				Payload: b,
+			}
+			dataBytes, _ := json.Marshal(outMsg)
+			go func() {
+				broadcast <- BroadcastMessage{Type: MsgAttack, Data: dataBytes}
 			}()
 		case "inventory_update":
 			playerID, ok := data.(string)

@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.26.0 for the latest shipped movement-authority slice', () => {
-        expect(indexHtml).toContain('Alpha 0.26.0');
+    test('advances the login screen to alpha 0.27.0 for the latest shipped remote-attack replication slice', () => {
+        expect(indexHtml).toContain('Alpha 0.27.0');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.26.0', () => {
+    test('includes the latest player-facing patch notes entry for 0.27.0', () => {
+        expect(indexHtml).toContain('Patch 0.27.0');
+        expect(indexHtml).toContain('Remote basic attacks now broadcast an explicit attack-start event instead of waiting for later damage or state side effects');
+        expect(indexHtml).toContain('Other clients now rotate nearby remote players into their swing target and kick the attack animation immediately when the server accepts the hit attempt');
+        expect(indexHtml).toContain('This narrows the gap between remote melee intent and visible impact before the later broader action-replication pass');
+        expect(indexHtml).toContain('Added regression coverage for explicit remote basic-attack replication and 0.27.0 version presentation');
+    });
+
+    test('keeps the prior 0.26.0 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.26.0');
         expect(indexHtml).toContain('Large self movement corrections still apply the server position immediately for gameplay truth');
         expect(indexHtml).toContain('the local player mesh and locked camera now ease into the corrected position over a short visual window instead of popping there in one frame');
@@ -114,6 +122,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.27.0');
         expect(indexHtml).toContain('Patch 0.26.0');
         expect(indexHtml).toContain('Patch 0.25.4');
         expect(indexHtml).toContain('Patch 0.25.3');
@@ -208,6 +217,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.27.0');
         expect(indexHtml).toContain('Patch 0.26.0');
         expect(indexHtml).toContain('Patch 0.25.4');
         expect(indexHtml).toContain('Patch 0.25.3');
@@ -257,6 +267,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.27.0"');
         expect(indexHtml).toContain('data-version="0.26.0"');
         expect(indexHtml).toContain('data-version="0.25.4"');
         expect(indexHtml).toContain('data-version="0.25.3"');

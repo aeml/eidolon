@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.26.0`
+- Current in-game displayed version: `Alpha 0.27.0`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.26.0`
+### Shipped through `0.27.0`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -60,6 +60,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.25.3`: the Quest Journal and HUD clock now run off authoritative server time so daily reset messaging stays truthful and live-ops timing is easier to reason about
 - `0.25.4`: the Help screen and release docs now close out the real daily return loop with a player-facing reference and a dedicated retention QA route
 - `0.26.0`: large self movement corrections in the overworld now preserve server authority while smoothing the local mesh and locked camera instead of hard-snapping the whole view
+- `0.27.0`: remote basic attacks now replicate as explicit attack-start events so nearby clients can rotate and animate remote melee intent immediately instead of waiting for delayed side effects
 
 ### What `0.22` has clearly accomplished already
 

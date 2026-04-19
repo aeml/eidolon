@@ -347,6 +347,12 @@ export class GameEngine {
         return true;
     }
 
+    getReplicatedEntityById(entityId) {
+        if (!entityId) return null;
+        if (this.player && this.player.id === entityId) return this.player;
+        return this.remotePlayers?.get(entityId) || null;
+    }
+
     showRemoteStateReadability(entity, nextState, previousState = '') {
         if (!entity?.position || !this.floatingTextManager) return false;
         if (!this.isPlayerClassEntity(entity)) return false;
@@ -981,6 +987,25 @@ export class GameEngine {
                     source.updateState('ATTACKING');
                 }
                 this.showRemoteActionReadability(source, abilityData.skillName);
+            }
+        } else if (msg.type === 'attack') {
+            const attackData = msg.payload;
+            if (this.player && attackData.sourceId === this.player.id) return;
+
+            const source = this.remotePlayers.get(attackData.sourceId);
+            if (source && this.isPlayerClassEntity(source)) {
+                const lookTarget = this.getReplicatedEntityById(attackData.targetId)?.position
+                    || (Number.isFinite(attackData.targetX) && Number.isFinite(attackData.targetZ)
+                        ? new THREE.Vector3(attackData.targetX, source.position?.y || 0, attackData.targetZ)
+                        : null);
+                if (lookTarget && source.mesh) {
+                    source.mesh.lookAt(new THREE.Vector3(lookTarget.x, source.position?.y || 0, lookTarget.z));
+                    source.rotation?.copy?.(source.mesh.quaternion);
+                }
+                if (typeof source.updateState === 'function' && source.state !== 'JUMPING') {
+                    source.updateState('ATTACKING');
+                }
+                this.showRemoteActionReadability(source, 'ATTACK');
             }
         } else if (msg.type === 'damage') {
             const dmgData = msg.payload;
