@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.25.3</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.25.4</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -490,6 +490,14 @@
                     <div><strong style="color: #ffd700;">4.</strong> <strong>Level 100</strong> unlocks <strong>Heroic</strong> and <strong>Mythic</strong> dungeon difficulties.</div>
                     <div><strong style="color: #ffd700;">5.</strong> If you get turned around, reopen <strong>World Map (M)</strong> or <strong>Journal (J)</strong> to recover the route.</div>
                 </div>
+                <div id="help-daily-return-guide" style="border-top: 1px solid #444; padding-top: 10px;">
+                    <div style="color: #ffd700; font-size: 15px; font-weight: bold; margin-bottom: 6px;">Daily Return Loop</div>
+                    <div><strong style="color: #ffd700;">1.</strong> Open <strong>Journal (J)</strong> and check the <strong>Repeatable Ladder</strong> plus the live <strong>ET</strong> reset countdown before you pick a run.</div>
+                    <div><strong style="color: #ffd700;">2.</strong> Group up when possible. Nearby party members share kill credit, gold, XP, dungeon boss rewards, and add roughly <strong>+10% rewards per nearby member</strong> before difficulty scaling.</div>
+                    <div><strong style="color: #ffd700;">3.</strong> Push the highest-value daily route first, then turn in anything marked <strong>Ready</strong> before reset.</div>
+                    <div><strong style="color: #ffd700;">4.</strong> Use <strong>Vendor / Repair</strong> for junk, <strong>Stash</strong> for build pieces, and the <strong>Trading House</strong> for drops worth circulating to other players.</div>
+                    <div><strong style="color: #ffd700;">5.</strong> After reset, reopen the Journal and repeat the strongest paying route instead of guessing what is worth doing next.</div>
+                </div>
             </div>
             <div style="text-align: center; padding-bottom: 10px;">
                 <button id="btn-close-help" class="menu-btn">Close</button>
@@ -508,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.25.4" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.25.4 (The daily return loop now has a real closeout guide and QA route)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Help screen closeout:</strong> Help now includes a Daily Return Loop reference that ties together the Journal ladder, ET reset clock, nearby party reward bonus, and Trading House circulation path.</li>
+                        <li><strong>Retention loop stays grounded:</strong> The guide only points at systems that already exist in the game, so the 0.25 closeout explains the real sticky loop instead of promising fake weekly sludge.</li>
+                        <li><strong>Release QA route recorded:</strong> Added a dedicated 0.25 retention QA checklist covering Journal reset timing, party bonus visibility, dungeon rerun ladder, and Trading House flow.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for the Daily Return Loop help reference and 0.25.4 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.25.3" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.25.3 (Daily reset messaging now runs off the real server clock)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.25.3 for the latest shipped live-ops slice', () => {
-        expect(indexHtml).toContain('Alpha 0.25.3');
+    test('advances the login screen to alpha 0.25.4 for the latest shipped retention closeout slice', () => {
+        expect(indexHtml).toContain('Alpha 0.25.4');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -43,6 +43,16 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Journal (J)');
     });
 
+    test('includes a daily return loop quick-reference in the help screen', () => {
+        expect(indexHtml).toContain('id="help-daily-return-guide"');
+        expect(indexHtml).toContain('Daily Return Loop');
+        expect(indexHtml).toContain('Repeatable Ladder');
+        expect(indexHtml).toContain('ET reset clock');
+        expect(indexHtml).toContain('+10% rewards per nearby member');
+        expect(indexHtml).toContain('Trading House');
+        expect(indexHtml).toContain('After reset, reopen the Journal');
+    });
+
     test('includes plain-language starter service guidance on merchant stash forge and trading house windows', () => {
         expect(indexHtml).toContain('id="shop-service-guidance"');
         expect(indexHtml).toContain('id="shop-buyback-guidance"');
@@ -63,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.25.3', () => {
+    test('includes the latest player-facing patch notes entry for 0.25.4', () => {
+        expect(indexHtml).toContain('Patch 0.25.4');
+        expect(indexHtml).toContain('Help now includes a Daily Return Loop reference that ties together the Journal ladder, ET reset clock, nearby party reward bonus, and Trading House circulation path');
+        expect(indexHtml).toContain('The guide only points at systems that already exist in the game, so the 0.25 closeout explains the real sticky loop instead of promising fake weekly sludge');
+        expect(indexHtml).toContain('Added a dedicated 0.25 retention QA checklist covering Journal reset timing, party bonus visibility, dungeon rerun ladder, and Trading House flow');
+        expect(indexHtml).toContain('Added regression coverage for the Daily Return Loop help reference and 0.25.4 version presentation');
+    });
+
+    test('keeps the prior 0.25.3 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.25.3');
         expect(indexHtml).toContain('Quest Journal reset messaging now runs off authoritative server time instead of a static daily-reset sentence');
         expect(indexHtml).toContain('Repeatable ladder copy now shows exactly how long remains before the next reset, giving live-ops and tuning work a truthful clock to point at');
@@ -88,6 +106,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.25.4');
         expect(indexHtml).toContain('Patch 0.25.3');
         expect(indexHtml).toContain('Patch 0.25.2');
         expect(indexHtml).toContain('Patch 0.25.1');
@@ -180,6 +199,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.25.4');
         expect(indexHtml).toContain('Patch 0.25.3');
         expect(indexHtml).toContain('Patch 0.25.1');
         expect(indexHtml).toContain('Patch 0.25.0');
@@ -227,6 +247,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.25.4"');
         expect(indexHtml).toContain('data-version="0.25.3"');
         expect(indexHtml).toContain('data-version="0.25.2"');
         expect(indexHtml).toContain('data-version="0.25.1"');
