@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.25.4 for the latest shipped retention closeout slice', () => {
-        expect(indexHtml).toContain('Alpha 0.25.4');
+    test('advances the login screen to alpha 0.26.0 for the latest shipped movement-authority slice', () => {
+        expect(indexHtml).toContain('Alpha 0.26.0');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.25.4', () => {
+    test('includes the latest player-facing patch notes entry for 0.26.0', () => {
+        expect(indexHtml).toContain('Patch 0.26.0');
+        expect(indexHtml).toContain('Large self movement corrections still apply the server position immediately for gameplay truth');
+        expect(indexHtml).toContain('the local player mesh and locked camera now ease into the corrected position over a short visual window instead of popping there in one frame');
+        expect(indexHtml).toContain('Authoritative jump visuals still override the new correction smoothing so airborne travel does not get a second conflicting interpolation pass');
+        expect(indexHtml).toContain('Added regression coverage for self-correction visual smoothing, correction expiry, jump-priority handling, and 0.26.0 version presentation');
+    });
+
+    test('keeps the prior 0.25.4 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.25.4');
         expect(indexHtml).toContain('Help now includes a Daily Return Loop reference that ties together the Journal ladder, ET reset clock, nearby party reward bonus, and Trading House circulation path');
         expect(indexHtml).toContain('The guide only points at systems that already exist in the game, so the 0.25 closeout explains the real sticky loop instead of promising fake weekly sludge');
@@ -106,6 +114,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.26.0');
         expect(indexHtml).toContain('Patch 0.25.4');
         expect(indexHtml).toContain('Patch 0.25.3');
         expect(indexHtml).toContain('Patch 0.25.2');
@@ -199,6 +208,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.26.0');
         expect(indexHtml).toContain('Patch 0.25.4');
         expect(indexHtml).toContain('Patch 0.25.3');
         expect(indexHtml).toContain('Patch 0.25.1');
@@ -247,6 +257,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.26.0"');
         expect(indexHtml).toContain('data-version="0.25.4"');
         expect(indexHtml).toContain('data-version="0.25.3"');
         expect(indexHtml).toContain('data-version="0.25.2"');

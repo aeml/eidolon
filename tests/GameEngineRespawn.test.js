@@ -233,6 +233,45 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.player.position);
     });
 
+    test('delta self teleport seeds a short-lived visual correction state for overworld smoothing', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.stats.hp = 100;
+        engine.player.position.set(0, 0, 0);
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        state: 'IDLE',
+                        health: 100,
+                        maxHealth: 100,
+                        mana: 100,
+                        maxMana: 100,
+                        x: 80,
+                        z: 240,
+                        y: 0
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.position.x).toBe(80);
+        expect(engine.player.position.z).toBe(240);
+        expect(engine.playerCorrectionVisualState).toEqual(expect.objectContaining({
+            from: expect.any(THREE.Vector3),
+            to: expect.any(THREE.Vector3),
+            displayPosition: expect.any(THREE.Vector3),
+            duration: expect.any(Number)
+        }));
+        expect(engine.playerCorrectionVisualState.from.x).toBe(0);
+        expect(engine.playerCorrectionVisualState.to.x).toBe(80);
+        expect(engine.playerCorrectionVisualState.displayPosition.x).toBe(0);
+    });
+
     test('full state DEAD->alive also forces town respawn', () => {
         const engine = createEngineHarness();
 

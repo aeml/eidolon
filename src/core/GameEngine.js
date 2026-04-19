@@ -165,6 +165,7 @@ export class GameEngine {
         this.frameCount = 0;
         this.playerJumpState = null;
         this.playerJumpVisualHeight = 0;
+        this.playerCorrectionVisualState = null;
         this.lastRenderHudSignature = '';
         this.lastRenderXpSignature = '';
         this.lastRenderHotbarCooldownSignature = '';
@@ -1314,12 +1315,14 @@ export class GameEngine {
                             const horizontalPos = new THREE.Vector3(pData.x, this.player.position.y, pData.z);
                             const dist = this.player.position.distanceTo(horizontalPos);
                             if (pData.state === 'JUMPING' || dist > 20.0) { // Threshold for teleport (larger than normal lag correction)
+                                const previousPosition = this.player.position.clone();
                                 console.log(`GameEngine: Detected server teleport, syncing position. Dist: ${dist}, Server: ${serverPos.x},${serverPos.z}, Client: ${this.player.position.x},${this.player.position.z}`);
                                 if (pData.state === 'JUMPING') {
                                     this.player.position.x = serverPos.x;
                                     this.player.position.z = serverPos.z;
                                 } else {
                                     this.player.position.copy(serverPos);
+                                    this.beginPlayerCorrectionVisual(previousPosition, serverPos);
                                 }
                                 this.player.targetPosition = null;
                                 this.chunkManager.updateEntityChunk(this.player);
@@ -1563,12 +1566,14 @@ export class GameEngine {
                             const horizontalPos = new THREE.Vector3(pData.x, this.player.position.y, pData.z);
                             const dist = this.player.position.distanceTo(horizontalPos);
                             if (pData.state === 'JUMPING' || dist > 20.0) {
+                                const previousPosition = this.player.position.clone();
                                 console.log(`GameEngine: Detected self teleport from delta, syncing position. Dist: ${dist}`);
                                 if (pData.state === 'JUMPING') {
                                     this.player.position.x = serverPos.x;
                                     this.player.position.z = serverPos.z;
                                 } else {
                                     this.player.position.copy(serverPos);
+                                    this.beginPlayerCorrectionVisual(previousPosition, serverPos);
                                 }
                                 this.player.targetPosition = null;
                                 this.chunkManager.updateEntityChunk(this.player);
@@ -3665,6 +3670,49 @@ export class GameEngine {
         this.applyEntityJumpVisuals(this.player, jumpState);
     }
 
+    beginPlayerCorrectionVisual(previousPosition, nextPosition) {
+        if (!previousPosition || !nextPosition) return;
+
+        const horizontalDistance = new THREE.Vector2(previousPosition.x, previousPosition.z)
+            .distanceTo(new THREE.Vector2(nextPosition.x, nextPosition.z));
+        if (!Number.isFinite(horizontalDistance) || horizontalDistance < 0.25) {
+            this.playerCorrectionVisualState = null;
+            return;
+        }
+
+        this.playerCorrectionVisualState = {
+            from: previousPosition.clone(),
+            to: nextPosition.clone(),
+            displayPosition: previousPosition.clone(),
+            elapsed: 0,
+            duration: Math.max(0.08, Math.min(0.18, horizontalDistance / 240))
+        };
+    }
+
+    updatePlayerCorrectionVisual(dt) {
+        const correction = this.playerCorrectionVisualState;
+        if (!correction || !this.player) return null;
+
+        correction.elapsed = Math.min(correction.duration, correction.elapsed + dt);
+        const progress = correction.duration > 0 ? correction.elapsed / correction.duration : 1;
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        correction.displayPosition.lerpVectors(correction.from, correction.to, easedProgress);
+
+        if (progress >= 1) {
+            this.playerCorrectionVisualState = null;
+            return null;
+        }
+
+        return correction.displayPosition;
+    }
+
+    applyPlayerCorrectionVisuals() {
+        if (!this.player?.mesh || !this.playerCorrectionVisualState || this.playerJumpState) return;
+
+        this.player.mesh.position.copy(this.playerCorrectionVisualState.displayPosition);
+        this.player.mesh.quaternion.copy(this.player.rotation);
+    }
+
     moveToAndInteract(entity) {
         if (!entity) return;
         this.pendingInteraction = entity;
@@ -4118,11 +4166,12 @@ export class GameEngine {
         // Timer updated by server message
 
         this.updatePlayerJump(dt);
+        const playerCorrectionDisplayTarget = !this.playerJumpState ? this.updatePlayerCorrectionVisual(dt) : null;
 
         const cameraFollowTarget = this.cameraLocked
             ? (this.playerJumpState?.serverDriven && this.playerJumpState?.displayPosition
                 ? this.playerJumpState.displayPosition
-                : this.player?.position)
+                : playerCorrectionDisplayTarget || this.player?.position)
             : null;
 
         if (this.player) {
@@ -4628,6 +4677,7 @@ export class GameEngine {
         }
 
         this.applyPlayerJumpVisuals();
+        this.applyPlayerCorrectionVisuals();
 
         this.renderSystem.render();
 

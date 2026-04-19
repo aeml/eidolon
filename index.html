@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.25.4</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.26.0</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.26.0" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.26.0 (Large overworld corrections stop hard-snapping the local view)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Authority stays server-side:</strong> Large self movement corrections still apply the server position immediately for gameplay truth.</li>
+                        <li><strong>View snaps less:</strong> After a big overworld correction, the local player mesh and locked camera now ease into the corrected position over a short visual window instead of popping there in one frame.</li>
+                        <li><strong>Jump path keeps priority:</strong> Authoritative jump visuals still override the new correction smoothing so airborne travel does not get a second conflicting interpolation pass.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for self-correction visual smoothing, correction expiry, jump-priority handling, and 0.26.0 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.25.4" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.25.4 (The daily return loop now has a real closeout guide and QA route)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

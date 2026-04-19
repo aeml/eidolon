@@ -26,6 +26,15 @@ function createEngineHarness() {
     engine.remotePlayers = new Map();
     engine.playerJumpState = null;
     engine.playerJumpVisualHeight = 0;
+    engine.entityCreationQueue = [];
+    engine.pendingEntityIds = new Set();
+    engine.recentlyPickedUpLoot = new Set();
+    engine.effects = [];
+    engine.hazards = new Map();
+    engine.raycastTimer = 0;
+    engine.needsRaycast = false;
+    engine.gameTime = 0;
+    engine.frameCount = 0;
     engine.performRaycast = jest.fn();
     engine.clearCombatIntentState = jest.fn();
     engine.refreshCombatIntentState = jest.fn();
@@ -40,6 +49,7 @@ function createEngineHarness() {
         camera: {},
         scene: { add: jest.fn(), remove: jest.fn(), traverse: jest.fn() },
         setCameraTarget: jest.fn(),
+        updateEnvironmentLighting: jest.fn(),
         render: jest.fn()
     };
     engine.uiManager = {
@@ -60,10 +70,20 @@ function createEngineHarness() {
     };
     engine.minimap = { update: jest.fn() };
     engine.worldMap = { update: jest.fn() };
-    engine.network = { send: jest.fn() };
+    engine.floatingTextManager = { update: jest.fn() };
+    engine.network = {
+        send: jest.fn(),
+        drainMessages: jest.fn(() => []),
+        messageQueue: [],
+        latestServerTime: null
+    };
     engine.abilityController = {
         pendingAbilityTarget: { id: 'ability-target' },
-        pendingAbilitySkill: 'Fireball'
+        pendingAbilitySkill: 'Fireball',
+        processInputBuffer: jest.fn(),
+        updatePendingTarget: jest.fn(),
+        performAbility: jest.fn(),
+        performAttack: jest.fn()
     };
     engine.inputManager = {
         keys: { control: false, alt: false },
@@ -422,6 +442,75 @@ describe('authoritative jump flow', () => {
         engine.applyPlayerJumpVisuals();
 
         expect(engine.playerJumpState.displayPosition.x).toBeCloseTo(displayXAfterUpdate, 5);
+    });
+
+    test('local correction visuals smooth mesh and camera after a large self correction while logical position stays authoritative', () => {
+        const engine = createEngineHarness();
+        engine.cameraLocked = true;
+        engine.player.position.set(80, 0, 240);
+        engine.playerCorrectionVisualState = {
+            from: new THREE.Vector3(0, 0, 0),
+            to: new THREE.Vector3(80, 0, 240),
+            displayPosition: new THREE.Vector3(0, 0, 0),
+            elapsed: 0,
+            duration: 0.18
+        };
+
+        engine.update(1 / 60);
+        engine.player.render();
+        engine.applyPlayerJumpVisuals();
+        engine.applyPlayerCorrectionVisuals();
+
+        expect(engine.player.position.x).toBe(80);
+        expect(engine.player.mesh.position.x).toBeGreaterThan(0);
+        expect(engine.player.mesh.position.x).toBeLessThan(80);
+        expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.playerCorrectionVisualState.displayPosition);
+    });
+
+    test('local correction visuals expire and return camera follow to the authoritative player position', () => {
+        const engine = createEngineHarness();
+        engine.cameraLocked = true;
+        engine.player.position.set(80, 0, 240);
+        engine.playerCorrectionVisualState = {
+            from: new THREE.Vector3(0, 0, 0),
+            to: new THREE.Vector3(80, 0, 240),
+            displayPosition: new THREE.Vector3(0, 0, 0),
+            elapsed: 0.17,
+            duration: 0.18
+        };
+
+        engine.update(1 / 60);
+
+        expect(engine.playerCorrectionVisualState).toBeNull();
+        expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.player.position);
+    });
+
+    test('jump visuals keep priority over local correction smoothing', () => {
+        const engine = createEngineHarness();
+        engine.cameraLocked = true;
+        engine.player.position.set(12, 0, 8);
+        engine.playerCorrectionVisualState = {
+            from: new THREE.Vector3(0, 0, 0),
+            to: new THREE.Vector3(80, 0, 240),
+            displayPosition: new THREE.Vector3(20, 0, 60),
+            elapsed: 0,
+            duration: 0.18
+        };
+        engine.playerJumpState = {
+            start: new THREE.Vector3(0, 0, 0),
+            end: new THREE.Vector3(20, 0, 12),
+            progress: 0.6,
+            elapsed: 0.6,
+            duration: 0.8,
+            height: 8,
+            serverDriven: true,
+            visualHeight: 4,
+            displayPosition: new THREE.Vector3(6, 0, 4)
+        };
+
+        engine.update(1 / 60);
+
+        expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.playerJumpState.displayPosition);
     });
 
     test('predicted local jump is not cleared by self deltas that omit state', () => {
