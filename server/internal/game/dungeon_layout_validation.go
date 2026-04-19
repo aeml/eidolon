@@ -52,24 +52,55 @@ func assignDungeonRoomHooks(layout *DungeonLayout) {
 
 	normalIndices := make([]int, 0)
 	eliteIndices := make([]int, 0)
+	traversableRoomCount := 0
 	for idx := range layout.Rooms {
 		layout.Rooms[idx].Hook = ""
 		switch layout.Rooms[idx].Type {
 		case "normal":
 			normalIndices = append(normalIndices, idx)
+			traversableRoomCount++
 		case "elite":
 			eliteIndices = append(eliteIndices, idx)
+			traversableRoomCount++
 		}
 	}
 
+	shrineIndex := -1
 	if len(normalIndices) > 0 {
-		layout.Rooms[normalIndices[0]].Hook = "chest"
+		shrineIndex = normalIndices[len(normalIndices)-1]
 	}
+
+	chestCandidates := make([]int, 0, len(normalIndices))
+	for _, idx := range normalIndices {
+		if idx == shrineIndex {
+			continue
+		}
+		chestCandidates = append(chestCandidates, idx)
+	}
+	if len(chestCandidates) > 0 {
+		layout.Rooms[chestCandidates[0]].Hook = "chest"
+	}
+	if traversableRoomCount >= 5 && len(chestCandidates) > 1 {
+		midpoint := len(layout.Rooms) / 2
+		for _, idx := range chestCandidates[1:] {
+			if idx >= midpoint {
+				layout.Rooms[idx].Hook = "chest"
+				break
+			}
+		}
+	}
+	if shrineIndex >= 0 {
+		layout.Rooms[shrineIndex].Hook = "shrine"
+	}
+
 	if len(eliteIndices) > 0 {
 		layout.Rooms[eliteIndices[0]].Hook = "elite_ambush"
 	}
-	if len(normalIndices) > 1 {
-		layout.Rooms[normalIndices[len(normalIndices)-1]].Hook = "shrine"
+	if traversableRoomCount >= 5 && len(eliteIndices) > 1 {
+		lastEliteIndex := eliteIndices[len(eliteIndices)-1]
+		if lastEliteIndex != eliteIndices[0] {
+			layout.Rooms[lastEliteIndex].Hook = "elite_ambush"
+		}
 	}
 }
 

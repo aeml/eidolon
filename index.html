@@ -270,7 +270,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.24.0</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.24.1</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -506,6 +506,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.24.1" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.24.1 (Long dungeon runs now cadence reward pockets and pressure spikes more deliberately)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Long-run cadence pass:</strong> Longer multi-boss dungeons can now stage a second chest pocket and a second elite ambush deeper in the run instead of spending the entire dungeon line on only one early reward and one early spike.</li>
+                        <li><strong>Shrine stays late:</strong> The shrine beat still anchors the deep pre-boss reset, so repeated reward and pressure beats do not consume the final recovery window.</li>
+                        <li><strong>0.24 depth continues:</strong> This is the first real encounter-cadence pass on top of the new room-role metadata, giving longer runs more authored momentum before the Heroic/Mythic identity slice.</li>
+                        <li><strong>Regression coverage:</strong> Added server and client regression coverage for expanded long-run hook distribution, repeated reward/ambush beats, and preserved late-shrine recovery pacing.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.24.0" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.24.0 (Dungeon room roles now read like a pacing plan instead of isolated markers)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

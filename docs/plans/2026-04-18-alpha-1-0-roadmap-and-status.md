@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.24.0`
+- Current in-game displayed version: `Alpha 0.24.1`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.24.0`
+### Shipped through `0.24.1`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -50,6 +50,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.23.3`: forge upgrade, socket, gem, and respec surfaces now explain buildcraft order and material commitments more clearly
 - `0.23.4`: dungeon reward messaging now lands more like payoff and closes the `0.23` line with stronger release-readability polish
 - `0.24.0`: dungeon room state now exposes canonical room roles and pacing metadata across journal, portal, minimap, and world-map route surfaces
+- `0.24.1`: longer dungeon runs now repeat reward and ambush beats more deliberately while preserving the late shrine reset before boss pressure
 
 ### What `0.22` has clearly accomplished already
 
@@ -348,15 +349,15 @@ Suggested milestone slices:
 - `0.24.3`: rerun incentive and reward-ladder pass
 - `0.24.4`: party dungeon UX hardening and release QA
 
-### `0.24.0` current slice
+### `0.24.1` current slice
 
 Status: ready to ship
 
 Current focus:
 
-- dungeon room state should expose one shared role model (`travel`, `reward`, `recovery`, `elite`, `event`, `boss`) instead of forcing each client surface to infer pacing from raw hooks
-- journal guidance, minimap markers, world-map previews, and hovered dungeon portals should all read the same next-beat pacing language
-- this slice should establish reusable metadata for the later `0.24.1` cadence pass and the rest of the dungeon-depth line
+- longer multi-boss dungeon lines should not spend the entire run on only one early chest beat and one early ambush beat
+- longer runs should be able to surface a second reward pocket and a second pressure spike while keeping shrine as the late recovery anchor
+- this slice should make long-run cadence feel more authored before the later Heroic/Mythic identity and rerun-incentive work
 
 ## `0.25` - Social, economy, and retention foundations
 

@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.24.0 for the latest shipped dungeon-room-role slice', () => {
-        expect(indexHtml).toContain('Alpha 0.24.0');
+    test('advances the login screen to alpha 0.24.1 for the latest shipped dungeon-cadence slice', () => {
+        expect(indexHtml).toContain('Alpha 0.24.1');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -63,7 +63,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.24.0', () => {
+    test('includes the latest player-facing patch notes entry for 0.24.1', () => {
+        expect(indexHtml).toContain('Patch 0.24.1');
+        expect(indexHtml).toContain('Longer multi-boss dungeons can now stage a second chest pocket and a second elite ambush deeper in the run');
+        expect(indexHtml).toContain('The shrine beat still anchors the deep pre-boss reset');
+        expect(indexHtml).toContain('This is the first real encounter-cadence pass on top of the new room-role metadata');
+        expect(indexHtml).toContain('Added server and client regression coverage for expanded long-run hook distribution, repeated reward/ambush beats, and preserved late-shrine recovery pacing');
+    });
+
+    test('keeps the prior 0.24.0 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.24.0');
         expect(indexHtml).toContain('Dungeon room state now tags rooms with shared roles like travel, reward, recovery, elite, event, and boss');
         expect(indexHtml).toContain('journal, hovered dungeon portals, minimap markers, and world-map active dungeon marker now surface cadence reads like Payoff, Reset, Spike, Pressure, and Climax');
@@ -113,6 +121,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.24.1');
         expect(indexHtml).toContain('Patch 0.24.0');
         expect(indexHtml).toContain('Patch 0.23.4');
         expect(indexHtml).toContain('Patch 0.23.3');
@@ -153,6 +162,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.24.1"');
         expect(indexHtml).toContain('data-version="0.24.0"');
         expect(indexHtml).toContain('data-version="0.23.4"');
         expect(indexHtml).toContain('data-version="0.23.3"');

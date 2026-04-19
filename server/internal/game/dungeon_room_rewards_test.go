@@ -291,6 +291,85 @@ func TestMarkDungeonRoomClearedHookLootRewardsPopulateCountsAndInventory(t *test
 	}
 }
 
+func TestMarkDungeonRoomClearedLongRunHookCadenceRepeatsRewardAndAmbushBeats(t *testing.T) {
+	w := NewWorld(nil)
+	player := &Entity{
+		ID:            "player-1",
+		Type:          TypePlayer,
+		Level:         75,
+		Health:        850,
+		MaxHealth:     1000,
+		Mana:          260,
+		MaxMana:       300,
+		MaxExperience: 100,
+		Inventory:     make([]Item, MaxInventorySize),
+	}
+	w.AddEntity(player)
+
+	layout := DungeonLayout{
+		Rooms: []DungeonRoom{
+			{X: 0, Z: 0, Width: 40, Height: 40, Type: "start"},
+			{X: 100, Z: 0, Width: 40, Height: 40, Type: "normal"},
+			{X: 200, Z: 0, Width: 40, Height: 40, Type: "elite"},
+			{X: 300, Z: 0, Width: 40, Height: 40, Type: "normal"},
+			{X: 400, Z: 0, Width: 40, Height: 40, Type: "elite"},
+			{X: 500, Z: 0, Width: 40, Height: 40, Type: "normal"},
+			{X: 600, Z: 0, Width: 40, Height: 40, Type: "boss"},
+		},
+	}
+	assignDungeonRoomHooks(&layout)
+
+	instanceID := "instance-room-hook-cadence"
+	w.InstanceLayouts[instanceID] = &DungeonInstance{
+		ID:                instanceID,
+		Layout:            layout,
+		Difficulty:        DifficultyHeroic,
+		DungeonType:       "tempest_spire",
+		RunLevel:          75,
+		RoomState:         NewDungeonRoomState(layout),
+		PlayerRoomSummary: map[string]DungeonRoomSummary{"player-1": {}},
+	}
+	w.Entities[player.ID].InstanceID = instanceID
+
+	rewards := make([]DungeonRoomClearRewardEvent, 0)
+	w.OnEvent = func(eventType string, data interface{}) {
+		if eventType == "room_clear_reward" {
+			rewards = append(rewards, data.(DungeonRoomClearRewardEvent))
+		}
+	}
+
+	w.MarkDungeonRoomCleared(instanceID, 1)
+	w.MarkDungeonRoomCleared(instanceID, 2)
+	w.MarkDungeonRoomCleared(instanceID, 3)
+	w.MarkDungeonRoomCleared(instanceID, 4)
+	w.MarkDungeonRoomCleared(instanceID, 5)
+
+	if len(rewards) != 5 {
+		t.Fatalf("expected 5 non-boss reward events, got %d", len(rewards))
+	}
+	if rewards[0].RoomHook != "chest" || rewards[0].GemCount != 1 {
+		t.Fatalf("expected early chest pocket to award a gem, got %+v", rewards[0])
+	}
+	if rewards[1].RoomHook != "elite_ambush" || rewards[1].ItemCount != 1 {
+		t.Fatalf("expected first ambush spike to award an item, got %+v", rewards[1])
+	}
+	if rewards[2].RoomHook != "chest" || rewards[2].GemCount != 1 {
+		t.Fatalf("expected deeper chest pocket to repeat gem reward pacing, got %+v", rewards[2])
+	}
+	if rewards[3].RoomHook != "elite_ambush" || rewards[3].ItemCount != 1 {
+		t.Fatalf("expected deeper ambush spike to repeat item reward pacing, got %+v", rewards[3])
+	}
+	if rewards[4].RoomHook != "shrine" || rewards[4].BuffName != "Sanctuary" {
+		t.Fatalf("expected final pre-boss room to remain the shrine reset, got %+v", rewards[4])
+	}
+	if rewards[2].Hint != "Treasure secured — cash in before the boss" {
+		t.Fatalf("expected repeated chest pocket to keep treasure hint, got %q", rewards[2].Hint)
+	}
+	if rewards[3].Hint != "Ambush survived — momentum and spoils increased" {
+		t.Fatalf("expected repeated ambush spike to keep ambush hint, got %q", rewards[3].Hint)
+	}
+}
+
 func TestMarkDungeonRoomClearedShrineBuffExpiresAfterDuration(t *testing.T) {
 	w := NewWorld(nil)
 	player := &Entity{
