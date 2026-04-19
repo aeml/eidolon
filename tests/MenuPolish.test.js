@@ -187,7 +187,24 @@ function buildStaticWindowDom() {
             <canvas id="world-map-canvas"></canvas>
         </div>
         <div id="social-window" style="display:none"></div>
-        <div id="party-panel"></div>
+        <div id="party-panel">
+            <div class="party-panel__header">
+                <span class="party-panel__title">PARTY</span>
+                <button id="btn-leave-party" class="party-btn party-btn--danger" type="button">Leave</button>
+            </div>
+            <div id="party-panel-guidance"></div>
+            <div id="party-list"></div>
+            <div class="party-panel__footer">
+                <input type="text" id="party-invite-input" class="party-panel__invite-input" />
+                <button id="btn-invite-party" class="party-btn party-btn--success" type="button">Invite</button>
+            </div>
+        </div>
+        <div id="party-request-modal" style="display:none">
+            <div id="party-inviter-name"></div>
+            <div id="party-request-benefits"></div>
+            <button id="btn-accept-party"></button>
+            <button id="btn-decline-party"></button>
+        </div>
         <div id="skill-tree-window" style="display:none"></div>
         <button id="btn-close-skills"></button>
         <div id="skill-tree-content"></div>
@@ -708,6 +725,41 @@ describe('menu polish regressions', () => {
         expect(inviteBtn).not.toBeNull();
         inviteBtn.click();
         expect(inviteSpy).toHaveBeenCalledWith('Alice');
+    });
+
+    test('party panel surfaces role visibility and cooperative reward guidance', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+        ui.lastPlayerRef = { id: 'player-1', name: 'Rob' };
+
+        ui.updateParty({
+            partyId: 'party-1',
+            leaderId: 'player-1',
+            members: [
+                { id: 'player-1', name: 'Rob', class: 'Wizard', level: 25, hp: 80, maxHp: 100, isLeader: true },
+                { id: 'player-2', name: 'Alice', class: 'Rogue', level: 24, hp: 70, maxHp: 100, isLeader: false }
+            ]
+        });
+
+        expect(document.getElementById('party-panel').textContent).toContain('Leader view');
+        expect(document.getElementById('party-panel').textContent).toContain('+20%');
+
+        const members = document.querySelectorAll('.party-member');
+        expect(members).toHaveLength(2);
+        expect(members[0].querySelector('.party-member-role').textContent).toBe('Leader');
+        expect(members[0].querySelector('.party-member-bonus').textContent).toContain('+20%');
+        expect(members[1].querySelector('.party-member-role').textContent).toBe('Member');
+    });
+
+    test('party invite modal explains cooperative benefits before accepting', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+
+        ui.showPartyRequest('Alice');
+
+        expect(document.getElementById('party-request-modal').style.display).toBe('block');
+        expect(document.getElementById('party-request-benefits').textContent).toContain('share nearby kill rewards');
+        expect(document.getElementById('party-request-benefits').textContent).toContain('dungeon boss credit');
     });
 
     test('older static window markup uses consistent close button chrome', () => {

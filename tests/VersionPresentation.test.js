@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.24.4 for the latest shipped party-ux slice', () => {
-        expect(indexHtml).toContain('Alpha 0.24.4');
+    test('advances the login screen to alpha 0.25.0 for the latest shipped party-importance slice', () => {
+        expect(indexHtml).toContain('Alpha 0.25.0');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -63,7 +63,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.24.4', () => {
+    test('includes the latest player-facing patch notes entry for 0.25.0', () => {
+        expect(indexHtml).toContain('Patch 0.25.0');
+        expect(indexHtml).toContain('The party panel now explains why grouping matters by calling out shared nearby kill rewards, dungeon boss credit, and the live party reward bonus');
+        expect(indexHtml).toContain('Party members now show clearer role tags like Leader, You, and Member instead of reading like anonymous HP bars');
+        expect(indexHtml).toContain('Party invite prompts now explain the cooperative upside before you accept');
+        expect(indexHtml).toContain('Added regression coverage for party benefit guidance, role visibility in the party panel, invite benefit messaging, and 0.25.0 version presentation');
+    });
+
+    test('keeps the prior 0.24.4 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.24.4');
         expect(indexHtml).toContain('The Dungeon Guide now spells out whether the party is starting a fresh run, continuing a live run, or sitting on an empty instance that is about to collapse');
         expect(indexHtml).toContain('Leader-only reset ownership is now explicit in the menu, while non-leaders are told they can only continue the current party instance');
@@ -145,6 +153,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.25.0');
         expect(indexHtml).toContain('Patch 0.24.4');
         expect(indexHtml).toContain('Patch 0.24.3');
         expect(indexHtml).toContain('Patch 0.24.2');
@@ -189,6 +198,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.25.0"');
         expect(indexHtml).toContain('data-version="0.24.4"');
         expect(indexHtml).toContain('data-version="0.24.3"');
         expect(indexHtml).toContain('data-version="0.24.2"');

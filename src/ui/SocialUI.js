@@ -168,10 +168,15 @@ export class SocialUI {
         this.partyData = partyData;
         if (!this.partyPanel || !this.partyList) return;
 
+        const panelGuidance = document.getElementById('party-panel-guidance');
+
         const inParty = !!(partyData && partyData.partyId);
         this.inParty = inParty;
 
         if (!inParty) {
+            if (panelGuidance) {
+                panelGuidance.textContent = 'Stay near party members to share kill credit, gold, XP, and dungeon boss rewards. Each nearby member also adds to the party reward bonus.';
+            }
             if (this.socialWindow.style.display === 'none') {
                 this.partyPanel.style.display = 'none';
             } else {
@@ -195,6 +200,13 @@ export class SocialUI {
         const player = this.ctx.getLastPlayer();
         const myId = player ? player.id : null;
         const amILeader = myId === leaderId;
+        const nearbyBonusPct = Math.max(10, members.length * 10);
+
+        if (panelGuidance) {
+            panelGuidance.textContent = amILeader
+                ? `Leader view: keep members nearby to share kill credit, gold, XP, and dungeon boss rewards. Current nearby party bonus target reads +${nearbyBonusPct}% before dungeon difficulty multipliers.`
+                : `Party rewards are proximity-based: stay near the group to share kill credit, gold, XP, and dungeon boss rewards. A full nearby party currently targets about +${nearbyBonusPct}% bonus rewards before difficulty scaling.`;
+        }
 
         members.forEach(member => {
             const div = document.createElement('div');
@@ -203,6 +215,7 @@ export class SocialUI {
             const hpPercent = (member.hp / member.maxHp) * 100;
             const isLeader = member.isLeader;
             const isMe = member.id === myId;
+            const roleLabel = isLeader ? 'Leader' : isMe ? 'You' : 'Member';
 
             const info = document.createElement('div');
             info.className = 'party-member-info';
@@ -237,6 +250,21 @@ export class SocialUI {
             info.appendChild(nameRow);
             info.appendChild(hpBar);
             div.appendChild(info);
+
+            const metaRow = document.createElement('div');
+            metaRow.className = 'party-member-meta';
+
+            const role = document.createElement('span');
+            role.className = 'party-member-role';
+            role.textContent = roleLabel;
+
+            const bonus = document.createElement('span');
+            bonus.className = 'party-member-bonus';
+            bonus.textContent = `Nearby share: +${nearbyBonusPct}%`;
+
+            metaRow.appendChild(role);
+            metaRow.appendChild(bonus);
+            div.appendChild(metaRow);
 
             if (amILeader && !isMe) {
                 const actions = document.createElement('div');
@@ -273,6 +301,10 @@ export class SocialUI {
         if (!this.partyRequestModal) return;
         this.currentInviter = inviterName;
         if (this.partyInviterName) this.partyInviterName.textContent = inviterName;
+        const benefits = document.getElementById('party-request-benefits');
+        if (benefits) {
+            benefits.textContent = 'Accept to share nearby kill rewards, dungeon boss credit, and party-led dungeon entry flow.';
+        }
         this.partyRequestModal.style.display = 'block';
     }
 

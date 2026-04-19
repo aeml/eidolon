@@ -214,6 +214,7 @@
                 <span class="party-panel__title">PARTY</span>
                 <button id="btn-leave-party" class="party-btn party-btn--danger" type="button">Leave</button>
             </div>
+            <div id="party-panel-guidance" class="party-panel__guidance">Stay near party members to share kill credit, gold, XP, and dungeon boss rewards. Each nearby member also adds to the party reward bonus.</div>
             <div id="party-list">
                 <!-- Members go here -->
             </div>
@@ -229,6 +230,7 @@
             <div class="party-request-modal__body">
                 <span id="party-inviter-name" class="party-request-modal__inviter">Player</span> wants to invite you to a party.
             </div>
+            <div id="party-request-benefits" class="party-request-modal__benefits">Accept to share nearby kill rewards, dungeon boss credit, and party-led dungeon entry flow.</div>
             <div class="party-request-modal__actions">
                 <button id="btn-accept-party" class="party-btn party-btn--success party-btn--large" type="button">Accept</button>
                 <button id="btn-decline-party" class="party-btn party-btn--danger party-btn--large" type="button">Decline</button>
@@ -270,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.24.4</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.25.0</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -506,6 +508,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.25.0" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.25.0 (Party play now does a better job of selling why it matters)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Party value is visible:</strong> The party panel now explains why grouping matters by calling out shared nearby kill rewards, dungeon boss credit, and the live party reward bonus.</li>
+                        <li><strong>Roster roles read clearly:</strong> Party members now show clearer role tags like Leader, You, and Member instead of reading like anonymous HP bars.</li>
+                        <li><strong>Invites sell the upside:</strong> Party invite prompts now explain the cooperative upside before you accept.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for party benefit guidance, role visibility in the party panel, invite benefit messaging, and 0.25.0 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.24.4" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.24.4 (Party dungeon state now reads clearly before you click in)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
