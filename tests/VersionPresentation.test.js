@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.27.5 for the latest shipped explicit remote-action refresh slice', () => {
-        expect(indexHtml).toContain('Alpha 0.27.5');
+    test('advances the login screen to alpha 0.27.6 for the latest shipped remote readability de-echo slice', () => {
+        expect(indexHtml).toContain('Alpha 0.27.6');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.27.5', () => {
+    test('includes the latest player-facing patch notes entry for 0.27.6', () => {
+        expect(indexHtml).toContain('Patch 0.27.6');
+        expect(indexHtml).toContain('Named remote ability callouts now suppress the immediate generic <code>ATTACK</code> echo that could arrive from the next replicated attack-state confirmation for the same actor');
+        expect(indexHtml).toContain('This keeps nearby spell readability focused on the real skill name instead of stacking a second generic label a beat later');
+        expect(indexHtml).toContain('Generic replicated <code>ATTACK</code> readability still works when no explicit named action callout just fired');
+        expect(indexHtml).toContain('Added regression coverage for remote ability readability de-echo handling and 0.27.6 version presentation');
+    });
+
+    test('keeps the prior 0.27.5 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.27.5');
         expect(indexHtml).toContain('Explicit remote attack and ability events can now restart nearby action presentation even if that actor was already in an <code>ATTACKING</code> pose from the previous action');
         expect(indexHtml).toContain('This keeps fast back-to-back remote swings and casts readable after the 0.27.4 duplicate-confirmation fix stopped generic sync from stretching one action forever');
@@ -162,6 +170,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.27.6');
         expect(indexHtml).toContain('Patch 0.27.5');
         expect(indexHtml).toContain('Patch 0.27.4');
         expect(indexHtml).toContain('Patch 0.27.3');
@@ -262,6 +271,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.27.6');
         expect(indexHtml).toContain('Patch 0.27.5');
         expect(indexHtml).toContain('Patch 0.27.4');
         expect(indexHtml).toContain('Patch 0.27.3');
@@ -317,6 +327,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.27.6"');
         expect(indexHtml).toContain('data-version="0.27.5"');
         expect(indexHtml).toContain('data-version="0.27.4"');
         expect(indexHtml).toContain('data-version="0.27.3"');

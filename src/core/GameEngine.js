@@ -343,6 +343,11 @@ export class GameEngine {
         const key = `remote-action-${sourceEntity.id || sourceEntity.name}-${label}`;
         if (!this.canShowThrottledReadabilityEvent(key, 750)) return false;
 
+        const actorKey = sourceEntity.id || sourceEntity.name;
+        if (actorKey) {
+            this.readabilityFeedbackTimestamps.set(`remote-attack-state-suppressed-${actorKey}`, Date.now());
+        }
+
         this.floatingTextManager.spawn(label, sourceEntity.position, '#8fe7ff', '18px');
         return true;
     }
@@ -392,6 +397,15 @@ export class GameEngine {
 
         const label = this.buildRemoteActionReadabilityText(entity, actionLabel);
         if (!label) return false;
+
+        if (state === 'ATTACKING') {
+            const actorKey = entity.id || entity.name;
+            const suppressedAt = actorKey ? (this.readabilityFeedbackTimestamps.get(`remote-attack-state-suppressed-${actorKey}`) || 0) : 0;
+            if (suppressedAt && (Date.now() - suppressedAt) < 650) {
+                return false;
+            }
+        }
+
         const key = `remote-state-${entity.id || entity.name}-${state}`;
         if (!this.canShowThrottledReadabilityEvent(key, state === 'JUMPING' ? 650 : 500)) return false;
 
