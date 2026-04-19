@@ -263,6 +263,77 @@ describe('QuestUI objectives panel', () => {
         expect(list.textContent).toContain('Push Heroic and Mythic runs');
     });
 
+    test('renders a repeatable ladder summary in the journal for the highest-value dailies', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] })
+        });
+
+        questUI.updateJournal([
+            {
+                id: 'daily_dungeon_bosses_mythic',
+                target: 'DungeonBossMythic',
+                accepted: true,
+                completed: false,
+                count: 1,
+                maxCount: 4,
+                rewardXP: 15000000
+            },
+            {
+                id: 'daily_dungeon_bosses_heroic',
+                target: 'DungeonBossHeroic',
+                accepted: false,
+                completed: false,
+                count: 0,
+                maxCount: 4,
+                rewardXP: 10000000
+            },
+            {
+                id: 'daily_tempest_spire_bosses',
+                target: 'TempestSpireBoss',
+                accepted: true,
+                completed: true,
+                count: 5,
+                maxCount: 5,
+                rewardXP: 9000000
+            }
+        ]);
+
+        const journal = document.getElementById('journal-list');
+        expect(journal.textContent).toContain('Repeatable Ladder');
+        expect(journal.textContent).toContain('Accepted now: 1');
+        expect(journal.textContent).toContain('Ready to claim: 1');
+        expect(journal.textContent).toContain('Dungeon Boss (Mythic) • Active');
+        expect(journal.textContent).toContain('1 / 4 • 15,000,000 XP');
+        expect(journal.textContent).toContain('Dungeon Boss (Heroic) • Available');
+        expect(journal.textContent).toContain('Tempest Spire Bosses • Ready');
+    });
+
+    test('keeps the repeatable ladder visible even when no dailies are currently accepted', () => {
+        buildQuestDom();
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] })
+        });
+
+        questUI.updateJournal([
+            {
+                id: 'daily_molten_core_bosses',
+                target: 'MoltenCoreBoss',
+                accepted: false,
+                completed: false,
+                count: 0,
+                maxCount: 5,
+                rewardXP: 9000000
+            }
+        ]);
+
+        const journal = document.getElementById('journal-list');
+        expect(journal.textContent).toContain('Repeatable Ladder');
+        expect(journal.textContent).toContain('Accepted now: 0');
+        expect(journal.textContent).toContain('Molten Core Bosses • Available');
+        expect(journal.textContent).toContain('No active quests.');
+    });
+
     test('hides objectives panel when there are no accepted quests outside town', () => {
         buildQuestDom();
         const questUI = new QuestUI({

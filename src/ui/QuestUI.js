@@ -129,6 +129,37 @@ export class QuestUI {
         return message;
     }
 
+    buildRepeatableLadderSummary(quests) {
+        if (!Array.isArray(quests)) return null;
+
+        const repeatableQuests = quests.filter((quest) => quest?.id?.startsWith('daily_'));
+        if (repeatableQuests.length === 0) return null;
+
+        const formatLadderLabel = (quest) => {
+            if (quest?.target === 'DungeonBossHeroic') return 'Dungeon Boss (Heroic)';
+            if (quest?.target === 'DungeonBossMythic') return 'Dungeon Boss (Mythic)';
+            return this.formatQuestTarget(quest?.target, quest?.maxCount);
+        };
+
+        const topEntries = [...repeatableQuests]
+            .sort((left, right) => (Number(right?.rewardXP) || 0) - (Number(left?.rewardXP) || 0))
+            .slice(0, 3)
+            .map((quest) => ({
+                id: quest.id,
+                label: formatLadderLabel(quest),
+                accepted: Boolean(quest.accepted && !quest.completed),
+                completed: Boolean(quest.accepted && quest.completed),
+                progressText: `${Math.max(0, Number(quest.count) || 0)} / ${Math.max(0, Number(quest.maxCount) || 0)}`,
+                rewardXP: Number(quest.rewardXP) || 0
+            }));
+
+        return {
+            acceptedCount: repeatableQuests.filter((quest) => quest?.accepted && !quest?.completed).length,
+            readyCount: repeatableQuests.filter((quest) => quest?.accepted && quest?.completed).length,
+            topEntries
+        };
+    }
+
     isPlayerInTown(player = this.ctx.getLastPlayer?.()) {
         if (!player?.position) return false;
         const x = Number(player.position.x);
@@ -709,6 +740,57 @@ export class QuestUI {
         infoDiv.textContent = `Daily quests reset at 12:00 AM Eastern Time`;
         this.journalList.appendChild(infoDiv);
 
+        const repeatableLadder = this.buildRepeatableLadderSummary(quests);
+        if (repeatableLadder) {
+            const ladder = document.createElement('div');
+            ladder.style.background = 'linear-gradient(180deg, rgba(29, 35, 46, 0.95), rgba(18, 22, 29, 0.95))';
+            ladder.style.border = '1px solid rgba(143, 176, 217, 0.35)';
+            ladder.style.padding = '10px';
+            ladder.style.marginBottom = '14px';
+            ladder.style.display = 'flex';
+            ladder.style.flexDirection = 'column';
+            ladder.style.gap = '6px';
+
+            const title = this.createMessage('Repeatable Ladder', {
+                color: '#ffd700',
+                fontSize: '11px',
+                fontWeight: 'bold',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase'
+            });
+            const body = this.createMessage(
+                `Accepted now: ${repeatableLadder.acceptedCount} • Ready to claim: ${repeatableLadder.readyCount}. Highest-value dailies reset tomorrow, so this is the fastest XP ladder to pick back up.`,
+                { color: '#d7dfef', fontSize: '12px', lineHeight: '1.5' }
+            );
+
+            ladder.appendChild(title);
+            ladder.appendChild(body);
+
+            repeatableLadder.topEntries.forEach((entry) => {
+                const row = document.createElement('div');
+                row.style.display = 'flex';
+                row.style.justifyContent = 'space-between';
+                row.style.gap = '10px';
+                row.style.fontSize = '12px';
+                row.style.alignItems = 'baseline';
+
+                const left = this.createMessage(
+                    `${entry.label}${entry.completed ? ' • Ready' : entry.accepted ? ' • Active' : ' • Available'}`,
+                    { color: entry.completed ? '#7cf0a5' : entry.accepted ? '#ffd36f' : '#cfd7e2' }
+                );
+                const right = this.createMessage(
+                    `${entry.progressText} • ${entry.rewardXP.toLocaleString()} XP`,
+                    { color: '#8fd3ff', whiteSpace: 'nowrap' }
+                );
+
+                row.appendChild(left);
+                row.appendChild(right);
+                ladder.appendChild(row);
+            });
+
+            this.journalList.appendChild(ladder);
+        }
+
         if (!quests) return;
         let hasActive = false;
 
@@ -787,7 +869,6 @@ export class QuestUI {
         });
 
         if (!hasActive) {
-            this.clearElement(this.journalList);
             this.journalList.appendChild(this.createMessage('No active quests.', {
                 color: '#888',
                 textAlign: 'center',
