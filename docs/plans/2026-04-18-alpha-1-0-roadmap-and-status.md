@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.24.3`
+- Current in-game displayed version: `Alpha 0.24.4`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.24.3`
+### Shipped through `0.24.4`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -53,6 +53,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.24.1`: longer dungeon runs now repeat reward and ambush beats more deliberately while preserving the late shrine reset before boss pressure
 - `0.24.2`: Heroic and Mythic boss clears now advertise and award distinct endgame bonus drops, making endgame difficulty identity visible in both the dungeon menu and live reward summaries
 - `0.24.3`: the Dungeon Guide now surfaces a live rerun ladder from accepted daily dungeon boss quests, making the max-level reward ladder visible before a run starts
+- `0.24.4`: the Dungeon Guide now makes party-instance ownership, continue/reset control, and empty-instance expiry explicit before the group commits to a run
 
 ### What `0.22` has clearly accomplished already
 
@@ -351,15 +352,15 @@ Suggested milestone slices:
 - `0.24.3`: rerun incentive and reward-ladder pass
 - `0.24.4`: party dungeon UX hardening and release QA
 
-### `0.24.3` current slice
+### `0.24.4` current slice
 
 Status: ready to ship
 
 Current focus:
 
-- rerun incentive should be visible at the point where the player chooses the next dungeon, not hidden in the broader journal list
-- the reward ladder should reflect real accepted daily dungeon quests instead of a fabricated progression track
-- this slice should stay small by surfacing the existing dungeon daily ladder in the Dungeon Guide before the later party UX pass
+- party members should understand whether they are starting fresh or re-entering an existing run before clicking the button
+- reset ownership and empty-instance expiry should be explicit so group control feels less ambiguous
+- this slice should keep the change small by hardening the Dungeon Guide state readout rather than redesigning the broader party system
 
 ## `0.25` - Social, economy, and retention foundations
 

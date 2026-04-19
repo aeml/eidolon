@@ -236,4 +236,47 @@ describe('dungeon progression menu', () => {
             }
         }));
     });
+
+    test('explains active party-instance ownership and labels continue/reset actions for leaders', () => {
+        const ui = new UIManager(false);
+
+        ui.showDungeonMenu({
+            hasInstance: true,
+            timeLeft: 87,
+            isLeader: true,
+            playerLevel: 100,
+            maxPlayerLevel: 100,
+            dungeonUnlockLevel: 30,
+            endgameDifficultyUnlockLevel: 100,
+            availableRunLevels: [30, 40, 50, 60, 70, 80, 90, 100]
+        });
+
+        const partyStateBox = document.getElementById('dungeon-party-state-box');
+        expect(partyStateBox.textContent).toContain('Party instance idle');
+        expect(partyStateBox.textContent).toContain('87s');
+        expect(partyStateBox.textContent).toContain('You are the party leader');
+        expect(document.getElementById('btn-enter-dungeon').innerText).toBe('Continue Party Run');
+        expect(document.getElementById('btn-reset-dungeon').innerText).toBe('Reset Party Instance');
+    });
+
+    test('explains that non-leaders can only continue an existing party run', () => {
+        const ui = new UIManager(false);
+
+        ui.showDungeonMenu({
+            hasInstance: true,
+            timeLeft: 0,
+            isLeader: false,
+            playerLevel: 100,
+            maxPlayerLevel: 100,
+            dungeonUnlockLevel: 30,
+            endgameDifficultyUnlockLevel: 100,
+            availableRunLevels: [30, 40, 50, 60, 70, 80, 90, 100]
+        });
+
+        const partyStateBox = document.getElementById('dungeon-party-state-box');
+        expect(partyStateBox.textContent).toContain('Party instance active');
+        expect(partyStateBox.textContent).toContain('Non-leaders can only continue the current party instance');
+        expect(document.getElementById('btn-enter-dungeon').innerText).toBe('Continue Party Run');
+        expect(document.getElementById('btn-reset-dungeon')).toBeNull();
+    });
 });

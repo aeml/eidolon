@@ -2639,22 +2639,36 @@ export class UIManager {
         header.appendChild(closeBtn);
         menu.appendChild(header);
 
+        const partyStateBox = document.createElement('div');
+        partyStateBox.id = 'dungeon-party-state-box';
+        partyStateBox.style.background = 'rgba(17, 21, 28, 0.9)';
+        partyStateBox.style.border = '1px solid rgba(120, 142, 172, 0.28)';
+        partyStateBox.style.borderRadius = '8px';
+        partyStateBox.style.padding = '10px 12px';
+        partyStateBox.style.marginBottom = '14px';
+        partyStateBox.style.textAlign = 'left';
+        partyStateBox.style.fontSize = '12px';
+
         if (data.hasInstance && data.timeLeft > 0) {
-            const timer = document.createElement('p');
-            timer.innerText = `Instance resets in: ${Math.ceil(data.timeLeft)}s`;
-            timer.style.color = '#ffaa00';
-            menu.appendChild(timer);
+            partyStateBox.innerHTML = `
+                <div style="color: #ffaa00; font-weight: bold;">Party instance idle — reset window open</div>
+                <div style="color: #d7dfef; margin-top: 4px; line-height: 1.5;">Your party already owns a dungeon instance. If everyone left, it will collapse in ${Math.ceil(data.timeLeft)}s unless the party goes back in.</div>
+                <div style="color: ${data.isLeader ? '#ffd36f' : '#8ea8d1'}; margin-top: 4px; line-height: 1.5;">${data.isLeader ? 'You are the party leader, so you can continue it or reset it for a fresh run.' : 'Only the party leader can reset it. Non-leaders can still re-enter the current party run.'}</div>
+            `;
         } else if (data.hasInstance) {
-            const status = document.createElement('p');
-            status.innerText = 'Instance Active';
-            status.style.color = '#00ff00';
-            menu.appendChild(status);
+            partyStateBox.innerHTML = `
+                <div style="color: #7cf0a5; font-weight: bold;">Party instance active</div>
+                <div style="color: #d7dfef; margin-top: 4px; line-height: 1.5;">Your party already has a live dungeon run. Entering here continues that same instance instead of creating a new one.</div>
+                <div style="color: ${data.isLeader ? '#ffd36f' : '#8ea8d1'}; margin-top: 4px; line-height: 1.5;">${data.isLeader ? 'You are the party leader, so you can keep the run going or reset it when the group wants a fresh start.' : 'Reset control stays with the party leader. Non-leaders can only continue the current party instance.'}</div>
+            `;
         } else {
-            const status = document.createElement('p');
-            status.innerText = 'No Active Instance';
-            status.style.color = '#aaa';
-            menu.appendChild(status);
+            partyStateBox.innerHTML = `
+                <div style="color: #aaa; font-weight: bold;">No active party instance</div>
+                <div style="color: #d7dfef; margin-top: 4px; line-height: 1.5;">Entering now starts a fresh dungeon run for your current party.</div>
+                <div style="color: ${data.isLeader ? '#ffd36f' : '#8ea8d1'}; margin-top: 4px; line-height: 1.5;">${data.isLeader ? 'As party leader, your dungeon choice and reset actions define the run for the group.' : 'If you want a different dungeon or a reset, ask the party leader to drive it.'}</div>
+            `;
         }
+        menu.appendChild(partyStateBox);
 
         // Dungeon Selection
         const dungeonInfo = {
@@ -2911,7 +2925,7 @@ export class UIManager {
 
         const enterBtn = document.createElement('button');
         enterBtn.id = 'btn-enter-dungeon';
-        enterBtn.innerText = 'Enter Dungeon';
+        enterBtn.innerText = data.hasInstance ? 'Continue Party Run' : 'Start Party Run';
         enterBtn.className = 'menu-btn';
         enterBtn.type = 'button';
         enterBtn.style.minWidth = '160px';
@@ -2941,7 +2955,7 @@ export class UIManager {
         if (data.isLeader) {
             const resetBtn = document.createElement('button');
             resetBtn.id = 'btn-reset-dungeon';
-            resetBtn.innerText = 'Reset Instance';
+            resetBtn.innerText = 'Reset Party Instance';
             resetBtn.className = 'menu-btn';
             resetBtn.type = 'button';
             resetBtn.style.minWidth = '160px';

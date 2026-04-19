@@ -288,11 +288,13 @@ describe('menu polish regressions', () => {
         const menu = document.getElementById('dungeon-menu');
         const closeBtn = document.getElementById('btn-close-dungeon-menu');
         const ladderBox = document.getElementById('dungeon-reward-ladder-box');
+        const partyStateBox = document.getElementById('dungeon-party-state-box');
 
         expect(backdrop).not.toBeNull();
         expect(menu).not.toBeNull();
         expect(closeBtn).not.toBeNull();
         expect(ladderBox).not.toBeNull();
+        expect(partyStateBox).not.toBeNull();
 
         closeBtn.click();
         expect(document.getElementById('dungeon-menu')).toBeNull();
@@ -343,11 +345,13 @@ describe('menu polish regressions', () => {
         const dungeonSelect = document.getElementById('dungeon-type-select');
         const runLevelSelect = document.getElementById('dungeon-run-level-select');
         const ladderBox = document.getElementById('dungeon-reward-ladder-box');
+        const partyStateBox = document.getElementById('dungeon-party-state-box');
         expect(dungeonMenu).not.toBeNull();
         expect(dungeonMenu.style.userSelect).toBe('none');
         expect(dungeonSelect.style.userSelect).toBe('text');
         expect(runLevelSelect.style.userSelect).toBe('text');
         expect(ladderBox.textContent).toContain('Repeat-Run Ladder');
+        expect(partyStateBox.textContent).toContain('No active party instance');
 
         window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
         expect(document.getElementById('dungeon-menu')).toBeNull();

@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.24.3 for the latest shipped rerun-incentive slice', () => {
-        expect(indexHtml).toContain('Alpha 0.24.3');
+    test('advances the login screen to alpha 0.24.4 for the latest shipped party-ux slice', () => {
+        expect(indexHtml).toContain('Alpha 0.24.4');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -63,7 +63,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.24.3', () => {
+    test('includes the latest player-facing patch notes entry for 0.24.4', () => {
+        expect(indexHtml).toContain('Patch 0.24.4');
+        expect(indexHtml).toContain('The Dungeon Guide now spells out whether the party is starting a fresh run, continuing a live run, or sitting on an empty instance that is about to collapse');
+        expect(indexHtml).toContain('Leader-only reset ownership is now explicit in the menu, while non-leaders are told they can only continue the current party instance');
+        expect(indexHtml).toContain('Enter and reset buttons now read like party actions instead of generic solo-instance verbs');
+        expect(indexHtml).toContain('Added regression coverage for party instance state messaging, continue-versus-start labeling, leader-only reset controls, and 0.24.4 version presentation');
+    });
+
+    test('keeps the prior 0.24.3 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.24.3');
         expect(indexHtml).toContain('The Dungeon Guide now surfaces a live repeat-run ladder tied to your accepted daily dungeon boss quests');
         expect(indexHtml).toContain('The ladder updates by selected dungeon and difficulty so players can see which reruns are still paying the strongest daily XP');
@@ -137,6 +145,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.24.4');
         expect(indexHtml).toContain('Patch 0.24.3');
         expect(indexHtml).toContain('Patch 0.24.2');
         expect(indexHtml).toContain('Patch 0.24.1');
@@ -180,6 +189,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.24.4"');
         expect(indexHtml).toContain('data-version="0.24.3"');
         expect(indexHtml).toContain('data-version="0.24.2"');
         expect(indexHtml).toContain('data-version="0.24.1"');

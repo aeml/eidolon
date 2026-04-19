@@ -270,7 +270,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.24.3</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.24.4</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -506,6 +506,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.24.4" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.24.4 (Party dungeon state now reads clearly before you click in)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Party run state is explicit:</strong> The Dungeon Guide now spells out whether the party is starting a fresh run, continuing a live run, or sitting on an empty instance that is about to collapse.</li>
+                        <li><strong>Leader ownership is visible:</strong> Leader-only reset ownership is now explicit in the menu, while non-leaders are told they can only continue the current party instance.</li>
+                        <li><strong>Buttons read like group actions:</strong> Enter and reset buttons now read like party actions instead of generic solo-instance verbs.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for party instance state messaging, continue-versus-start labeling, leader-only reset controls, and 0.24.4 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.24.3" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.24.3 (The Dungeon Guide now shows why another run is worth doing)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
