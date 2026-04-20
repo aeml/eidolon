@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.27.9 for the latest shipped full-window remote de-echo slice', () => {
-        expect(indexHtml).toContain('Alpha 0.27.9');
+    test('advances the login screen to alpha 0.28.0 for the latest shipped remote support-state readability slice', () => {
+        expect(indexHtml).toContain('Alpha 0.28.0');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.27.9', () => {
+    test('includes the latest player-facing patch notes entry for 0.28.0', () => {
+        expect(indexHtml).toContain('Patch 0.28.0');
+        expect(indexHtml).toContain('Nearby remote Spirit Guardians state now surfaces explicit support readability when the aura comes online or falls off instead of leaving the persistent support state mostly silent after cast start');
+        expect(indexHtml).toContain('Activation de-dupes against the immediate named Spirit Guardians cast label, while expiry still calls out when the nearby support aura ends');
+        expect(indexHtml).toContain('This starts the broader 0.28 multiplayer presentation pass by teaching a real replicated support state to read more like the cleaned-up remote combat states');
+        expect(indexHtml).toContain('Added regression coverage for remote Spirit Guardians support-state readability and 0.28.0 version presentation');
+    });
+
+    test('keeps the prior 0.27.9 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.27.9');
         expect(indexHtml).toContain('Generic <code>ATTACK</code> echo suppression for named remote actions now lasts for the full named-callout throttle window instead of expiring a beat early');
         expect(indexHtml).toContain('This closes the last small leak where a repeat cast could still surface a stray generic label near the end of the named readability cooldown');
@@ -194,6 +202,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.28.0');
         expect(indexHtml).toContain('Patch 0.27.9');
         expect(indexHtml).toContain('Patch 0.27.8');
         expect(indexHtml).toContain('Patch 0.27.7');
@@ -298,6 +307,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.28.0');
         expect(indexHtml).toContain('Patch 0.27.9');
         expect(indexHtml).toContain('Patch 0.27.8');
         expect(indexHtml).toContain('Patch 0.27.7');
@@ -357,6 +367,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.28.0"');
         expect(indexHtml).toContain('data-version="0.27.9"');
         expect(indexHtml).toContain('data-version="0.27.8"');
         expect(indexHtml).toContain('data-version="0.27.7"');

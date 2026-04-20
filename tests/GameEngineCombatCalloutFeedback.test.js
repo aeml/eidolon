@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
+import { Cleric } from '../src/entities/Cleric.js';
 
 jest.unstable_mockModule('../src/proto/state_pb.js', () => {
     const mock = {
@@ -900,6 +901,166 @@ describe('GameEngine encounter callouts', () => {
 
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledTimes(1);
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: FIREBALL', remotePlayer.position, '#8fe7ff', '18px');
+
+        jest.useRealTimers();
+    });
+
+    test('shows a nearby remote support-state label when spirit guardians falls off', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remoteCleric = new Cleric('remote-cleric-down');
+        remoteCleric.name = 'Ayla';
+        remoteCleric.position.set(8, 0, 0);
+        remoteCleric.targetServerPosition = null;
+        remoteCleric.targetServerRotation = undefined;
+        remoteCleric.rotation = new THREE.Quaternion();
+        remoteCleric.mesh = new THREE.Group();
+        remoteCleric.spiritsActive = true;
+        remoteCleric.cancelAbilities = jest.fn(function cancelAbilities() {
+            this.spiritsActive = false;
+        });
+        remoteCleric.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteCleric, {
+            id: 'remote-cleric-down',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            spiritsActive: false
+        });
+
+        expect(remoteCleric.cancelAbilities).toHaveBeenCalled();
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: GUARDIANS DOWN', remoteCleric.position, '#d8ffd2', '16px');
+    });
+
+    test('shows a nearby remote support-state activation label when spirit guardians comes online without a recent named cast label', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remoteCleric = new Cleric('remote-cleric-up');
+        remoteCleric.name = 'Ayla';
+        remoteCleric.position.set(8, 0, 0);
+        remoteCleric.targetServerPosition = null;
+        remoteCleric.targetServerRotation = undefined;
+        remoteCleric.rotation = new THREE.Quaternion();
+        remoteCleric.mesh = new THREE.Group();
+        remoteCleric.spiritsActive = false;
+        remoteCleric.useAbility = jest.fn(function useAbility() {
+            this.spiritsActive = true;
+        });
+        remoteCleric.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteCleric, {
+            id: 'remote-cleric-up',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            spiritsActive: true
+        });
+
+        expect(remoteCleric.useAbility).toHaveBeenCalled();
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: GUARDIANS UP', remoteCleric.position, '#9dffb0', '16px');
+    });
+
+    test('suppresses the support-state activation label when a recent explicit Spirit Guardians callout already fired', () => {
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date('2026-04-19T12:00:00Z'));
+
+        const engine = Object.create(GameEngine.prototype);
+        const remoteCleric = new Cleric('remote-cleric-dedupe');
+        remoteCleric.name = 'Ayla';
+        remoteCleric.position.set(8, 0, 0);
+        remoteCleric.targetServerPosition = null;
+        remoteCleric.targetServerRotation = undefined;
+        remoteCleric.rotation = new THREE.Quaternion();
+        remoteCleric.mesh = new THREE.Group();
+        remoteCleric.spiritsActive = false;
+        remoteCleric.useAbility = jest.fn(function useAbility() {
+            this.spiritsActive = true;
+        });
+        remoteCleric.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map([
+            ['remote-action-remote-cleric-dedupe-AYLA: SPIRIT GUARDIANS', Date.now()]
+        ]);
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteCleric, {
+            id: 'remote-cleric-dedupe',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            spiritsActive: true
+        });
+
+        expect(remoteCleric.useAbility).toHaveBeenCalled();
+        expect(engine.floatingTextManager.spawn).not.toHaveBeenCalled();
 
         jest.useRealTimers();
     });

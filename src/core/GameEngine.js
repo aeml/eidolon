@@ -412,6 +412,44 @@ export class GameEngine {
         return true;
     }
 
+    showRemoteSupportStateReadability(entity, supportKey, active) {
+        if (!entity?.position || !this.floatingTextManager) return false;
+        if (!this.isPlayerClassEntity(entity)) return false;
+        if (!this.isPositionNearPlayer(entity.position, 34)) return false;
+
+        const normalizedKey = String(supportKey || '').trim().toLowerCase();
+        if (!normalizedKey) return false;
+
+        let actionLabel = '';
+        let color = '#9dffb0';
+        let cooldownMs = 900;
+
+        if (normalizedKey === 'spirit_guardians') {
+            actionLabel = active ? 'GUARDIANS UP' : 'GUARDIANS DOWN';
+            color = active ? '#9dffb0' : '#d8ffd2';
+        } else {
+            return false;
+        }
+
+        const label = this.buildRemoteActionReadabilityText(entity, actionLabel);
+        if (!label) return false;
+
+        const actorKey = entity.id || entity.name;
+        if (active && actorKey) {
+            const explicitSpiritKey = `remote-action-${actorKey}-${this.buildRemoteActionReadabilityText(entity, 'Spirit Guardians')}`;
+            const explicitSpiritAt = this.readabilityFeedbackTimestamps.get(explicitSpiritKey) || 0;
+            if (explicitSpiritAt && (Date.now() - explicitSpiritAt) < cooldownMs) {
+                return false;
+            }
+        }
+
+        const key = `remote-support-${actorKey}-${normalizedKey}-${active ? 'active' : 'inactive'}`;
+        if (!this.canShowThrottledReadabilityEvent(key, cooldownMs)) return false;
+
+        this.floatingTextManager.spawn(label, entity.position, color, '16px');
+        return true;
+    }
+
     showNearbyRemoteDamageFeedback(sourceEntity, targetEntity, amount) {
         if (!targetEntity?.position || !this.floatingTextManager) return false;
         if (!this.isNearbyCombatEvent(sourceEntity, targetEntity, 38)) return false;
@@ -1873,6 +1911,7 @@ export class GameEngine {
     syncRemoteEntity(remoteEntity, pData) {
         const previousRemotePosition = remoteEntity.position?.clone?.() || new THREE.Vector3();
         const previousRemoteState = remoteEntity.state || '';
+        const previousRemoteSpiritsActive = Boolean(remoteEntity.spiritsActive);
 
         // --- Position / Interpolation ---
         if (pData.type === 'Projectile') {
@@ -1969,6 +2008,9 @@ export class GameEngine {
                 remoteEntity.updateState(pData.state);
             }
             this.showRemoteStateReadability(remoteEntity, pData.state, previousRemoteState);
+            if (pData.spiritsActive !== undefined && previousRemoteSpiritsActive !== Boolean(remoteEntity.spiritsActive)) {
+                this.showRemoteSupportStateReadability(remoteEntity, 'spirit_guardians', Boolean(remoteEntity.spiritsActive));
+            }
 
             // Rotation
             if (pData.rotation !== undefined) {

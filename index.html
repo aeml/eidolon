@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.27.9</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.28.0</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.28.0" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.0 (Nearby remote support auras now read more like combat states)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Persistent support states speak up now:</strong> Nearby remote Spirit Guardians state now surfaces explicit support readability when the aura comes online or falls off instead of leaving the persistent support state mostly silent after cast start.</li>
+                        <li><strong>Start labels stay de-duped:</strong> Activation de-dupes against the immediate named Spirit Guardians cast label, while expiry still calls out when the nearby support aura ends.</li>
+                        <li><strong>The broader 0.28 pass begins here:</strong> This starts the broader 0.28 multiplayer presentation pass by teaching a real replicated support state to read more like the cleaned-up remote combat states.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for remote Spirit Guardians support-state readability and 0.28.0 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.27.9" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.9 (Remote named-action de-echo now lasts for the full throttle window)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
