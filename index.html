@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.27.7</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.27.8</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.27.8" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.8 (Throttled named remote casts still suppress generic ATTACK echo)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Repeat casts stay de-echoed:</strong> Repeated explicit remote ability starts now keep suppressing the generic <code>ATTACK</code> echo even when the named callout itself is still inside its throttle window.</li>
+                        <li><strong>Rate limiting stays honest:</strong> This keeps rapid repeat casts from falling back to a stray generic label just because the named readability text was intentionally rate-limited.</li>
+                        <li><strong>Suppress timing follows real action starts:</strong> The suppress window now tracks explicit action starts, not only the moments when the named label was actually rendered.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for throttled remote ability de-echo handling and 0.27.8 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.27.7" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.7 (Remote damage sync stops quietly re-stretching attack presentation)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

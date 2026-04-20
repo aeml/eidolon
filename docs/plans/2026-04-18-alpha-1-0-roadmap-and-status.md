@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.27.7`
+- Current in-game displayed version: `Alpha 0.27.8`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.27.7`
+### Shipped through `0.27.8`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -68,6 +68,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.27.5`: explicit remote action-start messages can now refresh a new nearby swing or cast even while duplicate generic attack-state confirmations remain idempotent
 - `0.27.6`: named remote ability callouts now suppress the immediate generic attack-label echo, keeping nearby spell readability focused on the real skill instead of stacking a second generic label
 - `0.27.7`: remote damage confirmations no longer re-arm nearby remote attack presentation unless the local player is the victim and the client still needs a fallback hit-read sync
+- `0.27.8`: repeated explicit remote ability starts now keep suppressing generic attack-label echo even while the named callout itself is still rate-limited, keeping rapid repeat casts readable without stray fallback labels
 
 ### What `0.22` has clearly accomplished already
 

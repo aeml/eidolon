@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.27.7 for the latest shipped damage-sync cleanup slice', () => {
-        expect(indexHtml).toContain('Alpha 0.27.7');
+    test('advances the login screen to alpha 0.27.8 for the latest shipped throttled remote-callout cleanup slice', () => {
+        expect(indexHtml).toContain('Alpha 0.27.8');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.27.7', () => {
+    test('includes the latest player-facing patch notes entry for 0.27.8', () => {
+        expect(indexHtml).toContain('Patch 0.27.8');
+        expect(indexHtml).toContain('Repeated explicit remote ability starts now keep suppressing the generic <code>ATTACK</code> echo even when the named callout itself is still inside its throttle window');
+        expect(indexHtml).toContain('This keeps rapid repeat casts from falling back to a stray generic label just because the named readability text was intentionally rate-limited');
+        expect(indexHtml).toContain('The suppress window now tracks explicit action starts, not only the moments when the named label was actually rendered');
+        expect(indexHtml).toContain('Added regression coverage for throttled remote ability de-echo handling and 0.27.8 version presentation');
+    });
+
+    test('keeps the prior 0.27.7 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.27.7');
         expect(indexHtml).toContain('Remote damage packets no longer re-trigger generic attack presentation for nearby remote-versus-remote combat when explicit action-start messages already covered the swing or cast');
         expect(indexHtml).toContain('This keeps crowded fights from quietly stretching remote attack poses again through later damage confirmation side effects');
@@ -178,6 +186,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.27.8');
         expect(indexHtml).toContain('Patch 0.27.7');
         expect(indexHtml).toContain('Patch 0.27.6');
         expect(indexHtml).toContain('Patch 0.27.5');
@@ -280,6 +289,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.27.8');
         expect(indexHtml).toContain('Patch 0.27.7');
         expect(indexHtml).toContain('Patch 0.27.6');
         expect(indexHtml).toContain('Patch 0.27.5');
@@ -337,6 +347,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.27.8"');
         expect(indexHtml).toContain('data-version="0.27.7"');
         expect(indexHtml).toContain('data-version="0.27.6"');
         expect(indexHtml).toContain('data-version="0.27.5"');

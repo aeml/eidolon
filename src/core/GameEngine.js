@@ -340,13 +340,12 @@ export class GameEngine {
 
         const label = this.buildRemoteActionReadabilityText(sourceEntity, skillName);
         if (!label) return false;
-        const key = `remote-action-${sourceEntity.id || sourceEntity.name}-${label}`;
-        if (!this.canShowThrottledReadabilityEvent(key, 750)) return false;
-
         const actorKey = sourceEntity.id || sourceEntity.name;
         if (actorKey) {
             this.readabilityFeedbackTimestamps.set(`remote-attack-state-suppressed-${actorKey}`, Date.now());
         }
+        const key = `remote-action-${sourceEntity.id || sourceEntity.name}-${label}`;
+        if (!this.canShowThrottledReadabilityEvent(key, 750)) return false;
 
         this.floatingTextManager.spawn(label, sourceEntity.position, '#8fe7ff', '18px');
         return true;
