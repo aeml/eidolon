@@ -400,7 +400,7 @@ export class GameEngine {
         if (state === 'ATTACKING') {
             const actorKey = entity.id || entity.name;
             const suppressedAt = actorKey ? (this.readabilityFeedbackTimestamps.get(`remote-attack-state-suppressed-${actorKey}`) || 0) : 0;
-            if (suppressedAt && (Date.now() - suppressedAt) < 650) {
+            if (suppressedAt && (Date.now() - suppressedAt) < 750) {
                 return false;
             }
         }

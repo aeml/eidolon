@@ -825,4 +825,82 @@ describe('GameEngine encounter callouts', () => {
 
         jest.useRealTimers();
     });
+
+    test('generic ATTACK echo stays suppressed for the full named-action throttle window', () => {
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date('2026-04-19T12:00:00Z'));
+
+        const engine = Object.create(GameEngine.prototype);
+        const remotePlayer = {
+            id: 'remote-full-window',
+            name: 'Ayla',
+            position: new THREE.Vector3(8, 0, 0),
+            targetServerPosition: null,
+            targetServerRotation: undefined,
+            rotation: new THREE.Quaternion(),
+            state: 'IDLE',
+            isCharging: false,
+            isDead: false,
+            deadTimer: 0,
+            isRemote: true,
+            constructor: { name: 'Wizard' },
+            mesh: null,
+            stats: { hp: 100, maxHp: 100, mana: 10, maxMana: 10, speed: 3, attackSpeed: 1 },
+            updateState: jest.fn(function updateState(nextState) {
+                this.state = nextState;
+            })
+        };
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.remotePlayers = new Map([['remote-full-window', remotePlayer]]);
+        engine.abilityController = { triggerRemoteAbilityVisuals: jest.fn() };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.renderSystem = { effectGroup: new THREE.Group() };
+        engine.effects = [];
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteActionReadability = GameEngine.prototype.showRemoteActionReadability;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.handleServerMessage({
+            type: 'ability',
+            payload: {
+                sourceId: 'remote-full-window',
+                skillName: 'Fireball',
+                targetX: 12,
+                targetZ: 3
+            }
+        });
+
+        jest.advanceTimersByTime(700);
+        jest.setSystemTime(new Date('2026-04-19T12:00:00.700Z'));
+
+        engine.syncRemoteEntity(remotePlayer, {
+            id: 'remote-full-window',
+            type: 'Player',
+            state: 'ATTACKING',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledTimes(1);
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: FIREBALL', remotePlayer.position, '#8fe7ff', '18px');
+
+        jest.useRealTimers();
+    });
 });

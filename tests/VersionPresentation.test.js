@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.27.8 for the latest shipped throttled remote-callout cleanup slice', () => {
-        expect(indexHtml).toContain('Alpha 0.27.8');
+    test('advances the login screen to alpha 0.27.9 for the latest shipped full-window remote de-echo slice', () => {
+        expect(indexHtml).toContain('Alpha 0.27.9');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.27.8', () => {
+    test('includes the latest player-facing patch notes entry for 0.27.9', () => {
+        expect(indexHtml).toContain('Patch 0.27.9');
+        expect(indexHtml).toContain('Generic <code>ATTACK</code> echo suppression for named remote actions now lasts for the full named-callout throttle window instead of expiring a beat early');
+        expect(indexHtml).toContain('This closes the last small leak where a repeat cast could still surface a stray generic label near the end of the named readability cooldown');
+        expect(indexHtml).toContain('The de-echo window now matches the same 750ms cadence used by the explicit remote action callout throttle');
+        expect(indexHtml).toContain('Added regression coverage for full-window remote de-echo timing and 0.27.9 version presentation');
+    });
+
+    test('keeps the prior 0.27.8 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.27.8');
         expect(indexHtml).toContain('Repeated explicit remote ability starts now keep suppressing the generic <code>ATTACK</code> echo even when the named callout itself is still inside its throttle window');
         expect(indexHtml).toContain('This keeps rapid repeat casts from falling back to a stray generic label just because the named readability text was intentionally rate-limited');
@@ -186,6 +194,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.27.9');
         expect(indexHtml).toContain('Patch 0.27.8');
         expect(indexHtml).toContain('Patch 0.27.7');
         expect(indexHtml).toContain('Patch 0.27.6');
@@ -289,6 +298,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.27.9');
         expect(indexHtml).toContain('Patch 0.27.8');
         expect(indexHtml).toContain('Patch 0.27.7');
         expect(indexHtml).toContain('Patch 0.27.6');
@@ -347,6 +357,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.27.9"');
         expect(indexHtml).toContain('data-version="0.27.8"');
         expect(indexHtml).toContain('data-version="0.27.7"');
         expect(indexHtml).toContain('data-version="0.27.6"');
