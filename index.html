@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.28.0</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.28.1</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.28.1" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.1 (Guardian Embrace now replicates as a readable remote support aura)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Another support aura is now truly replicated:</strong> Guardian Embrace now replicates through the hot-path multiplayer state snapshot so nearby clients can see that support aura come online and fall off in real time.</li>
+                        <li><strong>Remote cleric support reads richer:</strong> Nearby remote clerics now surface <code>EMBRACE UP</code> and <code>EMBRACE DOWN</code> readability, extending the new support-state pass beyond Spirit Guardians alone.</li>
+                        <li><strong>Server truth drives the read:</strong> This turns another real server-authoritative support flag into player-facing multiplayer readability instead of relying on cast-start guesswork.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for Guardian Embrace replication readability and 0.28.1 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.28.0" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.0 (Nearby remote support auras now read more like combat states)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

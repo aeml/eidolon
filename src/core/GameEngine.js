@@ -427,6 +427,9 @@ export class GameEngine {
         if (normalizedKey === 'spirit_guardians') {
             actionLabel = active ? 'GUARDIANS UP' : 'GUARDIANS DOWN';
             color = active ? '#9dffb0' : '#d8ffd2';
+        } else if (normalizedKey === 'guardian_embrace') {
+            actionLabel = active ? 'EMBRACE UP' : 'EMBRACE DOWN';
+            color = active ? '#fff1a6' : '#fff7d1';
         } else {
             return false;
         }
@@ -1912,6 +1915,7 @@ export class GameEngine {
         const previousRemotePosition = remoteEntity.position?.clone?.() || new THREE.Vector3();
         const previousRemoteState = remoteEntity.state || '';
         const previousRemoteSpiritsActive = Boolean(remoteEntity.spiritsActive);
+        const previousRemoteGuardianEmbraceActive = Boolean(remoteEntity.guardianEmbraceActive);
 
         // --- Position / Interpolation ---
         if (pData.type === 'Projectile') {
@@ -2010,6 +2014,12 @@ export class GameEngine {
             this.showRemoteStateReadability(remoteEntity, pData.state, previousRemoteState);
             if (pData.spiritsActive !== undefined && previousRemoteSpiritsActive !== Boolean(remoteEntity.spiritsActive)) {
                 this.showRemoteSupportStateReadability(remoteEntity, 'spirit_guardians', Boolean(remoteEntity.spiritsActive));
+            }
+            if (pData.guardianEmbraceActive !== undefined) {
+                remoteEntity.guardianEmbraceActive = Boolean(pData.guardianEmbraceActive);
+            }
+            if (pData.guardianEmbraceActive !== undefined && previousRemoteGuardianEmbraceActive !== Boolean(remoteEntity.guardianEmbraceActive)) {
+                this.showRemoteSupportStateReadability(remoteEntity, 'guardian_embrace', Boolean(remoteEntity.guardianEmbraceActive));
             }
 
             // Rotation

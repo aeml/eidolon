@@ -2984,6 +2984,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 40, wireType 0 =*/320).bool(message.spiritsBoosted);
                 if (message.isCharging != null && Object.hasOwnProperty.call(message, "isCharging"))
                     writer.uint32(/* id 41, wireType 0 =*/328).bool(message.isCharging);
+                if (message.guardianEmbraceActive != null && Object.hasOwnProperty.call(message, "guardianEmbraceActive"))
+                    writer.uint32(/* id 51, wireType 0 =*/408).bool(message.guardianEmbraceActive);
                 if (message.stunned != null && Object.hasOwnProperty.call(message, "stunned"))
                     writer.uint32(/* id 42, wireType 0 =*/336).bool(message.stunned);
                 if (message.slowed != null && Object.hasOwnProperty.call(message, "slowed"))
@@ -3224,8 +3226,12 @@ export const eidolon = $root.eidolon = (() => {
                             message.spiritsBoosted = reader.bool();
                             break;
                         }
-                    case 41: {
+                        case 41: {
                             message.isCharging = reader.bool();
+                            break;
+                        }
+                    case 51: {
+                            message.guardianEmbraceActive = reader.bool();
                             break;
                         }
                     case 42: {
@@ -3485,6 +3491,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.isCharging != null && message.hasOwnProperty("isCharging"))
                     if (typeof message.isCharging !== "boolean")
                         return "isCharging: boolean expected";
+                if (message.guardianEmbraceActive != null && message.hasOwnProperty("guardianEmbraceActive"))
+                    if (typeof message.guardianEmbraceActive !== "boolean")
+                        return "guardianEmbraceActive: boolean expected";
                 if (message.stunned != null && message.hasOwnProperty("stunned"))
                     if (typeof message.stunned !== "boolean")
                         return "stunned: boolean expected";
@@ -3653,6 +3662,8 @@ export const eidolon = $root.eidolon = (() => {
                     message.spiritsBoosted = Boolean(object.spiritsBoosted);
                 if (object.isCharging != null)
                     message.isCharging = Boolean(object.isCharging);
+                if (object.guardianEmbraceActive != null)
+                    message.guardianEmbraceActive = Boolean(object.guardianEmbraceActive);
                 if (object.stunned != null)
                     message.stunned = Boolean(object.stunned);
                 if (object.slowed != null)
@@ -3751,6 +3762,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.spiritsActive = false;
                     object.spiritsBoosted = false;
                     object.isCharging = false;
+                    object.guardianEmbraceActive = false;
                     object.stunned = false;
                     object.slowed = false;
                     object.rooted = false;
@@ -3850,6 +3862,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.spiritsBoosted = message.spiritsBoosted;
                 if (message.isCharging != null && message.hasOwnProperty("isCharging"))
                     object.isCharging = message.isCharging;
+                if (message.guardianEmbraceActive != null && message.hasOwnProperty("guardianEmbraceActive"))
+                    object.guardianEmbraceActive = message.guardianEmbraceActive;
                 if (message.stunned != null && message.hasOwnProperty("stunned"))
                     object.stunned = message.stunned;
                 if (message.slowed != null && message.hasOwnProperty("slowed"))

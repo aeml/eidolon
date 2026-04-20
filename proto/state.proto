@@ -131,6 +131,7 @@ message Entity {
   bool spirits_active = 39;
   bool spirits_boosted = 40;
   bool is_charging = 41;
+  bool guardian_embrace_active = 51;
 
   // Common buff/debuff booleans used for visuals/behavior
   bool stunned = 42;

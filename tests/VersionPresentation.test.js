@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.28.0 for the latest shipped remote support-state readability slice', () => {
-        expect(indexHtml).toContain('Alpha 0.28.0');
+    test('advances the login screen to alpha 0.28.1 for the latest shipped replicated Guardian Embrace readability slice', () => {
+        expect(indexHtml).toContain('Alpha 0.28.1');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.28.0', () => {
+    test('includes the latest player-facing patch notes entry for 0.28.1', () => {
+        expect(indexHtml).toContain('Patch 0.28.1');
+        expect(indexHtml).toContain('Guardian Embrace now replicates through the hot-path multiplayer state snapshot so nearby clients can see that support aura come online and fall off in real time');
+        expect(indexHtml).toContain('Nearby remote clerics now surface <code>EMBRACE UP</code> and <code>EMBRACE DOWN</code> readability, extending the new support-state pass beyond Spirit Guardians alone');
+        expect(indexHtml).toContain('This turns another real server-authoritative support flag into player-facing multiplayer readability instead of relying on cast-start guesswork');
+        expect(indexHtml).toContain('Added regression coverage for Guardian Embrace replication readability and 0.28.1 version presentation');
+    });
+
+    test('keeps the prior 0.28.0 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.28.0');
         expect(indexHtml).toContain('Nearby remote Spirit Guardians state now surfaces explicit support readability when the aura comes online or falls off instead of leaving the persistent support state mostly silent after cast start');
         expect(indexHtml).toContain('Activation de-dupes against the immediate named Spirit Guardians cast label, while expiry still calls out when the nearby support aura ends');
@@ -202,6 +210,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.28.1');
         expect(indexHtml).toContain('Patch 0.28.0');
         expect(indexHtml).toContain('Patch 0.27.9');
         expect(indexHtml).toContain('Patch 0.27.8');
@@ -307,6 +316,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.28.1');
         expect(indexHtml).toContain('Patch 0.28.0');
         expect(indexHtml).toContain('Patch 0.27.9');
         expect(indexHtml).toContain('Patch 0.27.8');
@@ -367,6 +377,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.28.1"');
         expect(indexHtml).toContain('data-version="0.28.0"');
         expect(indexHtml).toContain('data-version="0.27.9"');
         expect(indexHtml).toContain('data-version="0.27.8"');

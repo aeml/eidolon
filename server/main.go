@@ -110,6 +110,7 @@ type EntitySnapshot struct {
 	State        string
 	Level        int
 	IsCharging   bool
+	GuardianEmbraceActive bool
 	JumpProgress float64
 	TalentPoints int
 	TalentKeys   int
@@ -3476,6 +3477,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		State:        e.State,
 		Level:        e.Level,
 		IsCharging:   e.IsCharging,
+		GuardianEmbraceActive: e.GuardianEmbraceActive,
 		JumpProgress: e.JumpProgress,
 		TalentPoints: derivedTalentPoints,
 		TalentKeys:   keys,
@@ -3501,6 +3503,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cstate := current.State
 	clevel := current.Level
 	cisCharging := current.IsCharging
+	cguardianEmbraceActive := current.GuardianEmbraceActive
 	ctalentPoints := current.TalentPoints
 	cjumpProgress := current.JumpProgress
 	ctalentKeys := 0
@@ -3562,6 +3565,9 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 
 	// Charging state changes are always significant
 	if cisCharging != last.IsCharging {
+		return true
+	}
+	if cguardianEmbraceActive != last.GuardianEmbraceActive {
 		return true
 	}
 
@@ -3881,6 +3887,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		SpiritsActive:     e.SpiritsActive,
 		SpiritsBoosted:    e.SpiritsBoosted,
 		IsCharging:        e.IsCharging,
+		GuardianEmbraceActive: e.GuardianEmbraceActive,
 		Stunned:           e.Stunned,
 		Slowed:            e.Slowed,
 		Rooted:            e.Rooted,
