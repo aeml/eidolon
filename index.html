@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.27.6</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.27.7</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.27.7" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.7 (Remote damage sync stops quietly re-stretching attack presentation)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Damage confirms stop re-arming remote swings:</strong> Remote damage packets no longer re-trigger generic attack presentation for nearby remote-versus-remote combat when explicit action-start messages already covered the swing or cast.</li>
+                        <li><strong>Crowded fights stay cleaner:</strong> This keeps crowded fights from quietly stretching remote attack poses again through later damage confirmation side effects.</li>
+                        <li><strong>Last-resort local-hit sync stays alive:</strong> Damage against the local player still refreshes the attacker presentation as a fallback when the client needs a last-resort hit-read sync.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for remote damage sync cleanup and 0.27.7 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.27.6" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.6 (Named remote ability callouts no longer echo as generic ATTACK labels)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

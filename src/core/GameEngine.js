@@ -1089,16 +1089,11 @@ export class GameEngine {
             }
 
             // If target is local player, flash screen or shake camera?
-            if (sourceEntity && sourceEntity.isRemote && typeof sourceEntity.updateState === 'function' && sourceEntity.state !== 'JUMPING') {
-                if (dmgData.targetId === this.player?.id || this.isNearbyCombatEvent(sourceEntity, target, 38)) {
-                    sourceEntity.updateState('ATTACKING');
-                }
-            }
             if (this.player && dmgData.targetId === this.player.id) {
                 // Visual sync: if we took damage from a remote entity, force its ATTACKING animation.
                 // This prevents cases where state updates arrive out-of-sync and enemies appear to "run" while hitting.
-                if (sourceEntity && sourceEntity.isRemote && typeof sourceEntity.updateState === 'function') {
-                    sourceEntity.updateState('ATTACKING');
+                if (sourceEntity && sourceEntity.isRemote) {
+                    this.beginRemoteActionPresentation(sourceEntity);
                 }
                 // this.renderSystem.shakeCamera(0.2);
             }

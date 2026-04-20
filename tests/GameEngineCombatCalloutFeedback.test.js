@@ -482,7 +482,39 @@ describe('GameEngine encounter callouts', () => {
         });
 
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith(182, enemy.position, '#8fe7ff', '20px');
-        expect(remotePlayer.updateState).toHaveBeenCalledWith('ATTACKING');
+        expect(remotePlayer.updateState).not.toHaveBeenCalled();
+    });
+
+    test('damage against the local player can still refresh remote attacker presentation when no explicit action start was seen', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remotePlayer = {
+            id: 'remote-2',
+            position: new THREE.Vector3(6, 0, 0),
+            state: 'IDLE',
+            isRemote: true,
+            constructor: { name: 'Fighter' },
+            setAttackingState: jest.fn(function setAttackingState() {
+                this.state = 'ATTACKING';
+            })
+        };
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.remotePlayers = new Map([['remote-2', remotePlayer]]);
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+        engine.beginRemoteActionPresentation = GameEngine.prototype.beginRemoteActionPresentation;
+
+        engine.handleServerMessage({
+            type: 'damage',
+            payload: {
+                sourceId: 'remote-2',
+                targetId: 'player-1',
+                amount: 31
+            }
+        });
+
+        expect(remotePlayer.setAttackingState).toHaveBeenCalledWith(true);
     });
 
     test('does not show remote readability text for faraway remote-player actions', () => {
