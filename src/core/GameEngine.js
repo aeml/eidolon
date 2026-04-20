@@ -421,17 +421,21 @@ export class GameEngine {
         if (!normalizedKey) return false;
 
         let actionLabel = '';
+        let explicitSkillLabel = '';
         let color = '#9dffb0';
         let cooldownMs = 900;
 
         if (normalizedKey === 'spirit_guardians') {
             actionLabel = active ? 'GUARDIANS UP' : 'GUARDIANS DOWN';
+            explicitSkillLabel = 'Spirit Guardians';
             color = active ? '#9dffb0' : '#d8ffd2';
         } else if (normalizedKey === 'guardian_embrace') {
             actionLabel = active ? 'EMBRACE UP' : 'EMBRACE DOWN';
+            explicitSkillLabel = 'Guardian Embrace';
             color = active ? '#fff1a6' : '#fff7d1';
         } else if (normalizedKey === 'blessing_resolve') {
             actionLabel = active ? 'RESOLVE UP' : 'RESOLVE DOWN';
+            explicitSkillLabel = 'Blessing of Resolve';
             color = active ? '#ffe38a' : '#fff2c2';
         } else {
             return false;
@@ -441,10 +445,11 @@ export class GameEngine {
         if (!label) return false;
 
         const actorKey = entity.id || entity.name;
-        if (active && actorKey) {
-            const explicitSpiritKey = `remote-action-${actorKey}-${this.buildRemoteActionReadabilityText(entity, 'Spirit Guardians')}`;
-            const explicitSpiritAt = this.readabilityFeedbackTimestamps.get(explicitSpiritKey) || 0;
-            if (explicitSpiritAt && (Date.now() - explicitSpiritAt) < cooldownMs) {
+        if (active && actorKey && explicitSkillLabel) {
+            const explicitSupportLabel = this.buildRemoteActionReadabilityText(entity, explicitSkillLabel);
+            const explicitSupportKey = explicitSupportLabel ? `remote-action-${actorKey}-${explicitSupportLabel}` : '';
+            const explicitSupportAt = explicitSupportKey ? (this.readabilityFeedbackTimestamps.get(explicitSupportKey) || 0) : 0;
+            if (explicitSupportAt && (Date.now() - explicitSupportAt) < cooldownMs) {
                 return false;
             }
         }
