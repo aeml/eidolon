@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.28.1</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.28.2</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.28.2" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.2 (Blessing of Resolve now reads as a real remote support aura)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Another defensive aura is now truly replicated:</strong> Blessing of Resolve now replicates through the hot-path multiplayer state snapshot so nearby clients can track that defensive aura in real time.</li>
+                        <li><strong>Remote cleric defense reads richer:</strong> Nearby remote clerics now surface <code>RESOLVE UP</code> and <code>RESOLVE DOWN</code> readability, extending the support-state pass to another real timed buff.</li>
+                        <li><strong>Server truth still drives the read:</strong> This keeps the 0.28 line focused on server-authoritative support-state visibility rather than falling back to cast-start-only inference.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for Blessing of Resolve replication readability and 0.28.2 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.28.1" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.1 (Guardian Embrace now replicates as a readable remote support aura)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

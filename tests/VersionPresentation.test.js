@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.28.1 for the latest shipped replicated Guardian Embrace readability slice', () => {
-        expect(indexHtml).toContain('Alpha 0.28.1');
+    test('advances the login screen to alpha 0.28.2 for the latest shipped Blessing of Resolve support-state slice', () => {
+        expect(indexHtml).toContain('Alpha 0.28.2');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.28.1', () => {
+    test('includes the latest player-facing patch notes entry for 0.28.2', () => {
+        expect(indexHtml).toContain('Patch 0.28.2');
+        expect(indexHtml).toContain('Blessing of Resolve now replicates through the hot-path multiplayer state snapshot so nearby clients can track that defensive aura in real time');
+        expect(indexHtml).toContain('Nearby remote clerics now surface <code>RESOLVE UP</code> and <code>RESOLVE DOWN</code> readability, extending the support-state pass to another real timed buff');
+        expect(indexHtml).toContain('This keeps the 0.28 line focused on server-authoritative support-state visibility rather than falling back to cast-start-only inference');
+        expect(indexHtml).toContain('Added regression coverage for Blessing of Resolve replication readability and 0.28.2 version presentation');
+    });
+
+    test('keeps the prior 0.28.1 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.28.1');
         expect(indexHtml).toContain('Guardian Embrace now replicates through the hot-path multiplayer state snapshot so nearby clients can see that support aura come online and fall off in real time');
         expect(indexHtml).toContain('Nearby remote clerics now surface <code>EMBRACE UP</code> and <code>EMBRACE DOWN</code> readability, extending the new support-state pass beyond Spirit Guardians alone');
@@ -210,6 +218,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.28.2');
         expect(indexHtml).toContain('Patch 0.28.1');
         expect(indexHtml).toContain('Patch 0.28.0');
         expect(indexHtml).toContain('Patch 0.27.9');
@@ -316,6 +325,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.28.2');
         expect(indexHtml).toContain('Patch 0.28.1');
         expect(indexHtml).toContain('Patch 0.28.0');
         expect(indexHtml).toContain('Patch 0.27.9');
@@ -377,6 +387,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.28.2"');
         expect(indexHtml).toContain('data-version="0.28.1"');
         expect(indexHtml).toContain('data-version="0.28.0"');
         expect(indexHtml).toContain('data-version="0.27.9"');

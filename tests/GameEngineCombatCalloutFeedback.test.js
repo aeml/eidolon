@@ -1158,4 +1158,98 @@ describe('GameEngine encounter callouts', () => {
 
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: EMBRACE DOWN', remoteCleric.position, '#fff7d1', '16px');
     });
+
+    test('shows a nearby remote support-state activation label when Blessing of Resolve comes online', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remoteCleric = new Cleric('remote-resolve-up');
+        remoteCleric.name = 'Ayla';
+        remoteCleric.position.set(8, 0, 0);
+        remoteCleric.targetServerPosition = null;
+        remoteCleric.targetServerRotation = undefined;
+        remoteCleric.rotation = new THREE.Quaternion();
+        remoteCleric.mesh = new THREE.Group();
+        remoteCleric.blessingResolveActive = false;
+        remoteCleric.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteCleric, {
+            id: 'remote-resolve-up',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            blessingResolveActive: true
+        });
+
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: RESOLVE UP', remoteCleric.position, '#ffe38a', '16px');
+    });
+
+    test('shows a nearby remote support-state expiry label when Blessing of Resolve falls off', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remoteCleric = new Cleric('remote-resolve-down');
+        remoteCleric.name = 'Ayla';
+        remoteCleric.position.set(8, 0, 0);
+        remoteCleric.targetServerPosition = null;
+        remoteCleric.targetServerRotation = undefined;
+        remoteCleric.rotation = new THREE.Quaternion();
+        remoteCleric.mesh = new THREE.Group();
+        remoteCleric.blessingResolveActive = true;
+        remoteCleric.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteCleric, {
+            id: 'remote-resolve-down',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            blessingResolveActive: false
+        });
+
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: RESOLVE DOWN', remoteCleric.position, '#fff2c2', '16px');
+    });
 });

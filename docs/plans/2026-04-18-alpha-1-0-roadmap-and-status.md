@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.28.1`
+- Current in-game displayed version: `Alpha 0.28.2`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.28.1`
+### Shipped through `0.28.2`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -72,6 +72,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.27.9`: named remote action de-echo now lasts for the full 750ms callout throttle window, closing the last late-window leak where repeat casts could still surface a stray generic attack label
 - `0.28.0`: nearby remote Spirit Guardians state now produces support readability on activation and expiry, starting a broader multiplayer presentation pass that covers persistent support states as well as attacks and casts
 - `0.28.1`: Guardian Embrace now replicates through the hot-path state path and surfaces nearby `EMBRACE UP/DOWN` readability, extending multiplayer support-state visibility beyond Spirit Guardians
+- `0.28.2`: Blessing of Resolve now replicates through the hot-path state path and surfaces nearby `RESOLVE UP/DOWN` readability, continuing the support-state visibility pass with another real server-timed buff
 
 ### What `0.22` has clearly accomplished already
 
