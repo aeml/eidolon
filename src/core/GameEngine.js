@@ -63,6 +63,14 @@ const REMOTE_SUPPORT_STATE_CONFIG = {
         inactiveColor: '#fff2bf',
         cooldownMs: 900,
     },
+    spell_focus: {
+        activeLabel: 'FOCUS UP',
+        inactiveLabel: 'FOCUS DOWN',
+        explicitSkillLabel: 'Spell Focus',
+        activeColor: '#d29cff',
+        inactiveColor: '#f0d8ff',
+        cooldownMs: 900,
+    },
 };
 import { Fighter } from '../entities/Fighter.js';
 import { Skeleton } from '../entities/Skeleton.js';
@@ -1967,6 +1975,7 @@ export class GameEngine {
         const previousRemoteArcaneShieldActive = Boolean(remoteEntity.arcaneShieldActive);
         const previousRemoteShieldHP = Number(remoteEntity.shieldHP || 0);
         const previousRemoteTimeWarpActive = Number(remoteEntity.hasteTimer || 0) > 0;
+        const previousRemoteSpellFocusActive = Boolean(remoteEntity.spellFocusActive);
 
         // --- Position / Interpolation ---
         if (pData.type === 'Projectile') {
@@ -2106,6 +2115,17 @@ export class GameEngine {
             }
             if (pData.timeWarpActive !== undefined && previousRemoteTimeWarpActive !== (Number(remoteEntity.hasteTimer || 0) > 0)) {
                 this.showRemoteSupportStateReadability(remoteEntity, 'time_warp', Number(remoteEntity.hasteTimer || 0) > 0);
+            }
+            if (pData.spellFocusActive !== undefined) {
+                remoteEntity.spellFocusActive = Boolean(pData.spellFocusActive);
+                if (!remoteEntity.spellFocusActive) {
+                    remoteEntity.spellFocusMultiplier = 1.0;
+                } else if (!Number.isFinite(remoteEntity.spellFocusMultiplier) || remoteEntity.spellFocusMultiplier <= 1.0) {
+                    remoteEntity.spellFocusMultiplier = 2.5;
+                }
+            }
+            if (pData.spellFocusActive !== undefined && previousRemoteSpellFocusActive !== Boolean(remoteEntity.spellFocusActive)) {
+                this.showRemoteSupportStateReadability(remoteEntity, 'spell_focus', Boolean(remoteEntity.spellFocusActive));
             }
 
             // Rotation

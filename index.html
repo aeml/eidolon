@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.28.7</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.28.8</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.28.8" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.8 (Spell Focus now reads as a real remote charge-up buff)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Another wizard prep state now truly replicates:</strong> Spell Focus now replicates through the hot-path multiplayer state snapshot so nearby clients can track that charged-cast window in real time.</li>
+                        <li><strong>Remote cast prep reads clearly:</strong> Nearby remote wizards now surface <code>FOCUS UP</code> and <code>FOCUS DOWN</code> readability, and the replicated state now drives the existing spell-focus multiplier path instead of leaving remote prep windows implicit.</li>
+                        <li><strong>Wizard setup rules stay consistent:</strong> Activation still de-dupes against the explicit Spell Focus cast label, keeping the wizard utility readability rules consistent across buff and setup states.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for Spell Focus replication readability and 0.28.8 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.28.7" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.7 (Time Warp now reads as a real remote haste window)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

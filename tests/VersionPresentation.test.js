@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.28.7 for the latest shipped Time Warp support-state slice', () => {
-        expect(indexHtml).toContain('Alpha 0.28.7');
+    test('advances the login screen to alpha 0.28.8 for the latest shipped Spell Focus support-state slice', () => {
+        expect(indexHtml).toContain('Alpha 0.28.8');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.28.7', () => {
+    test('includes the latest player-facing patch notes entry for 0.28.8', () => {
+        expect(indexHtml).toContain('Patch 0.28.8');
+        expect(indexHtml).toContain('Spell Focus now replicates through the hot-path multiplayer state snapshot so nearby clients can track that charged-cast window in real time');
+        expect(indexHtml).toContain('Nearby remote wizards now surface <code>FOCUS UP</code> and <code>FOCUS DOWN</code> readability, and the replicated state now drives the existing spell-focus multiplier path instead of leaving remote prep windows implicit');
+        expect(indexHtml).toContain('Activation still de-dupes against the explicit Spell Focus cast label, keeping the wizard utility readability rules consistent across buff and setup states');
+        expect(indexHtml).toContain('Added regression coverage for Spell Focus replication readability and 0.28.8 version presentation');
+    });
+
+    test('keeps the prior 0.28.7 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.28.7');
         expect(indexHtml).toContain('Time Warp now replicates through the hot-path multiplayer state snapshot so nearby clients can track that haste window in real time');
         expect(indexHtml).toContain('Nearby remote wizards now surface <code>WARP UP</code> and <code>WARP DOWN</code> readability, and the replicated state now drives the existing haste buff path instead of leaving remote Time Warp implicit');
@@ -258,6 +266,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.28.8');
         expect(indexHtml).toContain('Patch 0.28.7');
         expect(indexHtml).toContain('Patch 0.28.6');
         expect(indexHtml).toContain('Patch 0.28.5');
@@ -370,6 +379,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.28.8');
         expect(indexHtml).toContain('Patch 0.28.7');
         expect(indexHtml).toContain('Patch 0.28.6');
         expect(indexHtml).toContain('Patch 0.28.5');
@@ -437,6 +447,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.28.8"');
         expect(indexHtml).toContain('data-version="0.28.7"');
         expect(indexHtml).toContain('data-version="0.28.6"');
         expect(indexHtml).toContain('data-version="0.28.5"');

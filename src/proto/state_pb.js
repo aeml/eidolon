@@ -2996,6 +2996,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 55, wireType 0 =*/440).int32(message.arcaneShieldHp);
                 if (message.timeWarpActive != null && Object.hasOwnProperty.call(message, "timeWarpActive"))
                     writer.uint32(/* id 56, wireType 0 =*/448).bool(message.timeWarpActive);
+                if (message.spellFocusActive != null && Object.hasOwnProperty.call(message, "spellFocusActive"))
+                    writer.uint32(/* id 57, wireType 0 =*/456).bool(message.spellFocusActive);
                 if (message.stunned != null && Object.hasOwnProperty.call(message, "stunned"))
                     writer.uint32(/* id 42, wireType 0 =*/336).bool(message.stunned);
                 if (message.slowed != null && Object.hasOwnProperty.call(message, "slowed"))
@@ -3262,6 +3264,10 @@ export const eidolon = $root.eidolon = (() => {
                         }
                     case 56: {
                             message.timeWarpActive = reader.bool();
+                            break;
+                        }
+                    case 57: {
+                            message.spellFocusActive = reader.bool();
                             break;
                         }
                     case 42: {
@@ -3539,6 +3545,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.timeWarpActive != null && message.hasOwnProperty("timeWarpActive"))
                     if (typeof message.timeWarpActive !== "boolean")
                         return "timeWarpActive: boolean expected";
+                if (message.spellFocusActive != null && message.hasOwnProperty("spellFocusActive"))
+                    if (typeof message.spellFocusActive !== "boolean")
+                        return "spellFocusActive: boolean expected";
                 if (message.stunned != null && message.hasOwnProperty("stunned"))
                     if (typeof message.stunned !== "boolean")
                         return "stunned: boolean expected";
@@ -3719,6 +3728,8 @@ export const eidolon = $root.eidolon = (() => {
                     message.arcaneShieldHp = object.arcaneShieldHp | 0;
                 if (object.timeWarpActive != null)
                     message.timeWarpActive = Boolean(object.timeWarpActive);
+                if (object.spellFocusActive != null)
+                    message.spellFocusActive = Boolean(object.spellFocusActive);
                 if (object.stunned != null)
                     message.stunned = Boolean(object.stunned);
                 if (object.slowed != null)
@@ -3823,6 +3834,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.arcaneShieldActive = false;
                     object.arcaneShieldHp = 0;
                     object.timeWarpActive = false;
+                    object.spellFocusActive = false;
                     object.stunned = false;
                     object.slowed = false;
                     object.rooted = false;
@@ -3934,6 +3946,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.arcaneShieldHp = message.arcaneShieldHp;
                 if (message.timeWarpActive != null && message.hasOwnProperty("timeWarpActive"))
                     object.timeWarpActive = message.timeWarpActive;
+                if (message.spellFocusActive != null && message.hasOwnProperty("spellFocusActive"))
+                    object.spellFocusActive = message.spellFocusActive;
                 if (message.stunned != null && message.hasOwnProperty("stunned"))
                     object.stunned = message.stunned;
                 if (message.slowed != null && message.hasOwnProperty("slowed"))

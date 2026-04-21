@@ -1829,6 +1829,164 @@ describe('GameEngine encounter callouts', () => {
         jest.useRealTimers();
     });
 
+    test('shows a nearby remote support-state activation label when Spell Focus comes online', async () => {
+        const { Wizard } = await import('../src/entities/Wizard.js');
+        const engine = Object.create(GameEngine.prototype);
+        const remoteWizard = new Wizard('remote-focus-up');
+        remoteWizard.name = 'Lyra';
+        remoteWizard.position.set(8, 0, 0);
+        remoteWizard.targetServerPosition = null;
+        remoteWizard.targetServerRotation = undefined;
+        remoteWizard.rotation = new THREE.Quaternion();
+        remoteWizard.mesh = new THREE.Group();
+        remoteWizard.spellFocusActive = false;
+        remoteWizard.spellFocusMultiplier = 1.0;
+        remoteWizard.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteWizard, {
+            id: 'remote-focus-up',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            spellFocusActive: true
+        });
+
+        expect(remoteWizard.spellFocusActive).toBe(true);
+        expect(remoteWizard.spellFocusMultiplier).toBe(2.5);
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('LYRA: FOCUS UP', remoteWizard.position, '#d29cff', '16px');
+    });
+
+    test('shows a nearby remote support-state expiry label when Spell Focus is consumed or falls off', async () => {
+        const { Wizard } = await import('../src/entities/Wizard.js');
+        const engine = Object.create(GameEngine.prototype);
+        const remoteWizard = new Wizard('remote-focus-down');
+        remoteWizard.name = 'Lyra';
+        remoteWizard.position.set(8, 0, 0);
+        remoteWizard.targetServerPosition = null;
+        remoteWizard.targetServerRotation = undefined;
+        remoteWizard.rotation = new THREE.Quaternion();
+        remoteWizard.mesh = new THREE.Group();
+        remoteWizard.spellFocusActive = true;
+        remoteWizard.spellFocusMultiplier = 2.5;
+        remoteWizard.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteWizard, {
+            id: 'remote-focus-down',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            spellFocusActive: false
+        });
+
+        expect(remoteWizard.spellFocusActive).toBe(false);
+        expect(remoteWizard.spellFocusMultiplier).toBe(1.0);
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('LYRA: FOCUS DOWN', remoteWizard.position, '#f0d8ff', '16px');
+    });
+
+    test('suppresses Spell Focus activation readability when a recent explicit Spell Focus cast label already fired', async () => {
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date('2026-04-19T12:00:00Z'));
+
+        const { Wizard } = await import('../src/entities/Wizard.js');
+        const engine = Object.create(GameEngine.prototype);
+        const remoteWizard = new Wizard('remote-focus-dedupe');
+        remoteWizard.name = 'Lyra';
+        remoteWizard.position.set(8, 0, 0);
+        remoteWizard.targetServerPosition = null;
+        remoteWizard.targetServerRotation = undefined;
+        remoteWizard.rotation = new THREE.Quaternion();
+        remoteWizard.mesh = new THREE.Group();
+        remoteWizard.spellFocusActive = false;
+        remoteWizard.spellFocusMultiplier = 1.0;
+        remoteWizard.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map([
+            ['remote-action-remote-focus-dedupe-LYRA: SPELL FOCUS', Date.now()]
+        ]);
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteWizard, {
+            id: 'remote-focus-dedupe',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            spellFocusActive: true
+        });
+
+        expect(engine.floatingTextManager.spawn).not.toHaveBeenCalled();
+
+        jest.useRealTimers();
+    });
+
     test('keeps all replicated remote support states in the shared support registry', () => {
         const source = fs.readFileSync(path.join(repoRoot, 'src/core/GameEngine.js'), 'utf8');
 

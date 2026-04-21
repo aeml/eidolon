@@ -116,6 +116,7 @@ type EntitySnapshot struct {
 	ArcaneShieldActive bool
 	ArcaneShieldHP int
 	TimeWarpActive bool
+	SpellFocusActive bool
 	JumpProgress float64
 	TalentPoints int
 	TalentKeys   int
@@ -3488,6 +3489,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		ArcaneShieldActive: e.ArcaneShieldActive,
 		ArcaneShieldHP: e.ArcaneShieldHP,
 		TimeWarpActive: e.TimeWarpActive,
+		SpellFocusActive: e.SpellFocusActive,
 		JumpProgress: e.JumpProgress,
 		TalentPoints: derivedTalentPoints,
 		TalentKeys:   keys,
@@ -3519,6 +3521,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	carcaneShieldActive := current.ArcaneShieldActive
 	carcaneShieldHP := current.ArcaneShieldHP
 	ctimeWarpActive := current.TimeWarpActive
+	cspellFocusActive := current.SpellFocusActive
 	ctalentPoints := current.TalentPoints
 	cjumpProgress := current.JumpProgress
 	ctalentKeys := 0
@@ -3595,6 +3598,9 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 		return true
 	}
 	if ctimeWarpActive != last.TimeWarpActive {
+		return true
+	}
+	if cspellFocusActive != last.SpellFocusActive {
 		return true
 	}
 
@@ -3920,6 +3926,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		ArcaneShieldActive: e.ArcaneShieldActive,
 		ArcaneShieldHp: int32(e.ArcaneShieldHP),
 		TimeWarpActive: e.TimeWarpActive,
+		SpellFocusActive: e.SpellFocusActive,
 		Stunned:           e.Stunned,
 		Slowed:            e.Slowed,
 		Rooted:            e.Rooted,

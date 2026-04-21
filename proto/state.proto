@@ -137,6 +137,7 @@ message Entity {
   bool arcane_shield_active = 54;
   int32 arcane_shield_hp = 55;
   bool time_warp_active = 56;
+  bool spell_focus_active = 57;
 
   // Common buff/debuff booleans used for visuals/behavior
   bool stunned = 42;

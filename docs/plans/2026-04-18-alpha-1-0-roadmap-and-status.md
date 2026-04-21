@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.28.7`
+- Current in-game displayed version: `Alpha 0.28.8`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.28.7`
+### Shipped through `0.28.8`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -78,6 +78,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.28.5`: remote support-state readability now runs through a shared registry for labels, colors, and cast de-dupe mapping, consolidating the growing 0.28 support-state line onto one reusable path
 - `0.28.6`: Arcane Shield now replicates through the hot-path state path with remaining shield value and surfaces nearby `SHIELD UP/DOWN` readability, extending the support-state pass to HP-backed protective buffs
 - `0.28.7`: Time Warp now replicates through the hot-path state path and surfaces nearby `WARP UP/DOWN` readability, extending the support-state visibility pass to wizard haste windows as well as protective buffs
+- `0.28.8`: Spell Focus now replicates through the hot-path state path and surfaces nearby `FOCUS UP/DOWN` readability, extending the support-state pass to charged-cast setup buffs as well as timed utility windows
 
 ### What `0.22` has clearly accomplished already
 
