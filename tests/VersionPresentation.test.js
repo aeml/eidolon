@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.0 for the latest shipped remote effect sync consolidation slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.0');
+    test('advances the login screen to alpha 0.29.1 for the latest shipped local authoritative effect sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.1');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.0', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.1', () => {
+        expect(indexHtml).toContain('Patch 0.29.1');
+        expect(indexHtml).toContain('The new shared effect sync path now also applies to the local authoritative player state, so server-driven buff expiry and consumption stop depending on one-off manual sync logic');
+        expect(indexHtml).toContain('Time Warp, Spell Focus, Arcane Shield, and the newer support flags now clear or apply through the same helper whether the affected actor is local or remote');
+        expect(indexHtml).toContain('This extends the 0.29 cleanup from remote readability into local correctness for server-authoritative buff and control state updates');
+        expect(indexHtml).toContain('Added regression coverage for local authoritative effect sync reuse and 0.29.1 version presentation');
+    });
+
+    test('keeps the prior 0.29.0 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.0');
         expect(indexHtml).toContain('Remote support and control buffs now sync through one shared effect registry instead of a growing chain of hand-written per-flag blocks inside remote entity state handling');
         expect(indexHtml).toContain('Guardian Embrace, Blessing of Resolve, Divine Intervention, Arcane Shield, Time Warp, and Spell Focus now all reuse the same remote effect sync path while preserving their existing player-facing callouts');
@@ -274,6 +282,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.29.1');
         expect(indexHtml).toContain('Patch 0.29.0');
         expect(indexHtml).toContain('Patch 0.28.8');
         expect(indexHtml).toContain('Patch 0.28.7');
@@ -388,6 +397,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.29.1');
         expect(indexHtml).toContain('Patch 0.29.0');
         expect(indexHtml).toContain('Patch 0.28.8');
         expect(indexHtml).toContain('Patch 0.28.7');
@@ -457,6 +467,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.29.1"');
         expect(indexHtml).toContain('data-version="0.29.0"');
         expect(indexHtml).toContain('data-version="0.28.8"');
         expect(indexHtml).toContain('data-version="0.28.7"');

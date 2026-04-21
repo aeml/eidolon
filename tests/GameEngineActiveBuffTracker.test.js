@@ -218,4 +218,33 @@ describe('GameEngine active buff tracker', () => {
         expect(engine.getActiveBuffs().some((buff) => buff.id === 'guardian_roar')).toBe(false);
         expect(engine.getActiveBuffs().some((buff) => buff.id === 'arcane_shield')).toBe(false);
     });
+
+    test('local authoritative support sync clears wizard buff state through the shared helper', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;
+        engine.syncPlayerSupportEffects = GameEngine.prototype.syncPlayerSupportEffects;
+        engine.showRemoteSupportStateReadability = jest.fn();
+        engine.player = {
+            hasteTimer: 8,
+            hasteFactor: 0.5,
+            spellFocusActive: true,
+            spellFocusMultiplier: 2.5,
+            arcaneShieldActive: true,
+            shieldHP: 120
+        };
+
+        engine.syncPlayerSupportEffects(engine.player, {
+            timeWarpActive: false,
+            spellFocusActive: false,
+            arcaneShieldActive: false,
+            arcaneShieldHp: 0
+        });
+
+        expect(engine.player.hasteTimer).toBe(0);
+        expect(engine.player.hasteFactor).toBe(0);
+        expect(engine.player.spellFocusActive).toBe(false);
+        expect(engine.player.spellFocusMultiplier).toBe(1.0);
+        expect(engine.player.arcaneShieldActive).toBe(false);
+        expect(engine.player.shieldHP).toBe(0);
+    });
 });

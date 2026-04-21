@@ -591,6 +591,10 @@ export class GameEngine {
         });
     }
 
+    syncPlayerSupportEffects(playerEntity, payload) {
+        this.syncRemoteSupportEffects(playerEntity, payload);
+    }
+
     showNearbyRemoteDamageFeedback(sourceEntity, targetEntity, amount) {
         if (!targetEntity?.position || !this.floatingTextManager) return false;
         if (!this.isNearbyCombatEvent(sourceEntity, targetEntity, 38)) return false;
@@ -1698,6 +1702,7 @@ export class GameEngine {
                                 }
                             }
                         }
+                        this.syncPlayerSupportEffects(this.player, pData);
 
                         // Optimization: Only update UI if values changed
                         if (this.player.xp !== this.lastXP || this.player.xpToNextLevel !== this.lastMaxXP || this.player.level !== this.lastLevel) {
@@ -1840,6 +1845,7 @@ export class GameEngine {
                         if (pData.speed !== undefined) this.player.stats.speed = pData.speed;
                         if (pData.attackSpeed !== undefined) this.player.stats.attackSpeed = pData.attackSpeed;
                         if (pData.cooldownReduction !== undefined) this.player.stats.cooldownReduction = pData.cooldownReduction;
+                        this.syncPlayerSupportEffects(this.player, pData);
                     }
                     
                     // Sync Skills

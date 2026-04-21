@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.29.0</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.29.1</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.29.1" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.1 (Local authoritative buff sync now reuses the shared effect helper)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Local buff sync now rides the same path:</strong> The new shared effect sync path now also applies to the local authoritative player state, so server-driven buff expiry and consumption stop depending on one-off manual sync logic.</li>
+                        <li><strong>Remote and local rules now match:</strong> Time Warp, Spell Focus, Arcane Shield, and the newer support flags now clear or apply through the same helper whether the affected actor is local or remote.</li>
+                        <li><strong>The 0.29 cleanup line continues:</strong> This extends the 0.29 cleanup from remote readability into local correctness for server-authoritative buff and control state updates.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for local authoritative effect sync reuse and 0.29.1 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.29.0" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.0 (Remote buff replication now runs through one shared effect sync registry)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

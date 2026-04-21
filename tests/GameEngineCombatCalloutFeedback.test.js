@@ -2013,4 +2013,11 @@ describe('GameEngine encounter callouts', () => {
         expect(source).toContain('spell_focus:');
         expect(source).toContain('syncRemoteSupportEffects(remoteEntity, payload)');
     });
+
+    test('routes local authoritative support effects through the shared support effect sync helper', () => {
+        const source = fs.readFileSync(path.join(repoRoot, 'src/core/GameEngine.js'), 'utf8');
+
+        expect(source).toContain('syncPlayerSupportEffects(playerEntity, payload)');
+        expect(source).toContain('this.syncPlayerSupportEffects(this.player, pData);');
+    });
 });
