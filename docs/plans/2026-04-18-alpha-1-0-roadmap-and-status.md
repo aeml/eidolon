@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.28.4`
+- Current in-game displayed version: `Alpha 0.28.5`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.28.4`
+### Shipped through `0.28.5`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -75,6 +75,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.28.2`: Blessing of Resolve now replicates through the hot-path state path and surfaces nearby `RESOLVE UP/DOWN` readability, continuing the support-state visibility pass with another real server-timed buff
 - `0.28.3`: remote support-state activation readability now de-dupes against each buff's own explicit cast label, reducing duplicate support callouts and starting to consolidate shared support-state timing rules
 - `0.28.4`: Divine Intervention now replicates through the hot-path state path and surfaces nearby `INTERVENTION UP/DOWN` readability, extending the support-state visibility pass to another real server-timed rescue buff
+- `0.28.5`: remote support-state readability now runs through a shared registry for labels, colors, and cast de-dupe mapping, consolidating the growing 0.28 support-state line onto one reusable path
 
 ### What `0.22` has clearly accomplished already
 

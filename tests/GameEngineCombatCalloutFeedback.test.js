@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { Cleric } from '../src/entities/Cleric.js';
+import fs from 'fs';
+import path from 'path';
 
 jest.unstable_mockModule('../src/proto/state_pb.js', () => {
     const mock = {
@@ -16,6 +18,7 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 });
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
+const repoRoot = path.resolve(process.cwd());
 
 describe('GameEngine encounter callouts', () => {
     test('notifies UI when a boss telegraph arrives', () => {
@@ -1507,5 +1510,19 @@ describe('GameEngine encounter callouts', () => {
         expect(engine.floatingTextManager.spawn).not.toHaveBeenCalled();
 
         jest.useRealTimers();
+    });
+
+    test('keeps all replicated remote support states in the shared support registry', () => {
+        const source = fs.readFileSync(path.join(repoRoot, 'src/core/GameEngine.js'), 'utf8');
+
+        expect(source).toContain('const REMOTE_SUPPORT_STATE_CONFIG = {');
+        expect(source).toContain('spirit_guardians:');
+        expect(source).toContain('guardian_embrace:');
+        expect(source).toContain('blessing_resolve:');
+        expect(source).toContain('divine_intervention:');
+        expect(source).toContain("explicitSkillLabel: 'Spirit Guardians'");
+        expect(source).toContain("explicitSkillLabel: 'Guardian Embrace'");
+        expect(source).toContain("explicitSkillLabel: 'Blessing of Resolve'");
+        expect(source).toContain("explicitSkillLabel: 'Divine Intervention'");
     });
 });

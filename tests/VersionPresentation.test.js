@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.28.4 for the latest shipped Divine Intervention support-state slice', () => {
-        expect(indexHtml).toContain('Alpha 0.28.4');
+    test('advances the login screen to alpha 0.28.5 for the latest shipped support registry consolidation slice', () => {
+        expect(indexHtml).toContain('Alpha 0.28.5');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.28.4', () => {
+    test('includes the latest player-facing patch notes entry for 0.28.5', () => {
+        expect(indexHtml).toContain('Patch 0.28.5');
+        expect(indexHtml).toContain('Remote support-state readability now pulls its labels, colors, and cast de-dupe mapping from one shared registry instead of a growing chain of per-buff conditionals');
+        expect(indexHtml).toContain('Spirit Guardians, Guardian Embrace, Blessing of Resolve, and Divine Intervention now all ride the same support metadata path, making the 0.28 support pass easier to extend without re-teaching timing rules each time');
+        expect(indexHtml).toContain('This keeps behavior unchanged for existing support auras while setting up the next replicated buff slices on a cleaner shared foundation');
+        expect(indexHtml).toContain('Added regression coverage for the shared remote support registry and 0.28.5 version presentation');
+    });
+
+    test('keeps the prior 0.28.4 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.28.4');
         expect(indexHtml).toContain('Divine Intervention now replicates through the hot-path multiplayer state snapshot so nearby clients can track that rescue buff in real time');
         expect(indexHtml).toContain('Nearby remote clerics now surface <code>INTERVENTION UP</code> and <code>INTERVENTION DOWN</code> readability, extending the support-state pass to another real timed protection effect');
@@ -234,6 +242,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.28.5');
         expect(indexHtml).toContain('Patch 0.28.4');
         expect(indexHtml).toContain('Patch 0.28.3');
         expect(indexHtml).toContain('Patch 0.28.2');
@@ -343,6 +352,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.28.5');
         expect(indexHtml).toContain('Patch 0.28.4');
         expect(indexHtml).toContain('Patch 0.28.3');
         expect(indexHtml).toContain('Patch 0.28.2');
@@ -407,6 +417,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.28.5"');
         expect(indexHtml).toContain('data-version="0.28.4"');
         expect(indexHtml).toContain('data-version="0.28.3"');
         expect(indexHtml).toContain('data-version="0.28.2"');

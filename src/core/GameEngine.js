@@ -13,6 +13,41 @@ import { WorldGenerator } from '../world/WorldGenerator.js';
 import { Minimap } from '../ui/Minimap.js';
 import { WorldMap } from '../ui/WorldMap.js';
 import { FloatingTextManager } from '../ui/FloatingTextManager.js';
+
+const REMOTE_SUPPORT_STATE_CONFIG = {
+    spirit_guardians: {
+        activeLabel: 'GUARDIANS UP',
+        inactiveLabel: 'GUARDIANS DOWN',
+        explicitSkillLabel: 'Spirit Guardians',
+        activeColor: '#9dffb0',
+        inactiveColor: '#d8ffd2',
+        cooldownMs: 900,
+    },
+    guardian_embrace: {
+        activeLabel: 'EMBRACE UP',
+        inactiveLabel: 'EMBRACE DOWN',
+        explicitSkillLabel: 'Guardian Embrace',
+        activeColor: '#fff1a6',
+        inactiveColor: '#fff7d1',
+        cooldownMs: 900,
+    },
+    blessing_resolve: {
+        activeLabel: 'RESOLVE UP',
+        inactiveLabel: 'RESOLVE DOWN',
+        explicitSkillLabel: 'Blessing of Resolve',
+        activeColor: '#ffe38a',
+        inactiveColor: '#fff2c2',
+        cooldownMs: 900,
+    },
+    divine_intervention: {
+        activeLabel: 'INTERVENTION UP',
+        inactiveLabel: 'INTERVENTION DOWN',
+        explicitSkillLabel: 'Divine Intervention',
+        activeColor: '#ffd76b',
+        inactiveColor: '#ffefb8',
+        cooldownMs: 900,
+    },
+};
 import { Fighter } from '../entities/Fighter.js';
 import { Skeleton } from '../entities/Skeleton.js';
 import { Rogue } from '../entities/Rogue.js';
@@ -420,30 +455,13 @@ export class GameEngine {
         const normalizedKey = String(supportKey || '').trim().toLowerCase();
         if (!normalizedKey) return false;
 
-        let actionLabel = '';
-        let explicitSkillLabel = '';
-        let color = '#9dffb0';
-        let cooldownMs = 900;
+        const config = REMOTE_SUPPORT_STATE_CONFIG[normalizedKey];
+        if (!config) return false;
 
-        if (normalizedKey === 'spirit_guardians') {
-            actionLabel = active ? 'GUARDIANS UP' : 'GUARDIANS DOWN';
-            explicitSkillLabel = 'Spirit Guardians';
-            color = active ? '#9dffb0' : '#d8ffd2';
-        } else if (normalizedKey === 'guardian_embrace') {
-            actionLabel = active ? 'EMBRACE UP' : 'EMBRACE DOWN';
-            explicitSkillLabel = 'Guardian Embrace';
-            color = active ? '#fff1a6' : '#fff7d1';
-        } else if (normalizedKey === 'blessing_resolve') {
-            actionLabel = active ? 'RESOLVE UP' : 'RESOLVE DOWN';
-            explicitSkillLabel = 'Blessing of Resolve';
-            color = active ? '#ffe38a' : '#fff2c2';
-        } else if (normalizedKey === 'divine_intervention') {
-            actionLabel = active ? 'INTERVENTION UP' : 'INTERVENTION DOWN';
-            explicitSkillLabel = 'Divine Intervention';
-            color = active ? '#ffd76b' : '#ffefb8';
-        } else {
-            return false;
-        }
+        const actionLabel = active ? config.activeLabel : config.inactiveLabel;
+        const explicitSkillLabel = config.explicitSkillLabel;
+        const color = active ? config.activeColor : config.inactiveColor;
+        const cooldownMs = config.cooldownMs;
 
         const label = this.buildRemoteActionReadabilityText(entity, actionLabel);
         if (!label) return false;
