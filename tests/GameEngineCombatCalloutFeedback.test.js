@@ -2000,4 +2000,17 @@ describe('GameEngine encounter callouts', () => {
         expect(source).toContain("explicitSkillLabel: 'Blessing of Resolve'");
         expect(source).toContain("explicitSkillLabel: 'Divine Intervention'");
     });
+
+    test('routes replicated remote support effects through the shared support effect sync registry', () => {
+        const source = fs.readFileSync(path.join(repoRoot, 'src/core/GameEngine.js'), 'utf8');
+
+        expect(source).toContain('const REMOTE_EFFECT_SYNC_CONFIG = {');
+        expect(source).toContain('guardian_embrace:');
+        expect(source).toContain('blessing_resolve:');
+        expect(source).toContain('divine_intervention:');
+        expect(source).toContain('arcane_shield:');
+        expect(source).toContain('time_warp:');
+        expect(source).toContain('spell_focus:');
+        expect(source).toContain('syncRemoteSupportEffects(remoteEntity, payload)');
+    });
 });

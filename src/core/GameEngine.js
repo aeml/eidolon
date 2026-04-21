@@ -72,6 +72,74 @@ const REMOTE_SUPPORT_STATE_CONFIG = {
         cooldownMs: 900,
     },
 };
+
+const REMOTE_EFFECT_SYNC_CONFIG = {
+    guardian_embrace: {
+        payloadKey: 'guardianEmbraceActive',
+        getPreviousActive: (entity) => Boolean(entity.guardianEmbraceActive),
+        applyPayload: (entity, value) => {
+            entity.guardianEmbraceActive = Boolean(value);
+        },
+        getNextActive: (entity) => Boolean(entity.guardianEmbraceActive),
+    },
+    blessing_resolve: {
+        payloadKey: 'blessingResolveActive',
+        getPreviousActive: (entity) => Boolean(entity.blessingResolveActive),
+        applyPayload: (entity, value) => {
+            entity.blessingResolveActive = Boolean(value);
+        },
+        getNextActive: (entity) => Boolean(entity.blessingResolveActive),
+    },
+    divine_intervention: {
+        payloadKey: 'divineInterventionActive',
+        getPreviousActive: (entity) => Boolean(entity.divineInterventionActive),
+        applyPayload: (entity, value) => {
+            entity.divineInterventionActive = Boolean(value);
+        },
+        getNextActive: (entity) => Boolean(entity.divineInterventionActive),
+    },
+    arcane_shield: {
+        payloadKey: 'arcaneShieldActive',
+        payloadKeys: ['arcaneShieldActive', 'arcaneShieldHp'],
+        getPreviousActive: (entity) => Boolean(entity.arcaneShieldActive) && Number(entity.shieldHP || 0) > 0,
+        applyPayload: (entity, value, payload) => {
+            if (value !== undefined) {
+                entity.arcaneShieldActive = Boolean(value);
+            }
+            if (payload.arcaneShieldHp !== undefined) {
+                entity.shieldHP = Number(payload.arcaneShieldHp || 0);
+            }
+        },
+        getNextActive: (entity) => Boolean(entity.arcaneShieldActive) && Number(entity.shieldHP || 0) > 0,
+    },
+    time_warp: {
+        payloadKey: 'timeWarpActive',
+        getPreviousActive: (entity) => Number(entity.hasteTimer || 0) > 0,
+        applyPayload: (entity, value) => {
+            if (Boolean(value)) {
+                entity.hasteTimer = Math.max(Number(entity.hasteTimer || 0), 8.0);
+                entity.hasteFactor = Math.max(Number(entity.hasteFactor || 0), 0.5);
+            } else {
+                entity.hasteTimer = 0;
+                entity.hasteFactor = 0;
+            }
+        },
+        getNextActive: (entity) => Number(entity.hasteTimer || 0) > 0,
+    },
+    spell_focus: {
+        payloadKey: 'spellFocusActive',
+        getPreviousActive: (entity) => Boolean(entity.spellFocusActive),
+        applyPayload: (entity, value) => {
+            entity.spellFocusActive = Boolean(value);
+            if (!entity.spellFocusActive) {
+                entity.spellFocusMultiplier = 1.0;
+            } else if (!Number.isFinite(entity.spellFocusMultiplier) || entity.spellFocusMultiplier <= 1.0) {
+                entity.spellFocusMultiplier = 2.5;
+            }
+        },
+        getNextActive: (entity) => Boolean(entity.spellFocusActive),
+    },
+};
 import { Fighter } from '../entities/Fighter.js';
 import { Skeleton } from '../entities/Skeleton.js';
 import { Rogue } from '../entities/Rogue.js';
@@ -505,6 +573,22 @@ export class GameEngine {
 
         this.floatingTextManager.spawn(label, entity.position, color, '16px');
         return true;
+    }
+
+    syncRemoteSupportEffects(remoteEntity, payload) {
+        Object.entries(REMOTE_EFFECT_SYNC_CONFIG).forEach(([supportKey, config]) => {
+            const payloadKeys = config.payloadKeys || [config.payloadKey];
+            const hasRelevantPayload = payloadKeys.some((key) => payload[key] !== undefined);
+            if (!hasRelevantPayload) return;
+
+            const previousActive = config.getPreviousActive(remoteEntity);
+            config.applyPayload(remoteEntity, payload[config.payloadKey], payload);
+            const nextActive = config.getNextActive(remoteEntity);
+
+            if (previousActive !== nextActive) {
+                this.showRemoteSupportStateReadability(remoteEntity, supportKey, nextActive);
+            }
+        });
     }
 
     showNearbyRemoteDamageFeedback(sourceEntity, targetEntity, amount) {
@@ -1969,13 +2053,6 @@ export class GameEngine {
         const previousRemotePosition = remoteEntity.position?.clone?.() || new THREE.Vector3();
         const previousRemoteState = remoteEntity.state || '';
         const previousRemoteSpiritsActive = Boolean(remoteEntity.spiritsActive);
-        const previousRemoteGuardianEmbraceActive = Boolean(remoteEntity.guardianEmbraceActive);
-        const previousRemoteBlessingResolveActive = Boolean(remoteEntity.blessingResolveActive);
-        const previousRemoteDivineInterventionActive = Boolean(remoteEntity.divineInterventionActive);
-        const previousRemoteArcaneShieldActive = Boolean(remoteEntity.arcaneShieldActive);
-        const previousRemoteShieldHP = Number(remoteEntity.shieldHP || 0);
-        const previousRemoteTimeWarpActive = Number(remoteEntity.hasteTimer || 0) > 0;
-        const previousRemoteSpellFocusActive = Boolean(remoteEntity.spellFocusActive);
 
         // --- Position / Interpolation ---
         if (pData.type === 'Projectile') {
@@ -2075,58 +2152,7 @@ export class GameEngine {
             if (pData.spiritsActive !== undefined && previousRemoteSpiritsActive !== Boolean(remoteEntity.spiritsActive)) {
                 this.showRemoteSupportStateReadability(remoteEntity, 'spirit_guardians', Boolean(remoteEntity.spiritsActive));
             }
-            if (pData.guardianEmbraceActive !== undefined) {
-                remoteEntity.guardianEmbraceActive = Boolean(pData.guardianEmbraceActive);
-            }
-            if (pData.guardianEmbraceActive !== undefined && previousRemoteGuardianEmbraceActive !== Boolean(remoteEntity.guardianEmbraceActive)) {
-                this.showRemoteSupportStateReadability(remoteEntity, 'guardian_embrace', Boolean(remoteEntity.guardianEmbraceActive));
-            }
-            if (pData.blessingResolveActive !== undefined) {
-                remoteEntity.blessingResolveActive = Boolean(pData.blessingResolveActive);
-            }
-            if (pData.blessingResolveActive !== undefined && previousRemoteBlessingResolveActive !== Boolean(remoteEntity.blessingResolveActive)) {
-                this.showRemoteSupportStateReadability(remoteEntity, 'blessing_resolve', Boolean(remoteEntity.blessingResolveActive));
-            }
-            if (pData.divineInterventionActive !== undefined) {
-                remoteEntity.divineInterventionActive = Boolean(pData.divineInterventionActive);
-            }
-            if (pData.divineInterventionActive !== undefined && previousRemoteDivineInterventionActive !== Boolean(remoteEntity.divineInterventionActive)) {
-                this.showRemoteSupportStateReadability(remoteEntity, 'divine_intervention', Boolean(remoteEntity.divineInterventionActive));
-            }
-            if (pData.arcaneShieldActive !== undefined) {
-                remoteEntity.arcaneShieldActive = Boolean(pData.arcaneShieldActive);
-            }
-            if (pData.arcaneShieldHp !== undefined) {
-                remoteEntity.shieldHP = Number(pData.arcaneShieldHp || 0);
-            }
-            const nextRemoteArcaneShieldActive = Boolean(remoteEntity.arcaneShieldActive) && Number(remoteEntity.shieldHP || 0) > 0;
-            const previousEffectiveArcaneShieldActive = previousRemoteArcaneShieldActive && previousRemoteShieldHP > 0;
-            if ((pData.arcaneShieldActive !== undefined || pData.arcaneShieldHp !== undefined) && previousEffectiveArcaneShieldActive !== nextRemoteArcaneShieldActive) {
-                this.showRemoteSupportStateReadability(remoteEntity, 'arcane_shield', nextRemoteArcaneShieldActive);
-            }
-            if (pData.timeWarpActive !== undefined) {
-                if (Boolean(pData.timeWarpActive)) {
-                    remoteEntity.hasteTimer = Math.max(Number(remoteEntity.hasteTimer || 0), 8.0);
-                    remoteEntity.hasteFactor = Math.max(Number(remoteEntity.hasteFactor || 0), 0.5);
-                } else {
-                    remoteEntity.hasteTimer = 0;
-                    remoteEntity.hasteFactor = 0;
-                }
-            }
-            if (pData.timeWarpActive !== undefined && previousRemoteTimeWarpActive !== (Number(remoteEntity.hasteTimer || 0) > 0)) {
-                this.showRemoteSupportStateReadability(remoteEntity, 'time_warp', Number(remoteEntity.hasteTimer || 0) > 0);
-            }
-            if (pData.spellFocusActive !== undefined) {
-                remoteEntity.spellFocusActive = Boolean(pData.spellFocusActive);
-                if (!remoteEntity.spellFocusActive) {
-                    remoteEntity.spellFocusMultiplier = 1.0;
-                } else if (!Number.isFinite(remoteEntity.spellFocusMultiplier) || remoteEntity.spellFocusMultiplier <= 1.0) {
-                    remoteEntity.spellFocusMultiplier = 2.5;
-                }
-            }
-            if (pData.spellFocusActive !== undefined && previousRemoteSpellFocusActive !== Boolean(remoteEntity.spellFocusActive)) {
-                this.showRemoteSupportStateReadability(remoteEntity, 'spell_focus', Boolean(remoteEntity.spellFocusActive));
-            }
+            this.syncRemoteSupportEffects(remoteEntity, pData);
 
             // Rotation
             if (pData.rotation !== undefined) {

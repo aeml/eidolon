@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.28.8 for the latest shipped Spell Focus support-state slice', () => {
-        expect(indexHtml).toContain('Alpha 0.28.8');
+    test('advances the login screen to alpha 0.29.0 for the latest shipped remote effect sync consolidation slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.0');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.28.8', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.0', () => {
+        expect(indexHtml).toContain('Patch 0.29.0');
+        expect(indexHtml).toContain('Remote support and control buffs now sync through one shared effect registry instead of a growing chain of hand-written per-flag blocks inside remote entity state handling');
+        expect(indexHtml).toContain('Guardian Embrace, Blessing of Resolve, Divine Intervention, Arcane Shield, Time Warp, and Spell Focus now all reuse the same remote effect sync path while preserving their existing player-facing callouts');
+        expect(indexHtml).toContain('This starts the next multiplayer cleanup line by consolidating server-authoritative buff replication rules before more support and control flags are added');
+        expect(indexHtml).toContain('Added regression coverage for the shared remote effect sync registry and 0.29.0 version presentation');
+    });
+
+    test('keeps the prior 0.28.8 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.28.8');
         expect(indexHtml).toContain('Spell Focus now replicates through the hot-path multiplayer state snapshot so nearby clients can track that charged-cast window in real time');
         expect(indexHtml).toContain('Nearby remote wizards now surface <code>FOCUS UP</code> and <code>FOCUS DOWN</code> readability, and the replicated state now drives the existing spell-focus multiplier path instead of leaving remote prep windows implicit');
@@ -266,6 +274,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.29.0');
         expect(indexHtml).toContain('Patch 0.28.8');
         expect(indexHtml).toContain('Patch 0.28.7');
         expect(indexHtml).toContain('Patch 0.28.6');
@@ -379,6 +388,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.29.0');
         expect(indexHtml).toContain('Patch 0.28.8');
         expect(indexHtml).toContain('Patch 0.28.7');
         expect(indexHtml).toContain('Patch 0.28.6');
@@ -447,6 +457,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.29.0"');
         expect(indexHtml).toContain('data-version="0.28.8"');
         expect(indexHtml).toContain('data-version="0.28.7"');
         expect(indexHtml).toContain('data-version="0.28.6"');
