@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.28.3</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.28.4</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.28.4" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.4 (Divine Intervention now reads as a real remote rescue buff)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Another timed support flag now truly replicates:</strong> Divine Intervention now replicates through the hot-path multiplayer state snapshot so nearby clients can track that rescue buff in real time.</li>
+                        <li><strong>Remote cleric protection reads richer:</strong> Nearby remote clerics now surface <code>INTERVENTION UP</code> and <code>INTERVENTION DOWN</code> readability, extending the support-state pass to another real timed protection effect.</li>
+                        <li><strong>Support de-dupe rules still hold:</strong> Activation still de-dupes against the explicit Divine Intervention cast label, so the added support-state visibility does not reintroduce duplicate callouts.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for Divine Intervention replication readability and 0.28.4 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.28.3" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.3 (Remote support activations now de-dupe against their own cast labels)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

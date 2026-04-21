@@ -668,6 +668,7 @@ type Entity struct {
 	IsCharging     bool `protobuf:"varint,41,opt,name=is_charging,json=isCharging,proto3" json:"is_charging,omitempty"`
 	GuardianEmbraceActive bool `protobuf:"varint,51,opt,name=guardian_embrace_active,json=guardianEmbraceActive,proto3" json:"guardian_embrace_active,omitempty"`
 	BlessingResolveActive bool `protobuf:"varint,52,opt,name=blessing_resolve_active,json=blessingResolveActive,proto3" json:"blessing_resolve_active,omitempty"`
+	DivineInterventionActive bool `protobuf:"varint,53,opt,name=divine_intervention_active,json=divineInterventionActive,proto3" json:"divine_intervention_active,omitempty"`
 	// Common buff/debuff booleans used for visuals/behavior
 	Stunned  bool `protobuf:"varint,42,opt,name=stunned,proto3" json:"stunned,omitempty"`
 	Slowed   bool `protobuf:"varint,43,opt,name=slowed,proto3" json:"slowed,omitempty"`
@@ -1013,6 +1014,13 @@ func (x *Entity) GetGuardianEmbraceActive() bool {
 func (x *Entity) GetBlessingResolveActive() bool {
 	if x != nil {
 		return x.BlessingResolveActive
+	}
+	return false
+}
+
+func (x *Entity) GetDivineInterventionActive() bool {
+	if x != nil {
+		return x.DivineInterventionActive
 	}
 	return false
 }

@@ -133,6 +133,7 @@ message Entity {
   bool is_charging = 41;
   bool guardian_embrace_active = 51;
   bool blessing_resolve_active = 52;
+  bool divine_intervention_active = 53;
 
   // Common buff/debuff booleans used for visuals/behavior
   bool stunned = 42;

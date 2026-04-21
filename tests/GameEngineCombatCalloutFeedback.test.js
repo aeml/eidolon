@@ -1360,4 +1360,152 @@ describe('GameEngine encounter callouts', () => {
 
         jest.useRealTimers();
     });
+
+    test('shows a nearby remote support-state activation label when Divine Intervention comes online', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remoteCleric = new Cleric('remote-intervention-up');
+        remoteCleric.name = 'Ayla';
+        remoteCleric.position.set(8, 0, 0);
+        remoteCleric.targetServerPosition = null;
+        remoteCleric.targetServerRotation = undefined;
+        remoteCleric.rotation = new THREE.Quaternion();
+        remoteCleric.mesh = new THREE.Group();
+        remoteCleric.divineInterventionActive = false;
+        remoteCleric.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteCleric, {
+            id: 'remote-intervention-up',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            divineInterventionActive: true
+        });
+
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: INTERVENTION UP', remoteCleric.position, '#ffd76b', '16px');
+    });
+
+    test('shows a nearby remote support-state expiry label when Divine Intervention falls off', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const remoteCleric = new Cleric('remote-intervention-down');
+        remoteCleric.name = 'Ayla';
+        remoteCleric.position.set(8, 0, 0);
+        remoteCleric.targetServerPosition = null;
+        remoteCleric.targetServerRotation = undefined;
+        remoteCleric.rotation = new THREE.Quaternion();
+        remoteCleric.mesh = new THREE.Group();
+        remoteCleric.divineInterventionActive = true;
+        remoteCleric.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteCleric, {
+            id: 'remote-intervention-down',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            divineInterventionActive: false
+        });
+
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: INTERVENTION DOWN', remoteCleric.position, '#ffefb8', '16px');
+    });
+
+    test('suppresses Divine Intervention activation readability when a recent explicit Divine Intervention cast label already fired', () => {
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date('2026-04-19T12:00:00Z'));
+
+        const engine = Object.create(GameEngine.prototype);
+        const remoteCleric = new Cleric('remote-intervention-dedupe');
+        remoteCleric.name = 'Ayla';
+        remoteCleric.position.set(8, 0, 0);
+        remoteCleric.targetServerPosition = null;
+        remoteCleric.targetServerRotation = undefined;
+        remoteCleric.rotation = new THREE.Quaternion();
+        remoteCleric.mesh = new THREE.Group();
+        remoteCleric.divineInterventionActive = false;
+        remoteCleric.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map([
+            ['remote-action-remote-intervention-dedupe-AYLA: DIVINE INTERVENTION', Date.now()]
+        ]);
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteCleric, {
+            id: 'remote-intervention-dedupe',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            divineInterventionActive: true
+        });
+
+        expect(engine.floatingTextManager.spawn).not.toHaveBeenCalled();
+
+        jest.useRealTimers();
+    });
 });

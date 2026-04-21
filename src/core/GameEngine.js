@@ -437,6 +437,10 @@ export class GameEngine {
             actionLabel = active ? 'RESOLVE UP' : 'RESOLVE DOWN';
             explicitSkillLabel = 'Blessing of Resolve';
             color = active ? '#ffe38a' : '#fff2c2';
+        } else if (normalizedKey === 'divine_intervention') {
+            actionLabel = active ? 'INTERVENTION UP' : 'INTERVENTION DOWN';
+            explicitSkillLabel = 'Divine Intervention';
+            color = active ? '#ffd76b' : '#ffefb8';
         } else {
             return false;
         }
@@ -1925,6 +1929,7 @@ export class GameEngine {
         const previousRemoteSpiritsActive = Boolean(remoteEntity.spiritsActive);
         const previousRemoteGuardianEmbraceActive = Boolean(remoteEntity.guardianEmbraceActive);
         const previousRemoteBlessingResolveActive = Boolean(remoteEntity.blessingResolveActive);
+        const previousRemoteDivineInterventionActive = Boolean(remoteEntity.divineInterventionActive);
 
         // --- Position / Interpolation ---
         if (pData.type === 'Projectile') {
@@ -2035,6 +2040,12 @@ export class GameEngine {
             }
             if (pData.blessingResolveActive !== undefined && previousRemoteBlessingResolveActive !== Boolean(remoteEntity.blessingResolveActive)) {
                 this.showRemoteSupportStateReadability(remoteEntity, 'blessing_resolve', Boolean(remoteEntity.blessingResolveActive));
+            }
+            if (pData.divineInterventionActive !== undefined) {
+                remoteEntity.divineInterventionActive = Boolean(pData.divineInterventionActive);
+            }
+            if (pData.divineInterventionActive !== undefined && previousRemoteDivineInterventionActive !== Boolean(remoteEntity.divineInterventionActive)) {
+                this.showRemoteSupportStateReadability(remoteEntity, 'divine_intervention', Boolean(remoteEntity.divineInterventionActive));
             }
 
             // Rotation

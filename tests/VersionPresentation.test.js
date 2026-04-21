@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.28.3 for the latest shipped support activation de-dupe slice', () => {
-        expect(indexHtml).toContain('Alpha 0.28.3');
+    test('advances the login screen to alpha 0.28.4 for the latest shipped Divine Intervention support-state slice', () => {
+        expect(indexHtml).toContain('Alpha 0.28.4');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.28.3', () => {
+    test('includes the latest player-facing patch notes entry for 0.28.4', () => {
+        expect(indexHtml).toContain('Patch 0.28.4');
+        expect(indexHtml).toContain('Divine Intervention now replicates through the hot-path multiplayer state snapshot so nearby clients can track that rescue buff in real time');
+        expect(indexHtml).toContain('Nearby remote clerics now surface <code>INTERVENTION UP</code> and <code>INTERVENTION DOWN</code> readability, extending the support-state pass to another real timed protection effect');
+        expect(indexHtml).toContain('Activation still de-dupes against the explicit Divine Intervention cast label, so the added support-state visibility does not reintroduce duplicate callouts');
+        expect(indexHtml).toContain('Added regression coverage for Divine Intervention replication readability and 0.28.4 version presentation');
+    });
+
+    test('keeps the prior 0.28.3 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.28.3');
         expect(indexHtml).toContain('Remote support-state activation readability now de-dupes against each buff\'s own explicit cast label instead of only handling Spirit Guardians');
         expect(indexHtml).toContain('Guardian Embrace and Blessing of Resolve no longer double-call their activation state a beat after the named cast text already fired');
@@ -226,6 +234,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.28.4');
         expect(indexHtml).toContain('Patch 0.28.3');
         expect(indexHtml).toContain('Patch 0.28.2');
         expect(indexHtml).toContain('Patch 0.28.1');
@@ -334,6 +343,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.28.4');
         expect(indexHtml).toContain('Patch 0.28.3');
         expect(indexHtml).toContain('Patch 0.28.2');
         expect(indexHtml).toContain('Patch 0.28.1');
@@ -397,6 +407,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.28.4"');
         expect(indexHtml).toContain('data-version="0.28.3"');
         expect(indexHtml).toContain('data-version="0.28.2"');
         expect(indexHtml).toContain('data-version="0.28.1"');
