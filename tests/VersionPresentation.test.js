@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.28.5 for the latest shipped support registry consolidation slice', () => {
-        expect(indexHtml).toContain('Alpha 0.28.5');
+    test('advances the login screen to alpha 0.28.6 for the latest shipped Arcane Shield support-state slice', () => {
+        expect(indexHtml).toContain('Alpha 0.28.6');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.28.5', () => {
+    test('includes the latest player-facing patch notes entry for 0.28.6', () => {
+        expect(indexHtml).toContain('Patch 0.28.6');
+        expect(indexHtml).toContain('Arcane Shield now replicates through the hot-path multiplayer state snapshot with both its active flag and remaining shield value so nearby clients can track the protection state truthfully');
+        expect(indexHtml).toContain('Nearby remote wizards now surface <code>SHIELD UP</code> and <code>SHIELD DOWN</code> readability, and the replicated shield value now feeds the existing shield buff tracker path instead of leaving remote shield state implicit');
+        expect(indexHtml).toContain('Activation still de-dupes against the explicit Arcane Shield cast label, keeping the growing support-state line consistent even for HP-backed protective buffs');
+        expect(indexHtml).toContain('Added regression coverage for Arcane Shield replication readability, buff tracking, and 0.28.6 version presentation');
+    });
+
+    test('keeps the prior 0.28.5 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.28.5');
         expect(indexHtml).toContain('Remote support-state readability now pulls its labels, colors, and cast de-dupe mapping from one shared registry instead of a growing chain of per-buff conditionals');
         expect(indexHtml).toContain('Spirit Guardians, Guardian Embrace, Blessing of Resolve, and Divine Intervention now all ride the same support metadata path, making the 0.28 support pass easier to extend without re-teaching timing rules each time');
@@ -242,6 +250,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.28.6');
         expect(indexHtml).toContain('Patch 0.28.5');
         expect(indexHtml).toContain('Patch 0.28.4');
         expect(indexHtml).toContain('Patch 0.28.3');
@@ -352,6 +361,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.28.6');
         expect(indexHtml).toContain('Patch 0.28.5');
         expect(indexHtml).toContain('Patch 0.28.4');
         expect(indexHtml).toContain('Patch 0.28.3');
@@ -417,6 +427,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.28.6"');
         expect(indexHtml).toContain('data-version="0.28.5"');
         expect(indexHtml).toContain('data-version="0.28.4"');
         expect(indexHtml).toContain('data-version="0.28.3"');

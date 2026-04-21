@@ -134,6 +134,8 @@ message Entity {
   bool guardian_embrace_active = 51;
   bool blessing_resolve_active = 52;
   bool divine_intervention_active = 53;
+  bool arcane_shield_active = 54;
+  int32 arcane_shield_hp = 55;
 
   // Common buff/debuff booleans used for visuals/behavior
   bool stunned = 42;

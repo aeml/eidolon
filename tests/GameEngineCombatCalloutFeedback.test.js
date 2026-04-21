@@ -1512,6 +1512,165 @@ describe('GameEngine encounter callouts', () => {
         jest.useRealTimers();
     });
 
+    test('shows a nearby remote support-state activation label when Arcane Shield comes online with shield HP', async () => {
+        const { Wizard } = await import('../src/entities/Wizard.js');
+        const engine = Object.create(GameEngine.prototype);
+        const remoteWizard = new Wizard('remote-shield-up');
+        remoteWizard.name = 'Lyra';
+        remoteWizard.position.set(8, 0, 0);
+        remoteWizard.targetServerPosition = null;
+        remoteWizard.targetServerRotation = undefined;
+        remoteWizard.rotation = new THREE.Quaternion();
+        remoteWizard.mesh = new THREE.Group();
+        remoteWizard.arcaneShieldActive = false;
+        remoteWizard.shieldHP = 0;
+        remoteWizard.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteWizard, {
+            id: 'remote-shield-up',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            arcaneShieldActive: true,
+            arcaneShieldHp: 180
+        });
+
+        expect(remoteWizard.shieldHP).toBe(180);
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('LYRA: SHIELD UP', remoteWizard.position, '#8fd2ff', '16px');
+    });
+
+    test('shows a nearby remote support-state expiry label when Arcane Shield breaks or expires', async () => {
+        const { Wizard } = await import('../src/entities/Wizard.js');
+        const engine = Object.create(GameEngine.prototype);
+        const remoteWizard = new Wizard('remote-shield-down');
+        remoteWizard.name = 'Lyra';
+        remoteWizard.position.set(8, 0, 0);
+        remoteWizard.targetServerPosition = null;
+        remoteWizard.targetServerRotation = undefined;
+        remoteWizard.rotation = new THREE.Quaternion();
+        remoteWizard.mesh = new THREE.Group();
+        remoteWizard.arcaneShieldActive = true;
+        remoteWizard.shieldHP = 90;
+        remoteWizard.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteWizard, {
+            id: 'remote-shield-down',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            arcaneShieldActive: false,
+            arcaneShieldHp: 0
+        });
+
+        expect(remoteWizard.shieldHP).toBe(0);
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('LYRA: SHIELD DOWN', remoteWizard.position, '#d7efff', '16px');
+    });
+
+    test('suppresses Arcane Shield activation readability when a recent explicit Arcane Shield cast label already fired', async () => {
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date('2026-04-19T12:00:00Z'));
+
+        const { Wizard } = await import('../src/entities/Wizard.js');
+        const engine = Object.create(GameEngine.prototype);
+        const remoteWizard = new Wizard('remote-shield-dedupe');
+        remoteWizard.name = 'Lyra';
+        remoteWizard.position.set(8, 0, 0);
+        remoteWizard.targetServerPosition = null;
+        remoteWizard.targetServerRotation = undefined;
+        remoteWizard.rotation = new THREE.Quaternion();
+        remoteWizard.mesh = new THREE.Group();
+        remoteWizard.arcaneShieldActive = false;
+        remoteWizard.shieldHP = 0;
+        remoteWizard.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map([
+            ['remote-action-remote-shield-dedupe-LYRA: ARCANE SHIELD', Date.now()]
+        ]);
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteWizard, {
+            id: 'remote-shield-dedupe',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            arcaneShieldActive: true,
+            arcaneShieldHp: 180
+        });
+
+        expect(engine.floatingTextManager.spawn).not.toHaveBeenCalled();
+
+        jest.useRealTimers();
+    });
+
     test('keeps all replicated remote support states in the shared support registry', () => {
         const source = fs.readFileSync(path.join(repoRoot, 'src/core/GameEngine.js'), 'utf8');
 

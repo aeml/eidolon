@@ -47,6 +47,14 @@ const REMOTE_SUPPORT_STATE_CONFIG = {
         inactiveColor: '#ffefb8',
         cooldownMs: 900,
     },
+    arcane_shield: {
+        activeLabel: 'SHIELD UP',
+        inactiveLabel: 'SHIELD DOWN',
+        explicitSkillLabel: 'Arcane Shield',
+        activeColor: '#8fd2ff',
+        inactiveColor: '#d7efff',
+        cooldownMs: 900,
+    },
 };
 import { Fighter } from '../entities/Fighter.js';
 import { Skeleton } from '../entities/Skeleton.js';
@@ -1948,6 +1956,8 @@ export class GameEngine {
         const previousRemoteGuardianEmbraceActive = Boolean(remoteEntity.guardianEmbraceActive);
         const previousRemoteBlessingResolveActive = Boolean(remoteEntity.blessingResolveActive);
         const previousRemoteDivineInterventionActive = Boolean(remoteEntity.divineInterventionActive);
+        const previousRemoteArcaneShieldActive = Boolean(remoteEntity.arcaneShieldActive);
+        const previousRemoteShieldHP = Number(remoteEntity.shieldHP || 0);
 
         // --- Position / Interpolation ---
         if (pData.type === 'Projectile') {
@@ -2064,6 +2074,17 @@ export class GameEngine {
             }
             if (pData.divineInterventionActive !== undefined && previousRemoteDivineInterventionActive !== Boolean(remoteEntity.divineInterventionActive)) {
                 this.showRemoteSupportStateReadability(remoteEntity, 'divine_intervention', Boolean(remoteEntity.divineInterventionActive));
+            }
+            if (pData.arcaneShieldActive !== undefined) {
+                remoteEntity.arcaneShieldActive = Boolean(pData.arcaneShieldActive);
+            }
+            if (pData.arcaneShieldHp !== undefined) {
+                remoteEntity.shieldHP = Number(pData.arcaneShieldHp || 0);
+            }
+            const nextRemoteArcaneShieldActive = Boolean(remoteEntity.arcaneShieldActive) && Number(remoteEntity.shieldHP || 0) > 0;
+            const previousEffectiveArcaneShieldActive = previousRemoteArcaneShieldActive && previousRemoteShieldHP > 0;
+            if ((pData.arcaneShieldActive !== undefined || pData.arcaneShieldHp !== undefined) && previousEffectiveArcaneShieldActive !== nextRemoteArcaneShieldActive) {
+                this.showRemoteSupportStateReadability(remoteEntity, 'arcane_shield', nextRemoteArcaneShieldActive);
             }
 
             // Rotation

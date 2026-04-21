@@ -49,7 +49,8 @@ describe('GameEngine active buff tracker', () => {
             slowFactor: 0.5,
             spiritsActive: true,
             spiritDuration: 7.9,
-            spiritBoosted: true
+            spiritBoosted: true,
+            arcaneShieldActive: true
         };
 
         engine.syncTrackedActorBuffs(actor);

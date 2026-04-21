@@ -113,6 +113,8 @@ type EntitySnapshot struct {
 	GuardianEmbraceActive bool
 	BlessingResolveActive bool
 	DivineInterventionActive bool
+	ArcaneShieldActive bool
+	ArcaneShieldHP int
 	JumpProgress float64
 	TalentPoints int
 	TalentKeys   int
@@ -3482,6 +3484,8 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		GuardianEmbraceActive: e.GuardianEmbraceActive,
 		BlessingResolveActive: e.BlessingResolveActive,
 		DivineInterventionActive: e.DivineInterventionActive,
+		ArcaneShieldActive: e.ArcaneShieldActive,
+		ArcaneShieldHP: e.ArcaneShieldHP,
 		JumpProgress: e.JumpProgress,
 		TalentPoints: derivedTalentPoints,
 		TalentKeys:   keys,
@@ -3510,6 +3514,8 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cguardianEmbraceActive := current.GuardianEmbraceActive
 	cblessingResolveActive := current.BlessingResolveActive
 	cdivineInterventionActive := current.DivineInterventionActive
+	carcaneShieldActive := current.ArcaneShieldActive
+	carcaneShieldHP := current.ArcaneShieldHP
 	ctalentPoints := current.TalentPoints
 	cjumpProgress := current.JumpProgress
 	ctalentKeys := 0
@@ -3580,6 +3586,9 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 		return true
 	}
 	if cdivineInterventionActive != last.DivineInterventionActive {
+		return true
+	}
+	if carcaneShieldActive != last.ArcaneShieldActive || carcaneShieldHP != last.ArcaneShieldHP {
 		return true
 	}
 
@@ -3902,6 +3911,8 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		GuardianEmbraceActive: e.GuardianEmbraceActive,
 		BlessingResolveActive: e.BlessingResolveActive,
 		DivineInterventionActive: e.DivineInterventionActive,
+		ArcaneShieldActive: e.ArcaneShieldActive,
+		ArcaneShieldHp: int32(e.ArcaneShieldHP),
 		Stunned:           e.Stunned,
 		Slowed:            e.Slowed,
 		Rooted:            e.Rooted,

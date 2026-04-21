@@ -2990,6 +2990,10 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 52, wireType 0 =*/416).bool(message.blessingResolveActive);
                 if (message.divineInterventionActive != null && Object.hasOwnProperty.call(message, "divineInterventionActive"))
                     writer.uint32(/* id 53, wireType 0 =*/424).bool(message.divineInterventionActive);
+                if (message.arcaneShieldActive != null && Object.hasOwnProperty.call(message, "arcaneShieldActive"))
+                    writer.uint32(/* id 54, wireType 0 =*/432).bool(message.arcaneShieldActive);
+                if (message.arcaneShieldHp != null && Object.hasOwnProperty.call(message, "arcaneShieldHp"))
+                    writer.uint32(/* id 55, wireType 0 =*/440).int32(message.arcaneShieldHp);
                 if (message.stunned != null && Object.hasOwnProperty.call(message, "stunned"))
                     writer.uint32(/* id 42, wireType 0 =*/336).bool(message.stunned);
                 if (message.slowed != null && Object.hasOwnProperty.call(message, "slowed"))
@@ -3244,6 +3248,14 @@ export const eidolon = $root.eidolon = (() => {
                         }
                     case 53: {
                             message.divineInterventionActive = reader.bool();
+                            break;
+                        }
+                    case 54: {
+                            message.arcaneShieldActive = reader.bool();
+                            break;
+                        }
+                    case 55: {
+                            message.arcaneShieldHp = reader.int32();
                             break;
                         }
                     case 42: {
@@ -3512,6 +3524,12 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.divineInterventionActive != null && message.hasOwnProperty("divineInterventionActive"))
                     if (typeof message.divineInterventionActive !== "boolean")
                         return "divineInterventionActive: boolean expected";
+                if (message.arcaneShieldActive != null && message.hasOwnProperty("arcaneShieldActive"))
+                    if (typeof message.arcaneShieldActive !== "boolean")
+                        return "arcaneShieldActive: boolean expected";
+                if (message.arcaneShieldHp != null && message.hasOwnProperty("arcaneShieldHp"))
+                    if (!$util.isInteger(message.arcaneShieldHp))
+                        return "arcaneShieldHp: integer expected";
                 if (message.stunned != null && message.hasOwnProperty("stunned"))
                     if (typeof message.stunned !== "boolean")
                         return "stunned: boolean expected";
@@ -3686,6 +3704,10 @@ export const eidolon = $root.eidolon = (() => {
                     message.blessingResolveActive = Boolean(object.blessingResolveActive);
                 if (object.divineInterventionActive != null)
                     message.divineInterventionActive = Boolean(object.divineInterventionActive);
+                if (object.arcaneShieldActive != null)
+                    message.arcaneShieldActive = Boolean(object.arcaneShieldActive);
+                if (object.arcaneShieldHp != null)
+                    message.arcaneShieldHp = object.arcaneShieldHp | 0;
                 if (object.stunned != null)
                     message.stunned = Boolean(object.stunned);
                 if (object.slowed != null)
@@ -3787,6 +3809,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.guardianEmbraceActive = false;
                     object.blessingResolveActive = false;
                     object.divineInterventionActive = false;
+                    object.arcaneShieldActive = false;
+                    object.arcaneShieldHp = 0;
                     object.stunned = false;
                     object.slowed = false;
                     object.rooted = false;
@@ -3892,6 +3916,10 @@ export const eidolon = $root.eidolon = (() => {
                     object.blessingResolveActive = message.blessingResolveActive;
                 if (message.divineInterventionActive != null && message.hasOwnProperty("divineInterventionActive"))
                     object.divineInterventionActive = message.divineInterventionActive;
+                if (message.arcaneShieldActive != null && message.hasOwnProperty("arcaneShieldActive"))
+                    object.arcaneShieldActive = message.arcaneShieldActive;
+                if (message.arcaneShieldHp != null && message.hasOwnProperty("arcaneShieldHp"))
+                    object.arcaneShieldHp = message.arcaneShieldHp;
                 if (message.stunned != null && message.hasOwnProperty("stunned"))
                     object.stunned = message.stunned;
                 if (message.slowed != null && message.hasOwnProperty("slowed"))

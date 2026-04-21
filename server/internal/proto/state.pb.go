@@ -669,6 +669,8 @@ type Entity struct {
 	GuardianEmbraceActive bool `protobuf:"varint,51,opt,name=guardian_embrace_active,json=guardianEmbraceActive,proto3" json:"guardian_embrace_active,omitempty"`
 	BlessingResolveActive bool `protobuf:"varint,52,opt,name=blessing_resolve_active,json=blessingResolveActive,proto3" json:"blessing_resolve_active,omitempty"`
 	DivineInterventionActive bool `protobuf:"varint,53,opt,name=divine_intervention_active,json=divineInterventionActive,proto3" json:"divine_intervention_active,omitempty"`
+	ArcaneShieldActive bool `protobuf:"varint,54,opt,name=arcane_shield_active,json=arcaneShieldActive,proto3" json:"arcane_shield_active,omitempty"`
+	ArcaneShieldHp int32 `protobuf:"varint,55,opt,name=arcane_shield_hp,json=arcaneShieldHp,proto3" json:"arcane_shield_hp,omitempty"`
 	// Common buff/debuff booleans used for visuals/behavior
 	Stunned  bool `protobuf:"varint,42,opt,name=stunned,proto3" json:"stunned,omitempty"`
 	Slowed   bool `protobuf:"varint,43,opt,name=slowed,proto3" json:"slowed,omitempty"`
@@ -1023,6 +1025,20 @@ func (x *Entity) GetDivineInterventionActive() bool {
 		return x.DivineInterventionActive
 	}
 	return false
+}
+
+func (x *Entity) GetArcaneShieldActive() bool {
+	if x != nil {
+		return x.ArcaneShieldActive
+	}
+	return false
+}
+
+func (x *Entity) GetArcaneShieldHp() int32 {
+	if x != nil {
+		return x.ArcaneShieldHp
+	}
+	return 0
 }
 
 func (x *Entity) GetStunned() bool {
