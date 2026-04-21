@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.29.2</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.29.3</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.29.3" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.3 (Spirit Guardians now reliably triggers compressed server state updates)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Guardian delta sync now participates in server change tracking:</strong> Spirit Guardians state now participates in the server delta snapshot change tracker, so guardian-only activation and expiry cannot get skipped by compressed state broadcasts.</li>
+                        <li><strong>The server support-state set is more internally consistent:</strong> This keeps the server delta path aligned with the newer support-effect replication set instead of leaving Spirit Guardians outside the consolidated comparison block.</li>
+                        <li><strong>Client readability now gets a steadier authoritative trigger:</strong> Nearby guardian state readability and the shared client-side support sync path now have a more reliable authoritative trigger to react to.</li>
+                        <li><strong>Regression coverage:</strong> Added server regression coverage for Spirit Guardians delta snapshot tracking and 0.29.3 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.29.2" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.2 (Spirit Guardians sync now uses the shared support effect helper)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

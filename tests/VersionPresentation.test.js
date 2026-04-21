@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.2 for the latest shipped spirit guardians sync consolidation slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.2');
+    test('advances the login screen to alpha 0.29.3 for the latest shipped guardian delta sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.3');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.2', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.3', () => {
+        expect(indexHtml).toContain('Patch 0.29.3');
+        expect(indexHtml).toContain('Spirit Guardians state now participates in the server delta snapshot change tracker, so guardian-only activation and expiry cannot get skipped by compressed state broadcasts');
+        expect(indexHtml).toContain('This keeps the server delta path aligned with the newer support-effect replication set instead of leaving Spirit Guardians outside the consolidated comparison block');
+        expect(indexHtml).toContain('Nearby guardian state readability and the shared client-side support sync path now have a more reliable authoritative trigger to react to');
+        expect(indexHtml).toContain('Added server regression coverage for Spirit Guardians delta snapshot tracking and 0.29.3 version presentation');
+    });
+
+    test('keeps the prior 0.29.2 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.2');
         expect(indexHtml).toContain('Spirit Guardians now also syncs through the shared support-effect helper instead of keeping a separate one-off apply and teardown path');
         expect(indexHtml).toContain('Server-driven guardian expiry now clears only guardian state instead of routing through broader cleric ability cancellation that could drop unrelated support effects');
@@ -290,6 +298,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.29.3');
         expect(indexHtml).toContain('Patch 0.29.2');
         expect(indexHtml).toContain('Patch 0.29.1');
         expect(indexHtml).toContain('Patch 0.29.0');
@@ -406,6 +415,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.29.3');
         expect(indexHtml).toContain('Patch 0.29.2');
         expect(indexHtml).toContain('Patch 0.29.1');
         expect(indexHtml).toContain('Patch 0.29.0');
@@ -477,6 +487,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.29.3"');
         expect(indexHtml).toContain('data-version="0.29.2"');
         expect(indexHtml).toContain('data-version="0.29.1"');
         expect(indexHtml).toContain('data-version="0.29.0"');

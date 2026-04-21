@@ -110,6 +110,7 @@ type EntitySnapshot struct {
 	State        string
 	Level        int
 	IsCharging   bool
+	SpiritsActive bool
 	GuardianEmbraceActive bool
 	BlessingResolveActive bool
 	DivineInterventionActive bool
@@ -3483,6 +3484,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		State:        e.State,
 		Level:        e.Level,
 		IsCharging:   e.IsCharging,
+		SpiritsActive: e.SpiritsActive,
 		GuardianEmbraceActive: e.GuardianEmbraceActive,
 		BlessingResolveActive: e.BlessingResolveActive,
 		DivineInterventionActive: e.DivineInterventionActive,
@@ -3515,6 +3517,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cstate := current.State
 	clevel := current.Level
 	cisCharging := current.IsCharging
+	cspiritsActive := current.SpiritsActive
 	cguardianEmbraceActive := current.GuardianEmbraceActive
 	cblessingResolveActive := current.BlessingResolveActive
 	cdivineInterventionActive := current.DivineInterventionActive
@@ -3583,6 +3586,9 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 
 	// Charging state changes are always significant
 	if cisCharging != last.IsCharging {
+		return true
+	}
+	if cspiritsActive != last.SpiritsActive {
 		return true
 	}
 	if cguardianEmbraceActive != last.GuardianEmbraceActive {
