@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.28.6</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.28.7</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.28.7" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.7 (Time Warp now reads as a real remote haste window)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Another wizard utility state now truly replicates:</strong> Time Warp now replicates through the hot-path multiplayer state snapshot so nearby clients can track that haste window in real time.</li>
+                        <li><strong>Remote haste reads clearly:</strong> Nearby remote wizards now surface <code>WARP UP</code> and <code>WARP DOWN</code> readability, and the replicated state now drives the existing haste buff path instead of leaving remote Time Warp implicit.</li>
+                        <li><strong>Wizard support rules stay consistent:</strong> Activation still de-dupes against the explicit Time Warp cast label, keeping the support-state presentation rules consistent across the wizard utility kit.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for Time Warp replication readability and 0.28.7 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.28.6" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.6 (Arcane Shield now reads as a real remote protective shield state)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

@@ -671,6 +671,7 @@ type Entity struct {
 	DivineInterventionActive bool `protobuf:"varint,53,opt,name=divine_intervention_active,json=divineInterventionActive,proto3" json:"divine_intervention_active,omitempty"`
 	ArcaneShieldActive bool `protobuf:"varint,54,opt,name=arcane_shield_active,json=arcaneShieldActive,proto3" json:"arcane_shield_active,omitempty"`
 	ArcaneShieldHp int32 `protobuf:"varint,55,opt,name=arcane_shield_hp,json=arcaneShieldHp,proto3" json:"arcane_shield_hp,omitempty"`
+	TimeWarpActive bool `protobuf:"varint,56,opt,name=time_warp_active,json=timeWarpActive,proto3" json:"time_warp_active,omitempty"`
 	// Common buff/debuff booleans used for visuals/behavior
 	Stunned  bool `protobuf:"varint,42,opt,name=stunned,proto3" json:"stunned,omitempty"`
 	Slowed   bool `protobuf:"varint,43,opt,name=slowed,proto3" json:"slowed,omitempty"`
@@ -1039,6 +1040,13 @@ func (x *Entity) GetArcaneShieldHp() int32 {
 		return x.ArcaneShieldHp
 	}
 	return 0
+}
+
+func (x *Entity) GetTimeWarpActive() bool {
+	if x != nil {
+		return x.TimeWarpActive
+	}
+	return false
 }
 
 func (x *Entity) GetStunned() bool {

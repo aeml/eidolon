@@ -1671,6 +1671,164 @@ describe('GameEngine encounter callouts', () => {
         jest.useRealTimers();
     });
 
+    test('shows a nearby remote support-state activation label when Time Warp comes online', async () => {
+        const { Wizard } = await import('../src/entities/Wizard.js');
+        const engine = Object.create(GameEngine.prototype);
+        const remoteWizard = new Wizard('remote-warp-up');
+        remoteWizard.name = 'Lyra';
+        remoteWizard.position.set(8, 0, 0);
+        remoteWizard.targetServerPosition = null;
+        remoteWizard.targetServerRotation = undefined;
+        remoteWizard.rotation = new THREE.Quaternion();
+        remoteWizard.mesh = new THREE.Group();
+        remoteWizard.hasteTimer = 0;
+        remoteWizard.hasteFactor = 0;
+        remoteWizard.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteWizard, {
+            id: 'remote-warp-up',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            timeWarpActive: true
+        });
+
+        expect(remoteWizard.hasteTimer).toBe(8.0);
+        expect(remoteWizard.hasteFactor).toBe(0.5);
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('LYRA: WARP UP', remoteWizard.position, '#ffe07a', '16px');
+    });
+
+    test('shows a nearby remote support-state expiry label when Time Warp falls off', async () => {
+        const { Wizard } = await import('../src/entities/Wizard.js');
+        const engine = Object.create(GameEngine.prototype);
+        const remoteWizard = new Wizard('remote-warp-down');
+        remoteWizard.name = 'Lyra';
+        remoteWizard.position.set(8, 0, 0);
+        remoteWizard.targetServerPosition = null;
+        remoteWizard.targetServerRotation = undefined;
+        remoteWizard.rotation = new THREE.Quaternion();
+        remoteWizard.mesh = new THREE.Group();
+        remoteWizard.hasteTimer = 4;
+        remoteWizard.hasteFactor = 0.5;
+        remoteWizard.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map();
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteWizard, {
+            id: 'remote-warp-down',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            timeWarpActive: false
+        });
+
+        expect(remoteWizard.hasteTimer).toBe(0);
+        expect(remoteWizard.hasteFactor).toBe(0);
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('LYRA: WARP DOWN', remoteWizard.position, '#fff2bf', '16px');
+    });
+
+    test('suppresses Time Warp activation readability when a recent explicit Time Warp cast label already fired', async () => {
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date('2026-04-19T12:00:00Z'));
+
+        const { Wizard } = await import('../src/entities/Wizard.js');
+        const engine = Object.create(GameEngine.prototype);
+        const remoteWizard = new Wizard('remote-warp-dedupe');
+        remoteWizard.name = 'Lyra';
+        remoteWizard.position.set(8, 0, 0);
+        remoteWizard.targetServerPosition = null;
+        remoteWizard.targetServerRotation = undefined;
+        remoteWizard.rotation = new THREE.Quaternion();
+        remoteWizard.mesh = new THREE.Group();
+        remoteWizard.hasteTimer = 0;
+        remoteWizard.hasteFactor = 0;
+        remoteWizard.updateState = jest.fn(function updateState(nextState) {
+            this.state = nextState;
+        });
+
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.floatingTextManager = { spawn: jest.fn() };
+        engine.readabilityFeedbackTimestamps = new Map([
+            ['remote-action-remote-warp-dedupe-LYRA: TIME WARP', Date.now()]
+        ]);
+        engine.chunkManager = { updateEntityChunk: jest.fn() };
+        engine.syncAuthoritativeJumpState = jest.fn();
+        engine.clearAuthoritativeJumpState = jest.fn();
+        engine.isPlayerClassEntity = GameEngine.prototype.isPlayerClassEntity;
+        engine.isPositionNearPlayer = GameEngine.prototype.isPositionNearPlayer;
+        engine.canShowThrottledReadabilityEvent = GameEngine.prototype.canShowThrottledReadabilityEvent;
+        engine.formatRemoteActionLabel = GameEngine.prototype.formatRemoteActionLabel;
+        engine.getRemoteActionSourceLabel = GameEngine.prototype.getRemoteActionSourceLabel;
+        engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
+        engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
+        engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
+
+        engine.syncRemoteEntity(remoteWizard, {
+            id: 'remote-warp-dedupe',
+            type: 'Player',
+            state: 'IDLE',
+            x: 8,
+            y: 0,
+            z: 0,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10,
+            timeWarpActive: true
+        });
+
+        expect(engine.floatingTextManager.spawn).not.toHaveBeenCalled();
+
+        jest.useRealTimers();
+    });
+
     test('keeps all replicated remote support states in the shared support registry', () => {
         const source = fs.readFileSync(path.join(repoRoot, 'src/core/GameEngine.js'), 'utf8');
 

@@ -55,6 +55,14 @@ const REMOTE_SUPPORT_STATE_CONFIG = {
         inactiveColor: '#d7efff',
         cooldownMs: 900,
     },
+    time_warp: {
+        activeLabel: 'WARP UP',
+        inactiveLabel: 'WARP DOWN',
+        explicitSkillLabel: 'Time Warp',
+        activeColor: '#ffe07a',
+        inactiveColor: '#fff2bf',
+        cooldownMs: 900,
+    },
 };
 import { Fighter } from '../entities/Fighter.js';
 import { Skeleton } from '../entities/Skeleton.js';
@@ -1958,6 +1966,7 @@ export class GameEngine {
         const previousRemoteDivineInterventionActive = Boolean(remoteEntity.divineInterventionActive);
         const previousRemoteArcaneShieldActive = Boolean(remoteEntity.arcaneShieldActive);
         const previousRemoteShieldHP = Number(remoteEntity.shieldHP || 0);
+        const previousRemoteTimeWarpActive = Number(remoteEntity.hasteTimer || 0) > 0;
 
         // --- Position / Interpolation ---
         if (pData.type === 'Projectile') {
@@ -2085,6 +2094,18 @@ export class GameEngine {
             const previousEffectiveArcaneShieldActive = previousRemoteArcaneShieldActive && previousRemoteShieldHP > 0;
             if ((pData.arcaneShieldActive !== undefined || pData.arcaneShieldHp !== undefined) && previousEffectiveArcaneShieldActive !== nextRemoteArcaneShieldActive) {
                 this.showRemoteSupportStateReadability(remoteEntity, 'arcane_shield', nextRemoteArcaneShieldActive);
+            }
+            if (pData.timeWarpActive !== undefined) {
+                if (Boolean(pData.timeWarpActive)) {
+                    remoteEntity.hasteTimer = Math.max(Number(remoteEntity.hasteTimer || 0), 8.0);
+                    remoteEntity.hasteFactor = Math.max(Number(remoteEntity.hasteFactor || 0), 0.5);
+                } else {
+                    remoteEntity.hasteTimer = 0;
+                    remoteEntity.hasteFactor = 0;
+                }
+            }
+            if (pData.timeWarpActive !== undefined && previousRemoteTimeWarpActive !== (Number(remoteEntity.hasteTimer || 0) > 0)) {
+                this.showRemoteSupportStateReadability(remoteEntity, 'time_warp', Number(remoteEntity.hasteTimer || 0) > 0);
             }
 
             // Rotation
