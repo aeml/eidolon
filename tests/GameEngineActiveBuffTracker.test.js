@@ -247,4 +247,33 @@ describe('GameEngine active buff tracker', () => {
         expect(engine.player.arcaneShieldActive).toBe(false);
         expect(engine.player.shieldHP).toBe(0);
     });
+
+    test('shared support sync clears spirit guardians without dropping unrelated cleric buffs', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;
+        engine.syncPlayerSupportEffects = GameEngine.prototype.syncPlayerSupportEffects;
+        engine.showRemoteSupportStateReadability = jest.fn();
+
+        const player = {
+            spiritsActive: true,
+            spiritDuration: 8,
+            guardianEmbraceActive: true,
+            guardianEmbraceTimer: 6,
+            seraphActive: true,
+            clearSpiritMeshes: jest.fn(function clearSpiritMeshes() {
+                this.spirits = [];
+            })
+        };
+
+        engine.syncPlayerSupportEffects(player, {
+            spiritsActive: false
+        });
+
+        expect(player.spiritsActive).toBe(false);
+        expect(player.spiritDuration).toBe(0);
+        expect(player.clearSpiritMeshes).toHaveBeenCalled();
+        expect(player.guardianEmbraceActive).toBe(true);
+        expect(player.guardianEmbraceTimer).toBe(6);
+        expect(player.seraphActive).toBe(true);
+    });
 });

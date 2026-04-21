@@ -918,7 +918,7 @@ describe('GameEngine encounter callouts', () => {
         remoteCleric.rotation = new THREE.Quaternion();
         remoteCleric.mesh = new THREE.Group();
         remoteCleric.spiritsActive = true;
-        remoteCleric.cancelAbilities = jest.fn(function cancelAbilities() {
+        remoteCleric.clearSpiritMeshes = jest.fn(function clearSpiritMeshes() {
             this.spiritsActive = false;
         });
         remoteCleric.updateState = jest.fn(function updateState(nextState) {
@@ -939,6 +939,7 @@ describe('GameEngine encounter callouts', () => {
         engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
         engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
         engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;
         engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
 
         engine.syncRemoteEntity(remoteCleric, {
@@ -955,7 +956,7 @@ describe('GameEngine encounter callouts', () => {
             spiritsActive: false
         });
 
-        expect(remoteCleric.cancelAbilities).toHaveBeenCalled();
+        expect(remoteCleric.clearSpiritMeshes).toHaveBeenCalled();
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: GUARDIANS DOWN', remoteCleric.position, '#d8ffd2', '16px');
     });
 
@@ -969,7 +970,7 @@ describe('GameEngine encounter callouts', () => {
         remoteCleric.rotation = new THREE.Quaternion();
         remoteCleric.mesh = new THREE.Group();
         remoteCleric.spiritsActive = false;
-        remoteCleric.useAbility = jest.fn(function useAbility() {
+        remoteCleric.createSpirits = jest.fn(function createSpirits() {
             this.spiritsActive = true;
         });
         remoteCleric.updateState = jest.fn(function updateState(nextState) {
@@ -990,6 +991,7 @@ describe('GameEngine encounter callouts', () => {
         engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
         engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
         engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;
         engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
 
         engine.syncRemoteEntity(remoteCleric, {
@@ -1006,7 +1008,7 @@ describe('GameEngine encounter callouts', () => {
             spiritsActive: true
         });
 
-        expect(remoteCleric.useAbility).toHaveBeenCalled();
+        expect(remoteCleric.createSpirits).toHaveBeenCalled();
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('AYLA: GUARDIANS UP', remoteCleric.position, '#9dffb0', '16px');
     });
 
@@ -1023,7 +1025,7 @@ describe('GameEngine encounter callouts', () => {
         remoteCleric.rotation = new THREE.Quaternion();
         remoteCleric.mesh = new THREE.Group();
         remoteCleric.spiritsActive = false;
-        remoteCleric.useAbility = jest.fn(function useAbility() {
+        remoteCleric.createSpirits = jest.fn(function createSpirits() {
             this.spiritsActive = true;
         });
         remoteCleric.updateState = jest.fn(function updateState(nextState) {
@@ -1046,6 +1048,7 @@ describe('GameEngine encounter callouts', () => {
         engine.buildRemoteActionReadabilityText = GameEngine.prototype.buildRemoteActionReadabilityText;
         engine.showRemoteStateReadability = GameEngine.prototype.showRemoteStateReadability;
         engine.showRemoteSupportStateReadability = GameEngine.prototype.showRemoteSupportStateReadability;
+        engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;
         engine.syncRemoteEntity = GameEngine.prototype.syncRemoteEntity;
 
         engine.syncRemoteEntity(remoteCleric, {
@@ -1062,7 +1065,7 @@ describe('GameEngine encounter callouts', () => {
             spiritsActive: true
         });
 
-        expect(remoteCleric.useAbility).toHaveBeenCalled();
+        expect(remoteCleric.createSpirits).toHaveBeenCalled();
         expect(engine.floatingTextManager.spawn).not.toHaveBeenCalled();
 
         jest.useRealTimers();
@@ -2019,5 +2022,13 @@ describe('GameEngine encounter callouts', () => {
 
         expect(source).toContain('syncPlayerSupportEffects(playerEntity, payload)');
         expect(source).toContain('this.syncPlayerSupportEffects(this.player, pData);');
+    });
+
+    test('routes spirit guardians through the shared support effect sync helper', () => {
+        const source = fs.readFileSync(path.join(repoRoot, 'src/core/GameEngine.js'), 'utf8');
+
+        expect(source).toContain("spirit_guardians: {");
+        expect(source).toContain("payloadKey: 'spiritsActive'");
+        expect(source).toContain('this.syncRemoteSupportEffects(remoteEntity, pData);');
     });
 });

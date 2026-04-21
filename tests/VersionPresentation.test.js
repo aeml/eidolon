@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.1 for the latest shipped local authoritative effect sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.1');
+    test('advances the login screen to alpha 0.29.2 for the latest shipped spirit guardians sync consolidation slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.2');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.1', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.2', () => {
+        expect(indexHtml).toContain('Patch 0.29.2');
+        expect(indexHtml).toContain('Spirit Guardians now also syncs through the shared support-effect helper instead of keeping a separate one-off apply and teardown path');
+        expect(indexHtml).toContain('Server-driven guardian expiry now clears only guardian state instead of routing through broader cleric ability cancellation that could drop unrelated support effects');
+        expect(indexHtml).toContain('This closes the last major support-effect holdout from the 0.29 sync consolidation line while keeping nearby guardians readability unchanged');
+        expect(indexHtml).toContain('Added regression coverage for guardian-only synced teardown and 0.29.2 version presentation');
+    });
+
+    test('keeps the prior 0.29.1 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.1');
         expect(indexHtml).toContain('The new shared effect sync path now also applies to the local authoritative player state, so server-driven buff expiry and consumption stop depending on one-off manual sync logic');
         expect(indexHtml).toContain('Time Warp, Spell Focus, Arcane Shield, and the newer support flags now clear or apply through the same helper whether the affected actor is local or remote');
@@ -282,6 +290,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.29.2');
         expect(indexHtml).toContain('Patch 0.29.1');
         expect(indexHtml).toContain('Patch 0.29.0');
         expect(indexHtml).toContain('Patch 0.28.8');
@@ -397,6 +406,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.29.2');
         expect(indexHtml).toContain('Patch 0.29.1');
         expect(indexHtml).toContain('Patch 0.29.0');
         expect(indexHtml).toContain('Patch 0.28.8');
@@ -467,6 +477,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.29.2"');
         expect(indexHtml).toContain('data-version="0.29.1"');
         expect(indexHtml).toContain('data-version="0.29.0"');
         expect(indexHtml).toContain('data-version="0.28.8"');

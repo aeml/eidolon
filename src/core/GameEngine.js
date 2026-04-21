@@ -74,6 +74,28 @@ const REMOTE_SUPPORT_STATE_CONFIG = {
 };
 
 const REMOTE_EFFECT_SYNC_CONFIG = {
+    spirit_guardians: {
+        payloadKey: 'spiritsActive',
+        getPreviousActive: (entity) => Boolean(entity.spiritsActive),
+        applyPayload: (entity, value) => {
+            const nextActive = Boolean(value);
+            if (nextActive === Boolean(entity.spiritsActive)) return;
+
+            entity.spiritsActive = nextActive;
+            if (nextActive) {
+                entity.spiritDuration = Math.max(Number(entity.spiritDuration || 0), 8.0);
+                if (typeof entity.createSpirits === 'function') {
+                    entity.createSpirits();
+                }
+            } else {
+                entity.spiritDuration = 0;
+                if (typeof entity.clearSpiritMeshes === 'function') {
+                    entity.clearSpiritMeshes();
+                }
+            }
+        },
+        getNextActive: (entity) => Boolean(entity.spiritsActive),
+    },
     guardian_embrace: {
         payloadKey: 'guardianEmbraceActive',
         getPreviousActive: (entity) => Boolean(entity.guardianEmbraceActive),
@@ -1691,17 +1713,6 @@ export class GameEngine {
                             }
                         }
 
-                        // Sync Spirits (Cleric)
-                        if (this.player instanceof Cleric) {
-                            if (pData.spiritsActive !== undefined) {
-                                if (pData.spiritsActive && !this.player.spiritsActive) {
-                                    this.player.spiritsActive = true;
-                                    this.player.createSpirits();
-                                } else if (!pData.spiritsActive && this.player.spiritsActive) {
-                                    this.player.cancelAbilities();
-                                }
-                            }
-                        }
                         this.syncPlayerSupportEffects(this.player, pData);
 
                         // Optimization: Only update UI if values changed
@@ -2058,8 +2069,6 @@ export class GameEngine {
     syncRemoteEntity(remoteEntity, pData) {
         const previousRemotePosition = remoteEntity.position?.clone?.() || new THREE.Vector3();
         const previousRemoteState = remoteEntity.state || '';
-        const previousRemoteSpiritsActive = Boolean(remoteEntity.spiritsActive);
-
         // --- Position / Interpolation ---
         if (pData.type === 'Projectile') {
             remoteEntity.position.set(pData.x, pData.y ?? 0, pData.z);
@@ -2099,19 +2108,6 @@ export class GameEngine {
         // Scale
         if (pData.scale !== undefined && remoteEntity.scale !== pData.scale) {
             remoteEntity.setScale(pData.scale);
-        }
-
-        // Spirits (Cleric)
-        if (pData.spiritsActive !== undefined) {
-            if (pData.spiritsActive && !remoteEntity.spiritsActive) {
-                if (remoteEntity instanceof Cleric) {
-                    remoteEntity.useAbility(null, this);
-                }
-            } else if (!pData.spiritsActive && remoteEntity.spiritsActive) {
-                if (remoteEntity instanceof Cleric) {
-                    remoteEntity.cancelAbilities();
-                }
-            }
         }
 
         // --- Death handling ---
@@ -2155,9 +2151,6 @@ export class GameEngine {
                 remoteEntity.updateState(pData.state);
             }
             this.showRemoteStateReadability(remoteEntity, pData.state, previousRemoteState);
-            if (pData.spiritsActive !== undefined && previousRemoteSpiritsActive !== Boolean(remoteEntity.spiritsActive)) {
-                this.showRemoteSupportStateReadability(remoteEntity, 'spirit_guardians', Boolean(remoteEntity.spiritsActive));
-            }
             this.syncRemoteSupportEffects(remoteEntity, pData);
 
             // Rotation
