@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.29.5`
+- Current in-game displayed version: `Alpha 0.29.6`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.29.5`
+### Shipped through `0.29.6`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -85,6 +85,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.29.3`: Spirit Guardians now also participates in the server delta snapshot change tracker, making guardian-only activation and expiry reliable in compressed authoritative state broadcasts
 - `0.29.4`: boosted Spirit Guardians now also participates in both server delta tracking and the client-side shared support sync helper, keeping the boosted guardian variant authoritative after compressed updates
 - `0.29.5`: local authoritative self sync now also applies server-sent HP and mana regeneration values, keeping passive sustain behavior aligned with authoritative derived stats after full and delta updates
+- `0.29.6`: local authoritative self sync now also applies server-sent base attributes, keeping the character sheet's base-versus-bonus stat breakdown aligned with authoritative server changes
 
 ### What `0.22` has clearly accomplished already
 

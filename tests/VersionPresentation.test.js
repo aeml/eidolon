@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.5 for the latest shipped local regen sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.5');
+    test('advances the login screen to alpha 0.29.6 for the latest shipped local base stat sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.6');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.5', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.6', () => {
+        expect(indexHtml).toContain('Patch 0.29.6');
+        expect(indexHtml).toContain('Local authoritative self sync now also applies server-sent base attributes so character-sheet base-versus-bonus breakdowns stay truthful after full and delta updates');
+        expect(indexHtml).toContain('This keeps authoritative stat migration, level overrides, and other server-side base-stat changes from leaving the local UI with stale underlying attribute baselines');
+        expect(indexHtml).toContain('The 0.29 cleanup line continues by closing another local-only stat truth gap while reusing the existing self-sync structure');
+        expect(indexHtml).toContain('Added regression coverage for local authoritative base stat sync and 0.29.6 version presentation');
+    });
+
+    test('keeps the prior 0.29.5 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.5');
         expect(indexHtml).toContain('Local authoritative self sync now applies server-sent HP and mana regeneration values instead of leaving those derived stats stale between full recalculations');
         expect(indexHtml).toContain('This keeps passive sustain behavior aligned with authoritative server stats after delta and full-state updates, especially when gear, talents, or effects change regeneration mid-session');
@@ -314,6 +322,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.29.6');
         expect(indexHtml).toContain('Patch 0.29.5');
         expect(indexHtml).toContain('Patch 0.29.4');
         expect(indexHtml).toContain('Patch 0.29.3');
@@ -433,6 +442,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.29.6');
         expect(indexHtml).toContain('Patch 0.29.5');
         expect(indexHtml).toContain('Patch 0.29.4');
         expect(indexHtml).toContain('Patch 0.29.3');
@@ -507,6 +517,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.29.6"');
         expect(indexHtml).toContain('data-version="0.29.5"');
         expect(indexHtml).toContain('data-version="0.29.4"');
         expect(indexHtml).toContain('data-version="0.29.3"');

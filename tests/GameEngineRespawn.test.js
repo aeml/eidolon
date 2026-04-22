@@ -29,6 +29,13 @@ function createEngineHarness() {
         gold: 0,
         targetPosition: new THREE.Vector3(5, 0, 5),
         position: new THREE.Vector3(50, 0, 50),
+        baseStats: {
+            strength: 10,
+            dexterity: 10,
+            intelligence: 10,
+            wisdom: 10,
+            vitality: 10
+        },
         stats: {
             hp: 0,
             maxHp: 100,
@@ -302,6 +309,40 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.stats.manaRegen).toBe(9);
     });
 
+    test('delta self sync applies authoritative base stats for character sheet truth', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        health: 80,
+                        maxHealth: 100,
+                        mana: 40,
+                        maxMana: 100,
+                        baseStats: {
+                            strength: 14,
+                            dexterity: 11,
+                            intelligence: 12,
+                            wisdom: 13,
+                            vitality: 15
+                        }
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.baseStats.strength).toBe(14);
+        expect(engine.player.baseStats.dexterity).toBe(11);
+        expect(engine.player.baseStats.intelligence).toBe(12);
+        expect(engine.player.baseStats.wisdom).toBe(13);
+        expect(engine.player.baseStats.vitality).toBe(15);
+    });
+
     test('full state DEAD->alive also forces town respawn', () => {
         const engine = createEngineHarness();
 
@@ -315,6 +356,13 @@ describe('GameEngine multiplayer respawn sync', () => {
                     maxHealth: 100,
                     mana: 100,
                     maxMana: 100,
+                    baseStats: {
+                        strength: 16,
+                        dexterity: 12,
+                        intelligence: 14,
+                        wisdom: 15,
+                        vitality: 18
+                    },
                     experience: 0,
                     maxExperience: 100,
                     level: 1,
@@ -333,6 +381,11 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.respawn).toHaveBeenCalledWith(-1.25, 200);
         expect(engine.chunkManager.updateEntityChunk).toHaveBeenCalledWith(engine.player);
         expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.player.position);
+        expect(engine.player.baseStats.strength).toBe(16);
+        expect(engine.player.baseStats.dexterity).toBe(12);
+        expect(engine.player.baseStats.intelligence).toBe(14);
+        expect(engine.player.baseStats.wisdom).toBe(15);
+        expect(engine.player.baseStats.vitality).toBe(18);
         expect(engine.player.stats.hpRegen).toBe(11);
         expect(engine.player.stats.manaRegen).toBe(7);
     });

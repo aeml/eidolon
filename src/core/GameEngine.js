@@ -1629,6 +1629,13 @@ export class GameEngine {
                                 this.player.stats.wisdom = pData.stats.wisdom;
                                 this.player.stats.vitality = pData.stats.vitality;
                             }
+                            if (pData.baseStats) {
+                                this.player.baseStats.strength = pData.baseStats.strength;
+                                this.player.baseStats.dexterity = pData.baseStats.dexterity;
+                                this.player.baseStats.intelligence = pData.baseStats.intelligence;
+                                this.player.baseStats.wisdom = pData.baseStats.wisdom;
+                                this.player.baseStats.vitality = pData.baseStats.vitality;
+                            }
 
                             // Sync Derived Stats
                             if (pData.damage !== undefined) this.player.stats.damage = pData.damage;
@@ -1857,6 +1864,13 @@ export class GameEngine {
                             this.player.stats.intelligence = pData.stats.intelligence;
                             this.player.stats.wisdom = pData.stats.wisdom;
                             this.player.stats.vitality = pData.stats.vitality;
+                        }
+                        if (pData.baseStats) {
+                            this.player.baseStats.strength = pData.baseStats.strength;
+                            this.player.baseStats.dexterity = pData.baseStats.dexterity;
+                            this.player.baseStats.intelligence = pData.baseStats.intelligence;
+                            this.player.baseStats.wisdom = pData.baseStats.wisdom;
+                            this.player.baseStats.vitality = pData.baseStats.vitality;
                         }
                         
                         // Sync Derived Stats
