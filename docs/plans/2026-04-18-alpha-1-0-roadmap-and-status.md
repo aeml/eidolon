@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.29.3`
+- Current in-game displayed version: `Alpha 0.29.4`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.29.3`
+### Shipped through `0.29.4`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -83,6 +83,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.29.1`: the local authoritative player buff path now reuses the same shared effect sync helper, reducing local-vs-remote drift in server-driven buff expiry and consumption handling
 - `0.29.2`: Spirit Guardians now also syncs through the shared support-effect helper, narrowing synced guardian teardown so it no longer routes through broader cleric ability cancellation
 - `0.29.3`: Spirit Guardians now also participates in the server delta snapshot change tracker, making guardian-only activation and expiry reliable in compressed authoritative state broadcasts
+- `0.29.4`: boosted Spirit Guardians now also participates in both server delta tracking and the client-side shared support sync helper, keeping the boosted guardian variant authoritative after compressed updates
 
 ### What `0.22` has clearly accomplished already
 

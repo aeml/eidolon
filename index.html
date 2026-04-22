@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.29.3</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.29.4</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.29.4" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.4 (Boosted Spirit Guardians now stays authoritative across compressed sync)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Boosted guardians now stay on the authoritative path:</strong> Boosted Spirit Guardians now syncs through both the server delta snapshot tracker and the client-side shared support helper instead of dropping that boosted state on compressed updates.</li>
+                        <li><strong>Guardian boost metadata now matches the rest of the support sync line:</strong> This keeps guardian boost metadata aligned with the rest of the authoritative support-state replication path, so boosted guardians stay visible and mechanically correct after the initial cast snapshot.</li>
+                        <li><strong>Buff tracking stays truthful:</strong> The active buff tracker can now keep showing boosted guardians from authoritative state instead of silently falling back to the normal guardian variant.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for boosted guardian delta tracking, boosted guardian client sync, and 0.29.4 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.29.3" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.3 (Spirit Guardians now reliably triggers compressed server state updates)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

@@ -76,22 +76,29 @@ const REMOTE_SUPPORT_STATE_CONFIG = {
 const REMOTE_EFFECT_SYNC_CONFIG = {
     spirit_guardians: {
         payloadKey: 'spiritsActive',
+        payloadKeys: ['spiritsActive', 'spiritsBoosted'],
         getPreviousActive: (entity) => Boolean(entity.spiritsActive),
-        applyPayload: (entity, value) => {
-            const nextActive = Boolean(value);
-            if (nextActive === Boolean(entity.spiritsActive)) return;
+        applyPayload: (entity, value, payload) => {
+            const wasActive = Boolean(entity.spiritsActive);
+            const nextActive = value !== undefined ? Boolean(value) : wasActive;
+            const nextBoosted = nextActive && Boolean(payload.spiritsBoosted ?? entity.spiritBoosted);
 
-            entity.spiritsActive = nextActive;
-            if (nextActive) {
-                entity.spiritDuration = Math.max(Number(entity.spiritDuration || 0), 8.0);
-                if (typeof entity.createSpirits === 'function') {
-                    entity.createSpirits();
-                }
-            } else {
+            if (!nextActive) {
+                entity.spiritsActive = false;
+                entity.spiritBoosted = false;
                 entity.spiritDuration = 0;
                 if (typeof entity.clearSpiritMeshes === 'function') {
                     entity.clearSpiritMeshes();
                 }
+                return;
+            }
+
+            entity.spiritsActive = true;
+            entity.spiritBoosted = nextBoosted;
+            entity.spiritDuration = Math.max(Number(entity.spiritDuration || 0), nextBoosted ? 10.0 : 8.0);
+
+            if (!wasActive && typeof entity.createSpirits === 'function') {
+                entity.createSpirits();
             }
         },
         getNextActive: (entity) => Boolean(entity.spiritsActive),

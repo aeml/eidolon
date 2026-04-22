@@ -276,4 +276,28 @@ describe('GameEngine active buff tracker', () => {
         expect(player.guardianEmbraceTimer).toBe(6);
         expect(player.seraphActive).toBe(true);
     });
+
+    test('shared support sync applies boosted spirit guardians metadata from authoritative payloads', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;
+        engine.syncPlayerSupportEffects = GameEngine.prototype.syncPlayerSupportEffects;
+        engine.showRemoteSupportStateReadability = jest.fn();
+
+        const player = {
+            spiritsActive: false,
+            spiritBoosted: false,
+            spiritDuration: 0,
+            createSpirits: jest.fn()
+        };
+
+        engine.syncPlayerSupportEffects(player, {
+            spiritsActive: true,
+            spiritsBoosted: true
+        });
+
+        expect(player.spiritsActive).toBe(true);
+        expect(player.spiritBoosted).toBe(true);
+        expect(player.spiritDuration).toBe(10);
+        expect(player.createSpirits).toHaveBeenCalled();
+    });
 });
