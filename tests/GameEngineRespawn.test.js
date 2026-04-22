@@ -40,7 +40,9 @@ function createEngineHarness() {
             wisdom: 10,
             vitality: 10,
             damage: 20,
-            defense: 10
+            defense: 10,
+            hpRegen: 5,
+            manaRegen: 5
         },
         inventory: [],
         equipment: {},
@@ -272,6 +274,34 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.playerCorrectionVisualState.displayPosition.x).toBe(0);
     });
 
+    test('delta self sync applies authoritative regeneration stats', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.stats.hp = 80;
+        engine.player.stats.mana = 40;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        health: 80,
+                        maxHealth: 100,
+                        mana: 40,
+                        maxMana: 100,
+                        hpRegen: 12,
+                        manaRegen: 9
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.stats.hpRegen).toBe(12);
+        expect(engine.player.stats.manaRegen).toBe(9);
+    });
+
     test('full state DEAD->alive also forces town respawn', () => {
         const engine = createEngineHarness();
 
@@ -290,6 +320,8 @@ describe('GameEngine multiplayer respawn sync', () => {
                     level: 1,
                     damage: 20,
                     defense: 10,
+                    hpRegen: 11,
+                    manaRegen: 7,
                     skillPoints: 0,
                     selectedBranch: null,
                     unlockedSkills: [],
@@ -301,5 +333,7 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.respawn).toHaveBeenCalledWith(-1.25, 200);
         expect(engine.chunkManager.updateEntityChunk).toHaveBeenCalledWith(engine.player);
         expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.player.position);
+        expect(engine.player.stats.hpRegen).toBe(11);
+        expect(engine.player.stats.manaRegen).toBe(7);
     });
 });

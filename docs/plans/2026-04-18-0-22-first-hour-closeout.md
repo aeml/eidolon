@@ -133,6 +133,6 @@ Release review decision:
 Implementation status:
 
 - `0.22` is now closed for planned implementation work
-- active feature development has moved to `0.29.4`
+- active feature development has moved to `0.29.5`
 
 If the live QA pass reveals a real onboarding dead spot, ship one last small `0.22.x` cleanup patch and then close it.
