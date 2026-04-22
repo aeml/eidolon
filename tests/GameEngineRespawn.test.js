@@ -49,7 +49,8 @@ function createEngineHarness() {
             damage: 20,
             defense: 10,
             hpRegen: 5,
-            manaRegen: 5
+            manaRegen: 5,
+            castSpeed: 1.02
         },
         inventory: [],
         equipment: {},
@@ -343,6 +344,30 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.baseStats.vitality).toBe(15);
     });
 
+    test('delta self sync applies authoritative cast speed', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        health: 80,
+                        maxHealth: 100,
+                        mana: 40,
+                        maxMana: 100,
+                        castSpeed: 1.37
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.stats.castSpeed).toBe(1.37);
+    });
+
     test('full state DEAD->alive also forces town respawn', () => {
         const engine = createEngineHarness();
 
@@ -370,6 +395,7 @@ describe('GameEngine multiplayer respawn sync', () => {
                     defense: 10,
                     hpRegen: 11,
                     manaRegen: 7,
+                    castSpeed: 1.25,
                     skillPoints: 0,
                     selectedBranch: null,
                     unlockedSkills: [],
@@ -388,5 +414,6 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.baseStats.vitality).toBe(18);
         expect(engine.player.stats.hpRegen).toBe(11);
         expect(engine.player.stats.manaRegen).toBe(7);
+        expect(engine.player.stats.castSpeed).toBe(1.25);
     });
 });

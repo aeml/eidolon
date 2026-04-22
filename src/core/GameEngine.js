@@ -1645,6 +1645,7 @@ export class GameEngine {
                             if (pData.cooldownReduction !== undefined) this.player.stats.cooldownReduction = pData.cooldownReduction;
                             if (pData.hpRegen !== undefined) this.player.stats.hpRegen = pData.hpRegen;
                             if (pData.manaRegen !== undefined) this.player.stats.manaRegen = pData.manaRegen;
+                            if (pData.castSpeed !== undefined) this.player.stats.castSpeed = pData.castSpeed;
                         }
 
                         // Sync Skills
@@ -1881,6 +1882,7 @@ export class GameEngine {
                         if (pData.cooldownReduction !== undefined) this.player.stats.cooldownReduction = pData.cooldownReduction;
                         if (pData.hpRegen !== undefined) this.player.stats.hpRegen = pData.hpRegen;
                         if (pData.manaRegen !== undefined) this.player.stats.manaRegen = pData.manaRegen;
+                        if (pData.castSpeed !== undefined) this.player.stats.castSpeed = pData.castSpeed;
                         this.syncPlayerSupportEffects(this.player, pData);
                     }
                     
