@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.14 for the latest shipped debuff delta sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.14');
+    test('advances the login screen to alpha 0.29.15 for the latest shipped slow factor sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.15');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.14', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.15', () => {
+        expect(indexHtml).toContain('Patch 0.29.15');
+        expect(indexHtml).toContain('Authoritative state now also replicates slow factor so active slows can carry truthful strength data instead of only a boolean on/off signal');
+        expect(indexHtml).toContain('This lets the local player sync and debuff tracker show the real slow percentage from server state while still avoiding any invented generic durations for other active debuffs');
+        expect(indexHtml).toContain('The 0.29 cleanup line continues with the smallest truthful active-status detail replication slice before broader debuff duration work');
+        expect(indexHtml).toContain('Added regression coverage for authoritative slow factor sync and 0.29.15 version presentation');
+    });
+
+    test('keeps the prior 0.29.14 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.14');
         expect(indexHtml).toContain('Server delta snapshots now track stunned, slowed, rooted, bleeding, and poisoned state changes so status-only transitions cannot be skipped by compressed authoritative updates');
         expect(indexHtml).toContain('This keeps the new local debuff-clear path and any remote status consumers supplied with timely authoritative debuff flips instead of relying on unrelated movement or stat changes to carry them through');
@@ -386,6 +394,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.29.15');
         expect(indexHtml).toContain('Patch 0.29.14');
         expect(indexHtml).toContain('Patch 0.29.13');
         expect(indexHtml).toContain('Patch 0.29.12');
@@ -514,6 +523,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.29.15');
         expect(indexHtml).toContain('Patch 0.29.14');
         expect(indexHtml).toContain('Patch 0.29.13');
         expect(indexHtml).toContain('Patch 0.29.12');
@@ -597,6 +607,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.29.15"');
         expect(indexHtml).toContain('data-version="0.29.14"');
         expect(indexHtml).toContain('data-version="0.29.13"');
         expect(indexHtml).toContain('data-version="0.29.12"');

@@ -145,6 +145,7 @@ message Entity {
   bool rooted = 44;
   bool bleeding = 45;
   bool poisoned = 46;
+  float slow_factor = 58;
 
   // Passive talents
   int32 talent_points = 47;

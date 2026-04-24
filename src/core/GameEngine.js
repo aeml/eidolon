@@ -655,6 +655,17 @@ export class GameEngine {
         });
     }
 
+    syncPlayerStatusDetails(playerEntity, payload) {
+        if (!playerEntity || !payload) return;
+
+        if (payload.slowFactor !== undefined) {
+            playerEntity.slowFactor = Number(payload.slowFactor || 0);
+            if (payload.slowed === true && playerEntity.slowTimer <= 0) {
+                playerEntity.slowTimer = Math.max(playerEntity.slowTimer || 0, 0.1);
+            }
+        }
+    }
+
     showNearbyRemoteDamageFeedback(sourceEntity, targetEntity, amount) {
         if (!targetEntity?.position || !this.floatingTextManager) return false;
         if (!this.isNearbyCombatEvent(sourceEntity, targetEntity, 38)) return false;
@@ -1772,6 +1783,7 @@ export class GameEngine {
 
                         this.syncPlayerSupportEffects(this.player, pData);
                         this.syncPlayerStatusClears(this.player, pData);
+                        this.syncPlayerStatusDetails(this.player, pData);
 
                         // Optimization: Only update UI if values changed
                         if (this.player.xp !== this.lastXP || this.player.xpToNextLevel !== this.lastMaxXP || this.player.level !== this.lastLevel) {
@@ -1928,6 +1940,7 @@ export class GameEngine {
                         if (pData.castSpeed !== undefined) this.player.stats.castSpeed = pData.castSpeed;
                         this.syncPlayerSupportEffects(this.player, pData);
                         this.syncPlayerStatusClears(this.player, pData);
+                        this.syncPlayerStatusDetails(this.player, pData);
                     }
                     
                     // Sync Skills

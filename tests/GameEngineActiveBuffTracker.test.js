@@ -333,4 +333,22 @@ describe('GameEngine active buff tracker', () => {
         expect(player.poisonTimer).toBe(0);
         expect(player.poisonStacks).toBe(0);
     });
+
+    test('authoritative self status details apply replicated slow factor', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncPlayerStatusDetails = GameEngine.prototype.syncPlayerStatusDetails;
+
+        const player = {
+            slowTimer: 0,
+            slowFactor: 0
+        };
+
+        engine.syncPlayerStatusDetails(player, {
+            slowed: true,
+            slowFactor: 0.35
+        });
+
+        expect(player.slowFactor).toBe(0.35);
+        expect(player.slowTimer).toBe(0.1);
+    });
 });

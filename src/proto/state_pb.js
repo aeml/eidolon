@@ -2446,6 +2446,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {boolean|null} [rooted] Entity rooted
              * @property {boolean|null} [bleeding] Entity bleeding
              * @property {boolean|null} [poisoned] Entity poisoned
+             * @property {number|null} [slowFactor] Entity slowFactor
              * @property {number|null} [talentPoints] Entity talentPoints
              * @property {Array.<string>|null} [unlockedTalents] Entity unlockedTalents
              * @property {Object.<string,number>|null} [talentRanks] Entity talentRanks
@@ -2842,6 +2843,14 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.poisoned = false;
 
             /**
+             * Entity slowFactor.
+             * @member {number} slowFactor
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.slowFactor = 0;
+
+            /**
              * Entity talentPoints.
              * @member {number} talentPoints
              * @memberof eidolon.state.Entity
@@ -3008,6 +3017,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 45, wireType 0 =*/360).bool(message.bleeding);
                 if (message.poisoned != null && Object.hasOwnProperty.call(message, "poisoned"))
                     writer.uint32(/* id 46, wireType 0 =*/368).bool(message.poisoned);
+                if (message.slowFactor != null && Object.hasOwnProperty.call(message, "slowFactor"))
+                    writer.uint32(/* id 58, wireType 5 =*/469).float(message.slowFactor);
                 if (message.talentPoints != null && Object.hasOwnProperty.call(message, "talentPoints"))
                     writer.uint32(/* id 47, wireType 0 =*/376).int32(message.talentPoints);
                 if (message.unlockedTalents != null && message.unlockedTalents.length)
@@ -3290,6 +3301,10 @@ export const eidolon = $root.eidolon = (() => {
                             message.poisoned = reader.bool();
                             break;
                         }
+                    case 58: {
+                            message.slowFactor = reader.float();
+                            break;
+                        }
                     case 47: {
                             message.talentPoints = reader.int32();
                             break;
@@ -3563,6 +3578,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.poisoned != null && message.hasOwnProperty("poisoned"))
                     if (typeof message.poisoned !== "boolean")
                         return "poisoned: boolean expected";
+                if (message.slowFactor != null && message.hasOwnProperty("slowFactor"))
+                    if (typeof message.slowFactor !== "number")
+                        return "slowFactor: number expected";
                 if (message.talentPoints != null && message.hasOwnProperty("talentPoints"))
                     if (!$util.isInteger(message.talentPoints))
                         return "talentPoints: integer expected";
@@ -3740,6 +3758,8 @@ export const eidolon = $root.eidolon = (() => {
                     message.bleeding = Boolean(object.bleeding);
                 if (object.poisoned != null)
                     message.poisoned = Boolean(object.poisoned);
+                if (object.slowFactor != null)
+                    message.slowFactor = Number(object.slowFactor);
                 if (object.talentPoints != null)
                     message.talentPoints = object.talentPoints | 0;
                 if (object.unlockedTalents) {
@@ -3840,6 +3860,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.rooted = false;
                     object.bleeding = false;
                     object.poisoned = false;
+                    object.slowFactor = 0;
                     object.talentPoints = 0;
                 }
                 if (message.id != null && message.hasOwnProperty("id"))
@@ -3958,6 +3979,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.bleeding = message.bleeding;
                 if (message.poisoned != null && message.hasOwnProperty("poisoned"))
                     object.poisoned = message.poisoned;
+                if (message.slowFactor != null && message.hasOwnProperty("slowFactor"))
+                    object.slowFactor = options.json && !isFinite(message.slowFactor) ? String(message.slowFactor) : message.slowFactor;
                 if (message.talentPoints != null && message.hasOwnProperty("talentPoints"))
                     object.talentPoints = message.talentPoints;
                 if (message.unlockedTalents && message.unlockedTalents.length) {

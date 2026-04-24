@@ -537,6 +537,30 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.poisonStacks).toBe(0);
     });
 
+    test('delta self sync applies authoritative slow factor detail', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.slowTimer = 0;
+        engine.player.slowFactor = 0;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        slowed: true,
+                        slowFactor: 0.35
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.slowFactor).toBe(0.35);
+        expect(engine.player.slowTimer).toBe(0.1);
+    });
+
     test('full state DEAD->alive also forces town respawn', () => {
         const engine = createEngineHarness();
 
@@ -558,6 +582,7 @@ describe('GameEngine multiplayer respawn sync', () => {
                     unlockedTalents: ['cleric_devotion'],
                     stunned: false,
                     slowed: false,
+                    slowFactor: 0,
                     rooted: false,
                     bleeding: false,
                     poisoned: false,

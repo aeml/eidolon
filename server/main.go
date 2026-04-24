@@ -121,6 +121,7 @@ type EntitySnapshot struct {
 	SpellFocusActive bool
 	Stunned bool
 	Slowed bool
+	SlowFactor float64
 	Rooted bool
 	Bleeding bool
 	Poisoned bool
@@ -3501,6 +3502,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		SpellFocusActive: e.SpellFocusActive,
 		Stunned: e.Stunned,
 		Slowed: e.Slowed,
+		SlowFactor: e.SlowFactor,
 		Rooted: e.Rooted,
 		Bleeding: e.Bleeding,
 		Poisoned: e.Poisoned,
@@ -3540,6 +3542,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cspellFocusActive := current.SpellFocusActive
 	cstunned := current.Stunned
 	cslowed := current.Slowed
+	cslowFactor := current.SlowFactor
 	crooted := current.Rooted
 	cbleeding := current.Bleeding
 	cpoisoned := current.Poisoned
@@ -3630,7 +3633,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cspellFocusActive != last.SpellFocusActive {
 		return true
 	}
-	if cstunned != last.Stunned || cslowed != last.Slowed || crooted != last.Rooted || cbleeding != last.Bleeding || cpoisoned != last.Poisoned {
+	if cstunned != last.Stunned || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || crooted != last.Rooted || cbleeding != last.Bleeding || cpoisoned != last.Poisoned {
 		return true
 	}
 
@@ -3959,6 +3962,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		SpellFocusActive: e.SpellFocusActive,
 		Stunned:           e.Stunned,
 		Slowed:            e.Slowed,
+		SlowFactor:        float32(e.SlowFactor),
 		Rooted:            e.Rooted,
 		Bleeding:          e.Bleeding,
 		Poisoned:          e.Poisoned,
