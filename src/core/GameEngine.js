@@ -1616,6 +1616,7 @@ export class GameEngine {
                         this.player.hasSyncedLevel = true;
 
                         if (this.player.stats) {
+                            if (pData.scale !== undefined && this.player.scale !== pData.scale) this.player.setScale(pData.scale);
                             this.player.stats.hp = pData.health;
                             this.player.stats.maxHp = pData.maxHealth;
                             this.player.stats.mana = pData.mana;
@@ -1855,6 +1856,7 @@ export class GameEngine {
                             this.syncTownRecoveryGuidance(previousX, previousZ, this.player.position.x, this.player.position.z);
                         }
 
+                        if (pData.scale !== undefined && this.player.scale !== pData.scale) this.player.setScale(pData.scale);
                         if (pData.health !== undefined) this.player.stats.hp = pData.health;
                         if (pData.maxHealth !== undefined) this.player.stats.maxHp = pData.maxHealth;
                         if (pData.mana !== undefined) this.player.stats.mana = pData.mana;

@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.8 for the latest shipped local quest sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.8');
+    test('advances the login screen to alpha 0.29.9 for the latest shipped local scale sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.9');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.8', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.9', () => {
+        expect(indexHtml).toContain('Patch 0.29.9');
+        expect(indexHtml).toContain('Local authoritative self sync now also applies server-sent scale so player size changes use the same authoritative <code>setScale</code> path that remote entities already follow');
+        expect(indexHtml).toContain('This keeps local range, collision, and visual scale behavior aligned when the server changes player scale instead of leaving the local actor on stale size until some later rebuild');
+        expect(indexHtml).toContain('The 0.29 cleanup line continues by closing another emitted-but-not-applied self field in the authoritative player sync path');
+        expect(indexHtml).toContain('Added regression coverage for local authoritative scale sync and 0.29.9 version presentation');
+    });
+
+    test('keeps the prior 0.29.8 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.8');
         expect(indexHtml).toContain('Local authoritative self sync now also applies quest data from entity state and delta payloads instead of depending only on separate quest update messages');
         expect(indexHtml).toContain('This keeps quest objectives and journal state aligned when authoritative player sync already includes the latest quest list, reducing one more split-brain path between dedicated UI events and entity state');
@@ -338,6 +346,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.29.9');
         expect(indexHtml).toContain('Patch 0.29.8');
         expect(indexHtml).toContain('Patch 0.29.7');
         expect(indexHtml).toContain('Patch 0.29.6');
@@ -460,6 +469,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.29.9');
         expect(indexHtml).toContain('Patch 0.29.8');
         expect(indexHtml).toContain('Patch 0.29.7');
         expect(indexHtml).toContain('Patch 0.29.6');
@@ -537,6 +547,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.29.9"');
         expect(indexHtml).toContain('data-version="0.29.8"');
         expect(indexHtml).toContain('data-version="0.29.7"');
         expect(indexHtml).toContain('data-version="0.29.6"');
