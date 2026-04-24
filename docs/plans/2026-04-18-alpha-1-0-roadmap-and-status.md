@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.29.15`
+- Current in-game displayed version: `Alpha 0.29.16`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.29.15`
+### Shipped through `0.29.16`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -95,6 +95,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.29.13`: local authoritative self sync now also clears stale debuff timers and stacks when authoritative status booleans explicitly say those debuffs are no longer active
 - `0.29.14`: server delta snapshots now also track debuff booleans, keeping status-only transitions from being skipped by compressed authoritative state updates
 - `0.29.15`: authoritative state now also replicates slow factor, keeping active slow strength truthful in local sync and debuff UI without inventing generic debuff durations
+- `0.29.16`: authoritative state now also replicates root duration, keeping active root remaining time truthful in local sync and debuff UI without widening the rest of debuff-duration replication yet
 
 ### What `0.22` has clearly accomplished already
 

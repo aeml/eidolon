@@ -2,6 +2,7 @@ package main
 
 import (
 	"testing"
+	"time"
 
 	"eidolon-server/internal/game"
 )
@@ -124,5 +125,30 @@ func TestEntitySnapshotTracksDebuffFlagsForDeltaSync(t *testing.T) {
 	}
 	if hasEntityChanged(entity, snapshot) {
 		t.Fatal("expected unchanged debuff flags to stay delta-stable")
+	}
+}
+
+func TestEntitySnapshotTracksRootDurationForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:          "player-rooted",
+		Type:        game.TypePlayer,
+		SubType:     "Rogue",
+		State:       "IDLE",
+		TalentRanks: map[string]int{},
+		Rooted:      true,
+		RootEndTime: time.Now().Add(2500 * time.Millisecond),
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+	if snapshot.RootDuration <= 0 {
+		t.Fatal("expected snapshot to track root duration")
+	}
+
+	entity.RootEndTime = time.Now().Add(1500 * time.Millisecond)
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected root duration delta change to be detected")
 	}
 }

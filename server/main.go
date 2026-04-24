@@ -123,6 +123,7 @@ type EntitySnapshot struct {
 	Slowed bool
 	SlowFactor float64
 	Rooted bool
+	RootDuration float64
 	Bleeding bool
 	Poisoned bool
 	JumpProgress float64
@@ -3480,6 +3481,14 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 			derivedTalentPoints = 0
 		}
 	}
+	rootDuration := 0.0
+	if e.Rooted {
+		rootDuration = time.Until(e.RootEndTime).Seconds()
+		if rootDuration < 0 {
+			rootDuration = 0
+		}
+	}
+
 	snap := &EntitySnapshot{
 		X:            e.X,
 		Z:            e.Z,
@@ -3504,6 +3513,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		Slowed: e.Slowed,
 		SlowFactor: e.SlowFactor,
 		Rooted: e.Rooted,
+		RootDuration: rootDuration,
 		Bleeding: e.Bleeding,
 		Poisoned: e.Poisoned,
 		JumpProgress: e.JumpProgress,
@@ -3544,6 +3554,13 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	cslowed := current.Slowed
 	cslowFactor := current.SlowFactor
 	crooted := current.Rooted
+	crootDuration := 0.0
+	if crooted {
+		crootDuration = time.Until(current.RootEndTime).Seconds()
+		if crootDuration < 0 {
+			crootDuration = 0
+		}
+	}
 	cbleeding := current.Bleeding
 	cpoisoned := current.Poisoned
 	ctalentPoints := current.TalentPoints
@@ -3633,7 +3650,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cspellFocusActive != last.SpellFocusActive {
 		return true
 	}
-	if cstunned != last.Stunned || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || crooted != last.Rooted || cbleeding != last.Bleeding || cpoisoned != last.Poisoned {
+	if cstunned != last.Stunned || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || cpoisoned != last.Poisoned {
 		return true
 	}
 
@@ -3908,6 +3925,14 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		lootItem = &li
 	}
 
+	rootDuration := float32(0)
+	if e.Rooted {
+		remaining := time.Until(e.RootEndTime).Seconds()
+		if remaining > 0 {
+			rootDuration = float32(remaining)
+		}
+	}
+
 	out := &statepb.Entity{
 		Id:                e.ID,
 		InstanceId:        e.InstanceID,
@@ -3964,6 +3989,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		Slowed:            e.Slowed,
 		SlowFactor:        float32(e.SlowFactor),
 		Rooted:            e.Rooted,
+		RootDuration:      rootDuration,
 		Bleeding:          e.Bleeding,
 		Poisoned:          e.Poisoned,
 	}

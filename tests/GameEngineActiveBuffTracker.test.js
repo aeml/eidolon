@@ -351,4 +351,20 @@ describe('GameEngine active buff tracker', () => {
         expect(player.slowFactor).toBe(0.35);
         expect(player.slowTimer).toBe(0.1);
     });
+
+    test('authoritative self status details apply replicated root duration', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncPlayerStatusDetails = GameEngine.prototype.syncPlayerStatusDetails;
+
+        const player = {
+            rootTimer: 0
+        };
+
+        engine.syncPlayerStatusDetails(player, {
+            rooted: true,
+            rootDuration: 2.5
+        });
+
+        expect(player.rootTimer).toBe(2.5);
+    });
 });

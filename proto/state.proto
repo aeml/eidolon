@@ -146,6 +146,7 @@ message Entity {
   bool bleeding = 45;
   bool poisoned = 46;
   float slow_factor = 58;
+  float root_duration = 59;
 
   // Passive talents
   int32 talent_points = 47;

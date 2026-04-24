@@ -664,6 +664,10 @@ export class GameEngine {
                 playerEntity.slowTimer = Math.max(playerEntity.slowTimer || 0, 0.1);
             }
         }
+
+        if (payload.rootDuration !== undefined && payload.rooted === true) {
+            playerEntity.rootTimer = Math.max(0, Number(payload.rootDuration || 0));
+        }
     }
 
     showNearbyRemoteDamageFeedback(sourceEntity, targetEntity, amount) {

@@ -561,6 +561,28 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.slowTimer).toBe(0.1);
     });
 
+    test('delta self sync applies authoritative root duration detail', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.rootTimer = 0;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        rooted: true,
+                        rootDuration: 2.5
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.rootTimer).toBe(2.5);
+    });
+
     test('full state DEAD->alive also forces town respawn', () => {
         const engine = createEngineHarness();
 
@@ -584,6 +606,7 @@ describe('GameEngine multiplayer respawn sync', () => {
                     slowed: false,
                     slowFactor: 0,
                     rooted: false,
+                    rootDuration: 0,
                     bleeding: false,
                     poisoned: false,
                     baseStats: {
