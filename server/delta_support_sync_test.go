@@ -69,3 +69,60 @@ func TestEntitySnapshotTracksBoostedSpiritGuardiansForDeltaSync(t *testing.T) {
 		t.Fatal("expected unchanged boosted spirit guardians state to stay delta-stable")
 	}
 }
+
+func TestEntitySnapshotTracksDebuffFlagsForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:       "player-debuffs",
+		Type:     game.TypePlayer,
+		SubType:  "Fighter",
+		State:    "IDLE",
+		TalentRanks: map[string]int{},
+		Stunned:  false,
+		Slowed:   false,
+		Rooted:   false,
+		Bleeding: false,
+		Poisoned: false,
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+
+	entity.Stunned = true
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected stunned delta change to be detected")
+	}
+
+	entity.Stunned = false
+	entity.Slowed = true
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected slowed delta change to be detected")
+	}
+
+	entity.Slowed = false
+	entity.Rooted = true
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected rooted delta change to be detected")
+	}
+
+	entity.Rooted = false
+	entity.Bleeding = true
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected bleeding delta change to be detected")
+	}
+
+	entity.Bleeding = false
+	entity.Poisoned = true
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected poisoned delta change to be detected")
+	}
+
+	snapshot = entityToSnapshot(entity)
+	if !snapshot.Poisoned {
+		t.Fatal("expected snapshot to track poisoned state")
+	}
+	if hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected unchanged debuff flags to stay delta-stable")
+	}
+}

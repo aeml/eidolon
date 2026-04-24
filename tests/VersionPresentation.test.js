@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.13 for the latest shipped authoritative debuff clear slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.13');
+    test('advances the login screen to alpha 0.29.14 for the latest shipped debuff delta sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.14');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.13', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.14', () => {
+        expect(indexHtml).toContain('Patch 0.29.14');
+        expect(indexHtml).toContain('Server delta snapshots now track stunned, slowed, rooted, bleeding, and poisoned state changes so status-only transitions cannot be skipped by compressed authoritative updates');
+        expect(indexHtml).toContain('This keeps the new local debuff-clear path and any remote status consumers supplied with timely authoritative debuff flips instead of relying on unrelated movement or stat changes to carry them through');
+        expect(indexHtml).toContain('The 0.29 cleanup line continues by tightening the server delta broadcaster before any broader status duration replication work');
+        expect(indexHtml).toContain('Added regression coverage for debuff flag delta tracking and 0.29.14 version presentation');
+    });
+
+    test('keeps the prior 0.29.13 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.13');
         expect(indexHtml).toContain('Local authoritative self sync now clears stale debuff timers and stacks when server state explicitly says stun, slow, root, bleed, or poison are no longer active');
         expect(indexHtml).toContain('This keeps the local buff tracker and control-state truth from lingering after authoritative status removal without pretending to know missing server-side durations for still-active debuffs');
@@ -378,6 +386,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.29.14');
         expect(indexHtml).toContain('Patch 0.29.13');
         expect(indexHtml).toContain('Patch 0.29.12');
         expect(indexHtml).toContain('Patch 0.29.11');
@@ -505,6 +514,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.29.14');
         expect(indexHtml).toContain('Patch 0.29.13');
         expect(indexHtml).toContain('Patch 0.29.12');
         expect(indexHtml).toContain('Patch 0.29.11');
@@ -587,6 +597,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.29.14"');
         expect(indexHtml).toContain('data-version="0.29.13"');
         expect(indexHtml).toContain('data-version="0.29.12"');
         expect(indexHtml).toContain('data-version="0.29.11"');

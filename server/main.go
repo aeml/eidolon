@@ -119,6 +119,11 @@ type EntitySnapshot struct {
 	ArcaneShieldHP int
 	TimeWarpActive bool
 	SpellFocusActive bool
+	Stunned bool
+	Slowed bool
+	Rooted bool
+	Bleeding bool
+	Poisoned bool
 	JumpProgress float64
 	TalentPoints int
 	TalentKeys   int
@@ -3494,6 +3499,11 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		ArcaneShieldHP: e.ArcaneShieldHP,
 		TimeWarpActive: e.TimeWarpActive,
 		SpellFocusActive: e.SpellFocusActive,
+		Stunned: e.Stunned,
+		Slowed: e.Slowed,
+		Rooted: e.Rooted,
+		Bleeding: e.Bleeding,
+		Poisoned: e.Poisoned,
 		JumpProgress: e.JumpProgress,
 		TalentPoints: derivedTalentPoints,
 		TalentKeys:   keys,
@@ -3528,6 +3538,11 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	carcaneShieldHP := current.ArcaneShieldHP
 	ctimeWarpActive := current.TimeWarpActive
 	cspellFocusActive := current.SpellFocusActive
+	cstunned := current.Stunned
+	cslowed := current.Slowed
+	crooted := current.Rooted
+	cbleeding := current.Bleeding
+	cpoisoned := current.Poisoned
 	ctalentPoints := current.TalentPoints
 	cjumpProgress := current.JumpProgress
 	ctalentKeys := 0
@@ -3613,6 +3628,9 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 		return true
 	}
 	if cspellFocusActive != last.SpellFocusActive {
+		return true
+	}
+	if cstunned != last.Stunned || cslowed != last.Slowed || crooted != last.Rooted || cbleeding != last.Bleeding || cpoisoned != last.Poisoned {
 		return true
 	}
 
