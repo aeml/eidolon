@@ -30,6 +30,7 @@ function createEngineHarness() {
         targetPosition: new THREE.Vector3(5, 0, 5),
         position: new THREE.Vector3(50, 0, 50),
         scale: 1,
+        isCharging: false,
         baseStats: {
             strength: 10,
             dexterity: 10,
@@ -419,6 +420,28 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.scale).toBe(1.75);
     });
 
+    test('delta self sync applies authoritative charge state', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'MOVING';
+        engine.player.isCharging = false;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        state: 'MOVING',
+                        isCharging: true
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.isCharging).toBe(true);
+    });
+
     test('full state DEAD->alive also forces town respawn', () => {
         const engine = createEngineHarness();
 
@@ -433,6 +456,7 @@ describe('GameEngine multiplayer respawn sync', () => {
                     mana: 100,
                     maxMana: 100,
                     scale: 1.5,
+                    isCharging: true,
                     baseStats: {
                         strength: 16,
                         dexterity: 12,
@@ -467,6 +491,7 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.baseStats.vitality).toBe(18);
         expect(engine.player.setScale).toHaveBeenCalledWith(1.5);
         expect(engine.player.scale).toBe(1.5);
+        expect(engine.player.isCharging).toBe(true);
         expect(engine.player.stats.hpRegen).toBe(11);
         expect(engine.player.stats.manaRegen).toBe(7);
         expect(engine.player.stats.castSpeed).toBe(1.25);

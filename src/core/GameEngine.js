@@ -1565,6 +1565,7 @@ export class GameEngine {
                             // Ensure local death presentation still triggers when health reaches zero.
                             this.handlePlayerDeathTransition();
                         }
+                        if (pData.isCharging !== undefined) this.player.isCharging = pData.isCharging;
 
                         // Check for forced teleport (large distance discrepancy)
                         // This handles portals or admin teleports where state might not change from DEAD
@@ -1826,6 +1827,7 @@ export class GameEngine {
                                 this.player.state = pData.state;
                             }
                         }
+                        if (pData.isCharging !== undefined) this.player.isCharging = pData.isCharging;
 
                         if (pData.state === 'JUMPING') {
                             this.syncAuthoritativeJumpState(this.player, pData);

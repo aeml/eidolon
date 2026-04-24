@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.29.9`
+- Current in-game displayed version: `Alpha 0.29.10`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.29.9`
+### Shipped through `0.29.10`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -89,6 +89,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.29.7`: local authoritative self sync now also applies server-sent cast speed, closing another emitted-but-not-applied derived stat gap in the local player path
 - `0.29.8`: local authoritative self sync now also applies quest data from entity state and delta payloads, keeping quest objectives and journal state aligned with authoritative player sync
 - `0.29.9`: local authoritative self sync now also applies server-sent scale through the normal setScale path, keeping player size aligned with authoritative server changes
+- `0.29.10`: local authoritative self sync now also applies server-sent charge state, keeping local charging behavior aligned with the same authoritative flag already used by remote entity sync
 
 ### What `0.22` has clearly accomplished already
 
