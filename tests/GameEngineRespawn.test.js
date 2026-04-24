@@ -59,6 +59,7 @@ function createEngineHarness() {
         quests: [],
         hotbar: [],
         unlockedSkills: [],
+        unlockedTalents: [],
         skillRunes: {},
         setScale: jest.fn(function setScale(scale) {
             this.scale = scale;
@@ -469,6 +470,26 @@ describe('GameEngine multiplayer respawn sync', () => {
         });
     });
 
+    test('delta self sync applies authoritative unlocked talents', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        unlockedTalents: ['fighter_brutality', 'fighter_unbreakable']
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.unlockedTalents).toEqual(['fighter_brutality', 'fighter_unbreakable']);
+    });
+
     test('full state DEAD->alive also forces town respawn', () => {
         const engine = createEngineHarness();
 
@@ -487,6 +508,7 @@ describe('GameEngine multiplayer respawn sync', () => {
                     skillRunes: {
                         spirit_guardians: 'radiant_orbit'
                     },
+                    unlockedTalents: ['cleric_devotion'],
                     baseStats: {
                         strength: 16,
                         dexterity: 12,
@@ -523,6 +545,7 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.scale).toBe(1.5);
         expect(engine.player.isCharging).toBe(true);
         expect(engine.player.skillRunes).toEqual({ spirit_guardians: 'radiant_orbit' });
+        expect(engine.player.unlockedTalents).toEqual(['cleric_devotion']);
         expect(engine.player.stats.hpRegen).toBe(11);
         expect(engine.player.stats.manaRegen).toBe(7);
         expect(engine.player.stats.castSpeed).toBe(1.25);

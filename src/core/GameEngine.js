@@ -1677,6 +1677,7 @@ export class GameEngine {
                         // (Proto3 defaults will decode as 0/empty when truly unset.)
                         if (pData.talentPoints !== undefined) this.player.talentPoints = pData.talentPoints;
                         if (pData.talentRanks !== undefined) this.player.talentRanks = pData.talentRanks || {};
+                        if (pData.unlockedTalents !== undefined) this.player.unlockedTalents = pData.unlockedTalents || [];
 
                         // Server-authoritative skill runes
                         if (pData.skillRunes !== undefined) this.player.skillRunes = pData.skillRunes || {};
@@ -1944,6 +1945,7 @@ export class GameEngine {
                         // Server-authoritative talents: always apply the decoded values.
                         if (pData.talentPoints !== undefined) this.player.talentPoints = pData.talentPoints;
                         if (pData.talentRanks !== undefined) this.player.talentRanks = pData.talentRanks || {};
+                        if (pData.unlockedTalents !== undefined) this.player.unlockedTalents = pData.unlockedTalents || [];
 
                         if (this.uiManager.skillTree.isOpen) {
                             if (prevTalentPoints !== (this.player.talentPoints || 0) ||
