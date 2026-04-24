@@ -59,6 +59,7 @@ function createEngineHarness() {
         quests: [],
         hotbar: [],
         unlockedSkills: [],
+        skillRunes: {},
         setScale: jest.fn(function setScale(scale) {
             this.scale = scale;
         }),
@@ -442,6 +443,32 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.isCharging).toBe(true);
     });
 
+    test('delta self sync applies authoritative skill runes', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        skillRunes: {
+                            meteor_drop: 'meteor_burn',
+                            scorch_beam: 'beam_split'
+                        }
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.skillRunes).toEqual({
+            meteor_drop: 'meteor_burn',
+            scorch_beam: 'beam_split'
+        });
+    });
+
     test('full state DEAD->alive also forces town respawn', () => {
         const engine = createEngineHarness();
 
@@ -457,6 +484,9 @@ describe('GameEngine multiplayer respawn sync', () => {
                     maxMana: 100,
                     scale: 1.5,
                     isCharging: true,
+                    skillRunes: {
+                        spirit_guardians: 'radiant_orbit'
+                    },
                     baseStats: {
                         strength: 16,
                         dexterity: 12,
@@ -492,6 +522,7 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.setScale).toHaveBeenCalledWith(1.5);
         expect(engine.player.scale).toBe(1.5);
         expect(engine.player.isCharging).toBe(true);
+        expect(engine.player.skillRunes).toEqual({ spirit_guardians: 'radiant_orbit' });
         expect(engine.player.stats.hpRegen).toBe(11);
         expect(engine.player.stats.manaRegen).toBe(7);
         expect(engine.player.stats.castSpeed).toBe(1.25);

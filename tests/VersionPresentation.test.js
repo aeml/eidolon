@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.10 for the latest shipped local charge sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.10');
+    test('advances the login screen to alpha 0.29.11 for the latest shipped local skill rune sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.11');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.10', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.11', () => {
+        expect(indexHtml).toContain('Patch 0.29.11');
+        expect(indexHtml).toContain('Local authoritative self sync now also applies server-sent skill rune selections during delta updates instead of relying only on the separate rune message or a later full-state refresh');
+        expect(indexHtml).toContain('This keeps rune-driven skill behavior and UI truth aligned when authoritative player updates already contain the latest rune loadout, closing another small split path in the local progression sync flow');
+        expect(indexHtml).toContain('The 0.29 cleanup line continues by making the local authoritative player path more internally complete across both combat state and progression customisation');
+        expect(indexHtml).toContain('Added regression coverage for local authoritative skill rune sync and 0.29.11 version presentation');
+    });
+
+    test('keeps the prior 0.29.10 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.10');
         expect(indexHtml).toContain('Local authoritative self sync now also applies server-sent charge state so the local player follows the same authoritative charging flag already used by remote entity sync');
         expect(indexHtml).toContain('This keeps local fighter charge behavior, animation selection, and related control-state checks from drifting when the server toggles charging without a separate local prediction path owning the transition');
@@ -354,6 +362,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.29.11');
         expect(indexHtml).toContain('Patch 0.29.10');
         expect(indexHtml).toContain('Patch 0.29.9');
         expect(indexHtml).toContain('Patch 0.29.8');
@@ -478,6 +487,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.29.11');
         expect(indexHtml).toContain('Patch 0.29.10');
         expect(indexHtml).toContain('Patch 0.29.9');
         expect(indexHtml).toContain('Patch 0.29.8');
@@ -557,6 +567,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.29.11"');
         expect(indexHtml).toContain('data-version="0.29.10"');
         expect(indexHtml).toContain('data-version="0.29.9"');
         expect(indexHtml).toContain('data-version="0.29.8"');

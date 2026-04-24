@@ -1953,6 +1953,10 @@ export class GameEngine {
                             }
                         }
                     }
+
+                    if (pData.skillRunes !== undefined) {
+                        this.player.skillRunes = pData.skillRunes || {};
+                    }
                     
                     // Sync XP, Level, Gold
                     // Protobuf entity fields use experience/maxExperience; legacy JSON used xp/xpToNextLevel.
