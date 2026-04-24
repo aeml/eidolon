@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.29.7</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.29.8</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.29.8" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.8 (Local authoritative quest sync now stays aligned)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Local self sync now applies quest truth:</strong> Local authoritative self sync now also applies quest data from entity state and delta payloads instead of depending only on separate quest update messages.</li>
+                        <li><strong>Quest UI stays aligned with authoritative player sync:</strong> This keeps quest objectives and journal state aligned when authoritative player sync already includes the latest quest list, reducing one more split-brain path between dedicated UI events and entity state.</li>
+                        <li><strong>The 0.29 cleanup line continues:</strong> The 0.29 cleanup line continues by making local self sync more complete across both combat stats and progression state.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for local authoritative quest sync and 0.29.8 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.29.7" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.7 (Local authoritative cast speed now stays aligned)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

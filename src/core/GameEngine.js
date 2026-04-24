@@ -1730,6 +1730,12 @@ export class GameEngine {
                             }
                         }
 
+                        if (pData.quests !== undefined) {
+                            this.player.quests = Array.isArray(pData.quests) ? pData.quests : [];
+                            this.uiManager.updateQuestWindow?.(this.player.quests);
+                            this.uiManager.updateJournal?.(this.player.quests);
+                        }
+
                         this.syncPlayerSupportEffects(this.player, pData);
 
                         // Optimization: Only update UI if values changed
@@ -1995,6 +2001,12 @@ export class GameEngine {
                         for (const key in this.player.equipment) {
                             this.player.equipment[key] = this.hydrateItem(this.player.equipment[key]);
                         }
+                    }
+
+                    if (pData.quests !== undefined) {
+                        this.player.quests = Array.isArray(pData.quests) ? pData.quests : [];
+                        this.uiManager.updateQuestWindow?.(this.player.quests);
+                        this.uiManager.updateJournal?.(this.player.quests);
                     }
                     
                     return;

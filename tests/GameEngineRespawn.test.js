@@ -54,6 +54,7 @@ function createEngineHarness() {
         },
         inventory: [],
         equipment: {},
+        quests: [],
         hotbar: [],
         unlockedSkills: [],
         respawn: jest.fn(function respawn(x, z) {
@@ -90,6 +91,8 @@ function createEngineHarness() {
     };
 
     engine.uiManager = {
+        updateQuestWindow: jest.fn(),
+        updateJournal: jest.fn(),
         updateXP: jest.fn(),
         updateHotbar: jest.fn(),
         updateCharacterSheet: jest.fn(),
@@ -368,6 +371,29 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.stats.castSpeed).toBe(1.37);
     });
 
+    test('delta self sync applies authoritative quests and refreshes quest UI', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        const quests = [{ id: 'daily-1', title: 'Clear the crypt', objective: 'Kill 10 skeletons' }];
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        quests
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.quests).toEqual(quests);
+        expect(engine.uiManager.updateQuestWindow).toHaveBeenCalledWith(quests);
+        expect(engine.uiManager.updateJournal).toHaveBeenCalledWith(quests);
+    });
+
     test('full state DEAD->alive also forces town respawn', () => {
         const engine = createEngineHarness();
 
@@ -396,6 +422,7 @@ describe('GameEngine multiplayer respawn sync', () => {
                     hpRegen: 11,
                     manaRegen: 7,
                     castSpeed: 1.25,
+                    quests: [{ id: 'story-1', title: 'Speak to the guardian', objective: 'Find the shrine' }],
                     skillPoints: 0,
                     selectedBranch: null,
                     unlockedSkills: [],
@@ -415,5 +442,8 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.stats.hpRegen).toBe(11);
         expect(engine.player.stats.manaRegen).toBe(7);
         expect(engine.player.stats.castSpeed).toBe(1.25);
+        expect(engine.player.quests).toEqual([{ id: 'story-1', title: 'Speak to the guardian', objective: 'Find the shrine' }]);
+        expect(engine.uiManager.updateQuestWindow).toHaveBeenCalledWith(engine.player.quests);
+        expect(engine.uiManager.updateJournal).toHaveBeenCalledWith(engine.player.quests);
     });
 });
