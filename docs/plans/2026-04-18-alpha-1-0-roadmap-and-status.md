@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.29.12`
+- Current in-game displayed version: `Alpha 0.29.13`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.29.12`
+### Shipped through `0.29.13`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -92,6 +92,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.29.10`: local authoritative self sync now also applies server-sent charge state, keeping local charging behavior aligned with the same authoritative flag already used by remote entity sync
 - `0.29.11`: local authoritative self sync now also applies server-sent skill rune selections during delta updates, keeping local rune-driven progression state aligned with authoritative player sync
 - `0.29.12`: local authoritative self sync now also stores server-sent unlocked talent lists during delta updates, keeping local talent progression state aligned with authoritative player sync
+- `0.29.13`: local authoritative self sync now also clears stale debuff timers and stacks when authoritative status booleans explicitly say those debuffs are no longer active
 
 ### What `0.22` has clearly accomplished already
 

@@ -31,6 +31,14 @@ function createEngineHarness() {
         position: new THREE.Vector3(50, 0, 50),
         scale: 1,
         isCharging: false,
+        stunTimer: 0,
+        slowTimer: 0,
+        slowFactor: 0,
+        rootTimer: 0,
+        bleedTimer: 0,
+        bleedStacks: 0,
+        poisonTimer: 0,
+        poisonStacks: 0,
         baseStats: {
             strength: 10,
             dexterity: 10,
@@ -490,6 +498,45 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.unlockedTalents).toEqual(['fighter_brutality', 'fighter_unbreakable']);
     });
 
+    test('delta self sync clears authoritative debuff timers when the server says statuses are gone', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.stunTimer = 2.5;
+        engine.player.slowTimer = 5;
+        engine.player.slowFactor = 0.6;
+        engine.player.rootTimer = 3;
+        engine.player.bleedTimer = 8;
+        engine.player.bleedStacks = 2;
+        engine.player.poisonTimer = 6;
+        engine.player.poisonStacks = 4;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        stunned: false,
+                        slowed: false,
+                        rooted: false,
+                        bleeding: false,
+                        poisoned: false
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.stunTimer).toBe(0);
+        expect(engine.player.slowTimer).toBe(0);
+        expect(engine.player.slowFactor).toBe(0);
+        expect(engine.player.rootTimer).toBe(0);
+        expect(engine.player.bleedTimer).toBe(0);
+        expect(engine.player.bleedStacks).toBe(0);
+        expect(engine.player.poisonTimer).toBe(0);
+        expect(engine.player.poisonStacks).toBe(0);
+    });
+
     test('full state DEAD->alive also forces town respawn', () => {
         const engine = createEngineHarness();
 
@@ -509,6 +556,11 @@ describe('GameEngine multiplayer respawn sync', () => {
                         spirit_guardians: 'radiant_orbit'
                     },
                     unlockedTalents: ['cleric_devotion'],
+                    stunned: false,
+                    slowed: false,
+                    rooted: false,
+                    bleeding: false,
+                    poisoned: false,
                     baseStats: {
                         strength: 16,
                         dexterity: 12,
@@ -546,6 +598,14 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.isCharging).toBe(true);
         expect(engine.player.skillRunes).toEqual({ spirit_guardians: 'radiant_orbit' });
         expect(engine.player.unlockedTalents).toEqual(['cleric_devotion']);
+        expect(engine.player.stunTimer).toBe(0);
+        expect(engine.player.slowTimer).toBe(0);
+        expect(engine.player.slowFactor).toBe(0);
+        expect(engine.player.rootTimer).toBe(0);
+        expect(engine.player.bleedTimer).toBe(0);
+        expect(engine.player.bleedStacks).toBe(0);
+        expect(engine.player.poisonTimer).toBe(0);
+        expect(engine.player.poisonStacks).toBe(0);
         expect(engine.player.stats.hpRegen).toBe(11);
         expect(engine.player.stats.manaRegen).toBe(7);
         expect(engine.player.stats.castSpeed).toBe(1.25);

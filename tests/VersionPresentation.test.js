@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.12 for the latest shipped local unlocked talent sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.12');
+    test('advances the login screen to alpha 0.29.13 for the latest shipped authoritative debuff clear slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.13');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.12', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.13', () => {
+        expect(indexHtml).toContain('Patch 0.29.13');
+        expect(indexHtml).toContain('Local authoritative self sync now clears stale debuff timers and stacks when server state explicitly says stun, slow, root, bleed, or poison are no longer active');
+        expect(indexHtml).toContain('This keeps the local buff tracker and control-state truth from lingering after authoritative status removal without pretending to know missing server-side durations for still-active debuffs');
+        expect(indexHtml).toContain('The 0.29 cleanup line continues with a narrow status-model correction that is safe to ship before any broader timer replication redesign');
+        expect(indexHtml).toContain('Added regression coverage for authoritative local debuff clears and 0.29.13 version presentation');
+    });
+
+    test('keeps the prior 0.29.12 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.12');
         expect(indexHtml).toContain('Local authoritative self sync now also stores server-sent unlocked talent lists during delta updates instead of treating that field as a change trigger without ever applying it');
         expect(indexHtml).toContain('This keeps the local progression state aligned when authoritative player updates include talent unlocks alongside ranks and points, closing one more small split in the talent sync path');
@@ -370,6 +378,7 @@ describe('version presentation', () => {
     });
 
     test('keeps the prior 0.25.0 patch notes entry in history', () => {
+        expect(indexHtml).toContain('Patch 0.29.13');
         expect(indexHtml).toContain('Patch 0.29.12');
         expect(indexHtml).toContain('Patch 0.29.11');
         expect(indexHtml).toContain('Patch 0.29.10');
@@ -496,6 +505,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.29.13');
         expect(indexHtml).toContain('Patch 0.29.12');
         expect(indexHtml).toContain('Patch 0.29.11');
         expect(indexHtml).toContain('Patch 0.29.10');
@@ -577,6 +587,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.29.13"');
         expect(indexHtml).toContain('data-version="0.29.12"');
         expect(indexHtml).toContain('data-version="0.29.11"');
         expect(indexHtml).toContain('data-version="0.29.10"');

@@ -169,6 +169,27 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
         getNextActive: (entity) => Boolean(entity.spellFocusActive),
     },
 };
+
+const AUTHORITATIVE_STATUS_CLEAR_CONFIG = {
+    stunned: (entity) => {
+        entity.stunTimer = 0;
+    },
+    slowed: (entity) => {
+        entity.slowTimer = 0;
+        entity.slowFactor = 0;
+    },
+    rooted: (entity) => {
+        entity.rootTimer = 0;
+    },
+    bleeding: (entity) => {
+        entity.bleedTimer = 0;
+        entity.bleedStacks = 0;
+    },
+    poisoned: (entity) => {
+        entity.poisonTimer = 0;
+        entity.poisonStacks = 0;
+    }
+};
 import { Fighter } from '../entities/Fighter.js';
 import { Skeleton } from '../entities/Skeleton.js';
 import { Rogue } from '../entities/Rogue.js';
@@ -622,6 +643,16 @@ export class GameEngine {
 
     syncPlayerSupportEffects(playerEntity, payload) {
         this.syncRemoteSupportEffects(playerEntity, payload);
+    }
+
+    syncPlayerStatusClears(playerEntity, payload) {
+        if (!playerEntity || !payload) return;
+
+        Object.entries(AUTHORITATIVE_STATUS_CLEAR_CONFIG).forEach(([payloadKey, clearStatus]) => {
+            if (payload[payloadKey] === false) {
+                clearStatus(playerEntity);
+            }
+        });
     }
 
     showNearbyRemoteDamageFeedback(sourceEntity, targetEntity, amount) {
@@ -1740,6 +1771,7 @@ export class GameEngine {
                         }
 
                         this.syncPlayerSupportEffects(this.player, pData);
+                        this.syncPlayerStatusClears(this.player, pData);
 
                         // Optimization: Only update UI if values changed
                         if (this.player.xp !== this.lastXP || this.player.xpToNextLevel !== this.lastMaxXP || this.player.level !== this.lastLevel) {
@@ -1895,6 +1927,7 @@ export class GameEngine {
                         if (pData.manaRegen !== undefined) this.player.stats.manaRegen = pData.manaRegen;
                         if (pData.castSpeed !== undefined) this.player.stats.castSpeed = pData.castSpeed;
                         this.syncPlayerSupportEffects(this.player, pData);
+                        this.syncPlayerStatusClears(this.player, pData);
                     }
                     
                     // Sync Skills

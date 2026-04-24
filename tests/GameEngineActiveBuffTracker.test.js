@@ -300,4 +300,37 @@ describe('GameEngine active buff tracker', () => {
         expect(player.spiritDuration).toBe(10);
         expect(player.createSpirits).toHaveBeenCalled();
     });
+
+    test('authoritative self status clears remove tracked debuffs without inventing new durations', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncPlayerStatusClears = GameEngine.prototype.syncPlayerStatusClears;
+
+        const player = {
+            stunTimer: 2,
+            slowTimer: 4,
+            slowFactor: 0.5,
+            rootTimer: 3,
+            bleedTimer: 6,
+            bleedStacks: 2,
+            poisonTimer: 5,
+            poisonStacks: 3
+        };
+
+        engine.syncPlayerStatusClears(player, {
+            stunned: false,
+            slowed: false,
+            rooted: false,
+            bleeding: false,
+            poisoned: false
+        });
+
+        expect(player.stunTimer).toBe(0);
+        expect(player.slowTimer).toBe(0);
+        expect(player.slowFactor).toBe(0);
+        expect(player.rootTimer).toBe(0);
+        expect(player.bleedTimer).toBe(0);
+        expect(player.bleedStacks).toBe(0);
+        expect(player.poisonTimer).toBe(0);
+        expect(player.poisonStacks).toBe(0);
+    });
 });

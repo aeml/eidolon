@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.29.12</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.29.13</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.29.13" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.13 (Authoritative local debuff clears now stay aligned)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Local self sync now clears stale debuff state when the server says it is gone:</strong> Local authoritative self sync now clears stale debuff timers and stacks when server state explicitly says stun, slow, root, bleed, or poison are no longer active.</li>
+                        <li><strong>Debuff truth no longer lingers after authoritative removal:</strong> This keeps the local buff tracker and control-state truth from lingering after authoritative status removal without pretending to know missing server-side durations for still-active debuffs.</li>
+                        <li><strong>The 0.29 cleanup line continues carefully:</strong> The 0.29 cleanup line continues with a narrow status-model correction that is safe to ship before any broader timer replication redesign.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for authoritative local debuff clears and 0.29.13 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.29.12" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.12 (Local authoritative unlocked talent sync now stays aligned)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
