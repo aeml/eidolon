@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.29.16</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.29.17</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.29.17" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.17 (Stun duration sync now stays aligned)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Authoritative state now also replicates stun duration:</strong> Authoritative state now also replicates stun duration so active stuns can carry truthful remaining time instead of only an on/off stunned flag.</li>
+                        <li><strong>Stun lockout detail is now more truthful:</strong> This lets local self sync and debuff UI track the real remaining stun lockout from server state while keeping the broader debuff-duration rollout incremental and honest.</li>
+                        <li><strong>The 0.29 cleanup line continues one debuff at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one debuff at a time, following root duration with the next safe timer-backed stun case.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for authoritative stun duration sync and 0.29.17 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.29.16" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.16 (Root duration sync now stays aligned)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

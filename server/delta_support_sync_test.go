@@ -152,3 +152,28 @@ func TestEntitySnapshotTracksRootDurationForDeltaSync(t *testing.T) {
 		t.Fatal("expected root duration delta change to be detected")
 	}
 }
+
+func TestEntitySnapshotTracksStunDurationForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:          "player-stunned",
+		Type:        game.TypePlayer,
+		SubType:     "Wizard",
+		State:       "IDLE",
+		TalentRanks: map[string]int{},
+		Stunned:     true,
+		StunEndTime: time.Now().Add(2500 * time.Millisecond),
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+	if snapshot.StunDuration <= 0 {
+		t.Fatal("expected snapshot to track stun duration")
+	}
+
+	entity.StunEndTime = time.Now().Add(1500 * time.Millisecond)
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected stun duration delta change to be detected")
+	}
+}

@@ -367,4 +367,20 @@ describe('GameEngine active buff tracker', () => {
 
         expect(player.rootTimer).toBe(2.5);
     });
+
+    test('authoritative self status details apply replicated stun duration', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncPlayerStatusDetails = GameEngine.prototype.syncPlayerStatusDetails;
+
+        const player = {
+            stunTimer: 0
+        };
+
+        engine.syncPlayerStatusDetails(player, {
+            stunned: true,
+            stunDuration: 1.75
+        });
+
+        expect(player.stunTimer).toBe(1.75);
+    });
 });

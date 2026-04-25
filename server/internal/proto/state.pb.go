@@ -681,6 +681,7 @@ type Entity struct {
 	Poisoned bool `protobuf:"varint,46,opt,name=poisoned,proto3" json:"poisoned,omitempty"`
 	SlowFactor float32 `protobuf:"fixed32,58,opt,name=slow_factor,json=slowFactor,proto3" json:"slow_factor,omitempty"`
 	RootDuration float32 `protobuf:"fixed32,59,opt,name=root_duration,json=rootDuration,proto3" json:"root_duration,omitempty"`
+	StunDuration float32 `protobuf:"fixed32,60,opt,name=stun_duration,json=stunDuration,proto3" json:"stun_duration,omitempty"`
 	// Passive talents
 	TalentPoints    int32    `protobuf:"varint,47,opt,name=talent_points,json=talentPoints,proto3" json:"talent_points,omitempty"`
 	UnlockedTalents []string `protobuf:"bytes,48,rep,name=unlocked_talents,json=unlockedTalents,proto3" json:"unlocked_talents,omitempty"`
@@ -1104,6 +1105,13 @@ func (x *Entity) GetSlowFactor() float32 {
 func (x *Entity) GetRootDuration() float32 {
 	if x != nil {
 		return x.RootDuration
+	}
+	return 0
+}
+
+func (x *Entity) GetStunDuration() float32 {
+	if x != nil {
+		return x.StunDuration
 	}
 	return 0
 }

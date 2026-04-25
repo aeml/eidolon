@@ -668,6 +668,10 @@ export class GameEngine {
         if (payload.rootDuration !== undefined && payload.rooted === true) {
             playerEntity.rootTimer = Math.max(0, Number(payload.rootDuration || 0));
         }
+
+        if (payload.stunDuration !== undefined && payload.stunned === true) {
+            playerEntity.stunTimer = Math.max(0, Number(payload.stunDuration || 0));
+        }
     }
 
     showNearbyRemoteDamageFeedback(sourceEntity, targetEntity, amount) {

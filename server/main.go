@@ -120,6 +120,7 @@ type EntitySnapshot struct {
 	TimeWarpActive bool
 	SpellFocusActive bool
 	Stunned bool
+	StunDuration float64
 	Slowed bool
 	SlowFactor float64
 	Rooted bool
@@ -3481,6 +3482,13 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 			derivedTalentPoints = 0
 		}
 	}
+	stunDuration := 0.0
+	if e.Stunned {
+		stunDuration = time.Until(e.StunEndTime).Seconds()
+		if stunDuration < 0 {
+			stunDuration = 0
+		}
+	}
 	rootDuration := 0.0
 	if e.Rooted {
 		rootDuration = time.Until(e.RootEndTime).Seconds()
@@ -3510,6 +3518,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		TimeWarpActive: e.TimeWarpActive,
 		SpellFocusActive: e.SpellFocusActive,
 		Stunned: e.Stunned,
+		StunDuration: stunDuration,
 		Slowed: e.Slowed,
 		SlowFactor: e.SlowFactor,
 		Rooted: e.Rooted,
@@ -3551,6 +3560,13 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	ctimeWarpActive := current.TimeWarpActive
 	cspellFocusActive := current.SpellFocusActive
 	cstunned := current.Stunned
+	cstunDuration := 0.0
+	if cstunned {
+		cstunDuration = time.Until(current.StunEndTime).Seconds()
+		if cstunDuration < 0 {
+			cstunDuration = 0
+		}
+	}
 	cslowed := current.Slowed
 	cslowFactor := current.SlowFactor
 	crooted := current.Rooted
@@ -3650,7 +3666,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cspellFocusActive != last.SpellFocusActive {
 		return true
 	}
-	if cstunned != last.Stunned || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || cpoisoned != last.Poisoned {
+	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || cpoisoned != last.Poisoned {
 		return true
 	}
 
@@ -3925,6 +3941,13 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		lootItem = &li
 	}
 
+	stunDuration := float32(0)
+	if e.Stunned {
+		remaining := time.Until(e.StunEndTime).Seconds()
+		if remaining > 0 {
+			stunDuration = float32(remaining)
+		}
+	}
 	rootDuration := float32(0)
 	if e.Rooted {
 		remaining := time.Until(e.RootEndTime).Seconds()
@@ -3986,6 +4009,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		TimeWarpActive: e.TimeWarpActive,
 		SpellFocusActive: e.SpellFocusActive,
 		Stunned:           e.Stunned,
+		StunDuration:      stunDuration,
 		Slowed:            e.Slowed,
 		SlowFactor:        float32(e.SlowFactor),
 		Rooted:            e.Rooted,

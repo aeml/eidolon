@@ -583,6 +583,28 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.rootTimer).toBe(2.5);
     });
 
+    test('delta self sync applies authoritative stun duration detail', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.stunTimer = 0;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        stunned: true,
+                        stunDuration: 1.75
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.stunTimer).toBe(1.75);
+    });
+
     test('full state DEAD->alive also forces town respawn', () => {
         const engine = createEngineHarness();
 
@@ -603,6 +625,7 @@ describe('GameEngine multiplayer respawn sync', () => {
                     },
                     unlockedTalents: ['cleric_devotion'],
                     stunned: false,
+                    stunDuration: 0,
                     slowed: false,
                     slowFactor: 0,
                     rooted: false,
