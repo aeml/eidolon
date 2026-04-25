@@ -324,6 +324,8 @@ describe('GameEngine active buff tracker', () => {
             slowFactor: 0.5,
             rootTimer: 3,
             weakPointMarkTimer: 4,
+            markWeaknessTimer: 5,
+            markWeaknessFactor: 0.2,
             bleedTimer: 6,
             bleedStacks: 2,
             bleedTickDamage: 14,
@@ -337,6 +339,7 @@ describe('GameEngine active buff tracker', () => {
             slowed: false,
             rooted: false,
             weakPointMarked: false,
+            markWeakness: false,
             bleeding: false,
             poisoned: false
         });
@@ -346,6 +349,8 @@ describe('GameEngine active buff tracker', () => {
         expect(player.slowFactor).toBe(0);
         expect(player.rootTimer).toBe(0);
         expect(player.weakPointMarkTimer).toBe(0);
+        expect(player.markWeaknessTimer).toBe(0);
+        expect(player.markWeaknessFactor).toBe(0);
         expect(player.bleedTimer).toBe(0);
         expect(player.bleedStacks).toBe(0);
         expect(player.bleedTickDamage).toBe(0);
@@ -401,6 +406,45 @@ describe('GameEngine active buff tracker', () => {
         });
 
         expect(player.weakPointMarkTimer).toBe(4.25);
+    });
+
+    test('authoritative self status details apply replicated mark weakness state', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncPlayerStatusDetails = GameEngine.prototype.syncPlayerStatusDetails;
+
+        const player = {
+            markWeaknessTimer: 0,
+            markWeaknessFactor: 0
+        };
+
+        engine.syncPlayerStatusDetails(player, {
+            markWeakness: true
+        });
+
+        expect(player.markWeaknessTimer).toBe(0.1);
+        expect(player.markWeaknessFactor).toBe(0);
+    });
+
+    test('mark weakness buff detail falls back to a truthful generic label without authoritative factor data', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.activeBuffs = [];
+        engine.upsertActiveBuff = GameEngine.prototype.upsertActiveBuff;
+        engine.syncTrackedActorBuffs = GameEngine.prototype.syncTrackedActorBuffs;
+        engine.getActiveBuffs = GameEngine.prototype.getActiveBuffs;
+
+        engine.syncTrackedActorBuffs({
+            markWeaknessTimer: 0.1,
+            markWeaknessFactor: 0
+        });
+
+        expect(engine.getActiveBuffs()).toEqual(expect.arrayContaining([
+            expect.objectContaining({
+                id: 'mark_weakness',
+                detail: 'Damage taken increased',
+                durationSeconds: 0.1,
+                isDebuff: true
+            })
+        ]));
     });
 
     test('authoritative self status details apply replicated slow duration', () => {

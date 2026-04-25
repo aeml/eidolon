@@ -193,6 +193,10 @@ const AUTHORITATIVE_STATUS_CLEAR_CONFIG = {
     },
     weakPointMarked: (entity) => {
         entity.weakPointMarkTimer = 0;
+    },
+    markWeakness: (entity) => {
+        entity.markWeaknessTimer = 0;
+        entity.markWeaknessFactor = 0;
     }
 };
 import { Fighter } from '../entities/Fighter.js';
@@ -704,6 +708,10 @@ export class GameEngine {
 
         if (payload.weakPointMarked === true && playerEntity.weakPointMarkTimer <= 0) {
             playerEntity.weakPointMarkTimer = Math.max(playerEntity.weakPointMarkTimer || 0, 0.1);
+        }
+
+        if (payload.markWeakness === true && playerEntity.markWeaknessTimer <= 0) {
+            playerEntity.markWeaknessTimer = Math.max(playerEntity.markWeaknessTimer || 0, 0.1);
         }
     }
 
@@ -3141,7 +3149,7 @@ export class GameEngine {
                 icon: '🎯',
                 name: 'Marked',
                 durationSeconds: Number(actor.markWeaknessTimer || 0),
-                detail: `+${Math.round(Number(actor.markWeaknessFactor || 0) * 100)}% damage taken`,
+                detail: Number(actor.markWeaknessFactor || 0) > 0 ? `+${Math.round(Number(actor.markWeaknessFactor || 0) * 100)}% damage taken` : 'Damage taken increased',
                 isDebuff: true
             },
             {
