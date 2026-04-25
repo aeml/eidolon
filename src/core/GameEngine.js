@@ -190,6 +190,9 @@ const AUTHORITATIVE_STATUS_CLEAR_CONFIG = {
         entity.poisonTimer = 0;
         entity.poisonStacks = 0;
         entity.poisonTickDamage = 0;
+    },
+    weakPointMarked: (entity) => {
+        entity.weakPointMarkTimer = 0;
     }
 };
 import { Fighter } from '../entities/Fighter.js';
@@ -693,6 +696,10 @@ export class GameEngine {
 
         if (payload.poisonDamage !== undefined && payload.poisoned === true) {
             playerEntity.poisonTickDamage = Math.max(0, Math.round(Number(payload.poisonDamage || 0)));
+        }
+
+        if (payload.weakPointMarked === true && playerEntity.weakPointMarkTimer <= 0) {
+            playerEntity.weakPointMarkTimer = Math.max(playerEntity.weakPointMarkTimer || 0, 0.1);
         }
     }
 
@@ -3114,6 +3121,15 @@ export class GameEngine {
                 durationSeconds: Number(actor.swiftBuffTimer || 0),
                 detail: '+20% move speed',
                 isDebuff: false
+            },
+            {
+                id: 'weak_point',
+                active: Number(actor.weakPointMarkTimer) > 0,
+                icon: '🎯',
+                name: 'Weak Point',
+                durationSeconds: Number(actor.weakPointMarkTimer || 0),
+                detail: 'Vulnerable to piercing throw',
+                isDebuff: true
             },
             {
                 id: 'mark_weakness',

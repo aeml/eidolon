@@ -38,6 +38,7 @@ describe('GameEngine active buff tracker', () => {
             lastStandTimer: 4.8,
             lastStandDamageBoost: 0.45,
             swiftBuffTimer: 3.0,
+            weakPointMarkTimer: 4.1,
             markWeaknessTimer: 5.2,
             markWeaknessFactor: 0.2,
             bleedTimer: 8.0,
@@ -130,6 +131,14 @@ describe('GameEngine active buff tracker', () => {
                 isDebuff: false
             }),
             expect.objectContaining({
+                id: 'weak_point',
+                name: 'Weak Point',
+                icon: '🎯',
+                detail: 'Vulnerable to piercing throw',
+                durationSeconds: 4.1,
+                isDebuff: true
+            }),
+            expect.objectContaining({
                 id: 'mark_weakness',
                 name: 'Marked',
                 icon: '🎯',
@@ -182,6 +191,7 @@ describe('GameEngine active buff tracker', () => {
             hasteFactor: 0.5,
             blessingZealTimer: 9,
             blessingZealFactor: 0.25,
+            weakPointMarkTimer: 3,
             bleedTimer: 4,
             bleedStacks: 2,
             bleedTickDamage: 12
@@ -313,6 +323,7 @@ describe('GameEngine active buff tracker', () => {
             slowTimer: 4,
             slowFactor: 0.5,
             rootTimer: 3,
+            weakPointMarkTimer: 4,
             bleedTimer: 6,
             bleedStacks: 2,
             bleedTickDamage: 14,
@@ -325,6 +336,7 @@ describe('GameEngine active buff tracker', () => {
             stunned: false,
             slowed: false,
             rooted: false,
+            weakPointMarked: false,
             bleeding: false,
             poisoned: false
         });
@@ -333,6 +345,7 @@ describe('GameEngine active buff tracker', () => {
         expect(player.slowTimer).toBe(0);
         expect(player.slowFactor).toBe(0);
         expect(player.rootTimer).toBe(0);
+        expect(player.weakPointMarkTimer).toBe(0);
         expect(player.bleedTimer).toBe(0);
         expect(player.bleedStacks).toBe(0);
         expect(player.bleedTickDamage).toBe(0);
@@ -357,6 +370,21 @@ describe('GameEngine active buff tracker', () => {
 
         expect(player.slowFactor).toBe(0.35);
         expect(player.slowTimer).toBe(0.1);
+    });
+
+    test('authoritative self status details apply replicated weak point state', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncPlayerStatusDetails = GameEngine.prototype.syncPlayerStatusDetails;
+
+        const player = {
+            weakPointMarkTimer: 0
+        };
+
+        engine.syncPlayerStatusDetails(player, {
+            weakPointMarked: true
+        });
+
+        expect(player.weakPointMarkTimer).toBe(0.1);
     });
 
     test('authoritative self status details apply replicated slow duration', () => {

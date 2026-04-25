@@ -132,6 +132,7 @@ type EntitySnapshot struct {
 	Poisoned bool
 	PoisonDuration float64
 	PoisonDamage int
+	WeakPointMarked bool
 	JumpProgress float64
 	TalentPoints int
 	TalentKeys   int
@@ -3564,6 +3565,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		Poisoned: e.Poisoned,
 		PoisonDuration: poisonDuration,
 		PoisonDamage: poisonDamage,
+		WeakPointMarked: e.WeakPointMarked,
 		JumpProgress: e.JumpProgress,
 		TalentPoints: derivedTalentPoints,
 		TalentKeys:   keys,
@@ -3647,6 +3649,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 			cpoisonDamage = current.PoisonDamage
 		}
 	}
+	cweakPointMarked := current.WeakPointMarked
 	ctalentPoints := current.TalentPoints
 	cjumpProgress := current.JumpProgress
 	ctalentKeys := 0
@@ -3729,6 +3732,9 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 		return true
 	}
 	if ctimeWarpActive != last.TimeWarpActive {
+		return true
+	}
+	if cweakPointMarked != last.WeakPointMarked {
 		return true
 	}
 	if cspellFocusActive != last.SpellFocusActive {
@@ -4118,6 +4124,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		Poisoned:          e.Poisoned,
 		PoisonDuration:    poisonDuration,
 		PoisonDamage:      poisonDamage,
+		WeakPointMarked:   e.WeakPointMarked,
 	}
 
 	e.Mu.RUnlock()

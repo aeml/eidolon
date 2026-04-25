@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.22 for the latest shipped slow duration sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.22');
+    test('advances the login screen to alpha 0.29.23 for the latest shipped weak point active sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.23');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.22', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.23', () => {
+        expect(indexHtml).toContain('Patch 0.29.23');
+        expect(indexHtml).toContain('Authoritative state now also replicates weak point active state so marked targets can stay truthfully flagged in local self sync instead of relying only on local guesswork');
+        expect(indexHtml).toContain('This lets local self sync and debuff UI reflect the real server-owned weak point mark state while keeping duration and damage details for later slices');
+        expect(indexHtml).toContain('The 0.29 cleanup line continues by extending status detail replication one debuff field at a time, following slow duration with the first safe weak point state case');
+        expect(indexHtml).toContain('Added regression coverage for authoritative weak point active sync and 0.29.23 version presentation');
+    });
+
+    test('keeps the prior 0.29.22 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.22');
         expect(indexHtml).toContain('Authoritative state now also replicates slow duration so active slows can carry truthful remaining time instead of relying only on slow factor and a local placeholder timer');
         expect(indexHtml).toContain('This lets local self sync and debuff UI track the real remaining slow window from server state while keeping the broader status rollout incremental and honest');

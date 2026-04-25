@@ -35,6 +35,7 @@ function createEngineHarness() {
         slowTimer: 0,
         slowFactor: 0,
         rootTimer: 0,
+        weakPointMarkTimer: 0,
         bleedTimer: 0,
         bleedStacks: 0,
         bleedTickDamage: 0,
@@ -507,6 +508,7 @@ describe('GameEngine multiplayer respawn sync', () => {
         engine.player.slowTimer = 5;
         engine.player.slowFactor = 0.6;
         engine.player.rootTimer = 3;
+        engine.player.weakPointMarkTimer = 4;
         engine.player.bleedTimer = 8;
         engine.player.bleedStacks = 2;
         engine.player.poisonTimer = 6;
@@ -521,6 +523,7 @@ describe('GameEngine multiplayer respawn sync', () => {
                         stunned: false,
                         slowed: false,
                         rooted: false,
+                        weakPointMarked: false,
                         bleeding: false,
                         poisoned: false
                     }
@@ -533,6 +536,7 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.slowTimer).toBe(0);
         expect(engine.player.slowFactor).toBe(0);
         expect(engine.player.rootTimer).toBe(0);
+        expect(engine.player.weakPointMarkTimer).toBe(0);
         expect(engine.player.bleedTimer).toBe(0);
         expect(engine.player.bleedStacks).toBe(0);
         expect(engine.player.poisonTimer).toBe(0);
@@ -561,6 +565,27 @@ describe('GameEngine multiplayer respawn sync', () => {
 
         expect(engine.player.slowFactor).toBe(0.35);
         expect(engine.player.slowTimer).toBe(0.1);
+    });
+
+    test('delta self sync applies authoritative weak point active state', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.weakPointMarkTimer = 0;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        weakPointMarked: true
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.weakPointMarkTimer).toBe(0.1);
     });
 
     test('delta self sync applies authoritative slow duration detail', () => {
@@ -752,6 +777,7 @@ describe('GameEngine multiplayer respawn sync', () => {
                     slowFactor: 0,
                     rooted: false,
                     rootDuration: 0,
+                    weakPointMarked: false,
                     bleeding: false,
                     bleedDuration: 0,
                     bleedDamage: 0,

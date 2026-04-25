@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.29.22`
+- Current in-game displayed version: `Alpha 0.29.23`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.29.22`
+### Shipped through `0.29.23`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -102,6 +102,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.29.20`: authoritative state now also replicates bleed damage, keeping active bleed tick detail truthful in local sync and debuff UI without inventing server-side stack counts
 - `0.29.21`: authoritative state now also replicates poison damage, keeping active poison tick detail truthful in local sync and debuff UI without inventing server-side stack counts
 - `0.29.22`: authoritative state now also replicates slow duration, keeping active slow remaining time truthful in local sync and debuff UI instead of relying on a local placeholder timer
+- `0.29.23`: authoritative state now also replicates weak point active state, keeping local self sync and debuff UI aligned with the real server-owned marked flag before adding duration detail
 
 ### What `0.22` has clearly accomplished already
 
