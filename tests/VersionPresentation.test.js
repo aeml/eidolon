@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.17 for the latest shipped stun duration sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.17');
+    test('advances the login screen to alpha 0.29.18 for the latest shipped bleed duration sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.18');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.17', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.18', () => {
+        expect(indexHtml).toContain('Patch 0.29.18');
+        expect(indexHtml).toContain('Authoritative state now also replicates bleed duration so active bleeds can carry truthful remaining time instead of only an on/off bleeding flag');
+        expect(indexHtml).toContain('This lets local self sync and debuff UI track the real remaining bleed window from server state while keeping the broader debuff-duration rollout incremental and honest');
+        expect(indexHtml).toContain('The 0.29 cleanup line continues by extending status detail replication one debuff at a time, moving from timer-backed crowd control into the next safe server-owned bleed case');
+        expect(indexHtml).toContain('Added regression coverage for authoritative bleed duration sync and 0.29.18 version presentation');
+    });
+
+    test('keeps the prior 0.29.17 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.17');
         expect(indexHtml).toContain('Authoritative state now also replicates stun duration so active stuns can carry truthful remaining time instead of only an on/off stunned flag');
         expect(indexHtml).toContain('This lets local self sync and debuff UI track the real remaining stun lockout from server state while keeping the broader debuff-duration rollout incremental and honest');

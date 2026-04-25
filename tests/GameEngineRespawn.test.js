@@ -605,6 +605,30 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.stunTimer).toBe(1.75);
     });
 
+    test('delta self sync applies authoritative bleed duration detail', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.bleedTimer = 0;
+        engine.player.bleedStacks = 2;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        bleeding: true,
+                        bleedDuration: 3.25
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.bleedTimer).toBe(3.25);
+        expect(engine.player.bleedStacks).toBe(2);
+    });
+
     test('full state DEAD->alive also forces town respawn', () => {
         const engine = createEngineHarness();
 
@@ -631,6 +655,7 @@ describe('GameEngine multiplayer respawn sync', () => {
                     rooted: false,
                     rootDuration: 0,
                     bleeding: false,
+                    bleedDuration: 0,
                     poisoned: false,
                     baseStats: {
                         strength: 16,

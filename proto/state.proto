@@ -148,6 +148,7 @@ message Entity {
   float slow_factor = 58;
   float root_duration = 59;
   float stun_duration = 60;
+  float bleed_duration = 61;
 
   // Passive talents
   int32 talent_points = 47;

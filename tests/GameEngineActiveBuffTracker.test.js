@@ -383,4 +383,22 @@ describe('GameEngine active buff tracker', () => {
 
         expect(player.stunTimer).toBe(1.75);
     });
+
+    test('authoritative self status details apply replicated bleed duration', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncPlayerStatusDetails = GameEngine.prototype.syncPlayerStatusDetails;
+
+        const player = {
+            bleedTimer: 0,
+            bleedStacks: 2
+        };
+
+        engine.syncPlayerStatusDetails(player, {
+            bleeding: true,
+            bleedDuration: 3.25
+        });
+
+        expect(player.bleedTimer).toBe(3.25);
+        expect(player.bleedStacks).toBe(2);
+    });
 });

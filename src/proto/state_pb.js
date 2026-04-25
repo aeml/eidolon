@@ -2449,6 +2449,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [slowFactor] Entity slowFactor
              * @property {number|null} [rootDuration] Entity rootDuration
              * @property {number|null} [stunDuration] Entity stunDuration
+             * @property {number|null} [bleedDuration] Entity bleedDuration
              * @property {number|null} [talentPoints] Entity talentPoints
              * @property {Array.<string>|null} [unlockedTalents] Entity unlockedTalents
              * @property {Object.<string,number>|null} [talentRanks] Entity talentRanks
@@ -2869,6 +2870,14 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.stunDuration = 0;
 
             /**
+             * Entity bleedDuration.
+             * @member {number} bleedDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.bleedDuration = 0;
+
+            /**
              * Entity talentPoints.
              * @member {number} talentPoints
              * @memberof eidolon.state.Entity
@@ -3041,6 +3050,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 59, wireType 5 =*/477).float(message.rootDuration);
                 if (message.stunDuration != null && Object.hasOwnProperty.call(message, "stunDuration"))
                     writer.uint32(/* id 60, wireType 5 =*/485).float(message.stunDuration);
+                if (message.bleedDuration != null && Object.hasOwnProperty.call(message, "bleedDuration"))
+                    writer.uint32(/* id 61, wireType 5 =*/493).float(message.bleedDuration);
                 if (message.talentPoints != null && Object.hasOwnProperty.call(message, "talentPoints"))
                     writer.uint32(/* id 47, wireType 0 =*/376).int32(message.talentPoints);
                 if (message.unlockedTalents != null && message.unlockedTalents.length)
@@ -3335,6 +3346,10 @@ export const eidolon = $root.eidolon = (() => {
                             message.stunDuration = reader.float();
                             break;
                         }
+                    case 61: {
+                            message.bleedDuration = reader.float();
+                            break;
+                        }
                     case 47: {
                             message.talentPoints = reader.int32();
                             break;
@@ -3617,6 +3632,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.stunDuration != null && message.hasOwnProperty("stunDuration"))
                     if (typeof message.stunDuration !== "number")
                         return "stunDuration: number expected";
+                if (message.bleedDuration != null && message.hasOwnProperty("bleedDuration"))
+                    if (typeof message.bleedDuration !== "number")
+                        return "bleedDuration: number expected";
                 if (message.talentPoints != null && message.hasOwnProperty("talentPoints"))
                     if (!$util.isInteger(message.talentPoints))
                         return "talentPoints: integer expected";
@@ -3800,6 +3818,8 @@ export const eidolon = $root.eidolon = (() => {
                     message.rootDuration = Number(object.rootDuration);
                 if (object.stunDuration != null)
                     message.stunDuration = Number(object.stunDuration);
+                if (object.bleedDuration != null)
+                    message.bleedDuration = Number(object.bleedDuration);
                 if (object.talentPoints != null)
                     message.talentPoints = object.talentPoints | 0;
                 if (object.unlockedTalents) {
@@ -3903,6 +3923,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.slowFactor = 0;
                     object.rootDuration = 0;
                     object.stunDuration = 0;
+                    object.bleedDuration = 0;
                     object.talentPoints = 0;
                 }
                 if (message.id != null && message.hasOwnProperty("id"))
@@ -4027,6 +4048,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.rootDuration = options.json && !isFinite(message.rootDuration) ? String(message.rootDuration) : message.rootDuration;
                 if (message.stunDuration != null && message.hasOwnProperty("stunDuration"))
                     object.stunDuration = options.json && !isFinite(message.stunDuration) ? String(message.stunDuration) : message.stunDuration;
+                if (message.bleedDuration != null && message.hasOwnProperty("bleedDuration"))
+                    object.bleedDuration = options.json && !isFinite(message.bleedDuration) ? String(message.bleedDuration) : message.bleedDuration;
                 if (message.talentPoints != null && message.hasOwnProperty("talentPoints"))
                     object.talentPoints = message.talentPoints;
                 if (message.unlockedTalents && message.unlockedTalents.length) {
