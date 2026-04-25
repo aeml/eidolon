@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.19 for the latest shipped poison duration sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.19');
+    test('advances the login screen to alpha 0.29.20 for the latest shipped bleed damage sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.20');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.19', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.20', () => {
+        expect(indexHtml).toContain('Patch 0.29.20');
+        expect(indexHtml).toContain('Authoritative state now also replicates bleed damage so active bleeds can carry truthful per-tick damage detail instead of relying only on local stack guesses');
+        expect(indexHtml).toContain('This lets local self sync and debuff UI prefer the real server-owned bleed tick damage while still falling back to local stack-based detail when that authoritative field is absent');
+        expect(indexHtml).toContain('The 0.29 cleanup line continues by extending status detail replication one debuff field at a time, following poison duration with the next safe bleed-owned damage detail');
+        expect(indexHtml).toContain('Added regression coverage for authoritative bleed damage sync and 0.29.20 version presentation');
+    });
+
+    test('keeps the prior 0.29.19 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.19');
         expect(indexHtml).toContain('Authoritative state now also replicates poison duration so active poison can carry truthful remaining time instead of only an on/off poisoned flag');
         expect(indexHtml).toContain('This lets local self sync and debuff UI track the real remaining poison window from server state while keeping the broader debuff-duration rollout incremental and honest');

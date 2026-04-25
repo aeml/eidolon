@@ -184,6 +184,7 @@ const AUTHORITATIVE_STATUS_CLEAR_CONFIG = {
     bleeding: (entity) => {
         entity.bleedTimer = 0;
         entity.bleedStacks = 0;
+        entity.bleedTickDamage = 0;
     },
     poisoned: (entity) => {
         entity.poisonTimer = 0;
@@ -675,6 +676,10 @@ export class GameEngine {
 
         if (payload.bleedDuration !== undefined && payload.bleeding === true) {
             playerEntity.bleedTimer = Math.max(0, Number(payload.bleedDuration || 0));
+        }
+
+        if (payload.bleedDamage !== undefined && payload.bleeding === true) {
+            playerEntity.bleedTickDamage = Math.max(0, Math.round(Number(payload.bleedDamage || 0)));
         }
 
         if (payload.poisonDuration !== undefined && payload.poisoned === true) {
@@ -3116,7 +3121,9 @@ export class GameEngine {
                 icon: '🩸',
                 name: 'Bleeding',
                 durationSeconds: Number(actor.bleedTimer || 0),
-                detail: `${Math.max(1, Math.round(Number(actor.bleedStacks || 0)))} bleed stacks`,
+                detail: Number(actor.bleedTickDamage || 0) > 0
+                    ? `${Math.round(Number(actor.bleedTickDamage || 0))} bleed per tick`
+                    : `${Math.max(1, Math.round(Number(actor.bleedStacks || 0)))} bleed stacks`,
                 isDebuff: true
             },
             {

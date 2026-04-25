@@ -227,3 +227,29 @@ func TestEntitySnapshotTracksPoisonDurationForDeltaSync(t *testing.T) {
 		t.Fatal("expected poison duration delta change to be detected")
 	}
 }
+
+func TestEntitySnapshotTracksBleedDamageForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:           "player-bleed-damage",
+		Type:         game.TypePlayer,
+		SubType:      "Rogue",
+		State:        "IDLE",
+		TalentRanks:  map[string]int{},
+		Bleeding:     true,
+		BleedEndTime: time.Now().Add(2500 * time.Millisecond),
+		BleedDamage:  14,
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+	if snapshot.BleedDamage != 14 {
+		t.Fatal("expected snapshot to track bleed damage")
+	}
+
+	entity.BleedDamage = 9
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected bleed damage delta change to be detected")
+	}
+}

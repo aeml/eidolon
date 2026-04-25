@@ -42,6 +42,7 @@ describe('GameEngine active buff tracker', () => {
             markWeaknessFactor: 0.2,
             bleedTimer: 8.0,
             bleedStacks: 2,
+            bleedTickDamage: 14,
             poisonTimer: 6.0,
             poisonStacks: 3,
             rootTimer: 2.2,
@@ -139,7 +140,7 @@ describe('GameEngine active buff tracker', () => {
                 id: 'bleed',
                 name: 'Bleeding',
                 icon: '🩸',
-                detail: '2 bleed stacks',
+                detail: '14 bleed per tick',
                 durationSeconds: 8.0,
                 isDebuff: true
             }),
@@ -181,7 +182,8 @@ describe('GameEngine active buff tracker', () => {
             blessingZealTimer: 9,
             blessingZealFactor: 0.25,
             bleedTimer: 4,
-            bleedStacks: 2
+            bleedStacks: 2,
+            bleedTickDamage: 12
         };
         engine.upsertActiveBuff = GameEngine.prototype.upsertActiveBuff;
         engine.removeActiveBuff = GameEngine.prototype.removeActiveBuff;
@@ -312,6 +314,7 @@ describe('GameEngine active buff tracker', () => {
             rootTimer: 3,
             bleedTimer: 6,
             bleedStacks: 2,
+            bleedTickDamage: 14,
             poisonTimer: 5,
             poisonStacks: 3
         };
@@ -330,6 +333,7 @@ describe('GameEngine active buff tracker', () => {
         expect(player.rootTimer).toBe(0);
         expect(player.bleedTimer).toBe(0);
         expect(player.bleedStacks).toBe(0);
+        expect(player.bleedTickDamage).toBe(0);
         expect(player.poisonTimer).toBe(0);
         expect(player.poisonStacks).toBe(0);
     });
@@ -399,6 +403,24 @@ describe('GameEngine active buff tracker', () => {
         });
 
         expect(player.bleedTimer).toBe(3.25);
+        expect(player.bleedStacks).toBe(2);
+    });
+
+    test('authoritative self status details apply replicated bleed damage', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncPlayerStatusDetails = GameEngine.prototype.syncPlayerStatusDetails;
+
+        const player = {
+            bleedTickDamage: 0,
+            bleedStacks: 2
+        };
+
+        engine.syncPlayerStatusDetails(player, {
+            bleeding: true,
+            bleedDamage: 14
+        });
+
+        expect(player.bleedTickDamage).toBe(14);
         expect(player.bleedStacks).toBe(2);
     });
 

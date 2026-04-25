@@ -37,6 +37,7 @@ function createEngineHarness() {
         rootTimer: 0,
         bleedTimer: 0,
         bleedStacks: 0,
+        bleedTickDamage: 0,
         poisonTimer: 0,
         poisonStacks: 0,
         baseStats: {
@@ -629,6 +630,30 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.bleedStacks).toBe(2);
     });
 
+    test('delta self sync applies authoritative bleed damage detail', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.bleedTickDamage = 0;
+        engine.player.bleedStacks = 2;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        bleeding: true,
+                        bleedDamage: 14
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.bleedTickDamage).toBe(14);
+        expect(engine.player.bleedStacks).toBe(2);
+    });
+
     test('delta self sync applies authoritative poison duration detail', () => {
         const engine = createEngineHarness();
         engine.player.state = 'IDLE';
@@ -680,6 +705,7 @@ describe('GameEngine multiplayer respawn sync', () => {
                     rootDuration: 0,
                     bleeding: false,
                     bleedDuration: 0,
+                    bleedDamage: 0,
                     poisoned: false,
                     poisonDuration: 0,
                     baseStats: {

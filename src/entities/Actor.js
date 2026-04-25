@@ -119,6 +119,7 @@ export class Actor extends Entity {
         // Rogue Debuffs
         this.bleedTimer = 0;
         this.bleedStacks = 0;
+        this.bleedTickDamage = 0;
         this.weakPointMarkTimer = 0;
         
         // Rogue Branch C Debuffs
@@ -590,7 +591,7 @@ export class Actor extends Entity {
             this.bleedTickTimer += dt;
             if (this.bleedTickTimer >= 1.0) {
                 this.bleedTickTimer -= 1.0;
-                const bleedDmg = 5 * this.bleedStacks;
+                const bleedDmg = this.bleedTickDamage > 0 ? this.bleedTickDamage : 5 * this.bleedStacks;
                 this.takeDamage(bleedDmg);
                 // Visual
                 // if (floatingTextManager) floatingTextManager.spawn(bleedDmg, this.position, '#ff0000');
@@ -599,6 +600,7 @@ export class Actor extends Entity {
             if (this.bleedTimer <= 0) {
                 this.bleedTimer = 0;
                 this.bleedStacks = 0;
+                this.bleedTickDamage = 0;
             }
         }
 
@@ -980,6 +982,7 @@ export class Actor extends Entity {
         this.markWeaknessFactor = 0;
         this.bleedTimer = 0;
         this.bleedStacks = 0;
+        this.bleedTickDamage = 0;
         this.weakPointMarkTimer = 0;
         // Add other debuffs here if they exist (poison, bleed, etc.)
         console.log(`${this.id} was cleansed!`);
