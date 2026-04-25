@@ -337,6 +337,28 @@ describe('GameEngine active buff tracker', () => {
         expect(player.createSpirits).toHaveBeenCalled();
     });
 
+    test('shared support sync applies authoritative blessing resolve duration detail', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;
+        engine.syncPlayerSupportEffects = GameEngine.prototype.syncPlayerSupportEffects;
+        engine.showRemoteSupportStateReadability = jest.fn();
+
+        const player = {
+            blessingResolveActive: false,
+            blessingResolveTimer: 0,
+            blessingResolveReduction: 0.25
+        };
+
+        engine.syncPlayerSupportEffects(player, {
+            blessingResolveActive: true,
+            blessingResolveDuration: 12.5
+        });
+
+        expect(player.blessingResolveActive).toBe(true);
+        expect(player.blessingResolveTimer).toBe(12.5);
+        expect(player.blessingResolveReduction).toBe(0.25);
+    });
+
     test('authoritative self status clears remove tracked debuffs without inventing new durations', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.syncPlayerStatusClears = GameEngine.prototype.syncPlayerStatusClears;

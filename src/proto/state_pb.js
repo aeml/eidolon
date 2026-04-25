@@ -2451,6 +2451,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {boolean|null} [markWeakness] Entity markWeakness
              * @property {number|null} [markWeaknessDuration] Entity markWeaknessDuration
              * @property {number|null} [spiritDuration] Entity spiritDuration
+             * @property {number|null} [blessingResolveDuration] Entity blessingResolveDuration
              * @property {number|null} [slowFactor] Entity slowFactor
              * @property {number|null} [slowDuration] Entity slowDuration
              * @property {number|null} [rootDuration] Entity rootDuration
@@ -2895,6 +2896,14 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.spiritDuration = 0;
 
             /**
+             * Entity blessingResolveDuration.
+             * @member {number} blessingResolveDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.blessingResolveDuration = 0;
+
+            /**
              * Entity slowFactor.
              * @member {number} slowFactor
              * @memberof eidolon.state.Entity
@@ -3135,6 +3144,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 69, wireType 5 =*/557).float(message.markWeaknessDuration);
                 if (message.spiritDuration != null && Object.hasOwnProperty.call(message, "spiritDuration"))
                     writer.uint32(/* id 70, wireType 5 =*/565).float(message.spiritDuration);
+                if (message.blessingResolveDuration != null && Object.hasOwnProperty.call(message, "blessingResolveDuration"))
+                    writer.uint32(/* id 71, wireType 5 =*/573).float(message.blessingResolveDuration);
                 if (message.slowFactor != null && Object.hasOwnProperty.call(message, "slowFactor"))
                     writer.uint32(/* id 58, wireType 5 =*/469).float(message.slowFactor);
                 if (message.slowDuration != null && Object.hasOwnProperty.call(message, "slowDuration"))
@@ -3451,6 +3462,10 @@ export const eidolon = $root.eidolon = (() => {
                         }
                     case 70: {
                             message.spiritDuration = reader.float();
+                            break;
+                        }
+                    case 71: {
+                            message.blessingResolveDuration = reader.float();
                             break;
                         }
                     case 58: {
@@ -3773,6 +3788,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.spiritDuration != null && message.hasOwnProperty("spiritDuration"))
                     if (typeof message.spiritDuration !== "number")
                         return "spiritDuration: number expected";
+                if (message.blessingResolveDuration != null && message.hasOwnProperty("blessingResolveDuration"))
+                    if (typeof message.blessingResolveDuration !== "number")
+                        return "blessingResolveDuration: number expected";
                 if (message.slowFactor != null && message.hasOwnProperty("slowFactor"))
                     if (typeof message.slowFactor !== "number")
                         return "slowFactor: number expected";
@@ -3984,6 +4002,8 @@ export const eidolon = $root.eidolon = (() => {
                     message.markWeaknessDuration = Number(object.markWeaknessDuration);
                 if (object.spiritDuration != null)
                     message.spiritDuration = Number(object.spiritDuration);
+                if (object.blessingResolveDuration != null)
+                    message.blessingResolveDuration = Number(object.blessingResolveDuration);
                 if (object.slowFactor != null)
                     message.slowFactor = Number(object.slowFactor);
                 if (object.slowDuration != null)
@@ -4105,6 +4125,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.markWeakness = false;
                     object.markWeaknessDuration = 0;
                     object.spiritDuration = 0;
+                    object.blessingResolveDuration = 0;
                     object.slowFactor = 0;
                     object.slowDuration = 0;
                     object.rootDuration = 0;
@@ -4241,6 +4262,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.markWeaknessDuration = options.json && !isFinite(message.markWeaknessDuration) ? String(message.markWeaknessDuration) : message.markWeaknessDuration;
                 if (message.spiritDuration != null && message.hasOwnProperty("spiritDuration"))
                     object.spiritDuration = options.json && !isFinite(message.spiritDuration) ? String(message.spiritDuration) : message.spiritDuration;
+                if (message.blessingResolveDuration != null && message.hasOwnProperty("blessingResolveDuration"))
+                    object.blessingResolveDuration = options.json && !isFinite(message.blessingResolveDuration) ? String(message.blessingResolveDuration) : message.blessingResolveDuration;
                 if (message.slowFactor != null && message.hasOwnProperty("slowFactor"))
                     object.slowFactor = options.json && !isFinite(message.slowFactor) ? String(message.slowFactor) : message.slowFactor;
                 if (message.slowDuration != null && message.hasOwnProperty("slowDuration"))

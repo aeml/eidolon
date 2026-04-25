@@ -428,3 +428,28 @@ func TestEntitySnapshotTracksSpiritDurationForDeltaSync(t *testing.T) {
 		t.Fatal("expected spirit duration delta change to be detected")
 	}
 }
+
+func TestEntitySnapshotTracksBlessingResolveDurationForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:                     "player-blessing-resolve-duration",
+		Type:                   game.TypePlayer,
+		SubType:                "Cleric",
+		State:                  "IDLE",
+		TalentRanks:            map[string]int{},
+		BlessingResolveActive:  true,
+		BlessingResolveEndTime: time.Now().Add(2500 * time.Millisecond),
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+	if snapshot.BlessingResolveDuration <= 0 {
+		t.Fatal("expected snapshot to track blessing resolve duration")
+	}
+
+	entity.BlessingResolveEndTime = time.Now().Add(500 * time.Millisecond)
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected blessing resolve duration delta change to be detected")
+	}
+}

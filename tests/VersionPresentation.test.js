@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.27 for the latest shipped spirit duration sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.27');
+    test('advances the login screen to alpha 0.29.28 for the latest shipped blessing resolve duration sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.28');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.27', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.28', () => {
+        expect(indexHtml).toContain('Patch 0.29.28');
+        expect(indexHtml).toContain('Authoritative state now also replicates blessing resolve duration so Blessing of Resolve can carry truthful remaining time in local self sync instead of relying on a local placeholder timer');
+        expect(indexHtml).toContain('This lets local self sync and buff UI track the real remaining Blessing of Resolve window from server state while keeping the broader support-duration rollout incremental and honest');
+        expect(indexHtml).toContain('The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following spirit duration with the next timer-backed support-duration case');
+        expect(indexHtml).toContain('Added regression coverage for authoritative blessing resolve duration sync and 0.29.28 version presentation');
+    });
+
+    test('keeps the prior 0.29.27 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.27');
         expect(indexHtml).toContain('Authoritative state now also replicates spirit duration so Spirit Guardians can carry truthful remaining time in local self sync instead of relying on a local placeholder timer');
         expect(indexHtml).toContain('This lets local self sync and buff UI track the real remaining Spirit Guardians window from server state while keeping the broader support-duration rollout incremental and honest');

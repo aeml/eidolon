@@ -118,8 +118,11 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
     blessing_resolve: {
         payloadKey: 'blessingResolveActive',
         getPreviousActive: (entity) => Boolean(entity.blessingResolveActive),
-        applyPayload: (entity, value) => {
+        applyPayload: (entity, value, payload) => {
             entity.blessingResolveActive = Boolean(value);
+            if (payload.blessingResolveDuration !== undefined) {
+                entity.blessingResolveTimer = Math.max(0, Number(payload.blessingResolveDuration || 0));
+            }
         },
         getNextActive: (entity) => Boolean(entity.blessingResolveActive),
     },
