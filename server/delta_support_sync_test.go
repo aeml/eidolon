@@ -529,3 +529,28 @@ func TestEntitySnapshotTracksArcaneShieldDurationForDeltaSync(t *testing.T) {
 		t.Fatal("expected arcane shield duration delta change to be detected")
 	}
 }
+
+func TestEntitySnapshotTracksDivineInterventionDurationForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:                       "player-divine-intervention-duration",
+		Type:                     game.TypePlayer,
+		SubType:                  "Cleric",
+		State:                    "IDLE",
+		TalentRanks:              map[string]int{},
+		DivineInterventionActive: true,
+		DivineInterventionEndTime: time.Now().Add(2500 * time.Millisecond),
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+	if snapshot.DivineInterventionDuration <= 0 {
+		t.Fatal("expected snapshot to track divine intervention duration")
+	}
+
+	entity.DivineInterventionEndTime = time.Now().Add(500 * time.Millisecond)
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected divine intervention duration delta change to be detected")
+	}
+}

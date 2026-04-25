@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.31 for the latest shipped arcane shield duration sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.31');
+    test('advances the login screen to alpha 0.29.32 for the latest shipped divine intervention duration sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.32');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,20 +73,20 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.31', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.32', () => {
+        expect(indexHtml).toContain('Patch 0.29.32');
+        expect(indexHtml).toContain('Authoritative state now also replicates divine intervention duration so Divine Intervention can carry truthful remaining time in local self sync instead of relying on a missing local timer');
+        expect(indexHtml).toContain('This lets local self sync and buff UI track the real remaining Divine Intervention window from server state while keeping the broader support-duration rollout incremental and honest');
+        expect(indexHtml).toContain('The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following arcane shield duration with the last timer-backed rescue buff case in this pass');
+        expect(indexHtml).toContain('Added regression coverage for authoritative divine intervention duration sync and 0.29.32 version presentation');
+    });
+
+    test('keeps the prior 0.29.31 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.31');
         expect(indexHtml).toContain('Authoritative state now also replicates arcane shield duration so Arcane Shield can carry truthful remaining time in local self sync instead of relying on a borrowed placeholder timer');
         expect(indexHtml).toContain('This lets local self sync and buff UI track the real remaining Arcane Shield window from server state while keeping the broader support-duration rollout incremental and honest');
         expect(indexHtml).toContain('The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following guardian embrace duration with the next timer-backed wizard protection case');
         expect(indexHtml).toContain('Added regression coverage for authoritative arcane shield duration sync and 0.29.31 version presentation');
-    });
-
-    test('keeps the prior 0.29.30 patch notes entry in history', () => {
-        expect(indexHtml).toContain('Patch 0.29.30');
-        expect(indexHtml).toContain('Authoritative state now also replicates guardian embrace duration so Guardian Embrace can carry truthful remaining time in local self sync instead of relying on a local placeholder timer');
-        expect(indexHtml).toContain('This lets local self sync and buff UI track the real remaining Guardian Embrace window from server state while keeping the broader support-duration rollout incremental and honest');
-        expect(indexHtml).toContain('The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following time warp duration with the next timer-backed cleric support case');
-        expect(indexHtml).toContain('Added regression coverage for authoritative guardian embrace duration sync and 0.29.30 version presentation');
     });
 
     test('keeps the prior 0.29.26 patch notes entry in history', () => {

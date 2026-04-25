@@ -107,6 +107,7 @@ export class Actor extends Entity {
         // Cleric Buffs/Debuffs
         this.blessingResolveTimer = 0;
         this.blessingResolveReduction = 0;
+        this.divineInterventionTimer = 0; // Display-only authoritative rescue window
         this.blessingZealTimer = 0;
         this.blessingZealFactor = 0;
         this.markWeaknessTimer = 0;
@@ -561,6 +562,12 @@ export class Actor extends Entity {
             if (this.blessingResolveTimer <= 0) {
                 this.blessingResolveTimer = 0;
                 this.blessingResolveReduction = 0;
+            }
+        }
+        if (this.divineInterventionTimer > 0) {
+            this.divineInterventionTimer -= dt;
+            if (this.divineInterventionTimer <= 0) {
+                this.divineInterventionTimer = 0;
             }
         }
         if (this.blessingZealTimer > 0) {
@@ -1029,6 +1036,7 @@ export class Actor extends Entity {
         if (this.divineInterventionActive && (this.stats.hp - finalAmount <= 0)) {
             this.stats.hp = this.stats.maxHp * 0.30; // Heal to 30%
             this.divineInterventionActive = false;
+            this.divineInterventionTimer = 0;
             console.log(`${this.id} was saved by Divine Intervention!`);
             return; 
         }

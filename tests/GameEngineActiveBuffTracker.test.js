@@ -28,6 +28,8 @@ describe('GameEngine active buff tracker', () => {
             guardianRoarReduction: 0.3,
             blessingResolveTimer: 6.2,
             blessingResolveReduction: 0.25,
+            divineInterventionActive: true,
+            divineInterventionTimer: 5.4,
             blessingZealTimer: 11.4,
             blessingZealFactor: 0.35,
             hasteTimer: 10.0,
@@ -74,6 +76,14 @@ describe('GameEngine active buff tracker', () => {
                 icon: '✝️',
                 detail: '25% damage reduction',
                 durationSeconds: 6.2,
+                isDebuff: false
+            }),
+            expect.objectContaining({
+                id: 'divine_intervention',
+                name: 'Divine Intervention',
+                icon: '🪽',
+                detail: 'Fatal damage prevention active',
+                durationSeconds: 5.4,
                 isDebuff: false
             }),
             expect.objectContaining({
@@ -422,6 +432,26 @@ describe('GameEngine active buff tracker', () => {
         expect(player.arcaneShieldActive).toBe(true);
         expect(player.shieldHP).toBe(180);
         expect(player.arcaneShieldTimer).toBe(12.5);
+    });
+
+    test('shared support sync applies authoritative divine intervention duration detail', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;
+        engine.syncPlayerSupportEffects = GameEngine.prototype.syncPlayerSupportEffects;
+        engine.showRemoteSupportStateReadability = jest.fn();
+
+        const player = {
+            divineInterventionActive: false,
+            divineInterventionTimer: 0
+        };
+
+        engine.syncPlayerSupportEffects(player, {
+            divineInterventionActive: true,
+            divineInterventionDuration: 12.5
+        });
+
+        expect(player.divineInterventionActive).toBe(true);
+        expect(player.divineInterventionTimer).toBe(12.5);
     });
 
     test('authoritative self status clears remove tracked debuffs without inventing new durations', () => {

@@ -688,6 +688,7 @@ type Entity struct {
 	TimeWarpDuration float32 `protobuf:"fixed32,72,opt,name=time_warp_duration,json=timeWarpDuration,proto3" json:"time_warp_duration,omitempty"`
 	GuardianEmbraceDuration float32 `protobuf:"fixed32,73,opt,name=guardian_embrace_duration,json=guardianEmbraceDuration,proto3" json:"guardian_embrace_duration,omitempty"`
 	ArcaneShieldDuration float32 `protobuf:"fixed32,74,opt,name=arcane_shield_duration,json=arcaneShieldDuration,proto3" json:"arcane_shield_duration,omitempty"`
+	DivineInterventionDuration float32 `protobuf:"fixed32,75,opt,name=divine_intervention_duration,json=divineInterventionDuration,proto3" json:"divine_intervention_duration,omitempty"`
 	SlowFactor float32 `protobuf:"fixed32,58,opt,name=slow_factor,json=slowFactor,proto3" json:"slow_factor,omitempty"`
 	SlowDuration float32 `protobuf:"fixed32,65,opt,name=slow_duration,json=slowDuration,proto3" json:"slow_duration,omitempty"`
 	RootDuration float32 `protobuf:"fixed32,59,opt,name=root_duration,json=rootDuration,proto3" json:"root_duration,omitempty"`
@@ -1210,6 +1211,13 @@ func (x *Entity) GetGuardianEmbraceDuration() float32 {
 func (x *Entity) GetArcaneShieldDuration() float32 {
 	if x != nil {
 		return x.ArcaneShieldDuration
+	}
+	return 0
+}
+
+func (x *Entity) GetDivineInterventionDuration() float32 {
+	if x != nil {
+		return x.DivineInterventionDuration
 	}
 	return 0
 }

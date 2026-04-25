@@ -154,6 +154,7 @@ message Entity {
   float time_warp_duration = 72;
   float guardian_embrace_duration = 73;
   float arcane_shield_duration = 74;
+  float divine_intervention_duration = 75;
   float slow_factor = 58;
   float root_duration = 59;
   float stun_duration = 60;

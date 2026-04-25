@@ -35,6 +35,8 @@ function createEngineHarness() {
         blessingResolveActive: false,
         blessingResolveTimer: 0,
         blessingResolveReduction: 0,
+        divineInterventionActive: false,
+        divineInterventionTimer: 0,
         guardianEmbraceActive: false,
         guardianEmbraceTimer: 0,
         arcaneShieldActive: false,
@@ -686,6 +688,30 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.arcaneShieldActive).toBe(true);
         expect(engine.player.shieldHP).toBe(180);
         expect(engine.player.arcaneShieldTimer).toBe(12.5);
+    });
+
+    test('delta self sync applies authoritative divine intervention duration detail', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.divineInterventionActive = false;
+        engine.player.divineInterventionTimer = 0;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        divineInterventionActive: true,
+                        divineInterventionDuration: 12.5
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.divineInterventionActive).toBe(true);
+        expect(engine.player.divineInterventionTimer).toBe(12.5);
     });
 
     test('delta self sync applies authoritative weak point active state', () => {

@@ -132,8 +132,11 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
     divine_intervention: {
         payloadKey: 'divineInterventionActive',
         getPreviousActive: (entity) => Boolean(entity.divineInterventionActive),
-        applyPayload: (entity, value) => {
+        applyPayload: (entity, value, payload) => {
             entity.divineInterventionActive = Boolean(value);
+            if (payload.divineInterventionDuration !== undefined) {
+                entity.divineInterventionTimer = Math.max(0, Number(payload.divineInterventionDuration || 0));
+            }
         },
         getNextActive: (entity) => Boolean(entity.divineInterventionActive),
     },
@@ -3098,6 +3101,15 @@ export class GameEngine {
                 name: 'Blessing of Resolve',
                 durationSeconds: Number(actor.blessingResolveTimer || 0),
                 detail: `${Math.round(Number(actor.blessingResolveReduction || 0) * 100)}% damage reduction`,
+                isDebuff: false
+            },
+            {
+                id: 'divine_intervention',
+                active: Boolean(actor.divineInterventionActive) && Number(actor.divineInterventionTimer || 0) > 0,
+                icon: '🪽',
+                name: 'Divine Intervention',
+                durationSeconds: Number(actor.divineInterventionTimer || 0),
+                detail: 'Fatal damage prevention active',
                 isDebuff: false
             },
             {
