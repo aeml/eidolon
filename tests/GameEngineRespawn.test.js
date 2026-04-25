@@ -37,6 +37,9 @@ function createEngineHarness() {
         blessingResolveReduction: 0,
         guardianEmbraceActive: false,
         guardianEmbraceTimer: 0,
+        arcaneShieldActive: false,
+        arcaneShieldTimer: 0,
+        shieldHP: 0,
         hasteTimer: 0,
         hasteFactor: 0,
         slowTimer: 0,
@@ -656,6 +659,33 @@ describe('GameEngine multiplayer respawn sync', () => {
 
         expect(engine.player.hasteTimer).toBe(12.5);
         expect(engine.player.hasteFactor).toBe(0.5);
+    });
+
+    test('delta self sync applies authoritative arcane shield duration detail', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.arcaneShieldActive = false;
+        engine.player.arcaneShieldTimer = 0;
+        engine.player.shieldHP = 0;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        arcaneShieldActive: true,
+                        arcaneShieldHp: 180,
+                        arcaneShieldDuration: 12.5
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.arcaneShieldActive).toBe(true);
+        expect(engine.player.shieldHP).toBe(180);
+        expect(engine.player.arcaneShieldTimer).toBe(12.5);
     });
 
     test('delta self sync applies authoritative weak point active state', () => {

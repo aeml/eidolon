@@ -148,6 +148,9 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
             if (payload.arcaneShieldHp !== undefined) {
                 entity.shieldHP = Number(payload.arcaneShieldHp || 0);
             }
+            if (payload.arcaneShieldDuration !== undefined) {
+                entity.arcaneShieldTimer = Math.max(0, Number(payload.arcaneShieldDuration || 0));
+            }
         },
         getNextActive: (entity) => Boolean(entity.arcaneShieldActive) && Number(entity.shieldHP || 0) > 0,
     },
@@ -3120,7 +3123,7 @@ export class GameEngine {
                 active: Number(actor.shieldHP) > 0,
                 icon: '🔷',
                 name: 'Arcane Shield',
-                durationSeconds: Number(actor.hasteTimer || 0),
+                durationSeconds: Number(actor.arcaneShieldTimer || 0),
                 detail: `${Math.round(Number(actor.shieldHP || 0))} shield remaining`,
                 isDebuff: false
             },

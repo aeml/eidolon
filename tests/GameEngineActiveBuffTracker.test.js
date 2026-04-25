@@ -32,6 +32,7 @@ describe('GameEngine active buff tracker', () => {
             blessingZealFactor: 0.35,
             hasteTimer: 10.0,
             hasteFactor: 0.5,
+            arcaneShieldTimer: 9.2,
             shieldHP: 420,
             speedBoostTimer: 2.7,
             speedBoostFactor: 1.0,
@@ -87,6 +88,7 @@ describe('GameEngine active buff tracker', () => {
                 id: 'arcane_shield',
                 name: 'Arcane Shield',
                 icon: '🔷',
+                durationSeconds: 9.2,
                 detail: '420 shield remaining',
                 isDebuff: false
             }),
@@ -397,6 +399,29 @@ describe('GameEngine active buff tracker', () => {
 
         expect(player.hasteTimer).toBe(12.5);
         expect(player.hasteFactor).toBe(0.5);
+    });
+
+    test('shared support sync applies authoritative arcane shield duration detail', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;
+        engine.syncPlayerSupportEffects = GameEngine.prototype.syncPlayerSupportEffects;
+        engine.showRemoteSupportStateReadability = jest.fn();
+
+        const player = {
+            arcaneShieldActive: false,
+            arcaneShieldTimer: 0,
+            shieldHP: 0
+        };
+
+        engine.syncPlayerSupportEffects(player, {
+            arcaneShieldActive: true,
+            arcaneShieldHp: 180,
+            arcaneShieldDuration: 12.5
+        });
+
+        expect(player.arcaneShieldActive).toBe(true);
+        expect(player.shieldHP).toBe(180);
+        expect(player.arcaneShieldTimer).toBe(12.5);
     });
 
     test('authoritative self status clears remove tracked debuffs without inventing new durations', () => {

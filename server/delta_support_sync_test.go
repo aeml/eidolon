@@ -503,3 +503,29 @@ func TestEntitySnapshotTracksGuardianEmbraceDurationForDeltaSync(t *testing.T) {
 		t.Fatal("expected guardian embrace duration delta change to be detected")
 	}
 }
+
+func TestEntitySnapshotTracksArcaneShieldDurationForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:                "player-arcane-shield-duration",
+		Type:              game.TypePlayer,
+		SubType:           "Wizard",
+		State:             "IDLE",
+		TalentRanks:       map[string]int{},
+		ArcaneShieldActive: true,
+		ArcaneShieldHP:    180,
+		ArcaneShieldEndTime: time.Now().Add(2500 * time.Millisecond),
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+	if snapshot.ArcaneShieldDuration <= 0 {
+		t.Fatal("expected snapshot to track arcane shield duration")
+	}
+
+	entity.ArcaneShieldEndTime = time.Now().Add(500 * time.Millisecond)
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected arcane shield duration delta change to be detected")
+	}
+}

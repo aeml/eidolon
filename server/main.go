@@ -140,6 +140,7 @@ type EntitySnapshot struct {
 	BlessingResolveDuration float64
 	TimeWarpDuration float64
 	GuardianEmbraceDuration float64
+	ArcaneShieldDuration float64
 	JumpProgress float64
 	TalentPoints int
 	TalentKeys   int
@@ -3580,6 +3581,13 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 			guardianEmbraceDuration = 0
 		}
 	}
+	arcaneShieldDuration := 0.0
+	if e.ArcaneShieldActive && e.ArcaneShieldHP > 0 {
+		arcaneShieldDuration = time.Until(e.ArcaneShieldEndTime).Seconds()
+		if arcaneShieldDuration < 0 {
+			arcaneShieldDuration = 0
+		}
+	}
 
 	snap := &EntitySnapshot{
 		X:            e.X,
@@ -3622,6 +3630,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		BlessingResolveDuration: blessingResolveDuration,
 		TimeWarpDuration: timeWarpDuration,
 		GuardianEmbraceDuration: guardianEmbraceDuration,
+		ArcaneShieldDuration: arcaneShieldDuration,
 		JumpProgress: e.JumpProgress,
 		TalentPoints: derivedTalentPoints,
 		TalentKeys:   keys,
@@ -3749,6 +3758,13 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 			cguardianEmbraceDuration = 0
 		}
 	}
+	carcaneShieldDuration := 0.0
+	if carcaneShieldActive && carcaneShieldHP > 0 {
+		carcaneShieldDuration = time.Until(current.ArcaneShieldEndTime).Seconds()
+		if carcaneShieldDuration < 0 {
+			carcaneShieldDuration = 0
+		}
+	}
 	ctalentPoints := current.TalentPoints
 	cjumpProgress := current.JumpProgress
 	ctalentKeys := 0
@@ -3842,7 +3858,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cspellFocusActive != last.SpellFocusActive {
 		return true
 	}
-	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || math.Abs(cslowDuration-last.SlowDuration) > 0.05 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || math.Abs(cbleedDuration-last.BleedDuration) > 0.05 || cbleedDamage != last.BleedDamage || cpoisoned != last.Poisoned || math.Abs(cpoisonDuration-last.PoisonDuration) > 0.05 || cpoisonDamage != last.PoisonDamage || math.Abs(cweakPointDuration-last.WeakPointDuration) > 0.05 || math.Abs(cmarkWeaknessDuration-last.MarkWeaknessDuration) > 0.05 || math.Abs(cspiritDuration-last.SpiritDuration) > 0.05 || math.Abs(cblessingResolveDuration-last.BlessingResolveDuration) > 0.05 || math.Abs(ctimeWarpDuration-last.TimeWarpDuration) > 0.05 || math.Abs(cguardianEmbraceDuration-last.GuardianEmbraceDuration) > 0.05 {
+	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || math.Abs(cslowDuration-last.SlowDuration) > 0.05 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || math.Abs(cbleedDuration-last.BleedDuration) > 0.05 || cbleedDamage != last.BleedDamage || cpoisoned != last.Poisoned || math.Abs(cpoisonDuration-last.PoisonDuration) > 0.05 || cpoisonDamage != last.PoisonDamage || math.Abs(cweakPointDuration-last.WeakPointDuration) > 0.05 || math.Abs(cmarkWeaknessDuration-last.MarkWeaknessDuration) > 0.05 || math.Abs(cspiritDuration-last.SpiritDuration) > 0.05 || math.Abs(cblessingResolveDuration-last.BlessingResolveDuration) > 0.05 || math.Abs(ctimeWarpDuration-last.TimeWarpDuration) > 0.05 || math.Abs(cguardianEmbraceDuration-last.GuardianEmbraceDuration) > 0.05 || math.Abs(carcaneShieldDuration-last.ArcaneShieldDuration) > 0.05 {
 		return true
 	}
 
@@ -4202,6 +4218,13 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 			guardianEmbraceDuration = float32(remaining)
 		}
 	}
+	arcaneShieldDuration := float32(0)
+	if e.ArcaneShieldActive && e.ArcaneShieldHP > 0 {
+		remaining := time.Until(e.ArcaneShieldEndTime).Seconds()
+		if remaining > 0 {
+			arcaneShieldDuration = float32(remaining)
+		}
+	}
 
 	out := &statepb.Entity{
 		Id:                e.ID,
@@ -4276,6 +4299,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		BlessingResolveDuration: blessingResolveDuration,
 		TimeWarpDuration: timeWarpDuration,
 		GuardianEmbraceDuration: guardianEmbraceDuration,
+		ArcaneShieldDuration: arcaneShieldDuration,
 	}
 
 	e.Mu.RUnlock()

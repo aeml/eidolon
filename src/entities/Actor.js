@@ -137,6 +137,7 @@ export class Actor extends Entity {
 
         // Wizard Debuffs/Buffs
         this.frozenTimer = 0; // Stun + Visual
+        this.arcaneShieldTimer = 0; // Display-only authoritative shield duration
         this.shieldHP = 0; // Absorbs damage
         this.hasteTimer = 0; // Speed + CDR
         this.hasteFactor = 0;
@@ -688,6 +689,13 @@ export class Actor extends Entity {
             this.hasteTimer -= dt;
             if (this.hasteTimer <= 0) {
                 this.hasteFactor = 0;
+            }
+        }
+
+        if (this.arcaneShieldTimer > 0) {
+            this.arcaneShieldTimer -= dt;
+            if (this.arcaneShieldTimer <= 0) {
+                this.arcaneShieldTimer = 0;
             }
         }
         
