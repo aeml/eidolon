@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.29 for the latest shipped time warp duration sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.29');
+    test('advances the login screen to alpha 0.29.30 for the latest shipped guardian embrace duration sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.30');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,20 +73,20 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.29', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.30', () => {
+        expect(indexHtml).toContain('Patch 0.29.30');
+        expect(indexHtml).toContain('Authoritative state now also replicates guardian embrace duration so Guardian Embrace can carry truthful remaining time in local self sync instead of relying on a local placeholder timer');
+        expect(indexHtml).toContain('This lets local self sync and buff UI track the real remaining Guardian Embrace window from server state while keeping the broader support-duration rollout incremental and honest');
+        expect(indexHtml).toContain('The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following time warp duration with the next timer-backed cleric support case');
+        expect(indexHtml).toContain('Added regression coverage for authoritative guardian embrace duration sync and 0.29.30 version presentation');
+    });
+
+    test('keeps the prior 0.29.29 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.29');
         expect(indexHtml).toContain('Authoritative state now also replicates time warp duration so Time Warp can carry truthful remaining time in local self sync instead of relying on a local placeholder timer');
         expect(indexHtml).toContain('This lets local self sync and buff UI track the real remaining Time Warp window from server state while keeping the broader support-duration rollout incremental and honest');
         expect(indexHtml).toContain('The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following blessing resolve duration with the next timer-backed wizard support case');
         expect(indexHtml).toContain('Added regression coverage for authoritative time warp duration sync and 0.29.29 version presentation');
-    });
-
-    test('keeps the prior 0.29.28 patch notes entry in history', () => {
-        expect(indexHtml).toContain('Patch 0.29.28');
-        expect(indexHtml).toContain('Authoritative state now also replicates blessing resolve duration so Blessing of Resolve can carry truthful remaining time in local self sync instead of relying on a local placeholder timer');
-        expect(indexHtml).toContain('This lets local self sync and buff UI track the real remaining Blessing of Resolve window from server state while keeping the broader support-duration rollout incremental and honest');
-        expect(indexHtml).toContain('The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following spirit duration with the next timer-backed support-duration case');
-        expect(indexHtml).toContain('Added regression coverage for authoritative blessing resolve duration sync and 0.29.28 version presentation');
     });
 
     test('keeps the prior 0.29.26 patch notes entry in history', () => {

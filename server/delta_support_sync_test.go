@@ -478,3 +478,28 @@ func TestEntitySnapshotTracksTimeWarpDurationForDeltaSync(t *testing.T) {
 		t.Fatal("expected time warp duration delta change to be detected")
 	}
 }
+
+func TestEntitySnapshotTracksGuardianEmbraceDurationForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:                  "player-guardian-embrace-duration",
+		Type:                game.TypePlayer,
+		SubType:             "Cleric",
+		State:               "IDLE",
+		TalentRanks:         map[string]int{},
+		GuardianEmbraceActive: true,
+		GuardianEmbraceEndTime: time.Now().Add(2500 * time.Millisecond),
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+	if snapshot.GuardianEmbraceDuration <= 0 {
+		t.Fatal("expected snapshot to track guardian embrace duration")
+	}
+
+	entity.GuardianEmbraceEndTime = time.Now().Add(500 * time.Millisecond)
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected guardian embrace duration delta change to be detected")
+	}
+}

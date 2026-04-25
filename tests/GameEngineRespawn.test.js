@@ -35,6 +35,8 @@ function createEngineHarness() {
         blessingResolveActive: false,
         blessingResolveTimer: 0,
         blessingResolveReduction: 0,
+        guardianEmbraceActive: false,
+        guardianEmbraceTimer: 0,
         hasteTimer: 0,
         hasteFactor: 0,
         slowTimer: 0,
@@ -606,6 +608,30 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.blessingResolveActive).toBe(true);
         expect(engine.player.blessingResolveTimer).toBe(12.5);
         expect(engine.player.blessingResolveReduction).toBe(0.25);
+    });
+
+    test('delta self sync applies authoritative guardian embrace duration detail', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.guardianEmbraceActive = false;
+        engine.player.guardianEmbraceTimer = 0;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        guardianEmbraceActive: true,
+                        guardianEmbraceDuration: 12.5
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.guardianEmbraceActive).toBe(true);
+        expect(engine.player.guardianEmbraceTimer).toBe(12.5);
     });
 
     test('delta self sync applies authoritative time warp duration detail', () => {

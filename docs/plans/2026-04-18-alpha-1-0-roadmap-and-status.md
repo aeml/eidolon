@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.29.29`
+- Current in-game displayed version: `Alpha 0.29.30`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.29.29`
+### Shipped through `0.29.30`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -109,6 +109,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.29.27`: authoritative state now also replicates spirit duration, keeping active Spirit Guardians remaining time truthful in local self sync and buff UI instead of relying on a local placeholder timer
 - `0.29.28`: authoritative state now also replicates blessing resolve duration, keeping active Blessing of Resolve remaining time truthful in local self sync and buff UI instead of relying on a local placeholder timer
 - `0.29.29`: authoritative state now also replicates time warp duration, keeping active Time Warp remaining time truthful in local self sync and buff UI instead of relying on a local placeholder timer
+- `0.29.30`: authoritative state now also replicates guardian embrace duration, keeping active Guardian Embrace remaining time truthful in local self sync and buff UI instead of relying on a local placeholder timer
 
 ### What `0.22` has clearly accomplished already
 

@@ -337,6 +337,26 @@ describe('GameEngine active buff tracker', () => {
         expect(player.createSpirits).toHaveBeenCalled();
     });
 
+    test('shared support sync applies authoritative guardian embrace duration detail', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;
+        engine.syncPlayerSupportEffects = GameEngine.prototype.syncPlayerSupportEffects;
+        engine.showRemoteSupportStateReadability = jest.fn();
+
+        const player = {
+            guardianEmbraceActive: false,
+            guardianEmbraceTimer: 0
+        };
+
+        engine.syncPlayerSupportEffects(player, {
+            guardianEmbraceActive: true,
+            guardianEmbraceDuration: 12.5
+        });
+
+        expect(player.guardianEmbraceActive).toBe(true);
+        expect(player.guardianEmbraceTimer).toBe(12.5);
+    });
+
     test('shared support sync applies authoritative blessing resolve duration detail', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;

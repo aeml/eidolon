@@ -110,8 +110,11 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
     guardian_embrace: {
         payloadKey: 'guardianEmbraceActive',
         getPreviousActive: (entity) => Boolean(entity.guardianEmbraceActive),
-        applyPayload: (entity, value) => {
+        applyPayload: (entity, value, payload) => {
             entity.guardianEmbraceActive = Boolean(value);
+            if (payload.guardianEmbraceDuration !== undefined) {
+                entity.guardianEmbraceTimer = Math.max(0, Number(payload.guardianEmbraceDuration || 0));
+            }
         },
         getNextActive: (entity) => Boolean(entity.guardianEmbraceActive),
     },
