@@ -329,3 +329,28 @@ func TestEntitySnapshotTracksWeakPointMarkedForDeltaSync(t *testing.T) {
 		t.Fatal("expected weak point marked delta change to be detected")
 	}
 }
+
+func TestEntitySnapshotTracksWeakPointDurationForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:               "player-weak-point-duration",
+		Type:             game.TypePlayer,
+		SubType:          "Rogue",
+		State:            "IDLE",
+		TalentRanks:      map[string]int{},
+		WeakPointMarked:  true,
+		WeakPointEndTime: time.Now().Add(2500 * time.Millisecond),
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+	if snapshot.WeakPointDuration <= 0 {
+		t.Fatal("expected snapshot to track weak point duration")
+	}
+
+	entity.WeakPointEndTime = time.Now().Add(500 * time.Millisecond)
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected weak point duration delta change to be detected")
+	}
+}

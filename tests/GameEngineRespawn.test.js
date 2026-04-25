@@ -588,6 +588,28 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.weakPointMarkTimer).toBe(0.1);
     });
 
+    test('delta self sync applies authoritative weak point duration detail', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.weakPointMarkTimer = 0;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        weakPointMarked: true,
+                        weakPointDuration: 4.25
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.weakPointMarkTimer).toBe(4.25);
+    });
+
     test('delta self sync applies authoritative slow duration detail', () => {
         const engine = createEngineHarness();
         engine.player.state = 'IDLE';

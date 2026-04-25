@@ -387,6 +387,22 @@ describe('GameEngine active buff tracker', () => {
         expect(player.weakPointMarkTimer).toBe(0.1);
     });
 
+    test('authoritative self status details apply replicated weak point duration', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncPlayerStatusDetails = GameEngine.prototype.syncPlayerStatusDetails;
+
+        const player = {
+            weakPointMarkTimer: 0
+        };
+
+        engine.syncPlayerStatusDetails(player, {
+            weakPointMarked: true,
+            weakPointDuration: 4.25
+        });
+
+        expect(player.weakPointMarkTimer).toBe(4.25);
+    });
+
     test('authoritative self status details apply replicated slow duration', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.syncPlayerStatusDetails = GameEngine.prototype.syncPlayerStatusDetails;

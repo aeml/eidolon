@@ -146,6 +146,7 @@ message Entity {
   bool bleeding = 45;
   bool poisoned = 46;
   bool weak_point_marked = 66;
+  float weak_point_duration = 67;
   float slow_factor = 58;
   float root_duration = 59;
   float stun_duration = 60;

@@ -698,6 +698,10 @@ export class GameEngine {
             playerEntity.poisonTickDamage = Math.max(0, Math.round(Number(payload.poisonDamage || 0)));
         }
 
+        if (payload.weakPointDuration !== undefined && payload.weakPointMarked === true) {
+            playerEntity.weakPointMarkTimer = Math.max(0, Number(payload.weakPointDuration || 0));
+        }
+
         if (payload.weakPointMarked === true && playerEntity.weakPointMarkTimer <= 0) {
             playerEntity.weakPointMarkTimer = Math.max(playerEntity.weakPointMarkTimer || 0, 0.1);
         }
