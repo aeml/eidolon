@@ -149,6 +149,7 @@ message Entity {
   float weak_point_duration = 67;
   bool mark_weakness = 68;
   float mark_weakness_duration = 69;
+  float spirit_duration = 70;
   float slow_factor = 58;
   float root_duration = 59;
   float stun_duration = 60;

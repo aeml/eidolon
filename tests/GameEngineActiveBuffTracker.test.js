@@ -314,6 +314,29 @@ describe('GameEngine active buff tracker', () => {
         expect(player.createSpirits).toHaveBeenCalled();
     });
 
+    test('shared support sync applies authoritative spirit duration detail', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;
+        engine.syncPlayerSupportEffects = GameEngine.prototype.syncPlayerSupportEffects;
+        engine.showRemoteSupportStateReadability = jest.fn();
+
+        const player = {
+            spiritsActive: false,
+            spiritBoosted: false,
+            spiritDuration: 0,
+            createSpirits: jest.fn()
+        };
+
+        engine.syncPlayerSupportEffects(player, {
+            spiritsActive: true,
+            spiritDuration: 6.5
+        });
+
+        expect(player.spiritsActive).toBe(true);
+        expect(player.spiritDuration).toBe(6.5);
+        expect(player.createSpirits).toHaveBeenCalled();
+    });
+
     test('authoritative self status clears remove tracked debuffs without inventing new durations', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.syncPlayerStatusClears = GameEngine.prototype.syncPlayerStatusClears;

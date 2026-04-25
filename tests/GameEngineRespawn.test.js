@@ -44,6 +44,9 @@ function createEngineHarness() {
         poisonTimer: 0,
         poisonStacks: 0,
         poisonTickDamage: 0,
+        spiritsActive: false,
+        spiritBoosted: false,
+        spiritDuration: 0,
         baseStats: {
             strength: 10,
             dexterity: 10,
@@ -662,6 +665,31 @@ describe('GameEngine multiplayer respawn sync', () => {
 
         expect(engine.player.markWeaknessTimer).toBe(4.25);
         expect(engine.player.markWeaknessFactor).toBe(0);
+    });
+
+    test('delta self sync applies authoritative spirit duration detail', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.spiritsActive = false;
+        engine.player.spiritBoosted = false;
+        engine.player.spiritDuration = 0;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        spiritsActive: true,
+                        spiritDuration: 6.5
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.spiritsActive).toBe(true);
+        expect(engine.player.spiritDuration).toBe(6.5);
     });
 
     test('delta self sync applies authoritative slow duration detail', () => {

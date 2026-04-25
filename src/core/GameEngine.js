@@ -97,6 +97,10 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
             entity.spiritBoosted = nextBoosted;
             entity.spiritDuration = Math.max(Number(entity.spiritDuration || 0), nextBoosted ? 10.0 : 8.0);
 
+            if (payload.spiritDuration !== undefined) {
+                entity.spiritDuration = Math.max(0, Number(payload.spiritDuration || 0));
+            }
+
             if (!wasActive && typeof entity.createSpirits === 'function') {
                 entity.createSpirits();
             }

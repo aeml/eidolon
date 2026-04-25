@@ -403,3 +403,28 @@ func TestEntitySnapshotTracksMarkWeaknessDurationForDeltaSync(t *testing.T) {
 		t.Fatal("expected mark weakness duration delta change to be detected")
 	}
 }
+
+func TestEntitySnapshotTracksSpiritDurationForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:             "player-spirit-duration",
+		Type:           game.TypePlayer,
+		SubType:        "Cleric",
+		State:          "IDLE",
+		TalentRanks:    map[string]int{},
+		SpiritsActive:  true,
+		SpiritEndTime:  time.Now().Add(2500 * time.Millisecond),
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+	if snapshot.SpiritDuration <= 0 {
+		t.Fatal("expected snapshot to track spirit duration")
+	}
+
+	entity.SpiritEndTime = time.Now().Add(500 * time.Millisecond)
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected spirit duration delta change to be detected")
+	}
+}
