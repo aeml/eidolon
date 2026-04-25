@@ -713,6 +713,10 @@ export class GameEngine {
         if (payload.markWeakness === true && playerEntity.markWeaknessTimer <= 0) {
             playerEntity.markWeaknessTimer = Math.max(playerEntity.markWeaknessTimer || 0, 0.1);
         }
+
+        if (payload.markWeaknessDuration !== undefined && payload.markWeakness === true) {
+            playerEntity.markWeaknessTimer = Math.max(0, Number(payload.markWeaknessDuration || 0));
+        }
     }
 
     showNearbyRemoteDamageFeedback(sourceEntity, targetEntity, amount) {

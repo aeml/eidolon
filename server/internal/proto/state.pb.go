@@ -682,6 +682,7 @@ type Entity struct {
 	WeakPointMarked bool `protobuf:"varint,66,opt,name=weak_point_marked,json=weakPointMarked,proto3" json:"weak_point_marked,omitempty"`
 	WeakPointDuration float32 `protobuf:"fixed32,67,opt,name=weak_point_duration,json=weakPointDuration,proto3" json:"weak_point_duration,omitempty"`
 	MarkWeakness bool `protobuf:"varint,68,opt,name=mark_weakness,json=markWeakness,proto3" json:"mark_weakness,omitempty"`
+	MarkWeaknessDuration float32 `protobuf:"fixed32,69,opt,name=mark_weakness_duration,json=markWeaknessDuration,proto3" json:"mark_weakness_duration,omitempty"`
 	SlowFactor float32 `protobuf:"fixed32,58,opt,name=slow_factor,json=slowFactor,proto3" json:"slow_factor,omitempty"`
 	SlowDuration float32 `protobuf:"fixed32,65,opt,name=slow_duration,json=slowDuration,proto3" json:"slow_duration,omitempty"`
 	RootDuration float32 `protobuf:"fixed32,59,opt,name=root_duration,json=rootDuration,proto3" json:"root_duration,omitempty"`
@@ -1162,6 +1163,13 @@ func (x *Entity) GetPoisonDamage() int32 {
 func (x *Entity) GetWeakPointDuration() float32 {
 	if x != nil {
 		return x.WeakPointDuration
+	}
+	return 0
+}
+
+func (x *Entity) GetMarkWeaknessDuration() float32 {
+	if x != nil {
+		return x.MarkWeaknessDuration
 	}
 	return 0
 }

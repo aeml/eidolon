@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.25 for the latest shipped mark weakness active sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.25');
+    test('advances the login screen to alpha 0.29.26 for the latest shipped mark weakness duration sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.26');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.25', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.26', () => {
+        expect(indexHtml).toContain('Patch 0.29.26');
+        expect(indexHtml).toContain('Authoritative state now also replicates mark weakness duration so marked targets can carry truthful remaining time in local self sync instead of relying on a placeholder timer');
+        expect(indexHtml).toContain('This lets local self sync and debuff UI track the real remaining marked window from server state while keeping factor detail for later slices');
+        expect(indexHtml).toContain('The 0.29 cleanup line continues by extending status detail replication one debuff field at a time, following mark weakness active state with the matching timer-backed marked case');
+        expect(indexHtml).toContain('Added regression coverage for authoritative mark weakness duration sync and 0.29.26 version presentation');
+    });
+
+    test('keeps the prior 0.29.25 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.25');
         expect(indexHtml).toContain('Authoritative state now also replicates mark weakness active state so marked targets can stay truthfully flagged in local self sync instead of relying only on local guesswork');
         expect(indexHtml).toContain('This lets local self sync and debuff UI reflect the real server-owned mark weakness state while keeping duration and factor details for later slices');

@@ -425,6 +425,24 @@ describe('GameEngine active buff tracker', () => {
         expect(player.markWeaknessFactor).toBe(0);
     });
 
+    test('authoritative self status details apply replicated mark weakness duration', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncPlayerStatusDetails = GameEngine.prototype.syncPlayerStatusDetails;
+
+        const player = {
+            markWeaknessTimer: 0,
+            markWeaknessFactor: 0
+        };
+
+        engine.syncPlayerStatusDetails(player, {
+            markWeakness: true,
+            markWeaknessDuration: 4.25
+        });
+
+        expect(player.markWeaknessTimer).toBe(4.25);
+        expect(player.markWeaknessFactor).toBe(0);
+    });
+
     test('mark weakness buff detail falls back to a truthful generic label without authoritative factor data', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.activeBuffs = [];
