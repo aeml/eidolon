@@ -685,6 +685,7 @@ type Entity struct {
 	MarkWeaknessDuration float32 `protobuf:"fixed32,69,opt,name=mark_weakness_duration,json=markWeaknessDuration,proto3" json:"mark_weakness_duration,omitempty"`
 	SpiritDuration float32 `protobuf:"fixed32,70,opt,name=spirit_duration,json=spiritDuration,proto3" json:"spirit_duration,omitempty"`
 	BlessingResolveDuration float32 `protobuf:"fixed32,71,opt,name=blessing_resolve_duration,json=blessingResolveDuration,proto3" json:"blessing_resolve_duration,omitempty"`
+	TimeWarpDuration float32 `protobuf:"fixed32,72,opt,name=time_warp_duration,json=timeWarpDuration,proto3" json:"time_warp_duration,omitempty"`
 	SlowFactor float32 `protobuf:"fixed32,58,opt,name=slow_factor,json=slowFactor,proto3" json:"slow_factor,omitempty"`
 	SlowDuration float32 `protobuf:"fixed32,65,opt,name=slow_duration,json=slowDuration,proto3" json:"slow_duration,omitempty"`
 	RootDuration float32 `protobuf:"fixed32,59,opt,name=root_duration,json=rootDuration,proto3" json:"root_duration,omitempty"`
@@ -1186,6 +1187,13 @@ func (x *Entity) GetSpiritDuration() float32 {
 func (x *Entity) GetBlessingResolveDuration() float32 {
 	if x != nil {
 		return x.BlessingResolveDuration
+	}
+	return 0
+}
+
+func (x *Entity) GetTimeWarpDuration() float32 {
+	if x != nil {
+		return x.TimeWarpDuration
 	}
 	return 0
 }

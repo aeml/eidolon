@@ -151,9 +151,12 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
     time_warp: {
         payloadKey: 'timeWarpActive',
         getPreviousActive: (entity) => Number(entity.hasteTimer || 0) > 0,
-        applyPayload: (entity, value) => {
+        applyPayload: (entity, value, payload) => {
             if (Boolean(value)) {
                 entity.hasteTimer = Math.max(Number(entity.hasteTimer || 0), 8.0);
+                if (payload.timeWarpDuration !== undefined) {
+                    entity.hasteTimer = Math.max(0, Number(payload.timeWarpDuration || 0));
+                }
                 entity.hasteFactor = Math.max(Number(entity.hasteFactor || 0), 0.5);
             } else {
                 entity.hasteTimer = 0;

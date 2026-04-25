@@ -453,3 +453,28 @@ func TestEntitySnapshotTracksBlessingResolveDurationForDeltaSync(t *testing.T) {
 		t.Fatal("expected blessing resolve duration delta change to be detected")
 	}
 }
+
+func TestEntitySnapshotTracksTimeWarpDurationForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:            "player-time-warp-duration",
+		Type:          game.TypePlayer,
+		SubType:       "Wizard",
+		State:         "IDLE",
+		TalentRanks:   map[string]int{},
+		TimeWarpActive: true,
+		TimeWarpEndTime: time.Now().Add(2500 * time.Millisecond),
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+	if snapshot.TimeWarpDuration <= 0 {
+		t.Fatal("expected snapshot to track time warp duration")
+	}
+
+	entity.TimeWarpEndTime = time.Now().Add(500 * time.Millisecond)
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected time warp duration delta change to be detected")
+	}
+}

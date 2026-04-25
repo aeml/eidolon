@@ -359,6 +359,26 @@ describe('GameEngine active buff tracker', () => {
         expect(player.blessingResolveReduction).toBe(0.25);
     });
 
+    test('shared support sync applies authoritative time warp duration detail', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;
+        engine.syncPlayerSupportEffects = GameEngine.prototype.syncPlayerSupportEffects;
+        engine.showRemoteSupportStateReadability = jest.fn();
+
+        const player = {
+            hasteTimer: 0,
+            hasteFactor: 0
+        };
+
+        engine.syncPlayerSupportEffects(player, {
+            timeWarpActive: true,
+            timeWarpDuration: 12.5
+        });
+
+        expect(player.hasteTimer).toBe(12.5);
+        expect(player.hasteFactor).toBe(0.5);
+    });
+
     test('authoritative self status clears remove tracked debuffs without inventing new durations', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.syncPlayerStatusClears = GameEngine.prototype.syncPlayerStatusClears;

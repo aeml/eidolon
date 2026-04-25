@@ -35,6 +35,8 @@ function createEngineHarness() {
         blessingResolveActive: false,
         blessingResolveTimer: 0,
         blessingResolveReduction: 0,
+        hasteTimer: 0,
+        hasteFactor: 0,
         slowTimer: 0,
         slowFactor: 0,
         rootTimer: 0,
@@ -604,6 +606,30 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.blessingResolveActive).toBe(true);
         expect(engine.player.blessingResolveTimer).toBe(12.5);
         expect(engine.player.blessingResolveReduction).toBe(0.25);
+    });
+
+    test('delta self sync applies authoritative time warp duration detail', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.hasteTimer = 0;
+        engine.player.hasteFactor = 0;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        timeWarpActive: true,
+                        timeWarpDuration: 12.5
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.hasteTimer).toBe(12.5);
+        expect(engine.player.hasteFactor).toBe(0.5);
     });
 
     test('delta self sync applies authoritative weak point active state', () => {
