@@ -3,6 +3,10 @@ import { jest } from '@jest/globals';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
 describe('RenderSystem shadow coverage', () => {
+    beforeEach(() => {
+        localStorage.clear();
+    });
+
     test('tracks the directional shadow camera around the player instead of a tiny origin-bound frustum', () => {
         const renderSystem = new RenderSystem(false);
 
