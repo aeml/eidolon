@@ -629,6 +629,30 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.bleedStacks).toBe(2);
     });
 
+    test('delta self sync applies authoritative poison duration detail', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.poisonTimer = 0;
+        engine.player.poisonStacks = 3;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        poisoned: true,
+                        poisonDuration: 4.5
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.poisonTimer).toBe(4.5);
+        expect(engine.player.poisonStacks).toBe(3);
+    });
+
     test('full state DEAD->alive also forces town respawn', () => {
         const engine = createEngineHarness();
 
@@ -657,6 +681,7 @@ describe('GameEngine multiplayer respawn sync', () => {
                     bleeding: false,
                     bleedDuration: 0,
                     poisoned: false,
+                    poisonDuration: 0,
                     baseStats: {
                         strength: 16,
                         dexterity: 12,

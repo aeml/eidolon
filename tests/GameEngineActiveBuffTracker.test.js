@@ -401,4 +401,22 @@ describe('GameEngine active buff tracker', () => {
         expect(player.bleedTimer).toBe(3.25);
         expect(player.bleedStacks).toBe(2);
     });
+
+    test('authoritative self status details apply replicated poison duration', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncPlayerStatusDetails = GameEngine.prototype.syncPlayerStatusDetails;
+
+        const player = {
+            poisonTimer: 0,
+            poisonStacks: 3
+        };
+
+        engine.syncPlayerStatusDetails(player, {
+            poisoned: true,
+            poisonDuration: 4.5
+        });
+
+        expect(player.poisonTimer).toBe(4.5);
+        expect(player.poisonStacks).toBe(3);
+    });
 });

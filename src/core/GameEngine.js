@@ -676,6 +676,10 @@ export class GameEngine {
         if (payload.bleedDuration !== undefined && payload.bleeding === true) {
             playerEntity.bleedTimer = Math.max(0, Number(payload.bleedDuration || 0));
         }
+
+        if (payload.poisonDuration !== undefined && payload.poisoned === true) {
+            playerEntity.poisonTimer = Math.max(0, Number(payload.poisonDuration || 0));
+        }
     }
 
     showNearbyRemoteDamageFeedback(sourceEntity, targetEntity, amount) {

@@ -128,6 +128,7 @@ type EntitySnapshot struct {
 	Bleeding bool
 	BleedDuration float64
 	Poisoned bool
+	PoisonDuration float64
 	JumpProgress float64
 	TalentPoints int
 	TalentKeys   int
@@ -3504,6 +3505,13 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 			bleedDuration = 0
 		}
 	}
+	poisonDuration := 0.0
+	if e.Poisoned {
+		poisonDuration = time.Until(e.PoisonEndTime).Seconds()
+		if poisonDuration < 0 {
+			poisonDuration = 0
+		}
+	}
 
 	snap := &EntitySnapshot{
 		X:            e.X,
@@ -3534,6 +3542,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		Bleeding: e.Bleeding,
 		BleedDuration: bleedDuration,
 		Poisoned: e.Poisoned,
+		PoisonDuration: poisonDuration,
 		JumpProgress: e.JumpProgress,
 		TalentPoints: derivedTalentPoints,
 		TalentKeys:   keys,
@@ -3595,6 +3604,13 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 		}
 	}
 	cpoisoned := current.Poisoned
+	cpoisonDuration := 0.0
+	if cpoisoned {
+		cpoisonDuration = time.Until(current.PoisonEndTime).Seconds()
+		if cpoisonDuration < 0 {
+			cpoisonDuration = 0
+		}
+	}
 	ctalentPoints := current.TalentPoints
 	cjumpProgress := current.JumpProgress
 	ctalentKeys := 0
@@ -3682,7 +3698,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cspellFocusActive != last.SpellFocusActive {
 		return true
 	}
-	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || math.Abs(cbleedDuration-last.BleedDuration) > 0.05 || cpoisoned != last.Poisoned {
+	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || math.Abs(cbleedDuration-last.BleedDuration) > 0.05 || cpoisoned != last.Poisoned || math.Abs(cpoisonDuration-last.PoisonDuration) > 0.05 {
 		return true
 	}
 
@@ -3978,6 +3994,13 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 			bleedDuration = float32(remaining)
 		}
 	}
+	poisonDuration := float32(0)
+	if e.Poisoned {
+		remaining := time.Until(e.PoisonEndTime).Seconds()
+		if remaining > 0 {
+			poisonDuration = float32(remaining)
+		}
+	}
 
 	out := &statepb.Entity{
 		Id:                e.ID,
@@ -4040,6 +4063,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		Bleeding:          e.Bleeding,
 		BleedDuration:     bleedDuration,
 		Poisoned:          e.Poisoned,
+		PoisonDuration:    poisonDuration,
 	}
 
 	e.Mu.RUnlock()
