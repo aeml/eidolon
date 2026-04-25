@@ -667,6 +667,10 @@ export class GameEngine {
             }
         }
 
+        if (payload.slowDuration !== undefined && payload.slowed === true) {
+            playerEntity.slowTimer = Math.max(0, Number(payload.slowDuration || 0));
+        }
+
         if (payload.rootDuration !== undefined && payload.rooted === true) {
             playerEntity.rootTimer = Math.max(0, Number(payload.rootDuration || 0));
         }

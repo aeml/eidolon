@@ -279,3 +279,29 @@ func TestEntitySnapshotTracksPoisonDamageForDeltaSync(t *testing.T) {
 		t.Fatal("expected poison damage delta change to be detected")
 	}
 }
+
+func TestEntitySnapshotTracksSlowDurationForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:          "player-slowed",
+		Type:        game.TypePlayer,
+		SubType:     "Rogue",
+		State:       "IDLE",
+		TalentRanks: map[string]int{},
+		Slowed:      true,
+		SlowFactor:  0.35,
+		SlowEndTime: time.Now().Add(2500 * time.Millisecond),
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+	if snapshot.SlowDuration <= 0 {
+		t.Fatal("expected snapshot to track slow duration")
+	}
+
+	entity.SlowEndTime = time.Now().Add(500 * time.Millisecond)
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected slow duration delta change to be detected")
+	}
+}

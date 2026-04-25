@@ -2447,6 +2447,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {boolean|null} [bleeding] Entity bleeding
              * @property {boolean|null} [poisoned] Entity poisoned
              * @property {number|null} [slowFactor] Entity slowFactor
+             * @property {number|null} [slowDuration] Entity slowDuration
              * @property {number|null} [rootDuration] Entity rootDuration
              * @property {number|null} [stunDuration] Entity stunDuration
              * @property {number|null} [bleedDuration] Entity bleedDuration
@@ -2857,6 +2858,14 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.slowFactor = 0;
 
             /**
+             * Entity slowDuration.
+             * @member {number} slowDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.slowDuration = 0;
+
+            /**
              * Entity rootDuration.
              * @member {number} rootDuration
              * @memberof eidolon.state.Entity
@@ -3073,6 +3082,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 46, wireType 0 =*/368).bool(message.poisoned);
                 if (message.slowFactor != null && Object.hasOwnProperty.call(message, "slowFactor"))
                     writer.uint32(/* id 58, wireType 5 =*/469).float(message.slowFactor);
+                if (message.slowDuration != null && Object.hasOwnProperty.call(message, "slowDuration"))
+                    writer.uint32(/* id 65, wireType 5 =*/525).float(message.slowDuration);
                 if (message.rootDuration != null && Object.hasOwnProperty.call(message, "rootDuration"))
                     writer.uint32(/* id 59, wireType 5 =*/477).float(message.rootDuration);
                 if (message.stunDuration != null && Object.hasOwnProperty.call(message, "stunDuration"))
@@ -3369,6 +3380,10 @@ export const eidolon = $root.eidolon = (() => {
                         }
                     case 58: {
                             message.slowFactor = reader.float();
+                            break;
+                        }
+                    case 65: {
+                            message.slowDuration = reader.float();
                             break;
                         }
                     case 59: {
@@ -3671,6 +3686,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.slowFactor != null && message.hasOwnProperty("slowFactor"))
                     if (typeof message.slowFactor !== "number")
                         return "slowFactor: number expected";
+                if (message.slowDuration != null && message.hasOwnProperty("slowDuration"))
+                    if (typeof message.slowDuration !== "number")
+                        return "slowDuration: number expected";
                 if (message.rootDuration != null && message.hasOwnProperty("rootDuration"))
                     if (typeof message.rootDuration !== "number")
                         return "rootDuration: number expected";
@@ -3868,6 +3886,8 @@ export const eidolon = $root.eidolon = (() => {
                     message.poisoned = Boolean(object.poisoned);
                 if (object.slowFactor != null)
                     message.slowFactor = Number(object.slowFactor);
+                if (object.slowDuration != null)
+                    message.slowDuration = Number(object.slowDuration);
                 if (object.rootDuration != null)
                     message.rootDuration = Number(object.rootDuration);
                 if (object.stunDuration != null)
@@ -3981,6 +4001,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.bleeding = false;
                     object.poisoned = false;
                     object.slowFactor = 0;
+                    object.slowDuration = 0;
                     object.rootDuration = 0;
                     object.stunDuration = 0;
                     object.bleedDuration = 0;
@@ -4107,6 +4128,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.poisoned = message.poisoned;
                 if (message.slowFactor != null && message.hasOwnProperty("slowFactor"))
                     object.slowFactor = options.json && !isFinite(message.slowFactor) ? String(message.slowFactor) : message.slowFactor;
+                if (message.slowDuration != null && message.hasOwnProperty("slowDuration"))
+                    object.slowDuration = options.json && !isFinite(message.slowDuration) ? String(message.slowDuration) : message.slowDuration;
                 if (message.rootDuration != null && message.hasOwnProperty("rootDuration"))
                     object.rootDuration = options.json && !isFinite(message.rootDuration) ? String(message.rootDuration) : message.rootDuration;
                 if (message.stunDuration != null && message.hasOwnProperty("stunDuration"))

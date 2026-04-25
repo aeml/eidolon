@@ -563,6 +563,30 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.slowTimer).toBe(0.1);
     });
 
+    test('delta self sync applies authoritative slow duration detail', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.slowTimer = 0;
+        engine.player.slowFactor = 0.35;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        slowed: true,
+                        slowDuration: 2.75
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.slowTimer).toBe(2.75);
+        expect(engine.player.slowFactor).toBe(0.35);
+    });
+
     test('delta self sync applies authoritative root duration detail', () => {
         const engine = createEngineHarness();
         engine.player.state = 'IDLE';
@@ -734,6 +758,7 @@ describe('GameEngine multiplayer respawn sync', () => {
                     poisoned: false,
                     poisonDuration: 0,
                     poisonDamage: 0,
+                    slowDuration: 0,
                     baseStats: {
                         strength: 16,
                         dexterity: 12,

@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.21 for the latest shipped poison damage sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.21');
+    test('advances the login screen to alpha 0.29.22 for the latest shipped slow duration sync slice', () => {
+        expect(indexHtml).toContain('Alpha 0.29.22');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.21', () => {
+    test('includes the latest player-facing patch notes entry for 0.29.22', () => {
+        expect(indexHtml).toContain('Patch 0.29.22');
+        expect(indexHtml).toContain('Authoritative state now also replicates slow duration so active slows can carry truthful remaining time instead of relying only on slow factor and a local placeholder timer');
+        expect(indexHtml).toContain('This lets local self sync and debuff UI track the real remaining slow window from server state while keeping the broader status rollout incremental and honest');
+        expect(indexHtml).toContain('The 0.29 cleanup line continues by extending status detail replication one debuff field at a time, following poison damage with the remaining timer-backed slow case');
+        expect(indexHtml).toContain('Added regression coverage for authoritative slow duration sync and 0.29.22 version presentation');
+    });
+
+    test('keeps the prior 0.29.21 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.21');
         expect(indexHtml).toContain('Authoritative state now also replicates poison damage so active poison can carry truthful per-tick damage detail instead of relying only on local stack guesses');
         expect(indexHtml).toContain('This lets local self sync and debuff UI prefer the real server-owned poison tick damage while still falling back to local stack-based detail when that authoritative field is absent');

@@ -123,6 +123,7 @@ type EntitySnapshot struct {
 	StunDuration float64
 	Slowed bool
 	SlowFactor float64
+	SlowDuration float64
 	Rooted bool
 	RootDuration float64
 	Bleeding bool
@@ -3493,6 +3494,13 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 			stunDuration = 0
 		}
 	}
+	slowDuration := 0.0
+	if e.Slowed {
+		slowDuration = time.Until(e.SlowEndTime).Seconds()
+		if slowDuration < 0 {
+			slowDuration = 0
+		}
+	}
 	rootDuration := 0.0
 	if e.Rooted {
 		rootDuration = time.Until(e.RootEndTime).Seconds()
@@ -3547,6 +3555,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		StunDuration: stunDuration,
 		Slowed: e.Slowed,
 		SlowFactor: e.SlowFactor,
+		SlowDuration: slowDuration,
 		Rooted: e.Rooted,
 		RootDuration: rootDuration,
 		Bleeding: e.Bleeding,
@@ -3599,6 +3608,13 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	}
 	cslowed := current.Slowed
 	cslowFactor := current.SlowFactor
+	cslowDuration := 0.0
+	if cslowed {
+		cslowDuration = time.Until(current.SlowEndTime).Seconds()
+		if cslowDuration < 0 {
+			cslowDuration = 0
+		}
+	}
 	crooted := current.Rooted
 	crootDuration := 0.0
 	if crooted {
@@ -3718,7 +3734,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cspellFocusActive != last.SpellFocusActive {
 		return true
 	}
-	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || math.Abs(cbleedDuration-last.BleedDuration) > 0.05 || cbleedDamage != last.BleedDamage || cpoisoned != last.Poisoned || math.Abs(cpoisonDuration-last.PoisonDuration) > 0.05 || cpoisonDamage != last.PoisonDamage {
+	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || math.Abs(cslowDuration-last.SlowDuration) > 0.05 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || math.Abs(cbleedDuration-last.BleedDuration) > 0.05 || cbleedDamage != last.BleedDamage || cpoisoned != last.Poisoned || math.Abs(cpoisonDuration-last.PoisonDuration) > 0.05 || cpoisonDamage != last.PoisonDamage {
 		return true
 	}
 
@@ -4000,6 +4016,13 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 			stunDuration = float32(remaining)
 		}
 	}
+	slowDuration := float32(0)
+	if e.Slowed {
+		remaining := time.Until(e.SlowEndTime).Seconds()
+		if remaining > 0 {
+			slowDuration = float32(remaining)
+		}
+	}
 	rootDuration := float32(0)
 	if e.Rooted {
 		remaining := time.Until(e.RootEndTime).Seconds()
@@ -4086,6 +4109,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		StunDuration:      stunDuration,
 		Slowed:            e.Slowed,
 		SlowFactor:        float32(e.SlowFactor),
+		SlowDuration:      slowDuration,
 		Rooted:            e.Rooted,
 		RootDuration:      rootDuration,
 		Bleeding:          e.Bleeding,

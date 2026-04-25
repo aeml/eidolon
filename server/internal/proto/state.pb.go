@@ -680,6 +680,7 @@ type Entity struct {
 	Bleeding bool `protobuf:"varint,45,opt,name=bleeding,proto3" json:"bleeding,omitempty"`
 	Poisoned bool `protobuf:"varint,46,opt,name=poisoned,proto3" json:"poisoned,omitempty"`
 	SlowFactor float32 `protobuf:"fixed32,58,opt,name=slow_factor,json=slowFactor,proto3" json:"slow_factor,omitempty"`
+	SlowDuration float32 `protobuf:"fixed32,65,opt,name=slow_duration,json=slowDuration,proto3" json:"slow_duration,omitempty"`
 	RootDuration float32 `protobuf:"fixed32,59,opt,name=root_duration,json=rootDuration,proto3" json:"root_duration,omitempty"`
 	StunDuration float32 `protobuf:"fixed32,60,opt,name=stun_duration,json=stunDuration,proto3" json:"stun_duration,omitempty"`
 	BleedDuration float32 `protobuf:"fixed32,61,opt,name=bleed_duration,json=bleedDuration,proto3" json:"bleed_duration,omitempty"`
@@ -1102,6 +1103,13 @@ func (x *Entity) GetPoisoned() bool {
 func (x *Entity) GetSlowFactor() float32 {
 	if x != nil {
 		return x.SlowFactor
+	}
+	return 0
+}
+
+func (x *Entity) GetSlowDuration() float32 {
+	if x != nil {
+		return x.SlowDuration
 	}
 	return 0
 }
