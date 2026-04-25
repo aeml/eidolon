@@ -151,6 +151,7 @@ message Entity {
   float bleed_duration = 61;
   float poison_duration = 62;
   int32 bleed_damage = 63;
+  int32 poison_damage = 64;
 
   // Passive talents
   int32 talent_points = 47;

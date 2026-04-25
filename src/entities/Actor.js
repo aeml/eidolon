@@ -131,6 +131,7 @@ export class Actor extends Entity {
         this.stealthTimer = 0;
         this.poisonTimer = 0;
         this.poisonStacks = 0;
+        this.poisonTickDamage = 0;
         this.speedBoostTimer = 0;
         this.speedBoostFactor = 0;
 
@@ -646,7 +647,7 @@ export class Actor extends Entity {
             this.poisonTickTimer += dt;
             if (this.poisonTickTimer >= 1.0) {
                 this.poisonTickTimer -= 1.0;
-                const poisonDmg = 3 * this.poisonStacks; // Lower base dmg than bleed but reduces healing
+                const poisonDmg = this.poisonTickDamage > 0 ? this.poisonTickDamage : 3 * this.poisonStacks; // Lower base dmg than bleed but reduces healing
                 this.takeDamage(poisonDmg);
                 // Visual
                 // if (floatingTextManager) floatingTextManager.spawn(poisonDmg, this.position, '#00ff00');
@@ -655,6 +656,7 @@ export class Actor extends Entity {
             if (this.poisonTimer <= 0) {
                 this.poisonTimer = 0;
                 this.poisonStacks = 0;
+                this.poisonTickDamage = 0;
             }
         }
 

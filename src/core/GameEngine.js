@@ -189,6 +189,7 @@ const AUTHORITATIVE_STATUS_CLEAR_CONFIG = {
     poisoned: (entity) => {
         entity.poisonTimer = 0;
         entity.poisonStacks = 0;
+        entity.poisonTickDamage = 0;
     }
 };
 import { Fighter } from '../entities/Fighter.js';
@@ -684,6 +685,10 @@ export class GameEngine {
 
         if (payload.poisonDuration !== undefined && payload.poisoned === true) {
             playerEntity.poisonTimer = Math.max(0, Number(payload.poisonDuration || 0));
+        }
+
+        if (payload.poisonDamage !== undefined && payload.poisoned === true) {
+            playerEntity.poisonTickDamage = Math.max(0, Math.round(Number(payload.poisonDamage || 0)));
         }
     }
 
@@ -3132,7 +3137,9 @@ export class GameEngine {
                 icon: '☠️',
                 name: 'Poisoned',
                 durationSeconds: Number(actor.poisonTimer || 0),
-                detail: `${Math.max(1, Math.round(Number(actor.poisonStacks || 0)))} poison stacks`,
+                detail: Number(actor.poisonTickDamage || 0) > 0
+                    ? `${Math.round(Number(actor.poisonTickDamage || 0))} poison per tick`
+                    : `${Math.max(1, Math.round(Number(actor.poisonStacks || 0)))} poison stacks`,
                 isDebuff: true
             },
             {

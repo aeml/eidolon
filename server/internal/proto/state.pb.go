@@ -685,6 +685,7 @@ type Entity struct {
 	BleedDuration float32 `protobuf:"fixed32,61,opt,name=bleed_duration,json=bleedDuration,proto3" json:"bleed_duration,omitempty"`
 	PoisonDuration float32 `protobuf:"fixed32,62,opt,name=poison_duration,json=poisonDuration,proto3" json:"poison_duration,omitempty"`
 	BleedDamage int32 `protobuf:"varint,63,opt,name=bleed_damage,json=bleedDamage,proto3" json:"bleed_damage,omitempty"`
+	PoisonDamage int32 `protobuf:"varint,64,opt,name=poison_damage,json=poisonDamage,proto3" json:"poison_damage,omitempty"`
 	// Passive talents
 	TalentPoints    int32    `protobuf:"varint,47,opt,name=talent_points,json=talentPoints,proto3" json:"talent_points,omitempty"`
 	UnlockedTalents []string `protobuf:"bytes,48,rep,name=unlocked_talents,json=unlockedTalents,proto3" json:"unlocked_talents,omitempty"`
@@ -1136,6 +1137,13 @@ func (x *Entity) GetPoisonDuration() float32 {
 func (x *Entity) GetBleedDamage() int32 {
 	if x != nil {
 		return x.BleedDamage
+	}
+	return 0
+}
+
+func (x *Entity) GetPoisonDamage() int32 {
+	if x != nil {
+		return x.PoisonDamage
 	}
 	return 0
 }

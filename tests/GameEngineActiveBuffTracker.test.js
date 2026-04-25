@@ -45,6 +45,7 @@ describe('GameEngine active buff tracker', () => {
             bleedTickDamage: 14,
             poisonTimer: 6.0,
             poisonStacks: 3,
+            poisonTickDamage: 11,
             rootTimer: 2.2,
             slowTimer: 4.5,
             slowFactor: 0.5,
@@ -148,7 +149,7 @@ describe('GameEngine active buff tracker', () => {
                 id: 'poison',
                 name: 'Poisoned',
                 icon: '☠️',
-                detail: '3 poison stacks',
+                detail: '11 poison per tick',
                 durationSeconds: 6.0,
                 isDebuff: true
             }),
@@ -316,7 +317,8 @@ describe('GameEngine active buff tracker', () => {
             bleedStacks: 2,
             bleedTickDamage: 14,
             poisonTimer: 5,
-            poisonStacks: 3
+            poisonStacks: 3,
+            poisonTickDamage: 11
         };
 
         engine.syncPlayerStatusClears(player, {
@@ -336,6 +338,7 @@ describe('GameEngine active buff tracker', () => {
         expect(player.bleedTickDamage).toBe(0);
         expect(player.poisonTimer).toBe(0);
         expect(player.poisonStacks).toBe(0);
+        expect(player.poisonTickDamage).toBe(0);
     });
 
     test('authoritative self status details apply replicated slow factor', () => {
@@ -439,6 +442,24 @@ describe('GameEngine active buff tracker', () => {
         });
 
         expect(player.poisonTimer).toBe(4.5);
+        expect(player.poisonStacks).toBe(3);
+    });
+
+    test('authoritative self status details apply replicated poison damage', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncPlayerStatusDetails = GameEngine.prototype.syncPlayerStatusDetails;
+
+        const player = {
+            poisonTickDamage: 0,
+            poisonStacks: 3
+        };
+
+        engine.syncPlayerStatusDetails(player, {
+            poisoned: true,
+            poisonDamage: 11
+        });
+
+        expect(player.poisonTickDamage).toBe(11);
         expect(player.poisonStacks).toBe(3);
     });
 });

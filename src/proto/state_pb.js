@@ -2452,6 +2452,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [bleedDuration] Entity bleedDuration
              * @property {number|null} [poisonDuration] Entity poisonDuration
              * @property {number|null} [bleedDamage] Entity bleedDamage
+             * @property {number|null} [poisonDamage] Entity poisonDamage
              * @property {number|null} [talentPoints] Entity talentPoints
              * @property {Array.<string>|null} [unlockedTalents] Entity unlockedTalents
              * @property {Object.<string,number>|null} [talentRanks] Entity talentRanks
@@ -2896,6 +2897,14 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.bleedDamage = 0;
 
             /**
+             * Entity poisonDamage.
+             * @member {number} poisonDamage
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.poisonDamage = 0;
+
+            /**
              * Entity talentPoints.
              * @member {number} talentPoints
              * @memberof eidolon.state.Entity
@@ -3074,6 +3083,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 62, wireType 5 =*/501).float(message.poisonDuration);
                 if (message.bleedDamage != null && Object.hasOwnProperty.call(message, "bleedDamage"))
                     writer.uint32(/* id 63, wireType 0 =*/504).int32(message.bleedDamage);
+                if (message.poisonDamage != null && Object.hasOwnProperty.call(message, "poisonDamage"))
+                    writer.uint32(/* id 64, wireType 0 =*/512).int32(message.poisonDamage);
                 if (message.talentPoints != null && Object.hasOwnProperty.call(message, "talentPoints"))
                     writer.uint32(/* id 47, wireType 0 =*/376).int32(message.talentPoints);
                 if (message.unlockedTalents != null && message.unlockedTalents.length)
@@ -3380,6 +3391,10 @@ export const eidolon = $root.eidolon = (() => {
                             message.bleedDamage = reader.int32();
                             break;
                         }
+                    case 64: {
+                            message.poisonDamage = reader.int32();
+                            break;
+                        }
                     case 47: {
                             message.talentPoints = reader.int32();
                             break;
@@ -3671,6 +3686,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.bleedDamage != null && message.hasOwnProperty("bleedDamage"))
                     if (!$util.isInteger(message.bleedDamage))
                         return "bleedDamage: integer expected";
+                if (message.poisonDamage != null && message.hasOwnProperty("poisonDamage"))
+                    if (!$util.isInteger(message.poisonDamage))
+                        return "poisonDamage: integer expected";
                 if (message.talentPoints != null && message.hasOwnProperty("talentPoints"))
                     if (!$util.isInteger(message.talentPoints))
                         return "talentPoints: integer expected";
@@ -3860,6 +3878,8 @@ export const eidolon = $root.eidolon = (() => {
                     message.poisonDuration = Number(object.poisonDuration);
                 if (object.bleedDamage != null)
                     message.bleedDamage = object.bleedDamage | 0;
+                if (object.poisonDamage != null)
+                    message.poisonDamage = object.poisonDamage | 0;
                 if (object.talentPoints != null)
                     message.talentPoints = object.talentPoints | 0;
                 if (object.unlockedTalents) {
@@ -3966,6 +3986,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.bleedDuration = 0;
                     object.poisonDuration = 0;
                     object.bleedDamage = 0;
+                    object.poisonDamage = 0;
                     object.talentPoints = 0;
                 }
                 if (message.id != null && message.hasOwnProperty("id"))
@@ -4096,6 +4117,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.poisonDuration = options.json && !isFinite(message.poisonDuration) ? String(message.poisonDuration) : message.poisonDuration;
                 if (message.bleedDamage != null && message.hasOwnProperty("bleedDamage"))
                     object.bleedDamage = message.bleedDamage;
+                if (message.poisonDamage != null && message.hasOwnProperty("poisonDamage"))
+                    object.poisonDamage = message.poisonDamage;
                 if (message.talentPoints != null && message.hasOwnProperty("talentPoints"))
                     object.talentPoints = message.talentPoints;
                 if (message.unlockedTalents && message.unlockedTalents.length) {
