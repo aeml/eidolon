@@ -138,6 +138,7 @@ message Entity {
   int32 arcane_shield_hp = 55;
   bool time_warp_active = 56;
   bool spell_focus_active = 57;
+  bool swift_active = 77;
 
   // Common buff/debuff booleans used for visuals/behavior
   bool stunned = 42;
@@ -156,6 +157,7 @@ message Entity {
   float arcane_shield_duration = 74;
   float divine_intervention_duration = 75;
   float spell_focus_duration = 76;
+  float swift_duration = 78;
   float slow_factor = 58;
   float root_duration = 59;
   float stun_duration = 60;

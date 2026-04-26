@@ -13,3 +13,4 @@ logs/
 server/logs/
 Caddyfile
 server/.env
+coverage/

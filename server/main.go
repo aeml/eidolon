@@ -119,6 +119,7 @@ type EntitySnapshot struct {
 	ArcaneShieldHP int
 	TimeWarpActive bool
 	SpellFocusActive bool
+	SwiftActive bool
 	Stunned bool
 	StunDuration float64
 	Slowed bool
@@ -143,6 +144,7 @@ type EntitySnapshot struct {
 	ArcaneShieldDuration float64
 	DivineInterventionDuration float64
 	SpellFocusDuration float64
+	SwiftDuration float64
 	JumpProgress float64
 	TalentPoints int
 	TalentKeys   int
@@ -3604,6 +3606,13 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 			spellFocusDuration = 0
 		}
 	}
+	swiftDuration := 0.0
+	if e.SwiftActive {
+		swiftDuration = time.Until(e.SwiftEndTime).Seconds()
+		if swiftDuration < 0 {
+			swiftDuration = 0
+		}
+	}
 
 	snap := &EntitySnapshot{
 		X:            e.X,
@@ -3625,6 +3634,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		ArcaneShieldHP: e.ArcaneShieldHP,
 		TimeWarpActive: e.TimeWarpActive,
 		SpellFocusActive: e.SpellFocusActive,
+		SwiftActive: e.SwiftActive,
 		Stunned: e.Stunned,
 		StunDuration: stunDuration,
 		Slowed: e.Slowed,
@@ -3649,6 +3659,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		ArcaneShieldDuration: arcaneShieldDuration,
 		DivineInterventionDuration: divineInterventionDuration,
 		SpellFocusDuration: spellFocusDuration,
+		SwiftDuration: swiftDuration,
 		JumpProgress: e.JumpProgress,
 		TalentPoints: derivedTalentPoints,
 		TalentKeys:   keys,
@@ -3683,6 +3694,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	carcaneShieldHP := current.ArcaneShieldHP
 	ctimeWarpActive := current.TimeWarpActive
 	cspellFocusActive := current.SpellFocusActive
+	cswiftActive := current.SwiftActive
 	cstunned := current.Stunned
 	cstunDuration := 0.0
 	if cstunned {
@@ -3797,6 +3809,13 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 			cspellFocusDuration = 0
 		}
 	}
+	cswiftDuration := 0.0
+	if cswiftActive {
+		cswiftDuration = time.Until(current.SwiftEndTime).Seconds()
+		if cswiftDuration < 0 {
+			cswiftDuration = 0
+		}
+	}
 	ctalentPoints := current.TalentPoints
 	cjumpProgress := current.JumpProgress
 	ctalentKeys := 0
@@ -3890,7 +3909,10 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cspellFocusActive != last.SpellFocusActive {
 		return true
 	}
-	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || math.Abs(cslowDuration-last.SlowDuration) > 0.05 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || math.Abs(cbleedDuration-last.BleedDuration) > 0.05 || cbleedDamage != last.BleedDamage || cpoisoned != last.Poisoned || math.Abs(cpoisonDuration-last.PoisonDuration) > 0.05 || cpoisonDamage != last.PoisonDamage || math.Abs(cweakPointDuration-last.WeakPointDuration) > 0.05 || math.Abs(cmarkWeaknessDuration-last.MarkWeaknessDuration) > 0.05 || math.Abs(cspiritDuration-last.SpiritDuration) > 0.05 || math.Abs(cblessingResolveDuration-last.BlessingResolveDuration) > 0.05 || math.Abs(ctimeWarpDuration-last.TimeWarpDuration) > 0.05 || math.Abs(cguardianEmbraceDuration-last.GuardianEmbraceDuration) > 0.05 || math.Abs(carcaneShieldDuration-last.ArcaneShieldDuration) > 0.05 || math.Abs(cdivineInterventionDuration-last.DivineInterventionDuration) > 0.05 || math.Abs(cspellFocusDuration-last.SpellFocusDuration) > 0.05 {
+	if cswiftActive != last.SwiftActive {
+		return true
+	}
+	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || math.Abs(cslowDuration-last.SlowDuration) > 0.05 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || math.Abs(cbleedDuration-last.BleedDuration) > 0.05 || cbleedDamage != last.BleedDamage || cpoisoned != last.Poisoned || math.Abs(cpoisonDuration-last.PoisonDuration) > 0.05 || cpoisonDamage != last.PoisonDamage || math.Abs(cweakPointDuration-last.WeakPointDuration) > 0.05 || math.Abs(cmarkWeaknessDuration-last.MarkWeaknessDuration) > 0.05 || math.Abs(cspiritDuration-last.SpiritDuration) > 0.05 || math.Abs(cblessingResolveDuration-last.BlessingResolveDuration) > 0.05 || math.Abs(ctimeWarpDuration-last.TimeWarpDuration) > 0.05 || math.Abs(cguardianEmbraceDuration-last.GuardianEmbraceDuration) > 0.05 || math.Abs(carcaneShieldDuration-last.ArcaneShieldDuration) > 0.05 || math.Abs(cdivineInterventionDuration-last.DivineInterventionDuration) > 0.05 || math.Abs(cspellFocusDuration-last.SpellFocusDuration) > 0.05 || math.Abs(cswiftDuration-last.SwiftDuration) > 0.05 {
 		return true
 	}
 
@@ -4271,6 +4293,13 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 			spellFocusDuration = float32(remaining)
 		}
 	}
+	swiftDuration := float32(0)
+	if e.SwiftActive {
+		remaining := time.Until(e.SwiftEndTime).Seconds()
+		if remaining > 0 {
+			swiftDuration = float32(remaining)
+		}
+	}
 
 	out := &statepb.Entity{
 		Id:                e.ID,
@@ -4324,6 +4353,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		ArcaneShieldHp: int32(e.ArcaneShieldHP),
 		TimeWarpActive: e.TimeWarpActive,
 		SpellFocusActive: e.SpellFocusActive,
+		SwiftActive: e.SwiftActive,
 		Stunned:           e.Stunned,
 		StunDuration:      stunDuration,
 		Slowed:            e.Slowed,
@@ -4348,6 +4378,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		ArcaneShieldDuration: arcaneShieldDuration,
 		DivineInterventionDuration: divineInterventionDuration,
 		SpellFocusDuration: spellFocusDuration,
+		SwiftDuration: swiftDuration,
 	}
 
 	e.Mu.RUnlock()

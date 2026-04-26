@@ -255,6 +255,8 @@ describe('GameEngine active buff tracker', () => {
             spellFocusActive: true,
             spellFocusTimer: 15,
             spellFocusMultiplier: 2.5,
+            swiftActive: true,
+            swiftBuffTimer: 3,
             arcaneShieldActive: true,
             shieldHP: 120
         };
@@ -262,6 +264,7 @@ describe('GameEngine active buff tracker', () => {
         engine.syncPlayerSupportEffects(engine.player, {
             timeWarpActive: false,
             spellFocusActive: false,
+            swiftActive: false,
             arcaneShieldActive: false,
             arcaneShieldHp: 0
         });
@@ -271,6 +274,8 @@ describe('GameEngine active buff tracker', () => {
         expect(engine.player.spellFocusActive).toBe(false);
         expect(engine.player.spellFocusTimer).toBe(0);
         expect(engine.player.spellFocusMultiplier).toBe(1.0);
+        expect(engine.player.swiftActive).toBe(false);
+        expect(engine.player.swiftBuffTimer).toBe(0);
         expect(engine.player.arcaneShieldActive).toBe(false);
         expect(engine.player.shieldHP).toBe(0);
     });
@@ -433,6 +438,26 @@ describe('GameEngine active buff tracker', () => {
         expect(player.spellFocusActive).toBe(true);
         expect(player.spellFocusTimer).toBe(12.5);
         expect(player.spellFocusMultiplier).toBe(2.5);
+    });
+
+    test('shared support sync applies authoritative swift state and duration detail', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;
+        engine.syncPlayerSupportEffects = GameEngine.prototype.syncPlayerSupportEffects;
+        engine.showRemoteSupportStateReadability = jest.fn();
+
+        const player = {
+            swiftActive: false,
+            swiftBuffTimer: 0
+        };
+
+        engine.syncPlayerSupportEffects(player, {
+            swiftActive: true,
+            swiftDuration: 2.5
+        });
+
+        expect(player.swiftActive).toBe(true);
+        expect(player.swiftBuffTimer).toBe(2.5);
     });
 
     test('shared support sync applies authoritative arcane shield duration detail', () => {

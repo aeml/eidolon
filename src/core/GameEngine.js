@@ -191,6 +191,20 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
         },
         getNextActive: (entity) => Boolean(entity.spellFocusActive),
     },
+    swift: {
+        payloadKey: 'swiftActive',
+        getPreviousActive: (entity) => Number(entity.swiftBuffTimer || 0) > 0,
+        applyPayload: (entity, value, payload) => {
+            entity.swiftActive = Boolean(value);
+            if (payload.swiftDuration !== undefined) {
+                entity.swiftBuffTimer = Math.max(0, Number(payload.swiftDuration || 0));
+            }
+            if (!entity.swiftActive) {
+                entity.swiftBuffTimer = 0;
+            }
+        },
+        getNextActive: (entity) => Boolean(entity.swiftActive) && Number(entity.swiftBuffTimer || 0) > 0,
+    },
 };
 
 const AUTHORITATIVE_STATUS_CLEAR_CONFIG = {

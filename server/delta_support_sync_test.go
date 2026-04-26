@@ -579,3 +579,56 @@ func TestEntitySnapshotTracksSpellFocusDurationForDeltaSync(t *testing.T) {
 		t.Fatal("expected spell focus duration delta change to be detected")
 	}
 }
+
+func TestEntitySnapshotTracksSwiftStateForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:           "player-swift-state",
+		Type:         game.TypePlayer,
+		SubType:      "Rogue",
+		State:        "IDLE",
+		TalentRanks:  map[string]int{},
+		SwiftActive:  true,
+		SwiftEndTime: time.Now().Add(2500 * time.Millisecond),
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+	if !snapshot.SwiftActive {
+		t.Fatal("expected snapshot to track swift active state")
+	}
+	if snapshot.SwiftDuration <= 0 {
+		t.Fatal("expected snapshot to track swift duration")
+	}
+
+	entity.SwiftActive = false
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected swift active delta change to be detected")
+	}
+}
+
+func TestEntitySnapshotTracksSwiftDurationForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:           "player-swift-duration",
+		Type:         game.TypePlayer,
+		SubType:      "Rogue",
+		State:        "IDLE",
+		TalentRanks:  map[string]int{},
+		SwiftActive:  true,
+		SwiftEndTime: time.Now().Add(2500 * time.Millisecond),
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+	if snapshot.SwiftDuration <= 0 {
+		t.Fatal("expected snapshot to track swift duration")
+	}
+
+	entity.SwiftEndTime = time.Now().Add(500 * time.Millisecond)
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected swift duration delta change to be detected")
+	}
+}

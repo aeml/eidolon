@@ -5497,6 +5497,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if e.DivineInterventionActive && now.After(e.DivineInterventionEndTime) {
 				e.DivineInterventionActive = false
 			}
+			if e.SwiftActive && now.After(e.SwiftEndTime) {
+				e.SwiftActive = false
+			}
 			if e.BlessingResolveActive && now.After(e.BlessingResolveEndTime) {
 				e.BlessingResolveActive = false
 			}

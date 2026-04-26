@@ -673,6 +673,7 @@ type Entity struct {
 	ArcaneShieldHp int32 `protobuf:"varint,55,opt,name=arcane_shield_hp,json=arcaneShieldHp,proto3" json:"arcane_shield_hp,omitempty"`
 	TimeWarpActive bool `protobuf:"varint,56,opt,name=time_warp_active,json=timeWarpActive,proto3" json:"time_warp_active,omitempty"`
 	SpellFocusActive bool `protobuf:"varint,57,opt,name=spell_focus_active,json=spellFocusActive,proto3" json:"spell_focus_active,omitempty"`
+	SwiftActive bool `protobuf:"varint,77,opt,name=swift_active,json=swiftActive,proto3" json:"swift_active,omitempty"`
 	// Common buff/debuff booleans used for visuals/behavior
 	Stunned  bool `protobuf:"varint,42,opt,name=stunned,proto3" json:"stunned,omitempty"`
 	Slowed   bool `protobuf:"varint,43,opt,name=slowed,proto3" json:"slowed,omitempty"`
@@ -690,6 +691,7 @@ type Entity struct {
 	ArcaneShieldDuration float32 `protobuf:"fixed32,74,opt,name=arcane_shield_duration,json=arcaneShieldDuration,proto3" json:"arcane_shield_duration,omitempty"`
 	DivineInterventionDuration float32 `protobuf:"fixed32,75,opt,name=divine_intervention_duration,json=divineInterventionDuration,proto3" json:"divine_intervention_duration,omitempty"`
 	SpellFocusDuration float32 `protobuf:"fixed32,76,opt,name=spell_focus_duration,json=spellFocusDuration,proto3" json:"spell_focus_duration,omitempty"`
+	SwiftDuration float32 `protobuf:"fixed32,78,opt,name=swift_duration,json=swiftDuration,proto3" json:"swift_duration,omitempty"`
 	SlowFactor float32 `protobuf:"fixed32,58,opt,name=slow_factor,json=slowFactor,proto3" json:"slow_factor,omitempty"`
 	SlowDuration float32 `protobuf:"fixed32,65,opt,name=slow_duration,json=slowDuration,proto3" json:"slow_duration,omitempty"`
 	RootDuration float32 `protobuf:"fixed32,59,opt,name=root_duration,json=rootDuration,proto3" json:"root_duration,omitempty"`
@@ -1076,6 +1078,13 @@ func (x *Entity) GetSpellFocusActive() bool {
 	return false
 }
 
+func (x *Entity) GetSwiftActive() bool {
+	if x != nil {
+		return x.SwiftActive
+	}
+	return false
+}
+
 func (x *Entity) GetStunned() bool {
 	if x != nil {
 		return x.Stunned
@@ -1226,6 +1235,13 @@ func (x *Entity) GetDivineInterventionDuration() float32 {
 func (x *Entity) GetSpellFocusDuration() float32 {
 	if x != nil {
 		return x.SpellFocusDuration
+	}
+	return 0
+}
+
+func (x *Entity) GetSwiftDuration() float32 {
+	if x != nil {
+		return x.SwiftDuration
 	}
 	return 0
 }
