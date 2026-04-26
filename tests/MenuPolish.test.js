@@ -990,6 +990,22 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.support-window__body--patch-notes\s*\{[^}]*flex-grow:\s*1;[^}]*color:\s*#ccc;/s);
     });
 
+    test('support menus reuse footer and action row classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toContain('<div class="support-window__footer">');
+        expect(html).toContain('class="support-window__actions support-window__actions--split"');
+        expect(html).toContain('id="btn-cancel-report" class="menu-btn support-window__button--half"');
+        expect(html).toContain('id="btn-submit-report" class="menu-btn support-window__button--half support-window__button--success"');
+        expect(html).not.toContain('id="btn-cancel-report" class="menu-btn" style="width: 45%;"');
+        expect(html).not.toContain('id="btn-submit-report" class="menu-btn" style="width: 45%; background: #4CAF50; border-color: #45a049;"');
+
+        expect(css).toMatch(/\.support-window__actions\s*\{[^}]*display:\s*flex;[^}]*gap:\s*10px;[^}]*flex-wrap:\s*wrap;/s);
+        expect(css).toMatch(/\.support-window__button--half\s*\{[^}]*width:\s*min\(45%, 180px\);[^}]*min-width:\s*120px;/s);
+        expect(css).toMatch(/\.support-window__button--success\s*\{[^}]*background:\s*#4CAF50;[^}]*border-color:\s*#45a049;/s);
+    });
+
     test('service and quest windows stay within the viewport and scroll growing content internally', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(windowsCssPath, 'utf8');

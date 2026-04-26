@@ -390,6 +390,27 @@
     padding-bottom: 10px;
 }
 
+.support-window__actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.support-window__actions--split {
+    justify-content: space-between;
+}
+
+.support-window__button--half {
+    width: min(45%, 180px);
+    min-width: 120px;
+}
+
+.support-window__button--success {
+    background: #4CAF50;
+    border-color: #45a049;
+}
+
 /* ---- Generated Menus ---- */
 .generated-menu-backdrop {
     position: fixed;

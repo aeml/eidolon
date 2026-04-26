@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.3 for the static support menu consistency slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.3');
+    test('advances the login screen to alpha 0.31.4 for the support action row consistency slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.4');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.3', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.4', () => {
+        expect(indexHtml).toContain('Patch 0.31.4');
+        expect(indexHtml).toContain('Settings and Help close areas use the shared support-window footer class');
+        expect(indexHtml).toContain('Cancel and Submit now use reusable support button sizing classes');
+        expect(indexHtml).toContain('Support windows now share shell, body, footer, and action-row patterns');
+        expect(indexHtml).toContain('Added coverage for support footer/action-row classes and reusable report action buttons');
+    });
+
+    test('keeps the prior 0.31.3 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.3');
         expect(indexHtml).toContain('Settings, Help, Report, and Patch Notes now share support-window chrome');
         expect(indexHtml).toContain('Tall settings controls, help guides, report fields, and patch history content scroll through shared support-window body variants');
@@ -700,6 +708,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.4');
         expect(indexHtml).toContain('Patch 0.31.3');
         expect(indexHtml).toContain('Patch 0.31.2');
         expect(indexHtml).toContain('Patch 0.31.1');
@@ -794,6 +803,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.4"');
         expect(indexHtml).toContain('data-version="0.31.3"');
         expect(indexHtml).toContain('data-version="0.31.2"');
         expect(indexHtml).toContain('data-version="0.31.1"');
