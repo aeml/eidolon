@@ -329,13 +329,36 @@
     min-height: 0;
 }
 
+/* ---- HUD Utility Windows ---- */
+#abilities-menu,
+#character-sheet,
+#inventory-screen,
+#split-stack-window {
+    box-sizing: border-box;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+}
+
+#abilities-menu,
+#character-sheet,
+#inventory-screen {
+    overflow: hidden;
+}
+
+#abilities-content,
+.char-sheet-body,
+#inventory-grid {
+    min-height: 0;
+    overflow-y: auto;
+}
+
 /* ---- Character Sheet ---- */
 #character-sheet {
     top: 50%;
     left: 50%;
     transform: translate(-150%, -50%);
-    width: 380px;
-    height: 560px;
+    width: min(380px, calc(100vw - 24px));
+    height: min(560px, calc(100vh - 24px));
 }
 
 .char-sheet-body {
@@ -386,8 +409,8 @@
     top: 50%;
     left: 50%;
     transform: translate(100%, -50%);
-    width: 300px;
-    height: 400px;
+    width: min(300px, calc(100vw - 24px));
+    height: min(400px, calc(100vh - 24px));
 }
 
 .inventory-grid {

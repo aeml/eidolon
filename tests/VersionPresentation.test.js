@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.30.2 for the service and quest window slice', () => {
-        expect(indexHtml).toContain('Alpha 0.30.2');
+    test('advances the login screen to alpha 0.30.3 for the HUD utility window slice', () => {
+        expect(indexHtml).toContain('Alpha 0.30.3');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.30.2', () => {
+    test('includes the latest player-facing patch notes entry for 0.30.3', () => {
+        expect(indexHtml).toContain('Patch 0.30.3');
+        expect(indexHtml).toContain('The remaining HUD utility windows now use viewport-capped dimensions instead of fixed desktop-only frames');
+        expect(indexHtml).toContain('Ability lists, character stats, inventory contents, and split-stack controls can scroll inside their windows when the available screen height is tight');
+        expect(indexHtml).toContain('Primary HUD, service, quest, Forge, and static menus now share the same basic rule');
+        expect(indexHtml).toContain('Added regression coverage for responsive HUD utility window constraints, plus 0.30.3 version presentation');
+    });
+
+    test('keeps the prior 0.30.2 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.30.2');
         expect(indexHtml).toContain('These primary gameplay menus now cap their width and height instead of assuming desktop-only space');
         expect(indexHtml).toContain('Merchant and Trading House content now scrolls inside the window frame so tabs, lists, and action controls remain usable when content grows');
@@ -652,6 +660,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.30.3');
         expect(indexHtml).toContain('Patch 0.30.2');
         expect(indexHtml).toContain('Patch 0.30.1');
         expect(indexHtml).toContain('Patch 0.30.0');
@@ -740,6 +749,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.30.3"');
         expect(indexHtml).toContain('data-version="0.30.2"');
         expect(indexHtml).toContain('data-version="0.30.1"');
         expect(indexHtml).toContain('data-version="0.30.0"');

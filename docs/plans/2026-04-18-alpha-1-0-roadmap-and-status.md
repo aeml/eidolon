@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.30.2`
+- Current in-game displayed version: `Alpha 0.30.3`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.30.2`
+### Shipped through `0.30.3`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -117,6 +117,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.30.0`: Forge tabs now use a larger viewport-capped menu with internal scrolling so bottom upgrade and action controls stay visible and clickable during normal play
 - `0.30.1`: Help, Report, and Patch Notes now cap to the viewport and keep tall content scrollable inside the menu frame
 - `0.30.2`: Merchant, Stash, Trading House, Available Quests, and Quest Journal windows now cap to the viewport and keep growing content scrollable inside their menu frames
+- `0.30.3`: Abilities, Inventory, Character Sheet, and Split Stack windows now cap to the viewport and keep growing utility content scrollable inside their frames
 
 ### What `0.22` has clearly accomplished already
 
@@ -227,7 +228,7 @@ Historical closeout note:
 Current status:
 
 - `0.22` is closed for planned implementation work
-- `0.30.2` is now the active version line
+- `0.30.3` is now the active version line
 
 ### Historical `0.22` implementation checklist
 

@@ -106,9 +106,9 @@
         </div>
 
         <!-- Abilities Menu (Spellbook) -->
-        <div id="abilities-menu" class="window" style="display: none; width: 350px; height: 400px; flex-direction: column;">
+        <div id="abilities-menu" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(350px, calc(100vw - 24px)); height: min(400px, calc(100vh - 24px)); z-index: 101; flex-direction: column;">
             <div class="window-header"><span>ABILITIES (P)</span><button id="btn-close-abilities" class="close-btn" type="button" aria-label="Close abilities menu">×</button></div>
-            <div id="abilities-content" style="padding: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+            <div id="abilities-content" style="padding: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; min-height: 0; overflow-y: auto;">
                 <!-- Populated by JS -->
             </div>
         </div>
@@ -190,12 +190,12 @@
         </div>
 
         <!-- Split Stack Window -->
-        <div id="split-stack-window" class="window" style="display: none; width: 250px; height: auto; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000;">
+        <div id="split-stack-window" class="window" style="display: none; width: min(250px, calc(100vw - 24px)); max-height: calc(100vh - 24px); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; overflow: hidden;">
             <div class="window-header">
                 <span>Split Stack</span>
                 <button id="btn-close-split" class="close-btn" type="button" aria-label="Close split stack window">×</button>
             </div>
-            <div class="window-content" style="display: flex; flex-direction: column; gap: 10px; padding: 15px; align-items: center;">
+            <div class="window-content" style="display: flex; flex-direction: column; gap: 10px; padding: 15px; align-items: center; max-height: calc(100vh - 110px); overflow-y: auto;">
                 <div id="split-item-name" style="color: #ffd700; font-weight: bold;">Item Name</div>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <input type="range" id="split-amount-range" min="1" max="1" value="1" style="width: 100px;">
@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.30.2</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.30.3</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.30.3" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.30.3 (HUD utility windows now follow viewport rules)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Abilities, Inventory, Character Sheet, and Split Stack now respect the viewport:</strong> The remaining HUD utility windows now use viewport-capped dimensions instead of fixed desktop-only frames.</li>
+                        <li><strong>Growing utility content now scrolls internally:</strong> Ability lists, character stats, inventory contents, and split-stack controls can scroll inside their windows when the available screen height is tight.</li>
+                        <li><strong>The 0.30 menu-quality pass is more consistent:</strong> Primary HUD, service, quest, Forge, and static menus now share the same basic rule: stay inside the viewport and keep actions reachable.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for responsive HUD utility window constraints, plus 0.30.3 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.30.2" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.30.2 (Service and quest windows now fit the viewport)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

@@ -931,6 +931,25 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/#trading-house-screen\s+\.window-body,[\s\S]*#quest-journal\s+\.window-list\s*\{[^}]*min-height:\s*0;/);
     });
 
+    test('hud utility windows stay within the viewport and scroll growing content internally', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toMatch(/id="abilities-menu"[^>]*width: min\(350px, calc\(100vw - 24px\)\);/);
+        expect(html).toMatch(/id="abilities-menu"[^>]*height: min\(400px, calc\(100vh - 24px\)\);/);
+        expect(html).toMatch(/id="abilities-content"[^>]*min-height: 0; overflow-y: auto;/);
+
+        expect(html).toMatch(/id="split-stack-window"[^>]*width: min\(250px, calc\(100vw - 24px\)\);/);
+        expect(html).toMatch(/id="split-stack-window"[^>]*max-height: calc\(100vh - 24px\);/);
+        expect(html).toMatch(/id="split-stack-window"[^>]*overflow: hidden;/);
+        expect(html).toMatch(/class="window-content"[^>]*max-height: calc\(100vh - 110px\); overflow-y: auto;/);
+
+        expect(css).toMatch(/#abilities-menu,[\s\S]*#split-stack-window\s*\{[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);/);
+        expect(css).toMatch(/#character-sheet\s*\{[^}]*width:\s*min\(380px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(560px, calc\(100vh - 24px\)\);/s);
+        expect(css).toMatch(/#inventory-screen\s*\{[^}]*width:\s*min\(300px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(400px, calc\(100vh - 24px\)\);/s);
+        expect(css).toMatch(/#abilities-content,[\s\S]*#inventory-grid\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/);
+    });
+
     test('window chrome disables accidental selection while preserving text selection inside form fields', () => {
         const css = readFileSync(windowsCssPath, 'utf8');
 
