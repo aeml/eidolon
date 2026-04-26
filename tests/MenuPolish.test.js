@@ -1028,6 +1028,37 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.support-field__control\s*\{[^}]*padding:\s*10px;[^}]*background:\s*#333;[^}]*border:\s*1px solid #666;/s);
     });
 
+    test('settings asset cache section uses reusable panel classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toContain('<div class="asset-cache-panel">');
+        expect(html).toContain('<div class="asset-cache-panel__header">');
+        expect(html).toContain('<div id="asset-download-status" class="asset-cache-panel__status">Not downloaded</div>');
+        expect(html).toContain('<div id="asset-download-progress" class="asset-cache-panel__detail">0%</div>');
+        expect(html).toContain('<div class="asset-cache-meter">');
+        expect(html).toContain('<div id="asset-download-progress-bar" class="asset-cache-meter__bar"></div>');
+        expect(html).toContain('<div class="asset-cache-pack-list">');
+        expect(html).toContain('<div id="asset-pack-core-badge" class="asset-cache-pack__badge">Not cached</div>');
+        expect(html).toContain('<div class="asset-cache-panel__actions">');
+        expect(html).toContain('id="btn-download-recommended-assets" class="menu-btn asset-cache-panel__button--recommended"');
+        expect(html).toContain('id="btn-refresh-outdated-assets" class="menu-btn asset-cache-panel__button--refresh"');
+        expect(html).toContain('id="btn-update-cached-assets" class="menu-btn asset-cache-panel__button--update"');
+        expect(html).toContain('id="btn-clear-cached-assets" class="menu-btn asset-cache-panel__button--clear"');
+        expect(html).not.toContain('id="asset-download-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #5bbd6a 0%, #9ad06f 100%); transition: width 0.2s ease;"');
+        expect(html).not.toContain('id="asset-pack-core-badge" style="display: inline-flex;');
+        expect(html).not.toContain('id="btn-download-recommended-assets" class="menu-btn" type="button" style="border-color: #5f8f5f; color: #d6ffd6;"');
+        expect(html).not.toContain('id="btn-clear-cached-assets" class="menu-btn" type="button" style="border-color: #aa6666; color: #ffb7b7;"');
+
+        expect(css).toMatch(/\.asset-cache-panel\s*\{[^}]*display:\s*flex;[^}]*flex-direction:\s*column;[^}]*border-top:\s*1px solid rgba\(255,255,255,0\.08\);/s);
+        expect(css).toMatch(/\.asset-cache-panel__header,[\s\S]*\.asset-cache-pack\s*\{[^}]*justify-content:\s*space-between;[^}]*align-items:\s*center;/s);
+        expect(css).toMatch(/\.asset-cache-meter__bar\s*\{[^}]*width:\s*0%;[^}]*background:\s*linear-gradient\(90deg, #5bbd6a 0%, #9ad06f 100%\);/s);
+        expect(css).toMatch(/\.asset-cache-pack__badge\s*\{[^}]*display:\s*inline-flex;[^}]*border-radius:\s*999px;/s);
+        expect(css).toMatch(/\.asset-cache-panel__actions\s*\{[^}]*justify-content:\s*flex-end;[^}]*flex-wrap:\s*wrap;/s);
+        expect(css).toMatch(/\.asset-cache-panel__button--recommended\s*\{[^}]*border-color:\s*#5f8f5f;[^}]*color:\s*#d6ffd6;/s);
+        expect(css).toMatch(/\.asset-cache-panel__button--clear\s*\{[^}]*border-color:\s*#aa6666;[^}]*color:\s*#ffb7b7;/s);
+    });
+
     test('service and quest windows stay within the viewport and scroll growing content internally', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(windowsCssPath, 'utf8');

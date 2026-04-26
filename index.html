@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.5</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.6</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -385,63 +385,63 @@
                         Applies after you enter the world, persists between sessions, and stays off on the login screen.
                     </div>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 10px; text-align: left; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                <div class="asset-cache-panel">
+                    <div class="asset-cache-panel__header">
                         <div>
-                            <div style="color: #ffd700; font-size: 13px;">Keep Assets on This Device</div>
-                            <div style="font-size: 12px; color: #aaa; line-height: 1.4;">Download model packs once so refreshes can reuse them offline-style.</div>
+                            <div class="asset-cache-panel__title">Keep Assets on This Device</div>
+                            <div class="support-field__hint">Download model packs once so refreshes can reuse them offline-style.</div>
                         </div>
-                        <div id="asset-download-status" style="font-size: 12px; color: #9ad06f; text-align: right;">Not downloaded</div>
+                        <div id="asset-download-status" class="asset-cache-panel__status">Not downloaded</div>
                     </div>
-                    <div id="asset-download-progress" style="font-size: 12px; color: #aaa;">0%</div>
-                    <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden;">
-                        <div id="asset-download-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #5bbd6a 0%, #9ad06f 100%); transition: width 0.2s ease;"></div>
+                    <div id="asset-download-progress" class="asset-cache-panel__detail">0%</div>
+                    <div class="asset-cache-meter">
+                        <div id="asset-download-progress-bar" class="asset-cache-meter__bar"></div>
                     </div>
-                    <div id="asset-cache-state-detail" style="font-size: 12px; color: #8fb0d9;">Checking cache state...</div>
-                    <div id="asset-last-synced-version" style="font-size: 12px; color: #7f8ca3;">Last synced asset version: Not yet synced</div>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                    <div id="asset-cache-state-detail" class="asset-cache-panel__detail asset-cache-panel__detail--info">Checking cache state...</div>
+                    <div id="asset-last-synced-version" class="asset-cache-panel__detail asset-cache-panel__detail--muted">Last synced asset version: Not yet synced</div>
+                    <div class="asset-cache-pack-list">
+                        <div class="asset-cache-pack">
                             <div>
-                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
-                                    <div style="color: #fff; font-size: 13px;">Core Models</div>
-                                    <div id="asset-pack-core-badge" style="display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: bold; letter-spacing: 0.04em; text-transform: uppercase; background: rgba(140, 148, 163, 0.18); color: #c7d0dc; border: 1px solid rgba(140, 148, 163, 0.35);">Not cached</div>
+                                <div class="asset-cache-pack__heading">
+                                    <div class="asset-cache-pack__title">Core Models</div>
+                                    <div id="asset-pack-core-badge" class="asset-cache-pack__badge">Not cached</div>
                                 </div>
-                                <div id="asset-pack-core-status" style="font-size: 12px; color: #aaa;">Core models not downloaded</div>
-                                <div id="asset-pack-core-size" style="font-size: 11px; color: #7f8ca3;">Estimated download: 18 MB</div>
-                                <div id="asset-pack-core-version" style="font-size: 11px; color: #7f8ca3;">Cached version: Not cached</div>
+                                <div id="asset-pack-core-status" class="asset-cache-pack__status">Core models not downloaded</div>
+                                <div id="asset-pack-core-size" class="asset-cache-pack__meta">Estimated download: 18 MB</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Cached version: Not cached</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button">Download Core</button>
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                        <div class="asset-cache-pack">
                             <div>
-                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
-                                    <div style="color: #fff; font-size: 13px;">Dungeon Models</div>
-                                    <div id="asset-pack-dungeon-badge" style="display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: bold; letter-spacing: 0.04em; text-transform: uppercase; background: rgba(140, 148, 163, 0.18); color: #c7d0dc; border: 1px solid rgba(140, 148, 163, 0.35);">Not cached</div>
+                                <div class="asset-cache-pack__heading">
+                                    <div class="asset-cache-pack__title">Dungeon Models</div>
+                                    <div id="asset-pack-dungeon-badge" class="asset-cache-pack__badge">Not cached</div>
                                 </div>
-                                <div id="asset-pack-dungeon-status" style="font-size: 12px; color: #aaa;">Dungeon models not downloaded</div>
-                                <div id="asset-pack-dungeon-size" style="font-size: 11px; color: #7f8ca3;">Estimated download: 24 MB</div>
-                                <div id="asset-pack-dungeon-version" style="font-size: 11px; color: #7f8ca3;">Cached version: Not cached</div>
+                                <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Dungeon models not downloaded</div>
+                                <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Estimated download: 24 MB</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Cached version: Not cached</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button">Download Dungeons</button>
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                        <div class="asset-cache-pack">
                             <div>
-                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
-                                    <div style="color: #fff; font-size: 13px;">Environment Textures</div>
-                                    <div id="asset-pack-environment-badge" style="display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: bold; letter-spacing: 0.04em; text-transform: uppercase; background: rgba(140, 148, 163, 0.18); color: #c7d0dc; border: 1px solid rgba(140, 148, 163, 0.35);">Not cached</div>
+                                <div class="asset-cache-pack__heading">
+                                    <div class="asset-cache-pack__title">Environment Textures</div>
+                                    <div id="asset-pack-environment-badge" class="asset-cache-pack__badge">Not cached</div>
                                 </div>
-                                <div id="asset-pack-environment-status" style="font-size: 12px; color: #aaa;">Environment textures not downloaded</div>
-                                <div id="asset-pack-environment-size" style="font-size: 11px; color: #7f8ca3;">Estimated download: 9 MB</div>
-                                <div id="asset-pack-environment-version" style="font-size: 11px; color: #7f8ca3;">Cached version: Not cached</div>
+                                <div id="asset-pack-environment-status" class="asset-cache-pack__status">Environment textures not downloaded</div>
+                                <div id="asset-pack-environment-size" class="asset-cache-pack__meta">Estimated download: 9 MB</div>
+                                <div id="asset-pack-environment-version" class="asset-cache-pack__meta">Cached version: Not cached</div>
                             </div>
                             <button id="btn-download-environment-assets" class="menu-btn" type="button">Download Environment</button>
                         </div>
                     </div>
-                    <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; flex-wrap: wrap;">
-                        <button id="btn-download-recommended-assets" class="menu-btn" type="button" style="border-color: #5f8f5f; color: #d6ffd6;">Download Recommended Assets</button>
-                        <button id="btn-refresh-outdated-assets" class="menu-btn" type="button" style="border-color: #6d8fb5; color: #c4dcff;">Refresh Outdated Assets</button>
-                        <button id="btn-update-cached-assets" class="menu-btn" type="button" style="border-color: #7d75c7; color: #ddd4ff;">Update Cached Assets</button>
-                        <button id="btn-clear-cached-assets" class="menu-btn" type="button" style="border-color: #aa6666; color: #ffb7b7;">Clear Cached Assets</button>
+                    <div class="asset-cache-panel__actions">
+                        <button id="btn-download-recommended-assets" class="menu-btn asset-cache-panel__button--recommended" type="button">Download Recommended Assets</button>
+                        <button id="btn-refresh-outdated-assets" class="menu-btn asset-cache-panel__button--refresh" type="button">Refresh Outdated Assets</button>
+                        <button id="btn-update-cached-assets" class="menu-btn asset-cache-panel__button--update" type="button">Update Cached Assets</button>
+                        <button id="btn-clear-cached-assets" class="menu-btn asset-cache-panel__button--clear" type="button">Clear Cached Assets</button>
                     </div>
                 </div>
                 <div class="support-window__footer">
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.6" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.6 (Settings asset cache uses shared panel classes)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Asset cache Settings now use reusable panel classes:</strong> The cache header, status, progress meter, pack list, badges, metadata, and action row now share asset-cache CSS instead of inline layout and typography.</li>
+                        <li><strong>Cache action buttons now use named variants:</strong> Recommended download, refresh, update, and clear actions keep their visual intent through reusable button modifier classes instead of one-off inline color styles.</li>
+                        <li><strong>The 0.31 consistency pass keeps consolidating Settings:</strong> Settings now shares shell, body, footer, action-row, core field, and asset-cache panel patterns before moving on to the next client menu surface.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for asset-cache panel markup, meter styling, pack badge styling, action button variants, and removed inline cache chrome.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.5" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.5 (Settings core fields use shared form classes)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
