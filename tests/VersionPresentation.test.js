@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.30.0 for the Forge client-quality slice', () => {
-        expect(indexHtml).toContain('Alpha 0.30.0');
+    test('advances the login screen to alpha 0.30.1 for the static menu viewport slice', () => {
+        expect(indexHtml).toContain('Alpha 0.30.1');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.30.0', () => {
+    test('includes the latest player-facing patch notes entry for 0.30.1', () => {
+        expect(indexHtml).toContain('Patch 0.30.1');
+        expect(indexHtml).toContain('These static menus now cap their width and height against the current viewport instead of relying on fixed desktop dimensions');
+        expect(indexHtml).toContain('Help and Report content keep their actions reachable when the viewport is short');
+        expect(indexHtml).toContain('The Patch Notes window now keeps its history scroll inside a viewport-capped frame instead of exceeding short displays');
+        expect(indexHtml).toContain('Added regression coverage for responsive Help, Report, and Patch Notes menu constraints, plus 0.30.1 version presentation');
+    });
+
+    test('keeps the prior 0.30.0 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.30.0');
         expect(indexHtml).toContain('Alpha now advances to 0.30.0 with the first menu-consistency slice focused on Forge usability');
         expect(indexHtml).toContain('The Forge window is wider and taller on normal screens while staying capped to the viewport');
@@ -636,6 +644,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.30.1');
         expect(indexHtml).toContain('Patch 0.30.0');
         expect(indexHtml).toContain('Patch 0.29.16');
         expect(indexHtml).toContain('Patch 0.29.15');
@@ -722,6 +731,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.30.1"');
         expect(indexHtml).toContain('data-version="0.30.0"');
         expect(indexHtml).toContain('data-version="0.29.16"');
         expect(indexHtml).toContain('data-version="0.29.15"');

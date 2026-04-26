@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.30.0</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.30.1</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -451,9 +451,9 @@
         </div>
 
         <!-- Report Screen -->
-        <div id="report-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; z-index: 102;">
+        <div id="report-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(400px, calc(100vw - 24px)); max-height: calc(100vh - 24px); z-index: 102; overflow: hidden;">
             <div class="window-header"><span>SUBMIT REPORT</span><button id="btn-close-report-header" class="close-btn" type="button" aria-label="Close report form">×</button></div>
-            <div style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="padding: 20px; display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 110px); overflow-y: auto;">
                 <select id="report-type" style="padding: 10px; background: #333; color: white; border: 1px solid #666; font-family: inherit;">
                     <option value="Bug Report">Bug Report</option>
                     <option value="Feature Request">Feature Request</option>
@@ -467,7 +467,7 @@
         </div>
 
         <!-- Help Screen -->
-        <div id="help-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 460px; z-index: 101;">
+        <div id="help-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(460px, calc(100vw - 24px)); max-height: calc(100vh - 24px); z-index: 101; overflow: hidden;">
             <div class="window-header"><span>CONTROLS</span><button id="btn-close-help-header" class="close-btn" type="button" aria-label="Close help">×</button></div>
             <div style="padding: 20px; text-align: left; line-height: 1.8; font-size: 14px; display: flex; flex-direction: column; gap: 12px; max-height: calc(100vh - 160px); overflow-y: auto;">
                 <div>
@@ -505,7 +505,7 @@
         </div>
 
         <!-- Patch Notes Screen -->
-        <div id="patch-notes-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 600px; z-index: 101; flex-direction: column;">
+        <div id="patch-notes-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(500px, calc(100vw - 24px)); height: min(600px, calc(100vh - 24px)); z-index: 101; flex-direction: column;">
             <div class="window-header">
                 <span>
                     PATCH NOTES 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.30.1" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.30.1 (Static menus now respect the viewport)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Help, Report, and Patch Notes now fit normal viewports:</strong> These static menus now cap their width and height against the current viewport instead of relying on fixed desktop dimensions.</li>
+                        <li><strong>Tall modal content now scrolls inside the window:</strong> Help and Report content keep their actions reachable when the viewport is short, matching the Forge menu approach from the first 0.30 slice.</li>
+                        <li><strong>Patch Notes stays readable on smaller screens:</strong> The Patch Notes window now keeps its history scroll inside a viewport-capped frame instead of exceeding short displays.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for responsive Help, Report, and Patch Notes menu constraints, plus 0.30.1 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.30.0" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.30.0 (Forge menus now fit the client-quality pass)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

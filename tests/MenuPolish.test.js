@@ -889,6 +889,23 @@ describe('menu polish regressions', () => {
         expect(html).toMatch(/id="settings-screen"[\s\S]*?overflow-y: auto;/);
     });
 
+    test('static help report and patch notes windows stay within the viewport and scroll internally', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+
+        expect(html).toMatch(/id="help-screen"[^>]*width: min\(460px, calc\(100vw - 24px\)\);/);
+        expect(html).toMatch(/id="help-screen"[^>]*max-height: calc\(100vh - 24px\);/);
+        expect(html).toMatch(/id="help-screen"[^>]*overflow: hidden;/);
+        expect(html).toMatch(/id="help-screen"[\s\S]*?max-height: calc\(100vh - 160px\); overflow-y: auto;/);
+
+        expect(html).toMatch(/id="report-screen"[^>]*width: min\(400px, calc\(100vw - 24px\)\);/);
+        expect(html).toMatch(/id="report-screen"[^>]*max-height: calc\(100vh - 24px\);/);
+        expect(html).toMatch(/id="report-screen"[^>]*overflow: hidden;/);
+        expect(html).toMatch(/id="report-screen"[\s\S]*?max-height: calc\(100vh - 110px\); overflow-y: auto;/);
+
+        expect(html).toMatch(/id="patch-notes-screen"[^>]*width: min\(500px, calc\(100vw - 24px\)\);/);
+        expect(html).toMatch(/id="patch-notes-screen"[^>]*height: min\(600px, calc\(100vh - 24px\)\);/);
+    });
+
     test('window chrome disables accidental selection while preserving text selection inside form fields', () => {
         const css = readFileSync(windowsCssPath, 'utf8');
 
