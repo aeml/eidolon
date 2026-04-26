@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.4</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.5</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -337,51 +337,51 @@
         <div id="settings-screen" class="window support-window support-window--settings" style="display: none;">
             <div class="window-header"><span>SETTINGS</span><button id="btn-close-settings-header" class="close-btn" type="button" aria-label="Close settings">×</button></div>
             <div class="support-window__body support-window__body--settings">
-                <div style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
-                    <label for="graphics-quality" style="color: #ffd700; font-size: 13px;">Graphics Quality</label>
-                    <select id="graphics-quality" style="padding: 10px; background: #333; color: #fff; border: 1px solid #666; font-family: inherit;">
+                <div class="support-field">
+                    <label for="graphics-quality" class="support-field__label">Graphics Quality</label>
+                    <select id="graphics-quality" class="support-field__control">
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>
                         <option value="high" selected>High</option>
                     </select>
-                    <div style="font-size: 12px; color: #aaa; line-height: 1.4;">
+                    <div class="support-field__hint">
                         High is the default target and enables full effects. Lower settings reduce post-processing and shadow cost.
                     </div>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <label for="graphics-brightness" style="color: #ffd700; font-size: 13px;">Brightness</label>
-                        <span id="graphics-brightness-value" style="color: #ddd; font-size: 12px;">100%</span>
+                <div class="support-field">
+                    <div class="support-field__row">
+                        <label for="graphics-brightness" class="support-field__label">Brightness</label>
+                        <span id="graphics-brightness-value" class="support-field__value">100%</span>
                     </div>
-                    <input id="graphics-brightness" type="range" min="0" max="100" step="1" value="50" style="width: 100%;" />
-                    <div style="font-size: 12px; color: #aaa; line-height: 1.4;">
+                    <input id="graphics-brightness" class="support-field__range" type="range" min="0" max="100" step="1" value="50" />
+                    <div class="support-field__hint">
                         50% matches the default brightness. Lower values darken further; higher values only brighten slightly.
                     </div>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
-                        <label for="auto-loot-enabled" style="color: #ffd700; font-size: 13px;">Auto-Loot Nearby Items</label>
+                <div class="support-field">
+                    <div class="support-field__row">
+                        <label for="auto-loot-enabled" class="support-field__label">Auto-Loot Nearby Items</label>
                         <input id="auto-loot-enabled" type="checkbox" />
                     </div>
-                    <div style="font-size: 12px; color: #aaa; line-height: 1.4;">
+                    <div class="support-field__hint">
                         Automatically attempts to pick up nearby loot while you move through it.
                     </div>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
-                        <label for="camera-shake-enabled" style="color: #ffd700; font-size: 13px;">Camera Shake</label>
+                <div class="support-field">
+                    <div class="support-field__row">
+                        <label for="camera-shake-enabled" class="support-field__label">Camera Shake</label>
                         <input id="camera-shake-enabled" type="checkbox" />
                     </div>
-                    <div style="font-size: 12px; color: #aaa; line-height: 1.4;">
+                    <div class="support-field__hint">
                         Off by default. Enable it if you want jump landings and impacts to punch the camera.
                     </div>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
-                        <label for="fullscreen-enabled" style="color: #ffd700; font-size: 13px;">Fullscreen</label>
+                <div class="support-field">
+                    <div class="support-field__row">
+                        <label for="fullscreen-enabled" class="support-field__label">Fullscreen</label>
                         <input id="fullscreen-enabled" type="checkbox" />
                     </div>
-                    <div style="font-size: 12px; color: #aaa; line-height: 1.4;">
+                    <div class="support-field__hint">
                         Applies after you enter the world, persists between sessions, and stays off on the login screen.
                     </div>
                 </div>
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.5" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.5 (Settings core fields use shared form classes)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Core Settings rows now use reusable support-field classes:</strong> Graphics quality, brightness, auto-loot, camera shake, and fullscreen controls now share field, row, label, hint, value, select, and range styling.</li>
+                        <li><strong>Repeated inline form styling has been reduced:</strong> The primary Settings controls no longer duplicate label colors, hint typography, row layout, or range width inline.</li>
+                        <li><strong>The 0.31 consistency pass keeps tightening support menus:</strong> Settings now shares shell, body, footer, action-row, and core field patterns before the asset-cache section gets its own cleanup.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for support-field markup and reusable Settings form CSS.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.4" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.4 (Support menu actions use shared rows)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

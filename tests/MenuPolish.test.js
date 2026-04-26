@@ -1006,6 +1006,28 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.support-window__button--success\s*\{[^}]*background:\s*#4CAF50;[^}]*border-color:\s*#45a049;/s);
     });
 
+    test('settings core fields reuse support field classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toContain('<label for="graphics-quality" class="support-field__label">Graphics Quality</label>');
+        expect(html).toContain('<select id="graphics-quality" class="support-field__control">');
+        expect(html).toContain('<label for="graphics-brightness" class="support-field__label">Brightness</label>');
+        expect(html).toContain('<span id="graphics-brightness-value" class="support-field__value">100%</span>');
+        expect(html).toContain('<input id="graphics-brightness" class="support-field__range" type="range"');
+        expect(html).toContain('<label for="auto-loot-enabled" class="support-field__label">Auto-Loot Nearby Items</label>');
+        expect(html).toContain('<label for="camera-shake-enabled" class="support-field__label">Camera Shake</label>');
+        expect(html).toContain('<label for="fullscreen-enabled" class="support-field__label">Fullscreen</label>');
+        expect(html).not.toContain('<label for="graphics-quality" style="color: #ffd700; font-size: 13px;">Graphics Quality</label>');
+        expect(html).not.toContain('<input id="graphics-brightness" type="range" min="0" max="100" step="1" value="50" style="width: 100%;" />');
+
+        expect(css).toMatch(/\.support-field\s*\{[^}]*display:\s*flex;[^}]*flex-direction:\s*column;[^}]*gap:\s*8px;[^}]*text-align:\s*left;/s);
+        expect(css).toMatch(/\.support-field__row\s*\{[^}]*justify-content:\s*space-between;[^}]*align-items:\s*center;[^}]*gap:\s*12px;/s);
+        expect(css).toMatch(/\.support-field__label\s*\{[^}]*color:\s*#ffd700;[^}]*font-size:\s*13px;/s);
+        expect(css).toMatch(/\.support-field__hint\s*\{[^}]*font-size:\s*12px;[^}]*color:\s*#aaa;[^}]*line-height:\s*1\.4;/s);
+        expect(css).toMatch(/\.support-field__control\s*\{[^}]*padding:\s*10px;[^}]*background:\s*#333;[^}]*border:\s*1px solid #666;/s);
+    });
+
     test('service and quest windows stay within the viewport and scroll growing content internally', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(windowsCssPath, 'utf8');
