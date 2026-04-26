@@ -990,6 +990,22 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.support-window__body--patch-notes\s*\{[^}]*flex-grow:\s*1;[^}]*color:\s*#ccc;/s);
     });
 
+    test('patch notes history entries reuse shared title and list classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toContain('<div class="patch-note-entry" data-version="0.31.7">');
+        expect(html).toContain('<h3 class="patch-note-entry__title">Patch 0.31.7');
+        expect(html).toContain('<ul class="patch-note-entry__list">');
+        expect(html).not.toContain('class="patch-note-entry" data-version="0.31.7" style="margin-bottom: 20px;"');
+        expect(html).not.toContain('<h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch');
+        expect(html).not.toContain('<ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">');
+
+        expect(css).toMatch(/\.patch-note-entry\s*\{[^}]*margin-bottom:\s*20px;/s);
+        expect(css).toMatch(/\.patch-note-entry__title\s*\{[^}]*color:\s*#ffd700;[^}]*border-bottom:\s*1px solid #444;[^}]*padding-bottom:\s*5px;/s);
+        expect(css).toMatch(/\.patch-note-entry__list\s*\{[^}]*list-style-type:\s*disc;[^}]*padding-left:\s*20px;[^}]*line-height:\s*1\.6;/s);
+    });
+
     test('support menus reuse footer and action row classes', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(windowsCssPath, 'utf8');

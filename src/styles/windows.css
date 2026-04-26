@@ -385,6 +385,22 @@
     color: #ccc;
 }
 
+.patch-note-entry {
+    margin-bottom: 20px;
+}
+
+.patch-note-entry__title {
+    color: #ffd700;
+    border-bottom: 1px solid #444;
+    padding-bottom: 5px;
+}
+
+.patch-note-entry__list {
+    list-style-type: disc;
+    padding-left: 20px;
+    line-height: 1.6;
+}
+
 .support-window__footer {
     text-align: center;
     padding-bottom: 10px;

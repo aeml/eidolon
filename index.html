@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.6</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.7</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,909 +516,918 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
-                <div class="patch-note-entry" data-version="0.31.6" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.6 (Settings asset cache uses shared panel classes)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.31.7">
+                    <h3 class="patch-note-entry__title">Patch 0.31.7 (Patch Notes content uses shared entry classes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Patch Notes content now uses reusable entry chrome:</strong> Release titles and bullet lists now share patch-note title and list classes instead of repeating inline heading and list styles on every entry.</li>
+                        <li><strong>Patch history spacing is owned by CSS:</strong> Patch note entries now get their bottom spacing from the shared patch-note-entry class instead of per-entry margin styles.</li>
+                        <li><strong>The 0.31 consistency pass extends inside support windows:</strong> Patch Notes now shares both its support-window shell and its repeated content styling through class-based CSS.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for patch-note entry title/list classes and removed repeated inline Patch Notes content chrome.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.31.6">
+                    <h3 class="patch-note-entry__title">Patch 0.31.6 (Settings asset cache uses shared panel classes)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Asset cache Settings now use reusable panel classes:</strong> The cache header, status, progress meter, pack list, badges, metadata, and action row now share asset-cache CSS instead of inline layout and typography.</li>
                         <li><strong>Cache action buttons now use named variants:</strong> Recommended download, refresh, update, and clear actions keep their visual intent through reusable button modifier classes instead of one-off inline color styles.</li>
                         <li><strong>The 0.31 consistency pass keeps consolidating Settings:</strong> Settings now shares shell, body, footer, action-row, core field, and asset-cache panel patterns before moving on to the next client menu surface.</li>
                         <li><strong>Regression coverage:</strong> Added coverage for asset-cache panel markup, meter styling, pack badge styling, action button variants, and removed inline cache chrome.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.31.5" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.5 (Settings core fields use shared form classes)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.31.5">
+                    <h3 class="patch-note-entry__title">Patch 0.31.5 (Settings core fields use shared form classes)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Core Settings rows now use reusable support-field classes:</strong> Graphics quality, brightness, auto-loot, camera shake, and fullscreen controls now share field, row, label, hint, value, select, and range styling.</li>
                         <li><strong>Repeated inline form styling has been reduced:</strong> The primary Settings controls no longer duplicate label colors, hint typography, row layout, or range width inline.</li>
                         <li><strong>The 0.31 consistency pass keeps tightening support menus:</strong> Settings now shares shell, body, footer, action-row, and core field patterns before the asset-cache section gets its own cleanup.</li>
                         <li><strong>Regression coverage:</strong> Added coverage for support-field markup and reusable Settings form CSS.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.31.4" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.4 (Support menu actions use shared rows)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.31.4">
+                    <h3 class="patch-note-entry__title">Patch 0.31.4 (Support menu actions use shared rows)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Support menu footers now share action structure:</strong> Settings and Help close areas use the shared support-window footer class, while Report now uses shared support action-row classes.</li>
                         <li><strong>Report actions no longer carry one-off button widths:</strong> Cancel and Submit now use reusable support button sizing classes, and Submit uses a shared success button modifier.</li>
                         <li><strong>The 0.31 consistency pass keeps reducing inline menu chrome:</strong> Support windows now share shell, body, footer, and action-row patterns before the next menu-feel cleanup pass.</li>
                         <li><strong>Regression coverage:</strong> Added coverage for support footer/action-row classes and reusable report action buttons.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.31.3" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.3 (Static support menus share shell and body classes)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.31.3">
+                    <h3 class="patch-note-entry__title">Patch 0.31.3 (Static support menus share shell and body classes)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Settings, Help, Report, and Patch Notes now share support-window chrome:</strong> Their modal shell sizing, viewport caps, overflow rules, and z-index tiers now live in reusable CSS classes.</li>
                         <li><strong>Support menu bodies now use reusable scroll classes:</strong> Tall settings controls, help guides, report fields, and patch history content scroll through shared support-window body variants instead of one-off inline body styles.</li>
                         <li><strong>The 0.31 consistency pass covers the static support layer:</strong> Static support menus now line up with the generated and pause menu cleanup direction before the later audio/accessibility work begins.</li>
                         <li><strong>Regression coverage:</strong> Added coverage for support-window shell classes, support body scroll variants, and 0.31.3 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.31.2" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.2 (Pause menu joins the shared window pattern)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.31.2">
+                    <h3 class="patch-note-entry__title">Patch 0.31.2 (Pause menu joins the shared window pattern)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Pause menu chrome is now class-based:</strong> The Escape menu now uses reusable pause-menu and pause-menu__actions classes instead of carrying its position, width, and body spacing inline.</li>
                         <li><strong>Pause actions stay reachable on short screens:</strong> The button stack now scrolls inside a viewport-capped pause menu frame when vertical space is tight.</li>
                         <li><strong>The 0.31 consistency pass covers another primary menu:</strong> Pause, generated, Forge, static, service, quest, and HUD utility windows now share the same direction: viewport-safe shells with reusable body/action structure.</li>
                         <li><strong>Regression coverage:</strong> Added coverage for pause menu viewport-safe chrome and reusable action-stack markup.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.31.1" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.1 (Generated menu chrome now lives in shared CSS)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.31.1">
+                    <h3 class="patch-note-entry__title">Patch 0.31.1 (Generated menu chrome now lives in shared CSS)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Generated menu shell styles are no longer duplicated inline:</strong> Dungeon Portal and Talent Master now let shared generated-menu classes own backdrop, position, sizing, overflow, and action-row behavior.</li>
                         <li><strong>Dynamic controls use reusable class hooks:</strong> Dungeon selects, difficulty choices, and generated menu footers keep their layout through shared CSS instead of one-off JavaScript style assignments.</li>
                         <li><strong>The 0.31 consistency pass gets easier to extend:</strong> Future generated menu polish can target one CSS surface instead of auditing duplicate modal shell styles in multiple UI modules.</li>
                         <li><strong>Regression coverage:</strong> Added coverage that generated menus use reusable chrome classes and no longer depend on inline viewport shell styles.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.31.0" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.0 (Client UX consistency pass begins)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.31.0">
+                    <h3 class="patch-note-entry__title">Patch 0.31.0 (Client UX consistency pass begins)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Generated menus now share consistent chrome:</strong> Dungeon Portal and Talent Master use shared generated-menu and backdrop classes instead of living as one-off modal frames.</li>
                         <li><strong>Dynamic menu controls are easier to keep consistent:</strong> Dungeon selects, difficulty rows, and footer action rows now carry reusable classes that match the 0.30 viewport behavior.</li>
                         <li><strong>The 0.31 line starts from the completed 0.30 sizing audit:</strong> The next client-quality work can focus on consistent headers, bodies, footers, tabs, and menu feel instead of basic clipping fixes.</li>
                         <li><strong>Regression coverage:</strong> Added coverage for shared generated modal chrome, reusable generated action rows, and 0.31.0 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.30.4" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.30.4 (Dynamic menus now finish the viewport audit)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.30.4">
+                    <h3 class="patch-note-entry__title">Patch 0.30.4 (Dynamic menus now finish the viewport audit)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Dungeon Portal and Talent Master now respect the viewport:</strong> Generated menus now cap their height, scroll internally, and keep footer actions reachable when their guidance or option lists grow.</li>
                         <li><strong>Special panels now follow the same sizing rule:</strong> Skill Tree, party roster, and party invite surfaces now stay inside normal viewport bounds instead of relying on fixed desktop-only frames.</li>
                         <li><strong>Small-screen controls are harder to clip:</strong> Dungeon selectors and difficulty controls now wrap or shrink inside their menu instead of forcing horizontal overflow.</li>
                         <li><strong>Regression coverage:</strong> Added coverage for generated menu viewport caps, special panel sizing, and 0.30.4 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.30.3" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.30.3 (HUD utility windows now follow viewport rules)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.30.3">
+                    <h3 class="patch-note-entry__title">Patch 0.30.3 (HUD utility windows now follow viewport rules)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Abilities, Inventory, Character Sheet, and Split Stack now respect the viewport:</strong> The remaining HUD utility windows now use viewport-capped dimensions instead of fixed desktop-only frames.</li>
                         <li><strong>Growing utility content now scrolls internally:</strong> Ability lists, character stats, inventory contents, and split-stack controls can scroll inside their windows when the available screen height is tight.</li>
                         <li><strong>The 0.30 menu-quality pass is more consistent:</strong> Primary HUD, service, quest, Forge, and static menus now share the same basic rule: stay inside the viewport and keep actions reachable.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for responsive HUD utility window constraints, plus 0.30.3 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.30.2" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.30.2 (Service and quest windows now fit the viewport)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.30.2">
+                    <h3 class="patch-note-entry__title">Patch 0.30.2 (Service and quest windows now fit the viewport)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Merchant, Stash, Trading House, and Quest windows now respect the viewport:</strong> These primary gameplay menus now cap their width and height instead of assuming desktop-only space.</li>
                         <li><strong>Service menus keep actions reachable:</strong> Merchant and Trading House content now scrolls inside the window frame so tabs, lists, and action controls remain usable when content grows.</li>
                         <li><strong>Quest surfaces follow the same menu-quality rule:</strong> Available Quests and Quest Journal now use viewport-capped frames with internal list scrolling.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for responsive service and quest window constraints, plus 0.30.2 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.30.1" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.30.1 (Static menus now respect the viewport)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.30.1">
+                    <h3 class="patch-note-entry__title">Patch 0.30.1 (Static menus now respect the viewport)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Help, Report, and Patch Notes now fit normal viewports:</strong> These static menus now cap their width and height against the current viewport instead of relying on fixed desktop dimensions.</li>
                         <li><strong>Tall modal content now scrolls inside the window:</strong> Help and Report content keep their actions reachable when the viewport is short, matching the Forge menu approach from the first 0.30 slice.</li>
                         <li><strong>Patch Notes stays readable on smaller screens:</strong> The Patch Notes window now keeps its history scroll inside a viewport-capped frame instead of exceeding short displays.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for responsive Help, Report, and Patch Notes menu constraints, plus 0.30.1 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.30.0" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.30.0 (Forge menus now fit the client-quality pass)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.30.0">
+                    <h3 class="patch-note-entry__title">Patch 0.30.0 (Forge menus now fit the client-quality pass)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>The 0.30 client-quality line has started:</strong> Alpha now advances to 0.30.0 with the first menu-consistency slice focused on Forge usability.</li>
                         <li><strong>Forge tabs now have more usable room:</strong> The Forge window is wider and taller on normal screens while staying capped to the viewport.</li>
                         <li><strong>Bottom Forge actions stay reachable:</strong> Forge content now scrolls inside the menu, so upgrade, potency, socket, insert, combine, and remove actions remain accessible when tab content gets tall.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for Forge menu sizing, internal scrolling, action-button reachability, and 0.30.0 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.34" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.34 (Swift state now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.34">
+                    <h3 class="patch-note-entry__title">Patch 0.29.34 (Swift state now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates swift active state and duration:</strong> Authoritative state now also replicates swift active state and duration so Swift can carry truthful remaining time in local self sync instead of relying only on local trigger guesses.</li>
                         <li><strong>Swift timer detail is now more truthful:</strong> This lets local self sync and buff UI track the real remaining Swift window from server state while also fixing expired server Swift state to clear cleanly.</li>
                         <li><strong>The 0.29 cleanup line continues one buff field at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following spell focus duration with the remaining timer-backed unique speed buff case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative swift state and duration sync, plus 0.29.34 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.33" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.33 (Spell Focus duration now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.33">
+                    <h3 class="patch-note-entry__title">Patch 0.29.33 (Spell Focus duration now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates spell focus duration:</strong> Authoritative state now also replicates spell focus duration so Spell Focus can carry truthful remaining time in local self sync instead of relying on a missing local timer.</li>
                         <li><strong>Spell Focus timer detail is now more truthful:</strong> This lets local self sync and buff UI track the real remaining Spell Focus window from server state while keeping the broader support-duration rollout incremental and honest.</li>
                         <li><strong>The 0.29 cleanup line continues one buff field at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following divine intervention duration with the next timer-backed wizard setup buff case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative spell focus duration sync and 0.29.33 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.32" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.32 (Divine Intervention duration now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.32">
+                    <h3 class="patch-note-entry__title">Patch 0.29.32 (Divine Intervention duration now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates divine intervention duration:</strong> Authoritative state now also replicates divine intervention duration so Divine Intervention can carry truthful remaining time in local self sync instead of relying on a missing local timer.</li>
                         <li><strong>Divine Intervention timer detail is now more truthful:</strong> This lets local self sync and buff UI track the real remaining Divine Intervention window from server state while keeping the broader support-duration rollout incremental and honest.</li>
                         <li><strong>The 0.29 cleanup line continues one buff field at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following arcane shield duration with the last timer-backed rescue buff case in this pass.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative divine intervention duration sync and 0.29.32 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.31" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.31 (Arcane Shield duration now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.31">
+                    <h3 class="patch-note-entry__title">Patch 0.29.31 (Arcane Shield duration now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates arcane shield duration:</strong> Authoritative state now also replicates arcane shield duration so Arcane Shield can carry truthful remaining time in local self sync instead of relying on a borrowed placeholder timer.</li>
                         <li><strong>Arcane Shield timer detail is now more truthful:</strong> This lets local self sync and buff UI track the real remaining Arcane Shield window from server state while keeping the broader support-duration rollout incremental and honest.</li>
                         <li><strong>The 0.29 cleanup line continues one buff field at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following guardian embrace duration with the next timer-backed wizard protection case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative arcane shield duration sync and 0.29.31 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.30" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.30 (Guardian Embrace duration now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.30">
+                    <h3 class="patch-note-entry__title">Patch 0.29.30 (Guardian Embrace duration now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates guardian embrace duration:</strong> Authoritative state now also replicates guardian embrace duration so Guardian Embrace can carry truthful remaining time in local self sync instead of relying on a local placeholder timer.</li>
                         <li><strong>Guardian Embrace timer detail is now more truthful:</strong> This lets local self sync and buff UI track the real remaining Guardian Embrace window from server state while keeping the broader support-duration rollout incremental and honest.</li>
                         <li><strong>The 0.29 cleanup line continues one buff field at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following time warp duration with the next timer-backed cleric support case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative guardian embrace duration sync and 0.29.30 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.29" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.29 (Time Warp duration now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.29">
+                    <h3 class="patch-note-entry__title">Patch 0.29.29 (Time Warp duration now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates time warp duration:</strong> Authoritative state now also replicates time warp duration so Time Warp can carry truthful remaining time in local self sync instead of relying on a local placeholder timer.</li>
                         <li><strong>Time Warp timer detail is now more truthful:</strong> This lets local self sync and buff UI track the real remaining Time Warp window from server state while keeping the broader support-duration rollout incremental and honest.</li>
                         <li><strong>The 0.29 cleanup line continues one buff field at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following blessing resolve duration with the next timer-backed wizard support case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative time warp duration sync and 0.29.29 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.28" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.28 (Blessing Resolve duration now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.28">
+                    <h3 class="patch-note-entry__title">Patch 0.29.28 (Blessing Resolve duration now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates blessing resolve duration:</strong> Authoritative state now also replicates blessing resolve duration so Blessing of Resolve can carry truthful remaining time in local self sync instead of relying on a local placeholder timer.</li>
                         <li><strong>Blessing Resolve timer detail is now more truthful:</strong> This lets local self sync and buff UI track the real remaining Blessing of Resolve window from server state while keeping the broader support-duration rollout incremental and honest.</li>
                         <li><strong>The 0.29 cleanup line continues one buff field at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following spirit duration with the next timer-backed support-duration case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative blessing resolve duration sync and 0.29.28 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.27" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.27 (Spirit duration now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.27">
+                    <h3 class="patch-note-entry__title">Patch 0.29.27 (Spirit duration now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates spirit duration:</strong> Authoritative state now also replicates spirit duration so Spirit Guardians can carry truthful remaining time in local self sync instead of relying on a local placeholder timer.</li>
                         <li><strong>Spirit timer detail is now more truthful:</strong> This lets local self sync and buff UI track the real remaining Spirit Guardians window from server state while keeping the broader support-duration rollout incremental and honest.</li>
                         <li><strong>The 0.29 cleanup line continues one buff field at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one buff field at a time, following mark weakness duration with the first timer-backed support-duration case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative spirit duration sync and 0.29.27 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.26" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.26 (Marked duration now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.26">
+                    <h3 class="patch-note-entry__title">Patch 0.29.26 (Marked duration now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates mark weakness duration:</strong> Authoritative state now also replicates mark weakness duration so marked targets can carry truthful remaining time in local self sync instead of relying on a placeholder timer.</li>
                         <li><strong>Marked timer detail is now more truthful:</strong> This lets local self sync and debuff UI track the real remaining marked window from server state while keeping factor detail for later slices.</li>
                         <li><strong>The 0.29 cleanup line continues one debuff field at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one debuff field at a time, following mark weakness active state with the matching timer-backed marked case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative mark weakness duration sync and 0.29.26 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.25" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.25 (Marked sync now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.25">
+                    <h3 class="patch-note-entry__title">Patch 0.29.25 (Marked sync now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates mark weakness active state:</strong> Authoritative state now also replicates mark weakness active state so marked targets can stay truthfully flagged in local self sync instead of relying only on local guesswork.</li>
                         <li><strong>Marked state is now more truthful in local sync:</strong> This lets local self sync and debuff UI reflect the real server-owned mark weakness state while keeping duration and factor details for later slices.</li>
                         <li><strong>The marked debuff card now avoids fake percentage detail:</strong> When only authoritative active state is present, the debuff card now falls back to a truthful generic marked label instead of inventing a `+0% damage taken` factor.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative mark weakness active sync, truthful marked-detail fallback, and 0.29.25 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.24" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.24 (Weak point duration now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.24">
+                    <h3 class="patch-note-entry__title">Patch 0.29.24 (Weak point duration now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates weak point duration:</strong> Authoritative state now also replicates weak point duration so marked targets can carry truthful remaining time in local self sync instead of relying on a placeholder timer.</li>
                         <li><strong>Weak point timer detail is now more truthful:</strong> This lets local self sync and debuff UI track the real remaining weak point window from server state while keeping weak point detail rollout incremental and honest.</li>
                         <li><strong>The 0.29 cleanup line continues one debuff field at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one debuff field at a time, following weak point active state with the matching timer-backed weak point case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative weak point duration sync and 0.29.24 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.23" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.23 (Weak point sync now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.23">
+                    <h3 class="patch-note-entry__title">Patch 0.29.23 (Weak point sync now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates weak point active state:</strong> Authoritative state now also replicates weak point active state so marked targets can stay truthfully flagged in local self sync instead of relying only on local guesswork.</li>
                         <li><strong>Weak point state is now more truthful in local sync:</strong> This lets local self sync and debuff UI reflect the real server-owned weak point mark state while keeping duration and damage details for later slices.</li>
                         <li><strong>The 0.29 cleanup line continues one debuff field at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one debuff field at a time, following slow duration with the first safe weak point state case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative weak point active sync and 0.29.23 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.22" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.22 (Slow duration sync now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.22">
+                    <h3 class="patch-note-entry__title">Patch 0.29.22 (Slow duration sync now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates slow duration:</strong> Authoritative state now also replicates slow duration so active slows can carry truthful remaining time instead of relying only on slow factor and a local placeholder timer.</li>
                         <li><strong>Slow window detail is now more truthful:</strong> This lets local self sync and debuff UI track the real remaining slow window from server state while keeping the broader status rollout incremental and honest.</li>
                         <li><strong>The 0.29 cleanup line continues one debuff field at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one debuff field at a time, following poison damage with the remaining timer-backed slow case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative slow duration sync and 0.29.22 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.21" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.21 (Poison damage sync now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.21">
+                    <h3 class="patch-note-entry__title">Patch 0.29.21 (Poison damage sync now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates poison damage:</strong> Authoritative state now also replicates poison damage so active poison can carry truthful per-tick damage detail instead of relying only on local stack guesses.</li>
                         <li><strong>Poison detail is now more truthful in local sync:</strong> This lets local self sync and debuff UI prefer the real server-owned poison tick damage while still falling back to local stack-based detail when that authoritative field is absent.</li>
                         <li><strong>The 0.29 cleanup line continues one debuff field at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one debuff field at a time, following bleed damage with the matching safe poison-owned damage detail.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative poison damage sync and 0.29.21 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.20" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.20 (Bleed damage sync now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.20">
+                    <h3 class="patch-note-entry__title">Patch 0.29.20 (Bleed damage sync now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates bleed damage:</strong> Authoritative state now also replicates bleed damage so active bleeds can carry truthful per-tick damage detail instead of relying only on local stack guesses.</li>
                         <li><strong>Bleed detail is now more truthful in local sync:</strong> This lets local self sync and debuff UI prefer the real server-owned bleed tick damage while still falling back to local stack-based detail when that authoritative field is absent.</li>
                         <li><strong>The 0.29 cleanup line continues one debuff field at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one debuff field at a time, following poison duration with the next safe bleed-owned damage detail.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative bleed damage sync and 0.29.20 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.19" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.19 (Poison duration sync now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.19">
+                    <h3 class="patch-note-entry__title">Patch 0.29.19 (Poison duration sync now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates poison duration:</strong> Authoritative state now also replicates poison duration so active poison can carry truthful remaining time instead of only an on/off poisoned flag.</li>
                         <li><strong>Poison window detail is now more truthful:</strong> This lets local self sync and debuff UI track the real remaining poison window from server state while keeping the broader debuff-duration rollout incremental and honest.</li>
                         <li><strong>The 0.29 cleanup line continues one debuff at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one debuff at a time, following bleed with the matching safe server-owned poison case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative poison duration sync and 0.29.19 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.18" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.18 (Bleed duration sync now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.18">
+                    <h3 class="patch-note-entry__title">Patch 0.29.18 (Bleed duration sync now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates bleed duration:</strong> Authoritative state now also replicates bleed duration so active bleeds can carry truthful remaining time instead of only an on/off bleeding flag.</li>
                         <li><strong>Bleed window detail is now more truthful:</strong> This lets local self sync and debuff UI track the real remaining bleed window from server state while keeping the broader debuff-duration rollout incremental and honest.</li>
                         <li><strong>The 0.29 cleanup line continues one debuff at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one debuff at a time, moving from timer-backed crowd control into the next safe server-owned bleed case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative bleed duration sync and 0.29.18 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.17" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.17 (Stun duration sync now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.17">
+                    <h3 class="patch-note-entry__title">Patch 0.29.17 (Stun duration sync now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates stun duration:</strong> Authoritative state now also replicates stun duration so active stuns can carry truthful remaining time instead of only an on/off stunned flag.</li>
                         <li><strong>Stun lockout detail is now more truthful:</strong> This lets local self sync and debuff UI track the real remaining stun lockout from server state while keeping the broader debuff-duration rollout incremental and honest.</li>
                         <li><strong>The 0.29 cleanup line continues one debuff at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one debuff at a time, following root duration with the next safe timer-backed stun case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative stun duration sync and 0.29.17 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.16" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.16 (Root duration sync now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.16">
+                    <h3 class="patch-note-entry__title">Patch 0.29.16 (Root duration sync now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates root duration:</strong> Authoritative state now also replicates root duration so active roots can carry truthful remaining time instead of only an on/off rooted flag.</li>
                         <li><strong>Root lockout detail is now more truthful:</strong> This lets local self sync and debuff UI track the real remaining root lockout from server state while keeping the broader debuff-duration rollout incremental and honest.</li>
                         <li><strong>The 0.29 cleanup line continues one debuff at a time:</strong> The 0.29 cleanup line continues by extending status detail replication one debuff at a time, starting with the cleanest timer-backed root case.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative root duration sync and 0.29.16 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.15" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.15 (Slow factor sync now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.15">
+                    <h3 class="patch-note-entry__title">Patch 0.29.15 (Slow factor sync now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative state now also replicates slow factor:</strong> Authoritative state now also replicates slow factor so active slows can carry truthful strength data instead of only a boolean on/off signal.</li>
                         <li><strong>Slow debuff detail is now more truthful:</strong> This lets the local player sync and debuff tracker show the real slow percentage from server state while still avoiding any invented generic durations for other active debuffs.</li>
                         <li><strong>The 0.29 cleanup line continues carefully:</strong> The 0.29 cleanup line continues with the smallest truthful active-status detail replication slice before broader debuff duration work.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative slow factor sync and 0.29.15 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.14" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.14 (Debuff delta sync now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.14">
+                    <h3 class="patch-note-entry__title">Patch 0.29.14 (Debuff delta sync now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Server delta snapshots now track debuff booleans:</strong> Server delta snapshots now track stunned, slowed, rooted, bleeding, and poisoned state changes so status-only transitions cannot be skipped by compressed authoritative updates.</li>
                         <li><strong>Status flips now arrive promptly:</strong> This keeps the new local debuff-clear path and any remote status consumers supplied with timely authoritative debuff flips instead of relying on unrelated movement or stat changes to carry them through.</li>
                         <li><strong>The 0.29 cleanup line continues on the server side:</strong> The 0.29 cleanup line continues by tightening the server delta broadcaster before any broader status duration replication work.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for debuff flag delta tracking and 0.29.14 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.13" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.13 (Authoritative local debuff clears now stay aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.13">
+                    <h3 class="patch-note-entry__title">Patch 0.29.13 (Authoritative local debuff clears now stay aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Local self sync now clears stale debuff state when the server says it is gone:</strong> Local authoritative self sync now clears stale debuff timers and stacks when server state explicitly says stun, slow, root, bleed, or poison are no longer active.</li>
                         <li><strong>Debuff truth no longer lingers after authoritative removal:</strong> This keeps the local buff tracker and control-state truth from lingering after authoritative status removal without pretending to know missing server-side durations for still-active debuffs.</li>
                         <li><strong>The 0.29 cleanup line continues carefully:</strong> The 0.29 cleanup line continues with a narrow status-model correction that is safe to ship before any broader timer replication redesign.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative local debuff clears and 0.29.13 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.12" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.12 (Local authoritative unlocked talent sync now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.12">
+                    <h3 class="patch-note-entry__title">Patch 0.29.12 (Local authoritative unlocked talent sync now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Local self sync now applies unlocked talent truth during delta updates:</strong> Local authoritative self sync now also stores server-sent unlocked talent lists during delta updates instead of treating that field as a change trigger without ever applying it.</li>
                         <li><strong>Talent progression state stays aligned with authoritative player updates:</strong> This keeps the local progression state aligned when authoritative player updates include talent unlocks alongside ranks and points, closing one more small split in the talent sync path.</li>
                         <li><strong>The 0.29 cleanup line continues:</strong> The 0.29 cleanup line continues by making local authoritative progression sync more internally complete before any broader status-model work.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for local authoritative unlocked talent sync and 0.29.12 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.11" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.11 (Local authoritative skill rune sync now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.11">
+                    <h3 class="patch-note-entry__title">Patch 0.29.11 (Local authoritative skill rune sync now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Local self sync now applies skill rune truth during delta updates:</strong> Local authoritative self sync now also applies server-sent skill rune selections during delta updates instead of relying only on the separate rune message or a later full-state refresh.</li>
                         <li><strong>Rune-driven behavior stays aligned with authoritative player state:</strong> This keeps rune-driven skill behavior and UI truth aligned when authoritative player updates already contain the latest rune loadout, closing another small split path in the local progression sync flow.</li>
                         <li><strong>The 0.29 cleanup line continues:</strong> The 0.29 cleanup line continues by making the local authoritative player path more internally complete across both combat state and progression customisation.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for local authoritative skill rune sync and 0.29.11 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.10" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.10 (Local authoritative charge state now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.10">
+                    <h3 class="patch-note-entry__title">Patch 0.29.10 (Local authoritative charge state now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Local self sync now applies charge-state truth:</strong> Local authoritative self sync now also applies server-sent charge state so the local player follows the same authoritative charging flag already used by remote entity sync.</li>
                         <li><strong>Charge behavior no longer depends on stale local state:</strong> This keeps local fighter charge behavior, animation selection, and related control-state checks from drifting when the server toggles charging without a separate local prediction path owning the transition.</li>
                         <li><strong>The 0.29 cleanup line continues:</strong> The 0.29 cleanup line continues by closing another emitted-but-not-applied self state flag in the authoritative player sync path.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for local authoritative charge sync and 0.29.10 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.9" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.9 (Local authoritative scale now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.9">
+                    <h3 class="patch-note-entry__title">Patch 0.29.9 (Local authoritative scale now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Local self sync now applies scale truth:</strong> Local authoritative self sync now also applies server-sent scale so player size changes use the same authoritative <code>setScale</code> path that remote entities already follow.</li>
                         <li><strong>Player size no longer drifts behind server state:</strong> This keeps local range, collision, and visual scale behavior aligned when the server changes player scale instead of leaving the local actor on stale size until some later rebuild.</li>
                         <li><strong>The 0.29 cleanup line continues:</strong> The 0.29 cleanup line continues by closing another emitted-but-not-applied self field in the authoritative player sync path.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for local authoritative scale sync and 0.29.9 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.8" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.8 (Local authoritative quest sync now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.8">
+                    <h3 class="patch-note-entry__title">Patch 0.29.8 (Local authoritative quest sync now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Local self sync now applies quest truth:</strong> Local authoritative self sync now also applies quest data from entity state and delta payloads instead of depending only on separate quest update messages.</li>
                         <li><strong>Quest UI stays aligned with authoritative player sync:</strong> This keeps quest objectives and journal state aligned when authoritative player sync already includes the latest quest list, reducing one more split-brain path between dedicated UI events and entity state.</li>
                         <li><strong>The 0.29 cleanup line continues:</strong> The 0.29 cleanup line continues by making local self sync more complete across both combat stats and progression state.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for local authoritative quest sync and 0.29.8 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.7" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.7 (Local authoritative cast speed now stays aligned)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.7">
+                    <h3 class="patch-note-entry__title">Patch 0.29.7 (Local authoritative cast speed now stays aligned)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Local self sync now applies cast speed truth:</strong> Local authoritative self sync now also applies server-sent cast speed so that remaining derived stat truth stays aligned after full and delta updates.</li>
                         <li><strong>Another emitted local stat gap is closed:</strong> This closes another emitted-but-not-applied local stat field in the 0.29 cleanup line instead of leaving cast timing modifiers stale until a later local recalculation.</li>
                         <li><strong>The local stat sync path is more internally consistent:</strong> The local self-sync path now keeps base stats, regeneration, and cast speed aligned with the same authoritative payload that already drives other derived stat updates.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for local authoritative cast speed sync and 0.29.7 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.6" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.6 (Local authoritative base stats now stay truthful)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.6">
+                    <h3 class="patch-note-entry__title">Patch 0.29.6 (Local authoritative base stats now stay truthful)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Local self sync now applies base attribute truth:</strong> Local authoritative self sync now also applies server-sent base attributes so character-sheet base-versus-bonus breakdowns stay truthful after full and delta updates.</li>
                         <li><strong>Authoritative stat migrations now stay visible in the UI:</strong> This keeps authoritative stat migration, level overrides, and other server-side base-stat changes from leaving the local UI with stale underlying attribute baselines.</li>
                         <li><strong>The 0.29 cleanup line continues:</strong> The 0.29 cleanup line continues by closing another local-only stat truth gap while reusing the existing self-sync structure.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for local authoritative base stat sync and 0.29.6 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.5" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.5 (Local authoritative regeneration stats now stay in sync)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.5">
+                    <h3 class="patch-note-entry__title">Patch 0.29.5 (Local authoritative regeneration stats now stay in sync)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Local self sync now applies regeneration truth:</strong> Local authoritative self sync now applies server-sent HP and mana regeneration values instead of leaving those derived stats stale between full recalculations.</li>
                         <li><strong>Passive sustain stays authoritative:</strong> This keeps passive sustain behavior aligned with authoritative server stats after delta and full-state updates, especially when gear, talents, or effects change regeneration mid-session.</li>
                         <li><strong>The 0.29 cleanup line continues:</strong> The 0.29 cleanup line continues by closing another small local-only derived-stat sync gap without widening the broader status-model design.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for local authoritative regeneration sync and 0.29.5 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.4" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.4 (Boosted Spirit Guardians now stays authoritative across compressed sync)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.4">
+                    <h3 class="patch-note-entry__title">Patch 0.29.4 (Boosted Spirit Guardians now stays authoritative across compressed sync)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Boosted guardians now stay on the authoritative path:</strong> Boosted Spirit Guardians now syncs through both the server delta snapshot tracker and the client-side shared support helper instead of dropping that boosted state on compressed updates.</li>
                         <li><strong>Guardian boost metadata now matches the rest of the support sync line:</strong> This keeps guardian boost metadata aligned with the rest of the authoritative support-state replication path, so boosted guardians stay visible and mechanically correct after the initial cast snapshot.</li>
                         <li><strong>Buff tracking stays truthful:</strong> The active buff tracker can now keep showing boosted guardians from authoritative state instead of silently falling back to the normal guardian variant.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for boosted guardian delta tracking, boosted guardian client sync, and 0.29.4 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.3" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.3 (Spirit Guardians now reliably triggers compressed server state updates)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.3">
+                    <h3 class="patch-note-entry__title">Patch 0.29.3 (Spirit Guardians now reliably triggers compressed server state updates)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Guardian delta sync now participates in server change tracking:</strong> Spirit Guardians state now participates in the server delta snapshot change tracker, so guardian-only activation and expiry cannot get skipped by compressed state broadcasts.</li>
                         <li><strong>The server support-state set is more internally consistent:</strong> This keeps the server delta path aligned with the newer support-effect replication set instead of leaving Spirit Guardians outside the consolidated comparison block.</li>
                         <li><strong>Client readability now gets a steadier authoritative trigger:</strong> Nearby guardian state readability and the shared client-side support sync path now have a more reliable authoritative trigger to react to.</li>
                         <li><strong>Regression coverage:</strong> Added server regression coverage for Spirit Guardians delta snapshot tracking and 0.29.3 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.2" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.2 (Spirit Guardians sync now uses the shared support effect helper)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.2">
+                    <h3 class="patch-note-entry__title">Patch 0.29.2 (Spirit Guardians sync now uses the shared support effect helper)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Spirit Guardians now rides the shared sync path:</strong> Spirit Guardians now also syncs through the shared support-effect helper instead of keeping a separate one-off apply and teardown path.</li>
                         <li><strong>Guardian teardown is now narrowly scoped:</strong> Server-driven guardian expiry now clears only guardian state instead of routing through broader cleric ability cancellation that could drop unrelated support effects.</li>
                         <li><strong>The 0.29 consolidation line closes another gap:</strong> This closes the last major support-effect holdout from the 0.29 sync consolidation line while keeping nearby guardians readability unchanged.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for guardian-only synced teardown and 0.29.2 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.1" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.1 (Local authoritative buff sync now reuses the shared effect helper)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.1">
+                    <h3 class="patch-note-entry__title">Patch 0.29.1 (Local authoritative buff sync now reuses the shared effect helper)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Local buff sync now rides the same path:</strong> The new shared effect sync path now also applies to the local authoritative player state, so server-driven buff expiry and consumption stop depending on one-off manual sync logic.</li>
                         <li><strong>Remote and local rules now match:</strong> Time Warp, Spell Focus, Arcane Shield, and the newer support flags now clear or apply through the same helper whether the affected actor is local or remote.</li>
                         <li><strong>The 0.29 cleanup line continues:</strong> This extends the 0.29 cleanup from remote readability into local correctness for server-authoritative buff and control state updates.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for local authoritative effect sync reuse and 0.29.1 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.29.0" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.29.0 (Remote buff replication now runs through one shared effect sync registry)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.29.0">
+                    <h3 class="patch-note-entry__title">Patch 0.29.0 (Remote buff replication now runs through one shared effect sync registry)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Remote effect sync is now centralized:</strong> Remote support and control buffs now sync through one shared effect registry instead of a growing chain of hand-written per-flag blocks inside remote entity state handling.</li>
                         <li><strong>The current replicated buff set now shares one path:</strong> Guardian Embrace, Blessing of Resolve, Divine Intervention, Arcane Shield, Time Warp, and Spell Focus now all reuse the same remote effect sync path while preserving their existing player-facing callouts.</li>
                         <li><strong>This starts the next cleanup line:</strong> This starts the next multiplayer cleanup line by consolidating server-authoritative buff replication rules before more support and control flags are added.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for the shared remote effect sync registry and 0.29.0 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.28.8" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.8 (Spell Focus now reads as a real remote charge-up buff)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.28.8">
+                    <h3 class="patch-note-entry__title">Patch 0.28.8 (Spell Focus now reads as a real remote charge-up buff)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Another wizard prep state now truly replicates:</strong> Spell Focus now replicates through the hot-path multiplayer state snapshot so nearby clients can track that charged-cast window in real time.</li>
                         <li><strong>Remote cast prep reads clearly:</strong> Nearby remote wizards now surface <code>FOCUS UP</code> and <code>FOCUS DOWN</code> readability, and the replicated state now drives the existing spell-focus multiplier path instead of leaving remote prep windows implicit.</li>
                         <li><strong>Wizard setup rules stay consistent:</strong> Activation still de-dupes against the explicit Spell Focus cast label, keeping the wizard utility readability rules consistent across buff and setup states.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for Spell Focus replication readability and 0.28.8 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.28.7" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.7 (Time Warp now reads as a real remote haste window)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.28.7">
+                    <h3 class="patch-note-entry__title">Patch 0.28.7 (Time Warp now reads as a real remote haste window)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Another wizard utility state now truly replicates:</strong> Time Warp now replicates through the hot-path multiplayer state snapshot so nearby clients can track that haste window in real time.</li>
                         <li><strong>Remote haste reads clearly:</strong> Nearby remote wizards now surface <code>WARP UP</code> and <code>WARP DOWN</code> readability, and the replicated state now drives the existing haste buff path instead of leaving remote Time Warp implicit.</li>
                         <li><strong>Wizard support rules stay consistent:</strong> Activation still de-dupes against the explicit Time Warp cast label, keeping the support-state presentation rules consistent across the wizard utility kit.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for Time Warp replication readability and 0.28.7 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.28.6" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.6 (Arcane Shield now reads as a real remote protective shield state)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.28.6">
+                    <h3 class="patch-note-entry__title">Patch 0.28.6 (Arcane Shield now reads as a real remote protective shield state)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Shield truth now replicates properly:</strong> Arcane Shield now replicates through the hot-path multiplayer state snapshot with both its active flag and remaining shield value so nearby clients can track the protection state truthfully.</li>
                         <li><strong>Remote wizard protection reads clearly:</strong> Nearby remote wizards now surface <code>SHIELD UP</code> and <code>SHIELD DOWN</code> readability, and the replicated shield value now feeds the existing shield buff tracker path instead of leaving remote shield state implicit.</li>
                         <li><strong>Support rules still stay consistent:</strong> Activation still de-dupes against the explicit Arcane Shield cast label, keeping the growing support-state line consistent even for HP-backed protective buffs.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for Arcane Shield replication readability, buff tracking, and 0.28.6 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.28.5" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.5 (Remote support readability now runs through one shared registry)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.28.5">
+                    <h3 class="patch-note-entry__title">Patch 0.28.5 (Remote support readability now runs through one shared registry)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Support metadata is now centralized:</strong> Remote support-state readability now pulls its labels, colors, and cast de-dupe mapping from one shared registry instead of a growing chain of per-buff conditionals.</li>
                         <li><strong>The current support set now rides one path:</strong> Spirit Guardians, Guardian Embrace, Blessing of Resolve, and Divine Intervention now all ride the same support metadata path, making the 0.28 support pass easier to extend without re-teaching timing rules each time.</li>
                         <li><strong>Behavior stays stable while the foundation improves:</strong> This keeps behavior unchanged for existing support auras while setting up the next replicated buff slices on a cleaner shared foundation.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for the shared remote support registry and 0.28.5 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.28.4" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.4 (Divine Intervention now reads as a real remote rescue buff)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.28.4">
+                    <h3 class="patch-note-entry__title">Patch 0.28.4 (Divine Intervention now reads as a real remote rescue buff)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Another timed support flag now truly replicates:</strong> Divine Intervention now replicates through the hot-path multiplayer state snapshot so nearby clients can track that rescue buff in real time.</li>
                         <li><strong>Remote cleric protection reads richer:</strong> Nearby remote clerics now surface <code>INTERVENTION UP</code> and <code>INTERVENTION DOWN</code> readability, extending the support-state pass to another real timed protection effect.</li>
                         <li><strong>Support de-dupe rules still hold:</strong> Activation still de-dupes against the explicit Divine Intervention cast label, so the added support-state visibility does not reintroduce duplicate callouts.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for Divine Intervention replication readability and 0.28.4 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.28.3" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.3 (Remote support activations now de-dupe against their own cast labels)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.28.3">
+                    <h3 class="patch-note-entry__title">Patch 0.28.3 (Remote support activations now de-dupe against their own cast labels)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Support activation timing is now shared:</strong> Remote support-state activation readability now de-dupes against each buff's own explicit cast label instead of only handling Spirit Guardians.</li>
                         <li><strong>Fewer duplicate support callouts:</strong> Guardian Embrace and Blessing of Resolve no longer double-call their activation state a beat after the named cast text already fired.</li>
                         <li><strong>0.28 starts consolidating:</strong> This starts consolidating the 0.28 support-state pass into shared timing rules instead of a chain of per-buff exceptions.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for support activation de-dupe handling and 0.28.3 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.28.2" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.2 (Blessing of Resolve now reads as a real remote support aura)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.28.2">
+                    <h3 class="patch-note-entry__title">Patch 0.28.2 (Blessing of Resolve now reads as a real remote support aura)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Another defensive aura is now truly replicated:</strong> Blessing of Resolve now replicates through the hot-path multiplayer state snapshot so nearby clients can track that defensive aura in real time.</li>
                         <li><strong>Remote cleric defense reads richer:</strong> Nearby remote clerics now surface <code>RESOLVE UP</code> and <code>RESOLVE DOWN</code> readability, extending the support-state pass to another real timed buff.</li>
                         <li><strong>Server truth still drives the read:</strong> This keeps the 0.28 line focused on server-authoritative support-state visibility rather than falling back to cast-start-only inference.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for Blessing of Resolve replication readability and 0.28.2 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.28.1" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.1 (Guardian Embrace now replicates as a readable remote support aura)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.28.1">
+                    <h3 class="patch-note-entry__title">Patch 0.28.1 (Guardian Embrace now replicates as a readable remote support aura)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Another support aura is now truly replicated:</strong> Guardian Embrace now replicates through the hot-path multiplayer state snapshot so nearby clients can see that support aura come online and fall off in real time.</li>
                         <li><strong>Remote cleric support reads richer:</strong> Nearby remote clerics now surface <code>EMBRACE UP</code> and <code>EMBRACE DOWN</code> readability, extending the new support-state pass beyond Spirit Guardians alone.</li>
                         <li><strong>Server truth drives the read:</strong> This turns another real server-authoritative support flag into player-facing multiplayer readability instead of relying on cast-start guesswork.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for Guardian Embrace replication readability and 0.28.1 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.28.0" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.28.0 (Nearby remote support auras now read more like combat states)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.28.0">
+                    <h3 class="patch-note-entry__title">Patch 0.28.0 (Nearby remote support auras now read more like combat states)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Persistent support states speak up now:</strong> Nearby remote Spirit Guardians state now surfaces explicit support readability when the aura comes online or falls off instead of leaving the persistent support state mostly silent after cast start.</li>
                         <li><strong>Start labels stay de-duped:</strong> Activation de-dupes against the immediate named Spirit Guardians cast label, while expiry still calls out when the nearby support aura ends.</li>
                         <li><strong>The broader 0.28 pass begins here:</strong> This starts the broader 0.28 multiplayer presentation pass by teaching a real replicated support state to read more like the cleaned-up remote combat states.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for remote Spirit Guardians support-state readability and 0.28.0 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.27.9" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.9 (Remote named-action de-echo now lasts for the full throttle window)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.27.9">
+                    <h3 class="patch-note-entry__title">Patch 0.27.9 (Remote named-action de-echo now lasts for the full throttle window)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>De-echo no longer expires early:</strong> Generic <code>ATTACK</code> echo suppression for named remote actions now lasts for the full named-callout throttle window instead of expiring a beat early.</li>
                         <li><strong>Repeat casts stay clean all the way through:</strong> This closes the last small leak where a repeat cast could still surface a stray generic label near the end of the named readability cooldown.</li>
                         <li><strong>One timing rule now governs both:</strong> The de-echo window now matches the same 750ms cadence used by the explicit remote action callout throttle.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for full-window remote de-echo timing and 0.27.9 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.27.8" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.8 (Throttled named remote casts still suppress generic ATTACK echo)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.27.8">
+                    <h3 class="patch-note-entry__title">Patch 0.27.8 (Throttled named remote casts still suppress generic ATTACK echo)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Repeat casts stay de-echoed:</strong> Repeated explicit remote ability starts now keep suppressing the generic <code>ATTACK</code> echo even when the named callout itself is still inside its throttle window.</li>
                         <li><strong>Rate limiting stays honest:</strong> This keeps rapid repeat casts from falling back to a stray generic label just because the named readability text was intentionally rate-limited.</li>
                         <li><strong>Suppress timing follows real action starts:</strong> The suppress window now tracks explicit action starts, not only the moments when the named label was actually rendered.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for throttled remote ability de-echo handling and 0.27.8 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.27.7" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.7 (Remote damage sync stops quietly re-stretching attack presentation)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.27.7">
+                    <h3 class="patch-note-entry__title">Patch 0.27.7 (Remote damage sync stops quietly re-stretching attack presentation)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Damage confirms stop re-arming remote swings:</strong> Remote damage packets no longer re-trigger generic attack presentation for nearby remote-versus-remote combat when explicit action-start messages already covered the swing or cast.</li>
                         <li><strong>Crowded fights stay cleaner:</strong> This keeps crowded fights from quietly stretching remote attack poses again through later damage confirmation side effects.</li>
                         <li><strong>Last-resort local-hit sync stays alive:</strong> Damage against the local player still refreshes the attacker presentation as a fallback when the client needs a last-resort hit-read sync.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for remote damage sync cleanup and 0.27.7 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.27.6" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.6 (Named remote ability callouts no longer echo as generic ATTACK labels)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.27.6">
+                    <h3 class="patch-note-entry__title">Patch 0.27.6 (Named remote ability callouts no longer echo as generic ATTACK labels)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Named callouts stay primary:</strong> Named remote ability callouts now suppress the immediate generic <code>ATTACK</code> echo that could arrive from the next replicated attack-state confirmation for the same actor.</li>
                         <li><strong>Spell readability stays cleaner:</strong> This keeps nearby spell readability focused on the real skill name instead of stacking a second generic label a beat later.</li>
                         <li><strong>Generic state labels still matter:</strong> Generic replicated <code>ATTACK</code> readability still works when no explicit named action callout just fired.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for remote ability readability de-echo handling and 0.27.6 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.27.5" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.5 (Explicit remote action starts can refresh a new swing or cast)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.27.5">
+                    <h3 class="patch-note-entry__title">Patch 0.27.5 (Explicit remote action starts can refresh a new swing or cast)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Explicit starts can refresh again:</strong> Explicit remote attack and ability events can now restart nearby action presentation even if that actor was already in an <code>ATTACKING</code> pose from the previous action.</li>
                         <li><strong>Fast sequences stay readable:</strong> This keeps fast back-to-back remote swings and casts readable after the 0.27.4 duplicate-confirmation fix stopped generic sync from stretching one action forever.</li>
                         <li><strong>Sync confirmations still stay calm:</strong> Later replicated <code>ATTACKING</code> confirmations still stay idempotent, but real explicit action-start messages now re-arm the visual cadence for a new move.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for explicit remote action refresh handling and 0.27.5 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.27.4" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.4 (Duplicate remote attack confirmations no longer overextend the same swing)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.27.4">
+                    <h3 class="patch-note-entry__title">Patch 0.27.4 (Duplicate remote attack confirmations no longer overextend the same swing)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>One swing stays one swing:</strong> Duplicate remote attack confirmations now stop re-extending the same local attack pose when they are only confirming a swing that is already in progress.</li>
                         <li><strong>Less stretched melee presentation:</strong> This reduces overstretched remote swing visuals when explicit attack events and later replicated <code>ATTACKING</code> state both describe the same melee action.</li>
                         <li><strong>Fresh timers stay meaningful:</strong> The client now only starts a fresh remote attack timer when a nearby actor was not already attacking.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for duplicate remote attack sequencing and 0.27.4 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.27.3" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.3 (Remote attack recovery now follows server states immediately)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.27.3">
+                    <h3 class="patch-note-entry__title">Patch 0.27.3 (Remote attack recovery now follows server states immediately)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Recovery state is authoritative again:</strong> Remote players now accept server recovery states immediately after an attack instead of waiting for a client-side attack timer to expire.</li>
                         <li><strong>Fewer stuck swing reads:</strong> This reduces cases where nearby actors look stuck swinging after the server has already moved them back to idle or movement.</li>
                         <li><strong>Client timer stops yielding to stale pose lock:</strong> The client now clears local remote attack timers when authoritative non-attack states arrive.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for remote attack recovery sequencing and 0.27.3 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.27.2" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.2 (Remote charge states now keep charge-style motion presentation)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.27.2">
+                    <h3 class="patch-note-entry__title">Patch 0.27.2 (Remote charge states now keep charge-style motion presentation)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Charge presentation keeps priority:</strong> Remote charge-state actors now keep their run-style presentation when the server says they are charging instead of falling back to a stationary attack loop.</li>
                         <li><strong>Fighter rushes read truer:</strong> This makes fighter charge-type abilities read more truthfully on nearby clients while the server is still driving the actual movement path.</li>
                         <li><strong>Replication layering stays explicit:</strong> The client now treats replicated charging as higher-priority presentation than generic <code>ATTACKING</code> for remote actors.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for remote charge animation priority and 0.27.2 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.27.1" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.1 (Remote ability casts now face their accepted target immediately)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.27.1">
+                    <h3 class="patch-note-entry__title">Patch 0.27.1 (Remote ability casts now face their accepted target immediately)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Cast facing lands sooner:</strong> Remote ability casts now rotate nearby remote players toward the accepted cast target before later movement or state packets arrive.</li>
                         <li><strong>Spell intent reads cleaner:</strong> Projectile shots, support casts, and ground-targeted spells now read with cleaner intent because the caster no longer appears to fire sideways for a beat.</li>
                         <li><strong>Replication pass stays incremental:</strong> This tightens remote spell readability on top of the new explicit basic-attack replication instead of waiting for the broader 0.28 presentation pass.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for remote ability facing sync and 0.27.1 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.27.0" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.27.0 (Remote basic attacks now replicate as immediate action starts)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.27.0">
+                    <h3 class="patch-note-entry__title">Patch 0.27.0 (Remote basic attacks now replicate as immediate action starts)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Attack start is explicit:</strong> Remote basic attacks now broadcast an explicit attack-start event instead of waiting for later damage or state side effects.</li>
                         <li><strong>Remote swings read sooner:</strong> Other clients now rotate nearby remote players into their swing target and kick the attack animation immediately when the server accepts the hit attempt.</li>
                         <li><strong>Smaller intent-to-impact gap:</strong> This narrows the gap between remote melee intent and visible impact before the later broader action-replication pass.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for explicit remote basic-attack replication and 0.27.0 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.26.0" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.26.0 (Large overworld corrections stop hard-snapping the local view)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.26.0">
+                    <h3 class="patch-note-entry__title">Patch 0.26.0 (Large overworld corrections stop hard-snapping the local view)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authority stays server-side:</strong> Large self movement corrections still apply the server position immediately for gameplay truth.</li>
                         <li><strong>View snaps less:</strong> After a big overworld correction, the local player mesh and locked camera now ease into the corrected position over a short visual window instead of popping there in one frame.</li>
                         <li><strong>Jump path keeps priority:</strong> Authoritative jump visuals still override the new correction smoothing so airborne travel does not get a second conflicting interpolation pass.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for self-correction visual smoothing, correction expiry, jump-priority handling, and 0.26.0 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.25.4" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.25.4 (The daily return loop now has a real closeout guide and QA route)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.25.4">
+                    <h3 class="patch-note-entry__title">Patch 0.25.4 (The daily return loop now has a real closeout guide and QA route)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Help screen closeout:</strong> Help now includes a Daily Return Loop reference that ties together the Journal ladder, ET reset clock, nearby party reward bonus, and Trading House circulation path.</li>
                         <li><strong>Retention loop stays grounded:</strong> The guide only points at systems that already exist in the game, so the 0.25 closeout explains the real sticky loop instead of promising fake weekly sludge.</li>
                         <li><strong>Release QA route recorded:</strong> Added a dedicated 0.25 retention QA checklist covering Journal reset timing, party bonus visibility, dungeon rerun ladder, and Trading House flow.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for the Daily Return Loop help reference and 0.25.4 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.25.3" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.25.3 (Daily reset messaging now runs off the real server clock)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.25.3">
+                    <h3 class="patch-note-entry__title">Patch 0.25.3 (Daily reset messaging now runs off the real server clock)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Authoritative reset timing:</strong> Quest Journal reset messaging now runs off authoritative server time instead of a static daily-reset sentence.</li>
                         <li><strong>Live ladder countdown:</strong> Repeatable ladder copy now shows exactly how long remains before the next reset, giving live-ops and tuning work a truthful clock to point at.</li>
                         <li><strong>Clock stays honest:</strong> The HUD clock now reads from the same server-time feed, so daily reset messaging and the visible clock stop drifting apart.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for authoritative reset countdown rendering, journal refresh on server-time ticks, and 0.25.3 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.25.2" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.25.2 (The Quest Journal now shows the repeatable ladder worth coming back for)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.25.2">
+                    <h3 class="patch-note-entry__title">Patch 0.25.2 (The Quest Journal now shows the repeatable ladder worth coming back for)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Daily ladder is visible:</strong> Quest Journal now surfaces a repeatable ladder summary for the highest-value daily quests instead of hiding the best return loop behind accepted-only entries.</li>
                         <li><strong>Status reads clearly:</strong> The journal now shows which top dailies are Active, Ready, or still Available, along with a quick accepted-versus-ready count.</li>
                         <li><strong>0.25 retention loop pass:</strong> This gives max-level players a visible come-back-tomorrow XP ladder without adding fake mobile-style sludge systems.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for repeatable ladder journal rendering, high-value daily visibility, and 0.25.2 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.25.1" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.25.1 (Trading House rows now explain what happens next)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.25.1">
+                    <h3 class="patch-note-entry__title">Patch 0.25.1 (Trading House rows now explain what happens next)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Browse rows read better:</strong> Trading House browse rows now surface bid state and time remaining so search results stop reading like bare item ledgers.</li>
                         <li><strong>Listing intent is clearer:</strong> Listing flow now explains starting bid, buyout, and the sold-auction payout path before you post.</li>
                         <li><strong>Collection outcome is explicit:</strong> My Auctions now makes it clearer whether you are collecting gold or reclaiming an unsold item.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for trading-house tab guidance, auction timing hints, collection outcome messaging, and 0.25.1 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.25.0" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.25.0 (Party play now does a better job of selling why it matters)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.25.0">
+                    <h3 class="patch-note-entry__title">Patch 0.25.0 (Party play now does a better job of selling why it matters)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Party value is visible:</strong> The party panel now explains why grouping matters by calling out shared nearby kill rewards, dungeon boss credit, and the live party reward bonus.</li>
                         <li><strong>Roster roles read clearly:</strong> Party members now show clearer role tags like Leader, You, and Member instead of reading like anonymous HP bars.</li>
                         <li><strong>Invites sell the upside:</strong> Party invite prompts now explain the cooperative upside before you accept.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for party benefit guidance, role visibility in the party panel, invite benefit messaging, and 0.25.0 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.24.4" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.24.4 (Party dungeon state now reads clearly before you click in)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.24.4">
+                    <h3 class="patch-note-entry__title">Patch 0.24.4 (Party dungeon state now reads clearly before you click in)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Party run state is explicit:</strong> The Dungeon Guide now spells out whether the party is starting a fresh run, continuing a live run, or sitting on an empty instance that is about to collapse.</li>
                         <li><strong>Leader ownership is visible:</strong> Leader-only reset ownership is now explicit in the menu, while non-leaders are told they can only continue the current party instance.</li>
                         <li><strong>Buttons read like group actions:</strong> Enter and reset buttons now read like party actions instead of generic solo-instance verbs.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for party instance state messaging, continue-versus-start labeling, leader-only reset controls, and 0.24.4 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.24.3" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.24.3 (The Dungeon Guide now shows why another run is worth doing)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.24.3">
+                    <h3 class="patch-note-entry__title">Patch 0.24.3 (The Dungeon Guide now shows why another run is worth doing)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Visible rerun ladder:</strong> The Dungeon Guide now surfaces a live repeat-run ladder tied to your accepted daily dungeon boss quests instead of leaving that incentive buried in the quest list.</li>
                         <li><strong>Selected route matters:</strong> The ladder updates by selected dungeon and difficulty so players can see which reruns are still paying the strongest daily XP before they commit to the next run.</li>
                         <li><strong>0.24 reward-ladder pass:</strong> This gives max-level dungeon play a visible reward ladder before the later party-flow hardening pass.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for dungeon menu repeat-run ladder rendering, selected dungeon/difficulty daily quest visibility, and 0.24.3 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.24.2" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.24.2 (Heroic and Mythic now read like distinct endgame reward lanes)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.24.2">
+                    <h3 class="patch-note-entry__title">Patch 0.24.2 (Heroic and Mythic now read like distinct endgame reward lanes)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Endgame reward identity:</strong> Heroic bosses now guarantee a bonus gem drop, while Mythic bosses guarantee both a bonus gem and a unique-effect item on top of the normal boss payout.</li>
                         <li><strong>Difficulty reads better up front:</strong> The dungeon menu now explains each difficulty as a distinct endgame lane instead of only listing stat multipliers, so Heroic reads like a gem chase and Mythic reads like a capstone build-defining push.</li>
                         <li><strong>Reward summary tells the truth:</strong> Boss reward summaries now surface the exact Heroic or Mythic bonus rule that paid out on the kill, matching the authoritative server reward logic.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for endgame difficulty reward notes, guaranteed Mythic unique-effect gear, dungeon menu identity copy, and 0.24.2 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.24.1" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.24.1 (Long dungeon runs now cadence reward pockets and pressure spikes more deliberately)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.24.1">
+                    <h3 class="patch-note-entry__title">Patch 0.24.1 (Long dungeon runs now cadence reward pockets and pressure spikes more deliberately)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Long-run cadence pass:</strong> Longer multi-boss dungeons can now stage a second chest pocket and a second elite ambush deeper in the run instead of spending the entire dungeon line on only one early reward and one early spike.</li>
                         <li><strong>Shrine stays late:</strong> The shrine beat still anchors the deep pre-boss reset, so repeated reward and pressure beats do not consume the final recovery window.</li>
                         <li><strong>0.24 depth continues:</strong> This is the first real encounter-cadence pass on top of the new room-role metadata, giving longer runs more authored momentum before the Heroic/Mythic identity slice.</li>
                         <li><strong>Regression coverage:</strong> Added server and client regression coverage for expanded long-run hook distribution, repeated reward/ambush beats, and preserved late-shrine recovery pacing.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.24.0" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.24.0 (Dungeon room roles now read like a pacing plan instead of isolated markers)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.24.0">
+                    <h3 class="patch-note-entry__title">Patch 0.24.0 (Dungeon room roles now read like a pacing plan instead of isolated markers)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Canonical room roles:</strong> Dungeon room state now tags rooms with shared roles like travel, reward, recovery, elite, event, and boss so route surfaces can read from one pacing model instead of scattered hook checks.</li>
                         <li><strong>Pacing labels on route guidance:</strong> The journal, hovered dungeon portals, minimap markers, and world-map active dungeon marker now surface cadence reads like Payoff, Reset, Spike, Pressure, and Climax alongside the next beat.</li>
                         <li><strong>0.24 begins:</strong> This starts the dungeon-depth line by making room-role metadata explicit and reusable before the follow-up cadence tuning, endgame identity, and rerun-incentive slices.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for normalized dungeon room metadata, cadence-aware route guidance, entrance hints, minimap overlays, and world-map beat previews.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.23.4" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.23.4 (Reward moments now land harder at the end of the 0.23 line)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.23.4">
+                    <h3 class="patch-note-entry__title">Patch 0.23.4 (Reward moments now land harder at the end of the 0.23 line)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Stronger reward payoff:</strong> Boss-kill and room-clear reward callouts now lead with a payoff read instead of only a ledger, so dungeon clears feel more like a win and less like a receipt.</li>
                         <li><strong>Better loot pulse:</strong> Reward chat now surfaces short punchier lines like boss down, build drops secured, and elite-room payoff before falling back to raw currency and loot counts.</li>
                         <li><strong>0.23 closeout:</strong> This closes the `0.23` line with class identity, loot readability, buildcraft coherence, and stronger reward presentation before the roadmap shifts toward dungeon/endgame depth in `0.24`.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for stronger reward/chat payoff messaging, updated room-clear summaries, and 0.23.4 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.23.3" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.23.3 (Forge and respec now explain the buildcraft order more clearly)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.23.3">
+                    <h3 class="patch-note-entry__title">Patch 0.23.3 (Forge and respec now explain the buildcraft order more clearly)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Forge action order:</strong> The Forge now spells out the buildcraft sequence up front: use Shards first to test likely keepers, invest Hearts once a piece stays equipped, then open sockets and commit gems.</li>
                         <li><strong>Upgrade affordability:</strong> Upgrade previews now show current Shard availability and disable actions you cannot afford yet, matching the clearer material checks already present on Potency and Sockets.</li>
                         <li><strong>Respec intent clarity:</strong> The Talent Master now explains when to reset talents, when to reset skills, and when a full rebuild makes sense, instead of only listing three gold costs.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for forge upgrade material visibility, forge-to-respec handoff, richer respec explanations, and 0.23.3 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.23.2" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.23.2 (Loot decisions now read faster from the tooltip itself)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.23.2">
+                    <h3 class="patch-note-entry__title">Patch 0.23.2 (Loot decisions now read faster from the tooltip itself)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Quick gear read:</strong> Starter equippable tooltips now call out open-slot items, likely upgrades, likely weaker drops, and mixed-signal sidegrades before you fully parse every stat line.</li>
                         <li><strong>Visible compare hint:</strong> Desktop item tooltips now explicitly tell you when to hold Shift and which equipped item you are comparing against, including auto-slot ring and trinket cases.</li>
                         <li><strong>0.23 focus continues:</strong> This keeps the early `0.23` buildcraft pass centered on loot and item-decision readability before the deeper forge and respec coherence work.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for starter equip-read tooltip guidance, compare-target hints, and 0.23.2 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.23.1" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.23.1 (Branch roles now explain how each spec actually plays)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.23.1">
+                    <h3 class="patch-note-entry__title">Patch 0.23.1 (Branch roles now explain how each spec actually plays)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Actionable branch identity:</strong> Skill Tree branches now show role tags plus quick "Wants" and "Excels at" summaries, so spec choice reads like a build direction instead of only a list of node names.</li>
                         <li><strong>Stronger branch comparison:</strong> Tank Core vs Bruiser, Burst Assassin vs Throw Specialist, AoE Caster vs Boss Caster, and the other branch splits now read more clearly at a glance.</li>
                         <li><strong>0.23 focus continues:</strong> This keeps the early `0.23` effort focused on class/spec fantasy and branch differentiation before the deeper loot/buildcraft passes.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for branch-role identity cards and 0.23.1 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.23.0" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.23.0 (Class identity and branch fantasy now read more clearly)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.23.0">
+                    <h3 class="patch-note-entry__title">Patch 0.23.0 (Class identity and branch fantasy now read more clearly)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Class-select identity:</strong> Character creation and first-login messaging now push players toward picking a combat fantasy, not just the safest starter pick.</li>
                         <li><strong>Skill Tree identity:</strong> Skill Tree now leads with a class identity summary and branch-role summaries so each path reads like a distinct combat role before you unlock deeper nodes.</li>
                         <li><strong>0.22 closure:</strong> `0.22` is now closed for planned implementation work, and this is the first `0.23` slice focused on class/spec fantasy presentation.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for skill-tree identity copy, updated first-login guidance, and 0.23.0 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.21" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.21 (0.22 is now feature-complete pending live QA sign-off)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.21">
+                    <h3 class="patch-note-entry__title">Patch 0.22.21 (0.22 is now feature-complete pending live QA sign-off)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Release review:</strong> The `0.22` tracking docs now explicitly mark the release as feature-complete in code and limit any further `0.22.x` work to live-QA findings only.</li>
                         <li><strong>Honest blocker:</strong> The remaining gate is now clearly recorded as first-hour live QA sign-off rather than missing onboarding or readability systems.</li>
                         <li><strong>Closeout guidance:</strong> The closeout docs now say to move directly into `0.23` if QA is clean, or ship one final tiny cleanup patch only if QA finds a real dead spot.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for the `0.22.21` version and patch-note presentation update.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.20" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.20 (Town guidance now stays useful after the first unlock band)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.20">
+                    <h3 class="patch-note-entry__title">Patch 0.22.20 (Town guidance now stays useful after the first unlock band)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Post-30 handoff:</strong> When a player is back in town after unlocking base dungeons, the objective panel now points them toward the Dungeon Guide instead of going quiet.</li>
                         <li><strong>Post-100 handoff:</strong> Level-100 town guidance now points players toward Heroic and Mythic runs, build review, and forge prep instead of leaving the next step implied.</li>
                         <li><strong>Closeout support:</strong> Added a written `0.22` first-hour closeout doc that records what shipped, what still needs live QA, and the current close recommendation.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for post-level-30 and post-level-100 town guidance plus 0.22.20 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.19" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.19 (First-hour milestone guidance is easier to recover in-client)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.19">
+                    <h3 class="patch-note-entry__title">Patch 0.22.19 (First-hour milestone guidance is easier to recover in-client)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Milestone visibility:</strong> Start-flow guidance and the Help screen now call out the first-hour progression beats more explicitly, including the level 30 dungeon unlock and level 100 Heroic/Mythic unlock.</li>
                         <li><strong>Recoverable next steps:</strong> The in-client Help screen now doubles as a first-hour route refresher so players can recover their next step without leaving the game or guessing.</li>
                         <li><strong>Town-service clarity:</strong> Quest Giver, Vendor / Repair, Stash, Forge, Dungeon Guide, World Map, and Journal are now framed together in one quick-reference path.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for first-hour milestone guidance, Help screen milestone copy, and 0.22.19 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.18" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.18 (Nearby remote players now read more clearly in motion)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.18">
+                    <h3 class="patch-note-entry__title">Patch 0.22.18 (Nearby remote players now read more clearly in motion)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Named remote actions:</strong> Nearby remote-player abilities now show named action labels, and nearby remote jumps and basic attacks now surface readable motion cues instead of blending into movement noise.</li>
                         <li><strong>Remote motion clarity:</strong> Replicated attack and jump states now help broadcast what nearby players are actually doing, not just where they are standing.</li>
                         <li><strong>Spam control:</strong> Remote readability labels stay nearby-only and throttled so the extra feedback helps without turning multiplayer fights into constant text spam.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for named remote ability labels, nearby remote jump and attack labels, far-away suppression, and 0.22.18 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.17" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.17 (Nearby multiplayer combat reads better in crowded fights)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.17">
+                    <h3 class="patch-note-entry__title">Patch 0.22.17 (Nearby multiplayer combat reads better in crowded fights)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Remote action readability:</strong> Nearby remote-player abilities now surface readable action labels so allied and nearby player casts do not disappear into effect spam.</li>
                         <li><strong>Crowded combat damage clarity:</strong> Nearby remote-player damage now shows up as readable floating numbers during crowded fights instead of only showing when the local player is directly involved.</li>
                         <li><strong>Animation sync assist:</strong> Remote player damage and ability events now help force attacking-state presentation so nearby combatants feel more alive and truthful.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for nearby remote action labels, nearby remote damage readability, far-away spam suppression, and 0.22.17 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.16" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.16 (Combat attempts now explain why they failed or what happens next)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.16">
+                    <h3 class="patch-note-entry__title">Patch 0.22.16 (Combat attempts now explain why they failed or what happens next)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Failed-action clarity:</strong> Out-of-range attacks, out-of-range casts, cooldown attempts, and no-mana casts now surface explicit combat callouts instead of failing silently or feeling ambiguous.</li>
                         <li><strong>Level-up payoff:</strong> Level-up moments now call out milestone unlocks more clearly, including the dungeon unlock at level 30 and endgame difficulty unlocks at level 100.</li>
                         <li><strong>Reward readability:</strong> Boss rewards and room-clear rewards now surface through readable combat callouts as well as chat, so the first-hour reward loop lands harder.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for failed-cast readability, move-into-range combat feedback, reward callouts, and 0.22.16 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.15" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.15 (Starter loot and forge guidance now explains what is worth keeping)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.15">
+                    <h3 class="patch-note-entry__title">Patch 0.22.15 (Starter loot and forge guidance now explains what is worth keeping)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Starter loot truth:</strong> Inventory, start-flow, and town guidance now explain that obvious Common gear is usually vendor cleanup while better drops are worth checking before selling.</li>
                         <li><strong>Forge-material clarity:</strong> Shards, Hearts, and Gems are now called out more explicitly as forge materials worth saving instead of accidental vendor trash.</li>
                         <li><strong>Better service handoff:</strong> Merchant, Stash, Forge, and Trading House guidance now do a cleaner job of telling you what belongs where during the first hour.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for starter inventory guidance, starter recovery guidance, and 0.22.15 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.14" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.14 (Pre-fight boss objectives now tell you to commit)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.14">
+                    <h3 class="patch-note-entry__title">Patch 0.22.14 (Pre-fight boss objectives now tell you to commit)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Boss-commit truth:</strong> Pre-fight boss objectives now use commit language instead of flat discovered-room placeholder copy.</li>
                         <li><strong>Guidance sync:</strong> Boss guidance now tells you to reset and commit before the fight is live, matching the callout layer.</li>
                         <li><strong>Boss-state separation:</strong> Boss journal entries now distinguish commit-before-engage from Boss Now execution guidance.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for pre-live boss objective guidance and 0.22.14 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.13" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.13 (Cleared dungeons now read like extraction, not a fake turn-in)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.13">
+                    <h3 class="patch-note-entry__title">Patch 0.22.13 (Cleared dungeons now read like extraction, not a fake turn-in)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Extraction-state truth:</strong> Cleared dungeons now shift the objective panel into extraction language instead of a generic completed turn-in state.</li>
                         <li><strong>Exit objective clarity:</strong> Exit objectives now tell you to backtrack out with the loot after the boss is down.</li>
                         <li><strong>Journal guidance fix:</strong> Cleared dungeon guidance no longer falls back to Turn this in for 0 XP in the journal panel.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for cleared-dungeon extraction guidance and 0.22.13 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.12" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.12 (Transitional route beats now read like real approach states)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.12">
+                    <h3 class="patch-note-entry__title">Patch 0.22.12 (Transitional route beats now read like real approach states)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Approach-state truth:</strong> Dungeon objective fallback guidance now describes transitional approach beats instead of generic push deeper copy.</li>
                         <li><strong>Boss bridge clarity:</strong> One-room bridge states now call out the last approach room before the boss instead of vague final-room phrasing.</li>
                         <li><strong>Shrine-route clarity:</strong> Longer neutral stretches now point cleanly toward the shrine reset, so approach rooms read like authored pacing instead of filler.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for transitional objective summaries, journal guidance rendering, and 0.22.12 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.11" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.11 (Ambush objectives now keep their pressure-spike language)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.11">
+                    <h3 class="patch-note-entry__title">Patch 0.22.11 (Ambush objectives now keep their pressure-spike language)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Ambush objective truth:</strong> Dungeon objective guidance now gives ambush rooms the same pressure-spike language already used by live callouts.</li>
                         <li><strong>Journal sync:</strong> Ambush objectives and journal guidance now say Elite room ahead — pressure spike incoming instead of drifting back to generic elite-discovered copy.</li>
                         <li><strong>Route continuity:</strong> Ambush route previews still show the next beats after the spike, so the journal keeps telling the same dungeon story as the minimap, world map, and callout layer.</li>
                         <li><strong>Regression coverage:</strong> Added regression coverage for ambush objective summaries, journal guidance rendering, and 0.22.11 version presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.10" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.10 (Dungeon entrance hints stay truthful while you move)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.10">
+                    <h3 class="patch-note-entry__title">Patch 0.22.10 (Dungeon entrance hints stay truthful while you move)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Moving-play clarity:</strong> Dungeon entrance hints now stay truthful to the live beat while you are moving instead of falling back to generic open-portal copy.</li>
                         <li><strong>Beat-aware portal guidance:</strong> Hovered dungeon portals now preview chest, ambush, shrine, and boss urgency using the same authored pacing language as route callouts.</li>
                         <li><strong>Live refresh:</strong> Entrance hints now refresh immediately when dungeon room-state progression changes under the cursor, so portal guidance does not lag one beat behind the run.</li>
                         <li><strong>Regression coverage:</strong> Added tests around beat-aware entrance hint copy, live boss entrance urgency, room-state-triggered hint refresh, and 0.22.10 version / patch-note presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.9" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.9 (Dungeon route guidance now sharpens around the next spike)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.9">
+                    <h3 class="patch-note-entry__title">Patch 0.22.9 (Dungeon route guidance now sharpens around the next spike)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Treasure room truth:</strong> Chest objectives now warn when the reward room is just a quick score before the ambush spike instead of staying on generic loot copy.</li>
                         <li><strong>Shrine timing clarity:</strong> Shrine objectives now call out the last reset before the boss push when the next meaningful beat is the boss room.</li>
                         <li><strong>Journal guidance sync:</strong> Objective-panel guidance now mirrors the same authored pacing language the combat callouts already use, so route text and in-run warnings stop drifting apart.</li>
                         <li><strong>Regression coverage:</strong> Added tests around sharpened chest and shrine objective copy, guidance rendering, and 0.22.9 version / patch-note presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.8" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.8 (Live boss state stays truthful across dungeon route surfaces)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.8">
+                    <h3 class="patch-note-entry__title">Patch 0.22.8 (Live boss state stays truthful across dungeon route surfaces)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Boss state truth:</strong> Dungeon route surfaces now stay truthful during live boss fights instead of leaving some UI on "boss ahead" while the encounter is already active.</li>
                         <li><strong>Map sync:</strong> Minimap, world map, and objective tracker now all promote the active boss state to Boss Now when you are already in the boss room.</li>
                         <li><strong>Journal execution guidance:</strong> The boss objective flips from planning copy into survive the boss fight execution guidance once the fight is live, and stale route-preview text drops away.</li>
                         <li><strong>Regression coverage:</strong> Added tests around live boss markers on map surfaces, live boss objective guidance, and 0.22.8 version / patch-note presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.7" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.7 (Economy onboarding tells you what to sell where)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.7">
+                    <h3 class="patch-note-entry__title">Patch 0.22.7 (Economy onboarding tells you what to sell where)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Starter economy guidance:</strong> The new-player flow now tells you to dump junk at Vendor / Repair instead of leaving early inventory cleanup implied.</li>
                         <li><strong>Market handoff:</strong> First-session guidance now tells you to save market-worthy drops for the Trading House once you start finding gear worth listing.</li>
                         <li><strong>Town objective clarity:</strong> Starter town objectives now reinforce Stash, Vendor / Repair, and Trading House together so the economy loop is readable before leaving town.</li>
                         <li><strong>Regression coverage:</strong> Added tests around start-flow copy, town-objective economy guidance, and 0.22.7 version / patch-note presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.6" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.6 (Trading House and Vendor guidance split)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.6">
+                    <h3 class="patch-note-entry__title">Patch 0.22.6 (Trading House and Vendor guidance split)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Separate market stop:</strong> Trading House now shows up separately for player-to-player buying and selling instead of being folded into Vendor / Repair.</li>
                         <li><strong>True town anchors:</strong> Trading House now points at the real market building while Vendor / Repair stays pinned to the actual merchant NPC.</li>
                         <li><strong>Clear service prompts:</strong> Trading House now tells you to buy and sell items with other players, while Vendor / Repair now stays focused on gambling and unloading unwanted gear.</li>
                         <li><strong>Regression coverage:</strong> Added tests around split service labels, exact anchors, hover hint copy, and 0.22.6 version / patch-note presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.5" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.5 (Dungeon Guide wayfinding and first-dungeon handoff)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.5">
+                    <h3 class="patch-note-entry__title">Patch 0.22.5 (Dungeon Guide wayfinding and first-dungeon handoff)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Dungeon Guide on the route:</strong> Dungeon Guide now appears on the world map and minimap at the real town anchor so the first dungeon handoff is visible instead of implied.</li>
                         <li><strong>Exact town anchor:</strong> The Dungeon Guide wayfinding marker now uses the real town-service position at the guide NPC instead of leaving the first dungeon step off the route.</li>
                         <li><strong>Clear hover prompt:</strong> Hovering the Dungeon Guide now explains how to start your first dungeon run instead of falling back to generic interact text.</li>
                         <li><strong>Regression coverage:</strong> Added tests around Dungeon Guide anchor coverage, map/minimap visibility, hover hint copy, and 0.22.5 version / patch-note presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.4" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.4 (Canonical town-service labels and exact marker anchors)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.4">
+                    <h3 class="patch-note-entry__title">Patch 0.22.4 (Canonical town-service labels and exact marker anchors)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Shared service names:</strong> world map and minimap now use the same exact service names instead of mixing shortened variants.</li>
                         <li><strong>Real anchor alignment:</strong> Forge and Vendor / Repair markers now sit on the real interactable anchors instead of approximate building-center guesses.</li>
                         <li><strong>Town-route truth:</strong> Quest Giver, Forge, Stash, and Vendor / Repair all pull from one canonical town-service coordinate table.</li>
                         <li><strong>Regression coverage:</strong> Added tests around exact service anchors, canonical map/minimap labels, and 0.22.4 version / patch-note presentation.</li>
                     </ul>
                 </div>
-                <div class="patch-note-entry" data-version="0.22.3" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.3 (Starter-route map priority and visual ordering)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.3">
+                    <h3 class="patch-note-entry__title">Patch 0.22.3 (Starter-route map priority and visual ordering)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Starter route priority:</strong> Quest Giver and Forge now draw first in the town route so the most important first-session stops stand out immediately.</li>
                         <li><strong>Shared wayfinding order:</strong> world map and minimap both prioritize the same starter route instead of drifting between different service orders.</li>
                         <li><strong>Visual emphasis:</strong> Quest and Forge markers now get stronger visual treatment so the first objective path reads faster at a glance.</li>
@@ -1426,9 +1435,9 @@
                     </ul>
                 </div>
 
-                <div class="patch-note-entry" data-version="0.22.2" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.2 (First-step copy consistency and quest-funnel clarity)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.2">
+                    <h3 class="patch-note-entry__title">Patch 0.22.2 (First-step copy consistency and quest-funnel clarity)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Same next step everywhere:</strong> Start-screen copy, the objectives panel, and town onboarding now all point you to the Quest Giver by the Forge instead of drifting between vague phrases.</li>
                         <li><strong>Map and journal handoff:</strong> First-session guidance now explicitly calls out World Map (M) and Journal (J) together so the next action is easier to recover after loading in.</li>
                         <li><strong>Cleaner starter funnel:</strong> New players now get a more direct start-screen explanation of class pick -> town -> Quest Giver -> first quest flow.</li>
@@ -1436,9 +1445,9 @@
                     </ul>
                 </div>
 
-                <div class="patch-note-entry" data-version="0.22.1" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.1 (Starter-town wayfinding and service prompts)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.1">
+                    <h3 class="patch-note-entry__title">Patch 0.22.1 (Starter-town wayfinding and service prompts)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Quest Giver prompt:</strong> Hovering the Quest Giver now tells first-session players exactly that this is where they pick up the first quest.</li>
                         <li><strong>Town service hover hints:</strong> Forge, Stash, and Vendor / Repair now explain what they are for instead of just saying "interact".</li>
                         <li><strong>Overworld re-entry onboarding:</strong> Returning to town refreshes the objective panel immediately so the starter funnel does not wait on a later quest packet.</li>
@@ -1446,9 +1455,9 @@
                     </ul>
                 </div>
 
-                <div class="patch-note-entry" data-version="0.22.0" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.22.0 (First-session onboarding and start-screen clarity)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.22.0">
+                    <h3 class="patch-note-entry__title">Patch 0.22.0 (First-session onboarding and start-screen clarity)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>First Steps panel:</strong> The login screen now explains the immediate path for both returning players and first-time characters instead of dumping you into a blank decision wall.</li>
                         <li><strong>Smarter enter-world guidance:</strong> Logging into an existing character now shifts the start-screen copy toward resuming your run, opening quests, and using the tracker to find your next stop.</li>
                         <li><strong>Clearer new-player funnel:</strong> Fresh accounts now get explicit character-creation guidance before entering the world, including what happens right after class selection.</li>
@@ -1457,9 +1466,9 @@
                     </ul>
                 </div>
 
-                <div class="patch-note-entry" data-version="0.21.5" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.5 (Closeout stability and HUD sanity)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.21.5">
+                    <h3 class="patch-note-entry__title">Patch 0.21.5 (Closeout stability and HUD sanity)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Safer instance transitions:</strong> Entering or leaving dungeons now respects the shared scene-group boundaries instead of relying on broad scene cleanup that could disturb unrelated runtime state.</li>
                         <li><strong>Dynamic scene ownership cleanup:</strong> Remote player meshes and transient instance content now clear through the render system's explicit ownership paths, making transition behavior easier to reason about and less brittle.</li>
                         <li><strong>HUD update sanity pass:</strong> Core HUD state like health, mana, XP, and cooldown overlays now avoids unnecessary re-renders when nothing visible actually changed.</li>
@@ -1468,9 +1477,9 @@
                     </ul>
                 </div>
 
-                <div class="patch-note-entry" data-version="0.21.4" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.4 (Dungeon/menu/game-feel polish)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.21.4">
+                    <h3 class="patch-note-entry__title">Patch 0.21.4 (Dungeon/menu/game-feel polish)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Dungeon portal UX:</strong> The dungeon menu now behaves like a cleaner modal with reliable header close, footer close, backdrop close, and Escape handling.</li>
                         <li><strong>Respec modal polish:</strong> The respec flow follows the same close behavior so dismiss actions feel consistent instead of brittle.</li>
                         <li><strong>Less accidental text selection:</strong> Menu/window chrome is now non-selectable while inputs still preserve normal text selection where typing/editing matters.</li>
@@ -1480,9 +1489,9 @@
                     </ul>
                 </div>
 
-                <div class="patch-note-entry" data-version="0.21.3" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.21.3 (Asset pack caching finished for this release line)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.21.3">
+                    <h3 class="patch-note-entry__title">Patch 0.21.3 (Asset pack caching finished for this release line)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Cached version visibility:</strong> Every downloadable pack now shows its <strong>Cached version</strong> directly in settings so it is obvious what is stored on this device.</li>
                         <li><strong>Service-worker metadata:</strong> Cached pack versions now stay in sync whether assets are warmed directly or through the live service-worker path.</li>
                         <li><strong>At-a-glance state badges:</strong> Packs now surface clear labels for <strong>Current</strong>, <strong>Outdated</strong>, <strong>Partial</strong>, <strong>Downloading</strong>, and not-yet-cached states.</li>
@@ -1491,9 +1500,9 @@
                     </ul>
                 </div>
 
-                <div class="patch-note-entry" data-version="0.19" style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.19 (Passive Talents: Persistence & UX)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                <div class="patch-note-entry" data-version="0.19">
+                    <h3 class="patch-note-entry__title">Patch 0.19 (Passive Talents: Persistence & UX)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Passive Talents:</strong> Added a ranked passive talent system (0/5 per talent) that upgrades abilities rather than raw stat sticks.</li>
                         <li><strong>Skill Tree UI:</strong> Added <strong>Skills</strong> / <strong>Talents</strong> tabs inside the K menu and a clearer talent points header showing <strong>available / total (spent)</strong>.</li>
                         <li><strong>Spec-Focused Talents:</strong> Talent list now only shows Mastery/Technique entries relevant to your currently selected branch (A/B/C).</li>
@@ -1506,8 +1515,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.18 (Protobuf State Streaming)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.18 (Protobuf State Streaming)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Networking:</strong> State updates now stream as protobuf frames (EDPB header + versioning) for lower bandwidth and CPU overhead.</li>
                         <li><strong>Compatibility:</strong> Removed legacy gzip+JSON state update mode; client and server must both be updated to 0.18+.</li>
                         <li><strong>Combat Visuals:</strong> Remote enemy attack animations now sync to damage events to prevent “running while hitting” desync.</li>
@@ -1517,8 +1526,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.17c (Animation & Sync Fixes)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.17c (Animation & Sync Fixes)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Animation Fixes:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
                                 <li><strong>Cleric Spirit Guardians:</strong> Fixed spirits not disappearing and animation staying stuck on Attack after spell expires.</li>
@@ -1537,8 +1546,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.17b (Performance)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.17b (Performance)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Client Optimizations:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
                                 <li><strong>Collision Detection:</strong> Reusable temp vectors eliminate memory allocations in hot paths.</li>
@@ -1560,8 +1569,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.17 (Dungeons & Economy)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.17 (Dungeons & Economy)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>New Features:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
                                 <li><strong>Instanced Dungeons:</strong> Fully implemented the instanced dungeon system. Party up and enter unique, private dungeon instances!</li>
@@ -1591,8 +1600,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.16b (Forge Polish)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.16b (Forge Polish)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Forge Overhaul:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
                                 <li><strong>Stat Previews:</strong> You can now see exactly how much your stats will increase before upgrading or empowering items.</li>
@@ -1605,8 +1614,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.16 (Performance & Polish)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.16 (Performance & Polish)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Global Party Map:</strong> See your party members anywhere in the world on the map (M).</li>
                         <li><strong>Reliable Recall:</strong> Press 'B' to teleport to town. Now 100% reliable!</li>
                         <li><strong>Performance:</strong> Massive engine optimizations for smoother gameplay.</li>
@@ -1616,8 +1625,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.15 (Parties & Abilities)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.15 (Parties & Abilities)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Party System:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
                                 <li><strong>Group Up:</strong> Invite friends to your party using the new Social Window (Press <strong>'O'</strong>).</li>
@@ -1643,8 +1652,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.14 (Frost Guardian & Daily Quests)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.14 (Frost Guardian & Daily Quests)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>New Content:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
                                 <li><strong>Frost Guardian:</strong> A powerful new boss entity now roams the snow-covered lands of the Water Realm.</li>
@@ -1670,8 +1679,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.13 (Elemental Realms & Quality of Life)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.13 (Elemental Realms & Quality of Life)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>New Content:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
                                 <li><strong>Water Realm:</strong> A brand new elemental zone has been added to the world.</li>
@@ -1693,8 +1702,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.12 (The Expansion)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.12 (The Expansion)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>World Expansion:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
                                 <li><strong>Map Expanded:</strong> The world has grown significantly larger.</li>
@@ -1731,8 +1740,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.11 (The Mobile Overhaul)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.11 (The Mobile Overhaul)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Mobile Experience:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
                                 <li><strong>HUD Redesign:</strong> The mobile interface has been completely reorganized to maximize visibility.
@@ -1758,8 +1767,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.10 (The Awakening)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.10 (The Awakening)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Eidolon Online:</strong> The world is no longer lonely. <strong>Full Multiplayer Support</strong> is now live! See other players, fight together, and trade in real-time.</li>
                         <li><strong>Social Features:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
@@ -1779,8 +1788,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.09</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.09</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Mobile Polish:</strong> Improved UI scaling, hidden debug console, and added auto-targeting for mobile skills.</li>
                         <li><strong>Shop Improvements:</strong> Fixed Mystery Boxes, added "Insufficient Gold" warning, and prevented accidental movement while shopping.</li>
                         <li><strong>Single Player Fixes:</strong> Restored loot drops, fixed item pickup, and ensured items despawn correctly.</li>
@@ -1790,8 +1799,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.08 (Mobile Performance & Stability)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.08 (Mobile Performance & Stability)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Performance Overhaul:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
                                 <li><strong>Lazy Loading:</strong> 3D assets now load only when needed, drastically reducing startup memory usage and preventing crashes.</li>
@@ -1816,8 +1825,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.07 (The Construct & Loot 2.0)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.07 (The Construct & Loot 2.0)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>New Content:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
                                 <li><strong>New Enemy: Construct:</strong> Undead amalgams now roam the outer wastelands (Level 20-30). High health and damage.</li>
@@ -1861,8 +1870,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.06 (Balance & Fixes)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.06 (Balance & Fixes)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Loot & Economy:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
                                 <li><strong>Global Drop Rate:</strong> Increased to <strong>50%</strong> for all enemies.</li>
@@ -1886,8 +1895,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.05 (Elite Update)</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.05 (Elite Update)</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Elite Enemy System:</strong>
                             <ul style="padding-left: 20px; margin-top: 5px;">
                                 <li>A powerful Elite Enemy now spawns every 3 minutes.</li>
@@ -1918,8 +1927,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.16</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.16</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Global Party Map:</strong> Party members are now visible on the World Map (green dots) regardless of distance.</li>
                         <li><strong>Reliable Recall:</strong> Fixed the 'B' button (Recall) rubber-banding issue; it now reliably teleports you to town.</li>
                         <li><strong>Performance Overhaul:</strong> Major optimizations to collision detection and memory usage for smoother gameplay.</li>
@@ -1932,8 +1941,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.15</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.15</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Party System:</strong> You can now invite players to a party! (Right-click or use /invite).</li>
                         <li><strong>Shared Rewards:</strong> Party members share XP and Gold from kills (within range).</li>
                         <li><strong>Party Bonus:</strong> +10% XP and Gold bonus for each party member!</li>
@@ -1943,8 +1952,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.04</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.04</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Controls:</strong> Added "Click and Hold" to move. Character now follows the mouse cursor continuously.</li>
                         <li><strong>Combat:</strong> Fighter's "Charge" ability now casts instantly from any distance.</li>
                         <li><strong>Combat:</strong> Ranged classes (Wizard, Rogue) now cast abilities instantly from any distance without walking.</li>
@@ -1956,8 +1965,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.03</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.03</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Mobile Support:</strong> Full mobile controls added! Virtual Joystick, Action Buttons, and Mobile UI.</li>
                         <li><strong>Performance:</strong> Optimized rendering for mobile devices (Shadows, AA).</li>
                         <li><strong>Ranged Combat:</strong> Fireball and Dagger Throw can now be cast instantly from any distance.</li>
@@ -1968,8 +1977,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.02</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.02</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>New Content: The Merchant:</strong> A Dwarf Salesman has arrived in town! Sell your unwanted loot or buy "Mystery Boxes" (500g) to gamble for gear at your level.</li>
                         <li><strong>New Enemy: Imp:</strong> Mischievous demons now inhabit the lands beyond the skeletons (Level 5-10).</li>
                         <li><strong>World Expansion:</strong>
@@ -1986,8 +1995,8 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.01</h3>
-                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                    <h3 class="patch-note-entry__title">Patch 0.01</h3>
+                    <ul class="patch-note-entry__list">
                         <li><strong>Loot System:</strong> Enemies now drop physical loot orbs on the ground.</li>
                         <li><strong>Rarity Colors:</strong> Items have rarity colors (Common, Uncommon, Rare, Legendary).</li>
                         <li><strong>Affixes:</strong> Items can now drop with prefixes and suffixes (e.g., "Strong Iron Sword of Fire").</li>
