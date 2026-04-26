@@ -52,7 +52,7 @@ function buildStaticWindowDom() {
         <div id="objectives-list"></div>
         <button id="btn-close-quest"></button>
         <button id="btn-close-journal"></button>
-        <div id="esc-menu" class="window" style="display:none; z-index: 100;"></div>
+        <div id="esc-menu" class="window pause-menu" style="display:none; z-index: 100;"></div>
         <div id="help-screen" class="window" style="display:none; z-index: 101;"></div>
         <button id="btn-close-help-header"></button>
         <div id="settings-screen" class="window" style="display:none; z-index: 102;"></div>
@@ -946,6 +946,17 @@ describe('menu polish regressions', () => {
 
         expect(html).toContain('id="btn-close-character"');
         expect(html).toContain('id="btn-close-inventory"');
+    });
+
+    test('pause menu uses reusable viewport-safe menu chrome', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toMatch(/id="esc-menu"[^>]*class="window pause-menu"[^>]*style="display: none;"/);
+        expect(html).toContain('class="pause-menu__actions"');
+        expect(html).not.toContain('id="esc-menu" class="window" style="display: none; top: 50%; left: 50%;');
+        expect(css).toMatch(/\.pause-menu\s*\{[^}]*width:\s*min\(300px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow:\s*hidden;/s);
+        expect(css).toMatch(/\.pause-menu__actions\s*\{[^}]*max-height:\s*calc\(100vh - 92px\);[^}]*overflow-y:\s*auto;[^}]*display:\s*flex;[^}]*flex-direction:\s*column;/s);
     });
 
     test('settings window stays within the viewport and scrolls internally when content is tall', () => {

@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.1</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.2</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -321,9 +321,9 @@
         </div>
 
         <!-- Escape Menu -->
-        <div id="esc-menu" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; text-align: center; z-index: 100;">
+        <div id="esc-menu" class="window pause-menu" style="display: none;">
             <div class="window-header">PAUSED</div>
-            <div style="padding: 20px;">
+            <div class="pause-menu__actions">
                 <button id="btn-resume" class="menu-btn">Resume Game</button>
                 <button id="btn-help" class="menu-btn">Help</button>
                 <button id="btn-settings" class="menu-btn">Settings</button>
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.31.2" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.2 (Pause menu joins the shared window pattern)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Pause menu chrome is now class-based:</strong> The Escape menu now uses reusable pause-menu and pause-menu__actions classes instead of carrying its position, width, and body spacing inline.</li>
+                        <li><strong>Pause actions stay reachable on short screens:</strong> The button stack now scrolls inside a viewport-capped pause menu frame when vertical space is tight.</li>
+                        <li><strong>The 0.31 consistency pass covers another primary menu:</strong> Pause, generated, Forge, static, service, quest, and HUD utility windows now share the same direction: viewport-safe shells with reusable body/action structure.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for pause menu viewport-safe chrome and reusable action-stack markup.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.1" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.1 (Generated menu chrome now lives in shared CSS)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

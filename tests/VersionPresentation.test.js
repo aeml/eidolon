@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.1 for the shared generated menu chrome slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.1');
+    test('advances the login screen to alpha 0.31.2 for the pause menu consistency slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.2');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.1', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.2', () => {
+        expect(indexHtml).toContain('Patch 0.31.2');
+        expect(indexHtml).toContain('The Escape menu now uses reusable pause-menu and pause-menu__actions classes');
+        expect(indexHtml).toContain('The button stack now scrolls inside a viewport-capped pause menu frame');
+        expect(indexHtml).toContain('Pause, generated, Forge, static, service, quest, and HUD utility windows');
+        expect(indexHtml).toContain('Added coverage for pause menu viewport-safe chrome and reusable action-stack markup');
+    });
+
+    test('keeps the prior 0.31.1 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.1');
         expect(indexHtml).toContain('Dungeon Portal and Talent Master now let shared generated-menu classes own backdrop, position, sizing, overflow, and action-row behavior');
         expect(indexHtml).toContain('Dungeon selects, difficulty choices, and generated menu footers keep their layout through shared CSS');
@@ -684,6 +692,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.2');
         expect(indexHtml).toContain('Patch 0.31.1');
         expect(indexHtml).toContain('Patch 0.31.0');
         expect(indexHtml).toContain('Patch 0.30.4');
@@ -776,6 +785,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.2"');
         expect(indexHtml).toContain('data-version="0.31.1"');
         expect(indexHtml).toContain('data-version="0.31.0"');
         expect(indexHtml).toContain('data-version="0.30.4"');
