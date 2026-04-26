@@ -53,11 +53,11 @@ function buildStaticWindowDom() {
         <button id="btn-close-quest"></button>
         <button id="btn-close-journal"></button>
         <div id="esc-menu" class="window pause-menu" style="display:none; z-index: 100;"></div>
-        <div id="help-screen" class="window" style="display:none; z-index: 101;"></div>
+        <div id="help-screen" class="window support-window support-window--help" style="display:none;"></div>
         <button id="btn-close-help-header"></button>
-        <div id="settings-screen" class="window" style="display:none; z-index: 102;"></div>
+        <div id="settings-screen" class="window support-window support-window--settings" style="display:none;"></div>
         <button id="btn-close-settings-header"></button>
-        <div id="patch-notes-screen" class="window" style="display:none; z-index: 101;"></div>
+        <div id="patch-notes-screen" class="window support-window support-window--patch-notes" style="display:none;"></div>
         <button id="btn-close-patch-notes-header"></button>
         <button id="btn-resume"></button>
         <button id="btn-help"></button>
@@ -74,7 +74,7 @@ function buildStaticWindowDom() {
         <button id="btn-close-abilities"></button>
         <div id="hotbar-container"></div>
         <div class="hotbar-slot"><div class="hotbar-icon"></div></div>
-        <div id="report-screen" class="window" style="display:none; z-index: 102;"></div>
+        <div id="report-screen" class="window support-window support-window--report" style="display:none;"></div>
         <button id="btn-close-report-header"></button>
         <button id="btn-cancel-report"></button>
         <button id="btn-submit-report"></button>
@@ -509,7 +509,8 @@ describe('menu polish regressions', () => {
 
         expect(backdrop).not.toBeNull();
         expect(backdrop.parentElement).toBe(document.getElementById('ui-layer'));
-        expect(Number(backdrop.style.zIndex)).toBeLessThan(Number(settingsScreen.style.zIndex));
+        expect(backdrop.style.zIndex).toBe('99');
+        expect(settingsScreen.classList.contains('support-window--settings')).toBe(true);
     });
 
     test('skill tree surfaces class identity and branch role cards', () => {
@@ -961,27 +962,32 @@ describe('menu polish regressions', () => {
 
     test('settings window stays within the viewport and scrolls internally when content is tall', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
 
-        expect(html).toMatch(/id="settings-screen"[^>]*max-height: calc\(100vh - 24px\);/);
-        expect(html).toMatch(/id="settings-screen"[^>]*overflow: hidden;/);
-        expect(html).toMatch(/id="settings-screen"[\s\S]*?overflow-y: auto;/);
+        expect(html).toMatch(/id="settings-screen"[^>]*class="window support-window support-window--settings"[^>]*style="display: none;"/);
+        expect(html).toContain('class="support-window__body support-window__body--settings"');
+        expect(css).toMatch(/\.support-window\s*\{[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow:\s*hidden;/s);
+        expect(css).toMatch(/\.support-window--settings\s*\{[^}]*width:\s*min\(360px, calc\(100vw - 24px\)\);[^}]*z-index:\s*102;/s);
+        expect(css).toMatch(/\.support-window__body--settings\s*\{[^}]*gap:\s*16px;[^}]*max-height:\s*calc\(100vh - 76px\);/s);
     });
 
     test('static help report and patch notes windows stay within the viewport and scroll internally', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
 
-        expect(html).toMatch(/id="help-screen"[^>]*width: min\(460px, calc\(100vw - 24px\)\);/);
-        expect(html).toMatch(/id="help-screen"[^>]*max-height: calc\(100vh - 24px\);/);
-        expect(html).toMatch(/id="help-screen"[^>]*overflow: hidden;/);
-        expect(html).toMatch(/id="help-screen"[\s\S]*?max-height: calc\(100vh - 160px\); overflow-y: auto;/);
+        expect(html).toMatch(/id="help-screen"[^>]*class="window support-window support-window--help"[^>]*style="display: none;"/);
+        expect(html).toContain('class="support-window__body support-window__body--help"');
+        expect(html).toMatch(/id="report-screen"[^>]*class="window support-window support-window--report"[^>]*style="display: none;"/);
+        expect(html).toContain('class="support-window__body support-window__body--report"');
+        expect(html).toMatch(/id="patch-notes-screen"[^>]*class="window support-window support-window--patch-notes"[^>]*style="display: none;"/);
+        expect(html).toMatch(/id="patch-notes-history" class="support-window__body support-window__body--patch-notes"/);
 
-        expect(html).toMatch(/id="report-screen"[^>]*width: min\(400px, calc\(100vw - 24px\)\);/);
-        expect(html).toMatch(/id="report-screen"[^>]*max-height: calc\(100vh - 24px\);/);
-        expect(html).toMatch(/id="report-screen"[^>]*overflow: hidden;/);
-        expect(html).toMatch(/id="report-screen"[\s\S]*?max-height: calc\(100vh - 110px\); overflow-y: auto;/);
-
-        expect(html).toMatch(/id="patch-notes-screen"[^>]*width: min\(500px, calc\(100vw - 24px\)\);/);
-        expect(html).toMatch(/id="patch-notes-screen"[^>]*height: min\(600px, calc\(100vh - 24px\)\);/);
+        expect(css).toMatch(/\.support-window--help\s*\{[^}]*width:\s*min\(460px, calc\(100vw - 24px\)\);[^}]*z-index:\s*101;/s);
+        expect(css).toMatch(/\.support-window__body--help\s*\{[^}]*max-height:\s*calc\(100vh - 160px\);[^}]*text-align:\s*left;/s);
+        expect(css).toMatch(/\.support-window--report\s*\{[^}]*width:\s*min\(400px, calc\(100vw - 24px\)\);[^}]*z-index:\s*102;/s);
+        expect(css).toMatch(/\.support-window__body--report\s*\{[^}]*gap:\s*10px;[^}]*max-height:\s*calc\(100vh - 110px\);/s);
+        expect(css).toMatch(/\.support-window--patch-notes\s*\{[^}]*width:\s*min\(500px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(600px, calc\(100vh - 24px\)\);/s);
+        expect(css).toMatch(/\.support-window__body--patch-notes\s*\{[^}]*flex-grow:\s*1;[^}]*color:\s*#ccc;/s);
     });
 
     test('service and quest windows stay within the viewport and scroll growing content internally', () => {

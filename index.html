@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.2</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.3</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -334,9 +334,9 @@
             </div>
         </div>
 
-        <div id="settings-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(360px, calc(100vw - 24px)); max-height: calc(100vh - 24px); z-index: 102; overflow: hidden;">
+        <div id="settings-screen" class="window support-window support-window--settings" style="display: none;">
             <div class="window-header"><span>SETTINGS</span><button id="btn-close-settings-header" class="close-btn" type="button" aria-label="Close settings">×</button></div>
-            <div style="padding: 20px; display: flex; flex-direction: column; gap: 16px; max-height: calc(100vh - 76px); overflow-y: auto; overflow-x: hidden;">
+            <div class="support-window__body support-window__body--settings">
                 <div style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
                     <label for="graphics-quality" style="color: #ffd700; font-size: 13px;">Graphics Quality</label>
                     <select id="graphics-quality" style="padding: 10px; background: #333; color: #fff; border: 1px solid #666; font-family: inherit;">
@@ -451,9 +451,9 @@
         </div>
 
         <!-- Report Screen -->
-        <div id="report-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(400px, calc(100vw - 24px)); max-height: calc(100vh - 24px); z-index: 102; overflow: hidden;">
+        <div id="report-screen" class="window support-window support-window--report" style="display: none;">
             <div class="window-header"><span>SUBMIT REPORT</span><button id="btn-close-report-header" class="close-btn" type="button" aria-label="Close report form">×</button></div>
-            <div style="padding: 20px; display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 110px); overflow-y: auto;">
+            <div class="support-window__body support-window__body--report">
                 <select id="report-type" style="padding: 10px; background: #333; color: white; border: 1px solid #666; font-family: inherit;">
                     <option value="Bug Report">Bug Report</option>
                     <option value="Feature Request">Feature Request</option>
@@ -467,9 +467,9 @@
         </div>
 
         <!-- Help Screen -->
-        <div id="help-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(460px, calc(100vw - 24px)); max-height: calc(100vh - 24px); z-index: 101; overflow: hidden;">
+        <div id="help-screen" class="window support-window support-window--help" style="display: none;">
             <div class="window-header"><span>CONTROLS</span><button id="btn-close-help-header" class="close-btn" type="button" aria-label="Close help">×</button></div>
-            <div style="padding: 20px; text-align: left; line-height: 1.8; font-size: 14px; display: flex; flex-direction: column; gap: 12px; max-height: calc(100vh - 160px); overflow-y: auto;">
+            <div class="support-window__body support-window__body--help">
                 <div>
                     <div style="color: #ffd700; font-size: 15px; font-weight: bold; margin-bottom: 6px;">Core Controls</div>
                     <div><strong style="color: #ffd700;">Left Click:</strong> Move / Melee Attack</div>
@@ -499,13 +499,13 @@
                     <div><strong style="color: #ffd700;">5.</strong> After reset, reopen the Journal and repeat the strongest paying route instead of guessing what is worth doing next.</div>
                 </div>
             </div>
-            <div style="text-align: center; padding-bottom: 10px;">
+            <div class="support-window__footer">
                 <button id="btn-close-help" class="menu-btn">Close</button>
             </div>
         </div>
 
         <!-- Patch Notes Screen -->
-        <div id="patch-notes-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(500px, calc(100vw - 24px)); height: min(600px, calc(100vh - 24px)); z-index: 101; flex-direction: column;">
+        <div id="patch-notes-screen" class="window support-window support-window--patch-notes" style="display: none;">
             <div class="window-header">
                 <span>
                     PATCH NOTES 
@@ -515,7 +515,16 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.3" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.3 (Static support menus share shell and body classes)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Settings, Help, Report, and Patch Notes now share support-window chrome:</strong> Their modal shell sizing, viewport caps, overflow rules, and z-index tiers now live in reusable CSS classes.</li>
+                        <li><strong>Support menu bodies now use reusable scroll classes:</strong> Tall settings controls, help guides, report fields, and patch history content scroll through shared support-window body variants instead of one-off inline body styles.</li>
+                        <li><strong>The 0.31 consistency pass covers the static support layer:</strong> Static support menus now line up with the generated and pause menu cleanup direction before the later audio/accessibility work begins.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for support-window shell classes, support body scroll variants, and 0.31.3 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.2" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.2 (Pause menu joins the shared window pattern)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

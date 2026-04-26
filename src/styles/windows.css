@@ -318,6 +318,78 @@
     width: 100%;
 }
 
+/* ---- Static Support Menus ---- */
+.support-window {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    overflow: hidden;
+}
+
+.support-window--settings {
+    width: min(360px, calc(100vw - 24px));
+    z-index: 102;
+}
+
+.support-window--report {
+    width: min(400px, calc(100vw - 24px));
+    z-index: 102;
+}
+
+.support-window--help {
+    width: min(460px, calc(100vw - 24px));
+    z-index: 101;
+}
+
+.support-window--patch-notes {
+    width: min(500px, calc(100vw - 24px));
+    height: min(600px, calc(100vh - 24px));
+    z-index: 101;
+    flex-direction: column;
+}
+
+.support-window__body {
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.support-window__body--settings {
+    gap: 16px;
+    max-height: calc(100vh - 76px);
+}
+
+.support-window__body--report {
+    gap: 10px;
+    max-height: calc(100vh - 110px);
+}
+
+.support-window__body--help {
+    gap: 12px;
+    max-height: calc(100vh - 160px);
+    text-align: left;
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+.support-window__body--patch-notes {
+    flex-grow: 1;
+    text-align: left;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.support-window__footer {
+    text-align: center;
+    padding-bottom: 10px;
+}
+
 /* ---- Generated Menus ---- */
 .generated-menu-backdrop {
     position: fixed;
