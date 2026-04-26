@@ -233,25 +233,33 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
     steps:
+      - name: Configure SSH key
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ssh.mendola.tech >> ~/.ssh/known_hosts
+
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
-        with:
-          host: ssh.mendola.tech
-          username: aeml
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            set -euo pipefail
-            cd /home/aeml/eidolon
-            git fetch origin ${{ github.ref_name }}
-            EXPECTED_SHA="$(git rev-parse origin/${{ github.ref_name }})"
-            echo "Expected origin/${{ github.ref_name }}: ${EXPECTED_SHA}"
-            git reset --hard origin/${{ github.ref_name }}
-            git clean -fd
-            ACTUAL_SHA="$(git rev-parse HEAD)"
-            echo "Checked out HEAD: ${ACTUAL_SHA}"
-            if [ "${ACTUAL_SHA}" != "${EXPECTED_SHA}" ]; then
-              echo "Deployed checkout does not match origin/${{ github.ref_name }}" >&2
-              exit 1
-            fi
-            cd server
-            CLEAN_SERVER_TREE=true bash ./deploy/deploy_linux.sh
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          ssh -o BatchMode=yes aeml@ssh.mendola.tech "REF_NAME='${REF_NAME}' bash -se" <<'EOF'
+          set -euo pipefail
+          cd /home/aeml/eidolon
+          git fetch origin "${REF_NAME}"
+          EXPECTED_SHA="$(git rev-parse origin/${REF_NAME})"
+          echo "Expected origin/${REF_NAME}: ${EXPECTED_SHA}"
+          git reset --hard origin/${REF_NAME}
+          git clean -fd
+          ACTUAL_SHA="$(git rev-parse HEAD)"
+          echo "Checked out HEAD: ${ACTUAL_SHA}"
+          if [ "${ACTUAL_SHA}" != "${EXPECTED_SHA}" ]; then
+            echo "Deployed checkout does not match origin/${REF_NAME}" >&2
+            exit 1
+          fi
+          cd server
+          CLEAN_SERVER_TREE=true bash ./deploy/deploy_linux.sh
+          EOF
