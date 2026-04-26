@@ -718,6 +718,18 @@ describe('menu polish regressions', () => {
         expect(html).not.toContain('style="width: 100%; background: #661111;"');
     });
 
+    test('forge window is large enough and scrolls internally so bottom tab actions stay reachable', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toMatch(/id="forge-screen"[^>]*class="window forge-window"/);
+        expect(html).toMatch(/id="forge-screen"[^>]*width:\s*min\(92vw,\s*760px\);/);
+        expect(html).toMatch(/id="forge-screen"[^>]*height:\s*min\(860px,\s*calc\(100vh - 24px\)\);/);
+        expect(css).toMatch(/#forge-screen\s*\{[^}]*max-height:\s*calc\(100vh - 24px\);/s);
+        expect(css).toMatch(/#forge-screen\s+\.window-body\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;[^}]*padding-bottom:\s*18px;/s);
+        expect(css).toMatch(/#forge-screen\s+\.btn-menu\s*\{[^}]*min-height:\s*38px;/s);
+    });
+
     test('social window uses reusable class-based chrome', () => {
         buildStaticWindowDom();
         const ui = new UIManager(false);

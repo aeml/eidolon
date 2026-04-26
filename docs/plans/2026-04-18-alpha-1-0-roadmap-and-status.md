@@ -481,6 +481,7 @@ Release promise: the client feels complete, stable, and polished enough to stop 
 Primary goals:
 
 - Finish client UX consistency across menus, settings, patch notes, help, and HUD
+- Make Forge tab layouts large enough that bottom upgrade/action controls remain visible and clickable across normal view sizes
 - Add a meaningful audio layer for combat, loot, menu, and moment-to-moment feel
 - Add accessibility basics such as UI scale, keybinds, and clarity toggles
 - Continue VFX, impact feedback, and menu feel improvements
@@ -489,13 +490,14 @@ Primary goals:
 Completion gates:
 
 - The client feels coherent across all major surfaces
+- Forge upgrade, socket, gem, and related tab actions are never hidden below the visible menu window during normal play
 - Audio materially improves feedback and feel
 - Accessibility basics exist and are usable
 - Manual QA on the client is faster and safer than it is today
 
 Suggested milestone slices:
 
-- `0.30-0.31`: client UX consistency pass across menus, help, settings, and HUD
+- `0.30-0.31`: client UX consistency pass across menus, help, settings, HUD, and Forge tab sizing
 - `0.32-0.33`: audio foundation pass for combat, loot, and UI
 - `0.34-0.35`: accessibility baseline pass for UI scale, keybinds, and clarity toggles
 - `0.36-0.37`: VFX, impact feedback, and menu-feel pass

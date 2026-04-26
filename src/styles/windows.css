@@ -291,6 +291,27 @@
     border-top: 1px solid #444;
 }
 
+/* ---- Forge ---- */
+#forge-screen {
+    box-sizing: border-box;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+}
+
+#forge-screen .window-body {
+    min-height: 0;
+    overflow-y: auto;
+    padding-bottom: 18px;
+}
+
+#forge-screen .window-panel {
+    min-height: 0;
+}
+
+#forge-screen .btn-menu {
+    min-height: 38px;
+}
+
 /* ---- Character Sheet ---- */
 #character-sheet {
     top: 50%;

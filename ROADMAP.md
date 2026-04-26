@@ -77,6 +77,7 @@ For the active long-range tracking document that includes remaining `0.22` work 
 - Reusable VFX/decal library for low-cost combat feedback
 - More impact feedback for abilities and enemy telegraphs
 - Audio layer and stronger menu/UI feel
+- Forge tab layout pass so upgrade/action controls at the bottom of each tab stay visible and clickable
 
 ## Longer-term opportunities
 - Guilds, friends/LFG, and deeper social systems

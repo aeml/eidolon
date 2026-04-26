@@ -94,6 +94,7 @@ Key work:
 - Continue movement/combat impact polish where it clearly improves readability
 - Add reusable VFX/decal/audio hooks for low-cost feedback wins
 - Keep menu/modal interactions consistent across all UI surfaces
+- Ensure all Forge tabs use a large enough menu window that bottom upgrade/action controls remain visible and clickable
 - Add a short manual QA checklist for gameplay-feel regressions after each slice
 
 Primary files:
@@ -101,6 +102,7 @@ Primary files:
 - `src/core/TransientEffects.js`
 - `src/core/RenderSystem.js`
 - `src/ui/UIManager.js`
+- `src/ui/ForgeUI.js`
 - `src/ui/SkillTreeUI.js`
 - `tests/MenuPolish.test.js`
 - `tests/GameEngineCtrlClickJump.test.js`
