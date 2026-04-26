@@ -2593,40 +2593,10 @@ export class UIManager {
         const backdrop = document.createElement('div');
         backdrop.id = 'dungeon-menu-backdrop';
         backdrop.className = 'generated-menu-backdrop';
-        backdrop.style.position = 'fixed';
-        backdrop.style.inset = '0';
-        backdrop.style.background = 'rgba(3, 5, 10, 0.72)';
-        backdrop.style.backdropFilter = 'blur(8px)';
-        backdrop.style.webkitBackdropFilter = 'blur(8px)';
-        backdrop.style.zIndex = '1090';
-        backdrop.style.pointerEvents = 'auto';
 
         const menu = document.createElement('div');
         menu.id = 'dungeon-menu';
         menu.className = 'generated-menu generated-menu--dungeon';
-        menu.style.position = 'fixed';
-        menu.style.top = '50%';
-        menu.style.left = '50%';
-        menu.style.transform = 'translate(-50%, -50%)';
-        menu.style.background = 'linear-gradient(180deg, rgba(24, 28, 35, 0.96) 0%, rgba(11, 14, 18, 0.96) 100%)';
-        menu.style.border = '1px solid rgba(255, 215, 0, 0.4)';
-        menu.style.borderRadius = '16px';
-        menu.style.padding = '20px';
-        menu.style.color = '#fff';
-        menu.style.zIndex = '1100';
-        menu.style.textAlign = 'center';
-        menu.style.boxSizing = 'border-box';
-        menu.style.width = 'min(92vw, 540px)';
-        menu.style.minWidth = '0';
-        menu.style.maxWidth = 'calc(100vw - 24px)';
-        menu.style.maxHeight = 'calc(100vh - 24px)';
-        menu.style.overflowY = 'auto';
-        menu.style.overflowX = 'hidden';
-        menu.style.paddingBottom = '24px';
-        menu.style.boxShadow = '0 28px 80px rgba(0, 0, 0, 0.55)';
-        menu.style.userSelect = 'none';
-        menu.style.webkitUserSelect = 'none';
-        menu.style.pointerEvents = 'auto';
         menu.addEventListener('click', (e) => e.stopPropagation());
 
         let isMenuClosed = false;
@@ -2767,8 +2737,6 @@ export class UIManager {
         dungeonSelect.style.color = '#fff';
         dungeonSelect.style.border = '1px solid #555';
         dungeonSelect.style.cursor = 'pointer';
-        dungeonSelect.style.width = 'min(250px, 100%)';
-        dungeonSelect.style.boxSizing = 'border-box';
         dungeonSelect.style.userSelect = 'text';
         dungeonSelect.style.webkitUserSelect = 'text';
 
@@ -2814,8 +2782,6 @@ export class UIManager {
         runLevelSelect.style.color = '#fff';
         runLevelSelect.style.border = '1px solid #555';
         runLevelSelect.style.cursor = 'pointer';
-        runLevelSelect.style.width = 'min(250px, 100%)';
-        runLevelSelect.style.boxSizing = 'border-box';
         runLevelSelect.style.userSelect = 'text';
         runLevelSelect.style.webkitUserSelect = 'text';
         for (const runLevel of availableRunLevels.length > 0 ? availableRunLevels : DUNGEON_RUN_LEVEL_BANDS) {
@@ -2846,11 +2812,6 @@ export class UIManager {
         // Difficulty Buttons Container
         const diffContainer = document.createElement('div');
         diffContainer.className = 'generated-menu__choice-row';
-        diffContainer.style.display = 'flex';
-        diffContainer.style.justifyContent = 'center';
-        diffContainer.style.gap = '10px';
-        diffContainer.style.flexWrap = 'wrap';
-        diffContainer.style.margin = '10px 0';
 
         let selectedDifficulty = 'normal';
 
@@ -2956,11 +2917,6 @@ export class UIManager {
         // Enter Button
         const actions = document.createElement('div');
         actions.className = 'generated-menu__actions';
-        actions.style.display = 'flex';
-        actions.style.justifyContent = 'center';
-        actions.style.gap = '10px';
-        actions.style.flexWrap = 'wrap';
-        actions.style.marginTop = '16px';
 
         const enterBtn = document.createElement('button');
         enterBtn.id = 'btn-enter-dungeon';

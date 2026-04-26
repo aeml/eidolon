@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.0</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.1</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.31.1" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.1 (Generated menu chrome now lives in shared CSS)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Generated menu shell styles are no longer duplicated inline:</strong> Dungeon Portal and Talent Master now let shared generated-menu classes own backdrop, position, sizing, overflow, and action-row behavior.</li>
+                        <li><strong>Dynamic controls use reusable class hooks:</strong> Dungeon selects, difficulty choices, and generated menu footers keep their layout through shared CSS instead of one-off JavaScript style assignments.</li>
+                        <li><strong>The 0.31 consistency pass gets easier to extend:</strong> Future generated menu polish can target one CSS surface instead of auditing duplicate modal shell styles in multiple UI modules.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage that generated menus use reusable chrome classes and no longer depend on inline viewport shell styles.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.0" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.0 (Client UX consistency pass begins)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

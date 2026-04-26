@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.0 for the client UX consistency line', () => {
-        expect(indexHtml).toContain('Alpha 0.31.0');
+    test('advances the login screen to alpha 0.31.1 for the shared generated menu chrome slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.1');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.0', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.1', () => {
+        expect(indexHtml).toContain('Patch 0.31.1');
+        expect(indexHtml).toContain('Dungeon Portal and Talent Master now let shared generated-menu classes own backdrop, position, sizing, overflow, and action-row behavior');
+        expect(indexHtml).toContain('Dungeon selects, difficulty choices, and generated menu footers keep their layout through shared CSS');
+        expect(indexHtml).toContain('Future generated menu polish can target one CSS surface');
+        expect(indexHtml).toContain('Added coverage that generated menus use reusable chrome classes and no longer depend on inline viewport shell styles');
+    });
+
+    test('keeps the prior 0.31.0 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.0');
         expect(indexHtml).toContain('Dungeon Portal and Talent Master use shared generated-menu and backdrop classes');
         expect(indexHtml).toContain('Dungeon selects, difficulty rows, and footer action rows now carry reusable classes');
@@ -676,6 +684,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.1');
         expect(indexHtml).toContain('Patch 0.31.0');
         expect(indexHtml).toContain('Patch 0.30.4');
         expect(indexHtml).toContain('Patch 0.30.3');
@@ -767,6 +776,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.1"');
         expect(indexHtml).toContain('data-version="0.31.0"');
         expect(indexHtml).toContain('data-version="0.30.4"');
         expect(indexHtml).toContain('data-version="0.30.3"');

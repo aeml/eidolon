@@ -366,7 +366,7 @@ describe('menu polish regressions', () => {
         const ladderBox = document.getElementById('dungeon-reward-ladder-box');
         const partyStateBox = document.getElementById('dungeon-party-state-box');
         expect(dungeonMenu).not.toBeNull();
-        expect(dungeonMenu.style.userSelect).toBe('none');
+        expect(dungeonMenu.classList.contains('generated-menu')).toBe(true);
         expect(dungeonSelect.style.userSelect).toBe('text');
         expect(runLevelSelect.style.userSelect).toBe('text');
         expect(ladderBox.textContent).toContain('Repeat-Run Ladder');
@@ -384,7 +384,7 @@ describe('menu polish regressions', () => {
 
         const respecMenu = document.getElementById('respec-menu');
         expect(respecMenu).not.toBeNull();
-        expect(respecMenu.style.userSelect).toBe('none');
+        expect(respecMenu.classList.contains('generated-menu')).toBe(true);
 
         window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
         expect(document.getElementById('respec-menu')).toBeNull();
@@ -426,6 +426,7 @@ describe('menu polish regressions', () => {
     });
 
     test('generated dungeon and respec menus cap to the viewport and scroll to footer actions', () => {
+        const css = readFileSync(windowsCssPath, 'utf8');
         const uiManager = Object.create(UIManager.prototype);
         uiManager.getDungeonDailyQuestEntries = () => [];
         window.game = { socket: { send: jest.fn() } };
@@ -447,18 +448,14 @@ describe('menu polish regressions', () => {
         expect(document.getElementById('dungeon-menu-backdrop').classList.contains('generated-menu-backdrop')).toBe(true);
         expect(dungeonMenu.classList.contains('generated-menu')).toBe(true);
         expect(dungeonMenu.classList.contains('generated-menu--dungeon')).toBe(true);
-        expect(dungeonMenu.style.width).toBe('min(92vw, 540px)');
-        expect(dungeonMenu.style.maxWidth).toBe('calc(100vw - 24px)');
-        expect(dungeonMenu.style.maxHeight).toBe('calc(100vh - 24px)');
-        expect(dungeonMenu.style.overflowY).toBe('auto');
-        expect(dungeonMenu.style.overflowX).toBe('hidden');
-        expect(dungeonMenu.style.paddingBottom).toBe('24px');
+        expect(dungeonMenu.getAttribute('style') || '').not.toContain('max-height');
+        expect(css).toMatch(/\.generated-menu\s*\{[^}]*width:\s*min\(92vw, 540px\);[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow-y:\s*auto;[^}]*overflow-x:\s*hidden;[^}]*padding:\s*20px 20px 24px;/s);
         expect(dungeonSelect.classList.contains('generated-menu__select')).toBe(true);
         expect(runLevelSelect.classList.contains('generated-menu__select')).toBe(true);
-        expect(dungeonSelect.style.width).toBe('min(250px, 100%)');
-        expect(runLevelSelect.style.width).toBe('min(250px, 100%)');
+        expect(dungeonSelect.style.width).toBe('');
+        expect(runLevelSelect.style.width).toBe('');
         expect(heroicButton.parentElement.classList.contains('generated-menu__choice-row')).toBe(true);
-        expect(heroicButton.parentElement.style.flexWrap).toBe('wrap');
+        expect(heroicButton.parentElement.getAttribute('style')).toBeNull();
         expect(dungeonFooterCloseBtn.parentElement.classList.contains('generated-menu__actions')).toBe(true);
         expect(dungeonFooterCloseBtn).not.toBeNull();
         dungeonFooterCloseBtn.click();
@@ -475,13 +472,10 @@ describe('menu polish regressions', () => {
         expect(document.getElementById('respec-menu-backdrop').classList.contains('generated-menu-backdrop')).toBe(true);
         expect(respecMenu.classList.contains('generated-menu')).toBe(true);
         expect(respecMenu.classList.contains('generated-menu--respec')).toBe(true);
-        expect(respecMenu.style.width).toBe('min(92vw, 460px)');
-        expect(respecMenu.style.maxWidth).toBe('calc(100vw - 24px)');
-        expect(respecMenu.style.maxHeight).toBe('calc(100vh - 24px)');
-        expect(respecMenu.style.overflowY).toBe('auto');
-        expect(respecMenu.style.overflowX).toBe('hidden');
-        expect(respecMenu.style.paddingBottom).toBe('24px');
+        expect(respecMenu.getAttribute('style') || '').not.toContain('max-height');
+        expect(css).toMatch(/\.generated-menu--respec\s*\{[^}]*width:\s*min\(92vw, 460px\);/s);
         expect(respecFooterCloseBtn.parentElement.classList.contains('generated-menu__actions')).toBe(true);
+        expect(respecFooterCloseBtn.parentElement.getAttribute('style')).toBeNull();
         expect(respecFooterCloseBtn).not.toBeNull();
     });
 

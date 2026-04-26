@@ -961,13 +961,6 @@ export class SkillTreeUI {
         const backdrop = document.createElement('div');
         backdrop.id = 'respec-menu-backdrop';
         backdrop.className = 'generated-menu-backdrop';
-        backdrop.style.position = 'fixed';
-        backdrop.style.inset = '0';
-        backdrop.style.background = 'rgba(3, 5, 10, 0.72)';
-        backdrop.style.backdropFilter = 'blur(8px)';
-        backdrop.style.webkitBackdropFilter = 'blur(8px)';
-        backdrop.style.zIndex = '1090';
-        backdrop.style.pointerEvents = 'auto';
         backdrop.__closeMenu = removeMenu;
         backdrop.addEventListener('click', removeMenu);
         window.addEventListener('keydown', handleMenuEscape);
@@ -975,29 +968,6 @@ export class SkillTreeUI {
         const menu = document.createElement('div');
         menu.id = 'respec-menu';
         menu.className = 'generated-menu generated-menu--respec';
-        menu.style.position = 'fixed';
-        menu.style.top = '50%';
-        menu.style.left = '50%';
-        menu.style.transform = 'translate(-50%, -50%)';
-        menu.style.background = 'linear-gradient(180deg, rgba(23, 30, 24, 0.96) 0%, rgba(12, 18, 14, 0.98) 100%)';
-        menu.style.border = '1px solid rgba(106, 170, 68, 0.7)';
-        menu.style.padding = '20px';
-        menu.style.color = '#fff';
-        menu.style.zIndex = '1100';
-        menu.style.textAlign = 'center';
-        menu.style.boxSizing = 'border-box';
-        menu.style.width = 'min(92vw, 460px)';
-        menu.style.minWidth = '0';
-        menu.style.maxWidth = 'calc(100vw - 24px)';
-        menu.style.maxHeight = 'calc(100vh - 24px)';
-        menu.style.overflowY = 'auto';
-        menu.style.overflowX = 'hidden';
-        menu.style.paddingBottom = '24px';
-        menu.style.borderRadius = '16px';
-        menu.style.boxShadow = '0 28px 80px rgba(0, 0, 0, 0.55)';
-        menu.style.userSelect = 'none';
-        menu.style.webkitUserSelect = 'none';
-        menu.style.pointerEvents = 'auto';
         menu.addEventListener('click', (e) => e.stopPropagation());
 
         const header = document.createElement('div');
@@ -1099,9 +1069,6 @@ export class SkillTreeUI {
 
         const footerActions = document.createElement('div');
         footerActions.className = 'generated-menu__actions';
-        footerActions.style.display = 'flex';
-        footerActions.style.justifyContent = 'center';
-        footerActions.style.marginTop = '16px';
 
         const footerCloseBtn = document.createElement('button');
         footerCloseBtn.id = 'btn-close-respec-menu-footer';
