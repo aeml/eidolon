@@ -253,6 +253,7 @@ describe('GameEngine active buff tracker', () => {
             hasteTimer: 8,
             hasteFactor: 0.5,
             spellFocusActive: true,
+            spellFocusTimer: 15,
             spellFocusMultiplier: 2.5,
             arcaneShieldActive: true,
             shieldHP: 120
@@ -268,6 +269,7 @@ describe('GameEngine active buff tracker', () => {
         expect(engine.player.hasteTimer).toBe(0);
         expect(engine.player.hasteFactor).toBe(0);
         expect(engine.player.spellFocusActive).toBe(false);
+        expect(engine.player.spellFocusTimer).toBe(0);
         expect(engine.player.spellFocusMultiplier).toBe(1.0);
         expect(engine.player.arcaneShieldActive).toBe(false);
         expect(engine.player.shieldHP).toBe(0);
@@ -409,6 +411,28 @@ describe('GameEngine active buff tracker', () => {
 
         expect(player.hasteTimer).toBe(12.5);
         expect(player.hasteFactor).toBe(0.5);
+    });
+
+    test('shared support sync applies authoritative spell focus duration detail', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.syncRemoteSupportEffects = GameEngine.prototype.syncRemoteSupportEffects;
+        engine.syncPlayerSupportEffects = GameEngine.prototype.syncPlayerSupportEffects;
+        engine.showRemoteSupportStateReadability = jest.fn();
+
+        const player = {
+            spellFocusActive: false,
+            spellFocusTimer: 0,
+            spellFocusMultiplier: 1.0
+        };
+
+        engine.syncPlayerSupportEffects(player, {
+            spellFocusActive: true,
+            spellFocusDuration: 12.5
+        });
+
+        expect(player.spellFocusActive).toBe(true);
+        expect(player.spellFocusTimer).toBe(12.5);
+        expect(player.spellFocusMultiplier).toBe(2.5);
     });
 
     test('shared support sync applies authoritative arcane shield duration detail', () => {

@@ -72,6 +72,7 @@ export class Wizard extends Actor {
         if (this.spellFocusActive) {
             damageMultiplier = this.spellFocusMultiplier;
             this.spellFocusActive = false; // Consume it
+            this.spellFocusTimer = 0;
             this.spellFocusMultiplier = 1.0;
             gameEngine.floatingTextManager.spawn("FOCUSED!", this.position, '#8800ff');
         }
@@ -377,6 +378,7 @@ export class Wizard extends Actor {
             this.cooldowns["Spell Focus"] = 20.0 * (1 - cdr);
             
             this.spellFocusActive = true;
+            this.spellFocusTimer = 15.0;
             this.spellFocusMultiplier = 2.5; // 150% bonus damage
             
             gameEngine.floatingTextManager.spawn("SPELL FOCUS!", this.position, '#8800ff');

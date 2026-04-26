@@ -2456,6 +2456,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [guardianEmbraceDuration] Entity guardianEmbraceDuration
              * @property {number|null} [arcaneShieldDuration] Entity arcaneShieldDuration
              * @property {number|null} [divineInterventionDuration] Entity divineInterventionDuration
+             * @property {number|null} [spellFocusDuration] Entity spellFocusDuration
              * @property {number|null} [slowFactor] Entity slowFactor
              * @property {number|null} [slowDuration] Entity slowDuration
              * @property {number|null} [rootDuration] Entity rootDuration
@@ -2940,6 +2941,14 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.divineInterventionDuration = 0;
 
             /**
+             * Entity spellFocusDuration.
+             * @member {number} spellFocusDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.spellFocusDuration = 0;
+
+            /**
              * Entity slowFactor.
              * @member {number} slowFactor
              * @memberof eidolon.state.Entity
@@ -3190,6 +3199,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 74, wireType 5 =*/597).float(message.arcaneShieldDuration);
                 if (message.divineInterventionDuration != null && Object.hasOwnProperty.call(message, "divineInterventionDuration"))
                     writer.uint32(/* id 75, wireType 5 =*/605).float(message.divineInterventionDuration);
+                if (message.spellFocusDuration != null && Object.hasOwnProperty.call(message, "spellFocusDuration"))
+                    writer.uint32(/* id 76, wireType 5 =*/613).float(message.spellFocusDuration);
                 if (message.slowFactor != null && Object.hasOwnProperty.call(message, "slowFactor"))
                     writer.uint32(/* id 58, wireType 5 =*/469).float(message.slowFactor);
                 if (message.slowDuration != null && Object.hasOwnProperty.call(message, "slowDuration"))
@@ -3528,6 +3539,10 @@ export const eidolon = $root.eidolon = (() => {
                             message.divineInterventionDuration = reader.float();
                             break;
                         }
+                    case 76: {
+                            message.spellFocusDuration = reader.float();
+                            break;
+                        }
                     case 58: {
                             message.slowFactor = reader.float();
                             break;
@@ -3863,6 +3878,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.divineInterventionDuration != null && message.hasOwnProperty("divineInterventionDuration"))
                     if (typeof message.divineInterventionDuration !== "number")
                         return "divineInterventionDuration: number expected";
+                if (message.spellFocusDuration != null && message.hasOwnProperty("spellFocusDuration"))
+                    if (typeof message.spellFocusDuration !== "number")
+                        return "spellFocusDuration: number expected";
                 if (message.slowFactor != null && message.hasOwnProperty("slowFactor"))
                     if (typeof message.slowFactor !== "number")
                         return "slowFactor: number expected";
@@ -4084,6 +4102,8 @@ export const eidolon = $root.eidolon = (() => {
                     message.arcaneShieldDuration = Number(object.arcaneShieldDuration);
                 if (object.divineInterventionDuration != null)
                     message.divineInterventionDuration = Number(object.divineInterventionDuration);
+                if (object.spellFocusDuration != null)
+                    message.spellFocusDuration = Number(object.spellFocusDuration);
                 if (object.slowFactor != null)
                     message.slowFactor = Number(object.slowFactor);
                 if (object.slowDuration != null)
@@ -4210,6 +4230,7 @@ export const eidolon = $root.eidolon = (() => {
                     object.guardianEmbraceDuration = 0;
                     object.arcaneShieldDuration = 0;
                     object.divineInterventionDuration = 0;
+                    object.spellFocusDuration = 0;
                     object.slowFactor = 0;
                     object.slowDuration = 0;
                     object.rootDuration = 0;
@@ -4356,6 +4377,8 @@ export const eidolon = $root.eidolon = (() => {
                     object.arcaneShieldDuration = options.json && !isFinite(message.arcaneShieldDuration) ? String(message.arcaneShieldDuration) : message.arcaneShieldDuration;
                 if (message.divineInterventionDuration != null && message.hasOwnProperty("divineInterventionDuration"))
                     object.divineInterventionDuration = options.json && !isFinite(message.divineInterventionDuration) ? String(message.divineInterventionDuration) : message.divineInterventionDuration;
+                if (message.spellFocusDuration != null && message.hasOwnProperty("spellFocusDuration"))
+                    object.spellFocusDuration = options.json && !isFinite(message.spellFocusDuration) ? String(message.spellFocusDuration) : message.spellFocusDuration;
                 if (message.slowFactor != null && message.hasOwnProperty("slowFactor"))
                     object.slowFactor = options.json && !isFinite(message.slowFactor) ? String(message.slowFactor) : message.slowFactor;
                 if (message.slowDuration != null && message.hasOwnProperty("slowDuration"))

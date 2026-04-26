@@ -177,9 +177,13 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
     spell_focus: {
         payloadKey: 'spellFocusActive',
         getPreviousActive: (entity) => Boolean(entity.spellFocusActive),
-        applyPayload: (entity, value) => {
+        applyPayload: (entity, value, payload) => {
             entity.spellFocusActive = Boolean(value);
+            if (payload.spellFocusDuration !== undefined) {
+                entity.spellFocusTimer = Math.max(0, Number(payload.spellFocusDuration || 0));
+            }
             if (!entity.spellFocusActive) {
+                entity.spellFocusTimer = 0;
                 entity.spellFocusMultiplier = 1.0;
             } else if (!Number.isFinite(entity.spellFocusMultiplier) || entity.spellFocusMultiplier <= 1.0) {
                 entity.spellFocusMultiplier = 2.5;
@@ -3119,6 +3123,15 @@ export class GameEngine {
                 name: 'Blessing of Zeal',
                 durationSeconds: Number(actor.blessingZealTimer || 0),
                 detail: `+${Math.round(Number(actor.blessingZealFactor || 0) * 100)}% damage and healing`,
+                isDebuff: false
+            },
+            {
+                id: 'spell_focus',
+                active: Boolean(actor.spellFocusActive) && Number(actor.spellFocusTimer || 0) > 0,
+                icon: '🔮',
+                name: 'Spell Focus',
+                durationSeconds: Number(actor.spellFocusTimer || 0),
+                detail: `+${Math.round((Number(actor.spellFocusMultiplier || 1) - 1) * 100)}% next spell damage`,
                 isDebuff: false
             },
             {

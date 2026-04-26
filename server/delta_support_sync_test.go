@@ -554,3 +554,28 @@ func TestEntitySnapshotTracksDivineInterventionDurationForDeltaSync(t *testing.T
 		t.Fatal("expected divine intervention duration delta change to be detected")
 	}
 }
+
+func TestEntitySnapshotTracksSpellFocusDurationForDeltaSync(t *testing.T) {
+	entity := &game.Entity{
+		ID:               "player-spell-focus-duration",
+		Type:             game.TypePlayer,
+		SubType:          "Wizard",
+		State:            "IDLE",
+		TalentRanks:      map[string]int{},
+		SpellFocusActive: true,
+		SpellFocusEndTime: time.Now().Add(2500 * time.Millisecond),
+	}
+
+	snapshot := entityToSnapshot(entity)
+	if snapshot == nil {
+		t.Fatal("expected snapshot")
+	}
+	if snapshot.SpellFocusDuration <= 0 {
+		t.Fatal("expected snapshot to track spell focus duration")
+	}
+
+	entity.SpellFocusEndTime = time.Now().Add(500 * time.Millisecond)
+	if !hasEntityChanged(entity, snapshot) {
+		t.Fatal("expected spell focus duration delta change to be detected")
+	}
+}

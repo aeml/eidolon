@@ -142,6 +142,7 @@ export class Actor extends Entity {
         this.shieldHP = 0; // Absorbs damage
         this.hasteTimer = 0; // Speed + CDR
         this.hasteFactor = 0;
+        this.spellFocusTimer = 0; // Display-only authoritative spell focus duration
         
         // Unique Effect Timers
         this.swiftBuffTimer = 0; // Swift effect: +20% speed for 3s after skill use
@@ -696,6 +697,13 @@ export class Actor extends Entity {
             this.hasteTimer -= dt;
             if (this.hasteTimer <= 0) {
                 this.hasteFactor = 0;
+            }
+        }
+
+        if (this.spellFocusTimer > 0) {
+            this.spellFocusTimer -= dt;
+            if (this.spellFocusTimer <= 0) {
+                this.spellFocusTimer = 0;
             }
         }
 

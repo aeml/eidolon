@@ -142,6 +142,7 @@ type EntitySnapshot struct {
 	GuardianEmbraceDuration float64
 	ArcaneShieldDuration float64
 	DivineInterventionDuration float64
+	SpellFocusDuration float64
 	JumpProgress float64
 	TalentPoints int
 	TalentKeys   int
@@ -3596,6 +3597,13 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 			divineInterventionDuration = 0
 		}
 	}
+	spellFocusDuration := 0.0
+	if e.SpellFocusActive {
+		spellFocusDuration = time.Until(e.SpellFocusEndTime).Seconds()
+		if spellFocusDuration < 0 {
+			spellFocusDuration = 0
+		}
+	}
 
 	snap := &EntitySnapshot{
 		X:            e.X,
@@ -3640,6 +3648,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		GuardianEmbraceDuration: guardianEmbraceDuration,
 		ArcaneShieldDuration: arcaneShieldDuration,
 		DivineInterventionDuration: divineInterventionDuration,
+		SpellFocusDuration: spellFocusDuration,
 		JumpProgress: e.JumpProgress,
 		TalentPoints: derivedTalentPoints,
 		TalentKeys:   keys,
@@ -3781,6 +3790,13 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 			cdivineInterventionDuration = 0
 		}
 	}
+	cspellFocusDuration := 0.0
+	if cspellFocusActive {
+		cspellFocusDuration = time.Until(current.SpellFocusEndTime).Seconds()
+		if cspellFocusDuration < 0 {
+			cspellFocusDuration = 0
+		}
+	}
 	ctalentPoints := current.TalentPoints
 	cjumpProgress := current.JumpProgress
 	ctalentKeys := 0
@@ -3874,7 +3890,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cspellFocusActive != last.SpellFocusActive {
 		return true
 	}
-	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || math.Abs(cslowDuration-last.SlowDuration) > 0.05 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || math.Abs(cbleedDuration-last.BleedDuration) > 0.05 || cbleedDamage != last.BleedDamage || cpoisoned != last.Poisoned || math.Abs(cpoisonDuration-last.PoisonDuration) > 0.05 || cpoisonDamage != last.PoisonDamage || math.Abs(cweakPointDuration-last.WeakPointDuration) > 0.05 || math.Abs(cmarkWeaknessDuration-last.MarkWeaknessDuration) > 0.05 || math.Abs(cspiritDuration-last.SpiritDuration) > 0.05 || math.Abs(cblessingResolveDuration-last.BlessingResolveDuration) > 0.05 || math.Abs(ctimeWarpDuration-last.TimeWarpDuration) > 0.05 || math.Abs(cguardianEmbraceDuration-last.GuardianEmbraceDuration) > 0.05 || math.Abs(carcaneShieldDuration-last.ArcaneShieldDuration) > 0.05 || math.Abs(cdivineInterventionDuration-last.DivineInterventionDuration) > 0.05 {
+	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || math.Abs(cslowDuration-last.SlowDuration) > 0.05 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || math.Abs(cbleedDuration-last.BleedDuration) > 0.05 || cbleedDamage != last.BleedDamage || cpoisoned != last.Poisoned || math.Abs(cpoisonDuration-last.PoisonDuration) > 0.05 || cpoisonDamage != last.PoisonDamage || math.Abs(cweakPointDuration-last.WeakPointDuration) > 0.05 || math.Abs(cmarkWeaknessDuration-last.MarkWeaknessDuration) > 0.05 || math.Abs(cspiritDuration-last.SpiritDuration) > 0.05 || math.Abs(cblessingResolveDuration-last.BlessingResolveDuration) > 0.05 || math.Abs(ctimeWarpDuration-last.TimeWarpDuration) > 0.05 || math.Abs(cguardianEmbraceDuration-last.GuardianEmbraceDuration) > 0.05 || math.Abs(carcaneShieldDuration-last.ArcaneShieldDuration) > 0.05 || math.Abs(cdivineInterventionDuration-last.DivineInterventionDuration) > 0.05 || math.Abs(cspellFocusDuration-last.SpellFocusDuration) > 0.05 {
 		return true
 	}
 
@@ -4248,6 +4264,13 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 			divineInterventionDuration = float32(remaining)
 		}
 	}
+	spellFocusDuration := float32(0)
+	if e.SpellFocusActive {
+		remaining := time.Until(e.SpellFocusEndTime).Seconds()
+		if remaining > 0 {
+			spellFocusDuration = float32(remaining)
+		}
+	}
 
 	out := &statepb.Entity{
 		Id:                e.ID,
@@ -4324,6 +4347,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		GuardianEmbraceDuration: guardianEmbraceDuration,
 		ArcaneShieldDuration: arcaneShieldDuration,
 		DivineInterventionDuration: divineInterventionDuration,
+		SpellFocusDuration: spellFocusDuration,
 	}
 
 	e.Mu.RUnlock()

@@ -42,6 +42,9 @@ function createEngineHarness() {
         arcaneShieldActive: false,
         arcaneShieldTimer: 0,
         shieldHP: 0,
+        spellFocusActive: false,
+        spellFocusTimer: 0,
+        spellFocusMultiplier: 1.0,
         hasteTimer: 0,
         hasteFactor: 0,
         slowTimer: 0,
@@ -688,6 +691,32 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.arcaneShieldActive).toBe(true);
         expect(engine.player.shieldHP).toBe(180);
         expect(engine.player.arcaneShieldTimer).toBe(12.5);
+    });
+
+    test('delta self sync applies authoritative spell focus duration detail', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.spellFocusActive = false;
+        engine.player.spellFocusTimer = 0;
+        engine.player.spellFocusMultiplier = 1.0;
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        spellFocusActive: true,
+                        spellFocusDuration: 12.5
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.spellFocusActive).toBe(true);
+        expect(engine.player.spellFocusTimer).toBe(12.5);
+        expect(engine.player.spellFocusMultiplier).toBe(2.5);
     });
 
     test('delta self sync applies authoritative divine intervention duration detail', () => {
