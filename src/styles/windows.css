@@ -312,6 +312,23 @@
     min-height: 38px;
 }
 
+/* ---- Service / Quest Windows ---- */
+#shop-screen,
+#stash-screen,
+#trading-house-screen,
+#quest-window,
+#quest-journal {
+    box-sizing: border-box;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+}
+
+#trading-house-screen .window-body,
+#quest-window .window-list,
+#quest-journal .window-list {
+    min-height: 0;
+}
+
 /* ---- Character Sheet ---- */
 #character-sheet {
     top: 50%;

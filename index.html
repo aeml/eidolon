@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.30.1</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.30.2</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.30.2" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.30.2 (Service and quest windows now fit the viewport)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Merchant, Stash, Trading House, and Quest windows now respect the viewport:</strong> These primary gameplay menus now cap their width and height instead of assuming desktop-only space.</li>
+                        <li><strong>Service menus keep actions reachable:</strong> Merchant and Trading House content now scrolls inside the window frame so tabs, lists, and action controls remain usable when content grows.</li>
+                        <li><strong>Quest surfaces follow the same menu-quality rule:</strong> Available Quests and Quest Journal now use viewport-capped frames with internal list scrolling.</li>
+                        <li><strong>Regression coverage:</strong> Added regression coverage for responsive service and quest window constraints, plus 0.30.2 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.30.1" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.30.1 (Static menus now respect the viewport)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
@@ -1917,7 +1926,7 @@
         </div>
 
         <!-- Shop Screen -->
-        <div id="shop-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: auto; z-index: 101; flex-direction: column;">
+        <div id="shop-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(500px, calc(100vw - 24px)); max-height: calc(100vh - 24px); z-index: 101; flex-direction: column; overflow: hidden;">
             <div class="window-header"><span>MERCHANT</span><button id="btn-close-shop-header" class="close-btn" type="button" aria-label="Close merchant window">×</button></div>
             
             <!-- Tabs -->
@@ -1927,7 +1936,7 @@
             </div>
 
             <!-- Main Shop Content -->
-            <div id="shop-content-main" style="padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column;">
+            <div id="shop-content-main" style="padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; min-height: 0; overflow-y: auto;">
                 <p id="shop-service-guidance" style="color: #aaa; font-size: 14px; margin-bottom: 10px;">Right-click items in your inventory to sell them. Use this merchant for obvious junk and fast gold, not for Shards, Hearts, Gems, or standout upgrades you may want to keep.</p>
                 <p style="color: #8fb7d9; font-size: 12px; margin: 0 0 15px 0;">Sell All buttons are fastest for low-rarity cleanup. Buyback is for "shit, I sold the wrong thing." Common gear is usually safe to clear first once you have upgrades equipped.</p>
                 
@@ -1945,7 +1954,7 @@
             </div>
 
             <!-- Buyback Content -->
-            <div id="shop-content-buyback" style="padding: 10px; text-align: center; flex-grow: 1; display: none; flex-direction: column;">
+            <div id="shop-content-buyback" style="padding: 10px; text-align: center; flex-grow: 1; display: none; flex-direction: column; min-height: 0; overflow-y: auto;">
                 <p id="shop-buyback-guidance" style="color: #aaa; font-size: 14px; margin-bottom: 15px;">Buyback lets you recover something you just sold before it is gone for good.</p>
                 <div id="buyback-grid" class="inventory-grid" style="grid-template-columns: repeat(5, 1fr); padding: 10px; max-height: 300px; overflow-y: auto;">
                     <!-- Populated by JS -->
@@ -1958,7 +1967,7 @@
         </div>
 
         <!-- Stash Screen -->
-        <div id="stash-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: auto; z-index: 101; flex-direction: column;">
+        <div id="stash-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(500px, calc(100vw - 24px)); max-height: calc(100vh - 24px); z-index: 101; flex-direction: column; overflow-y: auto;">
             <div class="window-header">
                 <span>STASH</span>
                 <button id="btn-close-stash" class="close-btn" type="button" aria-label="Close stash">×</button>
@@ -2144,7 +2153,7 @@
         </div>
 
         <!-- Trading House Screen -->
-        <div id="trading-house-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 500px; z-index: 101; flex-direction: column;">
+        <div id="trading-house-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(600px, calc(100vw - 24px)); height: min(500px, calc(100vh - 24px)); z-index: 101; flex-direction: column;">
             <div class="window-header">
                 <span>TRADING HOUSE</span>
                 <button id="btn-close-trading-house" class="close-btn" type="button" aria-label="Close trading house">×</button>
@@ -2225,7 +2234,7 @@
         </div>
 
         <!-- Quest Window (NPC Interaction) -->
-        <div id="quest-window" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 500px; z-index: 101; flex-direction: column;">
+        <div id="quest-window" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(400px, calc(100vw - 24px)); height: min(500px, calc(100vh - 24px)); z-index: 101; flex-direction: column;">
             <div class="window-header">
                 <span>AVAILABLE QUESTS</span>
                 <button id="btn-close-quest" class="close-btn" type="button" aria-label="Close quest window">×</button>
@@ -2236,7 +2245,7 @@
         </div>
 
         <!-- Quest Journal (Player Log) -->
-        <div id="quest-journal" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 500px; z-index: 100; flex-direction: column;">
+        <div id="quest-journal" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(400px, calc(100vw - 24px)); height: min(500px, calc(100vh - 24px)); z-index: 100; flex-direction: column;">
             <div class="window-header">
                 <span>QUEST JOURNAL</span>
                 <button id="btn-close-journal" class="close-btn" type="button" aria-label="Close quest journal">×</button>

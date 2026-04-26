@@ -906,6 +906,31 @@ describe('menu polish regressions', () => {
         expect(html).toMatch(/id="patch-notes-screen"[^>]*height: min\(600px, calc\(100vh - 24px\)\);/);
     });
 
+    test('service and quest windows stay within the viewport and scroll growing content internally', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toMatch(/id="shop-screen"[^>]*width: min\(500px, calc\(100vw - 24px\)\);/);
+        expect(html).toMatch(/id="shop-screen"[^>]*max-height: calc\(100vh - 24px\);/);
+        expect(html).toMatch(/id="shop-content-main"[^>]*min-height: 0; overflow-y: auto;/);
+        expect(html).toMatch(/id="shop-content-buyback"[^>]*min-height: 0; overflow-y: auto;/);
+
+        expect(html).toMatch(/id="stash-screen"[^>]*width: min\(500px, calc\(100vw - 24px\)\);/);
+        expect(html).toMatch(/id="stash-screen"[^>]*max-height: calc\(100vh - 24px\);/);
+        expect(html).toMatch(/id="stash-screen"[^>]*overflow-y: auto;/);
+
+        expect(html).toMatch(/id="trading-house-screen"[^>]*width: min\(600px, calc\(100vw - 24px\)\);/);
+        expect(html).toMatch(/id="trading-house-screen"[^>]*height: min\(500px, calc\(100vh - 24px\)\);/);
+
+        expect(html).toMatch(/id="quest-window"[^>]*width: min\(400px, calc\(100vw - 24px\)\);/);
+        expect(html).toMatch(/id="quest-window"[^>]*height: min\(500px, calc\(100vh - 24px\)\);/);
+        expect(html).toMatch(/id="quest-journal"[^>]*width: min\(400px, calc\(100vw - 24px\)\);/);
+        expect(html).toMatch(/id="quest-journal"[^>]*height: min\(500px, calc\(100vh - 24px\)\);/);
+
+        expect(css).toMatch(/#shop-screen,[\s\S]*#quest-journal\s*\{[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);/);
+        expect(css).toMatch(/#trading-house-screen\s+\.window-body,[\s\S]*#quest-journal\s+\.window-list\s*\{[^}]*min-height:\s*0;/);
+    });
+
     test('window chrome disables accidental selection while preserving text selection inside form fields', () => {
         const css = readFileSync(windowsCssPath, 'utf8');
 
