@@ -218,18 +218,17 @@ Current decision:
 - no additional planned `0.22.x` implementation slices should be added unless live QA finds a real issue
 - the remaining blocker to closing `0.22` is live first-hour QA sign-off, not missing onboarding/readability systems
 
-Recommended next step:
+Historical closeout note:
 
-- run the first-hour live QA route from `docs/plans/2026-04-18-0-22-first-hour-closeout.md`
-- if the route is clean or only reveals tiny wording fixes, close `0.22` and move to `0.23`
-- if the route reveals a real onboarding dead spot, ship one final tiny `0.22.x` cleanup patch and then close it
+- the first-hour live QA route from `docs/plans/2026-04-18-0-22-first-hour-closeout.md` remains useful as a regression checklist
+- `0.22` is no longer the active implementation line
 
 Current status:
 
 - `0.22` is closed for planned implementation work
 - `0.30.1` is now the active version line
 
-### `0.22` actionable implementation checklist
+### Historical `0.22` implementation checklist
 
 #### Slice 1: First-hour funnel audit
 
@@ -292,7 +291,7 @@ Primary files:
 - `README.md`
 - `ROADMAP.md`
 
-### Recommended `0.22` implementation order
+### Historical `0.22` implementation order
 
 Run the remaining `0.22` work in this order.
 
@@ -310,43 +309,41 @@ Why this order:
 
 ### Exact next slice to build
 
-Build `Slice 1: first-hour funnel audit and recovery` next.
+Build the next `0.30` client-quality slice.
 
 Scope:
 
-- make the next-step funnel recoverable after menu close, recall, death, and return to town
-- verify that the start-screen, objective panel, journal guidance, world map, minimap, and hover hints still agree after those state changes
-- close any obvious first-hour dead-time or ambiguity uncovered by that pass
+- audit the remaining primary windows for fixed desktop sizing, clipped footer actions, and inconsistent scroll behavior
+- keep the fixes small and menu-focused, following the Forge, Help, Report, and Patch Notes sizing pattern
+- update player-facing patch notes and regression coverage with each shipped `0.30.x` slice
 
 Why this is the best next slice:
 
-- it directly targets the remaining `0.22` release gates instead of adding side content
-- it consolidates the many `0.22.x` guidance improvements into one coherent first-hour experience
-- it is the highest-leverage way to decide what `0.22` is still actually missing before spending time on secondary polish
+- `0.30` is the active client-quality line, so the next wins should keep closing visible menu and usability rough edges
+- the first two `0.30` patches established the viewport-capped, internally scrollable modal pattern
+- finishing the window audit reduces obvious UI frustration before adding larger audio, accessibility, or VFX work
 
 Exact files to start in:
 
-- `src/main.js`
-- `src/ui/QuestUI.js`
-- `src/ui/WorldMap.js`
-- `src/ui/Minimap.js`
-- `src/core/GameEngine.js`
 - `index.html`
+- `src/styles/windows.css`
+- `src/styles/responsive.css`
+- `src/ui/UIManager.js`
+- `tests/MenuPolish.test.js`
+- `tests/VersionPresentation.test.js`
 
 Target regression surfaces for this slice:
 
-- `tests/QuestUIObjectivesPanel.test.js`
-- `tests/WorldMapTownWayfinding.test.js`
-- `tests/MinimapDungeonRoomStates.test.js`
-- `tests/MainAssetBoot.test.js`
+- `tests/MenuPolish.test.js`
+- `tests/UIBindings.test.js`
 - `tests/VersionPresentation.test.js`
 
 Definition of done for the next slice:
 
-- a fresh player can recover the next step after the most common funnel-breaking events
-- onboarding surfaces agree on the next step after recall, death, and town re-entry
-- no obvious first-hour ambiguity remains in the tested path
-- targeted regression coverage exists for the new recovery behavior
+- no primary menu action buttons are hidden below an unscrollable window body during normal play
+- static and HUD-launched windows stay within the viewport or intentionally scale through the existing responsive path
+- targeted regression coverage locks down the sizing behavior
+- patch notes and the active status line move forward with the implementation
 
 ## Roadmap from `0.23` to `alpha 1.0`
 
@@ -378,11 +375,11 @@ Suggested milestone slices:
 - `0.23.3`: forge, gems, respec, and buildcraft coherence pass
 - `0.23.4`: reward-excitement polish, balance pass, and release QA
 
-### `0.23.4` current slice
+### `0.23` release-line status
 
 Status: ready to ship
 
-Current focus:
+Closeout focus:
 
 - reward moments should end the release line with more payoff and less spreadsheet feeling
 - dungeon completion and room-clear messaging should celebrate what just happened before listing the ledger
@@ -414,11 +411,11 @@ Suggested milestone slices:
 - `0.24.3`: rerun incentive and reward-ladder pass
 - `0.24.4`: party dungeon UX hardening and release QA
 
-### `0.24.4` current slice
+### `0.24` release-line status
 
 Status: ready to ship
 
-Current focus:
+Closeout focus:
 
 - party members should understand whether they are starting fresh or re-entering an existing run before clicking the button
 - reset ownership and empty-instance expiry should be explicit so group control feels less ambiguous
