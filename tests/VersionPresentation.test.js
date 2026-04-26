@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.29.34 for the latest shipped swift sync slice', () => {
-        expect(indexHtml).toContain('Alpha 0.29.34');
+    test('advances the login screen to alpha 0.30.0 for the Forge client-quality slice', () => {
+        expect(indexHtml).toContain('Alpha 0.30.0');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.29.34', () => {
+    test('includes the latest player-facing patch notes entry for 0.30.0', () => {
+        expect(indexHtml).toContain('Patch 0.30.0');
+        expect(indexHtml).toContain('Alpha now advances to 0.30.0 with the first menu-consistency slice focused on Forge usability');
+        expect(indexHtml).toContain('The Forge window is wider and taller on normal screens while staying capped to the viewport');
+        expect(indexHtml).toContain('Forge content now scrolls inside the menu, so upgrade, potency, socket, insert, combine, and remove actions remain accessible when tab content gets tall');
+        expect(indexHtml).toContain('Added regression coverage for Forge menu sizing, internal scrolling, action-button reachability, and 0.30.0 version presentation');
+    });
+
+    test('keeps the prior 0.29.34 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.29.34');
         expect(indexHtml).toContain('Authoritative state now also replicates swift active state and duration so Swift can carry truthful remaining time in local self sync instead of relying only on local trigger guesses');
         expect(indexHtml).toContain('This lets local self sync and buff UI track the real remaining Swift window from server state while also fixing expired server Swift state to clear cleanly');
@@ -628,6 +636,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.30.0');
         expect(indexHtml).toContain('Patch 0.29.16');
         expect(indexHtml).toContain('Patch 0.29.15');
         expect(indexHtml).toContain('Patch 0.29.14');
@@ -713,6 +722,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.30.0"');
         expect(indexHtml).toContain('data-version="0.29.16"');
         expect(indexHtml).toContain('data-version="0.29.15"');
         expect(indexHtml).toContain('data-version="0.29.14"');
