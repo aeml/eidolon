@@ -444,15 +444,22 @@ describe('menu polish regressions', () => {
         const heroicButton = document.getElementById('diff-btn-heroic');
         const dungeonFooterCloseBtn = document.getElementById('btn-close-dungeon-menu-footer');
 
+        expect(document.getElementById('dungeon-menu-backdrop').classList.contains('generated-menu-backdrop')).toBe(true);
+        expect(dungeonMenu.classList.contains('generated-menu')).toBe(true);
+        expect(dungeonMenu.classList.contains('generated-menu--dungeon')).toBe(true);
         expect(dungeonMenu.style.width).toBe('min(92vw, 540px)');
         expect(dungeonMenu.style.maxWidth).toBe('calc(100vw - 24px)');
         expect(dungeonMenu.style.maxHeight).toBe('calc(100vh - 24px)');
         expect(dungeonMenu.style.overflowY).toBe('auto');
         expect(dungeonMenu.style.overflowX).toBe('hidden');
         expect(dungeonMenu.style.paddingBottom).toBe('24px');
+        expect(dungeonSelect.classList.contains('generated-menu__select')).toBe(true);
+        expect(runLevelSelect.classList.contains('generated-menu__select')).toBe(true);
         expect(dungeonSelect.style.width).toBe('min(250px, 100%)');
         expect(runLevelSelect.style.width).toBe('min(250px, 100%)');
+        expect(heroicButton.parentElement.classList.contains('generated-menu__choice-row')).toBe(true);
         expect(heroicButton.parentElement.style.flexWrap).toBe('wrap');
+        expect(dungeonFooterCloseBtn.parentElement.classList.contains('generated-menu__actions')).toBe(true);
         expect(dungeonFooterCloseBtn).not.toBeNull();
         dungeonFooterCloseBtn.click();
 
@@ -465,12 +472,16 @@ describe('menu polish regressions', () => {
         const respecMenu = document.getElementById('respec-menu');
         const respecFooterCloseBtn = document.getElementById('btn-close-respec-menu-footer');
 
+        expect(document.getElementById('respec-menu-backdrop').classList.contains('generated-menu-backdrop')).toBe(true);
+        expect(respecMenu.classList.contains('generated-menu')).toBe(true);
+        expect(respecMenu.classList.contains('generated-menu--respec')).toBe(true);
         expect(respecMenu.style.width).toBe('min(92vw, 460px)');
         expect(respecMenu.style.maxWidth).toBe('calc(100vw - 24px)');
         expect(respecMenu.style.maxHeight).toBe('calc(100vh - 24px)');
         expect(respecMenu.style.overflowY).toBe('auto');
         expect(respecMenu.style.overflowX).toBe('hidden');
         expect(respecMenu.style.paddingBottom).toBe('24px');
+        expect(respecFooterCloseBtn.parentElement.classList.contains('generated-menu__actions')).toBe(true);
         expect(respecFooterCloseBtn).not.toBeNull();
     });
 
@@ -1019,5 +1030,16 @@ describe('menu polish regressions', () => {
         expect(css).toContain('.window input,');
         expect(css).toContain('user-select: text;');
         expect(css).toContain('.close-btn');
+    });
+
+    test('generated modal chrome has shared viewport and action-row classes', () => {
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(css).toMatch(/\.generated-menu-backdrop\s*\{[^}]*position:\s*fixed;[^}]*inset:\s*0;[^}]*z-index:\s*1090;/s);
+        expect(css).toMatch(/\.generated-menu\s*\{[^}]*width:\s*min\(92vw, 540px\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow-y:\s*auto;/s);
+        expect(css).toMatch(/\.generated-menu--dungeon\s*\{[^}]*rgba\(255, 215, 0, 0\.4\)/s);
+        expect(css).toMatch(/\.generated-menu--respec\s*\{[^}]*width:\s*min\(92vw, 460px\);/s);
+        expect(css).toMatch(/\.generated-menu__select\s*\{[^}]*width:\s*min\(250px, 100%\);/s);
+        expect(css).toMatch(/\.generated-menu__actions\s*\{[^}]*flex-wrap:\s*wrap;/s);
     });
 });

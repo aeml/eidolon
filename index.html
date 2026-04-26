@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.30.4</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.0</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" style="padding: 20px; text-align: left; overflow-y: auto; flex-grow: 1; font-size: 14px; color: #ccc;">
+                <div class="patch-note-entry" data-version="0.31.0" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.31.0 (Client UX consistency pass begins)</h3>
+                    <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Generated menus now share consistent chrome:</strong> Dungeon Portal and Talent Master use shared generated-menu and backdrop classes instead of living as one-off modal frames.</li>
+                        <li><strong>Dynamic menu controls are easier to keep consistent:</strong> Dungeon selects, difficulty rows, and footer action rows now carry reusable classes that match the 0.30 viewport behavior.</li>
+                        <li><strong>The 0.31 line starts from the completed 0.30 sizing audit:</strong> The next client-quality work can focus on consistent headers, bodies, footers, tabs, and menu feel instead of basic clipping fixes.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for shared generated modal chrome, reusable generated action rows, and 0.31.0 version presentation.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.30.4" style="margin-bottom: 20px;">
                     <h3 style="color: #ffd700; border-bottom: 1px solid #444; padding-bottom: 5px;">Patch 0.30.4 (Dynamic menus now finish the viewport audit)</h3>
                     <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.6;">

@@ -960,6 +960,7 @@ export class SkillTreeUI {
 
         const backdrop = document.createElement('div');
         backdrop.id = 'respec-menu-backdrop';
+        backdrop.className = 'generated-menu-backdrop';
         backdrop.style.position = 'fixed';
         backdrop.style.inset = '0';
         backdrop.style.background = 'rgba(3, 5, 10, 0.72)';
@@ -973,6 +974,7 @@ export class SkillTreeUI {
 
         const menu = document.createElement('div');
         menu.id = 'respec-menu';
+        menu.className = 'generated-menu generated-menu--respec';
         menu.style.position = 'fixed';
         menu.style.top = '50%';
         menu.style.left = '50%';
@@ -1096,6 +1098,7 @@ export class SkillTreeUI {
         menu.appendChild(goldDisplay);
 
         const footerActions = document.createElement('div');
+        footerActions.className = 'generated-menu__actions';
         footerActions.style.display = 'flex';
         footerActions.style.justifyContent = 'center';
         footerActions.style.marginTop = '16px';

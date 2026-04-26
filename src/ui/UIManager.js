@@ -2592,6 +2592,7 @@ export class UIManager {
 
         const backdrop = document.createElement('div');
         backdrop.id = 'dungeon-menu-backdrop';
+        backdrop.className = 'generated-menu-backdrop';
         backdrop.style.position = 'fixed';
         backdrop.style.inset = '0';
         backdrop.style.background = 'rgba(3, 5, 10, 0.72)';
@@ -2602,6 +2603,7 @@ export class UIManager {
 
         const menu = document.createElement('div');
         menu.id = 'dungeon-menu';
+        menu.className = 'generated-menu generated-menu--dungeon';
         menu.style.position = 'fixed';
         menu.style.top = '50%';
         menu.style.left = '50%';
@@ -2757,6 +2759,7 @@ export class UIManager {
         // Dungeon Type Dropdown
         const dungeonSelect = document.createElement('select');
         dungeonSelect.id = 'dungeon-type-select';
+        dungeonSelect.className = 'generated-menu__select';
         dungeonSelect.style.margin = '5px';
         dungeonSelect.style.padding = '8px';
         dungeonSelect.style.fontSize = '14px';
@@ -2803,6 +2806,7 @@ export class UIManager {
 
         const runLevelSelect = document.createElement('select');
         runLevelSelect.id = 'dungeon-run-level-select';
+        runLevelSelect.className = 'generated-menu__select';
         runLevelSelect.style.margin = '5px';
         runLevelSelect.style.padding = '8px';
         runLevelSelect.style.fontSize = '14px';
@@ -2841,6 +2845,7 @@ export class UIManager {
 
         // Difficulty Buttons Container
         const diffContainer = document.createElement('div');
+        diffContainer.className = 'generated-menu__choice-row';
         diffContainer.style.display = 'flex';
         diffContainer.style.justifyContent = 'center';
         diffContainer.style.gap = '10px';
@@ -2950,6 +2955,7 @@ export class UIManager {
 
         // Enter Button
         const actions = document.createElement('div');
+        actions.className = 'generated-menu__actions';
         actions.style.display = 'flex';
         actions.style.justifyContent = 'center';
         actions.style.gap = '10px';
