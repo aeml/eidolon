@@ -983,8 +983,14 @@ export class SkillTreeUI {
         menu.style.color = '#fff';
         menu.style.zIndex = '1100';
         menu.style.textAlign = 'center';
-        menu.style.minWidth = '350px';
-        menu.style.maxWidth = 'min(92vw, 460px)';
+        menu.style.boxSizing = 'border-box';
+        menu.style.width = 'min(92vw, 460px)';
+        menu.style.minWidth = '0';
+        menu.style.maxWidth = 'calc(100vw - 24px)';
+        menu.style.maxHeight = 'calc(100vh - 24px)';
+        menu.style.overflowY = 'auto';
+        menu.style.overflowX = 'hidden';
+        menu.style.paddingBottom = '24px';
         menu.style.borderRadius = '16px';
         menu.style.boxShadow = '0 28px 80px rgba(0, 0, 0, 0.55)';
         menu.style.userSelect = 'none';

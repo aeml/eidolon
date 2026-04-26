@@ -2613,8 +2613,14 @@ export class UIManager {
         menu.style.color = '#fff';
         menu.style.zIndex = '1100';
         menu.style.textAlign = 'center';
-        menu.style.minWidth = '400px';
-        menu.style.maxWidth = 'min(92vw, 540px)';
+        menu.style.boxSizing = 'border-box';
+        menu.style.width = 'min(92vw, 540px)';
+        menu.style.minWidth = '0';
+        menu.style.maxWidth = 'calc(100vw - 24px)';
+        menu.style.maxHeight = 'calc(100vh - 24px)';
+        menu.style.overflowY = 'auto';
+        menu.style.overflowX = 'hidden';
+        menu.style.paddingBottom = '24px';
         menu.style.boxShadow = '0 28px 80px rgba(0, 0, 0, 0.55)';
         menu.style.userSelect = 'none';
         menu.style.webkitUserSelect = 'none';
@@ -2758,7 +2764,8 @@ export class UIManager {
         dungeonSelect.style.color = '#fff';
         dungeonSelect.style.border = '1px solid #555';
         dungeonSelect.style.cursor = 'pointer';
-        dungeonSelect.style.width = '250px';
+        dungeonSelect.style.width = 'min(250px, 100%)';
+        dungeonSelect.style.boxSizing = 'border-box';
         dungeonSelect.style.userSelect = 'text';
         dungeonSelect.style.webkitUserSelect = 'text';
 
@@ -2803,7 +2810,8 @@ export class UIManager {
         runLevelSelect.style.color = '#fff';
         runLevelSelect.style.border = '1px solid #555';
         runLevelSelect.style.cursor = 'pointer';
-        runLevelSelect.style.width = '250px';
+        runLevelSelect.style.width = 'min(250px, 100%)';
+        runLevelSelect.style.boxSizing = 'border-box';
         runLevelSelect.style.userSelect = 'text';
         runLevelSelect.style.webkitUserSelect = 'text';
         for (const runLevel of availableRunLevels.length > 0 ? availableRunLevels : DUNGEON_RUN_LEVEL_BANDS) {
@@ -2836,6 +2844,7 @@ export class UIManager {
         diffContainer.style.display = 'flex';
         diffContainer.style.justifyContent = 'center';
         diffContainer.style.gap = '10px';
+        diffContainer.style.flexWrap = 'wrap';
         diffContainer.style.margin = '10px 0';
 
         let selectedDifficulty = 'normal';

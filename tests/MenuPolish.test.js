@@ -7,6 +7,7 @@ import { SkillTreeUI } from '../src/ui/SkillTreeUI.js';
 const windowsCssPath = fileURLToPath(new URL('../src/styles/windows.css', import.meta.url));
 const worldMapCssPath = fileURLToPath(new URL('../src/styles/world-map.css', import.meta.url));
 const partyCssPath = fileURLToPath(new URL('../src/styles/party.css', import.meta.url));
+const skillTreeCssPath = fileURLToPath(new URL('../src/styles/skill-tree.css', import.meta.url));
 const indexHtmlPath = fileURLToPath(new URL('../index.html', import.meta.url));
 
 function createTouchLikeEvent(type, options = {}) {
@@ -424,6 +425,55 @@ describe('menu polish regressions', () => {
         expect(document.getElementById('respec-menu-backdrop')).toBeNull();
     });
 
+    test('generated dungeon and respec menus cap to the viewport and scroll to footer actions', () => {
+        const uiManager = Object.create(UIManager.prototype);
+        uiManager.getDungeonDailyQuestEntries = () => [];
+        window.game = { socket: { send: jest.fn() } };
+
+        uiManager.showDungeonMenu({
+            hasInstance: false,
+            isLeader: true,
+            playerLevel: 100,
+            availableRunLevels: [30, 60, 90],
+            quests: []
+        });
+
+        const dungeonMenu = document.getElementById('dungeon-menu');
+        const dungeonSelect = document.getElementById('dungeon-type-select');
+        const runLevelSelect = document.getElementById('dungeon-run-level-select');
+        const heroicButton = document.getElementById('diff-btn-heroic');
+        const dungeonFooterCloseBtn = document.getElementById('btn-close-dungeon-menu-footer');
+
+        expect(dungeonMenu.style.width).toBe('min(92vw, 540px)');
+        expect(dungeonMenu.style.maxWidth).toBe('calc(100vw - 24px)');
+        expect(dungeonMenu.style.maxHeight).toBe('calc(100vh - 24px)');
+        expect(dungeonMenu.style.overflowY).toBe('auto');
+        expect(dungeonMenu.style.overflowX).toBe('hidden');
+        expect(dungeonMenu.style.paddingBottom).toBe('24px');
+        expect(dungeonSelect.style.width).toBe('min(250px, 100%)');
+        expect(runLevelSelect.style.width).toBe('min(250px, 100%)');
+        expect(heroicButton.parentElement.style.flexWrap).toBe('wrap');
+        expect(dungeonFooterCloseBtn).not.toBeNull();
+        dungeonFooterCloseBtn.click();
+
+        const skillTree = new SkillTreeUI({
+            getLastPlayer: () => ({ level: 100, gold: 999999 }),
+            sendRespec: jest.fn()
+        });
+        skillTree.showRespecMenu();
+
+        const respecMenu = document.getElementById('respec-menu');
+        const respecFooterCloseBtn = document.getElementById('btn-close-respec-menu-footer');
+
+        expect(respecMenu.style.width).toBe('min(92vw, 460px)');
+        expect(respecMenu.style.maxWidth).toBe('calc(100vw - 24px)');
+        expect(respecMenu.style.maxHeight).toBe('calc(100vh - 24px)');
+        expect(respecMenu.style.overflowY).toBe('auto');
+        expect(respecMenu.style.overflowX).toBe('hidden');
+        expect(respecMenu.style.paddingBottom).toBe('24px');
+        expect(respecFooterCloseBtn).not.toBeNull();
+    });
+
     test('static windows expose header close buttons and backdrop dismissal for older menu screens', () => {
         buildStaticWindowDom();
         const ui = new UIManager(false);
@@ -622,6 +672,18 @@ describe('menu polish regressions', () => {
 
         expect(worldMapCss).toMatch(/#world-map\s*\{[^}]*user-select:\s*none;/s);
         expect(partyCss).toMatch(/#party-panel\s*\{[^}]*user-select:\s*none;/s);
+    });
+
+    test('special skill tree and party surfaces stay inside the viewport', () => {
+        const skillTreeCss = readFileSync(skillTreeCssPath, 'utf8');
+        const partyCss = readFileSync(partyCssPath, 'utf8');
+
+        expect(skillTreeCss).toMatch(/#skill-tree-window\s*\{[^}]*width:\s*min\(900px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(700px, calc\(100vh - 24px\)\);/s);
+        expect(skillTreeCss).toMatch(/#skill-tree-window\s*\{[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow:\s*hidden;/s);
+        expect(skillTreeCss).toMatch(/\.skill-tree-content\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/s);
+
+        expect(partyCss).toMatch(/#party-panel\s*\{[^}]*max-width:\s*calc\(100vw - 40px\);[^}]*max-height:\s*calc\(100vh - 170px\);[^}]*overflow-y:\s*auto;/s);
+        expect(partyCss).toMatch(/\.party-request-modal\s*\{[^}]*width:\s*min\(360px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow-y:\s*auto;/s);
     });
 
     test('browser warning and party markup use reusable classes instead of inline close hacks', () => {
