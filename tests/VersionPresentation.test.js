@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.19 for the skill tree empty-state consistency slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.19');
+    test('advances the login screen to alpha 0.31.20 for the inventory footer consistency slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.20');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.19', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.20', () => {
+        expect(indexHtml).toContain('Patch 0.31.20');
+        expect(indexHtml).toContain('The sort row, sort button, gold display, and starter guidance now share inventory CSS instead of inline HTML chrome');
+        expect(indexHtml).toContain('Footer spacing, button treatment, gold text, guidance color, line height, alignment, and separators now live in window CSS');
+        expect(indexHtml).toContain('Skill Tree placeholder cleanup now extends into the inventory management surface');
+        expect(indexHtml).toContain('Added coverage for inventory footer classes and removed the old inline inventory footer styling');
+    });
+
+    test('keeps the prior 0.31.19 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.19');
         expect(indexHtml).toContain('The fallback message for selecting a class now shares skill-tree CSS instead of inline HTML chrome');
         expect(indexHtml).toContain('Center alignment, muted copy color, and top spacing now live beside the rest of the Skill Tree styles');
@@ -828,6 +836,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.20');
         expect(indexHtml).toContain('Patch 0.31.19');
         expect(indexHtml).toContain('Patch 0.31.18');
         expect(indexHtml).toContain('Patch 0.31.17');
@@ -938,6 +947,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.20"');
         expect(indexHtml).toContain('data-version="0.31.19"');
         expect(indexHtml).toContain('data-version="0.31.18"');
         expect(indexHtml).toContain('data-version="0.31.17"');

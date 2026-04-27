@@ -180,13 +180,13 @@
                 <div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div>
                 <div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div><div class="inv-slot"></div>
             </div>
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; border-top: 1px solid #444;">
-                <button id="btn-sort-inventory" title="Sorts your bag from top-left to bottom-right: Hearts, Shards, Gems, then Equipment and other items." aria-label="Sort inventory: Hearts, Shards, Gems, then other items" style="padding: 6px 12px; background: linear-gradient(180deg, #2b3442 0%, #18212c 100%); color: #d9e1e8; border: 1px solid #5d748d; cursor: pointer; font-weight: bold; letter-spacing: 0.05em;">SORT</button>
-                <div id="gold-display" style="color: #ffd700; font-weight: bold; text-align: right;">
+            <div class="inventory-footer">
+                <button id="btn-sort-inventory" class="inventory-sort-button" title="Sorts your bag from top-left to bottom-right: Hearts, Shards, Gems, then Equipment and other items." aria-label="Sort inventory: Hearts, Shards, Gems, then other items">SORT</button>
+                <div id="gold-display" class="inventory-gold-display">
                     GOLD: 0
                 </div>
             </div>
-            <div id="inventory-guidance" style="padding: 0 10px 10px 10px; color: #8fb7d9; font-size: 12px; line-height: 1.5; text-align: center; border-top: 1px solid #2a3340;">Common gear is usually vendor junk unless it is an upgrade. Better drops are worth checking, while Shards, Hearts, and Gems should usually be saved for the Forge.</div>
+            <div id="inventory-guidance" class="inventory-guidance">Common gear is usually vendor junk unless it is an upgrade. Better drops are worth checking, while Shards, Hearts, and Gems should usually be saved for the Forge.</div>
         </div>
 
         <!-- Split Stack Window -->
@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.19</span>
+                <span class="start-version-row__label">Alpha 0.31.20</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.20">
+                    <h3 class="patch-note-entry__title">Patch 0.31.20 (Inventory footer uses shared classes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The inventory footer now uses reusable classes:</strong> The sort row, sort button, gold display, and starter guidance now share inventory CSS instead of inline HTML chrome.</li>
+                        <li><strong>Inventory copy styling has been centralized:</strong> Footer spacing, button treatment, gold text, guidance color, line height, alignment, and separators now live in window CSS.</li>
+                        <li><strong>The 0.31 consistency pass continues through core bag flow:</strong> Skill Tree placeholder cleanup now extends into the inventory management surface.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for inventory footer classes and removed the old inline inventory footer styling.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.19">
                     <h3 class="patch-note-entry__title">Patch 0.31.19 (Skill Tree empty state uses a shared class)</h3>
                     <ul class="patch-note-entry__list">

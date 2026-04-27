@@ -1062,7 +1062,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.19</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.20</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1313,6 +1313,25 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/#inventory-screen\s*\{[^}]*width:\s*min\(300px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(400px, calc\(100vh - 24px\)\);/s);
         expect(css).toMatch(/#abilities-content,[\s\S]*#inventory-grid\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/);
         expect(css).toMatch(/\.abilities-content\s*\{[^}]*display:\s*grid;[^}]*grid-template-columns:\s*repeat\(4, 1fr\);/s);
+    });
+
+    test('inventory footer gold and guidance chrome use shared classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toContain('<div class="inventory-footer">');
+        expect(html).toContain('id="btn-sort-inventory" class="inventory-sort-button"');
+        expect(html).toContain('<div id="gold-display" class="inventory-gold-display">');
+        expect(html).toContain('<div id="inventory-guidance" class="inventory-guidance">');
+        expect(html).not.toContain('<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; border-top: 1px solid #444;">');
+        expect(html).not.toContain('id="btn-sort-inventory" title="Sorts your bag from top-left to bottom-right: Hearts, Shards, Gems, then Equipment and other items." aria-label="Sort inventory: Hearts, Shards, Gems, then other items" style="padding: 6px 12px;');
+        expect(html).not.toContain('<div id="gold-display" style="color: #ffd700; font-weight: bold; text-align: right;">');
+        expect(html).not.toContain('id="inventory-guidance" style="padding: 0 10px 10px 10px; color: #8fb7d9; font-size: 12px; line-height: 1.5; text-align: center; border-top: 1px solid #2a3340;"');
+
+        expect(css).toMatch(/\.inventory-footer\s*\{[^}]*display:\s*flex;[^}]*align-items:\s*center;[^}]*justify-content:\s*space-between;[^}]*border-top:\s*1px solid var\(--border-default\);/s);
+        expect(css).toMatch(/\.inventory-sort-button\s*\{[^}]*padding:\s*6px 12px;[^}]*background:\s*linear-gradient\(180deg, #2b3442 0%, #18212c 100%\);[^}]*letter-spacing:\s*0\.05em;/s);
+        expect(css).toMatch(/\.inventory-gold-display\s*\{[^}]*color:\s*var\(--color-gold\);[^}]*font-weight:\s*bold;[^}]*text-align:\s*right;/s);
+        expect(css).toMatch(/\.inventory-guidance\s*\{[^}]*color:\s*#8fb7d9;[^}]*line-height:\s*1\.5;[^}]*border-top:\s*1px solid #2a3340;/s);
     });
 
     test('window chrome disables accidental selection while preserving text selection inside form fields', () => {

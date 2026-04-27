@@ -846,6 +846,40 @@
     gap: var(--spacing-sm);
 }
 
+.inventory-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border-top: 1px solid var(--border-default);
+}
+
+.inventory-sort-button {
+    padding: 6px 12px;
+    background: linear-gradient(180deg, #2b3442 0%, #18212c 100%);
+    color: #d9e1e8;
+    border: 1px solid #5d748d;
+    cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+}
+
+.inventory-gold-display {
+    color: var(--color-gold);
+    font-weight: bold;
+    text-align: right;
+}
+
+.inventory-guidance {
+    padding: 0 var(--spacing-md) var(--spacing-md) var(--spacing-md);
+    color: #8fb7d9;
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+    border-top: 1px solid #2a3340;
+}
+
 .inv-slot {
     background: var(--bg-input);
     border: 1px solid var(--border-default);
