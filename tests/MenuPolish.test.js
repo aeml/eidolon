@@ -1062,7 +1062,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.23</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.24</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1278,9 +1278,7 @@ describe('menu polish regressions', () => {
         expect(html).toMatch(/id="shop-content-main"[^>]*class="shop-content shop-content--main"/);
         expect(html).toMatch(/id="shop-content-buyback"[^>]*class="shop-content shop-content--buyback"[^>]*style="display: none;"/);
 
-        expect(html).toMatch(/id="stash-screen"[^>]*width: min\(500px, calc\(100vw - 24px\)\);/);
-        expect(html).toMatch(/id="stash-screen"[^>]*max-height: calc\(100vh - 24px\);/);
-        expect(html).toMatch(/id="stash-screen"[^>]*overflow-y: auto;/);
+        expect(html).toMatch(/id="stash-screen"[^>]*class="window stash-window"[^>]*style="display: none;"/);
 
         expect(html).toMatch(/id="trading-house-screen"[^>]*width: min\(600px, calc\(100vw - 24px\)\);/);
         expect(html).toMatch(/id="trading-house-screen"[^>]*height: min\(500px, calc\(100vh - 24px\)\);/);
@@ -1293,6 +1291,7 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/#shop-screen,[\s\S]*#quest-journal\s*\{[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);/);
         expect(css).toMatch(/\.shop-window\s*\{[^}]*width:\s*min\(500px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow:\s*hidden;/s);
         expect(css).toMatch(/\.shop-content\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/s);
+        expect(css).toMatch(/\.stash-window\s*\{[^}]*width:\s*min\(500px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow-y:\s*auto;/s);
         expect(css).toMatch(/#trading-house-screen\s+\.window-body,[\s\S]*#quest-journal\s+\.window-list\s*\{[^}]*min-height:\s*0;/);
     });
 
@@ -1339,6 +1338,22 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.shop-sell-button--common\s*\{[^}]*background:\s*#333;[^}]*color:\s*#fff;[^}]*border-color:\s*#fff;/s);
         expect(css).toMatch(/\.shop-sell-button--uncommon\s*\{[^}]*background:\s*#1a331a;[^}]*color:\s*#1eff00;[^}]*border-color:\s*#1eff00;/s);
         expect(css).toMatch(/\.shop-sell-button--rare\s*\{[^}]*background:\s*#1a1a33;[^}]*color:\s*#0070dd;[^}]*border-color:\s*#0070dd;/s);
+    });
+
+    test('stash window grid and guidance use shared classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toContain('<div id="stash-screen" class="window stash-window" style="display: none;">');
+        expect(html).toContain('<div class="inventory-grid stash-grid" id="stash-grid">');
+        expect(html).toContain('<div id="stash-guidance" class="stash-guidance">');
+        expect(html).not.toContain('<div id="stash-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(500px, calc(100vw - 24px)); max-height: calc(100vh - 24px); z-index: 101; flex-direction: column; overflow-y: auto;">');
+        expect(html).not.toContain('<div class="inventory-grid" id="stash-grid" style="grid-template-columns: repeat(10, 1fr); padding: 10px;">');
+        expect(html).not.toContain('<div id="stash-guidance" style="padding: 10px; color: #aaa; font-size: 12px; text-align: center;">');
+
+        expect(css).toMatch(/\.stash-window\s*\{[^}]*top:\s*50%;[^}]*left:\s*50%;[^}]*transform:\s*translate\(-50%, -50%\);[^}]*z-index:\s*101;[^}]*flex-direction:\s*column;[^}]*overflow-y:\s*auto;/s);
+        expect(css).toMatch(/\.stash-grid\s*\{[^}]*grid-template-columns:\s*repeat\(10, 1fr\);[^}]*padding:\s*var\(--spacing-md\);/s);
+        expect(css).toMatch(/\.stash-guidance\s*\{[^}]*padding:\s*var\(--spacing-md\);[^}]*color:\s*var\(--color-text-muted\);[^}]*font-size:\s*12px;[^}]*text-align:\s*center;/s);
     });
 
     test('hud utility windows stay within the viewport and scroll growing content internally', () => {

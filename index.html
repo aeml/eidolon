@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.23</span>
+                <span class="start-version-row__label">Alpha 0.31.24</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.24">
+                    <h3 class="patch-note-entry__title">Patch 0.31.24 (Stash window uses shared classes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The Stash window now uses reusable classes:</strong> Window centering, viewport sizing, z-index, flex layout, and scrolling now live in shared window CSS.</li>
+                        <li><strong>Stash grid and guidance chrome has been centralized:</strong> The 10-column stash grid, padding, muted guidance color, font size, and centered copy now use named stash classes.</li>
+                        <li><strong>The 0.31 consistency pass continues through storage flow:</strong> Merchant sell-button cleanup now extends into the stash service surface.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for Stash shell/grid/guidance classes and removed the old inline stash styling.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.23">
                     <h3 class="patch-note-entry__title">Patch 0.31.23 (Merchant sell buttons use shared classes)</h3>
                     <ul class="patch-note-entry__list">
@@ -2201,15 +2210,15 @@
         </div>
 
         <!-- Stash Screen -->
-        <div id="stash-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(500px, calc(100vw - 24px)); max-height: calc(100vh - 24px); z-index: 101; flex-direction: column; overflow-y: auto;">
+        <div id="stash-screen" class="window stash-window" style="display: none;">
             <div class="window-header">
                 <span>STASH</span>
                 <button id="btn-close-stash" class="close-btn" type="button" aria-label="Close stash">×</button>
             </div>
-            <div class="inventory-grid" id="stash-grid" style="grid-template-columns: repeat(10, 1fr); padding: 10px;">
+            <div class="inventory-grid stash-grid" id="stash-grid">
                 <!-- Populated by JS -->
             </div>
-            <div id="stash-guidance" style="padding: 10px; color: #aaa; font-size: 12px; text-align: center;">
+            <div id="stash-guidance" class="stash-guidance">
                 Right-click to move items between Inventory and Stash. Use the Stash to park spare gear, gems, Hearts, and Shards without clogging your bag, especially if you are not sure whether something should be forged later.
             </div>
         </div>

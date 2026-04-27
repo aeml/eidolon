@@ -827,6 +827,29 @@
     border-color: #0070dd;
 }
 
+.stash-window {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(500px, calc(100vw - 24px));
+    max-height: calc(100vh - 24px);
+    z-index: 101;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.stash-grid {
+    grid-template-columns: repeat(10, 1fr);
+    padding: var(--spacing-md);
+}
+
+.stash-guidance {
+    padding: var(--spacing-md);
+    color: var(--color-text-muted);
+    font-size: 12px;
+    text-align: center;
+}
+
 /* ---- HUD Utility Windows ---- */
 #abilities-menu,
 #character-sheet,

@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.23 for the merchant sell-button consistency slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.23');
+    test('advances the login screen to alpha 0.31.24 for the stash consistency slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.24');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.23', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.24', () => {
+        expect(indexHtml).toContain('Patch 0.31.24');
+        expect(indexHtml).toContain('Window centering, viewport sizing, z-index, flex layout, and scrolling now live in shared window CSS');
+        expect(indexHtml).toContain('The 10-column stash grid, padding, muted guidance color, font size, and centered copy now use named stash classes');
+        expect(indexHtml).toContain('Merchant sell-button cleanup now extends into the stash service surface');
+        expect(indexHtml).toContain('Added coverage for Stash shell/grid/guidance classes and removed the old inline stash styling');
+    });
+
+    test('keeps the prior 0.31.23 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.23');
         expect(indexHtml).toContain('Common, Uncommon, and Rare sell actions now share a base sell-button class plus rarity modifiers');
         expect(indexHtml).toContain('Button sizing, padding, font sizing, backgrounds, text colors, and border colors now live in window CSS');
@@ -860,6 +868,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.24');
         expect(indexHtml).toContain('Patch 0.31.23');
         expect(indexHtml).toContain('Patch 0.31.22');
         expect(indexHtml).toContain('Patch 0.31.21');
@@ -974,6 +983,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.24"');
         expect(indexHtml).toContain('data-version="0.31.23"');
         expect(indexHtml).toContain('data-version="0.31.22"');
         expect(indexHtml).toContain('data-version="0.31.21"');
