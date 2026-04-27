@@ -8,6 +8,7 @@ const windowsCssPath = fileURLToPath(new URL('../src/styles/windows.css', import
 const worldMapCssPath = fileURLToPath(new URL('../src/styles/world-map.css', import.meta.url));
 const partyCssPath = fileURLToPath(new URL('../src/styles/party.css', import.meta.url));
 const skillTreeCssPath = fileURLToPath(new URL('../src/styles/skill-tree.css', import.meta.url));
+const startScreenCssPath = fileURLToPath(new URL('../src/styles/start-screen.css', import.meta.url));
 const indexHtmlPath = fileURLToPath(new URL('../index.html', import.meta.url));
 
 function createTouchLikeEvent(type, options = {}) {
@@ -1042,6 +1043,22 @@ describe('menu polish regressions', () => {
 
         expect(css).toMatch(/\.patch-notes-header__meta\s*\{[^}]*font-size:\s*12px;[^}]*font-weight:\s*normal;[^}]*color:\s*#ccc;[^}]*margin-left:\s*10px;/s);
         expect(css).toMatch(/\.patch-notes-header__link\s*\{[^}]*color:\s*#ffd700;[^}]*text-decoration:\s*underline;[^}]*cursor:\s*pointer;/s);
+    });
+
+    test('start screen version row uses shared label and patch notes link classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(startScreenCssPath, 'utf8');
+
+        expect(html).toContain('<div class="start-version-row">');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.12</span>');
+        expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
+        expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
+        expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
+        expect(html).not.toContain('id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;"');
+
+        expect(css).toMatch(/\.start-version-row\s*\{[^}]*text-align:\s*center;[^}]*margin-top:\s*-20px;[^}]*margin-bottom:\s*20px;/s);
+        expect(css).toMatch(/\.start-version-row__label\s*\{[^}]*color:\s*white;[^}]*font-size:\s*18px;[^}]*font-weight:\s*bold;/s);
+        expect(css).toMatch(/\.start-version-row__link\s*\{[^}]*color:\s*#ffd700;[^}]*cursor:\s*pointer;[^}]*text-decoration:\s*underline;[^}]*font-size:\s*14px;[^}]*margin-left:\s*5px;/s);
     });
 
     test('support menus reuse footer and action row classes', () => {

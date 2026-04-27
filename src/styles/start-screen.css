@@ -29,6 +29,26 @@
     text-shadow: 0 0 20px var(--color-gold-dim);
 }
 
+.start-version-row {
+    text-align: center;
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+
+.start-version-row__label {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.start-version-row__link {
+    color: #ffd700;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
 .subtitle {
     font-size: 1.5rem;
     margin-bottom: 3rem;
