@@ -37,6 +37,7 @@ export class UIManager {
         this.lastDungeonEntranceHintSignature = '';
         this.lastPlayerStatsSignature = '';
         this.lastXpSignature = '';
+        this.lastHotbarCooldownSignature = '';
         this.serverEpochSeconds = 0;
 
         // New UI Elements
@@ -1765,6 +1766,12 @@ export class UIManager {
     updateHotbarCooldowns(player) {
         if (!player || !player.hotbar) return;
 
+        const signature = this.serializeHotbarCooldowns(player);
+        if (signature === this.lastHotbarCooldownSignature) {
+            return;
+        }
+        this.lastHotbarCooldownSignature = signature;
+
         this.hotbarSlots.forEach((slot, index) => {
             const skillName = player.hotbar[index];
             const overlay = slot.querySelector('.cooldown-overlay');
@@ -1789,6 +1796,24 @@ export class UIManager {
                 overlay.style.display = 'none';
             }
         });
+    }
+
+    serializeHotbarCooldowns(player) {
+        return this.hotbarSlots.map((_, index) => {
+            const skillName = player?.hotbar?.[index] || '';
+            if (!skillName) {
+                return `${index}:empty`;
+            }
+
+            let cooldown = 0;
+            if (player.cooldowns && player.cooldowns[skillName] > 0) {
+                cooldown = player.cooldowns[skillName];
+            } else if (skillName === player.abilityName && player.abilityCooldown > 0) {
+                cooldown = player.abilityCooldown;
+            }
+
+            return `${index}:${skillName}:${cooldown > 0 ? Math.ceil(cooldown) : 0}`;
+        }).join('|');
     }
 
     toggleEscMenu() {

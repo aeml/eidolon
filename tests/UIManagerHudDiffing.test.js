@@ -204,4 +204,29 @@ describe('UIManager HUD diffing', () => {
         ui.updateXP(player);
         expect(xpBar.style.width).toBe('50%');
     });
+
+    test('updateHotbarCooldowns skips identical displayed cooldowns and refreshes when they change', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const slot = document.querySelector('.hotbar-slot');
+        const overlay = document.createElement('div');
+        overlay.className = 'cooldown-overlay';
+        slot.appendChild(overlay);
+        const player = createPlayer({
+            hotbar: ['Slash'],
+            cooldowns: { Slash: 3.2 }
+        });
+
+        ui.updateHotbarCooldowns(player);
+        expect(overlay.style.display).toBe('flex');
+        expect(overlay.textContent).toBe('4');
+
+        overlay.textContent = 'stale';
+        ui.updateHotbarCooldowns(player);
+        expect(overlay.textContent).toBe('stale');
+
+        player.cooldowns.Slash = 2.1;
+        ui.updateHotbarCooldowns(player);
+        expect(overlay.textContent).toBe('3');
+    });
 });
