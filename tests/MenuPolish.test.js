@@ -1050,7 +1050,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.14</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.15</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1103,6 +1103,28 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.auth-status\s*\{[^}]*color:\s*#ffeb3b;[^}]*font-size:\s*14px;[^}]*text-align:\s*center;[^}]*min-height:\s*20px;/s);
         expect(css).toMatch(/\.play-container\s*\{[^}]*display:\s*none;[^}]*text-align:\s*center;[^}]*margin-top:\s*20px;/s);
         expect(css).toMatch(/\.play-container__button\s*\{[^}]*font-size:\s*24px;[^}]*padding:\s*15px 50px;[^}]*background:\s*#4CAF50;[^}]*border:\s*2px solid #45a049;[^}]*box-shadow:\s*0 0 20px rgba\(76, 175, 80, 0\.5\);/s);
+    });
+
+    test('class selection descriptions use shared title and class-color classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(startScreenCssPath, 'utf8');
+
+        expect(html).toContain('<div class="class-selection__title">Create New Character</div>');
+        expect(html).toContain('id="class-fighter-description" class="class-selection__description class-selection__description--fighter"');
+        expect(html).toContain('id="class-rogue-description" class="class-selection__description class-selection__description--rogue"');
+        expect(html).toContain('id="class-wizard-description" class="class-selection__description class-selection__description--wizard"');
+        expect(html).toContain('id="class-cleric-description" class="class-selection__description class-selection__description--cleric"');
+        expect(html).not.toContain('<div style="width: 100%; text-align: center; color: #aaa; margin-bottom: 10px;">Create New Character</div>');
+        expect(html).not.toContain('style="width: 100%; text-align: center; color: #8ec5ff; margin-bottom: 6px; font-size: 13px;"');
+        expect(html).not.toContain('style="width: 100%; text-align: center; color: #ffd27a; margin-bottom: 6px; font-size: 13px;"');
+
+        expect(css).toMatch(/\.class-selection__title,[\s\S]*\.class-selection__description\s*\{[^}]*width:\s*100%;[^}]*text-align:\s*center;/s);
+        expect(css).toMatch(/\.class-selection__title\s*\{[^}]*color:\s*#aaa;[^}]*margin-bottom:\s*10px;/s);
+        expect(css).toMatch(/\.class-selection__description\s*\{[^}]*margin-bottom:\s*6px;[^}]*font-size:\s*13px;/s);
+        expect(css).toMatch(/\.class-selection__description--fighter\s*\{[^}]*color:\s*#8ec5ff;/s);
+        expect(css).toMatch(/\.class-selection__description--rogue\s*\{[^}]*color:\s*#9ee6a0;/s);
+        expect(css).toMatch(/\.class-selection__description--wizard\s*\{[^}]*color:\s*#caa8ff;/s);
+        expect(css).toMatch(/\.class-selection__description--cleric\s*\{[^}]*color:\s*#ffd27a;/s);
     });
 
     test('support menus reuse footer and action row classes', () => {

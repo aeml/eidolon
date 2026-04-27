@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.14 for the auth entry controls consistency slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.14');
+    test('advances the login screen to alpha 0.31.15 for the class selection description consistency slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.15');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.14', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.15', () => {
+        expect(indexHtml).toContain('Patch 0.31.15');
+        expect(indexHtml).toContain('The create-character title and each class fantasy description now share class-selection title, description, and class-color modifier classes');
+        expect(indexHtml).toContain('Shared width, alignment, spacing, font sizing, and class-specific description colors now live in start-screen CSS');
+        expect(indexHtml).toContain('Version, first steps, auth, enter-world, and class-pick guidance all use class-based styling');
+        expect(indexHtml).toContain('Added coverage for class-selection title/description/modifier classes and removed inline class-pick guidance chrome');
+    });
+
+    test('keeps the prior 0.31.14 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.14');
         expect(indexHtml).toContain('Auth title, auth action row, fill-width auth buttons, auth status text, and the play container button now share named start-screen classes');
         expect(indexHtml).toContain('Login title typography, auth button flex, status color and sizing, play container layout, and enter-world button emphasis now live in start-screen CSS');
@@ -788,6 +796,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.15');
         expect(indexHtml).toContain('Patch 0.31.14');
         expect(indexHtml).toContain('Patch 0.31.13');
         expect(indexHtml).toContain('Patch 0.31.12');
@@ -893,6 +902,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.15"');
         expect(indexHtml).toContain('data-version="0.31.14"');
         expect(indexHtml).toContain('data-version="0.31.13"');
         expect(indexHtml).toContain('data-version="0.31.12"');

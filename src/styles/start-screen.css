@@ -197,6 +197,38 @@
     margin-top: var(--spacing-xl);
 }
 
+.class-selection__title,
+.class-selection__description {
+    width: 100%;
+    text-align: center;
+}
+
+.class-selection__title {
+    color: #aaa;
+    margin-bottom: 10px;
+}
+
+.class-selection__description {
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.class-selection__description--fighter {
+    color: #8ec5ff;
+}
+
+.class-selection__description--rogue {
+    color: #9ee6a0;
+}
+
+.class-selection__description--wizard {
+    color: #caa8ff;
+}
+
+.class-selection__description--cleric {
+    color: #ffd27a;
+}
+
 /* Duplicate .menu-btn definition from start-screen context
    (more specific than the generic .menu-btn in hud.css) */
 .class-selection ~ .menu-btn,

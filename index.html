@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.14</span>
+                <span class="start-version-row__label">Alpha 0.31.15</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -308,14 +308,14 @@
             </div>
 
             <div id="class-selection-container" class="class-selection">
-                <div style="width: 100%; text-align: center; color: #aaa; margin-bottom: 10px;">Create New Character</div>
-                <div id="class-fighter-description" style="width: 100%; text-align: center; color: #8ec5ff; margin-bottom: 6px; font-size: 13px;">Fighter — durable melee bruiser with the safest first-hour path.</div>
+                <div class="class-selection__title">Create New Character</div>
+                <div id="class-fighter-description" class="class-selection__description class-selection__description--fighter">Fighter — durable melee bruiser with the safest first-hour path.</div>
                 <button class="class-btn" data-type="Fighter">Fighter</button>
-                <div id="class-rogue-description" style="width: 100%; text-align: center; color: #9ee6a0; margin-bottom: 6px; font-size: 13px;">Rogue — mobile skirmisher that rewards timing and repositioning.</div>
+                <div id="class-rogue-description" class="class-selection__description class-selection__description--rogue">Rogue — mobile skirmisher that rewards timing and repositioning.</div>
                 <button class="class-btn" data-type="Rogue">Rogue</button>
-                <div id="class-wizard-description" style="width: 100%; text-align: center; color: #caa8ff; margin-bottom: 6px; font-size: 13px;">Wizard — ranged caster with strong burst and more mana management.</div>
+                <div id="class-wizard-description" class="class-selection__description class-selection__description--wizard">Wizard — ranged caster with strong burst and more mana management.</div>
                 <button class="class-btn" data-type="Wizard">Wizard</button>
-                <div id="class-cleric-description" style="width: 100%; text-align: center; color: #ffd27a; margin-bottom: 6px; font-size: 13px;">Cleric — sustain-focused hybrid with forgiving recovery tools.</div>
+                <div id="class-cleric-description" class="class-selection__description class-selection__description--cleric">Cleric — sustain-focused hybrid with forgiving recovery tools.</div>
                 <button class="class-btn" data-type="Cleric">Cleric</button>
             </div>
         </div>
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.15">
+                    <h3 class="patch-note-entry__title">Patch 0.31.15 (Class selection descriptions use shared classes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Class-selection copy now uses reusable classes:</strong> The create-character title and each class fantasy description now share class-selection title, description, and class-color modifier classes.</li>
+                        <li><strong>Inline class-selection chrome has been reduced:</strong> Shared width, alignment, spacing, font sizing, and class-specific description colors now live in start-screen CSS.</li>
+                        <li><strong>The 0.31 entry-surface cleanup now covers the whole start flow:</strong> Version, first steps, auth, enter-world, and class-pick guidance all use class-based styling.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for class-selection title/description/modifier classes and removed inline class-pick guidance chrome.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.14">
                     <h3 class="patch-note-entry__title">Patch 0.31.14 (Auth entry controls use shared classes)</h3>
                     <ul class="patch-note-entry__list">
