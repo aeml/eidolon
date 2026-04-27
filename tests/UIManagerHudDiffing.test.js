@@ -181,4 +181,27 @@ describe('UIManager HUD diffing', () => {
         expect(updateAbilityIcon).toHaveBeenCalledTimes(2);
         expect(document.getElementById('player-hp-text').textContent).toBe('80 / 100');
     });
+
+    test('updateXP skips identical XP payloads and refreshes when displayed XP changes', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const player = createPlayer({
+            level: 4,
+            xp: 25,
+            xpToNextLevel: 100
+        });
+        const xpBar = document.getElementById('xp-bar-fill');
+
+        ui.updateXP(player);
+        expect(xpBar.style.width).toBe('25%');
+        expect(document.getElementById('xp-text').textContent).toBe('LVL 4');
+
+        xpBar.style.width = '77%';
+        ui.updateXP(player);
+        expect(xpBar.style.width).toBe('77%');
+
+        player.xp = 50;
+        ui.updateXP(player);
+        expect(xpBar.style.width).toBe('50%');
+    });
 });

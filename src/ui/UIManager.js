@@ -36,6 +36,7 @@ export class UIManager {
         this.lastCombatIntentSignature = '';
         this.lastDungeonEntranceHintSignature = '';
         this.lastPlayerStatsSignature = '';
+        this.lastXpSignature = '';
         this.serverEpochSeconds = 0;
 
         // New UI Elements
@@ -2313,6 +2314,15 @@ export class UIManager {
 
     updateXP(player) {
         if (!player) return;
+        const signature = [
+            player.level ?? 0,
+            player.xp ?? 0,
+            player.xpToNextLevel ?? 0
+        ].join('|');
+        if (signature === this.lastXpSignature) {
+            return;
+        }
+        this.lastXpSignature = signature;
         const pct = (player.xp / player.xpToNextLevel) * 100;
         this.xpBar.style.width = `${Math.max(0, pct)}%`;
         this.xpText.textContent = `LVL ${player.level}`;

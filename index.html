@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.29</span>
+                <span class="start-version-row__label">Alpha 0.31.30</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.30">
+                    <h3 class="patch-note-entry__title">Patch 0.31.30 (XP bar DOM diffing)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>XP bar updates now diff inside UIManager:</strong> Repeated identical level, XP, and next-level XP payloads skip redundant progress-bar and level-label DOM writes.</li>
+                        <li><strong>HUD diffing now covers both survival and progression readouts:</strong> The stat HUD guardrail added in 0.31.29 now extends to the always-visible XP bar.</li>
+                        <li><strong>The 0.31 performance cleanup keeps reducing high-frequency DOM churn:</strong> Progress updates stay responsive while stable state stays quiet.</li>
+                        <li><strong>Regression coverage:</strong> Added UIManager XP diffing coverage for identical XP payloads and changed displayed XP values.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.29">
                     <h3 class="patch-note-entry__title">Patch 0.31.29 (HUD stat DOM diffing)</h3>
                     <ul class="patch-note-entry__list">
