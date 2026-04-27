@@ -1062,7 +1062,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.21</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.22</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1274,10 +1274,9 @@ describe('menu polish regressions', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(windowsCssPath, 'utf8');
 
-        expect(html).toMatch(/id="shop-screen"[^>]*width: min\(500px, calc\(100vw - 24px\)\);/);
-        expect(html).toMatch(/id="shop-screen"[^>]*max-height: calc\(100vh - 24px\);/);
-        expect(html).toMatch(/id="shop-content-main"[^>]*min-height: 0; overflow-y: auto;/);
-        expect(html).toMatch(/id="shop-content-buyback"[^>]*min-height: 0; overflow-y: auto;/);
+        expect(html).toMatch(/id="shop-screen"[^>]*class="window shop-window"[^>]*style="display: none;"/);
+        expect(html).toMatch(/id="shop-content-main"[^>]*class="shop-content shop-content--main"/);
+        expect(html).toMatch(/id="shop-content-buyback"[^>]*class="shop-content shop-content--buyback"[^>]*style="display: none;"/);
 
         expect(html).toMatch(/id="stash-screen"[^>]*width: min\(500px, calc\(100vw - 24px\)\);/);
         expect(html).toMatch(/id="stash-screen"[^>]*max-height: calc\(100vh - 24px\);/);
@@ -1292,7 +1291,37 @@ describe('menu polish regressions', () => {
         expect(html).toMatch(/id="quest-journal"[^>]*height: min\(500px, calc\(100vh - 24px\)\);/);
 
         expect(css).toMatch(/#shop-screen,[\s\S]*#quest-journal\s*\{[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);/);
+        expect(css).toMatch(/\.shop-window\s*\{[^}]*width:\s*min\(500px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow:\s*hidden;/s);
+        expect(css).toMatch(/\.shop-content\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/s);
         expect(css).toMatch(/#trading-house-screen\s+\.window-body,[\s\S]*#quest-journal\s+\.window-list\s*\{[^}]*min-height:\s*0;/);
+    });
+
+    test('merchant shop shell content and grids use shared classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toContain('<div id="shop-screen" class="window shop-window" style="display: none;">');
+        expect(html).toContain('<div id="shop-content-main" class="shop-content shop-content--main">');
+        expect(html).toContain('<p id="shop-service-guidance" class="shop-guidance">');
+        expect(html).toContain('<p class="shop-guidance shop-guidance--tip">');
+        expect(html).toContain('<h3 id="shop-gamble-title" class="shop-gamble-title">MYSTERY BOXES (500g)</h3>');
+        expect(html).toContain('<div id="shop-grid" class="shop-grid">');
+        expect(html).toContain('<div id="shop-content-buyback" class="shop-content shop-content--buyback" style="display: none;">');
+        expect(html).toContain('<p id="shop-buyback-guidance" class="shop-guidance shop-guidance--buyback">');
+        expect(html).toContain('<div id="buyback-grid" class="inventory-grid shop-buyback-grid">');
+        expect(html).not.toContain('<div id="shop-screen" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(500px, calc(100vw - 24px)); max-height: calc(100vh - 24px); z-index: 101; flex-direction: column; overflow: hidden;">');
+        expect(html).not.toContain('id="shop-content-main" style="padding: 10px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; min-height: 0; overflow-y: auto;"');
+        expect(html).not.toContain('id="shop-service-guidance" style="color: #aaa; font-size: 14px; margin-bottom: 10px;"');
+        expect(html).not.toContain('id="shop-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px;"');
+        expect(html).not.toContain('id="buyback-grid" class="inventory-grid" style="grid-template-columns: repeat(5, 1fr); padding: 10px; max-height: 300px; overflow-y: auto;"');
+
+        expect(css).toMatch(/\.shop-window\s*\{[^}]*top:\s*50%;[^}]*left:\s*50%;[^}]*transform:\s*translate\(-50%, -50%\);[^}]*z-index:\s*101;[^}]*flex-direction:\s*column;[^}]*overflow:\s*hidden;/s);
+        expect(css).toMatch(/\.shop-content\s*\{[^}]*padding:\s*var\(--spacing-md\);[^}]*text-align:\s*center;[^}]*flex-grow:\s*1;[^}]*flex-direction:\s*column;/s);
+        expect(css).toMatch(/\.shop-guidance\s*\{[^}]*color:\s*var\(--color-text-muted\);[^}]*font-size:\s*14px;[^}]*margin-bottom:\s*var\(--spacing-md\);/s);
+        expect(css).toMatch(/\.shop-guidance--tip\s*\{[^}]*color:\s*#8fb7d9;[^}]*font-size:\s*12px;[^}]*margin:\s*0 0 var\(--spacing-lg\) 0;/s);
+        expect(css).toMatch(/\.shop-gamble-title\s*\{[^}]*color:\s*var\(--color-gold\);[^}]*border-bottom:\s*1px solid var\(--border-default\);/s);
+        expect(css).toMatch(/\.shop-grid\s*\{[^}]*display:\s*grid;[^}]*grid-template-columns:\s*repeat\(3, 1fr\);[^}]*gap:\s*var\(--spacing-md\);/s);
+        expect(css).toMatch(/\.shop-buyback-grid\s*\{[^}]*grid-template-columns:\s*repeat\(5, 1fr\);[^}]*max-height:\s*300px;[^}]*overflow-y:\s*auto;/s);
     });
 
     test('hud utility windows stay within the viewport and scroll growing content internally', () => {

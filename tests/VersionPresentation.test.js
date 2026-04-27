@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.21 for the split stack consistency slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.21');
+    test('advances the login screen to alpha 0.31.22 for the merchant shop consistency slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.22');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.21', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.22', () => {
+        expect(indexHtml).toContain('Patch 0.31.22');
+        expect(indexHtml).toContain('Window sizing, centering, z-index, flex layout, and overflow rules now live in shared window CSS');
+        expect(indexHtml).toContain('Main shop and buyback panes now share scrollable content styling, guidance copy styling, mystery-box grid layout, and buyback grid sizing');
+        expect(indexHtml).toContain('Split Stack cleanup now extends into the Merchant shop flow');
+        expect(indexHtml).toContain('Added coverage for Merchant shop shell/content classes and removed the old inline shop layout styling');
+    });
+
+    test('keeps the prior 0.31.21 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.21');
         expect(indexHtml).toContain('The modal shell, scrollable content, item label, controls, and action row now share window CSS instead of inline HTML chrome');
         expect(indexHtml).toContain('Range width, number input sizing, field colors, borders, padding, and row spacing now live with the rest of the window styles');
@@ -844,6 +852,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.22');
         expect(indexHtml).toContain('Patch 0.31.21');
         expect(indexHtml).toContain('Patch 0.31.20');
         expect(indexHtml).toContain('Patch 0.31.19');
@@ -956,6 +965,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.22"');
         expect(indexHtml).toContain('data-version="0.31.21"');
         expect(indexHtml).toContain('data-version="0.31.20"');
         expect(indexHtml).toContain('data-version="0.31.19"');
