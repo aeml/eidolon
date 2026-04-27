@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.22</span>
+                <span class="start-version-row__label">Alpha 0.31.23</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.23">
+                    <h3 class="patch-note-entry__title">Patch 0.31.23 (Merchant sell buttons use shared classes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Merchant sell-all buttons now use reusable classes:</strong> Common, Uncommon, and Rare sell actions now share a base sell-button class plus rarity modifiers.</li>
+                        <li><strong>Rarity button chrome has been centralized:</strong> Button sizing, padding, font sizing, backgrounds, text colors, and border colors now live in window CSS.</li>
+                        <li><strong>The 0.31 consistency pass continues through service actions:</strong> Merchant shop layout cleanup now extends into its low-rarity cleanup controls.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for Merchant sell-button classes and removed the old inline rarity button styling.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.22">
                     <h3 class="patch-note-entry__title">Patch 0.31.22 (Merchant shop uses shared layout classes)</h3>
                     <ul class="patch-note-entry__list">
@@ -2166,9 +2175,9 @@
                 <p class="shop-guidance shop-guidance--tip">Sell All buttons are fastest for low-rarity cleanup. Buyback is for "shit, I sold the wrong thing." Common gear is usually safe to clear first once you have upgrades equipped.</p>
                 
                 <div class="window-action-row">
-                    <button id="btn-sell-common" class="menu-btn" style="background: #333; color: #fff; border-color: #fff; font-size: 12px; padding: 5px 10px;">Sell All Common</button>
-                    <button id="btn-sell-uncommon" class="menu-btn" style="background: #1a331a; color: #1eff00; border-color: #1eff00; font-size: 12px; padding: 5px 10px;">Sell All Uncommon</button>
-                    <button id="btn-sell-rare" class="menu-btn" style="background: #1a1a33; color: #0070dd; border-color: #0070dd; font-size: 12px; padding: 5px 10px;">Sell All Rare</button>
+                    <button id="btn-sell-common" class="menu-btn shop-sell-button shop-sell-button--common">Sell All Common</button>
+                    <button id="btn-sell-uncommon" class="menu-btn shop-sell-button shop-sell-button--uncommon">Sell All Uncommon</button>
+                    <button id="btn-sell-rare" class="menu-btn shop-sell-button shop-sell-button--rare">Sell All Rare</button>
                 </div>
 
                 <h3 id="shop-gamble-title" class="shop-gamble-title">MYSTERY BOXES (500g)</h3>

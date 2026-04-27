@@ -804,6 +804,29 @@
     overflow-y: auto;
 }
 
+.shop-sell-button {
+    font-size: 12px;
+    padding: 5px 10px;
+}
+
+.shop-sell-button--common {
+    background: #333;
+    color: #fff;
+    border-color: #fff;
+}
+
+.shop-sell-button--uncommon {
+    background: #1a331a;
+    color: #1eff00;
+    border-color: #1eff00;
+}
+
+.shop-sell-button--rare {
+    background: #1a1a33;
+    color: #0070dd;
+    border-color: #0070dd;
+}
+
 /* ---- HUD Utility Windows ---- */
 #abilities-menu,
 #character-sheet,

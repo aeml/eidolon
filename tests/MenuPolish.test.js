@@ -1062,7 +1062,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.22</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.23</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1322,6 +1322,23 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.shop-gamble-title\s*\{[^}]*color:\s*var\(--color-gold\);[^}]*border-bottom:\s*1px solid var\(--border-default\);/s);
         expect(css).toMatch(/\.shop-grid\s*\{[^}]*display:\s*grid;[^}]*grid-template-columns:\s*repeat\(3, 1fr\);[^}]*gap:\s*var\(--spacing-md\);/s);
         expect(css).toMatch(/\.shop-buyback-grid\s*\{[^}]*grid-template-columns:\s*repeat\(5, 1fr\);[^}]*max-height:\s*300px;[^}]*overflow-y:\s*auto;/s);
+    });
+
+    test('merchant sell all rarity buttons use shared modifier classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toContain('id="btn-sell-common" class="menu-btn shop-sell-button shop-sell-button--common"');
+        expect(html).toContain('id="btn-sell-uncommon" class="menu-btn shop-sell-button shop-sell-button--uncommon"');
+        expect(html).toContain('id="btn-sell-rare" class="menu-btn shop-sell-button shop-sell-button--rare"');
+        expect(html).not.toContain('id="btn-sell-common" class="menu-btn" style="background: #333; color: #fff; border-color: #fff; font-size: 12px; padding: 5px 10px;"');
+        expect(html).not.toContain('id="btn-sell-uncommon" class="menu-btn" style="background: #1a331a; color: #1eff00; border-color: #1eff00; font-size: 12px; padding: 5px 10px;"');
+        expect(html).not.toContain('id="btn-sell-rare" class="menu-btn" style="background: #1a1a33; color: #0070dd; border-color: #0070dd; font-size: 12px; padding: 5px 10px;"');
+
+        expect(css).toMatch(/\.shop-sell-button\s*\{[^}]*font-size:\s*12px;[^}]*padding:\s*5px 10px;/s);
+        expect(css).toMatch(/\.shop-sell-button--common\s*\{[^}]*background:\s*#333;[^}]*color:\s*#fff;[^}]*border-color:\s*#fff;/s);
+        expect(css).toMatch(/\.shop-sell-button--uncommon\s*\{[^}]*background:\s*#1a331a;[^}]*color:\s*#1eff00;[^}]*border-color:\s*#1eff00;/s);
+        expect(css).toMatch(/\.shop-sell-button--rare\s*\{[^}]*background:\s*#1a1a33;[^}]*color:\s*#0070dd;[^}]*border-color:\s*#0070dd;/s);
     });
 
     test('hud utility windows stay within the viewport and scroll growing content internally', () => {
