@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.26</span>
+                <span class="start-version-row__label">Alpha 0.31.27</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.27">
+                    <h3 class="patch-note-entry__title">Patch 0.31.27 (Instance environment disposal)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Instance environment cleanup now releases generated mesh resources:</strong> Clearing a dungeon or town layout disposes geometry and material resources before removing stale instance environment meshes.</li>
+                        <li><strong>Persistent world surfaces remain protected:</strong> Static water, ground, and realm particles stay mounted and are not disposed during instance transitions.</li>
+                        <li><strong>The scene-group transition work gets safer under repeated runs:</strong> Returning between dungeons and town now avoids leaving old generated environment resources behind.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage that instance environment meshes are disposed while static environment meshes are preserved.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.26">
                     <h3 class="patch-note-entry__title">Patch 0.31.26 (Instance environment cleanup)</h3>
                     <ul class="patch-note-entry__list">

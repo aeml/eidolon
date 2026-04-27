@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.26 for the instance environment cleanup slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.26');
+    test('advances the login screen to alpha 0.31.27 for the instance environment disposal slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.27');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.26', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.27', () => {
+        expect(indexHtml).toContain('Patch 0.31.27');
+        expect(indexHtml).toContain('Clearing a dungeon or town layout disposes geometry and material resources');
+        expect(indexHtml).toContain('Static water, ground, and realm particles stay mounted and are not disposed during instance transitions');
+        expect(indexHtml).toContain('Returning between dungeons and town now avoids leaving old generated environment resources behind');
+        expect(indexHtml).toContain('Added coverage that instance environment meshes are disposed while static environment meshes are preserved');
+    });
+
+    test('keeps the prior 0.31.26 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.26');
         expect(indexHtml).toContain('Water, ground, and realm particles live in a static environment group');
         expect(indexHtml).toContain('Instance transitions now clear stale generated environment meshes alongside entities and effects');
@@ -884,6 +892,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.27');
         expect(indexHtml).toContain('Patch 0.31.26');
         expect(indexHtml).toContain('Patch 0.31.25');
         expect(indexHtml).toContain('Patch 0.31.24');
@@ -1001,6 +1010,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.27"');
         expect(indexHtml).toContain('data-version="0.31.26"');
         expect(indexHtml).toContain('data-version="0.31.25"');
         expect(indexHtml).toContain('data-version="0.31.24"');

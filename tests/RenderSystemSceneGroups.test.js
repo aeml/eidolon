@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { jest } from '@jest/globals';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
 describe('RenderSystem scene groups', () => {
@@ -28,6 +29,10 @@ describe('RenderSystem scene groups', () => {
         renderSystem.instanceEnvironmentGroup.add(instanceEnvironmentMesh);
         renderSystem.entityGroup.add(entityMesh);
         renderSystem.effectGroup.add(effectMesh);
+        const staticGeometryDispose = jest.spyOn(environmentMesh.geometry, 'dispose');
+        const staticMaterialDispose = jest.spyOn(environmentMesh.material, 'dispose');
+        const instanceGeometryDispose = jest.spyOn(instanceEnvironmentMesh.geometry, 'dispose');
+        const instanceMaterialDispose = jest.spyOn(instanceEnvironmentMesh.material, 'dispose');
 
         renderSystem.clearInstanceScene();
 
@@ -39,5 +44,9 @@ describe('RenderSystem scene groups', () => {
         expect(instanceEnvironmentMesh.parent).toBeNull();
         expect(entityMesh.parent).toBeNull();
         expect(effectMesh.parent).toBeNull();
+        expect(staticGeometryDispose).not.toHaveBeenCalled();
+        expect(staticMaterialDispose).not.toHaveBeenCalled();
+        expect(instanceGeometryDispose).toHaveBeenCalledTimes(1);
+        expect(instanceMaterialDispose).toHaveBeenCalledTimes(1);
     });
 });

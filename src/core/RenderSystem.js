@@ -1093,16 +1093,34 @@ export class RenderSystem {
     }
 
     clearInstanceScene() {
-        this.clearGroupChildren(this.instanceEnvironmentGroup);
+        this.clearGroupChildren(this.instanceEnvironmentGroup, { dispose: true });
         this.clearGroupChildren(this.entityGroup);
         this.clearGroupChildren(this.effectGroup);
     }
 
-    clearGroupChildren(group) {
+    clearGroupChildren(group, options = {}) {
         if (!group) return;
         while (group.children.length > 0) {
-            group.remove(group.children[0]);
+            const child = group.children[0];
+            if (options.dispose) {
+                this.disposeObjectResources(child);
+            }
+            group.remove(child);
         }
+    }
+
+    disposeObjectResources(object) {
+        if (!object) return;
+        object.traverse?.((child) => {
+            if (child.geometry?.dispose) {
+                child.geometry.dispose();
+            }
+            if (Array.isArray(child.material)) {
+                child.material.forEach(material => material?.dispose?.());
+            } else if (child.material?.dispose) {
+                child.material.dispose();
+            }
+        });
     }
 
     render() {
