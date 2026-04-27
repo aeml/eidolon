@@ -880,6 +880,56 @@
     border-top: 1px solid #2a3340;
 }
 
+/* ---- Split Stack ---- */
+.split-stack-window {
+    width: min(250px, calc(100vw - 24px));
+    max-height: calc(100vh - 24px);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000;
+    overflow: hidden;
+}
+
+.split-stack-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    align-items: center;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+}
+
+.split-stack-item-name {
+    color: var(--color-gold);
+    font-weight: bold;
+}
+
+.split-stack-control-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.split-stack-range {
+    width: 100px;
+}
+
+.split-stack-amount-input {
+    width: 50px;
+    background: var(--bg-input);
+    color: var(--color-white);
+    border: 1px solid var(--border-default);
+    padding: var(--spacing-sm);
+}
+
+.split-stack-action-row {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
 .inv-slot {
     background: var(--bg-input);
     border: 1px solid var(--border-default);

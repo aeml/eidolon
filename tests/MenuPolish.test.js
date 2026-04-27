@@ -1062,7 +1062,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.20</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.21</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1302,13 +1302,13 @@ describe('menu polish regressions', () => {
         expect(html).toMatch(/id="abilities-menu"[^>]*class="window abilities-menu"[^>]*style="display: none;"/);
         expect(html).toMatch(/id="abilities-content"[^>]*class="abilities-content"/);
 
-        expect(html).toMatch(/id="split-stack-window"[^>]*width: min\(250px, calc\(100vw - 24px\)\);/);
-        expect(html).toMatch(/id="split-stack-window"[^>]*max-height: calc\(100vh - 24px\);/);
-        expect(html).toMatch(/id="split-stack-window"[^>]*overflow: hidden;/);
-        expect(html).toMatch(/class="window-content"[^>]*max-height: calc\(100vh - 110px\); overflow-y: auto;/);
+        expect(html).toMatch(/id="split-stack-window"[^>]*class="window split-stack-window"[^>]*style="display: none;"/);
+        expect(html).toMatch(/class="window-content split-stack-content"/);
 
         expect(css).toMatch(/#abilities-menu,[\s\S]*#split-stack-window\s*\{[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);/);
         expect(css).toMatch(/\.abilities-menu\s*\{[^}]*width:\s*min\(350px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(400px, calc\(100vh - 24px\)\);/s);
+        expect(css).toMatch(/\.split-stack-window\s*\{[^}]*width:\s*min\(250px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow:\s*hidden;/s);
+        expect(css).toMatch(/\.split-stack-content\s*\{[^}]*max-height:\s*calc\(100vh - 110px\);[^}]*overflow-y:\s*auto;/s);
         expect(css).toMatch(/#character-sheet\s*\{[^}]*width:\s*min\(380px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(560px, calc\(100vh - 24px\)\);/s);
         expect(css).toMatch(/#inventory-screen\s*\{[^}]*width:\s*min\(300px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(400px, calc\(100vh - 24px\)\);/s);
         expect(css).toMatch(/#abilities-content,[\s\S]*#inventory-grid\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/);
@@ -1332,6 +1332,29 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.inventory-sort-button\s*\{[^}]*padding:\s*6px 12px;[^}]*background:\s*linear-gradient\(180deg, #2b3442 0%, #18212c 100%\);[^}]*letter-spacing:\s*0\.05em;/s);
         expect(css).toMatch(/\.inventory-gold-display\s*\{[^}]*color:\s*var\(--color-gold\);[^}]*font-weight:\s*bold;[^}]*text-align:\s*right;/s);
         expect(css).toMatch(/\.inventory-guidance\s*\{[^}]*color:\s*#8fb7d9;[^}]*line-height:\s*1\.5;[^}]*border-top:\s*1px solid #2a3340;/s);
+    });
+
+    test('split stack dialog chrome uses shared classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toContain('<div id="split-stack-window" class="window split-stack-window" style="display: none;">');
+        expect(html).toContain('<div class="window-content split-stack-content">');
+        expect(html).toContain('<div id="split-item-name" class="split-stack-item-name">Item Name</div>');
+        expect(html).toContain('<div class="split-stack-control-row">');
+        expect(html).toContain('id="split-amount-range" class="split-stack-range"');
+        expect(html).toContain('id="split-amount-input" class="split-stack-amount-input"');
+        expect(html).toContain('<div class="split-stack-action-row">');
+        expect(html).not.toContain('<div id="split-stack-window" class="window" style="display: none; width: min(250px, calc(100vw - 24px)); max-height: calc(100vh - 24px); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; overflow: hidden;">');
+        expect(html).not.toContain('<div class="window-content" style="display: flex; flex-direction: column; gap: 10px; padding: 15px; align-items: center; max-height: calc(100vh - 110px); overflow-y: auto;">');
+        expect(html).not.toContain('<div id="split-item-name" style="color: #ffd700; font-weight: bold;">Item Name</div>');
+        expect(html).not.toContain('id="split-amount-input" min="1" max="1" value="1" style="width: 50px; background: #222; color: white; border: 1px solid #444; padding: 5px;"');
+
+        expect(css).toMatch(/\.split-stack-item-name\s*\{[^}]*color:\s*var\(--color-gold\);[^}]*font-weight:\s*bold;/s);
+        expect(css).toMatch(/\.split-stack-control-row\s*\{[^}]*display:\s*flex;[^}]*align-items:\s*center;[^}]*gap:\s*var\(--spacing-md\);/s);
+        expect(css).toMatch(/\.split-stack-range\s*\{[^}]*width:\s*100px;/s);
+        expect(css).toMatch(/\.split-stack-amount-input\s*\{[^}]*width:\s*50px;[^}]*background:\s*var\(--bg-input\);[^}]*border:\s*1px solid var\(--border-default\);/s);
+        expect(css).toMatch(/\.split-stack-action-row\s*\{[^}]*display:\s*flex;[^}]*gap:\s*var\(--spacing-md\);[^}]*margin-top:\s*var\(--spacing-md\);/s);
     });
 
     test('window chrome disables accidental selection while preserving text selection inside form fields', () => {

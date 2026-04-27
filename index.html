@@ -190,18 +190,18 @@
         </div>
 
         <!-- Split Stack Window -->
-        <div id="split-stack-window" class="window" style="display: none; width: min(250px, calc(100vw - 24px)); max-height: calc(100vh - 24px); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; overflow: hidden;">
+        <div id="split-stack-window" class="window split-stack-window" style="display: none;">
             <div class="window-header">
                 <span>Split Stack</span>
                 <button id="btn-close-split" class="close-btn" type="button" aria-label="Close split stack window">×</button>
             </div>
-            <div class="window-content" style="display: flex; flex-direction: column; gap: 10px; padding: 15px; align-items: center; max-height: calc(100vh - 110px); overflow-y: auto;">
-                <div id="split-item-name" style="color: #ffd700; font-weight: bold;">Item Name</div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <input type="range" id="split-amount-range" min="1" max="1" value="1" style="width: 100px;">
-                    <input type="number" id="split-amount-input" min="1" max="1" value="1" style="width: 50px; background: #222; color: white; border: 1px solid #444; padding: 5px;">
+            <div class="window-content split-stack-content">
+                <div id="split-item-name" class="split-stack-item-name">Item Name</div>
+                <div class="split-stack-control-row">
+                    <input type="range" id="split-amount-range" class="split-stack-range" min="1" max="1" value="1">
+                    <input type="number" id="split-amount-input" class="split-stack-amount-input" min="1" max="1" value="1">
                 </div>
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <div class="split-stack-action-row">
                     <button id="btn-confirm-split" class="btn-action">Split</button>
                     <button id="btn-cancel-split" class="btn-secondary">Cancel</button>
                 </div>
@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.20</span>
+                <span class="start-version-row__label">Alpha 0.31.21</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.21">
+                    <h3 class="patch-note-entry__title">Patch 0.31.21 (Split Stack dialog uses shared classes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The Split Stack dialog now uses reusable classes:</strong> The modal shell, scrollable content, item label, controls, and action row now share window CSS instead of inline HTML chrome.</li>
+                        <li><strong>Split controls have centralized sizing:</strong> Range width, number input sizing, field colors, borders, padding, and row spacing now live with the rest of the window styles.</li>
+                        <li><strong>The 0.31 consistency pass continues through inventory workflows:</strong> Inventory footer cleanup now extends into stack management.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for Split Stack classes and removed the old inline dialog styling.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.20">
                     <h3 class="patch-note-entry__title">Patch 0.31.20 (Inventory footer uses shared classes)</h3>
                     <ul class="patch-note-entry__list">
