@@ -1052,7 +1052,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.17</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.18</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1163,6 +1163,19 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.ability-tooltip__name\s*\{[^}]*margin:\s*0 0 5px 0;[^}]*color:\s*#ffd700;/s);
         expect(css).toMatch(/\.ability-tooltip__desc\s*\{[^}]*font-size:\s*12px;[^}]*color:\s*#ccc;/s);
         expect(css).toMatch(/\.ability-tooltip__cost\s*\{[^}]*font-size:\s*12px;[^}]*color:\s*#aaf;[^}]*margin-top:\s*5px;/s);
+    });
+
+    test('abilities menu shell and content use shared layout classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toContain('<div id="abilities-menu" class="window abilities-menu" style="display: none;">');
+        expect(html).toContain('<div id="abilities-content" class="abilities-content">');
+        expect(html).not.toContain('<div id="abilities-menu" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(350px, calc(100vw - 24px)); height: min(400px, calc(100vh - 24px)); z-index: 101; flex-direction: column;">');
+        expect(html).not.toContain('<div id="abilities-content" style="padding: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; min-height: 0; overflow-y: auto;">');
+
+        expect(css).toMatch(/\.abilities-menu\s*\{[^}]*top:\s*50%;[^}]*left:\s*50%;[^}]*transform:\s*translate\(-50%, -50%\);[^}]*width:\s*min\(350px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(400px, calc\(100vh - 24px\)\);[^}]*z-index:\s*101;[^}]*flex-direction:\s*column;/s);
+        expect(css).toMatch(/\.abilities-content\s*\{[^}]*padding:\s*var\(--spacing-md\);[^}]*display:\s*grid;[^}]*grid-template-columns:\s*repeat\(4, 1fr\);[^}]*gap:\s*var\(--spacing-md\);/s);
     });
 
     test('support menus reuse footer and action row classes', () => {
@@ -1276,9 +1289,8 @@ describe('menu polish regressions', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(windowsCssPath, 'utf8');
 
-        expect(html).toMatch(/id="abilities-menu"[^>]*width: min\(350px, calc\(100vw - 24px\)\);/);
-        expect(html).toMatch(/id="abilities-menu"[^>]*height: min\(400px, calc\(100vh - 24px\)\);/);
-        expect(html).toMatch(/id="abilities-content"[^>]*min-height: 0; overflow-y: auto;/);
+        expect(html).toMatch(/id="abilities-menu"[^>]*class="window abilities-menu"[^>]*style="display: none;"/);
+        expect(html).toMatch(/id="abilities-content"[^>]*class="abilities-content"/);
 
         expect(html).toMatch(/id="split-stack-window"[^>]*width: min\(250px, calc\(100vw - 24px\)\);/);
         expect(html).toMatch(/id="split-stack-window"[^>]*max-height: calc\(100vh - 24px\);/);
@@ -1286,9 +1298,11 @@ describe('menu polish regressions', () => {
         expect(html).toMatch(/class="window-content"[^>]*max-height: calc\(100vh - 110px\); overflow-y: auto;/);
 
         expect(css).toMatch(/#abilities-menu,[\s\S]*#split-stack-window\s*\{[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);/);
+        expect(css).toMatch(/\.abilities-menu\s*\{[^}]*width:\s*min\(350px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(400px, calc\(100vh - 24px\)\);/s);
         expect(css).toMatch(/#character-sheet\s*\{[^}]*width:\s*min\(380px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(560px, calc\(100vh - 24px\)\);/s);
         expect(css).toMatch(/#inventory-screen\s*\{[^}]*width:\s*min\(300px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(400px, calc\(100vh - 24px\)\);/s);
         expect(css).toMatch(/#abilities-content,[\s\S]*#inventory-grid\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/);
+        expect(css).toMatch(/\.abilities-content\s*\{[^}]*display:\s*grid;[^}]*grid-template-columns:\s*repeat\(4, 1fr\);/s);
     });
 
     test('window chrome disables accidental selection while preserving text selection inside form fields', () => {

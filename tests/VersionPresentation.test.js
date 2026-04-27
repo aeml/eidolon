@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.17 for the ability tooltip consistency slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.17');
+    test('advances the login screen to alpha 0.31.18 for the abilities menu consistency slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.18');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.17', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.18', () => {
+        expect(indexHtml).toContain('Patch 0.31.18');
+        expect(indexHtml).toContain('The spellbook window keeps its centered, viewport-safe layout in shared CSS instead of inline HTML chrome');
+        expect(indexHtml).toContain('Padding, four-column layout, tile gaps, minimum height, and scroll behavior now live in window CSS');
+        expect(indexHtml).toContain('Active ability tooltip cleanup now extends into the Abilities spellbook menu');
+        expect(indexHtml).toContain('Added coverage for the Abilities menu shell/content classes and removed inline layout styling');
+    });
+
+    test('keeps the prior 0.31.17 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.17');
         expect(indexHtml).toContain('The compact ability name, description, and mana-cost rows now share ability-tooltip classes');
         expect(indexHtml).toContain('Tooltip title spacing, gold title color, description sizing, muted copy color, cost color, and cost spacing now live in abilities CSS');
@@ -812,6 +820,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.18');
         expect(indexHtml).toContain('Patch 0.31.17');
         expect(indexHtml).toContain('Patch 0.31.16');
         expect(indexHtml).toContain('Patch 0.31.15');
@@ -920,6 +929,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.18"');
         expect(indexHtml).toContain('data-version="0.31.17"');
         expect(indexHtml).toContain('data-version="0.31.16"');
         expect(indexHtml).toContain('data-version="0.31.15"');

@@ -106,9 +106,9 @@
         </div>
 
         <!-- Abilities Menu (Spellbook) -->
-        <div id="abilities-menu" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(350px, calc(100vw - 24px)); height: min(400px, calc(100vh - 24px)); z-index: 101; flex-direction: column;">
+        <div id="abilities-menu" class="window abilities-menu" style="display: none;">
             <div class="window-header"><span>ABILITIES (P)</span><button id="btn-close-abilities" class="close-btn" type="button" aria-label="Close abilities menu">×</button></div>
-            <div id="abilities-content" style="padding: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; min-height: 0; overflow-y: auto;">
+            <div id="abilities-content" class="abilities-content">
                 <!-- Populated by JS -->
             </div>
         </div>
@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.17</span>
+                <span class="start-version-row__label">Alpha 0.31.18</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.18">
+                    <h3 class="patch-note-entry__title">Patch 0.31.18 (Abilities menu shell uses shared classes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The Abilities menu shell now uses reusable classes:</strong> The spellbook window keeps its centered, viewport-safe layout in shared CSS instead of inline HTML chrome.</li>
+                        <li><strong>The spell grid now has a named content class:</strong> Padding, four-column layout, tile gaps, minimum height, and scroll behavior now live in window CSS.</li>
+                        <li><strong>The 0.31 consistency pass continues through HUD windows:</strong> Active ability tooltip cleanup now extends into the Abilities spellbook menu.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for the Abilities menu shell/content classes and removed inline layout styling.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.17">
                     <h3 class="patch-note-entry__title">Patch 0.31.17 (Ability tooltip text uses shared classes)</h3>
                     <ul class="patch-note-entry__list">

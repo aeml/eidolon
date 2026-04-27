@@ -755,11 +755,28 @@
     overflow: hidden;
 }
 
+.abilities-menu {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(350px, calc(100vw - 24px));
+    height: min(400px, calc(100vh - 24px));
+    z-index: 101;
+    flex-direction: column;
+}
+
 #abilities-content,
 .char-sheet-body,
 #inventory-grid {
     min-height: 0;
     overflow-y: auto;
+}
+
+.abilities-content {
+    padding: var(--spacing-md);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-md);
 }
 
 /* ---- Character Sheet ---- */
