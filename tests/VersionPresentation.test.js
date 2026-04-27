@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.9 for the pause action consistency slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.9');
+    test('advances the login screen to alpha 0.31.10 for the help guide consistency slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.10');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.9', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.10', () => {
+        expect(indexHtml).toContain('Patch 0.31.10');
+        expect(indexHtml).toContain('Core Controls, First Hour Milestones, and Daily Return Loop now share help-guide section, title, separator, and highlighted key styling');
+        expect(indexHtml).toContain('Shortcut labels, numbered guide markers, and section dividers now use class-based CSS');
+        expect(indexHtml).toContain('Help now shares support-window shell/body chrome plus reusable internal guide content classes');
+        expect(indexHtml).toContain('Added coverage for Help guide title/key/separator classes and removed repeated inline Help guide chrome');
+    });
+
+    test('keeps the prior 0.31.9 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.9');
         expect(indexHtml).toContain('Report Bug / Feature and Unstuck / Respawn now keep their warning and danger styling through named pause-menu button classes');
         expect(indexHtml).toContain('The remaining one-off border and color styles in the pause action stack now live in shared CSS');
@@ -748,6 +756,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.10');
         expect(indexHtml).toContain('Patch 0.31.9');
         expect(indexHtml).toContain('Patch 0.31.8');
         expect(indexHtml).toContain('Patch 0.31.7');
@@ -848,6 +857,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.10"');
         expect(indexHtml).toContain('data-version="0.31.9"');
         expect(indexHtml).toContain('data-version="0.31.8"');
         expect(indexHtml).toContain('data-version="0.31.7"');

@@ -411,6 +411,22 @@
     line-height: 1.6;
 }
 
+.help-guide--separated {
+    border-top: 1px solid #444;
+    padding-top: 10px;
+}
+
+.help-guide__title {
+    color: #ffd700;
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.help-guide__key {
+    color: #ffd700;
+}
+
 .support-window__footer {
     text-align: center;
     padding-bottom: 10px;

@@ -996,6 +996,25 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.support-window__body--patch-notes\s*\{[^}]*flex-grow:\s*1;[^}]*color:\s*#ccc;/s);
     });
 
+    test('help guide content reuses shared title key and separator classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toContain('<div class="help-guide">');
+        expect(html).toContain('<div id="help-first-hour-guide" class="help-guide help-guide--separated">');
+        expect(html).toContain('<div id="help-daily-return-guide" class="help-guide help-guide--separated">');
+        expect(html).toContain('<div class="help-guide__title">Core Controls</div>');
+        expect(html).toContain('<strong class="help-guide__key">Left Click:</strong>');
+        expect(html).toContain('<strong class="help-guide__key">1.</strong> Start with the <strong>Quest Giver</strong>');
+        expect(html).not.toContain('<div style="color: #ffd700; font-size: 15px; font-weight: bold; margin-bottom: 6px;">Core Controls</div>');
+        expect(html).not.toContain('<div id="help-first-hour-guide" style="border-top: 1px solid #444; padding-top: 10px;">');
+        expect(html).not.toContain('<strong style="color: #ffd700;">Left Click:</strong>');
+
+        expect(css).toMatch(/\.help-guide--separated\s*\{[^}]*border-top:\s*1px solid #444;[^}]*padding-top:\s*10px;/s);
+        expect(css).toMatch(/\.help-guide__title\s*\{[^}]*color:\s*#ffd700;[^}]*font-size:\s*15px;[^}]*font-weight:\s*bold;[^}]*margin-bottom:\s*6px;/s);
+        expect(css).toMatch(/\.help-guide__key\s*\{[^}]*color:\s*#ffd700;/s);
+    });
+
     test('patch notes history entries reuse shared title and list classes', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(windowsCssPath, 'utf8');

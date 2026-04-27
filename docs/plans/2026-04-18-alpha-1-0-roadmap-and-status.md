@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.31.9`
+- Current in-game displayed version: `Alpha 0.31.10`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.31.9`
+### Shipped through `0.31.10`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -129,6 +129,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.31.7`: Patch Notes release entries now use reusable patch-note entry, title, and list classes instead of repeated inline content chrome
 - `0.31.8`: Report form select and textarea controls now reuse support-field control classes instead of duplicated inline form chrome
 - `0.31.9`: Pause menu report and respawn actions now use reusable pause-menu warning and danger button variants instead of inline color styles
+- `0.31.10`: Help screen guide sections now use reusable help-guide section, title, separator, and highlighted key classes
 
 ### What `0.22` has clearly accomplished already
 
@@ -239,7 +240,7 @@ Historical closeout note:
 Current status:
 
 - `0.22` is closed for planned implementation work
-- `0.31.9` is now the active version line
+- `0.31.10` is now the active version line
 
 ### Historical `0.22` implementation checklist
 
