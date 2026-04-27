@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.28 for the transition UI refresh reset slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.28');
+    test('advances the login screen to alpha 0.31.29 for the HUD stat DOM diffing slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.29');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.28', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.29', () => {
+        expect(indexHtml).toContain('Patch 0.31.29');
+        expect(indexHtml).toContain('Repeated identical HP, mana, ability, cooldown, and mana-cost payloads skip redundant DOM writes');
+        expect(indexHtml).toContain('Direct callers outside the render signature path cannot spam the same HUD update every frame');
+        expect(indexHtml).toContain('High-frequency combat state stays responsive without doing unnecessary UI work');
+        expect(indexHtml).toContain('Added UIManager HUD diffing coverage for identical stat payloads and changed displayed health values');
+    });
+
+    test('keeps the prior 0.31.28 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.28');
         expect(indexHtml).toContain('HUD stats, XP, hotbar cooldowns, enemy bars, character sheet, and world map signatures are cleared');
         expect(indexHtml).toContain('UI diffing no longer carries stale scene signatures into the next area');
@@ -900,6 +908,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.29');
         expect(indexHtml).toContain('Patch 0.31.28');
         expect(indexHtml).toContain('Patch 0.31.27');
         expect(indexHtml).toContain('Patch 0.31.26');
@@ -1019,6 +1028,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.29"');
         expect(indexHtml).toContain('data-version="0.31.28"');
         expect(indexHtml).toContain('data-version="0.31.27"');
         expect(indexHtml).toContain('data-version="0.31.26"');

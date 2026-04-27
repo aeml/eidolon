@@ -35,6 +35,7 @@ export class UIManager {
         this.dungeonEntranceHintPrompt = document.getElementById('dungeon-entrance-hint-prompt');
         this.lastCombatIntentSignature = '';
         this.lastDungeonEntranceHintSignature = '';
+        this.lastPlayerStatsSignature = '';
         this.serverEpochSeconds = 0;
 
         // New UI Elements
@@ -980,6 +981,11 @@ export class UIManager {
     updatePlayerStats(player) {
         if (!player) return;
         this.lastPlayerRef = player;
+        const signature = this.serializePlayerStats(player);
+        if (signature === this.lastPlayerStatsSignature) {
+            return;
+        }
+        this.lastPlayerStatsSignature = signature;
         
         const hpPct = (player.stats.hp / player.stats.maxHp) * 100;
         this.hpBar.style.width = `${Math.max(0, hpPct)}%`;
@@ -994,6 +1000,22 @@ export class UIManager {
 
         // Update Ability UI
         this.updateAbilityIcon(player);
+    }
+
+    serializePlayerStats(player) {
+        const stats = player?.stats || {};
+        return [
+            Math.ceil(stats.hp ?? 0),
+            stats.maxHp ?? 0,
+            Math.floor(stats.mana ?? 0),
+            stats.maxMana ?? 0,
+            player?.abilityName || '',
+            player?.abilityDescription || '',
+            player?.abilityCooldown > 0 ? Math.ceil(player.abilityCooldown) : 0,
+            player?.abilityManaCost ?? 0,
+            stats.manaCostReduction ?? 0,
+            player?.subType || player?.meshType || ''
+        ].join('|');
     }
 
     getSkillIconPath(skillName, classType) {
