@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.15 for the class selection description consistency slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.15');
+    test('advances the login screen to alpha 0.31.16 for the loading overlay consistency slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.16');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.15', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.16', () => {
+        expect(indexHtml).toContain('Patch 0.31.16');
+        expect(indexHtml).toContain('The loading screen shell, title, progress frame, progress fill, and status text now share loading-screen classes');
+        expect(indexHtml).toContain('Fullscreen overlay positioning, centered layout, title color, progress sizing, bar transition, and status typography now live in overlay CSS');
+        expect(indexHtml).toContain('Login, class selection, and loading states all move toward reusable class-based styling');
+        expect(indexHtml).toContain('Added coverage for loading overlay classes and removed inline loading-screen progress chrome');
+    });
+
+    test('keeps the prior 0.31.15 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.15');
         expect(indexHtml).toContain('The create-character title and each class fantasy description now share class-selection title, description, and class-color modifier classes');
         expect(indexHtml).toContain('Shared width, alignment, spacing, font sizing, and class-specific description colors now live in start-screen CSS');
@@ -796,6 +804,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.16');
         expect(indexHtml).toContain('Patch 0.31.15');
         expect(indexHtml).toContain('Patch 0.31.14');
         expect(indexHtml).toContain('Patch 0.31.13');
@@ -902,6 +911,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.16"');
         expect(indexHtml).toContain('data-version="0.31.15"');
         expect(indexHtml).toContain('data-version="0.31.14"');
         expect(indexHtml).toContain('data-version="0.31.13"');

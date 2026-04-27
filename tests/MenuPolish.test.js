@@ -5,6 +5,7 @@ import { UIManager } from '../src/ui/UIManager.js';
 import { SkillTreeUI } from '../src/ui/SkillTreeUI.js';
 
 const windowsCssPath = fileURLToPath(new URL('../src/styles/windows.css', import.meta.url));
+const overlaysCssPath = fileURLToPath(new URL('../src/styles/overlays.css', import.meta.url));
 const worldMapCssPath = fileURLToPath(new URL('../src/styles/world-map.css', import.meta.url));
 const partyCssPath = fileURLToPath(new URL('../src/styles/party.css', import.meta.url));
 const skillTreeCssPath = fileURLToPath(new URL('../src/styles/skill-tree.css', import.meta.url));
@@ -1050,7 +1051,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.15</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.16</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1125,6 +1126,26 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.class-selection__description--rogue\s*\{[^}]*color:\s*#9ee6a0;/s);
         expect(css).toMatch(/\.class-selection__description--wizard\s*\{[^}]*color:\s*#caa8ff;/s);
         expect(css).toMatch(/\.class-selection__description--cleric\s*\{[^}]*color:\s*#ffd27a;/s);
+    });
+
+    test('loading overlay uses shared shell title progress and text classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(overlaysCssPath, 'utf8');
+
+        expect(html).toContain('<div id="loading-screen" class="loading-screen">');
+        expect(html).toContain('<h2 class="loading-screen__title">LOADING...</h2>');
+        expect(html).toContain('<div class="loading-screen__bar">');
+        expect(html).toContain('<div id="loading-bar-fill" class="loading-screen__bar-fill"></div>');
+        expect(html).toContain('<div id="loading-text" class="loading-screen__text">Initializing...</div>');
+        expect(html).not.toContain('id="loading-screen" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; flex-direction: column; justify-content: center; align-items: center;"');
+        expect(html).not.toContain('<h2 style="color: #ffd700; margin-bottom: 20px; font-size: 2rem;">LOADING...</h2>');
+        expect(html).not.toContain('id="loading-bar-fill" style="width: 0%; height: 100%; background: #ffd700; transition: width 0.2s;"');
+
+        expect(css).toMatch(/\.loading-screen\s*\{[^}]*display:\s*none;[^}]*position:\s*absolute;[^}]*width:\s*100%;[^}]*height:\s*100%;[^}]*background:\s*#000;[^}]*z-index:\s*200;[^}]*flex-direction:\s*column;[^}]*justify-content:\s*center;[^}]*align-items:\s*center;/s);
+        expect(css).toMatch(/\.loading-screen__title\s*\{[^}]*color:\s*#ffd700;[^}]*margin-bottom:\s*20px;[^}]*font-size:\s*2rem;/s);
+        expect(css).toMatch(/\.loading-screen__bar\s*\{[^}]*width:\s*300px;[^}]*height:\s*20px;[^}]*background:\s*#333;[^}]*border:\s*2px solid #666;[^}]*border-radius:\s*4px;[^}]*overflow:\s*hidden;/s);
+        expect(css).toMatch(/\.loading-screen__bar-fill\s*\{[^}]*width:\s*0%;[^}]*height:\s*100%;[^}]*background:\s*#ffd700;[^}]*transition:\s*width 0\.2s;/s);
+        expect(css).toMatch(/\.loading-screen__text\s*\{[^}]*color:\s*#888;[^}]*margin-top:\s*10px;[^}]*font-size:\s*14px;/s);
     });
 
     test('support menus reuse footer and action row classes', () => {

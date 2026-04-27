@@ -261,18 +261,18 @@
             <canvas id="world-map-canvas"></canvas>
         </div>
 
-        <div id="loading-screen" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; flex-direction: column; justify-content: center; align-items: center;">
-            <h2 style="color: #ffd700; margin-bottom: 20px; font-size: 2rem;">LOADING...</h2>
-            <div style="width: 300px; height: 20px; background: #333; border: 2px solid #666; border-radius: 4px; overflow: hidden;">
-                <div id="loading-bar-fill" style="width: 0%; height: 100%; background: #ffd700; transition: width 0.2s;"></div>
+        <div id="loading-screen" class="loading-screen">
+            <h2 class="loading-screen__title">LOADING...</h2>
+            <div class="loading-screen__bar">
+                <div id="loading-bar-fill" class="loading-screen__bar-fill"></div>
             </div>
-            <div id="loading-text" style="color: #888; margin-top: 10px; font-size: 14px;">Initializing...</div>
+            <div id="loading-text" class="loading-screen__text">Initializing...</div>
         </div>
 
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.15</span>
+                <span class="start-version-row__label">Alpha 0.31.16</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.16">
+                    <h3 class="patch-note-entry__title">Patch 0.31.16 (Loading overlay uses shared classes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Loading overlay chrome now uses reusable classes:</strong> The loading screen shell, title, progress frame, progress fill, and status text now share loading-screen classes.</li>
+                        <li><strong>Inline loading styles have been reduced:</strong> Fullscreen overlay positioning, centered layout, title color, progress sizing, bar transition, and status typography now live in overlay CSS.</li>
+                        <li><strong>The 0.31 entry-surface cleanup now covers transition feedback:</strong> Login, class selection, and loading states all move toward reusable class-based styling.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for loading overlay classes and removed inline loading-screen progress chrome.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.15">
                     <h3 class="patch-note-entry__title">Patch 0.31.15 (Class selection descriptions use shared classes)</h3>
                     <ul class="patch-note-entry__list">

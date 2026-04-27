@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.31.15`
+- Current in-game displayed version: `Alpha 0.31.16`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.31.15`
+### Shipped through `0.31.16`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -135,6 +135,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.31.13`: Start screen First Steps panel shell, body, title, copy, and steps now use reusable start-flow-panel classes instead of inline chrome
 - `0.31.14`: Start screen auth title, action row, fill buttons, status text, and enter-world controls now use reusable classes instead of inline chrome
 - `0.31.15`: Start screen class-selection title and class fantasy descriptions now use reusable title, description, and class-color modifier classes instead of inline chrome
+- `0.31.16`: Loading overlay shell, title, progress frame, progress fill, and status text now use reusable loading-screen classes instead of inline chrome
 
 ### What `0.22` has clearly accomplished already
 
@@ -245,7 +246,7 @@ Historical closeout note:
 Current status:
 
 - `0.22` is closed for planned implementation work
-- `0.31.15` is now the active version line
+- `0.31.16` is now the active version line
 
 ### Historical `0.22` implementation checklist
 
