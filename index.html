@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.24</span>
+                <span class="start-version-row__label">Alpha 0.31.25</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.25">
+                    <h3 class="patch-note-entry__title">Patch 0.31.25 (Forge shell uses shared classes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The Forge shell now uses its reusable class:</strong> Centering, viewport width, tall menu height, z-index, and flex column layout now live on the forge-window class.</li>
+                        <li><strong>Inline Forge window chrome has been reduced:</strong> The Forge keeps its large viewport-safe menu window without carrying layout details in HTML.</li>
+                        <li><strong>The 0.31 consistency pass continues through crafting flow:</strong> Stash cleanup now extends into the Forge shell that supports upgrade actions near the bottom of each tab.</li>
+                        <li><strong>Regression coverage:</strong> Updated Forge viewport coverage to assert the shared class and removed the old inline Forge shell styling.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.24">
                     <h3 class="patch-note-entry__title">Patch 0.31.24 (Stash window uses shared classes)</h3>
                     <ul class="patch-note-entry__list">
@@ -2224,7 +2233,7 @@
         </div>
 
         <!-- Forge Screen -->
-        <div id="forge-screen" class="window forge-window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(92vw, 760px); height: min(860px, calc(100vh - 24px)); z-index: 101; flex-direction: column;">
+        <div id="forge-screen" class="window forge-window" style="display: none;">
             <div class="window-header">
                 <span>FORGE</span>
                 <button id="btn-close-forge" class="close-btn" type="button" aria-label="Close forge">×</button>

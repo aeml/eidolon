@@ -708,6 +708,16 @@
     max-height: calc(100vh - 24px);
 }
 
+.forge-window {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(92vw, 760px);
+    height: min(860px, calc(100vh - 24px));
+    z-index: 101;
+    flex-direction: column;
+}
+
 #forge-screen .window-body {
     min-height: 0;
     overflow-y: auto;

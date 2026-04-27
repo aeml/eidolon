@@ -803,10 +803,10 @@ describe('menu polish regressions', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(windowsCssPath, 'utf8');
 
-        expect(html).toMatch(/id="forge-screen"[^>]*class="window forge-window"/);
-        expect(html).toMatch(/id="forge-screen"[^>]*width:\s*min\(92vw,\s*760px\);/);
-        expect(html).toMatch(/id="forge-screen"[^>]*height:\s*min\(860px,\s*calc\(100vh - 24px\)\);/);
+        expect(html).toMatch(/id="forge-screen"[^>]*class="window forge-window"[^>]*style="display: none;"/);
+        expect(html).not.toContain('<div id="forge-screen" class="window forge-window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(92vw, 760px); height: min(860px, calc(100vh - 24px)); z-index: 101; flex-direction: column;">');
         expect(css).toMatch(/#forge-screen\s*\{[^}]*max-height:\s*calc\(100vh - 24px\);/s);
+        expect(css).toMatch(/\.forge-window\s*\{[^}]*width:\s*min\(92vw, 760px\);[^}]*height:\s*min\(860px, calc\(100vh - 24px\)\);[^}]*z-index:\s*101;[^}]*flex-direction:\s*column;/s);
         expect(css).toMatch(/#forge-screen\s+\.window-body\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;[^}]*padding-bottom:\s*18px;/s);
         expect(css).toMatch(/#forge-screen\s+\.btn-menu\s*\{[^}]*min-height:\s*38px;/s);
     });
@@ -1062,7 +1062,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.24</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.25</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
