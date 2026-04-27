@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.10</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.11</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -509,13 +509,22 @@
             <div class="window-header">
                 <span>
                     PATCH NOTES 
-                    <span style="font-size: 12px; font-weight: normal; color: #ccc; margin-left: 10px;">
-                        (Click <a href="https://github.com/aeml/eidolon/commits/master/" target="_blank" style="color: #ffd700; text-decoration: underline; cursor: pointer;">here</a> for full commit history)
+                    <span class="patch-notes-header__meta">
+                        (Click <a class="patch-notes-header__link" href="https://github.com/aeml/eidolon/commits/master/" target="_blank">here</a> for full commit history)
                     </span>
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.11">
+                    <h3 class="patch-note-entry__title">Patch 0.31.11 (Patch Notes header uses shared classes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Patch Notes header helper text now uses reusable classes:</strong> The full commit history hint and link now keep their compact secondary styling through named patch-notes header classes.</li>
+                        <li><strong>Inline Patch Notes header chrome has been reduced:</strong> The remaining one-off font, color, margin, underline, and pointer styles now live in shared CSS.</li>
+                        <li><strong>The 0.31 consistency pass keeps tightening support windows:</strong> Patch Notes now shares shell, scroll body, entry chrome, and header metadata styling through class-based CSS.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for Patch Notes header meta/link classes and removed inline header helper styling.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.10">
                     <h3 class="patch-note-entry__title">Patch 0.31.10 (Help guide content uses shared classes)</h3>
                     <ul class="patch-note-entry__list">

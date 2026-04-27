@@ -395,6 +395,19 @@
     color: #ccc;
 }
 
+.patch-notes-header__meta {
+    font-size: 12px;
+    font-weight: normal;
+    color: #ccc;
+    margin-left: 10px;
+}
+
+.patch-notes-header__link {
+    color: #ffd700;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .patch-note-entry {
     margin-bottom: 20px;
 }

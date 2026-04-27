@@ -1031,6 +1031,19 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.patch-note-entry__list\s*\{[^}]*list-style-type:\s*disc;[^}]*padding-left:\s*20px;[^}]*line-height:\s*1\.6;/s);
     });
 
+    test('patch notes header helper text uses shared meta and link classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toContain('<span class="patch-notes-header__meta">');
+        expect(html).toContain('<a class="patch-notes-header__link" href="https://github.com/aeml/eidolon/commits/master/" target="_blank">here</a>');
+        expect(html).not.toContain('<span style="font-size: 12px; font-weight: normal; color: #ccc; margin-left: 10px;">');
+        expect(html).not.toContain('target="_blank" style="color: #ffd700; text-decoration: underline; cursor: pointer;"');
+
+        expect(css).toMatch(/\.patch-notes-header__meta\s*\{[^}]*font-size:\s*12px;[^}]*font-weight:\s*normal;[^}]*color:\s*#ccc;[^}]*margin-left:\s*10px;/s);
+        expect(css).toMatch(/\.patch-notes-header__link\s*\{[^}]*color:\s*#ffd700;[^}]*text-decoration:\s*underline;[^}]*cursor:\s*pointer;/s);
+    });
+
     test('support menus reuse footer and action row classes', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(windowsCssPath, 'utf8');

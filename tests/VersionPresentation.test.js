@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.10 for the help guide consistency slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.10');
+    test('advances the login screen to alpha 0.31.11 for the patch notes header consistency slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.11');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.10', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.11', () => {
+        expect(indexHtml).toContain('Patch 0.31.11');
+        expect(indexHtml).toContain('The full commit history hint and link now keep their compact secondary styling through named patch-notes header classes');
+        expect(indexHtml).toContain('The remaining one-off font, color, margin, underline, and pointer styles now live in shared CSS');
+        expect(indexHtml).toContain('Patch Notes now shares shell, scroll body, entry chrome, and header metadata styling through class-based CSS');
+        expect(indexHtml).toContain('Added coverage for Patch Notes header meta/link classes and removed inline header helper styling');
+    });
+
+    test('keeps the prior 0.31.10 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.10');
         expect(indexHtml).toContain('Core Controls, First Hour Milestones, and Daily Return Loop now share help-guide section, title, separator, and highlighted key styling');
         expect(indexHtml).toContain('Shortcut labels, numbered guide markers, and section dividers now use class-based CSS');
