@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.12 for the start screen version row consistency slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.12');
+    test('advances the login screen to alpha 0.31.13 for the start flow panel consistency slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.13');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.12', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.13', () => {
+        expect(indexHtml).toContain('Patch 0.31.13');
+        expect(indexHtml).toContain('The start-flow shell, body, title, copy, and step text now share named start-flow-panel classes');
+        expect(indexHtml).toContain('Positioning, width, margin, flex layout, body padding, title emphasis, copy color, and step typography now live in start-screen CSS');
+        expect(indexHtml).toContain('The login screen now treats its version row and onboarding guidance as reusable styling surfaces');
+        expect(indexHtml).toContain('Added coverage for start-flow panel shell/body/text classes and removed inline first-steps panel chrome');
+    });
+
+    test('keeps the prior 0.31.12 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.12');
         expect(indexHtml).toContain('The visible Alpha version label and login-screen Patch Notes shortcut now share named start-version-row classes');
         expect(indexHtml).toContain('The row spacing, version typography, gold shortcut color, underline, cursor, and link offset now live in start-screen CSS');
@@ -772,6 +780,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.13');
         expect(indexHtml).toContain('Patch 0.31.12');
         expect(indexHtml).toContain('Patch 0.31.11');
         expect(indexHtml).toContain('Patch 0.31.10');
@@ -875,6 +884,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.13"');
         expect(indexHtml).toContain('data-version="0.31.12"');
         expect(indexHtml).toContain('data-version="0.31.11"');
         expect(indexHtml).toContain('data-version="0.31.10"');

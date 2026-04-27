@@ -272,16 +272,16 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.12</span>
+                <span class="start-version-row__label">Alpha 0.31.13</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
-            <div id="start-flow-panel" class="window" style="position: relative; top: auto; left: auto; transform: none; width: min(560px, calc(100vw - 40px)); margin: 0 auto 20px auto; display: flex; flex-direction: column; gap: 10px;">
+            <div id="start-flow-panel" class="window start-flow-panel">
                 <div class="window-header"><span>FIRST STEPS</span></div>
-                <div style="padding: 16px; display: flex; flex-direction: column; gap: 10px; text-align: left;">
-                    <div id="start-flow-title" style="color: #ffd700; font-size: 20px; font-weight: bold;">Login to continue your run</div>
-                        <div id="start-flow-copy" style="color: #ddd; line-height: 1.5;">Returning players can jump straight back in. New players should pick a class fantasy first: Fighter for frontline control, Rogue for burst and tricks, Wizard for ranged spell pressure, Cleric for healing and support. Then enter town, head to the Quest Giver by the Forge, and follow the quest tracker through the first combat and dungeon steps.</div>
-                            <div id="start-flow-steps" style="color: #aaa; font-size: 14px; line-height: 1.6;">1. Login or register. 2. Enter world or create a character. 3. Open Skill Tree (K) to review your branches, then use Quests (J), World Map (M), and the Quest Giver by the Forge to start your route. Vendor obvious junk, save forge materials, reach level 30 to unlock all base dungeons, and push to level 100 for Heroic and Mythic runs.</div>
+                <div class="start-flow-panel__body">
+                    <div id="start-flow-title" class="start-flow-panel__title">Login to continue your run</div>
+                    <div id="start-flow-copy" class="start-flow-panel__copy">Returning players can jump straight back in. New players should pick a class fantasy first: Fighter for frontline control, Rogue for burst and tricks, Wizard for ranged spell pressure, Cleric for healing and support. Then enter town, head to the Quest Giver by the Forge, and follow the quest tracker through the first combat and dungeon steps.</div>
+                    <div id="start-flow-steps" class="start-flow-panel__steps">1. Login or register. 2. Enter world or create a character. 3. Open Skill Tree (K) to review your branches, then use Quests (J), World Map (M), and the Quest Giver by the Forge to start your route. Vendor obvious junk, save forge materials, reach level 30 to unlock all base dungeons, and push to level 100 for Heroic and Mythic runs.</div>
                 </div>
             </div>
             
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.13">
+                    <h3 class="patch-note-entry__title">Patch 0.31.13 (Start flow panel uses shared classes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>First Steps panel chrome now uses reusable classes:</strong> The start-flow shell, body, title, copy, and step text now share named start-flow-panel classes.</li>
+                        <li><strong>Inline onboarding panel styling has been reduced:</strong> Positioning, width, margin, flex layout, body padding, title emphasis, copy color, and step typography now live in start-screen CSS.</li>
+                        <li><strong>The 0.31 entry-surface cleanup continues:</strong> The login screen now treats its version row and onboarding guidance as reusable styling surfaces instead of one-off inline blocks.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for start-flow panel shell/body/text classes and removed inline first-steps panel chrome.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.12">
                     <h3 class="patch-note-entry__title">Patch 0.31.12 (Start screen version row uses shared classes)</h3>
                     <ul class="patch-note-entry__list">

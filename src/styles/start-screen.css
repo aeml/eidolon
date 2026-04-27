@@ -49,6 +49,43 @@
     margin-left: 5px;
 }
 
+.start-flow-panel {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: min(560px, calc(100vw - 40px));
+    margin: 0 auto 20px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.start-flow-panel__body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+}
+
+.start-flow-panel__title {
+    color: #ffd700;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.start-flow-panel__copy {
+    color: #ddd;
+    line-height: 1.5;
+}
+
+.start-flow-panel__steps {
+    color: #aaa;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
 .subtitle {
     font-size: 1.5rem;
     margin-bottom: 3rem;

@@ -1050,7 +1050,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.12</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.13</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1059,6 +1059,26 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.start-version-row\s*\{[^}]*text-align:\s*center;[^}]*margin-top:\s*-20px;[^}]*margin-bottom:\s*20px;/s);
         expect(css).toMatch(/\.start-version-row__label\s*\{[^}]*color:\s*white;[^}]*font-size:\s*18px;[^}]*font-weight:\s*bold;/s);
         expect(css).toMatch(/\.start-version-row__link\s*\{[^}]*color:\s*#ffd700;[^}]*cursor:\s*pointer;[^}]*text-decoration:\s*underline;[^}]*font-size:\s*14px;[^}]*margin-left:\s*5px;/s);
+    });
+
+    test('start flow panel uses shared shell body and copy classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(startScreenCssPath, 'utf8');
+
+        expect(html).toContain('<div id="start-flow-panel" class="window start-flow-panel">');
+        expect(html).toContain('<div class="start-flow-panel__body">');
+        expect(html).toContain('<div id="start-flow-title" class="start-flow-panel__title">Login to continue your run</div>');
+        expect(html).toContain('<div id="start-flow-copy" class="start-flow-panel__copy">');
+        expect(html).toContain('<div id="start-flow-steps" class="start-flow-panel__steps">');
+        expect(html).not.toContain('id="start-flow-panel" class="window" style="position: relative; top: auto; left: auto; transform: none; width: min(560px, calc(100vw - 40px)); margin: 0 auto 20px auto; display: flex; flex-direction: column; gap: 10px;"');
+        expect(html).not.toContain('<div style="padding: 16px; display: flex; flex-direction: column; gap: 10px; text-align: left;">');
+        expect(html).not.toContain('id="start-flow-title" style="color: #ffd700; font-size: 20px; font-weight: bold;"');
+
+        expect(css).toMatch(/\.start-flow-panel\s*\{[^}]*position:\s*relative;[^}]*top:\s*auto;[^}]*left:\s*auto;[^}]*transform:\s*none;[^}]*width:\s*min\(560px, calc\(100vw - 40px\)\);[^}]*margin:\s*0 auto 20px auto;[^}]*display:\s*flex;[^}]*flex-direction:\s*column;[^}]*gap:\s*10px;/s);
+        expect(css).toMatch(/\.start-flow-panel__body\s*\{[^}]*padding:\s*16px;[^}]*display:\s*flex;[^}]*flex-direction:\s*column;[^}]*gap:\s*10px;[^}]*text-align:\s*left;/s);
+        expect(css).toMatch(/\.start-flow-panel__title\s*\{[^}]*color:\s*#ffd700;[^}]*font-size:\s*20px;[^}]*font-weight:\s*bold;/s);
+        expect(css).toMatch(/\.start-flow-panel__copy\s*\{[^}]*color:\s*#ddd;[^}]*line-height:\s*1\.5;/s);
+        expect(css).toMatch(/\.start-flow-panel__steps\s*\{[^}]*color:\s*#aaa;[^}]*font-size:\s*14px;[^}]*line-height:\s*1\.6;/s);
     });
 
     test('support menus reuse footer and action row classes', () => {
