@@ -78,10 +78,16 @@ export class RenderSystem {
         this.targetLighting = null;
         this.environmentGroup = new THREE.Group();
         this.environmentGroup.name = 'EnvironmentGroup';
+        this.staticEnvironmentGroup = new THREE.Group();
+        this.staticEnvironmentGroup.name = 'StaticEnvironmentGroup';
+        this.instanceEnvironmentGroup = new THREE.Group();
+        this.instanceEnvironmentGroup.name = 'InstanceEnvironmentGroup';
         this.entityGroup = new THREE.Group();
         this.entityGroup.name = 'EntityGroup';
         this.effectGroup = new THREE.Group();
         this.effectGroup.name = 'EffectGroup';
+        this.environmentGroup.add(this.staticEnvironmentGroup);
+        this.environmentGroup.add(this.instanceEnvironmentGroup);
         this.scene.add(this.environmentGroup);
         this.scene.add(this.entityGroup);
         this.scene.add(this.effectGroup);
@@ -241,7 +247,7 @@ export class RenderSystem {
             }
 
             if (!this.waterPlane.parent) {
-                this.environmentGroup.add(this.waterPlane);
+                this.staticEnvironmentGroup.add(this.waterPlane);
             }
         } catch {
             // Water is optional; skip on failure.
@@ -283,7 +289,7 @@ export class RenderSystem {
         }
 
         if (!this.groundEarth.parent) {
-            this.environmentGroup.add(this.groundEarth);
+            this.staticEnvironmentGroup.add(this.groundEarth);
         }
 
         if (!this.groundSnow) {
@@ -303,7 +309,7 @@ export class RenderSystem {
         }
 
         if (!this.groundSnow.parent) {
-            this.environmentGroup.add(this.groundSnow);
+            this.staticEnvironmentGroup.add(this.groundSnow);
         }
 
         // Fire Realm ground (West Zone: X -3000 to -1000, Z: -600 to 1000)
@@ -326,7 +332,7 @@ export class RenderSystem {
         }
 
         if (!this.groundFire.parent) {
-            this.environmentGroup.add(this.groundFire);
+            this.staticEnvironmentGroup.add(this.groundFire);
         }
 
         // Air Realm ground (East Zone: X 1000 to 3000, Z: -600 to 1000)
@@ -349,7 +355,7 @@ export class RenderSystem {
         }
 
         if (!this.groundAir.parent) {
-            this.environmentGroup.add(this.groundAir);
+            this.staticEnvironmentGroup.add(this.groundAir);
         }
 
         report(100, 'Environment ready');
@@ -467,7 +473,7 @@ export class RenderSystem {
 
         this._pMesh = new THREE.Points(geom, mat);
         this._pMesh.frustumCulled = false;
-        this.environmentGroup.add(this._pMesh);
+        this.staticEnvironmentGroup.add(this._pMesh);
 
         // Internal per-particle state (plain arrays, not GPU attributes)
         this._pVel = new Float32Array(count * 3);
@@ -1076,7 +1082,7 @@ export class RenderSystem {
 
     addToEnvironment(mesh) {
         if (mesh) {
-            this.environmentGroup.add(mesh);
+            this.instanceEnvironmentGroup.add(mesh);
         }
     }
 
@@ -1087,6 +1093,7 @@ export class RenderSystem {
     }
 
     clearInstanceScene() {
+        this.clearGroupChildren(this.instanceEnvironmentGroup);
         this.clearGroupChildren(this.entityGroup);
         this.clearGroupChildren(this.effectGroup);
     }

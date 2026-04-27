@@ -86,15 +86,20 @@ function createEngineHarness() {
     const scene = createScene();
     const playerMesh = { position: new THREE.Vector3(), visible: false, parent: null };
     const environmentGroup = createGroup('environment');
+    const staticEnvironmentGroup = createGroup('static-environment');
+    const instanceEnvironmentGroup = createGroup('instance-environment');
     const entityGroup = createGroup('entities');
     const effectGroup = createGroup('effects');
     const keyLight = { id: 'key-light', parent: null };
 
+    environmentGroup.add(staticEnvironmentGroup);
+    environmentGroup.add(instanceEnvironmentGroup);
     scene.add(environmentGroup);
     scene.add(entityGroup);
     scene.add(effectGroup);
     scene.add(keyLight);
-    environmentGroup.add({ id: 'persistent-tree', parent: null });
+    staticEnvironmentGroup.add({ id: 'persistent-tree', parent: null });
+    instanceEnvironmentGroup.add({ id: 'stale-dungeon-floor', parent: null });
     entityGroup.add({ id: 'stale-enemy-mesh', parent: null });
     effectGroup.add({ id: 'stale-effect-mesh', parent: null });
 
@@ -113,12 +118,15 @@ function createEngineHarness() {
     engine.renderSystem = {
         scene,
         environmentGroup,
+        staticEnvironmentGroup,
+        instanceEnvironmentGroup,
         entityGroup,
         effectGroup,
         keyLight,
         add: jest.fn(mesh => entityGroup.add(mesh)),
         remove: jest.fn(mesh => mesh?.parent?.remove?.(mesh)),
         clearInstanceScene: jest.fn(() => {
+            instanceEnvironmentGroup.children.slice().forEach(child => instanceEnvironmentGroup.remove(child));
             entityGroup.children.slice().forEach(child => entityGroup.remove(child));
             effectGroup.children.slice().forEach(child => effectGroup.remove(child));
         }),
@@ -185,6 +193,7 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(engine.collisionManager.setDungeonWalkableGeometry).toHaveBeenCalledWith(layout.walkRects);
         expect(engine.collisionManager.clearDungeonWalkableGeometry).not.toHaveBeenCalled();
         expect(worldGeneratorInstances).toHaveLength(1);
+        expect(worldGeneratorInstances[0].scene).toBe(engine.renderSystem.instanceEnvironmentGroup);
         expect(worldGeneratorInstances[0][generatorMethod]).toHaveBeenCalledWith(0, 0, layout);
         expect(engine.player.position.x).toBe(12);
         expect(engine.player.position.z).toBe(34);
@@ -224,10 +233,13 @@ describe('GameEngine dungeon containment wiring', () => {
 
         expect(engine.renderSystem.clearInstanceScene).toHaveBeenCalled();
         expect(engine.renderSystem.environmentGroup.parent).toBe(engine.renderSystem.scene);
+        expect(engine.renderSystem.staticEnvironmentGroup.parent).toBe(engine.renderSystem.environmentGroup);
+        expect(engine.renderSystem.instanceEnvironmentGroup.parent).toBe(engine.renderSystem.environmentGroup);
         expect(engine.renderSystem.entityGroup.parent).toBe(engine.renderSystem.scene);
         expect(engine.renderSystem.effectGroup.parent).toBe(engine.renderSystem.scene);
         expect(engine.renderSystem.scene.children).toContain(engine.renderSystem.keyLight);
-        expect(engine.renderSystem.environmentGroup.children.map(child => child.id)).toContain('persistent-tree');
+        expect(engine.renderSystem.staticEnvironmentGroup.children.map(child => child.id)).toContain('persistent-tree');
+        expect(engine.renderSystem.instanceEnvironmentGroup.children.map(child => child.id)).not.toContain('stale-dungeon-floor');
         expect(engine.renderSystem.entityGroup.children).toHaveLength(1);
         expect(engine.renderSystem.effectGroup.children).toHaveLength(0);
         expect(engine.player.mesh.parent).toBe(engine.renderSystem.entityGroup);
@@ -282,10 +294,13 @@ describe('GameEngine dungeon containment wiring', () => {
         await engine.enterInstance('instance-5', 'overworld', null);
 
         expect(engine.renderSystem.environmentGroup.parent).toBe(engine.renderSystem.scene);
+        expect(engine.renderSystem.staticEnvironmentGroup.parent).toBe(engine.renderSystem.environmentGroup);
+        expect(engine.renderSystem.instanceEnvironmentGroup.parent).toBe(engine.renderSystem.environmentGroup);
         expect(engine.renderSystem.entityGroup.parent).toBe(engine.renderSystem.scene);
         expect(engine.renderSystem.effectGroup.parent).toBe(engine.renderSystem.scene);
         expect(engine.renderSystem.scene.children).toContain(engine.renderSystem.keyLight);
-        expect(engine.renderSystem.environmentGroup.children.map(child => child.id)).toContain('persistent-tree');
+        expect(engine.renderSystem.staticEnvironmentGroup.children.map(child => child.id)).toContain('persistent-tree');
+        expect(engine.renderSystem.instanceEnvironmentGroup.children.map(child => child.id)).not.toContain('stale-dungeon-floor');
         expect(engine.player.mesh.parent).toBe(engine.renderSystem.entityGroup);
     });
 

@@ -347,7 +347,7 @@ export class GameEngine {
         this.currentDungeonRoomState = null;
         this.currentDungeonLayout = null;
         this.activeBuffs = [];
-        this.worldGenerator = new WorldGenerator(this.renderSystem.environmentGroup, this.collisionManager);
+        this.worldGenerator = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager);
         this.minimap = new Minimap();
         this.minimap.setGameEngine(this);
         this.worldMap = new WorldMap(this);
@@ -413,6 +413,10 @@ export class GameEngine {
 
     get effectScene() {
         return this.renderSystem.effectGroup;
+    }
+
+    getInstanceEnvironmentGroup() {
+        return this.renderSystem.instanceEnvironmentGroup || this.renderSystem.environmentGroup;
     }
 
     isPlayerDead() {
@@ -1203,6 +1207,9 @@ export class GameEngine {
         if (typeof this.renderSystem.clearInstanceScene === 'function') {
             this.renderSystem.clearInstanceScene();
         } else {
+            this.renderSystem.instanceEnvironmentGroup?.children?.slice().forEach(child => {
+                this.renderSystem.instanceEnvironmentGroup.remove(child);
+            });
             this.renderSystem.entityGroup?.children?.slice().forEach(child => {
                 this.renderSystem.entityGroup.remove(child);
             });
@@ -1233,7 +1240,7 @@ export class GameEngine {
         }
 
         // Generate new world
-        const worldGen = new WorldGenerator(this.renderSystem.environmentGroup, this.collisionManager);
+        const worldGen = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager);
         if (type === 'crypt') {
             await worldGen.createDungeon(0, 0, 100);
         } else if (type === 'verdant_bastion_catacombs') {
@@ -4554,7 +4561,7 @@ export class GameEngine {
                     const position = { x: pData.x, y: 0, z: pData.z };
                     
                     const hazard = new EnvironmentalHazard(pData.id, hazardType, position, { radius });
-                    hazard.addToScene(this.renderSystem.environmentGroup);
+                    hazard.addToScene(this.getInstanceEnvironmentGroup());
                     this.hazards.set(pData.id, hazard);
                     
                     // Skip adding to remotePlayers/entities - hazards are managed separately

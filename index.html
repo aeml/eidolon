@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.25</span>
+                <span class="start-version-row__label">Alpha 0.31.26</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.26">
+                    <h3 class="patch-note-entry__title">Patch 0.31.26 (Instance environment cleanup)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Scene transitions now separate persistent and per-instance environment content:</strong> Water, ground, and realm particles live in a static environment group while dungeon and town geometry routes through an instance environment group.</li>
+                        <li><strong>Dungeon and town rebuilds clear more cleanly:</strong> Instance transitions now clear stale generated environment meshes alongside entities and effects instead of allowing old layouts to accumulate.</li>
+                        <li><strong>The 0.31 consistency pass moves back into runtime reliability:</strong> The same scene-group foundation now covers environment geometry, not only entities and transient effects.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for static/instance environment groups, per-instance world generation routing, and fallback transition cleanup.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.25">
                     <h3 class="patch-note-entry__title">Patch 0.31.25 (Forge shell uses shared classes)</h3>
                     <ul class="patch-note-entry__list">
