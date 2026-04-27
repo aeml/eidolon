@@ -465,6 +465,10 @@
     font-family: inherit;
 }
 
+.support-field__textarea {
+    resize: none;
+}
+
 .support-field__range {
     width: 100%;
 }

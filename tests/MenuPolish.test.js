@@ -1022,6 +1022,19 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.support-window__button--success\s*\{[^}]*background:\s*#4CAF50;[^}]*border-color:\s*#45a049;/s);
     });
 
+    test('report form fields reuse support field controls', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+
+        expect(html).toContain('<select id="report-type" class="support-field__control">');
+        expect(html).toContain('<textarea id="report-text" class="support-field__control support-field__textarea" rows="8" placeholder="Describe your issue or idea..."></textarea>');
+        expect(html).not.toContain('<select id="report-type" style="padding: 10px; background: #333; color: white; border: 1px solid #666; font-family: inherit;">');
+        expect(html).not.toContain('<textarea id="report-text" rows="8" placeholder="Describe your issue or idea..." style="padding: 10px; background: #333; color: white; border: 1px solid #666; resize: none; font-family: inherit;"></textarea>');
+
+        expect(css).toMatch(/\.support-field__control\s*\{[^}]*padding:\s*10px;[^}]*background:\s*#333;[^}]*color:\s*#fff;[^}]*border:\s*1px solid #666;[^}]*font-family:\s*inherit;/s);
+        expect(css).toMatch(/\.support-field__textarea\s*\{[^}]*resize:\s*none;/s);
+    });
+
     test('settings core fields reuse support field classes', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(windowsCssPath, 'utf8');

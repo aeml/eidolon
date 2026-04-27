@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.7</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.8</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -454,11 +454,11 @@
         <div id="report-screen" class="window support-window support-window--report" style="display: none;">
             <div class="window-header"><span>SUBMIT REPORT</span><button id="btn-close-report-header" class="close-btn" type="button" aria-label="Close report form">×</button></div>
             <div class="support-window__body support-window__body--report">
-                <select id="report-type" style="padding: 10px; background: #333; color: white; border: 1px solid #666; font-family: inherit;">
+                <select id="report-type" class="support-field__control">
                     <option value="Bug Report">Bug Report</option>
                     <option value="Feature Request">Feature Request</option>
                 </select>
-                <textarea id="report-text" rows="8" placeholder="Describe your issue or idea..." style="padding: 10px; background: #333; color: white; border: 1px solid #666; resize: none; font-family: inherit;"></textarea>
+                <textarea id="report-text" class="support-field__control support-field__textarea" rows="8" placeholder="Describe your issue or idea..."></textarea>
                 <div class="support-window__actions support-window__actions--split">
                     <button id="btn-cancel-report" class="menu-btn support-window__button--half">Cancel</button>
                     <button id="btn-submit-report" class="menu-btn support-window__button--half support-window__button--success">Submit</button>
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.8">
+                    <h3 class="patch-note-entry__title">Patch 0.31.8 (Report form fields use shared controls)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Report form inputs now use reusable control classes:</strong> The report type select and report text area now share the support-field control styling already used by Settings fields.</li>
+                        <li><strong>The text area has a named variant:</strong> Report text keeps resize behavior through a reusable support-field textarea class instead of one-off inline styling.</li>
+                        <li><strong>The 0.31 consistency pass keeps consolidating support menus:</strong> Report now shares shell, body, actions, buttons, and field chrome with the rest of the support-window layer.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for reusable Report form field classes and removed inline report select/textarea chrome.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.7">
                     <h3 class="patch-note-entry__title">Patch 0.31.7 (Patch Notes content uses shared entry classes)</h3>
                     <ul class="patch-note-entry__list">
