@@ -53,6 +53,22 @@
     pointer-events: none;
 }
 
+.ability-tooltip__name {
+    margin: 0 0 5px 0;
+    color: #ffd700;
+}
+
+.ability-tooltip__desc {
+    font-size: 12px;
+    color: #ccc;
+}
+
+.ability-tooltip__cost {
+    font-size: 12px;
+    color: #aaf;
+    margin-top: 5px;
+}
+
 /* ---- Hotbar ---- */
 #hotbar-container {
     position: absolute;

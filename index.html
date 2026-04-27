@@ -79,9 +79,9 @@
             <div id="ability-icon"></div>
             <div id="ability-cooldown"></div>
             <div id="ability-tooltip">
-                <h4 id="ability-name" style="margin: 0 0 5px 0; color: #ffd700;">Ability</h4>
-                <div id="ability-desc" style="font-size: 12px; color: #ccc;">Description</div>
-                <div id="ability-cost" style="font-size: 12px; color: #aaf; margin-top: 5px;">Mana: 0</div>
+                <h4 id="ability-name" class="ability-tooltip__name">Ability</h4>
+                <div id="ability-desc" class="ability-tooltip__desc">Description</div>
+                <div id="ability-cost" class="ability-tooltip__cost">Mana: 0</div>
             </div>
         </div>
 
@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.16</span>
+                <span class="start-version-row__label">Alpha 0.31.17</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.17">
+                    <h3 class="patch-note-entry__title">Patch 0.31.17 (Ability tooltip text uses shared classes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Ability tooltip text now uses reusable classes:</strong> The compact ability name, description, and mana-cost rows now share ability-tooltip classes.</li>
+                        <li><strong>Inline tooltip text chrome has been reduced:</strong> Tooltip title spacing, gold title color, description sizing, muted copy color, cost color, and cost spacing now live in abilities CSS.</li>
+                        <li><strong>The 0.31 consistency pass starts moving into HUD micro-surfaces:</strong> The start flow and loading overlay cleanup now extends into the active ability tooltip.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for ability tooltip text classes and removed inline ability tooltip text styling.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.16">
                     <h3 class="patch-note-entry__title">Patch 0.31.16 (Loading overlay uses shared classes)</h3>
                     <ul class="patch-note-entry__list">

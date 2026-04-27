@@ -6,6 +6,7 @@ import { SkillTreeUI } from '../src/ui/SkillTreeUI.js';
 
 const windowsCssPath = fileURLToPath(new URL('../src/styles/windows.css', import.meta.url));
 const overlaysCssPath = fileURLToPath(new URL('../src/styles/overlays.css', import.meta.url));
+const abilitiesCssPath = fileURLToPath(new URL('../src/styles/abilities.css', import.meta.url));
 const worldMapCssPath = fileURLToPath(new URL('../src/styles/world-map.css', import.meta.url));
 const partyCssPath = fileURLToPath(new URL('../src/styles/party.css', import.meta.url));
 const skillTreeCssPath = fileURLToPath(new URL('../src/styles/skill-tree.css', import.meta.url));
@@ -1051,7 +1052,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.16</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.17</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1146,6 +1147,22 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.loading-screen__bar\s*\{[^}]*width:\s*300px;[^}]*height:\s*20px;[^}]*background:\s*#333;[^}]*border:\s*2px solid #666;[^}]*border-radius:\s*4px;[^}]*overflow:\s*hidden;/s);
         expect(css).toMatch(/\.loading-screen__bar-fill\s*\{[^}]*width:\s*0%;[^}]*height:\s*100%;[^}]*background:\s*#ffd700;[^}]*transition:\s*width 0\.2s;/s);
         expect(css).toMatch(/\.loading-screen__text\s*\{[^}]*color:\s*#888;[^}]*margin-top:\s*10px;[^}]*font-size:\s*14px;/s);
+    });
+
+    test('ability tooltip text uses shared name description and cost classes', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(abilitiesCssPath, 'utf8');
+
+        expect(html).toContain('<h4 id="ability-name" class="ability-tooltip__name">Ability</h4>');
+        expect(html).toContain('<div id="ability-desc" class="ability-tooltip__desc">Description</div>');
+        expect(html).toContain('<div id="ability-cost" class="ability-tooltip__cost">Mana: 0</div>');
+        expect(html).not.toContain('<h4 id="ability-name" style="margin: 0 0 5px 0; color: #ffd700;">Ability</h4>');
+        expect(html).not.toContain('<div id="ability-desc" style="font-size: 12px; color: #ccc;">Description</div>');
+        expect(html).not.toContain('<div id="ability-cost" style="font-size: 12px; color: #aaf; margin-top: 5px;">Mana: 0</div>');
+
+        expect(css).toMatch(/\.ability-tooltip__name\s*\{[^}]*margin:\s*0 0 5px 0;[^}]*color:\s*#ffd700;/s);
+        expect(css).toMatch(/\.ability-tooltip__desc\s*\{[^}]*font-size:\s*12px;[^}]*color:\s*#ccc;/s);
+        expect(css).toMatch(/\.ability-tooltip__cost\s*\{[^}]*font-size:\s*12px;[^}]*color:\s*#aaf;[^}]*margin-top:\s*5px;/s);
     });
 
     test('support menus reuse footer and action row classes', () => {
