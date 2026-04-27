@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">
-                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.8</span>
+                <span style="color: white; font-size: 18px; font-weight: bold;">Alpha 0.31.9</span>
                 <span id="login-patch-notes-link" style="color: #ffd700; cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: 5px;">(patch notes)</span>
             </div>
 
@@ -328,8 +328,8 @@
                 <button id="btn-help" class="menu-btn">Help</button>
                 <button id="btn-settings" class="menu-btn">Settings</button>
                 <button id="btn-patch-notes" class="menu-btn">Patch Notes</button>
-                <button id="btn-report" class="menu-btn" style="border-color: #ffd700; color: #ffd700;">Report Bug / Feature</button>
-                <button id="btn-respawn" class="menu-btn" style="border-color: #ff4444; color: #ff4444;">Unstuck / Respawn</button>
+                <button id="btn-report" class="menu-btn pause-menu__button--report">Report Bug / Feature</button>
+                <button id="btn-respawn" class="menu-btn pause-menu__button--danger">Unstuck / Respawn</button>
                 <button id="btn-menu" class="menu-btn">Return to Menu</button>
             </div>
         </div>
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.9">
+                    <h3 class="patch-note-entry__title">Patch 0.31.9 (Pause menu special actions use shared variants)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Pause menu special actions now use reusable variants:</strong> Report Bug / Feature and Unstuck / Respawn now keep their warning and danger styling through named pause-menu button classes.</li>
+                        <li><strong>The Escape menu has less inline chrome:</strong> The remaining one-off border and color styles in the pause action stack now live in shared CSS.</li>
+                        <li><strong>The 0.31 consistency pass keeps tightening primary menus:</strong> Pause now shares viewport-safe shell, action-stack layout, and special action variants through class-based styling.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for pause menu report/danger button variants and removed inline pause action styling.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.8">
                     <h3 class="patch-note-entry__title">Patch 0.31.8 (Report form fields use shared controls)</h3>
                     <ul class="patch-note-entry__list">

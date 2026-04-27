@@ -318,6 +318,16 @@
     width: 100%;
 }
 
+.pause-menu__button--report {
+    border-color: #ffd700;
+    color: #ffd700;
+}
+
+.pause-menu__button--danger {
+    border-color: #ff4444;
+    color: #ff4444;
+}
+
 /* ---- Static Support Menus ---- */
 .support-window {
     top: 50%;

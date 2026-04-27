@@ -955,9 +955,15 @@ describe('menu polish regressions', () => {
 
         expect(html).toMatch(/id="esc-menu"[^>]*class="window pause-menu"[^>]*style="display: none;"/);
         expect(html).toContain('class="pause-menu__actions"');
+        expect(html).toContain('id="btn-report" class="menu-btn pause-menu__button--report"');
+        expect(html).toContain('id="btn-respawn" class="menu-btn pause-menu__button--danger"');
         expect(html).not.toContain('id="esc-menu" class="window" style="display: none; top: 50%; left: 50%;');
+        expect(html).not.toContain('id="btn-report" class="menu-btn" style="border-color: #ffd700; color: #ffd700;"');
+        expect(html).not.toContain('id="btn-respawn" class="menu-btn" style="border-color: #ff4444; color: #ff4444;"');
         expect(css).toMatch(/\.pause-menu\s*\{[^}]*width:\s*min\(300px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow:\s*hidden;/s);
         expect(css).toMatch(/\.pause-menu__actions\s*\{[^}]*max-height:\s*calc\(100vh - 92px\);[^}]*overflow-y:\s*auto;[^}]*display:\s*flex;[^}]*flex-direction:\s*column;/s);
+        expect(css).toMatch(/\.pause-menu__button--report\s*\{[^}]*border-color:\s*#ffd700;[^}]*color:\s*#ffd700;/s);
+        expect(css).toMatch(/\.pause-menu__button--danger\s*\{[^}]*border-color:\s*#ff4444;[^}]*color:\s*#ff4444;/s);
     });
 
     test('settings window stays within the viewport and scrolls internally when content is tall', () => {
