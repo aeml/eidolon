@@ -125,6 +125,20 @@
     outline: none;
 }
 
+.auth-panel__title {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #ffd700;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.auth-panel__actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
 .auth-btn {
     padding: 12px;
     border: none;
@@ -139,6 +153,17 @@
     touch-action: manipulation;
 }
 
+.auth-btn--fill {
+    flex: 1;
+}
+
+.auth-status {
+    color: #ffeb3b;
+    font-size: 14px;
+    text-align: center;
+    min-height: 20px;
+}
+
 #btn-login {
     background: var(--color-login);
     color: white;
@@ -150,6 +175,21 @@
     color: white;
 }
 #btn-register:hover { background: var(--color-register-hover); }
+
+.play-container {
+    display: none;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.play-container__button {
+    font-size: 24px;
+    padding: 15px 50px;
+    background: #4CAF50;
+    color: white;
+    border: 2px solid #45a049;
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+}
 
 .class-selection {
     display: none;

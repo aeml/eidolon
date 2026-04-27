@@ -1050,7 +1050,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.13</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.14</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1079,6 +1079,30 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.start-flow-panel__title\s*\{[^}]*color:\s*#ffd700;[^}]*font-size:\s*20px;[^}]*font-weight:\s*bold;/s);
         expect(css).toMatch(/\.start-flow-panel__copy\s*\{[^}]*color:\s*#ddd;[^}]*line-height:\s*1\.5;/s);
         expect(css).toMatch(/\.start-flow-panel__steps\s*\{[^}]*color:\s*#aaa;[^}]*font-size:\s*14px;[^}]*line-height:\s*1\.6;/s);
+    });
+
+    test('auth entry controls use shared classes instead of inline chrome', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(startScreenCssPath, 'utf8');
+
+        expect(html).toContain('<div class="auth-panel__title">LOGIN / REGISTER</div>');
+        expect(html).toContain('<div class="auth-panel__actions">');
+        expect(html).toContain('<button id="btn-login" class="auth-btn auth-btn--fill">Login</button>');
+        expect(html).toContain('<button id="btn-register" class="auth-btn auth-btn--fill">Register</button>');
+        expect(html).toContain('<div id="auth-status" class="auth-status"></div>');
+        expect(html).toContain('<div id="play-container" class="play-container">');
+        expect(html).toContain('<button id="btn-play-character" class="menu-btn play-container__button">ENTER WORLD</button>');
+        expect(html).not.toContain('<div style="text-align: center; font-size: 1.2rem; color: #ffd700; margin-bottom: 10px; font-weight: bold;">LOGIN / REGISTER</div>');
+        expect(html).not.toContain('<button id="btn-login" class="auth-btn" style="flex: 1;">Login</button>');
+        expect(html).not.toContain('<div id="auth-status" style="color: #ffeb3b; font-size: 14px; text-align: center; min-height: 20px;"></div>');
+        expect(html).not.toContain('<div id="play-container" style="display: none; text-align: center; margin-top: 20px;">');
+
+        expect(css).toMatch(/\.auth-panel__title\s*\{[^}]*text-align:\s*center;[^}]*font-size:\s*1\.2rem;[^}]*color:\s*#ffd700;[^}]*margin-bottom:\s*10px;[^}]*font-weight:\s*bold;/s);
+        expect(css).toMatch(/\.auth-panel__actions\s*\{[^}]*display:\s*flex;[^}]*gap:\s*10px;[^}]*margin-top:\s*10px;/s);
+        expect(css).toMatch(/\.auth-btn--fill\s*\{[^}]*flex:\s*1;/s);
+        expect(css).toMatch(/\.auth-status\s*\{[^}]*color:\s*#ffeb3b;[^}]*font-size:\s*14px;[^}]*text-align:\s*center;[^}]*min-height:\s*20px;/s);
+        expect(css).toMatch(/\.play-container\s*\{[^}]*display:\s*none;[^}]*text-align:\s*center;[^}]*margin-top:\s*20px;/s);
+        expect(css).toMatch(/\.play-container__button\s*\{[^}]*font-size:\s*24px;[^}]*padding:\s*15px 50px;[^}]*background:\s*#4CAF50;[^}]*border:\s*2px solid #45a049;[^}]*box-shadow:\s*0 0 20px rgba\(76, 175, 80, 0\.5\);/s);
     });
 
     test('support menus reuse footer and action row classes', () => {

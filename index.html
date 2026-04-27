@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.13</span>
+                <span class="start-version-row__label">Alpha 0.31.14</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -289,22 +289,22 @@
             <input type="hidden" id="server-address" value="wss://eserver.mendola.tech/ws">
 
             <div id="login-panel">
-                <div style="text-align: center; font-size: 1.2rem; color: #ffd700; margin-bottom: 10px; font-weight: bold;">LOGIN / REGISTER</div>
+                <div class="auth-panel__title">LOGIN / REGISTER</div>
                 
                 <input type="text" id="auth-username" class="auth-input" placeholder="Username">
                 <input type="email" id="auth-email" class="auth-input" placeholder="Email (Optional for Login)">
                 <input type="password" id="auth-password" class="auth-input" placeholder="Password">
                 
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <button id="btn-login" class="auth-btn" style="flex: 1;">Login</button>
-                    <button id="btn-register" class="auth-btn" style="flex: 1;">Register</button>
+                <div class="auth-panel__actions">
+                    <button id="btn-login" class="auth-btn auth-btn--fill">Login</button>
+                    <button id="btn-register" class="auth-btn auth-btn--fill">Register</button>
                 </div>
                 
-                <div id="auth-status" style="color: #ffeb3b; font-size: 14px; text-align: center; min-height: 20px;"></div>
+                <div id="auth-status" class="auth-status"></div>
             </div>
 
-            <div id="play-container" style="display: none; text-align: center; margin-top: 20px;">
-                <button id="btn-play-character" class="menu-btn" style="font-size: 24px; padding: 15px 50px; background: #4CAF50; color: white; border: 2px solid #45a049; box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);">ENTER WORLD</button>
+            <div id="play-container" class="play-container">
+                <button id="btn-play-character" class="menu-btn play-container__button">ENTER WORLD</button>
             </div>
 
             <div id="class-selection-container" class="class-selection">
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.14">
+                    <h3 class="patch-note-entry__title">Patch 0.31.14 (Auth entry controls use shared classes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Login and enter-world controls now use reusable classes:</strong> Auth title, auth action row, fill-width auth buttons, auth status text, and the play container button now share named start-screen classes.</li>
+                        <li><strong>Inline auth chrome has been reduced:</strong> Login title typography, auth button flex, status color and sizing, play container layout, and enter-world button emphasis now live in start-screen CSS.</li>
+                        <li><strong>The 0.31 entry-surface cleanup keeps moving downward:</strong> Start screen version, first-step guidance, login controls, and enter-world affordance now follow the same class-based styling direction.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for auth panel and play container classes and removed inline auth/enter-world chrome.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.13">
                     <h3 class="patch-note-entry__title">Patch 0.31.13 (Start flow panel uses shared classes)</h3>
                     <ul class="patch-note-entry__list">

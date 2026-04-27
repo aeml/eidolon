@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.13 for the start flow panel consistency slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.13');
+    test('advances the login screen to alpha 0.31.14 for the auth entry controls consistency slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.14');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.13', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.14', () => {
+        expect(indexHtml).toContain('Patch 0.31.14');
+        expect(indexHtml).toContain('Auth title, auth action row, fill-width auth buttons, auth status text, and the play container button now share named start-screen classes');
+        expect(indexHtml).toContain('Login title typography, auth button flex, status color and sizing, play container layout, and enter-world button emphasis now live in start-screen CSS');
+        expect(indexHtml).toContain('Start screen version, first-step guidance, login controls, and enter-world affordance now follow the same class-based styling direction');
+        expect(indexHtml).toContain('Added coverage for auth panel and play container classes and removed inline auth/enter-world chrome');
+    });
+
+    test('keeps the prior 0.31.13 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.13');
         expect(indexHtml).toContain('The start-flow shell, body, title, copy, and step text now share named start-flow-panel classes');
         expect(indexHtml).toContain('Positioning, width, margin, flex layout, body padding, title emphasis, copy color, and step typography now live in start-screen CSS');
@@ -780,6 +788,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.14');
         expect(indexHtml).toContain('Patch 0.31.13');
         expect(indexHtml).toContain('Patch 0.31.12');
         expect(indexHtml).toContain('Patch 0.31.11');
@@ -884,6 +893,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.14"');
         expect(indexHtml).toContain('data-version="0.31.13"');
         expect(indexHtml).toContain('data-version="0.31.12"');
         expect(indexHtml).toContain('data-version="0.31.11"');
