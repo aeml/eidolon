@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.27</span>
+                <span class="start-version-row__label">Alpha 0.31.28</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.28">
+                    <h3 class="patch-note-entry__title">Patch 0.31.28 (Transition UI refresh reset)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Instance transitions now reset render-update signatures:</strong> HUD stats, XP, hotbar cooldowns, enemy bars, character sheet, and world map signatures are cleared when a new instance is entered.</li>
+                        <li><strong>The first frame after a dungeon or town swap refreshes reliably:</strong> UI diffing no longer carries stale scene signatures into the next area.</li>
+                        <li><strong>The scene cleanup pass now covers presentation freshness:</strong> Runtime scene ownership and render-time UI throttling stay aligned during transitions.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage that entering an instance clears all render update signatures before rebuilding the scene.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.27">
                     <h3 class="patch-note-entry__title">Patch 0.31.27 (Instance environment disposal)</h3>
                     <ul class="patch-note-entry__list">

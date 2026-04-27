@@ -114,6 +114,12 @@ function createEngineHarness() {
     engine.combatIntentSignature = '';
     engine.combatTargetHighlight = null;
     engine.highlightedCombatTarget = null;
+    engine.lastRenderHudSignature = 'old-hud';
+    engine.lastRenderXpSignature = 'old-xp';
+    engine.lastRenderHotbarCooldownSignature = 'old-hotbar';
+    engine.lastRenderEnemyBarSignature = 'old-enemy-bars';
+    engine.lastRenderCharacterSheetSignature = 'old-character-sheet';
+    engine.lastRenderWorldMapSignature = 'old-world-map';
     engine.cameraLocked = true;
     engine.renderSystem = {
         scene,
@@ -328,6 +334,19 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(engine.highlightedCombatTarget).toBeNull();
         expect(engine.combatTargetHighlight.visible).toBe(false);
         expect(engine.combatTargetHighlight.parent).toBeNull();
+    });
+
+    test('enterInstance resets render update signatures so the first new-scene frame refreshes UI', async () => {
+        const engine = createEngineHarness();
+
+        await engine.enterInstance('instance-6b', 'overworld', null);
+
+        expect(engine.lastRenderHudSignature).toBe('');
+        expect(engine.lastRenderXpSignature).toBe('');
+        expect(engine.lastRenderHotbarCooldownSignature).toBe('');
+        expect(engine.lastRenderEnemyBarSignature).toBe('');
+        expect(engine.lastRenderCharacterSheetSignature).toBe('');
+        expect(engine.lastRenderWorldMapSignature).toBe('');
     });
 
     test('environmental hazards remove and dispose meshes from their current parent during instance teardown', async () => {

@@ -419,6 +419,15 @@ export class GameEngine {
         return this.renderSystem.instanceEnvironmentGroup || this.renderSystem.environmentGroup;
     }
 
+    resetRenderUpdateSignatures() {
+        this.lastRenderHudSignature = '';
+        this.lastRenderXpSignature = '';
+        this.lastRenderHotbarCooldownSignature = '';
+        this.lastRenderEnemyBarSignature = '';
+        this.lastRenderCharacterSheetSignature = '';
+        this.lastRenderWorldMapSignature = '';
+    }
+
     isPlayerDead() {
         if (!this.player) return false;
         const hp = this.player.stats ? this.player.stats.hp : undefined;
@@ -1170,6 +1179,7 @@ export class GameEngine {
         this.currentDungeonRoomState = decorateDungeonRoomState(roomState);
         this.currentDungeonLayout = layout || null;
         this.clearCombatIntentState();
+        this.resetRenderUpdateSignatures();
         this.refreshDungeonEntranceHint();
         this.pendingInteraction = null;
 
