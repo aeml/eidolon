@@ -695,6 +695,16 @@ describe('menu polish regressions', () => {
         expect(partyCss).toMatch(/\.party-request-modal\s*\{[^}]*width:\s*min\(360px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow-y:\s*auto;/s);
     });
 
+    test('skill tree empty state uses a shared placeholder class', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(skillTreeCssPath, 'utf8');
+
+        expect(html).toContain('<div class="skill-tree-empty-state">');
+        expect(html).toContain('Select a class to view skills.');
+        expect(html).not.toContain('<div style="text-align: center; color: #aaa; margin-top: 50px;">');
+        expect(css).toMatch(/\.skill-tree-empty-state\s*\{[^}]*text-align:\s*center;[^}]*color:\s*var\(--color-text-muted\);[^}]*margin-top:\s*50px;/s);
+    });
+
     test('browser warning and party markup use reusable classes instead of inline close hacks', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
 
@@ -1052,7 +1062,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.18</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.19</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');

@@ -46,6 +46,12 @@
     gap: var(--spacing-md);
 }
 
+.skill-tree-empty-state {
+    text-align: center;
+    color: var(--color-text-muted);
+    margin-top: 50px;
+}
+
 .skill-tier-1-container {
     border: 1px solid var(--border-default);
     padding: var(--spacing-lg);

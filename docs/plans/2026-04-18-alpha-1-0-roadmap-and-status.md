@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.31.18`
+- Current in-game displayed version: `Alpha 0.31.19`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.31.18`
+### Shipped through `0.31.19`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -138,6 +138,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.31.16`: Loading overlay shell, title, progress frame, progress fill, and status text now use reusable loading-screen classes instead of inline chrome
 - `0.31.17`: Compact ability tooltip name, description, and mana-cost rows now use reusable ability-tooltip classes instead of inline chrome
 - `0.31.18`: Abilities spellbook shell and spell grid layout now use reusable abilities-menu and abilities-content classes instead of inline chrome
+- `0.31.19`: Skill Tree empty-state placeholder copy now uses a reusable skill-tree-empty-state class instead of inline chrome
 
 ### What `0.22` has clearly accomplished already
 
@@ -248,7 +249,7 @@ Historical closeout note:
 Current status:
 
 - `0.22` is closed for planned implementation work
-- `0.31.18` is now the active version line
+- `0.31.19` is now the active version line
 
 ### Historical `0.22` implementation checklist
 
