@@ -124,6 +124,7 @@ export class UIManager {
         this.audioEnabledToggle = document.getElementById('audio-enabled');
         this.audioVolumeSlider = document.getElementById('audio-volume');
         this.audioVolumeValue = document.getElementById('audio-volume-value');
+        this.audioDetailSelect = document.getElementById('audio-detail-level');
         this.cameraShakeToggle = document.getElementById('camera-shake-enabled');
         this.fullscreenToggle = document.getElementById('fullscreen-enabled');
         this.btnDownloadCoreAssets = document.getElementById('btn-download-core-assets');
@@ -171,6 +172,7 @@ export class UIManager {
         this.onAutoLootChange = null;
         this.onAudioEnabledChange = null;
         this.onAudioVolumeChange = null;
+        this.onAudioDetailLevelChange = null;
         this.onCameraShakeChange = null;
         this.onFullscreenChange = null;
         this.onEscMenuChange = null;
@@ -215,6 +217,7 @@ export class UIManager {
         const audioSettings = this.audioManager.getSettings();
         this.audioEnabled = audioSettings.enabled;
         this.audioVolume = Math.round(audioSettings.volume * 100);
+        this.audioDetailLevel = audioSettings.detailLevel || 'full';
         if (this.audioEnabledToggle) {
             this.audioEnabledToggle.checked = this.audioEnabled;
             this.audioEnabledToggle.addEventListener('change', () => {
@@ -225,6 +228,12 @@ export class UIManager {
             this.audioVolumeSlider.value = String(this.audioVolume);
             this.audioVolumeSlider.addEventListener('input', () => {
                 this.setAudioVolume(Number(this.audioVolumeSlider.value));
+            });
+        }
+        if (this.audioDetailSelect) {
+            this.audioDetailSelect.value = this.audioDetailLevel;
+            this.audioDetailSelect.addEventListener('change', () => {
+                this.setAudioDetailLevel(this.audioDetailSelect.value);
             });
         }
         this.updateAudioVolumeLabel();
@@ -2218,6 +2227,22 @@ export class UIManager {
 
     getAudioVolume() {
         return Math.max(0, Math.min(1, (Number(this.audioVolume) || 0) / 100));
+    }
+
+    setAudioDetailLevel(detailLevel) {
+        const nextValue = detailLevel === 'reduced' ? 'reduced' : 'full';
+        this.audioDetailLevel = nextValue;
+        this.audioManager?.setDetailLevel?.(nextValue);
+        if (this.audioDetailSelect && this.audioDetailSelect.value !== nextValue) {
+            this.audioDetailSelect.value = nextValue;
+        }
+        if (this.onAudioDetailLevelChange) {
+            this.onAudioDetailLevelChange(nextValue);
+        }
+    }
+
+    getAudioDetailLevel() {
+        return this.audioDetailLevel === 'reduced' ? 'reduced' : 'full';
     }
 
     setCameraShakeEnabled(enabled) {

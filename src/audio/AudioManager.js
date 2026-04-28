@@ -1,5 +1,11 @@
 const DEFAULT_VOLUME = 0.45;
 const CUE_COOLDOWN_MS = 45;
+const DEFAULT_DETAIL_LEVEL = 'full';
+
+const AUDIO_DETAIL_LEVELS = Object.freeze({
+    full: 'full',
+    reduced: 'reduced',
+});
 
 export const AUDIO_CUES = Object.freeze({
     uiClick: 'ui.click',
@@ -28,6 +34,7 @@ export class AudioManager {
 
         this.enabled = this.readStoredBoolean('eidolon.audioEnabled', true);
         this.volume = this.readStoredNumber('eidolon.audioVolume', DEFAULT_VOLUME, 0, 1);
+        this.detailLevel = this.readStoredDetailLevel('eidolon.audioDetailLevel', DEFAULT_DETAIL_LEVEL);
     }
 
     readStoredBoolean(key, fallback) {
@@ -56,6 +63,19 @@ export class AudioManager {
         } catch {
             // Storage can be unavailable in private contexts; audio still works for this session.
         }
+    }
+
+    readStoredDetailLevel(key, fallback) {
+        try {
+            const stored = this.storage?.getItem?.(key);
+            return this.normalizeDetailLevel(stored || fallback);
+        } catch {
+            return fallback;
+        }
+    }
+
+    normalizeDetailLevel(detailLevel) {
+        return detailLevel === AUDIO_DETAIL_LEVELS.reduced ? AUDIO_DETAIL_LEVELS.reduced : AUDIO_DETAIL_LEVELS.full;
     }
 
     ensureContext() {
@@ -102,15 +122,29 @@ export class AudioManager {
         if (this.masterGain) this.masterGain.gain.value = this.enabled ? this.volume : 0;
     }
 
+    setDetailLevel(detailLevel) {
+        this.detailLevel = this.normalizeDetailLevel(detailLevel);
+        this.persistSetting('eidolon.audioDetailLevel', this.detailLevel);
+    }
+
     getSettings() {
         return {
             enabled: this.enabled,
             volume: this.volume,
+            detailLevel: this.detailLevel,
         };
+    }
+
+    isCueAllowedForDetailLevel(cueName) {
+        if (this.detailLevel !== AUDIO_DETAIL_LEVELS.reduced) return true;
+        return cueName !== AUDIO_CUES.uiClick
+            && cueName !== AUDIO_CUES.uiOpen
+            && cueName !== AUDIO_CUES.uiClose;
     }
 
     canPlay(cueName) {
         if (!this.enabled) return false;
+        if (!this.isCueAllowedForDetailLevel(cueName)) return false;
         const lastPlayedAt = this.lastCueTimes.get(cueName) || 0;
         const now = this.now();
         if (now - lastPlayedAt < CUE_COOLDOWN_MS) return false;

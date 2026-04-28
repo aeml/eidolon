@@ -7,8 +7,8 @@ const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-
 const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.32.0 for the audio foundation slice', () => {
-        expect(indexHtml).toContain('Alpha 0.32.0');
+    test('advances the login screen to alpha 0.32.1 for the audio detail controls slice', () => {
+        expect(indexHtml).toContain('Alpha 0.32.1');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -75,23 +75,31 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.32.0', () => {
+    test('includes the latest player-facing patch notes entry for 0.32.1', () => {
+        expect(indexHtml).toContain('Patch 0.32.1');
+        expect(indexHtml).toContain('Settings adds an Audio Detail selector with Full cues and Reduced UI cues modes');
+        expect(indexHtml).toContain('UI click and window open/close sounds are suppressed while gameplay feedback like loot, combat, and jump sounds remains available');
+        expect(indexHtml).toContain('Audio detail uses the same centralized settings path as audio enablement and volume');
+        expect(indexHtml).toContain('Added coverage for reduced-detail filtering, invalid detail-level normalization, UIManager persistence, settings presentation, and the 0.32.1 release state');
+    });
+
+    test('marks 0.32.1 shipped and points the roadmap at authored audio asset readiness', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.32.1`');
+        expect(alphaRoadmap).toContain('`0.32.1` is now the active version line');
+        expect(alphaRoadmap).toContain('`0.32` is active and has shipped its audio foundation plus the first accessibility-facing detail control');
+        expect(alphaRoadmap).toContain('Build the `0.32.2` authored audio asset-readiness slice.');
+        expect(alphaRoadmap).toContain('define cue asset metadata and fallback behavior so generated cues remain available when authored files are missing');
+        expect(engineeringRoadmap).toContain('### 1. Audio asset readiness');
+        expect(engineeringRoadmap).toContain('`feat: prepare audio asset cue loading`');
+        expect(engineeringRoadmap).not.toContain('`refactor: add scene groups for instance transitions`');
+    });
+
+    test('keeps the prior 0.32.0 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.32.0');
         expect(indexHtml).toContain('A client-owned AudioManager now provides generated placeholder cues');
         expect(indexHtml).toContain('UI clicks and window open/close actions, loot pickup and inventory-full feedback, combat hits and misses, and jump takeoff and landing');
         expect(indexHtml).toContain('Players can toggle audio cues and adjust synthesized cue volume');
         expect(indexHtml).toContain('Added coverage for audio defaults and cue definitions, loot success/failure cues, combat hit/miss cues, jump start/landing cues, settings presentation, and the 0.32.0 release state');
-    });
-
-    test('marks 0.32.0 shipped and points the roadmap at audio accessibility follow-up', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.32.0`');
-        expect(alphaRoadmap).toContain('`0.32.0` is now the active version line');
-        expect(alphaRoadmap).toContain('`0.32` is active and has shipped its audio foundation baseline');
-        expect(alphaRoadmap).toContain('Build the `0.32.1` audio and accessibility follow-up slice.');
-        expect(alphaRoadmap).toContain('prepare the generated cue path for later replacement by authored `.mp3`/`.ogg` assets');
-        expect(engineeringRoadmap).toContain('### 1. Audio accessibility and asset readiness');
-        expect(engineeringRoadmap).toContain('`feat: add audio accessibility controls`');
-        expect(engineeringRoadmap).not.toContain('`refactor: add scene groups for instance transitions`');
     });
 
     test('keeps the prior 0.31.41 patch notes entry in history', () => {
@@ -1025,6 +1033,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.32.1');
         expect(indexHtml).toContain('Patch 0.32.0');
         expect(indexHtml).toContain('Patch 0.31.41');
         expect(indexHtml).toContain('Patch 0.31.40');
@@ -1158,6 +1167,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.32.1"');
         expect(indexHtml).toContain('data-version="0.32.0"');
         expect(indexHtml).toContain('data-version="0.31.41"');
         expect(indexHtml).toContain('data-version="0.31.40"');

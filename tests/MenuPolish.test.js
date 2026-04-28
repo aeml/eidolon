@@ -90,6 +90,7 @@ function buildStaticWindowDom() {
         <input id="audio-enabled" type="checkbox" />
         <input id="audio-volume" />
         <div id="audio-volume-value"></div>
+        <select id="audio-detail-level"></select>
         <button id="btn-download-core-assets"></button>
         <button id="btn-download-dungeon-assets"></button>
         <button id="btn-download-environment-assets"></button>
@@ -1114,7 +1115,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.32.0</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.32.1</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1303,6 +1304,9 @@ describe('menu polish regressions', () => {
         expect(html).toContain('<label for="audio-enabled" class="support-field__label">Audio Cues</label>');
         expect(html).toContain('<label for="audio-volume" class="support-field__label">Audio Volume</label>');
         expect(html).toContain('<input id="audio-volume" class="support-field__range" type="range"');
+        expect(html).toContain('<label for="audio-detail-level" class="support-field__label">Audio Detail</label>');
+        expect(html).toContain('<select id="audio-detail-level" class="support-field__control">');
+        expect(html).toContain('Reduced UI cues keeps gameplay feedback sounds but quiets routine menu click and window sounds.');
         expect(html).toContain('<label for="camera-shake-enabled" class="support-field__label">Camera Shake</label>');
         expect(html).toContain('<label for="fullscreen-enabled" class="support-field__label">Fullscreen</label>');
         expect(html).not.toContain('<label for="graphics-quality" style="color: #ffd700; font-size: 13px;">Graphics Quality</label>');

@@ -57,6 +57,10 @@ function buildDom() {
         <input id="graphics-brightness" />
         <div id="graphics-brightness-value"></div>
         <input id="auto-loot-enabled" type="checkbox" />
+        <input id="audio-enabled" type="checkbox" />
+        <input id="audio-volume" />
+        <div id="audio-volume-value"></div>
+        <select id="audio-detail-level"><option value="full">Full cues</option><option value="reduced">Reduced UI cues</option></select>
         <input id="camera-shake-enabled" type="checkbox" />
         <input id="fullscreen-enabled" type="checkbox" />
         <div id="inventory-screen"></div>
@@ -224,6 +228,31 @@ describe('UIManager settings', () => {
         expect(ui.getFullscreenEnabled()).toBe(true);
         expect(document.getElementById('fullscreen-enabled').checked).toBe(true);
         expect(ui.onFullscreenChange).toHaveBeenCalledWith(true);
+    });
+
+    test('audio detail level persists and invokes callback', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        ui.onAudioDetailLevelChange = jest.fn();
+
+        ui.setAudioDetailLevel('reduced');
+
+        expect(localStorage.getItem('eidolon.audioDetailLevel')).toBe('reduced');
+        expect(ui.getAudioDetailLevel()).toBe('reduced');
+        expect(document.getElementById('audio-detail-level').value).toBe('reduced');
+        expect(ui.onAudioDetailLevelChange).toHaveBeenCalledWith('reduced');
+    });
+
+    test('audio detail select change updates setting', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const select = document.getElementById('audio-detail-level');
+
+        select.value = 'reduced';
+        select.dispatchEvent(new Event('change'));
+
+        expect(ui.getAudioDetailLevel()).toBe('reduced');
+        expect(localStorage.getItem('eidolon.audioDetailLevel')).toBe('reduced');
     });
 
     test('esc menu toggle reports open and close state', () => {

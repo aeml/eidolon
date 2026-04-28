@@ -50,7 +50,7 @@ describe('AudioManager', () => {
         const context = createMockContext();
         const audio = new AudioManager({ contextFactory: () => context, now: () => 1000 });
 
-        expect(audio.getSettings()).toEqual({ enabled: true, volume: 0.45 });
+        expect(audio.getSettings()).toEqual({ enabled: true, volume: 0.45, detailLevel: 'full' });
         expect(audio.play(AUDIO_CUES.uiClick)).toBe(true);
 
         expect(context.createGain).toHaveBeenCalled();
@@ -68,7 +68,7 @@ describe('AudioManager', () => {
 
         expect(localStorage.getItem('eidolon.audioVolume')).toBe('0.8');
         expect(localStorage.getItem('eidolon.audioEnabled')).toBe('false');
-        expect(audio.getSettings()).toEqual({ enabled: false, volume: 0.8 });
+        expect(audio.getSettings()).toEqual({ enabled: false, volume: 0.8, detailLevel: 'full' });
         expect(context.createdGains[0].gain.value).toBe(0);
 
         audio.setEnabled(true);
@@ -116,5 +116,31 @@ describe('AudioManager', () => {
             expect.objectContaining({ type: 'triangle', frequency: 260 }),
             expect.objectContaining({ type: 'triangle', frequency: 180 }),
         ]));
+    });
+
+    test('reduced detail level suppresses routine UI cues while preserving gameplay cues', () => {
+        let now = 1000;
+        const context = createMockContext();
+        const audio = new AudioManager({ contextFactory: () => context, now: () => now });
+
+        audio.setDetailLevel('reduced');
+        expect(localStorage.getItem('eidolon.audioDetailLevel')).toBe('reduced');
+        expect(audio.getSettings().detailLevel).toBe('reduced');
+        expect(audio.play(AUDIO_CUES.uiClick)).toBe(false);
+
+        now += 50;
+        expect(audio.play(AUDIO_CUES.combatHit)).toBe(true);
+        expect(context.createOscillator).toHaveBeenCalled();
+    });
+
+    test('normalizes invalid detail levels back to full cues', () => {
+        localStorage.setItem('eidolon.audioDetailLevel', 'verbose');
+
+        const audio = new AudioManager({ contextFactory: () => createMockContext() });
+
+        expect(audio.getSettings().detailLevel).toBe('full');
+        audio.setDetailLevel('reduced');
+        audio.setDetailLevel('invalid');
+        expect(audio.getSettings().detailLevel).toBe('full');
     });
 });
