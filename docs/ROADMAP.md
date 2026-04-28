@@ -2,7 +2,7 @@
 
 Last refreshed: April 2026
 
-This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, and movement/render polish passes already landed on `master`.
+This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, and `0.31` client-UX closeout passes already landed on `master`.
 
 For the broader release-status tracker that covers remaining `0.22` work and the roadmap through `alpha 1.0`, see `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md`.
 
@@ -29,36 +29,40 @@ For the broader release-status tracker that covers remaining `0.22` work and the
 - Modal close interaction fixes for menus
 - Sharper/stabler shadows
 - Exaggerated ctrl-click jump visuals with landing dust and camera punch
+- `0.31` client UX closeout: shared menu chrome, viewport-safe windows, UI diffing, and class-based death overlay presentation
 
 ## Highest-value next slices
 
-### 1. Scene-group instance transitions
+### 1. Audio foundation
 Why now:
-- Instance entry/exit still relies on broad scene rebuild behavior
-- This is one of the largest remaining correctness/perf footguns in the client
-- Recent runtime hygiene landed: instance transitions now clear stale transient combat/effect/hazard state before rebuilding, so the remaining work is narrower and safer
+- `0.31` closed the planned client UX consistency line
+- The largest remaining presentation gap is that combat, loot, and UI actions still have no meaningful sound layer
+- A small audio abstraction is needed before adding one-off sounds across gameplay systems
 
 Targets:
-- `src/core/RenderSystem.js`
-- `src/core/GameEngine.js`
-- `src/world/WorldGenerator.js`
-- tests around instance transitions and cleanup
-
-Definition of done:
-- Environment, entities, and transient effects live in explicit scene groups
-- Dungeon transitions stop depending on clearing broadly across unrelated scene content
-
-### 2. UI diffing and throttling
-Why now:
-- A lot of the remaining frame-time waste is DOM churn rather than headline rendering features
-
-Targets:
+- `src/audio/` or the smallest existing client location for a new audio manager
 - `src/core/GameEngine.js`
 - `src/ui/UIManager.js`
-- extracted UI modules where live updates are frequent
+- `src/ui/InventoryUI.js`
+- tests around audio manager defaults, mute/volume behavior, and first cue triggers
 
 Definition of done:
-- HUD, XP, buff tracker, and related panels update on meaningful changes or throttled cadence instead of unnecessary per-frame churn
+- UI, loot, and combat cues route through one client-owned audio manager
+- Browser autoplay policy is handled safely until player interaction unlocks playback
+- The first cues improve feedback without becoming noisy or mandatory
+
+### 2. Accessibility baseline
+Why now:
+- Audio should land with user control, and the following roadmap phase needs UI scale, keybind, and clarity settings
+
+Targets:
+- `src/ui/UIManager.js`
+- settings and input-management surfaces
+- relevant CSS modules and menu regression tests
+
+Definition of done:
+- Players can control key clarity options from settings without external docs
+- UI scale/keybind work has regression coverage for persistence and presentation
 
 ### 3. Data-driven mesh/content expansion
 Why now:
@@ -99,6 +103,6 @@ Definition of done:
 - There is a tiny deterministic sandbox for testing rendering, movement, VFX, and menu regressions without a full live run
 
 ## Recommended next 3 implementation slices
-1. `refactor: add scene groups for instance transitions`
-2. `perf: throttle and diff high-frequency HUD updates`
-3. `feat: add dungeon room-role pacing metadata`
+1. `feat: add audio manager foundation`
+2. `feat: wire first combat loot and ui cues`
+3. `feat: add accessibility control baseline`

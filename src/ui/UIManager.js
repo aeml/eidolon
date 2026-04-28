@@ -482,33 +482,14 @@ export class UIManager {
         const existing = document.getElementById('death-screen');
         const div = existing || document.createElement('div');
         div.id = 'death-screen';
+        div.className = 'death-screen';
         div.style.display = 'none';
-        div.style.position = 'absolute';
-        div.style.top = '0';
-        div.style.left = '0';
-        div.style.width = '100%';
-        div.style.height = '100%';
-        div.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-        div.style.zIndex = '2000';
-        div.style.flexDirection = 'column';
-        div.style.alignItems = 'center';
-        div.style.justifyContent = 'center';
-        div.style.color = '#ff0000';
-        div.style.fontFamily = 'Arial, sans-serif';
 
         div.innerHTML = `
-            <h1 id="death-screen-title" style="font-size: 72px; margin-bottom: 20px; text-shadow: 0 0 10px #000;">YOU DIED</h1>
-            <div id="death-screen-hint" style="max-width: 520px; margin: 0 0 18px; color: #f4e6d2; font-size: 18px; line-height: 1.45; text-align: center;"></div>
-            <div id="death-screen-meta" style="margin: 0 0 20px; color: #d6d9e6; font-size: 15px; letter-spacing: 0.02em;"></div>
-            <button id="btn-death-respawn" style="
-                padding: 15px 40px; 
-                font-size: 24px; 
-                background: #333; 
-                color: white; 
-                border: 2px solid #666; 
-                cursor: pointer;
-                transition: all 0.2s;
-            ">Respawn in Town</button>
+            <h1 id="death-screen-title" class="death-screen__title">YOU DIED</h1>
+            <div id="death-screen-hint" class="death-screen__hint"></div>
+            <div id="death-screen-meta" class="death-screen__meta"></div>
+            <button id="btn-death-respawn" class="menu-btn death-screen__button">Respawn in Town</button>
         `;
 
         if (!existing) {
@@ -516,14 +497,6 @@ export class UIManager {
         }
 
         const btn = div.querySelector('#btn-death-respawn');
-        btn.onmouseover = () => {
-            btn.style.background = '#444';
-            btn.style.borderColor = '#fff';
-        };
-        btn.onmouseout = () => {
-            btn.style.background = '#333';
-            btn.style.borderColor = '#666';
-        };
         btn.onclick = () => {
             if (this.onRespawn) {
                 this.onRespawn();

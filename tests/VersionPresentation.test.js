@@ -3,10 +3,12 @@ import path from 'path';
 
 const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
+const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md'), 'utf8');
+const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.40 for the viewport-safe window layout slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.40');
+    test('advances the login screen to alpha 0.31.41 for the client UX closeout slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.41');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +75,25 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.40', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.41', () => {
+        expect(indexHtml).toContain('Patch 0.31.41');
+        expect(indexHtml).toContain('The death/respawn overlay now uses reusable CSS classes and shared button styling');
+        expect(indexHtml).toContain('Title, guidance, metadata, and respawn action sizing clamp for small screens');
+        expect(indexHtml).toContain('0.31 is marked closed for planned client-UX consistency work');
+        expect(indexHtml).toContain('Added closeout coverage for death overlay classes, removed inline death-screen chrome, 0.31.41 version presentation, and the 0.32-ready roadmap state');
+    });
+
+    test('marks 0.31 complete and points the roadmap at 0.32 audio foundation', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.31.41`');
+        expect(alphaRoadmap).toContain('`0.31` is closed for planned client-UX consistency work; the next active implementation line is `0.32`');
+        expect(alphaRoadmap).toContain('Build the first `0.32` audio-foundation slice.');
+        expect(alphaRoadmap).toContain('establish a small audio manager');
+        expect(engineeringRoadmap).toContain('### 1. Audio foundation');
+        expect(engineeringRoadmap).toContain('`feat: add audio manager foundation`');
+        expect(engineeringRoadmap).not.toContain('`refactor: add scene groups for instance transitions`');
+    });
+
+    test('keeps the prior 0.31.40 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.40');
         expect(indexHtml).toContain('Window placement now runs through shared viewport rules');
         expect(indexHtml).toContain('Shop, Stash, and Forge keep Inventory beside them on wide screens');
@@ -996,6 +1016,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.41');
         expect(indexHtml).toContain('Patch 0.31.40');
         expect(indexHtml).toContain('Patch 0.31.39');
         expect(indexHtml).toContain('Patch 0.31.38');
@@ -1127,6 +1148,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.41"');
         expect(indexHtml).toContain('data-version="0.31.40"');
         expect(indexHtml).toContain('data-version="0.31.39"');
         expect(indexHtml).toContain('data-version="0.31.38"');

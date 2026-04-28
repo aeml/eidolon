@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.31.40`
+- Current in-game displayed version: `Alpha 0.31.41`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.31.40`
+### Shipped through `0.31.41`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -160,6 +160,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.31.38`: Render throttling now reuses the UIManager player stat serializer so displayed HUD payload comparisons stay aligned
 - `0.31.39`: Render throttling now reuses the UIManager XP serializer so progression comparisons stay aligned between engine and UI
 - `0.31.40`: Primary menus, service windows, support modals, and the world map now use shared viewport-safe layout rules with wide-screen Inventory companions and narrow-screen non-overlap behavior
+- `0.31.41`: Death and respawn overlay chrome now uses reusable class-based CSS and shared button styling, closing the planned `0.31` client-UX consistency line before the `0.32` audio foundation begins
 
 ### What `0.22` has clearly accomplished already
 
@@ -270,7 +271,8 @@ Historical closeout note:
 Current status:
 
 - `0.22` is closed for planned implementation work
-- `0.31.40` is now the active version line
+- `0.31.41` is now the active version line
+- `0.31` is closed for planned client-UX consistency work; the next active implementation line is `0.32`
 
 ### Historical `0.22` implementation checklist
 
@@ -353,41 +355,41 @@ Why this order:
 
 ### Exact next slice to build
 
-Build the next `0.31` client-UX consistency slice.
+Build the first `0.32` audio-foundation slice.
 
 Scope:
 
-- use the completed `0.30` viewport audit as the baseline for the broader client UX consistency pass
-- continue removing menu chrome inconsistencies that make windows feel built by separate systems
-- tighten settings, help, social, skill, and HUD presentation without starting the audio foundation yet
-- update player-facing patch notes and regression coverage with each shipped `0.31.x` slice
+- establish a small audio manager that can play UI, combat, loot, and feedback cues behind settings-safe volume controls
+- start with a minimal, deterministic set of cues rather than trying to score the whole game in one pass
+- keep the first slice resilient when browser autoplay policy blocks sound until player interaction
+- update player-facing patch notes and regression coverage with each shipped `0.32.x` slice
 
 Why this is the best next slice:
 
-- `0.30` has closed the visible window clipping audit, including generated modals and special panels
-- `0.31` should turn that sizing baseline into consistent menu chrome, spacing, action rows, and close behavior
-- finishing this UX consistency layer reduces obvious UI friction before adding larger audio, accessibility, or VFX work
+- `0.30` closed the visible window clipping audit, including generated modals and special panels
+- `0.31` closed the planned client-UX consistency layer across shared chrome, viewport safety, UI diffing, and overlay closeout
+- the next visible quality gap is the missing audio layer promised for the `0.32-0.33` phase
 
 Exact files to start in:
 
 - `index.html`
-- `src/styles/windows.css`
-- `src/styles/responsive.css`
+- `src/audio/` or the smallest existing client location for a new audio manager
+- `src/core/GameEngine.js`
 - `src/ui/UIManager.js`
-- `tests/MenuPolish.test.js`
+- `src/ui/InventoryUI.js`
 - `tests/VersionPresentation.test.js`
 
 Target regression surfaces for this slice:
 
-- `tests/MenuPolish.test.js`
-- `tests/UIBindings.test.js`
+- audio-manager unit tests once the manager exists
+- targeted UI/input tests for menu and loot cues
 - `tests/VersionPresentation.test.js`
 
 Definition of done for the next slice:
 
-- primary menus use consistent header, body, footer, tab, and action-row behavior
-- generated menus no longer feel visually or behaviorally separate from static windows
-- targeted regression coverage locks down the consistency behavior
+- audio playback is routed through one small client-owned abstraction
+- volume/mute defaults are safe and do not break browsers before user gesture unlock
+- the first shipped cues improve real moment-to-moment feedback without becoming noisy
 - patch notes and the active status line move forward with the implementation
 
 ## Roadmap from `0.23` to `alpha 1.0`

@@ -1110,7 +1110,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.40</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.41</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1163,6 +1163,27 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.auth-status\s*\{[^}]*color:\s*#ffeb3b;[^}]*font-size:\s*14px;[^}]*text-align:\s*center;[^}]*min-height:\s*20px;/s);
         expect(css).toMatch(/\.play-container\s*\{[^}]*display:\s*none;[^}]*text-align:\s*center;[^}]*margin-top:\s*20px;/s);
         expect(css).toMatch(/\.play-container__button\s*\{[^}]*font-size:\s*24px;[^}]*padding:\s*15px 50px;[^}]*background:\s*#4CAF50;[^}]*border:\s*2px solid #45a049;[^}]*box-shadow:\s*0 0 20px rgba\(76, 175, 80, 0\.5\);/s);
+    });
+
+    test('death overlay uses reusable closeout classes instead of inline chrome', () => {
+        buildStaticWindowDom();
+        const overlaysCss = readFileSync(overlaysCssPath, 'utf8');
+        new UIManager(false);
+
+        const deathScreen = document.getElementById('death-screen');
+        expect(deathScreen.classList.contains('death-screen')).toBe(true);
+        expect(deathScreen.querySelector('#death-screen-title').className).toBe('death-screen__title');
+        expect(deathScreen.querySelector('#death-screen-hint').className).toBe('death-screen__hint');
+        expect(deathScreen.querySelector('#death-screen-meta').className).toBe('death-screen__meta');
+        expect(deathScreen.querySelector('#btn-death-respawn').className).toBe('menu-btn death-screen__button');
+
+        expect(deathScreen.innerHTML).not.toContain('style=');
+        expect(deathScreen.style.position).toBe('');
+        expect(deathScreen.style.backgroundColor).toBe('');
+        expect(deathScreen.style.zIndex).toBe('');
+        expect(overlaysCss).toMatch(/\.death-screen\s*\{[^}]*position:\s*absolute;[^}]*inset:\s*0;[^}]*background:\s*rgba\(0, 0, 0, 0\.8\);[^}]*z-index:\s*2000;/s);
+        expect(overlaysCss).toMatch(/\.death-screen__title\s*\{[^}]*font-size:\s*clamp\(42px, 9vw, 72px\);/s);
+        expect(overlaysCss).toMatch(/\.death-screen__button\s*\{[^}]*width:\s*auto;[^}]*min-height:\s*52px;/s);
     });
 
     test('class selection descriptions use shared title and class-color classes', () => {
