@@ -38,6 +38,7 @@ export class UIManager {
         this.lastPlayerStatsSignature = '';
         this.lastXpSignature = '';
         this.lastHotbarCooldownSignature = '';
+        this.lastCharacterSheetSignature = '';
         this.serverEpochSeconds = 0;
 
         // New UI Elements
@@ -2361,6 +2362,12 @@ export class UIManager {
         // Only update DOM if visible to save performance
         if (this.characterSheet.style.display === 'none') return;
 
+        const signature = this.serializeCharacterSheet(player);
+        if (signature === this.lastCharacterSheetSignature) {
+            return;
+        }
+        this.lastCharacterSheetSignature = signature;
+
         const showPoints = !player.isMultiplayer;
         const btnStyle = (player.statPoints > 0 && showPoints) ? 'display:inline-block; margin-left:5px; cursor:pointer;' : 'display:none;';
 
@@ -2412,6 +2419,74 @@ export class UIManager {
         this.inventory.updateEquipSlot('slot-ring2', player.equipment.ring2, 'RING 2');
         this.inventory.updateEquipSlot('slot-trinket1', player.equipment.trinket1, 'TRINKET 1');
         this.inventory.updateEquipSlot('slot-trinket2', player.equipment.trinket2, 'TRINKET 2');
+    }
+
+    serializeCharacterSheet(player) {
+        const stats = player?.stats || {};
+        const baseStats = player?.baseStats || {};
+        const equipment = player?.equipment || {};
+        const equipmentSlots = [
+            'head',
+            'shoulders',
+            'chest',
+            'belt',
+            'legs',
+            'feet',
+            'gloves',
+            'neck',
+            'mainHand',
+            'offHand',
+            'ring1',
+            'ring2',
+            'trinket1',
+            'trinket2'
+        ];
+
+        return [
+            player?.level ?? 0,
+            player?.xp ?? 0,
+            player?.xpToNextLevel ?? 0,
+            player?.isMultiplayer ? 'mp' : 'sp',
+            player?.statPoints ?? 0,
+            Math.ceil(stats.hp ?? 0),
+            stats.maxHp ?? 0,
+            Math.ceil(stats.mana ?? 0),
+            stats.maxMana ?? 0,
+            stats.strength ?? 0,
+            stats.dexterity ?? 0,
+            stats.intelligence ?? 0,
+            stats.vitality ?? 0,
+            stats.wisdom ?? 0,
+            stats.damage ?? 0,
+            stats.defense ?? 0,
+            baseStats.strength ?? '',
+            baseStats.dexterity ?? '',
+            baseStats.intelligence ?? '',
+            baseStats.vitality ?? '',
+            baseStats.wisdom ?? '',
+            ...equipmentSlots.map((slot) => this.serializeEquipmentForCharacterSheet(equipment[slot]))
+        ].join('|');
+    }
+
+    serializeEquipmentForCharacterSheet(item) {
+        if (!item || !item.id) return 'empty';
+
+        const rarity = typeof item.rarity === 'string'
+            ? item.rarity
+            : (item.rarity?.name || item.rarity?.key || '');
+        const socketSummary = Array.isArray(item.sockets)
+            ? item.sockets.map((socket) => socket?.id || socket?.name || 'empty').join(',')
+            : '';
+
+        return [
+            item.id,
+            item.name || '',
+            item.type || '',
+            rarity,
+            item.potency ?? 0,
+            item.socketCount ?? '',
+            socketSummary
+        ].join(':');
     }
 
     updateEquipSlot(id, item, placeholder, serverSlotName) { this.inventory.updateEquipSlot(id, item, placeholder, serverSlotName); }

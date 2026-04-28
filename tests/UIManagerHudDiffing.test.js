@@ -229,4 +229,53 @@ describe('UIManager HUD diffing', () => {
         ui.updateHotbarCooldowns(player);
         expect(overlay.textContent).toBe('3');
     });
+
+    test('updateCharacterSheet skips identical visible character payloads and refreshes when stats change', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const updateEquipSlot = jest.spyOn(ui.inventory, 'updateEquipSlot');
+        const player = createPlayer({
+            level: 7,
+            xp: 35,
+            xpToNextLevel: 100,
+            statPoints: 2,
+            stats: {
+                hp: 95,
+                maxHp: 120,
+                mana: 40,
+                maxMana: 80,
+                strength: 12,
+                dexterity: 9,
+                intelligence: 8,
+                vitality: 11,
+                wisdom: 7,
+                damage: 14,
+                defense: 6
+            },
+            baseStats: {
+                strength: 10,
+                dexterity: 9,
+                intelligence: 8,
+                vitality: 10,
+                wisdom: 7
+            },
+            equipment: {
+                head: { id: 'helm-1', name: 'Iron Helm', type: 'HEAD', rarity: 'COMMON', potency: 1 }
+            }
+        });
+
+        ui.updateCharacterSheet(player);
+        expect(updateEquipSlot).toHaveBeenCalledTimes(14);
+        expect(document.getElementById('stats-content').textContent).toContain('14');
+
+        document.getElementById('stats-content').textContent = 'stale';
+        ui.updateCharacterSheet(player);
+        expect(updateEquipSlot).toHaveBeenCalledTimes(14);
+        expect(document.getElementById('stats-content').textContent).toBe('stale');
+
+        player.stats.damage = 18;
+        ui.updateCharacterSheet(player);
+        expect(updateEquipSlot).toHaveBeenCalledTimes(28);
+        expect(document.getElementById('stats-content').textContent).toContain('18');
+    });
 });
