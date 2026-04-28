@@ -133,7 +133,11 @@ export class TradingUI {
         if (!this.tradingHouseScreen) return;
 
         const isHidden = this.tradingHouseScreen.style.display === 'none' || this.tradingHouseScreen.style.display === '';
-        this.tradingHouseScreen.style.display = isHidden ? 'flex' : 'none';
+        if (this.ctx.toggleManagedWindow) {
+            this.ctx.toggleManagedWindow('trading');
+        } else {
+            this.tradingHouseScreen.style.display = isHidden ? 'flex' : 'none';
+        }
 
         if (isHidden) {
             this.switchTab('bid');

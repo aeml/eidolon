@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.31.25`
+- Current in-game displayed version: `Alpha 0.31.40`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.31.25`
+### Shipped through `0.31.40`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -145,6 +145,21 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.31.23`: Merchant Common, Uncommon, and Rare sell-all buttons now use reusable shop sell-button classes instead of inline chrome
 - `0.31.24`: Stash window shell, 10-column stash grid, and stash guidance copy now use reusable stash classes instead of inline chrome
 - `0.31.25`: Forge shell centering, viewport sizing, tall menu height, z-index, and flex layout now use the reusable forge-window class instead of inline chrome
+- `0.31.26`: Scene transitions now separate persistent and per-instance environment content so dungeon and town rebuilds clear generated environment meshes cleanly
+- `0.31.27`: Instance environment cleanup now disposes generated mesh resources while preserving persistent world surfaces
+- `0.31.28`: Instance transitions now reset render-update signatures for HUD, XP, hotbar, enemy bars, character sheet, and world-map updates
+- `0.31.29`: Player stat HUD updates now diff inside UIManager so repeated identical HP, mana, ability, cooldown, and cost payloads skip redundant DOM writes
+- `0.31.30`: XP bar updates now diff inside UIManager so stable level and progression payloads stop rewriting the bar every frame
+- `0.31.31`: Hotbar cooldown rendering now diffs inside UIManager so stable cooldown overlays avoid redundant DOM writes
+- `0.31.32`: Character sheet refreshes now diff inside UIManager so repeated identical visible character payloads skip full stats and equipment-slot rebuilds
+- `0.31.33`: Hotbar slot assignment now invalidates cooldown diffing so recreated cooldown overlay DOM refreshes safely
+- `0.31.34`: Opening the character sheet now invalidates its diff cache so each open cycle forces one fresh visible render
+- `0.31.35`: Scene swaps now clear UIManager display caches alongside render signatures before the next scene presents
+- `0.31.36`: Render throttling now reuses the UIManager hotbar cooldown serializer so engine and UI comparisons stay aligned
+- `0.31.37`: Render throttling now reuses the UIManager character sheet serializer so visible character payload comparisons stay aligned
+- `0.31.38`: Render throttling now reuses the UIManager player stat serializer so displayed HUD payload comparisons stay aligned
+- `0.31.39`: Render throttling now reuses the UIManager XP serializer so progression comparisons stay aligned between engine and UI
+- `0.31.40`: Primary menus, service windows, support modals, and the world map now use shared viewport-safe layout rules with wide-screen Inventory companions and narrow-screen non-overlap behavior
 
 ### What `0.22` has clearly accomplished already
 
@@ -255,7 +270,7 @@ Historical closeout note:
 Current status:
 
 - `0.22` is closed for planned implementation work
-- `0.31.25` is now the active version line
+- `0.31.40` is now the active version line
 
 ### Historical `0.22` implementation checklist
 

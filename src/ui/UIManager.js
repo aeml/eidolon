@@ -56,6 +56,7 @@ export class UIManager {
             getOnboardingRecoveryContext: () => window.game?.getOnboardingRecoveryContext?.() || null,
             getServerEpochSeconds: () => this.serverEpochSeconds,
             closePrimaryHudMenus: (options) => this.closePrimaryHudMenus(options),
+            toggleManagedWindow: (id, options) => this.toggleManagedWindow(id, options),
         });
 
         // Escape Menu & Help
@@ -90,7 +91,8 @@ export class UIManager {
                         payload: { respecType: type }
                     }));
                 }
-            }
+            },
+            toggleManagedWindow: (id, options) => this.toggleManagedWindow(id, options),
         });
 
         // Abilities Menu UI
@@ -268,6 +270,7 @@ export class UIManager {
             getLastPlayer: () => this.lastPlayerRef,
             showRespecMenu: () => this.showRespecMenu(),
             inventoryScreen: document.getElementById('inventory-screen'),
+            toggleManagedWindow: (id, options) => this.toggleManagedWindow(id, options),
         });
 
         // Trading House UI — delegated to TradingUI module
@@ -278,6 +281,7 @@ export class UIManager {
             showItemTooltip: (item, x, y) => this.inventory.showItemTooltip(item, x, y),
             hideTooltips: () => this.inventory.hideTooltips(),
             addChatMessage: (sender, msg) => this.addChatMessage(sender, msg),
+            toggleManagedWindow: (id, options) => this.toggleManagedWindow(id, options),
         });
 
         // Inventory UI (extracted module) — handles inventory grid, equip slots,
@@ -291,6 +295,9 @@ export class UIManager {
             addChatMessage: (sender, msg) => this.addChatMessage(sender, msg),
             updateCharacterSheet: (player) => this.updateCharacterSheet(player),
             closePrimaryHudMenus: (options) => this.closePrimaryHudMenus(options),
+            toggleManagedWindow: (id, options) => this.toggleManagedWindow(id, options),
+            closeManagedGroup: (group, options) => this.closeManagedGroup(group, options),
+            clampTooltipToViewport: (element) => this.clampTooltipToViewport(element),
             trading: this.trading,
         });
 
@@ -318,6 +325,9 @@ export class UIManager {
             getLastPlayer: () => this.lastPlayerRef,
             addChatMessage: (sender, msg) => this.addChatMessage(sender, msg),
             closePrimaryHudMenus: (options) => this.closePrimaryHudMenus(options),
+            openManagedWindow: (id, options) => this.openManagedWindow(id, options),
+            toggleManagedWindow: (id, options) => this.toggleManagedWindow(id, options),
+            closeManagedWindow: (id) => this.closeManagedWindow(id),
         });
         this.createDeathScreen();
 
@@ -331,6 +341,7 @@ export class UIManager {
         this.setupWindow(this.quest.questWindow);
         this.setupWindow(this.quest.questJournal);
         this.setupWindow(this.helpScreen);
+        this.setupWindow(this.settingsScreen);
         this.setupWindow(this.patchNotesScreen);
         this.setupWindow(this.reportScreen);
         this.setupWindow(this.social.socialWindow);
@@ -338,6 +349,11 @@ export class UIManager {
         this.setupWindow(this.abilitiesMenu);
 
         if (this.social.partyPanel) this.setupWindow(this.social.partyPanel);
+        this.registerWindowLayouts();
+        window.addEventListener('resize', () => this.reflowVisibleWindows());
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => this.reflowVisibleWindows());
+        }
 
         // Ability UI
         this.abilityContainer = document.getElementById('ability-container');
@@ -1314,12 +1330,201 @@ export class UIManager {
         }
     }
 
+    registerWindowLayouts() {
+        const worldMap = document.getElementById('world-map');
+        this.windowLayouts = new Map([
+            ['character', { element: this.characterSheet, display: 'block', group: 'primary', placement: 'leftCompanion' }],
+            ['inventory', { element: this.inventory?.inventoryScreen, display: 'block', group: 'primary', placement: 'rightCompanion' }],
+            ['shop', { element: this.inventory?.shopScreen, display: 'flex', group: 'service', placement: 'center' }],
+            ['stash', { element: this.inventory?.stashScreen, display: 'flex', group: 'service', placement: 'center' }],
+            ['forge', { element: this.forge?.forgeScreen, display: 'flex', group: 'service', placement: 'center' }],
+            ['trading', { element: this.trading?.tradingHouseScreen, display: 'flex', group: 'service', placement: 'center' }],
+            ['quest', { element: this.quest?.questWindow, display: 'flex', group: 'service', placement: 'center' }],
+            ['journal', { element: this.quest?.questJournal, display: 'flex', group: 'primary', placement: 'center' }],
+            ['skills', { element: this.skillTree?.skillTreeWindow, display: 'flex', group: 'primary', placement: 'center' }],
+            ['abilities', { element: this.abilitiesMenu, display: 'flex', group: 'primary', placement: 'center' }],
+            ['map', { element: worldMap, display: 'flex', group: 'primary', placement: 'center' }],
+            ['social', { element: this.social?.socialWindow, display: 'block', group: 'primary', placement: 'center' }],
+            ['help', { element: this.helpScreen, display: 'block', group: 'modal', placement: 'center' }],
+            ['settings', { element: this.settingsScreen, display: 'block', group: 'modal', placement: 'center' }],
+            ['report', { element: this.reportScreen, display: 'block', group: 'modal', placement: 'center' }],
+            ['patchNotes', { element: this.patchNotesScreen, display: 'flex', group: 'modal', placement: 'center' }]
+        ]);
+    }
+
+    isWindowOpen(id) {
+        const layout = this.windowLayouts?.get(id);
+        return this.isElementVisible(layout?.element);
+    }
+
+    getOpenWindowIds(group = null) {
+        if (!this.windowLayouts) return [];
+        return [...this.windowLayouts.entries()]
+            .filter(([, layout]) => (!group || layout.group === group) && this.isElementVisible(layout.element))
+            .map(([id]) => id);
+    }
+
+    shouldUseCompanionServiceLayout() {
+        return window.innerWidth >= 960;
+    }
+
+    prepareWindowForLayout(element) {
+        if (!element) return;
+        element.style.position = 'fixed';
+        element.style.margin = '0';
+        element.style.right = 'auto';
+        element.style.bottom = 'auto';
+        element.style.transformOrigin = 'center center';
+    }
+
+    centerWindow(element) {
+        this.prepareWindowForLayout(element);
+        element.style.left = '50%';
+        element.style.top = '50%';
+        element.style.transform = 'translate(-50%, -50%)';
+    }
+
+    placeWindowPair(primaryElement, companionElement) {
+        this.prepareWindowForLayout(primaryElement);
+        this.prepareWindowForLayout(companionElement);
+
+        const gap = 16;
+        const primaryRect = primaryElement.getBoundingClientRect();
+        const companionRect = companionElement.getBoundingClientRect();
+        const totalWidth = primaryRect.width + companionRect.width + gap;
+        const left = Math.max(12, Math.round((window.innerWidth - totalWidth) / 2));
+        const top = Math.max(12, Math.round((window.innerHeight - Math.max(primaryRect.height, companionRect.height)) / 2));
+
+        primaryElement.style.left = `${left}px`;
+        primaryElement.style.top = `${top}px`;
+        primaryElement.style.transform = 'none';
+        companionElement.style.left = `${left + primaryRect.width + gap}px`;
+        companionElement.style.top = `${top}px`;
+        companionElement.style.transform = 'none';
+        this.clampWindowToViewport(primaryElement);
+        this.clampWindowToViewport(companionElement);
+    }
+
+    clampWindowToViewport(element) {
+        if (!element || !this.isElementVisible(element)) return;
+
+        const margin = 12;
+        const rect = element.getBoundingClientRect();
+        let left = rect.left;
+        let top = rect.top;
+        const maxLeft = Math.max(margin, window.innerWidth - rect.width - margin);
+        const maxTop = Math.max(margin, window.innerHeight - rect.height - margin);
+
+        if (rect.width <= window.innerWidth - margin * 2) {
+            left = Math.min(Math.max(left, margin), maxLeft);
+        } else {
+            left = margin;
+        }
+
+        if (rect.height <= window.innerHeight - margin * 2) {
+            top = Math.min(Math.max(top, margin), maxTop);
+        } else {
+            top = margin;
+        }
+
+        element.style.position = 'fixed';
+        element.style.left = `${Math.round(left)}px`;
+        element.style.top = `${Math.round(top)}px`;
+        element.style.right = 'auto';
+        element.style.bottom = 'auto';
+        element.style.transform = 'none';
+    }
+
+    openManagedWindow(id, { keepCompanion = false } = {}) {
+        const layout = this.windowLayouts?.get(id);
+        if (!layout?.element) return;
+
+        if (layout.group === 'primary') {
+            this.closeManagedGroup('primary', { except: id });
+        }
+
+        if (layout.group === 'service') {
+            this.closeManagedGroup('primary');
+            this.closeManagedGroup('service', { except: id });
+            this.closeAllStaticModals();
+        }
+
+        if (layout.group === 'modal') {
+            this.closeManagedGroup('service');
+            this.closeManagedGroup('primary');
+        }
+
+        layout.element.style.display = layout.display;
+
+        if (keepCompanion && this.inventory?.inventoryScreen) {
+            this.inventory.inventoryScreen.style.display = 'block';
+        }
+
+        this.reflowVisibleWindows();
+    }
+
+    closeManagedWindow(id) {
+        const layout = this.windowLayouts?.get(id);
+        if (layout?.element) {
+            layout.element.style.display = 'none';
+        }
+        if (id === 'social' && this.social?.partyPanel && !this.social.inParty) {
+            this.social.partyPanel.style.display = 'none';
+        }
+    }
+
+    closeManagedGroup(group, { except = null } = {}) {
+        if (!this.windowLayouts) return;
+        this.windowLayouts.forEach((layout, id) => {
+            if (id !== except && layout.group === group && layout.element) {
+                this.closeManagedWindow(id);
+            }
+        });
+    }
+
+    toggleManagedWindow(id, options = {}) {
+        if (this.isWindowOpen(id)) {
+            this.closeManagedWindow(id);
+            this.reflowVisibleWindows();
+            return false;
+        }
+
+        this.openManagedWindow(id, options);
+        return true;
+    }
+
+    reflowVisibleWindows() {
+        if (!this.windowLayouts) return;
+
+        const openService = this.getOpenWindowIds('service');
+        const serviceId = openService[0] || null;
+        const serviceLayout = serviceId ? this.windowLayouts.get(serviceId) : null;
+        const inventoryElement = this.inventory?.inventoryScreen;
+        const serviceWithInventory = serviceLayout?.element && inventoryElement && this.isElementVisible(inventoryElement);
+
+        if (serviceWithInventory && this.shouldUseCompanionServiceLayout()) {
+            this.placeWindowPair(serviceLayout.element, inventoryElement);
+        } else if (serviceLayout?.element) {
+            this.centerWindow(serviceLayout.element);
+            if (inventoryElement && serviceId !== 'inventory') {
+                inventoryElement.style.display = 'none';
+            }
+        }
+
+        this.windowLayouts.forEach((layout, id) => {
+            if (!layout.element || !this.isElementVisible(layout.element)) return;
+            if (layout.group === 'service') return;
+            if (id === 'inventory' && serviceWithInventory && this.shouldUseCompanionServiceLayout()) return;
+            if (!layout.element.dataset.draggedWindow && layout.placement === 'center') {
+                this.centerWindow(layout.element);
+            }
+            this.clampWindowToViewport(layout.element);
+        });
+    }
+
     toggleCharacterSheet() {
         const isHidden = this.characterSheet.style.display === 'none' || this.characterSheet.style.display === '';
-        if (isHidden) {
-            this.closePrimaryHudMenus({ except: 'character' });
-        }
-        this.characterSheet.style.display = isHidden ? 'block' : 'none';
+        this.toggleManagedWindow('character');
         
         if (isHidden && this.lastPlayerRef) {
             this.lastCharacterSheetSignature = '';
@@ -1343,13 +1548,6 @@ export class UIManager {
 
         backdrop = document.createElement('div');
         backdrop.id = 'ui-static-modal-backdrop';
-        backdrop.style.position = 'fixed';
-        backdrop.style.inset = '0';
-        backdrop.style.background = 'rgba(3, 5, 10, 0.58)';
-        backdrop.style.backdropFilter = 'blur(6px)';
-        backdrop.style.webkitBackdropFilter = 'blur(6px)';
-        backdrop.style.zIndex = '99';
-        backdrop.style.pointerEvents = 'auto';
         backdrop.addEventListener('click', () => this.closeOpenStaticModal());
         (this.uiLayer || document.getElementById('ui-layer') || document.body).appendChild(backdrop);
         return backdrop;
@@ -1388,7 +1586,7 @@ export class UIManager {
     }
 
     closeOpenStaticModal() {
-        for (const windowElement of this.getStaticModalWindows()) {
+        for (const windowElement of [...this.getStaticModalWindows()].reverse()) {
             if (this.closeStaticModal(windowElement)) {
                 return true;
             }
@@ -1404,6 +1602,8 @@ export class UIManager {
 
         const isHidden = !this.isElementVisible(element);
         if (isHidden) {
+            this.closeManagedGroup?.('service');
+            this.closeManagedGroup?.('primary');
             this.getStaticModalWindows().forEach((windowElement) => {
                 if (windowElement && windowElement !== element) {
                     windowElement.style.display = 'none';
@@ -1415,6 +1615,9 @@ export class UIManager {
         }
 
         this.syncStaticModalBackdrop();
+        if (isHidden) {
+            this.reflowVisibleWindows();
+        }
     }
 
     // --- Inventory delegates (InventoryUI module) ---
@@ -1464,7 +1667,7 @@ export class UIManager {
 
     toggleSkillTree() {
         const isOpening = !this.skillTree.isOpen;
-        if (isOpening) {
+        if (isOpening && !this.windowLayouts) {
             this.closePrimaryHudMenus({ except: 'skills' });
         }
         this.skillTree.toggle();
@@ -1478,9 +1681,14 @@ export class UIManager {
 
         const isOpening = worldMap.style.display === 'none' || worldMap.style.display === '';
         if (isOpening) {
-            this.closePrimaryHudMenus({ except: 'map' });
+            if (this.windowLayouts) {
+                this.closeManagedGroup('primary', { except: 'map' });
+            } else {
+                this.closePrimaryHudMenus({ except: 'map' });
+            }
         }
         this.onMapToggle();
+        this.reflowVisibleWindows();
     }
 
     renderSkillTree(classType) {
@@ -1562,10 +1770,7 @@ export class UIManager {
         }
 
         const isHidden = this.abilitiesMenu.style.display === 'none' || this.abilitiesMenu.style.display === '';
-        if (isHidden) {
-            this.closePrimaryHudMenus({ except: 'abilities' });
-        }
-        this.abilitiesMenu.style.display = isHidden ? 'flex' : 'none';
+        this.toggleManagedWindow('abilities');
 
         if (isHidden && this.lastPlayerRef) {
             const classType = this.lastPlayerRef.subType || this.lastPlayerRef.meshType;
@@ -1710,6 +1915,26 @@ export class UIManager {
         if (rect.top < 0) {
             this.statTooltip.style.top = `${y + 50}px`; // Show below if no space above
         }
+        this.clampTooltipToViewport(this.statTooltip);
+    }
+
+    clampTooltipToViewport(element, margin = 10) {
+        if (!element || element.style.display === 'none') return;
+        const rect = element.getBoundingClientRect();
+        let left = rect.left;
+        let top = rect.top;
+
+        if (rect.right > window.innerWidth - margin) {
+            left = window.innerWidth - rect.width - margin;
+        }
+        if (rect.bottom > window.innerHeight - margin) {
+            top = window.innerHeight - rect.height - margin;
+        }
+        if (left < margin) left = margin;
+        if (top < margin) top = margin;
+
+        element.style.left = `${Math.round(left)}px`;
+        element.style.top = `${Math.round(top)}px`;
     }
 
     assignSkillToSlot(slotIndex, skillName) {
@@ -2283,6 +2508,11 @@ export class UIManager {
             closedSomething = true;
         }
 
+        if (this.inventory.splitStackWindow?.style.display === 'block') {
+            this.inventory.hideSplitWindow();
+            closedSomething = true;
+        }
+
         // Close Shop
         if (this.inventory.shopScreen.style.display === 'flex') {
             this.inventory.shopScreen.style.display = 'none';
@@ -2545,38 +2775,15 @@ export class UIManager {
             const rect = element.getBoundingClientRect();
             
             // 2. Reset positioning properties to prepare for absolute positioning
-            element.style.position = 'absolute';
+            element.dataset.draggedWindow = 'true';
+            element.style.position = 'fixed';
             element.style.margin = '0';
             element.style.right = 'auto';
             element.style.bottom = 'auto';
+            element.style.transform = 'none';
 
-            // Check for mobile scale
-            // .mobile-mode is kept in sync with viewport width via matchMedia
-            // listener in main.js, so checking the class is sufficient.
-            const isMobile = document.body.classList.contains('mobile-mode');
-            
-            if (isMobile) {
-                // Preserve scale but move origin to top-left for easy dragging
-                element.style.transformOrigin = 'top left';
-                element.style.transform = 'scale(0.5)';
-            } else {
-                element.style.transform = 'none';
-            }
-            
-            // 3. Calculate position relative to the offset parent
-            let parentX = 0;
-            let parentY = 0;
-            const op = element.offsetParent;
-            
-            if (op) {
-                const opRect = op.getBoundingClientRect();
-                parentX = opRect.left + (op.clientLeft || 0);
-                parentY = opRect.top + (op.clientTop || 0);
-            }
-            
-            // 4. Set the new left/top to match the visual position
-            const newLeft = rect.left - parentX;
-            const newTop = rect.top - parentY;
+            const newLeft = rect.left;
+            const newTop = rect.top;
             
             element.style.left = `${newLeft}px`;
             element.style.top = `${newTop}px`;
@@ -2593,14 +2800,14 @@ export class UIManager {
             let newLeft = startLeft + dx;
             let newTop = startTop + dy;
 
-            // Bounds check
-            const headerRect = header.getBoundingClientRect();
-            const maxX = window.innerWidth - 50; 
-            const maxY = window.innerHeight - headerRect.height;
+            const rect = element.getBoundingClientRect();
+            const margin = 12;
+            const maxX = Math.max(margin, window.innerWidth - rect.width - margin);
+            const maxY = Math.max(margin, window.innerHeight - rect.height - margin);
 
-            if (newTop < 0) newTop = 0;
+            if (newTop < margin) newTop = margin;
             if (newTop > maxY) newTop = maxY;
-            if (newLeft < -headerRect.width + 50) newLeft = -headerRect.width + 50;
+            if (newLeft < margin) newLeft = margin;
             if (newLeft > maxX) newLeft = maxX;
 
             element.style.left = `${newLeft}px`;
@@ -2695,6 +2902,7 @@ export class UIManager {
         this.statTooltip.style.display = 'block';
         this.statTooltip.style.left = `${x + 15}px`;
         this.statTooltip.style.top = `${y + 15}px`;
+        this.clampTooltipToViewport(this.statTooltip);
     }
 
     formatStatName(statKey) {

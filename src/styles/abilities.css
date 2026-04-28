@@ -44,7 +44,9 @@
     position: absolute;
     bottom: 80px;
     right: 0;
-    width: 200px;
+    width: min(200px, calc(100vw - 24px));
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
     background: var(--bg-panel);
     border: 1px solid var(--border-light);
     padding: var(--spacing-md);

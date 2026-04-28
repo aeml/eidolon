@@ -49,7 +49,11 @@ export class SkillTreeUI {
     /** Toggle skill tree window open/closed. */
     toggle() {
         const isHidden = this.skillTreeWindow.style.display === 'none' || this.skillTreeWindow.style.display === '';
-        this.skillTreeWindow.style.display = isHidden ? 'flex' : 'none';
+        if (this.ctx.toggleManagedWindow) {
+            this.ctx.toggleManagedWindow('skills');
+        } else {
+            this.skillTreeWindow.style.display = isHidden ? 'flex' : 'none';
+        }
 
         if (isHidden) {
             const player = this.ctx.getLastPlayer();

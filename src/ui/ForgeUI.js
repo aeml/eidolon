@@ -146,10 +146,14 @@ export class ForgeUI {
 
     toggle() {
         const isHidden = this.forgeScreen.style.display === 'none' || this.forgeScreen.style.display === '';
-        this.forgeScreen.style.display = isHidden ? 'flex' : 'none';
+        if (this.ctx.toggleManagedWindow) {
+            this.ctx.toggleManagedWindow('forge', { keepCompanion: true });
+        } else {
+            this.forgeScreen.style.display = isHidden ? 'flex' : 'none';
+        }
 
         if (isHidden) {
-            if (this.ctx.inventoryScreen) this.ctx.inventoryScreen.style.display = 'block';
+            if (!this.ctx.toggleManagedWindow && this.ctx.inventoryScreen) this.ctx.inventoryScreen.style.display = 'block';
             this.switchForgeTab('upgrade');
             const player = this.ctx.getLastPlayer();
             if (player) {

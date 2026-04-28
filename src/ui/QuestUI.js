@@ -59,7 +59,11 @@ export class QuestUI {
     /** Toggle the quest NPC window. */
     toggleQuestWindow() {
         const isHidden = this.questWindow.style.display === 'none' || this.questWindow.style.display === '';
-        this.questWindow.style.display = isHidden ? 'flex' : 'none';
+        if (this.ctx.toggleManagedWindow) {
+            this.ctx.toggleManagedWindow('quest');
+        } else {
+            this.questWindow.style.display = isHidden ? 'flex' : 'none';
+        }
         if (isHidden) {
             const player = this.ctx.getLastPlayer();
             if (player && player.quests) {
@@ -71,10 +75,14 @@ export class QuestUI {
     /** Toggle the quest journal. */
     toggleJournal() {
         const isHidden = this.questJournal.style.display === 'none' || this.questJournal.style.display === '';
-        if (isHidden) {
+        if (isHidden && !this.ctx.toggleManagedWindow) {
             this.ctx.closePrimaryHudMenus?.({ except: 'journal' });
         }
-        this.questJournal.style.display = isHidden ? 'flex' : 'none';
+        if (this.ctx.toggleManagedWindow) {
+            this.ctx.toggleManagedWindow('journal');
+        } else {
+            this.questJournal.style.display = isHidden ? 'flex' : 'none';
+        }
         if (isHidden) {
             const player = this.ctx.getLastPlayer();
             if (player && player.quests) {

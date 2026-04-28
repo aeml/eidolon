@@ -82,6 +82,9 @@
     top: 88px;
     left: 20px;
     width: min(320px, calc(100vw - 40px));
+    max-height: calc(100vh - 260px);
+    overflow-y: auto;
+    overflow-x: hidden;
     pointer-events: none;
     z-index: calc(var(--z-hud) + 1);
 }
@@ -306,6 +309,43 @@
     flex-direction: column;
     gap: 8px;
     margin-top: 8px;
+}
+
+#objectives-panel,
+#combat-intent-panel,
+#dungeon-entrance-hint,
+#player-hud,
+#game-timer,
+#chat-box {
+    box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+    #objectives-panel {
+        top: 70px;
+        left: 10px;
+        width: min(300px, calc(100vw - 20px));
+        max-height: min(42vh, calc(100vh - 210px));
+    }
+
+    #combat-intent-panel,
+    #dungeon-entrance-hint {
+        right: 10px;
+        width: min(260px, calc(100vw - 20px));
+    }
+
+    #combat-intent-panel {
+        top: 192px;
+    }
+
+    #dungeon-entrance-hint {
+        top: 320px;
+    }
+
+    #player-hud {
+        width: min(260px, calc(100vw - 20px));
+        left: 10px;
+    }
 }
 
 .objective-entry {

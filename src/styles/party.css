@@ -6,13 +6,13 @@
    ------------------------------------------------------------ */
 
 #party-panel {
-    position: absolute;
-    top: 150px;
+    position: fixed;
+    top: min(430px, calc(100vh - 260px));
     left: 20px;
     box-sizing: border-box;
     width: 220px;
     max-width: calc(100vw - 40px);
-    max-height: calc(100vh - 170px);
+    max-height: min(240px, calc(100vh - 170px));
     overflow-y: auto;
     overflow-x: hidden;
     display: none; /* Shown when in party */

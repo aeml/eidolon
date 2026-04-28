@@ -86,9 +86,17 @@ export class SocialUI {
             show = this.socialWindow.style.display === 'none';
         }
         if (show) {
-            this.ctx.closePrimaryHudMenus?.({ except: 'social' });
+            if (this.ctx.openManagedWindow) {
+                this.ctx.openManagedWindow('social');
+            } else {
+                this.ctx.closePrimaryHudMenus?.({ except: 'social' });
+                this.socialWindow.style.display = 'block';
+            }
+        } else if (this.ctx.closeManagedWindow) {
+            this.ctx.closeManagedWindow('social');
+        } else {
+            this.socialWindow.style.display = 'none';
         }
-        this.socialWindow.style.display = show ? 'block' : 'none';
 
         if (show) {
             if (this.onSocialOpen) this.onSocialOpen();

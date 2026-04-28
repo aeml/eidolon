@@ -509,10 +509,14 @@ export class InventoryUI {
 
     toggleInventory() {
         const isHidden = this.inventoryScreen.style.display === 'none' || this.inventoryScreen.style.display === '';
-        if (isHidden) {
-            this.ctx.closePrimaryHudMenus?.({ except: 'inventory' });
+        if (this.ctx.toggleManagedWindow) {
+            this.ctx.toggleManagedWindow('inventory');
+        } else {
+            if (isHidden) {
+                this.ctx.closePrimaryHudMenus?.({ except: 'inventory' });
+            }
+            this.inventoryScreen.style.display = isHidden ? 'block' : 'none';
         }
-        this.inventoryScreen.style.display = isHidden ? 'block' : 'none';
 
         if (isHidden) {
             const player = this._getLastPlayer();
@@ -524,11 +528,15 @@ export class InventoryUI {
 
     toggleShop() {
         const isHidden = this.shopScreen.style.display === 'none' || this.shopScreen.style.display === '';
-        this.shopScreen.style.display = isHidden ? 'flex' : 'none';
+        if (this.ctx.toggleManagedWindow) {
+            this.ctx.toggleManagedWindow('shop', { keepCompanion: true });
+        } else {
+            this.shopScreen.style.display = isHidden ? 'flex' : 'none';
+        }
 
         if (isHidden) {
             this.switchShopTab('main');
-            this.inventoryScreen.style.display = 'block';
+            if (!this.ctx.toggleManagedWindow) this.inventoryScreen.style.display = 'block';
             const player = this._getLastPlayer();
             if (player) {
                 this.updateInventory(player);
@@ -542,10 +550,14 @@ export class InventoryUI {
 
     toggleStash() {
         const isHidden = this.stashScreen.style.display === 'none' || this.stashScreen.style.display === '';
-        this.stashScreen.style.display = isHidden ? 'flex' : 'none';
+        if (this.ctx.toggleManagedWindow) {
+            this.ctx.toggleManagedWindow('stash', { keepCompanion: true });
+        } else {
+            this.stashScreen.style.display = isHidden ? 'flex' : 'none';
+        }
 
         if (isHidden) {
-            this.inventoryScreen.style.display = 'block';
+            if (!this.ctx.toggleManagedWindow) this.inventoryScreen.style.display = 'block';
             const player = this._getLastPlayer();
             if (player) {
                 this.updateInventory(player);
@@ -560,6 +572,8 @@ export class InventoryUI {
 
     showSplitWindow(item, slotIndex) {
         if (!this.splitStackWindow) return;
+        this.ctx.closeManagedGroup?.('service');
+        this.ctx.closeManagedGroup?.('primary');
 
         this.pendingSplitItem = item;
         this.pendingSplitSlot = slotIndex;
@@ -1251,11 +1265,7 @@ export class InventoryUI {
         this.statTooltip.style.left = `${x + 15}px`;
         this.statTooltip.style.top = `${y + 15}px`;
 
-        // Ensure on screen
-        const rect = this.statTooltip.getBoundingClientRect();
-        if (rect.right > window.innerWidth) {
-            this.statTooltip.style.left = `${window.innerWidth - rect.width - 10}px`;
-        }
+        this.ctx.clampTooltipToViewport?.(this.statTooltip);
 
         // Comparison Tooltip
         this.compareTooltip.style.display = 'none';
@@ -1312,6 +1322,7 @@ export class InventoryUI {
                 if (compRect.right > window.innerWidth) {
                     this.compareTooltip.style.left = `${mainRect.left - compRect.width - 10}px`;
                 }
+                this.ctx.clampTooltipToViewport?.(this.compareTooltip);
             }
         }
     }

@@ -275,6 +275,54 @@ describe('menu polish regressions', () => {
         expect(windowEl.style.top).toBe('');
     });
 
+    test('dragged windows clamp the full frame inside the viewport', () => {
+        const uiManager = Object.create(UIManager.prototype);
+        const windowEl = document.createElement('div');
+        windowEl.className = 'window';
+        windowEl.style.display = 'block';
+        windowEl.style.width = '300px';
+        windowEl.style.height = '220px';
+        windowEl.style.left = '100px';
+        windowEl.style.top = '100px';
+        windowEl.innerHTML = `
+            <div class="window-header">
+                <span>Inventory</span>
+            </div>
+            <div>Body</div>
+        `;
+
+        Object.defineProperty(window, 'innerWidth', { configurable: true, value: 640 });
+        Object.defineProperty(window, 'innerHeight', { configurable: true, value: 480 });
+        windowEl.getBoundingClientRect = jest.fn(() => ({
+            left: Number.parseFloat(windowEl.style.left) || 100,
+            top: Number.parseFloat(windowEl.style.top) || 100,
+            right: (Number.parseFloat(windowEl.style.left) || 100) + 300,
+            bottom: (Number.parseFloat(windowEl.style.top) || 100) + 220,
+            width: 300,
+            height: 220
+        }));
+
+        document.body.appendChild(windowEl);
+        uiManager.setupWindow(windowEl);
+
+        windowEl.querySelector('.window-header').dispatchEvent(new MouseEvent('mousedown', {
+            bubbles: true,
+            clientX: 110,
+            clientY: 110
+        }));
+        window.dispatchEvent(new MouseEvent('mousemove', {
+            bubbles: true,
+            clientX: 1000,
+            clientY: 1000
+        }));
+        window.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+
+        expect(windowEl.style.position).toBe('fixed');
+        expect(windowEl.style.left).toBe('328px');
+        expect(windowEl.style.top).toBe('248px');
+        expect(windowEl.dataset.draggedWindow).toBe('true');
+    });
+
     test('window headers do not start dragging when close controls are tapped', () => {
         const uiManager = Object.create(UIManager.prototype);
         const windowEl = document.createElement('div');
@@ -512,7 +560,7 @@ describe('menu polish regressions', () => {
 
         expect(backdrop).not.toBeNull();
         expect(backdrop.parentElement).toBe(document.getElementById('ui-layer'));
-        expect(backdrop.style.zIndex).toBe('99');
+        expect(backdrop.id).toBe('ui-static-modal-backdrop');
         expect(settingsScreen.classList.contains('support-window--settings')).toBe(true);
     });
 
@@ -691,7 +739,7 @@ describe('menu polish regressions', () => {
         expect(skillTreeCss).toMatch(/#skill-tree-window\s*\{[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow:\s*hidden;/s);
         expect(skillTreeCss).toMatch(/\.skill-tree-content\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/s);
 
-        expect(partyCss).toMatch(/#party-panel\s*\{[^}]*max-width:\s*calc\(100vw - 40px\);[^}]*max-height:\s*calc\(100vh - 170px\);[^}]*overflow-y:\s*auto;/s);
+        expect(partyCss).toMatch(/#party-panel\s*\{[^}]*max-width:\s*calc\(100vw - 40px\);[^}]*max-height:\s*min\(240px, calc\(100vh - 170px\)\);[^}]*overflow-y:\s*auto;/s);
         expect(partyCss).toMatch(/\.party-request-modal\s*\{[^}]*width:\s*min\(360px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow-y:\s*auto;/s);
     });
 
@@ -1062,7 +1110,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.39</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.31.40</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1154,7 +1202,7 @@ describe('menu polish regressions', () => {
 
         expect(css).toMatch(/\.loading-screen\s*\{[^}]*display:\s*none;[^}]*position:\s*absolute;[^}]*width:\s*100%;[^}]*height:\s*100%;[^}]*background:\s*#000;[^}]*z-index:\s*200;[^}]*flex-direction:\s*column;[^}]*justify-content:\s*center;[^}]*align-items:\s*center;/s);
         expect(css).toMatch(/\.loading-screen__title\s*\{[^}]*color:\s*#ffd700;[^}]*margin-bottom:\s*20px;[^}]*font-size:\s*2rem;/s);
-        expect(css).toMatch(/\.loading-screen__bar\s*\{[^}]*width:\s*300px;[^}]*height:\s*20px;[^}]*background:\s*#333;[^}]*border:\s*2px solid #666;[^}]*border-radius:\s*4px;[^}]*overflow:\s*hidden;/s);
+        expect(css).toMatch(/\.loading-screen__bar\s*\{[^}]*width:\s*min\(300px, calc\(100vw - 40px\)\);[^}]*height:\s*20px;[^}]*background:\s*#333;[^}]*border:\s*2px solid #666;[^}]*border-radius:\s*4px;[^}]*overflow:\s*hidden;/s);
         expect(css).toMatch(/\.loading-screen__bar-fill\s*\{[^}]*width:\s*0%;[^}]*height:\s*100%;[^}]*background:\s*#ffd700;[^}]*transition:\s*width 0\.2s;/s);
         expect(css).toMatch(/\.loading-screen__text\s*\{[^}]*color:\s*#888;[^}]*margin-top:\s*10px;[^}]*font-size:\s*14px;/s);
     });
@@ -1293,6 +1341,46 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.shop-content\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/s);
         expect(css).toMatch(/\.stash-window\s*\{[^}]*width:\s*min\(500px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow-y:\s*auto;/s);
         expect(css).toMatch(/#trading-house-screen\s+\.window-body,[\s\S]*#quest-journal\s+\.window-list\s*\{[^}]*min-height:\s*0;/);
+    });
+
+    test('managed windows enforce primary exclusivity and wide-screen service companions', () => {
+        buildStaticWindowDom();
+        const ui = new UIManager(false);
+
+        Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1280 });
+        Object.defineProperty(window, 'innerHeight', { configurable: true, value: 800 });
+
+        ui.toggleManagedWindow('inventory');
+        expect(document.getElementById('inventory-screen').style.display).toBe('block');
+
+        ui.toggleManagedWindow('journal');
+        expect(document.getElementById('inventory-screen').style.display).toBe('none');
+        expect(document.getElementById('quest-journal').style.display).toBe('flex');
+
+        ui.toggleManagedWindow('shop', { keepCompanion: true });
+        expect(document.getElementById('quest-journal').style.display).toBe('none');
+        expect(document.getElementById('shop-screen').style.display).toBe('flex');
+        expect(document.getElementById('inventory-screen').style.display).toBe('block');
+
+        Object.defineProperty(window, 'innerWidth', { configurable: true, value: 700 });
+        ui.reflowVisibleWindows();
+        expect(document.getElementById('shop-screen').style.display).toBe('flex');
+        expect(document.getElementById('inventory-screen').style.display).toBe('none');
+    });
+
+    test('layout CSS avoids offscreen side transforms and caps objective height', () => {
+        const css = readFileSync(windowsCssPath, 'utf8');
+        const hudCss = readFileSync(overlaysCssPath.replace('overlays.css', 'hud.css'), 'utf8');
+        const responsiveCss = readFileSync(overlaysCssPath.replace('overlays.css', 'responsive.css'), 'utf8');
+
+        expect(css).toMatch(/\.window\s*\{[^}]*position:\s*fixed;[^}]*box-sizing:\s*border-box;/s);
+        expect(css).toMatch(/#character-sheet\s*\{[^}]*transform:\s*translate\(-50%, -50%\);/s);
+        expect(css).toMatch(/#inventory-screen\s*\{[^}]*transform:\s*translate\(-50%, -50%\);/s);
+        expect(css).not.toContain('transform: translate(-150%, -50%);');
+        expect(css).not.toContain('transform: translate(100%, -50%);');
+        expect(hudCss).toMatch(/#objectives-panel\s*\{[^}]*max-height:\s*calc\(100vh - 260px\);[^}]*overflow-y:\s*auto;/s);
+        expect(responsiveCss).not.toContain('scale(0.5)');
+        expect(responsiveCss).not.toContain('scale(0.6)');
     });
 
     test('merchant shop shell content and grids use shared classes', () => {

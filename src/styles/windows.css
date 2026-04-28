@@ -4,7 +4,7 @@
 
 /* ---- Base Window ---- */
 .window {
-    position: absolute;
+    position: fixed;
     background: var(--bg-panel);
     border: 2px solid var(--border-light);
     border-radius: var(--radius-md);
@@ -17,6 +17,7 @@
     -webkit-user-select: none;
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
+    box-sizing: border-box;
 }
 
 .window-header {
@@ -337,6 +338,16 @@
     max-width: calc(100vw - 24px);
     max-height: calc(100vh - 24px);
     overflow: hidden;
+}
+
+#ui-static-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 5, 10, 0.58);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 99;
+    pointer-events: auto;
 }
 
 .support-window--settings {
@@ -904,7 +915,7 @@
 #character-sheet {
     top: 50%;
     left: 50%;
-    transform: translate(-150%, -50%);
+    transform: translate(-50%, -50%);
     width: min(380px, calc(100vw - 24px));
     height: min(560px, calc(100vh - 24px));
 }
@@ -956,7 +967,7 @@
 #inventory-screen {
     top: 50%;
     left: 50%;
-    transform: translate(100%, -50%);
+    transform: translate(-50%, -50%);
     width: min(300px, calc(100vw - 24px));
     height: min(400px, calc(100vh - 24px));
 }

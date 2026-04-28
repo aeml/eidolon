@@ -49,6 +49,7 @@
     top: 62px !important;
     left: 10px !important;
     width: min(280px, calc(100vw - 20px)) !important;
+    max-height: min(38vh, calc(100vh - 210px)) !important;
 }
 
 .mobile-mode #combat-intent-panel {
@@ -64,9 +65,9 @@
 }
 
 .mobile-mode #player-hud {
-    width: clamp(120px, 20vw, 150px) !important;
+    width: clamp(120px, 28vw, 150px) !important;
     top: 10px !important;
-    left: 220px !important;
+    left: clamp(110px, 32vw, 220px) !important;
     bottom: auto !important;
 }
 
@@ -75,7 +76,7 @@
 
 .mobile-mode #ability-container {
     top: 10px !important;
-    left: 380px !important;
+    left: clamp(250px, 60vw, calc(100vw - 70px)) !important;
     right: auto !important;
     bottom: auto !important;
     width: 40px !important;
@@ -83,9 +84,9 @@
 }
 
 .mobile-mode #chat-box {
-    top: 60px !important;
+    top: auto !important;
     left: 10px !important;
-    bottom: auto !important;
+    bottom: 155px !important;
     width: min(250px, 40vw) !important;
     height: 120px !important;
     font-size: 10px !important;
@@ -133,29 +134,7 @@
     height: 40px !important;
 }
 
-/* Windows / panels — scale down to fit small screens */
-.mobile-mode .window {
-    transform-origin: center center;
-    transform: translate(-50%, -50%) scale(0.5);
-}
-
-.mobile-mode #character-sheet {
-    transform: translate(-50%, -50%) scale(0.5);
-    left: 50%;
-}
-
-.mobile-mode #inventory-screen {
-    left: auto;
-    right: 5px;
-    transform-origin: right center;
-    transform: translate(0, -50%) scale(0.5);
-}
-
-.mobile-mode #shop-screen {
-    left: 5px;
-    transform-origin: left center;
-    transform: translate(0, -50%) scale(0.5);
-}
+/* Windows / panels stay viewport-clamped via UIManager; do not scale content down. */
 
 /* ---- Landscape Mode (short viewports) ---- */
 @media (max-height: 600px) {
@@ -179,8 +158,5 @@
         transform-origin: bottom left;
     }
 
-    /* Ensure windows fit vertically */
-    .window {
-        transform: translate(-50%, -50%) scale(0.6) !important;
-    }
+    /* Window shells use max-height and internal scrolling instead of transform scaling. */
 }

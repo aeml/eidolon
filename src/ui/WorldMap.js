@@ -307,6 +307,18 @@ export class WorldMap {
     }
 
     toggle() {
+        if (this.gameEngine?.uiManager?.windowLayouts) {
+            const opened = this.gameEngine.uiManager.toggleManagedWindow('map');
+            if (opened && this.gameEngine.player) {
+                this.cameraX = this.gameEngine.player.position.x;
+                this.cameraZ = this.gameEngine.player.position.z;
+                this.mapOffsetX = 0;
+                this.mapOffsetY = 0;
+                this.draw(this.gameEngine.player);
+            }
+            return;
+        }
+
         const isHidden = this.container.style.display === 'none' || this.container.style.display === '';
         this.container.style.display = isHidden ? 'flex' : 'none';
         if (isHidden && this.gameEngine.player) {
