@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.32.3</span>
+                <span class="start-version-row__label">Alpha 0.32.4</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -366,6 +366,16 @@
                     <input id="ui-scale" class="support-field__range" type="range" min="85" max="125" step="5" value="100" />
                     <div class="support-field__hint">
                         Scales menus and HUD text while viewport-safe windows keep their visible bounds.
+                    </div>
+                </div>
+                <div class="support-field">
+                    <label for="control-hint-level" class="support-field__label">Control Hints</label>
+                    <select id="control-hint-level" class="support-field__control">
+                        <option value="standard" selected>Standard controls</option>
+                        <option value="detailed">Detailed keyboard reference</option>
+                    </select>
+                    <div class="support-field__hint">
+                        Detailed mode expands Help with grouped keyboard shortcuts without changing your actual bindings.
                     </div>
                 </div>
                 <div class="support-field">
@@ -521,6 +531,15 @@
                     <div><strong class="help-guide__key">M:</strong> World Map</div>
                     <div><strong class="help-guide__key">J:</strong> Journal / current quest route</div>
                 </div>
+                <div id="help-keyboard-reference" class="help-guide help-guide--separated help-guide--keyboard-reference" style="display: none;">
+                    <div class="help-guide__title">Detailed Keyboard Reference</div>
+                    <div class="help-guide__grid">
+                        <div><strong class="help-guide__key">Movement:</strong> Left Click to move, Click and Hold to keep moving, WASD to pan camera</div>
+                        <div><strong class="help-guide__key">Combat:</strong> Left Click for melee/basic attack, Right Click to use your selected ability, 1-4 for hotbar abilities</div>
+                        <div><strong class="help-guide__key">Navigation:</strong> M opens World Map, J opens Journal, I opens Inventory, C opens Character Sheet</div>
+                        <div><strong class="help-guide__key">Camera:</strong> Scroll zooms, Spacebar toggles camera lock, Ctrl-click triggers the jump-style movement read</div>
+                    </div>
+                </div>
                 <div id="help-first-hour-guide" class="help-guide help-guide--separated">
                     <div class="help-guide__title">First Hour Milestones</div>
                     <div><strong class="help-guide__key">1.</strong> Start with the <strong>Quest Giver</strong> by the <strong>Forge</strong> and follow the objective tracker.</div>
@@ -555,6 +574,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.32.4">
+                    <h3 class="patch-note-entry__title">Patch 0.32.4 (Keybind clarity settings)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Control Hints are now adjustable:</strong> Settings adds a Standard controls / Detailed keyboard reference selector.</li>
+                        <li><strong>Help can now expand keyboard guidance:</strong> Detailed mode adds grouped movement, combat, navigation, and camera shortcut reminders to the Help screen.</li>
+                        <li><strong>Input behavior stays unchanged:</strong> The setting only changes Help presentation and persists as `eidolon.controlHintLevel`.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for control-hint persistence, invalid-value normalization, Help presentation toggling, settings markup, and the 0.32.4 release state.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.32.3">
                     <h3 class="patch-note-entry__title">Patch 0.32.3 (UI scale baseline)</h3>
                     <ul class="patch-note-entry__list">

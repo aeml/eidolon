@@ -122,6 +122,8 @@ export class UIManager {
         this.graphicsBrightnessValue = document.getElementById('graphics-brightness-value');
         this.uiScaleSlider = document.getElementById('ui-scale');
         this.uiScaleValue = document.getElementById('ui-scale-value');
+        this.controlHintLevelSelect = document.getElementById('control-hint-level');
+        this.keyboardReferenceGuide = document.getElementById('help-keyboard-reference');
         this.autoLootToggle = document.getElementById('auto-loot-enabled');
         this.audioEnabledToggle = document.getElementById('audio-enabled');
         this.audioVolumeSlider = document.getElementById('audio-volume');
@@ -172,6 +174,7 @@ export class UIManager {
         this.onGraphicsQualityChange = null;
         this.onBrightnessChange = null;
         this.onUiScaleChange = null;
+        this.onControlHintLevelChange = null;
         this.onAutoLootChange = null;
         this.onAudioEnabledChange = null;
         this.onAudioVolumeChange = null;
@@ -221,6 +224,15 @@ export class UIManager {
         }
         this.applyUiScale();
         this.updateUiScaleLabel();
+
+        this.controlHintLevel = this.normalizeControlHintLevel(localStorage.getItem('eidolon.controlHintLevel'));
+        if (this.controlHintLevelSelect) {
+            this.controlHintLevelSelect.value = this.controlHintLevel;
+            this.controlHintLevelSelect.addEventListener('change', () => {
+                this.setControlHintLevel(this.controlHintLevelSelect.value);
+            });
+        }
+        this.applyControlHintLevel();
 
         const storedAutoLoot = localStorage.getItem('eidolon.autoLootEnabled');
         this.autoLootEnabled = storedAutoLoot === null ? false : storedAutoLoot === 'true';
@@ -2217,6 +2229,33 @@ export class UIManager {
 
     getUiScale() {
         return Math.max(0.85, Math.min(1.25, (Number(this.uiScale) || 100) / 100));
+    }
+
+    normalizeControlHintLevel(level) {
+        return level === 'detailed' ? 'detailed' : 'standard';
+    }
+
+    applyControlHintLevel() {
+        if (this.keyboardReferenceGuide) {
+            this.keyboardReferenceGuide.style.display = this.controlHintLevel === 'detailed' ? 'block' : 'none';
+        }
+    }
+
+    setControlHintLevel(level) {
+        const nextValue = this.normalizeControlHintLevel(level);
+        this.controlHintLevel = nextValue;
+        localStorage.setItem('eidolon.controlHintLevel', nextValue);
+        if (this.controlHintLevelSelect && this.controlHintLevelSelect.value !== nextValue) {
+            this.controlHintLevelSelect.value = nextValue;
+        }
+        this.applyControlHintLevel();
+        if (this.onControlHintLevelChange) {
+            this.onControlHintLevelChange(nextValue);
+        }
+    }
+
+    getControlHintLevel() {
+        return this.normalizeControlHintLevel(this.controlHintLevel);
     }
 
     setAutoLootEnabled(enabled) {

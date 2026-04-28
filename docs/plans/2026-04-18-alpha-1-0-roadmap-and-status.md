@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.32.3`
+- Current in-game displayed version: `Alpha 0.32.4`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.32.3`
+### Shipped through `0.32.4`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -165,6 +165,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.32.1`: Audio Detail settings now let players reduce routine UI cue noise while preserving gameplay feedback sounds through the shared AudioManager path
 - `0.32.2`: Audio cue asset metadata and optional authored-media playback now make generated UI, loot, combat, and jump cues replaceable through the shared AudioManager without scattering playback calls
 - `0.32.3`: UI Scale settings now persist an 85%-125% menu and HUD text scaling control through the shared UI layer while preserving viewport-safe window bounds
+- `0.32.4`: Control Hint settings now let players expand Help with a detailed keyboard reference without changing actual input mappings
 
 ### What `0.22` has clearly accomplished already
 
@@ -275,9 +276,9 @@ Historical closeout note:
 Current status:
 
 - `0.22` is closed for planned implementation work
-- `0.32.3` is now the active version line
+- `0.32.4` is now the active version line
 - `0.31` is closed for planned client-UX consistency work
-- `0.32` is active and has shipped its audio foundation, audio detail control, authored-asset readiness, and first UI scale accessibility control; the next implementation line should continue broader accessibility basics rather than reopen `0.31`
+- `0.32` is active and has shipped its audio foundation, audio detail control, authored-asset readiness, UI scale control, and keybind clarity setting; the next implementation line should move to data-driven content expansion rather than reopen `0.31`
 
 ### Historical `0.22` implementation checklist
 
@@ -360,40 +361,40 @@ Why this order:
 
 ### Exact next slice to build
 
-Build the `0.32.4` keybind clarity settings slice.
+Build the `0.33.0` mesh catalog expansion slice.
 
 Scope:
 
-- add the first small keybind or control-reference clarity setting through Settings without disrupting existing input behavior
-- keep accessibility preferences persisted, understandable, and safe by default
-- preserve the existing viewport-safe menu rules while scaling or clarifying client surfaces
-- update player-facing patch notes and regression coverage with each shipped `0.32.x` slice
+- catalog more high-traffic mesh definitions without changing gameplay behavior
+- reduce switch-driven environment/entity presentation paths where a catalog entry can describe the same output
+- keep generated geometry and asset fallback behavior stable while definitions move into data
+- update player-facing patch notes and regression coverage with each shipped slice
 
 Why this is the best next slice:
 
 - `0.30` closed the visible window clipping audit, including generated modals and special panels
 - `0.31` closed the planned client-UX consistency layer across shared chrome, viewport safety, UI diffing, and overlay closeout
-- `0.32.0` shipped the first audio foundation, `0.32.1` added the first audio accessibility control, `0.32.2` made generated cues authored-asset ready, and `0.32.3` added UI scale, so the next visible quality gap is keybind clarity
+- `0.32.0` through `0.32.4` shipped the planned audio/accessibility baseline, so the next highest-value client-quality step is making more visual/content definitions catalog-driven
 
 Exact files to start in:
 
 - `index.html`
-- `src/ui/UIManager.js`
-- `src/styles/`
-- input-management and help/settings surfaces
+- `src/utils/MeshFactory.js`
+- `src/utils/MeshCatalog.js`
+- high-traffic entity/environment mesh definitions
 - `tests/VersionPresentation.test.js`
 
 Target regression surfaces for this slice:
 
-- UIManager settings/input tests for persistence and callback behavior
-- menu/style regression tests for viewport-safe presentation
+- MeshCatalog/MeshFactory regression tests for equivalent output
+- entity/environment rendering tests around moved definitions
 - `tests/VersionPresentation.test.js`
 
 Definition of done for the next slice:
 
-- accessibility settings route through one small client-owned preferences path
-- defaults remain safe and do not break existing menu layout or HUD positioning
-- keybind clarity improves control discoverability without changing current input mappings unexpectedly
+- catalog-driven definitions preserve current visible output
+- fallback paths stay safe for missing assets or generated geometry
+- new content definitions become easier to add without editing large switch blocks
 - patch notes and the active status line move forward with the implementation
 
 ## Roadmap from `0.23` to `alpha 1.0`

@@ -1071,8 +1071,12 @@ describe('menu polish regressions', () => {
         expect(html).toContain('<div class="help-guide">');
         expect(html).toContain('<div id="help-first-hour-guide" class="help-guide help-guide--separated">');
         expect(html).toContain('<div id="help-daily-return-guide" class="help-guide help-guide--separated">');
+        expect(html).toContain('<div id="help-keyboard-reference" class="help-guide help-guide--separated help-guide--keyboard-reference" style="display: none;">');
         expect(html).toContain('<div class="help-guide__title">Core Controls</div>');
+        expect(html).toContain('<div class="help-guide__title">Detailed Keyboard Reference</div>');
+        expect(html).toContain('<div class="help-guide__grid">');
         expect(html).toContain('<strong class="help-guide__key">Left Click:</strong>');
+        expect(html).toContain('<strong class="help-guide__key">Combat:</strong> Left Click for melee/basic attack, Right Click to use your selected ability, 1-4 for hotbar abilities');
         expect(html).toContain('<strong class="help-guide__key">1.</strong> Start with the <strong>Quest Giver</strong>');
         expect(html).not.toContain('<div style="color: #ffd700; font-size: 15px; font-weight: bold; margin-bottom: 6px;">Core Controls</div>');
         expect(html).not.toContain('<div id="help-first-hour-guide" style="border-top: 1px solid #444; padding-top: 10px;">');
@@ -1081,6 +1085,8 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.help-guide--separated\s*\{[^}]*border-top:\s*1px solid #444;[^}]*padding-top:\s*10px;/s);
         expect(css).toMatch(/\.help-guide__title\s*\{[^}]*color:\s*#ffd700;[^}]*font-size:\s*15px;[^}]*font-weight:\s*bold;[^}]*margin-bottom:\s*6px;/s);
         expect(css).toMatch(/\.help-guide__key\s*\{[^}]*color:\s*#ffd700;/s);
+        expect(css).toMatch(/\.help-guide__grid\s*\{[^}]*display:\s*grid;[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\);/s);
+        expect(css).toMatch(/@media \(max-width: 640px\)\s*\{\s*\.help-guide__grid\s*\{[^}]*grid-template-columns:\s*1fr;/s);
     });
 
     test('patch notes history entries reuse shared title and list classes', () => {
@@ -1117,7 +1123,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.32.3</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.32.4</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1306,6 +1312,10 @@ describe('menu polish regressions', () => {
         expect(html).toContain('<span id="ui-scale-value" class="support-field__value">100%</span>');
         expect(html).toContain('<input id="ui-scale" class="support-field__range" type="range" min="85" max="125" step="5" value="100" />');
         expect(html).toContain('Scales menus and HUD text while viewport-safe windows keep their visible bounds.');
+        expect(html).toContain('<label for="control-hint-level" class="support-field__label">Control Hints</label>');
+        expect(html).toContain('<select id="control-hint-level" class="support-field__control">');
+        expect(html).toContain('<option value="detailed">Detailed keyboard reference</option>');
+        expect(html).toContain('Detailed mode expands Help with grouped keyboard shortcuts without changing your actual bindings.');
         expect(html).toContain('<label for="auto-loot-enabled" class="support-field__label">Auto-Loot Nearby Items</label>');
         expect(html).toContain('<label for="audio-enabled" class="support-field__label">Audio Cues</label>');
         expect(html).toContain('<label for="audio-volume" class="support-field__label">Audio Volume</label>');

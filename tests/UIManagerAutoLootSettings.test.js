@@ -58,6 +58,8 @@ function buildDom() {
         <div id="graphics-brightness-value"></div>
         <input id="ui-scale" />
         <div id="ui-scale-value"></div>
+        <select id="control-hint-level"><option value="standard">Standard controls</option><option value="detailed">Detailed keyboard reference</option></select>
+        <div id="help-keyboard-reference" style="display:none"></div>
         <input id="auto-loot-enabled" type="checkbox" />
         <input id="audio-enabled" type="checkbox" />
         <input id="audio-volume" />
@@ -303,6 +305,50 @@ describe('UIManager settings', () => {
         expect(document.getElementById('ui-scale-value').textContent).toBe('100%');
         expect(document.documentElement.style.getPropertyValue('--ui-scale')).toBe('1');
         expect(localStorage.getItem('eidolon.uiScale')).toBe('large');
+    });
+
+    test('control hint level persists and toggles detailed help reference', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        ui.onControlHintLevelChange = jest.fn();
+
+        ui.setControlHintLevel('detailed');
+
+        expect(localStorage.getItem('eidolon.controlHintLevel')).toBe('detailed');
+        expect(ui.getControlHintLevel()).toBe('detailed');
+        expect(document.getElementById('control-hint-level').value).toBe('detailed');
+        expect(document.getElementById('help-keyboard-reference').style.display).toBe('block');
+        expect(ui.onControlHintLevelChange).toHaveBeenCalledWith('detailed');
+
+        ui.setControlHintLevel('invalid');
+        expect(localStorage.getItem('eidolon.controlHintLevel')).toBe('standard');
+        expect(ui.getControlHintLevel()).toBe('standard');
+        expect(document.getElementById('help-keyboard-reference').style.display).toBe('none');
+    });
+
+    test('control hint select change updates setting', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const select = document.getElementById('control-hint-level');
+
+        select.value = 'detailed';
+        select.dispatchEvent(new Event('change'));
+
+        expect(ui.getControlHintLevel()).toBe('detailed');
+        expect(localStorage.getItem('eidolon.controlHintLevel')).toBe('detailed');
+        expect(document.getElementById('help-keyboard-reference').style.display).toBe('block');
+    });
+
+    test('invalid stored control hint level normalizes without persisting', () => {
+        localStorage.setItem('eidolon.controlHintLevel', 'verbose');
+        buildDom();
+
+        const ui = new UIManager(false);
+
+        expect(ui.getControlHintLevel()).toBe('standard');
+        expect(document.getElementById('control-hint-level').value).toBe('standard');
+        expect(document.getElementById('help-keyboard-reference').style.display).toBe('none');
+        expect(localStorage.getItem('eidolon.controlHintLevel')).toBe('verbose');
     });
 
     test('esc menu toggle reports open and close state', () => {
