@@ -250,4 +250,22 @@ describe('GameEngine render-time HUD throttling', () => {
 
         expect(engine.uiManager.updateCharacterSheet).toHaveBeenCalledTimes(2);
     });
+
+    test('render uses the UIManager character sheet serializer when available', () => {
+        const engine = createEngineHarness();
+        engine.frameCount = 10;
+        engine.uiManager.isCharacterSheetOpen = true;
+        engine.uiManager.serializeCharacterSheet = jest.fn(() => 'ui-character-1');
+
+        engine.render(1);
+        engine.render(1);
+
+        expect(engine.uiManager.serializeCharacterSheet).toHaveBeenCalledWith(engine.player);
+        expect(engine.uiManager.updateCharacterSheet).toHaveBeenCalledTimes(1);
+
+        engine.uiManager.serializeCharacterSheet.mockReturnValue('ui-character-2');
+        engine.render(1);
+
+        expect(engine.uiManager.updateCharacterSheet).toHaveBeenCalledTimes(2);
+    });
 });

@@ -5201,38 +5201,40 @@ export class GameEngine {
             // Dynamic UI Updates (Throttled)
             if (this.frameCount % 10 === 0) {
                 if (this.uiManager.isCharacterSheetOpen) {
-                    const characterSheetSignature = [
-                        this.player.level ?? 0,
-                        this.player.xp ?? 0,
-                        this.player.xpToNextLevel ?? 0,
-                        this.player.statPoints ?? 0,
-                        this.player.isMultiplayer ? '1' : '0',
-                        Math.ceil(playerStats.hp ?? 0),
-                        playerStats.maxHp ?? 0,
-                        Math.floor(playerStats.mana ?? 0),
-                        playerStats.maxMana ?? 0,
-                        playerStats.strength ?? 0,
-                        playerStats.dexterity ?? 0,
-                        playerStats.intelligence ?? 0,
-                        playerStats.vitality ?? 0,
-                        playerStats.wisdom ?? 0,
-                        playerStats.damage ?? 0,
-                        playerStats.defense ?? 0,
-                        this.player.equipment?.head?.id || '',
-                        this.player.equipment?.shoulders?.id || '',
-                        this.player.equipment?.chest?.id || '',
-                        this.player.equipment?.belt?.id || '',
-                        this.player.equipment?.legs?.id || '',
-                        this.player.equipment?.feet?.id || '',
-                        this.player.equipment?.gloves?.id || '',
-                        this.player.equipment?.neck?.id || '',
-                        this.player.equipment?.mainHand?.id || '',
-                        this.player.equipment?.offHand?.id || '',
-                        this.player.equipment?.ring1?.id || '',
-                        this.player.equipment?.ring2?.id || '',
-                        this.player.equipment?.trinket1?.id || '',
-                        this.player.equipment?.trinket2?.id || ''
-                    ].join('|');
+                    const characterSheetSignature = this.uiManager.serializeCharacterSheet
+                        ? this.uiManager.serializeCharacterSheet(this.player)
+                        : [
+                            this.player.level ?? 0,
+                            this.player.xp ?? 0,
+                            this.player.xpToNextLevel ?? 0,
+                            this.player.statPoints ?? 0,
+                            this.player.isMultiplayer ? '1' : '0',
+                            Math.ceil(playerStats.hp ?? 0),
+                            playerStats.maxHp ?? 0,
+                            Math.floor(playerStats.mana ?? 0),
+                            playerStats.maxMana ?? 0,
+                            playerStats.strength ?? 0,
+                            playerStats.dexterity ?? 0,
+                            playerStats.intelligence ?? 0,
+                            playerStats.vitality ?? 0,
+                            playerStats.wisdom ?? 0,
+                            playerStats.damage ?? 0,
+                            playerStats.defense ?? 0,
+                            this.player.equipment?.head?.id || '',
+                            this.player.equipment?.shoulders?.id || '',
+                            this.player.equipment?.chest?.id || '',
+                            this.player.equipment?.belt?.id || '',
+                            this.player.equipment?.legs?.id || '',
+                            this.player.equipment?.feet?.id || '',
+                            this.player.equipment?.gloves?.id || '',
+                            this.player.equipment?.neck?.id || '',
+                            this.player.equipment?.mainHand?.id || '',
+                            this.player.equipment?.offHand?.id || '',
+                            this.player.equipment?.ring1?.id || '',
+                            this.player.equipment?.ring2?.id || '',
+                            this.player.equipment?.trinket1?.id || '',
+                            this.player.equipment?.trinket2?.id || ''
+                        ].join('|');
                     if (characterSheetSignature !== this.lastRenderCharacterSheetSignature) {
                         this.uiManager.updateCharacterSheet(this.player);
                         this.lastRenderCharacterSheetSignature = characterSheetSignature;

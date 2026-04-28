@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.36 for the shared hotbar cooldown signature slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.36');
+    test('advances the login screen to alpha 0.31.37 for the shared character sheet signature slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.37');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.36', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.37', () => {
+        expect(indexHtml).toContain('Patch 0.31.37');
+        expect(indexHtml).toContain('The engine and UI layer share the same visible character payload signature whenever the UI serializer is available');
+        expect(indexHtml).toContain('Stat, resource, point, equipment, rarity, potency, and socket comparisons stay aligned between render throttling and DOM updates');
+        expect(indexHtml).toContain('Future character sheet display changes can update the UI serializer without repeating render-loop signature code');
+        expect(indexHtml).toContain('Added GameEngine render throttling coverage for the UIManager character sheet serializer path');
+    });
+
+    test('keeps the prior 0.31.36 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.36');
         expect(indexHtml).toContain('The engine and UI layer share the same displayed cooldown signature whenever the UI serializer is available');
         expect(indexHtml).toContain('Slot count, empty-slot, skill, and rounded cooldown comparisons stay aligned between render throttling and DOM updates');
@@ -964,6 +972,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.37');
         expect(indexHtml).toContain('Patch 0.31.36');
         expect(indexHtml).toContain('Patch 0.31.35');
         expect(indexHtml).toContain('Patch 0.31.34');
@@ -1091,6 +1100,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.37"');
         expect(indexHtml).toContain('data-version="0.31.36"');
         expect(indexHtml).toContain('data-version="0.31.35"');
         expect(indexHtml).toContain('data-version="0.31.34"');
