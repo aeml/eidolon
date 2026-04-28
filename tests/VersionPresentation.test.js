@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.34 for the character sheet reopen refresh slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.34');
+    test('advances the login screen to alpha 0.31.35 for the transition UI cache reset slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.35');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.34', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.35', () => {
+        expect(indexHtml).toContain('Patch 0.31.35');
+        expect(indexHtml).toContain("Scene swaps clear the UI layer's combat, portal hint, HUD, XP, hotbar, and character sheet diff signatures");
+        expect(indexHtml).toContain('The engine render signatures and UIManager display signatures reset together before the new scene presents');
+        expect(indexHtml).toContain('Performance guards remain local to each UI surface while transitions can force a clean visible refresh');
+        expect(indexHtml).toContain('Added GameEngine transition coverage for UI display cache resets and direct UIManager cache reset coverage');
+    });
+
+    test('keeps the prior 0.31.34 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.34');
         expect(indexHtml).toContain('Each open cycle forces one fresh render before repeated visible updates are diffed again');
         expect(indexHtml).toContain('Stats and equipment slots refresh after the panel is closed and opened, even when the player payload is unchanged');
@@ -948,6 +956,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.35');
         expect(indexHtml).toContain('Patch 0.31.34');
         expect(indexHtml).toContain('Patch 0.31.33');
         expect(indexHtml).toContain('Patch 0.31.32');
@@ -1073,6 +1082,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.35"');
         expect(indexHtml).toContain('data-version="0.31.34"');
         expect(indexHtml).toContain('data-version="0.31.33"');
         expect(indexHtml).toContain('data-version="0.31.32"');

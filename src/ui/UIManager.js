@@ -548,6 +548,15 @@ export class UIManager {
 
     handleSellAll(rarityName) { this.inventory.handleSellAll(rarityName); }
 
+    resetDisplaySignatures() {
+        this.lastCombatIntentSignature = '';
+        this.lastDungeonEntranceHintSignature = '';
+        this.lastPlayerStatsSignature = '';
+        this.lastXpSignature = '';
+        this.lastHotbarCooldownSignature = '';
+        this.lastCharacterSheetSignature = '';
+    }
+
     addChatMessage(sender, message) {
         if (!this.chatBox) return;
         this.chatBox.style.display = 'flex';

@@ -163,6 +163,26 @@ function createPlayer(overrides = {}) {
 }
 
 describe('UIManager HUD diffing', () => {
+    test('resetDisplaySignatures clears all UI-level diff caches', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        ui.lastCombatIntentSignature = 'combat';
+        ui.lastDungeonEntranceHintSignature = 'dungeon-hint';
+        ui.lastPlayerStatsSignature = 'stats';
+        ui.lastXpSignature = 'xp';
+        ui.lastHotbarCooldownSignature = 'hotbar';
+        ui.lastCharacterSheetSignature = 'character';
+
+        ui.resetDisplaySignatures();
+
+        expect(ui.lastCombatIntentSignature).toBe('');
+        expect(ui.lastDungeonEntranceHintSignature).toBe('');
+        expect(ui.lastPlayerStatsSignature).toBe('');
+        expect(ui.lastXpSignature).toBe('');
+        expect(ui.lastHotbarCooldownSignature).toBe('');
+        expect(ui.lastCharacterSheetSignature).toBe('');
+    });
+
     test('updatePlayerStats skips identical HUD payloads and refreshes when displayed values change', () => {
         buildDom();
         const ui = new UIManager(false);

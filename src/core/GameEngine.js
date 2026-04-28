@@ -426,6 +426,7 @@ export class GameEngine {
         this.lastRenderEnemyBarSignature = '';
         this.lastRenderCharacterSheetSignature = '';
         this.lastRenderWorldMapSignature = '';
+        this.uiManager?.resetDisplaySignatures?.();
     }
 
     isPlayerDead() {

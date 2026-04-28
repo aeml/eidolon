@@ -162,7 +162,8 @@ function createEngineHarness() {
     };
     engine.uiManager = {
         clearCombatIntent: jest.fn(),
-        clearDungeonEntranceHint: jest.fn()
+        clearDungeonEntranceHint: jest.fn(),
+        resetDisplaySignatures: jest.fn()
     };
     engine.abilityController = {
         pendingAbilityTarget: null,
@@ -336,7 +337,7 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(engine.combatTargetHighlight.parent).toBeNull();
     });
 
-    test('enterInstance resets render update signatures so the first new-scene frame refreshes UI', async () => {
+    test('enterInstance resets render and UI display signatures so the first new-scene frame refreshes UI', async () => {
         const engine = createEngineHarness();
 
         await engine.enterInstance('instance-6b', 'overworld', null);
@@ -347,6 +348,7 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(engine.lastRenderEnemyBarSignature).toBe('');
         expect(engine.lastRenderCharacterSheetSignature).toBe('');
         expect(engine.lastRenderWorldMapSignature).toBe('');
+        expect(engine.uiManager.resetDisplaySignatures).toHaveBeenCalledTimes(1);
     });
 
     test('environmental hazards remove and dispose meshes from their current parent during instance teardown', async () => {
