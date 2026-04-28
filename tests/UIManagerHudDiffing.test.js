@@ -230,6 +230,34 @@ describe('UIManager HUD diffing', () => {
         expect(overlay.textContent).toBe('3');
     });
 
+    test('assignSkillToSlot invalidates hotbar cooldown diffing when overlay DOM is recreated', () => {
+        buildDom();
+        const slot = document.querySelector('.hotbar-slot');
+        const icon = document.createElement('div');
+        icon.className = 'hotbar-icon';
+        slot.appendChild(icon);
+        const overlay = document.createElement('div');
+        overlay.className = 'cooldown-overlay';
+        slot.appendChild(overlay);
+        const ui = new UIManager(false);
+        const player = createPlayer({
+            hotbar: ['Slash'],
+            cooldowns: { Slash: 3.2 }
+        });
+
+        ui.updateHotbarCooldowns(player);
+        expect(overlay.textContent).toBe('4');
+
+        overlay.remove();
+        ui.assignSkillToSlot(0, 'Slash');
+        const recreatedOverlay = slot.querySelector('.cooldown-overlay');
+        expect(recreatedOverlay.style.display).toBe('none');
+
+        ui.updateHotbarCooldowns(player);
+        expect(recreatedOverlay.style.display).toBe('flex');
+        expect(recreatedOverlay.textContent).toBe('4');
+    });
+
     test('updateCharacterSheet skips identical visible character payloads and refreshes when stats change', () => {
         buildDom();
         const ui = new UIManager(false);

@@ -1705,6 +1705,7 @@ export class UIManager {
     assignSkillToSlot(slotIndex, skillName) {
         const slot = this.hotbarSlots[slotIndex];
         const icon = slot.querySelector('.hotbar-icon');
+        this.lastHotbarCooldownSignature = '';
         
         // Create or get cooldown overlay
         let cooldownOverlay = slot.querySelector('.cooldown-overlay');
