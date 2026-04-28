@@ -2,7 +2,7 @@
 
 Last refreshed: April 2026
 
-This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, and `0.31` client-UX closeout passes already landed on `master`.
+This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, `0.31` client-UX closeout, and `0.32.0` audio foundation passes already landed on `master`.
 
 For the broader release-status tracker that covers remaining `0.22` work and the roadmap through `alpha 1.0`, see `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md`.
 
@@ -30,28 +30,29 @@ For the broader release-status tracker that covers remaining `0.22` work and the
 - Sharper/stabler shadows
 - Exaggerated ctrl-click jump visuals with landing dust and camera punch
 - `0.31` client UX closeout: shared menu chrome, viewport-safe windows, UI diffing, and class-based death overlay presentation
+- `0.32.0` audio foundation: shared AudioManager, generated placeholder UI/loot/combat/jump cues, and persisted audio settings controls
 
 ## Highest-value next slices
 
-### 1. Audio foundation
+### 1. Audio accessibility and asset readiness
 Why now:
-- `0.31` closed the planned client UX consistency line
-- The largest remaining presentation gap is that combat, loot, and UI actions still have no meaningful sound layer
-- A small audio abstraction is needed before adding one-off sounds across gameplay systems
+- `0.32.0` shipped the first generated cue layer through one shared AudioManager
+- The next quality step is making that layer easier to control, test, and replace with authored `.mp3`/`.ogg` assets later
+- Accessibility controls should build on the audio settings work while the surface area is still small
 
 Targets:
 - `src/audio/` or the smallest existing client location for a new audio manager
 - `src/core/GameEngine.js`
 - `src/ui/UIManager.js`
 - `src/ui/InventoryUI.js`
-- tests around audio manager defaults, mute/volume behavior, and first cue triggers
+- tests around audio settings persistence, replacement-ready cue routing, and first accessibility controls
 
 Definition of done:
-- UI, loot, and combat cues route through one client-owned audio manager
-- Browser autoplay policy is handled safely until player interaction unlocks playback
-- The first cues improve feedback without becoming noisy or mandatory
+- UI, loot, combat, and jump cues keep routing through one client-owned audio manager
+- Settings make the audio layer optional, understandable, and safe by default
+- Generated cues remain replaceable without scattering direct playback calls across gameplay code
 
-### 2. Accessibility baseline
+### 2. Broader accessibility baseline
 Why now:
 - Audio should land with user control, and the following roadmap phase needs UI scale, keybind, and clarity settings
 
@@ -103,6 +104,6 @@ Definition of done:
 - There is a tiny deterministic sandbox for testing rendering, movement, VFX, and menu regressions without a full live run
 
 ## Recommended next 3 implementation slices
-1. `feat: add audio manager foundation`
-2. `feat: wire first combat loot and ui cues`
-3. `feat: add accessibility control baseline`
+1. `feat: add audio accessibility controls`
+2. `feat: prepare audio asset cue loading`
+3. `feat: add ui scale control baseline`

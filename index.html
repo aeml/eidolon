@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.41</span>
+                <span class="start-version-row__label">Alpha 0.32.0</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -535,6 +535,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.32.0">
+                    <h3 class="patch-note-entry__title">Patch 0.32.0 (Audio foundation)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The first audio layer is live:</strong> A client-owned AudioManager now provides generated placeholder cues that can later be replaced with authored audio assets.</li>
+                        <li><strong>Moment-to-moment feedback now has sound:</strong> UI clicks and window open/close actions, loot pickup and inventory-full feedback, combat hits and misses, and jump takeoff and landing all route through the shared audio manager.</li>
+                        <li><strong>Audio controls are available in Settings:</strong> Players can toggle audio cues and adjust synthesized cue volume, with preferences persisted between sessions.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for audio defaults and cue definitions, loot success/failure cues, combat hit/miss cues, jump start/landing cues, settings presentation, and the 0.32.0 release state.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.41">
                     <h3 class="patch-note-entry__title">Patch 0.31.41 (Client UX closeout)</h3>
                     <ul class="patch-note-entry__list">
