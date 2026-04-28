@@ -159,6 +159,22 @@ describe('GameEngine render-time HUD throttling', () => {
         expect(engine.uiManager.updateHotbarCooldowns).toHaveBeenCalledTimes(2);
     });
 
+    test('render uses the UIManager hotbar cooldown serializer when available', () => {
+        const engine = createEngineHarness();
+        engine.uiManager.serializeHotbarCooldowns = jest.fn(() => 'ui-hotbar-1');
+
+        engine.render(1);
+        engine.render(1);
+
+        expect(engine.uiManager.serializeHotbarCooldowns).toHaveBeenCalledWith(engine.player);
+        expect(engine.uiManager.updateHotbarCooldowns).toHaveBeenCalledTimes(1);
+
+        engine.uiManager.serializeHotbarCooldowns.mockReturnValue('ui-hotbar-2');
+        engine.render(1);
+
+        expect(engine.uiManager.updateHotbarCooldowns).toHaveBeenCalledTimes(2);
+    });
+
     test('render does not spam enemy bar updates when hover, alt state, and tracked enemies are unchanged', () => {
         const engine = createEngineHarness();
         const enemy = {

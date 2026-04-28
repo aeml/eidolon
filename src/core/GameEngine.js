@@ -5184,13 +5184,15 @@ export class GameEngine {
                 this.lastRenderXpSignature = xpSignature;
             }
 
-            const hotbarCooldownSignature = (this.player.hotbar || []).map((skillName, index) => {
-                if (!skillName) return `${index}:empty`;
-                const mappedCooldown = this.player.cooldowns?.[skillName] ?? 0;
-                const fallbackCooldown = skillName === this.player.abilityName ? (this.player.abilityCooldown ?? 0) : 0;
-                const displayedCooldown = Math.max(mappedCooldown, fallbackCooldown);
-                return `${index}:${skillName}:${displayedCooldown > 0 ? Math.ceil(displayedCooldown) : 0}`;
-            }).join('|');
+            const hotbarCooldownSignature = this.uiManager.serializeHotbarCooldowns
+                ? this.uiManager.serializeHotbarCooldowns(this.player)
+                : (this.player.hotbar || []).map((skillName, index) => {
+                    if (!skillName) return `${index}:empty`;
+                    const mappedCooldown = this.player.cooldowns?.[skillName] ?? 0;
+                    const fallbackCooldown = skillName === this.player.abilityName ? (this.player.abilityCooldown ?? 0) : 0;
+                    const displayedCooldown = Math.max(mappedCooldown, fallbackCooldown);
+                    return `${index}:${skillName}:${displayedCooldown > 0 ? Math.ceil(displayedCooldown) : 0}`;
+                }).join('|');
             if (hotbarCooldownSignature !== this.lastRenderHotbarCooldownSignature) {
                 this.uiManager.updateHotbarCooldowns(this.player);
                 this.lastRenderHotbarCooldownSignature = hotbarCooldownSignature;

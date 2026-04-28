@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.35</span>
+                <span class="start-version-row__label">Alpha 0.31.36</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.36">
+                    <h3 class="patch-note-entry__title">Patch 0.31.36 (Shared hotbar cooldown signature)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Render throttling now reuses the UIManager hotbar cooldown serializer:</strong> The engine and UI layer share the same displayed cooldown signature whenever the UI serializer is available.</li>
+                        <li><strong>Hotbar cooldown diffing has one source of truth:</strong> Slot count, empty-slot, skill, and rounded cooldown comparisons stay aligned between render throttling and DOM updates.</li>
+                        <li><strong>The 0.31 UI performance pass reduces drift risk:</strong> Future hotbar display changes can update the UI serializer without duplicating render-loop signature logic.</li>
+                        <li><strong>Regression coverage:</strong> Added GameEngine render throttling coverage for the UIManager hotbar cooldown serializer path.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.35">
                     <h3 class="patch-note-entry__title">Patch 0.31.35 (Transition UI cache reset)</h3>
                     <ul class="patch-note-entry__list">
