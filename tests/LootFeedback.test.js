@@ -16,6 +16,7 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
 const { LootDrop } = await import('../src/entities/LootDrop.js');
+const { AUDIO_CUES } = await import('../src/audio/AudioManager.js');
 
 function createItem(name = 'Iron Sword', rarityName = 'Rare', color = '#66ccff') {
     return {
@@ -66,6 +67,7 @@ function createEngineHarness() {
         showLootPickupToast: jest.fn()
     };
     engine.floatingTextManager = { spawn: jest.fn() };
+    engine.playAudioCue = jest.fn();
     engine.hydrateItem = (item) => ({ ...item });
     engine.isPlayerDead = () => false;
     engine.getInteractionRangeForEntity = GameEngine.prototype.getInteractionRangeForEntity;
@@ -116,6 +118,7 @@ describe('GameEngine loot pickup feedback', () => {
 
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledTimes(1);
         expect(engine.uiManager.showLootPickupToast).toHaveBeenCalledTimes(1);
+        expect(engine.playAudioCue).toHaveBeenCalledWith(AUDIO_CUES.lootBlocked);
     });
 
     test('pickupLoot shows success feedback and optimistic removal', () => {
@@ -128,6 +131,7 @@ describe('GameEngine loot pickup feedback', () => {
 
         expect(didPickup).toBe(true);
         expect(engine.network.send).toHaveBeenCalledWith('pickup', { lootId: 'loot-success' });
+        expect(engine.playAudioCue).toHaveBeenCalledWith(AUDIO_CUES.lootPickup, { pitch: 1 });
         expect(engine.uiManager.showLootPickupToast).toHaveBeenCalledWith('Rare: Radiant Ruby', { sender: 'Loot' });
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('RARE: RADIANT RUBY', engine.player.position, '#a855f7');
         expect(engine.remotePlayers.has(loot.id)).toBe(false);

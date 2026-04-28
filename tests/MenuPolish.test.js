@@ -87,6 +87,9 @@ function buildStaticWindowDom() {
         <input id="graphics-brightness" />
         <div id="graphics-brightness-value"></div>
         <input id="auto-loot-enabled" type="checkbox" />
+        <input id="audio-enabled" type="checkbox" />
+        <input id="audio-volume" />
+        <div id="audio-volume-value"></div>
         <button id="btn-download-core-assets"></button>
         <button id="btn-download-dungeon-assets"></button>
         <button id="btn-download-environment-assets"></button>
@@ -244,6 +247,7 @@ function buildStaticWindowDom() {
 describe('menu polish regressions', () => {
     beforeEach(() => {
         document.body.innerHTML = '';
+        localStorage.clear();
         delete window.game;
     });
 
@@ -1296,6 +1300,9 @@ describe('menu polish regressions', () => {
         expect(html).toContain('<span id="graphics-brightness-value" class="support-field__value">100%</span>');
         expect(html).toContain('<input id="graphics-brightness" class="support-field__range" type="range"');
         expect(html).toContain('<label for="auto-loot-enabled" class="support-field__label">Auto-Loot Nearby Items</label>');
+        expect(html).toContain('<label for="audio-enabled" class="support-field__label">Audio Cues</label>');
+        expect(html).toContain('<label for="audio-volume" class="support-field__label">Audio Volume</label>');
+        expect(html).toContain('<input id="audio-volume" class="support-field__range" type="range"');
         expect(html).toContain('<label for="camera-shake-enabled" class="support-field__label">Camera Shake</label>');
         expect(html).toContain('<label for="fullscreen-enabled" class="support-field__label">Fullscreen</label>');
         expect(html).not.toContain('<label for="graphics-quality" style="color: #ffd700; font-size: 13px;">Graphics Quality</label>');

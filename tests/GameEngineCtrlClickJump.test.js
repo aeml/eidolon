@@ -15,6 +15,7 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 });
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
+const { AUDIO_CUES } = await import('../src/audio/AudioManager.js');
 
 function createEngineHarness() {
     const engine = Object.create(GameEngine.prototype);
@@ -29,6 +30,7 @@ function createEngineHarness() {
     engine.refreshCombatIntentState = jest.fn();
     engine.refreshDungeonEntranceHint = jest.fn();
     engine.spawnTransientEffect = jest.fn(() => true);
+    engine.playAudioCue = jest.fn();
     engine.chunkManager = {
         updateEntityChunk: jest.fn(),
         getActiveEntities: jest.fn(() => [engine.player])
@@ -115,6 +117,9 @@ describe('GameEngine ctrl-click jump', () => {
         }));
         expect(engine.playerJumpState.end.x).toBeCloseTo(-6, 5);
         expect(engine.playerJumpState.end.z).toBeCloseTo(14, 5);
+        expect(engine.playAudioCue).toHaveBeenCalledWith(AUDIO_CUES.jumpStart, expect.objectContaining({
+            pitch: expect.any(Number)
+        }));
     });
 
     test('plain left click keeps existing ground move behavior', () => {
@@ -165,6 +170,7 @@ describe('GameEngine ctrl-click jump', () => {
         expect(engine.player.mesh.position.y).toBeCloseTo(engine.player.position.y, 5);
         expect(engine.player.clearJumpAnimation).toHaveBeenCalledTimes(1);
         expect(engine.player.state).toBe('IDLE');
+        expect(engine.playAudioCue).toHaveBeenCalledWith(AUDIO_CUES.jumpLand, { impact: 0.9 });
     });
 
     test('shorter jumps finish faster than longer jumps', () => {

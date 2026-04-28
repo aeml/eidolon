@@ -13,6 +13,7 @@ import { WorldGenerator } from '../world/WorldGenerator.js';
 import { Minimap } from '../ui/Minimap.js';
 import { WorldMap } from '../ui/WorldMap.js';
 import { FloatingTextManager } from '../ui/FloatingTextManager.js';
+import { AudioManager, AUDIO_CUES } from '../audio/AudioManager.js';
 
 const REMOTE_SUPPORT_STATE_CONFIG = {
     spirit_guardians: {
@@ -326,7 +327,8 @@ export class GameEngine {
 
         this.chunkManager = new ChunkManager(this.renderSystem.entityGroup);
         this.collisionManager = new CollisionManager();
-        this.uiManager = new UIManager(this.isMobile);
+        this.audioManager = new AudioManager();
+        this.uiManager = new UIManager(this.isMobile, { audioManager: this.audioManager });
         this.autoLootEnabled = this.uiManager.getAutoLootEnabled();
         this.uiManager.onAutoLootChange = (enabled) => {
             this.autoLootEnabled = enabled;
@@ -427,6 +429,10 @@ export class GameEngine {
         this.lastRenderCharacterSheetSignature = '';
         this.lastRenderWorldMapSignature = '';
         this.uiManager?.resetDisplaySignatures?.();
+    }
+
+    playAudioCue(cueName, options = {}) {
+        return this.audioManager?.play?.(cueName, options) || false;
     }
 
     isPlayerDead() {
@@ -1449,6 +1455,11 @@ export class GameEngine {
                 }
             }
 
+            if (this.player && (dmgData.sourceId === this.player.id || dmgData.targetId === this.player.id)) {
+                const amount = Math.max(0, Number(dmgData.amount) || 0);
+                this.playAudioCue(AUDIO_CUES.combatHit, { impact: Math.min(1, amount / 80) });
+            }
+
             // If target is local player, flash screen or shake camera?
             if (this.player && dmgData.targetId === this.player.id) {
                 // Visual sync: if we took damage from a remote entity, force its ATTACKING animation.
@@ -2436,6 +2447,7 @@ export class GameEngine {
         if (!entity || result !== 'picked_up') return;
         const message = this.formatLootPickupMessage(entity);
         const color = this.uiManager?.getRarityColor?.(entity.item?.rarity) || entity.itemColor || '#ffd700';
+        this.playAudioCue(AUDIO_CUES.lootPickup, { pitch: entity.item?.gemQuality ? 1.15 : 1 });
 
         if (this.floatingTextManager && this.player?.position) {
             this.floatingTextManager.spawn(message.toUpperCase(), this.player.position, color);
@@ -2451,6 +2463,7 @@ export class GameEngine {
         if (reason === 'inventory_full') {
             if (now - (this.lastInventoryFullTime || 0) <= 1000) return;
             this.lastInventoryFullTime = now;
+            this.playAudioCue(AUDIO_CUES.lootBlocked);
             this.floatingTextManager?.spawn('INVENTORY FULL', this.player.position, '#ff4444');
             this.uiManager?.showLootPickupToast?.('Inventory full', { sender: 'Loot' });
         }
@@ -3707,6 +3720,7 @@ export class GameEngine {
         };
         this.playerJumpLandingVisual = null;
         this.playerJumpVisualHeight = 0;
+        this.playAudioCue(AUDIO_CUES.jumpStart, { pitch: Math.max(0.85, Math.min(1.25, travelDistance / 18)) });
         this.chunkManager?.updateEntityChunk?.(this.player);
         this.renderSystem?.setCameraTarget?.(this.player.position);
         return true;
@@ -3829,6 +3843,7 @@ export class GameEngine {
                     impact: 0.85
                 };
                 this.applyJumpImpactEffect(entity, 0.85);
+                this.playAudioCue(AUDIO_CUES.jumpLand, { impact: 0.85 });
                 if (shouldConsumeQueuedJump) {
                     this.playerQueuedJump = false;
                     const queuedDestination = this.inputManager.getGroundIntersection?.();
@@ -3893,6 +3908,7 @@ export class GameEngine {
                 impact: 0.9
             };
             this.applyJumpImpactEffect(this.player, 0.9);
+            this.playAudioCue(AUDIO_CUES.jumpLand, { impact: 0.9 });
             this.player.state = 'IDLE';
             this.player.playAnimation?.('Idle');
 

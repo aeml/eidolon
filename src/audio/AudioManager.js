@@ -6,6 +6,7 @@ export const AUDIO_CUES = Object.freeze({
     uiOpen: 'ui.open',
     uiClose: 'ui.close',
     lootPickup: 'loot.pickup',
+    lootBlocked: 'loot.blocked',
     combatHit: 'combat.hit',
     combatMiss: 'combat.miss',
     jumpStart: 'movement.jump.start',
@@ -125,7 +126,11 @@ export class AudioManager {
         if (!context || !destination || !cue) return false;
 
         const startAt = context.currentTime || 0;
-        cue.forEach((tone) => this.playTone(context, destination, startAt, tone));
+        try {
+            cue.forEach((tone) => this.playTone(context, destination, startAt, tone));
+        } catch {
+            return false;
+        }
         return true;
     }
 
@@ -147,6 +152,11 @@ export class AudioManager {
                 return [
                     { frequency: 880 * pitch, duration: 0.055, type: 'sine', gain: 0.08 },
                     { frequency: 1320 * pitch, delay: 0.045, duration: 0.08, type: 'sine', gain: 0.06 },
+                ];
+            case AUDIO_CUES.lootBlocked:
+                return [
+                    { frequency: 260 * pitch, duration: 0.055, type: 'triangle', gain: 0.06 },
+                    { frequency: 180 * pitch, delay: 0.04, duration: 0.07, type: 'triangle', gain: 0.045 },
                 ];
             case AUDIO_CUES.combatHit:
                 return [
@@ -175,13 +185,21 @@ export class AudioManager {
         const peakGain = tone.gain;
 
         oscillator.type = tone.type;
-        oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
-        gain.gain.setValueAtTime(0.0001, toneStart);
-        gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, peakGain), toneStart + 0.008);
-        gain.gain.exponentialRampToValueAtTime(0.0001, toneEnd);
-        oscillator.connect(gain);
-        gain.connect(destination);
-        oscillator.start(toneStart);
-        oscillator.stop(toneEnd + 0.01);
+        if (oscillator.frequency?.setValueAtTime) {
+            oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
+        } else if (oscillator.frequency) {
+            oscillator.frequency.value = tone.frequency;
+        }
+        if (gain.gain?.setValueAtTime && gain.gain?.exponentialRampToValueAtTime) {
+            gain.gain.setValueAtTime(0.0001, toneStart);
+            gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, peakGain), toneStart + 0.008);
+            gain.gain.exponentialRampToValueAtTime(0.0001, toneEnd);
+        } else if (gain.gain) {
+            gain.gain.value = peakGain;
+        }
+        oscillator.connect?.(gain);
+        gain.connect?.(destination);
+        oscillator.start?.(toneStart);
+        oscillator.stop?.(toneEnd + 0.01);
     }
 }

@@ -11,6 +11,7 @@ import { Wizard } from '../entities/Wizard.js';
 import { Cleric } from '../entities/Cleric.js';
 import { AvengingSeraph } from '../entities/AvengingSeraph.js';
 import { DwarfSalesman } from '../entities/DwarfSalesman.js';
+import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { resolveRemoteSkillVisual } from '../skills/skillVisuals.js';
 
 export class AbilityController {
@@ -466,6 +467,15 @@ export class AbilityController {
         const player = this.engine.player;
         if (!player || !target) return;
         if (player.state === 'JUMPING' || this.engine.playerJumpState) return;
+
+        const dist = player.position && target.position
+            ? new THREE.Vector2(player.position.x, player.position.z).distanceTo(new THREE.Vector2(target.position.x, target.position.z))
+            : 0;
+        const range = this.engine.getInteractionRangeForEntity?.(target) || this.getAbilityCastRange();
+        if (dist > range + 0.25) {
+            this.engine.playAudioCue?.(AUDIO_CUES.combatMiss);
+            return;
+        }
 
         // Send to Server
         this.engine.network.send('attack', { targetId: target.id });

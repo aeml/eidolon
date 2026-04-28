@@ -18,6 +18,7 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 });
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
+const { AUDIO_CUES } = await import('../src/audio/AudioManager.js');
 const repoRoot = path.resolve(process.cwd());
 
 describe('GameEngine encounter callouts', () => {
@@ -289,6 +290,7 @@ describe('GameEngine encounter callouts', () => {
         engine.floatingTextManager = { spawn: jest.fn() };
         engine.readabilityFeedbackTimestamps = new Map();
         engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+        engine.playAudioCue = jest.fn();
 
         engine.handleServerMessage({
             type: 'ability',
@@ -340,6 +342,7 @@ describe('GameEngine encounter callouts', () => {
         engine.floatingTextManager = { spawn: jest.fn() };
         engine.readabilityFeedbackTimestamps = new Map();
         engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+        engine.playAudioCue = jest.fn();
 
         engine.handleServerMessage({
             type: 'ability',
@@ -475,6 +478,7 @@ describe('GameEngine encounter callouts', () => {
         engine.floatingTextManager = { spawn: jest.fn() };
         engine.readabilityFeedbackTimestamps = new Map();
         engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+        engine.playAudioCue = jest.fn();
 
         engine.handleServerMessage({
             type: 'damage',
@@ -487,6 +491,7 @@ describe('GameEngine encounter callouts', () => {
 
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith(182, enemy.position, '#8fe7ff', '20px');
         expect(remotePlayer.updateState).not.toHaveBeenCalled();
+        expect(engine.playAudioCue).not.toHaveBeenCalled();
     });
 
     test('damage against the local player can still refresh remote attacker presentation when no explicit action start was seen', () => {
@@ -508,6 +513,7 @@ describe('GameEngine encounter callouts', () => {
         engine.readabilityFeedbackTimestamps = new Map();
         engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
         engine.beginRemoteActionPresentation = GameEngine.prototype.beginRemoteActionPresentation;
+        engine.playAudioCue = jest.fn();
 
         engine.handleServerMessage({
             type: 'damage',
@@ -519,6 +525,7 @@ describe('GameEngine encounter callouts', () => {
         });
 
         expect(remotePlayer.setAttackingState).toHaveBeenCalledWith(true);
+        expect(engine.playAudioCue).toHaveBeenCalledWith(AUDIO_CUES.combatHit, { impact: 31 / 80 });
     });
 
     test('does not show remote readability text for faraway remote-player actions', () => {

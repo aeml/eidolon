@@ -108,4 +108,13 @@ describe('AudioManager', () => {
             expect.objectContaining({ type: 'sine' }),
         ]));
     });
+
+    test('exposes a distinct blocked-loot cue for failed pickup feedback', () => {
+        const audio = new AudioManager({ contextFactory: () => createMockContext() });
+
+        expect(audio.createCue(AUDIO_CUES.lootBlocked)).toEqual(expect.arrayContaining([
+            expect.objectContaining({ type: 'triangle', frequency: 260 }),
+            expect.objectContaining({ type: 'triangle', frequency: 180 }),
+        ]));
+    });
 });

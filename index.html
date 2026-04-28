@@ -369,6 +369,25 @@
                 </div>
                 <div class="support-field">
                     <div class="support-field__row">
+                        <label for="audio-enabled" class="support-field__label">Audio Cues</label>
+                        <input id="audio-enabled" type="checkbox" checked />
+                    </div>
+                    <div class="support-field__hint">
+                        Enables generated placeholder sounds for UI actions, loot, combat hits, misses, and jumps.
+                    </div>
+                </div>
+                <div class="support-field">
+                    <div class="support-field__row">
+                        <label for="audio-volume" class="support-field__label">Audio Volume</label>
+                        <span id="audio-volume-value" class="support-field__value">45%</span>
+                    </div>
+                    <input id="audio-volume" class="support-field__range" type="range" min="0" max="100" step="1" value="45" />
+                    <div class="support-field__hint">
+                        Controls synthesized placeholder cues and persists between sessions.
+                    </div>
+                </div>
+                <div class="support-field">
+                    <div class="support-field__row">
                         <label for="camera-shake-enabled" class="support-field__label">Camera Shake</label>
                         <input id="camera-shake-enabled" type="checkbox" />
                     </div>

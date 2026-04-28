@@ -9,10 +9,12 @@ import { InventoryUI } from './InventoryUI.js';
 import { AssetCacheManager } from '../assets/AssetCacheManager.js';
 import { DEFAULT_ASSET_VERSION, getAssetPackEstimateMb, getRecommendedAssetPackNames } from '../assets/assetManifest.js';
 import { DUNGEON_RUN_LEVEL_BANDS, availableDungeonRunLevelsForPlayer, isEndgameDifficultyUnlocked } from '../data/dungeonProgression.js';
+import { AudioManager, AUDIO_CUES } from '../audio/AudioManager.js';
 
 export class UIManager {
-    constructor(isMobile = false) {
+    constructor(isMobile = false, options = {}) {
         this.isMobile = isMobile;
+        this.audioManager = options.audioManager || new AudioManager();
         this.hud = document.getElementById('player-hud');
         this.hpBar = document.getElementById('player-hp-bar');
         this.hpText = document.getElementById('player-hp-text');
@@ -119,6 +121,9 @@ export class UIManager {
         this.graphicsBrightnessSlider = document.getElementById('graphics-brightness');
         this.graphicsBrightnessValue = document.getElementById('graphics-brightness-value');
         this.autoLootToggle = document.getElementById('auto-loot-enabled');
+        this.audioEnabledToggle = document.getElementById('audio-enabled');
+        this.audioVolumeSlider = document.getElementById('audio-volume');
+        this.audioVolumeValue = document.getElementById('audio-volume-value');
         this.cameraShakeToggle = document.getElementById('camera-shake-enabled');
         this.fullscreenToggle = document.getElementById('fullscreen-enabled');
         this.btnDownloadCoreAssets = document.getElementById('btn-download-core-assets');
@@ -164,6 +169,8 @@ export class UIManager {
         this.onGraphicsQualityChange = null;
         this.onBrightnessChange = null;
         this.onAutoLootChange = null;
+        this.onAudioEnabledChange = null;
+        this.onAudioVolumeChange = null;
         this.onCameraShakeChange = null;
         this.onFullscreenChange = null;
         this.onEscMenuChange = null;
@@ -204,6 +211,23 @@ export class UIManager {
                 this.setAutoLootEnabled(this.autoLootToggle.checked);
             });
         }
+
+        const audioSettings = this.audioManager.getSettings();
+        this.audioEnabled = audioSettings.enabled;
+        this.audioVolume = Math.round(audioSettings.volume * 100);
+        if (this.audioEnabledToggle) {
+            this.audioEnabledToggle.checked = this.audioEnabled;
+            this.audioEnabledToggle.addEventListener('change', () => {
+                this.setAudioEnabled(this.audioEnabledToggle.checked);
+            });
+        }
+        if (this.audioVolumeSlider) {
+            this.audioVolumeSlider.value = String(this.audioVolume);
+            this.audioVolumeSlider.addEventListener('input', () => {
+                this.setAudioVolume(Number(this.audioVolumeSlider.value));
+            });
+        }
+        this.updateAudioVolumeLabel();
 
         const storedCameraShake = localStorage.getItem('eidolon.cameraShakeEnabled');
         this.cameraShakeEnabled = storedCameraShake === null ? false : storedCameraShake === 'true';
@@ -399,6 +423,7 @@ export class UIManager {
         if (this.btnMenuSkills) this.btnMenuSkills.addEventListener('click', () => this.toggleSkillTree());
         const btnCloseWorldMap = document.getElementById('btn-close-world-map');
         if (btnCloseWorldMap) btnCloseWorldMap.addEventListener('click', () => this.toggleWorldMap());
+        this.setupAudioInteractionCues();
 
         // Event Delegation for Stat Buttons & Tooltips
         this.statsContent.addEventListener('click', (e) => {
@@ -1330,6 +1355,32 @@ export class UIManager {
         return this.isElementVisible(layout?.element);
     }
 
+    unlockAudio() {
+        return this.audioManager?.unlock?.() || false;
+    }
+
+    playAudioCue(cueName, options = {}) {
+        return this.audioManager?.play?.(cueName, options) || false;
+    }
+
+    playUICue(cueName) {
+        this.unlockAudio();
+        return this.playAudioCue(cueName);
+    }
+
+    setupAudioInteractionCues() {
+        if (this.audioInteractionCuesSetup) return;
+        this.audioInteractionCuesSetup = true;
+        document.addEventListener('click', (event) => {
+            const target = event.target;
+            if (!target?.closest) return;
+            const interactive = target.closest('button, .hud-menu-btn, .class-btn, .auth-btn, .start-version-row__link, input, select, textarea');
+            if (interactive) {
+                this.playUICue(AUDIO_CUES.uiClick);
+            }
+        }, true);
+    }
+
     getOpenWindowIds(group = null) {
         if (!this.windowLayouts) return [];
         return [...this.windowLayouts.entries()]
@@ -1408,9 +1459,10 @@ export class UIManager {
         element.style.transform = 'none';
     }
 
-    openManagedWindow(id, { keepCompanion = false } = {}) {
+    openManagedWindow(id, { keepCompanion = false, silent = false } = {}) {
         const layout = this.windowLayouts?.get(id);
         if (!layout?.element) return;
+        const wasOpen = this.isElementVisible(layout.element);
 
         if (layout.group === 'primary') {
             this.closeManagedGroup('primary', { except: id });
@@ -1429,6 +1481,10 @@ export class UIManager {
 
         layout.element.style.display = layout.display;
 
+        if (!silent && !wasOpen) {
+            this.playUICue(AUDIO_CUES.uiOpen);
+        }
+
         if (keepCompanion && this.inventory?.inventoryScreen) {
             this.inventory.inventoryScreen.style.display = 'block';
         }
@@ -1436,10 +1492,14 @@ export class UIManager {
         this.reflowVisibleWindows();
     }
 
-    closeManagedWindow(id) {
+    closeManagedWindow(id, { silent = false } = {}) {
         const layout = this.windowLayouts?.get(id);
         if (layout?.element) {
+            const wasOpen = this.isElementVisible(layout.element);
             layout.element.style.display = 'none';
+            if (!silent && wasOpen) {
+                this.playUICue(AUDIO_CUES.uiClose);
+            }
         }
         if (id === 'social' && this.social?.partyPanel && !this.social.inParty) {
             this.social.partyPanel.style.display = 'none';
@@ -1450,7 +1510,7 @@ export class UIManager {
         if (!this.windowLayouts) return;
         this.windowLayouts.forEach((layout, id) => {
             if (id !== except && layout.group === group && layout.element) {
-                this.closeManagedWindow(id);
+                this.closeManagedWindow(id, { silent: true });
             }
         });
     }
@@ -1542,6 +1602,7 @@ export class UIManager {
         }
 
         element.style.display = 'none';
+        this.playUICue(AUDIO_CUES.uiClose);
         this.syncStaticModalBackdrop();
         return true;
     }
@@ -1583,8 +1644,10 @@ export class UIManager {
                 }
             });
             element.style.display = openDisplay;
+            this.playUICue(AUDIO_CUES.uiOpen);
         } else {
             element.style.display = 'none';
+            this.playUICue(AUDIO_CUES.uiClose);
         }
 
         this.syncStaticModalBackdrop();
@@ -2029,6 +2092,7 @@ export class UIManager {
     toggleEscMenu() {
         const isHidden = this.escMenu.style.display === 'none' || this.escMenu.style.display === '';
         this.escMenu.style.display = isHidden ? 'block' : 'none';
+        this.playUICue(isHidden ? AUDIO_CUES.uiOpen : AUDIO_CUES.uiClose);
         this.onEscMenuChange?.(isHidden);
         
         // If closing menu, also close help/patch notes if open
@@ -2114,6 +2178,46 @@ export class UIManager {
 
     getAutoLootEnabled() {
         return Boolean(this.autoLootEnabled);
+    }
+
+    updateAudioVolumeLabel() {
+        if (this.audioVolumeValue) {
+            this.audioVolumeValue.textContent = `${Math.round(this.audioVolume)}%`;
+        }
+    }
+
+    setAudioEnabled(enabled) {
+        const nextValue = Boolean(enabled);
+        this.audioEnabled = nextValue;
+        this.audioManager?.setEnabled?.(nextValue);
+        if (this.audioEnabledToggle) {
+            this.audioEnabledToggle.checked = nextValue;
+        }
+        if (this.onAudioEnabledChange) {
+            this.onAudioEnabledChange(nextValue);
+        }
+    }
+
+    getAudioEnabled() {
+        return Boolean(this.audioEnabled);
+    }
+
+    setAudioVolume(volumePercent) {
+        const numericVolume = Number.isFinite(volumePercent) ? volumePercent : 45;
+        const clamped = Math.max(0, Math.min(100, numericVolume));
+        this.audioVolume = clamped;
+        this.audioManager?.setVolume?.(clamped / 100);
+        if (this.audioVolumeSlider && Number(this.audioVolumeSlider.value) !== clamped) {
+            this.audioVolumeSlider.value = String(clamped);
+        }
+        this.updateAudioVolumeLabel();
+        if (this.onAudioVolumeChange) {
+            this.onAudioVolumeChange(clamped / 100);
+        }
+    }
+
+    getAudioVolume() {
+        return Math.max(0, Math.min(1, (Number(this.audioVolume) || 0) / 100));
     }
 
     setCameraShakeEnabled(enabled) {

@@ -1,6 +1,8 @@
 import * as THREE from 'three';
+import { jest } from '@jest/globals';
 import { CONSTANTS } from '../src/core/Constants.js';
 import { AbilityController } from '../src/core/AbilityController.js';
+import { AUDIO_CUES } from '../src/audio/AudioManager.js';
 
 describe('Ability range interaction', () => {
     test('doubles configured ranges for charge, piercing throw, and fireball', () => {
@@ -73,5 +75,29 @@ describe('Ability range interaction', () => {
         expect(preview.abilityName).toBe('Fireball');
         expect(preview.ability).toBe(60);
         expect(preview.isEstimate).toBe(true);
+    });
+
+    test('basic attacks play miss cue and do not send when the target is out of range', () => {
+        const player = {
+            position: new THREE.Vector3(0, 0, 0),
+            state: 'IDLE'
+        };
+        const target = {
+            id: 'enemy-1',
+            position: new THREE.Vector3(20, 0, 0)
+        };
+        const engine = {
+            player,
+            playerJumpState: null,
+            network: { send: jest.fn() },
+            getInteractionRangeForEntity: jest.fn(() => 4),
+            playAudioCue: jest.fn()
+        };
+        const controller = new AbilityController(engine);
+
+        controller.performAttack(target);
+
+        expect(engine.network.send).not.toHaveBeenCalled();
+        expect(engine.playAudioCue).toHaveBeenCalledWith(AUDIO_CUES.combatMiss);
     });
 });
