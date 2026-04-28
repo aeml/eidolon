@@ -2,7 +2,7 @@
 
 Last refreshed: April 2026
 
-This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, `0.31` client-UX closeout, and `0.32.4` audio/accessibility passes already landed on `master`.
+This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, `0.31` client-UX closeout, `0.32` audio/accessibility passes, and `0.33.0` mesh catalog expansion already landed on `master`.
 
 For the broader release-status tracker that covers remaining `0.22` work and the roadmap through `alpha 1.0`, see `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md`.
 
@@ -35,25 +35,14 @@ For the broader release-status tracker that covers remaining `0.22` work and the
 - `0.32.2` audio asset readiness: cue asset metadata and optional authored-media playback now preserve generated fallbacks through the shared AudioManager
 - `0.32.3` UI scale baseline: Settings now persists an 85%-125% UI Scale control through the shared UI layer without breaking viewport-safe windows
 - `0.32.4` keybind clarity settings: Settings can expand Help with a detailed keyboard reference without changing input mappings
+- `0.33.0` mesh catalog expansion: procedural realm and dungeon enemy silhouettes now live in MeshCatalog while MeshFactory keeps equivalent runtime output and fallback behavior
 
 ## Highest-value next slices
 
-### 1. Data-driven mesh/content expansion
-Why now:
-- The codebase is much safer when new content is catalog-driven instead of switch-driven
-- The audio/accessibility run has now covered audio controls, asset readiness, UI scale, and keybind clarity
-
-Targets:
-- `src/utils/MeshFactory.js`
-- `src/utils/MeshCatalog.js`
-- relevant tests under `tests/`
-
-Definition of done:
-- High-traffic entity and environment definitions are catalog-backed and easier to extend with lower regression risk
-
-### 2. Dungeon satisfaction pass
+### 1. Dungeon satisfaction pass
 Why now:
 - Core dungeon progression is in, but replayability and room identity can still improve a lot
+- The latest catalog pass reduced presentation-data risk before the next content-feel pass
 
 Targets:
 - `server/internal/game/world.go`
@@ -65,7 +54,7 @@ Targets:
 Definition of done:
 - Rooms feel more intentionally paced and endgame difficulties feel distinct beyond number inflation
 
-### 3. Repro/sandbox QA tooling
+### 2. Repro/sandbox QA tooling
 Why now:
 - Fast manual QA makes polish slices much safer and cheaper
 
@@ -77,7 +66,7 @@ Targets:
 Definition of done:
 - There is a tiny deterministic sandbox for testing rendering, movement, VFX, and menu regressions without a full live run
 
-### 4. Social depth foundation
+### 3. Social depth foundation
 Why now:
 - Parties, chat, and trading house exist, but the alpha runway still needs deeper social structures before guilds and PvP
 
@@ -89,7 +78,7 @@ Targets:
 Definition of done:
 - The next social feature has a clear data path and player-facing entry point without overloading existing party flows
 
-### 5. Multiplayer smoothness hardening
+### 4. Multiplayer smoothness hardening
 Why now:
 - Remote movement and action reads are better than before, but multiplayer smoothness remains one of the largest alpha-wide risks
 
@@ -101,7 +90,19 @@ Targets:
 Definition of done:
 - Remote actors feel more stable under normal latency without weakening server authority
 
+### 5. Data-driven mesh/content follow-up
+Why now:
+- `0.33.0` moved procedural enemy definitions, but additional structure/NPC branches can still become catalog-backed later
+
+Targets:
+- `src/utils/MeshFactory.js`
+- `src/utils/MeshCatalog.js`
+- relevant tests under `tests/`
+
+Definition of done:
+- More high-traffic entity and environment definitions are catalog-backed and easier to extend with lower regression risk
+
 ## Recommended next 3 implementation slices
-1. `feat: catalog more mesh definitions`
-2. `feat: improve dungeon room pacing`
-3. `feat: add repro sandbox route`
+1. `feat: improve dungeon room pacing`
+2. `feat: add repro sandbox route`
+3. `feat: deepen social foundations`

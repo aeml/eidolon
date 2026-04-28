@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.32.4</span>
+                <span class="start-version-row__label">Alpha 0.33.0</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -574,6 +574,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.33.0">
+                    <h3 class="patch-note-entry__title">Patch 0.33.0 (Mesh catalog expansion)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Procedural enemy definitions are now catalog-owned:</strong> Fire, air, and water realm enemy silhouettes now live in MeshCatalog instead of MeshFactory.</li>
+                        <li><strong>Renderer behavior stays unchanged:</strong> MeshFactory still exposes the same procedural spec entry point and uses the same generated geometry, tint, emissive, scale, cache, hitbox, and fallback behavior.</li>
+                        <li><strong>Future content additions are safer:</strong> New procedural enemy definitions can be added through catalog data without editing the factory's runtime creation flow.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for cataloged procedural enemy specs, representative realm and dungeon silhouettes, and MeshFactory compatibility with the catalog-owned table.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.32.4">
                     <h3 class="patch-note-entry__title">Patch 0.32.4 (Keybind clarity settings)</h3>
                     <ul class="patch-note-entry__list">

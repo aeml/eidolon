@@ -22,4 +22,14 @@ describe('MeshCatalog', () => {
         expect(MeshCatalog.recipes.Construct.animations).toEqual(['idle', 'walk', 'run', 'attack', 'death']);
         expect(MeshCatalog.recipes.TradingHouse.type).toBe('structure');
     });
+
+    test('catalogs procedural enemy silhouettes for realm and dungeon enemies', () => {
+        const specs = MeshCatalog.getProceduralEnemySpecs();
+
+        expect(specs.SandstormDjinn).toMatchObject({ shape: 'wraith', scale: 2.5, color: 0xD2B48C });
+        expect(specs.MagmaGolem).toMatchObject({ shape: 'golem', emissive: 0xFF2200 });
+        expect(specs.Cindermaw).toMatchObject({ shape: 'beast', emissiveI: 0.6 });
+        expect(specs.Zephyrion).toMatchObject({ shape: 'elemental', scale: 6.5 });
+        expect(specs.Thalorath).toMatchObject({ shape: 'titan', color: 0x003B6F });
+    });
 });

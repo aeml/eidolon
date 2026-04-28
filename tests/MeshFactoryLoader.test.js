@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { MeshFactory } from '../src/utils/MeshFactory.js';
+import { MeshCatalog } from '../src/utils/MeshCatalog.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { jest } from '@jest/globals';
 
@@ -123,5 +124,12 @@ describe('MeshFactory preload phases', () => {
         const background = MeshFactory.getBackgroundPreloadModelPaths();
         expect(background).toContain('./assets/buildings/trading_post.glb');
         expect(background).toContain('./assets/buildings/dungeons/the_verdant_bastion.glb');
+    });
+});
+
+describe('MeshFactory catalog integration', () => {
+    test('uses catalog-owned procedural enemy specs for compatibility', () => {
+        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS).toBe(MeshCatalog.getProceduralEnemySpecs());
+        expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.Cindermaw.shape).toBe('beast');
     });
 });

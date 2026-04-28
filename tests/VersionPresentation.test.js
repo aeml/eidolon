@@ -7,8 +7,8 @@ const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-
 const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.32.4 for the keybind clarity settings slice', () => {
-        expect(indexHtml).toContain('Alpha 0.32.4');
+    test('advances the login screen to alpha 0.33.0 for the mesh catalog expansion slice', () => {
+        expect(indexHtml).toContain('Alpha 0.33.0');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -75,23 +75,31 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.32.4', () => {
+    test('includes the latest player-facing patch notes entry for 0.33.0', () => {
+        expect(indexHtml).toContain('Patch 0.33.0');
+        expect(indexHtml).toContain('Fire, air, and water realm enemy silhouettes now live in MeshCatalog instead of MeshFactory');
+        expect(indexHtml).toContain('MeshFactory still exposes the same procedural spec entry point');
+        expect(indexHtml).toContain('New procedural enemy definitions can be added through catalog data without editing the factory');
+        expect(indexHtml).toContain('Added coverage for cataloged procedural enemy specs, representative realm and dungeon silhouettes, and MeshFactory compatibility with the catalog-owned table');
+    });
+
+    test('marks 0.33.0 shipped and points the roadmap at dungeon satisfaction work', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.33.0`');
+        expect(alphaRoadmap).toContain('`0.33.0` is now the active version line');
+        expect(alphaRoadmap).toContain('has shipped the first mesh catalog expansion slice');
+        expect(alphaRoadmap).toContain('Build the `0.33.1` dungeon satisfaction slice.');
+        expect(alphaRoadmap).toContain('improve dungeon room pacing and encounter readability without changing the broad progression contract');
+        expect(engineeringRoadmap).toContain('### 1. Dungeon satisfaction pass');
+        expect(engineeringRoadmap).toContain('`feat: improve dungeon room pacing`');
+        expect(engineeringRoadmap).not.toContain('`feat: add keybind clarity settings`');
+    });
+
+    test('keeps the prior 0.32.4 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.32.4');
         expect(indexHtml).toContain('Settings adds a Standard controls / Detailed keyboard reference selector');
         expect(indexHtml).toContain('Detailed mode adds grouped movement, combat, navigation, and camera shortcut reminders to the Help screen');
         expect(indexHtml).toContain('The setting only changes Help presentation and persists as `eidolon.controlHintLevel`');
         expect(indexHtml).toContain('Added coverage for control-hint persistence, invalid-value normalization, Help presentation toggling, settings markup, and the 0.32.4 release state');
-    });
-
-    test('marks 0.32.4 shipped and points the roadmap at catalog work', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.32.4`');
-        expect(alphaRoadmap).toContain('`0.32.4` is now the active version line');
-        expect(alphaRoadmap).toContain('has shipped its audio foundation, audio detail control, authored-asset readiness, UI scale control, and keybind clarity setting');
-        expect(alphaRoadmap).toContain('Build the `0.33.0` mesh catalog expansion slice.');
-        expect(alphaRoadmap).toContain('catalog more high-traffic mesh definitions without changing gameplay behavior');
-        expect(engineeringRoadmap).toContain('### 1. Data-driven mesh/content expansion');
-        expect(engineeringRoadmap).toContain('`feat: catalog more mesh definitions`');
-        expect(engineeringRoadmap).not.toContain('`feat: add keybind clarity settings`');
     });
 
     test('keeps the prior 0.32.3 patch notes entry in history', () => {
@@ -1057,6 +1065,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.33.0');
         expect(indexHtml).toContain('Patch 0.32.4');
         expect(indexHtml).toContain('Patch 0.32.3');
         expect(indexHtml).toContain('Patch 0.32.2');
@@ -1194,6 +1203,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.33.0"');
         expect(indexHtml).toContain('data-version="0.32.4"');
         expect(indexHtml).toContain('data-version="0.32.3"');
         expect(indexHtml).toContain('data-version="0.32.2"');
