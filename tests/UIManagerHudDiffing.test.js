@@ -225,6 +225,18 @@ describe('UIManager HUD diffing', () => {
         expect(xpBar.style.width).toBe('50%');
     });
 
+    test('serializeXP uses the displayed level and XP payload', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const player = createPlayer({
+            level: 4,
+            xp: 25,
+            xpToNextLevel: 100
+        });
+
+        expect(ui.serializeXP(player)).toBe('4|25|100');
+    });
+
     test('updateHotbarCooldowns skips identical displayed cooldowns and refreshes when they change', () => {
         buildDom();
         const ui = new UIManager(false);

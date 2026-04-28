@@ -93,6 +93,22 @@ describe('GameEngine render-time HUD throttling', () => {
         expect(engine.uiManager.updateXP).toHaveBeenCalledTimes(2);
     });
 
+    test('render uses the UIManager XP serializer when available', () => {
+        const engine = createEngineHarness();
+        engine.uiManager.serializeXP = jest.fn(() => 'ui-xp-1');
+
+        engine.render(1);
+        engine.render(1);
+
+        expect(engine.uiManager.serializeXP).toHaveBeenCalledWith(engine.player);
+        expect(engine.uiManager.updateXP).toHaveBeenCalledTimes(1);
+
+        engine.uiManager.serializeXP.mockReturnValue('ui-xp-2');
+        engine.render(1);
+
+        expect(engine.uiManager.updateXP).toHaveBeenCalledTimes(2);
+    });
+
     test('render uses the UIManager player stats serializer when available', () => {
         const engine = createEngineHarness();
         engine.uiManager.serializePlayerStats = jest.fn(() => 'ui-stats-1');

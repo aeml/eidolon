@@ -5176,11 +5176,13 @@ export class GameEngine {
                 this.lastRenderHudSignature = hudSignature;
             }
 
-            const xpSignature = [
-                this.player.level ?? 0,
-                this.player.xp ?? 0,
-                this.player.xpToNextLevel ?? 0
-            ].join('|');
+            const xpSignature = this.uiManager.serializeXP
+                ? this.uiManager.serializeXP(this.player)
+                : [
+                    this.player.level ?? 0,
+                    this.player.xp ?? 0,
+                    this.player.xpToNextLevel ?? 0
+                ].join('|');
             if (xpSignature !== this.lastRenderXpSignature) {
                 this.uiManager.updateXP(this.player);
                 this.lastRenderXpSignature = xpSignature;

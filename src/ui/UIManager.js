@@ -2351,11 +2351,7 @@ export class UIManager {
 
     updateXP(player) {
         if (!player) return;
-        const signature = [
-            player.level ?? 0,
-            player.xp ?? 0,
-            player.xpToNextLevel ?? 0
-        ].join('|');
+        const signature = this.serializeXP(player);
         if (signature === this.lastXpSignature) {
             return;
         }
@@ -2363,6 +2359,14 @@ export class UIManager {
         const pct = (player.xp / player.xpToNextLevel) * 100;
         this.xpBar.style.width = `${Math.max(0, pct)}%`;
         this.xpText.textContent = `LVL ${player.level}`;
+    }
+
+    serializeXP(player) {
+        return [
+            player?.level ?? 0,
+            player?.xp ?? 0,
+            player?.xpToNextLevel ?? 0
+        ].join('|');
     }
 
     updateCharacterSheet(player) {
