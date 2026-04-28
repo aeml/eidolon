@@ -26,6 +26,7 @@ canvas { display: block; }
     pointer-events: none;
     z-index: var(--z-ui-layer);
     background: transparent;
+    font-size: calc(16px * var(--ui-scale));
 }
 
 /* ---- Keyframe Animations ---- */

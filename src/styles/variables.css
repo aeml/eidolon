@@ -64,6 +64,7 @@
     --color-debug:          #ff4444;
 
     /* ---- Typography ---- */
+    --ui-scale:              1;
     --font-primary:         'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     --font-display:         'Cinzel', serif;
     --font-mono:            'Consolas', 'Courier New', monospace;

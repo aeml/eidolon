@@ -56,6 +56,8 @@ function buildDom() {
         <select id="graphics-quality"></select>
         <input id="graphics-brightness" />
         <div id="graphics-brightness-value"></div>
+        <input id="ui-scale" />
+        <div id="ui-scale-value"></div>
         <input id="auto-loot-enabled" type="checkbox" />
         <input id="audio-enabled" type="checkbox" />
         <input id="audio-volume" />
@@ -253,6 +255,54 @@ describe('UIManager settings', () => {
 
         expect(ui.getAudioDetailLevel()).toBe('reduced');
         expect(localStorage.getItem('eidolon.audioDetailLevel')).toBe('reduced');
+    });
+
+    test('ui scale persists, clamps, and applies root css variable', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        ui.onUiScaleChange = jest.fn();
+
+        ui.setUiScale(125);
+
+        expect(localStorage.getItem('eidolon.uiScale')).toBe('125');
+        expect(ui.getUiScale()).toBe(1.25);
+        expect(document.getElementById('ui-scale').value).toBe('125');
+        expect(document.getElementById('ui-scale-value').textContent).toBe('125%');
+        expect(document.documentElement.style.getPropertyValue('--ui-scale')).toBe('1.25');
+        expect(ui.onUiScaleChange).toHaveBeenCalledWith(1.25);
+
+        ui.setUiScale(200);
+        expect(localStorage.getItem('eidolon.uiScale')).toBe('125');
+
+        ui.setUiScale(10);
+        expect(localStorage.getItem('eidolon.uiScale')).toBe('85');
+        expect(ui.getUiScale()).toBe(0.85);
+    });
+
+    test('ui scale slider change updates setting', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        const slider = document.getElementById('ui-scale');
+
+        slider.value = '115';
+        slider.dispatchEvent(new Event('input'));
+
+        expect(ui.getUiScale()).toBe(1.15);
+        expect(localStorage.getItem('eidolon.uiScale')).toBe('115');
+        expect(document.getElementById('ui-scale-value').textContent).toBe('115%');
+    });
+
+    test('invalid stored ui scale normalizes back to default without persisting', () => {
+        localStorage.setItem('eidolon.uiScale', 'large');
+        buildDom();
+
+        const ui = new UIManager(false);
+
+        expect(ui.getUiScale()).toBe(1);
+        expect(document.getElementById('ui-scale').value).toBe('100');
+        expect(document.getElementById('ui-scale-value').textContent).toBe('100%');
+        expect(document.documentElement.style.getPropertyValue('--ui-scale')).toBe('1');
+        expect(localStorage.getItem('eidolon.uiScale')).toBe('large');
     });
 
     test('esc menu toggle reports open and close state', () => {

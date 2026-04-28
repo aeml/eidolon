@@ -11,6 +11,8 @@ const worldMapCssPath = fileURLToPath(new URL('../src/styles/world-map.css', imp
 const partyCssPath = fileURLToPath(new URL('../src/styles/party.css', import.meta.url));
 const skillTreeCssPath = fileURLToPath(new URL('../src/styles/skill-tree.css', import.meta.url));
 const startScreenCssPath = fileURLToPath(new URL('../src/styles/start-screen.css', import.meta.url));
+const variablesCssPath = fileURLToPath(new URL('../src/styles/variables.css', import.meta.url));
+const baseCssPath = fileURLToPath(new URL('../src/styles/base.css', import.meta.url));
 const indexHtmlPath = fileURLToPath(new URL('../index.html', import.meta.url));
 
 function createTouchLikeEvent(type, options = {}) {
@@ -1115,7 +1117,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.32.2</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.32.3</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1300,6 +1302,10 @@ describe('menu polish regressions', () => {
         expect(html).toContain('<label for="graphics-brightness" class="support-field__label">Brightness</label>');
         expect(html).toContain('<span id="graphics-brightness-value" class="support-field__value">100%</span>');
         expect(html).toContain('<input id="graphics-brightness" class="support-field__range" type="range"');
+        expect(html).toContain('<label for="ui-scale" class="support-field__label">UI Scale</label>');
+        expect(html).toContain('<span id="ui-scale-value" class="support-field__value">100%</span>');
+        expect(html).toContain('<input id="ui-scale" class="support-field__range" type="range" min="85" max="125" step="5" value="100" />');
+        expect(html).toContain('Scales menus and HUD text while viewport-safe windows keep their visible bounds.');
         expect(html).toContain('<label for="auto-loot-enabled" class="support-field__label">Auto-Loot Nearby Items</label>');
         expect(html).toContain('<label for="audio-enabled" class="support-field__label">Audio Cues</label>');
         expect(html).toContain('<label for="audio-volume" class="support-field__label">Audio Volume</label>');
@@ -1317,6 +1323,14 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/\.support-field__label\s*\{[^}]*color:\s*#ffd700;[^}]*font-size:\s*13px;/s);
         expect(css).toMatch(/\.support-field__hint\s*\{[^}]*font-size:\s*12px;[^}]*color:\s*#aaa;[^}]*line-height:\s*1\.4;/s);
         expect(css).toMatch(/\.support-field__control\s*\{[^}]*padding:\s*10px;[^}]*background:\s*#333;[^}]*border:\s*1px solid #666;/s);
+    });
+
+    test('ui scale uses shared css token on the ui layer', () => {
+        const variablesCss = readFileSync(variablesCssPath, 'utf8');
+        const baseCss = readFileSync(baseCssPath, 'utf8');
+
+        expect(variablesCss).toMatch(/--ui-scale:\s*1;/);
+        expect(baseCss).toMatch(/#ui-layer\s*\{[^}]*font-size:\s*calc\(16px \* var\(--ui-scale\)\);/s);
     });
 
     test('settings asset cache section uses reusable panel classes', () => {

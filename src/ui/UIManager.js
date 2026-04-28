@@ -120,6 +120,8 @@ export class UIManager {
         this.graphicsQualitySelect = document.getElementById('graphics-quality');
         this.graphicsBrightnessSlider = document.getElementById('graphics-brightness');
         this.graphicsBrightnessValue = document.getElementById('graphics-brightness-value');
+        this.uiScaleSlider = document.getElementById('ui-scale');
+        this.uiScaleValue = document.getElementById('ui-scale-value');
         this.autoLootToggle = document.getElementById('auto-loot-enabled');
         this.audioEnabledToggle = document.getElementById('audio-enabled');
         this.audioVolumeSlider = document.getElementById('audio-volume');
@@ -169,6 +171,7 @@ export class UIManager {
 
         this.onGraphicsQualityChange = null;
         this.onBrightnessChange = null;
+        this.onUiScaleChange = null;
         this.onAutoLootChange = null;
         this.onAudioEnabledChange = null;
         this.onAudioVolumeChange = null;
@@ -204,6 +207,20 @@ export class UIManager {
             });
         }
         this.updateBrightnessLabel();
+
+        const storedUiScaleValue = localStorage.getItem('eidolon.uiScale');
+        const storedUiScale = Number(storedUiScaleValue);
+        this.uiScale = storedUiScaleValue !== null && Number.isFinite(storedUiScale)
+            ? Math.max(85, Math.min(125, storedUiScale))
+            : 100;
+        if (this.uiScaleSlider) {
+            this.uiScaleSlider.value = String(this.uiScale);
+            this.uiScaleSlider.addEventListener('input', () => {
+                this.setUiScale(Number(this.uiScaleSlider.value));
+            });
+        }
+        this.applyUiScale();
+        this.updateUiScaleLabel();
 
         const storedAutoLoot = localStorage.getItem('eidolon.autoLootEnabled');
         this.autoLootEnabled = storedAutoLoot === null ? false : storedAutoLoot === 'true';
@@ -2171,6 +2188,35 @@ export class UIManager {
 
     getBrightnessLevel() {
         return this.graphicsBrightness;
+    }
+
+    updateUiScaleLabel() {
+        if (this.uiScaleValue) {
+            this.uiScaleValue.textContent = `${Math.round(this.uiScale)}%`;
+        }
+    }
+
+    applyUiScale() {
+        document.documentElement?.style?.setProperty?.('--ui-scale', String(this.uiScale / 100));
+    }
+
+    setUiScale(scalePercent) {
+        const numericScale = Number.isFinite(scalePercent) ? scalePercent : 100;
+        const clamped = Math.max(85, Math.min(125, numericScale));
+        this.uiScale = clamped;
+        localStorage.setItem('eidolon.uiScale', String(clamped));
+        if (this.uiScaleSlider && Number(this.uiScaleSlider.value) !== clamped) {
+            this.uiScaleSlider.value = String(clamped);
+        }
+        this.applyUiScale();
+        this.updateUiScaleLabel();
+        if (this.onUiScaleChange) {
+            this.onUiScaleChange(clamped / 100);
+        }
+    }
+
+    getUiScale() {
+        return Math.max(0.85, Math.min(1.25, (Number(this.uiScale) || 100) / 100));
     }
 
     setAutoLootEnabled(enabled) {

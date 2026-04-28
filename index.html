@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.32.2</span>
+                <span class="start-version-row__label">Alpha 0.32.3</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -356,6 +356,16 @@
                     <input id="graphics-brightness" class="support-field__range" type="range" min="0" max="100" step="1" value="50" />
                     <div class="support-field__hint">
                         50% matches the default brightness. Lower values darken further; higher values only brighten slightly.
+                    </div>
+                </div>
+                <div class="support-field">
+                    <div class="support-field__row">
+                        <label for="ui-scale" class="support-field__label">UI Scale</label>
+                        <span id="ui-scale-value" class="support-field__value">100%</span>
+                    </div>
+                    <input id="ui-scale" class="support-field__range" type="range" min="85" max="125" step="5" value="100" />
+                    <div class="support-field__hint">
+                        Scales menus and HUD text while viewport-safe windows keep their visible bounds.
                     </div>
                 </div>
                 <div class="support-field">
@@ -545,6 +555,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.32.3">
+                    <h3 class="patch-note-entry__title">Patch 0.32.3 (UI scale baseline)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>UI Scale is now adjustable:</strong> Settings adds an 85% to 125% UI Scale slider for menus and HUD text.</li>
+                        <li><strong>The preference persists safely:</strong> UI scale is stored as `eidolon.uiScale`, normalizes invalid values back to 100%, and updates the visible percentage immediately.</li>
+                        <li><strong>Viewport safety stays intact:</strong> Scaling applies through the shared UI layer so existing viewport-capped windows keep their screen bounds and scroll behavior.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for UI scale persistence, clamping, DOM presentation, CSS scale tokens, and the 0.32.3 release state.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.32.2">
                     <h3 class="patch-note-entry__title">Patch 0.32.2 (Audio asset readiness)</h3>
                     <ul class="patch-note-entry__list">

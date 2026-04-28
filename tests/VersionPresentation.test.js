@@ -7,8 +7,8 @@ const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-
 const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.32.2 for the audio asset-readiness slice', () => {
-        expect(indexHtml).toContain('Alpha 0.32.2');
+    test('advances the login screen to alpha 0.32.3 for the ui scale baseline slice', () => {
+        expect(indexHtml).toContain('Alpha 0.32.3');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -75,23 +75,31 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.32.2', () => {
+    test('includes the latest player-facing patch notes entry for 0.32.3', () => {
+        expect(indexHtml).toContain('Patch 0.32.3');
+        expect(indexHtml).toContain('Settings adds an 85% to 125% UI Scale slider for menus and HUD text');
+        expect(indexHtml).toContain('UI scale is stored as `eidolon.uiScale`, normalizes invalid values back to 100%, and updates the visible percentage immediately');
+        expect(indexHtml).toContain('Scaling applies through the shared UI layer so existing viewport-capped windows keep their screen bounds and scroll behavior');
+        expect(indexHtml).toContain('Added coverage for UI scale persistence, clamping, DOM presentation, CSS scale tokens, and the 0.32.3 release state');
+    });
+
+    test('marks 0.32.3 shipped and points the roadmap at keybind clarity', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.32.3`');
+        expect(alphaRoadmap).toContain('`0.32.3` is now the active version line');
+        expect(alphaRoadmap).toContain('has shipped its audio foundation, audio detail control, authored-asset readiness, and first UI scale accessibility control');
+        expect(alphaRoadmap).toContain('Build the `0.32.4` keybind clarity settings slice.');
+        expect(alphaRoadmap).toContain('add the first small keybind or control-reference clarity setting through Settings without disrupting existing input behavior');
+        expect(engineeringRoadmap).toContain('### 1. Keybind clarity baseline');
+        expect(engineeringRoadmap).toContain('`feat: add keybind clarity settings`');
+        expect(engineeringRoadmap).not.toContain('`feat: add ui scale control baseline`');
+    });
+
+    test('keeps the prior 0.32.2 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.32.2');
         expect(indexHtml).toContain('The shared AudioManager exposes replacement-ready `.ogg` and `.mp3` metadata for every UI, loot, combat, and jump cue');
         expect(indexHtml).toContain('Missing or unavailable authored media falls back to the existing generated cue layer instead of breaking feedback');
         expect(indexHtml).toContain('Optional authored media uses the same cue route, volume, mute, detail-level, and cooldown rules as synthesized sounds');
         expect(indexHtml).toContain('Added coverage for cue asset metadata, authored media playback, generated fallback behavior, and the 0.32.2 release state');
-    });
-
-    test('marks 0.32.2 shipped and points the roadmap at broader accessibility basics', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.32.2`');
-        expect(alphaRoadmap).toContain('`0.32.2` is now the active version line');
-        expect(alphaRoadmap).toContain('has shipped its audio foundation, first accessibility-facing detail control, and authored-asset readiness');
-        expect(alphaRoadmap).toContain('Build the `0.32.3` broader accessibility baseline slice.');
-        expect(alphaRoadmap).toContain('add the first small UI-scale or key-clarity control through Settings without introducing layout overlap');
-        expect(engineeringRoadmap).toContain('### 1. Broader accessibility baseline');
-        expect(engineeringRoadmap).toContain('`feat: add ui scale control baseline`');
-        expect(engineeringRoadmap).not.toContain('`feat: prepare audio asset cue loading`');
     });
 
     test('keeps the prior 0.32.1 patch notes entry in history', () => {
@@ -1041,6 +1049,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.32.3');
         expect(indexHtml).toContain('Patch 0.32.2');
         expect(indexHtml).toContain('Patch 0.32.1');
         expect(indexHtml).toContain('Patch 0.32.0');
@@ -1176,6 +1185,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.32.3"');
         expect(indexHtml).toContain('data-version="0.32.2"');
         expect(indexHtml).toContain('data-version="0.32.1"');
         expect(indexHtml).toContain('data-version="0.32.0"');
