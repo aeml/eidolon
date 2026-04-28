@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { AudioManager, AUDIO_CUES } from '../src/audio/AudioManager.js';
+import { AudioManager, AUDIO_CUES, AUDIO_CUE_ASSETS } from '../src/audio/AudioManager.js';
 
 function createMockContext() {
     const destination = { id: 'destination' };
@@ -142,5 +142,59 @@ describe('AudioManager', () => {
         audio.setDetailLevel('reduced');
         audio.setDetailLevel('invalid');
         expect(audio.getSettings().detailLevel).toBe('full');
+    });
+
+    test('exposes replacement-ready asset metadata for every generated cue', () => {
+        const audio = new AudioManager({ contextFactory: () => createMockContext() });
+
+        expect(Object.keys(AUDIO_CUE_ASSETS).sort()).toEqual(Object.values(AUDIO_CUES).sort());
+        expect(audio.getCueAssetMetadata(AUDIO_CUES.lootPickup)).toEqual({
+            category: 'loot',
+            fallback: 'generated',
+            sources: [
+                { src: 'assets/audio/cues/loot-pickup.ogg', type: 'audio/ogg' },
+                { src: 'assets/audio/cues/loot-pickup.mp3', type: 'audio/mpeg' },
+            ],
+        });
+        expect(audio.getCueAssetMetadata(AUDIO_CUES.jumpLand).category).toBe('movement');
+    });
+
+    test('plays authored cue media through the same cue route when a factory is provided', () => {
+        const context = createMockContext();
+        const media = {
+            currentTime: 10,
+            volume: 1,
+            preload: '',
+            play: jest.fn(() => Promise.resolve()),
+        };
+        const mediaFactory = jest.fn(() => media);
+        const audio = new AudioManager({ contextFactory: () => context, mediaFactory, now: () => 1000 });
+
+        expect(audio.play(AUDIO_CUES.uiClick)).toBe(true);
+
+        expect(mediaFactory).toHaveBeenCalledWith(
+            { src: 'assets/audio/cues/ui-click.ogg', type: 'audio/ogg' },
+            AUDIO_CUES.uiClick,
+            AUDIO_CUE_ASSETS[AUDIO_CUES.uiClick],
+        );
+        expect(media.preload).toBe('auto');
+        expect(media.currentTime).toBe(0);
+        expect(media.volume).toBe(0.45);
+        expect(media.play).toHaveBeenCalledTimes(1);
+        expect(context.createOscillator).not.toHaveBeenCalled();
+    });
+
+    test('falls back to generated cues when authored media cannot be created', () => {
+        const context = createMockContext();
+        const audio = new AudioManager({
+            contextFactory: () => context,
+            mediaFactory: () => {
+                throw new Error('missing audio asset');
+            },
+            now: () => 1000,
+        });
+
+        expect(audio.play(AUDIO_CUES.combatMiss)).toBe(true);
+        expect(context.createOscillator).toHaveBeenCalledTimes(1);
     });
 });

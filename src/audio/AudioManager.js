@@ -19,6 +19,27 @@ export const AUDIO_CUES = Object.freeze({
     jumpLand: 'movement.jump.land',
 });
 
+const createCueAsset = (category, slug) => Object.freeze({
+    category,
+    fallback: 'generated',
+    sources: Object.freeze([
+        Object.freeze({ src: `assets/audio/cues/${slug}.ogg`, type: 'audio/ogg' }),
+        Object.freeze({ src: `assets/audio/cues/${slug}.mp3`, type: 'audio/mpeg' }),
+    ]),
+});
+
+export const AUDIO_CUE_ASSETS = Object.freeze({
+    [AUDIO_CUES.uiClick]: createCueAsset('ui', 'ui-click'),
+    [AUDIO_CUES.uiOpen]: createCueAsset('ui', 'ui-open'),
+    [AUDIO_CUES.uiClose]: createCueAsset('ui', 'ui-close'),
+    [AUDIO_CUES.lootPickup]: createCueAsset('loot', 'loot-pickup'),
+    [AUDIO_CUES.lootBlocked]: createCueAsset('loot', 'loot-blocked'),
+    [AUDIO_CUES.combatHit]: createCueAsset('combat', 'combat-hit'),
+    [AUDIO_CUES.combatMiss]: createCueAsset('combat', 'combat-miss'),
+    [AUDIO_CUES.jumpStart]: createCueAsset('movement', 'jump-start'),
+    [AUDIO_CUES.jumpLand]: createCueAsset('movement', 'jump-land'),
+});
+
 export class AudioManager {
     constructor(options = {}) {
         this.contextFactory = options.contextFactory || (() => {
@@ -28,8 +49,12 @@ export class AudioManager {
         this.now = options.now || (() => Date.now());
         this.storage = options.storage || globalThis.localStorage || null;
         this.context = options.context || null;
+        this.assetManifest = options.assetManifest || AUDIO_CUE_ASSETS;
+        this.mediaFactory = options.mediaFactory || null;
         this.masterGain = null;
         this.lastCueTimes = new Map();
+        this.mediaCache = new Map();
+        this.failedAssetCues = new Set();
         this.unlocked = false;
 
         this.enabled = this.readStoredBoolean('eidolon.audioEnabled', true);
@@ -135,6 +160,14 @@ export class AudioManager {
         };
     }
 
+    getCueAssetMetadata(cueName) {
+        return this.assetManifest?.[cueName] || null;
+    }
+
+    getCueAssetManifest() {
+        return this.assetManifest;
+    }
+
     isCueAllowedForDetailLevel(cueName) {
         if (this.detailLevel !== AUDIO_DETAIL_LEVELS.reduced) return true;
         return cueName !== AUDIO_CUES.uiClick
@@ -154,6 +187,8 @@ export class AudioManager {
 
     play(cueName, options = {}) {
         if (!this.canPlay(cueName)) return false;
+        if (this.playAuthoredCue(cueName)) return true;
+
         const context = this.ensureContext();
         const destination = this.ensureMasterGain();
         const cue = this.createCue(cueName, options);
@@ -166,6 +201,47 @@ export class AudioManager {
             return false;
         }
         return true;
+    }
+
+    playAuthoredCue(cueName) {
+        if (!this.mediaFactory || this.failedAssetCues.has(cueName)) return false;
+        const asset = this.getCueAssetMetadata(cueName);
+        if (!asset?.sources?.length) return false;
+
+        const media = this.getMediaForCue(cueName, asset);
+        if (!media?.play) return false;
+
+        try {
+            if ('currentTime' in media) media.currentTime = 0;
+            if ('volume' in media) media.volume = this.volume;
+            const result = media.play();
+            if (result?.catch) {
+                result.catch(() => {
+                    this.failedAssetCues.add(cueName);
+                });
+            }
+            return true;
+        } catch {
+            this.failedAssetCues.add(cueName);
+            return false;
+        }
+    }
+
+    getMediaForCue(cueName, asset) {
+        if (this.mediaCache.has(cueName)) return this.mediaCache.get(cueName);
+
+        const source = asset.sources[0];
+        let media = null;
+        try {
+            media = this.mediaFactory(source, cueName, asset) || null;
+        } catch {
+            this.failedAssetCues.add(cueName);
+            return null;
+        }
+
+        if (media && 'preload' in media) media.preload = 'auto';
+        this.mediaCache.set(cueName, media);
+        return media;
     }
 
     createCue(cueName, options = {}) {

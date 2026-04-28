@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.32.1`
+- Current in-game displayed version: `Alpha 0.32.2`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.32.1`
+### Shipped through `0.32.2`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -163,6 +163,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.31.41`: Death and respawn overlay chrome now uses reusable class-based CSS and shared button styling, closing the planned `0.31` client-UX consistency line before the `0.32` audio foundation begins
 - `0.32.0`: The audio foundation is live with a shared client AudioManager, generated placeholder cues for UI, loot, combat, and jumps, and persisted settings controls for audio enablement and volume
 - `0.32.1`: Audio Detail settings now let players reduce routine UI cue noise while preserving gameplay feedback sounds through the shared AudioManager path
+- `0.32.2`: Audio cue asset metadata and optional authored-media playback now make generated UI, loot, combat, and jump cues replaceable through the shared AudioManager without scattering playback calls
 
 ### What `0.22` has clearly accomplished already
 
@@ -273,9 +274,9 @@ Historical closeout note:
 Current status:
 
 - `0.22` is closed for planned implementation work
-- `0.32.1` is now the active version line
+- `0.32.2` is now the active version line
 - `0.31` is closed for planned client-UX consistency work
-- `0.32` is active and has shipped its audio foundation plus the first accessibility-facing detail control; the next implementation line should build on authored-asset readiness rather than reopen `0.31`
+- `0.32` is active and has shipped its audio foundation, first accessibility-facing detail control, and authored-asset readiness; the next implementation line should move into broader accessibility basics rather than reopen `0.31`
 
 ### Historical `0.22` implementation checklist
 
@@ -358,41 +359,40 @@ Why this order:
 
 ### Exact next slice to build
 
-Build the `0.32.2` authored audio asset-readiness slice.
+Build the `0.32.3` broader accessibility baseline slice.
 
 Scope:
 
-- prepare the generated cue path for later replacement by authored `.mp3`/`.ogg` assets without adding one-off playback calls
-- define cue asset metadata and fallback behavior so generated cues remain available when authored files are missing
-- keep new cues sparse and settings-controlled so the audio layer improves feedback without becoming noisy
+- add the first small UI-scale or key-clarity control through Settings without introducing layout overlap
+- keep accessibility preferences persisted, understandable, and safe by default
+- preserve the existing viewport-safe menu rules while scaling or clarifying client surfaces
 - update player-facing patch notes and regression coverage with each shipped `0.32.x` slice
 
 Why this is the best next slice:
 
 - `0.30` closed the visible window clipping audit, including generated modals and special panels
 - `0.31` closed the planned client-UX consistency layer across shared chrome, viewport safety, UI diffing, and overlay closeout
-- `0.32.0` shipped the first audio foundation and `0.32.1` added the first audio accessibility control, so the next visible quality gap is authored-asset readiness
+- `0.32.0` shipped the first audio foundation, `0.32.1` added the first audio accessibility control, and `0.32.2` made generated cues authored-asset ready, so the next visible quality gap is broader accessibility control
 
 Exact files to start in:
 
 - `index.html`
-- `src/audio/`
-- `src/core/GameEngine.js`
 - `src/ui/UIManager.js`
-- `src/ui/InventoryUI.js`
+- `src/styles/`
+- settings/input-management surfaces
 - `tests/VersionPresentation.test.js`
 
 Target regression surfaces for this slice:
 
-- audio-manager unit tests for cue asset metadata and fallback hooks
-- targeted UI/input tests for menu, loot, combat, and jump cues
+- UIManager settings tests for persistence and callback behavior
+- menu/style regression tests for viewport-safe presentation
 - `tests/VersionPresentation.test.js`
 
 Definition of done for the next slice:
 
-- audio playback remains routed through one small client-owned abstraction
-- volume/mute defaults stay safe and do not break browsers before user gesture unlock
-- the generated cue layer remains easy to replace with authored assets later
+- accessibility settings route through one small client-owned preferences path
+- defaults remain safe and do not break existing menu layout or HUD positioning
+- viewport-safe rules keep windows usable on desktop and mobile
 - patch notes and the active status line move forward with the implementation
 
 ## Roadmap from `0.23` to `alpha 1.0`

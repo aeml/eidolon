@@ -2,7 +2,7 @@
 
 Last refreshed: April 2026
 
-This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, `0.31` client-UX closeout, and `0.32.1` audio foundation/control passes already landed on `master`.
+This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, `0.31` client-UX closeout, and `0.32.2` audio foundation/control/asset-readiness passes already landed on `master`.
 
 For the broader release-status tracker that covers remaining `0.22` work and the roadmap through `alpha 1.0`, see `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md`.
 
@@ -32,30 +32,14 @@ For the broader release-status tracker that covers remaining `0.22` work and the
 - `0.31` client UX closeout: shared menu chrome, viewport-safe windows, UI diffing, and class-based death overlay presentation
 - `0.32.0` audio foundation: shared AudioManager, generated placeholder UI/loot/combat/jump cues, and persisted audio settings controls
 - `0.32.1` audio detail control: reduced UI cue mode quiets routine menu sounds while preserving gameplay feedback cues
+- `0.32.2` audio asset readiness: cue asset metadata and optional authored-media playback now preserve generated fallbacks through the shared AudioManager
 
 ## Highest-value next slices
 
-### 1. Audio asset readiness
+### 1. Broader accessibility baseline
 Why now:
-- `0.32.0` shipped the first generated cue layer through one shared AudioManager
-- `0.32.1` added the first accessibility-facing detail control for players who want less routine UI sound
-- The next quality step is making that layer replaceable with authored `.mp3`/`.ogg` assets later
-
-Targets:
-- `src/audio/` or the smallest existing client location for a new audio manager
-- `src/core/GameEngine.js`
-- `src/ui/UIManager.js`
-- `src/ui/InventoryUI.js`
-- tests around audio asset metadata, generated fallback behavior, and replacement-ready cue routing
-
-Definition of done:
-- UI, loot, combat, and jump cues keep routing through one client-owned audio manager
-- Settings keep the audio layer optional, understandable, and safe by default
-- Generated cues remain replaceable without scattering direct playback calls across gameplay code
-
-### 2. Broader accessibility baseline
-Why now:
-- Audio should land with user control, and the following roadmap phase needs UI scale, keybind, and clarity settings
+- Audio now has basic enablement, volume, detail, and authored-asset readiness
+- The next client-quality gap is making visual scale, key clarity, and readability controls easier to tune in-client
 
 Targets:
 - `src/ui/UIManager.js`
@@ -66,7 +50,7 @@ Definition of done:
 - Players can control key clarity options from settings without external docs
 - UI scale/keybind work has regression coverage for persistence and presentation
 
-### 3. Data-driven mesh/content expansion
+### 2. Data-driven mesh/content expansion
 Why now:
 - The codebase is much safer when new content is catalog-driven instead of switch-driven
 
@@ -78,7 +62,7 @@ Targets:
 Definition of done:
 - High-traffic entity and environment definitions are catalog-backed and easier to extend with lower regression risk
 
-### 4. Dungeon satisfaction pass
+### 3. Dungeon satisfaction pass
 Why now:
 - Core dungeon progression is in, but replayability and room identity can still improve a lot
 
@@ -92,7 +76,7 @@ Targets:
 Definition of done:
 - Rooms feel more intentionally paced and endgame difficulties feel distinct beyond number inflation
 
-### 5. Repro/sandbox QA tooling
+### 4. Repro/sandbox QA tooling
 Why now:
 - Fast manual QA makes polish slices much safer and cheaper
 
@@ -104,7 +88,19 @@ Targets:
 Definition of done:
 - There is a tiny deterministic sandbox for testing rendering, movement, VFX, and menu regressions without a full live run
 
+### 5. Social depth foundation
+Why now:
+- Parties, chat, and trading house exist, but the alpha runway still needs deeper social structures before guilds and PvP
+
+Targets:
+- server social state and persistence surfaces
+- party/chat/trading-adjacent UI entry points
+- regression tests around social state transitions
+
+Definition of done:
+- The next social feature has a clear data path and player-facing entry point without overloading existing party flows
+
 ## Recommended next 3 implementation slices
-1. `feat: prepare audio asset cue loading`
-2. `feat: add ui scale control baseline`
-3. `feat: add keybind clarity settings`
+1. `feat: add ui scale control baseline`
+2. `feat: add keybind clarity settings`
+3. `feat: catalog more mesh definitions`
