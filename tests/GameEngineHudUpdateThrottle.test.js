@@ -93,6 +93,22 @@ describe('GameEngine render-time HUD throttling', () => {
         expect(engine.uiManager.updateXP).toHaveBeenCalledTimes(2);
     });
 
+    test('render uses the UIManager player stats serializer when available', () => {
+        const engine = createEngineHarness();
+        engine.uiManager.serializePlayerStats = jest.fn(() => 'ui-stats-1');
+
+        engine.render(1);
+        engine.render(1);
+
+        expect(engine.uiManager.serializePlayerStats).toHaveBeenCalledWith(engine.player);
+        expect(engine.uiManager.updatePlayerStats).toHaveBeenCalledTimes(1);
+
+        engine.uiManager.serializePlayerStats.mockReturnValue('ui-stats-2');
+        engine.render(1);
+
+        expect(engine.uiManager.updatePlayerStats).toHaveBeenCalledTimes(2);
+    });
+
     test('render only updates world map while it is visible', () => {
         const engine = createEngineHarness();
         engine.worldMap.isVisible.mockReturnValue(true);

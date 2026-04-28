@@ -5158,17 +5158,19 @@ export class GameEngine {
             }
 
             const playerStats = this.player.stats || {};
-            const hudSignature = [
-                Math.ceil(playerStats.hp ?? 0),
-                playerStats.maxHp ?? 0,
-                Math.floor(playerStats.mana ?? 0),
-                playerStats.maxMana ?? 0,
-                this.player.abilityName || '',
-                this.player.abilityDescription || '',
-                this.player.abilityCooldown > 0 ? Math.ceil(this.player.abilityCooldown) : 0,
-                this.player.abilityManaCost ?? 0,
-                playerStats.manaCostReduction ?? 0
-            ].join('|');
+            const hudSignature = this.uiManager.serializePlayerStats
+                ? this.uiManager.serializePlayerStats(this.player)
+                : [
+                    Math.ceil(playerStats.hp ?? 0),
+                    playerStats.maxHp ?? 0,
+                    Math.floor(playerStats.mana ?? 0),
+                    playerStats.maxMana ?? 0,
+                    this.player.abilityName || '',
+                    this.player.abilityDescription || '',
+                    this.player.abilityCooldown > 0 ? Math.ceil(this.player.abilityCooldown) : 0,
+                    this.player.abilityManaCost ?? 0,
+                    playerStats.manaCostReduction ?? 0
+                ].join('|');
             if (hudSignature !== this.lastRenderHudSignature) {
                 this.uiManager.updatePlayerStats(this.player);
                 this.lastRenderHudSignature = hudSignature;
