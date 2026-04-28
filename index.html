@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.31.33</span>
+                <span class="start-version-row__label">Alpha 0.31.34</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -516,6 +516,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.31.34">
+                    <h3 class="patch-note-entry__title">Patch 0.31.34 (Character sheet reopen refresh)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Opening the character sheet now invalidates its diff cache:</strong> Each open cycle forces one fresh render before repeated visible updates are diffed again.</li>
+                        <li><strong>Reopened character panels cannot inherit stale DOM:</strong> Stats and equipment slots refresh after the panel is closed and opened, even when the player payload is unchanged.</li>
+                        <li><strong>The 0.31 panel diffing work stays safe across menu lifecycles:</strong> Performance guards remain active while open, but panel entry points rebuild their visible contents.</li>
+                        <li><strong>Regression coverage:</strong> Added UIManager coverage that reopening the character sheet refreshes visible stats and equipment slot updates.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.31.33">
                     <h3 class="patch-note-entry__title">Patch 0.31.33 (Hotbar cooldown refresh invalidation)</h3>
                     <ul class="patch-note-entry__list">

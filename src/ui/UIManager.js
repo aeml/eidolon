@@ -1313,6 +1313,7 @@ export class UIManager {
         this.characterSheet.style.display = isHidden ? 'block' : 'none';
         
         if (isHidden && this.lastPlayerRef) {
+            this.lastCharacterSheetSignature = '';
             this.updateCharacterSheet(this.lastPlayerRef);
         }
     }

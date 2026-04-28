@@ -5,8 +5,8 @@ const repoRoot = path.resolve(process.cwd());
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.31.33 for the hotbar cooldown invalidation slice', () => {
-        expect(indexHtml).toContain('Alpha 0.31.33');
+    test('advances the login screen to alpha 0.31.34 for the character sheet reopen refresh slice', () => {
+        expect(indexHtml).toContain('Alpha 0.31.34');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -73,7 +73,15 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.31.33', () => {
+    test('includes the latest player-facing patch notes entry for 0.31.34', () => {
+        expect(indexHtml).toContain('Patch 0.31.34');
+        expect(indexHtml).toContain('Each open cycle forces one fresh render before repeated visible updates are diffed again');
+        expect(indexHtml).toContain('Stats and equipment slots refresh after the panel is closed and opened, even when the player payload is unchanged');
+        expect(indexHtml).toContain('Performance guards remain active while open, but panel entry points rebuild their visible contents');
+        expect(indexHtml).toContain('Added UIManager coverage that reopening the character sheet refreshes visible stats and equipment slot updates');
+    });
+
+    test('keeps the prior 0.31.33 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.31.33');
         expect(indexHtml).toContain('Reassigning or rebuilding a skill slot forces the next cooldown overlay refresh even when the player cooldown value is unchanged');
         expect(indexHtml).toContain('Newly recreated overlays no longer stay hidden behind a matching cached cooldown signature');
@@ -940,6 +948,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.31.34');
         expect(indexHtml).toContain('Patch 0.31.33');
         expect(indexHtml).toContain('Patch 0.31.32');
         expect(indexHtml).toContain('Patch 0.31.31');
@@ -1064,6 +1073,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.31.34"');
         expect(indexHtml).toContain('data-version="0.31.33"');
         expect(indexHtml).toContain('data-version="0.31.32"');
         expect(indexHtml).toContain('data-version="0.31.31"');
