@@ -16,6 +16,7 @@ export function getDungeonRoomRole(room = null) {
     if (room.hook === 'chest') return 'reward';
     if (room.hook === 'shrine') return 'recovery';
     if (room.hook === 'elite_ambush') return 'event';
+    if (room.pacing === 'boss_approach') return 'approach';
     if (room.type === 'elite') return 'elite';
     return 'travel';
 }
@@ -34,6 +35,8 @@ export function getDungeonRoomCadenceTag(room = null) {
     case 'event':
         return 'spike';
     case 'elite':
+        return 'pressure';
+    case 'approach':
         return 'pressure';
     case 'boss':
         return 'climax';
@@ -75,6 +78,8 @@ export function getDungeonBeatLabel(room = null, summary = null) {
         return 'Boss';
     case 'elite':
         return 'Elite';
+    case 'approach':
+        return 'Approach';
     case 'travel':
         return 'Travel';
     case 'entry':

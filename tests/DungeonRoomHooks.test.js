@@ -26,7 +26,7 @@ describe('Dungeon room hooks', () => {
                 objectiveRoomIndex: 1,
                 rooms: [
                     { index: 0, type: 'start', explored: true, cleared: true },
-                    { index: 1, type: 'normal', hook: 'shrine', explored: true, cleared: false },
+                    { index: 1, type: 'normal', hook: 'shrine', pacing: 'boss_approach', explored: true, cleared: false },
                     { index: 2, type: 'normal', explored: false, cleared: false },
                     { index: 3, type: 'boss', explored: false, cleared: false }
                 ]
@@ -140,5 +140,38 @@ describe('Dungeon room hooks', () => {
         expect(fillRects.some((entry) => entry.fillStyle === 'rgba(255, 220, 120, 0.12)')).toBe(true);
         expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 145, 90, 0.95)')).toBe(true);
         expect(texts.some((entry) => String(entry.args[0]).includes('Ambush'))).toBe(true);
+    });
+
+    test('builds boss-approach routing objectives from pacing metadata', () => {
+        buildQuestDom();
+
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 2,
+                objectiveRoomIndex: 3,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: true },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: true, cleared: true },
+                    { index: 3, type: 'normal', pacing: 'boss_approach', explored: true, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'molten_core'
+        });
+
+        expect(questUI.buildObjectiveSummary([])).toEqual([
+            expect.objectContaining({
+                title: 'Break through the boss approach',
+                badge: 'Approach',
+                badgeClass: 'is-approach',
+                routeTone: 'warning',
+                hint: 'Final room before the boss — clear it, then commit',
+                sequenceHint: 'Route: Approach -> Boss',
+                cadenceLabel: 'Pressure'
+            })
+        ]);
     });
 });

@@ -449,6 +449,7 @@ export class Minimap {
             const isBossObjective = role === 'boss';
             const isEliteObjective = role === 'elite';
             const isAmbushObjective = role === 'event';
+            const isApproachObjective = role === 'approach';
             const isLiveBoss = isLiveDungeonBossRoom(room, summary);
             return {
                 isBossObjective,
@@ -456,7 +457,7 @@ export class Minimap {
                     ? `rgba(255, 110, 110, ${alpha})`
                     : isAmbushObjective
                         ? `rgba(255, 145, 90, ${alpha})`
-                        : isEliteObjective
+                        : isEliteObjective || isApproachObjective
                             ? `rgba(255, 190, 90, ${alpha})`
                             : `rgba(255, 215, 90, ${alpha})`,
                 label: getDungeonBeatLabel(room, summary) || 'Objective'
@@ -485,6 +486,8 @@ export class Minimap {
                 fill = 'rgba(120, 255, 160, 0.22)';
             } else if (room.explored && getDungeonRoomRole(room) === 'elite') {
                 fill = 'rgba(255, 190, 90, 0.12)';
+            } else if (getDungeonRoomRole(room) === 'approach') {
+                fill = room.cleared ? 'rgba(255, 180, 90, 0.18)' : 'rgba(255, 180, 90, 0.12)';
             } else if (room.explored) {
                 fill = 'rgba(90, 160, 255, 0.18)';
             }

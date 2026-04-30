@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.33.0`
+- Current in-game displayed version: `Alpha 0.33.1`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.33.0`
+### Shipped through `0.33.1`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -167,6 +167,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.32.3`: UI Scale settings now persist an 85%-125% menu and HUD text scaling control through the shared UI layer while preserving viewport-safe window bounds
 - `0.32.4`: Control Hint settings now let players expand Help with a detailed keyboard reference without changing actual input mappings
 - `0.33.0`: Procedural Fire, Air, and Water realm enemy silhouettes now live in MeshCatalog while MeshFactory keeps equivalent runtime output, cached geometry/material handling, hitboxes, and skeleton fallback behavior
+- `0.33.1`: Dungeon room summaries now mark boss-approach pacing metadata, letting objectives, Journal, dungeon entrance hints, minimap, world map, and combat callouts identify the final pre-boss commit beat without changing rewards, unlocks, or boss progression
 
 ### What `0.22` has clearly accomplished already
 
@@ -277,10 +278,11 @@ Historical closeout note:
 Current status:
 
 - `0.22` is closed for planned implementation work
-- `0.33.0` is now the active version line
+- `0.33.1` is now the active version line
 - `0.31` is closed for planned client-UX consistency work
 - `0.32` has shipped its audio foundation, audio detail control, authored-asset readiness, UI scale control, and keybind clarity setting
-- `0.33.0` has shipped the first mesh catalog expansion slice; the next implementation line should move to dungeon room satisfaction rather than reopen `0.31` or `0.32`
+- `0.33.0` shipped the first mesh catalog expansion slice
+- `0.33.1` shipped the first dungeon satisfaction slice by making boss approach beats explicit across route surfaces; the next implementation line should move to repro/sandbox QA tooling rather than reopen `0.31` or `0.32`
 
 ### Historical `0.22` implementation checklist
 
@@ -363,13 +365,13 @@ Why this order:
 
 ### Exact next slice to build
 
-Build the `0.33.1` dungeon satisfaction slice.
+Build the `0.33.2` repro/sandbox QA tooling slice.
 
 Scope:
 
-- improve dungeon room pacing and encounter readability without changing the broad progression contract
-- make room roles, ambushes, shrine beats, and boss approach states feel more deliberately authored
-- preserve existing dungeon entry, completion, reward, and difficulty unlock behavior
+- add a tiny deterministic sandbox route for fast manual checks of rendering, movement, VFX, and menu regressions
+- keep the sandbox isolated from normal login/live gameplay paths
+- document the intended smoke-check workflow for future polish slices
 - update player-facing patch notes and regression coverage with each shipped slice
 
 Why this is the best next slice:
@@ -377,28 +379,27 @@ Why this is the best next slice:
 - `0.30` closed the visible window clipping audit, including generated modals and special panels
 - `0.31` closed the planned client-UX consistency layer across shared chrome, viewport safety, UI diffing, and overlay closeout
 - `0.32.0` through `0.32.4` shipped the planned audio/accessibility baseline
-- `0.33.0` moved procedural enemy silhouettes into MeshCatalog while preserving runtime output, so the next highest-value client/content step is making dungeon runs feel more intentionally paced
+- `0.33.0` moved procedural enemy silhouettes into MeshCatalog while preserving runtime output
+- `0.33.1` made boss approach beats explicit across route surfaces, so the next highest-value quality step is faster deterministic manual QA before deeper content-feel work continues
 
 Exact files to start in:
 
-- `server/internal/game/world.go`
-- `server/main.go`
-- `src/core/GameEngine.js`
-- `src/ui/QuestUI.js`
-- `src/ui/Minimap.js`
+- `repro.html`
+- `src/repro.js`
+- supporting docs/checklists under `docs/plans/`
 - `tests/VersionPresentation.test.js`
 
 Target regression surfaces for this slice:
 
-- dungeon route, journal, portal, minimap, and reward-summary tests for room-pacing reads
-- server/client tests that protect existing dungeon completion and difficulty behavior
+- repro route smoke tests
+- client tests that ensure the sandbox remains isolated from normal login/live gameplay boot
 - `tests/VersionPresentation.test.js`
 
 Definition of done for the next slice:
 
-- dungeon rooms feel less mechanically repetitive and more intentionally paced
-- existing unlocks, boss clears, daily ladder, and rewards remain stable
-- route surfaces stay aligned across journal, portal hints, minimap, and world map
+- deterministic sandbox route exists and can be opened without a full live run
+- sandbox exercises representative rendering, movement, VFX, and menu surfaces
+- normal player login/live boot remains unchanged
 - patch notes and the active status line move forward with the implementation
 
 ## Roadmap from `0.23` to `alpha 1.0`

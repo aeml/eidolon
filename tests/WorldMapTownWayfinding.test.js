@@ -143,6 +143,36 @@ describe('WorldMap town wayfinding', () => {
         ]));
     });
 
+    test('renders boss approach beats before the active dungeon boss marker', () => {
+        const worldMap = new WorldMap({
+            player: { position: { x: 2400, z: 200 }, id: 'player-1' },
+            chunkManager: { getActiveEntities: () => [] },
+            uiManager: { partyData: { members: [] } },
+            currentInstanceType: 'tempest_spire',
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 2,
+                objectiveRoomIndex: 3,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'elite', hook: 'elite_ambush', explored: true, cleared: true },
+                    { index: 2, type: 'normal', hook: 'shrine', explored: true, cleared: true },
+                    { index: 3, type: 'normal', pacing: 'boss_approach', explored: true, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ]
+            })
+        });
+
+        worldMap.draw({ position: { x: 2400, z: 200 }, id: 'player-1' });
+
+        expect(texts).toEqual(expect.arrayContaining([
+            '★ Tempest Spire [Approach • Pressure]',
+            'Next: Boss'
+        ]));
+        expect(strokes).toEqual(expect.arrayContaining([
+            expect.objectContaining({ strokeStyle: 'rgba(255, 110, 110, 0.6)' })
+        ]));
+    });
+
     test('renders a live boss marker when the active dungeon boss is already engaged', () => {
         const worldMap = new WorldMap({
             player: { position: { x: 2400, z: 200 }, id: 'player-1' },

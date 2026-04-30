@@ -1496,6 +1496,7 @@ type DungeonRoom struct {
 	Height float64 `json:"height"`
 	Type   string  `json:"type"` // "start", "boss", "normal", "elite"
 	Hook   string  `json:"hook,omitempty"`
+	Pacing string  `json:"pacing,omitempty"`
 	Color  int     `json:"color"`
 }
 
@@ -1519,6 +1520,7 @@ type DungeonRoomSummaryEntry struct {
 	Height   float64 `json:"height"`
 	Type     string  `json:"type"`
 	Hook     string  `json:"hook,omitempty"`
+	Pacing   string  `json:"pacing,omitempty"`
 	Explored bool    `json:"explored"`
 	Cleared  bool    `json:"cleared"`
 }
@@ -1606,6 +1608,7 @@ func (s *DungeonRoomState) Summary(x, z float64) DungeonRoomSummary {
 			Height:   room.Height,
 			Type:     room.Type,
 			Hook:     room.Hook,
+			Pacing:   room.Pacing,
 			Explored: progress.Explored,
 			Cleared:  progress.Cleared,
 		})

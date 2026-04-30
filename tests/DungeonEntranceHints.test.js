@@ -472,6 +472,33 @@ describe('Dungeon entrance hints', () => {
         }));
     });
 
+    test('GameEngine sharpens hovered dungeon entrance hints for boss approach beats', () => {
+        const engine = createEngineHarness();
+        engine.player.position = new THREE.Vector3(0, 0, 0);
+        engine.currentInstanceType = 'tempest_spire';
+        engine.currentDungeonRoomState = decorateDungeonRoomState({
+            currentRoomIndex: 2,
+            objectiveRoomIndex: 3,
+            rooms: [
+                { index: 0, type: 'start', explored: true, cleared: true },
+                { index: 1, type: 'elite', hook: 'elite_ambush', explored: true, cleared: true },
+                { index: 2, type: 'normal', hook: 'shrine', explored: true, cleared: true },
+                { index: 3, type: 'normal', pacing: 'boss_approach', explored: true, cleared: false },
+                { index: 4, type: 'boss', explored: false, cleared: false }
+            ]
+        });
+        engine.hoveredEntity = createEntrance({ position: new THREE.Vector3(20, 0, 0) });
+
+        engine.refreshDungeonEntranceHint();
+
+        expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
+            dungeonName: 'Tempest Spire',
+            inRange: true,
+            statusLabel: 'Dungeon Portal • Next: Approach • Pressure',
+            promptLabel: 'Final room before the boss — clear it, then commit'
+        }));
+    });
+
     test('GameEngine refreshes hovered dungeon entrance hints when dungeon room state changes', () => {
         const engine = createEngineHarness();
         engine.currentInstanceType = 'tempest_spire';

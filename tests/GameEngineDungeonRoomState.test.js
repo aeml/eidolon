@@ -230,7 +230,7 @@ describe('GameEngine dungeon room state', () => {
                 { index: 0, explored: true, cleared: true, type: 'start', x: 0, z: 0, width: 40, height: 40 },
                 { index: 1, explored: true, cleared: false, type: 'normal', hook: 'chest', x: 50, z: 0, width: 40, height: 40 },
                 { index: 2, explored: false, cleared: false, type: 'elite', hook: 'elite_ambush', x: 100, z: 0, width: 40, height: 40 },
-                { index: 3, explored: false, cleared: false, type: 'normal', hook: 'shrine', x: 150, z: 0, width: 40, height: 40 },
+                { index: 3, explored: false, cleared: false, type: 'normal', hook: 'shrine', pacing: 'boss_approach', x: 150, z: 0, width: 40, height: 40 },
                 { index: 4, explored: false, cleared: false, type: 'boss', x: 200, z: 0, width: 40, height: 40 }
             ]
         });
@@ -255,7 +255,7 @@ describe('GameEngine dungeon room state', () => {
             rooms: expect.arrayContaining([
                 expect.objectContaining({ index: 1, explored: true, cleared: true, hook: 'chest' }),
                 expect.objectContaining({ index: 2, explored: true, cleared: false, type: 'elite', hook: 'elite_ambush', roomRole: 'event', cadenceTag: 'spike' }),
-                expect.objectContaining({ index: 3, explored: false, cleared: false, type: 'normal', hook: 'shrine', roomRole: 'recovery', cadenceTag: 'reset' })
+                expect.objectContaining({ index: 3, explored: false, cleared: false, type: 'normal', hook: 'shrine', pacing: 'boss_approach', roomRole: 'recovery', cadenceTag: 'reset' })
             ])
         }));
     });

@@ -357,6 +357,7 @@ export class QuestUI {
             if (role === 'recovery') return 'Shrine';
             if (role === 'boss') return 'Boss';
             if (role === 'elite') return 'Elite';
+            if (role === 'approach') return 'Approach';
             if (room.index === currentObjectiveIndex && getDungeonRoomRole(nextMeaningfulRoom) === 'recovery') return 'Approach';
             if (room.index === currentObjectiveIndex && getDungeonRoomRole(nextMeaningfulRoom) === 'boss') return 'Approach';
             return null;
@@ -500,6 +501,23 @@ export class QuestUI {
                 badgeClass: 'is-elite',
                 routeTone: 'warning',
                 hint: objectiveRoom.explored ? 'Elite room discovered' : 'Elite threat ahead',
+                sequenceHint,
+                cadenceLabel
+            };
+        }
+
+        if (getDungeonRoomRole(objectiveRoom) === 'approach') {
+            return {
+                id: `dungeon-route-${instanceType}`,
+                title: 'Break through the boss approach',
+                progressLabel,
+                progressPct,
+                rewardXP: 0,
+                completed: false,
+                badge: 'Approach',
+                badgeClass: 'is-approach',
+                routeTone: 'warning',
+                hint: 'Final room before the boss — clear it, then commit',
                 sequenceHint,
                 cadenceLabel
             };

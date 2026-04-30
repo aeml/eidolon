@@ -206,6 +206,45 @@ describe('GameEngine encounter callouts', () => {
         }));
     });
 
+    test('announces boss approach rooms before the boss objective goes live', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = { id: 'player-1', position: new THREE.Vector3(0, 0, 0) };
+        engine.currentDungeonRoomState = {
+            currentRoomIndex: 1,
+            objectiveRoomIndex: 1,
+            rooms: [
+                { index: 0, type: 'start', explored: true, cleared: true },
+                { index: 1, type: 'elite', hook: 'elite_ambush', explored: true, cleared: false },
+                { index: 2, type: 'normal', pacing: 'boss_approach', explored: true, cleared: false },
+                { index: 3, type: 'boss', explored: false, cleared: false }
+            ]
+        };
+        engine.uiManager = {
+            showCombatCallout: jest.fn()
+        };
+        engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
+
+        engine.handleServerMessage({
+            type: 'dungeon_room_state',
+            payload: {
+                currentRoomIndex: 2,
+                objectiveRoomIndex: 2,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'elite', hook: 'elite_ambush', explored: true, cleared: true },
+                    { index: 2, type: 'normal', pacing: 'boss_approach', explored: true, cleared: false },
+                    { index: 3, type: 'boss', explored: false, cleared: false }
+                ]
+            }
+        });
+
+        expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
+            title: 'Next: Approach',
+            tone: 'warning',
+            subtitle: 'Final room before the boss — clear it, then commit'
+        }));
+    });
+
     test('moveToAndInteract surfaces a move-into-range callout for hostile targets', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.player = {

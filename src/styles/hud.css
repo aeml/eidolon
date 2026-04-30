@@ -429,6 +429,12 @@
     color: #ffc4a3;
 }
 
+.objective-entry__badge.is-approach {
+    border-color: rgba(255, 190, 90, 0.55);
+    background: rgba(255, 190, 90, 0.14);
+    color: #ffd7a3;
+}
+
 .objective-entry__badge.is-exit {
     border-color: rgba(120, 220, 255, 0.55);
     background: rgba(120, 220, 255, 0.14);

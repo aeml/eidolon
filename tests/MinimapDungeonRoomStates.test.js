@@ -207,6 +207,30 @@ describe('Minimap dungeon room states', () => {
         expect(fillRects.some((entry) => entry.fillStyle === 'rgba(120, 255, 220, 0.12)')).toBe(true);
     });
 
+    test('renders boss approach rooms with approach labels and pressure coloring', () => {
+        const minimap = new Minimap(200);
+        minimap.gameEngine = {
+            getDungeonRoomSummary: () => ({
+                currentRoomIndex: 2,
+                objectiveRoomIndex: 3,
+                rooms: [
+                    { index: 0, x: 0, z: 0, width: 40, height: 40, type: 'start', explored: true, cleared: true },
+                    { index: 1, x: 50, z: 0, width: 40, height: 40, type: 'elite', hook: 'elite_ambush', explored: true, cleared: true },
+                    { index: 2, x: 100, z: 0, width: 40, height: 40, type: 'normal', hook: 'shrine', explored: true, cleared: true },
+                    { index: 3, x: 150, z: 0, width: 40, height: 40, type: 'normal', pacing: 'boss_approach', explored: true, cleared: false },
+                    { index: 4, x: 200, z: 0, width: 40, height: 40, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            uiManager: { partyData: { members: [] } }
+        };
+
+        minimap.update({ position: { x: 100, z: 0 }, id: 'player-1' }, []);
+
+        expect(fillRects.some((entry) => entry.fillStyle === 'rgba(255, 180, 90, 0.12)')).toBe(true);
+        expect(strokes.some((entry) => entry.strokeStyle === 'rgba(255, 190, 90, 0.95)')).toBe(true);
+        expect(texts.some((entry) => String(entry.args[0]).includes('Approach'))).toBe(true);
+    });
+
     test('renders a distinct exit marker when the dungeon objective is complete', () => {
         const minimap = new Minimap(200);
         minimap.gameEngine = {

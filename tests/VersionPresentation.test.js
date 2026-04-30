@@ -7,8 +7,8 @@ const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-
 const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.33.0 for the mesh catalog expansion slice', () => {
-        expect(indexHtml).toContain('Alpha 0.33.0');
+    test('advances the login screen to alpha 0.33.1 for the dungeon boss approach pacing slice', () => {
+        expect(indexHtml).toContain('Alpha 0.33.1');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -75,23 +75,31 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.33.0', () => {
+    test('includes the latest player-facing patch notes entry for 0.33.1', () => {
+        expect(indexHtml).toContain('Patch 0.33.1');
+        expect(indexHtml).toContain('Dungeon room summaries mark the final traversable room before each boss with boss-approach pacing metadata');
+        expect(indexHtml).toContain('Objectives, Journal guidance, dungeon entrance hints, minimap markers, world-map previews, and combat callouts now identify Approach rooms');
+        expect(indexHtml).toContain('Boss approach is pacing metadata only, so chest, shrine, elite ambush, boss clear, unlock, and reward behavior remains unchanged');
+        expect(indexHtml).toContain('Added server and client coverage for boss-approach summary metadata, route copy, minimap/world-map markers, entrance hints, combat callouts, and the 0.33.1 release state');
+    });
+
+    test('marks 0.33.1 shipped and points the roadmap at repro sandbox work', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.33.1`');
+        expect(alphaRoadmap).toContain('`0.33.1` is now the active version line');
+        expect(alphaRoadmap).toContain('shipped the first dungeon satisfaction slice by making boss approach beats explicit across route surfaces');
+        expect(alphaRoadmap).toContain('Build the `0.33.2` repro/sandbox QA tooling slice.');
+        expect(alphaRoadmap).toContain('add a tiny deterministic sandbox route for fast manual checks');
+        expect(engineeringRoadmap).toContain('### 1. Repro/sandbox QA tooling');
+        expect(engineeringRoadmap).toContain('`feat: add repro sandbox route`');
+        expect(engineeringRoadmap).not.toContain('`feat: add keybind clarity settings`');
+    });
+
+    test('keeps the prior 0.33.0 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.33.0');
         expect(indexHtml).toContain('Fire, air, and water realm enemy silhouettes now live in MeshCatalog instead of MeshFactory');
         expect(indexHtml).toContain('MeshFactory still exposes the same procedural spec entry point');
         expect(indexHtml).toContain('New procedural enemy definitions can be added through catalog data without editing the factory');
         expect(indexHtml).toContain('Added coverage for cataloged procedural enemy specs, representative realm and dungeon silhouettes, and MeshFactory compatibility with the catalog-owned table');
-    });
-
-    test('marks 0.33.0 shipped and points the roadmap at dungeon satisfaction work', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.33.0`');
-        expect(alphaRoadmap).toContain('`0.33.0` is now the active version line');
-        expect(alphaRoadmap).toContain('has shipped the first mesh catalog expansion slice');
-        expect(alphaRoadmap).toContain('Build the `0.33.1` dungeon satisfaction slice.');
-        expect(alphaRoadmap).toContain('improve dungeon room pacing and encounter readability without changing the broad progression contract');
-        expect(engineeringRoadmap).toContain('### 1. Dungeon satisfaction pass');
-        expect(engineeringRoadmap).toContain('`feat: improve dungeon room pacing`');
-        expect(engineeringRoadmap).not.toContain('`feat: add keybind clarity settings`');
     });
 
     test('keeps the prior 0.32.4 patch notes entry in history', () => {
@@ -1065,6 +1073,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.33.1');
         expect(indexHtml).toContain('Patch 0.33.0');
         expect(indexHtml).toContain('Patch 0.32.4');
         expect(indexHtml).toContain('Patch 0.32.3');
@@ -1203,6 +1212,7 @@ describe('version presentation', () => {
     test('keeps a dedicated patch notes history container with release entries', () => {
         expect(indexHtml).toContain('id="patch-notes-history"');
         expect(indexHtml).toContain('class="patch-note-entry"');
+        expect(indexHtml).toContain('data-version="0.33.1"');
         expect(indexHtml).toContain('data-version="0.33.0"');
         expect(indexHtml).toContain('data-version="0.32.4"');
         expect(indexHtml).toContain('data-version="0.32.3"');

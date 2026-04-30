@@ -27,6 +27,34 @@ func TestAssignDungeonRoomHooksStagesTreasureEarlyAndShrineLate(t *testing.T) {
 	if layout.Rooms[0].Hook != "" || layout.Rooms[4].Hook != "" {
 		t.Fatalf("expected start/boss rooms to remain unhooked, got start=%q boss=%q", layout.Rooms[0].Hook, layout.Rooms[4].Hook)
 	}
+	if layout.Rooms[3].Pacing != "boss_approach" {
+		t.Fatalf("expected pre-boss room to carry boss approach pacing metadata, got %q", layout.Rooms[3].Pacing)
+	}
+}
+
+func TestAssignDungeonRoomHooksKeepsApproachPacingSeparateFromRewardHooks(t *testing.T) {
+	layout := DungeonLayout{
+		Rooms: []DungeonRoom{
+			{X: 0, Z: 0, Width: 40, Height: 40, Type: "start"},
+			{X: 100, Z: 0, Width: 40, Height: 40, Type: "normal"},
+			{X: 200, Z: 0, Width: 40, Height: 40, Type: "elite"},
+			{X: 300, Z: 0, Width: 40, Height: 40, Type: "normal"},
+			{X: 400, Z: 0, Width: 40, Height: 40, Type: "normal"},
+			{X: 500, Z: 0, Width: 40, Height: 40, Type: "boss"},
+		},
+	}
+
+	assignDungeonRoomHooks(&layout)
+
+	if layout.Rooms[4].Pacing != "boss_approach" {
+		t.Fatalf("expected final traversable room to be marked as boss approach, got %q", layout.Rooms[4].Pacing)
+	}
+	if layout.Rooms[4].Hook != "shrine" {
+		t.Fatalf("expected boss approach pacing to preserve existing reward hook, got %q", layout.Rooms[4].Hook)
+	}
+	if layout.Rooms[3].Pacing != "" {
+		t.Fatalf("expected only the immediate pre-boss room to carry approach pacing, got %q", layout.Rooms[3].Pacing)
+	}
 }
 
 func TestAssignDungeonRoomHooksAddsSecondRewardAndLateAmbushForLongRuns(t *testing.T) {
@@ -68,6 +96,7 @@ func TestDungeonRoomStateSummaryIncludesRoomHooks(t *testing.T) {
 			{X: 100, Z: 0, Width: 40, Height: 40, Type: "normal", Hook: "shrine"},
 			{X: 200, Z: 0, Width: 40, Height: 40, Type: "elite", Hook: "elite_ambush"},
 			{X: 300, Z: 0, Width: 40, Height: 40, Type: "normal", Hook: "chest"},
+			{X: 400, Z: 0, Width: 40, Height: 40, Type: "boss"},
 		},
 	}
 
@@ -83,6 +112,9 @@ func TestDungeonRoomStateSummaryIncludesRoomHooks(t *testing.T) {
 	}
 	if summary.Rooms[3].Hook != "shrine" {
 		t.Fatalf("expected shrine hook in summary, got %q", summary.Rooms[3].Hook)
+	}
+	if summary.Rooms[3].Pacing != "boss_approach" {
+		t.Fatalf("expected boss approach pacing in summary, got %q", summary.Rooms[3].Pacing)
 	}
 }
 

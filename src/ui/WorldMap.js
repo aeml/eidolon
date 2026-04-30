@@ -419,7 +419,7 @@ export class WorldMap {
             ? 'rgba(255, 145, 90, 0.6)'
             : getDungeonRoomRole(nextRoom) === 'boss'
                 ? 'rgba(255, 110, 110, 0.6)'
-                : getDungeonRoomRole(nextRoom) === 'elite'
+                : ['elite', 'approach'].includes(getDungeonRoomRole(nextRoom))
                     ? 'rgba(255, 190, 90, 0.6)'
                     : 'rgba(255, 215, 90, 0.6)';
 

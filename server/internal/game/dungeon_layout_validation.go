@@ -55,6 +55,7 @@ func assignDungeonRoomHooks(layout *DungeonLayout) {
 	traversableRoomCount := 0
 	for idx := range layout.Rooms {
 		layout.Rooms[idx].Hook = ""
+		layout.Rooms[idx].Pacing = ""
 		switch layout.Rooms[idx].Type {
 		case "normal":
 			normalIndices = append(normalIndices, idx)
@@ -100,6 +101,12 @@ func assignDungeonRoomHooks(layout *DungeonLayout) {
 		lastEliteIndex := eliteIndices[len(eliteIndices)-1]
 		if lastEliteIndex != eliteIndices[0] {
 			layout.Rooms[lastEliteIndex].Hook = "elite_ambush"
+		}
+	}
+
+	for idx := 1; idx < len(layout.Rooms); idx++ {
+		if layout.Rooms[idx].Type == "boss" && layout.Rooms[idx-1].Type != "start" {
+			layout.Rooms[idx-1].Pacing = "boss_approach"
 		}
 	}
 }

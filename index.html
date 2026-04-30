@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.33.0</span>
+                <span class="start-version-row__label">Alpha 0.33.1</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -574,6 +574,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.33.1">
+                    <h3 class="patch-note-entry__title">Patch 0.33.1 (Dungeon boss approach pacing)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Boss approach beats are now explicit:</strong> Dungeon room summaries mark the final traversable room before each boss with boss-approach pacing metadata.</li>
+                        <li><strong>Route surfaces call out the commit beat:</strong> Objectives, Journal guidance, dungeon entrance hints, minimap markers, world-map previews, and combat callouts now identify Approach rooms before the boss goes live.</li>
+                        <li><strong>Rewards and progression stay stable:</strong> Boss approach is pacing metadata only, so chest, shrine, elite ambush, boss clear, unlock, and reward behavior remains unchanged.</li>
+                        <li><strong>Regression coverage:</strong> Added server and client coverage for boss-approach summary metadata, route copy, minimap/world-map markers, entrance hints, combat callouts, and the 0.33.1 release state.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.33.0">
                     <h3 class="patch-note-entry__title">Patch 0.33.0 (Mesh catalog expansion)</h3>
                     <ul class="patch-note-entry__list">

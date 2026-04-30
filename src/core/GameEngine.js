@@ -2798,6 +2798,8 @@ export class GameEngine {
                     promptLabel = 'Boss room ahead — reset and commit';
                 } else if (objectiveRoom.roomRole === 'elite') {
                     promptLabel = objectiveRoom.explored ? 'Elite room discovered' : 'Elite threat ahead';
+                } else if (objectiveRoom.roomRole === 'approach') {
+                    promptLabel = 'Final room before the boss — clear it, then commit';
                 } else {
                     promptLabel = inRange
                         ? 'Click to open the dungeon portal.'
@@ -3092,6 +3094,9 @@ export class GameEngine {
                 : 'Treasure room ahead — quick reward before danger';
         } else if (objectiveRoom.roomRole === 'elite') {
             subtitle = objectiveRoom.explored ? 'Elite room discovered' : 'Elite threat ahead';
+        } else if (objectiveRoom.roomRole === 'approach') {
+            subtitle = 'Final room before the boss — clear it, then commit';
+            tone = 'warning';
         }
 
         return {

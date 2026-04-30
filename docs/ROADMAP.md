@@ -2,7 +2,7 @@
 
 Last refreshed: April 2026
 
-This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, `0.31` client-UX closeout, `0.32` audio/accessibility passes, and `0.33.0` mesh catalog expansion already landed on `master`.
+This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, `0.31` client-UX closeout, `0.32` audio/accessibility passes, and `0.33.1` dungeon pacing work already landed on `master`.
 
 For the broader release-status tracker that covers remaining `0.22` work and the roadmap through `alpha 1.0`, see `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md`.
 
@@ -36,13 +36,26 @@ For the broader release-status tracker that covers remaining `0.22` work and the
 - `0.32.3` UI scale baseline: Settings now persists an 85%-125% UI Scale control through the shared UI layer without breaking viewport-safe windows
 - `0.32.4` keybind clarity settings: Settings can expand Help with a detailed keyboard reference without changing input mappings
 - `0.33.0` mesh catalog expansion: procedural realm and dungeon enemy silhouettes now live in MeshCatalog while MeshFactory keeps equivalent runtime output and fallback behavior
+- `0.33.1` dungeon boss approach pacing: server room summaries now expose boss-approach metadata and route surfaces call out the final pre-boss commit beat without changing rewards or progression
 
 ## Highest-value next slices
 
-### 1. Dungeon satisfaction pass
+### 1. Repro/sandbox QA tooling
 Why now:
-- Core dungeon progression is in, but replayability and room identity can still improve a lot
-- The latest catalog pass reduced presentation-data risk before the next content-feel pass
+- Fast manual QA makes polish slices much safer and cheaper
+- The latest dungeon pacing pass widened route-surface coverage, so a deterministic sandbox would reduce future regression cost
+
+Targets:
+- `repro.html`
+- `src/repro.js`
+- supporting docs/checklists under `docs/plans/`
+
+Definition of done:
+- There is a tiny deterministic sandbox for testing rendering, movement, VFX, and menu regressions without a full live run
+
+### 2. Dungeon satisfaction follow-up
+Why now:
+- Core dungeon progression is in, and boss approach beats now read better, but replayability and room identity can still improve
 
 Targets:
 - `server/internal/game/world.go`
@@ -53,18 +66,6 @@ Targets:
 
 Definition of done:
 - Rooms feel more intentionally paced and endgame difficulties feel distinct beyond number inflation
-
-### 2. Repro/sandbox QA tooling
-Why now:
-- Fast manual QA makes polish slices much safer and cheaper
-
-Targets:
-- `repro.html`
-- `src/repro.js`
-- supporting docs/checklists under `docs/plans/`
-
-Definition of done:
-- There is a tiny deterministic sandbox for testing rendering, movement, VFX, and menu regressions without a full live run
 
 ### 3. Social depth foundation
 Why now:
@@ -103,6 +104,6 @@ Definition of done:
 - More high-traffic entity and environment definitions are catalog-backed and easier to extend with lower regression risk
 
 ## Recommended next 3 implementation slices
-1. `feat: improve dungeon room pacing`
-2. `feat: add repro sandbox route`
+1. `feat: add repro sandbox route`
+2. `feat: improve dungeon room pacing`
 3. `feat: deepen social foundations`
