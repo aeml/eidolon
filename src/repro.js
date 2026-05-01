@@ -13,6 +13,10 @@ const previewWindow = document.getElementById('repro-preview-window');
 const triggerTelegraphButton = document.getElementById('repro-trigger-telegraph');
 const triggerLootButton = document.getElementById('repro-trigger-loot');
 const triggerJumpButton = document.getElementById('repro-trigger-jump');
+const triggerVerdantRoomButton = document.getElementById('repro-trigger-room-verdant');
+const triggerAbyssRoomButton = document.getElementById('repro-trigger-room-abyss');
+const triggerMoltenRoomButton = document.getElementById('repro-trigger-room-molten');
+const triggerTempestRoomButton = document.getElementById('repro-trigger-room-tempest');
 const toggleWindowButton = document.getElementById('repro-toggle-window');
 const resetSceneButton = document.getElementById('repro-reset-scene');
 const previewWindowCloseButton = document.getElementById('repro-window-close');
@@ -75,6 +79,110 @@ jumpPreview.position.set(0, 0.1, 0);
 jumpPreview.visible = false;
 renderSystem.scene.add(jumpPreview);
 
+const dungeonRoomPreview = new THREE.Group();
+dungeonRoomPreview.visible = false;
+renderSystem.scene.add(dungeonRoomPreview);
+
+const dungeonPreviewThemes = {
+    verdant: {
+        label: 'Verdant Bastion',
+        floorColor: 0x244b32,
+        corridorColor: 0x3c6844,
+        accentColor: 0x7ce38b,
+        bossColor: 0xd8f7a8
+    },
+    abyss: {
+        label: 'Abyssal Well',
+        floorColor: 0x18334a,
+        corridorColor: 0x1d4f69,
+        accentColor: 0x5ed5ff,
+        bossColor: 0xb2e9ff
+    },
+    molten: {
+        label: 'Molten Core',
+        floorColor: 0x4a2518,
+        corridorColor: 0x6d321c,
+        accentColor: 0xff8a42,
+        bossColor: 0xffd08a
+    },
+    tempest: {
+        label: 'Tempest Spire',
+        floorColor: 0x272c55,
+        corridorColor: 0x384080,
+        accentColor: 0xa78cff,
+        bossColor: 0xe1d6ff
+    }
+};
+
+function clearDungeonRoomPreview() {
+    while (dungeonRoomPreview.children.length > 0) {
+        const child = dungeonRoomPreview.children.pop();
+        child.geometry?.dispose?.();
+        child.material?.dispose?.();
+    }
+}
+
+function addFloorRect(width, depth, x, z, color, opacity = 0.82) {
+    const tile = new THREE.Mesh(
+        new THREE.BoxGeometry(width, 0.12, depth),
+        new THREE.MeshStandardMaterial({ color, transparent: true, opacity, roughness: 0.9 })
+    );
+    tile.position.set(x, 0.04, z);
+    tile.receiveShadow = true;
+    dungeonRoomPreview.add(tile);
+    return tile;
+}
+
+function addRoomMarker(x, z, color, radius = 0.55) {
+    const markerMesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(radius, radius, 0.18, 24),
+        new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.35 })
+    );
+    markerMesh.position.set(x, 0.28, z);
+    markerMesh.castShadow = true;
+    dungeonRoomPreview.add(markerMesh);
+    return markerMesh;
+}
+
+function triggerDungeonRoomPreview(themeKey) {
+    const theme = dungeonPreviewThemes[themeKey] || dungeonPreviewThemes.verdant;
+    clearDungeonRoomPreview();
+
+    addFloorRect(9, 7, -14, 0, theme.floorColor);
+    addFloorRect(14, 3, -4, 0, theme.corridorColor, 0.72);
+    addFloorRect(8, 8, 6, 0, theme.floorColor);
+    addFloorRect(14, 3, 16, 0, theme.corridorColor, 0.72);
+    addFloorRect(9, 7, 26, 0, theme.floorColor);
+
+    addRoomMarker(-14, 0, 0x66f7ff, 0.45);
+    addRoomMarker(6, 0, 0xffd700, 0.5);
+    addRoomMarker(26, 0, theme.bossColor, 0.75);
+
+    const approachRing = new THREE.Mesh(
+        new THREE.RingGeometry(2.8, 3.45, 48),
+        new THREE.MeshBasicMaterial({ color: theme.accentColor, transparent: true, opacity: 0.8, side: THREE.DoubleSide })
+    );
+    approachRing.name = 'boss_approach';
+    approachRing.rotation.x = -Math.PI / 2;
+    approachRing.position.set(16, 0.18, 0);
+    dungeonRoomPreview.add(approachRing);
+
+    for (let i = 0; i < 6; i += 1) {
+        const pillar = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.28, 0.4, 2.4, 12),
+            new THREE.MeshStandardMaterial({ color: theme.accentColor, roughness: 0.75 })
+        );
+        pillar.position.set(24 + (i % 3) * 1.8, 1.2, i < 3 ? -2.1 : 2.1);
+        pillar.castShadow = true;
+        dungeonRoomPreview.add(pillar);
+    }
+
+    dungeonRoomPreview.visible = true;
+    controls.target.set(6, 0, 0);
+    controls.update();
+    setReadout(`Preview: ${theme.label} dungeon room\nRoute: start -> reward -> boss_approach -> boss\nUse to smoke-check room pacing, corridor readability, and boss-approach contrast.`);
+}
+
 const baseGeometry = new THREE.IcosahedronGeometry(0.8, 0);
 const baseMaterial = new THREE.MeshStandardMaterial({ color: 0xff9f66, roughness: 0.4, metalness: 0.1 });
 
@@ -127,9 +235,11 @@ function resetPreviewState() {
     telegraphPreview.visible = false;
     lootPreview.visible = false;
     jumpPreview.visible = false;
+    dungeonRoomPreview.visible = false;
     telegraphPreviewUntil = 0;
     lootPreviewUntil = 0;
     jumpPreviewUntil = 0;
+    clearDungeonRoomPreview();
     marker.visible = false;
     toggleWindowPreview(false);
     setReadout('Last pick: none');
@@ -209,6 +319,10 @@ const togglePerf = () => {
 triggerTelegraphButton?.addEventListener('click', () => triggerTelegraphPreview());
 triggerLootButton?.addEventListener('click', () => triggerLootPreview());
 triggerJumpButton?.addEventListener('click', () => triggerJumpPreview());
+triggerVerdantRoomButton?.addEventListener('click', () => triggerDungeonRoomPreview('verdant'));
+triggerAbyssRoomButton?.addEventListener('click', () => triggerDungeonRoomPreview('abyss'));
+triggerMoltenRoomButton?.addEventListener('click', () => triggerDungeonRoomPreview('molten'));
+triggerTempestRoomButton?.addEventListener('click', () => triggerDungeonRoomPreview('tempest'));
 toggleWindowButton?.addEventListener('click', () => toggleWindowPreview());
 resetSceneButton?.addEventListener('click', () => resetPreviewState());
 previewWindowCloseButton?.addEventListener('click', () => toggleWindowPreview(false));
@@ -266,6 +380,14 @@ const animate = () => {
         }
     }
 
+    if (dungeonRoomPreview.visible) {
+        const approachRing = dungeonRoomPreview.getObjectByName('boss_approach');
+        if (approachRing) {
+            approachRing.scale.setScalar(1 + Math.sin(now * 0.006) * 0.08);
+            approachRing.material.opacity = 0.62 + Math.sin(now * 0.01) * 0.18;
+        }
+    }
+
     renderSystem.render();
     requestAnimationFrame(animate);
 };
@@ -277,6 +399,7 @@ export {
     triggerTelegraphPreview,
     triggerLootPreview,
     triggerJumpPreview,
+    triggerDungeonRoomPreview,
     toggleWindowPreview,
     resetPreviewState
 };

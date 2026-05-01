@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.33.1</span>
+                <span class="start-version-row__label">Alpha 0.33.2</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -574,6 +574,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.33.2">
+                    <h3 class="patch-note-entry__title">Patch 0.33.2 (Repro sandbox QA tooling)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Repro sandbox coverage is broader:</strong> `repro.html` now includes deterministic dungeon room previews for Verdant, Abyss, Molten, and Tempest themes.</li>
+                        <li><strong>Boss approach checks are faster:</strong> The sandbox highlights start, reward, `boss_approach`, and boss beats without requiring login, networking, or a live dungeon run.</li>
+                        <li><strong>Manual QA has a repeatable route:</strong> Added a dedicated 0.33.2 smoke workflow for rendering, movement, VFX, menu chrome, and dungeon pacing checks.</li>
+                        <li><strong>Regression coverage:</strong> Added coverage for repro controls, live-boot isolation, deterministic dungeon room previews, smoke workflow documentation, and the 0.33.2 release state.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.33.1">
                     <h3 class="patch-note-entry__title">Patch 0.33.1 (Dungeon boss approach pacing)</h3>
                     <ul class="patch-note-entry__list">

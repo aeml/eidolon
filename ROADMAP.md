@@ -35,6 +35,7 @@ For the active long-range tracking document that includes remaining `0.22` work 
 - Jump anticipation/flip/tuck/landing polish with stronger arc, dust, and camera punch
 - Higher-fidelity, more stable world/building/fence shadows
 - Asset-cache management UI with cached-version visibility and update/refresh controls
+- Deterministic `repro.html` sandbox previews for rendering, movement, VFX, menu chrome, and dungeon room pacing checks
 
 ## Active priorities
 
@@ -47,7 +48,7 @@ For the active long-range tracking document that includes remaining `0.22` work 
 - Reduce UI DOM churn and expensive per-frame updates
 - Finish scene-group based instance transitions instead of whole-scene rebuild behavior
 - Continue moving hard-coded content definitions into data-driven catalogs/registries
-- Expand repro/sandbox tooling for safe manual QA
+- Use and expand repro/sandbox tooling for safe manual QA
 
 ### 3. Dungeon depth and replay value
 - Distinguish room roles more clearly: travel, elite, event, reward, boss
@@ -65,7 +66,7 @@ For the active long-range tracking document that includes remaining `0.22` work 
 - Scene-group instance transition cleanup
 - UI diffing/throttling for frequently updated HUD panels
 - MeshFactory catalog cleanup and more data-driven asset definitions
-- Expand the local repro/sandbox scene for gameplay and render QA
+- Use the local repro/sandbox scene for gameplay and render QA, expanding it when new risky surfaces are added
 
 ### Phase B: Dungeon satisfaction pass
 - Room-role tagging and encounter pacing rules

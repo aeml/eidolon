@@ -7,8 +7,8 @@ const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-
 const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.33.1 for the dungeon boss approach pacing slice', () => {
-        expect(indexHtml).toContain('Alpha 0.33.1');
+    test('advances the login screen to alpha 0.33.2 for the repro sandbox QA tooling slice', () => {
+        expect(indexHtml).toContain('Alpha 0.33.2');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -75,23 +75,31 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.33.1', () => {
+    test('includes the latest player-facing patch notes entry for 0.33.2', () => {
+        expect(indexHtml).toContain('Patch 0.33.2');
+        expect(indexHtml).toContain('`repro.html` now includes deterministic dungeon room previews for Verdant, Abyss, Molten, and Tempest themes');
+        expect(indexHtml).toContain('The sandbox highlights start, reward, `boss_approach`, and boss beats without requiring login, networking, or a live dungeon run');
+        expect(indexHtml).toContain('Added a dedicated 0.33.2 smoke workflow for rendering, movement, VFX, menu chrome, and dungeon pacing checks');
+        expect(indexHtml).toContain('Added coverage for repro controls, live-boot isolation, deterministic dungeon room previews, smoke workflow documentation, and the 0.33.2 release state');
+    });
+
+    test('marks 0.33.2 shipped and points the roadmap at dungeon follow-up work', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.33.2`');
+        expect(alphaRoadmap).toContain('`0.33.2` is now the active version line');
+        expect(alphaRoadmap).toContain('shipped the repro/sandbox QA tooling slice');
+        expect(alphaRoadmap).toContain('Build the `0.33.3` dungeon satisfaction follow-up slice.');
+        expect(alphaRoadmap).toContain('use the new repro sandbox as the fast visual smoke route before full live dungeon QA');
+        expect(engineeringRoadmap).toContain('### 1. Dungeon satisfaction follow-up');
+        expect(engineeringRoadmap).toContain('`feat: improve dungeon room pacing`');
+        expect(engineeringRoadmap).not.toContain('`feat: add keybind clarity settings`');
+    });
+
+    test('keeps the prior 0.33.1 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.33.1');
         expect(indexHtml).toContain('Dungeon room summaries mark the final traversable room before each boss with boss-approach pacing metadata');
         expect(indexHtml).toContain('Objectives, Journal guidance, dungeon entrance hints, minimap markers, world-map previews, and combat callouts now identify Approach rooms');
         expect(indexHtml).toContain('Boss approach is pacing metadata only, so chest, shrine, elite ambush, boss clear, unlock, and reward behavior remains unchanged');
         expect(indexHtml).toContain('Added server and client coverage for boss-approach summary metadata, route copy, minimap/world-map markers, entrance hints, combat callouts, and the 0.33.1 release state');
-    });
-
-    test('marks 0.33.1 shipped and points the roadmap at repro sandbox work', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.33.1`');
-        expect(alphaRoadmap).toContain('`0.33.1` is now the active version line');
-        expect(alphaRoadmap).toContain('shipped the first dungeon satisfaction slice by making boss approach beats explicit across route surfaces');
-        expect(alphaRoadmap).toContain('Build the `0.33.2` repro/sandbox QA tooling slice.');
-        expect(alphaRoadmap).toContain('add a tiny deterministic sandbox route for fast manual checks');
-        expect(engineeringRoadmap).toContain('### 1. Repro/sandbox QA tooling');
-        expect(engineeringRoadmap).toContain('`feat: add repro sandbox route`');
-        expect(engineeringRoadmap).not.toContain('`feat: add keybind clarity settings`');
     });
 
     test('keeps the prior 0.33.0 patch notes entry in history', () => {
