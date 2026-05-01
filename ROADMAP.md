@@ -36,6 +36,7 @@ For the active long-range tracking document that includes remaining `0.22` work 
 - Higher-fidelity, more stable world/building/fence shadows
 - Asset-cache management UI with cached-version visibility and update/refresh controls
 - Deterministic `repro.html` sandbox previews for rendering, movement, VFX, menu chrome, and dungeon room pacing checks
+- Remote-player jump visuals now share the local jump animation lifecycle and smooth progress between server packets
 
 ## Active priorities
 

@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.33.2</span>
+                <span class="start-version-row__label">Alpha 0.33.3</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -574,6 +574,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.33.3">
+                    <h3 class="patch-note-entry__title">Patch 0.33.3 (Dungeon difficulty pacing and remote jump polish)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Endgame dungeon routes read more distinctly:</strong> Dungeon room summaries now carry difficulty, run-level, and difficulty-pacing metadata for Normal, Heroic, and Mythic runs.</li>
+                        <li><strong>Route copy calls out endgame pressure:</strong> Objectives and Journal cadence labels now surface Heroic Pressure and Mythic Trial context without changing rewards, unlocks, or room-completion behavior.</li>
+                        <li><strong>Remote jump animation is smoother:</strong> Nearby remote-player jumps now use the same jump animation lifecycle as local jumps and advance visual progress between server packets.</li>
+                        <li><strong>Regression coverage:</strong> Added server and client coverage for difficulty-pacing summary metadata, route copy, remote jump animation lifecycle, remote jump progress interpolation, and the 0.33.3 release state.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.33.2">
                     <h3 class="patch-note-entry__title">Patch 0.33.2 (Repro sandbox QA tooling)</h3>
                     <ul class="patch-note-entry__list">

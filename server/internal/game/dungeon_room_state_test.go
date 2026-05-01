@@ -80,3 +80,28 @@ func TestWorldTracksDungeonRoomProgressForPlayers(t *testing.T) {
 		t.Fatalf("expected a next objective room index")
 	}
 }
+
+func TestWorldDungeonRoomSummaryIncludesDifficultyPacingContext(t *testing.T) {
+	w := NewWorld(nil)
+	player := &Entity{ID: "player-1", Type: TypePlayer}
+	w.AddEntity(player)
+
+	instanceID := w.CreateDungeon("party-heroic", "molten_core", DifficultyHeroic, 100)
+	if err := w.EnterInstance(player.ID, instanceID); err != nil {
+		t.Fatalf("enter instance: %v", err)
+	}
+
+	summary, ok := w.GetDungeonRoomSummary(instanceID, player.ID)
+	if !ok {
+		t.Fatalf("expected dungeon room summary for player")
+	}
+	if summary.Difficulty != string(DifficultyHeroic) {
+		t.Fatalf("expected heroic difficulty context, got %q", summary.Difficulty)
+	}
+	if summary.RunLevel != 100 {
+		t.Fatalf("expected run level 100 context, got %d", summary.RunLevel)
+	}
+	if summary.DifficultyPacing != "heroic_pressure" {
+		t.Fatalf("expected heroic pressure pacing context, got %q", summary.DifficultyPacing)
+	}
+}

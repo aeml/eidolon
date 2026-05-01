@@ -1,6 +1,8 @@
 import {
     findNextDungeonMeaningfulRoom,
     getDungeonCadenceLabel,
+    getDungeonDifficultyPacingHint,
+    getDungeonDifficultyPacingLabel,
     getDungeonRoomRole,
     isLiveDungeonBossRoom
 } from '../utils/dungeonRoomMetadata.js';
@@ -410,6 +412,12 @@ export class QuestUI {
 
         const nextUnclearedBeat = objectiveRoom ? findNextDungeonMeaningfulRoom(summary, objectiveRoom.index) : null;
         const cadenceLabel = getDungeonCadenceLabel(objectiveRoom);
+        const difficultyPacingLabel = getDungeonDifficultyPacingLabel(summary);
+        const difficultyPacingHint = getDungeonDifficultyPacingHint(summary);
+        const cadenceWithDifficulty = cadenceLabel
+            ? [cadenceLabel, difficultyPacingLabel].filter(Boolean).join(' • ')
+            : difficultyPacingLabel;
+        const withDifficultyHint = (hint) => difficultyPacingHint ? `${hint} ${difficultyPacingHint}` : hint;
 
         if (getDungeonRoomRole(objectiveRoom) === 'recovery') {
             return {
@@ -422,13 +430,13 @@ export class QuestUI {
                 badge: 'Shrine',
                 badgeClass: 'is-shrine',
                 routeTone: 'support',
-                hint: getDungeonRoomRole(nextUnclearedBeat) === 'boss'
+                hint: withDifficultyHint(getDungeonRoomRole(nextUnclearedBeat) === 'boss'
                     ? 'Last reset before the boss push'
                     : objectiveRoom.explored
                         ? 'Shrine discovered'
-                        : 'A restorative shrine lies ahead',
+                        : 'A restorative shrine lies ahead'),
                 sequenceHint,
-                cadenceLabel
+                cadenceLabel: cadenceWithDifficulty
             };
         }
 
@@ -443,13 +451,13 @@ export class QuestUI {
                 badge: 'Chest',
                 badgeClass: 'is-chest',
                 routeTone: 'support',
-                hint: getDungeonRoomRole(nextUnclearedBeat) === 'event'
+                hint: withDifficultyHint(getDungeonRoomRole(nextUnclearedBeat) === 'event'
                     ? 'Quick score before the ambush spike'
                     : objectiveRoom.explored
                         ? 'Treasure room discovered'
-                        : 'Treasure cache detected deeper inside',
+                        : 'Treasure cache detected deeper inside'),
                 sequenceHint,
-                cadenceLabel
+                cadenceLabel: cadenceWithDifficulty
             };
         }
 
@@ -464,9 +472,9 @@ export class QuestUI {
                 badge: 'Ambush',
                 badgeClass: 'is-ambush',
                 routeTone: 'warning',
-                hint: 'Elite room ahead — pressure spike incoming',
+                hint: withDifficultyHint('Elite room ahead — pressure spike incoming'),
                 sequenceHint,
-                cadenceLabel
+                cadenceLabel: cadenceWithDifficulty
             };
         }
 
@@ -481,11 +489,11 @@ export class QuestUI {
                 badge: isLiveBossObjective ? 'Boss Now' : 'Boss',
                 badgeClass: 'is-boss',
                 routeTone: 'danger',
-                hint: isLiveBossObjective
+                hint: withDifficultyHint(isLiveBossObjective
                     ? 'You are in the boss room — commit and survive'
-                    : 'Boss room ahead — reset and commit',
+                    : 'Boss room ahead — reset and commit'),
                 sequenceHint,
-                cadenceLabel
+                cadenceLabel: cadenceWithDifficulty
             };
         }
 
@@ -500,9 +508,9 @@ export class QuestUI {
                 badge: 'Elite',
                 badgeClass: 'is-elite',
                 routeTone: 'warning',
-                hint: objectiveRoom.explored ? 'Elite room discovered' : 'Elite threat ahead',
+                hint: withDifficultyHint(objectiveRoom.explored ? 'Elite room discovered' : 'Elite threat ahead'),
                 sequenceHint,
-                cadenceLabel
+                cadenceLabel: cadenceWithDifficulty
             };
         }
 
@@ -517,9 +525,9 @@ export class QuestUI {
                 badge: 'Approach',
                 badgeClass: 'is-approach',
                 routeTone: 'warning',
-                hint: 'Final room before the boss — clear it, then commit',
+                hint: withDifficultyHint('Final room before the boss — clear it, then commit'),
                 sequenceHint,
-                cadenceLabel
+                cadenceLabel: cadenceWithDifficulty
             };
         }
 
@@ -543,13 +551,13 @@ export class QuestUI {
             badge: 'Objective',
             badgeClass: 'is-objective',
             routeTone: 'neutral',
-            hint: isBridgeToBoss
+            hint: withDifficultyHint(isBridgeToBoss
                 ? 'Boss path open — one last room before the boss'
                 : isBridgeToShrine
                     ? `${remainingRooms} rooms remain before the shrine reset`
-                    : `Clear ${remainingRooms} more rooms`,
+                    : `Clear ${remainingRooms} more rooms`),
             sequenceHint,
-            cadenceLabel
+            cadenceLabel: cadenceWithDifficulty
         };
     }
 

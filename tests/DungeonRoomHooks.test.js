@@ -174,4 +174,36 @@ describe('Dungeon room hooks', () => {
             })
         ]);
     });
+
+    test('adds endgame difficulty pacing context to dungeon routing objectives', () => {
+        buildQuestDom();
+
+        const questUI = new QuestUI({
+            getLastPlayer: () => ({ quests: [] }),
+            getDungeonRoomSummary: () => ({
+                difficulty: 'mythic',
+                runLevel: 100,
+                difficultyPacing: 'mythic_trial',
+                currentRoomIndex: 2,
+                objectiveRoomIndex: 3,
+                rooms: [
+                    { index: 0, type: 'start', explored: true, cleared: true },
+                    { index: 1, type: 'normal', hook: 'chest', explored: true, cleared: true },
+                    { index: 2, type: 'elite', hook: 'elite_ambush', explored: true, cleared: true },
+                    { index: 3, type: 'normal', pacing: 'boss_approach', explored: true, cleared: false },
+                    { index: 4, type: 'boss', explored: false, cleared: false }
+                ]
+            }),
+            getCurrentInstanceId: () => 'instance-1',
+            getCurrentInstanceType: () => 'abyssal_well'
+        });
+
+        expect(questUI.buildObjectiveSummary([])).toEqual([
+            expect.objectContaining({
+                title: 'Break through the boss approach',
+                hint: 'Final room before the boss — clear it, then commit Mythic trial: every room is a capstone push toward gem and unique-effect boss loot.',
+                cadenceLabel: 'Pressure • Mythic Trial'
+            })
+        ]);
+    });
 });

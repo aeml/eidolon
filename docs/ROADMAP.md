@@ -2,7 +2,7 @@
 
 Last refreshed: April 2026
 
-This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, `0.31` client-UX closeout, `0.32` audio/accessibility passes, and `0.33.2` repro sandbox work already landed on `master`.
+This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, `0.31` client-UX closeout, `0.32` audio/accessibility passes, and `0.33.3` dungeon difficulty pacing work already landed on `master`.
 
 For the broader release-status tracker that covers remaining `0.22` work and the roadmap through `alpha 1.0`, see `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md`.
 
@@ -38,12 +38,13 @@ For the broader release-status tracker that covers remaining `0.22` work and the
 - `0.33.0` mesh catalog expansion: procedural realm and dungeon enemy silhouettes now live in MeshCatalog while MeshFactory keeps equivalent runtime output and fallback behavior
 - `0.33.1` dungeon boss approach pacing: server room summaries now expose boss-approach metadata and route surfaces call out the final pre-boss commit beat without changing rewards or progression
 - `0.33.2` repro sandbox QA tooling: `repro.html` now offers deterministic dungeon room previews and a documented smoke workflow for rendering, movement, VFX, menu, and pacing regressions
+- `0.33.3` dungeon difficulty pacing and remote jump polish: room summaries now expose endgame difficulty pacing context while remote-player jump visuals use the same animation lifecycle as local jumps
 
 ## Highest-value next slices
 
 ### 1. Dungeon satisfaction follow-up
 Why now:
-- Core dungeon progression is in, and boss approach beats now read better, but replayability and room identity can still improve
+- Core dungeon progression is in, and endgame difficulty pressure now reads better, but replayability and room identity can still improve
 - The repro sandbox now makes future dungeon readability checks faster before full live QA
 
 Targets:
@@ -105,6 +106,6 @@ Definition of done:
 - The deterministic sandbox covers any newly risky visual or UX surfaces without requiring a full live run
 
 ## Recommended next 3 implementation slices
-1. `feat: improve dungeon room pacing`
+1. `feat: deepen dungeon room identity`
 2. `feat: deepen social foundations`
 3. `feat: harden multiplayer smoothness`

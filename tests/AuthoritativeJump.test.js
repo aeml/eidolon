@@ -794,6 +794,8 @@ describe('authoritative jump flow', () => {
                 userData: {}
             },
             stats: { hp: 100, maxHp: 100, mana: 10, maxMana: 10, speed: 3, attackSpeed: 1 },
+            playJumpAnimation: jest.fn(),
+            clearJumpAnimation: jest.fn(),
             updateState: jest.fn(function updateState(nextState) {
                 this.state = nextState;
             })
@@ -830,6 +832,10 @@ describe('authoritative jump flow', () => {
             height: 8
         }));
         expect(remoteEntity.jumpVisualState.visualHeight).toBeCloseTo(8, 5);
+        expect(remoteEntity.playJumpAnimation).toHaveBeenCalledWith(expect.objectContaining({
+            duration: expect.any(Number),
+            serverDriven: true
+        }));
 
         engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
 
@@ -849,6 +855,7 @@ describe('authoritative jump flow', () => {
 
         engine.clearAuthoritativeJumpState(remoteEntity);
 
+        expect(remoteEntity.clearJumpAnimation).toHaveBeenCalledTimes(1);
         expect(engine.spawnTransientEffect).toHaveBeenCalledWith(
             'jump_land',
             expect.objectContaining({ x: 4, y: 0, z: 0 }),
@@ -1060,5 +1067,36 @@ describe('authoritative jump flow', () => {
 
         expect(remoteEntity.position.x).toBeCloseTo(11.95, 5);
         expect(remoteEntity.mesh.position.x).toBeGreaterThanOrEqual(forwardVisualX);
+    });
+
+    test('remote authoritative jump visual progress advances between server packets', () => {
+        const engine = createEngineHarness();
+        const remoteEntity = {
+            position: new THREE.Vector3(4, 0, 0),
+            rotation: new THREE.Quaternion(),
+            jumpVisualState: {
+                start: new THREE.Vector3(0, 0, 0),
+                end: new THREE.Vector3(20, 0, 0),
+                progress: 0.25,
+                elapsed: 0.25,
+                duration: 1,
+                height: 8,
+                visualHeight: Math.sin(0.25 * Math.PI) * 8,
+                serverDriven: true,
+                displayPosition: new THREE.Vector3(4, 0, 0)
+            },
+            mesh: {
+                position: new THREE.Vector3(4, 0, 0),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            }
+        };
+        engine.activeEntitiesCache = [engine.player, remoteEntity];
+
+        engine.updateRemoteJumpVisuals(0.2);
+
+        expect(remoteEntity.jumpVisualState.progress).toBeCloseTo(0.45, 5);
+        expect(remoteEntity.jumpVisualState.visualHeight).toBeGreaterThan(Math.sin(0.25 * Math.PI) * 8);
     });
 });

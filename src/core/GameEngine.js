@@ -3809,7 +3809,7 @@ export class GameEngine {
             this.playerJumpVisualHeight = 0;
             this.player.targetPosition = null;
         } else {
-            entity.jumpVisualState = {
+            const nextJumpState = {
                 start,
                 end,
                 progress,
@@ -3821,6 +3821,10 @@ export class GameEngine {
                 displayPosition,
                 landingVisual: entity.jumpLandingVisual || null
             };
+            entity.jumpVisualState = nextJumpState;
+            if (!existingJump || !existingJump.serverDriven || existingJump.duration !== duration) {
+                entity.playJumpAnimation?.(nextJumpState);
+            }
         }
 
         return true;
@@ -3867,9 +3871,22 @@ export class GameEngine {
                 duration: 180,
                 impact: 0.85
             };
+            entity.clearJumpAnimation?.();
             this.applyJumpImpactEffect(entity, 0.85);
         }
         entity.jumpVisualState = null;
+    }
+
+    updateRemoteJumpVisuals(dt) {
+        const activeEntities = this.activeEntitiesCache || this.chunkManager?.getActiveEntities?.() || [];
+        for (const entity of activeEntities) {
+            const jump = entity !== this.player ? entity?.jumpVisualState : null;
+            if (!jump?.serverDriven || !(jump.duration > 0)) continue;
+
+            jump.elapsed = Math.min(jump.duration, Math.max(jump.elapsed || 0, (jump.progress || 0) * jump.duration) + dt);
+            jump.progress = Math.max(jump.progress || 0, Math.min(1, jump.elapsed / jump.duration));
+            jump.visualHeight = Math.max(0, Math.sin(jump.progress * Math.PI) * (jump.height || 0));
+        }
     }
 
     updatePlayerJump(dt) {
@@ -4643,6 +4660,7 @@ export class GameEngine {
         }
 
         this.activeEntitiesCache = this.chunkManager.getActiveEntities();
+        this.updateRemoteJumpVisuals(dt);
         this.updateLootVisualFeedback();
         this.processAutoLoot();
 

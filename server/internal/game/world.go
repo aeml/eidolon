@@ -1529,6 +1529,9 @@ type DungeonRoomSummary struct {
 	Rooms              []DungeonRoomSummaryEntry `json:"rooms"`
 	CurrentRoomIndex   int                       `json:"currentRoomIndex"`
 	ObjectiveRoomIndex int                       `json:"objectiveRoomIndex"`
+	Difficulty         string                    `json:"difficulty,omitempty"`
+	RunLevel           int                       `json:"runLevel,omitempty"`
+	DifficultyPacing   string                    `json:"difficultyPacing,omitempty"`
 }
 
 type DungeonRoomState struct {
@@ -1801,6 +1804,27 @@ type AbilityEvent struct {
 	TargetZ   float64 `json:"targetZ"`
 }
 
+func difficultyPacingTag(difficulty DungeonDifficulty) string {
+	switch difficulty {
+	case DifficultyHeroic:
+		return "heroic_pressure"
+	case DifficultyMythic:
+		return "mythic_trial"
+	default:
+		return "standard_route"
+	}
+}
+
+func withDungeonSummaryContext(summary DungeonRoomSummary, difficulty DungeonDifficulty, runLevel int) DungeonRoomSummary {
+	if difficulty == "" {
+		difficulty = DifficultyNormal
+	}
+	summary.Difficulty = string(difficulty)
+	summary.RunLevel = runLevel
+	summary.DifficultyPacing = difficultyPacingTag(difficulty)
+	return summary
+}
+
 type AttackEvent struct {
 	SourceID string  `json:"sourceId"`
 	TargetID string  `json:"targetId"`
@@ -1850,47 +1874,47 @@ type TelegraphEvent struct {
 }
 
 type RewardSummaryEvent struct {
-	PlayerID    string `json:"playerId"`
-	Title       string `json:"title"`
-	Subtitle    string `json:"subtitle,omitempty"`
-	Gold        int    `json:"gold"`
-	XP          int    `json:"xp"`
-	ItemCount   int    `json:"itemCount"`
-	GemCount    int    `json:"gemCount"`
-	HeartCount  int    `json:"heartCount"`
-	BossName    string `json:"bossName,omitempty"`
-	InstanceType string `json:"instanceType,omitempty"`
-	Difficulty  string `json:"difficulty,omitempty"`
-	RunLevel    int    `json:"runLevel,omitempty"`
-	RoomsCleared int   `json:"roomsCleared,omitempty"`
-	TotalRooms  int    `json:"totalRooms,omitempty"`
-	EliteRoomsCleared int `json:"eliteRoomsCleared,omitempty"`
-	TotalEliteRooms int `json:"totalEliteRooms,omitempty"`
-	DifficultyNote string `json:"difficultyNote,omitempty"`
-	ExitHint    string `json:"exitHint,omitempty"`
+	PlayerID          string `json:"playerId"`
+	Title             string `json:"title"`
+	Subtitle          string `json:"subtitle,omitempty"`
+	Gold              int    `json:"gold"`
+	XP                int    `json:"xp"`
+	ItemCount         int    `json:"itemCount"`
+	GemCount          int    `json:"gemCount"`
+	HeartCount        int    `json:"heartCount"`
+	BossName          string `json:"bossName,omitempty"`
+	InstanceType      string `json:"instanceType,omitempty"`
+	Difficulty        string `json:"difficulty,omitempty"`
+	RunLevel          int    `json:"runLevel,omitempty"`
+	RoomsCleared      int    `json:"roomsCleared,omitempty"`
+	TotalRooms        int    `json:"totalRooms,omitempty"`
+	EliteRoomsCleared int    `json:"eliteRoomsCleared,omitempty"`
+	TotalEliteRooms   int    `json:"totalEliteRooms,omitempty"`
+	DifficultyNote    string `json:"difficultyNote,omitempty"`
+	ExitHint          string `json:"exitHint,omitempty"`
 }
 
 type DungeonRoomClearRewardEvent struct {
-	PlayerID             string `json:"playerId"`
-	Title                string `json:"title"`
-	Subtitle             string `json:"subtitle,omitempty"`
-	Gold                 int    `json:"gold"`
-	XP                   int    `json:"xp"`
-	ItemCount            int    `json:"itemCount,omitempty"`
-	GemCount             int    `json:"gemCount,omitempty"`
-	HeartCount           int    `json:"heartCount,omitempty"`
-	Hint                 string `json:"hint,omitempty"`
-	RoomIndex            int    `json:"roomIndex"`
-	ObjectiveRoomIndex   int    `json:"objectiveRoomIndex"`
-	RoomType             string `json:"roomType,omitempty"`
-	RoomHook             string `json:"roomHook,omitempty"`
-	InstanceType         string `json:"instanceType,omitempty"`
-	Difficulty           string `json:"difficulty,omitempty"`
-	HealthRestored       int    `json:"healthRestored,omitempty"`
-	ManaRestored         int    `json:"manaRestored,omitempty"`
-	BuffName             string `json:"buffName,omitempty"`
-	BuffDurationSeconds  int    `json:"buffDurationSeconds,omitempty"`
-	DamageReductionPct   int    `json:"damageReductionPct,omitempty"`
+	PlayerID            string `json:"playerId"`
+	Title               string `json:"title"`
+	Subtitle            string `json:"subtitle,omitempty"`
+	Gold                int    `json:"gold"`
+	XP                  int    `json:"xp"`
+	ItemCount           int    `json:"itemCount,omitempty"`
+	GemCount            int    `json:"gemCount,omitempty"`
+	HeartCount          int    `json:"heartCount,omitempty"`
+	Hint                string `json:"hint,omitempty"`
+	RoomIndex           int    `json:"roomIndex"`
+	ObjectiveRoomIndex  int    `json:"objectiveRoomIndex"`
+	RoomType            string `json:"roomType,omitempty"`
+	RoomHook            string `json:"roomHook,omitempty"`
+	InstanceType        string `json:"instanceType,omitempty"`
+	Difficulty          string `json:"difficulty,omitempty"`
+	HealthRestored      int    `json:"healthRestored,omitempty"`
+	ManaRestored        int    `json:"manaRestored,omitempty"`
+	BuffName            string `json:"buffName,omitempty"`
+	BuffDurationSeconds int    `json:"buffDurationSeconds,omitempty"`
+	DamageReductionPct  int    `json:"damageReductionPct,omitempty"`
 }
 
 func formatDungeonLabel(instanceType string) string {
@@ -1936,24 +1960,24 @@ func countRewardDrops(items []*Item) (itemCount, gemCount int) {
 func buildBossRewardSummary(playerID, bossName, instanceType string, difficulty DungeonDifficulty, runLevel, roomsCleared, eliteRoomsCleared, totalRooms, totalEliteRooms, gold, xp, heartCount int, lootItems []*Item) RewardSummaryEvent {
 	itemCount, gemCount := countRewardDrops(lootItems)
 	return RewardSummaryEvent{
-		PlayerID:     playerID,
-		Title:        fmt.Sprintf("Boss Defeated: %s", bossName),
-		Subtitle:     fmt.Sprintf("%s • %s", formatDungeonLabel(instanceType), formatDungeonDifficultyLabel(difficulty)),
-		Gold:         gold,
-		XP:           xp,
-		ItemCount:    itemCount,
-		GemCount:     gemCount,
-		HeartCount:   heartCount,
-		BossName:     bossName,
-		InstanceType: instanceType,
-		Difficulty:   string(difficulty),
-		RunLevel:     runLevel,
-		RoomsCleared: roomsCleared,
-		TotalRooms:   totalRooms,
+		PlayerID:          playerID,
+		Title:             fmt.Sprintf("Boss Defeated: %s", bossName),
+		Subtitle:          fmt.Sprintf("%s • %s", formatDungeonLabel(instanceType), formatDungeonDifficultyLabel(difficulty)),
+		Gold:              gold,
+		XP:                xp,
+		ItemCount:         itemCount,
+		GemCount:          gemCount,
+		HeartCount:        heartCount,
+		BossName:          bossName,
+		InstanceType:      instanceType,
+		Difficulty:        string(difficulty),
+		RunLevel:          runLevel,
+		RoomsCleared:      roomsCleared,
+		TotalRooms:        totalRooms,
 		EliteRoomsCleared: eliteRoomsCleared,
 		TotalEliteRooms:   totalEliteRooms,
-		DifficultyNote: difficultyRewardNote(difficulty),
-		ExitHint:     "Return to the entrance to leave the dungeon.",
+		DifficultyNote:    difficultyRewardNote(difficulty),
+		ExitHint:          "Return to the entrance to leave the dungeon.",
 	}
 }
 
@@ -5445,8 +5469,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.ChargeRuneID = ""
 				e.Mu.Unlock()
 			} else {
-				nextX := e.X + (dx / dist) * moveDist
-				nextZ := e.Z + (dz / dist) * moveDist
+				nextX := e.X + (dx/dist)*moveDist
+				nextZ := e.Z + (dz/dist)*moveDist
 				if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(e, nextX, nextZ); ok {
 					nextX = constrainedX
 					nextZ = constrainedZ
@@ -8375,7 +8399,7 @@ func (w *World) UpdateDungeonRoomProgress(playerID string, x, z float64) {
 		return
 	}
 	inst.RoomState.MarkExploredAt(x, z)
-	inst.PlayerRoomSummary[playerID] = inst.RoomState.Summary(x, z)
+	inst.PlayerRoomSummary[playerID] = withDungeonSummaryContext(inst.RoomState.Summary(x, z), inst.Difficulty, inst.RunLevel)
 }
 
 func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
@@ -8399,7 +8423,7 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 
 	inst.RoomState.MarkRoomCleared(roomIndex)
 	for playerID := range inst.PlayerRoomSummary {
-		inst.PlayerRoomSummary[playerID] = inst.RoomState.Summary(0, 0)
+		inst.PlayerRoomSummary[playerID] = withDungeonSummaryContext(inst.RoomState.Summary(0, 0), inst.Difficulty, inst.RunLevel)
 	}
 	roomsCleared := 0
 	eliteRoomsCleared := 0
@@ -8495,9 +8519,9 @@ func (w *World) GetDungeonRoomSummary(instanceID string, playerID string) (Dunge
 		return DungeonRoomSummary{}, false
 	}
 	if summary, ok := inst.PlayerRoomSummary[playerID]; ok {
-		return summary, true
+		return withDungeonSummaryContext(summary, inst.Difficulty, inst.RunLevel), true
 	}
-	return inst.RoomState.Summary(0, 0), true
+	return withDungeonSummaryContext(inst.RoomState.Summary(0, 0), inst.Difficulty, inst.RunLevel), true
 }
 
 func fallbackDungeonLayout(dungeonType string) DungeonLayout {
@@ -9150,7 +9174,7 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 			inst.EmptySince = time.Time{} // Reset empty timer
 			if inst.RoomState != nil {
 				inst.RoomState.MarkExploredAt(startX, startZ)
-				inst.PlayerRoomSummary[playerID] = inst.RoomState.Summary(startX, startZ)
+				inst.PlayerRoomSummary[playerID] = withDungeonSummaryContext(inst.RoomState.Summary(startX, startZ), inst.Difficulty, inst.RunLevel)
 			}
 		}
 	}

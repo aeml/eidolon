@@ -8,6 +8,30 @@ const DUNGEON_CADENCE_LABELS = Object.freeze({
     climax: 'Climax'
 });
 
+const DUNGEON_DIFFICULTY_PACING_LABELS = Object.freeze({
+    standard_route: 'Standard Route',
+    heroic_pressure: 'Heroic Pressure',
+    mythic_trial: 'Mythic Trial'
+});
+
+export function getDungeonDifficultyPacingLabel(summary = null) {
+    const tag = summary?.difficultyPacing;
+    return DUNGEON_DIFFICULTY_PACING_LABELS[tag] || '';
+}
+
+export function getDungeonDifficultyPacingHint(summary = null) {
+    switch (summary?.difficultyPacing) {
+    case 'heroic_pressure':
+        return 'Heroic pressure: heavier room checks before the guaranteed boss gem.';
+    case 'mythic_trial':
+        return 'Mythic trial: every room is a capstone push toward gem and unique-effect boss loot.';
+    case 'standard_route':
+        return 'Standard route: learn the layout, pacing, and boss kit.';
+    default:
+        return '';
+    }
+}
+
 export function getDungeonRoomRole(room = null) {
     if (!room) return '';
     if (room.roomRole) return room.roomRole;
@@ -136,6 +160,8 @@ export function decorateDungeonRoomState(summary = null) {
         objectiveRoomRole: objectiveRoom?.roomRole || '',
         objectiveCadenceTag: objectiveRoom?.cadenceTag || '',
         nextBeatRole: nextMeaningfulRoom?.roomRole || '',
-        nextBeatCadenceTag: nextMeaningfulRoom?.cadenceTag || ''
+        nextBeatCadenceTag: nextMeaningfulRoom?.cadenceTag || '',
+        difficultyPacingLabel: getDungeonDifficultyPacingLabel(summary),
+        difficultyPacingHint: getDungeonDifficultyPacingHint(summary)
     };
 }

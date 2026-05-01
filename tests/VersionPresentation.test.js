@@ -7,8 +7,8 @@ const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-
 const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.33.2 for the repro sandbox QA tooling slice', () => {
-        expect(indexHtml).toContain('Alpha 0.33.2');
+    test('advances the login screen to alpha 0.33.3 for the dungeon difficulty pacing and remote jump polish slice', () => {
+        expect(indexHtml).toContain('Alpha 0.33.3');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -75,23 +75,31 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.33.2', () => {
+    test('includes the latest player-facing patch notes entry for 0.33.3', () => {
+        expect(indexHtml).toContain('Patch 0.33.3');
+        expect(indexHtml).toContain('Dungeon room summaries now carry difficulty, run-level, and difficulty-pacing metadata for Normal, Heroic, and Mythic runs');
+        expect(indexHtml).toContain('Objectives and Journal cadence labels now surface Heroic Pressure and Mythic Trial context without changing rewards, unlocks, or room-completion behavior');
+        expect(indexHtml).toContain('Nearby remote-player jumps now use the same jump animation lifecycle as local jumps and advance visual progress between server packets');
+        expect(indexHtml).toContain('Added server and client coverage for difficulty-pacing summary metadata, route copy, remote jump animation lifecycle, remote jump progress interpolation, and the 0.33.3 release state');
+    });
+
+    test('marks 0.33.3 shipped and points the roadmap at dungeon room identity work', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.33.3`');
+        expect(alphaRoadmap).toContain('`0.33.3` is now the active version line');
+        expect(alphaRoadmap).toContain('shipped the dungeon difficulty pacing follow-up and fixed remote-player jump presentation');
+        expect(alphaRoadmap).toContain('Build the `0.33.4` dungeon room identity follow-up slice.');
+        expect(alphaRoadmap).toContain('improve dungeon room identity and replay pacing beyond the boss-approach and difficulty-pacing metadata passes');
+        expect(engineeringRoadmap).toContain('### 1. Dungeon satisfaction follow-up');
+        expect(engineeringRoadmap).toContain('`feat: deepen dungeon room identity`');
+        expect(engineeringRoadmap).not.toContain('`feat: add keybind clarity settings`');
+    });
+
+    test('keeps the prior 0.33.2 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.33.2');
         expect(indexHtml).toContain('`repro.html` now includes deterministic dungeon room previews for Verdant, Abyss, Molten, and Tempest themes');
         expect(indexHtml).toContain('The sandbox highlights start, reward, `boss_approach`, and boss beats without requiring login, networking, or a live dungeon run');
         expect(indexHtml).toContain('Added a dedicated 0.33.2 smoke workflow for rendering, movement, VFX, menu chrome, and dungeon pacing checks');
         expect(indexHtml).toContain('Added coverage for repro controls, live-boot isolation, deterministic dungeon room previews, smoke workflow documentation, and the 0.33.2 release state');
-    });
-
-    test('marks 0.33.2 shipped and points the roadmap at dungeon follow-up work', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.33.2`');
-        expect(alphaRoadmap).toContain('`0.33.2` is now the active version line');
-        expect(alphaRoadmap).toContain('shipped the repro/sandbox QA tooling slice');
-        expect(alphaRoadmap).toContain('Build the `0.33.3` dungeon satisfaction follow-up slice.');
-        expect(alphaRoadmap).toContain('use the new repro sandbox as the fast visual smoke route before full live dungeon QA');
-        expect(engineeringRoadmap).toContain('### 1. Dungeon satisfaction follow-up');
-        expect(engineeringRoadmap).toContain('`feat: improve dungeon room pacing`');
-        expect(engineeringRoadmap).not.toContain('`feat: add keybind clarity settings`');
     });
 
     test('keeps the prior 0.33.1 patch notes entry in history', () => {
