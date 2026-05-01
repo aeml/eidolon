@@ -7,8 +7,8 @@ const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-
 const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.33.3 for the dungeon difficulty pacing and remote jump polish slice', () => {
-        expect(indexHtml).toContain('Alpha 0.33.3');
+    test('advances the login screen to alpha 0.33.4 for the dungeon room identity slice', () => {
+        expect(indexHtml).toContain('Alpha 0.33.4');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -75,23 +75,31 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.33.3', () => {
+    test('includes the latest player-facing patch notes entry for 0.33.4', () => {
+        expect(indexHtml).toContain('Patch 0.33.4');
+        expect(indexHtml).toContain('Room summaries expose stable identity tags such as Treasure Cache, Restorative Shrine, Ambush Chamber, Boss Approach, and Boss Lair');
+        expect(indexHtml).toContain('Objectives, Journal guidance, dungeon entrance hints, minimap markers, world-map previews, and combat callouts use the stronger room identity labels and hints');
+        expect(indexHtml).toContain('Room identity is metadata and copy only, so chest, shrine, ambush, boss clear, unlock, and completion behavior is unchanged');
+        expect(indexHtml).toContain('Added server and client coverage for room-identity summary metadata, route copy, sandbox preview labels, and the 0.33.4 release state');
+    });
+
+    test('marks 0.33.4 shipped and points the roadmap at social depth work', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.33.4`');
+        expect(alphaRoadmap).toContain('`0.33.4` is now the active version line');
+        expect(alphaRoadmap).toContain('shipped the dungeon room identity follow-up');
+        expect(alphaRoadmap).toContain('Build the `0.34.0` social depth foundation slice.');
+        expect(alphaRoadmap).toContain('deepen social foundations beyond party reward-sharing, chat, and the trading house');
+        expect(engineeringRoadmap).toContain('### 1. Social depth foundation');
+        expect(engineeringRoadmap).toContain('`feat: deepen social foundations`');
+        expect(engineeringRoadmap).not.toContain('`feat: add keybind clarity settings`');
+    });
+
+    test('keeps the prior 0.33.3 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.33.3');
         expect(indexHtml).toContain('Dungeon room summaries now carry difficulty, run-level, and difficulty-pacing metadata for Normal, Heroic, and Mythic runs');
         expect(indexHtml).toContain('Objectives and Journal cadence labels now surface Heroic Pressure and Mythic Trial context without changing rewards, unlocks, or room-completion behavior');
         expect(indexHtml).toContain('Nearby remote-player jumps now use the same jump animation lifecycle as local jumps and advance visual progress between server packets');
         expect(indexHtml).toContain('Added server and client coverage for difficulty-pacing summary metadata, route copy, remote jump animation lifecycle, remote jump progress interpolation, and the 0.33.3 release state');
-    });
-
-    test('marks 0.33.3 shipped and points the roadmap at dungeon room identity work', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.33.3`');
-        expect(alphaRoadmap).toContain('`0.33.3` is now the active version line');
-        expect(alphaRoadmap).toContain('shipped the dungeon difficulty pacing follow-up and fixed remote-player jump presentation');
-        expect(alphaRoadmap).toContain('Build the `0.33.4` dungeon room identity follow-up slice.');
-        expect(alphaRoadmap).toContain('improve dungeon room identity and replay pacing beyond the boss-approach and difficulty-pacing metadata passes');
-        expect(engineeringRoadmap).toContain('### 1. Dungeon satisfaction follow-up');
-        expect(engineeringRoadmap).toContain('`feat: deepen dungeon room identity`');
-        expect(engineeringRoadmap).not.toContain('`feat: add keybind clarity settings`');
     });
 
     test('keeps the prior 0.33.2 patch notes entry in history', () => {

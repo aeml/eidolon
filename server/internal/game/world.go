@@ -1521,6 +1521,7 @@ type DungeonRoomSummaryEntry struct {
 	Type     string  `json:"type"`
 	Hook     string  `json:"hook,omitempty"`
 	Pacing   string  `json:"pacing,omitempty"`
+	Identity string  `json:"identity,omitempty"`
 	Explored bool    `json:"explored"`
 	Cleared  bool    `json:"cleared"`
 }
@@ -1546,6 +1547,27 @@ func NewDungeonRoomState(layout DungeonLayout) *DungeonRoomState {
 		Layout:                layout,
 		Rooms:                 rooms,
 		CurrentRoomIndexValue: -1,
+	}
+}
+
+func dungeonRoomIdentityTag(room DungeonRoom) string {
+	switch {
+	case room.Type == "start":
+		return "entry_gate"
+	case room.Type == "boss":
+		return "boss_lair"
+	case room.Hook == "chest":
+		return "treasure_cache"
+	case room.Hook == "shrine":
+		return "restorative_shrine"
+	case room.Hook == "elite_ambush":
+		return "ambush_chamber"
+	case room.Pacing == "boss_approach":
+		return "boss_approach"
+	case room.Type == "elite":
+		return "elite_guard"
+	default:
+		return "route_hall"
 	}
 }
 
@@ -1612,6 +1634,7 @@ func (s *DungeonRoomState) Summary(x, z float64) DungeonRoomSummary {
 			Type:     room.Type,
 			Hook:     room.Hook,
 			Pacing:   room.Pacing,
+			Identity: dungeonRoomIdentityTag(room),
 			Explored: progress.Explored,
 			Cleared:  progress.Cleared,
 		})

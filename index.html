@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.33.3</span>
+                <span class="start-version-row__label">Alpha 0.33.4</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -574,6 +574,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.33.4">
+                    <h3 class="patch-note-entry__title">Patch 0.33.4 (Dungeon room identity)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Dungeon rooms now have clearer identities:</strong> Room summaries expose stable identity tags such as Treasure Cache, Restorative Shrine, Ambush Chamber, Boss Approach, and Boss Lair.</li>
+                        <li><strong>Route surfaces read less generic:</strong> Objectives, Journal guidance, dungeon entrance hints, minimap markers, world-map previews, and combat callouts use the stronger room identity labels and hints.</li>
+                        <li><strong>Rewards and progression stay stable:</strong> Room identity is metadata and copy only, so chest, shrine, ambush, boss clear, unlock, and completion behavior is unchanged.</li>
+                        <li><strong>Regression coverage:</strong> Added server and client coverage for room-identity summary metadata, route copy, sandbox preview labels, and the 0.33.4 release state.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.33.3">
                     <h3 class="patch-note-entry__title">Patch 0.33.3 (Dungeon difficulty pacing and remote jump polish)</h3>
                     <ul class="patch-note-entry__list">

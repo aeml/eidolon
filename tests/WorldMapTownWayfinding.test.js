@@ -134,8 +134,8 @@ describe('WorldMap town wayfinding', () => {
         worldMap.draw({ position: { x: 2400, z: 200 }, id: 'player-1' });
 
         expect(texts).toEqual(expect.arrayContaining([
-            '★ Tempest Spire [Chest • Payoff]',
-            'Next: Ambush'
+            '★ Tempest Spire [Treasure Cache • Payoff]',
+            'Next: Ambush Chamber'
         ]));
         expect(strokes).toEqual(expect.arrayContaining([
             expect.objectContaining({ strokeStyle: '#ffd700' }),
@@ -165,8 +165,8 @@ describe('WorldMap town wayfinding', () => {
         worldMap.draw({ position: { x: 2400, z: 200 }, id: 'player-1' });
 
         expect(texts).toEqual(expect.arrayContaining([
-            '★ Tempest Spire [Approach • Pressure]',
-            'Next: Boss'
+            '★ Tempest Spire [Boss Approach • Pressure]',
+            'Next: Boss Lair'
         ]));
         expect(strokes).toEqual(expect.arrayContaining([
             expect.objectContaining({ strokeStyle: 'rgba(255, 110, 110, 0.6)' })
@@ -197,7 +197,7 @@ describe('WorldMap town wayfinding', () => {
         expect(texts).toEqual(expect.arrayContaining([
             '★ Tempest Spire [Boss Now • Climax]'
         ]));
-        expect(texts).not.toContain('Next: Boss');
+        expect(texts).not.toContain('Next: Boss Lair');
         expect(strokes).toEqual(expect.arrayContaining([
             expect.objectContaining({ strokeStyle: 'rgba(255, 110, 110, 0.6)' })
         ]));

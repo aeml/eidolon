@@ -32,6 +32,7 @@ describe('repro and QA tooling', () => {
         expect(js).toContain('triggerJumpPreview');
         expect(js).toContain('triggerDungeonRoomPreview');
         expect(js).toContain('boss_approach');
+        expect(js).toContain('Entry Gate -> Treasure Cache -> Boss Approach -> Boss Lair');
         expect(js).toContain('dungeonPreviewThemes');
         expect(js).toContain('toggleWindowPreview');
         expect(js).toContain('resetPreviewState');

@@ -466,9 +466,9 @@ describe('QuestUI objectives panel', () => {
                 title: 'Commit to the boss room',
                 badge: 'Boss',
                 badgeClass: 'is-boss',
-                hint: 'Boss room ahead — reset and commit',
+                hint: 'Boss room ahead — reset and commit Boss lair: commit to the encounter and survive.',
                 routeTone: 'danger',
-                cadenceLabel: 'Climax'
+                cadenceLabel: 'Climax • Boss Lair'
             }),
             expect.objectContaining({
                 id: 'q1',
@@ -502,10 +502,10 @@ describe('QuestUI objectives panel', () => {
                 title: 'Break through the last approach room',
                 badge: 'Objective',
                 badgeClass: 'is-objective',
-                hint: 'Boss path open — one last room before the boss',
+                hint: 'Boss path open — one last room before the boss Route hall: clear forward and watch for the next named beat.',
                 routeTone: 'neutral',
-                sequenceHint: 'Route: Approach -> Boss',
-                cadenceLabel: 'Build'
+                sequenceHint: 'Route: Route Hall -> Boss Lair',
+                cadenceLabel: 'Build • Route Hall'
             })
         ]);
     });
@@ -535,8 +535,9 @@ describe('QuestUI objectives panel', () => {
         expect(guidance).not.toBeNull();
         expect(guidance.textContent).toContain('Clear through to the shrine route');
         expect(guidance.textContent).toContain('3 rooms remain before the shrine reset');
-        expect(guidance.textContent).toContain('Cadence: Build');
-        expect(guidance.textContent).toContain('Route: Approach -> Shrine -> Boss');
+        expect(guidance.textContent).toContain('Route hall: clear forward and watch for the next named beat.');
+        expect(guidance.textContent).toContain('Cadence: Build • Route Hall');
+        expect(guidance.textContent).toContain('Route: Route Hall -> Restorative Shrine -> Boss Lair');
     });
 
     test('builds a live boss objective when the player is already in the boss room', () => {
@@ -564,10 +565,10 @@ describe('QuestUI objectives panel', () => {
                 title: 'Survive the boss fight',
                 badge: 'Boss Now',
                 badgeClass: 'is-boss',
-                hint: 'You are in the boss room — commit and survive',
+                hint: 'You are in the boss room — commit and survive Boss lair: commit to the encounter and survive.',
                 routeTone: 'danger',
                 sequenceHint: '',
-                cadenceLabel: 'Climax'
+                cadenceLabel: 'Climax • Boss Lair'
             })
         ]);
     });
@@ -658,9 +659,9 @@ describe('QuestUI objectives panel', () => {
                 title: 'Clear the elite room',
                 badge: 'Elite',
                 badgeClass: 'is-elite',
-                hint: 'Elite room discovered',
+                hint: 'Elite room discovered Elite guard: a heavier combat check on the route.',
                 routeTone: 'warning',
-                cadenceLabel: 'Pressure'
+                cadenceLabel: 'Pressure • Elite Guard'
             })
         ]);
     });
@@ -692,10 +693,10 @@ describe('QuestUI objectives panel', () => {
                 title: 'Survive the ambush room',
                 badge: 'Ambush',
                 badgeClass: 'is-ambush',
-                hint: 'Elite room ahead — pressure spike incoming',
+                hint: 'Elite room ahead — pressure spike incoming Ambush chamber: expect elite pressure and limited reset time.',
                 routeTone: 'warning',
-                sequenceHint: 'Route: Ambush -> Shrine -> Boss',
-                cadenceLabel: 'Spike'
+                sequenceHint: 'Route: Ambush Chamber -> Restorative Shrine -> Boss Lair',
+                cadenceLabel: 'Spike • Ambush Chamber'
             })
         ]);
     });
@@ -725,8 +726,9 @@ describe('QuestUI objectives panel', () => {
         expect(guidance).not.toBeNull();
         expect(guidance.textContent).toContain('Survive the ambush room');
         expect(guidance.textContent).toContain('Elite room ahead — pressure spike incoming');
-        expect(guidance.textContent).toContain('Cadence: Spike');
-        expect(guidance.textContent).toContain('Route: Ambush -> Shrine -> Boss');
+        expect(guidance.textContent).toContain('Ambush chamber: expect elite pressure and limited reset time.');
+        expect(guidance.textContent).toContain('Cadence: Spike • Ambush Chamber');
+        expect(guidance.textContent).toContain('Route: Ambush Chamber -> Restorative Shrine -> Boss Lair');
     });
 
     test('builds a treasure-room routing objective before the deeper shrine reset room', () => {
@@ -756,10 +758,10 @@ describe('QuestUI objectives panel', () => {
                 title: 'Secure the treasure room',
                 badge: 'Chest',
                 badgeClass: 'is-chest',
-                hint: 'Quick score before the ambush spike',
+                hint: 'Quick score before the ambush spike Treasure cache: a short payoff beat before route pressure returns.',
                 routeTone: 'support',
-                sequenceHint: 'Route: Chest -> Ambush -> Shrine -> Boss',
-                cadenceLabel: 'Payoff'
+                sequenceHint: 'Route: Treasure Cache -> Ambush Chamber -> Restorative Shrine -> Boss Lair',
+                cadenceLabel: 'Payoff • Treasure Cache'
             })
         ]);
     });
@@ -789,8 +791,9 @@ describe('QuestUI objectives panel', () => {
         expect(guidance).not.toBeNull();
         expect(guidance.textContent).toContain('Secure the treasure room');
         expect(guidance.textContent).toContain('Quick score before the ambush spike');
-        expect(guidance.textContent).toContain('Cadence: Payoff');
-        expect(guidance.textContent).toContain('Route: Chest -> Ambush -> Shrine -> Boss');
+        expect(guidance.textContent).toContain('Treasure cache: a short payoff beat before route pressure returns.');
+        expect(guidance.textContent).toContain('Cadence: Payoff • Treasure Cache');
+        expect(guidance.textContent).toContain('Route: Treasure Cache -> Ambush Chamber -> Restorative Shrine -> Boss Lair');
     });
 
     test('builds a shrine routing objective as the last reset before a boss push', () => {
@@ -819,10 +822,10 @@ describe('QuestUI objectives panel', () => {
                 title: 'Reach the shrine room',
                 badge: 'Shrine',
                 badgeClass: 'is-shrine',
-                hint: 'Last reset before the boss push',
+                hint: 'Last reset before the boss push Restorative shrine: stabilize resources before the next push.',
                 routeTone: 'support',
-                sequenceHint: 'Route: Shrine -> Boss',
-                cadenceLabel: 'Reset'
+                sequenceHint: 'Route: Restorative Shrine -> Boss Lair',
+                cadenceLabel: 'Reset • Restorative Shrine'
             })
         ]);
     });
@@ -851,8 +854,9 @@ describe('QuestUI objectives panel', () => {
         expect(guidance).not.toBeNull();
         expect(guidance.textContent).toContain('Reach the shrine room');
         expect(guidance.textContent).toContain('Last reset before the boss push');
-        expect(guidance.textContent).toContain('Cadence: Reset');
-        expect(guidance.textContent).toContain('Route: Shrine -> Boss');
+        expect(guidance.textContent).toContain('Restorative shrine: stabilize resources before the next push.');
+        expect(guidance.textContent).toContain('Cadence: Reset • Restorative Shrine');
+        expect(guidance.textContent).toContain('Route: Restorative Shrine -> Boss Lair');
     });
 
     test('renders commit guidance for a discovered boss objective before the fight goes live', () => {

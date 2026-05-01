@@ -415,7 +415,7 @@ describe('Dungeon entrance hints', () => {
         expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
             dungeonName: 'Tempest Spire',
             inRange: true,
-            statusLabel: 'Dungeon Portal • Next: Chest • Payoff',
+            statusLabel: 'Dungeon Portal • Next: Treasure Cache • Payoff',
             promptLabel: 'Quick score before the ambush spike'
         }));
     });
@@ -441,7 +441,7 @@ describe('Dungeon entrance hints', () => {
         expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
             dungeonName: 'Tempest Spire',
             inRange: true,
-            statusLabel: 'Dungeon Portal • Next: Shrine • Reset',
+            statusLabel: 'Dungeon Portal • Next: Restorative Shrine • Reset',
             promptLabel: 'Last reset before the boss push'
         }));
     });
@@ -494,7 +494,7 @@ describe('Dungeon entrance hints', () => {
         expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
             dungeonName: 'Tempest Spire',
             inRange: true,
-            statusLabel: 'Dungeon Portal • Next: Approach • Pressure',
+            statusLabel: 'Dungeon Portal • Next: Boss Approach • Pressure',
             promptLabel: 'Final room before the boss — clear it, then commit'
         }));
     });
@@ -529,7 +529,7 @@ describe('Dungeon entrance hints', () => {
         });
 
         expect(engine.uiManager.updateDungeonEntranceHint).toHaveBeenCalledWith(expect.objectContaining({
-            statusLabel: 'Dungeon Portal • Next: Ambush • Spike',
+            statusLabel: 'Dungeon Portal • Next: Ambush Chamber • Spike',
             promptLabel: 'Elite room ahead — pressure spike incoming'
         }));
     });

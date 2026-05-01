@@ -288,7 +288,7 @@ describe('Dungeon room clear feedback', () => {
         engine.handleServerMessage({ type: 'room_clear_reward', payload: summary });
 
         expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
-            title: 'Next: Boss',
+            title: 'Next: Boss Lair',
             tone: 'boss',
             subtitle: 'Boss room ahead — reset and commit'
         }));
@@ -334,7 +334,7 @@ describe('Dungeon room clear feedback', () => {
         engine.handleServerMessage({ type: 'room_clear_reward', payload: summary });
 
         expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
-            title: 'Next: Shrine',
+            title: 'Next: Restorative Shrine',
             tone: 'support',
             subtitle: 'Last reset before the boss push'
         }));
@@ -380,7 +380,7 @@ describe('Dungeon room clear feedback', () => {
         engine.handleServerMessage({ type: 'room_clear_reward', payload: summary });
 
         expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
-            title: 'Next: Chest',
+            title: 'Next: Treasure Cache',
             tone: 'support',
             subtitle: 'Quick score before the ambush spike'
         }));

@@ -41,9 +41,9 @@ describe('Dungeon room hooks', () => {
                 badge: 'Shrine',
                 badgeClass: 'is-shrine',
                 routeTone: 'support',
-                hint: 'Last reset before the boss push',
-                sequenceHint: 'Route: Shrine -> Boss',
-                cadenceLabel: 'Reset'
+                hint: 'Last reset before the boss push Restorative shrine: stabilize resources before the next push.',
+                sequenceHint: 'Route: Restorative Shrine -> Boss Lair',
+                cadenceLabel: 'Reset • Restorative Shrine'
             })
         ]);
 
@@ -70,9 +70,9 @@ describe('Dungeon room hooks', () => {
                 badge: 'Chest',
                 badgeClass: 'is-chest',
                 routeTone: 'support',
-                hint: 'Treasure room discovered',
-                sequenceHint: 'Route: Chest -> Boss',
-                cadenceLabel: 'Payoff'
+                hint: 'Treasure room discovered Treasure cache: a short payoff beat before route pressure returns.',
+                sequenceHint: 'Route: Treasure Cache -> Boss Lair',
+                cadenceLabel: 'Payoff • Treasure Cache'
             })
         ]);
     });
@@ -168,9 +168,9 @@ describe('Dungeon room hooks', () => {
                 badge: 'Approach',
                 badgeClass: 'is-approach',
                 routeTone: 'warning',
-                hint: 'Final room before the boss — clear it, then commit',
-                sequenceHint: 'Route: Approach -> Boss',
-                cadenceLabel: 'Pressure'
+                hint: 'Final room before the boss — clear it, then commit Boss approach: the last traversal check before the arena.',
+                sequenceHint: 'Route: Boss Approach -> Boss Lair',
+                cadenceLabel: 'Pressure • Boss Approach'
             })
         ]);
     });
@@ -201,8 +201,8 @@ describe('Dungeon room hooks', () => {
         expect(questUI.buildObjectiveSummary([])).toEqual([
             expect.objectContaining({
                 title: 'Break through the boss approach',
-                hint: 'Final room before the boss — clear it, then commit Mythic trial: every room is a capstone push toward gem and unique-effect boss loot.',
-                cadenceLabel: 'Pressure • Mythic Trial'
+                hint: 'Final room before the boss — clear it, then commit Boss approach: the last traversal check before the arena. Mythic trial: every room is a capstone push toward gem and unique-effect boss loot.',
+                cadenceLabel: 'Pressure • Boss Approach • Mythic Trial'
             })
         ]);
     });

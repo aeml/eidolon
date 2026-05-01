@@ -116,6 +116,18 @@ func TestDungeonRoomStateSummaryIncludesRoomHooks(t *testing.T) {
 	if summary.Rooms[3].Pacing != "boss_approach" {
 		t.Fatalf("expected boss approach pacing in summary, got %q", summary.Rooms[3].Pacing)
 	}
+	if summary.Rooms[1].Identity != "treasure_cache" {
+		t.Fatalf("expected chest room identity in summary, got %q", summary.Rooms[1].Identity)
+	}
+	if summary.Rooms[2].Identity != "ambush_chamber" {
+		t.Fatalf("expected elite ambush identity in summary, got %q", summary.Rooms[2].Identity)
+	}
+	if summary.Rooms[3].Identity != "restorative_shrine" {
+		t.Fatalf("expected shrine identity in summary, got %q", summary.Rooms[3].Identity)
+	}
+	if summary.Rooms[4].Identity != "boss_lair" {
+		t.Fatalf("expected boss room identity in summary, got %q", summary.Rooms[4].Identity)
+	}
 }
 
 func TestDungeonRoomStateSummaryIncludesExpandedLongRunHooks(t *testing.T) {
@@ -146,5 +158,11 @@ func TestDungeonRoomStateSummaryIncludesExpandedLongRunHooks(t *testing.T) {
 	}
 	if summary.Rooms[5].Hook != "shrine" {
 		t.Fatalf("expected shrine hook in summary, got %q", summary.Rooms[5].Hook)
+	}
+	if summary.Rooms[3].Identity != "treasure_cache" {
+		t.Fatalf("expected second chest room identity in summary, got %q", summary.Rooms[3].Identity)
+	}
+	if summary.Rooms[4].Identity != "ambush_chamber" {
+		t.Fatalf("expected deeper ambush identity in summary, got %q", summary.Rooms[4].Identity)
 	}
 }

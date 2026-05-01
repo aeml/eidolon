@@ -2,7 +2,7 @@
 
 Last refreshed: April 2026
 
-This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, `0.31` client-UX closeout, `0.32` audio/accessibility passes, and `0.33.3` dungeon difficulty pacing work already landed on `master`.
+This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, `0.31` client-UX closeout, `0.32` audio/accessibility passes, and `0.33.4` dungeon room identity work already landed on `master`.
 
 For the broader release-status tracker that covers remaining `0.22` work and the roadmap through `alpha 1.0`, see `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md`.
 
@@ -39,27 +39,14 @@ For the broader release-status tracker that covers remaining `0.22` work and the
 - `0.33.1` dungeon boss approach pacing: server room summaries now expose boss-approach metadata and route surfaces call out the final pre-boss commit beat without changing rewards or progression
 - `0.33.2` repro sandbox QA tooling: `repro.html` now offers deterministic dungeon room previews and a documented smoke workflow for rendering, movement, VFX, menu, and pacing regressions
 - `0.33.3` dungeon difficulty pacing and remote jump polish: room summaries now expose endgame difficulty pacing context while remote-player jump visuals use the same animation lifecycle as local jumps
+- `0.33.4` dungeon room identity: room summaries now expose named identity tags and route surfaces use clearer labels such as Treasure Cache, Restorative Shrine, Ambush Chamber, Boss Approach, and Boss Lair
 
 ## Highest-value next slices
 
-### 1. Dungeon satisfaction follow-up
+### 1. Social depth foundation
 Why now:
-- Core dungeon progression is in, and endgame difficulty pressure now reads better, but replayability and room identity can still improve
-- The repro sandbox now makes future dungeon readability checks faster before full live QA
-
-Targets:
-- `server/internal/game/world.go`
-- `server/main.go`
-- `src/core/GameEngine.js`
-- `src/ui/QuestUI.js`
-- `src/ui/Minimap.js`
-
-Definition of done:
-- Rooms feel more intentionally paced and endgame difficulties feel distinct beyond number inflation
-
-### 2. Social depth foundation
-Why now:
-- Parties, chat, and trading house exist, but the alpha runway still needs deeper social structures before guilds and PvP
+- Parties, chat, and the trading house exist, but the alpha runway still needs deeper social structures before guilds and PvP
+- Dungeon satisfaction has had several focused passes, so social depth is the next broadest product gap
 
 Targets:
 - server social state and persistence surfaces
@@ -69,7 +56,7 @@ Targets:
 Definition of done:
 - The next social feature has a clear data path and player-facing entry point without overloading existing party flows
 
-### 3. Multiplayer smoothness hardening
+### 2. Multiplayer smoothness hardening
 Why now:
 - Remote movement and action reads are better than before, but multiplayer smoothness remains one of the largest alpha-wide risks
 
@@ -80,6 +67,21 @@ Targets:
 
 Definition of done:
 - Remote actors feel more stable under normal latency without weakening server authority
+
+### 3. Dungeon satisfaction follow-up
+Why now:
+- Core dungeon progression, boss approach, difficulty pacing, and room identity now read better, but deeper replay variation can still improve later
+- The repro sandbox makes future dungeon readability checks faster before full live QA
+
+Targets:
+- `server/internal/game/world.go`
+- `server/main.go`
+- `src/core/GameEngine.js`
+- `src/ui/QuestUI.js`
+- `src/ui/Minimap.js`
+
+Definition of done:
+- Rooms feel more intentionally varied without destabilizing rewards, unlocks, or completion behavior
 
 ### 4. Data-driven mesh/content follow-up
 Why now:
@@ -106,6 +108,6 @@ Definition of done:
 - The deterministic sandbox covers any newly risky visual or UX surfaces without requiring a full live run
 
 ## Recommended next 3 implementation slices
-1. `feat: deepen dungeon room identity`
-2. `feat: deepen social foundations`
-3. `feat: harden multiplayer smoothness`
+1. `feat: deepen social foundations`
+2. `feat: harden multiplayer smoothness`
+3. `feat: add dungeon replay variety`

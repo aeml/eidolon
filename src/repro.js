@@ -180,7 +180,7 @@ function triggerDungeonRoomPreview(themeKey) {
     dungeonRoomPreview.visible = true;
     controls.target.set(6, 0, 0);
     controls.update();
-    setReadout(`Preview: ${theme.label} dungeon room\nRoute: start -> reward -> boss_approach -> boss\nUse to smoke-check room pacing, corridor readability, and boss-approach contrast.`);
+    setReadout(`Preview: ${theme.label} dungeon room\nRoute: Entry Gate -> Treasure Cache -> Boss Approach -> Boss Lair\nUse to smoke-check room identity labels, corridor readability, and boss-approach contrast.`);
 }
 
 const baseGeometry = new THREE.IcosahedronGeometry(0.8, 0);

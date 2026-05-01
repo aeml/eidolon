@@ -37,6 +37,7 @@ For the active long-range tracking document that includes remaining `0.22` work 
 - Asset-cache management UI with cached-version visibility and update/refresh controls
 - Deterministic `repro.html` sandbox previews for rendering, movement, VFX, menu chrome, and dungeon room pacing checks
 - Remote-player jump visuals now share the local jump animation lifecycle and smooth progress between server packets
+- Named dungeon room identities now surface across summaries, objectives, entrance hints, minimap, world map, combat callouts, and sandbox previews
 
 ## Active priorities
 
@@ -56,7 +57,11 @@ For the active long-range tracking document that includes remaining `0.22` work 
 - Improve endgame difficulty identity beyond raw stat scaling
 - Add more run satisfaction hooks: events, elite modifiers, stronger room-clear moments, better dungeon-specific rewards
 
-### 4. Audio, accessibility, and onboarding
+### 4. Social depth
+- Deepen social foundations beyond parties, chat, and the trading house
+- Add clearer player-facing entry points before larger guild or PvP systems
+
+### 5. Audio, accessibility, and onboarding
 - Add stronger audio/UI feedback for combat, loot, and menus
 - Improve onboarding and first-session clarity
 - Add accessibility options such as UI scale, keybinds, and visual clarity toggles

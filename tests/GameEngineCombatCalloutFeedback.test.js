@@ -85,7 +85,7 @@ describe('GameEngine encounter callouts', () => {
         });
 
         expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
-            title: 'Next: Ambush',
+            title: 'Next: Ambush Chamber',
             tone: 'warning',
             subtitle: 'Elite room ahead — pressure spike incoming'
         }));
@@ -124,7 +124,7 @@ describe('GameEngine encounter callouts', () => {
         });
 
         expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
-            title: 'Next: Shrine',
+            title: 'Next: Restorative Shrine',
             tone: 'support',
             subtitle: 'Last reset before the boss push'
         }));
@@ -163,7 +163,7 @@ describe('GameEngine encounter callouts', () => {
         });
 
         expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
-            title: 'Next: Chest',
+            title: 'Next: Treasure Cache',
             tone: 'support',
             subtitle: 'Quick score before the ambush spike'
         }));
@@ -239,7 +239,7 @@ describe('GameEngine encounter callouts', () => {
         });
 
         expect(engine.uiManager.showCombatCallout).toHaveBeenCalledWith(expect.objectContaining({
-            title: 'Next: Approach',
+            title: 'Next: Boss Approach',
             tone: 'warning',
             subtitle: 'Final room before the boss — clear it, then commit'
         }));
