@@ -39,6 +39,7 @@ For the active long-range tracking document that includes remaining `0.22` work 
 - Remote-player jump visuals now share the local jump animation lifecycle and smooth progress between server packets
 - Named dungeon room identities now surface across summaries, objectives, entrance hints, minimap, world map, combat callouts, and sandbox previews
 - Social status intent is now visible through the Social window and online roster
+- Remote-player interpolation now clamps frame spikes so nearby players do not overshoot the latest server target
 
 ## Active priorities
 

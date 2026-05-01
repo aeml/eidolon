@@ -2,7 +2,7 @@
 
 Last refreshed: April 2026
 
-This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, `0.31` client-UX closeout, `0.32` audio/accessibility passes, `0.33.4` dungeon room identity work, and `0.34.0` social status foundation already landed on `master`.
+This is the engineering-facing roadmap. It focuses on the slices still worth building after the recent dungeon progression, UI polish, asset caching, movement/render polish, `0.31` client-UX closeout, `0.32` audio/accessibility passes, `0.33.4` dungeon room identity work, `0.34.0` social status foundation, and `0.35.0` remote smoothing hardening already landed on `master`.
 
 For the broader release-status tracker that covers remaining `0.22` work and the roadmap through `alpha 1.0`, see `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md`.
 
@@ -41,25 +41,14 @@ For the broader release-status tracker that covers remaining `0.22` work and the
 - `0.33.3` dungeon difficulty pacing and remote jump polish: room summaries now expose endgame difficulty pacing context while remote-player jump visuals use the same animation lifecycle as local jumps
 - `0.33.4` dungeon room identity: room summaries now expose named identity tags and route surfaces use clearer labels such as Treasure Cache, Restorative Shrine, Ambush Chamber, Boss Approach, and Boss Lair
 - `0.34.0` social status foundation: the Social window now lets players declare Available, Looking for Party, In Run, or Busy status and surfaces that intent in the online roster
+- `0.35.0` remote smoothing hardening: remote actor position and rotation interpolation now clamp frame spikes so presentation settles on the latest server target instead of overshooting it
 
 ## Highest-value next slices
 
-### 1. Multiplayer smoothness hardening
-Why now:
-- Remote movement and action reads are better than before, but multiplayer smoothness remains one of the largest alpha-wide risks
-- Social status now gives lightweight player intent without reopening party or trading flows, so the next broad risk is authoritative multiplayer presentation
-
-Targets:
-- server/client state streaming paths
-- `src/core/GameEngine.js`
-- multiplayer presentation regression tests
-
-Definition of done:
-- Remote actors feel more stable under normal latency without weakening server authority
-
-### 2. Social depth follow-up
+### 1. Social depth follow-up
 Why now:
 - Parties, chat, the trading house, and social statuses exist, but the alpha runway still needs deeper social structures before guilds and PvP
+- `0.35.0` closed a focused remote smoothing risk, so the next slice can return to the social foundation without reopening multiplayer presentation immediately
 
 Targets:
 - server social state and persistence surfaces
@@ -68,6 +57,18 @@ Targets:
 
 Definition of done:
 - The next social feature has a clear data path and player-facing entry point without overloading existing party flows
+
+### 2. Multiplayer smoothness follow-up
+Why now:
+- Remote movement and action reads are better than before, but multiplayer smoothness remains one of the largest alpha-wide risks
+
+Targets:
+- server/client state streaming paths
+- `src/core/GameEngine.js`
+- multiplayer presentation regression tests
+
+Definition of done:
+- Remote actors feel more stable under normal latency without weakening server authority
 
 ### 3. Dungeon satisfaction follow-up
 Why now:
@@ -109,6 +110,6 @@ Definition of done:
 - The deterministic sandbox covers any newly risky visual or UX surfaces without requiring a full live run
 
 ## Recommended next 3 implementation slices
-1. `feat: harden multiplayer smoothness`
-2. `feat: deepen social foundations`
+1. `feat: deepen social foundations`
+2. `feat: harden multiplayer smoothness`
 3. `feat: add dungeon replay variety`

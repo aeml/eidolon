@@ -272,7 +272,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.34.0</span>
+                <span class="start-version-row__label">Alpha 0.35.0</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -574,6 +574,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.35.0">
+                    <h3 class="patch-note-entry__title">Patch 0.35.0 (Remote smoothing hardening)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Remote motion is more stable:</strong> Nearby remote-player interpolation now clamps frame spikes to the latest server target instead of overshooting past it.</li>
+                        <li><strong>Remote facing is safer:</strong> Remote rotation smoothing uses the same clamped interpolation window so large frame deltas settle cleanly on server-facing intent.</li>
+                        <li><strong>Local authority stays unchanged:</strong> The fix only affects remote actor presentation and does not change local movement, combat, party, chat, trading, or dungeon-entry behavior.</li>
+                        <li><strong>Regression coverage:</strong> Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.34.0">
                     <h3 class="patch-note-entry__title">Patch 0.34.0 (Social status foundation)</h3>
                     <ul class="patch-note-entry__list">

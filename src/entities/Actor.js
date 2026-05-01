@@ -723,7 +723,7 @@ export class Actor extends Entity {
             // Interpolate Position
             let movedDistance = 0;
             if (this.targetServerPosition) {
-                const lerpFactor = 10.0 * dt;
+                const lerpFactor = Math.min(1, Math.max(0, 10.0 * dt));
                 TEMP_VEC.copy(this.position); // Save old pos
                 this.position.lerp(this.targetServerPosition, lerpFactor);
                 movedDistance = this.position.distanceTo(TEMP_VEC);
@@ -737,7 +737,7 @@ export class Actor extends Entity {
             // Interpolate Rotation
             if (this.targetServerRotation !== undefined) {
                 TEMP_QUAT.setFromAxisAngle(UP_VEC, this.targetServerRotation);
-                this.rotation.slerp(TEMP_QUAT, 10.0 * dt);
+                this.rotation.slerp(TEMP_QUAT, Math.min(1, Math.max(0, 10.0 * dt)));
             } else if (movedDistance > 0.001) {
                 // Fallback: Face movement direction if no server rotation provided
                 // This ensures entities don't slide sideways if the server omits rotation

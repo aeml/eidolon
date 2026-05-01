@@ -7,8 +7,8 @@ const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-
 const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.34.0 for the social status foundation slice', () => {
-        expect(indexHtml).toContain('Alpha 0.34.0');
+    test('advances the login screen to alpha 0.35.0 for the remote smoothing hardening slice', () => {
+        expect(indexHtml).toContain('Alpha 0.35.0');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -75,23 +75,31 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Common gear is usually vendor junk unless it is an upgrade');
     });
 
-    test('includes the latest player-facing patch notes entry for 0.34.0', () => {
+    test('includes the latest player-facing patch notes entry for 0.35.0', () => {
+        expect(indexHtml).toContain('Patch 0.35.0');
+        expect(indexHtml).toContain('Nearby remote-player interpolation now clamps frame spikes to the latest server target instead of overshooting past it');
+        expect(indexHtml).toContain('Remote rotation smoothing uses the same clamped interpolation window so large frame deltas settle cleanly on server-facing intent');
+        expect(indexHtml).toContain('The fix only affects remote actor presentation and does not change local movement, combat, party, chat, trading, or dungeon-entry behavior');
+        expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
+    });
+
+    test('marks 0.35.0 shipped and points the roadmap back at social depth work', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.35.0`');
+        expect(alphaRoadmap).toContain('`0.35.0` is now the active version line');
+        expect(alphaRoadmap).toContain('shipped the remote interpolation frame-spike hardening slice');
+        expect(alphaRoadmap).toContain('Build the `0.36.0` social depth follow-up slice.');
+        expect(alphaRoadmap).toContain('deepen social foundations beyond parties, chat, social statuses, and the trading house');
+        expect(engineeringRoadmap).toContain('### 1. Social depth follow-up');
+        expect(engineeringRoadmap).toContain('`feat: deepen social foundations`');
+        expect(engineeringRoadmap).not.toContain('`feat: add keybind clarity settings`');
+    });
+
+    test('keeps the prior 0.34.0 patch notes entry in history', () => {
         expect(indexHtml).toContain('Patch 0.34.0');
         expect(indexHtml).toContain('The Social window now lets players set Available, Looking for Party, In Run, or Busy status');
         expect(indexHtml).toContain('The roster includes each player social status alongside name, class, level, and invite actions');
         expect(indexHtml).toContain('Party invites, party leave, party leadership controls, chat, trading, and dungeon entry behavior are unchanged');
         expect(indexHtml).toContain('Added server and client coverage for social-status normalization, roster rendering, UI bindings, and the 0.34.0 release state');
-    });
-
-    test('marks 0.34.0 shipped and points the roadmap at multiplayer smoothness work', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.34.0`');
-        expect(alphaRoadmap).toContain('`0.34.0` is now the active version line');
-        expect(alphaRoadmap).toContain('shipped the social status foundation');
-        expect(alphaRoadmap).toContain('Build the `0.35.0` multiplayer smoothness hardening slice.');
-        expect(alphaRoadmap).toContain('make nearby remote-player movement and action reads more stable without weakening server authority');
-        expect(engineeringRoadmap).toContain('### 1. Multiplayer smoothness hardening');
-        expect(engineeringRoadmap).toContain('`feat: harden multiplayer smoothness`');
-        expect(engineeringRoadmap).not.toContain('`feat: add keybind clarity settings`');
     });
 
     test('keeps the prior 0.33.4 patch notes entry in history', () => {

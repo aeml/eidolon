@@ -265,6 +265,30 @@ describe('Actor System', () => {
             expect(actor.playAnimation).not.toHaveBeenCalledWith('Attack', false);
         });
 
+        test('remote interpolation clamps frame spikes to the server target instead of overshooting', () => {
+            actor.isRemote = true;
+            actor.state = 'IDLE';
+            actor.targetServerPosition = new THREE.Vector3(4, 0, 0);
+            actor.targetServerRotation = Math.PI / 2;
+            actor.visualOffset = new THREE.Vector3();
+            actor.position.set(0, 0, 0);
+            actor.rotation = new THREE.Quaternion();
+            actor.mesh = {
+                position: new THREE.Vector3(),
+                quaternion: new THREE.Quaternion(),
+                lookAt: jest.fn()
+            };
+
+            actor.update(0.2, null, null, null);
+
+            expect(actor.position.x).toBeCloseTo(4);
+            expect(actor.position.z).toBeCloseTo(0);
+            expect(actor.mesh.position.x).toBeCloseTo(4);
+
+            const targetRotation = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
+            expect(actor.rotation.angleTo(targetRotation)).toBeCloseTo(0);
+        });
+
         test('remote server recovery state cancels the local attack timer and accepts idle immediately', () => {
             jest.useFakeTimers();
 
