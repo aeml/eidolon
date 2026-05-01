@@ -18,9 +18,11 @@ export class SocialUI {
         this.partyData = null;
         this.inParty = false;
         this.currentInviter = null;
+        this.currentSocialStatus = 'available';
 
         // --- Callbacks (set by GameEngine) ---
         this.onSocialOpen = null;
+        this.onSocialStatusChange = null;
         this.onPartyInvite = null;
         this.onPartyLeave = null;
         this.onPartyResponse = null;
@@ -63,6 +65,14 @@ export class SocialUI {
             if (this.onPartyResponse) this.onPartyResponse(this.currentInviter, false);
             this.hidePartyRequest();
         });
+
+        this.socialStatusSelect = document.getElementById('social-status-select');
+        if (this.socialStatusSelect) {
+            this.socialStatusSelect.value = this.currentSocialStatus;
+            this.socialStatusSelect.addEventListener('change', () => {
+                this.setSocialStatus(this.socialStatusSelect.value, { notify: true });
+            });
+        }
     }
 
     // ================================================================
@@ -139,6 +149,11 @@ export class SocialUI {
             level.textContent = String(p.level);
             row.appendChild(level);
 
+            const status = document.createElement('span');
+            status.className = `social-window__cell social-window__status social-window__status--${this.normalizeSocialStatus(p.socialStatus)}`;
+            status.textContent = this.getSocialStatusLabel(p.socialStatus);
+            row.appendChild(status);
+
             const action = document.createElement('div');
             action.className = 'social-window__cell social-window__action';
             if (!isSelf) {
@@ -166,6 +181,37 @@ export class SocialUI {
 
             this.socialList.appendChild(row);
         });
+    }
+
+    setSocialStatus(status, options = {}) {
+        const normalized = this.normalizeSocialStatus(status);
+        this.currentSocialStatus = normalized;
+        if (this.socialStatusSelect && this.socialStatusSelect.value !== normalized) {
+            this.socialStatusSelect.value = normalized;
+        }
+        if (options.notify) {
+            this.onSocialStatusChange?.(normalized);
+            this.ctx.addChatMessage?.('System', `Social status set to ${this.getSocialStatusLabel(normalized)}.`);
+        }
+        return normalized;
+    }
+
+    normalizeSocialStatus(status) {
+        return ['available', 'looking_party', 'in_run', 'busy'].includes(status) ? status : 'available';
+    }
+
+    getSocialStatusLabel(status) {
+        switch (this.normalizeSocialStatus(status)) {
+        case 'looking_party':
+            return 'Looking for Party';
+        case 'in_run':
+            return 'In Run';
+        case 'busy':
+            return 'Busy';
+        case 'available':
+        default:
+            return 'Available';
+        }
     }
 
     // ================================================================
@@ -344,10 +390,20 @@ export class SocialUI {
                 <span class="social-window__title">SOCIAL</span>
                 <button id="close-social" class="close-btn" type="button" aria-label="Close social window">×</button>
             </div>
+            <div class="social-window__status-control">
+                <label class="social-window__status-label" for="social-status-select">My social status</label>
+                <select id="social-status-select" class="social-window__status-select">
+                    <option value="available">Available</option>
+                    <option value="looking_party">Looking for Party</option>
+                    <option value="in_run">In Run</option>
+                    <option value="busy">Busy</option>
+                </select>
+            </div>
             <div class="social-window__columns">
                 <span>Name</span>
                 <span>Class</span>
                 <span>Level</span>
+                <span>Status</span>
                 <span>Action</span>
             </div>
             <div id="social-list" class="social-window__list">

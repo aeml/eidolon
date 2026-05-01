@@ -1435,7 +1435,8 @@ type Entity struct {
 	LastPoisonTick      time.Time `json:"-"`
 
 	// Party
-	PartyID string `json:"partyId,omitempty"`
+	PartyID      string `json:"partyId,omitempty"`
+	SocialStatus string `json:"socialStatus,omitempty"`
 
 	// Unique Effect: swift - Speed boost after skill use
 	SwiftActive  bool      `json:"swiftActive,omitempty"`
@@ -1805,6 +1806,23 @@ type World struct {
 	// Event Callback
 	OnEvent       func(eventType string, data interface{})
 	OnQuestUpdate func(playerID string, quests []Quest)
+}
+
+const DefaultSocialStatus = "available"
+
+var validSocialStatuses = map[string]bool{
+	"available":     true,
+	"looking_party": true,
+	"in_run":        true,
+	"busy":          true,
+}
+
+func NormalizeSocialStatus(status string) string {
+	normalized := strings.ToLower(strings.TrimSpace(status))
+	if validSocialStatuses[normalized] {
+		return normalized
+	}
+	return DefaultSocialStatus
 }
 
 type DamageEvent struct {
@@ -3171,12 +3189,26 @@ func (w *World) spawnEnemyRect(subType string, count int, minX, maxX, minZ, maxZ
 func (w *World) AddEntity(e *Entity) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
+	if e.Type == TypePlayer {
+		e.SocialStatus = NormalizeSocialStatus(e.SocialStatus)
+	}
 	// Remove stale grid entry if entity ID already exists (e.g. re-join)
 	if old, exists := w.Entities[e.ID]; exists {
 		w.Grid.Remove(old)
 	}
 	w.Entities[e.ID] = e
 	w.Grid.Add(e)
+}
+
+func (w *World) SetPlayerSocialStatus(playerID string, status string) (string, bool) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	player, ok := w.Entities[playerID]
+	if !ok || player.Type != TypePlayer {
+		return "", false
+	}
+	player.SocialStatus = NormalizeSocialStatus(status)
+	return player.SocialStatus, true
 }
 
 func (w *World) RemoveEntity(id string) {
@@ -3281,6 +3313,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		InstanceID:        e.InstanceID,
 		Name:              e.Name,
 		PartyID:           e.PartyID,
+		SocialStatus:      e.SocialStatus,
 		Type:              e.Type,
 		SubType:           e.SubType,
 		X:                 e.X,

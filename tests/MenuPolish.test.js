@@ -9,6 +9,7 @@ const overlaysCssPath = fileURLToPath(new URL('../src/styles/overlays.css', impo
 const abilitiesCssPath = fileURLToPath(new URL('../src/styles/abilities.css', import.meta.url));
 const worldMapCssPath = fileURLToPath(new URL('../src/styles/world-map.css', import.meta.url));
 const partyCssPath = fileURLToPath(new URL('../src/styles/party.css', import.meta.url));
+const socialCssPath = fileURLToPath(new URL('../src/styles/social.css', import.meta.url));
 const skillTreeCssPath = fileURLToPath(new URL('../src/styles/skill-tree.css', import.meta.url));
 const startScreenCssPath = fileURLToPath(new URL('../src/styles/start-screen.css', import.meta.url));
 const variablesCssPath = fileURLToPath(new URL('../src/styles/variables.css', import.meta.url));
@@ -733,9 +734,12 @@ describe('menu polish regressions', () => {
     test('world map and party panel styles prevent accidental text selection', () => {
         const worldMapCss = readFileSync(worldMapCssPath, 'utf8');
         const partyCss = readFileSync(partyCssPath, 'utf8');
+        const socialCss = readFileSync(socialCssPath, 'utf8');
 
         expect(worldMapCss).toMatch(/#world-map\s*\{[^}]*user-select:\s*none;/s);
         expect(partyCss).toMatch(/#party-panel\s*\{[^}]*user-select:\s*none;/s);
+        expect(socialCss).toMatch(/\.social-window\s*\{[^}]*width:\s*min\(560px, calc\(100vw - 40px\)\);/s);
+        expect(socialCss).toMatch(/\.social-window__status-select\s*\{[^}]*min-width:\s*170px;/s);
     });
 
     test('special skill tree and party surfaces stay inside the viewport', () => {
@@ -874,26 +878,36 @@ describe('menu polish regressions', () => {
         expect(socialWindow.classList.contains('social-window')).toBe(true);
         expect(socialWindow.querySelector('.social-window__header')).not.toBeNull();
         expect(socialWindow.querySelector('.social-window__title')).not.toBeNull();
+        expect(socialWindow.querySelector('.social-window__status-control')).not.toBeNull();
         expect(socialWindow.querySelector('.social-window__columns')).not.toBeNull();
         expect(socialWindow.querySelector('.social-window__list')).not.toBeNull();
     });
 
-    test('social list renders polished reusable rows and invite actions', () => {
+    test('social list renders polished reusable rows statuses and invite actions', () => {
         buildStaticWindowDom();
         const ui = new UIManager(false);
         const inviteSpy = jest.fn();
+        const statusSpy = jest.fn();
         ui.social.onPartyInvite = inviteSpy;
+        ui.social.onSocialStatusChange = statusSpy;
         ui.lastPlayerRef = { name: 'Rob' };
 
+        document.getElementById('social-status-select').value = 'looking_party';
+        document.getElementById('social-status-select').dispatchEvent(new Event('change'));
+        expect(statusSpy).toHaveBeenCalledWith('looking_party');
+        expect(ui.social.currentSocialStatus).toBe('looking_party');
+
         ui.updateSocialList([
-            { name: 'Rob', class: 'Wizard', level: 12 },
-            { name: 'Alice', class: 'Rogue', level: 18 }
+            { name: 'Rob', class: 'Wizard', level: 12, socialStatus: 'looking_party' },
+            { name: 'Alice', class: 'Rogue', level: 18, socialStatus: 'busy' }
         ]);
 
         const rows = document.querySelectorAll('.social-window__row');
         expect(rows).toHaveLength(2);
         expect(rows[0].querySelector('.social-window__name--self')).not.toBeNull();
         expect(rows[0].querySelector('.social-window__self-badge')).not.toBeNull();
+        expect(rows[0].querySelector('.social-window__status').textContent).toBe('Looking for Party');
+        expect(rows[1].querySelector('.social-window__status').textContent).toBe('Busy');
 
         const inviteBtn = rows[1].querySelector('.social-window__invite-btn');
         expect(inviteBtn).not.toBeNull();
@@ -1123,7 +1137,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.33.4</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.34.0</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');

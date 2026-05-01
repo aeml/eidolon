@@ -12,7 +12,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.33.4`
+- Current in-game displayed version: `Alpha 0.34.0`
 - `0.21` is closed out and accepted
 - `0.22` is closed for planned implementation work after shipping meaningful onboarding, wayfinding, economy-guidance, and dungeon-guidance improvements
 - The game already has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, asset caching, and substantial UX polish
@@ -20,7 +20,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 
 ## Where we are now
 
-### Shipped through `0.33.4`
+### Shipped through `0.34.0`
 
 - `0.22.0`: first-session onboarding and start-screen clarity
 - `0.22.1`: starter-town wayfinding and service prompts
@@ -171,6 +171,7 @@ This doc is the practical tracking layer for the current alpha-to-beta runway. I
 - `0.33.2`: The repro sandbox now includes deterministic dungeon room previews and a documented smoke workflow for rendering, movement, VFX, menu chrome, and boss-approach pacing checks without booting normal login or live gameplay
 - `0.33.3`: Dungeon room summaries now carry difficulty, run-level, and difficulty-pacing metadata so Heroic and Mythic routes read as distinct pressure states, while remote-player jump visuals use the same jump animation lifecycle and between-packet progress smoothing as local jumps
 - `0.33.4`: Dungeon room summaries now expose room-identity metadata and route surfaces use clearer names like Treasure Cache, Restorative Shrine, Ambush Chamber, Boss Approach, and Boss Lair without changing rewards or room completion rules
+- `0.34.0`: The Social window now lets players set Available, Looking for Party, In Run, or Busy status and shows that intent in the online roster without changing party invites, party membership controls, chat, trading, or dungeon entry behavior
 
 ### What `0.22` has clearly accomplished already
 
@@ -281,14 +282,15 @@ Historical closeout note:
 Current status:
 
 - `0.22` is closed for planned implementation work
-- `0.33.4` is now the active version line
+- `0.34.0` is now the active version line
 - `0.31` is closed for planned client-UX consistency work
 - `0.32` has shipped its audio foundation, audio detail control, authored-asset readiness, UI scale control, and keybind clarity setting
 - `0.33.0` shipped the first mesh catalog expansion slice
 - `0.33.1` shipped the first dungeon satisfaction slice by making boss approach beats explicit across route surfaces
 - `0.33.2` shipped the repro/sandbox QA tooling slice
 - `0.33.3` shipped the dungeon difficulty pacing follow-up and fixed remote-player jump presentation
-- `0.33.4` shipped the dungeon room identity follow-up; the next implementation line should deepen social foundations rather than reopen `0.31`, `0.32`, or the current dungeon satisfaction pass
+- `0.33.4` shipped the dungeon room identity follow-up
+- `0.34.0` shipped the social status foundation; the next implementation line should harden multiplayer smoothness rather than reopen `0.31`, `0.32`, or the current dungeon satisfaction pass
 
 ### Historical `0.22` implementation checklist
 
@@ -371,13 +373,13 @@ Why this order:
 
 ### Exact next slice to build
 
-Build the `0.34.0` social depth foundation slice.
+Build the `0.35.0` multiplayer smoothness hardening slice.
 
 Scope:
 
-- deepen social foundations beyond party reward-sharing, chat, and the trading house
-- keep existing party invite, party reward-sharing, and chat behavior stable unless explicitly changed and covered
-- add a player-facing entry point that explains the new social state instead of hiding it behind commands
+- make nearby remote-player movement and action reads more stable without weakening server authority
+- keep existing local movement, party, chat, trading, and dungeon-entry behavior stable unless deliberately changed and covered
+- target visible multiplayer presentation issues that can be covered with focused regression tests instead of broad rewrites
 - update player-facing patch notes and regression coverage with each shipped slice
 
 Why this is the best next slice:
@@ -390,25 +392,26 @@ Why this is the best next slice:
 - `0.33.2` added faster deterministic manual QA
 - `0.33.3` made Heroic and Mythic route pressure more explicit, so deeper dungeon room-identity work can continue with clearer endgame context
 - `0.33.4` gave rooms stable identity names, so the dungeon satisfaction pass can pause while the next broad alpha gap moves to social depth
+- `0.34.0` gave players lightweight social intent in the roster, so the next broad alpha risk moves back to multiplayer smoothness
 
 Exact files to start in:
 
 - `server/internal/game/world.go`
-- `server/internal/database/`
 - `server/main.go`
-- `src/ui/SocialUI.js`
-- `src/ui/UIManager.js`
+- `src/core/GameEngine.js`
+- `src/entities/Player.js`
+- multiplayer presentation tests under `tests/`
 
 Target regression surfaces for this slice:
 
-- social state and persistence tests
-- party/chat/trading-adjacent UI tests for any new entry point
+- remote-player movement interpolation and action-state presentation tests
+- local movement and camera authority regressions
 - `tests/VersionPresentation.test.js`
 
 Definition of done for the next slice:
 
-- the next social feature has a clear server data path and player-facing entry point
-- existing party invites, party membership, chat, and trading-house flows remain stable unless deliberately changed and covered
+- nearby remote actors feel more stable under normal latency without client-side authority drift
+- local movement, party invites, party membership, chat, trading-house flows, and dungeon entry remain stable unless deliberately changed and covered
 - patch notes and the active status line move forward with the implementation
 
 ## Roadmap from `0.23` to `alpha 1.0`

@@ -48,6 +48,10 @@ export class UIBindings {
         ui.social.onSocialOpen = () => {
             engine.network.send('social', {});
         };
+        ui.social.onSocialStatusChange = (status) => {
+            engine.network.send('social_status', { status });
+            engine.network.send('social', {});
+        };
         ui.trading.onTradingSearch = (query) => {
             engine.network.send('trading_search', { query });
         };

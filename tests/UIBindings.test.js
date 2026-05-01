@@ -71,6 +71,10 @@ describe('UIBindings', () => {
         engine.uiManager.social.onPartyInvite('alice');
         expect(engine.sendPartyMessage).toHaveBeenCalledWith('party_invite', { targetName: 'alice' });
 
+        engine.uiManager.social.onSocialStatusChange('looking_party');
+        expect(engine.network.send).toHaveBeenCalledWith('social_status', { status: 'looking_party' });
+        expect(engine.network.send).toHaveBeenCalledWith('social', {});
+
         engine.uiManager.onMapToggle();
         expect(engine.worldMap.toggle).toHaveBeenCalled();
     });

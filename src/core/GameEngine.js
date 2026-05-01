@@ -1367,6 +1367,8 @@ export class GameEngine {
             this.uiManager.updateParty(msg.payload);
         } else if (msg.type === 'party_request') {
             this.uiManager.showPartyRequest(msg.payload.targetName);
+        } else if (msg.type === 'social_status') {
+            this.uiManager.social?.setSocialStatus?.(msg.payload?.status, { notify: false });
         } else if (msg.type === 'time') {
             const timeData = msg.payload;
             this.uiManager.updateServerTime(timeData.time);

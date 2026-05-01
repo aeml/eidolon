@@ -212,6 +212,7 @@ const (
 	MsgPartyPromote    = "party_promote"
 	MsgPartyLeave      = "party_leave"
 	MsgPartyUpdate     = "party_update"
+	MsgSocialStatus    = "social_status"
 	MsgBuyback         = "buyback"
 	MsgBuybackList     = "buyback_list"
 	MsgUnequip         = "unequip"
@@ -266,9 +267,14 @@ type InventoryMovePayload struct {
 }
 
 type SocialEntry struct {
-	Name  string `json:"name"`
-	Class string `json:"class"`
-	Level int    `json:"level"`
+	Name         string `json:"name"`
+	Class        string `json:"class"`
+	Level        int    `json:"level"`
+	SocialStatus string `json:"socialStatus"`
+}
+
+type SocialStatusPayload struct {
+	Status string `json:"status"`
 }
 
 type AuthPayload struct {
@@ -2849,9 +2855,10 @@ func (c *Client) handleMessage(msg Message) {
 				entity := world.GetEntity(client.playerID)
 				if entity != nil {
 					playerList = append(playerList, SocialEntry{
-						Name:  entity.Name,
-						Class: entity.SubType,
-						Level: entity.Level,
+						Name:         entity.Name,
+						Class:        entity.SubType,
+						Level:        entity.Level,
+						SocialStatus: game.NormalizeSocialStatus(entity.SocialStatus),
 					})
 				}
 			}
@@ -2865,6 +2872,21 @@ func (c *Client) handleMessage(msg Message) {
 		}
 		b, _ := json.Marshal(msg)
 		c.sendSafe(b)
+
+	case MsgSocialStatus:
+		if c.playerID == "" {
+			return
+		}
+		var payload SocialStatusPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		status, ok := world.SetPlayerSocialStatus(c.playerID, payload.Status)
+		if !ok {
+			return
+		}
+		ackPayload, _ := json.Marshal(SocialStatusPayload{Status: status})
+		c.sendSafe(createMessage(MsgSocialStatus, ackPayload))
 	case MsgRespawn:
 		if c.playerID == "" {
 			return
