@@ -243,6 +243,11 @@ window.addEventListener('DOMContentLoaded', () => {
                 const data = msg.payload;
                 authStatus.textContent = data.message || "Logged in!";
                 authStatus.style.color = '#4CAF50';
+
+                // Persist resume token so we can reconnect without re-authenticating.
+                if (data.resumeToken) {
+                    try { localStorage.setItem('eidolon_resume_token', data.resumeToken); } catch (_) {}
+                }
                 
                 // Hide login panel
                 if (loginPanel) loginPanel.style.display = 'none';
@@ -353,6 +358,34 @@ window.addEventListener('DOMContentLoaded', () => {
             }
             // Pass username and socket to GameEngine
             window.game = new GameEngine(type, isMobile, isMultiplayer, serverAddress, username, authSocket);
+
+            // Wire session-resume / reconnect callbacks into the network layer.
+            if (window.game.network) {
+                const addr = serverAddressInput ? serverAddressInput.value : serverAddress;
+                window.game.network.reconnectUrl = addr;
+                window.game.network.getResumeToken = () => {
+                    try { return localStorage.getItem('eidolon_resume_token'); } catch (_) { return null; }
+                };
+                window.game.network.onResumeSuccess = (newToken) => {
+                    try { localStorage.setItem('eidolon_resume_token', newToken); } catch (_) {}
+                };
+                window.game.network.onConnectionStateChange = (state) => {
+                    window.game?.uiManager?.setConnectionState(state);
+                };
+                window.game.network.onReconnectFailed = () => {
+                    try { localStorage.removeItem('eidolon_resume_token'); } catch (_) {}
+                    isAuthenticated = false;
+                    if (loginPanel) loginPanel.style.display = '';
+                    if (authStatus) {
+                        authStatus.textContent = 'Disconnected. Please log in again.';
+                        authStatus.style.color = '#ff4444';
+                    }
+                    if (window.game && typeof window.game.destroy === 'function') {
+                        window.game.destroy();
+                    }
+                    window.game = null;
+                };
+            }
             if (window.game?.uiManager) {
                 const existingFullscreenChange = window.game.uiManager.onFullscreenChange;
                 const existingEscMenuChange = window.game.uiManager.onEscMenuChange;

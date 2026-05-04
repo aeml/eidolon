@@ -93,6 +93,20 @@ export class UIBindings {
             engine.promotePartyMember(targetId);
         };
 
+        // Friends callbacks (0.38)
+        ui.social.onFriendRequest = (username) => {
+            engine.network.send('friend_request', { username });
+        };
+        ui.social.onFriendAccept = (username) => {
+            engine.network.send('friend_accept', { username });
+        };
+        ui.social.onFriendDecline = (username) => {
+            engine.network.send('friend_decline', { username });
+        };
+        ui.social.onFriendRemove = (username) => {
+            engine.network.send('friend_remove', { username });
+        };
+
         ui.skillTree.onSelectBranch = (branch) => {
             engine.network.send('selectBranch', { branch });
         };

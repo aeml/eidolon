@@ -1,6 +1,6 @@
 # Eidolon Architecture
 
-Last refreshed: April 2026
+Last refreshed: May 3, 2026
 
 ## Current architecture
 

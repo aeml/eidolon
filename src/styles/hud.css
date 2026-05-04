@@ -46,6 +46,45 @@
     font-weight: bold;
 }
 
+/* ---- Connection State Indicator ---- */
+#conn-indicator {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font-primary);
+    letter-spacing: 0.5px;
+    pointer-events: none;
+    z-index: var(--z-game-timer);
+    display: none;
+}
+
+#conn-indicator.conn-indicator--reconnecting {
+    display: block;
+    color: #fff;
+    background: rgba(180, 100, 0, 0.92);
+    border: 1px solid #e6a23c;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    animation: conn-pulse 1.4s ease-in-out infinite;
+}
+
+#conn-indicator.conn-indicator--lost {
+    display: block;
+    color: #fff;
+    background: rgba(140, 0, 0, 0.92);
+    border: 1px solid #ff4444;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes conn-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.6; }
+}
+
 /* ---- Game Timer ---- */
 #game-timer {
     position: fixed;

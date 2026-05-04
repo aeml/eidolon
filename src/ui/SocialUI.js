@@ -20,6 +20,11 @@ export class SocialUI {
         this.currentInviter = null;
         this.currentSocialStatus = 'available';
 
+        // --- Friends state (0.38) ---
+        this.friendEntries = [];   // [{ username, online, socialStatus }]
+        this.pendingUsernames = []; // incoming pending requests
+        this._activeTab = 'online';
+
         // --- Callbacks (set by GameEngine) ---
         this.onSocialOpen = null;
         this.onSocialStatusChange = null;
@@ -28,6 +33,12 @@ export class SocialUI {
         this.onPartyResponse = null;
         this.onPartyKick = null;
         this.onPartyPromote = null;
+
+        // --- Friends callbacks (set by UIBindings / GameEngine, 0.38) ---
+        this.onFriendRequest = null;   // (username) → send request
+        this.onFriendAccept  = null;   // (username) → accept pending
+        this.onFriendDecline = null;   // (username) → decline pending
+        this.onFriendRemove  = null;   // (username) → remove friend
 
         // --- Create the social window DOM element ---
         this._createSocialWindow();
@@ -215,6 +226,54 @@ export class SocialUI {
     }
 
     // ================================================================
+    // FRIENDS (0.38)
+    // ================================================================
+
+    /**
+     * Called when a `friend_list` message is received from the server.
+     * @param {{ friends: Array<{username,online,socialStatus}>, pending: string[] }} payload
+     */
+    updateFriendList(payload) {
+        this.friendEntries = Array.isArray(payload.friends) ? payload.friends : [];
+        this.pendingUsernames = Array.isArray(payload.pending) ? payload.pending : [];
+        if (this._activeTab === 'friends') {
+            this._renderFriendsPanel();
+        }
+        this._updateFriendsBadge();
+    }
+
+    /**
+     * Called when a `friend_presence` message is received.
+     * Updates the relevant entry and refreshes the panel if visible.
+     * @param {{ username: string, online: boolean }} data
+     */
+    onFriendPresence(data) {
+        const entry = this.friendEntries.find(e => e.username === data.username);
+        if (entry) {
+            entry.online = data.online;
+            if (!data.online) entry.socialStatus = '';
+        }
+        if (this._activeTab === 'friends') {
+            this._renderFriendsPanel();
+        }
+    }
+
+    /**
+     * Called when a `friend_request` notification is pushed by the server
+     * (someone sent *this* player a request).
+     * @param {{ username: string }} data
+     */
+    onIncomingFriendRequest(data) {
+        if (!this.pendingUsernames.includes(data.username)) {
+            this.pendingUsernames.push(data.username);
+        }
+        if (this._activeTab === 'friends') {
+            this._renderFriendsPanel();
+        }
+        this._updateFriendsBadge();
+    }
+
+    // ================================================================
     // PARTY
     // ================================================================
 
@@ -399,14 +458,40 @@ export class SocialUI {
                     <option value="busy">Busy</option>
                 </select>
             </div>
-            <div class="social-window__columns">
-                <span>Name</span>
-                <span>Class</span>
-                <span>Level</span>
-                <span>Status</span>
-                <span>Action</span>
+            <div class="social-window__tabs" role="tablist">
+                <button class="social-window__tab social-window__tab--active"
+                        id="tab-btn-online" role="tab"
+                        aria-selected="true" aria-controls="tab-panel-online"
+                        type="button">Online</button>
+                <button class="social-window__tab"
+                        id="tab-btn-friends" role="tab"
+                        aria-selected="false" aria-controls="tab-panel-friends"
+                        type="button">Friends <span id="friends-badge" class="social-window__friends-badge" style="display:none"></span></button>
             </div>
-            <div id="social-list" class="social-window__list">
+            <div id="tab-panel-online" role="tabpanel" aria-labelledby="tab-btn-online">
+                <div class="social-window__columns">
+                    <span>Name</span>
+                    <span>Class</span>
+                    <span>Level</span>
+                    <span>Status</span>
+                    <span>Action</span>
+                </div>
+                <div id="social-list" class="social-window__list">
+                </div>
+            </div>
+            <div id="tab-panel-friends" role="tabpanel" aria-labelledby="tab-btn-friends" style="display:none">
+                <div class="friends-add-row">
+                    <input type="text" id="friend-add-input"
+                           class="friends-add-input" placeholder="Username" maxlength="32"
+                           aria-label="Friend username to add" />
+                    <button id="btn-add-friend" class="friends-add-btn" type="button">Add Friend</button>
+                </div>
+                <div id="friends-pending-section" class="friends-pending-section" style="display:none">
+                    <div class="friends-section-header">Pending Requests</div>
+                    <div id="friends-pending-list" class="friends-pending-list"></div>
+                </div>
+                <div class="friends-section-header">Friends</div>
+                <div id="friends-list" class="friends-list"></div>
             </div>
         `;
 
@@ -416,7 +501,178 @@ export class SocialUI {
 
         div.querySelector('#close-social')?.addEventListener('click', () => this.toggleSocial(false));
 
+        // Tab switching
+        div.querySelector('#tab-btn-online')?.addEventListener('click', () => this._switchTab('online'));
+        div.querySelector('#tab-btn-friends')?.addEventListener('click', () => {
+            this._switchTab('friends');
+            this._renderFriendsPanel();
+        });
+
+        // Add friend button
+        const addBtn = div.querySelector('#btn-add-friend');
+        const addInput = div.querySelector('#friend-add-input');
+        if (addBtn && addInput) {
+            const submit = () => {
+                const name = addInput.value.trim();
+                if (name && this.onFriendRequest) {
+                    this.onFriendRequest(name);
+                    addInput.value = '';
+                }
+            };
+            addBtn.addEventListener('click', submit);
+            addInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') submit();
+            });
+        }
+
         this.socialWindow = div;
         this.socialList = div.querySelector('#social-list');
+        this._friendsPanel = div.querySelector('#tab-panel-friends');
+        this._friendsList = div.querySelector('#friends-list');
+        this._friendsPendingList = div.querySelector('#friends-pending-list');
+        this._friendsPendingSection = div.querySelector('#friends-pending-section');
+        this._friendsBadge = div.querySelector('#friends-badge');
+    }
+
+    /** Switch between 'online' and 'friends' tabs. */
+    _switchTab(tab) {
+        this._activeTab = tab;
+        const onlinePanel = this.socialWindow.querySelector('#tab-panel-online');
+        const friendsPanel = this.socialWindow.querySelector('#tab-panel-friends');
+        const onlineBtn = this.socialWindow.querySelector('#tab-btn-online');
+        const friendsBtn = this.socialWindow.querySelector('#tab-btn-friends');
+
+        if (tab === 'online') {
+            if (onlinePanel) onlinePanel.style.display = '';
+            if (friendsPanel) friendsPanel.style.display = 'none';
+            onlineBtn?.classList.add('social-window__tab--active');
+            onlineBtn?.setAttribute('aria-selected', 'true');
+            friendsBtn?.classList.remove('social-window__tab--active');
+            friendsBtn?.setAttribute('aria-selected', 'false');
+        } else {
+            if (onlinePanel) onlinePanel.style.display = 'none';
+            if (friendsPanel) friendsPanel.style.display = '';
+            friendsBtn?.classList.add('social-window__tab--active');
+            friendsBtn?.setAttribute('aria-selected', 'true');
+            onlineBtn?.classList.remove('social-window__tab--active');
+            onlineBtn?.setAttribute('aria-selected', 'false');
+        }
+    }
+
+    /** Rebuild the friends tab content from current state. */
+    _renderFriendsPanel() {
+        if (!this._friendsList) return;
+
+        // Pending requests section
+        if (this._friendsPendingSection && this._friendsPendingList) {
+            if (this.pendingUsernames.length > 0) {
+                this._friendsPendingSection.style.display = '';
+                this._friendsPendingList.replaceChildren();
+                this.pendingUsernames.forEach(username => {
+                    const row = document.createElement('div');
+                    row.className = 'friends-row friends-row--pending';
+
+                    const nameEl = document.createElement('span');
+                    nameEl.className = 'friends-name';
+                    nameEl.textContent = username;
+                    row.appendChild(nameEl);
+
+                    const actions = document.createElement('div');
+                    actions.className = 'friends-actions';
+
+                    const acceptBtn = document.createElement('button');
+                    acceptBtn.type = 'button';
+                    acceptBtn.className = 'friends-btn friends-btn--accept';
+                    acceptBtn.textContent = 'Accept';
+                    acceptBtn.addEventListener('click', () => {
+                        this.onFriendAccept?.(username);
+                    });
+
+                    const declineBtn = document.createElement('button');
+                    declineBtn.type = 'button';
+                    declineBtn.className = 'friends-btn friends-btn--decline';
+                    declineBtn.textContent = 'Decline';
+                    declineBtn.addEventListener('click', () => {
+                        this.onFriendDecline?.(username);
+                    });
+
+                    actions.appendChild(acceptBtn);
+                    actions.appendChild(declineBtn);
+                    row.appendChild(actions);
+                    this._friendsPendingList.appendChild(row);
+                });
+            } else {
+                this._friendsPendingSection.style.display = 'none';
+            }
+        }
+
+        // Friends list
+        this._friendsList.replaceChildren();
+
+        if (this.friendEntries.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'friends-empty';
+            empty.textContent = 'No friends yet. Add someone!';
+            this._friendsList.appendChild(empty);
+            return;
+        }
+
+        // Sort: online first, then alphabetical
+        const sorted = [...this.friendEntries].sort((a, b) => {
+            if (a.online !== b.online) return a.online ? -1 : 1;
+            return a.username.localeCompare(b.username);
+        });
+
+        sorted.forEach(entry => {
+            const row = document.createElement('div');
+            row.className = `friends-row${entry.online ? ' friends-row--online' : ' friends-row--offline'}`;
+
+            const dot = document.createElement('span');
+            dot.className = `friends-dot friends-dot--${entry.online ? 'online' : 'offline'}`;
+            dot.setAttribute('aria-hidden', 'true');
+            row.appendChild(dot);
+
+            const nameEl = document.createElement('span');
+            nameEl.className = 'friends-name';
+            nameEl.textContent = entry.username;
+            row.appendChild(nameEl);
+
+            if (entry.online && entry.socialStatus) {
+                const statusEl = document.createElement('span');
+                statusEl.className = `friends-status friends-status--${this.normalizeSocialStatus(entry.socialStatus)}`;
+                statusEl.textContent = this.getSocialStatusLabel(entry.socialStatus);
+                row.appendChild(statusEl);
+            } else if (!entry.online) {
+                const offlineEl = document.createElement('span');
+                offlineEl.className = 'friends-status friends-status--offline';
+                offlineEl.textContent = 'Offline';
+                row.appendChild(offlineEl);
+            }
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'friends-btn friends-btn--remove';
+            removeBtn.title = `Remove ${entry.username}`;
+            removeBtn.textContent = '✕';
+            removeBtn.setAttribute('aria-label', `Remove ${entry.username} from friends`);
+            removeBtn.addEventListener('click', () => {
+                this.onFriendRemove?.(entry.username);
+            });
+            row.appendChild(removeBtn);
+
+            this._friendsList.appendChild(row);
+        });
+    }
+
+    /** Update the pending-requests badge on the Friends tab button. */
+    _updateFriendsBadge() {
+        if (!this._friendsBadge) return;
+        const count = this.pendingUsernames.length;
+        if (count > 0) {
+            this._friendsBadge.textContent = String(count);
+            this._friendsBadge.style.display = '';
+        } else {
+            this._friendsBadge.style.display = 'none';
+        }
     }
 }

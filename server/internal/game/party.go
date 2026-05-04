@@ -191,6 +191,70 @@ func (w *World) PromotePartyMember(leaderID, targetID string) (*Party, error) {
 	return party, nil
 }
 
+// RejoinParty adds playerID to an existing party identified by partyID.
+// Unlike JoinParty it does not check whether the player is already in a
+// party — the caller is responsible for ensuring the entity was freshly
+// created with an empty PartyID.  Returns an error if the party no longer
+// exists or is already full.
+func (w *World) RejoinParty(playerID, partyID string) error {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	party, exists := w.Parties[partyID]
+	if !exists {
+		return fmt.Errorf("party not found")
+	}
+
+	player, exists := w.Entities[playerID]
+	if !exists {
+		return fmt.Errorf("player not found")
+	}
+
+	party.Mu.Lock()
+	defer party.Mu.Unlock()
+
+	if len(party.Members) >= party.MaxSize {
+		return fmt.Errorf("party is full")
+	}
+
+	party.Members = append(party.Members, playerID)
+	player.PartyID = partyID
+	return nil
+}
+
+// RemoveExpiredMemberFromParty removes playerID from partyID after the
+// entity has already been deleted from w.Entities (e.g. resume-window
+// expiry).  It is safe to call even when the party no longer exists.
+func (w *World) RemoveExpiredMemberFromParty(playerID, partyID string) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	party, exists := w.Parties[partyID]
+	if !exists {
+		return
+	}
+
+	party.Mu.Lock()
+	defer party.Mu.Unlock()
+
+	newMembers := make([]string, 0, len(party.Members))
+	for _, mid := range party.Members {
+		if mid != playerID {
+			newMembers = append(newMembers, mid)
+		}
+	}
+	party.Members = newMembers
+
+	if len(party.Members) == 0 {
+		delete(w.Parties, partyID)
+		return
+	}
+
+	if party.LeaderID == playerID {
+		party.LeaderID = party.Members[0]
+	}
+}
+
 func (w *World) GetParty(partyID string) *Party {
 	w.Mu.RLock()
 	defer w.Mu.RUnlock()
@@ -203,4 +267,25 @@ func (p *Party) GetSnapshot() (string, string, []string) {
 	members := make([]string, len(p.Members))
 	copy(members, p.Members)
 	return p.ID, p.LeaderID, members
+}
+
+// CanReceivePartyInvite reports whether the player with the given ID is
+// eligible to receive a party invite.  Returns (true, "") when the invite
+// may proceed.  Returns (false, reason) when it should be blocked:
+//   - "not_found" — player does not exist in the world
+//   - "busy"      — player's social status is "busy" (0.37.4)
+func (w *World) CanReceivePartyInvite(playerID string) (bool, string) {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+	player, ok := w.Entities[playerID]
+	if !ok || player.Type != TypePlayer {
+		return false, "not_found"
+	}
+	player.Mu.RLock()
+	status := player.SocialStatus
+	player.Mu.RUnlock()
+	if NormalizeSocialStatus(status) == "busy" {
+		return false, "busy"
+	}
+	return true, ""
 }

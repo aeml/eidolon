@@ -40,6 +40,8 @@
     <div id="ui-layer">
 
         <div id="game-timer">00:00</div>
+        <!-- Connection state indicator: shown only during reconnect / lost -->
+        <div id="conn-indicator" aria-live="polite"></div>
         <!-- Mobile UI Overlay -->
         <div id="mobile-ui">
             <div id="joystick-zone">
@@ -272,7 +274,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.35.0</span>
+                <span class="start-version-row__label">Alpha 0.38.4</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -574,6 +576,124 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.38.4">
+                    <h3 class="patch-note-entry__title">Patch 0.38.4 (Friends list and presence — test coverage)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>DB integration tests:</strong> 17 Go tests covering all six friendship CRUD methods; run against a live Mongo instance when <code>MONGO_URI</code> is set, skip cleanly otherwise.</li>
+                        <li><strong>Server helper tests:</strong> Pure unit tests for <code>usernameToPlayerID</code>, <code>playerIDToUsername</code>, and <code>buildFriendListPayload</code>; DB-gated handler tests for all five <code>MsgFriend*</code> message cases.</li>
+                        <li><strong>SocialUI friends tests:</strong> 32 JS tests covering friend list rendering, presence updates, incoming request display, tab switching, badge counts, and all four friend callbacks.</li>
+                        <li><strong>UIManager toast tests:</strong> 16 JS tests covering online-only firing, disabled toggle, per-user rate limiting, 30-second reset, ARIA attributes, localStorage persistence, and <code>_renderFriendToast</code> DOM output.</li>
+                        <li><strong>Regression coverage:</strong> Added Go and JS test suites for all 0.38 server, UI, and toast surfaces and the 0.38.4 release state.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.38.3">
+                    <h3 class="patch-note-entry__title">Patch 0.38.3 (Friend-online toast)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>A toast appears when a friend comes online:</strong> A brief notification slides in at the bottom of the screen showing "<em>username</em> is now online." so you do not have to poll the Social window.</li>
+                        <li><strong>Rate-limited per user:</strong> The same friend triggers at most one toast every 30 seconds, so rapid reconnects do not spam the screen.</li>
+                        <li><strong>Opt-out persists across sessions:</strong> Settings exposes a toggle stored as <code>eidolon.friendOnlineToast</code> in localStorage; defaults to enabled.</li>
+                        <li><strong>Accessible markup:</strong> The toast element carries <code>role="status"</code> and <code>aria-live="polite"</code> so screen readers announce it without interrupting active interaction.</li>
+                        <li><strong>Regression coverage:</strong> Added UIManager toast coverage for rate limiting, toggle persistence, DOM output, and the 0.38.3 release state.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.38.2">
+                    <h3 class="patch-note-entry__title">Patch 0.38.2 (Friends sub-panel in Social window)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Social window gains a Friends tab:</strong> The header now shows Online and Friends tabs; the Friends tab lists accepted friends with live online/offline status.</li>
+                        <li><strong>Friend actions are in-panel:</strong> Each friend entry has Remove and, for online friends, a presence badge; pending incoming requests appear with Accept and Decline buttons.</li>
+                        <li><strong>Add Friend input:</strong> A text field and button let you send a friend request by username from within the Friends tab.</li>
+                        <li><strong>Badge on the tab:</strong> An unread count badge on the Friends tab lights up when a new incoming request arrives.</li>
+                        <li><strong>Regression coverage:</strong> Added SocialUI friends panel coverage for rendering, presence, request handling, and the 0.38.2 release state.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.38.1">
+                    <h3 class="patch-note-entry__title">Patch 0.38.1 (Server friend handlers and presence)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Five friend message handlers on the server:</strong> The server now handles <code>friend_request</code>, <code>friend_accept</code>, <code>friend_decline</code>, <code>friend_remove</code>, and <code>friend_list</code> messages.</li>
+                        <li><strong>Push-based online presence:</strong> When a player joins or disconnects, the server pushes a <code>friend_presence</code> message to every accepted friend who is currently online.</li>
+                        <li><strong>Friend list on connect:</strong> The client receives a fresh friend list payload on the first state message so the Friends panel is populated without a manual refresh.</li>
+                        <li><strong>Regression coverage:</strong> Added server handler and presence helper coverage and the 0.38.1 release state.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.38.0">
+                    <h3 class="patch-note-entry__title">Patch 0.38.0 (Friendships database schema)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>A persistent friendship table is live:</strong> The <code>friendships</code> MongoDB collection stores directed relationships with <code>requester_id</code>, <code>addressee_id</code>, and <code>status</code> fields.</li>
+                        <li><strong>Mutual-accept model:</strong> A request must be accepted before either side sees the other in their friend list; duplicate requests in either direction are blocked at the DB layer.</li>
+                        <li><strong>Six CRUD methods:</strong> <code>SendFriendRequest</code>, <code>AcceptFriendRequest</code>, <code>DeclineFriendRequest</code>, <code>RemoveFriend</code>, <code>GetFriends</code>, and <code>GetPendingRequests</code> cover the full friendship lifecycle.</li>
+                        <li><strong>Regression coverage:</strong> Added Go DB schema, indexes, CRUD methods, and the 0.38.0 release state.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.37.4">
+                    <h3 class="patch-note-entry__title">Patch 0.37.4 (Social status enforcement and auto-transitions)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Busy blocks party invites:</strong> The server now rejects party invitations sent to a player whose status is Busy, and the inviter receives a clear explanation.</li>
+                        <li><strong>Dungeon entry automatically sets In Run:</strong> When your party enters a dungeon, the server sets every member's status to In Run and broadcasts the updated roster — no manual update required.</li>
+                        <li><strong>Respawn and Recall automatically restore Available:</strong> Returning to the overworld via respawn or recall reverts your status from In Run to Available and triggers a fresh roster broadcast.</li>
+                        <li><strong>Busy is respected throughout:</strong> If you explicitly chose Busy before entering a dungeon, the server will not override it — on entry or on return.</li>
+                        <li><strong>Regression coverage:</strong> Added server and client coverage for busy invite blocking, automatic in-run transitions, available revert logic, and the 0.37.4 release state.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.37.3">
+                    <h3 class="patch-note-entry__title">Patch 0.37.3 (Proactive social-status broadcast)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Social status changes are now visible without reopening the window:</strong> When any player changes their status, a fresh roster is pushed to every open Social window within the same server tick.</li>
+                        <li><strong>Previously the Social window only refreshed on open:</strong> Stale statuses no longer require manually closing and reopening the panel to see updates.</li>
+                        <li><strong>Regression coverage:</strong> Added server coverage for proactive Social list broadcast and the 0.37.3 release state.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.37.2">
+                    <h3 class="patch-note-entry__title">Patch 0.37.2 (Party-member highlight)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Party members are visually distinct in the world:</strong> A teal ring now appears around the character model of every player in your party — no need to open the Party panel to recognise your group.</li>
+                        <li><strong>The ring updates automatically:</strong> Joining a party, leaving, or another member disconnecting refreshes the ring for all party members within the same state tick.</li>
+                        <li><strong>Existing party and combat flows are unchanged:</strong> The ring is a visual overlay; no combat, reward, or party management behavior was modified.</li>
+                        <li><strong>Regression coverage:</strong> Added client coverage for party ring lifecycle, mesh replacement, and the 0.37.2 release state.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.37.1">
+                    <h3 class="patch-note-entry__title">Patch 0.37.1 (Party persistence across disconnects)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Party membership now survives a disconnect:</strong> Your party ID is stored in the database and rejoined automatically on login if the party is still active when you return.</li>
+                        <li><strong>Expired members are cleaned up honestly:</strong> If your resume window closes before you reconnect, you are removed from the party at that point rather than silently holding a dead slot.</li>
+                        <li><strong>Regression coverage:</strong> Added Go unit tests for party rejoin, expired-member cleanup, and the 0.37.1 release state.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.37.0">
+                    <h3 class="patch-note-entry__title">Patch 0.37.0 (Party and social-status proto fields)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Party ID and social status now ride the binary state stream:</strong> <code>party_id</code> and <code>social_status</code> are added as first-class fields in <code>state.proto</code>; both the Go server and JS client are regenerated from the updated schema.</li>
+                        <li><strong>State updates are leaner and more reliable:</strong> Party membership and social presence are now delta-compressed alongside position, health, and all other entity fields instead of riding a separate JSON path.</li>
+                        <li><strong>Regression coverage:</strong> Added 11 Go tests for proto encoding, snapshot diffing, and the 0.37.0 release state.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.36.3">
+                    <h3 class="patch-note-entry__title">Patch 0.36.3 (Connection-state HUD indicator)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>A connection banner now appears when the game is reconnecting:</strong> A pill indicator at the top-center of the screen shows "Reconnecting…" (amber, pulsing) or "Connection lost" (red) so you always know the connection state without guessing.</li>
+                        <li><strong>The banner disappears automatically on successful resume:</strong> Once the session resumes, the indicator hides itself — normal play has no persistent overlay.</li>
+                        <li><strong>NetworkManager fires connection-state change events:</strong> <code>onConnectionStateChange</code> is called with <code>'reconnecting'</code>, <code>'connected'</code>, or <code>'lost'</code> at each transition and is wired to <code>UIManager.setConnectionState()</code>.</li>
+                        <li><strong>Regression coverage:</strong> Added UIManager <code>setConnectionState</code> tests covering all three states and the missing-element guard. Added NetworkManager tests covering each state-change path.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.36.2">
+                    <h3 class="patch-note-entry__title">Patch 0.36.2 (Client-side reconnect loop)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Transient disconnects no longer reload the page:</strong> <code>NetworkManager</code> now retries with exponential back-off (up to 5 attempts, starting at 1 s) instead of calling <code>window.location.reload()</code>.</li>
+                        <li><strong>Session resume is replayed on reconnect:</strong> When a new WebSocket opens, the stored resume token is sent automatically; a successful server ack refreshes the token in <code>localStorage</code>.</li>
+                        <li><strong>Unrecoverable disconnects show the login screen:</strong> Once all retry attempts are exhausted or the server rejects the token, the login panel is restored and the stale token is cleared.</li>
+                        <li><strong>Regression coverage:</strong> Added 18 NetworkManager tests covering the back-off schedule, resume-token handshake, server rejection, and destroy-timer cancel paths.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.36.0">
+                    <h3 class="patch-note-entry__title">Patch 0.36.0 (Server-side session resume)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Your character stays in the world during a brief disconnect:</strong> The server now issues a cryptographic resume token at login and keeps your entity in a "disconnected" state for up to 5 minutes instead of removing it immediately.</li>
+                        <li><strong>Rejoining with a valid token restores your session in place:</strong> <code>MsgResumeSession</code> validates the token, rebinds your entity, issues a fresh token, and resends full player state — no re-login required.</li>
+                        <li><strong>Expired or double-used tokens are rejected cleanly:</strong> Tokens are single-use and expire after the resume window; a 30-second sweep goroutine removes entities whose window has closed.</li>
+                        <li><strong>Regression coverage:</strong> Added 9 Go unit tests for the world disconnect / resume lifecycle.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.35.0">
                     <h3 class="patch-note-entry__title">Patch 0.35.0 (Remote smoothing hardening)</h3>
                     <ul class="patch-note-entry__list">

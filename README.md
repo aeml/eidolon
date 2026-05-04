@@ -211,12 +211,13 @@ eidolon/
 ```
 
 ## Key documentation
-- `ROADMAP.md` — high-level product and polish roadmap
-- `IMPROVEMENT_PLAN.md` — current improvement tracks and backlog
+- `ROADMAP.md` — top-level product roadmap pointer
+- `docs/ROADMAP.md` — engineering roadmap pointer
 - `docs/ARCHITECTURE.md` — current architecture snapshot
-- `docs/ROADMAP.md` — engineering roadmap / next technical slices
-- `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md` — active status tracker for remaining `0.22` work and the roadmap from `0.23` through `alpha 1.0`
-- `docs/plans/2026-04-04-eidolon-current-state-and-next-steps-plan.md` — current implementation plan for the next wave of work
+- `docs/REVIEW.md` — current review of what is working and what is fragile
+- `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md` — active release-line tracker from `0.35.0` through `Alpha 1.0`
+- `docs/plans/2026-05-03-v1-0-implementation-plan.md` — audit-grounded v1.0 implementation plan with slice contents, files, and definition-of-done gates
+- `docs/plans/archive/` — superseded planning docs kept for historical reference
 
 ## License
 

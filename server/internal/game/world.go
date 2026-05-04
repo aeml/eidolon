@@ -1438,6 +1438,10 @@ type Entity struct {
 	PartyID      string `json:"partyId,omitempty"`
 	SocialStatus string `json:"socialStatus,omitempty"`
 
+	// Reconnect / session resume
+	Disconnected   bool      `json:"-"`
+	DisconnectedAt time.Time `json:"-"`
+
 	// Unique Effect: swift - Speed boost after skill use
 	SwiftActive  bool      `json:"swiftActive,omitempty"`
 	SwiftEndTime time.Time `json:"-"`
@@ -3211,6 +3215,39 @@ func (w *World) SetPlayerSocialStatus(playerID string, status string) (string, b
 	return player.SocialStatus, true
 }
 
+// SetPlayerSocialStatusAutomatic applies a system-driven status change with
+// context-aware preconditions (0.37.4):
+//
+//   - "in_run"   is set only when the current status is not "busy"
+//     (player explicitly requested no-disturb; respect it).
+//   - "available" is set only when the current status is "in_run"
+//     (revert what the system previously set; don't clobber a manual choice).
+//
+// Returns the resulting status and true if the update was applied, or the
+// unchanged status and false if the precondition was not met.
+func (w *World) SetPlayerSocialStatusAutomatic(playerID, newStatus string) (string, bool) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	player, ok := w.Entities[playerID]
+	if !ok || player.Type != TypePlayer {
+		return "", false
+	}
+	current := NormalizeSocialStatus(player.SocialStatus)
+	target := NormalizeSocialStatus(newStatus)
+	switch target {
+	case "in_run":
+		if current == "busy" {
+			return current, false
+		}
+	case "available":
+		if current != "in_run" {
+			return current, false
+		}
+	}
+	player.SocialStatus = target
+	return target, true
+}
+
 func (w *World) RemoveEntity(id string) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
@@ -3223,6 +3260,66 @@ func (w *World) RemoveEntity(id string) {
 			w.checkAndResetDungeonLocked(instanceID)
 		}
 	}
+}
+
+// SetEntityDisconnected marks a player entity as disconnected and keeps it in the
+// world for the session-resume window. Returns false if the entity does not exist.
+func (w *World) SetEntityDisconnected(id string, at time.Time) bool {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	e, ok := w.Entities[id]
+	if !ok {
+		return false
+	}
+	e.Disconnected = true
+	e.DisconnectedAt = at
+	e.State = "IDLE"
+	e.TargetX = e.X
+	e.TargetZ = e.Z
+	return true
+}
+
+// ClearEntityDisconnected removes the disconnected marker from an entity and returns
+// the live entity pointer so the caller can rebind a new client to it.
+// Returns (entity, true) on success, (nil, false) if the entity is not found or is
+// not currently in the disconnected state.
+func (w *World) ClearEntityDisconnected(id string) (*Entity, bool) {
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	e, ok := w.Entities[id]
+	if !ok || !e.Disconnected {
+		return nil, false
+	}
+	e.Disconnected = false
+	e.DisconnectedAt = time.Time{}
+	return e, true
+}
+
+// CollectExpiredDisconnectedPlayers returns and removes all player entities whose
+// disconnected-at time is older than window. Call this periodically to reap players
+// that did not resume within the session window.
+func (w *World) CollectExpiredDisconnectedPlayers(window time.Duration) []*Entity {
+	now := time.Now()
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+	var expired []*Entity
+	for _, e := range w.Entities {
+		if e.Type != TypePlayer || !e.Disconnected {
+			continue
+		}
+		if now.Sub(e.DisconnectedAt) > window {
+			expired = append(expired, e)
+		}
+	}
+	for _, e := range expired {
+		instanceID := e.InstanceID
+		w.Grid.Remove(e)
+		delete(w.Entities, e.ID)
+		if strings.HasPrefix(instanceID, "dungeon_") {
+			w.checkAndResetDungeonLocked(instanceID)
+		}
+	}
+	return expired
 }
 
 func (w *World) UpdateEntityPosition(id string, x, y, z, rotation float64) {

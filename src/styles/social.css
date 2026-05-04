@@ -195,3 +195,266 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
+
+/* ============================================================
+   Social Window — Tab Bar (0.38)
+   ============================================================ */
+
+.social-window__tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0;
+}
+
+.social-window__tab {
+    padding: 7px 16px;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    background: transparent;
+    color: #9ca8b7;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+    position: relative;
+    bottom: -1px;
+}
+
+.social-window__tab:hover {
+    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.social-window__tab--active {
+    color: #ffd76a;
+    background: rgba(255, 215, 0, 0.06);
+    border-color: rgba(255, 215, 0, 0.25);
+    border-bottom-color: transparent;
+}
+
+.social-window__friends-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: #e05252;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+/* ============================================================
+   Friends Panel (0.38)
+   ============================================================ */
+
+.friends-add-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    align-items: center;
+}
+
+.friends-add-input {
+    flex: 1;
+    padding: 7px 10px;
+    border: 1px solid rgba(255, 215, 0, 0.28);
+    border-radius: 8px;
+    background: rgba(8, 10, 14, 0.95);
+    color: #f4f7fb;
+    font: inherit;
+    font-size: 13px;
+}
+
+.friends-add-input::placeholder {
+    color: #5a6270;
+}
+
+.friends-add-btn {
+    padding: 7px 14px;
+    border: 1px solid rgba(84, 184, 109, 0.55);
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgba(61, 124, 74, 0.95) 0%, rgba(34, 90, 47, 0.95) 100%);
+    color: #f7fff8;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: filter 0.15s, transform 0.15s;
+    white-space: nowrap;
+}
+
+.friends-add-btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
+
+.friends-section-header {
+    color: #9ca8b7;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 8px 0 6px;
+    padding: 0 4px;
+}
+
+.friends-pending-section {
+    margin-bottom: 8px;
+}
+
+.friends-pending-list,
+.friends-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+    max-height: 280px;
+    padding-right: 2px;
+}
+
+.friends-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.friends-row:hover {
+    border-color: rgba(255, 215, 0, 0.22);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.friends-row--online {
+    border-color: rgba(120, 217, 127, 0.18);
+}
+
+.friends-dot {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.friends-dot--online  { background: #78d97f; }
+.friends-dot--offline { background: #4a5568; }
+
+.friends-name {
+    flex: 1;
+    font-weight: 600;
+    font-size: 13px;
+    color: #f4f7fb;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.friends-status {
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    color: #9ca8b7;
+}
+
+.friends-status--available     { color: #9ca8b7; }
+.friends-status--looking_party { color: #78d97f; }
+.friends-status--in_run        { color: #8fd3ff; }
+.friends-status--busy          { color: #ffb36f; }
+.friends-status--offline       { color: #4a5568; }
+
+.friends-actions {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.friends-btn {
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: filter 0.12s, transform 0.12s;
+}
+
+.friends-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.friends-btn--accept {
+    background: linear-gradient(180deg, rgba(61, 124, 74, 0.95) 0%, rgba(34, 90, 47, 0.95) 100%);
+    border-color: rgba(84, 184, 109, 0.55);
+    color: #f7fff8;
+}
+
+.friends-btn--decline {
+    background: rgba(80, 40, 40, 0.85);
+    border-color: rgba(200, 80, 80, 0.45);
+    color: #ffb3b3;
+}
+
+.friends-btn--remove {
+    background: transparent;
+    border-color: rgba(200, 80, 80, 0.35);
+    color: #c05050;
+    margin-left: auto;
+    padding: 4px 8px;
+}
+
+.friends-empty {
+    color: #5a6270;
+    font-style: italic;
+    font-size: 13px;
+    padding: 10px 4px;
+}
+
+/* ============================================================
+   Friend Online Toast (0.38.3)
+   ============================================================ */
+
+.friend-toast {
+    position: fixed;
+    bottom: 80px;
+    right: 24px;
+    z-index: 9999;
+    padding: 10px 16px;
+    border: 1px solid rgba(120, 217, 127, 0.45);
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(21, 32, 24, 0.96) 0%, rgba(11, 18, 13, 0.96) 100%);
+    color: #c6f5cc;
+    font-size: 13px;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.friend-toast--visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+

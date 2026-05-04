@@ -12,9 +12,10 @@ import (
 )
 
 type DB struct {
-	client   *mongo.Client
-	users    *mongo.Collection
-	auctions *mongo.Collection
+	client      *mongo.Client
+	users       *mongo.Collection
+	auctions    *mongo.Collection
+	friendships *mongo.Collection
 }
 
 type User struct {
@@ -67,6 +68,8 @@ type Character struct {
 	// Passive talents
 	UnlockedTalents []string       `bson:"unlocked_talents"` // legacy: treated as rank 1 per id
 	TalentRanks     map[string]int `bson:"talent_ranks,omitempty"`
+	// Social
+	PartyID string `bson:"party_id,omitempty"`
 }
 
 type Quest struct {
@@ -105,6 +108,23 @@ type Item struct {
 	Sockets     int            `bson:"sockets"`
 }
 
+// FriendshipPending and FriendshipAccepted are the two valid status values for a Friendship document.
+const (
+	FriendshipPending  = "pending"
+	FriendshipAccepted = "accepted"
+)
+
+// Friendship represents a directed friend request or established friendship between two players.
+// RequesterID is the player who sent the request; AddresseeID is the recipient.
+// To find all friendships for a player, query both requester_id and addressee_id sides.
+type Friendship struct {
+	RequesterID string    `bson:"requester_id"`
+	AddresseeID string    `bson:"addressee_id"`
+	Status      string    `bson:"status"`
+	CreatedAt   time.Time `bson:"created_at"`
+	UpdatedAt   time.Time `bson:"updated_at"`
+}
+
 func New(uri string) (*DB, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -122,6 +142,7 @@ func New(uri string) (*DB, error) {
 	db := client.Database("eidolon")
 	users := db.Collection("users")
 	auctions := db.Collection("auctions")
+	friendships := db.Collection("friendships")
 
 	// Create unique index on username
 	_, err = users.Indexes().CreateOne(ctx, mongo.IndexModel{
@@ -132,10 +153,28 @@ func New(uri string) (*DB, error) {
 		return nil, err
 	}
 
+	// Unique compound index prevents duplicate directed requests.
+	_, err = friendships.Indexes().CreateOne(ctx, mongo.IndexModel{
+		Keys:    bson.D{{Key: "requester_id", Value: 1}, {Key: "addressee_id", Value: 1}},
+		Options: options.Index().SetUnique(true),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// Index for fast reverse-lookup (incoming requests / accepted friendships for addressee side).
+	_, err = friendships.Indexes().CreateOne(ctx, mongo.IndexModel{
+		Keys: bson.D{{Key: "addressee_id", Value: 1}},
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	return &DB{
-		client:   client,
-		users:    users,
-		auctions: auctions,
+		client:      client,
+		users:       users,
+		auctions:    auctions,
+		friendships: friendships,
 	}, nil
 }
 
@@ -308,4 +347,172 @@ func (db *DB) LoadAuctions() ([]*Auction, error) {
 		return nil, err
 	}
 	return auctions, nil
+}
+
+// SendFriendRequest creates a pending friendship document from requesterID to addresseeID.
+// Returns an error if any relationship (in either direction) already exists.
+func (db *DB) SendFriendRequest(requesterID, addresseeID string) error {
+	if requesterID == addresseeID {
+		return errors.New("cannot send friend request to yourself")
+	}
+
+	existing, err := db.GetFriendship(requesterID, addresseeID)
+	if err != nil {
+		return err
+	}
+	if existing != nil {
+		return errors.New("relationship already exists")
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	now := time.Now()
+	doc := Friendship{
+		RequesterID: requesterID,
+		AddresseeID: addresseeID,
+		Status:      FriendshipPending,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	}
+	_, err = db.friendships.InsertOne(ctx, doc)
+	if mongo.IsDuplicateKeyError(err) {
+		return errors.New("relationship already exists")
+	}
+	return err
+}
+
+// AcceptFriendRequest promotes a pending request (requesterID → addresseeID) to accepted.
+func (db *DB) AcceptFriendRequest(requesterID, addresseeID string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{
+		"requester_id": requesterID,
+		"addressee_id": addresseeID,
+		"status":       FriendshipPending,
+	}
+	update := bson.M{"$set": bson.M{"status": FriendshipAccepted, "updated_at": time.Now()}}
+
+	result, err := db.friendships.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+	if result.MatchedCount == 0 {
+		return errors.New("pending friend request not found")
+	}
+	return nil
+}
+
+// DeclineFriendRequest removes a pending request (requesterID → addresseeID) without accepting it.
+func (db *DB) DeclineFriendRequest(requesterID, addresseeID string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{
+		"requester_id": requesterID,
+		"addressee_id": addresseeID,
+		"status":       FriendshipPending,
+	}
+	result, err := db.friendships.DeleteOne(ctx, filter)
+	if err != nil {
+		return err
+	}
+	if result.DeletedCount == 0 {
+		return errors.New("pending friend request not found")
+	}
+	return nil
+}
+
+// RemoveFriend deletes an accepted friendship between two players (order-independent).
+func (db *DB) RemoveFriend(playerA, playerB string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{
+		"$or": bson.A{
+			bson.M{"requester_id": playerA, "addressee_id": playerB},
+			bson.M{"requester_id": playerB, "addressee_id": playerA},
+		},
+		"status": FriendshipAccepted,
+	}
+	result, err := db.friendships.DeleteOne(ctx, filter)
+	if err != nil {
+		return err
+	}
+	if result.DeletedCount == 0 {
+		return errors.New("friendship not found")
+	}
+	return nil
+}
+
+// GetFriends returns all accepted friendships in which playerID appears on either side.
+func (db *DB) GetFriends(playerID string) ([]*Friendship, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{
+		"$or": bson.A{
+			bson.M{"requester_id": playerID},
+			bson.M{"addressee_id": playerID},
+		},
+		"status": FriendshipAccepted,
+	}
+	cursor, err := db.friendships.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var result []*Friendship
+	if err = cursor.All(ctx, &result); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+// GetPendingRequests returns all pending friendship documents where playerID is the addressee
+// (i.e. incoming requests that playerID has not yet responded to).
+func (db *DB) GetPendingRequests(addresseeID string) ([]*Friendship, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{
+		"addressee_id": addresseeID,
+		"status":       FriendshipPending,
+	}
+	cursor, err := db.friendships.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var result []*Friendship
+	if err = cursor.All(ctx, &result); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+// GetFriendship returns the friendship document between two players regardless of direction,
+// or nil if no relationship exists.
+func (db *DB) GetFriendship(playerA, playerB string) (*Friendship, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{
+		"$or": bson.A{
+			bson.M{"requester_id": playerA, "addressee_id": playerB},
+			bson.M{"requester_id": playerB, "addressee_id": playerA},
+		},
+	}
+	var f Friendship
+	err := db.friendships.FindOne(ctx, filter).Decode(&f)
+	if err == mongo.ErrNoDocuments {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &f, nil
 }

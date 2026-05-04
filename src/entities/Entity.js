@@ -76,6 +76,11 @@ export class Entity {
             this.updateNameTag();
         }
 
+        // Restore party ring if party highlight was set before mesh loaded.
+        if (this._partyHighlightActive) {
+            this._updatePartyRing();
+        }
+
         if (this.onMeshReady) {
             this.onMeshReady(mesh);
             this.onMeshReady = null; // Clear callback
@@ -86,6 +91,52 @@ export class Entity {
         this.name = name;
         if (this.mesh) {
             this.updateNameTag();
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Party member highlight (0.37.2)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Show or hide a teal ground ring that marks this entity as a party member
+     * of the local player.  Safe to call before the mesh has loaded — the ring
+     * will be attached when setMesh() fires.
+     * @param {boolean} active
+     */
+    setPartyHighlight(active) {
+        active = Boolean(active);
+        if (active === Boolean(this._partyHighlightActive)) return; // no-op
+        this._partyHighlightActive = active;
+        if (this.mesh) this._updatePartyRing();
+    }
+
+    _updatePartyRing() {
+        if (!this.mesh) return;
+        const NAME = 'PartyRing';
+        const existing = this.mesh.getObjectByName(NAME);
+        if (this._partyHighlightActive) {
+            if (!existing) {
+                const ring = new THREE.Mesh(
+                    new THREE.RingGeometry(0.55, 0.75, 32),
+                    new THREE.MeshBasicMaterial({
+                        color: 0x44ff88,
+                        transparent: true,
+                        opacity: 0.7,
+                        side: THREE.DoubleSide
+                    })
+                );
+                ring.name = NAME;
+                ring.rotation.x = -Math.PI / 2;
+                ring.position.y = 0.05; // just above ground
+                this.mesh.add(ring);
+            }
+        } else {
+            if (existing) {
+                existing.geometry?.dispose();
+                existing.material?.dispose();
+                this.mesh.remove(existing);
+            }
         }
     }
 
@@ -163,6 +214,13 @@ export class Entity {
             if (nameTag) {
                 // Only dispose material, texture is cached
                 if (nameTag.material) nameTag.material.dispose();
+            }
+
+            // Dispose PartyRing
+            const partyRing = this.mesh.getObjectByName("PartyRing");
+            if (partyRing) {
+                partyRing.geometry?.dispose();
+                partyRing.material?.dispose();
             }
 
             // Remove from parent

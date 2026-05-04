@@ -7,8 +7,18 @@ const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-
 const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.35.0 for the remote smoothing hardening slice', () => {
-        expect(indexHtml).toContain('Alpha 0.35.0');
+    test('advances the login screen to alpha 0.38.4 for the friends list and presence slices', () => {
+        expect(indexHtml).toContain('Alpha 0.38.4');
+        expect(indexHtml).toContain('Patch 0.38.4');
+        expect(indexHtml).toContain('Patch 0.38.3');
+        expect(indexHtml).toContain('Patch 0.38.2');
+        expect(indexHtml).toContain('Patch 0.38.1');
+        expect(indexHtml).toContain('Patch 0.38.0');
+        expect(indexHtml).toContain('Patch 0.37.4');
+        expect(indexHtml).toContain('Patch 0.37.3');
+        expect(indexHtml).toContain('Patch 0.36.3');
+        expect(indexHtml).toContain('Patch 0.36.2');
+        expect(indexHtml).toContain('Patch 0.36.0');
     });
 
     test('includes first-session onboarding guidance on the start screen', () => {
@@ -83,15 +93,56 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.35.0 shipped and points the roadmap back at social depth work', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.35.0`');
-        expect(alphaRoadmap).toContain('`0.35.0` is now the active version line');
-        expect(alphaRoadmap).toContain('shipped the remote interpolation frame-spike hardening slice');
-        expect(alphaRoadmap).toContain('Build the `0.36.0` social depth follow-up slice.');
-        expect(alphaRoadmap).toContain('deepen social foundations beyond parties, chat, social statuses, and the trading house');
-        expect(engineeringRoadmap).toContain('### 1. Social depth follow-up');
-        expect(engineeringRoadmap).toContain('`feat: deepen social foundations`');
+    test('marks 0.38.4 shipped and points the active line at 0.39', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.38.4`');
+        expect(alphaRoadmap).toContain('Active implementation line: `0.39`');
+        expect(alphaRoadmap).toContain('0.38` (closed)');
+        expect(alphaRoadmap).toContain('0.37` (closed)');
+        expect(alphaRoadmap).toContain('0.36` (closed)');
+        expect(alphaRoadmap).toContain('0.35` (closed)');
+        expect(alphaRoadmap).toContain('frame-spike');
+        expect(alphaRoadmap).toContain('Reconnect and session resume');
+        expect(alphaRoadmap).toContain('party persistence and proto integration');
+        expect(alphaRoadmap).toContain('Friends list and presence');
+        expect(engineeringRoadmap).toContain('2026-04-18-alpha-1-0-roadmap-and-status.md');
         expect(engineeringRoadmap).not.toContain('`feat: add keybind clarity settings`');
+    });
+
+    test('includes the 0.37.4 patch notes entry for social status enforcement', () => {
+        expect(indexHtml).toContain('Patch 0.37.4');
+        expect(indexHtml).toContain('Busy blocks party invites');
+        expect(indexHtml).toContain('Dungeon entry automatically sets In Run');
+        expect(indexHtml).toContain('Respawn and Recall automatically restore Available');
+        expect(indexHtml).toContain('Busy is respected throughout');
+        expect(indexHtml).toContain('Added server and client coverage for busy invite blocking, automatic in-run transitions, available revert logic, and the 0.37.4 release state');
+    });
+
+    test('includes the 0.37.3 patch notes entry for proactive social broadcast', () => {
+        expect(indexHtml).toContain('Patch 0.37.3');
+        expect(indexHtml).toContain('Social status changes are now visible without reopening the window');
+        expect(indexHtml).toContain('fresh roster is pushed to every open Social window within the same server tick');
+        expect(indexHtml).toContain('Added server coverage for proactive Social list broadcast and the 0.37.3 release state');
+    });
+
+    test('includes the 0.37.2 patch notes entry for party-member highlight', () => {
+        expect(indexHtml).toContain('Patch 0.37.2');
+        expect(indexHtml).toContain('Party members are visually distinct in the world');
+        expect(indexHtml).toContain('teal ring now appears around the character model');
+        expect(indexHtml).toContain('Added client coverage for party ring lifecycle, mesh replacement, and the 0.37.2 release state');
+    });
+
+    test('includes the 0.37.1 patch notes entry for party persistence', () => {
+        expect(indexHtml).toContain('Patch 0.37.1');
+        expect(indexHtml).toContain('Party membership now survives a disconnect');
+        expect(indexHtml).toContain('Added Go unit tests for party rejoin, expired-member cleanup, and the 0.37.1 release state');
+    });
+
+    test('includes the 0.37.0 patch notes entry for proto fields', () => {
+        expect(indexHtml).toContain('Patch 0.37.0');
+        expect(indexHtml).toContain('Party ID and social status now ride the binary state stream');
+        expect(indexHtml).toContain('party_id');
+        expect(indexHtml).toContain('social_status');
+        expect(indexHtml).toContain('Added 11 Go tests for proto encoding, snapshot diffing, and the 0.37.0 release state');
     });
 
     test('keeps the prior 0.34.0 patch notes entry in history', () => {

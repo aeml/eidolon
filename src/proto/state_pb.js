@@ -1,4 +1,4 @@
-/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
+﻿/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
 const $protobuf = globalThis.protobuf;
 
 if (!$protobuf) {
@@ -2467,17 +2467,19 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [spellFocusDuration] Entity spellFocusDuration
              * @property {number|null} [swiftDuration] Entity swiftDuration
              * @property {number|null} [slowFactor] Entity slowFactor
-             * @property {number|null} [slowDuration] Entity slowDuration
              * @property {number|null} [rootDuration] Entity rootDuration
              * @property {number|null} [stunDuration] Entity stunDuration
              * @property {number|null} [bleedDuration] Entity bleedDuration
              * @property {number|null} [poisonDuration] Entity poisonDuration
              * @property {number|null} [bleedDamage] Entity bleedDamage
              * @property {number|null} [poisonDamage] Entity poisonDamage
+             * @property {number|null} [slowDuration] Entity slowDuration
              * @property {number|null} [talentPoints] Entity talentPoints
              * @property {Array.<string>|null} [unlockedTalents] Entity unlockedTalents
              * @property {Object.<string,number>|null} [talentRanks] Entity talentRanks
              * @property {Object.<string,string>|null} [skillRunes] Entity skillRunes
+             * @property {string|null} [partyId] Entity partyId
+             * @property {string|null} [socialStatus] Entity socialStatus
              */
 
             /**
@@ -2830,6 +2832,70 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.isCharging = false;
 
             /**
+             * Entity guardianEmbraceActive.
+             * @member {boolean} guardianEmbraceActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.guardianEmbraceActive = false;
+
+            /**
+             * Entity blessingResolveActive.
+             * @member {boolean} blessingResolveActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.blessingResolveActive = false;
+
+            /**
+             * Entity divineInterventionActive.
+             * @member {boolean} divineInterventionActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.divineInterventionActive = false;
+
+            /**
+             * Entity arcaneShieldActive.
+             * @member {boolean} arcaneShieldActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.arcaneShieldActive = false;
+
+            /**
+             * Entity arcaneShieldHp.
+             * @member {number} arcaneShieldHp
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.arcaneShieldHp = 0;
+
+            /**
+             * Entity timeWarpActive.
+             * @member {boolean} timeWarpActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.timeWarpActive = false;
+
+            /**
+             * Entity spellFocusActive.
+             * @member {boolean} spellFocusActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.spellFocusActive = false;
+
+            /**
+             * Entity swiftActive.
+             * @member {boolean} swiftActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.swiftActive = false;
+
+            /**
              * Entity stunned.
              * @member {boolean} stunned
              * @memberof eidolon.state.Entity
@@ -2974,14 +3040,6 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.slowFactor = 0;
 
             /**
-             * Entity slowDuration.
-             * @member {number} slowDuration
-             * @memberof eidolon.state.Entity
-             * @instance
-             */
-            Entity.prototype.slowDuration = 0;
-
-            /**
              * Entity rootDuration.
              * @member {number} rootDuration
              * @memberof eidolon.state.Entity
@@ -3030,6 +3088,14 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.poisonDamage = 0;
 
             /**
+             * Entity slowDuration.
+             * @member {number} slowDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.slowDuration = 0;
+
+            /**
              * Entity talentPoints.
              * @member {number} talentPoints
              * @memberof eidolon.state.Entity
@@ -3060,6 +3126,22 @@ export const eidolon = $root.eidolon = (() => {
              * @instance
              */
             Entity.prototype.skillRunes = $util.emptyObject;
+
+            /**
+             * Entity partyId.
+             * @member {string} partyId
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.partyId = "";
+
+            /**
+             * Entity socialStatus.
+             * @member {string} socialStatus
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.socialStatus = "";
 
             /**
              * Creates a new Entity instance using the specified properties.
@@ -3172,6 +3254,27 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 40, wireType 0 =*/320).bool(message.spiritsBoosted);
                 if (message.isCharging != null && Object.hasOwnProperty.call(message, "isCharging"))
                     writer.uint32(/* id 41, wireType 0 =*/328).bool(message.isCharging);
+                if (message.stunned != null && Object.hasOwnProperty.call(message, "stunned"))
+                    writer.uint32(/* id 42, wireType 0 =*/336).bool(message.stunned);
+                if (message.slowed != null && Object.hasOwnProperty.call(message, "slowed"))
+                    writer.uint32(/* id 43, wireType 0 =*/344).bool(message.slowed);
+                if (message.rooted != null && Object.hasOwnProperty.call(message, "rooted"))
+                    writer.uint32(/* id 44, wireType 0 =*/352).bool(message.rooted);
+                if (message.bleeding != null && Object.hasOwnProperty.call(message, "bleeding"))
+                    writer.uint32(/* id 45, wireType 0 =*/360).bool(message.bleeding);
+                if (message.poisoned != null && Object.hasOwnProperty.call(message, "poisoned"))
+                    writer.uint32(/* id 46, wireType 0 =*/368).bool(message.poisoned);
+                if (message.talentPoints != null && Object.hasOwnProperty.call(message, "talentPoints"))
+                    writer.uint32(/* id 47, wireType 0 =*/376).int32(message.talentPoints);
+                if (message.unlockedTalents != null && message.unlockedTalents.length)
+                    for (let i = 0; i < message.unlockedTalents.length; ++i)
+                        writer.uint32(/* id 48, wireType 2 =*/386).string(message.unlockedTalents[i]);
+                if (message.talentRanks != null && Object.hasOwnProperty.call(message, "talentRanks"))
+                    for (let keys = Object.keys(message.talentRanks), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 49, wireType 2 =*/394).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.talentRanks[keys[i]]).ldelim();
+                if (message.skillRunes != null && Object.hasOwnProperty.call(message, "skillRunes"))
+                    for (let keys = Object.keys(message.skillRunes), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 50, wireType 2 =*/402).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.skillRunes[keys[i]]).ldelim();
                 if (message.guardianEmbraceActive != null && Object.hasOwnProperty.call(message, "guardianEmbraceActive"))
                     writer.uint32(/* id 51, wireType 0 =*/408).bool(message.guardianEmbraceActive);
                 if (message.blessingResolveActive != null && Object.hasOwnProperty.call(message, "blessingResolveActive"))
@@ -3186,18 +3289,22 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 56, wireType 0 =*/448).bool(message.timeWarpActive);
                 if (message.spellFocusActive != null && Object.hasOwnProperty.call(message, "spellFocusActive"))
                     writer.uint32(/* id 57, wireType 0 =*/456).bool(message.spellFocusActive);
-                if (message.swiftActive != null && Object.hasOwnProperty.call(message, "swiftActive"))
-                    writer.uint32(/* id 77, wireType 0 =*/616).bool(message.swiftActive);
-                if (message.stunned != null && Object.hasOwnProperty.call(message, "stunned"))
-                    writer.uint32(/* id 42, wireType 0 =*/336).bool(message.stunned);
-                if (message.slowed != null && Object.hasOwnProperty.call(message, "slowed"))
-                    writer.uint32(/* id 43, wireType 0 =*/344).bool(message.slowed);
-                if (message.rooted != null && Object.hasOwnProperty.call(message, "rooted"))
-                    writer.uint32(/* id 44, wireType 0 =*/352).bool(message.rooted);
-                if (message.bleeding != null && Object.hasOwnProperty.call(message, "bleeding"))
-                    writer.uint32(/* id 45, wireType 0 =*/360).bool(message.bleeding);
-                if (message.poisoned != null && Object.hasOwnProperty.call(message, "poisoned"))
-                    writer.uint32(/* id 46, wireType 0 =*/368).bool(message.poisoned);
+                if (message.slowFactor != null && Object.hasOwnProperty.call(message, "slowFactor"))
+                    writer.uint32(/* id 58, wireType 5 =*/469).float(message.slowFactor);
+                if (message.rootDuration != null && Object.hasOwnProperty.call(message, "rootDuration"))
+                    writer.uint32(/* id 59, wireType 5 =*/477).float(message.rootDuration);
+                if (message.stunDuration != null && Object.hasOwnProperty.call(message, "stunDuration"))
+                    writer.uint32(/* id 60, wireType 5 =*/485).float(message.stunDuration);
+                if (message.bleedDuration != null && Object.hasOwnProperty.call(message, "bleedDuration"))
+                    writer.uint32(/* id 61, wireType 5 =*/493).float(message.bleedDuration);
+                if (message.poisonDuration != null && Object.hasOwnProperty.call(message, "poisonDuration"))
+                    writer.uint32(/* id 62, wireType 5 =*/501).float(message.poisonDuration);
+                if (message.bleedDamage != null && Object.hasOwnProperty.call(message, "bleedDamage"))
+                    writer.uint32(/* id 63, wireType 0 =*/504).int32(message.bleedDamage);
+                if (message.poisonDamage != null && Object.hasOwnProperty.call(message, "poisonDamage"))
+                    writer.uint32(/* id 64, wireType 0 =*/512).int32(message.poisonDamage);
+                if (message.slowDuration != null && Object.hasOwnProperty.call(message, "slowDuration"))
+                    writer.uint32(/* id 65, wireType 5 =*/525).float(message.slowDuration);
                 if (message.weakPointMarked != null && Object.hasOwnProperty.call(message, "weakPointMarked"))
                     writer.uint32(/* id 66, wireType 0 =*/528).bool(message.weakPointMarked);
                 if (message.weakPointDuration != null && Object.hasOwnProperty.call(message, "weakPointDuration"))
@@ -3220,35 +3327,14 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 75, wireType 5 =*/605).float(message.divineInterventionDuration);
                 if (message.spellFocusDuration != null && Object.hasOwnProperty.call(message, "spellFocusDuration"))
                     writer.uint32(/* id 76, wireType 5 =*/613).float(message.spellFocusDuration);
+                if (message.swiftActive != null && Object.hasOwnProperty.call(message, "swiftActive"))
+                    writer.uint32(/* id 77, wireType 0 =*/616).bool(message.swiftActive);
                 if (message.swiftDuration != null && Object.hasOwnProperty.call(message, "swiftDuration"))
                     writer.uint32(/* id 78, wireType 5 =*/629).float(message.swiftDuration);
-                if (message.slowFactor != null && Object.hasOwnProperty.call(message, "slowFactor"))
-                    writer.uint32(/* id 58, wireType 5 =*/469).float(message.slowFactor);
-                if (message.slowDuration != null && Object.hasOwnProperty.call(message, "slowDuration"))
-                    writer.uint32(/* id 65, wireType 5 =*/525).float(message.slowDuration);
-                if (message.rootDuration != null && Object.hasOwnProperty.call(message, "rootDuration"))
-                    writer.uint32(/* id 59, wireType 5 =*/477).float(message.rootDuration);
-                if (message.stunDuration != null && Object.hasOwnProperty.call(message, "stunDuration"))
-                    writer.uint32(/* id 60, wireType 5 =*/485).float(message.stunDuration);
-                if (message.bleedDuration != null && Object.hasOwnProperty.call(message, "bleedDuration"))
-                    writer.uint32(/* id 61, wireType 5 =*/493).float(message.bleedDuration);
-                if (message.poisonDuration != null && Object.hasOwnProperty.call(message, "poisonDuration"))
-                    writer.uint32(/* id 62, wireType 5 =*/501).float(message.poisonDuration);
-                if (message.bleedDamage != null && Object.hasOwnProperty.call(message, "bleedDamage"))
-                    writer.uint32(/* id 63, wireType 0 =*/504).int32(message.bleedDamage);
-                if (message.poisonDamage != null && Object.hasOwnProperty.call(message, "poisonDamage"))
-                    writer.uint32(/* id 64, wireType 0 =*/512).int32(message.poisonDamage);
-                if (message.talentPoints != null && Object.hasOwnProperty.call(message, "talentPoints"))
-                    writer.uint32(/* id 47, wireType 0 =*/376).int32(message.talentPoints);
-                if (message.unlockedTalents != null && message.unlockedTalents.length)
-                    for (let i = 0; i < message.unlockedTalents.length; ++i)
-                        writer.uint32(/* id 48, wireType 2 =*/386).string(message.unlockedTalents[i]);
-                if (message.talentRanks != null && Object.hasOwnProperty.call(message, "talentRanks"))
-                    for (let keys = Object.keys(message.talentRanks), i = 0; i < keys.length; ++i)
-                        writer.uint32(/* id 49, wireType 2 =*/394).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.talentRanks[keys[i]]).ldelim();
-                if (message.skillRunes != null && Object.hasOwnProperty.call(message, "skillRunes"))
-                    for (let keys = Object.keys(message.skillRunes), i = 0; i < keys.length; ++i)
-                        writer.uint32(/* id 50, wireType 2 =*/402).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.skillRunes[keys[i]]).ldelim();
+                if (message.partyId != null && Object.hasOwnProperty.call(message, "partyId"))
+                    writer.uint32(/* id 79, wireType 2 =*/634).string(message.partyId);
+                if (message.socialStatus != null && Object.hasOwnProperty.call(message, "socialStatus"))
+                    writer.uint32(/* id 80, wireType 2 =*/642).string(message.socialStatus);
                 return writer;
             };
 
@@ -3468,7 +3554,7 @@ export const eidolon = $root.eidolon = (() => {
                             message.spiritsBoosted = reader.bool();
                             break;
                         }
-                        case 41: {
+                    case 41: {
                             message.isCharging = reader.bool();
                             break;
                         }
@@ -3576,10 +3662,6 @@ export const eidolon = $root.eidolon = (() => {
                             message.slowFactor = reader.float();
                             break;
                         }
-                    case 65: {
-                            message.slowDuration = reader.float();
-                            break;
-                        }
                     case 59: {
                             message.rootDuration = reader.float();
                             break;
@@ -3602,6 +3684,10 @@ export const eidolon = $root.eidolon = (() => {
                         }
                     case 64: {
                             message.poisonDamage = reader.int32();
+                            break;
+                        }
+                    case 65: {
+                            message.slowDuration = reader.float();
                             break;
                         }
                     case 47: {
@@ -3658,6 +3744,14 @@ export const eidolon = $root.eidolon = (() => {
                                 }
                             }
                             message.skillRunes[key] = value;
+                            break;
+                        }
+                    case 79: {
+                            message.partyId = reader.string();
+                            break;
+                        }
+                    case 80: {
+                            message.socialStatus = reader.string();
                             break;
                         }
                     default:
@@ -3919,9 +4013,6 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.slowFactor != null && message.hasOwnProperty("slowFactor"))
                     if (typeof message.slowFactor !== "number")
                         return "slowFactor: number expected";
-                if (message.slowDuration != null && message.hasOwnProperty("slowDuration"))
-                    if (typeof message.slowDuration !== "number")
-                        return "slowDuration: number expected";
                 if (message.rootDuration != null && message.hasOwnProperty("rootDuration"))
                     if (typeof message.rootDuration !== "number")
                         return "rootDuration: number expected";
@@ -3940,6 +4031,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.poisonDamage != null && message.hasOwnProperty("poisonDamage"))
                     if (!$util.isInteger(message.poisonDamage))
                         return "poisonDamage: integer expected";
+                if (message.slowDuration != null && message.hasOwnProperty("slowDuration"))
+                    if (typeof message.slowDuration !== "number")
+                        return "slowDuration: number expected";
                 if (message.talentPoints != null && message.hasOwnProperty("talentPoints"))
                     if (!$util.isInteger(message.talentPoints))
                         return "talentPoints: integer expected";
@@ -3966,6 +4060,12 @@ export const eidolon = $root.eidolon = (() => {
                         if (!$util.isString(message.skillRunes[key[i]]))
                             return "skillRunes: string{k:string} expected";
                 }
+                if (message.partyId != null && message.hasOwnProperty("partyId"))
+                    if (!$util.isString(message.partyId))
+                        return "partyId: string expected";
+                if (message.socialStatus != null && message.hasOwnProperty("socialStatus"))
+                    if (!$util.isString(message.socialStatus))
+                        return "socialStatus: string expected";
                 return null;
             };
 
@@ -4145,8 +4245,6 @@ export const eidolon = $root.eidolon = (() => {
                     message.swiftDuration = Number(object.swiftDuration);
                 if (object.slowFactor != null)
                     message.slowFactor = Number(object.slowFactor);
-                if (object.slowDuration != null)
-                    message.slowDuration = Number(object.slowDuration);
                 if (object.rootDuration != null)
                     message.rootDuration = Number(object.rootDuration);
                 if (object.stunDuration != null)
@@ -4159,6 +4257,8 @@ export const eidolon = $root.eidolon = (() => {
                     message.bleedDamage = object.bleedDamage | 0;
                 if (object.poisonDamage != null)
                     message.poisonDamage = object.poisonDamage | 0;
+                if (object.slowDuration != null)
+                    message.slowDuration = Number(object.slowDuration);
                 if (object.talentPoints != null)
                     message.talentPoints = object.talentPoints | 0;
                 if (object.unlockedTalents) {
@@ -4182,6 +4282,10 @@ export const eidolon = $root.eidolon = (() => {
                     for (let keys = Object.keys(object.skillRunes), i = 0; i < keys.length; ++i)
                         message.skillRunes[keys[i]] = String(object.skillRunes[keys[i]]);
                 }
+                if (object.partyId != null)
+                    message.partyId = String(object.partyId);
+                if (object.socialStatus != null)
+                    message.socialStatus = String(object.socialStatus);
                 return message;
             };
 
@@ -4247,6 +4351,12 @@ export const eidolon = $root.eidolon = (() => {
                     object.spiritsActive = false;
                     object.spiritsBoosted = false;
                     object.isCharging = false;
+                    object.stunned = false;
+                    object.slowed = false;
+                    object.rooted = false;
+                    object.bleeding = false;
+                    object.poisoned = false;
+                    object.talentPoints = 0;
                     object.guardianEmbraceActive = false;
                     object.blessingResolveActive = false;
                     object.divineInterventionActive = false;
@@ -4254,12 +4364,14 @@ export const eidolon = $root.eidolon = (() => {
                     object.arcaneShieldHp = 0;
                     object.timeWarpActive = false;
                     object.spellFocusActive = false;
-                    object.swiftActive = false;
-                    object.stunned = false;
-                    object.slowed = false;
-                    object.rooted = false;
-                    object.bleeding = false;
-                    object.poisoned = false;
+                    object.slowFactor = 0;
+                    object.rootDuration = 0;
+                    object.stunDuration = 0;
+                    object.bleedDuration = 0;
+                    object.poisonDuration = 0;
+                    object.bleedDamage = 0;
+                    object.poisonDamage = 0;
+                    object.slowDuration = 0;
                     object.weakPointMarked = false;
                     object.weakPointDuration = 0;
                     object.markWeakness = false;
@@ -4271,16 +4383,10 @@ export const eidolon = $root.eidolon = (() => {
                     object.arcaneShieldDuration = 0;
                     object.divineInterventionDuration = 0;
                     object.spellFocusDuration = 0;
+                    object.swiftActive = false;
                     object.swiftDuration = 0;
-                    object.slowFactor = 0;
-                    object.slowDuration = 0;
-                    object.rootDuration = 0;
-                    object.stunDuration = 0;
-                    object.bleedDuration = 0;
-                    object.poisonDuration = 0;
-                    object.bleedDamage = 0;
-                    object.poisonDamage = 0;
-                    object.talentPoints = 0;
+                    object.partyId = "";
+                    object.socialStatus = "";
                 }
                 if (message.id != null && message.hasOwnProperty("id"))
                     object.id = message.id;
@@ -4374,6 +4480,33 @@ export const eidolon = $root.eidolon = (() => {
                     object.spiritsBoosted = message.spiritsBoosted;
                 if (message.isCharging != null && message.hasOwnProperty("isCharging"))
                     object.isCharging = message.isCharging;
+                if (message.stunned != null && message.hasOwnProperty("stunned"))
+                    object.stunned = message.stunned;
+                if (message.slowed != null && message.hasOwnProperty("slowed"))
+                    object.slowed = message.slowed;
+                if (message.rooted != null && message.hasOwnProperty("rooted"))
+                    object.rooted = message.rooted;
+                if (message.bleeding != null && message.hasOwnProperty("bleeding"))
+                    object.bleeding = message.bleeding;
+                if (message.poisoned != null && message.hasOwnProperty("poisoned"))
+                    object.poisoned = message.poisoned;
+                if (message.talentPoints != null && message.hasOwnProperty("talentPoints"))
+                    object.talentPoints = message.talentPoints;
+                if (message.unlockedTalents && message.unlockedTalents.length) {
+                    object.unlockedTalents = [];
+                    for (let j = 0; j < message.unlockedTalents.length; ++j)
+                        object.unlockedTalents[j] = message.unlockedTalents[j];
+                }
+                if (message.talentRanks && (keys2 = Object.keys(message.talentRanks)).length) {
+                    object.talentRanks = {};
+                    for (let j = 0; j < keys2.length; ++j)
+                        object.talentRanks[keys2[j]] = message.talentRanks[keys2[j]];
+                }
+                if (message.skillRunes && (keys2 = Object.keys(message.skillRunes)).length) {
+                    object.skillRunes = {};
+                    for (let j = 0; j < keys2.length; ++j)
+                        object.skillRunes[keys2[j]] = message.skillRunes[keys2[j]];
+                }
                 if (message.guardianEmbraceActive != null && message.hasOwnProperty("guardianEmbraceActive"))
                     object.guardianEmbraceActive = message.guardianEmbraceActive;
                 if (message.blessingResolveActive != null && message.hasOwnProperty("blessingResolveActive"))
@@ -4388,18 +4521,22 @@ export const eidolon = $root.eidolon = (() => {
                     object.timeWarpActive = message.timeWarpActive;
                 if (message.spellFocusActive != null && message.hasOwnProperty("spellFocusActive"))
                     object.spellFocusActive = message.spellFocusActive;
-                if (message.swiftActive != null && message.hasOwnProperty("swiftActive"))
-                    object.swiftActive = message.swiftActive;
-                if (message.stunned != null && message.hasOwnProperty("stunned"))
-                    object.stunned = message.stunned;
-                if (message.slowed != null && message.hasOwnProperty("slowed"))
-                    object.slowed = message.slowed;
-                if (message.rooted != null && message.hasOwnProperty("rooted"))
-                    object.rooted = message.rooted;
-                if (message.bleeding != null && message.hasOwnProperty("bleeding"))
-                    object.bleeding = message.bleeding;
-                if (message.poisoned != null && message.hasOwnProperty("poisoned"))
-                    object.poisoned = message.poisoned;
+                if (message.slowFactor != null && message.hasOwnProperty("slowFactor"))
+                    object.slowFactor = options.json && !isFinite(message.slowFactor) ? String(message.slowFactor) : message.slowFactor;
+                if (message.rootDuration != null && message.hasOwnProperty("rootDuration"))
+                    object.rootDuration = options.json && !isFinite(message.rootDuration) ? String(message.rootDuration) : message.rootDuration;
+                if (message.stunDuration != null && message.hasOwnProperty("stunDuration"))
+                    object.stunDuration = options.json && !isFinite(message.stunDuration) ? String(message.stunDuration) : message.stunDuration;
+                if (message.bleedDuration != null && message.hasOwnProperty("bleedDuration"))
+                    object.bleedDuration = options.json && !isFinite(message.bleedDuration) ? String(message.bleedDuration) : message.bleedDuration;
+                if (message.poisonDuration != null && message.hasOwnProperty("poisonDuration"))
+                    object.poisonDuration = options.json && !isFinite(message.poisonDuration) ? String(message.poisonDuration) : message.poisonDuration;
+                if (message.bleedDamage != null && message.hasOwnProperty("bleedDamage"))
+                    object.bleedDamage = message.bleedDamage;
+                if (message.poisonDamage != null && message.hasOwnProperty("poisonDamage"))
+                    object.poisonDamage = message.poisonDamage;
+                if (message.slowDuration != null && message.hasOwnProperty("slowDuration"))
+                    object.slowDuration = options.json && !isFinite(message.slowDuration) ? String(message.slowDuration) : message.slowDuration;
                 if (message.weakPointMarked != null && message.hasOwnProperty("weakPointMarked"))
                     object.weakPointMarked = message.weakPointMarked;
                 if (message.weakPointDuration != null && message.hasOwnProperty("weakPointDuration"))
@@ -4422,41 +4559,14 @@ export const eidolon = $root.eidolon = (() => {
                     object.divineInterventionDuration = options.json && !isFinite(message.divineInterventionDuration) ? String(message.divineInterventionDuration) : message.divineInterventionDuration;
                 if (message.spellFocusDuration != null && message.hasOwnProperty("spellFocusDuration"))
                     object.spellFocusDuration = options.json && !isFinite(message.spellFocusDuration) ? String(message.spellFocusDuration) : message.spellFocusDuration;
+                if (message.swiftActive != null && message.hasOwnProperty("swiftActive"))
+                    object.swiftActive = message.swiftActive;
                 if (message.swiftDuration != null && message.hasOwnProperty("swiftDuration"))
                     object.swiftDuration = options.json && !isFinite(message.swiftDuration) ? String(message.swiftDuration) : message.swiftDuration;
-                if (message.slowFactor != null && message.hasOwnProperty("slowFactor"))
-                    object.slowFactor = options.json && !isFinite(message.slowFactor) ? String(message.slowFactor) : message.slowFactor;
-                if (message.slowDuration != null && message.hasOwnProperty("slowDuration"))
-                    object.slowDuration = options.json && !isFinite(message.slowDuration) ? String(message.slowDuration) : message.slowDuration;
-                if (message.rootDuration != null && message.hasOwnProperty("rootDuration"))
-                    object.rootDuration = options.json && !isFinite(message.rootDuration) ? String(message.rootDuration) : message.rootDuration;
-                if (message.stunDuration != null && message.hasOwnProperty("stunDuration"))
-                    object.stunDuration = options.json && !isFinite(message.stunDuration) ? String(message.stunDuration) : message.stunDuration;
-                if (message.bleedDuration != null && message.hasOwnProperty("bleedDuration"))
-                    object.bleedDuration = options.json && !isFinite(message.bleedDuration) ? String(message.bleedDuration) : message.bleedDuration;
-                if (message.poisonDuration != null && message.hasOwnProperty("poisonDuration"))
-                    object.poisonDuration = options.json && !isFinite(message.poisonDuration) ? String(message.poisonDuration) : message.poisonDuration;
-                if (message.bleedDamage != null && message.hasOwnProperty("bleedDamage"))
-                    object.bleedDamage = message.bleedDamage;
-                if (message.poisonDamage != null && message.hasOwnProperty("poisonDamage"))
-                    object.poisonDamage = message.poisonDamage;
-                if (message.talentPoints != null && message.hasOwnProperty("talentPoints"))
-                    object.talentPoints = message.talentPoints;
-                if (message.unlockedTalents && message.unlockedTalents.length) {
-                    object.unlockedTalents = [];
-                    for (let j = 0; j < message.unlockedTalents.length; ++j)
-                        object.unlockedTalents[j] = message.unlockedTalents[j];
-                }
-                if (message.talentRanks && (keys2 = Object.keys(message.talentRanks)).length) {
-                    object.talentRanks = {};
-                    for (let j = 0; j < keys2.length; ++j)
-                        object.talentRanks[keys2[j]] = message.talentRanks[keys2[j]];
-                }
-                if (message.skillRunes && (keys2 = Object.keys(message.skillRunes)).length) {
-                    object.skillRunes = {};
-                    for (let j = 0; j < keys2.length; ++j)
-                        object.skillRunes[keys2[j]] = message.skillRunes[keys2[j]];
-                }
+                if (message.partyId != null && message.hasOwnProperty("partyId"))
+                    object.partyId = message.partyId;
+                if (message.socialStatus != null && message.hasOwnProperty("socialStatus"))
+                    object.socialStatus = message.socialStatus;
                 return object;
             };
 

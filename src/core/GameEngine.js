@@ -364,6 +364,9 @@ export class GameEngine {
         this.combatIntentSignature = '';
         this.highlightedCombatTarget = null;
         this.combatTargetHighlight = null;
+        // 0.37.2 — party-member highlight: local player's party ID from the state stream.
+        // Remote actors whose partyId matches get a teal ground ring.
+        this.myPartyId = '';
         this.playerType = playerType || 'Fighter';
         this.enemies = [];
         this.lootDrops = [];
@@ -1369,6 +1372,20 @@ export class GameEngine {
             this.uiManager.showPartyRequest(msg.payload.targetName);
         } else if (msg.type === 'social_status') {
             this.uiManager.social?.setSocialStatus?.(msg.payload?.status, { notify: false });
+        } else if (msg.type === 'friend_list') {
+            // Server pushed a fresh friend list (response to friend_list request or after accept/remove).
+            this.uiManager.social?.updateFriendList?.(msg.payload);
+        } else if (msg.type === 'friend_presence') {
+            // A friend came online or went offline.
+            this.uiManager.social?.onFriendPresence?.(msg.payload);
+            this.uiManager.showFriendToast?.(msg.payload?.username, msg.payload?.online);
+        } else if (msg.type === 'friend_request') {
+            // Server notified us that another player sent us a friend request.
+            this.uiManager.social?.onIncomingFriendRequest?.(msg.payload);
+        } else if (msg.type === 'friend_accept') {
+            // Confirmation that a friend request was accepted (no-op: friend_list is pushed separately).
+        } else if (msg.type === 'friend_decline') {
+            // Confirmation that a friend request was declined (no-op).
         } else if (msg.type === 'time') {
             const timeData = msg.payload;
             this.uiManager.updateServerTime(timeData.time);
@@ -1662,6 +1679,8 @@ export class GameEngine {
                 const types = {};
                 Object.values(state).forEach(e => { types[e.type] = (types[e.type] || 0) + 1; });
                 console.log(`First state received: ${entityCount} entities`, types);
+                // Request initial friend list on login (0.38.1).
+                if (this.isMultiplayer) this.network.send('friend_list', {});
             }
 
             // Debug log for entity count (throttled)
@@ -1931,6 +1950,11 @@ export class GameEngine {
                             this.uiManager.updateInventory(this.player);
                             this.lastGold = pData.gold;
                         }
+
+                        // Party highlight (0.37.2): track local player's partyId from state stream.
+                        if (pData.partyId !== undefined) {
+                            this.setMyPartyId(pData.partyId);
+                        }
                     }
                     this.syncDeathScreen();
                     return; // Skip self
@@ -2150,6 +2174,11 @@ export class GameEngine {
 
                     if (pData.gold !== undefined) this.player.gold = pData.gold;
 
+                    // Party highlight (0.37.2): track local player's partyId from delta stream.
+                    if (pData.partyId !== undefined) {
+                        this.setMyPartyId(pData.partyId);
+                    }
+
                     // Keep XP/Level UI responsive when updates arrive via delta.
                     if (this.player.xp !== this.lastXP || this.player.xpToNextLevel !== this.lastMaxXP || this.player.level !== this.lastLevel) {
                         console.log(`Updating XP/Level UI: Level=${this.player.level}, XP=${this.player.xp}`);
@@ -2319,6 +2348,15 @@ export class GameEngine {
         // Name
         if (pData.name && remoteEntity.name !== pData.name) {
             remoteEntity.setName(pData.name);
+        }
+
+        // Party-member highlight (0.37.2): driven exclusively by partyId from the
+        // state stream — single source of truth, no MsgPartyUpdate cross-reference.
+        if (pData.partyId !== undefined && pData.partyId !== remoteEntity.partyId) {
+            remoteEntity.partyId = pData.partyId;
+            if (typeof remoteEntity.setPartyHighlight === 'function') {
+                remoteEntity.setPartyHighlight(!!(this.myPartyId && pData.partyId === this.myPartyId));
+            }
         }
 
         // Scale
@@ -2994,6 +3032,35 @@ export class GameEngine {
         }
 
         this.positionCombatTargetHighlight(target);
+    }
+
+    // -----------------------------------------------------------------------
+    // Party-member highlight (0.37.2)
+    // -----------------------------------------------------------------------
+
+    /**
+     * Update the local player's party ID and refresh highlights on all
+     * currently-loaded remote actors.  Called whenever the local player's
+     * partyId changes in the state/delta stream.
+     * @param {string} partyId
+     */
+    setMyPartyId(partyId) {
+        if (partyId === this.myPartyId) return;
+        this.myPartyId = partyId || '';
+        this.refreshAllPartyHighlights();
+    }
+
+    /**
+     * Re-evaluate the party-member highlight for every known remote entity.
+     * Called after myPartyId changes so existing actors update immediately.
+     */
+    refreshAllPartyHighlights() {
+        this.remotePlayers.forEach((entity) => {
+            if (typeof entity.setPartyHighlight === 'function') {
+                const isPartyMember = !!(this.myPartyId && entity.partyId === this.myPartyId);
+                entity.setPartyHighlight(isPartyMember);
+            }
+        });
     }
 
     refreshCombatIntentState() {

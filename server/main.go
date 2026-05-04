@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	crand "crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -42,6 +44,9 @@ const (
 
 	// Maximum message size allowed from peer.
 	maxMessageSize = 8192 // Increased for larger payloads
+
+	// How long a disconnected player entity lingers in the world for session resume.
+	resumeWindow = 5 * time.Minute
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
@@ -149,6 +154,8 @@ type EntitySnapshot struct {
 	TalentPoints int
 	TalentKeys   int
 	TalentSpent  int
+	PartyID      string
+	SocialStatus string
 }
 
 // Client represents a connected player
@@ -236,6 +243,15 @@ const (
 	MsgRewardSummary     = "reward_summary"
 	MsgRoomClearReward   = "room_clear_reward"
 	MsgDungeonRoomState  = "dungeon_room_state"
+	MsgResumeSession     = "resume_session"
+
+	// Friends (0.38)
+	MsgFriendRequest  = "friend_request"   // C→S send request; S→C incoming request notification
+	MsgFriendAccept   = "friend_accept"    // C→S accept pending; S→C accepted notification
+	MsgFriendDecline  = "friend_decline"   // C→S decline pending request
+	MsgFriendRemove   = "friend_remove"    // C→S remove accepted friend
+	MsgFriendList     = "friend_list"      // C→S request list; S→C full list payload
+	MsgFriendPresence = "friend_presence"  // S→C friend came online or went offline
 )
 
 type SplitStackPayload struct {
@@ -275,6 +291,31 @@ type SocialEntry struct {
 
 type SocialStatusPayload struct {
 	Status string `json:"status"`
+}
+
+// FriendUsernamePayload is used for friend_request / friend_accept / friend_decline / friend_remove.
+// Username is the other player's username (not playerID).
+type FriendUsernamePayload struct {
+	Username string `json:"username"`
+}
+
+// FriendEntry is one row in the friend list sent to the client.
+type FriendEntry struct {
+	Username     string `json:"username"`
+	Online       bool   `json:"online"`
+	SocialStatus string `json:"socialStatus,omitempty"`
+}
+
+// FriendListPayload is the full S→C friend_list payload.
+type FriendListPayload struct {
+	Friends []FriendEntry `json:"friends"`
+	Pending []string      `json:"pending"` // usernames of players who sent *this* player a pending request
+}
+
+// FriendPresencePayload is sent S→C when a friend comes online or goes offline.
+type FriendPresencePayload struct {
+	Username string `json:"username"`
+	Online   bool   `json:"online"`
 }
 
 type AuthPayload struct {
@@ -533,6 +574,18 @@ var broadcast = make(chan BroadcastMessage)
 var register = make(chan *Client)
 var unregister = make(chan *Client)
 
+// Session-resume token store (in-memory; one token per username).
+type resumeTokenEntry struct {
+	username  string
+	expiresAt time.Time
+}
+
+var (
+	resumeTokens   = make(map[string]*resumeTokenEntry) // token → entry
+	resumeByUser   = make(map[string]string)            // username → token
+	resumeTokensMu sync.Mutex
+)
+
 var httpErrLogger *log.Logger
 var suspiciousStdoutLogger *log.Logger
 var suspiciousFileLogger *log.Logger
@@ -576,6 +629,57 @@ func requestIP(r *http.Request) string {
 		return host
 	}
 	return r.RemoteAddr
+}
+
+// generateResumeToken returns a cryptographically random 32-byte hex token.
+func generateResumeToken() (string, error) {
+	buf := make([]byte, 32)
+	if _, err := crand.Read(buf); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(buf), nil
+}
+
+// issueResumeToken creates (or replaces) a session-resume token for username.
+// The previous token for this user, if any, is revoked.
+func issueResumeToken(username string) (string, error) {
+	token, err := generateResumeToken()
+	if err != nil {
+		return "", err
+	}
+	resumeTokensMu.Lock()
+	defer resumeTokensMu.Unlock()
+	// Revoke old token
+	if old, ok := resumeByUser[username]; ok {
+		delete(resumeTokens, old)
+	}
+	entry := &resumeTokenEntry{
+		username:  username,
+		expiresAt: time.Now().Add(resumeWindow),
+	}
+	resumeTokens[token] = entry
+	resumeByUser[username] = token
+	return token, nil
+}
+
+// validateAndConsumeResumeToken validates the token and, if valid, removes it
+// and returns the associated username. Returns ("", false) on any failure.
+func validateAndConsumeResumeToken(token string) (string, bool) {
+	resumeTokensMu.Lock()
+	defer resumeTokensMu.Unlock()
+	entry, ok := resumeTokens[token]
+	if !ok {
+		return "", false
+	}
+	if time.Now().After(entry.expiresAt) {
+		delete(resumeTokens, token)
+		delete(resumeByUser, entry.username)
+		return "", false
+	}
+	username := entry.username
+	delete(resumeTokens, token)
+	delete(resumeByUser, username)
+	return username, true
 }
 
 func logSuspicious(r *http.Request, reason string, err error) {
@@ -686,6 +790,23 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	world = game.NewWorld(db)
+
+	// Sweep goroutine: remove disconnected player entities whose resume window
+	// has expired. Runs every 30 seconds.
+	go func() {
+		ticker := time.NewTicker(30 * time.Second)
+		defer ticker.Stop()
+		for range ticker.C {
+			expired := world.CollectExpiredDisconnectedPlayers(resumeWindow)
+			for _, e := range expired {
+				log.Printf("Session resume window expired for player %s (%s); entity removed", e.Name, e.ID)
+				// Clean up party membership now that the entity is gone (0.37.1).
+				if e.PartyID != "" {
+					world.RemoveExpiredMemberFromParty(e.ID, e.PartyID)
+				}
+			}
+		}
+	}()
 
 	// Set up World Event Callback
 	world.OnEvent = func(eventType string, data interface{}) {
@@ -1133,6 +1254,73 @@ func runHub() {
 	}
 }
 
+// sendInitialPlayerState pushes inventory, stash, buyback, quests, skill runes,
+// and (optionally) the current dungeon instance layout to the client. It is
+// called both on a fresh MsgJoin and on a successful MsgResumeSession.
+func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
+	// Inventory
+	if len(entity.Inventory) > 0 {
+		invPayload, _ := json.Marshal(entity.Inventory)
+		msg := Message{Type: MsgInventory, Payload: invPayload}
+		b, _ := json.Marshal(msg)
+		c.sendSafe(b)
+	}
+
+	// Stash
+	if len(entity.Stash) > 0 {
+		stashPayload, _ := json.Marshal(entity.Stash)
+		msg := Message{Type: MsgStash, Payload: stashPayload}
+		b, _ := json.Marshal(msg)
+		c.sendSafe(b)
+	}
+
+	// Buyback list
+	if len(entity.Buyback) > 0 {
+		buybackPayload, _ := json.Marshal(entity.Buyback)
+		msg := Message{Type: MsgBuybackList, Payload: buybackPayload}
+		b, _ := json.Marshal(msg)
+		c.sendSafe(b)
+	}
+
+	// Quests
+	if len(entity.Quests) > 0 {
+		questPayload, _ := json.Marshal(entity.Quests)
+		msg := Message{Type: MsgQuestUpdate, Payload: questPayload}
+		b, _ := json.Marshal(msg)
+		c.sendSafe(b)
+	}
+
+	// Skill runes
+	if len(entity.SkillRunes) > 0 {
+		runesPayload, _ := json.Marshal(map[string]interface{}{
+			"skillRunes": entity.SkillRunes,
+		})
+		msg := Message{Type: MsgSelectRune, Payload: runesPayload}
+		b, _ := json.Marshal(msg)
+		c.sendSafe(b)
+	}
+
+	// Dungeon instance layout (reconnect / session-resume)
+	if instanceID != "" {
+		layout, hasLayout := world.GetInstanceLayout(instanceID)
+		if hasLayout {
+			log.Printf("Sending instance layout to %s for instance %s: %d rooms", c.username, instanceID, len(layout.Rooms))
+			resp := map[string]interface{}{
+				"instanceId": instanceID,
+				"type":       "verdant_bastion", // TODO: store dungeon type in DB when multiple types exist
+				"layout":     layout,
+			}
+			if roomState, ok := world.GetDungeonRoomSummary(instanceID, c.playerID); ok {
+				resp["roomState"] = roomState
+			}
+			payloadBytes, _ := json.Marshal(resp)
+			instMsg := Message{Type: MsgEnterInstance, Payload: payloadBytes}
+			b, _ := json.Marshal(instMsg)
+			c.sendSafe(b)
+		}
+	}
+}
+
 func cleanupClient(client *Client) {
 	// 1. Get state (fast, in-memory)
 	var entity *game.Entity
@@ -1140,9 +1328,14 @@ func cleanupClient(client *Client) {
 		entity = world.GetEntityCopy(client.playerID)
 	}
 
-	// 2. Remove from world (fast, in-memory)
+	// 2. Mark entity as disconnected instead of removing it immediately.
+	//    The entity remains in the world during the resume window so a
+	//    reconnecting client can pick up where it left off.
 	if client.playerID != "" {
-		world.RemoveEntity(client.playerID)
+		if !world.SetEntityDisconnected(client.playerID, time.Now()) {
+			// Entity was already gone (e.g. removed by the sweep); nothing to do.
+			log.Printf("cleanupClient: entity %s not found in world", client.playerID)
+		}
 	}
 
 	// 3. Cleanup session (fast)
@@ -1152,7 +1345,12 @@ func cleanupClient(client *Client) {
 	}
 	sessionsMu.Unlock()
 
-	// 4. Save to DB (slow, do async)
+	// 4. Notify online friends that this player has gone offline (0.38.1).
+	if client.username != "" {
+		go notifyFriendsPresence(client.username, false)
+	}
+
+	// 5. Save to DB (slow, do async)
 	if entity != nil {
 		go func(c *Client, e *game.Entity) {
 			saveCharacterDB(c, e)
@@ -1314,11 +1512,19 @@ func (c *Client) handleMessage(msg Message) {
 			characterType = user.Characters[0].Class
 		}
 
+		// Issue session-resume token
+		resumeToken, err := issueResumeToken(c.username)
+		if err != nil {
+			log.Printf("Failed to issue resume token for %s: %v", c.username, err)
+			resumeToken = ""
+		}
+
 		// Send success message
 		response := map[string]interface{}{
 			"message":       "Login successful",
 			"hasCharacter":  hasCharacter,
 			"characterType": characterType,
+			"resumeToken":   resumeToken,
 		}
 		payloadBytes, _ := json.Marshal(response)
 
@@ -1740,89 +1946,22 @@ func (c *Client) handleMessage(msg Message) {
 		entity.RecalculateStats()
 		world.AddEntity(entity)
 
+		// Attempt to rejoin the persisted party (0.37.1).
+		// The party may no longer exist (all members left / server restart) — fail silently.
+		if char.PartyID != "" {
+			if err := world.RejoinParty(playerID, char.PartyID); err != nil {
+				log.Printf("Party rejoin for %s (party %s) skipped: %v", c.username, char.PartyID, err)
+			} else {
+				log.Printf("Player %s rejoined party %s on login", c.username, char.PartyID)
+			}
+		}
+
 		// Generate Daily Quests if needed
 		world.GenerateDailyQuests(playerID)
 
-		// Send initial inventory
-		if len(entity.Inventory) > 0 {
-			invPayload, _ := json.Marshal(entity.Inventory)
-			msg := Message{
-				Type:    MsgInventory,
-				Payload: invPayload,
-			}
-			b, _ := json.Marshal(msg)
-			c.sendSafe(b)
-		}
-
-		// Send initial stash
-		if len(entity.Stash) > 0 {
-			stashPayload, _ := json.Marshal(entity.Stash)
-			msg := Message{
-				Type:    MsgStash,
-				Payload: stashPayload,
-			}
-			b, _ := json.Marshal(msg)
-			c.sendSafe(b)
-		}
-
-		// Send initial buyback list
-		if len(entity.Buyback) > 0 {
-			buybackPayload, _ := json.Marshal(entity.Buyback)
-			msg := Message{
-				Type:    MsgBuybackList,
-				Payload: buybackPayload,
-			}
-			b, _ := json.Marshal(msg)
-			c.sendSafe(b)
-		}
-
-		// Send initial quests
-		if len(entity.Quests) > 0 {
-			questPayload, _ := json.Marshal(entity.Quests)
-			msg := Message{
-				Type:    MsgQuestUpdate,
-				Payload: questPayload,
-			}
-			b, _ := json.Marshal(msg)
-			c.sendSafe(b)
-		}
-
-		// Send initial skill runes
-		if len(entity.SkillRunes) > 0 {
-			runesPayload, _ := json.Marshal(map[string]interface{}{
-				"skillRunes": entity.SkillRunes,
-			})
-			msg := Message{
-				Type:    MsgSelectRune,
-				Payload: runesPayload,
-			}
-			b, _ := json.Marshal(msg)
-			c.sendSafe(b)
-		}
-
-		// If reconnecting to an instance, send the layout
-		if instanceID != "" {
-			layout, hasLayout := world.GetInstanceLayout(instanceID)
-			if hasLayout {
-				log.Printf("Reconnecting %s to instance %s: %d rooms", c.username, instanceID, len(layout.Rooms))
-				resp := map[string]interface{}{
-					"instanceId": instanceID,
-					"type":       "verdant_bastion", // TODO: Store dungeon type in DB if we have multiple
-				}
-				resp["layout"] = layout
-				if roomState, ok := world.GetDungeonRoomSummary(instanceID, c.playerID); ok {
-					resp["roomState"] = roomState
-				}
-				payloadBytes, _ := json.Marshal(resp)
-
-				instMsg := Message{
-					Type:    MsgEnterInstance,
-					Payload: payloadBytes,
-				}
-				b, _ := json.Marshal(instMsg)
-				c.sendSafe(b)
-			}
-		}
+		sendInitialPlayerState(c, entity, instanceID)
+		// Notify online friends that this player has come online (0.38.1).
+		go notifyFriendsPresence(c.username, true)
 
 	case MsgEnterDungeon:
 		if c.playerID == "" {
@@ -1928,11 +2067,13 @@ func (c *Client) handleMessage(msg Message) {
 					Type:    MsgEnterInstance,
 					Payload: payloadBytes,
 				}
-				b, _ := json.Marshal(msg)
-				memberClient.sendSafe(b)
-				// memberClient.sendError("Debug: Sent EnterInstance")
-			}
+			b, _ := json.Marshal(msg)
+			memberClient.sendSafe(b)
+			// memberClient.sendError("Debug: Sent EnterInstance")
+			// Auto-set social status: in_run (0.37.4)
+			autoSetSocialStatus(memberClient, memberID, "in_run")
 		}
+	}
 
 	case MsgGetDungeonStatus:
 		if c.playerID == "" {
@@ -2025,6 +2166,71 @@ func (c *Client) handleMessage(msg Message) {
 
 		world.ResetDungeon(player.PartyID)
 		c.sendError("Dungeon reset.") // Using sendError for notification for now
+
+	case MsgResumeSession:
+		// Client sends: { "token": "<64-char hex>" }
+		var payload struct {
+			Token string `json:"token"`
+		}
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil || payload.Token == "" {
+			c.sendError("Invalid resume_session payload")
+			return
+		}
+
+		username, ok := validateAndConsumeResumeToken(payload.Token)
+		if !ok {
+			c.sendError("Session token invalid or expired. Please log in again.")
+			return
+		}
+
+		// Clear the disconnected flag; this also returns the live entity pointer.
+		playerID := "player-" + username
+		entity, ok := world.ClearEntityDisconnected(playerID)
+		if !ok {
+			// Entity already swept or was never disconnected — fall back to normal login.
+			c.sendError("No resumable session found. Please log in and join normally.")
+			return
+		}
+
+		// Bind this new client to the existing entity.
+		c.username = username
+		c.playerID = playerID
+
+		sessionsMu.Lock()
+		// Kick any stale session for this username (shouldn't exist, but be safe).
+		if old, exists := activeSessions[username]; exists && old != c {
+			go func(old *Client) {
+				defer func() { recover() }()
+				old.sendError("Logged in from another location")
+				time.Sleep(100 * time.Millisecond)
+				old.conn.Close()
+			}(old)
+		}
+		activeSessions[username] = c
+		sessionsMu.Unlock()
+
+		// Issue a fresh resume token for the next disconnect.
+		newToken, err := issueResumeToken(username)
+		if err != nil {
+			log.Printf("Failed to re-issue resume token for %s: %v", username, err)
+			newToken = ""
+		}
+
+		// Notify the client that the session resumed successfully.
+		resumeResp := map[string]interface{}{
+			"playerID":    playerID,
+			"resumeToken": newToken,
+		}
+		resumePayload, _ := json.Marshal(resumeResp)
+		resumeMsg := Message{Type: MsgResumeSession, Payload: resumePayload}
+		b, _ := json.Marshal(resumeMsg)
+		c.sendSafe(b)
+
+		// Re-send all initial state so the client can repopulate its UI.
+		instanceID := entity.InstanceID
+		sendInitialPlayerState(c, entity, instanceID)
+
+		log.Printf("Session resumed: %s (playerID: %s)", username, playerID)
 
 	case MsgMove:
 		if c.playerID == "" {
@@ -2709,6 +2915,17 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 
+		// Reject if target has set their social status to "busy" (0.37.4).
+		if ok, reason := world.CanReceivePartyInvite(targetClient.playerID); !ok {
+			switch reason {
+			case "busy":
+				c.sendError(payload.TargetName + " is busy and cannot receive party invites")
+			default:
+				c.sendError("Player not available")
+			}
+			return
+		}
+
 		// Create party if not exists
 		if inviter.PartyID == "" {
 			party := world.CreateParty(c.playerID)
@@ -2847,31 +3064,10 @@ func (c *Client) handleMessage(msg Message) {
 		broadcastPartyUpdate(party)
 
 	case MsgSocial:
-		// Gather online players
-		var playerList []SocialEntry
-		sessionsMu.Lock()
-		for _, client := range activeSessions {
-			if client.playerID != "" {
-				entity := world.GetEntity(client.playerID)
-				if entity != nil {
-					playerList = append(playerList, SocialEntry{
-						Name:         entity.Name,
-						Class:        entity.SubType,
-						Level:        entity.Level,
-						SocialStatus: game.NormalizeSocialStatus(entity.SocialStatus),
-					})
-				}
-			}
-		}
-		sessionsMu.Unlock()
-
+		// Build and send the current online-player list to this requester.
+		playerList := buildSocialList()
 		payload, _ := json.Marshal(playerList)
-		msg := Message{
-			Type:    MsgSocial,
-			Payload: payload,
-		}
-		b, _ := json.Marshal(msg)
-		c.sendSafe(b)
+		c.sendSafe(createMessage(MsgSocial, payload))
 
 	case MsgSocialStatus:
 		if c.playerID == "" {
@@ -2885,8 +3081,134 @@ func (c *Client) handleMessage(msg Message) {
 		if !ok {
 			return
 		}
+		// Ack to requester.
 		ackPayload, _ := json.Marshal(SocialStatusPayload{Status: status})
 		c.sendSafe(createMessage(MsgSocialStatus, ackPayload))
+		// Proactively push a fresh social list to all connected clients so their
+		// Social windows update within one tick (0.37.3).
+		go broadcastSocialToAll()
+
+	// ── Friends (0.38) ──────────────────────────────────────────────────────────
+
+	case MsgFriendList:
+		// Client requests their full friend list.
+		if c.playerID == "" {
+			return
+		}
+		listPayload := buildFriendListPayload(c.playerID)
+		p, _ := json.Marshal(listPayload)
+		c.sendSafe(createMessage(MsgFriendList, p))
+
+	case MsgFriendRequest:
+		// Client sends a friend request to another player.
+		if c.playerID == "" {
+			return
+		}
+		var req FriendUsernamePayload
+		if err := json.Unmarshal(msg.Payload, &req); err != nil || req.Username == "" {
+			c.sendError("invalid friend request payload")
+			return
+		}
+		if req.Username == c.username {
+			c.sendError("cannot send friend request to yourself")
+			return
+		}
+		requesterID := c.playerID
+		addresseeID := usernameToPlayerID(req.Username)
+		if err := db.SendFriendRequest(requesterID, addresseeID); err != nil {
+			c.sendError(err.Error())
+			return
+		}
+		// Ack to sender.
+		ackP, _ := json.Marshal(FriendUsernamePayload{Username: req.Username})
+		c.sendSafe(createMessage(MsgFriendRequest, ackP))
+		// Notify addressee if online so their pending list updates immediately.
+		sessionsMu.Lock()
+		addrClient, addrOnline := activeSessions[req.Username]
+		sessionsMu.Unlock()
+		if addrOnline {
+			notifP, _ := json.Marshal(FriendUsernamePayload{Username: c.username})
+			addrClient.sendSafe(createMessage(MsgFriendRequest, notifP))
+		}
+
+	case MsgFriendAccept:
+		// Client accepts a pending request from another player (requester).
+		if c.playerID == "" {
+			return
+		}
+		var req FriendUsernamePayload
+		if err := json.Unmarshal(msg.Payload, &req); err != nil || req.Username == "" {
+			c.sendError("invalid friend accept payload")
+			return
+		}
+		requesterID := usernameToPlayerID(req.Username)
+		addresseeID := c.playerID
+		if err := db.AcceptFriendRequest(requesterID, addresseeID); err != nil {
+			c.sendError(err.Error())
+			return
+		}
+		// Push fresh friend lists to both players.
+		acceptorList := buildFriendListPayload(c.playerID)
+		ap, _ := json.Marshal(acceptorList)
+		c.sendSafe(createMessage(MsgFriendList, ap))
+
+		sessionsMu.Lock()
+		reqClient, reqOnline := activeSessions[req.Username]
+		sessionsMu.Unlock()
+		if reqOnline {
+			reqList := buildFriendListPayload(requesterID)
+			rp, _ := json.Marshal(reqList)
+			reqClient.sendSafe(createMessage(MsgFriendList, rp))
+		}
+
+	case MsgFriendDecline:
+		// Client declines a pending request from another player.
+		if c.playerID == "" {
+			return
+		}
+		var req FriendUsernamePayload
+		if err := json.Unmarshal(msg.Payload, &req); err != nil || req.Username == "" {
+			c.sendError("invalid friend decline payload")
+			return
+		}
+		requesterID := usernameToPlayerID(req.Username)
+		if err := db.DeclineFriendRequest(requesterID, c.playerID); err != nil {
+			c.sendError(err.Error())
+			return
+		}
+		// Ack to decliner.
+		ackP, _ := json.Marshal(FriendUsernamePayload{Username: req.Username})
+		c.sendSafe(createMessage(MsgFriendDecline, ackP))
+
+	case MsgFriendRemove:
+		// Client removes an accepted friend.
+		if c.playerID == "" {
+			return
+		}
+		var req FriendUsernamePayload
+		if err := json.Unmarshal(msg.Payload, &req); err != nil || req.Username == "" {
+			c.sendError("invalid friend remove payload")
+			return
+		}
+		otherID := usernameToPlayerID(req.Username)
+		if err := db.RemoveFriend(c.playerID, otherID); err != nil {
+			c.sendError(err.Error())
+			return
+		}
+		// Ack to requester and push updated lists.
+		myList := buildFriendListPayload(c.playerID)
+		mp, _ := json.Marshal(myList)
+		c.sendSafe(createMessage(MsgFriendList, mp))
+
+		sessionsMu.Lock()
+		otherClient, otherOnline := activeSessions[req.Username]
+		sessionsMu.Unlock()
+		if otherOnline {
+			otherList := buildFriendListPayload(otherID)
+			op, _ := json.Marshal(otherList)
+			otherClient.sendSafe(createMessage(MsgFriendList, op))
+		}
+
 	case MsgRespawn:
 		if c.playerID == "" {
 			return
@@ -2912,6 +3234,8 @@ func (c *Client) handleMessage(msg Message) {
 			}
 			b, _ := json.Marshal(msg)
 			c.sendSafe(b)
+			// Auto-revert social status: available (0.37.4)
+			autoSetSocialStatus(c, c.playerID, "available")
 		}
 
 	case MsgRecall:
@@ -2939,6 +3263,8 @@ func (c *Client) handleMessage(msg Message) {
 			}
 			b, _ := json.Marshal(msg)
 			c.sendSafe(b)
+			// Auto-revert social status: available (0.37.4)
+			autoSetSocialStatus(c, c.playerID, "available")
 		}
 
 	case MsgReport:
@@ -3686,6 +4012,8 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		TalentPoints: derivedTalentPoints,
 		TalentKeys:   keys,
 		TalentSpent:  spent,
+		PartyID:      e.PartyID,
+		SocialStatus: e.SocialStatus,
 	}
 	e.Mu.RUnlock()
 
@@ -3858,6 +4186,8 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 			ctalentPoints = 0
 		}
 	}
+	cpartyID := current.PartyID
+	csocialStatus := current.SocialStatus
 	current.Mu.RUnlock()
 
 	// Position change threshold (0.05 units = basically any movement)
@@ -3932,6 +4262,9 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 		return true
 	}
 	if cswiftActive != last.SwiftActive {
+		return true
+	}
+	if cpartyID != last.PartyID || csocialStatus != last.SocialStatus {
 		return true
 	}
 	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || math.Abs(cslowDuration-last.SlowDuration) > 0.05 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || math.Abs(cbleedDuration-last.BleedDuration) > 0.05 || cbleedDamage != last.BleedDamage || cpoisoned != last.Poisoned || math.Abs(cpoisonDuration-last.PoisonDuration) > 0.05 || cpoisonDamage != last.PoisonDamage || math.Abs(cweakPointDuration-last.WeakPointDuration) > 0.05 || math.Abs(cmarkWeaknessDuration-last.MarkWeaknessDuration) > 0.05 || math.Abs(cspiritDuration-last.SpiritDuration) > 0.05 || math.Abs(cblessingResolveDuration-last.BlessingResolveDuration) > 0.05 || math.Abs(ctimeWarpDuration-last.TimeWarpDuration) > 0.05 || math.Abs(cguardianEmbraceDuration-last.GuardianEmbraceDuration) > 0.05 || math.Abs(carcaneShieldDuration-last.ArcaneShieldDuration) > 0.05 || math.Abs(cdivineInterventionDuration-last.DivineInterventionDuration) > 0.05 || math.Abs(cspellFocusDuration-last.SpellFocusDuration) > 0.05 || math.Abs(cswiftDuration-last.SwiftDuration) > 0.05 {
@@ -4401,14 +4734,169 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		DivineInterventionDuration: divineInterventionDuration,
 		SpellFocusDuration: spellFocusDuration,
 		SwiftDuration: swiftDuration,
+		PartyId:      e.PartyID,
+		SocialStatus: e.SocialStatus,
 	}
 
 	e.Mu.RUnlock()
 	return out
 }
 
+// autoSetSocialStatus applies a system-driven social status change for the
+// given player (0.37.4).  It respects SetPlayerSocialStatusAutomatic's
+// preconditions, then acks the new status to the player's client so their
+// dropdown stays in sync, and broadcasts a fresh MsgSocial to all sessions.
+// No-op (no ack, no broadcast) when the precondition is not met.
+func autoSetSocialStatus(c *Client, playerID, newStatus string) {
+	status, changed := world.SetPlayerSocialStatusAutomatic(playerID, newStatus)
+	if !changed {
+		return
+	}
+	// Ack to the affected player so their UI dropdown reflects the new value.
+	ackPayload, _ := json.Marshal(SocialStatusPayload{Status: status})
+	c.sendSafe(createMessage(MsgSocialStatus, ackPayload))
+	// Broadcast fresh list to all sessions.
+	go broadcastSocialToAll()
+}
+
+func buildSocialList() []SocialEntry {
+	var list []SocialEntry
+	sessionsMu.Lock()
+	ids := make([]string, 0, len(activeSessions))
+	for _, client := range activeSessions {
+		if client.playerID != "" {
+			ids = append(ids, client.playerID)
+		}
+	}
+	sessionsMu.Unlock()
+
+	for _, id := range ids {
+		entity := world.GetEntity(id)
+		if entity == nil {
+			continue
+		}
+		entity.Mu.RLock()
+		entry := SocialEntry{
+			Name:         entity.Name,
+			Class:        entity.SubType,
+			Level:        entity.Level,
+			SocialStatus: game.NormalizeSocialStatus(entity.SocialStatus),
+		}
+		entity.Mu.RUnlock()
+		list = append(list, entry)
+	}
+	return list
+}
+
+// broadcastSocialToAll sends a fresh MsgSocial list to every active session.
+// Called whenever a player's social status changes (0.37.3).
+func broadcastSocialToAll() {
+	list := buildSocialList()
+	payload, _ := json.Marshal(list)
+	msg := createMessage(MsgSocial, payload)
+
+	sessionsMu.Lock()
+	clients := make([]*Client, 0, len(activeSessions))
+	for _, c := range activeSessions {
+		clients = append(clients, c)
+	}
+	sessionsMu.Unlock()
+
+	for _, c := range clients {
+		c.sendSafe(msg)
+	}
+}
+
+// usernameToPlayerID returns the canonical playerID for a given username.
+func usernameToPlayerID(username string) string {
+	return "player-" + username
+}
+
+// playerIDToUsername strips the "player-" prefix to recover the username.
+func playerIDToUsername(playerID string) string {
+	return strings.TrimPrefix(playerID, "player-")
+}
+
+// buildFriendListPayload assembles a FriendListPayload for the given playerID.
+// It reads accepted friends and pending incoming requests from the DB, then
+// cross-references activeSessions to determine online status.
+func buildFriendListPayload(playerID string) FriendListPayload {
+	friends, err := db.GetFriends(playerID)
+	if err != nil {
+		log.Printf("buildFriendListPayload: DB error for %s: %v", playerID, err)
+		return FriendListPayload{Friends: []FriendEntry{}, Pending: []string{}}
+	}
+
+	pendingDocs, err := db.GetPendingRequests(playerID)
+	if err != nil {
+		log.Printf("buildFriendListPayload: pending DB error for %s: %v", playerID, err)
+		pendingDocs = nil
+	}
+
+	entries := make([]FriendEntry, 0, len(friends))
+	for _, f := range friends {
+		otherID := f.RequesterID
+		if f.RequesterID == playerID {
+			otherID = f.AddresseeID
+		}
+		otherUsername := playerIDToUsername(otherID)
+
+		entry := FriendEntry{Username: otherUsername}
+
+		sessionsMu.Lock()
+		otherClient, online := activeSessions[otherUsername]
+		sessionsMu.Unlock()
+
+		if online && otherClient.playerID != "" {
+			entry.Online = true
+			entity := world.GetEntity(otherClient.playerID)
+			if entity != nil {
+				entity.Mu.RLock()
+				entry.SocialStatus = game.NormalizeSocialStatus(entity.SocialStatus)
+				entity.Mu.RUnlock()
+			}
+		}
+		entries = append(entries, entry)
+	}
+
+	pendingUsernames := make([]string, 0, len(pendingDocs))
+	for _, p := range pendingDocs {
+		pendingUsernames = append(pendingUsernames, playerIDToUsername(p.RequesterID))
+	}
+
+	return FriendListPayload{Friends: entries, Pending: pendingUsernames}
+}
+
+// notifyFriendsPresence pushes a MsgFriendPresence packet to every online friend of username.
+// Called on login (online=true) and disconnect (online=false).
+func notifyFriendsPresence(username string, online bool) {
+	playerID := usernameToPlayerID(username)
+	friends, err := db.GetFriends(playerID)
+	if err != nil {
+		log.Printf("notifyFriendsPresence: DB error for %s: %v", username, err)
+		return
+	}
+
+	payload, _ := json.Marshal(FriendPresencePayload{Username: username, Online: online})
+	msg := createMessage(MsgFriendPresence, payload)
+
+	for _, f := range friends {
+		otherID := f.RequesterID
+		if f.RequesterID == playerID {
+			otherID = f.AddresseeID
+		}
+		otherUsername := playerIDToUsername(otherID)
+
+		sessionsMu.Lock()
+		otherClient, ok := activeSessions[otherUsername]
+		sessionsMu.Unlock()
+		if ok {
+			otherClient.sendSafe(msg)
+		}
+	}
+}
+
 func broadcastTime() {
-	// Send server time (seconds since epoch or just a counter)
 	// For game timer, maybe just send seconds elapsed since server start or a specific game time
 	// Let's send current Unix timestamp
 	now := time.Now().Unix()
@@ -4491,6 +4979,8 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 		SkillRunes:      entity.SkillRunes,
 		UnlockedTalents: unlockedTalents,
 		TalentRanks:     normalizedRanks,
+		// Social
+		PartyID: entity.PartyID,
 	}
 
 	// Convert Game Inventory to DB Inventory

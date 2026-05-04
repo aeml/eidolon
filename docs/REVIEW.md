@@ -1,7 +1,7 @@
 # Eidolon Review
 
-Last refreshed: April 2026
-Reviewed against current `master` after the recent dungeon progression, menu polish, and jump/shadow polish passes.
+Last refreshed: May 3, 2026
+Reviewed against current `master` at `Alpha 0.35.0` after the social status foundation and remote-smoothing hardening passes.
 
 ## What the project is today
 - Static browser client loaded from `index.html` and ES modules

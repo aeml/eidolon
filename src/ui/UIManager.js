@@ -24,6 +24,7 @@ export class UIManager {
         this.floatingBars = new Map(); // Entity ID -> DOM Element
         this.uiLayer = document.getElementById('ui-layer');
         this.gameTimer = document.getElementById('game-timer');
+        this.connIndicator = document.getElementById('conn-indicator');
         this.combatIntentPanel = document.getElementById('combat-intent-panel');
         this.combatIntentName = document.getElementById('combat-intent-name');
         this.combatIntentMeta = document.getElementById('combat-intent-meta');
@@ -275,6 +276,12 @@ export class UIManager {
                 this.setCameraShakeEnabled(this.cameraShakeToggle.checked);
             });
         }
+
+        // Friend-online toast setting (0.38.3) — defaults to enabled.
+        const storedFriendToast = localStorage.getItem('eidolon.friendOnlineToast');
+        this.friendOnlineToastEnabled = storedFriendToast === null ? true : storedFriendToast === 'true';
+        // Rate-limit map: username → timestamp of last toast shown.
+        this._friendToastLastShown = new Map();
         const storedFullscreen = localStorage.getItem('eidolon.fullscreenEnabled');
         this.fullscreenEnabled = storedFullscreen === null ? false : storedFullscreen === 'true';
         if (this.fullscreenToggle) {
@@ -609,6 +616,28 @@ export class UIManager {
         this.lastCharacterSheetSignature = '';
     }
 
+    /**
+     * Update the connection-state HUD pill.
+     * @param {'connected'|'reconnecting'|'lost'} state
+     */
+    setConnectionState(state) {
+        const el = this.connIndicator;
+        if (!el) return;
+        el.classList.remove('conn-indicator--reconnecting', 'conn-indicator--lost');
+        if (state === 'reconnecting') {
+            el.textContent = 'Reconnecting\u2026';
+            el.classList.add('conn-indicator--reconnecting');
+        } else if (state === 'lost') {
+            el.textContent = 'Connection lost';
+            el.classList.add('conn-indicator--lost');
+        } else {
+            // 'connected' — hide the indicator; normal play state needs no banner.
+            el.style.display = 'none';
+            el.textContent = '';
+        }
+    }
+
+
     addChatMessage(sender, message) {
         if (!this.chatBox) return;
         this.chatBox.style.display = 'flex';
@@ -940,6 +969,66 @@ export class UIManager {
         if (this.combatIntentPreviewAbilityLabel) {
             this.combatIntentPreviewAbilityLabel.textContent = tone === 'boss' ? 'Boss Telegraph' : 'Threat Warning';
         }
+    }
+
+    /**
+     * Show a brief toast notification when a friend comes online or goes offline.
+     * No-ops if the user has opted out or if a toast for this friend was shown
+     * within the last 30 seconds (rate-limit guard against reconnect spam).
+     *
+     * @param {string} username
+     * @param {boolean} online
+     */
+    showFriendToast(username, online) {
+        if (!this.friendOnlineToastEnabled) return;
+
+        // Only show toasts for online events (offline is implicit / low-value noise).
+        if (!online) return;
+
+        // Rate-limit: one toast per friend per 30 seconds.
+        const now = Date.now();
+        const last = this._friendToastLastShown.get(username) || 0;
+        if (now - last < 30_000) return;
+        this._friendToastLastShown.set(username, now);
+
+        this._renderFriendToast(`${username} is now online.`);
+    }
+
+    /** Toggle the friend-online toast setting and persist it. */
+    setFriendOnlineToastEnabled(enabled) {
+        this.friendOnlineToastEnabled = enabled;
+        localStorage.setItem('eidolon.friendOnlineToast', String(enabled));
+    }
+
+    /** @returns {boolean} */
+    getFriendOnlineToastEnabled() {
+        return this.friendOnlineToastEnabled;
+    }
+
+    /**
+     * Render a transient friend notification toast in the bottom-right corner.
+     * The element fades out after 4 seconds then is removed from the DOM.
+     * @param {string} text
+     */
+    _renderFriendToast(text) {
+        const toast = document.createElement('div');
+        toast.className = 'friend-toast';
+        toast.setAttribute('role', 'status');
+        toast.setAttribute('aria-live', 'polite');
+        toast.textContent = text;
+        document.body.appendChild(toast);
+
+        // Force reflow so the transition fires.
+        // eslint-disable-next-line no-unused-expressions
+        toast.offsetHeight;
+        toast.classList.add('friend-toast--visible');
+
+        const DISMISS_MS = 4000;
+        const FADE_MS = 400;
+        setTimeout(() => {
+            toast.classList.remove('friend-toast--visible');
+            setTimeout(() => toast.remove(), FADE_MS);
+        }, DISMISS_MS);
     }
 
     updateCombatIntent(intent) {

@@ -4,9 +4,9 @@ import { fileURLToPath } from 'node:url';
 const reproHtmlPath = fileURLToPath(new URL('../repro.html', import.meta.url));
 const reproJsPath = fileURLToPath(new URL('../src/repro.js', import.meta.url));
 const dungeonChecklistPath = fileURLToPath(new URL('../docs/plans/dungeon-manual-qa-checklist.md', import.meta.url));
-const sandboxSmokePath = fileURLToPath(new URL('../docs/plans/2026-04-30-0-33-2-repro-sandbox-smoke.md', import.meta.url));
-const releaseChecklistPath = fileURLToPath(new URL('../docs/plans/0.21-release-checklist.md', import.meta.url));
-const retentionChecklistPath = fileURLToPath(new URL('../docs/plans/2026-04-19-0-25-retention-closeout-qa.md', import.meta.url));
+const sandboxSmokePath = fileURLToPath(new URL('../docs/plans/archive/2026-04-30-0-33-2-repro-sandbox-smoke.md', import.meta.url));
+const releaseChecklistPath = fileURLToPath(new URL('../docs/plans/archive/0.21-release-checklist.md', import.meta.url));
+const retentionChecklistPath = fileURLToPath(new URL('../docs/plans/archive/2026-04-19-0-25-retention-closeout-qa.md', import.meta.url));
 
 describe('repro and QA tooling', () => {
     test('repro scene exposes focused QA controls for rendering movement VFX menus and dungeon pacing', () => {
