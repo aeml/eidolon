@@ -376,15 +376,23 @@ export class Actor extends Entity {
     }
 
     playJumpAnimation(jumpState = null) {
+        const duration = Math.max(0.001, Number.isFinite(jumpState?.duration) ? jumpState.duration : 0.8);
         const walkAction = this.animations?.Walk;
         if (!walkAction) {
             if (this.animations?.Jump) {
                 this.playAnimation('Jump', false, true);
+                const clipDuration = this.currentAction?.getClip?.()?.duration || duration;
+                const timeScale = Math.max(0.01, clipDuration / duration);
+                this.currentAction?.setEffectiveTimeScale?.(timeScale);
+                this.jumpAnimationRestore = {
+                    name: 'Jump',
+                    timeScale
+                };
+                return true;
             }
             return false;
         }
 
-        const duration = Math.max(0.001, Number.isFinite(jumpState?.duration) ? jumpState.duration : 0.8);
         this.playAnimation('Walk', false, true);
         const clipDuration = this.currentAction?.getClip?.()?.duration || duration;
         const timeScale = Math.max(0.01, clipDuration / duration);

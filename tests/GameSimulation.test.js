@@ -336,6 +336,25 @@ describe('Actor System', () => {
             jest.runOnlyPendingTimers();
             jest.useRealTimers();
         });
+
+        test('jump animation fallback stretches Jump clip over authoritative jump duration', () => {
+            const action = {
+                getClip: () => ({ duration: 0.25 }),
+                setEffectiveTimeScale: jest.fn(),
+                reset: jest.fn().mockReturnThis(),
+                fadeIn: jest.fn().mockReturnThis(),
+                play: jest.fn().mockReturnThis(),
+                setLoop: jest.fn()
+            };
+            actor.mixer = {};
+            actor.animations = { Jump: action };
+
+            const played = actor.playJumpAnimation({ duration: 1 });
+
+            expect(played).toBe(true);
+            expect(action.setEffectiveTimeScale).toHaveBeenCalledWith(0.25);
+            expect(actor.jumpAnimationRestore).toEqual({ name: 'Jump', timeScale: 0.25 });
+        });
     });
 
     describe('Inventory System', () => {
