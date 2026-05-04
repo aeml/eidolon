@@ -1019,7 +1019,6 @@ export class UIManager {
         document.body.appendChild(toast);
 
         // Force reflow so the transition fires.
-        // eslint-disable-next-line no-unused-expressions
         toast.offsetHeight;
         toast.classList.add('friend-toast--visible');
 
