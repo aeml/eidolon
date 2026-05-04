@@ -78,19 +78,19 @@ export class UIBindings {
             engine.network.send('report', { reportType: type, text });
         };
         ui.social.onPartyInvite = (targetName) => {
-            engine.sendPartyMessage('party_invite', { targetName });
+            engine.socialController.sendPartyMessage('party_invite', { targetName });
         };
         ui.social.onPartyLeave = () => {
-            engine.sendPartyMessage('party_leave', {});
+            engine.socialController.sendPartyMessage('party_leave', {});
         };
         ui.social.onPartyResponse = (inviterName, accepted) => {
-            engine.sendPartyMessage('party_response', { inviterName, accepted });
+            engine.socialController.sendPartyMessage('party_response', { inviterName, accepted });
         };
         ui.social.onPartyKick = (targetId) => {
-            engine.kickPartyMember(targetId);
+            engine.socialController.kickPartyMember(targetId);
         };
         ui.social.onPartyPromote = (targetId) => {
-            engine.promotePartyMember(targetId);
+            engine.socialController.promotePartyMember(targetId);
         };
 
         // Friends callbacks (0.38)

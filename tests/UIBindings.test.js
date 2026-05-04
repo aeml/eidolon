@@ -32,7 +32,11 @@ describe('UIBindings', () => {
                 pendingAbilitySkill: 'Fireball'
             },
             worldMap: { toggle: jest.fn() },
-            sendPartyMessage: jest.fn(),
+            socialController: {
+                sendPartyMessage: jest.fn(),
+                kickPartyMember: jest.fn(),
+                promotePartyMember: jest.fn(),
+            },
             uiManager: {
                 getGraphicsQuality: jest.fn(() => 'medium'),
                 getBrightnessLevel: jest.fn(() => 0.75),
@@ -69,7 +73,7 @@ describe('UIBindings', () => {
         expect(engine.uiManager.inventory.updateInventory).not.toHaveBeenCalledWith(engine.player);
 
         engine.uiManager.social.onPartyInvite('alice');
-        expect(engine.sendPartyMessage).toHaveBeenCalledWith('party_invite', { targetName: 'alice' });
+        expect(engine.socialController.sendPartyMessage).toHaveBeenCalledWith('party_invite', { targetName: 'alice' });
 
         engine.uiManager.social.onSocialStatusChange('looking_party');
         expect(engine.network.send).toHaveBeenCalledWith('social_status', { status: 'looking_party' });

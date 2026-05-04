@@ -289,3 +289,15 @@ func (w *World) CanReceivePartyInvite(playerID string) (bool, string) {
 	}
 	return true, ""
 }
+
+// GetAllParties returns a snapshot of all active parties in the world.
+func (w *World) GetAllParties() []*Party {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+
+	parties := make([]*Party, 0, len(w.Parties))
+	for _, p := range w.Parties {
+		parties = append(parties, p)
+	}
+	return parties
+}

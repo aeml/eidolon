@@ -14,8 +14,8 @@ The deeper, audit-grounded implementation plan that backs every release line bel
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.38.4`
-- Active implementation line: `0.39`
+- Current in-game displayed version: `Alpha 0.39.3`
+- Active implementation line: `0.40`
 - Closed for planned implementation work: `0.21` through `0.37`
 - The game has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, asset caching, audio foundation, accessibility baseline, and substantial UX polish
 - The biggest remaining alpha-wide risks are deeper social systems, missing guilds, missing PvP, server/client architectural concentration, and continued multiplayer-readability hardening
@@ -46,6 +46,8 @@ For per-patch detail see `index.html` Patch Notes. The summary below captures th
 
 - `0.38` (closed): persistent `friendships` collection; friend request / accept / decline / remove server handlers; push-based online/offline presence to accepted friends; friends sub-panel in Social window; friend-online toast with 30-second rate limit and localStorage opt-out
 
+- `0.39` (closed): extracted `internal/game/social.go`; split `main.go` dispatch switch into `friends_handlers.go`, `party_handlers.go`, `social_handlers.go`, `trading_handlers.go`; extracted `SocialPresenceController.js` from `GameEngine.js`
+
 ### What is still not at alpha 1.0 quality yet
 
 - Social systems are still parties + status + chat + trading house, not full social depth (no friends list, no rich chat channels, no presence beyond the roster)
@@ -67,7 +69,19 @@ All slices shipped:
 - `0.38.3`: friend-online toast; 30-second per-user rate limit; localStorage opt-out (`eidolon.friendOnlineToast`); ARIA annotations
 - `0.38.4`: Go DB integration tests (17); server helper + handler tests; SocialUI friends JS tests (32); UIManager toast JS tests (16)
 
-## Active line: `0.39` (TBD)
+## Closed line: `0.39` social closeout and decomposition primer (complete)
+
+Release promise: extract the social/party/friend cluster into owned modules on server and client; primer pass before the 0.40 architecture decomposition band.
+
+All slices shipped:
+- `0.39.0`: extracted `server/internal/game/social.go` (71 lines) — social-status helpers; `GetAllParties` moved to `party.go`; `world.go` −69 lines
+- `0.39.1`: extracted `friends_handlers.go`, `party_handlers.go`, `social_handlers.go`, `trading_handlers.go` (all `package main`); `main.go` 5 153 → 4 542 lines (−611); dispatch switch thinned to delegate calls
+- `0.39.2`: extracted `src/core/SocialPresenceController.js` (108 lines); `GameEngine.js` 5 403 → 5 347 lines (−56); party-highlight, social/party/friend message routing, and UIBindings wiring moved to controller
+- `0.39.3`: regression QA pass — 932/932 JS green, all Go packages pass
+
+DoD note: `world.go` (9 325 LOC) and `main.go` (4 542 LOC) exceed the original slice targets (7 500 / 3 500); full reduction is deferred to the 0.40–0.43 architecture decomposition band.
+
+## Active line: `0.40` (TBD)
 
 Release promise: party membership survives disconnects and `partyId` / `socialStatus` ride the state stream.
 

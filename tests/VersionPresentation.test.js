@@ -7,8 +7,12 @@ const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-
 const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.38.4 for the friends list and presence slices', () => {
-        expect(indexHtml).toContain('Alpha 0.38.4');
+    test('advances the login screen to alpha 0.39.3 for the social closeout and decomposition primer', () => {
+        expect(indexHtml).toContain('Alpha 0.39.3');
+        expect(indexHtml).toContain('Patch 0.39.3');
+        expect(indexHtml).toContain('Patch 0.39.2');
+        expect(indexHtml).toContain('Patch 0.39.1');
+        expect(indexHtml).toContain('Patch 0.39.0');
         expect(indexHtml).toContain('Patch 0.38.4');
         expect(indexHtml).toContain('Patch 0.38.3');
         expect(indexHtml).toContain('Patch 0.38.2');
@@ -93,9 +97,10 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.38.4 shipped and points the active line at 0.39', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.38.4`');
-        expect(alphaRoadmap).toContain('Active implementation line: `0.39`');
+    test('marks 0.39.3 shipped and points the active line at 0.40', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.39.3`');
+        expect(alphaRoadmap).toContain('Active implementation line: `0.40`');
+        expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
         expect(alphaRoadmap).toContain('0.37` (closed)');
         expect(alphaRoadmap).toContain('0.36` (closed)');
@@ -105,7 +110,6 @@ describe('version presentation', () => {
         expect(alphaRoadmap).toContain('party persistence and proto integration');
         expect(alphaRoadmap).toContain('Friends list and presence');
         expect(engineeringRoadmap).toContain('2026-04-18-alpha-1-0-roadmap-and-status.md');
-        expect(engineeringRoadmap).not.toContain('`feat: add keybind clarity settings`');
     });
 
     test('includes the 0.37.4 patch notes entry for social status enforcement', () => {

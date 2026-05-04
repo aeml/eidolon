@@ -133,19 +133,19 @@ Definition of done:
 - friend-online presence is push-based, not pull-based
 - the relationship table can be extended for ignore/block in 0.52 without schema migration
 
-### `0.39` Social closeout and decomposition primer
+### `0.39` Social closeout and decomposition primer **(closed)**
 
 Slices:
 
-- `0.39.0` extract `internal/game/social.go` from `world.go` (party, social-status, friend code that 0.37/0.38 introduced).
-- `0.39.1` extract `internal/game/handlers/` package: split the `main.go` dispatch switch into per-handler files. Start with social/party/trading handlers (lowest coupling).
-- `0.39.2` client: extract `SocialPresenceController` from `GameEngine.js` (party + social + friend sync clusters).
-- `0.39.3` regression QA pass; close out the social-depth band.
+- `0.39.0` ✓ extract `internal/game/social.go` from `world.go` (party, social-status, friend code that 0.37/0.38 introduced).
+- `0.39.1` ✓ extract `internal/game/handlers/` package: split the `main.go` dispatch switch into per-handler files. Start with social/party/trading handlers (lowest coupling).
+- `0.39.2` ✓ client: extract `SocialPresenceController` from `GameEngine.js` (party + social + friend sync clusters).
+- `0.39.3` ✓ regression QA pass; close out the social-depth band.
 
 Definition of done:
-- `world.go` is below 7,500 LOC
-- `main.go` is below 3,500 LOC
-- social-band features have a single owner module each
+- `world.go` is below 7,500 LOC *(not yet met — 9 325; deferred to 0.40–0.43)*
+- `main.go` is below 3,500 LOC *(not yet met — 4 542; deferred to 0.40–0.43)*
+- social-band features have a single owner module each ✓
 
 ### `0.40` to `0.43` Architecture decomposition
 

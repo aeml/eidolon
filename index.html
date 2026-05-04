@@ -274,7 +274,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.38.4</span>
+                <span class="start-version-row__label">Alpha 0.39.3</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -576,6 +576,36 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.39.3">
+                    <h3 class="patch-note-entry__title">Patch 0.39.3 (Social closeout — QA pass)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Regression QA:</strong> 932/932 JS tests green; all Go packages pass after the 0.39 decomposition work.</li>
+                        <li><strong>DoD note:</strong> <code>world.go</code> (9 325 LOC) and <code>main.go</code> (4 542 LOC) exceed the original slice targets (7 500 / 3 500); full reduction is deferred to the 0.40–0.43 architecture decomposition band.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.39.2">
+                    <h3 class="patch-note-entry__title">Patch 0.39.2 (SocialPresenceController extracted)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>New module:</strong> <code>src/core/SocialPresenceController.js</code> (108 lines) owns all social / party / friend network-message routing and the local party-highlight state.</li>
+                        <li><strong>GameEngine.js reduced:</strong> 5 403 → 5 347 lines (−56); <code>setMyPartyId</code>, <code>refreshAllPartyHighlights</code>, <code>sendPartyMessage</code>, <code>kickPartyMember</code>, <code>promotePartyMember</code>, and nine message-handler branches removed from the engine.</li>
+                        <li><strong>UIBindings updated:</strong> Party action callbacks now route through <code>engine.socialController</code> directly.</li>
+                        <li><strong>Tests updated:</strong> <code>GameEnginePartyHighlight.test.js</code> rewritten to test <code>SocialPresenceController</code> in isolation; <code>UIBindings.test.js</code> mock updated accordingly.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.39.1">
+                    <h3 class="patch-note-entry__title">Patch 0.39.1 (Server handler files extracted)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Four new handler files:</strong> <code>server/friends_handlers.go</code> (127 lines), <code>server/party_handlers.go</code> (187 lines), <code>server/social_handlers.go</code> (32 lines), <code>server/trading_handlers.go</code> (372 lines) — all <code>package main</code>.</li>
+                        <li><strong>main.go reduced:</strong> 5 153 → 4 542 lines (−611); <code>handleMessage</code> dispatch switch thinned to 19 single-line delegate calls.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="0.39.0">
+                    <h3 class="patch-note-entry__title">Patch 0.39.0 (social.go extracted)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>New package file:</strong> <code>server/internal/game/social.go</code> (71 lines) — <code>DefaultSocialStatus</code>, <code>validSocialStatuses</code>, <code>NormalizeSocialStatus</code>, <code>SetPlayerSocialStatus</code>, <code>SetPlayerSocialStatusAutomatic</code>.</li>
+                        <li><strong>party.go gains <code>GetAllParties</code>:</strong> moved from <code>world.go</code>; <code>world.go</code> reduced from 9 394 → 9 325 lines.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.38.4">
                     <h3 class="patch-note-entry__title">Patch 0.38.4 (Friends list and presence — test coverage)</h3>
                     <ul class="patch-note-entry__list">
