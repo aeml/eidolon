@@ -992,6 +992,78 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.mesh.position.x).toBeLessThan(snappedLogicalX);
     });
 
+    test('remote authoritative jump does not restart animation for tiny metadata jitter', () => {
+        const engine = createEngineHarness();
+        const remoteEntity = {
+            position: new THREE.Vector3(0, 0, 0),
+            targetServerPosition: null,
+            targetServerRotation: undefined,
+            rotation: new THREE.Quaternion(),
+            state: 'IDLE',
+            isCharging: false,
+            isDead: false,
+            deadTimer: 0,
+            visualOffset: new THREE.Vector3(0, 0, 0),
+            mesh: {
+                visible: true,
+                position: new THREE.Vector3(0, 0, 0),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            },
+            stats: { hp: 100, maxHp: 100, mana: 10, maxMana: 10, speed: 3, attackSpeed: 1 },
+            playJumpAnimation: jest.fn(),
+            updateState: jest.fn(function updateState(nextState) {
+                this.state = nextState;
+            })
+        };
+
+        engine.syncRemoteEntity(remoteEntity, {
+            id: 'remote-1',
+            type: 'Player',
+            state: 'JUMPING',
+            x: 4,
+            y: 0,
+            z: 0,
+            jumpStartX: 0,
+            jumpStartY: 0,
+            jumpStartZ: 0,
+            jumpTargetX: 20,
+            jumpTargetY: 0,
+            jumpTargetZ: 0,
+            jumpDuration: 1,
+            jumpProgress: 0.2,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+
+        engine.syncRemoteEntity(remoteEntity, {
+            id: 'remote-1',
+            type: 'Player',
+            state: 'JUMPING',
+            x: 4.5,
+            y: 0,
+            z: 0,
+            jumpStartX: 0.02,
+            jumpStartY: 0,
+            jumpStartZ: 0,
+            jumpTargetX: 20.02,
+            jumpTargetY: 0,
+            jumpTargetZ: 0,
+            jumpDuration: 1.02,
+            jumpProgress: 0.18,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+
+        expect(remoteEntity.playJumpAnimation).toHaveBeenCalledTimes(1);
+        expect(remoteEntity.jumpVisualState.progress).toBeCloseTo(0.2, 5);
+    });
+
     test('remote authoritative jump interpolation does not jitter backward on tiny correction packets', () => {
         const engine = createEngineHarness();
         const remoteEntity = {
@@ -1098,5 +1170,6 @@ describe('authoritative jump flow', () => {
 
         expect(remoteEntity.jumpVisualState.progress).toBeCloseTo(0.45, 5);
         expect(remoteEntity.jumpVisualState.visualHeight).toBeGreaterThan(Math.sin(0.25 * Math.PI) * 8);
+        expect(remoteEntity.jumpVisualState.displayPosition.x).toBeGreaterThan(4);
     });
 });

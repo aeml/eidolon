@@ -3756,6 +3756,17 @@ export class GameEngine {
         return true;
     }
 
+    isSameAuthoritativeJump(existingJump, start, end, duration) {
+        if (!existingJump?.serverDriven || !existingJump.start || !existingJump.end) return false;
+
+        const positionTolerance = 0.35;
+        const durationTolerance = 0.075;
+        const existingDuration = Number.isFinite(existingJump.duration) ? existingJump.duration : duration;
+        return existingJump.start.distanceTo(start) <= positionTolerance
+            && existingJump.end.distanceTo(end) <= positionTolerance
+            && Math.abs(existingDuration - duration) <= durationTolerance;
+    }
+
     syncAuthoritativeJumpState(entity, pData) {
         if (!entity || pData?.state !== 'JUMPING') return false;
 
@@ -3798,6 +3809,8 @@ export class GameEngine {
 
         const travelDistance = start.distanceTo(end);
         const duration = Math.max(0.001, getJumpField('jumpDuration', existingJump?.duration ?? this.getJumpTravelDuration(travelDistance || 0)));
+        const isSameJump = this.isSameAuthoritativeJump(existingJump, start, end, duration)
+            || (!hasJumpMetadata && !!existingJump?.serverDriven);
         const jumpVector = new THREE.Vector3(end.x - start.x, 0, end.z - start.z);
         const jumpDistanceSq = jumpVector.lengthSq();
         const projectedProgress = jumpDistanceSq > 0.0001
@@ -3806,7 +3819,13 @@ export class GameEngine {
         const fallbackProgress = projectedProgress ?? (typeof existingJump?.progress === 'number'
             ? existingJump.progress
             : (typeof existingJump?.elapsed === 'number' ? (existingJump.elapsed / duration) : 0));
-        const progress = Math.max(0, Math.min(1, getJumpField('jumpProgress', fallbackProgress)));
+        const packetProgress = Math.max(0, Math.min(1, getJumpField('jumpProgress', fallbackProgress)));
+        const previousProgress = typeof existingJump?.progress === 'number'
+            ? existingJump.progress
+            : (typeof existingJump?.elapsed === 'number' && existingJump.duration > 0 ? existingJump.elapsed / existingJump.duration : 0);
+        const progress = isSameJump
+            ? Math.max(0, Math.min(1, Math.max(previousProgress, packetProgress)))
+            : packetProgress;
         const inferredHeight = this.getJumpArcHeight(travelDistance);
         const height = getJumpField('jumpHeight', existingJump?.height ?? inferredHeight);
         const baseY = THREE.MathUtils.lerp(start.y, end.y, progress);
@@ -3834,7 +3853,7 @@ export class GameEngine {
                 visualHeight,
                 displayPosition
             };
-            if (!existingJump || !existingJump.serverDriven || existingJump.duration !== duration) {
+            if (!isSameJump) {
                 this.player.playJumpAnimation?.(this.playerJumpState);
             }
             this.playerJumpVisualHeight = 0;
@@ -3853,7 +3872,7 @@ export class GameEngine {
                 landingVisual: entity.jumpLandingVisual || null
             };
             entity.jumpVisualState = nextJumpState;
-            if (!existingJump || !existingJump.serverDriven || existingJump.duration !== duration) {
+            if (!isSameJump) {
                 entity.playJumpAnimation?.(nextJumpState);
             }
         }
@@ -3917,6 +3936,13 @@ export class GameEngine {
             jump.elapsed = Math.min(jump.duration, Math.max(jump.elapsed || 0, (jump.progress || 0) * jump.duration) + dt);
             jump.progress = Math.max(jump.progress || 0, Math.min(1, jump.elapsed / jump.duration));
             jump.visualHeight = Math.max(0, Math.sin(jump.progress * Math.PI) * (jump.height || 0));
+            if (jump.start && jump.end) {
+                const trajectoryPosition = new THREE.Vector3().lerpVectors(jump.start, jump.end, jump.progress);
+                trajectoryPosition.y = entity.position.y;
+                jump.displayPosition = jump.displayPosition || trajectoryPosition.clone();
+                jump.displayPosition.lerp(trajectoryPosition, 0.35);
+                jump.displayPosition.y = entity.position.y;
+            }
         }
     }
 
@@ -4149,7 +4175,10 @@ export class GameEngine {
             }
             const shouldSmoothDisplayPosition = entity !== this.player;
             if (shouldSmoothDisplayPosition) {
-                const displayTarget = this.getAuthoritativeJumpDisplayTarget(entity, jumpState) || entity.position;
+                const displayTarget = jumpState.start && jumpState.end
+                    ? new THREE.Vector3().lerpVectors(jumpState.start, jumpState.end, this.getJumpVisualProgress(jumpState))
+                    : this.getAuthoritativeJumpDisplayTarget(entity, jumpState) || entity.position;
+                displayTarget.y = entity.position.y;
                 jumpState.displayPosition.lerp(displayTarget, 0.35);
                 jumpState.displayPosition.y = entity.position.y;
             }
@@ -5197,9 +5226,10 @@ export class GameEngine {
         for (let i = 0; i < activeEntities.length; i++) {
             const entity = activeEntities[i];
             if (entity.isActive) {
-                entity.render(alpha);
                 if (entity !== this.player && entity.jumpVisualState) {
                     this.applyEntityJumpVisuals(entity, entity.jumpVisualState);
+                } else {
+                    entity.render(alpha);
                 }
             }
         }
