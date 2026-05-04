@@ -274,7 +274,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.39.3</span>
+                <span class="start-version-row__label">Alpha 0.40.0</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -576,6 +576,14 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.40.0">
+                    <h3 class="patch-note-entry__title">Patch 0.40.0 (entity.go extracted)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>New module:</strong> <code>server/internal/game/entity.go</code> (~950 lines) owns <code>EntityType</code> constants, <code>Quest</code>, <code>Stats</code>, and <code>Entity</code> struct; rune helpers (<code>HasRune</code>, <code>GetRuneForSkill</code>); set-bonus helpers (<code>HasSetBonus</code>, <code>HasAnySetBonus</code>, <code>GetSetBonusValue</code>, <code>HasUniqueEffect</code>); status-effect helpers (<code>GetEffectiveManaCost</code>, <code>ActivateSwiftIfEquipped</code>, <code>GetEffectiveSpeed</code>); <code>RecalculateStats</code>; <code>GetEntityCopy</code>; <code>copyEntity</code>.</li>
+                        <li><strong>world.go reduced:</strong> 9 325 → 7 444 lines (−1 881); seven duplicate blocks surgically removed.</li>
+                        <li><strong>Tests:</strong> 932/932 JS green; <code>go build ./...</code> clean.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.39.3">
                     <h3 class="patch-note-entry__title">Patch 0.39.3 (Social closeout — QA pass)</h3>
                     <ul class="patch-note-entry__list">

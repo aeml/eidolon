@@ -7,8 +7,15 @@ const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-
 const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.39.3 for the social closeout and decomposition primer', () => {
-        expect(indexHtml).toContain('Alpha 0.39.3');
+    test('advances the login screen to alpha 0.40.0 for entity.go extraction', () => {
+        expect(indexHtml).toContain('Alpha 0.40.0');
+        expect(indexHtml).toContain('Patch 0.40.0');
+        expect(indexHtml).toContain('entity.go extracted');
+        expect(indexHtml).toContain('world.go reduced');
+        expect(indexHtml).toContain('7 444');
+    });
+
+    test('retains patch history for 0.39.x social closeout and decomposition primer', () => {
         expect(indexHtml).toContain('Patch 0.39.3');
         expect(indexHtml).toContain('Patch 0.39.2');
         expect(indexHtml).toContain('Patch 0.39.1');
@@ -97,8 +104,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.39.3 shipped and points the active line at 0.40', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.39.3`');
+    test('marks 0.40.0 shipped and points the active line at 0.40', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.40.0`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.40`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

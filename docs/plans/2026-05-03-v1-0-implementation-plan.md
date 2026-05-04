@@ -143,7 +143,7 @@ Slices:
 - `0.39.3` ✓ regression QA pass; close out the social-depth band.
 
 Definition of done:
-- `world.go` is below 7,500 LOC *(not yet met — 9 325; deferred to 0.40–0.43)*
+- `world.go` is below 7,500 LOC ✓ *(7 444 after 0.40.0; full 3 000 target by end of 0.43)*
 - `main.go` is below 3,500 LOC *(not yet met — 4 542; deferred to 0.40–0.43)*
 - social-band features have a single owner module each ✓
 
@@ -153,7 +153,7 @@ Reason: the code-size and lock-coarseness audit results above. v1.0 cannot ship 
 
 Slices:
 
-- `0.40.0` extract `internal/game/entity/` package: Entity struct, RecalculateStats, copy/snapshot, status-effect component.
+- `0.40.0` ✓ extracted `internal/game/entity.go`: Entity struct, RecalculateStats, copy/snapshot, status-effect helpers, rune helpers, set-bonus helpers; `world.go` 9 325 → 7 444 lines (−1 881)
 - `0.40.1` extract `internal/game/talents/`, `internal/game/runes/`, `internal/game/combos/`, `internal/game/setbonus/`. These are already self-contained data tables in `world.go`.
 - `0.40.2` extract `internal/game/dungeon/`: DungeonInstance, room-progression, validation. Move the four `generate*Layout` functions into `dungeon/layouts/{verdant,molten,tempest,abyss}.go`.
 - `0.41.0` extract `internal/game/combat/`: PerformAttack, CalculateFinalDamage, threat, handleDeath.

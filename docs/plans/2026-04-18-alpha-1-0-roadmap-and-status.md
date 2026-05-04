@@ -14,7 +14,7 @@ The deeper, audit-grounded implementation plan that backs every release line bel
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.39.3`
+- Current in-game displayed version: `Alpha 0.40.0`
 - Active implementation line: `0.40`
 - Closed for planned implementation work: `0.21` through `0.37`
 - The game has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, asset caching, audio foundation, accessibility baseline, and substantial UX polish
@@ -47,6 +47,8 @@ For per-patch detail see `index.html` Patch Notes. The summary below captures th
 - `0.38` (closed): persistent `friendships` collection; friend request / accept / decline / remove server handlers; push-based online/offline presence to accepted friends; friends sub-panel in Social window; friend-online toast with 30-second rate limit and localStorage opt-out
 
 - `0.39` (closed): extracted `internal/game/social.go`; split `main.go` dispatch switch into `friends_handlers.go`, `party_handlers.go`, `social_handlers.go`, `trading_handlers.go`; extracted `SocialPresenceController.js` from `GameEngine.js`
+
+- `0.40` (in progress): architecture decomposition — extracting entity, talent, rune, combo, dungeon sub-packages from `world.go`; `0.40.0` shipped `entity.go` (world.go 9 325 → 7 444 lines)
 
 ### What is still not at alpha 1.0 quality yet
 
@@ -81,16 +83,12 @@ All slices shipped:
 
 DoD note: `world.go` (9 325 LOC) and `main.go` (4 542 LOC) exceed the original slice targets (7 500 / 3 500); full reduction is deferred to the 0.40–0.43 architecture decomposition band.
 
-## Active line: `0.40` (TBD)
+## Active line: `0.40` — architecture decomposition (in progress)
 
-Release promise: party membership survives disconnects and `partyId` / `socialStatus` ride the state stream.
+Release promise: extract entity, talent, rune, combo, dungeon sub-packages from `world.go`; reduce `world.go` below 3 000 LOC and `main.go` below 2 000 LOC by end of `0.43`.
 
-All slices shipped:
-- `0.37.0`: `party_id` and `social_status` added to `state.proto`; both generated files regenerated
-- `0.37.1`: `PartyID` persisted on `Character`; `RejoinParty` on login; `RemoveExpiredMemberFromParty` on sweep
-- `0.37.2`: teal party-member ring on remote actors driven by `entity.party_id`
-- `0.37.3`: proactive `MsgSocial` broadcast on every status change; pull-only refresh replaced
-- `0.37.4`: `busy` blocks party invites; dungeon entry auto-sets `in_run`; respawn/recall auto-reverts to `available`
+Slices shipped so far:
+- `0.40.0`: extracted `server/internal/game/entity.go` (~950 lines) — `EntityType` constants, `Quest`, `Stats`, `Entity` struct, rune helpers, set-bonus helpers, status-effect helpers, `RecalculateStats`, `GetEntityCopy`, `copyEntity`; `world.go` 9 325 → 7 444 lines (−1 881); 932/932 JS green, `go build ./...` clean
 
 ## Roadmap from `0.36` to `alpha 1.0`
 
