@@ -992,6 +992,71 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.mesh.position.x).toBeLessThan(snappedLogicalX);
     });
 
+    test('remote jump deltas with scalar metadata still follow observed server positions', () => {
+        const engine = createEngineHarness();
+        const remoteEntity = {
+            position: new THREE.Vector3(0, 0, 0),
+            targetServerPosition: null,
+            targetServerRotation: undefined,
+            rotation: new THREE.Quaternion(),
+            state: 'IDLE',
+            isCharging: false,
+            isDead: false,
+            deadTimer: 0,
+            visualOffset: new THREE.Vector3(0, 0, 0),
+            mesh: {
+                visible: true,
+                position: new THREE.Vector3(0, 0, 0),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            },
+            stats: { hp: 100, maxHp: 100, mana: 10, maxMana: 10, speed: 3, attackSpeed: 1 },
+            playJumpAnimation: jest.fn(),
+            updateState: jest.fn(function updateState(nextState) {
+                this.state = nextState;
+            })
+        };
+
+        engine.syncRemoteEntity(remoteEntity, {
+            id: 'remote-1',
+            type: 'Player',
+            state: 'JUMPING',
+            x: 3,
+            y: 2,
+            z: 0,
+            jumpProgress: 0.2,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+        engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
+        const firstVisualX = remoteEntity.mesh.position.x;
+
+        engine.syncRemoteEntity(remoteEntity, {
+            id: 'remote-1',
+            type: 'Player',
+            state: 'JUMPING',
+            x: 8,
+            y: 5,
+            z: 0,
+            jumpProgress: 0.55,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+        engine.updateRemoteJumpVisuals(0.016);
+        engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
+
+        expect(remoteEntity.jumpVisualState.hasAuthoritativeTrajectory).toBe(false);
+        expect(remoteEntity.jumpVisualState.end.x).toBeCloseTo(8, 5);
+        expect(remoteEntity.mesh.position.x).toBeGreaterThan(firstVisualX);
+        expect(remoteEntity.mesh.position.x).toBeGreaterThan(0);
+        expect(remoteEntity.mesh.position.x).toBeLessThan(8);
+    });
+
     test('remote authoritative jump does not restart animation for tiny metadata jitter', () => {
         const engine = createEngineHarness();
         const remoteEntity = {
@@ -1170,6 +1235,6 @@ describe('authoritative jump flow', () => {
 
         expect(remoteEntity.jumpVisualState.progress).toBeCloseTo(0.45, 5);
         expect(remoteEntity.jumpVisualState.visualHeight).toBeGreaterThan(Math.sin(0.25 * Math.PI) * 8);
-        expect(remoteEntity.jumpVisualState.displayPosition.x).toBeGreaterThan(4);
+        expect(remoteEntity.jumpVisualState.displayPosition.x).toBeGreaterThanOrEqual(4);
     });
 });
