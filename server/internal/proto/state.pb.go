@@ -709,8 +709,18 @@ type Entity struct {
 	// Skill runes: skillName -> runeId
 	SkillRunes map[string]string `protobuf:"bytes,50,rep,name=skill_runes,json=skillRunes,proto3" json:"skill_runes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Social / party
-	PartyId       string `protobuf:"bytes,79,opt,name=party_id,json=partyId,proto3" json:"party_id,omitempty"`
-	SocialStatus  string `protobuf:"bytes,80,opt,name=social_status,json=socialStatus,proto3" json:"social_status,omitempty"`
+	PartyId      string `protobuf:"bytes,79,opt,name=party_id,json=partyId,proto3" json:"party_id,omitempty"`
+	SocialStatus string `protobuf:"bytes,80,opt,name=social_status,json=socialStatus,proto3" json:"social_status,omitempty"`
+	// Authoritative jump replication
+	JumpStartX    float32 `protobuf:"fixed32,81,opt,name=jump_start_x,json=jumpStartX,proto3" json:"jump_start_x,omitempty"`
+	JumpStartY    float32 `protobuf:"fixed32,82,opt,name=jump_start_y,json=jumpStartY,proto3" json:"jump_start_y,omitempty"`
+	JumpStartZ    float32 `protobuf:"fixed32,83,opt,name=jump_start_z,json=jumpStartZ,proto3" json:"jump_start_z,omitempty"`
+	JumpTargetX   float32 `protobuf:"fixed32,84,opt,name=jump_target_x,json=jumpTargetX,proto3" json:"jump_target_x,omitempty"`
+	JumpTargetY   float32 `protobuf:"fixed32,85,opt,name=jump_target_y,json=jumpTargetY,proto3" json:"jump_target_y,omitempty"`
+	JumpTargetZ   float32 `protobuf:"fixed32,86,opt,name=jump_target_z,json=jumpTargetZ,proto3" json:"jump_target_z,omitempty"`
+	JumpDuration  float32 `protobuf:"fixed32,87,opt,name=jump_duration,json=jumpDuration,proto3" json:"jump_duration,omitempty"`
+	JumpHeight    float32 `protobuf:"fixed32,88,opt,name=jump_height,json=jumpHeight,proto3" json:"jump_height,omitempty"`
+	JumpProgress  float32 `protobuf:"fixed32,89,opt,name=jump_progress,json=jumpProgress,proto3" json:"jump_progress,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1305,6 +1315,69 @@ func (x *Entity) GetSocialStatus() string {
 	return ""
 }
 
+func (x *Entity) GetJumpStartX() float32 {
+	if x != nil {
+		return x.JumpStartX
+	}
+	return 0
+}
+
+func (x *Entity) GetJumpStartY() float32 {
+	if x != nil {
+		return x.JumpStartY
+	}
+	return 0
+}
+
+func (x *Entity) GetJumpStartZ() float32 {
+	if x != nil {
+		return x.JumpStartZ
+	}
+	return 0
+}
+
+func (x *Entity) GetJumpTargetX() float32 {
+	if x != nil {
+		return x.JumpTargetX
+	}
+	return 0
+}
+
+func (x *Entity) GetJumpTargetY() float32 {
+	if x != nil {
+		return x.JumpTargetY
+	}
+	return 0
+}
+
+func (x *Entity) GetJumpTargetZ() float32 {
+	if x != nil {
+		return x.JumpTargetZ
+	}
+	return 0
+}
+
+func (x *Entity) GetJumpDuration() float32 {
+	if x != nil {
+		return x.JumpDuration
+	}
+	return 0
+}
+
+func (x *Entity) GetJumpHeight() float32 {
+	if x != nil {
+		return x.JumpHeight
+	}
+	return 0
+}
+
+func (x *Entity) GetJumpProgress() float32 {
+	if x != nil {
+		return x.JumpProgress
+	}
+	return 0
+}
+
 var File_state_proto protoreflect.FileDescriptor
 
 const file_state_proto_rawDesc = "" +
@@ -1368,7 +1441,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xe3\x18\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xa0\x1b\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -1460,7 +1533,20 @@ const file_state_proto_rawDesc = "" +
 	"\vskill_runes\x182 \x03(\v2%.eidolon.state.Entity.SkillRunesEntryR\n" +
 	"skillRunes\x12\x19\n" +
 	"\bparty_id\x18O \x01(\tR\apartyId\x12#\n" +
-	"\rsocial_status\x18P \x01(\tR\fsocialStatus\x1aQ\n" +
+	"\rsocial_status\x18P \x01(\tR\fsocialStatus\x12 \n" +
+	"\fjump_start_x\x18Q \x01(\x02R\n" +
+	"jumpStartX\x12 \n" +
+	"\fjump_start_y\x18R \x01(\x02R\n" +
+	"jumpStartY\x12 \n" +
+	"\fjump_start_z\x18S \x01(\x02R\n" +
+	"jumpStartZ\x12\"\n" +
+	"\rjump_target_x\x18T \x01(\x02R\vjumpTargetX\x12\"\n" +
+	"\rjump_target_y\x18U \x01(\x02R\vjumpTargetY\x12\"\n" +
+	"\rjump_target_z\x18V \x01(\x02R\vjumpTargetZ\x12#\n" +
+	"\rjump_duration\x18W \x01(\x02R\fjumpDuration\x12\x1f\n" +
+	"\vjump_height\x18X \x01(\x02R\n" +
+	"jumpHeight\x12#\n" +
+	"\rjump_progress\x18Y \x01(\x02R\fjumpProgress\x1aQ\n" +
 	"\x0eEquipmentEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12)\n" +
 	"\x05value\x18\x02 \x01(\v2\x13.eidolon.state.ItemR\x05value:\x028\x01\x1a>\n" +

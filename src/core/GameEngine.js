@@ -3760,11 +3760,17 @@ export class GameEngine {
         if (!entity || pData?.state !== 'JUMPING') return false;
 
         const existingJump = entity === this.player ? this.playerJumpState : entity.jumpVisualState;
-        const hasJumpMetadata = pData.jumpStartX !== undefined
-            || pData.jumpTargetX !== undefined
-            || pData.jumpHeight !== undefined
-            || pData.jumpDuration !== undefined
-            || pData.jumpProgress !== undefined;
+        const hasOwnJumpField = (key) => Object.prototype.hasOwnProperty.call(pData, key);
+        const hasJumpMetadata = hasOwnJumpField('jumpStartX')
+            || hasOwnJumpField('jumpTargetX')
+            || hasOwnJumpField('jumpHeight')
+            || hasOwnJumpField('jumpDuration')
+            || hasOwnJumpField('jumpProgress');
+        const getJumpField = (key, fallback) => {
+            if (hasOwnJumpField(key)) return pData[key];
+            if (hasJumpMetadata && pData[key] !== undefined) return pData[key];
+            return fallback;
+        };
         const previousPosition = pData._previousPosition?.clone?.() || entity.position.clone();
         const currentPosition = new THREE.Vector3(
             pData.x ?? entity.position.x,
@@ -3773,14 +3779,14 @@ export class GameEngine {
         );
 
         let start = new THREE.Vector3(
-            pData.jumpStartX ?? existingJump?.start?.x ?? previousPosition.x,
-            pData.jumpStartY ?? existingJump?.start?.y ?? previousPosition.y,
-            pData.jumpStartZ ?? existingJump?.start?.z ?? previousPosition.z
+            getJumpField('jumpStartX', existingJump?.start?.x ?? previousPosition.x),
+            getJumpField('jumpStartY', existingJump?.start?.y ?? previousPosition.y),
+            getJumpField('jumpStartZ', existingJump?.start?.z ?? previousPosition.z)
         );
         let end = new THREE.Vector3(
-            pData.jumpTargetX ?? existingJump?.end?.x ?? currentPosition.x,
-            pData.jumpTargetY ?? existingJump?.end?.y ?? start.y,
-            pData.jumpTargetZ ?? existingJump?.end?.z ?? currentPosition.z
+            getJumpField('jumpTargetX', existingJump?.end?.x ?? currentPosition.x),
+            getJumpField('jumpTargetY', existingJump?.end?.y ?? start.y),
+            getJumpField('jumpTargetZ', existingJump?.end?.z ?? currentPosition.z)
         );
 
         const horizontalTravel = new THREE.Vector3(currentPosition.x - start.x, 0, currentPosition.z - start.z);
@@ -3791,7 +3797,7 @@ export class GameEngine {
         }
 
         const travelDistance = start.distanceTo(end);
-        const duration = Math.max(0.001, pData.jumpDuration ?? existingJump?.duration ?? this.getJumpTravelDuration(travelDistance || 0));
+        const duration = Math.max(0.001, getJumpField('jumpDuration', existingJump?.duration ?? this.getJumpTravelDuration(travelDistance || 0)));
         const jumpVector = new THREE.Vector3(end.x - start.x, 0, end.z - start.z);
         const jumpDistanceSq = jumpVector.lengthSq();
         const projectedProgress = jumpDistanceSq > 0.0001
@@ -3800,9 +3806,9 @@ export class GameEngine {
         const fallbackProgress = projectedProgress ?? (typeof existingJump?.progress === 'number'
             ? existingJump.progress
             : (typeof existingJump?.elapsed === 'number' ? (existingJump.elapsed / duration) : 0));
-        const progress = Math.max(0, Math.min(1, pData.jumpProgress ?? fallbackProgress));
+        const progress = Math.max(0, Math.min(1, getJumpField('jumpProgress', fallbackProgress)));
         const inferredHeight = this.getJumpArcHeight(travelDistance);
-        const height = pData.jumpHeight ?? existingJump?.height ?? inferredHeight;
+        const height = getJumpField('jumpHeight', existingJump?.height ?? inferredHeight);
         const baseY = THREE.MathUtils.lerp(start.y, end.y, progress);
         const computedArcHeight = Math.sin(progress * Math.PI) * height;
         const replicatedArcHeight = Math.max(0, (pData.y ?? currentPosition.y) - baseY);

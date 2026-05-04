@@ -105,57 +105,57 @@ var (
 // EntitySnapshot stores minimal state for delta comparison
 // We only track fields that change frequently
 type EntitySnapshot struct {
-	X            float64
-	Z            float64
-	Y            float64
-	Rotation     float64
-	Health       int
-	MaxHealth    int
-	Mana         int
-	State        string
-	Level        int
-	IsCharging   bool
-	SpiritsActive bool
-	SpiritsBoosted bool
-	GuardianEmbraceActive bool
-	BlessingResolveActive bool
-	DivineInterventionActive bool
-	ArcaneShieldActive bool
-	ArcaneShieldHP int
-	TimeWarpActive bool
-	SpellFocusActive bool
-	SwiftActive bool
-	Stunned bool
-	StunDuration float64
-	Slowed bool
-	SlowFactor float64
-	SlowDuration float64
-	Rooted bool
-	RootDuration float64
-	Bleeding bool
-	BleedDuration float64
-	BleedDamage int
-	Poisoned bool
-	PoisonDuration float64
-	PoisonDamage int
-	WeakPointMarked bool
-	WeakPointDuration float64
-	MarkWeakness bool
-	MarkWeaknessDuration float64
-	SpiritDuration float64
-	BlessingResolveDuration float64
-	TimeWarpDuration float64
-	GuardianEmbraceDuration float64
-	ArcaneShieldDuration float64
+	X                          float64
+	Z                          float64
+	Y                          float64
+	Rotation                   float64
+	Health                     int
+	MaxHealth                  int
+	Mana                       int
+	State                      string
+	Level                      int
+	IsCharging                 bool
+	SpiritsActive              bool
+	SpiritsBoosted             bool
+	GuardianEmbraceActive      bool
+	BlessingResolveActive      bool
+	DivineInterventionActive   bool
+	ArcaneShieldActive         bool
+	ArcaneShieldHP             int
+	TimeWarpActive             bool
+	SpellFocusActive           bool
+	SwiftActive                bool
+	Stunned                    bool
+	StunDuration               float64
+	Slowed                     bool
+	SlowFactor                 float64
+	SlowDuration               float64
+	Rooted                     bool
+	RootDuration               float64
+	Bleeding                   bool
+	BleedDuration              float64
+	BleedDamage                int
+	Poisoned                   bool
+	PoisonDuration             float64
+	PoisonDamage               int
+	WeakPointMarked            bool
+	WeakPointDuration          float64
+	MarkWeakness               bool
+	MarkWeaknessDuration       float64
+	SpiritDuration             float64
+	BlessingResolveDuration    float64
+	TimeWarpDuration           float64
+	GuardianEmbraceDuration    float64
+	ArcaneShieldDuration       float64
 	DivineInterventionDuration float64
-	SpellFocusDuration float64
-	SwiftDuration float64
-	JumpProgress float64
-	TalentPoints int
-	TalentKeys   int
-	TalentSpent  int
-	PartyID      string
-	SocialStatus string
+	SpellFocusDuration         float64
+	SwiftDuration              float64
+	JumpProgress               float64
+	TalentPoints               int
+	TalentKeys                 int
+	TalentSpent                int
+	PartyID                    string
+	SocialStatus               string
 }
 
 // Client represents a connected player
@@ -246,12 +246,12 @@ const (
 	MsgResumeSession     = "resume_session"
 
 	// Friends (0.38)
-	MsgFriendRequest  = "friend_request"   // C→S send request; S→C incoming request notification
-	MsgFriendAccept   = "friend_accept"    // C→S accept pending; S→C accepted notification
-	MsgFriendDecline  = "friend_decline"   // C→S decline pending request
-	MsgFriendRemove   = "friend_remove"    // C→S remove accepted friend
-	MsgFriendList     = "friend_list"      // C→S request list; S→C full list payload
-	MsgFriendPresence = "friend_presence"  // S→C friend came online or went offline
+	MsgFriendRequest  = "friend_request"  // C→S send request; S→C incoming request notification
+	MsgFriendAccept   = "friend_accept"   // C→S accept pending; S→C accepted notification
+	MsgFriendDecline  = "friend_decline"  // C→S decline pending request
+	MsgFriendRemove   = "friend_remove"   // C→S remove accepted friend
+	MsgFriendList     = "friend_list"     // C→S request list; S→C full list payload
+	MsgFriendPresence = "friend_presence" // S→C friend came online or went offline
 )
 
 type SplitStackPayload struct {
@@ -474,47 +474,47 @@ type TelegraphPayload struct {
 }
 
 type RewardSummaryPayload struct {
-	PlayerID     string `json:"playerId"`
-	Title        string `json:"title"`
-	Subtitle     string `json:"subtitle,omitempty"`
-	Gold         int    `json:"gold"`
-	XP           int    `json:"xp"`
-	ItemCount    int    `json:"itemCount"`
-	GemCount     int    `json:"gemCount"`
-	HeartCount   int    `json:"heartCount"`
-	BossName     string `json:"bossName,omitempty"`
-	InstanceType string `json:"instanceType,omitempty"`
-	Difficulty   string `json:"difficulty,omitempty"`
-	RunLevel     int    `json:"runLevel,omitempty"`
-	RoomsCleared int    `json:"roomsCleared,omitempty"`
-	TotalRooms   int    `json:"totalRooms,omitempty"`
-	EliteRoomsCleared int `json:"eliteRoomsCleared,omitempty"`
-	TotalEliteRooms int `json:"totalEliteRooms,omitempty"`
-	DifficultyNote string `json:"difficultyNote,omitempty"`
-	ExitHint     string `json:"exitHint,omitempty"`
+	PlayerID          string `json:"playerId"`
+	Title             string `json:"title"`
+	Subtitle          string `json:"subtitle,omitempty"`
+	Gold              int    `json:"gold"`
+	XP                int    `json:"xp"`
+	ItemCount         int    `json:"itemCount"`
+	GemCount          int    `json:"gemCount"`
+	HeartCount        int    `json:"heartCount"`
+	BossName          string `json:"bossName,omitempty"`
+	InstanceType      string `json:"instanceType,omitempty"`
+	Difficulty        string `json:"difficulty,omitempty"`
+	RunLevel          int    `json:"runLevel,omitempty"`
+	RoomsCleared      int    `json:"roomsCleared,omitempty"`
+	TotalRooms        int    `json:"totalRooms,omitempty"`
+	EliteRoomsCleared int    `json:"eliteRoomsCleared,omitempty"`
+	TotalEliteRooms   int    `json:"totalEliteRooms,omitempty"`
+	DifficultyNote    string `json:"difficultyNote,omitempty"`
+	ExitHint          string `json:"exitHint,omitempty"`
 }
 
 type RoomClearRewardPayload struct {
-	PlayerID             string `json:"playerId"`
-	Title                string `json:"title"`
-	Subtitle             string `json:"subtitle,omitempty"`
-	Gold                 int    `json:"gold"`
-	XP                   int    `json:"xp"`
-	ItemCount            int    `json:"itemCount,omitempty"`
-	GemCount             int    `json:"gemCount,omitempty"`
-	HeartCount           int    `json:"heartCount,omitempty"`
-	Hint                 string `json:"hint,omitempty"`
-	RoomIndex            int    `json:"roomIndex"`
-	ObjectiveRoomIndex   int    `json:"objectiveRoomIndex"`
-	RoomType             string `json:"roomType,omitempty"`
-	RoomHook             string `json:"roomHook,omitempty"`
-	InstanceType         string `json:"instanceType,omitempty"`
-	Difficulty           string `json:"difficulty,omitempty"`
-	HealthRestored       int    `json:"healthRestored,omitempty"`
-	ManaRestored         int    `json:"manaRestored,omitempty"`
-	BuffName             string `json:"buffName,omitempty"`
-	BuffDurationSeconds  int    `json:"buffDurationSeconds,omitempty"`
-	DamageReductionPct   int    `json:"damageReductionPct,omitempty"`
+	PlayerID            string `json:"playerId"`
+	Title               string `json:"title"`
+	Subtitle            string `json:"subtitle,omitempty"`
+	Gold                int    `json:"gold"`
+	XP                  int    `json:"xp"`
+	ItemCount           int    `json:"itemCount,omitempty"`
+	GemCount            int    `json:"gemCount,omitempty"`
+	HeartCount          int    `json:"heartCount,omitempty"`
+	Hint                string `json:"hint,omitempty"`
+	RoomIndex           int    `json:"roomIndex"`
+	ObjectiveRoomIndex  int    `json:"objectiveRoomIndex"`
+	RoomType            string `json:"roomType,omitempty"`
+	RoomHook            string `json:"roomHook,omitempty"`
+	InstanceType        string `json:"instanceType,omitempty"`
+	Difficulty          string `json:"difficulty,omitempty"`
+	HealthRestored      int    `json:"healthRestored,omitempty"`
+	ManaRestored        int    `json:"manaRestored,omitempty"`
+	BuffName            string `json:"buffName,omitempty"`
+	BuffDurationSeconds int    `json:"buffDurationSeconds,omitempty"`
+	DamageReductionPct  int    `json:"damageReductionPct,omitempty"`
 }
 
 type ChatPayload struct {
@@ -1022,24 +1022,24 @@ func main() {
 				return
 			}
 			payload := RewardSummaryPayload{
-				PlayerID:     evt.PlayerID,
-				Title:        evt.Title,
-				Subtitle:     evt.Subtitle,
-				Gold:         evt.Gold,
-				XP:           evt.XP,
-				ItemCount:    evt.ItemCount,
-				GemCount:     evt.GemCount,
-				HeartCount:   evt.HeartCount,
-				BossName:     evt.BossName,
-				InstanceType: evt.InstanceType,
-				Difficulty:   evt.Difficulty,
-				RunLevel:     evt.RunLevel,
-				RoomsCleared: evt.RoomsCleared,
-				TotalRooms:   evt.TotalRooms,
+				PlayerID:          evt.PlayerID,
+				Title:             evt.Title,
+				Subtitle:          evt.Subtitle,
+				Gold:              evt.Gold,
+				XP:                evt.XP,
+				ItemCount:         evt.ItemCount,
+				GemCount:          evt.GemCount,
+				HeartCount:        evt.HeartCount,
+				BossName:          evt.BossName,
+				InstanceType:      evt.InstanceType,
+				Difficulty:        evt.Difficulty,
+				RunLevel:          evt.RunLevel,
+				RoomsCleared:      evt.RoomsCleared,
+				TotalRooms:        evt.TotalRooms,
 				EliteRoomsCleared: evt.EliteRoomsCleared,
 				TotalEliteRooms:   evt.TotalEliteRooms,
-				DifficultyNote: evt.DifficultyNote,
-				ExitHint:     evt.ExitHint,
+				DifficultyNote:    evt.DifficultyNote,
+				ExitHint:          evt.ExitHint,
 			}
 			b, _ := json.Marshal(payload)
 			outMsg := Message{
@@ -2067,13 +2067,13 @@ func (c *Client) handleMessage(msg Message) {
 					Type:    MsgEnterInstance,
 					Payload: payloadBytes,
 				}
-			b, _ := json.Marshal(msg)
-			memberClient.sendSafe(b)
-			// memberClient.sendError("Debug: Sent EnterInstance")
-			// Auto-set social status: in_run (0.37.4)
-			autoSetSocialStatus(memberClient, memberID, "in_run")
+				b, _ := json.Marshal(msg)
+				memberClient.sendSafe(b)
+				// memberClient.sendError("Debug: Sent EnterInstance")
+				// Auto-set social status: in_run (0.37.4)
+				autoSetSocialStatus(memberClient, memberID, "in_run")
+			}
 		}
-	}
 
 	case MsgGetDungeonStatus:
 		if c.playerID == "" {
@@ -2128,14 +2128,14 @@ func (c *Client) handleMessage(msg Message) {
 		}
 
 		resp := map[string]interface{}{
-			"hasInstance":                hasInstance,
-			"timeLeft":                   timeLeft,
-			"isLeader":                   isLeader,
-			"playerLevel":                player.Level,
-			"maxPlayerLevel":             game.MaxPlayerLevel,
-			"dungeonUnlockLevel":         game.DungeonUnlockLevel,
+			"hasInstance":                  hasInstance,
+			"timeLeft":                     timeLeft,
+			"isLeader":                     isLeader,
+			"playerLevel":                  player.Level,
+			"maxPlayerLevel":               game.MaxPlayerLevel,
+			"dungeonUnlockLevel":           game.DungeonUnlockLevel,
 			"endgameDifficultyUnlockLevel": game.EndgameDifficultyUnlockLevel,
-			"availableRunLevels":         game.AvailableDungeonRunLevelsForPlayer(player.Level),
+			"availableRunLevels":           game.AvailableDungeonRunLevelsForPlayer(player.Level),
 		}
 		if statusReq.DungeonType != "" {
 			resp["dungeonType"] = statusReq.DungeonType
@@ -3352,57 +3352,57 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 	}
 
 	snap := &EntitySnapshot{
-		X:            e.X,
-		Z:            e.Z,
-		Y:            e.Y,
-		Rotation:     e.Rotation,
-		Health:       e.Health,
-		MaxHealth:    e.MaxHealth,
-		Mana:         e.Mana,
-		State:        e.State,
-		Level:        e.Level,
-		IsCharging:   e.IsCharging,
-		SpiritsActive: e.SpiritsActive,
-		SpiritsBoosted: e.SpiritsBoosted,
-		GuardianEmbraceActive: e.GuardianEmbraceActive,
-		BlessingResolveActive: e.BlessingResolveActive,
-		DivineInterventionActive: e.DivineInterventionActive,
-		ArcaneShieldActive: e.ArcaneShieldActive,
-		ArcaneShieldHP: e.ArcaneShieldHP,
-		TimeWarpActive: e.TimeWarpActive,
-		SpellFocusActive: e.SpellFocusActive,
-		SwiftActive: e.SwiftActive,
-		Stunned: e.Stunned,
-		StunDuration: stunDuration,
-		Slowed: e.Slowed,
-		SlowFactor: e.SlowFactor,
-		SlowDuration: slowDuration,
-		Rooted: e.Rooted,
-		RootDuration: rootDuration,
-		Bleeding: e.Bleeding,
-		BleedDuration: bleedDuration,
-		BleedDamage: bleedDamage,
-		Poisoned: e.Poisoned,
-		PoisonDuration: poisonDuration,
-		PoisonDamage: poisonDamage,
-		WeakPointMarked: e.WeakPointMarked,
-		WeakPointDuration: weakPointDuration,
-		MarkWeakness: e.MarkWeakness,
-		MarkWeaknessDuration: markWeaknessDuration,
-		SpiritDuration: spiritDuration,
-		BlessingResolveDuration: blessingResolveDuration,
-		TimeWarpDuration: timeWarpDuration,
-		GuardianEmbraceDuration: guardianEmbraceDuration,
-		ArcaneShieldDuration: arcaneShieldDuration,
+		X:                          e.X,
+		Z:                          e.Z,
+		Y:                          e.Y,
+		Rotation:                   e.Rotation,
+		Health:                     e.Health,
+		MaxHealth:                  e.MaxHealth,
+		Mana:                       e.Mana,
+		State:                      e.State,
+		Level:                      e.Level,
+		IsCharging:                 e.IsCharging,
+		SpiritsActive:              e.SpiritsActive,
+		SpiritsBoosted:             e.SpiritsBoosted,
+		GuardianEmbraceActive:      e.GuardianEmbraceActive,
+		BlessingResolveActive:      e.BlessingResolveActive,
+		DivineInterventionActive:   e.DivineInterventionActive,
+		ArcaneShieldActive:         e.ArcaneShieldActive,
+		ArcaneShieldHP:             e.ArcaneShieldHP,
+		TimeWarpActive:             e.TimeWarpActive,
+		SpellFocusActive:           e.SpellFocusActive,
+		SwiftActive:                e.SwiftActive,
+		Stunned:                    e.Stunned,
+		StunDuration:               stunDuration,
+		Slowed:                     e.Slowed,
+		SlowFactor:                 e.SlowFactor,
+		SlowDuration:               slowDuration,
+		Rooted:                     e.Rooted,
+		RootDuration:               rootDuration,
+		Bleeding:                   e.Bleeding,
+		BleedDuration:              bleedDuration,
+		BleedDamage:                bleedDamage,
+		Poisoned:                   e.Poisoned,
+		PoisonDuration:             poisonDuration,
+		PoisonDamage:               poisonDamage,
+		WeakPointMarked:            e.WeakPointMarked,
+		WeakPointDuration:          weakPointDuration,
+		MarkWeakness:               e.MarkWeakness,
+		MarkWeaknessDuration:       markWeaknessDuration,
+		SpiritDuration:             spiritDuration,
+		BlessingResolveDuration:    blessingResolveDuration,
+		TimeWarpDuration:           timeWarpDuration,
+		GuardianEmbraceDuration:    guardianEmbraceDuration,
+		ArcaneShieldDuration:       arcaneShieldDuration,
 		DivineInterventionDuration: divineInterventionDuration,
-		SpellFocusDuration: spellFocusDuration,
-		SwiftDuration: swiftDuration,
-		JumpProgress: e.JumpProgress,
-		TalentPoints: derivedTalentPoints,
-		TalentKeys:   keys,
-		TalentSpent:  spent,
-		PartyID:      e.PartyID,
-		SocialStatus: e.SocialStatus,
+		SpellFocusDuration:         spellFocusDuration,
+		SwiftDuration:              swiftDuration,
+		JumpProgress:               e.JumpProgress,
+		TalentPoints:               derivedTalentPoints,
+		TalentKeys:                 keys,
+		TalentSpent:                spent,
+		PartyID:                    e.PartyID,
+		SocialStatus:               e.SocialStatus,
 	}
 	e.Mu.RUnlock()
 
@@ -4046,85 +4046,94 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 	}
 
 	out := &statepb.Entity{
-		Id:                e.ID,
-		InstanceId:        e.InstanceID,
-		Name:              e.Name,
-		Type:              string(e.Type),
-		SubType:           e.SubType,
-		X:                 float32(e.X),
-		Y:                 float32(e.Y),
-		Z:                 float32(e.Z),
-		Rotation:          float32(e.Rotation),
-		Health:            int32(e.Health),
-		MaxHealth:         int32(e.MaxHealth),
-		Mana:              int32(e.Mana),
-		MaxMana:           int32(e.MaxMana),
-		Level:             int32(e.Level),
-		Experience:        int32(e.Experience),
-		MaxExperience:     int32(e.MaxExperience),
-		Gold:              int32(e.Gold),
-		SkillPoints:       int32(e.SkillPoints),
-		SelectedBranch:    e.SelectedBranch,
-		UnlockedSkills:    unlockedSkills,
-		TalentPoints:      int32(derivedTalentPoints),
-		UnlockedTalents:   unlockedTalents,
-		TalentRanks:       talentRanks,
-		BaseStats:         statsToProto(e.BaseStats),
-		Stats:             statsToProto(e.Stats),
-		Damage:            int32(e.Damage),
-		Defense:           int32(e.Defense),
-		Speed:             float32(e.Speed),
-		AttackSpeed:       float32(e.AttackSpeed),
-		CooldownReduction: float32(e.CooldownReduction),
-		HpRegen:           float32(e.HpRegen),
-		ManaRegen:         float32(e.ManaRegen),
-		CastSpeed:         float32(e.CastSpeed),
-		Scale:             float32(e.Scale),
-		State:             e.State,
-		Equipment:         equipment,
-		Quests:            questsToProto(quests),
-		LootItem:          itemToProto(lootItem),
-		OwnerId:           e.OwnerID,
-		VelX:              float32(e.VelX),
-		VelZ:              float32(e.VelZ),
-		SpiritsActive:     e.SpiritsActive,
-		SpiritsBoosted:    e.SpiritsBoosted,
-		IsCharging:        e.IsCharging,
-		GuardianEmbraceActive: e.GuardianEmbraceActive,
-		BlessingResolveActive: e.BlessingResolveActive,
-		DivineInterventionActive: e.DivineInterventionActive,
-		ArcaneShieldActive: e.ArcaneShieldActive,
-		ArcaneShieldHp: int32(e.ArcaneShieldHP),
-		TimeWarpActive: e.TimeWarpActive,
-		SpellFocusActive: e.SpellFocusActive,
-		SwiftActive: e.SwiftActive,
-		Stunned:           e.Stunned,
-		StunDuration:      stunDuration,
-		Slowed:            e.Slowed,
-		SlowFactor:        float32(e.SlowFactor),
-		SlowDuration:      slowDuration,
-		Rooted:            e.Rooted,
-		RootDuration:      rootDuration,
-		Bleeding:          e.Bleeding,
-		BleedDuration:     bleedDuration,
-		BleedDamage:       bleedDamage,
-		Poisoned:          e.Poisoned,
-		PoisonDuration:    poisonDuration,
-		PoisonDamage:      poisonDamage,
-		WeakPointMarked:   e.WeakPointMarked,
-		WeakPointDuration: float32(weakPointDuration),
-		MarkWeakness:      e.MarkWeakness,
-		MarkWeaknessDuration: markWeaknessDuration,
-		SpiritDuration:    spiritDuration,
-		BlessingResolveDuration: blessingResolveDuration,
-		TimeWarpDuration: timeWarpDuration,
-		GuardianEmbraceDuration: guardianEmbraceDuration,
-		ArcaneShieldDuration: arcaneShieldDuration,
+		Id:                         e.ID,
+		InstanceId:                 e.InstanceID,
+		Name:                       e.Name,
+		Type:                       string(e.Type),
+		SubType:                    e.SubType,
+		X:                          float32(e.X),
+		Y:                          float32(e.Y),
+		Z:                          float32(e.Z),
+		Rotation:                   float32(e.Rotation),
+		Health:                     int32(e.Health),
+		MaxHealth:                  int32(e.MaxHealth),
+		Mana:                       int32(e.Mana),
+		MaxMana:                    int32(e.MaxMana),
+		Level:                      int32(e.Level),
+		Experience:                 int32(e.Experience),
+		MaxExperience:              int32(e.MaxExperience),
+		Gold:                       int32(e.Gold),
+		SkillPoints:                int32(e.SkillPoints),
+		SelectedBranch:             e.SelectedBranch,
+		UnlockedSkills:             unlockedSkills,
+		TalentPoints:               int32(derivedTalentPoints),
+		UnlockedTalents:            unlockedTalents,
+		TalentRanks:                talentRanks,
+		BaseStats:                  statsToProto(e.BaseStats),
+		Stats:                      statsToProto(e.Stats),
+		Damage:                     int32(e.Damage),
+		Defense:                    int32(e.Defense),
+		Speed:                      float32(e.Speed),
+		AttackSpeed:                float32(e.AttackSpeed),
+		CooldownReduction:          float32(e.CooldownReduction),
+		HpRegen:                    float32(e.HpRegen),
+		ManaRegen:                  float32(e.ManaRegen),
+		CastSpeed:                  float32(e.CastSpeed),
+		Scale:                      float32(e.Scale),
+		State:                      e.State,
+		Equipment:                  equipment,
+		Quests:                     questsToProto(quests),
+		LootItem:                   itemToProto(lootItem),
+		OwnerId:                    e.OwnerID,
+		VelX:                       float32(e.VelX),
+		VelZ:                       float32(e.VelZ),
+		SpiritsActive:              e.SpiritsActive,
+		SpiritsBoosted:             e.SpiritsBoosted,
+		IsCharging:                 e.IsCharging,
+		GuardianEmbraceActive:      e.GuardianEmbraceActive,
+		BlessingResolveActive:      e.BlessingResolveActive,
+		DivineInterventionActive:   e.DivineInterventionActive,
+		ArcaneShieldActive:         e.ArcaneShieldActive,
+		ArcaneShieldHp:             int32(e.ArcaneShieldHP),
+		TimeWarpActive:             e.TimeWarpActive,
+		SpellFocusActive:           e.SpellFocusActive,
+		SwiftActive:                e.SwiftActive,
+		Stunned:                    e.Stunned,
+		StunDuration:               stunDuration,
+		Slowed:                     e.Slowed,
+		SlowFactor:                 float32(e.SlowFactor),
+		SlowDuration:               slowDuration,
+		Rooted:                     e.Rooted,
+		RootDuration:               rootDuration,
+		Bleeding:                   e.Bleeding,
+		BleedDuration:              bleedDuration,
+		BleedDamage:                bleedDamage,
+		Poisoned:                   e.Poisoned,
+		PoisonDuration:             poisonDuration,
+		PoisonDamage:               poisonDamage,
+		WeakPointMarked:            e.WeakPointMarked,
+		WeakPointDuration:          float32(weakPointDuration),
+		MarkWeakness:               e.MarkWeakness,
+		MarkWeaknessDuration:       markWeaknessDuration,
+		SpiritDuration:             spiritDuration,
+		BlessingResolveDuration:    blessingResolveDuration,
+		TimeWarpDuration:           timeWarpDuration,
+		GuardianEmbraceDuration:    guardianEmbraceDuration,
+		ArcaneShieldDuration:       arcaneShieldDuration,
 		DivineInterventionDuration: divineInterventionDuration,
-		SpellFocusDuration: spellFocusDuration,
-		SwiftDuration: swiftDuration,
-		PartyId:      e.PartyID,
-		SocialStatus: e.SocialStatus,
+		SpellFocusDuration:         spellFocusDuration,
+		SwiftDuration:              swiftDuration,
+		JumpStartX:                 float32(e.JumpStartX),
+		JumpStartY:                 float32(e.JumpStartY),
+		JumpStartZ:                 float32(e.JumpStartZ),
+		JumpTargetX:                float32(e.JumpTargetX),
+		JumpTargetY:                float32(e.JumpTargetY),
+		JumpTargetZ:                float32(e.JumpTargetZ),
+		JumpDuration:               float32(e.JumpDuration),
+		JumpHeight:                 float32(e.JumpHeight),
+		JumpProgress:               float32(e.JumpProgress),
+		PartyId:                    e.PartyID,
+		SocialStatus:               e.SocialStatus,
 	}
 
 	e.Mu.RUnlock()

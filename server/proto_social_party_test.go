@@ -199,3 +199,35 @@ func TestEntityToProto_EmptyPartyAndStatusByDefault(t *testing.T) {
 		t.Fatalf("expected empty pb.SocialStatus, got %q", pb.SocialStatus)
 	}
 }
+
+func TestEntityToProto_PopulatesJumpMetadata(t *testing.T) {
+	e := &game.Entity{
+		ID:           "p12",
+		Type:         game.TypePlayer,
+		SubType:      "Fighter",
+		State:        "JUMPING",
+		TalentRanks:  map[string]int{},
+		JumpStartX:   1,
+		JumpStartY:   2,
+		JumpStartZ:   3,
+		JumpTargetX:  11,
+		JumpTargetY:  2,
+		JumpTargetZ:  13,
+		JumpDuration: 0.75,
+		JumpHeight:   8.5,
+		JumpProgress: 0.4,
+	}
+	pb := entityToProto(e)
+	if pb == nil {
+		t.Fatal("entityToProto returned nil")
+	}
+	if pb.JumpStartX != 1 || pb.JumpStartY != 2 || pb.JumpStartZ != 3 {
+		t.Fatalf("expected jump start (1,2,3), got (%.2f,%.2f,%.2f)", pb.JumpStartX, pb.JumpStartY, pb.JumpStartZ)
+	}
+	if pb.JumpTargetX != 11 || pb.JumpTargetY != 2 || pb.JumpTargetZ != 13 {
+		t.Fatalf("expected jump target (11,2,13), got (%.2f,%.2f,%.2f)", pb.JumpTargetX, pb.JumpTargetY, pb.JumpTargetZ)
+	}
+	if pb.JumpDuration != 0.75 || pb.JumpHeight != 8.5 || pb.JumpProgress != 0.4 {
+		t.Fatalf("expected jump timing metadata, got duration=%.2f height=%.2f progress=%.2f", pb.JumpDuration, pb.JumpHeight, pb.JumpProgress)
+	}
+}

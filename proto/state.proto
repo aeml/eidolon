@@ -180,4 +180,15 @@ message Entity {
   // Social / party
   string party_id = 79;
   string social_status = 80;
+
+  // Authoritative jump replication
+  float jump_start_x = 81;
+  float jump_start_y = 82;
+  float jump_start_z = 83;
+  float jump_target_x = 84;
+  float jump_target_y = 85;
+  float jump_target_z = 86;
+  float jump_duration = 87;
+  float jump_height = 88;
+  float jump_progress = 89;
 }

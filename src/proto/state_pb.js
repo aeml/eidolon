@@ -1,4 +1,4 @@
-﻿/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
+/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
 const $protobuf = globalThis.protobuf;
 
 if (!$protobuf) {
@@ -2480,6 +2480,15 @@ export const eidolon = $root.eidolon = (() => {
              * @property {Object.<string,string>|null} [skillRunes] Entity skillRunes
              * @property {string|null} [partyId] Entity partyId
              * @property {string|null} [socialStatus] Entity socialStatus
+             * @property {number|null} [jumpStartX] Entity jumpStartX
+             * @property {number|null} [jumpStartY] Entity jumpStartY
+             * @property {number|null} [jumpStartZ] Entity jumpStartZ
+             * @property {number|null} [jumpTargetX] Entity jumpTargetX
+             * @property {number|null} [jumpTargetY] Entity jumpTargetY
+             * @property {number|null} [jumpTargetZ] Entity jumpTargetZ
+             * @property {number|null} [jumpDuration] Entity jumpDuration
+             * @property {number|null} [jumpHeight] Entity jumpHeight
+             * @property {number|null} [jumpProgress] Entity jumpProgress
              */
 
             /**
@@ -3144,6 +3153,78 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.socialStatus = "";
 
             /**
+             * Entity jumpStartX.
+             * @member {number} jumpStartX
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.jumpStartX = 0;
+
+            /**
+             * Entity jumpStartY.
+             * @member {number} jumpStartY
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.jumpStartY = 0;
+
+            /**
+             * Entity jumpStartZ.
+             * @member {number} jumpStartZ
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.jumpStartZ = 0;
+
+            /**
+             * Entity jumpTargetX.
+             * @member {number} jumpTargetX
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.jumpTargetX = 0;
+
+            /**
+             * Entity jumpTargetY.
+             * @member {number} jumpTargetY
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.jumpTargetY = 0;
+
+            /**
+             * Entity jumpTargetZ.
+             * @member {number} jumpTargetZ
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.jumpTargetZ = 0;
+
+            /**
+             * Entity jumpDuration.
+             * @member {number} jumpDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.jumpDuration = 0;
+
+            /**
+             * Entity jumpHeight.
+             * @member {number} jumpHeight
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.jumpHeight = 0;
+
+            /**
+             * Entity jumpProgress.
+             * @member {number} jumpProgress
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.jumpProgress = 0;
+
+            /**
              * Creates a new Entity instance using the specified properties.
              * @function create
              * @memberof eidolon.state.Entity
@@ -3335,6 +3416,24 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 79, wireType 2 =*/634).string(message.partyId);
                 if (message.socialStatus != null && Object.hasOwnProperty.call(message, "socialStatus"))
                     writer.uint32(/* id 80, wireType 2 =*/642).string(message.socialStatus);
+                if (message.jumpStartX != null && Object.hasOwnProperty.call(message, "jumpStartX"))
+                    writer.uint32(/* id 81, wireType 5 =*/653).float(message.jumpStartX);
+                if (message.jumpStartY != null && Object.hasOwnProperty.call(message, "jumpStartY"))
+                    writer.uint32(/* id 82, wireType 5 =*/661).float(message.jumpStartY);
+                if (message.jumpStartZ != null && Object.hasOwnProperty.call(message, "jumpStartZ"))
+                    writer.uint32(/* id 83, wireType 5 =*/669).float(message.jumpStartZ);
+                if (message.jumpTargetX != null && Object.hasOwnProperty.call(message, "jumpTargetX"))
+                    writer.uint32(/* id 84, wireType 5 =*/677).float(message.jumpTargetX);
+                if (message.jumpTargetY != null && Object.hasOwnProperty.call(message, "jumpTargetY"))
+                    writer.uint32(/* id 85, wireType 5 =*/685).float(message.jumpTargetY);
+                if (message.jumpTargetZ != null && Object.hasOwnProperty.call(message, "jumpTargetZ"))
+                    writer.uint32(/* id 86, wireType 5 =*/693).float(message.jumpTargetZ);
+                if (message.jumpDuration != null && Object.hasOwnProperty.call(message, "jumpDuration"))
+                    writer.uint32(/* id 87, wireType 5 =*/701).float(message.jumpDuration);
+                if (message.jumpHeight != null && Object.hasOwnProperty.call(message, "jumpHeight"))
+                    writer.uint32(/* id 88, wireType 5 =*/709).float(message.jumpHeight);
+                if (message.jumpProgress != null && Object.hasOwnProperty.call(message, "jumpProgress"))
+                    writer.uint32(/* id 89, wireType 5 =*/717).float(message.jumpProgress);
                 return writer;
             };
 
@@ -3754,6 +3853,42 @@ export const eidolon = $root.eidolon = (() => {
                             message.socialStatus = reader.string();
                             break;
                         }
+                    case 81: {
+                            message.jumpStartX = reader.float();
+                            break;
+                        }
+                    case 82: {
+                            message.jumpStartY = reader.float();
+                            break;
+                        }
+                    case 83: {
+                            message.jumpStartZ = reader.float();
+                            break;
+                        }
+                    case 84: {
+                            message.jumpTargetX = reader.float();
+                            break;
+                        }
+                    case 85: {
+                            message.jumpTargetY = reader.float();
+                            break;
+                        }
+                    case 86: {
+                            message.jumpTargetZ = reader.float();
+                            break;
+                        }
+                    case 87: {
+                            message.jumpDuration = reader.float();
+                            break;
+                        }
+                    case 88: {
+                            message.jumpHeight = reader.float();
+                            break;
+                        }
+                    case 89: {
+                            message.jumpProgress = reader.float();
+                            break;
+                        }
                     default:
                         reader.skipType(tag & 7);
                         break;
@@ -4066,6 +4201,33 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.socialStatus != null && message.hasOwnProperty("socialStatus"))
                     if (!$util.isString(message.socialStatus))
                         return "socialStatus: string expected";
+                if (message.jumpStartX != null && message.hasOwnProperty("jumpStartX"))
+                    if (typeof message.jumpStartX !== "number")
+                        return "jumpStartX: number expected";
+                if (message.jumpStartY != null && message.hasOwnProperty("jumpStartY"))
+                    if (typeof message.jumpStartY !== "number")
+                        return "jumpStartY: number expected";
+                if (message.jumpStartZ != null && message.hasOwnProperty("jumpStartZ"))
+                    if (typeof message.jumpStartZ !== "number")
+                        return "jumpStartZ: number expected";
+                if (message.jumpTargetX != null && message.hasOwnProperty("jumpTargetX"))
+                    if (typeof message.jumpTargetX !== "number")
+                        return "jumpTargetX: number expected";
+                if (message.jumpTargetY != null && message.hasOwnProperty("jumpTargetY"))
+                    if (typeof message.jumpTargetY !== "number")
+                        return "jumpTargetY: number expected";
+                if (message.jumpTargetZ != null && message.hasOwnProperty("jumpTargetZ"))
+                    if (typeof message.jumpTargetZ !== "number")
+                        return "jumpTargetZ: number expected";
+                if (message.jumpDuration != null && message.hasOwnProperty("jumpDuration"))
+                    if (typeof message.jumpDuration !== "number")
+                        return "jumpDuration: number expected";
+                if (message.jumpHeight != null && message.hasOwnProperty("jumpHeight"))
+                    if (typeof message.jumpHeight !== "number")
+                        return "jumpHeight: number expected";
+                if (message.jumpProgress != null && message.hasOwnProperty("jumpProgress"))
+                    if (typeof message.jumpProgress !== "number")
+                        return "jumpProgress: number expected";
                 return null;
             };
 
@@ -4286,6 +4448,24 @@ export const eidolon = $root.eidolon = (() => {
                     message.partyId = String(object.partyId);
                 if (object.socialStatus != null)
                     message.socialStatus = String(object.socialStatus);
+                if (object.jumpStartX != null)
+                    message.jumpStartX = Number(object.jumpStartX);
+                if (object.jumpStartY != null)
+                    message.jumpStartY = Number(object.jumpStartY);
+                if (object.jumpStartZ != null)
+                    message.jumpStartZ = Number(object.jumpStartZ);
+                if (object.jumpTargetX != null)
+                    message.jumpTargetX = Number(object.jumpTargetX);
+                if (object.jumpTargetY != null)
+                    message.jumpTargetY = Number(object.jumpTargetY);
+                if (object.jumpTargetZ != null)
+                    message.jumpTargetZ = Number(object.jumpTargetZ);
+                if (object.jumpDuration != null)
+                    message.jumpDuration = Number(object.jumpDuration);
+                if (object.jumpHeight != null)
+                    message.jumpHeight = Number(object.jumpHeight);
+                if (object.jumpProgress != null)
+                    message.jumpProgress = Number(object.jumpProgress);
                 return message;
             };
 
@@ -4387,6 +4567,15 @@ export const eidolon = $root.eidolon = (() => {
                     object.swiftDuration = 0;
                     object.partyId = "";
                     object.socialStatus = "";
+                    object.jumpStartX = 0;
+                    object.jumpStartY = 0;
+                    object.jumpStartZ = 0;
+                    object.jumpTargetX = 0;
+                    object.jumpTargetY = 0;
+                    object.jumpTargetZ = 0;
+                    object.jumpDuration = 0;
+                    object.jumpHeight = 0;
+                    object.jumpProgress = 0;
                 }
                 if (message.id != null && message.hasOwnProperty("id"))
                     object.id = message.id;
@@ -4567,6 +4756,24 @@ export const eidolon = $root.eidolon = (() => {
                     object.partyId = message.partyId;
                 if (message.socialStatus != null && message.hasOwnProperty("socialStatus"))
                     object.socialStatus = message.socialStatus;
+                if (message.jumpStartX != null && message.hasOwnProperty("jumpStartX"))
+                    object.jumpStartX = options.json && !isFinite(message.jumpStartX) ? String(message.jumpStartX) : message.jumpStartX;
+                if (message.jumpStartY != null && message.hasOwnProperty("jumpStartY"))
+                    object.jumpStartY = options.json && !isFinite(message.jumpStartY) ? String(message.jumpStartY) : message.jumpStartY;
+                if (message.jumpStartZ != null && message.hasOwnProperty("jumpStartZ"))
+                    object.jumpStartZ = options.json && !isFinite(message.jumpStartZ) ? String(message.jumpStartZ) : message.jumpStartZ;
+                if (message.jumpTargetX != null && message.hasOwnProperty("jumpTargetX"))
+                    object.jumpTargetX = options.json && !isFinite(message.jumpTargetX) ? String(message.jumpTargetX) : message.jumpTargetX;
+                if (message.jumpTargetY != null && message.hasOwnProperty("jumpTargetY"))
+                    object.jumpTargetY = options.json && !isFinite(message.jumpTargetY) ? String(message.jumpTargetY) : message.jumpTargetY;
+                if (message.jumpTargetZ != null && message.hasOwnProperty("jumpTargetZ"))
+                    object.jumpTargetZ = options.json && !isFinite(message.jumpTargetZ) ? String(message.jumpTargetZ) : message.jumpTargetZ;
+                if (message.jumpDuration != null && message.hasOwnProperty("jumpDuration"))
+                    object.jumpDuration = options.json && !isFinite(message.jumpDuration) ? String(message.jumpDuration) : message.jumpDuration;
+                if (message.jumpHeight != null && message.hasOwnProperty("jumpHeight"))
+                    object.jumpHeight = options.json && !isFinite(message.jumpHeight) ? String(message.jumpHeight) : message.jumpHeight;
+                if (message.jumpProgress != null && message.hasOwnProperty("jumpProgress"))
+                    object.jumpProgress = options.json && !isFinite(message.jumpProgress) ? String(message.jumpProgress) : message.jumpProgress;
                 return object;
             };
 
