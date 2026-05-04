@@ -826,8 +826,8 @@ export class Actor extends Entity {
                     this.playAnimation('Death', false);
                 }
             } else if (this.state === 'JUMPING') {
-                if (!this.jumpAnimationRestore && this.animations['Jump']) {
-                    this.playAnimation('Jump', false);
+                if (!this.jumpAnimationRestore) {
+                    this.playJumpAnimation(this.jumpVisualState);
                 }
             } else if (this.isCharging) {
                 const moveAnim = this.getMovementAnimationName(true);

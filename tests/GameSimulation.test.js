@@ -355,6 +355,18 @@ describe('Actor System', () => {
             expect(action.setEffectiveTimeScale).toHaveBeenCalledWith(0.25);
             expect(actor.jumpAnimationRestore).toEqual({ name: 'Jump', timeScale: 0.25 });
         });
+
+        test('remote jumping update uses authoritative jump animation timing', () => {
+            actor.isRemote = true;
+            actor.state = 'JUMPING';
+            actor.jumpVisualState = { duration: 1.2, serverDriven: true };
+            actor.targetServerPosition = actor.position.clone();
+            actor.playJumpAnimation = jest.fn();
+
+            actor.update(0.016, null, null, null);
+
+            expect(actor.playJumpAnimation).toHaveBeenCalledWith(actor.jumpVisualState);
+        });
     });
 
     describe('Inventory System', () => {
