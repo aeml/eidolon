@@ -1237,4 +1237,97 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.jumpVisualState.visualHeight).toBeGreaterThan(Math.sin(0.25 * Math.PI) * 8);
         expect(remoteEntity.jumpVisualState.displayPosition.x).toBeGreaterThanOrEqual(4);
     });
+
+    test('syncRemoteEntity neutralises targetServerPosition.y to baseY during jump to prevent Actor lerp double-arc (Bug 1 fix)', () => {
+        const engine = createEngineHarness();
+        const remoteEntity = {
+            position: new THREE.Vector3(0, 0, 0),
+            targetServerPosition: null,
+            targetServerRotation: undefined,
+            rotation: new THREE.Quaternion(),
+            state: 'IDLE',
+            isCharging: false,
+            isDead: false,
+            deadTimer: 0,
+            mesh: {
+                visible: true,
+                position: new THREE.Vector3(0, 0, 0),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            },
+            stats: { hp: 100, maxHp: 100, mana: 10, maxMana: 10, speed: 3, attackSpeed: 1 },
+            playJumpAnimation: jest.fn(),
+            clearJumpAnimation: jest.fn(),
+            updateState: jest.fn(function updateState(nextState) { this.state = nextState; })
+        };
+
+        // pData.y = 4.5 is the server-side arc Y (base + arc height combined).
+        // syncAuthoritativeJumpState computes baseY ~0 from the trajectory and sets
+        // entity.position.y = baseY.  The fix must also clamp targetServerPosition.y
+        // to baseY so Actor.update() lerp does not re-introduce the arc height, which
+        // would cause applyEntityJumpVisuals to add visualHeight on top => double arc.
+        engine.syncRemoteEntity(remoteEntity, {
+            id: 'remote-1',
+            type: 'Player',
+            state: 'JUMPING',
+            x: 5,
+            y: 4.5,          // server arc Y -- includes arc height
+            z: 0,
+            jumpStartX: 0,
+            jumpStartY: 0,
+            jumpStartZ: 0,
+            jumpTargetX: 20,
+            jumpTargetY: 0,
+            jumpTargetZ: 0,
+            jumpProgress: 0.25,
+            jumpHeight: 8,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        });
+
+        expect(remoteEntity.targetServerPosition).not.toBeNull();
+        // targetServerPosition.y must match entity.position.y (baseY), NOT pData.y (4.5).
+        expect(remoteEntity.targetServerPosition.y).toBeCloseTo(remoteEntity.position.y, 5);
+        expect(remoteEntity.targetServerPosition.y).not.toBeCloseTo(4.5, 1);
+    });
+
+    test('updateRemoteJumpVisuals does not lerp displayPosition X/Z; applyEntityJumpVisuals is the single lerp site per frame (Bug 2 fix)', () => {
+        const engine = createEngineHarness();
+        // Entity is mid-jump: displayPosition.x lags behind logical position.x.
+        const remoteEntity = {
+            position: new THREE.Vector3(8, 0, 0),
+            rotation: new THREE.Quaternion(),
+            jumpVisualState: {
+                start: new THREE.Vector3(0, 0, 0),
+                end: new THREE.Vector3(20, 0, 0),
+                progress: 0.4,
+                elapsed: 0.4,
+                duration: 1,
+                height: 8,
+                visualHeight: Math.sin(0.4 * Math.PI) * 8,
+                serverDriven: true,
+                displayPosition: new THREE.Vector3(4, 0, 0)  // lags behind position.x=8
+            },
+            mesh: {
+                position: new THREE.Vector3(4, 0, 0),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            }
+        };
+        engine.activeEntitiesCache = [engine.player, remoteEntity];
+
+        // Update pass: X/Z must NOT advance — only Y sync is allowed here.
+        engine.updateRemoteJumpVisuals(0.016);
+        expect(remoteEntity.jumpVisualState.displayPosition.x).toBe(4);
+
+        // Render pass: X/Z must advance toward entity.position.x = 8 via single lerp.
+        engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
+        expect(remoteEntity.jumpVisualState.displayPosition.x).toBeGreaterThan(4);
+        expect(remoteEntity.jumpVisualState.displayPosition.x).toBeLessThan(8);
+        expect(remoteEntity.mesh.position.x).toBeGreaterThan(4);
+    });
 });

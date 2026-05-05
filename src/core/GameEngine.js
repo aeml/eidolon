@@ -2323,6 +2323,12 @@ export class GameEngine {
                 ...pData,
                 _previousPosition: previousRemotePosition
             });
+            // Bug 1 fix: syncAuthoritativeJumpState set entity.position.y = baseY (ground level).
+            // Neutralise targetServerPosition.y so Actor.update() lerp doesn't re-introduce
+            // the server arc height and cause a double-arc at render time.
+            if (remoteEntity.targetServerPosition) {
+                remoteEntity.targetServerPosition.y = remoteEntity.position.y;
+            }
         } else {
             this.clearAuthoritativeJumpState(remoteEntity);
         }
@@ -3953,9 +3959,8 @@ export class GameEngine {
             jump.progress = Math.max(jump.progress || 0, Math.min(1, jump.elapsed / jump.duration));
             jump.visualHeight = Math.max(0, Math.sin(jump.progress * Math.PI) * (jump.height || 0));
             if (jump.displayPosition) {
-                const displayTarget = this.getAuthoritativeJumpDisplayTarget(entity, jump) || entity.position;
-                displayTarget.y = entity.position.y;
-                jump.displayPosition.lerp(displayTarget, 0.35);
+                // Bug 2 fix: do NOT lerp displayPosition here; applyEntityJumpVisuals
+                // is the single lerp site per frame.  Only keep Y in sync with baseY.
                 jump.displayPosition.y = entity.position.y;
             }
         }
