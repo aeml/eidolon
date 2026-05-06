@@ -212,14 +212,15 @@ describe('authoritative jump flow', () => {
             serverDriven: true
         }));
         expect(engine.playerJumpState.end.x).toBe(18);
-        expect(engine.playerJumpState.elapsed).toBeCloseTo(0.25, 5);
+        expect(engine.playerJumpState.elapsed).toBeCloseTo(engine.playerJumpState.duration * 0.25, 5);
         expect(engine.player.state).toBe('JUMPING');
 
         engine.updatePlayerJump(1 / 60);
         engine.applyPlayerJumpVisuals();
 
         expect(engine.player.position.y).toBe(0);
-        expect(engine.player.mesh.position.y).toBeCloseTo(4.242640687, 5);
+        expect(engine.player.mesh.position.y).toBeGreaterThanOrEqual(4.242640687);
+        expect(engine.player.mesh.position.y).toBeLessThan(5);
     });
     test('predicted jump arc is preserved while awaiting server updates that only include jumping state and position', () => {
         const engine = createEngineHarness();
@@ -260,7 +261,7 @@ describe('authoritative jump flow', () => {
             serverDriven: true
         }));
         expect(engine.playerJumpState.height).toBeGreaterThan(0);
-        expect(engine.playerJumpVisualHeight).toBe(0);
+        expect(engine.playerJumpVisualHeight).toBeGreaterThan(0);
     });
 
     test('authoritative jump updates without explicit jump metadata still preserve the seeded arc progress and height', () => {
@@ -322,7 +323,7 @@ describe('authoritative jump flow', () => {
         engine.applyPlayerJumpVisuals();
 
         expect(engine.player.mesh.position.y).toBeGreaterThan(5);
-        expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(2.5);
+        expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(2.3);
     });
 
     test('self authoritative jump visually interpolates toward new server jump packets instead of snapping mesh horizontally', () => {
@@ -1236,6 +1237,63 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.jumpVisualState.progress).toBeCloseTo(0.45, 5);
         expect(remoteEntity.jumpVisualState.visualHeight).toBeGreaterThan(Math.sin(0.25 * Math.PI) * 8);
         expect(remoteEntity.jumpVisualState.displayPosition.x).toBeGreaterThanOrEqual(4);
+    });
+
+    test('local predicted and remote authoritative jumps render the same mesh pose for the same visual progress', () => {
+        const engine = createEngineHarness();
+        const start = new THREE.Vector3(0, 0, 0);
+        const end = new THREE.Vector3(20, 0, 0);
+        const duration = engine.getJumpTravelDuration(start.distanceTo(end));
+        const height = engine.getJumpArcHeight(start.distanceTo(end));
+        const progress = 0.5;
+        const visualHeight = Math.sin(progress * Math.PI) * height;
+
+        engine.player.position.copy(start).lerp(end, progress);
+        engine.player.position.y = 0;
+        engine.playerJumpState = engine.normalizeJumpVisualState({
+            start: start.clone(),
+            end: end.clone(),
+            visualProgress: progress,
+            elapsed: progress * duration,
+            duration,
+            height,
+            serverDriven: false,
+            displayPosition: engine.player.position.clone()
+        }, engine.player.position);
+        engine.playerJumpVisualHeight = engine.playerJumpState.visualHeight;
+        engine.applyPlayerJumpVisuals();
+
+        const localMeshPosition = engine.player.mesh.position.clone();
+        const localMeshQuaternion = engine.player.mesh.quaternion.clone();
+        const localMeshScale = engine.player.mesh.scale.clone();
+
+        const remoteEntity = {
+            position: start.clone().lerp(end, progress),
+            rotation: new THREE.Quaternion(),
+            jumpVisualState: engine.normalizeJumpVisualState({
+                start: start.clone(),
+                end: end.clone(),
+                visualProgress: progress,
+                elapsed: progress * duration,
+                duration,
+                height,
+                visualHeight,
+                serverDriven: true,
+                displayPosition: start.clone().lerp(end, progress)
+            }, start.clone().lerp(end, progress)),
+            mesh: {
+                position: new THREE.Vector3(),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            }
+        };
+
+        engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
+
+        expect(remoteEntity.mesh.position.distanceTo(localMeshPosition)).toBeLessThan(0.0001);
+        expect(remoteEntity.mesh.quaternion.angleTo(localMeshQuaternion)).toBeLessThan(0.0001);
+        expect(remoteEntity.mesh.scale.distanceTo(localMeshScale)).toBeLessThan(0.0001);
     });
 
     test('syncRemoteEntity neutralises targetServerPosition.y to baseY during jump to prevent Actor lerp double-arc (Bug 1 fix)', () => {

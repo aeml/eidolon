@@ -340,6 +340,7 @@ describe('Actor System', () => {
         test('jump animation fallback stretches Jump clip over authoritative jump duration', () => {
             const action = {
                 getClip: () => ({ duration: 0.25 }),
+                time: 0,
                 setEffectiveTimeScale: jest.fn(),
                 reset: jest.fn().mockReturnThis(),
                 fadeIn: jest.fn().mockReturnThis(),
@@ -354,6 +355,46 @@ describe('Actor System', () => {
             expect(played).toBe(true);
             expect(action.setEffectiveTimeScale).toHaveBeenCalledWith(0.25);
             expect(actor.jumpAnimationRestore).toEqual({ name: 'Jump', timeScale: 0.25 });
+        });
+
+        test('remote jump animation starts at authoritative visual progress instead of frame zero', () => {
+            const action = {
+                getClip: () => ({ duration: 0.6 }),
+                time: 0,
+                setEffectiveTimeScale: jest.fn(),
+                reset: jest.fn().mockReturnThis(),
+                fadeIn: jest.fn().mockReturnThis(),
+                play: jest.fn().mockReturnThis(),
+                setLoop: jest.fn()
+            };
+            actor.mixer = {};
+            actor.animations = { Walk: action };
+
+            const played = actor.playJumpAnimation({ duration: 1.2, visualProgress: 0.5, serverDriven: true });
+
+            expect(played).toBe(true);
+            expect(action.setEffectiveTimeScale).toHaveBeenCalledWith(0.5);
+            expect(action.time).toBeCloseTo(0.3, 5);
+            expect(actor.jumpAnimationRestore).toEqual({ name: 'Walk', timeScale: 0.5 });
+        });
+
+        test('jump animation seek falls back to elapsed seconds when visual progress is omitted', () => {
+            const action = {
+                getClip: () => ({ duration: 0.8 }),
+                time: 0,
+                setEffectiveTimeScale: jest.fn(),
+                reset: jest.fn().mockReturnThis(),
+                fadeIn: jest.fn().mockReturnThis(),
+                play: jest.fn().mockReturnThis(),
+                setLoop: jest.fn()
+            };
+            actor.mixer = {};
+            actor.animations = { Jump: action };
+
+            const played = actor.playJumpAnimation({ duration: 1.6, elapsed: 0.4, serverDriven: true });
+
+            expect(played).toBe(true);
+            expect(action.time).toBeCloseTo(0.2, 5);
         });
 
         test('remote jumping update uses authoritative jump animation timing', () => {

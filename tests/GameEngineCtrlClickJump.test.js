@@ -145,7 +145,7 @@ describe('GameEngine ctrl-click jump', () => {
         }));
         expect(engine.player.playAnimation).not.toHaveBeenCalledWith('Run');
         const duration = engine.playerJumpState.duration;
-        expect(duration).toBeGreaterThanOrEqual(0.95);
+        expect(duration).toBeGreaterThanOrEqual(1.2);
 
         engine.updatePlayerJump(duration / 2);
         engine.applyPlayerJumpVisuals();
@@ -180,7 +180,7 @@ describe('GameEngine ctrl-click jump', () => {
         const longDuration = engine.getJumpTravelDuration(24);
 
         expect(shortDuration).toBeLessThan(longDuration);
-        expect(shortDuration).toBe(0.18);
+        expect(shortDuration).toBe(0.46);
     });
 
     test('jump visuals complete a full 360 front flip over the course of the jump', () => {

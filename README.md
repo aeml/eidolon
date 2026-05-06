@@ -5,41 +5,116 @@
 
 > Brought to you by [Robert Mendola](https://mendola.tech)
 
-Eidolon is a browser-based isometric action RPG MMO with a vanilla JavaScript + Three.js client, an authoritative Go WebSocket server, and MongoDB persistence.
+Eidolon is a browser-based isometric action RPG MMO with a vanilla JavaScript + Three.js client, an authoritative Go WebSocket server, protobuf state streaming, and MongoDB persistence.
 
-## Recommended visuals to add
-- Combat screenshot: active target highlight, damage readability, and hotbar usage in one frame
-- Dungeon screenshot: room objective / party / reward-summary UI in one frame
-- Short GIF: movement + combat + loot + menu polish in a 10-20 second loop
+## Current State
 
-## Vision and media
-- Final vision: [final_vision.md](final_vision.md)
-- Planned media folder: [`docs/media/`](docs/media/)
+- Current in-game displayed version: `Alpha 0.40.0`
+- Active implementation line: `0.40` architecture decomposition
+- Shipped foundation: 4 classes, 4 realms, 4 instanced dungeons, multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, friends/presence, reconnect/session resume, asset caching, audio, accessibility baseline, and broad UX polish
+- Current risk focus: reducing server/client monolith hotspots, strengthening multiplayer readability, then moving into richer social systems, guilds, PvP, and endgame content
+
+## Vision
+
+Eidolon should feel like a real online action RPG, not a promising prototype.
+
+The end state is a polished browser MMO with strong class identity, readable and satisfying combat, authored-feeling dungeon runs, meaningful loot progression, a living economy, and a client/server architecture that stays understandable as the game grows.
+
+Player-facing goals:
+- Fast, readable, satisfying real-time combat
+- Strong class fantasy across Fighter, Rogue, Wizard, and Cleric
+- Dungeons with intentional pacing instead of procedural shuffling for its own sake
+- Progression that stays rewarding from first login through endgame replay
+- Social and economy hooks that make the world feel inhabited rather than solo with chat
+
+Quality bar:
+- Movement, attacks, jumps, abilities, hit response, and recovery feel authored
+- Enemy telegraphs and player effects stay clear in chaotic fights
+- Deaths feel fair and understandable
+- Menus are fast, responsive, consistent, and legible
+- Critical combat, dungeon, multiplayer, and UI flows have meaningful automated coverage
+
+North star: build a browser MMO that feels shockingly complete, polished, and alive for how directly and leanly it is built.
+
+## World And Narrative
+
+Eidolon is set in Aethelgard, a realm where physical reality is a projection of the Collective Consciousness. The world has fallen into Dissonance: a parasitic frequency called the Umbra distorts lands and guardians into hostile forms. The player is a Harmonizer who fights to re-tune corrupted reality and reveal the ideal form, the Eidolon, beneath it.
+
+Core restoration arc:
+- Dissonance: corrupted, desaturated, hostile spaces dominated by the Umbra
+- Catharsis: boss encounters against Fallen Paragons whose corruption cracks away during combat
+- Resonance: restored regions become vibrant, safer, and more abundant hubs
+
+Realm themes:
+- Earth / Iron Weald: strength and growth corrupted into overgrowth, rust, and brutality
+- Air / Crystalline Spire: logic and structure corrupted into cold preservation and absolute order
+- Fire / Shifting Sands: possibility and spirit corrupted into mirage, deceit, and paranoia
+- Water / Abyssal Well: emotion and connection corrupted into drowning grief and obsession
+
+The fiction supports current and future systems: enemies are psychological fragments, loot is restored memory, and early greybox/low-detail presentation can be framed as reality stripped down to raw geometry by the Umbra.
+
+Technical/narrative alignment to preserve in future content work:
+- The Harmonizer maps to player control and class expression
+- Dissonance/Resonance can map to corrupt/restored asset bundles or zone-state presentation
+- Hollows and Constructs can justify simple repeated geometry, instancing, and elite silhouettes
+- Paragon armor-break moments should read as corruption cracking away rather than simple execution
+- Gear should feel like restored memories: corrupted shards refined into harmonic equipment
+
+Base character asset prompts, retained from the original world-design notes:
+- Fighter: "Low poly 3D character model of a heavy muscular human base body, standing in A-pose. Style: Stylized fantasy, hand-painted texture aesthetic. Features: Wearing simple rough-spun tunic and trousers. Earthy brown and moss green fabric colors. No armor, no helmet, no weapons. Strong, grounded silhouette. Bare hands and boots."
+- Wizard: "Low poly 3D character model of a tall slender human base body, standing in A-pose. Style: Stylized fantasy, hand-painted texture aesthetic. Features: Wearing simple linen under-robes or plain tunic. Ice blue and white fabric colors. No heavy cloaks, no staff, no accessories. Clean vertical silhouette. Bare hands and soft shoes."
+- Rogue: "Low poly 3D character model of an athletic wiry human base body, standing in A-pose. Style: Stylized fantasy, hand-painted texture aesthetic. Features: Wearing tight-fitting dark base layers and foot wraps. Burnt orange and deep purple fabric colors. Face visible (no cowl/hood). No daggers, no belts, no armor. Agile silhouette."
+- Cleric: "Low poly 3D character model of a soft-featured human base body, standing in A-pose. Style: Stylized fantasy, hand-painted texture aesthetic. Features: Wearing a plain, unadorned gown or vestment. Deep ocean blue and teal fabric colors. No religious symbols, no staff, no heavy robes. Smooth, curved silhouette. Bare hands."
 
 ## Preview
+
 ![Eidolon gameplay screenshot](docs/media/gameplay-overworld.png)
 ![Eidolon continue screen screenshot](docs/media/dungeon-run.png)
 
-> README visuals use a real live-town gameplay capture plus a real continue/enter-world screen from a disposable demo character on the live game.
+Recommended media still to add:
+- Combat screenshot: target highlight, damage readability, and hotbar usage in one frame
+- Dungeon screenshot: room objective, party, and reward-summary UI in one frame
+- Short GIF: movement, combat, loot, and menu polish in a 10-20 second loop
 
-## Why this project matters
-- Real-time browser multiplayer with server authority and synchronization
-- A broad shipped gameplay surface: combat, progression, loot, crafting, quests, dungeons, parties, economy, and live UX polish
-- Full-stack execution across client runtime, backend services, persistence, asset delivery, testing, and deployment
+## Current Shipped Highlights
 
-## Current shipped highlights
-- 4 playable classes, 4 overworld realms, and 4 instanced dungeons
-- Multiplayer combat, skill trees, passive talents, runes, combos, buffs/debuffs, stash, forge, gambling NPC, and trading house
-- Ongoing UX and technical improvements including asset caching, modularized client systems, CI linting, and client/server test coverage
+### Gameplay And Progression
 
-## Architecture at a glance
-- Client: vanilla JavaScript ES modules + Three.js runtime and UI systems
-- Server: authoritative Go WebSocket simulation and state authority
-- Data: MongoDB persistence
-- State transport: protobuf envelopes (`EDPB`)
-- Delivery: static client + separate WebSocket backend + service-worker-managed asset packs
+- 4 playable classes: Fighter, Rogue, Wizard, Cleric
+- Real-time multiplayer combat with authoritative Go server simulation
+- Skill trees, passive talents, runes, combos, buffs, debuffs, and hotbar skills
+- Daily quests, party play, stash, forge, gambling NPC, trading house, friends, and social presence
+- Ctrl+click jump movement with authoritative sync, local prediction, remote parity work, landing dust, and camera punch support
 
-## System architecture
+### World And Dungeons
+
+- Overworld realms: Earth, Water/Snow, Fire, Air, plus Town
+- Instanced dungeons: Verdant Bastion Catacombs, Molten Core, Tempest Spire, Abyssal Well
+- All base dungeons unlock at level 30
+- Players choose dungeon run levels in bands while leveling
+- Heroic and Mythic unlock at max level only
+- Dungeon room state tracking, room-clear rewards, boss reward summaries, objective guidance, entrance hints, route previews, and active beat callouts
+
+### UX And Presentation
+
+- Combat intent HUD and target highlighting
+- Quest/objective tracker and dungeon entrance context hints
+- Auto-loot toggle and clearer loot pickup feedback
+- Grouped buff/debuff tracker and stronger death/respawn recovery feedback
+- Friend-online toast, connection-state HUD, and social status presentation
+- Polished modal/menu close behavior, non-selectable window chrome, better dungeon/respec menu UX, stable shadows, and stronger landing feedback
+
+### Technical Foundations
+
+- Three.js `0.181.2` on runtime and tests
+- Protobuf state streaming with `EDPB` envelopes
+- Authoritative Go WebSocket simulation with MongoDB persistence
+- Reconnect/session resume token flow and exponential-backoff client reconnect
+- Jest client suite, Go server tests, and ESLint in CI/local workflows
+- Modularized client systems including `NetworkManager`, `AbilityController`, `SocialPresenceController`, and extracted UI feature modules
+- Client asset caching flow with per-pack status, cached-version visibility, and update actions
+
+## Architecture At A Glance
 
 ```mermaid
 graph LR
@@ -55,38 +130,15 @@ graph LR
     PB --> Client
 ```
 
-## Current shipped state
+Primary runtime ownership:
+- `GameEngine`: update/render lifecycle, player state, authoritative sync, interactions, collision, loot flow, dungeon entry, transient effects
+- `RenderSystem`: Three.js renderer, camera, scenes/groups, lighting, shadows, quality settings, camera punch
+- `NetworkManager`: socket lifecycle, JSON sends, protobuf state decoding, message queue, reconnect state
+- `AbilityController`: targeting, ability orchestration, basic attacks, hotbar abilities, pending target chase
+- `UIManager` facade: shared UI wiring and feature modules including Inventory, SkillTree, Forge, Trading, Quest, and Social UI
+- Server `world.go` / `internal/game`: authoritative combat, movement, dungeon logic, rewards, progression, parties, social, and state production
 
-### Gameplay and progression
-- 4 playable classes: Fighter, Rogue, Wizard, Cleric
-- Real-time multiplayer combat with an authoritative Go server
-- Skill trees, passive talents, runes, combos, buffs, debuffs, and hotbar skills
-- Daily quests, party play, stash, forge, gambling NPC, and trading house
-- Ctrl+click jump movement with authoritative sync and exaggerated client visuals
-
-### World and dungeons
-- Overworld realms: Earth, Water/Snow, Fire, Air, plus Town
-- Instanced dungeons: Verdant Bastion Catacombs, Molten Core, Tempest Spire, Abyssal Well
-- All base dungeons unlock at level 30
-- Players choose dungeon run levels in bands while leveling
-- Heroic and Mythic unlock at max level only
-- Dungeon room state tracking, room-clear rewards, boss reward summaries, objective guidance, and entrance hints
-
-### UX and presentation
-- Combat intent HUD and target highlighting
-- Quest/objective tracker and dungeon entrance context hints
-- Auto-loot toggle and clearer loot pickup feedback
-- Grouped buff/debuff tracker and stronger death/respawn recovery feedback
-- Polished modal/menu close behavior, non-selectable window chrome, and better dungeon/respec menu UX
-- Higher-fidelity/stabler world shadows plus stronger jump landing feedback with dust and camera punch
-
-### Technical foundations
-- Three.js 0.181.2 on both runtime and tests
-- Protobuf state streaming with `EDPB` envelopes
-- Jest client suite and Go server tests
-- ESLint enforced in CI/local workflows
-- Modularized client systems including `NetworkManager`, `AbilityController`, and extracted UI feature modules
-- Client asset caching flow with per-pack status, cached-version visibility, and update actions
+Current architecture work is focused on decomposition: extracting entity, talent, rune, combo, dungeon, combat, action, remote-visual-sync, jump, transient-effect, and UI modules so v1.0 features can land without compounding monolith risk.
 
 ## Controls
 
@@ -104,28 +156,30 @@ graph LR
 | K | Skills / Talents / Runes / Combos |
 | M | World Map |
 | J | Quest Journal / objectives |
-| O | Social / party UI |
+| O | Social / party / friends UI |
 | ESC | Escape menu / close modal UI |
 
-## Tech stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| Client | Vanilla JavaScript (ES modules), Three.js 0.181.2 |
-| Server | Go 1.23 (`toolchain go1.24.5` in `server/go.mod`), Gorilla WebSocket, protobuf |
+| Client | Vanilla JavaScript ES modules, Three.js `0.181.2` |
+| Server | Go 1.23, `toolchain go1.24.5` in `server/go.mod`, Gorilla WebSocket, protobuf |
 | Database | MongoDB |
 | Assets | GLB/GLTF models, PNG textures/icons, service-worker-managed asset packs |
 | Testing | Jest, ESLint, Go test |
 
-## Local development
+## Local Development
 
 ### Prerequisites
+
 - Go 1.23+
 - MongoDB
 - Node.js / npm
 - A simple static file server such as Python's built-in `http.server`
 
-### Run the server
+### Run The Server
+
 From `server/`:
 
 ```bash
@@ -139,7 +193,8 @@ Local default WebSocket endpoint:
 Production endpoint commonly used by the client build:
 - `wss://eserver.mendola.tech/ws`
 
-### Run the client
+### Run The Client
+
 From the repo root:
 
 ```bash
@@ -150,9 +205,9 @@ python -m http.server 8000
 Then open:
 - `http://localhost:8000`
 
-If you want the local client to connect to local server instead of production, update the hidden server address in `index.html` or use your local dev workflow for that environment.
+If you want the local client to connect to the local server instead of production, update the hidden server address in `index.html` or use your local dev workflow for that environment.
 
-## Tests and validation
+## Tests And Validation
 
 From the repo root:
 
@@ -161,19 +216,19 @@ npm test
 npm run lint
 ```
 
-From `server/`:
-
-```bash
-go test ./...
-```
-
 Fast smoke subset:
 
 ```bash
 npm run test:smoke
 ```
 
-## Project layout
+From `server/`:
+
+```bash
+go test ./...
+```
+
+## Project Layout
 
 ```text
 eidolon/
@@ -189,13 +244,6 @@ eidolon/
 │   │   ├── ChunkManager.js
 │   │   └── CollisionManager.js
 │   ├── ui/
-│   │   ├── UIManager.js
-│   │   ├── InventoryUI.js
-│   │   ├── SkillTreeUI.js
-│   │   ├── ForgeUI.js
-│   │   ├── QuestUI.js
-│   │   ├── TradingUI.js
-│   │   └── SocialUI.js
 │   ├── world/
 │   ├── entities/
 │   ├── skills/
@@ -210,14 +258,13 @@ eidolon/
 └── assets/
 ```
 
-## Key documentation
-- `ROADMAP.md` — top-level product roadmap pointer
-- `docs/ROADMAP.md` — engineering roadmap pointer
-- `docs/ARCHITECTURE.md` — current architecture snapshot
-- `docs/REVIEW.md` — current review of what is working and what is fragile
-- `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md` — active release-line tracker from `0.35.0` through `Alpha 1.0`
-- `docs/plans/2026-05-03-v1-0-implementation-plan.md` — audit-grounded v1.0 implementation plan with slice contents, files, and definition-of-done gates
-- `docs/plans/archive/` — superseded planning docs kept for historical reference
+## Documentation Policy
+
+Root documentation is intentionally limited to:
+- `README.md`: current product, technical, setup, architecture, and world summary
+- `ROADMAP.md`: current roadmap and planning source of truth
+
+Additional working plans and snapshots live under `docs/`, especially `docs/plans/`. Per-patch history lives in `index.html` Patch Notes.
 
 ## License
 

@@ -377,6 +377,18 @@ export class Actor extends Entity {
 
     playJumpAnimation(jumpState = null) {
         const duration = Math.max(0.001, Number.isFinite(jumpState?.duration) ? jumpState.duration : 0.8);
+        const getJumpProgress = () => {
+            if (Number.isFinite(jumpState?.visualProgress)) return jumpState.visualProgress;
+            if (Number.isFinite(jumpState?.progress)) return jumpState.progress;
+            if (Number.isFinite(jumpState?.elapsed) && duration > 0) return jumpState.elapsed / duration;
+            return 0;
+        };
+        const syncActionToJumpProgress = () => {
+            if (!this.currentAction?.getClip) return;
+            const clipDuration = this.currentAction.getClip()?.duration || duration;
+            const progress = Math.max(0, Math.min(1, getJumpProgress()));
+            this.currentAction.time = Math.min(clipDuration, Math.max(0, clipDuration * progress));
+        };
         const walkAction = this.animations?.Walk;
         if (!walkAction) {
             if (this.animations?.Jump) {
@@ -384,6 +396,7 @@ export class Actor extends Entity {
                 const clipDuration = this.currentAction?.getClip?.()?.duration || duration;
                 const timeScale = Math.max(0.01, clipDuration / duration);
                 this.currentAction?.setEffectiveTimeScale?.(timeScale);
+                syncActionToJumpProgress();
                 this.jumpAnimationRestore = {
                     name: 'Jump',
                     timeScale
@@ -397,6 +410,7 @@ export class Actor extends Entity {
         const clipDuration = this.currentAction?.getClip?.()?.duration || duration;
         const timeScale = Math.max(0.01, clipDuration / duration);
         this.currentAction?.setEffectiveTimeScale?.(timeScale);
+        syncActionToJumpProgress();
         this.jumpAnimationRestore = {
             name: 'Walk',
             timeScale

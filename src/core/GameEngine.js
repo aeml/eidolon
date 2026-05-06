@@ -3759,7 +3759,51 @@ export class GameEngine {
         this.playAudioCue(AUDIO_CUES.jumpStart, { pitch: Math.max(0.85, Math.min(1.25, travelDistance / 18)) });
         this.chunkManager?.updateEntityChunk?.(this.player);
         this.renderSystem?.setCameraTarget?.(this.player.position);
+        this.normalizeJumpVisualState(this.playerJumpState);
         return true;
+    }
+
+    normalizeJumpVisualState(jumpState, fallbackPosition = null) {
+        if (!jumpState) return null;
+
+        const duration = Math.max(0.001, Number.isFinite(jumpState.duration) ? jumpState.duration : 0.001);
+        jumpState.duration = duration;
+
+        const progressFromElapsed = Number.isFinite(jumpState.elapsed)
+            ? jumpState.elapsed / duration
+            : undefined;
+        const visualProgress = Number.isFinite(jumpState.visualProgress)
+            ? jumpState.visualProgress
+            : (Number.isFinite(jumpState.progress) ? jumpState.progress : progressFromElapsed);
+        const clampedProgress = Math.max(0, Math.min(1, visualProgress ?? 0));
+
+        jumpState.visualProgress = clampedProgress;
+        jumpState.progress = clampedProgress;
+        jumpState.elapsed = clampedProgress * duration;
+        jumpState.visualHeight = Math.max(0, Math.sin(clampedProgress * Math.PI) * (jumpState.height || 0));
+
+        if (!jumpState.displayPosition) {
+            jumpState.displayPosition = fallbackPosition?.clone?.()
+                || jumpState.start?.clone?.()
+                || new THREE.Vector3();
+        }
+
+        return jumpState;
+    }
+
+    advanceJumpVisualState(jumpState, dt) {
+        if (!jumpState || !(jumpState.duration > 0)) return null;
+
+        this.normalizeJumpVisualState(jumpState);
+        const elapsed = Math.min(jumpState.duration, Math.max(0, jumpState.elapsed || 0) + dt);
+        const progress = jumpState.duration > 0 ? elapsed / jumpState.duration : 1;
+
+        jumpState.elapsed = elapsed;
+        jumpState.visualProgress = Math.max(0, Math.min(1, progress));
+        jumpState.progress = jumpState.visualProgress;
+        jumpState.visualHeight = Math.max(0, Math.sin(jumpState.visualProgress * Math.PI) * (jumpState.height || 0));
+
+        return jumpState;
     }
 
     isSameAuthoritativeJump(existingJump, start, end, duration) {
@@ -3866,7 +3910,8 @@ export class GameEngine {
                 start,
                 end,
                 progress,
-                elapsed: progress,
+                visualProgress: progress,
+                elapsed: progress * duration,
                 duration,
                 height,
                 serverDriven: true,
@@ -3874,16 +3919,19 @@ export class GameEngine {
                 hasAuthoritativeTrajectory: hasJumpTrajectoryMetadata,
                 displayPosition
             };
+            this.normalizeJumpVisualState(this.playerJumpState, displayPosition);
+            this.playerJumpState.visualHeight = visualHeight;
             if (!isSameJump) {
                 this.player.playJumpAnimation?.(this.playerJumpState);
             }
-            this.playerJumpVisualHeight = 0;
+            this.playerJumpVisualHeight = this.playerJumpState.visualHeight || 0;
             this.player.targetPosition = null;
         } else {
             const nextJumpState = {
                 start,
                 end,
                 progress,
+                visualProgress: progress,
                 elapsed: progress * duration,
                 duration,
                 height,
@@ -3893,6 +3941,8 @@ export class GameEngine {
                 displayPosition,
                 landingVisual: entity.jumpLandingVisual || null
             };
+            this.normalizeJumpVisualState(nextJumpState, displayPosition);
+            nextJumpState.visualHeight = visualHeight;
             entity.jumpVisualState = nextJumpState;
             if (!isSameJump) {
                 entity.playJumpAnimation?.(nextJumpState);
@@ -3955,9 +4005,7 @@ export class GameEngine {
             const jump = entity !== this.player ? entity?.jumpVisualState : null;
             if (!jump?.serverDriven || !(jump.duration > 0)) continue;
 
-            jump.elapsed = Math.min(jump.duration, Math.max(jump.elapsed || 0, (jump.progress || 0) * jump.duration) + dt);
-            jump.progress = Math.max(jump.progress || 0, Math.min(1, jump.elapsed / jump.duration));
-            jump.visualHeight = Math.max(0, Math.sin(jump.progress * Math.PI) * (jump.height || 0));
+            this.advanceJumpVisualState(jump, dt);
             if (jump.displayPosition) {
                 // Bug 2 fix: do NOT lerp displayPosition here; applyEntityJumpVisuals
                 // is the single lerp site per frame.  Only keep Y in sync with baseY.
@@ -3971,6 +4019,7 @@ export class GameEngine {
 
         const jump = this.playerJumpState;
         if (jump.serverDriven) {
+            this.advanceJumpVisualState(jump, dt);
             if (!jump.displayPosition) {
                 jump.displayPosition = this.player.position.clone();
             }
@@ -3985,13 +4034,12 @@ export class GameEngine {
             this.playerQueuedJump = true;
         }
 
-        jump.elapsed = Math.min(jump.duration, jump.elapsed + dt);
-        const progress = jump.duration > 0 ? jump.elapsed / jump.duration : 1;
-        const arc = Math.sin(progress * Math.PI) * jump.height;
+        this.advanceJumpVisualState(jump, dt);
+        const progress = jump.visualProgress ?? this.getJumpVisualProgress(jump);
 
         this.player.position.lerpVectors(jump.start, jump.end, progress);
         this.player.position.y = jump.start.y;
-        this.playerJumpVisualHeight = arc;
+        this.playerJumpVisualHeight = jump.visualHeight || 0;
         this.chunkManager?.updateEntityChunk?.(this.player);
         this.renderSystem?.setCameraTarget?.(this.player.position);
 
@@ -4056,7 +4104,7 @@ export class GameEngine {
 
     getJumpTravelDuration(distance = 0) {
         const safeDistance = Math.max(0, Number(distance) || 0);
-        return Math.max(0.18, Math.min(1.1, safeDistance / 18));
+        return Math.max(0.46, Math.min(1.28, safeDistance / 13.5));
     }
 
     getJumpArcHeight(distance = 0) {
@@ -4066,6 +4114,9 @@ export class GameEngine {
 
     getJumpVisualProgress(jumpState) {
         if (!jumpState) return 0;
+        if (typeof jumpState.visualProgress === 'number') {
+            return Math.max(0, Math.min(1, jumpState.visualProgress));
+        }
         if (typeof jumpState.progress === 'number') {
             return Math.max(0, Math.min(1, jumpState.progress));
         }
@@ -4243,7 +4294,7 @@ export class GameEngine {
             ? {
                 ...this.playerJumpState,
                 progress: this.getJumpVisualProgress(this.playerJumpState),
-                visualHeight: this.playerJumpVisualHeight || 0,
+                visualHeight: this.playerJumpState.visualHeight ?? this.playerJumpVisualHeight ?? 0,
                 landingVisual: this.playerJumpLandingVisual || null
             }
             : (this.playerJumpLandingVisual
