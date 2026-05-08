@@ -3902,15 +3902,23 @@ export class GameEngine {
         const previousProgress = typeof existingJump?.progress === 'number'
             ? existingJump.progress
             : (typeof existingJump?.elapsed === 'number' && existingJump.duration > 0 ? existingJump.elapsed / existingJump.duration : 0);
-        const progress = isSameJump
+        const authoritativeProgress = isSameJump
             ? Math.max(0, Math.min(1, Math.max(previousProgress, packetProgress)))
             : packetProgress;
+        const previousVisualProgress = typeof existingJump?.visualProgress === 'number'
+            ? existingJump.visualProgress
+            : previousProgress;
+        const progress = entity !== this.player
+            ? (isSameJump ? previousVisualProgress : 0)
+            : authoritativeProgress;
         const inferredHeight = this.getJumpArcHeight(travelDistance);
         const height = getJumpScalarField('jumpHeight', existingJump?.height ?? inferredHeight);
-        const baseY = THREE.MathUtils.lerp(start.y, end.y, progress);
+        const baseY = THREE.MathUtils.lerp(start.y, end.y, entity === this.player ? progress : authoritativeProgress);
         const computedArcHeight = Math.sin(progress * Math.PI) * height;
         const replicatedArcHeight = Math.max(0, (pData.y ?? currentPosition.y) - baseY);
-        const visualHeight = Math.max(computedArcHeight, replicatedArcHeight);
+        const visualHeight = entity === this.player
+            ? Math.max(computedArcHeight, replicatedArcHeight)
+            : computedArcHeight;
         const previousDisplayPosition = existingJump?.displayPosition?.clone?.()
             || entity.mesh?.position?.clone?.()
             || previousPosition.clone();
@@ -3951,6 +3959,7 @@ export class GameEngine {
                 duration,
                 height,
                 visualHeight,
+                authoritativeProgress,
                 serverDriven: true,
                 hasAuthoritativeTrajectory: hasJumpTrajectoryMetadata,
                 displayPosition,
@@ -3965,6 +3974,19 @@ export class GameEngine {
         }
 
         return true;
+    }
+
+    finishRemoteJumpVisual(entity, impact = 0.85) {
+        if (!entity?.jumpVisualState) return;
+
+        entity.jumpLandingVisual = {
+            startTime: Date.now(),
+            duration: 180,
+            impact
+        };
+        entity.clearJumpAnimation?.();
+        this.applyJumpImpactEffect(entity, impact);
+        entity.jumpVisualState = null;
     }
 
     clearAuthoritativeJumpState(entity) {
@@ -4003,15 +4025,13 @@ export class GameEngine {
             return;
         }
         if (entity.jumpVisualState) {
-            entity.jumpLandingVisual = {
-                startTime: Date.now(),
-                duration: 180,
-                impact: 0.85
-            };
-            entity.clearJumpAnimation?.();
-            this.applyJumpImpactEffect(entity, 0.85);
+            const visualProgress = this.getJumpVisualProgress(entity.jumpVisualState);
+            if (visualProgress < 0.98) {
+                entity.jumpVisualState.landingPending = true;
+                return;
+            }
+            this.finishRemoteJumpVisual(entity, 0.85);
         }
-        entity.jumpVisualState = null;
     }
 
     updateRemoteJumpVisuals(dt) {
@@ -4021,6 +4041,10 @@ export class GameEngine {
             if (!jump?.serverDriven || !(jump.duration > 0)) continue;
 
             this.advanceJumpVisualState(jump, dt);
+            if (jump.landingPending && this.getJumpVisualProgress(jump) >= 1) {
+                this.finishRemoteJumpVisual(entity, 0.85);
+                continue;
+            }
             if (jump.displayPosition) {
                 if (jump.hasAuthoritativeTrajectory) {
                     const trajectoryDisplayPosition = this.getJumpBasePositionAtProgress(jump);
