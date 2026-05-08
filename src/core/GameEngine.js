@@ -3979,6 +3979,18 @@ export class GameEngine {
     finishRemoteJumpVisual(entity, impact = 0.85) {
         if (!entity?.jumpVisualState) return;
 
+        const landingEnd = entity.jumpVisualState.end?.clone?.() || entity.position?.clone?.();
+        if (landingEnd && entity.position) {
+            entity.position.copy(landingEnd);
+            entity.position.y = landingEnd.y;
+            if (entity.targetServerPosition?.copy) {
+                entity.targetServerPosition.copy(landingEnd);
+            } else {
+                entity.targetServerPosition = landingEnd.clone();
+            }
+            this.chunkManager?.updateEntityChunk?.(entity);
+        }
+
         entity.jumpLandingVisual = {
             startTime: Date.now(),
             duration: 180,

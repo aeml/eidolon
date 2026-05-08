@@ -864,7 +864,7 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.clearJumpAnimation).toHaveBeenCalledTimes(1);
         expect(engine.spawnTransientEffect).toHaveBeenCalledWith(
             'jump_land',
-            expect.objectContaining({ x: 4, y: 0, z: 0 }),
+            expect.objectContaining({ x: 20, y: 0, z: 0 }),
             0xd8d2c4,
             expect.objectContaining({ impact: 0.85, className: 'Object' })
         );
@@ -1432,7 +1432,46 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.jumpVisualState.landingPending).toBe(true);
         engine.updateRemoteJumpVisuals(1);
         expect(remoteEntity.jumpVisualState).toBeNull();
+        expect(remoteEntity.position.x).toBeCloseTo(20, 5);
+        expect(remoteEntity.targetServerPosition.x).toBeCloseTo(20, 5);
         expect(remoteEntity.clearJumpAnimation).toHaveBeenCalledTimes(1);
+    });
+
+    test('remote jump finishing snaps logical actor position to jump target so it cannot float after landing', () => {
+        const engine = createEngineHarness();
+        const remoteEntity = {
+            position: new THREE.Vector3(8, 0, 0),
+            targetServerPosition: new THREE.Vector3(12, 0, 0),
+            rotation: new THREE.Quaternion(),
+            jumpVisualState: {
+                start: new THREE.Vector3(0, 0, 0),
+                end: new THREE.Vector3(40, 0, 0),
+                progress: 1,
+                visualProgress: 1,
+                elapsed: 1.28,
+                duration: 1.28,
+                height: 16,
+                visualHeight: 0,
+                authoritativeProgress: 1,
+                serverDriven: true,
+                hasAuthoritativeTrajectory: true,
+                displayPosition: new THREE.Vector3(40, 0, 0)
+            },
+            mesh: {
+                position: new THREE.Vector3(40, 0, 0),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            },
+            clearJumpAnimation: jest.fn()
+        };
+
+        engine.finishRemoteJumpVisual(remoteEntity);
+
+        expect(remoteEntity.jumpVisualState).toBeNull();
+        expect(remoteEntity.position.x).toBeCloseTo(40, 5);
+        expect(remoteEntity.targetServerPosition.x).toBeCloseTo(40, 5);
+        expect(engine.chunkManager.updateEntityChunk).toHaveBeenCalledWith(remoteEntity);
     });
 
     test('local predicted and remote authoritative jumps render the same mesh pose for the same visual progress', () => {
