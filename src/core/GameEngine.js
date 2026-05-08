@@ -4022,9 +4022,16 @@ export class GameEngine {
 
             this.advanceJumpVisualState(jump, dt);
             if (jump.displayPosition) {
-                // Bug 2 fix: do NOT lerp displayPosition here; applyEntityJumpVisuals
-                // is the single lerp site per frame.  Only keep Y in sync with baseY.
-                jump.displayPosition.y = entity.position.y;
+                if (jump.hasAuthoritativeTrajectory) {
+                    const trajectoryDisplayPosition = this.getJumpBasePositionAtProgress(jump);
+                    if (trajectoryDisplayPosition) {
+                        jump.displayPosition.copy(trajectoryDisplayPosition);
+                    }
+                } else {
+                    // Bug 2 fix: do NOT lerp displayPosition here; applyEntityJumpVisuals
+                    // is the single lerp site per frame.  Only keep Y in sync with baseY.
+                    jump.displayPosition.y = entity.position.y;
+                }
             }
         }
     }
@@ -4145,6 +4152,15 @@ export class GameEngine {
         return 0;
     }
 
+    getJumpBasePositionAtProgress(jumpState, progress = this.getJumpVisualProgress(jumpState)) {
+        if (!jumpState?.start || !jumpState?.end) {
+            return null;
+        }
+
+        const clampedProgress = Math.max(0, Math.min(1, progress));
+        return new THREE.Vector3().lerpVectors(jumpState.start, jumpState.end, clampedProgress);
+    }
+
     applyJumpImpactEffect(entity, impact = 0.9) {
         if (!entity?.position || !this.spawnTransientEffect) return;
         const className = entity?.constructor?.name || 'Unknown';
@@ -4223,6 +4239,10 @@ export class GameEngine {
             return targetPosition;
         }
 
+        if (jumpState.hasAuthoritativeTrajectory && entity !== this.player) {
+            return this.getJumpBasePositionAtProgress(jumpState) || targetPosition;
+        }
+
         const jumpVector = jumpState?.start && jumpState?.end
             ? new THREE.Vector3(jumpState.end.x - jumpState.start.x, 0, jumpState.end.z - jumpState.start.z)
             : new THREE.Vector3();
@@ -4259,8 +4279,14 @@ export class GameEngine {
             if (!jumpState.displayPosition) {
                 jumpState.displayPosition = entity.position.clone();
             }
+            if (jumpState.hasAuthoritativeTrajectory && entity !== this.player) {
+                const trajectoryDisplayPosition = this.getJumpBasePositionAtProgress(jumpState);
+                if (trajectoryDisplayPosition) {
+                    jumpState.displayPosition.copy(trajectoryDisplayPosition);
+                }
+            }
             const shouldSmoothDisplayPosition = entity !== this.player && options.smoothDisplayPosition !== false;
-            if (shouldSmoothDisplayPosition) {
+            if (shouldSmoothDisplayPosition && !(jumpState.hasAuthoritativeTrajectory && entity !== this.player)) {
                 const displayTarget = this.getAuthoritativeJumpDisplayTarget(entity, jumpState) || entity.position;
                 displayTarget.y = entity.position.y;
                 jumpState.displayPosition.lerp(displayTarget, 0.35);
