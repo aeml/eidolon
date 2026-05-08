@@ -2288,6 +2288,21 @@ export class GameEngine {
         return true;
     }
 
+    getInitialRemoteEntityY(pData) {
+        if (pData?.state !== 'JUMPING') {
+            return pData?.y ?? 0;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(pData, 'jumpStartY')) {
+            return pData.jumpStartY;
+        }
+        if (Object.prototype.hasOwnProperty.call(pData, 'jumpTargetY')) {
+            return pData.jumpTargetY;
+        }
+
+        return 0;
+    }
+
     /**
      * Synchronise a remote entity's position, state, health, animation,
      * rotation, and level from a server payload (used by both `state` and
@@ -4750,8 +4765,10 @@ export class GameEngine {
                 }
                 
                 if (remoteEntity) {
-                    // Set initial position immediately
-                    remoteEntity.position.set(pData.x, pData.y ?? 0, pData.z);
+                    // Set initial position immediately.  For actors first seen mid-jump,
+                    // seed the logical Y at the jump base so syncRemoteEntity can build
+                    // the same visual arc/flip used by already-visible remote players.
+                    remoteEntity.position.set(pData.x, this.getInitialRemoteEntityY(pData), pData.z);
 
                     // Set initial scale
                     if (pData.scale !== undefined) {
@@ -4766,6 +4783,9 @@ export class GameEngine {
 
                     this.remotePlayers.set(pData.id, remoteEntity);
                     this.addEntity(remoteEntity);
+                    if (pData.state !== undefined && pData.type !== 'Loot' && pData.type !== 'Projectile' && pData.type !== 'Fence') {
+                        this.syncRemoteEntity(remoteEntity, pData);
+                    }
                 }
             } catch (e) {
                 console.error("Error creating entity:", pData.id, e);

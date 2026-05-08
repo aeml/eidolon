@@ -865,6 +865,63 @@ describe('authoritative jump flow', () => {
         );
     });
 
+    test('remote actor first seen mid-jump seeds from jump base height before visual sync', () => {
+        const engine = createEngineHarness();
+        const remoteEntity = {
+            position: new THREE.Vector3(0, 0, 0),
+            targetServerPosition: null,
+            targetServerRotation: undefined,
+            rotation: new THREE.Quaternion(),
+            state: 'IDLE',
+            isCharging: false,
+            isDead: false,
+            deadTimer: 0,
+            visualOffset: new THREE.Vector3(0, 0, 0),
+            mesh: {
+                visible: true,
+                position: new THREE.Vector3(0, 0, 0),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            },
+            stats: { hp: 100, maxHp: 100, mana: 10, maxMana: 10, speed: 3, attackSpeed: 1 },
+            playJumpAnimation: jest.fn(),
+            clearJumpAnimation: jest.fn(),
+            updateState: jest.fn(function updateState(nextState) {
+                this.state = nextState;
+            })
+        };
+        const jumpSnapshot = {
+            id: 'remote-1',
+            type: 'Player',
+            state: 'JUMPING',
+            x: 5,
+            y: 4.5,
+            z: 0,
+            jumpStartX: 0,
+            jumpStartZ: 0,
+            jumpTargetX: 20,
+            jumpTargetZ: 0,
+            jumpProgress: 0.25,
+            jumpHeight: 8,
+            health: 100,
+            maxHealth: 100,
+            mana: 10,
+            maxMana: 10
+        };
+
+        remoteEntity.position.set(jumpSnapshot.x, engine.getInitialRemoteEntityY(jumpSnapshot), jumpSnapshot.z);
+        engine.syncRemoteEntity(remoteEntity, jumpSnapshot);
+        engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
+
+        expect(remoteEntity.position.y).toBe(0);
+        expect(remoteEntity.targetServerPosition.y).toBe(0);
+        expect(remoteEntity.jumpVisualState.start.y).toBe(0);
+        expect(remoteEntity.jumpVisualState.visualHeight).toBeGreaterThan(5);
+        expect(remoteEntity.mesh.position.y).toBeGreaterThan(5);
+        expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(1.2);
+    });
+
     test('remote authoritative jump without explicit metadata still builds a visible airborne arc from replicated travel', () => {
         const engine = createEngineHarness();
         const remoteEntity = {
