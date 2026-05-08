@@ -2336,7 +2336,8 @@ export class GameEngine {
         if (pData.state === 'JUMPING') {
             this.syncAuthoritativeJumpState(remoteEntity, {
                 ...pData,
-                _previousPosition: previousRemotePosition
+                _previousPosition: previousRemotePosition,
+                _previousState: previousRemoteState
             });
             // Bug 1 fix: syncAuthoritativeJumpState set entity.position.y = baseY (ground level).
             // Neutralise targetServerPosition.y so Actor.update() lerp doesn't re-introduce
@@ -3908,8 +3909,10 @@ export class GameEngine {
         const previousVisualProgress = typeof existingJump?.visualProgress === 'number'
             ? existingJump.visualProgress
             : previousProgress;
-        const progress = entity !== this.player
-            ? (isSameJump ? previousVisualProgress : 0)
+        const isRemoteActor = entity !== this.player;
+        const discoveredMidJump = isRemoteActor && !isSameJump && pData._newlyCreated === true;
+        const progress = isRemoteActor
+            ? (isSameJump ? previousVisualProgress : (discoveredMidJump ? packetProgress : 0))
             : authoritativeProgress;
         const inferredHeight = this.getJumpArcHeight(travelDistance);
         const height = getJumpScalarField('jumpHeight', existingJump?.height ?? inferredHeight);
@@ -3980,16 +3983,6 @@ export class GameEngine {
         if (!entity?.jumpVisualState) return;
 
         const landingEnd = entity.jumpVisualState.end?.clone?.() || entity.position?.clone?.();
-        if (landingEnd && entity.position) {
-            entity.position.copy(landingEnd);
-            entity.position.y = landingEnd.y;
-            if (entity.targetServerPosition?.copy) {
-                entity.targetServerPosition.copy(landingEnd);
-            } else {
-                entity.targetServerPosition = landingEnd.clone();
-            }
-            this.chunkManager?.updateEntityChunk?.(entity);
-        }
 
         entity.jumpLandingVisual = {
             startTime: Date.now(),
@@ -3997,7 +3990,7 @@ export class GameEngine {
             impact
         };
         entity.clearJumpAnimation?.();
-        this.applyJumpImpactEffect(entity, impact);
+        this.applyJumpImpactEffect(entity, impact, landingEnd);
         entity.jumpVisualState = null;
     }
 
@@ -4197,11 +4190,10 @@ export class GameEngine {
         return new THREE.Vector3().lerpVectors(jumpState.start, jumpState.end, clampedProgress);
     }
 
-    applyJumpImpactEffect(entity, impact = 0.9) {
+    applyJumpImpactEffect(entity, impact = 0.9, positionOverride = null) {
         if (!entity?.position || !this.spawnTransientEffect) return;
         const className = entity?.constructor?.name || 'Unknown';
-        const impactPosition = entity.position.clone();
-        impactPosition.y = entity.position.y;
+        const impactPosition = positionOverride?.clone?.() || entity.position.clone();
         this.spawnTransientEffect('jump_land', impactPosition, 0xd8d2c4, {
             impact,
             className
@@ -4855,7 +4847,7 @@ export class GameEngine {
                     this.remotePlayers.set(pData.id, remoteEntity);
                     this.addEntity(remoteEntity);
                     if (pData.state !== undefined && pData.type !== 'Loot' && pData.type !== 'Projectile' && pData.type !== 'Fence') {
-                        this.syncRemoteEntity(remoteEntity, pData);
+                        this.syncRemoteEntity(remoteEntity, { ...pData, _newlyCreated: true });
                     }
                 }
             } catch (e) {

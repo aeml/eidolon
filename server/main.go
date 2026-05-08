@@ -3664,6 +3664,8 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 }
 
 func broadcastState() {
+	const stateBroadcastRadius = 200.0
+
 	// 1. Copy active sessions to minimize lock time
 	sessionsMu.Lock()
 	clients := make([]*Client, 0, len(activeSessions))
@@ -3687,8 +3689,9 @@ func broadcastState() {
 				}
 			}()
 
-			// Get current state (100 unit radius)
-			currentState := world.GetStateForPlayer(c.playerID, 100.0)
+			// Keep actors known well outside the camera so jump visuals can start
+			// before a remote jumper enters the local player's visible area.
+			currentState := world.GetStateForPlayer(c.playerID, stateBroadcastRadius)
 			playerEntity := world.GetEntityCopy(c.playerID)
 			if playerEntity != nil && playerEntity.InstanceID != "" {
 				world.UpdateDungeonRoomProgress(c.playerID, playerEntity.X, playerEntity.Z)

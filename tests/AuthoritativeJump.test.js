@@ -916,15 +916,16 @@ describe('authoritative jump flow', () => {
         };
 
         remoteEntity.position.set(jumpSnapshot.x, engine.getInitialRemoteEntityY(jumpSnapshot), jumpSnapshot.z);
-        engine.syncRemoteEntity(remoteEntity, jumpSnapshot);
+        engine.syncRemoteEntity(remoteEntity, { ...jumpSnapshot, _newlyCreated: true });
         engine.activeEntitiesCache = [engine.player, remoteEntity];
-        engine.updateRemoteJumpVisuals(remoteEntity.jumpVisualState.duration * 0.25);
         engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
 
         expect(remoteEntity.position.y).toBe(0);
         expect(remoteEntity.targetServerPosition.y).toBe(0);
         expect(remoteEntity.jumpVisualState.start.y).toBe(0);
+        expect(remoteEntity.jumpVisualState.visualProgress).toBeCloseTo(0.25, 5);
         expect(remoteEntity.jumpVisualState.visualHeight).toBeGreaterThan(5);
+        expect(remoteEntity.mesh.position.x).toBeCloseTo(5, 5);
         expect(remoteEntity.mesh.position.y).toBeGreaterThan(5);
         expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(1.2);
     });
@@ -1432,12 +1433,18 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.jumpVisualState.landingPending).toBe(true);
         engine.updateRemoteJumpVisuals(1);
         expect(remoteEntity.jumpVisualState).toBeNull();
-        expect(remoteEntity.position.x).toBeCloseTo(20, 5);
-        expect(remoteEntity.targetServerPosition.x).toBeCloseTo(20, 5);
+        expect(remoteEntity.position.x).toBeCloseTo(19, 5);
+        expect(remoteEntity.targetServerPosition.x).toBeCloseTo(19, 5);
         expect(remoteEntity.clearJumpAnimation).toHaveBeenCalledTimes(1);
+        expect(engine.spawnTransientEffect).toHaveBeenCalledWith(
+            'jump_land',
+            expect.objectContaining({ x: 20, y: 0, z: 0 }),
+            0xd8d2c4,
+            expect.objectContaining({ impact: 0.85 })
+        );
     });
 
-    test('remote jump finishing snaps logical actor position to jump target so it cannot float after landing', () => {
+    test('remote jump finishing does not snap logical actor position to jump target', () => {
         const engine = createEngineHarness();
         const remoteEntity = {
             position: new THREE.Vector3(8, 0, 0),
@@ -1469,9 +1476,15 @@ describe('authoritative jump flow', () => {
         engine.finishRemoteJumpVisual(remoteEntity);
 
         expect(remoteEntity.jumpVisualState).toBeNull();
-        expect(remoteEntity.position.x).toBeCloseTo(40, 5);
-        expect(remoteEntity.targetServerPosition.x).toBeCloseTo(40, 5);
-        expect(engine.chunkManager.updateEntityChunk).toHaveBeenCalledWith(remoteEntity);
+        expect(remoteEntity.position.x).toBeCloseTo(8, 5);
+        expect(remoteEntity.targetServerPosition.x).toBeCloseTo(12, 5);
+        expect(engine.chunkManager.updateEntityChunk).not.toHaveBeenCalledWith(remoteEntity);
+        expect(engine.spawnTransientEffect).toHaveBeenCalledWith(
+            'jump_land',
+            expect.objectContaining({ x: 40, y: 0, z: 0 }),
+            0xd8d2c4,
+            expect.objectContaining({ impact: 0.85 })
+        );
     });
 
     test('local predicted and remote authoritative jumps render the same mesh pose for the same visual progress', () => {
