@@ -112,4 +112,26 @@ describe('ChunkManager scene residency', () => {
         expect(otherParent.remove).toHaveBeenCalledWith(mesh);
         expect(scene.remove).not.toHaveBeenCalled();
     });
+
+    test('active entity cache is invalidated when entities are added, moved, or removed', () => {
+        const scene = createSceneHarness();
+        const manager = new ChunkManager(scene);
+        manager.activeChunkKeys.add('0,0');
+        manager.lastPlayerChunkKey = '0,0';
+
+        const first = createEntity({ id: 'first', x: 0, z: 0 });
+        manager.addEntity(first);
+        expect(manager.getActiveEntities()).toContain(first);
+
+        const second = createEntity({ id: 'second', x: 1, z: 1 });
+        manager.addEntity(second);
+        expect(manager.getActiveEntities()).toEqual(expect.arrayContaining([first, second]));
+
+        second.position.set(manager.chunkSize * 2, 0, 0);
+        manager.updateEntityChunk(second);
+        expect(manager.getActiveEntities()).not.toContain(second);
+
+        manager.removeEntity(first);
+        expect(manager.getActiveEntities()).not.toContain(first);
+    });
 });

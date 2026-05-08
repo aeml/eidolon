@@ -4252,14 +4252,14 @@ export class GameEngine {
         return targetPosition;
     }
 
-    applyEntityJumpVisuals(entity, jumpState) {
+    applyEntityJumpVisuals(entity, jumpState, options = {}) {
         if (!entity?.mesh) return;
 
         if (jumpState?.serverDriven) {
             if (!jumpState.displayPosition) {
                 jumpState.displayPosition = entity.position.clone();
             }
-            const shouldSmoothDisplayPosition = entity !== this.player;
+            const shouldSmoothDisplayPosition = entity !== this.player && options.smoothDisplayPosition !== false;
             if (shouldSmoothDisplayPosition) {
                 const displayTarget = this.getAuthoritativeJumpDisplayTarget(entity, jumpState) || entity.position;
                 displayTarget.y = entity.position.y;
@@ -4301,6 +4301,15 @@ export class GameEngine {
         const rollQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), rollAmount);
         entity.mesh.quaternion.multiply(flipQuaternion).multiply(rollQuaternion);
         this.applyJumpVisualScale(entity, jumpState, progress, styleProfile);
+    }
+
+    applyRemoteJumpVisuals(options = {}) {
+        const activeEntities = this.chunkManager?.getActiveEntities?.() || this.activeEntitiesCache || [];
+        for (const entity of activeEntities) {
+            if (entity !== this.player && entity?.jumpVisualState) {
+                this.applyEntityJumpVisuals(entity, entity.jumpVisualState, options);
+            }
+        }
     }
 
     applyPlayerJumpVisuals() {
@@ -4953,6 +4962,7 @@ export class GameEngine {
             }
 
             this.chunkManager.update(this.player, dt, this.collisionManager, this.floatingTextManager, this);
+            this.applyRemoteJumpVisuals({ smoothDisplayPosition: false });
 
             if (this.pendingInteraction) {
                 // 1. Validate Target

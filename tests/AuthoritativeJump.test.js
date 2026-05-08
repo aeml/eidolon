@@ -1353,6 +1353,43 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.mesh.scale.distanceTo(localMeshScale)).toBeLessThan(0.0001);
     });
 
+    test('remote jump pose is reapplied after actor update resets the mesh upright', () => {
+        const engine = createEngineHarness();
+        const remoteEntity = {
+            position: new THREE.Vector3(10, 0, 0),
+            rotation: new THREE.Quaternion(),
+            jumpVisualState: {
+                start: new THREE.Vector3(0, 0, 0),
+                end: new THREE.Vector3(20, 0, 0),
+                progress: 0.5,
+                visualProgress: 0.5,
+                elapsed: 0.5,
+                duration: 1,
+                height: 8,
+                visualHeight: 8,
+                serverDriven: true,
+                displayPosition: new THREE.Vector3(10, 0, 0)
+            },
+            mesh: {
+                position: new THREE.Vector3(10, 0, 0),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            }
+        };
+        engine.chunkManager.getActiveEntities.mockReturnValue([engine.player, remoteEntity]);
+
+        remoteEntity.mesh.position.copy(remoteEntity.position);
+        remoteEntity.mesh.quaternion.copy(remoteEntity.rotation);
+        expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBe(0);
+
+        engine.applyRemoteJumpVisuals({ smoothDisplayPosition: false });
+
+        expect(remoteEntity.jumpVisualState.displayPosition.x).toBe(10);
+        expect(remoteEntity.mesh.position.y).toBe(8);
+        expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(2.5);
+    });
+
     test('syncRemoteEntity neutralises targetServerPosition.y to baseY during jump to prevent Actor lerp double-arc (Bug 1 fix)', () => {
         const engine = createEngineHarness();
         const remoteEntity = {

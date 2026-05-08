@@ -137,6 +137,7 @@ export class ChunkManager {
             this.chunks.set(key, new Set());
         }
         this.chunks.get(key).add(entity);
+        this._activeChunksChanged = true;
         
         if (this.activeChunkKeys.has(key) || isAlwaysResidentEntityType(entity.type)) {
             if (!entity.mesh && entity.ensureMesh) {
@@ -168,6 +169,7 @@ export class ChunkManager {
         }
         this.chunks.get(newKey).add(entity);
         entity._chunkKey = newKey;
+        this._activeChunksChanged = true;
 
         const isActiveOld = this.activeChunkKeys.has(oldKey);
         const isActiveNew = this.activeChunkKeys.has(newKey);
@@ -273,6 +275,7 @@ export class ChunkManager {
         const key = entity._chunkKey || this.getChunkKey(entity.position.x, entity.position.z);
         if (this.chunks.has(key)) {
             this.chunks.get(key).delete(entity);
+            this._activeChunksChanged = true;
         }
         
         if (entity.dispose) {
