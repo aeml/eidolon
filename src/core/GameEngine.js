@@ -3909,7 +3909,9 @@ export class GameEngine {
         const previousVisualProgress = typeof existingJump?.visualProgress === 'number'
             ? existingJump.visualProgress
             : previousProgress;
-        const progress = authoritativeProgress;
+        const progress = entity !== this.player
+            ? (isSameJump ? previousVisualProgress : 0)
+            : authoritativeProgress;
         const inferredHeight = this.getJumpArcHeight(travelDistance);
         const height = getJumpScalarField('jumpHeight', existingJump?.height ?? inferredHeight);
         const baseY = THREE.MathUtils.lerp(start.y, end.y, entity === this.player ? progress : authoritativeProgress);

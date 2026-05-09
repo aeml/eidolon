@@ -829,17 +829,18 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.jumpVisualState).toEqual(expect.objectContaining({
             start: expect.any(THREE.Vector3),
             end: expect.any(THREE.Vector3),
-            progress: 0.5,
+            progress: 0,
             authoritativeProgress: 0.5,
             height: 8
         }));
-        expect(remoteEntity.jumpVisualState.visualHeight).toBeCloseTo(8, 5);
+        expect(remoteEntity.jumpVisualState.visualHeight).toBeCloseTo(0, 5);
         expect(remoteEntity.playJumpAnimation).toHaveBeenCalledWith(expect.objectContaining({
             duration: expect.any(Number),
             serverDriven: true
         }));
 
         engine.activeEntitiesCache = [engine.player, remoteEntity];
+        engine.updateRemoteJumpVisuals(remoteEntity.jumpVisualState.duration * 0.5);
         engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
 
         const upVector = new THREE.Vector3(0, 1, 0).applyQuaternion(remoteEntity.mesh.quaternion);
@@ -917,6 +918,7 @@ describe('authoritative jump flow', () => {
         remoteEntity.position.set(jumpSnapshot.x, engine.getInitialRemoteEntityY(jumpSnapshot), jumpSnapshot.z);
         engine.syncRemoteEntity(remoteEntity, { ...jumpSnapshot, _newlyCreated: true });
         engine.activeEntitiesCache = [engine.player, remoteEntity];
+        engine.updateRemoteJumpVisuals(remoteEntity.jumpVisualState.duration * 0.25);
         engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
 
         expect(remoteEntity.position.y).toBe(0);
@@ -981,7 +983,7 @@ describe('authoritative jump flow', () => {
             maxMana: 10
         });
         engine.activeEntitiesCache = [engine.player, remoteEntity];
-        engine.updateRemoteJumpVisuals(0.1);
+        engine.updateRemoteJumpVisuals(0.6);
 
         expect(remoteEntity.jumpVisualState).toEqual(expect.objectContaining({
             start: expect.any(THREE.Vector3),
@@ -1195,7 +1197,7 @@ describe('authoritative jump flow', () => {
         });
 
         expect(remoteEntity.playJumpAnimation).toHaveBeenCalledTimes(1);
-        expect(remoteEntity.jumpVisualState.progress).toBeCloseTo(0.4, 5);
+        expect(remoteEntity.jumpVisualState.progress).toBeCloseTo(0.2, 5);
     });
 
     test('remote authoritative jump interpolation does not jitter backward on tiny correction packets', () => {
@@ -1357,6 +1359,7 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.position.x).toBe(4);
 
         engine.activeEntitiesCache = [engine.player, remoteEntity];
+        engine.updateRemoteJumpVisuals(0.5);
         engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
 
         expect(remoteEntity.jumpVisualState.hasAuthoritativeTrajectory).toBe(true);
@@ -1366,7 +1369,7 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(1.5);
     });
 
-    test('remote jump visual progress is phase-locked when server packets arrive near landing', () => {
+    test('remote jump visual progress is frontend-driven even when server packets arrive near landing', () => {
         const engine = createEngineHarness();
         const remoteEntity = {
             position: new THREE.Vector3(0, 0, 0),
@@ -1416,19 +1419,20 @@ describe('authoritative jump flow', () => {
         });
 
         expect(remoteEntity.jumpVisualState.authoritativeProgress).toBeCloseTo(0.95, 5);
-        expect(remoteEntity.jumpVisualState.visualProgress).toBeCloseTo(0.95, 5);
+        expect(remoteEntity.jumpVisualState.visualProgress).toBe(0);
         engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
-        expect(remoteEntity.mesh.position.x).toBeCloseTo(19, 5);
-        expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeLessThan(0.6);
+        expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeLessThan(0.05);
 
         engine.activeEntitiesCache = [engine.player, remoteEntity];
         engine.updateRemoteJumpVisuals(0.25);
         engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
-        expect(remoteEntity.jumpVisualState.visualProgress).toBe(1);
-        expect(remoteEntity.mesh.position.x).toBeCloseTo(20, 5);
-        expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeLessThan(0.05);
+        expect(remoteEntity.jumpVisualState.visualProgress).toBeCloseTo(0.25, 5);
+        expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(1.0);
+        expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeLessThan(2.4);
 
         engine.clearAuthoritativeJumpState(remoteEntity);
+        expect(remoteEntity.jumpVisualState.landingPending).toBe(true);
+        engine.updateRemoteJumpVisuals(1);
         expect(remoteEntity.jumpVisualState).toBeNull();
         expect(remoteEntity.position.x).toBeCloseTo(19, 5);
         expect(remoteEntity.targetServerPosition.x).toBeCloseTo(19, 5);
