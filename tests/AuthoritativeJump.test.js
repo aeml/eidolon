@@ -1581,6 +1581,42 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(2.5);
     });
 
+    test('remote jump visual timer advances for known players outside active render chunks', () => {
+        const engine = createEngineHarness();
+        const remoteEntity = {
+            id: 'remote-1',
+            position: new THREE.Vector3(0, 0, 0),
+            rotation: new THREE.Quaternion(),
+            jumpVisualState: {
+                start: new THREE.Vector3(0, 0, 0),
+                end: new THREE.Vector3(20, 0, 0),
+                progress: 0,
+                visualProgress: 0,
+                elapsed: 0,
+                duration: 1,
+                height: 8,
+                visualHeight: 0,
+                serverDriven: true,
+                hasAuthoritativeTrajectory: true,
+                displayPosition: new THREE.Vector3(0, 0, 0)
+            },
+            mesh: {
+                position: new THREE.Vector3(0, 0, 0),
+                quaternion: new THREE.Quaternion(),
+                scale: new THREE.Vector3(1, 1, 1),
+                userData: {}
+            }
+        };
+        engine.activeEntitiesCache = [engine.player];
+        engine.remotePlayers.set(remoteEntity.id, remoteEntity);
+
+        engine.updateRemoteJumpVisuals(0.5);
+
+        expect(remoteEntity.jumpVisualState.visualProgress).toBeCloseTo(0.5, 5);
+        expect(remoteEntity.jumpVisualState.visualHeight).toBeGreaterThan(7);
+        expect(remoteEntity.jumpVisualState.displayPosition.x).toBeCloseTo(10, 5);
+    });
+
     test('syncRemoteEntity neutralises targetServerPosition.y to baseY during jump to prevent Actor lerp double-arc (Bug 1 fix)', () => {
         const engine = createEngineHarness();
         const remoteEntity = {

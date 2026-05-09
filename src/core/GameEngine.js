@@ -4040,8 +4040,22 @@ export class GameEngine {
     }
 
     updateRemoteJumpVisuals(dt) {
+        const entities = new Set();
         const activeEntities = this.activeEntitiesCache || this.chunkManager?.getActiveEntities?.() || [];
         for (const entity of activeEntities) {
+            if (entity && entity !== this.player) {
+                entities.add(entity);
+            }
+        }
+        if (this.remotePlayers?.values) {
+            for (const entity of this.remotePlayers.values()) {
+                if (entity && entity !== this.player) {
+                    entities.add(entity);
+                }
+            }
+        }
+
+        for (const entity of entities) {
             const jump = entity !== this.player ? entity?.jumpVisualState : null;
             if (!jump?.serverDriven || !(jump.duration > 0)) continue;
 
