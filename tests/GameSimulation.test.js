@@ -408,6 +408,29 @@ describe('Actor System', () => {
 
             expect(actor.playJumpAnimation).toHaveBeenCalledWith(actor.jumpVisualState);
         });
+
+        test('remote jumping update keeps active animation phase tied to visual progress', () => {
+            const action = {
+                getClip: () => ({ duration: 0.6 }),
+                time: 0,
+                setEffectiveTimeScale: jest.fn(),
+                reset: jest.fn().mockReturnThis(),
+                fadeIn: jest.fn().mockReturnThis(),
+                play: jest.fn().mockReturnThis(),
+                setLoop: jest.fn()
+            };
+            actor.isRemote = true;
+            actor.state = 'JUMPING';
+            actor.mixer = { update: jest.fn() };
+            actor.animations = { Walk: action };
+            actor.targetServerPosition = actor.position.clone();
+            actor.playJumpAnimation({ duration: 1.2, visualProgress: 0.25, serverDriven: true });
+            actor.jumpVisualState = { duration: 1.2, visualProgress: 0.75, serverDriven: true };
+
+            actor.update(0.016, null, null, null);
+
+            expect(action.time).toBeCloseTo(0.45, 5);
+        });
     });
 
     describe('Inventory System', () => {

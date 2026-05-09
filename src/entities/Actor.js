@@ -377,18 +377,6 @@ export class Actor extends Entity {
 
     playJumpAnimation(jumpState = null) {
         const duration = Math.max(0.001, Number.isFinite(jumpState?.duration) ? jumpState.duration : 0.8);
-        const getJumpProgress = () => {
-            if (Number.isFinite(jumpState?.visualProgress)) return jumpState.visualProgress;
-            if (Number.isFinite(jumpState?.progress)) return jumpState.progress;
-            if (Number.isFinite(jumpState?.elapsed) && duration > 0) return jumpState.elapsed / duration;
-            return 0;
-        };
-        const syncActionToJumpProgress = () => {
-            if (!this.currentAction?.getClip) return;
-            const clipDuration = this.currentAction.getClip()?.duration || duration;
-            const progress = Math.max(0, Math.min(1, getJumpProgress()));
-            this.currentAction.time = Math.min(clipDuration, Math.max(0, clipDuration * progress));
-        };
         const walkAction = this.animations?.Walk;
         if (!walkAction) {
             if (this.animations?.Jump) {
@@ -396,11 +384,11 @@ export class Actor extends Entity {
                 const clipDuration = this.currentAction?.getClip?.()?.duration || duration;
                 const timeScale = Math.max(0.01, clipDuration / duration);
                 this.currentAction?.setEffectiveTimeScale?.(timeScale);
-                syncActionToJumpProgress();
                 this.jumpAnimationRestore = {
                     name: 'Jump',
                     timeScale
                 };
+                this.syncJumpAnimationToVisualState(jumpState);
                 return true;
             }
             return false;
@@ -410,11 +398,26 @@ export class Actor extends Entity {
         const clipDuration = this.currentAction?.getClip?.()?.duration || duration;
         const timeScale = Math.max(0.01, clipDuration / duration);
         this.currentAction?.setEffectiveTimeScale?.(timeScale);
-        syncActionToJumpProgress();
         this.jumpAnimationRestore = {
             name: 'Walk',
             timeScale
         };
+        this.syncJumpAnimationToVisualState(jumpState);
+        return true;
+    }
+
+    syncJumpAnimationToVisualState(jumpState = this.jumpVisualState) {
+        if (!this.currentAction?.getClip || !jumpState) return false;
+
+        const duration = Math.max(0.001, Number.isFinite(jumpState.duration) ? jumpState.duration : 0.8);
+        const progress = Number.isFinite(jumpState.visualProgress)
+            ? jumpState.visualProgress
+            : (Number.isFinite(jumpState.progress)
+                ? jumpState.progress
+                : (Number.isFinite(jumpState.elapsed) ? jumpState.elapsed / duration : 0));
+        const clipDuration = this.currentAction.getClip()?.duration || duration;
+        const clampedProgress = Math.max(0, Math.min(1, progress));
+        this.currentAction.time = Math.min(clipDuration, Math.max(0, clipDuration * clampedProgress));
         return true;
     }
 
@@ -842,6 +845,8 @@ export class Actor extends Entity {
             } else if (this.state === 'JUMPING') {
                 if (!this.jumpAnimationRestore) {
                     this.playJumpAnimation(this.jumpVisualState);
+                } else {
+                    this.syncJumpAnimationToVisualState(this.jumpVisualState);
                 }
             } else if (this.isCharging) {
                 const moveAnim = this.getMovementAnimationName(true);
