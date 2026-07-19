@@ -86,27 +86,27 @@ The most backend-relevant pattern in the repo is the split between client intent
 | Client | Vanilla JavaScript ES modules, Three.js `0.181.2` |
 | Networking | WebSockets |
 | State Protocol | JSON command messages, protobuf `StateEnvelope` replication with `EDPB` framing |
-| Server | Go `1.23` with `toolchain go1.24.5`, Gorilla WebSocket, protobuf |
+| Server | Go `1.24.5`, Gorilla WebSocket, protobuf |
 | Persistence | MongoDB |
 | Asset Delivery | Static client files, service worker caching |
 | Deployment | Docker, Docker Compose, Nginx, Certbot TLS scripts |
-| Validation | Jest, ESLint, `go test`, GitHub Actions |
+| Browser QA | Playwright `1.61.1` with system Chrome locally and Chromium in CI |
+| Validation | Jest, ESLint, Playwright, `go test`, `go build`, npm audit, GitHub Actions |
 
 ## Local Development
 
 ### Prerequisites
 
-- Node.js and npm
-- Go `1.23+`
+- Node.js `24` (the supported release line) and npm `9+`
+- Go `1.24.5`
 - MongoDB
-- A simple static file server such as Python `http.server`
 
 ### Run The Server
 
 From `server/`:
 
 ```bash
-go run main.go
+go run .
 ```
 
 Default local WebSocket endpoint:
@@ -118,13 +118,13 @@ Default local WebSocket endpoint:
 From the repo root:
 
 ```bash
-npm install
-python -m http.server 8000
+npm ci
+npm run serve
 ```
 
 Open:
 
-- `http://localhost:8000`
+- `http://127.0.0.1:4173`
 
 If you want the browser client to connect to the local server instead of the production endpoint, update the configured server address in `index.html` as part of your local workflow.
 
@@ -145,8 +145,11 @@ For Linux host deployment, see `server/deploy/README_LINUX.md`.
 Client validation from the repo root:
 
 ```bash
+npm ci
 npm test
 npm run lint
+npm audit --audit-level=low
+npm run test:e2e:anonymous
 ```
 
 Optional smoke subset:
@@ -159,13 +162,22 @@ Server validation from `server/`:
 
 ```bash
 go test ./...
-go build .
+go build ./...
 ```
 
 Notes:
 
-- There is no separate frontend bundling step in `package.json`; the browser client runs as static ES modules.
-- CI runs client lint/tests and server tests, then publishes coverage artifacts and a GitHub Pages coverage site.
+- `npm ci` runs `prepare:client`, which copies locked Three.js and protobuf runtimes from `node_modules` into ignored `vendor/`. Production no longer depends on a runtime CDN.
+- The browser client remains static ES modules; there is no application bundle.
+- Credentialed browser QA uses `EIDOLON_E2E_USERNAME` and `EIDOLON_E2E_PASSWORD`. Set `EIDOLON_E2E_FULL_GAMEPLAY=1` only for a dedicated QA character that may level, fight, loot, and enter a dungeon. Optional `_SECONDARY` variables enable the two-browser route.
+- Credentialed Playwright traces, screenshots, and video are disabled so account identifiers and form inputs cannot enter artifacts. Playwright's automatic input-valued failure snapshot is also disabled for credentialed routes, and CI redacts then scans supplied credential values before upload. The anonymous route retains screenshots, traces, and video on failure.
+
+### Release verification
+
+- Client identity: `https://eidolon.mendola.tech/release.json`
+- Server readiness and identity: `https://eserver.mendola.tech/healthz`
+- Both endpoints report the deployed Git commit. The deployment workflow polls until they match the pushed SHA, then runs the live Playwright suite.
+- `/level` is a QA-only command. It is disabled unless the authenticated username appears in the server's `EIDOLON_QA_USERNAMES` allowlist.
 
 ## Project Status
 
@@ -174,6 +186,24 @@ Notes:
 - Current shipped foundation: four classes, four realms, four dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, friends/presence, reconnect/session resume, asset caching, audio foundation, and substantial UX polish
 - Current engineering emphasis: reducing monolith hotspots in `server/internal/game/world.go`, `server/main.go`, `src/core/GameEngine.js`, and `src/ui/UIManager.js`
 - Next backend-facing hardening themes in the roadmap: persistence, protocol safety, performance, multi-client coverage, and soak validation
+
+Verification state as of July 19, 2026:
+
+- Implemented and unit-tested: locked/self-hosted browser runtimes, QA command authorization, disposable load-test credentials, health/release identity, and deployment SHA gates.
+- Locally browser-tested: anonymous start screen, Patch Notes/Escape, vendored asset load, console/page/request failures, and production WebSocket connectivity in real system Chrome.
+- Implemented but credential-gated: persistent-character movement, menus, combat/abilities, kill/loot/inventory, dungeon entry/exit, persistence, reconnect, and two-client party/presence/action convergence.
+- Live production verification: only recorded after the pushed SHA is deployed and the dedicated QA route completes; see `docs/plans/live-browser-qa-checklist.md`.
+
+Current measured hotspots (physical lines, `wc -l`):
+
+| File | LOC |
+|---|---:|
+| `server/internal/game/world.go` | 8,408 |
+| `server/main.go` | 4,632 |
+| `src/core/GameEngine.js` | 5,548 |
+| `src/ui/UIManager.js` | 3,622 |
+
+These measurements show that the `0.40` decomposition target is still open; release-confidence work does not claim the monolith reduction is complete.
 
 ## Media TODO
 

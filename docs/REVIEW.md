@@ -1,39 +1,52 @@
-# Eidolon Review
+# Eidolon Current-State Review
 
-Last refreshed: May 3, 2026
-Reviewed against current `master` at `Alpha 0.35.0` after the social status foundation and remote-smoothing hardening passes.
+Last refreshed: July 19, 2026
 
-## What the project is today
-- Static browser client loaded from `index.html` and ES modules
-- Vanilla JS / Three.js client coordinated by `GameEngine`
-- Authoritative Go server with protobuf state streaming and MongoDB persistence
-- A large playable feature set already exists: classes, quests, loot, forge, trading, party play, four realms, and four instanced dungeons
-- The game now has a noticeably stronger UX baseline than earlier revisions: combat intent, objectives, entrance hints, room-state feedback, menu close fixes, better death/respawn messaging, and better movement/render feel
+Reviewed against the working `Alpha 0.40.0` release-confidence change set. Verification labels here are deliberate: implemented, unit-tested, locally browser-tested, and live-tested are different claims.
 
-## What is working well
-- Dungeon progression model is much clearer than before: unlock-at-30, run-level selection, endgame difficulties at 100
-- Client/server jump authority is covered and synchronized
-- Render pipeline quality is improved, especially around stable shadows and movement readability
-- UI surface area is still large, but it is no longer concentrated in a single 5k-line monolith
-- Test coverage is strong enough to support aggressive polish passes without flying blind
+## What the project is
 
-## What is still fragile
-- Instance transitions still rely on broad scene rebuild behavior instead of explicit scene groups
-- Some HUD/UI surfaces still update more often than necessary, which risks DOM churn and mobile jank
-- Mesh/content definition work is only partially data-driven; some additions still require touching fragile condition trees
-- The game has many good feedback systems now, but dungeon pacing/replay-value is still more procedural than authored
+Eidolon is a static Three.js browser action RPG backed by an authoritative Go/WebSocket server and MongoDB persistence. Four classes, four realms, four dungeons, progression, quests, loot, forge/stash/trading, parties, social status, friendships, and reconnect/session resume are present in code.
 
-## Best next improvements
-1. Scene-group based instance cleanup and transitions
-2. UI diffing/throttling for high-frequency HUD updates
-3. Continued MeshFactory/catalog cleanup
-4. Dungeon pacing and room-role identity pass
-5. Repro/sandbox tooling for fast manual QA
-6. Audio/accessibility/onboarding improvements once the above are safer
+## Evidence that is currently strong
 
-## What should not be treated as current problems anymore
-- Three.js runtime/test mismatch: fixed
-- Missing input teardown: fixed
-- Missing combat-intent/loot/objective guidance baseline: fixed
-- One-dungeon/two-zone project framing: stale and no longer accurate
-- “Switch from JSON to protobuf” as future work: stale; protobuf state streaming is already live
+- Client unit baseline: 82 Jest suites / 951 tests pass in this environment.
+- Server baseline: every Go package tests and builds under Go 1.24.5.
+- Dependency baseline: the lockfile audits at zero known npm vulnerabilities; the production protobuf runtime is locked and self-hosted rather than loaded from a CDN.
+- Local browser baseline: a real system-Chrome Playwright smoke passes start/version, Patch Notes, Escape, vendored runtime load, first-party failures, console/page errors, and production WebSocket connectivity.
+- Security baseline: `/level` now requires an authenticated username on an explicit server allowlist, with allow/deny regression tests.
+- Load-test credentials: tracked credentials are removed; the driver generates cryptographically random, in-memory credentials unless an explicit read-only file is supplied.
+- Release observability: client and server expose commit identity; server readiness includes a Mongo ping; deployment checks require the expected SHA and healthy database.
+
+## Implemented but not yet proven live
+
+- The committed credentialed browser path logs into a persistent character and uses real keyboard/mouse/DOM input for movement, menus, abilities, overworld kills, loot/inventory, dungeon entry/exit, persistence, and reconnect.
+- The optional two-account path covers presence, party invite/accept, remote movement, jump, combat presentation, and position convergence.
+- GitHub Actions is configured to deploy only after unit/build/anonymous-browser gates, poll client and server for the pushed SHA, and then run live Playwright.
+
+These are not called live-tested until dedicated production credentials are supplied, the release is pushed, Actions completes, and the production route passes.
+
+## What remains fragile
+
+- The main monoliths remain large: `world.go` 8,408 LOC, `main.go` 4,632, `GameEngine.js` 5,548, and `UIManager.js` 3,622.
+- The server still lacks the planned instance-scoped lock hierarchy.
+- Mongo migration tooling, broader persistence integration tests, formal per-message rate limiting, and malformed-packet fuzz coverage remain open.
+- Browser automation is a release gate, not a substitute for long-duration gameplay, mobile, accessibility, performance, and multi-client soak work.
+- The asset/repository footprint is very large and deserves a separate packaging/history strategy.
+
+## Best next work after this release
+
+1. Finish the production credentialed browser run and retain failure/pass evidence.
+2. Fix any live regression forward before continuing feature work.
+3. Resume narrow `0.40` decomposition slices with measured LOC and module-boundary tests.
+4. Add Mongo-backed CI integration coverage and schema migration tooling.
+5. Build nightly multi-client soak and performance baselines.
+6. Audit asset packaging and repository size without rewriting history casually.
+
+## Claims that should no longer appear in current docs
+
+- “Reconnect does not exist.” It does, with a resume window and tests.
+- “Friends/presence do not exist.” They do and persist in Mongo.
+- “Protobuf is future work.” Binary full/delta state replication is current.
+- “Receiving any HTTP response proves deployment health.” Deployment now checks readiness and commit identity.
+- “The `0.40.0` extraction brought `world.go` below 7,500 lines.” Current measured state is 8,408 lines; historical reduction claims must not replace current measurement.

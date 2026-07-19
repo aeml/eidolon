@@ -1,14 +1,16 @@
 # Eidolon v1.0 Implementation Plan
 
-Date: May 3, 2026
-Current version: `Alpha 0.35.0`
+Date: May 3, 2026; current-state correction July 19, 2026
+Current version: `Alpha 0.40.0`
 Target: `Alpha 1.0` (last alpha before beta)
 
 This plan is grounded in a direct codebase audit, not in roadmap aspiration. It enumerates the concrete gaps blocking v1.0, the order to address them, the files involved, and the gating criteria. It supersedes any previous "suggested milestone slice" framing where evidence in the code disagrees.
 
+> Current-state correction: the audit list below is retained as the May 3 baseline, not as a claim about July. Reconnect/session resume, party persistence/proto fields, proactive social status, persistent friendships, and a committed real-browser harness now exist. Current measured hotspots are `world.go` 8,408 LOC, `main.go` 4,632, `GameEngine.js` 5,548, and `UIManager.js` 3,622. The immediate gate is production release verification through `docs/plans/live-browser-qa-checklist.md`; after that, resume the still-open `0.40` decomposition slices.
+
 Companion doc: `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md` (the high-level roadmap-and-status). This doc is the deeper implementation plan that the roadmap points at.
 
-## Audit summary: where the code actually is
+## May 3 audit snapshot (historical baseline)
 
 ### Foundations that are real
 
@@ -408,13 +410,4 @@ The roadmap's existing alpha 1.0 list still applies, but each item below is now 
 
 ## Immediate next action
 
-Start `0.36.0`: server session resume token. This is the highest-leverage single slice in the entire plan because every later v1.0 promise becomes more reliable once a transient disconnect stops dropping the player to the login screen.
-
-Files to open first:
-- `server/main.go` (auth flow lines 1261-1330; session enforcement 1289-1306)
-- `server/internal/database/db.go` (add `sessions` collection or token field on `User`)
-- `server/internal/game/world.go` (entity disconnect lifecycle)
-- `src/core/NetworkManager.js` (the `onclose` reload to remove later in 0.36.2)
-
-First test to write:
-- `server/internal/game/session_resume_test.go`: token issued at login is accepted by `MsgResumeSession` within the resume window and rebinds the existing entity.
+Complete the release-confidence gate: fresh-install validation, push `master`, verify matching live client/server SHAs, and run the anonymous plus dedicated-character Playwright routes. Record evidence without upgrading credential-gated tests to “live-tested” before they actually pass. Then return to `0.40.1` with the current LOC baseline above.

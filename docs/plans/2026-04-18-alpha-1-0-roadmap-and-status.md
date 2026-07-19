@@ -1,6 +1,6 @@
 # Eidolon Alpha 1.0 Roadmap and Status
 
-Last refreshed: May 3, 2026
+Last refreshed: July 19, 2026
 
 Purpose: keep one working document that answers three questions clearly.
 
@@ -16,9 +16,12 @@ The deeper, audit-grounded implementation plan that backs every release line bel
 
 - Current in-game displayed version: `Alpha 0.40.0`
 - Active implementation line: `0.40`
+- Active release-confidence work: self-hosted locked browser dependencies, real-browser QA, QA-command restrictions, and deploy SHA/readiness verification
 - Closed for planned implementation work: `0.21` through `0.37`
 - The game has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, asset caching, audio foundation, accessibility baseline, and substantial UX polish
-- The biggest remaining alpha-wide risks are deeper social systems, missing guilds, missing PvP, server/client architectural concentration, and continued multiplayer-readability hardening
+- The biggest remaining alpha-wide risks are missing guilds and PvP, server/client architectural concentration, persistence/protocol hardening, and long-running multiplayer soak coverage
+- Verification at this checkpoint: 82 Jest suites / 951 tests and all Go packages pass; anonymous Playwright passes in system Chrome; credentialed and two-account production routes are implemented but not yet live-tested
+- Current hotspot measurements: `world.go` 8,408 LOC, `main.go` 4,632, `GameEngine.js` 5,548, `UIManager.js` 3,622
 
 ## Where we are now
 
@@ -48,11 +51,11 @@ For per-patch detail see `index.html` Patch Notes. The summary below captures th
 
 - `0.39` (closed): extracted `internal/game/social.go`; split `main.go` dispatch switch into `friends_handlers.go`, `party_handlers.go`, `social_handlers.go`, `trading_handlers.go`; extracted `SocialPresenceController.js` from `GameEngine.js`
 
-- `0.40` (in progress): architecture decomposition — extracting entity, talent, rune, combo, dungeon sub-packages from `world.go`; `0.40.0` shipped `entity.go` (world.go 9 325 → 7 444 lines)
+- `0.40` (in progress): architecture decomposition — `entity.go` exists, but current `world.go` measures 8,408 physical lines; use current measurements, not the historical 7,444-line checkpoint, for completion gates
 
 ### What is still not at alpha 1.0 quality yet
 
-- Social systems are still parties + status + chat + trading house, not full social depth (no friends list, no rich chat channels, no presence beyond the roster)
+- Social systems include persistent friendships and presence, but still lack rich chat channels, ignore/block, guilds, and broader moderation primitives
 - Guilds do not exist yet
 - PvP does not exist as a real shipped mode yet
 - Server/client monolith hot spots still concentrate risk for future feature work
@@ -88,7 +91,7 @@ DoD note: `world.go` (9 325 LOC) and `main.go` (4 542 LOC) exceed the original s
 Release promise: extract entity, talent, rune, combo, dungeon sub-packages from `world.go`; reduce `world.go` below 3 000 LOC and `main.go` below 2 000 LOC by end of `0.43`.
 
 Slices shipped so far:
-- `0.40.0`: extracted `server/internal/game/entity.go` (~950 lines) — `EntityType` constants, `Quest`, `Stats`, `Entity` struct, rune helpers, set-bonus helpers, status-effect helpers, `RecalculateStats`, `GetEntityCopy`, `copyEntity`; `world.go` 9 325 → 7 444 lines (−1 881); 932/932 JS green, `go build ./...` clean
+- `0.40.0`: extracted `server/internal/game/entity.go` (952 current lines) — entity model and related helpers. Historical notes recorded `world.go` at 7,444 immediately after extraction; the current file is 8,408 lines. Current validation is 951/951 JS green plus all Go tests/builds.
 
 ## Roadmap from `0.36` to `alpha 1.0`
 

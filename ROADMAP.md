@@ -2,7 +2,7 @@
 
 > Project by [Robert Mendola](https://mendola.tech)
 >
-> Last refreshed: May 5, 2026
+> Last refreshed: July 19, 2026
 
 This is the root roadmap and planning source of truth for the repo. Per-patch history lives in `index.html` Patch Notes. Detailed working plans live under `docs/plans/` and should stay aligned with this file.
 
@@ -10,9 +10,16 @@ This is the root roadmap and planning source of truth for the repo. Per-patch hi
 
 - Current in-game displayed version: `Alpha 0.40.0`
 - Active implementation line: `0.40` architecture decomposition
+- Active release-confidence lane: locked/self-hosted browser dependencies, production SHA/readiness reporting, and real-browser deployment QA
 - Closed for planned implementation work: `0.21` through `0.37`
 - Current shipped foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, friends/presence, asset caching, audio foundation, accessibility baseline, reconnect/session resume, and substantial UX polish
-- Biggest remaining alpha-wide risks: server/client monolith hotspots, richer social systems, missing guilds, missing PvP, persistence/economy hardening, and multi-client soak validation
+- Biggest remaining alpha-wide risks: server/client monolith hotspots, missing guilds and PvP, persistence/economy hardening, and sustained multi-client soak validation
+
+Evidence boundary for the current lane:
+
+- Unit-tested and locally browser-tested work is not labeled live-tested.
+- The Playwright harness covers anonymous, persistent-character, and optional two-account flows; credentialed routes remain unverified until dedicated QA secrets are supplied and the production run completes.
+- Current hotspot measurements are `world.go` 8,408 LOC, `main.go` 4,632, `GameEngine.js` 5,548, and `UIManager.js` 3,622. The decomposition completion gates below are not met.
 
 ## Alpha 1.0 Strategy
 

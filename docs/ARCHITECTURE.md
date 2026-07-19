@@ -1,139 +1,129 @@
 # Eidolon Architecture
 
-Last refreshed: May 3, 2026
+Last refreshed: July 19, 2026
 
-## Current architecture
+This document describes the current runtime and release architecture. Per-patch history belongs in the in-game Patch Notes; roadmap intentions belong in `ROADMAP.md` and `docs/plans/`.
+
+## Runtime topology
 
 ```text
-Client
+Browser (static ES modules)
   index.html
     -> src/main.js
-        -> GameEngine
-           - RenderSystem
-           - InputManager
-           - ChunkManager
-           - CollisionManager
-           - NetworkManager
-           - AbilityController
-           - UIManager facade
-             - InventoryUI
-             - SkillTreeUI
-             - ForgeUI
-             - TradingUI
-             - QuestUI
-             - SocialUI
-           - WorldGenerator
-           - MeshFactory / MeshCatalog helpers
-           - Entities / transient effects / maps / HUD
+       -> GameEngine
+          -> InputManager -> real mouse/keyboard intent
+          -> RenderSystem -> Three.js scene/camera/WebGL
+          -> NetworkManager -> WebSocket lifecycle/resume
+          -> AbilityController
+          -> UIManager facade and feature UIs
+          -> ChunkManager / WorldGenerator / entities
 
-Server
-  server/main.go
-    -> internal/game/
-       - world state
-       - parties / quests / dungeons / rewards / progression
-       - protobuf envelope production
-    -> internal/database/
-       - MongoDB persistence
+                     JSON commands
+Browser ------------------------------------> Go server /ws
+Browser <------------------------------------ Go server
+       JSON control + EDPB/protobuf state
+
+Go server
+  main.go -> authentication, sessions, message routing, state encoding
+  handler files -> friends, party, social, trading
+  internal/game -> authoritative simulation and rules
+  internal/database -> MongoDB persistence
+
+Release path
+  push to master -> Jest/lint/audit + Go test/build + Playwright smoke
+                 -> GitHub Pages client + SSH/Docker server deploy
+                 -> matching release SHA poll
+                 -> live Playwright QA
 ```
 
-## Main runtime responsibilities
+## Authority and protocol
 
-### `GameEngine`
-- Orchestrates update/render lifecycle
-- Holds high-level player state, authoritative sync handling, and interaction flow
-- Coordinates rendering, collision, UI, networking, dungeon entry, loot flow, and transient effects
+The browser sends intent such as movement, jump, attack, ability, inventory, party, dungeon, and reconnect messages. The Go server validates and applies that intent; the client does not own canonical combat, position, progression, party, or inventory state.
 
-### `RenderSystem`
-- Owns Three.js renderer, camera, scene, lighting, shadows, environment textures, and quality settings
-- Handles current lighting/shadow-follow behavior and camera punch support
-- Uses explicit scene groups so environment content survives instance changes while entity/effect content is cleared separately
+The wire format is intentionally mixed:
 
-### Instance transition runtime hygiene
-- `GameEngine.enterInstance()` now clears pending interactions, active transient effects, hazard visuals, and combat-target highlight state before rebuilding the next scene
-- `ChunkManager` and `GameEngine.addEntity()` now agree on a single always-resident town-service list (`DwarfSalesman`, `Stash`, `QuestNPC`, `RespecNPC`, `Forge`, `TradingHouse`) so immediate mesh loads do not silently skip render/collision setup
-- This keeps dungeon/overworld swaps from carrying stale combat readability artifacts into the next space and closes a real async mesh-load footgun around town services and active-chunk spawns
+- JSON carries authentication, commands, control messages, errors, and session-resume traffic.
+- Binary state replication uses an `EDPB` header, a wire-version byte, and protobuf `StateEnvelope` full/delta payloads.
+- `NetworkManager` decodes state and manages reconnect with a server-issued resume token.
 
-### `NetworkManager`
-- Wraps socket message flow and protobuf state decoding
-- Keeps WebSocket logic out of most UI wiring paths
+## Browser dependency delivery
 
-### `AbilityController`
-- Owns ability-targeting/orchestration logic that used to live directly inside `GameEngine`
-- Reduces core-engine sprawl around skills and input-to-ability flow
+The client is not bundled. `npm ci` runs `scripts/prepare-client.mjs`, which copies the exact locked Three.js and protobuf browser runtimes into ignored `vendor/`. `index.html` imports those local files. The Pages job repeats that deterministic preparation before publishing.
 
-### `UIManager` facade + feature modules
-- `UIManager` still handles cross-surface wiring and shared helpers
-- Heavy feature surfaces have been split into dedicated modules:
-  - `InventoryUI`
-  - `SkillTreeUI`
-  - `ForgeUI`
-  - `TradingUI`
-  - `QuestUI`
-  - `SocialUI`
+Current locked runtime versions:
 
-### Server `world.go`
-- Still the main authoritative gameplay hub for combat, movement, dungeon logic, rewards, and progression
-- It is far more capable than earlier versions, but remains a major future refactor target because so much game logic still concentrates there
+- Three.js `0.181.2`
+- protobufjs `8.7.1`
+- Playwright test harness `1.61.1`
 
-## Data flow notes
-- Client receives protobuf state envelopes (`EDPB` + version byte + payload)
-- Server remains authoritative for movement, combat, progression, and dungeon entry validation
-- Client adds prediction/presentation layers for responsiveness and readability, then reconciles to server truth
+This removes runtime reliance on the former protobuf CDN script and makes the deployed dependency derive from `package-lock.json`.
 
-## What changed since earlier architecture docs
-- Networking is no longer best described as “GameEngine directly owns the socket everywhere”
-- UI is no longer best described as “one class owns everything”
-- Protobuf networking is no longer a future architecture target; it is current architecture
-- Current design work is less about first extraction and more about finishing the remaining heavy seams cleanly
-- `ChunkManager` and `GameEngine.addEntity()` now share a single always-resident town-service allowlist (`DwarfSalesman`, `Stash`, `QuestNPC`, `RespecNPC`, `Forge`, `TradingHouse`) so active chunk logic and delayed mesh attach decisions do not drift apart.
-- Installing the `onMeshReady` hook before chunk registration closes the immediate mesh creation race where service structures or live chunk spawns could skip render attach or collider setup.
-- Wizard `Scorch Beam` and projectile impact/explosion readability bursts now route through `spawnTransientEffect`/`effectScene` first, instead of writing temporary combat meshes straight into the entity scene. That keeps combat telegraphs inside the effect lane and makes transition cleanup deterministic.
-- Rogue `Tripwire` now plants its persistent trap mesh in `effectScene` and uses the same effect lane for trigger smoke, so trap readability no longer depends on the entity scene surviving untouched.
-- Fighter, Cleric, and AvengingSeraph transient class visuals now accept `effectScene`-only game-engine contexts instead of bailing out just because the entity scene is absent. That keeps multiplayer/alternate runtime paths on the same effect lane.
-- Projectile fallback bursts for Arcane Missile and Fireball/Meteor explosions now use the same resolved effect scene (`effectScene` first, then `scene`) instead of writing directly to `gameEngine.scene`. That keeps even non-transient fallback visuals inside the same runtime lane.
-- Projectile meteor trail particles now reparent pooled meshes when the effect scene changes, so reused trail visuals do not stick to a stale scene group across combat/runtime transitions.
-- Wizard Scorch Beam fallback cleanup now removes its beam mesh from the current parent instead of assuming the original effect scene still owns it, which makes the fallback resilient to scene-group transitions and reparenting.
-- Fighter, Cleric, Rogue, Wizard, and AvengingSeraph now share a real effect-scene fallback visual path when `spawnTransientEffect` is unavailable, instead of silently doing nothing after passing the effectScene guard. That keeps class readability effects visible in stripped-down/runtime-limited contexts.
-- Projectile fallback bursts now use the same shared parent-safe burst helper as other effect-scene fallbacks, so impact/explosion cleanup survives mesh reparenting instead of assuming the original scene still owns the effect.
-- Rogue Tripwire now disposes its planted trap mesh resources on trigger via the shared scene-mesh disposal helper instead of only detaching the mesh. That closes a small but real leak in repeated trap-heavy fights.
-- Wizard Scorch Beam fallback now uses the shared parent-safe beam helper instead of carrying its own bespoke cylinder/add/fade/remove lifecycle. That removes another duplicated temporary-visual path and keeps cleanup rules consistent.
-- Projectile particle-pool disposal now removes pooled meshes from their current parent instead of a stale recorded scene, so teardown stays correct after effect-scene reparenting and test resets.
-- Rogue Tripwire planted visuals now use the shared persistent scene-mesh helper instead of open-coding geometry/material/scene wiring. That keeps persistent temporary effects on the same creation/disposal contract as the newer fallback helpers.
-- AreaOfEffect entities now dispose their visual geometry/material through the shared scene-mesh disposal helper when they expire or are removed, instead of relying on generic Entity teardown that only detached the mesh. That closes a real leak on persistent zone spells like burning ground and gravity well.
-- ChunkManager direct fallback removal paths now detach meshes from their current parent instead of assuming `this.scene` still owns them. That keeps non-disposable entities safe under reparenting and matches the rest of the parent-safe cleanup work.
-- Cleric Spirit Guardians now use shared spirit-mesh cleanup for both cancellation and expiry, so orbiting spirits dispose correctly even if ownership changes before teardown.
-- Player jumps now drive the Walk GLB during airtime as a single timed cycle instead of freezing into an idle pose, and the jump lifecycle explicitly restores normal animation timing on landing/authoritative clear.
-- Environmental hazards now detach and dispose their meshes from the current parent during teardown, so instance cleanup stays correct even if hazard visuals have been reparented before removal.
-- Cleric seraph cleanup now follows the same shared parent-safe disposal path as Spirit Guardians, so cancel/expiry teardown no longer assumes the seraph mesh still lives under the Cleric root mesh.
-- GameEngine remote-entity fallback teardown now detaches meshes from their current parent before falling back to render-system removal, so stale ownership assumptions no longer leak into remote entity cleanup.
-- GameEngine local pending-interaction pickup cleanup now follows the same parent-safe fallback rule, so reparented loot meshes detach correctly even when no entity-level dispose hook exists.
-- GameEngine now also discards immediately-created inactive meshes from their current parent during onMeshReady handling, so stale ownership assumptions do not survive entity invalidation races.
-- Optimistic loot pickup cleanup in GameEngine now removes fallback meshes from their current parent before falling back to render-system removal, so remote loot teardown matches the same parent-safe contract as the rest of runtime cleanup.
-- Core TransientEffects cleanup now also detaches effect meshes from their current parent before disposing them, so reparented telegraphs and burst visuals obey the same ownership contract as the newer fallback helpers.
-- LootDrop.dispose now detaches from the current parent and only disposes its owned sprite materials, keeping cached text textures and shared orb/hitbox resources intact while honoring the same parent-safe teardown contract.
-- RenderSystem.setupLights now removes existing ambient/directional lights and their targets from their current parent before installing replacements, keeping lighting resets resilient if scene ownership changes.
-- RenderSystem particle-overlay disposal now also detaches the internal points mesh from its current parent before teardown, so environment-particle cleanup matches the same parent-safe ownership contract.
-- ChunkManager now also detaches inactive-chunk meshes from their current parent during addEntity residency decisions, removing the last stale special-case branch that still assumed scene ownership there.
-- GameEngine render-time HUD throttling now also diffs enemy-bar visibility/health inputs, so stable hover/Alt target states stop forcing high-frequency enemy-bar DOM work every frame.
-- Open character-sheet refreshes now also diff tracked stat/equipment inputs before rebuilding the sheet, so leaving the panel open no longer causes redundant heavy DOM/equipment-slot churn every throttle tick.
-- Visible world-map refreshes now diff coarse player position and instance context before redrawing, so leaving the map open no longer repaints the whole canvas every render when nothing meaningful changed.
-- Minimap buff/debuff icon rows now diff their displayed buff state before rebuilding the DOM, so stable timed effects stop churning button/list markup every minimap tick.
-- Dungeon room hook pacing now stages treasure before the elite spike and reserves the restorative shrine for the deeper pre-boss reset, so runs build momentum instead of front-loading safety.
-- Dungeon objective guidance now exposes the upcoming hooked beat sequence (for example `Chest -> Ambush -> Shrine -> Boss`) directly in the objectives panel, so room metadata reads like an actual run plan instead of isolated labels.
-- Minimap dungeon overlays now preview the next uncleared beat after the current objective with a softer marker/label, so players can read the immediate route plan at a glance while moving instead of only from the objectives panel.
-- World-map dungeon markers now mirror that same beat readability for the active instance by annotating the current dungeon marker with the active objective beat and a next-beat preview, keeping the big map and minimap honest with each other.
-- Render-time world-map throttling now keys off dungeon beat state as well as player movement/instance identity, so route-readability markers stay truthful when the objective advances in-place instead of waiting for the player to move.
-- Dungeon room-state advances can now raise a small combat callout for the newly exposed dangerous beat (for example `Next: Ambush`), so the pacing plan shows up as an actionable warning instead of only map chrome.
-- Room-clear progression now reuses that same beat-advance callout path, so the moment a shrine or mid-run room opens the boss objective the client immediately surfaces `Next: Boss` instead of burying it only in reward text.
-- Shrine objectives now escalate more truthfully when they are the last stop before a boss: the callout subtitle shifts from a generic support beat to `Last reset before the boss push`, reinforcing the authored run cadence at exactly the right moment.
-- Chest objectives also now read against the next beat: when treasure is immediately followed by an elite ambush, the callout sharpens to `Quick score before the ambush spike` instead of generic treasure flavor.
-- Boss callouts now distinguish an unlocked boss objective from a boss beat that is already live: progression can still say `Next: Boss`, but if room state says the player is already in the boss room the callout escalates to `Boss Now` with immediate-commit language.
-- Minimap and world-map dungeon markers now mirror that same live-boss distinction, promoting the active boss marker to `Boss Now` once the player is actually in the boss room instead of leaving the maps one beat behind the callout layer.
-- The objective panel now mirrors that same transition from planning to execution: a boss objective switches from `Confront the boss` / route-preview framing to `Survive the boss fight` with `Boss Now` badge state and no stale route hint once the encounter is already live.
-- Shrine and chest journal objectives now also read against the next beat instead of generic room flavor: shrine-before-boss becomes `Last reset before the boss push`, and chest-before-ambush becomes `Quick score before the ambush spike`, matching the combat callout pacing language.
-- Ambush journal objectives now keep that same authored warning language too: the objective/journal surface says `Elite room ahead — pressure spike incoming` instead of drifting back to generic elite-discovered copy once the ambush room becomes the active beat.
-- Generic non-hook objective beats are now less placeholder-like too: bridge-to-boss states call out the last approach room before the boss, and longer neutral stretches explicitly point toward the shrine route instead of falling back to undifferentiated `Push deeper` copy.
-- Fully cleared dungeons now switch the objective/journal surface into extraction language too: the exit state tells the player to backtrack out through the entrance with the loot, and the guidance panel no longer falls back to a fake `Turn this in for 0 XP` turn-in message.
-- Pre-live boss objectives now use that same authored urgency too: before the encounter is actually live, the journal says `Commit to the boss room` / `Boss room ahead — reset and commit` instead of generic boss-room-discovered filler, while the live fight still promotes to `Boss Now` execution guidance.
-- Hovered dungeon entrance hints now reuse that same beat truth for the active dungeon: the portal can show `Next: Chest`, `Next: Ambush`, `Next: Shrine`, or `Boss Now` with matching urgency text, and it refreshes immediately when `dungeon_room_state` advances under the cursor.
-- Most important next architectural step: finish burning down the remaining direct `gameEngine.scene` gameplay visuals still hiding in projectile/utility fallback paths so transient combat readability no longer depends on ad hoc scene writes.
+## Client ownership
+
+- `GameEngine`: lifecycle, authoritative state application, interaction coordination, instance transitions, and the main update loop.
+- `NetworkManager`: WebSocket send/decode, reconnection, buffered state, and resume-session behavior.
+- `RenderSystem`: renderer, camera, lighting, scene groups, quality settings, and effect/environment ownership.
+- `InputManager`: DOM input listeners and translation into gameplay intent.
+- `AbilityController`: ability targeting and orchestration.
+- `UIManager`: cross-surface coordinator. Inventory, skills, forge, trading, quests, and social behavior already have feature modules, but the facade remains oversized.
+- `SocialPresenceController`: party/social/friend message routing and local party-highlight state.
+
+## Server ownership
+
+- `main.go`: process startup, HTTP `/healthz`, WebSocket lifecycle, session/auth orchestration, JSON dispatch, protobuf snapshot/delta production, and persistence mapping.
+- `internal/game/world.go`: authoritative tick, combat, movement, AI, loot, dungeons, rewards, and progression. It remains the largest server risk.
+- `internal/game/entity.go`: entity model, stats, status effects, copy/snapshot helpers, runes, and set-bonus helpers.
+- `internal/game/party.go`, `social.go`, and dungeon-focused files: partially extracted domain behavior.
+- `internal/database`: Mongo collections and persistence operations.
+
+`/level` is not a normal gameplay capability. The server accepts it only when the authenticated username is in the explicit `EIDOLON_QA_USERNAMES` allowlist.
+
+## Persistence and reconnect
+
+MongoDB stores accounts, password hashes, characters, auctions, and friendships. Character state includes progression, inventory/stash/equipment, quests, skills/runes/talents, position, and party identity.
+
+On a transient disconnect, the server retains the entity for a five-minute resume window. The client reconnects with exponential backoff and presents its stored resume token. A successful resume rebinds the same server entity and refreshes the token. This path has unit coverage and is exercised by the credentialed browser suite; a claim of live verification requires the production test evidence.
+
+## Release identity and readiness
+
+- The client publishes `/release.json` with `commit` and `version`.
+- The server publishes `/healthz` with status, database readiness, commit, and version.
+- Docker injects the server commit/version through linker variables.
+- The server Docker context excludes `.env`, logs, reports, credential files, and database archives.
+- The Pages job generates the client manifest from `GITHUB_SHA`.
+- Deployment fails unless local server health is `200`, Mongo reports ready, and the server reports the expected commit.
+- Post-deploy automation polls both public endpoints until they report the same pushed SHA.
+
+No secrets are returned by either endpoint.
+
+## Browser QA boundary
+
+Playwright runs system Chrome at `/usr/bin/google-chrome` in the Codex environment and pinned Playwright Chromium in CI. Gameplay is driven through real DOM, keyboard, and mouse input. `page.evaluate()` is limited to read-only state inspection, transport fault injection for reconnect, and Three.js projection used to position real mouse clicks.
+
+Credentialed traces, screenshots, video, and Playwright's input-valued failure snapshot are disabled because recordings can expose account identifiers or form inputs. CI redacts and scans all supplied QA values before any report upload. The anonymous route retains screenshots, traces, and video on failure.
+
+## Measured hotspots
+
+Physical lines measured with `wc -l` on July 19, 2026:
+
+| File | LOC |
+|---|---:|
+| `server/internal/game/world.go` | 8,408 |
+| `server/main.go` | 4,632 |
+| `src/core/GameEngine.js` | 5,548 |
+| `src/ui/UIManager.js` | 3,622 |
+| `src/core/NetworkManager.js` | 317 |
+| `src/core/SocialPresenceController.js` | 108 |
+| `src/ui/SocialUI.js` | 678 |
+
+Totals: 40,623 JavaScript LOC under `src/`, 31,135 Go LOC under `server/`, 24,980 JavaScript test LOC under `tests/`, and 7,938 Go test LOC. Generated protobuf code and assets are included where those directory totals naturally include them; the hotspot table is the useful refactor baseline.
+
+The `0.40`–`0.43` decomposition gates are therefore still open. Release-confidence work should not be confused with completion of the monolith decomposition.
+
+## Known architectural risks
+
+- `world.go`, `main.go`, `GameEngine`, and `UIManager` remain well above roadmap size targets.
+- `World.Mu` still concentrates simulation-lock risk; instance-scoped locking is not implemented.
+- Mongo migration tooling and broader integration coverage remain roadmap work.
+- The committed browser harness provides real multi-client paths, but nightly soak and 100-client durability gates do not yet exist.
+- The static asset tree and repository remain unusually large; asset packaging and repository-size work should be handled as a focused follow-up.

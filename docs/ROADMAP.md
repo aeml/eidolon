@@ -1,6 +1,6 @@
 # Eidolon Engineering Roadmap
 
-Last refreshed: May 3, 2026
+Last refreshed: July 19, 2026
 
 This file is a short pointer. The engineering planning that used to live here now lives in two documents that are kept current:
 
@@ -13,11 +13,12 @@ Per-patch detail lives in `index.html` Patch Notes.
 
 Earlier versions of this doc duplicated content with the top-level `ROADMAP.md` and with the active plan docs under `docs/plans/`. The duplication drifted: each refresh updated some files and missed others. The single-source-of-truth structure is now:
 
-- `ROADMAP.md` (repo root): one-paragraph product roadmap pointer
+- `ROADMAP.md` (repo root): product roadmap and current release-confidence status
 - `docs/ROADMAP.md` (this file): one-paragraph engineering roadmap pointer
 - `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md`: the active release tracker
 - `docs/plans/2026-05-03-v1-0-implementation-plan.md`: the canonical implementation plan
 - `index.html` Patch Notes: per-patch history
+- `docs/plans/live-browser-qa-checklist.md`: durable local, deployment, and live-character release gate
 
 When this file and the plan docs above disagree, the plan docs win.
 
