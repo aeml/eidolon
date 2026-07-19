@@ -207,7 +207,7 @@ Current measured hotspots (physical lines, `wc -l`):
 
 | File | LOC |
 |---|---:|
-| `server/internal/game/world.go` | 8,464 |
+| `server/internal/game/world.go` | 8,466 |
 | `server/main.go` | 4,710 |
 | `src/core/GameEngine.js` | 5,548 |
 | `src/ui/UIManager.js` | 3,622 |

@@ -28,7 +28,7 @@ These are not called live-tested until dedicated production credentials are supp
 
 ## What remains fragile
 
-- The main monoliths remain large: `world.go` 8,464 LOC, `main.go` 4,710, `GameEngine.js` 5,548, and `UIManager.js` 3,622.
+- The main monoliths remain large: `world.go` 8,466 LOC, `main.go` 4,710, `GameEngine.js` 5,548, and `UIManager.js` 3,622.
 - The server still lacks the planned instance-scoped lock hierarchy.
 - Mongo migration tooling, broader persistence integration tests, formal per-message rate limiting, and malformed-packet fuzz coverage remain open.
 - Browser automation is a release gate, not a substitute for long-duration gameplay, mobile, accessibility, performance, and multi-client soak work.
@@ -50,4 +50,4 @@ These are not called live-tested until dedicated production credentials are supp
 - “Friends/presence do not exist.” They do and persist in Mongo.
 - “Protobuf is future work.” Binary full/delta state replication is current.
 - “Receiving any HTTP response proves deployment health.” Deployment now checks readiness and commit identity.
-- “The `0.40.0` extraction brought `world.go` below 7,500 lines.” Current measured state is 8,464 lines; historical reduction claims must not replace current measurement.
+- “The `0.40.0` extraction brought `world.go` below 7,500 lines.” Current measured state is 8,466 lines; historical reduction claims must not replace current measurement.

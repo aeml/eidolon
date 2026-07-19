@@ -373,7 +373,7 @@ var StatNames = map[string]struct {
 	"vitality":     {"Hearty", "of the Whale"},
 }
 
-func GenerateLoot(targetLevel int) *Item {
+func generateLootFromPool(targetLevel int, pool []BaseItem) *Item {
 	// 1. Roll for Rarity (Legendary 1%, Rare 29%, Uncommon 30%, Common 40%)
 	roll := rand.Float64()
 	rarity := RarityCommon
@@ -403,9 +403,26 @@ func GenerateLoot(targetLevel int) *Item {
 	level := rand.Intn(targetLevel-minLevel+1) + minLevel
 
 	// 3. Pick Base Item
-	baseItem := BaseItems[rand.Intn(len(BaseItems))]
+	baseItem := pool[rand.Intn(len(pool))]
 
 	return createItem(baseItem, rarity, multiplier, statCount, level)
+}
+
+func GenerateLoot(targetLevel int) *Item {
+	return generateLootFromPool(targetLevel, BaseItems)
+}
+
+// GenerateEquipmentLoot uses the normal enemy-drop rarity and level rules but
+// excludes materials, relics, and gems. It exists for flows that explicitly
+// promise an equippable item rather than merely a loot entity.
+func GenerateEquipmentLoot(targetLevel int) *Item {
+	equipment := make([]BaseItem, 0, len(BaseItems))
+	for _, baseItem := range BaseItems {
+		if baseItem.Type != ItemMaterial && baseItem.Type != ItemRelic && baseItem.Type != ItemGem {
+			equipment = append(equipment, baseItem)
+		}
+	}
+	return generateLootFromPool(targetLevel, equipment)
 }
 
 func GenerateEliteLoot(level int) *Item {

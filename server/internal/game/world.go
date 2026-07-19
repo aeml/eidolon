@@ -6831,7 +6831,9 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 			if dropCount > 0 {
 				for i := 0; i < dropCount; i++ {
-					if isElite {
+					if qaGuaranteedLoot && i == 0 {
+						lootItems = append(lootItems, GenerateEquipmentLoot(tLevel))
+					} else if isElite {
 						lootItems = append(lootItems, GenerateEliteLoot(tLevel))
 					} else {
 						lootItems = append(lootItems, GenerateLoot(tLevel))

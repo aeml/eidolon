@@ -28,6 +28,18 @@ func TestGenerateLoot(t *testing.T) {
 	}
 }
 
+func TestGenerateEquipmentLootAlwaysReturnsEquipment(t *testing.T) {
+	for i := 0; i < 100; i++ {
+		item := GenerateEquipmentLoot(10)
+		if item == nil {
+			t.Fatal("GenerateEquipmentLoot returned nil")
+		}
+		if item.Type == ItemMaterial || item.Type == ItemRelic || item.Type == ItemGem {
+			t.Fatalf("GenerateEquipmentLoot returned non-equipment type %s", item.Type)
+		}
+	}
+}
+
 func TestGenerateLootRarity(t *testing.T) {
 	// Run many times to check rarity distribution
 	rarities := make(map[ItemRarity]int)

@@ -19,7 +19,7 @@ Evidence boundary for the current lane:
 
 - Unit-tested and locally browser-tested work is not labeled live-tested.
 - The Playwright harness covers anonymous, persistent-character, and optional two-account flows. The full character route passes locally against disposable Mongo/API containers; it remains unverified in production until dedicated QA secrets are supplied and the deployed run completes.
-- Current hotspot measurements are `world.go` 8,464 LOC, `main.go` 4,710, `GameEngine.js` 5,548, and `UIManager.js` 3,622. The decomposition completion gates below are not met.
+- Current hotspot measurements are `world.go` 8,466 LOC, `main.go` 4,710, `GameEngine.js` 5,548, and `UIManager.js` 3,622. The decomposition completion gates below are not met.
 
 ## Alpha 1.0 Strategy
 
