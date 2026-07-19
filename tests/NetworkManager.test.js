@@ -133,6 +133,114 @@ describe('NetworkManager — basic send / queue', () => {
         expect(nm.messageQueue).toHaveLength(2);
     });
 
+    test('drainMessages() prioritizes control messages and current state when backlogged', () => {
+        const nm = new NetworkManager(null);
+        nm.messageQueue = [
+            { type: 'state', payload: { sequence: 1 } },
+            { type: 'delta', payload: { sequence: 2 } },
+            { type: 'state', payload: { sequence: 3 } },
+            { type: 'chat', payload: { message: 'confirmed' } },
+            { type: 'inventory', payload: [] }
+        ];
+
+        expect(nm.drainMessages(3)).toEqual([
+            { type: 'chat', payload: { message: 'confirmed' } },
+            { type: 'inventory', payload: [] },
+            { type: 'state', payload: { sequence: 3 } }
+        ]);
+        expect(nm.messageQueue).toEqual([]);
+    });
+
+    test('drainMessages() compacts an extreme state backlog without losing current entities', () => {
+        const nm = new NetworkManager(null);
+        nm.messageQueue = [
+            { type: 'state', payload: { player: { x: 0 }, stale: { id: 'stale' } } },
+            ...Array.from({ length: 20 }, (_, index) => ({
+                type: 'delta',
+                payload: {
+                    u: { player: { x: index + 1 } },
+                    r: index === 4 ? ['stale'] : []
+                }
+            })),
+            { type: 'chat', payload: { message: 'priority' } }
+        ];
+
+        const drained = nm.drainMessages(5);
+
+        expect(drained[0]).toEqual({ type: 'chat', payload: { message: 'priority' } });
+        expect(drained).toHaveLength(5);
+        expect(drained[1]).toEqual(expect.objectContaining({
+            type: 'state',
+            payload: expect.objectContaining({ player: { x: 17 } })
+        }));
+        expect(drained[1].payload.stale).toBeUndefined();
+        expect(drained.at(-1)).toEqual(expect.objectContaining({
+            type: 'delta',
+            payload: expect.objectContaining({ u: { player: { x: 20 } } })
+        }));
+        expect(nm.messageQueue).toEqual([]);
+    });
+
+    test('receive-path compaction bounds state traffic between animation frames', () => {
+        const nm = new NetworkManager(null);
+
+        nm._enqueueMessage({
+            type: 'state',
+            payload: { player: { id: 'player', x: 0 }, stale: { id: 'stale' } }
+        });
+        for (let index = 1; index <= 100; index += 1) {
+            if (index === 50) {
+                nm._enqueueMessage({ type: 'inventory', payload: [{ name: 'Authoritative Axe' }] });
+            }
+            nm._enqueueMessage({
+                type: 'delta',
+                payload: {
+                    u: { player: { id: 'player', x: index } },
+                    r: index === 25 ? ['stale'] : []
+                }
+            });
+        }
+
+        expect(nm.messageQueue.length).toBeLessThanOrEqual(64);
+
+        const drained = nm.drainMessages(40);
+        expect(drained[0]).toEqual({
+            type: 'inventory',
+            payload: [{ name: 'Authoritative Axe' }]
+        });
+
+        const latestState = drained.at(-1);
+        expect(latestState.type).toBe('delta');
+        expect(latestState.payload.u.player.x).toBe(100);
+        expect(drained.some((message) => message.payload?.stale)).toBe(false);
+    });
+
+    test('combat-effect floods cannot starve controls or authoritative state', () => {
+        const nm = new NetworkManager(null);
+        nm._enqueueMessage({ type: 'state', payload: { player: { id: 'player', x: 0 } } });
+        for (let index = 1; index <= 100; index += 1) {
+            nm._enqueueMessage({ type: 'attack', payload: { sourceId: `enemy-${index}` } });
+            nm._enqueueMessage({ type: 'damage', payload: { targetId: `enemy-${index}`, amount: index } });
+            nm._enqueueMessage({
+                type: 'delta',
+                payload: { u: { player: { id: 'player', x: index } }, r: [] }
+            });
+        }
+        nm._enqueueMessage({ type: 'chat', payload: { sender: 'System', message: 'Waypoint set' } });
+
+        expect(nm.messageQueue.length).toBeLessThanOrEqual(64);
+
+        const drained = nm.drainMessages(5);
+        expect(drained[0].type).toBe('chat');
+        expect(drained.some((message) =>
+            (message.type === 'state' && message.payload.player?.x === 100) ||
+            (message.type === 'delta' && message.payload.u.player?.x === 100)
+        )).toBe(true);
+        expect(drained.filter((message) =>
+            message.type === 'attack' || message.type === 'damage'
+        ).length).toBeLessThanOrEqual(3);
+    });
+
     test('requests ordered ArrayBuffer delivery for binary state frames', () => {
         const sock = makeMockSocket();
         const nm = new NetworkManager(sock);

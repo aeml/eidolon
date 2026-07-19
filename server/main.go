@@ -228,6 +228,7 @@ type EntitySnapshot struct {
 type Client struct {
 	conn         *websocket.Conn
 	send         chan []byte
+	prioritySend chan []byte
 	playerID     string
 	username     string
 	lastState    map[string]*EntitySnapshot // Track last sent state per entity
@@ -1293,6 +1294,9 @@ func runHub() {
 				cleanupClient(client)
 				delete(clients, client)
 				close(client.send)
+				if client.prioritySend != nil {
+					close(client.prioritySend)
+				}
 			}
 		case message := <-broadcast:
 			for client := range clients {
@@ -1321,6 +1325,9 @@ func runHub() {
 						cleanupClient(client)
 						delete(clients, client)
 						close(client.send)
+						if client.prioritySend != nil {
+							close(client.prioritySend)
+						}
 					}
 				}
 			}
@@ -1446,10 +1453,11 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	client := &Client{
-		conn:      c,
-		send:      make(chan []byte, 256), // Increased buffer size to prevent drops
-		lastState: make(map[string]*EntitySnapshot),
-		seenIDs:   make(map[string]bool),
+		conn:         c,
+		send:         make(chan []byte, 256), // State traffic is lossy under pressure.
+		prioritySend: make(chan []byte, 64),  // Control/UI messages must not starve behind state.
+		lastState:    make(map[string]*EntitySnapshot),
+		seenIDs:      make(map[string]bool),
 	}
 	register <- client
 
@@ -1493,30 +1501,46 @@ func (c *Client) writePump() {
 		c.conn.Close()
 	}()
 
+	writeMessage := func(message []byte) error {
+		c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+		msgType := websocket.TextMessage
+		if len(message) > 5 && bytes.Equal(message[0:4], stateProtoMagic) {
+			msgType = websocket.BinaryMessage
+		}
+		w, err := c.conn.NextWriter(msgType)
+		if err != nil {
+			return err
+		}
+		if _, err := w.Write(message); err != nil {
+			_ = w.Close()
+			return err
+		}
+		return w.Close()
+	}
+
 	for {
+		// Give already-queued control traffic strict precedence without
+		// preventing state or ping progress when the priority lane is empty.
 		select {
+		case message, ok := <-c.prioritySend:
+			if !ok || writeMessage(message) != nil {
+				return
+			}
+			continue
+		default:
+		}
+
+		select {
+		case message, ok := <-c.prioritySend:
+			if !ok || writeMessage(message) != nil {
+				return
+			}
 		case message, ok := <-c.send:
-			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
-				// The hub closed the channel.
-				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				_ = c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
-
-			// Check if data is Binary (Eidolon protobuf magic "EDPB")
-			msgType := websocket.TextMessage
-			if len(message) > 5 && bytes.Equal(message[0:4], stateProtoMagic) {
-				msgType = websocket.BinaryMessage
-			}
-
-			w, err := c.conn.NextWriter(msgType)
-			if err != nil {
-				return
-			}
-
-			w.Write(message)
-
-			if err := w.Close(); err != nil {
+			if writeMessage(message) != nil {
 				return
 			}
 		case <-ticker.C:
@@ -3358,6 +3382,10 @@ func (c *Client) sendSafe(data []byte) {
 			// Channel closed, client disconnected
 		}
 	}()
+	if c.prioritySend != nil {
+		c.prioritySend <- data
+		return
+	}
 	c.send <- data
 }
 
@@ -3372,7 +3400,7 @@ func (c *Client) sendError(msg string) {
 		Payload: json.RawMessage(`"` + msg + `"`),
 	}
 	b, _ := json.Marshal(m)
-	c.send <- b
+	c.sendSafe(b)
 }
 
 // entityToSnapshot extracts fields we track for delta comparison

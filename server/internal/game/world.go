@@ -599,9 +599,11 @@ func (w *World) MovePlayerToQAWaypoint(playerID, waypoint string) (*Entity, bool
 	return player, true
 }
 
-// ArmPlayerQAGuaranteedLoot makes one subsequent enemy kill use the normal
-// loot generator even when its random 50% roll would miss. Authorization is
-// enforced by the server command layer, and the flag is consumed on kill.
+// ArmPlayerQAGuaranteedLoot makes one subsequent enemy encounter deterministic:
+// the next accepted basic attack can finish the enemy and that kill uses the
+// normal equipment generator even when its random 50% roll would miss.
+// Authorization is enforced by the server command layer, and the flag is
+// consumed on kill.
 func (w *World) ArmPlayerQAGuaranteedLoot(playerID string) bool {
 	player := w.GetEntity(playerID)
 	if player == nil || player.Type != TypePlayer {
@@ -6189,6 +6191,9 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		if tgt == nil || tgt.State == "DEAD" {
 			return
 		}
+		att.Mu.RLock()
+		qaDeterministicEncounter := att.Type == TypePlayer && att.QAGuaranteedLoot
+		att.Mu.RUnlock()
 
 		// Lock target for modification
 		tgt.Mu.Lock()
@@ -6214,6 +6219,9 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		damage := att.Damage - defense
 		if damage < 1 {
 			damage = 1
+		}
+		if qaDeterministicEncounter && tgt.Type == TypeEnemy && damage < tgt.Health {
+			damage = tgt.Health
 		}
 
 		// Cloak Prepared Ambush rune: next attack deals +100% damage

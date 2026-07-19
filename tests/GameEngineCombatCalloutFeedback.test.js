@@ -279,6 +279,34 @@ describe('GameEngine encounter callouts', () => {
         expect(engine.player.move).toHaveBeenCalled();
     });
 
+    test('moveToAndInteract sends an in-range multiplayer attack without waiting for a frame', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.player = {
+            position: new THREE.Vector3(0, 0, 0),
+            stats: { attackSpeed: 2 },
+            lastAttackTime: 0
+        };
+        engine.isMultiplayer = true;
+        engine.abilityController = {
+            pendingAbilityTarget: null,
+            pendingAbilitySkill: null,
+            performAttack: jest.fn()
+        };
+        engine.getInteractionRangeForEntity = jest.fn(() => 4.0);
+        engine.isHostileActorTarget = jest.fn(() => true);
+        engine.moveToAndInteract = GameEngine.prototype.moveToAndInteract;
+        const target = {
+            id: 'enemy-nearby',
+            position: new THREE.Vector3(2, 0, 0)
+        };
+
+        engine.moveToAndInteract(target);
+
+        expect(engine.pendingInteraction).toBe(target);
+        expect(engine.abilityController.performAttack).toHaveBeenCalledWith(target);
+        expect(engine.player.lastAttackTime).toBeGreaterThan(0);
+    });
+
     test('handleLevelUpFeedback announces milestone unlock guidance', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.player = {

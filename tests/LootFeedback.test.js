@@ -47,12 +47,14 @@ function createEngineHarness() {
     engine.lastAutoLootAttemptTime = 0;
     engine.autoLootAttemptCooldownMs = 250;
     engine.recentlyPickedUpLoot = new Set();
+    engine.pendingLootPickups = new Map();
     engine.pendingInteraction = null;
     engine.activeEntitiesCache = [];
     engine.remotePlayers = new Map();
     engine.entityCreationQueue = [];
     engine.pendingEntityIds = new Set();
     engine.recentlyPickedUpLootTimeout = 5000;
+    engine.pendingLootPickupTimeout = 10000;
     engine.chunkManager = {
         chunks: new Map(),
         getChunkKey: jest.fn(() => '0:0')
@@ -82,6 +84,9 @@ function createEngineHarness() {
     engine.processAutoLoot = GameEngine.prototype.processAutoLoot;
     engine.updateLootVisualFeedback = GameEngine.prototype.updateLootVisualFeedback;
     engine.pickupLoot = GameEngine.prototype.pickupLoot;
+    engine.confirmPendingLootPickups = GameEngine.prototype.confirmPendingLootPickups;
+    engine.removeRemoteEntity = GameEngine.prototype.removeRemoteEntity;
+    engine.handleServerMessage = GameEngine.prototype.handleServerMessage;
     return engine;
 }
 
@@ -121,7 +126,7 @@ describe('GameEngine loot pickup feedback', () => {
         expect(engine.playAudioCue).toHaveBeenCalledWith(AUDIO_CUES.lootBlocked);
     });
 
-    test('pickupLoot shows success feedback and optimistic removal', () => {
+    test('pickupLoot waits for authoritative inventory confirmation before success feedback', () => {
         const engine = createEngineHarness();
         const loot = createLootEntity({ id: 'loot-success', item: createItem('Radiant Ruby', 'Rare', '#a855f7') });
         engine.remotePlayers.set(loot.id, loot);
@@ -131,10 +136,32 @@ describe('GameEngine loot pickup feedback', () => {
 
         expect(didPickup).toBe(true);
         expect(engine.network.send).toHaveBeenCalledWith('pickup', { lootId: 'loot-success' });
+        expect(engine.playAudioCue).not.toHaveBeenCalled();
+        expect(engine.uiManager.showLootPickupToast).not.toHaveBeenCalled();
+        expect(engine.remotePlayers.has(loot.id)).toBe(true);
+        expect(engine.player.inventory.filter(Boolean)).toHaveLength(0);
+
+        engine.handleServerMessage({ type: 'inventory', payload: [loot.item] });
+
         expect(engine.playAudioCue).toHaveBeenCalledWith(AUDIO_CUES.lootPickup, { pitch: 1 });
         expect(engine.uiManager.showLootPickupToast).toHaveBeenCalledWith('Rare: Radiant Ruby', { sender: 'Loot' });
         expect(engine.floatingTextManager.spawn).toHaveBeenCalledWith('RARE: RADIANT RUBY', engine.player.position, '#a855f7');
         expect(engine.remotePlayers.has(loot.id)).toBe(false);
+    });
+
+    test('a pickup without server confirmation remains retryable and does not create a ghost item', () => {
+        const engine = createEngineHarness();
+        const loot = createLootEntity({ id: 'loot-retry' });
+        engine.remotePlayers.set(loot.id, loot);
+        engine.activeEntitiesCache = [loot];
+
+        engine.pickupLoot(loot.id);
+        engine.pickupLoot(loot.id);
+
+        expect(engine.network.send).toHaveBeenCalledTimes(2);
+        expect(engine.remotePlayers.has(loot.id)).toBe(true);
+        expect(engine.player.inventory.filter(Boolean)).toHaveLength(0);
+        expect(engine.pendingLootPickups.has(loot.id)).toBe(true);
     });
 
     test('pickupLoot detaches fallback loot meshes from their current parent after reparenting', () => {
@@ -148,6 +175,7 @@ describe('GameEngine loot pickup feedback', () => {
         engine.chunkManager.chunks.set('0:0', new Set([loot]));
 
         const didPickup = engine.pickupLoot(loot.id);
+        engine.handleServerMessage({ type: 'inventory', payload: [loot.item] });
 
         expect(didPickup).toBe(true);
         expect(otherParent.children).toHaveLength(0);

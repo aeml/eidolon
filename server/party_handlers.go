@@ -72,7 +72,10 @@ func handleMsgPartyInvite(c *Client, msg Message) {
 	}
 	reqBytes, _ := json.Marshal(reqPayload)
 	targetClient.sendSafe(createMessage(MsgPartyRequest, reqBytes))
-	c.sendError("Invite sent to " + payload.TargetName)
+	// A successfully delivered invite is informational, not a protocol error.
+	// Keep it in the existing system-chat surface so the player still receives
+	// visible confirmation without emitting a false console error in browsers.
+	c.sendSystemChat("Invite sent to " + payload.TargetName)
 }
 
 // handleMsgPartyResponse handles acceptance or rejection of a party invite.

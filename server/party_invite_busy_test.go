@@ -49,6 +49,18 @@ func sendPartyInvite(c *Client, targetName string) {
 	c.handleMessage(Message{Type: MsgPartyInvite, Payload: payload})
 }
 
+func TestClientSendSafePrefersPriorityChannel(t *testing.T) {
+	c := &Client{
+		send:         make(chan []byte, 1),
+		prioritySend: make(chan []byte, 1),
+	}
+	c.sendSafe([]byte("control"))
+
+	if len(c.prioritySend) != 1 || len(c.send) != 0 {
+		t.Fatalf("control message was not isolated from state traffic: priority=%d state=%d", len(c.prioritySend), len(c.send))
+	}
+}
+
 // ---------------------------------------------------------------------------
 // Busy blocks invite
 // ---------------------------------------------------------------------------
@@ -196,6 +208,49 @@ func TestPartyInvite_AvailableTarget_DeliversRequest(t *testing.T) {
 	}
 	if !found {
 		t.Fatalf("expected MsgPartyRequest delivered to available player, got messages: %+v", msgs)
+	}
+}
+
+func TestPartyInvite_AvailableTarget_ConfirmsWithoutProtocolError(t *testing.T) {
+	origWorld := world
+	origSessions := activeSessions
+	defer func() {
+		world = origWorld
+		activeSessions = origSessions
+	}()
+
+	world = game.NewWorld(nil)
+	activeSessions = make(map[string]*Client)
+
+	inviterEntity := newBusyTestPlayer("inv-confirm", "Inviter", "available")
+	targetEntity := newBusyTestPlayer("tgt-confirm", "Target", "available")
+	world.AddEntity(inviterEntity)
+	world.AddEntity(targetEntity)
+
+	inviterClient := newBusyTestClient("inv-confirm", "Inviter")
+	targetClient := newBusyTestClient("tgt-confirm", "Target")
+	activeSessions["Inviter"] = inviterClient
+	activeSessions["Target"] = targetClient
+
+	sendPartyInvite(inviterClient, "Target")
+
+	msgs := drainSentMessages(inviterClient.send)
+	foundConfirmation := false
+	for _, msg := range msgs {
+		if msg.Type == MsgError {
+			t.Fatalf("successful invite must not be reported as an error: %+v", msgs)
+		}
+		if msg.Type != MsgChat {
+			continue
+		}
+		var payload ChatPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			t.Fatalf("decode confirmation chat: %v", err)
+		}
+		foundConfirmation = payload.Sender == "System" && payload.Message == "Invite sent to Target"
+	}
+	if !foundConfirmation {
+		t.Fatalf("expected a system-chat invite confirmation, got messages: %+v", msgs)
 	}
 }
 

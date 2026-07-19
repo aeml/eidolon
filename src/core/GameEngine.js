@@ -415,6 +415,11 @@ export class GameEngine {
         // Track recently picked up loot IDs to prevent phantom item recreation
         this.recentlyPickedUpLoot = new Set();
         this.recentlyPickedUpLootTimeout = 5000; // 5 seconds
+        // A pickup is not real until the server's inventory packet confirms it.
+        // Keeping pending loot retryable prevents rejected requests from
+        // creating client-only "ghost" items.
+        this.pendingLootPickups = new Map();
+        this.pendingLootPickupTimeout = 10000;
     }
 
     get scene() {
@@ -1353,6 +1358,7 @@ export class GameEngine {
                 }
                 this.player.inventory = inventory;
                 this.uiManager.updateInventory(this.player);
+                this.confirmPendingLootPickups(inventory);
             }
         } else if (msg.type === 'stash') {
             const stash = msg.payload.map(item => this.hydrateItem(item));
@@ -2469,6 +2475,28 @@ export class GameEngine {
         this.remotePlayers.delete(id);
     }
 
+    confirmPendingLootPickups(inventory) {
+        if (!this.pendingLootPickups?.size) return;
+
+        const quantityByName = new Map();
+        for (const item of inventory || []) {
+            if (!item?.id || !item.name) continue;
+            quantityByName.set(item.name, (quantityByName.get(item.name) || 0) + (item.stack || 1));
+        }
+
+        for (const [lootId, pending] of this.pendingLootPickups) {
+            if ((quantityByName.get(pending.itemName) || 0) <= pending.quantityBefore) continue;
+
+            this.pendingLootPickups.delete(lootId);
+            this.recentlyPickedUpLoot.add(lootId);
+            setTimeout(() => {
+                this.recentlyPickedUpLoot.delete(lootId);
+            }, this.recentlyPickedUpLootTimeout);
+            this.showLootPickupFeedback(pending.entity, 'picked_up');
+            this.removeRemoteEntity(lootId);
+        }
+    }
+
     isLootEntity(entity) {
         return entity instanceof LootDrop;
     }
@@ -2576,9 +2604,9 @@ export class GameEngine {
 
         const isEmptyInventorySlot = (slot) => !slot || !slot.id;
 
-        // Decide whether we can safely do optimistic pickup.
-        // Only do it when the *entire* stack can fit in the current inventory state.
-        const canOptimisticPickup = (() => {
+        // Only request pickup when the entire stack can fit in the current
+        // inventory state; the server remains authoritative for acceptance.
+        const canFitPickup = (() => {
             if (!entity || !entity.item || !this.player || !this.player.inventory) return false;
 
             const item = this.hydrateItem({ ...entity.item });
@@ -2619,98 +2647,32 @@ export class GameEngine {
             return false;
         })();
 
-        if (!canOptimisticPickup) {
+        if (!canFitPickup) {
             // No point sending a request the server must reject.
             this.showLootFailureFeedback('inventory_full');
             return false;
         }
 
-        // Send pickup request (we expect success since it fits).
+        if (!this.pendingLootPickups.has(lootId)) {
+            const item = this.hydrateItem({ ...entity.item });
+            const quantityBefore = this.player.inventory.reduce((total, inventoryItem) =>
+                total + (inventoryItem?.id && inventoryItem.name === item.name
+                    ? (inventoryItem.stack || 1)
+                    : 0), 0);
+            this.pendingLootPickups.set(lootId, {
+                entity,
+                itemName: item.name,
+                quantityBefore
+            });
+            setTimeout(() => {
+                this.pendingLootPickups.delete(lootId);
+            }, this.pendingLootPickupTimeout);
+        }
+
+        // Keep the item and inventory unchanged until the server's inventory
+        // response confirms success. The interaction loop can safely retry a
+        // request rejected because the authoritative player position lagged.
         this.network.send('pickup', { lootId: lootId });
-
-        // Track this loot as recently picked up to prevent phantom recreation
-        this.recentlyPickedUpLoot.add(lootId);
-        setTimeout(() => {
-            this.recentlyPickedUpLoot.delete(lootId);
-        }, this.recentlyPickedUpLootTimeout);
-
-        // Remove from entity creation queue if pending (prevents phantom items)
-        const queueIdx = this.entityCreationQueue.findIndex(e => e.id === lootId);
-        if (queueIdx !== -1) {
-            this.entityCreationQueue.splice(queueIdx, 1);
-            this.pendingEntityIds.delete(lootId);
-        }
-
-        // Optimistic removal to prevent "ghost items"
-        if (entity) {
-            console.log(`Optimistically removing loot ${lootId}`);
-
-            // Optimistic inventory update - add item to bag instantly
-            if (entity.item && this.player && this.player.inventory) {
-                const item = this.hydrateItem({ ...entity.item });
-
-                // Handle stackable items
-                if (item.maxStack && item.maxStack > 1) {
-                    // Try to stack with existing items first
-                    let remainingStack = item.stack || 1;
-                    for (let i = 0; i < this.player.inventory.length && remainingStack > 0; i++) {
-                        const invItem = this.player.inventory[i];
-                        if (invItem && invItem.id && invItem.name === item.name && invItem.stack < invItem.maxStack) {
-                            const spaceAvailable = invItem.maxStack - invItem.stack;
-                            const toAdd = Math.min(spaceAvailable, remainingStack);
-                            invItem.stack += toAdd;
-                            remainingStack -= toAdd;
-                        }
-                    }
-
-                    // If remaining, find empty slot(s)
-                    if (remainingStack > 0) {
-                        for (let i = 0; i < this.player.inventory.length && remainingStack > 0; i++) {
-                            if (isEmptyInventorySlot(this.player.inventory[i])) {
-                                const stackHere = Math.min(item.maxStack, remainingStack);
-                                const newItem = { ...item, stack: stackHere };
-                                this.player.inventory[i] = newItem;
-                                remainingStack -= stackHere;
-                            }
-                        }
-                    }
-                } else {
-                    // Non-stackable: find empty slot
-                    for (let i = 0; i < this.player.inventory.length; i++) {
-                        if (isEmptyInventorySlot(this.player.inventory[i])) {
-                            this.player.inventory[i] = item;
-                            break;
-                        }
-                    }
-                }
-
-                // Immediately update UI
-                this.uiManager.updateInventory(this.player);
-            }
-
-            this.showLootPickupFeedback(entity, 'picked_up');
-
-            entity.isActive = false;
-            if (entity.dispose) {
-                entity.dispose();
-            } else if (entity.mesh) {
-                if (entity.mesh.parent?.remove) {
-                    entity.mesh.parent.remove(entity.mesh);
-                } else {
-                    this.renderSystem.remove(entity.mesh);
-                }
-            }
-
-            const key = this.chunkManager.getChunkKey(entity.position.x, entity.position.z);
-            if (this.chunkManager.chunks.has(key)) {
-                this.chunkManager.chunks.get(key).delete(entity);
-            }
-            this.remotePlayers.delete(lootId);
-
-            if (this.pendingInteraction === entity) {
-                this.pendingInteraction = null;
-            }
-        }
 
         return true;
     }
@@ -4477,6 +4439,16 @@ export class GameEngine {
             const target = entity.position.clone();
             target.y = this.player.position.y;
             this.player.move(target);
+        } else if (this.isMultiplayer && this.isHostileActorTarget(entity)) {
+            // A direct in-range click should not wait for the next animation
+            // frame before reaching the server. Slow renderers still retain
+            // the pending interaction for normal cooldown-driven auto-attacks.
+            const now = Date.now();
+            const cooldownMs = (this.player.stats?.attackSpeed || 1) * 1000;
+            if (now - (this.player.lastAttackTime || 0) >= cooldownMs) {
+                this.player.lastAttackTime = now;
+                this.abilityController.performAttack(entity);
+            }
         }
     }
 
@@ -4715,8 +4687,10 @@ export class GameEngine {
 
         // Process Network Message Queue
         // 1. Handle critical messages (Chat, Inventory, etc.)
-        // Increased limit to clear backlog faster
-        const maxMessages = 200; 
+        // Healthy clients normally receive at most a few packets per frame.
+        // A bounded limit lets NetworkManager compact slow-client backlogs
+        // before stale state processing becomes a render death spiral.
+        const maxMessages = 40;
         
         const pendingMessages = this.network.drainMessages(maxMessages);
 
