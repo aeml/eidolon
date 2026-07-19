@@ -14,6 +14,9 @@ export class NetworkManager {
         /** @type {Object[]} Queued incoming messages (drained each tick) */
         this.messageQueue = [];
 
+        /** Serial fallback for environments that still deliver binary frames as Blob. */
+        this._binaryDecodeChain = Promise.resolve();
+
         /** Latest raw server time payload (string).  Kept outside queue for perf. */
         this.latestServerTime = null;
 
@@ -100,60 +103,24 @@ export class NetworkManager {
      * message queue.  Time messages are stored separately for perf.
      */
     setupListeners() {
+        // ArrayBuffer avoids one asynchronous FileReader per 30 Hz state
+        // packet. Besides reducing queue latency, synchronous decoding keeps
+        // authoritative movement frames in WebSocket transport order.
+        this.socket.binaryType = 'arraybuffer';
         this.socket.onmessage = (event) => {
             try {
                 let data = event.data;
 
                 // --- Binary (protobuf) path ---
+                if (data instanceof ArrayBuffer) {
+                    this._decodeBinaryState(data);
+                    return;
+                }
                 if (data instanceof Blob) {
-                    const reader = new FileReader();
-                    reader.onload = () => {
-                        try {
-                            const compressed = new Uint8Array(reader.result);
-
-                            // EDPB + version byte + protobuf payload
-                            if (
-                                compressed.length > 5 &&
-                                compressed[0] === 0x45 &&
-                                compressed[1] === 0x44 &&
-                                compressed[2] === 0x50 &&
-                                compressed[3] === 0x42
-                            ) {
-                                const wireVersion = compressed[4];
-                                if (wireVersion !== 1) {
-                                    console.warn('Unsupported state proto wire version:', wireVersion);
-                                    return;
-                                }
-
-                                const payloadBytes = compressed.subarray(5);
-                                const env = eidolonProto.state.StateEnvelope.decode(payloadBytes);
-
-                                if (env.full) {
-                                    const entities = env.full.entities || [];
-                                    const payload = {};
-                                    for (const e of entities) payload[e.id] = e;
-                                    this.messageQueue.push({ type: 'state', payload });
-                                    return;
-                                }
-
-                                if (env.delta) {
-                                    const entities = env.delta.entities || [];
-                                    const u = {};
-                                    for (const e of entities) u[e.id] = e;
-                                    const r = env.delta.removedIds || [];
-                                    this.messageQueue.push({ type: 'delta', payload: { u, r } });
-                                    return;
-                                }
-
-                                return;
-                            }
-
-                            console.warn('Unknown binary payload; ignoring (expected EDPB protobuf)');
-                        } catch (e) {
-                            console.error('Decompression error:', e);
-                        }
-                    };
-                    reader.readAsArrayBuffer(data);
+                    this._binaryDecodeChain = this._binaryDecodeChain
+                        .then(() => data.arrayBuffer())
+                        .then((buffer) => this._decodeBinaryState(buffer))
+                        .catch((error) => console.error('Decompression error:', error));
                     return;
                 }
 
@@ -201,6 +168,51 @@ export class NetworkManager {
         this.socket.onerror = (error) => {
             console.error('WebSocket error:', error);
         };
+    }
+
+    _decodeBinaryState(buffer) {
+        try {
+            const compressed = new Uint8Array(buffer);
+
+            // EDPB + version byte + protobuf payload
+            if (
+                compressed.length <= 5 ||
+                compressed[0] !== 0x45 ||
+                compressed[1] !== 0x44 ||
+                compressed[2] !== 0x50 ||
+                compressed[3] !== 0x42
+            ) {
+                console.warn('Unknown binary payload; ignoring (expected EDPB protobuf)');
+                return;
+            }
+
+            const wireVersion = compressed[4];
+            if (wireVersion !== 1) {
+                console.warn('Unsupported state proto wire version:', wireVersion);
+                return;
+            }
+
+            const payloadBytes = compressed.subarray(5);
+            const env = eidolonProto.state.StateEnvelope.decode(payloadBytes);
+
+            if (env.full) {
+                const entities = env.full.entities || [];
+                const payload = {};
+                for (const e of entities) payload[e.id] = e;
+                this.messageQueue.push({ type: 'state', payload });
+                return;
+            }
+
+            if (env.delta) {
+                const entities = env.delta.entities || [];
+                const u = {};
+                for (const e of entities) u[e.id] = e;
+                const r = env.delta.removedIds || [];
+                this.messageQueue.push({ type: 'delta', payload: { u, r } });
+            }
+        } catch (error) {
+            console.error('Decompression error:', error);
+        }
     }
 
     // ------------------------------------------------------------------

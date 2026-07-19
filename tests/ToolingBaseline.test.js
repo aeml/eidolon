@@ -19,11 +19,14 @@ describe('tooling baseline', () => {
         expect(indexHtml).not.toContain('unpkg.com');
         expect(packageJson.scripts['prepare:client']).toBeTruthy();
         expect(fs.existsSync(path.join(repoRoot, 'scripts', 'sanitize-playwright-artifacts.mjs'))).toBe(true);
+        expect(fs.readFileSync(path.join(repoRoot, 'scripts', 'serve-static.mjs'), 'utf8'))
+            .toContain('EIDOLON_STATIC_WS_URL');
     });
 
     test('defines local quality scripts', () => {
         expect(packageJson.scripts['test:smoke']).toBeTruthy();
         expect(packageJson.scripts['test:e2e']).toBeTruthy();
+        expect(packageJson.scripts['test:e2e:isolated']).toBeTruthy();
         expect(packageJson.scripts.lint).toBeTruthy();
     });
 

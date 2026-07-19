@@ -33,7 +33,7 @@ test.describe('dedicated QA character', () => {
 
     test('kills and loots in the overworld, enters and exits a dungeon, and persists', async ({ page, baseURL }) => {
         test.skip(process.env.EIDOLON_E2E_FULL_GAMEPLAY !== '1', 'Enable for an extended disposable-character run');
-        test.setTimeout(360_000);
+        test.setTimeout(600_000);
         const failures = collectBrowserFailures(page, baseURL);
         await loginAndEnterWorld(page, credentials);
         await ensureDungeonReadyLevel(page);
@@ -41,6 +41,16 @@ test.describe('dedicated QA character', () => {
         await enterAndExitDungeon(page);
         await exerciseReconnect(page);
         await verifyPersistenceAfterFreshLogin(page, credentials, inventoryCount);
+        expect(failures, failures.join('\n')).toEqual([]);
+    });
+
+    test('enters and exits a dungeon through the allowlisted QA waypoint', async ({ page, baseURL }) => {
+        test.skip(process.env.EIDOLON_E2E_PORTAL_ONLY !== '1', 'Enable for focused portal QA');
+        test.setTimeout(300_000);
+        const failures = collectBrowserFailures(page, baseURL);
+        await loginAndEnterWorld(page, credentials);
+        await ensureDungeonReadyLevel(page);
+        await enterAndExitDungeon(page);
         expect(failures, failures.join('\n')).toEqual([]);
     });
 });

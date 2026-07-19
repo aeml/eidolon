@@ -42,6 +42,12 @@ export default defineConfig({
     },
     webServer: useLocalServer ? {
         command: 'npm run serve',
+        env: {
+            ...process.env,
+            ...(process.env.EIDOLON_E2E_WS_URL
+                ? { EIDOLON_STATIC_WS_URL: process.env.EIDOLON_E2E_WS_URL }
+                : {})
+        },
         url: localBaseURL,
         reuseExistingServer: !process.env.CI,
         timeout: 30_000

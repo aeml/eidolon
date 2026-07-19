@@ -3,6 +3,7 @@ import {
     collectBrowserFailures,
     credentialsFromEnvironment,
     loginAndEnterWorld,
+    moveByGroundClick,
     projectEntity,
     projectNearestHostile
 } from './helpers.js';
@@ -81,9 +82,7 @@ test.describe('two-account multiplayer', () => {
             }, { timeout: 20_000 }).toBe(true);
             await firstPage.keyboard.press('Escape');
             const beforeMovement = await remoteSnapshot(secondPage, primary.username);
-            await firstPage.keyboard.down('w');
-            await firstPage.waitForTimeout(1_500);
-            await firstPage.keyboard.up('w');
+            await moveByGroundClick(firstPage, 20, 0);
 
             await expect.poll(async () => {
                 const after = await remoteSnapshot(secondPage, primary.username);
@@ -104,20 +103,13 @@ test.describe('two-account multiplayer', () => {
                 return remote?.state === 'JUMPING' || Number(remote?.jumpProgress) > 0;
             }, { timeout: 5_000, intervals: [50, 100, 200] }).toBe(true);
 
-            await secondPage.keyboard.down('w');
-            await secondPage.waitForTimeout(1_500);
-            await secondPage.keyboard.up('w');
+            await moveByGroundClick(secondPage, 20, 0);
 
             let hostile = await projectNearestHostile(firstPage);
             for (let attempt = 0; !hostile && attempt < 30; attempt += 1) {
                 await Promise.all([
-                    firstPage.keyboard.down('w'),
-                    secondPage.keyboard.down('w')
-                ]);
-                await firstPage.waitForTimeout(1_000);
-                await Promise.all([
-                    firstPage.keyboard.up('w'),
-                    secondPage.keyboard.up('w')
+                    moveByGroundClick(firstPage, 30, 0),
+                    moveByGroundClick(secondPage, 30, 0)
                 ]);
                 hostile = await projectNearestHostile(firstPage);
             }

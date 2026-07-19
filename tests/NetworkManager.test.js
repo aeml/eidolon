@@ -8,12 +8,14 @@
 
 import { jest } from '@jest/globals';
 
+const decodeStateEnvelopeMock = jest.fn(() => ({ full: null, delta: null }));
+
 // Stub the protobuf import so NetworkManager can be loaded in Jest/jsdom.
 jest.unstable_mockModule('../src/proto/state_pb.js', () => ({
     eidolon: {
         state: {
             StateEnvelope: {
-                decode: jest.fn(() => ({ full: null, delta: null }))
+                decode: decodeStateEnvelopeMock
             }
         }
     }
@@ -129,6 +131,34 @@ describe('NetworkManager — basic send / queue', () => {
         const first = nm.drainMessages(3);
         expect(first).toHaveLength(3);
         expect(nm.messageQueue).toHaveLength(2);
+    });
+
+    test('requests ordered ArrayBuffer delivery for binary state frames', () => {
+        const sock = makeMockSocket();
+        const nm = new NetworkManager(sock);
+
+        nm.setupListeners();
+
+        expect(sock.binaryType).toBe('arraybuffer');
+    });
+
+    test('decodes an ArrayBuffer state frame synchronously into queue order', () => {
+        const sock = makeMockSocket();
+        const nm = new NetworkManager(sock);
+        decodeStateEnvelopeMock.mockReturnValueOnce({
+            full: { entities: [{ id: 'player-one', x: 12 }] },
+            delta: null
+        });
+        nm.setupListeners();
+
+        const frame = new Uint8Array([0x45, 0x44, 0x50, 0x42, 0x01, 0x99]);
+        sock.onmessage({ data: frame.buffer });
+
+        expect(decodeStateEnvelopeMock).toHaveBeenCalledWith(new Uint8Array([0x99]));
+        expect(nm.drainMessages()).toEqual([{
+            type: 'state',
+            payload: { 'player-one': { id: 'player-one', x: 12 } }
+        }]);
     });
 });
 

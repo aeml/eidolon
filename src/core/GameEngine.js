@@ -859,7 +859,7 @@ export class GameEngine {
     }
 
     async loadGame(onProgress) {
-        console.error(`Initializing GameEngine with player type: ${this.playerType}`);
+        console.log(`Initializing GameEngine with player type: ${this.playerType}`);
         
         if (onProgress) onProgress(10, "Creating Player...");
         await new Promise(r => setTimeout(r, 50));

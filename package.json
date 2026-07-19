@@ -17,6 +17,7 @@
     "test:e2e": "playwright test",
     "test:e2e:anonymous": "playwright test tests/e2e/anonymous.spec.js",
     "test:e2e:authenticated": "playwright test tests/e2e/authenticated.spec.js",
+    "test:e2e:isolated": "bash scripts/run-isolated-character-qa.sh",
     "test:e2e:multiplayer": "playwright test tests/e2e/multiplayer.spec.js",
     "lint": "eslint src tests scripts playwright.config.js --max-warnings=0"
   },

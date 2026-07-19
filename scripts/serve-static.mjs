@@ -1,5 +1,5 @@
 import { createReadStream } from 'node:fs';
-import { stat } from 'node:fs/promises';
+import { readFile, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -7,6 +7,18 @@ import { fileURLToPath } from 'node:url';
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const host = process.env.HOST || '127.0.0.1';
 const port = Number.parseInt(process.env.PORT || '4173', 10);
+const indexPath = path.join(repoRoot, 'index.html');
+
+function configuredWebSocketURL() {
+    if (!process.env.EIDOLON_STATIC_WS_URL) return null;
+    const parsed = new URL(process.env.EIDOLON_STATIC_WS_URL);
+    if (!['ws:', 'wss:'].includes(parsed.protocol)) {
+        throw new Error('EIDOLON_STATIC_WS_URL must use ws:// or wss://');
+    }
+    return parsed.href;
+}
+
+const webSocketOverride = configuredWebSocketURL();
 
 const mimeTypes = new Map([
     ['.css', 'text/css; charset=utf-8'],
@@ -38,6 +50,21 @@ const server = createServer(async (request, response) => {
     try {
         const fileStat = await stat(filePath);
         if (!fileStat.isFile()) throw new Error('Not a file');
+        if (filePath === indexPath && webSocketOverride) {
+            const source = await readFile(filePath, 'utf8');
+            const rendered = source.replace(
+                /(<input type="hidden" id="server-address" value=")[^"]+(">)/,
+                (_match, prefix, suffix) => `${prefix}${webSocketOverride}${suffix}`
+            );
+            const contents = Buffer.from(rendered);
+            response.writeHead(200, {
+                'Cache-Control': 'no-store',
+                'Content-Length': contents.length,
+                'Content-Type': mimeTypes.get('.html')
+            });
+            response.end(request.method === 'HEAD' ? undefined : contents);
+            return;
+        }
         response.writeHead(200, {
             'Cache-Control': 'no-store',
             'Content-Length': fileStat.size,
