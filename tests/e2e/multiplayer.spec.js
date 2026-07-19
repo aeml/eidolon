@@ -20,7 +20,7 @@ test.describe('two-account multiplayer', () => {
     test.skip(!hasTwoAccounts, 'Set primary and _SECONDARY credentials for multiplayer QA');
 
     test('both real characters observe one another through the live state stream', async ({ browser, baseURL }) => {
-        test.setTimeout(240_000);
+        test.setTimeout(900_000);
         expect(primary.username !== secondary.username).toBe(true);
         const firstContext = await browser.newContext();
         const secondContext = await browser.newContext();

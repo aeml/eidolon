@@ -124,6 +124,9 @@ window.addEventListener('DOMContentLoaded', () => {
     
     let authSocket = null;
     let isAuthenticated = false;
+    let pendingAuthRequest = null;
+    let authReconnectTimer = null;
+    let authReconnectAttempts = 0;
 
     const classSelectionContainer = document.getElementById('class-selection-container');
     const playContainer = document.getElementById('play-container');
@@ -222,14 +225,39 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Simple Auth Logic
+    // Auth requests survive a transient edge/WebSocket connection failure.
+    // The previous polling loop never replaced a closed socket and could run
+    // forever after a failed handshake.
+    const sendPendingAuthRequest = () => {
+        if (!pendingAuthRequest || authSocket?.readyState !== WebSocket.OPEN) return false;
+        const request = pendingAuthRequest;
+        pendingAuthRequest = null;
+        authSocket.send(JSON.stringify(request.message));
+        authStatus.textContent = request.status;
+        authStatus.style.color = '#ffeb3b';
+        return true;
+    };
+
+    const scheduleAuthReconnect = () => {
+        if (!pendingAuthRequest || authReconnectTimer || authReconnectAttempts >= 6) return;
+        const reconnectDelay = Math.min(500 * (2 ** authReconnectAttempts), 5000);
+        authReconnectAttempts += 1;
+        authReconnectTimer = setTimeout(() => {
+            authReconnectTimer = null;
+            authSocket = null;
+            connectAuth();
+        }, reconnectDelay);
+    };
+
     const connectAuth = () => {
         if (authSocket && (authSocket.readyState === WebSocket.OPEN || authSocket.readyState === WebSocket.CONNECTING)) return;
         const addr = serverAddressInput.value;
         authSocket = new WebSocket(addr);
         
         authSocket.onopen = () => {
-             console.log("Connected to server for auth");
+            console.log("Connected to server for auth");
+            authReconnectAttempts = 0;
+            sendPendingAuthRequest();
         };
 
         authSocket.onmessage = (event) => {
@@ -270,29 +298,32 @@ window.addEventListener('DOMContentLoaded', () => {
             console.error("Auth socket error", e);
             authStatus.textContent = "Connection error";
             authStatus.style.color = '#ff4444';
+            scheduleAuthReconnect();
         };
+
+        authSocket.onclose = () => scheduleAuthReconnect();
+    };
+
+    const submitAuthRequest = (message, status) => {
+        pendingAuthRequest = { message, status };
+        authReconnectAttempts = 0;
+        if (authReconnectTimer) {
+            clearTimeout(authReconnectTimer);
+            authReconnectTimer = null;
+        }
+        connectAuth();
+        sendPendingAuthRequest();
     };
 
     if (btnLogin) {
         btnLogin.addEventListener('click', () => {
-            connectAuth();
-            // Wait for connection if needed
-            const sendLogin = () => {
-                if (authSocket.readyState === WebSocket.OPEN) {
-                    authSocket.send(JSON.stringify({
-                        type: 'login',
-                        payload: {
-                            username: authUsernameInput.value,
-                            password: authPasswordInput.value
-                        }
-                    }));
-                    authStatus.textContent = "Logging in...";
-                    authStatus.style.color = '#ffeb3b';
-                } else {
-                    setTimeout(sendLogin, 100);
+            submitAuthRequest({
+                type: 'login',
+                payload: {
+                    username: authUsernameInput.value,
+                    password: authPasswordInput.value
                 }
-            };
-            sendLogin();
+            }, "Logging in...");
         });
 
         // Allow Enter key to trigger login
@@ -307,24 +338,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
     if (btnRegister) {
         btnRegister.addEventListener('click', () => {
-            connectAuth();
-            const sendRegister = () => {
-                if (authSocket.readyState === WebSocket.OPEN) {
-                    authSocket.send(JSON.stringify({
-                        type: 'register',
-                        payload: {
-                            username: authUsernameInput.value,
-                            email: authEmailInput.value,
-                            password: authPasswordInput.value
-                        }
-                    }));
-                    authStatus.textContent = "Register request sent...";
-                    authStatus.style.color = '#ffeb3b';
-                } else {
-                    setTimeout(sendRegister, 100);
+            submitAuthRequest({
+                type: 'register',
+                payload: {
+                    username: authUsernameInput.value,
+                    email: authEmailInput.value,
+                    password: authPasswordInput.value
                 }
-            };
-            sendRegister();
+            }, "Register request sent...");
         });
     }
 
@@ -454,4 +475,9 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Browser QA and human-facing diagnostics can distinguish a complete
+    // module boot from a partially rendered document whose dependencies were
+    // interrupted at the edge.
+    document.documentElement.dataset.eidolonReady = 'true';
 });

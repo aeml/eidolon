@@ -10,7 +10,7 @@ Eidolon is a static Three.js browser action RPG backed by an authoritative Go/We
 
 ## Evidence that is currently strong
 
-- Client unit baseline: 82 Jest suites / 953 tests pass from a fresh Node 24 install in this environment.
+- Client unit baseline: 82 Jest suites / 954 tests pass from a fresh Node 24 install in this environment.
 - Server baseline: every Go package tests and builds under Go 1.24.5.
 - Dependency baseline: the lockfile audits at zero known npm vulnerabilities; the production protobuf runtime is locked and self-hosted rather than loaded from a CDN.
 - Local browser baseline: Google Chrome `150.0.7871.124` passes the anonymous surface plus a disposable full-character route for movement, menus, combat/ability, kill/loot/inventory, dungeon entry/exit, reconnect, and persisted fresh login.
@@ -32,6 +32,7 @@ These are not called live-tested until dedicated production credentials are supp
 - The server still lacks the planned instance-scoped lock hierarchy.
 - Mongo migration tooling, broader persistence integration tests, formal per-message rate limiting, and malformed-packet fuzz coverage remain open.
 - Browser automation is a release gate, not a substitute for long-duration gameplay, mobile, accessibility, performance, and multi-client soak work.
+- The public Cloudflare path emitted intermittent 522 responses during release QA. Bounded browser retries and automatic auth-socket replacement now verify recovery, but recurring 522s remain an origin/edge reliability signal worth monitoring separately.
 - The asset/repository footprint is very large and deserves a separate packaging/history strategy.
 
 ## Best next work after this release

@@ -2,11 +2,13 @@ import { expect, test } from '@playwright/test';
 import {
     assertWebSocketReachable,
     collectBrowserFailures,
+    getJSONWithRetry,
     openGame,
     productionWebSocketURL
 } from './helpers.js';
 
 test('anonymous release surface, runtime dependencies, and server are healthy', async ({ page, request, baseURL }) => {
+    test.setTimeout(360_000);
     const failures = collectBrowserFailures(page, baseURL);
     const response = await openGame(page, { waitUntil: 'networkidle' });
 
@@ -14,9 +16,13 @@ test('anonymous release surface, runtime dependencies, and server are healthy', 
     await expect(page.locator('.start-version-row__label')).toContainText('Alpha');
 
     expect(await page.evaluate(() => typeof globalThis.protobuf)).toBe('object');
-    const vendorManifest = await request.get(`${baseURL}/vendor/manifest.json`);
-    expect(vendorManifest.ok()).toBe(true);
-    expect(await vendorManifest.json()).toMatchObject({
+    const vendorManifest = await getJSONWithRetry(
+        request,
+        `${baseURL}/vendor/manifest.json`,
+        (json) => json?.protobufjs === '8.7.1' && json?.three === '0.181.2',
+        'vendor manifest'
+    );
+    expect(vendorManifest).toMatchObject({
         protobufjs: '8.7.1',
         three: '0.181.2'
     });
@@ -30,19 +36,22 @@ test('anonymous release surface, runtime dependencies, and server are healthy', 
 
     const expectedCommit = process.env.EIDOLON_EXPECTED_COMMIT;
     if (expectedCommit) {
-        const releaseResponse = await request.get(`${baseURL}/release.json?expected=${expectedCommit}`, {
-            headers: { 'Cache-Control': 'no-cache' }
-        });
-        expect(releaseResponse.ok()).toBe(true);
-        expect((await releaseResponse.json()).commit).toBe(expectedCommit);
+        const release = await getJSONWithRetry(
+            request,
+            `${baseURL}/release.json?expected=${expectedCommit}`,
+            (json) => json?.commit === expectedCommit,
+            'frontend release identity'
+        );
+        expect(release.commit).toBe(expectedCommit);
 
         const healthURL = process.env.EIDOLON_E2E_HEALTH_URL;
         expect(healthURL, 'EIDOLON_E2E_HEALTH_URL is required with EIDOLON_EXPECTED_COMMIT').toBeTruthy();
-        const healthResponse = await request.get(`${healthURL}?expected=${expectedCommit}`, {
-            headers: { 'Cache-Control': 'no-cache' }
-        });
-        expect(healthResponse.ok()).toBe(true);
-        const health = await healthResponse.json();
+        const health = await getJSONWithRetry(
+            request,
+            `${healthURL}?expected=${expectedCommit}`,
+            (json) => json?.status === 'ok' && json?.database === 'ready' && json?.commit === expectedCommit,
+            'backend health identity'
+        );
         expect(health.status).toBe('ok');
         expect(health.commit).toBe(expectedCommit);
         expect(health.database).toBe('ready');

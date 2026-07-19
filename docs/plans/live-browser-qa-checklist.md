@@ -62,13 +62,15 @@ Pass only when the install is lockfile-clean, audit reports no vulnerability, cl
 
 Automated in `tests/e2e/anonymous.spec.js`:
 
-1. Main document returns 200 and `EIDOLON ONLINE` renders.
+1. Main document returns 200, `EIDOLON ONLINE` renders, and the client module publishes its complete-boot marker.
 2. Visible Alpha version exists.
 3. Locked protobuf and Three.js vendor manifest loads.
 4. Patch Notes opens from the login screen and closes with Escape.
 5. No first-party request failure, HTTP error, page exception, or console error is observed.
 6. A browser WebSocket connects to the configured game server.
 7. In post-deploy mode, client `/release.json` and server `/healthz` both equal the expected SHA; server status is `ok` and database is `ready`.
+
+The live path uses bounded retries for transient edge 5xx responses, JSON identity requests, and initial WebSocket handshakes. A later complete boot or successful handshake may reconcile that abandoned attempt; an unrecovered final attempt, application exception, 4xx response, or functional mismatch still fails the gate.
 
 ## Gate 3: persistent-character smoke
 
@@ -168,9 +170,9 @@ Fill this in after the live run; do not pre-check it based on local results.
 
 Current local worktree evidence on July 19, 2026:
 
-- Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 82 Jest suites / 953 tests, and ESLint passed.
+- Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 82 Jest suites / 954 tests, and ESLint passed.
 - Go toolchain `1.24.5`: `go test -race ./...` and `go build -trimpath ./...` passed.
-- Google Chrome `150.0.7871.124`: anonymous smoke passed; the combined isolated character suite passed both smoke/reconnect and extended gameplay/persistence tests in 5.4 minutes.
+- Google Chrome `150.0.7871.124`: anonymous smoke passed; the combined isolated character suite passed both smoke/reconnect and extended gameplay/persistence tests in 5.3 minutes.
 - The focused portal route also passed, credential scanning passed, and no uniquely suffixed QA container, network, or image remained after cleanup.
 - This is locally browser-tested evidence only. The table below remains pending until the production SHA and persistent QA character are verified.
 

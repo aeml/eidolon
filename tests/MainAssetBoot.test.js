@@ -79,6 +79,7 @@ describe('asset persistence boot wiring', () => {
         await Promise.resolve();
 
         expect(register).toHaveBeenCalledWith('./sw.js', { scope: './' });
+        expect(document.documentElement.dataset.eidolonReady).toBe('true');
     });
 
     test('login patch notes link, both close buttons, and Escape toggle the patch notes history screen', async () => {
@@ -203,6 +204,57 @@ describe('asset persistence boot wiring', () => {
         expect(document.getElementById('start-flow-steps').textContent).toContain('save Shards, Hearts, and Gems');
         expect(document.getElementById('start-flow-steps').textContent).toContain('level 30');
         expect(document.getElementById('start-flow-steps').textContent).toContain('Heroic and Mythic');
+    });
+
+    test('replaces a failed auth socket and sends the pending login after reconnect', async () => {
+        jest.useFakeTimers();
+        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        try {
+            buildStartDom();
+            installBrowserMocks();
+            const sockets = [];
+            class MockWebSocket {
+                static CONNECTING = 0;
+                static OPEN = 1;
+                static CLOSED = 3;
+                constructor() {
+                    this.readyState = MockWebSocket.CONNECTING;
+                    this.sent = [];
+                    sockets.push(this);
+                }
+                send(message) {
+                    this.sent.push(JSON.parse(message));
+                }
+            }
+
+            Object.defineProperty(globalThis, 'WebSocket', {
+                configurable: true,
+                value: MockWebSocket
+            });
+
+            await import('../src/main.js');
+            window.dispatchEvent(new Event('DOMContentLoaded'));
+            await Promise.resolve();
+
+            document.getElementById('btn-login').click();
+            expect(sockets).toHaveLength(1);
+            sockets[0].readyState = MockWebSocket.CLOSED;
+            sockets[0].onerror(new Event('error'));
+            sockets[0].onclose(new Event('close'));
+
+            await jest.advanceTimersByTimeAsync(500);
+            expect(sockets).toHaveLength(2);
+            sockets[1].readyState = MockWebSocket.OPEN;
+            sockets[1].onopen();
+
+            expect(sockets[1].sent).toEqual([{
+                type: 'login',
+                payload: { username: 'test', password: 'secret' }
+            }]);
+        } finally {
+            errorSpy.mockRestore();
+            jest.useRealTimers();
+        }
     });
 
     test('persisted fullscreen preference applies when the loading screen starts, not on login', async () => {

@@ -1,9 +1,26 @@
 import { expect } from '@playwright/test';
 
 export const productionWebSocketURL = 'wss://eserver.mendola.tech/ws';
+const browserFailureState = new WeakMap();
+
+const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+function discardFailuresSince(page, startIndex) {
+    const failures = browserFailureState.get(page);
+    if (failures && failures.length > startIndex) failures.splice(startIndex);
+}
+
+function discardRecoveredWebSocketFailures(page, startIndex = 0) {
+    const failures = browserFailureState.get(page);
+    if (!failures) return;
+    for (let index = failures.length - 1; index >= startIndex; index -= 1) {
+        if (/WebSocket|Auth socket error/i.test(failures[index])) failures.splice(index, 1);
+    }
+}
 
 export function collectBrowserFailures(page, baseURL) {
     const failures = [];
+    browserFailureState.set(page, failures);
     const firstPartyOrigin = new URL(baseURL).origin;
     const successfulResponses = new Set();
     const canceledAssetFailures = new Map();
@@ -11,7 +28,13 @@ export function collectBrowserFailures(page, baseURL) {
 
     page.on('pageerror', (error) => failures.push(`pageerror: ${error.message}`));
     page.on('console', (message) => {
-        if (message.type() === 'error') failures.push(`console: ${message.text()}`);
+        if (message.type() !== 'error') return;
+        const text = message.text();
+        // The response listener records the actionable URL and status. Avoid a
+        // duplicate generic console entry that cannot itself be reconciled
+        // when a later navigation successfully reloads that resource.
+        if (/Failed to load resource: the server responded with a status of 5\d\d/i.test(text)) return;
+        failures.push(`console: ${text}`);
     });
     page.on('requestfailed', (request) => {
         if (new URL(request.url()).origin === firstPartyOrigin) {
@@ -68,64 +91,133 @@ export function collectBrowserFailures(page, baseURL) {
 
 export async function openGame(page, options = {}) {
     let response = null;
-    for (let attempt = 0; attempt < 4; attempt += 1) {
-        response = await page.goto('/', { waitUntil: options.waitUntil || 'domcontentloaded' });
-        if (response?.status() === 200) {
-            await expect(page.locator('#game-title')).toHaveText('EIDOLON ONLINE');
-            return response;
+    let readinessError = null;
+    const attempts = options.attempts || 8;
+    for (let attempt = 0; attempt < attempts; attempt += 1) {
+        const failureStart = browserFailureState.get(page)?.length || 0;
+        try {
+            response = await page.goto('/', {
+                waitUntil: options.waitUntil || 'domcontentloaded',
+                timeout: 20_000
+            });
+        } catch (error) {
+            response = null;
+            readinessError = error;
         }
-        if ((response?.status() || 0) < 500) break;
-        await page.waitForTimeout(1_000 * (attempt + 1));
+        if (response?.status() === 200) {
+            try {
+                await expect(page.locator('#game-title')).toHaveText('EIDOLON ONLINE');
+                await expect.poll(() => page.evaluate(() => Boolean(
+                    document.documentElement.dataset.eidolonReady === 'true' &&
+                    typeof globalThis.protobuf === 'object'
+                )), {
+                    message: 'The complete game runtime must load before browser QA continues',
+                    timeout: 15_000
+                }).toBe(true);
+                return response;
+            } catch (error) {
+                readinessError = error;
+            }
+        }
+        if (attempt === attempts - 1) break;
+
+        // A full navigation replaces the failed document/runtime. Discard only
+        // failures belonging to that abandoned attempt; the final attempt is
+        // retained if recovery never succeeds.
+        discardFailuresSince(page, failureStart);
+        await page.waitForTimeout(Math.min(1_000 * (attempt + 1), 5_000));
     }
-    expect(response?.status(), 'The live game document must recover from transient edge errors').toBe(200);
-    return response;
+    if (response?.status() !== 200) {
+        expect(response?.status(), 'The live game document must recover from transient edge errors').toBe(200);
+    }
+    throw readinessError || new Error('The complete game runtime did not become ready');
 }
 
 export async function assertWebSocketReachable(page, url = productionWebSocketURL) {
-    const result = await page.evaluate((socketURL) => new Promise((resolve) => {
-        const socket = new WebSocket(socketURL);
-        const timeout = setTimeout(() => {
-            socket.close();
-            resolve('timeout');
-        }, 10_000);
-        socket.addEventListener('open', () => {
-            clearTimeout(timeout);
-            socket.close(1000, 'Playwright connectivity check');
-            resolve('open');
-        }, { once: true });
-        socket.addEventListener('error', () => {
-            clearTimeout(timeout);
-            resolve('error');
-        }, { once: true });
-    }), url);
-
+    const failureStart = browserFailureState.get(page)?.length || 0;
+    let result = 'untried';
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+        result = await page.evaluate((socketURL) => new Promise((resolve) => {
+            const socket = new WebSocket(socketURL);
+            const timeout = setTimeout(() => {
+                socket.close();
+                resolve('timeout');
+            }, 10_000);
+            socket.addEventListener('open', () => {
+                clearTimeout(timeout);
+                socket.close(1000, 'Playwright connectivity check');
+                resolve('open');
+            }, { once: true });
+            socket.addEventListener('error', () => {
+                clearTimeout(timeout);
+                resolve('error');
+            }, { once: true });
+        }), url);
+        if (result === 'open') {
+            discardRecoveredWebSocketFailures(page, failureStart);
+            return;
+        }
+        await page.waitForTimeout(Math.min(1_000 * (attempt + 1), 5_000));
+    }
     expect(result).toBe('open');
 }
 
-export async function loginAndEnterWorld(page, credentials) {
-    await openGame(page);
-
-    await page.locator('#auth-username').fill(credentials.username);
-    await page.locator('#auth-password').fill(credentials.password);
-    if (process.env.EIDOLON_E2E_REGISTER === '1') {
-        await page.locator('#auth-email').fill(`${credentials.username}@example.invalid`);
-        await page.locator('#btn-register').click();
-        await expect(page.locator('#auth-status')).toContainText(
-            /Registration successful|username already exists/,
-            { timeout: 20_000 }
-        );
-    }
-    let authenticated = false;
-    for (let attempt = 0; attempt < 3 && !authenticated; attempt += 1) {
-        await page.locator('#btn-login').click();
+export async function getJSONWithRetry(request, url, validate, label = 'live endpoint') {
+    let lastStatus = 'unavailable';
+    let lastError = null;
+    for (let attempt = 0; attempt < 8; attempt += 1) {
         try {
-            await expect(page.locator('#auth-status')).toHaveCSS('color', 'rgb(76, 175, 80)', {
-                timeout: 10_000
+            const response = await request.get(url, {
+                headers: { 'Cache-Control': 'no-cache' },
+                timeout: 20_000
             });
-            authenticated = true;
-        } catch {
-            // A fresh button click recreates a closed auth socket or resends on
-            // an open one. Three stalled handshakes remain a hard failure.
+            lastStatus = response.status();
+            if (response.ok()) {
+                const json = await response.json();
+                if (!validate || validate(json)) return json;
+                lastError = new Error(`${label} returned an unexpected payload`);
+            }
+        } catch (error) {
+            lastError = error;
+        }
+        if (attempt < 7) await delay(Math.min(1_000 * (attempt + 1), 5_000));
+    }
+    throw new Error(`${label} did not recover after bounded retries (last status: ${lastStatus})`, {
+        cause: lastError
+    });
+}
+
+export async function loginAndEnterWorld(page, credentials) {
+    let authenticated = false;
+    for (let pageAttempt = 0; pageAttempt < 3 && !authenticated; pageAttempt += 1) {
+        const failureStart = browserFailureState.get(page)?.length || 0;
+        await openGame(page);
+
+        await page.locator('#auth-username').fill(credentials.username);
+        await page.locator('#auth-password').fill(credentials.password);
+        if (process.env.EIDOLON_E2E_REGISTER === '1' && pageAttempt === 0) {
+            await page.locator('#auth-email').fill(`${credentials.username}@example.invalid`);
+            await page.locator('#btn-register').click();
+            await expect(page.locator('#auth-status')).toContainText(
+                /Registration successful|username already exists/,
+                { timeout: 30_000 }
+            );
+        }
+        for (let socketAttempt = 0; socketAttempt < 4 && !authenticated; socketAttempt += 1) {
+            await page.locator('#btn-login').click();
+            try {
+                await expect(page.locator('#auth-status')).toHaveCSS('color', 'rgb(76, 175, 80)', {
+                    timeout: 15_000
+                });
+                authenticated = true;
+                discardRecoveredWebSocketFailures(page, failureStart);
+            } catch {
+                // A fresh button click recreates a closed auth socket or resends
+                // on an open one. A replaced page retries the complete runtime.
+            }
+        }
+        if (!authenticated && pageAttempt < 2) {
+            discardFailuresSince(page, failureStart);
         }
     }
     expect(authenticated, 'The browser must complete a credentialed auth handshake').toBe(true);
