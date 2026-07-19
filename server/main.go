@@ -3257,6 +3257,47 @@ func (c *Client) handleChatCommand(raw string) bool {
 
 		c.sendSystemChat(fmt.Sprintf("Level set to %d.", level))
 		return true
+	case "/qa-waypoint":
+		if !isQAUsername(c.username) {
+			c.sendError("QA command unavailable for this account.")
+			return true
+		}
+		if len(fields) != 2 || (!strings.EqualFold(fields[1], "combat") && !strings.EqualFold(fields[1], "verdant")) {
+			c.sendError("Usage: /qa-waypoint <combat|verdant>")
+			return true
+		}
+		if c.playerID == "" || world == nil {
+			c.sendError("No active overworld character for QA waypoint.")
+			return true
+		}
+
+		if _, ok := world.MovePlayerToQAWaypoint(c.playerID, fields[1]); !ok {
+			c.sendError("No active overworld character for QA waypoint.")
+			return true
+		}
+
+		if strings.EqualFold(fields[1], "combat") {
+			c.sendSystemChat("QA waypoint set outside the east town gate; protection active for 5 minutes.")
+		} else {
+			c.sendSystemChat("QA waypoint set near Verdant Bastion; protection active for 5 minutes.")
+		}
+		return true
+	case "/qa-loot-next":
+		if !isQAUsername(c.username) {
+			c.sendError("QA command unavailable for this account.")
+			return true
+		}
+		if len(fields) != 1 {
+			c.sendError("Usage: /qa-loot-next")
+			return true
+		}
+		if c.playerID == "" || world == nil || !world.ArmPlayerQAGuaranteedLoot(c.playerID) {
+			c.sendError("No active character for QA loot check.")
+			return true
+		}
+
+		c.sendSystemChat("Next enemy kill will produce a QA loot drop.")
+		return true
 	default:
 		return false
 	}

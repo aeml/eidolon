@@ -552,6 +552,61 @@ func (w *World) SetPlayerLevel(playerID string, level int) (*Entity, bool) {
 	return player, true
 }
 
+// QAWaypointProtectionDuration bounds protection after a fixed QA teleport.
+const QAWaypointProtectionDuration = 5 * time.Minute
+
+// MovePlayerToQAWaypoint moves an overworld player to a fixed release-QA
+// waypoint. Authorization belongs to the server command layer; keeping the
+// supported destinations fixed prevents this helper from becoming an
+// arbitrary-coordinate teleport. The bounded protection window gives a real
+// browser enough time to load the distant endgame zone and operate its UI.
+func (w *World) MovePlayerToQAWaypoint(playerID, waypoint string) (*Entity, bool) {
+	var x, z float64
+	switch strings.ToLower(strings.TrimSpace(waypoint)) {
+	case "combat":
+		x, z = 120, 200
+	case "verdant":
+		x, z = 800, 200
+	default:
+		return nil, false
+	}
+
+	w.Mu.Lock()
+	defer w.Mu.Unlock()
+
+	player, ok := w.Entities[playerID]
+	if !ok || player.Type != TypePlayer || player.InstanceID != "" {
+		return nil, false
+	}
+
+	oldX, oldZ := player.X, player.Z
+	player.X = x
+	player.Y = 0
+	player.Z = z
+	player.TargetX = x
+	player.TargetZ = z
+	player.TargetID = ""
+	player.State = "IDLE"
+	player.InvulnerableEndTime = time.Now().Add(QAWaypointProtectionDuration)
+	w.Grid.Update(player, oldX, oldZ)
+
+	return player, true
+}
+
+// ArmPlayerQAGuaranteedLoot makes one subsequent enemy kill use the normal
+// loot generator even when its random 50% roll would miss. Authorization is
+// enforced by the server command layer, and the flag is consumed on kill.
+func (w *World) ArmPlayerQAGuaranteedLoot(playerID string) bool {
+	player := w.GetEntity(playerID)
+	if player == nil || player.Type != TypePlayer {
+		return false
+	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	player.QAGuaranteedLoot = true
+	return true
+}
+
 // ============================================================
 // SKILL RUNE SYSTEM
 // Each skill can have one rune equipped from 3 options
@@ -1418,7 +1473,6 @@ type World struct {
 	OnQuestUpdate func(playerID string, quests []Quest)
 }
 
-
 type DamageEvent struct {
 	TargetID string
 	SourceID string
@@ -1704,7 +1758,6 @@ func NewWorld(db *database.DB) *World {
 	w.initWorld()
 	return w
 }
-
 
 func (w *World) initWorld() {
 	w.spawnMerchant()
@@ -2783,7 +2836,6 @@ func (w *World) AddEntity(e *Entity) {
 	w.Entities[e.ID] = e
 	w.Grid.Add(e)
 }
-
 
 func (w *World) RemoveEntity(id string) {
 	w.Mu.Lock()
@@ -6631,6 +6683,10 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 		tID := target.ID
 		tX, tZ := target.X, target.Z
 		tInstanceID := target.InstanceID
+		attacker.Mu.Lock()
+		qaGuaranteedLoot := attacker.QAGuaranteedLoot
+		attacker.QAGuaranteedLoot = false
+		attacker.Mu.Unlock()
 
 		go func() {
 			// Get difficulty multipliers and current dungeon completion state for dungeon enemies
@@ -6767,7 +6823,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			dropCount := 0
 			if isElite {
 				dropCount = 3 // Elites drop 3 items guaranteed
-			} else if rand.Float64() < 0.5 && tLevel > 0 {
+			} else if (qaGuaranteedLoot || rand.Float64() < 0.5) && tLevel > 0 {
 				dropCount = 1 // Normal enemies have 50% chance for 1 item
 			}
 

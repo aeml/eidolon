@@ -221,6 +221,220 @@ func TestHandleMessageLevelCommandRejectsNonQAAccount(t *testing.T) {
 	t.Fatalf("expected QA authorization error, got %+v", msgs)
 }
 
+func TestHandleMessageQAWaypointMovesAllowlistedOverworldPlayer(t *testing.T) {
+	allowLevelCommandTestUser(t)
+	originalWorld := world
+	defer func() { world = originalWorld }()
+	world = game.NewWorld(nil)
+
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	player.X = 100
+	player.Z = 100
+	world.AddEntity(player)
+
+	payload, _ := json.Marshal(ChatPayload{Message: "/qa-waypoint verdant", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+
+	updated := world.GetEntity(client.playerID)
+	if updated == nil {
+		t.Fatal("expected player to remain in world")
+	}
+	if updated.X != 800 || updated.Y != 0 || updated.Z != 200 {
+		t.Fatalf("expected Verdant QA waypoint at (800, 0, 200), got (%v, %v, %v)", updated.X, updated.Y, updated.Z)
+	}
+	if updated.TargetX != updated.X || updated.TargetZ != updated.Z || updated.State != "IDLE" {
+		t.Fatalf("expected a stationary waypoint arrival, got target=(%v, %v) state=%q", updated.TargetX, updated.TargetZ, updated.State)
+	}
+	minimumProtection := time.Now().Add(game.QAWaypointProtectionDuration - time.Second)
+	if updated.InvulnerableEndTime.Before(minimumProtection) {
+		t.Fatalf("expected the full QA browser protection window, got %v", updated.InvulnerableEndTime)
+	}
+
+	msgs := drainSentMessages(client.send)
+	for _, msg := range msgs {
+		if msg.Type == MsgChat && strings.Contains(messagePayloadChat(t, msg).Message, "Verdant Bastion") {
+			return
+		}
+	}
+	t.Fatalf("expected QA waypoint success response, got %+v", msgs)
+}
+
+func TestHandleMessageQAWaypointRejectsInvalidDestination(t *testing.T) {
+	allowLevelCommandTestUser(t)
+	originalWorld := world
+	defer func() { world = originalWorld }()
+	world = game.NewWorld(nil)
+
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	player.X = 100
+	player.Z = 100
+	world.AddEntity(player)
+
+	payload, _ := json.Marshal(ChatPayload{Message: "/qa-waypoint arbitrary", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+
+	updated := world.GetEntity(client.playerID)
+	if updated.X != 100 || updated.Z != 100 {
+		t.Fatalf("expected invalid waypoint to leave position unchanged, got (%v, %v)", updated.X, updated.Z)
+	}
+
+	msgs := drainSentMessages(client.send)
+	for _, msg := range msgs {
+		if msg.Type == MsgError && strings.Contains(messagePayloadString(t, msg), "Usage: /qa-waypoint <combat|verdant>") {
+			return
+		}
+	}
+	t.Fatalf("expected waypoint usage error, got %+v", msgs)
+}
+
+func TestHandleMessageQAWaypointMovesAllowlistedPlayerOutsideTownForCombat(t *testing.T) {
+	allowLevelCommandTestUser(t)
+	originalWorld := world
+	defer func() { world = originalWorld }()
+	world = game.NewWorld(nil)
+
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	world.AddEntity(player)
+
+	payload, _ := json.Marshal(ChatPayload{Message: "/qa-waypoint combat", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+
+	updated := world.GetEntity(client.playerID)
+	if updated.X != 120 || updated.Z != 200 {
+		t.Fatalf("expected combat QA waypoint at (120, 200), got (%v, %v)", updated.X, updated.Z)
+	}
+
+	msgs := drainSentMessages(client.send)
+	for _, msg := range msgs {
+		if msg.Type == MsgChat && strings.Contains(messagePayloadChat(t, msg).Message, "east town gate") {
+			return
+		}
+	}
+	t.Fatalf("expected combat waypoint success response, got %+v", msgs)
+}
+
+func TestHandleMessageQAWaypointRejectsNonQAAccount(t *testing.T) {
+	originalWorld := world
+	originalQAUsernames := qaUsernames
+	defer func() {
+		world = originalWorld
+		qaUsernames = originalQAUsernames
+	}()
+	world = game.NewWorld(nil)
+	qaUsernames = parseQAUsernames("different_qa_account")
+
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	player.X = 100
+	player.Z = 100
+	world.AddEntity(player)
+
+	payload, _ := json.Marshal(ChatPayload{Message: "/qa-waypoint verdant", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+
+	updated := world.GetEntity(client.playerID)
+	if updated.X != 100 || updated.Z != 100 {
+		t.Fatalf("expected unauthorized waypoint to leave position unchanged, got (%v, %v)", updated.X, updated.Z)
+	}
+
+	msgs := drainSentMessages(client.send)
+	for _, msg := range msgs {
+		if msg.Type == MsgError && strings.Contains(messagePayloadString(t, msg), "QA command unavailable") {
+			return
+		}
+	}
+	t.Fatalf("expected QA authorization error, got %+v", msgs)
+}
+
+func TestHandleMessageQAWaypointRejectsPlayerInsideDungeon(t *testing.T) {
+	allowLevelCommandTestUser(t)
+	originalWorld := world
+	defer func() { world = originalWorld }()
+	world = game.NewWorld(nil)
+
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	player.InstanceID = "instance-qa-test"
+	player.X = 40
+	player.Z = 50
+	world.AddEntity(player)
+
+	payload, _ := json.Marshal(ChatPayload{Message: "/qa-waypoint verdant", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+
+	updated := world.GetEntity(client.playerID)
+	if updated.X != 40 || updated.Z != 50 {
+		t.Fatalf("expected dungeon player to remain at (%v, %v), got (%v, %v)", 40, 50, updated.X, updated.Z)
+	}
+
+	msgs := drainSentMessages(client.send)
+	for _, msg := range msgs {
+		if msg.Type == MsgError && strings.Contains(messagePayloadString(t, msg), "No active overworld character") {
+			return
+		}
+	}
+	t.Fatalf("expected overworld-only waypoint error, got %+v", msgs)
+}
+
+func TestHandleMessageQALootNextArmsAllowlistedPlayer(t *testing.T) {
+	allowLevelCommandTestUser(t)
+	originalWorld := world
+	defer func() { world = originalWorld }()
+	world = game.NewWorld(nil)
+
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	world.AddEntity(player)
+
+	payload, _ := json.Marshal(ChatPayload{Message: "/qa-loot-next", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+
+	if !world.GetEntity(client.playerID).QAGuaranteedLoot {
+		t.Fatal("expected allowlisted QA player to arm the next loot drop")
+	}
+
+	msgs := drainSentMessages(client.send)
+	for _, msg := range msgs {
+		if msg.Type == MsgChat && strings.Contains(messagePayloadChat(t, msg).Message, "Next enemy kill") {
+			return
+		}
+	}
+	t.Fatalf("expected QA loot success response, got %+v", msgs)
+}
+
+func TestHandleMessageQALootNextRejectsNonQAAccount(t *testing.T) {
+	originalWorld := world
+	originalQAUsernames := qaUsernames
+	defer func() {
+		world = originalWorld
+		qaUsernames = originalQAUsernames
+	}()
+	world = game.NewWorld(nil)
+	qaUsernames = parseQAUsernames("different_qa_account")
+
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	world.AddEntity(player)
+
+	payload, _ := json.Marshal(ChatPayload{Message: "/qa-loot-next", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+
+	if world.GetEntity(client.playerID).QAGuaranteedLoot {
+		t.Fatal("expected unauthorized account not to arm a loot drop")
+	}
+
+	msgs := drainSentMessages(client.send)
+	for _, msg := range msgs {
+		if msg.Type == MsgError && strings.Contains(messagePayloadString(t, msg), "QA command unavailable") {
+			return
+		}
+	}
+	t.Fatalf("expected QA authorization error, got %+v", msgs)
+}
+
 func TestCheckOriginAllowsKnownLocalAndProductionOrigins(t *testing.T) {
 	cases := []struct {
 		name   string

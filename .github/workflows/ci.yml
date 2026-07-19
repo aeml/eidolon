@@ -77,7 +77,7 @@ jobs:
       - name: Convert Go coverage to LCOV
         working-directory: server
         run: |
-          go install github.com/jandelgado/gcov2lcov@latest
+          go install github.com/jandelgado/gcov2lcov@v1.1.1
           gcov2lcov -infile=coverage.out -outfile=coverage.lcov
 
       - name: Upload server coverage artifact
@@ -142,6 +142,14 @@ jobs:
             echo "Secondary QA username/password must be supplied together." >&2
             exit 1
           fi
+          if ! [[ "${QA_USERNAME}" =~ ^[A-Za-z0-9_.-]+$ ]]; then
+            echo "Primary QA username must use only letters, numbers, dot, underscore, or hyphen." >&2
+            exit 1
+          fi
+          if [ -n "${QA_USERNAME_SECONDARY}" ] && ! [[ "${QA_USERNAME_SECONDARY}" =~ ^[A-Za-z0-9_.-]+$ ]]; then
+            echo "Secondary QA username must use only letters, numbers, dot, underscore, or hyphen." >&2
+            exit 1
+          fi
 
   # Build site with coverage reports and deploy to GitHub Pages
   deploy:
@@ -184,8 +192,8 @@ jobs:
         run: |
           # Copy the entire game to public/ (preserves eidolon.mendola.tech)
           mkdir -p public
-          cp -r index.html assets src vendor public/ 2>/dev/null || true
-          cp -r *.css *.js public/ 2>/dev/null || true
+          cp -r index.html assets src vendor public/
+          cp sw.js public/
           printf '{"commit":"%s","version":"Alpha 0.40.0"}\n' "${GITHUB_SHA}" > public/release.json
           
           # Create coverage directory
@@ -319,8 +327,16 @@ jobs:
         env:
           REF_NAME: ${{ github.ref_name }}
           COMMIT_SHA: ${{ github.sha }}
+          QA_USERNAME: ${{ secrets.EIDOLON_E2E_USERNAME }}
+          QA_USERNAME_SECONDARY: ${{ secrets.EIDOLON_E2E_USERNAME_SECONDARY }}
         run: |
-          ssh -o BatchMode=yes aeml@ssh.mendola.tech "REF_NAME='${REF_NAME}' COMMIT_SHA='${COMMIT_SHA}' bash -se" <<'EOF'
+          qa_usernames="${QA_USERNAME}"
+          if [ -n "${QA_USERNAME_SECONDARY}" ]; then
+            qa_usernames="${qa_usernames},${QA_USERNAME_SECONDARY}"
+          fi
+          qa_usernames_b64="$(printf '%s' "${qa_usernames}" | base64 -w0)"
+          ssh -o BatchMode=yes aeml@ssh.mendola.tech \
+            "REF_NAME='${REF_NAME}' COMMIT_SHA='${COMMIT_SHA}' QA_USERNAMES_B64='${qa_usernames_b64}' bash -se" <<'EOF'
           set -euo pipefail
           cd /home/aeml/eidolon
           git fetch origin "${REF_NAME}"
@@ -339,6 +355,24 @@ jobs:
             exit 1
           fi
           cd server
+          qa_usernames="$(printf '%s' "${QA_USERNAMES_B64}" | base64 --decode)"
+          qa_env_tmp="$(mktemp .env.qa.XXXXXX)"
+          trap 'rm -f "${qa_env_tmp}"' EXIT
+          awk -v value="${qa_usernames}" '
+            BEGIN { found = 0 }
+            /^EIDOLON_QA_USERNAMES=/ {
+              print "EIDOLON_QA_USERNAMES=" value
+              found = 1
+              next
+            }
+            { print }
+            END {
+              if (!found) print "EIDOLON_QA_USERNAMES=" value
+            }
+          ' .env > "${qa_env_tmp}"
+          chmod --reference=.env "${qa_env_tmp}"
+          mv "${qa_env_tmp}" .env
+          trap - EXIT
           CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 0.40.0" bash ./deploy/deploy_linux.sh
           EOF
 

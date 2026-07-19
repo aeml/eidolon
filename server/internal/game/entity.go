@@ -125,6 +125,7 @@ type Entity struct {
 	AbilityCooldown   time.Duration        `json:"-"`
 	Cooldowns         map[string]time.Time `json:"-"`
 	LastRespawnTime   time.Time            `json:"-"`
+	QAGuaranteedLoot  bool                 `json:"-"`
 	LastSpecialAttack time.Time            `json:"-"` // Boss AoE slam cooldown
 
 	// Threat (server-side only): playerID -> threat
@@ -652,7 +653,7 @@ func (e *Entity) RecalculateStats() {
 	// Cap Speed (Max = 3x Speed at 10 Dex)
 	refDex := 10.0
 	refSpeed := (3.0 + (refDex * 0.5)) * 1.2 // ~9.6
-	maxSpeed := refSpeed * 3.0                // ~28.8
+	maxSpeed := refSpeed * 3.0               // ~28.8
 
 	if e.Speed > maxSpeed {
 		e.Speed = maxSpeed
