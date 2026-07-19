@@ -213,6 +213,16 @@ func (w *World) RejoinParty(playerID, partyID string) error {
 	party.Mu.Lock()
 	defer party.Mu.Unlock()
 
+	// A full login can replace a still-lingering resume-window entity while
+	// the in-memory party already contains the canonical player ID. Rejoining
+	// that ID must restore the entity link without duplicating the member row.
+	for _, memberID := range party.Members {
+		if memberID == playerID {
+			player.PartyID = partyID
+			return nil
+		}
+	}
+
 	if len(party.Members) >= party.MaxSize {
 		return fmt.Errorf("party is full")
 	}

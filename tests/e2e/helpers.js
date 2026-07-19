@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import { isIgnoredBrowserRequest } from './browserFailurePolicy.js';
 
 export const productionWebSocketURL = 'wss://eserver.mendola.tech/ws';
 const browserFailureState = new WeakMap();
@@ -37,7 +38,9 @@ export function collectBrowserFailures(page, baseURL) {
         failures.push(`console: ${text}`);
     });
     page.on('requestfailed', (request) => {
-        if (new URL(request.url()).origin === firstPartyOrigin) {
+        const requestURL = new URL(request.url());
+        if (requestURL.origin === firstPartyOrigin &&
+            !isIgnoredBrowserRequest(request.method(), request.url())) {
             const errorText = request.failure()?.errorText;
             const detail = `requestfailed: ${request.method()} ${request.url()} (${errorText})`;
 
@@ -58,8 +61,10 @@ export function collectBrowserFailures(page, baseURL) {
         }
     });
     page.on('response', (response) => {
-        if (new URL(response.url()).origin !== firstPartyOrigin) return;
-        const documentKey = new URL(response.url()).pathname;
+        const responseURL = new URL(response.url());
+        if (responseURL.origin !== firstPartyOrigin) return;
+        if (isIgnoredBrowserRequest(response.request().method(), response.url())) return;
+        const documentKey = responseURL.pathname;
         if (response.status() >= 400) {
             const detail = `response: ${response.status()} ${response.url()}`;
             failures.push(detail);
@@ -92,7 +97,7 @@ export function collectBrowserFailures(page, baseURL) {
 export async function openGame(page, options = {}) {
     let response = null;
     let readinessError = null;
-    const attempts = options.attempts || 8;
+    const attempts = options.attempts || 10;
     for (let attempt = 0; attempt < attempts; attempt += 1) {
         const failureStart = browserFailureState.get(page)?.length || 0;
         try {
@@ -235,11 +240,26 @@ export async function loginAndEnterWorld(page, credentials) {
     }
 
     await expect(page.locator('#loading-screen')).toBeHidden({ timeout: 120_000 });
-    await expect.poll(() => page.evaluate(() => Boolean(
-        window.game?.player?.position &&
-        window.game?._firstStateReceived &&
-        window.game?.network?.socket?.readyState === WebSocket.OPEN
-    )), { timeout: 30_000 }).toBe(true);
+    try {
+        await expect.poll(() => page.evaluate(() => Boolean(
+            window.game?.player?.position &&
+            window.game?._firstStateReceived &&
+            window.game?.network?.socket?.readyState === WebSocket.OPEN
+        )), { timeout: 30_000 }).toBe(true);
+    } catch (error) {
+        const diagnostic = await page.evaluate(() => ({
+            playerReady: Boolean(window.game?.player?.position),
+            firstStateReceived: Boolean(window.game?._firstStateReceived),
+            socketState: window.game?.network?.socket?.readyState ?? null,
+            queuedMessages: window.game?.network?.messageQueue?.length ?? null,
+            frameCount: window.game?.frameCount ?? null,
+            visibility: document.visibilityState,
+            focused: document.hasFocus()
+        }));
+        throw new Error(`The rendered world did not receive authoritative state: ${JSON.stringify(diagnostic)}`, {
+            cause: error
+        });
+    }
 }
 
 export async function readPlayerState(page) {
@@ -667,7 +687,7 @@ async function projectNearestLoot(page) {
     });
 }
 
-async function disableAutoLootThroughSettings(page) {
+async function openSettingsThroughEscape(page) {
     const escMenu = page.locator('#esc-menu');
     for (let attempt = 0; attempt < 3 && !await escMenu.isVisible(); attempt += 1) {
         await page.keyboard.press('Escape');
@@ -675,16 +695,35 @@ async function disableAutoLootThroughSettings(page) {
     }
     await expect(escMenu).toBeVisible();
     await page.locator('#btn-settings').click();
+    await expect(page.locator('#settings-screen')).toBeVisible();
+    return escMenu;
+}
+
+async function closeSettingsAndResume(page, escMenu) {
+    await page.locator('#btn-close-settings').click();
+    await expect(page.locator('#settings-screen')).toBeHidden();
+    await page.keyboard.press('Escape');
+    await expect(escMenu).toBeHidden();
+}
+
+export async function selectLowGraphicsThroughSettings(page) {
+    const escMenu = await openSettingsThroughEscape(page);
+    const quality = page.locator('#graphics-quality');
+    await expect(quality).toBeVisible();
+    await quality.selectOption('low');
+    await expect(quality).toHaveValue('low');
+    await closeSettingsAndResume(page, escMenu);
+}
+
+async function disableAutoLootThroughSettings(page) {
+    const escMenu = await openSettingsThroughEscape(page);
     const autoLootToggle = page.locator('#auto-loot-enabled');
     await expect(autoLootToggle).toBeVisible();
     if (await autoLootToggle.isChecked()) {
         await autoLootToggle.click();
     }
     await expect(autoLootToggle).not.toBeChecked();
-    await page.locator('#btn-close-settings').click();
-    await expect(page.locator('#settings-screen')).toBeHidden();
-    await page.keyboard.press('Escape');
-    await expect(escMenu).toBeHidden();
+    await closeSettingsAndResume(page, escMenu);
 }
 
 async function findAndApproachLoot(page, inventoryBefore) {
@@ -736,7 +775,7 @@ async function findAndApproachLoot(page, inventoryBefore) {
     return loot;
 }
 
-async function findOverworldTarget(page) {
+export async function findOverworldTarget(page) {
     // Spawn sits among randomized town props. Cross the fixed east gate with
     // real Ctrl-click jumps and prove directional authoritative movement,
     // rather than treating any sideways collision response as progress.
@@ -833,20 +872,51 @@ async function findOverworldTarget(page) {
     return target;
 }
 
-async function useCombatQAWaypoint(page) {
-    await page.keyboard.press('Enter');
+export async function useCombatQAWaypoint(page) {
     const chatInput = page.locator('#chat-input');
-    await expect(chatInput).toBeFocused();
-    await chatInput.fill('/qa-waypoint combat');
-    await chatInput.press('Enter');
-    await expect(page.locator('#chat-messages')).toContainText(
-        'QA waypoint set outside the east town gate',
-        { timeout: 15_000 }
-    );
-    await expect.poll(async () => {
-        const state = await readPlayerState(page);
-        return Math.hypot(state.x - 120, state.z - 200);
-    }, { timeout: 15_000 }).toBeLessThan(3);
+    let lastError = null;
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+        const chatIsFocused = await chatInput.evaluate((element) => element === document.activeElement);
+        if (!chatIsFocused) await page.keyboard.press('Enter');
+        await expect(chatInput).toBeFocused();
+        await chatInput.fill('/qa-waypoint combat');
+        await chatInput.press('Enter');
+        // Releases before the propagation fix immediately refocus chat through
+        // the global Enter listener. Escape is the visible user recovery path
+        // and becomes unnecessary once the fixed client is deployed.
+        if (await chatInput.evaluate((element) => element === document.activeElement)) {
+            await page.keyboard.press('Escape');
+        }
+        await expect(chatInput).not.toBeFocused();
+        try {
+            await expect(page.locator('#chat-messages')).toContainText(
+                'QA waypoint set outside the east town gate',
+                { timeout: 15_000 }
+            );
+            await expect.poll(async () => {
+                const state = await readPlayerState(page);
+                return Math.hypot(state.x - 120, state.z - 200);
+            }, { timeout: 15_000 }).toBeLessThan(3);
+            // The server response opens the chat transcript. Dismiss it with
+            // the same Escape path a player uses so it cannot cover gameplay
+            // or social-window controls later in the scenario.
+            await page.keyboard.press('Escape');
+            await expect(page.locator('#chat-box')).toBeHidden();
+            return;
+        } catch (error) {
+            lastError = error;
+        }
+    }
+    const diagnostic = await page.evaluate(() => ({
+        socketState: window.game?.network?.socket?.readyState ?? null,
+        queuedMessages: window.game?.network?.messageQueue?.length ?? null,
+        frameCount: window.game?.frameCount ?? null,
+        x: window.game?.player?.position?.x ?? null,
+        z: window.game?.player?.position?.z ?? null
+    }));
+    throw new Error(`The QA combat waypoint did not settle after a visible resend: ${JSON.stringify(diagnostic)}`, {
+        cause: lastError
+    });
 }
 
 async function readCombatDiagnostic(page, targetId) {

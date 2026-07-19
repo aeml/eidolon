@@ -501,6 +501,10 @@ export class UIManager {
         if (this.chatInput) {
             this.chatInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
+                    // Do not let the same Enter reach the global "open chat"
+                    // listener after this handler blurs the input.
+                    e.preventDefault();
+                    e.stopPropagation();
                     const msg = this.chatInput.value.trim();
                     if (msg && this.onChatSend) {
                         this.onChatSend(msg);
@@ -2765,6 +2769,14 @@ export class UIManager {
 
     handleEscape() {
         let closedSomething = false;
+
+        // Chat messages can cover controls in other windows. Give players a
+        // real way to dismiss the panel after sending or receiving a message.
+        if (this.chatBox?.style.display === 'flex') {
+            this.toggleChat(false);
+            this.chatInput?.blur();
+            return;
+        }
 
         // 1. Close Gameplay Windows
         if (this.characterSheet.style.display === 'block') {

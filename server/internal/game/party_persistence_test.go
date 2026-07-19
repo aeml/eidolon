@@ -51,6 +51,39 @@ func TestRejoinParty_SuccessfullyAddsPlayerToExistingParty(t *testing.T) {
 	}
 }
 
+func TestRejoinParty_ExistingMemberIsIdempotent(t *testing.T) {
+	w := NewWorld(nil)
+	w.AddEntity(newPlayerEntity("player-leader"))
+	w.AddEntity(newPlayerEntity("player-member"))
+
+	party := w.CreateParty("player-leader")
+	if err := w.JoinParty(party.ID, "player-member"); err != nil {
+		t.Fatal(err)
+	}
+
+	// A normal login replaces the entity object while the resume-window party
+	// still contains the same canonical player ID.
+	replacement := newPlayerEntity("player-member")
+	w.AddEntity(replacement)
+	if err := w.RejoinParty("player-member", party.ID); err != nil {
+		t.Fatalf("idempotent RejoinParty failed: %v", err)
+	}
+
+	_, _, members := party.GetSnapshot()
+	count := 0
+	for _, memberID := range members {
+		if memberID == "player-member" {
+			count++
+		}
+	}
+	if count != 1 {
+		t.Fatalf("expected one canonical member row, got %d in %v", count, members)
+	}
+	if replacement.PartyID != party.ID {
+		t.Fatalf("replacement entity PartyID = %q, want %q", replacement.PartyID, party.ID)
+	}
+}
+
 func TestRejoinParty_PartyNotFound(t *testing.T) {
 	w := NewWorld(nil)
 	p := newPlayerEntity("player-x")

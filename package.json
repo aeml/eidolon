@@ -19,6 +19,7 @@
     "test:e2e:authenticated": "playwright test tests/e2e/authenticated.spec.js",
     "test:e2e:isolated": "bash scripts/run-isolated-character-qa.sh",
     "test:e2e:multiplayer": "playwright test tests/e2e/multiplayer.spec.js",
+    "verify:browser-gpu": "node scripts/verify-browser-gpu.mjs",
     "lint": "eslint src tests scripts playwright.config.js --max-warnings=0"
   },
   "dependencies": {

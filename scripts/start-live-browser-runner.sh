@@ -14,5 +14,13 @@ if tmux has-session -t "${session_name}" 2>/dev/null; then
     exit 0
 fi
 
-tmux new-session -d -s "${session_name}" -c "${runner_dir}" ./run.sh
-echo "Started repository runner in tmux session ${session_name}."
+runner_user="$(id -un)"
+if ! id -nG "${runner_user}" | tr ' ' '\n' | grep -qx render; then
+    echo "${runner_user} must belong to the render group before the browser runner starts." >&2
+    echo "Run: sudo usermod -aG render,video ${runner_user}" >&2
+    exit 1
+fi
+
+tmux new-session -d -s "${session_name}" -c "${runner_dir}" \
+    "sg render -c './run.sh'"
+echo "Started repository runner with render-device access in tmux session ${session_name}."

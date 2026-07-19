@@ -98,7 +98,7 @@ No secrets are returned by either endpoint.
 
 ## Browser QA boundary
 
-Playwright runs system Chrome at `/usr/bin/google-chrome` in the Codex environment and for both character gates on the repository-scoped `eidolon-live-browser` self-hosted production runner; GitHub-hosted predeploy smoke uses pinned Playwright Chromium for the anonymous surface. Gameplay is driven through real DOM, keyboard, and mouse input. `page.evaluate()` is limited to read-only state inspection and Three.js projection used to position real mouse clicks. Reconnect faults are requested through the visible chat UI and performed by the allowlisted server-side `/qa-disconnect` command, outside page code. Live checks allow bounded recovery from transient edge 5xx responses, but require a complete client-module boot marker and retain the final failure when recovery never succeeds.
+Playwright runs hardware-accelerated system Chrome at `/usr/bin/google-chrome` in the Codex environment and for both character gates on the repository-scoped `eidolon-live-browser` self-hosted production runner; the runner starts under the host `render` group and fails early if Chrome reports SwiftShader or another software renderer. GitHub-hosted predeploy smoke uses pinned Playwright Chromium for the anonymous surface. Gameplay is driven through real DOM, keyboard, and mouse input. `page.evaluate()` is limited to read-only state inspection and Three.js projection used to position real mouse clicks. Reconnect faults are requested through the visible chat UI and performed by the allowlisted server-side `/qa-disconnect` command, outside page code. Live checks allow bounded recovery from transient edge 5xx responses, but require a complete client-module boot marker and retain the final failure when recovery never succeeds. Post-deploy Chrome can resolve only `eserver.mendola.tech` directly to a validated live-origin IP secret, retaining the production hostname/TLS identity while avoiding Cloudflare starvation of the gameplay WebSocket; public release/health polling and frontend navigation still use their normal URLs.
 
 `npm run test:e2e:isolated` builds the server, starts disposable Mongo/API containers on a private Docker network, registers a random allowlisted character through visible browser controls, and removes all temporary containers and data on exit. The route covers authoritative movement, menu hotkeys, combat and ability cooldown, kill/loot/inventory, dungeon entry/exit, reconnect/session resume, and fresh-login persistence without invoking gameplay methods from test code.
 
@@ -118,7 +118,7 @@ Physical lines measured with `wc -l` on July 19, 2026:
 | `src/core/SocialPresenceController.js` | 108 |
 | `src/ui/SocialUI.js` | 678 |
 
-Totals: 40,661 JavaScript LOC under `src/`, 31,669 Go LOC under `server/`, 25,914 JavaScript test LOC under `tests/`, and 8,303 Go test LOC. Generated protobuf code and assets are included where those directory totals naturally include them; the hotspot table is the useful refactor baseline.
+Totals: 40,673 JavaScript LOC under `src/`, 31,712 Go LOC under `server/`, 26,169 JavaScript test LOC under `tests/`, and 8,336 Go test LOC. Generated protobuf code and assets are included where those directory totals naturally include them; the hotspot table is the useful refactor baseline.
 
 The `0.40`–`0.43` decomposition gates are therefore still open. Release-confidence work should not be confused with completion of the monolith decomposition.
 

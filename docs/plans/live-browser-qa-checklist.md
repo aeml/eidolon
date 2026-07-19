@@ -106,7 +106,7 @@ Any inventory-full state, missing QA authorization, navigation softlock, kill/lo
 
 Automated when secondary credentials exist:
 
-1. Log both dedicated characters in with separate browser contexts.
+1. Log both dedicated characters in with separate system-Chrome processes, select Low graphics through each visible Settings screen, and use the fixed allowlisted combat waypoint through chat so persistent characters begin within the replication radius.
 2. Set primary presence to Looking for Party and verify the secondary Social roster sees it.
 3. Invite through party UI; accept through the secondary modal.
 4. Verify both party panels and replicated `partyId` agree.
@@ -161,12 +161,15 @@ EIDOLON_E2E_BASE_URL=https://eidolon.mendola.tech
 EIDOLON_E2E_WS_URL=wss://eserver.mendola.tech/ws
 EIDOLON_E2E_HEALTH_URL=https://eserver.mendola.tech/healthz
 EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome
+EIDOLON_E2E_BACKEND_ORIGIN_IP=<live origin IP secret>
 EIDOLON_EXPECTED_COMMIT=<pushed SHA>
 ```
 
+The Chrome-only origin override keeps the public production hostname and valid TLS certificate while preventing Cloudflare edge faults from starving the 30 Hz gameplay stream. Public client and server identities are still polled through their normal URLs before Chrome starts, and the frontend itself still loads through the public production URL.
+
 7. Upload the HTML report and anonymous failure screenshots/video/traces. Credentialed recordings remain off. Both character jobs are selected only by push-gated dependencies; pull-request browser work stays on GitHub-hosted infrastructure and receives neither runner access nor production credentials.
 
-The current runner host stores the official repository registration under `/home/aeml/.local/share/eidolon-actions-runner`. It must remain online with the `eidolon-live-browser` label; an offline runner deliberately leaves the post-deploy gate queued rather than silently skipping gameplay. After a host restart, `scripts/start-live-browser-runner.sh` starts the configured runner in the detached `eidolon-actions-runner` tmux session without reading or writing QA credentials.
+The current runner host stores the official repository registration under `/home/aeml/.local/share/eidolon-actions-runner`. The runner account must belong to `render` and `video`; both character jobs fail before gameplay unless Chrome reports a hardware WebGL renderer. It must remain online with the `eidolon-live-browser` label; an offline runner deliberately leaves the post-deploy gate queued rather than silently skipping gameplay. After a host restart, `scripts/start-live-browser-runner.sh` starts the configured runner under the `render` group in the detached `eidolon-actions-runner` tmux session without reading or writing QA credentials.
 
 ## Release evidence record
 
@@ -174,7 +177,7 @@ Fill this in after the live run; do not pre-check it based on local results.
 
 Current local worktree evidence on July 19, 2026:
 
-- Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 82 Jest suites / 954 tests, and ESLint passed.
+- Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 83 Jest suites / 957 tests, and ESLint passed.
 - Go toolchain `1.24.5`: `go test -race ./...` and `go build -trimpath ./...` passed.
 - Google Chrome `150.0.7871.124`: anonymous smoke passed; the combined isolated character suite passed both smoke/reconnect and extended gameplay/persistence tests in 5.7 minutes.
 - The focused portal route also passed, credential scanning passed, and no uniquely suffixed QA container, network, or image remained after cleanup.

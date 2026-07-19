@@ -187,6 +187,37 @@ describe('UIManager settings', () => {
         expect(localStorage.getItem('eidolon.autoLootEnabled')).toBe('true');
     });
 
+    test('submitting chat stays blurred instead of reopening globally', () => {
+        buildDom();
+        const ui = new UIManager(false);
+        ui.onChatSend = jest.fn();
+        const chatInput = document.getElementById('chat-input');
+        const chatBox = document.getElementById('chat-box');
+        ui.toggleChat(true);
+        chatInput.value = 'hello party';
+        chatInput.focus();
+
+        const enter = new KeyboardEvent('keydown', {
+            key: 'Enter',
+            bubbles: true,
+            cancelable: true
+        });
+        chatInput.dispatchEvent(enter);
+
+        expect(ui.onChatSend).toHaveBeenCalledWith('hello party');
+        expect(chatInput.value).toBe('');
+        expect(document.activeElement).not.toBe(chatInput);
+        expect(enter.defaultPrevented).toBe(true);
+        expect(chatBox.style.display).toBe('flex');
+        ui.social.toggleSocial(true);
+        expect(ui.social.isOpen).toBe(true);
+
+        ui.handleEscape();
+
+        expect(chatBox.style.display).toBe('none');
+        expect(ui.social.isOpen).toBe(true);
+    });
+
     test('camera shake defaults off when no setting is stored', () => {
         buildDom();
 

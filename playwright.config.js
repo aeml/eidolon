@@ -1,5 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 import { existsSync } from 'node:fs';
+import {
+    backendOriginBrowserArgs,
+    hardwareWebGLBrowserArgs
+} from './tests/e2e/browserLaunchPolicy.js';
 
 const localBaseURL = 'http://127.0.0.1:4173';
 const baseURL = process.env.EIDOLON_E2E_BASE_URL || localBaseURL;
@@ -7,6 +11,10 @@ const useLocalServer = baseURL === localBaseURL;
 const configuredSystemChrome = process.env.EIDOLON_E2E_BROWSER_PATH;
 const systemChrome = configuredSystemChrome || '/usr/bin/google-chrome';
 const useSystemChrome = existsSync(systemChrome) && (!process.env.CI || Boolean(configuredSystemChrome));
+const backendResolverArgs = backendOriginBrowserArgs(process.env.EIDOLON_E2E_BACKEND_ORIGIN_IP);
+const browserGraphicsArgs = useSystemChrome
+    ? hardwareWebGLBrowserArgs()
+    : ['--enable-webgl', '--ignore-gpu-blocklist'];
 const hasCredentialedRoute = Boolean(
     process.env.EIDOLON_E2E_USERNAME || process.env.EIDOLON_E2E_USERNAME_SECONDARY
 );
@@ -36,7 +44,10 @@ export default defineConfig({
         ignoreHTTPSErrors: false,
         launchOptions: {
             executablePath: useSystemChrome ? systemChrome : undefined,
-            args: ['--enable-webgl', '--ignore-gpu-blocklist']
+            args: [
+                ...browserGraphicsArgs,
+                ...backendResolverArgs
+            ]
         },
         screenshot: 'only-on-failure',
         trace: 'retain-on-failure',

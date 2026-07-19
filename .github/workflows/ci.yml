@@ -140,6 +140,7 @@ jobs:
           npm ci
           test -x /usr/bin/google-chrome
           /usr/bin/google-chrome --version
+          EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome npm run verify:browser-gpu
 
       - name: Run disposable full-character gameplay
         env:
@@ -432,6 +433,7 @@ jobs:
           npm ci
           test -x /usr/bin/google-chrome
           /usr/bin/google-chrome --version
+          EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome npm run verify:browser-gpu
 
       - name: Wait for matching live releases
         env:
@@ -456,6 +458,7 @@ jobs:
           EIDOLON_E2E_WS_URL: wss://eserver.mendola.tech/ws
           EIDOLON_E2E_HEALTH_URL: https://eserver.mendola.tech/healthz
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+          EIDOLON_E2E_BACKEND_ORIGIN_IP: ${{ secrets.EIDOLON_E2E_BACKEND_ORIGIN_IP }}
           EIDOLON_EXPECTED_COMMIT: ${{ github.sha }}
           EIDOLON_E2E_USERNAME: ${{ secrets.EIDOLON_E2E_USERNAME }}
           EIDOLON_E2E_PASSWORD: ${{ secrets.EIDOLON_E2E_PASSWORD }}
