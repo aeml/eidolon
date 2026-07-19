@@ -226,12 +226,13 @@ type EntitySnapshot struct {
 
 // Client represents a connected player
 type Client struct {
-	conn      *websocket.Conn
-	send      chan []byte
-	playerID  string
-	username  string
-	lastState map[string]*EntitySnapshot // Track last sent state per entity
-	seenIDs   map[string]bool            // Track which entities client knows about
+	conn         *websocket.Conn
+	send         chan []byte
+	playerID     string
+	username     string
+	lastState    map[string]*EntitySnapshot // Track last sent state per entity
+	seenIDs      map[string]bool            // Track which entities client knows about
+	qaDisconnect func()                     // Optional test hook for the allowlisted reconnect fault.
 }
 
 // Message types
@@ -3298,9 +3299,45 @@ func (c *Client) handleChatCommand(raw string) bool {
 
 		c.sendSystemChat("Next enemy kill will produce a QA loot drop.")
 		return true
+	case "/qa-disconnect":
+		if !isQAUsername(c.username) {
+			c.sendError("QA command unavailable for this account.")
+			return true
+		}
+		if len(fields) != 1 {
+			c.sendError("Usage: /qa-disconnect")
+			return true
+		}
+
+		c.sendSystemChat("QA reconnect fault scheduled.")
+		c.triggerQADisconnect()
+		return true
 	default:
 		return false
 	}
+}
+
+func (c *Client) triggerQADisconnect() {
+	if c.qaDisconnect != nil {
+		c.qaDisconnect()
+		return
+	}
+	if c.conn == nil {
+		return
+	}
+
+	conn := c.conn
+	go func() {
+		// Let writePump flush the system chat before the server creates a real
+		// transport interruption. NetworkManager must then resume the session.
+		time.Sleep(150 * time.Millisecond)
+		_ = conn.WriteControl(
+			websocket.CloseMessage,
+			websocket.FormatCloseMessage(websocket.CloseGoingAway, "QA reconnect fault"),
+			time.Now().Add(time.Second),
+		)
+		_ = conn.Close()
+	}()
 }
 
 func (c *Client) sendSystemChat(message string) {

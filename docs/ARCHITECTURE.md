@@ -76,7 +76,7 @@ This removes runtime reliance on the former protobuf CDN script and makes the de
 - `internal/game/party.go`, `social.go`, and dungeon-focused files: partially extracted domain behavior.
 - `internal/database`: Mongo collections and persistence operations.
 
-`/level`, the fixed `/qa-waypoint <combat|verdant>` destinations, and `/qa-loot-next` are not normal gameplay capabilities. The server accepts them only when the authenticated username is in the explicit `EIDOLON_QA_USERNAMES` allowlist. The waypoint helper cannot accept arbitrary coordinates or operate inside a dungeon, and its protection expires after five minutes. The loot flag is server-only and consumed synchronously by the next eligible enemy kill.
+`/level`, the fixed `/qa-waypoint <combat|verdant>` destinations, `/qa-loot-next`, and `/qa-disconnect` are not normal gameplay capabilities. The server accepts them only when the authenticated username is in the explicit `EIDOLON_QA_USERNAMES` allowlist. The waypoint helper cannot accept arbitrary coordinates or operate inside a dungeon, and its protection expires after five minutes. The loot flag is server-only and consumed synchronously by the next eligible enemy kill. The disconnect command schedules a server-originated WebSocket close so the browser can exercise session resume without proxying the production state stream or mutating page code.
 
 ## Persistence and reconnect
 
@@ -98,7 +98,7 @@ No secrets are returned by either endpoint.
 
 ## Browser QA boundary
 
-Playwright runs system Chrome at `/usr/bin/google-chrome` in the Codex environment and pinned Playwright Chromium in CI. Gameplay is driven through real DOM, keyboard, and mouse input. `page.evaluate()` is limited to read-only state inspection and Three.js projection used to position real mouse clicks. Reconnect faults are injected through Playwright's routed WebSocket transport, outside page code.
+Playwright runs system Chrome at `/usr/bin/google-chrome` in the Codex environment and pinned Playwright Chromium in CI. Gameplay is driven through real DOM, keyboard, and mouse input. `page.evaluate()` is limited to read-only state inspection and Three.js projection used to position real mouse clicks. Reconnect faults are requested through the visible chat UI and performed by the allowlisted server-side `/qa-disconnect` command, outside page code.
 
 `npm run test:e2e:isolated` builds the server, starts disposable Mongo/API containers on a private Docker network, registers a random allowlisted character through visible browser controls, and removes all temporary containers and data on exit. The route covers authoritative movement, menu hotkeys, combat and ability cooldown, kill/loot/inventory, dungeon entry/exit, reconnect/session resume, and fresh-login persistence without invoking gameplay methods from test code.
 
@@ -111,14 +111,14 @@ Physical lines measured with `wc -l` on July 19, 2026:
 | File | LOC |
 |---|---:|
 | `server/internal/game/world.go` | 8,464 |
-| `server/main.go` | 4,673 |
+| `server/main.go` | 4,710 |
 | `src/core/GameEngine.js` | 5,548 |
 | `src/ui/UIManager.js` | 3,622 |
-| `src/core/NetworkManager.js` | 317 |
+| `src/core/NetworkManager.js` | 329 |
 | `src/core/SocialPresenceController.js` | 108 |
 | `src/ui/SocialUI.js` | 678 |
 
-Totals: 40,623 JavaScript LOC under `src/`, 31,135 Go LOC under `server/`, 24,980 JavaScript test LOC under `tests/`, and 7,938 Go test LOC. Generated protobuf code and assets are included where those directory totals naturally include them; the hotspot table is the useful refactor baseline.
+Totals: 40,635 JavaScript LOC under `src/`, 31,593 Go LOC under `server/`, 25,760 JavaScript test LOC under `tests/`, and 8,261 Go test LOC. Generated protobuf code and assets are included where those directory totals naturally include them; the hotspot table is the useful refactor baseline.
 
 The `0.40`–`0.43` decomposition gates are therefore still open. Release-confidence work should not be confused with completion of the monolith decomposition.
 

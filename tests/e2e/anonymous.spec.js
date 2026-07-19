@@ -2,15 +2,15 @@ import { expect, test } from '@playwright/test';
 import {
     assertWebSocketReachable,
     collectBrowserFailures,
+    openGame,
     productionWebSocketURL
 } from './helpers.js';
 
 test('anonymous release surface, runtime dependencies, and server are healthy', async ({ page, request, baseURL }) => {
     const failures = collectBrowserFailures(page, baseURL);
-    const response = await page.goto('/', { waitUntil: 'networkidle' });
+    const response = await openGame(page, { waitUntil: 'networkidle' });
 
     expect(response?.status()).toBe(200);
-    await expect(page.locator('#game-title')).toHaveText('EIDOLON ONLINE');
     await expect(page.locator('.start-version-row__label')).toContainText('Alpha');
 
     expect(await page.evaluate(() => typeof globalThis.protobuf)).toBe('object');

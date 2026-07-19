@@ -18,7 +18,7 @@ Do not promote a claim between categories without the corresponding run.
 - Use only dedicated QA accounts from environment variables or GitHub secrets.
 - Never place usernames/passwords in commands that will be committed, logs, screenshots, traces, or markdown evidence.
 - The extended route may set a dedicated character to level 100, gain XP/items, change position, create/leave a party, and create/reset a dungeon instance.
-- Add only dedicated primary/secondary QA usernames to the server `EIDOLON_QA_USERNAMES` allowlist. `/level`, fixed `/qa-waypoint` destinations, and `/qa-loot-next` all use that same server-side gate.
+- Add only dedicated primary/secondary QA usernames to the server `EIDOLON_QA_USERNAMES` allowlist. `/level`, fixed `/qa-waypoint` destinations, `/qa-loot-next`, and `/qa-disconnect` all use that same server-side gate.
 - Do not run the extended route against a normal player character.
 - Credentialed traces, screenshots, video, and the automatic input-valued failure snapshot stay disabled because recordings can contain account identifiers or passwords. CI also redacts and scans the supplied values before upload. The anonymous gate retains all three failure artifact types.
 
@@ -78,7 +78,7 @@ Automated when primary credentials exist:
 2. Wait for the first authoritative state frame.
 3. Click a projected ground destination with the real mouse and verify authoritative position changes. If randomized town props occupy every projected click, use a bounded real WASD fallback and require the same server-authoritative displacement.
 4. Open and Escape-close Character (`C`), Inventory (`I`), Journal (`J`), Skills (`K`), Map (`M`), Social (`O`), and Abilities (`P`).
-5. Close Playwright's routed WebSocket transport as a fault injection, then verify the browser's real resume path opens a new socket and preserves player identity. Page code remains read-only during this check.
+5. Submit `/qa-disconnect` through visible chat input, then verify the browser's real resume path opens a new socket and preserves player identity. The server closes the transport and page code remains read-only during this check.
 
 ## Gate 4: extended gameplay route
 
@@ -95,7 +95,7 @@ Automated only with `EIDOLON_E2E_FULL_GAMEPLAY=1` and an allowlisted dedicated a
 9. Zoom with real wheel events, click the real portal, choose Normal, and start the run through visible DOM controls.
 10. Verify the authoritative instance type changes to `verdant_bastion_catacombs`.
 11. Recall with `B` and verify return to `overworld`.
-12. Exercise reconnect/session resume through a routed transport close.
+12. Exercise reconnect/session resume through the allowlisted server-originated transport close.
 13. Reload, log in again, and verify level and inventory persistence.
 
 Any inventory-full state, missing QA authorization, navigation softlock, kill/loot failure, incorrect instance transition, or lost persistence fails the gate.

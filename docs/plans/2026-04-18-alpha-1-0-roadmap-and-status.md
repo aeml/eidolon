@@ -21,7 +21,7 @@ The deeper, audit-grounded implementation plan that backs every release line bel
 - The game has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, asset caching, audio foundation, accessibility baseline, and substantial UX polish
 - The biggest remaining alpha-wide risks are missing guilds and PvP, server/client architectural concentration, persistence/protocol hardening, and long-running multiplayer soak coverage
 - Verification at this checkpoint: the client and all Go packages pass their automated baselines; anonymous and disposable full-character Playwright routes pass in system Chrome; the credentialed production and two-account routes are implemented but not yet live-tested
-- Current hotspot measurements: `world.go` 8,464 LOC, `main.go` 4,673, `GameEngine.js` 5,548, `UIManager.js` 3,622
+- Current hotspot measurements: `world.go` 8,464 LOC, `main.go` 4,710, `GameEngine.js` 5,548, `UIManager.js` 3,622
 
 ## Where we are now
 

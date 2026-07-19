@@ -1,25 +1,13 @@
 import { expect } from '@playwright/test';
 
 export const productionWebSocketURL = 'wss://eserver.mendola.tech/ws';
-const routedSocketState = new WeakMap();
-
-async function routeAuthenticatedWebSockets(page) {
-    if (routedSocketState.has(page)) return;
-
-    const state = { client: null, connectionCount: 0 };
-    routedSocketState.set(page, state);
-    await page.routeWebSocket(/\/ws(?:\?|$)/, (socket) => {
-        state.client = socket;
-        state.connectionCount += 1;
-        socket.connectToServer();
-    });
-}
 
 export function collectBrowserFailures(page, baseURL) {
     const failures = [];
     const firstPartyOrigin = new URL(baseURL).origin;
     const successfulResponses = new Set();
     const canceledAssetFailures = new Map();
+    const transientDocumentFailures = new Map();
 
     page.on('pageerror', (error) => failures.push(`pageerror: ${error.message}`));
     page.on('console', (message) => {
@@ -48,12 +36,26 @@ export function collectBrowserFailures(page, baseURL) {
     });
     page.on('response', (response) => {
         if (new URL(response.url()).origin !== firstPartyOrigin) return;
+        const documentKey = new URL(response.url()).pathname;
         if (response.status() >= 400) {
-            failures.push(`response: ${response.status()} ${response.url()}`);
+            const detail = `response: ${response.status()} ${response.url()}`;
+            failures.push(detail);
+            if (response.status() >= 500 && response.request().resourceType() === 'document') {
+                const details = transientDocumentFailures.get(documentKey) || [];
+                details.push(detail);
+                transientDocumentFailures.set(documentKey, details);
+            }
             return;
         }
 
         successfulResponses.add(response.url());
+        if (response.request().resourceType() === 'document') {
+            for (const detail of transientDocumentFailures.get(documentKey) || []) {
+                const index = failures.indexOf(detail);
+                if (index !== -1) failures.splice(index, 1);
+            }
+            transientDocumentFailures.delete(documentKey);
+        }
         for (const detail of canceledAssetFailures.get(response.url()) || []) {
             const index = failures.indexOf(detail);
             if (index !== -1) failures.splice(index, 1);
@@ -62,6 +64,21 @@ export function collectBrowserFailures(page, baseURL) {
     });
 
     return failures;
+}
+
+export async function openGame(page, options = {}) {
+    let response = null;
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+        response = await page.goto('/', { waitUntil: options.waitUntil || 'domcontentloaded' });
+        if (response?.status() === 200) {
+            await expect(page.locator('#game-title')).toHaveText('EIDOLON ONLINE');
+            return response;
+        }
+        if ((response?.status() || 0) < 500) break;
+        await page.waitForTimeout(1_000 * (attempt + 1));
+    }
+    expect(response?.status(), 'The live game document must recover from transient edge errors').toBe(200);
+    return response;
 }
 
 export async function assertWebSocketReachable(page, url = productionWebSocketURL) {
@@ -86,11 +103,7 @@ export async function assertWebSocketReachable(page, url = productionWebSocketUR
 }
 
 export async function loginAndEnterWorld(page, credentials) {
-    // Route before navigation so reconnect can be fault-injected from the
-    // Playwright transport layer without mutating window.game in page code.
-    await routeAuthenticatedWebSockets(page);
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('#game-title')).toHaveText('EIDOLON ONLINE');
+    await openGame(page);
 
     await page.locator('#auth-username').fill(credentials.username);
     await page.locator('#auth-password').fill(credentials.password);
@@ -383,19 +396,23 @@ export async function exerciseMenus(page) {
 
 export async function exerciseReconnect(page) {
     const before = await readPlayerState(page);
-    const socketState = routedSocketState.get(page);
-    expect(socketState?.client, 'The authenticated WebSocket must be routed before reconnect QA').not.toBeNull();
-    const connectionCount = socketState.connectionCount;
 
-    // Closing Playwright's routed transport produces the same browser close
-    // event as a network interruption while keeping page.evaluate read-only.
-    await socketState.client.close({ code: 1001, reason: 'QA reconnect fault' });
+    // Trigger a server-originated transport close through visible chat input.
+    // The command is available only to the production QA allowlist, and no
+    // game/network method is invoked from page code or from the test harness.
+    await page.keyboard.press('Enter');
+    const chatInput = page.locator('#chat-input');
+    await expect(chatInput).toBeFocused();
+    await chatInput.fill('/qa-disconnect');
+    await chatInput.press('Enter');
 
-    await expect.poll(async () => ({
-        connectionCount: socketState.connectionCount,
-        open: await page.evaluate(() =>
-            window.game?.network?.socket?.readyState === WebSocket.OPEN)
-    }), { timeout: 30_000 }).toEqual({ connectionCount: connectionCount + 1, open: true });
+    await expect.poll(() => page.evaluate(() =>
+        window.game?.network?.socket?.readyState !== WebSocket.OPEN
+    ), { timeout: 10_000 }).toBe(true);
+    await expect.poll(() => page.evaluate(() => Boolean(
+        window.game?._firstStateReceived &&
+        window.game?.network?.socket?.readyState === WebSocket.OPEN
+    )), { timeout: 45_000 }).toBe(true);
 
     const after = await readPlayerState(page);
     expect(after.id === before.id && after.name === before.name).toBe(true);

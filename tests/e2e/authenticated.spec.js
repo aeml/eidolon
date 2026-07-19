@@ -23,6 +23,7 @@ test.describe('dedicated QA character', () => {
     test.skip(!hasCredentials, 'Set EIDOLON_E2E_USERNAME and EIDOLON_E2E_PASSWORD for character QA');
 
     test('logs in, enters the world, moves, opens gameplay UI, and reconnects', async ({ page, baseURL }) => {
+        test.setTimeout(300_000);
         const failures = collectBrowserFailures(page, baseURL);
         await loginAndEnterWorld(page, credentials);
         await exerciseMovement(page);

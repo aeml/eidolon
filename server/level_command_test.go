@@ -435,6 +435,50 @@ func TestHandleMessageQALootNextRejectsNonQAAccount(t *testing.T) {
 	t.Fatalf("expected QA authorization error, got %+v", msgs)
 }
 
+func TestHandleMessageQADisconnectSchedulesAllowlistedConnectionFault(t *testing.T) {
+	allowLevelCommandTestUser(t)
+	client := newLevelCommandClient()
+	disconnected := false
+	client.qaDisconnect = func() { disconnected = true }
+
+	payload, _ := json.Marshal(ChatPayload{Message: "/qa-disconnect", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+
+	if !disconnected {
+		t.Fatal("expected allowlisted QA account to schedule a connection fault")
+	}
+	msgs := drainSentMessages(client.send)
+	for _, msg := range msgs {
+		if msg.Type == MsgChat && strings.Contains(messagePayloadChat(t, msg).Message, "reconnect fault scheduled") {
+			return
+		}
+	}
+	t.Fatalf("expected QA disconnect success response, got %+v", msgs)
+}
+
+func TestHandleMessageQADisconnectRejectsNonQAAccount(t *testing.T) {
+	originalQAUsernames := qaUsernames
+	defer func() { qaUsernames = originalQAUsernames }()
+	qaUsernames = parseQAUsernames("different_qa_account")
+
+	client := newLevelCommandClient()
+	disconnected := false
+	client.qaDisconnect = func() { disconnected = true }
+	payload, _ := json.Marshal(ChatPayload{Message: "/qa-disconnect", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+
+	if disconnected {
+		t.Fatal("expected unauthorized account not to schedule a connection fault")
+	}
+	msgs := drainSentMessages(client.send)
+	for _, msg := range msgs {
+		if msg.Type == MsgError && strings.Contains(messagePayloadString(t, msg), "QA command unavailable") {
+			return
+		}
+	}
+	t.Fatalf("expected QA authorization error, got %+v", msgs)
+}
+
 func TestCheckOriginAllowsKnownLocalAndProductionOrigins(t *testing.T) {
 	cases := []struct {
 		name   string
