@@ -68,6 +68,6 @@ The server uses MongoDB for user and character persistence.
 
 ## QA-only commands
 
-`/level` is disabled for normal accounts. Set a comma-separated `EIDOLON_QA_USERNAMES` value (or `--qa-usernames`) to allow dedicated authenticated QA usernames. Do not add normal player accounts.
+`/level`, `/qa-waypoint <combat|verdant>`, and `/qa-loot-next` are disabled for normal accounts. Set a comma-separated `EIDOLON_QA_USERNAMES` value (or `--qa-usernames`) to allow dedicated authenticated QA usernames. The waypoints use fixed coordinates and a bounded five-minute protection window; `/qa-loot-next` forces the next eligible normal kill through the usual loot generator. Do not add normal player accounts.
 
 The load-test driver generates cryptographically random, in-memory credentials by default. An explicit `--credentials-file` is read-only; credential files and legacy `bot_data.json` paths are ignored by Git.

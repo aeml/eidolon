@@ -18,7 +18,7 @@ Do not promote a claim between categories without the corresponding run.
 - Use only dedicated QA accounts from environment variables or GitHub secrets.
 - Never place usernames/passwords in commands that will be committed, logs, screenshots, traces, or markdown evidence.
 - The extended route may set a dedicated character to level 100, gain XP/items, change position, create/leave a party, and create/reset a dungeon instance.
-- Add only the primary QA username to the server `EIDOLON_QA_USERNAMES` allowlist when `/level` acceleration is required.
+- Add only dedicated primary/secondary QA usernames to the server `EIDOLON_QA_USERNAMES` allowlist. `/level`, fixed `/qa-waypoint` destinations, and `/qa-loot-next` all use that same server-side gate.
 - Do not run the extended route against a normal player character.
 - Credentialed traces, screenshots, video, and the automatic input-valued failure snapshot stay disabled because recordings can contain account identifiers or passwords. CI also redacts and scans the supplied values before upload. The anonymous gate retains all three failure artifact types.
 
@@ -49,13 +49,14 @@ npm audit --audit-level=low
 npm test -- --runInBand
 npm run lint
 npm run test:e2e:anonymous
+npm run test:e2e:isolated
 
 cd server
 go test ./...
 go build ./...
 ```
 
-Pass only when the install is lockfile-clean, audit reports no vulnerability, client/server gates pass, and system Chrome completes the anonymous route without console/page/request failures.
+Pass only when the install is lockfile-clean, audit reports no vulnerability, client/server gates pass, system Chrome completes the anonymous route without console/page/request failures, and the temporary local stack completes the full character route. The isolated command creates uniquely suffixed `eidolon-isolated-qa-*` Docker resources, tracks ownership, removes only what it created, and refuses collisions.
 
 ## Gate 2: anonymous browser surface
 
@@ -75,26 +76,27 @@ Automated when primary credentials exist:
 
 1. Log in through visible inputs and enter the saved character (or create the configured class on a dedicated empty account).
 2. Wait for the first authoritative state frame.
-3. Hold a real movement key and verify authoritative position changes.
+3. Click a projected ground destination with the real mouse and verify authoritative position changes. If randomized town props occupy every projected click, use a bounded real WASD fallback and require the same server-authoritative displacement.
 4. Open and Escape-close Character (`C`), Inventory (`I`), Journal (`J`), Skills (`K`), Map (`M`), Social (`O`), and Abilities (`P`).
-5. Close the active WebSocket as a fault injection, then verify resume opens a new socket and preserves player identity.
+5. Close Playwright's routed WebSocket transport as a fault injection, then verify the browser's real resume path opens a new socket and preserves player identity. Page code remains read-only during this check.
 
 ## Gate 4: extended gameplay route
 
 Automated only with `EIDOLON_E2E_FULL_GAMEPLAY=1` and an allowlisted dedicated account:
 
 1. Use chat DOM input for `/level 100` only if the character is below 100.
-2. Leave town through real WASD input until a hostile is visible.
-3. Use projected read-only coordinates for real mouse targeting; press real hotbar keys for abilities.
-4. Kill an overworld enemy. Repeat up to five encounters if random loot does not drop.
-5. Click dropped loot with the real mouse and verify authoritative inventory count increases.
-6. Recall to town with `B`.
-7. Hold the isometric east chord (`S+D`) until the Verdant Bastion portal is reached.
-8. Click the real portal, choose Normal, and start the run through visible DOM controls.
-9. Verify the authoritative instance type changes to `verdant_bastion_catacombs`.
-10. Recall with `B` and verify return to `overworld`.
-11. Exercise reconnect/session resume.
-12. Reload, log in again, and verify level and inventory persistence.
+2. Disable Auto-Loot through the visible Settings controls so inventory growth proves a mouse-driven pickup.
+3. Submit `/qa-waypoint combat` through chat. This fixed allowlisted waypoint avoids randomized town-prop navigation and grants five minutes of bounded protection; it does not perform combat.
+4. Submit `/qa-loot-next` through chat so the next normal kill uses the regular loot generator without a flaky 50% miss.
+5. Use projected read-only coordinates for real mouse targeting and right-click the hostile for the primary ability.
+6. Verify ability cooldown, intermediate damage or a one-shot death, and the authoritative kill. All repeated attacks remain real mouse clicks.
+7. Approach and click the replicated loot with the real mouse. If the killing click also acquires the newly spawned overlapping loot, accept only an authoritative inventory increase while Auto-Loot is explicitly off.
+8. Submit `/qa-waypoint verdant` through chat. The destination is fixed near the portal because a fresh QA character cannot safely traverse the endgame zone.
+9. Zoom with real wheel events, click the real portal, choose Normal, and start the run through visible DOM controls.
+10. Verify the authoritative instance type changes to `verdant_bastion_catacombs`.
+11. Recall with `B` and verify return to `overworld`.
+12. Exercise reconnect/session resume through a routed transport close.
+13. Reload, log in again, and verify level and inventory persistence.
 
 Any inventory-full state, missing QA authorization, navigation softlock, kill/loot failure, incorrect instance transition, or lost persistence fails the gate.
 
@@ -106,7 +108,7 @@ Automated when secondary credentials exist:
 2. Set primary presence to Looking for Party and verify the secondary Social roster sees it.
 3. Invite through party UI; accept through the secondary modal.
 4. Verify both party panels and replicated `partyId` agree.
-5. Move the primary with real keys and verify the secondary observes remote displacement.
+5. Move the primary with a real ground click and verify the secondary observes remote displacement.
 6. Ctrl-click a real canvas destination and verify the secondary observes jump state/progress.
 7. Move both toward a shared hostile; attack/cast through primary input and verify remote combat presentation.
 8. Verify the secondary's remote primary position converges with the primary's authoritative position.
@@ -146,9 +148,10 @@ Automation covers release mechanics, not the full product-quality surface. For a
 The production workflow performs these steps after a push to `master`:
 
 1. Run client tests/lint/audit, server tests/build, and local anonymous Playwright.
-2. Deploy Pages and the Docker server.
-3. Poll cache-busted `https://eidolon.mendola.tech/release.json` and `https://eserver.mendola.tech/healthz` until both equal the workflow SHA.
-4. Run Playwright with:
+2. Validate dedicated QA secrets and update the server allowlist from those username secrets during deployment.
+3. Deploy Pages and the Docker server.
+4. Poll cache-busted `https://eidolon.mendola.tech/release.json` and `https://eserver.mendola.tech/healthz` until both equal the workflow SHA.
+5. Run Playwright with:
 
 ```text
 EIDOLON_E2E_BASE_URL=https://eidolon.mendola.tech
@@ -157,11 +160,19 @@ EIDOLON_E2E_HEALTH_URL=https://eserver.mendola.tech/healthz
 EIDOLON_EXPECTED_COMMIT=<pushed SHA>
 ```
 
-5. Upload the HTML report and anonymous failure screenshots/video/traces. Credentialed recordings remain off.
+6. Upload the HTML report and anonymous failure screenshots/video/traces. Credentialed recordings remain off.
 
 ## Release evidence record
 
 Fill this in after the live run; do not pre-check it based on local results.
+
+Current local worktree evidence on July 19, 2026:
+
+- Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 82 Jest suites / 953 tests, and ESLint passed.
+- Go toolchain `1.24.5`: `go test -race ./...` and `go build -trimpath ./...` passed.
+- Google Chrome `150.0.7871.124`: anonymous smoke passed; the combined isolated character suite passed both smoke/reconnect and extended gameplay/persistence tests in 5.4 minutes.
+- The focused portal route also passed, credential scanning passed, and no uniquely suffixed QA container, network, or image remained after cleanup.
+- This is locally browser-tested evidence only. The table below remains pending until the production SHA and persistent QA character are verified.
 
 | Evidence | Result |
 |---|---|

@@ -76,7 +76,7 @@ This removes runtime reliance on the former protobuf CDN script and makes the de
 - `internal/game/party.go`, `social.go`, and dungeon-focused files: partially extracted domain behavior.
 - `internal/database`: Mongo collections and persistence operations.
 
-`/level` is not a normal gameplay capability. The server accepts it only when the authenticated username is in the explicit `EIDOLON_QA_USERNAMES` allowlist.
+`/level`, the fixed `/qa-waypoint <combat|verdant>` destinations, and `/qa-loot-next` are not normal gameplay capabilities. The server accepts them only when the authenticated username is in the explicit `EIDOLON_QA_USERNAMES` allowlist. The waypoint helper cannot accept arbitrary coordinates or operate inside a dungeon, and its protection expires after five minutes. The loot flag is server-only and consumed synchronously by the next eligible enemy kill.
 
 ## Persistence and reconnect
 
@@ -98,7 +98,9 @@ No secrets are returned by either endpoint.
 
 ## Browser QA boundary
 
-Playwright runs system Chrome at `/usr/bin/google-chrome` in the Codex environment and pinned Playwright Chromium in CI. Gameplay is driven through real DOM, keyboard, and mouse input. `page.evaluate()` is limited to read-only state inspection, transport fault injection for reconnect, and Three.js projection used to position real mouse clicks.
+Playwright runs system Chrome at `/usr/bin/google-chrome` in the Codex environment and pinned Playwright Chromium in CI. Gameplay is driven through real DOM, keyboard, and mouse input. `page.evaluate()` is limited to read-only state inspection and Three.js projection used to position real mouse clicks. Reconnect faults are injected through Playwright's routed WebSocket transport, outside page code.
+
+`npm run test:e2e:isolated` builds the server, starts disposable Mongo/API containers on a private Docker network, registers a random allowlisted character through visible browser controls, and removes all temporary containers and data on exit. The route covers authoritative movement, menu hotkeys, combat and ability cooldown, kill/loot/inventory, dungeon entry/exit, reconnect/session resume, and fresh-login persistence without invoking gameplay methods from test code.
 
 Credentialed traces, screenshots, video, and Playwright's input-valued failure snapshot are disabled because recordings can expose account identifiers or form inputs. CI redacts and scans all supplied QA values before any report upload. The anonymous route retains screenshots, traces, and video on failure.
 
@@ -108,8 +110,8 @@ Physical lines measured with `wc -l` on July 19, 2026:
 
 | File | LOC |
 |---|---:|
-| `server/internal/game/world.go` | 8,408 |
-| `server/main.go` | 4,632 |
+| `server/internal/game/world.go` | 8,464 |
+| `server/main.go` | 4,673 |
 | `src/core/GameEngine.js` | 5,548 |
 | `src/ui/UIManager.js` | 3,622 |
 | `src/core/NetworkManager.js` | 317 |
