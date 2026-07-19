@@ -177,7 +177,7 @@ Fill this in after the live run; do not pre-check it based on local results.
 
 Current local worktree evidence on July 19, 2026:
 
-- Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 83 Jest suites / 957 tests, and ESLint passed.
+- Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 83 Jest suites / 959 tests, and ESLint passed.
 - Go toolchain `1.24.5`: `go test -race ./...` and `go build -trimpath ./...` passed.
 - Google Chrome `150.0.7871.124`: anonymous smoke passed; the combined isolated character suite passed both smoke/reconnect and extended gameplay/persistence tests in 5.7 minutes.
 - The focused portal route also passed, credential scanning passed, and no uniquely suffixed QA container, network, or image remained after cleanup.

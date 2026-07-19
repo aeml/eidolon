@@ -702,7 +702,12 @@ async function openSettingsThroughEscape(page) {
 async function closeSettingsAndResume(page, escMenu) {
     await page.locator('#btn-close-settings').click();
     await expect(page.locator('#settings-screen')).toBeHidden();
-    await page.keyboard.press('Escape');
+    // A server message can reopen chat above the Escape menu. Close visible
+    // layers one at a time through real Escape input until gameplay resumes.
+    for (let attempt = 0; attempt < 4 && await escMenu.isVisible(); attempt += 1) {
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(150);
+    }
     await expect(escMenu).toBeHidden();
 }
 
@@ -900,7 +905,8 @@ export async function useCombatQAWaypoint(page) {
             // The server response opens the chat transcript. Dismiss it with
             // the same Escape path a player uses so it cannot cover gameplay
             // or social-window controls later in the scenario.
-            await page.keyboard.press('Escape');
+            const chatBox = page.locator('#chat-box');
+            if (await chatBox.isVisible()) await page.keyboard.press('Escape');
             await expect(page.locator('#chat-box')).toBeHidden();
             return;
         } catch (error) {

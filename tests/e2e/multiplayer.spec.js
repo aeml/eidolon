@@ -160,11 +160,36 @@ test.describe('two-account multiplayer', () => {
                 (element, primaryName) => element.textContent.includes(primaryName),
                 primary.username
             ), { timeout: 20_000 }).toBe(true);
-            await expect.poll(async () => {
-                const firstSees = await remoteSnapshot(firstPage, secondary.username);
-                const secondSees = await remoteSnapshot(secondPage, primary.username);
-                return Boolean(firstSees?.partyId && firstSees.partyId === secondSees?.partyId);
-            }, { timeout: 20_000 }).toBe(true);
+            const partyReplication = async () => {
+                const [firstSees, secondSees, firstLocalPartyId, secondLocalPartyId] = await Promise.all([
+                    remoteSnapshot(firstPage, secondary.username),
+                    remoteSnapshot(secondPage, primary.username),
+                    firstPage.evaluate(() => window.game?.socialController?.myPartyId || ''),
+                    secondPage.evaluate(() => window.game?.socialController?.myPartyId || '')
+                ]);
+                return {
+                    firstLocalPartyId,
+                    firstRemotePartyId: firstSees?.partyId || '',
+                    secondLocalPartyId,
+                    secondRemotePartyId: secondSees?.partyId || ''
+                };
+            };
+            try {
+                await expect.poll(async () => {
+                    const snapshot = await partyReplication();
+                    return Boolean(
+                        snapshot.firstLocalPartyId &&
+                        snapshot.firstLocalPartyId === snapshot.secondLocalPartyId &&
+                        snapshot.firstLocalPartyId === snapshot.firstRemotePartyId &&
+                        snapshot.firstLocalPartyId === snapshot.secondRemotePartyId
+                    );
+                }, { timeout: 20_000 }).toBe(true);
+            } catch (error) {
+                throw new Error(
+                    `Party state stream did not converge: ${JSON.stringify(await partyReplication())}`,
+                    { cause: error }
+                );
+            }
             phase('formed fresh replicated party');
             await closeSocialWindow(firstPage);
             const beforeMovement = await remoteSnapshot(secondPage, primary.username);

@@ -118,7 +118,7 @@ Physical lines measured with `wc -l` on July 19, 2026:
 | `src/core/SocialPresenceController.js` | 108 |
 | `src/ui/SocialUI.js` | 678 |
 
-Totals: 40,673 JavaScript LOC under `src/`, 31,712 Go LOC under `server/`, 26,169 JavaScript test LOC under `tests/`, and 8,336 Go test LOC. Generated protobuf code and assets are included where those directory totals naturally include them; the hotspot table is the useful refactor baseline.
+Totals: 40,677 JavaScript LOC under `src/`, 31,755 Go LOC under `server/`, 26,241 JavaScript test LOC under `tests/`, and 8,368 Go test LOC. Generated protobuf code and assets are included where those directory totals naturally include them; the hotspot table is the useful refactor baseline.
 
 The `0.40`–`0.43` decomposition gates are therefore still open. Release-confidence work should not be confused with completion of the monolith decomposition.
 

@@ -286,6 +286,40 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.renderSystem.setCameraTarget).toHaveBeenCalledWith(engine.player.position);
     });
 
+    test.each(['delta', 'state'])(
+        '%s self teleport corrects drift just below the old twenty-unit cutoff',
+        (messageType) => {
+            const engine = createEngineHarness();
+            engine.player.state = 'IDLE';
+            engine.player.stats.hp = 100;
+            engine.player.position.set(139.94, 0, 200);
+            engine.player.targetPosition = new THREE.Vector3(140, 0, 200);
+
+            const playerUpdate = {
+                id: 'player-1',
+                state: 'IDLE',
+                health: 100,
+                maxHealth: 100,
+                mana: 100,
+                maxMana: 100,
+                x: 120,
+                z: 200,
+                y: 0
+            };
+            engine.handleServerMessage({
+                type: messageType,
+                payload: messageType === 'delta'
+                    ? { u: { 'player-1': playerUpdate }, r: [] }
+                    : { 'player-1': playerUpdate }
+            });
+
+            expect(engine.player.position.x).toBe(120);
+            expect(engine.player.position.z).toBe(200);
+            expect(engine.player.targetPosition).toBeNull();
+            expect(engine.chunkManager.updateEntityChunk).toHaveBeenCalledWith(engine.player);
+        }
+    );
+
     test('delta self teleport seeds a short-lived visual correction state for overworld smoothing', () => {
         const engine = createEngineHarness();
         engine.player.state = 'IDLE';

@@ -1749,7 +1749,7 @@ export class GameEngine {
                             const serverPos = new THREE.Vector3(pData.x, pData.y || 0, pData.z);
                             const horizontalPos = new THREE.Vector3(pData.x, this.player.position.y, pData.z);
                             const dist = this.player.position.distanceTo(horizontalPos);
-                            if (pData.state === 'JUMPING' || dist > 20.0) { // Threshold for teleport (larger than normal lag correction)
+                            if (pData.state === 'JUMPING' || dist > 10.0) { // Threshold for authoritative correction beyond normal lag
                                 const previousPosition = this.player.position.clone();
                                 console.log(`GameEngine: Detected server teleport, syncing position. Dist: ${dist}, Server: ${serverPos.x},${serverPos.z}, Client: ${this.player.position.x},${this.player.position.z}`);
                                 if (pData.state === 'JUMPING') {
@@ -2016,7 +2016,11 @@ export class GameEngine {
                             const serverPos = new THREE.Vector3(pData.x, pData.y || 0, pData.z);
                             const horizontalPos = new THREE.Vector3(pData.x, this.player.position.y, pData.z);
                             const dist = this.player.position.distanceTo(horizontalPos);
-                            if (pData.state === 'JUMPING' || dist > 20.0) {
+                            // Correct meaningful authoritative drift before a
+                            // stale local move can overwrite a server teleport.
+                            // The fixed QA waypoint exposed that a value just
+                            // under the old 20-unit cutoff never converged.
+                            if (pData.state === 'JUMPING' || dist > 10.0) {
                                 const previousPosition = this.player.position.clone();
                                 console.log(`GameEngine: Detected self teleport from delta, syncing position. Dist: ${dist}`);
                                 if (pData.state === 'JUMPING') {
