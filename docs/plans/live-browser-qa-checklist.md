@@ -67,7 +67,7 @@ Automated in `tests/e2e/anonymous.spec.js`:
 3. Locked protobuf and Three.js vendor manifest loads.
 4. Patch Notes opens from the login screen and closes with Escape.
 5. No first-party request failure, HTTP error, page exception, or console error is observed.
-6. A browser WebSocket connects to the configured game server.
+6. A browser WebSocket connects when `EIDOLON_E2E_WS_URL` configures a game server. Predeploy static smoke omits that external dependency; the isolated character route and post-deploy suite require real sockets.
 7. In post-deploy mode, client `/release.json` and server `/healthz` both equal the expected SHA; server status is `ok` and database is `ready`.
 
 The live path uses bounded retries for transient edge 5xx responses, JSON identity requests, and initial WebSocket handshakes. A later complete boot or successful handshake may reconcile that abandoned attempt; an unrecovered final attempt, application exception, 4xx response, or functional mismatch still fails the gate.
@@ -149,20 +149,23 @@ Automation covers release mechanics, not the full product-quality surface. For a
 
 The production workflow performs these steps after a push to `master`:
 
-1. Run client tests/lint/audit, server tests/build, and local anonymous Playwright.
+1. Run client tests/lint/audit, server tests/build, local anonymous Playwright, and the disposable full-character browser route before any deployment.
 2. Validate dedicated QA secrets and update the server allowlist from those username secrets during deployment.
 3. Deploy Pages and the Docker server.
 4. Poll cache-busted `https://eidolon.mendola.tech/release.json` and `https://eserver.mendola.tech/healthz` until both equal the workflow SHA.
-5. Run Playwright with:
+5. Dispatch the post-deploy job to the repository-scoped `eidolon-live-browser` self-hosted runner and run system Google Chrome with:
 
 ```text
 EIDOLON_E2E_BASE_URL=https://eidolon.mendola.tech
 EIDOLON_E2E_WS_URL=wss://eserver.mendola.tech/ws
 EIDOLON_E2E_HEALTH_URL=https://eserver.mendola.tech/healthz
+EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome
 EIDOLON_EXPECTED_COMMIT=<pushed SHA>
 ```
 
-6. Upload the HTML report and anonymous failure screenshots/video/traces. Credentialed recordings remain off.
+6. Upload the HTML report and anonymous failure screenshots/video/traces. Credentialed recordings remain off. The live runner is selected only by push-gated deploy dependencies; pull-request browser work stays on GitHub-hosted infrastructure and receives no production credentials.
+
+The current runner host stores the official repository registration under `/home/aeml/.local/share/eidolon-actions-runner`. It must remain online with the `eidolon-live-browser` label; an offline runner deliberately leaves the post-deploy gate queued rather than silently skipping gameplay. After a host restart, `scripts/start-live-browser-runner.sh` starts the configured runner in the detached `eidolon-actions-runner` tmux session without reading or writing QA credentials.
 
 ## Release evidence record
 

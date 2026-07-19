@@ -4,7 +4,9 @@ import { existsSync } from 'node:fs';
 const localBaseURL = 'http://127.0.0.1:4173';
 const baseURL = process.env.EIDOLON_E2E_BASE_URL || localBaseURL;
 const useLocalServer = baseURL === localBaseURL;
-const systemChrome = process.env.EIDOLON_E2E_BROWSER_PATH || '/usr/bin/google-chrome';
+const configuredSystemChrome = process.env.EIDOLON_E2E_BROWSER_PATH;
+const systemChrome = configuredSystemChrome || '/usr/bin/google-chrome';
+const useSystemChrome = existsSync(systemChrome) && (!process.env.CI || Boolean(configuredSystemChrome));
 const hasCredentialedRoute = Boolean(
     process.env.EIDOLON_E2E_USERNAME || process.env.EIDOLON_E2E_USERNAME_SECONDARY
 );
@@ -33,7 +35,7 @@ export default defineConfig({
         headless: process.env.EIDOLON_E2E_HEADLESS !== '0',
         ignoreHTTPSErrors: false,
         launchOptions: {
-            executablePath: !process.env.CI && existsSync(systemChrome) ? systemChrome : undefined,
+            executablePath: useSystemChrome ? systemChrome : undefined,
             args: ['--enable-webgl', '--ignore-gpu-blocklist']
         },
         screenshot: 'only-on-failure',

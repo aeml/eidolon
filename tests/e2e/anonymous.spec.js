@@ -3,8 +3,7 @@ import {
     assertWebSocketReachable,
     collectBrowserFailures,
     getJSONWithRetry,
-    openGame,
-    productionWebSocketURL
+    openGame
 } from './helpers.js';
 
 test('anonymous release surface, runtime dependencies, and server are healthy', async ({ page, request, baseURL }) => {
@@ -32,7 +31,9 @@ test('anonymous release surface, runtime dependencies, and server are healthy', 
     await page.keyboard.press('Escape');
     await expect(page.locator('#patch-notes-screen')).toBeHidden();
 
-    await assertWebSocketReachable(page, process.env.EIDOLON_E2E_WS_URL || productionWebSocketURL);
+    if (process.env.EIDOLON_E2E_WS_URL) {
+        await assertWebSocketReachable(page, process.env.EIDOLON_E2E_WS_URL);
+    }
 
     const expectedCommit = process.env.EIDOLON_EXPECTED_COMMIT;
     if (expectedCommit) {
