@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { URL, fileURLToPath } from 'node:url';
 import { jest } from '@jest/globals';
 import { UIManager } from '../src/ui/UIManager.js';
 import { SkillTreeUI } from '../src/ui/SkillTreeUI.js';

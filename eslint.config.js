@@ -7,8 +7,11 @@ export default [
             'assets/**',
             'coverage/**',
             'node_modules/**',
+            'playwright-report/**',
             'server/**',
-            'src/proto/**'
+            'src/proto/**',
+            'test-results/**',
+            'vendor/**'
         ]
     },
     {
@@ -25,6 +28,17 @@ export default [
         },
         rules: {
             'no-unused-vars': 'off'
+        }
+    },
+    {
+        files: ['playwright.config.js', 'scripts/**/*.js', 'scripts/**/*.mjs'],
+        ...js.configs.recommended,
+        languageOptions: {
+            ecmaVersion: 'latest',
+            sourceType: 'module',
+            globals: {
+                ...globals.node
+            }
         }
     }
 ];

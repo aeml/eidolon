@@ -1,5 +1,5 @@
 import { readFileSync, existsSync } from 'fs';
-import { fileURLToPath } from 'node:url';
+import { URL, fileURLToPath } from 'node:url';
 
 const reproHtmlPath = fileURLToPath(new URL('../repro.html', import.meta.url));
 const reproJsPath = fileURLToPath(new URL('../src/repro.js', import.meta.url));

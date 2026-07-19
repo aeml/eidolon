@@ -1,26 +1,37 @@
 {
   "name": "eidolon-tests",
   "version": "1.0.0",
-  "description": "Unit tests for Eidolon",
+  "description": "Eidolon browser game client, validation, and release tooling",
   "type": "module",
+  "engines": {
+    "node": ">=24.0.0 <25.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
+    "prepare:client": "node scripts/prepare-client.mjs",
+    "postinstall": "npm run prepare:client",
+    "serve": "node scripts/serve-static.mjs",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "test:smoke": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runTestsByPath tests/CollisionManager.test.js tests/ItemSystem.test.js",
-    "lint": "eslint src tests --max-warnings=0"
+    "test:e2e": "playwright test",
+    "test:e2e:anonymous": "playwright test tests/e2e/anonymous.spec.js",
+    "test:e2e:authenticated": "playwright test tests/e2e/authenticated.spec.js",
+    "test:e2e:multiplayer": "playwright test tests/e2e/multiplayer.spec.js",
+    "lint": "eslint src tests scripts playwright.config.js --max-warnings=0"
   },
-
   "dependencies": {
-    "three": "^0.181.2"
+    "three": "0.181.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@playwright/test": "1.61.1",
     "eslint": "^9.39.1",
     "globals": "^15.15.0",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
-    "protobufjs": "^7.5.4",
-    "protobufjs-cli": "^1.1.3"
+    "protobufjs": "8.7.1",
+    "protobufjs-cli": "2.6.1"
   },
   "overrides": {
     "test-exclude": "^7.0.0"

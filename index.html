@@ -7,12 +7,12 @@
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="src/styles/index.css">
-    <script src="https://unpkg.com/protobufjs@7.5.4/dist/minimal/protobuf.min.js"></script>
+    <script src="./vendor/protobuf/protobuf.min.js"></script>
     <script type="importmap">
         {
             "imports": {
-                "three": "https://unpkg.com/three@0.181.2/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.181.2/examples/jsm/"
+                "three": "./vendor/three/build/three.module.js",
+                "three/addons/": "./vendor/three/examples/jsm/"
 
             }
         }
@@ -582,6 +582,10 @@
                         <li><strong>New module:</strong> <code>server/internal/game/entity.go</code> (~950 lines) owns <code>EntityType</code> constants, <code>Quest</code>, <code>Stats</code>, and <code>Entity</code> struct; rune helpers (<code>HasRune</code>, <code>GetRuneForSkill</code>); set-bonus helpers (<code>HasSetBonus</code>, <code>HasAnySetBonus</code>, <code>GetSetBonusValue</code>, <code>HasUniqueEffect</code>); status-effect helpers (<code>GetEffectiveManaCost</code>, <code>ActivateSwiftIfEquipped</code>, <code>GetEffectiveSpeed</code>); <code>RecalculateStats</code>; <code>GetEntityCopy</code>; <code>copyEntity</code>.</li>
                         <li><strong>world.go reduced:</strong> 9 325 → 7 444 lines (−1 881); seven duplicate blocks surgically removed.</li>
                         <li><strong>Tests:</strong> 932/932 JS green; <code>go build ./...</code> clean.</li>
+                        <li><strong>Release confidence:</strong> Browser runtimes are now locked and self-hosted, production exposes matching client/server commit identity, and deployment requires database-ready health before live Playwright QA.</li>
+                        <li><strong>Real-browser QA:</strong> Playwright 1.61.1 covers the anonymous surface plus credential-gated character movement, menus, combat, loot, dungeon transitions, persistence, reconnect, and optional two-account convergence.</li>
+                        <li><strong>QA safety:</strong> <code>/level</code> now requires an authenticated allowlisted QA username, and tracked load-test credentials were replaced with disposable in-memory generation.</li>
+                        <li><strong>Current validation:</strong> 951/951 JS tests and all Go packages pass. Current measured hotspots remain above decomposition targets: <code>world.go</code> 8 408, <code>main.go</code> 4 632, <code>GameEngine.js</code> 5 548, and <code>UIManager.js</code> 3 622 lines.</li>
                     </ul>
                 </div>
                 <div class="patch-note-entry" data-version="0.39.3">
