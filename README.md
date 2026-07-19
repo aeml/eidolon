@@ -90,7 +90,7 @@ The most backend-relevant pattern in the repo is the split between client intent
 | Persistence | MongoDB |
 | Asset Delivery | Static client files, service worker caching |
 | Deployment | Docker, Docker Compose, Nginx, Certbot TLS scripts |
-| Browser QA | Playwright `1.61.1` with system Chrome locally and Chromium in CI |
+| Browser QA | Playwright `1.61.1`; system Chrome for character gameplay and pinned Chromium for hosted anonymous CI |
 | Validation | Jest, ESLint, Playwright, `go test`, `go build`, npm audit, GitHub Actions |
 
 ## Local Development

@@ -316,6 +316,36 @@ func TestHandleMessageQAWaypointMovesAllowlistedPlayerOutsideTownForCombat(t *te
 	t.Fatalf("expected combat waypoint success response, got %+v", msgs)
 }
 
+func TestHandleMessageQAWaypointRejectsQueuedMovementFromOldPosition(t *testing.T) {
+	allowLevelCommandTestUser(t)
+	originalWorld := world
+	defer func() { world = originalWorld }()
+	world = game.NewWorld(nil)
+
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	player.X = 21
+	player.Z = 200
+	world.AddEntity(player)
+
+	waypointPayload, _ := json.Marshal(ChatPayload{Message: "/qa-waypoint combat", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: waypointPayload})
+
+	staleMovePayload, _ := json.Marshal(MovePayload{X: 21, Y: 0, Z: 200, State: "IDLE"})
+	client.handleMessage(Message{Type: MsgMove, Payload: staleMovePayload})
+	updated := world.GetEntity(client.playerID)
+	if updated.X != 120 || updated.Z != 200 {
+		t.Fatalf("expected the waypoint handoff to reject stale movement, got (%v, %v)", updated.X, updated.Z)
+	}
+
+	updated.MoveLockUntil = time.Now().Add(-time.Second)
+	freshMovePayload, _ := json.Marshal(MovePayload{X: 121, Y: 0, Z: 200, State: "MOVING"})
+	client.handleMessage(Message{Type: MsgMove, Payload: freshMovePayload})
+	if updated.X != 121 || updated.Z != 200 {
+		t.Fatalf("expected normal movement after the handoff window, got (%v, %v)", updated.X, updated.Z)
+	}
+}
+
 func TestHandleMessageQAWaypointRejectsNonQAAccount(t *testing.T) {
 	originalWorld := world
 	originalQAUsernames := qaUsernames

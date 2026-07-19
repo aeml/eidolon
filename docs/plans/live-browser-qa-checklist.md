@@ -88,7 +88,7 @@ Automated only with `EIDOLON_E2E_FULL_GAMEPLAY=1` and an allowlisted dedicated a
 
 1. Use chat DOM input for `/level 100` only if the character is below 100.
 2. Disable Auto-Loot through the visible Settings controls so inventory growth proves a mouse-driven pickup.
-3. Submit `/qa-waypoint combat` through chat. This fixed allowlisted waypoint avoids randomized town-prop navigation and grants five minutes of bounded protection; it does not perform combat.
+3. Submit `/qa-waypoint combat` through chat. This fixed allowlisted waypoint avoids randomized town-prop navigation, grants five minutes of bounded protection, and briefly rejects stale movement queued at the old position while the authoritative state reaches the browser; it does not perform combat.
 4. Submit `/qa-loot-next` through chat so the next normal kill uses the regular loot generator without a flaky 50% miss.
 5. Use projected read-only coordinates for real mouse targeting and right-click the hostile for the primary ability.
 6. Verify ability cooldown, intermediate damage or a one-shot death, and the authoritative kill. All repeated attacks remain real mouse clicks.
@@ -149,11 +149,12 @@ Automation covers release mechanics, not the full product-quality surface. For a
 
 The production workflow performs these steps after a push to `master`:
 
-1. Run client tests/lint/audit, server tests/build, local anonymous Playwright, and the disposable full-character browser route before any deployment.
-2. Validate dedicated QA secrets and update the server allowlist from those username secrets during deployment.
-3. Deploy Pages and the Docker server.
-4. Poll cache-busted `https://eidolon.mendola.tech/release.json` and `https://eserver.mendola.tech/healthz` until both equal the workflow SHA.
-5. Dispatch the post-deploy job to the repository-scoped `eidolon-live-browser` self-hosted runner and run system Google Chrome with:
+1. Run client tests/lint/audit and server tests/build on GitHub-hosted workers, then run the anonymous surface in pinned Playwright Chromium.
+2. Dispatch the disposable full-character route to the repository-scoped `eidolon-live-browser` runner and require `/usr/bin/google-chrome` before any deployment. This push-only gate generates its own temporary account and receives no production credentials.
+3. Validate dedicated QA secrets and update the server allowlist from those username secrets during deployment.
+4. Deploy Pages and the Docker server.
+5. Poll cache-busted `https://eidolon.mendola.tech/release.json` and `https://eserver.mendola.tech/healthz` until both equal the workflow SHA.
+6. Dispatch the post-deploy job to the same runner and run system Google Chrome with:
 
 ```text
 EIDOLON_E2E_BASE_URL=https://eidolon.mendola.tech
@@ -163,7 +164,7 @@ EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome
 EIDOLON_EXPECTED_COMMIT=<pushed SHA>
 ```
 
-6. Upload the HTML report and anonymous failure screenshots/video/traces. Credentialed recordings remain off. The live runner is selected only by push-gated deploy dependencies; pull-request browser work stays on GitHub-hosted infrastructure and receives no production credentials.
+7. Upload the HTML report and anonymous failure screenshots/video/traces. Credentialed recordings remain off. Both character jobs are selected only by push-gated dependencies; pull-request browser work stays on GitHub-hosted infrastructure and receives neither runner access nor production credentials.
 
 The current runner host stores the official repository registration under `/home/aeml/.local/share/eidolon-actions-runner`. It must remain online with the `eidolon-live-browser` label; an offline runner deliberately leaves the post-deploy gate queued rather than silently skipping gameplay. After a host restart, `scripts/start-live-browser-runner.sh` starts the configured runner in the detached `eidolon-actions-runner` tmux session without reading or writing QA credentials.
 
@@ -175,7 +176,7 @@ Current local worktree evidence on July 19, 2026:
 
 - Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 82 Jest suites / 954 tests, and ESLint passed.
 - Go toolchain `1.24.5`: `go test -race ./...` and `go build -trimpath ./...` passed.
-- Google Chrome `150.0.7871.124`: anonymous smoke passed; the combined isolated character suite passed both smoke/reconnect and extended gameplay/persistence tests in 5.3 minutes.
+- Google Chrome `150.0.7871.124`: anonymous smoke passed; the combined isolated character suite passed both smoke/reconnect and extended gameplay/persistence tests in 5.7 minutes.
 - The focused portal route also passed, credential scanning passed, and no uniquely suffixed QA container, network, or image remained after cleanup.
 - This is locally browser-tested evidence only. The table below remains pending until the production SHA and persistent QA character are verified.
 

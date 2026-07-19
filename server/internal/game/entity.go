@@ -125,6 +125,7 @@ type Entity struct {
 	AbilityCooldown   time.Duration        `json:"-"`
 	Cooldowns         map[string]time.Time `json:"-"`
 	LastRespawnTime   time.Time            `json:"-"`
+	MoveLockUntil     time.Time            `json:"-"`
 	QAGuaranteedLoot  bool                 `json:"-"`
 	LastSpecialAttack time.Time            `json:"-"` // Boss AoE slam cooldown
 
@@ -802,6 +803,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		LastAbilityTime:   e.LastAbilityTime,
 		AbilityCooldown:   e.AbilityCooldown,
 		LastRespawnTime:   e.LastRespawnTime,
+		MoveLockUntil:     e.MoveLockUntil,
 		LootItem:          e.LootItem,
 		LootTime:          e.LootTime,
 		CreatedAt:         e.CreatedAt,

@@ -2322,6 +2322,9 @@ func (c *Client) handleMessage(msg Message) {
 			if time.Since(e.LastRespawnTime) < 1*time.Second {
 				return
 			}
+			if time.Now().Before(e.MoveLockUntil) {
+				return
+			}
 			if e.State == "JUMPING" {
 				return
 			}
@@ -2357,6 +2360,9 @@ func (c *Client) handleMessage(msg Message) {
 		}
 		if e := world.GetEntity(c.playerID); e != nil {
 			if time.Since(e.LastRespawnTime) < 1*time.Second {
+				return
+			}
+			if time.Now().Before(e.MoveLockUntil) {
 				return
 			}
 		}

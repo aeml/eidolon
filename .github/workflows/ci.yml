@@ -109,9 +109,6 @@ jobs:
       - name: Run anonymous real-browser smoke
         run: npm run test:e2e:anonymous
 
-      - name: Run isolated character gameplay
-        run: npm run test:e2e:isolated
-
       - name: Upload browser failure evidence
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -123,9 +120,46 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
+  predeploy-character:
+    name: Predeploy Character QA (System Chrome)
+    needs: [browser-smoke]
+    runs-on: [self-hosted, linux, x64, eidolon-live-browser]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies and verify system Chrome
+        run: |
+          npm ci
+          test -x /usr/bin/google-chrome
+          /usr/bin/google-chrome --version
+
+      - name: Run disposable full-character gameplay
+        env:
+          EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+        run: npm run test:e2e:isolated
+
+      - name: Upload predeploy character evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: predeploy-character-evidence-${{ github.sha }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
   release-inputs:
     name: Validate Production QA Inputs
-    needs: [browser-smoke]
+    needs: [predeploy-character]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
     steps:

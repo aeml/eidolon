@@ -555,6 +555,11 @@ func (w *World) SetPlayerLevel(playerID string, level int) (*Entity, bool) {
 // QAWaypointProtectionDuration bounds protection after a fixed QA teleport.
 const QAWaypointProtectionDuration = 5 * time.Minute
 
+// QAWaypointMovementLockDuration lets the authoritative teleport reach the
+// browser before a movement packet queued at the old position can overwrite
+// it. Normal input resumes as soon as this short handoff window expires.
+const QAWaypointMovementLockDuration = time.Second
+
 // MovePlayerToQAWaypoint moves an overworld player to a fixed release-QA
 // waypoint. Authorization belongs to the server command layer; keeping the
 // supported destinations fixed prevents this helper from becoming an
@@ -587,6 +592,7 @@ func (w *World) MovePlayerToQAWaypoint(playerID, waypoint string) (*Entity, bool
 	player.TargetZ = z
 	player.TargetID = ""
 	player.State = "IDLE"
+	player.MoveLockUntil = time.Now().Add(QAWaypointMovementLockDuration)
 	player.InvulnerableEndTime = time.Now().Add(QAWaypointProtectionDuration)
 	w.Grid.Update(player, oldX, oldZ)
 
@@ -7211,6 +7217,7 @@ func (w *World) GetState() map[string]*Entity {
 			LastAbilityTime:   v.LastAbilityTime,
 			AbilityCooldown:   v.AbilityCooldown,
 			LastRespawnTime:   v.LastRespawnTime,
+			MoveLockUntil:     v.MoveLockUntil,
 			LootItem:          v.LootItem,
 			LootTime:          v.LootTime,
 			CreatedAt:         v.CreatedAt,
