@@ -3,20 +3,19 @@
 This is the authoritative multiplayer server for Eidolon, written in Go.
 
 ## Current runtime notes
-- Go module version: `go 1.23`
-- Toolchain declared in `go.mod`: `go1.24.5`
+- Go module/toolchain version: `go 1.24.5`
 - Persistence: MongoDB
 - Networking: Gorilla WebSocket + protobuf state envelopes
 
 ## Prerequisites
-- Go 1.23+
+- Go 1.24.5
 - MongoDB (local or Atlas)
 
 ## Run locally without TLS
 From `server/`:
 
 ```bash
-go run main.go
+go run .
 ```
 
 Default local endpoint:
@@ -24,12 +23,17 @@ Default local endpoint:
 
 The listen address can be changed with `--addr` if needed.
 
+Readiness endpoint:
+
+- `http://localhost:8080/healthz`
+- Reports service status, Mongo readiness, build commit, and version without secrets.
+
 ## Run locally with self-signed TLS
 If you want local `wss://` for browser testing, generate a self-signed cert:
 
 ```bash
 openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
-go run main.go --cert=cert.pem --key=key.pem
+go run . --cert=cert.pem --key=key.pem
 ```
 
 Then trust the certificate in your browser before testing `wss://localhost:8080/ws`.
@@ -39,6 +43,7 @@ From `server/`:
 
 ```bash
 go test ./...
+go build ./...
 ```
 
 ## Production notes
@@ -55,8 +60,14 @@ See these docs for deployment details:
 Example Linux build:
 
 ```bash
-go build -o eidolon-server main.go
+go build -trimpath -o eidolon-server .
 ```
 
 ## Database
 The server uses MongoDB for user and character persistence.
+
+## QA-only commands
+
+`/level` is disabled for normal accounts. Set a comma-separated `EIDOLON_QA_USERNAMES` value (or `--qa-usernames`) to allow dedicated authenticated QA usernames. Do not add normal player accounts.
+
+The load-test driver generates cryptographically random, in-memory credentials by default. An explicit `--credentials-file` is read-only; credential files and legacy `bot_data.json` paths are ignored by Git.

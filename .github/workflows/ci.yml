@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
@@ -36,6 +36,9 @@ jobs:
 
       - name: Run lint
         run: npm run lint
+
+      - name: Audit production and development dependencies
+        run: npm audit --audit-level=low
 
       - name: Run tests with coverage
         run: npm test -- --coverage --coverageReporters=lcov --coverageReporters=text
@@ -58,7 +61,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
-          go-version: '1.21'
+          go-version: '1.24.5'
           cache-dependency-path: server/go.sum
 
       - name: Run Go tests with coverage
@@ -66,6 +69,10 @@ jobs:
         run: |
           go test -v -coverprofile=coverage.out -covermode=atomic ./...
           go tool cover -func=coverage.out
+
+      - name: Build server
+        working-directory: server
+        run: go build -trimpath ./...
 
       - name: Convert Go coverage to LCOV
         working-directory: server
@@ -80,10 +87,66 @@ jobs:
           path: server/coverage.lcov
           retention-days: 7
 
+  browser-smoke:
+    name: Browser Smoke (Playwright)
+    needs: [client-tests, server-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies and browser
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Run anonymous real-browser smoke
+        run: npm run test:e2e:anonymous
+
+      - name: Upload browser failure evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: predeploy-browser-evidence
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  release-inputs:
+    name: Validate Production QA Inputs
+    needs: [browser-smoke]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    steps:
+      - name: Require a dedicated primary account and consistent optional secondary account
+        env:
+          QA_USERNAME: ${{ secrets.EIDOLON_E2E_USERNAME }}
+          QA_PASSWORD: ${{ secrets.EIDOLON_E2E_PASSWORD }}
+          QA_USERNAME_SECONDARY: ${{ secrets.EIDOLON_E2E_USERNAME_SECONDARY }}
+          QA_PASSWORD_SECONDARY: ${{ secrets.EIDOLON_E2E_PASSWORD_SECONDARY }}
+        run: |
+          if [ -z "${QA_USERNAME}" ] || [ -z "${QA_PASSWORD}" ]; then
+            echo "Dedicated primary QA credentials are required for the production release gate." >&2
+            exit 1
+          fi
+          if { [ -n "${QA_USERNAME_SECONDARY}" ] && [ -z "${QA_PASSWORD_SECONDARY}" ]; } || \
+             { [ -z "${QA_USERNAME_SECONDARY}" ] && [ -n "${QA_PASSWORD_SECONDARY}" ]; }; then
+            echo "Secondary QA username/password must be supplied together." >&2
+            exit 1
+          fi
+
   # Build site with coverage reports and deploy to GitHub Pages
   deploy:
     name: Deploy to GitHub Pages
-    needs: [client-tests, server-tests]
+    needs: [client-tests, server-tests, browser-smoke, release-inputs]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
     environment:
@@ -95,6 +158,15 @@ jobs:
 
       - name: Install lcov
         run: sudo apt-get update && sudo apt-get install -y lcov
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Prepare locked browser runtime
+        run: npm ci
 
       - name: Download client coverage
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
@@ -112,8 +184,9 @@ jobs:
         run: |
           # Copy the entire game to public/ (preserves eidolon.mendola.tech)
           mkdir -p public
-          cp -r index.html assets src public/ 2>/dev/null || true
+          cp -r index.html assets src vendor public/ 2>/dev/null || true
           cp -r *.css *.js public/ 2>/dev/null || true
+          printf '{"commit":"%s","version":"Alpha 0.40.0"}\n' "${GITHUB_SHA}" > public/release.json
           
           # Create coverage directory
           mkdir -p public/coverage/client public/coverage/server
@@ -229,7 +302,7 @@ jobs:
   # Deploy server via SSH to remote host
   deploy-server:
     name: Deploy Server (SSH)
-    needs: [client-tests, server-tests]
+    needs: [client-tests, server-tests, browser-smoke, release-inputs]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
     steps:
@@ -245,8 +318,9 @@ jobs:
       - name: Deploy via SSH
         env:
           REF_NAME: ${{ github.ref_name }}
+          COMMIT_SHA: ${{ github.sha }}
         run: |
-          ssh -o BatchMode=yes aeml@ssh.mendola.tech "REF_NAME='${REF_NAME}' bash -se" <<'EOF'
+          ssh -o BatchMode=yes aeml@ssh.mendola.tech "REF_NAME='${REF_NAME}' COMMIT_SHA='${COMMIT_SHA}' bash -se" <<'EOF'
           set -euo pipefail
           cd /home/aeml/eidolon
           git fetch origin "${REF_NAME}"
@@ -260,6 +334,82 @@ jobs:
             echo "Deployed checkout does not match origin/${REF_NAME}" >&2
             exit 1
           fi
+          if [ "${ACTUAL_SHA}" != "${COMMIT_SHA}" ]; then
+            echo "Deployed checkout does not match workflow commit ${COMMIT_SHA}" >&2
+            exit 1
+          fi
           cd server
-          CLEAN_SERVER_TREE=true bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 0.40.0" bash ./deploy/deploy_linux.sh
           EOF
+
+  post-deploy-browser:
+    name: Live Release and Character QA
+    needs: [deploy, deploy-server]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies and browser
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Wait for matching live releases
+        env:
+          EXPECTED_COMMIT: ${{ github.sha }}
+        run: |
+          for attempt in $(seq 1 60); do
+            client_commit="$(curl -fsS -H 'Cache-Control: no-cache' "https://eidolon.mendola.tech/release.json?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*"commit":"\([^"]*\)".*/\1/p' || true)"
+            server_commit="$(curl -fsS -H 'Cache-Control: no-cache' "https://eserver.mendola.tech/healthz?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*"commit":"\([^"]*\)".*/\1/p' || true)"
+            if [ "${client_commit}" = "${EXPECTED_COMMIT}" ] && [ "${server_commit}" = "${EXPECTED_COMMIT}" ]; then
+              exit 0
+            fi
+            if [ "${attempt}" -eq 60 ]; then
+              echo "Live release mismatch: client=${client_commit:-unavailable} server=${server_commit:-unavailable} expected=${EXPECTED_COMMIT}" >&2
+              exit 1
+            fi
+            sleep 5
+          done
+
+      - name: Run live anonymous and character QA
+        env:
+          EIDOLON_E2E_BASE_URL: https://eidolon.mendola.tech
+          EIDOLON_E2E_WS_URL: wss://eserver.mendola.tech/ws
+          EIDOLON_E2E_HEALTH_URL: https://eserver.mendola.tech/healthz
+          EIDOLON_EXPECTED_COMMIT: ${{ github.sha }}
+          EIDOLON_E2E_USERNAME: ${{ secrets.EIDOLON_E2E_USERNAME }}
+          EIDOLON_E2E_PASSWORD: ${{ secrets.EIDOLON_E2E_PASSWORD }}
+          EIDOLON_E2E_CLASS: ${{ secrets.EIDOLON_E2E_CLASS }}
+          EIDOLON_E2E_USERNAME_SECONDARY: ${{ secrets.EIDOLON_E2E_USERNAME_SECONDARY }}
+          EIDOLON_E2E_PASSWORD_SECONDARY: ${{ secrets.EIDOLON_E2E_PASSWORD_SECONDARY }}
+          EIDOLON_E2E_CLASS_SECONDARY: ${{ secrets.EIDOLON_E2E_CLASS_SECONDARY }}
+          EIDOLON_E2E_FULL_GAMEPLAY: '1'
+        run: npm run test:e2e
+
+      - name: Sanitize live browser evidence
+        id: sanitize_evidence
+        if: ${{ always() }}
+        env:
+          EIDOLON_E2E_USERNAME: ${{ secrets.EIDOLON_E2E_USERNAME }}
+          EIDOLON_E2E_PASSWORD: ${{ secrets.EIDOLON_E2E_PASSWORD }}
+          EIDOLON_E2E_USERNAME_SECONDARY: ${{ secrets.EIDOLON_E2E_USERNAME_SECONDARY }}
+          EIDOLON_E2E_PASSWORD_SECONDARY: ${{ secrets.EIDOLON_E2E_PASSWORD_SECONDARY }}
+        run: node scripts/sanitize-playwright-artifacts.mjs
+
+      - name: Upload live browser evidence
+        if: ${{ !cancelled() && steps.sanitize_evidence.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: live-browser-evidence-${{ github.sha }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14

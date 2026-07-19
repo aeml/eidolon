@@ -46,10 +46,10 @@ func messagePayloadChat(t *testing.T, msg Message) ChatPayload {
 
 func newLevelCommandClient() *Client {
 	return &Client{
-		send:     make(chan []byte, 32),
-		username: "qa_level_test",
-		playerID: "player-qa_level_test",
-		seenIDs:  make(map[string]bool),
+		send:      make(chan []byte, 32),
+		username:  "qa_level_test",
+		playerID:  "player-qa_level_test",
+		seenIDs:   make(map[string]bool),
 		lastState: make(map[string]*EntitySnapshot),
 	}
 }
@@ -86,7 +86,15 @@ func newLevelCommandPlayer(id string) *game.Entity {
 	return p
 }
 
+func allowLevelCommandTestUser(t *testing.T) {
+	t.Helper()
+	original := qaUsernames
+	qaUsernames = parseQAUsernames("qa_level_test")
+	t.Cleanup(func() { qaUsernames = original })
+}
+
 func TestHandleMessageLevelCommandSetsPlayerLevelAndResponds(t *testing.T) {
+	allowLevelCommandTestUser(t)
 	originalWorld := world
 	defer func() { world = originalWorld }()
 	world = game.NewWorld(nil)
@@ -146,6 +154,7 @@ func TestHandleMessageLevelCommandSetsPlayerLevelAndResponds(t *testing.T) {
 }
 
 func TestHandleMessageLevelCommandRejectsInvalidInput(t *testing.T) {
+	allowLevelCommandTestUser(t)
 	originalWorld := world
 	defer func() { world = originalWorld }()
 	world = game.NewWorld(nil)
@@ -180,6 +189,36 @@ func TestHandleMessageLevelCommandRejectsInvalidInput(t *testing.T) {
 	if !found {
 		t.Fatalf("expected usage error in sent messages, got %+v", msgs)
 	}
+}
+
+func TestHandleMessageLevelCommandRejectsNonQAAccount(t *testing.T) {
+	originalWorld := world
+	originalQAUsernames := qaUsernames
+	defer func() {
+		world = originalWorld
+		qaUsernames = originalQAUsernames
+	}()
+	world = game.NewWorld(nil)
+	qaUsernames = parseQAUsernames("different_qa_account")
+
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	world.AddEntity(player)
+
+	payload, _ := json.Marshal(ChatPayload{Message: "/level 30", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+
+	if got := world.GetEntity(client.playerID).Level; got != 1 {
+		t.Fatalf("expected unauthorized command to leave level at 1, got %d", got)
+	}
+
+	msgs := drainSentMessages(client.send)
+	for _, msg := range msgs {
+		if msg.Type == MsgError && strings.Contains(messagePayloadString(t, msg), "QA command unavailable") {
+			return
+		}
+	}
+	t.Fatalf("expected QA authorization error, got %+v", msgs)
 }
 
 func TestCheckOriginAllowsKnownLocalAndProductionOrigins(t *testing.T) {

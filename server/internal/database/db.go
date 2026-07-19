@@ -178,6 +178,14 @@ func New(uri string) (*DB, error) {
 	}, nil
 }
 
+// Ping verifies that the database backing the authoritative game state is ready.
+func (db *DB) Ping(ctx context.Context) error {
+	if db == nil || db.client == nil {
+		return errors.New("database client is not initialized")
+	}
+	return db.client.Ping(ctx, nil)
+}
+
 func (db *DB) CreateUser(username, email, password string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {

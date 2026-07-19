@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	crand "crypto/rand"
 	"encoding/hex"
 	"encoding/json"
@@ -60,6 +61,13 @@ var logHTTPErrors = flag.Bool("log-http-errors", false, "Log noisy HTTP/TLS hand
 var suspiciousStdout = flag.Bool("suspicious-stdout", true, "Print suspicious/non-client connections to stdout")
 var suspiciousCooldown = flag.Duration("suspicious-cooldown", 30*time.Second, "Minimum time between suspicious logs per IP")
 var suspiciousLogFilePath = flag.String("suspicious-log-file", "logs/junk.log", "Path to log suspicious/non-client connections (empty disables file logging)")
+var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAMES"), "Comma-separated usernames allowed to use QA-only commands")
+
+var (
+	buildCommit  = "development"
+	buildVersion = "Alpha 0.40.0"
+	qaUsernames  = map[string]struct{}{}
+)
 
 var stateProtoMagic = []byte{'E', 'D', 'P', 'B'}
 
@@ -87,6 +95,64 @@ func isAllowedWebsocketOrigin(origin string) bool {
 	}
 	_, ok := allowedWebsocketOriginHosts[hostname]
 	return ok
+}
+
+func parseQAUsernames(raw string) map[string]struct{} {
+	parsed := make(map[string]struct{})
+	for _, username := range strings.Split(raw, ",") {
+		username = strings.ToLower(strings.TrimSpace(username))
+		if username != "" {
+			parsed[username] = struct{}{}
+		}
+	}
+	return parsed
+}
+
+func isQAUsername(username string) bool {
+	_, ok := qaUsernames[strings.ToLower(strings.TrimSpace(username))]
+	return ok
+}
+
+type healthResponse struct {
+	Status   string `json:"status"`
+	Database string `json:"database"`
+	Commit   string `json:"commit"`
+	Version  string `json:"version"`
+}
+
+func healthHandler(pingDatabase func(context.Context) error) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+			w.Header().Set("Allow", "GET, HEAD")
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		response := healthResponse{
+			Status:   "ok",
+			Database: "ready",
+			Commit:   buildCommit,
+			Version:  buildVersion,
+		}
+		statusCode := http.StatusOK
+		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
+		defer cancel()
+		if pingDatabase == nil || pingDatabase(ctx) != nil {
+			response.Status = "unavailable"
+			response.Database = "unavailable"
+			statusCode = http.StatusServiceUnavailable
+		}
+
+		w.Header().Set("Cache-Control", "no-store")
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(statusCode)
+		if r.Method == http.MethodHead {
+			return
+		}
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			log.Printf("health response write failed: %v", err)
+		}
+	}
 }
 
 var upgrader = websocket.Upgrader{
@@ -771,6 +837,7 @@ func setupLogging() ([]io.Closer, error) {
 
 func main() {
 	flag.Parse()
+	qaUsernames = parseQAUsernames(*qaUsernamesFlag)
 	closers, err := setupLogging()
 	if err != nil {
 		// Logging isn't ready; fall back to stderr.
@@ -1185,6 +1252,12 @@ func main() {
 	}()
 
 	mux := http.NewServeMux()
+	mux.HandleFunc("/healthz", healthHandler(func(ctx context.Context) error {
+		if db == nil {
+			return fmt.Errorf("database is not initialized")
+		}
+		return db.Ping(ctx)
+	}))
 	mux.HandleFunc("/ws", serveWs)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		// Anything that isn't the game's websocket endpoint is almost always noise on a public IP.
@@ -2319,6 +2392,7 @@ func (c *Client) handleMessage(msg Message) {
 			}
 			b, _ := json.Marshal(msg)
 			c.sendSafe(b)
+			savePlayer(c)
 		} else if reason == "inventory_full" {
 			c.sendError("Inventory full")
 		}
@@ -3135,6 +3209,10 @@ func (c *Client) handleChatCommand(raw string) bool {
 
 	switch fields[0] {
 	case "/level":
+		if !isQAUsername(c.username) {
+			c.sendError("QA command unavailable for this account.")
+			return true
+		}
 		if len(fields) != 2 {
 			c.sendError("Usage: /level <1-100>")
 			return true
@@ -4325,7 +4403,7 @@ func saveAllPlayers() {
 }
 
 func savePlayer(client *Client) {
-	if client.playerID == "" || client.username == "" {
+	if db == nil || world == nil || client == nil || client.playerID == "" || client.username == "" {
 		return
 	}
 

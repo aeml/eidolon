@@ -20,6 +20,7 @@ Edit `.env` and preserve any existing non-Mongo values. Required keys:
 - `MONGO_INITDB_ROOT_USERNAME`
 - `MONGO_INITDB_ROOT_PASSWORD`
 - `MONGO_URI` (must use `mongo:27017` and `authSource=admin`)
+- `EIDOLON_QA_USERNAMES` (optional; dedicated QA usernames only)
 
 Recommended example URI:
 
@@ -41,7 +42,7 @@ docker compose build api
 docker compose up -d
 docker compose ps
 docker compose logs --tail=100 api
-curl -sS -o /dev/null -w "HTTP %{http_code}\n" http://127.0.0.1:${APP_HOST_PORT:-18082}/
+curl -fsS http://127.0.0.1:${APP_HOST_PORT:-18082}/healthz
 ```
 
 ## 3) Restore Mongo data from existing archive
@@ -94,8 +95,10 @@ This runs:
 docker compose ps
 docker compose logs --tail=200 api
 ss -ltnp | grep -E ':(80|443|18082)\s'
-curl -I https://<your-domain>/
+curl -fsS https://<your-domain>/healthz
 ```
+
+The deploy script injects `EIDOLON_BUILD_COMMIT` into the binary and fails unless `/healthz` reports that exact commit with `database: ready`. A root-path 404 is not a readiness signal.
 
 Optional reboot resilience check:
 

@@ -14,6 +14,12 @@ if git rev-parse --show-toplevel >/dev/null 2>&1; then
   echo "Current server tree from HEAD"
 fi
 
+if [ -z "${EIDOLON_BUILD_COMMIT:-}" ] && [ -n "${REPO_ROOT:-}" ]; then
+  EIDOLON_BUILD_COMMIT="$(git -C "${REPO_ROOT}" rev-parse HEAD)"
+fi
+EIDOLON_BUILD_VERSION="${EIDOLON_BUILD_VERSION:-Alpha 0.40.0}"
+export EIDOLON_BUILD_COMMIT EIDOLON_BUILD_VERSION
+
 if ! command -v docker >/dev/null 2>&1; then
   echo "docker not found" >&2
   exit 1
@@ -80,7 +86,21 @@ if docker compose logs --tail=200 api | grep -Ei "mongo|auth|connect|failed" >/d
 fi
 
 HOST_PORT="${APP_HOST_PORT:-18082}"
-echo "Checking local upstream endpoint on http://127.0.0.1:${HOST_PORT}/ ..."
-curl -sS -o /dev/null -w "HTTP %{http_code}\n" "http://127.0.0.1:${HOST_PORT}/"
+HEALTH_URL="http://127.0.0.1:${HOST_PORT}/healthz"
+echo "Waiting for healthy release ${EIDOLON_BUILD_COMMIT} at ${HEALTH_URL} ..."
+health_json=""
+for attempt in $(seq 1 30); do
+  if health_json="$(curl -fsS "${HEALTH_URL}" 2>/dev/null)" && \
+     printf '%s' "${health_json}" | grep -Fq "\"commit\":\"${EIDOLON_BUILD_COMMIT}\"" && \
+     printf '%s' "${health_json}" | grep -Fq '"database":"ready"'; then
+    break
+  fi
+  if [ "${attempt}" -eq 30 ]; then
+    echo "Server health/release verification failed: ${health_json}" >&2
+    exit 1
+  fi
+  sleep 2
+done
+echo "Verified server health: ${health_json}"
 
-echo "Deployment baseline complete. Continue with nginx + certbot setup next."
+echo "Deployment complete. Server release identity and database readiness verified."

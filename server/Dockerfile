@@ -1,4 +1,8 @@
-FROM golang:1.24-alpine AS builder
+ARG GO_VERSION=1.24.5
+FROM golang:${GO_VERSION}-alpine AS builder
+
+ARG BUILD_COMMIT=development
+ARG BUILD_VERSION="Alpha 0.40.0"
 
 WORKDIR /src
 
@@ -9,7 +13,9 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o /out/eidolon-server .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath \
+    -ldflags="-s -w -X 'main.buildCommit=${BUILD_COMMIT}' -X 'main.buildVersion=${BUILD_VERSION}'" \
+    -o /out/eidolon-server .
 RUN printf '[]\n' > /out/bug_reports.json
 
 FROM gcr.io/distroless/base-debian12:nonroot

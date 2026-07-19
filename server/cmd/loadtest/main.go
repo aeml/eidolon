@@ -3,7 +3,9 @@ package main
 import (
 	"bytes"
 	"compress/gzip"
+	crand "crypto/rand"
 	"crypto/tls"
+	"encoding/hex"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -21,11 +23,12 @@ import (
 )
 
 var (
-	addr     = flag.String("addr", "localhost:8080", "http service address")
-	scheme   = flag.String("scheme", "wss", "websocket scheme (ws or wss)")
-	count    = flag.Int("n", 10, "number of bots")
-	townMode = flag.Bool("town", false, "bots only roam in town")
-	insecure = flag.Bool("insecure-skip-verify", false, "skip TLS certificate verification for local/self-signed testing")
+	addr            = flag.String("addr", "localhost:8080", "http service address")
+	scheme          = flag.String("scheme", "wss", "websocket scheme (ws or wss)")
+	count           = flag.Int("n", 10, "number of bots")
+	townMode        = flag.Bool("town", false, "bots only roam in town")
+	insecure        = flag.Bool("insecure-skip-verify", false, "skip TLS certificate verification for local/self-signed testing")
+	credentialsFile = flag.String("credentials-file", "", "optional read-only JSON credential file; generated credentials otherwise remain in memory")
 )
 
 type Message struct {
@@ -58,23 +61,49 @@ type BotCredentials struct {
 	Password string `json:"password"`
 }
 
-func loadCredentials() []BotCredentials {
-	file, err := os.ReadFile("bot_data.json")
+func loadCredentials(path string) ([]BotCredentials, error) {
+	if path == "" {
+		return []BotCredentials{}, nil
+	}
+	file, err := os.ReadFile(path)
 	if err != nil {
-		return []BotCredentials{}
+		return nil, fmt.Errorf("read credentials file: %w", err)
 	}
 	var creds []BotCredentials
-	json.Unmarshal(file, &creds)
-	return creds
+	if err := json.Unmarshal(file, &creds); err != nil {
+		return nil, fmt.Errorf("decode credentials file: %w", err)
+	}
+	return creds, nil
 }
 
-func saveCredentials(creds []BotCredentials) {
-	data, _ := json.MarshalIndent(creds, "", "  ")
-	os.WriteFile("bot_data.json", data, 0644)
+func randomHex(byteCount int) (string, error) {
+	raw := make([]byte, byteCount)
+	if _, err := io.ReadFull(crand.Reader, raw); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(raw), nil
+}
+
+func generateDisposableCredentials() (BotCredentials, error) {
+	usernameToken, err := randomHex(8)
+	if err != nil {
+		return BotCredentials{}, fmt.Errorf("generate username: %w", err)
+	}
+	password, err := randomHex(24)
+	if err != nil {
+		return BotCredentials{}, fmt.Errorf("generate password: %w", err)
+	}
+	return BotCredentials{
+		Username: "loadtest-" + usernameToken,
+		Password: password,
+	}, nil
 }
 
 func main() {
 	flag.Parse()
+	if *count < 1 {
+		log.Fatal("-n must be at least 1")
+	}
 	rand.Seed(time.Now().UnixNano())
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
@@ -82,18 +111,21 @@ func main() {
 	u := url.URL{Scheme: *scheme, Host: *addr, Path: "/ws"}
 	log.Printf("Connecting to %s with %d bots...", u.String(), *count)
 
-	// Load or Generate Credentials
-	creds := loadCredentials()
+	// Credential files are opt-in and read-only. Any missing accounts use
+	// cryptographically random, process-local credentials that are never saved.
+	creds, err := loadCredentials(*credentialsFile)
+	if err != nil {
+		log.Fatal(err)
+	}
 	if len(creds) < *count {
-		log.Printf("Generating %d new bot accounts...", *count-len(creds))
+		log.Printf("Generating %d disposable in-memory bot accounts...", *count-len(creds))
 		for len(creds) < *count {
-			name := generateRandomName()
-			creds = append(creds, BotCredentials{
-				Username: name,
-				Password: fmt.Sprintf("bot-pass-%06d", len(creds)+1),
-			})
+			credential, err := generateDisposableCredentials()
+			if err != nil {
+				log.Fatal(err)
+			}
+			creds = append(creds, credential)
 		}
-		saveCredentials(creds)
 	}
 
 	var wg sync.WaitGroup
@@ -550,42 +582,4 @@ func send(c *websocket.Conn, msgType string, payload interface{}) error {
 	writeMu.Lock()
 	defer writeMu.Unlock()
 	return c.WriteJSON(msg)
-}
-
-func generateRandomName() string {
-	names := []string{
-		"AmberVale",
-		"AshHarbor",
-		"BramForge",
-		"CinderFox",
-		"CorinVale",
-		"DawnSeeker",
-		"EmberRune",
-		"FrostGlen",
-		"GaleWalker",
-		"GoldenPine",
-		"HarborLight",
-		"HollowStar",
-		"IronWillow",
-		"JuniperSky",
-		"KestrelStone",
-		"LarkSpear",
-		"MiraThorne",
-		"Northwatch",
-		"OakSentinel",
-		"RiverAsh",
-		"RowanField",
-		"SilverBrook",
-		"StoneLantern",
-		"SunwardPath",
-		"ThornKeep",
-		"ValeRunner",
-		"VerdantEcho",
-		"WestGrove",
-		"WillowHart",
-		"WinterMark",
-	}
-
-	name := names[rand.Intn(len(names))]
-	return fmt.Sprintf("%s%d", name, rand.Intn(100000))
 }

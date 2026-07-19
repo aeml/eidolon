@@ -1,8 +1,6 @@
 module eidolon-server
 
-go 1.23
-
-toolchain go1.24.5
+go 1.24.5
 
 require (
 	github.com/google/uuid v1.6.0

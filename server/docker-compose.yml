@@ -26,6 +26,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        GO_VERSION: 1.24.5
+        BUILD_COMMIT: ${EIDOLON_BUILD_COMMIT:-development}
+        BUILD_VERSION: ${EIDOLON_BUILD_VERSION:-Alpha 0.40.0}
     restart: unless-stopped
     env_file:
       - .env
@@ -40,6 +44,7 @@ services:
       - --log-http-errors=${LOG_HTTP_ERRORS:-false}
       - --suspicious-log-file=${SUSPICIOUS_LOG_FILE:-logs/junk.log}
       - --suspicious-stdout=${SUSPICIOUS_STDOUT:-false}
+      - --qa-usernames=${EIDOLON_QA_USERNAMES:-}
     ports:
       - 127.0.0.1:${APP_HOST_PORT:-18082}:8080
     volumes:
