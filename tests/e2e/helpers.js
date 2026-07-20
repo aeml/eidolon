@@ -347,22 +347,24 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
             }, { timeout: options.timeout || 1_500 }).toBeGreaterThan(options.minimumDistance || 1);
             return readPlayerState(page);
         } catch {
-            // Jump is a real desktop input path and lets the character clear
-            // small town props or fence edges that block click-to-move.
-            await page.keyboard.down('Control');
-            try {
-                await page.mouse.click(target.x, target.y);
-            } finally {
-                await page.keyboard.up('Control');
-            }
-            try {
-                await expect.poll(async () => {
-                    const after = await readPlayerState(page);
-                    return Math.hypot(after.x - before.x, after.z - before.z);
-                }, { timeout: 2_500 }).toBeGreaterThan(options.minimumDistance || 1);
-                return readPlayerState(page);
-            } catch {
-                // Try a nearby ground vector.
+            if (options.allowJumpFallback !== false) {
+                // Jump is a real desktop input path and lets the character clear
+                // small town props or fence edges that block click-to-move.
+                await page.keyboard.down('Control');
+                try {
+                    await page.mouse.click(target.x, target.y);
+                } finally {
+                    await page.keyboard.up('Control');
+                }
+                try {
+                    await expect.poll(async () => {
+                        const after = await readPlayerState(page);
+                        return Math.hypot(after.x - before.x, after.z - before.z);
+                    }, { timeout: 2_500 }).toBeGreaterThan(options.minimumDistance || 1);
+                    return readPlayerState(page);
+                } catch {
+                    // Try a nearby ground vector.
+                }
             }
         }
     }

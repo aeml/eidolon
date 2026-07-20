@@ -150,6 +150,10 @@ async function sampleRemoteMovement(page, username, durationMs = 4_000) {
     return page.evaluate(({ remoteUsername, duration }) => new Promise((resolve) => {
         const frames = [];
         const startedAt = performance.now();
+        const initialEntity = [...(window.game?.remotePlayers?.values?.() || [])]
+            .find((candidate) => candidate?.name === remoteUsername);
+        const initialBuffer = initialEntity?.remoteTransformBuffer || null;
+        const initialMetrics = initialBuffer?.getMetrics?.() || null;
         const capture = (now) => {
             const game = window.game;
             const entity = [...(game?.remotePlayers?.values?.() || [])]
@@ -161,14 +165,23 @@ async function sampleRemoteMovement(page, username, durationMs = 4_000) {
                     z: entity.position.z,
                     renderX: entity.mesh.position.x,
                     renderZ: entity.mesh.position.z,
+                    visualOffsetX: entity.visualOffset?.x || 0,
+                    visualOffsetZ: entity.visualOffset?.z || 0,
                     state: entity.state,
                     animation: entity.currentAnimationName || null
                 });
             }
             if (now - startedAt >= duration) {
+                const metrics = entity?.remoteTransformBuffer?.getMetrics?.() || null;
                 resolve({
                     frames,
-                    metrics: entity?.remoteTransformBuffer?.getMetrics?.() || null
+                    metrics,
+                    sameBuffer: Boolean(initialBuffer && entity?.remoteTransformBuffer === initialBuffer),
+                    metricDelta: initialMetrics && metrics ? {
+                        accepted: metrics.accepted - initialMetrics.accepted,
+                        interpolated: metrics.interpolated - initialMetrics.interpolated,
+                        extrapolated: metrics.extrapolated - initialMetrics.extrapolated
+                    } : null
                 });
                 return;
             }
@@ -207,7 +220,10 @@ function analyzeRemoteMovement(frames) {
         previousProgress = progress;
         maxRenderLogicalGap = Math.max(
             maxRenderLogicalGap,
-            Math.hypot(frame.renderX - frame.x, frame.renderZ - frame.z)
+            Math.hypot(
+                frame.renderX - (frame.x + frame.visualOffsetX),
+                frame.renderZ - (frame.z + frame.visualOffsetZ)
+            )
         );
         uniqueRenderPositions.add(`${frame.renderX.toFixed(3)},${frame.renderZ.toFixed(3)}`);
     }
@@ -666,7 +682,7 @@ test.describe('two-account multiplayer', () => {
             const beforeMovement = await remoteSnapshot(secondPage, primary.username);
             const remoteMovementPromise = sampleRemoteMovement(secondPage, primary.username);
             await firstPage.bringToFront();
-            await moveByGroundClick(firstPage, 20, 0);
+            await moveByGroundClick(firstPage, 20, 0, { allowJumpFallback: false });
 
             await expect.poll(async () => {
                 const after = await remoteSnapshot(secondPage, primary.username);
@@ -676,7 +692,7 @@ test.describe('two-account multiplayer', () => {
             const remoteMovementAnalysis = analyzeRemoteMovement(remoteMovement.frames);
             expect(remoteMovementAnalysis.largestBacktrack).toBeGreaterThanOrEqual(-0.35);
             expect(remoteMovementAnalysis.largestStep).toBeLessThan(3);
-            expect(remoteMovementAnalysis.maxRenderLogicalGap).toBeLessThan(2);
+            expect(remoteMovementAnalysis.maxRenderLogicalGap).toBeLessThan(0.75);
             expect(remoteMovementAnalysis.uniqueRenderPositions).toBeGreaterThan(4);
             expect(remoteMovement.metrics).toEqual(expect.objectContaining({
                 samples: expect.any(Number),
@@ -684,8 +700,9 @@ test.describe('two-account multiplayer', () => {
                 interpolated: expect.any(Number)
             }));
             expect(remoteMovement.metrics.samples).toBeLessThanOrEqual(32);
-            expect(remoteMovement.metrics.accepted).toBeGreaterThan(2);
-            expect(remoteMovement.metrics.interpolated + remoteMovement.metrics.extrapolated).toBeGreaterThan(0);
+            expect(remoteMovement.sameBuffer).toBe(true);
+            expect(remoteMovement.metricDelta.accepted).toBeGreaterThan(2);
+            expect(remoteMovement.metricDelta.interpolated + remoteMovement.metricDelta.extrapolated).toBeGreaterThan(0);
             phase('verified remote movement');
 
             const gameCanvas = firstPage.locator('body > canvas').last();
