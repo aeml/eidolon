@@ -1,6 +1,6 @@
 # Eidolon Live Browser QA Checklist
 
-Last refreshed: July 19, 2026
+Last refreshed: July 20, 2026
 
 Purpose: provide one durable release gate from local build through deployed real-character verification. This checklist consolidates the useful live portions of the dungeon, first-hour, retention, and repro workflows without treating the deterministic repro sandbox as proof of networked gameplay.
 
@@ -87,9 +87,9 @@ Automated when primary credentials exist:
 Automated only with `EIDOLON_E2E_FULL_GAMEPLAY=1` and an allowlisted dedicated account:
 
 1. Use chat DOM input for `/level 100` only if the character is below 100.
-2. Disable Auto-Loot through the visible Settings controls so inventory growth proves a mouse-driven pickup.
+2. Select Low graphics and disable Auto-Loot through the visible Settings controls so the route proves both real UI configuration and mouse-driven pickup.
 3. Submit `/qa-waypoint combat` through chat. This fixed allowlisted waypoint avoids randomized town-prop navigation, grants five minutes of bounded protection, and briefly rejects stale movement queued at the old position while the authoritative state reaches the browser; it does not perform combat.
-4. Submit `/qa-loot-next` through chat so the next normal kill uses the regular loot generator without a flaky 50% miss.
+4. Submit `/qa-loot-next` through chat so the next accepted basic attack kills its normal-enemy target and the regular server-owned drop path guarantees equipment without relying on random damage or a 50% drop chance.
 5. Use projected read-only coordinates for real mouse targeting and right-click the hostile for the primary ability.
 6. Verify ability cooldown, intermediate damage or a one-shot death, and the authoritative kill. All repeated attacks remain real mouse clicks.
 7. Approach and click the replicated loot with the real mouse. If the killing click also acquires the newly spawned overlapping loot, accept only an authoritative inventory increase while Auto-Loot is explicitly off.
@@ -175,27 +175,27 @@ The current runner host stores the official repository registration under `/home
 
 Fill this in after the live run; do not pre-check it based on local results.
 
-Current local worktree evidence on July 19, 2026:
+Current release evidence on July 20, 2026:
 
-- Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 83 Jest suites / 959 tests, and ESLint passed.
+- Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 83 Jest suites / 965 tests, and ESLint passed.
 - Go toolchain `1.24.5`: `go test -race ./...` and `go build -trimpath ./...` passed.
-- Google Chrome `150.0.7871.124`: anonymous smoke passed; the combined isolated character suite passed both smoke/reconnect and extended gameplay/persistence tests in 5.7 minutes.
+- Google Chrome `150.0.7871.124`: anonymous smoke passed; the combined isolated character suite passed both smoke/reconnect and extended gameplay/persistence tests with a hardware AMD Vulkan renderer in 1.2 minutes.
 - The focused portal route also passed, credential scanning passed, and no uniquely suffixed QA container, network, or image remained after cleanup.
-- This is locally browser-tested evidence only. The table below remains pending until the production SHA and persistent QA character are verified.
+- The isolated route is locally browser-tested evidence. The matching live evidence for the released code SHA is recorded below.
 
 | Evidence | Result |
 |---|---|
-| Pushed commit | Pending |
-| Client reported commit | Pending |
-| Server reported commit | Pending |
-| GitHub Actions run | Pending |
-| Browser/version | Pending |
-| Live anonymous route | Pending |
-| Live primary character route | Pending |
-| Live extended gameplay route | Pending |
-| Live secondary multiplayer route | Not required unless credentials supplied |
-| Failure artifacts/issues | Pending |
-| Final worktree/origin state | Pending |
+| Pushed commit | `634280a551e40eb3016b5b50991178e1d04c75ac` on `master` |
+| Client reported commit | `634280a551e40eb3016b5b50991178e1d04c75ac` |
+| Server reported commit | `634280a551e40eb3016b5b50991178e1d04c75ac`; status `ok`, database `ready` |
+| GitHub Actions run | [CI run 29708438440](https://github.com/aeml/eidolon/actions/runs/29708438440), passed |
+| Browser/version | Google Chrome `150.0.7871.124`, hardware AMD Vulkan/RADV renderer |
+| Live anonymous route | Passed against the matching production client/server SHA |
+| Live primary character route | Passed movement, menu hotkeys, server-originated disconnect, session resume, and identity preservation |
+| Live extended gameplay route | Passed visible Low graphics/Auto-Loot settings, ability and basic-attack combat, authoritative kill/drop/pickup/equip, dungeon entry/exit, reconnect, and fresh-login persistence |
+| Live secondary multiplayer route | Passed presence, party invite/accept, shared party state, remote movement/jump/combat presentation, position convergence, and cleanup |
+| Failure artifacts/issues | No product failure in the final same-SHA run; sanitized evidence upload passed. A GitHub Actions outage and an infrastructure-only Docker proxy denial delayed the successful predeploy rerun. |
+| Final worktree/origin state | Evidence changes committed directly to `master`; clean `HEAD == origin/master` verified at handoff |
 
 ## Failure policy
 

@@ -186,7 +186,7 @@ Notes:
 - Client identity: `https://eidolon.mendola.tech/release.json`
 - Server readiness and identity: `https://eserver.mendola.tech/healthz`
 - Both endpoints report the deployed Git commit. The deployment workflow polls until they match the pushed SHA, then runs the live Playwright suite.
-- `/level`, `/qa-waypoint <combat|verdant>`, and `/qa-loot-next` are release-QA commands. They are disabled unless the authenticated username appears in the server's `EIDOLON_QA_USERNAMES` allowlist. Waypoints are fixed, grant a bounded five-minute protection window, and cannot teleport into an active dungeon; the loot command affects only the next normal enemy kill.
+- `/level`, `/qa-waypoint <combat|verdant>`, and `/qa-loot-next` are release-QA commands. They are disabled unless the authenticated username appears in the server's `EIDOLON_QA_USERNAMES` allowlist. Waypoints are fixed, grant a bounded five-minute protection window, and cannot teleport into an active dungeon; the loot command makes the next accepted basic attack kill its normal-enemy target and guarantees that kill's regular loot path yields equipment.
 
 ## Project Status
 
@@ -196,21 +196,21 @@ Notes:
 - Current engineering emphasis: reducing monolith hotspots in `server/internal/game/world.go`, `server/main.go`, `src/core/GameEngine.js`, and `src/ui/UIManager.js`
 - Next backend-facing hardening themes in the roadmap: persistence, protocol safety, performance, multi-client coverage, and soak validation
 
-Verification state as of July 19, 2026:
+Verification state as of July 20, 2026:
 
 - Implemented and unit-tested: locked/self-hosted browser runtimes, QA command authorization, disposable load-test credentials, health/release identity, and deployment SHA gates.
-- Locally browser-tested: anonymous start screen, Patch Notes/Escape, vendored asset load, console/page/request failures, production WebSocket connectivity, and a disposable full-character route covering movement, menus, combat/abilities, kill/loot/inventory, dungeon entry/exit, persistence, and reconnect in real system Chrome.
-- Implemented but production-credential-gated: the same persistent-character route against the deployed game, plus two-client party/presence/action convergence when secondary credentials are supplied.
-- Live production verification: only recorded after the pushed SHA is deployed and the dedicated QA route completes; see `docs/plans/live-browser-qa-checklist.md`.
+- Locally browser-tested: anonymous start screen, Patch Notes/Escape, vendored asset load, console/page/request failures, production WebSocket connectivity, and a disposable full-character route covering visible Low-graphics selection, movement, menus, combat/abilities, kill/loot/inventory, dungeon entry/exit, persistence, and reconnect in hardware-accelerated system Chrome.
+- Live production-tested: deployed SHA `634280a` passed the anonymous surface, persistent-character movement/menus/reconnect, extended combat/loot/dungeon/persistence route, and two-client party/presence/movement/jump/combat convergence in hardware-accelerated system Chrome.
+- The full evidence record and workflow link are retained in `docs/plans/live-browser-qa-checklist.md`.
 
 Current measured hotspots (physical lines, `wc -l`):
 
 | File | LOC |
 |---|---:|
-| `server/internal/game/world.go` | 8,466 |
-| `server/main.go` | 4,710 |
-| `src/core/GameEngine.js` | 5,548 |
-| `src/ui/UIManager.js` | 3,622 |
+| `server/internal/game/world.go` | 8,481 |
+| `server/main.go` | 4,744 |
+| `src/core/GameEngine.js` | 5,526 |
+| `src/ui/UIManager.js` | 3,634 |
 
 These measurements show that the `0.40` decomposition target is still open; release-confidence work does not claim the monolith reduction is complete.
 

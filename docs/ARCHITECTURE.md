@@ -1,6 +1,6 @@
 # Eidolon Architecture
 
-Last refreshed: July 19, 2026
+Last refreshed: July 20, 2026
 
 This document describes the current runtime and release architecture. Per-patch history belongs in the in-game Patch Notes; roadmap intentions belong in `ROADMAP.md` and `docs/plans/`.
 
@@ -46,6 +46,8 @@ The wire format is intentionally mixed:
 - Binary state replication uses an `EDPB` header, a wire-version byte, and protobuf `StateEnvelope` full/delta payloads.
 - `NetworkManager` decodes state and manages reconnect with a server-issued resume token.
 
+Both ends protect authoritative progress when traffic spikes. The server gives errors, authentication/session control, inventory confirmations, party/social changes, and other lossless control messages a priority path ahead of replaceable state traffic. The browser bounds its receive backlog, compacts superseded full/delta state into the newest canonical snapshot, retains a small recent window of transient combat/telegraph events, and always applies the newest state before those effects. Loot presentation waits for server inventory state rather than creating optimistic client inventory.
+
 ## Browser dependency delivery
 
 The client is not bundled. `npm ci` runs `scripts/prepare-client.mjs`, which copies the exact locked Three.js and protobuf browser runtimes into ignored `vendor/`. `index.html` imports those local files. The Pages job repeats that deterministic preparation before publishing.
@@ -76,7 +78,7 @@ This removes runtime reliance on the former protobuf CDN script and makes the de
 - `internal/game/party.go`, `social.go`, and dungeon-focused files: partially extracted domain behavior.
 - `internal/database`: Mongo collections and persistence operations.
 
-`/level`, the fixed `/qa-waypoint <combat|verdant>` destinations, `/qa-loot-next`, and `/qa-disconnect` are not normal gameplay capabilities. The server accepts them only when the authenticated username is in the explicit `EIDOLON_QA_USERNAMES` allowlist. The waypoint helper cannot accept arbitrary coordinates or operate inside a dungeon, its protection expires after five minutes, and a one-second authoritative handoff rejects movement packets queued at the pre-waypoint position. The loot flag is server-only and consumed synchronously by the next eligible enemy kill. The disconnect command schedules a server-originated WebSocket close so the browser can exercise session resume without proxying the production state stream or mutating page code.
+`/level`, the fixed `/qa-waypoint <combat|verdant>` destinations, `/qa-loot-next`, and `/qa-disconnect` are not normal gameplay capabilities. The server accepts them only when the authenticated username is in the explicit `EIDOLON_QA_USERNAMES` allowlist. The waypoint helper cannot accept arbitrary coordinates or operate inside a dungeon, its protection expires after five minutes, and a one-second authoritative handoff rejects movement packets queued at the pre-waypoint position. The loot flag is server-only, consumed by the next accepted basic attack on a normal enemy, makes that attack lethal, and guarantees an equipment result through the regular server-owned drop path. The disconnect command schedules a server-originated WebSocket close so the browser can exercise session resume without proxying the production state stream or mutating page code.
 
 ## Persistence and reconnect
 
@@ -106,19 +108,19 @@ Credentialed traces, screenshots, video, and Playwright's input-valued failure s
 
 ## Measured hotspots
 
-Physical lines measured with `wc -l` on July 19, 2026:
+Physical lines measured with `wc -l` on July 20, 2026:
 
 | File | LOC |
 |---|---:|
-| `server/internal/game/world.go` | 8,473 |
-| `server/main.go` | 4,716 |
-| `src/core/GameEngine.js` | 5,548 |
-| `src/ui/UIManager.js` | 3,622 |
-| `src/core/NetworkManager.js` | 329 |
+| `server/internal/game/world.go` | 8,481 |
+| `server/main.go` | 4,744 |
+| `src/core/GameEngine.js` | 5,526 |
+| `src/ui/UIManager.js` | 3,634 |
+| `src/core/NetworkManager.js` | 445 |
 | `src/core/SocialPresenceController.js` | 108 |
 | `src/ui/SocialUI.js` | 678 |
 
-Totals: 40,677 JavaScript LOC under `src/`, 31,755 Go LOC under `server/`, 26,241 JavaScript test LOC under `tests/`, and 8,368 Go test LOC. Generated protobuf code and assets are included where those directory totals naturally include them; the hotspot table is the useful refactor baseline.
+Totals: 40,767 JavaScript LOC under `src/`, 31,898 Go LOC under `server/`, 26,413 JavaScript test LOC under `tests/`, and 8,472 Go test LOC. Generated protobuf code and assets are included where those directory totals naturally include them; the hotspot table is the useful refactor baseline.
 
 The `0.40`–`0.43` decomposition gates are therefore still open. Release-confidence work should not be confused with completion of the monolith decomposition.
 

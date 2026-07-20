@@ -1,6 +1,6 @@
 # Eidolon Engineering Roadmap
 
-Last refreshed: July 19, 2026
+Last refreshed: July 20, 2026
 
 This file is a short pointer. The engineering planning that used to live here now lives in two documents that are kept current:
 
