@@ -171,6 +171,66 @@ async function castAndObserveRemote(sourcePage, observerPage, sourceUsername, sk
     return snapshot;
 }
 
+async function attackAndObserveRemote(sourcePage, observerPage, sourceUsername, initialHostile) {
+    let hostile = initialHostile;
+    let lastDiagnostic = null;
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+        if (attempt > 0) {
+            await sourcePage.waitForTimeout(1_200);
+            await useCombatQAWaypoint(sourcePage);
+            hostile = await findOverworldTarget(sourcePage);
+        }
+
+        let projected = await projectEntity(sourcePage, hostile.id);
+        if (!projected?.visible) {
+            hostile = await findOverworldTarget(sourcePage);
+            projected = await projectEntity(sourcePage, hostile.id);
+        }
+        if (!projected?.visible) continue;
+
+        await sourcePage.bringToFront();
+        await sourcePage.mouse.move(projected.x, projected.y);
+        await sourcePage.waitForTimeout(50);
+        await sourcePage.mouse.click(projected.x, projected.y);
+        try {
+            await expect.poll(async () => {
+                const remote = await remotePlayerSnapshot(observerPage, sourceUsername);
+                return Boolean(
+                    remote?.state === 'ATTACKING' ||
+                    remote?.currentAnimation === 'Attack'
+                );
+            }, {
+                message: 'the observer must render the real-input basic attack',
+                timeout: 8_000,
+                intervals: [25, 50, 100, 250]
+            }).toBe(true);
+            return hostile;
+        } catch {
+            const [local, remote] = await Promise.all([
+                sourcePage.evaluate((targetId) => {
+                    const game = window.game;
+                    const target = (game?.activeEntitiesCache || [])
+                        .find((candidate) => candidate.id === targetId) || game?.remotePlayers?.get?.(targetId);
+                    return {
+                        state: game?.player?.state || null,
+                        animation: game?.player?.currentAnimationName || null,
+                        pendingTargetId: game?.pendingInteraction?.id || null,
+                        targetState: target?.state || null,
+                        targetActive: target?.isActive ?? null
+                    };
+                }, hostile.id),
+                remotePlayerSnapshot(observerPage, sourceUsername)
+            ]);
+            lastDiagnostic = { attempt: attempt + 1, hostileId: hostile.id, local, remote };
+        }
+    }
+
+    throw new Error(
+        `Remote basic attack never followed a bounded real hostile click: ${JSON.stringify(lastDiagnostic)}`
+    );
+}
+
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
 test.describe('two-account multiplayer', () => {
@@ -554,20 +614,14 @@ test.describe('two-account multiplayer', () => {
             // hostile finder instead of wandering until the test times out.
             await useCombatQAWaypoint(firstPage);
             await useCombatQAWaypoint(secondPage);
-            const hostile = await findOverworldTarget(firstPage);
+            let hostile = await findOverworldTarget(firstPage);
             phase('acquired shared hostile');
-            await firstPage.mouse.click(hostile.x, hostile.y);
-            await expect.poll(async () => {
-                const remote = await remoteSnapshot(secondPage, primary.username);
-                return Boolean(
-                    remote?.state === 'ATTACKING' ||
-                    remote?.currentAnimation === 'Attack'
-                );
-            }, {
-                message: 'the observer must render the real-input basic attack',
-                timeout: 30_000,
-                intervals: [25, 50, 100, 250]
-            }).toBe(true);
+            hostile = await attackAndObserveRemote(
+                firstPage,
+                secondPage,
+                primary.username,
+                hostile
+            );
             phase('verified remote basic-attack presentation');
 
             const expectedCombatSkill = await firstPage.evaluate(() => window.game?.player?.hotbar?.[0] || '');

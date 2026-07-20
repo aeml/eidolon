@@ -1,4 +1,7 @@
-import { isIgnoredBrowserRequest } from './e2e/browserFailurePolicy.js';
+import {
+    isBenignCanceledAssetRequest,
+    isIgnoredBrowserRequest
+} from './e2e/browserFailurePolicy.js';
 import {
     backendOriginBrowserArgs,
     hardwareWebGLBrowserArgs
@@ -16,6 +19,22 @@ describe('browser failure collection', () => {
         )).toBe(false);
         expect(isIgnoredBrowserRequest(
             'POST',
+            'https://eidolon.mendola.tech/src/main.js'
+        )).toBe(false);
+    });
+
+    test('ignores only Chrome-cancelled icon replacements', () => {
+        const iconURL = 'https://eidolon.mendola.tech/assets/icons/wizard/inferno_cataclysm.png';
+        expect(isBenignCanceledAssetRequest('image', 'net::ERR_ABORTED', iconURL)).toBe(true);
+        expect(isBenignCanceledAssetRequest('image', 'net::ERR_FAILED', iconURL)).toBe(false);
+        expect(isBenignCanceledAssetRequest(
+            'fetch',
+            'net::ERR_ABORTED',
+            'https://eidolon.mendola.tech/assets/models/wizard.glb'
+        )).toBe(false);
+        expect(isBenignCanceledAssetRequest(
+            'image',
+            'net::ERR_ABORTED',
             'https://eidolon.mendola.tech/src/main.js'
         )).toBe(false);
     });

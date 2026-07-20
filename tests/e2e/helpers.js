@@ -1,5 +1,8 @@
 import { expect } from '@playwright/test';
-import { isIgnoredBrowserRequest } from './browserFailurePolicy.js';
+import {
+    isBenignCanceledAssetRequest,
+    isIgnoredBrowserRequest
+} from './browserFailurePolicy.js';
 
 export const productionWebSocketURL = 'wss://eserver.mendola.tech/ws';
 const browserFailureState = new WeakMap();
@@ -43,6 +46,12 @@ export function collectBrowserFailures(page, baseURL) {
             !isIgnoredBrowserRequest(request.method(), request.url())) {
             const errorText = request.failure()?.errorText;
             const detail = `requestfailed: ${request.method()} ${request.url()} (${errorText})`;
+
+            if (isBenignCanceledAssetRequest(
+                request.resourceType(),
+                errorText,
+                request.url()
+            )) return;
 
             // Chrome can cancel a GLB request while the newly activated asset
             // service worker takes control, after which MeshFactory retries it.
