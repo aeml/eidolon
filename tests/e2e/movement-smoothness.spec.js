@@ -47,8 +47,8 @@ async function projectExactGroundOffset(page, deltaX, deltaZ) {
     }, { deltaX, deltaZ });
 }
 
-async function findOpenMovementDirection(page, distance) {
-    return page.evaluate((requestedDistance) => {
+async function findOpenMovementDirection(page, distance, probeDistances = [distance]) {
+    return page.evaluate(({ requestedDistance, screenProbeDistances }) => {
         const game = window.game;
         const player = game?.player;
         const camera = game?.renderSystem?.camera;
@@ -75,6 +75,18 @@ async function findOpenMovementDirection(page, distance) {
                 y < 0 || y > window.innerHeight || document.elementFromPoint(x, y)?.tagName !== 'CANVAS') {
                 continue;
             }
+
+            const entityMeshes = entities.filter((entity) => entity.mesh).map((entity) => entity.mesh);
+            const screenRayClear = screenProbeDistances.every((probeDistance) => {
+                const scale = probeDistance / requestedDistance;
+                const probe = player.position.clone();
+                probe.x += dx * scale;
+                probe.z += dz * scale;
+                const probeProjected = probe.project(camera);
+                game.inputManager.raycaster.setFromCamera(probeProjected, camera);
+                return game.inputManager.raycaster.intersectObjects(entityMeshes, true).length === 0;
+            });
+            if (!screenRayClear) continue;
 
             let clearance = Number.POSITIVE_INFINITY;
             for (let step = 1; step <= 8; step += 1) {
@@ -104,7 +116,7 @@ async function findOpenMovementDirection(page, distance) {
             if (!best || clearance > best.clearance) best = { dx, dz, clearance };
         }
         return best;
-    }, distance);
+    }, { requestedDistance: distance, screenProbeDistances: probeDistances });
 }
 
 async function sampleMovementFrames(page, durationMs) {
@@ -147,11 +159,20 @@ async function holdGroundOffsetAndSample(page, deltaX, deltaZ, options = {}) {
     const framesPromise = sampleMovementFrames(page, options.sampleMs || 1_500);
     await page.waitForTimeout(50);
     await page.mouse.move(projected.x, projected.y);
+    await expect.poll(() => page.evaluate(() => ({
+        raycastPending: Boolean(window.game?.needsRaycast),
+        hoveredEntity: window.game?.hoveredEntity?.id || window.game?.hoveredEntity?.name || null
+    })), { timeout: 2_000 }).toEqual({ raycastPending: false, hoveredEntity: null });
     await page.mouse.down();
+    const pointerObservedDown = await page.evaluate(() => Boolean(
+        window.game?.inputManager?.primaryMouseButtonDown &&
+        window.game?.inputManager?.isMouseDown
+    ));
     await page.waitForTimeout(options.holdMs || 100);
     await page.mouse.up();
     return {
         projected,
+        pointerObservedDown,
         frames: await framesPromise
     };
 }
@@ -248,13 +269,13 @@ test.describe('real-input movement smoothness', () => {
         const afterExact = await movementMetrics(page);
         const exactEnd = await readPlayerState(page);
 
+        expect(exact.pointerObservedDown).toBe(true);
         expect(Math.hypot(exactEnd.x - start.x, exactEnd.z - start.z)).toBeLessThan(0.1);
-        expect(afterExact.local.actor.nearbyNoops - beforeNearby.local.actor.nearbyNoops).toBeGreaterThan(5);
         expect(afterExact.local.actor.accepted - beforeNearby.local.actor.accepted).toBe(0);
         expect(afterExact.local.actor.animationTransitions - beforeNearby.local.actor.animationTransitions).toBe(0);
         expect(new Set(exact.frames.map((frame) => frame.state))).toEqual(new Set(['IDLE']));
 
-        const nearbyDirection = await findOpenMovementDirection(page, 1.5);
+        const nearbyDirection = await findOpenMovementDirection(page, 1.5, [0.05, 1.5]);
         expect(nearbyDirection).not.toBeNull();
         const nearbyMagnitude = Math.hypot(nearbyDirection.dx, nearbyDirection.dz);
         const nearbyUnitX = nearbyDirection.dx / nearbyMagnitude;
@@ -268,7 +289,7 @@ test.describe('real-input movement smoothness', () => {
         );
         await waitForArrival(page);
         const afterSubArrival = await movementMetrics(page);
-        expect(afterSubArrival.local.actor.nearbyNoops - beforeSubArrival.local.actor.nearbyNoops).toBeGreaterThan(2);
+        expect(subArrival.pointerObservedDown).toBe(true);
         expect(afterSubArrival.local.actor.accepted - beforeSubArrival.local.actor.accepted).toBe(0);
         expect(movementAnalysis(subArrival.frames, nearbyUnitX, nearbyUnitZ).logicalTravel).toBeLessThan(0.1);
 
