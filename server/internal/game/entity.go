@@ -119,15 +119,16 @@ type Entity struct {
 	State    string  `json:"state"` // IDLE, MOVING, ATTACKING, DEAD
 
 	// Combat
-	LastAttackTime    time.Time            `json:"-"`
-	AttackCooldown    time.Duration        `json:"-"`
-	LastAbilityTime   time.Time            `json:"-"`
-	AbilityCooldown   time.Duration        `json:"-"`
-	Cooldowns         map[string]time.Time `json:"-"`
-	LastRespawnTime   time.Time            `json:"-"`
-	MoveLockUntil     time.Time            `json:"-"`
-	QAGuaranteedLoot  bool                 `json:"-"`
-	LastSpecialAttack time.Time            `json:"-"` // Boss AoE slam cooldown
+	LastAttackTime       time.Time            `json:"-"`
+	AttackCooldown       time.Duration        `json:"-"`
+	LastAbilityTime      time.Time            `json:"-"`
+	AbilityCooldown      time.Duration        `json:"-"`
+	Cooldowns            map[string]time.Time `json:"-"`
+	LastRespawnTime      time.Time            `json:"-"`
+	MoveLockUntil        time.Time            `json:"-"`
+	QAGuaranteedLoot     bool                 `json:"-"`
+	QAPersistentDuration time.Duration        `json:"-"`
+	LastSpecialAttack    time.Time            `json:"-"` // Boss AoE slam cooldown
 
 	// Threat (server-side only): playerID -> threat
 	Threat map[string]float64 `json:"-"`
@@ -901,6 +902,62 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		JumpDuration: v.JumpDuration,
 		JumpHeight:   v.JumpHeight,
 		JumpProgress: v.JumpProgress,
+		OwnerID:      v.OwnerID,
+
+		SpiritsActive:  v.SpiritsActive,
+		SpiritsBoosted: v.SpiritsBoosted,
+		SpiritEndTime:  v.SpiritEndTime,
+
+		BerserkerModeActive:  v.BerserkerModeActive,
+		BerserkerModeEndTime: v.BerserkerModeEndTime,
+		LastStandActive:      v.LastStandActive,
+		LastStandEndTime:     v.LastStandEndTime,
+		StealthActive:        v.StealthActive,
+		StealthEndTime:       v.StealthEndTime,
+		ZealActive:           v.ZealActive,
+		ZealEndTime:          v.ZealEndTime,
+
+		IronFortressActive:        v.IronFortressActive,
+		IronFortressEndTime:       v.IronFortressEndTime,
+		GuardianRoarActive:        v.GuardianRoarActive,
+		GuardianRoarEndTime:       v.GuardianRoarEndTime,
+		SerratedEdgesActive:       v.SerratedEdgesActive,
+		SerratedEdgesEndTime:      v.SerratedEdgesEndTime,
+		PoisonCoatingActive:       v.PoisonCoatingActive,
+		PoisonCoatingEndTime:      v.PoisonCoatingEndTime,
+		SpellFocusActive:          v.SpellFocusActive,
+		SpellFocusEndTime:         v.SpellFocusEndTime,
+		ArcaneShieldActive:        v.ArcaneShieldActive,
+		ArcaneShieldHP:            v.ArcaneShieldHP,
+		ArcaneShieldEndTime:       v.ArcaneShieldEndTime,
+		TimeWarpActive:            v.TimeWarpActive,
+		TimeWarpEndTime:           v.TimeWarpEndTime,
+		DivineInterventionActive:  v.DivineInterventionActive,
+		DivineInterventionEndTime: v.DivineInterventionEndTime,
+		BlessingResolveActive:     v.BlessingResolveActive,
+		BlessingResolveEndTime:    v.BlessingResolveEndTime,
+		GuardianEmbraceActive:     v.GuardianEmbraceActive,
+		GuardianEmbraceEndTime:    v.GuardianEmbraceEndTime,
+		SwiftActive:               v.SwiftActive,
+		SwiftEndTime:              v.SwiftEndTime,
+
+		Stunned:             v.Stunned,
+		StunEndTime:         v.StunEndTime,
+		Slowed:              v.Slowed,
+		SlowEndTime:         v.SlowEndTime,
+		SlowFactor:          v.SlowFactor,
+		Rooted:              v.Rooted,
+		RootEndTime:         v.RootEndTime,
+		WeakPointMarked:     v.WeakPointMarked,
+		WeakPointEndTime:    v.WeakPointEndTime,
+		MarkWeakness:        v.MarkWeakness,
+		MarkWeaknessEndTime: v.MarkWeaknessEndTime,
+		Bleeding:            v.Bleeding,
+		BleedEndTime:        v.BleedEndTime,
+		BleedDamage:         v.BleedDamage,
+		Poisoned:            v.Poisoned,
+		PoisonEndTime:       v.PoisonEndTime,
+		PoisonDamage:        v.PoisonDamage,
 	}
 
 	// Add type-specific fields
@@ -933,10 +990,15 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		e.HpRegen = v.HpRegen
 		e.ManaRegen = v.ManaRegen
 		e.CastSpeed = v.CastSpeed
-		e.SpiritsActive = v.SpiritsActive
 		e.IsCharging = v.IsCharging
 		e.ChargeTargetX = v.ChargeTargetX
 		e.ChargeTargetZ = v.ChargeTargetZ
+		if v.SkillRunes != nil {
+			e.SkillRunes = make(map[string]string, len(v.SkillRunes))
+			for skill, runeID := range v.SkillRunes {
+				e.SkillRunes[skill] = runeID
+			}
+		}
 		if len(v.Equipment) > 0 {
 			newEquip := make(map[string]Item, len(v.Equipment))
 			for slot, item := range v.Equipment {

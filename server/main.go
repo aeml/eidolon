@@ -191,6 +191,14 @@ type EntitySnapshot struct {
 	TimeWarpActive             bool
 	SpellFocusActive           bool
 	SwiftActive                bool
+	IronFortressActive         bool
+	GuardianRoarActive         bool
+	BerserkerModeActive        bool
+	LastStandActive            bool
+	SerratedEdgesActive        bool
+	PoisonCoatingActive        bool
+	StealthActive              bool
+	ZealActive                 bool
 	Stunned                    bool
 	StunDuration               float64
 	Slowed                     bool
@@ -216,6 +224,14 @@ type EntitySnapshot struct {
 	DivineInterventionDuration float64
 	SpellFocusDuration         float64
 	SwiftDuration              float64
+	IronFortressDuration       float64
+	GuardianRoarDuration       float64
+	BerserkerModeDuration      float64
+	LastStandDuration          float64
+	SerratedEdgesDuration      float64
+	PoisonCoatingDuration      float64
+	StealthDuration            float64
+	ZealDuration               float64
 	JumpProgress               float64
 	TalentPoints               int
 	TalentKeys                 int
@@ -238,59 +254,60 @@ type Client struct {
 
 // Message types
 const (
-	MsgJoin            = "join"
-	MsgLogin           = "login"
-	MsgRegister        = "register"
-	MsgMove            = "move"
-	MsgJump            = "jump"
-	MsgAttack          = "attack"
-	MsgDamage          = "damage"
-	MsgChat            = "chat"
-	MsgState           = "state"
-	MsgError           = "error"
-	MsgPickup          = "pickup"
-	MsgInventory       = "inventory"
-	MsgAbility         = "ability"
-	MsgEquip           = "equip"
-	MsgBuyGamble       = "buy_gamble"
-	MsgSell            = "sell"
-	MsgSocial          = "social"
-	MsgRespawn         = "respawn"
-	MsgRecall          = "recall"
-	MsgReport          = "report"
-	MsgStashDeposit    = "stash_deposit"
-	MsgStashWithdraw   = "stash_withdraw"
-	MsgStash           = "stash"
-	MsgQuestUpdate     = "quest_update"
-	MsgAcceptQuest     = "accept_quest"
-	MsgCompleteQuest   = "complete_quest"
-	MsgSelectBranch    = "selectBranch"
-	MsgUnlockSkill     = "unlockSkill"
-	MsgUnlockTalent    = "unlockTalent"
-	MsgResetTalents    = "resetTalents"
-	MsgRespec          = "respec"
-	MsgRespecCost      = "respec_cost"
-	MsgSelectRune      = "select_rune"
-	MsgGetRunes        = "get_runes"
-	MsgCombo           = "combo"
-	MsgForgeUpgrade    = "forge_upgrade"
-	MsgForgePotency    = "forge_potency"
-	MsgForgeSocket     = "forge_socket"
-	MsgForgeInsertGem  = "forge_insert_gem"
-	MsgForgeCombineGem = "forge_combine_gem"
-	MsgForgeRemoveGem  = "forge_remove_gem"
-	MsgPartyInvite     = "party_invite"
-	MsgPartyResponse   = "party_response"
-	MsgPartyRequest    = "party_request"
-	MsgPartyJoinResp   = "party_join_resp"
-	MsgPartyKick       = "party_kick"
-	MsgPartyPromote    = "party_promote"
-	MsgPartyLeave      = "party_leave"
-	MsgPartyUpdate     = "party_update"
-	MsgSocialStatus    = "social_status"
-	MsgBuyback         = "buyback"
-	MsgBuybackList     = "buyback_list"
-	MsgUnequip         = "unequip"
+	MsgJoin             = "join"
+	MsgLogin            = "login"
+	MsgRegister         = "register"
+	MsgMove             = "move"
+	MsgJump             = "jump"
+	MsgQAAnimationReady = "qa_animation_ready"
+	MsgAttack           = "attack"
+	MsgDamage           = "damage"
+	MsgChat             = "chat"
+	MsgState            = "state"
+	MsgError            = "error"
+	MsgPickup           = "pickup"
+	MsgInventory        = "inventory"
+	MsgAbility          = "ability"
+	MsgEquip            = "equip"
+	MsgBuyGamble        = "buy_gamble"
+	MsgSell             = "sell"
+	MsgSocial           = "social"
+	MsgRespawn          = "respawn"
+	MsgRecall           = "recall"
+	MsgReport           = "report"
+	MsgStashDeposit     = "stash_deposit"
+	MsgStashWithdraw    = "stash_withdraw"
+	MsgStash            = "stash"
+	MsgQuestUpdate      = "quest_update"
+	MsgAcceptQuest      = "accept_quest"
+	MsgCompleteQuest    = "complete_quest"
+	MsgSelectBranch     = "selectBranch"
+	MsgUnlockSkill      = "unlockSkill"
+	MsgUnlockTalent     = "unlockTalent"
+	MsgResetTalents     = "resetTalents"
+	MsgRespec           = "respec"
+	MsgRespecCost       = "respec_cost"
+	MsgSelectRune       = "select_rune"
+	MsgGetRunes         = "get_runes"
+	MsgCombo            = "combo"
+	MsgForgeUpgrade     = "forge_upgrade"
+	MsgForgePotency     = "forge_potency"
+	MsgForgeSocket      = "forge_socket"
+	MsgForgeInsertGem   = "forge_insert_gem"
+	MsgForgeCombineGem  = "forge_combine_gem"
+	MsgForgeRemoveGem   = "forge_remove_gem"
+	MsgPartyInvite      = "party_invite"
+	MsgPartyResponse    = "party_response"
+	MsgPartyRequest     = "party_request"
+	MsgPartyJoinResp    = "party_join_resp"
+	MsgPartyKick        = "party_kick"
+	MsgPartyPromote     = "party_promote"
+	MsgPartyLeave       = "party_leave"
+	MsgPartyUpdate      = "party_update"
+	MsgSocialStatus     = "social_status"
+	MsgBuyback          = "buyback"
+	MsgBuybackList      = "buyback_list"
+	MsgUnequip          = "unequip"
 
 	// Trading
 	MsgTradingSearch     = "trading_search"
@@ -3329,6 +3346,48 @@ func (c *Client) handleChatCommand(raw string) bool {
 
 		c.sendSystemChat("Next enemy kill will produce a QA loot drop.")
 		return true
+	case "/qa-animation-ready":
+		if !isQAUsername(c.username) {
+			c.sendError("QA command unavailable for this account.")
+			return true
+		}
+		lowHealth := len(fields) == 2 && strings.EqualFold(fields[1], "low-health")
+		persistent := len(fields) == 2 && strings.EqualFold(fields[1], "persistent")
+		if len(fields) > 2 || (len(fields) == 2 && !lowHealth && !persistent) {
+			c.sendError("Usage: /qa-animation-ready [low-health|persistent]")
+			return true
+		}
+		if c.playerID == "" || world == nil || !world.PreparePlayerForAnimationQA(c.playerID, lowHealth, persistent) {
+			c.sendError("No active character for animation readiness.")
+			return true
+		}
+
+		message := "Animation QA readiness restored."
+		if lowHealth {
+			message = "Animation QA readiness restored at low health."
+		} else if persistent {
+			message = "Animation QA readiness restored for persistent-effect reconstruction."
+		}
+		c.sendSystemChat(message)
+		payload, _ := json.Marshal(map[string]bool{"lowHealth": lowHealth, "persistent": persistent})
+		c.sendSafe(createMessage(MsgQAAnimationReady, payload))
+		return true
+	case "/qa-protection":
+		if !isQAUsername(c.username) {
+			c.sendError("QA command unavailable for this account.")
+			return true
+		}
+		if len(fields) != 2 || !strings.EqualFold(fields[1], "off") {
+			c.sendError("Usage: /qa-protection off")
+			return true
+		}
+		if c.playerID == "" || world == nil || !world.DisablePlayerQAProtection(c.playerID) {
+			c.sendError("No active character for QA protection control.")
+			return true
+		}
+
+		c.sendSystemChat("QA waypoint protection disabled; hostile damage is authoritative.")
+		return true
 	case "/qa-disconnect":
 		if !isQAUsername(c.username) {
 			c.sendError("QA command unavailable for this account.")
@@ -3540,6 +3599,62 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 			swiftDuration = 0
 		}
 	}
+	ironFortressDuration := 0.0
+	if e.IronFortressActive {
+		ironFortressDuration = time.Until(e.IronFortressEndTime).Seconds()
+		if ironFortressDuration < 0 {
+			ironFortressDuration = 0
+		}
+	}
+	guardianRoarDuration := 0.0
+	if e.GuardianRoarActive {
+		guardianRoarDuration = time.Until(e.GuardianRoarEndTime).Seconds()
+		if guardianRoarDuration < 0 {
+			guardianRoarDuration = 0
+		}
+	}
+	berserkerModeDuration := 0.0
+	if e.BerserkerModeActive {
+		berserkerModeDuration = time.Until(e.BerserkerModeEndTime).Seconds()
+		if berserkerModeDuration < 0 {
+			berserkerModeDuration = 0
+		}
+	}
+	lastStandDuration := 0.0
+	if e.LastStandActive {
+		lastStandDuration = time.Until(e.LastStandEndTime).Seconds()
+		if lastStandDuration < 0 {
+			lastStandDuration = 0
+		}
+	}
+	serratedEdgesDuration := 0.0
+	if e.SerratedEdgesActive {
+		serratedEdgesDuration = time.Until(e.SerratedEdgesEndTime).Seconds()
+		if serratedEdgesDuration < 0 {
+			serratedEdgesDuration = 0
+		}
+	}
+	poisonCoatingDuration := 0.0
+	if e.PoisonCoatingActive {
+		poisonCoatingDuration = time.Until(e.PoisonCoatingEndTime).Seconds()
+		if poisonCoatingDuration < 0 {
+			poisonCoatingDuration = 0
+		}
+	}
+	stealthDuration := 0.0
+	if e.StealthActive {
+		stealthDuration = time.Until(e.StealthEndTime).Seconds()
+		if stealthDuration < 0 {
+			stealthDuration = 0
+		}
+	}
+	zealDuration := 0.0
+	if e.ZealActive {
+		zealDuration = time.Until(e.ZealEndTime).Seconds()
+		if zealDuration < 0 {
+			zealDuration = 0
+		}
+	}
 
 	snap := &EntitySnapshot{
 		X:                          e.X,
@@ -3562,6 +3677,14 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		TimeWarpActive:             e.TimeWarpActive,
 		SpellFocusActive:           e.SpellFocusActive,
 		SwiftActive:                e.SwiftActive,
+		IronFortressActive:         e.IronFortressActive,
+		GuardianRoarActive:         e.GuardianRoarActive,
+		BerserkerModeActive:        e.BerserkerModeActive,
+		LastStandActive:            e.LastStandActive,
+		SerratedEdgesActive:        e.SerratedEdgesActive,
+		PoisonCoatingActive:        e.PoisonCoatingActive,
+		StealthActive:              e.StealthActive,
+		ZealActive:                 e.ZealActive,
 		Stunned:                    e.Stunned,
 		StunDuration:               stunDuration,
 		Slowed:                     e.Slowed,
@@ -3587,6 +3710,14 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		DivineInterventionDuration: divineInterventionDuration,
 		SpellFocusDuration:         spellFocusDuration,
 		SwiftDuration:              swiftDuration,
+		IronFortressDuration:       ironFortressDuration,
+		GuardianRoarDuration:       guardianRoarDuration,
+		BerserkerModeDuration:      berserkerModeDuration,
+		LastStandDuration:          lastStandDuration,
+		SerratedEdgesDuration:      serratedEdgesDuration,
+		PoisonCoatingDuration:      poisonCoatingDuration,
+		StealthDuration:            stealthDuration,
+		ZealDuration:               zealDuration,
 		JumpProgress:               e.JumpProgress,
 		TalentPoints:               derivedTalentPoints,
 		TalentKeys:                 keys,
@@ -3624,6 +3755,14 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	ctimeWarpActive := current.TimeWarpActive
 	cspellFocusActive := current.SpellFocusActive
 	cswiftActive := current.SwiftActive
+	cironFortressActive := current.IronFortressActive
+	cguardianRoarActive := current.GuardianRoarActive
+	cberserkerModeActive := current.BerserkerModeActive
+	clastStandActive := current.LastStandActive
+	cserratedEdgesActive := current.SerratedEdgesActive
+	cpoisonCoatingActive := current.PoisonCoatingActive
+	cstealthActive := current.StealthActive
+	czealActive := current.ZealActive
 	cstunned := current.Stunned
 	cstunDuration := 0.0
 	if cstunned {
@@ -3745,6 +3884,62 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 			cswiftDuration = 0
 		}
 	}
+	cironFortressDuration := 0.0
+	if cironFortressActive {
+		cironFortressDuration = time.Until(current.IronFortressEndTime).Seconds()
+		if cironFortressDuration < 0 {
+			cironFortressDuration = 0
+		}
+	}
+	cguardianRoarDuration := 0.0
+	if cguardianRoarActive {
+		cguardianRoarDuration = time.Until(current.GuardianRoarEndTime).Seconds()
+		if cguardianRoarDuration < 0 {
+			cguardianRoarDuration = 0
+		}
+	}
+	cberserkerModeDuration := 0.0
+	if cberserkerModeActive {
+		cberserkerModeDuration = time.Until(current.BerserkerModeEndTime).Seconds()
+		if cberserkerModeDuration < 0 {
+			cberserkerModeDuration = 0
+		}
+	}
+	clastStandDuration := 0.0
+	if clastStandActive {
+		clastStandDuration = time.Until(current.LastStandEndTime).Seconds()
+		if clastStandDuration < 0 {
+			clastStandDuration = 0
+		}
+	}
+	cserratedEdgesDuration := 0.0
+	if cserratedEdgesActive {
+		cserratedEdgesDuration = time.Until(current.SerratedEdgesEndTime).Seconds()
+		if cserratedEdgesDuration < 0 {
+			cserratedEdgesDuration = 0
+		}
+	}
+	cpoisonCoatingDuration := 0.0
+	if cpoisonCoatingActive {
+		cpoisonCoatingDuration = time.Until(current.PoisonCoatingEndTime).Seconds()
+		if cpoisonCoatingDuration < 0 {
+			cpoisonCoatingDuration = 0
+		}
+	}
+	cstealthDuration := 0.0
+	if cstealthActive {
+		cstealthDuration = time.Until(current.StealthEndTime).Seconds()
+		if cstealthDuration < 0 {
+			cstealthDuration = 0
+		}
+	}
+	czealDuration := 0.0
+	if czealActive {
+		czealDuration = time.Until(current.ZealEndTime).Seconds()
+		if czealDuration < 0 {
+			czealDuration = 0
+		}
+	}
 	ctalentPoints := current.TalentPoints
 	cjumpProgress := current.JumpProgress
 	ctalentKeys := 0
@@ -3843,10 +4038,20 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cswiftActive != last.SwiftActive {
 		return true
 	}
+	if cironFortressActive != last.IronFortressActive ||
+		cguardianRoarActive != last.GuardianRoarActive ||
+		cberserkerModeActive != last.BerserkerModeActive ||
+		clastStandActive != last.LastStandActive ||
+		cserratedEdgesActive != last.SerratedEdgesActive ||
+		cpoisonCoatingActive != last.PoisonCoatingActive ||
+		cstealthActive != last.StealthActive ||
+		czealActive != last.ZealActive {
+		return true
+	}
 	if cpartyID != last.PartyID || csocialStatus != last.SocialStatus {
 		return true
 	}
-	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || math.Abs(cslowDuration-last.SlowDuration) > 0.05 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || math.Abs(cbleedDuration-last.BleedDuration) > 0.05 || cbleedDamage != last.BleedDamage || cpoisoned != last.Poisoned || math.Abs(cpoisonDuration-last.PoisonDuration) > 0.05 || cpoisonDamage != last.PoisonDamage || math.Abs(cweakPointDuration-last.WeakPointDuration) > 0.05 || math.Abs(cmarkWeaknessDuration-last.MarkWeaknessDuration) > 0.05 || math.Abs(cspiritDuration-last.SpiritDuration) > 0.05 || math.Abs(cblessingResolveDuration-last.BlessingResolveDuration) > 0.05 || math.Abs(ctimeWarpDuration-last.TimeWarpDuration) > 0.05 || math.Abs(cguardianEmbraceDuration-last.GuardianEmbraceDuration) > 0.05 || math.Abs(carcaneShieldDuration-last.ArcaneShieldDuration) > 0.05 || math.Abs(cdivineInterventionDuration-last.DivineInterventionDuration) > 0.05 || math.Abs(cspellFocusDuration-last.SpellFocusDuration) > 0.05 || math.Abs(cswiftDuration-last.SwiftDuration) > 0.05 {
+	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || math.Abs(cslowDuration-last.SlowDuration) > 0.05 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || math.Abs(cbleedDuration-last.BleedDuration) > 0.05 || cbleedDamage != last.BleedDamage || cpoisoned != last.Poisoned || math.Abs(cpoisonDuration-last.PoisonDuration) > 0.05 || cpoisonDamage != last.PoisonDamage || math.Abs(cweakPointDuration-last.WeakPointDuration) > 0.05 || math.Abs(cmarkWeaknessDuration-last.MarkWeaknessDuration) > 0.05 || math.Abs(cspiritDuration-last.SpiritDuration) > 0.05 || math.Abs(cblessingResolveDuration-last.BlessingResolveDuration) > 0.05 || math.Abs(ctimeWarpDuration-last.TimeWarpDuration) > 0.05 || math.Abs(cguardianEmbraceDuration-last.GuardianEmbraceDuration) > 0.05 || math.Abs(carcaneShieldDuration-last.ArcaneShieldDuration) > 0.05 || math.Abs(cdivineInterventionDuration-last.DivineInterventionDuration) > 0.05 || math.Abs(cspellFocusDuration-last.SpellFocusDuration) > 0.05 || math.Abs(cswiftDuration-last.SwiftDuration) > 0.05 || math.Abs(cironFortressDuration-last.IronFortressDuration) > 0.05 || math.Abs(cguardianRoarDuration-last.GuardianRoarDuration) > 0.05 || math.Abs(cberserkerModeDuration-last.BerserkerModeDuration) > 0.05 || math.Abs(clastStandDuration-last.LastStandDuration) > 0.05 || math.Abs(cserratedEdgesDuration-last.SerratedEdgesDuration) > 0.05 || math.Abs(cpoisonCoatingDuration-last.PoisonCoatingDuration) > 0.05 || math.Abs(cstealthDuration-last.StealthDuration) > 0.05 || math.Abs(czealDuration-last.ZealDuration) > 0.05 {
 		return true
 	}
 
@@ -4086,6 +4291,10 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 
 	// Copy slices/maps/pointers while under the lock.
 	unlockedSkills := append([]string(nil), e.UnlockedSkills...)
+	skillRunes := make(map[string]string, len(e.SkillRunes))
+	for skill, runeID := range e.SkillRunes {
+		skillRunes[skill] = runeID
+	}
 
 	// Passive talents: ranked map (new) + derived unlocked list (legacy).
 	talentRanks := make(map[string]int32)
@@ -4237,6 +4446,54 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 			swiftDuration = float32(remaining)
 		}
 	}
+	ironFortressDuration := float32(0)
+	if e.IronFortressActive {
+		if remaining := time.Until(e.IronFortressEndTime).Seconds(); remaining > 0 {
+			ironFortressDuration = float32(remaining)
+		}
+	}
+	guardianRoarDuration := float32(0)
+	if e.GuardianRoarActive {
+		if remaining := time.Until(e.GuardianRoarEndTime).Seconds(); remaining > 0 {
+			guardianRoarDuration = float32(remaining)
+		}
+	}
+	berserkerModeDuration := float32(0)
+	if e.BerserkerModeActive {
+		if remaining := time.Until(e.BerserkerModeEndTime).Seconds(); remaining > 0 {
+			berserkerModeDuration = float32(remaining)
+		}
+	}
+	lastStandDuration := float32(0)
+	if e.LastStandActive {
+		if remaining := time.Until(e.LastStandEndTime).Seconds(); remaining > 0 {
+			lastStandDuration = float32(remaining)
+		}
+	}
+	serratedEdgesDuration := float32(0)
+	if e.SerratedEdgesActive {
+		if remaining := time.Until(e.SerratedEdgesEndTime).Seconds(); remaining > 0 {
+			serratedEdgesDuration = float32(remaining)
+		}
+	}
+	poisonCoatingDuration := float32(0)
+	if e.PoisonCoatingActive {
+		if remaining := time.Until(e.PoisonCoatingEndTime).Seconds(); remaining > 0 {
+			poisonCoatingDuration = float32(remaining)
+		}
+	}
+	stealthDuration := float32(0)
+	if e.StealthActive {
+		if remaining := time.Until(e.StealthEndTime).Seconds(); remaining > 0 {
+			stealthDuration = float32(remaining)
+		}
+	}
+	zealDuration := float32(0)
+	if e.ZealActive {
+		if remaining := time.Until(e.ZealEndTime).Seconds(); remaining > 0 {
+			zealDuration = float32(remaining)
+		}
+	}
 
 	out := &statepb.Entity{
 		Id:                         e.ID,
@@ -4259,6 +4516,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		SkillPoints:                int32(e.SkillPoints),
 		SelectedBranch:             e.SelectedBranch,
 		UnlockedSkills:             unlockedSkills,
+		SkillRunes:                 skillRunes,
 		TalentPoints:               int32(derivedTalentPoints),
 		UnlockedTalents:            unlockedTalents,
 		TalentRanks:                talentRanks,
@@ -4291,6 +4549,14 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		TimeWarpActive:             e.TimeWarpActive,
 		SpellFocusActive:           e.SpellFocusActive,
 		SwiftActive:                e.SwiftActive,
+		IronFortressActive:         e.IronFortressActive,
+		GuardianRoarActive:         e.GuardianRoarActive,
+		BerserkerModeActive:        e.BerserkerModeActive,
+		LastStandActive:            e.LastStandActive,
+		SerratedEdgesActive:        e.SerratedEdgesActive,
+		PoisonCoatingActive:        e.PoisonCoatingActive,
+		StealthActive:              e.StealthActive,
+		ZealActive:                 e.ZealActive,
 		Stunned:                    e.Stunned,
 		StunDuration:               stunDuration,
 		Slowed:                     e.Slowed,
@@ -4316,6 +4582,14 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		DivineInterventionDuration: divineInterventionDuration,
 		SpellFocusDuration:         spellFocusDuration,
 		SwiftDuration:              swiftDuration,
+		IronFortressDuration:       ironFortressDuration,
+		GuardianRoarDuration:       guardianRoarDuration,
+		BerserkerModeDuration:      berserkerModeDuration,
+		LastStandDuration:          lastStandDuration,
+		SerratedEdgesDuration:      serratedEdgesDuration,
+		PoisonCoatingDuration:      poisonCoatingDuration,
+		StealthDuration:            stealthDuration,
+		ZealDuration:               zealDuration,
 		JumpStartX:                 float32(e.JumpStartX),
 		JumpStartY:                 float32(e.JumpStartY),
 		JumpStartZ:                 float32(e.JumpStartZ),

@@ -717,16 +717,12 @@ export class SkillTreeUI {
                         if (this.onSelectRune) {
                             this.onSelectRune(skillName, newRuneId);
                         }
-                        // Optimistic UI update
-                        if (player) {
-                            if (!player.skillRunes) player.skillRunes = {};
-                            if (newRuneId) {
-                                player.skillRunes[skillName] = newRuneId;
-                            } else {
-                                delete player.skillRunes[skillName];
-                            }
-                        }
-                        this.renderSkillTree(classType);
+                        // Rune selection is server-authoritative. Mutating the
+                        // shared player object here made an optimistic value
+                        // indistinguishable from the acknowledgement and let a
+                        // state packet already in flight visibly restore the old
+                        // rune. GameEngine renders this tab again when the
+                        // select_rune acknowledgement arrives.
                     });
                     runeBtn.addEventListener('mouseenter', () => {
                         runeBtn.style.background = isEquipped ? 'rgba(0, 150, 0, 0.5)' : 'rgba(70, 70, 70, 0.9)';

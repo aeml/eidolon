@@ -126,7 +126,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 			player.SpiritsActive = true
 			player.SpiritsBoosted = true
-			player.SpiritEndTime = time.Now().Add(10 * time.Second)
+			player.SpiritEndTime = time.Now().Add(consumePersistentDuration(player, 10*time.Second))
 			// Boost logic would be in updateEntity where spirits do damage
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
@@ -225,7 +225,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 			player.SpiritsActive = true
 			player.SpiritsBoosted = false
-			player.SpiritEndTime = time.Now().Add(8 * time.Second)
+			player.SpiritEndTime = time.Now().Add(consumePersistentDuration(player, 8*time.Second))
 			player.State = "ATTACKING"
 
 			// Spirit Guardians Rune Effects

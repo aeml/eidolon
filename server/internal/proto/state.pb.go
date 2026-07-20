@@ -674,6 +674,14 @@ type Entity struct {
 	TimeWarpActive           bool  `protobuf:"varint,56,opt,name=time_warp_active,json=timeWarpActive,proto3" json:"time_warp_active,omitempty"`
 	SpellFocusActive         bool  `protobuf:"varint,57,opt,name=spell_focus_active,json=spellFocusActive,proto3" json:"spell_focus_active,omitempty"`
 	SwiftActive              bool  `protobuf:"varint,77,opt,name=swift_active,json=swiftActive,proto3" json:"swift_active,omitempty"`
+	IronFortressActive       bool  `protobuf:"varint,90,opt,name=iron_fortress_active,json=ironFortressActive,proto3" json:"iron_fortress_active,omitempty"`
+	GuardianRoarActive       bool  `protobuf:"varint,91,opt,name=guardian_roar_active,json=guardianRoarActive,proto3" json:"guardian_roar_active,omitempty"`
+	BerserkerModeActive      bool  `protobuf:"varint,92,opt,name=berserker_mode_active,json=berserkerModeActive,proto3" json:"berserker_mode_active,omitempty"`
+	LastStandActive          bool  `protobuf:"varint,93,opt,name=last_stand_active,json=lastStandActive,proto3" json:"last_stand_active,omitempty"`
+	SerratedEdgesActive      bool  `protobuf:"varint,94,opt,name=serrated_edges_active,json=serratedEdgesActive,proto3" json:"serrated_edges_active,omitempty"`
+	PoisonCoatingActive      bool  `protobuf:"varint,95,opt,name=poison_coating_active,json=poisonCoatingActive,proto3" json:"poison_coating_active,omitempty"`
+	StealthActive            bool  `protobuf:"varint,96,opt,name=stealth_active,json=stealthActive,proto3" json:"stealth_active,omitempty"`
+	ZealActive               bool  `protobuf:"varint,97,opt,name=zeal_active,json=zealActive,proto3" json:"zeal_active,omitempty"`
 	// Common buff/debuff booleans used for visuals/behavior
 	Stunned                    bool    `protobuf:"varint,42,opt,name=stunned,proto3" json:"stunned,omitempty"`
 	Slowed                     bool    `protobuf:"varint,43,opt,name=slowed,proto3" json:"slowed,omitempty"`
@@ -692,6 +700,14 @@ type Entity struct {
 	DivineInterventionDuration float32 `protobuf:"fixed32,75,opt,name=divine_intervention_duration,json=divineInterventionDuration,proto3" json:"divine_intervention_duration,omitempty"`
 	SpellFocusDuration         float32 `protobuf:"fixed32,76,opt,name=spell_focus_duration,json=spellFocusDuration,proto3" json:"spell_focus_duration,omitempty"`
 	SwiftDuration              float32 `protobuf:"fixed32,78,opt,name=swift_duration,json=swiftDuration,proto3" json:"swift_duration,omitempty"`
+	IronFortressDuration       float32 `protobuf:"fixed32,98,opt,name=iron_fortress_duration,json=ironFortressDuration,proto3" json:"iron_fortress_duration,omitempty"`
+	GuardianRoarDuration       float32 `protobuf:"fixed32,99,opt,name=guardian_roar_duration,json=guardianRoarDuration,proto3" json:"guardian_roar_duration,omitempty"`
+	BerserkerModeDuration      float32 `protobuf:"fixed32,100,opt,name=berserker_mode_duration,json=berserkerModeDuration,proto3" json:"berserker_mode_duration,omitempty"`
+	LastStandDuration          float32 `protobuf:"fixed32,101,opt,name=last_stand_duration,json=lastStandDuration,proto3" json:"last_stand_duration,omitempty"`
+	SerratedEdgesDuration      float32 `protobuf:"fixed32,102,opt,name=serrated_edges_duration,json=serratedEdgesDuration,proto3" json:"serrated_edges_duration,omitempty"`
+	PoisonCoatingDuration      float32 `protobuf:"fixed32,103,opt,name=poison_coating_duration,json=poisonCoatingDuration,proto3" json:"poison_coating_duration,omitempty"`
+	StealthDuration            float32 `protobuf:"fixed32,104,opt,name=stealth_duration,json=stealthDuration,proto3" json:"stealth_duration,omitempty"`
+	ZealDuration               float32 `protobuf:"fixed32,105,opt,name=zeal_duration,json=zealDuration,proto3" json:"zeal_duration,omitempty"`
 	SlowFactor                 float32 `protobuf:"fixed32,58,opt,name=slow_factor,json=slowFactor,proto3" json:"slow_factor,omitempty"`
 	RootDuration               float32 `protobuf:"fixed32,59,opt,name=root_duration,json=rootDuration,proto3" json:"root_duration,omitempty"`
 	StunDuration               float32 `protobuf:"fixed32,60,opt,name=stun_duration,json=stunDuration,proto3" json:"stun_duration,omitempty"`
@@ -1098,6 +1114,62 @@ func (x *Entity) GetSwiftActive() bool {
 	return false
 }
 
+func (x *Entity) GetIronFortressActive() bool {
+	if x != nil {
+		return x.IronFortressActive
+	}
+	return false
+}
+
+func (x *Entity) GetGuardianRoarActive() bool {
+	if x != nil {
+		return x.GuardianRoarActive
+	}
+	return false
+}
+
+func (x *Entity) GetBerserkerModeActive() bool {
+	if x != nil {
+		return x.BerserkerModeActive
+	}
+	return false
+}
+
+func (x *Entity) GetLastStandActive() bool {
+	if x != nil {
+		return x.LastStandActive
+	}
+	return false
+}
+
+func (x *Entity) GetSerratedEdgesActive() bool {
+	if x != nil {
+		return x.SerratedEdgesActive
+	}
+	return false
+}
+
+func (x *Entity) GetPoisonCoatingActive() bool {
+	if x != nil {
+		return x.PoisonCoatingActive
+	}
+	return false
+}
+
+func (x *Entity) GetStealthActive() bool {
+	if x != nil {
+		return x.StealthActive
+	}
+	return false
+}
+
+func (x *Entity) GetZealActive() bool {
+	if x != nil {
+		return x.ZealActive
+	}
+	return false
+}
+
 func (x *Entity) GetStunned() bool {
 	if x != nil {
 		return x.Stunned
@@ -1213,6 +1285,62 @@ func (x *Entity) GetSpellFocusDuration() float32 {
 func (x *Entity) GetSwiftDuration() float32 {
 	if x != nil {
 		return x.SwiftDuration
+	}
+	return 0
+}
+
+func (x *Entity) GetIronFortressDuration() float32 {
+	if x != nil {
+		return x.IronFortressDuration
+	}
+	return 0
+}
+
+func (x *Entity) GetGuardianRoarDuration() float32 {
+	if x != nil {
+		return x.GuardianRoarDuration
+	}
+	return 0
+}
+
+func (x *Entity) GetBerserkerModeDuration() float32 {
+	if x != nil {
+		return x.BerserkerModeDuration
+	}
+	return 0
+}
+
+func (x *Entity) GetLastStandDuration() float32 {
+	if x != nil {
+		return x.LastStandDuration
+	}
+	return 0
+}
+
+func (x *Entity) GetSerratedEdgesDuration() float32 {
+	if x != nil {
+		return x.SerratedEdgesDuration
+	}
+	return 0
+}
+
+func (x *Entity) GetPoisonCoatingDuration() float32 {
+	if x != nil {
+		return x.PoisonCoatingDuration
+	}
+	return 0
+}
+
+func (x *Entity) GetStealthDuration() float32 {
+	if x != nil {
+		return x.StealthDuration
+	}
+	return 0
+}
+
+func (x *Entity) GetZealDuration() float32 {
+	if x != nil {
+		return x.ZealDuration
 	}
 	return 0
 }
@@ -1441,7 +1569,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xa0\x1b\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xa8!\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -1500,7 +1628,16 @@ const file_state_proto_rawDesc = "" +
 	"\x10arcane_shield_hp\x187 \x01(\x05R\x0earcaneShieldHp\x12(\n" +
 	"\x10time_warp_active\x188 \x01(\bR\x0etimeWarpActive\x12,\n" +
 	"\x12spell_focus_active\x189 \x01(\bR\x10spellFocusActive\x12!\n" +
-	"\fswift_active\x18M \x01(\bR\vswiftActive\x12\x18\n" +
+	"\fswift_active\x18M \x01(\bR\vswiftActive\x120\n" +
+	"\x14iron_fortress_active\x18Z \x01(\bR\x12ironFortressActive\x120\n" +
+	"\x14guardian_roar_active\x18[ \x01(\bR\x12guardianRoarActive\x122\n" +
+	"\x15berserker_mode_active\x18\\ \x01(\bR\x13berserkerModeActive\x12*\n" +
+	"\x11last_stand_active\x18] \x01(\bR\x0flastStandActive\x122\n" +
+	"\x15serrated_edges_active\x18^ \x01(\bR\x13serratedEdgesActive\x122\n" +
+	"\x15poison_coating_active\x18_ \x01(\bR\x13poisonCoatingActive\x12%\n" +
+	"\x0estealth_active\x18` \x01(\bR\rstealthActive\x12\x1f\n" +
+	"\vzeal_active\x18a \x01(\bR\n" +
+	"zealActive\x12\x18\n" +
 	"\astunned\x18* \x01(\bR\astunned\x12\x16\n" +
 	"\x06slowed\x18+ \x01(\bR\x06slowed\x12\x16\n" +
 	"\x06rooted\x18, \x01(\bR\x06rooted\x12\x1a\n" +
@@ -1517,7 +1654,15 @@ const file_state_proto_rawDesc = "" +
 	"\x16arcane_shield_duration\x18J \x01(\x02R\x14arcaneShieldDuration\x12@\n" +
 	"\x1cdivine_intervention_duration\x18K \x01(\x02R\x1adivineInterventionDuration\x120\n" +
 	"\x14spell_focus_duration\x18L \x01(\x02R\x12spellFocusDuration\x12%\n" +
-	"\x0eswift_duration\x18N \x01(\x02R\rswiftDuration\x12\x1f\n" +
+	"\x0eswift_duration\x18N \x01(\x02R\rswiftDuration\x124\n" +
+	"\x16iron_fortress_duration\x18b \x01(\x02R\x14ironFortressDuration\x124\n" +
+	"\x16guardian_roar_duration\x18c \x01(\x02R\x14guardianRoarDuration\x126\n" +
+	"\x17berserker_mode_duration\x18d \x01(\x02R\x15berserkerModeDuration\x12.\n" +
+	"\x13last_stand_duration\x18e \x01(\x02R\x11lastStandDuration\x126\n" +
+	"\x17serrated_edges_duration\x18f \x01(\x02R\x15serratedEdgesDuration\x126\n" +
+	"\x17poison_coating_duration\x18g \x01(\x02R\x15poisonCoatingDuration\x12)\n" +
+	"\x10stealth_duration\x18h \x01(\x02R\x0fstealthDuration\x12#\n" +
+	"\rzeal_duration\x18i \x01(\x02R\fzealDuration\x12\x1f\n" +
 	"\vslow_factor\x18: \x01(\x02R\n" +
 	"slowFactor\x12#\n" +
 	"\rroot_duration\x18; \x01(\x02R\frootDuration\x12#\n" +

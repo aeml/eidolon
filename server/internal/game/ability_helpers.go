@@ -8,6 +8,18 @@ const (
 	meteorImpactVisualScale      = 1.65
 )
 
+// consumePersistentDuration keeps production ability timing unchanged while
+// allowing an explicitly allowlisted QA character to exercise join-in-progress
+// reconstruction through an otherwise normal authoritative cast.
+func consumePersistentDuration(player *Entity, normal time.Duration) time.Duration {
+	if player == nil || player.QAPersistentDuration <= normal {
+		return normal
+	}
+	duration := player.QAPersistentDuration
+	player.QAPersistentDuration = 0
+	return duration
+}
+
 func visualAbilityRadius(effectName string, radius float64) float64 {
 	if radius <= 0 {
 		return radius

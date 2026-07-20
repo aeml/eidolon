@@ -60,6 +60,35 @@ describe('Projectile combat effect routing', () => {
         expect(options).toEqual({ source: owner });
     });
 
+    test('projectiles ignore nearby world props without a damage contract', () => {
+        const owner = createOwner();
+        const worldProp = {
+            id: 'quest-marker-1',
+            position: new THREE.Vector3(0.25, 0, 0),
+            radius: 0.5,
+            isActive: true,
+            state: 'IDLE',
+            constructor: { name: 'QuestMarker' }
+        };
+        const projectile = new Projectile(
+            'arcane-world-prop',
+            owner,
+            'ArcaneMissile',
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(1, 0, 0)
+        );
+
+        expect(() => projectile.update(
+            0,
+            null,
+            null,
+            { getActiveEntities: () => [worldProp] },
+            { spawn: jest.fn() },
+            { scene: null, effectScene: new THREE.Group(), spawnTransientEffect: jest.fn(() => true) }
+        )).not.toThrow();
+        expect(projectile.isActive).toBe(true);
+    });
+
     test('Meteor explosion routes splash readability through transient effects with the explosion radius', () => {
         const owner = createOwner();
         const primaryEnemy = createEnemy(new THREE.Vector3(0.1, 0, 0));

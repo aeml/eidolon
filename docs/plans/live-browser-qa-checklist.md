@@ -18,7 +18,7 @@ Do not promote a claim between categories without the corresponding run.
 - Use only dedicated QA accounts from environment variables or GitHub secrets.
 - Never place usernames/passwords in commands that will be committed, logs, screenshots, traces, or markdown evidence.
 - The extended route may set a dedicated character to level 100, gain XP/items, change position, create/leave a party, and create/reset a dungeon instance.
-- Add only dedicated primary/secondary QA usernames to the server `EIDOLON_QA_USERNAMES` allowlist. `/level`, fixed `/qa-waypoint` destinations, `/qa-loot-next`, and `/qa-disconnect` all use that same server-side gate.
+- Add only dedicated QA usernames to the server `EIDOLON_QA_USERNAMES` allowlist. The release workflow derives four persistent animation characters (`<primary>-f`, `-r`, `-w`, and `-c`) from the primary base. `/level`, fixed `/qa-waypoint` destinations, `/qa-loot-next`, `/qa-disconnect`, `/qa-animation-ready`, and `/qa-protection off` all use that same server-side gate.
 - Do not run the extended route against a normal player character.
 - Credentialed traces, screenshots, video, and the automatic input-valued failure snapshot stay disabled because recordings can contain account identifiers or passwords. CI also redacts and scans the supplied values before upload. The anonymous gate retains all three failure artifact types.
 
@@ -48,12 +48,15 @@ npm ci
 npm audit --audit-level=low
 npm test -- --runInBand
 npm run lint
+npm run docs:animations
 npm run test:e2e:anonymous
-npm run test:e2e:isolated
+sg render -c 'npm run verify:browser-gpu'
+sg render -c 'npm run test:e2e:animations'
+sg render -c 'npm run test:e2e:isolated'
 
 cd server
-go test ./...
-go build ./...
+go test -race ./...
+go build -trimpath ./...
 ```
 
 Pass only when the install is lockfile-clean, audit reports no vulnerability, client/server gates pass, system Chrome completes the anonymous route without console/page/request failures, and the temporary local stack completes the full character route. The isolated command creates uniquely suffixed `eidolon-isolated-qa-*` Docker resources, tracks ownership, removes only what it created, and refuses collisions.
@@ -102,7 +105,20 @@ Automated only with `EIDOLON_E2E_FULL_GAMEPLAY=1` and an allowlisted dedicated a
 
 Any inventory-full state, missing QA authorization, navigation softlock, kill/loot failure, incorrect instance transition, or lost persistence fails the gate.
 
-## Gate 5: two-browser multiplayer
+## Gate 5: exhaustive four-class animation matrix
+
+Automated once for each Fighter, Rogue, Wizard, and Cleric character:
+
+1. Log in/create the intended class through visible controls, set level 100 through allowlisted chat, use the fixed combat waypoint, and select High graphics through Settings.
+2. Prove Idle, ground-click Run/Walk, Ctrl-click jump/landing restoration, and a real basic attack without missing clips or non-finite transforms.
+3. Select each specialization branch through the Skills UI and cast all 13 class abilities through right-click/hotbar input.
+4. Select Low graphics, equip every declared rune through the Runes UI, and cast all 15 material variants for that class through normal input.
+5. Require the canonical presentation layer count, non-generic skeletal profile, visible effect nodes, bounded timers/effects, and a clean browser failure audit for every cast.
+6. Disable waypoint protection through `/qa-protection off`, die to a live hostile, require the Death clip, respawn through the visible button, and require state recovery.
+
+The matrix covers 52 active abilities and 60 rune variants in total. `page.evaluate()` remains read-only; it may inspect state and project coordinates but never invokes movement, abilities, effect constructors, or combat methods.
+
+## Gate 6: two-browser multiplayer and remote animation
 
 Automated when secondary credentials exist:
 
@@ -113,10 +129,12 @@ Automated when secondary credentials exist:
 5. Move the primary with a real ground click and verify the secondary observes remote displacement.
 6. Ctrl-click a real canvas destination and verify the secondary observes jump state/progress.
 7. Move both toward a shared hostile; attack/cast through primary input and verify remote combat presentation.
-8. Verify the secondary's remote primary position converges with the primary's authoritative position.
-9. Leave the party during cleanup, including failure cleanup when possible.
+8. With Cleric primary and Wizard secondary, verify remote Spirit Guardians base and boost counts, single-instance refresh, attachment, a fresh observer's state-only reconstruction, authoritative expiration, and cleanup.
+9. Verify remote Consecrated Ground and Avenging Seraph, then Wizard Fireball/projectile, Teleport displacement, and Gravity Well persistent area presentation.
+10. Verify the secondary's remote primary position converges with the primary's authoritative position and both browser failure audits remain empty.
+11. Leave the party during cleanup, including failure cleanup when possible.
 
-## Gate 6: targeted manual follow-up
+## Gate 7: targeted manual follow-up
 
 Automation covers release mechanics, not the full product-quality surface. For a release touching these areas, append the corresponding manual pass.
 
@@ -142,16 +160,16 @@ Automation covers release mechanics, not the full product-quality surface. For a
 
 ### Repro sandbox
 
-- Use `repro.html` for a two-minute rendering/VFX/menu/dungeon-beat preview before a full run.
+- Use `repro.html?gallery=1` for the deterministic production animation/VFX inventory and plain `repro.html` for a two-minute menu/dungeon-beat preview before a full run.
 - Do not cite it as live gameplay, authentication, persistence, networking, or server-authority evidence.
 
 ## Deployment and production run
 
 The production workflow performs these steps after a push to `master`:
 
-1. Run client tests/lint/audit and server tests/build on GitHub-hosted workers, then run the anonymous surface in pinned Playwright Chromium.
-2. Dispatch the disposable full-character route to the repository-scoped `eidolon-live-browser` runner and require `/usr/bin/google-chrome` before any deployment. This push-only gate generates its own temporary account and receives no production credentials.
-3. Validate dedicated QA secrets and update the server allowlist from those username secrets during deployment.
+1. Run client tests/lint/audit and server tests/build plus the Go race detector on GitHub-hosted workers, then run the anonymous surface in pinned Playwright Chromium.
+2. Dispatch hardware renderer verification, the High/Low deterministic gallery, and the complete disposable general/four-class/two-browser route to the repository-scoped `eidolon-live-browser` runner before any deployment. This push-only gate generates its own temporary accounts and receives no production credentials.
+3. Validate dedicated QA secrets and update the server allowlist with the primary account, optional legacy secondary, and four derived class usernames during deployment.
 4. Deploy Pages and the Docker server.
 5. Poll cache-busted `https://eidolon.mendola.tech/release.json` and `https://eserver.mendola.tech/healthz` until both equal the workflow SHA.
 6. Dispatch the post-deploy job to the same runner and run system Google Chrome with:
@@ -167,7 +185,8 @@ EIDOLON_EXPECTED_COMMIT=<pushed SHA>
 
 The Chrome-only origin override keeps the public production hostname and valid TLS certificate while preventing Cloudflare edge faults from starving the 30 Hz gameplay stream. Public client and server identities are still polled through their normal URLs before Chrome starts, and the frontend itself still loads through the public production URL.
 
-7. Upload the HTML report and anonymous failure screenshots/video/traces. Credentialed recordings remain off. Both character jobs are selected only by push-gated dependencies; pull-request browser work stays on GitHub-hosted infrastructure and receives neither runner access nor production credentials.
+7. Run the live anonymous/general character routes, then `npm run test:e2e:live-animations` for all four persistent class characters and Cleric/Wizard remote animation.
+8. Redact and scan every supplied credential value, then upload the sanitized HTML report and permitted evidence. Credentialed traces and video remain off. Both character jobs are selected only by push-gated dependencies; pull-request browser work stays on GitHub-hosted infrastructure and receives neither runner access nor production credentials.
 
 The current runner host stores the official repository registration under `/home/aeml/.local/share/eidolon-actions-runner`. The runner account must belong to `render` and `video`; both character jobs fail before gameplay unless Chrome reports a hardware WebGL renderer. It must remain online with the `eidolon-live-browser` label; an offline runner deliberately leaves the post-deploy gate queued rather than silently skipping gameplay. After a host restart, `scripts/start-live-browser-runner.sh` starts the configured runner under the `render` group in the detached `eidolon-actions-runner` tmux session without reading or writing QA credentials.
 

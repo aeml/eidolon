@@ -600,6 +600,32 @@ describe('menu polish regressions', () => {
         expect(document.getElementById('skill-tree-content').textContent).toContain('Excels at: melting elites and bosses with concentrated spell pressure');
     });
 
+    test('rune clicks wait for the authoritative server response before changing player state', () => {
+        buildStaticWindowDom();
+        const player = {
+            level: 100,
+            subType: 'Fighter',
+            selectedBranch: 'A',
+            unlockedSkills: ['Shield Bash', 'Iron Fortress', 'Guardian Roar', 'Bulwark'],
+            skillRunes: { 'Iron Fortress': 'ironfortress_extended' }
+        };
+        const skillTree = new SkillTreeUI({
+            getLastPlayer: () => player,
+            sendRespec: jest.fn()
+        });
+        skillTree.skillTreeMode = 'runes';
+        skillTree.onSelectRune = jest.fn();
+        skillTree.renderSkillTree('Fighter');
+
+        const thornsName = [...document.querySelectorAll('#skill-tree-content div')]
+            .find((element) => element.textContent === 'Thorns');
+        expect(thornsName).toBeDefined();
+        thornsName.click();
+
+        expect(skillTree.onSelectRune).toHaveBeenCalledWith('Iron Fortress', 'ironfortress_thorns');
+        expect(player.skillRunes['Iron Fortress']).toBe('ironfortress_extended');
+    });
+
     test('escape closes static modal first and keeps esc menu open', () => {
         buildStaticWindowDom();
         const ui = new UIManager(false);

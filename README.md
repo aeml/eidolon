@@ -149,6 +149,7 @@ npm ci
 npm test
 npm run lint
 npm audit --audit-level=low
+npm run docs:animations
 npm run test:e2e:anonymous
 ```
 
@@ -158,19 +159,23 @@ Optional smoke subset:
 npm run test:smoke
 ```
 
-Full isolated character QA (Docker and system Chrome required):
+Full isolated character and animation QA (Docker and hardware-accelerated system Chrome required):
 
 ```bash
-npm run test:e2e:isolated
+sg render -c 'npm run verify:browser-gpu'
+sg render -c 'npm run test:e2e:animations'
+sg render -c 'npm run test:e2e:isolated'
 ```
 
-This builds a per-run temporary server image, creates uniquely suffixed Mongo/API containers, a private network, and a disposable allowlisted account, executes movement, menus, combat, loot, dungeon, persistence, and reconnect through browser input, then removes only the resources it created. It refuses resource collisions or an occupied port; override the default port with `EIDOLON_ISOLATED_QA_PORT`.
+The deterministic gallery renders every canonical base/rune presentation and every actor inventory entry at High and Low quality through production rendering code. The isolated route builds a per-run temporary server image, creates uniquely suffixed Mongo/API containers, a private network, and disposable allowlisted characters. It executes the general character route, all four class locomotion/death and ability/rune matrices, and the two-browser remote-animation matrix through visible input, then removes only the resources it created. It refuses resource collisions or an occupied port; override the default port with `EIDOLON_ISOLATED_QA_PORT`.
+
+The generated canonical inventory is [docs/ANIMATION_COVERAGE.md](docs/ANIMATION_COVERAGE.md). Edit its source manifests and regenerate it; do not hand-edit its tables.
 
 Server validation from `server/`:
 
 ```bash
-go test ./...
-go build ./...
+go test -race ./...
+go build -trimpath ./...
 ```
 
 Notes:
@@ -186,7 +191,7 @@ Notes:
 - Client identity: `https://eidolon.mendola.tech/release.json`
 - Server readiness and identity: `https://eserver.mendola.tech/healthz`
 - Both endpoints report the deployed Git commit. The deployment workflow polls until they match the pushed SHA, then runs the live Playwright suite.
-- `/level`, `/qa-waypoint <combat|verdant>`, and `/qa-loot-next` are release-QA commands. They are disabled unless the authenticated username appears in the server's `EIDOLON_QA_USERNAMES` allowlist. Waypoints are fixed, grant a bounded five-minute protection window, and cannot teleport into an active dungeon; the loot command makes the next accepted basic attack kill its normal-enemy target and guarantees that kill's regular loot path yields equipment.
+- `/level`, `/qa-waypoint <combat|verdant>`, `/qa-loot-next`, `/qa-disconnect`, `/qa-animation-ready [low-health|persistent]`, and `/qa-protection off` are release-QA commands. They are disabled unless the authenticated username appears in the server's `EIDOLON_QA_USERNAMES` allowlist. Animation readiness restores bounded resources/cooldowns; `low-health` permits the Last Stand input path, and `persistent` extends only the next Spirit Guardians activation/boost long enough to prove late-join reconstruction. Protection can only be turned off after the fixed combat waypoint so death/respawn remains real server-authoritative gameplay.
 
 ## Project Status
 
@@ -198,8 +203,8 @@ Notes:
 
 Verification state as of July 20, 2026:
 
-- Implemented and unit-tested: locked/self-hosted browser runtimes, QA command authorization, disposable load-test credentials, health/release identity, and deployment SHA gates.
-- Locally browser-tested: anonymous start screen, Patch Notes/Escape, vendored asset load, console/page/request failures, production WebSocket connectivity, and a disposable full-character route covering visible Low-graphics selection, movement, menus, combat/abilities, kill/loot/inventory, dungeon entry/exit, persistence, and reconnect in hardware-accelerated system Chrome.
+- Implemented and unit-tested: locked/self-hosted browser runtimes, QA command authorization, canonical coverage for 52 active abilities, 60 rune variants, and 47 actor archetypes, persistent animation-state replication, disposable test credentials, health/release identity, and deployment SHA gates.
+- Locally browser-tested: the deterministic High/Low animation gallery, four real-input class matrices covering locomotion/basic attack/death and every canonical ability/rune, two-process remote VFX including Spirit Guardians late-join/expiration, plus the anonymous and general disposable character routes in hardware-accelerated system Chrome.
 - Live production-tested: deployed SHA `634280a` passed the anonymous surface, persistent-character movement/menus/reconnect, extended combat/loot/dungeon/persistence route, and two-client party/presence/movement/jump/combat convergence in hardware-accelerated system Chrome.
 - The full evidence record and workflow link are retained in `docs/plans/live-browser-qa-checklist.md`.
 

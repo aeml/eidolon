@@ -18,8 +18,11 @@
     "test:e2e:anonymous": "playwright test tests/e2e/anonymous.spec.js",
     "test:e2e:authenticated": "playwright test tests/e2e/authenticated.spec.js",
     "test:e2e:isolated": "bash scripts/run-isolated-character-qa.sh",
+    "test:e2e:live-animations": "bash scripts/run-live-animation-qa.sh",
     "test:e2e:multiplayer": "playwright test tests/e2e/multiplayer.spec.js",
+    "test:e2e:animations": "playwright test tests/e2e/animation-gallery.spec.js",
     "verify:browser-gpu": "node scripts/verify-browser-gpu.mjs",
+    "docs:animations": "node scripts/generate-animation-coverage.mjs",
     "lint": "eslint src tests scripts playwright.config.js --max-warnings=0"
   },
   "dependencies": {

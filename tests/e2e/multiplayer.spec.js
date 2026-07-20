@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { CONSTANTS } from '../../src/core/Constants.js';
 import {
     backendOriginBrowserArgs,
     hardwareWebGLBrowserArgs
@@ -6,10 +7,12 @@ import {
 import {
     collectBrowserFailures,
     credentialsFromEnvironment,
+    ensureDungeonReadyLevel,
     findOverworldTarget,
     loginAndEnterWorld,
     moveByGroundClick,
     projectEntity,
+    projectGroundOffset,
     selectLowGraphicsThroughSettings,
     useCombatQAWaypoint
 } from './helpers.js';
@@ -26,8 +29,10 @@ async function pressBodyKey(page, key) {
 
 async function dismissChatIfVisible(page) {
     const chatBox = page.locator('#chat-box');
-    if (!await chatBox.isVisible()) return;
-    await pressBodyKey(page, 'Escape');
+    for (let attempt = 0; attempt < 4 && await chatBox.isVisible(); attempt += 1) {
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(100);
+    }
     await expect(chatBox).toBeHidden();
 }
 
@@ -50,6 +55,120 @@ async function leavePartyIfPresent(page) {
     await page.locator('#btn-leave-party').click();
     await expect.poll(inParty, { timeout: 20_000 }).toBe(false);
     await closeSocialWindow(page);
+}
+
+async function prepareAnimationCast(page, persistent = false) {
+    const sequence = await page.evaluate(() => window.game?.animationQAReadySequence || 0);
+    const chatInput = page.locator('#chat-input');
+    if (!await chatInput.evaluate((element) => element === document.activeElement)) {
+        await page.keyboard.press('Enter');
+    }
+    await expect(chatInput).toBeFocused();
+    await chatInput.fill(`/qa-animation-ready${persistent ? ' persistent' : ''}`);
+    await chatInput.press('Enter');
+    await expect(page.locator('#chat-messages')).toContainText(
+        persistent
+            ? 'Animation QA readiness restored for persistent-effect reconstruction.'
+            : 'Animation QA readiness restored.', {
+        timeout: 20_000
+        });
+    if (await chatInput.evaluate((element) => element === document.activeElement)) {
+        await page.keyboard.press('Escape');
+    }
+    await dismissChatIfVisible(page);
+    await expect.poll(() => page.evaluate(() => window.game?.animationQAReadySequence || 0), {
+        timeout: 20_000
+    }).toBeGreaterThan(sequence);
+}
+
+async function selectBranch(page, className, branch) {
+    const expectedSkills = [2, 3, 4, 5].map((tier) =>
+        CONSTANTS.SKILL_TREES[className][`Branch${branch}`][`Tier${tier}`].name
+    );
+    const current = await page.evaluate(() => ({
+        branch: window.game?.player?.selectedBranch,
+        hotbar: window.game?.player?.hotbar || []
+    }));
+    if (current.branch === branch && expectedSkills.every((skill, index) => current.hotbar[index] === skill)) {
+        return expectedSkills;
+    }
+
+    await dismissChatIfVisible(page);
+    await pressBodyKey(page, 'k');
+    const skillWindow = page.locator('#skill-tree-window');
+    await expect(skillWindow).toBeVisible();
+    await skillWindow.getByRole('button', { name: 'Skills', exact: true }).click();
+    const branchCard = page.locator('.skill-branch').nth(['A', 'B', 'C'].indexOf(branch));
+    const selectButton = branchCard.getByRole('button', { name: 'Select Spec' });
+    if (await selectButton.count()) await selectButton.click();
+    await expect.poll(() => page.evaluate(() => window.game?.player?.selectedBranch), {
+        timeout: 20_000
+    }).toBe(branch);
+    await expect.poll(() => page.evaluate(() => window.game?.player?.hotbar || []), {
+        timeout: 20_000
+    }).toEqual(expectedSkills);
+    await pressBodyKey(page, 'Escape');
+    await expect(skillWindow).toBeHidden();
+    return expectedSkills;
+}
+
+async function remotePlayerSnapshot(page, username) {
+    return page.evaluate((remoteUsername) => {
+        const game = window.game;
+        const entity = [...(game?.remotePlayers?.values?.() || [])]
+            .find((candidate) => candidate?.name === remoteUsername);
+        if (!entity) return null;
+        const spiritGroups = game?.renderSystem?.effectGroup?.children?.filter?.((child) =>
+            child?.userData?.effectType === 'spirit_guardians' &&
+            child?.userData?.ownerId === entity.id
+        ) || [];
+        return {
+            id: entity.id,
+            partyId: entity.partyId,
+            state: entity.state,
+            currentAnimation: entity.currentAnimationName || null,
+            jumpProgress: entity.jumpProgress,
+            x: entity.position?.x,
+            z: entity.position?.z,
+            lastAbility: entity.lastRemoteAbilityPresentation || null,
+            spiritsActive: Boolean(entity.spiritsActive),
+            spiritBoosted: Boolean(entity.spiritBoosted),
+            spiritDuration: Number(entity.spiritDuration || 0),
+            guardianCount: entity.spiritEffect?.guardians?.length || 0,
+            spiritGroupCount: spiritGroups.length,
+            spiritFollowDistance: entity.spiritEffect?.group?.position?.distanceTo?.(entity.position) ?? null
+        };
+    }, username);
+}
+
+async function castAndObserveRemote(sourcePage, observerPage, sourceUsername, skillName, key) {
+    await prepareAnimationCast(sourcePage);
+    let target = null;
+    await expect.poll(async () => {
+        target = await projectGroundOffset(sourcePage, 6, 2);
+        return Boolean(target?.canvas);
+    }, { timeout: 8_000 }).toBe(true);
+    const previous = (await remotePlayerSnapshot(observerPage, sourceUsername))?.lastAbility?.timestamp || -1;
+    await sourcePage.mouse.move(target.x, target.y);
+    if (key === 'right') {
+        await sourcePage.mouse.click(target.x, target.y, { button: 'right' });
+    } else {
+        await sourcePage.keyboard.press(key);
+    }
+    await observerPage.bringToFront();
+    await expect.poll(async () => {
+        const presentation = (await remotePlayerSnapshot(observerPage, sourceUsername))?.lastAbility;
+        return Boolean(presentation?.skillName === skillName && presentation.timestamp > previous);
+    }, {
+        message: `${skillName} must play through the remote production VFX route`,
+        timeout: 15_000,
+        intervals: [25, 50, 100, 250]
+    }).toBe(true);
+    const snapshot = await remotePlayerSnapshot(observerPage, sourceUsername);
+    expect(snapshot.lastAbility.fallback).toBe(false);
+    expect(snapshot.lastAbility.layerCount).toBeGreaterThan(0);
+    expect(snapshot.currentAnimation).toMatch(/^(Attack|Run|Walk|Idle)$/);
+    return snapshot;
 }
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
@@ -84,6 +203,7 @@ test.describe('two-account multiplayer', () => {
             phase('loading primary character');
             await firstPage.bringToFront();
             await loginAndEnterWorld(firstPage, primary);
+            await ensureDungeonReadyLevel(firstPage, 100);
             // A real user can lower rendering cost before opening another game.
             // This keeps two production WebGL clients responsive on the
             // repository runner without bypassing gameplay or mutating page state.
@@ -91,6 +211,7 @@ test.describe('two-account multiplayer', () => {
             phase('loading secondary character');
             await secondPage.bringToFront();
             await loginAndEnterWorld(secondPage, secondary);
+            await ensureDungeonReadyLevel(secondPage, 100);
             await selectLowGraphicsThroughSettings(secondPage);
 
             // Persistent accounts may retain a party across disconnects. Start
@@ -106,18 +227,7 @@ test.describe('two-account multiplayer', () => {
             await useCombatQAWaypoint(secondPage);
             phase('colocated characters');
 
-            const remoteSnapshot = (page, username) => page.evaluate((remoteUsername) => {
-                const entity = [...(window.game?.remotePlayers?.values?.() || [])]
-                    .find((candidate) => candidate?.name === remoteUsername);
-                return entity ? {
-                    id: entity.id,
-                    partyId: entity.partyId,
-                    state: entity.state,
-                    jumpProgress: entity.jumpProgress,
-                    x: entity.position?.x,
-                    z: entity.position?.z
-                } : null;
-            }, username);
+            const remoteSnapshot = remotePlayerSnapshot;
 
             await expect.poll(() => remoteSnapshot(firstPage, secondary.username), { timeout: 30_000 }).not.toBeNull();
             await expect.poll(() => remoteSnapshot(secondPage, primary.username), { timeout: 30_000 }).not.toBeNull();
@@ -192,6 +302,227 @@ test.describe('two-account multiplayer', () => {
             }
             phase('formed fresh replicated party');
             await closeSocialWindow(firstPage);
+
+            if (primary.characterClass === 'Cleric') {
+                phase('verifying remote Spirit Guardians lifecycle');
+                await firstPage.bringToFront();
+                await castAndObserveRemote(
+                    firstPage,
+                    secondPage,
+                    primary.username,
+                    'Spirit Guardians',
+                    'right'
+                );
+                try {
+                    await expect.poll(async () => {
+                        const remote = await remoteSnapshot(secondPage, primary.username);
+                        return {
+                            active: remote?.spiritsActive,
+                            count: remote?.guardianCount,
+                            groups: remote?.spiritGroupCount,
+                            attached: Number(remote?.spiritFollowDistance) < 0.4
+                        };
+                    }, { timeout: 10_000 }).toEqual({
+                        active: true,
+                        count: 3,
+                        groups: 1,
+                        attached: true
+                    });
+                } catch (error) {
+                    const [local, remote] = await Promise.all([
+                        firstPage.evaluate(() => ({
+                            active: window.game?.player?.spiritsActive,
+                            boosted: window.game?.player?.spiritBoosted,
+                            duration: window.game?.player?.spiritDuration,
+                            socket: window.game?.network?.socket?.readyState,
+                            queued: window.game?.network?.messageQueue?.length
+                        })),
+                        remoteSnapshot(secondPage, primary.username)
+                    ]);
+                    throw new Error(`Spirit Guardians did not become remotely persistent: ${JSON.stringify({ local, remote })}`, {
+                        cause: error
+                    });
+                }
+
+                await selectBranch(firstPage, 'Cleric', 'B');
+                await castAndObserveRemote(
+                    firstPage,
+                    secondPage,
+                    primary.username,
+                    'Spirit Guardians Boost',
+                    '3'
+                );
+                await expect.poll(async () => {
+                    const remote = await remoteSnapshot(secondPage, primary.username);
+                    return {
+                        active: remote?.spiritsActive,
+                        boosted: remote?.spiritBoosted,
+                        count: remote?.guardianCount,
+                        groups: remote?.spiritGroupCount
+                    };
+                }, { timeout: 10_000 }).toEqual({
+                    active: true,
+                    boosted: true,
+                    count: 5,
+                    groups: 1
+                });
+
+                // Refresh through the real hotbar path, then replace the
+                // observer runtime while the server-authoritative aura is live.
+                // The fresh page must reconstruct one boosted orbit set from
+                // the state stream rather than relying on the original cast event.
+                await castAndObserveRemote(
+                    firstPage,
+                    secondPage,
+                    primary.username,
+                    'Spirit Guardians Boost',
+                    '3'
+                );
+                await secondPage.bringToFront();
+                await secondPage.reload({ waitUntil: 'domcontentloaded' });
+                await expect(secondPage.locator('#game-title')).toHaveText('EIDOLON ONLINE');
+                await secondPage.locator('#auth-username').fill(secondary.username);
+                await secondPage.locator('#auth-password').fill(secondary.password);
+                await secondPage.locator('#btn-login').click();
+                await expect(secondPage.locator('#auth-status')).toHaveCSS('color', 'rgb(76, 175, 80)', {
+                    timeout: 20_000
+                });
+                await expect(secondPage.locator('#btn-play-character')).toBeVisible();
+
+                // The replacement browser is authenticated but has not joined
+                // the world, so it cannot receive the cast event. Refresh the
+                // aura through normal source input, then join and require the
+                // first authoritative snapshot to reconstruct it.
+                await firstPage.bringToFront();
+                await prepareAnimationCast(firstPage, true);
+                let refreshTarget = null;
+                await expect.poll(async () => {
+                    refreshTarget = await projectGroundOffset(firstPage, 6, 2);
+                    return Boolean(refreshTarget?.canvas);
+                }, { timeout: 8_000 }).toBe(true);
+                const priorLocalPresentation = await firstPage.evaluate(() =>
+                    window.game?.player?.lastAbilityPresentation?.timestamp || -1
+                );
+                await firstPage.mouse.move(refreshTarget.x, refreshTarget.y);
+                await firstPage.keyboard.press('3');
+                await expect.poll(() => firstPage.evaluate((previous) => {
+                    const presentation = window.game?.player?.lastAbilityPresentation;
+                    return Boolean(
+                        presentation?.skillName === 'Spirit Guardians Boost' &&
+                        presentation.timestamp > previous
+                    );
+                }, priorLocalPresentation), { timeout: 8_000 }).toBe(true);
+
+                await secondPage.bringToFront();
+                await secondPage.locator('#btn-play-character').click();
+                await expect.poll(() => secondPage.evaluate(() => Boolean(
+                    window.game?.player?.position &&
+                    window.game?._firstStateReceived &&
+                    window.game?.network?.socket?.readyState === WebSocket.OPEN
+                )), { timeout: 45_000 }).toBe(true);
+                await expect.poll(async () => {
+                    const remote = await remoteSnapshot(secondPage, primary.username);
+                    return {
+                        active: remote?.spiritsActive,
+                        boosted: remote?.spiritBoosted,
+                        count: remote?.guardianCount,
+                        groups: remote?.spiritGroupCount,
+                        attached: Number(remote?.spiritFollowDistance) < 0.4
+                    };
+                }, { timeout: 12_000 }).toEqual({
+                    active: true,
+                    boosted: true,
+                    count: 5,
+                    groups: 1,
+                    attached: true
+                });
+                await expect(secondPage.locator('#loading-screen')).toBeHidden({ timeout: 120_000 });
+                await selectLowGraphicsThroughSettings(secondPage);
+                phase('verified Spirit Guardians refresh and join-in-progress reconstruction');
+
+                await firstPage.bringToFront();
+                await castAndObserveRemote(
+                    firstPage,
+                    secondPage,
+                    primary.username,
+                    'Spirit Guardians Boost',
+                    '3'
+                );
+
+                await expect.poll(async () => {
+                    const remote = await remoteSnapshot(secondPage, primary.username);
+                    return {
+                        active: remote?.spiritsActive,
+                        count: remote?.guardianCount,
+                        groups: remote?.spiritGroupCount
+                    };
+                }, { timeout: 18_000 }).toEqual({ active: false, count: 0, groups: 0 });
+                phase('verified Spirit Guardians authoritative expiration and cleanup');
+
+                await firstPage.bringToFront();
+                await castAndObserveRemote(
+                    firstPage,
+                    secondPage,
+                    primary.username,
+                    'Consecrated Ground',
+                    '2'
+                );
+                const priorSeraphIds = await secondPage.evaluate(() =>
+                    [...(window.game?.remotePlayers?.values?.() || [])]
+                        .filter((candidate) =>
+                            (candidate?.subType || candidate?.meshType || candidate?.constructor?.name) === 'AvengingSeraph'
+                        )
+                        .map((candidate) => candidate.id)
+                );
+                await castAndObserveRemote(
+                    firstPage,
+                    secondPage,
+                    primary.username,
+                    'Avenging Seraph',
+                    '4'
+                );
+                await expect.poll(() => secondPage.evaluate((beforeIds) =>
+                    [...(window.game?.remotePlayers?.values?.() || [])].some((candidate) =>
+                        (candidate?.subType || candidate?.meshType || candidate?.constructor?.name) === 'AvengingSeraph' &&
+                        !beforeIds.includes(candidate.id)
+                    ), priorSeraphIds), { timeout: 15_000 }).toBe(true);
+                phase('verified remote ground effect and summon categories');
+            }
+
+            if (secondary.characterClass === 'Wizard') {
+                phase('verifying remote projectile, teleport, and area categories');
+                await secondPage.bringToFront();
+                await castAndObserveRemote(
+                    secondPage,
+                    firstPage,
+                    secondary.username,
+                    'Fireball',
+                    'right'
+                );
+                await selectBranch(secondPage, 'Wizard', 'C');
+                const beforeTeleport = await remoteSnapshot(firstPage, secondary.username);
+                await castAndObserveRemote(
+                    secondPage,
+                    firstPage,
+                    secondary.username,
+                    'Teleport',
+                    '1'
+                );
+                await expect.poll(async () => {
+                    const remote = await remoteSnapshot(firstPage, secondary.username);
+                    return Math.hypot(remote.x - beforeTeleport.x, remote.z - beforeTeleport.z);
+                }, { timeout: 15_000 }).toBeGreaterThan(0.5);
+                await castAndObserveRemote(
+                    secondPage,
+                    firstPage,
+                    secondary.username,
+                    'Gravity Well',
+                    '3'
+                );
+                phase('verified remote projectile, forced movement, and persistent-area visuals');
+                await useCombatQAWaypoint(firstPage);
+            }
+
             const beforeMovement = await remoteSnapshot(secondPage, primary.username);
             await moveByGroundClick(firstPage, 20, 0);
 
@@ -226,12 +557,28 @@ test.describe('two-account multiplayer', () => {
             const hostile = await findOverworldTarget(firstPage);
             phase('acquired shared hostile');
             await firstPage.mouse.click(hostile.x, hostile.y);
-            await pressBodyKey(firstPage, '1');
             await expect.poll(async () => {
                 const remote = await remoteSnapshot(secondPage, primary.username);
-                return remote?.state === 'ATTACKING' || remote?.state === 'CASTING';
-            }, { timeout: 20_000, intervals: [50, 100, 250] }).toBe(true);
-            phase('verified remote combat presentation');
+                return Boolean(
+                    remote?.state === 'ATTACKING' ||
+                    remote?.currentAnimation === 'Attack'
+                );
+            }, {
+                message: 'the observer must render the real-input basic attack',
+                timeout: 30_000,
+                intervals: [25, 50, 100, 250]
+            }).toBe(true);
+            phase('verified remote basic-attack presentation');
+
+            const expectedCombatSkill = await firstPage.evaluate(() => window.game?.player?.hotbar?.[0] || '');
+            await castAndObserveRemote(
+                firstPage,
+                secondPage,
+                primary.username,
+                expectedCombatSkill,
+                '1'
+            );
+            phase('verified remote ability presentation after combat');
 
             const primaryPosition = await firstPage.evaluate(() => ({
                 x: window.game.player.position.x,

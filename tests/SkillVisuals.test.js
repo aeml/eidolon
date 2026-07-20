@@ -17,14 +17,19 @@ describe('skill visuals registry', () => {
         });
     });
 
-    test('resolves wizard meteor as intentionally handled without spawn payload', () => {
+    test('resolves wizard meteor into explicit telegraph and impact layers', () => {
         const entity = Object.create(Wizard.prototype);
         entity.position = new THREE.Vector3(0, 0, 0);
         const target = new THREE.Vector3(7, 0, 8);
 
         const visual = resolveRemoteSkillVisual(entity, 'Meteor Drop', target);
 
-        expect(visual).toEqual({ handled: true });
+        expect(visual).toEqual({
+            layers: [
+                { color: 0xff3324, type: 'telegraph', origin: target },
+                { color: 0xff9b32, type: 'ring', origin: target }
+            ]
+        });
     });
 
     test('returns class fallback when skill is unmapped', () => {

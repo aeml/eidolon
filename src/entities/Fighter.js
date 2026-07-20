@@ -7,7 +7,7 @@ import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
 export class Fighter extends Actor {
     constructor(id) {
         super(id, CONSTANTS.ENTITIES.FIGHTER);
-        this.scaleAnimSpeed = false;
+        this.scaleAnimSpeed = true;
         this.meshType = 'Fighter';
         
         this.abilityName = "Charge";
@@ -22,6 +22,11 @@ export class Fighter extends Actor {
     }
 
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
+        const requestedSkill = skillNameOverride || this.abilityName;
+        if (requestedSkill === 'Last Stand Rampage' && this.stats.hp / this.stats.maxHp >= 0.30) {
+            gameEngine?.floatingTextManager?.spawn?.('HP too high!', this.position, '#888888');
+            return false;
+        }
         if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) return;
 
         this.gameEngine = gameEngine;
@@ -35,7 +40,6 @@ export class Fighter extends Actor {
             this.whirlwindTimer = 0;
             this.whirlwindDuration = 1.0; // Spin for 1 second
             this.state = 'ATTACKING';
-            this.playAnimation('Attack'); // Or a spin animation if available
             
             // Override Cooldown for Whirlwind (e.g. 10s)
             this.setSkillCooldown("Whirlwind", 10.0);
@@ -47,7 +51,6 @@ export class Fighter extends Actor {
         if (skill === "Shield Slam") {
             if (!this.unlockedSkills.includes("Shield Slam")) return;
             console.log("Fighter used Shield Slam!");
-            this.playAnimation('Attack', false, true);
             
             // Override Cooldown for Shield Slam (e.g. 6s)
             this.setSkillCooldown("Shield Slam", 6.0);
@@ -91,8 +94,6 @@ export class Fighter extends Actor {
         if (skill === "Iron Fortress") {
             if (!this.unlockedSkills.includes("Iron Fortress")) return;
             console.log("Fighter used Iron Fortress!");
-            // Buff Animation (maybe a shout or just a particle)
-            this.playAnimation('Idle', false, true); // No specific anim, just reset
             
             // Duration 30s
             this.ironFortressTimer = 30.0;
@@ -114,7 +115,6 @@ export class Fighter extends Actor {
         if (skill === "Guardian Roar") {
             if (!this.unlockedSkills.includes("Guardian Roar")) return;
             console.log("Fighter used Guardian Roar!");
-            this.playAnimation('Attack', false, true); // Shout anim?
             
             // Cooldown 30s
             this.setSkillCooldown("Guardian Roar", 30.0);
@@ -152,7 +152,6 @@ export class Fighter extends Actor {
         if (skill === "Sweeping Strike") {
             if (!this.unlockedSkills.includes("Sweeping Strike")) return;
             console.log("Fighter used Sweeping Strike!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 4s
             this.setSkillCooldown("Sweeping Strike", 4.0);
@@ -190,7 +189,6 @@ export class Fighter extends Actor {
         if (skill === "Earthshaker") {
             if (!this.unlockedSkills.includes("Earthshaker")) return;
             console.log("Fighter used Earthshaker!");
-            this.playAnimation('Attack', false, true); // Smash anim
             
             // Cooldown 12s
             this.setSkillCooldown("Earthshaker", 12.0);
@@ -227,7 +225,6 @@ export class Fighter extends Actor {
 
         if (skill === "Unbreakable Grip") {
             console.log("Fighter used Unbreakable Grip!");
-            this.playAnimation('Attack', false, true); // Pull anim
             
             // Cooldown 15s
             const cdr = this.stats.cooldownReduction || 0;
@@ -271,7 +268,6 @@ export class Fighter extends Actor {
 
         if (skill === "Juggernaut Charge") {
             console.log("Fighter used Juggernaut Charge (Shockwave)!");
-            this.playAnimation('Attack', false, true); // Stomp/Roar
             
             // Cooldown 20s
             const cdr = this.stats.cooldownReduction || 0;
@@ -314,8 +310,6 @@ export class Fighter extends Actor {
             // Usually passives are always on, but if it's a skill slot, maybe it's an active that enables this state?
             // Or maybe it's a short term buff. Let's make it a self-buff for now that enables the passive check.
             
-            this.playAnimation('Idle', false, true);
-            
             // Cooldown 45s
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Berserker Edge"] = 45.0 * (1 - cdr);
@@ -338,7 +332,6 @@ export class Fighter extends Actor {
             
             this.isCharging = true;
             this.state = 'ATTACKING';
-            this.playAnimation('Run');
             this.chargeTarget = targetVector.clone();
             
             // Mark this charge as Shattering
@@ -363,7 +356,6 @@ export class Fighter extends Actor {
             this.whirlwindTimer = 0;
             this.whirlwindDuration = 1.5; // Longer spin
             this.state = 'ATTACKING';
-            this.playAnimation('Attack');
             
             // Mark as Executioner
             this.isExecutionerSpin = true;
@@ -386,8 +378,6 @@ export class Fighter extends Actor {
                 return false; // Failed to cast
             }
             
-            this.playAnimation('Attack', false, true); // Roar
-            
             // Cooldown 120s (Ultimate)
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Last Stand Rampage"] = 120.0 * (1 - cdr);
@@ -405,7 +395,6 @@ export class Fighter extends Actor {
         console.log("Fighter used Charge!");
         this.isCharging = true;
         this.state = 'ATTACKING'; // Lock movement
-        this.playAnimation('Run'); // Fast run
         
         // Calculate charge direction
         this.chargeTarget = targetVector.clone();
@@ -609,6 +598,7 @@ export class Fighter extends Actor {
     }
 
     spawnVisualEffect(gameEngine, position, color, type) {
+        if (this.shouldSuppressLegacyCastVisual()) return;
         if (!gameEngine || (!gameEngine.effectScene && !gameEngine.scene && typeof gameEngine.spawnTransientEffect !== 'function')) return;
         if (typeof gameEngine.spawnTransientEffect === 'function' && gameEngine.spawnTransientEffect(type, position, color, { source: this })) {
             return;

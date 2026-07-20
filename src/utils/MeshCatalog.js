@@ -3,21 +3,25 @@ const PRELOAD_MODEL_PATHS = [
     './assets/archetypes/Fighter/walk.glb',
     './assets/archetypes/Fighter/run.glb',
     './assets/archetypes/Fighter/attack.glb',
+    './assets/archetypes/Fighter/death.glb',
 
     './assets/archetypes/Wizard/idle.glb',
     './assets/archetypes/Wizard/walk.glb',
     './assets/archetypes/Wizard/run.glb',
     './assets/archetypes/Wizard/attack.glb',
+    './assets/archetypes/Wizard/death.glb',
 
     './assets/archetypes/Rogue/idle.glb',
     './assets/archetypes/Rogue/walk.glb',
     './assets/archetypes/Rogue/run.glb',
     './assets/archetypes/Rogue/attack.glb',
+    './assets/archetypes/Rogue/death.glb',
 
     './assets/archetypes/Cleric/idle.glb',
     './assets/archetypes/Cleric/walk.glb',
     './assets/archetypes/Cleric/run.glb',
     './assets/archetypes/Cleric/attack.glb',
+    './assets/archetypes/Cleric/death.glb',
 
     './assets/enemies/undead/skeleton/idle.glb',
     './assets/enemies/undead/skeleton/walk.glb',

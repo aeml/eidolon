@@ -615,6 +615,47 @@ func (w *World) ArmPlayerQAGuaranteedLoot(playerID string) bool {
 	return true
 }
 
+// PreparePlayerForAnimationQA refills one dedicated QA character and clears
+// only its ability readiness gates. Authorization is enforced by the chat
+// command layer. It never creates an effect, ability event, target, or damage.
+func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persistent bool) bool {
+	player := w.GetEntity(playerID)
+	if player == nil || player.Type != TypePlayer {
+		return false
+	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	player.Mana = player.MaxMana
+	player.Health = player.MaxHealth
+	if lowHealth {
+		player.Health = max(1, player.MaxHealth/4)
+	}
+	player.AbilityCooldown = 0
+	player.LastAbilityTime = time.Time{}
+	player.Cooldowns = make(map[string]time.Time)
+	player.QAPersistentDuration = 0
+	if persistent {
+		player.QAPersistentDuration = 45 * time.Second
+	}
+	if player.State != "DEAD" {
+		player.State = "IDLE"
+	}
+	return true
+}
+
+// DisablePlayerQAProtection lets a dedicated QA character exercise a genuine
+// hostile damage/death/respawn path after using a protected fixed waypoint.
+func (w *World) DisablePlayerQAProtection(playerID string) bool {
+	player := w.GetEntity(playerID)
+	if player == nil || player.Type != TypePlayer {
+		return false
+	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	player.InvulnerableEndTime = time.Time{}
+	return true
+}
+
 // ============================================================
 // SKILL RUNE SYSTEM
 // Each skill can have one rune equipped from 3 options

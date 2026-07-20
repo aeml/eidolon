@@ -132,4 +132,27 @@ describe('MeshFactory catalog integration', () => {
         expect(MeshFactory.PROCEDURAL_ENEMY_SPECS).toBe(MeshCatalog.getProceduralEnemySpecs());
         expect(MeshFactory.PROCEDURAL_ENEMY_SPECS.Cindermaw.shape).toBe('beast');
     });
+
+    test('procedural enemies ship explicit idle, movement, attack, and death clips', () => {
+        const mesh = MeshFactory.createProceduralEnemy(
+            'Cindermaw',
+            MeshFactory.PROCEDURAL_ENEMY_SPECS.Cindermaw
+        );
+        const clips = Object.fromEntries(mesh.userData.animations.map((clip) => [clip.name, clip]));
+
+        expect(Object.keys(clips)).toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+        expect(clips.Idle.tracks.length).toBeGreaterThan(0);
+        expect(clips.Attack.tracks.length).toBeGreaterThan(0);
+        expect(clips.Death.tracks.length).toBeGreaterThan(0);
+
+        const firstPart = mesh.getObjectByName('ProceduralPart0');
+        const originalRotation = firstPart.rotation.x;
+        const mixer = new THREE.AnimationMixer(mesh);
+        mixer.clipAction(clips.Attack).reset().play();
+        mixer.update(0.28);
+
+        expect(firstPart.rotation.x).not.toBeCloseTo(originalRotation, 4);
+        mixer.stopAllAction();
+        mixer.uncacheRoot(mesh);
+    });
 });

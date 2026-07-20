@@ -513,6 +513,7 @@ export class MeshFactory {
                     material = this._getProceduralTransMat(`${type}:${i}`, spec, d.opacity);
                 }
                 const mesh = new THREE.Mesh(d.geo, material);
+                mesh.name = `ProceduralPart${i}`;
                 mesh.position.set(d.pos[0], d.pos[1], d.pos[2]);
                 mesh.rotation.set(d.rot[0], d.rot[1], d.rot[2]);
                 mesh.castShadow = true;
@@ -526,11 +527,15 @@ export class MeshFactory {
                 new THREE.BoxGeometry(0.6, 1.2, 0.6),
                 new THREE.MeshStandardMaterial({ color: 0xff00ff, wireframe: true })
             );
+            placeholder.name = 'ProceduralPart0';
             placeholder.position.y = 0.6;
             placeholder.castShadow = true;
             placeholder.receiveShadow = true;
             group.add(placeholder);
         }
+
+        group.userData.proceduralShape = shape;
+        group.userData.animations = this.createProceduralAnimationClips(group.children);
 
         // Scale the whole group
         group.scale.set(s, s, s);
@@ -549,6 +554,84 @@ export class MeshFactory {
         group.add(hitMesh);
 
         return group;
+    }
+
+    static createProceduralAnimationClips(parts) {
+        const animatedParts = [...parts].filter((part) => part?.isMesh && /^ProceduralPart\d+$/.test(part.name));
+        if (animatedParts.length === 0) return [];
+
+        const idleTracks = [];
+        const walkTracks = [];
+        const runTracks = [];
+        const attackTracks = [];
+        const deathTracks = [];
+
+        animatedParts.forEach((part, index) => {
+            const path = part.name;
+            const baseY = part.position.y;
+            const baseRotX = part.rotation.x;
+            const baseRotZ = part.rotation.z;
+            const phase = index % 2 === 0 ? 1 : -1;
+            const movementAmount = index === 0 ? 0.08 : 0.16;
+
+            idleTracks.push(new THREE.NumberKeyframeTrack(
+                `${path}.position[y]`,
+                [0, 0.75, 1.5],
+                [baseY, baseY + 0.035 + (index % 3) * 0.006, baseY]
+            ));
+
+            walkTracks.push(new THREE.NumberKeyframeTrack(
+                `${path}.rotation[x]`,
+                [0, 0.4, 0.8],
+                [baseRotX - movementAmount * phase, baseRotX + movementAmount * phase, baseRotX - movementAmount * phase]
+            ));
+            walkTracks.push(new THREE.NumberKeyframeTrack(
+                `${path}.position[y]`,
+                [0, 0.2, 0.4, 0.6, 0.8],
+                [baseY, baseY + 0.035, baseY, baseY + 0.035, baseY]
+            ));
+
+            runTracks.push(new THREE.NumberKeyframeTrack(
+                `${path}.rotation[x]`,
+                [0, 0.24, 0.48],
+                [baseRotX - movementAmount * 1.45 * phase, baseRotX + movementAmount * 1.45 * phase, baseRotX - movementAmount * 1.45 * phase]
+            ));
+            runTracks.push(new THREE.NumberKeyframeTrack(
+                `${path}.position[y]`,
+                [0, 0.12, 0.24, 0.36, 0.48],
+                [baseY, baseY + 0.06, baseY, baseY + 0.06, baseY]
+            ));
+
+            attackTracks.push(new THREE.NumberKeyframeTrack(
+                `${path}.rotation[x]`,
+                [0, 0.18, 0.38, 0.62],
+                [baseRotX, baseRotX - (0.18 + index * 0.015), baseRotX + (0.34 + index * 0.02), baseRotX]
+            ));
+            attackTracks.push(new THREE.NumberKeyframeTrack(
+                `${path}.rotation[z]`,
+                [0, 0.18, 0.38, 0.62],
+                [baseRotZ, baseRotZ - 0.08 * phase, baseRotZ + 0.12 * phase, baseRotZ]
+            ));
+
+            deathTracks.push(new THREE.NumberKeyframeTrack(
+                `${path}.position[y]`,
+                [0, 0.32, 0.85],
+                [baseY, baseY, Math.max(0.04, baseY * 0.22)]
+            ));
+            deathTracks.push(new THREE.NumberKeyframeTrack(
+                `${path}.rotation[z]`,
+                [0, 0.32, 0.85],
+                [baseRotZ, baseRotZ + 0.12 * phase, baseRotZ + (Math.PI / 2) * phase]
+            ));
+        });
+
+        return [
+            new THREE.AnimationClip('Idle', 1.5, idleTracks),
+            new THREE.AnimationClip('Walk', 0.8, walkTracks),
+            new THREE.AnimationClip('Run', 0.48, runTracks),
+            new THREE.AnimationClip('Attack', 0.62, attackTracks),
+            new THREE.AnimationClip('Death', 0.85, deathTracks)
+        ];
     }
 
     static getPooledMesh(type) {
@@ -720,6 +803,11 @@ export class MeshFactory {
                     if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
                 } catch (e) { console.warn("Missing attack anim"); }
 
+                try {
+                    const deathGltf = await this.loadModel('./assets/archetypes/Fighter/death.glb');
+                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
+                } catch (e) { console.warn("Missing death anim"); }
+
                 mesh.scale.set(2.5, 2.5, 2.5);
                 
                 mesh.traverse(c => {
@@ -792,6 +880,11 @@ export class MeshFactory {
                     if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
                 } catch (e) { console.warn("Missing attack anim"); }
 
+                try {
+                    const deathGltf = await this.loadModel('./assets/archetypes/Wizard/death.glb');
+                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
+                } catch (e) { console.warn("Missing death anim"); }
+
                 mesh.scale.set(2.5, 2.5, 2.5); 
                 
                 mesh.traverse(c => {
@@ -860,6 +953,11 @@ export class MeshFactory {
                     if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
                 } catch (e) { console.warn("Missing attack anim"); }
 
+                try {
+                    const deathGltf = await this.loadModel('./assets/archetypes/Rogue/death.glb');
+                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
+                } catch (e) { console.warn("Missing death anim"); }
+
                 mesh.scale.set(2.5, 2.5, 2.5); 
                 
                 mesh.traverse(c => {
@@ -927,6 +1025,11 @@ export class MeshFactory {
                     const attackGltf = await this.loadModel('./assets/archetypes/Cleric/attack.glb');
                     if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
                 } catch (e) { console.warn("Missing attack anim"); }
+
+                try {
+                    const deathGltf = await this.loadModel('./assets/archetypes/Cleric/death.glb');
+                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
+                } catch (e) { console.warn("Missing death anim"); }
 
                 mesh.scale.set(2.5, 2.5, 2.5); 
                 

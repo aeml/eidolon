@@ -21,6 +21,11 @@ describe('repro and QA tooling', () => {
             'repro-trigger-room-abyss',
             'repro-trigger-room-molten',
             'repro-trigger-room-tempest',
+            'animation-gallery',
+            'gallery-run-all',
+            'gallery-rune',
+            'gallery-quality',
+            'gallery-remote',
             'repro-toggle-window',
             'repro-reset-scene'
         ].forEach((controlId) => {
@@ -36,6 +41,7 @@ describe('repro and QA tooling', () => {
         expect(js).toContain('dungeonPreviewThemes');
         expect(js).toContain('toggleWindowPreview');
         expect(js).toContain('resetPreviewState');
+        expect(js).toContain('AnimationGallery');
     });
 
     test('repro route stays isolated from normal login and live gameplay boot', () => {

@@ -14,7 +14,7 @@ export class Rogue extends Actor {
         this.abilityDescription = "Throw a dagger that pierces through enemies in a line.";
         this.abilityManaCost = 15;
         this.abilityMaxCooldown = 1.0;
-        this.scaleAnimSpeed = false; // Rogue animations are static speed
+        this.scaleAnimSpeed = true;
         
         // Class specific state
         this.serratedEdgesActive = false;
@@ -95,7 +95,6 @@ export class Rogue extends Actor {
         if (skill === "Backstab") {
             if (!this.unlockedSkills.includes("Backstab")) return;
             console.log("Rogue used Backstab!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 6s
             const cdr = this.stats.cooldownReduction || 0;
@@ -146,7 +145,6 @@ export class Rogue extends Actor {
 
         if (skill === "Weak Point Mark") {
             console.log("Rogue used Weak Point Mark!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 12s
             const cdr = this.stats.cooldownReduction || 0;
@@ -223,7 +221,6 @@ export class Rogue extends Actor {
 
         if (skill === "Death Spiral") {
             console.log("Rogue used Death Spiral!");
-            this.playAnimation('Attack', false, true); // Spin anim if available
             
             // Cooldown 20s
             const cdr = this.stats.cooldownReduction || 0;
@@ -264,7 +261,6 @@ export class Rogue extends Actor {
 
         if (skill === "Serrated Edges") {
             console.log("Rogue used Serrated Edges!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 20s
             const cdr = this.stats.cooldownReduction || 0;
@@ -280,7 +276,6 @@ export class Rogue extends Actor {
 
         if (skill === "Blade Storm") {
             console.log("Rogue used Blade Storm!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 15s
             const cdr = this.stats.cooldownReduction || 0;
@@ -315,7 +310,6 @@ export class Rogue extends Actor {
 
         if (skill === "Phantom Volley") {
             console.log("Rogue used Phantom Volley!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 18s
             const cdr = this.stats.cooldownReduction || 0;
@@ -329,7 +323,7 @@ export class Rogue extends Actor {
             const targetPos = startPos.clone().add(direction.multiplyScalar(50)); // Far away target
 
             for (let i = 0; i < 3; i++) {
-                setTimeout(() => {
+                this.scheduleTask(() => {
                     // Use 'PhantomArrow' for the purple visual
                     const arrow = new Projectile(null, this, 'PhantomArrow', startPos, targetPos);
                     // Damage is set in Projectile.js for PhantomArrow
@@ -347,7 +341,6 @@ export class Rogue extends Actor {
 
         if (skill === "Fan of Knives") {
             console.log("Rogue used Fan of Knives!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 12s
             const cdr = this.stats.cooldownReduction || 0;
@@ -377,7 +370,6 @@ export class Rogue extends Actor {
 
         if (skill === "Smoke Bomb") {
             console.log("Rogue used Smoke Bomb!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 15s
             const cdr = this.stats.cooldownReduction || 0;
@@ -408,7 +400,6 @@ export class Rogue extends Actor {
 
         if (skill === "Poison Coating") {
             console.log("Rogue used Poison Coating!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 20s
             const cdr = this.stats.cooldownReduction || 0;
@@ -424,7 +415,6 @@ export class Rogue extends Actor {
 
         if (skill === "Tripwire") {
             console.log("Rogue used Tripwire!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 10s
             const cdr = this.stats.cooldownReduction || 0;
@@ -432,6 +422,10 @@ export class Rogue extends Actor {
 
             // Place trap at feet
             const trapPos = this.position.clone();
+
+            // Multiplayer receives the server-owned stationary projectile.
+            // The cast cue is predicted by the canonical presentation layer.
+            if (gameEngine.isMultiplayer) return;
             
             // Visual
             const trapScene = gameEngine?.effectScene || gameEngine?.scene;
@@ -449,6 +443,7 @@ export class Rogue extends Actor {
                 radius: 1.0,
                 mesh: mesh
             });
+            this._suppressLegacyCastVisualUntil = 0;
             
             return;
         }
@@ -480,8 +475,6 @@ export class Rogue extends Actor {
         }
 
         console.log("Rogue used Throw Dagger!");
-        this.playAnimation('Attack', false, true);
-        
         const startPos = this.position.clone();
         startPos.y += 1.0;
         
@@ -511,11 +504,32 @@ export class Rogue extends Actor {
     }
 
     spawnVisualEffect(gameEngine, position, color, type) {
+        if (this.shouldSuppressLegacyCastVisual()) return;
         if (!gameEngine || (!gameEngine.effectScene && !gameEngine.scene && typeof gameEngine.spawnTransientEffect !== 'function')) return;
         if (typeof gameEngine.spawnTransientEffect === 'function' && gameEngine.spawnTransientEffect(type, position, color, { source: this })) {
             return;
         }
 
         spawnEffectSceneFallback(gameEngine, position, color, type);
+    }
+
+    cancelAbilities() {
+        this.serratedEdgesActive = false;
+        this.serratedEdgesTimer = 0;
+        this.poisonCoatingActive = false;
+        this.poisonCoatingTimer = 0;
+        this.stealthTimer = 0;
+        this.speedBoostTimer = 0;
+        this.speedBoostFactor = 0;
+        this.traps.forEach((trap) => disposeSceneMesh(trap.mesh));
+        this.traps.length = 0;
+        this.mesh?.traverse?.((child) => {
+            if (!child.isMesh || !child.material) return;
+            const materials = Array.isArray(child.material) ? child.material : [child.material];
+            materials.forEach((material) => {
+                material.opacity = 1;
+                material.transparent = false;
+            });
+        });
     }
 }

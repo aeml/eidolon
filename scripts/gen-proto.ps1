@@ -1,5 +1,5 @@
 ﻿param(
-  [string]$Version = "33.2"
+  [string]$Version = "34.1"
 )
 
 $ErrorActionPreference = "Stop"
@@ -24,7 +24,7 @@ if (-not (Test-Path $ProtocExe)) {
 
 # Ensure protoc-gen-go exists
 Write-Host "Ensuring protoc-gen-go is installed..."
-go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.11
 
 $GoPath = (go env GOPATH)
 $GoBin = Join-Path $GoPath "bin"
@@ -70,7 +70,7 @@ try {
 const $protobuf = globalThis.protobuf;
 
 if (!$protobuf) {
-    throw new Error("protobufjs minimal not found on globalThis.protobuf. Load https://unpkg.com/protobufjs/dist/minimal/protobuf.min.js (or equivalent) before importing state_pb.js.");
+    throw new Error("protobufjs minimal not found on globalThis.protobuf. Load the pinned local browser runtime before importing state_pb.js.");
 }
 '@
 

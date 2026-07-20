@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { Entity } from './Entity.js';
 import { calculateSetBonuses, getEquippedUniqueEffects, getGemStats, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
 import { CONSTANTS } from '../core/Constants.js';
+import { getAbilityAnimationProfile, getAbilityPresentation } from '../skills/abilityVisualManifest.js';
+import { ACTOR_STATUS_VISUAL_STATES, AttachedStatusEffect } from './AttachedStatusEffect.js';
 
 // Optimization: Reusable temporary objects to avoid GC
 const TEMP_VEC = new THREE.Vector3();
@@ -182,6 +184,13 @@ export class Actor extends Entity {
         this.mixer = null;
         this.animations = {};
         this.currentAction = null;
+        this.currentAnimationName = null;
+        this._animFinishedHandler = null;
+        this.missingAnimationClips = new Set();
+        this.currentAbilityAnimation = null;
+        this.lastAbilityPresentation = null;
+        this.managedTimers = new Set();
+        this.attachedStatusEffects = new Map();
         
         this.radius = 1.25; // Collision radius (matches 2.5 scale width)
 
@@ -201,6 +210,76 @@ export class Actor extends Entity {
     setSkillCooldown(skillName, seconds) {
         const cdr = this.stats.cooldownReduction || 0;
         this.cooldowns[skillName] = seconds * (1 - cdr);
+    }
+
+    scheduleTask(callback, delayMs) {
+        const timer = setTimeout(() => {
+            this.managedTimers.delete(timer);
+            callback();
+        }, Math.max(0, Number(delayMs) || 0));
+        this.managedTimers.add(timer);
+        return timer;
+    }
+
+    clearScheduledTask(timer) {
+        if (!timer) return;
+        clearTimeout(timer);
+        this.managedTimers.delete(timer);
+    }
+
+    clearManagedTimers() {
+        this.managedTimers.forEach((timer) => clearTimeout(timer));
+        this.managedTimers.clear();
+        this.attackTimer = null;
+    }
+
+    getEffectScene() {
+        return this.gameEngine?.renderSystem?.effectGroup
+            || this.gameEngine?.effectScene
+            || this.gameEngine?.scene
+            || null;
+    }
+
+    syncAttachedStatusEffects(dt = 0) {
+        const scene = this.getEffectScene();
+        const quality = this.gameEngine?.renderSystem?.graphicsQuality || 'high';
+        const canDisplay = this.state !== 'DEAD' && this.isActive !== false && Boolean(scene);
+
+        Object.entries(ACTOR_STATUS_VISUAL_STATES).forEach(([statusKey, isActive]) => {
+            const shouldDisplay = canDisplay && Boolean(isActive(this));
+            let effect = this.attachedStatusEffects.get(statusKey);
+            if (!shouldDisplay) {
+                if (effect) {
+                    effect.dispose();
+                    this.attachedStatusEffects.delete(statusKey);
+                }
+                return;
+            }
+
+            if (!effect || effect.disposed || effect.scene !== scene || effect.quality !== quality) {
+                effect?.dispose?.();
+                effect = new AttachedStatusEffect(scene, this, statusKey, { quality });
+                this.attachedStatusEffects.set(statusKey, effect);
+            }
+            effect.update(dt);
+        });
+        return this.attachedStatusEffects.size;
+    }
+
+    clearAttachedStatusEffects() {
+        this.attachedStatusEffects.forEach((effect) => effect.dispose());
+        this.attachedStatusEffects.clear();
+    }
+
+    getAttachedStatusEffectMetrics() {
+        const totals = { effects: this.attachedStatusEffects.size, meshes: 0, geometries: 0, materials: 0 };
+        this.attachedStatusEffects.forEach((effect) => {
+            const metrics = effect.getMetrics();
+            totals.meshes += metrics.meshes;
+            totals.geometries += metrics.geometries;
+            totals.materials += metrics.materials;
+        });
+        return totals;
     }
 
     updateBasicEnemyAI(dt, player) {
@@ -312,55 +391,164 @@ export class Actor extends Entity {
         return null;
     }
 
-    playAnimation(name, loop = true, force = false) {
-        if (!this.mixer) return;
-        
-        // Fallback or check if animation exists
-        if (!this.animations[name]) {
-            // console.warn(`Animation ${name} not found for ${this.id}`);
-            return;
+    getAnimationForCurrentState() {
+        if (this.state === 'DEAD') return this.animations.Death ? 'Death' : null;
+        if (this.state === 'JUMPING') return null;
+        if (this.isCharging) return this.getMovementAnimationName(true);
+        if (this.isWhirlwinding) return this.animations.Attack ? 'Attack' : null;
+        if (this.state === 'MOVING' || this.targetPosition) {
+            return this.getMovementAnimationName(this.isRunning);
         }
-        
+        return this.animations.Idle ? 'Idle' : this.getMovementAnimationName(false);
+    }
+
+    clearAnimationFinishedHandler() {
+        if (this._animFinishedHandler && this.mixer?.removeEventListener) {
+            this.mixer.removeEventListener('finished', this._animFinishedHandler);
+        }
+        this._animFinishedHandler = null;
+    }
+
+    restoreAnimationForState(force = true) {
+        if (this.state === 'JUMPING') return false;
+        const nextAnimation = this.getAnimationForCurrentState();
+        if (!nextAnimation) return false;
+        this.currentAction?.setEffectiveTimeScale?.(1.0);
+        return this.playAnimation(nextAnimation, nextAnimation !== 'Death', force);
+    }
+
+    getMovementAnimationTimeScale(speed = this.stats?.speed) {
+        let effectiveSpeed = Math.max(0, Number(speed) || 0);
+        if (!this.isRunning) effectiveSpeed *= 0.5;
+        if (this.slowTimer > 0) effectiveSpeed *= Math.max(0, 1 - (this.slowFactor || 0));
+        if (this.speedBoostTimer > 0) effectiveSpeed *= 1 + Math.max(0, this.speedBoostFactor || 0);
+        const authoredSpeed = this.isRunning ? 6.0 : 3.0;
+        return Math.max(0.35, Math.min(2.5, effectiveSpeed / authoredSpeed));
+    }
+
+    syncMovementAnimationSpeed(speed = this.stats?.speed) {
+        const movementName = this.getMovementAnimationName(this.isRunning);
+        if (!movementName || this.currentAction !== this.animations[movementName]) return false;
+        this.currentAction.setEffectiveTimeScale?.(
+            this.scaleAnimSpeed ? this.getMovementAnimationTimeScale(speed) : 1.0
+        );
+        return true;
+    }
+
+    playAbilityAnimation(skillName, options = {}) {
+        const className = this.meshType || this.subType || this.constructor.name;
+        const profile = getAbilityAnimationProfile(className, skillName);
+        let clipName = options.clip || profile.clip;
+        if (!this.animations[clipName]) {
+            clipName = this.animations.Attack ? 'Attack' : (this.animations.Idle ? 'Idle' : null);
+        }
+        if (!clipName) return false;
+
+        const played = this.playAnimation(clipName, false, true);
+        if (!played || !this.currentAction?.getClip) return played;
+
+        const duration = Math.max(0.15, Number(options.duration || profile.duration) || 0.7);
+        const clipDuration = Math.max(0.001, this.currentAction.getClip()?.duration || duration);
+        this.currentAction.setEffectiveTimeScale?.(clipDuration / duration);
+        this.currentAbilityAnimation = {
+            skillName,
+            profile,
+            clipName,
+            duration
+        };
+        return true;
+    }
+
+    spawnAbilityPresentation(gameEngine, skillName, targetVector) {
+        const className = this.meshType || this.subType || this.constructor.name;
+        const presentation = getAbilityPresentation(className, skillName);
+        if (!presentation || typeof gameEngine?.spawnTransientEffect !== 'function') return false;
+
+        const sourcePosition = this.position?.clone?.() || this.position;
+        const targetPosition = targetVector?.clone?.() || targetVector || sourcePosition;
+        const direction = sourcePosition?.clone && targetPosition?.clone
+            ? targetPosition.clone().sub(sourcePosition).normalize()
+            : null;
+        let spawned = false;
+        presentation.layers.forEach((entry, index) => {
+            const position = entry.anchor === 'target' ? targetPosition : sourcePosition;
+            if (!position) return;
+            spawned = gameEngine.spawnTransientEffect(entry.type, position, entry.color, {
+                source: this,
+                direction,
+                abilityName: presentation.canonicalName,
+                abilityLayer: index
+            }) || spawned;
+        });
+        if (spawned) {
+            this.lastAbilityPresentation = {
+                skillName: presentation.canonicalName,
+                requestedSkillName: skillName,
+                layerCount: presentation.layers.length,
+                timestamp: globalThis.performance?.now?.() ?? Date.now()
+            };
+        }
+        // Older class handlers still contain a few one-shot calls used by the
+        // offline combat path. Suppress only the synchronous duplicate cast
+        // flash; delayed projectile impacts and periodic pulses remain visible.
+        this._suppressLegacyCastVisualUntil = Date.now() + 80;
+        return spawned;
+    }
+
+    shouldSuppressLegacyCastVisual() {
+        return Number(this._suppressLegacyCastVisualUntil || 0) >= Date.now();
+    }
+
+    playAnimation(name, loop = true, force = false) {
+        if (!this.mixer) return false;
+
+        // Death is terminal until an explicit respawn changes actor state.
+        if (this.state === 'DEAD' && name !== 'Death') return false;
+
+        if (!this.animations[name]) {
+            this.missingAnimationClips.add(name);
+            return false;
+        }
+
         const action = this.animations[name];
-        if (!force && this.currentAction === action) return;
+        if (!force && this.currentAction === action) return true;
+
+        this.clearAnimationFinishedHandler();
 
         if (this.currentAction && this.currentAction !== action) {
-            this.currentAction.fadeOut(0.2);
+            this.currentAction.fadeOut?.(0.16);
         }
 
         if (force && this.currentAction === action) {
-            action.stop();
+            action.stop?.();
         }
 
-        action.reset().fadeIn(0.2).play();
-        action.setLoop(loop ? THREE.LoopRepeat : THREE.LoopOnce);
+        action.enabled = true;
+        action.reset?.();
+        action.fadeIn?.(0.16);
+        action.play?.();
+        action.setEffectiveTimeScale?.(1.0);
+        action.setLoop?.(loop ? THREE.LoopRepeat : THREE.LoopOnce);
         action.clampWhenFinished = !loop;
-        
-        this.currentAction = action;
 
-        // For non-looping Attack animations, set up a callback to return to Idle
-        if (!loop && name === 'Attack' && this.state !== 'DEAD') {
-            // Clear any existing animation finished handler
-            if (this._animFinishedHandler) {
-                this.mixer.removeEventListener('finished', this._animFinishedHandler);
-                this._animFinishedHandler = null;
-            }
-            
-            const self = this;
-            this._animFinishedHandler = function onFinished(e) {
+        this.currentAction = action;
+        this.currentAnimationName = name;
+
+        if (!loop && name !== 'Death' && this.state !== 'DEAD' && this.mixer.addEventListener) {
+            this._animFinishedHandler = (e) => {
                 if (e.action === action) {
-                    self.mixer.removeEventListener('finished', onFinished);
-                    self._animFinishedHandler = null;
-                    // Return to Idle if not dead, not moving, and not in a special ability state
-                    if (self.state !== 'DEAD' && self.state !== 'MOVING' && 
-                        !self.spiritsActive && !self.isWhirlwinding && !self.isCharging) {
-                        self.state = 'IDLE';
-                        self.playAnimation('Idle');
-                    }
+                    this.clearAnimationFinishedHandler();
+                    // Basic attacks retain their authoritative ATTACKING window;
+                    // ability casts usually leave gameplay state untouched and
+                    // return immediately to the correct idle/run presentation.
+                    if (this.state === 'ATTACKING' && this.attackTimer) return;
+                    this.currentAbilityAnimation = null;
+                    this.restoreAnimationForState(true);
                 }
             };
             this.mixer.addEventListener('finished', this._animFinishedHandler);
         }
+        return true;
     }
 
     move(targetVector) {
@@ -377,29 +565,17 @@ export class Actor extends Entity {
 
     playJumpAnimation(jumpState = null) {
         const duration = Math.max(0.001, Number.isFinite(jumpState?.duration) ? jumpState.duration : 0.8);
-        const walkAction = this.animations?.Walk;
-        if (!walkAction) {
-            if (this.animations?.Jump) {
-                this.playAnimation('Jump', false, true);
-                const clipDuration = this.currentAction?.getClip?.()?.duration || duration;
-                const timeScale = Math.max(0.01, clipDuration / duration);
-                this.currentAction?.setEffectiveTimeScale?.(timeScale);
-                this.jumpAnimationRestore = {
-                    name: 'Jump',
-                    timeScale
-                };
-                this.syncJumpAnimationToVisualState(jumpState);
-                return true;
-            }
-            return false;
-        }
+        const animationName = this.animations?.Jump
+            ? 'Jump'
+            : this.getMovementAnimationName(this.isRunning);
+        if (!animationName) return false;
 
-        this.playAnimation('Walk', false, true);
+        this.playAnimation(animationName, false, true);
         const clipDuration = this.currentAction?.getClip?.()?.duration || duration;
         const timeScale = Math.max(0.01, clipDuration / duration);
         this.currentAction?.setEffectiveTimeScale?.(timeScale);
         this.jumpAnimationRestore = {
-            name: 'Walk',
+            name: animationName,
             timeScale
         };
         this.syncJumpAnimationToVisualState(jumpState);
@@ -477,6 +653,20 @@ export class Actor extends Entity {
             return false;
         }
 
+        // A committed cast supersedes stale click-to-move, chase, and queued
+        // interaction intent. Leaving any of these active lets the ordinary
+        // movement loop replace a cast action with Run/Idle on the next frame.
+        this.targetPosition = null;
+        this.velocity?.set?.(0, 0, 0);
+        if (this.state === 'MOVING') this.state = 'IDLE';
+        if (gameEngine) {
+            gameEngine.pendingInteraction = null;
+            if (gameEngine.abilityController) {
+                gameEngine.abilityController.pendingAbilityTarget = null;
+                gameEngine.abilityController.pendingAbilitySkill = null;
+            }
+        }
+
         this.stats.mana -= cost;
         
         // Apply Cooldown Reduction
@@ -498,7 +688,10 @@ export class Actor extends Entity {
             this.swiftBuffTimer = 3.0; // 3 seconds duration
             console.log(`${this.id} Swift effect triggered! +20% move speed for 3s`);
         }
-        
+
+        this.playAbilityAnimation(skillName);
+        this.spawnAbilityPresentation(gameEngine, skillName, targetVector);
+
         // Subclasses implement actual logic
         return true;
     }
@@ -535,6 +728,7 @@ export class Actor extends Entity {
 
     update(dt, collisionManager, player, activeEntities) {
         super.update(dt);
+        this.syncAttachedStatusEffects(dt);
 
         // Stun Logic
         if (this.stunTimer > 0) {
@@ -850,7 +1044,10 @@ export class Actor extends Entity {
                 }
             } else if (this.isCharging) {
                 const moveAnim = this.getMovementAnimationName(true);
-                if (moveAnim) this.playAnimation(moveAnim);
+                if (moveAnim) {
+                    this.playAnimation(moveAnim);
+                    this.syncMovementAnimationSpeed();
+                }
             } else if (this.state === 'ATTACKING') {
                 this.playAnimation('Attack', false);
                 // Scale animation speed for remote entities
@@ -870,7 +1067,10 @@ export class Actor extends Entity {
                 }
             } else if (this.state === 'MOVING') {
                 const moveAnim = this.getMovementAnimationName(this.isRunning);
-                if (moveAnim) this.playAnimation(moveAnim);
+                if (moveAnim) {
+                    this.playAnimation(moveAnim);
+                    this.syncMovementAnimationSpeed();
+                }
             } else {
                 this.playAnimation('Idle');
             }
@@ -919,7 +1119,18 @@ export class Actor extends Entity {
         if (this.mixer) {
             this.mixer.update(dt);
         }
-        
+
+        // A delayed authoritative packet can report MOVING after local
+        // click-to-move has already reached its destination and cleared the
+        // target. Without this convergence guard the client echoes that stale
+        // state back to the server forever and the actor runs in place.
+        if (this.state === 'MOVING' && !this.targetPosition) {
+            this.state = 'IDLE';
+            this.velocity.set(0, 0, 0);
+            this.playAnimation('Idle');
+            if (this.currentAction) this.currentAction.setEffectiveTimeScale(1.0);
+        }
+
         if (this.state === 'MOVING' && this.targetPosition) {
             // Root/Freeze Check
             if (this.rootTimer > 0 || this.frozenTimer > 0) {
@@ -1016,12 +1227,7 @@ export class Actor extends Entity {
                 const moveAnim = this.getMovementAnimationName(this.isRunning);
                 if (moveAnim) this.playAnimation(moveAnim);
 
-                // Scale animation speed with movement speed
-                if (this.currentAction && this.scaleAnimSpeed) {
-                    // Base speed is ~3.0. If speed is 6.0, anim plays 2x faster.
-                    const animSpeed = Math.max(1.0, currentSpeed / 3.0); 
-                    this.currentAction.setEffectiveTimeScale(animSpeed);
-                }
+                this.syncMovementAnimationSpeed(this.stats.speed);
             }
         }
     }
@@ -1120,14 +1326,13 @@ export class Actor extends Entity {
     die() {
         if (this.state === 'DEAD') return;
         this.state = 'DEAD';
+        this.currentAbilityAnimation = null;
         this.targetPosition = null;
-        if (this.attackTimer) {
-            clearTimeout(this.attackTimer);
-            this.attackTimer = null;
-        }
-        this.playAnimation('Death', false); 
+        this.clearManagedTimers();
+        this.playAnimation('Death', false);
         // timeSinceDeath is managed by GameEngine
         this.cancelAbilities();
+        this.clearAttachedStatusEffects();
         // Do not set isActive = false, so animation plays
     }
 
@@ -1178,7 +1383,7 @@ export class Actor extends Entity {
         this.lastAttackTime = now;
         
         if (this.attackTimer) {
-            clearTimeout(this.attackTimer);
+            this.clearScheduledTask(this.attackTimer);
             this.attackTimer = null;
         }
 
@@ -1209,7 +1414,7 @@ export class Actor extends Entity {
         }
 
         // Deal damage after a delay
-        this.attackTimer = setTimeout(() => {
+        this.attackTimer = this.scheduleTask(() => {
             if (this.state === 'DEAD') return;
 
             if (target && target.stats.hp > 0) {
@@ -1243,7 +1448,7 @@ export class Actor extends Entity {
         }, hitDelay);
         
         // Reset state when animation finishes
-        setTimeout(() => {
+        this.scheduleTask(() => {
             if (this.state === 'ATTACKING') {
                 this.state = 'IDLE';
                 this.playAnimation('Idle');
@@ -1283,7 +1488,7 @@ export class Actor extends Entity {
             };
             this.mixer.addEventListener('finished', onFinished);
         } else {
-             setTimeout(() => {
+             this.scheduleTask(() => {
                 if (this.state === 'ATTACKING') this.state = 'IDLE';
             }, 500);
         }
@@ -1295,6 +1500,7 @@ export class Actor extends Entity {
         this.state = 'IDLE';
         this.isActive = true;
         this.playAnimation('Idle');
+        this.syncAttachedStatusEffects(0);
         
         // Reset visual rotation if needed
         this.rotation.set(0, 0, 0, 1);
@@ -1621,9 +1827,10 @@ export class Actor extends Entity {
 
     setAttackingState(restartAnimation = true) {
         if (this.state === 'DEAD') return;
+        this.currentAbilityAnimation = null;
         
         if (this.attackTimer) {
-            clearTimeout(this.attackTimer);
+            this.clearScheduledTask(this.attackTimer);
             this.attackTimer = null;
         }
 
@@ -1642,7 +1849,7 @@ export class Actor extends Entity {
 
         const duration = cooldown * 1000;
 
-        this.attackTimer = setTimeout(() => {
+        this.attackTimer = this.scheduleTask(() => {
             if (this.state === 'ATTACKING') {
                 this.state = 'IDLE';
                 this.playAnimation('Idle');
@@ -1650,5 +1857,21 @@ export class Actor extends Entity {
             }
             this.attackTimer = null;
         }, duration);
+    }
+
+    dispose() {
+        this.clearManagedTimers();
+        this.clearAnimationFinishedHandler();
+        this.cancelAbilities?.();
+        this.clearAttachedStatusEffects();
+        this.mixer?.stopAllAction?.();
+        if (this.mixer && this.mesh) {
+            this.mixer.uncacheRoot?.(this.mesh);
+        }
+        this.currentAction = null;
+        this.currentAnimationName = null;
+        this.animations = {};
+        this.mixer = null;
+        super.dispose();
     }
 }

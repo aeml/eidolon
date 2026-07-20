@@ -25,10 +25,36 @@ describe('Wizard combat effect routing', () => {
         expect(spawnTransientEffect).toHaveBeenCalledTimes(1);
         const [type, position, color, options] = spawnTransientEffect.mock.calls[0];
         expect(type).toBe('beam');
-        expect(color).toBe(0xffaa00);
-        expect(position.x).toBeGreaterThan(10);
-        expect(position.y).toBeCloseTo(1.5, 5);
+        expect(color).toBe(0xffb136);
+        expect(position.x).toBeCloseTo(target.x, 5);
+        expect(position.y).toBeCloseTo(target.y, 5);
         expect(options.source).toBe(wizard);
+        expect(options.abilityName).toBe('Scorch Beam');
+    });
+
+    test('Scorch Beam ignores non-combat world entities along its line', () => {
+        const wizard = new Wizard('test-wizard');
+        wizard.mesh = new THREE.Group();
+        wizard.position.set(0, 0, 0);
+        wizard.unlockedSkills.push('Scorch Beam');
+        const worldProp = {
+            isActive: true,
+            state: 'IDLE',
+            position: new THREE.Vector3(4, 1.5, 0),
+            constructor: { name: 'QuestMarker' }
+        };
+
+        expect(() => wizard.useAbility(
+            new THREE.Vector3(8, 0, 0),
+            {
+                chunkManager: { getActiveEntities: () => [worldProp] },
+                floatingTextManager: { spawn: jest.fn() },
+                spawnTransientEffect: jest.fn(() => true),
+                effectScene: new THREE.Group(),
+                scene: null
+            },
+            'Scorch Beam'
+        )).not.toThrow();
     });
 
     test('Scorch Beam fallback cleans up from the current parent after the beam mesh is reparented', () => {

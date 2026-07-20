@@ -1,12 +1,13 @@
-/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
+/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-mixed-operators, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars, default-case, jsdoc/require-param*/
 const $protobuf = globalThis.protobuf;
 
 if (!$protobuf) {
-    throw new Error("protobufjs minimal not found on globalThis.protobuf. Load the protobuf runtime before importing state_pb.js.");
+    throw new Error("protobufjs minimal not found on globalThis.protobuf. Load the pinned local browser runtime before importing state_pb.js.");
 }
 
 // Common aliases
 const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
+const $Object = $util.global.Object, $undefined = $util.global.undefined, $Error = $util.global.Error, $TypeError = $util.global.TypeError, $Number = $util.global.Number, $Array = $util.global.Array, $String = $util.global.String, $Boolean = $util.global.Boolean, $isFinite = $util.global.isFinite;
 
 // Exported root namespace
 const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
@@ -33,27 +34,48 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Properties of a StateEnvelope.
+             * @typedef {Object} eidolon.state.StateEnvelope.$Properties
+             * @property {number|null} [version] StateEnvelope version
+             * @property {eidolon.state.StateFull.$Properties|null} [full] StateEnvelope full
+             * @property {eidolon.state.StateDelta.$Properties|null} [delta] StateEnvelope delta
+             * @property {"full"|"delta"} [payload] StateEnvelope payload
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a StateEnvelope.
              * @memberof eidolon.state
              * @interface IStateEnvelope
-             * @property {number|null} [version] StateEnvelope version
-             * @property {eidolon.state.IStateFull|null} [full] StateEnvelope full
-             * @property {eidolon.state.IStateDelta|null} [delta] StateEnvelope delta
+             * @augments eidolon.state.StateEnvelope.$Properties
+             * @deprecated Use eidolon.state.StateEnvelope.$Properties instead.
+             */
+
+            /**
+             * Narrowed shape of a StateEnvelope.
+             * @typedef {{
+             *   version?: number|null;
+             *   full?: eidolon.state.StateFull.$Shape|null;
+             *   delta?: eidolon.state.StateDelta.$Shape|null;
+             *   $unknowns?: Array.<Uint8Array>;
+             * } & (
+             *   ({ payload?: undefined; full?: null; delta?: null }|{ payload?: "full"; full: eidolon.state.StateFull.$Shape; delta?: null }|{ payload?: "delta"; full?: null; delta: eidolon.state.StateDelta.$Shape })
+             * )} eidolon.state.StateEnvelope.$Shape
              */
 
             /**
              * Constructs a new StateEnvelope.
              * @memberof eidolon.state
              * @classdesc Represents a StateEnvelope.
-             * @implements IStateEnvelope
              * @constructor
-             * @param {eidolon.state.IStateEnvelope=} [properties] Properties to set
+             * @param {eidolon.state.StateEnvelope.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
-            function StateEnvelope(properties) {
+            const StateEnvelope = function (properties) {
                 if (properties)
-                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
                             this[keys[i]] = properties[keys[i]];
-            }
+            };
 
             /**
              * StateEnvelope version.
@@ -65,7 +87,7 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * StateEnvelope full.
-             * @member {eidolon.state.IStateFull|null|undefined} full
+             * @member {eidolon.state.StateFull.$Properties|null|undefined} full
              * @memberof eidolon.state.StateEnvelope
              * @instance
              */
@@ -73,7 +95,7 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * StateEnvelope delta.
-             * @member {eidolon.state.IStateDelta|null|undefined} delta
+             * @member {eidolon.state.StateDelta.$Properties|null|undefined} delta
              * @memberof eidolon.state.StateEnvelope
              * @instance
              */
@@ -88,7 +110,7 @@ export const eidolon = $root.eidolon = (() => {
              * @memberof eidolon.state.StateEnvelope
              * @instance
              */
-            Object.defineProperty(StateEnvelope.prototype, "payload", {
+            $Object.defineProperty(StateEnvelope.prototype, "payload", {
                 get: $util.oneOfGetter($oneOfFields = ["full", "delta"]),
                 set: $util.oneOfSetter($oneOfFields)
             });
@@ -98,10 +120,14 @@ export const eidolon = $root.eidolon = (() => {
              * @function create
              * @memberof eidolon.state.StateEnvelope
              * @static
-             * @param {eidolon.state.IStateEnvelope=} [properties] Properties to set
+             * @param {eidolon.state.StateEnvelope.$Properties=} [properties] Properties to set
              * @returns {eidolon.state.StateEnvelope} StateEnvelope instance
+             * @type {{
+             *   (properties: eidolon.state.StateEnvelope.$Shape): eidolon.state.StateEnvelope & eidolon.state.StateEnvelope.$Shape;
+             *   (properties?: eidolon.state.StateEnvelope.$Properties): eidolon.state.StateEnvelope;
+             * }}
              */
-            StateEnvelope.create = function create(properties) {
+            StateEnvelope.create = function(properties) {
                 return new StateEnvelope(properties);
             };
 
@@ -110,19 +136,26 @@ export const eidolon = $root.eidolon = (() => {
              * @function encode
              * @memberof eidolon.state.StateEnvelope
              * @static
-             * @param {eidolon.state.IStateEnvelope} message StateEnvelope message or plain object to encode
+             * @param {eidolon.state.StateEnvelope.$Properties} message StateEnvelope message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            StateEnvelope.encode = function encode(message, writer) {
+            StateEnvelope.encode = function (message, writer, _depth) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.version != null && Object.hasOwnProperty.call(message, "version"))
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.version != null && $Object.hasOwnProperty.call(message, "version") && message.version !== 0)
                     writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.version);
-                if (message.full != null && Object.hasOwnProperty.call(message, "full"))
-                    $root.eidolon.state.StateFull.encode(message.full, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-                if (message.delta != null && Object.hasOwnProperty.call(message, "delta"))
-                    $root.eidolon.state.StateDelta.encode(message.delta, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.full != null && $Object.hasOwnProperty.call(message, "full"))
+                    $root.eidolon.state.StateFull.encode(message.full, writer.uint32(/* id 2, wireType 2 =*/18).fork(), _depth + 1).ldelim();
+                if (message.delta != null && $Object.hasOwnProperty.call(message, "delta"))
+                    $root.eidolon.state.StateDelta.encode(message.delta, writer.uint32(/* id 3, wireType 2 =*/26).fork(), _depth + 1).ldelim();
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
                 return writer;
             };
 
@@ -131,12 +164,12 @@ export const eidolon = $root.eidolon = (() => {
              * @function encodeDelimited
              * @memberof eidolon.state.StateEnvelope
              * @static
-             * @param {eidolon.state.IStateEnvelope} message StateEnvelope message or plain object to encode
+             * @param {eidolon.state.StateEnvelope.$Properties} message StateEnvelope message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            StateEnvelope.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
+            StateEnvelope.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
             };
 
             /**
@@ -146,36 +179,59 @@ export const eidolon = $root.eidolon = (() => {
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
              * @param {number} [length] Message length if known beforehand
-             * @returns {eidolon.state.StateEnvelope} StateEnvelope
+             * @returns {eidolon.state.StateEnvelope & eidolon.state.StateEnvelope.$Shape} StateEnvelope
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            StateEnvelope.decode = function decode(reader, length, error) {
+            StateEnvelope.decode = function (reader, length, _end, _depth, _target) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.eidolon.state.StateEnvelope();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.eidolon.state.StateEnvelope(), value;
                 while (reader.pos < end) {
-                    let tag = reader.uint32();
-                    if (tag === error)
-                        break;
-                    switch (tag >>> 3) {
-                    case 1: {
-                            message.version = reader.uint32();
-                            break;
-                        }
-                    case 2: {
-                            message.full = $root.eidolon.state.StateFull.decode(reader, reader.uint32());
-                            break;
-                        }
-                    case 3: {
-                            message.delta = $root.eidolon.state.StateDelta.decode(reader, reader.uint32());
-                            break;
-                        }
-                    default:
-                        reader.skipType(tag & 7);
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
                         break;
                     }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.uint32())
+                                message.version = value;
+                            else
+                                delete message.version;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            message.full = $root.eidolon.state.StateFull.decode(reader, reader.uint32(), $undefined, _depth + 1, message.full);
+                            message.payload = "full";
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            message.delta = $root.eidolon.state.StateDelta.decode(reader, reader.uint32(), $undefined, _depth + 1, message.delta);
+                            message.payload = "delta";
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
                 }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
                 return message;
             };
 
@@ -185,11 +241,11 @@ export const eidolon = $root.eidolon = (() => {
              * @memberof eidolon.state.StateEnvelope
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {eidolon.state.StateEnvelope} StateEnvelope
+             * @returns {eidolon.state.StateEnvelope & eidolon.state.StateEnvelope.$Shape} StateEnvelope
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            StateEnvelope.decodeDelimited = function decodeDelimited(reader) {
+            StateEnvelope.decodeDelimited = function(reader) {
                 if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
                 return this.decode(reader, reader.uint32());
@@ -203,27 +259,31 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            StateEnvelope.verify = function verify(message) {
+            StateEnvelope.verify = function (message, _depth) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
                 let properties = {};
-                if (message.version != null && message.hasOwnProperty("version"))
+                if (message.version != null && $Object.hasOwnProperty.call(message, "version"))
                     if (!$util.isInteger(message.version))
                         return "version: integer expected";
-                if (message.full != null && message.hasOwnProperty("full")) {
+                if (message.full != null && $Object.hasOwnProperty.call(message, "full")) {
                     properties.payload = 1;
                     {
-                        let error = $root.eidolon.state.StateFull.verify(message.full);
+                        let error = $root.eidolon.state.StateFull.verify(message.full, _depth + 1);
                         if (error)
                             return "full." + error;
                     }
                 }
-                if (message.delta != null && message.hasOwnProperty("delta")) {
+                if (message.delta != null && $Object.hasOwnProperty.call(message, "delta")) {
                     if (properties.payload === 1)
                         return "payload: multiple values";
                     properties.payload = 1;
                     {
-                        let error = $root.eidolon.state.StateDelta.verify(message.delta);
+                        let error = $root.eidolon.state.StateDelta.verify(message.delta, _depth + 1);
                         if (error)
                             return "delta." + error;
                     }
@@ -239,21 +299,28 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {eidolon.state.StateEnvelope} StateEnvelope
              */
-            StateEnvelope.fromObject = function fromObject(object) {
+            StateEnvelope.fromObject = function (object, _depth) {
                 if (object instanceof $root.eidolon.state.StateEnvelope)
                     return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".eidolon.state.StateEnvelope: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let message = new $root.eidolon.state.StateEnvelope();
                 if (object.version != null)
-                    message.version = object.version >>> 0;
+                    if ($Number(object.version) !== 0)
+                        message.version = object.version >>> 0;
                 if (object.full != null) {
-                    if (typeof object.full !== "object")
-                        throw TypeError(".eidolon.state.StateEnvelope.full: object expected");
-                    message.full = $root.eidolon.state.StateFull.fromObject(object.full);
+                    if (!$util.isObject(object.full))
+                        throw $TypeError(".eidolon.state.StateEnvelope.full: object expected");
+                    message.full = $root.eidolon.state.StateFull.fromObject(object.full, _depth + 1);
                 }
                 if (object.delta != null) {
-                    if (typeof object.delta !== "object")
-                        throw TypeError(".eidolon.state.StateEnvelope.delta: object expected");
-                    message.delta = $root.eidolon.state.StateDelta.fromObject(object.delta);
+                    if (!$util.isObject(object.delta))
+                        throw $TypeError(".eidolon.state.StateEnvelope.delta: object expected");
+                    message.delta = $root.eidolon.state.StateDelta.fromObject(object.delta, _depth + 1);
                 }
                 return message;
             };
@@ -267,21 +334,25 @@ export const eidolon = $root.eidolon = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            StateEnvelope.toObject = function toObject(message, options) {
+            StateEnvelope.toObject = function (message, options, _depth) {
                 if (!options)
                     options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let object = {};
                 if (options.defaults)
                     object.version = 0;
-                if (message.version != null && message.hasOwnProperty("version"))
+                if (message.version != null && $Object.hasOwnProperty.call(message, "version"))
                     object.version = message.version;
-                if (message.full != null && message.hasOwnProperty("full")) {
-                    object.full = $root.eidolon.state.StateFull.toObject(message.full, options);
+                if (message.full != null && $Object.hasOwnProperty.call(message, "full")) {
+                    object.full = $root.eidolon.state.StateFull.toObject(message.full, options, _depth + 1);
                     if (options.oneofs)
                         object.payload = "full";
                 }
-                if (message.delta != null && message.hasOwnProperty("delta")) {
-                    object.delta = $root.eidolon.state.StateDelta.toObject(message.delta, options);
+                if (message.delta != null && $Object.hasOwnProperty.call(message, "delta")) {
+                    object.delta = $root.eidolon.state.StateDelta.toObject(message.delta, options, _depth + 1);
                     if (options.oneofs)
                         object.payload = "delta";
                 }
@@ -295,23 +366,22 @@ export const eidolon = $root.eidolon = (() => {
              * @instance
              * @returns {Object.<string,*>} JSON object
              */
-            StateEnvelope.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            StateEnvelope.prototype.toJSON = function() {
+                return StateEnvelope.toObject(this, $protobuf.util.toJSONOptions);
             };
 
             /**
-             * Gets the default type url for StateEnvelope
+             * Gets the type url for StateEnvelope
              * @function getTypeUrl
              * @memberof eidolon.state.StateEnvelope
              * @static
-             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * @returns {string} The default type url
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
              */
-            StateEnvelope.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-                if (typeUrlPrefix === undefined) {
-                    typeUrlPrefix = "type.googleapis.com";
-                }
-                return typeUrlPrefix + "/eidolon.state.StateEnvelope";
+            StateEnvelope.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/eidolon.state.StateEnvelope";
             };
 
             return StateEnvelope;
@@ -321,30 +391,43 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Properties of a StateFull.
+             * @typedef {Object} eidolon.state.StateFull.$Properties
+             * @property {Array.<eidolon.state.Entity.$Properties>|null} [entities] StateFull entities
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a StateFull.
              * @memberof eidolon.state
              * @interface IStateFull
-             * @property {Array.<eidolon.state.IEntity>|null} [entities] StateFull entities
+             * @augments eidolon.state.StateFull.$Properties
+             * @deprecated Use eidolon.state.StateFull.$Properties instead.
+             */
+
+            /**
+             * Shape of a StateFull.
+             * @typedef {eidolon.state.StateFull.$Properties} eidolon.state.StateFull.$Shape
              */
 
             /**
              * Constructs a new StateFull.
              * @memberof eidolon.state
              * @classdesc Represents a StateFull.
-             * @implements IStateFull
              * @constructor
-             * @param {eidolon.state.IStateFull=} [properties] Properties to set
+             * @param {eidolon.state.StateFull.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
-            function StateFull(properties) {
+            const StateFull = function (properties) {
                 this.entities = [];
                 if (properties)
-                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
                             this[keys[i]] = properties[keys[i]];
-            }
+            };
 
             /**
              * StateFull entities.
-             * @member {Array.<eidolon.state.IEntity>} entities
+             * @member {Array.<eidolon.state.Entity.$Properties>} entities
              * @memberof eidolon.state.StateFull
              * @instance
              */
@@ -355,10 +438,14 @@ export const eidolon = $root.eidolon = (() => {
              * @function create
              * @memberof eidolon.state.StateFull
              * @static
-             * @param {eidolon.state.IStateFull=} [properties] Properties to set
+             * @param {eidolon.state.StateFull.$Properties=} [properties] Properties to set
              * @returns {eidolon.state.StateFull} StateFull instance
+             * @type {{
+             *   (properties: eidolon.state.StateFull.$Shape): eidolon.state.StateFull & eidolon.state.StateFull.$Shape;
+             *   (properties?: eidolon.state.StateFull.$Properties): eidolon.state.StateFull;
+             * }}
              */
-            StateFull.create = function create(properties) {
+            StateFull.create = function(properties) {
                 return new StateFull(properties);
             };
 
@@ -367,16 +454,23 @@ export const eidolon = $root.eidolon = (() => {
              * @function encode
              * @memberof eidolon.state.StateFull
              * @static
-             * @param {eidolon.state.IStateFull} message StateFull message or plain object to encode
+             * @param {eidolon.state.StateFull.$Properties} message StateFull message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            StateFull.encode = function encode(message, writer) {
+            StateFull.encode = function (message, writer, _depth) {
                 if (!writer)
                     writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 if (message.entities != null && message.entities.length)
                     for (let i = 0; i < message.entities.length; ++i)
-                        $root.eidolon.state.Entity.encode(message.entities[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        $root.eidolon.state.Entity.encode(message.entities[i], writer.uint32(/* id 1, wireType 2 =*/10).fork(), _depth + 1).ldelim();
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
                 return writer;
             };
 
@@ -385,12 +479,12 @@ export const eidolon = $root.eidolon = (() => {
              * @function encodeDelimited
              * @memberof eidolon.state.StateFull
              * @static
-             * @param {eidolon.state.IStateFull} message StateFull message or plain object to encode
+             * @param {eidolon.state.StateFull.$Properties} message StateFull message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            StateFull.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
+            StateFull.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
             };
 
             /**
@@ -400,30 +494,44 @@ export const eidolon = $root.eidolon = (() => {
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
              * @param {number} [length] Message length if known beforehand
-             * @returns {eidolon.state.StateFull} StateFull
+             * @returns {eidolon.state.StateFull & eidolon.state.StateFull.$Shape} StateFull
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            StateFull.decode = function decode(reader, length, error) {
+            StateFull.decode = function (reader, length, _end, _depth, _target) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.eidolon.state.StateFull();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.eidolon.state.StateFull();
                 while (reader.pos < end) {
-                    let tag = reader.uint32();
-                    if (tag === error)
-                        break;
-                    switch (tag >>> 3) {
-                    case 1: {
-                            if (!(message.entities && message.entities.length))
-                                message.entities = [];
-                            message.entities.push($root.eidolon.state.Entity.decode(reader, reader.uint32()));
-                            break;
-                        }
-                    default:
-                        reader.skipType(tag & 7);
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
                         break;
                     }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if (!(message.entities && message.entities.length))
+                                message.entities = [];
+                            message.entities.push($root.eidolon.state.Entity.decode(reader, reader.uint32(), $undefined, _depth + 1));
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
                 }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
                 return message;
             };
 
@@ -433,11 +541,11 @@ export const eidolon = $root.eidolon = (() => {
              * @memberof eidolon.state.StateFull
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {eidolon.state.StateFull} StateFull
+             * @returns {eidolon.state.StateFull & eidolon.state.StateFull.$Shape} StateFull
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            StateFull.decodeDelimited = function decodeDelimited(reader) {
+            StateFull.decodeDelimited = function(reader) {
                 if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
                 return this.decode(reader, reader.uint32());
@@ -451,14 +559,18 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            StateFull.verify = function verify(message) {
+            StateFull.verify = function (message, _depth) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.entities != null && message.hasOwnProperty("entities")) {
-                    if (!Array.isArray(message.entities))
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.entities != null && $Object.hasOwnProperty.call(message, "entities")) {
+                    if (!$Array.isArray(message.entities))
                         return "entities: array expected";
                     for (let i = 0; i < message.entities.length; ++i) {
-                        let error = $root.eidolon.state.Entity.verify(message.entities[i]);
+                        let error = $root.eidolon.state.Entity.verify(message.entities[i], _depth + 1);
                         if (error)
                             return "entities." + error;
                     }
@@ -474,18 +586,24 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {eidolon.state.StateFull} StateFull
              */
-            StateFull.fromObject = function fromObject(object) {
+            StateFull.fromObject = function (object, _depth) {
                 if (object instanceof $root.eidolon.state.StateFull)
                     return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".eidolon.state.StateFull: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let message = new $root.eidolon.state.StateFull();
                 if (object.entities) {
-                    if (!Array.isArray(object.entities))
-                        throw TypeError(".eidolon.state.StateFull.entities: array expected");
-                    message.entities = [];
+                    if (!$Array.isArray(object.entities))
+                        throw $TypeError(".eidolon.state.StateFull.entities: array expected");
+                    message.entities = $Array(object.entities.length);
                     for (let i = 0; i < object.entities.length; ++i) {
-                        if (typeof object.entities[i] !== "object")
-                            throw TypeError(".eidolon.state.StateFull.entities: object expected");
-                        message.entities[i] = $root.eidolon.state.Entity.fromObject(object.entities[i]);
+                        if (!$util.isObject(object.entities[i]))
+                            throw $TypeError(".eidolon.state.StateFull.entities: object expected");
+                        message.entities[i] = $root.eidolon.state.Entity.fromObject(object.entities[i], _depth + 1);
                     }
                 }
                 return message;
@@ -500,16 +618,20 @@ export const eidolon = $root.eidolon = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            StateFull.toObject = function toObject(message, options) {
+            StateFull.toObject = function (message, options, _depth) {
                 if (!options)
                     options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let object = {};
                 if (options.arrays || options.defaults)
                     object.entities = [];
                 if (message.entities && message.entities.length) {
-                    object.entities = [];
+                    object.entities = $Array(message.entities.length);
                     for (let j = 0; j < message.entities.length; ++j)
-                        object.entities[j] = $root.eidolon.state.Entity.toObject(message.entities[j], options);
+                        object.entities[j] = $root.eidolon.state.Entity.toObject(message.entities[j], options, _depth + 1);
                 }
                 return object;
             };
@@ -521,23 +643,22 @@ export const eidolon = $root.eidolon = (() => {
              * @instance
              * @returns {Object.<string,*>} JSON object
              */
-            StateFull.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            StateFull.prototype.toJSON = function() {
+                return StateFull.toObject(this, $protobuf.util.toJSONOptions);
             };
 
             /**
-             * Gets the default type url for StateFull
+             * Gets the type url for StateFull
              * @function getTypeUrl
              * @memberof eidolon.state.StateFull
              * @static
-             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * @returns {string} The default type url
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
              */
-            StateFull.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-                if (typeUrlPrefix === undefined) {
-                    typeUrlPrefix = "type.googleapis.com";
-                }
-                return typeUrlPrefix + "/eidolon.state.StateFull";
+            StateFull.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/eidolon.state.StateFull";
             };
 
             return StateFull;
@@ -547,32 +668,45 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Properties of a StateDelta.
+             * @typedef {Object} eidolon.state.StateDelta.$Properties
+             * @property {Array.<eidolon.state.Entity.$Properties>|null} [entities] StateDelta entities
+             * @property {Array.<string>|null} [removedIds] StateDelta removedIds
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a StateDelta.
              * @memberof eidolon.state
              * @interface IStateDelta
-             * @property {Array.<eidolon.state.IEntity>|null} [entities] StateDelta entities
-             * @property {Array.<string>|null} [removedIds] StateDelta removedIds
+             * @augments eidolon.state.StateDelta.$Properties
+             * @deprecated Use eidolon.state.StateDelta.$Properties instead.
+             */
+
+            /**
+             * Shape of a StateDelta.
+             * @typedef {eidolon.state.StateDelta.$Properties} eidolon.state.StateDelta.$Shape
              */
 
             /**
              * Constructs a new StateDelta.
              * @memberof eidolon.state
              * @classdesc Represents a StateDelta.
-             * @implements IStateDelta
              * @constructor
-             * @param {eidolon.state.IStateDelta=} [properties] Properties to set
+             * @param {eidolon.state.StateDelta.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
-            function StateDelta(properties) {
+            const StateDelta = function (properties) {
                 this.entities = [];
                 this.removedIds = [];
                 if (properties)
-                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
                             this[keys[i]] = properties[keys[i]];
-            }
+            };
 
             /**
              * StateDelta entities.
-             * @member {Array.<eidolon.state.IEntity>} entities
+             * @member {Array.<eidolon.state.Entity.$Properties>} entities
              * @memberof eidolon.state.StateDelta
              * @instance
              */
@@ -591,10 +725,14 @@ export const eidolon = $root.eidolon = (() => {
              * @function create
              * @memberof eidolon.state.StateDelta
              * @static
-             * @param {eidolon.state.IStateDelta=} [properties] Properties to set
+             * @param {eidolon.state.StateDelta.$Properties=} [properties] Properties to set
              * @returns {eidolon.state.StateDelta} StateDelta instance
+             * @type {{
+             *   (properties: eidolon.state.StateDelta.$Shape): eidolon.state.StateDelta & eidolon.state.StateDelta.$Shape;
+             *   (properties?: eidolon.state.StateDelta.$Properties): eidolon.state.StateDelta;
+             * }}
              */
-            StateDelta.create = function create(properties) {
+            StateDelta.create = function(properties) {
                 return new StateDelta(properties);
             };
 
@@ -603,19 +741,26 @@ export const eidolon = $root.eidolon = (() => {
              * @function encode
              * @memberof eidolon.state.StateDelta
              * @static
-             * @param {eidolon.state.IStateDelta} message StateDelta message or plain object to encode
+             * @param {eidolon.state.StateDelta.$Properties} message StateDelta message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            StateDelta.encode = function encode(message, writer) {
+            StateDelta.encode = function (message, writer, _depth) {
                 if (!writer)
                     writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 if (message.entities != null && message.entities.length)
                     for (let i = 0; i < message.entities.length; ++i)
-                        $root.eidolon.state.Entity.encode(message.entities[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        $root.eidolon.state.Entity.encode(message.entities[i], writer.uint32(/* id 1, wireType 2 =*/10).fork(), _depth + 1).ldelim();
                 if (message.removedIds != null && message.removedIds.length)
                     for (let i = 0; i < message.removedIds.length; ++i)
                         writer.uint32(/* id 2, wireType 2 =*/18).string(message.removedIds[i]);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
                 return writer;
             };
 
@@ -624,12 +769,12 @@ export const eidolon = $root.eidolon = (() => {
              * @function encodeDelimited
              * @memberof eidolon.state.StateDelta
              * @static
-             * @param {eidolon.state.IStateDelta} message StateDelta message or plain object to encode
+             * @param {eidolon.state.StateDelta.$Properties} message StateDelta message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            StateDelta.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
+            StateDelta.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
             };
 
             /**
@@ -639,36 +784,52 @@ export const eidolon = $root.eidolon = (() => {
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
              * @param {number} [length] Message length if known beforehand
-             * @returns {eidolon.state.StateDelta} StateDelta
+             * @returns {eidolon.state.StateDelta & eidolon.state.StateDelta.$Shape} StateDelta
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            StateDelta.decode = function decode(reader, length, error) {
+            StateDelta.decode = function (reader, length, _end, _depth, _target) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.eidolon.state.StateDelta();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.eidolon.state.StateDelta();
                 while (reader.pos < end) {
-                    let tag = reader.uint32();
-                    if (tag === error)
-                        break;
-                    switch (tag >>> 3) {
-                    case 1: {
-                            if (!(message.entities && message.entities.length))
-                                message.entities = [];
-                            message.entities.push($root.eidolon.state.Entity.decode(reader, reader.uint32()));
-                            break;
-                        }
-                    case 2: {
-                            if (!(message.removedIds && message.removedIds.length))
-                                message.removedIds = [];
-                            message.removedIds.push(reader.string());
-                            break;
-                        }
-                    default:
-                        reader.skipType(tag & 7);
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
                         break;
                     }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if (!(message.entities && message.entities.length))
+                                message.entities = [];
+                            message.entities.push($root.eidolon.state.Entity.decode(reader, reader.uint32(), $undefined, _depth + 1));
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if (!(message.removedIds && message.removedIds.length))
+                                message.removedIds = [];
+                            message.removedIds.push(reader.stringVerify());
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
                 }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
                 return message;
             };
 
@@ -678,11 +839,11 @@ export const eidolon = $root.eidolon = (() => {
              * @memberof eidolon.state.StateDelta
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {eidolon.state.StateDelta} StateDelta
+             * @returns {eidolon.state.StateDelta & eidolon.state.StateDelta.$Shape} StateDelta
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            StateDelta.decodeDelimited = function decodeDelimited(reader) {
+            StateDelta.decodeDelimited = function(reader) {
                 if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
                 return this.decode(reader, reader.uint32());
@@ -696,20 +857,24 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            StateDelta.verify = function verify(message) {
+            StateDelta.verify = function (message, _depth) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.entities != null && message.hasOwnProperty("entities")) {
-                    if (!Array.isArray(message.entities))
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.entities != null && $Object.hasOwnProperty.call(message, "entities")) {
+                    if (!$Array.isArray(message.entities))
                         return "entities: array expected";
                     for (let i = 0; i < message.entities.length; ++i) {
-                        let error = $root.eidolon.state.Entity.verify(message.entities[i]);
+                        let error = $root.eidolon.state.Entity.verify(message.entities[i], _depth + 1);
                         if (error)
                             return "entities." + error;
                     }
                 }
-                if (message.removedIds != null && message.hasOwnProperty("removedIds")) {
-                    if (!Array.isArray(message.removedIds))
+                if (message.removedIds != null && $Object.hasOwnProperty.call(message, "removedIds")) {
+                    if (!$Array.isArray(message.removedIds))
                         return "removedIds: array expected";
                     for (let i = 0; i < message.removedIds.length; ++i)
                         if (!$util.isString(message.removedIds[i]))
@@ -726,26 +891,32 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {eidolon.state.StateDelta} StateDelta
              */
-            StateDelta.fromObject = function fromObject(object) {
+            StateDelta.fromObject = function (object, _depth) {
                 if (object instanceof $root.eidolon.state.StateDelta)
                     return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".eidolon.state.StateDelta: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let message = new $root.eidolon.state.StateDelta();
                 if (object.entities) {
-                    if (!Array.isArray(object.entities))
-                        throw TypeError(".eidolon.state.StateDelta.entities: array expected");
-                    message.entities = [];
+                    if (!$Array.isArray(object.entities))
+                        throw $TypeError(".eidolon.state.StateDelta.entities: array expected");
+                    message.entities = $Array(object.entities.length);
                     for (let i = 0; i < object.entities.length; ++i) {
-                        if (typeof object.entities[i] !== "object")
-                            throw TypeError(".eidolon.state.StateDelta.entities: object expected");
-                        message.entities[i] = $root.eidolon.state.Entity.fromObject(object.entities[i]);
+                        if (!$util.isObject(object.entities[i]))
+                            throw $TypeError(".eidolon.state.StateDelta.entities: object expected");
+                        message.entities[i] = $root.eidolon.state.Entity.fromObject(object.entities[i], _depth + 1);
                     }
                 }
                 if (object.removedIds) {
-                    if (!Array.isArray(object.removedIds))
-                        throw TypeError(".eidolon.state.StateDelta.removedIds: array expected");
-                    message.removedIds = [];
+                    if (!$Array.isArray(object.removedIds))
+                        throw $TypeError(".eidolon.state.StateDelta.removedIds: array expected");
+                    message.removedIds = $Array(object.removedIds.length);
                     for (let i = 0; i < object.removedIds.length; ++i)
-                        message.removedIds[i] = String(object.removedIds[i]);
+                        message.removedIds[i] = $String(object.removedIds[i]);
                 }
                 return message;
             };
@@ -759,21 +930,25 @@ export const eidolon = $root.eidolon = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            StateDelta.toObject = function toObject(message, options) {
+            StateDelta.toObject = function (message, options, _depth) {
                 if (!options)
                     options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let object = {};
                 if (options.arrays || options.defaults) {
                     object.entities = [];
                     object.removedIds = [];
                 }
                 if (message.entities && message.entities.length) {
-                    object.entities = [];
+                    object.entities = $Array(message.entities.length);
                     for (let j = 0; j < message.entities.length; ++j)
-                        object.entities[j] = $root.eidolon.state.Entity.toObject(message.entities[j], options);
+                        object.entities[j] = $root.eidolon.state.Entity.toObject(message.entities[j], options, _depth + 1);
                 }
                 if (message.removedIds && message.removedIds.length) {
-                    object.removedIds = [];
+                    object.removedIds = $Array(message.removedIds.length);
                     for (let j = 0; j < message.removedIds.length; ++j)
                         object.removedIds[j] = message.removedIds[j];
                 }
@@ -787,23 +962,22 @@ export const eidolon = $root.eidolon = (() => {
              * @instance
              * @returns {Object.<string,*>} JSON object
              */
-            StateDelta.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            StateDelta.prototype.toJSON = function() {
+                return StateDelta.toObject(this, $protobuf.util.toJSONOptions);
             };
 
             /**
-             * Gets the default type url for StateDelta
+             * Gets the type url for StateDelta
              * @function getTypeUrl
              * @memberof eidolon.state.StateDelta
              * @static
-             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * @returns {string} The default type url
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
              */
-            StateDelta.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-                if (typeUrlPrefix === undefined) {
-                    typeUrlPrefix = "type.googleapis.com";
-                }
-                return typeUrlPrefix + "/eidolon.state.StateDelta";
+            StateDelta.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/eidolon.state.StateDelta";
             };
 
             return StateDelta;
@@ -813,29 +987,42 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Properties of a Stats.
-             * @memberof eidolon.state
-             * @interface IStats
+             * @typedef {Object} eidolon.state.Stats.$Properties
              * @property {number|null} [strength] Stats strength
              * @property {number|null} [dexterity] Stats dexterity
              * @property {number|null} [intelligence] Stats intelligence
              * @property {number|null} [wisdom] Stats wisdom
              * @property {number|null} [vitality] Stats vitality
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a Stats.
+             * @memberof eidolon.state
+             * @interface IStats
+             * @augments eidolon.state.Stats.$Properties
+             * @deprecated Use eidolon.state.Stats.$Properties instead.
+             */
+
+            /**
+             * Shape of a Stats.
+             * @typedef {eidolon.state.Stats.$Properties} eidolon.state.Stats.$Shape
              */
 
             /**
              * Constructs a new Stats.
              * @memberof eidolon.state
              * @classdesc Represents a Stats.
-             * @implements IStats
              * @constructor
-             * @param {eidolon.state.IStats=} [properties] Properties to set
+             * @param {eidolon.state.Stats.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
-            function Stats(properties) {
+            const Stats = function (properties) {
                 if (properties)
-                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
                             this[keys[i]] = properties[keys[i]];
-            }
+            };
 
             /**
              * Stats strength.
@@ -882,10 +1069,14 @@ export const eidolon = $root.eidolon = (() => {
              * @function create
              * @memberof eidolon.state.Stats
              * @static
-             * @param {eidolon.state.IStats=} [properties] Properties to set
+             * @param {eidolon.state.Stats.$Properties=} [properties] Properties to set
              * @returns {eidolon.state.Stats} Stats instance
+             * @type {{
+             *   (properties: eidolon.state.Stats.$Shape): eidolon.state.Stats & eidolon.state.Stats.$Shape;
+             *   (properties?: eidolon.state.Stats.$Properties): eidolon.state.Stats;
+             * }}
              */
-            Stats.create = function create(properties) {
+            Stats.create = function(properties) {
                 return new Stats(properties);
             };
 
@@ -894,23 +1085,30 @@ export const eidolon = $root.eidolon = (() => {
              * @function encode
              * @memberof eidolon.state.Stats
              * @static
-             * @param {eidolon.state.IStats} message Stats message or plain object to encode
+             * @param {eidolon.state.Stats.$Properties} message Stats message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Stats.encode = function encode(message, writer) {
+            Stats.encode = function (message, writer, _depth) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.strength != null && Object.hasOwnProperty.call(message, "strength"))
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.strength != null && $Object.hasOwnProperty.call(message, "strength") && message.strength !== 0)
                     writer.uint32(/* id 1, wireType 0 =*/8).int32(message.strength);
-                if (message.dexterity != null && Object.hasOwnProperty.call(message, "dexterity"))
+                if (message.dexterity != null && $Object.hasOwnProperty.call(message, "dexterity") && message.dexterity !== 0)
                     writer.uint32(/* id 2, wireType 0 =*/16).int32(message.dexterity);
-                if (message.intelligence != null && Object.hasOwnProperty.call(message, "intelligence"))
+                if (message.intelligence != null && $Object.hasOwnProperty.call(message, "intelligence") && message.intelligence !== 0)
                     writer.uint32(/* id 3, wireType 0 =*/24).int32(message.intelligence);
-                if (message.wisdom != null && Object.hasOwnProperty.call(message, "wisdom"))
+                if (message.wisdom != null && $Object.hasOwnProperty.call(message, "wisdom") && message.wisdom !== 0)
                     writer.uint32(/* id 4, wireType 0 =*/32).int32(message.wisdom);
-                if (message.vitality != null && Object.hasOwnProperty.call(message, "vitality"))
+                if (message.vitality != null && $Object.hasOwnProperty.call(message, "vitality") && message.vitality !== 0)
                     writer.uint32(/* id 5, wireType 0 =*/40).int32(message.vitality);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
                 return writer;
             };
 
@@ -919,12 +1117,12 @@ export const eidolon = $root.eidolon = (() => {
              * @function encodeDelimited
              * @memberof eidolon.state.Stats
              * @static
-             * @param {eidolon.state.IStats} message Stats message or plain object to encode
+             * @param {eidolon.state.Stats.$Properties} message Stats message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Stats.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
+            Stats.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
             };
 
             /**
@@ -934,44 +1132,81 @@ export const eidolon = $root.eidolon = (() => {
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
              * @param {number} [length] Message length if known beforehand
-             * @returns {eidolon.state.Stats} Stats
+             * @returns {eidolon.state.Stats & eidolon.state.Stats.$Shape} Stats
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Stats.decode = function decode(reader, length, error) {
+            Stats.decode = function (reader, length, _end, _depth, _target) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.eidolon.state.Stats();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.eidolon.state.Stats(), value;
                 while (reader.pos < end) {
-                    let tag = reader.uint32();
-                    if (tag === error)
-                        break;
-                    switch (tag >>> 3) {
-                    case 1: {
-                            message.strength = reader.int32();
-                            break;
-                        }
-                    case 2: {
-                            message.dexterity = reader.int32();
-                            break;
-                        }
-                    case 3: {
-                            message.intelligence = reader.int32();
-                            break;
-                        }
-                    case 4: {
-                            message.wisdom = reader.int32();
-                            break;
-                        }
-                    case 5: {
-                            message.vitality = reader.int32();
-                            break;
-                        }
-                    default:
-                        reader.skipType(tag & 7);
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
                         break;
                     }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.strength = value;
+                            else
+                                delete message.strength;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.dexterity = value;
+                            else
+                                delete message.dexterity;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.intelligence = value;
+                            else
+                                delete message.intelligence;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.wisdom = value;
+                            else
+                                delete message.wisdom;
+                            continue;
+                        }
+                    case 5: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.vitality = value;
+                            else
+                                delete message.vitality;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
                 }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
                 return message;
             };
 
@@ -981,11 +1216,11 @@ export const eidolon = $root.eidolon = (() => {
              * @memberof eidolon.state.Stats
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {eidolon.state.Stats} Stats
+             * @returns {eidolon.state.Stats & eidolon.state.Stats.$Shape} Stats
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Stats.decodeDelimited = function decodeDelimited(reader) {
+            Stats.decodeDelimited = function(reader) {
                 if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
                 return this.decode(reader, reader.uint32());
@@ -999,22 +1234,26 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            Stats.verify = function verify(message) {
+            Stats.verify = function (message, _depth) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.strength != null && message.hasOwnProperty("strength"))
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.strength != null && $Object.hasOwnProperty.call(message, "strength"))
                     if (!$util.isInteger(message.strength))
                         return "strength: integer expected";
-                if (message.dexterity != null && message.hasOwnProperty("dexterity"))
+                if (message.dexterity != null && $Object.hasOwnProperty.call(message, "dexterity"))
                     if (!$util.isInteger(message.dexterity))
                         return "dexterity: integer expected";
-                if (message.intelligence != null && message.hasOwnProperty("intelligence"))
+                if (message.intelligence != null && $Object.hasOwnProperty.call(message, "intelligence"))
                     if (!$util.isInteger(message.intelligence))
                         return "intelligence: integer expected";
-                if (message.wisdom != null && message.hasOwnProperty("wisdom"))
+                if (message.wisdom != null && $Object.hasOwnProperty.call(message, "wisdom"))
                     if (!$util.isInteger(message.wisdom))
                         return "wisdom: integer expected";
-                if (message.vitality != null && message.hasOwnProperty("vitality"))
+                if (message.vitality != null && $Object.hasOwnProperty.call(message, "vitality"))
                     if (!$util.isInteger(message.vitality))
                         return "vitality: integer expected";
                 return null;
@@ -1028,20 +1267,31 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {eidolon.state.Stats} Stats
              */
-            Stats.fromObject = function fromObject(object) {
+            Stats.fromObject = function (object, _depth) {
                 if (object instanceof $root.eidolon.state.Stats)
                     return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".eidolon.state.Stats: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let message = new $root.eidolon.state.Stats();
                 if (object.strength != null)
-                    message.strength = object.strength | 0;
+                    if ($Number(object.strength) !== 0)
+                        message.strength = object.strength | 0;
                 if (object.dexterity != null)
-                    message.dexterity = object.dexterity | 0;
+                    if ($Number(object.dexterity) !== 0)
+                        message.dexterity = object.dexterity | 0;
                 if (object.intelligence != null)
-                    message.intelligence = object.intelligence | 0;
+                    if ($Number(object.intelligence) !== 0)
+                        message.intelligence = object.intelligence | 0;
                 if (object.wisdom != null)
-                    message.wisdom = object.wisdom | 0;
+                    if ($Number(object.wisdom) !== 0)
+                        message.wisdom = object.wisdom | 0;
                 if (object.vitality != null)
-                    message.vitality = object.vitality | 0;
+                    if ($Number(object.vitality) !== 0)
+                        message.vitality = object.vitality | 0;
                 return message;
             };
 
@@ -1054,9 +1304,13 @@ export const eidolon = $root.eidolon = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            Stats.toObject = function toObject(message, options) {
+            Stats.toObject = function (message, options, _depth) {
                 if (!options)
                     options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let object = {};
                 if (options.defaults) {
                     object.strength = 0;
@@ -1065,15 +1319,15 @@ export const eidolon = $root.eidolon = (() => {
                     object.wisdom = 0;
                     object.vitality = 0;
                 }
-                if (message.strength != null && message.hasOwnProperty("strength"))
+                if (message.strength != null && $Object.hasOwnProperty.call(message, "strength"))
                     object.strength = message.strength;
-                if (message.dexterity != null && message.hasOwnProperty("dexterity"))
+                if (message.dexterity != null && $Object.hasOwnProperty.call(message, "dexterity"))
                     object.dexterity = message.dexterity;
-                if (message.intelligence != null && message.hasOwnProperty("intelligence"))
+                if (message.intelligence != null && $Object.hasOwnProperty.call(message, "intelligence"))
                     object.intelligence = message.intelligence;
-                if (message.wisdom != null && message.hasOwnProperty("wisdom"))
+                if (message.wisdom != null && $Object.hasOwnProperty.call(message, "wisdom"))
                     object.wisdom = message.wisdom;
-                if (message.vitality != null && message.hasOwnProperty("vitality"))
+                if (message.vitality != null && $Object.hasOwnProperty.call(message, "vitality"))
                     object.vitality = message.vitality;
                 return object;
             };
@@ -1085,23 +1339,22 @@ export const eidolon = $root.eidolon = (() => {
              * @instance
              * @returns {Object.<string,*>} JSON object
              */
-            Stats.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            Stats.prototype.toJSON = function() {
+                return Stats.toObject(this, $protobuf.util.toJSONOptions);
             };
 
             /**
-             * Gets the default type url for Stats
+             * Gets the type url for Stats
              * @function getTypeUrl
              * @memberof eidolon.state.Stats
              * @static
-             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * @returns {string} The default type url
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
              */
-            Stats.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-                if (typeUrlPrefix === undefined) {
-                    typeUrlPrefix = "type.googleapis.com";
-                }
-                return typeUrlPrefix + "/eidolon.state.Stats";
+            Stats.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/eidolon.state.Stats";
             };
 
             return Stats;
@@ -1111,8 +1364,7 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Properties of a Quest.
-             * @memberof eidolon.state
-             * @interface IQuest
+             * @typedef {Object} eidolon.state.Quest.$Properties
              * @property {string|null} [id] Quest id
              * @property {string|null} [type] Quest type
              * @property {string|null} [target] Quest target
@@ -1121,22 +1373,36 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [rewardXp] Quest rewardXp
              * @property {boolean|null} [completed] Quest completed
              * @property {boolean|null} [accepted] Quest accepted
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a Quest.
+             * @memberof eidolon.state
+             * @interface IQuest
+             * @augments eidolon.state.Quest.$Properties
+             * @deprecated Use eidolon.state.Quest.$Properties instead.
+             */
+
+            /**
+             * Shape of a Quest.
+             * @typedef {eidolon.state.Quest.$Properties} eidolon.state.Quest.$Shape
              */
 
             /**
              * Constructs a new Quest.
              * @memberof eidolon.state
              * @classdesc Represents a Quest.
-             * @implements IQuest
              * @constructor
-             * @param {eidolon.state.IQuest=} [properties] Properties to set
+             * @param {eidolon.state.Quest.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
-            function Quest(properties) {
+            const Quest = function (properties) {
                 if (properties)
-                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
                             this[keys[i]] = properties[keys[i]];
-            }
+            };
 
             /**
              * Quest id.
@@ -1207,10 +1473,14 @@ export const eidolon = $root.eidolon = (() => {
              * @function create
              * @memberof eidolon.state.Quest
              * @static
-             * @param {eidolon.state.IQuest=} [properties] Properties to set
+             * @param {eidolon.state.Quest.$Properties=} [properties] Properties to set
              * @returns {eidolon.state.Quest} Quest instance
+             * @type {{
+             *   (properties: eidolon.state.Quest.$Shape): eidolon.state.Quest & eidolon.state.Quest.$Shape;
+             *   (properties?: eidolon.state.Quest.$Properties): eidolon.state.Quest;
+             * }}
              */
-            Quest.create = function create(properties) {
+            Quest.create = function(properties) {
                 return new Quest(properties);
             };
 
@@ -1219,29 +1489,36 @@ export const eidolon = $root.eidolon = (() => {
              * @function encode
              * @memberof eidolon.state.Quest
              * @static
-             * @param {eidolon.state.IQuest} message Quest message or plain object to encode
+             * @param {eidolon.state.Quest.$Properties} message Quest message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Quest.encode = function encode(message, writer) {
+            Quest.encode = function (message, writer, _depth) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.id != null && $Object.hasOwnProperty.call(message, "id") && message.id !== "")
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
-                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                if (message.type != null && $Object.hasOwnProperty.call(message, "type") && message.type !== "")
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.type);
-                if (message.target != null && Object.hasOwnProperty.call(message, "target"))
+                if (message.target != null && $Object.hasOwnProperty.call(message, "target") && message.target !== "")
                     writer.uint32(/* id 3, wireType 2 =*/26).string(message.target);
-                if (message.count != null && Object.hasOwnProperty.call(message, "count"))
+                if (message.count != null && $Object.hasOwnProperty.call(message, "count") && message.count !== 0)
                     writer.uint32(/* id 4, wireType 0 =*/32).int32(message.count);
-                if (message.maxCount != null && Object.hasOwnProperty.call(message, "maxCount"))
+                if (message.maxCount != null && $Object.hasOwnProperty.call(message, "maxCount") && message.maxCount !== 0)
                     writer.uint32(/* id 5, wireType 0 =*/40).int32(message.maxCount);
-                if (message.rewardXp != null && Object.hasOwnProperty.call(message, "rewardXp"))
+                if (message.rewardXp != null && $Object.hasOwnProperty.call(message, "rewardXp") && message.rewardXp !== 0)
                     writer.uint32(/* id 6, wireType 0 =*/48).int32(message.rewardXp);
-                if (message.completed != null && Object.hasOwnProperty.call(message, "completed"))
+                if (message.completed != null && $Object.hasOwnProperty.call(message, "completed") && message.completed !== false)
                     writer.uint32(/* id 7, wireType 0 =*/56).bool(message.completed);
-                if (message.accepted != null && Object.hasOwnProperty.call(message, "accepted"))
+                if (message.accepted != null && $Object.hasOwnProperty.call(message, "accepted") && message.accepted !== false)
                     writer.uint32(/* id 8, wireType 0 =*/64).bool(message.accepted);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
                 return writer;
             };
 
@@ -1250,12 +1527,12 @@ export const eidolon = $root.eidolon = (() => {
              * @function encodeDelimited
              * @memberof eidolon.state.Quest
              * @static
-             * @param {eidolon.state.IQuest} message Quest message or plain object to encode
+             * @param {eidolon.state.Quest.$Properties} message Quest message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Quest.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
+            Quest.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
             };
 
             /**
@@ -1265,56 +1542,108 @@ export const eidolon = $root.eidolon = (() => {
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
              * @param {number} [length] Message length if known beforehand
-             * @returns {eidolon.state.Quest} Quest
+             * @returns {eidolon.state.Quest & eidolon.state.Quest.$Shape} Quest
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Quest.decode = function decode(reader, length, error) {
+            Quest.decode = function (reader, length, _end, _depth, _target) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.eidolon.state.Quest();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.eidolon.state.Quest(), value;
                 while (reader.pos < end) {
-                    let tag = reader.uint32();
-                    if (tag === error)
-                        break;
-                    switch (tag >>> 3) {
-                    case 1: {
-                            message.id = reader.string();
-                            break;
-                        }
-                    case 2: {
-                            message.type = reader.string();
-                            break;
-                        }
-                    case 3: {
-                            message.target = reader.string();
-                            break;
-                        }
-                    case 4: {
-                            message.count = reader.int32();
-                            break;
-                        }
-                    case 5: {
-                            message.maxCount = reader.int32();
-                            break;
-                        }
-                    case 6: {
-                            message.rewardXp = reader.int32();
-                            break;
-                        }
-                    case 7: {
-                            message.completed = reader.bool();
-                            break;
-                        }
-                    case 8: {
-                            message.accepted = reader.bool();
-                            break;
-                        }
-                    default:
-                        reader.skipType(tag & 7);
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
                         break;
                     }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.id = value;
+                            else
+                                delete message.id;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.type = value;
+                            else
+                                delete message.type;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.target = value;
+                            else
+                                delete message.target;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.count = value;
+                            else
+                                delete message.count;
+                            continue;
+                        }
+                    case 5: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.maxCount = value;
+                            else
+                                delete message.maxCount;
+                            continue;
+                        }
+                    case 6: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.rewardXp = value;
+                            else
+                                delete message.rewardXp;
+                            continue;
+                        }
+                    case 7: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.completed = value;
+                            else
+                                delete message.completed;
+                            continue;
+                        }
+                    case 8: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.accepted = value;
+                            else
+                                delete message.accepted;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
                 }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
                 return message;
             };
 
@@ -1324,11 +1653,11 @@ export const eidolon = $root.eidolon = (() => {
              * @memberof eidolon.state.Quest
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {eidolon.state.Quest} Quest
+             * @returns {eidolon.state.Quest & eidolon.state.Quest.$Shape} Quest
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Quest.decodeDelimited = function decodeDelimited(reader) {
+            Quest.decodeDelimited = function(reader) {
                 if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
                 return this.decode(reader, reader.uint32());
@@ -1342,31 +1671,35 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            Quest.verify = function verify(message) {
+            Quest.verify = function (message, _depth) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.id != null && message.hasOwnProperty("id"))
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     if (!$util.isString(message.id))
                         return "id: string expected";
-                if (message.type != null && message.hasOwnProperty("type"))
+                if (message.type != null && $Object.hasOwnProperty.call(message, "type"))
                     if (!$util.isString(message.type))
                         return "type: string expected";
-                if (message.target != null && message.hasOwnProperty("target"))
+                if (message.target != null && $Object.hasOwnProperty.call(message, "target"))
                     if (!$util.isString(message.target))
                         return "target: string expected";
-                if (message.count != null && message.hasOwnProperty("count"))
+                if (message.count != null && $Object.hasOwnProperty.call(message, "count"))
                     if (!$util.isInteger(message.count))
                         return "count: integer expected";
-                if (message.maxCount != null && message.hasOwnProperty("maxCount"))
+                if (message.maxCount != null && $Object.hasOwnProperty.call(message, "maxCount"))
                     if (!$util.isInteger(message.maxCount))
                         return "maxCount: integer expected";
-                if (message.rewardXp != null && message.hasOwnProperty("rewardXp"))
+                if (message.rewardXp != null && $Object.hasOwnProperty.call(message, "rewardXp"))
                     if (!$util.isInteger(message.rewardXp))
                         return "rewardXp: integer expected";
-                if (message.completed != null && message.hasOwnProperty("completed"))
+                if (message.completed != null && $Object.hasOwnProperty.call(message, "completed"))
                     if (typeof message.completed !== "boolean")
                         return "completed: boolean expected";
-                if (message.accepted != null && message.hasOwnProperty("accepted"))
+                if (message.accepted != null && $Object.hasOwnProperty.call(message, "accepted"))
                     if (typeof message.accepted !== "boolean")
                         return "accepted: boolean expected";
                 return null;
@@ -1380,26 +1713,40 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {eidolon.state.Quest} Quest
              */
-            Quest.fromObject = function fromObject(object) {
+            Quest.fromObject = function (object, _depth) {
                 if (object instanceof $root.eidolon.state.Quest)
                     return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".eidolon.state.Quest: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let message = new $root.eidolon.state.Quest();
                 if (object.id != null)
-                    message.id = String(object.id);
+                    if (typeof object.id !== "string" || object.id.length)
+                        message.id = $String(object.id);
                 if (object.type != null)
-                    message.type = String(object.type);
+                    if (typeof object.type !== "string" || object.type.length)
+                        message.type = $String(object.type);
                 if (object.target != null)
-                    message.target = String(object.target);
+                    if (typeof object.target !== "string" || object.target.length)
+                        message.target = $String(object.target);
                 if (object.count != null)
-                    message.count = object.count | 0;
+                    if ($Number(object.count) !== 0)
+                        message.count = object.count | 0;
                 if (object.maxCount != null)
-                    message.maxCount = object.maxCount | 0;
+                    if ($Number(object.maxCount) !== 0)
+                        message.maxCount = object.maxCount | 0;
                 if (object.rewardXp != null)
-                    message.rewardXp = object.rewardXp | 0;
+                    if ($Number(object.rewardXp) !== 0)
+                        message.rewardXp = object.rewardXp | 0;
                 if (object.completed != null)
-                    message.completed = Boolean(object.completed);
+                    if (object.completed)
+                        message.completed = $Boolean(object.completed);
                 if (object.accepted != null)
-                    message.accepted = Boolean(object.accepted);
+                    if (object.accepted)
+                        message.accepted = $Boolean(object.accepted);
                 return message;
             };
 
@@ -1412,9 +1759,13 @@ export const eidolon = $root.eidolon = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            Quest.toObject = function toObject(message, options) {
+            Quest.toObject = function (message, options, _depth) {
                 if (!options)
                     options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let object = {};
                 if (options.defaults) {
                     object.id = "";
@@ -1426,21 +1777,21 @@ export const eidolon = $root.eidolon = (() => {
                     object.completed = false;
                     object.accepted = false;
                 }
-                if (message.id != null && message.hasOwnProperty("id"))
+                if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
-                if (message.type != null && message.hasOwnProperty("type"))
+                if (message.type != null && $Object.hasOwnProperty.call(message, "type"))
                     object.type = message.type;
-                if (message.target != null && message.hasOwnProperty("target"))
+                if (message.target != null && $Object.hasOwnProperty.call(message, "target"))
                     object.target = message.target;
-                if (message.count != null && message.hasOwnProperty("count"))
+                if (message.count != null && $Object.hasOwnProperty.call(message, "count"))
                     object.count = message.count;
-                if (message.maxCount != null && message.hasOwnProperty("maxCount"))
+                if (message.maxCount != null && $Object.hasOwnProperty.call(message, "maxCount"))
                     object.maxCount = message.maxCount;
-                if (message.rewardXp != null && message.hasOwnProperty("rewardXp"))
+                if (message.rewardXp != null && $Object.hasOwnProperty.call(message, "rewardXp"))
                     object.rewardXp = message.rewardXp;
-                if (message.completed != null && message.hasOwnProperty("completed"))
+                if (message.completed != null && $Object.hasOwnProperty.call(message, "completed"))
                     object.completed = message.completed;
-                if (message.accepted != null && message.hasOwnProperty("accepted"))
+                if (message.accepted != null && $Object.hasOwnProperty.call(message, "accepted"))
                     object.accepted = message.accepted;
                 return object;
             };
@@ -1452,23 +1803,22 @@ export const eidolon = $root.eidolon = (() => {
              * @instance
              * @returns {Object.<string,*>} JSON object
              */
-            Quest.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            Quest.prototype.toJSON = function() {
+                return Quest.toObject(this, $protobuf.util.toJSONOptions);
             };
 
             /**
-             * Gets the default type url for Quest
+             * Gets the type url for Quest
              * @function getTypeUrl
              * @memberof eidolon.state.Quest
              * @static
-             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * @returns {string} The default type url
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
              */
-            Quest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-                if (typeUrlPrefix === undefined) {
-                    typeUrlPrefix = "type.googleapis.com";
-                }
-                return typeUrlPrefix + "/eidolon.state.Quest";
+            Quest.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/eidolon.state.Quest";
             };
 
             return Quest;
@@ -1478,28 +1828,41 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Properties of a SocketedGem.
-             * @memberof eidolon.state
-             * @interface ISocketedGem
+             * @typedef {Object} eidolon.state.SocketedGem.$Properties
              * @property {string|null} [type] SocketedGem type
              * @property {string|null} [quality] SocketedGem quality
              * @property {Object.<string,number>|null} [stats] SocketedGem stats
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SocketedGem.
+             * @memberof eidolon.state
+             * @interface ISocketedGem
+             * @augments eidolon.state.SocketedGem.$Properties
+             * @deprecated Use eidolon.state.SocketedGem.$Properties instead.
+             */
+
+            /**
+             * Shape of a SocketedGem.
+             * @typedef {eidolon.state.SocketedGem.$Properties} eidolon.state.SocketedGem.$Shape
              */
 
             /**
              * Constructs a new SocketedGem.
              * @memberof eidolon.state
              * @classdesc Represents a SocketedGem.
-             * @implements ISocketedGem
              * @constructor
-             * @param {eidolon.state.ISocketedGem=} [properties] Properties to set
+             * @param {eidolon.state.SocketedGem.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
-            function SocketedGem(properties) {
+            const SocketedGem = function (properties) {
                 this.stats = {};
                 if (properties)
-                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
                             this[keys[i]] = properties[keys[i]];
-            }
+            };
 
             /**
              * SocketedGem type.
@@ -1530,10 +1893,14 @@ export const eidolon = $root.eidolon = (() => {
              * @function create
              * @memberof eidolon.state.SocketedGem
              * @static
-             * @param {eidolon.state.ISocketedGem=} [properties] Properties to set
+             * @param {eidolon.state.SocketedGem.$Properties=} [properties] Properties to set
              * @returns {eidolon.state.SocketedGem} SocketedGem instance
+             * @type {{
+             *   (properties: eidolon.state.SocketedGem.$Shape): eidolon.state.SocketedGem & eidolon.state.SocketedGem.$Shape;
+             *   (properties?: eidolon.state.SocketedGem.$Properties): eidolon.state.SocketedGem;
+             * }}
              */
-            SocketedGem.create = function create(properties) {
+            SocketedGem.create = function(properties) {
                 return new SocketedGem(properties);
             };
 
@@ -1542,20 +1909,27 @@ export const eidolon = $root.eidolon = (() => {
              * @function encode
              * @memberof eidolon.state.SocketedGem
              * @static
-             * @param {eidolon.state.ISocketedGem} message SocketedGem message or plain object to encode
+             * @param {eidolon.state.SocketedGem.$Properties} message SocketedGem message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SocketedGem.encode = function encode(message, writer) {
+            SocketedGem.encode = function (message, writer, _depth) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.type != null && $Object.hasOwnProperty.call(message, "type") && message.type !== "")
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.type);
-                if (message.quality != null && Object.hasOwnProperty.call(message, "quality"))
+                if (message.quality != null && $Object.hasOwnProperty.call(message, "quality") && message.quality !== "")
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.quality);
-                if (message.stats != null && Object.hasOwnProperty.call(message, "stats"))
-                    for (let keys = Object.keys(message.stats), i = 0; i < keys.length; ++i)
+                if (message.stats != null && $Object.hasOwnProperty.call(message, "stats"))
+                    for (let keys = $Object.keys(message.stats), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.stats[keys[i]]).ldelim();
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
                 return writer;
             };
 
@@ -1564,12 +1938,12 @@ export const eidolon = $root.eidolon = (() => {
              * @function encodeDelimited
              * @memberof eidolon.state.SocketedGem
              * @static
-             * @param {eidolon.state.ISocketedGem} message SocketedGem message or plain object to encode
+             * @param {eidolon.state.SocketedGem.$Properties} message SocketedGem message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SocketedGem.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
+            SocketedGem.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
             };
 
             /**
@@ -1579,55 +1953,84 @@ export const eidolon = $root.eidolon = (() => {
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
              * @param {number} [length] Message length if known beforehand
-             * @returns {eidolon.state.SocketedGem} SocketedGem
+             * @returns {eidolon.state.SocketedGem & eidolon.state.SocketedGem.$Shape} SocketedGem
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SocketedGem.decode = function decode(reader, length, error) {
+            SocketedGem.decode = function (reader, length, _end, _depth, _target) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.eidolon.state.SocketedGem(), key, value;
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.eidolon.state.SocketedGem(), key, value;
                 while (reader.pos < end) {
-                    let tag = reader.uint32();
-                    if (tag === error)
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
                         break;
-                    switch (tag >>> 3) {
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
                     case 1: {
-                            message.type = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.type = value;
+                            else
+                                delete message.type;
+                            continue;
                         }
                     case 2: {
-                            message.quality = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.quality = value;
+                            else
+                                delete message.quality;
+                            continue;
                         }
                     case 3: {
+                            if (wireType !== 2)
+                                break;
                             if (message.stats === $util.emptyObject)
                                 message.stats = {};
                             let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = 0;
                             while (reader.pos < end2) {
-                                let tag2 = reader.uint32();
-                                switch (tag2 >>> 3) {
+                                let tag2 = reader.tag();
+                                wireType = tag2 & 7;
+                                switch (tag2 >>>= 3) {
                                 case 1:
-                                    key = reader.string();
-                                    break;
+                                    if (wireType !== 2)
+                                        break;
+                                    key = reader.stringVerify();
+                                    continue;
                                 case 2:
+                                    if (wireType !== 0)
+                                        break;
                                     value = reader.int32();
-                                    break;
-                                default:
-                                    reader.skipType(tag2 & 7);
-                                    break;
+                                    continue;
                                 }
+                                reader.skipType(wireType, _depth, tag2);
                             }
+                            if (key === "__proto__")
+                                $util.makeProp(message.stats, key);
                             message.stats[key] = value;
-                            break;
+                            continue;
                         }
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
                     }
                 }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
                 return message;
             };
 
@@ -1637,11 +2040,11 @@ export const eidolon = $root.eidolon = (() => {
              * @memberof eidolon.state.SocketedGem
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {eidolon.state.SocketedGem} SocketedGem
+             * @returns {eidolon.state.SocketedGem & eidolon.state.SocketedGem.$Shape} SocketedGem
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SocketedGem.decodeDelimited = function decodeDelimited(reader) {
+            SocketedGem.decodeDelimited = function(reader) {
                 if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
                 return this.decode(reader, reader.uint32());
@@ -1655,19 +2058,23 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SocketedGem.verify = function verify(message) {
+            SocketedGem.verify = function (message, _depth) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.type != null && message.hasOwnProperty("type"))
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.type != null && $Object.hasOwnProperty.call(message, "type"))
                     if (!$util.isString(message.type))
                         return "type: string expected";
-                if (message.quality != null && message.hasOwnProperty("quality"))
+                if (message.quality != null && $Object.hasOwnProperty.call(message, "quality"))
                     if (!$util.isString(message.quality))
                         return "quality: string expected";
-                if (message.stats != null && message.hasOwnProperty("stats")) {
+                if (message.stats != null && $Object.hasOwnProperty.call(message, "stats")) {
                     if (!$util.isObject(message.stats))
                         return "stats: object expected";
-                    let key = Object.keys(message.stats);
+                    let key = $Object.keys(message.stats);
                     for (let i = 0; i < key.length; ++i)
                         if (!$util.isInteger(message.stats[key[i]]))
                             return "stats: integer{k:string} expected";
@@ -1683,20 +2090,31 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {eidolon.state.SocketedGem} SocketedGem
              */
-            SocketedGem.fromObject = function fromObject(object) {
+            SocketedGem.fromObject = function (object, _depth) {
                 if (object instanceof $root.eidolon.state.SocketedGem)
                     return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".eidolon.state.SocketedGem: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let message = new $root.eidolon.state.SocketedGem();
                 if (object.type != null)
-                    message.type = String(object.type);
+                    if (typeof object.type !== "string" || object.type.length)
+                        message.type = $String(object.type);
                 if (object.quality != null)
-                    message.quality = String(object.quality);
+                    if (typeof object.quality !== "string" || object.quality.length)
+                        message.quality = $String(object.quality);
                 if (object.stats) {
-                    if (typeof object.stats !== "object")
-                        throw TypeError(".eidolon.state.SocketedGem.stats: object expected");
+                    if (!$util.isObject(object.stats))
+                        throw $TypeError(".eidolon.state.SocketedGem.stats: object expected");
                     message.stats = {};
-                    for (let keys = Object.keys(object.stats), i = 0; i < keys.length; ++i)
+                    for (let keys = $Object.keys(object.stats), i = 0; i < keys.length; ++i) {
+                        if (keys[i] === "__proto__")
+                            $util.makeProp(message.stats, keys[i]);
                         message.stats[keys[i]] = object.stats[keys[i]] | 0;
+                    }
                 }
                 return message;
             };
@@ -1710,9 +2128,13 @@ export const eidolon = $root.eidolon = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SocketedGem.toObject = function toObject(message, options) {
+            SocketedGem.toObject = function (message, options, _depth) {
                 if (!options)
                     options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let object = {};
                 if (options.objects || options.defaults)
                     object.stats = {};
@@ -1720,15 +2142,18 @@ export const eidolon = $root.eidolon = (() => {
                     object.type = "";
                     object.quality = "";
                 }
-                if (message.type != null && message.hasOwnProperty("type"))
+                if (message.type != null && $Object.hasOwnProperty.call(message, "type"))
                     object.type = message.type;
-                if (message.quality != null && message.hasOwnProperty("quality"))
+                if (message.quality != null && $Object.hasOwnProperty.call(message, "quality"))
                     object.quality = message.quality;
                 let keys2;
-                if (message.stats && (keys2 = Object.keys(message.stats)).length) {
+                if (message.stats && (keys2 = $Object.keys(message.stats)).length) {
                     object.stats = {};
-                    for (let j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j) {
+                        if (keys2[j] === "__proto__")
+                            $util.makeProp(object.stats, keys2[j]);
                         object.stats[keys2[j]] = message.stats[keys2[j]];
+                    }
                 }
                 return object;
             };
@@ -1740,23 +2165,22 @@ export const eidolon = $root.eidolon = (() => {
              * @instance
              * @returns {Object.<string,*>} JSON object
              */
-            SocketedGem.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            SocketedGem.prototype.toJSON = function() {
+                return SocketedGem.toObject(this, $protobuf.util.toJSONOptions);
             };
 
             /**
-             * Gets the default type url for SocketedGem
+             * Gets the type url for SocketedGem
              * @function getTypeUrl
              * @memberof eidolon.state.SocketedGem
              * @static
-             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * @returns {string} The default type url
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
              */
-            SocketedGem.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-                if (typeUrlPrefix === undefined) {
-                    typeUrlPrefix = "type.googleapis.com";
-                }
-                return typeUrlPrefix + "/eidolon.state.SocketedGem";
+            SocketedGem.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/eidolon.state.SocketedGem";
             };
 
             return SocketedGem;
@@ -1766,8 +2190,7 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Properties of an Item.
-             * @memberof eidolon.state
-             * @interface IItem
+             * @typedef {Object} eidolon.state.Item.$Properties
              * @property {string|null} [id] Item id
              * @property {string|null} [name] Item name
              * @property {string|null} [type] Item type
@@ -1784,25 +2207,39 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [sockets] Item sockets
              * @property {string|null} [gemType] Item gemType
              * @property {string|null} [gemQuality] Item gemQuality
-             * @property {Array.<eidolon.state.ISocketedGem>|null} [gems] Item gems
+             * @property {Array.<eidolon.state.SocketedGem.$Properties>|null} [gems] Item gems
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of an Item.
+             * @memberof eidolon.state
+             * @interface IItem
+             * @augments eidolon.state.Item.$Properties
+             * @deprecated Use eidolon.state.Item.$Properties instead.
+             */
+
+            /**
+             * Shape of an Item.
+             * @typedef {eidolon.state.Item.$Properties} eidolon.state.Item.$Shape
              */
 
             /**
              * Constructs a new Item.
              * @memberof eidolon.state
              * @classdesc Represents an Item.
-             * @implements IItem
              * @constructor
-             * @param {eidolon.state.IItem=} [properties] Properties to set
+             * @param {eidolon.state.Item.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
-            function Item(properties) {
+            const Item = function (properties) {
                 this.stats = {};
                 this.gems = [];
                 if (properties)
-                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
                             this[keys[i]] = properties[keys[i]];
-            }
+            };
 
             /**
              * Item id.
@@ -1934,7 +2371,7 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Item gems.
-             * @member {Array.<eidolon.state.ISocketedGem>} gems
+             * @member {Array.<eidolon.state.SocketedGem.$Properties>} gems
              * @memberof eidolon.state.Item
              * @instance
              */
@@ -1945,10 +2382,14 @@ export const eidolon = $root.eidolon = (() => {
              * @function create
              * @memberof eidolon.state.Item
              * @static
-             * @param {eidolon.state.IItem=} [properties] Properties to set
+             * @param {eidolon.state.Item.$Properties=} [properties] Properties to set
              * @returns {eidolon.state.Item} Item instance
+             * @type {{
+             *   (properties: eidolon.state.Item.$Shape): eidolon.state.Item & eidolon.state.Item.$Shape;
+             *   (properties?: eidolon.state.Item.$Properties): eidolon.state.Item;
+             * }}
              */
-            Item.create = function create(properties) {
+            Item.create = function(properties) {
                 return new Item(properties);
             };
 
@@ -1957,49 +2398,56 @@ export const eidolon = $root.eidolon = (() => {
              * @function encode
              * @memberof eidolon.state.Item
              * @static
-             * @param {eidolon.state.IItem} message Item message or plain object to encode
+             * @param {eidolon.state.Item.$Properties} message Item message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Item.encode = function encode(message, writer) {
+            Item.encode = function (message, writer, _depth) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.id != null && $Object.hasOwnProperty.call(message, "id") && message.id !== "")
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
-                if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                if (message.name != null && $Object.hasOwnProperty.call(message, "name") && message.name !== "")
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.name);
-                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                if (message.type != null && $Object.hasOwnProperty.call(message, "type") && message.type !== "")
                     writer.uint32(/* id 3, wireType 2 =*/26).string(message.type);
-                if (message.rarity != null && Object.hasOwnProperty.call(message, "rarity"))
+                if (message.rarity != null && $Object.hasOwnProperty.call(message, "rarity") && message.rarity !== "")
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.rarity);
-                if (message.slot != null && Object.hasOwnProperty.call(message, "slot"))
+                if (message.slot != null && $Object.hasOwnProperty.call(message, "slot") && message.slot !== "")
                     writer.uint32(/* id 5, wireType 2 =*/42).string(message.slot);
-                if (message.level != null && Object.hasOwnProperty.call(message, "level"))
+                if (message.level != null && $Object.hasOwnProperty.call(message, "level") && message.level !== 0)
                     writer.uint32(/* id 6, wireType 0 =*/48).int32(message.level);
-                if (message.stats != null && Object.hasOwnProperty.call(message, "stats"))
-                    for (let keys = Object.keys(message.stats), i = 0; i < keys.length; ++i)
+                if (message.stats != null && $Object.hasOwnProperty.call(message, "stats"))
+                    for (let keys = $Object.keys(message.stats), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 7, wireType 2 =*/58).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.stats[keys[i]]).ldelim();
-                if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+                if (message.value != null && $Object.hasOwnProperty.call(message, "value") && message.value !== 0)
                     writer.uint32(/* id 8, wireType 0 =*/64).int32(message.value);
-                if (message.icon != null && Object.hasOwnProperty.call(message, "icon"))
+                if (message.icon != null && $Object.hasOwnProperty.call(message, "icon") && message.icon !== "")
                     writer.uint32(/* id 9, wireType 2 =*/74).string(message.icon);
-                if (message.description != null && Object.hasOwnProperty.call(message, "description"))
+                if (message.description != null && $Object.hasOwnProperty.call(message, "description") && message.description !== "")
                     writer.uint32(/* id 10, wireType 2 =*/82).string(message.description);
-                if (message.stack != null && Object.hasOwnProperty.call(message, "stack"))
+                if (message.stack != null && $Object.hasOwnProperty.call(message, "stack") && message.stack !== 0)
                     writer.uint32(/* id 11, wireType 0 =*/88).int32(message.stack);
-                if (message.maxStack != null && Object.hasOwnProperty.call(message, "maxStack"))
+                if (message.maxStack != null && $Object.hasOwnProperty.call(message, "maxStack") && message.maxStack !== 0)
                     writer.uint32(/* id 12, wireType 0 =*/96).int32(message.maxStack);
-                if (message.potency != null && Object.hasOwnProperty.call(message, "potency"))
+                if (message.potency != null && $Object.hasOwnProperty.call(message, "potency") && message.potency !== 0)
                     writer.uint32(/* id 13, wireType 0 =*/104).int32(message.potency);
-                if (message.sockets != null && Object.hasOwnProperty.call(message, "sockets"))
+                if (message.sockets != null && $Object.hasOwnProperty.call(message, "sockets") && message.sockets !== 0)
                     writer.uint32(/* id 14, wireType 0 =*/112).int32(message.sockets);
-                if (message.gemType != null && Object.hasOwnProperty.call(message, "gemType"))
+                if (message.gemType != null && $Object.hasOwnProperty.call(message, "gemType") && message.gemType !== "")
                     writer.uint32(/* id 15, wireType 2 =*/122).string(message.gemType);
-                if (message.gemQuality != null && Object.hasOwnProperty.call(message, "gemQuality"))
+                if (message.gemQuality != null && $Object.hasOwnProperty.call(message, "gemQuality") && message.gemQuality !== "")
                     writer.uint32(/* id 16, wireType 2 =*/130).string(message.gemQuality);
                 if (message.gems != null && message.gems.length)
                     for (let i = 0; i < message.gems.length; ++i)
-                        $root.eidolon.state.SocketedGem.encode(message.gems[i], writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
+                        $root.eidolon.state.SocketedGem.encode(message.gems[i], writer.uint32(/* id 17, wireType 2 =*/138).fork(), _depth + 1).ldelim();
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
                 return writer;
             };
 
@@ -2008,12 +2456,12 @@ export const eidolon = $root.eidolon = (() => {
              * @function encodeDelimited
              * @memberof eidolon.state.Item
              * @static
-             * @param {eidolon.state.IItem} message Item message or plain object to encode
+             * @param {eidolon.state.Item.$Properties} message Item message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Item.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
+            Item.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
             };
 
             /**
@@ -2023,113 +2471,209 @@ export const eidolon = $root.eidolon = (() => {
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
              * @param {number} [length] Message length if known beforehand
-             * @returns {eidolon.state.Item} Item
+             * @returns {eidolon.state.Item & eidolon.state.Item.$Shape} Item
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Item.decode = function decode(reader, length, error) {
+            Item.decode = function (reader, length, _end, _depth, _target) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.eidolon.state.Item(), key, value;
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.eidolon.state.Item(), key, value;
                 while (reader.pos < end) {
-                    let tag = reader.uint32();
-                    if (tag === error)
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
                         break;
-                    switch (tag >>> 3) {
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
                     case 1: {
-                            message.id = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.id = value;
+                            else
+                                delete message.id;
+                            continue;
                         }
                     case 2: {
-                            message.name = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.name = value;
+                            else
+                                delete message.name;
+                            continue;
                         }
                     case 3: {
-                            message.type = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.type = value;
+                            else
+                                delete message.type;
+                            continue;
                         }
                     case 4: {
-                            message.rarity = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.rarity = value;
+                            else
+                                delete message.rarity;
+                            continue;
                         }
                     case 5: {
-                            message.slot = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.slot = value;
+                            else
+                                delete message.slot;
+                            continue;
                         }
                     case 6: {
-                            message.level = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.level = value;
+                            else
+                                delete message.level;
+                            continue;
                         }
                     case 7: {
+                            if (wireType !== 2)
+                                break;
                             if (message.stats === $util.emptyObject)
                                 message.stats = {};
                             let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = 0;
                             while (reader.pos < end2) {
-                                let tag2 = reader.uint32();
-                                switch (tag2 >>> 3) {
+                                let tag2 = reader.tag();
+                                wireType = tag2 & 7;
+                                switch (tag2 >>>= 3) {
                                 case 1:
-                                    key = reader.string();
-                                    break;
+                                    if (wireType !== 2)
+                                        break;
+                                    key = reader.stringVerify();
+                                    continue;
                                 case 2:
+                                    if (wireType !== 0)
+                                        break;
                                     value = reader.int32();
-                                    break;
-                                default:
-                                    reader.skipType(tag2 & 7);
-                                    break;
+                                    continue;
                                 }
+                                reader.skipType(wireType, _depth, tag2);
                             }
+                            if (key === "__proto__")
+                                $util.makeProp(message.stats, key);
                             message.stats[key] = value;
-                            break;
+                            continue;
                         }
                     case 8: {
-                            message.value = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.value = value;
+                            else
+                                delete message.value;
+                            continue;
                         }
                     case 9: {
-                            message.icon = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.icon = value;
+                            else
+                                delete message.icon;
+                            continue;
                         }
                     case 10: {
-                            message.description = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.description = value;
+                            else
+                                delete message.description;
+                            continue;
                         }
                     case 11: {
-                            message.stack = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.stack = value;
+                            else
+                                delete message.stack;
+                            continue;
                         }
                     case 12: {
-                            message.maxStack = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.maxStack = value;
+                            else
+                                delete message.maxStack;
+                            continue;
                         }
                     case 13: {
-                            message.potency = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.potency = value;
+                            else
+                                delete message.potency;
+                            continue;
                         }
                     case 14: {
-                            message.sockets = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.sockets = value;
+                            else
+                                delete message.sockets;
+                            continue;
                         }
                     case 15: {
-                            message.gemType = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.gemType = value;
+                            else
+                                delete message.gemType;
+                            continue;
                         }
                     case 16: {
-                            message.gemQuality = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.gemQuality = value;
+                            else
+                                delete message.gemQuality;
+                            continue;
                         }
                     case 17: {
+                            if (wireType !== 2)
+                                break;
                             if (!(message.gems && message.gems.length))
                                 message.gems = [];
-                            message.gems.push($root.eidolon.state.SocketedGem.decode(reader, reader.uint32()));
-                            break;
+                            message.gems.push($root.eidolon.state.SocketedGem.decode(reader, reader.uint32(), $undefined, _depth + 1));
+                            continue;
                         }
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
                     }
                 }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
                 return message;
             };
 
@@ -2139,11 +2683,11 @@ export const eidolon = $root.eidolon = (() => {
              * @memberof eidolon.state.Item
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {eidolon.state.Item} Item
+             * @returns {eidolon.state.Item & eidolon.state.Item.$Shape} Item
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Item.decodeDelimited = function decodeDelimited(reader) {
+            Item.decodeDelimited = function(reader) {
                 if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
                 return this.decode(reader, reader.uint32());
@@ -2157,67 +2701,71 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            Item.verify = function verify(message) {
+            Item.verify = function (message, _depth) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.id != null && message.hasOwnProperty("id"))
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     if (!$util.isString(message.id))
                         return "id: string expected";
-                if (message.name != null && message.hasOwnProperty("name"))
+                if (message.name != null && $Object.hasOwnProperty.call(message, "name"))
                     if (!$util.isString(message.name))
                         return "name: string expected";
-                if (message.type != null && message.hasOwnProperty("type"))
+                if (message.type != null && $Object.hasOwnProperty.call(message, "type"))
                     if (!$util.isString(message.type))
                         return "type: string expected";
-                if (message.rarity != null && message.hasOwnProperty("rarity"))
+                if (message.rarity != null && $Object.hasOwnProperty.call(message, "rarity"))
                     if (!$util.isString(message.rarity))
                         return "rarity: string expected";
-                if (message.slot != null && message.hasOwnProperty("slot"))
+                if (message.slot != null && $Object.hasOwnProperty.call(message, "slot"))
                     if (!$util.isString(message.slot))
                         return "slot: string expected";
-                if (message.level != null && message.hasOwnProperty("level"))
+                if (message.level != null && $Object.hasOwnProperty.call(message, "level"))
                     if (!$util.isInteger(message.level))
                         return "level: integer expected";
-                if (message.stats != null && message.hasOwnProperty("stats")) {
+                if (message.stats != null && $Object.hasOwnProperty.call(message, "stats")) {
                     if (!$util.isObject(message.stats))
                         return "stats: object expected";
-                    let key = Object.keys(message.stats);
+                    let key = $Object.keys(message.stats);
                     for (let i = 0; i < key.length; ++i)
                         if (!$util.isInteger(message.stats[key[i]]))
                             return "stats: integer{k:string} expected";
                 }
-                if (message.value != null && message.hasOwnProperty("value"))
+                if (message.value != null && $Object.hasOwnProperty.call(message, "value"))
                     if (!$util.isInteger(message.value))
                         return "value: integer expected";
-                if (message.icon != null && message.hasOwnProperty("icon"))
+                if (message.icon != null && $Object.hasOwnProperty.call(message, "icon"))
                     if (!$util.isString(message.icon))
                         return "icon: string expected";
-                if (message.description != null && message.hasOwnProperty("description"))
+                if (message.description != null && $Object.hasOwnProperty.call(message, "description"))
                     if (!$util.isString(message.description))
                         return "description: string expected";
-                if (message.stack != null && message.hasOwnProperty("stack"))
+                if (message.stack != null && $Object.hasOwnProperty.call(message, "stack"))
                     if (!$util.isInteger(message.stack))
                         return "stack: integer expected";
-                if (message.maxStack != null && message.hasOwnProperty("maxStack"))
+                if (message.maxStack != null && $Object.hasOwnProperty.call(message, "maxStack"))
                     if (!$util.isInteger(message.maxStack))
                         return "maxStack: integer expected";
-                if (message.potency != null && message.hasOwnProperty("potency"))
+                if (message.potency != null && $Object.hasOwnProperty.call(message, "potency"))
                     if (!$util.isInteger(message.potency))
                         return "potency: integer expected";
-                if (message.sockets != null && message.hasOwnProperty("sockets"))
+                if (message.sockets != null && $Object.hasOwnProperty.call(message, "sockets"))
                     if (!$util.isInteger(message.sockets))
                         return "sockets: integer expected";
-                if (message.gemType != null && message.hasOwnProperty("gemType"))
+                if (message.gemType != null && $Object.hasOwnProperty.call(message, "gemType"))
                     if (!$util.isString(message.gemType))
                         return "gemType: string expected";
-                if (message.gemQuality != null && message.hasOwnProperty("gemQuality"))
+                if (message.gemQuality != null && $Object.hasOwnProperty.call(message, "gemQuality"))
                     if (!$util.isString(message.gemQuality))
                         return "gemQuality: string expected";
-                if (message.gems != null && message.hasOwnProperty("gems")) {
-                    if (!Array.isArray(message.gems))
+                if (message.gems != null && $Object.hasOwnProperty.call(message, "gems")) {
+                    if (!$Array.isArray(message.gems))
                         return "gems: array expected";
                     for (let i = 0; i < message.gems.length; ++i) {
-                        let error = $root.eidolon.state.SocketedGem.verify(message.gems[i]);
+                        let error = $root.eidolon.state.SocketedGem.verify(message.gems[i], _depth + 1);
                         if (error)
                             return "gems." + error;
                     }
@@ -2233,55 +2781,79 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {eidolon.state.Item} Item
              */
-            Item.fromObject = function fromObject(object) {
+            Item.fromObject = function (object, _depth) {
                 if (object instanceof $root.eidolon.state.Item)
                     return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".eidolon.state.Item: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let message = new $root.eidolon.state.Item();
                 if (object.id != null)
-                    message.id = String(object.id);
+                    if (typeof object.id !== "string" || object.id.length)
+                        message.id = $String(object.id);
                 if (object.name != null)
-                    message.name = String(object.name);
+                    if (typeof object.name !== "string" || object.name.length)
+                        message.name = $String(object.name);
                 if (object.type != null)
-                    message.type = String(object.type);
+                    if (typeof object.type !== "string" || object.type.length)
+                        message.type = $String(object.type);
                 if (object.rarity != null)
-                    message.rarity = String(object.rarity);
+                    if (typeof object.rarity !== "string" || object.rarity.length)
+                        message.rarity = $String(object.rarity);
                 if (object.slot != null)
-                    message.slot = String(object.slot);
+                    if (typeof object.slot !== "string" || object.slot.length)
+                        message.slot = $String(object.slot);
                 if (object.level != null)
-                    message.level = object.level | 0;
+                    if ($Number(object.level) !== 0)
+                        message.level = object.level | 0;
                 if (object.stats) {
-                    if (typeof object.stats !== "object")
-                        throw TypeError(".eidolon.state.Item.stats: object expected");
+                    if (!$util.isObject(object.stats))
+                        throw $TypeError(".eidolon.state.Item.stats: object expected");
                     message.stats = {};
-                    for (let keys = Object.keys(object.stats), i = 0; i < keys.length; ++i)
+                    for (let keys = $Object.keys(object.stats), i = 0; i < keys.length; ++i) {
+                        if (keys[i] === "__proto__")
+                            $util.makeProp(message.stats, keys[i]);
                         message.stats[keys[i]] = object.stats[keys[i]] | 0;
+                    }
                 }
                 if (object.value != null)
-                    message.value = object.value | 0;
+                    if ($Number(object.value) !== 0)
+                        message.value = object.value | 0;
                 if (object.icon != null)
-                    message.icon = String(object.icon);
+                    if (typeof object.icon !== "string" || object.icon.length)
+                        message.icon = $String(object.icon);
                 if (object.description != null)
-                    message.description = String(object.description);
+                    if (typeof object.description !== "string" || object.description.length)
+                        message.description = $String(object.description);
                 if (object.stack != null)
-                    message.stack = object.stack | 0;
+                    if ($Number(object.stack) !== 0)
+                        message.stack = object.stack | 0;
                 if (object.maxStack != null)
-                    message.maxStack = object.maxStack | 0;
+                    if ($Number(object.maxStack) !== 0)
+                        message.maxStack = object.maxStack | 0;
                 if (object.potency != null)
-                    message.potency = object.potency | 0;
+                    if ($Number(object.potency) !== 0)
+                        message.potency = object.potency | 0;
                 if (object.sockets != null)
-                    message.sockets = object.sockets | 0;
+                    if ($Number(object.sockets) !== 0)
+                        message.sockets = object.sockets | 0;
                 if (object.gemType != null)
-                    message.gemType = String(object.gemType);
+                    if (typeof object.gemType !== "string" || object.gemType.length)
+                        message.gemType = $String(object.gemType);
                 if (object.gemQuality != null)
-                    message.gemQuality = String(object.gemQuality);
+                    if (typeof object.gemQuality !== "string" || object.gemQuality.length)
+                        message.gemQuality = $String(object.gemQuality);
                 if (object.gems) {
-                    if (!Array.isArray(object.gems))
-                        throw TypeError(".eidolon.state.Item.gems: array expected");
-                    message.gems = [];
+                    if (!$Array.isArray(object.gems))
+                        throw $TypeError(".eidolon.state.Item.gems: array expected");
+                    message.gems = $Array(object.gems.length);
                     for (let i = 0; i < object.gems.length; ++i) {
-                        if (typeof object.gems[i] !== "object")
-                            throw TypeError(".eidolon.state.Item.gems: object expected");
-                        message.gems[i] = $root.eidolon.state.SocketedGem.fromObject(object.gems[i]);
+                        if (!$util.isObject(object.gems[i]))
+                            throw $TypeError(".eidolon.state.Item.gems: object expected");
+                        message.gems[i] = $root.eidolon.state.SocketedGem.fromObject(object.gems[i], _depth + 1);
                     }
                 }
                 return message;
@@ -2296,9 +2868,13 @@ export const eidolon = $root.eidolon = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            Item.toObject = function toObject(message, options) {
+            Item.toObject = function (message, options, _depth) {
                 if (!options)
                     options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let object = {};
                 if (options.arrays || options.defaults)
                     object.gems = [];
@@ -2321,46 +2897,49 @@ export const eidolon = $root.eidolon = (() => {
                     object.gemType = "";
                     object.gemQuality = "";
                 }
-                if (message.id != null && message.hasOwnProperty("id"))
+                if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
-                if (message.name != null && message.hasOwnProperty("name"))
+                if (message.name != null && $Object.hasOwnProperty.call(message, "name"))
                     object.name = message.name;
-                if (message.type != null && message.hasOwnProperty("type"))
+                if (message.type != null && $Object.hasOwnProperty.call(message, "type"))
                     object.type = message.type;
-                if (message.rarity != null && message.hasOwnProperty("rarity"))
+                if (message.rarity != null && $Object.hasOwnProperty.call(message, "rarity"))
                     object.rarity = message.rarity;
-                if (message.slot != null && message.hasOwnProperty("slot"))
+                if (message.slot != null && $Object.hasOwnProperty.call(message, "slot"))
                     object.slot = message.slot;
-                if (message.level != null && message.hasOwnProperty("level"))
+                if (message.level != null && $Object.hasOwnProperty.call(message, "level"))
                     object.level = message.level;
                 let keys2;
-                if (message.stats && (keys2 = Object.keys(message.stats)).length) {
+                if (message.stats && (keys2 = $Object.keys(message.stats)).length) {
                     object.stats = {};
-                    for (let j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j) {
+                        if (keys2[j] === "__proto__")
+                            $util.makeProp(object.stats, keys2[j]);
                         object.stats[keys2[j]] = message.stats[keys2[j]];
+                    }
                 }
-                if (message.value != null && message.hasOwnProperty("value"))
+                if (message.value != null && $Object.hasOwnProperty.call(message, "value"))
                     object.value = message.value;
-                if (message.icon != null && message.hasOwnProperty("icon"))
+                if (message.icon != null && $Object.hasOwnProperty.call(message, "icon"))
                     object.icon = message.icon;
-                if (message.description != null && message.hasOwnProperty("description"))
+                if (message.description != null && $Object.hasOwnProperty.call(message, "description"))
                     object.description = message.description;
-                if (message.stack != null && message.hasOwnProperty("stack"))
+                if (message.stack != null && $Object.hasOwnProperty.call(message, "stack"))
                     object.stack = message.stack;
-                if (message.maxStack != null && message.hasOwnProperty("maxStack"))
+                if (message.maxStack != null && $Object.hasOwnProperty.call(message, "maxStack"))
                     object.maxStack = message.maxStack;
-                if (message.potency != null && message.hasOwnProperty("potency"))
+                if (message.potency != null && $Object.hasOwnProperty.call(message, "potency"))
                     object.potency = message.potency;
-                if (message.sockets != null && message.hasOwnProperty("sockets"))
+                if (message.sockets != null && $Object.hasOwnProperty.call(message, "sockets"))
                     object.sockets = message.sockets;
-                if (message.gemType != null && message.hasOwnProperty("gemType"))
+                if (message.gemType != null && $Object.hasOwnProperty.call(message, "gemType"))
                     object.gemType = message.gemType;
-                if (message.gemQuality != null && message.hasOwnProperty("gemQuality"))
+                if (message.gemQuality != null && $Object.hasOwnProperty.call(message, "gemQuality"))
                     object.gemQuality = message.gemQuality;
                 if (message.gems && message.gems.length) {
-                    object.gems = [];
+                    object.gems = $Array(message.gems.length);
                     for (let j = 0; j < message.gems.length; ++j)
-                        object.gems[j] = $root.eidolon.state.SocketedGem.toObject(message.gems[j], options);
+                        object.gems[j] = $root.eidolon.state.SocketedGem.toObject(message.gems[j], options, _depth + 1);
                 }
                 return object;
             };
@@ -2372,23 +2951,22 @@ export const eidolon = $root.eidolon = (() => {
              * @instance
              * @returns {Object.<string,*>} JSON object
              */
-            Item.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            Item.prototype.toJSON = function() {
+                return Item.toObject(this, $protobuf.util.toJSONOptions);
             };
 
             /**
-             * Gets the default type url for Item
+             * Gets the type url for Item
              * @function getTypeUrl
              * @memberof eidolon.state.Item
              * @static
-             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * @returns {string} The default type url
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
              */
-            Item.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-                if (typeUrlPrefix === undefined) {
-                    typeUrlPrefix = "type.googleapis.com";
-                }
-                return typeUrlPrefix + "/eidolon.state.Item";
+            Item.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/eidolon.state.Item";
             };
 
             return Item;
@@ -2398,8 +2976,7 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Properties of an Entity.
-             * @memberof eidolon.state
-             * @interface IEntity
+             * @typedef {Object} eidolon.state.Entity.$Properties
              * @property {string|null} [id] Entity id
              * @property {string|null} [instanceId] Entity instanceId
              * @property {string|null} [name] Entity name
@@ -2420,8 +2997,8 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [skillPoints] Entity skillPoints
              * @property {string|null} [selectedBranch] Entity selectedBranch
              * @property {Array.<string>|null} [unlockedSkills] Entity unlockedSkills
-             * @property {eidolon.state.IStats|null} [baseStats] Entity baseStats
-             * @property {eidolon.state.IStats|null} [stats] Entity stats
+             * @property {eidolon.state.Stats.$Properties|null} [baseStats] Entity baseStats
+             * @property {eidolon.state.Stats.$Properties|null} [stats] Entity stats
              * @property {number|null} [damage] Entity damage
              * @property {number|null} [defense] Entity defense
              * @property {number|null} [speed] Entity speed
@@ -2432,9 +3009,9 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [castSpeed] Entity castSpeed
              * @property {number|null} [scale] Entity scale
              * @property {string|null} [state] Entity state
-             * @property {Object.<string,eidolon.state.IItem>|null} [equipment] Entity equipment
-             * @property {Array.<eidolon.state.IQuest>|null} [quests] Entity quests
-             * @property {eidolon.state.IItem|null} [lootItem] Entity lootItem
+             * @property {Object.<string,eidolon.state.Item.$Properties>|null} [equipment] Entity equipment
+             * @property {Array.<eidolon.state.Quest.$Properties>|null} [quests] Entity quests
+             * @property {eidolon.state.Item.$Properties|null} [lootItem] Entity lootItem
              * @property {string|null} [ownerId] Entity ownerId
              * @property {number|null} [velX] Entity velX
              * @property {number|null} [velZ] Entity velZ
@@ -2449,6 +3026,14 @@ export const eidolon = $root.eidolon = (() => {
              * @property {boolean|null} [timeWarpActive] Entity timeWarpActive
              * @property {boolean|null} [spellFocusActive] Entity spellFocusActive
              * @property {boolean|null} [swiftActive] Entity swiftActive
+             * @property {boolean|null} [ironFortressActive] Entity ironFortressActive
+             * @property {boolean|null} [guardianRoarActive] Entity guardianRoarActive
+             * @property {boolean|null} [berserkerModeActive] Entity berserkerModeActive
+             * @property {boolean|null} [lastStandActive] Entity lastStandActive
+             * @property {boolean|null} [serratedEdgesActive] Entity serratedEdgesActive
+             * @property {boolean|null} [poisonCoatingActive] Entity poisonCoatingActive
+             * @property {boolean|null} [stealthActive] Entity stealthActive
+             * @property {boolean|null} [zealActive] Entity zealActive
              * @property {boolean|null} [stunned] Entity stunned
              * @property {boolean|null} [slowed] Entity slowed
              * @property {boolean|null} [rooted] Entity rooted
@@ -2466,6 +3051,14 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [divineInterventionDuration] Entity divineInterventionDuration
              * @property {number|null} [spellFocusDuration] Entity spellFocusDuration
              * @property {number|null} [swiftDuration] Entity swiftDuration
+             * @property {number|null} [ironFortressDuration] Entity ironFortressDuration
+             * @property {number|null} [guardianRoarDuration] Entity guardianRoarDuration
+             * @property {number|null} [berserkerModeDuration] Entity berserkerModeDuration
+             * @property {number|null} [lastStandDuration] Entity lastStandDuration
+             * @property {number|null} [serratedEdgesDuration] Entity serratedEdgesDuration
+             * @property {number|null} [poisonCoatingDuration] Entity poisonCoatingDuration
+             * @property {number|null} [stealthDuration] Entity stealthDuration
+             * @property {number|null} [zealDuration] Entity zealDuration
              * @property {number|null} [slowFactor] Entity slowFactor
              * @property {number|null} [rootDuration] Entity rootDuration
              * @property {number|null} [stunDuration] Entity stunDuration
@@ -2489,17 +3082,31 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [jumpDuration] Entity jumpDuration
              * @property {number|null} [jumpHeight] Entity jumpHeight
              * @property {number|null} [jumpProgress] Entity jumpProgress
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of an Entity.
+             * @memberof eidolon.state
+             * @interface IEntity
+             * @augments eidolon.state.Entity.$Properties
+             * @deprecated Use eidolon.state.Entity.$Properties instead.
+             */
+
+            /**
+             * Shape of an Entity.
+             * @typedef {eidolon.state.Entity.$Properties} eidolon.state.Entity.$Shape
              */
 
             /**
              * Constructs a new Entity.
              * @memberof eidolon.state
              * @classdesc Represents an Entity.
-             * @implements IEntity
              * @constructor
-             * @param {eidolon.state.IEntity=} [properties] Properties to set
+             * @param {eidolon.state.Entity.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
-            function Entity(properties) {
+            const Entity = function (properties) {
                 this.unlockedSkills = [];
                 this.equipment = {};
                 this.quests = [];
@@ -2507,10 +3114,10 @@ export const eidolon = $root.eidolon = (() => {
                 this.talentRanks = {};
                 this.skillRunes = {};
                 if (properties)
-                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
                             this[keys[i]] = properties[keys[i]];
-            }
+            };
 
             /**
              * Entity id.
@@ -2674,7 +3281,7 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Entity baseStats.
-             * @member {eidolon.state.IStats|null|undefined} baseStats
+             * @member {eidolon.state.Stats.$Properties|null|undefined} baseStats
              * @memberof eidolon.state.Entity
              * @instance
              */
@@ -2682,7 +3289,7 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Entity stats.
-             * @member {eidolon.state.IStats|null|undefined} stats
+             * @member {eidolon.state.Stats.$Properties|null|undefined} stats
              * @memberof eidolon.state.Entity
              * @instance
              */
@@ -2770,7 +3377,7 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Entity equipment.
-             * @member {Object.<string,eidolon.state.IItem>} equipment
+             * @member {Object.<string,eidolon.state.Item.$Properties>} equipment
              * @memberof eidolon.state.Entity
              * @instance
              */
@@ -2778,7 +3385,7 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Entity quests.
-             * @member {Array.<eidolon.state.IQuest>} quests
+             * @member {Array.<eidolon.state.Quest.$Properties>} quests
              * @memberof eidolon.state.Entity
              * @instance
              */
@@ -2786,7 +3393,7 @@ export const eidolon = $root.eidolon = (() => {
 
             /**
              * Entity lootItem.
-             * @member {eidolon.state.IItem|null|undefined} lootItem
+             * @member {eidolon.state.Item.$Properties|null|undefined} lootItem
              * @memberof eidolon.state.Entity
              * @instance
              */
@@ -2903,6 +3510,70 @@ export const eidolon = $root.eidolon = (() => {
              * @instance
              */
             Entity.prototype.swiftActive = false;
+
+            /**
+             * Entity ironFortressActive.
+             * @member {boolean} ironFortressActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.ironFortressActive = false;
+
+            /**
+             * Entity guardianRoarActive.
+             * @member {boolean} guardianRoarActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.guardianRoarActive = false;
+
+            /**
+             * Entity berserkerModeActive.
+             * @member {boolean} berserkerModeActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.berserkerModeActive = false;
+
+            /**
+             * Entity lastStandActive.
+             * @member {boolean} lastStandActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.lastStandActive = false;
+
+            /**
+             * Entity serratedEdgesActive.
+             * @member {boolean} serratedEdgesActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.serratedEdgesActive = false;
+
+            /**
+             * Entity poisonCoatingActive.
+             * @member {boolean} poisonCoatingActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.poisonCoatingActive = false;
+
+            /**
+             * Entity stealthActive.
+             * @member {boolean} stealthActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.stealthActive = false;
+
+            /**
+             * Entity zealActive.
+             * @member {boolean} zealActive
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.zealActive = false;
 
             /**
              * Entity stunned.
@@ -3039,6 +3710,70 @@ export const eidolon = $root.eidolon = (() => {
              * @instance
              */
             Entity.prototype.swiftDuration = 0;
+
+            /**
+             * Entity ironFortressDuration.
+             * @member {number} ironFortressDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.ironFortressDuration = 0;
+
+            /**
+             * Entity guardianRoarDuration.
+             * @member {number} guardianRoarDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.guardianRoarDuration = 0;
+
+            /**
+             * Entity berserkerModeDuration.
+             * @member {number} berserkerModeDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.berserkerModeDuration = 0;
+
+            /**
+             * Entity lastStandDuration.
+             * @member {number} lastStandDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.lastStandDuration = 0;
+
+            /**
+             * Entity serratedEdgesDuration.
+             * @member {number} serratedEdgesDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.serratedEdgesDuration = 0;
+
+            /**
+             * Entity poisonCoatingDuration.
+             * @member {number} poisonCoatingDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.poisonCoatingDuration = 0;
+
+            /**
+             * Entity stealthDuration.
+             * @member {number} stealthDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.stealthDuration = 0;
+
+            /**
+             * Entity zealDuration.
+             * @member {number} zealDuration
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.zealDuration = 0;
 
             /**
              * Entity slowFactor.
@@ -3229,10 +3964,14 @@ export const eidolon = $root.eidolon = (() => {
              * @function create
              * @memberof eidolon.state.Entity
              * @static
-             * @param {eidolon.state.IEntity=} [properties] Properties to set
+             * @param {eidolon.state.Entity.$Properties=} [properties] Properties to set
              * @returns {eidolon.state.Entity} Entity instance
+             * @type {{
+             *   (properties: eidolon.state.Entity.$Shape): eidolon.state.Entity & eidolon.state.Entity.$Shape;
+             *   (properties?: eidolon.state.Entity.$Properties): eidolon.state.Entity;
+             * }}
              */
-            Entity.create = function create(properties) {
+            Entity.create = function(properties) {
                 return new Entity(properties);
             };
 
@@ -3241,199 +3980,238 @@ export const eidolon = $root.eidolon = (() => {
              * @function encode
              * @memberof eidolon.state.Entity
              * @static
-             * @param {eidolon.state.IEntity} message Entity message or plain object to encode
+             * @param {eidolon.state.Entity.$Properties} message Entity message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Entity.encode = function encode(message, writer) {
+            Entity.encode = function (message, writer, _depth) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.id != null && $Object.hasOwnProperty.call(message, "id") && message.id !== "")
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
-                if (message.instanceId != null && Object.hasOwnProperty.call(message, "instanceId"))
+                if (message.instanceId != null && $Object.hasOwnProperty.call(message, "instanceId") && message.instanceId !== "")
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.instanceId);
-                if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                if (message.name != null && $Object.hasOwnProperty.call(message, "name") && message.name !== "")
                     writer.uint32(/* id 3, wireType 2 =*/26).string(message.name);
-                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                if (message.type != null && $Object.hasOwnProperty.call(message, "type") && message.type !== "")
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.type);
-                if (message.subType != null && Object.hasOwnProperty.call(message, "subType"))
+                if (message.subType != null && $Object.hasOwnProperty.call(message, "subType") && message.subType !== "")
                     writer.uint32(/* id 5, wireType 2 =*/42).string(message.subType);
-                if (message.x != null && Object.hasOwnProperty.call(message, "x"))
+                if (message.x != null && $Object.hasOwnProperty.call(message, "x") && !$Object.is(message.x, 0))
                     writer.uint32(/* id 6, wireType 5 =*/53).float(message.x);
-                if (message.y != null && Object.hasOwnProperty.call(message, "y"))
+                if (message.y != null && $Object.hasOwnProperty.call(message, "y") && !$Object.is(message.y, 0))
                     writer.uint32(/* id 7, wireType 5 =*/61).float(message.y);
-                if (message.z != null && Object.hasOwnProperty.call(message, "z"))
+                if (message.z != null && $Object.hasOwnProperty.call(message, "z") && !$Object.is(message.z, 0))
                     writer.uint32(/* id 8, wireType 5 =*/69).float(message.z);
-                if (message.rotation != null && Object.hasOwnProperty.call(message, "rotation"))
+                if (message.rotation != null && $Object.hasOwnProperty.call(message, "rotation") && !$Object.is(message.rotation, 0))
                     writer.uint32(/* id 9, wireType 5 =*/77).float(message.rotation);
-                if (message.health != null && Object.hasOwnProperty.call(message, "health"))
+                if (message.health != null && $Object.hasOwnProperty.call(message, "health") && message.health !== 0)
                     writer.uint32(/* id 10, wireType 0 =*/80).int32(message.health);
-                if (message.maxHealth != null && Object.hasOwnProperty.call(message, "maxHealth"))
+                if (message.maxHealth != null && $Object.hasOwnProperty.call(message, "maxHealth") && message.maxHealth !== 0)
                     writer.uint32(/* id 11, wireType 0 =*/88).int32(message.maxHealth);
-                if (message.mana != null && Object.hasOwnProperty.call(message, "mana"))
+                if (message.mana != null && $Object.hasOwnProperty.call(message, "mana") && message.mana !== 0)
                     writer.uint32(/* id 12, wireType 0 =*/96).int32(message.mana);
-                if (message.maxMana != null && Object.hasOwnProperty.call(message, "maxMana"))
+                if (message.maxMana != null && $Object.hasOwnProperty.call(message, "maxMana") && message.maxMana !== 0)
                     writer.uint32(/* id 13, wireType 0 =*/104).int32(message.maxMana);
-                if (message.level != null && Object.hasOwnProperty.call(message, "level"))
+                if (message.level != null && $Object.hasOwnProperty.call(message, "level") && message.level !== 0)
                     writer.uint32(/* id 14, wireType 0 =*/112).int32(message.level);
-                if (message.experience != null && Object.hasOwnProperty.call(message, "experience"))
+                if (message.experience != null && $Object.hasOwnProperty.call(message, "experience") && message.experience !== 0)
                     writer.uint32(/* id 15, wireType 0 =*/120).int32(message.experience);
-                if (message.maxExperience != null && Object.hasOwnProperty.call(message, "maxExperience"))
+                if (message.maxExperience != null && $Object.hasOwnProperty.call(message, "maxExperience") && message.maxExperience !== 0)
                     writer.uint32(/* id 16, wireType 0 =*/128).int32(message.maxExperience);
-                if (message.gold != null && Object.hasOwnProperty.call(message, "gold"))
+                if (message.gold != null && $Object.hasOwnProperty.call(message, "gold") && message.gold !== 0)
                     writer.uint32(/* id 17, wireType 0 =*/136).int32(message.gold);
-                if (message.skillPoints != null && Object.hasOwnProperty.call(message, "skillPoints"))
+                if (message.skillPoints != null && $Object.hasOwnProperty.call(message, "skillPoints") && message.skillPoints !== 0)
                     writer.uint32(/* id 18, wireType 0 =*/144).int32(message.skillPoints);
-                if (message.selectedBranch != null && Object.hasOwnProperty.call(message, "selectedBranch"))
+                if (message.selectedBranch != null && $Object.hasOwnProperty.call(message, "selectedBranch") && message.selectedBranch !== "")
                     writer.uint32(/* id 19, wireType 2 =*/154).string(message.selectedBranch);
                 if (message.unlockedSkills != null && message.unlockedSkills.length)
                     for (let i = 0; i < message.unlockedSkills.length; ++i)
                         writer.uint32(/* id 20, wireType 2 =*/162).string(message.unlockedSkills[i]);
-                if (message.baseStats != null && Object.hasOwnProperty.call(message, "baseStats"))
-                    $root.eidolon.state.Stats.encode(message.baseStats, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
-                if (message.stats != null && Object.hasOwnProperty.call(message, "stats"))
-                    $root.eidolon.state.Stats.encode(message.stats, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
-                if (message.damage != null && Object.hasOwnProperty.call(message, "damage"))
+                if (message.baseStats != null && $Object.hasOwnProperty.call(message, "baseStats"))
+                    $root.eidolon.state.Stats.encode(message.baseStats, writer.uint32(/* id 21, wireType 2 =*/170).fork(), _depth + 1).ldelim();
+                if (message.stats != null && $Object.hasOwnProperty.call(message, "stats"))
+                    $root.eidolon.state.Stats.encode(message.stats, writer.uint32(/* id 22, wireType 2 =*/178).fork(), _depth + 1).ldelim();
+                if (message.damage != null && $Object.hasOwnProperty.call(message, "damage") && message.damage !== 0)
                     writer.uint32(/* id 23, wireType 0 =*/184).int32(message.damage);
-                if (message.defense != null && Object.hasOwnProperty.call(message, "defense"))
+                if (message.defense != null && $Object.hasOwnProperty.call(message, "defense") && message.defense !== 0)
                     writer.uint32(/* id 24, wireType 0 =*/192).int32(message.defense);
-                if (message.speed != null && Object.hasOwnProperty.call(message, "speed"))
+                if (message.speed != null && $Object.hasOwnProperty.call(message, "speed") && !$Object.is(message.speed, 0))
                     writer.uint32(/* id 25, wireType 5 =*/205).float(message.speed);
-                if (message.attackSpeed != null && Object.hasOwnProperty.call(message, "attackSpeed"))
+                if (message.attackSpeed != null && $Object.hasOwnProperty.call(message, "attackSpeed") && !$Object.is(message.attackSpeed, 0))
                     writer.uint32(/* id 26, wireType 5 =*/213).float(message.attackSpeed);
-                if (message.cooldownReduction != null && Object.hasOwnProperty.call(message, "cooldownReduction"))
+                if (message.cooldownReduction != null && $Object.hasOwnProperty.call(message, "cooldownReduction") && !$Object.is(message.cooldownReduction, 0))
                     writer.uint32(/* id 27, wireType 5 =*/221).float(message.cooldownReduction);
-                if (message.hpRegen != null && Object.hasOwnProperty.call(message, "hpRegen"))
+                if (message.hpRegen != null && $Object.hasOwnProperty.call(message, "hpRegen") && !$Object.is(message.hpRegen, 0))
                     writer.uint32(/* id 28, wireType 5 =*/229).float(message.hpRegen);
-                if (message.manaRegen != null && Object.hasOwnProperty.call(message, "manaRegen"))
+                if (message.manaRegen != null && $Object.hasOwnProperty.call(message, "manaRegen") && !$Object.is(message.manaRegen, 0))
                     writer.uint32(/* id 29, wireType 5 =*/237).float(message.manaRegen);
-                if (message.castSpeed != null && Object.hasOwnProperty.call(message, "castSpeed"))
+                if (message.castSpeed != null && $Object.hasOwnProperty.call(message, "castSpeed") && !$Object.is(message.castSpeed, 0))
                     writer.uint32(/* id 30, wireType 5 =*/245).float(message.castSpeed);
-                if (message.scale != null && Object.hasOwnProperty.call(message, "scale"))
+                if (message.scale != null && $Object.hasOwnProperty.call(message, "scale") && !$Object.is(message.scale, 0))
                     writer.uint32(/* id 31, wireType 5 =*/253).float(message.scale);
-                if (message.state != null && Object.hasOwnProperty.call(message, "state"))
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state") && message.state !== "")
                     writer.uint32(/* id 32, wireType 2 =*/258).string(message.state);
-                if (message.equipment != null && Object.hasOwnProperty.call(message, "equipment"))
-                    for (let keys = Object.keys(message.equipment), i = 0; i < keys.length; ++i) {
+                if (message.equipment != null && $Object.hasOwnProperty.call(message, "equipment"))
+                    for (let keys = $Object.keys(message.equipment), i = 0; i < keys.length; ++i) {
                         writer.uint32(/* id 33, wireType 2 =*/266).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]);
-                        $root.eidolon.state.Item.encode(message.equipment[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim().ldelim();
+                        $root.eidolon.state.Item.encode(message.equipment[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork(), _depth + 1).ldelim().ldelim();
                     }
                 if (message.quests != null && message.quests.length)
                     for (let i = 0; i < message.quests.length; ++i)
-                        $root.eidolon.state.Quest.encode(message.quests[i], writer.uint32(/* id 34, wireType 2 =*/274).fork()).ldelim();
-                if (message.lootItem != null && Object.hasOwnProperty.call(message, "lootItem"))
-                    $root.eidolon.state.Item.encode(message.lootItem, writer.uint32(/* id 35, wireType 2 =*/282).fork()).ldelim();
-                if (message.ownerId != null && Object.hasOwnProperty.call(message, "ownerId"))
+                        $root.eidolon.state.Quest.encode(message.quests[i], writer.uint32(/* id 34, wireType 2 =*/274).fork(), _depth + 1).ldelim();
+                if (message.lootItem != null && $Object.hasOwnProperty.call(message, "lootItem"))
+                    $root.eidolon.state.Item.encode(message.lootItem, writer.uint32(/* id 35, wireType 2 =*/282).fork(), _depth + 1).ldelim();
+                if (message.ownerId != null && $Object.hasOwnProperty.call(message, "ownerId") && message.ownerId !== "")
                     writer.uint32(/* id 36, wireType 2 =*/290).string(message.ownerId);
-                if (message.velX != null && Object.hasOwnProperty.call(message, "velX"))
+                if (message.velX != null && $Object.hasOwnProperty.call(message, "velX") && !$Object.is(message.velX, 0))
                     writer.uint32(/* id 37, wireType 5 =*/301).float(message.velX);
-                if (message.velZ != null && Object.hasOwnProperty.call(message, "velZ"))
+                if (message.velZ != null && $Object.hasOwnProperty.call(message, "velZ") && !$Object.is(message.velZ, 0))
                     writer.uint32(/* id 38, wireType 5 =*/309).float(message.velZ);
-                if (message.spiritsActive != null && Object.hasOwnProperty.call(message, "spiritsActive"))
+                if (message.spiritsActive != null && $Object.hasOwnProperty.call(message, "spiritsActive") && message.spiritsActive !== false)
                     writer.uint32(/* id 39, wireType 0 =*/312).bool(message.spiritsActive);
-                if (message.spiritsBoosted != null && Object.hasOwnProperty.call(message, "spiritsBoosted"))
+                if (message.spiritsBoosted != null && $Object.hasOwnProperty.call(message, "spiritsBoosted") && message.spiritsBoosted !== false)
                     writer.uint32(/* id 40, wireType 0 =*/320).bool(message.spiritsBoosted);
-                if (message.isCharging != null && Object.hasOwnProperty.call(message, "isCharging"))
+                if (message.isCharging != null && $Object.hasOwnProperty.call(message, "isCharging") && message.isCharging !== false)
                     writer.uint32(/* id 41, wireType 0 =*/328).bool(message.isCharging);
-                if (message.stunned != null && Object.hasOwnProperty.call(message, "stunned"))
+                if (message.stunned != null && $Object.hasOwnProperty.call(message, "stunned") && message.stunned !== false)
                     writer.uint32(/* id 42, wireType 0 =*/336).bool(message.stunned);
-                if (message.slowed != null && Object.hasOwnProperty.call(message, "slowed"))
+                if (message.slowed != null && $Object.hasOwnProperty.call(message, "slowed") && message.slowed !== false)
                     writer.uint32(/* id 43, wireType 0 =*/344).bool(message.slowed);
-                if (message.rooted != null && Object.hasOwnProperty.call(message, "rooted"))
+                if (message.rooted != null && $Object.hasOwnProperty.call(message, "rooted") && message.rooted !== false)
                     writer.uint32(/* id 44, wireType 0 =*/352).bool(message.rooted);
-                if (message.bleeding != null && Object.hasOwnProperty.call(message, "bleeding"))
+                if (message.bleeding != null && $Object.hasOwnProperty.call(message, "bleeding") && message.bleeding !== false)
                     writer.uint32(/* id 45, wireType 0 =*/360).bool(message.bleeding);
-                if (message.poisoned != null && Object.hasOwnProperty.call(message, "poisoned"))
+                if (message.poisoned != null && $Object.hasOwnProperty.call(message, "poisoned") && message.poisoned !== false)
                     writer.uint32(/* id 46, wireType 0 =*/368).bool(message.poisoned);
-                if (message.talentPoints != null && Object.hasOwnProperty.call(message, "talentPoints"))
+                if (message.talentPoints != null && $Object.hasOwnProperty.call(message, "talentPoints") && message.talentPoints !== 0)
                     writer.uint32(/* id 47, wireType 0 =*/376).int32(message.talentPoints);
                 if (message.unlockedTalents != null && message.unlockedTalents.length)
                     for (let i = 0; i < message.unlockedTalents.length; ++i)
                         writer.uint32(/* id 48, wireType 2 =*/386).string(message.unlockedTalents[i]);
-                if (message.talentRanks != null && Object.hasOwnProperty.call(message, "talentRanks"))
-                    for (let keys = Object.keys(message.talentRanks), i = 0; i < keys.length; ++i)
+                if (message.talentRanks != null && $Object.hasOwnProperty.call(message, "talentRanks"))
+                    for (let keys = $Object.keys(message.talentRanks), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 49, wireType 2 =*/394).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.talentRanks[keys[i]]).ldelim();
-                if (message.skillRunes != null && Object.hasOwnProperty.call(message, "skillRunes"))
-                    for (let keys = Object.keys(message.skillRunes), i = 0; i < keys.length; ++i)
+                if (message.skillRunes != null && $Object.hasOwnProperty.call(message, "skillRunes"))
+                    for (let keys = $Object.keys(message.skillRunes), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 50, wireType 2 =*/402).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.skillRunes[keys[i]]).ldelim();
-                if (message.guardianEmbraceActive != null && Object.hasOwnProperty.call(message, "guardianEmbraceActive"))
+                if (message.guardianEmbraceActive != null && $Object.hasOwnProperty.call(message, "guardianEmbraceActive") && message.guardianEmbraceActive !== false)
                     writer.uint32(/* id 51, wireType 0 =*/408).bool(message.guardianEmbraceActive);
-                if (message.blessingResolveActive != null && Object.hasOwnProperty.call(message, "blessingResolveActive"))
+                if (message.blessingResolveActive != null && $Object.hasOwnProperty.call(message, "blessingResolveActive") && message.blessingResolveActive !== false)
                     writer.uint32(/* id 52, wireType 0 =*/416).bool(message.blessingResolveActive);
-                if (message.divineInterventionActive != null && Object.hasOwnProperty.call(message, "divineInterventionActive"))
+                if (message.divineInterventionActive != null && $Object.hasOwnProperty.call(message, "divineInterventionActive") && message.divineInterventionActive !== false)
                     writer.uint32(/* id 53, wireType 0 =*/424).bool(message.divineInterventionActive);
-                if (message.arcaneShieldActive != null && Object.hasOwnProperty.call(message, "arcaneShieldActive"))
+                if (message.arcaneShieldActive != null && $Object.hasOwnProperty.call(message, "arcaneShieldActive") && message.arcaneShieldActive !== false)
                     writer.uint32(/* id 54, wireType 0 =*/432).bool(message.arcaneShieldActive);
-                if (message.arcaneShieldHp != null && Object.hasOwnProperty.call(message, "arcaneShieldHp"))
+                if (message.arcaneShieldHp != null && $Object.hasOwnProperty.call(message, "arcaneShieldHp") && message.arcaneShieldHp !== 0)
                     writer.uint32(/* id 55, wireType 0 =*/440).int32(message.arcaneShieldHp);
-                if (message.timeWarpActive != null && Object.hasOwnProperty.call(message, "timeWarpActive"))
+                if (message.timeWarpActive != null && $Object.hasOwnProperty.call(message, "timeWarpActive") && message.timeWarpActive !== false)
                     writer.uint32(/* id 56, wireType 0 =*/448).bool(message.timeWarpActive);
-                if (message.spellFocusActive != null && Object.hasOwnProperty.call(message, "spellFocusActive"))
+                if (message.spellFocusActive != null && $Object.hasOwnProperty.call(message, "spellFocusActive") && message.spellFocusActive !== false)
                     writer.uint32(/* id 57, wireType 0 =*/456).bool(message.spellFocusActive);
-                if (message.slowFactor != null && Object.hasOwnProperty.call(message, "slowFactor"))
+                if (message.slowFactor != null && $Object.hasOwnProperty.call(message, "slowFactor") && !$Object.is(message.slowFactor, 0))
                     writer.uint32(/* id 58, wireType 5 =*/469).float(message.slowFactor);
-                if (message.rootDuration != null && Object.hasOwnProperty.call(message, "rootDuration"))
+                if (message.rootDuration != null && $Object.hasOwnProperty.call(message, "rootDuration") && !$Object.is(message.rootDuration, 0))
                     writer.uint32(/* id 59, wireType 5 =*/477).float(message.rootDuration);
-                if (message.stunDuration != null && Object.hasOwnProperty.call(message, "stunDuration"))
+                if (message.stunDuration != null && $Object.hasOwnProperty.call(message, "stunDuration") && !$Object.is(message.stunDuration, 0))
                     writer.uint32(/* id 60, wireType 5 =*/485).float(message.stunDuration);
-                if (message.bleedDuration != null && Object.hasOwnProperty.call(message, "bleedDuration"))
+                if (message.bleedDuration != null && $Object.hasOwnProperty.call(message, "bleedDuration") && !$Object.is(message.bleedDuration, 0))
                     writer.uint32(/* id 61, wireType 5 =*/493).float(message.bleedDuration);
-                if (message.poisonDuration != null && Object.hasOwnProperty.call(message, "poisonDuration"))
+                if (message.poisonDuration != null && $Object.hasOwnProperty.call(message, "poisonDuration") && !$Object.is(message.poisonDuration, 0))
                     writer.uint32(/* id 62, wireType 5 =*/501).float(message.poisonDuration);
-                if (message.bleedDamage != null && Object.hasOwnProperty.call(message, "bleedDamage"))
+                if (message.bleedDamage != null && $Object.hasOwnProperty.call(message, "bleedDamage") && message.bleedDamage !== 0)
                     writer.uint32(/* id 63, wireType 0 =*/504).int32(message.bleedDamage);
-                if (message.poisonDamage != null && Object.hasOwnProperty.call(message, "poisonDamage"))
+                if (message.poisonDamage != null && $Object.hasOwnProperty.call(message, "poisonDamage") && message.poisonDamage !== 0)
                     writer.uint32(/* id 64, wireType 0 =*/512).int32(message.poisonDamage);
-                if (message.slowDuration != null && Object.hasOwnProperty.call(message, "slowDuration"))
+                if (message.slowDuration != null && $Object.hasOwnProperty.call(message, "slowDuration") && !$Object.is(message.slowDuration, 0))
                     writer.uint32(/* id 65, wireType 5 =*/525).float(message.slowDuration);
-                if (message.weakPointMarked != null && Object.hasOwnProperty.call(message, "weakPointMarked"))
+                if (message.weakPointMarked != null && $Object.hasOwnProperty.call(message, "weakPointMarked") && message.weakPointMarked !== false)
                     writer.uint32(/* id 66, wireType 0 =*/528).bool(message.weakPointMarked);
-                if (message.weakPointDuration != null && Object.hasOwnProperty.call(message, "weakPointDuration"))
+                if (message.weakPointDuration != null && $Object.hasOwnProperty.call(message, "weakPointDuration") && !$Object.is(message.weakPointDuration, 0))
                     writer.uint32(/* id 67, wireType 5 =*/541).float(message.weakPointDuration);
-                if (message.markWeakness != null && Object.hasOwnProperty.call(message, "markWeakness"))
+                if (message.markWeakness != null && $Object.hasOwnProperty.call(message, "markWeakness") && message.markWeakness !== false)
                     writer.uint32(/* id 68, wireType 0 =*/544).bool(message.markWeakness);
-                if (message.markWeaknessDuration != null && Object.hasOwnProperty.call(message, "markWeaknessDuration"))
+                if (message.markWeaknessDuration != null && $Object.hasOwnProperty.call(message, "markWeaknessDuration") && !$Object.is(message.markWeaknessDuration, 0))
                     writer.uint32(/* id 69, wireType 5 =*/557).float(message.markWeaknessDuration);
-                if (message.spiritDuration != null && Object.hasOwnProperty.call(message, "spiritDuration"))
+                if (message.spiritDuration != null && $Object.hasOwnProperty.call(message, "spiritDuration") && !$Object.is(message.spiritDuration, 0))
                     writer.uint32(/* id 70, wireType 5 =*/565).float(message.spiritDuration);
-                if (message.blessingResolveDuration != null && Object.hasOwnProperty.call(message, "blessingResolveDuration"))
+                if (message.blessingResolveDuration != null && $Object.hasOwnProperty.call(message, "blessingResolveDuration") && !$Object.is(message.blessingResolveDuration, 0))
                     writer.uint32(/* id 71, wireType 5 =*/573).float(message.blessingResolveDuration);
-                if (message.timeWarpDuration != null && Object.hasOwnProperty.call(message, "timeWarpDuration"))
+                if (message.timeWarpDuration != null && $Object.hasOwnProperty.call(message, "timeWarpDuration") && !$Object.is(message.timeWarpDuration, 0))
                     writer.uint32(/* id 72, wireType 5 =*/581).float(message.timeWarpDuration);
-                if (message.guardianEmbraceDuration != null && Object.hasOwnProperty.call(message, "guardianEmbraceDuration"))
+                if (message.guardianEmbraceDuration != null && $Object.hasOwnProperty.call(message, "guardianEmbraceDuration") && !$Object.is(message.guardianEmbraceDuration, 0))
                     writer.uint32(/* id 73, wireType 5 =*/589).float(message.guardianEmbraceDuration);
-                if (message.arcaneShieldDuration != null && Object.hasOwnProperty.call(message, "arcaneShieldDuration"))
+                if (message.arcaneShieldDuration != null && $Object.hasOwnProperty.call(message, "arcaneShieldDuration") && !$Object.is(message.arcaneShieldDuration, 0))
                     writer.uint32(/* id 74, wireType 5 =*/597).float(message.arcaneShieldDuration);
-                if (message.divineInterventionDuration != null && Object.hasOwnProperty.call(message, "divineInterventionDuration"))
+                if (message.divineInterventionDuration != null && $Object.hasOwnProperty.call(message, "divineInterventionDuration") && !$Object.is(message.divineInterventionDuration, 0))
                     writer.uint32(/* id 75, wireType 5 =*/605).float(message.divineInterventionDuration);
-                if (message.spellFocusDuration != null && Object.hasOwnProperty.call(message, "spellFocusDuration"))
+                if (message.spellFocusDuration != null && $Object.hasOwnProperty.call(message, "spellFocusDuration") && !$Object.is(message.spellFocusDuration, 0))
                     writer.uint32(/* id 76, wireType 5 =*/613).float(message.spellFocusDuration);
-                if (message.swiftActive != null && Object.hasOwnProperty.call(message, "swiftActive"))
+                if (message.swiftActive != null && $Object.hasOwnProperty.call(message, "swiftActive") && message.swiftActive !== false)
                     writer.uint32(/* id 77, wireType 0 =*/616).bool(message.swiftActive);
-                if (message.swiftDuration != null && Object.hasOwnProperty.call(message, "swiftDuration"))
+                if (message.swiftDuration != null && $Object.hasOwnProperty.call(message, "swiftDuration") && !$Object.is(message.swiftDuration, 0))
                     writer.uint32(/* id 78, wireType 5 =*/629).float(message.swiftDuration);
-                if (message.partyId != null && Object.hasOwnProperty.call(message, "partyId"))
+                if (message.partyId != null && $Object.hasOwnProperty.call(message, "partyId") && message.partyId !== "")
                     writer.uint32(/* id 79, wireType 2 =*/634).string(message.partyId);
-                if (message.socialStatus != null && Object.hasOwnProperty.call(message, "socialStatus"))
+                if (message.socialStatus != null && $Object.hasOwnProperty.call(message, "socialStatus") && message.socialStatus !== "")
                     writer.uint32(/* id 80, wireType 2 =*/642).string(message.socialStatus);
-                if (message.jumpStartX != null && Object.hasOwnProperty.call(message, "jumpStartX"))
+                if (message.jumpStartX != null && $Object.hasOwnProperty.call(message, "jumpStartX") && !$Object.is(message.jumpStartX, 0))
                     writer.uint32(/* id 81, wireType 5 =*/653).float(message.jumpStartX);
-                if (message.jumpStartY != null && Object.hasOwnProperty.call(message, "jumpStartY"))
+                if (message.jumpStartY != null && $Object.hasOwnProperty.call(message, "jumpStartY") && !$Object.is(message.jumpStartY, 0))
                     writer.uint32(/* id 82, wireType 5 =*/661).float(message.jumpStartY);
-                if (message.jumpStartZ != null && Object.hasOwnProperty.call(message, "jumpStartZ"))
+                if (message.jumpStartZ != null && $Object.hasOwnProperty.call(message, "jumpStartZ") && !$Object.is(message.jumpStartZ, 0))
                     writer.uint32(/* id 83, wireType 5 =*/669).float(message.jumpStartZ);
-                if (message.jumpTargetX != null && Object.hasOwnProperty.call(message, "jumpTargetX"))
+                if (message.jumpTargetX != null && $Object.hasOwnProperty.call(message, "jumpTargetX") && !$Object.is(message.jumpTargetX, 0))
                     writer.uint32(/* id 84, wireType 5 =*/677).float(message.jumpTargetX);
-                if (message.jumpTargetY != null && Object.hasOwnProperty.call(message, "jumpTargetY"))
+                if (message.jumpTargetY != null && $Object.hasOwnProperty.call(message, "jumpTargetY") && !$Object.is(message.jumpTargetY, 0))
                     writer.uint32(/* id 85, wireType 5 =*/685).float(message.jumpTargetY);
-                if (message.jumpTargetZ != null && Object.hasOwnProperty.call(message, "jumpTargetZ"))
+                if (message.jumpTargetZ != null && $Object.hasOwnProperty.call(message, "jumpTargetZ") && !$Object.is(message.jumpTargetZ, 0))
                     writer.uint32(/* id 86, wireType 5 =*/693).float(message.jumpTargetZ);
-                if (message.jumpDuration != null && Object.hasOwnProperty.call(message, "jumpDuration"))
+                if (message.jumpDuration != null && $Object.hasOwnProperty.call(message, "jumpDuration") && !$Object.is(message.jumpDuration, 0))
                     writer.uint32(/* id 87, wireType 5 =*/701).float(message.jumpDuration);
-                if (message.jumpHeight != null && Object.hasOwnProperty.call(message, "jumpHeight"))
+                if (message.jumpHeight != null && $Object.hasOwnProperty.call(message, "jumpHeight") && !$Object.is(message.jumpHeight, 0))
                     writer.uint32(/* id 88, wireType 5 =*/709).float(message.jumpHeight);
-                if (message.jumpProgress != null && Object.hasOwnProperty.call(message, "jumpProgress"))
+                if (message.jumpProgress != null && $Object.hasOwnProperty.call(message, "jumpProgress") && !$Object.is(message.jumpProgress, 0))
                     writer.uint32(/* id 89, wireType 5 =*/717).float(message.jumpProgress);
+                if (message.ironFortressActive != null && $Object.hasOwnProperty.call(message, "ironFortressActive") && message.ironFortressActive !== false)
+                    writer.uint32(/* id 90, wireType 0 =*/720).bool(message.ironFortressActive);
+                if (message.guardianRoarActive != null && $Object.hasOwnProperty.call(message, "guardianRoarActive") && message.guardianRoarActive !== false)
+                    writer.uint32(/* id 91, wireType 0 =*/728).bool(message.guardianRoarActive);
+                if (message.berserkerModeActive != null && $Object.hasOwnProperty.call(message, "berserkerModeActive") && message.berserkerModeActive !== false)
+                    writer.uint32(/* id 92, wireType 0 =*/736).bool(message.berserkerModeActive);
+                if (message.lastStandActive != null && $Object.hasOwnProperty.call(message, "lastStandActive") && message.lastStandActive !== false)
+                    writer.uint32(/* id 93, wireType 0 =*/744).bool(message.lastStandActive);
+                if (message.serratedEdgesActive != null && $Object.hasOwnProperty.call(message, "serratedEdgesActive") && message.serratedEdgesActive !== false)
+                    writer.uint32(/* id 94, wireType 0 =*/752).bool(message.serratedEdgesActive);
+                if (message.poisonCoatingActive != null && $Object.hasOwnProperty.call(message, "poisonCoatingActive") && message.poisonCoatingActive !== false)
+                    writer.uint32(/* id 95, wireType 0 =*/760).bool(message.poisonCoatingActive);
+                if (message.stealthActive != null && $Object.hasOwnProperty.call(message, "stealthActive") && message.stealthActive !== false)
+                    writer.uint32(/* id 96, wireType 0 =*/768).bool(message.stealthActive);
+                if (message.zealActive != null && $Object.hasOwnProperty.call(message, "zealActive") && message.zealActive !== false)
+                    writer.uint32(/* id 97, wireType 0 =*/776).bool(message.zealActive);
+                if (message.ironFortressDuration != null && $Object.hasOwnProperty.call(message, "ironFortressDuration") && !$Object.is(message.ironFortressDuration, 0))
+                    writer.uint32(/* id 98, wireType 5 =*/789).float(message.ironFortressDuration);
+                if (message.guardianRoarDuration != null && $Object.hasOwnProperty.call(message, "guardianRoarDuration") && !$Object.is(message.guardianRoarDuration, 0))
+                    writer.uint32(/* id 99, wireType 5 =*/797).float(message.guardianRoarDuration);
+                if (message.berserkerModeDuration != null && $Object.hasOwnProperty.call(message, "berserkerModeDuration") && !$Object.is(message.berserkerModeDuration, 0))
+                    writer.uint32(/* id 100, wireType 5 =*/805).float(message.berserkerModeDuration);
+                if (message.lastStandDuration != null && $Object.hasOwnProperty.call(message, "lastStandDuration") && !$Object.is(message.lastStandDuration, 0))
+                    writer.uint32(/* id 101, wireType 5 =*/813).float(message.lastStandDuration);
+                if (message.serratedEdgesDuration != null && $Object.hasOwnProperty.call(message, "serratedEdgesDuration") && !$Object.is(message.serratedEdgesDuration, 0))
+                    writer.uint32(/* id 102, wireType 5 =*/821).float(message.serratedEdgesDuration);
+                if (message.poisonCoatingDuration != null && $Object.hasOwnProperty.call(message, "poisonCoatingDuration") && !$Object.is(message.poisonCoatingDuration, 0))
+                    writer.uint32(/* id 103, wireType 5 =*/829).float(message.poisonCoatingDuration);
+                if (message.stealthDuration != null && $Object.hasOwnProperty.call(message, "stealthDuration") && !$Object.is(message.stealthDuration, 0))
+                    writer.uint32(/* id 104, wireType 5 =*/837).float(message.stealthDuration);
+                if (message.zealDuration != null && $Object.hasOwnProperty.call(message, "zealDuration") && !$Object.is(message.zealDuration, 0))
+                    writer.uint32(/* id 105, wireType 5 =*/845).float(message.zealDuration);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
                 return writer;
             };
 
@@ -3442,12 +4220,12 @@ export const eidolon = $root.eidolon = (() => {
              * @function encodeDelimited
              * @memberof eidolon.state.Entity
              * @static
-             * @param {eidolon.state.IEntity} message Entity message or plain object to encode
+             * @param {eidolon.state.Entity.$Properties} message Entity message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Entity.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
+            Entity.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
             };
 
             /**
@@ -3457,443 +4235,1032 @@ export const eidolon = $root.eidolon = (() => {
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
              * @param {number} [length] Message length if known beforehand
-             * @returns {eidolon.state.Entity} Entity
+             * @returns {eidolon.state.Entity & eidolon.state.Entity.$Shape} Entity
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Entity.decode = function decode(reader, length, error) {
+            Entity.decode = function (reader, length, _end, _depth, _target) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.eidolon.state.Entity(), key, value;
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.eidolon.state.Entity(), key, value;
                 while (reader.pos < end) {
-                    let tag = reader.uint32();
-                    if (tag === error)
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
                         break;
-                    switch (tag >>> 3) {
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
                     case 1: {
-                            message.id = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.id = value;
+                            else
+                                delete message.id;
+                            continue;
                         }
                     case 2: {
-                            message.instanceId = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.instanceId = value;
+                            else
+                                delete message.instanceId;
+                            continue;
                         }
                     case 3: {
-                            message.name = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.name = value;
+                            else
+                                delete message.name;
+                            continue;
                         }
                     case 4: {
-                            message.type = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.type = value;
+                            else
+                                delete message.type;
+                            continue;
                         }
                     case 5: {
-                            message.subType = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.subType = value;
+                            else
+                                delete message.subType;
+                            continue;
                         }
                     case 6: {
-                            message.x = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.x = value;
+                            else
+                                delete message.x;
+                            continue;
                         }
                     case 7: {
-                            message.y = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.y = value;
+                            else
+                                delete message.y;
+                            continue;
                         }
                     case 8: {
-                            message.z = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.z = value;
+                            else
+                                delete message.z;
+                            continue;
                         }
                     case 9: {
-                            message.rotation = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.rotation = value;
+                            else
+                                delete message.rotation;
+                            continue;
                         }
                     case 10: {
-                            message.health = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.health = value;
+                            else
+                                delete message.health;
+                            continue;
                         }
                     case 11: {
-                            message.maxHealth = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.maxHealth = value;
+                            else
+                                delete message.maxHealth;
+                            continue;
                         }
                     case 12: {
-                            message.mana = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.mana = value;
+                            else
+                                delete message.mana;
+                            continue;
                         }
                     case 13: {
-                            message.maxMana = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.maxMana = value;
+                            else
+                                delete message.maxMana;
+                            continue;
                         }
                     case 14: {
-                            message.level = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.level = value;
+                            else
+                                delete message.level;
+                            continue;
                         }
                     case 15: {
-                            message.experience = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.experience = value;
+                            else
+                                delete message.experience;
+                            continue;
                         }
                     case 16: {
-                            message.maxExperience = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.maxExperience = value;
+                            else
+                                delete message.maxExperience;
+                            continue;
                         }
                     case 17: {
-                            message.gold = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.gold = value;
+                            else
+                                delete message.gold;
+                            continue;
                         }
                     case 18: {
-                            message.skillPoints = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.skillPoints = value;
+                            else
+                                delete message.skillPoints;
+                            continue;
                         }
                     case 19: {
-                            message.selectedBranch = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.selectedBranch = value;
+                            else
+                                delete message.selectedBranch;
+                            continue;
                         }
                     case 20: {
+                            if (wireType !== 2)
+                                break;
                             if (!(message.unlockedSkills && message.unlockedSkills.length))
                                 message.unlockedSkills = [];
-                            message.unlockedSkills.push(reader.string());
-                            break;
+                            message.unlockedSkills.push(reader.stringVerify());
+                            continue;
                         }
                     case 21: {
-                            message.baseStats = $root.eidolon.state.Stats.decode(reader, reader.uint32());
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            message.baseStats = $root.eidolon.state.Stats.decode(reader, reader.uint32(), $undefined, _depth + 1, message.baseStats);
+                            continue;
                         }
                     case 22: {
-                            message.stats = $root.eidolon.state.Stats.decode(reader, reader.uint32());
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            message.stats = $root.eidolon.state.Stats.decode(reader, reader.uint32(), $undefined, _depth + 1, message.stats);
+                            continue;
                         }
                     case 23: {
-                            message.damage = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.damage = value;
+                            else
+                                delete message.damage;
+                            continue;
                         }
                     case 24: {
-                            message.defense = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.defense = value;
+                            else
+                                delete message.defense;
+                            continue;
                         }
                     case 25: {
-                            message.speed = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.speed = value;
+                            else
+                                delete message.speed;
+                            continue;
                         }
                     case 26: {
-                            message.attackSpeed = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.attackSpeed = value;
+                            else
+                                delete message.attackSpeed;
+                            continue;
                         }
                     case 27: {
-                            message.cooldownReduction = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.cooldownReduction = value;
+                            else
+                                delete message.cooldownReduction;
+                            continue;
                         }
                     case 28: {
-                            message.hpRegen = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.hpRegen = value;
+                            else
+                                delete message.hpRegen;
+                            continue;
                         }
                     case 29: {
-                            message.manaRegen = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.manaRegen = value;
+                            else
+                                delete message.manaRegen;
+                            continue;
                         }
                     case 30: {
-                            message.castSpeed = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.castSpeed = value;
+                            else
+                                delete message.castSpeed;
+                            continue;
                         }
                     case 31: {
-                            message.scale = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.scale = value;
+                            else
+                                delete message.scale;
+                            continue;
                         }
                     case 32: {
-                            message.state = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.state = value;
+                            else
+                                delete message.state;
+                            continue;
                         }
                     case 33: {
+                            if (wireType !== 2)
+                                break;
                             if (message.equipment === $util.emptyObject)
                                 message.equipment = {};
                             let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = null;
                             while (reader.pos < end2) {
-                                let tag2 = reader.uint32();
-                                switch (tag2 >>> 3) {
+                                let tag2 = reader.tag();
+                                wireType = tag2 & 7;
+                                switch (tag2 >>>= 3) {
                                 case 1:
-                                    key = reader.string();
-                                    break;
+                                    if (wireType !== 2)
+                                        break;
+                                    key = reader.stringVerify();
+                                    continue;
                                 case 2:
-                                    value = $root.eidolon.state.Item.decode(reader, reader.uint32());
-                                    break;
-                                default:
-                                    reader.skipType(tag2 & 7);
-                                    break;
+                                    if (wireType !== 2)
+                                        break;
+                                    value = $root.eidolon.state.Item.decode(reader, reader.uint32(), $undefined, _depth + 1, value);
+                                    continue;
                                 }
+                                reader.skipType(wireType, _depth, tag2);
                             }
-                            message.equipment[key] = value;
-                            break;
+                            if (key === "__proto__")
+                                $util.makeProp(message.equipment, key);
+                            message.equipment[key] = value || new $root.eidolon.state.Item();
+                            continue;
                         }
                     case 34: {
+                            if (wireType !== 2)
+                                break;
                             if (!(message.quests && message.quests.length))
                                 message.quests = [];
-                            message.quests.push($root.eidolon.state.Quest.decode(reader, reader.uint32()));
-                            break;
+                            message.quests.push($root.eidolon.state.Quest.decode(reader, reader.uint32(), $undefined, _depth + 1));
+                            continue;
                         }
                     case 35: {
-                            message.lootItem = $root.eidolon.state.Item.decode(reader, reader.uint32());
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            message.lootItem = $root.eidolon.state.Item.decode(reader, reader.uint32(), $undefined, _depth + 1, message.lootItem);
+                            continue;
                         }
                     case 36: {
-                            message.ownerId = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.ownerId = value;
+                            else
+                                delete message.ownerId;
+                            continue;
                         }
                     case 37: {
-                            message.velX = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.velX = value;
+                            else
+                                delete message.velX;
+                            continue;
                         }
                     case 38: {
-                            message.velZ = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.velZ = value;
+                            else
+                                delete message.velZ;
+                            continue;
                         }
                     case 39: {
-                            message.spiritsActive = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.spiritsActive = value;
+                            else
+                                delete message.spiritsActive;
+                            continue;
                         }
                     case 40: {
-                            message.spiritsBoosted = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.spiritsBoosted = value;
+                            else
+                                delete message.spiritsBoosted;
+                            continue;
                         }
                     case 41: {
-                            message.isCharging = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.isCharging = value;
+                            else
+                                delete message.isCharging;
+                            continue;
                         }
                     case 51: {
-                            message.guardianEmbraceActive = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.guardianEmbraceActive = value;
+                            else
+                                delete message.guardianEmbraceActive;
+                            continue;
                         }
                     case 52: {
-                            message.blessingResolveActive = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.blessingResolveActive = value;
+                            else
+                                delete message.blessingResolveActive;
+                            continue;
                         }
                     case 53: {
-                            message.divineInterventionActive = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.divineInterventionActive = value;
+                            else
+                                delete message.divineInterventionActive;
+                            continue;
                         }
                     case 54: {
-                            message.arcaneShieldActive = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.arcaneShieldActive = value;
+                            else
+                                delete message.arcaneShieldActive;
+                            continue;
                         }
                     case 55: {
-                            message.arcaneShieldHp = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.arcaneShieldHp = value;
+                            else
+                                delete message.arcaneShieldHp;
+                            continue;
                         }
                     case 56: {
-                            message.timeWarpActive = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.timeWarpActive = value;
+                            else
+                                delete message.timeWarpActive;
+                            continue;
                         }
                     case 57: {
-                            message.spellFocusActive = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.spellFocusActive = value;
+                            else
+                                delete message.spellFocusActive;
+                            continue;
                         }
                     case 77: {
-                            message.swiftActive = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.swiftActive = value;
+                            else
+                                delete message.swiftActive;
+                            continue;
+                        }
+                    case 90: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.ironFortressActive = value;
+                            else
+                                delete message.ironFortressActive;
+                            continue;
+                        }
+                    case 91: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.guardianRoarActive = value;
+                            else
+                                delete message.guardianRoarActive;
+                            continue;
+                        }
+                    case 92: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.berserkerModeActive = value;
+                            else
+                                delete message.berserkerModeActive;
+                            continue;
+                        }
+                    case 93: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.lastStandActive = value;
+                            else
+                                delete message.lastStandActive;
+                            continue;
+                        }
+                    case 94: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.serratedEdgesActive = value;
+                            else
+                                delete message.serratedEdgesActive;
+                            continue;
+                        }
+                    case 95: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.poisonCoatingActive = value;
+                            else
+                                delete message.poisonCoatingActive;
+                            continue;
+                        }
+                    case 96: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.stealthActive = value;
+                            else
+                                delete message.stealthActive;
+                            continue;
+                        }
+                    case 97: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.zealActive = value;
+                            else
+                                delete message.zealActive;
+                            continue;
                         }
                     case 42: {
-                            message.stunned = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.stunned = value;
+                            else
+                                delete message.stunned;
+                            continue;
                         }
                     case 43: {
-                            message.slowed = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.slowed = value;
+                            else
+                                delete message.slowed;
+                            continue;
                         }
                     case 44: {
-                            message.rooted = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.rooted = value;
+                            else
+                                delete message.rooted;
+                            continue;
                         }
                     case 45: {
-                            message.bleeding = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.bleeding = value;
+                            else
+                                delete message.bleeding;
+                            continue;
                         }
                     case 46: {
-                            message.poisoned = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.poisoned = value;
+                            else
+                                delete message.poisoned;
+                            continue;
                         }
                     case 66: {
-                            message.weakPointMarked = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.weakPointMarked = value;
+                            else
+                                delete message.weakPointMarked;
+                            continue;
                         }
                     case 67: {
-                            message.weakPointDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.weakPointDuration = value;
+                            else
+                                delete message.weakPointDuration;
+                            continue;
                         }
                     case 68: {
-                            message.markWeakness = reader.bool();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.markWeakness = value;
+                            else
+                                delete message.markWeakness;
+                            continue;
                         }
                     case 69: {
-                            message.markWeaknessDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.markWeaknessDuration = value;
+                            else
+                                delete message.markWeaknessDuration;
+                            continue;
                         }
                     case 70: {
-                            message.spiritDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.spiritDuration = value;
+                            else
+                                delete message.spiritDuration;
+                            continue;
                         }
                     case 71: {
-                            message.blessingResolveDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.blessingResolveDuration = value;
+                            else
+                                delete message.blessingResolveDuration;
+                            continue;
                         }
                     case 72: {
-                            message.timeWarpDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.timeWarpDuration = value;
+                            else
+                                delete message.timeWarpDuration;
+                            continue;
                         }
                     case 73: {
-                            message.guardianEmbraceDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.guardianEmbraceDuration = value;
+                            else
+                                delete message.guardianEmbraceDuration;
+                            continue;
                         }
                     case 74: {
-                            message.arcaneShieldDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.arcaneShieldDuration = value;
+                            else
+                                delete message.arcaneShieldDuration;
+                            continue;
                         }
                     case 75: {
-                            message.divineInterventionDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.divineInterventionDuration = value;
+                            else
+                                delete message.divineInterventionDuration;
+                            continue;
                         }
                     case 76: {
-                            message.spellFocusDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.spellFocusDuration = value;
+                            else
+                                delete message.spellFocusDuration;
+                            continue;
                         }
                     case 78: {
-                            message.swiftDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.swiftDuration = value;
+                            else
+                                delete message.swiftDuration;
+                            continue;
+                        }
+                    case 98: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.ironFortressDuration = value;
+                            else
+                                delete message.ironFortressDuration;
+                            continue;
+                        }
+                    case 99: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.guardianRoarDuration = value;
+                            else
+                                delete message.guardianRoarDuration;
+                            continue;
+                        }
+                    case 100: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.berserkerModeDuration = value;
+                            else
+                                delete message.berserkerModeDuration;
+                            continue;
+                        }
+                    case 101: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.lastStandDuration = value;
+                            else
+                                delete message.lastStandDuration;
+                            continue;
+                        }
+                    case 102: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.serratedEdgesDuration = value;
+                            else
+                                delete message.serratedEdgesDuration;
+                            continue;
+                        }
+                    case 103: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.poisonCoatingDuration = value;
+                            else
+                                delete message.poisonCoatingDuration;
+                            continue;
+                        }
+                    case 104: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.stealthDuration = value;
+                            else
+                                delete message.stealthDuration;
+                            continue;
+                        }
+                    case 105: {
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.zealDuration = value;
+                            else
+                                delete message.zealDuration;
+                            continue;
                         }
                     case 58: {
-                            message.slowFactor = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.slowFactor = value;
+                            else
+                                delete message.slowFactor;
+                            continue;
                         }
                     case 59: {
-                            message.rootDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.rootDuration = value;
+                            else
+                                delete message.rootDuration;
+                            continue;
                         }
                     case 60: {
-                            message.stunDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.stunDuration = value;
+                            else
+                                delete message.stunDuration;
+                            continue;
                         }
                     case 61: {
-                            message.bleedDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.bleedDuration = value;
+                            else
+                                delete message.bleedDuration;
+                            continue;
                         }
                     case 62: {
-                            message.poisonDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.poisonDuration = value;
+                            else
+                                delete message.poisonDuration;
+                            continue;
                         }
                     case 63: {
-                            message.bleedDamage = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.bleedDamage = value;
+                            else
+                                delete message.bleedDamage;
+                            continue;
                         }
                     case 64: {
-                            message.poisonDamage = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.poisonDamage = value;
+                            else
+                                delete message.poisonDamage;
+                            continue;
                         }
                     case 65: {
-                            message.slowDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.slowDuration = value;
+                            else
+                                delete message.slowDuration;
+                            continue;
                         }
                     case 47: {
-                            message.talentPoints = reader.int32();
-                            break;
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.talentPoints = value;
+                            else
+                                delete message.talentPoints;
+                            continue;
                         }
                     case 48: {
+                            if (wireType !== 2)
+                                break;
                             if (!(message.unlockedTalents && message.unlockedTalents.length))
                                 message.unlockedTalents = [];
-                            message.unlockedTalents.push(reader.string());
-                            break;
+                            message.unlockedTalents.push(reader.stringVerify());
+                            continue;
                         }
                     case 49: {
+                            if (wireType !== 2)
+                                break;
                             if (message.talentRanks === $util.emptyObject)
                                 message.talentRanks = {};
                             let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = 0;
                             while (reader.pos < end2) {
-                                let tag2 = reader.uint32();
-                                switch (tag2 >>> 3) {
+                                let tag2 = reader.tag();
+                                wireType = tag2 & 7;
+                                switch (tag2 >>>= 3) {
                                 case 1:
-                                    key = reader.string();
-                                    break;
+                                    if (wireType !== 2)
+                                        break;
+                                    key = reader.stringVerify();
+                                    continue;
                                 case 2:
+                                    if (wireType !== 0)
+                                        break;
                                     value = reader.int32();
-                                    break;
-                                default:
-                                    reader.skipType(tag2 & 7);
-                                    break;
+                                    continue;
                                 }
+                                reader.skipType(wireType, _depth, tag2);
                             }
+                            if (key === "__proto__")
+                                $util.makeProp(message.talentRanks, key);
                             message.talentRanks[key] = value;
-                            break;
+                            continue;
                         }
                     case 50: {
+                            if (wireType !== 2)
+                                break;
                             if (message.skillRunes === $util.emptyObject)
                                 message.skillRunes = {};
                             let end2 = reader.uint32() + reader.pos;
                             key = "";
                             value = "";
                             while (reader.pos < end2) {
-                                let tag2 = reader.uint32();
-                                switch (tag2 >>> 3) {
+                                let tag2 = reader.tag();
+                                wireType = tag2 & 7;
+                                switch (tag2 >>>= 3) {
                                 case 1:
-                                    key = reader.string();
-                                    break;
+                                    if (wireType !== 2)
+                                        break;
+                                    key = reader.stringVerify();
+                                    continue;
                                 case 2:
-                                    value = reader.string();
-                                    break;
-                                default:
-                                    reader.skipType(tag2 & 7);
-                                    break;
+                                    if (wireType !== 2)
+                                        break;
+                                    value = reader.stringVerify();
+                                    continue;
                                 }
+                                reader.skipType(wireType, _depth, tag2);
                             }
+                            if (key === "__proto__")
+                                $util.makeProp(message.skillRunes, key);
                             message.skillRunes[key] = value;
-                            break;
+                            continue;
                         }
                     case 79: {
-                            message.partyId = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.partyId = value;
+                            else
+                                delete message.partyId;
+                            continue;
                         }
                     case 80: {
-                            message.socialStatus = reader.string();
-                            break;
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.socialStatus = value;
+                            else
+                                delete message.socialStatus;
+                            continue;
                         }
                     case 81: {
-                            message.jumpStartX = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.jumpStartX = value;
+                            else
+                                delete message.jumpStartX;
+                            continue;
                         }
                     case 82: {
-                            message.jumpStartY = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.jumpStartY = value;
+                            else
+                                delete message.jumpStartY;
+                            continue;
                         }
                     case 83: {
-                            message.jumpStartZ = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.jumpStartZ = value;
+                            else
+                                delete message.jumpStartZ;
+                            continue;
                         }
                     case 84: {
-                            message.jumpTargetX = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.jumpTargetX = value;
+                            else
+                                delete message.jumpTargetX;
+                            continue;
                         }
                     case 85: {
-                            message.jumpTargetY = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.jumpTargetY = value;
+                            else
+                                delete message.jumpTargetY;
+                            continue;
                         }
                     case 86: {
-                            message.jumpTargetZ = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.jumpTargetZ = value;
+                            else
+                                delete message.jumpTargetZ;
+                            continue;
                         }
                     case 87: {
-                            message.jumpDuration = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.jumpDuration = value;
+                            else
+                                delete message.jumpDuration;
+                            continue;
                         }
                     case 88: {
-                            message.jumpHeight = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.jumpHeight = value;
+                            else
+                                delete message.jumpHeight;
+                            continue;
                         }
                     case 89: {
-                            message.jumpProgress = reader.float();
-                            break;
+                            if (wireType !== 5)
+                                break;
+                            if (!$Object.is(value = reader.float(), 0))
+                                message.jumpProgress = value;
+                            else
+                                delete message.jumpProgress;
+                            continue;
                         }
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
                     }
                 }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
                 return message;
             };
 
@@ -3903,11 +5270,11 @@ export const eidolon = $root.eidolon = (() => {
              * @memberof eidolon.state.Entity
              * @static
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {eidolon.state.Entity} Entity
+             * @returns {eidolon.state.Entity & eidolon.state.Entity.$Shape} Entity
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Entity.decodeDelimited = function decodeDelimited(reader) {
+            Entity.decodeDelimited = function(reader) {
                 if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
                 return this.decode(reader, reader.uint32());
@@ -3921,311 +5288,363 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            Entity.verify = function verify(message) {
+            Entity.verify = function (message, _depth) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.id != null && message.hasOwnProperty("id"))
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     if (!$util.isString(message.id))
                         return "id: string expected";
-                if (message.instanceId != null && message.hasOwnProperty("instanceId"))
+                if (message.instanceId != null && $Object.hasOwnProperty.call(message, "instanceId"))
                     if (!$util.isString(message.instanceId))
                         return "instanceId: string expected";
-                if (message.name != null && message.hasOwnProperty("name"))
+                if (message.name != null && $Object.hasOwnProperty.call(message, "name"))
                     if (!$util.isString(message.name))
                         return "name: string expected";
-                if (message.type != null && message.hasOwnProperty("type"))
+                if (message.type != null && $Object.hasOwnProperty.call(message, "type"))
                     if (!$util.isString(message.type))
                         return "type: string expected";
-                if (message.subType != null && message.hasOwnProperty("subType"))
+                if (message.subType != null && $Object.hasOwnProperty.call(message, "subType"))
                     if (!$util.isString(message.subType))
                         return "subType: string expected";
-                if (message.x != null && message.hasOwnProperty("x"))
+                if (message.x != null && $Object.hasOwnProperty.call(message, "x"))
                     if (typeof message.x !== "number")
                         return "x: number expected";
-                if (message.y != null && message.hasOwnProperty("y"))
+                if (message.y != null && $Object.hasOwnProperty.call(message, "y"))
                     if (typeof message.y !== "number")
                         return "y: number expected";
-                if (message.z != null && message.hasOwnProperty("z"))
+                if (message.z != null && $Object.hasOwnProperty.call(message, "z"))
                     if (typeof message.z !== "number")
                         return "z: number expected";
-                if (message.rotation != null && message.hasOwnProperty("rotation"))
+                if (message.rotation != null && $Object.hasOwnProperty.call(message, "rotation"))
                     if (typeof message.rotation !== "number")
                         return "rotation: number expected";
-                if (message.health != null && message.hasOwnProperty("health"))
+                if (message.health != null && $Object.hasOwnProperty.call(message, "health"))
                     if (!$util.isInteger(message.health))
                         return "health: integer expected";
-                if (message.maxHealth != null && message.hasOwnProperty("maxHealth"))
+                if (message.maxHealth != null && $Object.hasOwnProperty.call(message, "maxHealth"))
                     if (!$util.isInteger(message.maxHealth))
                         return "maxHealth: integer expected";
-                if (message.mana != null && message.hasOwnProperty("mana"))
+                if (message.mana != null && $Object.hasOwnProperty.call(message, "mana"))
                     if (!$util.isInteger(message.mana))
                         return "mana: integer expected";
-                if (message.maxMana != null && message.hasOwnProperty("maxMana"))
+                if (message.maxMana != null && $Object.hasOwnProperty.call(message, "maxMana"))
                     if (!$util.isInteger(message.maxMana))
                         return "maxMana: integer expected";
-                if (message.level != null && message.hasOwnProperty("level"))
+                if (message.level != null && $Object.hasOwnProperty.call(message, "level"))
                     if (!$util.isInteger(message.level))
                         return "level: integer expected";
-                if (message.experience != null && message.hasOwnProperty("experience"))
+                if (message.experience != null && $Object.hasOwnProperty.call(message, "experience"))
                     if (!$util.isInteger(message.experience))
                         return "experience: integer expected";
-                if (message.maxExperience != null && message.hasOwnProperty("maxExperience"))
+                if (message.maxExperience != null && $Object.hasOwnProperty.call(message, "maxExperience"))
                     if (!$util.isInteger(message.maxExperience))
                         return "maxExperience: integer expected";
-                if (message.gold != null && message.hasOwnProperty("gold"))
+                if (message.gold != null && $Object.hasOwnProperty.call(message, "gold"))
                     if (!$util.isInteger(message.gold))
                         return "gold: integer expected";
-                if (message.skillPoints != null && message.hasOwnProperty("skillPoints"))
+                if (message.skillPoints != null && $Object.hasOwnProperty.call(message, "skillPoints"))
                     if (!$util.isInteger(message.skillPoints))
                         return "skillPoints: integer expected";
-                if (message.selectedBranch != null && message.hasOwnProperty("selectedBranch"))
+                if (message.selectedBranch != null && $Object.hasOwnProperty.call(message, "selectedBranch"))
                     if (!$util.isString(message.selectedBranch))
                         return "selectedBranch: string expected";
-                if (message.unlockedSkills != null && message.hasOwnProperty("unlockedSkills")) {
-                    if (!Array.isArray(message.unlockedSkills))
+                if (message.unlockedSkills != null && $Object.hasOwnProperty.call(message, "unlockedSkills")) {
+                    if (!$Array.isArray(message.unlockedSkills))
                         return "unlockedSkills: array expected";
                     for (let i = 0; i < message.unlockedSkills.length; ++i)
                         if (!$util.isString(message.unlockedSkills[i]))
                             return "unlockedSkills: string[] expected";
                 }
-                if (message.baseStats != null && message.hasOwnProperty("baseStats")) {
-                    let error = $root.eidolon.state.Stats.verify(message.baseStats);
+                if (message.baseStats != null && $Object.hasOwnProperty.call(message, "baseStats")) {
+                    let error = $root.eidolon.state.Stats.verify(message.baseStats, _depth + 1);
                     if (error)
                         return "baseStats." + error;
                 }
-                if (message.stats != null && message.hasOwnProperty("stats")) {
-                    let error = $root.eidolon.state.Stats.verify(message.stats);
+                if (message.stats != null && $Object.hasOwnProperty.call(message, "stats")) {
+                    let error = $root.eidolon.state.Stats.verify(message.stats, _depth + 1);
                     if (error)
                         return "stats." + error;
                 }
-                if (message.damage != null && message.hasOwnProperty("damage"))
+                if (message.damage != null && $Object.hasOwnProperty.call(message, "damage"))
                     if (!$util.isInteger(message.damage))
                         return "damage: integer expected";
-                if (message.defense != null && message.hasOwnProperty("defense"))
+                if (message.defense != null && $Object.hasOwnProperty.call(message, "defense"))
                     if (!$util.isInteger(message.defense))
                         return "defense: integer expected";
-                if (message.speed != null && message.hasOwnProperty("speed"))
+                if (message.speed != null && $Object.hasOwnProperty.call(message, "speed"))
                     if (typeof message.speed !== "number")
                         return "speed: number expected";
-                if (message.attackSpeed != null && message.hasOwnProperty("attackSpeed"))
+                if (message.attackSpeed != null && $Object.hasOwnProperty.call(message, "attackSpeed"))
                     if (typeof message.attackSpeed !== "number")
                         return "attackSpeed: number expected";
-                if (message.cooldownReduction != null && message.hasOwnProperty("cooldownReduction"))
+                if (message.cooldownReduction != null && $Object.hasOwnProperty.call(message, "cooldownReduction"))
                     if (typeof message.cooldownReduction !== "number")
                         return "cooldownReduction: number expected";
-                if (message.hpRegen != null && message.hasOwnProperty("hpRegen"))
+                if (message.hpRegen != null && $Object.hasOwnProperty.call(message, "hpRegen"))
                     if (typeof message.hpRegen !== "number")
                         return "hpRegen: number expected";
-                if (message.manaRegen != null && message.hasOwnProperty("manaRegen"))
+                if (message.manaRegen != null && $Object.hasOwnProperty.call(message, "manaRegen"))
                     if (typeof message.manaRegen !== "number")
                         return "manaRegen: number expected";
-                if (message.castSpeed != null && message.hasOwnProperty("castSpeed"))
+                if (message.castSpeed != null && $Object.hasOwnProperty.call(message, "castSpeed"))
                     if (typeof message.castSpeed !== "number")
                         return "castSpeed: number expected";
-                if (message.scale != null && message.hasOwnProperty("scale"))
+                if (message.scale != null && $Object.hasOwnProperty.call(message, "scale"))
                     if (typeof message.scale !== "number")
                         return "scale: number expected";
-                if (message.state != null && message.hasOwnProperty("state"))
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state"))
                     if (!$util.isString(message.state))
                         return "state: string expected";
-                if (message.equipment != null && message.hasOwnProperty("equipment")) {
+                if (message.equipment != null && $Object.hasOwnProperty.call(message, "equipment")) {
                     if (!$util.isObject(message.equipment))
                         return "equipment: object expected";
-                    let key = Object.keys(message.equipment);
+                    let key = $Object.keys(message.equipment);
                     for (let i = 0; i < key.length; ++i) {
-                        let error = $root.eidolon.state.Item.verify(message.equipment[key[i]]);
+                        let error = $root.eidolon.state.Item.verify(message.equipment[key[i]], _depth + 1);
                         if (error)
                             return "equipment." + error;
                     }
                 }
-                if (message.quests != null && message.hasOwnProperty("quests")) {
-                    if (!Array.isArray(message.quests))
+                if (message.quests != null && $Object.hasOwnProperty.call(message, "quests")) {
+                    if (!$Array.isArray(message.quests))
                         return "quests: array expected";
                     for (let i = 0; i < message.quests.length; ++i) {
-                        let error = $root.eidolon.state.Quest.verify(message.quests[i]);
+                        let error = $root.eidolon.state.Quest.verify(message.quests[i], _depth + 1);
                         if (error)
                             return "quests." + error;
                     }
                 }
-                if (message.lootItem != null && message.hasOwnProperty("lootItem")) {
-                    let error = $root.eidolon.state.Item.verify(message.lootItem);
+                if (message.lootItem != null && $Object.hasOwnProperty.call(message, "lootItem")) {
+                    let error = $root.eidolon.state.Item.verify(message.lootItem, _depth + 1);
                     if (error)
                         return "lootItem." + error;
                 }
-                if (message.ownerId != null && message.hasOwnProperty("ownerId"))
+                if (message.ownerId != null && $Object.hasOwnProperty.call(message, "ownerId"))
                     if (!$util.isString(message.ownerId))
                         return "ownerId: string expected";
-                if (message.velX != null && message.hasOwnProperty("velX"))
+                if (message.velX != null && $Object.hasOwnProperty.call(message, "velX"))
                     if (typeof message.velX !== "number")
                         return "velX: number expected";
-                if (message.velZ != null && message.hasOwnProperty("velZ"))
+                if (message.velZ != null && $Object.hasOwnProperty.call(message, "velZ"))
                     if (typeof message.velZ !== "number")
                         return "velZ: number expected";
-                if (message.spiritsActive != null && message.hasOwnProperty("spiritsActive"))
+                if (message.spiritsActive != null && $Object.hasOwnProperty.call(message, "spiritsActive"))
                     if (typeof message.spiritsActive !== "boolean")
                         return "spiritsActive: boolean expected";
-                if (message.spiritsBoosted != null && message.hasOwnProperty("spiritsBoosted"))
+                if (message.spiritsBoosted != null && $Object.hasOwnProperty.call(message, "spiritsBoosted"))
                     if (typeof message.spiritsBoosted !== "boolean")
                         return "spiritsBoosted: boolean expected";
-                if (message.isCharging != null && message.hasOwnProperty("isCharging"))
+                if (message.isCharging != null && $Object.hasOwnProperty.call(message, "isCharging"))
                     if (typeof message.isCharging !== "boolean")
                         return "isCharging: boolean expected";
-                if (message.guardianEmbraceActive != null && message.hasOwnProperty("guardianEmbraceActive"))
+                if (message.guardianEmbraceActive != null && $Object.hasOwnProperty.call(message, "guardianEmbraceActive"))
                     if (typeof message.guardianEmbraceActive !== "boolean")
                         return "guardianEmbraceActive: boolean expected";
-                if (message.blessingResolveActive != null && message.hasOwnProperty("blessingResolveActive"))
+                if (message.blessingResolveActive != null && $Object.hasOwnProperty.call(message, "blessingResolveActive"))
                     if (typeof message.blessingResolveActive !== "boolean")
                         return "blessingResolveActive: boolean expected";
-                if (message.divineInterventionActive != null && message.hasOwnProperty("divineInterventionActive"))
+                if (message.divineInterventionActive != null && $Object.hasOwnProperty.call(message, "divineInterventionActive"))
                     if (typeof message.divineInterventionActive !== "boolean")
                         return "divineInterventionActive: boolean expected";
-                if (message.arcaneShieldActive != null && message.hasOwnProperty("arcaneShieldActive"))
+                if (message.arcaneShieldActive != null && $Object.hasOwnProperty.call(message, "arcaneShieldActive"))
                     if (typeof message.arcaneShieldActive !== "boolean")
                         return "arcaneShieldActive: boolean expected";
-                if (message.arcaneShieldHp != null && message.hasOwnProperty("arcaneShieldHp"))
+                if (message.arcaneShieldHp != null && $Object.hasOwnProperty.call(message, "arcaneShieldHp"))
                     if (!$util.isInteger(message.arcaneShieldHp))
                         return "arcaneShieldHp: integer expected";
-                if (message.timeWarpActive != null && message.hasOwnProperty("timeWarpActive"))
+                if (message.timeWarpActive != null && $Object.hasOwnProperty.call(message, "timeWarpActive"))
                     if (typeof message.timeWarpActive !== "boolean")
                         return "timeWarpActive: boolean expected";
-                if (message.spellFocusActive != null && message.hasOwnProperty("spellFocusActive"))
+                if (message.spellFocusActive != null && $Object.hasOwnProperty.call(message, "spellFocusActive"))
                     if (typeof message.spellFocusActive !== "boolean")
                         return "spellFocusActive: boolean expected";
-                if (message.swiftActive != null && message.hasOwnProperty("swiftActive"))
+                if (message.swiftActive != null && $Object.hasOwnProperty.call(message, "swiftActive"))
                     if (typeof message.swiftActive !== "boolean")
                         return "swiftActive: boolean expected";
-                if (message.stunned != null && message.hasOwnProperty("stunned"))
+                if (message.ironFortressActive != null && $Object.hasOwnProperty.call(message, "ironFortressActive"))
+                    if (typeof message.ironFortressActive !== "boolean")
+                        return "ironFortressActive: boolean expected";
+                if (message.guardianRoarActive != null && $Object.hasOwnProperty.call(message, "guardianRoarActive"))
+                    if (typeof message.guardianRoarActive !== "boolean")
+                        return "guardianRoarActive: boolean expected";
+                if (message.berserkerModeActive != null && $Object.hasOwnProperty.call(message, "berserkerModeActive"))
+                    if (typeof message.berserkerModeActive !== "boolean")
+                        return "berserkerModeActive: boolean expected";
+                if (message.lastStandActive != null && $Object.hasOwnProperty.call(message, "lastStandActive"))
+                    if (typeof message.lastStandActive !== "boolean")
+                        return "lastStandActive: boolean expected";
+                if (message.serratedEdgesActive != null && $Object.hasOwnProperty.call(message, "serratedEdgesActive"))
+                    if (typeof message.serratedEdgesActive !== "boolean")
+                        return "serratedEdgesActive: boolean expected";
+                if (message.poisonCoatingActive != null && $Object.hasOwnProperty.call(message, "poisonCoatingActive"))
+                    if (typeof message.poisonCoatingActive !== "boolean")
+                        return "poisonCoatingActive: boolean expected";
+                if (message.stealthActive != null && $Object.hasOwnProperty.call(message, "stealthActive"))
+                    if (typeof message.stealthActive !== "boolean")
+                        return "stealthActive: boolean expected";
+                if (message.zealActive != null && $Object.hasOwnProperty.call(message, "zealActive"))
+                    if (typeof message.zealActive !== "boolean")
+                        return "zealActive: boolean expected";
+                if (message.stunned != null && $Object.hasOwnProperty.call(message, "stunned"))
                     if (typeof message.stunned !== "boolean")
                         return "stunned: boolean expected";
-                if (message.slowed != null && message.hasOwnProperty("slowed"))
+                if (message.slowed != null && $Object.hasOwnProperty.call(message, "slowed"))
                     if (typeof message.slowed !== "boolean")
                         return "slowed: boolean expected";
-                if (message.rooted != null && message.hasOwnProperty("rooted"))
+                if (message.rooted != null && $Object.hasOwnProperty.call(message, "rooted"))
                     if (typeof message.rooted !== "boolean")
                         return "rooted: boolean expected";
-                if (message.bleeding != null && message.hasOwnProperty("bleeding"))
+                if (message.bleeding != null && $Object.hasOwnProperty.call(message, "bleeding"))
                     if (typeof message.bleeding !== "boolean")
                         return "bleeding: boolean expected";
-                if (message.poisoned != null && message.hasOwnProperty("poisoned"))
+                if (message.poisoned != null && $Object.hasOwnProperty.call(message, "poisoned"))
                     if (typeof message.poisoned !== "boolean")
                         return "poisoned: boolean expected";
-                if (message.weakPointMarked != null && message.hasOwnProperty("weakPointMarked"))
+                if (message.weakPointMarked != null && $Object.hasOwnProperty.call(message, "weakPointMarked"))
                     if (typeof message.weakPointMarked !== "boolean")
                         return "weakPointMarked: boolean expected";
-                if (message.weakPointDuration != null && message.hasOwnProperty("weakPointDuration"))
+                if (message.weakPointDuration != null && $Object.hasOwnProperty.call(message, "weakPointDuration"))
                     if (typeof message.weakPointDuration !== "number")
                         return "weakPointDuration: number expected";
-                if (message.markWeakness != null && message.hasOwnProperty("markWeakness"))
+                if (message.markWeakness != null && $Object.hasOwnProperty.call(message, "markWeakness"))
                     if (typeof message.markWeakness !== "boolean")
                         return "markWeakness: boolean expected";
-                if (message.markWeaknessDuration != null && message.hasOwnProperty("markWeaknessDuration"))
+                if (message.markWeaknessDuration != null && $Object.hasOwnProperty.call(message, "markWeaknessDuration"))
                     if (typeof message.markWeaknessDuration !== "number")
                         return "markWeaknessDuration: number expected";
-                if (message.spiritDuration != null && message.hasOwnProperty("spiritDuration"))
+                if (message.spiritDuration != null && $Object.hasOwnProperty.call(message, "spiritDuration"))
                     if (typeof message.spiritDuration !== "number")
                         return "spiritDuration: number expected";
-                if (message.blessingResolveDuration != null && message.hasOwnProperty("blessingResolveDuration"))
+                if (message.blessingResolveDuration != null && $Object.hasOwnProperty.call(message, "blessingResolveDuration"))
                     if (typeof message.blessingResolveDuration !== "number")
                         return "blessingResolveDuration: number expected";
-                if (message.timeWarpDuration != null && message.hasOwnProperty("timeWarpDuration"))
+                if (message.timeWarpDuration != null && $Object.hasOwnProperty.call(message, "timeWarpDuration"))
                     if (typeof message.timeWarpDuration !== "number")
                         return "timeWarpDuration: number expected";
-                if (message.guardianEmbraceDuration != null && message.hasOwnProperty("guardianEmbraceDuration"))
+                if (message.guardianEmbraceDuration != null && $Object.hasOwnProperty.call(message, "guardianEmbraceDuration"))
                     if (typeof message.guardianEmbraceDuration !== "number")
                         return "guardianEmbraceDuration: number expected";
-                if (message.arcaneShieldDuration != null && message.hasOwnProperty("arcaneShieldDuration"))
+                if (message.arcaneShieldDuration != null && $Object.hasOwnProperty.call(message, "arcaneShieldDuration"))
                     if (typeof message.arcaneShieldDuration !== "number")
                         return "arcaneShieldDuration: number expected";
-                if (message.divineInterventionDuration != null && message.hasOwnProperty("divineInterventionDuration"))
+                if (message.divineInterventionDuration != null && $Object.hasOwnProperty.call(message, "divineInterventionDuration"))
                     if (typeof message.divineInterventionDuration !== "number")
                         return "divineInterventionDuration: number expected";
-                if (message.spellFocusDuration != null && message.hasOwnProperty("spellFocusDuration"))
+                if (message.spellFocusDuration != null && $Object.hasOwnProperty.call(message, "spellFocusDuration"))
                     if (typeof message.spellFocusDuration !== "number")
                         return "spellFocusDuration: number expected";
-                if (message.swiftDuration != null && message.hasOwnProperty("swiftDuration"))
+                if (message.swiftDuration != null && $Object.hasOwnProperty.call(message, "swiftDuration"))
                     if (typeof message.swiftDuration !== "number")
                         return "swiftDuration: number expected";
-                if (message.slowFactor != null && message.hasOwnProperty("slowFactor"))
+                if (message.ironFortressDuration != null && $Object.hasOwnProperty.call(message, "ironFortressDuration"))
+                    if (typeof message.ironFortressDuration !== "number")
+                        return "ironFortressDuration: number expected";
+                if (message.guardianRoarDuration != null && $Object.hasOwnProperty.call(message, "guardianRoarDuration"))
+                    if (typeof message.guardianRoarDuration !== "number")
+                        return "guardianRoarDuration: number expected";
+                if (message.berserkerModeDuration != null && $Object.hasOwnProperty.call(message, "berserkerModeDuration"))
+                    if (typeof message.berserkerModeDuration !== "number")
+                        return "berserkerModeDuration: number expected";
+                if (message.lastStandDuration != null && $Object.hasOwnProperty.call(message, "lastStandDuration"))
+                    if (typeof message.lastStandDuration !== "number")
+                        return "lastStandDuration: number expected";
+                if (message.serratedEdgesDuration != null && $Object.hasOwnProperty.call(message, "serratedEdgesDuration"))
+                    if (typeof message.serratedEdgesDuration !== "number")
+                        return "serratedEdgesDuration: number expected";
+                if (message.poisonCoatingDuration != null && $Object.hasOwnProperty.call(message, "poisonCoatingDuration"))
+                    if (typeof message.poisonCoatingDuration !== "number")
+                        return "poisonCoatingDuration: number expected";
+                if (message.stealthDuration != null && $Object.hasOwnProperty.call(message, "stealthDuration"))
+                    if (typeof message.stealthDuration !== "number")
+                        return "stealthDuration: number expected";
+                if (message.zealDuration != null && $Object.hasOwnProperty.call(message, "zealDuration"))
+                    if (typeof message.zealDuration !== "number")
+                        return "zealDuration: number expected";
+                if (message.slowFactor != null && $Object.hasOwnProperty.call(message, "slowFactor"))
                     if (typeof message.slowFactor !== "number")
                         return "slowFactor: number expected";
-                if (message.rootDuration != null && message.hasOwnProperty("rootDuration"))
+                if (message.rootDuration != null && $Object.hasOwnProperty.call(message, "rootDuration"))
                     if (typeof message.rootDuration !== "number")
                         return "rootDuration: number expected";
-                if (message.stunDuration != null && message.hasOwnProperty("stunDuration"))
+                if (message.stunDuration != null && $Object.hasOwnProperty.call(message, "stunDuration"))
                     if (typeof message.stunDuration !== "number")
                         return "stunDuration: number expected";
-                if (message.bleedDuration != null && message.hasOwnProperty("bleedDuration"))
+                if (message.bleedDuration != null && $Object.hasOwnProperty.call(message, "bleedDuration"))
                     if (typeof message.bleedDuration !== "number")
                         return "bleedDuration: number expected";
-                if (message.poisonDuration != null && message.hasOwnProperty("poisonDuration"))
+                if (message.poisonDuration != null && $Object.hasOwnProperty.call(message, "poisonDuration"))
                     if (typeof message.poisonDuration !== "number")
                         return "poisonDuration: number expected";
-                if (message.bleedDamage != null && message.hasOwnProperty("bleedDamage"))
+                if (message.bleedDamage != null && $Object.hasOwnProperty.call(message, "bleedDamage"))
                     if (!$util.isInteger(message.bleedDamage))
                         return "bleedDamage: integer expected";
-                if (message.poisonDamage != null && message.hasOwnProperty("poisonDamage"))
+                if (message.poisonDamage != null && $Object.hasOwnProperty.call(message, "poisonDamage"))
                     if (!$util.isInteger(message.poisonDamage))
                         return "poisonDamage: integer expected";
-                if (message.slowDuration != null && message.hasOwnProperty("slowDuration"))
+                if (message.slowDuration != null && $Object.hasOwnProperty.call(message, "slowDuration"))
                     if (typeof message.slowDuration !== "number")
                         return "slowDuration: number expected";
-                if (message.talentPoints != null && message.hasOwnProperty("talentPoints"))
+                if (message.talentPoints != null && $Object.hasOwnProperty.call(message, "talentPoints"))
                     if (!$util.isInteger(message.talentPoints))
                         return "talentPoints: integer expected";
-                if (message.unlockedTalents != null && message.hasOwnProperty("unlockedTalents")) {
-                    if (!Array.isArray(message.unlockedTalents))
+                if (message.unlockedTalents != null && $Object.hasOwnProperty.call(message, "unlockedTalents")) {
+                    if (!$Array.isArray(message.unlockedTalents))
                         return "unlockedTalents: array expected";
                     for (let i = 0; i < message.unlockedTalents.length; ++i)
                         if (!$util.isString(message.unlockedTalents[i]))
                             return "unlockedTalents: string[] expected";
                 }
-                if (message.talentRanks != null && message.hasOwnProperty("talentRanks")) {
+                if (message.talentRanks != null && $Object.hasOwnProperty.call(message, "talentRanks")) {
                     if (!$util.isObject(message.talentRanks))
                         return "talentRanks: object expected";
-                    let key = Object.keys(message.talentRanks);
+                    let key = $Object.keys(message.talentRanks);
                     for (let i = 0; i < key.length; ++i)
                         if (!$util.isInteger(message.talentRanks[key[i]]))
                             return "talentRanks: integer{k:string} expected";
                 }
-                if (message.skillRunes != null && message.hasOwnProperty("skillRunes")) {
+                if (message.skillRunes != null && $Object.hasOwnProperty.call(message, "skillRunes")) {
                     if (!$util.isObject(message.skillRunes))
                         return "skillRunes: object expected";
-                    let key = Object.keys(message.skillRunes);
+                    let key = $Object.keys(message.skillRunes);
                     for (let i = 0; i < key.length; ++i)
                         if (!$util.isString(message.skillRunes[key[i]]))
                             return "skillRunes: string{k:string} expected";
                 }
-                if (message.partyId != null && message.hasOwnProperty("partyId"))
+                if (message.partyId != null && $Object.hasOwnProperty.call(message, "partyId"))
                     if (!$util.isString(message.partyId))
                         return "partyId: string expected";
-                if (message.socialStatus != null && message.hasOwnProperty("socialStatus"))
+                if (message.socialStatus != null && $Object.hasOwnProperty.call(message, "socialStatus"))
                     if (!$util.isString(message.socialStatus))
                         return "socialStatus: string expected";
-                if (message.jumpStartX != null && message.hasOwnProperty("jumpStartX"))
+                if (message.jumpStartX != null && $Object.hasOwnProperty.call(message, "jumpStartX"))
                     if (typeof message.jumpStartX !== "number")
                         return "jumpStartX: number expected";
-                if (message.jumpStartY != null && message.hasOwnProperty("jumpStartY"))
+                if (message.jumpStartY != null && $Object.hasOwnProperty.call(message, "jumpStartY"))
                     if (typeof message.jumpStartY !== "number")
                         return "jumpStartY: number expected";
-                if (message.jumpStartZ != null && message.hasOwnProperty("jumpStartZ"))
+                if (message.jumpStartZ != null && $Object.hasOwnProperty.call(message, "jumpStartZ"))
                     if (typeof message.jumpStartZ !== "number")
                         return "jumpStartZ: number expected";
-                if (message.jumpTargetX != null && message.hasOwnProperty("jumpTargetX"))
+                if (message.jumpTargetX != null && $Object.hasOwnProperty.call(message, "jumpTargetX"))
                     if (typeof message.jumpTargetX !== "number")
                         return "jumpTargetX: number expected";
-                if (message.jumpTargetY != null && message.hasOwnProperty("jumpTargetY"))
+                if (message.jumpTargetY != null && $Object.hasOwnProperty.call(message, "jumpTargetY"))
                     if (typeof message.jumpTargetY !== "number")
                         return "jumpTargetY: number expected";
-                if (message.jumpTargetZ != null && message.hasOwnProperty("jumpTargetZ"))
+                if (message.jumpTargetZ != null && $Object.hasOwnProperty.call(message, "jumpTargetZ"))
                     if (typeof message.jumpTargetZ !== "number")
                         return "jumpTargetZ: number expected";
-                if (message.jumpDuration != null && message.hasOwnProperty("jumpDuration"))
+                if (message.jumpDuration != null && $Object.hasOwnProperty.call(message, "jumpDuration"))
                     if (typeof message.jumpDuration !== "number")
                         return "jumpDuration: number expected";
-                if (message.jumpHeight != null && message.hasOwnProperty("jumpHeight"))
+                if (message.jumpHeight != null && $Object.hasOwnProperty.call(message, "jumpHeight"))
                     if (typeof message.jumpHeight !== "number")
                         return "jumpHeight: number expected";
-                if (message.jumpProgress != null && message.hasOwnProperty("jumpProgress"))
+                if (message.jumpProgress != null && $Object.hasOwnProperty.call(message, "jumpProgress"))
                     if (typeof message.jumpProgress !== "number")
                         return "jumpProgress: number expected";
                 return null;
@@ -4239,233 +5658,375 @@ export const eidolon = $root.eidolon = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {eidolon.state.Entity} Entity
              */
-            Entity.fromObject = function fromObject(object) {
+            Entity.fromObject = function (object, _depth) {
                 if (object instanceof $root.eidolon.state.Entity)
                     return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".eidolon.state.Entity: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let message = new $root.eidolon.state.Entity();
                 if (object.id != null)
-                    message.id = String(object.id);
+                    if (typeof object.id !== "string" || object.id.length)
+                        message.id = $String(object.id);
                 if (object.instanceId != null)
-                    message.instanceId = String(object.instanceId);
+                    if (typeof object.instanceId !== "string" || object.instanceId.length)
+                        message.instanceId = $String(object.instanceId);
                 if (object.name != null)
-                    message.name = String(object.name);
+                    if (typeof object.name !== "string" || object.name.length)
+                        message.name = $String(object.name);
                 if (object.type != null)
-                    message.type = String(object.type);
+                    if (typeof object.type !== "string" || object.type.length)
+                        message.type = $String(object.type);
                 if (object.subType != null)
-                    message.subType = String(object.subType);
+                    if (typeof object.subType !== "string" || object.subType.length)
+                        message.subType = $String(object.subType);
                 if (object.x != null)
-                    message.x = Number(object.x);
+                    if (!$Object.is($Number(object.x), 0))
+                        message.x = $Number(object.x);
                 if (object.y != null)
-                    message.y = Number(object.y);
+                    if (!$Object.is($Number(object.y), 0))
+                        message.y = $Number(object.y);
                 if (object.z != null)
-                    message.z = Number(object.z);
+                    if (!$Object.is($Number(object.z), 0))
+                        message.z = $Number(object.z);
                 if (object.rotation != null)
-                    message.rotation = Number(object.rotation);
+                    if (!$Object.is($Number(object.rotation), 0))
+                        message.rotation = $Number(object.rotation);
                 if (object.health != null)
-                    message.health = object.health | 0;
+                    if ($Number(object.health) !== 0)
+                        message.health = object.health | 0;
                 if (object.maxHealth != null)
-                    message.maxHealth = object.maxHealth | 0;
+                    if ($Number(object.maxHealth) !== 0)
+                        message.maxHealth = object.maxHealth | 0;
                 if (object.mana != null)
-                    message.mana = object.mana | 0;
+                    if ($Number(object.mana) !== 0)
+                        message.mana = object.mana | 0;
                 if (object.maxMana != null)
-                    message.maxMana = object.maxMana | 0;
+                    if ($Number(object.maxMana) !== 0)
+                        message.maxMana = object.maxMana | 0;
                 if (object.level != null)
-                    message.level = object.level | 0;
+                    if ($Number(object.level) !== 0)
+                        message.level = object.level | 0;
                 if (object.experience != null)
-                    message.experience = object.experience | 0;
+                    if ($Number(object.experience) !== 0)
+                        message.experience = object.experience | 0;
                 if (object.maxExperience != null)
-                    message.maxExperience = object.maxExperience | 0;
+                    if ($Number(object.maxExperience) !== 0)
+                        message.maxExperience = object.maxExperience | 0;
                 if (object.gold != null)
-                    message.gold = object.gold | 0;
+                    if ($Number(object.gold) !== 0)
+                        message.gold = object.gold | 0;
                 if (object.skillPoints != null)
-                    message.skillPoints = object.skillPoints | 0;
+                    if ($Number(object.skillPoints) !== 0)
+                        message.skillPoints = object.skillPoints | 0;
                 if (object.selectedBranch != null)
-                    message.selectedBranch = String(object.selectedBranch);
+                    if (typeof object.selectedBranch !== "string" || object.selectedBranch.length)
+                        message.selectedBranch = $String(object.selectedBranch);
                 if (object.unlockedSkills) {
-                    if (!Array.isArray(object.unlockedSkills))
-                        throw TypeError(".eidolon.state.Entity.unlockedSkills: array expected");
-                    message.unlockedSkills = [];
+                    if (!$Array.isArray(object.unlockedSkills))
+                        throw $TypeError(".eidolon.state.Entity.unlockedSkills: array expected");
+                    message.unlockedSkills = $Array(object.unlockedSkills.length);
                     for (let i = 0; i < object.unlockedSkills.length; ++i)
-                        message.unlockedSkills[i] = String(object.unlockedSkills[i]);
+                        message.unlockedSkills[i] = $String(object.unlockedSkills[i]);
                 }
                 if (object.baseStats != null) {
-                    if (typeof object.baseStats !== "object")
-                        throw TypeError(".eidolon.state.Entity.baseStats: object expected");
-                    message.baseStats = $root.eidolon.state.Stats.fromObject(object.baseStats);
+                    if (!$util.isObject(object.baseStats))
+                        throw $TypeError(".eidolon.state.Entity.baseStats: object expected");
+                    message.baseStats = $root.eidolon.state.Stats.fromObject(object.baseStats, _depth + 1);
                 }
                 if (object.stats != null) {
-                    if (typeof object.stats !== "object")
-                        throw TypeError(".eidolon.state.Entity.stats: object expected");
-                    message.stats = $root.eidolon.state.Stats.fromObject(object.stats);
+                    if (!$util.isObject(object.stats))
+                        throw $TypeError(".eidolon.state.Entity.stats: object expected");
+                    message.stats = $root.eidolon.state.Stats.fromObject(object.stats, _depth + 1);
                 }
                 if (object.damage != null)
-                    message.damage = object.damage | 0;
+                    if ($Number(object.damage) !== 0)
+                        message.damage = object.damage | 0;
                 if (object.defense != null)
-                    message.defense = object.defense | 0;
+                    if ($Number(object.defense) !== 0)
+                        message.defense = object.defense | 0;
                 if (object.speed != null)
-                    message.speed = Number(object.speed);
+                    if (!$Object.is($Number(object.speed), 0))
+                        message.speed = $Number(object.speed);
                 if (object.attackSpeed != null)
-                    message.attackSpeed = Number(object.attackSpeed);
+                    if (!$Object.is($Number(object.attackSpeed), 0))
+                        message.attackSpeed = $Number(object.attackSpeed);
                 if (object.cooldownReduction != null)
-                    message.cooldownReduction = Number(object.cooldownReduction);
+                    if (!$Object.is($Number(object.cooldownReduction), 0))
+                        message.cooldownReduction = $Number(object.cooldownReduction);
                 if (object.hpRegen != null)
-                    message.hpRegen = Number(object.hpRegen);
+                    if (!$Object.is($Number(object.hpRegen), 0))
+                        message.hpRegen = $Number(object.hpRegen);
                 if (object.manaRegen != null)
-                    message.manaRegen = Number(object.manaRegen);
+                    if (!$Object.is($Number(object.manaRegen), 0))
+                        message.manaRegen = $Number(object.manaRegen);
                 if (object.castSpeed != null)
-                    message.castSpeed = Number(object.castSpeed);
+                    if (!$Object.is($Number(object.castSpeed), 0))
+                        message.castSpeed = $Number(object.castSpeed);
                 if (object.scale != null)
-                    message.scale = Number(object.scale);
+                    if (!$Object.is($Number(object.scale), 0))
+                        message.scale = $Number(object.scale);
                 if (object.state != null)
-                    message.state = String(object.state);
+                    if (typeof object.state !== "string" || object.state.length)
+                        message.state = $String(object.state);
                 if (object.equipment) {
-                    if (typeof object.equipment !== "object")
-                        throw TypeError(".eidolon.state.Entity.equipment: object expected");
+                    if (!$util.isObject(object.equipment))
+                        throw $TypeError(".eidolon.state.Entity.equipment: object expected");
                     message.equipment = {};
-                    for (let keys = Object.keys(object.equipment), i = 0; i < keys.length; ++i) {
-                        if (typeof object.equipment[keys[i]] !== "object")
-                            throw TypeError(".eidolon.state.Entity.equipment: object expected");
-                        message.equipment[keys[i]] = $root.eidolon.state.Item.fromObject(object.equipment[keys[i]]);
+                    for (let keys = $Object.keys(object.equipment), i = 0; i < keys.length; ++i) {
+                        if (keys[i] === "__proto__")
+                            $util.makeProp(message.equipment, keys[i]);
+                        if (!$util.isObject(object.equipment[keys[i]]))
+                            throw $TypeError(".eidolon.state.Entity.equipment: object expected");
+                        message.equipment[keys[i]] = $root.eidolon.state.Item.fromObject(object.equipment[keys[i]], _depth + 1);
                     }
                 }
                 if (object.quests) {
-                    if (!Array.isArray(object.quests))
-                        throw TypeError(".eidolon.state.Entity.quests: array expected");
-                    message.quests = [];
+                    if (!$Array.isArray(object.quests))
+                        throw $TypeError(".eidolon.state.Entity.quests: array expected");
+                    message.quests = $Array(object.quests.length);
                     for (let i = 0; i < object.quests.length; ++i) {
-                        if (typeof object.quests[i] !== "object")
-                            throw TypeError(".eidolon.state.Entity.quests: object expected");
-                        message.quests[i] = $root.eidolon.state.Quest.fromObject(object.quests[i]);
+                        if (!$util.isObject(object.quests[i]))
+                            throw $TypeError(".eidolon.state.Entity.quests: object expected");
+                        message.quests[i] = $root.eidolon.state.Quest.fromObject(object.quests[i], _depth + 1);
                     }
                 }
                 if (object.lootItem != null) {
-                    if (typeof object.lootItem !== "object")
-                        throw TypeError(".eidolon.state.Entity.lootItem: object expected");
-                    message.lootItem = $root.eidolon.state.Item.fromObject(object.lootItem);
+                    if (!$util.isObject(object.lootItem))
+                        throw $TypeError(".eidolon.state.Entity.lootItem: object expected");
+                    message.lootItem = $root.eidolon.state.Item.fromObject(object.lootItem, _depth + 1);
                 }
                 if (object.ownerId != null)
-                    message.ownerId = String(object.ownerId);
+                    if (typeof object.ownerId !== "string" || object.ownerId.length)
+                        message.ownerId = $String(object.ownerId);
                 if (object.velX != null)
-                    message.velX = Number(object.velX);
+                    if (!$Object.is($Number(object.velX), 0))
+                        message.velX = $Number(object.velX);
                 if (object.velZ != null)
-                    message.velZ = Number(object.velZ);
+                    if (!$Object.is($Number(object.velZ), 0))
+                        message.velZ = $Number(object.velZ);
                 if (object.spiritsActive != null)
-                    message.spiritsActive = Boolean(object.spiritsActive);
+                    if (object.spiritsActive)
+                        message.spiritsActive = $Boolean(object.spiritsActive);
                 if (object.spiritsBoosted != null)
-                    message.spiritsBoosted = Boolean(object.spiritsBoosted);
+                    if (object.spiritsBoosted)
+                        message.spiritsBoosted = $Boolean(object.spiritsBoosted);
                 if (object.isCharging != null)
-                    message.isCharging = Boolean(object.isCharging);
+                    if (object.isCharging)
+                        message.isCharging = $Boolean(object.isCharging);
                 if (object.guardianEmbraceActive != null)
-                    message.guardianEmbraceActive = Boolean(object.guardianEmbraceActive);
+                    if (object.guardianEmbraceActive)
+                        message.guardianEmbraceActive = $Boolean(object.guardianEmbraceActive);
                 if (object.blessingResolveActive != null)
-                    message.blessingResolveActive = Boolean(object.blessingResolveActive);
+                    if (object.blessingResolveActive)
+                        message.blessingResolveActive = $Boolean(object.blessingResolveActive);
                 if (object.divineInterventionActive != null)
-                    message.divineInterventionActive = Boolean(object.divineInterventionActive);
+                    if (object.divineInterventionActive)
+                        message.divineInterventionActive = $Boolean(object.divineInterventionActive);
                 if (object.arcaneShieldActive != null)
-                    message.arcaneShieldActive = Boolean(object.arcaneShieldActive);
+                    if (object.arcaneShieldActive)
+                        message.arcaneShieldActive = $Boolean(object.arcaneShieldActive);
                 if (object.arcaneShieldHp != null)
-                    message.arcaneShieldHp = object.arcaneShieldHp | 0;
+                    if ($Number(object.arcaneShieldHp) !== 0)
+                        message.arcaneShieldHp = object.arcaneShieldHp | 0;
                 if (object.timeWarpActive != null)
-                    message.timeWarpActive = Boolean(object.timeWarpActive);
+                    if (object.timeWarpActive)
+                        message.timeWarpActive = $Boolean(object.timeWarpActive);
                 if (object.spellFocusActive != null)
-                    message.spellFocusActive = Boolean(object.spellFocusActive);
+                    if (object.spellFocusActive)
+                        message.spellFocusActive = $Boolean(object.spellFocusActive);
                 if (object.swiftActive != null)
-                    message.swiftActive = Boolean(object.swiftActive);
+                    if (object.swiftActive)
+                        message.swiftActive = $Boolean(object.swiftActive);
+                if (object.ironFortressActive != null)
+                    if (object.ironFortressActive)
+                        message.ironFortressActive = $Boolean(object.ironFortressActive);
+                if (object.guardianRoarActive != null)
+                    if (object.guardianRoarActive)
+                        message.guardianRoarActive = $Boolean(object.guardianRoarActive);
+                if (object.berserkerModeActive != null)
+                    if (object.berserkerModeActive)
+                        message.berserkerModeActive = $Boolean(object.berserkerModeActive);
+                if (object.lastStandActive != null)
+                    if (object.lastStandActive)
+                        message.lastStandActive = $Boolean(object.lastStandActive);
+                if (object.serratedEdgesActive != null)
+                    if (object.serratedEdgesActive)
+                        message.serratedEdgesActive = $Boolean(object.serratedEdgesActive);
+                if (object.poisonCoatingActive != null)
+                    if (object.poisonCoatingActive)
+                        message.poisonCoatingActive = $Boolean(object.poisonCoatingActive);
+                if (object.stealthActive != null)
+                    if (object.stealthActive)
+                        message.stealthActive = $Boolean(object.stealthActive);
+                if (object.zealActive != null)
+                    if (object.zealActive)
+                        message.zealActive = $Boolean(object.zealActive);
                 if (object.stunned != null)
-                    message.stunned = Boolean(object.stunned);
+                    if (object.stunned)
+                        message.stunned = $Boolean(object.stunned);
                 if (object.slowed != null)
-                    message.slowed = Boolean(object.slowed);
+                    if (object.slowed)
+                        message.slowed = $Boolean(object.slowed);
                 if (object.rooted != null)
-                    message.rooted = Boolean(object.rooted);
+                    if (object.rooted)
+                        message.rooted = $Boolean(object.rooted);
                 if (object.bleeding != null)
-                    message.bleeding = Boolean(object.bleeding);
+                    if (object.bleeding)
+                        message.bleeding = $Boolean(object.bleeding);
                 if (object.poisoned != null)
-                    message.poisoned = Boolean(object.poisoned);
+                    if (object.poisoned)
+                        message.poisoned = $Boolean(object.poisoned);
                 if (object.weakPointMarked != null)
-                    message.weakPointMarked = Boolean(object.weakPointMarked);
+                    if (object.weakPointMarked)
+                        message.weakPointMarked = $Boolean(object.weakPointMarked);
                 if (object.weakPointDuration != null)
-                    message.weakPointDuration = Number(object.weakPointDuration);
+                    if (!$Object.is($Number(object.weakPointDuration), 0))
+                        message.weakPointDuration = $Number(object.weakPointDuration);
                 if (object.markWeakness != null)
-                    message.markWeakness = Boolean(object.markWeakness);
+                    if (object.markWeakness)
+                        message.markWeakness = $Boolean(object.markWeakness);
                 if (object.markWeaknessDuration != null)
-                    message.markWeaknessDuration = Number(object.markWeaknessDuration);
+                    if (!$Object.is($Number(object.markWeaknessDuration), 0))
+                        message.markWeaknessDuration = $Number(object.markWeaknessDuration);
                 if (object.spiritDuration != null)
-                    message.spiritDuration = Number(object.spiritDuration);
+                    if (!$Object.is($Number(object.spiritDuration), 0))
+                        message.spiritDuration = $Number(object.spiritDuration);
                 if (object.blessingResolveDuration != null)
-                    message.blessingResolveDuration = Number(object.blessingResolveDuration);
+                    if (!$Object.is($Number(object.blessingResolveDuration), 0))
+                        message.blessingResolveDuration = $Number(object.blessingResolveDuration);
                 if (object.timeWarpDuration != null)
-                    message.timeWarpDuration = Number(object.timeWarpDuration);
+                    if (!$Object.is($Number(object.timeWarpDuration), 0))
+                        message.timeWarpDuration = $Number(object.timeWarpDuration);
                 if (object.guardianEmbraceDuration != null)
-                    message.guardianEmbraceDuration = Number(object.guardianEmbraceDuration);
+                    if (!$Object.is($Number(object.guardianEmbraceDuration), 0))
+                        message.guardianEmbraceDuration = $Number(object.guardianEmbraceDuration);
                 if (object.arcaneShieldDuration != null)
-                    message.arcaneShieldDuration = Number(object.arcaneShieldDuration);
+                    if (!$Object.is($Number(object.arcaneShieldDuration), 0))
+                        message.arcaneShieldDuration = $Number(object.arcaneShieldDuration);
                 if (object.divineInterventionDuration != null)
-                    message.divineInterventionDuration = Number(object.divineInterventionDuration);
+                    if (!$Object.is($Number(object.divineInterventionDuration), 0))
+                        message.divineInterventionDuration = $Number(object.divineInterventionDuration);
                 if (object.spellFocusDuration != null)
-                    message.spellFocusDuration = Number(object.spellFocusDuration);
+                    if (!$Object.is($Number(object.spellFocusDuration), 0))
+                        message.spellFocusDuration = $Number(object.spellFocusDuration);
                 if (object.swiftDuration != null)
-                    message.swiftDuration = Number(object.swiftDuration);
+                    if (!$Object.is($Number(object.swiftDuration), 0))
+                        message.swiftDuration = $Number(object.swiftDuration);
+                if (object.ironFortressDuration != null)
+                    if (!$Object.is($Number(object.ironFortressDuration), 0))
+                        message.ironFortressDuration = $Number(object.ironFortressDuration);
+                if (object.guardianRoarDuration != null)
+                    if (!$Object.is($Number(object.guardianRoarDuration), 0))
+                        message.guardianRoarDuration = $Number(object.guardianRoarDuration);
+                if (object.berserkerModeDuration != null)
+                    if (!$Object.is($Number(object.berserkerModeDuration), 0))
+                        message.berserkerModeDuration = $Number(object.berserkerModeDuration);
+                if (object.lastStandDuration != null)
+                    if (!$Object.is($Number(object.lastStandDuration), 0))
+                        message.lastStandDuration = $Number(object.lastStandDuration);
+                if (object.serratedEdgesDuration != null)
+                    if (!$Object.is($Number(object.serratedEdgesDuration), 0))
+                        message.serratedEdgesDuration = $Number(object.serratedEdgesDuration);
+                if (object.poisonCoatingDuration != null)
+                    if (!$Object.is($Number(object.poisonCoatingDuration), 0))
+                        message.poisonCoatingDuration = $Number(object.poisonCoatingDuration);
+                if (object.stealthDuration != null)
+                    if (!$Object.is($Number(object.stealthDuration), 0))
+                        message.stealthDuration = $Number(object.stealthDuration);
+                if (object.zealDuration != null)
+                    if (!$Object.is($Number(object.zealDuration), 0))
+                        message.zealDuration = $Number(object.zealDuration);
                 if (object.slowFactor != null)
-                    message.slowFactor = Number(object.slowFactor);
+                    if (!$Object.is($Number(object.slowFactor), 0))
+                        message.slowFactor = $Number(object.slowFactor);
                 if (object.rootDuration != null)
-                    message.rootDuration = Number(object.rootDuration);
+                    if (!$Object.is($Number(object.rootDuration), 0))
+                        message.rootDuration = $Number(object.rootDuration);
                 if (object.stunDuration != null)
-                    message.stunDuration = Number(object.stunDuration);
+                    if (!$Object.is($Number(object.stunDuration), 0))
+                        message.stunDuration = $Number(object.stunDuration);
                 if (object.bleedDuration != null)
-                    message.bleedDuration = Number(object.bleedDuration);
+                    if (!$Object.is($Number(object.bleedDuration), 0))
+                        message.bleedDuration = $Number(object.bleedDuration);
                 if (object.poisonDuration != null)
-                    message.poisonDuration = Number(object.poisonDuration);
+                    if (!$Object.is($Number(object.poisonDuration), 0))
+                        message.poisonDuration = $Number(object.poisonDuration);
                 if (object.bleedDamage != null)
-                    message.bleedDamage = object.bleedDamage | 0;
+                    if ($Number(object.bleedDamage) !== 0)
+                        message.bleedDamage = object.bleedDamage | 0;
                 if (object.poisonDamage != null)
-                    message.poisonDamage = object.poisonDamage | 0;
+                    if ($Number(object.poisonDamage) !== 0)
+                        message.poisonDamage = object.poisonDamage | 0;
                 if (object.slowDuration != null)
-                    message.slowDuration = Number(object.slowDuration);
+                    if (!$Object.is($Number(object.slowDuration), 0))
+                        message.slowDuration = $Number(object.slowDuration);
                 if (object.talentPoints != null)
-                    message.talentPoints = object.talentPoints | 0;
+                    if ($Number(object.talentPoints) !== 0)
+                        message.talentPoints = object.talentPoints | 0;
                 if (object.unlockedTalents) {
-                    if (!Array.isArray(object.unlockedTalents))
-                        throw TypeError(".eidolon.state.Entity.unlockedTalents: array expected");
-                    message.unlockedTalents = [];
+                    if (!$Array.isArray(object.unlockedTalents))
+                        throw $TypeError(".eidolon.state.Entity.unlockedTalents: array expected");
+                    message.unlockedTalents = $Array(object.unlockedTalents.length);
                     for (let i = 0; i < object.unlockedTalents.length; ++i)
-                        message.unlockedTalents[i] = String(object.unlockedTalents[i]);
+                        message.unlockedTalents[i] = $String(object.unlockedTalents[i]);
                 }
                 if (object.talentRanks) {
-                    if (typeof object.talentRanks !== "object")
-                        throw TypeError(".eidolon.state.Entity.talentRanks: object expected");
+                    if (!$util.isObject(object.talentRanks))
+                        throw $TypeError(".eidolon.state.Entity.talentRanks: object expected");
                     message.talentRanks = {};
-                    for (let keys = Object.keys(object.talentRanks), i = 0; i < keys.length; ++i)
+                    for (let keys = $Object.keys(object.talentRanks), i = 0; i < keys.length; ++i) {
+                        if (keys[i] === "__proto__")
+                            $util.makeProp(message.talentRanks, keys[i]);
                         message.talentRanks[keys[i]] = object.talentRanks[keys[i]] | 0;
+                    }
                 }
                 if (object.skillRunes) {
-                    if (typeof object.skillRunes !== "object")
-                        throw TypeError(".eidolon.state.Entity.skillRunes: object expected");
+                    if (!$util.isObject(object.skillRunes))
+                        throw $TypeError(".eidolon.state.Entity.skillRunes: object expected");
                     message.skillRunes = {};
-                    for (let keys = Object.keys(object.skillRunes), i = 0; i < keys.length; ++i)
-                        message.skillRunes[keys[i]] = String(object.skillRunes[keys[i]]);
+                    for (let keys = $Object.keys(object.skillRunes), i = 0; i < keys.length; ++i) {
+                        if (keys[i] === "__proto__")
+                            $util.makeProp(message.skillRunes, keys[i]);
+                        message.skillRunes[keys[i]] = $String(object.skillRunes[keys[i]]);
+                    }
                 }
                 if (object.partyId != null)
-                    message.partyId = String(object.partyId);
+                    if (typeof object.partyId !== "string" || object.partyId.length)
+                        message.partyId = $String(object.partyId);
                 if (object.socialStatus != null)
-                    message.socialStatus = String(object.socialStatus);
+                    if (typeof object.socialStatus !== "string" || object.socialStatus.length)
+                        message.socialStatus = $String(object.socialStatus);
                 if (object.jumpStartX != null)
-                    message.jumpStartX = Number(object.jumpStartX);
+                    if (!$Object.is($Number(object.jumpStartX), 0))
+                        message.jumpStartX = $Number(object.jumpStartX);
                 if (object.jumpStartY != null)
-                    message.jumpStartY = Number(object.jumpStartY);
+                    if (!$Object.is($Number(object.jumpStartY), 0))
+                        message.jumpStartY = $Number(object.jumpStartY);
                 if (object.jumpStartZ != null)
-                    message.jumpStartZ = Number(object.jumpStartZ);
+                    if (!$Object.is($Number(object.jumpStartZ), 0))
+                        message.jumpStartZ = $Number(object.jumpStartZ);
                 if (object.jumpTargetX != null)
-                    message.jumpTargetX = Number(object.jumpTargetX);
+                    if (!$Object.is($Number(object.jumpTargetX), 0))
+                        message.jumpTargetX = $Number(object.jumpTargetX);
                 if (object.jumpTargetY != null)
-                    message.jumpTargetY = Number(object.jumpTargetY);
+                    if (!$Object.is($Number(object.jumpTargetY), 0))
+                        message.jumpTargetY = $Number(object.jumpTargetY);
                 if (object.jumpTargetZ != null)
-                    message.jumpTargetZ = Number(object.jumpTargetZ);
+                    if (!$Object.is($Number(object.jumpTargetZ), 0))
+                        message.jumpTargetZ = $Number(object.jumpTargetZ);
                 if (object.jumpDuration != null)
-                    message.jumpDuration = Number(object.jumpDuration);
+                    if (!$Object.is($Number(object.jumpDuration), 0))
+                        message.jumpDuration = $Number(object.jumpDuration);
                 if (object.jumpHeight != null)
-                    message.jumpHeight = Number(object.jumpHeight);
+                    if (!$Object.is($Number(object.jumpHeight), 0))
+                        message.jumpHeight = $Number(object.jumpHeight);
                 if (object.jumpProgress != null)
-                    message.jumpProgress = Number(object.jumpProgress);
+                    if (!$Object.is($Number(object.jumpProgress), 0))
+                        message.jumpProgress = $Number(object.jumpProgress);
                 return message;
             };
 
@@ -4478,9 +6039,13 @@ export const eidolon = $root.eidolon = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            Entity.toObject = function toObject(message, options) {
+            Entity.toObject = function (message, options, _depth) {
                 if (!options)
                     options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
                 let object = {};
                 if (options.arrays || options.defaults) {
                     object.unlockedSkills = [];
@@ -4576,204 +6141,261 @@ export const eidolon = $root.eidolon = (() => {
                     object.jumpDuration = 0;
                     object.jumpHeight = 0;
                     object.jumpProgress = 0;
+                    object.ironFortressActive = false;
+                    object.guardianRoarActive = false;
+                    object.berserkerModeActive = false;
+                    object.lastStandActive = false;
+                    object.serratedEdgesActive = false;
+                    object.poisonCoatingActive = false;
+                    object.stealthActive = false;
+                    object.zealActive = false;
+                    object.ironFortressDuration = 0;
+                    object.guardianRoarDuration = 0;
+                    object.berserkerModeDuration = 0;
+                    object.lastStandDuration = 0;
+                    object.serratedEdgesDuration = 0;
+                    object.poisonCoatingDuration = 0;
+                    object.stealthDuration = 0;
+                    object.zealDuration = 0;
                 }
-                if (message.id != null && message.hasOwnProperty("id"))
+                if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
-                if (message.instanceId != null && message.hasOwnProperty("instanceId"))
+                if (message.instanceId != null && $Object.hasOwnProperty.call(message, "instanceId"))
                     object.instanceId = message.instanceId;
-                if (message.name != null && message.hasOwnProperty("name"))
+                if (message.name != null && $Object.hasOwnProperty.call(message, "name"))
                     object.name = message.name;
-                if (message.type != null && message.hasOwnProperty("type"))
+                if (message.type != null && $Object.hasOwnProperty.call(message, "type"))
                     object.type = message.type;
-                if (message.subType != null && message.hasOwnProperty("subType"))
+                if (message.subType != null && $Object.hasOwnProperty.call(message, "subType"))
                     object.subType = message.subType;
-                if (message.x != null && message.hasOwnProperty("x"))
-                    object.x = options.json && !isFinite(message.x) ? String(message.x) : message.x;
-                if (message.y != null && message.hasOwnProperty("y"))
-                    object.y = options.json && !isFinite(message.y) ? String(message.y) : message.y;
-                if (message.z != null && message.hasOwnProperty("z"))
-                    object.z = options.json && !isFinite(message.z) ? String(message.z) : message.z;
-                if (message.rotation != null && message.hasOwnProperty("rotation"))
-                    object.rotation = options.json && !isFinite(message.rotation) ? String(message.rotation) : message.rotation;
-                if (message.health != null && message.hasOwnProperty("health"))
+                if (message.x != null && $Object.hasOwnProperty.call(message, "x"))
+                    object.x = options.json && !$isFinite(message.x) ? $String(message.x) : message.x;
+                if (message.y != null && $Object.hasOwnProperty.call(message, "y"))
+                    object.y = options.json && !$isFinite(message.y) ? $String(message.y) : message.y;
+                if (message.z != null && $Object.hasOwnProperty.call(message, "z"))
+                    object.z = options.json && !$isFinite(message.z) ? $String(message.z) : message.z;
+                if (message.rotation != null && $Object.hasOwnProperty.call(message, "rotation"))
+                    object.rotation = options.json && !$isFinite(message.rotation) ? $String(message.rotation) : message.rotation;
+                if (message.health != null && $Object.hasOwnProperty.call(message, "health"))
                     object.health = message.health;
-                if (message.maxHealth != null && message.hasOwnProperty("maxHealth"))
+                if (message.maxHealth != null && $Object.hasOwnProperty.call(message, "maxHealth"))
                     object.maxHealth = message.maxHealth;
-                if (message.mana != null && message.hasOwnProperty("mana"))
+                if (message.mana != null && $Object.hasOwnProperty.call(message, "mana"))
                     object.mana = message.mana;
-                if (message.maxMana != null && message.hasOwnProperty("maxMana"))
+                if (message.maxMana != null && $Object.hasOwnProperty.call(message, "maxMana"))
                     object.maxMana = message.maxMana;
-                if (message.level != null && message.hasOwnProperty("level"))
+                if (message.level != null && $Object.hasOwnProperty.call(message, "level"))
                     object.level = message.level;
-                if (message.experience != null && message.hasOwnProperty("experience"))
+                if (message.experience != null && $Object.hasOwnProperty.call(message, "experience"))
                     object.experience = message.experience;
-                if (message.maxExperience != null && message.hasOwnProperty("maxExperience"))
+                if (message.maxExperience != null && $Object.hasOwnProperty.call(message, "maxExperience"))
                     object.maxExperience = message.maxExperience;
-                if (message.gold != null && message.hasOwnProperty("gold"))
+                if (message.gold != null && $Object.hasOwnProperty.call(message, "gold"))
                     object.gold = message.gold;
-                if (message.skillPoints != null && message.hasOwnProperty("skillPoints"))
+                if (message.skillPoints != null && $Object.hasOwnProperty.call(message, "skillPoints"))
                     object.skillPoints = message.skillPoints;
-                if (message.selectedBranch != null && message.hasOwnProperty("selectedBranch"))
+                if (message.selectedBranch != null && $Object.hasOwnProperty.call(message, "selectedBranch"))
                     object.selectedBranch = message.selectedBranch;
                 if (message.unlockedSkills && message.unlockedSkills.length) {
-                    object.unlockedSkills = [];
+                    object.unlockedSkills = $Array(message.unlockedSkills.length);
                     for (let j = 0; j < message.unlockedSkills.length; ++j)
                         object.unlockedSkills[j] = message.unlockedSkills[j];
                 }
-                if (message.baseStats != null && message.hasOwnProperty("baseStats"))
-                    object.baseStats = $root.eidolon.state.Stats.toObject(message.baseStats, options);
-                if (message.stats != null && message.hasOwnProperty("stats"))
-                    object.stats = $root.eidolon.state.Stats.toObject(message.stats, options);
-                if (message.damage != null && message.hasOwnProperty("damage"))
+                if (message.baseStats != null && $Object.hasOwnProperty.call(message, "baseStats"))
+                    object.baseStats = $root.eidolon.state.Stats.toObject(message.baseStats, options, _depth + 1);
+                if (message.stats != null && $Object.hasOwnProperty.call(message, "stats"))
+                    object.stats = $root.eidolon.state.Stats.toObject(message.stats, options, _depth + 1);
+                if (message.damage != null && $Object.hasOwnProperty.call(message, "damage"))
                     object.damage = message.damage;
-                if (message.defense != null && message.hasOwnProperty("defense"))
+                if (message.defense != null && $Object.hasOwnProperty.call(message, "defense"))
                     object.defense = message.defense;
-                if (message.speed != null && message.hasOwnProperty("speed"))
-                    object.speed = options.json && !isFinite(message.speed) ? String(message.speed) : message.speed;
-                if (message.attackSpeed != null && message.hasOwnProperty("attackSpeed"))
-                    object.attackSpeed = options.json && !isFinite(message.attackSpeed) ? String(message.attackSpeed) : message.attackSpeed;
-                if (message.cooldownReduction != null && message.hasOwnProperty("cooldownReduction"))
-                    object.cooldownReduction = options.json && !isFinite(message.cooldownReduction) ? String(message.cooldownReduction) : message.cooldownReduction;
-                if (message.hpRegen != null && message.hasOwnProperty("hpRegen"))
-                    object.hpRegen = options.json && !isFinite(message.hpRegen) ? String(message.hpRegen) : message.hpRegen;
-                if (message.manaRegen != null && message.hasOwnProperty("manaRegen"))
-                    object.manaRegen = options.json && !isFinite(message.manaRegen) ? String(message.manaRegen) : message.manaRegen;
-                if (message.castSpeed != null && message.hasOwnProperty("castSpeed"))
-                    object.castSpeed = options.json && !isFinite(message.castSpeed) ? String(message.castSpeed) : message.castSpeed;
-                if (message.scale != null && message.hasOwnProperty("scale"))
-                    object.scale = options.json && !isFinite(message.scale) ? String(message.scale) : message.scale;
-                if (message.state != null && message.hasOwnProperty("state"))
+                if (message.speed != null && $Object.hasOwnProperty.call(message, "speed"))
+                    object.speed = options.json && !$isFinite(message.speed) ? $String(message.speed) : message.speed;
+                if (message.attackSpeed != null && $Object.hasOwnProperty.call(message, "attackSpeed"))
+                    object.attackSpeed = options.json && !$isFinite(message.attackSpeed) ? $String(message.attackSpeed) : message.attackSpeed;
+                if (message.cooldownReduction != null && $Object.hasOwnProperty.call(message, "cooldownReduction"))
+                    object.cooldownReduction = options.json && !$isFinite(message.cooldownReduction) ? $String(message.cooldownReduction) : message.cooldownReduction;
+                if (message.hpRegen != null && $Object.hasOwnProperty.call(message, "hpRegen"))
+                    object.hpRegen = options.json && !$isFinite(message.hpRegen) ? $String(message.hpRegen) : message.hpRegen;
+                if (message.manaRegen != null && $Object.hasOwnProperty.call(message, "manaRegen"))
+                    object.manaRegen = options.json && !$isFinite(message.manaRegen) ? $String(message.manaRegen) : message.manaRegen;
+                if (message.castSpeed != null && $Object.hasOwnProperty.call(message, "castSpeed"))
+                    object.castSpeed = options.json && !$isFinite(message.castSpeed) ? $String(message.castSpeed) : message.castSpeed;
+                if (message.scale != null && $Object.hasOwnProperty.call(message, "scale"))
+                    object.scale = options.json && !$isFinite(message.scale) ? $String(message.scale) : message.scale;
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state"))
                     object.state = message.state;
                 let keys2;
-                if (message.equipment && (keys2 = Object.keys(message.equipment)).length) {
+                if (message.equipment && (keys2 = $Object.keys(message.equipment)).length) {
                     object.equipment = {};
-                    for (let j = 0; j < keys2.length; ++j)
-                        object.equipment[keys2[j]] = $root.eidolon.state.Item.toObject(message.equipment[keys2[j]], options);
+                    for (let j = 0; j < keys2.length; ++j) {
+                        if (keys2[j] === "__proto__")
+                            $util.makeProp(object.equipment, keys2[j]);
+                        object.equipment[keys2[j]] = $root.eidolon.state.Item.toObject(message.equipment[keys2[j]], options, _depth + 1);
+                    }
                 }
                 if (message.quests && message.quests.length) {
-                    object.quests = [];
+                    object.quests = $Array(message.quests.length);
                     for (let j = 0; j < message.quests.length; ++j)
-                        object.quests[j] = $root.eidolon.state.Quest.toObject(message.quests[j], options);
+                        object.quests[j] = $root.eidolon.state.Quest.toObject(message.quests[j], options, _depth + 1);
                 }
-                if (message.lootItem != null && message.hasOwnProperty("lootItem"))
-                    object.lootItem = $root.eidolon.state.Item.toObject(message.lootItem, options);
-                if (message.ownerId != null && message.hasOwnProperty("ownerId"))
+                if (message.lootItem != null && $Object.hasOwnProperty.call(message, "lootItem"))
+                    object.lootItem = $root.eidolon.state.Item.toObject(message.lootItem, options, _depth + 1);
+                if (message.ownerId != null && $Object.hasOwnProperty.call(message, "ownerId"))
                     object.ownerId = message.ownerId;
-                if (message.velX != null && message.hasOwnProperty("velX"))
-                    object.velX = options.json && !isFinite(message.velX) ? String(message.velX) : message.velX;
-                if (message.velZ != null && message.hasOwnProperty("velZ"))
-                    object.velZ = options.json && !isFinite(message.velZ) ? String(message.velZ) : message.velZ;
-                if (message.spiritsActive != null && message.hasOwnProperty("spiritsActive"))
+                if (message.velX != null && $Object.hasOwnProperty.call(message, "velX"))
+                    object.velX = options.json && !$isFinite(message.velX) ? $String(message.velX) : message.velX;
+                if (message.velZ != null && $Object.hasOwnProperty.call(message, "velZ"))
+                    object.velZ = options.json && !$isFinite(message.velZ) ? $String(message.velZ) : message.velZ;
+                if (message.spiritsActive != null && $Object.hasOwnProperty.call(message, "spiritsActive"))
                     object.spiritsActive = message.spiritsActive;
-                if (message.spiritsBoosted != null && message.hasOwnProperty("spiritsBoosted"))
+                if (message.spiritsBoosted != null && $Object.hasOwnProperty.call(message, "spiritsBoosted"))
                     object.spiritsBoosted = message.spiritsBoosted;
-                if (message.isCharging != null && message.hasOwnProperty("isCharging"))
+                if (message.isCharging != null && $Object.hasOwnProperty.call(message, "isCharging"))
                     object.isCharging = message.isCharging;
-                if (message.stunned != null && message.hasOwnProperty("stunned"))
+                if (message.stunned != null && $Object.hasOwnProperty.call(message, "stunned"))
                     object.stunned = message.stunned;
-                if (message.slowed != null && message.hasOwnProperty("slowed"))
+                if (message.slowed != null && $Object.hasOwnProperty.call(message, "slowed"))
                     object.slowed = message.slowed;
-                if (message.rooted != null && message.hasOwnProperty("rooted"))
+                if (message.rooted != null && $Object.hasOwnProperty.call(message, "rooted"))
                     object.rooted = message.rooted;
-                if (message.bleeding != null && message.hasOwnProperty("bleeding"))
+                if (message.bleeding != null && $Object.hasOwnProperty.call(message, "bleeding"))
                     object.bleeding = message.bleeding;
-                if (message.poisoned != null && message.hasOwnProperty("poisoned"))
+                if (message.poisoned != null && $Object.hasOwnProperty.call(message, "poisoned"))
                     object.poisoned = message.poisoned;
-                if (message.talentPoints != null && message.hasOwnProperty("talentPoints"))
+                if (message.talentPoints != null && $Object.hasOwnProperty.call(message, "talentPoints"))
                     object.talentPoints = message.talentPoints;
                 if (message.unlockedTalents && message.unlockedTalents.length) {
-                    object.unlockedTalents = [];
+                    object.unlockedTalents = $Array(message.unlockedTalents.length);
                     for (let j = 0; j < message.unlockedTalents.length; ++j)
                         object.unlockedTalents[j] = message.unlockedTalents[j];
                 }
-                if (message.talentRanks && (keys2 = Object.keys(message.talentRanks)).length) {
+                if (message.talentRanks && (keys2 = $Object.keys(message.talentRanks)).length) {
                     object.talentRanks = {};
-                    for (let j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j) {
+                        if (keys2[j] === "__proto__")
+                            $util.makeProp(object.talentRanks, keys2[j]);
                         object.talentRanks[keys2[j]] = message.talentRanks[keys2[j]];
+                    }
                 }
-                if (message.skillRunes && (keys2 = Object.keys(message.skillRunes)).length) {
+                if (message.skillRunes && (keys2 = $Object.keys(message.skillRunes)).length) {
                     object.skillRunes = {};
-                    for (let j = 0; j < keys2.length; ++j)
+                    for (let j = 0; j < keys2.length; ++j) {
+                        if (keys2[j] === "__proto__")
+                            $util.makeProp(object.skillRunes, keys2[j]);
                         object.skillRunes[keys2[j]] = message.skillRunes[keys2[j]];
+                    }
                 }
-                if (message.guardianEmbraceActive != null && message.hasOwnProperty("guardianEmbraceActive"))
+                if (message.guardianEmbraceActive != null && $Object.hasOwnProperty.call(message, "guardianEmbraceActive"))
                     object.guardianEmbraceActive = message.guardianEmbraceActive;
-                if (message.blessingResolveActive != null && message.hasOwnProperty("blessingResolveActive"))
+                if (message.blessingResolveActive != null && $Object.hasOwnProperty.call(message, "blessingResolveActive"))
                     object.blessingResolveActive = message.blessingResolveActive;
-                if (message.divineInterventionActive != null && message.hasOwnProperty("divineInterventionActive"))
+                if (message.divineInterventionActive != null && $Object.hasOwnProperty.call(message, "divineInterventionActive"))
                     object.divineInterventionActive = message.divineInterventionActive;
-                if (message.arcaneShieldActive != null && message.hasOwnProperty("arcaneShieldActive"))
+                if (message.arcaneShieldActive != null && $Object.hasOwnProperty.call(message, "arcaneShieldActive"))
                     object.arcaneShieldActive = message.arcaneShieldActive;
-                if (message.arcaneShieldHp != null && message.hasOwnProperty("arcaneShieldHp"))
+                if (message.arcaneShieldHp != null && $Object.hasOwnProperty.call(message, "arcaneShieldHp"))
                     object.arcaneShieldHp = message.arcaneShieldHp;
-                if (message.timeWarpActive != null && message.hasOwnProperty("timeWarpActive"))
+                if (message.timeWarpActive != null && $Object.hasOwnProperty.call(message, "timeWarpActive"))
                     object.timeWarpActive = message.timeWarpActive;
-                if (message.spellFocusActive != null && message.hasOwnProperty("spellFocusActive"))
+                if (message.spellFocusActive != null && $Object.hasOwnProperty.call(message, "spellFocusActive"))
                     object.spellFocusActive = message.spellFocusActive;
-                if (message.slowFactor != null && message.hasOwnProperty("slowFactor"))
-                    object.slowFactor = options.json && !isFinite(message.slowFactor) ? String(message.slowFactor) : message.slowFactor;
-                if (message.rootDuration != null && message.hasOwnProperty("rootDuration"))
-                    object.rootDuration = options.json && !isFinite(message.rootDuration) ? String(message.rootDuration) : message.rootDuration;
-                if (message.stunDuration != null && message.hasOwnProperty("stunDuration"))
-                    object.stunDuration = options.json && !isFinite(message.stunDuration) ? String(message.stunDuration) : message.stunDuration;
-                if (message.bleedDuration != null && message.hasOwnProperty("bleedDuration"))
-                    object.bleedDuration = options.json && !isFinite(message.bleedDuration) ? String(message.bleedDuration) : message.bleedDuration;
-                if (message.poisonDuration != null && message.hasOwnProperty("poisonDuration"))
-                    object.poisonDuration = options.json && !isFinite(message.poisonDuration) ? String(message.poisonDuration) : message.poisonDuration;
-                if (message.bleedDamage != null && message.hasOwnProperty("bleedDamage"))
+                if (message.slowFactor != null && $Object.hasOwnProperty.call(message, "slowFactor"))
+                    object.slowFactor = options.json && !$isFinite(message.slowFactor) ? $String(message.slowFactor) : message.slowFactor;
+                if (message.rootDuration != null && $Object.hasOwnProperty.call(message, "rootDuration"))
+                    object.rootDuration = options.json && !$isFinite(message.rootDuration) ? $String(message.rootDuration) : message.rootDuration;
+                if (message.stunDuration != null && $Object.hasOwnProperty.call(message, "stunDuration"))
+                    object.stunDuration = options.json && !$isFinite(message.stunDuration) ? $String(message.stunDuration) : message.stunDuration;
+                if (message.bleedDuration != null && $Object.hasOwnProperty.call(message, "bleedDuration"))
+                    object.bleedDuration = options.json && !$isFinite(message.bleedDuration) ? $String(message.bleedDuration) : message.bleedDuration;
+                if (message.poisonDuration != null && $Object.hasOwnProperty.call(message, "poisonDuration"))
+                    object.poisonDuration = options.json && !$isFinite(message.poisonDuration) ? $String(message.poisonDuration) : message.poisonDuration;
+                if (message.bleedDamage != null && $Object.hasOwnProperty.call(message, "bleedDamage"))
                     object.bleedDamage = message.bleedDamage;
-                if (message.poisonDamage != null && message.hasOwnProperty("poisonDamage"))
+                if (message.poisonDamage != null && $Object.hasOwnProperty.call(message, "poisonDamage"))
                     object.poisonDamage = message.poisonDamage;
-                if (message.slowDuration != null && message.hasOwnProperty("slowDuration"))
-                    object.slowDuration = options.json && !isFinite(message.slowDuration) ? String(message.slowDuration) : message.slowDuration;
-                if (message.weakPointMarked != null && message.hasOwnProperty("weakPointMarked"))
+                if (message.slowDuration != null && $Object.hasOwnProperty.call(message, "slowDuration"))
+                    object.slowDuration = options.json && !$isFinite(message.slowDuration) ? $String(message.slowDuration) : message.slowDuration;
+                if (message.weakPointMarked != null && $Object.hasOwnProperty.call(message, "weakPointMarked"))
                     object.weakPointMarked = message.weakPointMarked;
-                if (message.weakPointDuration != null && message.hasOwnProperty("weakPointDuration"))
-                    object.weakPointDuration = options.json && !isFinite(message.weakPointDuration) ? String(message.weakPointDuration) : message.weakPointDuration;
-                if (message.markWeakness != null && message.hasOwnProperty("markWeakness"))
+                if (message.weakPointDuration != null && $Object.hasOwnProperty.call(message, "weakPointDuration"))
+                    object.weakPointDuration = options.json && !$isFinite(message.weakPointDuration) ? $String(message.weakPointDuration) : message.weakPointDuration;
+                if (message.markWeakness != null && $Object.hasOwnProperty.call(message, "markWeakness"))
                     object.markWeakness = message.markWeakness;
-                if (message.markWeaknessDuration != null && message.hasOwnProperty("markWeaknessDuration"))
-                    object.markWeaknessDuration = options.json && !isFinite(message.markWeaknessDuration) ? String(message.markWeaknessDuration) : message.markWeaknessDuration;
-                if (message.spiritDuration != null && message.hasOwnProperty("spiritDuration"))
-                    object.spiritDuration = options.json && !isFinite(message.spiritDuration) ? String(message.spiritDuration) : message.spiritDuration;
-                if (message.blessingResolveDuration != null && message.hasOwnProperty("blessingResolveDuration"))
-                    object.blessingResolveDuration = options.json && !isFinite(message.blessingResolveDuration) ? String(message.blessingResolveDuration) : message.blessingResolveDuration;
-                if (message.timeWarpDuration != null && message.hasOwnProperty("timeWarpDuration"))
-                    object.timeWarpDuration = options.json && !isFinite(message.timeWarpDuration) ? String(message.timeWarpDuration) : message.timeWarpDuration;
-                if (message.guardianEmbraceDuration != null && message.hasOwnProperty("guardianEmbraceDuration"))
-                    object.guardianEmbraceDuration = options.json && !isFinite(message.guardianEmbraceDuration) ? String(message.guardianEmbraceDuration) : message.guardianEmbraceDuration;
-                if (message.arcaneShieldDuration != null && message.hasOwnProperty("arcaneShieldDuration"))
-                    object.arcaneShieldDuration = options.json && !isFinite(message.arcaneShieldDuration) ? String(message.arcaneShieldDuration) : message.arcaneShieldDuration;
-                if (message.divineInterventionDuration != null && message.hasOwnProperty("divineInterventionDuration"))
-                    object.divineInterventionDuration = options.json && !isFinite(message.divineInterventionDuration) ? String(message.divineInterventionDuration) : message.divineInterventionDuration;
-                if (message.spellFocusDuration != null && message.hasOwnProperty("spellFocusDuration"))
-                    object.spellFocusDuration = options.json && !isFinite(message.spellFocusDuration) ? String(message.spellFocusDuration) : message.spellFocusDuration;
-                if (message.swiftActive != null && message.hasOwnProperty("swiftActive"))
+                if (message.markWeaknessDuration != null && $Object.hasOwnProperty.call(message, "markWeaknessDuration"))
+                    object.markWeaknessDuration = options.json && !$isFinite(message.markWeaknessDuration) ? $String(message.markWeaknessDuration) : message.markWeaknessDuration;
+                if (message.spiritDuration != null && $Object.hasOwnProperty.call(message, "spiritDuration"))
+                    object.spiritDuration = options.json && !$isFinite(message.spiritDuration) ? $String(message.spiritDuration) : message.spiritDuration;
+                if (message.blessingResolveDuration != null && $Object.hasOwnProperty.call(message, "blessingResolveDuration"))
+                    object.blessingResolveDuration = options.json && !$isFinite(message.blessingResolveDuration) ? $String(message.blessingResolveDuration) : message.blessingResolveDuration;
+                if (message.timeWarpDuration != null && $Object.hasOwnProperty.call(message, "timeWarpDuration"))
+                    object.timeWarpDuration = options.json && !$isFinite(message.timeWarpDuration) ? $String(message.timeWarpDuration) : message.timeWarpDuration;
+                if (message.guardianEmbraceDuration != null && $Object.hasOwnProperty.call(message, "guardianEmbraceDuration"))
+                    object.guardianEmbraceDuration = options.json && !$isFinite(message.guardianEmbraceDuration) ? $String(message.guardianEmbraceDuration) : message.guardianEmbraceDuration;
+                if (message.arcaneShieldDuration != null && $Object.hasOwnProperty.call(message, "arcaneShieldDuration"))
+                    object.arcaneShieldDuration = options.json && !$isFinite(message.arcaneShieldDuration) ? $String(message.arcaneShieldDuration) : message.arcaneShieldDuration;
+                if (message.divineInterventionDuration != null && $Object.hasOwnProperty.call(message, "divineInterventionDuration"))
+                    object.divineInterventionDuration = options.json && !$isFinite(message.divineInterventionDuration) ? $String(message.divineInterventionDuration) : message.divineInterventionDuration;
+                if (message.spellFocusDuration != null && $Object.hasOwnProperty.call(message, "spellFocusDuration"))
+                    object.spellFocusDuration = options.json && !$isFinite(message.spellFocusDuration) ? $String(message.spellFocusDuration) : message.spellFocusDuration;
+                if (message.swiftActive != null && $Object.hasOwnProperty.call(message, "swiftActive"))
                     object.swiftActive = message.swiftActive;
-                if (message.swiftDuration != null && message.hasOwnProperty("swiftDuration"))
-                    object.swiftDuration = options.json && !isFinite(message.swiftDuration) ? String(message.swiftDuration) : message.swiftDuration;
-                if (message.partyId != null && message.hasOwnProperty("partyId"))
+                if (message.swiftDuration != null && $Object.hasOwnProperty.call(message, "swiftDuration"))
+                    object.swiftDuration = options.json && !$isFinite(message.swiftDuration) ? $String(message.swiftDuration) : message.swiftDuration;
+                if (message.partyId != null && $Object.hasOwnProperty.call(message, "partyId"))
                     object.partyId = message.partyId;
-                if (message.socialStatus != null && message.hasOwnProperty("socialStatus"))
+                if (message.socialStatus != null && $Object.hasOwnProperty.call(message, "socialStatus"))
                     object.socialStatus = message.socialStatus;
-                if (message.jumpStartX != null && message.hasOwnProperty("jumpStartX"))
-                    object.jumpStartX = options.json && !isFinite(message.jumpStartX) ? String(message.jumpStartX) : message.jumpStartX;
-                if (message.jumpStartY != null && message.hasOwnProperty("jumpStartY"))
-                    object.jumpStartY = options.json && !isFinite(message.jumpStartY) ? String(message.jumpStartY) : message.jumpStartY;
-                if (message.jumpStartZ != null && message.hasOwnProperty("jumpStartZ"))
-                    object.jumpStartZ = options.json && !isFinite(message.jumpStartZ) ? String(message.jumpStartZ) : message.jumpStartZ;
-                if (message.jumpTargetX != null && message.hasOwnProperty("jumpTargetX"))
-                    object.jumpTargetX = options.json && !isFinite(message.jumpTargetX) ? String(message.jumpTargetX) : message.jumpTargetX;
-                if (message.jumpTargetY != null && message.hasOwnProperty("jumpTargetY"))
-                    object.jumpTargetY = options.json && !isFinite(message.jumpTargetY) ? String(message.jumpTargetY) : message.jumpTargetY;
-                if (message.jumpTargetZ != null && message.hasOwnProperty("jumpTargetZ"))
-                    object.jumpTargetZ = options.json && !isFinite(message.jumpTargetZ) ? String(message.jumpTargetZ) : message.jumpTargetZ;
-                if (message.jumpDuration != null && message.hasOwnProperty("jumpDuration"))
-                    object.jumpDuration = options.json && !isFinite(message.jumpDuration) ? String(message.jumpDuration) : message.jumpDuration;
-                if (message.jumpHeight != null && message.hasOwnProperty("jumpHeight"))
-                    object.jumpHeight = options.json && !isFinite(message.jumpHeight) ? String(message.jumpHeight) : message.jumpHeight;
-                if (message.jumpProgress != null && message.hasOwnProperty("jumpProgress"))
-                    object.jumpProgress = options.json && !isFinite(message.jumpProgress) ? String(message.jumpProgress) : message.jumpProgress;
+                if (message.jumpStartX != null && $Object.hasOwnProperty.call(message, "jumpStartX"))
+                    object.jumpStartX = options.json && !$isFinite(message.jumpStartX) ? $String(message.jumpStartX) : message.jumpStartX;
+                if (message.jumpStartY != null && $Object.hasOwnProperty.call(message, "jumpStartY"))
+                    object.jumpStartY = options.json && !$isFinite(message.jumpStartY) ? $String(message.jumpStartY) : message.jumpStartY;
+                if (message.jumpStartZ != null && $Object.hasOwnProperty.call(message, "jumpStartZ"))
+                    object.jumpStartZ = options.json && !$isFinite(message.jumpStartZ) ? $String(message.jumpStartZ) : message.jumpStartZ;
+                if (message.jumpTargetX != null && $Object.hasOwnProperty.call(message, "jumpTargetX"))
+                    object.jumpTargetX = options.json && !$isFinite(message.jumpTargetX) ? $String(message.jumpTargetX) : message.jumpTargetX;
+                if (message.jumpTargetY != null && $Object.hasOwnProperty.call(message, "jumpTargetY"))
+                    object.jumpTargetY = options.json && !$isFinite(message.jumpTargetY) ? $String(message.jumpTargetY) : message.jumpTargetY;
+                if (message.jumpTargetZ != null && $Object.hasOwnProperty.call(message, "jumpTargetZ"))
+                    object.jumpTargetZ = options.json && !$isFinite(message.jumpTargetZ) ? $String(message.jumpTargetZ) : message.jumpTargetZ;
+                if (message.jumpDuration != null && $Object.hasOwnProperty.call(message, "jumpDuration"))
+                    object.jumpDuration = options.json && !$isFinite(message.jumpDuration) ? $String(message.jumpDuration) : message.jumpDuration;
+                if (message.jumpHeight != null && $Object.hasOwnProperty.call(message, "jumpHeight"))
+                    object.jumpHeight = options.json && !$isFinite(message.jumpHeight) ? $String(message.jumpHeight) : message.jumpHeight;
+                if (message.jumpProgress != null && $Object.hasOwnProperty.call(message, "jumpProgress"))
+                    object.jumpProgress = options.json && !$isFinite(message.jumpProgress) ? $String(message.jumpProgress) : message.jumpProgress;
+                if (message.ironFortressActive != null && $Object.hasOwnProperty.call(message, "ironFortressActive"))
+                    object.ironFortressActive = message.ironFortressActive;
+                if (message.guardianRoarActive != null && $Object.hasOwnProperty.call(message, "guardianRoarActive"))
+                    object.guardianRoarActive = message.guardianRoarActive;
+                if (message.berserkerModeActive != null && $Object.hasOwnProperty.call(message, "berserkerModeActive"))
+                    object.berserkerModeActive = message.berserkerModeActive;
+                if (message.lastStandActive != null && $Object.hasOwnProperty.call(message, "lastStandActive"))
+                    object.lastStandActive = message.lastStandActive;
+                if (message.serratedEdgesActive != null && $Object.hasOwnProperty.call(message, "serratedEdgesActive"))
+                    object.serratedEdgesActive = message.serratedEdgesActive;
+                if (message.poisonCoatingActive != null && $Object.hasOwnProperty.call(message, "poisonCoatingActive"))
+                    object.poisonCoatingActive = message.poisonCoatingActive;
+                if (message.stealthActive != null && $Object.hasOwnProperty.call(message, "stealthActive"))
+                    object.stealthActive = message.stealthActive;
+                if (message.zealActive != null && $Object.hasOwnProperty.call(message, "zealActive"))
+                    object.zealActive = message.zealActive;
+                if (message.ironFortressDuration != null && $Object.hasOwnProperty.call(message, "ironFortressDuration"))
+                    object.ironFortressDuration = options.json && !$isFinite(message.ironFortressDuration) ? $String(message.ironFortressDuration) : message.ironFortressDuration;
+                if (message.guardianRoarDuration != null && $Object.hasOwnProperty.call(message, "guardianRoarDuration"))
+                    object.guardianRoarDuration = options.json && !$isFinite(message.guardianRoarDuration) ? $String(message.guardianRoarDuration) : message.guardianRoarDuration;
+                if (message.berserkerModeDuration != null && $Object.hasOwnProperty.call(message, "berserkerModeDuration"))
+                    object.berserkerModeDuration = options.json && !$isFinite(message.berserkerModeDuration) ? $String(message.berserkerModeDuration) : message.berserkerModeDuration;
+                if (message.lastStandDuration != null && $Object.hasOwnProperty.call(message, "lastStandDuration"))
+                    object.lastStandDuration = options.json && !$isFinite(message.lastStandDuration) ? $String(message.lastStandDuration) : message.lastStandDuration;
+                if (message.serratedEdgesDuration != null && $Object.hasOwnProperty.call(message, "serratedEdgesDuration"))
+                    object.serratedEdgesDuration = options.json && !$isFinite(message.serratedEdgesDuration) ? $String(message.serratedEdgesDuration) : message.serratedEdgesDuration;
+                if (message.poisonCoatingDuration != null && $Object.hasOwnProperty.call(message, "poisonCoatingDuration"))
+                    object.poisonCoatingDuration = options.json && !$isFinite(message.poisonCoatingDuration) ? $String(message.poisonCoatingDuration) : message.poisonCoatingDuration;
+                if (message.stealthDuration != null && $Object.hasOwnProperty.call(message, "stealthDuration"))
+                    object.stealthDuration = options.json && !$isFinite(message.stealthDuration) ? $String(message.stealthDuration) : message.stealthDuration;
+                if (message.zealDuration != null && $Object.hasOwnProperty.call(message, "zealDuration"))
+                    object.zealDuration = options.json && !$isFinite(message.zealDuration) ? $String(message.zealDuration) : message.zealDuration;
                 return object;
             };
 
@@ -4784,23 +6406,22 @@ export const eidolon = $root.eidolon = (() => {
              * @instance
              * @returns {Object.<string,*>} JSON object
              */
-            Entity.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            Entity.prototype.toJSON = function() {
+                return Entity.toObject(this, $protobuf.util.toJSONOptions);
             };
 
             /**
-             * Gets the default type url for Entity
+             * Gets the type url for Entity
              * @function getTypeUrl
              * @memberof eidolon.state.Entity
              * @static
-             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * @returns {string} The default type url
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
              */
-            Entity.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-                if (typeUrlPrefix === undefined) {
-                    typeUrlPrefix = "type.googleapis.com";
-                }
-                return typeUrlPrefix + "/eidolon.state.Entity";
+            Entity.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/eidolon.state.Entity";
             };
 
             return Entity;
@@ -4812,4 +6433,6 @@ export const eidolon = $root.eidolon = (() => {
     return eidolon;
 })();
 
-export { $root as default };
+export {
+  $root as default
+};

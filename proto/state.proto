@@ -139,6 +139,14 @@ message Entity {
   bool time_warp_active = 56;
   bool spell_focus_active = 57;
   bool swift_active = 77;
+  bool iron_fortress_active = 90;
+  bool guardian_roar_active = 91;
+  bool berserker_mode_active = 92;
+  bool last_stand_active = 93;
+  bool serrated_edges_active = 94;
+  bool poison_coating_active = 95;
+  bool stealth_active = 96;
+  bool zeal_active = 97;
 
   // Common buff/debuff booleans used for visuals/behavior
   bool stunned = 42;
@@ -158,6 +166,14 @@ message Entity {
   float divine_intervention_duration = 75;
   float spell_focus_duration = 76;
   float swift_duration = 78;
+  float iron_fortress_duration = 98;
+  float guardian_roar_duration = 99;
+  float berserker_mode_duration = 100;
+  float last_stand_duration = 101;
+  float serrated_edges_duration = 102;
+  float poison_coating_duration = 103;
+  float stealth_duration = 104;
+  float zeal_duration = 105;
   float slow_factor = 58;
   float root_duration = 59;
   float stun_duration = 60;

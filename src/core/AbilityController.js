@@ -141,12 +141,24 @@ export class AbilityController {
     triggerRemoteAbilityVisuals(entity, skillName, targetX, targetZ) {
         if (!entity || !entity.spawnVisualEffect) return;
 
+        entity.playAbilityAnimation?.(skillName);
+
         const visual = resolveRemoteSkillVisual(entity, skillName, new THREE.Vector3(targetX, 0, targetZ));
         if (visual.handled) {
             return;
         }
 
-        entity.spawnVisualEffect(this.engine, visual.origin, visual.color, visual.type);
+        const visualLayers = Array.isArray(visual.layers) ? visual.layers : [visual];
+        visualLayers.forEach((entry) => {
+            entity.spawnVisualEffect(this.engine, entry.origin, entry.color, entry.type);
+        });
+
+        entity.lastRemoteAbilityPresentation = {
+            skillName,
+            layerCount: visualLayers.length,
+            fallback: Boolean(visual.fallback),
+            timestamp: globalThis.performance?.now?.() ?? Date.now()
+        };
 
         if (visual.fallback) {
             const host = (typeof window !== 'undefined' && window.location) ? window.location.hostname : '';

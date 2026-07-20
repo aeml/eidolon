@@ -38,6 +38,7 @@ const SNARE_MAT = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const ZONE_GEO = new THREE.CylinderGeometry(5.0, 5.0, 0.1, 32);
 const ZONE_DAMAGE_MAT = new THREE.MeshBasicMaterial({ color: 0xff4400, transparent: true, opacity: 0.25 });
 const ZONE_HOLY_MAT = new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.3 });
+const STATIONARY_VISUAL_TYPES = new Set(['Tripwire', 'ExplosiveTrap', 'SnareTrap', 'ZoneDamage', 'ZoneHoly', 'Zone']);
 
 // =====================================================
 // Particle Pool Manager - Centralized for performance
@@ -192,6 +193,7 @@ export class Projectile extends Entity {
         this.damage = 0;
         this.radius = type === 'Fireball' ? 2.0 : 1.5; // Increased hit radius
         this.lifeTime = 10.0; // Increased lifetime to allow long-range shots
+        this.visualElapsed = 0;
         
         this.hitEntities = new Set(); // Track entities hit by this projectile
         
@@ -294,8 +296,10 @@ export class Projectile extends Entity {
         }
     }
 
-    update(dt, collisionManager, player, chunkManager, floatingTextManager, gameEngine) { 
+    update(dt, collisionManager, player, chunkManager, floatingTextManager, gameEngine) {
         if (!this.isActive) return;
+
+        this.visualElapsed += Math.max(0, Number(dt) || 0);
 
         const effectScene = gameEngine?.effectScene || gameEngine?.scene;
 
@@ -341,6 +345,19 @@ export class Projectile extends Entity {
         
         if (this.mesh) {
             this.mesh.position.copy(this.position);
+            if (STATIONARY_VISUAL_TYPES.has(this.type)) {
+                const baseScale = this.mesh.userData.projectileVisualBaseScale || this.mesh.scale.clone();
+                this.mesh.userData.projectileVisualBaseScale = baseScale;
+                const zone = this.type === 'ZoneDamage' || this.type === 'ZoneHoly' || this.type === 'Zone';
+                const pulse = 1 + Math.sin(this.visualElapsed * (zone ? 2.2 : 4.4)) * (zone ? 0.035 : 0.08);
+                this.mesh.scale.copy(baseScale);
+                if (zone) {
+                    this.mesh.scale.x *= pulse;
+                    this.mesh.scale.z *= pulse;
+                } else {
+                    this.mesh.scale.multiplyScalar(pulse);
+                }
+            }
         }
 
         // Collision Detection (Client-side prediction / Singleplayer)
@@ -357,8 +374,11 @@ export class Projectile extends Entity {
                 // Assuming owner is Player, ignore other Players? Or if owner is Enemy, ignore Enemies?
                 // For now, simple check: If owner is Player, ignore Player.
                 if (this.owner && this.owner.constructor.name === entity.constructor.name) continue;
-                // Also ignore Loot
-                if (entity.constructor.name === 'LootDrop') continue;
+                // World props, service NPCs, loot, effects, and other
+                // non-combat entities can share a chunk with a projectile.
+                // Only the damageable actor contract is a valid collision
+                // target; otherwise a visual pass can throw on takeDamage.
+                if (typeof entity.takeDamage !== 'function') continue;
 
                 const dist = this.position.distanceTo(entity.position);
                 if (dist < hitRadius + (entity.radius || 0.5)) {
@@ -376,7 +396,7 @@ export class Projectile extends Entity {
                             let minDst = 10.0;
                             for (const other of activeEntities) {
                                 if (other !== entity && other !== this.owner && other.isActive && other.state !== 'DEAD' && !this.hitEntities.has(other.id)) {
-                                    if (other.constructor.name === 'LootDrop') continue;
+                                    if (typeof other.takeDamage !== 'function') continue;
                                     if (this.owner && this.owner.constructor.name === other.constructor.name) continue;
                                     
                                     const d = entity.position.distanceTo(other.position);
@@ -459,7 +479,7 @@ export class Projectile extends Entity {
                         // Find all entities in splash radius
                         for (const splashTarget of activeEntities) {
                             if (splashTarget.state === 'DEAD' || !splashTarget.isActive) continue;
-                            if (splashTarget.constructor.name === 'LootDrop') continue;
+                            if (typeof splashTarget.takeDamage !== 'function') continue;
                             if (this.owner && this.owner.constructor.name === splashTarget.constructor.name) continue;
 
                             const splashDist = this.position.distanceTo(splashTarget.position);

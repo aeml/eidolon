@@ -281,7 +281,7 @@ export async function readPlayerState(page) {
     });
 }
 
-async function projectGroundOffset(page, deltaX, deltaZ) {
+export async function projectGroundOffset(page, deltaX, deltaZ) {
     return page.evaluate(({ deltaX: dx, deltaZ: dz }) => {
         const game = window.game;
         if (!game?.player?.position || !game.renderSystem?.camera) return null;
@@ -414,7 +414,7 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
     );
 }
 
-async function jumpByGroundClick(page, deltaX, deltaZ) {
+export async function jumpByGroundClick(page, deltaX, deltaZ) {
     const before = await readPlayerState(page);
     const target = await projectGroundOffset(page, deltaX, deltaZ);
     expect(target?.canvas, 'A real Ctrl-click jump requires an unobscured canvas destination').toBe(true);
@@ -713,13 +713,18 @@ async function closeSettingsAndResume(page, escMenu) {
     await expect(escMenu).toBeHidden();
 }
 
-export async function selectLowGraphicsThroughSettings(page) {
+export async function selectGraphicsThroughSettings(page, graphicsQuality) {
+    expect(['low', 'medium', 'high']).toContain(graphicsQuality);
     const escMenu = await openSettingsThroughEscape(page);
     const quality = page.locator('#graphics-quality');
     await expect(quality).toBeVisible();
-    await quality.selectOption('low');
-    await expect(quality).toHaveValue('low');
+    await quality.selectOption(graphicsQuality);
+    await expect(quality).toHaveValue(graphicsQuality);
     await closeSettingsAndResume(page, escMenu);
+}
+
+export async function selectLowGraphicsThroughSettings(page) {
+    await selectGraphicsThroughSettings(page, 'low');
 }
 
 async function disableAutoLootThroughSettings(page) {
@@ -805,6 +810,8 @@ export async function findOverworldTarget(page) {
             for (const entity of game?.remotePlayers?.values?.() || []) entities.set(entity.id, entity);
             const skeletons = [...entities.values()]
                 .filter((entity) => entity?.isActive &&
+                    entity.state !== 'DEAD' &&
+                    game.isHostileActorTarget?.(entity) &&
                     (entity.subType || entity.constructor?.name) === 'Skeleton' && entity.position);
             const nearest = skeletons.sort((first, second) =>
                 game.player.position.distanceTo(first.position) - game.player.position.distanceTo(second.position)
@@ -858,6 +865,7 @@ export async function findOverworldTarget(page) {
                     return {
                         distance: game.player.position.distanceTo(entity.position),
                         active: (game.activeEntitiesCache || []).includes(entity),
+                        state: entity.state,
                         hostile: game.isHostileActorTarget?.(entity),
                         mesh: Boolean(entity.mesh),
                         ndcX: projected.x,
@@ -910,6 +918,11 @@ export async function useCombatQAWaypoint(page) {
             const chatBox = page.locator('#chat-box');
             if (await chatBox.isVisible()) await page.keyboard.press('Escape');
             await expect(page.locator('#chat-box')).toBeHidden();
+            // The fixed waypoint intentionally rejects movement for one second
+            // so packets queued at the pre-teleport position cannot undo the
+            // authoritative handoff. Do not let the next real click appear to
+            // move only in local prediction while the server correctly drops it.
+            await page.waitForTimeout(1_100);
             return;
         } catch (error) {
             lastError = error;

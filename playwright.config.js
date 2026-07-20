@@ -8,6 +8,7 @@ import {
 const localBaseURL = 'http://127.0.0.1:4173';
 const baseURL = process.env.EIDOLON_E2E_BASE_URL || localBaseURL;
 const useLocalServer = baseURL === localBaseURL;
+const reuseLocalServer = !process.env.CI && process.env.EIDOLON_E2E_REUSE_SERVER !== '0';
 const configuredSystemChrome = process.env.EIDOLON_E2E_BROWSER_PATH;
 const systemChrome = configuredSystemChrome || '/usr/bin/google-chrome';
 const useSystemChrome = existsSync(systemChrome) && (!process.env.CI || Boolean(configuredSystemChrome));
@@ -62,7 +63,7 @@ export default defineConfig({
                 : {})
         },
         url: localBaseURL,
-        reuseExistingServer: !process.env.CI,
+        reuseExistingServer: reuseLocalServer,
         timeout: 30_000
     } : undefined
 });

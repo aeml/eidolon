@@ -105,6 +105,7 @@ function createEngineHarness() {
         playAnimation: jest.fn(),
         playJumpAnimation: jest.fn(),
         clearJumpAnimation: jest.fn(),
+        restoreAnimationForState: jest.fn(),
         mesh: {
             position: new THREE.Vector3(0, 0, 0),
             lookAt: jest.fn(),
@@ -663,6 +664,7 @@ describe('authoritative jump flow', () => {
 
         expect(engine.playerJumpState).toBeNull();
         expect(engine.player.clearJumpAnimation).toHaveBeenCalledTimes(1);
+        expect(engine.player.restoreAnimationForState).toHaveBeenCalledWith(true);
         expect(engine.player.position.y).toBe(0);
         expect(engine.player.mesh.position.y).toBe(0);
     });

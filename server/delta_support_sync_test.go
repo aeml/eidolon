@@ -1,19 +1,85 @@
 package main
 
 import (
+	"reflect"
 	"testing"
 	"time"
 
 	"eidolon-server/internal/game"
 )
 
+func TestEntitySnapshotAndProtoTrackAllAnimationBuffStates(t *testing.T) {
+	tests := []struct {
+		name          string
+		activeField   string
+		endTimeField  string
+		snapshotState string
+		snapshotTime  string
+		protoState    string
+		protoTime     string
+	}{
+		{"iron fortress", "IronFortressActive", "IronFortressEndTime", "IronFortressActive", "IronFortressDuration", "IronFortressActive", "IronFortressDuration"},
+		{"guardian roar", "GuardianRoarActive", "GuardianRoarEndTime", "GuardianRoarActive", "GuardianRoarDuration", "GuardianRoarActive", "GuardianRoarDuration"},
+		{"berserker edge", "BerserkerModeActive", "BerserkerModeEndTime", "BerserkerModeActive", "BerserkerModeDuration", "BerserkerModeActive", "BerserkerModeDuration"},
+		{"last stand", "LastStandActive", "LastStandEndTime", "LastStandActive", "LastStandDuration", "LastStandActive", "LastStandDuration"},
+		{"serrated edges", "SerratedEdgesActive", "SerratedEdgesEndTime", "SerratedEdgesActive", "SerratedEdgesDuration", "SerratedEdgesActive", "SerratedEdgesDuration"},
+		{"poison coating", "PoisonCoatingActive", "PoisonCoatingEndTime", "PoisonCoatingActive", "PoisonCoatingDuration", "PoisonCoatingActive", "PoisonCoatingDuration"},
+		{"stealth", "StealthActive", "StealthEndTime", "StealthActive", "StealthDuration", "StealthActive", "StealthDuration"},
+		{"blessing of zeal", "ZealActive", "ZealEndTime", "ZealActive", "ZealDuration", "ZealActive", "ZealDuration"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			entity := &game.Entity{
+				ID:          "animation-buff",
+				Type:        game.TypePlayer,
+				SubType:     "Fighter",
+				State:       "IDLE",
+				TalentRanks: map[string]int{},
+			}
+			entityValue := reflect.ValueOf(entity).Elem()
+			entityValue.FieldByName(test.activeField).SetBool(true)
+			entityValue.FieldByName(test.endTimeField).Set(reflect.ValueOf(time.Now().Add(2500 * time.Millisecond)))
+
+			snapshot := entityToSnapshot(entity)
+			snapshotValue := reflect.ValueOf(snapshot).Elem()
+			if !snapshotValue.FieldByName(test.snapshotState).Bool() {
+				t.Fatalf("snapshot omitted %s", test.snapshotState)
+			}
+			if snapshotValue.FieldByName(test.snapshotTime).Float() <= 0 {
+				t.Fatalf("snapshot omitted %s", test.snapshotTime)
+			}
+
+			protoEntity := entityToProto(entity)
+			protoValue := reflect.ValueOf(protoEntity).Elem()
+			if !protoValue.FieldByName(test.protoState).Bool() {
+				t.Fatalf("protobuf omitted %s", test.protoState)
+			}
+			if protoValue.FieldByName(test.protoTime).Float() <= 0 {
+				t.Fatalf("protobuf omitted %s", test.protoTime)
+			}
+
+			entityValue.FieldByName(test.activeField).SetBool(false)
+			if !hasEntityChanged(entity, snapshot) {
+				t.Fatal("active-to-inactive transition was not delta-visible")
+			}
+
+			entityValue.FieldByName(test.activeField).SetBool(true)
+			entityValue.FieldByName(test.endTimeField).Set(reflect.ValueOf(time.Now().Add(500 * time.Millisecond)))
+			if !hasEntityChanged(entity, snapshot) {
+				t.Fatal("duration refresh was not delta-visible")
+			}
+		})
+	}
+}
+
 func TestEntitySnapshotTracksSpiritGuardiansForDeltaSync(t *testing.T) {
 	entity := &game.Entity{
-		ID:           "cleric-1",
-		Type:         game.TypePlayer,
-		SubType:      "Cleric",
-		State:        "IDLE",
-		TalentRanks:  map[string]int{},
+		ID:            "cleric-1",
+		Type:          game.TypePlayer,
+		SubType:       "Cleric",
+		State:         "IDLE",
+		TalentRanks:   map[string]int{},
 		SpiritsActive: true,
 	}
 
@@ -35,6 +101,28 @@ func TestEntitySnapshotTracksSpiritGuardiansForDeltaSync(t *testing.T) {
 	entity.SpiritsActive = true
 	if hasEntityChanged(entity, snapshot) {
 		t.Fatal("expected unchanged spirit guardians state to stay delta-stable")
+	}
+}
+
+func TestEntityToProtoCopiesSkillRunes(t *testing.T) {
+	entity := &game.Entity{
+		ID:             "fighter-runes",
+		Type:           game.TypePlayer,
+		SubType:        "Fighter",
+		State:          "IDLE",
+		TalentRanks:    map[string]int{},
+		SkillRunes:     map[string]string{"Iron Fortress": "ironfortress_immovable"},
+		UnlockedSkills: []string{"Iron Fortress"},
+	}
+
+	protoEntity := entityToProto(entity)
+	if got := protoEntity.SkillRunes["Iron Fortress"]; got != "ironfortress_immovable" {
+		t.Fatalf("protobuf omitted equipped rune: got %q", got)
+	}
+
+	entity.SkillRunes["Iron Fortress"] = "ironfortress_reflect"
+	if got := protoEntity.SkillRunes["Iron Fortress"]; got != "ironfortress_immovable" {
+		t.Fatalf("protobuf rune map aliased mutable entity state: got %q", got)
 	}
 }
 
@@ -73,16 +161,16 @@ func TestEntitySnapshotTracksBoostedSpiritGuardiansForDeltaSync(t *testing.T) {
 
 func TestEntitySnapshotTracksDebuffFlagsForDeltaSync(t *testing.T) {
 	entity := &game.Entity{
-		ID:       "player-debuffs",
-		Type:     game.TypePlayer,
-		SubType:  "Fighter",
-		State:    "IDLE",
+		ID:          "player-debuffs",
+		Type:        game.TypePlayer,
+		SubType:     "Fighter",
+		State:       "IDLE",
 		TalentRanks: map[string]int{},
-		Stunned:  false,
-		Slowed:   false,
-		Rooted:   false,
-		Bleeding: false,
-		Poisoned: false,
+		Stunned:     false,
+		Slowed:      false,
+		Rooted:      false,
+		Bleeding:    false,
+		Poisoned:    false,
 	}
 
 	snapshot := entityToSnapshot(entity)
@@ -357,12 +445,12 @@ func TestEntitySnapshotTracksWeakPointDurationForDeltaSync(t *testing.T) {
 
 func TestEntitySnapshotTracksMarkWeaknessForDeltaSync(t *testing.T) {
 	entity := &game.Entity{
-		ID:            "player-mark-weakness",
-		Type:          game.TypePlayer,
-		SubType:       "Cleric",
-		State:         "IDLE",
-		TalentRanks:   map[string]int{},
-		MarkWeakness:  true,
+		ID:           "player-mark-weakness",
+		Type:         game.TypePlayer,
+		SubType:      "Cleric",
+		State:        "IDLE",
+		TalentRanks:  map[string]int{},
+		MarkWeakness: true,
 	}
 
 	snapshot := entityToSnapshot(entity)
@@ -406,13 +494,13 @@ func TestEntitySnapshotTracksMarkWeaknessDurationForDeltaSync(t *testing.T) {
 
 func TestEntitySnapshotTracksSpiritDurationForDeltaSync(t *testing.T) {
 	entity := &game.Entity{
-		ID:             "player-spirit-duration",
-		Type:           game.TypePlayer,
-		SubType:        "Cleric",
-		State:          "IDLE",
-		TalentRanks:    map[string]int{},
-		SpiritsActive:  true,
-		SpiritEndTime:  time.Now().Add(2500 * time.Millisecond),
+		ID:            "player-spirit-duration",
+		Type:          game.TypePlayer,
+		SubType:       "Cleric",
+		State:         "IDLE",
+		TalentRanks:   map[string]int{},
+		SpiritsActive: true,
+		SpiritEndTime: time.Now().Add(2500 * time.Millisecond),
 	}
 
 	snapshot := entityToSnapshot(entity)
@@ -456,12 +544,12 @@ func TestEntitySnapshotTracksBlessingResolveDurationForDeltaSync(t *testing.T) {
 
 func TestEntitySnapshotTracksTimeWarpDurationForDeltaSync(t *testing.T) {
 	entity := &game.Entity{
-		ID:            "player-time-warp-duration",
-		Type:          game.TypePlayer,
-		SubType:       "Wizard",
-		State:         "IDLE",
-		TalentRanks:   map[string]int{},
-		TimeWarpActive: true,
+		ID:              "player-time-warp-duration",
+		Type:            game.TypePlayer,
+		SubType:         "Wizard",
+		State:           "IDLE",
+		TalentRanks:     map[string]int{},
+		TimeWarpActive:  true,
 		TimeWarpEndTime: time.Now().Add(2500 * time.Millisecond),
 	}
 
@@ -481,12 +569,12 @@ func TestEntitySnapshotTracksTimeWarpDurationForDeltaSync(t *testing.T) {
 
 func TestEntitySnapshotTracksGuardianEmbraceDurationForDeltaSync(t *testing.T) {
 	entity := &game.Entity{
-		ID:                  "player-guardian-embrace-duration",
-		Type:                game.TypePlayer,
-		SubType:             "Cleric",
-		State:               "IDLE",
-		TalentRanks:         map[string]int{},
-		GuardianEmbraceActive: true,
+		ID:                     "player-guardian-embrace-duration",
+		Type:                   game.TypePlayer,
+		SubType:                "Cleric",
+		State:                  "IDLE",
+		TalentRanks:            map[string]int{},
+		GuardianEmbraceActive:  true,
 		GuardianEmbraceEndTime: time.Now().Add(2500 * time.Millisecond),
 	}
 
@@ -506,13 +594,13 @@ func TestEntitySnapshotTracksGuardianEmbraceDurationForDeltaSync(t *testing.T) {
 
 func TestEntitySnapshotTracksArcaneShieldDurationForDeltaSync(t *testing.T) {
 	entity := &game.Entity{
-		ID:                "player-arcane-shield-duration",
-		Type:              game.TypePlayer,
-		SubType:           "Wizard",
-		State:             "IDLE",
-		TalentRanks:       map[string]int{},
-		ArcaneShieldActive: true,
-		ArcaneShieldHP:    180,
+		ID:                  "player-arcane-shield-duration",
+		Type:                game.TypePlayer,
+		SubType:             "Wizard",
+		State:               "IDLE",
+		TalentRanks:         map[string]int{},
+		ArcaneShieldActive:  true,
+		ArcaneShieldHP:      180,
 		ArcaneShieldEndTime: time.Now().Add(2500 * time.Millisecond),
 	}
 
@@ -532,12 +620,12 @@ func TestEntitySnapshotTracksArcaneShieldDurationForDeltaSync(t *testing.T) {
 
 func TestEntitySnapshotTracksDivineInterventionDurationForDeltaSync(t *testing.T) {
 	entity := &game.Entity{
-		ID:                       "player-divine-intervention-duration",
-		Type:                     game.TypePlayer,
-		SubType:                  "Cleric",
-		State:                    "IDLE",
-		TalentRanks:              map[string]int{},
-		DivineInterventionActive: true,
+		ID:                        "player-divine-intervention-duration",
+		Type:                      game.TypePlayer,
+		SubType:                   "Cleric",
+		State:                     "IDLE",
+		TalentRanks:               map[string]int{},
+		DivineInterventionActive:  true,
 		DivineInterventionEndTime: time.Now().Add(2500 * time.Millisecond),
 	}
 
@@ -557,12 +645,12 @@ func TestEntitySnapshotTracksDivineInterventionDurationForDeltaSync(t *testing.T
 
 func TestEntitySnapshotTracksSpellFocusDurationForDeltaSync(t *testing.T) {
 	entity := &game.Entity{
-		ID:               "player-spell-focus-duration",
-		Type:             game.TypePlayer,
-		SubType:          "Wizard",
-		State:            "IDLE",
-		TalentRanks:      map[string]int{},
-		SpellFocusActive: true,
+		ID:                "player-spell-focus-duration",
+		Type:              game.TypePlayer,
+		SubType:           "Wizard",
+		State:             "IDLE",
+		TalentRanks:       map[string]int{},
+		SpellFocusActive:  true,
 		SpellFocusEndTime: time.Now().Add(2500 * time.Millisecond),
 	}
 

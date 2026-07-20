@@ -3,11 +3,12 @@ import { Actor } from './Actor.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { disposeSceneMesh, spawnEffectSceneFallback } from './EffectSceneFallback.js';
+import { SpiritGuardiansEffect } from './SpiritGuardiansEffect.js';
 
 export class Cleric extends Actor {
     constructor(id) {
         super(id, CONSTANTS.ENTITIES.CLERIC);
-        this.scaleAnimSpeed = false;
+        this.scaleAnimSpeed = true;
         this.meshType = 'Cleric';
 
         this.abilityName = "Spirit Guardians";
@@ -17,18 +18,21 @@ export class Cleric extends Actor {
         
         this.spiritsActive = false;
         this.spiritDuration = 0;
-        this.spirits = []; // Array of meshes
+        this.spiritBoosted = false;
+        this.spiritEffect = null;
+        // Compatibility view for diagnostics that predate SpiritGuardiansEffect.
+        this.spirits = [];
     }
 
     useAbility(targetVector, gameEngine, skillNameOverride = null) {
         if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) return;
+        this.gameEngine = gameEngine || this.gameEngine;
 
         const skill = skillNameOverride || this.abilityName;
 
         if (skill === "Healing Light") {
             if (!this.unlockedSkills.includes("Healing Light")) return;
             console.log("Cleric used Healing Light!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 5s
             const cdr = this.stats.cooldownReduction || 0;
@@ -73,7 +77,6 @@ export class Cleric extends Actor {
 
         if (skill === "Guardian Embrace") {
             console.log("Cleric used Guardian Embrace!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 15s
             const cdr = this.stats.cooldownReduction || 0;
@@ -89,7 +92,6 @@ export class Cleric extends Actor {
 
         if (skill === "Purifying Wave") {
             console.log("Cleric used Purifying Wave!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 12s
             const cdr = this.stats.cooldownReduction || 0;
@@ -117,7 +119,6 @@ export class Cleric extends Actor {
 
         if (skill === "Divine Intervention") {
             console.log("Cleric used Divine Intervention!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 60s
             const cdr = this.stats.cooldownReduction || 0;
@@ -139,6 +140,7 @@ export class Cleric extends Actor {
             if (!target) target = this;
 
             target.divineInterventionActive = true;
+            target.divineInterventionTimer = 10.0;
             gameEngine.floatingTextManager.spawn("DIVINE PROTECTION", target.position, '#ffd700');
             this.spawnVisualEffect(gameEngine, target.position, 0xffd700, "pillar");
             return;
@@ -148,7 +150,6 @@ export class Cleric extends Actor {
 
         if (skill === "Radiant Strike") {
             console.log("Cleric used Radiant Strike!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 4s
             const cdr = this.stats.cooldownReduction || 0;
@@ -187,14 +188,13 @@ export class Cleric extends Actor {
 
         if (skill === "Consecrated Ground") {
             console.log("Cleric used Consecrated Ground!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 12s
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Consecrated Ground"] = 12.0 * (1 - cdr);
 
             // Create Zone
-            this.consecratedZone = {
+            this.consecratedZone = gameEngine.isMultiplayer ? null : {
                 position: this.position.clone(),
                 duration: 8.0,
                 radius: 5.0
@@ -207,16 +207,15 @@ export class Cleric extends Actor {
 
         if (skill === "Spirit Guardians Boost") {
             console.log("Cleric used Spirit Guardians Boost!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 20s
             const cdr = this.stats.cooldownReduction || 0;
             this.cooldowns["Spirit Guardians Boost"] = 20.0 * (1 - cdr);
 
             this.spiritsActive = true;
-            this.spiritDuration = 10.0; 
+            this.spiritDuration = 10.0;
             this.spiritBoosted = true; // Enable boost
-            this.createSpirits();
+            this.createSpirits(gameEngine);
             
             gameEngine.floatingTextManager.spawn("SPIRIT BOOST!", this.position, '#ffff00');
             return;
@@ -224,7 +223,6 @@ export class Cleric extends Actor {
 
         if (skill === "Avenging Seraph") {
             console.log("Cleric used Avenging Seraph!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 45s
             const cdr = this.stats.cooldownReduction || 0;
@@ -240,7 +238,6 @@ export class Cleric extends Actor {
 
         if (skill === "Blessing of Resolve") {
             console.log("Cleric used Blessing of Resolve!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 20s
             const cdr = this.stats.cooldownReduction || 0;
@@ -269,7 +266,6 @@ export class Cleric extends Actor {
 
         if (skill === "Blessing of Zeal") {
             console.log("Cleric used Blessing of Zeal!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 25s
             const cdr = this.stats.cooldownReduction || 0;
@@ -286,7 +282,8 @@ export class Cleric extends Actor {
                     // Allies only
                     if (entity === this || entity.constructor.name === 'Fighter' || entity.constructor.name === 'Rogue' || entity.constructor.name === 'Wizard' || entity.constructor.name === 'Cleric') {
                         if (this.position.distanceTo(entity.position) < radius) {
-                            entity.zealTimer = 8.0;
+                            entity.blessingZealTimer = 8.0;
+                            entity.blessingZealFactor = 0.35;
                             // Zeal effect (e.g. attack speed or damage) handled in stats or update
                             gameEngine.floatingTextManager.spawn("ZEAL!", entity.position, '#ff0000');
                         }
@@ -300,7 +297,6 @@ export class Cleric extends Actor {
 
         if (skill === "Mark of Weakness") {
             console.log("Cleric used Mark of Weakness!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 15s
             const cdr = this.stats.cooldownReduction || 0;
@@ -332,7 +328,6 @@ export class Cleric extends Actor {
 
         if (skill === "Heaven's Trumpet") {
             console.log("Cleric used Heaven's Trumpet!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 60s
             const cdr = this.stats.cooldownReduction || 0;
@@ -370,17 +365,17 @@ export class Cleric extends Actor {
         // Default: Spirit Guardians
         if (skill === "Spirit Guardians" || skill === "Guardian Spirits" || skill === this.abilityName) {
             console.log("Cleric used Spirit Guardians!");
-            this.playAnimation('Attack', false, true); 
             
             this.spiritsActive = true;
-            this.spiritDuration = 8.0; 
+            this.spiritDuration = 8.0;
             this.spiritBoosted = false; // Normal mode
-            this.createSpirits();
+            this.createSpirits(gameEngine);
             return;
         }
     }
 
     spawnVisualEffect(gameEngine, position, color, type) {
+        if (this.shouldSuppressLegacyCastVisual()) return;
         if (!gameEngine || (!gameEngine.effectScene && !gameEngine.scene && typeof gameEngine.spawnTransientEffect !== 'function')) return;
         if (typeof gameEngine.spawnTransientEffect === 'function' && gameEngine.spawnTransientEffect(type, position, color, { source: this })) {
             return;
@@ -389,25 +384,29 @@ export class Cleric extends Actor {
         spawnEffectSceneFallback(gameEngine, position, color, type);
     }
 
-    createSpirits() {
-        if (this.mesh && this.spirits.length === 0) {
-            for (let i = 0; i < 3; i++) {
-                const geo = new THREE.SphereGeometry(0.3, 8, 8);
-                const mat = new THREE.MeshStandardMaterial({ 
-                    color: 0xffff00, 
-                    emissive: 0xffd700,
-                    emissiveIntensity: 1
-                });
-                const spirit = new THREE.Mesh(geo, mat);
-                this.mesh.add(spirit); // Attach to player
-                this.spirits.push({ mesh: spirit, angle: (i / 3) * Math.PI * 2 });
-            }
-        } else if (!this.mesh) {
-            // Retry later if mesh not ready
-            setTimeout(() => {
-                if (this.spiritsActive) this.createSpirits();
-            }, 100);
+    createSpirits(gameEngine = this.gameEngine) {
+        this.gameEngine = gameEngine || this.gameEngine;
+        const scene = this.gameEngine?.effectScene
+            || this.gameEngine?.renderSystem?.effectGroup
+            || this.mesh?.parent
+            || null;
+        if (!scene || !this.spiritsActive) return false;
+
+        const runeId = this.skillRunes?.['Spirit Guardians'] || null;
+        if (this.spiritEffect?.isActive) {
+            this.spiritEffect.setVariant({ boosted: this.spiritBoosted, runeId });
+            this.spirits = this.spiritEffect.guardians.map((mesh) => ({ mesh }));
+            return true;
         }
+
+        const quality = this.gameEngine?.uiManager?.getGraphicsQuality?.() || 'high';
+        this.spiritEffect = new SpiritGuardiansEffect(scene, this, {
+            boosted: this.spiritBoosted,
+            runeId,
+            quality
+        });
+        this.spirits = this.spiritEffect.guardians.map((mesh) => ({ mesh }));
+        return true;
     }
 
     onMeshReady(mesh) {
@@ -417,8 +416,10 @@ export class Cleric extends Actor {
     }
 
     clearSpiritMeshes() {
+        this.spiritEffect?.dispose?.();
+        this.spiritEffect = null;
         this.spirits.forEach(s => {
-            disposeSceneMesh(s.mesh);
+            if (s?.mesh?.parent) disposeSceneMesh(s.mesh);
         });
         this.spirits = [];
     }
@@ -434,11 +435,19 @@ export class Cleric extends Actor {
 
     cancelAbilities() {
         this.spiritsActive = false;
+        this.spiritDuration = 0;
+        this.spiritBoosted = false;
+        this.spiritDamageTimer = 0;
         this.clearSpiritMeshes();
         this.guardianEmbraceActive = false;
         this.guardianEmbraceTimer = 0;
         this.seraphActive = false;
         this.clearSeraphMesh();
+    }
+
+    dispose() {
+        this.cancelAbilities();
+        super.dispose();
     }
 
     update(dt, collisionManager, player, chunkManager, floatingTextManager) {
@@ -567,27 +576,20 @@ export class Cleric extends Actor {
             // Check if spirits should expire
             if (this.spiritDuration <= 0) {
                 this.spiritsActive = false;
+                this.spiritDuration = 0;
+                this.spiritBoosted = false;
                 this.clearSpiritMeshes();
-                // Return to idle animation
-                if (this.state !== 'DEAD') {
-                    this.playAnimation('Idle', true);
-                }
             } else {
-                // Rotate spirits
-                const radius = this.spiritBoosted ? 5.0 : 3.0; // Boosted radius
-                const speed = 3.0;
-                
-                this.spirits.forEach(s => {
-                    s.angle += speed * dt;
-                    s.mesh.position.set(
-                        Math.cos(s.angle) * radius,
-                        1.0 + Math.sin(s.angle * 2) * 0.2, // Bob up and down
-                        Math.sin(s.angle) * radius
-                    );
+                if (!this.spiritEffect?.isActive) this.createSpirits();
+                this.spiritEffect?.setVariant?.({
+                    boosted: this.spiritBoosted,
+                    runeId: this.skillRunes?.['Spirit Guardians'] || null
                 });
+                this.spiritEffect?.update?.(dt);
 
-                // Damage Logic (Area check)
-                if (chunkManager) {
+                // Offline simulation retains its local damage loop. Multiplayer
+                // presentation follows server state and never applies combat.
+                if (chunkManager && !this.isMultiplayer && !this.isRemote) {
                     this.spiritDamageTimer = (this.spiritDamageTimer || 0) + dt;
                     if (this.spiritDamageTimer > 0.5) {
                         this.spiritDamageTimer = 0;

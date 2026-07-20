@@ -9,7 +9,7 @@ import { spawnEffectSceneFallback, spawnSceneFallbackBeam } from './EffectSceneF
 export class Wizard extends Actor {
     constructor(id) {
         super(id, CONSTANTS.ENTITIES.WIZARD);
-        this.scaleAnimSpeed = false;
+        this.scaleAnimSpeed = true;
         this.meshType = 'Wizard';
 
         this.abilityName = "Fireball";
@@ -82,7 +82,6 @@ export class Wizard extends Actor {
         if (skill === "Flame Whip") {
             if (!this.unlockedSkills.includes("Flame Whip")) return;
             console.log("Wizard used Flame Whip!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 10s
             const cdr = this.stats.cooldownReduction || 0;
@@ -131,7 +130,6 @@ export class Wizard extends Actor {
         if (skill === "Flame Tornado") {
             if (!this.unlockedSkills.includes("Flame Tornado")) return;
             console.log("Wizard used Flame Tornado!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 12s
             const cdr = this.stats.cooldownReduction || 0;
@@ -155,7 +153,6 @@ export class Wizard extends Actor {
         if (skill === "Meteor Drop") {
             if (!this.unlockedSkills.includes("Meteor Drop")) return;
             console.log("Wizard used Meteor Drop!");
-            this.playAnimation('Attack', false, true);
 
             const meteorRuneId = this.skillRunes?.["Meteor Drop"] || null;
             const meteorRadius = meteorRuneId === 'meteor_extinction' ? 24.0 : 16.0;
@@ -214,7 +211,6 @@ export class Wizard extends Actor {
         if (skill === "Inferno Cataclysm") {
             if (!this.unlockedSkills.includes("Inferno Cataclysm")) return;
             console.log("Wizard used Inferno Cataclysm!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 60s
             const cdr = this.stats.cooldownReduction || 0;
@@ -232,12 +228,12 @@ export class Wizard extends Actor {
                 isHostile: true
             };
             
-            const zone = new AreaOfEffect(gameEngine, this, targetVector, config);
+            const zone = gameEngine.isMultiplayer ? null : new AreaOfEffect(gameEngine, this, targetVector, config);
             // Make visual bigger/cooler
-            if (zone.mesh) {
+            if (zone?.mesh) {
                 zone.mesh.material.opacity = 0.6;
             }
-            gameEngine.addEntity(zone);
+            if (zone) gameEngine.addEntity(zone);
             
             // Initial explosion visual
             this.spawnVisualEffect(gameEngine, targetVector, 0xff4500, "ring");
@@ -250,7 +246,6 @@ export class Wizard extends Actor {
         if (skill === "Scorch Beam") {
             if (!this.unlockedSkills.includes("Scorch Beam")) return;
             console.log("Wizard used Scorch Beam!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 8s
             const cdr = this.stats.cooldownReduction || 0;
@@ -268,7 +263,9 @@ export class Wizard extends Actor {
             const endPos = startPos.clone().add(dir.clone().multiplyScalar(range));
             
             const midPoint = startPos.clone().add(dir.clone().multiplyScalar(range / 2));
-            if (typeof gameEngine?.spawnTransientEffect === 'function') {
+            if (this.shouldSuppressLegacyCastVisual()) {
+                // The canonical presentation already emitted the beam.
+            } else if (typeof gameEngine?.spawnTransientEffect === 'function') {
                 gameEngine.spawnTransientEffect('beam', endPos, 0xffaa00, { source: this });
             } else {
                 const effectScene = gameEngine?.effectScene || gameEngine?.scene;
@@ -289,7 +286,7 @@ export class Wizard extends Actor {
             for (const entity of entities) {
                 if (!entity.isActive || entity.state === 'DEAD') continue;
                 if (entity === this) continue;
-                if (entity.constructor.name === 'LootDrop') continue;
+                if (!(entity instanceof Actor) || typeof entity.takeDamage !== 'function') continue;
                 
                 // Simple distance check to line segment
                 // Project entity pos onto line
@@ -316,7 +313,6 @@ export class Wizard extends Actor {
         if (skill === "Arcane Missiles") {
             if (!this.unlockedSkills.includes("Arcane Missiles")) return;
             console.log("Wizard used Arcane Missiles!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 6s
             const cdr = this.stats.cooldownReduction || 0;
@@ -327,7 +323,13 @@ export class Wizard extends Actor {
             let minDst = 20.0;
             const entities = gameEngine.chunkManager.getActiveEntities();
             entities.forEach(entity => {
-                if (entity.isActive && entity.state !== 'DEAD' && entity !== this && !(entity instanceof Actor && entity.constructor.name === 'LootDrop')) {
+                if (
+                    entity instanceof Actor &&
+                    typeof entity.takeDamage === 'function' &&
+                    entity.isActive &&
+                    entity.state !== 'DEAD' &&
+                    entity !== this
+                ) {
                      // Enemy check (simplified)
                      if (entity.constructor.name !== 'Wizard' && entity.constructor.name !== 'Cleric' && entity.constructor.name !== 'Fighter' && entity.constructor.name !== 'Rogue') {
                          const d = entity.position.distanceTo(targetVector);
@@ -341,7 +343,7 @@ export class Wizard extends Actor {
             
             // Spawn 3 missiles
             const spawnMissile = (delay, offsetAngle) => {
-                setTimeout(() => {
+                this.scheduleTask(() => {
                     const startPos = this.position.clone();
                     startPos.y += 2.0;
                     
@@ -371,7 +373,6 @@ export class Wizard extends Actor {
         if (skill === "Spell Focus") {
             if (!this.unlockedSkills.includes("Spell Focus")) return;
             console.log("Wizard used Spell Focus!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 20s
             const cdr = this.stats.cooldownReduction || 0;
@@ -389,7 +390,6 @@ export class Wizard extends Actor {
         if (skill === "Dragonfire Lance") {
             if (!this.unlockedSkills.includes("Dragonfire Lance")) return;
             console.log("Wizard used Dragonfire Lance!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 12s
             const cdr = this.stats.cooldownReduction || 0;
@@ -422,7 +422,6 @@ export class Wizard extends Actor {
         if (skill === "Arcane Shield") {
             if (!this.unlockedSkills.includes("Arcane Shield")) return;
             console.log("Wizard used Arcane Shield!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 20s
             const cdr = this.stats.cooldownReduction || 0;
@@ -431,6 +430,8 @@ export class Wizard extends Actor {
             // Shield Amount: 30% of Max HP + Int scaling
             const shieldAmount = (this.stats.maxHp * 0.30) + (this.stats.intelligence * 5.0);
             this.shieldHP = shieldAmount;
+            this.arcaneShieldActive = true;
+            this.arcaneShieldTimer = 10.0;
             
             gameEngine.floatingTextManager.spawn(`SHIELD +${Math.floor(shieldAmount)}`, this.position, '#0088ff');
             
@@ -444,7 +445,6 @@ export class Wizard extends Actor {
         if (skill === "Gravity Well") {
             if (!this.unlockedSkills.includes("Gravity Well")) return;
             console.log("Wizard used Gravity Well!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 25s
             const cdr = this.stats.cooldownReduction || 0;
@@ -466,9 +466,7 @@ export class Wizard extends Actor {
                     for (const entity of entities) {
                         if (!entity.isActive || entity.state === 'DEAD') continue;
                         if (entity === this) continue;
-                        if (entity.constructor.name === 'LootDrop') continue;
-                        if (entity.constructor.name === 'AreaOfEffect') continue;
-                        if (entity.constructor.name === 'Projectile') continue;
+                        if (!(entity instanceof Actor) || typeof entity.takeDamage !== 'function') continue;
                         
                         // Enemy Check
                         let isEnemy = true;
@@ -503,7 +501,6 @@ export class Wizard extends Actor {
         if (skill === "Time Warp") {
             if (!this.unlockedSkills.includes("Time Warp")) return;
             console.log("Wizard used Time Warp!");
-            this.playAnimation('Attack', false, true);
             
             // Cooldown 90s
             const cdr = this.stats.cooldownReduction || 0;
@@ -566,7 +563,6 @@ export class Wizard extends Actor {
         }
 
         console.log("Wizard used Fireball!");
-        this.playAnimation('Attack', false, true);
         
         // Spawn Projectile
         const startPos = this.position.clone();
@@ -589,11 +585,21 @@ export class Wizard extends Actor {
     }
 
     spawnVisualEffect(gameEngine, position, color, type, direction = null) {
+        if (this.shouldSuppressLegacyCastVisual()) return;
         if (!gameEngine || (!gameEngine.effectScene && !gameEngine.scene && typeof gameEngine.spawnTransientEffect !== 'function')) return;
         if (typeof gameEngine.spawnTransientEffect === 'function' && gameEngine.spawnTransientEffect(type, position, color, { source: this, direction })) {
             return;
         }
 
         spawnEffectSceneFallback(gameEngine, position, color, type);
+    }
+
+    cancelAbilities() {
+        this.spellFocusActive = false;
+        this.spellFocusTimer = 0;
+        this.spellFocusMultiplier = 1;
+        this.arcaneShieldActive = false;
+        this.arcaneShieldTimer = 0;
+        this.shieldHP = 0;
     }
 }

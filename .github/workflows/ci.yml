@@ -68,6 +68,10 @@ jobs:
           go test -v -coverprofile=coverage.out -covermode=atomic ./...
           go tool cover -func=coverage.out
 
+      - name: Run Go race detector
+        working-directory: server
+        run: go test -race ./...
+
       - name: Build server
         working-directory: server
         run: go build -trimpath ./...
@@ -138,12 +142,17 @@ jobs:
           npm ci
           test -x /usr/bin/google-chrome
           /usr/bin/google-chrome --version
-          EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome npm run verify:browser-gpu
+          sg render -c 'EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome npm run verify:browser-gpu'
+
+      - name: Run deterministic High/Low animation gallery
+        env:
+          EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+        run: sg render -c 'npm run test:e2e:animations'
 
       - name: Run disposable full-character gameplay
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
-        run: npm run test:e2e:isolated
+        run: sg render -c 'npm run test:e2e:isolated'
 
       - name: Upload predeploy character evidence
         if: ${{ !cancelled() }}
@@ -180,6 +189,10 @@ jobs:
           fi
           if ! [[ "${QA_USERNAME}" =~ ^[A-Za-z0-9_.-]+$ ]]; then
             echo "Primary QA username must use only letters, numbers, dot, underscore, or hyphen." >&2
+            exit 1
+          fi
+          if [ "${#QA_USERNAME}" -gt 30 ]; then
+            echo "Primary QA username must be at most 30 characters so dedicated class suffixes fit." >&2
             exit 1
           fi
           if [ -n "${QA_USERNAME_SECONDARY}" ] && ! [[ "${QA_USERNAME_SECONDARY}" =~ ^[A-Za-z0-9_.-]+$ ]]; then
@@ -371,6 +384,9 @@ jobs:
           QA_USERNAME_SECONDARY: ${{ secrets.EIDOLON_E2E_USERNAME_SECONDARY }}
         run: |
           qa_usernames="${QA_USERNAME}"
+          for class_suffix in f r w c; do
+            qa_usernames="${qa_usernames},${QA_USERNAME}-${class_suffix}"
+          done
           if [ -n "${QA_USERNAME_SECONDARY}" ]; then
             qa_usernames="${qa_usernames},${QA_USERNAME_SECONDARY}"
           fi
@@ -435,7 +451,7 @@ jobs:
           npm ci
           test -x /usr/bin/google-chrome
           /usr/bin/google-chrome --version
-          EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome npm run verify:browser-gpu
+          sg render -c 'EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome npm run verify:browser-gpu'
 
       - name: Wait for matching live releases
         env:
@@ -454,7 +470,7 @@ jobs:
             sleep 5
           done
 
-      - name: Run live anonymous and character QA
+      - name: Run live anonymous and persistent-character QA
         env:
           EIDOLON_E2E_BASE_URL: https://eidolon.mendola.tech
           EIDOLON_E2E_WS_URL: wss://eserver.mendola.tech/ws
@@ -469,7 +485,19 @@ jobs:
           EIDOLON_E2E_PASSWORD_SECONDARY: ${{ secrets.EIDOLON_E2E_PASSWORD_SECONDARY }}
           EIDOLON_E2E_CLASS_SECONDARY: ${{ secrets.EIDOLON_E2E_CLASS_SECONDARY }}
           EIDOLON_E2E_FULL_GAMEPLAY: '1'
-        run: npm run test:e2e
+        run: sg render -c 'npx playwright test tests/e2e/anonymous.spec.js tests/e2e/authenticated.spec.js'
+
+      - name: Run live four-class and remote-animation QA
+        env:
+          EIDOLON_E2E_BASE_URL: https://eidolon.mendola.tech
+          EIDOLON_E2E_WS_URL: wss://eserver.mendola.tech/ws
+          EIDOLON_E2E_HEALTH_URL: https://eserver.mendola.tech/healthz
+          EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+          EIDOLON_E2E_BACKEND_ORIGIN_IP: ${{ secrets.EIDOLON_E2E_BACKEND_ORIGIN_IP }}
+          EIDOLON_EXPECTED_COMMIT: ${{ github.sha }}
+          EIDOLON_E2E_USERNAME: ${{ secrets.EIDOLON_E2E_USERNAME }}
+          EIDOLON_E2E_PASSWORD: ${{ secrets.EIDOLON_E2E_PASSWORD }}
+        run: sg render -c 'npm run test:e2e:live-animations'
 
       - name: Sanitize live browser evidence
         id: sanitize_evidence

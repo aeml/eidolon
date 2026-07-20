@@ -1,11 +1,13 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RenderSystem } from './core/RenderSystem.js';
+import { AnimationGallery } from './animationGallery.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const perfOverlayEnabled = urlParams.get('perf') === '1';
 const instanceCount = Number.parseInt(urlParams.get('instances') || '250', 10);
 const useInstancing = urlParams.get('instancing') !== '0';
+const galleryMode = urlParams.get('gallery') === '1';
 
 const perfOverlay = document.getElementById('perf-overlay');
 const readout = document.getElementById('repro-readout');
@@ -245,7 +247,7 @@ function resetPreviewState() {
     setReadout('Last pick: none');
 }
 
-if (useInstancing) {
+if (!galleryMode && useInstancing) {
     instancedMesh = new THREE.InstancedMesh(baseGeometry, baseMaterial, spawnCount);
     instancedMesh.castShadow = true;
     instancedMesh.receiveShadow = true;
@@ -259,7 +261,7 @@ if (useInstancing) {
         instancedMesh.setMatrixAt(i, dummy.matrix);
     }
     renderSystem.scene.add(instancedMesh);
-} else {
+} else if (!galleryMode) {
     for (let i = 0; i < spawnCount; i += 1) {
         const angle = (i / spawnCount) * Math.PI * 2;
         const radius = 20 + (i % 8) * 3;
@@ -327,6 +329,14 @@ toggleWindowButton?.addEventListener('click', () => toggleWindowPreview());
 resetSceneButton?.addEventListener('click', () => resetPreviewState());
 previewWindowCloseButton?.addEventListener('click', () => toggleWindowPreview(false));
 
+let animationGallery = null;
+if (galleryMode) {
+    document.body.classList.add('gallery-mode');
+    gridHelper.visible = true;
+    animationGallery = new AnimationGallery(renderSystem, controls, setReadout);
+    await animationGallery.initialize();
+}
+
 window.addEventListener('keydown', (event) => {
     const key = event.key.toLowerCase();
     if (key === 'p') togglePerf();
@@ -341,6 +351,7 @@ const animate = () => {
     const delta = clock.getDelta();
     const now = performance.now();
     controls.update();
+    animationGallery?.update(delta);
 
     if (instancedMesh) {
         instancedMesh.rotation.y += delta * 0.1;

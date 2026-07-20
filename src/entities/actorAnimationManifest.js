@@ -1,0 +1,55 @@
+import { MeshCatalog } from '../utils/MeshCatalog.js';
+
+const entry = (category, source, states, options = {}) => Object.freeze({
+    category,
+    source,
+    states: Object.freeze(states),
+    jump: options.jump || 'not-used',
+    special: options.special || 'Attack clip plus class telegraph/VFX',
+    browserEvidence: options.browserEvidence || 'local hardware gallery: High/Low'
+});
+
+const STANDARD_CLIPS = ['Idle', 'Walk', 'Run', 'Attack', 'Death'];
+const WALKING_ENEMY_CLIPS = ['Idle', 'Walk', 'Run', 'Attack', 'Death'];
+
+export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
+    Fighter: entry('player', 'GLB', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
+    Rogue: entry('player', 'GLB', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
+    Wizard: entry('player', 'GLB', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
+    Cleric: entry('player', 'GLB', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
+
+    Skeleton: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    Imp: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    DemonOrc: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    Construct: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    InfernoTitan: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    Siren: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    FrostGuardian: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    AquaGolem: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    MountainTroll: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    RootboundWarden: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    BriarMatron: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    RustboundColossus: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    HollowSentinel: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+
+    AvengingSeraph: entry('summon', 'GLB', WALKING_ENEMY_CLIPS),
+    DwarfSalesman: entry('npc', 'GLB', ['Idle'], { special: 'none' }),
+    QuestNPC: entry('npc', 'GLB', ['Idle'], { special: 'none' }),
+    DungeonNPC: entry('npc', 'QuestNPC GLB alias', ['Idle'], { special: 'none' }),
+    RespecNPC: entry('npc', 'QuestNPC GLB alias', ['Idle'], { special: 'none' }),
+
+    ...Object.fromEntries(
+        Object.keys(MeshCatalog.getProceduralEnemySpecs()).map((type) => [
+            type,
+            entry('enemy-or-boss', 'procedural clips', WALKING_ENEMY_CLIPS)
+        ])
+    )
+});
+
+export function listActorAnimationEntries() {
+    return Object.entries(ACTOR_ANIMATION_MANIFEST).map(([type, metadata]) => ({ type, ...metadata }));
+}
+
+export function getActorAnimationEntry(type) {
+    return ACTOR_ANIMATION_MANIFEST[type] || null;
+}

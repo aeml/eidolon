@@ -75,10 +75,48 @@ const REMOTE_SUPPORT_STATE_CONFIG = {
     },
 };
 
+function createTimedRemoteEffectConfig({
+    payloadKey,
+    durationKey,
+    activeProperty = payloadKey,
+    timerProperty,
+    fallbackDuration,
+    onActivate,
+    onDeactivate
+}) {
+    const isActive = (entity) => Boolean(entity[activeProperty]) && Number(entity[timerProperty] || 0) > 0;
+    return {
+        payloadKey,
+        payloadKeys: [payloadKey, durationKey],
+        // The replicated active bit is the transition authority. A local
+        // display timer may reach zero just before the server's explicit
+        // inactive snapshot; requiring both here suppresses the DOWN cue and
+        // makes the final authoritative edge invisible.
+        getPreviousActive: (entity) => Boolean(entity[activeProperty]),
+        applyPayload: (entity, value, payload) => {
+            if (value !== undefined) entity[activeProperty] = Boolean(value);
+            if (payload[durationKey] !== undefined) {
+                entity[timerProperty] = Math.max(0, Number(payload[durationKey] || 0));
+            } else if (value === true) {
+                entity[timerProperty] = Math.max(Number(entity[timerProperty] || 0), fallbackDuration);
+            }
+
+            if (Boolean(entity[activeProperty]) && Number(entity[timerProperty] || 0) > 0) {
+                onActivate?.(entity, payload);
+            } else {
+                entity[activeProperty] = false;
+                entity[timerProperty] = 0;
+                onDeactivate?.(entity, payload);
+            }
+        },
+        getNextActive: isActive,
+    };
+}
+
 const REMOTE_EFFECT_SYNC_CONFIG = {
     spirit_guardians: {
         payloadKey: 'spiritsActive',
-        payloadKeys: ['spiritsActive', 'spiritsBoosted'],
+        payloadKeys: ['spiritsActive', 'spiritsBoosted', 'spiritDuration'],
         getPreviousActive: (entity) => Boolean(entity.spiritsActive),
         applyPayload: (entity, value, payload) => {
             const wasActive = Boolean(entity.spiritsActive);
@@ -103,48 +141,33 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
                 entity.spiritDuration = Math.max(0, Number(payload.spiritDuration || 0));
             }
 
-            if (!wasActive && typeof entity.createSpirits === 'function') {
+            if ((!wasActive || !entity.spiritEffect?.isActive) && typeof entity.createSpirits === 'function') {
                 entity.createSpirits();
             }
         },
         getNextActive: (entity) => Boolean(entity.spiritsActive),
     },
-    guardian_embrace: {
+    guardian_embrace: createTimedRemoteEffectConfig({
         payloadKey: 'guardianEmbraceActive',
-        getPreviousActive: (entity) => Boolean(entity.guardianEmbraceActive),
-        applyPayload: (entity, value, payload) => {
-            entity.guardianEmbraceActive = Boolean(value);
-            if (payload.guardianEmbraceDuration !== undefined) {
-                entity.guardianEmbraceTimer = Math.max(0, Number(payload.guardianEmbraceDuration || 0));
-            }
-        },
-        getNextActive: (entity) => Boolean(entity.guardianEmbraceActive),
-    },
-    blessing_resolve: {
+        durationKey: 'guardianEmbraceDuration',
+        timerProperty: 'guardianEmbraceTimer',
+        fallbackDuration: 8
+    }),
+    blessing_resolve: createTimedRemoteEffectConfig({
         payloadKey: 'blessingResolveActive',
-        getPreviousActive: (entity) => Boolean(entity.blessingResolveActive),
-        applyPayload: (entity, value, payload) => {
-            entity.blessingResolveActive = Boolean(value);
-            if (payload.blessingResolveDuration !== undefined) {
-                entity.blessingResolveTimer = Math.max(0, Number(payload.blessingResolveDuration || 0));
-            }
-        },
-        getNextActive: (entity) => Boolean(entity.blessingResolveActive),
-    },
-    divine_intervention: {
+        durationKey: 'blessingResolveDuration',
+        timerProperty: 'blessingResolveTimer',
+        fallbackDuration: 8
+    }),
+    divine_intervention: createTimedRemoteEffectConfig({
         payloadKey: 'divineInterventionActive',
-        getPreviousActive: (entity) => Boolean(entity.divineInterventionActive),
-        applyPayload: (entity, value, payload) => {
-            entity.divineInterventionActive = Boolean(value);
-            if (payload.divineInterventionDuration !== undefined) {
-                entity.divineInterventionTimer = Math.max(0, Number(payload.divineInterventionDuration || 0));
-            }
-        },
-        getNextActive: (entity) => Boolean(entity.divineInterventionActive),
-    },
+        durationKey: 'divineInterventionDuration',
+        timerProperty: 'divineInterventionTimer',
+        fallbackDuration: 8
+    }),
     arcane_shield: {
         payloadKey: 'arcaneShieldActive',
-        payloadKeys: ['arcaneShieldActive', 'arcaneShieldHp'],
+        payloadKeys: ['arcaneShieldActive', 'arcaneShieldHp', 'arcaneShieldDuration'],
         getPreviousActive: (entity) => Boolean(entity.arcaneShieldActive) && Number(entity.shieldHP || 0) > 0,
         applyPayload: (entity, value, payload) => {
             if (value !== undefined) {
@@ -161,9 +184,11 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
     },
     time_warp: {
         payloadKey: 'timeWarpActive',
+        payloadKeys: ['timeWarpActive', 'timeWarpDuration'],
         getPreviousActive: (entity) => Number(entity.hasteTimer || 0) > 0,
         applyPayload: (entity, value, payload) => {
-            if (Boolean(value)) {
+            const nextActive = value !== undefined ? Boolean(value) : Number(entity.hasteTimer || 0) > 0;
+            if (nextActive) {
                 entity.hasteTimer = Math.max(Number(entity.hasteTimer || 0), 8.0);
                 if (payload.timeWarpDuration !== undefined) {
                     entity.hasteTimer = Math.max(0, Number(payload.timeWarpDuration || 0));
@@ -176,37 +201,76 @@ const REMOTE_EFFECT_SYNC_CONFIG = {
         },
         getNextActive: (entity) => Number(entity.hasteTimer || 0) > 0,
     },
-    spell_focus: {
+    spell_focus: createTimedRemoteEffectConfig({
         payloadKey: 'spellFocusActive',
-        getPreviousActive: (entity) => Boolean(entity.spellFocusActive),
-        applyPayload: (entity, value, payload) => {
-            entity.spellFocusActive = Boolean(value);
-            if (payload.spellFocusDuration !== undefined) {
-                entity.spellFocusTimer = Math.max(0, Number(payload.spellFocusDuration || 0));
-            }
-            if (!entity.spellFocusActive) {
-                entity.spellFocusTimer = 0;
-                entity.spellFocusMultiplier = 1.0;
-            } else if (!Number.isFinite(entity.spellFocusMultiplier) || entity.spellFocusMultiplier <= 1.0) {
+        durationKey: 'spellFocusDuration',
+        timerProperty: 'spellFocusTimer',
+        fallbackDuration: 8,
+        onActivate: (entity) => {
+            if (!Number.isFinite(entity.spellFocusMultiplier) || entity.spellFocusMultiplier <= 1) {
                 entity.spellFocusMultiplier = 2.5;
             }
         },
-        getNextActive: (entity) => Boolean(entity.spellFocusActive),
-    },
-    swift: {
+        onDeactivate: (entity) => { entity.spellFocusMultiplier = 1; }
+    }),
+    swift: createTimedRemoteEffectConfig({
         payloadKey: 'swiftActive',
-        getPreviousActive: (entity) => Number(entity.swiftBuffTimer || 0) > 0,
-        applyPayload: (entity, value, payload) => {
-            entity.swiftActive = Boolean(value);
-            if (payload.swiftDuration !== undefined) {
-                entity.swiftBuffTimer = Math.max(0, Number(payload.swiftDuration || 0));
-            }
-            if (!entity.swiftActive) {
-                entity.swiftBuffTimer = 0;
-            }
-        },
-        getNextActive: (entity) => Boolean(entity.swiftActive) && Number(entity.swiftBuffTimer || 0) > 0,
-    },
+        durationKey: 'swiftDuration',
+        timerProperty: 'swiftBuffTimer',
+        fallbackDuration: 8
+    }),
+    iron_fortress: createTimedRemoteEffectConfig({
+        payloadKey: 'ironFortressActive',
+        durationKey: 'ironFortressDuration',
+        timerProperty: 'ironFortressTimer',
+        fallbackDuration: 30
+    }),
+    guardian_roar: createTimedRemoteEffectConfig({
+        payloadKey: 'guardianRoarActive',
+        durationKey: 'guardianRoarDuration',
+        timerProperty: 'guardianRoarTimer',
+        fallbackDuration: 8
+    }),
+    berserker_edge: createTimedRemoteEffectConfig({
+        payloadKey: 'berserkerModeActive',
+        durationKey: 'berserkerModeDuration',
+        activeProperty: 'berserkerEdgeActive',
+        timerProperty: 'berserkerEdgeTimer',
+        fallbackDuration: 15
+    }),
+    last_stand: createTimedRemoteEffectConfig({
+        payloadKey: 'lastStandActive',
+        durationKey: 'lastStandDuration',
+        timerProperty: 'lastStandTimer',
+        fallbackDuration: 10
+    }),
+    serrated_edges: createTimedRemoteEffectConfig({
+        payloadKey: 'serratedEdgesActive',
+        durationKey: 'serratedEdgesDuration',
+        timerProperty: 'serratedEdgesTimer',
+        fallbackDuration: 10
+    }),
+    poison_coating: createTimedRemoteEffectConfig({
+        payloadKey: 'poisonCoatingActive',
+        durationKey: 'poisonCoatingDuration',
+        timerProperty: 'poisonCoatingTimer',
+        fallbackDuration: 15
+    }),
+    stealth: createTimedRemoteEffectConfig({
+        payloadKey: 'stealthActive',
+        durationKey: 'stealthDuration',
+        timerProperty: 'stealthTimer',
+        fallbackDuration: 10
+    }),
+    blessing_zeal: createTimedRemoteEffectConfig({
+        payloadKey: 'zealActive',
+        durationKey: 'zealDuration',
+        activeProperty: 'blessingZealActive',
+        timerProperty: 'blessingZealTimer',
+        fallbackDuration: 8,
+        onActivate: (entity) => { entity.blessingZealFactor = 0.35; },
+        onDeactivate: (entity) => { entity.blessingZealFactor = 0; }
+    }),
 };
 
 const AUTHORITATIVE_STATUS_CLEAR_CONFIG = {
@@ -238,6 +302,14 @@ const AUTHORITATIVE_STATUS_CLEAR_CONFIG = {
         entity.markWeaknessFactor = 0;
     }
 };
+const AUTHORITATIVE_STATIONARY_PROJECTILES = new Set([
+    'Tripwire',
+    'ExplosiveTrap',
+    'SnareTrap',
+    'ZoneDamage',
+    'ZoneHoly',
+    'Zone'
+]);
 import { Fighter } from '../entities/Fighter.js';
 import { Skeleton } from '../entities/Skeleton.js';
 import { Rogue } from '../entities/Rogue.js';
@@ -718,6 +790,7 @@ export class GameEngine {
                 this.showRemoteSupportStateReadability(remoteEntity, supportKey, nextActive);
             }
         });
+        remoteEntity.syncAttachedStatusEffects?.(0);
     }
 
     syncPlayerSupportEffects(playerEntity, payload) {
@@ -1397,10 +1470,10 @@ export class GameEngine {
                     source.mesh.lookAt(new THREE.Vector3(lookTarget.x, source.position?.y || 0, lookTarget.z));
                     source.rotation?.copy?.(source.mesh.quaternion);
                 }
-                this.abilityController.triggerRemoteAbilityVisuals(source, abilityData.skillName, abilityData.targetX, abilityData.targetZ);
                 if (this.isPlayerClassEntity(source)) {
                     this.beginRemoteActionPresentation(source);
                 }
+                this.abilityController.triggerRemoteAbilityVisuals(source, abilityData.skillName, abilityData.targetX, abilityData.targetZ);
                 this.showRemoteActionReadability(source, abilityData.skillName);
             }
         } else if (msg.type === 'attack') {
@@ -1643,6 +1716,21 @@ export class GameEngine {
             if (typeof msg.payload === 'string' && msg.payload.includes("Logged in from another location")) {
                 this.network.isExpectedDisconnect = true;
                 window.location.reload();
+            }
+        } else if (msg.type === 'qa_animation_ready') {
+            this.animationQAReadySequence = (this.animationQAReadySequence || 0) + 1;
+            if (this.player) {
+                const lowHealth = Boolean(msg.payload?.lowHealth);
+                this.player.abilityCooldown = 0;
+                this.player.cooldowns = {};
+                if (this.player.stats) {
+                    this.player.stats.mana = this.player.stats.maxMana;
+                    this.player.stats.hp = lowHealth
+                        ? Math.max(1, Math.floor(this.player.stats.maxHp / 4))
+                        : this.player.stats.maxHp;
+                }
+                this.abilityController.inputBuffer.length = 0;
+                this.uiManager.updateHotbarCooldowns?.(this.player);
             }
         } else if (msg.type === 'enter_instance') {
             const instanceData = msg.payload;
@@ -2324,6 +2412,9 @@ export class GameEngine {
     syncRemoteEntity(remoteEntity, pData) {
         const previousRemotePosition = remoteEntity.position?.clone?.() || new THREE.Vector3();
         const previousRemoteState = remoteEntity.state || '';
+        if (pData.skillRunes !== undefined) {
+            remoteEntity.skillRunes = { ...(pData.skillRunes || {}) };
+        }
         // --- Position / Interpolation ---
         if (pData.type === 'Projectile') {
             remoteEntity.position.set(pData.x, pData.y ?? 0, pData.z);
@@ -2423,6 +2514,9 @@ export class GameEngine {
             }
             this.showRemoteStateReadability(remoteEntity, pData.state, previousRemoteState);
             this.syncRemoteSupportEffects(remoteEntity, pData);
+            this.syncPlayerStatusClears(remoteEntity, pData);
+            this.syncPlayerStatusDetails(remoteEntity, pData);
+            remoteEntity.syncAttachedStatusEffects?.(0);
 
             // Rotation
             if (pData.rotation !== undefined) {
@@ -3484,6 +3578,10 @@ export class GameEngine {
     addEntity(entity = null) {
         if (!entity) return;
 
+        // Persistent actor-owned VFX use the engine's world-space effect group
+        // and must not inherit scaled/rotating model transforms.
+        entity.gameEngine = this;
+
         const originalOnMeshReady = entity.onMeshReady;
         entity.onMeshReady = (mesh) => {
             console.log(`GameEngine: Mesh ready for ${entity.id}`);
@@ -3549,7 +3647,7 @@ export class GameEngine {
         
         this.chunkManager.getActiveEntities().forEach(entity => {
             // Don't damage the killer, dead entities, or entities without stats
-            if (entity === killer || entity.state === 'DEAD' || !entity.stats || !entity.isActive) return;
+            if (entity === killer || entity.state === 'DEAD' || !entity.stats || !entity.isActive || typeof entity.takeDamage !== 'function') return;
             // Only damage enemies (not players or friendly NPCs)
             if (entity.id && entity.id.startsWith('player')) return;
             
@@ -3970,6 +4068,7 @@ export class GameEngine {
                 this.player.position.y = landingEnd.y;
                 this.playerJumpState = null;
                 this.player.clearJumpAnimation?.();
+                this.player.restoreAnimationForState?.(true);
                 this.playerJumpVisualHeight = 0;
                 this.player.targetPosition = null;
                 this.chunkManager?.updateEntityChunk?.(this.player);
@@ -4765,8 +4864,12 @@ export class GameEngine {
                         return this.pickupLoot(pData.id);
                     };
                 } else if (pData.type === 'Projectile') {
-                    // Skip creating server projectile if it belongs to local player (avoid duplicates)
-                    if (pData.ownerId === this.player.id) continue;
+                    // Moving projectiles are predicted locally. Traps and zones
+                    // must use the authoritative server entity so their radius,
+                    // runes, duration, reconnect reconstruction, and removal are
+                    // identical for the caster and observers.
+                    if (pData.ownerId === this.player.id &&
+                        !AUTHORITATIVE_STATIONARY_PROJECTILES.has(pData.subType)) continue;
 
                     // Create Projectile
                     const y = pData.y ?? 0;
@@ -4777,6 +4880,14 @@ export class GameEngine {
                     const dummyOwner = { stats: { intelligence: 10, dexterity: 10 }, isRemote: true, isMultiplayer: true };
                     
                     remoteEntity = new Projectile(pData.id, owner || dummyOwner, pData.subType, start, target);
+                    if (AUTHORITATIVE_STATIONARY_PROJECTILES.has(pData.subType)) {
+                        // Server removal is the lifetime authority for traps and
+                        // zones. A client-side ten-second timeout could otherwise
+                        // hide long-duration Consecrated Ground or a trap that is
+                        // still present after reconnect/join-in-progress.
+                        remoteEntity.lifeTime = Number.POSITIVE_INFINITY;
+                        remoteEntity.serverAuthoritativeLifetime = true;
+                    }
                 } else if (pData.type === 'Fence') {
                     remoteEntity = new Fence(pData.id, pData.x, pData.z, pData.rotation || 0);
                     // Add to collision manager

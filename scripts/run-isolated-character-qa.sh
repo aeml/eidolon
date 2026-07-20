@@ -63,6 +63,20 @@ export EIDOLON_E2E_PASSWORD="$(openssl rand -hex 24)"
 export EIDOLON_E2E_CLASS="${EIDOLON_E2E_CLASS:-Wizard}"
 export EIDOLON_E2E_FULL_GAMEPLAY=1
 export EIDOLON_E2E_REGISTER=1
+export EIDOLON_E2E_REUSE_SERVER=0
+
+readonly QA_USERNAME_BASE="${EIDOLON_E2E_USERNAME}"
+readonly QA_PASSWORD="${EIDOLON_E2E_PASSWORD}"
+if [ -n "${EIDOLON_ANIMATION_QA_CLASS:-}" ]; then
+  readonly QA_ANIMATION_CLASSES=("${EIDOLON_ANIMATION_QA_CLASS}")
+else
+  readonly QA_ANIMATION_CLASSES=(Fighter Rogue Wizard Cleric)
+fi
+qa_animation_usernames=()
+for class_name in "${QA_ANIMATION_CLASSES[@]}"; do
+  qa_animation_usernames+=("${QA_USERNAME_BASE}-$(printf '%s' "${class_name}" | tr '[:upper:]' '[:lower:]')")
+done
+qa_allowlist="${QA_USERNAME_BASE},$(IFS=,; printf '%s' "${qa_animation_usernames[*]}")"
 
 mongo_username="qa_root"
 mongo_password="$(openssl rand -hex 24)"
@@ -100,7 +114,7 @@ mongo_uri="mongodb://${mongo_username}:${mongo_password}@mongo:27017/eidolon?aut
 docker run -d --name "${API_CONTAINER}" --network "${QA_NETWORK}" \
   -p "127.0.0.1:${QA_PORT}:8080" "${SERVER_IMAGE}" \
   --addr=:8080 --mongo-uri="${mongo_uri}" \
-  --qa-usernames="${EIDOLON_E2E_USERNAME}" \
+  --qa-usernames="${qa_allowlist}" \
   --log-file= --log-stdout=false --suspicious-log-file= --suspicious-stdout=false >/dev/null
 api_created=true
 
@@ -117,10 +131,39 @@ done
 
 echo "Isolated Mongo and API are ready."
 
+run_animation_classes() {
+  for class_name in "${QA_ANIMATION_CLASSES[@]}"; do
+    class_slug="$(printf '%s' "${class_name}" | tr '[:upper:]' '[:lower:]')"
+    echo "Running real-input ${class_name} animation matrix."
+    EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-${class_slug}" \
+      EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" \
+      EIDOLON_E2E_CLASS="${class_name}" \
+      EIDOLON_E2E_REGISTER=1 \
+      npx playwright test tests/e2e/animation-gameplay.spec.js || return $?
+  done
+}
+
+run_animation_multiplayer() {
+  EIDOLON_E2E_USERNAME="${QA_USERNAME_BASE}-cleric" \
+    EIDOLON_E2E_PASSWORD="${QA_PASSWORD}" \
+    EIDOLON_E2E_CLASS="Cleric" \
+    EIDOLON_E2E_USERNAME_SECONDARY="${QA_USERNAME_BASE}-wizard" \
+    EIDOLON_E2E_PASSWORD_SECONDARY="${QA_PASSWORD}" \
+    EIDOLON_E2E_CLASS_SECONDARY="Wizard" \
+    EIDOLON_E2E_REGISTER=1 \
+    npx playwright test tests/e2e/multiplayer.spec.js
+}
+
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated
+    npm run test:e2e:authenticated && run_animation_classes && run_animation_multiplayer
+    ;;
+  animations)
+    run_animation_classes
+    ;;
+  multiplayer)
+    run_animation_multiplayer
     ;;
   smoke)
     npx playwright test tests/e2e/authenticated.spec.js --grep "logs in, enters the world"
@@ -132,7 +175,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test tests/e2e/authenticated.spec.js --grep "allowlisted QA waypoint"
     ;;
   *)
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, smoke, extended, or portal." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, smoke, extended, or portal." >&2
     exit 1
     ;;
 esac
