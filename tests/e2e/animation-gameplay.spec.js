@@ -12,6 +12,7 @@ import {
     jumpByGroundClick,
     loginAndEnterWorld,
     moveByGroundClick,
+    projectEntity,
     projectGroundOffset,
     readPlayerState,
     selectGraphicsThroughSettings,
@@ -94,13 +95,21 @@ async function selectBranch(page, className, branch, expectedSkills) {
     await expect.poll(() => page.evaluate(() => window.game?.player?.hotbar || []), {
         timeout: 20_000
     }).toEqual(expectedSkills);
-    await page.keyboard.press('Escape');
-    await expect(window).toBeHidden();
+    await closeSkillWindow(page, window);
 
     const visibleHotbar = await page.locator('.hotbar-icon').evaluateAll((icons) =>
         icons.slice(0, 4).map((icon) => icon.dataset.skill || '')
     );
     expect(visibleHotbar).toEqual(expectedSkills);
+}
+
+async function closeSkillWindow(page, window = page.locator('#skill-tree-window')) {
+    if (!await window.isVisible()) return;
+    await page.locator('body').press('Escape');
+    if (await window.isVisible()) {
+        await page.locator('#btn-close-skills').click();
+    }
+    await expect(window).toBeHidden();
 }
 
 async function selectRune(page, skillName, rune) {
@@ -126,8 +135,48 @@ async function selectRune(page, skillName, rune) {
         }
     }
     expect(await selectedRune(), `${skillName}/${rune.id} must equip through the rune UI`).toBe(rune.id);
-    if (await window.isVisible()) await page.keyboard.press('Escape');
-    await expect(window).toBeHidden();
+    await closeSkillWindow(page, window);
+}
+
+async function exerciseBasicAttack(page) {
+    let lastDiagnostic = null;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+        if (attempt > 0) await useCombatQAWaypoint(page);
+        const hostile = await findOverworldTarget(page);
+        const projected = await projectEntity(page, hostile.id);
+        if (projected?.visible) {
+            await page.mouse.click(projected.x, projected.y);
+        } else {
+            await page.mouse.click(hostile.x, hostile.y);
+        }
+        try {
+            await expect.poll(() => page.evaluate(() => ({
+                state: window.game?.player?.state,
+                animation: window.game?.player?.currentAnimationName
+            })), {
+                timeout: 15_000,
+                intervals: [25, 50, 100, 250]
+            }).toEqual(expect.objectContaining({ animation: 'Attack' }));
+            return;
+        } catch {
+            lastDiagnostic = await page.evaluate((targetId) => {
+                const game = window.game;
+                const target = (game?.activeEntitiesCache || []).find((entity) => entity.id === targetId);
+                return {
+                    playerState: game?.player?.state,
+                    playerAnimation: game?.player?.currentAnimationName,
+                    playerX: game?.player?.position?.x,
+                    playerZ: game?.player?.position?.z,
+                    pendingTargetId: game?.pendingInteraction?.id || null,
+                    targetState: target?.state || null,
+                    targetActive: target?.isActive ?? null,
+                    targetX: target?.position?.x,
+                    targetZ: target?.position?.z
+                };
+            }, hostile.id);
+        }
+    }
+    throw new Error(`Basic attack did not reach its visible Attack clip: ${JSON.stringify(lastDiagnostic)}`);
 }
 
 async function castThroughInput(page, className, skillName, key, presentation) {
@@ -275,12 +324,7 @@ test.describe('real-input animation gameplay matrix', () => {
             timeout: 8_000
         }).toBe('Idle');
 
-        const hostile = await findOverworldTarget(page);
-        await page.mouse.click(hostile.x, hostile.y);
-        await expect.poll(() => page.evaluate(() => window.game?.player?.currentAnimationName), {
-            timeout: 12_000,
-            intervals: [25, 50, 100]
-        }).toBe('Attack');
+        await exerciseBasicAttack(page);
 
         await castThroughInput(page, className, matrix.base, 'right', presentations[matrix.base]);
         for (const branch of matrix.branches) {

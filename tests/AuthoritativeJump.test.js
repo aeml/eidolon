@@ -129,6 +129,51 @@ function createEngineHarness() {
 }
 
 describe('authoritative jump flow', () => {
+    test('stale self state cannot cancel a locally predicted basic-attack animation', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'ATTACKING';
+        engine.player.attackTimer = { pending: true };
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        state: 'IDLE',
+                        health: 100,
+                        maxHealth: 100,
+                        mana: 100,
+                        maxMana: 100
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.state).toBe('ATTACKING');
+
+        engine.player.attackTimer = null;
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: {
+                    'player-1': {
+                        id: 'player-1',
+                        state: 'IDLE',
+                        health: 100,
+                        maxHealth: 100,
+                        mana: 100,
+                        maxMana: 100
+                    }
+                },
+                r: []
+            }
+        });
+
+        expect(engine.player.state).toBe('IDLE');
+    });
+
     test('ctrl-left-click sends a jump request from the click coordinates and seeds a local predicted jump immediately', () => {
         const engine = createEngineHarness();
         engine.inputManager.getGroundIntersectionFromEvent = jest.fn(() => new THREE.Vector3(33, 0, -4));

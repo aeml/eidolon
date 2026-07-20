@@ -1797,6 +1797,7 @@ export class GameEngine {
                         // Sync State
                         const nextHp = pData.health !== undefined ? pData.health : this.player.stats?.hp;
                         const hasPredictedJump = !!this.playerJumpState && !this.playerJumpState.serverDriven;
+                        const hasPredictedAttack = this.shouldPreservePredictedPlayerAttack(pData.state);
                         if (pData.state !== undefined) {
                             if (this.player.state !== 'DEAD' && (pData.state === 'DEAD' || (nextHp !== undefined && nextHp <= 0))) {
                                 this.handlePlayerDeathTransition();
@@ -1820,7 +1821,7 @@ export class GameEngine {
                                     this.syncTownRecoveryGuidance(previousX, previousZ, this.player.position.x, this.player.position.z, 'respawn');
                                     justRespawned = true;
                                 }
-                            } else if (!(hasPredictedJump && pData.state !== 'JUMPING')) {
+                            } else if (!(hasPredictedJump && pData.state !== 'JUMPING') && !hasPredictedAttack) {
                                 this.player.state = pData.state;
                             }
                         } else if (pData.health !== undefined && pData.health <= 0 && this.player.state !== 'DEAD') {
@@ -2075,6 +2076,7 @@ export class GameEngine {
                         const previousZ = this.player.position?.z;
                         const nextHp = pData.health !== undefined ? pData.health : this.player.stats.hp;
                         const hasPredictedJump = !!this.playerJumpState && !this.playerJumpState.serverDriven;
+                        const hasPredictedAttack = this.shouldPreservePredictedPlayerAttack(pData.state);
                         if (pData.state !== undefined) {
                             if (this.player.state !== 'DEAD' && (pData.state === 'DEAD' || (nextHp !== undefined && nextHp <= 0))) {
                                 this.handlePlayerDeathTransition();
@@ -2094,7 +2096,7 @@ export class GameEngine {
                                     this.announceRespawnRecovery('delta');
                                     this.syncTownRecoveryGuidance(previousX, previousZ, this.player.position.x, this.player.position.z, 'respawn');
                                 }
-                            } else if (!(hasPredictedJump && pData.state !== 'JUMPING')) {
+                            } else if (!(hasPredictedJump && pData.state !== 'JUMPING') && !hasPredictedAttack) {
                                 this.player.state = pData.state;
                             }
                         }
@@ -3895,6 +3897,11 @@ export class GameEngine {
         return existingJump.start.distanceTo(start) <= positionTolerance
             && existingJump.end.distanceTo(end) <= positionTolerance
             && Math.abs(existingDuration - duration) <= durationTolerance;
+    }
+
+    shouldPreservePredictedPlayerAttack(nextState) {
+        if (!this.player?.attackTimer || this.player.state !== 'ATTACKING') return false;
+        return nextState !== 'ATTACKING' && nextState !== 'JUMPING' && nextState !== 'DEAD';
     }
 
     syncAuthoritativeJumpState(entity, pData) {
