@@ -282,11 +282,68 @@ func TestHandleMessageQAWaypointRejectsInvalidDestination(t *testing.T) {
 
 	msgs := drainSentMessages(client.send)
 	for _, msg := range msgs {
-		if msg.Type == MsgError && strings.Contains(messagePayloadString(t, msg), "Usage: /qa-waypoint <combat|verdant>") {
+		if msg.Type == MsgError && strings.Contains(messagePayloadString(t, msg), "Usage: /qa-waypoint <combat|encounter|verdant>") {
 			return
 		}
 	}
 	t.Fatalf("expected waypoint usage error, got %+v", msgs)
+}
+
+func TestHandleMessageQAWaypointMovesAllowlistedPlayerNearLiveEncounter(t *testing.T) {
+	allowLevelCommandTestUser(t)
+	originalWorld := world
+	defer func() { world = originalWorld }()
+	world = game.NewWorld(nil)
+
+	client := newLevelCommandClient()
+	player := newLevelCommandPlayer(client.playerID)
+	world.AddEntity(player)
+	enemy := &game.Entity{
+		ID:        "qa-encounter-skeleton",
+		Type:      game.TypeEnemy,
+		SubType:   "Skeleton",
+		X:         120,
+		Z:         200,
+		Health:    100,
+		MaxHealth: 100,
+		State:     "IDLE",
+	}
+	world.AddEntity(enemy)
+	deadEnemy := &game.Entity{
+		ID:        "qa-dead-encounter",
+		Type:      game.TypeEnemy,
+		SubType:   "Skeleton",
+		X:         120,
+		Z:         200,
+		Health:    0,
+		MaxHealth: 100,
+		State:     "DEAD",
+	}
+	world.AddEntity(deadEnemy)
+
+	payload, _ := json.Marshal(ChatPayload{Message: "/qa-waypoint encounter", Sender: client.username})
+	client.handleMessage(Message{Type: MsgChat, Payload: payload})
+
+	updated := world.GetEntity(client.playerID)
+	if distance := math.Hypot(updated.X-enemy.X, updated.Z-enemy.Z); math.Abs(distance-8) > 0.001 {
+		t.Fatalf("expected encounter waypoint eight metres from the live enemy, got %v", distance)
+	}
+	if updated.TargetX != updated.X || updated.TargetZ != updated.Z || updated.State != "IDLE" {
+		t.Fatalf("expected a stationary encounter arrival, got target=(%v, %v) state=%q", updated.TargetX, updated.TargetZ, updated.State)
+	}
+	if enemy.X != 120 || enemy.Z != 200 || enemy.Health != 100 || enemy.State != "IDLE" {
+		t.Fatalf("expected live encounter to remain unchanged, got position=(%v, %v) health=%v state=%q", enemy.X, enemy.Z, enemy.Health, enemy.State)
+	}
+	if deadEnemy.X != 120 || deadEnemy.Z != 200 || deadEnemy.Health != 0 || deadEnemy.State != "DEAD" {
+		t.Fatalf("expected nearer dead encounter to remain unchanged and ineligible, got position=(%v, %v) health=%v state=%q", deadEnemy.X, deadEnemy.Z, deadEnemy.Health, deadEnemy.State)
+	}
+
+	for _, msg := range drainSentMessages(client.send) {
+		if msg.Type == MsgChat && strings.Contains(messagePayloadChat(t, msg).Message, "live overworld encounter") {
+			return
+		}
+	}
+	t.Fatal("expected encounter waypoint success response")
 }
 
 func TestHandleMessageQAWaypointMovesAllowlistedPlayerOutsideTownForCombat(t *testing.T) {

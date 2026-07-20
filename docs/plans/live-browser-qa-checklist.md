@@ -18,7 +18,7 @@ Do not promote a claim between categories without the corresponding run.
 - Use only dedicated QA accounts from environment variables or GitHub secrets.
 - Never place usernames/passwords in commands that will be committed, logs, screenshots, traces, or markdown evidence.
 - The extended route may set a dedicated character to level 100, gain XP/items, change position, create/leave a party, and create/reset a dungeon instance.
-- Add only dedicated QA usernames to the server `EIDOLON_QA_USERNAMES` allowlist. The release workflow derives four persistent animation characters (`<primary>-f`, `-r`, `-w`, and `-c`) from the primary base. `/level`, fixed `/qa-waypoint` destinations, `/qa-loot-next`, `/qa-disconnect`, `/qa-animation-ready`, and `/qa-protection off` all use that same server-side gate.
+- Add only dedicated QA usernames to the server `EIDOLON_QA_USERNAMES` allowlist. The release workflow derives four persistent animation characters (`<primary>-f`, `-r`, `-w`, and `-c`) from the primary base. `/level`, bounded `/qa-waypoint` destinations, `/qa-loot-next`, `/qa-disconnect`, `/qa-animation-ready`, and `/qa-protection off` all use that same server-side gate.
 - Do not run the extended route against a normal player character.
 - Credentialed traces, screenshots, video, and the automatic input-valued failure snapshot stay disabled because recordings can contain account identifiers or passwords. CI also redacts and scans the supplied values before upload. The anonymous gate retains all three failure artifact types.
 
@@ -92,16 +92,17 @@ Automated only with `EIDOLON_E2E_FULL_GAMEPLAY=1` and an allowlisted dedicated a
 1. Use chat DOM input for `/level 100` only if the character is below 100.
 2. Select Low graphics and disable Auto-Loot through the visible Settings controls so the route proves both real UI configuration and mouse-driven pickup.
 3. Submit `/qa-waypoint combat` through chat. This fixed allowlisted waypoint avoids randomized town-prop navigation, grants five minutes of bounded protection, and briefly rejects stale movement queued at the old position while the authoritative state reaches the browser; it does not perform combat.
-4. Submit `/qa-loot-next` through chat so the next accepted basic attack kills its normal-enemy target and the regular server-owned drop path guarantees equipment without relying on random damage or a 50% drop chance.
-5. Use projected read-only coordinates for real mouse targeting and right-click the hostile for the primary ability.
-6. Verify ability cooldown, intermediate damage or a one-shot death, and the authoritative kill. All repeated attacks remain real mouse clicks.
-7. Approach and click the replicated loot with the real mouse. If the killing click also acquires the newly spawned overlapping loot, accept only an authoritative inventory increase while Auto-Loot is explicitly off.
-8. Submit `/qa-waypoint verdant` through chat. The destination is fixed near the portal because a fresh QA character cannot safely traverse the endgame zone.
-9. Zoom with real wheel events, click the real portal, choose Normal, and start the run through visible DOM controls.
-10. Verify the authoritative instance type changes to `verdant_bastion_catacombs`.
-11. Recall with `B` and verify return to `overworld`.
-12. Exercise reconnect/session resume through the allowlisted server-originated transport close.
-13. Reload, log in again, and verify level and inventory persistence.
+4. If no hostile is currently raycastable, submit `/qa-waypoint encounter`. The server selects the live enemy nearest the fixed combat anchor and moves only the QA player to an eight-metre offset; it does not spawn, damage, relocate, or otherwise alter the enemy.
+5. Use projected read-only coordinates and a real right-click to prove the primary ability enters cooldown before deterministic kill acceleration is armed.
+6. Submit `/qa-loot-next` through chat so the next accepted basic attack kills a normal-enemy target and the regular server-owned drop path guarantees equipment without relying on random damage or a 50% drop chance.
+7. Verify intermediate damage or a one-shot death and the authoritative kill. All repeated attacks remain real mouse clicks.
+8. Approach and click the replicated loot with the real mouse. If the killing click also acquires the newly spawned overlapping loot, accept only an authoritative inventory increase while Auto-Loot is explicitly off.
+9. Submit `/qa-waypoint verdant` through chat. The destination is fixed near the portal because a fresh QA character cannot safely traverse the endgame zone.
+10. Zoom with real wheel events, click the real portal, choose Normal, and start the run through visible DOM controls.
+11. Verify the authoritative instance type changes to `verdant_bastion_catacombs`.
+12. Recall with `B` and verify return to `overworld`.
+13. Exercise reconnect/session resume through the allowlisted server-originated transport close.
+14. Reload, log in again, and verify level and inventory persistence.
 
 Any inventory-full state, missing QA authorization, navigation softlock, kill/loot failure, incorrect instance transition, or lost persistence fails the gate.
 

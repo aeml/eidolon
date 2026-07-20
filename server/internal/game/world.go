@@ -560,19 +560,14 @@ const QAWaypointProtectionDuration = 5 * time.Minute
 // it. Normal input resumes as soon as this short handoff window expires.
 const QAWaypointMovementLockDuration = time.Second
 
-// MovePlayerToQAWaypoint moves an overworld player to a fixed release-QA
-// waypoint. Authorization belongs to the server command layer; keeping the
-// supported destinations fixed prevents this helper from becoming an
-// arbitrary-coordinate teleport. The bounded protection window gives a real
-// browser enough time to load the distant endgame zone and operate its UI.
+// MovePlayerToQAWaypoint moves an overworld player to a bounded release-QA
+// waypoint. Authorization belongs to the server command layer. Combat and
+// Verdant use fixed coordinates; encounter selects the live overworld enemy
+// nearest the fixed combat anchor and places the player eight metres toward
+// that anchor. No arbitrary coordinate or enemy mutation is accepted.
 func (w *World) MovePlayerToQAWaypoint(playerID, waypoint string) (*Entity, bool) {
-	var x, z float64
-	switch strings.ToLower(strings.TrimSpace(waypoint)) {
-	case "combat":
-		x, z = 120, 200
-	case "verdant":
-		x, z = 800, 200
-	default:
+	normalizedWaypoint := strings.ToLower(strings.TrimSpace(waypoint))
+	if normalizedWaypoint != "combat" && normalizedWaypoint != "encounter" && normalizedWaypoint != "verdant" {
 		return nil, false
 	}
 
@@ -582,6 +577,46 @@ func (w *World) MovePlayerToQAWaypoint(playerID, waypoint string) (*Entity, bool
 	player, ok := w.Entities[playerID]
 	if !ok || player.Type != TypePlayer || player.InstanceID != "" {
 		return nil, false
+	}
+
+	var x, z float64
+	switch normalizedWaypoint {
+	case "combat":
+		x, z = 120, 200
+	case "verdant":
+		x, z = 800, 200
+	case "encounter":
+		const anchorX, anchorZ = 120.0, 200.0
+		nearestDistanceSq := math.MaxFloat64
+		var enemyX, enemyZ float64
+		foundEnemy := false
+		for _, candidate := range w.Entities {
+			candidate.Mu.RLock()
+			eligible := candidate.Type == TypeEnemy && candidate.InstanceID == "" &&
+				candidate.State != "DEAD" && candidate.Health > 0
+			candidateX, candidateZ := candidate.X, candidate.Z
+			candidate.Mu.RUnlock()
+			if !eligible {
+				continue
+			}
+			dx, dz := candidateX-anchorX, candidateZ-anchorZ
+			distanceSq := dx*dx + dz*dz
+			if distanceSq < nearestDistanceSq {
+				nearestDistanceSq = distanceSq
+				enemyX, enemyZ = candidateX, candidateZ
+				foundEnemy = true
+			}
+		}
+		if !foundEnemy {
+			return nil, false
+		}
+		towardAnchorX, towardAnchorZ := anchorX-enemyX, anchorZ-enemyZ
+		directionLength := math.Hypot(towardAnchorX, towardAnchorZ)
+		if directionLength < 0.001 {
+			towardAnchorX, towardAnchorZ, directionLength = -1, 0, 1
+		}
+		x = enemyX + towardAnchorX/directionLength*8
+		z = enemyZ + towardAnchorZ/directionLength*8
 	}
 
 	oldX, oldZ := player.X, player.Z

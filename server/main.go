@@ -3310,8 +3310,9 @@ func (c *Client) handleChatCommand(raw string) bool {
 			c.sendError("QA command unavailable for this account.")
 			return true
 		}
-		if len(fields) != 2 || (!strings.EqualFold(fields[1], "combat") && !strings.EqualFold(fields[1], "verdant")) {
-			c.sendError("Usage: /qa-waypoint <combat|verdant>")
+		if len(fields) != 2 || (!strings.EqualFold(fields[1], "combat") &&
+			!strings.EqualFold(fields[1], "encounter") && !strings.EqualFold(fields[1], "verdant")) {
+			c.sendError("Usage: /qa-waypoint <combat|encounter|verdant>")
 			return true
 		}
 		if c.playerID == "" || world == nil {
@@ -3326,6 +3327,8 @@ func (c *Client) handleChatCommand(raw string) bool {
 
 		if strings.EqualFold(fields[1], "combat") {
 			c.sendSystemChat("QA waypoint set outside the east town gate; protection active for 5 minutes.")
+		} else if strings.EqualFold(fields[1], "encounter") {
+			c.sendSystemChat("QA waypoint set near a live overworld encounter; protection active for 5 minutes.")
 		} else {
 			c.sendSystemChat("QA waypoint set near Verdant Bastion; protection active for 5 minutes.")
 		}

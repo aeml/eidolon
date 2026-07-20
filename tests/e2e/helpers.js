@@ -817,6 +817,14 @@ export async function findOverworldTarget(page) {
     const projectPreferredHostile = async () =>
         await projectNearestHostile(page, 'Skeleton') || await projectNearestHostile(page);
     let target = await projectPreferredHostile();
+    if (!target) {
+        // Enemy spawns are deliberately randomized over a large sector. Ask
+        // the allowlisted server command to place this QA character near the
+        // live enemy closest to the fixed combat anchor; the enemy remains a
+        // normal authoritative world entity and all acquisition stays real UI.
+        await useEncounterQAWaypoint(page);
+        target = await projectPreferredHostile();
+    }
     for (let attempt = 0; !target && attempt < 12; attempt += 1) {
         const navigation = await page.evaluate(() => {
             const game = window.game;
@@ -966,6 +974,56 @@ export async function useCombatQAWaypoint(page) {
     });
 }
 
+export async function useEncounterQAWaypoint(page) {
+    const chatInput = page.locator('#chat-input');
+    let lastError = null;
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+        if (!await chatInput.evaluate((element) => element === document.activeElement)) {
+            await page.keyboard.press('Enter');
+        }
+        await expect(chatInput).toBeFocused();
+        await chatInput.fill('/qa-waypoint encounter');
+        await chatInput.press('Enter');
+        if (await chatInput.evaluate((element) => element === document.activeElement)) {
+            await page.keyboard.press('Escape');
+        }
+        await expect(chatInput).not.toBeFocused();
+        try {
+            await expect.poll(() => page.evaluate(() => {
+                const game = window.game;
+                if (!game?.player?.position) return Infinity;
+                let nearest = Infinity;
+                for (const entity of game.activeEntitiesCache || []) {
+                    if (!entity?.isActive || entity.state === 'DEAD' ||
+                        !game.isHostileActorTarget?.(entity) || !entity.position) continue;
+                    nearest = Math.min(nearest, game.player.position.distanceTo(entity.position));
+                }
+                return nearest;
+            }), { timeout: 30_000 }).toBeLessThan(12);
+            const chatBox = page.locator('#chat-box');
+            if (await chatBox.isVisible()) await page.keyboard.press('Escape');
+            await expect(chatBox).toBeHidden();
+            await page.waitForTimeout(1_100);
+            return;
+        } catch (error) {
+            lastError = error;
+        }
+    }
+    const diagnostic = await page.evaluate(() => ({
+        x: window.game?.player?.position?.x ?? null,
+        z: window.game?.player?.position?.z ?? null,
+        state: window.game?.player?.state ?? null,
+        confirmationVisible: [...document.querySelectorAll('#chat-messages > *')]
+            .some((element) => element.textContent?.includes('near a live overworld encounter')),
+        activeHostiles: (window.game?.activeEntitiesCache || []).filter((entity) =>
+            entity?.isActive && entity.state !== 'DEAD' && window.game?.isHostileActorTarget?.(entity)
+        ).length
+    }));
+    throw new Error(`The QA encounter waypoint did not settle near a live hostile: ${JSON.stringify(diagnostic)}`, {
+        cause: lastError
+    });
+}
+
 async function readCombatDiagnostic(page, targetId) {
     return page.evaluate((id) => {
         const game = window.game;
@@ -1001,6 +1059,39 @@ export async function exerciseCombatAndLoot(page) {
 
     await disableAutoLootThroughSettings(page);
     await useCombatQAWaypoint(page);
+
+    // Prove the real right-click ability before arming the deterministic basic
+    // attack kill. Otherwise /qa-loot-next can legitimately make the first
+    // left-click lethal before the ability path has a chance to run.
+    let abilityTarget = await findOverworldTarget(page);
+    let abilityDiagnostic = null;
+    for (let attempt = 0; attempt < 3 && !abilityWasUsed; attempt += 1) {
+        let projection = await projectEntity(page, abilityTarget.id);
+        if (!projection?.visible) {
+            await useEncounterQAWaypoint(page);
+            abilityTarget = await findOverworldTarget(page);
+            projection = await projectEntity(page, abilityTarget.id);
+        }
+        if (!projection?.visible) continue;
+        await page.mouse.move(projection.x, projection.y);
+        await page.waitForTimeout(50);
+        await page.mouse.click(projection.x, projection.y, { button: 'right' });
+        try {
+            await expect.poll(() => page.evaluate(() =>
+                Number(window.game?.player?.abilityCooldown || 0)
+            ), { timeout: 5_000, intervals: [25, 50, 100, 250] }).toBeGreaterThan(0);
+            abilityWasUsed = true;
+        } catch {
+            abilityDiagnostic = await readCombatDiagnostic(page, abilityTarget.id);
+            await useEncounterQAWaypoint(page);
+            abilityTarget = await findOverworldTarget(page);
+        }
+    }
+    if (!abilityWasUsed) {
+        throw new Error(`The primary ability never entered cooldown after bounded real right-clicks: ${JSON.stringify(abilityDiagnostic)}`);
+    }
+
+    await useEncounterQAWaypoint(page);
 
     await page.keyboard.press('Enter');
     const chatInput = page.locator('#chat-input');
@@ -1057,16 +1148,6 @@ export async function exerciseCombatAndLoot(page) {
                 await page.mouse.move(projection.x, projection.y);
                 await page.waitForTimeout(50);
                 await page.mouse.click(projection.x, projection.y);
-
-                const abilityReady = await page.evaluate(() =>
-                    Number(window.game?.player?.abilityCooldown || 0) <= 0
-                );
-                if (abilityReady) {
-                    await page.mouse.click(projection.x, projection.y, { button: 'right' });
-                    abilityWasUsed = await page.evaluate(() =>
-                        Number(window.game?.player?.abilityCooldown || 0) > 0
-                    ) || abilityWasUsed;
-                }
             }
             await page.waitForTimeout(500);
         }
@@ -1076,7 +1157,6 @@ export async function exerciseCombatAndLoot(page) {
             const diagnostic = await readCombatDiagnostic(page, target.id);
             throw new Error(`Browser combat did not defeat the target: ${JSON.stringify(diagnostic)}`);
         }
-        expect(abilityWasUsed, 'The primary ability must enter cooldown after a real right-click').toBe(true);
         // A normal multi-hit kill must expose an intermediate health change;
         // an immediate one-shot is already proven by acquisition plus death.
         const finalTargetState = await readEntity(page, target.id);
