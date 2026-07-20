@@ -8,6 +8,11 @@ export class Entity {
         this.id = id || crypto.randomUUID();
         this.position = new THREE.Vector3();
         this.rotation = new THREE.Quaternion();
+        this.previousPosition = new THREE.Vector3();
+        this.previousRotation = new THREE.Quaternion();
+        this.renderPosition = new THREE.Vector3();
+        this.renderRotation = new THREE.Quaternion();
+        this._transformHistoryReady = false;
         this.isActive = true;
         this.mesh = null;
         this.meshType = null;
@@ -51,15 +56,35 @@ export class Entity {
     update(dt) {
     }
 
+    capturePreviousTransform() {
+        this.previousPosition.copy(this.position);
+        this.previousRotation.copy(this.rotation);
+        this._transformHistoryReady = true;
+    }
+
+    resetTransformInterpolation() {
+        this.previousPosition.copy(this.position);
+        this.previousRotation.copy(this.rotation);
+        this.renderPosition.copy(this.position);
+        this.renderRotation.copy(this.rotation);
+        this._transformHistoryReady = true;
+    }
+
     render(interpolation) {
         if (this.mesh) {
-            this.mesh.position.copy(this.position);
-            this.mesh.quaternion.copy(this.rotation);
+            if (!this._transformHistoryReady) this.resetTransformInterpolation();
+            const alpha = Math.max(0, Math.min(1, Number(interpolation) || 0));
+            this.renderPosition.lerpVectors(this.previousPosition, this.position, alpha);
+            this.renderRotation.copy(this.previousRotation).slerp(this.rotation, alpha);
+            this.mesh.position.copy(this.renderPosition);
+            if (this.visualOffset) this.mesh.position.add(this.visualOffset);
+            this.mesh.quaternion.copy(this.renderRotation);
         }
     }
     
     setMesh(mesh) {
         this.mesh = mesh;
+        this.resetTransformInterpolation();
         this.mesh.userData.entityId = this.id;
         
         if (!this.mesh.userData.baseScale) {

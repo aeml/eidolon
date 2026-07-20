@@ -14,6 +14,10 @@ message StateEnvelope {
     StateFull full = 2;
     StateDelta delta = 3;
   }
+
+  // Server tick timestamp lets clients preserve snapshot spacing even when
+  // delivery jitter makes packet arrival uneven.
+  uint64 server_time_ms = 4;
 }
 
 message StateFull {
@@ -174,6 +178,9 @@ message Entity {
   float poison_coating_duration = 103;
   float stealth_duration = 104;
   float zeal_duration = 105;
+  // Newest client movement sample accepted by the server. Owning clients use
+  // this to distinguish an acknowledged prediction from a real correction.
+  uint64 move_sequence = 106;
   float slow_factor = 58;
   float root_duration = 59;
   float stun_duration = 60;

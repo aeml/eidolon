@@ -2996,12 +2996,24 @@ func (w *World) CollectExpiredDisconnectedPlayers(window time.Duration) []*Entit
 }
 
 func (w *World) UpdateEntityPosition(id string, x, y, z, rotation float64) {
+	w.UpdatePlayerMovement(id, x, y, z, rotation, "", 0)
+}
+
+// UpdatePlayerMovement applies one ordered player transform sample and records
+// its sequence as an acknowledgement. Legacy/internal callers may pass zero,
+// which preserves the pre-sequencing behavior without disturbing the current
+// acknowledgement.
+func (w *World) UpdatePlayerMovement(id string, x, y, z, rotation float64, state string, sequence uint64) bool {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
 	e, ok := w.Entities[id]
 	if !ok {
-		return
+		return false
+	}
+
+	if sequence > 0 && sequence <= e.LastMoveSequence {
+		return false
 	}
 
 	if e.Type == TypePlayer {
@@ -3016,11 +3028,19 @@ func (w *World) UpdateEntityPosition(id string, x, y, z, rotation float64) {
 	e.Y = y
 	e.Z = z
 	e.Rotation = rotation
+	if sequence > 0 {
+		e.LastMoveSequence = sequence
+	}
 	if e.State != "JUMPING" {
-		e.State = "MOVING" // Default to moving if position updates
+		if state != "" {
+			e.State = state
+		} else {
+			e.State = "MOVING" // Default to moving if position updates
+		}
 	}
 
 	w.Grid.Update(e, oldX, oldZ)
+	return true
 }
 
 func (w *World) StartPlayerJump(id string, x, y, z float64) bool {
@@ -7296,6 +7316,7 @@ func (w *World) GetState() map[string]*Entity {
 			SpawnX:            v.SpawnX,
 			SpawnZ:            v.SpawnZ,
 			State:             v.State,
+			LastMoveSequence:  v.LastMoveSequence,
 			LastAttackTime:    v.LastAttackTime,
 			AttackCooldown:    v.AttackCooldown,
 			LastAbilityTime:   v.LastAbilityTime,

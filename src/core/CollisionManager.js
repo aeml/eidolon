@@ -144,12 +144,10 @@ export class CollisionManager {
     checkEntityCollision(entity, chunkManager, ignoreEntity = null) {
         if (!chunkManager) return null;
         
-        // IMPORTANT:
-        // - For remote entities, we render with a client-only visualOffset.
-        //   Using mesh positions here creates a feedback loop where the offset influences future offsets,
-        //   and can make enemies appear out-of-range while server-authoritative hits land.
-        // - For local entities, mesh position helps reduce jitter.
-        const position = entity.isRemote ? entity.position : (entity.mesh ? entity.mesh.position : entity.position);
+        // Collision always owns logical transforms. Mesh transforms are
+        // interpolated presentation state and can intentionally lag one fixed
+        // tick; feeding them back into collision creates a correction loop.
+        const position = entity.position;
         const radius = entity.radius || 1.0;
         TEMP_ENTITY_PUSH.set(0, 0, 0);
         let count = 0;
@@ -174,7 +172,7 @@ export class CollisionManager {
                         // Only collide with other Actors (things with stats)
                         if (!other.stats) continue;
 
-                        const otherPos = other.isRemote ? other.position : (other.mesh ? other.mesh.position : other.position);
+                        const otherPos = other.position;
 
                         // Calculate distance
                         const dx = position.x - otherPos.x;

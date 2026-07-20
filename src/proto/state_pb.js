@@ -7,7 +7,7 @@ if (!$protobuf) {
 
 // Common aliases
 const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
-const $Object = $util.global.Object, $undefined = $util.global.undefined, $Error = $util.global.Error, $TypeError = $util.global.TypeError, $Number = $util.global.Number, $Array = $util.global.Array, $String = $util.global.String, $Boolean = $util.global.Boolean, $isFinite = $util.global.isFinite;
+const $Object = $util.global.Object, $undefined = $util.global.undefined, $Error = $util.global.Error, $TypeError = $util.global.TypeError, $Number = $util.global.Number, $parseInt = $util.global.parseInt, $String = $util.global.String, $BigInt = $util.global.BigInt, $Array = $util.global.Array, $Boolean = $util.global.Boolean, $isFinite = $util.global.isFinite;
 
 // Exported root namespace
 const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
@@ -38,6 +38,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [version] StateEnvelope version
              * @property {eidolon.state.StateFull.$Properties|null} [full] StateEnvelope full
              * @property {eidolon.state.StateDelta.$Properties|null} [delta] StateEnvelope delta
+             * @property {number|Long|null} [serverTimeMs] StateEnvelope serverTimeMs
              * @property {"full"|"delta"} [payload] StateEnvelope payload
              * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
@@ -56,6 +57,7 @@ export const eidolon = $root.eidolon = (() => {
              *   version?: number|null;
              *   full?: eidolon.state.StateFull.$Shape|null;
              *   delta?: eidolon.state.StateDelta.$Shape|null;
+             *   serverTimeMs?: number|Long|null;
              *   $unknowns?: Array.<Uint8Array>;
              * } & (
              *   ({ payload?: undefined; full?: null; delta?: null }|{ payload?: "full"; full: eidolon.state.StateFull.$Shape; delta?: null }|{ payload?: "delta"; full?: null; delta: eidolon.state.StateDelta.$Shape })
@@ -100,6 +102,14 @@ export const eidolon = $root.eidolon = (() => {
              * @instance
              */
             StateEnvelope.prototype.delta = null;
+
+            /**
+             * StateEnvelope serverTimeMs.
+             * @member {number|Long} serverTimeMs
+             * @memberof eidolon.state.StateEnvelope
+             * @instance
+             */
+            StateEnvelope.prototype.serverTimeMs = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
 
             // OneOf field names bound to virtual getters and setters
             let $oneOfFields;
@@ -153,6 +163,8 @@ export const eidolon = $root.eidolon = (() => {
                     $root.eidolon.state.StateFull.encode(message.full, writer.uint32(/* id 2, wireType 2 =*/18).fork(), _depth + 1).ldelim();
                 if (message.delta != null && $Object.hasOwnProperty.call(message, "delta"))
                     $root.eidolon.state.StateDelta.encode(message.delta, writer.uint32(/* id 3, wireType 2 =*/26).fork(), _depth + 1).ldelim();
+                if (message.serverTimeMs != null && $Object.hasOwnProperty.call(message, "serverTimeMs") && (typeof message.serverTimeMs === "object" ? message.serverTimeMs.low || message.serverTimeMs.high : message.serverTimeMs !== 0))
+                    writer.uint32(/* id 4, wireType 0 =*/32).uint64(message.serverTimeMs);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -223,6 +235,15 @@ export const eidolon = $root.eidolon = (() => {
                             message.payload = "delta";
                             continue;
                         }
+                    case 4: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.uint64()) === "object" ? value.low || value.high : value !== 0)
+                                message.serverTimeMs = value;
+                            else
+                                delete message.serverTimeMs;
+                            continue;
+                        }
                     }
                     reader.skipType(wireType, _depth, tag);
                     if (!reader.discardUnknown) {
@@ -288,6 +309,9 @@ export const eidolon = $root.eidolon = (() => {
                             return "delta." + error;
                     }
                 }
+                if (message.serverTimeMs != null && $Object.hasOwnProperty.call(message, "serverTimeMs"))
+                    if (!$util.isInteger(message.serverTimeMs) && !(message.serverTimeMs && $util.isInteger(message.serverTimeMs.low) && $util.isInteger(message.serverTimeMs.high)))
+                        return "serverTimeMs: integer|Long expected";
                 return null;
             };
 
@@ -322,6 +346,16 @@ export const eidolon = $root.eidolon = (() => {
                         throw $TypeError(".eidolon.state.StateEnvelope.delta: object expected");
                     message.delta = $root.eidolon.state.StateDelta.fromObject(object.delta, _depth + 1);
                 }
+                if (object.serverTimeMs != null)
+                    if (typeof object.serverTimeMs === "object" ? object.serverTimeMs.low || object.serverTimeMs.high : $Number(object.serverTimeMs) !== 0)
+                        if ($util.Long)
+                            message.serverTimeMs = $util.Long.fromValue(object.serverTimeMs, true);
+                        else if (typeof object.serverTimeMs === "string")
+                            message.serverTimeMs = $parseInt(object.serverTimeMs, 10);
+                        else if (typeof object.serverTimeMs === "number")
+                            message.serverTimeMs = object.serverTimeMs;
+                        else if (typeof object.serverTimeMs === "object")
+                            message.serverTimeMs = new $util.LongBits(object.serverTimeMs.low >>> 0, object.serverTimeMs.high >>> 0).toNumber(true);
                 return message;
             };
 
@@ -342,8 +376,14 @@ export const eidolon = $root.eidolon = (() => {
                 if (_depth > $util.recursionLimit)
                     throw $Error("max depth exceeded");
                 let object = {};
-                if (options.defaults)
+                if (options.defaults) {
                     object.version = 0;
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, true);
+                        object.serverTimeMs = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.serverTimeMs = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                }
                 if (message.version != null && $Object.hasOwnProperty.call(message, "version"))
                     object.version = message.version;
                 if (message.full != null && $Object.hasOwnProperty.call(message, "full")) {
@@ -356,6 +396,13 @@ export const eidolon = $root.eidolon = (() => {
                     if (options.oneofs)
                         object.payload = "delta";
                 }
+                if (message.serverTimeMs != null && $Object.hasOwnProperty.call(message, "serverTimeMs"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.serverTimeMs = typeof message.serverTimeMs === "number" ? $BigInt(message.serverTimeMs) : $util.Long.fromBits(message.serverTimeMs.low >>> 0, message.serverTimeMs.high >>> 0, true).toBigInt();
+                    else if (typeof message.serverTimeMs === "number")
+                        object.serverTimeMs = options.longs === $String ? $String(message.serverTimeMs) : message.serverTimeMs;
+                    else
+                        object.serverTimeMs = options.longs === $String ? $util.Long.prototype.toString.call(message.serverTimeMs) : options.longs === $Number ? new $util.LongBits(message.serverTimeMs.low >>> 0, message.serverTimeMs.high >>> 0).toNumber(true) : message.serverTimeMs;
                 return object;
             };
 
@@ -3059,6 +3106,7 @@ export const eidolon = $root.eidolon = (() => {
              * @property {number|null} [poisonCoatingDuration] Entity poisonCoatingDuration
              * @property {number|null} [stealthDuration] Entity stealthDuration
              * @property {number|null} [zealDuration] Entity zealDuration
+             * @property {number|Long|null} [moveSequence] Entity moveSequence
              * @property {number|null} [slowFactor] Entity slowFactor
              * @property {number|null} [rootDuration] Entity rootDuration
              * @property {number|null} [stunDuration] Entity stunDuration
@@ -3776,6 +3824,14 @@ export const eidolon = $root.eidolon = (() => {
             Entity.prototype.zealDuration = 0;
 
             /**
+             * Entity moveSequence.
+             * @member {number|Long} moveSequence
+             * @memberof eidolon.state.Entity
+             * @instance
+             */
+            Entity.prototype.moveSequence = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+
+            /**
              * Entity slowFactor.
              * @member {number} slowFactor
              * @memberof eidolon.state.Entity
@@ -4209,6 +4265,8 @@ export const eidolon = $root.eidolon = (() => {
                     writer.uint32(/* id 104, wireType 5 =*/837).float(message.stealthDuration);
                 if (message.zealDuration != null && $Object.hasOwnProperty.call(message, "zealDuration") && !$Object.is(message.zealDuration, 0))
                     writer.uint32(/* id 105, wireType 5 =*/845).float(message.zealDuration);
+                if (message.moveSequence != null && $Object.hasOwnProperty.call(message, "moveSequence") && (typeof message.moveSequence === "object" ? message.moveSequence.low || message.moveSequence.high : message.moveSequence !== 0))
+                    writer.uint32(/* id 106, wireType 0 =*/848).uint64(message.moveSequence);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -5004,6 +5062,15 @@ export const eidolon = $root.eidolon = (() => {
                                 delete message.zealDuration;
                             continue;
                         }
+                    case 106: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.uint64()) === "object" ? value.low || value.high : value !== 0)
+                                message.moveSequence = value;
+                            else
+                                delete message.moveSequence;
+                            continue;
+                        }
                     case 58: {
                             if (wireType !== 5)
                                 break;
@@ -5564,6 +5631,9 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.zealDuration != null && $Object.hasOwnProperty.call(message, "zealDuration"))
                     if (typeof message.zealDuration !== "number")
                         return "zealDuration: number expected";
+                if (message.moveSequence != null && $Object.hasOwnProperty.call(message, "moveSequence"))
+                    if (!$util.isInteger(message.moveSequence) && !(message.moveSequence && $util.isInteger(message.moveSequence.low) && $util.isInteger(message.moveSequence.high)))
+                        return "moveSequence: integer|Long expected";
                 if (message.slowFactor != null && $Object.hasOwnProperty.call(message, "slowFactor"))
                     if (typeof message.slowFactor !== "number")
                         return "slowFactor: number expected";
@@ -5940,6 +6010,16 @@ export const eidolon = $root.eidolon = (() => {
                 if (object.zealDuration != null)
                     if (!$Object.is($Number(object.zealDuration), 0))
                         message.zealDuration = $Number(object.zealDuration);
+                if (object.moveSequence != null)
+                    if (typeof object.moveSequence === "object" ? object.moveSequence.low || object.moveSequence.high : $Number(object.moveSequence) !== 0)
+                        if ($util.Long)
+                            message.moveSequence = $util.Long.fromValue(object.moveSequence, true);
+                        else if (typeof object.moveSequence === "string")
+                            message.moveSequence = $parseInt(object.moveSequence, 10);
+                        else if (typeof object.moveSequence === "number")
+                            message.moveSequence = object.moveSequence;
+                        else if (typeof object.moveSequence === "object")
+                            message.moveSequence = new $util.LongBits(object.moveSequence.low >>> 0, object.moveSequence.high >>> 0).toNumber(true);
                 if (object.slowFactor != null)
                     if (!$Object.is($Number(object.slowFactor), 0))
                         message.slowFactor = $Number(object.slowFactor);
@@ -6157,6 +6237,11 @@ export const eidolon = $root.eidolon = (() => {
                     object.poisonCoatingDuration = 0;
                     object.stealthDuration = 0;
                     object.zealDuration = 0;
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, true);
+                        object.moveSequence = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.moveSequence = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -6396,6 +6481,13 @@ export const eidolon = $root.eidolon = (() => {
                     object.stealthDuration = options.json && !$isFinite(message.stealthDuration) ? $String(message.stealthDuration) : message.stealthDuration;
                 if (message.zealDuration != null && $Object.hasOwnProperty.call(message, "zealDuration"))
                     object.zealDuration = options.json && !$isFinite(message.zealDuration) ? $String(message.zealDuration) : message.zealDuration;
+                if (message.moveSequence != null && $Object.hasOwnProperty.call(message, "moveSequence"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.moveSequence = typeof message.moveSequence === "number" ? $BigInt(message.moveSequence) : $util.Long.fromBits(message.moveSequence.low >>> 0, message.moveSequence.high >>> 0, true).toBigInt();
+                    else if (typeof message.moveSequence === "number")
+                        object.moveSequence = options.longs === $String ? $String(message.moveSequence) : message.moveSequence;
+                    else
+                        object.moveSequence = options.longs === $String ? $util.Long.prototype.toString.call(message.moveSequence) : options.longs === $Number ? new $util.LongBits(message.moveSequence.low >>> 0, message.moveSequence.high >>> 0).toNumber(true) : message.moveSequence;
                 return object;
             };
 

@@ -223,7 +223,7 @@ describe('CollisionManager', () => {
             expect(mockChunkManager.getChunkKey).toHaveBeenCalledWith(0, 0);
         });
 
-        test('checkEntityCollision uses mesh position when available', () => {
+        test('checkEntityCollision ignores lagging render meshes and uses logical position', () => {
             const entity = { 
                 position: new THREE.Vector3(100, 0, 100),
                 mesh: { position: new THREE.Vector3(50, 0, 50) },
@@ -239,8 +239,9 @@ describe('CollisionManager', () => {
             
             manager.checkEntityCollision(entity, mockChunkManager);
             
-            // Should use mesh position (50, 50), not entity position (100, 100)
-            expect(mockChunkManager.getChunkKey).toHaveBeenCalledWith(50, 50);
+            // Render interpolation deliberately leaves the mesh behind the
+            // logical transform; collision must never feed that lag back in.
+            expect(mockChunkManager.getChunkKey).toHaveBeenCalledWith(100, 100);
         });
     });
 

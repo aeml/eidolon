@@ -195,8 +195,7 @@ export class SpiritGuardiansEffect {
             this.scene.add(this.group);
         }
 
-        this.group.position.copy(this.source.position);
-        this.group.position.y += 0.12;
+        this.syncToSource(false);
         this.group.quaternion.identity();
         this.group.visible = this.source.state !== 'DEAD' && this.source.mesh?.visible !== false;
 
@@ -226,6 +225,15 @@ export class SpiritGuardiansEffect {
             this.pulseRing.material.opacity = 0.14 + pulse * (this.boosted ? 0.22 : 0.14);
             this.pulseRing.rotation.z = this.elapsed * 0.12;
         }
+    }
+
+    syncToSource(useRenderedPosition = false) {
+        if (!this.isActive || !this.group || !this.source?.position) return;
+        const visiblePosition = useRenderedPosition && this.source.mesh?.position
+            ? this.source.mesh.position
+            : this.source.position;
+        this.group.position.copy(visiblePosition);
+        this.group.position.y += 0.12;
     }
 
     getMetrics() {

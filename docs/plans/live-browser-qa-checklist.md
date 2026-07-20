@@ -52,6 +52,7 @@ npm run docs:animations
 npm run test:e2e:anonymous
 sg render -c 'npm run verify:browser-gpu'
 sg render -c 'npm run test:e2e:animations'
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=movement npm run test:e2e:isolated'
 sg render -c 'npm run test:e2e:isolated'
 
 cd server
@@ -84,6 +85,19 @@ Automated when primary credentials exist:
 3. Click a projected ground destination with the real mouse and verify authoritative position changes. If randomized town props occupy every projected click, use a bounded real WASD fallback and require the same server-authoritative displacement.
 4. Open and Escape-close Character (`C`), Inventory (`I`), Journal (`J`), Skills (`K`), Map (`M`), Social (`O`), and Abilities (`P`).
 5. Submit `/qa-disconnect` through visible chat input, then verify the browser's real resume path opens a new socket and preserves player identity. The server closes the transport and page code remains read-only during this check.
+
+### Dedicated movement smoothness route
+
+Automated in `tests/e2e/movement-smoothness.spec.js` with the same dedicated account:
+
+1. Require a non-software WebGL renderer, then use the visible allowlisted combat waypoint to reach a stable open area.
+2. Hold the real mouse on the exact current point and inside the arrival radius. Require zero accepted paths, zero locomotion transitions, and no displacement.
+3. Select an unobstructed direction by read-only inspection, then issue nearby and sustained real ground clicks.
+4. Sample logical player, rendered mesh, camera target, destination, state, animation, and correction activity on browser animation frames without mutating game state.
+5. Require monotonic logical/rendered progress, one arrival, bounded visible frame steps, camera/mesh coherence, Run/Idle restoration, and zero ordinary/hard correction events.
+6. Require ordered server acknowledgement to converge within two pending samples and idle transport to remain at heartbeat cadence.
+
+The default isolated route runs this gate. Postdeploy Playwright runs it again against the dedicated persistent live character and the matching release SHA.
 
 ## Gate 4: extended gameplay route
 
@@ -127,7 +141,7 @@ Automated when secondary credentials exist:
 2. Set primary presence to Looking for Party and verify the secondary Social roster sees it.
 3. Invite through party UI; accept through the secondary modal.
 4. Verify both party panels and replicated `partyId` agree.
-5. Move the primary with a real ground click and verify the secondary observes remote displacement.
+5. Move the primary with a real ground click and frame-sample the secondary's rendered remote character. Require multiple unique visible positions, bounded step/backtrack/gap, a bounded timestamp buffer, and active interpolation/extrapolation counters.
 6. Ctrl-click a real canvas destination and verify the secondary observes jump state/progress.
 7. Move both toward a shared hostile; attack/cast through primary input and verify remote combat presentation.
 8. With Cleric primary and Wizard secondary, verify remote Spirit Guardians base and boost counts, single-instance refresh, attachment, a fresh observer's state-only reconstruction, authoritative expiration, and cleanup.
@@ -186,7 +200,7 @@ EIDOLON_EXPECTED_COMMIT=<pushed SHA>
 
 The Chrome-only origin override keeps the public production hostname and valid TLS certificate while preventing Cloudflare edge faults from starving the 30 Hz gameplay stream. Public client and server identities are still polled through their normal URLs before Chrome starts, and the frontend itself still loads through the public production URL.
 
-7. Run the live anonymous/general character routes, then `npm run test:e2e:live-animations` for all four persistent class characters and Cleric/Wizard remote animation.
+7. Run the live anonymous/general/movement character routes, then `npm run test:e2e:live-animations` for all four persistent class characters and Cleric/Wizard remote animation/movement.
 8. Redact and scan every supplied credential value, then upload the sanitized HTML report and permitted evidence. Credentialed traces and video remain off. Both character jobs are selected only by push-gated dependencies; pull-request browser work stays on GitHub-hosted infrastructure and receives neither runner access nor production credentials.
 
 The current runner host stores the official repository registration under `/home/aeml/.local/share/eidolon-actions-runner`. The runner account must belong to `render` and `video`; both character jobs fail before gameplay unless Chrome reports a hardware WebGL renderer. It must remain online with the `eidolon-live-browser` label; an offline runner deliberately leaves the post-deploy gate queued rather than silently skipping gameplay. After a host restart, `scripts/start-live-browser-runner.sh` starts the configured runner under the `render` group in the detached `eidolon-actions-runner` tmux session without reading or writing QA credentials.
@@ -197,9 +211,9 @@ Fill this in after the live run; do not pre-check it based on local results.
 
 Current release evidence on July 20, 2026:
 
-- Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 90 Jest suites / 1,027 tests, and ESLint passed.
+- Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 92 Jest suites / 1,047 tests, and ESLint passed.
 - Go toolchain `1.24.5`: `go test -race ./...` and `go build -trimpath ./...` passed.
-- Google Chrome `150.0.7871.124`: anonymous smoke passed; the complete predeploy route passed the deterministic High/Low gallery, disposable general character route, four class matrices, and two-browser remote-animation matrix with the hardware `AMD Radeon Graphics (RADV RENOIR)` Vulkan renderer.
+- Google Chrome `150.0.7871.124`: focused local movement and two-browser remote-interpolation routes passed; the prior complete predeploy route passed anonymous smoke, the deterministic High/Low gallery, disposable general character route, four class matrices, and two-browser remote-animation matrix with the hardware `AMD Radeon Graphics (RADV RENOIR)` Vulkan renderer. The current complete route is rerun by the release workflow before deployment.
 - The focused portal route, credential scanning, and isolated cleanup passed; no uniquely suffixed QA container, network, or image remained after cleanup.
 - The isolated route is locally browser-tested evidence. The matching live evidence for the released code SHA is recorded below.
 

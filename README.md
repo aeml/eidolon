@@ -164,10 +164,11 @@ Full isolated character and animation QA (Docker and hardware-accelerated system
 ```bash
 sg render -c 'npm run verify:browser-gpu'
 sg render -c 'npm run test:e2e:animations'
+sg render -c 'EIDOLON_ISOLATED_QA_ROUTE=movement npm run test:e2e:isolated'
 sg render -c 'npm run test:e2e:isolated'
 ```
 
-The deterministic gallery renders every canonical base/rune presentation and every actor inventory entry at High and Low quality through production rendering code. The isolated route builds a per-run temporary server image, creates uniquely suffixed Mongo/API containers, a private network, and disposable allowlisted characters. It executes the general character route, all four class locomotion/death and ability/rune matrices, and the two-browser remote-animation matrix through visible input, then removes only the resources it created. It refuses resource collisions or an occupied port; override the default port with `EIDOLON_ISOLATED_QA_PORT`.
+The deterministic gallery renders every canonical base/rune presentation and every actor inventory entry at High and Low quality through production rendering code. The movement route uses real mouse input and frame-samples exact, sub-arrival, nearby, sustained, camera-follow, acknowledgement, and correction behavior. The isolated route builds a per-run temporary server image, creates uniquely suffixed Mongo/API containers, a private network, and disposable allowlisted characters. It executes the general character and movement routes, all four class locomotion/death and ability/rune matrices, and the two-browser remote-animation/movement matrix through visible input, then removes only the resources it created. It refuses resource collisions or an occupied port; override the default port with `EIDOLON_ISOLATED_QA_PORT`.
 
 The generated canonical inventory is [docs/ANIMATION_COVERAGE.md](docs/ANIMATION_COVERAGE.md). Edit its source manifests and regenerate it; do not hand-edit its tables.
 
@@ -204,7 +205,7 @@ Notes:
 Verification state as of July 20, 2026:
 
 - Implemented and unit-tested: locked/self-hosted browser runtimes, QA command authorization, canonical coverage for 52 active abilities, 60 rune variants, and 47 actor archetypes, persistent animation-state replication, disposable test credentials, health/release identity, and deployment SHA gates.
-- Locally browser-tested: the deterministic High/Low animation gallery, four real-input class matrices covering locomotion/basic attack/death and every canonical ability/rune, two-process remote VFX including Spirit Guardians late-join/expiration, plus the anonymous and general disposable character routes in hardware-accelerated system Chrome.
+- Locally browser-tested: exact/sub-arrival/nearby/sustained local movement, camera coherence, ordered acknowledgement, and two-process timestamped remote interpolation; the deterministic High/Low animation gallery; four real-input class matrices covering locomotion/basic attack/death and every canonical ability/rune; remote VFX including Spirit Guardians late-join/expiration; and the anonymous/general disposable character routes in hardware-accelerated system Chrome.
 - Live production-tested: deployed SHA `02533ea` passed the anonymous surface, persistent-character movement/menus/reconnect, extended combat/loot/dungeon/persistence route, every four-class ability/rune and locomotion/death matrix, and two-client party/presence/movement/jump/combat plus remote Spirit Guardians lifecycle in hardware-accelerated system Chrome. The final same-SHA run had no Playwright retries or product failures.
 - The full evidence record and workflow link are retained in `docs/plans/live-browser-qa-checklist.md`.
 
@@ -212,9 +213,9 @@ Current measured hotspots (physical lines, `wc -l`):
 
 | File | LOC |
 |---|---:|
-| `server/internal/game/world.go` | 8,557 |
-| `server/main.go` | 5,021 |
-| `src/core/GameEngine.js` | 5,645 |
+| `server/internal/game/world.go` | 8,578 |
+| `server/main.go` | 5,027 |
+| `src/core/GameEngine.js` | 5,810 |
 | `src/ui/UIManager.js` | 3,634 |
 
 These measurements show that the `0.40` decomposition target is still open; release-confidence work does not claim the monolith reduction is complete.

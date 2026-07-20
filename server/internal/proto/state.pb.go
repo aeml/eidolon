@@ -28,7 +28,10 @@ type StateEnvelope struct {
 	//
 	//	*StateEnvelope_Full
 	//	*StateEnvelope_Delta
-	Payload       isStateEnvelope_Payload `protobuf_oneof:"payload"`
+	Payload isStateEnvelope_Payload `protobuf_oneof:"payload"`
+	// Server tick timestamp lets clients preserve snapshot spacing even when
+	// delivery jitter makes packet arrival uneven.
+	ServerTimeMs  uint64 `protobuf:"varint,4,opt,name=server_time_ms,json=serverTimeMs,proto3" json:"server_time_ms,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -93,6 +96,13 @@ func (x *StateEnvelope) GetDelta() *StateDelta {
 		}
 	}
 	return nil
+}
+
+func (x *StateEnvelope) GetServerTimeMs() uint64 {
+	if x != nil {
+		return x.ServerTimeMs
+	}
+	return 0
 }
 
 type isStateEnvelope_Payload interface {
@@ -708,14 +718,17 @@ type Entity struct {
 	PoisonCoatingDuration      float32 `protobuf:"fixed32,103,opt,name=poison_coating_duration,json=poisonCoatingDuration,proto3" json:"poison_coating_duration,omitempty"`
 	StealthDuration            float32 `protobuf:"fixed32,104,opt,name=stealth_duration,json=stealthDuration,proto3" json:"stealth_duration,omitempty"`
 	ZealDuration               float32 `protobuf:"fixed32,105,opt,name=zeal_duration,json=zealDuration,proto3" json:"zeal_duration,omitempty"`
-	SlowFactor                 float32 `protobuf:"fixed32,58,opt,name=slow_factor,json=slowFactor,proto3" json:"slow_factor,omitempty"`
-	RootDuration               float32 `protobuf:"fixed32,59,opt,name=root_duration,json=rootDuration,proto3" json:"root_duration,omitempty"`
-	StunDuration               float32 `protobuf:"fixed32,60,opt,name=stun_duration,json=stunDuration,proto3" json:"stun_duration,omitempty"`
-	BleedDuration              float32 `protobuf:"fixed32,61,opt,name=bleed_duration,json=bleedDuration,proto3" json:"bleed_duration,omitempty"`
-	PoisonDuration             float32 `protobuf:"fixed32,62,opt,name=poison_duration,json=poisonDuration,proto3" json:"poison_duration,omitempty"`
-	BleedDamage                int32   `protobuf:"varint,63,opt,name=bleed_damage,json=bleedDamage,proto3" json:"bleed_damage,omitempty"`
-	PoisonDamage               int32   `protobuf:"varint,64,opt,name=poison_damage,json=poisonDamage,proto3" json:"poison_damage,omitempty"`
-	SlowDuration               float32 `protobuf:"fixed32,65,opt,name=slow_duration,json=slowDuration,proto3" json:"slow_duration,omitempty"`
+	// Newest client movement sample accepted by the server. Owning clients use
+	// this to distinguish an acknowledged prediction from a real correction.
+	MoveSequence   uint64  `protobuf:"varint,106,opt,name=move_sequence,json=moveSequence,proto3" json:"move_sequence,omitempty"`
+	SlowFactor     float32 `protobuf:"fixed32,58,opt,name=slow_factor,json=slowFactor,proto3" json:"slow_factor,omitempty"`
+	RootDuration   float32 `protobuf:"fixed32,59,opt,name=root_duration,json=rootDuration,proto3" json:"root_duration,omitempty"`
+	StunDuration   float32 `protobuf:"fixed32,60,opt,name=stun_duration,json=stunDuration,proto3" json:"stun_duration,omitempty"`
+	BleedDuration  float32 `protobuf:"fixed32,61,opt,name=bleed_duration,json=bleedDuration,proto3" json:"bleed_duration,omitempty"`
+	PoisonDuration float32 `protobuf:"fixed32,62,opt,name=poison_duration,json=poisonDuration,proto3" json:"poison_duration,omitempty"`
+	BleedDamage    int32   `protobuf:"varint,63,opt,name=bleed_damage,json=bleedDamage,proto3" json:"bleed_damage,omitempty"`
+	PoisonDamage   int32   `protobuf:"varint,64,opt,name=poison_damage,json=poisonDamage,proto3" json:"poison_damage,omitempty"`
+	SlowDuration   float32 `protobuf:"fixed32,65,opt,name=slow_duration,json=slowDuration,proto3" json:"slow_duration,omitempty"`
 	// Passive talents
 	TalentPoints    int32    `protobuf:"varint,47,opt,name=talent_points,json=talentPoints,proto3" json:"talent_points,omitempty"`
 	UnlockedTalents []string `protobuf:"bytes,48,rep,name=unlocked_talents,json=unlockedTalents,proto3" json:"unlocked_talents,omitempty"`
@@ -1345,6 +1358,13 @@ func (x *Entity) GetZealDuration() float32 {
 	return 0
 }
 
+func (x *Entity) GetMoveSequence() uint64 {
+	if x != nil {
+		return x.MoveSequence
+	}
+	return 0
+}
+
 func (x *Entity) GetSlowFactor() float32 {
 	if x != nil {
 		return x.SlowFactor
@@ -1510,11 +1530,12 @@ var File_state_proto protoreflect.FileDescriptor
 
 const file_state_proto_rawDesc = "" +
 	"\n" +
-	"\vstate.proto\x12\reidolon.state\"\x97\x01\n" +
+	"\vstate.proto\x12\reidolon.state\"\xbd\x01\n" +
 	"\rStateEnvelope\x12\x18\n" +
 	"\aversion\x18\x01 \x01(\rR\aversion\x12.\n" +
 	"\x04full\x18\x02 \x01(\v2\x18.eidolon.state.StateFullH\x00R\x04full\x121\n" +
-	"\x05delta\x18\x03 \x01(\v2\x19.eidolon.state.StateDeltaH\x00R\x05deltaB\t\n" +
+	"\x05delta\x18\x03 \x01(\v2\x19.eidolon.state.StateDeltaH\x00R\x05delta\x12$\n" +
+	"\x0eserver_time_ms\x18\x04 \x01(\x04R\fserverTimeMsB\t\n" +
 	"\apayload\">\n" +
 	"\tStateFull\x121\n" +
 	"\bentities\x18\x01 \x03(\v2\x15.eidolon.state.EntityR\bentities\"`\n" +
@@ -1569,7 +1590,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xa8!\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xcd!\n" +
 	"\x06Entity\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vinstance_id\x18\x02 \x01(\tR\n" +
@@ -1662,7 +1683,8 @@ const file_state_proto_rawDesc = "" +
 	"\x17serrated_edges_duration\x18f \x01(\x02R\x15serratedEdgesDuration\x126\n" +
 	"\x17poison_coating_duration\x18g \x01(\x02R\x15poisonCoatingDuration\x12)\n" +
 	"\x10stealth_duration\x18h \x01(\x02R\x0fstealthDuration\x12#\n" +
-	"\rzeal_duration\x18i \x01(\x02R\fzealDuration\x12\x1f\n" +
+	"\rzeal_duration\x18i \x01(\x02R\fzealDuration\x12#\n" +
+	"\rmove_sequence\x18j \x01(\x04R\fmoveSequence\x12\x1f\n" +
 	"\vslow_factor\x18: \x01(\x02R\n" +
 	"slowFactor\x12#\n" +
 	"\rroot_duration\x18; \x01(\x02R\frootDuration\x12#\n" +

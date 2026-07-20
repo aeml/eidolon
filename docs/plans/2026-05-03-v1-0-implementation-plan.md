@@ -6,7 +6,7 @@ Target: `Alpha 1.0` (last alpha before beta)
 
 This plan is grounded in a direct codebase audit, not in roadmap aspiration. It enumerates the concrete gaps blocking v1.0, the order to address them, the files involved, and the gating criteria. It supersedes any previous "suggested milestone slice" framing where evidence in the code disagrees.
 
-> Current-state correction: the audit list below is retained as the May 3 baseline, not as a claim about July. Reconnect/session resume, party persistence/proto fields, proactive social status, persistent friendships, and a committed real-browser harness now exist. Current measured hotspots are `world.go` 8,481 LOC, `main.go` 4,744, `GameEngine.js` 5,526, and `UIManager.js` 3,634. Production release verification passed for SHA `634280a`; resume the still-open `0.40` decomposition slices.
+> Current-state correction: the audit list below is retained as the May 3 baseline, not as a claim about July. Reconnect/session resume, party persistence/proto fields, proactive social status, persistent friendships, and a committed real-browser harness now exist. Current measured hotspots are `world.go` 8,578 LOC, `main.go` 5,027, `GameEngine.js` 5,810, and `UIManager.js` 3,634. Production release verification passed for SHA `634280a`; resume the still-open `0.40` decomposition slices.
 
 Companion doc: `docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md` (the high-level roadmap-and-status). This doc is the deeper implementation plan that the roadmap points at.
 

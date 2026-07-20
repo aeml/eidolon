@@ -113,6 +113,7 @@ export class ChunkManager {
                     // So we MUST pass chunkManager to Entity.update, which passes it to CollisionManager.
                     
                     // Let's pass chunkManager as the 4th argument.
+                    entity.capturePreviousTransform?.();
                     entity.update(dt, collisionManager, player, this, floatingTextManager, gameEngine);
                     
                     if (!entity.isActive) {

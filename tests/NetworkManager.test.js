@@ -268,6 +268,33 @@ describe('NetworkManager — basic send / queue', () => {
             payload: { 'player-one': { id: 'player-one', x: 12 } }
         }]);
     });
+
+    test('attaches the authoritative server tick to every decoded transform sample', () => {
+        const sock = makeMockSocket();
+        const nm = new NetworkManager(sock);
+        decodeStateEnvelopeMock.mockReturnValueOnce({
+            serverTimeMs: 1_784_564_218_123,
+            full: null,
+            delta: {
+                entities: [
+                    { id: 'player-one', x: 12, moveSequence: 41 },
+                    { id: 'player-two', x: 8 }
+                ],
+                removedIds: []
+            }
+        });
+        nm.setupListeners();
+
+        const frame = new Uint8Array([0x45, 0x44, 0x50, 0x42, 0x01, 0x99]);
+        sock.onmessage({ data: frame.buffer });
+
+        const [message] = nm.drainMessages();
+        expect(message.payload.u['player-one']).toEqual(expect.objectContaining({
+            moveSequence: 41,
+            _serverTimeMs: 1_784_564_218_123
+        }));
+        expect(message.payload.u['player-two']._serverTimeMs).toBe(1_784_564_218_123);
+    });
 });
 
 // ---------------------------------------------------------------------------

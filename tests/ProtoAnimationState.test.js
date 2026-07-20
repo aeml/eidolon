@@ -28,3 +28,33 @@ describe('authoritative animation buff protocol', () => {
         });
     });
 });
+
+describe('ordered movement protocol', () => {
+    test('round-trips movement acknowledgement and server tick fields', () => {
+        const serverTimeMs = 1_784_564_218_123;
+        const envelope = {
+            version: 1,
+            serverTimeMs,
+            delta: {
+                entities: [{
+                    id: 'movement-protocol-player',
+                    x: 4,
+                    z: 8,
+                    state: 'MOVING',
+                    moveSequence: 928
+                }],
+                removedIds: []
+            }
+        };
+
+        const encoded = eidolon.state.StateEnvelope.encode(envelope).finish();
+        const decoded = eidolon.state.StateEnvelope.decode(encoded);
+
+        expect(Number(decoded.serverTimeMs)).toBe(serverTimeMs);
+        expect(decoded.delta.entities[0]).toEqual(expect.objectContaining({
+            id: 'movement-protocol-player',
+            state: 'MOVING'
+        }));
+        expect(Number(decoded.delta.entities[0].moveSequence)).toBe(928);
+    });
+});

@@ -130,15 +130,95 @@ async function remotePlayerSnapshot(page, username) {
             jumpProgress: entity.jumpProgress,
             x: entity.position?.x,
             z: entity.position?.z,
+            renderX: entity.mesh?.position?.x,
+            renderZ: entity.mesh?.position?.z,
+            movementBuffer: entity.remoteTransformBuffer?.getMetrics?.() || null,
             lastAbility: entity.lastRemoteAbilityPresentation || null,
             spiritsActive: Boolean(entity.spiritsActive),
             spiritBoosted: Boolean(entity.spiritBoosted),
             spiritDuration: Number(entity.spiritDuration || 0),
             guardianCount: entity.spiritEffect?.guardians?.length || 0,
             spiritGroupCount: spiritGroups.length,
-            spiritFollowDistance: entity.spiritEffect?.group?.position?.distanceTo?.(entity.position) ?? null
+            spiritFollowDistance: entity.spiritEffect?.group?.position?.distanceTo?.(
+                entity.mesh?.position || entity.position
+            ) ?? null
         };
     }, username);
+}
+
+async function sampleRemoteMovement(page, username, durationMs = 4_000) {
+    return page.evaluate(({ remoteUsername, duration }) => new Promise((resolve) => {
+        const frames = [];
+        const startedAt = performance.now();
+        const capture = (now) => {
+            const game = window.game;
+            const entity = [...(game?.remotePlayers?.values?.() || [])]
+                .find((candidate) => candidate?.name === remoteUsername);
+            if (entity?.position && entity.mesh?.position) {
+                frames.push({
+                    t: now - startedAt,
+                    x: entity.position.x,
+                    z: entity.position.z,
+                    renderX: entity.mesh.position.x,
+                    renderZ: entity.mesh.position.z,
+                    state: entity.state,
+                    animation: entity.currentAnimationName || null
+                });
+            }
+            if (now - startedAt >= duration) {
+                resolve({
+                    frames,
+                    metrics: entity?.remoteTransformBuffer?.getMetrics?.() || null
+                });
+                return;
+            }
+            requestAnimationFrame(capture);
+        };
+        requestAnimationFrame(capture);
+    }), { remoteUsername: username, duration: durationMs });
+}
+
+function analyzeRemoteMovement(frames) {
+    expect(frames.length).toBeGreaterThan(10);
+    const first = frames[0];
+    const last = frames.at(-1);
+    const directionX = last.renderX - first.renderX;
+    const directionZ = last.renderZ - first.renderZ;
+    const magnitude = Math.hypot(directionX, directionZ);
+    expect(magnitude).toBeGreaterThan(0.25);
+    const unitX = directionX / magnitude;
+    const unitZ = directionZ / magnitude;
+    let previousProgress = 0;
+    let largestBacktrack = 0;
+    let largestStep = 0;
+    let maxRenderLogicalGap = 0;
+    const uniqueRenderPositions = new Set();
+
+    for (const [index, frame] of frames.entries()) {
+        const progress = (frame.renderX - first.renderX) * unitX +
+            (frame.renderZ - first.renderZ) * unitZ;
+        if (index > 0) {
+            largestBacktrack = Math.min(largestBacktrack, progress - previousProgress);
+            largestStep = Math.max(
+                largestStep,
+                Math.hypot(frame.renderX - frames[index - 1].renderX, frame.renderZ - frames[index - 1].renderZ)
+            );
+        }
+        previousProgress = progress;
+        maxRenderLogicalGap = Math.max(
+            maxRenderLogicalGap,
+            Math.hypot(frame.renderX - frame.x, frame.renderZ - frame.z)
+        );
+        uniqueRenderPositions.add(`${frame.renderX.toFixed(3)},${frame.renderZ.toFixed(3)}`);
+    }
+
+    return {
+        travel: magnitude,
+        largestBacktrack,
+        largestStep,
+        maxRenderLogicalGap,
+        uniqueRenderPositions: uniqueRenderPositions.size
+    };
 }
 
 async function castAndObserveRemote(sourcePage, observerPage, sourceUsername, skillName, key) {
@@ -584,12 +664,28 @@ test.describe('two-account multiplayer', () => {
             }
 
             const beforeMovement = await remoteSnapshot(secondPage, primary.username);
+            const remoteMovementPromise = sampleRemoteMovement(secondPage, primary.username);
+            await firstPage.bringToFront();
             await moveByGroundClick(firstPage, 20, 0);
 
             await expect.poll(async () => {
                 const after = await remoteSnapshot(secondPage, primary.username);
                 return Math.hypot(after.x - beforeMovement.x, after.z - beforeMovement.z);
             }, { timeout: 15_000 }).toBeGreaterThan(0.25);
+            const remoteMovement = await remoteMovementPromise;
+            const remoteMovementAnalysis = analyzeRemoteMovement(remoteMovement.frames);
+            expect(remoteMovementAnalysis.largestBacktrack).toBeGreaterThanOrEqual(-0.35);
+            expect(remoteMovementAnalysis.largestStep).toBeLessThan(3);
+            expect(remoteMovementAnalysis.maxRenderLogicalGap).toBeLessThan(2);
+            expect(remoteMovementAnalysis.uniqueRenderPositions).toBeGreaterThan(4);
+            expect(remoteMovement.metrics).toEqual(expect.objectContaining({
+                samples: expect.any(Number),
+                accepted: expect.any(Number),
+                interpolated: expect.any(Number)
+            }));
+            expect(remoteMovement.metrics.samples).toBeLessThanOrEqual(32);
+            expect(remoteMovement.metrics.accepted).toBeGreaterThan(2);
+            expect(remoteMovement.metrics.interpolated + remoteMovement.metrics.extrapolated).toBeGreaterThan(0);
             phase('verified remote movement');
 
             const gameCanvas = firstPage.locator('body > canvas').last();

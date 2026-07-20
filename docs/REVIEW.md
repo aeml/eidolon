@@ -10,10 +10,11 @@ Eidolon is a static Three.js browser action RPG backed by an authoritative Go/We
 
 ## Evidence that is currently strong
 
-- Client unit baseline: 90 Jest suites / 1,027 tests pass from a fresh Node 24 install in this environment.
+- Client unit baseline: 92 Jest suites / 1,047 tests pass from a fresh Node 24 install in this environment.
 - Server baseline: every Go package tests and builds under Go 1.24.5.
 - Dependency baseline: the lockfile audits at zero known npm vulnerabilities; the production protobuf runtime is locked and self-hosted rather than loaded from a CDN.
 - Local browser baseline: hardware-accelerated Google Chrome `150.0.7871.124` passes the anonymous surface plus a disposable full-character route for visible graphics selection, movement, menus, combat/ability, kill/loot/inventory, dungeon entry/exit, reconnect, and persisted fresh login.
+- Movement baseline: the disposable real-input route passes exact-current, sub-arrival, nearby, and sustained trajectories with no correction frames; a separate Chrome process observes bounded timestamped remote interpolation. Detailed ownership and thresholds are in `docs/MOVEMENT_SMOOTHNESS.md`.
 - Security baseline: `/level`, the fixed QA waypoints, and one-kill loot acceleration require an authenticated username on an explicit server allowlist, with allow/deny and consumption regression tests.
 - Load-test credentials: tracked credentials are removed; the driver generates cryptographically random, in-memory credentials unless an explicit read-only file is supplied.
 - Release observability: client and server expose commit identity; server readiness includes a Mongo ping; deployment checks require the expected SHA and healthy database.
@@ -29,7 +30,8 @@ This is point-in-time evidence for SHA `02533ea`, not a claim that later commits
 
 ## What remains fragile
 
-- The main monoliths remain large: `world.go` 8,557 LOC, `main.go` 5,021, `GameEngine.js` 5,645, and `UIManager.js` 3,634.
+- The main monoliths remain large: `world.go` 8,578 LOC, `main.go` 5,027, `GameEngine.js` 5,810, and `UIManager.js` 3,634.
+- The movement server still accepts bounded absolute client transforms rather than integrating directional input with complete overworld speed/collision authority; ordering, dungeon clamping, movement locks, and discontinuity rejection are enforced, but broader anti-cheat authority remains future protocol work.
 - The server still lacks the planned instance-scoped lock hierarchy.
 - Mongo migration tooling, broader persistence integration tests, formal per-message rate limiting, and malformed-packet fuzz coverage remain open.
 - Browser automation is a release gate, not a substitute for long-duration gameplay, mobile, accessibility, performance, and multi-client soak work.
@@ -50,4 +52,4 @@ This is point-in-time evidence for SHA `02533ea`, not a claim that later commits
 - “Friends/presence do not exist.” They do and persist in Mongo.
 - “Protobuf is future work.” Binary full/delta state replication is current.
 - “Receiving any HTTP response proves deployment health.” Deployment now checks readiness and commit identity.
-- “The `0.40.0` extraction brought `world.go` below 7,500 lines.” Current measured state is 8,481 lines; historical reduction claims must not replace current measurement.
+- “The `0.40.0` extraction brought `world.go` below 7,500 lines.” Current measured state is 8,578 lines; historical reduction claims must not replace current measurement.

@@ -419,6 +419,7 @@ type MovePayload struct {
 	Z        float64 `json:"z"`
 	Rotation float64 `json:"rotation"`
 	State    string  `json:"state"`
+	Sequence uint64  `json:"sequence"`
 }
 
 type JumpPayload struct {
@@ -2382,14 +2383,15 @@ func (c *Client) handleMessage(msg Message) {
 			}
 		}
 
-		world.UpdateEntityPosition(c.playerID, payload.X, payload.Y, payload.Z, payload.Rotation)
-		if e := world.GetEntity(c.playerID); e != nil {
-			if payload.State != "" {
-				e.State = payload.State
-			} else {
-				e.State = "MOVING" // Fallback
-			}
-		}
+		world.UpdatePlayerMovement(
+			c.playerID,
+			payload.X,
+			payload.Y,
+			payload.Z,
+			payload.Rotation,
+			payload.State,
+			payload.Sequence,
+		)
 
 	case MsgJump:
 		if c.playerID == "" {
@@ -4158,7 +4160,10 @@ func broadcastState() {
 			// First sync sends full state, subsequent sends ALWAYS use delta
 			// (We can't mix state/delta or client will incorrectly remove entities)
 			isFirstSync := len(c.seenIDs) == len(changedState) && len(removed) == 0
-			env := &statepb.StateEnvelope{Version: 1}
+			env := &statepb.StateEnvelope{
+				Version:      1,
+				ServerTimeMs: uint64(time.Now().UnixMilli()),
+			}
 
 			if isFirstSync {
 				full := &statepb.StateFull{Entities: make([]*statepb.Entity, 0, len(currentState))}
@@ -4604,6 +4609,7 @@ func entityToProto(e *game.Entity) *statepb.Entity {
 		JumpProgress:               float32(e.JumpProgress),
 		PartyId:                    e.PartyID,
 		SocialStatus:               e.SocialStatus,
+		MoveSequence:               e.LastMoveSequence,
 	}
 
 	e.Mu.RUnlock()

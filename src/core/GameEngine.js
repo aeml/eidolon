@@ -15,6 +15,11 @@ import { Minimap } from '../ui/Minimap.js';
 import { WorldMap } from '../ui/WorldMap.js';
 import { FloatingTextManager } from '../ui/FloatingTextManager.js';
 import { AudioManager, AUDIO_CUES } from '../audio/AudioManager.js';
+import {
+    horizontalDistance,
+    LOCAL_SERVER_ADJUSTMENT_TOLERANCE,
+    shortestAngleDelta
+} from './MovementSmoothing.js';
 
 const LOCAL_POSITION_CORRECTION_DISTANCE = 3.0;
 
@@ -473,6 +478,16 @@ export class GameEngine {
         this.playerJumpState = null;
         this.playerJumpVisualHeight = 0;
         this.playerCorrectionVisualState = null;
+        this.movementNetworkState = null;
+        this.movementTelemetry = {
+            packetsSent: 0,
+            idleHeartbeats: 0,
+            acknowledged: 0,
+            staleAcknowledgements: 0,
+            serverAdjustments: 0,
+            hardCorrections: 0,
+            maxServerAdjustment: 0
+        };
         this.lastRenderHudSignature = '';
         this.lastRenderXpSignature = '';
         this.lastRenderHotbarCooldownSignature = '';
@@ -1846,9 +1861,10 @@ export class GameEngine {
                             const serverPos = new THREE.Vector3(pData.x, pData.y || 0, pData.z);
                             const horizontalPos = new THREE.Vector3(pData.x, this.player.position.y, pData.z);
                             const dist = this.player.position.distanceTo(horizontalPos);
-                            if (pData.state === 'JUMPING' || dist > LOCAL_POSITION_CORRECTION_DISTANCE) {
+                            const correctionReason = this.getLocalPositionCorrectionReason(pData, serverPos, dist);
+                            if (correctionReason) {
                                 const previousPosition = this.player.position.clone();
-                                console.log(`GameEngine: Detected server teleport, syncing position. Dist: ${dist}, Server: ${serverPos.x},${serverPos.z}, Client: ${this.player.position.x},${this.player.position.z}`);
+                                console.log(`GameEngine: Applying ${correctionReason} position correction. Dist: ${dist}, Server: ${serverPos.x},${serverPos.z}, Client: ${this.player.position.x},${this.player.position.z}`);
                                 if (pData.state === 'JUMPING') {
                                     this.player.position.x = serverPos.x;
                                     this.player.position.z = serverPos.z;
@@ -2117,9 +2133,10 @@ export class GameEngine {
                             // Normal prediction differs by only a fraction of a
                             // movement step. Correct larger drift before stale
                             // chase input can visually undo a server teleport.
-                            if (pData.state === 'JUMPING' || dist > LOCAL_POSITION_CORRECTION_DISTANCE) {
+                            const correctionReason = this.getLocalPositionCorrectionReason(pData, serverPos, dist);
+                            if (correctionReason) {
                                 const previousPosition = this.player.position.clone();
-                                console.log(`GameEngine: Detected self teleport from delta, syncing position. Dist: ${dist}`);
+                                console.log(`GameEngine: Applying ${correctionReason} self correction from delta. Dist: ${dist}`);
                                 if (pData.state === 'JUMPING') {
                                     this.player.position.x = serverPos.x;
                                     this.player.position.z = serverPos.z;
@@ -2428,16 +2445,21 @@ export class GameEngine {
             const newPos = new THREE.Vector3(pData.x, pData.y ?? 0, pData.z);
             if (!remoteEntity.targetServerPosition) {
                 remoteEntity.position.copy(newPos);
-                remoteEntity.targetServerPosition = newPos;
-            } else {
-                if (remoteEntity.position.distanceTo(newPos) > 10.0) {
-                    remoteEntity.position.copy(newPos);
-                }
-                remoteEntity.targetServerPosition = newPos;
+                remoteEntity.resetTransformInterpolation?.();
+            }
+            remoteEntity.targetServerPosition = newPos;
+            if (pData.state !== 'JUMPING') {
+                remoteEntity.pushRemoteTransform?.(newPos, pData.rotation, {
+                    serverTimeMs: pData._serverTimeMs,
+                    state: pData.state
+                });
             }
         }
 
         if (pData.state === 'JUMPING') {
+            if (previousRemoteState !== 'JUMPING') {
+                remoteEntity.clearRemoteTransformBuffer?.();
+            }
             this.syncAuthoritativeJumpState(remoteEntity, {
                 ...pData,
                 _previousPosition: previousRemotePosition,
@@ -4475,7 +4497,7 @@ export class GameEngine {
 
         const horizontalDistance = new THREE.Vector2(previousPosition.x, previousPosition.z)
             .distanceTo(new THREE.Vector2(nextPosition.x, nextPosition.z));
-        if (!Number.isFinite(horizontalDistance) || horizontalDistance < 0.25) {
+        if (!Number.isFinite(horizontalDistance) || horizontalDistance < LOCAL_SERVER_ADJUSTMENT_TOLERANCE) {
             this.playerCorrectionVisualState = null;
             return;
         }
@@ -4486,6 +4508,144 @@ export class GameEngine {
             displayPosition: previousPosition.clone(),
             elapsed: 0,
             duration: Math.max(0.08, Math.min(0.18, horizontalDistance / 240))
+        };
+    }
+
+    ensureMovementNetworkState() {
+        if (!this.movementTelemetry) {
+            this.movementTelemetry = {
+                packetsSent: 0,
+                idleHeartbeats: 0,
+                acknowledged: 0,
+                staleAcknowledgements: 0,
+                serverAdjustments: 0,
+                hardCorrections: 0,
+                maxServerAdjustment: 0
+            };
+        }
+        const playerId = this.player?.id || null;
+        if (this.movementNetworkState?.playerId === playerId) return this.movementNetworkState;
+        this.movementNetworkState = {
+            playerId,
+            clock: 0,
+            lastSentAt: -Infinity,
+            nextSequence: 1,
+            lastAcknowledgedSequence: 0,
+            lastPacket: null,
+            sentHistory: new Map()
+        };
+        return this.movementNetworkState;
+    }
+
+    sendPlayerMovementIfNeeded(dt) {
+        if (!this.isMultiplayer || !this.player || !this.network?.send ||
+            this.player.state === 'DEAD' || this.player.state === 'JUMPING') return false;
+
+        const movement = this.ensureMovementNetworkState();
+        movement.clock += Math.max(0, Math.min(0.25, Number(dt) || 0));
+        const euler = new THREE.Euler().setFromQuaternion(this.player.rotation);
+        const packet = {
+            x: this.player.position.x,
+            y: this.player.position.y,
+            z: this.player.position.z,
+            rotation: euler.y,
+            state: this.player.state
+        };
+        const previous = movement.lastPacket;
+        const positionChanged = !previous || horizontalDistance(previous, packet) > 0.0025 ||
+            Math.abs((previous?.y ?? packet.y) - packet.y) > 0.0025;
+        const rotationChanged = !previous || Math.abs(shortestAngleDelta(previous.rotation, packet.rotation)) > 0.01;
+        const stateChanged = !previous || previous.state !== packet.state;
+        const elapsed = movement.clock - movement.lastSentAt;
+        // Fixed-step sums land a few ulps either side of exact cadence
+        // boundaries. The tiny epsilon prevents a nominal two-frame 30 Hz
+        // interval from occasionally stretching to three frames (20 Hz).
+        const heartbeat = elapsed + 1e-9 >= 1;
+        const cadenceReady = elapsed + 1e-9 >= (1 / 30);
+        if (!stateChanged && !heartbeat && (!(positionChanged || rotationChanged) || !cadenceReady)) {
+            return false;
+        }
+
+        const sequence = movement.nextSequence++;
+        const payload = { ...packet, sequence };
+        this.network.send('move', payload);
+        movement.lastSentAt = movement.clock;
+        movement.lastPacket = packet;
+        movement.sentHistory.set(sequence, { ...packet });
+        while (movement.sentHistory.size > 180) {
+            movement.sentHistory.delete(movement.sentHistory.keys().next().value);
+        }
+        this.movementTelemetry.packetsSent += 1;
+        if (heartbeat && !positionChanged && !rotationChanged && !stateChanged) {
+            this.movementTelemetry.idleHeartbeats += 1;
+        }
+        return true;
+    }
+
+    getLocalPositionCorrectionReason(pData, serverPosition, currentDistance) {
+        if (pData?.state === 'JUMPING') return 'authoritative jump';
+
+        const movement = this.ensureMovementNetworkState();
+        const acknowledgedSequence = Number(pData?.moveSequence || 0);
+        if (acknowledgedSequence > 0) {
+            // A newly constructed browser engine may resume a server-side
+            // entity whose counter survived the transport disconnect. Rebase
+            // before sending the next sample so the server does not reject an
+            // entire restarted 1..N sequence as stale.
+            movement.nextSequence = Math.max(movement.nextSequence, acknowledgedSequence + 1);
+            if (acknowledgedSequence < movement.lastAcknowledgedSequence) {
+                this.movementTelemetry.staleAcknowledgements += 1;
+                return null;
+            }
+
+            const sent = movement.sentHistory.get(acknowledgedSequence);
+            movement.lastAcknowledgedSequence = acknowledgedSequence;
+            this.movementTelemetry.acknowledged += 1;
+            for (const sequence of movement.sentHistory.keys()) {
+                if (sequence <= acknowledgedSequence) movement.sentHistory.delete(sequence);
+            }
+
+            if (sent) {
+                const adjustment = horizontalDistance(sent, serverPosition);
+                this.movementTelemetry.maxServerAdjustment = Math.max(
+                    this.movementTelemetry.maxServerAdjustment,
+                    Number.isFinite(adjustment) ? adjustment : 0
+                );
+                if (adjustment > LOCAL_SERVER_ADJUSTMENT_TOLERANCE) {
+                    this.movementTelemetry.serverAdjustments += 1;
+                    return 'acknowledged server adjustment';
+                }
+                // The server accepted this prediction. Its snapshot may be a
+                // frame or two behind the current local path, so never pull the
+                // player backward toward an already-accepted sample.
+                return null;
+            }
+        }
+
+        if (currentDistance > LOCAL_POSITION_CORRECTION_DISTANCE) {
+            this.movementTelemetry.hardCorrections += 1;
+            return 'authoritative discontinuity';
+        }
+        return null;
+    }
+
+    getMovementMetrics() {
+        const movement = this.ensureMovementNetworkState();
+        const remote = {};
+        for (const [id, entity] of this.remotePlayers || []) {
+            if (entity?.remoteTransformBuffer) {
+                remote[id] = entity.remoteTransformBuffer.getMetrics();
+            }
+        }
+        return {
+            local: {
+                ...this.movementTelemetry,
+                pendingAcknowledgements: movement.sentHistory.size,
+                lastAcknowledgedSequence: movement.lastAcknowledgedSequence,
+                lastSentSequence: movement.nextSequence - 1,
+                actor: { ...(this.player?.movementMetrics || {}) }
+            },
+            remote
         };
     }
 
@@ -5005,6 +5165,10 @@ export class GameEngine {
             : null;
 
         if (this.player) {
+            if (!this.inputManager.isMouseDown && this._primaryMovementPointerWasDown) {
+                this.player.clearBlockedMovementTarget?.();
+            }
+            this._primaryMovementPointerWasDown = Boolean(this.inputManager.isMouseDown);
             const playerIsJumping = this.player.state === 'JUMPING' || !!this.playerJumpState;
             if (!playerIsJumping && this.inputManager.isRightMouseDown) {
                 this.needsRaycast = true;
@@ -5443,19 +5607,7 @@ export class GameEngine {
         }
 
         // Network Update
-        if (this.isMultiplayer && this.player) {
-            // Don't send move updates if dead
-            if (this.player.state !== 'DEAD' && this.player.state !== 'JUMPING' && this.frameCount % 3 === 0) {
-                const euler = new THREE.Euler().setFromQuaternion(this.player.rotation);
-                this.network.send('move', {
-                    x: this.player.position.x,
-                    y: this.player.position.y,
-                    z: this.player.position.z,
-                    rotation: euler.y,
-                    state: this.player.state
-                });
-            }
-        }
+        this.sendPlayerMovementIfNeeded(dt);
         
         // Update realm lighting based on player position
         if (this.player) {
@@ -5498,6 +5650,19 @@ export class GameEngine {
 
         this.applyPlayerJumpVisuals();
         this.applyPlayerCorrectionVisuals();
+
+        for (let i = 0; i < activeEntities.length; i++) {
+            activeEntities[i]?.syncPresentationTransform?.();
+        }
+
+        if (this.cameraLocked && this.player?.mesh?.position) {
+            if (!this._renderCameraTarget) this._renderCameraTarget = new THREE.Vector3();
+            this._renderCameraTarget.copy(this.player.mesh.position);
+            // Jump squash/stretch is presentation-only; following its vertical
+            // arc would make every landing shake the whole screen.
+            this._renderCameraTarget.y = this.player.position.y;
+            this.renderSystem.setCameraTarget(this._renderCameraTarget);
+        }
 
         this.renderSystem.render();
 

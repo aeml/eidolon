@@ -1,260 +1,289 @@
-# Eidolon Animation, Ability VFX, and Movement Quality Goal
+# Eidolon Buttery-Smooth Movement and Locomotion Goal
 
-Audit, repair, polish, and comprehensively verify every player-facing animation and visual effect in Eidolon. This includes every active ability and its variants, all core character locomotion and combat states, persistent buffs and summons, local and remote-player presentation, and the shipped enemy/boss/NPC animation states.
+Eliminate player movement rubber-banding, micro-snaps, oscillation, stutter, foot sliding, and unstable locomotion transitions throughout Eidolon. The confirmed symptom is that short click-to-move commands—especially clicks at, or very near, the character’s current location—can feel rubber-bandy. Treat that as the first reproducible defect, not the boundary of the work.
 
-Spirit Guardians is a confirmed defect and a priority, but it is not the boundary of the work. Do not stop after fixing that one ability or after making unit tests pass. Work autonomously through discovery, implementation, automated coverage, real-browser visual inspection, multiplayer verification, production release, and live testing.
+Work autonomously through discovery, instrumentation, reproduction, root-cause analysis, implementation, automated regression coverage, hardware-browser inspection, multiplayer verification, production release, and live testing with dedicated real characters. Do not stop after hiding the symptom with a larger visual lerp, increasing the arrival radius, disabling reconciliation, or making one local test pass.
 
-The desired outcome is not merely “an effect object was created.” Every animation must be visible, readable, correctly timed, correctly positioned, synchronized with authoritative gameplay, smooth through state transitions, safe across reconnects, and free of known visual or lifecycle bugs.
+The desired outcome is responsive, continuous, and authoritative movement. Local input should feel immediate; the rendered character, camera, animation, and server state should converge without visible corrections; remote players should move naturally despite uneven snapshot timing; and arrival at both tiny and long-distance destinations should settle exactly once. Movement and animation must remain correct through combat, casting, jumps, forced movement, latency, frame-rate variation, reconnects, and terrain changes.
 
 ## Operating requirements
 
-- Begin by reading the current documentation, active plans, class implementations, skill/talent/rune data, server ability configuration, actor animation state machine, effect systems, model-loading paths, network replication, and existing tests.
-- Preserve unrelated user changes and normal player data.
-- Make focused, reviewable commits and keep the worktree clean.
-- Use the existing production release discipline: full local validation, push the completed work to the configured production branch (currently `master`), monitor deployment, confirm matching frontend/backend SHAs, and test the deployed game in real hardware-accelerated Chrome.
-- Fix forward when a release regression is attributable to this work. Do not leave production on a knowingly broken animation release.
-- Do not declare that everything works based only on code inspection, mocked Three.js objects, or an effect registry entry. Observe the real rendered result.
+- Begin by reading the current documentation, movement/input code, camera and pointer projection, character controller, pathing, client prediction, command transport, server movement validation and simulation, snapshot/state replication, reconciliation, remote interpolation, animation state machine, and existing unit/browser tests.
+- Reproduce and measure the defect before changing behavior. Record what the client predicted, what the server accepted, what snapshots returned, which corrections were applied, and which animation transitions occurred.
+- Preserve server authority, collision rules, speed limits, anti-cheat validation, combat behavior, and normal player data.
+- Preserve unrelated user changes and keep commits focused and reviewable.
+- Prefer a root-cause fix with explicit invariants over scattered tolerances or filters.
+- Use the production release discipline already established in this repository: complete local validation, commit and push to `master`, monitor deployment, confirm matching frontend/backend SHAs, and test the deployed game in real hardware-accelerated Chrome with dedicated persistent QA characters.
+- Fix forward when a deployed regression is attributable to this work. Do not leave production on a knowingly broken movement release.
+- Do not claim smoothness based only on mocked vectors, code inspection, or a green unit suite. Observe and measure the rendered result through real browser input.
 
-## 1. Build a canonical animation and ability-visual inventory
+## 1. Map the complete movement pipeline
 
-Create a durable coverage matrix, preferably `docs/ANIMATION_COVERAGE.md` plus a machine-readable source of truth where appropriate.
+Create or update durable movement architecture and QA documentation, preferably `docs/MOVEMENT_SMOOTHNESS.md`, with a concise data-flow map covering:
 
-Derive the inventory from all relevant sources rather than manually trusting one file:
+1. Mouse/keyboard input and canvas focus.
+2. Screen-to-world raycasting and terrain/collision destination selection.
+3. Local movement intent, path/replan state, and sequence/timestamp identity.
+4. Client-side prediction and rendered transform ownership.
+5. Outbound movement command cadence, coalescing, ordering, and cancellation.
+6. Server validation, movement integration, arrival rules, collision, and snapshot cadence.
+7. Authoritative state receipt, stale/out-of-order rejection, acknowledgement, and reconciliation.
+8. Local render smoothing and camera following.
+9. Remote-player interpolation/extrapolation and buffer management.
+10. Locomotion animation selection, blending, playback speed, facing, and restoration after higher-priority actions.
 
-- `server/internal/game/ability_config.go` and all server ability handlers.
-- `src/entities/Fighter.js`, `Rogue.js`, `Wizard.js`, and `Cleric.js`.
-- Skill tree, specialization, talent, rune, equipment-granted, transformed, summon, and alias data.
-- `src/skills/skillVisuals.js`, `TransientEffects.js`, `AreaOfEffect.js`, `Projectile.js`, and other local/remote VFX routes.
-- Actor/model animation clips and every shipped player, enemy, boss, summon, and NPC class.
-- Network events and replicated state used to present other players’ casts, movement, jumps, attacks, deaths, buffs, summons, channels, and teleports.
+Identify every location that can write player position, velocity, facing, destination, movement state, camera target, or locomotion animation. Document which layer owns each value and why. Remove accidental competing writers or ambiguous ownership where they cause instability.
 
-For each ability or actor state, record:
+Document the coordinate systems, units, time bases, precision/rounding behavior, tick rates, snapshot rates, and thresholds currently used. Verify that client and server arrival, stopping, collision, and speed semantics agree rather than assuming similarly named constants are equivalent.
 
-- Owning class/entity and exact canonical name.
-- Whether it is active, passive, channeled, persistent, movement-based, projectile, area, buff/debuff, summon, or transformation.
-- Local skeletal animation or procedural pose.
-- Cast, travel/channel, impact, persistent, expiration, and recovery VFX where applicable.
-- Sound hook if one exists; missing audio is not the main scope unless it causes animation timing defects.
-- Remote-player/enemy presentation.
-- Rune/talent/equipment variants that materially change timing, count, range, shape, duration, targeting, or appearance.
-- Intended graphics-quality behavior.
-- Automated coverage and real-browser evidence.
-- An explicit and justified “no animation required” classification for true passives. Never let a generic fallback silently conceal missing work.
+## 2. Build deterministic reproduction and telemetry
 
-Add a regression check that fails when a new configured active ability or replicated visual state has no explicit local and remote presentation classification.
+Add development/QA-only observability that can capture a bounded movement trace without exposing credentials or normal-player data. Each trace should make it possible to correlate:
 
-## 2. Repair the shared actor animation state machine
+- Input time and exact requested world destination.
+- Distance from the current predicted and authoritative position when the command was issued.
+- Movement command ID/sequence, send time, and acknowledgement or supersession.
+- Client predicted position, rendered position, velocity, facing, and active path/destination.
+- Server-authoritative position, velocity/state, accepted destination, and snapshot time/sequence.
+- Reconciliation error before and after correction, correction mode, and correction duration.
+- Remote interpolation-buffer depth, selected samples, extrapolation duration, and late/out-of-order snapshots.
+- Locomotion state, animation action, blend transition, normalized playback speed, and restart count.
+- Frame time, fixed-step accumulator where applicable, and camera-target position.
 
-Audit and correct `Actor.js` and every caller that can change animation state. Establish clear, testable priority and transition rules for at least:
+Instrumentation must be bounded, disabled by default, harmless in production, and cheap when inactive. Do not log credentials, tokens, chat, account details, or unrelated gameplay payloads.
 
-- Spawn/initialization.
-- Idle.
-- Walk.
-- Run.
-- Start moving, stop moving, rapid direction changes, and click-to-move replanning.
-- Basic attack, cast, channel, impact recovery, and repeated attacks at different attack/cast speeds.
-- Jump anticipation, airborne progression, landing, and restoration to the correct idle/walk/run state.
-- Charge, lunge, dash, blink, teleport, knockback, stun, root, pull, and other forced movement.
-- Hit reaction if the shipped models support it.
-- Death, corpse state, resurrection, and respawn.
-- Summon/transformation entry and exit.
-- Disconnect, session resume, fresh login, dungeon transition, and join-in-progress reconstruction.
+Create deterministic repro coverage for at least:
 
-Eliminate known classes of animation bugs:
+- Clicking exactly on the character/current destination.
+- Clicking inside the current arrival/stopping radius.
+- Repeated tiny moves in several directions.
+- Rapid alternation between two nearby points.
+- Reclicking the same destination before and after arrival.
+- Short, medium, and long clicks on flat terrain.
+- Short moves on slopes, terrain seams, collision edges, and near obstacles.
+- A click whose raycast resolves slightly differently between frames.
+- Replanning while already moving, reversing direction, and stopping mid-path.
+- Holding/releasing each supported keyboard movement input, including opposite-key transitions if keyboard movement exists.
+- Movement immediately before, during, and after attack, cast, channel, jump, dash/charge, knockback, stun/root, death, respawn, teleport, dungeon transition, reconnect, and character replacement.
+- 30, 60, 120, and uncapped/render-variable frame-rate conditions.
+- Stable low latency, uneven latency/jitter, packet delay, packet loss, duplicated packets, and reordered/stale snapshots using a deterministic test harness.
 
-- T-poses, bind-pose flashes, frozen mixers, missing clips, and invalid clip-name assumptions.
-- Moonwalking, foot sliding, incorrect facing, movement with an idle pose, or running while stationary.
-- Animation restart spam on repeated snapshots.
-- Casts that instantly snap back to idle, loop forever, or get overwritten by ordinary movement.
-- Attacks whose visual impact timing does not match the authoritative hit.
-- Jump animations that restart every frame, use an obviously broken walk fallback, land twice, or restore the wrong state.
-- Death being overwritten by movement, attacks, buffs, or late network packets.
-- Incorrect speed scaling at high attack speed, cast speed, haste, slow, or frame-rate variation.
-- Local and remote actors resolving the same state differently without a deliberate design reason.
+Produce a baseline report before the substantive fix. Measure correction magnitude, hard-snap count, arrival oscillation, destination churn, movement-command churn, animation restart count, and remote interpolation underruns. Use the baseline to set justified regression bounds; do not invent arbitrary numbers solely to make tests green.
 
-Use clean crossfades and stable mixer/action lifecycle management where supported by the assets. If an imported model lacks a required clip, provide an intentional procedural or best-fit fallback and document it; do not silently pretend the missing clip exists.
+## 3. Fix nearby-destination and arrival behavior
 
-## 3. Fix and polish every player ability
+Resolve the confirmed close-movement defect at its source. The completed behavior must satisfy these invariants:
 
-Exercise every configured and selectable active ability for Fighter, Rogue, Wizard, and Cleric, including alternate specialization skills, aliases, runes, talents, equipment modifiers, and transformed/summoned abilities.
+- A click at the current effective location is an idempotent no-op or a clean stop, never a move-stop-move loop.
+- A destination within the shared arrival tolerance cannot cause alternating client/server interpretations of “moving” and “arrived.”
+- Tiny valid moves happen once in the requested direction and settle once without overshoot, backwards correction, oscillation, or animation thrashing.
+- Repeated identical or effectively equivalent destinations do not restart a path, animation, or network command unnecessarily.
+- Floating-point noise, terrain-height sampling, coordinate quantization, and packet serialization cannot keep a nearly arrived character alive in a correction loop.
+- The client does not keep predicting a destination the server rejected, clamped, replaced, or already acknowledged as complete.
+- Superseded movement commands and late snapshots cannot resurrect an older nearby destination.
+- Arrival clears or preserves facing deliberately and consistently rather than flipping toward numerical noise.
+- Stopping remains responsive and does not introduce a perceptible input lag or excessive dead zone.
 
-For every ability, verify and fix:
+Centralize shared semantics or derive them from one authoritative definition where practical. If client prediction requires a deliberately different threshold, document the relationship and prove that its hysteresis cannot create a disagreement loop.
 
-- A readable anticipation/cast cue.
-- Correct origin, target, direction, facing, range, height, and terrain anchoring.
-- Travel or channel behavior when applicable.
-- Impact timing and location matching server-authoritative damage, healing, movement, buffs, debuffs, summons, or crowd control.
-- Persistent visuals for the full authoritative duration.
-- Clean refresh, stacking, replacement, cancellation, expiration, death, zone-change, and reconnect behavior.
-- No duplicate effects from local prediction plus server echo.
-- Correct local, remote-player, party-member, enemy, and target presentation.
-- Distinct enough visual identity to understand what happened during combat.
-- No clipping below terrain, detached effects, z-fighting, giant full-screen geometry, invisible particles, stale world-space effects, or camera-dependent disappearance.
-- Acceptable behavior at both Low and High graphics settings.
-- Stable behavior at common frame rates and under rapid repeated casting.
-- Complete disposal of geometries, materials, textures, particles, timers, listeners, animation actions, summons, and scene nodes.
+## 4. Repair prediction and reconciliation
 
-Do not broadly replace missing ability identity with the same generic ring, wave, buff flash, or Attack clip. Shared primitives are acceptable, but their composition, duration, scale, color, motion, and timing must communicate the actual ability.
+Audit the local controlled-player reconciliation algorithm end to end.
 
-## 4. Spirit Guardians acceptance criteria
+- Track enough command/snapshot identity to reject stale authoritative state and reconcile only against the correct prediction history.
+- Acknowledge and retire processed inputs/destinations deterministically; keep history and queues bounded.
+- Distinguish ordinary prediction error from teleport, respawn, portal, server correction, collision rejection, and other discontinuities.
+- Apply a deadband only where measured sub-visual error is truly harmless and cannot accumulate.
+- Smooth ordinary corrections over an evidence-based interval without creating a second lagging transform that fights input or the camera.
+- Reserve hard snaps for explicit discontinuities or error large enough that smoothing would be dishonest or unsafe.
+- Make smoothing frame-rate independent. Clamp interpolation/extrapolation factors and handle long frames, background-tab recovery, clock skew, and zero/negative deltas safely.
+- Avoid overshoot, spring ringing, correction direction reversal, NaNs, unbounded catch-up speed, and permanent residual drift.
+- Ensure new input composes correctly with a correction already in progress instead of restarting or reversing it.
+- Preserve collision and movement-speed authority. Never conceal a genuine invalid move indefinitely.
+- Keep the rendered transform, authoritative simulation transform, camera target, selection ring, attached VFX, nameplate, and audio source coherent during correction.
 
-Treat Cleric Spirit Guardians, Guardian Spirits, Spirit Guardians Boost, and materially related rune/talent/equipment variants as a dedicated defect cluster.
+Use one coherent model for position ownership and correction. Do not stack independent lerps in the network layer, entity update, mesh update, and camera follow unless their roles and combined response are explicitly designed and tested.
 
-The finished Spirit Guardians presentation must:
+## 5. Make remote movement smooth and truthful
 
-- Show clearly visible guardian spirits orbiting the Cleric rather than only a momentary cast flash.
-- Remain attached to and smoothly follow the correct Cleric while preserving stable orbit motion.
-- Run for the full server-authoritative active duration.
-- Communicate activation, periodic pulses/damage, and expiration without excessive screen noise.
-- Scale or vary correctly for Guardian Spirits, Spirit Guardians Boost, and relevant modifiers.
-- Appear for the casting player and other connected players.
-- Reconstruct correctly for join-in-progress, reconnect/session resume, and dungeon/overworld transitions when the effect remains active.
-- Refresh or replace cleanly without duplicate orbit sets, accelerated animation, leaked timers, or orphaned scene nodes.
-- Disappear exactly once on expiration, cancellation, death, character replacement, or logout.
-- Keep damage/healing authoritative; visual fixes must not introduce client-side combat authority.
-- Pass repeated-cast and long-duration lifecycle tests with stable scene/effect counts.
+Audit snapshot production and remote-player presentation separately from local prediction.
 
-## 5. Cover enemies, bosses, summons, and NPCs
+- Interpolate using authoritative timestamps/sequences and an intentional render delay rather than raw packet arrival time.
+- Keep the interpolation buffer bounded, ordered, and robust to jitter, duplicates, gaps, and stale/out-of-order packets.
+- Adapt or recover cleanly when network cadence changes, without permanently increasing latency.
+- Use bounded extrapolation only when justified; converge smoothly when the next snapshot arrives.
+- Teleports, respawns, portals, dungeon transitions, reconnects, and large authoritative discontinuities must snap intentionally and clear incompatible history.
+- Remote actors must not freeze briefly at every snapshot, zig-zag between samples, overshoot corners, cut through obstacles, or slowly trail indefinitely.
+- Facing and animation should derive from meaningful motion/intent, not frame-to-frame positional noise.
+- A joining or reconnecting observer must reconstruct the current location/state once without replaying old movement.
 
-Audit every shipped actor archetype, not only the four playable classes.
+Verify convergence using two real browser contexts and, where the production QA accounts permit it, two dedicated live characters observing one another.
 
-Verify the states each archetype actually uses: idle, movement, basic attack, special attack/cast, hit/control state where available, phase transition, summon behavior, death, and despawn. Prioritize enemies and bosses reachable in current overworld and dungeon content, but leave no shipped actor unclassified in the coverage matrix.
+## 6. Make locomotion animations buttery smooth
 
-Fix animation/event mismatches that affect combat readability, including telegraphs that do not lead to the represented attack, attacks that damage before their impact frame without intentional warning, dead actors continuing to animate, and phase/summon effects that remain after cleanup.
+Movement is not complete if the transform is smooth but the character looks unstable. Audit the shared actor state machine and all four player models for:
 
-## 6. Make local and multiplayer presentation converge
+- Idle → walk/run and walk/run → idle crossfades.
+- Walk ↔ run threshold hysteresis and playback-speed scaling.
+- Short moves that should not flash a full run cycle or restart the same action repeatedly.
+- Start, stop, rapid reversal, strafing/diagonal movement where supported, and sharp facing changes.
+- Foot sliding caused by mismatched visual playback speed and actual planar velocity.
+- Moonwalking or stale facing during client correction.
+- Animation restart spam caused by repeated snapshots or equivalent state assignments.
+- Run → attack/cast → run restoration; move → jump → land → move; dash/charge/knockback → locomotion; stun/root/death priority; respawn restoration.
+- Local and remote actors selecting equivalent locomotion states for equivalent motion.
+- Low-speed numerical drift that keeps a walk animation active while visually stationary.
+- Camera-relative or terrain-slope artifacts that make velocity classification unstable.
 
-Animation correctness must hold for both the controlled character and replicated actors.
+Use stable state transitions, evidence-based hysteresis, and clean crossfades. Preserve higher-priority combat, jump, forced-movement, and death animations. Do not continuously retime or restart an action for imperceptible velocity changes. Where source clips limit perfect foot locking, implement the safest available playback/blend behavior and document the exact asset limitation honestly.
 
-- Ensure network messages carry or derive the canonical ability/state identity, timing, target, and duration needed for presentation.
-- Avoid relying on a generic remote fallback when the local player receives a bespoke effect.
-- Prevent prediction/server-echo duplication.
-- Verify late packets cannot resurrect expired VFX or overwrite death/newer state.
-- Verify a second browser observes movement speed, walk/run, jump arc/progress, facing, basic attacks, every tested ability category, persistent buffs, summons, teleports/charges, death, and recovery.
-- Verify state converges after latency, reconnect, dungeon transitions, and joining while a persistent effect is active.
-- Preserve server authority and bounded client queues; do not solve visual smoothness by hiding real state divergence.
+## 7. Smooth camera and attached presentation
 
-## 7. Add deterministic automated and visual QA
+Verify that apparent rubber-banding is not introduced or amplified by presentation layers.
 
-Add focused unit/integration tests for:
+- The camera should follow the intended rendered/predicted target without independently oscillating against reconciliation.
+- Camera smoothing must be frame-rate independent, bounded, and reset correctly on teleports, respawns, dungeon transitions, reconnects, and character replacement.
+- Selection indicators, health bars, nameplates, shadows, sounds, projectiles, persistent effects such as Spirit Guardians, and other attached nodes must follow the same visible character trajectory without one-frame lag or separate snapping.
+- Terrain height correction must not introduce vertical buzz on slopes or feed vertical noise into planar arrival and locomotion decisions.
+- Pointer/raycast destination markers must remain stable and should accurately communicate clamped, rejected, or already-arrived destinations.
 
-- Canonical ability-to-visual coverage and alias resolution.
-- Animation priority, crossfade, completion, interruption, and restoration.
-- Walk/run/idle selection and speed scaling.
-- Jump start/progress/landing/restoration.
-- Death and resurrection priority.
-- Persistent effect creation, refresh, snapshot reconstruction, expiration, and disposal.
-- Spirit Guardians orbit count, following, duration, pulse cadence, remote reconstruction, and cleanup.
-- Prediction/server-echo deduplication.
-- Scene/resource counts after repeated casts and character/dungeon replacement.
-- Every fixed regression.
+Inspect the rendered canvas and recorded traces together so camera jitter is not mistaken for actor correction, or vice versa.
 
-Create or extend a deterministic animation/VFX gallery or repro route that can render every inventory entry at known camera positions and controlled timing. It must use production rendering code and assets, be unavailable or harmless in normal production play, and support:
+## 8. Preserve gameplay correctness and security
 
-- Captures at anticipation, cast, travel/channel, impact, persistent midpoint, and cleanup.
-- Local and remote actor views.
-- Low and High graphics settings.
-- Repeatable screenshot/video evidence without embedding credentials.
-- A clear failure when an effect is invisible, missing, non-finite, detached, never expires, or unexpectedly falls through to a generic visual.
+- The server remains authoritative for position, speed, collision, teleports, crowd control, and zone transitions.
+- Do not increase allowed speed, trust arbitrary client coordinates, bypass collision, weaken anti-cheat checks, or accept stale movement to improve apparent smoothness.
+- Movement commands and prediction history must remain bounded against spam or malicious input.
+- Rapid nearby clicks must not create unbounded server work, packet floods, path queues, timers, allocations, or animation actions.
+- Movement during attack/cast/channel/root/stun/death must obey existing gameplay rules.
+- Do not change balance, damage, cooldowns, mana, or crowd-control durations except when necessary to correct a proven synchronization defect; document and test any such change.
+- QA hooks must be authenticated, allowlisted, narrowly scoped, and incapable of granting normal users production authority.
 
-Use image comparisons selectively with sensible tolerances. Prefer behavioral assertions for timing/lifecycle and human-readable screenshot/video contact sheets for aesthetic judgment; do not create brittle pixel tests that fail on harmless GPU rasterization differences.
+## 9. Add layered regression coverage
 
-## 8. Test through real hardware-accelerated Chrome
+Add focused unit and integration tests for every corrected invariant, including:
 
-Use `/usr/bin/google-chrome` on the repository runner and require a hardware WebGL renderer. Fail if Chrome uses SwiftShader or another software renderer.
+- Near-zero input and equivalent-destination deduplication.
+- Shared arrival/stopping semantics and hysteresis.
+- Command sequencing, acknowledgement, supersession, and bounded history.
+- Stale/out-of-order snapshot rejection.
+- Correction deadband, smooth correction, hard discontinuity, interruption by new input, and convergence.
+- Frame-rate-independent integration and smoothing.
+- Long-frame/background recovery and non-finite input protection.
+- Terrain-height noise and planar-vs-vertical distance handling.
+- Remote interpolation, jitter, gaps, extrapolation bounds, and buffer reset.
+- Teleport/respawn/portal/dungeon/reconnect history reset.
+- Idle/walk/run selection, hysteresis, crossfade, playback speed, and no restart spam.
+- Higher-priority animation interruption and correct locomotion restoration.
+- Camera and attached-effect coherence.
+- Packet/queue/action/resource bounds during rapid tiny inputs and a movement soak.
 
-Browser testing must use the actual rendered canvas and normal game pathways:
+Tests should verify trajectories and invariants, not merely final positions. Assert that nearby movement settles, correction magnitude decreases monotonically where designed, velocity/camera continuity stays bounded, state transitions do not oscillate, and no old command reactivates after acknowledgement.
 
-- Use real keyboard, mouse, wheel, and visible DOM controls.
-- Select skills/runes/builds through normal UI where practical.
-- Cast and move through real gameplay input; do not call character ability, movement, jump, attack, or effect-construction methods directly from `page.evaluate()`.
-- Read-only inspection and Three.js projection for positioning real mouse input remain acceptable.
-- A securely allowlisted QA setup command may accelerate levels/resources/build changes for dedicated QA characters, but must never work for ordinary accounts and must not directly fabricate the visual being tested.
-- Capture console errors, page errors, failed assets/requests, WebSocket state, final animation/effect state, and sanitized failure evidence.
+## 10. Build real-browser movement QA
 
-Run at minimum:
+Create or extend Playwright coverage using `/usr/bin/google-chrome` and require a hardware WebGL renderer. Fail if Chrome uses SwiftShader or another software renderer.
 
-- All four playable classes through idle, walk, run, jump, basic attack, death/recovery, and every ability/variant in the canonical inventory.
-- Rapid transition sequences such as run → cast → move, jump → cast/land, attack → movement, channel → interrupt, death during an effect, and repeated casts.
-- A two-browser pass for remote locomotion, jumps, attacks, short effects, projectiles, ground effects, persistent buffs, summons, transformations, charges/teleports, death, and reconnect.
-- Representative overworld and dungeon terrain/camera conditions.
-- Low and High graphics passes.
-- Repeated-cast/cleanup and a bounded soak that detects growing scene nodes, active effects, timers, animation actions, or memory.
+Browser testing must exercise normal production pathways:
 
-The exhaustive predeploy route may use disposable isolated characters. Production verification must use only dedicated persistent QA characters/accounts and must never delete or overwrite normal player characters.
+- Use real mouse and keyboard input against the rendered canvas and visible UI.
+- Use the production pointer projection, movement commands, WebSocket transport, server simulation, snapshots, entity update, animation mixer, and camera.
+- Do not directly set character transforms, invoke movement methods, inject snapshots, or select animation actions through `page.evaluate()`.
+- Read-only instrumentation, bounded trace extraction, and Three.js projection used to position a real mouse click are acceptable.
+- Test real server-backed characters in the isolated predeploy environment and dedicated persistent QA characters after deployment.
+- Capture sanitized screenshots/video/traces on failure and inspect them. Do not store credentials in artifacts.
 
-## 9. Performance and accessibility guardrails
+The deterministic browser matrix must include:
 
-- Keep effects readable without making combat illegible when several players cast simultaneously.
-- Avoid excessive flashes, opaque full-screen effects, or rapid strobing.
-- Respect graphics-quality reductions while retaining essential telegraphs and ability identity.
-- Do not regress input responsiveness, authoritative movement, or network-state handling.
-- Establish bounded performance/resource measurements for the gallery, repeated casts, and multiplayer scene.
-- Investigate material frame-time, draw-call, allocation, or scene-node regressions introduced by the fixes.
+- Exact-current-position, inside-arrival-radius, tiny, repeated, alternating, short, medium, and long click-to-move cases.
+- Flat terrain, slopes, terrain seams, obstacles/collision edges, overworld, and representative dungeon conditions.
+- Start, stop, replan, reverse, rapid clicking, and a bounded sustained-movement soak.
+- Supported keyboard movement paths and transitions.
+- Walk, run, idle, jump/land, attack/cast while moving, dash/charge/teleport, crowd control, death/respawn, dungeon transition, reconnect, and character replacement.
+- Fighter, Rogue, Wizard, and Cleric with their real model/animation differences.
+- Attached persistent VFX, explicitly including Spirit Guardians while the Cleric moves and reconciles.
+- Two-browser remote movement under normal conditions and deterministic latency/jitter/loss/reordering profiles in the isolated environment.
+- At least 30, 60, and 120 FPS emulation or deterministic render-step coverage where browser throttling makes that credible.
+- Low and High graphics settings where presentation behavior differs.
 
-## 10. Documentation, release, and production proof
+The browser gate should produce summarized movement metrics without credentials: maximum/percentile ordinary correction, hard-snap count by legitimate reason, arrival oscillation count, animation restart count, remote buffer underruns, and trace assertion failures. Thresholds must be justified from baseline data and tightened enough to catch the original defect without becoming GPU-pixel brittle.
 
-Update the animation coverage matrix and relevant architecture/QA/status documentation with evidence-based claims. Distinguish:
+## 11. Performance and soak guardrails
 
-- Inventoried.
+- Measure movement command rate, snapshot rate, queue/history lengths, animation action count, scene/resource count, allocations where practical, and browser frame behavior.
+- Rapid nearby clicks must be coalesced or handled without flooding the server while preserving responsive legitimate replanning.
+- No movement or reconciliation path may leak timers, listeners, promises, traces, scene nodes, animation actions, or prediction records.
+- Run a bounded local/remote movement soak long enough to cross many arrival and reconciliation cycles.
+- Investigate material regressions in frame time, input latency, bandwidth, CPU, or memory introduced by smoothing.
+- Do not trade responsiveness for a visually smooth but sluggish feel. Record both input-to-visible-motion latency and convergence behavior.
+
+## 12. Documentation, release, and production proof
+
+Update `docs/MOVEMENT_SMOOTHNESS.md`, relevant architecture/testing documentation, and the live browser QA checklist with evidence-based claims. Clearly distinguish:
+
+- Reproduced and measured.
 - Implemented.
 - Unit/integration tested.
 - Locally hardware-browser tested.
 - Multiplayer tested.
 - Live production tested.
-- Still limited by missing source assets or other explicit constraints.
+- Still limited by source assets, network conditions, or other explicit constraints.
 
 Before pushing:
 
-- Run a fresh dependency install and audit.
-- Run the complete client test suite and lint.
-- Run the complete Go test suite with the race detector and build the server.
-- Validate GitHub Actions syntax.
-- Run the full isolated hardware-browser animation route and multiplayer route.
-- Sanitize all browser artifacts and verify no credentials are present.
+- Perform a fresh dependency install and dependency audit.
+- Run the complete client suite and lint.
+- Run the complete Go suite, race detector, and server build.
+- Validate workflow syntax and QA safety tests.
+- Run the isolated hardware-browser movement matrix, all four classes, deterministic network profiles, two-browser remote tests, and bounded soak.
+- Inspect real rendered evidence and movement traces.
+- Sanitize browser artifacts and verify that no credentials are present.
 
 Then:
 
 1. Commit the finished work in focused commits.
-2. Push to `master`.
+2. Push the verified commits directly to `master`.
 3. Monitor every GitHub Actions job through completion.
-4. Confirm the deployed client and backend both report the pushed full commit SHA and the database is ready.
-5. Run the live anonymous smoke.
-6. Run all four dedicated production QA characters through the locomotion/state matrix and exhaustive ability matrix.
-7. Run the live two-character remote-animation matrix, explicitly including Spirit Guardians lifecycle and reconnect reconstruction.
-8. Inspect the real rendered evidence, not only Playwright assertions.
-9. Fix forward and repeat deployment/testing for any defect found.
-10. Record the final run, SHA, renderer, coverage matrix, evidence, and honest remaining limitations.
+4. Confirm the live frontend release identity and backend health endpoint both report the pushed full SHA and the database is ready.
+5. Run the live anonymous browser smoke.
+6. Run dedicated persistent Fighter, Rogue, Wizard, and Cleric characters through the nearby-movement and full locomotion matrix using real browser input.
+7. Run the live two-character remote-movement matrix, including Cleric Spirit Guardians while moving.
+8. Inspect rendered screenshots/video and bounded movement traces, not only pass/fail assertions.
+9. Fix forward and repeat deployment/testing for any defect attributable to the work.
+10. Record the final SHA, workflow run, renderer, before/after metrics, live character evidence, and honest remaining limitations.
 
 ## Production safety constraints
 
-- Use only dedicated QA accounts and characters supplied through secrets or explicitly created for QA.
-- Never print credentials or include them in screenshots, video, traces, HTML reports, command output, or committed files.
-- Keep credentialed recordings disabled unless a proven sanitizer operates before any upload.
-- Do not alter or delete normal accounts, characters, inventories, skill builds, parties, auctions, or Mongo data.
-- Any QA-only command must be authenticated, explicitly allowlisted server-side, narrowly scoped, tested against privilege bypass, and incapable of granting normal users production powers.
-- Do not weaken TLS, browser security, deployment gates, server authority, or credential protections to make visual tests easier.
+- Use only dedicated QA accounts/characters provided through encrypted secrets or explicitly created for QA.
+- Never print credentials or include them in screenshots, videos, traces, HTML reports, command output, or committed files.
+- Keep credentialed recording disabled unless a proven sanitizer runs before upload.
+- Never alter or delete normal accounts, characters, inventories, builds, parties, auctions, or database records.
+- Any QA-only command must be authenticated, explicitly allowlisted server-side, narrowly scoped, privilege-tested, and unavailable to ordinary accounts.
+- Do not weaken TLS, browser security, deployment gates, server authority, collision validation, or credential protection to make tests easier.
 
 ## Scope discipline
 
-- This goal includes animation state, ability VFX, visual replication, and narrowly necessary rendering/network/test-harness changes.
-- It does not authorize unrelated progression, balance, content, economy, guild, PvP, or general monolith-refactor work.
-- Do not change ability damage, cooldown, mana cost, or gameplay behavior unless necessary to correct a proven animation synchronization bug; document and test any such change.
-- Reuse the existing art direction and assets where they are sound. If a missing source animation prevents a truly clean result, implement the best safe procedural fallback, document the limitation precisely, and identify the exact asset needed rather than hiding the gap.
+- This goal includes player movement, prediction/reconciliation, server movement processing, remote interpolation, camera following, locomotion animation blending, attached-presentation coherence, instrumentation, tests, and narrowly required deployment/QA changes.
+- It includes animation transitions affected by movement, but not a redesign of already validated ability VFX or unrelated combat visuals.
+- It does not authorize unrelated progression, balance, economy, content, guild, PvP, art-direction, or broad monolith-refactor work.
+- Refactor only where necessary to establish clear movement ownership and testable invariants.
+- If production-only conditions cannot be simulated safely, add non-invasive measurement and test with dedicated accounts; never experiment destructively on normal players.
 
 ## Definition of done
 
-- Every configured active ability and material variant is present in the canonical coverage matrix with explicit local and remote presentation.
-- Every shipped actor archetype and used animation state is classified and checked.
-- Spirit Guardians visibly orbits, pulses, follows, replicates, reconstructs, expires, and cleans up correctly.
-- Idle, walk, run, jump, basic attack/cast, forced movement, death, resurrection/respawn, and state restoration are smooth and correct for all four player classes locally and remotely.
-- No known missing, invisible, generic-fallback, duplicated, stuck, detached, mistimed, or leaking ability effect remains.
-- No known T-pose, frozen mixer, moonwalk, foot-slide regression, animation restart storm, incorrect restore, or death-priority bug remains.
-- Automated coverage fails on future unclassified active abilities or replicated visual states.
-- Repeated-cast and bounded-soak checks show stable effect/resource lifecycle.
-- Full client/server/lint/audit/build/race gates pass.
-- The exhaustive isolated and multiplayer routes pass in hardware-accelerated system Chrome.
-- The deployed frontend and backend report the same pushed SHA.
-- Dedicated persistent QA characters complete the live four-class and multiplayer animation matrices through real browser input.
-- Sanitized evidence and documentation record what was actually observed.
+- The exact-current-location and nearby-destination defect is reproduced in a deterministic regression test and fixed at its root cause.
+- Tiny, repeated, alternating, short, medium, and long moves start responsively, follow a continuous path, and settle exactly once without visible rubber-banding.
+- Local prediction and authoritative reconciliation converge under normal and impaired deterministic network profiles without stale-command resurrection, correction oscillation, or unjustified hard snaps.
+- Remote-player interpolation is smooth, bounded, and truthful under uneven snapshot arrival, and resets correctly for real discontinuities.
+- Idle, walk, run, facing, stop, jump/land, combat interruption/restoration, forced movement, death, and respawn transitions are stable and clean for all four classes locally and remotely.
+- Animation actions do not restart from equivalent snapshots or numerical speed noise; playback speed and movement velocity remain visually coherent.
+- Camera, terrain height, nameplates, selection rings, sounds, and attached VFX—including Spirit Guardians—remain visually attached and do not amplify corrections.
+- Movement remains server-authoritative, collision-safe, speed-valid, queue-bounded, and resilient to stale, duplicated, reordered, or malicious input.
+- Before/after metrics demonstrate materially reduced correction, oscillation, restart, and interpolation-underrun behavior without materially increasing input latency.
+- Complete client/server/lint/audit/build/race gates pass.
+- The full isolated movement, all-class, multiplayer, impaired-network, and soak matrices pass in hardware-accelerated system Chrome on the AMD GPU.
+- The final commits are pushed to `master`, all deployment jobs pass, and the deployed frontend/backend report the same final SHA.
+- Dedicated live QA characters complete the nearby-movement, locomotion, and two-character remote movement tests through real browser input.
+- Sanitized documentation and evidence record what was measured and observed, including any genuine source-asset or extreme-network limitation.
+- No known reproducible movement rubber-band, micro-snap, arrival oscillation, locomotion-animation thrash, camera correction fight, or remote interpolation stutter remains.
 - The final worktree is clean and `origin/master` contains the verified production commit.

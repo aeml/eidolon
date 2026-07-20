@@ -157,13 +157,16 @@ run_animation_multiplayer() {
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
   all)
-    npm run test:e2e:authenticated && run_animation_classes && run_animation_multiplayer
+    npm run test:e2e:authenticated && npm run test:e2e:movement && run_animation_classes && run_animation_multiplayer
     ;;
   animations)
     run_animation_classes
     ;;
   multiplayer)
     run_animation_multiplayer
+    ;;
+  movement)
+    npm run test:e2e:movement
     ;;
   smoke)
     npx playwright test tests/e2e/authenticated.spec.js --grep "logs in, enters the world"
@@ -175,7 +178,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test tests/e2e/authenticated.spec.js --grep "allowlisted QA waypoint"
     ;;
   *)
-    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, smoke, extended, or portal." >&2
+    echo "EIDOLON_ISOLATED_QA_ROUTE must be all, animations, multiplayer, movement, smoke, extended, or portal." >&2
     exit 1
     ;;
 esac

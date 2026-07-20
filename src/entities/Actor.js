@@ -2,6 +2,13 @@ import * as THREE from 'three';
 import { Entity } from './Entity.js';
 import { calculateSetBonuses, getEquippedUniqueEffects, getGemStats, UNIQUE_EFFECTS } from '../core/ItemSystem.js';
 import { CONSTANTS } from '../core/Constants.js';
+import {
+    exponentialSmoothingFactor,
+    horizontalDistanceSquared,
+    MOVEMENT_ARRIVAL_DISTANCE,
+    MOVEMENT_TARGET_EQUIVALENCE_DISTANCE,
+    RemoteTransformBuffer
+} from '../core/MovementSmoothing.js';
 import { getAbilityAnimationProfile, getAbilityPresentation } from '../skills/abilityVisualManifest.js';
 import { ACTOR_STATUS_VISUAL_STATES, AttachedStatusEffect } from './AttachedStatusEffect.js';
 
@@ -180,6 +187,19 @@ export class Actor extends Entity {
         this.targetPosition = null;
         this.velocity = new THREE.Vector3();
         this.state = 'IDLE'; // IDLE, MOVING, ATTACKING, DEAD
+        this.remoteTransformBuffer = null;
+        this.blockedTargetPosition = null;
+        this.movementNoProgressFrames = 0;
+        this.movementMetrics = {
+            requests: 0,
+            accepted: 0,
+            equivalentTargets: 0,
+            nearbyNoops: 0,
+            arrivals: 0,
+            blockedTargetNoops: 0,
+            blockedStops: 0,
+            animationTransitions: 0
+        };
         
         this.mixer = null;
         this.animations = {};
@@ -199,6 +219,10 @@ export class Actor extends Entity {
         this.gold = 0; // Currency
         this.scaleAnimSpeed = true; // Default to scaling animation speed with movement speed
         this.visualOffset = new THREE.Vector3(); // Visual separation offset
+    }
+
+    syncPresentationTransform() {
+        this.spiritEffect?.syncToSource?.(true);
     }
 
     modifyMesh(mesh) {
@@ -525,6 +549,10 @@ export class Actor extends Entity {
         const action = this.animations[name];
         if (!force && this.currentAction === action) return true;
 
+        if (this.currentAction !== action) {
+            this.movementMetrics.animationTransitions += 1;
+        }
+
         this.clearAnimationFinishedHandler();
 
         if (this.currentAction && this.currentAction !== action) {
@@ -564,15 +592,85 @@ export class Actor extends Entity {
     }
 
     move(targetVector) {
-        if (this.state === 'DEAD') return;
-        this.targetPosition = targetVector.clone();
-        
+        this.movementMetrics.requests += 1;
+        if (this.state === 'DEAD' || !targetVector ||
+            !Number.isFinite(targetVector.x) || !Number.isFinite(targetVector.z)) return false;
+        const movementSuppressed = this.rootTimer > 0 || this.frozenTimer > 0;
+
+        const arrivalDistanceSq = MOVEMENT_ARRIVAL_DISTANCE * MOVEMENT_ARRIVAL_DISTANCE;
+        if (horizontalDistanceSquared(this.position, targetVector) <= arrivalDistanceSq) {
+            this.movementMetrics.nearbyNoops += 1;
+            this.targetPosition = null;
+            this.velocity.set(0, 0, 0);
+            if (this.state === 'MOVING') {
+                this.state = 'IDLE';
+                this.playAnimation('Idle');
+                this.currentAction?.setEffectiveTimeScale?.(1.0);
+            }
+            return false;
+        }
+
+        if (this.blockedTargetPosition &&
+            horizontalDistanceSquared(this.blockedTargetPosition, targetVector) <= arrivalDistanceSq) {
+            this.movementMetrics.blockedTargetNoops += 1;
+            return false;
+        }
+        this.blockedTargetPosition = null;
+
+        const targetEquivalenceSq = MOVEMENT_TARGET_EQUIVALENCE_DISTANCE *
+            MOVEMENT_TARGET_EQUIVALENCE_DISTANCE;
+        const equivalentTarget = this.targetPosition &&
+            horizontalDistanceSquared(this.targetPosition, targetVector) <= targetEquivalenceSq;
+        if (equivalentTarget) {
+            this.movementMetrics.equivalentTargets += 1;
+            if (this.state === 'MOVING' || movementSuppressed) return false;
+        } else {
+            this.targetPosition = targetVector.clone();
+            this.movementMetrics.accepted += 1;
+            this.movementNoProgressFrames = 0;
+        }
+
+        // Preserve the queued destination without restarting Run/Idle on every
+        // held-input frame while a root or freeze prevents locomotion.
+        if (movementSuppressed) {
+            this.velocity.set(0, 0, 0);
+            return false;
+        }
+
         // Only trigger animation if changing state
         if (this.state !== 'MOVING') {
             this.state = 'MOVING';
             const moveAnim = this.getMovementAnimationName(this.isRunning);
             if (moveAnim) this.playAnimation(moveAnim);
         }
+        return true;
+    }
+
+    clearBlockedMovementTarget() {
+        this.blockedTargetPosition = null;
+        this.movementNoProgressFrames = 0;
+    }
+
+    pushRemoteTransform(position, rotation, options = {}) {
+        if (!this.remoteTransformBuffer) {
+            this.remoteTransformBuffer = new RemoteTransformBuffer();
+        }
+        const result = this.remoteTransformBuffer.push(position, rotation, options);
+        if (result.teleported) {
+            this.position.copy(position);
+            this.targetServerPosition = position.clone();
+            if (Number.isFinite(rotation)) {
+                this.targetServerRotation = rotation;
+                this.rotation.setFromAxisAngle(UP_VEC, rotation);
+            }
+            this.resetTransformInterpolation?.();
+        }
+        return result;
+    }
+
+    clearRemoteTransformBuffer() {
+        this.remoteTransformBuffer?.clear?.();
+        this.remoteTransformBuffer = null;
     }
 
     playJumpAnimation(jumpState = null) {
@@ -953,8 +1051,14 @@ export class Actor extends Entity {
         if (this.isRemote) {
             // Interpolate Position
             let movedDistance = 0;
-            if (this.targetServerPosition) {
-                const lerpFactor = Math.min(1, Math.max(0, 10.0 * dt));
+            const remoteSample = this.remoteTransformBuffer?.sample?.();
+            if (remoteSample) {
+                TEMP_VEC.copy(this.position);
+                this.position.copy(remoteSample.position);
+                movedDistance = this.position.distanceTo(TEMP_VEC);
+                this.targetServerRotation = remoteSample.rotation;
+            } else if (this.targetServerPosition) {
+                const lerpFactor = dt >= 0.1 ? 1 : exponentialSmoothingFactor(10, dt);
                 TEMP_VEC.copy(this.position); // Save old pos
                 this.position.lerp(this.targetServerPosition, lerpFactor);
                 movedDistance = this.position.distanceTo(TEMP_VEC);
@@ -968,7 +1072,7 @@ export class Actor extends Entity {
             // Interpolate Rotation
             if (this.targetServerRotation !== undefined) {
                 TEMP_QUAT.setFromAxisAngle(UP_VEC, this.targetServerRotation);
-                this.rotation.slerp(TEMP_QUAT, Math.min(1, Math.max(0, 10.0 * dt)));
+                this.rotation.slerp(TEMP_QUAT, dt >= 0.1 ? 1 : exponentialSmoothingFactor(10, dt));
             } else if (movedDistance > 0.001) {
                 // Fallback: Face movement direction if no server rotation provided
                 // This ensures entities don't slide sideways if the server omits rotation
@@ -1154,13 +1258,17 @@ export class Actor extends Entity {
 
             // Use temp vector for direction calculation to avoid allocation
             TEMP_VEC2.subVectors(this.targetPosition, this.position);
+            TEMP_VEC2.y = 0;
             const distance = TEMP_VEC2.length();
-            
-            if (distance < 0.1) {
-                this.position.copy(this.targetPosition);
+
+            if (distance <= MOVEMENT_ARRIVAL_DISTANCE) {
+                this.position.x = this.targetPosition.x;
+                this.position.z = this.targetPosition.z;
                 this.targetPosition = null;
                 this.state = 'IDLE';
                 this.velocity.set(0, 0, 0);
+                this.movementMetrics.arrivals += 1;
+                this.clearBlockedMovementTarget();
                 this.playAnimation('Idle');
                 if (this.currentAction) this.currentAction.setEffectiveTimeScale(1.0); // Reset speed for Idle
             } else {
@@ -1189,7 +1297,10 @@ export class Actor extends Entity {
                 }
 
                 this.velocity.copy(TEMP_VEC2).multiplyScalar(moveDist);
-                
+
+                const previousX = this.position.x;
+                const previousZ = this.position.z;
+
                 // Proposed new position - use temp vector
                 TEMP_VEC3.copy(this.position).add(this.velocity);
                 
@@ -1207,11 +1318,28 @@ export class Actor extends Entity {
                     if (activeEntities) {
                         const separation = collisionManager.checkEntityCollision(this, activeEntities);
                         if (separation) {
-                            // Apply separation force
-                            // We add it to the position directly. 
-                            // Since we are moving every frame, this acts as a sliding force.
-                            this.position.add(separation.multiplyScalar(0.5));
-                            
+                            this.position.add(separation);
+
+                            // Resolve toward the contact surface, then bound the
+                            // complete result to one movement step. A collision
+                            // response may slide sideways, but it must not move
+                            // backward relative to the requested direction.
+                            let resolvedX = this.position.x - previousX;
+                            let resolvedZ = this.position.z - previousZ;
+                            const forwardProgress = resolvedX * TEMP_VEC2.x + resolvedZ * TEMP_VEC2.z;
+                            if (forwardProgress < 0) {
+                                this.position.x -= TEMP_VEC2.x * forwardProgress;
+                                this.position.z -= TEMP_VEC2.z * forwardProgress;
+                                resolvedX = this.position.x - previousX;
+                                resolvedZ = this.position.z - previousZ;
+                            }
+                            const resolvedDistance = Math.hypot(resolvedX, resolvedZ);
+                            if (resolvedDistance > moveDist && resolvedDistance > 0) {
+                                const displacementScale = moveDist / resolvedDistance;
+                                this.position.x = previousX + resolvedX * displacementScale;
+                                this.position.z = previousZ + resolvedZ * displacementScale;
+                            }
+
                             // Re-check static collision to ensure we didn't get pushed into a wall
                             const finalCheck = collisionManager.checkCollision(this.position, this.radius, this.position);
                             if (finalCheck) {
@@ -1226,6 +1354,24 @@ export class Actor extends Entity {
                 // Ground Clamp: Ensure we never go below ground
                 if (this.position.y < 0) {
                     this.position.y = 0;
+                }
+
+                const remainingDistance = Math.sqrt(horizontalDistanceSquared(this.position, this.targetPosition));
+                if (!Number.isFinite(remainingDistance) || remainingDistance >= distance - 0.001) {
+                    this.movementNoProgressFrames += 1;
+                } else {
+                    this.movementNoProgressFrames = 0;
+                }
+
+                if (this.movementNoProgressFrames >= 3) {
+                    this.blockedTargetPosition = this.targetPosition.clone();
+                    this.targetPosition = null;
+                    this.state = 'IDLE';
+                    this.velocity.set(0, 0, 0);
+                    this.movementMetrics.blockedStops += 1;
+                    this.playAnimation('Idle');
+                    this.currentAction?.setEffectiveTimeScale?.(1.0);
+                    return;
                 }
                 
                 // Rotate to face movement - use temp vector instead of allocating

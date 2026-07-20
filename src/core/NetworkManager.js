@@ -205,11 +205,15 @@ export class NetworkManager {
 
             const payloadBytes = compressed.subarray(5);
             const env = eidolonProto.state.StateEnvelope.decode(payloadBytes);
+            const serverTimeMs = Number(env.serverTimeMs || 0);
 
             if (env.full) {
                 const entities = env.full.entities || [];
                 const payload = {};
-                for (const e of entities) payload[e.id] = e;
+                for (const e of entities) {
+                    if (serverTimeMs > 0) e._serverTimeMs = serverTimeMs;
+                    payload[e.id] = e;
+                }
                 this._enqueueMessage({ type: 'state', payload });
                 return;
             }
@@ -217,7 +221,10 @@ export class NetworkManager {
             if (env.delta) {
                 const entities = env.delta.entities || [];
                 const u = {};
-                for (const e of entities) u[e.id] = e;
+                for (const e of entities) {
+                    if (serverTimeMs > 0) e._serverTimeMs = serverTimeMs;
+                    u[e.id] = e;
+                }
                 const r = env.delta.removedIds || [];
                 this._enqueueMessage({ type: 'delta', payload: { u, r } });
             }

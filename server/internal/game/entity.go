@@ -117,6 +117,10 @@ type Entity struct {
 	SpawnX   float64 `json:"-"`
 	SpawnZ   float64 `json:"-"`
 	State    string  `json:"state"` // IDLE, MOVING, ATTACKING, DEAD
+	// LastMoveSequence acknowledges the newest ordered client movement sample
+	// accepted by the server. It is replicated to the owning client so normal
+	// network delay is never mistaken for an authoritative correction.
+	LastMoveSequence uint64 `json:"-"`
 
 	// Combat
 	LastAttackTime       time.Time            `json:"-"`
@@ -877,32 +881,33 @@ func (w *World) copyEntity(v *Entity) *Entity {
 	// This significantly reduces JSON payload size for state broadcasts
 
 	e := Entity{
-		ID:           v.ID,
-		InstanceID:   v.InstanceID,
-		Name:         v.Name,
-		PartyID:      v.PartyID,
-		SocialStatus: v.SocialStatus,
-		Type:         v.Type,
-		SubType:      v.SubType,
-		X:            v.X,
-		Y:            v.Y,
-		Z:            v.Z,
-		Rotation:     v.Rotation,
-		Health:       v.Health,
-		MaxHealth:    v.MaxHealth,
-		Level:        v.Level,
-		State:        v.State,
-		Scale:        v.Scale,
-		JumpStartX:   v.JumpStartX,
-		JumpStartY:   v.JumpStartY,
-		JumpStartZ:   v.JumpStartZ,
-		JumpTargetX:  v.JumpTargetX,
-		JumpTargetY:  v.JumpTargetY,
-		JumpTargetZ:  v.JumpTargetZ,
-		JumpDuration: v.JumpDuration,
-		JumpHeight:   v.JumpHeight,
-		JumpProgress: v.JumpProgress,
-		OwnerID:      v.OwnerID,
+		ID:               v.ID,
+		InstanceID:       v.InstanceID,
+		Name:             v.Name,
+		PartyID:          v.PartyID,
+		SocialStatus:     v.SocialStatus,
+		Type:             v.Type,
+		SubType:          v.SubType,
+		X:                v.X,
+		Y:                v.Y,
+		Z:                v.Z,
+		Rotation:         v.Rotation,
+		Health:           v.Health,
+		MaxHealth:        v.MaxHealth,
+		Level:            v.Level,
+		State:            v.State,
+		LastMoveSequence: v.LastMoveSequence,
+		Scale:            v.Scale,
+		JumpStartX:       v.JumpStartX,
+		JumpStartY:       v.JumpStartY,
+		JumpStartZ:       v.JumpStartZ,
+		JumpTargetX:      v.JumpTargetX,
+		JumpTargetY:      v.JumpTargetY,
+		JumpTargetZ:      v.JumpTargetZ,
+		JumpDuration:     v.JumpDuration,
+		JumpHeight:       v.JumpHeight,
+		JumpProgress:     v.JumpProgress,
+		OwnerID:          v.OwnerID,
 
 		SpiritsActive:  v.SpiritsActive,
 		SpiritsBoosted: v.SpiritsBoosted,

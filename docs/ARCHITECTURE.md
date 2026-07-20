@@ -102,7 +102,9 @@ No secrets are returned by either endpoint.
 
 Playwright runs hardware-accelerated system Chrome at `/usr/bin/google-chrome` in the Codex environment and for both character gates on the repository-scoped `eidolon-live-browser` self-hosted production runner; the runner starts under the host `render` group and fails early if Chrome reports SwiftShader or another software renderer. GitHub-hosted predeploy smoke uses pinned Playwright Chromium for the anonymous surface. Gameplay is driven through real DOM, keyboard, and mouse input. `page.evaluate()` is limited to read-only state inspection and Three.js projection used to position real mouse clicks. Reconnect faults are requested through the visible chat UI and performed by the allowlisted server-side `/qa-disconnect` command, outside page code. Live checks allow bounded recovery from transient edge 5xx responses, but require a complete client-module boot marker and retain the final failure when recovery never succeeds. Post-deploy Chrome can resolve only `eserver.mendola.tech` directly to a validated live-origin IP secret, retaining the production hostname/TLS identity while avoiding Cloudflare starvation of the gameplay WebSocket; public release/health polling and frontend navigation still use their normal URLs.
 
-`npm run test:e2e:animations` drives `repro.html?gallery=1` through production asset/rendering paths and verifies every canonical base/rune presentation and actor inventory entry at High and Low quality. `npm run test:e2e:isolated` builds the server, starts disposable Mongo/API containers on a private Docker network, registers random allowlisted characters through visible browser controls, and removes all temporary containers and data on exit. Its default route covers general authoritative gameplay, four class-specific locomotion/basic-attack/death and exhaustive ability/rune matrices, and a two-process multiplayer animation matrix. The multiplayer pass verifies Spirit Guardians base/boost refresh, join-in-progress reconstruction, authoritative expiration, ground effects, summons, projectiles, teleport/forced movement, persistent areas, movement, jump, and combat without invoking gameplay methods from page code.
+`npm run test:e2e:animations` drives `repro.html?gallery=1` through production asset/rendering paths and verifies every canonical base/rune presentation and actor inventory entry at High and Low quality. `npm run test:e2e:isolated` builds the server, starts disposable Mongo/API containers on a private Docker network, registers random allowlisted characters through visible browser controls, and removes all temporary containers and data on exit. Its default route covers general authoritative gameplay, exact/near/sustained movement, four class-specific locomotion/basic-attack/death and exhaustive ability/rune matrices, and a two-process multiplayer animation/movement matrix. The multiplayer pass verifies timestamped remote interpolation, Spirit Guardians base/boost refresh, join-in-progress reconstruction, authoritative expiration, ground effects, summons, projectiles, teleport/forced movement, persistent areas, movement, jump, and combat without invoking gameplay methods from page code.
+
+Movement presentation has one explicit ownership chain. `Actor` advances the local logical transform at a fixed 60 Hz; `Entity` retains the previous fixed transform and interpolates it at display time; collision reads only logical transforms; and the camera plus attached persistent effects follow the final rendered player transform. Changed player transforms carry ordered sequences at up to 30 Hz, server snapshots acknowledge the newest accepted sequence and include a server timestamp, and remote actors render from a bounded timestamped interpolation buffer. The thresholds, discontinuity rules, regression bounds, and current server-authority limitation are documented in `docs/MOVEMENT_SMOOTHNESS.md`.
 
 Credentialed traces, screenshots, video, and Playwright's input-valued failure snapshot are disabled because recordings can expose account identifiers or form inputs. CI redacts and scans all supplied QA values before any report upload. The anonymous route retains screenshots, traces, and video on failure.
 
@@ -112,15 +114,15 @@ Physical lines measured with `wc -l` on July 20, 2026:
 
 | File | LOC |
 |---|---:|
-| `server/internal/game/world.go` | 8,481 |
-| `server/main.go` | 4,744 |
-| `src/core/GameEngine.js` | 5,526 |
+| `server/internal/game/world.go` | 8,578 |
+| `server/main.go` | 5,027 |
+| `src/core/GameEngine.js` | 5,810 |
 | `src/ui/UIManager.js` | 3,634 |
 | `src/core/NetworkManager.js` | 445 |
 | `src/core/SocialPresenceController.js` | 108 |
 | `src/ui/SocialUI.js` | 678 |
 
-Totals: 40,767 JavaScript LOC under `src/`, 31,898 Go LOC under `server/`, 26,413 JavaScript test LOC under `tests/`, and 8,472 Go test LOC. Generated protobuf code and assets are included where those directory totals naturally include them; the hotspot table is the useful refactor baseline.
+Totals: 44,881 JavaScript LOC under `src/`, 32,999 Go LOC under `server/`, 29,401 JavaScript test LOC under `tests/`, and 8,947 Go test LOC. Generated protobuf code and assets are included where those directory totals naturally include them; the hotspot table is the useful refactor baseline.
 
 The `0.40`–`0.43` decomposition gates are therefore still open. Release-confidence work should not be confused with completion of the monolith decomposition.
 
@@ -130,4 +132,5 @@ The `0.40`–`0.43` decomposition gates are therefore still open. Release-confid
 - `World.Mu` still concentrates simulation-lock risk; instance-scoped locking is not implemented.
 - Mongo migration tooling and broader integration coverage remain roadmap work.
 - The committed browser harness provides real multi-client paths, but nightly soak and 100-client durability gates do not yet exist.
+- The movement server accepts bounded absolute transforms rather than integrating a directional input stream with complete overworld speed/collision authority; see `docs/MOVEMENT_SMOOTHNESS.md`.
 - The static asset tree and repository remain unusually large; asset packaging and repository-size work should be handled as a focused follow-up.
