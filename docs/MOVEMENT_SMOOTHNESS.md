@@ -2,7 +2,7 @@
 
 Last refreshed: July 20, 2026
 
-Status: implemented, unit-tested, and locally browser-tested. Production evidence belongs in `docs/plans/live-browser-qa-checklist.md` only after the matching frontend/backend SHA passes the live gate.
+Status: implemented, unit-tested, locally hardware-browser tested, multiplayer tested, and live production tested at code SHA `2d8dc3a16a6ef7d5eef68f46b420ba94b423a1e4` in GitHub Actions run `29766780968`.
 
 ## Data flow and ownership
 
@@ -63,7 +63,7 @@ The regression bounds now prove:
 - An 8-unit real-input move travels more than 6 units during the sample, has no more than 0.02 units of reverse progress, keeps each visible frame step below 1 unit, keeps camera-to-mesh error below 0.05 units, and uses no correction frame.
 - The same server-backed move produces zero new server adjustments and zero hard corrections, converges to within two pending acknowledgements, and transitions locomotion at most three times.
 - Stationary transport emits no more than two packets during a 1.25-second browser sample.
-- A real second Chrome process observes more than four unique rendered remote positions, a bounded transform buffer, active timestamp interpolation/extrapolation, less than 3 units per rendered step, and less than 2 units between remote logical and visible transforms.
+- A real second Chrome process observes more than four unique rendered remote positions, more than two new authoritative samples in the same bounded transform buffer, active timestamp interpolation/extrapolation, less than 3 units per rendered step, and less than 0.75 units of render-interpolation error after excluding the intentional visual de-stacking offset.
 
 The focused hardware runs used system Google Chrome with:
 
@@ -85,6 +85,8 @@ sg render -c 'EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome EIDOLON_ISOLATED_Q
 ```
 
 `tests/e2e/movement-smoothness.spec.js` uses `page.evaluate()` only for read-only transform/metric sampling and Three.js projection; every movement command comes from the real mouse. The default isolated route includes it before the four-class and two-process matrices. `tests/e2e/multiplayer.spec.js` samples the remote visible trajectory and transform-buffer counters while preserving its existing party, Spirit Guardians, jump, attack, ability, and convergence checks. The postdeploy workflow runs the movement route against the dedicated persistent production character.
+
+The matching live frontend and backend both reported `2d8dc3a16a6ef7d5eef68f46b420ba94b423a1e4`; backend readiness reported `status: ok` and `database: ready`. The live hardware-Chrome route passed exact-current/sub-arrival/short/sustained local movement and the persistent two-character remote movement matrix without a Playwright retry. The durable release table and workflow link are in `docs/plans/live-browser-qa-checklist.md`.
 
 ## Discontinuities and remaining limits
 

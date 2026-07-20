@@ -18,7 +18,7 @@ Eidolon is a static Three.js browser action RPG backed by an authoritative Go/We
 - Security baseline: `/level`, the fixed QA waypoints, and one-kill loot acceleration require an authenticated username on an explicit server allowlist, with allow/deny and consumption regression tests.
 - Load-test credentials: tracked credentials are removed; the driver generates cryptographically random, in-memory credentials unless an explicit read-only file is supplied.
 - Release observability: client and server expose commit identity; server readiness includes a Mongo ping; deployment checks require the expected SHA and healthy database.
-- Live release baseline: production client and server reported SHA `02533ea`; hardware Chrome passed anonymous, persistent-character, extended gameplay/persistence, all four class ability/rune and actor-state matrices, and two-client party/presence/action/remote-VFX convergence in GitHub Actions run `29729616053`, without a Playwright retry or product failure.
+- Live release baseline: production client and server reported SHA `2d8dc3a`; hardware Chrome passed anonymous, persistent-character, measured movement/camera/reconciliation, extended gameplay/persistence, all four class ability/rune and actor-state matrices, and two-client party/presence/action/remote-movement/remote-VFX convergence in GitHub Actions run `29766780968`, without a Playwright retry or product failure.
 
 ## Live release evidence and boundary
 
@@ -26,7 +26,7 @@ Eidolon is a static Three.js browser action RPG backed by an authoritative Go/We
 - The two-account live path covers presence, party invite/accept, remote movement, jump, combat presentation, position convergence, and the Spirit Guardians refresh, late-join reconstruction, authoritative expiration, and cleanup lifecycle.
 - GitHub Actions deploys only after unit/build/anonymous/disposable-character gates, polls client and server for the pushed SHA, and then runs live Playwright.
 
-This is point-in-time evidence for SHA `02533ea`, not a claim that later commits are live-tested before their own workflow and matching-SHA browser gate pass.
+This is point-in-time evidence for SHA `2d8dc3a`, not a claim that later commits are live-tested before their own workflow and matching-SHA browser gate pass.
 
 ## What remains fragile
 

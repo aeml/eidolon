@@ -213,22 +213,22 @@ Current release evidence on July 20, 2026:
 
 - Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 92 Jest suites / 1,047 tests, and ESLint passed.
 - Go toolchain `1.24.5`: `go test -race ./...` and `go build -trimpath ./...` passed.
-- Google Chrome `150.0.7871.124`: focused local movement and two-browser remote-interpolation routes passed; the prior complete predeploy route passed anonymous smoke, the deterministic High/Low gallery, disposable general character route, four class matrices, and two-browser remote-animation matrix with the hardware `AMD Radeon Graphics (RADV RENOIR)` Vulkan renderer. The current complete route is rerun by the release workflow before deployment.
+- Google Chrome `150.0.7871.124`: focused local movement, Fighter death/respawn, and two-browser remote-interpolation routes each passed twice. The complete predeploy route then passed anonymous smoke, the deterministic High/Low gallery, disposable general/movement routes, all four class matrices, and the two-browser remote-animation/movement matrix with the hardware `AMD Radeon Graphics (RADV RENOIR)` Vulkan renderer.
 - The focused portal route, credential scanning, and isolated cleanup passed; no uniquely suffixed QA container, network, or image remained after cleanup.
 - The isolated route is locally browser-tested evidence. The matching live evidence for the released code SHA is recorded below.
 
 | Evidence | Result |
 |---|---|
-| Pushed commit | `02533ea877400414e1cabdb1551f9646173c0a61` on `master` |
-| Client reported commit | `02533ea877400414e1cabdb1551f9646173c0a61` |
-| Server reported commit | `02533ea877400414e1cabdb1551f9646173c0a61`; status `ok`, database `ready` |
-| GitHub Actions run | [CI run 29729616053](https://github.com/aeml/eidolon/actions/runs/29729616053), passed |
+| Pushed commit | `2d8dc3a16a6ef7d5eef68f46b420ba94b423a1e4` on `master` |
+| Client reported commit | `2d8dc3a16a6ef7d5eef68f46b420ba94b423a1e4` |
+| Server reported commit | `2d8dc3a16a6ef7d5eef68f46b420ba94b423a1e4`; status `ok`, database `ready` |
+| GitHub Actions run | [CI run 29766780968](https://github.com/aeml/eidolon/actions/runs/29766780968), passed |
 | Browser/version | Google Chrome `150.0.7871.124`, hardware AMD Vulkan/RADV renderer |
 | Live anonymous route | Passed against the matching production client/server SHA |
-| Live primary character route | Passed movement, menu hotkeys, server-originated disconnect, session resume, and identity preservation |
+| Live primary character route | Passed exact-current, sub-arrival, short and sustained movement with bounded trajectory/camera/reconciliation metrics, plus menu hotkeys, server-originated disconnect, session resume, and identity preservation |
 | Live extended gameplay route | Passed visible Low graphics/Auto-Loot settings, ability and basic-attack combat, authoritative kill/drop/pickup/equip, dungeon entry/exit, reconnect, and fresh-login persistence |
 | Live four-class animation route | Passed all 52 active abilities, 60 rune presentations, class locomotion/basic attack/death, cooldown/resource evidence, effect cleanup, and Cleric Spirit Guardians in persistent real characters |
-| Live secondary multiplayer route | Passed presence, party invite/accept, shared party state, remote movement/jump/combat presentation, position convergence, and Spirit Guardians refresh, join-in-progress reconstruction, authoritative expiration, and cleanup |
+| Live secondary multiplayer route | Passed presence, party invite/accept, shared party state, same-buffer ground-movement interpolation with intentional visual separation excluded from error, remote jump/combat presentation, position convergence, and Spirit Guardians refresh, join-in-progress reconstruction, authoritative expiration, and cleanup |
 | Failure artifacts/issues | No Playwright retry or product failure in the final same-SHA run; credential scan sanitized zero files and evidence upload passed. Log matches for retry/error were limited to deliberate unit-test fault injection and negative party tests. |
 | Final worktree/origin state | Evidence changes committed directly to `master`; clean `HEAD == origin/master` verified at handoff |
 
