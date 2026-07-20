@@ -287,13 +287,13 @@ describe('GameEngine multiplayer respawn sync', () => {
     });
 
     test.each(['delta', 'state'])(
-        '%s self teleport corrects drift just below the old twenty-unit cutoff',
+        '%s self teleport corrects stale predicted drift above three units',
         (messageType) => {
             const engine = createEngineHarness();
             engine.player.state = 'IDLE';
             engine.player.stats.hp = 100;
-            engine.player.position.set(139.94, 0, 200);
-            engine.player.targetPosition = new THREE.Vector3(140, 0, 200);
+            engine.player.position.set(125.5, 0, 204.6);
+            engine.player.targetPosition = new THREE.Vector3(140, 0, 210);
 
             const playerUpdate = {
                 id: 'player-1',

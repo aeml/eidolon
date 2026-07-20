@@ -16,6 +16,8 @@ import { WorldMap } from '../ui/WorldMap.js';
 import { FloatingTextManager } from '../ui/FloatingTextManager.js';
 import { AudioManager, AUDIO_CUES } from '../audio/AudioManager.js';
 
+const LOCAL_POSITION_CORRECTION_DISTANCE = 3.0;
+
 const REMOTE_SUPPORT_STATE_CONFIG = {
     spirit_guardians: {
         activeLabel: 'GUARDIANS UP',
@@ -1844,7 +1846,7 @@ export class GameEngine {
                             const serverPos = new THREE.Vector3(pData.x, pData.y || 0, pData.z);
                             const horizontalPos = new THREE.Vector3(pData.x, this.player.position.y, pData.z);
                             const dist = this.player.position.distanceTo(horizontalPos);
-                            if (pData.state === 'JUMPING' || dist > 10.0) { // Threshold for authoritative correction beyond normal lag
+                            if (pData.state === 'JUMPING' || dist > LOCAL_POSITION_CORRECTION_DISTANCE) {
                                 const previousPosition = this.player.position.clone();
                                 console.log(`GameEngine: Detected server teleport, syncing position. Dist: ${dist}, Server: ${serverPos.x},${serverPos.z}, Client: ${this.player.position.x},${this.player.position.z}`);
                                 if (pData.state === 'JUMPING') {
@@ -2112,11 +2114,10 @@ export class GameEngine {
                             const serverPos = new THREE.Vector3(pData.x, pData.y || 0, pData.z);
                             const horizontalPos = new THREE.Vector3(pData.x, this.player.position.y, pData.z);
                             const dist = this.player.position.distanceTo(horizontalPos);
-                            // Correct meaningful authoritative drift before a
-                            // stale local move can overwrite a server teleport.
-                            // The fixed QA waypoint exposed that a value just
-                            // under the old 20-unit cutoff never converged.
-                            if (pData.state === 'JUMPING' || dist > 10.0) {
+                            // Normal prediction differs by only a fraction of a
+                            // movement step. Correct larger drift before stale
+                            // chase input can visually undo a server teleport.
+                            if (pData.state === 'JUMPING' || dist > LOCAL_POSITION_CORRECTION_DISTANCE) {
                                 const previousPosition = this.player.position.clone();
                                 console.log(`GameEngine: Detected self teleport from delta, syncing position. Dist: ${dist}`);
                                 if (pData.state === 'JUMPING') {
