@@ -85,6 +85,57 @@ describe('Actor animation state machine', () => {
         actor.dispose();
     });
 
+    test('idle reconciliation cannot replace an active local ability action', () => {
+        const actor = animatedActor();
+        actor.meshType = 'Fighter';
+
+        expect(actor.playAbilityAnimation('Iron Fortress')).toBe(true);
+        const abilityAction = actor.currentAction;
+        actor.state = 'MOVING';
+        actor.targetPosition = null;
+
+        actor.update(1 / 60, null, null, null);
+
+        expect(actor.state).toBe('IDLE');
+        expect(actor.currentAnimationName).toBe('Attack');
+        expect(actor.currentAction).toBe(abilityAction);
+        expect(actor.currentAbilityAnimation?.skillName).toBe('Iron Fortress');
+
+        actor.mixer.update(actor.currentAbilityAnimation.duration + 0.01);
+        expect(actor.currentAnimationName).toBe('Idle');
+        expect(actor.currentAbilityAnimation).toBeNull();
+        actor.dispose();
+    });
+
+    test('replicated idle snapshots cannot replace an active remote ability action', () => {
+        const actor = animatedActor();
+        actor.meshType = 'Cleric';
+        actor.isRemote = true;
+        actor.state = 'IDLE';
+
+        expect(actor.playAbilityAnimation('Spirit Guardians')).toBe(true);
+        const abilityAction = actor.currentAction;
+
+        actor.update(1 / 60, null, null, []);
+
+        expect(actor.currentAnimationName).toBe('Attack');
+        expect(actor.currentAction).toBe(abilityAction);
+        expect(actor.currentAbilityAnimation?.skillName).toBe('Spirit Guardians');
+        actor.dispose();
+    });
+
+    test('forced priority actions intentionally interrupt an active ability action', () => {
+        const actor = animatedActor();
+        actor.meshType = 'Fighter';
+
+        actor.playAbilityAnimation('Iron Fortress');
+        actor.playJumpAnimation({ duration: 0.8, visualProgress: 0 });
+
+        expect(actor.currentAbilityAnimation).toBeNull();
+        expect(actor.currentAnimationName).toBe('Jump');
+        actor.dispose();
+    });
+
     test('death animation cannot be overwritten by late movement or cast requests', () => {
         const actor = animatedActor();
 

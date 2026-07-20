@@ -510,6 +510,18 @@ export class Actor extends Entity {
             return false;
         }
 
+        // Ability actions are short, non-looping presentation locks. Logical
+        // state can still converge while they play, but routine Idle/Run
+        // reconciliation must not erase the visible cast on the next frame.
+        // A forced action is an intentional interrupt (new cast, jump, basic
+        // attack, or restore after completion), so it releases the old lock.
+        if (this.currentAbilityAnimation) {
+            if (!force && name !== this.currentAbilityAnimation.clipName) {
+                return false;
+            }
+            if (force) this.currentAbilityAnimation = null;
+        }
+
         const action = this.animations[name];
         if (!force && this.currentAction === action) return true;
 
