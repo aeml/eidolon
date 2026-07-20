@@ -264,18 +264,10 @@ async function exerciseDeathAndRespawn(page) {
         'QA waypoint protection disabled; hostile damage is authoritative.'
     );
     for (let attempt = 0; attempt < 5 && !await page.locator('#death-screen').isVisible(); attempt += 1) {
-        const projected = await page.evaluate((targetId) => {
-            const game = window.game;
-            const entity = (game?.activeEntitiesCache || []).find(({ id }) => id === targetId) ||
-                game?.remotePlayers?.get?.(targetId);
-            if (!entity?.position || !game?.renderSystem?.camera) return null;
-            const point = entity.position.clone().project(game.renderSystem.camera);
-            return {
-                x: (point.x + 1) * window.innerWidth / 2,
-                y: (-point.y + 1) * window.innerHeight / 2,
-                visible: point.z >= -1 && point.z <= 1 && Math.abs(point.x) <= 1 && Math.abs(point.y) <= 1
-            };
-        }, target.id);
+        // Aim at the animated actor's tagged hitbox, not its ground-level
+        // world origin. A feet projection can sit below the visible mesh and
+        // turn this real input into a ground click instead of an engagement.
+        const projected = await projectEntity(page, target.id);
         if (projected?.visible) await page.mouse.click(projected.x, projected.y);
         await page.waitForTimeout(4_000);
     }
