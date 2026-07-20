@@ -347,6 +347,64 @@ func TestPerformAbility_DispatchesToCleric(t *testing.T) {
 	}
 }
 
+func TestPerformAbility_PreservesMovementForSpiritGuardians(t *testing.T) {
+	w := newTestWorld()
+	p := newTestPlayer("p1", "Cleric")
+	p.State = "MOVING"
+	p.X = 7
+	p.Z = 9
+	p.TargetX = 20
+	p.TargetZ = 9
+	p.LastMoveSequence = 42
+	w.AddEntity(p)
+
+	w.PerformAbility("p1", 12, 9, "", "Spirit Guardians")
+
+	if !p.SpiritsActive {
+		t.Fatal("expected Spirit Guardians to activate")
+	}
+	if p.State != "MOVING" {
+		t.Fatalf("expected moving cast to preserve MOVING, got %s", p.State)
+	}
+	if p.X != 7 || p.Z != 9 || p.TargetX != 20 || p.TargetZ != 9 {
+		t.Fatalf("moving cast changed locomotion: position=(%v,%v) target=(%v,%v)", p.X, p.Z, p.TargetX, p.TargetZ)
+	}
+	if p.LastMoveSequence != 42 {
+		t.Fatalf("moving cast changed movement acknowledgement: got %d", p.LastMoveSequence)
+	}
+}
+
+func TestPerformAbility_PreservesMovementForProjectileCasts(t *testing.T) {
+	w := newTestWorld()
+	p := newTestPlayer("p1", "Wizard")
+	p.State = "MOVING"
+	p.UnlockedSkills = []string{"Fireball"}
+	p.LastMoveSequence = 17
+	w.AddEntity(p)
+
+	w.PerformAbility("p1", 10, 0, "", "Fireball")
+
+	if p.State != "MOVING" {
+		t.Fatalf("expected Fireball cast to preserve MOVING, got %s", p.State)
+	}
+	if p.LastMoveSequence != 17 {
+		t.Fatalf("Fireball cast changed movement acknowledgement: got %d", p.LastMoveSequence)
+	}
+}
+
+func TestPerformAbility_ChargeKeepsServerOwnedMovementState(t *testing.T) {
+	w := newTestWorld()
+	p := newTestPlayer("p1", "Fighter")
+	p.State = "MOVING"
+	w.AddEntity(p)
+
+	w.PerformAbility("p1", 10, 0, "", "Charge")
+
+	if !p.IsCharging || p.State != "ATTACKING" {
+		t.Fatalf("expected Charge to retain server-owned ATTACKING movement, charging=%v state=%s", p.IsCharging, p.State)
+	}
+}
+
 func TestPerformAbility_RejectsDeadPlayer(t *testing.T) {
 	w := newTestWorld()
 	p := newTestPlayer("p1", "Fighter")

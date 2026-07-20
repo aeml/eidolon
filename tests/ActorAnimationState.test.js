@@ -85,6 +85,34 @@ describe('Actor animation state machine', () => {
         actor.dispose();
     });
 
+    test('a moving self-cast preserves ordinary click-to-move locomotion', () => {
+        const actor = animatedActor();
+        actor.meshType = 'Cleric';
+        actor.abilityName = 'Spirit Guardians';
+        actor.state = 'MOVING';
+        actor.targetPosition = new THREE.Vector3(12, 0, 0);
+        actor.velocity.set(6, 0, 0);
+        const movementTarget = actor.targetPosition;
+        const engine = {
+            pendingInteraction: null,
+            abilityController: {
+                pendingAbilityTarget: null,
+                pendingAbilitySkill: null
+            },
+            spawnTransientEffect: () => true
+        };
+
+        expect(actor.useAbility(new THREE.Vector3(3, 0, 0), engine)).toBe(true);
+
+        expect(actor.targetPosition).toBe(movementTarget);
+        expect(actor.state).toBe('MOVING');
+        expect(actor.velocity.x).toBe(6);
+        expect(actor.currentAbilityAnimation?.skillName).toBe('Spirit Guardians');
+        actor.update(1 / 60, null, null, null);
+        expect(actor.position.x).toBeGreaterThan(0);
+        actor.dispose();
+    });
+
     test('idle reconciliation cannot replace an active local ability action', () => {
         const actor = animatedActor();
         actor.meshType = 'Fighter';

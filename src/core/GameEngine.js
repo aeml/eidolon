@@ -1818,6 +1818,7 @@ export class GameEngine {
                         const nextHp = pData.health !== undefined ? pData.health : this.player.stats?.hp;
                         const hasPredictedJump = !!this.playerJumpState && !this.playerJumpState.serverDriven;
                         const hasPredictedAttack = this.shouldPreservePredictedPlayerAttack(pData.state);
+                        const hasPredictedMovement = this.shouldPreservePredictedPlayerMovement(pData.state);
                         if (pData.state !== undefined) {
                             if (this.player.state !== 'DEAD' && (pData.state === 'DEAD' || (nextHp !== undefined && nextHp <= 0))) {
                                 this.handlePlayerDeathTransition();
@@ -1841,7 +1842,8 @@ export class GameEngine {
                                     this.syncTownRecoveryGuidance(previousX, previousZ, this.player.position.x, this.player.position.z, 'respawn');
                                     justRespawned = true;
                                 }
-                            } else if (!(hasPredictedJump && pData.state !== 'JUMPING') && !hasPredictedAttack) {
+                            } else if (!(hasPredictedJump && pData.state !== 'JUMPING') &&
+                                !hasPredictedAttack && !hasPredictedMovement) {
                                 this.player.state = pData.state;
                             }
                         } else if (pData.health !== undefined && pData.health <= 0 && this.player.state !== 'DEAD') {
@@ -2098,6 +2100,7 @@ export class GameEngine {
                         const nextHp = pData.health !== undefined ? pData.health : this.player.stats.hp;
                         const hasPredictedJump = !!this.playerJumpState && !this.playerJumpState.serverDriven;
                         const hasPredictedAttack = this.shouldPreservePredictedPlayerAttack(pData.state);
+                        const hasPredictedMovement = this.shouldPreservePredictedPlayerMovement(pData.state);
                         if (pData.state !== undefined) {
                             if (this.player.state !== 'DEAD' && (pData.state === 'DEAD' || (nextHp !== undefined && nextHp <= 0))) {
                                 this.handlePlayerDeathTransition();
@@ -2117,7 +2120,8 @@ export class GameEngine {
                                     this.announceRespawnRecovery('delta');
                                     this.syncTownRecoveryGuidance(previousX, previousZ, this.player.position.x, this.player.position.z, 'respawn');
                                 }
-                            } else if (!(hasPredictedJump && pData.state !== 'JUMPING') && !hasPredictedAttack) {
+                            } else if (!(hasPredictedJump && pData.state !== 'JUMPING') &&
+                                !hasPredictedAttack && !hasPredictedMovement) {
                                 this.player.state = pData.state;
                             }
                         }
@@ -4630,6 +4634,20 @@ export class GameEngine {
             return 'authoritative discontinuity';
         }
         return null;
+    }
+
+    shouldPreservePredictedPlayerMovement(serverState) {
+        if (this.player?.state !== 'MOVING' || !this.player?.targetPosition) return false;
+
+        // IDLE snapshots can trail a newly sent click-to-move packet. Let the
+        // active local path finish instead of inserting a one-frame stop that
+        // is immediately undone by the next acknowledged MOVING snapshot.
+        if (serverState === 'IDLE') return true;
+
+        // Ordinary casts are presentation-only and must not interrupt their
+        // active path. Server-owned actions (including Charge) do not create a
+        // local ability-animation lock and therefore remain authoritative.
+        return serverState === 'ATTACKING' && Boolean(this.player.currentAbilityAnimation);
     }
 
     getMovementMetrics() {

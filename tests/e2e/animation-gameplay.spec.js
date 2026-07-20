@@ -179,8 +179,10 @@ async function exerciseBasicAttack(page) {
     throw new Error(`Basic attack did not reach its visible Attack clip: ${JSON.stringify(lastDiagnostic)}`);
 }
 
-async function castThroughInput(page, className, skillName, key, presentation) {
-    await prepareAnimationCast(page, skillName === 'Last Stand Rampage');
+async function castThroughInput(page, className, skillName, key, presentation, options = {}) {
+    if (options.prepare !== false) {
+        await prepareAnimationCast(page, skillName === 'Last Stand Rampage');
+    }
     let target = null;
     await expect.poll(async () => {
         target = await projectGroundOffset(page, 7, 2);
@@ -237,6 +239,120 @@ async function castThroughInput(page, className, skillName, key, presentation) {
     expect(snapshot.effects + snapshot.effectChildren).toBeGreaterThan(0);
     await page.waitForTimeout(120);
     return snapshot;
+}
+
+async function sampleMovingCastFrames(page, durationMs = 650) {
+    return page.evaluate((duration) => new Promise((resolve) => {
+        const frames = [];
+        const startedAt = performance.now();
+        const capture = (now) => {
+            const player = window.game?.player;
+            if (player?.position) {
+                frames.push({
+                    elapsedMs: now - startedAt,
+                    x: player.position.x,
+                    z: player.position.z,
+                    state: player.state,
+                    targetX: player.targetPosition?.x ?? null,
+                    targetZ: player.targetPosition?.z ?? null,
+                    ability: player.currentAbilityAnimation?.skillName || null
+                });
+            }
+            if (now - startedAt >= duration) {
+                resolve(frames);
+                return;
+            }
+            requestAnimationFrame(capture);
+        };
+        requestAnimationFrame(capture);
+    }), durationMs);
+}
+
+async function exerciseMovingBaseCast(page, className, skillName, presentation) {
+    await page.keyboard.press('b');
+    await expect.poll(async () => {
+        const state = await readPlayerState(page);
+        return Math.hypot(state.x + 1.25, state.z - 200);
+    }, { timeout: 10_000 }).toBeLessThan(0.5);
+    await expect.poll(() => page.evaluate(() => ({
+        state: window.game?.player?.state,
+        hasTarget: Boolean(window.game?.player?.targetPosition)
+    }))).toEqual({ state: 'IDLE', hasTarget: false });
+    // Level-100 QA characters hit the movement speed cap and can legitimately
+    // reach the largest visible town click before a full cast round trip. Use
+    // baseline speed for this probe, then restore the animation-matrix level.
+    await visibleChatCommand(page, '/level 1', 'Level set to 1.');
+    await expect.poll(async () => (await readPlayerState(page)).level).toBe(1);
+    await prepareAnimationCast(page);
+
+    await moveByGroundClick(page, 24, 8, {
+        allowJumpFallback: false,
+        minimumDistance: 0.75,
+        timeout: 2_500
+    });
+    const before = await page.evaluate(() => {
+        const game = window.game;
+        const player = game?.player;
+        return {
+            x: player?.position?.x,
+            z: player?.position?.z,
+            state: player?.state,
+            targetX: player?.targetPosition?.x ?? null,
+            targetZ: player?.targetPosition?.z ?? null,
+            metrics: game?.getMovementMetrics?.()?.local || null
+        };
+    });
+    expect(before.state).toBe('MOVING');
+    expect(before.targetX).not.toBeNull();
+    expect(Math.hypot(before.targetX - before.x, before.targetZ - before.z)).toBeGreaterThan(8);
+
+    const framesPromise = sampleMovingCastFrames(page);
+    await castThroughInput(page, className, skillName, 'right', presentation, { prepare: false });
+    const frames = await framesPromise;
+    expect(frames.length).toBeGreaterThan(10);
+
+    const directionX = before.targetX - before.x;
+    const directionZ = before.targetZ - before.z;
+    const magnitude = Math.hypot(directionX, directionZ);
+    const unitX = directionX / magnitude;
+    const unitZ = directionZ / magnitude;
+    let priorProgress = 0;
+    let largestBacktrack = 0;
+    for (const [index, frame] of frames.entries()) {
+        const progress = (frame.x - frames[0].x) * unitX + (frame.z - frames[0].z) * unitZ;
+        if (index > 0) largestBacktrack = Math.min(largestBacktrack, progress - priorProgress);
+        priorProgress = progress;
+    }
+
+    const after = await page.evaluate(() => ({
+        state: window.game?.player?.state,
+        hasTarget: Boolean(window.game?.player?.targetPosition),
+        metrics: window.game?.getMovementMetrics?.()?.local || null
+    }));
+    expect(priorProgress).toBeGreaterThan(1);
+    expect(largestBacktrack).toBeGreaterThanOrEqual(-0.05);
+    expect(frames.some((frame) => frame.ability === skillName)).toBe(true);
+    const stateTimeline = frames.filter((frame, index) =>
+        index === 0 || frame.state !== frames[index - 1].state || frame.ability !== frames[index - 1].ability
+    ).map((frame) => ({
+        elapsedMs: Math.round(frame.elapsedMs),
+        state: frame.state,
+        ability: frame.ability
+    }));
+    expect(
+        new Set(frames.map((frame) => frame.state)),
+        `${className}/${skillName} movement state timeline: ${JSON.stringify(stateTimeline)}`
+    ).toEqual(new Set(['MOVING']));
+    expect(after.state).toBe('MOVING');
+    expect(after.hasTarget).toBe(true);
+    expect(after.metrics.serverAdjustments - before.metrics.serverAdjustments).toBe(0);
+    expect(after.metrics.hardCorrections - before.metrics.hardCorrections).toBe(0);
+    await expect.poll(() => page.evaluate(() => ({
+        state: window.game?.player?.state,
+        hasTarget: Boolean(window.game?.player?.targetPosition)
+    })), { timeout: 12_000 }).toEqual({ state: 'IDLE', hasTarget: false });
+    await visibleChatCommand(page, '/level 100', 'Level set to 100.');
+    await expect.poll(async () => (await readPlayerState(page)).level).toBe(100);
 }
 
 async function assertHardwareRenderer(page) {
@@ -297,8 +413,15 @@ test.describe('real-input animation gameplay matrix', () => {
         await loginAndEnterWorld(page, credentials);
         const renderer = await assertHardwareRenderer(page);
         await ensureDungeonReadyLevel(page, 100);
-        await useCombatQAWaypoint(page);
         await selectGraphicsThroughSettings(page, 'high');
+
+        // Charge owns its own authoritative movement. The other three base
+        // abilities must cast while ordinary click-to-move remains monotonic.
+        if (className !== 'Fighter') {
+            await exerciseMovingBaseCast(page, className, matrix.base, presentations[matrix.base]);
+        }
+
+        await useCombatQAWaypoint(page);
 
         await expect.poll(() => page.evaluate(() => window.game?.player?.currentAnimationName), {
             timeout: 15_000

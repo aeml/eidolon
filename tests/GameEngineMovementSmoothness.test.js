@@ -132,6 +132,22 @@ describe('GameEngine ordered movement transport', () => {
         expect(engine.movementTelemetry.staleAcknowledgements).toBe(1);
     });
 
+    test('predicted movement ignores stale idle and ordinary cast states', () => {
+        const engine = movementHarness();
+        engine.player.state = 'MOVING';
+        engine.player.targetPosition = new THREE.Vector3(12, 0, 0);
+
+        expect(engine.shouldPreservePredictedPlayerMovement('IDLE')).toBe(true);
+        expect(engine.shouldPreservePredictedPlayerMovement('ATTACKING')).toBe(false);
+
+        engine.player.currentAbilityAnimation = { skillName: 'Spirit Guardians' };
+
+        expect(engine.shouldPreservePredictedPlayerMovement('ATTACKING')).toBe(true);
+        expect(engine.shouldPreservePredictedPlayerMovement('DEAD')).toBe(false);
+        engine.player.targetPosition = null;
+        expect(engine.shouldPreservePredictedPlayerMovement('IDLE')).toBe(false);
+    });
+
     test('prediction history remains bounded during sustained movement', () => {
         const engine = movementHarness();
         engine.player.state = 'MOVING';

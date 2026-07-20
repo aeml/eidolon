@@ -763,12 +763,21 @@ export class Actor extends Entity {
             return false;
         }
 
-        // A committed cast supersedes stale click-to-move, chase, and queued
-        // interaction intent. Leaving any of these active lets the ordinary
-        // movement loop replace a cast action with Run/Idle on the next frame.
-        this.targetPosition = null;
-        this.velocity?.set?.(0, 0, 0);
-        if (this.state === 'MOVING') this.state = 'IDLE';
+        // Ability animation playback is presentation-only and can safely run
+        // while ordinary click-to-move continues. Only stop locomotion when
+        // the destination belongs to an interaction/ability chase that this
+        // committed cast explicitly supersedes; clearing every movement
+        // target here made self-cast buffs snap players back to their cast
+        // origin as the server reconciled the artificial stop.
+        const supersededChase = Boolean(
+            gameEngine?.pendingInteraction ||
+            gameEngine?.abilityController?.pendingAbilityTarget
+        );
+        if (supersededChase) {
+            this.targetPosition = null;
+            this.velocity?.set?.(0, 0, 0);
+            if (this.state === 'MOVING') this.state = 'IDLE';
+        }
         if (gameEngine) {
             gameEngine.pendingInteraction = null;
             if (gameEngine.abilityController) {

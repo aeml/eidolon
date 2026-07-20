@@ -6473,6 +6473,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	if !ok || player.State == "DEAD" {
 		return
 	}
+	stateBeforeAbility := player.State
 
 	// Default skill names if not provided (Legacy support)
 	if skillName == "" {
@@ -6568,6 +6569,14 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 		w.performRogueAbility(player, targetX, targetZ, targetID, skillName, setCooldown)
 	case "Cleric":
 		w.performClericAbility(player, targetX, targetZ, targetID, skillName, setCooldown)
+	}
+
+	// Ability events drive cast animation independently from logical movement.
+	// Preserve the pre-cast locomotion state for ordinary abilities so a server
+	// snapshot cannot stop or rewind a player who cast while moving. Charge
+	// variants keep ATTACKING because their server-owned movement is deliberate.
+	if player.State == "ATTACKING" && !player.IsCharging {
+		player.State = stateBeforeAbility
 	}
 }
 

@@ -113,19 +113,6 @@ func (w *World) fireTelegraphEvent(sourceID string, x, z, radius float64, durati
 	}
 }
 
-// delayedIdleReset schedules a goroutine that resets the given entity's state
-// from "ATTACKING" back to "IDLE" after 1 second. Used by Wizard cast animations.
-func (w *World) delayedIdleReset(playerID string) {
-	go func(pid string) {
-		time.Sleep(1 * time.Second)
-		w.Mu.Lock()
-		if p, ok := w.Entities[pid]; ok && p.State == "ATTACKING" {
-			p.State = "IDLE"
-		}
-		w.Mu.Unlock()
-	}(playerID)
-}
-
 // expandedAbilityRadius increases the grid query for AoEs so we do not miss
 // large targets whose centers sit just outside the VFX edge.
 func expandedAbilityRadius(effectName string, radius float64) float64 {

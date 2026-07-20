@@ -286,7 +286,6 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 10*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 
-			w.delayedIdleReset(player.ID)
 		}
 	} else if skillName == "Flame Tornado" {
 		// Flame Tornado
@@ -330,7 +329,6 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 8*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 
-			w.delayedIdleReset(player.ID)
 		}
 	} else if skillName == "Meteor Drop" {
 		// Meteor Drop
@@ -500,7 +498,6 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 
-			w.delayedIdleReset(player.ID)
 		}
 	} else if skillName == "Scorch Beam" {
 		// Scorch Beam (Line Damage)
@@ -571,7 +568,6 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 8*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 
-			w.delayedIdleReset(player.ID)
 		}
 	} else if skillName == "Dragonfire Lance" {
 		// Dragonfire Lance (Single Target Nuke)
@@ -614,7 +610,6 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 
-			w.delayedIdleReset(player.ID)
 		}
 	} else if skillName == "Frost Nova" {
 		// Frost Nova
@@ -659,7 +654,6 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 10*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 
-			w.delayedIdleReset(player.ID)
 		}
 	} else if skillName == "Arcane Missiles" {
 		// Arcane Missiles
