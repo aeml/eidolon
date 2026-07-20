@@ -801,19 +801,24 @@ export async function findOverworldTarget(page) {
     }
     expect((await readPlayerState(page)).x, 'The character must clear the east town fence').toBeGreaterThanOrEqual(115);
 
-    let target = await projectNearestHostile(page, 'Skeleton');
+    // Prefer the low-level Skeleton population, but do not make production QA
+    // depend on one randomized subtype being alive and on-camera. Every caller
+    // needs a real raycastable hostile, and the adjacent overworld sectors can
+    // legitimately make another hostile the nearest visible encounter.
+    const projectPreferredHostile = async () =>
+        await projectNearestHostile(page, 'Skeleton') || await projectNearestHostile(page);
+    let target = await projectPreferredHostile();
     for (let attempt = 0; !target && attempt < 12; attempt += 1) {
         const navigation = await page.evaluate(() => {
             const game = window.game;
             const entities = new Map();
             for (const entity of game?.activeEntitiesCache || []) entities.set(entity.id, entity);
             for (const entity of game?.remotePlayers?.values?.() || []) entities.set(entity.id, entity);
-            const skeletons = [...entities.values()]
+            const hostiles = [...entities.values()]
                 .filter((entity) => entity?.isActive &&
                     entity.state !== 'DEAD' &&
-                    game.isHostileActorTarget?.(entity) &&
-                    (entity.subType || entity.constructor?.name) === 'Skeleton' && entity.position);
-            const nearest = skeletons.sort((first, second) =>
+                    game.isHostileActorTarget?.(entity) && entity.position);
+            const nearest = hostiles.sort((first, second) =>
                 game.player.position.distanceTo(first.position) - game.player.position.distanceTo(second.position)
             )[0];
             if (!nearest) {
@@ -842,7 +847,7 @@ export async function findOverworldTarget(page) {
         } catch {
             continue;
         }
-        target = await projectNearestHostile(page, 'Skeleton');
+        target = await projectPreferredHostile();
     }
     if (!target) {
         const diagnostic = await page.evaluate(() => {
@@ -857,12 +862,13 @@ export async function findOverworldTarget(page) {
                 activeCounts[entity.subType || entity.constructor?.name || 'unknown'] =
                     (activeCounts[entity.subType || entity.constructor?.name || 'unknown'] || 0) + 1;
             }
-            const nearestSkeletons = [...(game?.remotePlayers?.values?.() || [])]
+            const nearestHostiles = [...(game?.remotePlayers?.values?.() || [])]
                 .filter((entity) => entity?.isActive &&
-                    (entity.subType || entity.constructor?.name) === 'Skeleton')
+                    game.isHostileActorTarget?.(entity))
                 .map((entity) => {
                     const projected = entity.position.clone().project(game.renderSystem.camera);
                     return {
+                        subType: entity.subType || entity.constructor?.name,
                         distance: game.player.position.distanceTo(entity.position),
                         active: (game.activeEntitiesCache || []).includes(entity),
                         state: entity.state,
@@ -883,10 +889,10 @@ export async function findOverworldTarget(page) {
                 activeCount: game?.activeEntitiesCache?.length || 0,
                 cameraTargetX: game?.renderSystem?.cameraTarget?.x,
                 cameraTargetZ: game?.renderSystem?.cameraTarget?.z,
-                nearestSkeletons
+                nearestHostiles
             };
         });
-        throw new Error(`No visible Skeleton after bounded east-gate navigation: ${JSON.stringify(diagnostic)}`);
+        throw new Error(`No visible hostile after bounded east-gate navigation: ${JSON.stringify(diagnostic)}`);
     }
     return target;
 }
