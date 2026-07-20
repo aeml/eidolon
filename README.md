@@ -205,16 +205,16 @@ Verification state as of July 20, 2026:
 
 - Implemented and unit-tested: locked/self-hosted browser runtimes, QA command authorization, canonical coverage for 52 active abilities, 60 rune variants, and 47 actor archetypes, persistent animation-state replication, disposable test credentials, health/release identity, and deployment SHA gates.
 - Locally browser-tested: the deterministic High/Low animation gallery, four real-input class matrices covering locomotion/basic attack/death and every canonical ability/rune, two-process remote VFX including Spirit Guardians late-join/expiration, plus the anonymous and general disposable character routes in hardware-accelerated system Chrome.
-- Live production-tested: deployed SHA `634280a` passed the anonymous surface, persistent-character movement/menus/reconnect, extended combat/loot/dungeon/persistence route, and two-client party/presence/movement/jump/combat convergence in hardware-accelerated system Chrome.
+- Live production-tested: deployed SHA `02533ea` passed the anonymous surface, persistent-character movement/menus/reconnect, extended combat/loot/dungeon/persistence route, every four-class ability/rune and locomotion/death matrix, and two-client party/presence/movement/jump/combat plus remote Spirit Guardians lifecycle in hardware-accelerated system Chrome. The final same-SHA run had no Playwright retries or product failures.
 - The full evidence record and workflow link are retained in `docs/plans/live-browser-qa-checklist.md`.
 
 Current measured hotspots (physical lines, `wc -l`):
 
 | File | LOC |
 |---|---:|
-| `server/internal/game/world.go` | 8,481 |
-| `server/main.go` | 4,744 |
-| `src/core/GameEngine.js` | 5,526 |
+| `server/internal/game/world.go` | 8,557 |
+| `server/main.go` | 5,021 |
+| `src/core/GameEngine.js` | 5,645 |
 | `src/ui/UIManager.js` | 3,634 |
 
 These measurements show that the `0.40` decomposition target is still open; release-confidence work does not claim the monolith reduction is complete.

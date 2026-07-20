@@ -197,24 +197,25 @@ Fill this in after the live run; do not pre-check it based on local results.
 
 Current release evidence on July 20, 2026:
 
-- Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 83 Jest suites / 965 tests, and ESLint passed.
+- Node `24.18.0`: fresh `npm ci`, zero-vulnerability `npm audit`, 90 Jest suites / 1,027 tests, and ESLint passed.
 - Go toolchain `1.24.5`: `go test -race ./...` and `go build -trimpath ./...` passed.
-- Google Chrome `150.0.7871.124`: anonymous smoke passed; the combined isolated character suite passed both smoke/reconnect and extended gameplay/persistence tests with a hardware AMD Vulkan renderer in 1.2 minutes.
-- The focused portal route also passed, credential scanning passed, and no uniquely suffixed QA container, network, or image remained after cleanup.
+- Google Chrome `150.0.7871.124`: anonymous smoke passed; the complete predeploy route passed the deterministic High/Low gallery, disposable general character route, four class matrices, and two-browser remote-animation matrix with the hardware `AMD Radeon Graphics (RADV RENOIR)` Vulkan renderer.
+- The focused portal route, credential scanning, and isolated cleanup passed; no uniquely suffixed QA container, network, or image remained after cleanup.
 - The isolated route is locally browser-tested evidence. The matching live evidence for the released code SHA is recorded below.
 
 | Evidence | Result |
 |---|---|
-| Pushed commit | `634280a551e40eb3016b5b50991178e1d04c75ac` on `master` |
-| Client reported commit | `634280a551e40eb3016b5b50991178e1d04c75ac` |
-| Server reported commit | `634280a551e40eb3016b5b50991178e1d04c75ac`; status `ok`, database `ready` |
-| GitHub Actions run | [CI run 29708438440](https://github.com/aeml/eidolon/actions/runs/29708438440), passed |
+| Pushed commit | `02533ea877400414e1cabdb1551f9646173c0a61` on `master` |
+| Client reported commit | `02533ea877400414e1cabdb1551f9646173c0a61` |
+| Server reported commit | `02533ea877400414e1cabdb1551f9646173c0a61`; status `ok`, database `ready` |
+| GitHub Actions run | [CI run 29729616053](https://github.com/aeml/eidolon/actions/runs/29729616053), passed |
 | Browser/version | Google Chrome `150.0.7871.124`, hardware AMD Vulkan/RADV renderer |
 | Live anonymous route | Passed against the matching production client/server SHA |
 | Live primary character route | Passed movement, menu hotkeys, server-originated disconnect, session resume, and identity preservation |
 | Live extended gameplay route | Passed visible Low graphics/Auto-Loot settings, ability and basic-attack combat, authoritative kill/drop/pickup/equip, dungeon entry/exit, reconnect, and fresh-login persistence |
-| Live secondary multiplayer route | Passed presence, party invite/accept, shared party state, remote movement/jump/combat presentation, position convergence, and cleanup |
-| Failure artifacts/issues | No product failure in the final same-SHA run; sanitized evidence upload passed. A GitHub Actions outage and an infrastructure-only Docker proxy denial delayed the successful predeploy rerun. |
+| Live four-class animation route | Passed all 52 active abilities, 60 rune presentations, class locomotion/basic attack/death, cooldown/resource evidence, effect cleanup, and Cleric Spirit Guardians in persistent real characters |
+| Live secondary multiplayer route | Passed presence, party invite/accept, shared party state, remote movement/jump/combat presentation, position convergence, and Spirit Guardians refresh, join-in-progress reconstruction, authoritative expiration, and cleanup |
+| Failure artifacts/issues | No Playwright retry or product failure in the final same-SHA run; credential scan sanitized zero files and evidence upload passed. Log matches for retry/error were limited to deliberate unit-test fault injection and negative party tests. |
 | Final worktree/origin state | Evidence changes committed directly to `master`; clean `HEAD == origin/master` verified at handoff |
 
 ## Failure policy

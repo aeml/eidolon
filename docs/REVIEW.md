@@ -10,26 +10,26 @@ Eidolon is a static Three.js browser action RPG backed by an authoritative Go/We
 
 ## Evidence that is currently strong
 
-- Client unit baseline: 83 Jest suites / 965 tests pass from a fresh Node 24 install in this environment.
+- Client unit baseline: 90 Jest suites / 1,027 tests pass from a fresh Node 24 install in this environment.
 - Server baseline: every Go package tests and builds under Go 1.24.5.
 - Dependency baseline: the lockfile audits at zero known npm vulnerabilities; the production protobuf runtime is locked and self-hosted rather than loaded from a CDN.
 - Local browser baseline: hardware-accelerated Google Chrome `150.0.7871.124` passes the anonymous surface plus a disposable full-character route for visible graphics selection, movement, menus, combat/ability, kill/loot/inventory, dungeon entry/exit, reconnect, and persisted fresh login.
 - Security baseline: `/level`, the fixed QA waypoints, and one-kill loot acceleration require an authenticated username on an explicit server allowlist, with allow/deny and consumption regression tests.
 - Load-test credentials: tracked credentials are removed; the driver generates cryptographically random, in-memory credentials unless an explicit read-only file is supplied.
 - Release observability: client and server expose commit identity; server readiness includes a Mongo ping; deployment checks require the expected SHA and healthy database.
-- Live release baseline: production client and server reported SHA `634280a`; hardware Chrome passed anonymous, persistent-character, extended gameplay/persistence, and two-client party/presence/action-convergence routes in GitHub Actions run `29708438440`.
+- Live release baseline: production client and server reported SHA `02533ea`; hardware Chrome passed anonymous, persistent-character, extended gameplay/persistence, all four class ability/rune and actor-state matrices, and two-client party/presence/action/remote-VFX convergence in GitHub Actions run `29729616053`, without a Playwright retry or product failure.
 
 ## Live release evidence and boundary
 
 - The credentialed browser path is proven both locally against an isolated real server/Mongo database and live against the matching production SHA.
-- The two-account live path covers presence, party invite/accept, remote movement, jump, combat presentation, and position convergence.
+- The two-account live path covers presence, party invite/accept, remote movement, jump, combat presentation, position convergence, and the Spirit Guardians refresh, late-join reconstruction, authoritative expiration, and cleanup lifecycle.
 - GitHub Actions deploys only after unit/build/anonymous/disposable-character gates, polls client and server for the pushed SHA, and then runs live Playwright.
 
-This is point-in-time evidence for SHA `634280a`, not a claim that later commits are live-tested before their own workflow and matching-SHA browser gate pass.
+This is point-in-time evidence for SHA `02533ea`, not a claim that later commits are live-tested before their own workflow and matching-SHA browser gate pass.
 
 ## What remains fragile
 
-- The main monoliths remain large: `world.go` 8,481 LOC, `main.go` 4,744, `GameEngine.js` 5,526, and `UIManager.js` 3,634.
+- The main monoliths remain large: `world.go` 8,557 LOC, `main.go` 5,021, `GameEngine.js` 5,645, and `UIManager.js` 3,634.
 - The server still lacks the planned instance-scoped lock hierarchy.
 - Mongo migration tooling, broader persistence integration tests, formal per-message rate limiting, and malformed-packet fuzz coverage remain open.
 - Browser automation is a release gate, not a substitute for long-duration gameplay, mobile, accessibility, performance, and multi-client soak work.
