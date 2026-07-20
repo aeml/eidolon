@@ -3,8 +3,7 @@ import {
     collectBrowserFailures,
     credentialsFromEnvironment,
     loginAndEnterWorld,
-    readPlayerState,
-    useCombatQAWaypoint
+    readPlayerState
 } from './helpers.js';
 
 const credentials = credentialsFromEnvironment();
@@ -61,8 +60,8 @@ async function findOpenMovementDirection(page, distance, probeDistances = [dista
         const circles = game.collisionManager?.circularColliders || [];
         let best = null;
 
-        for (let index = 0; index < 24; index += 1) {
-            const angle = index * Math.PI * 2 / 24;
+        for (let index = 0; index < 72; index += 1) {
+            const angle = index * Math.PI * 2 / 72;
             const dx = Math.cos(angle) * requestedDistance;
             const dz = Math.sin(angle) * requestedDistance;
             const target = player.position.clone();
@@ -158,11 +157,8 @@ async function holdGroundOffsetAndSample(page, deltaX, deltaZ, options = {}) {
 
     const framesPromise = sampleMovementFrames(page, options.sampleMs || 1_500);
     await page.waitForTimeout(50);
-    await page.mouse.move(projected.x, projected.y);
-    await expect.poll(() => page.evaluate(() => ({
-        raycastPending: Boolean(window.game?.needsRaycast),
-        hoveredEntity: window.game?.hoveredEntity?.id || window.game?.hoveredEntity?.name || null
-    })), { timeout: 2_000 }).toEqual({ raycastPending: false, hoveredEntity: null });
+    const hoveredEntity = await movePointerAndReadHoveredEntity(page, projected);
+    expect(hoveredEntity, 'Movement QA requires an unobstructed ground ray').toBeNull();
     await page.mouse.down();
     const pointerObservedDown = await page.evaluate(() => Boolean(
         window.game?.inputManager?.primaryMouseButtonDown &&
@@ -175,6 +171,65 @@ async function holdGroundOffsetAndSample(page, deltaX, deltaZ, options = {}) {
         pointerObservedDown,
         frames: await framesPromise
     };
+}
+
+async function movePointerAndReadHoveredEntity(page, projected) {
+    await page.mouse.move(projected.x, projected.y);
+    await expect.poll(() => page.evaluate(() => Boolean(
+        window.game?.needsRaycast
+    )), { timeout: 2_000 }).toBe(false);
+    return page.evaluate(() =>
+        window.game?.hoveredEntity?.id || window.game?.hoveredEntity?.name || null
+    );
+}
+
+async function ensureCurrentGroundRayIsClear(page) {
+    let lastHoveredEntity = null;
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+        const current = await projectExactGroundOffset(page, 0, 0);
+        expect(current?.canvas, 'Current player position must project onto the game canvas').toBe(true);
+        lastHoveredEntity = await movePointerAndReadHoveredEntity(page, current);
+        if (!lastHoveredEntity) return;
+
+        const relocationDistance = 8 + attempt * 2;
+        const direction = await findOpenMovementDirection(page, relocationDistance);
+        expect(direction, `A ray-clear relocation must exist away from ${lastHoveredEntity}`).not.toBeNull();
+        const relocation = await holdGroundOffsetAndSample(
+            page,
+            direction.dx,
+            direction.dz,
+            { holdMs: 90, sampleMs: 1_250 }
+        );
+        expect(relocation.pointerObservedDown).toBe(true);
+        await waitForArrival(page);
+    }
+    throw new Error(`No ray-clear current-position probe after bounded real-input relocation; last hover=${lastHoveredEntity}`);
+}
+
+async function findOpenMovementDirectionWithRelocation(page, distance, probeDistances = [distance]) {
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+        const direction = await findOpenMovementDirection(page, distance, probeDistances);
+        if (direction) return direction;
+
+        let relocationDirection = null;
+        for (const relocationDistance of [8, 12, 16].map((value) => value + attempt * 2)) {
+            relocationDirection = await findOpenMovementDirection(page, relocationDistance);
+            if (relocationDirection) break;
+        }
+        expect(
+            relocationDirection,
+            `A ray-clear relocation must expose a ${distance}-unit movement target`
+        ).not.toBeNull();
+        const relocation = await holdGroundOffsetAndSample(
+            page,
+            relocationDirection.dx,
+            relocationDirection.dz,
+            { holdMs: 90, sampleMs: 1_250 }
+        );
+        expect(relocation.pointerObservedDown).toBe(true);
+        await waitForArrival(page);
+    }
+    throw new Error(`No ray-clear ${distance}-unit movement target after bounded real-input relocation`);
 }
 
 function movementAnalysis(frames, directionX, directionZ) {
@@ -248,6 +303,17 @@ async function waitForArrival(page) {
     })), { timeout: 8_000 }).toEqual({ state: 'IDLE', hasTarget: false });
 }
 
+async function recallToTownForMovementQA(page) {
+    await page.bringToFront();
+    await page.keyboard.press('b');
+    await expect.poll(async () => {
+        const state = await readPlayerState(page);
+        return Math.hypot(state.x + 1.25, state.z - 200);
+    }, { timeout: 10_000 }).toBeLessThan(0.5);
+    await waitForArrival(page);
+    await page.waitForTimeout(250);
+}
+
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
 test.describe('real-input movement smoothness', () => {
@@ -258,9 +324,8 @@ test.describe('real-input movement smoothness', () => {
         const failures = collectBrowserFailures(page, baseURL);
         await loginAndEnterWorld(page, credentials);
         const renderer = await assertHardwareRenderer(page);
-        await useCombatQAWaypoint(page);
-        await page.bringToFront();
-        await waitForArrival(page);
+        await recallToTownForMovementQA(page);
+        await ensureCurrentGroundRayIsClear(page);
 
         const beforeNearby = await movementMetrics(page);
         const start = await readPlayerState(page);
@@ -275,8 +340,7 @@ test.describe('real-input movement smoothness', () => {
         expect(afterExact.local.actor.animationTransitions - beforeNearby.local.actor.animationTransitions).toBe(0);
         expect(new Set(exact.frames.map((frame) => frame.state))).toEqual(new Set(['IDLE']));
 
-        const nearbyDirection = await findOpenMovementDirection(page, 1.5, [0.05, 1.5]);
-        expect(nearbyDirection).not.toBeNull();
+        const nearbyDirection = await findOpenMovementDirectionWithRelocation(page, 1.5, [0.05, 1.5]);
         const nearbyMagnitude = Math.hypot(nearbyDirection.dx, nearbyDirection.dz);
         const nearbyUnitX = nearbyDirection.dx / nearbyMagnitude;
         const nearbyUnitZ = nearbyDirection.dz / nearbyMagnitude;
@@ -309,8 +373,7 @@ test.describe('real-input movement smoothness', () => {
         expect(shortAnalysis.maxCameraError).toBeLessThan(0.05);
         expect(afterShort.local.actor.arrivals - beforeShort.local.actor.arrivals).toBe(1);
 
-        const sustainedDirection = await findOpenMovementDirection(page, 8);
-        expect(sustainedDirection).not.toBeNull();
+        const sustainedDirection = await findOpenMovementDirectionWithRelocation(page, 8);
         const beforeLong = await movementMetrics(page);
         const sustained = await holdGroundOffsetAndSample(
             page,

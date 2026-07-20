@@ -1158,7 +1158,10 @@ export class GameEngine {
                 const previousZ = this.player.position.z;
                 
                 // Optimistic update
-                this.player.position.set(0, 0, 200);
+                // Match the authoritative server recall/respawn coordinate so
+                // the next state snapshot never has to pull the player 1.25m
+                // sideways immediately after this optimistic handoff.
+                this.player.position.set(-1.25, 0, 200);
                 this.player.targetPosition = null;
                 this.player.state = 'IDLE';
                 
