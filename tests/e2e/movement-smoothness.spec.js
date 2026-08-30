@@ -3,7 +3,8 @@ import {
     collectBrowserFailures,
     credentialsFromEnvironment,
     loginAndEnterWorld,
-    readPlayerState
+    readPlayerState,
+    useCombatQAWaypoint
 } from './helpers.js';
 
 const credentials = credentialsFromEnvironment();
@@ -414,6 +415,46 @@ test.describe('real-input movement smoothness', () => {
         await page.waitForTimeout(1_250);
         const afterIdle = await movementMetrics(page);
         expect(afterIdle.local.packetsSent - beforeIdle.local.packetsSent).toBeLessThanOrEqual(2);
+
+        // The original report occurred outside town. Exercise the same real
+        // ground-input path after a server-owned relocation beyond the town
+        // boundary, where denser entity streams used to make duplicate
+        // acknowledgement snapshots especially visible as rubberbanding.
+        await useCombatQAWaypoint(page);
+        const outsideStart = await readPlayerState(page);
+        expect(Math.hypot(outsideStart.x, outsideStart.z - 200)).toBeGreaterThan(100);
+        await ensureCurrentGroundRayIsClear(page);
+        const outsideDirection = await findOpenMovementDirectionWithRelocation(page, 8);
+        const beforeOutside = await movementMetrics(page);
+        const outside = await holdGroundOffsetAndSample(
+            page,
+            outsideDirection.dx,
+            outsideDirection.dz,
+            { holdMs: 90, sampleMs: 2_500 }
+        );
+        await waitForArrival(page);
+        await page.waitForTimeout(500);
+        const afterOutside = await movementMetrics(page);
+        const outsideAnalysis = movementAnalysis(
+            outside.frames,
+            outsideDirection.dx,
+            outsideDirection.dz
+        );
+
+        expect(outsideAnalysis.logicalTravel).toBeGreaterThan(6);
+        expect(outsideAnalysis.renderTravel).toBeGreaterThan(6);
+        expect(outsideAnalysis.largestLogicalBacktrack).toBeGreaterThanOrEqual(-0.02);
+        expect(outsideAnalysis.largestRenderBacktrack).toBeGreaterThanOrEqual(-0.02);
+        expect(outsideAnalysis.largestRenderStep).toBeLessThan(1);
+        expect(outsideAnalysis.maxCameraError).toBeLessThan(0.05);
+        expect(outsideAnalysis.maxRenderLogicalGap).toBeLessThan(0.75);
+        expect(outsideAnalysis.correctionFrames).toBe(0);
+        expect(afterOutside.local.serverAdjustments - beforeOutside.local.serverAdjustments).toBe(0);
+        expect(afterOutside.local.hardCorrections - beforeOutside.local.hardCorrections).toBe(0);
+        expect(afterOutside.local.actor.arrivals - beforeOutside.local.actor.arrivals).toBe(1);
+        expect(afterOutside.local.lastAcknowledgedSequence).toBeGreaterThanOrEqual(
+            afterOutside.local.lastSentSequence - 2
+        );
         expect(failures, failures.join('\n')).toEqual([]);
 
         await testInfo.attach('movement-smoothness-evidence', {
@@ -423,7 +464,8 @@ test.describe('real-input movement smoothness', () => {
                 subArrivalFrames: subArrival.frames.length,
                 short: shortAnalysis,
                 sustained: sustainedAnalysis,
-                transport: afterLong.local
+                outsideTown: outsideAnalysis,
+                transport: afterOutside.local
             }, null, 2)),
             contentType: 'application/json'
         });

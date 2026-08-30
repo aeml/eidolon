@@ -2,7 +2,8 @@ import { expect, test } from '@playwright/test';
 import { CONSTANTS } from '../../src/core/Constants.js';
 import {
     PLAYER_ABILITY_VISUALS,
-    getAbilityRuneVariants
+    getAbilityRuneVariants,
+    isAbilityVisualLayerEnabled
 } from '../../src/skills/abilityVisualManifest.js';
 import {
     collectBrowserFailures,
@@ -231,7 +232,14 @@ async function castThroughInput(page, className, skillName, key, presentation, o
             nonFiniteTransforms
         };
     });
-    expect(snapshot.presentation.layerCount).toBe(presentation.layers.length);
+    const expectedLayerCount = presentation.layers.filter((entry) =>
+        isAbilityVisualLayerEnabled(
+            entry,
+            { skillRunes: { [skillName]: options.runeId || null } },
+            skillName
+        )
+    ).length;
+    expect(snapshot.presentation.layerCount).toBe(expectedLayerCount);
     expect(snapshot.currentAnimation, `${className}/${skillName} animation snapshot: ${JSON.stringify(snapshot)}`)
         .toMatch(/^(Attack|Run|Walk)$/);
     expect(snapshot.missingClips).toEqual([]);
@@ -373,20 +381,21 @@ async function assertHardwareRenderer(page) {
 async function exerciseDeathAndRespawn(page) {
     await useCombatQAWaypoint(page);
     const target = await findOverworldTarget(page);
+    expect(target.distance, 'The death check needs a hostile inside its normal sight range').toBeLessThanOrEqual(45);
     await visibleChatCommand(page, '/level 1', 'Level set to 1.');
+    await visibleChatCommand(
+        page,
+        '/qa-animation-ready near-death',
+        'Animation QA readiness restored at one health for hostile death validation.'
+    );
     await visibleChatCommand(
         page,
         '/qa-protection off',
         'QA waypoint protection disabled; hostile damage is authoritative.'
     );
-    for (let attempt = 0; attempt < 5 && !await page.locator('#death-screen').isVisible(); attempt += 1) {
-        // Aim at the animated actor's tagged hitbox, not its ground-level
-        // world origin. A feet projection can sit below the visible mesh and
-        // turn this real input into a ground click instead of an engagement.
-        const projected = await projectEntity(page, target.id);
-        if (projected?.visible) await page.mouse.click(projected.x, projected.y);
-        await page.waitForTimeout(4_000);
-    }
+    // Do not click the hostile here: a level-100 character's retained gear can
+    // otherwise kill the low-level encounter before it lands a hit. Starting
+    // at one health lets the normal enemy AI and damage path decide the death.
     await expect(page.locator('#death-screen')).toBeVisible({ timeout: 45_000 });
     await expect.poll(async () => (await readPlayerState(page)).state).toBe('DEAD');
     const deathAnimation = await page.evaluate(() => window.game?.player?.currentAnimationName);
@@ -464,7 +473,14 @@ test.describe('real-input animation gameplay matrix', () => {
                 : 'right';
             for (const rune of runes) {
                 await selectRune(page, skillName, rune);
-                await castThroughInput(page, className, skillName, key, presentations[skillName]);
+                await castThroughInput(
+                    page,
+                    className,
+                    skillName,
+                    key,
+                    presentations[skillName],
+                    { runeId: rune.id }
+                );
             }
         }
 

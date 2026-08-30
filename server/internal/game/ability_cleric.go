@@ -17,64 +17,95 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 
 			// Divine Intervention Rune Effects
 			runeID := player.GetRuneForSkill("Divine Intervention")
-
-			player.DivineInterventionActive = true
-			player.DivineInterventionEndTime = time.Now().Add(5 * time.Second)
-
-			// Big Heal
-			heal := player.MaxHealth / 2
-			player.Health += heal
-			if player.Health > player.MaxHealth {
-				player.Health = player.MaxHealth
+			const castRange = 15.0
+			var primaryTarget *Entity
+			if targetID != "" {
+				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, target, castRange, TypePlayer, TypeNPC) {
+					primaryTarget = target
+				}
 			}
-
-			// divineintervention_guardian: Target gains 50% damage reduction for 5s
-			if runeID == "divineintervention_guardian" {
-				player.DivineInterventionGuardian = true
-				player.DivineInterventionGuardTime = time.Now().Add(5 * time.Second)
-			}
-
-			// divineintervention_miracle: Can affect 2 targets (heal nearest ally too)
-			if runeID == "divineintervention_miracle" {
-				minDist := 15.0
-				var nearestAlly *Entity
-				nearby := w.Grid.Nearby(player.X, player.Z, 15.0, player.InstanceID)
-				for _, t := range nearby {
-					if t.ID == player.ID {
+			if primaryTarget == nil {
+				minDist := 3.0 + maxAbilityTargetVisualRadius
+				for _, target := range w.Grid.Nearby(targetX, targetZ, minDist, player.InstanceID) {
+					if !validDirectAbilityTarget(player, target, castRange, TypePlayer, TypeNPC) {
 						continue
 					}
-					if t.Type == TypePlayer {
-						dx := t.X - player.X
-						dz := t.Z - player.Z
-						d := math.Sqrt(dx*dx + dz*dz)
-						if d < minDist {
-							minDist = d
-							nearestAlly = t
-						}
+					distance := math.Hypot(target.X-targetX, target.Z-targetZ)
+					if distance < minDist {
+						minDist = distance
+						primaryTarget = target
+					}
+				}
+			}
+			if primaryTarget == nil {
+				primaryTarget = player
+			}
+
+			protectionEnd := time.Now().Add(10 * time.Second)
+			applyIntervention := func(target *Entity) int {
+				target.DivineInterventionActive = true
+				target.DivineInterventionEndTime = protectionEnd
+				heal := applyHealingReceived(target, applyHealingDoneBonus(player, target.MaxHealth/2))
+				previousHealth := target.Health
+				target.Health += heal
+				if target.Health > target.MaxHealth {
+					target.Health = target.MaxHealth
+				}
+				if runeID == "divineintervention_guardian" {
+					target.DivineInterventionGuardian = true
+					target.DivineInterventionGuardTime = time.Now().Add(5 * time.Second)
+				}
+				return target.Health - previousHealth
+			}
+
+			primaryHeal := 0
+			if primaryTarget == player {
+				primaryHeal = applyIntervention(primaryTarget)
+			} else {
+				primaryTarget.Mu.Lock()
+				primaryHeal = applyIntervention(primaryTarget)
+				primaryTarget.Mu.Unlock()
+			}
+			if primaryHeal > 0 {
+				w.fireHealEvent(player.ID, primaryTarget.ID, primaryHeal)
+			}
+
+			// divineintervention_miracle: Can affect 2 targets (protect nearest ally too)
+			if runeID == "divineintervention_miracle" {
+				minDist := castRange
+				var nearestAlly *Entity
+				nearby := w.Grid.Nearby(player.X, player.Z, castRange, player.InstanceID)
+				for _, t := range nearby {
+					if t.ID == primaryTarget.ID || !validDirectAbilityTarget(player, t, castRange, TypePlayer, TypeNPC) {
+						continue
+					}
+					d := math.Hypot(t.X-player.X, t.Z-player.Z)
+					if d < minDist {
+						minDist = d
+						nearestAlly = t
 					}
 				}
 				if nearestAlly != nil {
 					nearestAlly.Mu.Lock()
-					nearestAlly.DivineInterventionActive = true
-					nearestAlly.DivineInterventionEndTime = time.Now().Add(5 * time.Second)
-					allyHeal := applyHealingDoneBonus(player, nearestAlly.MaxHealth/2)
-					nearestAlly.Health += allyHeal
-					if nearestAlly.Health > nearestAlly.MaxHealth {
-						nearestAlly.Health = nearestAlly.MaxHealth
-					}
+					allyHeal := applyIntervention(nearestAlly)
 					nearestAlly.Mu.Unlock()
-					w.fireHealEvent(player.ID, nearestAlly.ID, allyHeal)
+					if allyHeal > 0 {
+						w.fireHealEvent(player.ID, nearestAlly.ID, allyHeal)
+					}
 				}
 			}
 
 			// divineintervention_quick: Cooldown reduced by 50%
 			baseCooldown := resolveAbilityCooldown(player.SubType, skillName, 120*time.Second)
+			if player.HasAnySetBonus("divineInterventionCD") && baseCooldown > 60*time.Second {
+				baseCooldown = 60 * time.Second
+			}
 			if runeID == "divineintervention_quick" {
 				setCooldown(baseCooldown / 2)
 			} else {
 				setCooldown(baseCooldown)
 			}
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, primaryTarget.ID, skillName, primaryTarget.X, primaryTarget.Z)
 		}
 	} else if skillName == "Guardian Embrace" {
 		// Guardian Embrace (HoT Aura)
@@ -101,17 +132,32 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 
 			radius := 8.0
-			nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
+			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
-				if target.Type == TypePlayer || target.Type == TypeNPC {
+				if (target.Type == TypePlayer || target.Type == TypeNPC) && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.Mu.Lock()
 					// Cleanse Debuffs
 					target.Bleeding = false
+					target.BleedDamage = 0
+					target.BleedSourceID = ""
+					target.BleedEndTime = time.Time{}
 					target.Poisoned = false
+					target.PoisonDamage = 0
+					target.PoisonSourceID = ""
+					target.PoisonEndTime = time.Time{}
 					target.Slowed = false
+					target.SlowFactor = 0
+					target.SlowEndTime = time.Time{}
 					target.Stunned = false
+					target.StunEndTime = time.Time{}
 					target.Rooted = false
+					target.RootEndTime = time.Time{}
 					target.WeakPointMarked = false
+					target.WeakPointEndTime = time.Time{}
+					target.MarkWeakness = false
+					target.MarkWeaknessEndTime = time.Time{}
+					target.MarkWeaknessFactor = 0
+					target.RecalculateStats()
 					target.Mu.Unlock()
 				}
 			}
@@ -126,6 +172,9 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 			player.SpiritsActive = true
 			player.SpiritsBoosted = true
+			// Boost is also a standalone activation, so capture the selected
+			// Spirit Guardians rune instead of depending on an earlier base cast.
+			player.SpiritGuardiansRuneID = player.GetRuneForSkill("Spirit Guardians")
 			player.SpiritEndTime = time.Now().Add(consumePersistentDuration(player, 10*time.Second))
 			// Boost logic would be in updateEntity where spirits do damage
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
@@ -171,15 +220,16 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			// Single Target
 			var target *Entity
 			if targetID != "" {
-				if t, ok := w.Entities[targetID]; ok {
+				if t, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, t, 4.0, TypeEnemy) {
 					target = t
 				}
-			} else {
+			}
+			if target == nil {
 				// Find closest enemy
-				minDist := 4.0
-				nearby := w.Grid.Nearby(targetX, targetZ, 4.0, player.InstanceID)
+				minDist := 3.0
+				nearby := w.Grid.Nearby(targetX, targetZ, 3.0+maxAbilityTargetVisualRadius, player.InstanceID)
 				for _, t := range nearby {
-					if t.Type == TypeEnemy && t.State != "DEAD" {
+					if validDirectAbilityTarget(player, t, 4.0, TypeEnemy) {
 						dx := t.X - targetX
 						dz := t.Z - targetZ
 						d := math.Sqrt(dx*dx + dz*dz)
@@ -195,8 +245,10 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				target.Mu.Lock()
 				finalDamage := applyFinalDamage(player, target, damage, "holy")
 				addThreatLocked(target, player.ID, float64(finalDamage))
-				target.Stunned = true
-				target.StunEndTime = time.Now().Add(2 * time.Second)
+				if !target.CCImmune {
+					target.Stunned = true
+					target.StunEndTime = time.Now().Add(2 * time.Second)
+				}
 
 				w.fireDamageEvent(player.ID, target.ID, finalDamage)
 				if target.Health <= 0 {
@@ -209,12 +261,21 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
 	} else if skillName == "Blessing of Resolve" {
-		// Blessing of Resolve (Buff)
+		// Blessing of Resolve (Party Buff)
 		cost := resolveAbilityManaCost(player, skillName, 35)
 		if player.Mana >= cost {
 			player.Mana -= cost
-			player.BlessingResolveActive = true
-			player.BlessingResolveEndTime = time.Now().Add(20 * time.Second)
+			endTime := time.Now().Add(20 * time.Second)
+			radius := 10.0
+			for _, target := range w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID) {
+				target.Mu.Lock()
+				if (target.Type == TypePlayer || target.Type == TypeNPC) && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
+					target.BlessingResolveActive = true
+					target.BlessingResolveEndTime = endTime
+					target.RecalculateStats()
+				}
+				target.Mu.Unlock()
+			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 45*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
@@ -264,16 +325,24 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 
 				// Heal all allies in large radius around player
 				partyRadius := 20.0
-				nearby := w.Grid.Nearby(player.X, player.Z, partyRadius, player.InstanceID)
+				nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, partyRadius), player.InstanceID)
 				for _, ally := range nearby {
-					if ally.Type == TypePlayer || ally.Type == TypeNPC {
+					if (ally.Type == TypePlayer || ally.Type == TypeNPC) && withinAbilityRadius(skillName, player.X, player.Z, ally, partyRadius) {
 						ally.Mu.Lock()
-						ally.Health += healAmount
+						if ally.State == "DEAD" {
+							ally.Mu.Unlock()
+							continue
+						}
+						previousHealth := ally.Health
+						ally.Health += applyHealingReceived(ally, healAmount)
 						if ally.Health > ally.MaxHealth {
 							ally.Health = ally.MaxHealth
 						}
+						actualHeal := ally.Health - previousHealth
 						ally.Mu.Unlock()
-						w.fireHealEvent(player.ID, ally.ID, healAmount)
+						if actualHeal > 0 {
+							w.fireHealEvent(player.ID, ally.ID, actualHeal)
+						}
 					}
 				}
 
@@ -284,15 +353,16 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				var target *Entity
 				// Find target near cursor if targetID not set
 				if targetID != "" {
-					if t, ok := w.Entities[targetID]; ok {
+					if t, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, t, 15.0, TypePlayer, TypeNPC) {
 						target = t
 					}
-				} else {
+				}
+				if target == nil {
 					// Find closest ally
 					minDist := 3.0
-					nearby := w.Grid.Nearby(targetX, targetZ, 5.0, player.InstanceID)
+					nearby := w.Grid.Nearby(targetX, targetZ, 3.0+maxAbilityTargetVisualRadius, player.InstanceID)
 					for _, t := range nearby {
-						if t.Type == TypePlayer || t.Type == TypeNPC { // Ally
+						if validDirectAbilityTarget(player, t, 15.0, TypePlayer, TypeNPC) {
 							dx := t.X - targetX
 							dz := t.Z - targetZ
 							d := math.Sqrt(dx*dx + dz*dz)
@@ -312,34 +382,52 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				if runeID == "healinglight_beacon" {
 					tX, tZ := target.X, target.Z
 					aoeRadius := 5.0
-					nearby := w.Grid.Nearby(tX, tZ, aoeRadius, player.InstanceID)
+					nearby := w.Grid.Nearby(tX, tZ, expandedAbilityRadius(skillName, aoeRadius), player.InstanceID)
 					for _, ally := range nearby {
-						if ally.Type == TypePlayer || ally.Type == TypeNPC {
+						if (ally.Type == TypePlayer || ally.Type == TypeNPC) && withinAbilityRadius(skillName, tX, tZ, ally, aoeRadius) {
 							ally.Mu.Lock()
-							ally.Health += healAmount
+							if ally.State == "DEAD" {
+								ally.Mu.Unlock()
+								continue
+							}
+							previousHealth := ally.Health
+							ally.Health += applyHealingReceived(ally, healAmount)
 							if ally.Health > ally.MaxHealth {
 								ally.Health = ally.MaxHealth
 							}
+							actualHeal := ally.Health - previousHealth
 							ally.Mu.Unlock()
-							w.fireHealEvent(player.ID, ally.ID, healAmount)
+							if actualHeal > 0 {
+								w.fireHealEvent(player.ID, ally.ID, actualHeal)
+							}
 						}
 					}
 				} else {
 					// Normal single-target heal
 					target.Mu.Lock()
-					target.Health += healAmount
+					previousHealth := target.Health
+					target.Health += applyHealingReceived(target, healAmount)
 					if target.Health > target.MaxHealth {
 						target.Health = target.MaxHealth
 					}
+					actualHeal := target.Health - previousHealth
 					target.Mu.Unlock()
+					if actualHeal > 0 {
+						w.fireHealEvent(player.ID, target.ID, actualHeal)
+					}
 				}
 
 				// healinglight_renewal: Adds HoT for 5s (20% of initial heal)
 				if runeID == "healinglight_renewal" {
-					hotAmount := healAmount / 5 // 20% over 5 ticks = 4% per tick, total 20%
+					hotAmount := healAmount / 25 // Five ticks total 20% of the initial heal.
+					if hotAmount < 1 {
+						hotAmount = 1
+					}
 					target.Mu.Lock()
 					target.HealingLightHoTActive = true
 					target.HealingLightHoTAmount = hotAmount
+					target.HealingLightHoTSourceID = player.ID
+					target.HealingLightHoTTicksRemaining = 5
 					target.HealingLightHoTEndTime = time.Now().Add(5 * time.Second)
 					target.LastHealingLightHoTTick = time.Now()
 					target.Mu.Unlock()
@@ -355,10 +443,19 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 						target.Rooted = false
 					} else if target.Slowed {
 						target.Slowed = false
+						target.SlowFactor = 0
+						target.SlowEndTime = time.Time{}
+						target.RecalculateStats()
 					} else if target.Bleeding {
 						target.Bleeding = false
+						target.BleedDamage = 0
+						target.BleedSourceID = ""
+						target.BleedEndTime = time.Time{}
 					} else if target.Poisoned {
 						target.Poisoned = false
+						target.PoisonDamage = 0
+						target.PoisonSourceID = ""
+						target.PoisonEndTime = time.Time{}
 					}
 					target.Mu.Unlock()
 				}
@@ -391,13 +488,12 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				baseDamage = int(float64(baseDamage) * 1.5)
 			}
 
-			pDirX := math.Sin(player.Rotation)
-			pDirZ := math.Cos(player.Rotation)
+			pDirX, pDirZ := fighterFacing(player, targetX, targetZ)
 
 			// Track total damage for lifesteal
 			totalDamageDealt := 0
 
-			nearby := w.Grid.Nearby(player.X, player.Z, rangeDist, player.InstanceID)
+			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, rangeDist), player.InstanceID)
 			for _, target := range nearby {
 				if target.ID == player.ID {
 					continue
@@ -410,11 +506,11 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				}
 				dx := target.X - player.X
 				dz := target.Z - player.Z
-				isMarked := target.WeakPointMarked
+				isMarked := target.MarkWeakness
 				target.Mu.RUnlock()
 
 				dist := math.Sqrt(dx*dx + dz*dz)
-				if dist <= rangeDist {
+				if dist > 0 && dist <= rangeDist+entityVisualRadius(target) {
 					dirX := dx / dist
 					dirZ := dz / dist
 
@@ -433,7 +529,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 						addThreatLocked(target, player.ID, float64(finalDamage))
 
 						// radiantstrike_chains: Roots target for 2s
-						if runeID == "radiantstrike_chains" {
+						if runeID == "radiantstrike_chains" && !target.CCImmune {
 							target.Rooted = true
 							target.RootEndTime = time.Now().Add(2 * time.Second)
 						}
@@ -451,6 +547,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 							} else if target.IronFortressActive {
 								target.IronFortressActive = false
 							}
+							target.RecalculateStats()
 						}
 
 						isDead := target.Health <= 0
@@ -468,9 +565,13 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 
 			// Set Bonus: Crusader's Zeal 4pc (radiantStrikeLifesteal) - Heal for 100% of damage dealt
 			if player.HasAnySetBonus("radiantStrikeLifesteal") && totalDamageDealt > 0 {
-				player.Health += totalDamageDealt
+				previousHealth := player.Health
+				player.Health += applyHealingReceived(player, totalDamageDealt)
 				if player.Health > player.MaxHealth {
 					player.Health = player.MaxHealth
+				}
+				if actualHeal := player.Health - previousHealth; actualHeal > 0 {
+					w.fireHealEvent(player.ID, player.ID, actualHeal)
 				}
 			}
 
@@ -504,7 +605,13 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					target.Mu.Lock()
 					finalDamage := applyFinalDamage(player, target, damage, "holy")
 					addThreatLocked(target, player.ID, float64(finalDamage))
-					// Stun logic would go here
+					if !target.CCImmune {
+						target.Stunned = true
+						target.StunEndTime = time.Now().Add(3 * time.Second)
+					}
+					target.MarkWeakness = true
+					target.MarkWeaknessFactor = 0.50
+					target.MarkWeaknessEndTime = time.Now().Add(5 * time.Second)
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
 
@@ -537,6 +644,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			// Spawn Zone Entity
 			zone := &Entity{
 				ID:                         fmt.Sprintf("zone-%d", time.Now().UnixNano()),
+				InstanceID:                 player.InstanceID,
 				Type:                       TypeProjectile,
 				SubType:                    "ZoneHoly",
 				X:                          player.X,
@@ -547,6 +655,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				Damage:                     int(float64(20+(player.Stats.Wisdom*1)) * player.GetSkillDamageMultiplier("Consecrated Ground")),
 				OwnerID:                    player.ID,
 				CreatedAt:                  time.Now(),
+				ProjectileSkill:            "Consecrated Ground",
 				ConsecratedGroundRuneID:    runeID,
 				ConsecratedGroundSanctuary: runeID == "consecratedground_sanctuary",
 			}
@@ -571,14 +680,15 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			player.Mana -= cost
 
 			radius := 10.0
-			nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
+			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
-				if target.Type == TypePlayer || target.Type == TypeNPC {
-					target.Mu.Lock()
+				target.Mu.Lock()
+				if (target.Type == TypePlayer || target.Type == TypeNPC) && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.ZealActive = true
 					target.ZealEndTime = time.Now().Add(8 * time.Second)
-					target.Mu.Unlock()
+					target.RecalculateStats()
 				}
+				target.Mu.Unlock()
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 25*time.Second))
@@ -593,15 +703,16 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 			// Find target
 			var target *Entity
 			if targetID != "" {
-				if t, ok := w.Entities[targetID]; ok {
+				if t, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, t, 15.0, TypeEnemy) {
 					target = t
 				}
-			} else {
+			}
+			if target == nil {
 				// Closest enemy
 				minDist := 5.0
-				nearby := w.Grid.Nearby(targetX, targetZ, 5.0, player.InstanceID)
+				nearby := w.Grid.Nearby(targetX, targetZ, 5.0+maxAbilityTargetVisualRadius, player.InstanceID)
 				for _, t := range nearby {
-					if t.Type == TypeEnemy && t.State != "DEAD" {
+					if validDirectAbilityTarget(player, t, 15.0, TypeEnemy) {
 						d := math.Sqrt((t.X-targetX)*(t.X-targetX) + (t.Z-targetZ)*(t.Z-targetZ))
 						if d < minDist {
 							minDist = d
@@ -613,8 +724,9 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 
 			if target != nil {
 				target.Mu.Lock()
-				target.WeakPointMarked = true
-				target.WeakPointEndTime = time.Now().Add(10 * time.Second)
+				target.MarkWeakness = true
+				target.MarkWeaknessFactor = 0.20
+				target.MarkWeaknessEndTime = time.Now().Add(10 * time.Second)
 				target.Mu.Unlock()
 			}
 

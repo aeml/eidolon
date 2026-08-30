@@ -67,6 +67,8 @@ export class Wizard extends Actor {
 
         const skill = skillNameOverride || this.abilityName;
 
+        if (this.isMultiplayer || gameEngine?.isMultiplayer) return true;
+
         // Apply Spell Focus Multiplier if active
         let damageMultiplier = 1.0;
         if (this.spellFocusActive) {

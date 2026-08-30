@@ -1,6 +1,6 @@
 import { CONSTANTS } from '../core/Constants.js';
 
-const layer = (type, color, anchor = 'source') => Object.freeze({ type, color, anchor });
+const layer = (type, color, anchor = 'source', options = {}) => Object.freeze({ type, color, anchor, ...options });
 const presentation = (category, animation, layers, options = {}) => Object.freeze({
     category,
     animation,
@@ -13,7 +13,7 @@ const presentation = (category, animation, layers, options = {}) => Object.freez
 
 export const PLAYER_ABILITY_VISUALS = Object.freeze({
     Fighter: Object.freeze({
-        Charge: presentation('movement', 'charge', [layer('wave', 0xff5500)]),
+        Charge: presentation('movement', 'charge', [layer('wave', 0xff5500, 'target')]),
         Whirlwind: presentation('area', 'spin', [layer('spin', 0xd7dbe0)]),
         'Shield Slam': presentation('melee', 'heavy', [layer('impact', 0xffef74, 'target')]),
         'Iron Fortress': presentation('buff', 'buff', [layer('sphere', 0xaeb7c2)], { persistentState: 'iron_fortress' }),
@@ -23,7 +23,7 @@ export const PLAYER_ABILITY_VISUALS = Object.freeze({
         'Unbreakable Grip': presentation('control', 'pull', [layer('beam', 0x6aa9ff, 'target'), layer('impact', 0x326dff, 'target')]),
         'Juggernaut Charge': presentation('movement', 'charge', [layer('wave', 0xff3f35), layer('impact', 0xffaa55, 'target')]),
         'Berserker Edge': presentation('buff', 'buff', [layer('buff', 0xff3434), layer('ring', 0x9e1212)], { persistentState: 'berserker_edge' }),
-        'Shattering Charge': presentation('movement', 'charge', [layer('wave', 0xffffff), layer('impact', 0xff7744, 'target')]),
+        'Shattering Charge': presentation('movement', 'charge', [layer('wave', 0xffffff, 'target'), layer('impact', 0xff7744, 'target')]),
         'Executioner Spin': presentation('area', 'spin', [layer('spin', 0xff3030), layer('blood', 0x9d1010, 'target')]),
         'Last Stand Rampage': presentation('buff', 'shout', [layer('buff', 0xff1515), layer('ring', 0xff6b32)], { persistentState: 'last_stand' })
     }),
@@ -59,12 +59,16 @@ export const PLAYER_ABILITY_VISUALS = Object.freeze({
     }),
     Cleric: Object.freeze({
         'Spirit Guardians': presentation('persistent-aura', 'summon', [layer('buff', 0xffe066), layer('ring', 0xfff4a3)], { persistentState: 'spirit_guardians' }),
-        'Healing Light': presentation('heal', 'cast', [layer('pillar', 0x55ff9b, 'target'), layer('burst', 0xc8ffe0, 'target')]),
+        'Healing Light': presentation('heal', 'cast', [
+            layer('pillar', 0x55ff9b, 'target'),
+            layer('burst', 0xc8ffe0, 'target'),
+            layer('ring', 0x7dffc0, 'target', { runeOnly: 'healinglight_beacon' })
+        ]),
         'Guardian Embrace': presentation('persistent-aura', 'channel', [layer('ring', 0xffef78), layer('buff', 0xfff5ad)], { persistentState: 'guardian_embrace' }),
         'Purifying Wave': presentation('area', 'cast', [layer('ring', 0x70f5ff), layer('burst', 0xe1fdff)]),
         'Divine Intervention': presentation('buff', 'heavy-cast', [layer('pillar', 0xffd85a, 'target'), layer('sphere', 0xfff2a6, 'target')], { persistentState: 'divine_intervention' }),
-        'Radiant Strike': presentation('melee', 'heavy', [layer('burst', 0xffff6a), layer('impact', 0xffffff, 'target')]),
-        'Consecrated Ground': presentation('persistent-area', 'cast', [layer('ground_circle', 0xffd447, 'target'), layer('pillar', 0xfff1a1, 'target')], { persistentState: 'consecrated_ground' }),
+        'Radiant Strike': presentation('melee', 'heavy', [layer('cone', 0xffff6a), layer('impact', 0xffffff, 'target')]),
+        'Consecrated Ground': presentation('persistent-area', 'cast', [layer('ground_circle', 0xffd447), layer('pillar', 0xfff1a1)], { persistentState: 'consecrated_ground' }),
         'Spirit Guardians Boost': presentation('persistent-aura', 'summon', [layer('buff', 0xffffff), layer('ring', 0xffd75a)], { persistentState: 'spirit_guardians_boost' }),
         'Avenging Seraph': presentation('summon', 'summon', [layer('pillar', 0xffffff), layer('ring', 0xffe58a)], { persistentState: 'avenging_seraph' }),
         'Blessing of Resolve': presentation('buff-area', 'bless', [layer('ring', 0x66aaff), layer('sphere', 0xb9d8ff)], { persistentState: 'blessing_resolve' }),
@@ -101,6 +105,15 @@ export const ABILITY_VISUAL_ALIASES = Object.freeze({
         'Divine Protection': 'Divine Intervention',
         'Sacred Ground': 'Consecrated Ground',
         Resurrection: 'Divine Intervention'
+    })
+});
+
+const ABILITY_VISUAL_ALIAS_OVERRIDES = Object.freeze({
+    Wizard: Object.freeze({
+        'Frost Nova': presentation('area-control', 'cast', [
+            layer('ring', 0x72cfff),
+            layer('burst', 0xd7f4ff)
+        ])
     })
 });
 
@@ -156,8 +169,14 @@ export function getAbilityPresentation(className, skillName) {
         className,
         skillName,
         canonicalName,
-        ...PLAYER_ABILITY_VISUALS[className][canonicalName]
+        ...PLAYER_ABILITY_VISUALS[className][canonicalName],
+        ...(ABILITY_VISUAL_ALIAS_OVERRIDES[className]?.[skillName] || {})
     };
+}
+
+export function isAbilityVisualLayerEnabled(entry, source, canonicalName) {
+    if (!entry?.runeOnly) return true;
+    return source?.skillRunes?.[canonicalName] === entry.runeOnly;
 }
 
 export function getAbilityAnimationProfile(className, skillName) {

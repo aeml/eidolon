@@ -224,6 +224,46 @@ function createEngineHarness() {
 }
 
 describe('GameEngine multiplayer respawn sync', () => {
+    test('ability result reconciles predicted mana and cooldown', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.abilityName = 'Fireball';
+        engine.player.cooldowns = { Fireball: 2 };
+        engine.player.abilityCooldown = 2;
+        engine.player.stats.mana = 70;
+
+        engine.handleServerMessage({
+            type: 'ability_result',
+            payload: {
+                skillName: 'Fireball',
+                accepted: true,
+                mana: 73,
+                cooldownRemaining: 1.25
+            }
+        });
+
+        expect(engine.player.stats.mana).toBe(73);
+        expect(engine.player.cooldowns.Fireball).toBe(1.25);
+        expect(engine.player.abilityCooldown).toBe(1.25);
+    });
+
+    test('reconnect cooldown snapshot replaces stale local readiness', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        engine.player.abilityName = 'Fireball';
+        engine.player.cooldowns = { Fireball: 0, Teleport: 4, 'Time Warp': 12 };
+        engine.player.abilityCooldown = 0;
+
+        engine.handleServerMessage({
+            type: 'ability_cooldowns',
+            payload: { cooldowns: { Fireball: 1.5, Teleport: 8 } }
+        });
+
+        expect(engine.player.cooldowns).toEqual({ Fireball: 1.5, Teleport: 8, 'Time Warp': 0 });
+        expect(engine.player.abilityCooldown).toBe(1.5);
+    });
+
+
     test('delta DEAD->alive without position respawns to town and refreshes chunks', () => {
         const engine = createEngineHarness();
 

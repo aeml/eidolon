@@ -150,6 +150,14 @@ export class AbilityController {
 
         const visualLayers = Array.isArray(visual.layers) ? visual.layers : [visual];
         visualLayers.forEach((entry) => {
+            if (Number.isFinite(entry.radius) && typeof this.engine?.spawnTransientEffect === 'function') {
+                this.engine.spawnTransientEffect(entry.type, entry.origin, entry.color, {
+                    source: entity,
+                    radius: entry.radius,
+                    ...(Number.isFinite(entry.arc) ? { arc: entry.arc } : {})
+                });
+                return;
+            }
             entity.spawnVisualEffect(this.engine, entry.origin, entry.color, entry.type);
         });
 

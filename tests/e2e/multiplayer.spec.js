@@ -139,6 +139,8 @@ async function remotePlayerSnapshot(page, username) {
             spiritDuration: Number(entity.spiritDuration || 0),
             guardianCount: entity.spiritEffect?.guardians?.length || 0,
             spiritGroupCount: spiritGroups.length,
+            spiritEffectRadius: entity.spiritEffect?.effectRadius ?? null,
+            spiritRingRadius: entity.spiritEffect?.pulseRing?.geometry?.parameters?.outerRadius ?? null,
             spiritFollowDistance: entity.spiritEffect?.group?.position?.distanceTo?.(
                 entity.mesh?.position || entity.position
             ) ?? null
@@ -476,12 +478,16 @@ test.describe('two-account multiplayer', () => {
                             active: remote?.spiritsActive,
                             count: remote?.guardianCount,
                             groups: remote?.spiritGroupCount,
+                            effectRadius: remote?.spiritEffectRadius,
+                            ringRadius: remote?.spiritRingRadius,
                             attached: Number(remote?.spiritFollowDistance) < 0.4
                         };
                     }, { timeout: 10_000 }).toEqual({
                         active: true,
                         count: 3,
                         groups: 1,
+                        effectRadius: 16,
+                        ringRadius: 16,
                         attached: true
                     });
                 } catch (error) {
@@ -514,13 +520,17 @@ test.describe('two-account multiplayer', () => {
                         active: remote?.spiritsActive,
                         boosted: remote?.spiritBoosted,
                         count: remote?.guardianCount,
-                        groups: remote?.spiritGroupCount
+                        groups: remote?.spiritGroupCount,
+                        effectRadius: remote?.spiritEffectRadius,
+                        ringRadius: remote?.spiritRingRadius
                     };
                 }, { timeout: 10_000 }).toEqual({
                     active: true,
                     boosted: true,
                     count: 5,
-                    groups: 1
+                    groups: 1,
+                    effectRadius: 20,
+                    ringRadius: 20
                 });
 
                 // Refresh through the real hotbar path, then replace the
@@ -583,6 +593,8 @@ test.describe('two-account multiplayer', () => {
                         boosted: remote?.spiritBoosted,
                         count: remote?.guardianCount,
                         groups: remote?.spiritGroupCount,
+                        effectRadius: remote?.spiritEffectRadius,
+                        ringRadius: remote?.spiritRingRadius,
                         attached: Number(remote?.spiritFollowDistance) < 0.4
                     };
                 }, { timeout: 12_000 }).toEqual({
@@ -590,6 +602,8 @@ test.describe('two-account multiplayer', () => {
                     boosted: true,
                     count: 5,
                     groups: 1,
+                    effectRadius: 20,
+                    ringRadius: 20,
                     attached: true
                 });
                 await expect(secondPage.locator('#loading-screen')).toBeHidden({ timeout: 120_000 });

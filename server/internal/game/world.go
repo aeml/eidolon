@@ -447,7 +447,21 @@ func (e *Entity) GetSkillBonus(skillName string) TalentBonus {
 // GetSkillDamageMultiplier returns 1.0 + skill damage bonus for a given skill
 func (e *Entity) GetSkillDamageMultiplier(skillName string) float64 {
 	bonus := e.GetSkillBonus(skillName)
-	return 1.0 + bonus.SkillDamage
+	multiplier := 1.0 + bonus.SkillDamage
+	if e.SpellFocusActive {
+		multiplier *= 2.5
+	}
+	return multiplier
+}
+
+func isWizardDamageSkill(skillName string) bool {
+	switch skillName {
+	case "Fireball", "Flame Whip", "Flame Tornado", "Meteor Drop", "Inferno Cataclysm",
+		"Scorch Beam", "Arcane Missiles", "Dragonfire Lance", "Gravity Well", "Frost Nova":
+		return true
+	default:
+		return false
+	}
 }
 
 // GetSkillCdrBonus returns the CDR bonus for a given skill (0.0 to 1.0)
@@ -559,6 +573,7 @@ const QAWaypointProtectionDuration = 5 * time.Minute
 // browser before a movement packet queued at the old position can overwrite
 // it. Normal input resumes as soon as this short handoff window expires.
 const QAWaypointMovementLockDuration = time.Second
+const AbilityMovementLockDuration = 500 * time.Millisecond
 
 // MovePlayerToQAWaypoint moves an overworld player to a bounded release-QA
 // waypoint. Authorization belongs to the server command layer. Combat and
@@ -653,7 +668,9 @@ func (w *World) ArmPlayerQAGuaranteedLoot(playerID string) bool {
 // PreparePlayerForAnimationQA refills one dedicated QA character and clears
 // only its ability readiness gates. Authorization is enforced by the chat
 // command layer. It never creates an effect, ability event, target, or damage.
-func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persistent bool) bool {
+// nearDeath leaves one health so a subsequent real hostile hit can exercise
+// the authoritative death path without depending on the character's gear.
+func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persistent, nearDeath bool) bool {
 	player := w.GetEntity(playerID)
 	if player == nil || player.Type != TypePlayer {
 		return false
@@ -662,7 +679,9 @@ func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persiste
 	defer player.Mu.Unlock()
 	player.Mana = player.MaxMana
 	player.Health = player.MaxHealth
-	if lowHealth {
+	if nearDeath {
+		player.Health = 1
+	} else if lowHealth {
 		player.Health = max(1, player.MaxHealth/4)
 	}
 	player.AbilityCooldown = 0
@@ -967,6 +986,13 @@ func CalculateFinalDamage(attacker, target *Entity, baseDamage int, damageType s
 	}
 
 	// Set Bonus: Shadow's Embrace 4pc (backstabAnyAngle) is handled in Backstab ability itself
+	if target != nil && target.MarkWeakness {
+		factor := target.MarkWeaknessFactor
+		if factor <= 0 {
+			factor = 0.20
+		}
+		finalDamage = int(float64(finalDamage) * (1.0 + factor))
+	}
 
 	// Apply damage type bonuses from socketed gems and set bonuses.
 	switch damageType {
@@ -1008,6 +1034,42 @@ func ApplyDamageReflect(attacker, defender *Entity, damageDealt int) int {
 	}
 
 	return reflectedDamage
+}
+
+// snapshotCombatAttackerLocked captures the mutable attacker fields consulted
+// by delayed damage calculation. The caller must hold attacker.Mu. Keeping a
+// value snapshot avoids holding two entity locks in opposite orders while an
+// attack and retaliation resolve concurrently.
+func snapshotCombatAttackerLocked(attacker *Entity) *Entity {
+	if attacker == nil {
+		return nil
+	}
+	snapshot := &Entity{
+		ID:                  attacker.ID,
+		Type:                attacker.Type,
+		SubType:             attacker.SubType,
+		Damage:              attacker.Damage,
+		Stats:               attacker.Stats,
+		CritChanceBonus:     attacker.CritChanceBonus,
+		PoisonDamageBonus:   attacker.PoisonDamageBonus,
+		FireDamageBonus:     attacker.FireDamageBonus,
+		HolyDamageBonus:     attacker.HolyDamageBonus,
+		IronFortressActive:  attacker.IronFortressActive,
+		PoisonCoatingActive: attacker.PoisonCoatingActive,
+		QAGuaranteedLoot:    attacker.QAGuaranteedLoot,
+	}
+	snapshot.ActiveUniqueEffects = append([]string(nil), attacker.ActiveUniqueEffects...)
+	if attacker.ActiveSetBonuses != nil {
+		snapshot.ActiveSetBonuses = make(map[string]map[string]int, len(attacker.ActiveSetBonuses))
+		for setID, bonuses := range attacker.ActiveSetBonuses {
+			bonusCopy := make(map[string]int, len(bonuses))
+			for key, value := range bonuses {
+				bonusCopy[key] = value
+			}
+			snapshot.ActiveSetBonuses[setID] = bonusCopy
+		}
+	}
+	return snapshot
 }
 
 func (w *World) PerformUnlockTalent(playerID, talentID string) (*Entity, bool, string) {
@@ -3011,6 +3073,11 @@ func (w *World) UpdatePlayerMovement(id string, x, y, z, rotation float64, state
 	if !ok {
 		return false
 	}
+	e.Mu.Lock()
+	defer e.Mu.Unlock()
+	if e.State == "DEAD" || e.State == "JUMPING" || e.IsCharging || e.Stunned || e.Rooted || time.Now().Before(e.MoveLockUntil) {
+		return false
+	}
 
 	if sequence > 0 && sequence <= e.LastMoveSequence {
 		return false
@@ -3032,7 +3099,7 @@ func (w *World) UpdatePlayerMovement(id string, x, y, z, rotation float64, state
 		e.LastMoveSequence = sequence
 	}
 	if e.State != "JUMPING" {
-		if state != "" {
+		if state == "IDLE" || state == "MOVING" {
 			e.State = state
 		} else {
 			e.State = "MOVING" // Default to moving if position updates
@@ -3049,6 +3116,11 @@ func (w *World) StartPlayerJump(id string, x, y, z float64) bool {
 
 	e, ok := w.Entities[id]
 	if !ok || e.Type != TypePlayer {
+		return false
+	}
+	e.Mu.Lock()
+	defer e.Mu.Unlock()
+	if e.State == "DEAD" || e.IsCharging || e.Stunned || e.Rooted || time.Now().Before(e.MoveLockUntil) {
 		return false
 	}
 
@@ -4459,6 +4531,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 	if e.Type == TypeEnemy || e.Type == TypeNPC {
 		e.Mu.Lock()
 		if e.State == "DEAD" {
+			if e.SubType == "AvengingSeraph" {
+				deferred.addRemoval(e.ID)
+				e.Mu.Unlock()
+				return
+			}
 			// Check if Elite
 			if strings.HasPrefix(e.ID, "elite-") {
 				if time.Since(e.LastAttackTime) > 5*time.Second {
@@ -4492,6 +4569,31 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 	// --- Projectiles ---
 	if e.Type == TypeProjectile {
+		e.Mu.RLock()
+		projectileOwnerID := e.OwnerID
+		projectileTargetID := e.TargetID
+		projectileSubType := e.SubType
+		projectileInstanceID := e.InstanceID
+		e.Mu.RUnlock()
+		owner := w.GetEntity(projectileOwnerID)
+		ownerSpreadsPoison := false
+		ownerSerratedEdges := false
+		ownerPoisonCoating := false
+		ownerFireballPierce := false
+		ownerDexterity := 0
+		if owner != nil {
+			owner.Mu.RLock()
+			ownerSpreadsPoison = owner.HasAnySetBonus("poisonSpread")
+			ownerSerratedEdges = owner.SerratedEdgesActive
+			ownerPoisonCoating = owner.PoisonCoatingActive
+			ownerFireballPierce = owner.HasAnySetBonus("fireballPierce")
+			ownerDexterity = owner.Stats.Dexterity
+			owner.Mu.RUnlock()
+		}
+		var homingTarget *Entity
+		if projectileSubType == "ArcaneMissile" && projectileTargetID != "" {
+			homingTarget = w.GetEntity(projectileTargetID)
+		}
 		e.Mu.Lock()
 
 		// Zone Logic (ZoneDamage, ZoneHoly, etc.)
@@ -4524,21 +4626,22 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					damage = 10
 				}
 				ownerID := e.OwnerID
-				owner := w.GetEntity(ownerID)
 				ownerIsPlayer := owner != nil && owner.Type == TypePlayer
 				zoneSubType := e.SubType
+				zoneSkill := e.ProjectileSkill
 				isSanctuary := e.ConsecratedGroundSanctuary
+				zoneX, zoneZ, zoneInstanceID := e.X, e.Z, e.InstanceID
 				e.Mu.Unlock() // Unlock to query grid
 
 				effectiveRadius := expandedAbilityRadius(zoneSubType, radius)
-				nearby := w.Grid.Nearby(e.X, e.Z, effectiveRadius, e.InstanceID)
+				nearby := w.Grid.Nearby(zoneX, zoneZ, effectiveRadius, zoneInstanceID)
 				for _, target := range nearby {
 					target.Mu.RLock()
 					targetType := target.Type
 					targetState := target.State
 					target.Mu.RUnlock()
 
-					inRadius := withinAbilityRadius(zoneSubType, e.X, e.Z, target, radius)
+					inRadius := withinAbilityRadius(zoneSubType, zoneX, zoneZ, target, radius)
 					if !inRadius {
 						continue
 					}
@@ -4553,6 +4656,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							damageType = "holy"
 						case "ZonePoison":
 							damageType = "poison"
+						}
+						if zoneSkill == "Inferno Cataclysm" {
+							damageType = "fire"
 						}
 						target.Mu.Lock()
 						finalDamage := applyFinalDamage(owner, target, damage, damageType)
@@ -4583,19 +4689,21 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							healAmount = applyHealingDoneBonus(owner, healAmount)
 						}
 						target.Mu.Lock()
+						healAmount = applyHealingReceived(target, healAmount)
+						previousHealth := target.Health
 						target.Health += healAmount
 						if target.Health > target.MaxHealth {
 							target.Health = target.MaxHealth
 						}
+						actualHeal := target.Health - previousHealth
 						// Sanctuary rune: allies in area take 30% less damage
 						if isSanctuary {
-							target.SanctuaryDamageReduction = true
-							target.SanctuaryEndTime = time.Now().Add(2 * time.Second)
+							target.ConsecratedSanctuaryEndTime = time.Now().Add(2 * time.Second)
 						}
 						target.Mu.Unlock()
 
-						if w.OnEvent != nil && healAmount > 0 {
-							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: -healAmount})
+						if actualHeal > 0 {
+							w.fireHealEvent(ownerID, target.ID, actualHeal)
 						}
 					}
 				}
@@ -4607,6 +4715,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 		// Meteor Logic
 		if e.SubType == "Meteor" {
+			// Replicate a deterministic 20-unit/s descent so every client sees
+			// the same fall instead of a meteor suspended at its spawn height.
+			if remaining := time.Until(e.LastAttackTime).Seconds(); remaining > 0 {
+				e.Y = 20 * remaining
+			} else {
+				e.Y = 0
+			}
 			if time.Now().After(e.LastAttackTime) {
 				// Impact!
 				radius := e.Radius
@@ -4618,12 +4733,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				damage := e.Damage
 				ownerID := e.OwnerID
 				meteorShieldExplode := e.MeteorShieldExplode
-				owner := w.GetEntity(ownerID)
 				ownerIsPlayer := owner != nil && owner.Type == TypePlayer
+				impactX, impactZ, impactInstanceID := e.X, e.Z, e.InstanceID
 
 				e.Mu.Unlock() // Unlock to query grid
 
-				nearby := w.Grid.Nearby(e.X, e.Z, effectiveRadius, e.InstanceID)
+				nearby := w.Grid.Nearby(impactX, impactZ, effectiveRadius, impactInstanceID)
 				for _, target := range nearby {
 					target.Mu.RLock()
 					if target.Type != TypeEnemy || target.State == "DEAD" {
@@ -4632,7 +4747,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					}
 					target.Mu.RUnlock()
 
-					if withinAbilityRadius(impactName, e.X, e.Z, target, radius) {
+					if withinAbilityRadius(impactName, impactX, impactZ, target, radius) {
 						target.Mu.Lock()
 						finalDamage := applyFinalDamage(owner, target, damage, "fire")
 						if ownerIsPlayer {
@@ -4667,7 +4782,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						// Deal shield HP as AoE damage at meteor impact location
 						explosionRadius := radius * 1.5 // Slightly larger than meteor
 						effectiveExplosionRadius := expandedAbilityRadius(impactName, explosionRadius)
-						explosionNearby := w.Grid.Nearby(e.X, e.Z, effectiveExplosionRadius, e.InstanceID)
+						explosionNearby := w.Grid.Nearby(impactX, impactZ, effectiveExplosionRadius, impactInstanceID)
 						for _, target := range explosionNearby {
 							target.Mu.RLock()
 							if target.Type != TypeEnemy || target.State == "DEAD" {
@@ -4676,7 +4791,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							}
 							target.Mu.RUnlock()
 
-							if withinAbilityRadius(impactName, e.X, e.Z, target, explosionRadius) {
+							if withinAbilityRadius(impactName, impactX, impactZ, target, explosionRadius) {
 								target.Mu.Lock()
 								finalDamage := applyFinalDamage(owner, target, shieldExplosionDamage, "arcane")
 								if ownerIsPlayer {
@@ -4711,13 +4826,34 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 		// Lifetime check
 		lifetime := 5 * time.Second
-		if e.SubType == "ExplosiveTrap" || e.SubType == "SnareTrap" {
+		if e.SubType == "ExplosiveTrap" || e.SubType == "SnareTrap" || e.SubType == "Tripwire" {
 			lifetime = 60 * time.Second
 		}
 		if time.Since(e.CreatedAt) > lifetime {
 			deferred.addRemoval(e.ID)
 			e.Mu.Unlock()
 			return
+		}
+		if !e.ProjectileActivationTime.IsZero() && time.Now().Before(e.ProjectileActivationTime) {
+			e.Mu.Unlock()
+			return
+		}
+
+		if e.SubType == "ArcaneMissile" && e.TargetID != "" {
+			if homingTarget != nil {
+				homingTarget.Mu.RLock()
+				validTarget := homingTarget.InstanceID == e.InstanceID && homingTarget.Type == TypeEnemy && homingTarget.State != "DEAD"
+				dx := homingTarget.X - e.X
+				dz := homingTarget.Z - e.Z
+				homingTarget.Mu.RUnlock()
+				if validTarget {
+					if distance := math.Hypot(dx, dz); distance > 0 {
+						e.VelX = dx / distance * 25.0
+						e.VelZ = dz / distance * 25.0
+						e.Rotation = math.Atan2(e.VelX, e.VelZ)
+					}
+				}
+			}
 		}
 
 		// Move
@@ -4728,15 +4864,20 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 		// Snapshot for collision check
 		projX, projZ, radius, damage, ownerID, subType := e.X, e.Z, e.Radius, e.Damage, e.OwnerID, e.SubType
+		hitIDs := make(map[string]bool, len(e.HitList)+1)
+		for id, hit := range e.HitList {
+			if hit {
+				hitIDs[id] = true
+			}
+		}
 		e.Mu.Unlock()
 
-		owner := w.GetEntity(ownerID)
 		ownerIsPlayer := owner != nil && owner.Type == TypePlayer
 
 		// Check Collision with Enemies
-		nearbyEnemies := w.Grid.Nearby(projX, projZ, radius+2.0, e.InstanceID)
+		nearbyEnemies := w.Grid.Nearby(projX, projZ, radius+2.0, projectileInstanceID)
 		for _, target := range nearbyEnemies {
-			if target.InstanceID != e.InstanceID {
+			if target.InstanceID != projectileInstanceID {
 				continue
 			}
 			// Read Target State
@@ -4760,16 +4901,20 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					continue
 				}
 				e.HitList[target.ID] = true
+				hitIDs[target.ID] = true
 				projRuneID := e.ProjectileRuneID
 				projSkill := e.ProjectileSkill
 				projBounces := e.ProjectileBounces
+				fireballWellBoost := e.FireballWellBoost
+				projectilePierces := e.ProjectilePierce
 				e.Mu.Unlock()
+				projectileRedirected := false
 
 				// Calculate final damage with rune modifications
 				finalDamage := damage
 
 				// Combo: Implosion (Gravity Well → Fireball) = +100% damage to slowed targets
-				if projSkill == "Fireball" && e.FireballWellBoost {
+				if projSkill == "Fireball" && fireballWellBoost {
 					target.Mu.RLock()
 					isSlowed := target.Slowed
 					target.Mu.RUnlock()
@@ -4780,6 +4925,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				// Piercing Throw runes
 				if projSkill == "Piercing Throw" {
+					target.Mu.RLock()
+					weakPointMarked := target.WeakPointMarked
+					target.Mu.RUnlock()
+					if weakPointMarked {
+						finalDamage = finalDamage * 3 / 2
+					}
 					// Executioner rune: +100% damage to targets below 30% HP
 					if projRuneID == "piercingthrow_executioner" {
 						target.Mu.RLock()
@@ -4793,12 +4944,15 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				// Hit!
 				damageType := "physical"
-				if subType == "Fireball" || subType == "ExplosiveTrap" {
+				if subType == "Fireball" || subType == "FlameTornado" || subType == "DragonfireLance" || subType == "ExplosiveTrap" {
 					damageType = "fire"
 				} else if subType == "ArcaneMissile" {
 					damageType = "arcane"
 				}
 				target.Mu.Lock()
+				spreadPoisonAfterHit := false
+				spreadPoisonDamage := 0
+				spreadPoisonEndTime := time.Time{}
 				finalDamage = applyFinalDamage(owner, target, finalDamage, damageType)
 				if ownerIsPlayer {
 					addThreatLocked(target, ownerID, float64(finalDamage))
@@ -4806,32 +4960,59 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				isDead := target.Health <= 0
 
 				// Apply Trap Effects
-				if subType == "SnareTrap" {
+				if (subType == "SnareTrap" || subType == "Tripwire") && !target.CCImmune {
 					target.Rooted = true
 					target.RootEndTime = time.Now().Add(3 * time.Second)
 				}
 
 				// Piercing Throw: Serrated rune applies bleed
-				if projSkill == "Piercing Throw" && projRuneID == "piercingthrow_serrated" && !isDead {
+				if ((projSkill == "Piercing Throw" && (projRuneID == "piercingthrow_serrated" || ownerSerratedEdges)) ||
+					(projSkill == "Fan of Knives" && ownerSerratedEdges)) && !isDead {
 					target.Bleeding = true
-					target.BleedDamage = finalDamage / 5 // 20% of damage per tick
+					target.BleedDamage = finalDamage / 5
+					if target.BleedDamage < 1 {
+						target.BleedDamage = 1
+					}
+					target.BleedSourceID = ownerID
 					target.BleedEndTime = time.Now().Add(5 * time.Second)
 				}
 
 				// Fan of Knives rune effects
 				if projSkill == "Fan of Knives" && !isDead {
 					if projRuneID == "fanofknives_weighted" {
-						target.Slowed = true
-						target.SlowFactor = 0.30
-						target.SlowEndTime = time.Now().Add(3 * time.Second)
+						if !target.CCImmune {
+							target.Slowed = true
+							target.SlowFactor = 0.30
+							target.SlowEndTime = time.Now().Add(3 * time.Second)
+							target.RecalculateStats()
+						}
 					} else if projRuneID == "fanofknives_poisoned" {
 						target.Poisoned = true
 						target.PoisonDamage = finalDamage / 4
+						if target.PoisonDamage < 1 {
+							target.PoisonDamage = 1
+						}
+						target.PoisonSourceID = ownerID
 						target.PoisonEndTime = time.Now().Add(5 * time.Second)
+						spreadPoisonAfterHit = ownerSpreadsPoison
+						spreadPoisonDamage = target.PoisonDamage
+						spreadPoisonEndTime = target.PoisonEndTime
 					}
+				}
+				if projSkill == "Piercing Throw" && ownerPoisonCoating && !isDead {
+					target.Poisoned = true
+					target.PoisonDamage = 8 + ownerDexterity/2
+					target.PoisonSourceID = ownerID
+					target.PoisonEndTime = time.Now().Add(8 * time.Second)
+					spreadPoisonAfterHit = ownerSpreadsPoison
+					spreadPoisonDamage = target.PoisonDamage
+					spreadPoisonEndTime = target.PoisonEndTime
 				}
 
 				target.Mu.Unlock()
+				if spreadPoisonAfterHit {
+					w.spreadPoison(owner, target, spreadPoisonDamage, spreadPoisonEndTime)
+				}
 
 				if w.OnEvent != nil {
 					w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage})
@@ -4850,10 +5031,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					// Find nearest enemy that hasn't been hit
 					var nextTarget *Entity
 					minNextDist := 15.0 // Max bounce range
-					bounceNearby := w.Grid.Nearby(target.X, target.Z, minNextDist, e.InstanceID)
+					bounceNearby := w.Grid.Nearby(target.X, target.Z, minNextDist, projectileInstanceID)
 					for _, bt := range bounceNearby {
 						bt.Mu.RLock()
-						if bt.Type != TypeEnemy || bt.State == "DEAD" || e.HitList[bt.ID] {
+						if bt.Type != TypeEnemy || bt.State == "DEAD" || hitIDs[bt.ID] {
 							bt.Mu.RUnlock()
 							continue
 						}
@@ -4884,6 +5065,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							e.VelZ = (ndz / ndist) * speed
 							e.ProjectileBounces--
 							e.Rotation = math.Atan2(e.VelX, e.VelZ)
+							projectileRedirected = true
 						}
 						e.Mu.Unlock()
 					}
@@ -4897,9 +5079,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					}
 					effectiveSplashRadius := expandedAbilityRadius(subType, splashRadius)
 
-					splashTargets := w.Grid.Nearby(projX, projZ, effectiveSplashRadius, e.InstanceID)
+					splashTargets := w.Grid.Nearby(projX, projZ, effectiveSplashRadius, projectileInstanceID)
 					for _, splashTarget := range splashTargets {
-						if splashTarget.InstanceID != e.InstanceID {
+						if splashTarget.InstanceID != projectileInstanceID {
 							continue
 						}
 						splashTarget.Mu.RLock()
@@ -4938,10 +5120,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					// Find nearest enemy that hasn't been hit
 					var nextTarget *Entity
 					minNextDist := 15.0
-					chainNearby := w.Grid.Nearby(target.X, target.Z, minNextDist, e.InstanceID)
+					chainNearby := w.Grid.Nearby(target.X, target.Z, minNextDist, projectileInstanceID)
 					for _, ct := range chainNearby {
 						ct.Mu.RLock()
-						if ct.Type != TypeEnemy || ct.State == "DEAD" || e.HitList[ct.ID] {
+						if ct.Type != TypeEnemy || ct.State == "DEAD" || hitIDs[ct.ID] {
 							ct.Mu.RUnlock()
 							continue
 						}
@@ -4970,8 +5152,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							e.VelX = (ndx / ndist) * speed
 							e.VelZ = (ndz / ndist) * speed
 							e.ProjectileBounces--
-							e.Damage = e.Damage / 2 // 50% damage on bounce
+							if projBounces == 3 {
+								e.Damage /= 2 // Every additional target stays at 50% base damage.
+							}
 							e.Rotation = math.Atan2(e.VelX, e.VelZ)
+							projectileRedirected = true
 						}
 						e.Mu.Unlock()
 					}
@@ -4982,7 +5167,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				// For simplicity, we apply a burn DoT to all enemies in the splash area
 				if projSkill == "Fireball" && projRuneID == "fireball_magma" {
 					burnRadius := 5.0
-					burnTargets := w.Grid.Nearby(projX, projZ, burnRadius, e.InstanceID)
+					burnTargets := w.Grid.Nearby(projX, projZ, burnRadius, projectileInstanceID)
 					for _, bt := range burnTargets {
 						bt.Mu.RLock()
 						if bt.Type != TypeEnemy || bt.State == "DEAD" {
@@ -4998,6 +5183,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							// Apply burning ground DoT (reuse Bleeding for simplicity)
 							bt.Bleeding = true
 							bt.BleedDamage = finalDamage / 6 // ~17% per tick
+							bt.BleedSourceID = ownerID
 							bt.BleedEndTime = time.Now().Add(3 * time.Second)
 							bt.Mu.Unlock()
 						}
@@ -5006,8 +5192,8 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				// Determine if projectile should pierce
 				// Set Bonus: Inferno's Heart 4pc (fireballPierce) - Fireball pierces enemies
-				shouldPierce := subType == "Dagger" || subType == "FlameTornado" || e.ProjectilePierce
-				if subType == "Fireball" && owner != nil && owner.HasAnySetBonus("fireballPierce") {
+				shouldPierce := subType == "Dagger" || subType == "FlameTornado" || projectilePierces || projectileRedirected
+				if subType == "Fireball" && ownerFireballPierce {
 					shouldPierce = true
 				}
 
@@ -5081,8 +5267,6 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 				e.X = endX
 				e.Z = endZ
-				e.IsCharging = false
-				e.State = "IDLE"
 				w.Grid.Update(e, oldX, oldZ)
 
 				// Calculate charge distance for momentum rune
@@ -5091,8 +5275,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						(e.Z-e.ChargeStartZ)*(e.Z-e.ChargeStartZ),
 				)
 
+				impactSkill := e.ChargeSkillName
+				if impactSkill == "" {
+					impactSkill = "Charge"
+				}
 				// Impact Damage - base calculation with talent bonus
-				damage := int(float64(e.Damage) * 1.5 * 1.3 * e.GetSkillDamageMultiplier("Charge"))
+				damage := int(float64(e.Damage) * 1.5 * 1.3 * e.GetSkillDamageMultiplier(impactSkill))
 
 				// Rune effects
 				runeID := e.ChargeRuneID
@@ -5109,11 +5297,16 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					e.RuneArmorBuff = 0.20
 					e.RuneArmorBuffEndTime = time.Now().Add(5 * time.Second)
 				}
+				impactX, impactZ := e.ChargeTargetX, e.ChargeTargetZ
+				instanceID, sourceID := e.InstanceID, e.ID
+				consumeKnockdownCombo := e.ActiveCombo == "charge_extended_knockdown"
+				if consumeKnockdownCombo {
+					e.ActiveCombo = ""
+				}
 
 				e.Mu.Unlock() // Unlock before interaction
 
-				nearby := w.Grid.Nearby(e.ChargeTargetX, e.ChargeTargetZ, 16.0, e.InstanceID)
-				hitTargets := make([]*Entity, 0)
+				nearby := w.Grid.Nearby(impactX, impactZ, expandedAbilityRadius(impactSkill, 16.0), instanceID)
 
 				for _, target := range nearby {
 					target.Mu.RLock()
@@ -5121,27 +5314,27 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						target.Mu.RUnlock()
 						continue
 					}
-					tdx := e.ChargeTargetX - target.X
-					tdz := e.ChargeTargetZ - target.Z
 					target.Mu.RUnlock()
 
-					tdist := math.Sqrt(tdx*tdx + tdz*tdz)
-					if tdist < 16.0 {
+					if withinAbilityRadius(impactSkill, impactX, impactZ, target, 16.0) {
 						target.Mu.Lock()
 						finalDamage := applyFinalDamage(e, target, damage, "physical")
+						addThreatLocked(target, sourceID, float64(finalDamage))
 						isDead := target.Health <= 0
+						if impactSkill == "Shattering Charge" && !isDead {
+							target.ArmorReduction = 5
+							target.ArmorReductionEndTime = time.Now().Add(5 * time.Second)
+						}
 
 						// Combo: Tremor Rush (Earthshaker → Charge) = +2s knockdown
-						if e.ActiveCombo == "charge_extended_knockdown" {
+						if consumeKnockdownCombo && !target.CCImmune {
 							target.Stunned = true
 							target.StunEndTime = time.Now().Add(2 * time.Second)
 						}
 						target.Mu.Unlock()
 
-						hitTargets = append(hitTargets, target)
-
 						if w.OnEvent != nil {
-							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: finalDamage})
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: sourceID, Amount: finalDamage})
 						}
 
 						if isDead {
@@ -5152,16 +5345,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					}
 				}
 
-				// Consume the combo after use
-				if e.ActiveCombo == "charge_extended_knockdown" {
-					e.ActiveCombo = ""
-				}
-
 				// Shockwave rune: knockback AoE at end of charge (5 unit radius)
 				if runeID == "charge_shockwave" {
 					shockwaveRadius := 5.0
 					knockbackDist := 4.0
-					shockwaveNearby := w.Grid.Nearby(e.X, e.Z, shockwaveRadius, e.InstanceID)
+					shockwaveNearby := w.Grid.Nearby(impactX, impactZ, expandedAbilityRadius("Charge Shockwave", shockwaveRadius), instanceID)
 					for _, target := range shockwaveNearby {
 						target.Mu.RLock()
 						if target.Type != TypeEnemy || target.State == "DEAD" {
@@ -5171,15 +5359,19 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						tx, tz := target.X, target.Z
 						target.Mu.RUnlock()
 
-						knockDx := tx - e.X
-						knockDz := tz - e.Z
+						knockDx := tx - impactX
+						knockDz := tz - impactZ
 						knockDist := math.Sqrt(knockDx*knockDx + knockDz*knockDz)
-						if knockDist > 0 && knockDist <= shockwaveRadius {
+						if knockDist > 0 && knockDist <= shockwaveRadius+entityVisualRadius(target) {
 							// Normalize and apply knockback
 							knockDx = (knockDx / knockDist) * knockbackDist
 							knockDz = (knockDz / knockDist) * knockbackDist
 
 							target.Mu.Lock()
+							if target.CCImmune || target.IronFortressImmovable {
+								target.Mu.Unlock()
+								continue
+							}
 							oldTX, oldTZ := target.X, target.Z
 							target.X += knockDx
 							target.Z += knockDz
@@ -5195,7 +5387,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 
 				// Clear charge rune ID
 				e.Mu.Lock()
+				e.IsCharging = false
+				e.State = "IDLE"
+				e.MoveLockUntil = time.Now().Add(AbilityMovementLockDuration)
 				e.ChargeRuneID = ""
+				e.ChargeSkillName = ""
 				e.Mu.Unlock()
 			} else {
 				nextX := e.X + (dx/dist)*moveDist
@@ -5219,23 +5415,37 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 			if e.LastStandActive && now.After(e.LastStandEndTime) {
 				e.LastStandActive = false
+				e.RecalculateStats()
 			}
 			if e.StealthActive && now.After(e.StealthEndTime) {
 				e.StealthActive = false
 				e.CloakSwiftSpeedBonus = false
+				e.RecalculateStats()
 				// Don't clear CloakNextAttackBonus here - it persists until next attack
+			}
+			if e.CloakBurstSpeedBonus && now.After(e.CloakBurstSpeedEndTime) {
+				e.CloakBurstSpeedBonus = false
+				e.CloakBurstSpeedEndTime = time.Time{}
+				e.RecalculateStats()
+			}
+			if e.AccuracyReduction > 0 && now.After(e.AccuracyReductionEndTime) {
+				e.AccuracyReduction = 0
+				e.AccuracyReductionEndTime = time.Time{}
 			}
 			if e.ZealActive && now.After(e.ZealEndTime) {
 				e.ZealActive = false
+				e.RecalculateStats()
 			}
 			if e.IronFortressActive && now.After(e.IronFortressEndTime) {
 				e.IronFortressActive = false
 				e.IronFortressThorns = false
 				e.IronFortressImmovable = false
 				e.IronFortressRuneID = ""
+				e.RecalculateStats()
 			}
 			if e.GuardianRoarActive && now.After(e.GuardianRoarEndTime) {
 				e.GuardianRoarActive = false
+				e.RecalculateStats()
 			}
 			if e.SerratedEdgesActive && now.After(e.SerratedEdgesEndTime) {
 				e.SerratedEdgesActive = false
@@ -5247,17 +5457,24 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.ArcaneShieldActive = false
 				e.ArcaneShieldHP = 0
 			}
+			if e.SpellFocusActive && now.After(e.SpellFocusEndTime) {
+				e.SpellFocusActive = false
+				e.SpellFocusEndTime = time.Time{}
+			}
 			if e.TimeWarpActive && now.After(e.TimeWarpEndTime) {
 				e.TimeWarpActive = false
+				e.RecalculateStats()
 			}
 			if e.DivineInterventionActive && now.After(e.DivineInterventionEndTime) {
 				e.DivineInterventionActive = false
 			}
 			if e.SwiftActive && now.After(e.SwiftEndTime) {
 				e.SwiftActive = false
+				e.RecalculateStats()
 			}
 			if e.BlessingResolveActive && now.After(e.BlessingResolveEndTime) {
 				e.BlessingResolveActive = false
+				e.RecalculateStats()
 			}
 			if e.Stunned && now.After(e.StunEndTime) {
 				e.Stunned = false
@@ -5265,6 +5482,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if e.Slowed && now.After(e.SlowEndTime) {
 				e.Slowed = false
 				e.SlowFactor = 0
+				e.RecalculateStats()
 			}
 			if e.Rooted && now.After(e.RootEndTime) {
 				e.Rooted = false
@@ -5274,6 +5492,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			}
 			if e.MarkWeakness && now.After(e.MarkWeaknessEndTime) {
 				e.MarkWeakness = false
+				e.MarkWeaknessFactor = 0
+			}
+			if e.ArmorReduction > 0 && now.After(e.ArmorReductionEndTime) {
+				e.ArmorReduction = 0
+				e.ArmorReductionEndTime = time.Time{}
 			}
 
 			// Rune buff expirations
@@ -5339,56 +5562,93 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if e.Bleeding {
 				if now.After(e.BleedEndTime) {
 					e.Bleeding = false
+					e.BleedSourceID = ""
 				} else if time.Since(e.LastBleedTick) >= 1*time.Second {
 					e.LastBleedTick = now
 					e.Health -= e.BleedDamage
+					e.LastDamageType = "physical"
 					if w.OnEvent != nil {
-						w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: "bleed", Amount: e.BleedDamage})
+						sourceID := e.BleedSourceID
+						if sourceID == "" {
+							sourceID = "bleed"
+						}
+						w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: sourceID, Amount: e.BleedDamage})
 					}
 					if e.Health <= 0 {
-						// Handle death (tricky without attacker ref, assume environment/self)
+						sourceID := e.BleedSourceID
 						e.Mu.Unlock()
-						w.handleDeath(e, nil, deferred)
+						attacker := w.GetEntity(sourceID)
 						e.Mu.Lock()
+						if e.Health <= 0 && e.State != "DEAD" {
+							w.handleDeath(e, attacker, deferred)
+						}
 					}
 				}
 			}
-			if e.Poisoned {
+			if e.State != "DEAD" && e.Poisoned {
 				if now.After(e.PoisonEndTime) {
 					e.Poisoned = false
+					e.PoisonSourceID = ""
 				} else if time.Since(e.LastPoisonTick) >= 1*time.Second {
 					e.LastPoisonTick = now
 					e.Health -= e.PoisonDamage
+					e.LastDamageType = "poison"
 					if w.OnEvent != nil {
-						w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: "poison", Amount: e.PoisonDamage})
+						sourceID := e.PoisonSourceID
+						if sourceID == "" {
+							sourceID = "poison"
+						}
+						w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: sourceID, Amount: e.PoisonDamage})
 					}
 					if e.Health <= 0 {
+						sourceID := e.PoisonSourceID
 						e.Mu.Unlock()
-						w.handleDeath(e, nil, deferred)
+						attacker := w.GetEntity(sourceID)
 						e.Mu.Lock()
+						if e.Health <= 0 && e.State != "DEAD" {
+							w.handleDeath(e, attacker, deferred)
+						}
 					}
 				}
 			}
 
 			// Healing Light HoT (Renewal Rune)
 			if e.HealingLightHoTActive {
-				if now.After(e.HealingLightHoTEndTime) {
+				if e.HealingLightHoTTicksRemaining <= 0 {
 					e.HealingLightHoTActive = false
+					e.HealingLightHoTSourceID = ""
 				} else if time.Since(e.LastHealingLightHoTTick) >= 1*time.Second {
 					e.LastHealingLightHoTTick = now
-					e.Health += e.HealingLightHoTAmount
+					previousHealth := e.Health
+					e.Health += applyHealingReceived(e, e.HealingLightHoTAmount)
 					if e.Health > e.MaxHealth {
 						e.Health = e.MaxHealth
 					}
-					if w.OnEvent != nil {
-						w.OnEvent("heal", HealEvent{TargetID: e.ID, SourceID: "healinglight_hot", Amount: e.HealingLightHoTAmount})
+					e.HealingLightHoTTicksRemaining--
+					actualHeal := e.Health - previousHealth
+					if actualHeal > 0 && w.OnEvent != nil {
+						sourceID := e.HealingLightHoTSourceID
+						if sourceID == "" {
+							sourceID = "healinglight_hot"
+						}
+						w.OnEvent("heal", HealEvent{TargetID: e.ID, SourceID: sourceID, Amount: actualHeal})
 					}
+					if e.HealingLightHoTTicksRemaining <= 0 {
+						e.HealingLightHoTActive = false
+						e.HealingLightHoTSourceID = ""
+					}
+				} else if now.After(e.HealingLightHoTEndTime) {
+					e.HealingLightHoTActive = false
+					e.HealingLightHoTSourceID = ""
 				}
 			}
 
 			// Sanctuary Damage Reduction expiry check
 			if e.SanctuaryDamageReduction && now.After(e.SanctuaryEndTime) {
 				e.SanctuaryDamageReduction = false
+			}
+			if !e.ConsecratedSanctuaryEndTime.IsZero() && now.After(e.ConsecratedSanctuaryEndTime) {
+				e.ConsecratedSanctuaryEndTime = time.Time{}
 			}
 
 			// Divine Intervention Guardian Angel expiry check
@@ -5402,18 +5662,23 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					e.GuardianEmbraceActive = false
 				} else if time.Since(e.LastGuardianEmbraceTick) >= 1*time.Second {
 					e.LastGuardianEmbraceTick = now
-					heal := 20 + (e.Stats.Wisdom * 2)
+					heal := applyHealingDoneBonus(e, 20+(e.Stats.Wisdom*2))
 
 					// Heal Self
-					e.Health += heal
+					previousHealth := e.Health
+					e.Health += applyHealingReceived(e, heal)
 					if e.Health > e.MaxHealth {
 						e.Health = e.MaxHealth
+					}
+					selfHeal := e.Health - previousHealth
+					if selfHeal > 0 && w.OnEvent != nil {
+						w.OnEvent("heal", HealEvent{TargetID: e.ID, SourceID: e.ID, Amount: selfHeal})
 					}
 
 					// Heal Nearby Allies
 					pX, pZ := e.X, e.Z
 					e.Mu.Unlock()
-					nearby := w.Grid.Nearby(pX, pZ, 10.0, e.InstanceID)
+					nearby := w.Grid.Nearby(pX, pZ, expandedAbilityRadius("Guardian Embrace", 10.0), e.InstanceID)
 					for _, target := range nearby {
 						if target.InstanceID != e.InstanceID {
 							continue
@@ -5421,13 +5686,22 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						if target.ID == e.ID {
 							continue
 						}
-						if target.Type == TypePlayer || target.Type == TypeNPC {
+						if (target.Type == TypePlayer || target.Type == TypeNPC) && withinAbilityRadius("Guardian Embrace", pX, pZ, target, 10.0) {
 							target.Mu.Lock()
-							target.Health += heal
+							if target.State == "DEAD" {
+								target.Mu.Unlock()
+								continue
+							}
+							previousHealth := target.Health
+							target.Health += applyHealingReceived(target, heal)
 							if target.Health > target.MaxHealth {
 								target.Health = target.MaxHealth
 							}
+							actualHeal := target.Health - previousHealth
 							target.Mu.Unlock()
+							if actualHeal > 0 && w.OnEvent != nil {
+								w.OnEvent("heal", HealEvent{TargetID: target.ID, SourceID: e.ID, Amount: actualHeal})
+							}
 						}
 					}
 					e.Mu.Lock()
@@ -5444,19 +5718,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					if time.Since(e.LastSpiritTick) >= 500*time.Millisecond {
 						e.LastSpiritTick = now
 						damage := 10 + (e.Stats.Wisdom * 1)
-						radius := 16.0
 						if e.SpiritsBoosted {
 							damage = 20 + int(float64(e.Stats.Wisdom)*1.5)
-							radius = 20.0
 						}
 
 						// Spirit Guardians Rune Effects
 						spiritRuneID := e.SpiritGuardiansRuneID
-
-						// spirits_expanded: +50% radius
-						if spiritRuneID == "spirits_expanded" {
-							radius *= 1.5
-						}
+						radius := spiritGuardiansRadius(e.SpiritsBoosted, spiritRuneID)
 
 						// spirits_vengeful: +50% damage, -25% healing
 						healReduction := 1.0
@@ -5485,12 +5753,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 								// Damage enemies
 								if targetType == TypeEnemy && targetState != "DEAD" {
 									target.Mu.Lock()
-									target.Health -= damage
+									finalDamage := applyFinalDamage(e, target, damage, "holy")
+									addThreatLocked(target, e.ID, float64(finalDamage))
 									isDead := target.Health <= 0
 									target.Mu.Unlock()
 
 									if w.OnEvent != nil {
-										w.OnEvent("damage", DamageEvent{TargetID: targetID, SourceID: e.ID, Amount: damage})
+										w.OnEvent("damage", DamageEvent{TargetID: targetID, SourceID: e.ID, Amount: finalDamage})
 									}
 
 									if isDead {
@@ -5505,11 +5774,20 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 									healAmount := int(float64(5+(e.Stats.Wisdom/2)) * healReduction) // Apply vengeful rune reduction
 									healAmount = applyHealingDoneBonus(e, healAmount)
 									target.Mu.Lock()
-									target.Health += healAmount
+									if target.State == "DEAD" {
+										target.Mu.Unlock()
+										continue
+									}
+									previousHealth := target.Health
+									target.Health += applyHealingReceived(target, healAmount)
 									if target.Health > target.MaxHealth {
 										target.Health = target.MaxHealth
 									}
+									actualHeal := target.Health - previousHealth
 									target.Mu.Unlock()
+									if actualHeal > 0 {
+										w.fireHealEvent(e.ID, targetID, actualHeal)
+									}
 								}
 							}
 						}
@@ -5524,12 +5802,12 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 	}
 
 	if e.SubType == "AvengingSeraph" {
-		e.Mu.Lock()
-
+		e.Mu.RLock()
+		ownerID := e.OwnerID
+		e.Mu.RUnlock()
+		owner := w.GetEntity(ownerID)
 		// Owner Check (needed for both duration and bonus check)
-		owner := w.GetEntity(e.OwnerID)
 		if owner == nil {
-			e.Mu.Unlock()
 			deferred.addRemoval(e.ID)
 			return
 		}
@@ -5538,7 +5816,10 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		// Normal duration: 15s, with set bonus: permanent while in combat (300s max)
 		owner.Mu.RLock()
 		hasPermanentSeraph := owner.HasAnySetBonus("permanentSeraph")
+		ox, oz := owner.X, owner.Z
 		owner.Mu.RUnlock()
+
+		e.Mu.Lock()
 
 		maxDuration := 15 * time.Second
 		if hasPermanentSeraph {
@@ -5550,10 +5831,6 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			deferred.addRemoval(e.ID)
 			return
 		}
-
-		owner.Mu.RLock()
-		ox, oz := owner.X, owner.Z
-		owner.Mu.RUnlock()
 
 		// AI Logic
 		// 1. Find Target (Enemy)
@@ -5847,14 +6124,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 										damage = 1
 									}
 									p.Health -= damage
-									if p.Health < 0 {
-										p.Health = 0
-									}
 									if w.OnEvent != nil {
 										w.OnEvent("damage", DamageEvent{TargetID: p.ID, SourceID: srcID, Amount: damage})
 									}
 									if p.Health <= 0 {
-										p.State = "DEAD"
+										w.handleDeath(p, src, nil)
 									}
 								}
 								p.Mu.Unlock()
@@ -5975,14 +6249,14 @@ func (w *World) Update(dt float64) {
 	// However, we need to snapshot the entity list safely.
 
 	w.Mu.Lock()
+	worldLocked := true
 
 	defer func() {
 		if r := recover(); r != nil {
+			if worldLocked {
+				w.Mu.Unlock()
+			}
 			fmt.Printf("Recovered from panic in Update: %v\n", r)
-			// Ensure we don't leave.Mutex locked if we panic while holding it
-			// This is tricky because we lock/unlock multiple times.
-			// Ideally we should use a named mutex or check state, but sync.Mutex doesn't expose state.
-			// For now, we assume panic handling is last resort.
 		}
 	}()
 
@@ -5991,6 +6265,7 @@ func (w *World) Update(dt float64) {
 	if w.RegenTimer >= 1.0 {
 		w.RegenTimer -= 1.0
 		for _, e := range w.Entities {
+			e.Mu.Lock()
 			// Prevent regen if dead or effectively dead (<= 0 HP)
 			if e.State != "DEAD" && e.Health > 0 {
 				if e.Health < e.MaxHealth {
@@ -6006,6 +6281,7 @@ func (w *World) Update(dt float64) {
 					}
 				}
 			}
+			e.Mu.Unlock()
 		}
 	}
 
@@ -6015,11 +6291,15 @@ func (w *World) Update(dt float64) {
 
 	for _, e := range w.Entities {
 		allEntities = append(allEntities, e)
-		if e.Type == TypePlayer && e.State != "DEAD" {
+		e.Mu.RLock()
+		isActivePlayer := e.Type == TypePlayer && e.State != "DEAD"
+		e.Mu.RUnlock()
+		if isActivePlayer {
 			players = append(players, e)
 		}
 	}
 	w.Mu.Unlock() // Unlock World so parallel updates can happen
+	worldLocked = false
 
 	// 2. Update Entities (Parallel)
 	deferred := &deferredActions{}
@@ -6052,6 +6332,7 @@ func (w *World) Update(dt float64) {
 
 	// 3. Process Deferred Actions (Removals/Additions)
 	w.Mu.Lock()
+	worldLocked = true
 
 	for _, id := range deferred.removals {
 		if e, ok := w.Entities[id]; ok {
@@ -6066,6 +6347,7 @@ func (w *World) Update(dt float64) {
 	}
 
 	w.Mu.Unlock()
+	worldLocked = false
 
 	// 4. Environmental Hazard Damage (% max health per tick)
 	// Process hazard damage for players standing in hazard zones
@@ -6107,25 +6389,27 @@ func (w *World) processHazardDamage(dt float64, players []*Entity) {
 	defer w.Mu.Unlock()
 
 	for _, player := range players {
-		if player.State == "DEAD" || player.Health <= 0 {
-			continue
-		}
-
-		// Players in town are safe (Town: X -100 to 100, Z 100 to 300)
-		if player.X > -100 && player.X < 100 && player.Z > 100 && player.Z < 300 {
-			continue
-		}
-
-		// Players in dungeon instances don't get world hazard damage
-		if player.InstanceID != "" {
-			continue
-		}
-
 		player.Mu.RLock()
 		px, pz := player.X, player.Z
 		playerID := player.ID
 		maxHealth := player.MaxHealth
+		playerState := player.State
+		playerHealth := player.Health
+		instanceID := player.InstanceID
 		player.Mu.RUnlock()
+		if playerState == "DEAD" || playerHealth <= 0 {
+			continue
+		}
+
+		// Players in town are safe (Town: X -100 to 100, Z 100 to 300)
+		if px > -100 && px < 100 && pz > 100 && pz < 300 {
+			continue
+		}
+
+		// Players in dungeon instances don't get world hazard damage
+		if instanceID != "" {
+			continue
+		}
 
 		// Initialize player's hazard tick map if needed
 		if w.PlayerHazardTicks[playerID] == nil {
@@ -6157,25 +6441,24 @@ func (w *World) processHazardDamage(dt float64, players []*Entity) {
 					// Apply damage
 					player.Mu.Lock()
 					player.Health -= damage
-					if player.Health < 0 {
-						player.Health = 0
+					if player.Health <= 0 {
+						w.handleDeath(player, nil, nil)
 					}
+					playerDied := player.State == "DEAD"
 					player.Mu.Unlock()
 
 					// Emit damage event
-					w.OnEvent("hazard_damage", HazardDamageEvent{
-						PlayerID:   playerID,
-						HazardID:   hazardID,
-						HazardType: hazard.HazardType,
-						Damage:     damage,
-					})
+					if w.OnEvent != nil {
+						w.OnEvent("hazard_damage", HazardDamageEvent{
+							PlayerID:   playerID,
+							HazardID:   hazardID,
+							HazardType: hazard.HazardType,
+							Damage:     damage,
+						})
+					}
 
 					// Check for death
-					if player.Health <= 0 {
-						player.Mu.Lock()
-						player.State = "DEAD"
-						player.Mu.Unlock()
-
+					if playerDied && w.OnEvent != nil {
 						// Emit death event (player died to hazard)
 						w.OnEvent("death", map[string]interface{}{
 							"entityId":  playerID,
@@ -6197,109 +6480,147 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	defer w.Mu.Unlock()
 
 	attacker, ok := w.Entities[attackerID]
-	if !ok || attacker.State == "DEAD" {
+	if !ok {
+		return 0, false
+	}
+	attacker.Mu.RLock()
+	attackerBlocked := attacker.State == "DEAD" || attacker.State == "JUMPING" || attacker.IsCharging || attacker.Stunned
+	attackerInstanceID := attacker.InstanceID
+	attackerType := attacker.Type
+	attackerSubType := attacker.SubType
+	attackerX, attackerZ := attacker.X, attacker.Z
+	attackerScale := attacker.Scale
+	attackCooldown := attacker.AttackCooldown
+	lastAttackTime := attacker.LastAttackTime
+	attacker.Mu.RUnlock()
+	if attackerBlocked || time.Since(lastAttackTime) < attackCooldown {
 		return 0, false
 	}
 
 	target, ok := w.Entities[targetID]
-	if !ok || target.State == "DEAD" {
+	if !ok {
 		return 0, false
 	}
-
-	if attacker.InstanceID != target.InstanceID {
+	target.Mu.RLock()
+	targetBlocked := target.State == "DEAD"
+	targetInstanceID := target.InstanceID
+	targetType := target.Type
+	targetX, targetZ := target.X, target.Z
+	targetScale := target.Scale
+	target.Mu.RUnlock()
+	if targetBlocked || attackerInstanceID != targetInstanceID {
 		return 0, false
 	}
 
 	// NO PVP: If both are players, return false
-	if attacker.Type == TypePlayer && target.Type == TypePlayer {
+	if attackerType == TypePlayer && targetType == TypePlayer {
 		return 0, false
 	}
 
 	// NO NPC ATTACKS
-	if target.Type == TypeNPC || target.Type == TypeForge || target.Type == TypeStash {
-		return 0, false
-	}
-
-	// Check Cooldown
-	if time.Since(attacker.LastAttackTime) < attacker.AttackCooldown {
-		return 0, false
-	}
-
-	// Check CC
-	if attacker.Stunned {
+	if targetType == TypeNPC || targetType == TypeForge || targetType == TypeStash {
 		return 0, false
 	}
 
 	// Check Range (Simple distance check)
-	dx := attacker.X - target.X
-	dz := attacker.Z - target.Z
+	dx := attackerX - targetX
+	dz := attackerZ - targetZ
 	dist := math.Sqrt(dx*dx + dz*dz)
 
-	attackRange := 3.0 // Default Melee range (tighter so melee looks/feels like contact)
+	attackRange := 3.0 // Default enemy melee range
+	if attackerType == TypePlayer {
+		attackRange = 4.0
+		if attackerSubType == "Wizard" || attackerSubType == "Rogue" {
+			attackRange = 16.0
+		}
+	} else if attackerSubType == "DwarfSalesman" {
+		attackRange = 6.0
+	}
 
-	// Adjust range for scale (Bosses)
-	if attacker.Scale > 1.0 {
-		attackRange += (attacker.Scale - 1.0) * 1.5
+	// Adjust the selected base range for large attackers and targets.
+	if attackerScale > 1.0 {
+		attackRange += (attackerScale - 1.0) * 1.5
 	}
 
 	// Also adjust range for target's scale (allows melee to hit large bosses)
-	if target.Scale > 1.0 {
-		attackRange += (target.Scale - 1.0) * 1.5
-	}
-
-	switch attacker.SubType {
-	case "Wizard", "Rogue":
-		attackRange = 100.0 // Ranged - effectively infinite
-	case "DwarfSalesman":
-		attackRange = 6.0
+	if targetScale > 1.0 {
+		attackRange += (targetScale - 1.0) * 1.5
 	}
 
 	if dist > attackRange {
 		return 0, false
 	}
 
-	// Start Attack State & Cooldown immediately
+	// Commit atomically after validation. Recheck the mutable action gates in
+	// case a parallel world tick applied crowd control during target validation.
+	attacker.Mu.Lock()
+	if attacker.State == "DEAD" || attacker.State == "JUMPING" || attacker.IsCharging || attacker.Stunned ||
+		time.Since(attacker.LastAttackTime) < attacker.AttackCooldown {
+		attacker.Mu.Unlock()
+		return 0, false
+	}
 	attacker.LastAttackTime = time.Now()
 	attacker.State = "ATTACKING"
+	delay := time.Duration(float64(attacker.AttackCooldown) * 0.35)
+	missChance := attacker.AccuracyReduction
+	attacker.Mu.Unlock()
 	if w.OnEvent != nil {
 		w.OnEvent("attack", AttackEvent{
-			SourceID: attacker.ID,
-			TargetID: target.ID,
-			TargetX:  target.X,
-			TargetZ:  target.Z,
+			SourceID: attackerID,
+			TargetID: targetID,
+			TargetX:  targetX,
+			TargetZ:  targetZ,
 		})
 	}
 
-	// Calculate Delay (35% of animation duration)
-	// AttackCooldown IS the duration now.
-	delay := time.Duration(float64(attacker.AttackCooldown) * 0.35)
-
 	// Async Damage Application
-	go func(attID, tgtID string, d time.Duration) {
+	go func(attID, tgtID string, d time.Duration, blindedMissChance float64) {
 		time.Sleep(d)
 
 		// Use fine-grained locking instead of global lock
 		att := w.GetEntity(attID)
-		if att == nil || att.State == "DEAD" {
+		if att == nil {
 			return
 		}
 		tgt := w.GetEntity(tgtID)
-		if tgt == nil || tgt.State == "DEAD" {
+		if tgt == nil {
 			return
 		}
-		att.Mu.RLock()
-		qaDeterministicEncounter := att.Type == TypePlayer && att.QAGuaranteedLoot
-		att.Mu.RUnlock()
+		if blindedMissChance > 0 && rand.Float64() < blindedMissChance {
+			return
+		}
+		att.Mu.Lock()
+		if att.State == "DEAD" {
+			att.Mu.Unlock()
+			return
+		}
+		cloakBonus := att.CloakNextAttackBonus
+		if att.Type == TypePlayer && cloakBonus > 0 {
+			att.CloakNextAttackBonus = 0
+			att.StealthActive = false // Break stealth on attack
+			att.CloakSwiftSpeedBonus = false
+			att.RecalculateStats()
+		}
+		attackerSnapshot := snapshotCombatAttackerLocked(att)
+		att.Mu.Unlock()
+		qaDeterministicEncounter := attackerSnapshot.Type == TypePlayer && attackerSnapshot.QAGuaranteedLoot
+		poisonSpreads := attackerSnapshot.HasAnySetBonus("poisonSpread")
 
 		// Lock target for modification
 		tgt.Mu.Lock()
-		// We should also lock attacker if we read mutable fields, but Damage is updated in RecalculateStats
-		// and we are reading it. Ideally we lock both, but let's be careful of deadlock.
-		// Since we only read att.Damage (int), it's atomic-ish on 64bit, but technically racey.
-		// However, locking both requires ordering.
-		// For now, let's assume reading att.Damage is "safe enough" or we RLock att.
+		if tgt.State == "DEAD" {
+			tgt.Mu.Unlock()
+			return
+		}
+		pendingReflectDamage := 0
+		poisonApplied := false
+		poisonDamage := 0
+		poisonEndTime := time.Time{}
 
-		defense := tgt.Defense
+		defense := tgt.Defense - tgt.ArmorReduction
+		if defense < 0 {
+			defense = 0
+		}
 
 		// Bosses ignore 50% of defense
 		bosses := map[string]bool{
@@ -6308,11 +6629,11 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 			"BriarMatron": true, "RustboundColossus": true, "HollowSentinel": true,
 			"Avenging Seraph": true,
 		}
-		if bosses[att.SubType] {
+		if bosses[attackerSnapshot.SubType] {
 			defense = defense / 2
 		}
 
-		damage := att.Damage - defense
+		damage := attackerSnapshot.Damage - defense
 		if damage < 1 {
 			damage = 1
 		}
@@ -6321,23 +6642,15 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		}
 
 		// Cloak Prepared Ambush rune: next attack deals +100% damage
-		if att.Type == TypePlayer && att.CloakNextAttackBonus > 0 {
-			damage = int(float64(damage) * (1.0 + att.CloakNextAttackBonus))
-			att.Mu.Lock()
-			att.CloakNextAttackBonus = 0
-			att.StealthActive = false // Break stealth on attack
-			att.CloakSwiftSpeedBonus = false
-			att.Mu.Unlock()
+		if cloakBonus > 0 {
+			damage = int(float64(damage) * (1.0 + cloakBonus))
 		}
 
 		// Iron Fortress Thorns rune: reflect 20% damage back to attacker
 		if tgt.Type == TypePlayer && tgt.IronFortressActive && tgt.IronFortressThorns {
 			thornsDamage := damage / 5 // 20%
 			if thornsDamage > 0 {
-				att.Health -= thornsDamage
-				if w.OnEvent != nil {
-					w.OnEvent("damage", DamageEvent{TargetID: att.ID, SourceID: tgt.ID, Amount: thornsDamage})
-				}
+				pendingReflectDamage += thornsDamage
 			}
 		}
 
@@ -6346,15 +6659,21 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 			damage = 0
 		}
 
-		// Sanctuary damage reduction (Spirit Guardians rune or Consecrated Ground rune): 20-30% less damage
-		if tgt.Type == TypePlayer && tgt.SanctuaryDamageReduction && time.Now().Before(tgt.SanctuaryEndTime) {
-			// Sanctuary gives 20% reduction (spirits_sanctuary) or 30% (consecratedground_sanctuary)
-			// We use 25% as a middle ground since both can stack
-			damage = int(float64(damage) * 0.75)
+		// The two Sanctuary sources have distinct advertised strengths and may
+		// overlap. Use the stronger active reduction rather than an approximation.
+		sanctuaryReduction := 0.0
+		if tgt.SanctuaryDamageReduction && time.Now().Before(tgt.SanctuaryEndTime) {
+			sanctuaryReduction = 0.20
+		}
+		if !tgt.ConsecratedSanctuaryEndTime.IsZero() && time.Now().Before(tgt.ConsecratedSanctuaryEndTime) {
+			sanctuaryReduction = 0.30
+		}
+		if sanctuaryReduction > 0 {
+			damage = int(float64(damage) * (1.0 - sanctuaryReduction))
 		}
 
 		// Divine Intervention Guardian Angel rune: 50% damage reduction
-		if tgt.Type == TypePlayer && tgt.DivineInterventionGuardian && time.Now().Before(tgt.DivineInterventionGuardTime) {
+		if tgt.DivineInterventionGuardian && time.Now().Before(tgt.DivineInterventionGuardTime) {
 			damage = int(float64(damage) * 0.5)
 		}
 
@@ -6373,10 +6692,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 			if tgt.ArcaneShieldRuneID == "arcaneshield_reflective" {
 				reflectDamage := absorbed * 30 / 100
 				if reflectDamage > 0 {
-					att.Health -= reflectDamage
-					if w.OnEvent != nil {
-						w.OnEvent("damage", DamageEvent{TargetID: att.ID, SourceID: tgt.ID, Amount: reflectDamage})
-					}
+					pendingReflectDamage += reflectDamage
 				}
 			}
 
@@ -6386,26 +6702,28 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 					// Explode dealing absorbed amount to nearby enemies
 					explosionDamage := tgt.ArcaneShieldAbsorbed
 					explosionRadius := 6.0
+					shieldX, shieldZ, shieldInstanceID, shieldOwnerID := tgt.X, tgt.Z, tgt.InstanceID, tgt.ID
 					tgt.Mu.Unlock() // Unlock for grid search
-					explosionNearby := w.Grid.Nearby(tgt.X, tgt.Z, explosionRadius, tgt.InstanceID)
+					explosionNearby := w.Grid.Nearby(shieldX, shieldZ, explosionRadius, shieldInstanceID)
 					for _, et := range explosionNearby {
 						et.Mu.RLock()
 						if et.Type != TypeEnemy || et.State == "DEAD" {
 							et.Mu.RUnlock()
 							continue
 						}
-						edx := tgt.X - et.X
-						edz := tgt.Z - et.Z
+						edx := shieldX - et.X
+						edz := shieldZ - et.Z
 						et.Mu.RUnlock()
 
 						if (edx*edx + edz*edz) <= explosionRadius*explosionRadius {
 							et.Mu.Lock()
 							et.Health -= explosionDamage
+							et.LastDamageType = "arcane"
 							isDead := et.Health <= 0
 							et.Mu.Unlock()
 
 							if w.OnEvent != nil {
-								w.OnEvent("damage", DamageEvent{TargetID: et.ID, SourceID: tgt.ID, Amount: explosionDamage})
+								w.OnEvent("damage", DamageEvent{TargetID: et.ID, SourceID: shieldOwnerID, Amount: explosionDamage})
 							}
 							if isDead {
 								et.Mu.Lock()
@@ -6423,22 +6741,21 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 			}
 		}
 
-		actualDamage = applyFinalDamage(att, tgt, actualDamage, "physical")
-		if att.Type == TypePlayer && tgt.Type == TypeEnemy {
-			addThreatLocked(tgt, att.ID, float64(actualDamage))
+		actualDamage = applyFinalDamage(attackerSnapshot, tgt, actualDamage, "physical")
+		pendingReflectDamage += ApplyDamageReflect(attackerSnapshot, tgt, actualDamage)
+		if attackerSnapshot.Type == TypePlayer && tgt.Type == TypeEnemy {
+			addThreatLocked(tgt, attackerSnapshot.ID, float64(actualDamage))
 		}
 
 		// Apply On-Hit Effects
-		// These read att fields.
-		if att.SerratedEdgesActive {
-			tgt.Bleeding = true
-			tgt.BleedDamage = 10 + (att.Stats.Strength / 2)
-			tgt.BleedEndTime = time.Now().Add(5 * time.Second)
-		}
-		if att.PoisonCoatingActive {
+		if attackerSnapshot.PoisonCoatingActive {
 			tgt.Poisoned = true
-			tgt.PoisonDamage = 8 + (att.Stats.Dexterity / 2)
+			tgt.PoisonDamage = 8 + (attackerSnapshot.Stats.Dexterity / 2)
+			tgt.PoisonSourceID = attackerSnapshot.ID
 			tgt.PoisonEndTime = time.Now().Add(8 * time.Second)
+			poisonApplied = true
+			poisonDamage = tgt.PoisonDamage
+			poisonEndTime = tgt.PoisonEndTime
 		}
 
 		isDead := tgt.Health <= 0
@@ -6449,7 +6766,25 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		// So we should keep it locked or re-lock.
 
 		if w.OnEvent != nil {
-			w.OnEvent("damage", DamageEvent{TargetID: tgt.ID, SourceID: att.ID, Amount: damage})
+			w.OnEvent("damage", DamageEvent{TargetID: tgt.ID, SourceID: attackerSnapshot.ID, Amount: actualDamage})
+		}
+		if poisonApplied && poisonSpreads {
+			w.spreadPoison(att, tgt, poisonDamage, poisonEndTime)
+		}
+		if pendingReflectDamage > 0 {
+			att.Mu.Lock()
+			att.Health -= pendingReflectDamage
+			att.LastDamageType = "physical"
+			attackerDied := att.Health <= 0
+			att.Mu.Unlock()
+			if w.OnEvent != nil {
+				w.OnEvent("damage", DamageEvent{TargetID: att.ID, SourceID: tgt.ID, Amount: pendingReflectDamage})
+			}
+			if attackerDied {
+				att.Mu.Lock()
+				w.handleDeath(att, tgt, nil)
+				att.Mu.Unlock()
+			}
 		}
 
 		if isDead {
@@ -6460,18 +6795,57 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 			}
 			tgt.Mu.Unlock()
 		}
-	}(attackerID, targetID, delay)
+	}(attackerID, targetID, delay, missChance)
 
 	return 0, true
 }
 
-func (w *World) PerformAbility(playerID string, targetX, targetZ float64, targetID string, skillName string) {
+type AbilityResult struct {
+	SkillName         string  `json:"skillName"`
+	Accepted          bool    `json:"accepted"`
+	Reason            string  `json:"reason,omitempty"`
+	Mana              int     `json:"mana"`
+	CooldownRemaining float64 `json:"cooldownRemaining"`
+}
+
+func (w *World) GetAbilityCooldownSnapshot(playerID string) (map[string]float64, bool) {
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+	player, ok := w.Entities[playerID]
+	if !ok {
+		return nil, false
+	}
+	player.Mu.RLock()
+	defer player.Mu.RUnlock()
+	cooldowns := make(map[string]float64, len(player.Cooldowns))
+	for skillName, readyAt := range player.Cooldowns {
+		if remaining := time.Until(readyAt).Seconds(); remaining > 0 {
+			cooldowns[skillName] = remaining
+		}
+	}
+	return cooldowns, true
+}
+
+func (w *World) PerformAbility(playerID string, targetX, targetZ float64, targetID string, skillName string) AbilityResult {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
-	if !ok || player.State == "DEAD" {
-		return
+	if !ok {
+		return AbilityResult{SkillName: skillName, Reason: "player_not_found"}
+	}
+	result := AbilityResult{SkillName: skillName, Mana: player.Mana}
+	if player.State == "DEAD" {
+		result.Reason = "dead"
+		return result
+	}
+	if player.State == "JUMPING" || player.IsCharging {
+		result.Reason = "action_locked"
+		return result
+	}
+	if player.Stunned {
+		result.Reason = "crowd_controlled"
+		return result
 	}
 	stateBeforeAbility := player.State
 
@@ -6488,6 +6862,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 			skillName = "Spirit Guardians"
 		}
 	}
+	result.SkillName = skillName
 
 	// Lazy init cooldowns
 	if player.Cooldowns == nil {
@@ -6496,8 +6871,10 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 
 	// Check Specific Cooldown
 	if readyAt, ok := player.Cooldowns[skillName]; ok {
-		if time.Now().Before(readyAt) {
-			return
+		if remaining := time.Until(readyAt); remaining > 0 {
+			result.Reason = "cooldown"
+			result.CooldownRemaining = remaining.Seconds()
+			return result
 		}
 	}
 
@@ -6505,15 +6882,24 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	// Apply Cooldown Reduction to GCD? Maybe not necessary for GCD, but let's keep it snappy.
 	gcd := 500 * time.Millisecond
 	if time.Since(player.LastAbilityTime) < gcd {
-		return
+		result.Reason = "global_cooldown"
+		return result
 	}
 
+	abilityCommitted := false
+	authoritativeCooldown := time.Duration(0)
 	setCooldown := func(duration time.Duration) {
 		if player.CooldownReduction > 0 {
 			duration = time.Duration(float64(duration) * (1.0 - player.CooldownReduction))
 		}
-		player.Cooldowns[skillName] = time.Now().Add(duration)
+		if duration > 0 {
+			player.Cooldowns[skillName] = time.Now().Add(duration)
+		} else {
+			delete(player.Cooldowns, skillName)
+		}
 		player.LastAbilityTime = time.Now()
+		authoritativeCooldown = duration
+		abilityCommitted = true
 	}
 
 	// Check if skill is unlocked
@@ -6535,29 +6921,25 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	}
 
 	if !isUnlocked {
-		return
+		result.Reason = "locked"
+		return result
 	}
 
 	// Combo System: Check if this skill completes a combo
 	now := time.Now()
+	previousCombo := player.ActiveCombo
+	previousComboEndTime := player.ActiveComboEndTime
+	var activatedCombo *ComboDef
 	if player.LastSkillUsed != "" && now.Sub(player.LastSkillTime) <= ComboWindow {
 		combo := GetComboForSkills(player.SubType, player.LastSkillUsed, skillName)
 		if combo != nil {
 			player.ActiveCombo = combo.Effect
 			player.ActiveComboEndTime = now.Add(10 * time.Second) // Combo effect lasts 10 seconds or until consumed
-			if w.OnEvent != nil {
-				w.OnEvent("combo", map[string]interface{}{
-					"playerID":  player.ID,
-					"comboID":   combo.ID,
-					"comboName": combo.Name,
-				})
-			}
+			activatedCombo = combo
 		}
 	}
 
-	// Record this skill for combo tracking (after checking, so we don't self-combo)
-	player.LastSkillUsed = skillName
-	player.LastSkillTime = now
+	consumeSpellFocus := player.SubType == "Wizard" && player.SpellFocusActive && isWizardDamageSkill(skillName)
 
 	// Class Specific Logic
 	switch player.SubType {
@@ -6571,6 +6953,32 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 		w.performClericAbility(player, targetX, targetZ, targetID, skillName, setCooldown)
 	}
 
+	if !abilityCommitted {
+		// A handler can reject for mana, range, target, or an ability-specific
+		// requirement. Failed attempts must not consume/activate combos.
+		player.ActiveCombo = previousCombo
+		player.ActiveComboEndTime = previousComboEndTime
+		result.Mana = player.Mana
+		result.Reason = "requirements_not_met"
+		return result
+	}
+	if consumeSpellFocus {
+		player.SpellFocusActive = false
+		player.SpellFocusEndTime = time.Time{}
+	}
+
+	// Record combo history and publish the combo only after the cast commits.
+	player.LastSkillUsed = skillName
+	player.LastSkillTime = now
+	if activatedCombo != nil && w.OnEvent != nil {
+		w.OnEvent("combo", map[string]interface{}{
+			"playerID":  player.ID,
+			"comboID":   activatedCombo.ID,
+			"comboName": activatedCombo.Name,
+		})
+	}
+	player.ActivateSwiftIfEquipped()
+
 	// Ability events drive cast animation independently from logical movement.
 	// Preserve the pre-cast locomotion state for ordinary abilities so a server
 	// snapshot cannot stop or rewind a player who cast while moving. Charge
@@ -6578,6 +6986,11 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	if player.State == "ATTACKING" && !player.IsCharging {
 		player.State = stateBeforeAbility
 	}
+
+	result.Accepted = true
+	result.Mana = player.Mana
+	result.CooldownRemaining = authoritativeCooldown.Seconds()
+	return result
 }
 
 func (w *World) PerformSelectBranch(playerID, branch string) (*Entity, bool) {
@@ -6718,6 +7131,17 @@ func (w *World) PerformUnlockSkill(playerID, skillName string) (*Entity, bool) {
 		return nil, false
 	}
 
+	allowed := false
+	for index, branchSkill := range getSkillsForBranch(player.SubType, player.SelectedBranch) {
+		if branchSkill == skillName && player.Level >= index*10 {
+			allowed = true
+			break
+		}
+	}
+	if !allowed {
+		return nil, false
+	}
+
 	// Check if already unlocked
 	for _, s := range player.UnlockedSkills {
 		if s == skillName {
@@ -6741,41 +7165,46 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 		return
 	}
 
+	// Divine Intervention is authoritative lethal-damage prevention. Every
+	// damage path already funnels lethal outcomes through handleDeath, so this
+	// also protects against DoTs, hazards, projectiles, and reflected damage.
+	if (target.Type == TypePlayer || target.Type == TypeNPC) && target.DivineInterventionActive && time.Now().Before(target.DivineInterventionEndTime) {
+		target.Health = target.MaxHealth * 30 / 100
+		if target.Health < 1 {
+			target.Health = 1
+		}
+		target.DivineInterventionActive = false
+		target.DivineInterventionEndTime = time.Time{}
+		w.fireHealEvent(target.ID, target.ID, target.Health)
+		return
+	}
+
 	target.Health = 0
 	target.State = "DEAD"
 	target.LastAttackTime = time.Now()
 
 	// === ON-KILL EFFECTS (Unique Effects & Set Bonuses) ===
 	if attacker != nil && attacker.Type == TypePlayer && target.Type == TypeEnemy {
+		actualVampiricHeal := 0
+		explosionDamage := 0
+		attackerID := attacker.ID
+		attacker.Mu.Lock()
 		// Unique Effect: vampiric - Restore 5% max HP on kill
 		if attacker.HasUniqueEffect("vampiric") {
-			healAmount := applyHealingDoneBonus(attacker, attacker.MaxHealth/20) // 5%
+			healAmount := applyHealingReceived(attacker, applyHealingDoneBonus(attacker, attacker.MaxHealth/20)) // 5%
+			previousHealth := attacker.Health
 			attacker.Health += healAmount
 			if attacker.Health > attacker.MaxHealth {
 				attacker.Health = attacker.MaxHealth
 			}
+			actualVampiricHeal = attacker.Health - previousHealth
 		}
 
-		// Unique Effect: explosive - AoE damage on kill (15% of attacker's damage in 5 unit radius)
+		// Unique Effect: explosive - AoE damage on kill (50% of attacker's damage in 5 unit radius)
 		if attacker.HasUniqueEffect("explosive") {
-			explosionDamage := attacker.Damage * 15 / 100
+			explosionDamage = attacker.Damage * 50 / 100
 			if explosionDamage < 1 {
 				explosionDamage = 1
-			}
-			// Find nearby enemies (not the target itself)
-			nearbyTargets := w.Grid.Nearby(target.X, target.Z, 5.0, target.InstanceID)
-			for _, nearby := range nearbyTargets {
-				if nearby.ID == target.ID || nearby.Type != TypeEnemy || nearby.State == "DEAD" {
-					continue
-				}
-				nearby.Mu.Lock()
-				nearby.Health -= explosionDamage
-				if nearby.Health <= 0 {
-					nearby.Mu.Unlock()
-					w.handleDeath(nearby, attacker, deferred) // Recursive, could chain explosions!
-				} else {
-					nearby.Mu.Unlock()
-				}
 			}
 		}
 
@@ -6786,11 +7215,39 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			}
 		}
 
-		// Set Bonus: Inferno's Heart 6pc (meteorReset) - Fire kill resets Meteor CD
-		// Note: This should only trigger on fire damage kills, but we track it simply here
-		if attacker.HasAnySetBonus("meteorReset") {
+		// Set Bonus: Inferno's Heart 6pc (meteorReset) - Fire kills reset Meteor CD.
+		if target.LastDamageType == "fire" && attacker.HasAnySetBonus("meteorReset") {
 			if attacker.Cooldowns != nil {
 				delete(attacker.Cooldowns, "Meteor Drop")
+			}
+		}
+		attacker.Mu.Unlock()
+
+		if actualVampiricHeal > 0 {
+			w.fireHealEvent(attackerID, attackerID, actualVampiricHeal)
+		}
+		if explosionDamage > 0 {
+			// Find nearby enemies (not the target itself). Recursive kills keep
+			// their target lock, matching handleDeath's mutation contract, while
+			// the attacker lock is deliberately released to avoid chain deadlock.
+			nearbyTargets := w.Grid.Nearby(target.X, target.Z, 5.0, target.InstanceID)
+			for _, nearby := range nearbyTargets {
+				nearby.Mu.Lock()
+				if nearby.ID == target.ID || nearby.Type != TypeEnemy || nearby.State == "DEAD" {
+					nearby.Mu.Unlock()
+					continue
+				}
+				nearby.Health -= explosionDamage
+				nearby.LastDamageType = "physical"
+				nearbyID := nearby.ID
+				isDead := nearby.Health <= 0
+				if isDead {
+					w.handleDeath(nearby, attacker, deferred)
+				}
+				nearby.Mu.Unlock()
+				if w.OnEvent != nil {
+					w.OnEvent("damage", DamageEvent{TargetID: nearbyID, SourceID: attackerID, Amount: explosionDamage})
+				}
 			}
 		}
 	}
@@ -6805,6 +7262,8 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 		attacker.Mu.Lock()
 		qaGuaranteedLoot := attacker.QAGuaranteedLoot
 		attacker.QAGuaranteedLoot = false
+		attackerID := attacker.ID
+		attackerPartyID := attacker.PartyID
 		attacker.Mu.Unlock()
 
 		go func() {
@@ -6916,7 +7375,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 			}
 
 			if isBoss {
-				log.Printf("Boss Death Detected: %s. Attacker: %s. PartyID: %s", tSubType, attacker.ID, attacker.PartyID)
+				log.Printf("Boss Death Detected: %s. Attacker: %s. PartyID: %s", tSubType, attackerID, attackerPartyID)
 			}
 
 			// Dungeon Boss Check
@@ -6980,8 +7439,8 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 
 			// We need to access Party, which requires w.Mu.RLock via GetParty
 			// Since we are in a goroutine and not holding any locks, this is safe.
-			if attacker.PartyID != "" {
-				party := w.GetParty(attacker.PartyID)
+			if attackerPartyID != "" {
+				party := w.GetParty(attackerPartyID)
 				if party != nil {
 					_, _, memberIDs := party.GetSnapshot()
 					for _, mid := range memberIDs {
@@ -7287,6 +7746,7 @@ func (w *World) GetState() map[string]*Entity {
 	// So we copy.
 	state := make(map[string]*Entity, len(w.Entities))
 	for k, v := range w.Entities {
+		v.Mu.RLock()
 		// Shallow copy of entity struct is fine for now
 		// Manual copy to avoid copying mutex
 		e := Entity{
@@ -7368,6 +7828,10 @@ func (w *World) GetState() map[string]*Entity {
 			}
 			e.Equipment = newEquip
 		}
+		if v.UnlockedSkills != nil {
+			e.UnlockedSkills = append([]string(nil), v.UnlockedSkills...)
+		}
+		v.Mu.RUnlock()
 
 		state[k] = &e
 	}
@@ -7383,8 +7847,12 @@ func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[str
 		return make(map[string]*Entity)
 	}
 
+	player.Mu.RLock()
+	playerX, playerZ, playerInstanceID := player.X, player.Z, player.InstanceID
+	player.Mu.RUnlock()
+
 	// Query Grid
-	nearby := w.Grid.Nearby(player.X, player.Z, viewDistance, player.InstanceID)
+	nearby := w.Grid.Nearby(playerX, playerZ, viewDistance, playerInstanceID)
 
 	// Optimization: Pre-allocate map with expected capacity
 	// +10 for self, NPCs, and some buffer
@@ -7400,17 +7868,20 @@ func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[str
 		if v.ID == playerID {
 			continue
 		}
-		if v.InstanceID != player.InstanceID {
-			log.Printf("CRITICAL: GetStateForPlayer LEAK! Player %s (Inst: %s) sees %s (Inst: %s)", playerID, player.InstanceID, v.ID, v.InstanceID)
+		v.Mu.RLock()
+		vID, vInstanceID := v.ID, v.InstanceID
+		dx := v.X - playerX
+		dz := v.Z - playerZ
+		v.Mu.RUnlock()
+		if vInstanceID != playerInstanceID {
+			log.Printf("CRITICAL: GetStateForPlayer LEAK! Player %s (Inst: %s) sees %s (Inst: %s)", playerID, playerInstanceID, vID, vInstanceID)
 			continue
 		}
 		// Precise distance check using squared distance (avoids sqrt)
-		dx := v.X - player.X
-		dz := v.Z - player.Z
 		distSq := dx*dx + dz*dz
 
 		if distSq <= viewDistSq {
-			state[v.ID] = w.copyEntity(v)
+			state[vID] = w.copyEntity(v)
 		}
 	}
 	return state

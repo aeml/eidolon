@@ -28,14 +28,16 @@ describe('SpiritGuardiansEffect', () => {
         expect(effect.group.getObjectByName('SpiritGuardiansAura')).not.toBeNull();
         for (const guardian of effect.guardians) {
             expect(guardian.children).toHaveLength(3);
-            expect(guardian.position.length()).toBeLessThan(4.5);
+            expect(Math.hypot(guardian.position.x, guardian.position.z)).toBeCloseTo(12, 5);
         }
         expect(effect.getMetrics()).toEqual(expect.objectContaining({
             active: true,
             guardianCount: 3,
-            orbitRadius: 2.8,
+            effectRadius: 16,
+            orbitRadius: 12,
             attached: true
         }));
+        expect(effect.pulseRing.geometry.parameters.outerRadius).toBe(16);
 
         effect.dispose();
     });
@@ -74,9 +76,34 @@ describe('SpiritGuardiansEffect', () => {
         expect(effect.getMetrics()).toEqual(expect.objectContaining({
             boosted: true,
             runeId: 'spirits_vengeful',
-            orbitRadius: 4.5,
+            effectRadius: 20,
+            orbitRadius: 15,
             guardianCount: 5
         }));
+
+        effect.dispose();
+    });
+
+    test('expanded variants show the complete authoritative damage boundary', () => {
+        const scene = new THREE.Group();
+        const source = makeSource();
+        source.skillRunes['Spirit Guardians'] = 'spirits_expanded';
+        const effect = new SpiritGuardiansEffect(scene, source, {
+            runeId: 'spirits_expanded'
+        });
+
+        expect(effect.getMetrics()).toEqual(expect.objectContaining({
+            effectRadius: 24,
+            orbitRadius: 18
+        }));
+        expect(effect.pulseRing.geometry.parameters.outerRadius).toBe(24);
+
+        effect.setVariant({ boosted: true, runeId: 'spirits_expanded' });
+        expect(effect.getMetrics()).toEqual(expect.objectContaining({
+            effectRadius: 30,
+            orbitRadius: 22.5
+        }));
+        expect(effect.pulseRing.geometry.parameters.outerRadius).toBe(30);
 
         effect.dispose();
     });

@@ -159,3 +159,58 @@ func TestProjectileHitListInitialization(t *testing.T) {
 		t.Error("Enemy should be in HitList")
 	}
 }
+
+func TestPiercingThrowWeakPointDamageBonus(t *testing.T) {
+	newImpact := func(marked bool) int {
+		w := NewWorld(nil)
+		w.Entities = make(map[string]*Entity)
+		w.Grid = NewSpatialMap(50.0)
+		owner := newTestPlayer("rogue", "Rogue")
+		target := &Entity{ID: "enemy", Type: TypeEnemy, X: 2, Health: 100, MaxHealth: 100, State: "IDLE", WeakPointMarked: marked}
+		projectile := &Entity{
+			ID: "dagger", Type: TypeProjectile, SubType: "Dagger", ProjectileSkill: "Piercing Throw",
+			X: 0, VelX: 10, Radius: 1, Damage: 20, OwnerID: owner.ID, CreatedAt: time.Now(),
+		}
+		w.AddEntity(owner)
+		w.AddEntity(target)
+		w.AddEntity(projectile)
+		w.Update(0.2)
+		return 100 - target.Health
+	}
+
+	baseDamage := newImpact(false)
+	markedDamage := newImpact(true)
+	if markedDamage != baseDamage*3/2 {
+		t.Fatalf("Weak Point did not add 50%% Piercing Throw damage: base=%d marked=%d", baseDamage, markedDamage)
+	}
+}
+
+func TestFireballChainRedirectsAndKeepsAdditionalHitsAtHalfDamage(t *testing.T) {
+	w := NewWorld(nil)
+	w.Entities = make(map[string]*Entity)
+	w.Grid = NewSpatialMap(50.0)
+	owner := newTestPlayer("wizard-chain", "Wizard")
+	first := &Entity{ID: "chain-first", Type: TypeEnemy, X: 2, Health: 1000, MaxHealth: 1000, State: "IDLE", Scale: 1}
+	second := &Entity{ID: "chain-second", Type: TypeEnemy, X: 14, Health: 1000, MaxHealth: 1000, State: "IDLE", Scale: 1}
+	projectile := &Entity{
+		ID: "chain-fireball", Type: TypeProjectile, SubType: "Fireball", ProjectileSkill: "Fireball",
+		X: 0, VelX: 20, Radius: 2, Damage: 20, OwnerID: owner.ID, CreatedAt: time.Now(),
+		ProjectileRuneID: "fireball_chain", ProjectileBounces: 3,
+	}
+	w.AddEntity(owner)
+	w.AddEntity(first)
+	w.AddEntity(second)
+	deferred := &deferredActions{}
+	w.updateEntity(projectile, 0.1, nil, deferred)
+
+	if len(deferred.removals) > 0 {
+		t.Fatalf("chain fireball was removed instead of redirecting: %v", deferred.removals)
+	}
+	chained := projectile
+	chained.Mu.RLock()
+	bounces, damage, velX := chained.ProjectileBounces, chained.Damage, chained.VelX
+	chained.Mu.RUnlock()
+	if bounces != 2 || damage != 10 || velX <= 0 {
+		t.Fatalf("unexpected first chain redirect: bounces=%d damage=%d velX=%v", bounces, damage, velX)
+	}
+}

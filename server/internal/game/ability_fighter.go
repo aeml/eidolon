@@ -21,12 +21,11 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			player.ChargeStartZ = player.Z
 
 			// Momentum rune: +50% range
-			finalTargetX := targetX
-			finalTargetZ := targetZ
+			finalTargetX, finalTargetZ := clampAbilityTargetDistance(player, targetX, targetZ, 28.0)
 			if runeID == "charge_momentum" {
 				// Extend range by 50%
-				dx := targetX - player.X
-				dz := targetZ - player.Z
+				dx := finalTargetX - player.X
+				dz := finalTargetZ - player.Z
 				finalTargetX = player.X + dx*1.5
 				finalTargetZ = player.Z + dz*1.5
 			}
@@ -43,6 +42,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			}
 
 			player.IsCharging = true
+			player.ChargeSkillName = skillName
 			player.ChargeTargetX = finalTargetX
 			player.ChargeTargetZ = finalTargetZ
 			player.State = "ATTACKING"
@@ -102,7 +102,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					isDead := target.Health <= 0
 
 					// Bladestorm rune: pull enemies toward player
-					if runeID == "whirlwind_bladestorm" && !isDead {
+					if runeID == "whirlwind_bladestorm" && !isDead && !target.CCImmune && !target.IronFortressImmovable {
 						dist := math.Sqrt(distSq)
 						if dist > 1.0 {
 							pullDist := 2.0 // Pull 2 units toward player
@@ -131,8 +131,44 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					}
 				}
 			}
-			_ = hitCount // hitCount tracked but not currently used
+			if runeID == "whirlwind_bloodwhirl" && hitCount > 0 {
+				healAmount := applyHealingReceived(player, player.MaxHealth*2*hitCount/100)
+				if healAmount > 0 {
+					previousHealth := player.Health
+					player.Health += healAmount
+					if player.Health > player.MaxHealth {
+						player.Health = player.MaxHealth
+					}
+					if actualHeal := player.Health - previousHealth; actualHeal > 0 {
+						w.fireHealEvent(player.ID, player.ID, actualHeal)
+					}
+				}
+			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
+			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+		}
+	} else if skillName == "Shield Slam" {
+		cost := resolveAbilityManaCost(player, skillName, 25)
+		if player.Mana >= cost {
+			player.Mana -= cost
+			runeID := player.GetRuneForSkill(skillName)
+			damage := player.Damage + int(float64(player.Stats.Strength)*1.5)
+			if runeID == "shieldslam_reverberation" {
+				damage *= 2
+			}
+			stunDuration := 1500 * time.Millisecond
+			if runeID == "shieldslam_concussion" {
+				stunDuration += time.Second
+			}
+			totalDamage := w.damageFighterCone(player, targetX, targetZ, 4.0, math.Pi/4, damage, stunDuration, 1.0)
+			if runeID == "shieldslam_fortify" && totalDamage > 0 {
+				// The combat pipeline already provides a replicated absorb shield.
+				player.ArcaneShieldActive = true
+				player.ArcaneShieldHP += totalDamage
+				player.ArcaneShieldEndTime = time.Now().Add(10 * time.Second)
+				player.ArcaneShieldRuneID = ""
+			}
+			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 6*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
 	} else if skillName == "Shattering Charge" {
@@ -140,12 +176,20 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			finalTargetX, finalTargetZ := clampAbilityTargetDistance(player, targetX, targetZ, 28.0)
+			if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(player, finalTargetX, finalTargetZ); ok {
+				finalTargetX = constrainedX
+				finalTargetZ = constrainedZ
+			}
 			player.IsCharging = true
-			player.ChargeTargetX = targetX
-			player.ChargeTargetZ = targetZ
+			player.ChargeSkillName = skillName
+			player.ChargeStartX = player.X
+			player.ChargeStartZ = player.Z
+			player.ChargeTargetX = finalTargetX
+			player.ChargeTargetZ = finalTargetZ
 			player.State = "ATTACKING"
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 12*time.Second))
-			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+			w.fireAbilityEvent(player.ID, targetID, skillName, finalTargetX, finalTargetZ)
 		}
 	} else if skillName == "Executioner Spin" {
 		// Executioner Spin
@@ -172,7 +216,11 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 
 				if withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
 					target.Mu.Lock()
-					finalDamage := applyFinalDamage(player, target, damage, "physical")
+					modifiedDamage := damage
+					if target.WeakPointMarked || target.MarkWeakness || target.Threat[player.ID] > 0 {
+						modifiedDamage = int(float64(modifiedDamage) * 1.5)
+					}
+					finalDamage := applyFinalDamage(player, target, modifiedDamage, "physical")
 					addThreatLocked(target, player.ID, float64(finalDamage))
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
@@ -223,6 +271,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			} else {
 				player.IronFortressImmovable = false
 			}
+			player.RecalculateStats()
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
@@ -242,18 +291,23 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 
 			player.GuardianRoarActive = true
 			player.GuardianRoarEndTime = time.Now().Add(buffDuration)
+			canTauntBosses := player.HasAnySetBonus("bossTaunt")
 
 			// Taunt Logic
 			radius := 15.0
-			nearby := w.Grid.Nearby(player.X, player.Z, radius, player.InstanceID)
+			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
 			for _, target := range nearby {
 				if target.ID == player.ID {
 					continue
 				}
 				target.Mu.Lock()
-				if target.Type == TypeEnemy && target.State != "DEAD" {
+				if target.Type == TypeEnemy && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) && (target.Scale < 4.0 || canTauntBosses) {
 					// Taunt: set fighter to highest threat + 10% for this enemy.
 					tauntThreatLocked(target, player.ID)
+				} else if (target.Type == TypePlayer || target.Type == TypeNPC) && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
+					target.GuardianRoarActive = true
+					target.GuardianRoarEndTime = player.GuardianRoarEndTime
+					target.RecalculateStats()
 				}
 				target.Mu.Unlock()
 			}
@@ -261,17 +315,99 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 30*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
-	} else if skillName == "Serrated Edges" {
-		// Serrated Edges (Buff)
-		// NOTE: This skill is misplaced — it's a Rogue skill in the Fighter block.
-		// A Rogue player would never reach this code path since the outer switch
-		// dispatches on player.SubType. Preserved here for historical fidelity;
-		// see also ability_rogue.go for the correct Rogue version if one is added.
+	} else if skillName == "Sweeping Strike" {
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
 			player.Mana -= cost
-			player.SerratedEdgesActive = true
-			player.SerratedEdgesEndTime = time.Now().Add(10 * time.Second)
+			damage := player.Damage + int(float64(player.Stats.Strength)*1.2)
+			w.damageFighterCone(player, targetX, targetZ, 5.0, math.Pi/2, damage, 0, 2.0)
+			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 4*time.Second))
+			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+		}
+	} else if skillName == "Earthshaker" {
+		cost := resolveAbilityManaCost(player, skillName, 40)
+		if player.Mana >= cost {
+			player.Mana -= cost
+			runeID := player.GetRuneForSkill(skillName)
+			damage := player.Damage + player.Stats.Strength*2
+			stunDuration := 2 * time.Second
+			if runeID == "earthshaker_seismic" {
+				stunDuration *= 2
+			}
+			w.damageEarthshakerArea(player, player.X, player.Z, targetX, targetZ, 6.0, damage, stunDuration, runeID == "earthshaker_fissure")
+			if runeID == "earthshaker_aftershock" {
+				playerID := player.ID
+				instanceID := player.InstanceID
+				x, z := player.X, player.Z
+				go func() {
+					time.Sleep(time.Second)
+					w.Mu.Lock()
+					defer w.Mu.Unlock()
+					owner := w.Entities[playerID]
+					if owner == nil || owner.State == "DEAD" || owner.InstanceID != instanceID {
+						return
+					}
+					w.damageEarthshakerArea(owner, x, z, targetX, targetZ, 3.5, damage/2, time.Second, false)
+				}()
+			}
+			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 12*time.Second))
+			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+		}
+	} else if skillName == "Unbreakable Grip" {
+		if target := w.findFighterGripTarget(player, targetX, targetZ, targetID); target != nil {
+			cost := resolveAbilityManaCost(player, skillName, 35)
+			if player.Mana >= cost {
+				player.Mana -= cost
+				target.Mu.Lock()
+				dx := target.X - player.X
+				dz := target.Z - player.Z
+				dist := math.Sqrt(dx*dx + dz*dz)
+				if dist > 0 && !target.IronFortressImmovable && !target.CCImmune {
+					oldX, oldZ := target.X, target.Z
+					target.X = player.X + dx/dist*2.0
+					target.Z = player.Z + dz/dist*2.0
+					if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(target, target.X, target.Z); ok {
+						target.X, target.Z = constrainedX, constrainedZ
+					}
+					w.Grid.Update(target, oldX, oldZ)
+				}
+				if !target.CCImmune {
+					target.Rooted = true
+					target.RootEndTime = time.Now().Add(time.Second)
+				}
+				target.Mu.Unlock()
+				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 15*time.Second))
+				w.fireAbilityEvent(player.ID, target.ID, skillName, targetX, targetZ)
+			}
+		}
+	} else if skillName == "Juggernaut Charge" {
+		cost := resolveAbilityManaCost(player, skillName, 30)
+		if player.Mana >= cost {
+			player.Mana -= cost
+			radius := 10.0
+			damage := player.Damage + player.Stats.Strength
+			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
+			for _, target := range nearby {
+				target.Mu.Lock()
+				if target.Type != TypeEnemy || target.State == "DEAD" || !withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
+					target.Mu.Unlock()
+					continue
+				}
+				finalDamage := applyFinalDamage(player, target, damage, "physical")
+				addThreatLocked(target, player.ID, float64(finalDamage))
+				target.Slowed = true
+				target.SlowFactor = 0.6
+				target.SlowEndTime = time.Now().Add(5 * time.Second)
+				target.RecalculateStats()
+				isDead := target.Health <= 0
+				target.Mu.Unlock()
+				w.fireDamageEvent(player.ID, target.ID, finalDamage)
+				if isDead {
+					target.Mu.Lock()
+					w.handleDeath(target, player, nil)
+					target.Mu.Unlock()
+				}
+			}
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
@@ -286,26 +422,26 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 
 			// Apply to party
 			if player.PartyID != "" {
-				party := w.GetParty(player.PartyID)
+				// PerformAbility already owns w.Mu. Calling GetParty/GetEntity here
+				// attempts to recursively RLock the same RWMutex and freezes the world.
+				party := w.Parties[player.PartyID]
 				if party != nil {
 					_, _, members := party.GetSnapshot()
 					for _, mid := range members {
 						if mid == player.ID {
 							continue
 						}
-						member := w.GetEntity(mid)
+						member := w.Entities[mid]
 						if member != nil {
-							// Check distance
+							member.Mu.Lock()
 							dx := member.X - player.X
 							dz := member.Z - player.Z
-							dist := math.Sqrt(dx*dx + dz*dz)
-							if dist <= 15.0 {
-								member.Mu.Lock()
+							if member.InstanceID == player.InstanceID && member.State != "DEAD" && math.Hypot(dx, dz) <= 15.0+entityVisualRadius(member) {
 								member.BerserkerModeActive = true
 								member.BerserkerModeEndTime = time.Now().Add(15 * time.Second)
 								member.RecalculateStats()
-								member.Mu.Unlock()
 							}
+							member.Mu.Unlock()
 						}
 					}
 				}
@@ -321,6 +457,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 		if hpPercent < 0.30 {
 			player.LastStandActive = true
 			player.LastStandEndTime = time.Now().Add(10 * time.Second)
+			player.RecalculateStats()
 
 			// Combo: Iron Will (Iron Fortress → Last Stand Rampage) = Damage reduction persists
 			if player.ActiveCombo == "rampage_damage_reduction" {
@@ -339,4 +476,137 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
 	}
+}
+
+func clampAbilityTargetDistance(player *Entity, targetX, targetZ, maxDistance float64) (float64, float64) {
+	if player == nil || maxDistance <= 0 {
+		return targetX, targetZ
+	}
+	dx := targetX - player.X
+	dz := targetZ - player.Z
+	distance := math.Hypot(dx, dz)
+	if distance <= maxDistance || distance == 0 {
+		return targetX, targetZ
+	}
+	scale := maxDistance / distance
+	return player.X + dx*scale, player.Z + dz*scale
+}
+
+func fighterFacing(player *Entity, targetX, targetZ float64) (float64, float64) {
+	dx := targetX - player.X
+	dz := targetZ - player.Z
+	dist := math.Sqrt(dx*dx + dz*dz)
+	if dist > 0.001 {
+		return dx / dist, dz / dist
+	}
+	return math.Sin(player.Rotation), math.Cos(player.Rotation)
+}
+
+func (w *World) damageFighterCone(player *Entity, targetX, targetZ, radius, halfAngle float64, damage int, stun time.Duration, threatMultiplier float64) int {
+	facingX, facingZ := fighterFacing(player, targetX, targetZ)
+	totalDamage := 0
+	nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius("", radius), player.InstanceID)
+	for _, target := range nearby {
+		target.Mu.Lock()
+		if target.Type != TypeEnemy || target.State == "DEAD" {
+			target.Mu.Unlock()
+			continue
+		}
+		dx := target.X - player.X
+		dz := target.Z - player.Z
+		dist := math.Sqrt(dx*dx + dz*dz)
+		if dist <= 0 || dist > radius+entityVisualRadius(target) || facingX*(dx/dist)+facingZ*(dz/dist) < math.Cos(halfAngle) {
+			target.Mu.Unlock()
+			continue
+		}
+		finalDamage := applyFinalDamage(player, target, damage, "physical")
+		totalDamage += finalDamage
+		addThreatLocked(target, player.ID, float64(finalDamage)*threatMultiplier)
+		if stun > 0 && !target.CCImmune {
+			target.Stunned = true
+			target.StunEndTime = time.Now().Add(stun)
+		}
+		isDead := target.Health <= 0
+		target.Mu.Unlock()
+		w.fireDamageEvent(player.ID, target.ID, finalDamage)
+		if isDead {
+			target.Mu.Lock()
+			w.handleDeath(target, player, nil)
+			target.Mu.Unlock()
+		}
+	}
+	return totalDamage
+}
+
+func (w *World) damageEarthshakerArea(player *Entity, originX, originZ, targetX, targetZ, radius float64, damage int, stun time.Duration, line bool) {
+	facingX, facingZ := fighterFacing(player, targetX, targetZ)
+	nearby := w.Grid.Nearby(originX, originZ, expandedAbilityRadius("Earthshaker", radius), player.InstanceID)
+	for _, target := range nearby {
+		target.Mu.Lock()
+		if target.Type != TypeEnemy || target.State == "DEAD" {
+			target.Mu.Unlock()
+			continue
+		}
+		dx := target.X - originX
+		dz := target.Z - originZ
+		hit := withinAbilityRadius("Earthshaker", originX, originZ, target, radius)
+		if line {
+			forward := dx*facingX + dz*facingZ
+			lateral := math.Abs(dx*facingZ - dz*facingX)
+			hit = forward >= 0 && forward <= radius+entityVisualRadius(target) && lateral <= 1.5+entityVisualRadius(target)
+		}
+		if !hit {
+			target.Mu.Unlock()
+			continue
+		}
+		finalDamage := applyFinalDamage(player, target, damage, "physical")
+		addThreatLocked(target, player.ID, float64(finalDamage))
+		if !target.CCImmune {
+			target.Stunned = true
+			target.StunEndTime = time.Now().Add(stun)
+		}
+		isDead := target.Health <= 0
+		target.Mu.Unlock()
+		w.fireDamageEvent(player.ID, target.ID, finalDamage)
+		if isDead {
+			target.Mu.Lock()
+			w.handleDeath(target, player, nil)
+			target.Mu.Unlock()
+		}
+	}
+}
+
+func (w *World) findFighterGripTarget(player *Entity, targetX, targetZ float64, targetID string) *Entity {
+	maxRange := 10.0
+	valid := func(target *Entity) bool {
+		if target == nil {
+			return false
+		}
+		target.Mu.RLock()
+		defer target.Mu.RUnlock()
+		if target.Type != TypeEnemy || target.State == "DEAD" || target.InstanceID != player.InstanceID {
+			return false
+		}
+		dx := target.X - player.X
+		dz := target.Z - player.Z
+		return dx*dx+dz*dz <= (maxRange+entityVisualRadius(target))*(maxRange+entityVisualRadius(target))
+	}
+	if targetID != "" && valid(w.Entities[targetID]) {
+		return w.Entities[targetID]
+	}
+	var best *Entity
+	bestDistance := 3.0
+	for _, target := range w.Grid.Nearby(targetX, targetZ, 3.0+maxAbilityTargetVisualRadius, player.InstanceID) {
+		if !valid(target) {
+			continue
+		}
+		target.Mu.RLock()
+		distance := math.Hypot(target.X-targetX, target.Z-targetZ)
+		target.Mu.RUnlock()
+		if distance < bestDistance+entityVisualRadius(target) {
+			bestDistance = distance
+			best = target
+		}
+	}
+	return best
 }

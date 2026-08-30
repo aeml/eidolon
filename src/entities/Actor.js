@@ -9,7 +9,12 @@ import {
     MOVEMENT_TARGET_EQUIVALENCE_DISTANCE,
     RemoteTransformBuffer
 } from '../core/MovementSmoothing.js';
-import { getAbilityAnimationProfile, getAbilityPresentation } from '../skills/abilityVisualManifest.js';
+import {
+    getAbilityAnimationProfile,
+    getAbilityPresentation,
+    isAbilityVisualLayerEnabled
+} from '../skills/abilityVisualManifest.js';
+import { getAbilityAoeArc, getAbilityAoeRadius, isAoeBoundaryVisualType } from '../skills/abilityRadii.js';
 import { ACTOR_STATUS_VISUAL_STATES, AttachedStatusEffect } from './AttachedStatusEffect.js';
 
 // Optimization: Reusable temporary objects to avoid GC
@@ -444,7 +449,9 @@ export class Actor extends Entity {
     getMovementAnimationTimeScale(speed = this.stats?.speed) {
         let effectiveSpeed = Math.max(0, Number(speed) || 0);
         if (!this.isRunning) effectiveSpeed *= 0.5;
-        if (this.slowTimer > 0) effectiveSpeed *= Math.max(0, 1 - (this.slowFactor || 0));
+        if (this.slowTimer > 0 && !this.isMultiplayer && !this.isRemote) {
+            effectiveSpeed *= Math.max(0, 1 - (this.slowFactor || 0));
+        }
         if (this.speedBoostTimer > 0) effectiveSpeed *= 1 + Math.max(0, this.speedBoostFactor || 0);
         const authoredSpeed = this.isRunning ? 6.0 : 3.0;
         return Math.max(0.35, Math.min(2.5, effectiveSpeed / authoredSpeed));
@@ -493,22 +500,32 @@ export class Actor extends Entity {
         const direction = sourcePosition?.clone && targetPosition?.clone
             ? targetPosition.clone().sub(sourcePosition).normalize()
             : null;
+        const gameplayRadius = getAbilityAoeRadius(className, skillName, this)
+            ?? getAbilityAoeRadius(className, presentation.canonicalName, this);
+        const gameplayArc = getAbilityAoeArc(className, skillName)
+            ?? getAbilityAoeArc(className, presentation.canonicalName);
         let spawned = false;
-        presentation.layers.forEach((entry, index) => {
+        const activeLayers = presentation.layers.filter((entry) =>
+            isAbilityVisualLayerEnabled(entry, this, presentation.canonicalName)
+        );
+        activeLayers.forEach((entry, index) => {
             const position = entry.anchor === 'target' ? targetPosition : sourcePosition;
             if (!position) return;
             spawned = gameEngine.spawnTransientEffect(entry.type, position, entry.color, {
                 source: this,
                 direction,
                 abilityName: presentation.canonicalName,
-                abilityLayer: index
+                abilityLayer: index,
+                ...(gameplayRadius && isAoeBoundaryVisualType(entry.type)
+                    ? { radius: gameplayRadius, ...(gameplayArc ? { arc: gameplayArc } : {}) }
+                    : {})
             }) || spawned;
         });
         if (spawned) {
             this.lastAbilityPresentation = {
                 skillName: presentation.canonicalName,
                 requestedSkillName: skillName,
-                layerCount: presentation.layers.length,
+                layerCount: activeLayers.length,
                 timestamp: globalThis.performance?.now?.() ?? Date.now()
             };
         }
@@ -595,7 +612,7 @@ export class Actor extends Entity {
         this.movementMetrics.requests += 1;
         if (this.state === 'DEAD' || !targetVector ||
             !Number.isFinite(targetVector.x) || !Number.isFinite(targetVector.z)) return false;
-        const movementSuppressed = this.rootTimer > 0 || this.frozenTimer > 0;
+        const movementSuppressed = this.stunTimer > 0 || this.rootTimer > 0 || this.frozenTimer > 0;
 
         const arrivalDistanceSq = MOVEMENT_ARRIVAL_DISTANCE * MOVEMENT_ARRIVAL_DISTANCE;
         if (horizontalDistanceSquared(this.position, targetVector) <= arrivalDistanceSq) {
@@ -1258,7 +1275,7 @@ export class Actor extends Entity {
 
         if (this.state === 'MOVING' && this.targetPosition) {
             // Root/Freeze Check
-            if (this.rootTimer > 0 || this.frozenTimer > 0) {
+            if (this.stunTimer > 0 || this.rootTimer > 0 || this.frozenTimer > 0) {
                 this.state = 'IDLE';
                 this.velocity.set(0, 0, 0);
                 this.playAnimation('Idle');
@@ -1290,7 +1307,11 @@ export class Actor extends Entity {
                 }
                 
                 // Apply Slow
-                if (this.slowTimer > 0) {
+                // Multiplayer speed already includes authoritative slow/haste/
+                // Swift modifiers in the replicated derived stat. Applying the
+                // slow again here made local movement slower than the server
+                // contract and caused a second correction when the buff ended.
+                if (this.slowTimer > 0 && !this.isMultiplayer && !this.isRemote) {
                     currentSpeed *= (1 - this.slowFactor);
                 }
 

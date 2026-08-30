@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 
 const GOLD = 0xffd75a;
 const BOOSTED_GOLD = 0xffffff;
@@ -43,6 +44,7 @@ export class SpiritGuardiansEffect {
         this.quality = options.quality === 'low' ? 'low' : 'high';
         this.boosted = false;
         this.runeId = null;
+        this.effectRadius = 0;
         this.orbitRadius = 0;
         this.pulseRing = null;
 
@@ -59,9 +61,17 @@ export class SpiritGuardiansEffect {
     }
 
     getOrbitRadius() {
-        if (this.boosted) return 4.5;
-        if (this.runeId === 'spirits_expanded') return 4.2;
-        return 2.8;
+        // Keep the figures inside the damage edge so their bodies do not imply
+        // hits beyond the authoritative boundary. The ground ring itself is
+        // rendered at the exact effect radius.
+        return this.effectRadius * 0.75;
+    }
+
+    getEffectRadius() {
+        const skillName = this.boosted ? 'Spirit Guardians Boost' : 'Spirit Guardians';
+        return getAbilityAoeRadius('Cleric', skillName, {
+            skillRunes: { 'Spirit Guardians': this.runeId }
+        });
     }
 
     getColor() {
@@ -77,9 +87,11 @@ export class SpiritGuardiansEffect {
 
         this.boosted = nextBoosted;
         this.runeId = nextRuneId;
+        this.effectRadius = this.getEffectRadius();
         this.orbitRadius = this.getOrbitRadius();
         this.group.userData.boosted = this.boosted;
         this.group.userData.runeId = this.runeId;
+        this.group.userData.effectRadius = this.effectRadius;
         this.group.userData.orbitRadius = this.orbitRadius;
 
         if (options.rebuild || changed) {
@@ -165,8 +177,8 @@ export class SpiritGuardiansEffect {
         }
 
         const ringGeometry = this.track(new THREE.RingGeometry(
-            Math.max(0.2, this.orbitRadius - 0.22),
-            this.orbitRadius + 0.22,
+            Math.max(0.2, this.effectRadius - 0.35),
+            this.effectRadius,
             this.quality === 'low' ? 32 : 64
         ));
         const ringMaterial = this.track(new THREE.MeshBasicMaterial({
@@ -184,6 +196,7 @@ export class SpiritGuardiansEffect {
         this.group.add(this.pulseRing);
 
         this.group.userData.guardianCount = count;
+        this.group.userData.effectRadius = this.effectRadius;
         this.group.userData.orbitRadius = this.orbitRadius;
     }
 
@@ -220,7 +233,9 @@ export class SpiritGuardiansEffect {
         });
 
         if (this.pulseRing) {
-            const ringPulse = 0.985 + pulse * 0.03;
+            // Pulse outward from the authoritative edge; never shrink the
+            // visible boundary inside the actual damage radius.
+            const ringPulse = 1 + pulse * 0.015;
             this.pulseRing.scale.setScalar(ringPulse);
             this.pulseRing.material.opacity = 0.14 + pulse * (this.boosted ? 0.22 : 0.14);
             this.pulseRing.rotation.z = this.elapsed * 0.12;
@@ -240,6 +255,7 @@ export class SpiritGuardiansEffect {
         return {
             active: this.isActive,
             guardianCount: this.guardians.length,
+            effectRadius: this.effectRadius,
             orbitRadius: this.orbitRadius,
             boosted: this.boosted,
             runeId: this.runeId,

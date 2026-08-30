@@ -132,6 +132,47 @@ describe('GameEngine ordered movement transport', () => {
         expect(engine.movementTelemetry.staleAcknowledgements).toBe(1);
     });
 
+    test('a duplicate acknowledgement never stops a high-speed prediction far ahead of it', () => {
+        const engine = movementHarness();
+        engine.sendPlayerMovementIfNeeded(1 / 60);
+
+        expect(engine.getLocalPositionCorrectionReason(
+            { moveSequence: 1, state: 'MOVING' },
+            new THREE.Vector3(0, 0, 0),
+            0
+        )).toBeNull();
+
+        // At the 28.8 unit/s movement cap the client can be more than the
+        // three-unit discontinuity threshold ahead during a latency spike.
+        engine.player.position.x = 4.8;
+        expect(engine.getLocalPositionCorrectionReason(
+            { moveSequence: 1, state: 'MOVING' },
+            new THREE.Vector3(0, 0, 0),
+            4.8
+        )).toBeNull();
+        expect(engine.getMovementMetrics().local).toEqual(expect.objectContaining({
+            duplicateAcknowledgements: 1,
+            hardCorrections: 0
+        }));
+    });
+
+    test('server-owned movement with an unchanged acknowledgement remains authoritative', () => {
+        const engine = movementHarness();
+        engine.sendPlayerMovementIfNeeded(1 / 60);
+        engine.getLocalPositionCorrectionReason(
+            { moveSequence: 1, state: 'MOVING' },
+            new THREE.Vector3(0, 0, 0),
+            0
+        );
+
+        expect(engine.getLocalPositionCorrectionReason(
+            { moveSequence: 1, state: 'ATTACKING' },
+            new THREE.Vector3(8, 0, 0),
+            8
+        )).toBe('authoritative discontinuity');
+        expect(engine.getMovementMetrics().local.hardCorrections).toBe(1);
+    });
+
     test('predicted movement ignores stale idle and ordinary cast states', () => {
         const engine = movementHarness();
         engine.player.state = 'MOVING';
@@ -156,5 +197,36 @@ describe('GameEngine ordered movement transport', () => {
             engine.sendPlayerMovementIfNeeded(1 / 30);
         }
         expect(engine.ensureMovementNetworkState().sentHistory.size).toBe(180);
+    });
+
+    test('a failed simulation tick does not permanently stop the animation frame pump', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.lastTime = 0;
+        engine.accumulator = 0;
+        engine.fixedTimeStep = 1 / 60;
+        engine.isDestroyed = false;
+        engine.update = jest.fn(() => {
+            throw new Error('transient entity update failure');
+        });
+        engine.render = jest.fn();
+
+        const originalRequestAnimationFrame = globalThis.requestAnimationFrame;
+        const requestFrame = jest.fn(() => 42);
+        globalThis.requestAnimationFrame = requestFrame;
+        const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        try {
+            engine.loop(20);
+            expect(consoleError).toHaveBeenCalledWith(
+                'GameEngine Loop Error:',
+                expect.objectContaining({ message: 'transient entity update failure' })
+            );
+            expect(engine.accumulator).toBe(0);
+            expect(requestFrame).toHaveBeenCalledTimes(1);
+            expect(engine.animationFrameId).toBe(42);
+        } finally {
+            consoleError.mockRestore();
+            globalThis.requestAnimationFrame = originalRequestAnimationFrame;
+        }
     });
 });

@@ -1,12 +1,29 @@
 package game
 
-import "time"
+import (
+	"math"
+	"time"
+)
 
 const (
 	baseActorVisualRadius        = 1.25
 	maxAbilityTargetVisualRadius = 5.0
 	meteorImpactVisualScale      = 1.65
+	spiritGuardiansBaseRadius    = 16.0
+	spiritGuardiansBoostRadius   = 20.0
+	spiritGuardiansExpandedScale = 1.5
 )
+
+func spiritGuardiansRadius(boosted bool, runeID string) float64 {
+	radius := spiritGuardiansBaseRadius
+	if boosted {
+		radius = spiritGuardiansBoostRadius
+	}
+	if runeID == "spirits_expanded" {
+		radius *= spiritGuardiansExpandedScale
+	}
+	return radius
+}
 
 // consumePersistentDuration keeps production ability timing unchanged while
 // allowing an explicitly allowlisted QA character to exercise join-in-progress
@@ -49,15 +66,20 @@ func (w *World) fireAbilityEvent(sourceID, targetID, skillName string, targetX, 
 
 // fireDamageEvent emits a "damage" event if a listener is registered.
 func (w *World) fireDamageEvent(sourceID, targetID string, amount int) {
+	actualLifesteal := 0
 	if amount > 0 && sourceID != "" {
-		if source, ok := w.Entities[sourceID]; ok && source != nil && source.LifestealBonus > 0 {
-			healAmount := int(float64(amount) * source.LifestealBonus)
+		if source, ok := w.Entities[sourceID]; ok && source != nil {
+			source.Mu.Lock()
+			healAmount := applyHealingReceived(source, int(float64(amount)*source.LifestealBonus))
 			if healAmount > 0 {
+				previousHealth := source.Health
 				source.Health += healAmount
 				if source.Health > source.MaxHealth {
 					source.Health = source.MaxHealth
 				}
+				actualLifesteal = source.Health - previousHealth
 			}
+			source.Mu.Unlock()
 		}
 	}
 
@@ -67,6 +89,9 @@ func (w *World) fireDamageEvent(sourceID, targetID string, amount int) {
 			SourceID: sourceID,
 			Amount:   amount,
 		})
+	}
+	if actualLifesteal > 0 {
+		w.fireHealEvent(sourceID, sourceID, actualLifesteal)
 	}
 }
 
@@ -92,12 +117,29 @@ func applyHealingDoneBonus(source *Entity, amount int) int {
 	return boosted
 }
 
+// applyHealingReceived applies target-side healing modifiers. Poison Coating's
+// client contract is a 50% reduction and follows the poison itself, including
+// spread poison and projectile-applied poison.
+func applyHealingReceived(target *Entity, amount int) int {
+	if target == nil || amount <= 0 {
+		return amount
+	}
+	if target.Poisoned {
+		amount /= 2
+		if amount < 1 {
+			amount = 1
+		}
+	}
+	return amount
+}
+
 func applyFinalDamage(attacker, target *Entity, baseDamage int, damageType string) int {
 	if target == nil || baseDamage <= 0 {
 		return 0
 	}
 	finalDamage, _ := CalculateFinalDamage(attacker, target, baseDamage, damageType)
 	target.Health -= finalDamage
+	target.LastDamageType = damageType
 	return finalDamage
 }
 
@@ -147,4 +189,47 @@ func withinAbilityRadius(effectName string, originX, originZ float64, target *En
 	dx := originX - target.X
 	dz := originZ - target.Z
 	return (dx*dx + dz*dz) <= effectiveRadius*effectiveRadius
+}
+
+func validDirectAbilityTarget(player, target *Entity, maxRange float64, allowedTypes ...EntityType) bool {
+	if player == nil || target == nil || player.InstanceID != target.InstanceID || target.State == "DEAD" {
+		return false
+	}
+	typeAllowed := false
+	for _, allowedType := range allowedTypes {
+		if target.Type == allowedType {
+			typeAllowed = true
+			break
+		}
+	}
+	if !typeAllowed {
+		return false
+	}
+	if maxRange <= 0 {
+		return true
+	}
+	return math.Hypot(target.X-player.X, target.Z-player.Z) <= maxRange+entityVisualRadius(target)
+}
+
+func (w *World) spreadPoison(source, primaryTarget *Entity, damage int, endTime time.Time) {
+	if w == nil || source == nil || primaryTarget == nil || damage <= 0 {
+		return
+	}
+	const radius = 5.0
+	primaryTarget.Mu.RLock()
+	primaryID, originX, originZ, instanceID := primaryTarget.ID, primaryTarget.X, primaryTarget.Z, primaryTarget.InstanceID
+	primaryTarget.Mu.RUnlock()
+	for _, target := range w.Grid.Nearby(originX, originZ, radius+maxAbilityTargetVisualRadius, instanceID) {
+		if target.ID == primaryID {
+			continue
+		}
+		target.Mu.Lock()
+		if target.Type == TypeEnemy && target.State != "DEAD" && withinAbilityRadius("Poison Spread", originX, originZ, target, radius) {
+			target.Poisoned = true
+			target.PoisonDamage = damage
+			target.PoisonSourceID = source.ID
+			target.PoisonEndTime = endTime
+		}
+		target.Mu.Unlock()
+	}
 }

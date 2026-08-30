@@ -30,8 +30,14 @@ export class Fighter extends Actor {
         if (!super.useAbility(targetVector, gameEngine, skillNameOverride)) return;
 
         this.gameEngine = gameEngine;
-        
+
         const skill = skillNameOverride || this.abilityName;
+
+        // Multiplayer combat and movement are server-owned. The base Actor
+        // already predicts mana/cooldown plus the cast presentation; running
+        // the legacy offline handler as well used to apply a second, divergent
+        // teleport/damage/status simulation until the next snapshot corrected it.
+        if (this.isMultiplayer || gameEngine?.isMultiplayer) return true;
 
         if (skill === "Whirlwind") {
             if (!this.unlockedSkills.includes("Whirlwind")) return;

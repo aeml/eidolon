@@ -11,6 +11,7 @@ const TRANSIENT_MESSAGE_TYPES = new Set([
     'ability',
     'attack',
     'damage',
+    'heal',
     'telegraph',
     'dungeon_room_state'
 ]);

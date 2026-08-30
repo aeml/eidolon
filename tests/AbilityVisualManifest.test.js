@@ -36,6 +36,33 @@ function readServerAbilityNames() {
     return found;
 }
 
+function readServerAbilitySpecs() {
+    const source = readFileSync('server/internal/game/ability_config.go', 'utf8');
+    const found = Object.fromEntries(PLAYER_CLASSES.map((className) => [className, {}]));
+    let currentClass = null;
+
+    for (const line of source.split('\n')) {
+        const classMatch = line.match(/^\s*"(Fighter|Rogue|Wizard|Cleric)":\s*\{$/);
+        if (classMatch) {
+            currentClass = classMatch[1];
+            continue;
+        }
+        if (currentClass && /^\s*},\s*$/.test(line)) {
+            currentClass = null;
+            continue;
+        }
+        if (!currentClass) continue;
+        const specMatch = line.match(/^\s*"([^"]+)":\s*\{ManaCost:\s*(\d+),\s*Cooldown:\s*(\d+)\s*\*\s*time\.Second/);
+        if (specMatch) {
+            found[currentClass][specMatch[1]] = {
+                mana: Number(specMatch[2]),
+                cooldown: Number(specMatch[3])
+            };
+        }
+    }
+    return found;
+}
+
 describe('canonical ability visual manifest', () => {
     test.each(PLAYER_CLASSES)('%s skill tree has exact explicit manifest coverage', (className) => {
         const skillTreeNames = getSkillTreeAbilityNames(className).sort();
@@ -59,6 +86,20 @@ describe('canonical ability visual manifest', () => {
                 expect(Number.isFinite(entry.color)).toBe(true);
                 expect(['source', 'target']).toContain(entry.anchor);
             });
+        }
+    });
+
+    test('all 52 selectable abilities share client/server mana and cooldown contracts', () => {
+        const serverSpecs = readServerAbilitySpecs();
+        for (const className of PLAYER_CLASSES) {
+            for (const skillName of getSkillTreeAbilityNames(className)) {
+                const clientSpec = CONSTANTS.ABILITY_CONFIG[className].skills[skillName];
+                expect(clientSpec).toBeDefined();
+                expect(serverSpecs[className][skillName]).toEqual({
+                    mana: clientSpec.mana,
+                    cooldown: clientSpec.cooldown
+                });
+            }
         }
     });
 

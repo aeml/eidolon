@@ -1,5 +1,6 @@
 import { AvengingSeraph } from '../entities/AvengingSeraph.js';
-import { getAbilityPresentation } from './abilityVisualManifest.js';
+import { getAbilityPresentation, isAbilityVisualLayerEnabled } from './abilityVisualManifest.js';
+import { getAbilityAoeArc, getAbilityAoeRadius, isAoeBoundaryVisualType } from './abilityRadii.js';
 
 const CLASS_FALLBACKS = Object.freeze({
     Fighter: Object.freeze({ color: 0xffaa55, type: 'wave' }),
@@ -37,11 +38,20 @@ export function resolveRemoteSkillVisual(entity, skillName, targetPos) {
         };
     }
 
-    const layers = presentation.layers.map((entry) => ({
+    const gameplayRadius = getAbilityAoeRadius(className, skillName, entity)
+        ?? getAbilityAoeRadius(className, presentation.canonicalName, entity);
+    const gameplayArc = getAbilityAoeArc(className, skillName)
+        ?? getAbilityAoeArc(className, presentation.canonicalName);
+    const layers = presentation.layers
+        .filter((entry) => isAbilityVisualLayerEnabled(entry, entity, presentation.canonicalName))
+        .map((entry) => ({
         color: entry.color,
         type: entry.type,
-        origin: resolvePosition(entity, targetPos, entry.anchor)
-    }));
+        origin: resolvePosition(entity, targetPos, entry.anchor),
+        ...(gameplayRadius && isAoeBoundaryVisualType(entry.type)
+            ? { radius: gameplayRadius, ...(gameplayArc ? { arc: gameplayArc } : {}) }
+            : {})
+        }));
 
     if (layers.length === 1) return layers[0];
     return { layers };

@@ -19,7 +19,7 @@ func TestPreparePlayerForAnimationQAClearsOnlyReadinessGates(t *testing.T) {
 	player.InvulnerableEndTime = time.Now().Add(time.Minute)
 	w.AddEntity(player)
 
-	if !w.PreparePlayerForAnimationQA(player.ID, false, false) {
+	if !w.PreparePlayerForAnimationQA(player.ID, false, false, false) {
 		t.Fatal("expected player readiness reset")
 	}
 	if player.Health != player.MaxHealth || player.Mana != player.MaxMana {
@@ -39,11 +39,25 @@ func TestPreparePlayerForAnimationQACanSetARealCastPrecondition(t *testing.T) {
 	player.Health = player.MaxHealth
 	w.AddEntity(player)
 
-	if !w.PreparePlayerForAnimationQA(player.ID, true, false) {
+	if !w.PreparePlayerForAnimationQA(player.ID, true, false, false) {
 		t.Fatal("expected low-health readiness reset")
 	}
 	if player.Health != max(1, player.MaxHealth/4) {
 		t.Fatalf("expected 25%% health precondition, got hp=%d max=%d", player.Health, player.MaxHealth)
+	}
+}
+
+func TestPreparePlayerForAnimationQACanArmRealHostileDeathCheck(t *testing.T) {
+	w := game.NewWorld(nil)
+	player := newLevelCommandPlayer("player-animation-near-death")
+	player.Health = player.MaxHealth
+	w.AddEntity(player)
+
+	if !w.PreparePlayerForAnimationQA(player.ID, false, false, true) {
+		t.Fatal("expected near-death readiness reset")
+	}
+	if player.Health != 1 {
+		t.Fatalf("expected one health before a real hostile hit, got %d", player.Health)
 	}
 }
 
@@ -88,6 +102,13 @@ func TestAnimationQACommandsRequireAllowlistAndUseDedicatedSignal(t *testing.T) 
 	}
 	if player.QAPersistentDuration != 45*time.Second {
 		t.Fatalf("expected bounded one-shot persistent duration, got %s", player.QAPersistentDuration)
+	}
+
+	if !client.handleChatCommand("/qa-animation-ready near-death") {
+		t.Fatal("expected near-death animation readiness command to be handled")
+	}
+	if player.Health != 1 {
+		t.Fatalf("expected near-death command to leave one health, got %d", player.Health)
 	}
 
 	if !client.handleChatCommand("/qa-protection off") {

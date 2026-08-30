@@ -90,6 +90,8 @@ export class Rogue extends Actor {
 
         const skill = skillNameOverride || this.abilityName;
 
+        if (this.isMultiplayer || gameEngine?.isMultiplayer) return true;
+
         // --- Branch A: Assassin Burst Path ---
 
         if (skill === "Backstab") {

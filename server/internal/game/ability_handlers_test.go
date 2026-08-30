@@ -142,6 +142,41 @@ func TestWizardSpellFocus_ActivatesBuff(t *testing.T) {
 	}
 }
 
+func TestWizardSpellFocus_BoostsNextDamageSpellOnly(t *testing.T) {
+	w := newTestWorld()
+	p := newTestPlayer("p1", "Wizard")
+	p.UnlockedSkills = []string{"Spell Focus", "Teleport", "Fireball"}
+	w.AddEntity(p)
+
+	if result := w.PerformAbility(p.ID, 0, 0, "", "Spell Focus"); !result.Accepted {
+		t.Fatalf("Spell Focus rejected: %+v", result)
+	}
+	p.LastAbilityTime = time.Now().Add(-time.Second)
+	if result := w.PerformAbility(p.ID, 1, 0, "", "Teleport"); !result.Accepted {
+		t.Fatalf("Teleport rejected: %+v", result)
+	}
+	if !p.SpellFocusActive {
+		t.Fatal("utility spell consumed Spell Focus")
+	}
+
+	p.LastAbilityTime = time.Now().Add(-time.Second)
+	if result := w.PerformAbility(p.ID, 10, 0, "", "Fireball"); !result.Accepted {
+		t.Fatalf("Fireball rejected: %+v", result)
+	}
+	if p.SpellFocusActive {
+		t.Fatal("damage spell did not consume Spell Focus")
+	}
+	for _, entity := range w.Entities {
+		if entity.OwnerID == p.ID && entity.ProjectileSkill == "Fireball" {
+			if entity.Damage != 50 { // (20 + 0 Intelligence) * 2.5
+				t.Fatalf("expected focused Fireball damage 50, got %d", entity.Damage)
+			}
+			return
+		}
+	}
+	t.Fatal("focused Fireball projectile was not spawned")
+}
+
 func TestWizardArcaneShield_SetsShieldHP(t *testing.T) {
 	w := newTestWorld()
 	p := newTestPlayer("p1", "Wizard")
@@ -248,6 +283,37 @@ func TestClericDivineIntervention_HealthCap(t *testing.T) {
 	// Heal = MaxHealth/2 = 250, but capped at MaxHealth (500)
 	if p.Health != 500 {
 		t.Fatalf("expected health capped at 500, got %d", p.Health)
+	}
+}
+
+func TestClericDivineIntervention_TargetsAndSavesAlly(t *testing.T) {
+	w := newTestWorld()
+	cleric := newTestPlayer("cleric-1", "Cleric")
+	ally := newTestPlayer("ally-1", "Fighter")
+	ally.X = 5
+	ally.Health = 100
+	w.AddEntity(cleric)
+	w.AddEntity(ally)
+
+	w.performClericAbility(cleric, ally.X, ally.Z, ally.ID, "Divine Intervention", func(time.Duration) {})
+
+	if !ally.DivineInterventionActive || cleric.DivineInterventionActive {
+		t.Fatalf("expected selected ally alone to receive intervention, cleric=%v ally=%v", cleric.DivineInterventionActive, ally.DivineInterventionActive)
+	}
+	if ally.Health != 350 {
+		t.Fatalf("expected selected ally to receive the 50%% heal, got %d", ally.Health)
+	}
+
+	ally.Health = -50
+	ally.Mu.Lock()
+	w.handleDeath(ally, nil, nil)
+	ally.Mu.Unlock()
+
+	if ally.State == "DEAD" || ally.Health != ally.MaxHealth*30/100 {
+		t.Fatalf("expected lethal damage prevention to restore 30%% health, state=%s health=%d", ally.State, ally.Health)
+	}
+	if ally.DivineInterventionActive {
+		t.Fatal("expected lethal damage prevention to be consumed")
 	}
 }
 
@@ -374,6 +440,22 @@ func TestPerformAbility_PreservesMovementForSpiritGuardians(t *testing.T) {
 	}
 }
 
+func TestSpiritGuardiansBoostCapturesExpandedRuneOnStandaloneActivation(t *testing.T) {
+	w := newTestWorld()
+	p := newTestPlayer("p1", "Cleric")
+	p.SkillRunes = map[string]string{"Spirit Guardians": "spirits_expanded"}
+	w.AddEntity(p)
+
+	w.performClericAbility(p, 0, 0, "", "Spirit Guardians Boost", func(time.Duration) {})
+
+	if !p.SpiritsActive || !p.SpiritsBoosted {
+		t.Fatal("expected boosted Spirit Guardians to activate")
+	}
+	if p.SpiritGuardiansRuneID != "spirits_expanded" {
+		t.Fatalf("expected expanded rune to be captured, got %q", p.SpiritGuardiansRuneID)
+	}
+}
+
 func TestPerformAbility_PreservesMovementForProjectileCasts(t *testing.T) {
 	w := newTestWorld()
 	p := newTestPlayer("p1", "Wizard")
@@ -482,6 +564,204 @@ func TestFighterCharge_ClampsDungeonTargetToWalkableArea(t *testing.T) {
 	if p.ChargeTargetX != 20 || p.ChargeTargetZ != 0 {
 		t.Fatalf("expected charge target to clamp to room boundary (20,0), got (%.2f, %.2f)", p.ChargeTargetX, p.ChargeTargetZ)
 	}
+}
+
+func TestFighterShatteringCharge_ClampsRangeAndAppliesArmorBreak(t *testing.T) {
+	w := newTestWorld()
+	fighter := newTestPlayer("fighter-1", "Fighter")
+	fighter.X = 0
+	fighter.Z = 0
+	w.AddEntity(fighter)
+
+	enemy := &Entity{
+		ID:        "enemy-1",
+		Type:      TypeEnemy,
+		SubType:   "Skeleton",
+		State:     "IDLE",
+		Health:    1000,
+		MaxHealth: 1000,
+		Defense:   20,
+		X:         28,
+		Z:         0,
+		Threat:    make(map[string]float64),
+	}
+	w.AddEntity(enemy)
+
+	w.performFighterAbility(fighter, 1000, 0, "", "Shattering Charge", func(time.Duration) {})
+	if math.Abs(fighter.ChargeTargetX-28) > 0.001 {
+		t.Fatalf("expected shattering charge target to clamp to 28 units, got %.2f", fighter.ChargeTargetX)
+	}
+	w.Update(1)
+
+	if fighter.IsCharging || fighter.ChargeSkillName != "" {
+		t.Fatalf("expected charge state to clear after impact, charging=%v skill=%q", fighter.IsCharging, fighter.ChargeSkillName)
+	}
+	if enemy.ArmorReduction != 5 || time.Until(enemy.ArmorReductionEndTime) <= 0 {
+		t.Fatalf("expected shattering charge armor break, reduction=%d end=%v", enemy.ArmorReduction, enemy.ArmorReductionEndTime)
+	}
+}
+
+func TestPurifyingWave_ClearsSlowAndRecalculatesSpeed(t *testing.T) {
+	w := newTestWorld()
+	cleric := newTestPlayer("cleric-1", "Cleric")
+	ally := newTestPlayer("ally-1", "Fighter")
+	ally.X = 2
+	ally.BaseStats = Stats{Strength: 10, Dexterity: 10, Intelligence: 10, Wisdom: 10, Vitality: 10}
+	ally.RecalculateStats()
+	baseSpeed := ally.Speed
+	ally.Slowed = true
+	ally.SlowFactor = 0.5
+	ally.SlowEndTime = time.Now().Add(time.Minute)
+	ally.Bleeding = true
+	ally.BleedDamage = 10
+	ally.BleedSourceID = "enemy"
+	ally.Poisoned = true
+	ally.PoisonDamage = 10
+	ally.PoisonSourceID = "enemy"
+	ally.RecalculateStats()
+	if ally.Speed >= baseSpeed {
+		t.Fatalf("test setup did not slow ally: base=%v slowed=%v", baseSpeed, ally.Speed)
+	}
+	w.AddEntity(cleric)
+	w.AddEntity(ally)
+
+	w.performClericAbility(cleric, cleric.X, cleric.Z, "", "Purifying Wave", func(time.Duration) {})
+
+	if ally.Slowed || ally.Bleeding || ally.Poisoned || ally.SlowFactor != 0 {
+		t.Fatalf("cleanse left debuffs active: slowed=%v bleed=%v poison=%v factor=%v", ally.Slowed, ally.Bleeding, ally.Poisoned, ally.SlowFactor)
+	}
+	if ally.BleedSourceID != "" || ally.PoisonSourceID != "" {
+		t.Fatalf("cleanse retained DoT ownership: bleed=%q poison=%q", ally.BleedSourceID, ally.PoisonSourceID)
+	}
+	if ally.Speed != baseSpeed {
+		t.Fatalf("cleanse left stale slowed speed: got=%v want=%v", ally.Speed, baseSpeed)
+	}
+}
+
+func TestCloakAndVanishSpeedBurstIsAuthoritativeAndExpires(t *testing.T) {
+	w := newTestWorld()
+	rogue := newTestPlayer("rogue-cloak", "Rogue")
+	rogue.BaseStats = Stats{Dexterity: 10, Vitality: 10, Intelligence: 10}
+	rogue.RecalculateStats()
+	baseSpeed := rogue.Speed
+	w.AddEntity(rogue)
+
+	w.performRogueAbility(rogue, 0, 0, "", "Cloak & Vanish", func(time.Duration) {})
+	if rogue.Speed != baseSpeed*2 {
+		t.Fatalf("expected authoritative 100%% cloak burst, got=%v base=%v", rogue.Speed, baseSpeed)
+	}
+
+	rogue.CloakBurstSpeedEndTime = time.Now().Add(-time.Millisecond)
+	w.updateEntity(rogue, 0.016, nil, &deferredActions{})
+	if rogue.CloakBurstSpeedBonus || rogue.Speed != baseSpeed {
+		t.Fatalf("cloak burst left stale speed after expiry: active=%v speed=%v want=%v", rogue.CloakBurstSpeedBonus, rogue.Speed, baseSpeed)
+	}
+}
+
+func TestTripwireRootsForThreeSecondsAndRespectsCCImmunity(t *testing.T) {
+	for _, test := range []struct {
+		name     string
+		ccImmune bool
+		rooted   bool
+	}{
+		{name: "ordinary enemy", rooted: true},
+		{name: "cc immune enemy", ccImmune: true, rooted: false},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			w := newTestWorld()
+			rogue := newTestPlayer("rogue-tripwire", "Rogue")
+			enemy := &Entity{
+				ID: "enemy-tripwire", Type: TypeEnemy, Health: 200, MaxHealth: 200,
+				State: "IDLE", CCImmune: test.ccImmune, Scale: 1,
+			}
+			w.AddEntity(rogue)
+			w.AddEntity(enemy)
+			w.performRogueAbility(rogue, 0, 0, "", "Tripwire", func(time.Duration) {})
+
+			for _, entity := range w.Entities {
+				if entity.SubType == "Tripwire" {
+					w.updateEntity(entity, 0.016, nil, &deferredActions{})
+					break
+				}
+			}
+
+			if enemy.Rooted != test.rooted {
+				t.Fatalf("rooted=%v, want %v", enemy.Rooted, test.rooted)
+			}
+			if test.rooted {
+				remaining := time.Until(enemy.RootEndTime)
+				if remaining < 2500*time.Millisecond || remaining > 3100*time.Millisecond {
+					t.Fatalf("tripwire root duration=%v, want about 3s", remaining)
+				}
+			}
+		})
+	}
+}
+
+func TestPoisonCoatingHealingReductionMatchesClientContract(t *testing.T) {
+	target := &Entity{Poisoned: true}
+	if got := applyHealingReceived(target, 101); got != 50 {
+		t.Fatalf("poisoned heal=%d, want 50", got)
+	}
+	target.Poisoned = false
+	if got := applyHealingReceived(target, 101); got != 101 {
+		t.Fatalf("unpoisoned heal=%d, want 101", got)
+	}
+}
+
+func TestTeleportRejectsStaleMovementUntilAbilityLockExpires(t *testing.T) {
+	w := newTestWorld()
+	wizard := newTestPlayer("wizard-teleport", "Wizard")
+	wizard.UnlockedSkills = []string{"Teleport"}
+	w.AddEntity(wizard)
+
+	result := w.PerformAbility(wizard.ID, 10, 0, "", "Teleport")
+	if !result.Accepted || wizard.X != 10 {
+		t.Fatalf("teleport failed: result=%+v x=%v", result, wizard.X)
+	}
+	if w.UpdatePlayerMovement(wizard.ID, 0, 0, 0, 0, "MOVING", 1) {
+		t.Fatal("accepted a stale pre-teleport movement sample during the ability lock")
+	}
+	if wizard.X != 10 || wizard.LastMoveSequence != 0 {
+		t.Fatalf("stale sample overwrote teleport: x=%v sequence=%d", wizard.X, wizard.LastMoveSequence)
+	}
+
+	wizard.MoveLockUntil = time.Now().Add(-time.Millisecond)
+	if !w.UpdatePlayerMovement(wizard.ID, 11, 0, 0, 0, "MOVING", 2) {
+		t.Fatal("movement remained locked after the authoritative window expired")
+	}
+}
+
+func TestPerformAbilityRejectsCastDuringServerOwnedCharge(t *testing.T) {
+	w := newTestWorld()
+	fighter := newTestPlayer("fighter-action-lock", "Fighter")
+	fighter.UnlockedSkills = []string{"Whirlwind"}
+	fighter.IsCharging = true
+	w.AddEntity(fighter)
+
+	result := w.PerformAbility(fighter.ID, 0, 0, "", "Whirlwind")
+	if result.Accepted || result.Reason != "action_locked" {
+		t.Fatalf("cast during charge result=%+v, want action_locked", result)
+	}
+}
+
+func TestWizardDragonfireUsesDistinctProjectileContract(t *testing.T) {
+	w := newTestWorld()
+	wizard := newTestPlayer("wizard-1", "Wizard")
+	w.AddEntity(wizard)
+
+	w.performWizardAbility(wizard, 10, 0, "", "Dragonfire Lance", func(time.Duration) {})
+
+	for _, entity := range w.Entities {
+		if entity.OwnerID != wizard.ID {
+			continue
+		}
+		if entity.SubType != "DragonfireLance" || entity.ProjectileSkill != "Dragonfire Lance" {
+			t.Fatalf("Dragonfire inherited another projectile contract: subtype=%q skill=%q", entity.SubType, entity.ProjectileSkill)
+		}
+		return
+	}
+	t.Fatal("Dragonfire projectile was not spawned")
 }
 
 func TestRogueBackstabShadowstep_ClampsInsideDungeon(t *testing.T) {

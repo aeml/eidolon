@@ -1,6 +1,6 @@
 # Movement Smoothness Architecture and QA
 
-Last refreshed: July 20, 2026
+Last refreshed: August 29, 2026
 
 Status: implemented, unit-tested, locally hardware-browser tested, multiplayer tested, and live production tested at code SHA `2d8dc3a16a6ef7d5eef68f46b420ba94b423a1e4` in GitHub Actions run `29766780968`.
 
@@ -39,7 +39,7 @@ There is intentionally no position lerp in `NetworkManager`. It decodes the serv
 - Local simulation is fixed at 60 Hz. Rendering uses `accumulator / fixedTimeStep` in `[0, 1]`.
 - The effective local arrival radius is `0.1` units. Destinations within `0.025` units of an active target are equivalent and do not replace or restart it.
 - Changed local transforms are sent at no more than 30 Hz. State edges send immediately; stationary clients send one heartbeat per second instead of the former continuous idle stream.
-- A server result more than `0.04` units from the exact acknowledged prediction is a real adjustment. A greater-than-3-unit unacknowledged difference remains an authoritative discontinuity.
+- A server result more than `0.04` units from the exact acknowledged prediction is a real adjustment. A greater-than-3-unit unacknowledged difference remains an authoritative discontinuity. Repeated snapshots carrying the same acknowledgement and server position are duplicate observations, not new discontinuities.
 - Local prediction history is capped at 180 samples.
 - Remote playback uses a 100 ms interpolation delay, at most 80 ms of extrapolation while the server state is `MOVING`, a 10-unit teleport reset, and at most 32 samples.
 - Exponential fallback smoothing uses `1 - exp(-rate * dt)`, so equal elapsed time has the same response at 30, 60, and 120 simulation steps.
@@ -55,6 +55,8 @@ The close-destination symptom had four independent contributors:
 
 The old client also emitted movement every third fixed frame—about 20 packets per second—even while idle, and it had no command identity with which to distinguish an accepted older prediction from a genuine correction.
 
+The August 2026 high-speed report exposed two additional failure modes. A repeated snapshot with an acknowledgement equal to the last processed sequence no longer had a prediction-history entry; once a fast local actor was more than three units ahead, that duplicate could be misclassified as an authoritative discontinuity, snap the actor backward, and clear its destination. Duplicate acknowledgement snapshots are now ignored only when both their sequence and server position match the last processed acknowledgement, so real server-owned movement with an unchanged client sequence still corrects normally. Separately, the main frame loop logged a transient update error but did not schedule another animation frame, allowing one bad entity/effect tick to make the entire scene appear permanently frozen. The frame pump now reschedules in `finally` and discards failed catch-up time.
+
 The regression bounds now prove:
 
 - A held exact-current click is accepted zero times, produces zero locomotion animation transitions, and remains `IDLE`.
@@ -62,6 +64,9 @@ The regression bounds now prove:
 - A valid nearby move arrives exactly once without more than 0.02 units of logical or rendered reverse progress.
 - An 8-unit real-input move travels more than 6 units during the sample, has no more than 0.02 units of reverse progress, keeps each visible frame step below 1 unit, keeps camera-to-mesh error below 0.05 units, and uses no correction frame.
 - The same server-backed move produces zero new server adjustments and zero hard corrections, converges to within two pending acknowledgements, and transitions locomotion at most three times.
+- The same real-input trajectory passes after an authoritative waypoint outside the east town gate, with zero correction frames, server adjustments, or hard corrections.
+- A deterministic 28.8-unit/second regression keeps a prediction 4.8 units ahead of a repeated acknowledgement without clearing or correcting the path, while an actual changed server position with the same sequence remains authoritative.
+- A transient fixed-update exception schedules the next display frame instead of terminating the world loop.
 - Stationary transport emits no more than two packets during a 1.25-second browser sample.
 - A real second Chrome process observes more than four unique rendered remote positions, more than two new authoritative samples in the same bounded transform buffer, active timestamp interpolation/extrapolation, less than 3 units per rendered step, and less than 0.75 units of render-interpolation error after excluding the intentional visual de-stacking offset.
 

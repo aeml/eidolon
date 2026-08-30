@@ -262,12 +262,15 @@ const (
 	MsgQAAnimationReady = "qa_animation_ready"
 	MsgAttack           = "attack"
 	MsgDamage           = "damage"
+	MsgHeal             = "heal"
 	MsgChat             = "chat"
 	MsgState            = "state"
 	MsgError            = "error"
 	MsgPickup           = "pickup"
 	MsgInventory        = "inventory"
 	MsgAbility          = "ability"
+	MsgAbilityResult    = "ability_result"
+	MsgAbilityCooldowns = "ability_cooldowns"
 	MsgEquip            = "equip"
 	MsgBuyGamble        = "buy_gamble"
 	MsgSell             = "sell"
@@ -1026,6 +1029,18 @@ func main() {
 			go func() {
 				broadcast <- BroadcastMessage{Type: MsgDamage, Data: dataBytes}
 			}()
+		case "heal":
+			evt, ok := data.(game.HealEvent)
+			if !ok {
+				return
+			}
+			payload := DamagePayload{TargetID: evt.TargetID, Amount: evt.Amount, SourceID: evt.SourceID}
+			b, _ := json.Marshal(payload)
+			outMsg := Message{Type: MsgHeal, Payload: b}
+			dataBytes, _ := json.Marshal(outMsg)
+			go func() {
+				broadcast <- BroadcastMessage{Type: MsgHeal, Data: dataBytes}
+			}()
 		case "hazard_damage":
 			evt, ok := data.(game.HazardDamageEvent)
 			if !ok {
@@ -1357,6 +1372,16 @@ func runHub() {
 // and (optionally) the current dungeon instance layout to the client. It is
 // called both on a fresh MsgJoin and on a successful MsgResumeSession.
 func sendInitialPlayerState(c *Client, entity *game.Entity, instanceID string) {
+	// Cooldowns are server-owned and survive the session-resume window. Send a
+	// complete snapshot so reconnecting clients do not show abilities as ready
+	// only to have the server reject their first cast.
+	cooldowns, _ := world.GetAbilityCooldownSnapshot(entity.ID)
+	cooldownPayload, _ := json.Marshal(map[string]interface{}{
+		"cooldowns": cooldowns,
+	})
+	cooldownMessage, _ := json.Marshal(Message{Type: MsgAbilityCooldowns, Payload: cooldownPayload})
+	c.sendSafe(cooldownMessage)
+
 	// Inventory
 	if len(entity.Inventory) > 0 {
 		invPayload, _ := json.Marshal(entity.Inventory)
@@ -2361,20 +2386,26 @@ func (c *Client) handleMessage(msg Message) {
 
 		// Check for respawn immunity first
 		if e := world.GetEntity(c.playerID); e != nil {
-			if time.Since(e.LastRespawnTime) < 1*time.Second {
+			e.Mu.RLock()
+			lastRespawnTime := e.LastRespawnTime
+			moveLockUntil := e.MoveLockUntil
+			state := e.State
+			x, z := e.X, e.Z
+			e.Mu.RUnlock()
+			if time.Since(lastRespawnTime) < 1*time.Second {
 				return
 			}
-			if time.Now().Before(e.MoveLockUntil) {
+			if time.Now().Before(moveLockUntil) {
 				return
 			}
-			if e.State == "JUMPING" {
+			if state == "JUMPING" {
 				return
 			}
 
 			// Basic distance validation to prevent teleporting across map due to lag/race conditions
 			// e.g. Client sends (0,0) after server moved player to (20000, 20000)
-			dx := payload.X - e.X
-			dz := payload.Z - e.Z
+			dx := payload.X - x
+			dz := payload.Z - z
 			distSq := dx*dx + dz*dz
 			if distSq > 100*100 { // 100 units max jump per frame
 				// Ignore this move packet, it's likely from the previous context
@@ -2402,10 +2433,14 @@ func (c *Client) handleMessage(msg Message) {
 			return
 		}
 		if e := world.GetEntity(c.playerID); e != nil {
-			if time.Since(e.LastRespawnTime) < 1*time.Second {
+			e.Mu.RLock()
+			lastRespawnTime := e.LastRespawnTime
+			moveLockUntil := e.MoveLockUntil
+			e.Mu.RUnlock()
+			if time.Since(lastRespawnTime) < 1*time.Second {
 				return
 			}
-			if time.Now().Before(e.MoveLockUntil) {
+			if time.Now().Before(moveLockUntil) {
 				return
 			}
 		}
@@ -2455,7 +2490,10 @@ func (c *Client) handleMessage(msg Message) {
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
 			return
 		}
-		world.PerformAbility(c.playerID, payload.TargetX, payload.TargetZ, payload.TargetID, payload.SkillName)
+		result := world.PerformAbility(c.playerID, payload.TargetX, payload.TargetZ, payload.TargetID, payload.SkillName)
+		resultPayload, _ := json.Marshal(result)
+		resultMessage, _ := json.Marshal(Message{Type: MsgAbilityResult, Payload: resultPayload})
+		c.sendSafe(resultMessage)
 
 	case MsgChat:
 		if c.username == "" {
@@ -3358,11 +3396,12 @@ func (c *Client) handleChatCommand(raw string) bool {
 		}
 		lowHealth := len(fields) == 2 && strings.EqualFold(fields[1], "low-health")
 		persistent := len(fields) == 2 && strings.EqualFold(fields[1], "persistent")
-		if len(fields) > 2 || (len(fields) == 2 && !lowHealth && !persistent) {
-			c.sendError("Usage: /qa-animation-ready [low-health|persistent]")
+		nearDeath := len(fields) == 2 && strings.EqualFold(fields[1], "near-death")
+		if len(fields) > 2 || (len(fields) == 2 && !lowHealth && !persistent && !nearDeath) {
+			c.sendError("Usage: /qa-animation-ready [low-health|persistent|near-death]")
 			return true
 		}
-		if c.playerID == "" || world == nil || !world.PreparePlayerForAnimationQA(c.playerID, lowHealth, persistent) {
+		if c.playerID == "" || world == nil || !world.PreparePlayerForAnimationQA(c.playerID, lowHealth, persistent, nearDeath) {
 			c.sendError("No active character for animation readiness.")
 			return true
 		}
@@ -3372,9 +3411,15 @@ func (c *Client) handleChatCommand(raw string) bool {
 			message = "Animation QA readiness restored at low health."
 		} else if persistent {
 			message = "Animation QA readiness restored for persistent-effect reconstruction."
+		} else if nearDeath {
+			message = "Animation QA readiness restored at one health for hostile death validation."
 		}
 		c.sendSystemChat(message)
-		payload, _ := json.Marshal(map[string]bool{"lowHealth": lowHealth, "persistent": persistent})
+		payload, _ := json.Marshal(map[string]bool{
+			"lowHealth":  lowHealth,
+			"persistent": persistent,
+			"nearDeath":  nearDeath,
+		})
 		c.sendSafe(createMessage(MsgQAAnimationReady, payload))
 		return true
 	case "/qa-protection":

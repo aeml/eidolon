@@ -100,6 +100,64 @@ describe('Transient telegraph readability', () => {
         expect(effect.meshes[0].geometry.parameters.radius).toBeCloseTo(7, 5);
     });
 
+    test('renders an ability boundary ring at the supplied gameplay radius', () => {
+        const scene = new THREE.Scene();
+        const effect = createTransientEffect(
+            scene,
+            'ring',
+            new THREE.Vector3(0, 0, 0),
+            0xfff4a3,
+            { radius: 16 }
+        );
+
+        const ring = effect.meshes[0];
+        expect(ring.userData.gameplayRadius).toBe(16);
+        expect(ring.geometry.parameters.outerRadius).toBe(16);
+        effect.update(0.2);
+        expect(ring.scale.x).toBeGreaterThanOrEqual(1);
+    });
+
+    test('renders Smoke Bomb particles inside an exact gameplay boundary', () => {
+        const scene = new THREE.Scene();
+        const effect = createTransientEffect(
+            scene,
+            'smoke_cloud',
+            new THREE.Vector3(2, 0, -4),
+            0x626978,
+            { radius: 5 }
+        );
+
+        const group = effect.meshes[0];
+        const boundary = group.children.find((child) => child.userData.isGameplayBoundary);
+        expect(boundary).toBeDefined();
+        expect(boundary.userData.gameplayRadius).toBe(5);
+        expect(boundary.geometry.parameters.outerRadius).toBe(5);
+        for (const cloud of group.children.filter((child) => !child.userData.isGameplayBoundary)) {
+            expect(Math.hypot(cloud.position.x - 2, cloud.position.z + 4)).toBeLessThanOrEqual(4.5);
+        }
+    });
+
+    test('drives cone particles to the supplied gameplay range and arc', () => {
+        const scene = new THREE.Scene();
+        const effect = createTransientEffect(
+            scene,
+            'cone',
+            new THREE.Vector3(0, 0, 0),
+            0xffffff,
+            { radius: 5, arc: Math.PI, direction: new THREE.Vector3(0, 0, 1) }
+        );
+
+        const group = effect.meshes[0];
+        expect(group.children[0].userData.gameplayRadius).toBe(5);
+        const firstDirection = group.children[0].userData.dir;
+        const lastDirection = group.children[group.children.length - 1].userData.dir;
+        expect(firstDirection.angleTo(lastDirection)).toBeCloseTo(Math.PI, 5);
+        effect.update(effect.duration);
+        group.children.forEach((particle) => {
+            expect(Math.hypot(particle.position.x, particle.position.z)).toBeCloseTo(5, 5);
+        });
+    });
+
     test('disposes transient meshes from their current parent after reparenting', () => {
         const scene = new THREE.Scene();
         const otherParent = new THREE.Group();

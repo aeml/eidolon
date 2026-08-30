@@ -20,6 +20,7 @@ import {
     LOCAL_SERVER_ADJUSTMENT_TOLERANCE,
     shortestAngleDelta
 } from './MovementSmoothing.js';
+import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
 
 const LOCAL_POSITION_CORRECTION_DISTANCE = 3.0;
 
@@ -309,14 +310,6 @@ const AUTHORITATIVE_STATUS_CLEAR_CONFIG = {
         entity.markWeaknessFactor = 0;
     }
 };
-const AUTHORITATIVE_STATIONARY_PROJECTILES = new Set([
-    'Tripwire',
-    'ExplosiveTrap',
-    'SnareTrap',
-    'ZoneDamage',
-    'ZoneHoly',
-    'Zone'
-]);
 import { Fighter } from '../entities/Fighter.js';
 import { Skeleton } from '../entities/Skeleton.js';
 import { Rogue } from '../entities/Rogue.js';
@@ -460,6 +453,7 @@ export class GameEngine {
         this.lastTime = 0;
         this.accumulator = 0;
         this.fixedTimeStep = 1 / 60;
+        this.isDestroyed = false;
 
         this.gameTime = 0;
         this.nextEliteSpawnTime = 180;
@@ -484,6 +478,7 @@ export class GameEngine {
             idleHeartbeats: 0,
             acknowledged: 0,
             staleAcknowledgements: 0,
+            duplicateAcknowledgements: 0,
             serverAdjustments: 0,
             hardCorrections: 0,
             maxServerAdjustment: 0
@@ -1496,6 +1491,34 @@ export class GameEngine {
                 this.abilityController.triggerRemoteAbilityVisuals(source, abilityData.skillName, abilityData.targetX, abilityData.targetZ);
                 this.showRemoteActionReadability(source, abilityData.skillName);
             }
+        } else if (msg.type === 'ability_result') {
+            const result = msg.payload || {};
+            const skillName = result.skillName;
+            if (Number.isFinite(result.mana)) {
+                this.player.stats.mana = result.mana;
+            }
+            if (skillName) {
+                const remaining = Math.max(0, Number(result.cooldownRemaining) || 0);
+                this.player.cooldowns[skillName] = remaining;
+                if (skillName === this.player.abilityName) {
+                    this.player.abilityCooldown = remaining;
+                }
+            }
+        } else if (msg.type === 'ability_cooldowns') {
+            const cooldownState = msg.payload || {};
+            Object.keys(this.player.cooldowns || {}).forEach((skillName) => {
+                this.player.cooldowns[skillName] = 0;
+            });
+            Object.entries(cooldownState.cooldowns || {}).forEach(([skillName, remaining]) => {
+                this.player.cooldowns[skillName] = Math.max(0, Number(remaining) || 0);
+            });
+            if (Number.isFinite(cooldownState.mana)) {
+                this.player.stats.mana = cooldownState.mana;
+            }
+            this.player.abilityCooldown = Math.max(
+                0,
+                Number(this.player.cooldowns?.[this.player.abilityName]) || 0
+            );
         } else if (msg.type === 'attack') {
             const attackData = msg.payload;
             if (this.player && attackData.sourceId === this.player.id) return;
@@ -1512,6 +1535,14 @@ export class GameEngine {
                 }
                 this.beginRemoteActionPresentation(source);
                 this.showRemoteActionReadability(source, 'ATTACK');
+            }
+        } else if (msg.type === 'heal') {
+            const healData = msg.payload || {};
+            const target = healData.targetId === this.player.id
+                ? this.player
+                : this.remotePlayers.get(healData.targetId);
+            if (target && Number(healData.amount) > 0) {
+                this.floatingTextManager.spawn(`+${healData.amount}`, target.position, '#55ff9b');
             }
         } else if (msg.type === 'damage') {
             const dmgData = msg.payload;
@@ -2446,7 +2477,10 @@ export class GameEngine {
         if (pData.type === 'Projectile') {
             remoteEntity.position.set(pData.x, pData.y ?? 0, pData.z);
             if (pData.velX !== undefined && pData.velZ !== undefined) {
-                remoteEntity.velocity.set(pData.velX, 0, pData.velZ);
+                const verticalVelocity = remoteEntity.type === 'Meteor' ? -20 : 0;
+                remoteEntity.velocity.set(pData.velX, verticalVelocity, pData.velZ);
+                const horizontalSpeed = Math.hypot(pData.velX, pData.velZ);
+                if (horizontalSpeed > 0) remoteEntity.speed = horizontalSpeed;
             }
         } else {
             const newPos = new THREE.Vector3(pData.x, pData.y ?? 0, pData.z);
@@ -2577,6 +2611,21 @@ export class GameEngine {
     removeRemoteEntity(id) {
         const entity = this.remotePlayers.get(id);
         if (!entity) return;
+
+        // Meteor damage is server-authoritative and can land without a client
+        // actor directly under its narrow falling mesh. Use authoritative
+        // removal as a final impact cue when collision prediction did not
+        // already render the blast.
+        if (entity instanceof Projectile && entity.type === 'Meteor' && !entity.hasExploded) {
+            const impactPosition = entity.position.clone();
+            impactPosition.y = 0.1;
+            this.spawnTransientEffect?.('sphere', impactPosition, 0xff2200, {
+                source: entity.owner,
+                radius: entity.explosionRadius || 26.4,
+                duration: 0.45
+            });
+            entity.hasExploded = true;
+        }
 
         entity.isActive = false;
 
@@ -4525,6 +4574,7 @@ export class GameEngine {
                 idleHeartbeats: 0,
                 acknowledged: 0,
                 staleAcknowledgements: 0,
+                duplicateAcknowledgements: 0,
                 serverAdjustments: 0,
                 hardCorrections: 0,
                 maxServerAdjustment: 0
@@ -4538,6 +4588,7 @@ export class GameEngine {
             lastSentAt: -Infinity,
             nextSequence: 1,
             lastAcknowledgedSequence: 0,
+            lastAcknowledgedServerPosition: null,
             lastPacket: null,
             sentHistory: new Map()
         };
@@ -4605,8 +4656,27 @@ export class GameEngine {
                 return null;
             }
 
+            if (acknowledgedSequence === movement.lastAcknowledgedSequence &&
+                movement.lastAcknowledgedServerPosition &&
+                horizontalDistance(movement.lastAcknowledgedServerPosition, serverPosition) <=
+                    LOCAL_SERVER_ADJUSTMENT_TOLERANCE) {
+                // The owning entity is included in every server snapshot, so
+                // the same acknowledgement is commonly repeated while a newer
+                // client prediction is in flight. At high movement speed that
+                // old accepted position can be more than the discontinuity
+                // threshold behind the local actor. It is still an ordinary
+                // duplicate, not a teleport, and must never stop the path.
+                this.movementTelemetry.duplicateAcknowledgements += 1;
+                return null;
+            }
+
             const sent = movement.sentHistory.get(acknowledgedSequence);
             movement.lastAcknowledgedSequence = acknowledgedSequence;
+            movement.lastAcknowledgedServerPosition = {
+                x: serverPosition.x,
+                y: serverPosition.y,
+                z: serverPosition.z
+            };
             this.movementTelemetry.acknowledged += 1;
             for (const sequence of movement.sentHistory.keys()) {
                 if (sequence <= acknowledgedSequence) movement.sentHistory.delete(sequence);
@@ -4740,6 +4810,20 @@ export class GameEngine {
         }
     }
 
+    getRaycastEntityPriority(entity) {
+        if (entity instanceof LootDrop) return 0;
+        if (this.isHostileActorTarget(entity)) return 1;
+        if (this.isInteractableEntity(entity)) return 2;
+        if (entity instanceof Actor) return 3;
+        return 4;
+    }
+
+    sortRaycastEntities(entities) {
+        return [...new Set(entities)].sort((a, b) =>
+            this.getRaycastEntityPriority(a) - this.getRaycastEntityPriority(b)
+        );
+    }
+
     performRaycast() {
         const meshes = this.activeEntitiesCache
             .filter(e => e.mesh && e.isActive && e !== this.player)
@@ -4795,13 +4879,9 @@ export class GameEngine {
                 }
             }
 
-            hitEntities = hitEntities.filter(e => e.state !== 'DEAD' || e instanceof LootDrop);
-
-            hitEntities.sort((a, b) => {
-                if (a instanceof LootDrop && !(b instanceof LootDrop)) return -1;
-                if (!(a instanceof LootDrop) && b instanceof LootDrop) return 1;
-                return 0;
-            });
+            hitEntities = this.sortRaycastEntities(
+                hitEntities.filter(e => e.state !== 'DEAD' || e instanceof LootDrop)
+            );
 
             if (hitEntities.length > 0) {
                 this.hoveredEntity = hitEntities[0];
@@ -4874,7 +4954,6 @@ export class GameEngine {
                 this.accumulator = 0;
                 // Force a render to update positions from any pending network messages
                 this.render(1.0);
-                this.animationFrameId = requestAnimationFrame((t) => this.loop(t));
                 return;
             }
 
@@ -4890,15 +4969,25 @@ export class GameEngine {
     
             const alpha = this.accumulator / this.fixedTimeStep;
             this.render(alpha);
-    
-            this.animationFrameId = requestAnimationFrame((t) => this.loop(t));
         } catch (err) {
             console.error("GameEngine Loop Error:", err);
+            // Drop any accumulated catch-up work after a failed tick. Keeping
+            // it would immediately replay the same stale simulation window
+            // and turn a recoverable entity/effect error into a frame spiral.
+            this.accumulator = 0;
+        } finally {
+            // One bad update used to terminate requestAnimationFrame forever,
+            // which made the entire world appear frozen. Keep the frame pump
+            // alive so transient failures can recover on the next tick.
+            if (!this.isDestroyed) {
+                this.animationFrameId = requestAnimationFrame((t) => this.loop(t));
+            }
         }
     }
 
     destroy() {
         console.log("GameEngine: Destroying instance...");
+        this.isDestroyed = true;
         this.clearCombatIntentState();
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
@@ -5053,14 +5142,10 @@ export class GameEngine {
                         return this.pickupLoot(pData.id);
                     };
                 } else if (pData.type === 'Projectile') {
-                    // Moving projectiles are predicted locally. Traps and zones
-                    // must use the authoritative server entity so their radius,
-                    // runes, duration, reconnect reconstruction, and removal are
-                    // identical for the caster and observers.
-                    if (pData.ownerId === this.player.id &&
-                        !AUTHORITATIVE_STATIONARY_PROJECTILES.has(pData.subType)) continue;
-
-                    // Create Projectile
+                    // All multiplayer projectiles come from the authoritative
+                    // state stream. Class handlers no longer create a second
+                    // local projectile, so the caster and observers now see the
+                    // same entity, path, duration, and removal.
                     const y = pData.y ?? 0;
                     const start = new THREE.Vector3(pData.x, y, pData.z);
                     const target = new THREE.Vector3(pData.x + (pData.velX || 1), y, pData.z + (pData.velZ || 0));
@@ -5069,14 +5154,19 @@ export class GameEngine {
                     const dummyOwner = { stats: { intelligence: 10, dexterity: 10 }, isRemote: true, isMultiplayer: true };
                     
                     remoteEntity = new Projectile(pData.id, owner || dummyOwner, pData.subType, start, target);
-                    if (AUTHORITATIVE_STATIONARY_PROJECTILES.has(pData.subType)) {
-                        // Server removal is the lifetime authority for traps and
-                        // zones. A client-side ten-second timeout could otherwise
-                        // hide long-duration Consecrated Ground or a trap that is
-                        // still present after reconnect/join-in-progress.
-                        remoteEntity.lifeTime = Number.POSITIVE_INFINITY;
-                        remoteEntity.serverAuthoritativeLifetime = true;
-                    }
+                    const verticalVelocity = pData.subType === 'Meteor' ? -20 : 0;
+                    remoteEntity.velocity.set(pData.velX || 0, verticalVelocity, pData.velZ || 0);
+                    const horizontalSpeed = Math.hypot(pData.velX || 0, pData.velZ || 0);
+                    if (horizontalSpeed > 0) remoteEntity.speed = horizontalSpeed;
+                    remoteEntity.explosionRadius = getProjectileImpactRadius(
+                        pData.subType,
+                        owner,
+                        pData.scale
+                    );
+                    // Server removal is the lifetime authority for every
+                    // multiplayer projectile, including reconnect reconstruction.
+                    remoteEntity.lifeTime = Number.POSITIVE_INFINITY;
+                    remoteEntity.serverAuthoritativeLifetime = true;
                 } else if (pData.type === 'Fence') {
                     remoteEntity = new Fence(pData.id, pData.x, pData.z, pData.rotation || 0);
                     // Add to collision manager

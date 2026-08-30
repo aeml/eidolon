@@ -133,6 +133,7 @@ type Entity struct {
 	QAGuaranteedLoot     bool                 `json:"-"`
 	QAPersistentDuration time.Duration        `json:"-"`
 	LastSpecialAttack    time.Time            `json:"-"` // Boss AoE slam cooldown
+	LastDamageType       string               `json:"-"` // Damage type of the most recent applied hit
 
 	// Threat (server-side only): playerID -> threat
 	Threat map[string]float64 `json:"-"`
@@ -150,32 +151,34 @@ type Entity struct {
 	HitList map[string]bool `json:"-"`
 
 	// Projectile Rune Effects
-	ProjectileRuneID    string `json:"-"` // Rune applied to this projectile
-	ProjectileBounces   int    `json:"-"` // Remaining bounces for ricochet-type runes
-	ProjectileSkill     string `json:"-"` // Skill that created this projectile
-	ProjectilePierce    bool   `json:"-"` // Whether projectile pierces through enemies (combo effect)
-	FireballWellBoost   bool   `json:"-"` // Combo: Implosion - Fireball does +100% damage to slowed targets
-	MeteorShieldExplode bool   `json:"-"` // Combo: Arcane Barrage - Meteor explodes shield on impact
-	ZoneDoubleTick      bool   `json:"-"` // Combo: Time Burn - Zone ticks twice as fast
+	ProjectileRuneID         string    `json:"-"` // Rune applied to this projectile
+	ProjectileBounces        int       `json:"-"` // Remaining bounces for ricochet-type runes
+	ProjectileSkill          string    `json:"-"` // Skill that created this projectile
+	ProjectileActivationTime time.Time `json:"-"`
+	ProjectilePierce         bool      `json:"-"` // Whether projectile pierces through enemies (combo effect)
+	FireballWellBoost        bool      `json:"-"` // Combo: Implosion - Fireball does +100% damage to slowed targets
+	MeteorShieldExplode      bool      `json:"-"` // Combo: Arcane Barrage - Meteor explodes shield on impact
+	ZoneDoubleTick           bool      `json:"-"` // Combo: Time Burn - Zone ticks twice as fast
 
 	// Abilities
-	SpiritsActive  bool      `json:"spiritsActive"`
-	SpiritsBoosted bool      `json:"spiritsBoosted"`
-	SpiritEndTime  time.Time `json:"-"`
-	LastSpiritTick time.Time `json:"-"`
-	IsCharging     bool      `json:"isCharging,omitempty"`
-	ChargeTargetX  float64   `json:"-"`
-	ChargeTargetZ  float64   `json:"-"`
-	JumpStartX     float64   `json:"jumpStartX,omitempty"`
-	JumpStartY     float64   `json:"jumpStartY,omitempty"`
-	JumpStartZ     float64   `json:"jumpStartZ,omitempty"`
-	JumpTargetX    float64   `json:"jumpTargetX,omitempty"`
-	JumpTargetY    float64   `json:"jumpTargetY,omitempty"`
-	JumpTargetZ    float64   `json:"jumpTargetZ,omitempty"`
-	JumpDuration   float64   `json:"jumpDuration,omitempty"`
-	JumpElapsed    float64   `json:"jumpElapsed,omitempty"`
-	JumpHeight     float64   `json:"jumpHeight,omitempty"`
-	JumpProgress   float64   `json:"jumpProgress,omitempty"`
+	SpiritsActive   bool      `json:"spiritsActive"`
+	SpiritsBoosted  bool      `json:"spiritsBoosted"`
+	SpiritEndTime   time.Time `json:"-"`
+	LastSpiritTick  time.Time `json:"-"`
+	IsCharging      bool      `json:"isCharging,omitempty"`
+	ChargeTargetX   float64   `json:"-"`
+	ChargeTargetZ   float64   `json:"-"`
+	ChargeSkillName string    `json:"-"`
+	JumpStartX      float64   `json:"jumpStartX,omitempty"`
+	JumpStartY      float64   `json:"jumpStartY,omitempty"`
+	JumpStartZ      float64   `json:"jumpStartZ,omitempty"`
+	JumpTargetX     float64   `json:"jumpTargetX,omitempty"`
+	JumpTargetY     float64   `json:"jumpTargetY,omitempty"`
+	JumpTargetZ     float64   `json:"jumpTargetZ,omitempty"`
+	JumpDuration    float64   `json:"jumpDuration,omitempty"`
+	JumpElapsed     float64   `json:"jumpElapsed,omitempty"`
+	JumpHeight      float64   `json:"jumpHeight,omitempty"`
+	JumpProgress    float64   `json:"jumpProgress,omitempty"`
 
 	// Buffs
 	BerserkerModeActive  bool      `json:"berserkerModeActive,omitempty"`
@@ -212,25 +215,30 @@ type Entity struct {
 	LastGuardianEmbraceTick   time.Time `json:"-"`
 
 	// Debuffs / CC
-	Stunned             bool      `json:"stunned,omitempty"`
-	StunEndTime         time.Time `json:"-"`
-	Slowed              bool      `json:"slowed,omitempty"`
-	SlowEndTime         time.Time `json:"-"`
-	SlowFactor          float64   `json:"slowFactor,omitempty"`
-	Rooted              bool      `json:"rooted,omitempty"`
-	RootEndTime         time.Time `json:"-"`
-	WeakPointMarked     bool      `json:"weakPointMarked,omitempty"`
-	WeakPointEndTime    time.Time `json:"-"`
-	MarkWeakness        bool      `json:"markWeakness,omitempty"` // Cleric
-	MarkWeaknessEndTime time.Time `json:"-"`
-	Bleeding            bool      `json:"bleeding,omitempty"`
-	BleedEndTime        time.Time `json:"-"`
-	BleedDamage         int       `json:"-"`
-	LastBleedTick       time.Time `json:"-"`
-	Poisoned            bool      `json:"poisoned,omitempty"`
-	PoisonEndTime       time.Time `json:"-"`
-	PoisonDamage        int       `json:"-"`
-	LastPoisonTick      time.Time `json:"-"`
+	Stunned               bool      `json:"stunned,omitempty"`
+	StunEndTime           time.Time `json:"-"`
+	Slowed                bool      `json:"slowed,omitempty"`
+	SlowEndTime           time.Time `json:"-"`
+	SlowFactor            float64   `json:"slowFactor,omitempty"`
+	Rooted                bool      `json:"rooted,omitempty"`
+	RootEndTime           time.Time `json:"-"`
+	WeakPointMarked       bool      `json:"weakPointMarked,omitempty"`
+	WeakPointEndTime      time.Time `json:"-"`
+	MarkWeakness          bool      `json:"markWeakness,omitempty"` // Cleric
+	MarkWeaknessEndTime   time.Time `json:"-"`
+	MarkWeaknessFactor    float64   `json:"-"`
+	ArmorReduction        int       `json:"-"`
+	ArmorReductionEndTime time.Time `json:"-"`
+	Bleeding              bool      `json:"bleeding,omitempty"`
+	BleedEndTime          time.Time `json:"-"`
+	BleedDamage           int       `json:"-"`
+	BleedSourceID         string    `json:"-"`
+	LastBleedTick         time.Time `json:"-"`
+	Poisoned              bool      `json:"poisoned,omitempty"`
+	PoisonEndTime         time.Time `json:"-"`
+	PoisonDamage          int       `json:"-"`
+	PoisonSourceID        string    `json:"-"`
+	LastPoisonTick        time.Time `json:"-"`
 
 	// Party
 	PartyID      string `json:"partyId,omitempty"`
@@ -245,39 +253,48 @@ type Entity struct {
 	SwiftEndTime time.Time `json:"-"`
 
 	// Rune Effects
-	ChargeStartX          float64   `json:"-"` // For momentum rune distance calculation
-	ChargeStartZ          float64   `json:"-"`
-	ChargeRuneID          string    `json:"-"` // Which rune is active for current charge
-	CCImmune              bool      `json:"ccImmune,omitempty"`
-	CCImmuneEndTime       time.Time `json:"-"`
-	RuneArmorBuff         float64   `json:"-"` // Temporary armor buff from runes
-	RuneArmorBuffEndTime  time.Time `json:"-"`
-	WhirlwindTickCount    int       `json:"-"` // For extended whirlwind duration
-	WhirlwindActive       bool      `json:"whirlwindActive,omitempty"`
-	WhirlwindEndTime      time.Time `json:"-"`
-	WhirlwindRuneID       string    `json:"-"`
-	IronFortressRuneID    string    `json:"-"` // For thorns/immovable effects
-	IronFortressThorns    bool      `json:"-"`
-	IronFortressImmovable bool      `json:"-"`
-	ArcaneShieldRuneID    string    `json:"-"` // For reflective/explosive effects
-	ArcaneShieldAbsorbed  int       `json:"-"` // Track absorbed damage for explosive rune
-	InvulnerableEndTime   time.Time `json:"-"` // For teleport phase rune
-	CloakNextAttackBonus  float64   `json:"-"` // For cloak prepared ambush rune
-	CloakSwiftSpeedBonus  bool      `json:"-"` // For cloak swift rune
+	ChargeStartX             float64   `json:"-"` // For momentum rune distance calculation
+	ChargeStartZ             float64   `json:"-"`
+	ChargeRuneID             string    `json:"-"` // Which rune is active for current charge
+	CCImmune                 bool      `json:"ccImmune,omitempty"`
+	CCImmuneEndTime          time.Time `json:"-"`
+	RuneArmorBuff            float64   `json:"-"` // Temporary armor buff from runes
+	RuneArmorBuffEndTime     time.Time `json:"-"`
+	WhirlwindTickCount       int       `json:"-"` // For extended whirlwind duration
+	WhirlwindActive          bool      `json:"whirlwindActive,omitempty"`
+	WhirlwindEndTime         time.Time `json:"-"`
+	WhirlwindRuneID          string    `json:"-"`
+	IronFortressRuneID       string    `json:"-"` // For thorns/immovable effects
+	IronFortressThorns       bool      `json:"-"`
+	IronFortressImmovable    bool      `json:"-"`
+	ArcaneShieldRuneID       string    `json:"-"` // For reflective/explosive effects
+	ArcaneShieldAbsorbed     int       `json:"-"` // Track absorbed damage for explosive rune
+	InvulnerableEndTime      time.Time `json:"-"` // For teleport phase rune
+	TeleportCharges          int       `json:"-"`
+	TeleportChargeReadyAt    time.Time `json:"-"`
+	CloakNextAttackBonus     float64   `json:"-"` // For cloak prepared ambush rune
+	CloakSwiftSpeedBonus     bool      `json:"-"` // For cloak swift rune
+	CloakBurstSpeedBonus     bool      `json:"-"`
+	CloakBurstSpeedEndTime   time.Time `json:"-"`
+	AccuracyReduction        float64   `json:"-"`
+	AccuracyReductionEndTime time.Time `json:"-"`
 
 	// Cleric Rune Effects
-	SpiritGuardiansRuneID       string    `json:"-"` // For spirit guardian rune effects
-	SanctuaryDamageReduction    bool      `json:"-"` // Sanctuary rune: 20% damage reduction
-	SanctuaryEndTime            time.Time `json:"-"`
-	HealingLightHoTActive       bool      `json:"-"` // Renewal rune HoT
-	HealingLightHoTAmount       int       `json:"-"` // HoT amount per tick
-	HealingLightHoTEndTime      time.Time `json:"-"`
-	LastHealingLightHoTTick     time.Time `json:"-"`
-	DivineInterventionGuardian  bool      `json:"-"` // Guardian Angel rune: 50% damage reduction
-	DivineInterventionGuardTime time.Time `json:"-"`
-	ConsecratedGroundRuneID     string    `json:"-"` // Track which rune was used
-	ConsecratedGroundEndTime    time.Time `json:"-"` // For lingering rune extended duration
-	ConsecratedGroundSanctuary  bool      `json:"-"` // Sanctuary rune: allies take 30% less damage
+	SpiritGuardiansRuneID         string    `json:"-"` // For spirit guardian rune effects
+	SanctuaryDamageReduction      bool      `json:"-"` // Sanctuary rune: 20% damage reduction
+	SanctuaryEndTime              time.Time `json:"-"`
+	ConsecratedSanctuaryEndTime   time.Time `json:"-"`
+	HealingLightHoTActive         bool      `json:"-"` // Renewal rune HoT
+	HealingLightHoTAmount         int       `json:"-"` // HoT amount per tick
+	HealingLightHoTSourceID       string    `json:"-"`
+	HealingLightHoTTicksRemaining int       `json:"-"`
+	HealingLightHoTEndTime        time.Time `json:"-"`
+	LastHealingLightHoTTick       time.Time `json:"-"`
+	DivineInterventionGuardian    bool      `json:"-"` // Guardian Angel rune: 50% damage reduction
+	DivineInterventionGuardTime   time.Time `json:"-"`
+	ConsecratedGroundRuneID       string    `json:"-"` // Track which rune was used
+	ConsecratedGroundEndTime      time.Time `json:"-"` // For lingering rune extended duration
+	ConsecratedGroundSanctuary    bool      `json:"-"` // Sanctuary rune: allies take 30% less damage
 
 	// Combo System
 	LastSkillUsed      string    `json:"-"` // Last skill used for combo detection
@@ -404,6 +421,7 @@ func (e *Entity) ActivateSwiftIfEquipped() {
 	if e.HasUniqueEffect("swift") {
 		e.SwiftActive = true
 		e.SwiftEndTime = time.Now().Add(3 * time.Second)
+		e.RecalculateStats()
 	}
 }
 
@@ -415,15 +433,6 @@ func (e *Entity) GetEffectiveSpeed() float64 {
 	speed := e.Speed
 
 	// Unique Effect: swift - +20% speed for 3s after skill
-	if e.SwiftActive && time.Now().Before(e.SwiftEndTime) {
-		speed *= 1.20
-	}
-
-	// Apply slow debuff
-	if e.Slowed && time.Now().Before(e.SlowEndTime) {
-		speed *= e.SlowFactor
-	}
-
 	return speed
 }
 
@@ -698,7 +707,7 @@ func (e *Entity) RecalculateStats() {
 		e.Defense = int(float64(e.Defense) * 0.8)
 	}
 	if e.LastStandActive {
-		e.Defense = int(float64(e.Defense) * 1.5)
+		e.Damage *= 3
 	}
 	if e.ZealActive {
 		e.Speed *= 1.2
@@ -716,6 +725,10 @@ func (e *Entity) RecalculateStats() {
 		e.Speed *= 1.5
 		e.AttackSpeed /= 1.5
 		e.AttackCooldown = time.Duration(e.AttackSpeed * float64(time.Second))
+		e.CooldownReduction = math.Min(0.8, e.CooldownReduction+0.2)
+	}
+	if e.SwiftActive && time.Now().Before(e.SwiftEndTime) {
+		e.Speed *= 1.2
 	}
 	if e.BlessingResolveActive {
 		e.Defense = int(float64(e.Defense) * 1.2)
@@ -723,6 +736,9 @@ func (e *Entity) RecalculateStats() {
 	// Cloak Swift Rune: +30% movement speed while invisible
 	if e.CloakSwiftSpeedBonus && e.StealthActive {
 		e.Speed *= 1.3
+	}
+	if e.CloakBurstSpeedBonus && time.Now().Before(e.CloakBurstSpeedEndTime) {
+		e.Speed *= 2.0
 	}
 	if e.Slowed {
 		e.Speed *= (1.0 - e.SlowFactor)
@@ -879,6 +895,8 @@ func (w *World) copyEntity(v *Entity) *Entity {
 	// Optimized: Only copy essential fields based on entity type
 	// Enemies don't need inventory, stash, equipment details, etc.
 	// This significantly reduces JSON payload size for state broadcasts
+	v.Mu.RLock()
+	defer v.Mu.RUnlock()
 
 	e := Entity{
 		ID:               v.ID,
@@ -957,6 +975,7 @@ func (w *World) copyEntity(v *Entity) *Entity {
 		WeakPointEndTime:    v.WeakPointEndTime,
 		MarkWeakness:        v.MarkWeakness,
 		MarkWeaknessEndTime: v.MarkWeaknessEndTime,
+		MarkWeaknessFactor:  v.MarkWeaknessFactor,
 		Bleeding:            v.Bleeding,
 		BleedEndTime:        v.BleedEndTime,
 		BleedDamage:         v.BleedDamage,

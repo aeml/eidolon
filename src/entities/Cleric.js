@@ -4,6 +4,7 @@ import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { disposeSceneMesh, spawnEffectSceneFallback } from './EffectSceneFallback.js';
 import { SpiritGuardiansEffect } from './SpiritGuardiansEffect.js';
+import { getAbilityAoeRadius } from '../skills/abilityRadii.js';
 
 export class Cleric extends Actor {
     constructor(id) {
@@ -29,6 +30,8 @@ export class Cleric extends Actor {
         this.gameEngine = gameEngine || this.gameEngine;
 
         const skill = skillNameOverride || this.abilityName;
+
+        if (this.isMultiplayer || gameEngine?.isMultiplayer) return true;
 
         if (skill === "Healing Light") {
             if (!this.unlockedSkills.includes("Healing Light")) return;
@@ -120,9 +123,9 @@ export class Cleric extends Actor {
         if (skill === "Divine Intervention") {
             console.log("Cleric used Divine Intervention!");
             
-            // Cooldown 60s
+            // Cooldown 120s
             const cdr = this.stats.cooldownReduction || 0;
-            this.cooldowns["Divine Intervention"] = 60.0 * (1 - cdr);
+            this.cooldowns["Divine Intervention"] = 120.0 * (1 - cdr);
 
             // Find target
             let target = null;
@@ -550,7 +553,7 @@ export class Cleric extends Actor {
                 this.embraceTickTimer = (this.embraceTickTimer || 0) + dt;
                 if (this.embraceTickTimer >= 1.0) {
                     this.embraceTickTimer -= 1.0;
-                    const radius = 6.0;
+                    const radius = getAbilityAoeRadius('Cleric', 'Guardian Embrace', this);
                     const healAmount = 10 + (this.stats.wisdom * 0.5);
                     
                     // Find allies in range
@@ -594,7 +597,11 @@ export class Cleric extends Actor {
                     if (this.spiritDamageTimer > 0.5) {
                         this.spiritDamageTimer = 0;
                         
-                        const damageRadius = this.spiritBoosted ? 5.5 : 3.5;
+                        const damageRadius = getAbilityAoeRadius(
+                            'Cleric',
+                            this.spiritBoosted ? 'Spirit Guardians Boost' : 'Spirit Guardians',
+                            this
+                        );
                         let damage = 10 + (this.stats.wisdom * 1.0);
                         if (this.spiritBoosted) damage *= 1.5;
                         const textManager = (this.gameEngine && this.gameEngine.floatingTextManager) || floatingTextManager;

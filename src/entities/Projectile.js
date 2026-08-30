@@ -196,6 +196,7 @@ export class Projectile extends Entity {
         this.visualElapsed = 0;
         
         this.hitEntities = new Set(); // Track entities hit by this projectile
+        this.hasExploded = false;
         
         // Modifiers
         this.bounces = 0;
@@ -471,6 +472,7 @@ export class Projectile extends Entity {
 
                     } else if (this.type === 'Fireball' || this.type === 'Meteor') {
                         // Explode Logic: Hit, Splash, Destroy
+                        this.hasExploded = true;
                         this.isActive = false; // Destroy projectile
                         if (this.mesh) this.mesh.visible = false; // Hide immediately to prevent visual piercing
                         

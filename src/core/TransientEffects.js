@@ -333,10 +333,12 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
     }
 
     if (type === 'spin') {
+        const radius = Number.isFinite(options.radius) && options.radius > 0 ? options.radius : 3.5;
         const mesh = new THREE.Mesh(
-            new THREE.RingGeometry(0.5, 3.5, 32),
+            new THREE.RingGeometry(Math.max(0.2, radius * 0.82), radius, 32),
             createPulseRingMaterial(color, 0.55)
         );
+        mesh.userData.gameplayRadius = radius;
         mesh.rotation.x = Math.PI / 2;
         mesh.position.copy(position);
         mesh.position.y += 0.5;
@@ -351,17 +353,32 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
 
     if (type === 'wave' || type === 'ring') {
         const isBigRing = type === 'ring';
+        const exactRadius = Number.isFinite(options.radius) && options.radius > 0
+            ? options.radius
+            : null;
+        const outerRadius = exactRadius || (isBigRing ? 8.0 : 1.0);
+        const innerRadius = exactRadius
+            ? Math.max(0.2, outerRadius - Math.max(0.22, Math.min(0.5, outerRadius * 0.04)))
+            : 0.5;
         const mesh = new THREE.Mesh(
-            new THREE.RingGeometry(0.5, isBigRing ? 8.0 : 1.0, 32),
+            new THREE.RingGeometry(innerRadius, outerRadius, 32),
             createPulseRingMaterial(color, 0.5)
         );
+        if (exactRadius) mesh.userData.gameplayRadius = exactRadius;
         mesh.rotation.x = -Math.PI / 2;
         mesh.position.copy(position);
         mesh.position.y += 0.1;
         addToScene(scene, mesh);
-        return new TransientEffect(scene, mesh, isBigRing ? 0.5 : 1.0, ({ meshes, t }) => {
+        return new TransientEffect(scene, mesh, exactRadius ? 0.75 : (isBigRing ? 0.5 : 1.0), ({ meshes, t }) => {
             const m = meshes[0];
-            m.scale.setScalar(1 + t * (isBigRing ? 1.0 : 9.0));
+            if (exactRadius) {
+                // Keep the authoritative boundary visible at its true size for
+                // the whole cast flash. A small outward-only pulse preserves
+                // impact without implying a smaller hit area.
+                m.scale.setScalar(1 + Math.sin(t * Math.PI) * 0.015);
+            } else {
+                m.scale.setScalar(1 + t * (isBigRing ? 1.0 : 9.0));
+            }
             m.material.uniforms.uTime.value = t * 2.0;
             m.material.uniforms.uOpacity.value = (0.5 + (quality === 'high' ? 0.06 : 0.0)) * (1 - t);
         });
@@ -542,16 +559,22 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
 
     if (type === 'smoke_cloud') {
         const group = new THREE.Group();
+        const radius = Number.isFinite(options.radius) && options.radius > 0
+            ? options.radius
+            : null;
+        const cloudRadius = radius || 2.0;
         const cloudCount = Math.max(4, Math.round(10 * effectScale));
         for (let i = 0; i < cloudCount; i += 1) {
             const mesh = new THREE.Mesh(
                 new THREE.SphereGeometry(0.5, 8, 8),
                 new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.8, depthWrite: false })
             );
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.sqrt(Math.random()) * Math.max(0, cloudRadius - 0.5);
             mesh.position.set(
-                position.x + (Math.random() - 0.5) * 4.0,
+                position.x + Math.cos(angle) * distance,
                 position.y + Math.random() * 2.0,
-                position.z + (Math.random() - 0.5) * 4.0
+                position.z + Math.sin(angle) * distance
             );
             mesh.userData.drift = new THREE.Vector3(
                 (Math.random() - 0.5) * 0.35,
@@ -560,10 +583,29 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
             );
             group.add(mesh);
         }
+
+        if (radius) {
+            const boundary = new THREE.Mesh(
+                new THREE.RingGeometry(Math.max(0.2, radius - 0.3), radius, 40),
+                createPulseRingMaterial(color, 0.38)
+            );
+            boundary.rotation.x = -Math.PI / 2;
+            boundary.position.copy(position);
+            boundary.position.y += 0.06;
+            boundary.userData.gameplayRadius = radius;
+            boundary.userData.isGameplayBoundary = true;
+            group.add(boundary);
+        }
         addToScene(scene, group);
         return new TransientEffect(scene, group, 1.15, ({ meshes, dt, t }) => {
             const g = meshes[0];
             g.children.forEach((child) => {
+                if (child.userData.isGameplayBoundary) {
+                    child.scale.setScalar(1 + Math.sin(t * Math.PI) * 0.015);
+                    child.material.uniforms.uTime.value += dt;
+                    child.material.uniforms.uOpacity.value = 0.38 * (1 - t);
+                    return;
+                }
                 child.position.addScaledVector(child.userData.drift, dt);
                 child.scale.multiplyScalar(1 + dt * 0.7);
                 child.material.opacity = 0.8 * (1 - t);
@@ -572,8 +614,9 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
     }
 
     if (type === 'ground_circle') {
+        const radius = Number.isFinite(options.radius) && options.radius > 0 ? options.radius : 5.0;
         const mesh = new THREE.Mesh(
-            new THREE.CircleGeometry(5.0, 32),
+            new THREE.CircleGeometry(radius, 32),
             new THREE.MeshBasicMaterial({
                 color,
                 transparent: true,
@@ -582,6 +625,7 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
                 depthWrite: false
             })
         );
+        mesh.userData.gameplayRadius = radius;
         mesh.rotation.x = -Math.PI / 2;
         mesh.position.copy(position);
         mesh.position.y += 0.05;
@@ -643,9 +687,15 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         const isLarge = type === 'cone_large';
         const baseCount = isLarge ? 30 : 6;
         const count = Math.max(isLarge ? 12 : 4, Math.round(baseCount * effectScale));
-        const speed = isLarge ? 20.0 : 10.0;
         const life = isLarge ? 0.9 : 0.65;
-        const totalArc = isLarge ? Math.PI / 2 : Math.PI / 4;
+        const hasExactRadius = Number.isFinite(options.radius) && options.radius > 0;
+        const radius = hasExactRadius
+            ? options.radius
+            : (isLarge ? 18.0 : 6.5);
+        const speed = radius / life;
+        const totalArc = Number.isFinite(options.arc) && options.arc > 0
+            ? options.arc
+            : (isLarge ? Math.PI / 2 : Math.PI / 4);
         const group = new THREE.Group();
 
         for (let i = 0; i < count; i += 1) {
@@ -660,7 +710,8 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
             const dir = forward.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), angle).normalize();
             mesh.lookAt(mesh.position.clone().add(dir));
             mesh.userData.dir = dir;
-            mesh.userData.speed = speed * (0.85 + Math.random() * 0.3);
+            mesh.userData.speed = hasExactRadius ? speed : speed * (0.85 + Math.random() * 0.3);
+            mesh.userData.gameplayRadius = radius;
             group.add(mesh);
         }
 

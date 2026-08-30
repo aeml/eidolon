@@ -199,6 +199,9 @@ describe('Actor animation state machine', () => {
         actor.slowTimer = 1;
         actor.slowFactor = 0.5;
         expect(actor.getMovementAnimationTimeScale(6)).toBeCloseTo(0.5, 5);
+
+        actor.isMultiplayer = true;
+        expect(actor.getMovementAnimationTimeScale(3)).toBeCloseTo(0.5, 5);
         actor.dispose();
     });
 
@@ -214,6 +217,18 @@ describe('Actor animation state machine', () => {
         expect(actor.state).toBe('IDLE');
         expect(actor.currentAnimationName).toBe('Idle');
         expect(actor.velocity.lengthSq()).toBe(0);
+        actor.dispose();
+    });
+
+    test('stun queues a destination without allowing predicted movement', () => {
+        const actor = animatedActor();
+        actor.stunTimer = 1;
+
+        expect(actor.move(new THREE.Vector3(5, 0, 0))).toBe(false);
+        expect(actor.targetPosition).toEqual(new THREE.Vector3(5, 0, 0));
+        expect(actor.state).not.toBe('MOVING');
+        actor.update(0.1, null, null, null);
+        expect(actor.position.x).toBe(0);
         actor.dispose();
     });
 

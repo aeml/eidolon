@@ -29,6 +29,28 @@ func TestWithinAbilityRadius_MeteorUsesExpandedVisualSize(t *testing.T) {
 	}
 }
 
+func TestSpiritGuardiansRadiusMatchesBaseBoostAndExpandedVariants(t *testing.T) {
+	tests := []struct {
+		name    string
+		boosted bool
+		runeID  string
+		want    float64
+	}{
+		{name: "base", want: 16},
+		{name: "boosted", boosted: true, want: 20},
+		{name: "expanded", runeID: "spirits_expanded", want: 24},
+		{name: "boosted expanded", boosted: true, runeID: "spirits_expanded", want: 30},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := spiritGuardiansRadius(tt.boosted, tt.runeID); got != tt.want {
+				t.Fatalf("spiritGuardiansRadius(%v, %q) = %v, want %v", tt.boosted, tt.runeID, got, tt.want)
+			}
+		})
+	}
+}
+
 func TestGravityWell_HitsTargetInsideVisualEdge(t *testing.T) {
 	w := newTestWorld()
 	player := newTestPlayer("wizard", "Wizard")

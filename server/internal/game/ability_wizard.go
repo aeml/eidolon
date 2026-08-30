@@ -49,9 +49,33 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 50)
 		if player.Mana >= cost {
 			player.Mana -= cost
-			player.TimeWarpActive = true
-			player.TimeWarpEndTime = time.Now().Add(8 * time.Second)
+			// Time Warp should not reduce its own cooldown; commit before the
+			// party-wide CDR buff is applied.
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
+			endTime := time.Now().Add(8 * time.Second)
+			radius := 15.0
+			targets := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, radius), player.InstanceID)
+			if player.HasAnySetBonus("timeWarpZone") {
+				targets = make([]*Entity, 0, len(w.Entities))
+				for _, target := range w.Entities {
+					if target.InstanceID == player.InstanceID {
+						targets = append(targets, target)
+					}
+				}
+			}
+			for _, target := range targets {
+				target.Mu.Lock()
+				inRange := withinAbilityRadius(skillName, player.X, player.Z, target, radius)
+				if player.HasAnySetBonus("timeWarpZone") {
+					inRange = target.InstanceID == player.InstanceID
+				}
+				if (target.Type == TypePlayer || target.Type == TypeNPC) && target.State != "DEAD" && inRange {
+					target.TimeWarpActive = true
+					target.TimeWarpEndTime = endTime
+					target.RecalculateStats()
+				}
+				target.Mu.Unlock()
+			}
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
 	} else if skillName == "Gravity Well" {
@@ -59,6 +83,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 60)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			targetX, targetZ = clampAbilityTargetDistance(player, targetX, targetZ, 18.0)
 
 			// Check for rune effects
 			runeID := player.GetRuneForSkill("Gravity Well")
@@ -96,14 +121,14 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 					// Black Hole rune: enemies cannot escape (stronger pull)
 					pullStrength := 0.5
-					if runeID == "gravitywell_blackhole" {
+					if runeID == "gravitywell_blackhole" && !target.CCImmune {
 						pullStrength = 0.8 // Stronger pull
 						// Also root enemies briefly
 						target.Rooted = true
 						target.RootEndTime = time.Now().Add(2 * time.Second)
 					}
 
-					if dist > 0.5 {
+					if dist > 0.5 && !target.CCImmune {
 						oldX, oldZ := target.X, target.Z
 						target.X += dx * pullStrength
 						target.Z += dz * pullStrength
@@ -120,9 +145,12 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					isDead := target.Health <= 0
 
 					// Apply Slow
-					target.Slowed = true
-					target.SlowFactor = 0.5
-					target.SlowEndTime = time.Now().Add(3 * time.Second)
+					if !target.CCImmune {
+						target.Slowed = true
+						target.SlowFactor = 0.5
+						target.SlowEndTime = time.Now().Add(3 * time.Second)
+						target.RecalculateStats()
+					}
 
 					target.Mu.Unlock()
 
@@ -180,7 +208,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			velX := (dx / dist) * speed
 			velZ := (dz / dist) * speed
 
-			damage := int(float64(20+(player.Stats.Wisdom*2)) * player.GetSkillDamageMultiplier("Fireball"))
+			damage := int(float64(20+(player.Stats.Intelligence*2)) * player.GetSkillDamageMultiplier("Fireball"))
 
 			// Empowered rune: +100% damage
 			if runeID == "fireball_empowered" {
@@ -237,10 +265,9 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			angleThreshold := math.Pi / 4 // 45 degrees
 			damage := int(float64(25+(player.Stats.Intelligence*2)) * player.GetSkillDamageMultiplier("Flame Whip"))
 
-			pDirX := math.Sin(player.Rotation)
-			pDirZ := math.Cos(player.Rotation)
+			pDirX, pDirZ := fighterFacing(player, targetX, targetZ)
 
-			nearby := w.Grid.Nearby(player.X, player.Z, rangeDist, player.InstanceID)
+			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, rangeDist), player.InstanceID)
 			for _, target := range nearby {
 				if target.ID == player.ID {
 					continue
@@ -256,7 +283,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				target.Mu.RUnlock()
 
 				dist := math.Sqrt(dx*dx + dz*dz)
-				if dist <= rangeDist {
+				if dist > 0 && dist <= rangeDist+entityVisualRadius(target) {
 					dirX := dx / dist
 					dirZ := dz / dist
 
@@ -264,14 +291,16 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					// Nova Cascade combo: skip angle check (360° AoE)
 					if novaCascadeActive || dot > math.Cos(angleThreshold) {
 						target.Mu.Lock()
-						target.Health -= damage
-						addThreatLocked(target, player.ID, float64(damage))
-						target.Stunned = true
-						target.StunEndTime = time.Now().Add(3 * time.Second)
+						finalDamage := applyFinalDamage(player, target, damage, "fire")
+						addThreatLocked(target, player.ID, float64(finalDamage))
+						if !target.CCImmune {
+							target.Stunned = true
+							target.StunEndTime = time.Now().Add(3 * time.Second)
+						}
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
-						w.fireDamageEvent(player.ID, target.ID, damage)
+						w.fireDamageEvent(player.ID, target.ID, finalDamage)
 
 						if isDead {
 							target.Mu.Lock()
@@ -306,21 +335,23 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			damage := int(float64(30+(player.Stats.Intelligence*3)) * player.GetSkillDamageMultiplier("Flame Tornado"))
 
 			proj := &Entity{
-				ID:        fmt.Sprintf("proj-%d", time.Now().UnixNano()),
-				Type:      TypeProjectile,
-				SubType:   "FlameTornado",
-				X:         player.X,
-				Y:         1.5,
-				Z:         player.Z,
-				VelX:      velX,
-				VelZ:      velZ,
-				Radius:    3.0, // Large radius
-				Damage:    damage,
-				OwnerID:   player.ID,
-				Rotation:  math.Atan2(velX, velZ),
-				CreatedAt: time.Now(),
-				HitList:   make(map[string]bool), // Initialize HitList
-				Scale:     1.0,
+				ID:              fmt.Sprintf("proj-%d", time.Now().UnixNano()),
+				InstanceID:      player.InstanceID,
+				Type:            TypeProjectile,
+				SubType:         "FlameTornado",
+				X:               player.X,
+				Y:               1.5,
+				Z:               player.Z,
+				VelX:            velX,
+				VelZ:            velZ,
+				Radius:          3.0, // Large radius
+				Damage:          damage,
+				OwnerID:         player.ID,
+				Rotation:        math.Atan2(velX, velZ),
+				CreatedAt:       time.Now(),
+				HitList:         make(map[string]bool), // Initialize HitList
+				Scale:           1.0,
+				ProjectileSkill: "Flame Tornado",
 			}
 			w.Entities[proj.ID] = proj
 			w.Grid.Add(proj)
@@ -335,6 +366,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 60)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			targetX, targetZ = clampAbilityTargetDistance(player, targetX, targetZ, 20.0)
 
 			// Check for rune effects
 			runeID := player.GetRuneForSkill("Meteor Drop")
@@ -375,7 +407,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 						Type:                TypeProjectile,
 						SubType:             "Meteor",
 						X:                   impactX,
-						Y:                   30.0,
+						Y:                   20 * impactDelay.Seconds(),
 						Z:                   impactZ,
 						VelX:                0,
 						VelZ:                0,
@@ -428,6 +460,19 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					go func() {
 						for i := 0; i < 5; i++ {
 							time.Sleep(1 * time.Second)
+							w.Mu.Lock()
+							owner := w.Entities[playerID]
+							if owner == nil {
+								w.Mu.Unlock()
+								return
+							}
+							owner.Mu.RLock()
+							ownerValid := owner.State != "DEAD" && owner.InstanceID == instanceID
+							owner.Mu.RUnlock()
+							if !ownerValid {
+								w.Mu.Unlock()
+								return
+							}
 							// Spawn additional meteor at random offset
 							offsetX := (rand.Float64() - 0.5) * 10
 							offsetZ := (rand.Float64() - 0.5) * 10
@@ -450,7 +495,6 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 								Scale:           0.7,
 								ProjectileSkill: "Meteor Drop",
 							}
-							w.Mu.Lock()
 							w.Entities[apocProj.ID] = apocProj
 							w.Grid.Add(apocProj)
 							w.Mu.Unlock()
@@ -469,6 +513,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 60)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			targetX, targetZ = clampAbilityTargetDistance(player, targetX, targetZ, 20.0)
 
 			// Combo: Time Burn (Time Warp → Inferno Cataclysm) = Double tick rate
 			doubleTickActive := player.ActiveCombo == "cataclysm_double_tick"
@@ -478,18 +523,20 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 			// Spawn Zone
 			zone := &Entity{
-				ID:             fmt.Sprintf("zone-inferno-%d", time.Now().UnixNano()),
-				Type:           TypeProjectile,
-				SubType:        "ZoneDamage",
-				X:              targetX,
-				Y:              0.1,
-				Z:              targetZ,
-				Radius:         12.0,
-				Damage:         int(float64(30+player.Stats.Intelligence) * player.GetSkillDamageMultiplier("Inferno Cataclysm")),
-				OwnerID:        player.ID,
-				CreatedAt:      time.Now(),
-				Scale:          12.0 / 5.0,       // Encode radius for client rendering (base geometry is 5.0)
-				ZoneDoubleTick: doubleTickActive, // Combo: Time Burn
+				ID:              fmt.Sprintf("zone-inferno-%d", time.Now().UnixNano()),
+				InstanceID:      player.InstanceID,
+				Type:            TypeProjectile,
+				SubType:         "ZoneDamage",
+				X:               targetX,
+				Y:               0.1,
+				Z:               targetZ,
+				Radius:          12.0,
+				Damage:          int(float64(30+player.Stats.Intelligence) * player.GetSkillDamageMultiplier("Inferno Cataclysm")),
+				OwnerID:         player.ID,
+				CreatedAt:       time.Now(),
+				Scale:           12.0 / 5.0,       // Encode radius for client rendering (base geometry is 5.0)
+				ZoneDoubleTick:  doubleTickActive, // Combo: Time Burn
+				ProjectileSkill: "Inferno Cataclysm",
 			}
 			w.Entities[zone.ID] = zone
 			w.Grid.Add(zone)
@@ -505,7 +552,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		if player.Mana >= cost {
 			player.Mana -= cost
 
-			rangeDist := 15.0
+			rangeDist := 18.0
 			width := 1.0
 			damage := int(float64(25+(player.Stats.Intelligence*2)) * player.GetSkillDamageMultiplier("Scorch Beam"))
 
@@ -539,18 +586,21 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				vZ := tz - player.Z
 				t := vX*dirX + vZ*dirZ
 
-				if t > 0 && t < rangeDist {
+				if t > 0 && t < rangeDist+entityVisualRadius(target) {
 					// Closest point on line
 					cX := player.X + dirX*t
 					cZ := player.Z + dirZ*t
 
 					// Distance to line
 					d2 := (tx-cX)*(tx-cX) + (tz-cZ)*(tz-cZ)
-					if d2 < width*width {
+					lineWidth := width + entityVisualRadius(target)
+					if d2 < lineWidth*lineWidth {
 						// Hit
 						target.Mu.Lock()
 						finalDamage := applyFinalDamage(player, target, damage, "fire")
 						addThreatLocked(target, player.ID, float64(finalDamage))
+						target.ArmorReduction = 5
+						target.ArmorReductionEndTime = time.Now().Add(5 * time.Second)
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
@@ -588,20 +638,22 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 			velZ := (dz / dist) * 40.0
 
 			proj := &Entity{
-				ID:        fmt.Sprintf("proj-lance-%d", time.Now().UnixNano()),
-				Type:      TypeProjectile,
-				SubType:   "Fireball", // Reuse fireball visual but bigger?
-				X:         player.X,
-				Y:         1.5,
-				Z:         player.Z,
-				VelX:      velX,
-				VelZ:      velZ,
-				Radius:    1.0,
-				Damage:    damage,
-				OwnerID:   player.ID,
-				Rotation:  math.Atan2(velX, velZ),
-				CreatedAt: time.Now(),
-				Scale:     1.0,
+				ID:              fmt.Sprintf("proj-lance-%d", time.Now().UnixNano()),
+				InstanceID:      player.InstanceID,
+				Type:            TypeProjectile,
+				SubType:         "DragonfireLance",
+				X:               player.X,
+				Y:               1.5,
+				Z:               player.Z,
+				VelX:            velX,
+				VelZ:            velZ,
+				Radius:          1.0,
+				Damage:          damage,
+				OwnerID:         player.ID,
+				Rotation:        math.Atan2(velX, velZ),
+				CreatedAt:       time.Now(),
+				Scale:           1.0,
+				ProjectileSkill: "Dragonfire Lance",
 			}
 			w.Entities[proj.ID] = proj
 			w.Grid.Add(proj)
@@ -660,6 +712,30 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 		cost := resolveAbilityManaCost(player, skillName, 30)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			var homingTarget *Entity
+			if targetID != "" {
+				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, target, 18.0, TypeEnemy) {
+					homingTarget = target
+				}
+			}
+			if homingTarget == nil {
+				minDistance := 4.0
+				for _, target := range w.Grid.Nearby(targetX, targetZ, 4.0+maxAbilityTargetVisualRadius, player.InstanceID) {
+					if !validDirectAbilityTarget(player, target, 18.0, TypeEnemy) {
+						continue
+					}
+					distance := math.Hypot(target.X-targetX, target.Z-targetZ)
+					if distance < minDistance+entityVisualRadius(target) {
+						minDistance = distance
+						homingTarget = target
+					}
+				}
+			}
+			if homingTarget != nil {
+				targetID = homingTarget.ID
+				targetX = homingTarget.X
+				targetZ = homingTarget.Z
+			}
 
 			dx := targetX - player.X
 			dz := targetZ - player.Z
@@ -678,21 +754,23 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 				damage := int(float64(15+player.Stats.Intelligence) * player.GetSkillDamageMultiplier("Arcane Missiles"))
 
 				proj := &Entity{
-					ID:         fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
-					InstanceID: player.InstanceID,
-					Type:       TypeProjectile,
-					SubType:    "ArcaneMissile",
-					X:          player.X,
-					Y:          1.5,
-					Z:          player.Z,
-					VelX:       velX,
-					VelZ:       velZ,
-					Radius:     1.0,
-					Damage:     damage,
-					OwnerID:    player.ID,
-					Rotation:   angle,
-					CreatedAt:  time.Now(),
-					Scale:      1.0,
+					ID:              fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
+					InstanceID:      player.InstanceID,
+					Type:            TypeProjectile,
+					SubType:         "ArcaneMissile",
+					X:               player.X,
+					Y:               1.5,
+					Z:               player.Z,
+					VelX:            velX,
+					VelZ:            velZ,
+					Radius:          1.0,
+					Damage:          damage,
+					OwnerID:         player.ID,
+					TargetID:        targetID,
+					Rotation:        angle,
+					CreatedAt:       time.Now(),
+					Scale:           1.0,
+					ProjectileSkill: "Arcane Missiles",
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
@@ -775,6 +853,7 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 
 				player.X = targetX
 				player.Z = targetZ
+				player.MoveLockUntil = time.Now().Add(AbilityMovementLockDuration)
 				w.Grid.Update(player, oldX, oldZ)
 
 				// Warp rune: damage enemies at end location
@@ -813,7 +892,24 @@ func (w *World) performWizardAbility(player *Entity, targetX, targetZ float64, t
 					player.InvulnerableEndTime = time.Now().Add(1 * time.Second)
 				}
 
-				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 12*time.Second))
+				baseCooldown := resolveAbilityCooldown(player.SubType, skillName, 12*time.Second)
+				if player.HasAnySetBonus("teleportCharges") {
+					now := time.Now()
+					if player.TeleportChargeReadyAt.IsZero() || !now.Before(player.TeleportChargeReadyAt) {
+						player.TeleportCharges = 2
+					}
+					player.TeleportCharges--
+					if player.TeleportCharges > 0 {
+						effectiveCooldown := time.Duration(float64(baseCooldown) * (1.0 - player.CooldownReduction))
+						player.TeleportChargeReadyAt = now.Add(effectiveCooldown)
+						setCooldown(0)
+					} else {
+						player.TeleportChargeReadyAt = now.Add(time.Duration(float64(baseCooldown) * (1.0 - player.CooldownReduction)))
+						setCooldown(baseCooldown)
+					}
+				} else {
+					setCooldown(baseCooldown)
+				}
 				// Teleport mutates targetX/targetZ (clamping), so pass the clamped values
 				w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 			}

@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 	"math"
+	"math/rand"
 	"time"
 )
 
@@ -23,22 +24,35 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		// Shadow Strike (Teleport + Damage)
 		cost := resolveAbilityManaCost(player, skillName, 35)
 		if player.Mana >= cost {
-			// Teleport behind target
-			dx := targetX - player.X
-			dz := targetZ - player.Z
-			dist := math.Sqrt(dx*dx + dz*dz)
+			var strikeTarget *Entity
+			if targetID != "" {
+				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, target, 10.0, TypeEnemy) {
+					strikeTarget = target
+				}
+			}
+			if strikeTarget == nil {
+				minDistance := 3.0
+				for _, target := range w.Grid.Nearby(targetX, targetZ, 3.0+maxAbilityTargetVisualRadius, player.InstanceID) {
+					if !validDirectAbilityTarget(player, target, 10.0, TypeEnemy) {
+						continue
+					}
+					distance := math.Hypot(target.X-targetX, target.Z-targetZ)
+					if distance < minDistance+entityVisualRadius(target) {
+						minDistance = distance
+						strikeTarget = target
+					}
+				}
+			}
 
-			if dist <= 10.0 { // Max range
+			if strikeTarget != nil {
 				player.Mana -= cost
-
-				// Calculate position behind target
-				// Normalize direction
-				dirX := dx / dist
-				dirZ := dz / dist
-
-				// Teleport to other side
-				destX := targetX + dirX*1.0
-				destZ := targetZ + dirZ*1.0
+				strikeTarget.Mu.RLock()
+				targetX, targetZ = strikeTarget.X, strikeTarget.Z
+				targetRotation := strikeTarget.Rotation
+				strikeTarget.Mu.RUnlock()
+				// Teleport behind the target using its authoritative facing.
+				destX := targetX - math.Sin(targetRotation)*1.5
+				destZ := targetZ - math.Cos(targetRotation)*1.5
 
 				if constrainedX, constrainedZ, ok := w.constrainDungeonTargetPosition(player, destX, destZ); ok {
 					destX = constrainedX
@@ -48,6 +62,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				oldX, oldZ := player.X, player.Z
 				player.X = destX
 				player.Z = destZ
+				player.MoveLockUntil = time.Now().Add(AbilityMovementLockDuration)
 				w.Grid.Update(player, oldX, oldZ)
 
 				// Deal Damage with talent bonus
@@ -55,34 +70,28 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				if player.StealthActive {
 					damage = int(float64(damage) * 1.5)
 					player.StealthActive = false // Break stealth
+					player.CloakSwiftSpeedBonus = false
+					player.RecalculateStats()
 				}
 
-				// Find target at location
-				nearby := w.Grid.Nearby(targetX, targetZ, 2.0, player.InstanceID)
-				for _, target := range nearby {
-					if target.ID == player.ID {
-						continue
-					}
-					target.Mu.Lock()
-					if target.Type == TypeEnemy && target.State != "DEAD" {
-						finalDamage := applyFinalDamage(player, target, damage, "physical")
-						addThreatLocked(target, player.ID, float64(finalDamage))
-
-						// Apply Bleed
-						target.Bleeding = true
-						target.BleedDamage = 10 + (player.Stats.Dexterity / 2)
-						target.BleedEndTime = time.Now().Add(10 * time.Second)
-
-						w.fireDamageEvent(player.ID, target.ID, finalDamage)
-						if target.Health <= 0 {
-							w.handleDeath(target, player, nil)
-						}
-					}
-					target.Mu.Unlock()
+				strikeTarget.Mu.Lock()
+				finalDamage := applyFinalDamage(player, strikeTarget, damage, "physical")
+				addThreatLocked(strikeTarget, player.ID, float64(finalDamage))
+				strikeTarget.Bleeding = true
+				strikeTarget.BleedDamage = 10 + (player.Stats.Dexterity / 2)
+				strikeTarget.BleedSourceID = player.ID
+				strikeTarget.BleedEndTime = time.Now().Add(10 * time.Second)
+				isDead := strikeTarget.Health <= 0
+				strikeTarget.Mu.Unlock()
+				w.fireDamageEvent(player.ID, strikeTarget.ID, finalDamage)
+				if isDead {
+					strikeTarget.Mu.Lock()
+					w.handleDeath(strikeTarget, player, nil)
+					strikeTarget.Mu.Unlock()
 				}
 
 				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 10*time.Second))
-				w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+				w.fireAbilityEvent(player.ID, strikeTarget.ID, skillName, targetX, targetZ)
 			}
 		}
 	} else if skillName == "Weak Point Mark" {
@@ -91,19 +100,26 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		if player.Mana >= cost {
 			player.Mana -= cost
 
-			// Find target near cursor
+			// Find target near cursor while enforcing the authoritative cast range.
 			var bestTarget *Entity
+			if targetID != "" {
+				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, target, 10.0, TypeEnemy) {
+					bestTarget = target
+				}
+			}
 			minDist := 3.0
-			nearby := w.Grid.Nearby(targetX, targetZ, 5.0, player.InstanceID)
+			nearby := w.Grid.Nearby(targetX, targetZ, 3.0+maxAbilityTargetVisualRadius, player.InstanceID)
 			for _, target := range nearby {
+				if bestTarget != nil {
+					break
+				}
 				if target.ID == player.ID {
 					continue
 				}
-				target.Mu.RLock()
-				if target.Type != TypeEnemy || target.State == "DEAD" {
-					target.Mu.RUnlock()
+				if !validDirectAbilityTarget(player, target, 10.0, TypeEnemy) {
 					continue
 				}
+				target.Mu.RLock()
 				dx := target.X - targetX
 				dz := target.Z - targetZ
 				target.Mu.RUnlock()
@@ -235,6 +251,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		cost := resolveAbilityManaCost(player, skillName, 45)
 		if player.Mana >= cost {
 			player.Mana -= cost
+			targetX, targetZ = clampAbilityTargetDistance(player, targetX, targetZ, 12.0)
 
 			// Target area
 			radius := 6.0
@@ -385,7 +402,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			var bestTarget *Entity
 			minDist := rangeDist
 
-			nearby := w.Grid.Nearby(player.X, player.Z, rangeDist, player.InstanceID)
+			nearby := w.Grid.Nearby(player.X, player.Z, expandedAbilityRadius(skillName, rangeDist), player.InstanceID)
 			for _, target := range nearby {
 				if target.ID == player.ID {
 					continue
@@ -400,7 +417,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				target.Mu.RUnlock()
 
 				d := math.Sqrt(dx*dx + dz*dz)
-				if d < minDist {
+				if d <= rangeDist+entityVisualRadius(target) && d < minDist+entityVisualRadius(target) {
 					minDist = d
 					bestTarget = target
 				}
@@ -428,6 +445,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					oldX, oldZ := player.X, player.Z
 					player.X = teleX
 					player.Z = teleZ
+					player.MoveLockUntil = time.Now().Add(AbilityMovementLockDuration)
 					player.Rotation = tRot
 					w.Grid.Update(player, oldX, oldZ)
 				}
@@ -435,7 +453,10 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				// Check angle for backstab
 				bestTarget.Mu.RLock()
 				tRot := bestTarget.Rotation
-				tDefense := bestTarget.Defense
+				tDefense := bestTarget.Defense - bestTarget.ArmorReduction
+				if tDefense < 0 {
+					tDefense = 0
+				}
 				bestTarget.Mu.RUnlock()
 
 				tDirX := math.Sin(tRot)
@@ -458,10 +479,10 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					player.ActiveCombo = "" // Consume combo
 				}
 
-				// Ambush rune: +50% crit chance (simplified as +25% damage on average)
-				if runeID == "backstab_ambush" {
-					// Simulate 50% crit chance with 2x crit damage = +50% average damage
-					damage = int(float64(damage) * 1.5)
+				// Ambush rune: a real 50% critical roll, rather than flattening
+				// the proc into average damage on every strike.
+				if runeID == "backstab_ambush" && rand.Float64() < 0.5 {
+					damage *= 2
 				}
 
 				// Eviscerate rune: ignores 50% armor
@@ -509,18 +530,25 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 
 			// Find target
 			var bestTarget *Entity
+			if targetID != "" {
+				if target, ok := w.Entities[targetID]; ok && validDirectAbilityTarget(player, target, maxRange, TypeEnemy) {
+					bestTarget = target
+				}
+			}
 			minDist := maxRange
 
-			nearby := w.Grid.Nearby(targetX, targetZ, maxRange, player.InstanceID)
+			nearby := w.Grid.Nearby(targetX, targetZ, 3.0+maxAbilityTargetVisualRadius, player.InstanceID)
 			for _, target := range nearby {
+				if bestTarget != nil {
+					break
+				}
 				if target.ID == player.ID {
 					continue
 				}
-				target.Mu.RLock()
-				if target.Type != TypeEnemy || target.State == "DEAD" {
-					target.Mu.RUnlock()
+				if !validDirectAbilityTarget(player, target, maxRange, TypeEnemy) {
 					continue
 				}
+				target.Mu.RLock()
 				dx := target.X - targetX
 				dz := target.Z - targetZ
 				target.Mu.RUnlock()
@@ -553,15 +581,19 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				oldX, oldZ := player.X, player.Z
 				player.X = teleX
 				player.Z = teleZ
+				player.MoveLockUntil = time.Now().Add(AbilityMovementLockDuration)
 				player.Rotation = tRot
 				w.Grid.Update(player, oldX, oldZ)
 
 				// Cripple rune: slow target by 50% for 3s
 				if runeID == "shadowlunge_cripple" {
 					bestTarget.Mu.Lock()
-					bestTarget.Slowed = true
-					bestTarget.SlowFactor = 0.50
-					bestTarget.SlowEndTime = time.Now().Add(3 * time.Second)
+					if !bestTarget.CCImmune {
+						bestTarget.Slowed = true
+						bestTarget.SlowFactor = 0.50
+						bestTarget.SlowEndTime = time.Now().Add(3 * time.Second)
+						bestTarget.RecalculateStats()
+					}
 					bestTarget.Mu.Unlock()
 				}
 
@@ -606,26 +638,37 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 				damage := int(float64(10+player.Stats.Dexterity) * player.GetSkillDamageMultiplier("Blade Storm"))
 
 				proj := &Entity{
-					ID:        fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
-					Type:      TypeProjectile,
-					SubType:   "Dagger",
-					X:         player.X,
-					Y:         1.0,
-					Z:         player.Z,
-					VelX:      velX,
-					VelZ:      velZ,
-					Radius:    1.0,
-					Damage:    damage,
-					OwnerID:   player.ID,
-					Rotation:  angle,
-					CreatedAt: time.Now(),
-					Scale:     1.0,
+					ID:              fmt.Sprintf("proj-%s-%d-%d", player.ID, time.Now().UnixNano(), i),
+					InstanceID:      player.InstanceID,
+					Type:            TypeProjectile,
+					SubType:         "Dagger",
+					X:               player.X,
+					Y:               1.0,
+					Z:               player.Z,
+					VelX:            velX,
+					VelZ:            velZ,
+					Radius:          1.0,
+					Damage:          damage,
+					OwnerID:         player.ID,
+					Rotation:        angle,
+					CreatedAt:       time.Now(),
+					Scale:           1.0,
+					ProjectileSkill: "Blade Storm",
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
 			}
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 15*time.Second))
+			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
+		}
+	} else if skillName == "Serrated Edges" {
+		cost := resolveAbilityManaCost(player, skillName, 30)
+		if player.Mana >= cost {
+			player.Mana -= cost
+			player.SerratedEdgesActive = true
+			player.SerratedEdgesEndTime = time.Now().Add(10 * time.Second)
+			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 20*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
 		}
 	} else if skillName == "Death Spiral" {
@@ -665,7 +708,28 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 					if venomBurstActive && isPoisoned {
 						finalDamage = damage * 2
 					}
+					if player.HasAnySetBonus("deathSpiralConsume") {
+						now := time.Now()
+						if target.Bleeding && now.Before(target.BleedEndTime) {
+							remainingTicks := int(math.Ceil(time.Until(target.BleedEndTime).Seconds()))
+							finalDamage += target.BleedDamage * remainingTicks
+							target.Bleeding = false
+						}
+						if target.Poisoned && now.Before(target.PoisonEndTime) {
+							remainingTicks := int(math.Ceil(time.Until(target.PoisonEndTime).Seconds()))
+							finalDamage += target.PoisonDamage * remainingTicks
+							target.Poisoned = false
+						}
+					} else if target.Bleeding {
+						// The authoritative model stores one bleed stack. Consume it for
+						// the same Dexterity-scaled finisher bonus as the offline client.
+						finalDamage += player.Stats.Dexterity / 2
+						target.Bleeding = false
+						target.BleedDamage = 0
+						target.BleedSourceID = ""
+					}
 					finalDamage = applyFinalDamage(player, target, finalDamage, "physical")
+					addThreatLocked(target, player.ID, float64(finalDamage))
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
 
@@ -698,16 +762,23 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 
 			player.StealthActive = true
 			player.StealthEndTime = time.Now().Add(duration)
+			player.CloakBurstSpeedBonus = true
+			player.CloakBurstSpeedEndTime = time.Now().Add(3 * time.Second)
 
 			// Swift rune: +30% movement speed while invisible
 			if runeID == "cloak_swift" {
 				player.CloakSwiftSpeedBonus = true
+			} else {
+				player.CloakSwiftSpeedBonus = false
 			}
 
 			// Prepared Ambush rune: next attack deals +100% damage
 			if runeID == "cloak_ambush" {
 				player.CloakNextAttackBonus = 1.0 // 100% bonus
+			} else {
+				player.CloakNextAttackBonus = 0
 			}
+			player.RecalculateStats()
 
 			setCooldown(resolveAbilityCooldown(player.SubType, skillName, 30*time.Second))
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
@@ -719,8 +790,7 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 		// Combo: Shadow Dance (Shadow Lunge → Smoke Bomb) = Instant cast (no cooldown, reduced mana)
 		shadowDanceActive := player.ActiveCombo == "smoke_bomb_instant"
 		if shadowDanceActive {
-			cost = cost / 2         // Half mana cost
-			player.ActiveCombo = "" // Consume combo
+			cost = cost / 2 // Half mana cost
 		}
 
 		if player.Mana >= cost {
@@ -730,16 +800,25 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			effectiveRadius := expandedAbilityRadius(skillName, radius)
 			nearby := w.Grid.Nearby(player.X, player.Z, effectiveRadius, player.InstanceID)
 			for _, target := range nearby {
+				target.Mu.Lock()
 				if target.Type == TypeEnemy && target.State != "DEAD" && withinAbilityRadius(skillName, player.X, player.Z, target, radius) {
-					target.Mu.Lock()
-					target.Slowed = true
-					target.SlowEndTime = time.Now().Add(5 * time.Second)
-					target.Mu.Unlock()
+					if !target.CCImmune {
+						target.Slowed = true
+						target.SlowFactor = 0.5
+						target.SlowEndTime = time.Now().Add(5 * time.Second)
+						target.RecalculateStats()
+					}
+					target.AccuracyReduction = 0.30
+					target.AccuracyReductionEndTime = time.Now().Add(5 * time.Second)
 				}
+				target.Mu.Unlock()
 			}
 
 			// Shadow Dance combo: no cooldown
-			if !shadowDanceActive {
+			if shadowDanceActive {
+				player.ActiveCombo = "" // Consume combo after the cast succeeds.
+				setCooldown(0)
+			} else {
 				setCooldown(resolveAbilityCooldown(player.SubType, skillName, 60*time.Second))
 			}
 			w.fireAbilityEvent(player.ID, targetID, skillName, targetX, targetZ)
@@ -791,29 +870,31 @@ func (w *World) performRogueAbility(player *Entity, targetX, targetZ float64, ta
 			dirX := dx / dist
 			dirZ := dz / dist
 
-			// Fire 3 projectiles in a line with spacing to simulate rapid fire
-			for i := 0; i < 3; i++ {
-				// Offset backwards so they arrive sequentially
-				// Speed is 35. 0.15s delay approx 5 units.
-				offset := float64(i) * -5.0
-
+			// Fire 3 projectiles in a line with spacing to simulate rapid fire.
+			projectileCount := 3
+			if player.HasAnySetBonus("phantomVolleyDouble") {
+				projectileCount = 6
+			}
+			for i := 0; i < projectileCount; i++ {
 				proj := &Entity{
-					ID:               fmt.Sprintf("proj-phantom-%d-%d", time.Now().UnixNano(), i),
-					InstanceID:       player.InstanceID,
-					Type:             TypeProjectile,
-					SubType:          "PhantomArrow",
-					X:                player.X + (dirX * offset),
-					Y:                1.0,
-					Z:                player.Z + (dirZ * offset),
-					VelX:             dirX * 35.0,
-					VelZ:             dirZ * 35.0,
-					Radius:           0.5,
-					Damage:           int(float64(25+(player.Stats.Dexterity*2)) * player.GetSkillDamageMultiplier("Phantom Volley")),
-					OwnerID:          player.ID,
-					Rotation:         math.Atan2(dirX, dirZ),
-					CreatedAt:        time.Now(),
-					Scale:            1.0,
-					ProjectilePierce: shouldPierce, // Blade Tornado combo effect
+					ID:                       fmt.Sprintf("proj-phantom-%d-%d", time.Now().UnixNano(), i),
+					InstanceID:               player.InstanceID,
+					Type:                     TypeProjectile,
+					SubType:                  "PhantomArrow",
+					X:                        player.X,
+					Y:                        1.0,
+					Z:                        player.Z,
+					VelX:                     dirX * 35.0,
+					VelZ:                     dirZ * 35.0,
+					Radius:                   0.5,
+					Damage:                   int(float64(25+(player.Stats.Dexterity*2)) * player.GetSkillDamageMultiplier("Phantom Volley")),
+					OwnerID:                  player.ID,
+					Rotation:                 math.Atan2(dirX, dirZ),
+					CreatedAt:                time.Now(),
+					Scale:                    1.0,
+					ProjectileSkill:          "Phantom Volley",
+					ProjectileActivationTime: time.Now().Add(time.Duration(i) * 150 * time.Millisecond),
+					ProjectilePierce:         shouldPierce, // Blade Tornado combo effect
 				}
 				w.Entities[proj.ID] = proj
 				w.Grid.Add(proj)
