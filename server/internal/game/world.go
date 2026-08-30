@@ -6298,7 +6298,7 @@ func (w *World) Update(dt float64) {
 	for _, e := range w.Entities {
 		allEntities = append(allEntities, e)
 		e.Mu.RLock()
-		isActivePlayer := e.Type == TypePlayer && e.State != "DEAD"
+		isActivePlayer := e.Type == TypePlayer && e.State != "DEAD" && !e.Disconnected
 		e.Mu.RUnlock()
 		if isActivePlayer {
 			players = append(players, e)

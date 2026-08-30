@@ -1,7 +1,9 @@
 package game
 
 import (
+	"math"
 	"testing"
+	"time"
 )
 
 func TestNewWorld(t *testing.T) {
@@ -65,6 +67,49 @@ func TestWorldUpdate(t *testing.T) {
 	}
 	if e.X > 101.1 {
 		t.Errorf("Entity moved too far. X = %f", e.X)
+	}
+}
+
+func TestWorldUpdateEnemiesIgnoreDisconnectedPlayers(t *testing.T) {
+	w := NewWorld(nil)
+	connected := &Entity{
+		ID:    "player-connected",
+		Type:  TypePlayer,
+		State: "IDLE",
+		X:     8,
+		Z:     0,
+	}
+	disconnected := &Entity{
+		ID:           "player-disconnected",
+		Type:         TypePlayer,
+		State:        "IDLE",
+		X:            100,
+		Z:            0,
+		Disconnected: true,
+	}
+	enemy := &Entity{
+		ID:             "enemy-disconnected-target",
+		Type:           TypeEnemy,
+		State:          "IDLE",
+		X:              0,
+		Z:              0,
+		SpawnX:         -1000,
+		Speed:          5,
+		AttackCooldown: time.Second,
+		Threat: map[string]float64{
+			disconnected.ID: 100,
+		},
+	}
+	w.AddEntity(connected)
+	w.AddEntity(disconnected)
+	w.AddEntity(enemy)
+
+	before := math.Hypot(enemy.X-connected.X, enemy.Z-connected.Z)
+	w.Update(0.1)
+	after := math.Hypot(enemy.X-connected.X, enemy.Z-connected.Z)
+
+	if after >= before {
+		t.Fatalf("expected enemy to chase the connected player instead of stale disconnected threat: before=%f after=%f", before, after)
 	}
 }
 
