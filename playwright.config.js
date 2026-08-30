@@ -5,7 +5,14 @@ import {
     hardwareWebGLBrowserArgs
 } from './tests/e2e/browserLaunchPolicy.js';
 
-const localBaseURL = 'http://127.0.0.1:4173';
+const configuredLocalServerPort = process.env.EIDOLON_E2E_WEB_PORT || '4173';
+const localServerPort = Number(configuredLocalServerPort);
+
+if (!Number.isInteger(localServerPort) || localServerPort < 1 || localServerPort > 65_535) {
+    throw new Error(`EIDOLON_E2E_WEB_PORT must be an integer from 1 to 65535; received "${configuredLocalServerPort}"`);
+}
+
+const localBaseURL = `http://127.0.0.1:${localServerPort}`;
 const baseURL = process.env.EIDOLON_E2E_BASE_URL || localBaseURL;
 const useLocalServer = baseURL === localBaseURL;
 const reuseLocalServer = !process.env.CI && process.env.EIDOLON_E2E_REUSE_SERVER !== '0';
@@ -58,6 +65,7 @@ export default defineConfig({
         command: 'npm run serve',
         env: {
             ...process.env,
+            PORT: String(localServerPort),
             ...(process.env.EIDOLON_E2E_WS_URL
                 ? { EIDOLON_STATIC_WS_URL: process.env.EIDOLON_E2E_WS_URL }
                 : {})

@@ -67,17 +67,20 @@ test.describe('deterministic production animation gallery', () => {
             animations: 'allow'
         });
 
-        for (const [runeId, expectedRadius, expectedColor] of [
-            ['spirits_expanded', 4.2, 0xffd75a],
-            ['spirits_vengeful', 2.8, 0xffb52e],
-            ['spirits_sanctuary', 2.8, 0xbfffd8]
+        for (const [runeId, expectedEffectRadius, expectedOrbitRadius, expectedColor] of [
+            ['spirits_expanded', 24, 18, 0xffd75a],
+            ['spirits_vengeful', 16, 12, 0xffb52e],
+            ['spirits_sanctuary', 16, 12, 0xbfffd8]
         ]) {
             await page.locator('#gallery-rune').selectOption(runeId);
             await page.locator('#gallery-persist').click();
             await expect.poll(async () => {
                 const snapshot = await galleryMetrics(page);
                 return snapshot.spiritVariants.length === 2 && snapshot.spiritVariants.every((variant) =>
-                    variant.runeId === runeId && variant.orbitRadius === expectedRadius && variant.color === expectedColor
+                    variant.runeId === runeId &&
+                    variant.effectRadius === expectedEffectRadius &&
+                    variant.orbitRadius === expectedOrbitRadius &&
+                    variant.color === expectedColor
                 );
             }).toBe(true);
         }

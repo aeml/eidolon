@@ -127,6 +127,8 @@ jobs:
     needs: [browser-smoke]
     runs-on: [self-hosted, linux, x64, eidolon-live-browser]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    env:
+      EIDOLON_E2E_WEB_PORT: '41873'
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
