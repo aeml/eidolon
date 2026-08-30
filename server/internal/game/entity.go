@@ -123,17 +123,18 @@ type Entity struct {
 	LastMoveSequence uint64 `json:"-"`
 
 	// Combat
-	LastAttackTime       time.Time            `json:"-"`
-	AttackCooldown       time.Duration        `json:"-"`
-	LastAbilityTime      time.Time            `json:"-"`
-	AbilityCooldown      time.Duration        `json:"-"`
-	Cooldowns            map[string]time.Time `json:"-"`
-	LastRespawnTime      time.Time            `json:"-"`
-	MoveLockUntil        time.Time            `json:"-"`
-	QAGuaranteedLoot     bool                 `json:"-"`
-	QAPersistentDuration time.Duration        `json:"-"`
-	LastSpecialAttack    time.Time            `json:"-"` // Boss AoE slam cooldown
-	LastDamageType       string               `json:"-"` // Damage type of the most recent applied hit
+	LastAttackTime           time.Time            `json:"-"`
+	AttackCooldown           time.Duration        `json:"-"`
+	LastAbilityTime          time.Time            `json:"-"`
+	AbilityCooldown          time.Duration        `json:"-"`
+	Cooldowns                map[string]time.Time `json:"-"`
+	LastRespawnTime          time.Time            `json:"-"`
+	MoveLockUntil            time.Time            `json:"-"`
+	QAGuaranteedLoot         bool                 `json:"-"`
+	QAPersistentDuration     time.Duration        `json:"-"`
+	QAHealthRegenPausedUntil time.Time            `json:"-"`
+	LastSpecialAttack        time.Time            `json:"-"` // Boss AoE slam cooldown
+	LastDamageType           string               `json:"-"` // Damage type of the most recent applied hit
 
 	// Threat (server-side only): playerID -> threat
 	Threat map[string]float64 `json:"-"`

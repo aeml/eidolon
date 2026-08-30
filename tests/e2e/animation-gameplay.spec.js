@@ -17,7 +17,8 @@ import {
     projectGroundOffset,
     readPlayerState,
     selectGraphicsThroughSettings,
-    useCombatQAWaypoint
+    useCombatQAWaypoint,
+    useEncounterQAWaypoint
 } from './helpers.js';
 
 const credentials = credentialsFromEnvironment();
@@ -379,9 +380,9 @@ async function assertHardwareRenderer(page) {
 }
 
 async function exerciseDeathAndRespawn(page) {
-    await useCombatQAWaypoint(page);
+    await useEncounterQAWaypoint(page);
     const target = await findOverworldTarget(page);
-    expect(target.distance, 'The death check needs a hostile inside its normal sight range').toBeLessThanOrEqual(45);
+    expect(target.distance, 'The death check needs a hostile well inside its normal sight range').toBeLessThan(12);
     await visibleChatCommand(page, '/level 1', 'Level set to 1.');
     await visibleChatCommand(
         page,
@@ -396,7 +397,41 @@ async function exerciseDeathAndRespawn(page) {
     // Do not click the hostile here: a level-100 character's retained gear can
     // otherwise kill the low-level encounter before it lands a hit. Starting
     // at one health lets the normal enemy AI and damage path decide the death.
-    await expect(page.locator('#death-screen')).toBeVisible({ timeout: 45_000 });
+    try {
+        await expect(page.locator('#death-screen')).toBeVisible({ timeout: 45_000 });
+    } catch (error) {
+        const diagnostic = await page.evaluate((targetId) => {
+            const game = window.game;
+            const player = game?.player;
+            const hostiles = (game?.activeEntitiesCache || [])
+                .filter((entity) => entity?.isActive && game.isHostileActorTarget?.(entity))
+                .map((entity) => ({
+                    id: entity.id,
+                    state: entity.state,
+                    subType: entity.subType || entity.constructor?.name,
+                    health: entity.health ?? entity.stats?.hp,
+                    distance: player?.position?.distanceTo?.(entity.position),
+                    selected: entity.id === targetId
+                }))
+                .sort((first, second) => first.distance - second.distance)
+                .slice(0, 8);
+            return {
+                player: {
+                    x: player?.position?.x,
+                    z: player?.position?.z,
+                    state: player?.state,
+                    health: player?.stats?.hp,
+                    stealthActive: player?.stealthActive,
+                    ironFortressActive: player?.ironFortressActive,
+                    invulnerable: player?.invulnerable
+                },
+                hostiles
+            };
+        }, target.id);
+        throw new Error(`Nearby hostile did not complete the death check: ${JSON.stringify(diagnostic)}`, {
+            cause: error
+        });
+    }
     await expect.poll(async () => (await readPlayerState(page)).state).toBe('DEAD');
     const deathAnimation = await page.evaluate(() => window.game?.player?.currentAnimationName);
     expect(deathAnimation).toBe('Death');

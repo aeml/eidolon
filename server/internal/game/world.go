@@ -669,7 +669,8 @@ func (w *World) ArmPlayerQAGuaranteedLoot(playerID string) bool {
 // only its ability readiness gates. Authorization is enforced by the chat
 // command layer. It never creates an effect, ability event, target, or damage.
 // nearDeath leaves one health so a subsequent real hostile hit can exercise
-// the authoritative death path without depending on the character's gear.
+// the authoritative death path without depending on the character's gear or
+// its retained high-level health regeneration.
 func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persistent, nearDeath bool) bool {
 	player := w.GetEntity(playerID)
 	if player == nil || player.Type != TypePlayer {
@@ -679,8 +680,10 @@ func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persiste
 	defer player.Mu.Unlock()
 	player.Mana = player.MaxMana
 	player.Health = player.MaxHealth
+	player.QAHealthRegenPausedUntil = time.Time{}
 	if nearDeath {
 		player.Health = 1
+		player.QAHealthRegenPausedUntil = time.Now().Add(time.Minute)
 	} else if lowHealth {
 		player.Health = max(1, player.MaxHealth/4)
 	}
@@ -4477,6 +4480,7 @@ func (w *World) PerformRespawn(playerID string) {
 	player.State = "IDLE"
 	player.LastRespawnTime = time.Now()
 	player.Health = player.MaxHealth
+	player.QAHealthRegenPausedUntil = time.Time{}
 
 	// Remove from current grid location (which might be in an instance)
 	w.Grid.Remove(player)
@@ -6264,11 +6268,13 @@ func (w *World) Update(dt float64) {
 	w.RegenTimer += dt
 	if w.RegenTimer >= 1.0 {
 		w.RegenTimer -= 1.0
+		regenNow := time.Now()
 		for _, e := range w.Entities {
 			e.Mu.Lock()
 			// Prevent regen if dead or effectively dead (<= 0 HP)
 			if e.State != "DEAD" && e.Health > 0 {
-				if e.Health < e.MaxHealth {
+				qaHealthRegenPaused := regenNow.Before(e.QAHealthRegenPausedUntil)
+				if e.Health < e.MaxHealth && !qaHealthRegenPaused {
 					e.Health += int(e.HpRegen)
 					if e.Health > e.MaxHealth {
 						e.Health = e.MaxHealth

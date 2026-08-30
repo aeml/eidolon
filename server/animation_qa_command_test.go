@@ -51,6 +51,7 @@ func TestPreparePlayerForAnimationQACanArmRealHostileDeathCheck(t *testing.T) {
 	w := game.NewWorld(nil)
 	player := newLevelCommandPlayer("player-animation-near-death")
 	player.Health = player.MaxHealth
+	player.HpRegen = float64(player.MaxHealth)
 	w.AddEntity(player)
 
 	if !w.PreparePlayerForAnimationQA(player.ID, false, false, true) {
@@ -58,6 +59,18 @@ func TestPreparePlayerForAnimationQACanArmRealHostileDeathCheck(t *testing.T) {
 	}
 	if player.Health != 1 {
 		t.Fatalf("expected one health before a real hostile hit, got %d", player.Health)
+	}
+	if player.QAHealthRegenPausedUntil.Before(time.Now()) {
+		t.Fatal("expected near-death readiness to pause health regeneration")
+	}
+	w.Update(1.1)
+	if player.Health != 1 {
+		t.Fatalf("expected retained gear regeneration to stay paused, got %d health", player.Health)
+	}
+
+	w.PerformRespawn(player.ID)
+	if !player.QAHealthRegenPausedUntil.IsZero() {
+		t.Fatal("expected respawn to restore normal health regeneration")
 	}
 }
 
