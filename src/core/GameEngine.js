@@ -1056,9 +1056,10 @@ export class GameEngine {
         if (onProgress) onProgress(55, "Preloading models...");
         await MeshFactory.preloadAllModels({
             // Immediate actor assets gate entry. Heavy scenery continues in
-            // the background so one slow tree/building GLB cannot strand the
-            // loading overlay at 95/101.
+            // the background and other actor/object models load on demand, so
+            // an unused GLB cannot strand the loading overlay.
             phase: 'startup',
+            playerType: this.playerType,
             concurrency: 2,
             timeoutMs: 30000,
             failFast: false,

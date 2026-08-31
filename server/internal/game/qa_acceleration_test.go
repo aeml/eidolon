@@ -112,3 +112,55 @@ func TestQAGuaranteedLootMakesNextAcceptedBasicAttackDeterministic(t *testing.T)
 	}
 	t.Fatal("expected the allowlisted QA attack to finish the enemy")
 }
+
+func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) {
+	w := NewWorld(nil)
+	player := &Entity{
+		ID:        "player-qa-near-death",
+		Type:      TypePlayer,
+		SubType:   "Cleric",
+		Health:    90,
+		MaxHealth: 90,
+		Mana:      10,
+		MaxMana:   100,
+		Cooldowns: make(map[string]time.Time),
+	}
+	ownedZone := &Entity{
+		ID:      "owned-healing-zone",
+		Type:    TypeProjectile,
+		SubType: "ZoneHoly",
+		OwnerID: player.ID,
+	}
+	ownedSeraph := &Entity{
+		ID:      "owned-seraph",
+		Type:    TypeNPC,
+		SubType: "AvengingSeraph",
+		OwnerID: player.ID,
+	}
+	unrelatedZone := &Entity{
+		ID:      "other-player-zone",
+		Type:    TypeProjectile,
+		SubType: "ZoneHoly",
+		OwnerID: "another-player",
+	}
+	w.AddEntity(player)
+	w.AddEntity(ownedZone)
+	w.AddEntity(ownedSeraph)
+	w.AddEntity(unrelatedZone)
+
+	if !w.PreparePlayerForAnimationQA(player.ID, false, false, true) {
+		t.Fatal("expected near-death animation readiness reset")
+	}
+	if player.Health != 1 {
+		t.Fatalf("expected near-death health to remain at one, got %d", player.Health)
+	}
+	if got := applyHealingReceived(player, player.MaxHealth); got != 0 {
+		t.Fatalf("expected retained healing to be suppressed, got %d", got)
+	}
+	if w.GetEntity(ownedZone.ID) != nil || w.GetEntity(ownedSeraph.ID) != nil {
+		t.Fatal("expected player-owned projectiles and summons to be removed")
+	}
+	if w.GetEntity(unrelatedZone.ID) == nil {
+		t.Fatal("expected another player's transient effect to remain")
+	}
+}

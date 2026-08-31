@@ -124,6 +124,12 @@ func applyHealingReceived(target *Entity, amount int) int {
 	if target == nil || amount <= 0 {
 		return amount
 	}
+	// The allowlisted near-death release check must remain at one health until
+	// a real hostile hit arrives. This also covers healing from an already
+	// replicated zone or ally, not just the normal global regeneration tick.
+	if time.Now().Before(target.QAHealthRegenPausedUntil) {
+		return 0
+	}
 	if target.Poisoned {
 		amount /= 2
 		if amount < 1 {

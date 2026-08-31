@@ -670,13 +670,28 @@ func (w *World) ArmPlayerQAGuaranteedLoot(playerID string) bool {
 // layer. It never creates an effect, ability event, target, or damage.
 // nearDeath leaves one health so a subsequent real hostile hit can exercise
 // the authoritative death path without depending on the character's gear,
-// retained high-level health regeneration, or an effect left active by the
-// preceding all-ability matrix.
+// retained health recovery, or an owned effect left active by the preceding
+// all-ability matrix.
 func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persistent, nearDeath bool) bool {
-	player := w.GetEntity(playerID)
-	if player == nil || player.Type != TypePlayer {
+	w.Mu.Lock()
+	player, ok := w.Entities[playerID]
+	if !ok || player.Type != TypePlayer {
+		w.Mu.Unlock()
 		return false
 	}
+	if nearDeath {
+		for id, entity := range w.Entities {
+			ownedProjectile := entity.OwnerID == playerID && entity.Type == TypeProjectile
+			ownedSeraph := entity.OwnerID == playerID && entity.Type == TypeNPC && entity.SubType == "AvengingSeraph"
+			if !ownedProjectile && !ownedSeraph {
+				continue
+			}
+			w.Grid.Remove(entity)
+			delete(w.Entities, id)
+		}
+	}
+	w.Mu.Unlock()
+
 	player.Mu.Lock()
 	defer player.Mu.Unlock()
 	player.Mana = player.MaxMana
@@ -684,9 +699,10 @@ func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persiste
 	player.QAHealthRegenPausedUntil = time.Time{}
 	if nearDeath {
 		// The death check follows a complete ability/rune pass. End any movement,
-		// absorb, lethal-prevention, mitigation, or self-healing state that could
-		// legitimately survive the final cast. Waypoint invulnerability is kept
-		// separate and must still be explicitly removed by /qa-protection off.
+		// absorb, lethal-prevention, mitigation, or healing state that could
+		// legitimately survive the final cast. Owned projectiles and the Seraph
+		// were removed above. Waypoint invulnerability is kept separate and must
+		// still be explicitly removed by /qa-protection off.
 		player.IsCharging = false
 		player.ChargeTargetX = player.X
 		player.ChargeTargetZ = player.Z

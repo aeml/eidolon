@@ -214,8 +214,18 @@ export class MeshCatalog {
         return BACKGROUND_PRELOAD_PATHS.has(path) || BACKGROUND_PRELOAD_PREFIXES.some((prefix) => path.startsWith(prefix));
     }
 
-    static getStartupPreloadModelPaths() {
-        return this.getPreloadModelPaths().filter((path) => !this.isBackgroundPreloadPath(path));
+    static getStartupPreloadModelPaths(playerType = '') {
+        const supportedPlayerTypes = new Set(['Fighter', 'Rogue', 'Wizard', 'Cleric']);
+        const selectedPlayerType = supportedPlayerTypes.has(playerType) ? playerType : '';
+        const playerPrefix = selectedPlayerType
+            ? `./assets/archetypes/${selectedPlayerType}/`
+            : './assets/archetypes/';
+
+        // The network connection and entity stream start after this gate. Only
+        // the selected local actor can be visible before then, so enemy, NPC,
+        // summon, and interactive-object models should load on demand instead
+        // of keeping the loading screen open for assets that are not in use.
+        return this.getPreloadModelPaths().filter((path) => path.startsWith(playerPrefix));
     }
 
     static getBackgroundPreloadModelPaths() {

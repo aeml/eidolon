@@ -120,6 +120,17 @@ describe('MeshFactory preload phases', () => {
         expect(startup).toContain('./assets/archetypes/Fighter/idle.glb');
     });
 
+    test('player-specific startup preload gates only the selected local actor', () => {
+        const startup = MeshFactory.getStartupPreloadModelPaths('Cleric');
+
+        expect(startup).toHaveLength(5);
+        expect(startup).toContain('./assets/archetypes/Cleric/death.glb');
+        expect(startup).not.toContain('./assets/archetypes/Fighter/idle.glb');
+        expect(startup).not.toContain('./assets/enemies/undead/skeleton/idle.glb');
+        expect(startup).not.toContain('./assets/objects/chests/stash_base.glb');
+        expect(startup).not.toContain('./assets/summons/avenging_seraph/idle.glb');
+    });
+
     test('background preload contains world assets', () => {
         const background = MeshFactory.getBackgroundPreloadModelPaths();
         expect(background).toContain('./assets/buildings/trading_post.glb');

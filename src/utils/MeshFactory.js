@@ -19,8 +19,8 @@ export class MeshFactory {
         return MeshCatalog.isBackgroundPreloadPath(path);
     }
 
-    static getStartupPreloadModelPaths() {
-        return MeshCatalog.getStartupPreloadModelPaths();
+    static getStartupPreloadModelPaths(playerType = '') {
+        return MeshCatalog.getStartupPreloadModelPaths(playerType);
     }
 
     static getBackgroundPreloadModelPaths() {
@@ -147,7 +147,7 @@ export class MeshFactory {
     static async preloadAllModels(options = {}) {
         const phase = options.phase || 'all';
         if (phase === 'startup') {
-            return this.preloadModels(this.getStartupPreloadModelPaths(), options);
+            return this.preloadModels(this.getStartupPreloadModelPaths(options.playerType), options);
         }
         if (phase === 'background') {
             return this.preloadModels(this.getBackgroundPreloadModelPaths(), options);
