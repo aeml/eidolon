@@ -20,6 +20,15 @@
     box-sizing: border-box;
 }
 
+/* Primary menus size themselves to their rendered content, then hand overflow
+   to their internal scrollers when the viewport is the limiting dimension. */
+.content-aware-window {
+    box-sizing: border-box;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    z-index: calc(var(--z-hud) + 1);
+}
+
 .window-header {
     font-size: 1.2rem;
     border-bottom: 1px solid var(--border-default);
@@ -767,6 +776,14 @@
     max-height: calc(100vh - 24px);
 }
 
+#quest-window,
+#quest-journal {
+    width: min(520px, calc(100vw - 24px));
+    height: fit-content;
+    min-height: min(300px, calc(100vh - 24px));
+    overflow: hidden;
+}
+
 #trading-house-screen .window-body,
 #quest-window .window-list,
 #quest-journal .window-list {
@@ -904,8 +921,9 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: min(350px, calc(100vw - 24px));
-    height: min(400px, calc(100vh - 24px));
+    width: min(380px, calc(100vw - 24px));
+    height: fit-content;
+    min-height: min(180px, calc(100vh - 24px));
     z-index: 101;
     flex-direction: column;
 }
@@ -929,14 +947,15 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: min(380px, calc(100vw - 24px));
-    height: min(560px, calc(100vh - 24px));
+    width: min(420px, calc(100vw - 24px));
+    height: fit-content;
 }
 
 .char-sheet-body {
     display: flex;
     gap: var(--spacing-lg);
-    height: calc(100% - 40px);
+    height: auto;
+    max-height: calc(100vh - 92px);
 }
 
 #stats-content {
@@ -961,6 +980,7 @@
 }
 
 .equip-slot {
+    box-sizing: border-box;
     background: var(--bg-input);
     border: 1px solid var(--border-default);
     width: 60px;
@@ -981,13 +1001,13 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: min(300px, calc(100vw - 24px));
-    height: min(400px, calc(100vh - 24px));
+    width: min(360px, calc(100vw - 24px));
+    height: fit-content;
 }
 
 .inventory-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, minmax(48px, 1fr));
     gap: var(--spacing-sm);
 }
 

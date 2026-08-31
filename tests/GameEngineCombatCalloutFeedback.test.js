@@ -315,7 +315,7 @@ describe('GameEngine encounter callouts', () => {
         engine.renderSystem = { effectGroup: new THREE.Group() };
         engine.effects = [];
         engine.floatingTextManager = { spawn: jest.fn() };
-        engine.uiManager = { showCombatCallout: jest.fn() };
+        engine.uiManager = { showCombatCallout: jest.fn(), addGameMessage: jest.fn() };
         engine.network = { send: jest.fn() };
         engine.username = 'tester';
         engine.handleLevelUpFeedback = GameEngine.prototype.handleLevelUpFeedback;
@@ -328,7 +328,24 @@ describe('GameEngine encounter callouts', () => {
             title: 'Level 30 Reached',
             subtitle: expect.stringContaining('All base dungeons are now unlocked')
         }));
+        expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith(
+            'Level Up',
+            expect.stringContaining('Reached level 30')
+        );
         expect(engine.network.send).toHaveBeenCalledWith('chat', expect.objectContaining({ message: expect.stringContaining('level 30') }));
+    });
+
+    test('records ordinary XP gains privately in the Game stream after initial sync', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.uiManager = { addGameMessage: jest.fn() };
+        engine.announceExperienceGain = GameEngine.prototype.announceExperienceGain;
+
+        engine.announceExperienceGain(1200, 1475, 18, 18, true);
+        engine.announceExperienceGain(0, 1200, 18, 18, false);
+        engine.announceExperienceGain(4900, 100, 18, 19, true);
+
+        expect(engine.uiManager.addGameMessage).toHaveBeenCalledTimes(1);
+        expect(engine.uiManager.addGameMessage).toHaveBeenCalledWith('Experience', '+275 XP');
     });
 
     test('shows a nearby remote-player ability label and forces an attacking state', () => {

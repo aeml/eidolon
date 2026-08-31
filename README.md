@@ -198,7 +198,7 @@ Notes:
 
 ## Project Status
 
-- Current in-game displayed version: `Alpha 0.40.0`
+- Current in-game displayed version: `Alpha 0.40.0.1`
 - Active implementation line: `0.40` architecture decomposition
 - Current shipped foundation: four classes, four realms, four dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, friends/presence, reconnect/session resume, asset caching, audio foundation, and substantial UX polish
 - Current engineering emphasis: reducing monolith hotspots in `server/internal/game/world.go`, `server/main.go`, `src/core/GameEngine.js`, and `src/ui/UIManager.js`

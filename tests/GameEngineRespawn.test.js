@@ -508,6 +508,26 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.uiManager.updateJournal).toHaveBeenCalledWith(quests);
     });
 
+    test('delta self sync ignores an inherited protobuf quests default', () => {
+        const engine = createEngineHarness();
+        engine.player.state = 'IDLE';
+        const quests = [{ id: 'daily-1', title: 'Clear the crypt', objective: 'Kill 10 skeletons' }];
+        engine.player.quests = quests;
+        const playerDelta = Object.assign(Object.create({ quests: [] }), { id: 'player-1' });
+
+        engine.handleServerMessage({
+            type: 'delta',
+            payload: {
+                u: { 'player-1': playerDelta },
+                r: []
+            }
+        });
+
+        expect(engine.player.quests).toBe(quests);
+        expect(engine.uiManager.updateQuestWindow).not.toHaveBeenCalled();
+        expect(engine.uiManager.updateJournal).not.toHaveBeenCalled();
+    });
+
     test('delta self sync applies authoritative scale through setScale', () => {
         const engine = createEngineHarness();
         engine.player.state = 'IDLE';
@@ -1207,5 +1227,37 @@ describe('GameEngine multiplayer respawn sync', () => {
         expect(engine.player.quests).toEqual([{ id: 'story-1', title: 'Speak to the guardian', objective: 'Find the shrine' }]);
         expect(engine.uiManager.updateQuestWindow).toHaveBeenCalledWith(engine.player.quests);
         expect(engine.uiManager.updateJournal).toHaveBeenCalledWith(engine.player.quests);
+    });
+
+    test('full state sync ignores an inherited protobuf quests default', () => {
+        const engine = createEngineHarness();
+        const quests = [{ id: 'daily-1', title: 'Clear the crypt', objective: 'Kill 10 skeletons' }];
+        engine.player.quests = quests;
+        const playerState = Object.assign(Object.create({ quests: [] }), {
+            id: 'player-1',
+            state: 'IDLE',
+            health: 100,
+            maxHealth: 100,
+            mana: 100,
+            maxMana: 100,
+            experience: 0,
+            maxExperience: 100,
+            level: 1,
+            damage: 20,
+            defense: 10,
+            skillPoints: 0,
+            selectedBranch: null,
+            unlockedSkills: [],
+            gold: 0
+        });
+
+        engine.handleServerMessage({
+            type: 'state',
+            payload: { 'player-1': playerState }
+        });
+
+        expect(engine.player.quests).toBe(quests);
+        expect(engine.uiManager.updateQuestWindow).not.toHaveBeenCalled();
+        expect(engine.uiManager.updateJournal).not.toHaveBeenCalledWith([]);
     });
 });

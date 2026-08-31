@@ -1,8 +1,8 @@
 # Eidolon Current-State Review
 
-Last refreshed: July 20, 2026
+Last refreshed: August 30, 2026
 
-Reviewed against the working `Alpha 0.40.0` release-confidence change set. Verification labels here are deliberate: implemented, unit-tested, locally browser-tested, and live-tested are different claims.
+Reviewed against the working `Alpha 0.40.0.1` release-confidence change set. Verification labels here are deliberate: implemented, unit-tested, locally browser-tested, and live-tested are different claims.
 
 ## What the project is
 

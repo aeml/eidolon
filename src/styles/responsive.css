@@ -87,9 +87,16 @@
     top: auto !important;
     left: 10px !important;
     bottom: 155px !important;
-    width: min(250px, 40vw) !important;
-    height: 120px !important;
+    width: min(250px, calc(100vw - 20px)) !important;
+    height: 160px !important;
+    min-width: min(250px, calc(100vw - 20px)) !important;
+    min-height: 160px !important;
     font-size: 10px !important;
+    resize: none !important;
+}
+
+.mobile-mode .chat-tabs__resize-hint {
+    display: none;
 }
 
 /* Touch controls */

@@ -566,11 +566,12 @@ export class GameEngine {
     }
 
     announceRespawnRecovery(source = 'town') {
-        if (!this.uiManager?.addChatMessage) return;
+        const addMessage = this.uiManager?.addGameMessage || this.uiManager?.addChatMessage;
+        if (!addMessage) return;
         const locationLabel = source === 'delta'
             ? 'Recovered in town from the last defeat.'
             : 'Recovered in town.';
-        this.uiManager.addChatMessage('System', `${locationLabel} Hit Vendor / Repair, Forge, or the Stash before pushing back out.`);
+        addMessage.call(this.uiManager, 'System', `${locationLabel} Hit Vendor / Repair, Forge, or the Stash before pushing back out.`);
     }
 
     isTownPosition(x, z) {
@@ -920,11 +921,19 @@ export class GameEngine {
             subtitle: hint,
             duration: 2.8
         });
+        this.uiManager?.addGameMessage?.('Level Up', `Reached level ${nextLevel}. ${hint}`);
 
         this.network.send('chat', {
             message: `* has reached level ${nextLevel}! *`,
             sender: this.username || 'Player'
         });
+    }
+
+    announceExperienceGain(previousXP, nextXP, previousLevel, nextLevel, hadSyncedProgress) {
+        if (!hadSyncedProgress || previousLevel !== nextLevel) return;
+        const gainedXP = Math.max(0, Number(nextXP || 0) - Number(previousXP || 0));
+        if (gainedXP <= 0) return;
+        this.uiManager?.addGameMessage?.('Experience', `+${gainedXP.toLocaleString()} XP`);
     }
 
     syncDeathScreen() {
@@ -1179,7 +1188,11 @@ export class GameEngine {
             if (this.isMultiplayer && this.uiManager.chatInput) {
                 // Focus chat input if not already focused
                 if (document.activeElement !== this.uiManager.chatInput) {
-                    this.uiManager.chatInput.focus();
+                    if (this.uiManager.chat?.focusChatInput) {
+                        this.uiManager.chat.focusChatInput();
+                    } else {
+                        this.uiManager.chatInput.focus();
+                    }
                 }
             }
         });
@@ -1198,7 +1211,7 @@ export class GameEngine {
 
         this.inputManager.subscribe('onDebugOverlay', () => {
             const enabled = this.minimap.toggleDungeonDebugOverlay();
-            this.uiManager?.addChatMessage?.(`Dungeon debug overlay ${enabled ? 'enabled' : 'disabled'}.`, 'system');
+            this.uiManager?.addGameMessage?.('Debug', `Dungeon debug overlay ${enabled ? 'enabled' : 'disabled'}.`);
         });
 
         if (onProgress) onProgress(95, "Waiting for silicon...");
@@ -1436,7 +1449,8 @@ export class GameEngine {
 
         if (msg.type === 'chat') {
             const chatData = msg.payload;
-            this.uiManager.addChatMessage(chatData.sender, chatData.message);
+            const channel = chatData.channel || (chatData.sender === 'System' ? 'server' : 'global');
+            this.uiManager.addChatMessage(chatData.sender, chatData.message, { channel });
         } else if (msg.type === 'inventory') {
             const inventory = msg.payload.map(item => this.hydrateItem(item));
             if (this.player) {
@@ -1918,6 +1932,10 @@ export class GameEngine {
                         }
                         
 
+                        const previousXP = this.player.xp;
+                        const previousLevel = this.player.level;
+                        const hadSyncedProgress = Boolean(this.player.hasSyncedLevel);
+
                         this.player.xp = pData.experience;
                         this.player.xpToNextLevel = pData.maxExperience;
                         
@@ -1933,6 +1951,13 @@ export class GameEngine {
                             this.player.level = pData.level;
                         }
                         this.player.hasSyncedLevel = true;
+                        this.announceExperienceGain(
+                            previousXP,
+                            this.player.xp,
+                            previousLevel,
+                            this.player.level,
+                            hadSyncedProgress
+                        );
 
                         if (this.player.stats) {
                             if (pData.scale !== undefined && this.player.scale !== pData.scale) this.player.setScale(pData.scale);
@@ -2051,7 +2076,7 @@ export class GameEngine {
                             }
                         }
 
-                        if (pData.quests !== undefined) {
+                        if (Object.prototype.hasOwnProperty.call(pData, 'quests')) {
                             this.player.quests = Array.isArray(pData.quests) ? pData.quests : [];
                             this.uiManager.updateQuestWindow?.(this.player.quests);
                             this.uiManager.updateJournal?.(this.player.quests);
@@ -2296,6 +2321,9 @@ export class GameEngine {
                     
                     // Sync XP, Level, Gold
                     // Protobuf entity fields use experience/maxExperience; legacy JSON used xp/xpToNextLevel.
+                    const previousXP = this.player.xp;
+                    const previousLevel = this.player.level;
+                    const hadSyncedProgress = Boolean(this.player.hasSyncedLevel);
                     if (pData.experience !== undefined) this.player.xp = pData.experience;
                     if (pData.maxExperience !== undefined) this.player.xpToNextLevel = pData.maxExperience;
                     if (pData.xp !== undefined) this.player.xp = pData.xp;
@@ -2314,6 +2342,13 @@ export class GameEngine {
                         }
                         this.player.hasSyncedLevel = true;
                     }
+                    this.announceExperienceGain(
+                        previousXP,
+                        this.player.xp,
+                        previousLevel,
+                        this.player.level,
+                        hadSyncedProgress
+                    );
 
                     if (pData.gold !== undefined) this.player.gold = pData.gold;
 
@@ -2352,7 +2387,7 @@ export class GameEngine {
                         }
                     }
 
-                    if (pData.quests !== undefined) {
+                    if (Object.prototype.hasOwnProperty.call(pData, 'quests')) {
                         this.player.quests = Array.isArray(pData.quests) ? pData.quests : [];
                         this.uiManager.updateQuestWindow?.(this.player.quests);
                         this.uiManager.updateJournal?.(this.player.quests);

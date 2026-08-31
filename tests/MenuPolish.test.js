@@ -11,6 +11,7 @@ const worldMapCssPath = fileURLToPath(new URL('../src/styles/world-map.css', imp
 const partyCssPath = fileURLToPath(new URL('../src/styles/party.css', import.meta.url));
 const socialCssPath = fileURLToPath(new URL('../src/styles/social.css', import.meta.url));
 const skillTreeCssPath = fileURLToPath(new URL('../src/styles/skill-tree.css', import.meta.url));
+const chatCssPath = fileURLToPath(new URL('../src/styles/chat.css', import.meta.url));
 const startScreenCssPath = fileURLToPath(new URL('../src/styles/start-screen.css', import.meta.url));
 const variablesCssPath = fileURLToPath(new URL('../src/styles/variables.css', import.meta.url));
 const baseCssPath = fileURLToPath(new URL('../src/styles/base.css', import.meta.url));
@@ -772,7 +773,7 @@ describe('menu polish regressions', () => {
         const skillTreeCss = readFileSync(skillTreeCssPath, 'utf8');
         const partyCss = readFileSync(partyCssPath, 'utf8');
 
-        expect(skillTreeCss).toMatch(/#skill-tree-window\s*\{[^}]*width:\s*min\(900px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(700px, calc\(100vh - 24px\)\);/s);
+        expect(skillTreeCss).toMatch(/#skill-tree-window\s*\{[^}]*width:\s*min\(900px, calc\(100vw - 24px\)\);[^}]*height:\s*fit-content;[^}]*min-height:\s*min\(540px, calc\(100vh - 24px\)\);/s);
         expect(skillTreeCss).toMatch(/#skill-tree-window\s*\{[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow:\s*hidden;/s);
         expect(skillTreeCss).toMatch(/\.skill-tree-content\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/s);
 
@@ -1163,7 +1164,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.40.0</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.40.0.1</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1301,12 +1302,12 @@ describe('menu polish regressions', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(windowsCssPath, 'utf8');
 
-        expect(html).toContain('<div id="abilities-menu" class="window abilities-menu" style="display: none;">');
+        expect(html).toContain('<div id="abilities-menu" class="window abilities-menu content-aware-window" style="display: none;">');
         expect(html).toContain('<div id="abilities-content" class="abilities-content">');
         expect(html).not.toContain('<div id="abilities-menu" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(350px, calc(100vw - 24px)); height: min(400px, calc(100vh - 24px)); z-index: 101; flex-direction: column;">');
         expect(html).not.toContain('<div id="abilities-content" style="padding: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; min-height: 0; overflow-y: auto;">');
 
-        expect(css).toMatch(/\.abilities-menu\s*\{[^}]*top:\s*50%;[^}]*left:\s*50%;[^}]*transform:\s*translate\(-50%, -50%\);[^}]*width:\s*min\(350px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(400px, calc\(100vh - 24px\)\);[^}]*z-index:\s*101;[^}]*flex-direction:\s*column;/s);
+        expect(css).toMatch(/\.abilities-menu\s*\{[^}]*top:\s*50%;[^}]*left:\s*50%;[^}]*transform:\s*translate\(-50%, -50%\);[^}]*width:\s*min\(380px, calc\(100vw - 24px\)\);[^}]*height:\s*fit-content;[^}]*z-index:\s*101;[^}]*flex-direction:\s*column;/s);
         expect(css).toMatch(/\.abilities-content\s*\{[^}]*padding:\s*var\(--spacing-md\);[^}]*display:\s*grid;[^}]*grid-template-columns:\s*repeat\(4, 1fr\);[^}]*gap:\s*var\(--spacing-md\);/s);
     });
 
@@ -1427,15 +1428,14 @@ describe('menu polish regressions', () => {
         expect(html).toMatch(/id="trading-house-screen"[^>]*width: min\(600px, calc\(100vw - 24px\)\);/);
         expect(html).toMatch(/id="trading-house-screen"[^>]*height: min\(500px, calc\(100vh - 24px\)\);/);
 
-        expect(html).toMatch(/id="quest-window"[^>]*width: min\(400px, calc\(100vw - 24px\)\);/);
-        expect(html).toMatch(/id="quest-window"[^>]*height: min\(500px, calc\(100vh - 24px\)\);/);
-        expect(html).toMatch(/id="quest-journal"[^>]*width: min\(400px, calc\(100vw - 24px\)\);/);
-        expect(html).toMatch(/id="quest-journal"[^>]*height: min\(500px, calc\(100vh - 24px\)\);/);
+        expect(html).toMatch(/id="quest-window"[^>]*class="window content-aware-window"/);
+        expect(html).toMatch(/id="quest-journal"[^>]*class="window content-aware-window"/);
 
         expect(css).toMatch(/#shop-screen,[\s\S]*#quest-journal\s*\{[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);/);
         expect(css).toMatch(/\.shop-window\s*\{[^}]*width:\s*min\(500px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow:\s*hidden;/s);
         expect(css).toMatch(/\.shop-content\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/s);
         expect(css).toMatch(/\.stash-window\s*\{[^}]*width:\s*min\(500px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow-y:\s*auto;/s);
+        expect(css).toMatch(/#quest-window,[\s\S]*#quest-journal\s*\{[^}]*width:\s*min\(520px, calc\(100vw - 24px\)\);[^}]*height:\s*fit-content;[^}]*overflow:\s*hidden;/);
         expect(css).toMatch(/#trading-house-screen\s+\.window-body,[\s\S]*#quest-journal\s+\.window-list\s*\{[^}]*min-height:\s*0;/);
     });
 
@@ -1544,20 +1544,47 @@ describe('menu polish regressions', () => {
         const html = readFileSync(indexHtmlPath, 'utf8');
         const css = readFileSync(windowsCssPath, 'utf8');
 
-        expect(html).toMatch(/id="abilities-menu"[^>]*class="window abilities-menu"[^>]*style="display: none;"/);
+        expect(html).toMatch(/id="abilities-menu"[^>]*class="window abilities-menu content-aware-window"[^>]*style="display: none;"/);
         expect(html).toMatch(/id="abilities-content"[^>]*class="abilities-content"/);
 
         expect(html).toMatch(/id="split-stack-window"[^>]*class="window split-stack-window"[^>]*style="display: none;"/);
         expect(html).toMatch(/class="window-content split-stack-content"/);
 
         expect(css).toMatch(/#abilities-menu,[\s\S]*#split-stack-window\s*\{[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);/);
-        expect(css).toMatch(/\.abilities-menu\s*\{[^}]*width:\s*min\(350px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(400px, calc\(100vh - 24px\)\);/s);
+        expect(css).toMatch(/\.abilities-menu\s*\{[^}]*width:\s*min\(380px, calc\(100vw - 24px\)\);[^}]*height:\s*fit-content;[^}]*min-height:\s*min\(180px, calc\(100vh - 24px\)\);/s);
         expect(css).toMatch(/\.split-stack-window\s*\{[^}]*width:\s*min\(250px, calc\(100vw - 24px\)\);[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow:\s*hidden;/s);
         expect(css).toMatch(/\.split-stack-content\s*\{[^}]*max-height:\s*calc\(100vh - 110px\);[^}]*overflow-y:\s*auto;/s);
-        expect(css).toMatch(/#character-sheet\s*\{[^}]*width:\s*min\(380px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(560px, calc\(100vh - 24px\)\);/s);
-        expect(css).toMatch(/#inventory-screen\s*\{[^}]*width:\s*min\(300px, calc\(100vw - 24px\)\);[^}]*height:\s*min\(400px, calc\(100vh - 24px\)\);/s);
+        expect(css).toMatch(/#character-sheet\s*\{[^}]*width:\s*min\(420px, calc\(100vw - 24px\)\);[^}]*height:\s*fit-content;/s);
+        expect(css).toMatch(/#inventory-screen\s*\{[^}]*width:\s*min\(360px, calc\(100vw - 24px\)\);[^}]*height:\s*fit-content;/s);
         expect(css).toMatch(/#abilities-content,[\s\S]*#inventory-grid\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/);
         expect(css).toMatch(/\.abilities-content\s*\{[^}]*display:\s*grid;[^}]*grid-template-columns:\s*repeat\(4, 1fr\);/s);
+    });
+
+    test('primary menu windows are content-aware and viewport capped', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(windowsCssPath, 'utf8');
+        const socialCss = readFileSync(socialCssPath, 'utf8');
+        const skillTreeCss = readFileSync(skillTreeCssPath, 'utf8');
+
+        expect(html).toMatch(/id="character-sheet" class="window content-aware-window"/);
+        expect(html).toMatch(/id="inventory-screen" class="window content-aware-window"/);
+        expect(html).toMatch(/id="quest-journal" class="window content-aware-window"/);
+        expect(html).toMatch(/id="skill-tree-window" class="content-aware-window"/);
+        expect(css).toMatch(/\.content-aware-window\s*\{[^}]*max-width:\s*calc\(100vw - 24px\);[^}]*max-height:\s*calc\(100vh - 24px\);/s);
+        expect(css).toMatch(/#quest-window,[\s\S]*#quest-journal\s*\{[^}]*height:\s*fit-content;/);
+        expect(socialCss).toMatch(/\.social-window\s*\{[^}]*height:\s*fit-content;[^}]*max-height:\s*calc\(100vh - 24px\);[^}]*overflow-y:\s*auto;/s);
+        expect(skillTreeCss).toMatch(/#skill-tree-window\s*\{[^}]*height:\s*fit-content;[^}]*max-height:\s*calc\(100vh - 24px\);/s);
+    });
+
+    test('chat markup provides resizable Chat and Game logs', () => {
+        const html = readFileSync(indexHtmlPath, 'utf8');
+        const css = readFileSync(chatCssPath, 'utf8');
+
+        expect(html).toContain('data-chat-tab="chat"');
+        expect(html).toContain('data-chat-tab="game"');
+        expect(html).toContain('id="chat-composer"');
+        expect(css).toMatch(/#chat-box\s*\{[^}]*min-width:\s*280px;[^}]*max-width:\s*calc\(100vw - 40px\);[^}]*resize:\s*both;/s);
+        expect(css).toMatch(/#chat-messages\s*\{[^}]*min-height:\s*0;[^}]*overflow-y:\s*auto;/s);
     });
 
     test('inventory footer gold and guidance chrome use shared classes', () => {

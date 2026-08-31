@@ -9,7 +9,8 @@
     transform: translate(-50%, -50%);
     box-sizing: border-box;
     width: min(900px, calc(100vw - 24px));
-    height: min(700px, calc(100vh - 24px));
+    height: fit-content;
+    min-height: min(540px, calc(100vh - 24px));
     max-width: calc(100vw - 24px);
     max-height: calc(100vh - 24px);
     background: var(--bg-panel);

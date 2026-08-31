@@ -8,7 +8,7 @@ This is the root roadmap and planning source of truth for the repo. Per-patch hi
 
 ## Current Snapshot
 
-- Current in-game displayed version: `Alpha 0.40.0`
+- Current in-game displayed version: `Alpha 0.40.0.1`
 - Active implementation line: `0.40` architecture decomposition
 - Release-confidence gate: locked/self-hosted browser dependencies, production SHA/readiness reporting, and real-browser deployment QA are live-verified for release SHA `634280a`
 - Closed for planned implementation work: `0.21` through `0.37`
@@ -71,7 +71,7 @@ For per-patch detail, see `index.html` Patch Notes. This summary captures the pl
 - `0.37`: party membership survives disconnects; `partyId` and `socialStatus` ride the state stream; party members highlighted; social status changes broadcast proactively; `busy` blocks invites; dungeon entry/return updates status automatically
 - `0.38`: persistent friendships, friend request/accept/decline/remove, push-based online/offline presence, friends Social sub-panel, friend-online toast
 - `0.39`: social/party/friend code extracted into server/client owner modules; dispatch switch thinned; `SocialPresenceController` extracted from `GameEngine`
-- `0.40`: in progress; `0.40.0` extracted `server/internal/game/entity.go`, reducing `world.go` by about 1,881 lines
+- `0.40`: in progress; `0.40.0` extracted `server/internal/game/entity.go`, and `0.40.0.1` aligned ability/AoE presentation with authoritative gameplay while hardening movement and multiplayer synchronization
 
 ## Active Line: `0.40` To `0.43` Architecture Decomposition
 

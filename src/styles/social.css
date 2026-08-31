@@ -4,7 +4,10 @@
 
 .social-window {
     width: min(560px, calc(100vw - 40px));
-    height: min(540px, calc(100vh - 80px));
+    height: fit-content;
+    min-height: min(360px, calc(100vh - 24px));
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
     padding: 18px;
     background: linear-gradient(180deg, rgba(21, 25, 32, 0.96) 0%, rgba(11, 13, 18, 0.96) 100%);
     border: 1px solid rgba(255, 215, 0, 0.28);
@@ -457,4 +460,3 @@
     opacity: 1;
     transform: translateY(0);
 }
-

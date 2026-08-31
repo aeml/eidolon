@@ -92,11 +92,11 @@ describe('UIBindings', () => {
             { id: 'chest', name: 'Leather Tunic', type: 'ARMOR', slot: 'chest', rarity: { name: 'Common' } },
             { id: 'legs', name: 'Leather Pants', type: 'ARMOR', slot: 'legs', rarity: { name: 'Common' } },
             { id: 'boots', name: 'Leather Boots', type: 'ARMOR', slot: 'feet', rarity: { name: 'Common' } },
-            { id: 'gloves', name: 'Leather Gloves', type: 'ARMOR', slot: 'gloves', rarity: { name: 'Common' } },
+            { id: 'gloves', name: 'Leather Gloves', type: 'GLOVES', slot: 'gloves', rarity: { name: 'Common' } },
             { id: 'shoulders', name: 'Reinforced Spaulders', type: 'ARMOR', slot: 'shoulders', rarity: { name: 'Common' } },
             { id: 'belt', name: 'Studded Belt', type: 'ARMOR', slot: 'belt', rarity: { name: 'Common' } },
             { id: 'ring', name: 'Gold Ring', type: 'ACCESSORY', slot: 'ring', rarity: { name: 'Common' } },
-            { id: 'neck', name: 'Silver Necklace', type: 'ACCESSORY', slot: 'neck', rarity: { name: 'Common' } },
+            { id: 'neck', name: 'Silver Necklace', type: 'NECK', slot: 'neck', rarity: { name: 'Common' } },
             { id: 'trinket', name: 'Amulet of Power', type: 'ACCESSORY', slot: 'trinket', rarity: { name: 'Common' } },
             { id: 'gem-common', name: 'Flawed Ruby', type: 'GEM', slot: 'gem', rarity: { name: 'Common' } },
             { id: 'mat-common', name: 'Eidolon Shard', type: 'MATERIAL', slot: 'material', rarity: { name: 'Common' } },
@@ -127,6 +127,24 @@ describe('UIBindings', () => {
             'trinket',
             'weapon-main',
             'weapon-off'
+        ].sort());
+        const soldSlots = engine.network.send.mock.calls
+            .filter(([type]) => type === 'sell')
+            .map(([, payload]) => engine.player.inventory[payload.slotIndex].slot)
+            .sort();
+        expect(soldSlots).toEqual([
+            'head',
+            'chest',
+            'legs',
+            'feet',
+            'gloves',
+            'shoulders',
+            'belt',
+            'ring',
+            'neck',
+            'trinket',
+            'mainHand',
+            'offHand'
         ].sort());
     });
 

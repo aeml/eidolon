@@ -435,7 +435,7 @@ export class SocialUI {
     _createSocialWindow() {
         const div = document.getElementById('social-window') || document.createElement('div');
         div.id = 'social-window';
-        div.className = 'window social-window';
+        div.className = 'window social-window content-aware-window';
         div.style.display = 'none';
         div.style.position = 'absolute';
         div.style.top = '50%';

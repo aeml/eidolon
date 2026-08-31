@@ -6,6 +6,7 @@ import { TradingUI } from './TradingUI.js';
 import { QuestUI } from './QuestUI.js';
 import { SocialUI } from './SocialUI.js';
 import { InventoryUI } from './InventoryUI.js';
+import { ChatUI } from './ChatUI.js';
 import { AssetCacheManager } from '../assets/AssetCacheManager.js';
 import { DEFAULT_ASSET_VERSION, getAssetPackEstimateMb, getRecommendedAssetPackNames } from '../assets/assetManifest.js';
 import { DUNGEON_RUN_LEVEL_BANDS, availableDungeonRunLevelsForPlayer, isEndgameDifficultyUnlocked } from '../data/dungeonProgression.js';
@@ -349,7 +350,7 @@ export class UIManager {
             getRarityColor: (rarity) => this.getRarityColor(rarity),
             showItemTooltip: (item, x, y) => this.inventory.showItemTooltip(item, x, y),
             hideTooltips: () => this.inventory.hideTooltips(),
-            addChatMessage: (sender, msg) => this.addChatMessage(sender, msg),
+            addChatMessage: (sender, msg) => this.addGameMessage(sender, msg),
             toggleManagedWindow: (id, options) => this.toggleManagedWindow(id, options),
         });
 
@@ -361,7 +362,7 @@ export class UIManager {
             getItemIconPath: (item) => this.getItemIconPath(item),
             formatStatName: (key) => this.formatStatName(key),
             getRarityColor: (rarity) => this.getRarityColor(rarity),
-            addChatMessage: (sender, msg) => this.addChatMessage(sender, msg),
+            addChatMessage: (sender, msg) => this.addGameMessage(sender, msg),
             updateCharacterSheet: (player) => this.updateCharacterSheet(player),
             closePrimaryHudMenus: (options) => this.closePrimaryHudMenus(options),
             toggleManagedWindow: (id, options) => this.toggleManagedWindow(id, options),
@@ -494,35 +495,19 @@ export class UIManager {
         });
 
         // Chat UI
-        this.chatBox = document.getElementById('chat-box');
-        this.chatMessages = document.getElementById('chat-messages');
-        this.chatInput = document.getElementById('chat-input');
-        
-        if (this.chatInput) {
-            this.chatInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    // Do not let the same Enter reach the global "open chat"
-                    // listener after this handler blurs the input.
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const msg = this.chatInput.value.trim();
-                    if (msg && this.onChatSend) {
-                        this.onChatSend(msg);
-                        this.chatInput.value = '';
-                    }
-                    this.chatInput.blur(); // Unfocus after sending
-                    // Keep chat open but maybe fade out later? For now keep it.
-                }
-            });
-        }
+        this.chat = new ChatUI({
+            onSend: (message) => this.onChatSend?.(message)
+        });
+        this.chatBox = this.chat.chatBox;
+        this.chatMessages = this.chat.messages;
+        this.chatInput = this.chat.input;
 
         // Global Enter to open chat
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 if (this.chatInput && document.activeElement !== this.chatInput) {
                     e.preventDefault(); // Prevent other actions
-                    this.toggleChat(true);
-                    this.chatInput.focus();
+                    this.chat.focusChatInput();
                 }
             }
         });
@@ -642,23 +627,12 @@ export class UIManager {
     }
 
 
-    addChatMessage(sender, message) {
-        if (!this.chatBox) return;
-        this.chatBox.style.display = 'flex';
-        const div = document.createElement('div');
-        div.style.marginBottom = '4px';
-        const senderEl = document.createElement('strong');
-        senderEl.style.color = '#ffd700';
-        senderEl.textContent = `${sender}:`;
+    addChatMessage(sender, message, options = {}) {
+        this.chat?.addMessage(sender, message, { ...options, stream: 'chat' });
+    }
 
-        const messageEl = document.createElement('span');
-        messageEl.style.color = '#fff';
-        messageEl.textContent = ` ${message}`;
-
-        div.appendChild(senderEl);
-        div.appendChild(messageEl);
-        this.chatMessages.appendChild(div);
-        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+    addGameMessage(sender, message, options = {}) {
+        this.chat?.addMessage(sender, message, { ...options, stream: 'game' });
     }
 
     setTooltipDescription(lines, detailText = '') {
@@ -689,7 +663,7 @@ export class UIManager {
     showLootPickupToast(message, options = {}) {
         if (!message) return;
         const sender = options.sender || 'Loot';
-        this.addChatMessage(sender, message);
+        this.addGameMessage(sender, message);
     }
 
     formatRewardSummary(summary = {}) {
@@ -831,35 +805,35 @@ export class UIManager {
             duration: 2.8
         });
 
-        this.addChatMessage('Rewards', summary.title);
+        this.addGameMessage('Rewards', summary.title);
 
         if (subtitleLine) {
-            this.addChatMessage('Rewards', subtitleLine);
+            this.addGameMessage('Rewards', subtitleLine);
         }
 
         if (completionLine) {
-            this.addChatMessage('Rewards', completionLine);
+            this.addGameMessage('Rewards', completionLine);
         }
 
         if (difficultyNoteLine) {
-            this.addChatMessage('Rewards', difficultyNoteLine);
+            this.addGameMessage('Rewards', difficultyNoteLine);
         }
 
         if (headlineLine) {
-            this.addChatMessage('Rewards', headlineLine);
+            this.addGameMessage('Rewards', headlineLine);
         }
 
         if (currencyLine) {
-            this.addChatMessage('Rewards', currencyLine);
+            this.addGameMessage('Rewards', currencyLine);
         }
         if (lootLine) {
-            this.addChatMessage('Rewards', lootLine);
+            this.addGameMessage('Rewards', lootLine);
         }
         if (pulseLine && pulseLine !== currencyLine) {
-            this.addChatMessage('Rewards', pulseLine);
+            this.addGameMessage('Rewards', pulseLine);
         }
         if (summary.exitHint) {
-            this.addChatMessage('Rewards', summary.exitHint);
+            this.addGameMessage('Rewards', summary.exitHint);
         }
     }
 
@@ -891,24 +865,22 @@ export class UIManager {
             duration: summary.roomType === 'elite' ? 2.3 : 2.1
         });
 
-        this.addChatMessage('Room', summary.title);
+        this.addGameMessage('Room', summary.title);
         if (summary.subtitle) {
-            this.addChatMessage('Room', summary.subtitle);
+            this.addGameMessage('Room', summary.subtitle);
         }
 
         if (headlineLine) {
-            this.addChatMessage('Room', headlineLine);
+            this.addGameMessage('Room', headlineLine);
         }
 
         if (parts.length > 0) {
-            this.addChatMessage('Room', parts.join(' • '));
+            this.addGameMessage('Room', parts.join(' • '));
         }
     }
 
     toggleChat(show) {
-        if (this.chatBox) {
-            this.chatBox.style.display = show ? 'flex' : 'none';
-        }
+        this.chat?.show(show);
     }
 
     showHUD() {

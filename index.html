@@ -108,7 +108,7 @@
         </div>
 
         <!-- Abilities Menu (Spellbook) -->
-        <div id="abilities-menu" class="window abilities-menu" style="display: none;">
+        <div id="abilities-menu" class="window abilities-menu content-aware-window" style="display: none;">
             <div class="window-header"><span>ABILITIES (P)</span><button id="btn-close-abilities" class="close-btn" type="button" aria-label="Close abilities menu">×</button></div>
             <div id="abilities-content" class="abilities-content">
                 <!-- Populated by JS -->
@@ -116,7 +116,7 @@
         </div>
 
         <!-- Skill Tree Window -->
-        <div id="skill-tree-window">
+        <div id="skill-tree-window" class="content-aware-window">
             <div class="skill-tree-header window-header">
                 <span>Skill Tree</span>
                 <button id="btn-close-skills" class="close-btn" type="button" aria-label="Close skill tree">×</button>
@@ -134,7 +134,7 @@
             <div id="xp-bar-fill"></div>
         </div>
 
-        <div id="character-sheet" class="window">
+        <div id="character-sheet" class="window content-aware-window">
             <div class="window-header"><span>CHARACTER STATS</span><button id="btn-close-character" class="close-btn" type="button" aria-label="Close character sheet">×</button></div>
             <div class="char-sheet-body">
                 <div id="stats-content">
@@ -172,7 +172,7 @@
             </div>
         </div>
 
-        <div id="inventory-screen" class="window">
+        <div id="inventory-screen" class="window content-aware-window">
             <div class="window-header"><span>INVENTORY</span><button id="btn-close-inventory" class="close-btn" type="button" aria-label="Close inventory">×</button></div>
             <div class="inventory-grid" id="inventory-grid">
                 <!-- 25 Slots -->
@@ -240,9 +240,20 @@
         </div>
 
         <!-- Chat Box -->
-        <div id="chat-box">
-            <div id="chat-messages"></div>
-            <input type="text" id="chat-input" placeholder="Type message...">
+        <div id="chat-box" aria-label="Chat and game event log">
+            <div id="chat-tabs" class="chat-tabs" role="tablist" aria-label="Message log">
+                <button id="chat-tab-chat" class="chat-tab chat-tab--active" type="button" role="tab" aria-selected="true" aria-controls="chat-messages" data-chat-tab="chat">
+                    Chat <span class="chat-tab__unread" data-chat-unread hidden></span>
+                </button>
+                <button id="chat-tab-game" class="chat-tab" type="button" role="tab" aria-selected="false" aria-controls="chat-messages" data-chat-tab="game" tabindex="-1">
+                    Game <span class="chat-tab__unread" data-chat-unread hidden></span>
+                </button>
+                <span class="chat-tabs__resize-hint" title="Drag the lower-right corner to resize">Resize ↘</span>
+            </div>
+            <div id="chat-messages" role="log" aria-live="polite" data-active-stream="chat"></div>
+            <div id="chat-composer" class="chat-composer">
+                <input type="text" id="chat-input" placeholder="Type message..." aria-label="Chat message">
+            </div>
         </div>
 
         <!-- Menu Bar -->
@@ -274,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.40.0</span>
+                <span class="start-version-row__label">Alpha 0.40.0.1</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -576,6 +587,25 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.40.0.1">
+                    <h3 class="patch-note-entry__title">Patch 0.40.0.1 (ability, synchronization, and interface pass)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>High-speed movement is smoother:</strong> Repeated server acknowledgements for an older accepted input no longer stop newer local prediction or pull the character backward, eliminating the most visible rubberbanding at increased movement speeds.</li>
+                        <li><strong>Movement modifiers stay authoritative:</strong> Slow, haste, Swift, crowd-control, charge, teleport, death, and respawn state now reconcile from the server without applying speed changes twice or accepting movement while the character is locked.</li>
+                        <li><strong>The world recovers from a bad frame:</strong> A transient entity or effect update error no longer terminates the animation loop and leaves the game frozen; stale catch-up work is discarded and rendering resumes on the next frame.</li>
+                        <li><strong>Every class ability was audited:</strong> All 52 selectable Fighter, Rogue, Wizard, and Cleric abilities and all 60 rune variants now share validated client/server mana, cooldown, targeting, status, damage, healing, and unlock contracts.</li>
+                        <li><strong>Ability results stay in sync:</strong> The server now confirms cast mana and cooldown results, broadcasts healing feedback, and restores the complete authoritative cooldown snapshot after reconnect so the hotbar cannot show a rejected ability as ready.</li>
+                        <li><strong>AoE visuals match gameplay:</strong> Rings, cones, waves, smoke, ground effects, party auras, and projectile impacts now use a shared rune-aware radius registry that mirrors the server's actual hit geometry, including targets whose model extends across the boundary.</li>
+                        <li><strong>Spirit Guardians shows its real reach:</strong> The aura boundary now renders at 16 metres normally and 24 metres with Expanded Spirits; the boosted form renders at 20 or 30 metres, while the guardians orbit inside that exact damage edge.</li>
+                        <li><strong>Projectiles and persistent zones have one authority:</strong> Fireball, Meteor, traps, and ground zones now use the replicated server entity for path, impact size, duration, reconnect reconstruction, and removal, preventing duplicate or prematurely hidden effects.</li>
+                        <li><strong>Targeting and encounters stay consistent:</strong> Hostile targets take click priority over friendly player hitboxes, casts cannot cross instances or select dead targets, and disconnected players are removed from enemy targeting so enemies do not stall on a vanished threat.</li>
+                        <li><strong>Chat and character events are separated:</strong> The resizable message panel now has Chat and Game tabs. Global and server communication stays in Chat, while loot, XP gains, level-ups, recovery guidance, and reward summaries stay in the private Game log.</li>
+                        <li><strong>Menus fit their contents:</strong> Inventory, Character, Abilities, Quests, Skill Tree, and Social windows now grow to their useful content size, cap themselves to the active viewport, and scroll internally when the screen is the limiting dimension.</li>
+                        <li><strong>Daily quests remain at the quest giver:</strong> Optimized movement and combat snapshots no longer mistake protobuf's inherited empty quest default for a real quest update, so the authoritative daily list is not cleared between quest messages.</li>
+                        <li><strong>Vendor sell-all covers every equipment slot:</strong> Common, Uncommon, and Rare cleanup now includes gloves, necks, and every other equippable slot while continuing to protect gems, materials, Hearts, Shards, and relics.</li>
+                        <li><strong>Regression coverage:</strong> Added exact-radius, ability-contract, projectile, cooldown/reconnect, death/respawn, targeting, frame-recovery, movement-smoothness, four-class gameplay, and two-browser multiplayer tests, all verified in the production release gate.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.40.0">
                     <h3 class="patch-note-entry__title">Patch 0.40.0 (entity.go extracted)</h3>
                     <ul class="patch-note-entry__list">
@@ -2958,7 +2988,7 @@
         </div>
 
         <!-- Quest Window (NPC Interaction) -->
-        <div id="quest-window" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(400px, calc(100vw - 24px)); height: min(500px, calc(100vh - 24px)); z-index: 101; flex-direction: column;">
+        <div id="quest-window" class="window content-aware-window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 101; flex-direction: column;">
             <div class="window-header">
                 <span>AVAILABLE QUESTS</span>
                 <button id="btn-close-quest" class="close-btn" type="button" aria-label="Close quest window">×</button>
@@ -2969,7 +2999,7 @@
         </div>
 
         <!-- Quest Journal (Player Log) -->
-        <div id="quest-journal" class="window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(400px, calc(100vw - 24px)); height: min(500px, calc(100vh - 24px)); z-index: 100; flex-direction: column;">
+        <div id="quest-journal" class="window content-aware-window" style="display: none; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; flex-direction: column;">
             <div class="window-header">
                 <span>QUEST JOURNAL</span>
                 <button id="btn-close-journal" class="close-btn" type="button" aria-label="Close quest journal">×</button>

@@ -65,7 +65,7 @@ var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAME
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 0.40.0"
+	buildVersion = "Alpha 0.40.0.1"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -609,6 +609,7 @@ type RoomClearRewardPayload struct {
 type ChatPayload struct {
 	Message string `json:"message"`
 	Sender  string `json:"sender"`
+	Channel string `json:"channel,omitempty"`
 }
 
 type ReportPayload struct {
@@ -910,6 +911,7 @@ func main() {
 			outPayload := ChatPayload{
 				Message: msgText,
 				Sender:  "System",
+				Channel: "server",
 			}
 			b, _ := json.Marshal(outPayload)
 			outMsg := Message{
@@ -2511,6 +2513,7 @@ func (c *Client) handleMessage(msg Message) {
 		outPayload := ChatPayload{
 			Message: payload.Message,
 			Sender:  c.username,
+			Channel: "global",
 		}
 		b, _ := json.Marshal(outPayload)
 		outMsg := Message{
@@ -3480,7 +3483,7 @@ func (c *Client) triggerQADisconnect() {
 }
 
 func (c *Client) sendSystemChat(message string) {
-	payload, _ := json.Marshal(ChatPayload{Message: message, Sender: "System"})
+	payload, _ := json.Marshal(ChatPayload{Message: message, Sender: "System", Channel: "server"})
 	msg, _ := json.Marshal(Message{Type: MsgChat, Payload: payload})
 	c.sendSafe(msg)
 }

@@ -1,4 +1,13 @@
-const SELLABLE_GEAR_TYPES = new Set(['WEAPON', 'ARMOR', 'ACCESSORY']);
+const PROTECTED_INVENTORY_TYPES = new Set(['GEM', 'MATERIAL', 'RELIC']);
+const PROTECTED_INVENTORY_SLOTS = new Set(['gem', 'material', 'relic']);
+
+function isSellableEquipment(item) {
+    if (!item?.slot) return false;
+
+    const type = String(item.type || '').toUpperCase();
+    const slot = String(item.slot).toLowerCase();
+    return !PROTECTED_INVENTORY_TYPES.has(type) && !PROTECTED_INVENTORY_SLOTS.has(slot);
+}
 
 export class UIBindings {
     constructor(engine) {
@@ -39,7 +48,7 @@ export class UIBindings {
             if (!engine.player) return;
             for (let i = engine.player.inventory.length - 1; i >= 0; i--) {
                 const item = engine.player.inventory[i];
-                if (item && item.rarity && item.rarity.name === rarityName && SELLABLE_GEAR_TYPES.has(item.type)) {
+                if (item?.rarity?.name === rarityName && isSellableEquipment(item)) {
                     ui.inventory.onSellItem(i);
                 }
             }
