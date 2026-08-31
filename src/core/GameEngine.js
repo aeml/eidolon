@@ -23,6 +23,10 @@ import {
 import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
 
 const LOCAL_POSITION_CORRECTION_DISTANCE = 3.0;
+// Never advance more than two fixed simulation ticks between rendered frames.
+// At the 28.8 unit/s movement cap this limits a slow-frame visual step to
+// 0.96m, instead of replaying as much as 2.88m of movement in one lurch.
+const MAX_FRAME_SIMULATION_DELTA = 1 / 30;
 
 const REMOTE_SUPPORT_STATE_CONFIG = {
     spirit_guardians: {
@@ -454,6 +458,9 @@ export class GameEngine {
         this.accumulator = 0;
         this.fixedTimeStep = 1 / 60;
         this.isDestroyed = false;
+        this.deferredOverworldSceneryPromise = null;
+        this.overworldSceneryReady = false;
+        this.overworldSceneGeneration = 0;
 
         this.gameTime = 0;
         this.nextEliteSpawnTime = 180;
@@ -1048,9 +1055,13 @@ export class GameEngine {
 
         if (onProgress) onProgress(55, "Preloading models...");
         await MeshFactory.preloadAllModels({
-            phase: 'all',
-            concurrency: 1,
-            failFast: true,
+            // Immediate actor assets gate entry. Heavy scenery continues in
+            // the background so one slow tree/building GLB cannot strand the
+            // loading overlay at 95/101.
+            phase: 'startup',
+            concurrency: 2,
+            timeoutMs: 30000,
+            failFast: false,
             onProgress: (p, text) => {
                 if (!onProgress) return;
                 // Map 0..100 -> 55..75
@@ -1067,8 +1078,14 @@ export class GameEngine {
 
         // In multiplayer, we still need to render the static town
         // Town Center: (0, 200), Radius: 100
-        await this.worldGenerator.createTown(0, 200, 100);
-        await this.worldGenerator.createOverworldStructures();
+        if (typeof this.worldGenerator.createTownBase === 'function') {
+            await this.worldGenerator.createTownBase(0, 200, 100);
+            void this.startDeferredOverworldScenery();
+        } else {
+            // Preserve compatibility with lightweight/custom generators.
+            await this.worldGenerator.createTown(0, 200, 100);
+            await this.worldGenerator.createOverworldStructures();
+        }
         // this.spawnTownEntities();
 
         if (onProgress) onProgress(90, "Spawning Enemies...");
@@ -1225,6 +1242,56 @@ export class GameEngine {
         this.loop(0);
     }
 
+    startDeferredOverworldScenery() {
+        if (this.overworldSceneryReady) {
+            return Promise.resolve(true);
+        }
+        if (this.deferredOverworldSceneryPromise) {
+            return this.deferredOverworldSceneryPromise;
+        }
+
+        const sceneGeneration = this.overworldSceneGeneration || 0;
+        const task = (async () => {
+            const result = await MeshFactory.preloadAllModels({
+                phase: 'background',
+                concurrency: 2,
+                timeoutMs: 30000,
+                failFast: false
+            });
+
+            if (
+                this.isDestroyed ||
+                sceneGeneration !== (this.overworldSceneGeneration || 0) ||
+                (this.currentInstanceType && this.currentInstanceType !== 'overworld')
+            ) {
+                return false;
+            }
+
+            if (result?.failures?.length) {
+                console.warn(
+                    `GameEngine: Deferred scenery skipped after ${result.failures.length} model preload failure(s).`
+                );
+                return false;
+            }
+
+            await this.worldGenerator.createTownDecorations(0, 200);
+            await this.worldGenerator.createOverworldStructures();
+            this.overworldSceneryReady = true;
+            return true;
+        })().catch((error) => {
+            console.warn('GameEngine: Deferred overworld scenery failed to load.', error);
+            return false;
+        });
+
+        const trackedTask = task.finally(() => {
+            if (this.deferredOverworldSceneryPromise === trackedTask) {
+                this.deferredOverworldSceneryPromise = null;
+            }
+        });
+        this.deferredOverworldSceneryPromise = trackedTask;
+        return trackedTask;
+    }
+
     spawnTownEntities() {
         if (this.townEntitiesSpawned) return;
         this.townEntitiesSpawned = true;
@@ -1294,6 +1361,9 @@ export class GameEngine {
 
     async enterInstance(instanceId, type, layout, roomState = null) {
         console.log(`Entering instance: ${instanceId} (${type})`);
+        // Any scenery job started for the prior scene must not add meshes or
+        // colliders after the instance transition has cleared that scene.
+        this.overworldSceneGeneration = (this.overworldSceneGeneration || 0) + 1;
         const previousInstanceType = this.currentInstanceType || 'overworld';
         this.currentInstanceId = instanceId;
         this.currentInstanceType = type;
@@ -4992,7 +5062,7 @@ export class GameEngine {
                 return;
             }
 
-            const dt = Math.min(seconds - this.lastTime, 0.1);
+            const dt = Math.min(seconds - this.lastTime, MAX_FRAME_SIMULATION_DELTA);
             this.lastTime = seconds;
             
             this.accumulator += dt;

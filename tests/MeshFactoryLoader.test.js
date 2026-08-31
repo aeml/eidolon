@@ -125,6 +125,32 @@ describe('MeshFactory preload phases', () => {
         expect(background).toContain('./assets/buildings/trading_post.glb');
         expect(background).toContain('./assets/buildings/dungeons/the_verdant_bastion.glb');
     });
+
+    test('reports nonfatal preload failures so deferred scenery can stay optional', async () => {
+        const expectedError = new Error('slow scenery asset');
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModelWithTimeout')
+            .mockRejectedValueOnce(expectedError)
+            .mockResolvedValueOnce({ scene: {} });
+        const consoleWarn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+        try {
+            const result = await MeshFactory.preloadModels(
+                ['./assets/slow.glb', './assets/ready.glb'],
+                { concurrency: 1, timeoutMs: 50, failFast: false }
+            );
+
+            expect(result).toEqual({
+                completed: 2,
+                total: 2,
+                failures: [{ path: './assets/slow.glb', error: expectedError }]
+            });
+            expect(loadSpy).toHaveBeenNthCalledWith(1, './assets/slow.glb', 50);
+            expect(loadSpy).toHaveBeenNthCalledWith(2, './assets/ready.glb', 50);
+        } finally {
+            consoleWarn.mockRestore();
+            loadSpy.mockRestore();
+        }
+    });
 });
 
 describe('MeshFactory catalog integration', () => {

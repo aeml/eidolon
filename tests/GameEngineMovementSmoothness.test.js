@@ -13,6 +13,7 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 });
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
+const { MeshFactory } = await import('../src/utils/MeshFactory.js');
 
 function movementHarness() {
     const engine = Object.create(GameEngine.prototype);
@@ -227,6 +228,92 @@ describe('GameEngine ordered movement transport', () => {
         } finally {
             consoleError.mockRestore();
             globalThis.requestAnimationFrame = originalRequestAnimationFrame;
+        }
+    });
+
+    test('a slow rendered frame advances at most two fixed movement ticks', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.lastTime = 0;
+        engine.accumulator = 0;
+        engine.fixedTimeStep = 1 / 60;
+        engine.isDestroyed = false;
+        engine.update = jest.fn();
+        engine.render = jest.fn();
+
+        const originalRequestAnimationFrame = globalThis.requestAnimationFrame;
+        globalThis.requestAnimationFrame = jest.fn(() => 43);
+
+        try {
+            engine.loop(100);
+            expect(engine.update).toHaveBeenCalledTimes(2);
+            expect(engine.render).toHaveBeenCalledTimes(1);
+        } finally {
+            globalThis.requestAnimationFrame = originalRequestAnimationFrame;
+        }
+    });
+
+    test('loads noncritical overworld scenery after startup without blocking and deduplicates the job', async () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.isDestroyed = false;
+        engine.currentInstanceType = null;
+        engine.overworldSceneGeneration = 0;
+        engine.overworldSceneryReady = false;
+        engine.deferredOverworldSceneryPromise = null;
+        engine.worldGenerator = {
+            createTownDecorations: jest.fn().mockResolvedValue(),
+            createOverworldStructures: jest.fn().mockResolvedValue()
+        };
+        const preloadSpy = jest.spyOn(MeshFactory, 'preloadAllModels').mockResolvedValue({
+            completed: 11,
+            total: 11,
+            failures: []
+        });
+
+        try {
+            const first = engine.startDeferredOverworldScenery();
+            const second = engine.startDeferredOverworldScenery();
+            expect(second).toBe(first);
+            await expect(first).resolves.toBe(true);
+
+            expect(preloadSpy).toHaveBeenCalledWith(expect.objectContaining({
+                phase: 'background',
+                failFast: false
+            }));
+            expect(engine.worldGenerator.createTownDecorations).toHaveBeenCalledWith(0, 200);
+            expect(engine.worldGenerator.createOverworldStructures).toHaveBeenCalledTimes(1);
+            expect(engine.overworldSceneryReady).toBe(true);
+        } finally {
+            preloadSpy.mockRestore();
+        }
+    });
+
+    test('does not attach deferred overworld scenery after an instance transition', async () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.isDestroyed = false;
+        engine.currentInstanceType = null;
+        engine.overworldSceneGeneration = 0;
+        engine.overworldSceneryReady = false;
+        engine.deferredOverworldSceneryPromise = null;
+        engine.worldGenerator = {
+            createTownDecorations: jest.fn().mockResolvedValue(),
+            createOverworldStructures: jest.fn().mockResolvedValue()
+        };
+        let finishPreload;
+        const preloadSpy = jest.spyOn(MeshFactory, 'preloadAllModels').mockImplementation(() => (
+            new Promise(resolve => { finishPreload = resolve; })
+        ));
+
+        try {
+            const scenery = engine.startDeferredOverworldScenery();
+            engine.overworldSceneGeneration += 1;
+            engine.currentInstanceType = 'molten_core';
+            finishPreload({ completed: 11, total: 11, failures: [] });
+
+            await expect(scenery).resolves.toBe(false);
+            expect(engine.worldGenerator.createTownDecorations).not.toHaveBeenCalled();
+            expect(engine.worldGenerator.createOverworldStructures).not.toHaveBeenCalled();
+        } finally {
+            preloadSpy.mockRestore();
         }
     });
 });

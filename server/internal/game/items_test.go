@@ -109,7 +109,10 @@ func TestGenerateEliteLootRarity(t *testing.T) {
 }
 
 func TestGenerateLootForSlot(t *testing.T) {
-	slots := []string{"head", "chest", "legs", "feet", "mainHand", "offHand"}
+	slots := []string{
+		"head", "chest", "legs", "feet", "gloves", "shoulders",
+		"belt", "ring", "neck", "trinket", "mainHand", "offHand",
+	}
 
 	for _, slot := range slots {
 		item := GenerateLootForSlot(slot, 10)

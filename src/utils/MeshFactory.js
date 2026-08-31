@@ -99,6 +99,8 @@ export class MeshFactory {
             }
             throw new Error(`Model preload failed for ${first.path}: ${first.error?.message || first.error}`);
         }
+
+        return { completed, total, failures };
     }
 
     static isFatalPreloadError(error) {

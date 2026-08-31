@@ -19,7 +19,8 @@ describe('version presentation', () => {
     test('advances the login screen to alpha 0.40.0.1 for ability and synchronization fixes', () => {
         expect(indexHtml).toContain('Alpha 0.40.0.1');
         expect(indexHtml).toContain('Patch 0.40.0.1');
-        expect(indexHtml).toContain('Repeated server acknowledgements for an older accepted input no longer stop newer local prediction');
+        expect(indexHtml).toContain('slow browser frames can no longer replay more than two simulation ticks');
+        expect(indexHtml).toContain('Loading cannot be held hostage by distant scenery');
         expect(indexHtml).toContain('All 52 selectable Fighter, Rogue, Wizard, and Cleric abilities and all 60 rune variants');
         expect(indexHtml).toContain('Spirit Guardians shows its real reach');
         expect(indexHtml).toContain('disconnected players are removed from enemy targeting');

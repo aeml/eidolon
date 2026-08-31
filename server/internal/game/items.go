@@ -267,7 +267,7 @@ type Item struct {
 	Name         string         `json:"name" bson:"name"`
 	Type         ItemType       `json:"type" bson:"type"`
 	Rarity       ItemRarity     `json:"rarity" bson:"rarity"`
-	Slot         string         `json:"slot" bson:"slot"` // head, chest, legs, feet, mainHand, offHand
+	Slot         string         `json:"slot" bson:"slot"` // head, chest, legs, feet, gloves, shoulders, belt, ring, neck, trinket, mainHand, offHand
 	Level        int            `json:"level" bson:"level"`
 	Stats        map[string]int `json:"stats,omitempty" bson:"stats"`
 	Value        int            `json:"value" bson:"value"`

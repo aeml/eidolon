@@ -37,6 +37,13 @@ export class WorldGenerator {
     async createTown(centerX, centerZ, size) {
         console.log(`Generating town at ${centerX},${centerZ} size ${size}`);
 
+        await this.createTownBase(centerX, centerZ, size);
+        await this.createTownDecorations(centerX, centerZ);
+    }
+
+    async createTownBase(centerX, centerZ, size) {
+        console.log(`Generating town base at ${centerX},${centerZ} size ${size}`);
+
         await this.preloadTextures();
         
         // Use the passed size as radius (should be 100)
@@ -47,6 +54,9 @@ export class WorldGenerator {
         
         // this.createCircularFence(centerX, centerZ, radius);
         this.createRectangularFence(centerX, centerZ, size * 2, size * 2);
+    }
+
+    async createTownDecorations(centerX, centerZ) {
         await Promise.all([
             this.loadBuildings(centerX, centerZ),
             this.loadTrees(centerX, centerZ)

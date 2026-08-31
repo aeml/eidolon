@@ -64,6 +64,28 @@ function buildLargeBossApproachLayout() {
     };
 }
 
+describe('WorldGenerator staged overworld startup', () => {
+    test('keeps the town base independently loadable and preserves full createTown behavior', async () => {
+        const generator = createGenerator();
+        generator.createRectangularFence = jest.fn();
+        generator.loadBuildings = jest.fn().mockResolvedValue();
+        generator.loadTrees = jest.fn().mockResolvedValue();
+
+        await generator.createTownBase(0, 200, 100);
+
+        expect(generator.preloadTextures).toHaveBeenCalledTimes(1);
+        expect(generator.createRectangularFence).toHaveBeenCalledWith(0, 200, 200, 200);
+        expect(generator.loadBuildings).not.toHaveBeenCalled();
+        expect(generator.loadTrees).not.toHaveBeenCalled();
+
+        await generator.createTown(10, 20, 30);
+
+        expect(generator.createRectangularFence).toHaveBeenLastCalledWith(10, 20, 60, 60);
+        expect(generator.loadBuildings).toHaveBeenCalledWith(10, 20);
+        expect(generator.loadTrees).toHaveBeenCalledWith(10, 20);
+    });
+});
+
 describe.each([
     ['createVerdantBastionCatacombs'],
     ['createMoltenCore'],
