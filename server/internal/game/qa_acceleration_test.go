@@ -116,14 +116,16 @@ func TestQAGuaranteedLootMakesNextAcceptedBasicAttackDeterministic(t *testing.T)
 func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) {
 	w := NewWorld(nil)
 	player := &Entity{
-		ID:        "player-qa-near-death",
-		Type:      TypePlayer,
-		SubType:   "Cleric",
-		Health:    90,
-		MaxHealth: 90,
-		Mana:      10,
-		MaxMana:   100,
-		Cooldowns: make(map[string]time.Time),
+		ID:                  "player-qa-near-death",
+		Type:                TypePlayer,
+		SubType:             "Cleric",
+		Health:              90,
+		MaxHealth:           90,
+		Mana:                10,
+		MaxMana:             100,
+		Defense:             100,
+		Cooldowns:           make(map[string]time.Time),
+		InvulnerableEndTime: time.Now().Add(time.Minute),
 	}
 	ownedZone := &Entity{
 		ID:      "owned-healing-zone",
@@ -163,4 +165,41 @@ func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) 
 	if w.GetEntity(unrelatedZone.ID) == nil {
 		t.Fatal("expected another player's transient effect to remain")
 	}
+
+	if !w.DisablePlayerQAProtection(player.ID) {
+		t.Fatal("expected waypoint protection to be disabled")
+	}
+	// Simulate a mitigation edge being reapplied between readiness and the
+	// hostile swing. The release check must still take one real point of damage
+	// after explicit waypoint protection is gone.
+	player.Mu.Lock()
+	player.SanctuaryDamageReduction = true
+	player.SanctuaryEndTime = time.Now().Add(time.Minute)
+	player.Mu.Unlock()
+	enemy := &Entity{
+		ID:             "qa-near-death-enemy",
+		Type:           TypeEnemy,
+		SubType:        "Skeleton",
+		Health:         100,
+		MaxHealth:      100,
+		Damage:         1,
+		State:          "IDLE",
+		X:              1,
+		AttackCooldown: time.Millisecond,
+	}
+	w.AddEntity(enemy)
+	if _, accepted := w.PerformAttack(enemy.ID, player.ID); !accepted {
+		t.Fatal("expected a real nearby hostile attack to be accepted")
+	}
+	deadline := time.Now().Add(time.Second)
+	for time.Now().Before(deadline) {
+		player.Mu.RLock()
+		dead := player.State == "DEAD"
+		player.Mu.RUnlock()
+		if dead {
+			return
+		}
+		time.Sleep(time.Millisecond)
+	}
+	t.Fatal("expected the real hostile hit to complete the near-death check")
 }

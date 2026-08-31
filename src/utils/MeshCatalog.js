@@ -221,11 +221,14 @@ export class MeshCatalog {
             ? `./assets/archetypes/${selectedPlayerType}/`
             : './assets/archetypes/';
 
-        // The network connection and entity stream start after this gate. Only
-        // the selected local actor can be visible before then, so enemy, NPC,
-        // summon, and interactive-object models should load on demand instead
-        // of keeping the loading screen open for assets that are not in use.
-        return this.getPreloadModelPaths().filter((path) => path.startsWith(playerPrefix));
+        // The network connection and entity stream start after this gate. Load
+        // the selected local actor plus the Skeleton population immediately
+        // outside town; distant enemies, NPCs, summons, and interactive-object
+        // models remain on demand so unused assets cannot hold entry open.
+        return this.getPreloadModelPaths().filter((path) =>
+            path.startsWith(playerPrefix) ||
+            path.startsWith('./assets/enemies/undead/skeleton/')
+        );
     }
 
     static getBackgroundPreloadModelPaths() {

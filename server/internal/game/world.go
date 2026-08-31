@@ -6794,6 +6794,16 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 			}
 		}
 
+		// The allowlisted near-death gate still uses a normal hostile AI swing,
+		// range check, cooldown, and asynchronous damage path. Once its explicit
+		// waypoint protection has been removed, do not let a residual fractional
+		// mitigation or absorb round that already-minimal real hit back to zero.
+		qaNearDeathHit := tgt.Type == TypePlayer && tgt.Health == 1 &&
+			time.Now().Before(tgt.QAHealthRegenPausedUntil) && tgt.InvulnerableEndTime.IsZero()
+		if qaNearDeathHit && actualDamage < 1 {
+			actualDamage = 1
+		}
+
 		actualDamage = applyFinalDamage(attackerSnapshot, tgt, actualDamage, "physical")
 		pendingReflectDamage += ApplyDamageReflect(attackerSnapshot, tgt, actualDamage)
 		if attackerSnapshot.Type == TypePlayer && tgt.Type == TypeEnemy {
