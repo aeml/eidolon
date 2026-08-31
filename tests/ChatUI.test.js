@@ -28,6 +28,7 @@ describe('ChatUI', () => {
         const chat = new ChatUI();
 
         chat.addMessage('Ayla', 'Meet at the gate', { channel: 'global' });
+        expect(document.getElementById('chat-box').style.display).toBe('flex');
         chat.addMessage('Loot', 'Rare: Radiant Ruby', { stream: 'game' });
 
         const [communication, gameEvent] = document.querySelectorAll('.chat-message');
@@ -48,6 +49,25 @@ describe('ChatUI', () => {
         expect(document.getElementById('chat-composer').hidden).toBe(true);
         expect(gameTab.getAttribute('aria-selected')).toBe('true');
         expect(gameTab.classList.contains('chat-tab--unread')).toBe(false);
+    });
+
+    test('game events do not force chat open and dismissal survives delayed communication', () => {
+        const chat = new ChatUI();
+        const chatBox = document.getElementById('chat-box');
+
+        chat.addMessage('Experience', '+50 XP', { stream: 'game' });
+        expect(chatBox.style.display).toBe('none');
+
+        chat.addMessage('Server', 'Welcome back', { channel: 'server' });
+        expect(chatBox.style.display).toBe('flex');
+
+        chat.show(false);
+        chat.addMessage('Server', 'Delayed reply', { channel: 'server' });
+        expect(chatBox.style.display).toBe('none');
+
+        chat.focusChatInput();
+        expect(chatBox.style.display).toBe('flex');
+        expect(document.activeElement).toBe(document.getElementById('chat-input'));
     });
 
     test('sends trimmed communication from the Chat composer', () => {

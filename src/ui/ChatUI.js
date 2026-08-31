@@ -16,6 +16,7 @@ export class ChatUI {
         this.activeStream = 'chat';
         this.unread = { chat: 0, game: 0 };
         this.maxMessages = 250;
+        this.dismissed = false;
 
         this.bindEvents();
         this.restoreSize();
@@ -108,7 +109,12 @@ export class ChatUI {
         entry.appendChild(messageEl);
         this.messages.appendChild(entry);
         this.trimMessages();
-        this.chatBox.style.display = 'flex';
+        // Communication may reveal chat until the player explicitly dismisses
+        // it. Game-feed events are frequent and should remain unread without
+        // opening a panel over gameplay or another window.
+        if (normalizedStream === 'chat' && !this.dismissed) {
+            this.chatBox.style.display = 'flex';
+        }
 
         if (normalizedStream === this.activeStream) {
             this.messages.scrollTop = this.messages.scrollHeight;
@@ -152,6 +158,7 @@ export class ChatUI {
     }
 
     show(show = true) {
+        this.dismissed = !show;
         if (this.chatBox) {
             this.chatBox.style.display = show ? 'flex' : 'none';
         }
