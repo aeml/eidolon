@@ -1252,7 +1252,23 @@ export class GameEngine {
         }
 
         const sceneGeneration = this.overworldSceneGeneration || 0;
+        const sceneIsCurrent = () => (
+            !this.isDestroyed &&
+            sceneGeneration === (this.overworldSceneGeneration || 0) &&
+            (!this.currentInstanceType || this.currentInstanceType === 'overworld')
+        );
         const task = (async () => {
+            // Interactive dungeon entrances must not sit behind the entire
+            // decorative scenery queue. Start them first; the generator checks
+            // sceneIsCurrent before attaching each structure so a concurrent
+            // instance transition cannot repopulate a cleared scene.
+            const structuresTask = Promise.resolve(
+                this.worldGenerator.createOverworldStructures({ shouldAttach: sceneIsCurrent })
+            ).then(result => result !== false).catch((error) => {
+                console.warn('GameEngine: Deferred overworld structures failed to load.', error);
+                return false;
+            });
+
             const result = await MeshFactory.preloadAllModels({
                 phase: 'background',
                 concurrency: 2,
@@ -1260,25 +1276,33 @@ export class GameEngine {
                 failFast: false
             });
 
-            if (
-                this.isDestroyed ||
-                sceneGeneration !== (this.overworldSceneGeneration || 0) ||
-                (this.currentInstanceType && this.currentInstanceType !== 'overworld')
-            ) {
+            if (!sceneIsCurrent()) {
+                await structuresTask;
                 return false;
             }
 
             if (result?.failures?.length) {
                 console.warn(
-                    `GameEngine: Deferred scenery skipped after ${result.failures.length} model preload failure(s).`
+                    `GameEngine: Deferred scenery continuing after ${result.failures.length} optional model preload failure(s).`
                 );
+            }
+
+            const decorationsReady = await Promise.resolve(
+                this.worldGenerator.createTownDecorations(0, 200)
+            ).then(() => true).catch((error) => {
+                console.warn('GameEngine: Deferred town decorations failed to load.', error);
+                return false;
+            });
+            const structuresReady = await structuresTask;
+
+            if (!sceneIsCurrent()) {
                 return false;
             }
 
-            await this.worldGenerator.createTownDecorations(0, 200);
-            await this.worldGenerator.createOverworldStructures();
+            // The deferred pass has completed even if one optional asset used a
+            // fallback or failed. Avoid duplicating already attached scenery.
             this.overworldSceneryReady = true;
-            return true;
+            return structuresReady || decorationsReady;
         })().catch((error) => {
             console.warn('GameEngine: Deferred overworld scenery failed to load.', error);
             return false;

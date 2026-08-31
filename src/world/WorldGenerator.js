@@ -391,10 +391,11 @@ export class WorldGenerator {
         }
     }
 
-    async createOverworldStructures() {
+    async createOverworldStructures({ shouldAttach = () => true } = {}) {
         // The Verdant Bastion (Level 40-50 Dungeon)
         // Location: X=800, Z=200 (In the InfernoTitan area)
         const gltf = await MeshFactory.loadModel('./assets/buildings/dungeons/the_verdant_bastion.glb');
+        if (!shouldAttach()) return false;
         {
             const mesh = gltf.scene.clone();
             mesh.name = 'DungeonEntrance'; // Tag for interaction
@@ -439,6 +440,7 @@ export class WorldGenerator {
         // The Molten Core (Level 80-90 Dungeon)
         // Location: X=-2400, Z=200 (Fire Realm)
         const moltenGltf = await MeshFactory.loadModel('./assets/buildings/dungeons/the_molten_core.glb');
+        if (!shouldAttach()) return false;
         {
             const mesh = moltenGltf.scene.clone();
             mesh.name = 'DungeonEntrance';
@@ -470,6 +472,7 @@ export class WorldGenerator {
         // The Tempest Spire (Level 80-90 Dungeon)
         // Location: X=2400, Z=200 (Air Realm)
         const tempestGltf = await MeshFactory.loadModel('./assets/buildings/dungeons/the_tempest_spire.glb');
+        if (!shouldAttach()) return false;
         {
             const mesh = tempestGltf.scene.clone();
             mesh.name = 'DungeonEntrance';
@@ -501,6 +504,7 @@ export class WorldGenerator {
         // The Abyssal Well (Level 60-70 Dungeon)
         // Location: X=0, Z=-1400 (Water Realm center)
         const abyssalGltf = await MeshFactory.loadModel('./assets/buildings/dungeons/the_abyssal_well.glb');
+        if (!shouldAttach()) return false;
         {
             const mesh = abyssalGltf.scene.clone();
             mesh.name = 'DungeonEntrance';
@@ -528,6 +532,8 @@ export class WorldGenerator {
             this.collisionManager.addCircularCollider(0, -1400, radius);
             console.log(`Loaded The Abyssal Well at 0, -1400 with radius ${radius}`);
         }
+
+        return true;
     }
 
     hasCanonicalDungeonGeometry(layout) {

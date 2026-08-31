@@ -261,7 +261,7 @@ describe('GameEngine ordered movement transport', () => {
         engine.deferredOverworldSceneryPromise = null;
         engine.worldGenerator = {
             createTownDecorations: jest.fn().mockResolvedValue(),
-            createOverworldStructures: jest.fn().mockResolvedValue()
+            createOverworldStructures: jest.fn().mockResolvedValue(true)
         };
         const preloadSpy = jest.spyOn(MeshFactory, 'preloadAllModels').mockResolvedValue({
             completed: 11,
@@ -287,6 +287,38 @@ describe('GameEngine ordered movement transport', () => {
         }
     });
 
+    test('optional background preload failures do not suppress functional overworld structures', async () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.isDestroyed = false;
+        engine.currentInstanceType = null;
+        engine.overworldSceneGeneration = 0;
+        engine.overworldSceneryReady = false;
+        engine.deferredOverworldSceneryPromise = null;
+        engine.worldGenerator = {
+            createTownDecorations: jest.fn().mockResolvedValue(),
+            createOverworldStructures: jest.fn().mockResolvedValue(true)
+        };
+        const preloadSpy = jest.spyOn(MeshFactory, 'preloadAllModels').mockResolvedValue({
+            completed: 10,
+            total: 11,
+            failures: [{ path: './assets/plants/optional.glb', error: new Error('optional timeout') }]
+        });
+        const consoleWarn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+        try {
+            await expect(engine.startDeferredOverworldScenery()).resolves.toBe(true);
+            expect(engine.worldGenerator.createOverworldStructures).toHaveBeenCalledTimes(1);
+            expect(engine.worldGenerator.createTownDecorations).toHaveBeenCalledTimes(1);
+            expect(engine.overworldSceneryReady).toBe(true);
+            expect(consoleWarn).toHaveBeenCalledWith(
+                expect.stringContaining('continuing after 1 optional model preload failure')
+            );
+        } finally {
+            consoleWarn.mockRestore();
+            preloadSpy.mockRestore();
+        }
+    });
+
     test('does not attach deferred overworld scenery after an instance transition', async () => {
         const engine = Object.create(GameEngine.prototype);
         engine.isDestroyed = false;
@@ -296,7 +328,10 @@ describe('GameEngine ordered movement transport', () => {
         engine.deferredOverworldSceneryPromise = null;
         engine.worldGenerator = {
             createTownDecorations: jest.fn().mockResolvedValue(),
-            createOverworldStructures: jest.fn().mockResolvedValue()
+            createOverworldStructures: jest.fn(async ({ shouldAttach }) => {
+                await Promise.resolve();
+                return shouldAttach();
+            })
         };
         let finishPreload;
         const preloadSpy = jest.spyOn(MeshFactory, 'preloadAllModels').mockImplementation(() => (
@@ -311,7 +346,10 @@ describe('GameEngine ordered movement transport', () => {
 
             await expect(scenery).resolves.toBe(false);
             expect(engine.worldGenerator.createTownDecorations).not.toHaveBeenCalled();
-            expect(engine.worldGenerator.createOverworldStructures).not.toHaveBeenCalled();
+            expect(engine.worldGenerator.createOverworldStructures).toHaveBeenCalledTimes(1);
+            expect(engine.worldGenerator.createOverworldStructures).toHaveBeenCalledWith({
+                shouldAttach: expect.any(Function)
+            });
         } finally {
             preloadSpy.mockRestore();
         }

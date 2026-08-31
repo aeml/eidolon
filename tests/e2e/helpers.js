@@ -1056,6 +1056,30 @@ async function readCombatDiagnostic(page, targetId) {
 }
 
 export async function exerciseCombatAndLoot(page) {
+    // The persistent release account eventually fills across successful runs.
+    // Rotate one equippable item through the existing sell path so this test can
+    // continue proving a real loot pickup and its persistence on every deploy.
+    if ((await readPlayerState(page)).inventoryCount >= 25) {
+        const soldItemId = await page.evaluate(() => {
+            const game = window.game;
+            const equipmentSlots = new Set([
+                'head', 'chest', 'legs', 'feet', 'gloves', 'shoulders',
+                'belt', 'ring', 'neck', 'trinket', 'mainHand', 'offHand'
+            ]);
+            const index = (game?.player?.inventory || []).findIndex((item) =>
+                item?.id && equipmentSlots.has(item.slot)
+            );
+            if (index < 0 || typeof game?.uiManager?.inventory?.onSellItem !== 'function') return null;
+            const itemId = game.player.inventory[index].id;
+            game.uiManager.inventory.onSellItem(index);
+            return itemId;
+        });
+        expect(soldItemId, 'A full QA inventory must contain equipment that can be rotated').not.toBeNull();
+        await expect.poll(async () => (await readPlayerState(page)).inventoryCount, {
+            timeout: 15_000
+        }).toBeLessThan(25);
+    }
+
     const inventoryBefore = (await readPlayerState(page)).inventoryCount;
     let abilityWasUsed = false;
 

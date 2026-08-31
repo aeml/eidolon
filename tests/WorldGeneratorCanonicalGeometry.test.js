@@ -84,6 +84,30 @@ describe('WorldGenerator staged overworld startup', () => {
         expect(generator.loadBuildings).toHaveBeenCalledWith(10, 20);
         expect(generator.loadTrees).toHaveBeenCalledWith(10, 20);
     });
+
+    test('does not attach a deferred dungeon entrance after its overworld scene is invalidated', async () => {
+        const generator = createGenerator();
+        const entranceScene = new THREE.Group();
+        entranceScene.add(new THREE.Mesh(
+            new THREE.BoxGeometry(1, 1, 1),
+            new THREE.MeshStandardMaterial()
+        ));
+        const loadModelSpy = jest.spyOn(MeshFactory, 'loadModel').mockResolvedValue({
+            scene: entranceScene,
+            animations: []
+        });
+
+        try {
+            await expect(generator.createOverworldStructures({
+                shouldAttach: () => false
+            })).resolves.toBe(false);
+            expect(loadModelSpy).toHaveBeenCalledTimes(1);
+            expect(generator.scene.add).not.toHaveBeenCalled();
+            expect(generator.collisionManager.addCircularCollider).not.toHaveBeenCalled();
+        } finally {
+            loadModelSpy.mockRestore();
+        }
+    });
 });
 
 describe.each([
