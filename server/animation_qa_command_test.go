@@ -116,9 +116,6 @@ func TestPreparePlayerForAnimationQACanArmRealHostileDeathCheck(t *testing.T) {
 	if !w.DisablePlayerQAProtection(player.ID) {
 		t.Fatal("expected explicit waypoint protection disable")
 	}
-	if _, accepted := w.PerformAttack(enemy.ID, player.ID); !accepted {
-		t.Fatal("expected nearby hostile attack to enter the normal combat path")
-	}
 	deadline := time.Now().Add(time.Second)
 	state, health := "", 0
 	for time.Now().Before(deadline) {

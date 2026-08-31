@@ -680,14 +680,36 @@ func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persiste
 		return false
 	}
 	if nearDeath {
+		player.Mu.RLock()
+		playerX, playerZ, playerInstanceID := player.X, player.Z, player.InstanceID
+		player.Mu.RUnlock()
 		for id, entity := range w.Entities {
 			ownedProjectile := entity.OwnerID == playerID && entity.Type == TypeProjectile
 			ownedSeraph := entity.OwnerID == playerID && entity.Type == TypeNPC && entity.SubType == "AvengingSeraph"
-			if !ownedProjectile && !ownedSeraph {
+			if ownedProjectile || ownedSeraph {
+				w.Grid.Remove(entity)
+				delete(w.Entities, id)
 				continue
 			}
-			w.Grid.Remove(entity)
-			delete(w.Entities, id)
+
+			// The class matrix runs immediately after another QA browser closes.
+			// A nearby enemy can briefly retain that prior character's threat and
+			// animate attacks without striking the character under test. Give only
+			// nearby live hostiles decisive threat on this allowlisted character;
+			// the enemy must still acquire it through normal AI and complete its
+			// normal range, cooldown, swing delay, and damage path.
+			if entity.Type != TypeEnemy {
+				continue
+			}
+			entity.Mu.Lock()
+			if entity.State != "DEAD" && entity.InstanceID == playerInstanceID &&
+				math.Hypot(entity.X-playerX, entity.Z-playerZ) <= 12 {
+				if entity.Threat == nil {
+					entity.Threat = make(map[string]float64)
+				}
+				entity.Threat[playerID] = 1_000_000_000
+			}
+			entity.Mu.Unlock()
 		}
 	}
 	w.Mu.Unlock()
@@ -748,15 +770,45 @@ func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persiste
 }
 
 // DisablePlayerQAProtection lets a dedicated QA character exercise a genuine
-// hostile damage/death/respawn path after using a protected fixed waypoint.
+// hostile damage/death/respawn path after using a protected fixed waypoint. A
+// nearby enemy is primed for one explicit attack on that character so another
+// recently disconnected QA session cannot consume the validation swing.
 func (w *World) DisablePlayerQAProtection(playerID string) bool {
 	player := w.GetEntity(playerID)
 	if player == nil || player.Type != TypePlayer {
 		return false
 	}
 	player.Mu.Lock()
-	defer player.Mu.Unlock()
 	player.InvulnerableEndTime = time.Time{}
+	playerX, playerZ, playerInstanceID := player.X, player.Z, player.InstanceID
+	player.Mu.Unlock()
+
+	var nearest *Entity
+	nearestDistance := math.MaxFloat64
+	for _, candidate := range w.Grid.Nearby(playerX, playerZ, 12, playerInstanceID) {
+		candidate.Mu.RLock()
+		isLiveHostile := candidate.Type == TypeEnemy && candidate.State != "DEAD" &&
+			candidate.InstanceID == playerInstanceID
+		distance := math.Hypot(candidate.X-playerX, candidate.Z-playerZ)
+		candidate.Mu.RUnlock()
+		if isLiveHostile && distance < nearestDistance {
+			nearest = candidate
+			nearestDistance = distance
+		}
+	}
+
+	if nearest != nil {
+		nearest.Mu.Lock()
+		nearest.LastAttackTime = time.Time{}
+		nearest.State = "IDLE"
+		nearest.Stunned = false
+		nearest.StunEndTime = time.Time{}
+		nearest.AccuracyReduction = 0
+		nearest.AccuracyReductionEndTime = time.Time{}
+		nearest.Mu.Unlock()
+		_, _ = w.PerformAttack(nearest.ID, playerID)
+	}
+
 	return true
 }
 

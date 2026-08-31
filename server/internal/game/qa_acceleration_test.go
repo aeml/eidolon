@@ -127,6 +127,18 @@ func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) 
 		Cooldowns:           make(map[string]time.Time),
 		InvulnerableEndTime: time.Now().Add(time.Minute),
 	}
+	enemy := &Entity{
+		ID:             "qa-near-death-enemy",
+		Type:           TypeEnemy,
+		SubType:        "Skeleton",
+		Health:         100,
+		MaxHealth:      100,
+		Damage:         1,
+		State:          "IDLE",
+		X:              1,
+		AttackCooldown: time.Millisecond,
+		Threat:         map[string]float64{"prior-qa-player": 100_000},
+	}
 	ownedZone := &Entity{
 		ID:      "owned-healing-zone",
 		Type:    TypeProjectile,
@@ -149,6 +161,7 @@ func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) 
 	w.AddEntity(ownedZone)
 	w.AddEntity(ownedSeraph)
 	w.AddEntity(unrelatedZone)
+	w.AddEntity(enemy)
 
 	if !w.PreparePlayerForAnimationQA(player.ID, false, false, true) {
 		t.Fatal("expected near-death animation readiness reset")
@@ -165,10 +178,14 @@ func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) 
 	if w.GetEntity(unrelatedZone.ID) == nil {
 		t.Fatal("expected another player's transient effect to remain")
 	}
-
-	if !w.DisablePlayerQAProtection(player.ID) {
-		t.Fatal("expected waypoint protection to be disabled")
+	enemy.Mu.RLock()
+	focusedThreat := enemy.Threat[player.ID]
+	priorThreat := enemy.Threat["prior-qa-player"]
+	enemy.Mu.RUnlock()
+	if focusedThreat <= priorThreat {
+		t.Fatalf("expected nearby hostile to focus the active QA character, got active=%v prior=%v", focusedThreat, priorThreat)
 	}
+
 	// Simulate a mitigation edge being reapplied between readiness and the
 	// hostile swing. The release check must still take one real point of damage
 	// after explicit waypoint protection is gone.
@@ -176,20 +193,8 @@ func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) 
 	player.SanctuaryDamageReduction = true
 	player.SanctuaryEndTime = time.Now().Add(time.Minute)
 	player.Mu.Unlock()
-	enemy := &Entity{
-		ID:             "qa-near-death-enemy",
-		Type:           TypeEnemy,
-		SubType:        "Skeleton",
-		Health:         100,
-		MaxHealth:      100,
-		Damage:         1,
-		State:          "IDLE",
-		X:              1,
-		AttackCooldown: time.Millisecond,
-	}
-	w.AddEntity(enemy)
-	if _, accepted := w.PerformAttack(enemy.ID, player.ID); !accepted {
-		t.Fatal("expected a real nearby hostile attack to be accepted")
+	if !w.DisablePlayerQAProtection(player.ID) {
+		t.Fatal("expected waypoint protection to be disabled")
 	}
 	deadline := time.Now().Add(time.Second)
 	for time.Now().Before(deadline) {
