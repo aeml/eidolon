@@ -381,7 +381,24 @@ async function assertHardwareRenderer(page) {
 
 async function exerciseDeathAndRespawn(page) {
     await useEncounterQAWaypoint(page);
-    const target = await findOverworldTarget(page);
+    // Death validation does not click an enemy. Read the nearest active
+    // authoritative hostile directly instead of requiring that same enemy's
+    // mesh to be raycastable from the current camera angle; choosing a farther
+    // visible hostile can incorrectly reject the bounded encounter waypoint.
+    const target = await page.evaluate(() => {
+        const game = window.game;
+        const player = game?.player;
+        if (!player?.position) return null;
+        return (game.activeEntitiesCache || [])
+            .filter((entity) => entity?.isActive && entity.state !== 'DEAD' &&
+                game.isHostileActorTarget?.(entity) && entity.position)
+            .map((entity) => ({
+                id: entity.id,
+                distance: player.position.distanceTo(entity.position)
+            }))
+            .sort((first, second) => first.distance - second.distance)[0] || null;
+    });
+    expect(target).not.toBeNull();
     expect(target.distance, 'The death check needs a hostile well inside its normal sight range').toBeLessThan(12);
     await visibleChatCommand(page, '/level 1', 'Level set to 1.');
     await visibleChatCommand(
