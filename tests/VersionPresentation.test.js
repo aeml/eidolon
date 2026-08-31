@@ -23,6 +23,7 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('All 52 selectable Fighter, Rogue, Wizard, and Cleric abilities and all 60 rune variants');
         expect(indexHtml).toContain('Spirit Guardians shows its real reach');
         expect(indexHtml).toContain('disconnected players are removed from enemy targeting');
+        expect(indexHtml).toContain('Death and respawn validation now ends retained charge');
         expect(indexHtml).toContain('The resizable message panel now has Chat and Game tabs');
         expect(indexHtml).toContain('Inventory, Character, Abilities, Quests, Skill Tree, and Social windows now grow');
         expect(indexHtml).toContain('Daily quests remain at the quest giver');

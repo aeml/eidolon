@@ -52,6 +52,29 @@ func TestPreparePlayerForAnimationQACanArmRealHostileDeathCheck(t *testing.T) {
 	player := newLevelCommandPlayer("player-animation-near-death")
 	player.Health = player.MaxHealth
 	player.HpRegen = float64(player.MaxHealth)
+	player.IsCharging = true
+	player.ChargeTargetX = 25
+	player.ChargeRuneID = "charge_momentum"
+	player.WhirlwindActive = true
+	player.WhirlwindRuneID = "whirlwind_lifesteal"
+	player.ArcaneShieldActive = true
+	player.ArcaneShieldHP = 1_000_000
+	player.ArcaneShieldEndTime = time.Now().Add(time.Minute)
+	player.DivineInterventionActive = true
+	player.DivineInterventionEndTime = time.Now().Add(time.Minute)
+	player.SanctuaryDamageReduction = true
+	player.SanctuaryEndTime = time.Now().Add(time.Minute)
+	player.ConsecratedSanctuaryEndTime = time.Now().Add(time.Minute)
+	player.DivineInterventionGuardian = true
+	player.DivineInterventionGuardTime = time.Now().Add(time.Minute)
+	player.HealingLightHoTActive = true
+	player.HealingLightHoTTicksRemaining = 10
+	player.HealingLightHoTEndTime = time.Now().Add(time.Minute)
+	player.GuardianEmbraceActive = true
+	player.GuardianEmbraceEndTime = time.Now().Add(time.Minute)
+	player.SpiritsActive = true
+	player.SpiritEndTime = time.Now().Add(time.Minute)
+	player.InvulnerableEndTime = time.Now().Add(time.Minute)
 	w.AddEntity(player)
 
 	if !w.PreparePlayerForAnimationQA(player.ID, false, false, true) {
@@ -63,9 +86,52 @@ func TestPreparePlayerForAnimationQACanArmRealHostileDeathCheck(t *testing.T) {
 	if player.QAHealthRegenPausedUntil.Before(time.Now()) {
 		t.Fatal("expected near-death readiness to pause health regeneration")
 	}
+	if player.IsCharging || player.WhirlwindActive || player.ArcaneShieldActive || player.ArcaneShieldHP != 0 ||
+		player.DivineInterventionActive || player.SanctuaryDamageReduction ||
+		!player.ConsecratedSanctuaryEndTime.IsZero() || player.DivineInterventionGuardian ||
+		player.HealingLightHoTActive || player.GuardianEmbraceActive || player.SpiritsActive {
+		t.Fatal("expected near-death readiness to clear retained movement, protection, and healing effects")
+	}
+	if player.InvulnerableEndTime.IsZero() {
+		t.Fatal("expected waypoint invulnerability to remain until the explicit protection-off command")
+	}
 	w.Update(1.1)
 	if player.Health != 1 {
 		t.Fatalf("expected retained gear regeneration to stay paused, got %d health", player.Health)
+	}
+
+	enemy := &game.Entity{
+		ID:             "animation-near-death-enemy",
+		Type:           game.TypeEnemy,
+		SubType:        "Skeleton",
+		Health:         100,
+		MaxHealth:      100,
+		Damage:         100,
+		State:          "IDLE",
+		X:              player.X + 1,
+		Z:              player.Z,
+		AttackCooldown: time.Millisecond,
+	}
+	w.AddEntity(enemy)
+	if !w.DisablePlayerQAProtection(player.ID) {
+		t.Fatal("expected explicit waypoint protection disable")
+	}
+	if _, accepted := w.PerformAttack(enemy.ID, player.ID); !accepted {
+		t.Fatal("expected nearby hostile attack to enter the normal combat path")
+	}
+	deadline := time.Now().Add(time.Second)
+	state, health := "", 0
+	for time.Now().Before(deadline) {
+		player.Mu.RLock()
+		state, health = player.State, player.Health
+		player.Mu.RUnlock()
+		if state == "DEAD" {
+			break
+		}
+		time.Sleep(time.Millisecond)
+	}
+	if state != "DEAD" {
+		t.Fatalf("expected a real hostile hit to finish the protected-state cleanup check, state=%s health=%d", state, health)
 	}
 
 	w.PerformRespawn(player.ID)

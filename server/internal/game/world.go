@@ -666,11 +666,12 @@ func (w *World) ArmPlayerQAGuaranteedLoot(playerID string) bool {
 }
 
 // PreparePlayerForAnimationQA refills one dedicated QA character and clears
-// only its ability readiness gates. Authorization is enforced by the chat
-// command layer. It never creates an effect, ability event, target, or damage.
+// its ability readiness gates. Authorization is enforced by the chat command
+// layer. It never creates an effect, ability event, target, or damage.
 // nearDeath leaves one health so a subsequent real hostile hit can exercise
-// the authoritative death path without depending on the character's gear or
-// its retained high-level health regeneration.
+// the authoritative death path without depending on the character's gear,
+// retained high-level health regeneration, or an effect left active by the
+// preceding all-ability matrix.
 func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persistent, nearDeath bool) bool {
 	player := w.GetEntity(playerID)
 	if player == nil || player.Type != TypePlayer {
@@ -682,6 +683,36 @@ func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persiste
 	player.Health = player.MaxHealth
 	player.QAHealthRegenPausedUntil = time.Time{}
 	if nearDeath {
+		// The death check follows a complete ability/rune pass. End any movement,
+		// absorb, lethal-prevention, mitigation, or self-healing state that could
+		// legitimately survive the final cast. Waypoint invulnerability is kept
+		// separate and must still be explicitly removed by /qa-protection off.
+		player.IsCharging = false
+		player.ChargeTargetX = player.X
+		player.ChargeTargetZ = player.Z
+		player.ChargeRuneID = ""
+		player.ChargeSkillName = ""
+		player.WhirlwindActive = false
+		player.WhirlwindRuneID = ""
+		player.ArcaneShieldActive = false
+		player.ArcaneShieldHP = 0
+		player.ArcaneShieldEndTime = time.Time{}
+		player.ArcaneShieldRuneID = ""
+		player.ArcaneShieldAbsorbed = 0
+		player.DivineInterventionActive = false
+		player.DivineInterventionEndTime = time.Time{}
+		player.SanctuaryDamageReduction = false
+		player.SanctuaryEndTime = time.Time{}
+		player.ConsecratedSanctuaryEndTime = time.Time{}
+		player.DivineInterventionGuardian = false
+		player.DivineInterventionGuardTime = time.Time{}
+		player.HealingLightHoTActive = false
+		player.HealingLightHoTTicksRemaining = 0
+		player.HealingLightHoTEndTime = time.Time{}
+		player.GuardianEmbraceActive = false
+		player.GuardianEmbraceEndTime = time.Time{}
+		player.SpiritsActive = false
+		player.SpiritEndTime = time.Time{}
 		player.Health = 1
 		player.QAHealthRegenPausedUntil = time.Now().Add(time.Minute)
 	} else if lowHealth {
