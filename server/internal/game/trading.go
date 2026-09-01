@@ -101,20 +101,21 @@ func (ts *TradingSystem) toDBAuction(a *Auction) *database.Auction {
 
 func (ts *TradingSystem) toDBItem(i Item) database.Item {
 	return database.Item{
-		ID:          i.ID,
-		Name:        i.Name,
-		Type:        string(i.Type),
-		Slot:        i.Slot,
-		Rarity:      string(i.Rarity),
-		Level:       i.Level,
-		Stats:       i.Stats,
-		Value:       i.Value,
-		Icon:        i.Icon,
-		Description: i.Description,
-		Stack:       i.Stack,
-		MaxStack:    i.MaxStack,
-		Potency:     i.Potency,
-		Sockets:     i.Sockets,
+		ID:               i.ID,
+		Name:             i.Name,
+		Type:             string(i.Type),
+		Slot:             i.Slot,
+		Rarity:           string(i.Rarity),
+		Level:            i.Level,
+		Stats:            i.Stats,
+		Value:            i.Value,
+		Icon:             i.Icon,
+		Description:      i.Description,
+		Stack:            i.Stack,
+		MaxStack:         i.MaxStack,
+		Potency:          i.Potency,
+		Sockets:          i.Sockets,
+		StatScaleVersion: i.StatScaleVersion,
 	}
 }
 
@@ -142,22 +143,25 @@ func (ts *TradingSystem) fromDBItem(i database.Item) Item {
 	if stack == 0 {
 		stack = 1
 	}
-	return Item{
-		ID:          i.ID,
-		Name:        i.Name,
-		Type:        ItemType(i.Type),
-		Rarity:      ItemRarity(i.Rarity),
-		Slot:        i.Slot,
-		Level:       i.Level,
-		Stats:       i.Stats,
-		Value:       i.Value,
-		Icon:        i.Icon,
-		Description: i.Description,
-		Stack:       stack,
-		MaxStack:    i.MaxStack,
-		Potency:     i.Potency,
-		Sockets:     i.Sockets,
+	item := Item{
+		ID:               i.ID,
+		Name:             i.Name,
+		Type:             ItemType(i.Type),
+		Rarity:           ItemRarity(i.Rarity),
+		Slot:             i.Slot,
+		Level:            i.Level,
+		Stats:            i.Stats,
+		Value:            i.Value,
+		Icon:             i.Icon,
+		Description:      i.Description,
+		Stack:            stack,
+		MaxStack:         i.MaxStack,
+		Potency:          i.Potency,
+		Sockets:          i.Sockets,
+		StatScaleVersion: i.StatScaleVersion,
 	}
+	NormalizeItemStatScale(&item)
+	return item
 }
 
 func (ts *TradingSystem) CreateAuction(seller *Entity, item Item, bid, buyout, duration int) (*Auction, error) {

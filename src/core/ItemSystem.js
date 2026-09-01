@@ -6,6 +6,34 @@ export const RARITY = {
     EIDOLIC: { name: 'Eidolic', color: '#A020F0', multiplier: 1.0, statCount: 0 } // Purple
 };
 
+export const ITEM_STAT_SCALE_VERSION = 1;
+export const ITEM_STAT_SQUISH_DIVISOR = 25;
+
+const SQUISHABLE_FLAT_ITEM_STATS = new Set([
+    'strength',
+    'dexterity',
+    'intelligence',
+    'wisdom',
+    'vitality',
+    'damage',
+    'defense'
+]);
+
+export function squishFlatItemStat(stat, value) {
+    if (!SQUISHABLE_FLAT_ITEM_STATS.has(stat) || !Number.isFinite(value) || value === 0) {
+        return value;
+    }
+    const sign = value < 0 ? -1 : 1;
+    return sign * Math.max(1, Math.round(Math.abs(value) / ITEM_STAT_SQUISH_DIVISOR));
+}
+
+export function squishItemStats(stats = {}) {
+    return Object.fromEntries(Object.entries(stats).map(([stat, value]) => [
+        stat,
+        squishFlatItemStat(stat, value)
+    ]));
+}
+
 // ============================================================================
 // GEM TYPES AND QUALITIES
 // ============================================================================
@@ -54,7 +82,7 @@ export function getGemStats(gemType, quality) {
         stats[typeInfo.secondaryStat] = Math.floor(baseValue / 10);
     }
     
-    return stats;
+    return squishItemStats(stats);
 }
 
 // ============================================================================
@@ -405,6 +433,7 @@ export class Item {
         this.rarity = config.rarity;
         this.stats = config.stats || {};
         this.level = config.level || 1;
+        this.statScaleVersion = config.statScaleVersion ?? ITEM_STAT_SCALE_VERSION;
     }
 
     static getValue(item) {
@@ -579,7 +608,7 @@ export class ItemGenerator {
             type: baseItem.type,
             slot: baseItem.slot,
             rarity: rarity,
-            stats: stats,
+            stats: squishItemStats(stats),
             level: level
         });
     }

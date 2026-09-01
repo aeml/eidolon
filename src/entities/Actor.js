@@ -24,6 +24,7 @@ const TEMP_VEC3 = new THREE.Vector3();
 const TEMP_QUAT = new THREE.Quaternion();
 const UP_VEC = new THREE.Vector3(0, 1, 0);
 const ZERO_VEC = new THREE.Vector3(0, 0, 0);
+const REMOTE_ABILITY_ANIMATION_DEFER_MS = 2000;
 
 export class Actor extends Entity {
     constructor(id, config) {
@@ -213,6 +214,7 @@ export class Actor extends Entity {
         this._animFinishedHandler = null;
         this.missingAnimationClips = new Set();
         this.currentAbilityAnimation = null;
+        this.pendingRemoteAbilityAnimation = null;
         this.lastAbilityPresentation = null;
         this.managedTimers = new Set();
         this.attachedStatusEffects = new Map();
@@ -409,6 +411,19 @@ export class Actor extends Entity {
                     this.playAnimation('Idle');
                 }
             }
+
+            // A replicated cast can arrive while an on-demand remote class
+            // mesh is still loading. Retain only a recent one-shot so the
+            // event is not silently lost when the animation mixer becomes
+            // ready, while avoiding a visibly stale cast long afterward.
+            const pending = this.pendingRemoteAbilityAnimation;
+            this.pendingRemoteAbilityAnimation = null;
+            if (pending && Date.now() - pending.queuedAt <= REMOTE_ABILITY_ANIMATION_DEFER_MS) {
+                this.playAbilityAnimation(pending.skillName, {
+                    ...pending.options,
+                    deferUntilReady: false
+                });
+            }
         }
     }
 
@@ -473,7 +488,18 @@ export class Actor extends Entity {
         if (!this.animations[clipName]) {
             clipName = this.animations.Attack ? 'Attack' : (this.animations.Idle ? 'Idle' : null);
         }
-        if (!clipName) return false;
+        if (!clipName) {
+            if (this.isRemote && options.deferUntilReady !== false) {
+                this.pendingRemoteAbilityAnimation = {
+                    skillName,
+                    options: { ...options },
+                    queuedAt: Date.now()
+                };
+            }
+            return false;
+        }
+
+        this.pendingRemoteAbilityAnimation = null;
 
         const played = this.playAnimation(clipName, false, true);
         if (!played || !this.currentAction?.getClip) return played;
@@ -2058,6 +2084,7 @@ export class Actor extends Entity {
         }
         this.currentAction = null;
         this.currentAnimationName = null;
+        this.pendingRemoteAbilityAnimation = null;
         this.animations = {};
         this.mixer = null;
         super.dispose();

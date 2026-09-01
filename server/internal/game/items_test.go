@@ -1,8 +1,81 @@
 package game
 
 import (
+	"reflect"
 	"testing"
 )
+
+func TestFlatItemStatSquishUsesTwentyFiveToOneScale(t *testing.T) {
+	if got := SquishFlatItemStat("strength", 500); got != 20 {
+		t.Fatalf("expected 500 strength to squish to 20, got %d", got)
+	}
+	if got := SquishFlatItemStat("defense", 12); got != 1 {
+		t.Fatalf("expected a positive low roll to remain useful at 1, got %d", got)
+	}
+	if got := SquishFlatItemStat("critChance", 15); got != 15 {
+		t.Fatalf("expected percentage stats to remain unchanged, got %d", got)
+	}
+}
+
+func TestNormalizeLegacyItemStatScaleRunsExactlyOnce(t *testing.T) {
+	item := Item{
+		Stats: map[string]int{
+			"strength":   500,
+			"damage":     24,
+			"critChance": 15,
+		},
+		Gems: []SocketedGem{{
+			Type: GemRuby,
+			Stats: map[string]int{
+				"strength":   400,
+				"fireDamage": 40,
+			},
+		}},
+	}
+
+	NormalizeItemStatScale(&item)
+	expectedStats := map[string]int{"strength": 20, "damage": 1, "critChance": 15}
+	expectedGemStats := map[string]int{"strength": 16, "fireDamage": 40}
+	if !reflect.DeepEqual(item.Stats, expectedStats) {
+		t.Fatalf("unexpected migrated item stats: %#v", item.Stats)
+	}
+	if !reflect.DeepEqual(item.Gems[0].Stats, expectedGemStats) {
+		t.Fatalf("unexpected migrated gem stats: %#v", item.Gems[0].Stats)
+	}
+	if item.StatScaleVersion != ItemStatScaleVersion {
+		t.Fatalf("expected scale version %d, got %d", ItemStatScaleVersion, item.StatScaleVersion)
+	}
+
+	firstPass := map[string]int{}
+	for stat, value := range item.Stats {
+		firstPass[stat] = value
+	}
+	NormalizeItemStatScale(&item)
+	if !reflect.DeepEqual(item.Stats, firstPass) {
+		t.Fatalf("current-scale item was squished twice: %#v", item.Stats)
+	}
+}
+
+func TestGeneratedEquipmentAcrossEverySlotUsesCurrentStatScale(t *testing.T) {
+	slots := []string{
+		"head", "chest", "legs", "feet", "gloves", "shoulders",
+		"belt", "ring", "neck", "trinket", "mainHand", "offHand",
+	}
+	for _, slot := range slots {
+		item := GenerateLootForSlot(slot, 100)
+		if item == nil {
+			t.Fatalf("expected generated item for %s", slot)
+		}
+		if item.StatScaleVersion != ItemStatScaleVersion {
+			t.Fatalf("slot %s used stat scale version %d", slot, item.StatScaleVersion)
+		}
+		for stat, value := range item.Stats {
+			if _, squishable := squishableFlatItemStats[stat]; squishable && value < 1 {
+				t.Fatalf("slot %s produced non-positive %s=%d", slot, stat, value)
+			}
+		}
+	}
+}
 
 func TestGenerateLoot(t *testing.T) {
 	// Test basic loot generation
@@ -274,17 +347,18 @@ func TestCreateItemStatScaling(t *testing.T) {
 	}
 
 	level1 := createItem(sword, RarityCommon, 1.0, 0, 1)
-	level10 := createItem(sword, RarityCommon, 1.0, 0, 10)
-	level20 := createItem(sword, RarityCommon, 1.0, 0, 20)
+	level50 := createItem(sword, RarityCommon, 1.0, 0, 50)
+	level100 := createItem(sword, RarityCommon, 1.0, 0, 100)
 
-	// Higher levels should have higher stats
-	if level10.Stats["damage"] <= level1.Stats["damage"] {
-		t.Errorf("Level 10 (%d) should have more damage than level 1 (%d)",
-			level10.Stats["damage"], level1.Stats["damage"])
+	// The compressed integer scale intentionally groups nearby low levels, but
+	// progression remains monotonic across meaningful gear tiers.
+	if level50.Stats["damage"] <= level1.Stats["damage"] {
+		t.Errorf("Level 50 (%d) should have more damage than level 1 (%d)",
+			level50.Stats["damage"], level1.Stats["damage"])
 	}
-	if level20.Stats["damage"] <= level10.Stats["damage"] {
-		t.Errorf("Level 20 (%d) should have more damage than level 10 (%d)",
-			level20.Stats["damage"], level10.Stats["damage"])
+	if level100.Stats["damage"] <= level50.Stats["damage"] {
+		t.Errorf("Level 100 (%d) should have more damage than level 50 (%d)",
+			level100.Stats["damage"], level50.Stats["damage"])
 	}
 }
 

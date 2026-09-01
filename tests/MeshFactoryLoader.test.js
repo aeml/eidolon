@@ -192,4 +192,40 @@ describe('MeshFactory catalog integration', () => {
         mixer.stopAllAction();
         mixer.uncacheRoot(mesh);
     });
+
+    test.each([
+        ['Fighter', new THREE.BoxGeometry(1, 1, 1), 0xd84a3a, 0.5],
+        ['Rogue', new THREE.CylinderGeometry(0.3, 0.3, 1.5, 8), 0x4a8f54, 0.75],
+        ['Wizard', new THREE.ConeGeometry(0.5, 1.5, 8), 0x496bd8, 0.75],
+        ['Cleric', new THREE.SphereGeometry(0.6, 16, 16), 0xe0c95a, 0.6]
+    ])('%s asset fallback remains fully animated', (type, geometry, color, centerY) => {
+        const mesh = MeshFactory.createAnimatedPlayerFallback(type, geometry, color, centerY);
+        const clipNames = mesh.userData.animations.map((entry) => entry.name);
+
+        expect(mesh.userData.assetFallback).toBe(true);
+        expect(mesh.userData.fallbackType).toBe(type);
+        expect(clipNames).toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+        expect(mesh.getObjectByName('ProceduralPart0')).not.toBeNull();
+    });
+
+    test('every player factory path uses an animated fallback after model failure', async () => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel').mockRejectedValue(new Error('asset unavailable'));
+        const consoleWarn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        MeshFactory.pool = {};
+
+        try {
+            for (const type of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
+                const mesh = await MeshFactory.createMeshForType(type);
+                expect(mesh.userData.assetFallback).toBe(true);
+                expect(mesh.userData.fallbackType).toBe(type);
+                expect(mesh.userData.animations.map((entry) => entry.name))
+                    .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            }
+        } finally {
+            MeshFactory.pool = previousPool;
+            consoleWarn.mockRestore();
+            loadSpy.mockRestore();
+        }
+    });
 });

@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"strings"
 )
@@ -17,6 +18,63 @@ const (
 )
 
 type ItemType string
+
+const (
+	ItemStatScaleVersion  = 1
+	ItemStatSquishDivisor = 25
+)
+
+var squishableFlatItemStats = map[string]struct{}{
+	"strength":     {},
+	"dexterity":    {},
+	"intelligence": {},
+	"wisdom":       {},
+	"vitality":     {},
+	"damage":       {},
+	"defense":      {},
+}
+
+func SquishFlatItemStat(stat string, value int) int {
+	if _, ok := squishableFlatItemStats[stat]; !ok || value == 0 {
+		return value
+	}
+
+	sign := 1
+	if value < 0 {
+		sign = -1
+		value = -value
+	}
+	squished := int(math.Round(float64(value) / ItemStatSquishDivisor))
+	if squished < 1 {
+		squished = 1
+	}
+	return squished * sign
+}
+
+func SquishItemStats(stats map[string]int) map[string]int {
+	if stats == nil {
+		return nil
+	}
+	squished := make(map[string]int, len(stats))
+	for stat, value := range stats {
+		squished[stat] = SquishFlatItemStat(stat, value)
+	}
+	return squished
+}
+
+// NormalizeItemStatScale migrates persisted pre-squish gear exactly once.
+// Percentage stats and non-stat item economy fields are intentionally not
+// changed. Socketed gem stats share their containing item's scale version.
+func NormalizeItemStatScale(item *Item) {
+	if item == nil || item.StatScaleVersion >= ItemStatScaleVersion {
+		return
+	}
+	item.Stats = SquishItemStats(item.Stats)
+	for index := range item.Gems {
+		item.Gems[index].Stats = SquishItemStats(item.Gems[index].Stats)
+	}
+	item.StatScaleVersion = ItemStatScaleVersion
+}
 
 const (
 	ItemWeapon    ItemType = "WEAPON"
@@ -118,7 +176,7 @@ func GemStats(gemType GemType, quality GemQuality) map[string]int {
 		stats["moveSpeed"] = baseValue / 10 // % move speed
 		stats["cdr"] = baseValue / 20       // % cooldown reduction
 	}
-	return stats
+	return SquishItemStats(stats)
 }
 
 // GenerateGem creates a gem item
@@ -142,20 +200,21 @@ func GenerateGem(gemType GemType, quality GemQuality) *Item {
 	}
 
 	return &Item{
-		ID:          fmt.Sprintf("gem-%d-%d", rand.Int63(), rand.Int63()),
-		Name:        name,
-		Type:        ItemGem,
-		Rarity:      RarityRare,
-		Slot:        "gem",
-		Level:       1,
-		Stats:       stats,
-		Value:       value,
-		Icon:        icon,
-		Description: fmt.Sprintf("A %s %s that can be socketed into equipment.", quality, gemType),
-		Stack:       1,
-		MaxStack:    99,
-		GemType:     gemType,
-		GemQuality:  quality,
+		ID:               fmt.Sprintf("gem-%d-%d", rand.Int63(), rand.Int63()),
+		Name:             name,
+		Type:             ItemGem,
+		Rarity:           RarityRare,
+		Slot:             "gem",
+		Level:            1,
+		Stats:            stats,
+		Value:            value,
+		Icon:             icon,
+		Description:      fmt.Sprintf("A %s %s that can be socketed into equipment.", quality, gemType),
+		Stack:            1,
+		MaxStack:         99,
+		GemType:          gemType,
+		GemQuality:       quality,
+		StatScaleVersion: ItemStatScaleVersion,
 	}
 }
 
@@ -263,25 +322,26 @@ func GenerateRandomGemByLevel(level int, isElite bool) *Item {
 }
 
 type Item struct {
-	ID           string         `json:"id" bson:"id"`
-	Name         string         `json:"name" bson:"name"`
-	Type         ItemType       `json:"type" bson:"type"`
-	Rarity       ItemRarity     `json:"rarity" bson:"rarity"`
-	Slot         string         `json:"slot" bson:"slot"` // head, chest, legs, feet, gloves, shoulders, belt, ring, neck, trinket, mainHand, offHand
-	Level        int            `json:"level" bson:"level"`
-	Stats        map[string]int `json:"stats,omitempty" bson:"stats"`
-	Value        int            `json:"value" bson:"value"`
-	Icon         string         `json:"icon,omitempty" bson:"icon"`
-	Description  string         `json:"description,omitempty" bson:"description"`
-	Stack        int            `json:"stack,omitempty" bson:"stack"`
-	MaxStack     int            `json:"maxStack,omitempty" bson:"maxStack"`
-	Potency      int            `json:"potency,omitempty" bson:"potency"`
-	Sockets      int            `json:"sockets,omitempty" bson:"sockets"`
-	Gems         []SocketedGem  `json:"gems,omitempty" bson:"gems"`                 // Socketed gems
-	SetID        string         `json:"setId,omitempty" bson:"setId"`               // Set identifier
-	UniqueEffect string         `json:"uniqueEffect,omitempty" bson:"uniqueEffect"` // Unique proc effect
-	GemType      GemType        `json:"gemType,omitempty" bson:"gemType"`           // For gem items: type of gem
-	GemQuality   GemQuality     `json:"gemQuality,omitempty" bson:"gemQuality"`     // For gem items: quality of gem
+	ID               string         `json:"id" bson:"id"`
+	Name             string         `json:"name" bson:"name"`
+	Type             ItemType       `json:"type" bson:"type"`
+	Rarity           ItemRarity     `json:"rarity" bson:"rarity"`
+	Slot             string         `json:"slot" bson:"slot"` // head, chest, legs, feet, gloves, shoulders, belt, ring, neck, trinket, mainHand, offHand
+	Level            int            `json:"level" bson:"level"`
+	Stats            map[string]int `json:"stats,omitempty" bson:"stats"`
+	Value            int            `json:"value" bson:"value"`
+	Icon             string         `json:"icon,omitempty" bson:"icon"`
+	Description      string         `json:"description,omitempty" bson:"description"`
+	Stack            int            `json:"stack,omitempty" bson:"stack"`
+	MaxStack         int            `json:"maxStack,omitempty" bson:"maxStack"`
+	Potency          int            `json:"potency,omitempty" bson:"potency"`
+	Sockets          int            `json:"sockets,omitempty" bson:"sockets"`
+	Gems             []SocketedGem  `json:"gems,omitempty" bson:"gems"`                 // Socketed gems
+	SetID            string         `json:"setId,omitempty" bson:"setId"`               // Set identifier
+	UniqueEffect     string         `json:"uniqueEffect,omitempty" bson:"uniqueEffect"` // Unique proc effect
+	GemType          GemType        `json:"gemType,omitempty" bson:"gemType"`           // For gem items: type of gem
+	GemQuality       GemQuality     `json:"gemQuality,omitempty" bson:"gemQuality"`     // For gem items: quality of gem
+	StatScaleVersion int            `json:"statScaleVersion,omitempty" bson:"stat_scale_version"`
 }
 
 // Base Item Definitions (Matching Client)
@@ -570,18 +630,19 @@ func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCo
 		}
 
 		return &Item{
-			ID:          fmt.Sprintf("item-%d-%d", rand.Int63(), rand.Int63()),
-			Name:        baseItem.Name,
-			Type:        baseItem.Type,
-			Rarity:      rarity,
-			Slot:        baseItem.Slot,
-			Level:       1, // Materials don't really have level?
-			Stats:       make(map[string]int),
-			Value:       10, // Base value
-			Description: desc,
-			Stack:       1,
-			MaxStack:    1000,
-			Icon:        icon,
+			ID:               fmt.Sprintf("item-%d-%d", rand.Int63(), rand.Int63()),
+			Name:             baseItem.Name,
+			Type:             baseItem.Type,
+			Rarity:           rarity,
+			Slot:             baseItem.Slot,
+			Level:            1, // Materials don't really have level?
+			Stats:            make(map[string]int),
+			Value:            10, // Base value
+			Description:      desc,
+			Stack:            1,
+			MaxStack:         1000,
+			Icon:             icon,
+			StatScaleVersion: ItemStatScaleVersion,
 		}
 	}
 
@@ -674,16 +735,17 @@ func createItem(baseItem BaseItem, rarity ItemRarity, multiplier float64, statCo
 	}
 
 	return &Item{
-		ID:       fmt.Sprintf("item-%d", rand.Int63()),
-		Name:     name,
-		Type:     baseItem.Type,
-		Rarity:   rarity,
-		Slot:     baseItem.Slot,
-		Level:    level,
-		Stats:    itemStats,
-		Value:    int(float64(level*10) * multiplier),
-		Stack:    1,
-		MaxStack: 1,
+		ID:               fmt.Sprintf("item-%d", rand.Int63()),
+		Name:             name,
+		Type:             baseItem.Type,
+		Rarity:           rarity,
+		Slot:             baseItem.Slot,
+		Level:            level,
+		Stats:            SquishItemStats(itemStats),
+		Value:            int(float64(level*10) * multiplier),
+		Stack:            1,
+		MaxStack:         1,
+		StatScaleVersion: ItemStatScaleVersion,
 	}
 }
 

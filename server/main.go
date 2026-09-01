@@ -1914,22 +1914,25 @@ func (c *Client) handleMessage(msg Message) {
 					stack = 1
 				}
 
-				entity.Inventory[i] = game.Item{
-					ID:          dbItem.ID,
-					Name:        name,
-					Type:        game.ItemType(dbItem.Type),
-					Rarity:      game.ItemRarity(dbItem.Rarity),
-					Slot:        dbItem.Slot,
-					Level:       dbItem.Level,
-					Value:       dbItem.Value,
-					Icon:        dbItem.Icon,
-					Description: dbItem.Description,
-					Stats:       dbItem.Stats,
-					Stack:       stack,
-					MaxStack:    maxStack,
-					Potency:     dbItem.Potency,
-					Sockets:     dbItem.Sockets,
+				loadedItem := game.Item{
+					ID:               dbItem.ID,
+					Name:             name,
+					Type:             game.ItemType(dbItem.Type),
+					Rarity:           game.ItemRarity(dbItem.Rarity),
+					Slot:             dbItem.Slot,
+					Level:            dbItem.Level,
+					Value:            dbItem.Value,
+					Icon:             dbItem.Icon,
+					Description:      dbItem.Description,
+					Stats:            dbItem.Stats,
+					Stack:            stack,
+					MaxStack:         maxStack,
+					Potency:          dbItem.Potency,
+					Sockets:          dbItem.Sockets,
+					StatScaleVersion: dbItem.StatScaleVersion,
 				}
+				game.NormalizeItemStatScale(&loadedItem)
+				entity.Inventory[i] = loadedItem
 			}
 		}
 
@@ -1965,22 +1968,25 @@ func (c *Client) handleMessage(msg Message) {
 					stack = 1
 				}
 
-				entity.Stash[i] = game.Item{
-					ID:          dbItem.ID,
-					Name:        name,
-					Type:        game.ItemType(dbItem.Type),
-					Rarity:      game.ItemRarity(dbItem.Rarity),
-					Slot:        dbItem.Slot,
-					Level:       dbItem.Level,
-					Value:       dbItem.Value,
-					Icon:        dbItem.Icon,
-					Description: dbItem.Description,
-					Stats:       dbItem.Stats,
-					Stack:       stack,
-					MaxStack:    maxStack,
-					Potency:     dbItem.Potency,
-					Sockets:     dbItem.Sockets,
+				loadedItem := game.Item{
+					ID:               dbItem.ID,
+					Name:             name,
+					Type:             game.ItemType(dbItem.Type),
+					Rarity:           game.ItemRarity(dbItem.Rarity),
+					Slot:             dbItem.Slot,
+					Level:            dbItem.Level,
+					Value:            dbItem.Value,
+					Icon:             dbItem.Icon,
+					Description:      dbItem.Description,
+					Stats:            dbItem.Stats,
+					Stack:            stack,
+					MaxStack:         maxStack,
+					Potency:          dbItem.Potency,
+					Sockets:          dbItem.Sockets,
+					StatScaleVersion: dbItem.StatScaleVersion,
 				}
+				game.NormalizeItemStatScale(&loadedItem)
+				entity.Stash[i] = loadedItem
 			}
 		}
 
@@ -2016,22 +2022,25 @@ func (c *Client) handleMessage(msg Message) {
 					stack = 1
 				}
 
-				entity.Buyback[i] = game.Item{
-					ID:          dbItem.ID,
-					Name:        name,
-					Type:        game.ItemType(dbItem.Type),
-					Rarity:      game.ItemRarity(dbItem.Rarity),
-					Slot:        dbItem.Slot,
-					Level:       dbItem.Level,
-					Value:       dbItem.Value,
-					Icon:        dbItem.Icon,
-					Description: dbItem.Description,
-					Stats:       dbItem.Stats,
-					Stack:       stack,
-					MaxStack:    maxStack,
-					Potency:     dbItem.Potency,
-					Sockets:     dbItem.Sockets,
+				loadedItem := game.Item{
+					ID:               dbItem.ID,
+					Name:             name,
+					Type:             game.ItemType(dbItem.Type),
+					Rarity:           game.ItemRarity(dbItem.Rarity),
+					Slot:             dbItem.Slot,
+					Level:            dbItem.Level,
+					Value:            dbItem.Value,
+					Icon:             dbItem.Icon,
+					Description:      dbItem.Description,
+					Stats:            dbItem.Stats,
+					Stack:            stack,
+					MaxStack:         maxStack,
+					Potency:          dbItem.Potency,
+					Sockets:          dbItem.Sockets,
+					StatScaleVersion: dbItem.StatScaleVersion,
 				}
+				game.NormalizeItemStatScale(&loadedItem)
+				entity.Buyback[i] = loadedItem
 			}
 		}
 
@@ -2043,22 +2052,25 @@ func (c *Client) handleMessage(msg Message) {
 				if stack == 0 {
 					stack = 1
 				}
-				entity.Equipment[slot] = game.Item{
-					ID:          dbItem.ID,
-					Name:        dbItem.Name,
-					Type:        game.ItemType(dbItem.Type),
-					Rarity:      game.ItemRarity(dbItem.Rarity),
-					Slot:        dbItem.Slot,
-					Level:       dbItem.Level,
-					Value:       dbItem.Value,
-					Icon:        dbItem.Icon,
-					Description: dbItem.Description,
-					Stats:       dbItem.Stats,
-					Stack:       stack,
-					MaxStack:    dbItem.MaxStack,
-					Potency:     dbItem.Potency,
-					Sockets:     dbItem.Sockets,
+				loadedItem := game.Item{
+					ID:               dbItem.ID,
+					Name:             dbItem.Name,
+					Type:             game.ItemType(dbItem.Type),
+					Rarity:           game.ItemRarity(dbItem.Rarity),
+					Slot:             dbItem.Slot,
+					Level:            dbItem.Level,
+					Value:            dbItem.Value,
+					Icon:             dbItem.Icon,
+					Description:      dbItem.Description,
+					Stats:            dbItem.Stats,
+					Stack:            stack,
+					MaxStack:         dbItem.MaxStack,
+					Potency:          dbItem.Potency,
+					Sockets:          dbItem.Sockets,
+					StatScaleVersion: dbItem.StatScaleVersion,
 				}
+				game.NormalizeItemStatScale(&loadedItem)
+				entity.Equipment[slot] = loadedItem
 			}
 		}
 
@@ -4919,20 +4931,21 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 		char.Inventory = make([]database.Item, len(validItems))
 		for i, item := range validItems {
 			char.Inventory[i] = database.Item{
-				ID:          item.ID,
-				Name:        item.Name,
-				Type:        string(item.Type),
-				Rarity:      string(item.Rarity),
-				Slot:        item.Slot,
-				Level:       item.Level,
-				Value:       item.Value,
-				Icon:        item.Icon,
-				Description: item.Description,
-				Stats:       item.Stats,
-				Stack:       item.Stack,
-				MaxStack:    item.MaxStack,
-				Potency:     item.Potency,
-				Sockets:     item.Sockets,
+				ID:               item.ID,
+				Name:             item.Name,
+				Type:             string(item.Type),
+				Rarity:           string(item.Rarity),
+				Slot:             item.Slot,
+				Level:            item.Level,
+				Value:            item.Value,
+				Icon:             item.Icon,
+				Description:      item.Description,
+				Stats:            item.Stats,
+				Stack:            item.Stack,
+				MaxStack:         item.MaxStack,
+				Potency:          item.Potency,
+				Sockets:          item.Sockets,
+				StatScaleVersion: item.StatScaleVersion,
 			}
 		}
 	}
@@ -4943,20 +4956,21 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 		char.Stash = make([]database.Item, len(entity.Stash))
 		for i, item := range entity.Stash {
 			char.Stash[i] = database.Item{
-				ID:          item.ID,
-				Name:        item.Name,
-				Type:        string(item.Type),
-				Rarity:      string(item.Rarity),
-				Slot:        item.Slot,
-				Level:       item.Level,
-				Value:       item.Value,
-				Icon:        item.Icon,
-				Description: item.Description,
-				Stats:       item.Stats,
-				Stack:       item.Stack,
-				MaxStack:    item.MaxStack,
-				Potency:     item.Potency,
-				Sockets:     item.Sockets,
+				ID:               item.ID,
+				Name:             item.Name,
+				Type:             string(item.Type),
+				Rarity:           string(item.Rarity),
+				Slot:             item.Slot,
+				Level:            item.Level,
+				Value:            item.Value,
+				Icon:             item.Icon,
+				Description:      item.Description,
+				Stats:            item.Stats,
+				Stack:            item.Stack,
+				MaxStack:         item.MaxStack,
+				Potency:          item.Potency,
+				Sockets:          item.Sockets,
+				StatScaleVersion: item.StatScaleVersion,
 			}
 		}
 	}
@@ -4967,20 +4981,21 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 		char.Buyback = make([]database.Item, len(entity.Buyback))
 		for i, item := range entity.Buyback {
 			char.Buyback[i] = database.Item{
-				ID:          item.ID,
-				Name:        item.Name,
-				Type:        string(item.Type),
-				Rarity:      string(item.Rarity),
-				Slot:        item.Slot,
-				Level:       item.Level,
-				Value:       item.Value,
-				Icon:        item.Icon,
-				Description: item.Description,
-				Stats:       item.Stats,
-				Stack:       item.Stack,
-				MaxStack:    item.MaxStack,
-				Potency:     item.Potency,
-				Sockets:     item.Sockets,
+				ID:               item.ID,
+				Name:             item.Name,
+				Type:             string(item.Type),
+				Rarity:           string(item.Rarity),
+				Slot:             item.Slot,
+				Level:            item.Level,
+				Value:            item.Value,
+				Icon:             item.Icon,
+				Description:      item.Description,
+				Stats:            item.Stats,
+				Stack:            item.Stack,
+				MaxStack:         item.MaxStack,
+				Potency:          item.Potency,
+				Sockets:          item.Sockets,
+				StatScaleVersion: item.StatScaleVersion,
 			}
 		}
 	}
@@ -4990,20 +5005,21 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 	if len(entity.Equipment) > 0 {
 		for slot, item := range entity.Equipment {
 			char.Equipment[slot] = database.Item{
-				ID:          item.ID,
-				Name:        item.Name,
-				Type:        string(item.Type),
-				Rarity:      string(item.Rarity),
-				Slot:        item.Slot,
-				Level:       item.Level,
-				Value:       item.Value,
-				Icon:        item.Icon,
-				Description: item.Description,
-				Stats:       item.Stats,
-				Stack:       item.Stack,
-				MaxStack:    item.MaxStack,
-				Potency:     item.Potency,
-				Sockets:     item.Sockets,
+				ID:               item.ID,
+				Name:             item.Name,
+				Type:             string(item.Type),
+				Rarity:           string(item.Rarity),
+				Slot:             item.Slot,
+				Level:            item.Level,
+				Value:            item.Value,
+				Icon:             item.Icon,
+				Description:      item.Description,
+				Stats:            item.Stats,
+				Stack:            item.Stack,
+				MaxStack:         item.MaxStack,
+				Potency:          item.Potency,
+				Sockets:          item.Sockets,
+				StatScaleVersion: item.StatScaleVersion,
 			}
 		}
 	}

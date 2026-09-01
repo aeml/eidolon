@@ -636,6 +636,23 @@ export class MeshFactory {
         ];
     }
 
+    static createAnimatedPlayerFallback(type, geometry, color, centerY) {
+        const group = new THREE.Group();
+        const part = new THREE.Mesh(
+            geometry,
+            new THREE.MeshStandardMaterial({ color })
+        );
+        part.name = 'ProceduralPart0';
+        part.position.y = centerY;
+        part.castShadow = true;
+        part.receiveShadow = true;
+        group.add(part);
+        group.userData.assetFallback = true;
+        group.userData.fallbackType = type;
+        group.userData.animations = this.createProceduralAnimationClips(group.children);
+        return group;
+    }
+
     static getPooledMesh(type) {
         if (this.pool[type] && this.pool[type].length > 0) {
             const mesh = this.pool[type].pop();
@@ -837,13 +854,12 @@ export class MeshFactory {
                 return mesh;
             } catch (e) {
                 console.warn(`Failed to load model for ${type}, falling back to primitive.`, e);
-                const geometry = new THREE.BoxGeometry(1, 1, 1);
-                const material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.FIGHTER.COLOR });
-                mesh = new THREE.Mesh(geometry, material);
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;
-                mesh.position.y = 0.5;
-                return mesh;
+                return this.createAnimatedPlayerFallback(
+                    type,
+                    new THREE.BoxGeometry(1, 1, 1),
+                    CONSTANTS.ENTITIES.FIGHTER.COLOR,
+                    0.5
+                );
             }
         }
 
@@ -910,13 +926,12 @@ export class MeshFactory {
                 return mesh;
             } catch (e) {
                 console.warn(`Failed to load model for ${type}, falling back to primitive.`, e);
-                const geometry = new THREE.ConeGeometry(0.5, 1.5, 8);
-                const material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.WIZARD.COLOR });
-                mesh = new THREE.Mesh(geometry, material);
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;
-                mesh.position.y = 0.75;
-                return mesh;
+                return this.createAnimatedPlayerFallback(
+                    type,
+                    new THREE.ConeGeometry(0.5, 1.5, 8),
+                    CONSTANTS.ENTITIES.WIZARD.COLOR,
+                    0.75
+                );
             }
         }
 
@@ -983,13 +998,12 @@ export class MeshFactory {
                 return mesh;
             } catch (e) {
                 console.warn(`Failed to load model for ${type}, falling back to primitive.`, e);
-                const geometry = new THREE.CylinderGeometry(0.3, 0.3, 1.5, 8);
-                const material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.ROGUE.COLOR });
-                mesh = new THREE.Mesh(geometry, material);
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;
-                mesh.position.y = 0.75;
-                return mesh;
+                return this.createAnimatedPlayerFallback(
+                    type,
+                    new THREE.CylinderGeometry(0.3, 0.3, 1.5, 8),
+                    CONSTANTS.ENTITIES.ROGUE.COLOR,
+                    0.75
+                );
             }
         }
 
@@ -1062,13 +1076,12 @@ export class MeshFactory {
                 return mesh;
             } catch (e) {
                 console.warn(`Failed to load model for ${type}, falling back to primitive.`, e);
-                const geometry = new THREE.SphereGeometry(0.6, 16, 16);
-                const material = new THREE.MeshStandardMaterial({ color: CONSTANTS.ENTITIES.CLERIC.COLOR });
-                mesh = new THREE.Mesh(geometry, material);
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;
-                mesh.position.y = 0.6;
-                return mesh;
+                return this.createAnimatedPlayerFallback(
+                    type,
+                    new THREE.SphereGeometry(0.6, 16, 16),
+                    CONSTANTS.ENTITIES.CLERIC.COLOR,
+                    0.6
+                );
             }
         }
 

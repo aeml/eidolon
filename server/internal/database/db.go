@@ -92,20 +92,21 @@ type Stats struct {
 }
 
 type Item struct {
-	ID          string         `bson:"id"`
-	Name        string         `bson:"name"`
-	Type        string         `bson:"type"` // WEAPON, ARMOR
-	Slot        string         `bson:"slot"`
-	Rarity      string         `bson:"rarity"`
-	Level       int            `bson:"level"`
-	Stats       map[string]int `bson:"stats"`
-	Value       int            `bson:"value"`
-	Icon        string         `bson:"icon"`
-	Description string         `bson:"description"`
-	Stack       int            `bson:"stack"`
-	MaxStack    int            `bson:"max_stack"`
-	Potency     int            `bson:"potency"`
-	Sockets     int            `bson:"sockets"`
+	ID               string         `bson:"id"`
+	Name             string         `bson:"name"`
+	Type             string         `bson:"type"` // WEAPON, ARMOR
+	Slot             string         `bson:"slot"`
+	Rarity           string         `bson:"rarity"`
+	Level            int            `bson:"level"`
+	Stats            map[string]int `bson:"stats"`
+	Value            int            `bson:"value"`
+	Icon             string         `bson:"icon"`
+	Description      string         `bson:"description"`
+	Stack            int            `bson:"stack"`
+	MaxStack         int            `bson:"max_stack"`
+	Potency          int            `bson:"potency"`
+	Sockets          int            `bson:"sockets"`
+	StatScaleVersion int            `bson:"stat_scale_version,omitempty"`
 }
 
 // FriendshipPending and FriendshipAccepted are the two valid status values for a Friendship document.

@@ -127,6 +127,10 @@ async function remotePlayerSnapshot(page, username) {
             partyId: entity.partyId,
             state: entity.state,
             currentAnimation: entity.currentAnimationName || null,
+            meshReady: Boolean(entity.mesh),
+            meshLoading: Boolean(entity.isMeshLoading),
+            animationClips: Object.keys(entity.animations || {}),
+            assetFallback: Boolean(entity.mesh?.userData?.assetFallback),
             jumpProgress: entity.jumpProgress,
             x: entity.position?.x,
             z: entity.position?.z,
@@ -262,6 +266,13 @@ async function castAndObserveRemote(sourcePage, observerPage, sourceUsername, sk
         timeout: 15_000,
         intervals: [25, 50, 100, 250]
     }).toBe(true);
+    await expect.poll(async () =>
+        (await remotePlayerSnapshot(observerPage, sourceUsername))?.currentAnimation || null,
+    {
+        message: `${skillName} must retain an animated remote actor after on-demand mesh loading`,
+        timeout: 15_000,
+        intervals: [25, 50, 100, 250]
+    }).toMatch(/^(Attack|Run|Walk|Idle)$/);
     const snapshot = await remotePlayerSnapshot(observerPage, sourceUsername);
     expect(snapshot.lastAbility.fallback).toBe(false);
     expect(snapshot.lastAbility.layerCount).toBeGreaterThan(0);

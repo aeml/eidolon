@@ -2,6 +2,16 @@ package game
 
 import "testing"
 
+func TestGemFlatStatsUseSquishedScaleWhilePercentagesRemainStable(t *testing.T) {
+	stats := GemStats(GemRuby, GemRadiant)
+	if stats["strength"] != 16 {
+		t.Fatalf("expected Radiant Ruby strength 400 to squish to 16, got %d", stats["strength"])
+	}
+	if stats["fireDamage"] != 40 {
+		t.Fatalf("expected percentage fire damage to remain 40, got %d", stats["fireDamage"])
+	}
+}
+
 func TestGenerateRandomGemByLevelSetsIcon(t *testing.T) {
 	gem := GenerateRandomGemByLevel(1, false)
 	if gem == nil {

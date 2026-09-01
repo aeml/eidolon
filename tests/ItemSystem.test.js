@@ -1,5 +1,40 @@
 import { jest } from '@jest/globals';
-import { RARITY, SLOTS, BASE_ITEMS, Item, ItemGenerator } from '../src/core/ItemSystem.js';
+import {
+    BASE_ITEMS,
+    getGemStats,
+    ITEM_STAT_SCALE_VERSION,
+    Item,
+    ItemGenerator,
+    RARITY,
+    SLOTS,
+    squishFlatItemStat,
+    squishItemStats
+} from '../src/core/ItemSystem.js';
+
+describe('Item stat squish', () => {
+    test('uses the requested twenty-five-to-one flat-stat scale', () => {
+        expect(squishFlatItemStat('strength', 500)).toBe(20);
+        expect(squishFlatItemStat('defense', 12)).toBe(1);
+        expect(squishFlatItemStat('critChance', 15)).toBe(15);
+        expect(squishItemStats({ damage: 500, cdr: 20 }))
+            .toEqual({ damage: 20, cdr: 20 });
+    });
+
+    test('squishes gem flat stats without changing percentage effects', () => {
+        expect(getGemStats('Ruby', 'Radiant')).toEqual({
+            strength: 16,
+            fireDamage: 40
+        });
+    });
+
+    test('offline generated gear carries the current scale marker', () => {
+        const baseItem = BASE_ITEMS.find((entry) => entry.slot === SLOTS.MAIN_HAND);
+        const item = ItemGenerator.createItem(baseItem, RARITY.LEGENDARY, 100);
+
+        expect(item.statScaleVersion).toBe(ITEM_STAT_SCALE_VERSION);
+        expect(Object.values(item.stats).every((value) => value >= 1)).toBe(true);
+    });
+});
 
 describe('ItemSystem Constants', () => {
     describe('RARITY', () => {
@@ -370,11 +405,11 @@ describe('ItemGenerator', () => {
             const baseItem = BASE_ITEMS.find(i => i.slot === SLOTS.MAIN_HAND && i.type === 'WEAPON');
             
             const level1 = ItemGenerator.createItem(baseItem, RARITY.COMMON, 1);
-            const level10 = ItemGenerator.createItem(baseItem, RARITY.COMMON, 10);
-            const level20 = ItemGenerator.createItem(baseItem, RARITY.COMMON, 20);
-            
-            expect(level10.stats.damage).toBeGreaterThan(level1.stats.damage);
-            expect(level20.stats.damage).toBeGreaterThan(level10.stats.damage);
+            const level50 = ItemGenerator.createItem(baseItem, RARITY.COMMON, 50);
+            const level100 = ItemGenerator.createItem(baseItem, RARITY.COMMON, 100);
+
+            expect(level50.stats.damage).toBeGreaterThan(level1.stats.damage);
+            expect(level100.stats.damage).toBeGreaterThan(level50.stats.damage);
         });
 
         test('Rare items get bonus stats', () => {
@@ -443,12 +478,12 @@ describe('Item Stat Scaling', () => {
         
         const commonL1 = ItemGenerator.createItem(baseItem, RARITY.COMMON, 1);
         const rareL1 = ItemGenerator.createItem(baseItem, RARITY.RARE, 1);
-        const commonL10 = ItemGenerator.createItem(baseItem, RARITY.COMMON, 10);
+        const commonL100 = ItemGenerator.createItem(baseItem, RARITY.COMMON, 100);
         
         // Same level, higher rarity = more stats
         expect(getTotalStats(rareL1)).toBeGreaterThan(getTotalStats(commonL1));
         
         // Same rarity, higher level = more stats
-        expect(getTotalStats(commonL10)).toBeGreaterThan(getTotalStats(commonL1));
+        expect(getTotalStats(commonL100)).toBeGreaterThan(getTotalStats(commonL1));
     });
 });

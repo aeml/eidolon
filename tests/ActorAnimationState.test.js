@@ -152,6 +152,40 @@ describe('Actor animation state machine', () => {
         actor.dispose();
     });
 
+    test('a remote cast received during mesh loading plays when the mixer becomes ready', () => {
+        const actor = new Actor('loading-remote', {
+            STATS: {
+                STRENGTH: 5,
+                INTELLIGENCE: 5,
+                DEXTERITY: 6,
+                WISDOM: 5,
+                STAMINA: 5
+            }
+        });
+        actor.meshType = 'Cleric';
+        actor.isRemote = true;
+
+        expect(actor.playAbilityAnimation('Spirit Guardians')).toBe(false);
+        expect(actor.pendingRemoteAbilityAnimation).toEqual(expect.objectContaining({
+            skillName: 'Spirit Guardians'
+        }));
+
+        const mesh = new THREE.Group();
+        mesh.userData.animations = [
+            clip('Idle', 1),
+            clip('Walk', 0.8),
+            clip('Run', 0.6),
+            clip('Attack', 0.2),
+            clip('Death', 0.4)
+        ];
+        actor.setMesh(mesh);
+
+        expect(actor.pendingRemoteAbilityAnimation).toBeNull();
+        expect(actor.currentAnimationName).toBe('Attack');
+        expect(actor.currentAbilityAnimation?.skillName).toBe('Spirit Guardians');
+        actor.dispose();
+    });
+
     test('forced priority actions intentionally interrupt an active ability action', () => {
         const actor = animatedActor();
         actor.meshType = 'Fighter';
