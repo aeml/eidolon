@@ -574,6 +574,7 @@ const QAWaypointProtectionDuration = 5 * time.Minute
 // it. Normal input resumes as soon as this short handoff window expires.
 const QAWaypointMovementLockDuration = time.Second
 const AbilityMovementLockDuration = 500 * time.Millisecond
+const QADeathHostileAcquireRadius = 20.0
 
 // MovePlayerToQAWaypoint moves an overworld player to a bounded release-QA
 // waypoint. Authorization belongs to the server command layer. Combat and
@@ -703,7 +704,7 @@ func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persiste
 			}
 			entity.Mu.Lock()
 			if entity.State != "DEAD" && entity.InstanceID == playerInstanceID &&
-				math.Hypot(entity.X-playerX, entity.Z-playerZ) <= 12 {
+				math.Hypot(entity.X-playerX, entity.Z-playerZ) <= QADeathHostileAcquireRadius {
 				if entity.Threat == nil {
 					entity.Threat = make(map[string]float64)
 				}
@@ -785,7 +786,7 @@ func (w *World) DisablePlayerQAProtection(playerID string) bool {
 
 	var nearest *Entity
 	nearestDistance := math.MaxFloat64
-	for _, candidate := range w.Grid.Nearby(playerX, playerZ, 12, playerInstanceID) {
+	for _, candidate := range w.Grid.Nearby(playerX, playerZ, QADeathHostileAcquireRadius, playerInstanceID) {
 		candidate.Mu.RLock()
 		isLiveHostile := candidate.Type == TypeEnemy && candidate.State != "DEAD" &&
 			candidate.InstanceID == playerInstanceID
@@ -799,6 +800,10 @@ func (w *World) DisablePlayerQAProtection(playerID string) bool {
 
 	if nearest != nil {
 		nearest.Mu.Lock()
+		if nearest.Threat == nil {
+			nearest.Threat = make(map[string]float64)
+		}
+		nearest.Threat[playerID] = 1_000_000_000
 		nearest.LastAttackTime = time.Time{}
 		nearest.State = "IDLE"
 		nearest.Stunned = false

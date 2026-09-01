@@ -135,7 +135,7 @@ func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) 
 		MaxHealth:      100,
 		Damage:         1,
 		State:          "IDLE",
-		X:              1,
+		X:              14,
 		AttackCooldown: time.Millisecond,
 		Threat:         map[string]float64{"prior-qa-player": 100_000},
 	}
@@ -185,6 +185,24 @@ func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) 
 	if focusedThreat <= priorThreat {
 		t.Fatalf("expected nearby hostile to focus the active QA character, got active=%v prior=%v", focusedThreat, priorThreat)
 	}
+	if !w.DisablePlayerQAProtection(player.ID) {
+		t.Fatal("expected waypoint protection to be disabled while the focused hostile approaches")
+	}
+	player.Mu.RLock()
+	deadOutsideMeleeRange := player.State == "DEAD"
+	player.Mu.RUnlock()
+	if deadOutsideMeleeRange {
+		t.Fatal("expected the normal melee range to remain authoritative")
+	}
+
+	// Let the focused hostile finish its normal approach, then ask the same
+	// bounded command to exercise the real in-range attack and swing delay.
+	enemy.Mu.Lock()
+	oldEnemyX, oldEnemyZ := enemy.X, enemy.Z
+	enemy.X = 1
+	enemy.Z = 0
+	enemy.Mu.Unlock()
+	w.Grid.Update(enemy, oldEnemyX, oldEnemyZ)
 
 	// Simulate a mitigation edge being reapplied between readiness and the
 	// hostile swing. The release check must still take one real point of damage
