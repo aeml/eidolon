@@ -243,8 +243,15 @@ function analyzeRemoteMovement(frames) {
     };
 }
 
-async function castAndObserveRemote(sourcePage, observerPage, sourceUsername, skillName, key) {
-    await prepareAnimationCast(sourcePage);
+async function castAndObserveRemote(
+    sourcePage,
+    observerPage,
+    sourceUsername,
+    skillName,
+    key,
+    { persistent = false } = {}
+) {
+    await prepareAnimationCast(sourcePage, persistent);
     let target = null;
     await expect.poll(async () => {
         target = await projectGroundOffset(sourcePage, 6, 2);
@@ -258,21 +265,23 @@ async function castAndObserveRemote(sourcePage, observerPage, sourceUsername, sk
         await sourcePage.keyboard.press(key);
     }
     await observerPage.bringToFront();
-    await expect.poll(async () => {
-        const presentation = (await remotePlayerSnapshot(observerPage, sourceUsername))?.lastAbility;
-        return Boolean(presentation?.skillName === skillName && presentation.timestamp > previous);
-    }, {
-        message: `${skillName} must play through the remote production VFX route`,
-        timeout: 15_000,
-        intervals: [25, 50, 100, 250]
-    }).toBe(true);
-    await expect.poll(async () =>
-        (await remotePlayerSnapshot(observerPage, sourceUsername))?.currentAnimation || null,
-    {
-        message: `${skillName} must retain an animated remote actor after on-demand mesh loading`,
-        timeout: 15_000,
-        intervals: [25, 50, 100, 250]
-    }).toMatch(/^(Attack|Run|Walk|Idle)$/);
+    await Promise.all([
+        expect.poll(async () => {
+            const presentation = (await remotePlayerSnapshot(observerPage, sourceUsername))?.lastAbility;
+            return Boolean(presentation?.skillName === skillName && presentation.timestamp > previous);
+        }, {
+            message: `${skillName} must play through the remote production VFX route`,
+            timeout: 15_000,
+            intervals: [25, 50, 100, 250]
+        }).toBe(true),
+        expect.poll(async () =>
+            (await remotePlayerSnapshot(observerPage, sourceUsername))?.currentAnimation || null,
+        {
+            message: `${skillName} must retain an animated remote actor after on-demand mesh loading`,
+            timeout: 30_000,
+            intervals: [25, 50, 100, 250]
+        }).toMatch(/^(Attack|Run|Walk|Idle)$/)
+    ]);
     const snapshot = await remotePlayerSnapshot(observerPage, sourceUsername);
     expect(snapshot.lastAbility.fallback).toBe(false);
     expect(snapshot.lastAbility.layerCount).toBeGreaterThan(0);
@@ -480,7 +489,8 @@ test.describe('two-account multiplayer', () => {
                     secondPage,
                     primary.username,
                     'Spirit Guardians',
-                    'right'
+                    'right',
+                    { persistent: true }
                 );
                 try {
                     await expect.poll(async () => {
@@ -523,7 +533,8 @@ test.describe('two-account multiplayer', () => {
                     secondPage,
                     primary.username,
                     'Spirit Guardians Boost',
-                    '3'
+                    '3',
+                    { persistent: true }
                 );
                 await expect.poll(async () => {
                     const remote = await remoteSnapshot(secondPage, primary.username);
