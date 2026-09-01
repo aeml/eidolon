@@ -38,6 +38,7 @@ export class QuestUI {
         // --- Callbacks (set by GameEngine) ---
         this.onAcceptQuest = null;
         this.onCompleteQuest = null;
+        this.onRequestQuests = null;
 
         // --- Event listeners ---
         if (this.btnCloseQuest) this.btnCloseQuest.addEventListener('click', () => this.toggleQuestWindow());
@@ -69,6 +70,7 @@ export class QuestUI {
             this.questWindow.style.display = isHidden ? 'flex' : 'none';
         }
         if (isHidden) {
+            this.onRequestQuests?.();
             const player = this.ctx.getLastPlayer();
             if (player && player.quests) {
                 this.updateQuestWindow(player.quests);

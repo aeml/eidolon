@@ -515,6 +515,18 @@ export async function exerciseMenus(page) {
         }
         await expect(menu).toBeHidden();
     }
+
+    const characterSheet = page.locator('#character-sheet');
+    const inventory = page.locator('#inventory-screen');
+    await page.keyboard.press('c');
+    await expect(characterSheet).toBeVisible();
+    await page.keyboard.press('i');
+    await expect(inventory).toBeVisible();
+    await expect(characterSheet, 'Opening inventory must keep the equipment sheet visible').toBeVisible();
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Escape');
+    await expect(characterSheet).toBeHidden();
+    await expect(inventory).toBeHidden();
 }
 
 export async function exerciseReconnect(page) {

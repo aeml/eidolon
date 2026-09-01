@@ -282,6 +282,7 @@ const (
 	MsgStashWithdraw    = "stash_withdraw"
 	MsgStash            = "stash"
 	MsgQuestUpdate      = "quest_update"
+	MsgRequestQuests    = "request_quests"
 	MsgAcceptQuest      = "accept_quest"
 	MsgCompleteQuest    = "complete_quest"
 	MsgSelectBranch     = "selectBranch"
@@ -2382,6 +2383,7 @@ func (c *Client) handleMessage(msg Message) {
 		c.sendSafe(b)
 
 		// Re-send all initial state so the client can repopulate its UI.
+		world.GenerateDailyQuests(playerID)
 		instanceID := entity.InstanceID
 		sendInitialPlayerState(c, entity, instanceID)
 
@@ -2898,6 +2900,18 @@ func (c *Client) handleMessage(msg Message) {
 			}
 			bStash, _ := json.Marshal(msgStash)
 			c.sendSafe(bStash)
+		}
+
+	case MsgRequestQuests:
+		if c.playerID == "" {
+			return
+		}
+		player := world.GenerateDailyQuests(c.playerID)
+		if player != nil {
+			questPayload, _ := json.Marshal(player.Quests)
+			msg := Message{Type: MsgQuestUpdate, Payload: questPayload}
+			b, _ := json.Marshal(msg)
+			c.sendSafe(b)
 		}
 
 	case MsgAcceptQuest:

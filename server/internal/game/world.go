@@ -4286,6 +4286,42 @@ func (w *World) PerformStashWithdraw(playerID, itemID string) (*Entity, bool) {
 	return nil, false
 }
 
+func dailyQuestCatalog() []Quest {
+	return []Quest{
+		// Earth Realm (Lv 1-50)
+		{ID: "daily_skeleton", Type: "KILL", Target: "Skeleton", MaxCount: 100, RewardXP: 50000},
+		{ID: "daily_imp", Type: "KILL", Target: "Imp", MaxCount: 100, RewardXP: 150000},
+		{ID: "daily_demonorc", Type: "KILL", Target: "DemonOrc", MaxCount: 100, RewardXP: 300000},
+		{ID: "daily_construct", Type: "KILL", Target: "Construct", MaxCount: 100, RewardXP: 500000},
+		{ID: "daily_infernotitan", Type: "KILL", Target: "InfernoTitan", MaxCount: 100, RewardXP: 800000},
+		// Water Realm (Lv 50-70)
+		{ID: "daily_mountaintroll", Type: "KILL", Target: "MountainTroll", MaxCount: 100, RewardXP: 1200000},
+		{ID: "daily_aquagolem", Type: "KILL", Target: "AquaGolem", MaxCount: 100, RewardXP: 1600000},
+		{ID: "daily_siren", Type: "KILL", Target: "Siren", MaxCount: 100, RewardXP: 2200000},
+		{ID: "daily_frostguardian", Type: "KILL", Target: "FrostGuardian", MaxCount: 100, RewardXP: 3000000},
+		// Fire Realm (Lv 70-95)
+		{ID: "daily_sandstormdjinn", Type: "KILL", Target: "SandstormDjinn", MaxCount: 100, RewardXP: 4000000},
+		{ID: "daily_magmagolem", Type: "KILL", Target: "MagmaGolem", MaxCount: 100, RewardXP: 5000000},
+		{ID: "daily_scorchedwraith", Type: "KILL", Target: "ScorchedWraith", MaxCount: 100, RewardXP: 6500000},
+		{ID: "daily_infernalbehemoth", Type: "KILL", Target: "InfernalBehemoth", MaxCount: 100, RewardXP: 8000000},
+		{ID: "daily_phoenixsentinel", Type: "KILL", Target: "PhoenixSentinel", MaxCount: 100, RewardXP: 10000000},
+		// Air Realm (Lv 70-95)
+		{ID: "daily_stormharpy", Type: "KILL", Target: "StormHarpy", MaxCount: 100, RewardXP: 4000000},
+		{ID: "daily_cloudelemental", Type: "KILL", Target: "CloudElemental", MaxCount: 100, RewardXP: 5000000},
+		{ID: "daily_thunderroc", Type: "KILL", Target: "ThunderRoc", MaxCount: 100, RewardXP: 6500000},
+		{ID: "daily_tempestgiant", Type: "KILL", Target: "TempestGiant", MaxCount: 100, RewardXP: 8000000},
+		{ID: "daily_cycloneavatar", Type: "KILL", Target: "CycloneAvatar", MaxCount: 100, RewardXP: 10000000},
+		// Dungeon Bosses
+		{ID: "daily_dungeon_bosses", Type: "KILL", Target: "DungeonBoss", MaxCount: 4, RewardXP: 5000000},
+		{ID: "daily_verdant_bastion_bosses", Type: "KILL", Target: "VerdantBastionBoss", MaxCount: 4, RewardXP: 3000000},
+		{ID: "daily_abyssal_well_bosses", Type: "KILL", Target: "AbyssalWellBoss", MaxCount: 5, RewardXP: 6000000},
+		{ID: "daily_molten_core_bosses", Type: "KILL", Target: "MoltenCoreBoss", MaxCount: 5, RewardXP: 9000000},
+		{ID: "daily_tempest_spire_bosses", Type: "KILL", Target: "TempestSpireBoss", MaxCount: 5, RewardXP: 9000000},
+		{ID: "daily_dungeon_bosses_heroic", Type: "KILL", Target: "DungeonBossHeroic", MaxCount: 4, RewardXP: 10000000},
+		{ID: "daily_dungeon_bosses_mythic", Type: "KILL", Target: "DungeonBossMythic", MaxCount: 4, RewardXP: 15000000},
+	}
+}
+
 func (w *World) GenerateDailyQuests(playerID string) *Entity {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
@@ -4306,124 +4342,34 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 	y, m, d := now.Date()
 	ly, lm, ld := player.LastDailyQuest.In(loc).Date()
 
+	catalog := dailyQuestCatalog()
 	if y == ly && m == lm && d == ld && len(player.Quests) > 0 {
-		// Hotfix: Update rewards if they don't match the current values
+		// Reconcile every catalog entry on login, resume, and quest-giver open.
+		// This repairs partial legacy rows without resetting today's progress.
 		updated := false
-		hasQuestID := func(id string) bool {
-			for _, q := range player.Quests {
-				if q.ID == id {
-					return true
-				}
-			}
-			return false
+		catalogByID := make(map[string]Quest, len(catalog))
+		for _, quest := range catalog {
+			catalogByID[quest.ID] = quest
 		}
+		existingIDs := make(map[string]bool, len(player.Quests))
 		for i := range player.Quests {
 			q := &player.Quests[i]
-			var expectedXP int
-			switch q.Target {
-			case "Skeleton":
-				expectedXP = 50000
-			case "Imp":
-				expectedXP = 150000
-			case "DemonOrc":
-				expectedXP = 300000
-			case "Construct":
-				expectedXP = 500000
-			case "InfernoTitan":
-				expectedXP = 800000
-			case "MountainTroll":
-				expectedXP = 1200000
-			case "AquaGolem":
-				expectedXP = 1600000
-			case "Siren":
-				expectedXP = 2200000
-			case "FrostGuardian":
-				expectedXP = 3000000
-			case "SandstormDjinn":
-				expectedXP = 4000000
-			case "MagmaGolem":
-				expectedXP = 5000000
-			case "ScorchedWraith":
-				expectedXP = 6500000
-			case "InfernalBehemoth":
-				expectedXP = 8000000
-			case "PhoenixSentinel":
-				expectedXP = 10000000
-			case "StormHarpy":
-				expectedXP = 4000000
-			case "CloudElemental":
-				expectedXP = 5000000
-			case "ThunderRoc":
-				expectedXP = 6500000
-			case "TempestGiant":
-				expectedXP = 8000000
-			case "CycloneAvatar":
-				expectedXP = 10000000
-			case "VerdantBastionBoss":
-				expectedXP = 3000000
-			case "AbyssalWellBoss":
-				expectedXP = 6000000
-			case "MoltenCoreBoss":
-				expectedXP = 9000000
-			case "TempestSpireBoss":
-				expectedXP = 9000000
-			case "DungeonBoss":
-				expectedXP = 5000000
-			case "DungeonBossHeroic":
-				expectedXP = 10000000
-			case "DungeonBossMythic":
-				expectedXP = 15000000
+			existingIDs[q.ID] = true
+			expected, exists := catalogByID[q.ID]
+			if !exists {
+				continue
 			}
-			if expectedXP > 0 && q.RewardXP != expectedXP {
-				q.RewardXP = expectedXP
+			if q.Type != expected.Type || q.Target != expected.Target ||
+				q.MaxCount != expected.MaxCount || q.RewardXP != expected.RewardXP {
+				q.Type = expected.Type
+				q.Target = expected.Target
+				q.MaxCount = expected.MaxCount
+				q.RewardXP = expected.RewardXP
 				updated = true
 			}
 		}
-
-		// Check if new quests are missing
-		hasTroll := false
-		hasGolem := false
-		for _, q := range player.Quests {
-			if q.Target == "MountainTroll" {
-				hasTroll = true
-			}
-			if q.Target == "AquaGolem" {
-				hasGolem = true
-			}
-		}
-
-		if !hasTroll {
-			player.Quests = append(player.Quests, Quest{ID: "daily_mountaintroll", Type: "KILL", Target: "MountainTroll", Count: 0, MaxCount: 100, RewardXP: 1200000, Completed: false, Accepted: false})
-			updated = true
-		}
-		if !hasGolem {
-			player.Quests = append(player.Quests, Quest{ID: "daily_aquagolem", Type: "KILL", Target: "AquaGolem", Count: 0, MaxCount: 100, RewardXP: 1600000, Completed: false, Accepted: false})
-			updated = true
-		}
-
-		// Check for Dungeon Bosses Quest
-		hasDungeonBosses := false
-		for _, q := range player.Quests {
-			if q.ID == "daily_dungeon_bosses" {
-				hasDungeonBosses = true
-			}
-		}
-		if !hasDungeonBosses {
-			player.Quests = append(player.Quests, Quest{ID: "daily_dungeon_bosses", Type: "KILL", Target: "DungeonBoss", Count: 0, MaxCount: 4, RewardXP: 5000000, Completed: false, Accepted: false})
-			updated = true
-		}
-
-		additionalQuests := []Quest{
-			{ID: "daily_verdant_bastion_bosses", Type: "KILL", Target: "VerdantBastionBoss", Count: 0, MaxCount: 4, RewardXP: 3000000, Completed: false, Accepted: false},
-			{ID: "daily_abyssal_well_bosses", Type: "KILL", Target: "AbyssalWellBoss", Count: 0, MaxCount: 5, RewardXP: 6000000, Completed: false, Accepted: false},
-			{ID: "daily_molten_core_bosses", Type: "KILL", Target: "MoltenCoreBoss", Count: 0, MaxCount: 5, RewardXP: 9000000, Completed: false, Accepted: false},
-			{ID: "daily_tempest_spire_bosses", Type: "KILL", Target: "TempestSpireBoss", Count: 0, MaxCount: 5, RewardXP: 9000000, Completed: false, Accepted: false},
-			{ID: "daily_dungeon_bosses_heroic", Type: "KILL", Target: "DungeonBossHeroic", Count: 0, MaxCount: 4, RewardXP: 10000000, Completed: false, Accepted: false},
-			{ID: "daily_dungeon_bosses_mythic", Type: "KILL", Target: "DungeonBossMythic", Count: 0, MaxCount: 4, RewardXP: 15000000, Completed: false, Accepted: false},
-		}
-
-		for _, quest := range additionalQuests {
-			if !hasQuestID(quest.ID) {
+		for _, quest := range catalog {
+			if !existingIDs[quest.ID] {
 				player.Quests = append(player.Quests, quest)
 				updated = true
 			}
@@ -4442,40 +4388,7 @@ func (w *World) GenerateDailyQuests(playerID string) *Entity {
 
 	log.Printf("Generating daily quests for %s (Last: %v, Now: %v)", player.Name, player.LastDailyQuest, now)
 
-	// Generate Daily Quests - All zones
-	player.Quests = []Quest{
-		// Earth Realm (Lv 1-50)
-		{ID: "daily_skeleton", Type: "KILL", Target: "Skeleton", Count: 0, MaxCount: 100, RewardXP: 50000, Completed: false, Accepted: false},
-		{ID: "daily_imp", Type: "KILL", Target: "Imp", Count: 0, MaxCount: 100, RewardXP: 150000, Completed: false, Accepted: false},
-		{ID: "daily_demonorc", Type: "KILL", Target: "DemonOrc", Count: 0, MaxCount: 100, RewardXP: 300000, Completed: false, Accepted: false},
-		{ID: "daily_construct", Type: "KILL", Target: "Construct", Count: 0, MaxCount: 100, RewardXP: 500000, Completed: false, Accepted: false},
-		{ID: "daily_infernotitan", Type: "KILL", Target: "InfernoTitan", Count: 0, MaxCount: 100, RewardXP: 800000, Completed: false, Accepted: false},
-		// Water Realm (Lv 50-70)
-		{ID: "daily_mountaintroll", Type: "KILL", Target: "MountainTroll", Count: 0, MaxCount: 100, RewardXP: 1200000, Completed: false, Accepted: false},
-		{ID: "daily_aquagolem", Type: "KILL", Target: "AquaGolem", Count: 0, MaxCount: 100, RewardXP: 1600000, Completed: false, Accepted: false},
-		{ID: "daily_siren", Type: "KILL", Target: "Siren", Count: 0, MaxCount: 100, RewardXP: 2200000, Completed: false, Accepted: false},
-		{ID: "daily_frostguardian", Type: "KILL", Target: "FrostGuardian", Count: 0, MaxCount: 100, RewardXP: 3000000, Completed: false, Accepted: false},
-		// Fire Realm (Lv 70-95)
-		{ID: "daily_sandstormdjinn", Type: "KILL", Target: "SandstormDjinn", Count: 0, MaxCount: 100, RewardXP: 4000000, Completed: false, Accepted: false},
-		{ID: "daily_magmagolem", Type: "KILL", Target: "MagmaGolem", Count: 0, MaxCount: 100, RewardXP: 5000000, Completed: false, Accepted: false},
-		{ID: "daily_scorchedwraith", Type: "KILL", Target: "ScorchedWraith", Count: 0, MaxCount: 100, RewardXP: 6500000, Completed: false, Accepted: false},
-		{ID: "daily_infernalbehemoth", Type: "KILL", Target: "InfernalBehemoth", Count: 0, MaxCount: 100, RewardXP: 8000000, Completed: false, Accepted: false},
-		{ID: "daily_phoenixsentinel", Type: "KILL", Target: "PhoenixSentinel", Count: 0, MaxCount: 100, RewardXP: 10000000, Completed: false, Accepted: false},
-		// Air Realm (Lv 70-95)
-		{ID: "daily_stormharpy", Type: "KILL", Target: "StormHarpy", Count: 0, MaxCount: 100, RewardXP: 4000000, Completed: false, Accepted: false},
-		{ID: "daily_cloudelemental", Type: "KILL", Target: "CloudElemental", Count: 0, MaxCount: 100, RewardXP: 5000000, Completed: false, Accepted: false},
-		{ID: "daily_thunderroc", Type: "KILL", Target: "ThunderRoc", Count: 0, MaxCount: 100, RewardXP: 6500000, Completed: false, Accepted: false},
-		{ID: "daily_tempestgiant", Type: "KILL", Target: "TempestGiant", Count: 0, MaxCount: 100, RewardXP: 8000000, Completed: false, Accepted: false},
-		{ID: "daily_cycloneavatar", Type: "KILL", Target: "CycloneAvatar", Count: 0, MaxCount: 100, RewardXP: 10000000, Completed: false, Accepted: false},
-		// Dungeon Bosses
-		{ID: "daily_dungeon_bosses", Type: "KILL", Target: "DungeonBoss", Count: 0, MaxCount: 4, RewardXP: 5000000, Completed: false, Accepted: false},
-		{ID: "daily_verdant_bastion_bosses", Type: "KILL", Target: "VerdantBastionBoss", Count: 0, MaxCount: 4, RewardXP: 3000000, Completed: false, Accepted: false},
-		{ID: "daily_abyssal_well_bosses", Type: "KILL", Target: "AbyssalWellBoss", Count: 0, MaxCount: 5, RewardXP: 6000000, Completed: false, Accepted: false},
-		{ID: "daily_molten_core_bosses", Type: "KILL", Target: "MoltenCoreBoss", Count: 0, MaxCount: 5, RewardXP: 9000000, Completed: false, Accepted: false},
-		{ID: "daily_tempest_spire_bosses", Type: "KILL", Target: "TempestSpireBoss", Count: 0, MaxCount: 5, RewardXP: 9000000, Completed: false, Accepted: false},
-		{ID: "daily_dungeon_bosses_heroic", Type: "KILL", Target: "DungeonBossHeroic", Count: 0, MaxCount: 4, RewardXP: 10000000, Completed: false, Accepted: false},
-		{ID: "daily_dungeon_bosses_mythic", Type: "KILL", Target: "DungeonBossMythic", Count: 0, MaxCount: 4, RewardXP: 15000000, Completed: false, Accepted: false},
-	}
+	player.Quests = catalog
 	player.LastDailyQuest = now
 
 	return player

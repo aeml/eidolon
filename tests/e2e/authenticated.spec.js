@@ -26,6 +26,40 @@ test.describe('dedicated QA character', () => {
         test.setTimeout(600_000);
         const failures = collectBrowserFailures(page, baseURL);
         await loginAndEnterWorld(page, credentials);
+        await page.evaluate(() => {
+            const game = window.game;
+            window.__questQASends = [];
+            const originalSend = game.network.send.bind(game.network);
+            game.network.send = (type, payload) => {
+                window.__questQASends.push({ type, payload });
+                return originalSend(type, payload);
+            };
+            game.uiManager.toggleQuestWindow();
+        });
+        try {
+            await expect.poll(() => page.evaluate(() =>
+                window.game?.player?.quests?.some?.((quest) => quest.id === 'daily_skeleton') || false
+            ), {
+                message: 'opening the quest giver must reconcile the level-one starter daily catalog',
+                timeout: 20_000
+            }).toBe(true);
+        } catch (error) {
+            const diagnostic = await page.evaluate(() => ({
+                sent: window.__questQASends,
+                socket: window.game?.network?.socket?.readyState,
+                queuedTypes: window.game?.network?.messageQueue?.map?.((message) => message.type),
+                quests: window.game?.player?.quests,
+                requestCallback: typeof window.game?.uiManager?.quest?.onRequestQuests,
+                questText: document.getElementById('quest-list')?.textContent
+            }));
+            throw new Error(`Quest giver did not reconcile the starter catalog: ${JSON.stringify(diagnostic)}`, {
+                cause: error
+            });
+        }
+        if (process.env.EIDOLON_E2E_REGISTER === '1') {
+            await expect(page.locator('#quest-list').getByRole('button', { name: 'Accept Quest' }).first()).toBeVisible();
+        }
+        await page.evaluate(() => window.game?.uiManager?.toggleQuestWindow());
         await exerciseMovement(page);
         await exerciseMenus(page);
         await exerciseReconnect(page);

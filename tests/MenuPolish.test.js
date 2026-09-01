@@ -1439,7 +1439,7 @@ describe('menu polish regressions', () => {
         expect(css).toMatch(/#trading-house-screen\s+\.window-body,[\s\S]*#quest-journal\s+\.window-list\s*\{[^}]*min-height:\s*0;/);
     });
 
-    test('managed windows enforce primary exclusivity and wide-screen service companions', () => {
+    test('managed windows pair character and inventory while enforcing other primary exclusivity', () => {
         buildStaticWindowDom();
         const ui = new UIManager(false);
 
@@ -1449,8 +1449,13 @@ describe('menu polish regressions', () => {
         ui.toggleManagedWindow('inventory');
         expect(document.getElementById('inventory-screen').style.display).toBe('block');
 
+        ui.toggleManagedWindow('character');
+        expect(document.getElementById('inventory-screen').style.display).toBe('block');
+        expect(document.getElementById('character-sheet').style.display).toBe('block');
+
         ui.toggleManagedWindow('journal');
         expect(document.getElementById('inventory-screen').style.display).toBe('none');
+        expect(document.getElementById('character-sheet').style.display).toBe('none');
         expect(document.getElementById('quest-journal').style.display).toBe('flex');
 
         ui.toggleManagedWindow('shop', { keepCompanion: true });

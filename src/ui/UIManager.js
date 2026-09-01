@@ -1567,7 +1567,12 @@ export class UIManager {
         const wasOpen = this.isElementVisible(layout.element);
 
         if (layout.group === 'primary') {
-            this.closeManagedGroup('primary', { except: id });
+            const companionId = id === 'character'
+                ? 'inventory'
+                : id === 'inventory'
+                    ? 'character'
+                    : null;
+            this.closeManagedGroup('primary', { except: companionId ? [id, companionId] : id });
         }
 
         if (layout.group === 'service') {
@@ -1610,8 +1615,9 @@ export class UIManager {
 
     closeManagedGroup(group, { except = null } = {}) {
         if (!this.windowLayouts) return;
+        const excludedIds = new Set(Array.isArray(except) ? except : [except]);
         this.windowLayouts.forEach((layout, id) => {
-            if (id !== except && layout.group === group && layout.element) {
+            if (!excludedIds.has(id) && layout.group === group && layout.element) {
                 this.closeManagedWindow(id, { silent: true });
             }
         });
@@ -1636,6 +1642,9 @@ export class UIManager {
         const serviceLayout = serviceId ? this.windowLayouts.get(serviceId) : null;
         const inventoryElement = this.inventory?.inventoryScreen;
         const serviceWithInventory = serviceLayout?.element && inventoryElement && this.isElementVisible(inventoryElement);
+        const characterElement = this.characterSheet;
+        const characterWithInventory = characterElement && inventoryElement &&
+            this.isElementVisible(characterElement) && this.isElementVisible(inventoryElement);
 
         if (serviceWithInventory && this.shouldUseCompanionServiceLayout()) {
             this.placeWindowPair(serviceLayout.element, inventoryElement);
@@ -1646,11 +1655,18 @@ export class UIManager {
             }
         }
 
+        if (!serviceLayout?.element && characterWithInventory && this.shouldUseCompanionServiceLayout()) {
+            this.placeWindowPair(characterElement, inventoryElement);
+        }
+
         this.windowLayouts.forEach((layout, id) => {
             if (!layout.element || !this.isElementVisible(layout.element)) return;
             if (layout.group === 'service') return;
             if (id === 'inventory' && serviceWithInventory && this.shouldUseCompanionServiceLayout()) return;
-            if (!layout.element.dataset.draggedWindow && layout.placement === 'center') {
+            if ((id === 'character' || id === 'inventory') && characterWithInventory &&
+                this.shouldUseCompanionServiceLayout()) return;
+            if (!layout.element.dataset.draggedWindow &&
+                (layout.placement === 'center' || layout.placement.endsWith('Companion'))) {
                 this.centerWindow(layout.element);
             }
             this.clampWindowToViewport(layout.element);

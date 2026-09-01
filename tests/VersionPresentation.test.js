@@ -28,6 +28,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('The resizable message panel now has Chat and Game tabs');
         expect(indexHtml).toContain('Inventory, Character, Abilities, Quests, Skill Tree, and Social windows now grow');
         expect(indexHtml).toContain('Daily quests remain at the quest giver');
+        expect(indexHtml).toContain('guarantee the Skeleton starter daily for level-1 characters');
+        expect(indexHtml).toContain('The equipment sheet and inventory can remain open at the same time');
         expect(indexHtml).toContain('Vendor sell-all covers every equipment slot');
     });
 

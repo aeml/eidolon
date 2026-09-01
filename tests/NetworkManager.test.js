@@ -295,6 +295,46 @@ describe('NetworkManager — basic send / queue', () => {
         }));
         expect(message.payload.u['player-two']._serverTimeMs).toBe(1_784_564_218_123);
     });
+
+    test('removes protobuf synthetic empty quest presence from partial state entities', () => {
+        const sock = makeMockSocket();
+        const nm = new NetworkManager(sock);
+        const player = { id: 'player-one', x: 12, quests: [] };
+        expect(Object.hasOwn(player, 'quests')).toBe(true);
+        decodeStateEnvelopeMock.mockReturnValueOnce({
+            full: null,
+            delta: { entities: [player], removedIds: [] }
+        });
+        nm.setupListeners();
+
+        const frame = new Uint8Array([0x45, 0x44, 0x50, 0x42, 0x01, 0x99]);
+        sock.onmessage({ data: frame.buffer });
+
+        const decoded = nm.drainMessages()[0].payload.u['player-one'];
+        expect(Object.hasOwn(decoded, 'quests')).toBe(false);
+    });
+
+    test('preserves a non-empty authoritative protobuf quest catalog', () => {
+        const sock = makeMockSocket();
+        const nm = new NetworkManager(sock);
+        decodeStateEnvelopeMock.mockReturnValueOnce({
+            full: {
+                entities: [{
+                    id: 'player-one',
+                    quests: [{ id: 'daily_skeleton', accepted: false }]
+                }]
+            },
+            delta: null
+        });
+        nm.setupListeners();
+
+        const frame = new Uint8Array([0x45, 0x44, 0x50, 0x42, 0x01, 0x99]);
+        sock.onmessage({ data: frame.buffer });
+
+        expect(nm.drainMessages()[0].payload['player-one'].quests).toEqual([
+            { id: 'daily_skeleton', accepted: false }
+        ]);
+    });
 });
 
 // ---------------------------------------------------------------------------

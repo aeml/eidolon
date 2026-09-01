@@ -212,6 +212,7 @@ export class NetworkManager {
                 const entities = env.full.entities || [];
                 const payload = {};
                 for (const e of entities) {
+                    this._normalizeDecodedEntityPresence(e);
                     if (serverTimeMs > 0) e._serverTimeMs = serverTimeMs;
                     payload[e.id] = e;
                 }
@@ -223,6 +224,7 @@ export class NetworkManager {
                 const entities = env.delta.entities || [];
                 const u = {};
                 for (const e of entities) {
+                    this._normalizeDecodedEntityPresence(e);
                     if (serverTimeMs > 0) e._serverTimeMs = serverTimeMs;
                     u[e.id] = e;
                 }
@@ -231,6 +233,18 @@ export class NetworkManager {
             }
         } catch (error) {
             console.error('Decompression error:', error);
+        }
+    }
+
+    /**
+     * protobuf.js initializes repeated fields as own empty arrays even when
+     * their field number was absent from the wire. Remove that synthetic
+     * presence so partial movement/combat entities cannot masquerade as an
+     * authoritative request to clear the daily quest catalog.
+     */
+    _normalizeDecodedEntityPresence(entity) {
+        if (Array.isArray(entity?.quests) && entity.quests.length === 0) {
+            delete entity.quests;
         }
     }
 

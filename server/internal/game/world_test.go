@@ -41,6 +41,75 @@ func TestAddRemoveEntity(t *testing.T) {
 	}
 }
 
+func TestGenerateDailyQuestsGivesLevelOneStarterCatalog(t *testing.T) {
+	w := NewWorld(nil)
+	player := &Entity{ID: "player-level-one-quests", Type: TypePlayer, Level: 1}
+	w.AddEntity(player)
+
+	generated := w.GenerateDailyQuests(player.ID)
+	if generated == nil {
+		t.Fatal("expected daily quest generation to return the level-one player")
+	}
+	if len(generated.Quests) != len(dailyQuestCatalog()) {
+		t.Fatalf("expected complete daily catalog, got %d quests", len(generated.Quests))
+	}
+
+	foundStarter := false
+	for _, quest := range generated.Quests {
+		if quest.ID != "daily_skeleton" {
+			continue
+		}
+		foundStarter = true
+		if quest.Target != "Skeleton" || quest.MaxCount != 100 || quest.RewardXP != 50000 {
+			t.Fatalf("unexpected starter daily: %+v", quest)
+		}
+		if quest.Accepted || quest.Completed || quest.Count != 0 {
+			t.Fatalf("starter daily should begin available with no progress: %+v", quest)
+		}
+	}
+	if !foundStarter {
+		t.Fatal("expected daily_skeleton to be available to a level-one player")
+	}
+}
+
+func TestGenerateDailyQuestsRepairsPartialSameDayCatalogWithoutResettingProgress(t *testing.T) {
+	w := NewWorld(nil)
+	player := &Entity{
+		ID:             "player-partial-quests",
+		Type:           TypePlayer,
+		Level:          1,
+		LastDailyQuest: time.Now(),
+		Quests: []Quest{{
+			ID:        "daily_skeleton",
+			Type:      "LEGACY",
+			Target:    "Skeleton",
+			Count:     42,
+			MaxCount:  10,
+			RewardXP:  1,
+			Accepted:  true,
+			Completed: false,
+		}},
+	}
+	w.AddEntity(player)
+
+	generated := w.GenerateDailyQuests(player.ID)
+	if len(generated.Quests) != len(dailyQuestCatalog()) {
+		t.Fatalf("expected partial same-day row to be repaired to %d quests, got %d", len(dailyQuestCatalog()), len(generated.Quests))
+	}
+	for _, quest := range generated.Quests {
+		if quest.ID == "daily_skeleton" {
+			if quest.Count != 42 || !quest.Accepted || quest.Completed {
+				t.Fatalf("catalog repair reset today's starter progress: %+v", quest)
+			}
+			if quest.Type != "KILL" || quest.MaxCount != 100 || quest.RewardXP != 50000 {
+				t.Fatalf("catalog repair did not restore the starter definition: %+v", quest)
+			}
+			return
+		}
+	}
+	t.Fatal("repaired catalog is missing daily_skeleton")
+}
+
 func TestWorldUpdate(t *testing.T) {
 	w := NewWorld(nil)
 	// Add a moving enemy outside safe zone (> 50)

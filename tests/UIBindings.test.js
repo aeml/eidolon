@@ -79,6 +79,9 @@ describe('UIBindings', () => {
         expect(engine.network.send).toHaveBeenCalledWith('social_status', { status: 'looking_party' });
         expect(engine.network.send).toHaveBeenCalledWith('social', {});
 
+        engine.uiManager.quest.onRequestQuests();
+        expect(engine.network.send).toHaveBeenCalledWith('request_quests', {});
+
         engine.uiManager.onMapToggle();
         expect(engine.worldMap.toggle).toHaveBeenCalled();
     });
