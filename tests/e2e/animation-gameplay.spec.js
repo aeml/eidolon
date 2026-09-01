@@ -399,7 +399,7 @@ async function exerciseDeathAndRespawn(page) {
             .sort((first, second) => first.distance - second.distance)[0] || null;
     });
     expect(target).not.toBeNull();
-    expect(target.distance, 'The death check needs a hostile well inside its normal sight range').toBeLessThan(20);
+    expect(target.distance, 'The death check needs a hostile inside its normal sight range').toBeLessThan(45);
     await visibleChatCommand(page, '/level 1', 'Level set to 1.');
     await visibleChatCommand(
         page,

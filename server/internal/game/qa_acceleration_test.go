@@ -135,7 +135,7 @@ func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) 
 		MaxHealth:      100,
 		Damage:         1,
 		State:          "IDLE",
-		X:              14,
+		X:              40,
 		AttackCooldown: time.Millisecond,
 		Threat:         map[string]float64{"prior-qa-player": 100_000},
 	}

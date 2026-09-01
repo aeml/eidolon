@@ -574,7 +574,8 @@ const QAWaypointProtectionDuration = 5 * time.Minute
 // it. Normal input resumes as soon as this short handoff window expires.
 const QAWaypointMovementLockDuration = time.Second
 const AbilityMovementLockDuration = 500 * time.Millisecond
-const QADeathHostileAcquireRadius = 20.0
+const EnemySightRange = 45.0
+const QADeathHostileAcquireRadius = EnemySightRange
 
 // MovePlayerToQAWaypoint moves an overworld player to a bounded release-QA
 // waypoint. Authorization belongs to the server command layer. Combat and
@@ -6051,7 +6052,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		// AI Logic
 		var target *Entity
 		minDist := 1000.0
-		sightRange := 45.0
+		sightRange := EnemySightRange
 
 		// Snapshot position + threat without holding the enemy lock while scanning players.
 		var threatSnapshot map[string]float64
