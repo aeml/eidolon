@@ -300,6 +300,14 @@ async function attackAndObserveRemote(sourcePage, observerPage, sourceUsername, 
             hostile = await findOverworldTarget(sourcePage);
         }
 
+        // Projection must use the foreground camera. Bringing a throttled tab
+        // forward can advance camera follow and actor interpolation enough to
+        // invalidate a coordinate sampled immediately beforehand—especially
+        // now that procedural enemies use exact rather than oversized bounds.
+        await sourcePage.bringToFront();
+        await sourcePage.evaluate(() => new Promise((resolve) => {
+            requestAnimationFrame(() => requestAnimationFrame(resolve));
+        }));
         let projected = await projectEntity(sourcePage, hostile.id);
         if (!projected?.visible) {
             hostile = await findOverworldTarget(sourcePage);
@@ -307,10 +315,37 @@ async function attackAndObserveRemote(sourcePage, observerPage, sourceUsername, 
         }
         if (!projected?.visible) continue;
 
-        await sourcePage.bringToFront();
-        await sourcePage.mouse.move(projected.x, projected.y);
-        await sourcePage.waitForTimeout(50);
+        // Follow the live projected center until the production hover raycast
+        // confirms that the pointer is genuinely over a hostile. Enemies keep
+        // moving while the two-browser assertion runs, so a fixed coordinate
+        // plus an arbitrary delay can turn into a ground click under load.
+        let aimedHostileId = null;
+        for (let aimAttempt = 0; aimAttempt < 20 && !aimedHostileId; aimAttempt += 1) {
+            projected = await projectEntity(sourcePage, hostile.id);
+            if (!projected?.visible) break;
+            await sourcePage.mouse.move(projected.x, projected.y);
+            await sourcePage.waitForTimeout(75);
+            aimedHostileId = await sourcePage.evaluate(() => {
+                const game = window.game;
+                return game?.isHostileActorTarget?.(game.hoveredEntity)
+                    ? game.hoveredEntity.id
+                    : null;
+            });
+        }
+        if (!aimedHostileId) {
+            lastDiagnostic = {
+                attempt: attempt + 1,
+                hostileId: hostile.id,
+                projected,
+                reason: 'production hover raycast found no hostile at its live projected center'
+            };
+            continue;
+        }
+        if (aimedHostileId !== hostile.id) {
+            hostile = { ...hostile, id: aimedHostileId };
+        }
         await sourcePage.mouse.click(projected.x, projected.y);
+        await observerPage.bringToFront();
         try {
             await expect.poll(async () => {
                 const remote = await remotePlayerSnapshot(observerPage, sourceUsername);
