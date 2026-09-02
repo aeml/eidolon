@@ -25,7 +25,7 @@ describe('AssetCacheManager progress and clearing', () => {
 
         const manager = new AssetCacheManager();
         const updates = [];
-        const result = await manager.warmPack('core-models', {
+        const result = await manager.warmPack('environment-textures', {
             preferServiceWorker: false,
             onProgress: (update) => updates.push(update)
         });

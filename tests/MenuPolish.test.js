@@ -1164,7 +1164,7 @@ describe('menu polish regressions', () => {
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="start-version-row">');
-        expect(html).toContain('<span class="start-version-row__label">Alpha 0.41.0.7</span>');
+        expect(html).toContain('<span class="start-version-row__label">Alpha 0.41.0.8</span>');
         expect(html).toContain('<span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>');
         expect(html).not.toContain('<div style="text-align: center; margin-top: -20px; margin-bottom: 20px;">');
         expect(html).not.toContain('<span style="color: white; font-size: 18px; font-weight: bold;">Alpha');
@@ -1395,7 +1395,7 @@ describe('menu polish regressions', () => {
         expect(html).toContain('<div class="asset-cache-meter">');
         expect(html).toContain('<div id="asset-download-progress-bar" class="asset-cache-meter__bar"></div>');
         expect(html).toContain('<div class="asset-cache-pack-list">');
-        expect(html).toContain('<div id="asset-pack-core-badge" class="asset-cache-pack__badge">Not cached</div>');
+        expect(html).toContain('<div id="asset-pack-core-badge" class="asset-cache-pack__badge">Current</div>');
         expect(html).toContain('<div class="asset-cache-panel__actions">');
         expect(html).toContain('id="btn-download-recommended-assets" class="menu-btn asset-cache-panel__button--recommended"');
         expect(html).toContain('id="btn-refresh-outdated-assets" class="menu-btn asset-cache-panel__button--refresh"');

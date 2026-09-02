@@ -17,6 +17,11 @@ import {
     createProceduralRespecNPC
 } from '../art/ProceduralTownActors.js';
 import { createProceduralAvengingSeraph } from '../art/ProceduralSummons.js';
+import {
+    createProceduralDemonOrc,
+    createProceduralImp,
+    createProceduralSkeleton
+} from '../art/ProceduralLegacyEnemies.js';
 
 export class MeshFactory {
     static loader = new GLTFLoader();
@@ -181,89 +186,14 @@ export class MeshFactory {
     };
 
     /**
-     * Helper to load skeleton model with a color tint for placeholder enemies.
-     * This allows us to use the skeleton model/animations for all enemies until
-     * we have unique models for each enemy type.
-     * @param {number} color - Hex color to tint the skeleton
-     * @param {number} scale - Scale multiplier (default 2.5)
-     * @param {number} emissive - Emissive color (default 0x000000)
-     * @param {number} emissiveIntensity - Emissive intensity (default 0)
-     * @returns {Promise<THREE.Object3D>} The tinted skeleton mesh
+     * Last-resort visual for an unexpected procedural-enemy construction
+     * failure. Keep it code-native so removing the old Skeleton files cannot
+     * make an unrelated enemy disappear while the remaining families migrate.
      */
-    static async loadSkeletonWithTint(color, scale = 2.5, emissive = 0x000000, emissiveIntensity = 0) {
-        try {
-            const idleGltf = await this.loadModel('./assets/enemies/undead/skeleton/idle.glb');
-            const mesh = SkeletonUtils.clone(idleGltf.scene);
-            
-            mesh.userData.animations = [];
-            const addAnim = (clip, name) => {
-                if (clip) {
-                    const newClip = clip.clone();
-                    newClip.name = name;
-                    newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
-                    mesh.userData.animations.push(newClip);
-                }
-            };
-
-            if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
-
-            try {
-                const walkGltf = await this.loadModel('./assets/enemies/undead/skeleton/walk.glb');
-                if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
-            } catch (e) {}
-
-            try {
-                const runGltf = await this.loadModel('./assets/enemies/undead/skeleton/run.glb');
-                if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
-            } catch (e) {}
-
-            try {
-                const attackGltf = await this.loadModel('./assets/enemies/undead/skeleton/attack.glb');
-                if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
-            } catch (e) {}
-
-            try {
-                const deathGltf = await this.loadModel('./assets/enemies/undead/skeleton/death.glb');
-                if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
-            } catch (e) {}
-
-            mesh.scale.set(scale, scale, scale);
-            
-            // Apply color tint to all mesh materials
-            mesh.traverse(c => {
-                if (c.isMesh) {
-                    c.castShadow = true;
-                    c.receiveShadow = true;
-                    // Clone material to avoid affecting other skeletons
-                    if (c.material) {
-                        c.material = c.material.clone();
-                        c.material.color.setHex(color);
-                        if (emissive !== 0x000000) {
-                            c.material.emissive = new THREE.Color(emissive);
-                            c.material.emissiveIntensity = emissiveIntensity;
-                        }
-                    }
-                }
-            });
-
-            // Hitbox scaled to match
-            const hitSize = scale * 0.8;
-            const hitGeo = new THREE.BoxGeometry(hitSize, hitSize * 1.25, hitSize);
-            const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-            const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-            hitMesh.position.y = hitSize * 0.5;
-            mesh.add(hitMesh);
-            
-            return mesh;
-        } catch (e) {
-            console.error("Failed to load skeleton with tint:", e);
-            // Fallback to colored box
-            const geometry = new THREE.BoxGeometry(1, 2, 1);
-            const material = new THREE.MeshStandardMaterial({ color: color });
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.y = 1;
-            return mesh;
-        }
+    static async loadSkeletonWithTint() {
+        const mesh = createProceduralSkeleton();
+        mesh.userData.assetFallback = 'procedural Gloamwood gravebound';
+        return mesh;
     }
 
     // ====================================================================
@@ -789,200 +719,13 @@ export class MeshFactory {
         }
 
         if (type === 'Skeleton') {
-            try {
-                const idleGltf = await this.loadModel('./assets/enemies/undead/skeleton/idle.glb');
-                mesh = SkeletonUtils.clone(idleGltf.scene);
-                
-                mesh.userData.animations = [];
-                const addAnim = (clip, name) => {
-                    if (clip) {
-                        const newClip = clip.clone();
-                        newClip.name = name;
-                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
-                        mesh.userData.animations.push(newClip);
-                    }
-                };
-
-                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
-
-                try {
-                    const walkGltf = await this.loadModel('./assets/enemies/undead/skeleton/walk.glb');
-                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
-                } catch (e) {}
-
-                try {
-                    const runGltf = await this.loadModel('./assets/enemies/undead/skeleton/run.glb');
-                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
-                } catch (e) {}
-
-                try {
-                    const attackGltf = await this.loadModel('./assets/enemies/undead/skeleton/attack.glb');
-                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
-                } catch (e) {}
-
-                try {
-                    const deathGltf = await this.loadModel('./assets/enemies/undead/skeleton/death.glb');
-                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
-                } catch (e) {}
-
-                mesh.scale.set(2.5, 2.5, 2.5);
-                
-                mesh.traverse(c => {
-                    if (c.isMesh) {
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-
-                    }
-                });
-
-                const hitGeo = new THREE.BoxGeometry(2.0, 2.5, 2.0);
-                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-                hitMesh.position.y = 1.0;
-                mesh.add(hitMesh);
-                
-                return mesh;
-            } catch (e) {
-                console.error("Failed to load Skeleton:", e);
-                // Return a visible fallback instead of falling through to the default tiny box
-                return await this.loadSkeletonWithTint(0xcccccc, 2.5, 0x444444, 0.3);
-            }
+            return createProceduralSkeleton();
         }
 
         if (type === 'DemonOrc') {
-            try {
-                const idleGltf = await this.loadModel('./assets/enemies/demons/demon_orc/idle.glb');
-                mesh = SkeletonUtils.clone(idleGltf.scene);
-                
-                mesh.userData.animations = [];
-                const addAnim = (clip, name) => {
-                    if (clip) {
-                        const newClip = clip.clone();
-                        newClip.name = name;
-                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
-                        mesh.userData.animations.push(newClip);
-                    }
-                };
-
-                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
-
-                try {
-                    const walkGltf = await this.loadModel('./assets/enemies/demons/demon_orc/walk.glb');
-                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
-                } catch (e) {}
-
-                try {
-                    const runGltf = await this.loadModel('./assets/enemies/demons/demon_orc/run.glb');
-                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
-                } catch (e) {}
-
-                try {
-                    const attackGltf = await this.loadModel('./assets/enemies/demons/demon_orc/attack.glb');
-                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
-                } catch (e) {}
-
-                try {
-                    const deathGltf = await this.loadModel('./assets/enemies/demons/demon_orc/death.glb');
-                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
-                } catch (e) {}
-
-                mesh.scale.set(3.0, 3.0, 3.0);
-                
-                mesh.traverse(c => {
-                    if (c.isMesh) {
-                        if (!c.material) {
-                            c.material = new THREE.MeshStandardMaterial({ color: 0x8b0000 });
-                        }
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-
-                    }
-                });
-
-                const hitGeo = new THREE.BoxGeometry(2.5, 3.0, 2.5);
-                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-                hitMesh.position.y = 1.0;
-                mesh.add(hitMesh);
-                
-                return mesh;
-            } catch (e) {
-                console.error("Failed to load DemonOrc:", e);
-                const geometry = new THREE.BoxGeometry(1.5, 2, 1.5);
-                const material = new THREE.MeshStandardMaterial({ color: 0x8b0000 });
-                mesh = new THREE.Mesh(geometry, material);
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;
-                mesh.position.y = 1;
-                return mesh;
-            }
+            return createProceduralDemonOrc();
         } else if (type === 'Imp') {
-            try {
-                const idleGltf = await this.loadModel('./assets/enemies/demons/imp/idle.glb');
-                mesh = SkeletonUtils.clone(idleGltf.scene);
-                
-                mesh.userData.animations = [];
-                const addAnim = (clip, name) => {
-                    if (clip) {
-                        const newClip = clip.clone();
-                        newClip.name = name;
-                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
-                        mesh.userData.animations.push(newClip);
-                    }
-                };
-
-                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
-
-                try {
-                    const walkGltf = await this.loadModel('./assets/enemies/demons/imp/walk.glb');
-                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
-                } catch (e) {}
-
-                try {
-                    const runGltf = await this.loadModel('./assets/enemies/demons/imp/run.glb');
-                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
-                } catch (e) {}
-
-                try {
-                    const attackGltf = await this.loadModel('./assets/enemies/demons/imp/attack.glb');
-                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
-                } catch (e) {}
-
-                try {
-                    const deathGltf = await this.loadModel('./assets/enemies/demons/imp/death.glb');
-                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
-                } catch (e) {}
-
-                mesh.scale.set(1.8, 1.8, 1.8);
-                
-                mesh.traverse(c => {
-                    if (c.isMesh) {
-                        if (!c.material) {
-                            c.material = new THREE.MeshStandardMaterial({ color: 0xff4500 });
-                        }
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-
-                    }
-                });
-
-                const hitGeo = new THREE.BoxGeometry(2.0, 2.0, 2.0);
-                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-                hitMesh.position.y = 0.75;
-                mesh.add(hitMesh);
-                
-                return mesh;
-            } catch (e) {
-                console.error("Failed to load Imp:", e);
-                const geometry = new THREE.BoxGeometry(0.8, 1, 0.8);
-                const material = new THREE.MeshStandardMaterial({ color: 0xff4500 });
-                mesh = new THREE.Mesh(geometry, material);
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;
-                mesh.position.y = 0.5;
-                return mesh;
-            }
+            return createProceduralImp();
         } else if (type === 'Construct') {
             try {
                 const idleGltf = await this.loadModel('./assets/enemies/undead/construct/idle.glb');

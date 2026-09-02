@@ -14,36 +14,25 @@ describe('MeshCatalog', () => {
         expect(background).toContain('./assets/buildings/dungeons/the_verdant_bastion.glb');
     });
 
-    test('procedural Fighter never enters the model preload gate', () => {
-        const startup = MeshCatalog.getStartupPreloadModelPaths('Fighter');
+    test.each(['Fighter', 'Rogue', 'Wizard', 'Cleric'])('procedural %s and starter enemies never enter the model preload gate', (type) => {
+        const startup = MeshCatalog.getStartupPreloadModelPaths(type);
 
-        expect(startup).toHaveLength(5);
-        expect(startup.every((path) => path.startsWith('./assets/enemies/undead/skeleton/'))).toBe(true);
-        expect(MeshCatalog.getPreloadModelPaths().some((path) => path.includes('/Fighter/'))).toBe(false);
+        expect(startup).toEqual([]);
+        expect(MeshCatalog.getPreloadModelPaths().some((path) => path.includes(`/${type}/`))).toBe(false);
+        expect(MeshCatalog.getPreloadModelPaths().some((path) => path.includes('/skeleton/'))).toBe(false);
     });
 
-    test('procedural Rogue never enters the model preload gate', () => {
-        const startup = MeshCatalog.getStartupPreloadModelPaths('Rogue');
-
-        expect(startup).toHaveLength(5);
-        expect(startup.every((path) => path.startsWith('./assets/enemies/undead/skeleton/'))).toBe(true);
-        expect(MeshCatalog.getPreloadModelPaths().some((path) => path.includes('/Rogue/'))).toBe(false);
-    });
-
-    test('procedural Wizard never enters the model preload gate', () => {
-        const startup = MeshCatalog.getStartupPreloadModelPaths('Wizard');
-
-        expect(startup).toHaveLength(5);
-        expect(startup.every((path) => path.startsWith('./assets/enemies/undead/skeleton/'))).toBe(true);
-        expect(MeshCatalog.getPreloadModelPaths().some((path) => path.includes('/Wizard/'))).toBe(false);
-    });
-
-    test('procedural Cleric never enters the model preload gate', () => {
-        const startup = MeshCatalog.getStartupPreloadModelPaths('Cleric');
-
-        expect(startup).toHaveLength(5);
-        expect(startup.every((path) => path.startsWith('./assets/enemies/undead/skeleton/'))).toBe(true);
-        expect(MeshCatalog.getPreloadModelPaths().some((path) => path.includes('/Cleric/'))).toBe(false);
+    test('starter regional enemies have explicit procedural recipes and no model preload', () => {
+        expect(MeshCatalog.recipes.Skeleton.source).toBe('procedural Gloamwood ossuary rig');
+        expect(MeshCatalog.recipes.DemonOrc.source).toBe('procedural Cinder Wastes kiln-warrior rig');
+        expect(MeshCatalog.recipes.Imp.source).toBe('procedural Cinder Wastes ember-scavenger rig');
+        for (const type of ['Skeleton', 'DemonOrc', 'Imp']) {
+            expect(MeshCatalog.recipes[type]).toEqual(expect.objectContaining({
+                type: 'enemy',
+                animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            }));
+        }
+        expect(MeshCatalog.getPreloadModelPaths().some((path) => /skeleton|demon_orc|\/imp\//.test(path))).toBe(false);
     });
 
     test('all Lanternhold services use explicit procedural actor recipes', () => {

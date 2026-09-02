@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.7</span>
+                <span class="start-version-row__label">Alpha 0.41.0.8</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -465,14 +465,14 @@
                         <div class="asset-cache-pack">
                             <div>
                                 <div class="asset-cache-pack__heading">
-                                    <div class="asset-cache-pack__title">Core Models</div>
-                                    <div id="asset-pack-core-badge" class="asset-cache-pack__badge">Not cached</div>
+                                    <div class="asset-cache-pack__title">Procedural Core</div>
+                                    <div id="asset-pack-core-badge" class="asset-cache-pack__badge">Current</div>
                                 </div>
-                                <div id="asset-pack-core-status" class="asset-cache-pack__status">Core models not downloaded</div>
-                                <div id="asset-pack-core-size" class="asset-cache-pack__meta">Estimated download: 18 MB</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Cached version: Not cached</div>
+                                <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
+                                <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-04-01</div>
                             </div>
-                            <button id="btn-download-core-assets" class="menu-btn" type="button">Download Core</button>
+                            <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
                         <div class="asset-cache-pack">
                             <div>
@@ -587,6 +587,20 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.8">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.8 (lanterns among ash and bone)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Gloamwood's dead remember their rites:</strong> Starter Skeletons are now 51-piece code-generated ossuary pilgrims with articulated bone, moss-dark shrouds, grave candles, captive soul lanterns, and brass gravesickles.</li>
+                        <li><strong>The Cinder Wastes has an army, not a red tint:</strong> Demon Orcs become broad 55-piece kiln-warriors with furnace cuirasses, horned iron masks, glowing ember rifts, coal chains, and heavy cinder cleavers.</li>
+                        <li><strong>Every ember has teeth:</strong> Imps become 53-piece winged scavengers whose long horns, coal hearts, spaded tails, claws, and pilfer-forks stay legible beside their larger ash-legion kin.</li>
+                        <li><strong>Three anatomies, fifteen new motions:</strong> Each family receives its own generated Idle, Walk, Run, Attack, and stable Death performance. Weapons, jaws, wings, tails, chains, lanterns, limbs, and body weight move through independent actor-owned pivots for both local and replicated enemies.</li>
+                        <li><strong>The silhouettes changed; the rules did not:</strong> Existing spawn locations, aggro, combat, collision, loot, XP, Skeleton daily-quest credit, elite scaling, death, respawn, and server authority are preserved, including the established 1.25, 2, and 1-unit combat radii.</li>
+                        <li><strong>Selection covers exactly what you see:</strong> Grounded generated bounds include every horn, wing, tail, lantern, and weapon while a reused mesh keeps one current interaction owner and immutable cached resources.</li>
+                        <li><strong>Proven at gameplay distance:</strong> Automated coverage samples every animation for finite transforms, validates independent pose and shared-resource behavior, rejects authored model loads, and captures all three families with local/replicated actors at High and Low quality in hardware Chrome.</li>
+                        <li><strong>Procedural means already present:</strong> Device storage now identifies the code-generated core as built in and current, skips its obsolete 18 MB download, and reserves offline caching for the remaining external dungeon and environment assets.</li>
+                        <li><strong>Seventy-three megabytes buried:</strong> Fifteen superseded Skeleton, Demon Orc, and Imp GLBs—73.35 MB—have left production loading, preload manifests, fallbacks, and the deployed asset tree; Git history retains the complete rollback source.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.7">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.7 (the oath beneath broken wings)</h3>
                     <ul class="patch-note-entry__list">

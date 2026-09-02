@@ -83,6 +83,14 @@ Hazards must survive chunk residency changes and must dispose all geometry and m
 - `Idle`, `Walk`, `Run`, `Attack`, and `Death` keep their network state names but express hover, measured glide, driven flight, spear judgement, and folding collapse. Wings, weapon, censer, head, halo, and body are independently animated actor-owned pivots.
 - Generated selection bounds cover the entire apparition while combat radius remains server-owned. Geometry and materials are cached and immutable; every summoned instance owns its pose and pool reset.
 
+## Regional enemy language
+
+- Hostile families inherit their region's materials and magical accent, but each must also read through anatomy, posture, weapon, and motion with emissive color disabled. A regional palette is a relationship, never a whole-body tint.
+- Gloamwood gravebound are remnants carrying their own rites. Skeleton ossuary pilgrims combine exposed articulated bone, moss-dark burial cloth, a grave candle, a captive soul lantern, and an asymmetrical gravesickle. Their walk is loose and processional; attacks pull the entire frame behind the sickle; death settles into a stable scattered-bone silhouette.
+- Cinder Wastes ash-legion creatures look forged or scavenged rather than merely red. Demon Orc kiln-warriors are broad furnace bodies contained by black iron, horned masks, hanging chains, and brutally rectangular cleavers. Imps are small, sharp scavengers identified by beating coal hearts, bat-like wings, spaded tails, claws, and stolen fork weapons.
+- Enemy ornament stays inside the full-silhouette interaction bound and never changes combat collision. Persistent base marks identify faction presence but remain far smaller and dimmer than authoritative hazard or ability boundaries.
+- All enemy rigs preserve the shared network state vocabulary—`Idle`, `Walk`, `Run`, `Attack`, and `Death`—while expressing family-specific weight, anticipation, follow-through, and collapse. Geometry/material resources are cached; pivots, animation state, ownership, hitboxes, and pool resets remain per instance.
+
 ## Migration baseline — 2026-09-02
 
 - Authored asset payload: approximately 963.33 MiB.

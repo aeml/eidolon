@@ -16,8 +16,21 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.7 for the oath beneath broken wings', () => {
-        expect(indexHtml).toContain('Alpha 0.41.0.7');
+    test('advances the login screen to alpha 0.41.0.8 for lanterns among ash and bone', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.8');
+        expect(indexHtml).toContain('Patch 0.41.0.8');
+        expect(indexHtml).toContain("Gloamwood's dead remember their rites");
+        expect(indexHtml).toContain('51-piece code-generated ossuary pilgrims');
+        expect(indexHtml).toContain('broad 55-piece kiln-warriors');
+        expect(indexHtml).toContain('53-piece winged scavengers');
+        expect(indexHtml).toContain('Three anatomies, fifteen new motions');
+        expect(indexHtml).toContain('Skeleton daily-quest credit');
+        expect(indexHtml).toContain('local/replicated actors at High and Low quality');
+        expect(indexHtml).toContain('identifies the code-generated core as built in and current');
+        expect(indexHtml).toContain('Fifteen superseded Skeleton, Demon Orc, and Imp GLBs—73.35 MB');
+    });
+
+    test('retains alpha 0.41.0.7 oath beneath broken wings history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.7');
         expect(indexHtml).toContain('The Avenging Seraph has been reforged');
         expect(indexHtml).toContain('Sixty-eight faceted pieces');
@@ -122,7 +135,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.7';
+        const expectedVersion = 'Alpha 0.41.0.8';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -226,8 +239,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.7 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.7`');
+    test('marks 0.41.0.8 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.8`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

@@ -174,30 +174,28 @@ describe('UIManager asset download settings', () => {
     test('starts with idle asset download status labels', () => {
         const ui = new UIManager(false);
 
-        expect(ui.assetDownloadStatus.textContent).toContain('Not downloaded');
-        expect(ui.assetPackCoreStatus.textContent).toContain('Core models not downloaded');
+        expect(ui.assetDownloadStatus.textContent).toContain('Procedural core built in');
+        expect(ui.assetPackCoreStatus.textContent).toContain('Procedural core built in');
         expect(ui.assetPackDungeonStatus.textContent).toContain('Dungeon models not downloaded');
-        expect(ui.assetPackCoreSize.textContent).toContain('MB');
+        expect(ui.assetPackCoreSize.textContent).toContain('no download');
         expect(ui.assetPackEnvironmentSize.textContent).toContain('MB');
-        expect(document.getElementById('asset-pack-core-version').textContent).toContain('Not cached');
-        expect(document.getElementById('asset-pack-core-badge').textContent).toContain('Not cached');
-        expect(document.getElementById('asset-pack-core-badge').dataset.state).toBe('not-cached');
-        expect(document.getElementById('asset-pack-core-badge').style.color).toBe('rgb(199, 208, 220)');
+        expect(document.getElementById('asset-pack-core-version').textContent).toContain('Built-in version');
+        expect(document.getElementById('asset-pack-core-badge').textContent).toContain('Current');
+        expect(document.getElementById('asset-pack-core-badge').dataset.state).toBe('current');
+        expect(document.getElementById('asset-pack-core-badge').style.color).toBe('rgb(214, 255, 214)');
+        expect(document.getElementById('btn-download-core-assets').disabled).toBe(true);
         expect(ui.assetLastSyncedVersion.textContent).toContain('Not yet synced');
     });
 
-    test('core asset download button invokes callback and updates busy state', async () => {
+    test('procedural core is built in and cannot trigger a redundant download', async () => {
         const ui = new UIManager(false);
         ui.onAssetDownloadRequest = jest.fn(async () => undefined);
-
-        const pending = new Promise(() => {});
-        ui.onAssetDownloadRequest = jest.fn(() => pending);
 
         document.getElementById('btn-download-core-assets').click();
         await Promise.resolve();
 
-        expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('core-models');
-        expect(ui.assetDownloadStatus.textContent).toContain('Downloading core models');
+        expect(ui.onAssetDownloadRequest).not.toHaveBeenCalled();
+        expect(ui.assetPackCoreStatus.textContent).toContain('Procedural core built in');
     });
 
     test('download success updates pack-specific status text', async () => {
@@ -214,9 +212,6 @@ describe('UIManager asset download settings', () => {
         expect(document.getElementById('asset-pack-dungeon-badge').textContent).toContain('Current');
         expect(document.getElementById('asset-pack-dungeon-badge').dataset.state).toBe('current');
         expect(document.getElementById('asset-pack-dungeon-badge').style.color).toBe('rgb(214, 255, 214)');
-        expect(ui.assetDownloadStatus.textContent).toContain('Dungeon models ready offline');
-
-        ui.setAssetPackStatus('core-models', 'cached');
         expect(ui.assetDownloadStatus.textContent).toContain('All selected packs ready offline');
     });
 
@@ -241,7 +236,7 @@ describe('UIManager asset download settings', () => {
 
         expect(ui.onAssetCacheClearRequest).toHaveBeenCalled();
         expect(ui.assetDownloadStatus.textContent).toContain('Cache cleared');
-        expect(ui.assetPackCoreStatus.textContent).toContain('Core models not downloaded');
+        expect(ui.assetPackCoreStatus.textContent).toContain('Procedural core built in');
         expect(ui.assetPackDungeonStatus.textContent).toContain('Dungeon models not downloaded');
     });
 
@@ -258,7 +253,7 @@ describe('UIManager asset download settings', () => {
 
         await ui.refreshAssetCacheState();
 
-        expect(ui.assetPackCoreStatus.textContent).toContain('Core models cached');
+        expect(ui.assetPackCoreStatus.textContent).toContain('Procedural core built in');
         expect(ui.assetPackDungeonStatus.textContent).toContain('1/4 cached');
         expect(ui.assetPackEnvironmentStatus.textContent).toContain('2/4 cached');
         expect(document.getElementById('asset-pack-core-version').textContent).toContain('2026-04-01');
@@ -310,6 +305,7 @@ describe('UIManager asset download settings', () => {
         ui.assetCacheManager.inspectPack = jest.fn(async (packName) => ({
             packName,
             cached: packName === 'core-models',
+            builtIn: packName === 'core-models',
             cachedCount: packName === 'dungeon-models' ? 0 : 2,
             total: 4,
             updateAvailable: packName === 'environment-textures'
@@ -318,13 +314,13 @@ describe('UIManager asset download settings', () => {
 
         await ui.updateCachedAssets();
 
-        expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('core-models');
+        expect(ui.onAssetDownloadRequest).not.toHaveBeenCalledWith('core-models');
         expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('environment-textures');
         expect(ui.onAssetDownloadRequest).not.toHaveBeenCalledWith('dungeon-models');
         expect(ui.assetDownloadStatus.textContent).toContain('Updated cached asset packs');
     });
 
-    test('recommended assets button downloads core and environment packs', async () => {
+    test('recommended assets button skips built-in core and downloads environment textures', async () => {
         const ui = new UIManager(false);
         ui.onAssetDownloadRequest = jest.fn(async () => undefined);
 
@@ -335,7 +331,7 @@ describe('UIManager asset download settings', () => {
         await Promise.resolve();
         await Promise.resolve();
 
-        expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('core-models');
+        expect(ui.onAssetDownloadRequest).not.toHaveBeenCalledWith('core-models');
         expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('environment-textures');
         expect(ui.onAssetDownloadRequest).not.toHaveBeenCalledWith('dungeon-models');
     });
@@ -344,7 +340,7 @@ describe('UIManager asset download settings', () => {
         const ui = new UIManager(false);
         ui.onAssetDownloadRequest = jest.fn(async () => undefined);
 
-        await ui.requestAssetDownload('core-models');
+        await ui.requestAssetDownload('environment-textures');
 
         expect(ui.assetLastSyncedVersion.textContent).toContain('2026-04-01');
         expect(localStorage.getItem('eidolon.assetLastSyncedVersion')).toBe('2026-04-01');

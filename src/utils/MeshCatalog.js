@@ -1,22 +1,4 @@
 const PRELOAD_MODEL_PATHS = [
-    './assets/enemies/undead/skeleton/idle.glb',
-    './assets/enemies/undead/skeleton/walk.glb',
-    './assets/enemies/undead/skeleton/run.glb',
-    './assets/enemies/undead/skeleton/attack.glb',
-    './assets/enemies/undead/skeleton/death.glb',
-
-    './assets/enemies/demons/demon_orc/idle.glb',
-    './assets/enemies/demons/demon_orc/walk.glb',
-    './assets/enemies/demons/demon_orc/run.glb',
-    './assets/enemies/demons/demon_orc/attack.glb',
-    './assets/enemies/demons/demon_orc/death.glb',
-
-    './assets/enemies/demons/imp/idle.glb',
-    './assets/enemies/demons/imp/walk.glb',
-    './assets/enemies/demons/imp/run.glb',
-    './assets/enemies/demons/imp/attack.glb',
-    './assets/enemies/demons/imp/death.glb',
-
     './assets/enemies/undead/construct/idle.glb',
     './assets/enemies/undead/construct/walk.glb',
     './assets/enemies/undead/construct/run.glb',
@@ -102,6 +84,21 @@ const BACKGROUND_PRELOAD_PATHS = new Set([
 
 export class MeshCatalog {
     static recipes = {
+        Skeleton: {
+            type: 'enemy',
+            source: 'procedural Gloamwood ossuary rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        DemonOrc: {
+            type: 'enemy',
+            source: 'procedural Cinder Wastes kiln-warrior rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        Imp: {
+            type: 'enemy',
+            source: 'procedural Cinder Wastes ember-scavenger rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
         AvengingSeraph: {
             type: 'summon',
             source: 'procedural reliquary seraph rig',
@@ -197,12 +194,11 @@ export class MeshCatalog {
             : (proceduralPlayerTypes.has(playerType) ? null : './assets/archetypes/');
 
         // The network connection and entity stream start after this gate. Load
-        // the selected local actor plus the Skeleton population immediately
-        // outside town; distant enemies, NPCs, summons, and interactive-object
-        // models remain on demand so unused assets cannot hold entry open.
+        // only a selected authored local actor. Procedural player and starter-
+        // region enemy rigs are synchronous, while distant authored assets
+        // remain on demand so unused models cannot hold entry open.
         return this.getPreloadModelPaths().filter((path) =>
-            (playerPrefix && path.startsWith(playerPrefix)) ||
-            path.startsWith('./assets/enemies/undead/skeleton/')
+            playerPrefix && path.startsWith(playerPrefix)
         );
     }
 

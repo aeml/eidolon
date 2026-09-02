@@ -20,12 +20,12 @@ const ASSET_PACKS = {
 };
 
 const ASSET_PACK_SIZE_ESTIMATES_MB = {
-    'core-models': 18,
+    'core-models': 0,
     'dungeon-models': 24,
     'environment-textures': 9
 };
 
-const RECOMMENDED_ASSET_PACKS = ['core-models', 'environment-textures'];
+const RECOMMENDED_ASSET_PACKS = ['environment-textures'];
 
 function shouldVersionAsset(path) {
     return typeof path === 'string' && /^\.\/assets\//.test(path);
@@ -45,8 +45,8 @@ function resolveAssetPath(path) {
 }
 
 function getAssetPack(name) {
+    if (!Object.prototype.hasOwnProperty.call(ASSET_PACKS, name)) return null;
     const assets = Array.from(new Set(ASSET_PACKS[name] || []));
-    if (assets.length === 0) return null;
     return { name, assets };
 }
 

@@ -108,9 +108,9 @@ Player classes declare Idle/Walk/Run/Attack/Death clips through either the share
 | Rogue | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | Wizard | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | Cleric | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| Skeleton | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| Imp | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| DemonOrc | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
+| Skeleton | enemy | procedural Gloamwood ossuary rig | Idle, Walk, Run, Attack, Death | not-used | grave-sickle, soul lantern, shroud, and loose-bone collapse | local hardware gallery: High/Low |
+| Imp | enemy | procedural Cinder Wastes ember-scavenger rig | Idle, Walk, Run, Attack, Death | not-used | beating coal heart, bat wings, pilfer-fork, and spaded tail | local hardware gallery: High/Low |
+| DemonOrc | enemy | procedural Cinder Wastes kiln-warrior rig | Idle, Walk, Run, Attack, Death | not-used | furnace breastplate, cinder cleaver, coal chain, and heavy collapse | local hardware gallery: High/Low |
 | Construct | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | InfernoTitan | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | Siren | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |

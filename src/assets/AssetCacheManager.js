@@ -26,6 +26,10 @@ export class AssetCacheManager {
         return this.manifest.packs[packName] || [];
     }
 
+    hasPack(packName) {
+        return Object.prototype.hasOwnProperty.call(this.manifest.packs, packName);
+    }
+
     handleServiceWorkerMessage(event) {
         if (event?.data?.type !== 'asset-pack-progress') {
             return;
@@ -80,10 +84,10 @@ export class AssetCacheManager {
     }
 
     async warmPack(packName, { preferServiceWorker = true, onProgress = null } = {}) {
-        const assets = this.getPackAssets(packName);
-        if (assets.length === 0) {
+        if (!this.hasPack(packName)) {
             throw new Error(`Unknown asset pack: ${packName}`);
         }
+        const assets = this.getPackAssets(packName);
 
         const reportProgress = (completed) => {
             if (!onProgress) return;
@@ -93,6 +97,15 @@ export class AssetCacheManager {
         };
 
         reportProgress(0);
+
+        // The procedural core is emitted from JavaScript and has no external
+        // payload to cache. Keep the named pack valid so callers can inspect it,
+        // while completing immediately instead of waiting on a service worker
+        // progress message that can never arrive for an empty asset list.
+        if (assets.length === 0) {
+            await this.writePackMetadata(packName);
+            return { mode: 'built-in', cacheName: this.cacheName, assets };
+        }
 
         const serviceWorker = globalThis.navigator?.serviceWorker;
         if (preferServiceWorker && serviceWorker?.controller?.postMessage) {
@@ -138,7 +151,22 @@ export class AssetCacheManager {
     }
 
     async inspectPack(packName) {
+        if (!this.hasPack(packName)) {
+            throw new Error(`Unknown asset pack: ${packName}`);
+        }
         const assets = this.getPackAssets(packName);
+        if (assets.length === 0) {
+            return {
+                packName,
+                total: 0,
+                cachedCount: 0,
+                cached: true,
+                builtIn: true,
+                updateAvailable: false,
+                cachedVersion: this.manifest.version,
+                cacheName: this.cacheName
+            };
+        }
         const cacheApi = globalThis.caches;
         if (!cacheApi?.open || !cacheApi?.keys) {
             throw new Error('Cache Storage is not available');
@@ -166,6 +194,7 @@ export class AssetCacheManager {
             total: assets.length,
             cachedCount,
             cached: assets.length > 0 && cachedCount === assets.length,
+            builtIn: false,
             updateAvailable,
             cachedVersion,
             cacheName: this.cacheName

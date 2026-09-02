@@ -88,6 +88,19 @@ describe('actor animation manifest', () => {
         expect(ACTOR_ANIMATION_MANIFEST.AvengingSeraph.special).toContain('oath-spear');
     });
 
+    test('classifies starter regional enemies as intentional procedural rigs', () => {
+        expect(ACTOR_ANIMATION_MANIFEST.Skeleton).toEqual(expect.objectContaining({
+            category: 'enemy',
+            source: 'procedural Gloamwood ossuary rig',
+            states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        }));
+        expect(ACTOR_ANIMATION_MANIFEST.DemonOrc.source).toBe('procedural Cinder Wastes kiln-warrior rig');
+        expect(ACTOR_ANIMATION_MANIFEST.Imp.source).toBe('procedural Cinder Wastes ember-scavenger rig');
+        expect(ACTOR_ANIMATION_MANIFEST.Skeleton.special).toContain('soul lantern');
+        expect(ACTOR_ANIMATION_MANIFEST.DemonOrc.special).toContain('cinder cleaver');
+        expect(ACTOR_ANIMATION_MANIFEST.Imp.special).toContain('spaded tail');
+    });
+
     test('no combat actor is classified without idle, movement, attack, and death presentation', () => {
         for (const actor of listActorAnimationEntries()) {
             if (actor.category === 'npc') continue;

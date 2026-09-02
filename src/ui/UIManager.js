@@ -190,7 +190,7 @@ export class UIManager {
         this.assetCacheManager = new AssetCacheManager();
         this.assetLastSyncedVersionValue = localStorage.getItem('eidolon.assetLastSyncedVersion') || null;
         this.assetPackStatuses = {
-            'core-models': localStorage.getItem('eidolon.assetPack.core-models') || 'not-downloaded',
+            'core-models': 'cached',
             'dungeon-models': localStorage.getItem('eidolon.assetPack.dungeon-models') || 'not-downloaded',
             'environment-textures': localStorage.getItem('eidolon.assetPack.environment-textures') || 'not-downloaded'
         };
@@ -292,9 +292,8 @@ export class UIManager {
             });
         }
         if (this.btnDownloadCoreAssets) {
-            this.btnDownloadCoreAssets.addEventListener('click', () => {
-                void this.requestAssetDownload('core-models');
-            });
+            this.btnDownloadCoreAssets.disabled = true;
+            this.btnDownloadCoreAssets.textContent = 'Built In';
         }
         if (this.btnDownloadDungeonAssets) {
             this.btnDownloadDungeonAssets.addEventListener('click', () => {
@@ -2445,12 +2444,12 @@ export class UIManager {
     getAssetPackLabel(packName) {
         if (packName === 'dungeon-models') return 'Dungeon models';
         if (packName === 'environment-textures') return 'Environment textures';
-        return 'Core models';
+        return 'Procedural core';
     }
 
     renderAssetPackEstimates() {
         if (this.assetPackCoreSize) {
-            this.assetPackCoreSize.textContent = `Estimated download: ${getAssetPackEstimateMb('core-models')}`;
+            this.assetPackCoreSize.textContent = 'Code-generated locally · no download';
         }
         if (this.assetPackDungeonSize) {
             this.assetPackDungeonSize.textContent = `Estimated download: ${getAssetPackEstimateMb('dungeon-models')}`;
@@ -2458,10 +2457,10 @@ export class UIManager {
         if (this.assetPackEnvironmentSize) {
             this.assetPackEnvironmentSize.textContent = `Estimated download: ${getAssetPackEstimateMb('environment-textures')}`;
         }
-        this.renderAssetPackVersion('core-models');
+        this.renderAssetPackVersion('core-models', DEFAULT_ASSET_VERSION);
         this.renderAssetPackVersion('dungeon-models');
         this.renderAssetPackVersion('environment-textures');
-        this.renderAssetPackBadge('core-models', 'not-cached');
+        this.renderAssetPackBadge('core-models', 'current');
         this.renderAssetPackBadge('dungeon-models', 'not-cached');
         this.renderAssetPackBadge('environment-textures', 'not-cached');
     }
@@ -2498,6 +2497,10 @@ export class UIManager {
     renderAssetPackVersion(packName, version = null) {
         const element = this.getAssetPackVersionElement(packName);
         if (!element) {
+            return;
+        }
+        if (packName === 'core-models') {
+            element.textContent = `Built-in version: ${version || DEFAULT_ASSET_VERSION}`;
             return;
         }
         element.textContent = version
@@ -2633,11 +2636,7 @@ export class UIManager {
 
     refreshAssetDownloadStatus() {
         if (this.assetPackCoreStatus) {
-            this.assetPackCoreStatus.textContent = this.assetPackStatuses['core-models'] === 'cached'
-                ? 'Core models cached'
-                : this.assetPackStatuses['core-models'] === 'downloading'
-                    ? 'Downloading core models...'
-                    : 'Core models not downloaded';
+            this.assetPackCoreStatus.textContent = 'Procedural core built in';
         }
         if (this.assetPackDungeonStatus) {
             this.assetPackDungeonStatus.textContent = this.assetPackStatuses['dungeon-models'] === 'cached'
@@ -2655,7 +2654,7 @@ export class UIManager {
         }
         if (this.assetDownloadStatus) {
             if (this.assetPackStatuses['core-models'] === 'downloading') {
-                this.assetDownloadStatus.textContent = 'Downloading core models';
+                this.assetDownloadStatus.textContent = 'Preparing procedural core';
             } else if (this.assetPackStatuses['dungeon-models'] === 'downloading') {
                 this.assetDownloadStatus.textContent = 'Downloading dungeon models';
             } else if (this.assetPackStatuses['core-models'] === 'cached' && this.assetPackStatuses['dungeon-models'] === 'cached') {
@@ -2663,7 +2662,7 @@ export class UIManager {
             } else if (this.assetPackStatuses['dungeon-models'] === 'cached') {
                 this.assetDownloadStatus.textContent = 'Dungeon models ready offline';
             } else if (this.assetPackStatuses['core-models'] === 'cached') {
-                this.assetDownloadStatus.textContent = 'Core models ready offline';
+                this.assetDownloadStatus.textContent = 'Procedural core built in';
             } else {
                 this.assetDownloadStatus.textContent = 'Not downloaded';
             }
@@ -2719,7 +2718,7 @@ export class UIManager {
             this.assetCacheManager.inspectPack('environment-textures')
         ]);
         const cachedPacks = inspections
-            .filter((inspection) => inspection.cached || inspection.cachedCount > 0)
+            .filter((inspection) => !inspection.builtIn && (inspection.cached || inspection.cachedCount > 0))
             .map((inspection) => inspection.packName);
 
         for (const packName of cachedPacks) {
@@ -2738,7 +2737,7 @@ export class UIManager {
     async clearCachedAssets() {
         const handler = this.onAssetCacheClearRequest || (() => this.assetCacheManager.clearAll());
         const result = await handler();
-        this.setAssetPackStatus('core-models', 'not-downloaded');
+        this.setAssetPackStatus('core-models', 'cached');
         this.setAssetPackStatus('dungeon-models', 'not-downloaded');
         this.setAssetPackStatus('environment-textures', 'not-downloaded');
         this.updateAssetDownloadProgress({ completed: 0, total: 0, percent: 0 });

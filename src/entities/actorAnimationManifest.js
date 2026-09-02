@@ -18,9 +18,15 @@ export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
     Wizard: entry('player', 'shared procedural humanoid rig', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
     Cleric: entry('player', 'shared procedural humanoid rig', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
 
-    Skeleton: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
-    Imp: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
-    DemonOrc: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    Skeleton: entry('enemy', 'procedural Gloamwood ossuary rig', WALKING_ENEMY_CLIPS, {
+        special: 'grave-sickle, soul lantern, shroud, and loose-bone collapse'
+    }),
+    Imp: entry('enemy', 'procedural Cinder Wastes ember-scavenger rig', WALKING_ENEMY_CLIPS, {
+        special: 'beating coal heart, bat wings, pilfer-fork, and spaded tail'
+    }),
+    DemonOrc: entry('enemy', 'procedural Cinder Wastes kiln-warrior rig', WALKING_ENEMY_CLIPS, {
+        special: 'furnace breastplate, cinder cleaver, coal chain, and heavy collapse'
+    }),
     Construct: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
     InfernoTitan: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
     Siren: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),

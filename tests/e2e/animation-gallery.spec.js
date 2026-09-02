@@ -17,6 +17,11 @@ const proceduralTownActorTypes = Object.freeze([
 const proceduralSummonTypes = Object.freeze([
     ['AvengingSeraph', 'Lanternhold reliquary seraph']
 ]);
+const proceduralRegionalEnemyTypes = Object.freeze([
+    ['Skeleton', 'Gloamwood ossuary pilgrim'],
+    ['DemonOrc', 'Cinder Wastes kiln-warrior'],
+    ['Imp', 'Cinder Wastes ember-scavenger']
+]);
 
 test.use({ trace: 'off', video: 'off' });
 
@@ -256,6 +261,55 @@ test.describe('deterministic production animation gallery', () => {
                 expect(metrics.nonFiniteTransforms).toBe(0);
                 await page.screenshot({
                     path: testInfo.outputPath(`procedural-summon-${actorType.toLowerCase()}-${quality}.png`),
+                    animations: 'allow'
+                });
+            }
+        }
+
+        expect(failures, failures.join('\n')).toEqual([]);
+        testInfo.annotations.push({
+            type: 'renderer',
+            description: `${renderer.vendor} · ${renderer.renderer}`
+        });
+    });
+
+    test('renders each starter-region enemy silhouette, state, and quality tier in hardware Chrome', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        const response = await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
+        expect(response?.status()).toBe(200);
+
+        const renderer = await hardwareRenderer(page);
+        expect(renderer).not.toBeNull();
+        expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
+
+        for (const [actorType, artStyle] of proceduralRegionalEnemyTypes) {
+            await page.locator('#gallery-actor').selectOption(actorType);
+            await waitForActor(page, actorType);
+            let metrics = await galleryMetrics(page);
+            expect(metrics.proceduralEnemyFamily).toBe(true);
+            expect(metrics.proceduralActorType).toBe(actorType);
+            expect(metrics.actorArtStyle).toBe(artStyle);
+            expect(metrics.actorVisibleMeshes).toBeGreaterThanOrEqual(45);
+
+            for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death']) {
+                await page.locator('#gallery-state').selectOption(state);
+                await page.locator('#gallery-play-state').click();
+                await expect.poll(async () => (await galleryMetrics(page)).phase).toBe(`state:${state.toLowerCase()}`);
+                metrics = await galleryMetrics(page);
+                expect(metrics.currentAnimation).toBe(state);
+                expect(metrics.nonFiniteTransforms).toBe(0);
+            }
+
+            for (const quality of ['high', 'low']) {
+                await page.locator('#gallery-quality').selectOption(quality);
+                await page.locator('#gallery-state').selectOption('Idle');
+                await page.locator('#gallery-play-state').click();
+                await expect.poll(async () => (await galleryMetrics(page)).quality).toBe(quality);
+                metrics = await galleryMetrics(page);
+                expect(metrics.proceduralEnemyFamily).toBe(true);
+                expect(metrics.nonFiniteTransforms).toBe(0);
+                await page.screenshot({
+                    path: testInfo.outputPath(`procedural-regional-enemy-${actorType.toLowerCase()}-${quality}.png`),
                     animations: 'allow'
                 });
             }

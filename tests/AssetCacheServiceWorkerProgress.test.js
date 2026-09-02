@@ -38,7 +38,7 @@ describe('AssetCacheManager service worker progress and inspection', () => {
         const manager = new AssetCacheManager();
         const updates = [];
 
-        const warmPromise = manager.warmPack('core-models', {
+        const warmPromise = manager.warmPack('environment-textures', {
             preferServiceWorker: true,
             onProgress: (update) => updates.push(update)
         });
@@ -48,7 +48,7 @@ describe('AssetCacheManager service worker progress and inspection', () => {
             data: {
                 type: 'asset-pack-progress',
                 payload: {
-                    packName: 'core-models',
+                    packName: 'environment-textures',
                     completed: 2,
                     total: 4,
                     percent: 50
@@ -59,7 +59,7 @@ describe('AssetCacheManager service worker progress and inspection', () => {
             data: {
                 type: 'asset-pack-progress',
                 payload: {
-                    packName: 'core-models',
+                    packName: 'environment-textures',
                     completed: 4,
                     total: 4,
                     percent: 100,
@@ -71,7 +71,7 @@ describe('AssetCacheManager service worker progress and inspection', () => {
         await warmPromise;
 
         expect(updates).toContainEqual(expect.objectContaining({
-            packName: 'core-models',
+            packName: 'environment-textures',
             completed: 2,
             total: 4,
             percent: 50
@@ -83,7 +83,7 @@ describe('AssetCacheManager service worker progress and inspection', () => {
             if (name.endsWith('-meta')) {
                 return {
                     match: jest.fn(async () => ({
-                        json: async () => ({ packName: 'core-models', version: 'legacy-build' })
+                        json: async () => ({ packName: 'environment-textures', version: 'legacy-build' })
                     }))
                 };
             }
@@ -100,9 +100,9 @@ describe('AssetCacheManager service worker progress and inspection', () => {
         });
 
         const manager = new AssetCacheManager();
-        const status = await manager.inspectPack('core-models');
+        const status = await manager.inspectPack('environment-textures');
 
-        expect(status.packName).toBe('core-models');
+        expect(status.packName).toBe('environment-textures');
         expect(status.cached).toBe(false);
         expect(status.cachedCount).toBe(1);
         expect(status.total).toBeGreaterThan(1);

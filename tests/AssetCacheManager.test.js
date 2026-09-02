@@ -17,7 +17,9 @@ describe('asset pack manifest', () => {
 
         const corePack = getAssetPack('core-models');
         expect(corePack).toBeDefined();
+        expect(corePack.assets).toEqual([]);
         expect(new Set(corePack.assets).size).toBe(corePack.assets.length);
+        expect(getAssetPack('unknown-pack')).toBeNull();
 
         const manifest = getVersionedAssetManifest();
         expect(manifest.version).toBe(DEFAULT_ASSET_VERSION);
@@ -55,22 +57,52 @@ describe('AssetCacheManager', () => {
         });
     });
 
-    test('warms a pack directly through Cache Storage when requested', async () => {
+    test('warms an external pack directly through Cache Storage when requested', async () => {
         const metadataCache = { put: jest.fn(async () => undefined) };
         const assetCache = { addAll: jest.fn(async () => undefined), add: jest.fn(async () => undefined) };
         caches.open = jest.fn(async (name) => (name === `eidolon-assets-${DEFAULT_ASSET_VERSION}-meta` ? metadataCache : assetCache));
 
         const manager = new AssetCacheManager();
-        await manager.warmPack('core-models', { preferServiceWorker: false });
+        await manager.warmPack('environment-textures', { preferServiceWorker: false });
 
         expect(caches.open).toHaveBeenCalledWith(`eidolon-assets-${DEFAULT_ASSET_VERSION}`);
         expect(caches.open).toHaveBeenCalledWith(`eidolon-assets-${DEFAULT_ASSET_VERSION}-meta`);
-        expect(assetCache.add).toHaveBeenCalledTimes(ASSET_PACKS['core-models'].length);
-        expect(assetCache.add.mock.calls[0][0]).toEqual(expect.stringContaining(ASSET_PACKS['core-models'][0].replace('./', '')));
+        expect(assetCache.add).toHaveBeenCalledTimes(ASSET_PACKS['environment-textures'].length);
+        expect(assetCache.add.mock.calls[0][0]).toEqual(expect.stringContaining(ASSET_PACKS['environment-textures'][0].replace('./', '')));
         expect(metadataCache.put).toHaveBeenCalledWith(
-            'eidolon-meta://packs/core-models',
+            'eidolon-meta://packs/environment-textures',
             expect.objectContaining({ json: expect.any(Function) })
         );
+    });
+
+    test('recognizes the code-generated core as built in without a cache payload', async () => {
+        const metadataCache = { put: jest.fn(async () => undefined) };
+        caches.open = jest.fn(async () => metadataCache);
+
+        const manager = new AssetCacheManager();
+        const updates = [];
+        const result = await manager.warmPack('core-models', {
+            onProgress: (update) => updates.push(update)
+        });
+        const inspection = await manager.inspectPack('core-models');
+
+        expect(result).toEqual(expect.objectContaining({ mode: 'built-in', assets: [] }));
+        expect(updates).toEqual([expect.objectContaining({ completed: 0, total: 0, percent: 100 })]);
+        expect(navigator.serviceWorker.controller.postMessage).not.toHaveBeenCalled();
+        expect(inspection).toEqual(expect.objectContaining({
+            cached: true,
+            builtIn: true,
+            cachedCount: 0,
+            total: 0,
+            updateAvailable: false,
+            cachedVersion: DEFAULT_ASSET_VERSION
+        }));
+    });
+
+    test('still rejects unknown pack names', async () => {
+        const manager = new AssetCacheManager();
+        await expect(manager.warmPack('missing-pack')).rejects.toThrow('Unknown asset pack');
+        await expect(manager.inspectPack('missing-pack')).rejects.toThrow('Unknown asset pack');
     });
 
     test('registerServiceWorker registers the root asset service worker', async () => {
