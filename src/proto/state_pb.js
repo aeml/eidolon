@@ -2255,6 +2255,9 @@ export const eidolon = $root.eidolon = (() => {
              * @property {string|null} [gemType] Item gemType
              * @property {string|null} [gemQuality] Item gemQuality
              * @property {Array.<eidolon.state.SocketedGem.$Properties>|null} [gems] Item gems
+             * @property {string|null} [setId] Item setId
+             * @property {string|null} [uniqueEffect] Item uniqueEffect
+             * @property {number|null} [statScaleVersion] Item statScaleVersion
              * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
              */
 
@@ -2425,6 +2428,30 @@ export const eidolon = $root.eidolon = (() => {
             Item.prototype.gems = $util.emptyArray;
 
             /**
+             * Item setId.
+             * @member {string} setId
+             * @memberof eidolon.state.Item
+             * @instance
+             */
+            Item.prototype.setId = "";
+
+            /**
+             * Item uniqueEffect.
+             * @member {string} uniqueEffect
+             * @memberof eidolon.state.Item
+             * @instance
+             */
+            Item.prototype.uniqueEffect = "";
+
+            /**
+             * Item statScaleVersion.
+             * @member {number} statScaleVersion
+             * @memberof eidolon.state.Item
+             * @instance
+             */
+            Item.prototype.statScaleVersion = 0;
+
+            /**
              * Creates a new Item instance using the specified properties.
              * @function create
              * @memberof eidolon.state.Item
@@ -2492,6 +2519,12 @@ export const eidolon = $root.eidolon = (() => {
                 if (message.gems != null && message.gems.length)
                     for (let i = 0; i < message.gems.length; ++i)
                         $root.eidolon.state.SocketedGem.encode(message.gems[i], writer.uint32(/* id 17, wireType 2 =*/138).fork(), _depth + 1).ldelim();
+                if (message.setId != null && $Object.hasOwnProperty.call(message, "setId") && message.setId !== "")
+                    writer.uint32(/* id 18, wireType 2 =*/146).string(message.setId);
+                if (message.uniqueEffect != null && $Object.hasOwnProperty.call(message, "uniqueEffect") && message.uniqueEffect !== "")
+                    writer.uint32(/* id 19, wireType 2 =*/154).string(message.uniqueEffect);
+                if (message.statScaleVersion != null && $Object.hasOwnProperty.call(message, "statScaleVersion") && message.statScaleVersion !== 0)
+                    writer.uint32(/* id 20, wireType 0 =*/160).int32(message.statScaleVersion);
                 if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
                     for (let i = 0; i < message.$unknowns.length; ++i)
                         writer.raw(message.$unknowns[i]);
@@ -2712,6 +2745,33 @@ export const eidolon = $root.eidolon = (() => {
                             message.gems.push($root.eidolon.state.SocketedGem.decode(reader, reader.uint32(), $undefined, _depth + 1));
                             continue;
                         }
+                    case 18: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.setId = value;
+                            else
+                                delete message.setId;
+                            continue;
+                        }
+                    case 19: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.uniqueEffect = value;
+                            else
+                                delete message.uniqueEffect;
+                            continue;
+                        }
+                    case 20: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.statScaleVersion = value;
+                            else
+                                delete message.statScaleVersion;
+                            continue;
+                        }
                     }
                     reader.skipType(wireType, _depth, tag);
                     if (!reader.discardUnknown) {
@@ -2817,6 +2877,15 @@ export const eidolon = $root.eidolon = (() => {
                             return "gems." + error;
                     }
                 }
+                if (message.setId != null && $Object.hasOwnProperty.call(message, "setId"))
+                    if (!$util.isString(message.setId))
+                        return "setId: string expected";
+                if (message.uniqueEffect != null && $Object.hasOwnProperty.call(message, "uniqueEffect"))
+                    if (!$util.isString(message.uniqueEffect))
+                        return "uniqueEffect: string expected";
+                if (message.statScaleVersion != null && $Object.hasOwnProperty.call(message, "statScaleVersion"))
+                    if (!$util.isInteger(message.statScaleVersion))
+                        return "statScaleVersion: integer expected";
                 return null;
             };
 
@@ -2903,6 +2972,15 @@ export const eidolon = $root.eidolon = (() => {
                         message.gems[i] = $root.eidolon.state.SocketedGem.fromObject(object.gems[i], _depth + 1);
                     }
                 }
+                if (object.setId != null)
+                    if (typeof object.setId !== "string" || object.setId.length)
+                        message.setId = $String(object.setId);
+                if (object.uniqueEffect != null)
+                    if (typeof object.uniqueEffect !== "string" || object.uniqueEffect.length)
+                        message.uniqueEffect = $String(object.uniqueEffect);
+                if (object.statScaleVersion != null)
+                    if ($Number(object.statScaleVersion) !== 0)
+                        message.statScaleVersion = object.statScaleVersion | 0;
                 return message;
             };
 
@@ -2943,6 +3021,9 @@ export const eidolon = $root.eidolon = (() => {
                     object.sockets = 0;
                     object.gemType = "";
                     object.gemQuality = "";
+                    object.setId = "";
+                    object.uniqueEffect = "";
+                    object.statScaleVersion = 0;
                 }
                 if (message.id != null && $Object.hasOwnProperty.call(message, "id"))
                     object.id = message.id;
@@ -2988,6 +3069,12 @@ export const eidolon = $root.eidolon = (() => {
                     for (let j = 0; j < message.gems.length; ++j)
                         object.gems[j] = $root.eidolon.state.SocketedGem.toObject(message.gems[j], options, _depth + 1);
                 }
+                if (message.setId != null && $Object.hasOwnProperty.call(message, "setId"))
+                    object.setId = message.setId;
+                if (message.uniqueEffect != null && $Object.hasOwnProperty.call(message, "uniqueEffect"))
+                    object.uniqueEffect = message.uniqueEffect;
+                if (message.statScaleVersion != null && $Object.hasOwnProperty.call(message, "statScaleVersion"))
+                    object.statScaleVersion = message.statScaleVersion;
                 return object;
             };
 

@@ -51,6 +51,16 @@ Hazards must survive chunk residency changes and must dispose all geometry and m
 - Shared geometry and immutable materials are cached across actor instances. Mutable pose, equipped-part selection, tint state, effects, nameplates, hitboxes, and party markers belong to the actor instance and must reset on pool reuse.
 - At normal isometric zoom, class identity comes first from silhouette, then value grouping, then one restrained magical accent. Fine ornament is optional and may disappear on Low quality; head, hands, weapon, off-hand identity, and locomotion must remain readable.
 
+## Equipment language
+
+- Every equippable base family needs a named descriptor and intentional silhouette. Unknown items must fail coverage visibly; production must not hide an omission behind a generic cube, weapon, or armor fallback.
+- Metal, leather, cloth, and wood keep distinct roughness and metalness. A material family establishes the main value block, while a secondary material defines edges, straps, frames, or reinforcement.
+- Item tier may strengthen scale very slightly, but never enough to alter perceived reach, collision, or class proportions. Rarity uses one restrained emissive accent rather than recoloring the whole item.
+- Potency strengthens the existing rarity accent. Open sockets use dark faceted mounts; filled sockets show no more than three small, color-coded generated gemstones.
+- Set identity uses a thin diamond rune. Unique effects use a separate faceted mark with a stable effect palette. These marks are deliberately small and must not resemble world hazards, targets, or cast telegraphs.
+- Paired slots remain one logical item but render on every declared attachment region. Equipment follows animated pivots and has no independent gameplay transform or network authority.
+- A missing, replaced, or final unequipped item must restore the class's intentional default silhouette immediately. Shared geometry and materials are immutable and cached; attachment groups remain actor-owned and are removed before pool reuse.
+
 ## Migration baseline — 2026-09-02
 
 - Authored asset payload: approximately 963.33 MiB.

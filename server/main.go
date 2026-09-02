@@ -65,7 +65,7 @@ var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAME
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 0.41.0.1"
+	buildVersion = "Alpha 0.41.0.2"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -238,6 +238,7 @@ type EntitySnapshot struct {
 	TalentSpent                int
 	PartyID                    string
 	SocialStatus               string
+	EquipmentRevision          uint64
 }
 
 // Client represents a connected player
@@ -1930,6 +1931,11 @@ func (c *Client) handleMessage(msg Message) {
 					MaxStack:         maxStack,
 					Potency:          dbItem.Potency,
 					Sockets:          dbItem.Sockets,
+					Gems:             socketedGemsFromDatabase(dbItem.Gems),
+					SetID:            dbItem.SetID,
+					UniqueEffect:     dbItem.UniqueEffect,
+					GemType:          game.GemType(dbItem.GemType),
+					GemQuality:       game.GemQuality(dbItem.GemQuality),
 					StatScaleVersion: dbItem.StatScaleVersion,
 				}
 				game.NormalizeItemStatScale(&loadedItem)
@@ -1984,6 +1990,11 @@ func (c *Client) handleMessage(msg Message) {
 					MaxStack:         maxStack,
 					Potency:          dbItem.Potency,
 					Sockets:          dbItem.Sockets,
+					Gems:             socketedGemsFromDatabase(dbItem.Gems),
+					SetID:            dbItem.SetID,
+					UniqueEffect:     dbItem.UniqueEffect,
+					GemType:          game.GemType(dbItem.GemType),
+					GemQuality:       game.GemQuality(dbItem.GemQuality),
 					StatScaleVersion: dbItem.StatScaleVersion,
 				}
 				game.NormalizeItemStatScale(&loadedItem)
@@ -2038,6 +2049,11 @@ func (c *Client) handleMessage(msg Message) {
 					MaxStack:         maxStack,
 					Potency:          dbItem.Potency,
 					Sockets:          dbItem.Sockets,
+					Gems:             socketedGemsFromDatabase(dbItem.Gems),
+					SetID:            dbItem.SetID,
+					UniqueEffect:     dbItem.UniqueEffect,
+					GemType:          game.GemType(dbItem.GemType),
+					GemQuality:       game.GemQuality(dbItem.GemQuality),
 					StatScaleVersion: dbItem.StatScaleVersion,
 				}
 				game.NormalizeItemStatScale(&loadedItem)
@@ -2068,6 +2084,11 @@ func (c *Client) handleMessage(msg Message) {
 					MaxStack:         dbItem.MaxStack,
 					Potency:          dbItem.Potency,
 					Sockets:          dbItem.Sockets,
+					Gems:             socketedGemsFromDatabase(dbItem.Gems),
+					SetID:            dbItem.SetID,
+					UniqueEffect:     dbItem.UniqueEffect,
+					GemType:          game.GemType(dbItem.GemType),
+					GemQuality:       game.GemQuality(dbItem.GemQuality),
 					StatScaleVersion: dbItem.StatScaleVersion,
 				}
 				game.NormalizeItemStatScale(&loadedItem)
@@ -3542,6 +3563,36 @@ func (c *Client) sendError(msg string) {
 }
 
 // entityToSnapshot extracts fields we track for delta comparison
+func socketedGemsFromDatabase(gems []database.SocketedGem) []game.SocketedGem {
+	if len(gems) == 0 {
+		return nil
+	}
+	converted := make([]game.SocketedGem, 0, len(gems))
+	for _, gem := range gems {
+		converted = append(converted, game.SocketedGem{
+			Type:    game.GemType(gem.Type),
+			Quality: game.GemQuality(gem.Quality),
+			Stats:   gem.Stats,
+		})
+	}
+	return converted
+}
+
+func socketedGemsToDatabase(gems []game.SocketedGem) []database.SocketedGem {
+	if len(gems) == 0 {
+		return nil
+	}
+	converted := make([]database.SocketedGem, 0, len(gems))
+	for _, gem := range gems {
+		converted = append(converted, database.SocketedGem{
+			Type:    string(gem.Type),
+			Quality: string(gem.Quality),
+			Stats:   gem.Stats,
+		})
+	}
+	return converted
+}
+
 func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 	if e == nil {
 		return nil
@@ -3803,6 +3854,7 @@ func entityToSnapshot(e *game.Entity) *EntitySnapshot {
 		TalentSpent:                spent,
 		PartyID:                    e.PartyID,
 		SocialStatus:               e.SocialStatus,
+		EquipmentRevision:          e.EquipmentRevision,
 	}
 	e.Mu.RUnlock()
 
@@ -4041,6 +4093,7 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	}
 	cpartyID := current.PartyID
 	csocialStatus := current.SocialStatus
+	cequipmentRevision := current.EquipmentRevision
 	current.Mu.RUnlock()
 
 	// Position change threshold (0.05 units = basically any movement)
@@ -4130,6 +4183,9 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 	if cpartyID != last.PartyID || csocialStatus != last.SocialStatus {
 		return true
 	}
+	if cequipmentRevision != last.EquipmentRevision {
+		return true
+	}
 	if cstunned != last.Stunned || math.Abs(cstunDuration-last.StunDuration) > 0.05 || cslowed != last.Slowed || math.Abs(cslowFactor-last.SlowFactor) > 0.0001 || math.Abs(cslowDuration-last.SlowDuration) > 0.05 || crooted != last.Rooted || math.Abs(crootDuration-last.RootDuration) > 0.05 || cbleeding != last.Bleeding || math.Abs(cbleedDuration-last.BleedDuration) > 0.05 || cbleedDamage != last.BleedDamage || cpoisoned != last.Poisoned || math.Abs(cpoisonDuration-last.PoisonDuration) > 0.05 || cpoisonDamage != last.PoisonDamage || math.Abs(cweakPointDuration-last.WeakPointDuration) > 0.05 || math.Abs(cmarkWeaknessDuration-last.MarkWeaknessDuration) > 0.05 || math.Abs(cspiritDuration-last.SpiritDuration) > 0.05 || math.Abs(cblessingResolveDuration-last.BlessingResolveDuration) > 0.05 || math.Abs(ctimeWarpDuration-last.TimeWarpDuration) > 0.05 || math.Abs(cguardianEmbraceDuration-last.GuardianEmbraceDuration) > 0.05 || math.Abs(carcaneShieldDuration-last.ArcaneShieldDuration) > 0.05 || math.Abs(cdivineInterventionDuration-last.DivineInterventionDuration) > 0.05 || math.Abs(cspellFocusDuration-last.SpellFocusDuration) > 0.05 || math.Abs(cswiftDuration-last.SwiftDuration) > 0.05 || math.Abs(cironFortressDuration-last.IronFortressDuration) > 0.05 || math.Abs(cguardianRoarDuration-last.GuardianRoarDuration) > 0.05 || math.Abs(cberserkerModeDuration-last.BerserkerModeDuration) > 0.05 || math.Abs(clastStandDuration-last.LastStandDuration) > 0.05 || math.Abs(cserratedEdgesDuration-last.SerratedEdgesDuration) > 0.05 || math.Abs(cpoisonCoatingDuration-last.PoisonCoatingDuration) > 0.05 || math.Abs(cstealthDuration-last.StealthDuration) > 0.05 || math.Abs(czealDuration-last.ZealDuration) > 0.05 {
 		return true
 	}
@@ -4200,8 +4256,9 @@ func broadcastState() {
 			for id, entity := range currentState {
 				lastSnap, existed := c.lastState[id]
 
-				// ALWAYS include the player's own entity - they need full state for UI
-				// (skills, equipment, gold, etc. aren't tracked in EntitySnapshot)
+				// ALWAYS include the player's own entity - they need full state for UI.
+				// Equipment appearance is tracked for observers, while inventory, gold,
+				// quests, and other private/self-only fields are not.
 				if id == c.playerID {
 					changedState[id] = entity
 					c.lastState[id] = entityToSnapshot(entity)
@@ -4322,23 +4379,26 @@ func itemToProto(i *game.Item) *statepb.Item {
 		})
 	}
 	return &statepb.Item{
-		Id:          i.ID,
-		Name:        i.Name,
-		Type:        string(i.Type),
-		Rarity:      string(i.Rarity),
-		Slot:        i.Slot,
-		Level:       int32(i.Level),
-		Stats:       stats,
-		Value:       int32(i.Value),
-		Icon:        i.Icon,
-		Description: i.Description,
-		Stack:       int32(i.Stack),
-		MaxStack:    int32(i.MaxStack),
-		Potency:     int32(i.Potency),
-		Sockets:     int32(i.Sockets),
-		GemType:     string(i.GemType),
-		GemQuality:  string(i.GemQuality),
-		Gems:        gems,
+		Id:               i.ID,
+		Name:             i.Name,
+		Type:             string(i.Type),
+		Rarity:           string(i.Rarity),
+		Slot:             i.Slot,
+		Level:            int32(i.Level),
+		Stats:            stats,
+		Value:            int32(i.Value),
+		Icon:             i.Icon,
+		Description:      i.Description,
+		Stack:            int32(i.Stack),
+		MaxStack:         int32(i.MaxStack),
+		Potency:          int32(i.Potency),
+		Sockets:          int32(i.Sockets),
+		GemType:          string(i.GemType),
+		GemQuality:       string(i.GemQuality),
+		Gems:             gems,
+		SetId:            i.SetID,
+		UniqueEffect:     i.UniqueEffect,
+		StatScaleVersion: int32(i.StatScaleVersion),
 	}
 }
 
@@ -4959,6 +5019,11 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				MaxStack:         item.MaxStack,
 				Potency:          item.Potency,
 				Sockets:          item.Sockets,
+				Gems:             socketedGemsToDatabase(item.Gems),
+				SetID:            item.SetID,
+				UniqueEffect:     item.UniqueEffect,
+				GemType:          string(item.GemType),
+				GemQuality:       string(item.GemQuality),
 				StatScaleVersion: item.StatScaleVersion,
 			}
 		}
@@ -4984,6 +5049,11 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				MaxStack:         item.MaxStack,
 				Potency:          item.Potency,
 				Sockets:          item.Sockets,
+				Gems:             socketedGemsToDatabase(item.Gems),
+				SetID:            item.SetID,
+				UniqueEffect:     item.UniqueEffect,
+				GemType:          string(item.GemType),
+				GemQuality:       string(item.GemQuality),
 				StatScaleVersion: item.StatScaleVersion,
 			}
 		}
@@ -5009,6 +5079,11 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				MaxStack:         item.MaxStack,
 				Potency:          item.Potency,
 				Sockets:          item.Sockets,
+				Gems:             socketedGemsToDatabase(item.Gems),
+				SetID:            item.SetID,
+				UniqueEffect:     item.UniqueEffect,
+				GemType:          string(item.GemType),
+				GemQuality:       string(item.GemQuality),
 				StatScaleVersion: item.StatScaleVersion,
 			}
 		}
@@ -5033,6 +5108,11 @@ func saveCharacterDB(client *Client, entity *game.Entity) {
 				MaxStack:         item.MaxStack,
 				Potency:          item.Potency,
 				Sockets:          item.Sockets,
+				Gems:             socketedGemsToDatabase(item.Gems),
+				SetID:            item.SetID,
+				UniqueEffect:     item.UniqueEffect,
+				GemType:          string(item.GemType),
+				GemQuality:       string(item.GemQuality),
 				StatScaleVersion: item.StatScaleVersion,
 			}
 		}

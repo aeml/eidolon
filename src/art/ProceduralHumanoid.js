@@ -511,13 +511,14 @@ export function createProceduralFighter() {
 
     const head = addPivot(chest, 'Rig_Head', [0, 1.35, 0]);
     const headAnchor = addAnchor(head, 'Equipment_Head');
-    addMesh(
+    const face = addMesh(
         headAnchor,
         'Fighter_Head',
         geometry('head', () => new THREE.DodecahedronGeometry(0.31, 1)),
         materials.skin,
         { position: [0, 0.12, 0], scale: [0.86, 1.08, 0.86] }
     );
+    face.userData.equipmentBodyBase = true;
     addMesh(
         headAnchor,
         'Fighter_GreatHelm',
@@ -539,13 +540,14 @@ export function createProceduralFighter() {
         materials.edge,
         { position: [0, 0.05, 0.37] }
     );
-    addMesh(
+    const eyes = addMesh(
         headAnchor,
         'Fighter_EyeGlow',
         geometry('eye-glow', () => new THREE.BoxGeometry(0.42, 0.045, 0.035)),
         materials.glow,
         { position: [0, 0.18, 0.385] }
     );
+    eyes.userData.equipmentBodyBase = true;
     addMesh(
         headAnchor,
         'Fighter_HelmCrown',

@@ -115,8 +115,43 @@ func (ts *TradingSystem) toDBItem(i Item) database.Item {
 		MaxStack:         i.MaxStack,
 		Potency:          i.Potency,
 		Sockets:          i.Sockets,
+		Gems:             toDBSocketedGems(i.Gems),
+		SetID:            i.SetID,
+		UniqueEffect:     i.UniqueEffect,
+		GemType:          string(i.GemType),
+		GemQuality:       string(i.GemQuality),
 		StatScaleVersion: i.StatScaleVersion,
 	}
+}
+
+func toDBSocketedGems(gems []SocketedGem) []database.SocketedGem {
+	if len(gems) == 0 {
+		return nil
+	}
+	converted := make([]database.SocketedGem, 0, len(gems))
+	for _, gem := range gems {
+		converted = append(converted, database.SocketedGem{
+			Type:    string(gem.Type),
+			Quality: string(gem.Quality),
+			Stats:   gem.Stats,
+		})
+	}
+	return converted
+}
+
+func fromDBSocketedGems(gems []database.SocketedGem) []SocketedGem {
+	if len(gems) == 0 {
+		return nil
+	}
+	converted := make([]SocketedGem, 0, len(gems))
+	for _, gem := range gems {
+		converted = append(converted, SocketedGem{
+			Type:    GemType(gem.Type),
+			Quality: GemQuality(gem.Quality),
+			Stats:   gem.Stats,
+		})
+	}
+	return converted
 }
 
 func (ts *TradingSystem) fromDBAuction(a *database.Auction) *Auction {
@@ -158,6 +193,11 @@ func (ts *TradingSystem) fromDBItem(i database.Item) Item {
 		MaxStack:         i.MaxStack,
 		Potency:          i.Potency,
 		Sockets:          i.Sockets,
+		Gems:             fromDBSocketedGems(i.Gems),
+		SetID:            i.SetID,
+		UniqueEffect:     i.UniqueEffect,
+		GemType:          GemType(i.GemType),
+		GemQuality:       GemQuality(i.GemQuality),
 		StatScaleVersion: i.StatScaleVersion,
 	}
 	NormalizeItemStatScale(&item)

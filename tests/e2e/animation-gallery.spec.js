@@ -2,9 +2,11 @@ import { expect, test } from '@playwright/test';
 import { listActorAnimationEntries } from '../../src/entities/actorAnimationManifest.js';
 import { listPlayerAbilityPresentationVariants } from '../../src/skills/abilityVisualManifest.js';
 import { collectBrowserFailures } from './helpers.js';
+import { EQUIPMENT_VISUAL_DESCRIPTORS } from '../../src/art/ProceduralEquipment.js';
 
 const presentationCount = listPlayerAbilityPresentationVariants().length;
 const actorEntries = listActorAnimationEntries();
+const equipmentFamilyCount = Object.keys(EQUIPMENT_VISUAL_DESCRIPTORS).length;
 
 test.use({ trace: 'off', video: 'off' });
 
@@ -66,6 +68,58 @@ test.describe('deterministic production animation gallery', () => {
             await expect.poll(async () => (await galleryMetrics(page)).quality).toBe(quality);
             await page.screenshot({
                 path: testInfo.outputPath(`procedural-fighter-${quality}.png`),
+                animations: 'allow'
+            });
+        }
+
+        expect(failures, failures.join('\n')).toEqual([]);
+        testInfo.annotations.push({
+            type: 'renderer',
+            description: `${renderer.vendor} · ${renderer.renderer}`
+        });
+    });
+
+    test('renders every equipment family on local and replicated Fighters in hardware Chrome', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        const response = await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
+        expect(response?.status()).toBe(200);
+        await waitForActor(page, 'Cleric');
+
+        const renderer = await hardwareRenderer(page);
+        expect(renderer).not.toBeNull();
+        expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
+
+        await page.locator('#gallery-run-equipment').click();
+        await expect.poll(async () => {
+            const metrics = await galleryMetrics(page);
+            return metrics.equipmentAuditRunning ? -1 : metrics.equipmentAuditCompleted;
+        }, { timeout: 120_000 }).toBe(equipmentFamilyCount);
+
+        let metrics = await galleryMetrics(page);
+        expect(metrics.actorType).toBe('Fighter');
+        expect(metrics.proceduralHumanoid).toBe(true);
+        expect(metrics.equipmentAuditPassed).toBe(equipmentFamilyCount);
+        expect(metrics.phase).toBe('equipment:full-loadout');
+        expect(metrics.equipmentLocalItems).toBe(14);
+        expect(metrics.equipmentRemoteItems).toBe(14);
+        expect(metrics.equipmentLocalParts).toBeGreaterThanOrEqual(45);
+        expect(metrics.equipmentRemoteParts).toBe(metrics.equipmentLocalParts);
+        expect(metrics.equipmentLocalSetRegions).toBe(10);
+        expect(metrics.equipmentRemoteSetRegions).toBe(10);
+        expect(metrics.equipmentLocalUniqueRegions).toBe(18);
+        expect(metrics.equipmentRemoteUniqueRegions).toBe(18);
+        expect(metrics.nonFiniteTransforms).toBe(0);
+
+        for (const quality of ['high', 'low']) {
+            await page.locator('#gallery-quality').selectOption(quality);
+            await page.locator('#gallery-equip-all').click();
+            await expect.poll(async () => (await galleryMetrics(page)).quality).toBe(quality);
+            metrics = await galleryMetrics(page);
+            expect(metrics.equipmentLocalItems).toBe(14);
+            expect(metrics.equipmentRemoteItems).toBe(14);
+            expect(metrics.nonFiniteTransforms).toBe(0);
+            await page.screenshot({
+                path: testInfo.outputPath(`procedural-fighter-equipment-${quality}.png`),
                 animations: 'allow'
             });
         }

@@ -3434,6 +3434,7 @@ func (w *World) PerformEquip(playerID, itemID, slot string) (*Entity, bool) {
 		player.Equipment = make(map[string]Item)
 	}
 	player.Equipment[slot] = newItem
+	player.EquipmentRevision++
 
 	player.RecalculateStats()
 	return player, true
@@ -3589,6 +3590,7 @@ func (w *World) PerformUnequip(playerID, slot string) (*Entity, bool) {
 
 	// Remove from equipment
 	delete(player.Equipment, slot)
+	player.EquipmentRevision++
 
 	player.RecalculateStats()
 	return player, true
@@ -3701,6 +3703,7 @@ func (w *World) PerformForgeUpgrade(playerID, slot string, amount int) (*Entity,
 	newItem.Value = int(float64(newItem.Value) * ratio)
 
 	player.Equipment[slot] = newItem
+	player.EquipmentRevision++
 	player.RecalculateStats()
 
 	return player, true, "Upgrade successful"
@@ -3793,6 +3796,7 @@ func (w *World) PerformForgePotency(playerID, slot string) (*Entity, bool, strin
 	newItem.Value = int(float64(newItem.Value) * ratio)
 
 	player.Equipment[slot] = newItem
+	player.EquipmentRevision++
 	player.RecalculateStats()
 
 	return player, true, "Potency upgrade successful"
@@ -3883,6 +3887,7 @@ func (w *World) PerformForgeSocket(playerID, slot string) (*Entity, bool, string
 	newItem := item
 	newItem.Sockets++
 	player.Equipment[slot] = newItem
+	player.EquipmentRevision++
 
 	return player, true, "Socket added successfully"
 }
@@ -3948,6 +3953,7 @@ func (w *World) PerformForgeInsertGem(playerID, equipSlot string, gemInvIndex, s
 	}
 	newEquipItem.Gems = append(newEquipItem.Gems, socketedGem)
 	player.Equipment[equipSlot] = newEquipItem
+	player.EquipmentRevision++
 
 	// Remove gem from inventory
 	player.Inventory = append(player.Inventory[:gemInvIndex], player.Inventory[gemInvIndex+1:]...)
@@ -4058,6 +4064,7 @@ func (w *World) PerformForgeRemoveGem(playerID, equipSlot string, socketIndex in
 	newEquipItem := equipItem
 	newEquipItem.Gems = append(newEquipItem.Gems[:socketIndex], newEquipItem.Gems[socketIndex+1:]...)
 	player.Equipment[equipSlot] = newEquipItem
+	player.EquipmentRevision++
 
 	return player, true, "Gem removed (destroyed)"
 }

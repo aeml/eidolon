@@ -2148,6 +2148,7 @@ export class GameEngine {
                             for (const key in this.player.equipment) {
                                 this.player.equipment[key] = this.hydrateItem(this.player.equipment[key]);
                             }
+                            this.player.syncEquipmentVisuals?.();
                             
                             // Force UI Update if Forge is open
                             if (this.uiManager.forge.isOpen) {
@@ -2480,6 +2481,7 @@ export class GameEngine {
                         for (const key in this.player.equipment) {
                             this.player.equipment[key] = this.hydrateItem(this.player.equipment[key]);
                         }
+                        this.player.syncEquipmentVisuals?.();
                     }
 
                     if (Object.prototype.hasOwnProperty.call(pData, 'quests')) {
@@ -2600,6 +2602,9 @@ export class GameEngine {
     syncRemoteEntity(remoteEntity, pData) {
         const previousRemotePosition = remoteEntity.position?.clone?.() || new THREE.Vector3();
         const previousRemoteState = remoteEntity.state || '';
+        if (Object.prototype.hasOwnProperty.call(pData, 'equipment')) {
+            remoteEntity.syncEquipmentVisuals?.(pData.equipment || {});
+        }
         if (pData.skillRunes !== undefined) {
             remoteEntity.skillRunes = { ...(pData.skillRunes || {}) };
         }

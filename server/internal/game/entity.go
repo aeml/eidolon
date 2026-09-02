@@ -72,12 +72,13 @@ type Entity struct {
 	Gold          int          `json:"gold"`
 
 	// Inventory
-	Inventory      []Item          `json:"-"`
-	Stash          []Item          `json:"-"`
-	Buyback        []Item          `json:"-"`
-	Equipment      map[string]Item `json:"equipment"`
-	Quests         []Quest         `json:"quests"`
-	LastDailyQuest time.Time       `json:"-"`
+	Inventory         []Item          `json:"-"`
+	Stash             []Item          `json:"-"`
+	Buyback           []Item          `json:"-"`
+	Equipment         map[string]Item `json:"equipment"`
+	EquipmentRevision uint64          `json:"-"`
+	Quests            []Quest         `json:"quests"`
+	LastDailyQuest    time.Time       `json:"-"`
 
 	// Skills
 	SkillPoints    int               `json:"skillPoints"`
@@ -852,6 +853,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 		SkillPoints:       e.SkillPoints,
 		SelectedBranch:    e.SelectedBranch,
 		TalentPoints:      e.TalentPoints,
+		EquipmentRevision: e.EquipmentRevision,
 	}
 
 	if e.UnlockedSkills != nil {
@@ -900,33 +902,34 @@ func (w *World) copyEntity(v *Entity) *Entity {
 	defer v.Mu.RUnlock()
 
 	e := Entity{
-		ID:               v.ID,
-		InstanceID:       v.InstanceID,
-		Name:             v.Name,
-		PartyID:          v.PartyID,
-		SocialStatus:     v.SocialStatus,
-		Type:             v.Type,
-		SubType:          v.SubType,
-		X:                v.X,
-		Y:                v.Y,
-		Z:                v.Z,
-		Rotation:         v.Rotation,
-		Health:           v.Health,
-		MaxHealth:        v.MaxHealth,
-		Level:            v.Level,
-		State:            v.State,
-		LastMoveSequence: v.LastMoveSequence,
-		Scale:            v.Scale,
-		JumpStartX:       v.JumpStartX,
-		JumpStartY:       v.JumpStartY,
-		JumpStartZ:       v.JumpStartZ,
-		JumpTargetX:      v.JumpTargetX,
-		JumpTargetY:      v.JumpTargetY,
-		JumpTargetZ:      v.JumpTargetZ,
-		JumpDuration:     v.JumpDuration,
-		JumpHeight:       v.JumpHeight,
-		JumpProgress:     v.JumpProgress,
-		OwnerID:          v.OwnerID,
+		ID:                v.ID,
+		InstanceID:        v.InstanceID,
+		Name:              v.Name,
+		PartyID:           v.PartyID,
+		SocialStatus:      v.SocialStatus,
+		EquipmentRevision: v.EquipmentRevision,
+		Type:              v.Type,
+		SubType:           v.SubType,
+		X:                 v.X,
+		Y:                 v.Y,
+		Z:                 v.Z,
+		Rotation:          v.Rotation,
+		Health:            v.Health,
+		MaxHealth:         v.MaxHealth,
+		Level:             v.Level,
+		State:             v.State,
+		LastMoveSequence:  v.LastMoveSequence,
+		Scale:             v.Scale,
+		JumpStartX:        v.JumpStartX,
+		JumpStartY:        v.JumpStartY,
+		JumpStartZ:        v.JumpStartZ,
+		JumpTargetX:       v.JumpTargetX,
+		JumpTargetY:       v.JumpTargetY,
+		JumpTargetZ:       v.JumpTargetZ,
+		JumpDuration:      v.JumpDuration,
+		JumpHeight:        v.JumpHeight,
+		JumpProgress:      v.JumpProgress,
+		OwnerID:           v.OwnerID,
 
 		SpiritsActive:  v.SpiritsActive,
 		SpiritsBoosted: v.SpiritsBoosted,

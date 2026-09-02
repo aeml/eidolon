@@ -454,26 +454,29 @@ func (x *SocketedGem) GetStats() map[string]int32 {
 }
 
 type Item struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Type          string                 `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
-	Rarity        string                 `protobuf:"bytes,4,opt,name=rarity,proto3" json:"rarity,omitempty"`
-	Slot          string                 `protobuf:"bytes,5,opt,name=slot,proto3" json:"slot,omitempty"`
-	Level         int32                  `protobuf:"varint,6,opt,name=level,proto3" json:"level,omitempty"`
-	Stats         map[string]int32       `protobuf:"bytes,7,rep,name=stats,proto3" json:"stats,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
-	Value         int32                  `protobuf:"varint,8,opt,name=value,proto3" json:"value,omitempty"`
-	Icon          string                 `protobuf:"bytes,9,opt,name=icon,proto3" json:"icon,omitempty"`
-	Description   string                 `protobuf:"bytes,10,opt,name=description,proto3" json:"description,omitempty"`
-	Stack         int32                  `protobuf:"varint,11,opt,name=stack,proto3" json:"stack,omitempty"`
-	MaxStack      int32                  `protobuf:"varint,12,opt,name=max_stack,json=maxStack,proto3" json:"max_stack,omitempty"`
-	Potency       int32                  `protobuf:"varint,13,opt,name=potency,proto3" json:"potency,omitempty"`
-	Sockets       int32                  `protobuf:"varint,14,opt,name=sockets,proto3" json:"sockets,omitempty"`
-	GemType       string                 `protobuf:"bytes,15,opt,name=gem_type,json=gemType,proto3" json:"gem_type,omitempty"`
-	GemQuality    string                 `protobuf:"bytes,16,opt,name=gem_quality,json=gemQuality,proto3" json:"gem_quality,omitempty"`
-	Gems          []*SocketedGem         `protobuf:"bytes,17,rep,name=gems,proto3" json:"gems,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Id               string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name             string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Type             string                 `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
+	Rarity           string                 `protobuf:"bytes,4,opt,name=rarity,proto3" json:"rarity,omitempty"`
+	Slot             string                 `protobuf:"bytes,5,opt,name=slot,proto3" json:"slot,omitempty"`
+	Level            int32                  `protobuf:"varint,6,opt,name=level,proto3" json:"level,omitempty"`
+	Stats            map[string]int32       `protobuf:"bytes,7,rep,name=stats,proto3" json:"stats,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
+	Value            int32                  `protobuf:"varint,8,opt,name=value,proto3" json:"value,omitempty"`
+	Icon             string                 `protobuf:"bytes,9,opt,name=icon,proto3" json:"icon,omitempty"`
+	Description      string                 `protobuf:"bytes,10,opt,name=description,proto3" json:"description,omitempty"`
+	Stack            int32                  `protobuf:"varint,11,opt,name=stack,proto3" json:"stack,omitempty"`
+	MaxStack         int32                  `protobuf:"varint,12,opt,name=max_stack,json=maxStack,proto3" json:"max_stack,omitempty"`
+	Potency          int32                  `protobuf:"varint,13,opt,name=potency,proto3" json:"potency,omitempty"`
+	Sockets          int32                  `protobuf:"varint,14,opt,name=sockets,proto3" json:"sockets,omitempty"`
+	GemType          string                 `protobuf:"bytes,15,opt,name=gem_type,json=gemType,proto3" json:"gem_type,omitempty"`
+	GemQuality       string                 `protobuf:"bytes,16,opt,name=gem_quality,json=gemQuality,proto3" json:"gem_quality,omitempty"`
+	Gems             []*SocketedGem         `protobuf:"bytes,17,rep,name=gems,proto3" json:"gems,omitempty"`
+	SetId            string                 `protobuf:"bytes,18,opt,name=set_id,json=setId,proto3" json:"set_id,omitempty"`
+	UniqueEffect     string                 `protobuf:"bytes,19,opt,name=unique_effect,json=uniqueEffect,proto3" json:"unique_effect,omitempty"`
+	StatScaleVersion int32                  `protobuf:"varint,20,opt,name=stat_scale_version,json=statScaleVersion,proto3" json:"stat_scale_version,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *Item) Reset() {
@@ -623,6 +626,27 @@ func (x *Item) GetGems() []*SocketedGem {
 		return x.Gems
 	}
 	return nil
+}
+
+func (x *Item) GetSetId() string {
+	if x != nil {
+		return x.SetId
+	}
+	return ""
+}
+
+func (x *Item) GetUniqueEffect() string {
+	if x != nil {
+		return x.UniqueEffect
+	}
+	return ""
+}
+
+func (x *Item) GetStatScaleVersion() int32 {
+	if x != nil {
+		return x.StatScaleVersion
+	}
+	return 0
 }
 
 type Entity struct {
@@ -1566,7 +1590,7 @@ const file_state_proto_rawDesc = "" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\x8f\x04\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\xf9\x04\n" +
 	"\x04Item\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
@@ -1586,7 +1610,10 @@ const file_state_proto_rawDesc = "" +
 	"\bgem_type\x18\x0f \x01(\tR\agemType\x12\x1f\n" +
 	"\vgem_quality\x18\x10 \x01(\tR\n" +
 	"gemQuality\x12.\n" +
-	"\x04gems\x18\x11 \x03(\v2\x1a.eidolon.state.SocketedGemR\x04gems\x1a8\n" +
+	"\x04gems\x18\x11 \x03(\v2\x1a.eidolon.state.SocketedGemR\x04gems\x12\x15\n" +
+	"\x06set_id\x18\x12 \x01(\tR\x05setId\x12#\n" +
+	"\runique_effect\x18\x13 \x01(\tR\funiqueEffect\x12,\n" +
+	"\x12stat_scale_version\x18\x14 \x01(\x05R\x10statScaleVersion\x1a8\n" +
 	"\n" +
 	"StatsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +

@@ -16,6 +16,7 @@ import {
 } from '../skills/abilityVisualManifest.js';
 import { getAbilityAoeArc, getAbilityAoeRadius, isAoeBoundaryVisualType } from '../skills/abilityRadii.js';
 import { ACTOR_STATUS_VISUAL_STATES, AttachedStatusEffect } from './AttachedStatusEffect.js';
+import { applyProceduralEquipment, clearProceduralEquipment } from '../art/ProceduralEquipment.js';
 
 // Optimization: Reusable temporary objects to avoid GC
 const TEMP_VEC = new THREE.Vector3();
@@ -365,6 +366,11 @@ export class Actor extends Entity {
 
     setMesh(mesh) {
         super.setMesh(mesh);
+
+        // Equipment state commonly arrives before an asynchronous class mesh.
+        // Apply it as soon as the shared procedural rig is ready so local and
+        // replicated actors never flash the default kit after loading.
+        this.syncEquipmentVisuals(this.equipment, { force: true });
 
         // Add Hitbox for easier clicking
         // Model-backed actors retain the historic local box (their root is
@@ -897,6 +903,11 @@ export class Actor extends Entity {
         } else {
             this.state = newState;
         }
+    }
+
+    syncEquipmentVisuals(equipment = this.equipment, options = {}) {
+        if (equipment && equipment !== this.equipment) this.equipment = equipment;
+        return applyProceduralEquipment(this.mesh, this.equipment || {}, options);
     }
 
     update(dt, collisionManager, player, activeEntities) {
@@ -2098,6 +2109,7 @@ export class Actor extends Entity {
         this.pendingRemoteAbilityAnimation = null;
         this.animations = {};
         this.mixer = null;
+        clearProceduralEquipment(this.mesh);
         super.dispose();
     }
 }

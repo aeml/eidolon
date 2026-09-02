@@ -18,10 +18,37 @@ import {
     listPlayerAbilityPresentations
 } from './skills/abilityVisualManifest.js';
 import { ACTOR_ANIMATION_MANIFEST, listActorAnimationEntries } from './entities/actorAnimationManifest.js';
+import { BASE_ITEMS } from './core/ItemSystem.js';
+import {
+    EQUIPMENT_RENDER_SLOTS,
+    EQUIPMENT_VISUAL_DESCRIPTORS
+} from './art/ProceduralEquipment.js';
 
 const PLAYER_TYPES = Object.freeze({ Fighter, Rogue, Wizard, Cleric });
 const PLAYER_TYPE_NAMES = Object.freeze(Object.keys(PLAYER_TYPES));
 const TARGET_POSITION = new THREE.Vector3(0, 0, 5.5);
+const EQUIPPABLE_BASE_ITEMS = Object.freeze(BASE_ITEMS.filter((item) => EQUIPMENT_VISUAL_DESCRIPTORS[item.name]));
+const FIGHTER_SHOWCASE_LOADOUT = Object.freeze({
+    head: 'Iron Helm',
+    shoulders: 'Steel Pauldrons',
+    chest: 'Plate Mail',
+    gloves: 'Iron Gauntlets',
+    belt: 'Plated Girdle',
+    legs: 'Plate Greaves',
+    feet: 'Iron Boots',
+    neck: 'Necklace',
+    ring1: 'Ruby Ring',
+    ring2: 'Silver Ring',
+    trinket1: 'Amulet of Power',
+    trinket2: 'Orb of Mana',
+    mainHand: 'Iron Sword',
+    offHand: 'Wooden Shield'
+});
+const SET_EQUIPMENT_SLOTS = new Set(['head', 'shoulders', 'chest', 'gloves', 'legs', 'feet']);
+const UNIQUE_EFFECT_IDS = Object.freeze([
+    'vampiric', 'efficient', 'lucky', 'explosive', 'swift',
+    'thorns', 'berserker', 'guardian', 'executioner', 'regenerative'
+]);
 
 const PERSISTENT_STATE_APPLIERS = Object.freeze({
     iron_fortress: (actor) => { actor.ironFortressTimer = 8; },
@@ -65,6 +92,14 @@ function countSceneMetrics(root) {
         if (values.some((value) => !Number.isFinite(value))) nonFiniteTransforms++;
     });
     return { nodes, visibleMeshes, nonFiniteTransforms };
+}
+
+function countEquipmentIdentityRegions(root, identityField) {
+    let count = 0;
+    root?.traverse?.((child) => {
+        if (child.userData?.equipmentVisual && child.userData[identityField]) count++;
+    });
+    return count;
 }
 
 function makeActor(type, id) {
@@ -134,6 +169,10 @@ export class AnimationGallery {
         this.presentationSequence = 0;
         this.auditRunning = false;
         this.auditResults = [];
+        this.equipmentAuditResults = [];
+        this.equipmentAuditRunning = false;
+        this.currentEquipmentName = EQUIPPABLE_BASE_ITEMS[0]?.name || '';
+        this.framingMode = null;
         this.lastError = null;
         this.createdEffects = 0;
         this.disposedEffects = 0;
@@ -159,6 +198,10 @@ export class AnimationGallery {
         this.nextButton = document.getElementById('gallery-next');
         this.playStateButton = document.getElementById('gallery-play-state');
         this.runAllButton = document.getElementById('gallery-run-all');
+        this.equipmentSelect = document.getElementById('gallery-equipment');
+        this.equipButton = document.getElementById('gallery-equip');
+        this.equipAllButton = document.getElementById('gallery-equip-all');
+        this.runEquipmentButton = document.getElementById('gallery-run-equipment');
     }
 
     populateControls() {
@@ -168,6 +211,10 @@ export class AnimationGallery {
         });
         ['Idle', 'Walk', 'Run', 'Attack', 'Jump', 'Death'].forEach((state) => {
             this.stateSelect.add(new Option(state, state));
+        });
+        EQUIPPABLE_BASE_ITEMS.forEach((item) => {
+            const visual = EQUIPMENT_VISUAL_DESCRIPTORS[item.name];
+            this.equipmentSelect.add(new Option(`${item.name} · ${visual.slot}`, item.name));
         });
         this.classSelect.value = this.currentClass;
         this.actorSelect.value = this.currentActorType;
@@ -243,6 +290,20 @@ export class AnimationGallery {
         this.nextButton.addEventListener('click', () => this.nextAbility());
         this.playStateButton.addEventListener('click', () => this.playActorState(this.stateSelect.value));
         this.runAllButton.addEventListener('click', () => this.runAbilityAudit());
+        this.equipmentSelect.addEventListener('change', async () => {
+            this.currentEquipmentName = this.equipmentSelect.value;
+            await this.ensureFighterEquipmentActors();
+            this.presentEquipment(this.currentEquipmentName);
+        });
+        this.equipButton.addEventListener('click', async () => {
+            await this.ensureFighterEquipmentActors();
+            this.presentEquipment(this.equipmentSelect.value);
+        });
+        this.equipAllButton.addEventListener('click', async () => {
+            await this.ensureFighterEquipmentActors();
+            this.presentEquipmentLoadout();
+        });
+        this.runEquipmentButton.addEventListener('click', () => this.runEquipmentAudit());
     }
 
     makePreviewEngine() {
@@ -321,9 +382,8 @@ export class AnimationGallery {
                 this.remoteActor = remote;
             }
 
-            this.controls.target.set(0, 1.2, 1.8);
-            this.renderSystem.camera.position.set(13, 11, 18);
-            this.controls.update();
+            this.framingMode = null;
+            this.framePresentation(false);
             this.setStatus(`${type} loaded`, 'ready');
             this.updateMetrics();
             return true;
@@ -332,6 +392,139 @@ export class AnimationGallery {
             this.setStatus(`FAILED: ${this.lastError}`, 'failed');
             return false;
         }
+    }
+
+    async ensureFighterEquipmentActors() {
+        if (this.currentActorType === 'Fighter' && this.actor?.mesh?.userData?.proceduralHumanoid) return true;
+        this.currentActorType = 'Fighter';
+        this.actorSelect.value = 'Fighter';
+        return this.loadActors('Fighter');
+    }
+
+    framePresentation(equipment = false) {
+        const mode = equipment ? 'equipment' : 'presentation';
+        if (this.targetActor?.mesh) this.targetActor.mesh.visible = !equipment;
+        if (equipment) {
+            const centerX = this.remoteActor ? 2 : 0;
+            this.actor?.position.set(0, 0, 0);
+            this.remoteActor?.position.set(4, 0, 0);
+            this.controls.target.set(centerX, 1.7, 0);
+            this.renderSystem.camera.position.set(centerX, 9, 9);
+            if (this.framingMode !== mode) this.renderSystem.setZoom(7);
+        } else {
+            this.actor?.position.set(-2.8, 0, 0);
+            this.remoteActor?.position.set(2.8, 0, 0);
+            this.controls.target.set(0, 1.2, 1.8);
+            this.renderSystem.camera.position.set(13, 11, 18);
+            if (this.framingMode !== mode) this.renderSystem.setZoom(CONSTANTS.CAMERA.ZOOM);
+        }
+        this.framingMode = mode;
+        this.controls.update();
+    }
+
+    createGalleryEquipmentItem(baseItem, renderSlot, index = 0) {
+        const rarities = ['Common', 'Uncommon', 'Rare', 'Legendary'];
+        const gemTypes = ['Ruby', 'Sapphire', 'Emerald', 'Topaz', 'Diamond', 'Onyx', 'Opal'];
+        return {
+            id: `gallery-${renderSlot}-${baseItem.name.toLowerCase().replaceAll(' ', '-')}`,
+            name: baseItem.name,
+            baseName: baseItem.name,
+            type: baseItem.type,
+            slot: baseItem.slot,
+            rarity: rarities[index % rarities.length],
+            level: 1 + index * 9,
+            potency: index % 6,
+            sockets: index % 3,
+            gems: index % 3 > 0
+                ? [{ type: gemTypes[index % gemTypes.length], quality: 'Flawless' }]
+                : [],
+            setId: SET_EQUIPMENT_SLOTS.has(renderSlot)
+                ? (index % 2 === 0 ? 'warlord_fury' : 'bulwark_ages')
+                : '',
+            uniqueEffect: UNIQUE_EFFECT_IDS[index % UNIQUE_EFFECT_IDS.length],
+            statScaleVersion: 1
+        };
+    }
+
+    getRenderSlot(baseItem, occurrence = 0) {
+        if (baseItem.slot === 'ring') return occurrence % 2 === 0 ? 'ring1' : 'ring2';
+        if (baseItem.slot === 'trinket') return occurrence % 2 === 0 ? 'trinket1' : 'trinket2';
+        return baseItem.slot;
+    }
+
+    presentEquipment(baseName = this.currentEquipmentName) {
+        if (!this.actor?.mesh?.userData?.proceduralHumanoid) return false;
+        const baseItem = EQUIPPABLE_BASE_ITEMS.find((item) => item.name === baseName);
+        if (!baseItem) return false;
+        const renderSlot = this.getRenderSlot(baseItem);
+        const item = this.createGalleryEquipmentItem(baseItem, renderSlot, EQUIPPABLE_BASE_ITEMS.indexOf(baseItem));
+        this.currentEquipmentName = baseItem.name;
+        this.equipmentSelect.value = baseItem.name;
+        this.actor.syncEquipmentVisuals({ [renderSlot]: item }, { force: true });
+        this.remoteActor?.syncEquipmentVisuals({
+            [renderSlot]: { ...item, id: `${item.id}-remote` }
+        }, { force: true });
+        this.targetActor?.syncEquipmentVisuals({}, { force: true });
+        this.framePresentation(true);
+        this.phase = `equipment:${baseItem.name}`;
+        this.setStatus(`${baseItem.name} · ${renderSlot} · local + replicated`, 'playing');
+        this.updateMetrics();
+        return true;
+    }
+
+    presentEquipmentLoadout() {
+        if (!this.actor?.mesh?.userData?.proceduralHumanoid) return false;
+        const equipment = {};
+        EQUIPMENT_RENDER_SLOTS.forEach((renderSlot, index) => {
+            const baseItem = EQUIPPABLE_BASE_ITEMS.find((item) => item.name === FIGHTER_SHOWCASE_LOADOUT[renderSlot]);
+            equipment[renderSlot] = this.createGalleryEquipmentItem(baseItem, renderSlot, index + 1);
+        });
+        this.actor.syncEquipmentVisuals(equipment, { force: true });
+        this.remoteActor?.syncEquipmentVisuals(Object.fromEntries(
+            Object.entries(equipment).map(([slot, item]) => [slot, { ...item, id: `${item.id}-remote` }])
+        ), { force: true });
+        this.targetActor?.syncEquipmentVisuals({}, { force: true });
+        this.framePresentation(true);
+        this.currentEquipmentName = 'Full 14-slot loadout';
+        this.phase = 'equipment:full-loadout';
+        this.setStatus('Full 14-slot Fighter loadout · local + replicated', 'playing');
+        this.updateMetrics();
+        return true;
+    }
+
+    async runEquipmentAudit() {
+        if (this.equipmentAuditRunning) return;
+        this.equipmentAuditRunning = true;
+        this.equipmentAuditResults = [];
+        this.runEquipmentButton.disabled = true;
+        await this.ensureFighterEquipmentActors();
+        for (let index = 0; index < EQUIPPABLE_BASE_ITEMS.length; index++) {
+            const baseItem = EQUIPPABLE_BASE_ITEMS[index];
+            const rendered = this.presentEquipment(baseItem.name);
+            await new Promise((resolve) => setTimeout(resolve, 45));
+            const metrics = this.updateMetrics();
+            const passed = Boolean(
+                rendered &&
+                metrics.equipmentLocalItems === 1 &&
+                (!this.remoteActor || metrics.equipmentRemoteItems === 1) &&
+                metrics.equipmentLocalParts > 0 &&
+                metrics.nonFiniteTransforms === 0
+            );
+            this.equipmentAuditResults.push({ baseName: baseItem.name, passed, metrics });
+            this.coverage.textContent = `Equipment audit ${index + 1}/${EQUIPPABLE_BASE_ITEMS.length}`;
+        }
+        this.equipmentAuditRunning = false;
+        this.runEquipmentButton.disabled = false;
+        const passed = this.equipmentAuditResults.filter((entry) => entry.passed).length;
+        if (passed === EQUIPPABLE_BASE_ITEMS.length) this.presentEquipmentLoadout();
+        this.coverage.textContent = `${passed}/${EQUIPPABLE_BASE_ITEMS.length} equipment families passed`;
+        this.setStatus(
+            passed === EQUIPPABLE_BASE_ITEMS.length
+                ? 'All equipment families passed · full loadout shown'
+                : `${EQUIPPABLE_BASE_ITEMS.length - passed} equipment families failed`,
+            passed === EQUIPPABLE_BASE_ITEMS.length ? 'passed' : 'failed'
+        );
+        this.updateMetrics();
     }
 
     clearEffects() {
@@ -405,6 +598,7 @@ export class AnimationGallery {
 
     async presentAbility(phase = 'cast') {
         if (!this.actor || !PLAYER_TYPE_NAMES.includes(this.currentClass)) return false;
+        this.framePresentation(false);
         const sequence = ++this.presentationSequence;
         this.clearEffects();
         clearActorStatusState(this.actor);
@@ -471,6 +665,7 @@ export class AnimationGallery {
 
     playActorState(state) {
         if (!this.actor) return false;
+        this.framePresentation(false);
         this.cleanupPresentation();
         this.currentState = state;
         const declared = ACTOR_ANIMATION_MANIFEST[this.currentActorType];
@@ -587,6 +782,15 @@ export class AnimationGallery {
             proceduralClass: this.actor?.mesh?.userData?.proceduralClass || null,
             equipmentAnchorCount: Object.values(this.actor?.mesh?.userData?.equipmentAnchors || {})
                 .reduce((count, names) => count + names.length, 0),
+            equipmentName: this.currentEquipmentName,
+            equipmentLocalItems: this.actor?.mesh?.userData?.equipmentVisualItemCount || 0,
+            equipmentLocalParts: this.actor?.mesh?.userData?.equipmentVisualPartCount || 0,
+            equipmentRemoteItems: this.remoteActor?.mesh?.userData?.equipmentVisualItemCount || 0,
+            equipmentRemoteParts: this.remoteActor?.mesh?.userData?.equipmentVisualPartCount || 0,
+            equipmentLocalSetRegions: countEquipmentIdentityRegions(this.actor?.mesh, 'setId'),
+            equipmentRemoteSetRegions: countEquipmentIdentityRegions(this.remoteActor?.mesh, 'setId'),
+            equipmentLocalUniqueRegions: countEquipmentIdentityRegions(this.actor?.mesh, 'uniqueEffect'),
+            equipmentRemoteUniqueRegions: countEquipmentIdentityRegions(this.remoteActor?.mesh, 'uniqueEffect'),
             actorVisibleMeshes: actorMetrics.visibleMeshes,
             remoteVisibleMeshes: remoteMetrics.visibleMeshes,
             targetVisibleMeshes: targetMetrics.visibleMeshes,
@@ -609,6 +813,9 @@ export class AnimationGallery {
             auditCompleted: this.auditResults.length,
             auditPassed: this.auditResults.filter((entry) => entry.passed).length,
             auditRunning: this.auditRunning,
+            equipmentAuditCompleted: this.equipmentAuditResults.length,
+            equipmentAuditPassed: this.equipmentAuditResults.filter((entry) => entry.passed).length,
+            equipmentAuditRunning: this.equipmentAuditRunning,
             error: this.lastError
         };
         window.__eidolonAnimationGallery = metrics;
@@ -657,7 +864,8 @@ export class AnimationGallery {
         const abilities = listPlayerAbilityPresentations().length;
         const variants = listPlayerAbilityPresentationVariants().length;
         const actors = listActorAnimationEntries().length;
-        this.coverage.textContent = `${abilities} abilities · ${variants} base/rune variants · ${actors} actor archetypes`;
+        this.coverage.textContent = `${abilities} abilities · ${variants} base/rune variants · ${actors} actor archetypes · ${EQUIPPABLE_BASE_ITEMS.length} equipment families`;
         this.runAllButton.textContent = `Audit all ${variants}`;
+        this.runEquipmentButton.textContent = `Audit ${EQUIPPABLE_BASE_ITEMS.length} gear`;
     }
 }

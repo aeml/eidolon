@@ -106,7 +106,18 @@ type Item struct {
 	MaxStack         int            `bson:"max_stack"`
 	Potency          int            `bson:"potency"`
 	Sockets          int            `bson:"sockets"`
+	Gems             []SocketedGem  `bson:"gems,omitempty"`
+	SetID            string         `bson:"set_id,omitempty"`
+	UniqueEffect     string         `bson:"unique_effect,omitempty"`
+	GemType          string         `bson:"gem_type,omitempty"`
+	GemQuality       string         `bson:"gem_quality,omitempty"`
 	StatScaleVersion int            `bson:"stat_scale_version,omitempty"`
+}
+
+type SocketedGem struct {
+	Type    string         `bson:"type"`
+	Quality string         `bson:"quality"`
+	Stats   map[string]int `bson:"stats"`
 }
 
 // FriendshipPending and FriendshipAccepted are the two valid status values for a Friendship document.

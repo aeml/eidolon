@@ -1,8 +1,40 @@
 package game
 
 import (
+	"reflect"
 	"testing"
 )
+
+func TestTradingDatabaseRoundTripPreservesCompleteItemMetadata(t *testing.T) {
+	ts := NewTradingSystem(nil)
+	original := Item{
+		ID:               "complete-item",
+		Name:             "Brilliant Spell Tome of the Owl",
+		Type:             ItemArmor,
+		Rarity:           RarityLegendary,
+		Slot:             "offHand",
+		Level:            87,
+		Stats:            map[string]int{"defense": 9, "intelligence": 12},
+		Value:            900,
+		Stack:            1,
+		MaxStack:         1,
+		Potency:          4,
+		Sockets:          2,
+		SetID:            "temporal_weave",
+		UniqueEffect:     "efficient",
+		GemType:          GemSapphire,
+		GemQuality:       GemPerfect,
+		StatScaleVersion: ItemStatScaleVersion,
+		Gems: []SocketedGem{
+			{Type: GemSapphire, Quality: GemFlawless, Stats: map[string]int{"intelligence": 5}},
+		},
+	}
+
+	restored := ts.fromDBItem(ts.toDBItem(original))
+	if !reflect.DeepEqual(restored, original) {
+		t.Fatalf("trading persistence changed item metadata:\nwant %#v\n got %#v", original, restored)
+	}
+}
 
 func TestNewTradingSystem(t *testing.T) {
 	ts := NewTradingSystem(nil)

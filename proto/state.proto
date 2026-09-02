@@ -72,6 +72,9 @@ message Item {
   string gem_type = 15;
   string gem_quality = 16;
   repeated SocketedGem gems = 17;
+  string set_id = 18;
+  string unique_effect = 19;
+  int32 stat_scale_version = 20;
 }
 
 message Entity {

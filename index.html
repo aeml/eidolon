@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.1</span>
+                <span class="start-version-row__label">Alpha 0.41.0.2</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -587,6 +587,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.2">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.2 (armory of the Eidolons)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The Fighter now wears the loot you equip:</strong> All 36 equippable item families have intentional code-generated silhouettes, and all 14 equipped positions render across 18 animated body regions—including paired shoulders, gloves, legs, feet, rings, and trinkets.</li>
+                        <li><strong>Equipment identity is visible:</strong> Material families, item level tiers, rarity light, potency, open sockets, socketed gem colors, set runes, and unique-effect marks layer onto each item's readable base form without burying the combat silhouette in noise.</li>
+                        <li><strong>Nearby players change gear immediately:</strong> Equipped items attach to both local and replicated Fighters, follow the generated rig, replace the oathguard's default sword and shield cleanly, and update even when the wearer is standing still or unequips the final item.</li>
+                        <li><strong>Special loot keeps its identity:</strong> Socketed gems, set IDs, unique effects, standalone gem type and quality, and stat-scale version now survive inventory, stash, equipment, buyback, auction, database, and binary state-stream round trips instead of being discarded.</li>
+                        <li><strong>The armory is guarded against omissions:</strong> Coverage fails if a new equippable base item has no descriptor, if a slot cannot attach, if a stationary swap does not replicate, or if special item metadata disappears.</li>
+                        <li><strong>Inspectable visual QA:</strong> The hardware gallery can equip any family, build a coherent full loadout, audit every family on local and remote Fighters, validate finite transforms and shared cached resources, and capture the armory at High and Low quality.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.1">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.1 (the Lanternhold oathguard)</h3>
                     <ul class="patch-note-entry__list">
