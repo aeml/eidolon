@@ -16,8 +16,20 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.13 for the four-realm wilds', () => {
-        expect(indexHtml).toContain('Alpha 0.41.0.13');
+    test('advances the login screen to alpha 0.41.0.14 for coherent edge delivery', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.14');
+        expect(indexHtml).toContain('Patch 0.41.0.14');
+        expect(indexHtml).toContain('Every release now arrives as one world');
+        expect(indexHtml).toContain('full JavaScript module graph');
+        expect(indexHtml).toContain('The gate verifies the runtime, not only the label');
+        expect(indexHtml).toContain('Live QA walks through a fresh doorway');
+        expect(indexHtml).toContain('three 155–157 byte empty glTF migration bridges');
+        expect(indexHtml).toContain('Asset caches turn a clean page');
+        expect(indexHtml).toContain('2026-09-02-14');
+        expect(indexHtml).toContain('The wilds remain wholly generated');
+    });
+
+    test('retains alpha 0.41.0.13 complete four-realm wilds history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.13');
         expect(indexHtml).toContain('Nine wild silhouettes replace three old trees');
         expect(indexHtml).toContain('Gloamwood keeps its grave rites');
@@ -191,7 +203,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.13';
+        const expectedVersion = 'Alpha 0.41.0.14';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -295,8 +307,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.13 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.13`');
+    test('marks 0.41.0.14 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.14`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
@@ -1366,6 +1378,8 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.41.0.14');
+        expect(indexHtml).toContain('Patch 0.41.0.13');
         expect(indexHtml).toContain('Patch 0.33.1');
         expect(indexHtml).toContain('Patch 0.33.0');
         expect(indexHtml).toContain('Patch 0.32.4');

@@ -14,6 +14,9 @@ describe('asset service worker bootstrapping', () => {
 
         const { AssetCacheManager } = await import('../src/assets/AssetCacheManager.js');
         await expect(AssetCacheManager.registerServiceWorker()).resolves.toEqual(expect.objectContaining({ scope: './' }));
-        expect(register).toHaveBeenCalledWith('./sw.js', { scope: './' });
+        expect(register).toHaveBeenCalledWith('./sw.js', {
+            scope: './',
+            updateViaCache: 'none'
+        });
     });
 });

@@ -248,7 +248,7 @@ describe('UIManager asset download settings', () => {
             cachedCount: packName === 'core-models' ? 4 : packName === 'environment-textures' ? 2 : 1,
             total: 4,
             updateAvailable: packName === 'dungeon-models',
-            cachedVersion: packName === 'core-models' ? '2026-04-01' : packName === 'dungeon-models' ? 'legacy-build' : null
+            cachedVersion: packName === 'core-models' ? '2026-09-02-14' : packName === 'dungeon-models' ? 'legacy-build' : null
         }));
 
         await ui.refreshAssetCacheState();
@@ -256,7 +256,7 @@ describe('UIManager asset download settings', () => {
         expect(ui.assetPackCoreStatus.textContent).toContain('Procedural core built in');
         expect(ui.assetPackDungeonStatus.textContent).toContain('1/4 cached');
         expect(ui.assetPackEnvironmentStatus.textContent).toContain('2/4 cached');
-        expect(document.getElementById('asset-pack-core-version').textContent).toContain('2026-04-01');
+        expect(document.getElementById('asset-pack-core-version').textContent).toContain('2026-09-02-14');
         expect(document.getElementById('asset-pack-dungeon-version').textContent).toContain('legacy-build');
         expect(document.getElementById('asset-pack-environment-version').textContent).toContain('Not cached');
         expect(document.getElementById('asset-pack-core-badge').textContent).toContain('Current');
@@ -342,7 +342,7 @@ describe('UIManager asset download settings', () => {
 
         await ui.requestAssetDownload('environment-textures');
 
-        expect(ui.assetLastSyncedVersion.textContent).toContain('2026-04-01');
-        expect(localStorage.getItem('eidolon.assetLastSyncedVersion')).toBe('2026-04-01');
+        expect(ui.assetLastSyncedVersion.textContent).toContain('2026-09-02-14');
+        expect(localStorage.getItem('eidolon.assetLastSyncedVersion')).toBe('2026-09-02-14');
     });
 });

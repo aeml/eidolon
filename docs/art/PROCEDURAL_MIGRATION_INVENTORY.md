@@ -6,7 +6,7 @@ Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.13`
+Current migration release: `Alpha 0.41.0.14`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
@@ -129,3 +129,9 @@ Each boss owns generated `Idle`, `Walk`, `Run`, `Attack`, and stable `Death` per
 `Alpha 0.41.0.13` replaces the last three authored plant files with nine distinct code-generated foliage families. Gloamwood keeps its existing navigational role through pale ossuary birch, black grave pine, and lantern-bearing mourning willow. Moonfrost gains rime pine and drowned silver willow; Cinder Wastes gains ember-lit corpsewood and magma-hearted basalt briars; Stormcrown gains wind-bent gale cypress and captive storm crystals. Each silhouette uses its realm's dark material vocabulary and a small magical identity accent rather than a generic recolor.
 
 The world places 840 deterministic foliage instances through reusable per-part instancing, ten cached geometries, and twenty-eight cached materials. Town walls, all four dungeon entrances, cardinal travel roads, gateway sightlines, and the exact coordinates and radii of all 65 permanent server hazards receive explicit clearings; the hazard contract is compared directly with the Go source and adds an eight-unit visual apron. Only Gloamwood retains foliage collision, preserving prior navigation while new realm dressing stays visual-only. Foliage now appears immediately instead of waiting behind remaining building downloads, and a hardware-Chrome gallery inspects every production family. The release matrix's bounded waypoint protection also becomes server state separate from short gameplay invulnerability, preventing Wizard Teleport Phase and other class effects from shortening the inspection window or stranding a retry behind a death overlay. The three removed GLBs totaled 59,929,820 bytes and remain recoverable through Git history.
+
+## Coherent edge delivery
+
+`Alpha 0.41.0.14` hardens the procedural migration against mixed-version CDN state discovered by the first live 0.41.0.13 gate. GitHub Pages emits the entry script, every local module edge, stylesheet import, and CSS resource with the exact release commit, and production QA opens that commit-qualified document only after both the release manifest and versioned runtime are visible. The asset cache advances to a fresh generation and service-worker updates bypass the HTTP cache.
+
+Three 468-byte-total empty glTF migration bridges remain at the retired birch, pine, and willow URLs solely for already-cached pre-procedural clients. They contain no nodes, meshes, materials, authored geometry, collision, or new-runtime references, are excluded from authored-model totals, and are parsed in regression coverage through the production GLTFLoader. The active game remains entirely on the nine generated foliage families.

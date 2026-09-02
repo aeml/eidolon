@@ -19,7 +19,10 @@ export class AssetCacheManager {
         if (!serviceWorker?.register) {
             return null;
         }
-        return serviceWorker.register('./sw.js', { scope: './' });
+        return serviceWorker.register('./sw.js', {
+            scope: './',
+            updateViaCache: 'none'
+        });
     }
 
     getPackAssets(packName) {

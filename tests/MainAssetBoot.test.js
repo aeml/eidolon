@@ -78,7 +78,10 @@ describe('asset persistence boot wiring', () => {
         window.dispatchEvent(new Event('DOMContentLoaded'));
         await Promise.resolve();
 
-        expect(register).toHaveBeenCalledWith('./sw.js', { scope: './' });
+        expect(register).toHaveBeenCalledWith('./sw.js', {
+            scope: './',
+            updateViaCache: 'none'
+        });
         expect(document.documentElement.dataset.eidolonReady).toBe('true');
     });
 

@@ -107,7 +107,10 @@ describe('AssetCacheManager', () => {
 
     test('registerServiceWorker registers the root asset service worker', async () => {
         const registration = await AssetCacheManager.registerServiceWorker();
-        expect(navigator.serviceWorker.register).toHaveBeenCalledWith('./sw.js', { scope: './' });
+        expect(navigator.serviceWorker.register).toHaveBeenCalledWith('./sw.js', {
+            scope: './',
+            updateViaCache: 'none'
+        });
         expect(registration).toEqual(expect.objectContaining({ scope: '/' }));
     });
 

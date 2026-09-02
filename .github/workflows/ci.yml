@@ -248,7 +248,8 @@ jobs:
           mkdir -p public
           cp -r index.html assets src vendor public/
           cp sw.js public/
-          printf '{"commit":"%s","version":"Alpha 0.41.0.13"}\n' "${GITHUB_SHA}" > public/release.json
+          node scripts/version-pages-runtime.mjs public "${GITHUB_SHA}"
+          printf '{"commit":"%s","version":"Alpha 0.41.0.14"}\n' "${GITHUB_SHA}" > public/release.json
           
           # Create coverage directory
           mkdir -p public/coverage/client public/coverage/server
@@ -430,7 +431,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 0.41.0.13" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 0.41.0.14" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:
@@ -459,12 +460,15 @@ jobs:
         run: |
           for attempt in $(seq 1 60); do
             client_commit="$(curl -fsS -H 'Cache-Control: no-cache' "https://eidolon.mendola.tech/release.json?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*"commit":"\([^"]*\)".*/\1/p' || true)"
+            client_runtime_release="$(curl -fsS -H 'Cache-Control: no-cache' "https://eidolon.mendola.tech/?release=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*src\/main\.js?release=\([^"]*\)".*/\1/p' | tail -1 || true)"
             server_commit="$(curl -fsS -H 'Cache-Control: no-cache' "https://eserver.mendola.tech/healthz?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*"commit":"\([^"]*\)".*/\1/p' || true)"
-            if [ "${client_commit}" = "${EXPECTED_COMMIT}" ] && [ "${server_commit}" = "${EXPECTED_COMMIT}" ]; then
+            if [ "${client_commit}" = "${EXPECTED_COMMIT}" ] && \
+               [ "${client_runtime_release}" = "${EXPECTED_COMMIT}" ] && \
+               [ "${server_commit}" = "${EXPECTED_COMMIT}" ]; then
               exit 0
             fi
             if [ "${attempt}" -eq 60 ]; then
-              echo "Live release mismatch: client=${client_commit:-unavailable} server=${server_commit:-unavailable} expected=${EXPECTED_COMMIT}" >&2
+              echo "Live release mismatch: client=${client_commit:-unavailable} runtime=${client_runtime_release:-unavailable} server=${server_commit:-unavailable} expected=${EXPECTED_COMMIT}" >&2
               exit 1
             fi
             sleep 5

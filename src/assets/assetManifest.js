@@ -1,6 +1,6 @@
 import { MeshCatalog } from '../utils/MeshCatalog.js';
 
-const DEFAULT_ASSET_VERSION = '2026-04-01';
+const DEFAULT_ASSET_VERSION = '2026-09-02-14';
 
 const ASSET_VERSION_OVERRIDES = {
     './assets/buildings/dungeons/the_verdant_bastion.glb': 'dungeon-verdant-v2'

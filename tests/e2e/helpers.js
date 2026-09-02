@@ -107,10 +107,14 @@ export async function openGame(page, options = {}) {
     let response = null;
     let readinessError = null;
     const attempts = options.attempts || 10;
+    const expectedCommit = process.env.EIDOLON_EXPECTED_COMMIT;
+    const gameDocument = expectedCommit
+        ? `/?release=${encodeURIComponent(expectedCommit)}`
+        : '/';
     for (let attempt = 0; attempt < attempts; attempt += 1) {
         const failureStart = browserFailureState.get(page)?.length || 0;
         try {
-            response = await page.goto('/', {
+            response = await page.goto(gameDocument, {
                 waitUntil: options.waitUntil || 'domcontentloaded',
                 timeout: 20_000
             });

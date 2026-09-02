@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.13</span>
+                <span class="start-version-row__label">Alpha 0.41.0.14</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -470,7 +470,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-04-01</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-02-14</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -587,6 +587,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.14">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.14 (one oath across every edge)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Every release now arrives as one world:</strong> the published entry script, full JavaScript module graph, stylesheet imports, and local CSS resources receive the exact commit identity, preventing a new page from mixing with four-hour-old edge-cached game logic.</li>
+                        <li><strong>The gate verifies the runtime, not only the label:</strong> deployment waits until production serves both the expected release manifest and the commit-versioned main module before any live character is allowed into the verification run.</li>
+                        <li><strong>Live QA walks through a fresh doorway:</strong> production browser checks open the commit-qualified document, so edge propagation is tested against the release being approved rather than whichever anonymous HTML object a regional cache remembers.</li>
+                        <li><strong>Old groves fade without breaking travelers:</strong> three 155–157 byte empty glTF migration bridges answer stale pre-procedural tree requests without restoring any authored geometry, download weight, collision, or runtime dependency.</li>
+                        <li><strong>Asset caches turn a clean page:</strong> the cache generation advances to 2026-09-02-14, old generations are retired on activation, and service-worker updates bypass the HTTP cache so future migrations cannot remain pinned behind an obsolete worker import.</li>
+                        <li><strong>The wilds remain wholly generated:</strong> the nine realm-specific foliage families, 840 deterministic instances, exact 65-hazard clearings, ten shared geometries, twenty-eight materials, and 59.93 MB authored-model reduction from 0.41.0.13 remain unchanged.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.13">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.13 (the wild remembers every realm)</h3>
                     <ul class="patch-note-entry__list">
