@@ -292,7 +292,7 @@ describe('WorldGenerator shadow setup', () => {
         await generator.loadBuildings(0, 0);
 
         expect(loadModelSpy).not.toHaveBeenCalled();
-        expect(generator.scene.add).toHaveBeenCalledTimes(18);
+        expect(generator.scene.add).toHaveBeenCalledTimes(4);
         expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(18);
         const structures = generator.scene.add.mock.calls.map(([object]) => object);
         expect(structures.slice(0, 3).map((structure) => structure.userData.structureId)).toEqual([
@@ -300,7 +300,16 @@ describe('WorldGenerator shadow setup', () => {
             'trading_post',
             'blacksmith'
         ]);
-        expect(structures.slice(3).every((structure) => structure.userData.structureId === 'camp')).toBe(true);
+        expect(structures[3].userData).toEqual(expect.objectContaining({
+            proceduralTownCampField: true,
+            instanceCount: 15,
+            sourceMeshCount: 195,
+            drawMeshCount: 9
+        }));
+        expect(structures.slice(0, 3).reduce(
+            (total, structure) => total + structure.userData.drawMeshCount,
+            structures[3].userData.drawMeshCount
+        )).toBe(38);
 
         const mesh = structures[0].children.find(child => child.isMesh && child.material.visible !== false);
         expect(mesh).toBeTruthy();

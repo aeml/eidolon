@@ -4,6 +4,7 @@ import {
     LANTERNHOLD_STRUCTURE_DEFINITIONS,
     LANTERNHOLD_STRUCTURE_IDS,
     createLanternholdCampPlacements,
+    createProceduralLanternholdCampField,
     createProceduralLanternholdStructure,
     getProceduralLanternholdCacheMetrics
 } from '../src/art/ProceduralLanternholdArchitecture.js';
@@ -113,6 +114,46 @@ describe('procedural Lanternhold architecture', () => {
         });
     });
 
+    test('batches settlement landmarks by material and instances all fifteen camps', () => {
+        const landmarkIds = ['oathhall', 'trading_post', 'blacksmith'];
+        const landmarks = landmarkIds.map((structureId) =>
+            createProceduralLanternholdStructure(structureId, { optimized: true })
+        );
+        const placements = createLanternholdCampPlacements(0, 200);
+        const campField = createProceduralLanternholdCampField(placements);
+
+        for (const landmark of landmarks) {
+            const definition = LANTERNHOLD_STRUCTURE_DEFINITIONS[landmark.userData.structureId];
+            const bounds = new THREE.Box3().setFromObject(landmark);
+            const size = bounds.getSize(new THREE.Vector3());
+            expect(landmark.userData.renderBatched).toBe(true);
+            expect(landmark.userData.sourceMeshCount).toBeGreaterThan(landmark.userData.drawMeshCount);
+            expect(landmark.userData.drawMeshCount).toBeLessThanOrEqual(10);
+            definition.bounds.forEach((value, index) => expect(size.getComponent(index)).toBeCloseTo(value, 5));
+        }
+
+        expect(campField.userData).toEqual(expect.objectContaining({
+            proceduralTownCampField: true,
+            instanceCount: 15,
+            sourceMeshCount: 195,
+            drawMeshCount: 9
+        }));
+        expect(campField.children).toHaveLength(9);
+        expect(campField.children.every((part) => part.isInstancedMesh && part.count === 15)).toBe(true);
+        const matrix = new THREE.Matrix4();
+        for (const part of campField.children) {
+            for (let index = 0; index < part.count; index += 1) {
+                part.getMatrixAt(index, matrix);
+                expect(matrix.elements.every(Number.isFinite)).toBe(true);
+            }
+        }
+        const settlementDrawMeshes = landmarks.reduce(
+            (total, landmark) => total + landmark.userData.drawMeshCount,
+            campField.userData.drawMeshCount
+        );
+        expect(settlementDrawMeshes).toBe(38);
+    });
+
     test('routes every interactive town object through generated geometry without invoking GLTFLoader', async () => {
         const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
         try {
@@ -125,7 +166,8 @@ describe('procedural Lanternhold architecture', () => {
                 const mesh = await MeshFactory.createMeshForType(type);
                 expect(mesh.userData).toEqual(expect.objectContaining({
                     proceduralTownStructure: true,
-                    structureId
+                    structureId,
+                    renderBatched: true
                 }));
             }
             expect(loadSpy).not.toHaveBeenCalled();

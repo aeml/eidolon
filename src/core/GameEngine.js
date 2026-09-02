@@ -5081,15 +5081,7 @@ export class GameEngine {
         }
 
         if (this.isHostileActorTarget(entity)) {
-            range = this.abilityController.getAbilityCastRange(
-                this.abilityController.pendingAbilitySkill || this.player?.abilityName
-            );
-
-            if (entity.scale && entity.scale > 1.0) {
-                range += (entity.scale - 1.0) * 1.5;
-            }
-
-            return range;
+            return this.getBasicAttackRangeForEntity(entity);
         }
 
         if (entity instanceof Actor && entity !== this.player) {
@@ -5098,6 +5090,16 @@ export class GameEngine {
             }
         }
 
+        return range;
+    }
+
+    getBasicAttackRangeForEntity(entity) {
+        const className = this.player?.constructor?.name || this.player?.subType || '';
+        let range = CONSTANTS.BASIC_ATTACK_RANGES[className] ?? 4.0;
+        const attackerScale = Number(this.player?.scale) || 1;
+        const targetScale = Number(entity?.scale) || 1;
+        if (attackerScale > 1) range += (attackerScale - 1) * 1.5;
+        if (targetScale > 1) range += (targetScale - 1) * 1.5;
         return range;
     }
 
@@ -5520,7 +5522,7 @@ export class GameEngine {
                     }
                 } else if (this.hoveredEntity && this.hoveredEntity instanceof Actor && this.hoveredEntity !== this.player && this.hoveredEntity.state !== 'DEAD') {
                     const dist = this.player.position.distanceTo(this.hoveredEntity.position);
-                    const range = (this.player instanceof Wizard || this.player instanceof Rogue) ? 16.0 : 4.0;
+                    const range = this.getBasicAttackRangeForEntity(this.hoveredEntity);
 
                     if (dist < range) {
                         this.player.targetPosition = null;

@@ -6,7 +6,9 @@ import {
     getProceduralFoliageArchetype
 } from '../art/ProceduralRealmFoliage.js';
 import {
+    LANTERNHOLD_STRUCTURE_DEFINITIONS,
     createLanternholdCampPlacements,
+    createProceduralLanternholdCampField,
     createProceduralLanternholdStructure
 } from '../art/ProceduralLanternholdArchitecture.js';
 
@@ -192,19 +194,19 @@ export class WorldGenerator {
         };
 
         setupBuilding(
-            createProceduralLanternholdStructure('oathhall'),
+            createProceduralLanternholdStructure('oathhall', { optimized: true }),
             cx,
             cz - 30,
             0
         );
         setupBuilding(
-            createProceduralLanternholdStructure('trading_post'),
+            createProceduralLanternholdStructure('trading_post', { optimized: true }),
             cx + 30,
             cz,
             -Math.PI / 2
         );
         setupBuilding(
-            createProceduralLanternholdStructure('blacksmith'),
+            createProceduralLanternholdStructure('blacksmith', { optimized: true }),
             cx - 30,
             cz,
             Math.PI / 2
@@ -213,15 +215,21 @@ export class WorldGenerator {
         // Trading House is now an Entity (loaded in MeshFactory) to handle interaction/collision better
 
         const campPlacements = createLanternholdCampPlacements(cx, cz);
+        const campField = createProceduralLanternholdCampField(campPlacements);
+        campField.traverse((part) => {
+            if (part.isMesh) {
+                MeshFactory.configureShadowCastingForObject(part, { stableFrontShadows: true });
+            }
+        });
+        if (!shouldAttach()) return false;
+        this.scene.add(campField);
+        const campHeight = LANTERNHOLD_STRUCTURE_DEFINITIONS.camp.bounds[1];
         for (const placement of campPlacements) {
-            setupBuilding(
-                createProceduralLanternholdStructure('camp'),
-                placement.x,
-                placement.z,
-                placement.rotation,
-                -0.65,
+            const collider = new THREE.Box3().setFromCenterAndSize(
+                new THREE.Vector3(placement.x, -0.65 + campHeight / 2, placement.z),
                 new THREE.Vector3(2, 10, 2)
             );
+            this.collisionManager.addCollider(collider);
         }
         return true;
     }

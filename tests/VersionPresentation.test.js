@@ -26,6 +26,12 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('The paths have not moved');
         expect(indexHtml).toContain('Lanternhold arrives before distant doors');
         expect(indexHtml).toContain('One town, fifteen materials');
+        expect(indexHtml).toContain('The whole vigil travels in thirty-eight calls');
+        expect(indexHtml).toContain('from 390 visible mesh submissions to 38');
+        expect(indexHtml).toContain('Late packets no longer pull ghosts backward');
+        expect(indexHtml).toContain('bounded, continuous reconciliation');
+        expect(indexHtml).toContain('A swing begins where the server can honor it');
+        expect(indexHtml).toContain('4m for Fighter/Cleric and 16m for Rogue/Wizard');
         expect(indexHtml).toContain('176.75 MB');
         expect(indexHtml).toContain('only four authored dungeon facades totaling 70.43 MB remain');
         expect(indexHtml).toContain('hardware Chrome renders the complete settlement at High and Low quality');

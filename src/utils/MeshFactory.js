@@ -771,11 +771,11 @@ export class MeshFactory {
             mesh.position.y = 4.0;
             return mesh;
         } else if (type === 'TradingHouse') {
-            return createProceduralLanternholdStructure('trading_house');
+            return createProceduralLanternholdStructure('trading_house', { optimized: true });
         } else if (type === 'Stash') {
-            return createProceduralLanternholdStructure('stash');
+            return createProceduralLanternholdStructure('stash', { optimized: true });
         } else if (type === 'Forge') {
-            return createProceduralLanternholdStructure('forge');
+            return createProceduralLanternholdStructure('forge', { optimized: true });
         }
         // ========================================================================
         // PROCEDURAL ENEMIES (Fire / Air / Water realms + dungeon bosses)

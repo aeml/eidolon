@@ -243,7 +243,9 @@ describe('timestamped remote transform buffer', () => {
             state: 'MOVING'
         });
         expect(buffer.sample({ nowSeconds: 0.15 }).position.x).toBeCloseTo(1.5, 5);
-        expect(buffer.sample({ nowSeconds: 0.3 }).position.x).toBe(1);
+        const firstRecovery = buffer.sample({ nowSeconds: 0.3 });
+        expect(firstRecovery.mode).toBe('hold');
+        expect(firstRecovery.position.x).toBeCloseTo(1.5, 5);
 
         buffer.push(new THREE.Vector3(1, 0, 0), 0, {
             receiptTimeSeconds: 0.31,
@@ -251,6 +253,48 @@ describe('timestamped remote transform buffer', () => {
         });
         const stopped = buffer.sample({ nowSeconds: 0.35 });
         expect(stopped.mode).toBe('hold');
-        expect(stopped.position.x).toBe(1);
+        expect(stopped.position.x).toBeGreaterThan(1);
+        expect(stopped.position.x).toBeLessThan(1.5);
+        let settled = stopped;
+        for (let now = 0.366; now <= 1; now += 0.016) {
+            settled = buffer.sample({ nowSeconds: now });
+        }
+        expect(settled.position.x).toBeCloseTo(1, 2);
+    });
+
+    test('reconciles extrapolated overshoot without a backward snap on the next authoritative packet', () => {
+        const buffer = new RemoteTransformBuffer({ delay: 0, maxExtrapolation: 0.08 });
+        buffer.push(new THREE.Vector3(0, 0, 0), 0, {
+            receiptTimeSeconds: 0,
+            state: 'MOVING'
+        });
+        buffer.push(new THREE.Vector3(1, 0, 0), 0, {
+            receiptTimeSeconds: 0.1,
+            state: 'MOVING'
+        });
+        const positions = [buffer.sample({ nowSeconds: 0.18 }).position.x];
+        expect(positions[0]).toBeCloseTo(1.8, 5);
+
+        buffer.push(new THREE.Vector3(1.45, 0, 0), 0, {
+            receiptTimeSeconds: 0.2,
+            state: 'MOVING'
+        });
+        positions.push(buffer.sample({ nowSeconds: 0.2 }).position.x);
+        buffer.push(new THREE.Vector3(1.45, 0, 0), 0, {
+            receiptTimeSeconds: 0.21,
+            state: 'IDLE'
+        });
+        for (let now = 0.21; now <= 0.8; now += 0.016) {
+            positions.push(buffer.sample({ nowSeconds: now }).position.x);
+        }
+
+        const largestBacktrack = positions.slice(1).reduce(
+            (largest, position, index) => Math.min(largest, position - positions[index]),
+            0
+        );
+        expect(positions[1]).toBeCloseTo(positions[0], 5);
+        expect(largestBacktrack).toBeGreaterThanOrEqual(-0.2);
+        expect(positions.at(-1)).toBeCloseTo(1.45, 2);
+        expect(buffer.getMetrics().reconciliations).toBe(1);
     });
 });

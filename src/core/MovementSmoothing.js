@@ -7,6 +7,8 @@ export const REMOTE_INTERPOLATION_DELAY_SECONDS = 0.1;
 export const REMOTE_MAX_EXTRAPOLATION_SECONDS = 0.08;
 export const REMOTE_TELEPORT_DISTANCE = 10;
 export const REMOTE_TRANSFORM_BUFFER_LIMIT = 32;
+export const REMOTE_RECONCILIATION_RATE = 8;
+export const REMOTE_MAX_RECONCILIATION_STEP = 0.2;
 
 const TWO_PI = Math.PI * 2;
 
@@ -68,13 +70,18 @@ export class RemoteTransformBuffer {
         this.samples = [];
         this.serverClockOffset = null;
         this.lastServerTimeSeconds = null;
+        this.lastPresentedPosition = null;
+        this.lastPresentationMode = null;
+        this.lastPresentationTimeSeconds = null;
+        this.presentationCorrection = new THREE.Vector3();
         this.metrics = {
             accepted: 0,
             stale: 0,
             teleports: 0,
             interpolated: 0,
             extrapolated: 0,
-            underruns: 0
+            underruns: 0,
+            reconciliations: 0
         };
     }
 
@@ -82,6 +89,10 @@ export class RemoteTransformBuffer {
         this.samples.length = 0;
         this.serverClockOffset = null;
         this.lastServerTimeSeconds = null;
+        this.lastPresentedPosition = null;
+        this.lastPresentationMode = null;
+        this.lastPresentationTimeSeconds = null;
+        this.presentationCorrection.set(0, 0, 0);
     }
 
     resolveLocalSampleTime(serverTimeMs, receiptTimeSeconds) {
@@ -127,6 +138,10 @@ export class RemoteTransformBuffer {
         const teleported = Boolean(last) && horizontalDistance(last.position, position) > this.teleportDistance;
         if (teleported) {
             this.samples.length = 0;
+            this.lastPresentedPosition = null;
+            this.lastPresentationMode = null;
+            this.lastPresentationTimeSeconds = null;
+            this.presentationCorrection.set(0, 0, 0);
             this.metrics.teleports += 1;
         }
 
@@ -144,6 +159,42 @@ export class RemoteTransformBuffer {
         return { accepted: true, teleported };
     }
 
+    reconcilePresentation(sample, nowSeconds) {
+        if (!sample?.position) return sample;
+
+        const transitionedFromExtrapolation = this.lastPresentationMode === 'extrapolate' &&
+            sample.mode !== 'extrapolate' &&
+            this.lastPresentedPosition;
+        if (transitionedFromExtrapolation) {
+            this.presentationCorrection.copy(this.lastPresentedPosition).sub(sample.position);
+            // Vertical movement has its own authoritative jump path. Keeping
+            // this correction horizontal avoids manufacturing a second arc.
+            this.presentationCorrection.y = 0;
+            if (this.presentationCorrection.lengthSq() > 1e-8) {
+                this.metrics.reconciliations += 1;
+            }
+        } else if (this.presentationCorrection.lengthSq() > 1e-8) {
+            const previousTime = this.lastPresentationTimeSeconds ?? nowSeconds;
+            const elapsed = Math.max(0, Math.min(0.25, nowSeconds - previousTime));
+            const length = this.presentationCorrection.length();
+            const exponentialStep = length * (1 - Math.exp(-REMOTE_RECONCILIATION_RATE * elapsed));
+            const reduction = Math.min(length, REMOTE_MAX_RECONCILIATION_STEP, exponentialStep);
+            if (reduction > 0) {
+                this.presentationCorrection.multiplyScalar((length - reduction) / length);
+            }
+            if (this.presentationCorrection.lengthSq() <= 1e-8) {
+                this.presentationCorrection.set(0, 0, 0);
+            }
+        }
+
+        sample.position.add(this.presentationCorrection);
+        if (!this.lastPresentedPosition) this.lastPresentedPosition = new THREE.Vector3();
+        this.lastPresentedPosition.copy(sample.position);
+        this.lastPresentationMode = sample.mode;
+        this.lastPresentationTimeSeconds = nowSeconds;
+        return sample;
+    }
+
     sample(options = {}) {
         if (this.samples.length === 0) return null;
         const now = Number.isFinite(options.nowSeconds) ? options.nowSeconds : monotonicNowSeconds();
@@ -157,39 +208,39 @@ export class RemoteTransformBuffer {
         const second = this.samples[1];
         if (!second || renderTime <= first.time) {
             if (!second && renderTime > first.time) this.metrics.underruns += 1;
-            return {
+            return this.reconcilePresentation({
                 position: first.position.clone(),
                 rotation: first.rotation,
                 state: first.state,
                 mode: second ? 'buffering' : 'hold',
                 alpha: 0
-            };
+            }, now);
         }
 
         if (renderTime <= second.time) {
             const duration = Math.max(0.000001, second.time - first.time);
             const alpha = Math.max(0, Math.min(1, (renderTime - first.time) / duration));
             this.metrics.interpolated += 1;
-            return {
+            return this.reconcilePresentation({
                 position: first.position.clone().lerp(second.position, alpha),
                 rotation: interpolateAngle(first.rotation, second.rotation, alpha),
                 state: alpha < 0.5 ? first.state : second.state,
                 mode: 'interpolate',
                 alpha
-            };
+            }, now);
         }
 
         const overrun = renderTime - second.time;
         const canExtrapolate = overrun <= this.maxExtrapolation && second.state === 'MOVING';
         if (!canExtrapolate) {
             this.metrics.underruns += 1;
-            return {
+            return this.reconcilePresentation({
                 position: second.position.clone(),
                 rotation: second.rotation,
                 state: second.state,
                 mode: 'hold',
                 alpha: 1
-            };
+            }, now);
         }
 
         const duration = Math.max(0.000001, second.time - first.time);
@@ -198,13 +249,13 @@ export class RemoteTransformBuffer {
         const position = second.position.clone().addScaledVector(velocity, extrapolation);
         const angularVelocity = shortestAngleDelta(first.rotation, second.rotation) / duration;
         this.metrics.extrapolated += 1;
-        return {
+        return this.reconcilePresentation({
             position,
             rotation: second.rotation + angularVelocity * extrapolation,
             state: second.state,
             mode: 'extrapolate',
             alpha: 1 + extrapolation / duration
-        };
+        }, now);
     }
 
     getMetrics() {

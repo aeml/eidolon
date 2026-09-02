@@ -222,7 +222,13 @@ export const CONSTANTS = {
             }
         }
     },
-        ABILITY_CONFIG: {
+    BASIC_ATTACK_RANGES: Object.freeze({
+        Fighter: 4.0,
+        Rogue: 16.0,
+        Wizard: 16.0,
+        Cleric: 4.0
+    }),
+    ABILITY_CONFIG: {
         Fighter: {
             default: { mana: 20, cooldown: 5.0, range: 28.0 },
             skills: {

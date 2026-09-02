@@ -1,8 +1,10 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getRegionTheme } from './darkFantasyTheme.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
+const OPTIMIZED_STRUCTURE_PARTS = new Map();
 
 const definition = (id, label, artStyle, role, bounds) => Object.freeze({
     id,
@@ -499,23 +501,143 @@ const STRUCTURE_BUILDERS = Object.freeze({
     stash: createStash
 });
 
-export function createProceduralLanternholdStructure(structureId) {
+function configureStructureRoot(root, config) {
+    root.name = `Lanternhold:${config.label}`;
+    root.userData.proceduralTownStructure = true;
+    root.userData.structureId = config.id;
+    root.userData.artStyle = config.artStyle;
+    root.userData.role = config.role;
+    root.userData.gameplayBounds = [...config.bounds];
+    return root;
+}
+
+function getOptimizedStructureParts(structureId) {
+    if (OPTIMIZED_STRUCTURE_PARTS.has(structureId)) {
+        return OPTIMIZED_STRUCTURE_PARTS.get(structureId);
+    }
+
     const config = LANTERNHOLD_STRUCTURE_DEFINITIONS[structureId];
     const build = STRUCTURE_BUILDERS[structureId];
     if (!config || !build) {
         throw new Error(`Unknown Lanternhold structure: ${structureId}`);
     }
 
-    const root = new THREE.Group();
-    root.name = `Lanternhold:${config.label}`;
-    root.userData.proceduralTownStructure = true;
-    root.userData.structureId = structureId;
-    root.userData.artStyle = config.artStyle;
-    root.userData.role = config.role;
-    root.userData.gameplayBounds = [...config.bounds];
-    build(root);
+    const source = configureStructureRoot(new THREE.Group(), config);
+    build(source);
+    source.updateMatrixWorld(true);
+    const buckets = new Map();
+    let sourceMeshCount = 0;
+
+    source.traverse((part) => {
+        if (!part.isMesh || !part.userData.proceduralTownPart) return;
+        sourceMeshCount += 1;
+        const key = `${part.material.uuid}:${part.castShadow ? 1 : 0}:${part.receiveShadow ? 1 : 0}`;
+        if (!buckets.has(key)) {
+            buckets.set(key, {
+                material: part.material,
+                castShadow: part.castShadow,
+                receiveShadow: part.receiveShadow,
+                geometries: []
+            });
+        }
+        const bakedGeometry = part.geometry.index
+            ? part.geometry.toNonIndexed()
+            : part.geometry.clone();
+        buckets.get(key).geometries.push(bakedGeometry.applyMatrix4(part.matrixWorld));
+    });
+
+    const parts = [...buckets.values()].map((bucket, index) => {
+        const merged = mergeGeometries(bucket.geometries, false);
+        bucket.geometries.forEach((entry) => entry.dispose());
+        if (!merged) {
+            throw new Error(`Unable to batch Lanternhold structure: ${structureId}`);
+        }
+        merged.name = `lanternhold-${structureId}-batch-${index}`;
+        merged.computeBoundingBox();
+        merged.computeBoundingSphere();
+        return Object.freeze({
+            geometry: merged,
+            material: bucket.material,
+            castShadow: bucket.castShadow,
+            receiveShadow: bucket.receiveShadow
+        });
+    });
+    const result = Object.freeze({
+        parts: Object.freeze(parts),
+        sourceMeshCount
+    });
+    OPTIMIZED_STRUCTURE_PARTS.set(structureId, result);
+    return result;
+}
+
+export function createProceduralLanternholdStructure(structureId, { optimized = false } = {}) {
+    const config = LANTERNHOLD_STRUCTURE_DEFINITIONS[structureId];
+    const build = STRUCTURE_BUILDERS[structureId];
+    if (!config || !build) {
+        throw new Error(`Unknown Lanternhold structure: ${structureId}`);
+    }
+
+    const root = configureStructureRoot(new THREE.Group(), config);
+    if (optimized) {
+        const optimizedParts = getOptimizedStructureParts(structureId);
+        optimizedParts.parts.forEach((descriptor, index) => {
+            addMesh(
+                root,
+                `${structureId}:material-batch:${index}`,
+                descriptor.geometry,
+                descriptor.material,
+                {
+                    castShadow: descriptor.castShadow,
+                    receiveShadow: descriptor.receiveShadow
+                }
+            );
+        });
+        root.userData.renderBatched = true;
+        root.userData.sourceMeshCount = optimizedParts.sourceMeshCount;
+        root.userData.drawMeshCount = optimizedParts.parts.length;
+    } else {
+        build(root);
+    }
     addGameplayBounds(root, config);
     return root;
+}
+
+export function createProceduralLanternholdCampField(placements, { targetY = -0.65 } = {}) {
+    const normalizedPlacements = Array.isArray(placements) ? placements : [];
+    const optimized = getOptimizedStructureParts('camp');
+    const field = new THREE.Group();
+    field.name = 'Lanternhold:Pilgrim Vigil Field';
+    field.userData.proceduralTownCampField = true;
+    field.userData.instanceCount = normalizedPlacements.length;
+    field.userData.sourceMeshCount = optimized.sourceMeshCount * normalizedPlacements.length;
+    field.userData.drawMeshCount = optimized.parts.length;
+
+    const position = new THREE.Vector3();
+    const rotation = new THREE.Quaternion();
+    const scale = new THREE.Vector3(1, 1, 1);
+    const matrix = new THREE.Matrix4();
+    optimized.parts.forEach((descriptor, partIndex) => {
+        const instances = new THREE.InstancedMesh(
+            descriptor.geometry,
+            descriptor.material,
+            normalizedPlacements.length
+        );
+        instances.name = `camp:material-instance-batch:${partIndex}`;
+        instances.castShadow = descriptor.castShadow;
+        instances.receiveShadow = descriptor.receiveShadow;
+        instances.userData.proceduralTownPart = true;
+        normalizedPlacements.forEach((placement, placementIndex) => {
+            position.set(placement.x, targetY, placement.z);
+            rotation.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, placement.rotation);
+            matrix.compose(position, rotation, scale);
+            instances.setMatrixAt(placementIndex, matrix);
+        });
+        instances.instanceMatrix.needsUpdate = true;
+        instances.computeBoundingBox();
+        instances.computeBoundingSphere();
+        field.add(instances);
+    });
+    return field;
 }
 
 function deterministicRandom(seed) {
