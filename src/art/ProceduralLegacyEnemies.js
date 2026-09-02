@@ -53,6 +53,40 @@ export const PROCEDURAL_LEGACY_ENEMY_DEFINITIONS = Object.freeze({
             ember: 0xff652c,
             flame: 0xffc052
         })
+    }),
+    Construct: Object.freeze({
+        artStyle: 'Gloamwood grave-reliquary construct',
+        region: 'Gloamwood',
+        faction: 'gravebound',
+        bounds: Object.freeze({ radius: 2.65, height: 5.35, origin: 'feet' }),
+        combatRadius: 2.5,
+        palette: Object.freeze({
+            stone: 0x4d5147,
+            oldStone: 0x30352f,
+            moss: 0x657054,
+            root: 0x4b3829,
+            iron: 0x363b39,
+            brass: 0x856b3f,
+            spirit: 0x8df2bc,
+            graveFire: 0xc3ffd8
+        })
+    }),
+    InfernoTitan: Object.freeze({
+        artStyle: 'Cinder Wastes crucible titan',
+        region: 'Cinder Wastes',
+        faction: 'ash legion',
+        bounds: Object.freeze({ radius: 2.85, height: 6.4, origin: 'feet' }),
+        combatRadius: 1,
+        palette: Object.freeze({
+            basalt: 0x252224,
+            obsidian: 0x151417,
+            iron: 0x3d393a,
+            brass: 0x8e6236,
+            ember: 0xff5427,
+            magma: 0xff9d32,
+            whiteFire: 0xffe0a1,
+            ash: 0x625a57
+        })
     })
 });
 
@@ -687,11 +721,414 @@ export function createProceduralImp() {
     return finalizeEnemy(root, 'Imp', createImpClips());
 }
 
+function addConstructLeg(body, side, materials) {
+    const sign = side === 'Left' ? 1 : -1;
+    const hip = addPivot(body, `Rig_ConstructHip${side}`, [sign * 0.52, 1.1, 0], [0, 0, sign * -0.08]);
+    addMesh(hip, `Construct_HipStone${side}`,
+        geometry('construct-hip-stone', () => new THREE.DodecahedronGeometry(0.29, 0)), materials.stone,
+        { scale: [1.2, 0.88, 1] });
+    addMesh(hip, `Construct_ThighRoot${side}`,
+        geometry('construct-thigh-root', () => new THREE.CylinderGeometry(0.15, 0.22, 0.68, 6)), materials.root,
+        { position: [0, -0.37, 0], rotation: [0, 0, sign * 0.05] });
+    const knee = addPivot(hip, `Rig_ConstructKnee${side}`, [sign * 0.03, -0.76, 0]);
+    addMesh(knee, `Construct_KneeReliquary${side}`,
+        geometry('construct-knee', () => new THREE.OctahedronGeometry(0.24, 0)), materials.brass,
+        { scale: [1.1, 0.82, 1] });
+    addMesh(knee, `Construct_ShinStone${side}`,
+        geometry('construct-shin', () => new THREE.CylinderGeometry(0.18, 0.12, 0.62, 6)), materials.oldStone,
+        { position: [0, -0.34, 0] });
+    addMesh(knee, `Construct_ShinMoss${side}`,
+        geometry('construct-shin-moss', () => new THREE.ConeGeometry(0.13, 0.48, 5)), materials.moss,
+        { position: [sign * 0.1, -0.32, 0.13], rotation: [0.08, 0, sign * 0.18] });
+    const foot = addPivot(knee, `Rig_ConstructFoot${side}`, [0, -0.72, 0.1]);
+    addMesh(foot, `Construct_GravestoneFoot${side}`,
+        geometry('construct-foot', () => new THREE.BoxGeometry(0.48, 0.2, 0.72)), materials.stone,
+        { position: [0, 0.09, 0.18], rotation: [0.04, 0, 0] });
+}
+
+function addConstructArm(chest, side, materials) {
+    const sign = side === 'Left' ? 1 : -1;
+    const shoulder = addPivot(chest, `Rig_ConstructShoulder${side}`, [sign * 0.95, 0.46, 0], [0, 0, sign * -0.16]);
+    addMesh(shoulder, `Construct_ShoulderCairn${side}`,
+        geometry('construct-shoulder', () => new THREE.DodecahedronGeometry(0.45, 0)), materials.stone,
+        { scale: [1.25, 0.85, 1] });
+    addMesh(shoulder, `Construct_ShoulderMoss${side}`,
+        geometry('construct-shoulder-moss', () => new THREE.ConeGeometry(0.34, 0.4, 6)), materials.moss,
+        { position: [sign * 0.08, 0.28, 0], rotation: [0, 0, sign * -0.1] });
+    addMesh(shoulder, `Construct_UpperArm${side}`,
+        geometry('construct-upper-arm', () => new THREE.CylinderGeometry(0.19, 0.27, 0.82, 6)), materials.oldStone,
+        { position: [0, -0.46, 0] });
+    const elbow = addPivot(shoulder, `Rig_ConstructElbow${side}`, [0, -0.92, 0]);
+    addMesh(elbow, `Construct_ElbowBell${side}`,
+        geometry('construct-elbow', () => new THREE.OctahedronGeometry(0.25, 0)), materials.brass,
+        { scale: [1, 0.82, 1] });
+    addMesh(elbow, `Construct_Forearm${side}`,
+        geometry('construct-forearm', () => new THREE.CylinderGeometry(0.25, 0.17, 0.72, 6)), materials.stone,
+        { position: [0, -0.4, 0] });
+    const hand = addPivot(elbow, `Rig_ConstructHand${side}`, [0, -0.82, 0]);
+    addMesh(hand, `Construct_RootFist${side}`,
+        geometry('construct-fist', () => new THREE.DodecahedronGeometry(0.3, 0)), materials.root,
+        { scale: [0.9, 1.08, 0.95] });
+    return hand;
+}
+
+function createConstructClips() {
+    const idleTimes = [0, 0.7, 1.4, 2.1, 2.8];
+    const walkTimes = [0, 0.38, 0.76, 1.14, 1.52];
+    const runTimes = [0, 0.25, 0.5, 0.75, 1];
+    const attackTimes = [0, 0.28, 0.58, 0.9, 1.25];
+    const deathTimes = [0, 0.4, 0.85, 1.35, 1.9];
+    return [
+        new THREE.AnimationClip('Idle', 2.8, [
+            numberTrack('Rig_ConstructBody', 'position[y]', idleTimes, [0.55, 0.59, 0.55, 0.52, 0.55]),
+            numberTrack('Rig_ConstructBody', 'rotation[y]', idleTimes, [0, 0.018, 0, -0.018, 0]),
+            numberTrack('Rig_ConstructChest', 'rotation[z]', idleTimes, [0, 0.018, 0, -0.018, 0]),
+            numberTrack('Rig_ConstructHead', 'rotation[y]', idleTimes, [-0.08, 0.08, -0.08, -0.16, -0.08]),
+            numberTrack('Rig_ConstructJaw', 'rotation[x]', idleTimes, [0.03, 0.1, 0.03, 0.07, 0.03]),
+            numberTrack('Rig_ConstructShoulderLeft', 'rotation[z]', idleTimes, [-0.16, -0.13, -0.16, -0.2, -0.16]),
+            numberTrack('Rig_ConstructShoulderRight', 'rotation[z]', idleTimes, [0.16, 0.13, 0.16, 0.2, 0.16]),
+            numberTrack('Rig_ConstructWeapon', 'rotation[z]', idleTimes, [0.18, 0.23, 0.18, 0.12, 0.18]),
+            numberTrack('Rig_ConstructBell', 'rotation[z]', idleTimes, [0, -0.06, 0, 0.06, 0])
+        ]),
+        new THREE.AnimationClip('Walk', 1.52, [
+            numberTrack('Rig_ConstructBody', 'position[y]', walkTimes, [0.55, 0.63, 0.55, 0.63, 0.55]),
+            numberTrack('Rig_ConstructBody', 'rotation[z]', walkTimes, [0, 0.028, 0, -0.028, 0]),
+            numberTrack('Rig_ConstructHipLeft', 'rotation[x]', walkTimes, [0.38, 0, -0.38, 0, 0.38]),
+            numberTrack('Rig_ConstructHipRight', 'rotation[x]', walkTimes, [-0.38, 0, 0.38, 0, -0.38]),
+            numberTrack('Rig_ConstructKneeLeft', 'rotation[x]', walkTimes, [0.04, 0.48, 0.08, 0.14, 0.04]),
+            numberTrack('Rig_ConstructKneeRight', 'rotation[x]', walkTimes, [0.08, 0.14, 0.04, 0.48, 0.08]),
+            numberTrack('Rig_ConstructShoulderLeft', 'rotation[x]', walkTimes, [-0.22, 0, 0.22, 0, -0.22]),
+            numberTrack('Rig_ConstructShoulderRight', 'rotation[x]', walkTimes, [0.22, 0, -0.22, 0, 0.22]),
+            numberTrack('Rig_ConstructWeapon', 'rotation[z]', walkTimes, [0.18, 0.08, 0.18, 0.3, 0.18]),
+            numberTrack('Rig_ConstructBell', 'rotation[z]', walkTimes, [0, 0.18, 0, -0.18, 0])
+        ]),
+        new THREE.AnimationClip('Run', 1, [
+            numberTrack('Rig_ConstructBody', 'position[y]', runTimes, [0.55, 0.67, 0.55, 0.67, 0.55]),
+            numberTrack('Rig_ConstructBody', 'rotation[x]', runTimes, [0.12, 0.17, 0.12, 0.17, 0.12]),
+            numberTrack('Rig_ConstructHipLeft', 'rotation[x]', runTimes, [0.58, 0, -0.58, 0, 0.58]),
+            numberTrack('Rig_ConstructHipRight', 'rotation[x]', runTimes, [-0.58, 0, 0.58, 0, -0.58]),
+            numberTrack('Rig_ConstructKneeLeft', 'rotation[x]', runTimes, [0.08, 0.66, 0.12, 0.2, 0.08]),
+            numberTrack('Rig_ConstructKneeRight', 'rotation[x]', runTimes, [0.12, 0.2, 0.08, 0.66, 0.12]),
+            numberTrack('Rig_ConstructShoulderLeft', 'rotation[x]', runTimes, [-0.4, 0, 0.4, 0, -0.4]),
+            numberTrack('Rig_ConstructShoulderRight', 'rotation[x]', runTimes, [0.4, 0, -0.4, 0, 0.4]),
+            numberTrack('Rig_ConstructWeapon', 'rotation[z]', runTimes, [0.18, 0.02, 0.18, 0.36, 0.18]),
+            numberTrack('Rig_ConstructBell', 'rotation[z]', runTimes, [0, 0.3, 0, -0.3, 0])
+        ]),
+        new THREE.AnimationClip('Attack', 1.25, [
+            numberTrack('Rig_ConstructBody', 'position[y]', attackTimes, [0.55, 0.59, 0.68, 0.5, 0.55]),
+            numberTrack('Rig_ConstructBody', 'rotation[y]', attackTimes, [0, -0.2, -0.42, 0.34, 0]),
+            numberTrack('Rig_ConstructChest', 'rotation[x]', attackTimes, [0, -0.14, -0.24, 0.22, 0]),
+            numberTrack('Rig_ConstructShoulderRight', 'rotation[x]', attackTimes, [0, -0.74, -1.2, 0.86, 0]),
+            numberTrack('Rig_ConstructShoulderRight', 'rotation[z]', attackTimes, [0.16, 0.5, 0.72, -0.4, 0.16]),
+            numberTrack('Rig_ConstructElbowRight', 'rotation[x]', attackTimes, [0, -0.38, -0.64, 0.38, 0]),
+            numberTrack('Rig_ConstructWeapon', 'rotation[z]', attackTimes, [0.18, -0.88, -1.42, 0.82, 0.18]),
+            numberTrack('Rig_ConstructHead', 'rotation[y]', attackTimes, [-0.08, 0.08, 0.2, -0.12, -0.08]),
+            numberTrack('Rig_ConstructBell', 'rotation[z]', attackTimes, [0, -0.18, -0.4, 0.46, 0])
+        ]),
+        new THREE.AnimationClip('Death', 1.9, [
+            numberTrack('Rig_ConstructBody', 'position[y]', deathTimes, [0.55, 0.58, 0.26, -0.25, -0.58]),
+            numberTrack('Rig_ConstructBody', 'rotation[x]', deathTimes, [0, -0.08, 0.28, 0.82, 1.28]),
+            numberTrack('Rig_ConstructBody', 'rotation[z]', deathTimes, [0, 0.05, -0.18, -0.58, -0.82]),
+            numberTrack('Rig_ConstructChest', 'rotation[y]', deathTimes, [0, 0.08, -0.22, -0.5, -0.7]),
+            numberTrack('Rig_ConstructHead', 'rotation[x]', deathTimes, [0, -0.1, 0.25, 0.58, 0.82]),
+            numberTrack('Rig_ConstructShoulderLeft', 'rotation[z]', deathTimes, [-0.16, -0.38, -0.72, -1, -1.18]),
+            numberTrack('Rig_ConstructShoulderRight', 'rotation[z]', deathTimes, [0.16, 0.42, 0.76, 1.04, 1.2]),
+            numberTrack('Rig_ConstructHipLeft', 'rotation[x]', deathTimes, [0, -0.12, 0.25, 0.72, 1.02]),
+            numberTrack('Rig_ConstructHipRight', 'rotation[x]', deathTimes, [0, 0.12, -0.2, -0.58, -0.84]),
+            numberTrack('Rig_ConstructWeapon', 'rotation[z]', deathTimes, [0.18, 0.36, 0.7, 1.12, 1.42]),
+            numberTrack('Rig_ConstructBell', 'rotation[z]', deathTimes, [0, -0.22, 0.44, 1, 1.38])
+        ])
+    ];
+}
+
+export function createProceduralConstruct() {
+    const definition = PROCEDURAL_LEGACY_ENEMY_DEFINITIONS.Construct;
+    const p = definition.palette;
+    const materials = {
+        stone: material('construct-grave-stone', p.stone, { roughness: 0.98 }),
+        oldStone: material('construct-old-stone', p.oldStone, { roughness: 1 }),
+        moss: material('construct-moss', p.moss, { roughness: 1 }),
+        root: material('construct-root', p.root, { roughness: 0.96 }),
+        iron: material('construct-iron', p.iron, { metalness: 0.5, roughness: 0.65 }),
+        brass: material('construct-brass', p.brass, { metalness: 0.64, roughness: 0.5 }),
+        spirit: material('construct-spirit', p.spirit, { emissive: p.spirit, emissiveIntensity: 1.4, roughness: 0.2 }),
+        graveFire: material('construct-grave-fire', p.graveFire, { emissive: p.graveFire, emissiveIntensity: 1.8, roughness: 0.12 })
+    };
+    const root = new THREE.Group();
+    addMesh(root, 'Construct_GraveSeal', geometry('construct-ground-seal', () => new THREE.RingGeometry(1.55, 1.68, 12)), materials.spirit,
+        { position: [0, 0.012, 0], rotation: [-Math.PI / 2, 0, 0], castShadow: false, receiveShadow: false });
+    const body = addPivot(root, 'Rig_ConstructBody', [0, 0.55, 0]);
+    addMesh(body, 'Construct_PelvisCairn', geometry('construct-pelvis', () => new THREE.DodecahedronGeometry(0.67, 0)), materials.oldStone,
+        { position: [0, 1.22, 0], scale: [1.25, 0.7, 0.9] });
+    addMesh(body, 'Construct_RootWaist', geometry('construct-waist', () => new THREE.CylinderGeometry(0.45, 0.55, 0.62, 7)), materials.root,
+        { position: [0, 1.75, 0] });
+    for (let index = 0; index < 5; index += 1) {
+        addMesh(body, `Construct_WaistChain${index + 1}`,
+            geometry('construct-chain-link', () => new THREE.TorusGeometry(0.09, 0.022, 4, 7)), materials.brass,
+            { position: [-0.42 + index * 0.21, 1.56 - Math.abs(2 - index) * 0.035, 0.47], rotation: [Math.PI / 2, index % 2 ? Math.PI / 2 : 0, 0] });
+    }
+    addConstructLeg(body, 'Left', materials);
+    addConstructLeg(body, 'Right', materials);
+
+    const chest = addPivot(body, 'Rig_ConstructChest', [0, 2.35, 0], [-0.04, 0, 0]);
+    addMesh(chest, 'Construct_GravestoneTorso', geometry('construct-torso', () => new THREE.DodecahedronGeometry(0.88, 0)), materials.stone,
+        { scale: [1.18, 1.18, 0.82] });
+    addMesh(chest, 'Construct_ReliquaryDoor', geometry('construct-reliquary-door', () => new THREE.BoxGeometry(0.8, 0.92, 0.13)), materials.iron,
+        { position: [0, 0, 0.73] });
+    addMesh(chest, 'Construct_CaptiveSoul', geometry('construct-soul', () => new THREE.OctahedronGeometry(0.25, 0)), materials.graveFire,
+        { position: [0, 0.02, 0.84], scale: [0.75, 1.25, 0.42], castShadow: false });
+    for (const x of [-0.31, 0.31]) {
+        addMesh(chest, `Construct_ReliquaryBar${x}`, geometry('construct-reliquary-bar', () => new THREE.BoxGeometry(0.06, 0.82, 0.06)), materials.brass,
+            { position: [x, 0, 0.82] });
+    }
+    for (const [index, x] of [-0.72, -0.36, 0, 0.36, 0.72].entries()) {
+        addMesh(chest, `Construct_BackRib${index + 1}`, geometry('construct-back-rib', () => new THREE.ConeGeometry(0.12, 0.72, 5)), materials.root,
+            { position: [x, 0.2 + (index % 2) * 0.12, -0.62], rotation: [Math.PI / 2.8, 0, -x * 0.3] });
+    }
+    const leftHand = addConstructArm(chest, 'Left', materials);
+    const rightHand = addConstructArm(chest, 'Right', materials);
+
+    const head = addPivot(chest, 'Rig_ConstructHead', [0, 1.18, 0.02], [0, -0.08, 0]);
+    addMesh(head, 'Construct_BellSkull', geometry('construct-head', () => new THREE.DodecahedronGeometry(0.5, 0)), materials.oldStone,
+        { scale: [1.05, 1.08, 0.9] });
+    addMesh(head, 'Construct_FuneraryMask', geometry('construct-mask', () => new THREE.CylinderGeometry(0.34, 0.29, 0.42, 6)), materials.brass,
+        { position: [0, 0.02, 0.42], rotation: [Math.PI / 2, 0, 0], scale: [1, 1, 0.58] });
+    for (const [side, x] of [['Left', 0.17], ['Right', -0.17]]) {
+        addMesh(head, `Construct_Eye${side}`, geometry('construct-eye', () => new THREE.OctahedronGeometry(0.075, 0)), materials.graveFire,
+            { position: [x, 0.09, 0.52], scale: [1.1, 0.65, 0.45], castShadow: false });
+    }
+    const jaw = addPivot(head, 'Rig_ConstructJaw', [0, -0.33, 0.17], [0.03, 0, 0]);
+    addMesh(jaw, 'Construct_StoneJaw', geometry('construct-jaw', () => new THREE.BoxGeometry(0.5, 0.2, 0.3)), materials.stone,
+        { position: [0, 0, 0.06] });
+    for (const x of [-0.32, 0, 0.32]) {
+        addMesh(head, `Construct_CrownRoot${x}`, geometry('construct-crown-root', () => new THREE.ConeGeometry(0.1, 0.62, 5)), materials.root,
+            { position: [x, 0.62 - Math.abs(x) * 0.25, 0], rotation: [0, 0, x * -0.5] });
+    }
+
+    const weapon = addPivot(rightHand, 'Rig_ConstructWeapon', [0, -0.05, 0.02], [0.04, 0, 0.18]);
+    addMesh(weapon, 'Construct_TollingMaulShaft', geometry('construct-maul-shaft', () => new THREE.CylinderGeometry(0.07, 0.09, 1.55, 6)), materials.root,
+        { position: [0, -0.18, 0] });
+    addMesh(weapon, 'Construct_TollingMaulHead', geometry('construct-maul-head', () => new THREE.DodecahedronGeometry(0.42, 0)), materials.stone,
+        { position: [0, 0.76, 0], scale: [1.35, 0.9, 0.85] });
+    addMesh(weapon, 'Construct_TollingMaulRune', geometry('construct-maul-rune', () => new THREE.OctahedronGeometry(0.14, 0)), materials.spirit,
+        { position: [0, 0.79, 0.36], scale: [1, 1, 0.35], castShadow: false });
+    const bell = addPivot(leftHand, 'Rig_ConstructBell', [0, -0.08, 0], [0, 0, 0]);
+    addMesh(bell, 'Construct_GraveBellHandle', geometry('construct-bell-handle', () => new THREE.TorusGeometry(0.17, 0.035, 5, 8, Math.PI)), materials.brass,
+        { position: [0, -0.1, 0], rotation: [0, 0, Math.PI] });
+    addMesh(bell, 'Construct_GraveBell', geometry('construct-bell', () => new THREE.ConeGeometry(0.28, 0.52, 7, 1, true)), materials.iron,
+        { position: [0, -0.43, 0], rotation: [Math.PI, 0, 0] });
+    addMesh(bell, 'Construct_GraveBellClapper', geometry('construct-bell-clapper', () => new THREE.OctahedronGeometry(0.08, 0)), materials.graveFire,
+        { position: [0, -0.7, 0], castShadow: false });
+
+    return finalizeEnemy(root, 'Construct', createConstructClips());
+}
+
+function addTitanLeg(body, side, materials) {
+    const sign = side === 'Left' ? 1 : -1;
+    const hip = addPivot(body, `Rig_InfernoTitanHip${side}`, [sign * 0.68, 1.38, 0], [0, 0, sign * -0.05]);
+    addMesh(hip, `InfernoTitan_Hip${side}`, geometry('titan-hip', () => new THREE.DodecahedronGeometry(0.4, 0)), materials.basalt,
+        { scale: [1.25, 0.82, 1] });
+    addMesh(hip, `InfernoTitan_Thigh${side}`, geometry('titan-thigh', () => new THREE.CylinderGeometry(0.27, 0.39, 0.94, 7)), materials.basalt,
+        { position: [0, -0.51, 0] });
+    addMesh(hip, `InfernoTitan_ThighRift${side}`, geometry('titan-leg-rift', () => new THREE.BoxGeometry(0.055, 0.63, 0.045)), materials.magma,
+        { position: [sign * 0.11, -0.49, 0.32], rotation: [0, 0, sign * 0.13], castShadow: false });
+    const knee = addPivot(hip, `Rig_InfernoTitanKnee${side}`, [0, -1.02, 0]);
+    addMesh(knee, `InfernoTitan_Knee${side}`, geometry('titan-knee', () => new THREE.OctahedronGeometry(0.33, 0)), materials.iron,
+        { scale: [1.15, 0.82, 1] });
+    addMesh(knee, `InfernoTitan_Shin${side}`, geometry('titan-shin', () => new THREE.CylinderGeometry(0.34, 0.22, 0.82, 7)), materials.obsidian,
+        { position: [0, -0.45, 0] });
+    const foot = addPivot(knee, `Rig_InfernoTitanFoot${side}`, [0, -0.91, 0.12]);
+    addMesh(foot, `InfernoTitan_AnvilFoot${side}`, geometry('titan-foot', () => new THREE.BoxGeometry(0.68, 0.25, 1.02)), materials.basalt,
+        { position: [0, 0.14, 0.23] });
+    for (const x of [-0.22, 0, 0.22]) {
+        addMesh(foot, `InfernoTitan_Toe${side}${x}`, geometry('titan-toe', () => new THREE.ConeGeometry(0.13, 0.48, 5)), materials.iron,
+            { position: [x, 0.13, 0.73], rotation: [Math.PI / 2, 0, 0] });
+    }
+}
+
+function addTitanArm(chest, side, materials) {
+    const sign = side === 'Left' ? 1 : -1;
+    const shoulder = addPivot(chest, `Rig_InfernoTitanShoulder${side}`, [sign * 1.18, 0.58, 0], [0, 0, sign * -0.12]);
+    addMesh(shoulder, `InfernoTitan_CrucibleShoulder${side}`, geometry('titan-shoulder', () => new THREE.DodecahedronGeometry(0.55, 0)), materials.basalt,
+        { scale: [1.3, 0.82, 1.05] });
+    addMesh(shoulder, `InfernoTitan_ShoulderVent${side}`, geometry('titan-shoulder-vent', () => new THREE.ConeGeometry(0.2, 0.68, 6, 1, true)), materials.iron,
+        { position: [sign * 0.22, 0.44, -0.1] });
+    addMesh(shoulder, `InfernoTitan_VentFlame${side}`, geometry('titan-vent-flame', () => new THREE.ConeGeometry(0.095, 0.48, 5)), materials.whiteFire,
+        { position: [sign * 0.22, 0.85, -0.1], castShadow: false });
+    addMesh(shoulder, `InfernoTitan_UpperArm${side}`, geometry('titan-upper-arm', () => new THREE.CylinderGeometry(0.3, 0.4, 1.02, 7)), materials.basalt,
+        { position: [0, -0.56, 0] });
+    const elbow = addPivot(shoulder, `Rig_InfernoTitanElbow${side}`, [0, -1.12, 0]);
+    addMesh(elbow, `InfernoTitan_Elbow${side}`, geometry('titan-elbow', () => new THREE.OctahedronGeometry(0.34, 0)), materials.brass);
+    addMesh(elbow, `InfernoTitan_Forearm${side}`, geometry('titan-forearm', () => new THREE.CylinderGeometry(0.4, 0.27, 0.92, 7)), materials.obsidian,
+        { position: [0, -0.5, 0] });
+    for (const x of [-0.16, 0.16]) {
+        addMesh(elbow, `InfernoTitan_ForearmRift${side}${x}`, geometry('titan-arm-rift', () => new THREE.BoxGeometry(0.045, 0.66, 0.04)), materials.ember,
+            { position: [x, -0.5, 0.32], rotation: [0, 0, x * 0.5], castShadow: false });
+    }
+    const hand = addPivot(elbow, `Rig_InfernoTitanHand${side}`, [0, -1.03, 0]);
+    addMesh(hand, `InfernoTitan_FurnaceFist${side}`, geometry('titan-fist', () => new THREE.DodecahedronGeometry(0.4, 0)), materials.basalt,
+        { scale: [1.05, 1.12, 0.9] });
+    return hand;
+}
+
+function createInfernoTitanClips() {
+    const idleTimes = [0, 0.65, 1.3, 1.95, 2.6];
+    const walkTimes = [0, 0.42, 0.84, 1.26, 1.68];
+    const runTimes = [0, 0.28, 0.56, 0.84, 1.12];
+    const attackTimes = [0, 0.26, 0.55, 0.88, 1.22];
+    const deathTimes = [0, 0.42, 0.9, 1.42, 2];
+    return [
+        new THREE.AnimationClip('Idle', 2.6, [
+            numberTrack('Rig_InfernoTitanBody', 'position[y]', idleTimes, [0.58, 0.64, 0.58, 0.54, 0.58]),
+            numberTrack('Rig_InfernoTitanBody', 'rotation[y]', idleTimes, [0, 0.018, 0, -0.018, 0]),
+            numberTrack('Rig_InfernoTitanChest', 'rotation[x]', idleTimes, [-0.04, -0.07, -0.04, -0.015, -0.04]),
+            numberTrack('Rig_InfernoTitanHead', 'rotation[y]', idleTimes, [0.05, -0.05, 0.05, 0.12, 0.05]),
+            numberTrack('Rig_InfernoTitanJaw', 'rotation[x]', idleTimes, [0.04, 0.13, 0.04, 0.08, 0.04]),
+            numberTrack('Rig_InfernoTitanShoulderLeft', 'rotation[z]', idleTimes, [-0.12, -0.08, -0.12, -0.17, -0.12]),
+            numberTrack('Rig_InfernoTitanShoulderRight', 'rotation[z]', idleTimes, [0.12, 0.08, 0.12, 0.17, 0.12]),
+            numberTrack('Rig_InfernoTitanWeapon', 'rotation[z]', idleTimes, [-0.2, -0.15, -0.2, -0.26, -0.2]),
+            numberTrack('Rig_InfernoTitanCenser', 'rotation[z]', idleTimes, [0, -0.07, 0, 0.07, 0])
+        ]),
+        new THREE.AnimationClip('Walk', 1.68, [
+            numberTrack('Rig_InfernoTitanBody', 'position[y]', walkTimes, [0.58, 0.68, 0.58, 0.68, 0.58]),
+            numberTrack('Rig_InfernoTitanBody', 'rotation[z]', walkTimes, [0, 0.025, 0, -0.025, 0]),
+            numberTrack('Rig_InfernoTitanHipLeft', 'rotation[x]', walkTimes, [0.34, 0, -0.34, 0, 0.34]),
+            numberTrack('Rig_InfernoTitanHipRight', 'rotation[x]', walkTimes, [-0.34, 0, 0.34, 0, -0.34]),
+            numberTrack('Rig_InfernoTitanKneeLeft', 'rotation[x]', walkTimes, [0.05, 0.42, 0.08, 0.14, 0.05]),
+            numberTrack('Rig_InfernoTitanKneeRight', 'rotation[x]', walkTimes, [0.08, 0.14, 0.05, 0.42, 0.08]),
+            numberTrack('Rig_InfernoTitanShoulderLeft', 'rotation[x]', walkTimes, [-0.2, 0, 0.2, 0, -0.2]),
+            numberTrack('Rig_InfernoTitanShoulderRight', 'rotation[x]', walkTimes, [0.2, 0, -0.2, 0, 0.2]),
+            numberTrack('Rig_InfernoTitanWeapon', 'rotation[z]', walkTimes, [-0.2, -0.1, -0.2, -0.31, -0.2]),
+            numberTrack('Rig_InfernoTitanCenser', 'rotation[z]', walkTimes, [0, 0.16, 0, -0.16, 0])
+        ]),
+        new THREE.AnimationClip('Run', 1.12, [
+            numberTrack('Rig_InfernoTitanBody', 'position[y]', runTimes, [0.58, 0.73, 0.58, 0.73, 0.58]),
+            numberTrack('Rig_InfernoTitanBody', 'rotation[x]', runTimes, [0.13, 0.18, 0.13, 0.18, 0.13]),
+            numberTrack('Rig_InfernoTitanHipLeft', 'rotation[x]', runTimes, [0.52, 0, -0.52, 0, 0.52]),
+            numberTrack('Rig_InfernoTitanHipRight', 'rotation[x]', runTimes, [-0.52, 0, 0.52, 0, -0.52]),
+            numberTrack('Rig_InfernoTitanKneeLeft', 'rotation[x]', runTimes, [0.08, 0.6, 0.12, 0.18, 0.08]),
+            numberTrack('Rig_InfernoTitanKneeRight', 'rotation[x]', runTimes, [0.12, 0.18, 0.08, 0.6, 0.12]),
+            numberTrack('Rig_InfernoTitanShoulderLeft', 'rotation[x]', runTimes, [-0.34, 0, 0.34, 0, -0.34]),
+            numberTrack('Rig_InfernoTitanShoulderRight', 'rotation[x]', runTimes, [0.34, 0, -0.34, 0, 0.34]),
+            numberTrack('Rig_InfernoTitanWeapon', 'rotation[z]', runTimes, [-0.2, -0.04, -0.2, -0.37, -0.2]),
+            numberTrack('Rig_InfernoTitanCenser', 'rotation[z]', runTimes, [0, 0.28, 0, -0.28, 0])
+        ]),
+        new THREE.AnimationClip('Attack', 1.22, [
+            numberTrack('Rig_InfernoTitanBody', 'position[y]', attackTimes, [0.58, 0.64, 0.75, 0.53, 0.58]),
+            numberTrack('Rig_InfernoTitanBody', 'rotation[y]', attackTimes, [0, -0.22, -0.45, 0.36, 0]),
+            numberTrack('Rig_InfernoTitanChest', 'rotation[x]', attackTimes, [-0.04, -0.2, -0.32, 0.24, -0.04]),
+            numberTrack('Rig_InfernoTitanShoulderRight', 'rotation[x]', attackTimes, [0, -0.78, -1.24, 0.9, 0]),
+            numberTrack('Rig_InfernoTitanShoulderRight', 'rotation[z]', attackTimes, [0.12, 0.48, 0.74, -0.4, 0.12]),
+            numberTrack('Rig_InfernoTitanElbowRight', 'rotation[x]', attackTimes, [0, -0.36, -0.62, 0.4, 0]),
+            numberTrack('Rig_InfernoTitanWeapon', 'rotation[z]', attackTimes, [-0.2, -0.96, -1.48, 0.86, -0.2]),
+            numberTrack('Rig_InfernoTitanHead', 'rotation[y]', attackTimes, [0.05, 0.16, 0.25, -0.15, 0.05]),
+            numberTrack('Rig_InfernoTitanCenser', 'rotation[z]', attackTimes, [0, -0.2, -0.44, 0.48, 0])
+        ]),
+        new THREE.AnimationClip('Death', 2, [
+            numberTrack('Rig_InfernoTitanBody', 'position[y]', deathTimes, [0.58, 0.62, 0.32, -0.22, -0.62]),
+            numberTrack('Rig_InfernoTitanBody', 'rotation[x]', deathTimes, [0, -0.08, 0.3, 0.88, 1.34]),
+            numberTrack('Rig_InfernoTitanBody', 'rotation[z]', deathTimes, [0, 0.06, -0.2, -0.62, -0.88]),
+            numberTrack('Rig_InfernoTitanChest', 'rotation[y]', deathTimes, [0, 0.08, -0.2, -0.48, -0.68]),
+            numberTrack('Rig_InfernoTitanHead', 'rotation[x]', deathTimes, [0, -0.1, 0.28, 0.64, 0.9]),
+            numberTrack('Rig_InfernoTitanShoulderLeft', 'rotation[z]', deathTimes, [-0.12, -0.36, -0.74, -1.05, -1.22]),
+            numberTrack('Rig_InfernoTitanShoulderRight', 'rotation[z]', deathTimes, [0.12, 0.4, 0.78, 1.08, 1.24]),
+            numberTrack('Rig_InfernoTitanHipLeft', 'rotation[x]', deathTimes, [0, -0.1, 0.3, 0.78, 1.06]),
+            numberTrack('Rig_InfernoTitanHipRight', 'rotation[x]', deathTimes, [0, 0.12, -0.22, -0.62, -0.9]),
+            numberTrack('Rig_InfernoTitanWeapon', 'rotation[z]', deathTimes, [-0.2, 0.16, 0.62, 1.15, 1.46]),
+            numberTrack('Rig_InfernoTitanCenser', 'rotation[z]', deathTimes, [0, -0.24, 0.48, 1.08, 1.42])
+        ])
+    ];
+}
+
+export function createProceduralInfernoTitan() {
+    const definition = PROCEDURAL_LEGACY_ENEMY_DEFINITIONS.InfernoTitan;
+    const p = definition.palette;
+    const materials = {
+        basalt: material('titan-basalt', p.basalt, { roughness: 0.92 }),
+        obsidian: material('titan-obsidian', p.obsidian, { roughness: 0.48, metalness: 0.28 }),
+        iron: material('titan-iron', p.iron, { metalness: 0.62, roughness: 0.56 }),
+        brass: material('titan-brass', p.brass, { metalness: 0.7, roughness: 0.46 }),
+        ember: material('titan-ember', p.ember, { emissive: p.ember, emissiveIntensity: 1.55, roughness: 0.2 }),
+        magma: material('titan-magma', p.magma, { emissive: p.magma, emissiveIntensity: 1.75, roughness: 0.16 }),
+        whiteFire: material('titan-white-fire', p.whiteFire, { emissive: p.whiteFire, emissiveIntensity: 2, roughness: 0.1 }),
+        ash: material('titan-ash', p.ash, { roughness: 1 })
+    };
+    const root = new THREE.Group();
+    addMesh(root, 'InfernoTitan_CalderaBrand', geometry('titan-ground-brand', () => new THREE.RingGeometry(1.72, 1.86, 14)), materials.ember,
+        { position: [0, 0.012, 0], rotation: [-Math.PI / 2, 0, 0], castShadow: false, receiveShadow: false });
+    const body = addPivot(root, 'Rig_InfernoTitanBody', [0, 0.58, 0]);
+    addMesh(body, 'InfernoTitan_BasaltPelvis', geometry('titan-pelvis', () => new THREE.DodecahedronGeometry(0.83, 0)), materials.basalt,
+        { position: [0, 1.48, 0], scale: [1.28, 0.72, 0.92] });
+    addMesh(body, 'InfernoTitan_CrucibleWaist', geometry('titan-waist', () => new THREE.CylinderGeometry(0.58, 0.72, 0.76, 8)), materials.iron,
+        { position: [0, 2.15, 0] });
+    for (let index = 0; index < 6; index += 1) {
+        addMesh(body, `InfernoTitan_WaistRivet${index + 1}`, geometry('titan-rivet', () => new THREE.OctahedronGeometry(0.075, 0)), materials.brass,
+            { position: [-0.52 + index * 0.21, 2.23, 0.59], castShadow: false });
+    }
+    addTitanLeg(body, 'Left', materials);
+    addTitanLeg(body, 'Right', materials);
+
+    const chest = addPivot(body, 'Rig_InfernoTitanChest', [0, 3.02, 0], [-0.04, 0, 0]);
+    addMesh(chest, 'InfernoTitan_CrucibleTorso', geometry('titan-torso', () => new THREE.CylinderGeometry(1.12, 0.78, 1.72, 8)), materials.basalt);
+    addMesh(chest, 'InfernoTitan_FurnaceCage', geometry('titan-furnace-cage', () => new THREE.CylinderGeometry(0.62, 0.52, 1.12, 8, 1, true)), materials.iron,
+        { position: [0, -0.02, 0.72], rotation: [Math.PI / 2, 0, 0], scale: [1, 1, 0.48] });
+    addMesh(chest, 'InfernoTitan_WhiteCore', geometry('titan-white-core', () => new THREE.OctahedronGeometry(0.34, 0)), materials.whiteFire,
+        { position: [0, 0, 0.99], scale: [0.82, 1.35, 0.42], castShadow: false });
+    for (let index = 0; index < 5; index += 1) {
+        addMesh(chest, `InfernoTitan_FurnaceBar${index + 1}`, geometry('titan-furnace-bar', () => new THREE.BoxGeometry(0.055, 1.04, 0.05)), materials.brass,
+            { position: [-0.42 + index * 0.21, -0.02, 0.96], rotation: [0, 0, -0.15 + index * 0.075] });
+    }
+    for (const [index, x] of [-0.74, -0.37, 0.37, 0.74].entries()) {
+        addMesh(chest, `InfernoTitan_RibRift${index + 1}`, geometry('titan-rib-rift', () => new THREE.BoxGeometry(0.055, 0.75, 0.045)), materials.magma,
+            { position: [x, 0.04, 0.73], rotation: [0, 0, x * -0.24], castShadow: false });
+    }
+    const leftHand = addTitanArm(chest, 'Left', materials);
+    const rightHand = addTitanArm(chest, 'Right', materials);
+
+    const head = addPivot(chest, 'Rig_InfernoTitanHead', [0, 1.42, 0.04], [0, 0.05, 0]);
+    addMesh(head, 'InfernoTitan_ObsidianSkull', geometry('titan-head', () => new THREE.DodecahedronGeometry(0.6, 0)), materials.obsidian,
+        { scale: [1.08, 1, 0.92] });
+    addMesh(head, 'InfernoTitan_ExecutionMask', geometry('titan-mask', () => new THREE.CylinderGeometry(0.43, 0.36, 0.54, 6)), materials.iron,
+        { position: [0, 0.02, 0.5], rotation: [Math.PI / 2, 0, 0], scale: [1.08, 1, 0.58] });
+    for (const [side, x] of [['Left', 0.22], ['Right', -0.22]]) {
+        addMesh(head, `InfernoTitan_Eye${side}`, geometry('titan-eye', () => new THREE.OctahedronGeometry(0.09, 0)), materials.whiteFire,
+            { position: [x, 0.1, 0.65], scale: [1.15, 0.62, 0.42], castShadow: false });
+    }
+    const jaw = addPivot(head, 'Rig_InfernoTitanJaw', [0, -0.38, 0.2], [0.04, 0, 0]);
+    addMesh(jaw, 'InfernoTitan_ForgeJaw', geometry('titan-jaw', () => new THREE.BoxGeometry(0.68, 0.25, 0.4)), materials.basalt,
+        { position: [0, 0, 0.09] });
+    for (const [index, x] of [-0.47, -0.23, 0, 0.23, 0.47].entries()) {
+        addMesh(head, `InfernoTitan_MoltenCrown${index + 1}`, geometry('titan-crown', () => new THREE.ConeGeometry(0.13, 0.85, 5)), index === 2 ? materials.whiteFire : materials.ember,
+            { position: [x, 0.72 - Math.abs(x) * 0.28, -0.03], rotation: [0, 0, x * -0.55], castShadow: index !== 2 });
+    }
+
+    const weapon = addPivot(rightHand, 'Rig_InfernoTitanWeapon', [0, -0.08, 0], [0.08, 0, -0.2]);
+    addMesh(weapon, 'InfernoTitan_CalderaCleaverGrip', geometry('titan-cleaver-grip', () => new THREE.CylinderGeometry(0.09, 0.12, 1.8, 7)), materials.brass,
+        { position: [0, -0.2, 0] });
+    addMesh(weapon, 'InfernoTitan_CalderaCleaverBlade', geometry('titan-cleaver-blade', () => new THREE.BoxGeometry(0.96, 1.38, 0.19)), materials.obsidian,
+        { position: [0.32, 0.95, 0], rotation: [0, 0, -0.18], scale: [0.82, 1, 1] });
+    addMesh(weapon, 'InfernoTitan_CalderaCleaverEdge', geometry('titan-cleaver-edge', () => new THREE.BoxGeometry(0.1, 1.32, 0.22)), materials.magma,
+        { position: [0.77, 0.91, 0], rotation: [0, 0, -0.18], castShadow: false });
+    const censer = addPivot(leftHand, 'Rig_InfernoTitanCenser', [0, -0.08, 0], [0, 0, 0]);
+    for (let index = 0; index < 5; index += 1) {
+        addMesh(censer, `InfernoTitan_CenserLink${index + 1}`, geometry('titan-chain-link', () => new THREE.TorusGeometry(0.1, 0.024, 4, 7)), materials.brass,
+            { position: [0, -0.18 - index * 0.19, 0], rotation: [Math.PI / 2, index % 2 ? Math.PI / 2 : 0, 0] });
+    }
+    addMesh(censer, 'InfernoTitan_AshCenser', geometry('titan-censer', () => new THREE.DodecahedronGeometry(0.32, 0)), materials.iron,
+        { position: [0, -1.26, 0], scale: [1, 0.82, 1] });
+    addMesh(censer, 'InfernoTitan_CenserCoal', geometry('titan-censer-coal', () => new THREE.OctahedronGeometry(0.17, 0)), materials.ember,
+        { position: [0, -1.28, 0.25], castShadow: false });
+
+    return finalizeEnemy(root, 'InfernoTitan', createInfernoTitanClips());
+}
+
 export function createProceduralLegacyEnemy(type) {
     switch (type) {
         case 'Skeleton': return createProceduralSkeleton();
         case 'DemonOrc': return createProceduralDemonOrc();
         case 'Imp': return createProceduralImp();
+        case 'Construct': return createProceduralConstruct();
+        case 'InfernoTitan': return createProceduralInfernoTitan();
         default: throw new Error(`Unknown procedural legacy enemy: ${type}`);
     }
 }

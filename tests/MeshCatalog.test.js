@@ -22,17 +22,19 @@ describe('MeshCatalog', () => {
         expect(MeshCatalog.getPreloadModelPaths().some((path) => path.includes('/skeleton/'))).toBe(false);
     });
 
-    test('starter regional enemies have explicit procedural recipes and no model preload', () => {
+    test('legacy regional enemies have explicit procedural recipes and no migrated model preload', () => {
         expect(MeshCatalog.recipes.Skeleton.source).toBe('procedural Gloamwood ossuary rig');
         expect(MeshCatalog.recipes.DemonOrc.source).toBe('procedural Cinder Wastes kiln-warrior rig');
         expect(MeshCatalog.recipes.Imp.source).toBe('procedural Cinder Wastes ember-scavenger rig');
-        for (const type of ['Skeleton', 'DemonOrc', 'Imp']) {
+        expect(MeshCatalog.recipes.Construct.source).toBe('procedural Gloamwood grave-reliquary rig');
+        expect(MeshCatalog.recipes.InfernoTitan.source).toBe('procedural Cinder Wastes crucible-titan rig');
+        for (const type of ['Skeleton', 'DemonOrc', 'Imp', 'Construct', 'InfernoTitan']) {
             expect(MeshCatalog.recipes[type]).toEqual(expect.objectContaining({
                 type: 'enemy',
                 animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
             }));
         }
-        expect(MeshCatalog.getPreloadModelPaths().some((path) => /skeleton|demon_orc|\/imp\//.test(path))).toBe(false);
+        expect(MeshCatalog.getPreloadModelPaths().some((path) => /skeleton|demon_orc|\/imp\/|\/construct\/|\/inferno_titan\//.test(path))).toBe(false);
     });
 
     test('all Lanternhold services use explicit procedural actor recipes', () => {
@@ -58,7 +60,7 @@ describe('MeshCatalog', () => {
     test('mesh recipes retain typed asset metadata for concrete entities', () => {
         expect(MeshCatalog.recipes.AvengingSeraph.type).toBe('summon');
         expect(MeshCatalog.recipes.DwarfSalesman.source).toBe('procedural town actor');
-        expect(MeshCatalog.recipes.Construct.animations).toEqual(['idle', 'walk', 'run', 'attack', 'death']);
+        expect(MeshCatalog.recipes.Construct.animations).toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
         expect(MeshCatalog.recipes.TradingHouse.type).toBe('structure');
     });
 

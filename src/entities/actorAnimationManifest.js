@@ -27,8 +27,12 @@ export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
     DemonOrc: entry('enemy', 'procedural Cinder Wastes kiln-warrior rig', WALKING_ENEMY_CLIPS, {
         special: 'furnace breastplate, cinder cleaver, coal chain, and heavy collapse'
     }),
-    Construct: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
-    InfernoTitan: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    Construct: entry('enemy', 'procedural Gloamwood grave-reliquary rig', WALKING_ENEMY_CLIPS, {
+        special: 'captive-soul chest, grave bell, root joints, and tolling stone maul'
+    }),
+    InfernoTitan: entry('enemy', 'procedural Cinder Wastes crucible-titan rig', WALKING_ENEMY_CLIPS, {
+        special: 'white-hot furnace core, vent flames, caldera cleaver, and ash censer'
+    }),
     Siren: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
     FrostGuardian: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
     AquaGolem: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),

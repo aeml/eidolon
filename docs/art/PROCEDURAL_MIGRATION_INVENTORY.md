@@ -6,7 +6,7 @@ Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.8`
+Current migration release: `Alpha 0.41.0.9`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
@@ -14,9 +14,9 @@ This inventory is the migration ledger for the complete Eidolon dark-fantasy red
 
 | Dependency | Audited baseline | Release rule |
 | --- | ---: | --- |
-| Authored GLB models | 106 baseline; 64 current | Count may only decrease from 64 |
-| Authored GLB payload | 814,551,864 baseline; 597,605,576 bytes current | Payload may only decrease from 597,605,576 bytes |
-| Runtime `.glb` tokens | 225 baseline; 131 current | Token count may only decrease from 131 |
+| Authored GLB models | 106 baseline; 54 current | Count may only decrease from 54 |
+| Authored GLB payload | 814,551,864 baseline; 554,230,352 bytes current | Payload may only decrease from 554,230,352 bytes |
+| Runtime `.glb` tokens | 225 baseline; 110 current | Token count may only decrease from 110 |
 | Runtime files containing `.glb` | 5 | No new referencing module is permitted |
 | PNG images | 100 files | Audit and replace by use, not file extension alone |
 | SVG gem icons | 49 files | Existing generated vector family; retain or restyle intentionally |
@@ -34,7 +34,7 @@ Current legacy runtime references are confined to `MeshCatalog`, `MeshFactory`, 
 | Active world hazards | 19 lava pools, 12 sandstorms, 15 lightning zones, 19 wind gusts | Exact-radius themed boundaries migrated in 0.41.0.0 |
 | Overworld areas | Gloamwood Marches, Lanternhold, Moonfrost Expanse, Cinder Wastes, Stormcrown Reach | Theme manifest and lighting/atmosphere foundation migrated; geometry and dressing pending |
 | Dungeons | Thorncrypt, Furnace Below, Shattered Aerie, Drowned Sanctum | Theme manifest complete; room geometry, props, mechanics, and lighting migration pending |
-| Actors | players, remote players, NPCs, summons, early legacy enemies, procedural realm enemies and bosses | All players, four Lanternhold services, the Avenging Seraph, Skeletons, Demon Orcs, and Imps are code-native; remaining authored enemy families are pending |
+| Actors | players, remote players, NPCs, summons, legacy enemies, procedural realm enemies and bosses | All players, four Lanternhold services, the Avenging Seraph, Skeletons, Demon Orcs, Imps, Constructs, and Inferno Titans are code-native; water and dungeon authored enemy families are pending |
 | World objects | trees, town buildings, camps, dungeon facades, services, chests, portals, blockers | Legacy dependencies audited; procedural replacements pending |
 | Networked effects | projectiles, traps, persistent zones, auras, statuses, combat feedback | Gameplay contract audit exists; art migration and lifecycle gallery expansion pending |
 
@@ -107,3 +107,7 @@ The visual rig declares a complete 2.8-unit radial and 5.2-unit vertical selecti
 `Alpha 0.41.0.8` replaces the fifteen authored files behind the three earliest hostile families. Gloamwood Skeletons become 51-piece ossuary pilgrims: articulated bone, a moss-dark burial shroud, grave candle, captive soul lantern, and brass gravesickle create a readable wandering-dead silhouette without borrowing a player rig. Cinder Wastes Demon Orcs become 55-piece kiln-warriors built around a broad furnace cuirass, horned iron mask, ember rifts, cinder cleaver, and chained coal. Imps become 53-piece ember-scavengers with beating coal hearts, long horns, dark articulated wings, spaded tails, claws, and pilfer-forks.
 
 Each family has independent, code-generated `Idle`, `Walk`, `Run`, `Attack`, and stable `Death` motion tailored to its weight and anatomy. The visual rigs declare grounded full-silhouette selection bounds while retaining the established 1.25-unit Skeleton, 2-unit Demon Orc, and 1-unit Imp combat collision radii. Spawn rules, targeting, sight and attack range, movement authority, health, damage, loot, XP, quest credit, elite scaling, death, respawn, persistence, and replication remain on the existing gameplay paths. Unit tests cover grounded bounds, finite transforms in all states, semantic weapon motion, independent poses, cached resources, exact hitbox ownership, explicit catalog routing, loader bypass, and pool safety. Hardware Chrome renders every state, local/replicated instances, and High/Low settings. The fifteen superseded GLBs totaling 73,349,516 bytes were removed after those checks and remain recoverable through Git history.
+
+`Alpha 0.41.0.9` completes the two larger overworld families in those regions. Gloamwood Constructs become grave-reliquaries assembled from cairn stone, old roots, moss, funeral brass, a caged soul, tolling maul, and hanging grave bell. Cinder Wastes Inferno Titans become crucible giants whose black basalt mass is broken by a white-hot furnace cage, shoulder vents, molten crown, caldera cleaver, and chained ash censer. These silhouettes extend the gravebound and ash-legion material languages without scaling or recoloring either starter creature.
+
+Separate heavy-motion sets preserve all five network animation states and stable final death poses. Full generated interaction bounds follow each visible silhouette while the established 2.5-unit Construct and 1-unit Inferno Titan combat radii remain exact—even though the Titan's visible and selectable body is intentionally much larger. Spawn sectors, quest credit, targeting, combat, loot, XP, elite state, respawn, persistence, and replication remain unchanged. Unit and hardware-browser coverage verifies finite motion, semantic implements, shared cached resources, actor-owned pose, loader bypass, pooling, local/remote rendering, and High/Low presentation. The ten superseded GLBs totaled 43,375,224 bytes and remain recoverable through Git history after removal.

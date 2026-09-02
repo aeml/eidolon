@@ -20,7 +20,9 @@ const proceduralSummonTypes = Object.freeze([
 const proceduralRegionalEnemyTypes = Object.freeze([
     ['Skeleton', 'Gloamwood ossuary pilgrim'],
     ['DemonOrc', 'Cinder Wastes kiln-warrior'],
-    ['Imp', 'Cinder Wastes ember-scavenger']
+    ['Imp', 'Cinder Wastes ember-scavenger'],
+    ['Construct', 'Gloamwood grave-reliquary construct'],
+    ['InfernoTitan', 'Cinder Wastes crucible titan']
 ]);
 
 test.use({ trace: 'off', video: 'off' });
@@ -273,7 +275,7 @@ test.describe('deterministic production animation gallery', () => {
         });
     });
 
-    test('renders each starter-region enemy silhouette, state, and quality tier in hardware Chrome', async ({ page, baseURL }, testInfo) => {
+    test('renders each migrated regional enemy silhouette, state, and quality tier in hardware Chrome', async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         const response = await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
         expect(response?.status()).toBe(200);

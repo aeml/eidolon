@@ -16,8 +16,20 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.8 for lanterns among ash and bone', () => {
-        expect(indexHtml).toContain('Alpha 0.41.0.8');
+    test('advances the login screen to alpha 0.41.0.9 for the greater regional enemies', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.9');
+        expect(indexHtml).toContain('Patch 0.41.0.9');
+        expect(indexHtml).toContain('The Gloamwood has built a body for its dead');
+        expect(indexHtml).toContain('tolling stone maul, swinging grave bell');
+        expect(indexHtml).toContain("The Wastes' furnace walks");
+        expect(indexHtml).toContain('white-hot caged core');
+        expect(indexHtml).toContain('2.5-unit Construct and 1-unit Inferno Titan combat radii');
+        expect(indexHtml).toContain('local and replicated creatures');
+        expect(indexHtml).toContain('hardware Chrome captures both families at High and Low quality');
+        expect(indexHtml).toContain('Ten superseded Construct and Inferno Titan GLBs—43.38 MB');
+    });
+
+    test('retains alpha 0.41.0.8 lanterns among ash and bone history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.8');
         expect(indexHtml).toContain("Gloamwood's dead remember their rites");
         expect(indexHtml).toContain('51-piece code-generated ossuary pilgrims');
@@ -135,7 +147,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.8';
+        const expectedVersion = 'Alpha 0.41.0.9';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -239,8 +251,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.8 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.8`');
+    test('marks 0.41.0.9 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.9`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

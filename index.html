@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.8</span>
+                <span class="start-version-row__label">Alpha 0.41.0.9</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -587,6 +587,19 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.9">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.9 (the graves ring, the furnace wakes)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The Gloamwood has built a body for its dead:</strong> Constructs are now code-generated grave-reliquaries made from cairn stone, grasping roots, moss, funeral brass, and a caged soul instead of an imported character set.</li>
+                        <li><strong>Every relic tells the same rite:</strong> A tolling stone maul, swinging grave bell, marked cairn joints, funerary mask, and root crown give the Construct a broad, readable silhouette related to—but unmistakable from—the ossuary pilgrim.</li>
+                        <li><strong>The Wastes' furnace walks:</strong> Inferno Titans become towering crucible giants with obsidian anatomy, a white-hot caged core, shoulder vents, molten crown, caldera cleaver, and chained ash censer.</li>
+                        <li><strong>Weight lives in the motion:</strong> Both enemies receive independent generated Idle, Walk, Run, Attack, and stable Death performances. Limbs, masks, weapons, bells, censers, jaws, and complete bodies move through actor-owned pivots for local and replicated creatures.</li>
+                        <li><strong>New silhouettes, unchanged combat:</strong> Spawn sectors, daily-quest credit, aggro, pursuit, attacks, health, damage, loot, XP, elite rules, death, respawn, and network authority stay on their existing paths. The established 2.5-unit Construct and 1-unit Inferno Titan combat radii are preserved exactly.</li>
+                        <li><strong>Selection follows the whole creature:</strong> Grounded procedural bounds cover roots, crowns, vents, implements, and each giant frame without accumulating stale hitboxes or coupling visual size to combat reach.</li>
+                        <li><strong>Rendered, not merely asserted:</strong> Tests exercise every state for finite transforms, independent pose ownership, immutable shared resources, exact combat and interaction dimensions, explicit routing, loader bypass, and pool safety; hardware Chrome captures both families at High and Low quality.</li>
+                        <li><strong>Forty-three more megabytes reforged as code:</strong> Ten superseded Construct and Inferno Titan GLBs—43.38 MB—have left production manifests, preload routes, fallbacks, and the deployed asset tree while remaining recoverable through Git history.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.8">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.8 (lanterns among ash and bone)</h3>
                     <ul class="patch-note-entry__list">

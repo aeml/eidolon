@@ -1,16 +1,4 @@
 const PRELOAD_MODEL_PATHS = [
-    './assets/enemies/undead/construct/idle.glb',
-    './assets/enemies/undead/construct/walk.glb',
-    './assets/enemies/undead/construct/run.glb',
-    './assets/enemies/undead/construct/attack.glb',
-    './assets/enemies/undead/construct/death.glb',
-
-    './assets/enemies/demons/inferno_titan/idle.glb',
-    './assets/enemies/demons/inferno_titan/walk.glb',
-    './assets/enemies/demons/inferno_titan/run.glb',
-    './assets/enemies/demons/inferno_titan/attack.glb',
-    './assets/enemies/demons/inferno_titan/death.glb',
-
     './assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/idle.glb',
     './assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/walk.glb',
     './assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/run.glb',
@@ -126,8 +114,13 @@ export class MeshCatalog {
         },
         Construct: {
             type: 'enemy',
-            modelPath: './assets/enemies/undead/construct/idle.glb',
-            animations: ['idle', 'walk', 'run', 'attack', 'death']
+            source: 'procedural Gloamwood grave-reliquary rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        InfernoTitan: {
+            type: 'enemy',
+            source: 'procedural Cinder Wastes crucible-titan rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
         },
         TradingHouse: {
             type: 'structure',

@@ -338,7 +338,9 @@ describe('MeshFactory catalog integration', () => {
     test.each([
         ['Skeleton', 'Gloamwood ossuary pilgrim', 1.25],
         ['DemonOrc', 'Cinder Wastes kiln-warrior', 2],
-        ['Imp', 'Cinder Wastes ember-scavenger', 1]
+        ['Imp', 'Cinder Wastes ember-scavenger', 1],
+        ['Construct', 'Gloamwood grave-reliquary construct', 2.5],
+        ['InfernoTitan', 'Cinder Wastes crucible titan', 1]
     ])('%s uses its regional procedural rig without requesting a GLB', async (type, artStyle, combatRadius) => {
         const previousPool = MeshFactory.pool;
         const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
@@ -362,7 +364,7 @@ describe('MeshFactory catalog integration', () => {
         }
     });
 
-    test.each(['Skeleton', 'DemonOrc', 'Imp'])('a full %s pool never disposes shared generated resources', async (type) => {
+    test.each(['Skeleton', 'DemonOrc', 'Imp', 'Construct', 'InfernoTitan'])('a full %s pool never disposes shared generated resources', async (type) => {
         const previousPool = MeshFactory.pool;
         MeshFactory.pool = {};
         const mesh = await MeshFactory.createMeshForType(type);

@@ -101,6 +101,21 @@ describe('actor animation manifest', () => {
         expect(ACTOR_ANIMATION_MANIFEST.Imp.special).toContain('spaded tail');
     });
 
+    test('classifies the greater Gloamwood and Cinder Wastes enemies as intentional procedural rigs', () => {
+        expect(ACTOR_ANIMATION_MANIFEST.Construct).toEqual(expect.objectContaining({
+            category: 'enemy',
+            source: 'procedural Gloamwood grave-reliquary rig',
+            states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        }));
+        expect(ACTOR_ANIMATION_MANIFEST.InfernoTitan).toEqual(expect.objectContaining({
+            category: 'enemy',
+            source: 'procedural Cinder Wastes crucible-titan rig',
+            states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        }));
+        expect(ACTOR_ANIMATION_MANIFEST.Construct.special).toContain('grave bell');
+        expect(ACTOR_ANIMATION_MANIFEST.InfernoTitan.special).toContain('caldera cleaver');
+    });
+
     test('no combat actor is classified without idle, movement, attack, and death presentation', () => {
         for (const actor of listActorAnimationEntries()) {
             if (actor.category === 'npc') continue;

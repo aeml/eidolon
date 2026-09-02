@@ -16,9 +16,9 @@ const currentLegacyReferenceFiles = new Set([
 
 const INITIAL_LEGACY_MODEL_COUNT = 106;
 const INITIAL_LEGACY_MODEL_BYTES = 814551864;
-const MAX_LEGACY_MODEL_COUNT = 64;
-const MAX_LEGACY_MODEL_BYTES = 597605576;
-const MAX_RUNTIME_GLB_TOKENS = 131;
+const MAX_LEGACY_MODEL_COUNT = 54;
+const MAX_LEGACY_MODEL_BYTES = 554230352;
+const MAX_RUNTIME_GLB_TOKENS = 110;
 
 function walkFiles(root) {
     if (!fs.existsSync(root)) return [];
@@ -64,5 +64,23 @@ describe('procedural art migration guard', () => {
 
         expect(unexpectedFiles).toEqual([]);
         expect(totalTokens).toBeLessThanOrEqual(MAX_RUNTIME_GLB_TOKENS);
+    });
+
+    test('migrated regional actor directories cannot return to runtime references', () => {
+        const retiredDirectories = [
+            'assets/enemies/undead/skeleton/',
+            'assets/enemies/undead/construct/',
+            'assets/enemies/demons/demon_orc/',
+            'assets/enemies/demons/imp/',
+            'assets/enemies/demons/inferno_titan/'
+        ];
+        const runtimeSource = [
+            ...runtimeRoots.flatMap((root) => walkFiles(path.join(repoRoot, root))),
+            ...runtimeFiles.map((file) => path.join(repoRoot, file)).filter(fs.existsSync)
+        ].filter((filePath) => /\.(?:html|js|json|mjs)$/i.test(filePath))
+            .map((filePath) => fs.readFileSync(filePath, 'utf8'))
+            .join('\n');
+
+        retiredDirectories.forEach((directory) => expect(runtimeSource).not.toContain(directory));
     });
 });

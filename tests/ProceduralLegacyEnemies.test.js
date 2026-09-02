@@ -2,8 +2,10 @@ import * as THREE from 'three';
 import {
     PROCEDURAL_LEGACY_ENEMY_DEFINITIONS,
     PROCEDURAL_LEGACY_ENEMY_STATES,
+    createProceduralConstruct,
     createProceduralDemonOrc,
     createProceduralImp,
+    createProceduralInfernoTitan,
     createProceduralLegacyEnemy,
     createProceduralSkeleton,
     getProceduralLegacyEnemyCacheMetrics
@@ -11,11 +13,15 @@ import {
 import { Skeleton } from '../src/entities/Skeleton.js';
 import { DemonOrc } from '../src/entities/DemonOrc.js';
 import { Imp } from '../src/entities/Imp.js';
+import { Construct } from '../src/entities/Construct.js';
+import { InfernoTitan } from '../src/entities/InfernoTitan.js';
 
 const CASES = Object.freeze([
     ['Skeleton', createProceduralSkeleton, Skeleton, 45],
     ['DemonOrc', createProceduralDemonOrc, DemonOrc, 50],
-    ['Imp', createProceduralImp, Imp, 45]
+    ['Imp', createProceduralImp, Imp, 45],
+    ['Construct', createProceduralConstruct, Construct, 50],
+    ['InfernoTitan', createProceduralInfernoTitan, InfernoTitan, 55]
 ]);
 
 function sceneMetrics(root) {
@@ -128,6 +134,6 @@ describe('procedural regional legacy enemies', () => {
     test('factory routing is explicit and caches all regional resources once', () => {
         for (const [type] of CASES) expect(createProceduralLegacyEnemy(type).userData.proceduralActorType).toBe(type);
         expect(() => createProceduralLegacyEnemy('UnknownEnemy')).toThrow('Unknown procedural legacy enemy');
-        expect(getProceduralLegacyEnemyCacheMetrics()).toEqual({ geometries: 85, materials: 21 });
+        expect(getProceduralLegacyEnemyCacheMetrics()).toEqual({ geometries: 152, materials: 37 });
     });
 });

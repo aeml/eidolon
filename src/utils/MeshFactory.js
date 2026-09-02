@@ -18,8 +18,10 @@ import {
 } from '../art/ProceduralTownActors.js';
 import { createProceduralAvengingSeraph } from '../art/ProceduralSummons.js';
 import {
+    createProceduralConstruct,
     createProceduralDemonOrc,
     createProceduralImp,
+    createProceduralInfernoTitan,
     createProceduralSkeleton
 } from '../art/ProceduralLegacyEnemies.js';
 
@@ -727,138 +729,9 @@ export class MeshFactory {
         } else if (type === 'Imp') {
             return createProceduralImp();
         } else if (type === 'Construct') {
-            try {
-                const idleGltf = await this.loadModel('./assets/enemies/undead/construct/idle.glb');
-                mesh = SkeletonUtils.clone(idleGltf.scene);
-                
-                mesh.userData.animations = [];
-                const addAnim = (clip, name) => {
-                    if (clip) {
-                        const newClip = clip.clone();
-                        newClip.name = name;
-                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
-                        mesh.userData.animations.push(newClip);
-                    }
-                };
-
-                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
-
-                try {
-                    const walkGltf = await this.loadModel('./assets/enemies/undead/construct/walk.glb');
-                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
-                } catch (e) {}
-
-                try {
-                    const runGltf = await this.loadModel('./assets/enemies/undead/construct/run.glb');
-                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
-                } catch (e) {}
-
-                try {
-                    const attackGltf = await this.loadModel('./assets/enemies/undead/construct/attack.glb');
-                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
-                } catch (e) {}
-
-                try {
-                    const deathGltf = await this.loadModel('./assets/enemies/undead/construct/death.glb');
-                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
-                } catch (e) {}
-
-                mesh.scale.set(2.5, 2.5, 2.5);
-                
-                mesh.traverse(c => {
-                    if (c.isMesh) {
-                        if (!c.material) {
-                            c.material = new THREE.MeshStandardMaterial({ color: 0x555555 });
-                        }
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-
-                    }
-                });
-
-                const hitGeo = new THREE.BoxGeometry(2.5, 3.0, 2.5);
-                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-                hitMesh.position.y = 1.5;
-                mesh.add(hitMesh);
-                
-                return mesh;
-            } catch (e) {
-                console.error("Failed to load Construct:", e);
-                const geometry = new THREE.BoxGeometry(1.5, 2.5, 1.5);
-                const material = new THREE.MeshStandardMaterial({ color: 0x555555 });
-                mesh = new THREE.Mesh(geometry, material);
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;
-                mesh.position.y = 1.25;
-                return mesh;
-            }
+            return createProceduralConstruct();
         } else if (type === 'InfernoTitan') {
-            try {
-                const idleGltf = await this.loadModel('./assets/enemies/demons/inferno_titan/idle.glb');
-                mesh = SkeletonUtils.clone(idleGltf.scene);
-                
-                mesh.userData.animations = [];
-                const addAnim = (clip, name) => {
-                    if (clip) {
-                        const newClip = clip.clone();
-                        newClip.name = name;
-                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
-                        mesh.userData.animations.push(newClip);
-                    }
-                };
-
-                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
-
-                try {
-                    const walkGltf = await this.loadModel('./assets/enemies/demons/inferno_titan/walk.glb');
-                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
-                } catch (e) {}
-
-                try {
-                    const runGltf = await this.loadModel('./assets/enemies/demons/inferno_titan/run.glb');
-                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
-                } catch (e) {}
-
-                try {
-                    const attackGltf = await this.loadModel('./assets/enemies/demons/inferno_titan/attack.glb');
-                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
-                } catch (e) {}
-
-                try {
-                    const deathGltf = await this.loadModel('./assets/enemies/demons/inferno_titan/death.glb');
-                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
-                } catch (e) {}
-
-                mesh.scale.set(4.0, 4.0, 4.0);
-                
-                mesh.traverse(c => {
-                    if (c.isMesh) {
-                        if (!c.material) {
-                            c.material = new THREE.MeshStandardMaterial({ color: 0xff4500 });
-                        }
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-                    }
-                });
-
-                const hitGeo = new THREE.BoxGeometry(1.0, 2.0, 1.0);
-                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-                hitMesh.position.y = 1.0;
-                mesh.add(hitMesh);
-                
-                return mesh;
-            } catch (e) {
-                console.error("Failed to load InfernoTitan:", e);
-                const geometry = new THREE.BoxGeometry(2.0, 3.5, 2.0);
-                const material = new THREE.MeshStandardMaterial({ color: 0xff4500 });
-                mesh = new THREE.Mesh(geometry, material);
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;
-                mesh.position.y = 1.75;
-                return mesh;
-            }
+            return createProceduralInfernoTitan();
         } else if (type === 'RootboundWarden') {
             try {
                 const idleGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/idle.glb');
@@ -1221,8 +1094,8 @@ export class MeshFactory {
             }
         } else if (type === 'FrostGuardian') {
             try {
-                // Reuse Construct model but with Ice styling
-                const idleGltf = await this.loadModel('./assets/enemies/undead/construct/idle.glb');
+                // Frost Guardians retain their own authored rig until the Moonfrost actor pass.
+                const idleGltf = await this.loadModel('./assets/enemies/snow/frostguardian/idle.glb');
                 mesh = SkeletonUtils.clone(idleGltf.scene);
                 
                 mesh.userData.animations = [];
@@ -1238,22 +1111,22 @@ export class MeshFactory {
                 if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
 
                 try {
-                    const walkGltf = await this.loadModel('./assets/enemies/undead/construct/walk.glb');
+                    const walkGltf = await this.loadModel('./assets/enemies/snow/frostguardian/walk.glb');
                     if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
                 } catch (e) {}
 
                 try {
-                    const runGltf = await this.loadModel('./assets/enemies/undead/construct/run.glb');
+                    const runGltf = await this.loadModel('./assets/enemies/snow/frostguardian/run.glb');
                     if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
                 } catch (e) {}
 
                 try {
-                    const attackGltf = await this.loadModel('./assets/enemies/undead/construct/attack.glb');
+                    const attackGltf = await this.loadModel('./assets/enemies/snow/frostguardian/attack.glb');
                     if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
                 } catch (e) {}
 
                 try {
-                    const deathGltf = await this.loadModel('./assets/enemies/undead/construct/death.glb');
+                    const deathGltf = await this.loadModel('./assets/enemies/snow/frostguardian/death.glb');
                     if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
                 } catch (e) {}
 
