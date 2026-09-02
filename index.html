@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.9</span>
+                <span class="start-version-row__label">Alpha 0.41.0.10</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -587,6 +587,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.10">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.10 (the choir keeps its stride)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Spirit Guardians no longer steals your destination:</strong> The Cleric's signature aura now always resolves at its caster, even when the cursor happens to cross a distant creature during a right-click cast.</li>
+                        <li><strong>Movement and casting stay independent:</strong> Activating the aura while running preserves the ordinary click-to-move path, speed, state, and prediction history instead of silently converting the cast into a target chase and stopping on arrival.</li>
+                        <li><strong>The server receives unambiguous intent:</strong> Self-casts now send the Cleric's current position with no target ID; damage radius, mana, cooldown, duration, runes, and server authority are unchanged.</li>
+                        <li><strong>Production found it; coverage keeps it:</strong> A dedicated regression test casts through a hostile hover while moving and proves the path survives, alongside the existing movement, authority, ability, and live four-class browser matrices.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.9">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.9 (the graves ring, the furnace wakes)</h3>
                     <ul class="patch-note-entry__list">

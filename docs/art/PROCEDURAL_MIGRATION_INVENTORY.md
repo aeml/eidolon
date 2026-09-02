@@ -6,7 +6,7 @@ Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.9`
+Current migration release: `Alpha 0.41.0.10`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 

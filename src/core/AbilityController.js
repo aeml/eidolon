@@ -14,6 +14,13 @@ import { DwarfSalesman } from '../entities/DwarfSalesman.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { resolveRemoteSkillVisual } from '../skills/skillVisuals.js';
 
+// These abilities resolve around their caster. Cursor hover must never turn
+// them into a targeted chase: doing so clears an otherwise valid movement path
+// when the caster reaches the hovered actor, producing a visible stop on cast.
+const SELF_CAST_ABILITIES = new Set([
+    'Spirit Guardians'
+]);
+
 export class AbilityController {
     /**
      * @param {import('./GameEngine.js').GameEngine} engine
@@ -323,6 +330,26 @@ export class AbilityController {
                 },
                 900
             );
+            return;
+        }
+
+        if (SELF_CAST_ABILITIES.has(castSkillName)) {
+            const castPosition = player.position.clone();
+            this.pendingAbilityTarget = null;
+            this.pendingAbilitySkill = null;
+            if (engine.isMultiplayer) {
+                engine.network.send('ability', {
+                    targetX: castPosition.x,
+                    targetZ: castPosition.z,
+                    targetId: '',
+                    skillName: castSkillName
+                });
+            }
+            if (skillNameOverride && player.useSkill) {
+                player.useSkill(skillNameOverride, castPosition, engine);
+            } else {
+                player.useAbility(castPosition, engine, skillNameOverride);
+            }
             return;
         }
         

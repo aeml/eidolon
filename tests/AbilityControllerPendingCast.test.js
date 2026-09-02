@@ -180,4 +180,42 @@ describe('AbilityController pending target casting', () => {
         expect(player.useSkill).not.toHaveBeenCalled();
         expect(player.useAbility).not.toHaveBeenCalled();
     });
+
+    test('casts Spirit Guardians at the caster without chasing a hovered actor or stopping movement', () => {
+        const player = createPlayer();
+        player.abilityName = 'Spirit Guardians';
+        player.abilityManaCost = 0;
+        player.stats = { mana: 100, manaCostReduction: 0 };
+        const originalTarget = player.targetPosition;
+        const hovered = {
+            id: 'enemy-far-away',
+            state: 'IDLE',
+            position: new THREE.Vector3(40, 0, 0)
+        };
+        const engine = {
+            player,
+            isMobile: false,
+            isMultiplayer: true,
+            network: { send: jest.fn() },
+            uiManager: { isEscMenuOpen: false, isPatchNotesOpen: false, reportScreen: { style: { display: 'none' } } },
+            showReadabilityFeedback: jest.fn(),
+            hoveredEntity: hovered,
+            inputManager: { getGroundIntersection: jest.fn(() => new THREE.Vector3(7, 0, 2)) }
+        };
+        const controller = new AbilityController(engine);
+
+        controller.performAbility();
+
+        expect(engine.network.send).toHaveBeenCalledWith('ability', {
+            targetX: 0,
+            targetZ: 0,
+            targetId: '',
+            skillName: 'Spirit Guardians'
+        });
+        expect(player.useAbility).toHaveBeenCalledWith(new THREE.Vector3(0, 0, 0), engine, null);
+        expect(player.state).toBe('MOVING');
+        expect(player.targetPosition).toBe(originalTarget);
+        expect(controller.pendingAbilityTarget).toBeNull();
+        expect(engine.showReadabilityFeedback).not.toHaveBeenCalled();
+    });
 });

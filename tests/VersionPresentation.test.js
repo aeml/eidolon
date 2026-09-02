@@ -16,8 +16,15 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.9 for the greater regional enemies', () => {
-        expect(indexHtml).toContain('Alpha 0.41.0.9');
+    test('advances the login screen to alpha 0.41.0.10 for uninterrupted Spirit Guardians movement', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.10');
+        expect(indexHtml).toContain('Patch 0.41.0.10');
+        expect(indexHtml).toContain('Spirit Guardians no longer steals your destination');
+        expect(indexHtml).toContain('Activating the aura while running preserves the ordinary click-to-move path');
+        expect(indexHtml).toContain("send the Cleric's current position with no target ID");
+    });
+
+    test('retains alpha 0.41.0.9 greater regional enemy history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.9');
         expect(indexHtml).toContain('The Gloamwood has built a body for its dead');
         expect(indexHtml).toContain('tolling stone maul, swinging grave bell');
@@ -147,7 +154,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.9';
+        const expectedVersion = 'Alpha 0.41.0.10';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -251,8 +258,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.9 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.9`');
+    test('marks 0.41.0.10 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.10`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
