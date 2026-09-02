@@ -169,10 +169,17 @@ async function sampleRemoteMovement(page, username, durationMs = 4_000) {
                     t: now - startedAt,
                     x: entity.position.x,
                     z: entity.position.z,
+                    previousX: entity.previousPosition?.x,
+                    previousZ: entity.previousPosition?.z,
                     renderX: entity.mesh.position.x,
                     renderZ: entity.mesh.position.z,
                     visualOffsetX: entity.visualOffset?.x || 0,
                     visualOffsetZ: entity.visualOffset?.z || 0,
+                    presentationMode: entity.remoteTransformBuffer?.lastPresentationMode || null,
+                    correctionX: entity.remoteTransformBuffer?.presentationCorrection?.x || 0,
+                    correctionZ: entity.remoteTransformBuffer?.presentationCorrection?.z || 0,
+                    rawX: entity.remoteTransformBuffer?.samples?.at?.(-1)?.position?.x,
+                    rawZ: entity.remoteTransformBuffer?.samples?.at?.(-1)?.position?.z,
                     state: entity.state,
                     animation: entity.currentAnimationName || null
                 });
@@ -209,21 +216,35 @@ function analyzeRemoteMovement(frames) {
     const unitZ = directionZ / magnitude;
     let previousProgress = 0;
     let largestBacktrack = 0;
+    let largestLogicalBacktrack = 0;
     let largestStep = 0;
     let maxRenderLogicalGap = 0;
+    let worstFrameIndex = 0;
     const uniqueRenderPositions = new Set();
+    let previousLogicalProgress = 0;
 
     for (const [index, frame] of frames.entries()) {
         const progress = (frame.renderX - first.renderX) * unitX +
             (frame.renderZ - first.renderZ) * unitZ;
+        const logicalProgress = (frame.x - first.x) * unitX +
+            (frame.z - first.z) * unitZ;
         if (index > 0) {
-            largestBacktrack = Math.min(largestBacktrack, progress - previousProgress);
+            const backtrack = progress - previousProgress;
+            if (backtrack < largestBacktrack) {
+                largestBacktrack = backtrack;
+                worstFrameIndex = index;
+            }
+            largestLogicalBacktrack = Math.min(
+                largestLogicalBacktrack,
+                logicalProgress - previousLogicalProgress
+            );
             largestStep = Math.max(
                 largestStep,
                 Math.hypot(frame.renderX - frames[index - 1].renderX, frame.renderZ - frames[index - 1].renderZ)
             );
         }
         previousProgress = progress;
+        previousLogicalProgress = logicalProgress;
         maxRenderLogicalGap = Math.max(
             maxRenderLogicalGap,
             Math.hypot(
@@ -237,9 +258,11 @@ function analyzeRemoteMovement(frames) {
     return {
         travel: magnitude,
         largestBacktrack,
+        largestLogicalBacktrack,
         largestStep,
         maxRenderLogicalGap,
-        uniqueRenderPositions: uniqueRenderPositions.size
+        uniqueRenderPositions: uniqueRenderPositions.size,
+        worstFrames: frames.slice(Math.max(0, worstFrameIndex - 2), worstFrameIndex + 3)
     };
 }
 
@@ -315,36 +338,46 @@ async function attackAndObserveRemote(sourcePage, observerPage, sourceUsername, 
         }
         if (!projected?.visible) continue;
 
-        // Follow the live projected center until the production hover raycast
-        // confirms that the pointer is genuinely over a hostile. Enemies keep
-        // moving while the two-browser assertion runs, so a fixed coordinate
-        // plus an arbitrary delay can turn into a ground click under load.
+        // Reproject immediately before the real click. The click handler runs
+        // a synchronous production raycast from its own MouseEvent, so it is
+        // more authoritative than waiting for the separately throttled hover
+        // preview while a moving enemy and camera continue to advance.
         let aimedHostileId = null;
-        for (let aimAttempt = 0; aimAttempt < 20 && !aimedHostileId; aimAttempt += 1) {
+        for (let aimAttempt = 0; aimAttempt < 4 && !aimedHostileId; aimAttempt += 1) {
             projected = await projectEntity(sourcePage, hostile.id);
             if (!projected?.visible) break;
             await sourcePage.mouse.move(projected.x, projected.y);
-            await sourcePage.waitForTimeout(75);
             aimedHostileId = await sourcePage.evaluate(() => {
                 const game = window.game;
                 return game?.isHostileActorTarget?.(game.hoveredEntity)
                     ? game.hoveredEntity.id
                     : null;
             });
+            await sourcePage.mouse.click(projected.x, projected.y);
+            await sourcePage.waitForTimeout(50);
+            const clickTarget = await sourcePage.evaluate(() => {
+                const game = window.game;
+                if (game?.isHostileActorTarget?.(game.pendingInteraction)) {
+                    return game.pendingInteraction.id;
+                }
+                return game?.isHostileActorTarget?.(game.hoveredEntity)
+                    ? game.hoveredEntity.id
+                    : null;
+            });
+            aimedHostileId = clickTarget || aimedHostileId;
         }
         if (!aimedHostileId) {
             lastDiagnostic = {
                 attempt: attempt + 1,
                 hostileId: hostile.id,
                 projected,
-                reason: 'production hover raycast found no hostile at its live projected center'
+                reason: 'production click raycast found no hostile at its live projected center'
             };
             continue;
         }
         if (aimedHostileId !== hostile.id) {
             hostile = { ...hostile, id: aimedHostileId };
         }
-        await sourcePage.mouse.click(projected.x, projected.y);
         await observerPage.bringToFront();
         try {
             await expect.poll(async () => {
@@ -767,7 +800,10 @@ test.describe('two-account multiplayer', () => {
             }, { timeout: 15_000 }).toBeGreaterThan(0.25);
             const remoteMovement = await remoteMovementPromise;
             const remoteMovementAnalysis = analyzeRemoteMovement(remoteMovement.frames);
-            expect(remoteMovementAnalysis.largestBacktrack).toBeGreaterThanOrEqual(-0.35);
+            expect(
+                remoteMovementAnalysis.largestBacktrack,
+                `remote movement backtracked: ${JSON.stringify(remoteMovementAnalysis)}`
+            ).toBeGreaterThanOrEqual(-0.35);
             expect(remoteMovementAnalysis.largestStep).toBeLessThan(3);
             expect(remoteMovementAnalysis.maxRenderLogicalGap).toBeLessThan(0.75);
             expect(remoteMovementAnalysis.uniqueRenderPositions).toBeGreaterThan(4);
