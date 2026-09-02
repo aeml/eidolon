@@ -285,19 +285,24 @@ describe('WorldGenerator shadow setup', () => {
         expect(generator.collisionManager.addCollider).not.toHaveBeenCalled();
     });
 
-    test('configures building meshes with stable front-sided shadows to avoid bleed through walls', async () => {
+    test('builds deterministic procedural town architecture with stable front-sided shadows', async () => {
         const generator = createGenerator();
-        const buildingScene = new THREE.Group();
-        buildingScene.add(new THREE.Mesh(
-            new THREE.BoxGeometry(4, 4, 4),
-            new THREE.MeshStandardMaterial({ color: 0x888888 })
-        ));
-        const loadModelSpy = jest.spyOn(MeshFactory, 'loadModel').mockResolvedValue({ scene: buildingScene, animations: [] });
+        const loadModelSpy = jest.spyOn(MeshFactory, 'loadModel');
 
         await generator.loadBuildings(0, 0);
 
-        const addedBuilding = generator.scene.add.mock.calls[0][0];
-        const mesh = addedBuilding.children.find(child => child.isMesh);
+        expect(loadModelSpy).not.toHaveBeenCalled();
+        expect(generator.scene.add).toHaveBeenCalledTimes(18);
+        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(18);
+        const structures = generator.scene.add.mock.calls.map(([object]) => object);
+        expect(structures.slice(0, 3).map((structure) => structure.userData.structureId)).toEqual([
+            'oathhall',
+            'trading_post',
+            'blacksmith'
+        ]);
+        expect(structures.slice(3).every((structure) => structure.userData.structureId === 'camp')).toBe(true);
+
+        const mesh = structures[0].children.find(child => child.isMesh && child.material.visible !== false);
         expect(mesh).toBeTruthy();
         expect(mesh.castShadow).toBe(true);
         expect(mesh.receiveShadow).toBe(true);

@@ -9,6 +9,12 @@ import {
     createProceduralFoliagePreview,
     getProceduralFoliageCacheMetrics
 } from './art/ProceduralRealmFoliage.js';
+import {
+    LANTERNHOLD_STRUCTURE_DEFINITIONS,
+    LANTERNHOLD_STRUCTURE_IDS,
+    createProceduralLanternholdStructure,
+    getProceduralLanternholdCacheMetrics
+} from './art/ProceduralLanternholdArchitecture.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const perfOverlayEnabled = urlParams.get('perf') === '1';
@@ -17,7 +23,8 @@ const useInstancing = urlParams.get('instancing') !== '0';
 const galleryMode = urlParams.get('gallery') === '1';
 const hazardGalleryMode = urlParams.get('hazards') === '1';
 const foliageGalleryMode = urlParams.get('foliage') === '1';
-const specializedGalleryMode = galleryMode || hazardGalleryMode || foliageGalleryMode;
+const architectureGalleryMode = urlParams.get('architecture') === '1';
+const specializedGalleryMode = galleryMode || hazardGalleryMode || foliageGalleryMode || architectureGalleryMode;
 
 const perfOverlay = document.getElementById('perf-overlay');
 const readout = document.getElementById('repro-readout');
@@ -404,6 +411,38 @@ if (foliageGalleryMode) {
     setReadout('Procedural realm foliage gallery\nNine distinct silhouettes across Gloamwood, Moonfrost, Cinder Wastes, and Stormreach.');
 }
 
+const architectureGallery = new THREE.Group();
+architectureGallery.name = 'ProceduralLanternholdArchitectureGallery';
+if (architectureGalleryMode) {
+    document.body.classList.add('architecture-gallery-mode');
+    const placements = Object.freeze({
+        oathhall: [-23, 0, -14, 0.08],
+        trading_house: [0, 0, -14, 0],
+        blacksmith: [21, 0, -13, -0.12],
+        trading_post: [-22, 0, 15, 0.12],
+        forge: [-7, 0, 15, -0.08],
+        stash: [7, 0, 15, 0.1],
+        camp: [20, 0, 15, -0.15]
+    });
+    for (const structureId of LANTERNHOLD_STRUCTURE_IDS) {
+        const preview = createProceduralLanternholdStructure(structureId);
+        const [x, y, z, rotationY] = placements[structureId];
+        preview.position.set(x, y, z);
+        preview.rotation.y = rotationY;
+        architectureGallery.add(preview);
+    }
+    renderSystem.scene.add(architectureGallery);
+    renderSystem.applyLightingPreset('town', true);
+    renderSystem.setZoom(30);
+    renderSystem.camera.position.set(54, 48, 64);
+    controls.target.set(0, 6, 0);
+    controls.update();
+    window.__eidolonSetArchitectureQuality = (quality) => {
+        renderSystem.setGraphicsQuality(quality);
+    };
+    setReadout('Procedural Lanternhold architecture gallery\nSeven collision-faithful silhouettes: oathhall, market, smithy, camps, auction hall, forge, and stash.');
+}
+
 window.addEventListener('keydown', (event) => {
     const key = event.key.toLowerCase();
     if (key === 'p') togglePerf();
@@ -452,6 +491,33 @@ const animate = () => {
                     theme: preview.userData.theme,
                     meshCount: preview.children.filter((child) => child.isMesh).length,
                     height: bounds.max.y - bounds.min.y,
+                    finite: [...bounds.min.toArray(), ...bounds.max.toArray()].every(Number.isFinite)
+                };
+            })
+        };
+    }
+
+    if (architectureGalleryMode) {
+        window.__eidolonArchitectureGallery = {
+            ready: architectureGallery.children.length === LANTERNHOLD_STRUCTURE_IDS.length,
+            quality: renderSystem.graphicsQuality,
+            cache: getProceduralLanternholdCacheMetrics(),
+            structures: architectureGallery.children.map((preview) => {
+                const bounds = new THREE.Box3().setFromObject(preview);
+                const structureId = preview.userData.structureId;
+                const definition = LANTERNHOLD_STRUCTURE_DEFINITIONS[structureId];
+                const gameplayBounds = preview.getObjectByName(`${structureId}:gameplay-bounds`);
+                let visibleMeshCount = 0;
+                preview.traverse((child) => {
+                    if (child.isMesh && child.userData.proceduralTownPart) visibleMeshCount += 1;
+                });
+                return {
+                    id: structureId,
+                    artStyle: preview.userData.artStyle,
+                    role: preview.userData.role,
+                    meshCount: visibleMeshCount,
+                    size: gameplayBounds.scale.toArray(),
+                    expectedSize: [...definition.bounds],
                     finite: [...bounds.min.toArray(), ...bounds.max.toArray()].every(Number.isFinite)
                 };
             })

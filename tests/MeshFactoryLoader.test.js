@@ -134,10 +134,11 @@ describe('MeshFactory preload phases', () => {
         expect(startup).not.toContain('./assets/summons/avenging_seraph/idle.glb');
     });
 
-    test('background preload contains world assets', () => {
+    test('background preload contains only the remaining authored dungeon facades', () => {
         const background = MeshFactory.getBackgroundPreloadModelPaths();
-        expect(background).toContain('./assets/buildings/trading_post.glb');
+        expect(background).not.toContain('./assets/buildings/trading_post.glb');
         expect(background).toContain('./assets/buildings/dungeons/the_verdant_bastion.glb');
+        expect(background).toHaveLength(4);
     });
 
     test('reports nonfatal preload failures so deferred scenery can stay optional', async () => {

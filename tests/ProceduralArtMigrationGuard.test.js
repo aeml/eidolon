@@ -15,15 +15,14 @@ const currentLegacyReferenceFiles = new Set([
     'scripts/serve-static.mjs',
     'src/assets/assetManifest.js',
     'src/utils/MeshCatalog.js',
-    'src/utils/MeshFactory.js',
     'src/world/WorldGenerator.js'
 ]);
 
 const INITIAL_LEGACY_MODEL_COUNT = 106;
 const INITIAL_LEGACY_MODEL_BYTES = 814551864;
-const MAX_LEGACY_MODEL_COUNT = 11;
-const MAX_LEGACY_MODEL_BYTES = 247179476;
-const MAX_RUNTIME_GLB_TOKENS = 29;
+const MAX_LEGACY_MODEL_COUNT = 4;
+const MAX_LEGACY_MODEL_BYTES = 70429592;
+const MAX_RUNTIME_GLB_TOKENS = 10;
 
 function walkFiles(root) {
     if (!fs.existsSync(root)) return [];
@@ -87,7 +86,14 @@ describe('procedural art migration guard', () => {
             'assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/',
             'assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/',
             'assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/',
-            'assets/plants/'
+            'assets/plants/',
+            'assets/buildings/trading_house.glb',
+            'assets/buildings/blacksmith_forge.glb',
+            'assets/buildings/two_story_building.glb',
+            'assets/buildings/trading_post.glb',
+            'assets/buildings/blacksmith.glb',
+            'assets/buildings/camp_site.glb',
+            'assets/objects/chests/stash_base.glb'
         ];
         const runtimeSource = [
             ...runtimeRoots.flatMap((root) => walkFiles(path.join(repoRoot, root))),

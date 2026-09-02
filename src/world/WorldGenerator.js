@@ -5,6 +5,10 @@ import {
     createProceduralFoliagePlacements,
     getProceduralFoliageArchetype
 } from '../art/ProceduralRealmFoliage.js';
+import {
+    createLanternholdCampPlacements,
+    createProceduralLanternholdStructure
+} from '../art/ProceduralLanternholdArchitecture.js';
 
 // Shared temp objects to reduce allocations during instancing
 const TEMP_POS = new THREE.Vector3();
@@ -145,9 +149,10 @@ export class WorldGenerator {
         return true;
     }
 
-    async loadBuildings(cx, cz) {
-        const setupBuilding = (mesh, scale, x, z, rotationY = 0, targetY = -0.5, customCollider = null) => {
-            mesh.scale.set(scale, scale, scale);
+    async loadBuildings(cx, cz, { shouldAttach = () => true } = {}) {
+        if (!shouldAttach()) return false;
+
+        const setupBuilding = (mesh, x, z, rotationY = 0, targetY = -0.5, customCollider = null) => {
             mesh.rotation.y = rotationY;
             mesh.position.set(x, 0, z); // Start at 0
             
@@ -161,6 +166,7 @@ export class WorldGenerator {
             mesh.position.y += (targetY - bottomY);
             
             mesh.traverse(c => { if(c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: true }); } });
+            if (!shouldAttach()) return false;
             this.scene.add(mesh);
             
             if (customCollider) {
@@ -182,59 +188,42 @@ export class WorldGenerator {
                 const finalBox = new THREE.Box3().setFromObject(mesh);
                 this.collisionManager.addCollider(finalBox);
             }
+            return true;
         };
 
-        const twoStory = await MeshFactory.loadModel('./assets/buildings/two_story_building.glb');
-        setupBuilding(twoStory.scene.clone(), 12, cx, cz - 30, 0);
-
-        const tradingPost = await MeshFactory.loadModel('./assets/buildings/trading_post.glb');
-        setupBuilding(tradingPost.scene.clone(), 6, cx + 30, cz, -Math.PI / 2);
-
-        const blacksmith = await MeshFactory.loadModel('./assets/buildings/blacksmith.glb');
-        setupBuilding(blacksmith.scene.clone(), 7.8, cx - 30, cz, Math.PI / 2);
+        setupBuilding(
+            createProceduralLanternholdStructure('oathhall'),
+            cx,
+            cz - 30,
+            0
+        );
+        setupBuilding(
+            createProceduralLanternholdStructure('trading_post'),
+            cx + 30,
+            cz,
+            -Math.PI / 2
+        );
+        setupBuilding(
+            createProceduralLanternholdStructure('blacksmith'),
+            cx - 30,
+            cz,
+            Math.PI / 2
+        );
 
         // Trading House is now an Entity (loaded in MeshFactory) to handle interaction/collision better
 
-        const camp = await MeshFactory.loadModel('./assets/buildings/camp_site.glb');
-        const campModel = camp.scene;
-        const count = 15;
-        const exclusionRadius = 50;
-        const townRadius = 85;
-        const placedCamps = [];
-        const minCampDist = 20;
-
-        for (let i = 0; i < count; i++) {
-            let x, z, dist;
-            let attempts = 0;
-            let valid = false;
-
-            do {
-                x = cx + (Math.random() * 2 - 1) * townRadius;
-                z = cz + (Math.random() * 2 - 1) * townRadius;
-
-                dist = Math.sqrt(Math.pow(x - cx, 2) + Math.pow(z - cz, 2));
-
-                if (dist >= exclusionRadius) {
-                    let tooClose = false;
-                    for (const placed of placedCamps) {
-                        const d = Math.sqrt(Math.pow(x - placed.x, 2) + Math.pow(z - placed.z, 2));
-                        if (d < minCampDist) {
-                            tooClose = true;
-                            break;
-                        }
-                    }
-                    if (!tooClose) valid = true;
-                }
-                attempts++;
-            } while (!valid && attempts < 50);
-
-            if (valid) {
-                placedCamps.push({ x, z });
-                const instance = campModel.clone();
-                const rotation = Math.random() * Math.PI * 2;
-                setupBuilding(instance, 4, x, z, rotation, -0.65, new THREE.Vector3(2, 10, 2));
-            }
+        const campPlacements = createLanternholdCampPlacements(cx, cz);
+        for (const placement of campPlacements) {
+            setupBuilding(
+                createProceduralLanternholdStructure('camp'),
+                placement.x,
+                placement.z,
+                placement.rotation,
+                -0.65,
+                new THREE.Vector3(2, 10, 2)
+            );
         }
+        return true;
     }
 
     createRectangularFence(cx, cz, width, depth) {

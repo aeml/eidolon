@@ -1277,6 +1277,15 @@ export class GameEngine {
                 console.warn('GameEngine: Deferred realm foliage failed to load.', error);
                 return false;
             });
+            // Lanternhold architecture is also entirely code-native now. Build
+            // it beside foliage instead of holding the town skyline behind the
+            // remaining authored dungeon-facade downloads.
+            const buildingsTask = Promise.resolve(
+                this.worldGenerator.loadBuildings(0, 200, { shouldAttach: sceneIsCurrent })
+            ).then(result => result !== false).catch((error) => {
+                console.warn('GameEngine: Deferred town architecture failed to load.', error);
+                return false;
+            });
 
             const result = await MeshFactory.preloadAllModels({
                 phase: 'background',
@@ -1286,7 +1295,7 @@ export class GameEngine {
             });
 
             if (!sceneIsCurrent()) {
-                await Promise.all([structuresTask, foliageTask]);
+                await Promise.all([structuresTask, foliageTask, buildingsTask]);
                 return false;
             }
 
@@ -1296,13 +1305,11 @@ export class GameEngine {
                 );
             }
 
-            const buildingsReady = await Promise.resolve(
-                this.worldGenerator.loadBuildings(0, 200)
-            ).then(() => true).catch((error) => {
-                console.warn('GameEngine: Deferred town buildings failed to load.', error);
-                return false;
-            });
-            const [structuresReady, foliageReady] = await Promise.all([structuresTask, foliageTask]);
+            const [structuresReady, foliageReady, buildingsReady] = await Promise.all([
+                structuresTask,
+                foliageTask,
+                buildingsTask
+            ]);
 
             if (!sceneIsCurrent()) {
                 return false;

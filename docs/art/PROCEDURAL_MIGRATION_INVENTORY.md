@@ -6,7 +6,7 @@ Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.14`
+Current migration release: `Alpha 0.41.0.15`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
@@ -14,14 +14,14 @@ This inventory is the migration ledger for the complete Eidolon dark-fantasy red
 
 | Dependency | Audited baseline | Release rule |
 | --- | ---: | --- |
-| Authored GLB models | 106 baseline; 11 current | Count may only decrease from 11 |
-| Authored GLB payload | 814,551,864 baseline; 247,179,476 bytes current | Payload may only decrease from 247,179,476 bytes |
-| Runtime `.glb` tokens | 225 baseline; 29 current | Token count may only decrease from 29 |
-| Runtime files containing `.glb` | 5 | No new referencing module is permitted |
+| Authored GLB models | 106 baseline; 4 current | Count may only decrease from 4 |
+| Authored GLB payload | 814,551,864 baseline; 70,429,592 bytes current | Payload may only decrease from 70,429,592 bytes |
+| Runtime `.glb` tokens | 225 baseline; 10 current | Token count may only decrease from 10 |
+| Runtime files containing `.glb` | 4 | No new referencing module is permitted |
 | PNG images | 100 files | Audit and replace by use, not file extension alone |
 | SVG gem icons | 49 files | Existing generated vector family; retain or restyle intentionally |
 
-Current legacy runtime references are confined to `MeshCatalog`, `MeshFactory`, `WorldGenerator`, the asset revision manifest, and the static server MIME table. The MIME entry is not an asset dependency but remains inside the guarded surface until final removal.
+Current legacy runtime references are confined to `MeshCatalog`, `WorldGenerator`, the asset revision manifest, and the static server MIME table. The MIME entry is not an asset dependency but remains inside the guarded surface until final removal.
 
 ## Gameplay visual surfaces
 
@@ -32,10 +32,10 @@ Current legacy runtime references are confined to `MeshCatalog`, `MeshFactory`, 
 | Equipment | 36 base families across 14 rendered positions and 18 attachment regions | Descriptor, attachment, local/remote replication, and metadata persistence shipped in 0.41.0.2; proportion-specific fitting and galleries now cover Fighter, Rogue, Wizard, and Cleric |
 | Inventory-only types | material, relic, gem | Presentation audit pending; must not be treated as equipment |
 | Active world hazards | 19 lava pools, 12 sandstorms, 15 lightning zones, 19 wind gusts | Exact-radius themed boundaries migrated in 0.41.0.0 |
-| Overworld areas | Gloamwood Marches, Lanternhold, Moonfrost Expanse, Cinder Wastes, Stormcrown Reach | Theme manifest, lighting/atmosphere foundation, and nine-family realm foliage migrated; terrain and remaining structures pending |
+| Overworld areas | Gloamwood Marches, Lanternhold, Moonfrost Expanse, Cinder Wastes, Stormcrown Reach | Theme manifest, lighting/atmosphere foundation, nine-family realm foliage, and complete Lanternhold architecture migrated; realm terrain and remaining structures pending |
 | Dungeons | Thorncrypt, Furnace Below, Shattered Aerie, Drowned Sanctum | Theme manifest complete; room geometry, props, mechanics, and lighting migration pending |
 | Actors | players, remote players, NPCs, summons, legacy enemies, procedural realm enemies and bosses | All players, four Lanternhold services, the Avenging Seraph, Gloamwood/Cinder/Moonfrost overworld families, and all four Thorncrypt bosses are code-native; remaining enemy and boss routes use the earlier procedural-spec system and await their bespoke style pass |
-| World objects | trees, town buildings, camps, dungeon facades, services, chests, portals, blockers | All realm foliage and services migrated; town buildings, camps, dungeon facades, and legacy chests pending |
+| World objects | trees, town buildings, camps, dungeon facades, services, chests, portals, blockers | Realm foliage, all Lanternhold buildings/camps/services, auction house, forge, and stash migrated; dungeon facades, dungeon reward chests, portals, and blockers pending |
 | Networked effects | projectiles, traps, persistent zones, auras, statuses, combat feedback | Gameplay contract audit exists; art migration and lifecycle gallery expansion pending |
 
 ## Region and hazard identity
@@ -135,3 +135,11 @@ The world places 840 deterministic foliage instances through reusable per-part i
 `Alpha 0.41.0.14` hardens the procedural migration against mixed-version CDN state discovered by the first live 0.41.0.13 gate. GitHub Pages emits the entry script, every local module edge, stylesheet import, and CSS resource with the exact release commit, and production QA opens that commit-qualified document only after both the release manifest and versioned runtime are visible. The asset cache advances to a fresh generation and service-worker updates bypass the HTTP cache.
 
 Three 468-byte-total empty glTF migration bridges remain at the retired birch, pine, and willow URLs solely for already-cached pre-procedural clients. They contain no nodes, meshes, materials, authored geometry, collision, or new-runtime references, are excluded from authored-model totals, and are parsed in regression coverage through the production GLTFLoader. The active game remains entirely on the nine generated foliage families.
+
+## Lanternhold architecture and service relics
+
+`Alpha 0.41.0.15` replaces the seven authored models behind Lanternhold's skyline, outer camps, and object-scale services. The northern Oathhall layers old stone, black-oak framing, amber windows, buttresses, a broken-sun belfry, and slate vigil spire into the town's primary navigation silhouette. The Votive Market, Ashen Smithy, Gilded Compact auction hall, Oathfire Forge, and Wayfarer Reliquary each carry a role-specific shape and semantic detail language. Fifteen outer Pilgrim Vigils combine faceted tents, oathfires, bedrolls, split standards, and lanterns without borrowing a generic building shell.
+
+The complete family uses ten cached geometries and fifteen cached materials across independently owned scene roots. The fifteen camp placements are deterministic while preserving the existing fifty-unit central exclusion and twenty-unit pair spacing. Generated architecture starts beside foliage instead of waiting for the four remaining dungeon facades. Every structure carries an explicit invisible interaction box measured from the production-scaled authored scene it replaces; placement, grounding, collision, service range, picking, and the campsite's narrow navigation collider remain on their prior gameplay contracts. Unit tests contain every visible piece inside those bounds, exercise the live `MeshFactory` routes without `GLTFLoader`, and validate shadow setup, stale-scene rejection, resource sharing, and placement stability. Hardware Chrome renders the seven-family settlement at High and Low quality while asserting zero authored-model requests.
+
+The seven removed GLBs totaled 176,749,884 bytes. Four dungeon-facade GLBs totaling 70,429,592 bytes are the only authored models left in the migration ledger; the three tiny empty plant compatibility bridges remain non-authored and non-runtime as documented above.

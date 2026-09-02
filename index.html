@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.14</span>
+                <span class="start-version-row__label">Alpha 0.41.0.15</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -470,7 +470,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-02-14</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-02-15</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -481,7 +481,7 @@
                                     <div id="asset-pack-dungeon-badge" class="asset-cache-pack__badge">Not cached</div>
                                 </div>
                                 <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Dungeon models not downloaded</div>
-                                <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Estimated download: 24 MB</div>
+                                <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Estimated download: 71 MB</div>
                                 <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Cached version: Not cached</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button">Download Dungeons</button>
@@ -587,6 +587,20 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.15">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.15 (Lanternhold keeps the long vigil)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>A real silhouette crowns the safe road:</strong> Lanternhold's northern hall is now a many-gabled oathhouse with layered masonry, black-oak framing, amber windows, grave-road buttresses, a broken-sun belfry, and a tall slate vigil spire.</li>
+                        <li><strong>Every service owns its corner of town:</strong> the eastern votive market, western Ashen Smithy, Gilded Compact auction hall, Oathfire Forge, and Wayfarer Reliquary each receive a distinct code-generated structure instead of an imported or fallback shell.</li>
+                        <li><strong>Fifteen camps remember where they stood:</strong> outer-town pilgrim vigils now combine faceted tents, oathfires, bedrolls, standards, and way-lanterns in a deterministic layout that keeps the existing fifty-unit town clearing and twenty-unit camp spacing.</li>
+                        <li><strong>The paths have not moved:</strong> all seven generated families carry explicit invisible gameplay boxes measured from the production-scaled models they replace, preserving collision, grounding, click targets, service range, landmark placement, and navigation.</li>
+                        <li><strong>Lanternhold arrives before distant doors:</strong> generated buildings and camps are constructed beside foliage immediately, no longer waiting behind the remaining dungeon-facade download queue.</li>
+                        <li><strong>One town, fifteen materials:</strong> ten cached faceted geometries and a restrained charcoal timber, old stone, iron, brass, blood-cloth, amber, spirit, and oathfire palette keep the settlement cohesive without rebuilding resources per structure.</li>
+                        <li><strong>The old town leaves no weight behind:</strong> seven superseded GLBs totaling 176.75 MB have left production code, preload lists, caches, and the repository; only four authored dungeon facades totaling 70.43 MB remain in the migration ledger.</li>
+                        <li><strong>The vigil is inspectable:</strong> unit coverage audits every identity piece, exact bound, cache, placement, shadow, and loader route, while hardware Chrome renders the complete settlement at High and Low quality and rejects any authored-model request.</li>
+                        <li><strong>Caches follow the new skyline:</strong> the asset generation advances to 2026-09-02-15 so existing clients retire the prior town-model cache cleanly.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.14">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.14 (one oath across every edge)</h3>
                     <ul class="patch-note-entry__list">

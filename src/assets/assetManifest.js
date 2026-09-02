@@ -1,6 +1,6 @@
 import { MeshCatalog } from '../utils/MeshCatalog.js';
 
-const DEFAULT_ASSET_VERSION = '2026-09-02-14';
+const DEFAULT_ASSET_VERSION = '2026-09-02-15';
 
 const ASSET_VERSION_OVERRIDES = {
     './assets/buildings/dungeons/the_verdant_bastion.glb': 'dungeon-verdant-v2'
@@ -21,7 +21,7 @@ const ASSET_PACKS = {
 
 const ASSET_PACK_SIZE_ESTIMATES_MB = {
     'core-models': 0,
-    'dungeon-models': 24,
+    'dungeon-models': 71,
     'environment-textures': 9
 };
 

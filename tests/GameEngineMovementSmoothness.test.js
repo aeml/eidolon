@@ -265,8 +265,8 @@ describe('GameEngine ordered movement transport', () => {
             createOverworldStructures: jest.fn().mockResolvedValue(true)
         };
         const preloadSpy = jest.spyOn(MeshFactory, 'preloadAllModels').mockResolvedValue({
-            completed: 11,
-            total: 11,
+            completed: 4,
+            total: 4,
             failures: []
         });
 
@@ -283,7 +283,9 @@ describe('GameEngine ordered movement transport', () => {
             expect(engine.worldGenerator.loadTrees).toHaveBeenCalledWith(0, 200, {
                 shouldAttach: expect.any(Function)
             });
-            expect(engine.worldGenerator.loadBuildings).toHaveBeenCalledWith(0, 200);
+            expect(engine.worldGenerator.loadBuildings).toHaveBeenCalledWith(0, 200, {
+                shouldAttach: expect.any(Function)
+            });
             expect(engine.worldGenerator.createOverworldStructures).toHaveBeenCalledTimes(1);
             expect(engine.overworldSceneryReady).toBe(true);
         } finally {
@@ -304,8 +306,8 @@ describe('GameEngine ordered movement transport', () => {
             createOverworldStructures: jest.fn().mockResolvedValue(true)
         };
         const preloadSpy = jest.spyOn(MeshFactory, 'preloadAllModels').mockResolvedValue({
-            completed: 10,
-            total: 11,
+            completed: 3,
+            total: 4,
             failures: [{ path: './assets/plants/optional.glb', error: new Error('optional timeout') }]
         });
         const consoleWarn = jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -349,11 +351,13 @@ describe('GameEngine ordered movement transport', () => {
             const scenery = engine.startDeferredOverworldScenery();
             engine.overworldSceneGeneration += 1;
             engine.currentInstanceType = 'molten_core';
-            finishPreload({ completed: 11, total: 11, failures: [] });
+            finishPreload({ completed: 4, total: 4, failures: [] });
 
             await expect(scenery).resolves.toBe(false);
             expect(engine.worldGenerator.loadTrees).toHaveBeenCalledTimes(1);
-            expect(engine.worldGenerator.loadBuildings).not.toHaveBeenCalled();
+            expect(engine.worldGenerator.loadBuildings).toHaveBeenCalledWith(0, 200, {
+                shouldAttach: expect.any(Function)
+            });
             expect(engine.worldGenerator.createOverworldStructures).toHaveBeenCalledTimes(1);
             expect(engine.worldGenerator.createOverworldStructures).toHaveBeenCalledWith({
                 shouldAttach: expect.any(Function)

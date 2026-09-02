@@ -16,8 +16,23 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.14 for coherent edge delivery', () => {
-        expect(indexHtml).toContain('Alpha 0.41.0.14');
+    test('advances the login screen to alpha 0.41.0.15 for Lanternhold architecture', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.15');
+        expect(indexHtml).toContain('Patch 0.41.0.15');
+        expect(indexHtml).toContain('Lanternhold keeps the long vigil');
+        expect(indexHtml).toContain('A real silhouette crowns the safe road');
+        expect(indexHtml).toContain('Every service owns its corner of town');
+        expect(indexHtml).toContain('Fifteen camps remember where they stood');
+        expect(indexHtml).toContain('The paths have not moved');
+        expect(indexHtml).toContain('Lanternhold arrives before distant doors');
+        expect(indexHtml).toContain('One town, fifteen materials');
+        expect(indexHtml).toContain('176.75 MB');
+        expect(indexHtml).toContain('only four authored dungeon facades totaling 70.43 MB remain');
+        expect(indexHtml).toContain('hardware Chrome renders the complete settlement at High and Low quality');
+        expect(indexHtml).toContain('2026-09-02-15');
+    });
+
+    test('retains alpha 0.41.0.14 coherent edge delivery history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.14');
         expect(indexHtml).toContain('Every release now arrives as one world');
         expect(indexHtml).toContain('full JavaScript module graph');
@@ -203,7 +218,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.14';
+        const expectedVersion = 'Alpha 0.41.0.15';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -307,8 +322,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.14 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.14`');
+    test('marks 0.41.0.15 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.15`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
@@ -1378,6 +1393,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.41.0.15');
         expect(indexHtml).toContain('Patch 0.41.0.14');
         expect(indexHtml).toContain('Patch 0.41.0.13');
         expect(indexHtml).toContain('Patch 0.33.1');

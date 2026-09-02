@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import * as SkeletonUtils from './SkeletonUtils.js';
 import { MeshCatalog } from './MeshCatalog.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { resolveAssetPath } from '../assets/assetManifest.js';
@@ -36,6 +35,7 @@ import {
     createProceduralRootboundWarden,
     createProceduralRustboundColossus
 } from '../art/ProceduralThorncryptBosses.js';
+import { createProceduralLanternholdStructure } from '../art/ProceduralLanternholdArchitecture.js';
 
 export class MeshFactory {
     static loader = new GLTFLoader();
@@ -771,130 +771,11 @@ export class MeshFactory {
             mesh.position.y = 4.0;
             return mesh;
         } else if (type === 'TradingHouse') {
-            try {
-                const gltf = await this.loadModel('./assets/buildings/trading_house.glb');
-                const model = SkeletonUtils.clone(gltf.scene);
-                
-                // Scale 7.8x (matching WorldGenerator)
-                model.scale.set(7.8, 7.8, 7.8);
-                
-                model.traverse(c => {
-                    if (c.isMesh) {
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-                    }
-                });
-
-                // Calculate bounding box to center and ground the mesh
-                const box = new THREE.Box3().setFromObject(model);
-                const size = box.getSize(new THREE.Vector3());
-                const center = box.getCenter(new THREE.Vector3());
-                
-                model.position.sub(center); // Center at 0,0,0
-                model.position.y += size.y / 2; // Move up so bottom is at 0
-                model.position.y -= 0.5; // Slight sink to blend with ground
-
-                // Wrapper Group to persist offset
-                mesh = new THREE.Group();
-                mesh.add(model);
-
-                // Hitbox (Invisible, for clicking)
-                // Make it roughly the size of the building
-                const hitGeo = new THREE.BoxGeometry(12, 12, 12);
-                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-                hitMesh.position.y = 6.0;
-                mesh.add(hitMesh);
-
-                return mesh;
-            } catch (err) {
-                console.error("Failed to load TradingHouse:", err);
-                geometry = new THREE.BoxGeometry(10, 10, 10);
-                material = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
-                mesh = new THREE.Mesh(geometry, material);
-                return mesh;
-            }
+            return createProceduralLanternholdStructure('trading_house');
         } else if (type === 'Stash') {
-            try {
-                const gltf = await this.loadModel('./assets/objects/chests/stash_base.glb');
-                const model = SkeletonUtils.clone(gltf.scene);
-                
-                model.scale.set(2.0, 2.0, 2.0);
-                
-                model.traverse(c => {
-                    if (c.isMesh) {
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-                    }
-                });
-
-                // Calculate bounding box to center and ground the mesh
-                const box = new THREE.Box3().setFromObject(model);
-                const size = box.getSize(new THREE.Vector3());
-                const center = box.getCenter(new THREE.Vector3());
-                
-                model.position.sub(center); // Center at 0,0,0
-                model.position.y += size.y / 2 + 0.2; // Move up so bottom is at 0
-
-                // Wrapper Group to persist offset
-                mesh = new THREE.Group();
-                mesh.add(model);
-
-                const hitGeo = new THREE.BoxGeometry(2.0, 2.0, 2.0);
-                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-                hitMesh.position.y = 1.0;
-                mesh.add(hitMesh);
-
-                return mesh;
-            } catch (err) {
-                console.error("Failed to load Stash:", err);
-                geometry = this.geometryCache.stash;
-                material = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
-                mesh = new THREE.Mesh(geometry, material);
-                return mesh;
-            }
+            return createProceduralLanternholdStructure('stash');
         } else if (type === 'Forge') {
-            try {
-                const gltf = await this.loadModel('./assets/buildings/blacksmith_forge.glb');
-                const model = SkeletonUtils.clone(gltf.scene);
-                
-                model.scale.set(4.0, 4.0, 4.0);
-                
-                model.traverse(c => {
-                    if (c.isMesh) {
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-                    }
-                });
-
-                // Calculate bounding box to center and ground the mesh
-                const box = new THREE.Box3().setFromObject(model);
-                const size = box.getSize(new THREE.Vector3());
-                const center = box.getCenter(new THREE.Vector3());
-                
-                model.position.sub(center); // Center at 0,0,0
-                model.position.y += size.y / 2; // Move up so bottom is at 0
-
-                // Wrapper Group to persist offset
-                mesh = new THREE.Group();
-                mesh.add(model);
-
-                // Hitbox
-                const hitGeo = new THREE.BoxGeometry(4.0, 4.0, 4.0);
-                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-                hitMesh.position.y = 2.0;
-                mesh.add(hitMesh);
-
-                return mesh;
-            } catch (err) {
-                console.error("Failed to load Forge:", err);
-                geometry = new THREE.BoxGeometry(2, 2, 2);
-                material = new THREE.MeshStandardMaterial({ color: 0x555555 });
-                mesh = new THREE.Mesh(geometry, material);
-                return mesh;
-            }
+            return createProceduralLanternholdStructure('forge');
         }
         // ========================================================================
         // PROCEDURAL ENEMIES (Fire / Air / Water realms + dungeon bosses)

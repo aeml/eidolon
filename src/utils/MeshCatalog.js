@@ -1,14 +1,6 @@
 import { PROCEDURAL_FOLIAGE_RECIPES } from '../art/ProceduralRealmFoliage.js';
 
 const PRELOAD_MODEL_PATHS = [
-    './assets/buildings/trading_house.glb',
-    './assets/buildings/blacksmith_forge.glb',
-    './assets/objects/chests/stash_base.glb',
-
-    './assets/buildings/two_story_building.glb',
-    './assets/buildings/trading_post.glb',
-    './assets/buildings/blacksmith.glb',
-    './assets/buildings/camp_site.glb',
     './assets/buildings/dungeons/the_verdant_bastion.glb',
     './assets/buildings/dungeons/the_molten_core.glb',
     './assets/buildings/dungeons/the_tempest_spire.glb',
@@ -19,12 +11,7 @@ const BACKGROUND_PRELOAD_PREFIXES = [
     './assets/buildings/dungeons/'
 ];
 
-const BACKGROUND_PRELOAD_PATHS = new Set([
-    './assets/buildings/two_story_building.glb',
-    './assets/buildings/trading_post.glb',
-    './assets/buildings/blacksmith.glb',
-    './assets/buildings/camp_site.glb'
-]);
+const BACKGROUND_PRELOAD_PATHS = new Set();
 
 export class MeshCatalog {
     static recipes = {
@@ -120,7 +107,15 @@ export class MeshCatalog {
         },
         TradingHouse: {
             type: 'structure',
-            modelPath: './assets/buildings/trading_house.glb'
+            source: 'procedural Lanternhold auction hall'
+        },
+        Stash: {
+            type: 'structure',
+            source: 'procedural Lanternhold reliquary chest'
+        },
+        Forge: {
+            type: 'structure',
+            source: 'procedural Lanternhold oathfire forge'
         }
     };
 
