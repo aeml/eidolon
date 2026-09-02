@@ -5,12 +5,6 @@ const PRELOAD_MODEL_PATHS = [
     './assets/archetypes/Wizard/attack.glb',
     './assets/archetypes/Wizard/death.glb',
 
-    './assets/archetypes/Rogue/idle.glb',
-    './assets/archetypes/Rogue/walk.glb',
-    './assets/archetypes/Rogue/run.glb',
-    './assets/archetypes/Rogue/attack.glb',
-    './assets/archetypes/Rogue/death.glb',
-
     './assets/archetypes/Cleric/idle.glb',
     './assets/archetypes/Cleric/walk.glb',
     './assets/archetypes/Cleric/run.glb',
@@ -209,11 +203,12 @@ export class MeshCatalog {
     }
 
     static getStartupPreloadModelPaths(playerType = '') {
-        const modelBackedPlayerTypes = new Set(['Rogue', 'Wizard', 'Cleric']);
+        const modelBackedPlayerTypes = new Set(['Wizard', 'Cleric']);
+        const proceduralPlayerTypes = new Set(['Fighter', 'Rogue']);
         const selectedPlayerType = modelBackedPlayerTypes.has(playerType) ? playerType : '';
         const playerPrefix = selectedPlayerType
             ? `./assets/archetypes/${selectedPlayerType}/`
-            : (playerType === 'Fighter' ? null : './assets/archetypes/');
+            : (proceduralPlayerTypes.has(playerType) ? null : './assets/archetypes/');
 
         // The network connection and entity stream start after this gate. Load
         // the selected local actor plus the Skeleton population immediately

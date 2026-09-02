@@ -47,6 +47,13 @@ describe('actor animation manifest', () => {
         }));
     });
 
+    test('classifies Rogue as a class-specific shared procedural humanoid', () => {
+        expect(ACTOR_ANIMATION_MANIFEST.Rogue).toEqual(expect.objectContaining({
+            source: 'shared procedural humanoid rig',
+            states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        }));
+    });
+
     test('no combat actor is classified without idle, movement, attack, and death presentation', () => {
         for (const actor of listActorAnimationEntries()) {
             if (actor.category === 'npc') continue;

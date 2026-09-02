@@ -18,7 +18,7 @@ True passive talents do not create a cast action and are intentionally excluded 
 
 | Class | Canonical ability | Category | Actor profile | Cast/impact layers | Persistent route | Local | Remote | Rune variants |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Fighter | Charge | movement | charge | wave@source | none | class-handler | explicit | Momentum (charge_momentum)<br>Shockwave (charge_shockwave)<br>Unstoppable (charge_unstoppable) |
+| Fighter | Charge | movement | charge | wave@target | none | class-handler | explicit | Momentum (charge_momentum)<br>Shockwave (charge_shockwave)<br>Unstoppable (charge_unstoppable) |
 | Fighter | Whirlwind | area | spin | spin@source | none | class-handler | explicit | Extended (whirlwind_extended)<br>Bladestorm (whirlwind_bladestorm)<br>Bloodwhirl (whirlwind_bloodwhirl) |
 | Fighter | Shield Slam | melee | heavy | impact@target | none | class-handler | explicit | Concussion (shieldslam_concussion)<br>Reverberation (shieldslam_reverberation)<br>Fortify (shieldslam_fortify) |
 | Fighter | Iron Fortress | buff | buff | sphere@source | iron_fortress | class-handler | explicit | Extended (ironfortress_extended)<br>Thorns (ironfortress_thorns)<br>Immovable (ironfortress_immovable) |
@@ -28,7 +28,7 @@ True passive talents do not create a cast action and are intentionally excluded 
 | Fighter | Unbreakable Grip | control | pull | beam@target, impact@target | none | class-handler | explicit | none |
 | Fighter | Juggernaut Charge | movement | charge | wave@source, impact@target | none | class-handler | explicit | none |
 | Fighter | Berserker Edge | buff | buff | buff@source, ring@source | berserker_edge | class-handler | explicit | none |
-| Fighter | Shattering Charge | movement | charge | wave@source, impact@target | none | class-handler | explicit | none |
+| Fighter | Shattering Charge | movement | charge | wave@target, impact@target | none | class-handler | explicit | none |
 | Fighter | Executioner Spin | area | spin | spin@source, blood@target | none | class-handler | explicit | none |
 | Fighter | Last Stand Rampage | buff | shout | buff@source, ring@source | last_stand | class-handler | explicit | none |
 | Rogue | Piercing Throw | projectile | throw | burst@source | none | class-handler | explicit | Ricochet (piercingthrow_ricochet)<br>Serrated (piercingthrow_serrated)<br>Executioner (piercingthrow_executioner) |
@@ -58,12 +58,12 @@ True passive talents do not create a cast action and are intentionally excluded 
 | Wizard | Gravity Well | persistent-area | heavy-cast | ring@target, sphere@target | gravity_well | class-handler | explicit | Expanded (gravitywell_expanded)<br>Crushing (gravitywell_crushing)<br>Black Hole (gravitywell_blackhole) |
 | Wizard | Time Warp | buff-area | channel | ring@source, buff@source | time_warp | class-handler | explicit | none |
 | Cleric | Spirit Guardians | persistent-aura | summon | buff@source, ring@source | spirit_guardians | class-handler | explicit | Expanded (spirits_expanded)<br>Vengeful (spirits_vengeful)<br>Sanctuary (spirits_sanctuary) |
-| Cleric | Healing Light | heal | cast | pillar@target, burst@target | none | class-handler | explicit | Beacon (healinglight_beacon)<br>Renewal (healinglight_renewal)<br>Divine (healinglight_divine) |
+| Cleric | Healing Light | heal | cast | pillar@target, burst@target, ring@target | none | class-handler | explicit | Beacon (healinglight_beacon)<br>Renewal (healinglight_renewal)<br>Divine (healinglight_divine) |
 | Cleric | Guardian Embrace | persistent-aura | channel | ring@source, buff@source | guardian_embrace | class-handler | explicit | none |
 | Cleric | Purifying Wave | area | cast | ring@source, burst@source | none | class-handler | explicit | none |
 | Cleric | Divine Intervention | buff | heavy-cast | pillar@target, sphere@target | divine_intervention | class-handler | explicit | Quick Save (divineintervention_quick)<br>Guardian Angel (divineintervention_guardian)<br>Miracle (divineintervention_miracle) |
-| Cleric | Radiant Strike | melee | heavy | burst@source, impact@target | none | class-handler | explicit | Smite (radiantstrike_smite)<br>Chains of Light (radiantstrike_chains)<br>Purge (radiantstrike_purge) |
-| Cleric | Consecrated Ground | persistent-area | cast | ground_circle@target, pillar@target | consecrated_ground | class-handler | explicit | Expanded (consecratedground_expanded)<br>Lingering (consecratedground_lingering)<br>Holy Ground (consecratedground_sanctuary) |
+| Cleric | Radiant Strike | melee | heavy | cone@source, impact@target | none | class-handler | explicit | Smite (radiantstrike_smite)<br>Chains of Light (radiantstrike_chains)<br>Purge (radiantstrike_purge) |
+| Cleric | Consecrated Ground | persistent-area | cast | ground_circle@source, pillar@source | consecrated_ground | class-handler | explicit | Expanded (consecratedground_expanded)<br>Lingering (consecratedground_lingering)<br>Holy Ground (consecratedground_sanctuary) |
 | Cleric | Spirit Guardians Boost | persistent-aura | summon | buff@source, ring@source | spirit_guardians_boost | class-handler | explicit | none |
 | Cleric | Avenging Seraph | summon | summon | pillar@source, ring@source | avenging_seraph | class-handler | explicit | none |
 | Cleric | Blessing of Resolve | buff-area | bless | ring@source, sphere@source | blessing_resolve | class-handler | explicit | none |
@@ -100,12 +100,12 @@ Aliases reuse the canonical composition deliberately; they are tested so a serve
 
 ## Actor animation inventory (47)
 
-Player classes have imported Idle/Walk/Run/Attack/Death clips. Their shipped models have no dedicated Jump clip, so Jump uses an intentional procedural arc/lean synchronized to the best locomotion clip. Procedural enemies and bosses receive deterministic generated Idle/Walk/Run/Attack/Death clips. NPCs that never move or fight are explicitly Idle-only.
+Player classes declare Idle/Walk/Run/Attack/Death clips through either the shared procedural humanoid rig or a remaining imported rig. No player currently has a dedicated Jump clip, so Jump uses an intentional procedural arc/lean synchronized to the best locomotion clip. Procedural enemies and bosses receive deterministic generated Idle/Walk/Run/Attack/Death clips. NPCs that never move or fight are explicitly Idle-only.
 
 | Actor | Category | Source | Declared clips | Jump | Special behavior | Browser evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| Fighter | player | GLB | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| Rogue | player | GLB | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
+| Fighter | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
+| Rogue | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | Wizard | player | GLB | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | Cleric | player | GLB | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | Skeleton | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
@@ -188,7 +188,7 @@ These effects are world-space groups: they follow actor position without inherit
 - Persistent abilities additionally use an attached actor state, authoritative zone/trap entity, dedicated Spirit Guardians effect, or production summon entity.
 - Effect origin/target anchors, local/remote presentation, cleanup, repeated casts, non-finite transforms, visible mesh counts, and Low/High behavior are checked in the gallery and focused lifecycle tests.
 - Server removal controls authoritative trap and ground-zone lifetime. Actor death, replacement, scene clear, and disposal cancel managed timers and remove attached nodes once.
-- Production-model limitations are stated rather than hidden: no dedicated player Jump/Hit clips currently ship, and procedural enemies are intentionally code-animated. New imported clips should replace these fallbacks by updating the actor manifest and its regression tests.
+- Production-model limitations are stated rather than hidden: no dedicated player Jump/Hit clips currently ship, and generated actors are intentionally code-animated. Future code-native states must update the actor manifest and its regression tests rather than falling through to imported or generic animation.
 
 ## Evidence status
 

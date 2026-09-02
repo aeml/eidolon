@@ -6,7 +6,7 @@ Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.2`
+Current migration release: `Alpha 0.41.0.3`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
@@ -16,7 +16,7 @@ This inventory is the migration ledger for the complete Eidolon dark-fantasy red
 | --- | ---: | --- |
 | Authored GLB models | 106 files | Count may only decrease |
 | Authored GLB payload | 814,551,864 bytes | Payload may only decrease |
-| Runtime `.glb` tokens | 225 baseline; 214 current | Token count may only decrease |
+| Runtime `.glb` tokens | 225 baseline; 204 current | Token count may only decrease |
 | Runtime files containing `.glb` | 5 | No new referencing module is permitted |
 | PNG images | 100 files | Audit and replace by use, not file extension alone |
 | SVG gem icons | 49 files | Existing generated vector family; retain or restyle intentionally |
@@ -27,9 +27,9 @@ Current legacy runtime references are confined to `MeshCatalog`, `MeshFactory`, 
 
 | Surface | Current audited scope | Migration state |
 | --- | --- | --- |
-| Classes | Fighter, Rogue, Wizard, Cleric | Fighter migrated to the shared procedural humanoid rig in 0.41.0.1; Rogue, Wizard, and Cleric remain legacy GLB rigs |
+| Classes | Fighter, Rogue, Wizard, Cleric | Fighter migrated in 0.41.0.1 and Rogue in 0.41.0.3; Wizard and Cleric remain legacy GLB rigs |
 | Class abilities | 52 canonical selectable abilities and 60 rune variants | Authoritative-radius audit complete; full dark-fantasy effect restyle pending |
-| Equipment | 36 base families across 14 rendered positions and 18 attachment regions | Descriptor, attachment, local/remote replication, metadata persistence, and gallery milestone shipped for the procedural Fighter in 0.41.0.2; Rogue, Wizard, and Cleric fitting follows their rig migrations |
+| Equipment | 36 base families across 14 rendered positions and 18 attachment regions | Descriptor, attachment, local/remote replication, and metadata persistence shipped in 0.41.0.2; complete Rogue fitting and galleries shipped in 0.41.0.3; Wizard and Cleric follow their rig migrations |
 | Inventory-only types | material, relic, gem | Presentation audit pending; must not be treated as equipment |
 | Active world hazards | 19 lava pools, 12 sandstorms, 15 lightning zones, 19 wind gusts | Exact-radius themed boundaries migrated in 0.41.0.0 |
 | Overworld areas | Gloamwood Marches, Lanternhold, Moonfrost Expanse, Cinder Wastes, Stormcrown Reach | Theme manifest and lighting/atmosphere foundation migrated; geometry and dressing pending |
@@ -72,3 +72,9 @@ Each stage must leave the live game playable, preserve authoritative gameplay an
 `Alpha 0.41.0.1` removes all five Fighter GLBs from the production preload catalog and factory path. The Lanternhold oathguard is a 48-part code-generated actor with reusable geometry/material caches, independent per-actor transform pivots, generated Idle/Walk/Run/Attack/Death clips, and 18 named attachment points covering every equipment region. Pool reuse resets the complete rest pose, while selection hitboxes, nameplates, and party rings consume declared procedural bounds. The authored Fighter files remain in the repository temporarily as a rollback reference; production no longer requests them.
 
 The vertical slice established the attachment contract and default main/off-hand presentation. `Alpha 0.41.0.2` completes the next Fighter equipment gate: all 36 equippable base families resolve through strict descriptors; all 14 rendered positions occupy the rig's 18 attachment regions; material, rarity, tier, potency, socket, gem, set, and unique-effect identity is layered procedurally; and both local and remote equipment react to stationary swaps and final-slot removal. Binary replication and database conversions preserve complete special-item metadata through equipment, inventory, stash, buyback, and auctions. The gallery audits every family and a coherent full loadout at High and Low quality. Rogue, Wizard, and Cleric fitting remains coupled to their procedural proportion migrations rather than being falsely marked complete on legacy rigs.
+
+## Rogue shadeblade
+
+`Alpha 0.41.0.3` removes all five Rogue GLBs from the production catalog, startup preload, and mesh factory. The Gloamreach shadeblade is a code-native, forward-weighted actor with a masked faceted hood, asymmetrical hooked shoulder, strapped leather jerkin, venom vial, wrist blades, split cloak, and paired fang daggers. A dedicated scanning Idle, prowling Walk, low Run, two-handed Attack, and folding Death motion set drives the same authoritative animation states used by local and remote actors. Explicit 4.25-unit bounds preserve selection and pooling without inheriting assumptions from the old scaled model.
+
+The Rogue implements the full 18-anchor attachment contract. All 36 equipment families and every one of the 14 equipped positions fit the narrower rig, replace the default silhouette cleanly, keep face and eye identity where headwear permits, and reuse the existing item-identity layers. Unit coverage proves finite transforms, independent poses, shared cached resources, complete slot fitting, and removal of Rogue runtime model requests; the system-Chrome gallery captures every core state and a complete local/remote loadout at representative quality settings. Wizard and Cleric remain the two player-class model dependencies.

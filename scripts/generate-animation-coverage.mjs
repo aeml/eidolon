@@ -93,7 +93,7 @@ ${table(['Class', 'Alias', 'Canonical presentation'], aliasRows)}
 
 ## Actor animation inventory (${actors.length})
 
-Player classes have imported Idle/Walk/Run/Attack/Death clips. Their shipped models have no dedicated Jump clip, so Jump uses an intentional procedural arc/lean synchronized to the best locomotion clip. Procedural enemies and bosses receive deterministic generated Idle/Walk/Run/Attack/Death clips. NPCs that never move or fight are explicitly Idle-only.
+Player classes declare Idle/Walk/Run/Attack/Death clips through either the shared procedural humanoid rig or a remaining imported rig. No player currently has a dedicated Jump clip, so Jump uses an intentional procedural arc/lean synchronized to the best locomotion clip. Procedural enemies and bosses receive deterministic generated Idle/Walk/Run/Attack/Death clips. NPCs that never move or fight are explicitly Idle-only.
 
 ${table(['Actor', 'Category', 'Source', 'Declared clips', 'Jump', 'Special behavior', 'Browser evidence'], actorRows)}
 
@@ -109,7 +109,7 @@ ${table(['State key', 'Visual composition', 'Primary color', 'Radius'], statusRo
 - Persistent abilities additionally use an attached actor state, authoritative zone/trap entity, dedicated Spirit Guardians effect, or production summon entity.
 - Effect origin/target anchors, local/remote presentation, cleanup, repeated casts, non-finite transforms, visible mesh counts, and Low/High behavior are checked in the gallery and focused lifecycle tests.
 - Server removal controls authoritative trap and ground-zone lifetime. Actor death, replacement, scene clear, and disposal cancel managed timers and remove attached nodes once.
-- Production-model limitations are stated rather than hidden: no dedicated player Jump/Hit clips currently ship, and procedural enemies are intentionally code-animated. New imported clips should replace these fallbacks by updating the actor manifest and its regression tests.
+- Production-model limitations are stated rather than hidden: no dedicated player Jump/Hit clips currently ship, and generated actors are intentionally code-animated. Future code-native states must update the actor manifest and its regression tests rather than falling through to imported or generic animation.
 
 ## Evidence status
 

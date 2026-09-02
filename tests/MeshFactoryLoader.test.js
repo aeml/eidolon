@@ -118,7 +118,8 @@ describe('MeshFactory preload phases', () => {
         expect(startup).not.toContain('./assets/buildings/trading_post.glb');
         expect(startup).not.toContain('./assets/buildings/dungeons/the_verdant_bastion.glb');
         expect(startup).not.toContain('./assets/archetypes/Fighter/idle.glb');
-        expect(startup).toContain('./assets/archetypes/Rogue/idle.glb');
+        expect(startup).not.toContain('./assets/archetypes/Rogue/idle.glb');
+        expect(startup).toContain('./assets/archetypes/Wizard/idle.glb');
     });
 
     test('player-specific startup preload gates the selected actor and nearby hostile set', () => {
@@ -216,7 +217,7 @@ describe('MeshFactory catalog integration', () => {
         MeshFactory.pool = {};
 
         try {
-            for (const type of ['Rogue', 'Wizard', 'Cleric']) {
+            for (const type of ['Wizard', 'Cleric']) {
                 const mesh = await MeshFactory.createMeshForType(type);
                 expect(mesh.userData.assetFallback).toBe(true);
                 expect(mesh.userData.fallbackType).toBe(type);
@@ -245,6 +246,43 @@ describe('MeshFactory catalog integration', () => {
         } finally {
             MeshFactory.pool = previousPool;
             loadSpy.mockRestore();
+        }
+    });
+
+    test('Rogue uses the procedural shadeblade without requesting a GLB', async () => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType('Rogue');
+            expect(mesh.userData.proceduralHumanoid).toBe(true);
+            expect(mesh.userData.proceduralClass).toBe('Rogue');
+            expect(mesh.userData.artStyle).toBe('Gloamreach shadeblade');
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test('a full Rogue pool never disposes shared procedural render resources', async () => {
+        const previousPool = MeshFactory.pool;
+        MeshFactory.pool = {};
+        const mesh = await MeshFactory.createMeshForType('Rogue');
+        MeshFactory.pool.Rogue = Array.from({ length: 50 }, () => new THREE.Group());
+        const material = mesh.getObjectByName('Rogue_Jerkin').material;
+        const disposeSpy = jest.spyOn(material, 'dispose');
+
+        try {
+            MeshFactory.releaseMesh('Rogue', mesh);
+            expect(disposeSpy).not.toHaveBeenCalled();
+            expect(MeshFactory.pool.Rogue).toHaveLength(50);
+        } finally {
+            disposeSpy.mockRestore();
+            MeshFactory.pool = previousPool;
         }
     });
 });

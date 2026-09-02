@@ -28,7 +28,7 @@ const PLAYER_TYPES = Object.freeze({ Fighter, Rogue, Wizard, Cleric });
 const PLAYER_TYPE_NAMES = Object.freeze(Object.keys(PLAYER_TYPES));
 const TARGET_POSITION = new THREE.Vector3(0, 0, 5.5);
 const EQUIPPABLE_BASE_ITEMS = Object.freeze(BASE_ITEMS.filter((item) => EQUIPMENT_VISUAL_DESCRIPTORS[item.name]));
-const FIGHTER_SHOWCASE_LOADOUT = Object.freeze({
+const PROCEDURAL_SHOWCASE_LOADOUT = Object.freeze({
     head: 'Iron Helm',
     shoulders: 'Steel Pauldrons',
     chest: 'Plate Mail',
@@ -292,15 +292,15 @@ export class AnimationGallery {
         this.runAllButton.addEventListener('click', () => this.runAbilityAudit());
         this.equipmentSelect.addEventListener('change', async () => {
             this.currentEquipmentName = this.equipmentSelect.value;
-            await this.ensureFighterEquipmentActors();
+            await this.ensureProceduralEquipmentActors();
             this.presentEquipment(this.currentEquipmentName);
         });
         this.equipButton.addEventListener('click', async () => {
-            await this.ensureFighterEquipmentActors();
+            await this.ensureProceduralEquipmentActors();
             this.presentEquipment(this.equipmentSelect.value);
         });
         this.equipAllButton.addEventListener('click', async () => {
-            await this.ensureFighterEquipmentActors();
+            await this.ensureProceduralEquipmentActors();
             this.presentEquipmentLoadout();
         });
         this.runEquipmentButton.addEventListener('click', () => this.runEquipmentAudit());
@@ -394,8 +394,8 @@ export class AnimationGallery {
         }
     }
 
-    async ensureFighterEquipmentActors() {
-        if (this.currentActorType === 'Fighter' && this.actor?.mesh?.userData?.proceduralHumanoid) return true;
+    async ensureProceduralEquipmentActors() {
+        if (this.actor?.mesh?.userData?.proceduralHumanoid) return true;
         this.currentActorType = 'Fighter';
         this.actorSelect.value = 'Fighter';
         return this.loadActors('Fighter');
@@ -405,9 +405,9 @@ export class AnimationGallery {
         const mode = equipment ? 'equipment' : 'presentation';
         if (this.targetActor?.mesh) this.targetActor.mesh.visible = !equipment;
         if (equipment) {
-            const centerX = this.remoteActor ? 2 : 0;
-            this.actor?.position.set(0, 0, 0);
-            this.remoteActor?.position.set(4, 0, 0);
+            const centerX = this.remoteActor ? 2.8 : 1.2;
+            this.actor?.position.set(1.2, 0, 0);
+            this.remoteActor?.position.set(4.4, 0, 0);
             this.controls.target.set(centerX, 1.7, 0);
             this.renderSystem.camera.position.set(centerX, 9, 9);
             if (this.framingMode !== mode) this.renderSystem.setZoom(7);
@@ -418,6 +418,19 @@ export class AnimationGallery {
             this.renderSystem.camera.position.set(13, 11, 18);
             if (this.framingMode !== mode) this.renderSystem.setZoom(CONSTANTS.CAMERA.ZOOM);
         }
+        this.framingMode = mode;
+        this.controls.update();
+    }
+
+    frameActorState() {
+        const mode = 'actor-state';
+        const centerX = this.remoteActor ? 2.8 : 1.2;
+        if (this.targetActor?.mesh) this.targetActor.mesh.visible = false;
+        this.actor?.position.set(1.2, 0, 0);
+        this.remoteActor?.position.set(4.4, 0, 0);
+        this.controls.target.set(centerX, 1.75, 0);
+        this.renderSystem.camera.position.set(centerX, 8.4, 9.2);
+        if (this.framingMode !== mode) this.renderSystem.setZoom(8);
         this.framingMode = mode;
         this.controls.update();
     }
@@ -476,7 +489,7 @@ export class AnimationGallery {
         if (!this.actor?.mesh?.userData?.proceduralHumanoid) return false;
         const equipment = {};
         EQUIPMENT_RENDER_SLOTS.forEach((renderSlot, index) => {
-            const baseItem = EQUIPPABLE_BASE_ITEMS.find((item) => item.name === FIGHTER_SHOWCASE_LOADOUT[renderSlot]);
+            const baseItem = EQUIPPABLE_BASE_ITEMS.find((item) => item.name === PROCEDURAL_SHOWCASE_LOADOUT[renderSlot]);
             equipment[renderSlot] = this.createGalleryEquipmentItem(baseItem, renderSlot, index + 1);
         });
         this.actor.syncEquipmentVisuals(equipment, { force: true });
@@ -487,7 +500,7 @@ export class AnimationGallery {
         this.framePresentation(true);
         this.currentEquipmentName = 'Full 14-slot loadout';
         this.phase = 'equipment:full-loadout';
-        this.setStatus('Full 14-slot Fighter loadout · local + replicated', 'playing');
+        this.setStatus(`Full 14-slot ${this.currentActorType} loadout · local + replicated`, 'playing');
         this.updateMetrics();
         return true;
     }
@@ -497,7 +510,7 @@ export class AnimationGallery {
         this.equipmentAuditRunning = true;
         this.equipmentAuditResults = [];
         this.runEquipmentButton.disabled = true;
-        await this.ensureFighterEquipmentActors();
+        await this.ensureProceduralEquipmentActors();
         for (let index = 0; index < EQUIPPABLE_BASE_ITEMS.length; index++) {
             const baseItem = EQUIPPABLE_BASE_ITEMS[index];
             const rendered = this.presentEquipment(baseItem.name);
@@ -687,6 +700,7 @@ export class AnimationGallery {
             this.actor.isRunning = state === 'Run';
             this.actor.playAnimation(state, !['Attack', 'Death'].includes(state), true);
         }
+        this.frameActorState();
         this.phase = `state:${state.toLowerCase()}`;
         this.setStatus(`${this.currentActorType} · ${state}`, 'playing');
         this.updateMetrics();

@@ -572,7 +572,7 @@ function addIdentityDetails(group, item, visual) {
     }
 }
 
-function createEquipmentVisual(slot, item, anchor) {
+function createEquipmentVisual(slot, item, anchor, fitScale = 1) {
     const visual = resolveEquipmentVisualDescriptor(item);
     if (!visual) return null;
     const group = new THREE.Group();
@@ -589,12 +589,13 @@ function createEquipmentVisual(slot, item, anchor) {
     group.userData.setId = item.setId || '';
     group.userData.uniqueEffect = item.uniqueEffect || '';
     group.userData.statScaleVersion = Math.max(0, Number(item.statScaleVersion) || 0);
+    group.userData.fitScale = Math.max(0.5, Math.min(1.25, Number(fitScale) || 1));
     const mats = createMaterials(item, visual);
     const side = anchor.name.includes('Left') ? 1 : -1;
     BUILDERS[visual.family](group, visual, mats, side);
     addSocketDetails(group, item, visual, mats);
     addIdentityDetails(group, item, visual);
-    const tierScale = 1 + group.userData.tier * 0.025;
+    const tierScale = (1 + group.userData.tier * 0.025) * group.userData.fitScale;
     group.scale.setScalar(tierScale);
     return group;
 }
@@ -671,7 +672,12 @@ export function applyProceduralEquipment(root, equipment = {}, { force = false }
                 if (!child.userData?.equipmentAnchor && !child.userData?.equipmentVisual &&
                     !child.userData?.equipmentBodyBase) child.visible = false;
             });
-            const visual = createEquipmentVisual(slot, item, anchor);
+            const visual = createEquipmentVisual(
+                slot,
+                item,
+                anchor,
+                root.userData.equipmentScaleBySlot?.[slot] ?? 1
+            );
             if (!visual) return;
             anchor.add(visual);
             visual.traverse((child) => {

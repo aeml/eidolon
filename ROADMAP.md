@@ -8,9 +8,9 @@ This is the root roadmap and planning source of truth for the repo. Per-patch hi
 
 ## Current Snapshot
 
-- Current in-game displayed version: `Alpha 0.41.0.2`
+- Current in-game displayed version: `Alpha 0.41.0.3`
 - Active implementation line: `0.41` procedural dark-fantasy art migration
-- Release-confidence gate: locked/self-hosted browser dependencies, production SHA/readiness reporting, and real-browser deployment QA are live-verified for release SHA `634280a`
+- Release-confidence gate: locked/self-hosted browser dependencies, production SHA/readiness reporting, and real-browser deployment QA are live-verified through release SHA `6138396`
 - Closed for planned implementation work: `0.21` through `0.37`
 - Current shipped foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, friends/presence, asset caching, audio foundation, accessibility baseline, reconnect/session resume, and substantial UX polish
 - Biggest remaining alpha-wide risks: server/client monolith hotspots, missing guilds and PvP, persistence/economy hardening, and sustained multi-client soak validation
@@ -18,7 +18,7 @@ This is the root roadmap and planning source of truth for the repo. Per-patch hi
 Evidence boundary for the current lane:
 
 - Unit-tested and locally browser-tested work is not labeled live-tested.
-- The Playwright harness covers anonymous, persistent-character, and two-account flows. The full character route passes locally against disposable Mongo/API containers and passed live against deployed SHA `634280a` in hardware-accelerated system Chrome, including multiplayer convergence.
+- The Playwright harness covers anonymous, persistent-character, and two-account flows. The full character route passes locally against disposable Mongo/API containers and passed live against deployed SHA `6138396` in hardware-accelerated system Chrome, including multiplayer convergence.
 - Current hotspot measurements are `world.go` 8,578 LOC, `main.go` 5,027, `GameEngine.js` 5,810, and `UIManager.js` 3,634. The decomposition completion gates below are not met.
 
 ## Alpha 1.0 Strategy

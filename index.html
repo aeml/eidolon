@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.2</span>
+                <span class="start-version-row__label">Alpha 0.41.0.3</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -587,6 +587,18 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.3">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.3 (the Gloamreach shadeblade)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The Rogue has stepped out of the old model:</strong> A fully code-generated shadeblade now replaces the imported Rogue character and animation files in production, built from cached faceted geometry and restrained dark-fantasy materials.</li>
+                        <li><strong>Gloamreach has its own class silhouette:</strong> A low forward stance, masked seven-sided hood, asymmetrical hooked shoulder, strapped leathers, split shadow cloak, luminous venom vial, wrist blades, and paired fang daggers keep the Rogue distinct from the broad Lanternhold Fighter at gameplay zoom.</li>
+                        <li><strong>Rogue movement is authored for the class:</strong> Dedicated Idle, Walk, Run, dual-strike Attack, and collapsing Death clips animate independent hips, chest, head, arms, forearms, thighs, shins, and cloak for both local and nearby players.</li>
+                        <li><strong>The whole armory fits the shadeblade:</strong> All 14 equipped positions attach across the same 18 animated regions, every one of the 36 equipment families can replace the intentional default kit, and face plus eye identity remain visible beneath generated headgear.</li>
+                        <li><strong>Rogue entry is lighter:</strong> Five legacy Rogue GLBs have left the runtime catalog, startup preload, and mesh factory. Selecting Rogue now gates only on the nearby Skeleton population instead of downloading a class animation set before joining the world.</li>
+                        <li><strong>Pooling and selection retain their footing:</strong> The complete crouched rest pose resets between owners, shared render resources never share mutable transforms, and a declared full-height interaction volume keeps selection and party highlighting aligned with the narrower body.</li>
+                        <li><strong>Inspectable hardware QA:</strong> Automated galleries render Fighter and Rogue in every core animation at High and Low quality, then inspect full local and replicated Rogue loadouts for complete attachments, finite transforms, and clean default-kit replacement.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.2">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.2 (armory of the Eidolons)</h3>
                     <ul class="patch-note-entry__list">

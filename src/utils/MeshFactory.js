@@ -4,7 +4,7 @@ import * as SkeletonUtils from './SkeletonUtils.js';
 import { MeshCatalog } from './MeshCatalog.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { resolveAssetPath } from '../assets/assetManifest.js';
-import { createProceduralFighter } from '../art/ProceduralHumanoid.js';
+import { createProceduralFighter, createProceduralRogue } from '../art/ProceduralHumanoid.js';
 
 export class MeshFactory {
     static loader = new GLTFLoader();
@@ -680,7 +680,8 @@ export class MeshFactory {
             // Procedural enemies now use shared/cached geometries and materials —
             // do NOT dispose them (they are singletons). Only dispose non-cached
             // GLTF materials whose geometry is also shared.
-            const isProceduralType = type === 'Fighter' || !!this.PROCEDURAL_ENEMY_SPECS[type];
+            const isProceduralType = Boolean(mesh.userData?.proceduralHumanoid) ||
+                !!this.PROCEDURAL_ENEMY_SPECS[type];
             if (!isProceduralType) {
                 mesh.traverse((child) => {
                     if (child.isMesh) {
@@ -791,6 +792,10 @@ export class MeshFactory {
             return createProceduralFighter();
         }
 
+        if (type === 'Rogue') {
+            return createProceduralRogue();
+        }
+
         if (type === 'Wizard') {
             try {
                 const idleGltf = await this.loadModel('./assets/archetypes/Wizard/idle.glb');
@@ -858,78 +863,6 @@ export class MeshFactory {
                     type,
                     new THREE.ConeGeometry(0.5, 1.5, 8),
                     CONSTANTS.ENTITIES.WIZARD.COLOR,
-                    0.75
-                );
-            }
-        }
-
-        if (type === 'Rogue') {
-            try {
-                const idleGltf = await this.loadModel('./assets/archetypes/Rogue/idle.glb');
-                mesh = SkeletonUtils.clone(idleGltf.scene);
-                
-                mesh.userData.animations = [];
-
-                const addAnim = (clip, name) => {
-                    if (clip) {
-                        const newClip = clip.clone();
-                        newClip.name = name;
-                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
-                        mesh.userData.animations.push(newClip);
-                    }
-                };
-
-                if (idleGltf.animations.length > 0) {
-                    addAnim(idleGltf.animations[0], 'Idle');
-                }
-
-                try {
-                    const walkGltf = await this.loadModel('./assets/archetypes/Rogue/walk.glb');
-                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
-                } catch (e) { console.warn("Missing walk anim"); }
-
-                try {
-                    const runGltf = await this.loadModel('./assets/archetypes/Rogue/run.glb');
-                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
-                } catch (e) { console.warn("Missing run anim"); }
-
-                try {
-                    const attackGltf = await this.loadModel('./assets/archetypes/Rogue/attack.glb');
-                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
-                } catch (e) { console.warn("Missing attack anim"); }
-
-                try {
-                    const deathGltf = await this.loadModel('./assets/archetypes/Rogue/death.glb');
-                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
-                } catch (e) { console.warn("Missing death anim"); }
-
-                mesh.scale.set(2.5, 2.5, 2.5); 
-                
-                mesh.traverse(c => {
-                    if (c.isMesh) {
-                        if (!c.material) {
-                            c.material = new THREE.MeshStandardMaterial({ color: 0xffffff });
-                        }
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-
-                    }
-                });
-                
-                const box = new THREE.Box3().setFromObject(mesh);
-                const size = box.getSize(new THREE.Vector3());
-                const center = box.getCenter(new THREE.Vector3());
-                
-                mesh.position.sub(center); 
-                mesh.position.y += size.y / 2; 
-
-                return mesh;
-            } catch (e) {
-                console.warn(`Failed to load model for ${type}, falling back to primitive.`, e);
-                return this.createAnimatedPlayerFallback(
-                    type,
-                    new THREE.CylinderGeometry(0.3, 0.3, 1.5, 8),
-                    CONSTANTS.ENTITIES.ROGUE.COLOR,
                     0.75
                 );
             }

@@ -14,7 +14,7 @@ const WALKING_ENEMY_CLIPS = ['Idle', 'Walk', 'Run', 'Attack', 'Death'];
 
 export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
     Fighter: entry('player', 'shared procedural humanoid rig', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
-    Rogue: entry('player', 'GLB', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
+    Rogue: entry('player', 'shared procedural humanoid rig', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
     Wizard: entry('player', 'GLB', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
     Cleric: entry('player', 'GLB', STANDARD_CLIPS, { jump: 'procedural arc/lean with locomotion clip fallback' }),
 

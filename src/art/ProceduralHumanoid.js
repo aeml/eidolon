@@ -15,6 +15,18 @@ const FIGHTER_PALETTE = Object.freeze({
     glow: 0xffc04a
 });
 
+const ROGUE_PALETTE = Object.freeze({
+    leather: 0x25272b,
+    leatherLight: 0x4c5052,
+    cloth: 0x24202d,
+    clothDark: 0x100f16,
+    steel: 0x8a9699,
+    silver: 0xc0c8c3,
+    poison: 0x68c878,
+    skin: 0x8f6b5c,
+    glow: 0x78e08a
+});
+
 export const HUMANOID_ANIMATION_STATES = Object.freeze(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
 
 export const HUMANOID_EQUIPMENT_ANCHORS = Object.freeze({
@@ -277,6 +289,164 @@ function addSword(anchor, materials) {
     );
 }
 
+function addRogueDagger(anchor, materials, side, name) {
+    const sign = side === 'Left' ? 1 : -1;
+    const dagger = addPivot(anchor, name, [0, -0.03, 0], [0.08, sign * 0.08, -sign * 0.14]);
+    addMesh(
+        dagger,
+        `${name}_Grip`,
+        geometry('rogue-dagger-grip', () => new THREE.CylinderGeometry(0.052, 0.058, 0.34, 7)),
+        materials.leather,
+        { position: [0, -0.1, 0] }
+    );
+    addMesh(
+        dagger,
+        `${name}_Pommel`,
+        geometry('rogue-dagger-pommel', () => new THREE.OctahedronGeometry(0.075, 0)),
+        materials.poison,
+        { position: [0, -0.3, 0], scale: [0.7, 1, 0.7] }
+    );
+    addMesh(
+        dagger,
+        `${name}_Guard`,
+        geometry('rogue-dagger-guard', () => new THREE.BoxGeometry(0.35, 0.06, 0.075)),
+        materials.steel,
+        { position: [0, 0.08, 0], rotation: [0, 0, sign * 0.12] }
+    );
+    addMesh(
+        dagger,
+        `${name}_Blade`,
+        geometry('rogue-dagger-blade', () => new THREE.CylinderGeometry(0.035, 0.115, 0.82, 4)),
+        materials.silver,
+        { position: [0, 0.51, 0], rotation: [0, Math.PI / 4, 0], scale: [0.62, 1, 0.25] }
+    );
+    addMesh(
+        dagger,
+        `${name}_VenomChannel`,
+        geometry('rogue-dagger-channel', () => new THREE.BoxGeometry(0.022, 0.52, 0.022)),
+        materials.poison,
+        { position: [0, 0.49, 0.052] }
+    );
+}
+
+function addRogueArm(parent, side, materials) {
+    const sign = side === 'Left' ? 1 : -1;
+    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.72, 0.42, 0.01], [0.16, 0, -sign * 0.13]);
+    addMesh(
+        upperArm,
+        `Rogue_UpperArm${side}`,
+        geometry('rogue-upper-arm', () => new THREE.CylinderGeometry(0.16, 0.135, 0.7, 7)),
+        materials.cloth,
+        { position: [0, -0.35, 0] }
+    );
+
+    const shoulder = addAnchor(upperArm, `Equipment_Shoulder${side}`, [0, -0.02, 0]);
+    addMesh(
+        shoulder,
+        `Rogue_ShoulderGuard${side}`,
+        geometry('rogue-shoulder-guard', () => new THREE.DodecahedronGeometry(0.38, 0)),
+        side === 'Left' ? materials.leatherLight : materials.leather,
+        {
+            position: [sign * 0.04, -0.08, 0.01],
+            rotation: [0, 0, sign * 0.18],
+            scale: side === 'Left' ? [1.12, 0.48, 0.78] : [0.92, 0.38, 0.68]
+        }
+    );
+    if (side === 'Left') {
+        addMesh(
+            shoulder,
+            'Rogue_ShoulderHookLeft',
+            geometry('rogue-shoulder-hook', () => new THREE.ConeGeometry(0.085, 0.34, 4)),
+            materials.steel,
+            { position: [0.23, 0.08, -0.02], rotation: [0, 0, -0.5] }
+        );
+    }
+
+    const forearm = addPivot(upperArm, `Rig_Forearm${side}`, [0, -0.68, 0], [-0.16, 0, 0]);
+    addMesh(
+        forearm,
+        `Rogue_Forearm${side}`,
+        geometry('rogue-forearm', () => new THREE.CylinderGeometry(0.135, 0.105, 0.62, 7)),
+        materials.skin,
+        { position: [0, -0.3, 0] }
+    );
+    const glove = addAnchor(forearm, `Equipment_Glove${side}`, [0, -0.59, 0]);
+    addMesh(
+        glove,
+        `Rogue_Bracer${side}`,
+        geometry('rogue-bracer', () => new THREE.CylinderGeometry(0.14, 0.115, 0.34, 7)),
+        materials.leatherLight,
+        { position: [0, 0.11, 0] }
+    );
+    addMesh(
+        glove,
+        `Rogue_WristBlade${side}`,
+        geometry('rogue-wrist-blade', () => new THREE.ConeGeometry(0.055, 0.38, 4)),
+        materials.steel,
+        { position: [0, 0.08, 0.16], rotation: [Math.PI / 2, 0, 0] }
+    );
+
+    addAnchor(glove, side === 'Left' ? 'Equipment_RingLeft' : 'Equipment_RingRight', [sign * 0.1, -0.03, 0.04]);
+    return addAnchor(
+        glove,
+        side === 'Left' ? 'Equipment_OffHand' : 'Equipment_MainHand',
+        [0, -0.04, 0],
+        [0, 0, sign * 0.08]
+    );
+}
+
+function addRogueLeg(parent, side, materials) {
+    const sign = side === 'Left' ? 1 : -1;
+    const thigh = addPivot(parent, `Rig_Thigh${side}`, [sign * 0.27, -0.08, 0], [0.04, 0, sign * 0.035]);
+    const leg = addAnchor(thigh, `Equipment_Leg${side}`);
+    addMesh(
+        leg,
+        `Rogue_Thigh${side}`,
+        geometry('rogue-thigh', () => new THREE.CylinderGeometry(0.21, 0.17, 0.8, 7)),
+        materials.cloth,
+        { position: [0, -0.4, 0] }
+    );
+    addMesh(
+        leg,
+        `Rogue_ThighStrap${side}`,
+        geometry('rogue-thigh-strap', () => new THREE.TorusGeometry(0.185, 0.035, 4, 7)),
+        materials.leatherLight,
+        { position: [0, -0.25, 0], rotation: [Math.PI / 2, 0, 0], scale: [1, 0.82, 1] }
+    );
+
+    const shin = addPivot(thigh, `Rig_Shin${side}`, [0, -0.78, 0], [0.08, 0, 0]);
+    addMesh(
+        shin,
+        `Rogue_Shin${side}`,
+        geometry('rogue-shin', () => new THREE.CylinderGeometry(0.16, 0.12, 0.73, 7)),
+        materials.clothDark,
+        { position: [0, -0.36, 0] }
+    );
+    addMesh(
+        shin,
+        `Rogue_ShinGuard${side}`,
+        geometry('rogue-shin-guard', () => new THREE.ConeGeometry(0.16, 0.56, 5)),
+        materials.leatherLight,
+        { position: [0, -0.35, 0.1], rotation: [Math.PI, 0, 0], scale: [0.8, 1, 0.42] }
+    );
+
+    const foot = addAnchor(shin, `Equipment_Foot${side}`, [0, -0.78, 0.08]);
+    addMesh(
+        foot,
+        `Rogue_Boot${side}`,
+        geometry('rogue-boot', () => new THREE.BoxGeometry(0.31, 0.2, 0.56)),
+        materials.leather,
+        { position: [0, 0.09, 0.13], rotation: [-0.08, 0, 0] }
+    );
+    addMesh(
+        foot,
+        `Rogue_BootToe${side}`,
+        geometry('rogue-boot-toe', () => new THREE.ConeGeometry(0.15, 0.3, 5)),
+        materials.leatherLight,
+        { position: [0, 0.08, 0.39], rotation: [Math.PI / 2, 0, 0], scale: [0.86, 1, 0.62] }
+    );
+}
+
 function numberTrack(name, property, times, values) {
     return new THREE.NumberKeyframeTrack(`${name}.${property}`, times, values);
 }
@@ -345,6 +515,76 @@ function createHumanoidAnimationClips() {
         new THREE.AnimationClip('Run', 0.6, run),
         new THREE.AnimationClip('Attack', 0.72, attack),
         new THREE.AnimationClip('Death', 1.05, death)
+    ];
+}
+
+function createRogueAnimationClips() {
+    const idleTimes = [0, 0.7, 1.4, 2.1];
+    const idle = [
+        numberTrack('Rig_Hips', 'position[y]', idleTimes, [1.7, 1.66, 1.7, 1.7]),
+        numberTrack('Rig_Hips', 'rotation[y]', idleTimes, [-0.08, 0.04, 0.1, -0.08]),
+        numberTrack('Rig_Chest', 'rotation[x]', idleTimes, [-0.1, -0.15, -0.1, -0.1]),
+        numberTrack('Rig_Head', 'rotation[y]', idleTimes, [-0.18, 0.08, 0.22, -0.18]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[x]', idleTimes, [0.2, 0.3, 0.18, 0.2]),
+        numberTrack('Rig_UpperArmRight', 'rotation[x]', idleTimes, [-0.05, -0.16, -0.05, -0.05]),
+        numberTrack('Rig_Cloak', 'rotation[x]', idleTimes, [0.12, 0.18, 0.11, 0.12])
+    ];
+
+    const walkTimes = [0, 0.24, 0.48, 0.72, 0.96];
+    const walk = [
+        numberTrack('Rig_ThighLeft', 'rotation[x]', walkTimes, [-0.62, 0, 0.62, 0, -0.62]),
+        numberTrack('Rig_ThighRight', 'rotation[x]', walkTimes, [0.62, 0, -0.62, 0, 0.62]),
+        numberTrack('Rig_ShinLeft', 'rotation[x]', walkTimes, [0.48, 0.04, 0.02, 0.44, 0.48]),
+        numberTrack('Rig_ShinRight', 'rotation[x]', walkTimes, [0.02, 0.44, 0.48, 0.04, 0.02]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[x]', walkTimes, [0.46, 0.12, -0.28, 0.08, 0.46]),
+        numberTrack('Rig_UpperArmRight', 'rotation[x]', walkTimes, [-0.28, 0.08, 0.46, 0.12, -0.28]),
+        numberTrack('Rig_Hips', 'position[y]', walkTimes, [1.66, 1.74, 1.66, 1.74, 1.66]),
+        numberTrack('Rig_Chest', 'rotation[x]', walkTimes, [-0.12, -0.08, -0.12, -0.08, -0.12]),
+        numberTrack('Rig_Cloak', 'rotation[x]', walkTimes, [0.18, 0.28, 0.18, 0.28, 0.18])
+    ];
+
+    const runTimes = [0, 0.14, 0.28, 0.42, 0.56];
+    const run = [
+        numberTrack('Rig_ThighLeft', 'rotation[x]', runTimes, [-0.98, 0, 0.98, 0, -0.98]),
+        numberTrack('Rig_ThighRight', 'rotation[x]', runTimes, [0.98, 0, -0.98, 0, 0.98]),
+        numberTrack('Rig_ShinLeft', 'rotation[x]', runTimes, [0.82, 0.08, 0.03, 0.72, 0.82]),
+        numberTrack('Rig_ShinRight', 'rotation[x]', runTimes, [0.03, 0.72, 0.82, 0.08, 0.03]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[x]', runTimes, [0.78, 0.08, -0.66, 0.08, 0.78]),
+        numberTrack('Rig_UpperArmRight', 'rotation[x]', runTimes, [-0.66, 0.08, 0.78, 0.08, -0.66]),
+        numberTrack('Rig_Hips', 'position[y]', runTimes, [1.62, 1.76, 1.62, 1.76, 1.62]),
+        numberTrack('Rig_Chest', 'rotation[x]', runTimes, [-0.28, -0.34, -0.28, -0.34, -0.28]),
+        numberTrack('Rig_Cloak', 'rotation[x]', runTimes, [0.38, 0.62, 0.38, 0.62, 0.38])
+    ];
+
+    const attackTimes = [0, 0.12, 0.26, 0.4, 0.56, 0.72];
+    const attack = [
+        numberTrack('Rig_Hips', 'rotation[y]', attackTimes, [0, -0.42, 0.56, 0.28, -0.5, 0]),
+        numberTrack('Rig_Chest', 'rotation[y]', attackTimes, [0, -0.62, 0.76, 0.36, -0.68, 0]),
+        numberTrack('Rig_UpperArmRight', 'rotation[x]', attackTimes, [-0.05, -1.6, 0.9, 0.38, -0.18, -0.05]),
+        numberTrack('Rig_UpperArmRight', 'rotation[z]', attackTimes, [0.13, 0.62, -0.38, -0.2, 0.16, 0.13]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[x]', attackTimes, [0.2, 0.42, -0.18, -1.5, 0.96, 0.2]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[z]', attackTimes, [-0.13, -0.2, 0.2, -0.58, 0.34, -0.13]),
+        numberTrack('Rig_Head', 'rotation[y]', attackTimes, [0, -0.22, 0.3, 0.16, -0.28, 0]),
+        numberTrack('Rig_Cloak', 'rotation[x]', attackTimes, [0.12, 0.34, -0.08, 0.42, 0.18, 0.12])
+    ];
+
+    const deathTimes = [0, 0.2, 0.46, 0.8, 1.08];
+    const death = [
+        numberTrack('Rig_Hips', 'position[y]', deathTimes, [1.7, 1.56, 1.08, 0.48, 0.14]),
+        numberTrack('Rig_Hips', 'rotation[x]', deathTimes, [0, -0.12, -0.38, -0.7, -1.12]),
+        numberTrack('Rig_Chest', 'rotation[x]', deathTimes, [-0.1, 0.12, 0.48, 0.82, 1.22]),
+        numberTrack('Rig_Chest', 'rotation[z]', deathTimes, [0, 0.08, -0.18, -0.3, -0.36]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[x]', deathTimes, [0.2, -0.5, 0.34, 0.9, 1.18]),
+        numberTrack('Rig_UpperArmRight', 'rotation[x]', deathTimes, [-0.05, 0.48, -0.4, -0.84, -1.04]),
+        numberTrack('Rig_Head', 'rotation[x]', deathTimes, [0, 0.18, 0.42, 0.72, 0.92])
+    ];
+
+    return [
+        new THREE.AnimationClip('Idle', 2.1, idle),
+        new THREE.AnimationClip('Walk', 0.96, walk),
+        new THREE.AnimationClip('Run', 0.56, run),
+        new THREE.AnimationClip('Attack', 0.72, attack),
+        new THREE.AnimationClip('Death', 1.08, death)
     ];
 }
 
@@ -571,6 +811,224 @@ export function createProceduralFighter() {
     );
     root.userData.animations = createHumanoidAnimationClips();
     root.userData.bounds = Object.freeze({ radius: 1.25, height: 4.5, origin: 'feet' });
+    installRestPoseReset(root);
+    return root;
+}
+
+/**
+ * Creates Gloamreach's code-native shadeblade: a narrow, forward-weighted
+ * silhouette with asymmetrical leathers, split cloak, venom glass, and a
+ * dedicated dual-strike motion set on the shared humanoid attachment contract.
+ */
+export function createProceduralRogue() {
+    const materials = {
+        leather: material('rogue-leather', ROGUE_PALETTE.leather, { roughness: 0.88 }),
+        leatherLight: material('rogue-leather-light', ROGUE_PALETTE.leatherLight, { roughness: 0.76 }),
+        cloth: material('rogue-cloth', ROGUE_PALETTE.cloth, { roughness: 0.96 }),
+        clothDark: material('rogue-cloth-dark', ROGUE_PALETTE.clothDark, { roughness: 0.98 }),
+        steel: material('rogue-steel', ROGUE_PALETTE.steel, { metalness: 0.76, roughness: 0.34 }),
+        silver: material('rogue-silver', ROGUE_PALETTE.silver, { metalness: 0.9, roughness: 0.22 }),
+        poison: material('rogue-poison', ROGUE_PALETTE.poison, {
+            emissive: ROGUE_PALETTE.poison,
+            emissiveIntensity: 1.15,
+            roughness: 0.24
+        }),
+        skin: material('rogue-skin', ROGUE_PALETTE.skin, { roughness: 0.9 }),
+        glow: material('rogue-glow', ROGUE_PALETTE.glow, {
+            emissive: ROGUE_PALETTE.glow,
+            emissiveIntensity: 1.5,
+            roughness: 0.2
+        })
+    };
+
+    const root = new THREE.Group();
+    root.name = 'ProceduralRogue';
+    const rigRoot = addPivot(root, 'RigRoot');
+    const hips = addPivot(rigRoot, 'Rig_Hips', [0, 1.7, 0], [-0.04, 0, 0]);
+
+    addMesh(
+        hips,
+        'Rogue_HipWrap',
+        geometry('rogue-hip-wrap', () => new THREE.CylinderGeometry(0.46, 0.4, 0.45, 7)),
+        materials.cloth,
+        { position: [0, 0.08, 0], scale: [1, 1, 0.78] }
+    );
+    addMesh(
+        hips,
+        'Rogue_Loincloth',
+        geometry('rogue-loincloth', () => {
+            const shape = new THREE.Shape();
+            shape.moveTo(-0.24, 0.12);
+            shape.lineTo(0.24, 0.12);
+            shape.lineTo(0.15, -0.68);
+            shape.lineTo(0, -0.54);
+            shape.lineTo(-0.16, -0.7);
+            shape.closePath();
+            return new THREE.ShapeGeometry(shape, 1);
+        }),
+        materials.leather,
+        { position: [0, -0.3, 0.34], rotation: [0.04, 0, 0] }
+    );
+
+    const belt = addAnchor(hips, 'Equipment_Belt', [0, 0.2, 0]);
+    addMesh(
+        belt,
+        'Rogue_Belt',
+        geometry('rogue-belt', () => new THREE.CylinderGeometry(0.46, 0.46, 0.14, 7)),
+        materials.leatherLight,
+        { scale: [1, 1, 0.8] }
+    );
+    addMesh(
+        belt,
+        'Rogue_BeltClasp',
+        geometry('rogue-belt-clasp', () => new THREE.OctahedronGeometry(0.12, 0)),
+        materials.poison,
+        { position: [0.1, 0, 0.38], scale: [0.8, 1.1, 0.42] }
+    );
+    addAnchor(belt, 'Equipment_TrinketLeft', [0.31, -0.16, 0.23]);
+    addAnchor(belt, 'Equipment_TrinketRight', [-0.31, -0.16, 0.23]);
+
+    addRogueLeg(hips, 'Left', materials);
+    addRogueLeg(hips, 'Right', materials);
+
+    const chest = addPivot(hips, 'Rig_Chest', [0, 0.38, 0], [-0.1, 0, 0]);
+    const chestAnchor = addAnchor(chest, 'Equipment_Chest');
+    addMesh(
+        chestAnchor,
+        'Rogue_Jerkin',
+        geometry('rogue-jerkin', () => new THREE.CylinderGeometry(0.5, 0.43, 1.04, 7)),
+        materials.leather,
+        { position: [0, 0.45, 0], scale: [1.06, 1, 0.72] }
+    );
+    addMesh(
+        chestAnchor,
+        'Rogue_JerkinPanel',
+        geometry('rogue-jerkin-panel', () => new THREE.BoxGeometry(0.34, 0.82, 0.055)),
+        materials.leatherLight,
+        { position: [0.1, 0.45, 0.39], rotation: [0, 0, -0.11] }
+    );
+    for (let index = 0; index < 4; index++) {
+        addMesh(
+            chestAnchor,
+            `Rogue_JerkinClasp${index}`,
+            geometry('rogue-jerkin-clasp', () => new THREE.OctahedronGeometry(0.045, 0)),
+            materials.steel,
+            { position: [-0.08, 0.72 - index * 0.18, 0.43], scale: [0.7, 1, 0.45] }
+        );
+    }
+    addMesh(
+        chestAnchor,
+        'Rogue_VenomVial',
+        geometry('rogue-venom-vial', () => new THREE.OctahedronGeometry(0.09, 1)),
+        materials.glow,
+        { position: [-0.35, 0.35, 0.28], scale: [0.6, 1.25, 0.6], rotation: [0, 0, 0.28] }
+    );
+
+    const cloak = addPivot(chest, 'Rig_Cloak', [0, 0.76, -0.34], [0.12, 0, 0]);
+    [-1, 1].forEach((side) => {
+        addMesh(
+            cloak,
+            side < 0 ? 'Rogue_CloakLeft' : 'Rogue_CloakRight',
+            geometry('rogue-split-cloak', () => {
+                const shape = new THREE.Shape();
+                shape.moveTo(-0.3, 0.1);
+                shape.lineTo(0.3, 0.1);
+                shape.lineTo(0.2, -1.36);
+                shape.lineTo(0, -1.18);
+                shape.lineTo(-0.18, -1.44);
+                shape.closePath();
+                return new THREE.ShapeGeometry(shape, 1);
+            }),
+            side < 0 ? materials.clothDark : materials.cloth,
+            {
+                position: [side * 0.22, -0.05, 0],
+                rotation: [0.08, Math.PI, side * 0.05],
+                scale: [0.94, side < 0 ? 1 : 0.9, 1],
+                receiveShadow: false
+            }
+        );
+    });
+
+    const neck = addAnchor(chest, 'Equipment_Neck', [0, 1, 0]);
+    addMesh(
+        neck,
+        'Rogue_Scarf',
+        geometry('rogue-scarf', () => new THREE.TorusGeometry(0.29, 0.08, 5, 8)),
+        materials.clothDark,
+        { rotation: [Math.PI / 2, 0, 0], scale: [1, 0.82, 1] }
+    );
+
+    const head = addPivot(chest, 'Rig_Head', [0, 1.27, 0], [0.02, 0, 0]);
+    const headAnchor = addAnchor(head, 'Equipment_Head');
+    const face = addMesh(
+        headAnchor,
+        'Rogue_Head',
+        geometry('rogue-head', () => new THREE.DodecahedronGeometry(0.285, 1)),
+        materials.skin,
+        { position: [0, 0.1, 0], scale: [0.82, 1.06, 0.82] }
+    );
+    face.userData.equipmentBodyBase = true;
+    addMesh(
+        headAnchor,
+        'Rogue_Hood',
+        geometry('rogue-hood', () => new THREE.ConeGeometry(0.43, 0.76, 7, 1, true)),
+        materials.cloth,
+        { position: [0, 0.27, -0.02], rotation: [0, 0, Math.PI], scale: [1, 1, 0.92] }
+    );
+    addMesh(
+        headAnchor,
+        'Rogue_HoodTail',
+        geometry('rogue-hood-tail', () => new THREE.ConeGeometry(0.15, 0.58, 5)),
+        materials.clothDark,
+        { position: [0, 0.36, -0.34], rotation: [1.05, 0, Math.PI] }
+    );
+    addMesh(
+        headAnchor,
+        'Rogue_Mask',
+        geometry('rogue-mask', () => new THREE.CylinderGeometry(0.25, 0.22, 0.25, 7, 1, false, 0, Math.PI)),
+        materials.leatherLight,
+        { position: [0, 0.02, 0.17], rotation: [0, Math.PI / 2, Math.PI / 2], scale: [0.9, 1, 0.72] }
+    );
+    const eyes = addMesh(
+        headAnchor,
+        'Rogue_EyeGlow',
+        geometry('rogue-eye-glow', () => new THREE.BoxGeometry(0.34, 0.035, 0.025)),
+        materials.glow,
+        { position: [0, 0.17, 0.315] }
+    );
+    eyes.userData.equipmentBodyBase = true;
+
+    const offHand = addRogueArm(chest, 'Left', materials);
+    const mainHand = addRogueArm(chest, 'Right', materials);
+    addRogueDagger(offHand, materials, 'Left', 'Rogue_OffhandFang');
+    addRogueDagger(mainHand, materials, 'Right', 'Rogue_MainhandFang');
+
+    assertEquipmentAnchors(root);
+    root.userData.proceduralHumanoid = true;
+    root.userData.proceduralClass = 'Rogue';
+    root.userData.artStyle = 'Gloamreach shadeblade';
+    root.userData.sharedGeometry = true;
+    root.userData.equipmentAnchors = Object.fromEntries(
+        Object.entries(HUMANOID_EQUIPMENT_ANCHORS).map(([slot, names]) => [slot, [...names]])
+    );
+    root.userData.equipmentScaleBySlot = Object.freeze({
+        head: 0.88,
+        shoulders: 0.78,
+        chest: 0.85,
+        gloves: 0.84,
+        belt: 0.86,
+        legs: 0.84,
+        feet: 0.82,
+        neck: 0.9,
+        ring1: 0.86,
+        ring2: 0.86,
+        trinket1: 0.88,
+        trinket2: 0.88,
+        mainHand: 0.92,
+        offHand: 0.88
+    });
+    root.userData.animations = createRogueAnimationClips();
+    root.userData.bounds = Object.freeze({ radius: 1.05, height: 4.25, origin: 'feet' });
     installRestPoseReset(root);
     return root;
 }
