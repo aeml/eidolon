@@ -93,6 +93,14 @@ Hazards must survive chunk residency changes and must dispose all geometry and m
 - Enemy ornament stays inside the full-silhouette interaction bound and never changes combat collision. Persistent base marks identify faction presence but remain far smaller and dimmer than authoritative hazard or ability boundaries.
 - All enemy rigs preserve the shared network state vocabulary—`Idle`, `Walk`, `Run`, `Attack`, and `Death`—while expressing family-specific weight, anticipation, follow-through, and collapse. Geometry/material resources are cached; pivots, animation state, ownership, hitboxes, and pool resets remain per instance.
 
+## Realm foliage language
+
+- Foliage is regional architecture, not generic green scatter. Gloamwood grows pale ossuary birch, black grave pine, and votive mourning willow; Moonfrost carries rime pine and drowned silver willow; Cinder Wastes raises ember-lit corpsewood and magma-hearted basalt briars; Stormcrown bends gale cypress around captive storm crystals.
+- Trees and growths use the same faceted silhouette, dark value grouping, restrained accent, and material vocabulary as their realm. Magical fruit, cores, and conductors remain small identity beats and never resemble loot, targets, or damage boundaries.
+- Placement is deterministic across reconnects and clients. Town walls, dungeon entrances, cardinal roads, gateway sightlines, and every permanent hazard keep explicit clearings; hazard clearings include the complete server radius plus a readability apron.
+- Only Gloamwood foliage owns collision because authored forest trees already shaped that realm's navigation. New Moonfrost, Cinder, and Stormcrown dressing is visual-only until a server-authoritative navigation pass intentionally promotes it.
+- Production foliage is instanced by reusable part, with cached geometry and materials. Gallery previews may use individual meshes for inspection, but they must exercise the same recipes and shared resources as the world instances.
+
 ## Migration baseline — 2026-09-02
 
 - Authored asset payload: approximately 963.33 MiB.

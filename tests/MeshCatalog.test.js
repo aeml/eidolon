@@ -109,4 +109,19 @@ describe('MeshCatalog', () => {
         expect(specs.Zephyrion).toMatchObject({ shape: 'elemental', scale: 6.5 });
         expect(specs.Thalorath).toMatchObject({ shape: 'titan', color: 0x003B6F });
     });
+
+    test('catalogs every realm foliage family without authored plant preloads', () => {
+        const foliage = MeshCatalog.getProceduralFoliageRecipes();
+
+        expect(foliage.map((recipe) => recipe.id)).toEqual([
+            'ossuary_birch', 'grave_pine', 'mourning_willow',
+            'rime_pine', 'drowned_willow',
+            'ember_snag', 'basalt_briar',
+            'gale_cypress', 'storm_crystal'
+        ]);
+        expect(new Set(foliage.map((recipe) => recipe.region))).toEqual(
+            new Set(['earth', 'water', 'fire', 'air'])
+        );
+        expect(MeshCatalog.getPreloadModelPaths().some((path) => path.startsWith('./assets/plants/'))).toBe(false);
+    });
 });

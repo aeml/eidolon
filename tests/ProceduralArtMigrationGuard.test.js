@@ -16,9 +16,9 @@ const currentLegacyReferenceFiles = new Set([
 
 const INITIAL_LEGACY_MODEL_COUNT = 106;
 const INITIAL_LEGACY_MODEL_BYTES = 814551864;
-const MAX_LEGACY_MODEL_COUNT = 14;
-const MAX_LEGACY_MODEL_BYTES = 307109296;
-const MAX_RUNTIME_GLB_TOKENS = 35;
+const MAX_LEGACY_MODEL_COUNT = 11;
+const MAX_LEGACY_MODEL_BYTES = 247179476;
+const MAX_RUNTIME_GLB_TOKENS = 29;
 
 function walkFiles(root) {
     if (!fs.existsSync(root)) return [];
@@ -80,7 +80,8 @@ describe('procedural art migration guard', () => {
             'assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/',
             'assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/',
             'assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/',
-            'assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/'
+            'assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/',
+            'assets/plants/'
         ];
         const runtimeSource = [
             ...runtimeRoots.flatMap((root) => walkFiles(path.join(repoRoot, root))),

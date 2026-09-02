@@ -6,6 +6,7 @@ export class InputManager {
         this.scene = scene;
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
+        this.pointerOverCanvas = false;
         this.groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0); // Plane at Y=0
         this._intersectionTarget = new THREE.Vector3(); // Reusable vector
         
@@ -332,8 +333,8 @@ export class InputManager {
     }
 
     onMouseMove(event) {
-        this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        this.pointerOverCanvas = event.target?.tagName === 'CANVAS';
+        this.updateMouseFromEvent(event);
         
         // Notify listeners of mouse move (for hover checks)
         this.callbacks.onMouseMove.forEach(cb => cb(this.mouse));
@@ -351,7 +352,13 @@ export class InputManager {
 
     onMouseDown(event) {
         // Only handle clicks on the canvas (ignore UI)
-        if (event.target.tagName !== 'CANVAS') return;
+        this.pointerOverCanvas = event.target?.tagName === 'CANVAS';
+        if (!this.pointerOverCanvas) return;
+
+        // A click can occur without a preceding mousemove (for example after
+        // a moving actor crosses a stationary cursor). Always make the click
+        // coordinates the authoritative raycast sample for this interaction.
+        this.updateMouseFromEvent(event);
 
         if (event.button === 0) { // Left Click
             this.primaryMouseButtonDown = true;
@@ -391,10 +398,17 @@ export class InputManager {
         return intersection ? this._intersectionTarget : null;
     }
 
+    updateMouseFromEvent(event) {
+        if (typeof event?.clientX !== 'number' || typeof event?.clientY !== 'number') return;
+        this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    }
+
     clearInputState() {
         this.isMouseDown = false;
         this.primaryMouseButtonDown = false;
         this.isRightMouseDown = false;
+        this.pointerOverCanvas = false;
         this.joystickVector.set(0, 0);
         Object.keys(this.keys).forEach((key) => {
             this.keys[key] = false;

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { MeshFactory } from '../src/utils/MeshFactory.js';
 import { WorldGenerator } from '../src/world/WorldGenerator.js';
+import { PROCEDURAL_FOLIAGE_RECIPES } from '../src/art/ProceduralRealmFoliage.js';
 
 function createGenerator() {
     const scene = { add: jest.fn() };
@@ -238,33 +239,50 @@ describe('WorldGenerator shadow setup', () => {
         }
     });
 
-    test('configures instanced foliage materials for alpha-cutout silhouettes', async () => {
+    test('builds deterministic instanced procedural foliage without authored model loads', async () => {
         const generator = createGenerator();
-        const foliageMaterial = new THREE.MeshStandardMaterial({
-            map: { isTexture: true },
-            transparent: true,
-            side: THREE.DoubleSide
-        });
-        const leafMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), foliageMaterial);
-        const scene = new THREE.Group();
-        scene.add(leafMesh);
-        const loadModelSpy = jest.spyOn(MeshFactory, 'loadModel').mockResolvedValue({ scene, animations: [] });
+        const loadModelSpy = jest.spyOn(MeshFactory, 'loadModel');
 
         await generator.loadTrees(0, 200);
 
-        const addedTreeGroup = generator.scene.add.mock.calls.find(([obj]) => obj?.name?.startsWith('trees:'))?.[0];
-        expect(addedTreeGroup).toBeTruthy();
-        const instancedMesh = addedTreeGroup.children[0];
-        const material = Array.isArray(instancedMesh.material) ? instancedMesh.material[0] : instancedMesh.material;
-        expect(instancedMesh.castShadow).toBe(true);
-        expect(instancedMesh.receiveShadow).toBe(true);
-        expect(material.transparent).toBe(false);
-        expect(material.alphaTest).toBeGreaterThanOrEqual(0.5);
-        expect(material.shadowSide).toBe(THREE.DoubleSide);
-        expect(material.forceSinglePass).toBe(true);
-        expect(material.alphaToCoverage).toBe(false);
+        const groups = generator.scene.add.mock.calls.map(([object]) => object);
+        expect(groups).toHaveLength(PROCEDURAL_FOLIAGE_RECIPES.length);
+        expect(loadModelSpy).not.toHaveBeenCalled();
+        for (const [index, group] of groups.entries()) {
+            const recipe = PROCEDURAL_FOLIAGE_RECIPES[index];
+            expect(group.name).toBe(`foliage:${recipe.region}:${recipe.id}`);
+            expect(group.userData).toEqual(expect.objectContaining({
+                proceduralFoliage: true,
+                foliageId: recipe.id,
+                region: recipe.region,
+                instanceCount: recipe.count
+            }));
+            expect(group.children.length).toBeGreaterThanOrEqual(4);
+            for (const instance of group.children) {
+                expect(instance).toBeInstanceOf(THREE.InstancedMesh);
+                expect(instance.count).toBe(recipe.count);
+                expect(instance.material.flatShading).toBe(true);
+                expect(instance.material.transparent).toBe(false);
+                expect(instance.material.depthWrite).toBe(true);
+                expect([THREE.FrontSide, THREE.DoubleSide]).toContain(instance.material.side);
+            }
+        }
+
+        const expectedColliders = PROCEDURAL_FOLIAGE_RECIPES
+            .filter((recipe) => recipe.collision)
+            .reduce((sum, recipe) => sum + recipe.count, 0);
+        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(expectedColliders);
 
         loadModelSpy.mockRestore();
+    });
+
+    test('does not leave invisible foliage colliders when its scene generation is stale', async () => {
+        const generator = createGenerator();
+
+        await expect(generator.loadTrees(0, 200, { shouldAttach: () => false })).resolves.toBe(false);
+
+        expect(generator.scene.add).not.toHaveBeenCalled();
+        expect(generator.collisionManager.addCollider).not.toHaveBeenCalled();
     });
 
     test('configures building meshes with stable front-sided shadows to avoid bleed through walls', async () => {

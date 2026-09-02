@@ -3,6 +3,7 @@ import { listActorAnimationEntries } from '../../src/entities/actorAnimationMani
 import { listPlayerAbilityPresentationVariants } from '../../src/skills/abilityVisualManifest.js';
 import { collectBrowserFailures } from './helpers.js';
 import { EQUIPMENT_VISUAL_DESCRIPTORS } from '../../src/art/ProceduralEquipment.js';
+import { PROCEDURAL_FOLIAGE_RECIPES } from '../../src/art/ProceduralRealmFoliage.js';
 
 const presentationCount = listPlayerAbilityPresentationVariants().length;
 const actorEntries = listActorAnimationEntries();
@@ -467,6 +468,39 @@ test.describe('deterministic production animation gallery', () => {
         await page.screenshot({
             path: testInfo.outputPath('dark-fantasy-world-hazards.png'),
             animations: 'allow'
+        });
+        expect(failures, failures.join('\n')).toEqual([]);
+    });
+
+    test('renders every procedural realm foliage family in hardware Chrome', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        const response = await page.goto('/repro.html?foliage=1&instances=1', { waitUntil: 'networkidle' });
+        expect(response?.status()).toBe(200);
+
+        await expect.poll(() => page.evaluate(() => window.__eidolonFoliageGallery?.ready || false)).toBe(true);
+        const renderer = await hardwareRenderer(page);
+        expect(renderer).not.toBeNull();
+        expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
+
+        const metrics = await page.evaluate(() => window.__eidolonFoliageGallery);
+        expect(metrics.foliage.map((entry) => entry.id)).toEqual(
+            PROCEDURAL_FOLIAGE_RECIPES.map((recipe) => recipe.id)
+        );
+        expect(new Set(metrics.foliage.map((entry) => entry.region))).toEqual(
+            new Set(['earth', 'water', 'fire', 'air'])
+        );
+        for (const entry of metrics.foliage) {
+            expect(entry.theme).toBeTruthy();
+            expect(entry.meshCount).toBeGreaterThanOrEqual(4);
+            expect(entry.height).toBeGreaterThan(2);
+            expect(entry.finite).toBe(true);
+        }
+        expect(metrics.cache).toEqual({ geometries: 10, materials: 28, archetypes: 9 });
+
+        await page.screenshot({
+            path: testInfo.outputPath('dark-fantasy-realm-foliage.png'),
+            animations: 'allow',
+            fullPage: true
         });
         expect(failures, failures.join('\n')).toEqual([]);
     });

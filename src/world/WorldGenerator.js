@@ -1,13 +1,17 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
+import {
+    PROCEDURAL_FOLIAGE_RECIPES,
+    createProceduralFoliagePlacements,
+    getProceduralFoliageArchetype
+} from '../art/ProceduralRealmFoliage.js';
 
 // Shared temp objects to reduce allocations during instancing
-const TEMP_BOX = new THREE.Box3();
 const TEMP_POS = new THREE.Vector3();
 const TEMP_SCALE = new THREE.Vector3();
 const TEMP_QUAT = new THREE.Quaternion();
 const TEMP_MAT4 = new THREE.Matrix4();
+const TEMP_PART_MAT4 = new THREE.Matrix4();
 const TEMP_UP = new THREE.Vector3(0, 1, 0);
 
 export class WorldGenerator {
@@ -63,121 +67,82 @@ export class WorldGenerator {
         ]);
     }
 
-    async loadTrees(cx, cz) {
-        const treeTypes = [
-            { file: 'birch.glb', count: 150, scaleMin: 4, scaleMax: 7 },
-            { file: 'pine.glb', count: 150, scaleMin: 4, scaleMax: 7 },
-            { file: 'willow.glb', count: 150, scaleMin: 4, scaleMax: 7 }
-        ];
+    async loadTrees(cx, cz, { shouldAttach = () => true } = {}) {
+        // cx/cz remain part of the public signature because town generation
+        // calls this method as a decoration phase. Placements themselves are
+        // deterministic world-space recipes so reconnects and screenshots do
+        // not reshuffle landmarks around the player.
+        void cx;
+        void cz;
+        if (!shouldAttach()) return false;
 
-        // Earth Realm Bounds (approximate based on fence)
-        const bounds = { minX: -950, maxX: 950, minZ: -550, maxZ: 950 };
-        // Town Exclusion Zone (Center 0,200, Size 100 -> +/- 100)
-        // Add buffer
-        const townBounds = { minX: cx - 150, maxX: cx + 150, minZ: cz - 150, maxZ: cz + 150 };
-
-        const pickTreePlacements = (count) => {
-            const placements = [];
-            placements.length = 0;
-
-            for (let i = 0; i < count; i++) {
-                let x, z;
-                let valid = false;
-                let attempts = 0;
-
-                while (!valid && attempts < 50) {
-                    x = bounds.minX + Math.random() * (bounds.maxX - bounds.minX);
-                    z = bounds.minZ + Math.random() * (bounds.maxZ - bounds.minZ);
-
-                    // Check if inside town
-                    if (x > townBounds.minX && x < townBounds.maxX && 
-                        z > townBounds.minZ && z < townBounds.maxZ) {
-                        valid = false;
-                    } else {
-                        valid = true;
-                    }
-                    attempts++;
-                }
-
-                if (valid) {
-                    placements.push({ x, z });
-                }
-            }
-            return placements;
-        };
-
-        const extractMeshParts = (root) => {
-            const parts = [];
-            root.traverse((child) => {
-                if (!child.isMesh) return;
-                // Ensure geometry bounds exist so instancing doesn't do extra work later
-                if (child.geometry && child.geometry.boundingBox === null) {
-                    child.geometry.computeBoundingBox();
-                }
-                parts.push(child);
-            });
-            return parts;
-        };
-
-        await Promise.all(treeTypes.map(async (type) => {
-            const gltf = await MeshFactory.loadModel(`./assets/plants/${type.file}`);
-            const model = gltf.scene;
-            model.updateMatrixWorld(true);
-
-            // Compute a base bottom offset once (approx) so instances sit on the ground.
-            TEMP_BOX.setFromObject(model);
-            const baseBottomY = TEMP_BOX.min.y;
-
-            const placements = pickTreePlacements(type.count);
-            if (placements.length === 0) return;
-
-            const parts = extractMeshParts(model);
-            if (parts.length === 0) return;
-
+        for (const recipe of PROCEDURAL_FOLIAGE_RECIPES) {
+            const placements = createProceduralFoliagePlacements(recipe);
+            const parts = getProceduralFoliageArchetype(recipe.id);
             const group = new THREE.Group();
-            group.name = `trees:${type.file}`;
+            group.name = `foliage:${recipe.region}:${recipe.id}`;
+            group.userData.proceduralFoliage = true;
+            group.userData.foliageId = recipe.id;
+            group.userData.region = recipe.region;
+            group.userData.theme = recipe.theme;
+            group.userData.instanceCount = placements.length;
+            group.userData.placements = placements;
+            const colliders = [];
 
-            // One InstancedMesh per mesh-part in the GLB.
-            // This preserves multi-mesh tree models (trunk + leaves etc.) without hundreds of scene nodes.
-            const instancedMeshes = [];
-            for (const part of parts) {
-                const material = Array.isArray(part.material)
-                    ? part.material.map(m => MeshFactory.configureShadowCastingForMaterial(m.clone(), { isFoliage: true }))
-                    : MeshFactory.configureShadowCastingForMaterial(part.material.clone(), { isFoliage: true });
-                const inst = new THREE.InstancedMesh(part.geometry, material, placements.length);
-                inst.castShadow = true;
-                inst.receiveShadow = true;
-                instancedMeshes.push(inst);
-                group.add(inst);
-            }
+            const instancedParts = parts.map((descriptor) => {
+                const configuredMaterial = MeshFactory.configureShadowCastingForMaterial(
+                    descriptor.material,
+                    { isFoliage: true }
+                );
+                const instance = new THREE.InstancedMesh(
+                    descriptor.geometry,
+                    configuredMaterial,
+                    placements.length
+                );
+                instance.name = descriptor.name;
+                instance.castShadow = descriptor.castShadow;
+                instance.receiveShadow = descriptor.receiveShadow;
+                group.add(instance);
+                return { descriptor, instance };
+            });
 
-            for (let i = 0; i < placements.length; i++) {
-                const { x, z } = placements[i];
-                const scale = type.scaleMin + Math.random() * (type.scaleMax - type.scaleMin);
-                const rotation = Math.random() * Math.PI * 2;
-
-                TEMP_POS.set(x, (-baseBottomY) * scale, z);
-                TEMP_SCALE.set(scale, scale, scale);
-                TEMP_QUAT.setFromAxisAngle(TEMP_UP, rotation);
+            placements.forEach((placement, index) => {
+                TEMP_POS.set(placement.x, 0, placement.z);
+                TEMP_SCALE.setScalar(placement.scale);
+                TEMP_QUAT.setFromAxisAngle(TEMP_UP, placement.rotation);
                 TEMP_MAT4.compose(TEMP_POS, TEMP_QUAT, TEMP_SCALE);
 
-                for (const inst of instancedMeshes) {
-                    inst.setMatrixAt(i, TEMP_MAT4);
+                for (const { descriptor, instance } of instancedParts) {
+                    TEMP_PART_MAT4.multiplyMatrices(TEMP_MAT4, descriptor.matrix);
+                    instance.setMatrixAt(index, TEMP_PART_MAT4);
                 }
 
-                // Trunk Collider (keep as before)
-                const colliderSize = new THREE.Vector3(2, 10, 2);
-                const colliderCenter = new THREE.Vector3(x, 5, z);
-                const collider = new THREE.Box3().setFromCenterAndSize(colliderCenter, colliderSize);
-                this.collisionManager.addCollider(collider);
-            }
+                if (recipe.collision) {
+                    const [radius, height] = recipe.collision;
+                    const colliderSize = new THREE.Vector3(
+                        radius * 2 * placement.scale,
+                        height * placement.scale,
+                        radius * 2 * placement.scale
+                    );
+                    const colliderCenter = new THREE.Vector3(
+                        placement.x,
+                        colliderSize.y / 2,
+                        placement.z
+                    );
+                    colliders.push(new THREE.Box3().setFromCenterAndSize(colliderCenter, colliderSize));
+                }
+            });
 
-            for (const inst of instancedMeshes) {
-                inst.instanceMatrix.needsUpdate = true;
+            for (const { instance } of instancedParts) {
+                instance.instanceMatrix.needsUpdate = true;
+                instance.computeBoundingBox();
+                instance.computeBoundingSphere();
             }
-
+            if (!shouldAttach()) return false;
+            colliders.forEach((collider) => this.collisionManager.addCollider(collider));
             this.scene.add(group);
-        }));
+        }
+        return true;
     }
 
     async loadBuildings(cx, cz) {

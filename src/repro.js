@@ -3,7 +3,12 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RenderSystem } from './core/RenderSystem.js';
 import { AnimationGallery } from './animationGallery.js';
 import { EnvironmentalHazard } from './entities/EnvironmentalHazard.js';
-import { ACTIVE_WORLD_HAZARD_TYPES } from './art/darkFantasyTheme.js';
+import { ACTIVE_WORLD_HAZARD_TYPES, getRegionTheme } from './art/darkFantasyTheme.js';
+import {
+    PROCEDURAL_FOLIAGE_RECIPES,
+    createProceduralFoliagePreview,
+    getProceduralFoliageCacheMetrics
+} from './art/ProceduralRealmFoliage.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const perfOverlayEnabled = urlParams.get('perf') === '1';
@@ -11,6 +16,8 @@ const instanceCount = Number.parseInt(urlParams.get('instances') || '250', 10);
 const useInstancing = urlParams.get('instancing') !== '0';
 const galleryMode = urlParams.get('gallery') === '1';
 const hazardGalleryMode = urlParams.get('hazards') === '1';
+const foliageGalleryMode = urlParams.get('foliage') === '1';
+const specializedGalleryMode = galleryMode || hazardGalleryMode || foliageGalleryMode;
 
 const perfOverlay = document.getElementById('perf-overlay');
 const readout = document.getElementById('repro-readout');
@@ -250,7 +257,7 @@ function resetPreviewState() {
     setReadout('Last pick: none');
 }
 
-if (!galleryMode && !hazardGalleryMode && useInstancing) {
+if (!specializedGalleryMode && useInstancing) {
     instancedMesh = new THREE.InstancedMesh(baseGeometry, baseMaterial, spawnCount);
     instancedMesh.castShadow = true;
     instancedMesh.receiveShadow = true;
@@ -264,7 +271,7 @@ if (!galleryMode && !hazardGalleryMode && useInstancing) {
         instancedMesh.setMatrixAt(i, dummy.matrix);
     }
     renderSystem.scene.add(instancedMesh);
-} else if (!galleryMode && !hazardGalleryMode) {
+} else if (!specializedGalleryMode) {
     for (let i = 0; i < spawnCount; i += 1) {
         const angle = (i / spawnCount) * Math.PI * 2;
         const radius = 20 + (i % 8) * 3;
@@ -360,6 +367,43 @@ if (hazardGalleryMode) {
     setReadout('Dark-fantasy hazard gallery\nEvery glowing outer edge is the exact server-authoritative damage radius.');
 }
 
+const foliageGallery = new THREE.Group();
+foliageGallery.name = 'ProceduralRealmFoliageGallery';
+if (foliageGalleryMode) {
+    document.body.classList.add('foliage-gallery-mode');
+    PROCEDURAL_FOLIAGE_RECIPES.forEach((recipe, index) => {
+        const column = index % 3;
+        const row = Math.floor(index / 3);
+        const x = (column - 1) * 7.5;
+        const z = (row - 1) * 8.5;
+        const preview = createProceduralFoliagePreview(recipe.id);
+        preview.position.set(x, 0, z);
+        preview.rotation.y = (index % 2 ? -1 : 1) * 0.18;
+        foliageGallery.add(preview);
+
+        const theme = getRegionTheme(recipe.region);
+        const plinth = new THREE.Mesh(
+            new THREE.CylinderGeometry(2.65, 2.85, 0.22, 10),
+            new THREE.MeshStandardMaterial({
+                color: theme.palette.shadow,
+                emissive: theme.palette.accent,
+                emissiveIntensity: 0.08,
+                roughness: 0.95,
+                flatShading: true
+            })
+        );
+        plinth.name = `realm-plinth:${recipe.region}:${recipe.id}`;
+        plinth.position.set(x, -0.12, z);
+        plinth.receiveShadow = true;
+        foliageGallery.add(plinth);
+    });
+    renderSystem.scene.add(foliageGallery);
+    renderSystem.camera.position.set(22, 24, 34);
+    controls.target.set(0, 3.2, 0);
+    controls.update();
+    setReadout('Procedural realm foliage gallery\nNine distinct silhouettes across Gloamwood, Moonfrost, Cinder Wastes, and Stormreach.');
+}
+
 window.addEventListener('keydown', (event) => {
     const key = event.key.toLowerCase();
     if (key === 'p') togglePerf();
@@ -391,6 +435,26 @@ const animate = () => {
                     mesh.scale.x, mesh.scale.y, mesh.scale.z
                 ].every(Number.isFinite))
             }))
+        };
+    }
+
+
+    if (foliageGalleryMode) {
+        const previews = foliageGallery.children.filter((child) => child.userData?.proceduralFoliage);
+        window.__eidolonFoliageGallery = {
+            ready: previews.length === PROCEDURAL_FOLIAGE_RECIPES.length,
+            cache: getProceduralFoliageCacheMetrics(),
+            foliage: previews.map((preview) => {
+                const bounds = new THREE.Box3().setFromObject(preview);
+                return {
+                    id: preview.userData.foliageId,
+                    region: preview.userData.region,
+                    theme: preview.userData.theme,
+                    meshCount: preview.children.filter((child) => child.isMesh).length,
+                    height: bounds.max.y - bounds.min.y,
+                    finite: [...bounds.min.toArray(), ...bounds.max.toArray()].every(Number.isFinite)
+                };
+            })
         };
     }
 

@@ -255,31 +255,32 @@ type Entity struct {
 	SwiftEndTime time.Time `json:"-"`
 
 	// Rune Effects
-	ChargeStartX             float64   `json:"-"` // For momentum rune distance calculation
-	ChargeStartZ             float64   `json:"-"`
-	ChargeRuneID             string    `json:"-"` // Which rune is active for current charge
-	CCImmune                 bool      `json:"ccImmune,omitempty"`
-	CCImmuneEndTime          time.Time `json:"-"`
-	RuneArmorBuff            float64   `json:"-"` // Temporary armor buff from runes
-	RuneArmorBuffEndTime     time.Time `json:"-"`
-	WhirlwindTickCount       int       `json:"-"` // For extended whirlwind duration
-	WhirlwindActive          bool      `json:"whirlwindActive,omitempty"`
-	WhirlwindEndTime         time.Time `json:"-"`
-	WhirlwindRuneID          string    `json:"-"`
-	IronFortressRuneID       string    `json:"-"` // For thorns/immovable effects
-	IronFortressThorns       bool      `json:"-"`
-	IronFortressImmovable    bool      `json:"-"`
-	ArcaneShieldRuneID       string    `json:"-"` // For reflective/explosive effects
-	ArcaneShieldAbsorbed     int       `json:"-"` // Track absorbed damage for explosive rune
-	InvulnerableEndTime      time.Time `json:"-"` // For teleport phase rune
-	TeleportCharges          int       `json:"-"`
-	TeleportChargeReadyAt    time.Time `json:"-"`
-	CloakNextAttackBonus     float64   `json:"-"` // For cloak prepared ambush rune
-	CloakSwiftSpeedBonus     bool      `json:"-"` // For cloak swift rune
-	CloakBurstSpeedBonus     bool      `json:"-"`
-	CloakBurstSpeedEndTime   time.Time `json:"-"`
-	AccuracyReduction        float64   `json:"-"`
-	AccuracyReductionEndTime time.Time `json:"-"`
+	ChargeStartX                float64   `json:"-"` // For momentum rune distance calculation
+	ChargeStartZ                float64   `json:"-"`
+	ChargeRuneID                string    `json:"-"` // Which rune is active for current charge
+	CCImmune                    bool      `json:"ccImmune,omitempty"`
+	CCImmuneEndTime             time.Time `json:"-"`
+	RuneArmorBuff               float64   `json:"-"` // Temporary armor buff from runes
+	RuneArmorBuffEndTime        time.Time `json:"-"`
+	WhirlwindTickCount          int       `json:"-"` // For extended whirlwind duration
+	WhirlwindActive             bool      `json:"whirlwindActive,omitempty"`
+	WhirlwindEndTime            time.Time `json:"-"`
+	WhirlwindRuneID             string    `json:"-"`
+	IronFortressRuneID          string    `json:"-"` // For thorns/immovable effects
+	IronFortressThorns          bool      `json:"-"`
+	IronFortressImmovable       bool      `json:"-"`
+	ArcaneShieldRuneID          string    `json:"-"` // For reflective/explosive effects
+	ArcaneShieldAbsorbed        int       `json:"-"` // Track absorbed damage for explosive rune
+	InvulnerableEndTime         time.Time `json:"-"` // For teleport phase rune
+	QAWaypointProtectionEndTime time.Time `json:"-"` // Isolated allowlisted release-QA protection
+	TeleportCharges             int       `json:"-"`
+	TeleportChargeReadyAt       time.Time `json:"-"`
+	CloakNextAttackBonus        float64   `json:"-"` // For cloak prepared ambush rune
+	CloakSwiftSpeedBonus        bool      `json:"-"` // For cloak swift rune
+	CloakBurstSpeedBonus        bool      `json:"-"`
+	CloakBurstSpeedEndTime      time.Time `json:"-"`
+	AccuracyReduction           float64   `json:"-"`
+	AccuracyReductionEndTime    time.Time `json:"-"`
 
 	// Cleric Rune Effects
 	SpiritGuardiansRuneID         string    `json:"-"` // For spirit guardian rune effects

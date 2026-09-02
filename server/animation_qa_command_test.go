@@ -17,6 +17,7 @@ func TestPreparePlayerForAnimationQAClearsOnlyReadinessGates(t *testing.T) {
 	player.LastAbilityTime = time.Now()
 	player.Cooldowns["Iron Fortress"] = time.Now().Add(time.Minute)
 	player.InvulnerableEndTime = time.Now().Add(time.Minute)
+	player.QAWaypointProtectionEndTime = time.Now().Add(5 * time.Minute)
 	w.AddEntity(player)
 
 	if !w.PreparePlayerForAnimationQA(player.ID, false, false, false) {
@@ -29,6 +30,9 @@ func TestPreparePlayerForAnimationQAClearsOnlyReadinessGates(t *testing.T) {
 		t.Fatal("expected local and named server cooldown gates to clear")
 	}
 	if player.InvulnerableEndTime.IsZero() {
+		t.Fatal("animation readiness must not silently alter gameplay invulnerability")
+	}
+	if player.QAWaypointProtectionEndTime.IsZero() {
 		t.Fatal("animation readiness must not silently alter waypoint protection")
 	}
 }
@@ -80,6 +84,7 @@ func TestPreparePlayerForAnimationQACanArmRealHostileDeathCheck(t *testing.T) {
 	player.SpiritsActive = true
 	player.SpiritEndTime = time.Now().Add(time.Minute)
 	player.InvulnerableEndTime = time.Now().Add(time.Minute)
+	player.QAWaypointProtectionEndTime = time.Now().Add(5 * time.Minute)
 	w.AddEntity(player)
 
 	if !w.PreparePlayerForAnimationQA(player.ID, false, false, true) {
@@ -97,8 +102,11 @@ func TestPreparePlayerForAnimationQACanArmRealHostileDeathCheck(t *testing.T) {
 		player.HealingLightHoTActive || player.GuardianEmbraceActive || player.SpiritsActive {
 		t.Fatal("expected near-death readiness to clear retained movement, protection, and healing effects")
 	}
-	if player.InvulnerableEndTime.IsZero() {
-		t.Fatal("expected waypoint invulnerability to remain until the explicit protection-off command")
+	if !player.InvulnerableEndTime.IsZero() {
+		t.Fatal("expected near-death readiness to clear gameplay invulnerability")
+	}
+	if player.QAWaypointProtectionEndTime.IsZero() {
+		t.Fatal("expected waypoint protection to remain until the explicit protection-off command")
 	}
 	w.Update(1.1)
 	if player.Health != 1 {
@@ -156,6 +164,7 @@ func TestAnimationQACommandsRequireAllowlistAndUseDedicatedSignal(t *testing.T) 
 	player := newLevelCommandPlayer(client.playerID)
 	player.Cooldowns["Charge"] = time.Now().Add(time.Minute)
 	player.InvulnerableEndTime = time.Now().Add(time.Minute)
+	player.QAWaypointProtectionEndTime = time.Now().Add(5 * time.Minute)
 	world.AddEntity(player)
 
 	if !client.handleChatCommand("/qa-animation-ready") {
@@ -196,7 +205,7 @@ func TestAnimationQACommandsRequireAllowlistAndUseDedicatedSignal(t *testing.T) 
 	if !client.handleChatCommand("/qa-protection off") {
 		t.Fatal("expected protection command to be handled")
 	}
-	if !player.InvulnerableEndTime.IsZero() {
+	if !player.QAWaypointProtectionEndTime.IsZero() {
 		t.Fatal("expected allowlisted protection disable")
 	}
 

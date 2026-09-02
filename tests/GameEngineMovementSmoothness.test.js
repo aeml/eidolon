@@ -260,7 +260,8 @@ describe('GameEngine ordered movement transport', () => {
         engine.overworldSceneryReady = false;
         engine.deferredOverworldSceneryPromise = null;
         engine.worldGenerator = {
-            createTownDecorations: jest.fn().mockResolvedValue(),
+            loadTrees: jest.fn().mockResolvedValue(true),
+            loadBuildings: jest.fn().mockResolvedValue(),
             createOverworldStructures: jest.fn().mockResolvedValue(true)
         };
         const preloadSpy = jest.spyOn(MeshFactory, 'preloadAllModels').mockResolvedValue({
@@ -279,7 +280,10 @@ describe('GameEngine ordered movement transport', () => {
                 phase: 'background',
                 failFast: false
             }));
-            expect(engine.worldGenerator.createTownDecorations).toHaveBeenCalledWith(0, 200);
+            expect(engine.worldGenerator.loadTrees).toHaveBeenCalledWith(0, 200, {
+                shouldAttach: expect.any(Function)
+            });
+            expect(engine.worldGenerator.loadBuildings).toHaveBeenCalledWith(0, 200);
             expect(engine.worldGenerator.createOverworldStructures).toHaveBeenCalledTimes(1);
             expect(engine.overworldSceneryReady).toBe(true);
         } finally {
@@ -295,7 +299,8 @@ describe('GameEngine ordered movement transport', () => {
         engine.overworldSceneryReady = false;
         engine.deferredOverworldSceneryPromise = null;
         engine.worldGenerator = {
-            createTownDecorations: jest.fn().mockResolvedValue(),
+            loadTrees: jest.fn().mockResolvedValue(true),
+            loadBuildings: jest.fn().mockResolvedValue(),
             createOverworldStructures: jest.fn().mockResolvedValue(true)
         };
         const preloadSpy = jest.spyOn(MeshFactory, 'preloadAllModels').mockResolvedValue({
@@ -308,7 +313,8 @@ describe('GameEngine ordered movement transport', () => {
         try {
             await expect(engine.startDeferredOverworldScenery()).resolves.toBe(true);
             expect(engine.worldGenerator.createOverworldStructures).toHaveBeenCalledTimes(1);
-            expect(engine.worldGenerator.createTownDecorations).toHaveBeenCalledTimes(1);
+            expect(engine.worldGenerator.loadTrees).toHaveBeenCalledTimes(1);
+            expect(engine.worldGenerator.loadBuildings).toHaveBeenCalledTimes(1);
             expect(engine.overworldSceneryReady).toBe(true);
             expect(consoleWarn).toHaveBeenCalledWith(
                 expect.stringContaining('continuing after 1 optional model preload failure')
@@ -327,7 +333,8 @@ describe('GameEngine ordered movement transport', () => {
         engine.overworldSceneryReady = false;
         engine.deferredOverworldSceneryPromise = null;
         engine.worldGenerator = {
-            createTownDecorations: jest.fn().mockResolvedValue(),
+            loadTrees: jest.fn().mockResolvedValue(true),
+            loadBuildings: jest.fn().mockResolvedValue(),
             createOverworldStructures: jest.fn(async ({ shouldAttach }) => {
                 await Promise.resolve();
                 return shouldAttach();
@@ -345,7 +352,8 @@ describe('GameEngine ordered movement transport', () => {
             finishPreload({ completed: 11, total: 11, failures: [] });
 
             await expect(scenery).resolves.toBe(false);
-            expect(engine.worldGenerator.createTownDecorations).not.toHaveBeenCalled();
+            expect(engine.worldGenerator.loadTrees).toHaveBeenCalledTimes(1);
+            expect(engine.worldGenerator.loadBuildings).not.toHaveBeenCalled();
             expect(engine.worldGenerator.createOverworldStructures).toHaveBeenCalledTimes(1);
             expect(engine.worldGenerator.createOverworldStructures).toHaveBeenCalledWith({
                 shouldAttach: expect.any(Function)

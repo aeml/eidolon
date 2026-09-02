@@ -116,16 +116,17 @@ func TestQAGuaranteedLootMakesNextAcceptedBasicAttackDeterministic(t *testing.T)
 func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) {
 	w := NewWorld(nil)
 	player := &Entity{
-		ID:                  "player-qa-near-death",
-		Type:                TypePlayer,
-		SubType:             "Cleric",
-		Health:              90,
-		MaxHealth:           90,
-		Mana:                10,
-		MaxMana:             100,
-		Defense:             100,
-		Cooldowns:           make(map[string]time.Time),
-		InvulnerableEndTime: time.Now().Add(time.Minute),
+		ID:                          "player-qa-near-death",
+		Type:                        TypePlayer,
+		SubType:                     "Cleric",
+		Health:                      90,
+		MaxHealth:                   90,
+		Mana:                        10,
+		MaxMana:                     100,
+		Defense:                     100,
+		Cooldowns:                   make(map[string]time.Time),
+		InvulnerableEndTime:         time.Now().Add(time.Minute),
+		QAWaypointProtectionEndTime: time.Now().Add(5 * time.Minute),
 	}
 	enemy := &Entity{
 		ID:             "qa-near-death-enemy",
@@ -225,4 +226,49 @@ func TestNearDeathAnimationQARemovesOwnedEffectsAndBlocksRecovery(t *testing.T) 
 		time.Sleep(time.Millisecond)
 	}
 	t.Fatal("expected the real hostile hit to complete the near-death check")
+}
+
+func TestQAWaypointProtectionIsIndependentOfGameplayInvulnerabilityAndHazards(t *testing.T) {
+	w := NewWorld(nil)
+	player := &Entity{
+		ID:          "player-qa-protection-isolation",
+		Type:        TypePlayer,
+		SubType:     "Wizard",
+		Health:      100,
+		MaxHealth:   100,
+		State:       "IDLE",
+		Cooldowns:   make(map[string]time.Time),
+		SkillRunes:  make(map[string]string),
+		TalentRanks: make(map[string]int),
+	}
+	w.AddEntity(player)
+
+	if _, ok := w.MovePlayerToQAWaypoint(player.ID, "combat"); !ok {
+		t.Fatal("expected combat waypoint protection")
+	}
+	minimumProtection := time.Now().Add(QAWaypointProtectionDuration - time.Second)
+	if player.QAWaypointProtectionEndTime.Before(minimumProtection) {
+		t.Fatalf("expected bounded waypoint protection, got %v", player.QAWaypointProtectionEndTime)
+	}
+
+	// Reproduce a short Phase-style gameplay window. It must not overwrite the
+	// longer release-QA protection timestamp.
+	player.InvulnerableEndTime = time.Now().Add(time.Second)
+	if player.QAWaypointProtectionEndTime.Before(minimumProtection) {
+		t.Fatal("gameplay invulnerability shortened waypoint protection")
+	}
+
+	player.X = -800
+	player.Z = -450
+	player.InvulnerableEndTime = time.Now().Add(-time.Second)
+	w.processHazardDamage(1.1, []*Entity{player})
+	if player.Health != player.MaxHealth {
+		t.Fatalf("protected QA player took environmental damage: %d/%d", player.Health, player.MaxHealth)
+	}
+
+	player.QAWaypointProtectionEndTime = time.Time{}
+	w.processHazardDamage(1.1, []*Entity{player})
+	if player.Health >= player.MaxHealth {
+		t.Fatal("ordinary hazard damage stayed disabled after QA protection ended")
+	}
 }

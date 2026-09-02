@@ -29,7 +29,7 @@ services:
       args:
         GO_VERSION: 1.24.5
         BUILD_COMMIT: ${EIDOLON_BUILD_COMMIT:-development}
-        BUILD_VERSION: ${EIDOLON_BUILD_VERSION:-Alpha 0.41.0.12}
+        BUILD_VERSION: ${EIDOLON_BUILD_VERSION:-Alpha 0.41.0.13}
     restart: unless-stopped
     env_file:
       - .env

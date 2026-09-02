@@ -645,7 +645,7 @@ func (w *World) MovePlayerToQAWaypoint(playerID, waypoint string) (*Entity, bool
 	player.TargetID = ""
 	player.State = "IDLE"
 	player.MoveLockUntil = time.Now().Add(QAWaypointMovementLockDuration)
-	player.InvulnerableEndTime = time.Now().Add(QAWaypointProtectionDuration)
+	player.QAWaypointProtectionEndTime = time.Now().Add(QAWaypointProtectionDuration)
 	w.Grid.Update(player, oldX, oldZ)
 
 	return player, true
@@ -725,7 +725,7 @@ func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persiste
 		// The death check follows a complete ability/rune pass. End any movement,
 		// absorb, lethal-prevention, mitigation, or healing state that could
 		// legitimately survive the final cast. Owned projectiles and the Seraph
-		// were removed above. Waypoint invulnerability is kept separate and must
+		// were removed above. Waypoint protection is kept separate and must
 		// still be explicitly removed by /qa-protection off.
 		player.IsCharging = false
 		player.ChargeTargetX = player.X
@@ -753,6 +753,7 @@ func (w *World) PreparePlayerForAnimationQA(playerID string, lowHealth, persiste
 		player.GuardianEmbraceEndTime = time.Time{}
 		player.SpiritsActive = false
 		player.SpiritEndTime = time.Time{}
+		player.InvulnerableEndTime = time.Time{}
 		player.Health = 1
 		player.QAHealthRegenPausedUntil = time.Now().Add(time.Minute)
 	} else if lowHealth {
@@ -781,7 +782,7 @@ func (w *World) DisablePlayerQAProtection(playerID string) bool {
 		return false
 	}
 	player.Mu.Lock()
-	player.InvulnerableEndTime = time.Time{}
+	player.QAWaypointProtectionEndTime = time.Time{}
 	playerX, playerZ, playerInstanceID := player.X, player.Z, player.InstanceID
 	player.Mu.Unlock()
 
@@ -5538,6 +5539,9 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if now.After(e.InvulnerableEndTime) && !e.InvulnerableEndTime.IsZero() {
 				e.InvulnerableEndTime = time.Time{}
 			}
+			if now.After(e.QAWaypointProtectionEndTime) && !e.QAWaypointProtectionEndTime.IsZero() {
+				e.QAWaypointProtectionEndTime = time.Time{}
+			}
 
 			// Extended Whirlwind tick (from rune)
 			if e.WhirlwindActive {
@@ -6427,6 +6431,7 @@ func (w *World) processHazardDamage(dt float64, players []*Entity) {
 		playerState := player.State
 		playerHealth := player.Health
 		instanceID := player.InstanceID
+		qaProtectionEnd := player.QAWaypointProtectionEndTime
 		player.Mu.RUnlock()
 		if playerState == "DEAD" || playerHealth <= 0 {
 			continue
@@ -6439,6 +6444,14 @@ func (w *World) processHazardDamage(dt float64, players []*Entity) {
 
 		// Players in dungeon instances don't get world hazard damage
 		if instanceID != "" {
+			continue
+		}
+
+		// The allowlisted release waypoint promises a protected inspection
+		// window. Keep it independent from gameplay-rune invulnerability and do
+		// not bank a partial environmental tick while that window is active.
+		if !qaProtectionEnd.IsZero() && time.Now().Before(qaProtectionEnd) {
+			delete(w.PlayerHazardTicks, playerID)
 			continue
 		}
 
@@ -6685,8 +6698,12 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 			}
 		}
 
-		// Invulnerability check (from teleport phase rune)
-		if tgt.Type == TypePlayer && !tgt.InvulnerableEndTime.IsZero() && time.Now().Before(tgt.InvulnerableEndTime) {
+		// Gameplay invulnerability and allowlisted release-QA protection are
+		// independent clocks; a short class effect must never shorten the latter.
+		damageTime := time.Now()
+		gameplayInvulnerable := !tgt.InvulnerableEndTime.IsZero() && damageTime.Before(tgt.InvulnerableEndTime)
+		qaWaypointProtected := !tgt.QAWaypointProtectionEndTime.IsZero() && damageTime.Before(tgt.QAWaypointProtectionEndTime)
+		if tgt.Type == TypePlayer && (gameplayInvulnerable || qaWaypointProtected) {
 			damage = 0
 		}
 
@@ -6777,7 +6794,8 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		// waypoint protection has been removed, do not let a residual fractional
 		// mitigation or absorb round that already-minimal real hit back to zero.
 		qaNearDeathHit := tgt.Type == TypePlayer && tgt.Health == 1 &&
-			time.Now().Before(tgt.QAHealthRegenPausedUntil) && tgt.InvulnerableEndTime.IsZero()
+			time.Now().Before(tgt.QAHealthRegenPausedUntil) && tgt.InvulnerableEndTime.IsZero() &&
+			tgt.QAWaypointProtectionEndTime.IsZero()
 		if qaNearDeathHit && actualDamage < 1 {
 			actualDamage = 1
 		}

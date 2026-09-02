@@ -247,8 +247,8 @@ func TestHandleMessageQAWaypointMovesAllowlistedOverworldPlayer(t *testing.T) {
 		t.Fatalf("expected a stationary waypoint arrival, got target=(%v, %v) state=%q", updated.TargetX, updated.TargetZ, updated.State)
 	}
 	minimumProtection := time.Now().Add(game.QAWaypointProtectionDuration - time.Second)
-	if updated.InvulnerableEndTime.Before(minimumProtection) {
-		t.Fatalf("expected the full QA browser protection window, got %v", updated.InvulnerableEndTime)
+	if updated.QAWaypointProtectionEndTime.Before(minimumProtection) {
+		t.Fatalf("expected the full QA browser protection window, got %v", updated.QAWaypointProtectionEndTime)
 	}
 
 	msgs := drainSentMessages(client.send)

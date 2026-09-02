@@ -1268,6 +1268,15 @@ export class GameEngine {
                 console.warn('GameEngine: Deferred overworld structures failed to load.', error);
                 return false;
             });
+            // Code-native foliage is synchronous, light, and independent of
+            // the remaining authored structures. Put realm identity on screen
+            // immediately instead of holding it behind the background queue.
+            const foliageTask = Promise.resolve(
+                this.worldGenerator.loadTrees(0, 200, { shouldAttach: sceneIsCurrent })
+            ).then(result => result !== false).catch((error) => {
+                console.warn('GameEngine: Deferred realm foliage failed to load.', error);
+                return false;
+            });
 
             const result = await MeshFactory.preloadAllModels({
                 phase: 'background',
@@ -1277,7 +1286,7 @@ export class GameEngine {
             });
 
             if (!sceneIsCurrent()) {
-                await structuresTask;
+                await Promise.all([structuresTask, foliageTask]);
                 return false;
             }
 
@@ -1287,13 +1296,13 @@ export class GameEngine {
                 );
             }
 
-            const decorationsReady = await Promise.resolve(
-                this.worldGenerator.createTownDecorations(0, 200)
+            const buildingsReady = await Promise.resolve(
+                this.worldGenerator.loadBuildings(0, 200)
             ).then(() => true).catch((error) => {
-                console.warn('GameEngine: Deferred town decorations failed to load.', error);
+                console.warn('GameEngine: Deferred town buildings failed to load.', error);
                 return false;
             });
-            const structuresReady = await structuresTask;
+            const [structuresReady, foliageReady] = await Promise.all([structuresTask, foliageTask]);
 
             if (!sceneIsCurrent()) {
                 return false;
@@ -1302,7 +1311,7 @@ export class GameEngine {
             // The deferred pass has completed even if one optional asset used a
             // fallback or failed. Avoid duplicating already attached scenery.
             this.overworldSceneryReady = true;
-            return structuresReady || decorationsReady;
+            return structuresReady || foliageReady || buildingsReady;
         })().catch((error) => {
             console.warn('GameEngine: Deferred overworld scenery failed to load.', error);
             return false;
@@ -4959,10 +4968,16 @@ export class GameEngine {
         );
     }
 
+    getRaycastMeshForEntity(entity) {
+        if (!entity?.mesh) return null;
+        return entity.mesh.getObjectByName?.('ActorInteractionHitbox') || entity.mesh;
+    }
+
     performRaycast() {
         const meshes = this.activeEntitiesCache
             .filter(e => e.mesh && e.isActive && e !== this.player)
-            .map(e => e.mesh);
+            .map(e => this.getRaycastMeshForEntity(e))
+            .filter(Boolean);
         
         // Add Dungeon Entrance to raycast list
         const dungeonEntrances = [];
@@ -5392,7 +5407,13 @@ export class GameEngine {
         this.processAutoLoot();
 
         this.raycastTimer += dt;
-        if (this.needsRaycast && this.raycastTimer > 0.05) {
+        // Keep a stationary pointer attached to moving actors. Actor queries
+        // use their lightweight interaction proxy, so this remains cheaper
+        // than recursively raycasting every animated rig on each refresh.
+        const shouldRefreshMovingHover = !this.isMobile &&
+            this.inputManager.pointerOverCanvas &&
+            this.hoveredEntity instanceof Actor;
+        if ((this.needsRaycast || shouldRefreshMovingHover) && this.raycastTimer > 0.05) {
              this.performRaycast();
              this.raycastTimer = 0;
              this.needsRaycast = false;

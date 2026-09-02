@@ -16,6 +16,7 @@ jest.unstable_mockModule('../src/proto/state_pb.js', () => {
 
 const { GameEngine } = await import('../src/core/GameEngine.js');
 const { LootDrop } = await import('../src/entities/LootDrop.js');
+const { Actor } = await import('../src/entities/Actor.js');
 
 function createEngineHarness() {
     const engine = Object.create(GameEngine.prototype);
@@ -123,6 +124,27 @@ function createEngineHarness() {
 }
 
 describe('GameEngine ctrl-click hold regression', () => {
+    test('stationary hover refresh follows an acquired actor without polling empty ground', () => {
+        const engine = createEngineHarness();
+        engine.inputManager.isMouseDown = false;
+        engine.inputManager.pointerOverCanvas = true;
+        engine.raycastTimer = 0.06;
+
+        engine.update(1 / 60);
+        expect(engine.performRaycast).not.toHaveBeenCalled();
+
+        engine.hoveredEntity = Object.assign(Object.create(Actor.prototype), {
+            id: 'moving-hostile',
+            isActive: true,
+            state: 'MOVING',
+            position: new THREE.Vector3(10, 0, 10)
+        });
+        engine.raycastTimer = 0.06;
+        engine.update(1 / 60);
+
+        expect(engine.performRaycast).toHaveBeenCalledTimes(1);
+    });
+
     test('multiplayer ctrl-click request clears held mouse state so update loop does not immediately force an attack animation', () => {
         const engine = createEngineHarness();
 

@@ -1,11 +1,10 @@
+import { PROCEDURAL_FOLIAGE_RECIPES } from '../art/ProceduralRealmFoliage.js';
+
 const PRELOAD_MODEL_PATHS = [
     './assets/buildings/trading_house.glb',
     './assets/buildings/blacksmith_forge.glb',
     './assets/objects/chests/stash_base.glb',
 
-    './assets/plants/birch.glb',
-    './assets/plants/pine.glb',
-    './assets/plants/willow.glb',
     './assets/buildings/two_story_building.glb',
     './assets/buildings/trading_post.glb',
     './assets/buildings/blacksmith.glb',
@@ -17,7 +16,6 @@ const PRELOAD_MODEL_PATHS = [
 ];
 
 const BACKGROUND_PRELOAD_PREFIXES = [
-    './assets/plants/',
     './assets/buildings/dungeons/'
 ];
 
@@ -165,6 +163,10 @@ export class MeshCatalog {
 
     static getProceduralEnemySpecs() {
         return this.proceduralEnemySpecs;
+    }
+
+    static getProceduralFoliageRecipes() {
+        return PROCEDURAL_FOLIAGE_RECIPES;
     }
 
     static getPreloadModelPaths() {

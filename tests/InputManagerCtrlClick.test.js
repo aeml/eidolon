@@ -34,6 +34,11 @@ describe('InputManager ctrl-click propagation', () => {
             ctrlKey: true,
             button: 0
         }));
+        expect(manager.mouse).toEqual(expect.objectContaining({
+            x: (100 / window.innerWidth) * 2 - 1,
+            y: -(80 / window.innerHeight) * 2 + 1
+        }));
+        expect(manager.pointerOverCanvas).toBe(true);
         manager.dispose();
     });
 
@@ -105,12 +110,33 @@ describe('InputManager ctrl-click propagation', () => {
         manager.onKeyDown({ key: 'Control', code: 'ControlLeft' });
         manager.primaryMouseButtonDown = true;
         manager.isMouseDown = true;
+        manager.pointerOverCanvas = true;
 
         window.dispatchEvent(new Event('blur'));
 
         expect(manager.keys.control).toBe(false);
         expect(manager.primaryMouseButtonDown).toBe(false);
         expect(manager.isMouseDown).toBe(false);
+        expect(manager.pointerOverCanvas).toBe(false);
+        manager.dispose();
+    });
+
+    test('tracks whether the pointer is over the game canvas', () => {
+        const manager = new InputManager({}, {});
+
+        manager.onMouseMove({
+            target: { tagName: 'CANVAS' },
+            clientX: 40,
+            clientY: 60
+        });
+        expect(manager.pointerOverCanvas).toBe(true);
+
+        manager.onMouseMove({
+            target: { tagName: 'BUTTON' },
+            clientX: 50,
+            clientY: 70
+        });
+        expect(manager.pointerOverCanvas).toBe(false);
         manager.dispose();
     });
 });

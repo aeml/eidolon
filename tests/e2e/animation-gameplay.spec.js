@@ -74,6 +74,18 @@ async function prepareAnimationCast(page, lowHealth = false) {
     await expect.poll(() => page.evaluate(() => window.game?.animationQAReadySequence || 0), {
         timeout: 20_000
     }).toBeGreaterThan(sequence);
+    await expect.poll(async () => (await readPlayerState(page))?.state).not.toBe('DEAD');
+    await expect(page.locator('#death-screen')).toBeHidden();
+}
+
+async function recoverRetriedAnimationQACharacter(page) {
+    const state = await readPlayerState(page);
+    const deathScreen = page.locator('#death-screen');
+    if (state?.state !== 'DEAD' && !await deathScreen.isVisible()) return;
+    await expect(deathScreen).toBeVisible();
+    await page.locator('#btn-death-respawn').click();
+    await expect(deathScreen).toBeHidden({ timeout: 20_000 });
+    await expect.poll(async () => (await readPlayerState(page))?.state).not.toBe('DEAD');
 }
 
 async function selectBranch(page, className, branch, expectedSkills) {
@@ -186,10 +198,35 @@ async function castThroughInput(page, className, skillName, key, presentation, o
         await prepareAnimationCast(page, skillName === 'Last Stand Rampage');
     }
     let target = null;
-    await expect.poll(async () => {
-        target = await projectGroundOffset(page, 7, 2);
-        return Boolean(target?.canvas);
-    }, { timeout: 8_000 }).toBe(true);
+    try {
+        await expect.poll(async () => {
+            target = await projectGroundOffset(page, 7, 2);
+            return Boolean(target?.canvas);
+        }, { timeout: 8_000 }).toBe(true);
+    } catch (error) {
+        const diagnostic = await page.evaluate(() => {
+            const player = window.game?.player;
+            const visibleLayers = [...document.querySelectorAll('body > *')]
+                .filter((element) => getComputedStyle(element).display !== 'none' &&
+                    getComputedStyle(element).visibility !== 'hidden' &&
+                    getComputedStyle(element).pointerEvents !== 'none')
+                .map((element) => ({ id: element.id, className: element.className }))
+                .filter((entry) => entry.id || entry.className)
+                .slice(0, 20);
+            return {
+                state: player?.state,
+                health: player?.health ?? player?.stats?.hp,
+                x: player?.position?.x,
+                z: player?.position?.z,
+                deathScreen: document.querySelector('#death-screen')?.style?.display,
+                activeElement: document.activeElement?.id || document.activeElement?.tagName,
+                visibleLayers
+            };
+        });
+        throw new Error(`No unobstructed canvas point for ${className}/${skillName}: ${JSON.stringify(diagnostic)}`, {
+            cause: error
+        });
+    }
     await page.mouse.move(target.x, target.y);
     const previousTimestamp = await page.evaluate(() =>
         window.game?.player?.lastAbilityPresentation?.timestamp || -1
@@ -472,6 +509,7 @@ test.describe('real-input animation gameplay matrix', () => {
         const presentations = PLAYER_ABILITY_VISUALS[className];
 
         await loginAndEnterWorld(page, credentials);
+        await recoverRetriedAnimationQACharacter(page);
         const renderer = await assertHardwareRenderer(page);
         await ensureDungeonReadyLevel(page, 100);
         await selectGraphicsThroughSettings(page, 'high');

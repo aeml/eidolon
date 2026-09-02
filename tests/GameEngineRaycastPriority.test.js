@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import * as THREE from 'three';
 
 jest.unstable_mockModule('../src/proto/state_pb.js', () => {
     const mock = {
@@ -43,5 +44,23 @@ describe('GameEngine raycast target priority', () => {
             hostile,
             partyMember
         ]);
+    });
+
+    test('actor raycasts use the lightweight interaction proxy instead of the animated rig', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const hostile = new Actor('hostile-proxy', actorConfig);
+        const mesh = new THREE.Group();
+        mesh.userData.bounds = { radius: 1.4, height: 3.2 };
+        mesh.add(new THREE.Mesh(
+            new THREE.BoxGeometry(1, 1, 1),
+            new THREE.MeshBasicMaterial()
+        ));
+        hostile.setMesh(mesh);
+
+        const hitbox = mesh.getObjectByName('ActorInteractionHitbox');
+        expect(hitbox).toBeTruthy();
+        expect(engine.getRaycastMeshForEntity(hostile)).toBe(hitbox);
+        expect(engine.getRaycastMeshForEntity({ mesh })).toBe(hitbox);
+        expect(engine.getRaycastMeshForEntity({})).toBeNull();
     });
 });
