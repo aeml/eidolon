@@ -249,7 +249,7 @@ jobs:
           mkdir -p public
           cp -r index.html assets src vendor public/
           cp sw.js public/
-          printf '{"commit":"%s","version":"Alpha 0.41.0.0"}\n' "${GITHUB_SHA}" > public/release.json
+          printf '{"commit":"%s","version":"Alpha 0.41.0.1"}\n' "${GITHUB_SHA}" > public/release.json
           
           # Create coverage directory
           mkdir -p public/coverage/client public/coverage/server
@@ -431,7 +431,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 0.41.0.0" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 0.41.0.1" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:

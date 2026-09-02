@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.0</span>
+                <span class="start-version-row__label">Alpha 0.41.0.1</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -587,6 +587,18 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.1">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.1 (the Lanternhold oathguard)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The Fighter has been reborn in code:</strong> The old imported character and animation models are replaced in production by a 48-part low-poly dark-fantasy oathguard, assembled entirely from reusable geometry, materials, and transforms.</li>
+                        <li><strong>A stronger class silhouette:</strong> Faceted black iron, crimson cloth, warm brass, a great helm, glowing oath sigil, sword, kite shield, layered plate, gauntlets, greaves, and a moving cloak make the frontline class readable at normal game zoom.</li>
+                        <li><strong>The shared humanoid rig is live:</strong> Named hips, chest, head, arm, hand, thigh, shin, and cloak pivots drive generated Idle, Walk, Run, Attack, and Death clips for both local and replicated Fighters without changing authoritative movement or combat.</li>
+                        <li><strong>Every equipment region has a home:</strong> Eighteen named attachment anchors cover head, both shoulders, chest, both gloves, belt, both legs, both feet, neck, both rings, both trinkets, main hand, and off hand, forming the foundation for visible equipped items in the next migration slice.</li>
+                        <li><strong>Fighter entry is lighter and more reliable:</strong> Five legacy Fighter GLBs no longer appear in the runtime catalog, startup preload, or character factory. Fighter startup now gates only on the nearby Skeleton set, cutting its blocking model requests in half.</li>
+                        <li><strong>Pooling and selection stay correct:</strong> Reused procedural actors reset their complete pose and scale after death or preview rendering, interaction hitboxes no longer multiply when a mesh changes owners, and nameplates plus party rings use the generated character's declared dimensions.</li>
+                        <li><strong>Regression coverage:</strong> Unit tests inspect geometry reuse, independent rig state, exact slot anchors, full-height selection, finite bounds, every animation clip, preload removal, and pool reset; hardware-browser evidence renders the Fighter in every state at High and Low quality.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.0">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.0 (dark-fantasy foundation and exact world hazards)</h3>
                     <ul class="patch-note-entry__list">

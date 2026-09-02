@@ -16,8 +16,18 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.0 for the procedural dark-fantasy foundation', () => {
-        expect(indexHtml).toContain('Alpha 0.41.0.0');
+    test('advances the login screen to alpha 0.41.0.1 for the procedural Fighter vertical slice', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.1');
+        expect(indexHtml).toContain('Patch 0.41.0.1');
+        expect(indexHtml).toContain('The Fighter has been reborn in code');
+        expect(indexHtml).toContain('48-part low-poly dark-fantasy oathguard');
+        expect(indexHtml).toContain('Eighteen named attachment anchors');
+        expect(indexHtml).toContain('Five legacy Fighter GLBs no longer appear');
+        expect(indexHtml).toContain('interaction hitboxes no longer multiply');
+        expect(indexHtml).toContain('every state at High and Low quality');
+    });
+
+    test('retains alpha 0.41.0.0 dark-fantasy foundation and exact hazard history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.0');
         expect(indexHtml).toContain("Eidolon's visual rebirth begins");
         expect(indexHtml).toContain('Gloamwood Marches');
@@ -45,7 +55,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.0';
+        const expectedVersion = 'Alpha 0.41.0.1';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -149,8 +159,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.0 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.0`');
+    test('marks 0.41.0.1 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.1`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

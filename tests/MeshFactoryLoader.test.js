@@ -117,7 +117,8 @@ describe('MeshFactory preload phases', () => {
         const startup = MeshFactory.getStartupPreloadModelPaths();
         expect(startup).not.toContain('./assets/buildings/trading_post.glb');
         expect(startup).not.toContain('./assets/buildings/dungeons/the_verdant_bastion.glb');
-        expect(startup).toContain('./assets/archetypes/Fighter/idle.glb');
+        expect(startup).not.toContain('./assets/archetypes/Fighter/idle.glb');
+        expect(startup).toContain('./assets/archetypes/Rogue/idle.glb');
     });
 
     test('player-specific startup preload gates the selected actor and nearby hostile set', () => {
@@ -208,14 +209,14 @@ describe('MeshFactory catalog integration', () => {
         expect(mesh.getObjectByName('ProceduralPart0')).not.toBeNull();
     });
 
-    test('every player factory path uses an animated fallback after model failure', async () => {
+    test('remaining model-backed player paths use an animated fallback after model failure', async () => {
         const previousPool = MeshFactory.pool;
         const loadSpy = jest.spyOn(MeshFactory, 'loadModel').mockRejectedValue(new Error('asset unavailable'));
         const consoleWarn = jest.spyOn(console, 'warn').mockImplementation(() => {});
         MeshFactory.pool = {};
 
         try {
-            for (const type of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
+            for (const type of ['Rogue', 'Wizard', 'Cleric']) {
                 const mesh = await MeshFactory.createMeshForType(type);
                 expect(mesh.userData.assetFallback).toBe(true);
                 expect(mesh.userData.fallbackType).toBe(type);
@@ -225,6 +226,24 @@ describe('MeshFactory catalog integration', () => {
         } finally {
             MeshFactory.pool = previousPool;
             consoleWarn.mockRestore();
+            loadSpy.mockRestore();
+        }
+    });
+
+    test('Fighter uses the procedural humanoid without requesting a GLB', async () => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType('Fighter');
+            expect(mesh.userData.proceduralHumanoid).toBe(true);
+            expect(mesh.userData.proceduralClass).toBe('Fighter');
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
             loadSpy.mockRestore();
         }
     });

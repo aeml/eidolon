@@ -34,6 +34,49 @@ async function hardwareRenderer(page) {
 test.describe('deterministic production animation gallery', () => {
     test.describe.configure({ timeout: 1_200_000 });
 
+    test('renders the attachment-ready procedural Fighter in every state and quality tier', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        const response = await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
+        expect(response?.status()).toBe(200);
+
+        await page.locator('#gallery-actor').selectOption('Fighter');
+        await waitForActor(page, 'Fighter');
+        const renderer = await hardwareRenderer(page);
+        expect(renderer).not.toBeNull();
+        expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
+        let metrics = await galleryMetrics(page);
+        expect(metrics.proceduralHumanoid).toBe(true);
+        expect(metrics.proceduralClass).toBe('Fighter');
+        expect(metrics.equipmentAnchorCount).toBe(18);
+        expect(metrics.actorVisibleMeshes).toBeGreaterThanOrEqual(40);
+
+        for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death']) {
+            await page.locator('#gallery-state').selectOption(state);
+            await page.locator('#gallery-play-state').click();
+            await expect.poll(async () => (await galleryMetrics(page)).phase).toBe(`state:${state.toLowerCase()}`);
+            metrics = await galleryMetrics(page);
+            expect(metrics.currentAnimation).toBe(state);
+            expect(metrics.nonFiniteTransforms).toBe(0);
+        }
+
+        for (const quality of ['high', 'low']) {
+            await page.locator('#gallery-quality').selectOption(quality);
+            await page.locator('#gallery-state').selectOption('Idle');
+            await page.locator('#gallery-play-state').click();
+            await expect.poll(async () => (await galleryMetrics(page)).quality).toBe(quality);
+            await page.screenshot({
+                path: testInfo.outputPath(`procedural-fighter-${quality}.png`),
+                animations: 'allow'
+            });
+        }
+
+        expect(failures, failures.join('\n')).toEqual([]);
+        testInfo.annotations.push({
+            type: 'renderer',
+            description: `${renderer.vendor} · ${renderer.renderer}`
+        });
+    });
+
     test('renders all abilities, actor states, persistent effects, and cleanup in hardware Chrome', async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         const response = await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });

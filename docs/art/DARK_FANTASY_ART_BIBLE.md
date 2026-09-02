@@ -42,6 +42,15 @@ Every damaging area has three readable layers:
 
 Hazards must survive chunk residency changes and must dispose all geometry and materials on dungeon transitions, death teardown, reconnect replacement, and engine shutdown.
 
+## Humanoid language
+
+- Player silhouettes share a named transform hierarchy but not a costume silhouette: hips, chest, head, upper/lower arms, hands, thighs, shins, and class-specific secondary motion remain independently animatable.
+- The Fighter is the reference scale and first production vertical slice: roughly 4.5 world units tall, broad at the shoulders, plated, shield-forward, and grounded by large boots. Rogue, Wizard, and Cleric proportions may vary, but collision and interaction dimensions must remain explicit metadata rather than assumptions about model scale.
+- Idle motion should feel alive without visual noise. Walk and Run must show opposing arm/leg rhythm, Attack must have anticipation and follow-through, and Death must reach a stable final pose. Local and replicated actors consume the same generated clips.
+- Equipment mounts are part of the rig contract. Head, chest, belt, neck, main hand, and off hand use single anchors; paired shoulders, gloves, legs, feet, rings, and trinkets use left/right anchors. Attachments follow animated pivots and must never become separate network authorities.
+- Shared geometry and immutable materials are cached across actor instances. Mutable pose, equipped-part selection, tint state, effects, nameplates, hitboxes, and party markers belong to the actor instance and must reset on pool reuse.
+- At normal isometric zoom, class identity comes first from silhouette, then value grouping, then one restrained magical accent. Fine ornament is optional and may disappear on Low quality; head, hands, weapon, off-hand identity, and locomotion must remain readable.
+
 ## Migration baseline — 2026-09-02
 
 - Authored asset payload: approximately 963.33 MiB.

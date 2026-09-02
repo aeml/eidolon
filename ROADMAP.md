@@ -8,7 +8,7 @@ This is the root roadmap and planning source of truth for the repo. Per-patch hi
 
 ## Current Snapshot
 
-- Current in-game displayed version: `Alpha 0.41.0.0`
+- Current in-game displayed version: `Alpha 0.41.0.1`
 - Active implementation line: `0.41` procedural dark-fantasy art migration
 - Release-confidence gate: locked/self-hosted browser dependencies, production SHA/readiness reporting, and real-browser deployment QA are live-verified for release SHA `634280a`
 - Closed for planned implementation work: `0.21` through `0.37`

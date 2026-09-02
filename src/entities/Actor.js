@@ -365,20 +365,31 @@ export class Actor extends Entity {
 
     setMesh(mesh) {
         super.setMesh(mesh);
-        
+
         // Add Hitbox for easier clicking
-        // The mesh is scaled by 2.5 in MeshFactory, so a 1x2x1 box becomes 2.5x5x2.5
-        const hitGeo = new THREE.BoxGeometry(1.0, 2.0, 1.0);
-        const hitMat = new THREE.MeshBasicMaterial({ 
-            visible: true, 
-            transparent: true, 
-            opacity: 0,
-            depthWrite: false
-        });
-        const hitbox = new THREE.Mesh(hitGeo, hitMat);
-        hitbox.position.y = 1.0; // Center vertically (assuming origin at feet)
+        // Model-backed actors retain the historic local box (their root is
+        // scaled by MeshFactory). Procedural actors declare world-size bounds
+        // so their interaction volume covers the full generated silhouette.
+        // Reuse it when a pooled mesh changes owners to avoid accumulating
+        // invisible raycast targets with stale entity ids.
+        const declaredBounds = mesh.userData.bounds;
+        let hitbox = mesh.getObjectByName('ActorInteractionHitbox');
+        if (!hitbox) {
+            const hitWidth = declaredBounds?.radius ? declaredBounds.radius * 2 : 1;
+            const hitHeight = declaredBounds?.height || 2;
+            const hitGeo = new THREE.BoxGeometry(hitWidth, hitHeight, hitWidth);
+            const hitMat = new THREE.MeshBasicMaterial({
+                visible: true,
+                transparent: true,
+                opacity: 0,
+                depthWrite: false
+            });
+            hitbox = new THREE.Mesh(hitGeo, hitMat);
+            hitbox.name = 'ActorInteractionHitbox';
+            hitbox.position.y = hitHeight / 2;
+            mesh.add(hitbox);
+        }
         hitbox.userData.entityId = this.id;
-        mesh.add(hitbox);
 
         // Setup Animation Mixer if mesh has animations
         if (mesh.userData.animations && mesh.userData.animations.length > 0) {

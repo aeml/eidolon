@@ -142,8 +142,11 @@ export class Entity {
         const existing = this.mesh.getObjectByName(NAME);
         if (this._partyHighlightActive) {
             if (!existing) {
+                const declaredRadius = Number(this.mesh.userData.bounds?.radius) || 0;
+                const innerRadius = declaredRadius ? declaredRadius * 0.75 : 0.55;
+                const outerRadius = declaredRadius ? declaredRadius * 1.05 : 0.75;
                 const ring = new THREE.Mesh(
-                    new THREE.RingGeometry(0.55, 0.75, 32),
+                    new THREE.RingGeometry(innerRadius, outerRadius, 32),
                     new THREE.MeshBasicMaterial({
                         color: 0x44ff88,
                         transparent: true,
@@ -220,11 +223,12 @@ export class Entity {
         const sprite = new THREE.Sprite(material);
         
         sprite.name = "NameTag";
-        sprite.position.set(0, 2.5, 0); 
+        const declaredHeight = Number(this.mesh.userData.bounds?.height) || 0;
+        sprite.position.set(0, declaredHeight ? declaredHeight + 0.35 : 2.5, 0);
         
         // Scale based on aspect ratio to prevent distortion
         // User wanted "smaller", so we reduce the world-space height
-        const scaleHeight = 0.4; 
+        const scaleHeight = declaredHeight ? 0.48 : 0.4;
         const scaleWidth = (width / height) * scaleHeight;
         
         sprite.scale.set(scaleWidth, scaleHeight, 1); 

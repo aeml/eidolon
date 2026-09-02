@@ -4,6 +4,7 @@ import * as SkeletonUtils from './SkeletonUtils.js';
 import { MeshCatalog } from './MeshCatalog.js';
 import { CONSTANTS } from '../core/Constants.js';
 import { resolveAssetPath } from '../assets/assetManifest.js';
+import { createProceduralFighter } from '../art/ProceduralHumanoid.js';
 
 export class MeshFactory {
     static loader = new GLTFLoader();
@@ -656,6 +657,7 @@ export class MeshFactory {
     static getPooledMesh(type) {
         if (this.pool[type] && this.pool[type].length > 0) {
             const mesh = this.pool[type].pop();
+            mesh.userData.resetPose?.();
             mesh.visible = true;
             return mesh;
         }
@@ -678,7 +680,7 @@ export class MeshFactory {
             // Procedural enemies now use shared/cached geometries and materials —
             // do NOT dispose them (they are singletons). Only dispose non-cached
             // GLTF materials whose geometry is also shared.
-            const isProceduralType = !!this.PROCEDURAL_ENEMY_SPECS[type];
+            const isProceduralType = type === 'Fighter' || !!this.PROCEDURAL_ENEMY_SPECS[type];
             if (!isProceduralType) {
                 mesh.traverse((child) => {
                     if (child.isMesh) {
@@ -786,81 +788,7 @@ export class MeshFactory {
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800;
 
         if (type === 'Fighter') {
-            try {
-                const idleGltf = await this.loadModel('./assets/archetypes/Fighter/idle.glb');
-                mesh = SkeletonUtils.clone(idleGltf.scene);
-
-                mesh.userData.animations = [];
-
-                const addAnim = (clip, name) => {
-                    if (clip) {
-                        const newClip = clip.clone();
-                        newClip.name = name;
-                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
-                        mesh.userData.animations.push(newClip);
-                    }
-                };
-
-                if (idleGltf.animations.length > 0) {
-                    addAnim(idleGltf.animations[0], 'Idle');
-                } else {
-                    console.warn("MeshFactory: No animations found in idle.glb");
-                }
-
-                try {
-                    const walkGltf = await this.loadModel('./assets/archetypes/Fighter/walk.glb');
-                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
-                } catch (e) { console.warn("Missing walk anim"); }
-
-                try {
-                    const runGltf = await this.loadModel('./assets/archetypes/Fighter/run.glb');
-                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
-                } catch (e) { console.warn("Missing run anim"); }
-
-                try {
-                    const attackGltf = await this.loadModel('./assets/archetypes/Fighter/attack.glb');
-                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
-                } catch (e) { console.warn("Missing attack anim"); }
-
-                try {
-                    const deathGltf = await this.loadModel('./assets/archetypes/Fighter/death.glb');
-                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
-                } catch (e) { console.warn("Missing death anim"); }
-
-                mesh.scale.set(2.5, 2.5, 2.5);
-                
-                mesh.traverse(c => {
-                    if (c.isMesh) {
-                        if (!c.material) {
-                            c.material = new THREE.MeshStandardMaterial({ color: 0xffffff });
-                        }
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-
-                    }
-                });
-                
-                const box = new THREE.Box3().setFromObject(mesh);
-                const size = box.getSize(new THREE.Vector3());
-                const center = box.getCenter(new THREE.Vector3());
-                
-                if (size.length() === 0) {
-                    console.error("MeshFactory: Mesh has ZERO size! It might be empty or scale 0.");
-                }
-
-                mesh.position.sub(center);
-                mesh.position.y += size.y / 2;
-
-                return mesh;
-            } catch (e) {
-                console.warn(`Failed to load model for ${type}, falling back to primitive.`, e);
-                return this.createAnimatedPlayerFallback(
-                    type,
-                    new THREE.BoxGeometry(1, 1, 1),
-                    CONSTANTS.ENTITIES.FIGHTER.COLOR,
-                    0.5
-                );
-            }
+            return createProceduralFighter();
         }
 
         if (type === 'Wizard') {

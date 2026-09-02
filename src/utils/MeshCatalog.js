@@ -1,10 +1,4 @@
 const PRELOAD_MODEL_PATHS = [
-    './assets/archetypes/Fighter/idle.glb',
-    './assets/archetypes/Fighter/walk.glb',
-    './assets/archetypes/Fighter/run.glb',
-    './assets/archetypes/Fighter/attack.glb',
-    './assets/archetypes/Fighter/death.glb',
-
     './assets/archetypes/Wizard/idle.glb',
     './assets/archetypes/Wizard/walk.glb',
     './assets/archetypes/Wizard/run.glb',
@@ -215,18 +209,18 @@ export class MeshCatalog {
     }
 
     static getStartupPreloadModelPaths(playerType = '') {
-        const supportedPlayerTypes = new Set(['Fighter', 'Rogue', 'Wizard', 'Cleric']);
-        const selectedPlayerType = supportedPlayerTypes.has(playerType) ? playerType : '';
+        const modelBackedPlayerTypes = new Set(['Rogue', 'Wizard', 'Cleric']);
+        const selectedPlayerType = modelBackedPlayerTypes.has(playerType) ? playerType : '';
         const playerPrefix = selectedPlayerType
             ? `./assets/archetypes/${selectedPlayerType}/`
-            : './assets/archetypes/';
+            : (playerType === 'Fighter' ? null : './assets/archetypes/');
 
         // The network connection and entity stream start after this gate. Load
         // the selected local actor plus the Skeleton population immediately
         // outside town; distant enemies, NPCs, summons, and interactive-object
         // models remain on demand so unused assets cannot hold entry open.
         return this.getPreloadModelPaths().filter((path) =>
-            path.startsWith(playerPrefix) ||
+            (playerPrefix && path.startsWith(playerPrefix)) ||
             path.startsWith('./assets/enemies/undead/skeleton/')
         );
     }

@@ -583,6 +583,10 @@ export class AnimationGallery {
             remote: Boolean(this.remoteActor),
             clipNames: Object.keys(this.actor?.animations || {}),
             currentAnimation: this.actor?.currentAnimationName || null,
+            proceduralHumanoid: Boolean(this.actor?.mesh?.userData?.proceduralHumanoid),
+            proceduralClass: this.actor?.mesh?.userData?.proceduralClass || null,
+            equipmentAnchorCount: Object.values(this.actor?.mesh?.userData?.equipmentAnchors || {})
+                .reduce((count, names) => count + names.length, 0),
             actorVisibleMeshes: actorMetrics.visibleMeshes,
             remoteVisibleMeshes: remoteMetrics.visibleMeshes,
             targetVisibleMeshes: targetMetrics.visibleMeshes,
