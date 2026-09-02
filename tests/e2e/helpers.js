@@ -1068,6 +1068,12 @@ async function readCombatDiagnostic(page, targetId) {
 }
 
 export async function exerciseCombatAndLoot(page) {
+    // Persistent production QA characters can reconnect where a previous run
+    // was killed after its final assertion. Clear that legitimate gameplay
+    // state through the visible respawn action before opening Settings; the
+    // death overlay intentionally intercepts every menu click while active.
+    await recoverThroughDeathScreen(page);
+
     // The persistent release account eventually fills across successful runs.
     // Rotate one equippable item through the existing sell path so this test can
     // continue proving a real loot pickup and its persistence on every deploy.
