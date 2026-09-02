@@ -6,7 +6,7 @@ Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.11`
+Current migration release: `Alpha 0.41.0.12`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
@@ -14,9 +14,9 @@ This inventory is the migration ledger for the complete Eidolon dark-fantasy red
 
 | Dependency | Audited baseline | Release rule |
 | --- | ---: | --- |
-| Authored GLB models | 106 baseline; 34 current | Count may only decrease from 34 |
-| Authored GLB payload | 814,551,864 baseline; 402,192,612 bytes current | Payload may only decrease from 402,192,612 bytes |
-| Runtime `.glb` tokens | 225 baseline; 75 current | Token count may only decrease from 75 |
+| Authored GLB models | 106 baseline; 14 current | Count may only decrease from 14 |
+| Authored GLB payload | 814,551,864 baseline; 307,109,296 bytes current | Payload may only decrease from 307,109,296 bytes |
+| Runtime `.glb` tokens | 225 baseline; 35 current | Token count may only decrease from 35 |
 | Runtime files containing `.glb` | 5 | No new referencing module is permitted |
 | PNG images | 100 files | Audit and replace by use, not file extension alone |
 | SVG gem icons | 49 files | Existing generated vector family; retain or restyle intentionally |
@@ -34,7 +34,7 @@ Current legacy runtime references are confined to `MeshCatalog`, `MeshFactory`, 
 | Active world hazards | 19 lava pools, 12 sandstorms, 15 lightning zones, 19 wind gusts | Exact-radius themed boundaries migrated in 0.41.0.0 |
 | Overworld areas | Gloamwood Marches, Lanternhold, Moonfrost Expanse, Cinder Wastes, Stormcrown Reach | Theme manifest and lighting/atmosphere foundation migrated; geometry and dressing pending |
 | Dungeons | Thorncrypt, Furnace Below, Shattered Aerie, Drowned Sanctum | Theme manifest complete; room geometry, props, mechanics, and lighting migration pending |
-| Actors | players, remote players, NPCs, summons, legacy enemies, procedural realm enemies and bosses | All players, four Lanternhold services, the Avenging Seraph, Gloamwood/Cinder overworld families, and all four Moonfrost enemies are code-native; Verdant dungeon authored families remain pending |
+| Actors | players, remote players, NPCs, summons, legacy enemies, procedural realm enemies and bosses | All players, four Lanternhold services, the Avenging Seraph, Gloamwood/Cinder/Moonfrost overworld families, and all four Thorncrypt bosses are code-native; remaining enemy and boss routes use the earlier procedural-spec system and await their bespoke style pass |
 | World objects | trees, town buildings, camps, dungeon facades, services, chests, portals, blockers | Legacy dependencies audited; procedural replacements pending |
 | Networked effects | projectiles, traps, persistent zones, auras, statuses, combat feedback | Gameplay contract audit exists; art migration and lifecycle gallery expansion pending |
 
@@ -117,3 +117,9 @@ Separate heavy-motion sets preserve all five network animation states and stable
 `Alpha 0.41.0.11` replaces Moonfrost's twenty authored enemy files with four distinct code-native rigs. Mountain Trolls are broad rimebacks defined by fur mantles, jagged ice ridges, tusks, cairn clubs, and aurora charms. Aqua Golems are barnacled drowned cairns with water drips, a caged tide soul, and grave-anchor. Sirens become narrow floating choir-dead with split shrouds, exposed bone strings, voice chimes, spectral notes, talons, crown spines, and crescent blades. Frost Guardians are the armored pale vigil: aurora hearts, broken halos, horned visors, bells, and ice polearms establish a ceremonial silhouette separate from the golem.
 
 Each family owns an intentional `Idle`, `Walk`, `Run`, `Attack`, and stable `Death` motion set while sharing only immutable cached geometry and regional materials. Explicit grounded full-silhouette bounds preserve selection, reset, and pool ownership without changing the common 1.25-unit combat radius. The four overworld level bands and spawn sectors, water-dungeon trash routes, daily quests, movement speeds, pursuit, attacks, health, damage, drops, XP, elite state, death, respawn, and replication stay on their existing gameplay paths. Unit coverage and hardware Chrome exercise all states, local/replicated instances, High/Low settings, loader bypass, exact interaction bounds, and cache/pose isolation. The twenty superseded GLBs totaled 152,037,740 bytes and remain recoverable through Git history after removal.
+
+## Thorncrypt rootbound procession
+
+`Alpha 0.41.0.12` replaces the twenty authored files behind the Verdant Bastion's four sequential bosses. The Rootbound Warden is an ossuary gate given legs, crowned in roots and funerary ivy around a grave maul. The Briar Matron wears a rotating sepulchre of dead petals, a thorn halo, and ritual sickle. The Rustbound Colossus becomes a marching bronze reliquary with procession slabs, pipes, rivets, and a witchlit great hammer. The Hollow Sentinel closes the crypt as an empty ribbed vigil wrapped around one last green light, trailing torn standards behind a long poleblade.
+
+Each boss owns generated `Idle`, `Walk`, `Run`, `Attack`, and stable `Death` performances with grounded construction origins, actor-owned transforms, immutable shared render resources, and full-silhouette interaction bounds. Their distinct 2, 1.5, 3, and 2.5-unit combat radii remain exact, as does the Rootbound Warden's accelerated hit-alignment rule. Dungeon order, room generation, scaling, health, damage, pursuit, rewards, daily-quest credit, death, cleanup, and replication do not move. A separate sync audit removes Guardian Roar's obsolete seven-enemy client allowlist: future and current enemies now default to hostile while player classes, the Avenging Seraph, and service NPCs retain friendly treatment. The twenty removed GLBs totaled 95,083,316 bytes and remain recoverable through Git history.

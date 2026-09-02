@@ -175,6 +175,7 @@ function finalizeEnemy(root, type, clips) {
     root.userData.region = definition.region;
     root.userData.faction = definition.faction;
     root.userData.combatRadius = definition.combatRadius;
+    root.userData.interactionPadding = 0.75;
     root.userData.sharedGeometry = true;
     root.userData.bounds = definition.bounds;
     root.userData.animations = clips;

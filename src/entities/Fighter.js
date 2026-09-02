@@ -4,6 +4,23 @@ import { CONSTANTS } from '../core/Constants.js';
 import { MeshFactory } from '../utils/MeshFactory.js';
 import { spawnEffectSceneFallback } from './EffectSceneFallback.js';
 
+const GUARDIAN_ROAR_FRIENDLY_ACTOR_TYPES = new Set([
+    'Fighter',
+    'Rogue',
+    'Wizard',
+    'Cleric',
+    'AvengingSeraph',
+    'DwarfSalesman',
+    'QuestNPC',
+    'DungeonNPC',
+    'RespecNPC'
+]);
+
+function isGuardianRoarFriendlyActor(entity, gameEngine) {
+    if (gameEngine?.isPlayerClassEntity?.(entity)) return true;
+    return GUARDIAN_ROAR_FRIENDLY_ACTOR_TYPES.has(entity?.constructor?.name);
+}
+
 export class Fighter extends Actor {
     constructor(id) {
         super(id, CONSTANTS.ENTITIES.FIGHTER);
@@ -136,10 +153,7 @@ export class Fighter extends Actor {
                 if (entity.isActive && entity.state !== 'DEAD' && entity instanceof Actor) {
                     const dist = this.position.distanceTo(entity.position);
                     if (dist < radius) {
-                        const type = entity.constructor.name;
-                        const isEnemy = ['Skeleton', 'Imp', 'DemonOrc', 'Construct', 'InfernoTitan', 'Siren', 'FrostGuardian'].includes(type);
-                        
-                        if (!isEnemy) {
+                        if (isGuardianRoarFriendlyActor(entity, gameEngine)) {
                             // Ally: Apply Buff
                             entity.guardianRoarTimer = 10.0;
                             entity.guardianRoarReduction = 0.3; // 30%

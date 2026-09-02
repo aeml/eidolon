@@ -1,28 +1,4 @@
 const PRELOAD_MODEL_PATHS = [
-    './assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/idle.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/walk.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/run.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/attack.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/death.glb',
-
-    './assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/idle.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/walk.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/run.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/attack.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/death.glb',
-
-    './assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/idle.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/walk.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/run.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/attack.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/death.glb',
-
-    './assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/idle.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/walk.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/run.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/attack.glb',
-    './assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/death.glb',
-
     './assets/buildings/trading_house.glb',
     './assets/buildings/blacksmith_forge.glb',
     './assets/objects/chests/stash_base.glb',
@@ -122,6 +98,26 @@ export class MeshCatalog {
         FrostGuardian: {
             type: 'enemy',
             source: 'procedural Moonfrost glacial-bell rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        RootboundWarden: {
+            type: 'enemy',
+            source: 'procedural Thorncrypt root-gate rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        BriarMatron: {
+            type: 'enemy',
+            source: 'procedural Thorncrypt briar-crown rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        RustboundColossus: {
+            type: 'enemy',
+            source: 'procedural Thorncrypt rust-reliquary rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        HollowSentinel: {
+            type: 'enemy',
+            source: 'procedural Thorncrypt hollow-vigil rig',
             animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
         },
         TradingHouse: {

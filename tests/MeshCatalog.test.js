@@ -54,6 +54,25 @@ describe('MeshCatalog', () => {
         expect(MeshCatalog.getPreloadModelPaths().some((path) => /siren|aqua_golem|mountain_troll|frostguardian/.test(path))).toBe(false);
     });
 
+    test('Thorncrypt bosses have explicit procedural recipes and no authored-model preload', () => {
+        const expectedSources = {
+            RootboundWarden: 'procedural Thorncrypt root-gate rig',
+            BriarMatron: 'procedural Thorncrypt briar-crown rig',
+            RustboundColossus: 'procedural Thorncrypt rust-reliquary rig',
+            HollowSentinel: 'procedural Thorncrypt hollow-vigil rig'
+        };
+        for (const [type, source] of Object.entries(expectedSources)) {
+            expect(MeshCatalog.recipes[type]).toEqual({
+                type: 'enemy',
+                source,
+                animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            });
+        }
+        expect(MeshCatalog.getPreloadModelPaths().some((path) => (
+            /rootbound_warden|briar_matron|rustbound_colossus|hollow_sentinel/.test(path)
+        ))).toBe(false);
+    });
+
     test('all Lanternhold services use explicit procedural actor recipes', () => {
         for (const type of ['DwarfSalesman', 'QuestNPC', 'DungeonNPC', 'RespecNPC']) {
             expect(MeshCatalog.recipes[type]).toEqual({

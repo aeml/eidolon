@@ -16,8 +16,20 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.11 for the complete Moonfrost enemy family', () => {
-        expect(indexHtml).toContain('Alpha 0.41.0.11');
+    test('advances the login screen to alpha 0.41.0.12 for the Thorncrypt procession', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.12');
+        expect(indexHtml).toContain('Patch 0.41.0.12');
+        expect(indexHtml).toContain('The Thorncrypt has four true wardens');
+        expect(indexHtml).toContain('An ossuary gate learned to walk');
+        expect(indexHtml).toContain('The Matron opens her sepulchre');
+        expect(indexHtml).toContain('The rusted procession marches');
+        expect(indexHtml).toContain('One last light guards the hollow');
+        expect(indexHtml).toContain('Guardian Roar recognizes every generation');
+        expect(indexHtml).toContain('95.08 MB of obsolete boss GLBs');
+        expect(indexHtml).toContain('3.7 GB dependency cache');
+    });
+
+    test('retains alpha 0.41.0.11 complete Moonfrost enemy-family history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.11');
         expect(indexHtml).toContain('Moonfrost has its own monsters now');
         expect(indexHtml).toContain('The rimeback comes down from the pass');
@@ -165,7 +177,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.11';
+        const expectedVersion = 'Alpha 0.41.0.12';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -269,8 +281,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.11 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.11`');
+    test('marks 0.41.0.12 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.12`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

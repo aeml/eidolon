@@ -30,6 +30,12 @@ import {
     createProceduralMountainTroll,
     createProceduralSiren
 } from '../art/ProceduralMoonfrostEnemies.js';
+import {
+    createProceduralBriarMatron,
+    createProceduralHollowSentinel,
+    createProceduralRootboundWarden,
+    createProceduralRustboundColossus
+} from '../art/ProceduralThorncryptBosses.js';
 
 export class MeshFactory {
     static loader = new GLTFLoader();
@@ -739,173 +745,13 @@ export class MeshFactory {
         } else if (type === 'InfernoTitan') {
             return createProceduralInfernoTitan();
         } else if (type === 'RootboundWarden') {
-            try {
-                const idleGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/idle.glb');
-                mesh = SkeletonUtils.clone(idleGltf.scene);
-                
-                mesh.userData.animations = [];
-                const addAnim = (clip, name) => {
-                    if (clip) {
-                        const newClip = clip.clone();
-                        newClip.name = name;
-                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
-                        mesh.userData.animations.push(newClip);
-                    }
-                };
-
-                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
-
-                try {
-                    const walkGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/walk.glb');
-                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
-                } catch (e) {}
-                try {
-                    const runGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/run.glb');
-                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
-                } catch (e) {}
-                try {
-                    const attackGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/attack.glb');
-                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
-                } catch (e) {}
-                try {
-                    const deathGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/rootbound_warden/death.glb');
-                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
-                } catch (e) {}
-
-                mesh.scale.set(5.0, 5.0, 5.0);
-                mesh.traverse(c => { if(c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
-                return mesh;
-            } catch (e) {
-                console.error("Failed to load RootboundWarden:", e);
-                mesh = new THREE.Mesh(new THREE.BoxGeometry(2, 4, 2), new THREE.MeshStandardMaterial({ color: 0x006400 }));
-                return mesh;
-            }
+            return createProceduralRootboundWarden();
         } else if (type === 'BriarMatron') {
-            try {
-                const idleGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/idle.glb');
-                mesh = SkeletonUtils.clone(idleGltf.scene);
-                
-                mesh.userData.animations = [];
-                const addAnim = (clip, name) => {
-                    if (clip) {
-                        const newClip = clip.clone();
-                        newClip.name = name;
-                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
-                        mesh.userData.animations.push(newClip);
-                    }
-                };
-
-                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
-
-                try {
-                    const walkGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/walk.glb');
-                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
-                } catch (e) {}
-                try {
-                    const runGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/run.glb');
-                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
-                } catch (e) {}
-                try {
-                    const attackGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/attack.glb');
-                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
-                } catch (e) {}
-                try {
-                    const deathGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/briar_matron/death.glb');
-                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
-                } catch (e) {}
-
-                mesh.scale.set(2.0, 2.0, 2.0);
-                mesh.traverse(c => { if(c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
-                return mesh;
-            } catch (e) {
-                console.error("Failed to load BriarMatron:", e);
-                mesh = new THREE.Mesh(new THREE.BoxGeometry(1.5, 3, 1.5), new THREE.MeshStandardMaterial({ color: 0x8B0000 }));
-                return mesh;
-            }
+            return createProceduralBriarMatron();
         } else if (type === 'RustboundColossus') {
-            try {
-                const idleGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/idle.glb');
-                mesh = SkeletonUtils.clone(idleGltf.scene);
-                
-                mesh.userData.animations = [];
-                const addAnim = (clip, name) => {
-                    if (clip) {
-                        const newClip = clip.clone();
-                        newClip.name = name;
-                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
-                        mesh.userData.animations.push(newClip);
-                    }
-                };
-
-                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
-
-                try {
-                    const walkGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/walk.glb');
-                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
-                } catch (e) {}
-                try {
-                    const runGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/run.glb');
-                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
-                } catch (e) {}
-                try {
-                    const attackGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/attack.glb');
-                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
-                } catch (e) {}
-                try {
-                    const deathGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/rustbound_colossus/death.glb');
-                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
-                } catch (e) {}
-
-                mesh.scale.set(3.5, 3.5, 3.5);
-                mesh.traverse(c => { if(c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
-                return mesh;
-            } catch (e) {
-                console.error("Failed to load RustboundColossus:", e);
-                mesh = new THREE.Mesh(new THREE.BoxGeometry(3, 5, 3), new THREE.MeshStandardMaterial({ color: 0xA0522D }));
-                return mesh;
-            }
+            return createProceduralRustboundColossus();
         } else if (type === 'HollowSentinel') {
-            try {
-                const idleGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/idle.glb');
-                mesh = SkeletonUtils.clone(idleGltf.scene);
-                
-                mesh.userData.animations = [];
-                const addAnim = (clip, name) => {
-                    if (clip) {
-                        const newClip = clip.clone();
-                        newClip.name = name;
-                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
-                        mesh.userData.animations.push(newClip);
-                    }
-                };
-
-                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
-
-                try {
-                    const walkGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/walk.glb');
-                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
-                } catch (e) {}
-                try {
-                    const runGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/run.glb');
-                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
-                } catch (e) {}
-                try {
-                    const attackGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/attack.glb');
-                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
-                } catch (e) {}
-                try {
-                    const deathGltf = await this.loadModel('./assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/death.glb');
-                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
-                } catch (e) {}
-
-                mesh.scale.set(3.0, 3.0, 3.0);
-                mesh.traverse(c => { if(c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
-                return mesh;
-            } catch (e) {
-                console.error("Failed to load HollowSentinel:", e);
-                mesh = new THREE.Mesh(new THREE.BoxGeometry(2.5, 4.5, 2.5), new THREE.MeshStandardMaterial({ color: 0x708090 }));
-                return mesh;
-            }
+            return createProceduralHollowSentinel();
         } else if (type === 'Siren') {
             return createProceduralSiren();
         } else if (type === 'AquaGolem') {

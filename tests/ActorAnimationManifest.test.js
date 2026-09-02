@@ -133,6 +133,23 @@ describe('actor animation manifest', () => {
         }
     });
 
+    test('classifies all Thorncrypt bosses as intentional procedural boss rigs', () => {
+        const expectedSources = {
+            RootboundWarden: 'procedural Thorncrypt root-gate rig',
+            BriarMatron: 'procedural Thorncrypt briar-crown rig',
+            RustboundColossus: 'procedural Thorncrypt rust-reliquary rig',
+            HollowSentinel: 'procedural Thorncrypt hollow-vigil rig'
+        };
+        for (const [type, source] of Object.entries(expectedSources)) {
+            expect(ACTOR_ANIMATION_MANIFEST[type]).toEqual(expect.objectContaining({
+                category: 'enemy',
+                source,
+                states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            }));
+            expect(ACTOR_ANIMATION_MANIFEST[type].special).not.toBe('Attack clip plus class telegraph/VFX');
+        }
+    });
+
     test('no combat actor is classified without idle, movement, attack, and death presentation', () => {
         for (const actor of listActorAnimationEntries()) {
             if (actor.category === 'npc') continue;

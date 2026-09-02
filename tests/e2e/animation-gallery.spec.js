@@ -26,7 +26,11 @@ const proceduralRegionalEnemyTypes = Object.freeze([
     ['MountainTroll', 'Moonfrost rimeback troll'],
     ['AquaGolem', 'Moonfrost drowned-cairn golem'],
     ['Siren', 'Moonfrost choir siren'],
-    ['FrostGuardian', 'Moonfrost glacial bell guardian']
+    ['FrostGuardian', 'Moonfrost glacial bell guardian'],
+    ['RootboundWarden', 'Thorncrypt root-gate warden'],
+    ['BriarMatron', 'Thorncrypt briar-crown matron'],
+    ['RustboundColossus', 'Thorncrypt rust-reliquary colossus'],
+    ['HollowSentinel', 'Thorncrypt hollow-vigil sentinel']
 ]);
 
 test.use({ trace: 'off', video: 'off' });

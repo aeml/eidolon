@@ -45,10 +45,18 @@ export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
     MountainTroll: entry('enemy', 'procedural Moonfrost rimeback-troll rig', WALKING_ENEMY_CLIPS, {
         special: 'ice ridge, fur mantle, cairn club, aurora charm, and heavy collapse'
     }),
-    RootboundWarden: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
-    BriarMatron: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
-    RustboundColossus: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
-    HollowSentinel: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    RootboundWarden: entry('enemy', 'procedural Thorncrypt root-gate rig', WALKING_ENEMY_CLIPS, {
+        special: 'root crown, ossuary gate plates, grave maul, funerary ivy, and heavy collapse'
+    }),
+    BriarMatron: entry('enemy', 'procedural Thorncrypt briar-crown rig', WALKING_ENEMY_CLIPS, {
+        special: 'sepulchre petals, thorn halo, witch shards, briar sickle, and ritual collapse'
+    }),
+    RustboundColossus: entry('enemy', 'procedural Thorncrypt rust-reliquary rig', WALKING_ENEMY_CLIPS, {
+        special: 'procession slabs, funeral pipes, reliquary rivets, great hammer, and stone collapse'
+    }),
+    HollowSentinel: entry('enemy', 'procedural Thorncrypt hollow-vigil rig', WALKING_ENEMY_CLIPS, {
+        special: 'empty ribs, last witchlight, vigil tatters, crown, poleblade, and final collapse'
+    }),
 
     AvengingSeraph: entry('summon', 'procedural reliquary seraph rig', WALKING_ENEMY_CLIPS, {
         special: 'articulated broken-sun wings, oath-spear, censer, and collapse'

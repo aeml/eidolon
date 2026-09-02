@@ -106,7 +106,7 @@ describe('procedural regional legacy enemies', () => {
         expect(secondBody.position.y).toBeCloseTo(restY);
     });
 
-    test.each(CASES)('%s entity ownership preserves combat radius and installs one exact silhouette hitbox', (type, create, EntityClass) => {
+    test.each(CASES)('%s preserves combat radius and installs one latency-tolerant interaction hitbox', (type, create, EntityClass) => {
         const mesh = create();
         const first = new EntityClass(`${type}-first`);
         const second = new EntityClass(`${type}-second`);
@@ -123,12 +123,33 @@ describe('procedural regional legacy enemies', () => {
         });
         expect(hitboxes).toHaveLength(1);
         expect(hitboxes[0].userData.entityId).toBe(`${type}-second`);
+        expect(mesh.userData.interactionPadding).toBe(0.75);
         expect(hitboxes[0].geometry.parameters).toEqual(expect.objectContaining({
-            width: definition.bounds.radius * 2,
+            width: (definition.bounds.radius + mesh.userData.interactionPadding) * 2,
             height: definition.bounds.height,
-            depth: definition.bounds.radius * 2
+            depth: (definition.bounds.radius + mesh.userData.interactionPadding) * 2
         }));
         expect(hitboxes[0].position.y).toBe(definition.bounds.height / 2);
+    });
+
+    test('Skeleton remains raycastable across one live movement sample outside its visual bounds', () => {
+        const mesh = createProceduralSkeleton();
+        const skeleton = new Skeleton('moving-skeleton');
+        skeleton.name = '';
+        skeleton.setMesh(mesh);
+        mesh.updateMatrixWorld(true);
+
+        const definition = PROCEDURAL_LEGACY_ENEMY_DEFINITIONS.Skeleton;
+        const sampleDrift = 0.6;
+        const raycaster = new THREE.Raycaster(
+            new THREE.Vector3(definition.bounds.radius + sampleDrift, definition.bounds.height / 2, 5),
+            new THREE.Vector3(0, 0, -1)
+        );
+        const hits = raycaster.intersectObject(mesh.getObjectByName('ActorInteractionHitbox'));
+
+        expect(sampleDrift).toBeLessThan(mesh.userData.interactionPadding);
+        expect(hits.length).toBeGreaterThan(0);
+        expect(hits[0].object.userData.entityId).toBe('moving-skeleton');
     });
 
     test('factory routing is explicit and caches all regional resources once', () => {

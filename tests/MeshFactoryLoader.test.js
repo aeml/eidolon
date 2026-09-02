@@ -394,8 +394,39 @@ describe('MeshFactory catalog integration', () => {
     });
 
     test.each([
+        ['RootboundWarden', 'Thorncrypt root-gate warden', 2],
+        ['BriarMatron', 'Thorncrypt briar-crown matron', 1.5],
+        ['RustboundColossus', 'Thorncrypt rust-reliquary colossus', 3],
+        ['HollowSentinel', 'Thorncrypt hollow-vigil sentinel', 2.5]
+    ])('%s uses its Thorncrypt boss rig without requesting a GLB', async (type, artStyle, combatRadius) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralEnemyFamily: true,
+                proceduralBossFamily: 'thorncrypt',
+                proceduralActorType: type,
+                artStyle,
+                region: 'Verdant Bastion — The Thorncrypt',
+                combatRadius,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
         'Skeleton', 'DemonOrc', 'Imp', 'Construct', 'InfernoTitan',
-        'MountainTroll', 'AquaGolem', 'Siren', 'FrostGuardian'
+        'MountainTroll', 'AquaGolem', 'Siren', 'FrostGuardian',
+        'RootboundWarden', 'BriarMatron', 'RustboundColossus', 'HollowSentinel'
     ])('a full %s pool never disposes shared generated resources', async (type) => {
         const previousPool = MeshFactory.pool;
         MeshFactory.pool = {};

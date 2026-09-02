@@ -1,24 +1,24 @@
 import * as THREE from 'three';
 import {
-    PROCEDURAL_MOONFROST_ENEMY_DEFINITIONS,
-    PROCEDURAL_MOONFROST_ENEMY_STATES,
-    createProceduralAquaGolem,
-    createProceduralFrostGuardian,
-    createProceduralMoonfrostEnemy,
-    createProceduralMountainTroll,
-    createProceduralSiren,
-    getProceduralMoonfrostEnemyCacheMetrics
-} from '../src/art/ProceduralMoonfrostEnemies.js';
-import { AquaGolem } from '../src/entities/AquaGolem.js';
-import { FrostGuardian } from '../src/entities/FrostGuardian.js';
-import { MountainTroll } from '../src/entities/MountainTroll.js';
-import { Siren } from '../src/entities/Siren.js';
+    PROCEDURAL_THORNCRYPT_BOSS_DEFINITIONS,
+    PROCEDURAL_THORNCRYPT_BOSS_STATES,
+    createProceduralBriarMatron,
+    createProceduralHollowSentinel,
+    createProceduralRootboundWarden,
+    createProceduralRustboundColossus,
+    createProceduralThorncryptBoss,
+    getProceduralThorncryptBossCacheMetrics
+} from '../src/art/ProceduralThorncryptBosses.js';
+import { BriarMatron } from '../src/entities/BriarMatron.js';
+import { HollowSentinel } from '../src/entities/HollowSentinel.js';
+import { RootboundWarden } from '../src/entities/RootboundWarden.js';
+import { RustboundColossus } from '../src/entities/RustboundColossus.js';
 
 const CASES = Object.freeze([
-    ['MountainTroll', createProceduralMountainTroll, MountainTroll, 42],
-    ['AquaGolem', createProceduralAquaGolem, AquaGolem, 42],
-    ['Siren', createProceduralSiren, Siren, 45],
-    ['FrostGuardian', createProceduralFrostGuardian, FrostGuardian, 42]
+    ['RootboundWarden', createProceduralRootboundWarden, RootboundWarden, 60],
+    ['BriarMatron', createProceduralBriarMatron, BriarMatron, 60],
+    ['RustboundColossus', createProceduralRustboundColossus, RustboundColossus, 60],
+    ['HollowSentinel', createProceduralHollowSentinel, HollowSentinel, 60]
 ]);
 
 function sceneMetrics(root) {
@@ -32,15 +32,16 @@ function sceneMetrics(root) {
     return { visibleMeshes, nonFiniteTransforms };
 }
 
-describe('procedural Moonfrost enemy family', () => {
+describe('procedural Thorncrypt boss family', () => {
     test.each(CASES)('%s is grounded, bounded, detailed, and intentionally themed', (type, create, _EntityClass, minimumMeshes) => {
-        const enemy = create();
-        const definition = PROCEDURAL_MOONFROST_ENEMY_DEFINITIONS[type];
-        const bounds = new THREE.Box3().setFromObject(enemy);
-        const metrics = sceneMetrics(enemy);
+        const boss = create();
+        const definition = PROCEDURAL_THORNCRYPT_BOSS_DEFINITIONS[type];
+        const bounds = new THREE.Box3().setFromObject(boss);
+        const metrics = sceneMetrics(boss);
 
-        expect(enemy.userData).toEqual(expect.objectContaining({
+        expect(boss.userData).toEqual(expect.objectContaining({
             proceduralEnemyFamily: true,
+            proceduralBossFamily: 'thorncrypt',
             proceduralActorType: type,
             artStyle: definition.artStyle,
             region: definition.region,
@@ -49,7 +50,7 @@ describe('procedural Moonfrost enemy family', () => {
             sharedGeometry: true,
             bounds: definition.bounds
         }));
-        expect(enemy.userData.assetFallback).toBeUndefined();
+        expect(boss.userData.assetFallback).toBeUndefined();
         expect(metrics.visibleMeshes).toBeGreaterThanOrEqual(minimumMeshes);
         expect(metrics.nonFiniteTransforms).toBe(0);
         expect(bounds.min.y).toBeGreaterThanOrEqual(-0.001);
@@ -61,24 +62,22 @@ describe('procedural Moonfrost enemy family', () => {
         expect(bounds.max.z).toBeLessThanOrEqual(definition.bounds.radius);
     });
 
-    test.each(CASES)('%s has five finite and articulated animation states', (type, create) => {
-        const enemy = create();
-        const clips = Object.fromEntries(enemy.userData.animations.map((clip) => [clip.name, clip]));
-
-        expect(Object.keys(clips)).toEqual(PROCEDURAL_MOONFROST_ENEMY_STATES);
-        PROCEDURAL_MOONFROST_ENEMY_STATES.forEach((state) => expect(clips[state].tracks.length).toBeGreaterThanOrEqual(9));
+    test.each(CASES)('%s has five finite and articulated boss states', (type, create) => {
+        const boss = create();
+        const clips = Object.fromEntries(boss.userData.animations.map((clip) => [clip.name, clip]));
+        expect(Object.keys(clips)).toEqual(PROCEDURAL_THORNCRYPT_BOSS_STATES);
+        PROCEDURAL_THORNCRYPT_BOSS_STATES.forEach((state) => expect(clips[state].tracks.length).toBeGreaterThanOrEqual(9));
         expect(clips.Attack.tracks.some((animationTrack) => animationTrack.name.includes('Weapon.rotation[z]'))).toBe(true);
         expect(clips.Death.tracks.some((animationTrack) => animationTrack.name.endsWith('Body.position[y]'))).toBe(true);
 
-        for (const state of PROCEDURAL_MOONFROST_ENEMY_STATES) {
-            enemy.userData.resetPose();
-            const clip = clips[state];
-            const mixer = new THREE.AnimationMixer(enemy);
-            mixer.clipAction(clip).reset().play();
-            mixer.update(clip.duration * 0.5);
-            expect(sceneMetrics(enemy).nonFiniteTransforms).toBe(0);
+        for (const state of PROCEDURAL_THORNCRYPT_BOSS_STATES) {
+            boss.userData.resetPose();
+            const mixer = new THREE.AnimationMixer(boss);
+            mixer.clipAction(clips[state]).reset().play();
+            mixer.update(clips[state].duration * 0.5);
+            expect(sceneMetrics(boss).nonFiniteTransforms).toBe(0);
             mixer.stopAllAction();
-            mixer.uncacheRoot(enemy);
+            mixer.uncacheRoot(boss);
         }
     });
 
@@ -89,10 +88,10 @@ describe('procedural Moonfrost enemy family', () => {
         const secondMeshes = [];
         first.traverse((child) => { if (child.isMesh && child.visible) firstMeshes.push(child); });
         second.traverse((child) => { if (child.isMesh && child.visible) secondMeshes.push(child); });
-
         expect(first).not.toBe(second);
         expect(firstMeshes[0].geometry).toBe(secondMeshes[0].geometry);
         expect(firstMeshes[0].material).toBe(secondMeshes[0].material);
+
         const firstBody = first.getObjectByName(`Rig_${type}Body`);
         const secondBody = second.getObjectByName(`Rig_${type}Body`);
         const restY = firstBody.position.y;
@@ -102,17 +101,17 @@ describe('procedural Moonfrost enemy family', () => {
         expect(secondBody.position.y).toBeCloseTo(restY);
     });
 
-    test.each(CASES)('%s preserves authoritative radius and owns one latency-tolerant interaction hitbox', (type, create, EntityClass) => {
+    test.each(CASES)('%s preserves its boss radius and owns one exact interaction hitbox', (type, create, EntityClass) => {
         const actorMesh = create();
         const first = new EntityClass(`${type}-first`);
         const second = new EntityClass(`${type}-second`);
-        const definition = PROCEDURAL_MOONFROST_ENEMY_DEFINITIONS[type];
+        const definition = PROCEDURAL_THORNCRYPT_BOSS_DEFINITIONS[type];
         expect(first.radius).toBe(definition.combatRadius);
         first.name = '';
         second.name = '';
-
         first.setMesh(actorMesh);
         second.setMesh(actorMesh);
+
         const hitboxes = [];
         actorMesh.traverse((child) => {
             if (child.name === 'ActorInteractionHitbox') hitboxes.push(child);
@@ -128,12 +127,12 @@ describe('procedural Moonfrost enemy family', () => {
         expect(hitboxes[0].position.y).toBe(definition.bounds.height / 2);
     });
 
-    test('factory routing is explicit and regional resources remain cached', () => {
-        for (const [type] of CASES) expect(createProceduralMoonfrostEnemy(type).userData.proceduralActorType).toBe(type);
-        expect(() => createProceduralMoonfrostEnemy('UnknownEnemy')).toThrow('Unknown procedural Moonfrost enemy');
-        const metrics = getProceduralMoonfrostEnemyCacheMetrics();
-        for (const [type] of CASES) createProceduralMoonfrostEnemy(type);
-        expect(getProceduralMoonfrostEnemyCacheMetrics()).toEqual(metrics);
+    test('routing is explicit and all regional resources remain cached', () => {
+        for (const [type] of CASES) expect(createProceduralThorncryptBoss(type).userData.proceduralActorType).toBe(type);
+        expect(() => createProceduralThorncryptBoss('UnknownBoss')).toThrow('Unknown procedural Thorncrypt boss');
+        const metrics = getProceduralThorncryptBossCacheMetrics();
+        for (const [type] of CASES) createProceduralThorncryptBoss(type);
+        expect(getProceduralThorncryptBossCacheMetrics()).toEqual(metrics);
         expect(metrics.geometries).toBeGreaterThanOrEqual(70);
         expect(metrics.materials).toBe(24);
     });

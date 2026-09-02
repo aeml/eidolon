@@ -601,9 +601,15 @@ test.describe('two-account multiplayer', () => {
                     'Spirit Guardians Boost',
                     '3'
                 );
+                // Prove the active observer runtime was clean before deliberately
+                // replacing it. A navigation is allowed to cancel that abandoned
+                // document's pending embedded-GLB image decodes; reset only those
+                // teardown diagnostics, then keep auditing the replacement runtime.
+                expect(secondFailures, secondFailures.join('\n')).toEqual([]);
                 await secondPage.bringToFront();
                 await secondPage.reload({ waitUntil: 'domcontentloaded' });
                 await expect(secondPage.locator('#game-title')).toHaveText('EIDOLON ONLINE');
+                secondFailures.length = 0;
                 await secondPage.locator('#auth-username').fill(secondary.username);
                 await secondPage.locator('#auth-password').fill(secondary.password);
                 await secondPage.locator('#btn-login').click();

@@ -381,7 +381,15 @@ export class Actor extends Entity {
         const declaredBounds = mesh.userData.bounds;
         let hitbox = mesh.getObjectByName('ActorInteractionHitbox');
         if (!hitbox) {
-            const hitWidth = declaredBounds?.radius ? declaredBounds.radius * 2 : 1;
+            // Moving server actors can advance between pointer projection and
+            // the next rendered input sample. Procedural enemy families opt
+            // into a small input-only margin so a visibly acquired target does
+            // not turn into a ground click under real network latency. This is
+            // deliberately separate from the authoritative combat radius.
+            const interactionPadding = Math.max(0, Number(mesh.userData.interactionPadding) || 0);
+            const hitWidth = declaredBounds?.radius
+                ? (declaredBounds.radius + interactionPadding) * 2
+                : 1;
             const hitHeight = declaredBounds?.height || 2;
             const hitGeo = new THREE.BoxGeometry(hitWidth, hitHeight, hitWidth);
             const hitMat = new THREE.MeshBasicMaterial({

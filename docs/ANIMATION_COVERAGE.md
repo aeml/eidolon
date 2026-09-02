@@ -117,10 +117,10 @@ Player classes declare Idle/Walk/Run/Attack/Death clips through either the share
 | FrostGuardian | enemy | procedural Moonfrost glacial-bell rig | Idle, Walk, Run, Attack, Death | not-used | ice heart, broken halo, vigil bell, aurora polearm, and armored collapse | local hardware gallery: High/Low |
 | AquaGolem | enemy | procedural Moonfrost drowned-cairn rig | Idle, Walk, Run, Attack, Death | not-used | tide-soul chest, barnacled cairn body, anchor, water drips, and stone collapse | local hardware gallery: High/Low |
 | MountainTroll | enemy | procedural Moonfrost rimeback-troll rig | Idle, Walk, Run, Attack, Death | not-used | ice ridge, fur mantle, cairn club, aurora charm, and heavy collapse | local hardware gallery: High/Low |
-| RootboundWarden | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| BriarMatron | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| RustboundColossus | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| HollowSentinel | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
+| RootboundWarden | enemy | procedural Thorncrypt root-gate rig | Idle, Walk, Run, Attack, Death | not-used | root crown, ossuary gate plates, grave maul, funerary ivy, and heavy collapse | local hardware gallery: High/Low |
+| BriarMatron | enemy | procedural Thorncrypt briar-crown rig | Idle, Walk, Run, Attack, Death | not-used | sepulchre petals, thorn halo, witch shards, briar sickle, and ritual collapse | local hardware gallery: High/Low |
+| RustboundColossus | enemy | procedural Thorncrypt rust-reliquary rig | Idle, Walk, Run, Attack, Death | not-used | procession slabs, funeral pipes, reliquary rivets, great hammer, and stone collapse | local hardware gallery: High/Low |
+| HollowSentinel | enemy | procedural Thorncrypt hollow-vigil rig | Idle, Walk, Run, Attack, Death | not-used | empty ribs, last witchlight, vigil tatters, crown, poleblade, and final collapse | local hardware gallery: High/Low |
 | AvengingSeraph | summon | procedural reliquary seraph rig | Idle, Walk, Run, Attack, Death | not-used | articulated broken-sun wings, oath-spear, censer, and collapse | local hardware gallery: High/Low |
 | DwarfSalesman | npc | procedural town actor rig | Idle | not-used | merchant hammer and ember coin language | local hardware gallery: High/Low |
 | QuestNPC | npc | procedural town actor rig | Idle | not-used | oath-scroll and broken-sun quest language | local hardware gallery: High/Low |
