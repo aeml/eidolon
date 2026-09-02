@@ -6,7 +6,7 @@ Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.16`
+Current migration release: `Alpha 0.41.0.17`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
@@ -33,9 +33,9 @@ No authored model path remains in production code, manifests, preload lists, ser
 | Inventory-only types | material, relic, gem | Presentation audit pending; must not be treated as equipment |
 | Active world hazards | 19 lava pools, 12 sandstorms, 15 lightning zones, 19 wind gusts | Exact-radius themed boundaries migrated in 0.41.0.0 |
 | Overworld areas | Gloamwood Marches, Lanternhold, Moonfrost Expanse, Cinder Wastes, Stormcrown Reach | Theme manifest, lighting/atmosphere foundation, nine-family realm foliage, and complete Lanternhold architecture migrated; realm terrain and remaining structures pending |
-| Dungeons | Thorncrypt, Furnace Below, Shattered Aerie, Drowned Sanctum | Theme manifest complete; room geometry, props, mechanics, and lighting migration pending |
+| Dungeons | Thorncrypt, Furnace Below, Shattered Aerie, Drowned Sanctum | Generated room/corridor surfaces, all eight server room identities, and exact instance lighting/particles migrated in 0.41.0.17; encounter mechanics, dungeon hazards, bosses, and transitions still require the bespoke pass |
 | Actors | players, remote players, NPCs, summons, legacy enemies, procedural realm enemies and bosses | All players, four Lanternhold services, the Avenging Seraph, Gloamwood/Cinder/Moonfrost overworld families, and all four Thorncrypt bosses are code-native; remaining enemy and boss routes use the earlier procedural-spec system and await their bespoke style pass |
-| World objects | trees, town buildings, camps, dungeon facades, services, chests, portals, blockers | Realm foliage, all Lanternhold architecture/services, and all four overworld dungeon thresholds migrated; dungeon reward chests, interior portals, and blockers pending |
+| World objects | trees, town buildings, camps, dungeon facades, services, chests, portals, blockers | Realm foliage, all Lanternhold architecture/services, all four overworld dungeon thresholds, and visual room-role reliquaries/shrines migrated; reward-state presentation, interior portals, and blockers pending |
 | Networked effects | projectiles, traps, persistent zones, auras, statuses, combat feedback | Gameplay contract audit exists; art migration and lifecycle gallery expansion pending |
 
 ## Region and hazard identity
@@ -157,3 +157,13 @@ Each root carries an invisible box with the exact production-scaled dimensions m
 Eleven cached faceted geometries and twenty-five region-specific materials build 109 inspectable semantic pieces. Production merges each landmark by material into 34 total visible batches—eight or nine per threshold—while the dedicated browser gallery retains the detailed hierarchy for inspection. Unit coverage proves every ID, part family, exact bound, radius, position, resource cache, shadow rule, and loader bypass. Hardware Chrome renders all four together at High and Low quality and fails on any authored-model request.
 
 The four removed GLBs totaled 70,429,592 bytes. That brings the original 106-file, 814,551,864-byte authored-model ledger to exactly zero. `MeshCatalog`, overworld creation, the asset manifest, optional download UI, and service-worker pack generation contain no authored-model route; the named core and dungeon packs complete immediately as built-in code. The three 468-byte-total empty plant compatibility bridges remain explicitly excluded because they contain no nodes, meshes, materials, authored geometry, collision, or production reference.
+
+## Four named deep halls
+
+`Alpha 0.41.0.17` replaces the single authored cobblestone presentation shared by all four dungeon layouts with a generated interior system. The Thorncrypt uses offset funerary blocks, moss, living grave-root seams, witchlight wards, and bronze vigils. The Furnace Below uses black-glass forge plates, branching molten fractures, crucible fangs, and ember seals. The Shattered Aerie uses staggered storm slate, silver conductors, captive sky nodes, and floating fragments. The Drowned Sanctum uses flooded basalt, black-water tide rings, coral antlers, moonlit fonts, and bioluminescent marks. The production dungeon methods no longer await or request either legacy cobblestone texture.
+
+The same factory reads the server's established room metadata and gives `entry_gate`, `treasure_cache`, `restorative_shrine`, `ambush_chamber`, `boss_approach`, `elite_guard`, `boss_lair`, and `route_hall` distinct visual layouts. These props are explicitly visual-only: room and corridor dimensions, forty-unit door openings, fifteen-unit walls, collision boxes, canonical walk rectangles, combat, reward triggers, and room progression remain unchanged. Repeated surface resources are cached per generated instance, detail geometry is merged by material/shadow behavior, and transition disposal deduplicates shared geometry, materials, and procedural texture maps.
+
+This release also fixes dungeon atmosphere selection. The four layouts live at remote server coordinates that previously made position-only routing classify every one as Stormcrown/Air. Render context now overrides that coordinate heuristic while inside an instance, giving each dungeon its declared light, fog, exposure, bloom, and ambient particle family; leaving the instance clears the override and recycles old weather immediately. Unit coverage checks every theme, texture, identity, exact wall collider, loader bypass, context transition, and disposal route. A deterministic hardware-Chrome gallery renders all four surface languages and all eight room identities at High and Low quality while rejecting legacy cobblestone requests.
+
+This is the room-shell and atmosphere portion of migration stage seven. Boss/encounter dressing, damaging dungeon mechanics, reward-state lifecycle, interior portals/blockers, death/reconnect restoration, and room unload/reload behavior remain open and are not implied complete by this slice.

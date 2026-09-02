@@ -12,6 +12,11 @@ import {
     DUNGEON_ENTRANCE_DEFINITIONS,
     DUNGEON_ENTRANCE_IDS
 } from '../../src/art/ProceduralDungeonEntrances.js';
+import {
+    DUNGEON_INTERIOR_DEFINITIONS,
+    DUNGEON_INTERIOR_IDS,
+    DUNGEON_ROOM_IDENTITY_IDS
+} from '../../src/art/ProceduralDungeonInteriors.js';
 
 const presentationCount = listPlayerAbilityPresentationVariants().length;
 const actorEntries = listActorAnimationEntries();
@@ -595,6 +600,61 @@ test.describe('deterministic production animation gallery', () => {
             expect(metrics.entrances.every((entry) => entry.finite)).toBe(true);
             await page.screenshot({
                 path: testInfo.outputPath(`procedural-dungeon-entrances-${quality}.png`),
+                animations: 'allow',
+                fullPage: true
+            });
+        }
+
+        expect(failures, failures.join('\n')).toEqual([]);
+        testInfo.annotations.push({
+            type: 'renderer',
+            description: `${renderer.vendor} · ${renderer.renderer}`
+        });
+    });
+
+    test('renders every procedural dungeon surface and room identity at High and Low quality', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        const authoredDungeonTextureRequests = [];
+        page.on('request', (request) => {
+            if (/cobblestone(?:_walls)?\.png(?:\?|$)/i.test(request.url())) {
+                authoredDungeonTextureRequests.push(request.url());
+            }
+        });
+        const response = await page.goto('/repro.html?interiors=1&instances=1', { waitUntil: 'networkidle' });
+        expect(response?.status()).toBe(200);
+
+        await expect.poll(() => page.evaluate(() => window.__eidolonInteriorGallery?.ready || false)).toBe(true);
+        const renderer = await hardwareRenderer(page);
+        expect(renderer).not.toBeNull();
+        expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
+
+        let metrics = await page.evaluate(() => window.__eidolonInteriorGallery);
+        expect(metrics.interiors.map((entry) => entry.dungeonType)).toEqual(DUNGEON_INTERIOR_IDS);
+        expect(new Set(metrics.interiors.map((entry) => entry.artStyle)).size).toBe(4);
+        expect(new Set(metrics.interiors.map((entry) => entry.surfaceLanguage)).size).toBe(4);
+        for (const entry of metrics.interiors) {
+            expect(entry.artStyle).toBe(DUNGEON_INTERIOR_DEFINITIONS[entry.dungeonType].artStyle);
+            expect(entry.surfaceCount).toBe(3);
+            expect(entry.detailCount).toBeGreaterThanOrEqual(60);
+            expect(entry.roomIdentities).toEqual(DUNGEON_ROOM_IDENTITY_IDS);
+            expect(entry.cache).toEqual({
+                surfaceTextures: 4,
+                surfaceMaterials: 3,
+                surfaceGeometries: 3,
+                detailGeometries: 8,
+                detailMaterials: 5
+            });
+            expect(entry.finite).toBe(true);
+        }
+        expect(authoredDungeonTextureRequests).toEqual([]);
+
+        for (const quality of ['high', 'low']) {
+            await page.evaluate((value) => window.__eidolonSetInteriorQuality(value), quality);
+            await expect.poll(() => page.evaluate(() => window.__eidolonInteriorGallery.quality)).toBe(quality);
+            metrics = await page.evaluate(() => window.__eidolonInteriorGallery);
+            expect(metrics.interiors.every((entry) => entry.finite)).toBe(true);
+            await page.screenshot({
+                path: testInfo.outputPath(`procedural-dungeon-interiors-${quality}.png`),
                 animations: 'allow',
                 fullPage: true
             });

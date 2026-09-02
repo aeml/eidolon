@@ -1522,6 +1522,11 @@ export class GameEngine {
         this.player.position.set(startX, 0.5, startZ);
         this.player.targetPosition = null; // Clear any pending movement target
 
+        // Dungeon coordinates intentionally live far outside the overworld.
+        // Route atmosphere by instance identity so those coordinates cannot
+        // accidentally select the Air realm's light/fog/particles.
+        this.renderSystem.setEnvironmentContext?.(type, this.player.position, true);
+
         if (this.player.mesh) {
             this.player.mesh.position.set(startX, 0.5, startZ);
             this.renderSystem.add(this.player.mesh); // Ensure player is in scene

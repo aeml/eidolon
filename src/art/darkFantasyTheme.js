@@ -190,6 +190,10 @@ export const DUNGEON_THEME_KEYS = freezeArray([
     'tempest_spire',
     'abyssal_well'
 ]);
+export const REGION_THEME_KEYS = freezeArray([
+    ...OVERWORLD_THEME_KEYS,
+    ...DUNGEON_THEME_KEYS
+]);
 export const ACTIVE_WORLD_HAZARD_TYPES = freezeArray([
     'lava_pool',
     'sandstorm',
@@ -214,6 +218,27 @@ export function createOverworldLightingPresets() {
 
 export function createOverworldParticleConfigs() {
     return Object.fromEntries(OVERWORLD_THEME_KEYS.map((key) => {
+        const particles = DARK_FANTASY_REGION_THEMES[key].particles;
+        return [key, {
+            ...particles,
+            velY: [...particles.velY],
+            velXZ: [...particles.velXZ],
+            life: [...particles.life],
+            spread: [...particles.spread],
+            spawnY: [...particles.spawnY]
+        }];
+    }));
+}
+
+export function createRegionLightingPresets() {
+    return Object.fromEntries(REGION_THEME_KEYS.map((key) => [
+        key,
+        { ...DARK_FANTASY_REGION_THEMES[key].lighting }
+    ]));
+}
+
+export function createRegionParticleConfigs() {
+    return Object.fromEntries(REGION_THEME_KEYS.map((key) => {
         const particles = DARK_FANTASY_REGION_THEMES[key].particles;
         return [key, {
             ...particles,

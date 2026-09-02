@@ -49,4 +49,44 @@ describe('RenderSystem scene groups', () => {
         expect(instanceGeometryDispose).toHaveBeenCalledTimes(1);
         expect(instanceMaterialDispose).toHaveBeenCalledTimes(1);
     });
+
+    test('routes dungeon atmosphere by instance identity instead of remote coordinate quadrant', () => {
+        const renderSystem = new RenderSystem(false);
+        const remoteDungeonPosition = new THREE.Vector3(50000, 0.5, 20000);
+
+        for (const dungeonType of [
+            'verdant_bastion_catacombs',
+            'molten_core',
+            'tempest_spire',
+            'abyssal_well'
+        ]) {
+            expect(renderSystem.setEnvironmentContext(dungeonType, remoteDungeonPosition, true)).toBe(dungeonType);
+            expect(renderSystem.getRealmForPosition(remoteDungeonPosition)).toBe(dungeonType);
+            expect(renderSystem.currentRealm).toBe(dungeonType);
+            expect(renderSystem.currentLighting.fogNear).toBe(renderSystem.realmLightingPresets[dungeonType].fogNear);
+        }
+
+        expect(renderSystem.setEnvironmentContext('overworld', new THREE.Vector3(0, 0.5, 200), true)).toBe('town');
+        expect(renderSystem.environmentThemeOverride).toBeNull();
+        expect(renderSystem.getRealmForPosition(new THREE.Vector3(-2400, 0.5, 200))).toBe('fire');
+    });
+
+    test('disposes shared instance resources and procedural texture maps exactly once', () => {
+        const renderSystem = new RenderSystem(false);
+        const sharedGeometry = new THREE.BoxGeometry(1, 1, 1);
+        const map = new THREE.DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1);
+        const material = new THREE.MeshBasicMaterial({ map });
+        const root = new THREE.Group();
+        root.add(new THREE.Mesh(sharedGeometry, material));
+        root.add(new THREE.Mesh(sharedGeometry, material));
+        const geometryDispose = jest.spyOn(sharedGeometry, 'dispose');
+        const materialDispose = jest.spyOn(material, 'dispose');
+        const textureDispose = jest.spyOn(map, 'dispose');
+
+        renderSystem.disposeObjectResources(root);
+
+        expect(geometryDispose).toHaveBeenCalledTimes(1);
+        expect(materialDispose).toHaveBeenCalledTimes(1);
+        expect(textureDispose).toHaveBeenCalledTimes(1);
+    });
 });

@@ -8,9 +8,12 @@ import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
 import { resolveAssetPath } from '../assets/assetManifest.js';
 import {
-    createOverworldLightingPresets,
-    createOverworldParticleConfigs
+    DUNGEON_THEME_KEYS,
+    createRegionLightingPresets,
+    createRegionParticleConfigs
 } from '../art/darkFantasyTheme.js';
+
+const DUNGEON_THEME_KEY_SET = new Set(DUNGEON_THEME_KEYS);
 
 export class RenderSystem {
     constructor(isMobile = false) {
@@ -79,6 +82,7 @@ export class RenderSystem {
         this.midBrightnessScale = legacyMinBrightnessScale + 0.5 * (1 - legacyMinBrightnessScale);
         this.brightnessScale = 1.0;
         this.currentRealm = null;
+        this.environmentThemeOverride = null;
         this.targetLighting = null;
         this.environmentGroup = new THREE.Group();
         this.environmentGroup.name = 'EnvironmentGroup';
@@ -112,7 +116,7 @@ export class RenderSystem {
             fogFar: 4200
         };
 
-        this.realmLightingPresets = createOverworldLightingPresets();
+        this.realmLightingPresets = createRegionLightingPresets();
         this.perfStats = {
             lastTime: performance.now(),
             lastUpdate: performance.now(),
@@ -309,7 +313,7 @@ export class RenderSystem {
          air   — fast horizontal wind wisps
        ---------------------------------------------------------------- */
 
-    static REALM_PARTICLE_CONFIGS = createOverworldParticleConfigs();
+    static REALM_PARTICLE_CONFIGS = createRegionParticleConfigs();
 
     initRealmParticles() {
         const count = this.isMobile ? 50 : 140;
@@ -554,6 +558,7 @@ export class RenderSystem {
     }
 
     getRealmForPosition(position) {
+        if (this.environmentThemeOverride) return this.environmentThemeOverride;
         if (!position) return 'earth';
         if (position.z < -600) return 'water';
         if (position.x < -1000) return 'fire';
@@ -563,6 +568,20 @@ export class RenderSystem {
         const dz = position.z - 200;
         if (dx * dx + dz * dz < 120 * 120) return 'town';
         return 'earth';
+    }
+
+    setEnvironmentContext(context = null, position = null, immediate = true) {
+        const dungeonTheme = DUNGEON_THEME_KEY_SET.has(context) ? context : null;
+        this.environmentThemeOverride = dungeonTheme;
+        const realm = this.getRealmForPosition(position || this.cameraTarget);
+        this.currentRealm = realm;
+        this.applyLightingPreset(realm, immediate);
+
+        // Recycle the atmosphere immediately so a dungeon transition cannot
+        // carry overworld snow, embers, or wind across the loading boundary.
+        if (this._pLife) this._pLife.fill(0);
+        this._pRealm = null;
+        return realm;
     }
 
     applyLightingPreset(realm, immediate = false) {
@@ -987,25 +1006,42 @@ export class RenderSystem {
 
     clearGroupChildren(group, options = {}) {
         if (!group) return;
+        if (options.dispose) {
+            // Traverse the whole ownership group once so resources shared by
+            // sibling room, corridor, and dressing roots are deduplicated.
+            this.disposeObjectResources(group);
+        }
         while (group.children.length > 0) {
             const child = group.children[0];
-            if (options.dispose) {
-                this.disposeObjectResources(child);
-            }
             group.remove(child);
         }
     }
 
     disposeObjectResources(object) {
         if (!object) return;
+        const disposedGeometries = new Set();
+        const disposedMaterials = new Set();
+        const disposedTextures = new Set();
+        const disposeMaterial = (material) => {
+            if (!material || disposedMaterials.has(material)) return;
+            disposedMaterials.add(material);
+            for (const value of Object.values(material)) {
+                if (value?.isTexture && !disposedTextures.has(value)) {
+                    disposedTextures.add(value);
+                    value.dispose?.();
+                }
+            }
+            material.dispose?.();
+        };
         object.traverse?.((child) => {
-            if (child.geometry?.dispose) {
+            if (child.geometry?.dispose && !disposedGeometries.has(child.geometry)) {
+                disposedGeometries.add(child.geometry);
                 child.geometry.dispose();
             }
             if (Array.isArray(child.material)) {
-                child.material.forEach(material => material?.dispose?.());
-            } else if (child.material?.dispose) {
-                child.material.dispose();
+                child.material.forEach(disposeMaterial);
+            } else {
+                disposeMaterial(child.material);
             }
         });
     }

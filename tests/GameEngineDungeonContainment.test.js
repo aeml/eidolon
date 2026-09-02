@@ -137,6 +137,7 @@ function createEngineHarness() {
             effectGroup.children.slice().forEach(child => effectGroup.remove(child));
         }),
         setupLights: jest.fn(),
+        setEnvironmentContext: jest.fn(),
         setCameraTarget: jest.fn(),
         preloadEnvironment: jest.fn().mockResolvedValue()
     };
@@ -202,6 +203,7 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(worldGeneratorInstances).toHaveLength(1);
         expect(worldGeneratorInstances[0].scene).toBe(engine.renderSystem.instanceEnvironmentGroup);
         expect(worldGeneratorInstances[0][generatorMethod]).toHaveBeenCalledWith(0, 0, layout);
+        expect(engine.renderSystem.setEnvironmentContext).toHaveBeenCalledWith(instanceType, engine.player.position, true);
         expect(engine.player.position.x).toBe(12);
         expect(engine.player.position.z).toBe(34);
     });
@@ -217,6 +219,7 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(worldGeneratorInstances).toHaveLength(1);
         expect(worldGeneratorInstances[0].createTown).toHaveBeenCalledWith(0, 200, 100);
         expect(worldGeneratorInstances[0].createOverworldStructures).toHaveBeenCalled();
+        expect(engine.renderSystem.setEnvironmentContext).toHaveBeenCalledWith('overworld', engine.player.position, true);
     });
 
     test('enterInstance refreshes onboarding objectives after entering the overworld with no active quests', async () => {

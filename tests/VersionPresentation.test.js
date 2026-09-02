@@ -16,22 +16,18 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.16 for procedural dungeon thresholds', () => {
-        expect(indexHtml).toContain('Alpha 0.41.0.16');
-        expect(indexHtml).toContain('Patch 0.41.0.16');
-        expect(indexHtml).toContain('four doors dream in four tongues');
-        expect(indexHtml).toContain('The Thorncrypt grows its own crown');
-        expect(indexHtml).toContain('The Furnace Below opens its iron throat');
-        expect(indexHtml).toContain('The Shattered Aerie catches the storm');
-        expect(indexHtml).toContain('The Drowned Sanctum watches from below');
-        expect(indexHtml).toContain('Every old footprint remains exact');
-        expect(indexHtml).toContain('Entry logic never changed hands');
-        expect(indexHtml).toContain('One hundred nine details travel in thirty-four batches');
-        expect(indexHtml).toContain('The authored-model ledger reaches zero');
-        expect(indexHtml).toContain('70,429,592 bytes');
-        expect(indexHtml).toContain('all 106 authored models from the migration baseline are now gone');
-        expect(indexHtml).toContain('hardware-Chrome gallery cover all four themes at High and Low quality');
-        expect(indexHtml).toContain('2026-09-02-16');
+    test('advances the login screen to alpha 0.41.0.17 for procedural dungeon interiors', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.17');
+        expect(indexHtml).toContain('Patch 0.41.0.17');
+        expect(indexHtml).toContain('the deep halls remember their names');
+        expect(indexHtml).toContain('Four thresholds now lead to four different worlds');
+        expect(indexHtml).toContain('The floor tells you what waits ahead');
+        expect(indexHtml).toContain('Dungeon atmosphere finally follows the dungeon');
+        expect(indexHtml).toContain('Transitions shed the old weather cleanly');
+        expect(indexHtml).toContain('The server still owns every step');
+        expect(indexHtml).toContain('The old dungeon texture queue is gone');
+        expect(indexHtml).toContain('all eight room identities at High and Low quality');
+        expect(indexHtml).toContain('2026-09-02-17');
     });
 
     test('retains alpha 0.41.0.14 coherent edge delivery history', () => {
@@ -220,7 +216,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.16';
+        const expectedVersion = 'Alpha 0.41.0.17';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -324,8 +320,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.16 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.16`');
+    test('marks 0.41.0.17 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.17`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
@@ -1395,6 +1391,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.41.0.17');
         expect(indexHtml).toContain('Patch 0.41.0.16');
         expect(indexHtml).toContain('Patch 0.41.0.15');
         expect(indexHtml).toContain('Patch 0.41.0.14');

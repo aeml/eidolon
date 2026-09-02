@@ -16,6 +16,7 @@ import {
     DUNGEON_ENTRANCE_IDS,
     createProceduralDungeonEntrance
 } from '../art/ProceduralDungeonEntrances.js';
+import { createProceduralDungeonInteriorKit } from '../art/ProceduralDungeonInteriors.js';
 
 // Shared temp objects to reduce allocations during instancing
 const TEMP_POS = new THREE.Vector3();
@@ -32,6 +33,7 @@ export class WorldGenerator {
 
         this.floorTexture = null;
         this.wallTexture = null;
+        this.dungeonInteriorKit = null;
     }
 
     async preloadTextures() {
@@ -418,6 +420,7 @@ export class WorldGenerator {
 
         layout.rooms.forEach((room, index) => {
             this.createRoom(room.x, room.z, room.width, room.color, roomOpenings[index] || {});
+            this.addDungeonRoomDressing(room, index);
         });
 
         layout.corridors.forEach((corridor) => {
@@ -464,6 +467,7 @@ export class WorldGenerator {
         layout.rooms.forEach((room, index) => {
             const openings = this.buildLegacyRoomOpenings(layout.rooms, index);
             this.createRoom(room.x, room.z, room.width, room.color, openings);
+            this.addDungeonRoomDressing(room, index);
 
             if (prevRoom) {
                 this.createLegacyCorridorBetweenRooms(prevRoom, room);
@@ -716,7 +720,7 @@ export class WorldGenerator {
     async createVerdantBastionCatacombs(centerX, centerZ, layout) {
         console.log(`Generating Verdant Bastion Catacombs at ${centerX},${centerZ}`);
 
-        await this.preloadTextures();
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('verdant_bastion_catacombs');
         
         if (this.createLayoutDrivenDungeon(layout)) {
             return;
@@ -761,7 +765,7 @@ export class WorldGenerator {
     async createMoltenCore(centerX, centerZ, layout) {
         console.log(`Generating Molten Core at ${centerX},${centerZ}`);
 
-        await this.preloadTextures();
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('molten_core');
 
         if (this.createLayoutDrivenDungeon(layout)) {
             return;
@@ -771,7 +775,7 @@ export class WorldGenerator {
     async createTempestSpire(centerX, centerZ, layout) {
         console.log(`Generating Tempest Spire at ${centerX},${centerZ}`);
 
-        await this.preloadTextures();
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('tempest_spire');
 
         if (this.createLayoutDrivenDungeon(layout)) {
             return;
@@ -781,7 +785,7 @@ export class WorldGenerator {
     async createAbyssalWell(centerX, centerZ, layout) {
         console.log(`Generating Abyssal Well at ${centerX},${centerZ}`);
 
-        await this.preloadTextures();
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('abyssal_well');
 
         if (this.createLayoutDrivenDungeon(layout)) {
             return;
@@ -790,16 +794,25 @@ export class WorldGenerator {
 
     createRoom(x, z, size, color, openings = {}) {
         // Floor
-        const floorGeo = new THREE.PlaneGeometry(size, size);
-        
-        const texture = this.floorTexture.clone();
-        texture.repeat.set(size / 10, size / 10);
-        texture.needsUpdate = true;
-
-        const floorMat = new THREE.MeshStandardMaterial({ map: texture });
+        const floorGeo = this.dungeonInteriorKit
+            ? this.dungeonInteriorKit.floorGeometry(size, size)
+            : new THREE.PlaneGeometry(size, size);
+        let floorMat;
+        if (this.dungeonInteriorKit) {
+            floorMat = this.dungeonInteriorKit.floorMaterial(size, size);
+        } else {
+            const texture = this.floorTexture.clone();
+            texture.repeat.set(size / 10, size / 10);
+            texture.needsUpdate = true;
+            floorMat = new THREE.MeshStandardMaterial({ map: texture });
+        }
         const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.name = this.dungeonInteriorKit ? 'ProceduralDungeonRoomFloor' : 'DungeonRoomFloor';
+        floor.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
+        floor.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';
         floor.rotation.x = -Math.PI / 2;
         floor.position.set(x, 0.1, z);
+        floor.receiveShadow = true;
         this.scene.add(floor);
         
         const wallHeight = 15;
@@ -845,20 +858,30 @@ export class WorldGenerator {
     }
 
     createWall(x, z, w, h, d, rotY, isTransparent = false) {
-        const geo = new THREE.BoxGeometry(w, h, d);
-        
-        const texture = this.wallTexture.clone();
-        texture.repeat.set(w / 10, h / 10);
-        texture.needsUpdate = true;
-
-        const mat = new THREE.MeshStandardMaterial({ 
-            map: texture,
-            transparent: isTransparent,
-            opacity: isTransparent ? 0.3 : 1.0
-        });
+        const geo = this.dungeonInteriorKit
+            ? this.dungeonInteriorKit.wallGeometry(w, h, d)
+            : new THREE.BoxGeometry(w, h, d);
+        let mat;
+        if (this.dungeonInteriorKit) {
+            mat = this.dungeonInteriorKit.wallMaterial(w, h, isTransparent);
+        } else {
+            const texture = this.wallTexture.clone();
+            texture.repeat.set(w / 10, h / 10);
+            texture.needsUpdate = true;
+            mat = new THREE.MeshStandardMaterial({
+                map: texture,
+                transparent: isTransparent,
+                opacity: isTransparent ? 0.3 : 1.0
+            });
+        }
         const mesh = new THREE.Mesh(geo, mat);
+        mesh.name = this.dungeonInteriorKit ? 'ProceduralDungeonWall' : 'DungeonWall';
+        mesh.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
+        mesh.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';
         mesh.position.set(x, h/2, z);
         mesh.rotation.y = rotY;
+        mesh.castShadow = !isTransparent;
+        mesh.receiveShadow = true;
         this.scene.add(mesh);
         
         const collider = new THREE.Box3().setFromObject(mesh);
@@ -867,16 +890,25 @@ export class WorldGenerator {
 
     createCorner(x, z, width, openings = {}) {
         // Floor
-        const floorGeo = new THREE.PlaneGeometry(width, width);
-        
-        const texture = this.floorTexture.clone();
-        texture.repeat.set(width / 10, width / 10);
-        texture.needsUpdate = true;
-
-        const floorMat = new THREE.MeshStandardMaterial({ map: texture });
+        const floorGeo = this.dungeonInteriorKit
+            ? this.dungeonInteriorKit.floorGeometry(width, width)
+            : new THREE.PlaneGeometry(width, width);
+        let floorMat;
+        if (this.dungeonInteriorKit) {
+            floorMat = this.dungeonInteriorKit.floorMaterial(width, width);
+        } else {
+            const texture = this.floorTexture.clone();
+            texture.repeat.set(width / 10, width / 10);
+            texture.needsUpdate = true;
+            floorMat = new THREE.MeshStandardMaterial({ map: texture });
+        }
         const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.name = this.dungeonInteriorKit ? 'ProceduralDungeonCornerFloor' : 'DungeonCornerFloor';
+        floor.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
+        floor.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';
         floor.rotation.x = -Math.PI / 2;
         floor.position.set(x, 0.1, z); // Match room/corridor height
+        floor.receiveShadow = true;
         this.scene.add(floor);
 
         // Walls
@@ -898,7 +930,9 @@ export class WorldGenerator {
 
         // Corner Pillars (to fill gaps)
         const pillarSize = 2.5; // Slightly larger than wall thickness (2)
-        const pillarGeo = new THREE.BoxGeometry(pillarSize, 15, pillarSize);
+        const pillarGeo = this.dungeonInteriorKit
+            ? this.dungeonInteriorKit.wallGeometry(pillarSize, 15, pillarSize)
+            : new THREE.BoxGeometry(pillarSize, 15, pillarSize);
         
         const offsets = [
             { ox: -width/2, oz: -width/2 },
@@ -914,18 +948,27 @@ export class WorldGenerator {
             // Transparency Check
             const isTransparent = (px + pz) > (x + z);
             
-            const pillarTexture = this.wallTexture.clone();
-            pillarTexture.repeat.set(0.5, 1.5);
-            pillarTexture.needsUpdate = true;
-
-            const pillarMat = new THREE.MeshStandardMaterial({ 
-                map: pillarTexture,
-                transparent: isTransparent,
-                opacity: isTransparent ? 0.3 : 1.0
-            });
+            let pillarMat;
+            if (this.dungeonInteriorKit) {
+                pillarMat = this.dungeonInteriorKit.wallMaterial(pillarSize, 15, isTransparent);
+            } else {
+                const pillarTexture = this.wallTexture.clone();
+                pillarTexture.repeat.set(0.5, 1.5);
+                pillarTexture.needsUpdate = true;
+                pillarMat = new THREE.MeshStandardMaterial({
+                    map: pillarTexture,
+                    transparent: isTransparent,
+                    opacity: isTransparent ? 0.3 : 1.0
+                });
+            }
 
             const pillar = new THREE.Mesh(pillarGeo, pillarMat);
+            pillar.name = this.dungeonInteriorKit ? 'ProceduralDungeonCornerPillar' : 'DungeonCornerPillar';
+            pillar.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
+            pillar.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';
             pillar.position.set(px, 7.5, pz);
+            pillar.castShadow = !isTransparent;
+            pillar.receiveShadow = true;
             this.scene.add(pillar);
             this.collisionManager.addCollider(new THREE.Box3().setFromObject(pillar));
         });
@@ -961,24 +1004,35 @@ export class WorldGenerator {
 
         // Floor (Trimmed)
         // Use 0.1 to match room floor height since we are trimming
-        const geo = new THREE.PlaneGeometry(segmentLength, width);
-        
-        const texture = this.floorTexture.clone();
-        texture.repeat.set(segmentLength / 10, width / 10);
-        texture.needsUpdate = true;
-
-        const mat = new THREE.MeshStandardMaterial({ map: texture });
+        const geo = this.dungeonInteriorKit
+            ? this.dungeonInteriorKit.floorGeometry(segmentLength, width)
+            : new THREE.PlaneGeometry(segmentLength, width);
+        let mat;
+        if (this.dungeonInteriorKit) {
+            mat = this.dungeonInteriorKit.floorMaterial(segmentLength, width);
+        } else {
+            const texture = this.floorTexture.clone();
+            texture.repeat.set(segmentLength / 10, width / 10);
+            texture.needsUpdate = true;
+            mat = new THREE.MeshStandardMaterial({ map: texture });
+        }
         const mesh = new THREE.Mesh(geo, mat);
+        mesh.name = this.dungeonInteriorKit ? 'ProceduralDungeonCorridorFloor' : 'DungeonCorridorFloor';
+        mesh.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
+        mesh.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';
         mesh.rotation.x = -Math.PI / 2;
         mesh.position.set(cx, 0.1, cz);
         mesh.rotation.z = -angle; 
+        mesh.receiveShadow = true;
         this.scene.add(mesh);
         
         // Walls (Trimmed)
         const wallLength = segmentLength;
         const wallHeight = 15;
         const wallThickness = 2;
-        const wallGeo = new THREE.BoxGeometry(wallLength, wallHeight, wallThickness);
+        const wallGeo = this.dungeonInteriorKit
+            ? this.dungeonInteriorKit.wallGeometry(wallLength, wallHeight, wallThickness)
+            : new THREE.BoxGeometry(wallLength, wallHeight, wallThickness);
 
         // Determine transparency based on wall position relative to corridor center
         // Camera is at (+100, +100, +100) looking at (0,0,0)
@@ -1001,38 +1055,60 @@ export class WorldGenerator {
         const isLeftTransparent = leftScore > centerScore;
         const isRightTransparent = rightScore > centerScore;
 
-        const leftTexture = this.wallTexture.clone();
-        leftTexture.repeat.set(wallLength / 10, wallHeight / 10);
-        leftTexture.needsUpdate = true;
+        let leftMat;
+        let rightMat;
+        if (this.dungeonInteriorKit) {
+            leftMat = this.dungeonInteriorKit.wallMaterial(wallLength, wallHeight, isLeftTransparent);
+            rightMat = this.dungeonInteriorKit.wallMaterial(wallLength, wallHeight, isRightTransparent);
+        } else {
+            const leftTexture = this.wallTexture.clone();
+            leftTexture.repeat.set(wallLength / 10, wallHeight / 10);
+            leftTexture.needsUpdate = true;
+            leftMat = new THREE.MeshStandardMaterial({
+                map: leftTexture,
+                transparent: isLeftTransparent,
+                opacity: isLeftTransparent ? 0.3 : 1.0
+            });
 
-        const leftMat = new THREE.MeshStandardMaterial({ 
-            map: leftTexture,
-            transparent: isLeftTransparent,
-            opacity: isLeftTransparent ? 0.3 : 1.0
-        });
-
-        const rightTexture = this.wallTexture.clone();
-        rightTexture.repeat.set(wallLength / 10, wallHeight / 10);
-        rightTexture.needsUpdate = true;
-
-        const rightMat = new THREE.MeshStandardMaterial({ 
-            map: rightTexture,
-            transparent: isRightTransparent,
-            opacity: isRightTransparent ? 0.3 : 1.0
-        });
+            const rightTexture = this.wallTexture.clone();
+            rightTexture.repeat.set(wallLength / 10, wallHeight / 10);
+            rightTexture.needsUpdate = true;
+            rightMat = new THREE.MeshStandardMaterial({
+                map: rightTexture,
+                transparent: isRightTransparent,
+                opacity: isRightTransparent ? 0.3 : 1.0
+            });
+        }
 
         // Left Wall
         const leftWall = new THREE.Mesh(wallGeo, leftMat);
+        leftWall.name = this.dungeonInteriorKit ? 'ProceduralDungeonCorridorWall' : 'DungeonCorridorWall';
+        leftWall.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
+        leftWall.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';
         leftWall.position.set(lx, wallHeight/2, lz);
         leftWall.rotation.y = -angle;
+        leftWall.castShadow = !isLeftTransparent;
+        leftWall.receiveShadow = true;
         this.scene.add(leftWall);
         this.collisionManager.addCollider(new THREE.Box3().setFromObject(leftWall));
 
         // Right Wall
         const rightWall = new THREE.Mesh(wallGeo, rightMat);
+        rightWall.name = this.dungeonInteriorKit ? 'ProceduralDungeonCorridorWall' : 'DungeonCorridorWall';
+        rightWall.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
+        rightWall.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';
         rightWall.position.set(rx, wallHeight/2, rz);
         rightWall.rotation.y = -angle;
+        rightWall.castShadow = !isRightTransparent;
+        rightWall.receiveShadow = true;
         this.scene.add(rightWall);
         this.collisionManager.addCollider(new THREE.Box3().setFromObject(rightWall));
+    }
+
+    addDungeonRoomDressing(room, roomIndex) {
+        if (!this.dungeonInteriorKit || !room) return null;
+        const dressing = this.dungeonInteriorKit.createRoomDressing(room, roomIndex, { optimized: true });
+        this.scene.add(dressing);
+        return dressing;
     }
 }

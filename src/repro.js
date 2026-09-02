@@ -21,6 +21,12 @@ import {
     createProceduralDungeonEntrance,
     getProceduralDungeonEntranceCacheMetrics
 } from './art/ProceduralDungeonEntrances.js';
+import {
+    DUNGEON_INTERIOR_DEFINITIONS,
+    DUNGEON_INTERIOR_IDS,
+    DUNGEON_ROOM_IDENTITY_IDS,
+    createProceduralDungeonInteriorKit
+} from './art/ProceduralDungeonInteriors.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const perfOverlayEnabled = urlParams.get('perf') === '1';
@@ -31,7 +37,8 @@ const hazardGalleryMode = urlParams.get('hazards') === '1';
 const foliageGalleryMode = urlParams.get('foliage') === '1';
 const architectureGalleryMode = urlParams.get('architecture') === '1';
 const entranceGalleryMode = urlParams.get('entrances') === '1';
-const specializedGalleryMode = galleryMode || hazardGalleryMode || foliageGalleryMode || architectureGalleryMode || entranceGalleryMode;
+const interiorGalleryMode = urlParams.get('interiors') === '1';
+const specializedGalleryMode = galleryMode || hazardGalleryMode || foliageGalleryMode || architectureGalleryMode || entranceGalleryMode || interiorGalleryMode;
 
 const perfOverlay = document.getElementById('perf-overlay');
 const readout = document.getElementById('repro-readout');
@@ -480,6 +487,98 @@ if (entranceGalleryMode) {
     setReadout('Procedural dungeon threshold gallery\nFour exact-footprint landmarks: Thorncrypt, Furnace Below, Shattered Aerie, and Drowned Sanctum.');
 }
 
+const interiorGallery = new THREE.Group();
+interiorGallery.name = 'ProceduralDungeonInteriorGallery';
+const interiorGalleryKits = new Map();
+if (interiorGalleryMode) {
+    document.body.classList.add('interior-gallery-mode');
+    renderSystem.staticEnvironmentGroup.visible = false;
+    renderSystem.scene.background = new THREE.Color(0x080a0d);
+    gridHelper.visible = false;
+    const placements = Object.freeze({
+        verdant_bastion_catacombs: [-23, 0, -15],
+        molten_core: [23, 0, -15],
+        tempest_spire: [-23, 0, 15],
+        abyssal_well: [23, 0, 15]
+    });
+    const roomTemplates = Object.freeze({
+        entry_gate: { type: 'start' },
+        treasure_cache: { type: 'normal', hook: 'chest' },
+        restorative_shrine: { type: 'normal', hook: 'shrine' },
+        ambush_chamber: { type: 'elite', hook: 'elite_ambush' },
+        boss_approach: { type: 'normal', pacing: 'boss_approach' },
+        elite_guard: { type: 'elite' },
+        boss_lair: { type: 'boss' },
+        route_hall: { type: 'normal' }
+    });
+
+    for (const dungeonType of DUNGEON_INTERIOR_IDS) {
+        const kit = createProceduralDungeonInteriorKit(dungeonType);
+        interiorGalleryKits.set(dungeonType, kit);
+        const panel = new THREE.Group();
+        panel.name = `DungeonInteriorPanel:${dungeonType}`;
+        panel.position.set(...placements[dungeonType]);
+        panel.position.y = 0.2;
+        panel.scale.setScalar(0.58);
+        panel.userData.dungeonType = dungeonType;
+        panel.userData.artStyle = DUNGEON_INTERIOR_DEFINITIONS[dungeonType].artStyle;
+        panel.userData.surfaceLanguage = DUNGEON_INTERIOR_DEFINITIONS[dungeonType].surfaceLanguage;
+        panel.userData.roomIdentities = [...DUNGEON_ROOM_IDENTITY_IDS];
+
+        const floor = new THREE.Mesh(kit.floorGeometry(76, 50), kit.floorMaterial(76, 50));
+        floor.name = `${dungeonType}:gallery-floor`;
+        floor.rotation.x = -Math.PI / 2;
+        floor.position.y = 0.08;
+        floor.receiveShadow = true;
+        floor.userData.proceduralDungeonSurface = true;
+        panel.add(floor);
+
+        const rearWall = new THREE.Mesh(kit.wallGeometry(78, 15, 2), kit.wallMaterial(78, 15));
+        rearWall.name = `${dungeonType}:gallery-rear-wall`;
+        rearWall.position.set(0, 7.5, -25);
+        rearWall.castShadow = true;
+        rearWall.receiveShadow = true;
+        rearWall.userData.proceduralDungeonSurface = true;
+        panel.add(rearWall);
+
+        const sideWall = new THREE.Mesh(kit.wallGeometry(52, 15, 2), kit.wallMaterial(52, 15));
+        sideWall.name = `${dungeonType}:gallery-side-wall`;
+        sideWall.position.set(-38, 7.5, 0);
+        sideWall.rotation.y = Math.PI / 2;
+        sideWall.castShadow = true;
+        sideWall.receiveShadow = true;
+        sideWall.userData.proceduralDungeonSurface = true;
+        panel.add(sideWall);
+
+        DUNGEON_ROOM_IDENTITY_IDS.forEach((identity, roomIndex) => {
+            const column = roomIndex % 4;
+            const row = Math.floor(roomIndex / 4);
+            const room = {
+                x: -27 + (column * 18),
+                z: -11 + (row * 23),
+                width: 40,
+                height: 40,
+                ...roomTemplates[identity]
+            };
+            const dressing = kit.createRoomDressing(room, roomIndex, { optimized: false });
+            dressing.scale.setScalar(0.68);
+            panel.add(dressing);
+        });
+
+        interiorGallery.add(panel);
+    }
+    renderSystem.scene.add(interiorGallery);
+    renderSystem.applyLightingPreset('town', true);
+    renderSystem.setZoom(42);
+    renderSystem.camera.position.set(58, 100, 70);
+    controls.target.set(0, 3.5, 0);
+    controls.update();
+    window.__eidolonSetInteriorQuality = (quality) => {
+        renderSystem.setGraphicsQuality(quality);
+    };
+    setReadout('Procedural dungeon interior gallery\nFour generated surface languages and every authoritative room beat: gate, cache, shrine, ambush, approach, elite, boss, and route.');
+}
+
 window.addEventListener('keydown', (event) => {
     const key = event.key.toLowerCase();
     if (key === 'p') togglePerf();
@@ -587,6 +686,35 @@ const animate = () => {
                     size: gameplayBounds.scale.toArray(),
                     expectedSize: [...definition.bounds],
                     finite: [...worldBounds.min.toArray(), ...worldBounds.max.toArray()].every(Number.isFinite)
+                };
+            })
+        };
+    }
+
+    if (interiorGalleryMode) {
+        window.__eidolonInteriorGallery = {
+            ready: interiorGallery.children.length === DUNGEON_INTERIOR_IDS.length,
+            quality: renderSystem.graphicsQuality,
+            interiors: interiorGallery.children.map((panel) => {
+                const bounds = new THREE.Box3().setFromObject(panel);
+                const dungeonType = panel.userData.dungeonType;
+                let surfaceCount = 0;
+                let detailCount = 0;
+                const roomIdentities = [];
+                panel.traverse((child) => {
+                    if (child.isMesh && child.userData.proceduralDungeonSurface) surfaceCount += 1;
+                    if (child.isMesh && child.userData.proceduralDungeonInteriorPart) detailCount += 1;
+                    if (child.userData?.proceduralDungeonInterior) roomIdentities.push(child.userData.roomIdentity);
+                });
+                return {
+                    dungeonType,
+                    artStyle: panel.userData.artStyle,
+                    surfaceLanguage: panel.userData.surfaceLanguage,
+                    surfaceCount,
+                    detailCount,
+                    roomIdentities,
+                    cache: interiorGalleryKits.get(dungeonType)?.metrics(),
+                    finite: [...bounds.min.toArray(), ...bounds.max.toArray()].every(Number.isFinite)
                 };
             })
         };

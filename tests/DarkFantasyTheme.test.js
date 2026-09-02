@@ -5,6 +5,9 @@ import {
     DARK_FANTASY_REGION_THEMES,
     DUNGEON_THEME_KEYS,
     OVERWORLD_THEME_KEYS,
+    REGION_THEME_KEYS,
+    createRegionLightingPresets,
+    createRegionParticleConfigs,
     createOverworldLightingPresets,
     createOverworldParticleConfigs,
     getHazardTheme,
@@ -42,6 +45,21 @@ describe('Eidolon dark-fantasy art direction', () => {
         expect(lightingB.fire.exposure).toBe(DARK_FANTASY_REGION_THEMES.fire.lighting.exposure);
         expect(particlesB.water.velY).toEqual(DARK_FANTASY_REGION_THEMES.water.particles.velY);
         expect(getRegionTheme('missing')).toBe(DARK_FANTASY_REGION_THEMES.earth);
+    });
+
+    test('full render presets include every dungeon atmosphere as independent mutable state', () => {
+        const lightingA = createRegionLightingPresets();
+        const lightingB = createRegionLightingPresets();
+        const particlesA = createRegionParticleConfigs();
+        const particlesB = createRegionParticleConfigs();
+
+        expect(Object.keys(lightingA)).toEqual(REGION_THEME_KEYS);
+        expect(Object.keys(particlesA)).toEqual(REGION_THEME_KEYS);
+        expect(REGION_THEME_KEYS).toEqual([...OVERWORLD_THEME_KEYS, ...DUNGEON_THEME_KEYS]);
+        lightingA.molten_core.fogNear = 999;
+        particlesA.abyssal_well.spread[0] = 999;
+        expect(lightingB.molten_core.fogNear).toBe(DARK_FANTASY_REGION_THEMES.molten_core.lighting.fogNear);
+        expect(particlesB.abyssal_well.spread).toEqual(DARK_FANTASY_REGION_THEMES.abyssal_well.particles.spread);
     });
 
     test('every server hazard type has a named palette and every active type is explicit', () => {

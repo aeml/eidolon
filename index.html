@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.16</span>
+                <span class="start-version-row__label">Alpha 0.41.0.17</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -470,7 +470,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-02-16</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-02-17</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -482,7 +482,7 @@
                                 </div>
                                 <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Procedural dungeon entrances built in</div>
                                 <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-02-16</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-02-17</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -587,6 +587,23 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.17">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.17 (the deep halls remember their names)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Four thresholds now lead to four different worlds:</strong> the Thorncrypt, Furnace Below, Shattered Aerie, and Drowned Sanctum replace their shared cobblestone rooms with generated burial masonry, broken obsidian, storm-slate conductors, and drowned basalt.</li>
+                        <li><strong>The floor tells you what waits ahead:</strong> entry gates, treasure caches, restorative shrines, ambush chambers, boss approaches, elite guards, boss lairs, and route halls each receive a readable ritual layout driven by the server's room metadata.</li>
+                        <li><strong>Thorncrypt roots wake beneath the dead:</strong> mossed blocks, winding grave roots, witchlight wards, bronze vigils, and root-bound waystones carry the Verdant Bastion's identity through every room.</li>
+                        <li><strong>The Furnace Below cracks but does not cool:</strong> staggered black-glass plates, branching magma faults, crucible fangs, iron pylons, and ember seals turn the Molten Core into an ancient working forge.</li>
+                        <li><strong>The Shattered Aerie binds a storm underfoot:</strong> offset slate, silver circuits, captive sky nodes, floating fragments, and violet shrine light distinguish Tempest rooms at a glance.</li>
+                        <li><strong>The Drowned Sanctum keeps the tide's last oath:</strong> flooded basalt, luminous tide marks, coral antlers, moonlit fonts, and black-water circles shape the Abyssal Well.</li>
+                        <li><strong>Dungeon atmosphere finally follows the dungeon:</strong> instance identity now selects light, fog, exposure, bloom, and ambient particles, fixing all four remote-coordinate interiors incorrectly inheriting the Air realm preset.</li>
+                        <li><strong>Transitions shed the old weather cleanly:</strong> entering or leaving an instance immediately retires the previous realm's particles, while shared generated geometry, materials, and texture maps dispose once when the scene changes.</li>
+                        <li><strong>The server still owns every step:</strong> canonical room and corridor dimensions, forty-unit doors, fifteen-unit walls, collision boxes, walkable rectangles, spawn positions, combat, rewards, and room progression are unchanged; new dressing is visual-only.</li>
+                        <li><strong>The old dungeon texture queue is gone:</strong> all four generated interiors start synchronously without requesting the legacy cobblestone floor or wall images.</li>
+                        <li><strong>Every deep-hall beat is inspectable:</strong> exact-geometry unit coverage and a deterministic hardware-Chrome gallery render all four surface families and all eight room identities at High and Low quality.</li>
+                        <li><strong>Clients cross a clean threshold:</strong> the built-in asset generation advances to 2026-09-02-17.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.16">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.16 (four doors dream in four tongues)</h3>
                     <ul class="patch-note-entry__list">
