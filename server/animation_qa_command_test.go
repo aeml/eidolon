@@ -50,6 +50,11 @@ func TestPreparePlayerForAnimationQACanSetARealCastPrecondition(t *testing.T) {
 func TestPreparePlayerForAnimationQACanArmRealHostileDeathCheck(t *testing.T) {
 	w := game.NewWorld(nil)
 	player := newLevelCommandPlayer("player-animation-near-death")
+	// Keep this combat fixture out of the seeded overworld population. The QA
+	// helper intentionally selects the nearest hostile in the same instance;
+	// sharing the default instance lets an equidistant ambient spawn win a map-
+	// iteration tie and substitute its much longer swing delay for this fixture.
+	player.InstanceID = "animation-near-death-test"
 	player.Health = player.MaxHealth
 	player.HpRegen = float64(player.MaxHealth)
 	player.IsCharging = true
@@ -111,6 +116,7 @@ func TestPreparePlayerForAnimationQACanArmRealHostileDeathCheck(t *testing.T) {
 		X:              player.X + 1,
 		Z:              player.Z,
 		AttackCooldown: time.Millisecond,
+		InstanceID:     player.InstanceID,
 	}
 	w.AddEntity(enemy)
 	if !w.DisablePlayerQAProtection(player.ID) {
