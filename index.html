@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.3</span>
+                <span class="start-version-row__label">Alpha 0.41.0.4</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -587,6 +587,18 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.4">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.4 (the Stormcrown hexweaver)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The Wizard has broken the old spell:</strong> A fully code-generated Stormcrown hexweaver replaces all imported Wizard character and animation files in production with cached faceted geometry and restrained storm-arcane materials.</li>
+                        <li><strong>A true caster silhouette:</strong> A tall rear-weighted stance, seven-sided cowl, split rune robes, asymmetric mantle, silver high collar, stormstaff, and hovering astrolabe distinguish the Wizard cleanly from the oathguard and shadeblade at gameplay zoom.</li>
+                        <li><strong>Magic moves through the whole rig:</strong> Dedicated contemplative Idle, measured Walk, robe-swept Run, two-handed focus-cast Attack, and unraveling Death clips animate limbs, torso, cloak, staff arm, and independent floating focus for local and nearby players.</li>
+                        <li><strong>The complete armory fits:</strong> All 36 equipment families and 14 equipped positions attach across 18 animated regions with Wizard-specific scaling, preserve face and eye identity, and replace or restore the default staff and astrolabe cleanly.</li>
+                        <li><strong>Faster entry into the world:</strong> Five legacy Wizard GLBs have left the runtime catalog, startup gate, and mesh factory. Wizard characters now join after only the nearby Skeleton set is ready.</li>
+                        <li><strong>Selection stays honest:</strong> Explicit grounded 4.55-unit bounds drive interaction hitboxes, party highlights, and pool reuse while cached geometry and materials remain immutable between actors.</li>
+                        <li><strong>Inspectable visual coverage:</strong> Hardware galleries now render all three procedural classes in every core state at High and Low quality and exercise every equipment family on complete local and replicated Wizard loadouts.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.3">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.3 (the Gloamreach shadeblade)</h3>
                     <ul class="patch-note-entry__list">

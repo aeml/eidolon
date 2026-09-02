@@ -16,8 +16,19 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.3 for the Gloamreach shadeblade', () => {
-        expect(indexHtml).toContain('Alpha 0.41.0.3');
+    test('advances the login screen to alpha 0.41.0.4 for the Stormcrown hexweaver', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.4');
+        expect(indexHtml).toContain('Patch 0.41.0.4');
+        expect(indexHtml).toContain('The Wizard has broken the old spell');
+        expect(indexHtml).toContain('seven-sided cowl');
+        expect(indexHtml).toContain('two-handed focus-cast Attack');
+        expect(indexHtml).toContain('All 36 equipment families and 14 equipped positions');
+        expect(indexHtml).toContain('Five legacy Wizard GLBs have left the runtime catalog');
+        expect(indexHtml).toContain('Explicit grounded 4.55-unit bounds');
+        expect(indexHtml).toContain('complete local and replicated Wizard loadouts');
+    });
+
+    test('retains alpha 0.41.0.3 Gloamreach shadeblade history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.3');
         expect(indexHtml).toContain('The Rogue has stepped out of the old model');
         expect(indexHtml).toContain('masked seven-sided hood');
@@ -76,7 +87,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.3';
+        const expectedVersion = 'Alpha 0.41.0.4';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -180,8 +191,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.3 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.3`');
+    test('marks 0.41.0.4 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.4`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

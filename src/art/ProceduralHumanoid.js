@@ -27,6 +27,18 @@ const ROGUE_PALETTE = Object.freeze({
     glow: 0x78e08a
 });
 
+const WIZARD_PALETTE = Object.freeze({
+    cloth: 0x24233b,
+    clothDark: 0x10121f,
+    clothLight: 0x4a4b70,
+    slate: 0x41485c,
+    silver: 0xa9b8ca,
+    leather: 0x34283b,
+    skin: 0x927065,
+    arcane: 0x8d78ff,
+    storm: 0x73d9ff
+});
+
 export const HUMANOID_ANIMATION_STATES = Object.freeze(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
 
 export const HUMANOID_EQUIPMENT_ANCHORS = Object.freeze({
@@ -447,6 +459,190 @@ function addRogueLeg(parent, side, materials) {
     );
 }
 
+function addWizardArm(parent, side, materials) {
+    const sign = side === 'Left' ? 1 : -1;
+    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.76, 0.5, 0], [-0.04, 0, -sign * 0.16]);
+    addMesh(
+        upperArm,
+        `Wizard_UpperArm${side}`,
+        geometry('wizard-upper-arm', () => new THREE.CylinderGeometry(0.19, 0.145, 0.74, 7)),
+        materials.cloth,
+        { position: [0, -0.36, 0], scale: [1, 1, 0.88] }
+    );
+
+    const shoulder = addAnchor(upperArm, `Equipment_Shoulder${side}`, [0, -0.02, 0]);
+    addMesh(
+        shoulder,
+        `Wizard_Mantle${side}`,
+        geometry('wizard-mantle', () => new THREE.TetrahedronGeometry(0.42, 0)),
+        side === 'Left' ? materials.slate : materials.clothLight,
+        {
+            position: [sign * 0.04, -0.08, -0.01],
+            rotation: [0.1, 0, sign * 0.72],
+            scale: side === 'Left' ? [1.2, 0.72, 0.9] : [1, 0.62, 0.82]
+        }
+    );
+    addMesh(
+        shoulder,
+        `Wizard_MantleRune${side}`,
+        geometry('wizard-mantle-rune', () => new THREE.TorusGeometry(0.1, 0.025, 4, 6)),
+        side === 'Left' ? materials.storm : materials.arcane,
+        { position: [sign * 0.08, -0.08, 0.25], rotation: [Math.PI / 2, 0, 0], scale: [0.9, 1.2, 1] }
+    );
+
+    const forearm = addPivot(upperArm, `Rig_Forearm${side}`, [0, -0.71, 0], [0.08, 0, 0]);
+    addMesh(
+        forearm,
+        `Wizard_Forearm${side}`,
+        geometry('wizard-forearm', () => new THREE.CylinderGeometry(0.14, 0.105, 0.64, 7)),
+        materials.skin,
+        { position: [0, -0.31, 0] }
+    );
+    const glove = addAnchor(forearm, `Equipment_Glove${side}`, [0, -0.62, 0]);
+    addMesh(
+        glove,
+        `Wizard_RuneBracer${side}`,
+        geometry('wizard-rune-bracer', () => new THREE.CylinderGeometry(0.155, 0.115, 0.36, 7)),
+        materials.slate,
+        { position: [0, 0.12, 0] }
+    );
+    addMesh(
+        glove,
+        `Wizard_BracerGem${side}`,
+        geometry('wizard-bracer-gem', () => new THREE.OctahedronGeometry(0.075, 0)),
+        side === 'Left' ? materials.storm : materials.arcane,
+        { position: [0, 0.12, 0.14], scale: [0.75, 1, 0.45] }
+    );
+
+    addAnchor(glove, side === 'Left' ? 'Equipment_RingLeft' : 'Equipment_RingRight', [sign * 0.1, -0.04, 0.04]);
+    return addAnchor(
+        glove,
+        side === 'Left' ? 'Equipment_OffHand' : 'Equipment_MainHand',
+        [0, -0.05, 0],
+        [0, 0, sign * 0.06]
+    );
+}
+
+function addWizardLeg(parent, side, materials) {
+    const sign = side === 'Left' ? 1 : -1;
+    const thigh = addPivot(parent, `Rig_Thigh${side}`, [sign * 0.28, -0.1, 0], [0, 0, sign * 0.025]);
+    const leg = addAnchor(thigh, `Equipment_Leg${side}`);
+    addMesh(
+        leg,
+        `Wizard_Thigh${side}`,
+        geometry('wizard-thigh', () => new THREE.CylinderGeometry(0.22, 0.17, 0.84, 7)),
+        materials.clothDark,
+        { position: [0, -0.42, 0] }
+    );
+    addMesh(
+        leg,
+        `Wizard_RobePanel${side}`,
+        geometry('wizard-robe-panel', () => {
+            const shape = new THREE.Shape();
+            shape.moveTo(-0.3, 0.12);
+            shape.lineTo(0.3, 0.12);
+            shape.lineTo(0.22, -1.12);
+            shape.lineTo(0, -1.28);
+            shape.lineTo(-0.24, -1.08);
+            shape.closePath();
+            return new THREE.ShapeGeometry(shape, 1);
+        }),
+        side === 'Left' ? materials.cloth : materials.clothLight,
+        { position: [sign * 0.12, -0.16, 0.22], rotation: [0.04, Math.PI, sign * 0.035], receiveShadow: false }
+    );
+
+    const shin = addPivot(thigh, `Rig_Shin${side}`, [0, -0.82, 0], [0.03, 0, 0]);
+    addMesh(
+        shin,
+        `Wizard_Shin${side}`,
+        geometry('wizard-shin', () => new THREE.CylinderGeometry(0.17, 0.12, 0.78, 7)),
+        materials.clothDark,
+        { position: [0, -0.38, 0] }
+    );
+    const foot = addAnchor(shin, `Equipment_Foot${side}`, [0, -0.8, 0.08]);
+    addMesh(
+        foot,
+        `Wizard_Boot${side}`,
+        geometry('wizard-boot', () => new THREE.BoxGeometry(0.32, 0.22, 0.58)),
+        materials.leather,
+        { position: [0, 0.1, 0.13], rotation: [-0.06, 0, 0] }
+    );
+    addMesh(
+        foot,
+        `Wizard_BootCap${side}`,
+        geometry('wizard-boot-cap', () => new THREE.ConeGeometry(0.15, 0.32, 5)),
+        materials.slate,
+        { position: [0, 0.1, 0.4], rotation: [Math.PI / 2, 0, 0], scale: [0.82, 1, 0.58] }
+    );
+}
+
+function addWizardStaff(anchor, materials) {
+    const staff = addPivot(anchor, 'Wizard_Stormstaff', [0, -0.2, 0], [0.04, 0, -0.08]);
+    addMesh(
+        staff,
+        'Wizard_StaffShaft',
+        geometry('wizard-staff-shaft', () => new THREE.CylinderGeometry(0.055, 0.075, 2.65, 7)),
+        materials.leather,
+        { position: [0, 0.68, 0] }
+    );
+    addMesh(
+        staff,
+        'Wizard_StaffHeel',
+        geometry('wizard-staff-heel', () => new THREE.ConeGeometry(0.09, 0.34, 5)),
+        materials.silver,
+        { position: [0, -0.82, 0], rotation: [0, 0, Math.PI] }
+    );
+    [-1, 1].forEach((side) => {
+        addMesh(
+            staff,
+            side < 0 ? 'Wizard_StaffProngLeft' : 'Wizard_StaffProngRight',
+            geometry('wizard-staff-prong', () => new THREE.ConeGeometry(0.075, 0.62, 5)),
+            materials.silver,
+            { position: [side * 0.2, 2.06, 0], rotation: [0, 0, side * 0.46], scale: [0.9, 1, 0.68] }
+        );
+    });
+    addMesh(
+        staff,
+        'Wizard_StaffHalo',
+        geometry('wizard-staff-halo', () => new THREE.TorusGeometry(0.28, 0.045, 5, 10)),
+        materials.arcane,
+        { position: [0, 2.05, 0], rotation: [Math.PI / 2, 0, 0] }
+    );
+    addMesh(
+        staff,
+        'Wizard_StaffCore',
+        geometry('wizard-staff-core', () => new THREE.OctahedronGeometry(0.17, 1)),
+        materials.storm,
+        { position: [0, 2.05, 0], scale: [0.75, 1.3, 0.75] }
+    );
+}
+
+function addWizardFocus(anchor, materials) {
+    const focus = addPivot(anchor, 'Rig_Focus', [0.08, 0.5, 0.08], [0, 0, 0]);
+    focus.userData.defaultEquipmentPart = true;
+    addMesh(
+        focus,
+        'Wizard_Astrolabe',
+        geometry('wizard-astrolabe', () => new THREE.TorusGeometry(0.29, 0.035, 5, 10)),
+        materials.silver,
+        { rotation: [Math.PI / 2, 0, 0] }
+    );
+    addMesh(
+        focus,
+        'Wizard_AstrolabeCross',
+        geometry('wizard-astrolabe-cross', () => new THREE.TorusGeometry(0.22, 0.026, 4, 8)),
+        materials.arcane,
+        { rotation: [0, Math.PI / 2, 0] }
+    );
+    addMesh(
+        focus,
+        'Wizard_AstrolabeCore',
+        geometry('wizard-astrolabe-core', () => new THREE.OctahedronGeometry(0.115, 0)),
+        materials.storm,
+        { scale: [0.78, 1.16, 0.78] }
+    );
+}
+
 function numberTrack(name, property, times, values) {
     return new THREE.NumberKeyframeTrack(`${name}.${property}`, times, values);
 }
@@ -585,6 +781,87 @@ function createRogueAnimationClips() {
         new THREE.AnimationClip('Run', 0.56, run),
         new THREE.AnimationClip('Attack', 0.72, attack),
         new THREE.AnimationClip('Death', 1.08, death)
+    ];
+}
+
+function createWizardAnimationClips() {
+    const idleTimes = [0, 1, 2, 3];
+    const idle = [
+        numberTrack('Rig_Hips', 'position[y]', idleTimes, [1.75, 1.78, 1.75, 1.75]),
+        numberTrack('Rig_Chest', 'rotation[y]', idleTimes, [-0.05, 0.06, 0.1, -0.05]),
+        numberTrack('Rig_Head', 'rotation[x]', idleTimes, [-0.03, -0.1, -0.03, -0.03]),
+        numberTrack('Rig_Head', 'rotation[y]', idleTimes, [-0.1, 0.06, 0.14, -0.1]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[z]', idleTimes, [-0.18, -0.25, -0.18, -0.18]),
+        numberTrack('Rig_UpperArmRight', 'rotation[z]', idleTimes, [0.16, 0.2, 0.16, 0.16]),
+        numberTrack('Rig_Cloak', 'rotation[x]', idleTimes, [0.06, 0.13, 0.06, 0.06]),
+        numberTrack('Rig_Focus', 'position[y]', idleTimes, [0.5, 0.63, 0.5, 0.5]),
+        numberTrack('Rig_Focus', 'rotation[y]', idleTimes, [0, 2.1, 4.2, Math.PI * 2])
+    ];
+
+    const walkTimes = [0, 0.28, 0.56, 0.84, 1.12];
+    const walk = [
+        numberTrack('Rig_ThighLeft', 'rotation[x]', walkTimes, [-0.46, 0, 0.46, 0, -0.46]),
+        numberTrack('Rig_ThighRight', 'rotation[x]', walkTimes, [0.46, 0, -0.46, 0, 0.46]),
+        numberTrack('Rig_ShinLeft', 'rotation[x]', walkTimes, [0.34, 0.04, 0.02, 0.3, 0.34]),
+        numberTrack('Rig_ShinRight', 'rotation[x]', walkTimes, [0.02, 0.3, 0.34, 0.04, 0.02]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[x]', walkTimes, [0.3, 0.08, -0.22, 0.08, 0.3]),
+        numberTrack('Rig_UpperArmRight', 'rotation[x]', walkTimes, [-0.12, -0.04, 0.12, -0.04, -0.12]),
+        numberTrack('Rig_Hips', 'position[y]', walkTimes, [1.75, 1.82, 1.75, 1.82, 1.75]),
+        numberTrack('Rig_Chest', 'rotation[y]', walkTimes, [-0.06, 0, 0.06, 0, -0.06]),
+        numberTrack('Rig_Cloak', 'rotation[x]', walkTimes, [0.14, 0.25, 0.14, 0.25, 0.14]),
+        numberTrack('Rig_Focus', 'rotation[y]', walkTimes, [0, 1.6, 3.2, 4.8, Math.PI * 2])
+    ];
+
+    const runTimes = [0, 0.17, 0.34, 0.51, 0.68];
+    const run = [
+        numberTrack('Rig_ThighLeft', 'rotation[x]', runTimes, [-0.76, 0, 0.76, 0, -0.76]),
+        numberTrack('Rig_ThighRight', 'rotation[x]', runTimes, [0.76, 0, -0.76, 0, 0.76]),
+        numberTrack('Rig_ShinLeft', 'rotation[x]', runTimes, [0.62, 0.06, 0.02, 0.56, 0.62]),
+        numberTrack('Rig_ShinRight', 'rotation[x]', runTimes, [0.02, 0.56, 0.62, 0.06, 0.02]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[x]', runTimes, [0.55, 0.04, -0.48, 0.04, 0.55]),
+        numberTrack('Rig_UpperArmRight', 'rotation[x]', runTimes, [-0.28, -0.04, 0.28, -0.04, -0.28]),
+        numberTrack('Rig_Hips', 'position[y]', runTimes, [1.7, 1.84, 1.7, 1.84, 1.7]),
+        numberTrack('Rig_Chest', 'rotation[x]', runTimes, [-0.18, -0.23, -0.18, -0.23, -0.18]),
+        numberTrack('Rig_Cloak', 'rotation[x]', runTimes, [0.34, 0.58, 0.34, 0.58, 0.34]),
+        numberTrack('Rig_Focus', 'position[y]', runTimes, [0.52, 0.68, 0.52, 0.68, 0.52])
+    ];
+
+    const attackTimes = [0, 0.18, 0.4, 0.62, 0.86, 1.08];
+    const attack = [
+        numberTrack('Rig_Hips', 'rotation[y]', attackTimes, [0, -0.12, 0.08, 0.18, -0.08, 0]),
+        numberTrack('Rig_Chest', 'rotation[x]', attackTimes, [0, 0.1, -0.18, -0.28, -0.08, 0]),
+        numberTrack('Rig_Chest', 'rotation[y]', attackTimes, [0, -0.24, 0.18, 0.32, -0.12, 0]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[x]', attackTimes, [0, -0.5, -1.28, -1.52, -0.42, 0]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[z]', attackTimes, [-0.16, -0.55, -0.76, -0.42, -0.24, -0.16]),
+        numberTrack('Rig_ForearmLeft', 'rotation[x]', attackTimes, [0.08, -0.38, -0.78, -0.24, 0.04, 0.08]),
+        numberTrack('Rig_UpperArmRight', 'rotation[x]', attackTimes, [0, -0.72, -1.16, -1.34, -0.36, 0]),
+        numberTrack('Rig_UpperArmRight', 'rotation[z]', attackTimes, [0.16, 0.48, 0.68, 0.38, 0.22, 0.16]),
+        numberTrack('Rig_ForearmRight', 'rotation[x]', attackTimes, [0.08, -0.24, -0.58, -0.12, 0.04, 0.08]),
+        numberTrack('Rig_Head', 'rotation[x]', attackTimes, [0, 0.08, -0.16, -0.24, -0.06, 0]),
+        numberTrack('Rig_Cloak', 'rotation[x]', attackTimes, [0.06, 0.2, 0.42, 0.54, 0.22, 0.06]),
+        numberTrack('Rig_Focus', 'position[y]', attackTimes, [0.5, 0.72, 0.96, 1.16, 0.72, 0.5]),
+        numberTrack('Rig_Focus', 'rotation[y]', attackTimes, [0, 0.9, 2.8, 5.2, 7.1, Math.PI * 2])
+    ];
+
+    const deathTimes = [0, 0.24, 0.54, 0.9, 1.28];
+    const death = [
+        numberTrack('RigRoot', 'rotation[z]', deathTimes, [0, 0.06, 0.34, 0.92, 1.42]),
+        numberTrack('RigRoot', 'position[y]', deathTimes, [0, 0, -0.12, -0.46, -0.72]),
+        numberTrack('RigRoot', 'position[x]', deathTimes, [0, -0.03, -0.18, -0.48, -0.72]),
+        numberTrack('Rig_Chest', 'rotation[x]', deathTimes, [0, 0.12, 0.48, 0.82, 1.08]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[x]', deathTimes, [0, -0.42, 0.3, 0.76, 1.02]),
+        numberTrack('Rig_UpperArmRight', 'rotation[x]', deathTimes, [0, 0.36, -0.24, -0.62, -0.9]),
+        numberTrack('Rig_Head', 'rotation[x]', deathTimes, [0, 0.16, 0.38, 0.68, 0.88]),
+        numberTrack('Rig_Focus', 'position[y]', deathTimes, [0.5, 0.34, 0.02, -0.44, -0.82]),
+        numberTrack('Rig_Focus', 'rotation[z]', deathTimes, [0, 0.4, 1.4, 2.6, 3.6])
+    ];
+
+    return [
+        new THREE.AnimationClip('Idle', 3, idle),
+        new THREE.AnimationClip('Walk', 1.12, walk),
+        new THREE.AnimationClip('Run', 0.68, run),
+        new THREE.AnimationClip('Attack', 1.08, attack),
+        new THREE.AnimationClip('Death', 1.28, death)
     ];
 }
 
@@ -1029,6 +1306,239 @@ export function createProceduralRogue() {
     });
     root.userData.animations = createRogueAnimationClips();
     root.userData.bounds = Object.freeze({ radius: 1.05, height: 4.25, origin: 'feet' });
+    installRestPoseReset(root);
+    return root;
+}
+
+/**
+ * Creates Stormcrown's code-native hexweaver: a tall, rear-weighted caster
+ * framed by split robes, an asymmetric rune mantle, a stormstaff, and a
+ * hovering astrolabe on the shared humanoid attachment contract.
+ */
+export function createProceduralWizard() {
+    const materials = {
+        cloth: material('wizard-cloth', WIZARD_PALETTE.cloth, { roughness: 0.96 }),
+        clothDark: material('wizard-cloth-dark', WIZARD_PALETTE.clothDark, { roughness: 0.99 }),
+        clothLight: material('wizard-cloth-light', WIZARD_PALETTE.clothLight, { roughness: 0.9 }),
+        slate: material('wizard-slate', WIZARD_PALETTE.slate, { metalness: 0.28, roughness: 0.66 }),
+        silver: material('wizard-silver', WIZARD_PALETTE.silver, { metalness: 0.86, roughness: 0.28 }),
+        leather: material('wizard-leather', WIZARD_PALETTE.leather, { roughness: 0.9 }),
+        skin: material('wizard-skin', WIZARD_PALETTE.skin, { roughness: 0.9 }),
+        arcane: material('wizard-arcane', WIZARD_PALETTE.arcane, {
+            emissive: WIZARD_PALETTE.arcane,
+            emissiveIntensity: 1.35,
+            roughness: 0.22
+        }),
+        storm: material('wizard-storm', WIZARD_PALETTE.storm, {
+            emissive: WIZARD_PALETTE.storm,
+            emissiveIntensity: 1.5,
+            roughness: 0.18
+        })
+    };
+
+    const root = new THREE.Group();
+    root.name = 'ProceduralWizard';
+    const rigRoot = addPivot(root, 'RigRoot');
+    const hips = addPivot(rigRoot, 'Rig_Hips', [0, 1.75, 0], [0.02, 0, 0]);
+
+    addMesh(
+        hips,
+        'Wizard_HipRobe',
+        geometry('wizard-hip-robe', () => new THREE.CylinderGeometry(0.48, 0.56, 0.54, 7)),
+        materials.cloth,
+        { position: [0, 0.06, 0], scale: [1, 1, 0.82] }
+    );
+    addMesh(
+        hips,
+        'Wizard_RobeGlyph',
+        geometry('wizard-robe-glyph', () => new THREE.TorusGeometry(0.12, 0.025, 4, 6)),
+        materials.arcane,
+        { position: [0.08, -0.18, 0.45], rotation: [Math.PI / 2, 0, 0], scale: [0.72, 1.2, 1] }
+    );
+
+    const belt = addAnchor(hips, 'Equipment_Belt', [0, 0.22, 0]);
+    addMesh(
+        belt,
+        'Wizard_CordBelt',
+        geometry('wizard-cord-belt', () => new THREE.TorusGeometry(0.46, 0.055, 5, 9)),
+        materials.silver,
+        { rotation: [Math.PI / 2, 0, 0], scale: [1, 0.82, 1] }
+    );
+    addMesh(
+        belt,
+        'Wizard_BeltSeal',
+        geometry('wizard-belt-seal', () => new THREE.OctahedronGeometry(0.13, 0)),
+        materials.storm,
+        { position: [-0.12, -0.08, 0.4], scale: [0.82, 1.2, 0.48] }
+    );
+    addAnchor(belt, 'Equipment_TrinketLeft', [0.33, -0.18, 0.25]);
+    addAnchor(belt, 'Equipment_TrinketRight', [-0.33, -0.18, 0.25]);
+
+    addWizardLeg(hips, 'Left', materials);
+    addWizardLeg(hips, 'Right', materials);
+
+    const chest = addPivot(hips, 'Rig_Chest', [0, 0.4, 0], [0.01, 0, 0]);
+    const chestAnchor = addAnchor(chest, 'Equipment_Chest');
+    addMesh(
+        chestAnchor,
+        'Wizard_RunicCuirass',
+        geometry('wizard-runic-cuirass', () => new THREE.CylinderGeometry(0.52, 0.45, 1.13, 7)),
+        materials.cloth,
+        { position: [0, 0.48, 0], scale: [1.04, 1, 0.75] }
+    );
+    addMesh(
+        chestAnchor,
+        'Wizard_CuirassPanel',
+        geometry('wizard-cuirass-panel', () => {
+            const shape = new THREE.Shape();
+            shape.moveTo(-0.27, 0.47);
+            shape.lineTo(0.27, 0.47);
+            shape.lineTo(0.19, -0.4);
+            shape.lineTo(0, -0.52);
+            shape.lineTo(-0.2, -0.38);
+            shape.closePath();
+            return new THREE.ShapeGeometry(shape, 1);
+        }),
+        materials.clothLight,
+        { position: [0.05, 0.47, 0.4], rotation: [0, 0, -0.08] }
+    );
+    addMesh(
+        chestAnchor,
+        'Wizard_ChestSigilOuter',
+        geometry('wizard-chest-sigil-outer', () => new THREE.TorusGeometry(0.17, 0.026, 4, 8)),
+        materials.arcane,
+        { position: [0.03, 0.58, 0.455], rotation: [Math.PI / 2, 0, 0], scale: [0.82, 1.18, 1] }
+    );
+    addMesh(
+        chestAnchor,
+        'Wizard_ChestSigilCore',
+        geometry('wizard-chest-sigil-core', () => new THREE.OctahedronGeometry(0.075, 0)),
+        materials.storm,
+        { position: [0.03, 0.58, 0.47], scale: [0.7, 1, 0.4] }
+    );
+    for (let index = 0; index < 3; index++) {
+        addMesh(
+            chestAnchor,
+            `Wizard_ChestClasp${index}`,
+            geometry('wizard-chest-clasp', () => new THREE.OctahedronGeometry(0.045, 0)),
+            materials.silver,
+            { position: [-0.25, 0.78 - index * 0.2, 0.36], scale: [0.66, 1, 0.4] }
+        );
+    }
+
+    const cloak = addPivot(chest, 'Rig_Cloak', [0, 0.88, -0.36], [0.06, 0, 0]);
+    [-1, 1].forEach((side) => {
+        addMesh(
+            cloak,
+            side < 0 ? 'Wizard_CloakLeft' : 'Wizard_CloakRight',
+            geometry('wizard-split-cloak', () => {
+                const shape = new THREE.Shape();
+                shape.moveTo(-0.36, 0.12);
+                shape.lineTo(0.36, 0.12);
+                shape.lineTo(0.3, -1.56);
+                shape.lineTo(0.08, -1.42);
+                shape.lineTo(-0.1, -1.7);
+                shape.lineTo(-0.3, -1.5);
+                shape.closePath();
+                return new THREE.ShapeGeometry(shape, 1);
+            }),
+            side < 0 ? materials.clothDark : materials.cloth,
+            {
+                position: [side * 0.23, -0.05, 0],
+                rotation: [0.08, Math.PI, side * 0.035],
+                scale: [0.95, side < 0 ? 1 : 0.94, 1],
+                receiveShadow: false
+            }
+        );
+    });
+    addMesh(
+        cloak,
+        'Wizard_CloakStar',
+        geometry('wizard-cloak-star', () => new THREE.OctahedronGeometry(0.12, 0)),
+        materials.arcane,
+        { position: [0.16, -0.56, -0.02], scale: [0.55, 1.2, 0.22] }
+    );
+
+    const neck = addAnchor(chest, 'Equipment_Neck', [0, 1.04, 0]);
+    addMesh(
+        neck,
+        'Wizard_HighCollar',
+        geometry('wizard-high-collar', () => new THREE.CylinderGeometry(0.32, 0.42, 0.34, 7, 1, true)),
+        materials.slate,
+        { position: [0, 0.06, -0.02], scale: [1, 1, 0.86] }
+    );
+
+    const head = addPivot(chest, 'Rig_Head', [0, 1.32, 0], [-0.03, 0, 0]);
+    const headAnchor = addAnchor(head, 'Equipment_Head');
+    const face = addMesh(
+        headAnchor,
+        'Wizard_Head',
+        geometry('wizard-head', () => new THREE.DodecahedronGeometry(0.29, 1)),
+        materials.skin,
+        { position: [0, 0.11, 0], scale: [0.82, 1.08, 0.82] }
+    );
+    face.userData.equipmentBodyBase = true;
+    addMesh(
+        headAnchor,
+        'Wizard_Cowl',
+        geometry('wizard-cowl', () => new THREE.ConeGeometry(0.43, 0.76, 7, 1, true)),
+        materials.clothDark,
+        { position: [0, 0.28, -0.04], rotation: [0, 0, Math.PI], scale: [1, 1, 0.92] }
+    );
+    addMesh(
+        headAnchor,
+        'Wizard_CowlCrest',
+        geometry('wizard-cowl-crest', () => new THREE.ConeGeometry(0.13, 0.7, 5)),
+        materials.clothLight,
+        { position: [0.05, 0.72, -0.08], rotation: [0.24, 0, Math.PI], scale: [0.9, 1, 0.76] }
+    );
+    addMesh(
+        headAnchor,
+        'Wizard_BrowVane',
+        geometry('wizard-brow-vane', () => new THREE.TetrahedronGeometry(0.17, 0)),
+        materials.silver,
+        { position: [0, 0.31, 0.34], rotation: [0.1, 0, Math.PI / 4], scale: [0.46, 1.12, 0.34] }
+    );
+    const eyes = addMesh(
+        headAnchor,
+        'Wizard_EyeGlow',
+        geometry('wizard-eye-glow', () => new THREE.BoxGeometry(0.35, 0.04, 0.025)),
+        materials.storm,
+        { position: [0, 0.17, 0.31] }
+    );
+    eyes.userData.equipmentBodyBase = true;
+
+    const offHand = addWizardArm(chest, 'Left', materials);
+    const mainHand = addWizardArm(chest, 'Right', materials);
+    addWizardFocus(offHand, materials);
+    addWizardStaff(mainHand, materials);
+
+    assertEquipmentAnchors(root);
+    root.userData.proceduralHumanoid = true;
+    root.userData.proceduralClass = 'Wizard';
+    root.userData.artStyle = 'Stormcrown hexweaver';
+    root.userData.sharedGeometry = true;
+    root.userData.equipmentAnchors = Object.fromEntries(
+        Object.entries(HUMANOID_EQUIPMENT_ANCHORS).map(([slot, names]) => [slot, [...names]])
+    );
+    root.userData.equipmentScaleBySlot = Object.freeze({
+        head: 0.9,
+        shoulders: 0.82,
+        chest: 0.88,
+        gloves: 0.86,
+        belt: 0.88,
+        legs: 0.88,
+        feet: 0.84,
+        neck: 0.9,
+        ring1: 0.88,
+        ring2: 0.88,
+        trinket1: 0.9,
+        trinket2: 0.9,
+        mainHand: 0.92,
+        offHand: 0.9
+    });
+    root.userData.animations = createWizardAnimationClips();
+    root.userData.bounds = Object.freeze({ radius: 1.1, height: 4.55, origin: 'feet' });
     installRestPoseReset(root);
     return root;
 }

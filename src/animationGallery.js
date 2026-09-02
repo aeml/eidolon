@@ -28,21 +28,25 @@ const PLAYER_TYPES = Object.freeze({ Fighter, Rogue, Wizard, Cleric });
 const PLAYER_TYPE_NAMES = Object.freeze(Object.keys(PLAYER_TYPES));
 const TARGET_POSITION = new THREE.Vector3(0, 0, 5.5);
 const EQUIPPABLE_BASE_ITEMS = Object.freeze(BASE_ITEMS.filter((item) => EQUIPMENT_VISUAL_DESCRIPTORS[item.name]));
-const PROCEDURAL_SHOWCASE_LOADOUT = Object.freeze({
-    head: 'Iron Helm',
-    shoulders: 'Steel Pauldrons',
-    chest: 'Plate Mail',
-    gloves: 'Iron Gauntlets',
-    belt: 'Plated Girdle',
-    legs: 'Plate Greaves',
-    feet: 'Iron Boots',
-    neck: 'Necklace',
-    ring1: 'Ruby Ring',
-    ring2: 'Silver Ring',
-    trinket1: 'Amulet of Power',
-    trinket2: 'Orb of Mana',
-    mainHand: 'Iron Sword',
-    offHand: 'Wooden Shield'
+const PROCEDURAL_SHOWCASE_LOADOUTS = Object.freeze({
+    Fighter: Object.freeze({
+        head: 'Iron Helm', shoulders: 'Steel Pauldrons', chest: 'Plate Mail', gloves: 'Iron Gauntlets',
+        belt: 'Plated Girdle', legs: 'Plate Greaves', feet: 'Iron Boots', neck: 'Pendant',
+        ring1: 'Ruby Ring', ring2: 'Gold Ring', trinket1: 'Amulet of Power', trinket2: 'Talisman of Speed',
+        mainHand: 'Iron Sword', offHand: 'Wooden Shield'
+    }),
+    Rogue: Object.freeze({
+        head: 'Leather Cap', shoulders: 'Reinforced Spaulders', chest: 'Leather Tunic', gloves: 'Leather Gloves',
+        belt: 'Studded Belt', legs: 'Leather Pants', feet: 'Leather Boots', neck: 'Choker',
+        ring1: 'Gold Ring', ring2: 'Silver Ring', trinket1: 'Talisman of Speed', trinket2: 'Orb of Mana',
+        mainHand: 'Steel Dagger', offHand: 'Spell Tome'
+    }),
+    Wizard: Object.freeze({
+        head: 'Silk Hood', shoulders: 'Velvet Mantle', chest: 'Robes', gloves: 'Silk Gloves',
+        belt: 'Silk Sash', legs: 'Silk Skirt', feet: 'Sandals', neck: 'Necklace',
+        ring1: 'Silver Ring', ring2: 'Gold Ring', trinket1: 'Orb of Mana', trinket2: 'Talisman of Speed',
+        mainHand: 'Wooden Staff', offHand: 'Spell Tome'
+    })
 });
 const SET_EQUIPMENT_SLOTS = new Set(['head', 'shoulders', 'chest', 'gloves', 'legs', 'feet']);
 const UNIQUE_EFFECT_IDS = Object.freeze([
@@ -488,8 +492,10 @@ export class AnimationGallery {
     presentEquipmentLoadout() {
         if (!this.actor?.mesh?.userData?.proceduralHumanoid) return false;
         const equipment = {};
+        const showcase = PROCEDURAL_SHOWCASE_LOADOUTS[this.currentActorType] ||
+            PROCEDURAL_SHOWCASE_LOADOUTS.Fighter;
         EQUIPMENT_RENDER_SLOTS.forEach((renderSlot, index) => {
-            const baseItem = EQUIPPABLE_BASE_ITEMS.find((item) => item.name === PROCEDURAL_SHOWCASE_LOADOUT[renderSlot]);
+            const baseItem = EQUIPPABLE_BASE_ITEMS.find((item) => item.name === showcase[renderSlot]);
             equipment[renderSlot] = this.createGalleryEquipmentItem(baseItem, renderSlot, index + 1);
         });
         this.actor.syncEquipmentVisuals(equipment, { force: true });

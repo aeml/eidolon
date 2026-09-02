@@ -2,12 +2,14 @@ import * as THREE from 'three';
 import {
     createProceduralFighter,
     createProceduralRogue,
+    createProceduralWizard,
     getProceduralHumanoidCacheMetrics,
     HUMANOID_ANIMATION_STATES,
     HUMANOID_EQUIPMENT_ANCHORS
 } from '../src/art/ProceduralHumanoid.js';
 import { Fighter } from '../src/entities/Fighter.js';
 import { Rogue } from '../src/entities/Rogue.js';
+import { Wizard } from '../src/entities/Wizard.js';
 
 function meshCount(root) {
     let count = 0;
@@ -221,5 +223,98 @@ describe('shared procedural humanoid Rogue', () => {
             depth: 2.1
         }));
         expect(hitboxes[0].position.y).toBe(2.125);
+    });
+});
+
+describe('shared procedural humanoid Wizard', () => {
+    test('creates a grounded Stormcrown hexweaver with a tall asymmetric caster silhouette', () => {
+        const wizard = createProceduralWizard();
+        const bounds = new THREE.Box3().setFromObject(wizard);
+        const size = bounds.getSize(new THREE.Vector3());
+
+        expect(wizard.userData).toEqual(expect.objectContaining({
+            proceduralHumanoid: true,
+            proceduralClass: 'Wizard',
+            artStyle: 'Stormcrown hexweaver',
+            sharedGeometry: true
+        }));
+        expect(wizard.userData.assetFallback).toBeUndefined();
+        expect(meshCount(wizard)).toBeGreaterThanOrEqual(50);
+        expect(bounds.min.y).toBeCloseTo(0, 1);
+        expect(size.y).toBeGreaterThan(4.4);
+        expect(size.y).toBeLessThan(4.7);
+        expect(size.x).toBeGreaterThan(2);
+        expect(wizard.getObjectByName('Wizard_Stormstaff')).not.toBeNull();
+        expect(wizard.getObjectByName('Wizard_Astrolabe')).not.toBeNull();
+        expect(wizard.getObjectByName('Wizard_MantleLeft').material)
+            .not.toBe(wizard.getObjectByName('Wizard_MantleRight').material);
+        expect(hasOnlyFiniteTransforms(wizard)).toBe(true);
+    });
+
+    test('uses every shared attachment and a two-handed focus-cast animation', () => {
+        const wizard = createProceduralWizard();
+        const clips = Object.fromEntries(wizard.userData.animations.map((clip) => [clip.name, clip]));
+        const leftArm = wizard.getObjectByName('Rig_UpperArmLeft');
+        const rightArm = wizard.getObjectByName('Rig_UpperArmRight');
+        const focus = wizard.getObjectByName('Rig_Focus');
+        const restFocusY = focus.position.y;
+        const mixer = new THREE.AnimationMixer(wizard);
+
+        expect(wizard.userData.equipmentAnchors).toEqual(HUMANOID_EQUIPMENT_ANCHORS);
+        for (const anchorName of Object.values(HUMANOID_EQUIPMENT_ANCHORS).flat()) {
+            expect(wizard.getObjectByName(anchorName)?.userData.equipmentAnchor).toBe(true);
+        }
+        expect(Object.keys(clips)).toEqual(HUMANOID_ANIMATION_STATES);
+        HUMANOID_ANIMATION_STATES.forEach((name) => expect(clips[name].tracks.length).toBeGreaterThan(0));
+
+        mixer.clipAction(clips.Attack).reset().play();
+        mixer.update(0.55);
+        expect(leftArm.rotation.x).toBeLessThan(-1);
+        expect(rightArm.rotation.x).toBeLessThan(-1);
+        expect(focus.position.y).toBeGreaterThan(restFocusY);
+        expect(hasOnlyFiniteTransforms(wizard)).toBe(true);
+        mixer.stopAllAction();
+        mixer.uncacheRoot(wizard);
+    });
+
+    test('shares cached render resources while keeping focus motion and pool reset actor-owned', () => {
+        const first = createProceduralWizard();
+        const second = createProceduralWizard();
+        const firstCuirass = first.getObjectByName('Wizard_RunicCuirass');
+        const secondCuirass = second.getObjectByName('Wizard_RunicCuirass');
+
+        expect(firstCuirass.geometry).toBe(secondCuirass.geometry);
+        expect(firstCuirass.material).toBe(secondCuirass.material);
+        first.getObjectByName('Rig_Focus').position.y = 2.2;
+        expect(second.getObjectByName('Rig_Focus').position.y).toBeCloseTo(0.5);
+
+        first.scale.setScalar(0.74);
+        first.getObjectByName('RigRoot').rotation.z = 1.42;
+        first.userData.resetPose();
+        expect(first.scale.toArray()).toEqual([1, 1, 1]);
+        expect(first.getObjectByName('RigRoot').rotation.z).toBeCloseTo(0);
+        expect(first.getObjectByName('Rig_Focus').position.y).toBeCloseTo(0.5);
+    });
+
+    test('declares one correctly sized interaction hitbox when a pooled mesh changes Wizard owners', () => {
+        const mesh = createProceduralWizard();
+        const first = new Wizard('wizard-first');
+        const second = new Wizard('wizard-second');
+
+        first.setMesh(mesh);
+        second.setMesh(mesh);
+        const hitboxes = [];
+        mesh.traverse((child) => {
+            if (child.name === 'ActorInteractionHitbox') hitboxes.push(child);
+        });
+
+        expect(hitboxes).toHaveLength(1);
+        expect(hitboxes[0].userData.entityId).toBe('wizard-second');
+        expect(hitboxes[0].geometry.parameters).toEqual(expect.objectContaining({
+            width: 2.2,
+            height: 4.55,
+            depth: 2.2
+        }));
+        expect(hitboxes[0].position.y).toBeCloseTo(2.275);
     });
 });

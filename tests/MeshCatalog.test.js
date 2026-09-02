@@ -7,7 +7,8 @@ describe('MeshCatalog', () => {
 
         expect(startup).not.toContain('./assets/archetypes/Fighter/idle.glb');
         expect(startup).not.toContain('./assets/archetypes/Rogue/idle.glb');
-        expect(startup).toContain('./assets/archetypes/Wizard/idle.glb');
+        expect(startup).not.toContain('./assets/archetypes/Wizard/idle.glb');
+        expect(startup).toContain('./assets/archetypes/Cleric/idle.glb');
         expect(startup).not.toContain('./assets/buildings/trading_post.glb');
         expect(background).toContain('./assets/buildings/trading_post.glb');
         expect(background).toContain('./assets/buildings/dungeons/the_verdant_bastion.glb');
@@ -27,6 +28,14 @@ describe('MeshCatalog', () => {
         expect(startup).toHaveLength(5);
         expect(startup.every((path) => path.startsWith('./assets/enemies/undead/skeleton/'))).toBe(true);
         expect(MeshCatalog.getPreloadModelPaths().some((path) => path.includes('/Rogue/'))).toBe(false);
+    });
+
+    test('procedural Wizard never enters the model preload gate', () => {
+        const startup = MeshCatalog.getStartupPreloadModelPaths('Wizard');
+
+        expect(startup).toHaveLength(5);
+        expect(startup.every((path) => path.startsWith('./assets/enemies/undead/skeleton/'))).toBe(true);
+        expect(MeshCatalog.getPreloadModelPaths().some((path) => path.includes('/Wizard/'))).toBe(false);
     });
 
     test('mesh recipe aliases reuse quest NPC asset loader', () => {

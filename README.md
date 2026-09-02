@@ -198,7 +198,7 @@ Notes:
 
 ## Project Status
 
-- Current in-game displayed version: `Alpha 0.41.0.3`
+- Current in-game displayed version: `Alpha 0.41.0.4`
 - Active implementation line: `0.41` procedural dark-fantasy art migration
 - Current shipped foundation: four classes, four realms, four dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, friends/presence, reconnect/session resume, asset caching, audio foundation, and substantial UX polish
 - Current engineering emphasis: reducing monolith hotspots in `server/internal/game/world.go`, `server/main.go`, `src/core/GameEngine.js`, and `src/ui/UIManager.js`
@@ -208,7 +208,7 @@ Verification state as of July 20, 2026:
 
 - Implemented and unit-tested: locked/self-hosted browser runtimes, QA command authorization, canonical coverage for 52 active abilities, 60 rune variants, and 47 actor archetypes, persistent animation-state replication, disposable test credentials, health/release identity, and deployment SHA gates.
 - Locally browser-tested: exact/sub-arrival/nearby/sustained local movement, camera coherence, ordered acknowledgement, and two-process timestamped remote interpolation; the deterministic High/Low animation gallery; four real-input class matrices covering locomotion/basic attack/death and every canonical ability/rune; remote VFX including Spirit Guardians late-join/expiration; and the anonymous/general disposable character routes in hardware-accelerated system Chrome.
-- Live production-tested: deployed SHA `6138396` passed the anonymous surface, measured exact/sub-arrival/short/sustained movement with camera and reconciliation bounds, persistent-character menus/reconnect, extended combat/loot/dungeon/persistence, every four-class ability/rune and locomotion/death matrix, and same-buffer two-client ground interpolation, jump, combat, plus the remote Spirit Guardians lifecycle in hardware-accelerated system Chrome. GitHub Actions run `33610489458` passed every predeploy, deploy, identity, and live browser job.
+- Live production-tested: deployed SHA `e56121d` passed the anonymous surface, measured exact/sub-arrival/short/sustained movement with camera and reconciliation bounds, persistent-character menus/reconnect, extended combat/loot/dungeon/persistence, every four-class ability/rune and locomotion/death matrix, and same-buffer two-client ground interpolation, jump, combat, plus the remote Spirit Guardians lifecycle in hardware-accelerated system Chrome. GitHub Actions run `33615062045` passed every predeploy, deploy, identity, and live browser job.
 - The full evidence record and workflow link are retained in `docs/plans/live-browser-qa-checklist.md`.
 
 Current measured hotspots (physical lines, `wc -l`):

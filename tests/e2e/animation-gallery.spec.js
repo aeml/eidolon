@@ -7,6 +7,7 @@ import { EQUIPMENT_VISUAL_DESCRIPTORS } from '../../src/art/ProceduralEquipment.
 const presentationCount = listPlayerAbilityPresentationVariants().length;
 const actorEntries = listActorAnimationEntries();
 const equipmentFamilyCount = Object.keys(EQUIPMENT_VISUAL_DESCRIPTORS).length;
+const proceduralPlayerTypes = Object.freeze(['Fighter', 'Rogue', 'Wizard']);
 
 test.use({ trace: 'off', video: 'off' });
 
@@ -36,7 +37,7 @@ async function hardwareRenderer(page) {
 test.describe('deterministic production animation gallery', () => {
     test.describe.configure({ timeout: 1_200_000 });
 
-    test('renders both attachment-ready procedural classes in every state and quality tier', async ({ page, baseURL }, testInfo) => {
+    test('renders every attachment-ready procedural class in every state and quality tier', async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         const response = await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
         expect(response?.status()).toBe(200);
@@ -45,7 +46,7 @@ test.describe('deterministic production animation gallery', () => {
         expect(renderer).not.toBeNull();
         expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
 
-        for (const actorType of ['Fighter', 'Rogue']) {
+        for (const actorType of proceduralPlayerTypes) {
             await page.locator('#gallery-actor').selectOption(actorType);
             await waitForActor(page, actorType);
             let metrics = await galleryMetrics(page);
@@ -127,32 +128,34 @@ test.describe('deterministic production animation gallery', () => {
             });
         }
 
-        await page.locator('#gallery-actor').selectOption('Rogue');
-        await waitForActor(page, 'Rogue');
-        await page.locator('#gallery-run-equipment').click();
-        await expect.poll(async () => {
-            const snapshot = await galleryMetrics(page);
-            return snapshot.equipmentAuditRunning ? -1 : snapshot.equipmentAuditCompleted;
-        }, { timeout: 120_000 }).toBe(equipmentFamilyCount);
-        metrics = await galleryMetrics(page);
-        expect(metrics.equipmentAuditPassed).toBe(equipmentFamilyCount);
-        expect(metrics.proceduralClass).toBe('Rogue');
-        for (const quality of ['high', 'low']) {
-            await page.locator('#gallery-quality').selectOption(quality);
-            await page.locator('#gallery-equip-all').click();
-            await expect.poll(async () => (await galleryMetrics(page)).phase).toBe('equipment:full-loadout');
+        for (const actorType of proceduralPlayerTypes.slice(1)) {
+            await page.locator('#gallery-actor').selectOption(actorType);
+            await waitForActor(page, actorType);
+            await page.locator('#gallery-run-equipment').click();
+            await expect.poll(async () => {
+                const snapshot = await galleryMetrics(page);
+                return snapshot.equipmentAuditRunning ? -1 : snapshot.equipmentAuditCompleted;
+            }, { timeout: 120_000 }).toBe(equipmentFamilyCount);
             metrics = await galleryMetrics(page);
-            expect(metrics.proceduralClass).toBe('Rogue');
-            expect(metrics.quality).toBe(quality);
-            expect(metrics.equipmentLocalItems).toBe(14);
-            expect(metrics.equipmentRemoteItems).toBe(14);
-            expect(metrics.equipmentLocalParts).toBeGreaterThanOrEqual(45);
-            expect(metrics.equipmentRemoteParts).toBe(metrics.equipmentLocalParts);
-            expect(metrics.nonFiniteTransforms).toBe(0);
-            await page.screenshot({
-                path: testInfo.outputPath(`procedural-rogue-equipment-${quality}.png`),
-                animations: 'allow'
-            });
+            expect(metrics.equipmentAuditPassed).toBe(equipmentFamilyCount);
+            expect(metrics.proceduralClass).toBe(actorType);
+            for (const quality of ['high', 'low']) {
+                await page.locator('#gallery-quality').selectOption(quality);
+                await page.locator('#gallery-equip-all').click();
+                await expect.poll(async () => (await galleryMetrics(page)).phase).toBe('equipment:full-loadout');
+                metrics = await galleryMetrics(page);
+                expect(metrics.proceduralClass).toBe(actorType);
+                expect(metrics.quality).toBe(quality);
+                expect(metrics.equipmentLocalItems).toBe(14);
+                expect(metrics.equipmentRemoteItems).toBe(14);
+                expect(metrics.equipmentLocalParts).toBeGreaterThanOrEqual(45);
+                expect(metrics.equipmentRemoteParts).toBe(metrics.equipmentLocalParts);
+                expect(metrics.nonFiniteTransforms).toBe(0);
+                await page.screenshot({
+                    path: testInfo.outputPath(`procedural-${actorType.toLowerCase()}-equipment-${quality}.png`),
+                    animations: 'allow'
+                });
+            }
         }
 
         expect(failures, failures.join('\n')).toEqual([]);

@@ -14,13 +14,13 @@ The deeper, audit-grounded implementation plan that backs every release line bel
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.41.0.3`
+- Current in-game displayed version: `Alpha 0.41.0.4`
 - Active implementation line: `0.41`
-- Release-confidence gate: self-hosted locked browser dependencies, real-browser QA, QA-command restrictions, and deploy SHA/readiness verification are live-verified through SHA `6138396`
+- Release-confidence gate: self-hosted locked browser dependencies, real-browser QA, QA-command restrictions, and deploy SHA/readiness verification are live-verified through SHA `e56121d`
 - Closed for planned implementation work: `0.21` through `0.37`
 - The game has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, asset caching, audio foundation, accessibility baseline, and substantial UX polish
 - The biggest remaining alpha-wide risks are missing guilds and PvP, server/client architectural concentration, persistence/protocol hardening, and long-running multiplayer soak coverage
-- Verification at this checkpoint: the client and all Go packages pass their automated baselines; anonymous and disposable full-character Playwright routes pass in hardware-accelerated system Chrome; production SHA `6138396` passed anonymous, persistent-character, extended gameplay/persistence, four-class animation, and two-account multiplayer routes
+- Verification at this checkpoint: the client and all Go packages pass their automated baselines; anonymous and disposable full-character Playwright routes pass in hardware-accelerated system Chrome; production SHA `e56121d` passed anonymous, persistent-character, extended gameplay/persistence, four-class animation, and two-account multiplayer routes
 - Current hotspot measurements: `world.go` 8,578 LOC, `main.go` 5,027, `GameEngine.js` 5,810, `UIManager.js` 3,634
 
 ## Where we are now
