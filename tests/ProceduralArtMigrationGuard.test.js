@@ -16,7 +16,9 @@ const currentLegacyReferenceFiles = new Set([
 
 const INITIAL_LEGACY_MODEL_COUNT = 106;
 const INITIAL_LEGACY_MODEL_BYTES = 814551864;
-const MAX_RUNTIME_GLB_TOKENS = 194;
+const MAX_LEGACY_MODEL_COUNT = 86;
+const MAX_LEGACY_MODEL_BYTES = 733368172;
+const MAX_RUNTIME_GLB_TOKENS = 184;
 
 function walkFiles(root) {
     if (!fs.existsSync(root)) return [];
@@ -39,8 +41,10 @@ describe('procedural art migration guard', () => {
         const totalBytes = modelFiles.reduce((sum, filePath) => sum + fs.statSync(filePath).size, 0);
 
         expect(modelFiles.length).toBeGreaterThan(0);
-        expect(modelFiles.length).toBeLessThanOrEqual(INITIAL_LEGACY_MODEL_COUNT);
-        expect(totalBytes).toBeLessThanOrEqual(INITIAL_LEGACY_MODEL_BYTES);
+        expect(MAX_LEGACY_MODEL_COUNT).toBeLessThan(INITIAL_LEGACY_MODEL_COUNT);
+        expect(MAX_LEGACY_MODEL_BYTES).toBeLessThan(INITIAL_LEGACY_MODEL_BYTES);
+        expect(modelFiles.length).toBeLessThanOrEqual(MAX_LEGACY_MODEL_COUNT);
+        expect(totalBytes).toBeLessThanOrEqual(MAX_LEGACY_MODEL_BYTES);
     });
 
     test('new runtime modules cannot introduce authored GLB dependencies', () => {

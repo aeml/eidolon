@@ -107,7 +107,7 @@ Player classes declare Idle/Walk/Run/Attack/Death clips through either the share
 | Fighter | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | Rogue | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | Wizard | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| Cleric | player | GLB | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
+| Cleric | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death | procedural arc/lean with locomotion clip fallback | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | Skeleton | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | Imp | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | DemonOrc | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |

@@ -1,10 +1,4 @@
 const PRELOAD_MODEL_PATHS = [
-    './assets/archetypes/Cleric/idle.glb',
-    './assets/archetypes/Cleric/walk.glb',
-    './assets/archetypes/Cleric/run.glb',
-    './assets/archetypes/Cleric/attack.glb',
-    './assets/archetypes/Cleric/death.glb',
-
     './assets/enemies/undead/skeleton/idle.glb',
     './assets/enemies/undead/skeleton/walk.glb',
     './assets/enemies/undead/skeleton/run.glb',
@@ -197,8 +191,8 @@ export class MeshCatalog {
     }
 
     static getStartupPreloadModelPaths(playerType = '') {
-        const modelBackedPlayerTypes = new Set(['Cleric']);
-        const proceduralPlayerTypes = new Set(['Fighter', 'Rogue', 'Wizard']);
+        const modelBackedPlayerTypes = new Set();
+        const proceduralPlayerTypes = new Set(['Fighter', 'Rogue', 'Wizard', 'Cleric']);
         const selectedPlayerType = modelBackedPlayerTypes.has(playerType) ? playerType : '';
         const playerPrefix = selectedPlayerType
             ? `./assets/archetypes/${selectedPlayerType}/`

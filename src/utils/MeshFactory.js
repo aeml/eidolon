@@ -7,7 +7,8 @@ import { resolveAssetPath } from '../assets/assetManifest.js';
 import {
     createProceduralFighter,
     createProceduralRogue,
-    createProceduralWizard
+    createProceduralWizard,
+    createProceduralCleric
 } from '../art/ProceduralHumanoid.js';
 
 export class MeshFactory {
@@ -805,81 +806,7 @@ export class MeshFactory {
         }
 
         if (type === 'Cleric') {
-            try {
-                const idleGltf = await this.loadModel('./assets/archetypes/Cleric/idle.glb');
-                mesh = SkeletonUtils.clone(idleGltf.scene);
-                
-                mesh.userData.animations = [];
-
-                const addAnim = (clip, name) => {
-                    if (clip) {
-                        const newClip = clip.clone();
-                        newClip.name = name;
-                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
-                        mesh.userData.animations.push(newClip);
-                    }
-                };
-
-                if (idleGltf.animations.length > 0) {
-                    addAnim(idleGltf.animations[0], 'Idle');
-                }
-
-                try {
-                    const walkGltf = await this.loadModel('./assets/archetypes/Cleric/walk.glb');
-                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
-                } catch (e) { console.warn("Missing walk anim"); }
-
-                try {
-                    const runGltf = await this.loadModel('./assets/archetypes/Cleric/run.glb');
-                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
-                } catch (e) { console.warn("Missing run anim"); }
-
-                try {
-                    const attackGltf = await this.loadModel('./assets/archetypes/Cleric/attack.glb');
-                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
-                } catch (e) { console.warn("Missing attack anim"); }
-
-                try {
-                    const deathGltf = await this.loadModel('./assets/archetypes/Cleric/death.glb');
-                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
-                } catch (e) { console.warn("Missing death anim"); }
-
-                mesh.scale.set(2.5, 2.5, 2.5); 
-                
-                mesh.traverse(c => {
-                    if (c.isMesh) {
-                        if (!c.material) {
-                            c.material = new THREE.MeshStandardMaterial({ color: 0xffffff });
-                        }
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-
-                    }
-                });
-                
-                const box = new THREE.Box3().setFromObject(mesh);
-                const size = box.getSize(new THREE.Vector3());
-                const center = box.getCenter(new THREE.Vector3());
-                
-                mesh.position.sub(center); 
-                mesh.position.y += size.y / 2; 
-
-                const hitGeo = new THREE.BoxGeometry(1.5, 2.0, 1.5);
-                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-                hitMesh.position.y = 0.9;
-                mesh.add(hitMesh);
-
-                return mesh;
-            } catch (e) {
-                console.warn(`Failed to load model for ${type}, falling back to primitive.`, e);
-                return this.createAnimatedPlayerFallback(
-                    type,
-                    new THREE.SphereGeometry(0.6, 16, 16),
-                    CONSTANTS.ENTITIES.CLERIC.COLOR,
-                    0.6
-                );
-            }
+            return createProceduralCleric();
         }
 
         if (type === 'Skeleton') {

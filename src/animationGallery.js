@@ -46,6 +46,12 @@ const PROCEDURAL_SHOWCASE_LOADOUTS = Object.freeze({
         belt: 'Silk Sash', legs: 'Silk Skirt', feet: 'Sandals', neck: 'Necklace',
         ring1: 'Silver Ring', ring2: 'Gold Ring', trinket1: 'Orb of Mana', trinket2: 'Talisman of Speed',
         mainHand: 'Wooden Staff', offHand: 'Spell Tome'
+    }),
+    Cleric: Object.freeze({
+        head: 'Iron Helm', shoulders: 'Velvet Mantle', chest: 'Robes', gloves: 'Iron Gauntlets',
+        belt: 'Silk Sash', legs: 'Silk Skirt', feet: 'Iron Boots', neck: 'Pendant',
+        ring1: 'Silver Ring', ring2: 'Gold Ring', trinket1: 'Orb of Mana', trinket2: 'Amulet of Power',
+        mainHand: 'Cleric Mace', offHand: 'Wooden Shield'
     })
 });
 const SET_EQUIPMENT_SLOTS = new Set(['head', 'shoulders', 'chest', 'gloves', 'legs', 'feet']);

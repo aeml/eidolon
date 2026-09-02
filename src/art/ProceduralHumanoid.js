@@ -39,6 +39,19 @@ const WIZARD_PALETTE = Object.freeze({
     storm: 0x73d9ff
 });
 
+const CLERIC_PALETTE = Object.freeze({
+    cloth: 0x48413c,
+    clothDark: 0x191718,
+    ivory: 0xaaa18b,
+    bronze: 0x80613b,
+    gold: 0xc79b46,
+    iron: 0x4a4d4e,
+    leather: 0x493124,
+    skin: 0x9a7563,
+    holy: 0xffd76a,
+    spirit: 0x9fe0b2
+});
+
 export const HUMANOID_ANIMATION_STATES = Object.freeze(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
 
 export const HUMANOID_EQUIPMENT_ANCHORS = Object.freeze({
@@ -643,6 +656,216 @@ function addWizardFocus(anchor, materials) {
     );
 }
 
+function addClericArm(parent, side, materials) {
+    const sign = side === 'Left' ? 1 : -1;
+    const upperArm = addPivot(parent, `Rig_UpperArm${side}`, [sign * 0.8, 0.48, 0], [0.02, 0, -sign * 0.11]);
+    addMesh(
+        upperArm,
+        `Cleric_UpperArm${side}`,
+        geometry('cleric-upper-arm', () => new THREE.CylinderGeometry(0.21, 0.165, 0.74, 8)),
+        materials.cloth,
+        { position: [0, -0.36, 0], scale: [1, 1, 0.9] }
+    );
+
+    const shoulder = addAnchor(upperArm, `Equipment_Shoulder${side}`, [0, -0.02, 0]);
+    addMesh(
+        shoulder,
+        `Cleric_ReliquaryPauldron${side}`,
+        geometry('cleric-reliquary-pauldron', () => new THREE.DodecahedronGeometry(0.42, 0)),
+        side === 'Left' ? materials.bronze : materials.iron,
+        {
+            position: [sign * 0.04, -0.08, 0],
+            rotation: [0, 0, sign * 0.18],
+            scale: side === 'Left' ? [1.12, 0.56, 0.88] : [0.98, 0.48, 0.8]
+        }
+    );
+    addMesh(
+        shoulder,
+        `Cleric_ShoulderSeal${side}`,
+        geometry('cleric-shoulder-seal', () => new THREE.CylinderGeometry(0.11, 0.11, 0.035, 8)),
+        side === 'Left' ? materials.holy : materials.spirit,
+        { position: [sign * 0.08, -0.06, 0.34], rotation: [Math.PI / 2, 0, 0], scale: [1, 1, 0.5] }
+    );
+
+    const forearm = addPivot(upperArm, `Rig_Forearm${side}`, [0, -0.71, 0], [-0.04, 0, 0]);
+    addMesh(
+        forearm,
+        `Cleric_Forearm${side}`,
+        geometry('cleric-forearm', () => new THREE.CylinderGeometry(0.155, 0.12, 0.64, 8)),
+        materials.skin,
+        { position: [0, -0.31, 0] }
+    );
+    const glove = addAnchor(forearm, `Equipment_Glove${side}`, [0, -0.62, 0]);
+    addMesh(
+        glove,
+        `Cleric_VotiveGauntlet${side}`,
+        geometry('cleric-votive-gauntlet', () => new THREE.CylinderGeometry(0.165, 0.125, 0.38, 8)),
+        materials.bronze,
+        { position: [0, 0.12, 0] }
+    );
+    addMesh(
+        glove,
+        `Cleric_GauntletRune${side}`,
+        geometry('cleric-gauntlet-rune', () => new THREE.OctahedronGeometry(0.07, 0)),
+        materials.holy,
+        { position: [0, 0.12, 0.15], scale: [0.7, 1.05, 0.42] }
+    );
+
+    addAnchor(glove, side === 'Left' ? 'Equipment_RingLeft' : 'Equipment_RingRight', [sign * 0.11, -0.04, 0.04]);
+    return addAnchor(
+        glove,
+        side === 'Left' ? 'Equipment_OffHand' : 'Equipment_MainHand',
+        [0, -0.05, 0],
+        [0, 0, sign * 0.07]
+    );
+}
+
+function addClericLeg(parent, side, materials) {
+    const sign = side === 'Left' ? 1 : -1;
+    const thigh = addPivot(parent, `Rig_Thigh${side}`, [sign * 0.31, -0.1, 0], [0, 0, sign * 0.02]);
+    const leg = addAnchor(thigh, `Equipment_Leg${side}`);
+    addMesh(
+        leg,
+        `Cleric_Thigh${side}`,
+        geometry('cleric-thigh', () => new THREE.CylinderGeometry(0.24, 0.19, 0.82, 8)),
+        materials.clothDark,
+        { position: [0, -0.41, 0] }
+    );
+    addMesh(
+        leg,
+        `Cleric_VestmentPanel${side}`,
+        geometry('cleric-vestment-panel', () => {
+            const shape = new THREE.Shape();
+            shape.moveTo(-0.34, 0.14);
+            shape.lineTo(0.34, 0.14);
+            shape.lineTo(0.3, -1.12);
+            shape.lineTo(0.08, -1.24);
+            shape.lineTo(-0.1, -1.12);
+            shape.lineTo(-0.31, -1.2);
+            shape.closePath();
+            return new THREE.ShapeGeometry(shape, 1);
+        }),
+        side === 'Left' ? materials.ivory : materials.cloth,
+        { position: [sign * 0.14, -0.14, 0.22], rotation: [0.035, Math.PI, sign * 0.025], receiveShadow: false }
+    );
+    addMesh(
+        leg,
+        `Cleric_VestmentHem${side}`,
+        geometry('cleric-vestment-hem', () => new THREE.BoxGeometry(0.46, 0.08, 0.05)),
+        materials.gold,
+        { position: [sign * 0.14, -1.24, 0.235], rotation: [0, 0, sign * 0.05] }
+    );
+
+    const shin = addPivot(thigh, `Rig_Shin${side}`, [0, -0.81, 0], [0.03, 0, 0]);
+    addMesh(
+        shin,
+        `Cleric_Shin${side}`,
+        geometry('cleric-shin', () => new THREE.CylinderGeometry(0.18, 0.14, 0.77, 8)),
+        materials.clothDark,
+        { position: [0, -0.38, 0] }
+    );
+    const foot = addAnchor(shin, `Equipment_Foot${side}`, [0, -0.79, 0.08]);
+    addMesh(
+        foot,
+        `Cleric_Boot${side}`,
+        geometry('cleric-boot', () => new THREE.BoxGeometry(0.36, 0.23, 0.59)),
+        materials.leather,
+        { position: [0, 0.1, 0.13], rotation: [-0.05, 0, 0] }
+    );
+    addMesh(
+        foot,
+        `Cleric_BootReliquary${side}`,
+        geometry('cleric-boot-reliquary', () => new THREE.BoxGeometry(0.22, 0.15, 0.08)),
+        materials.bronze,
+        { position: [0, 0.12, 0.38], rotation: [0, 0, Math.PI / 4] }
+    );
+}
+
+function addClericMace(anchor, materials) {
+    const mace = addPivot(anchor, 'Cleric_Oathmace', [0, -0.08, 0], [0.06, 0, -0.09]);
+    addMesh(
+        mace,
+        'Cleric_MaceGrip',
+        geometry('cleric-mace-grip', () => new THREE.CylinderGeometry(0.065, 0.075, 0.62, 8)),
+        materials.leather,
+        { position: [0, 0.08, 0] }
+    );
+    addMesh(
+        mace,
+        'Cleric_MacePommel',
+        geometry('cleric-mace-pommel', () => new THREE.OctahedronGeometry(0.12, 0)),
+        materials.gold,
+        { position: [0, -0.3, 0], scale: [0.82, 1, 0.82] }
+    );
+    addMesh(
+        mace,
+        'Cleric_MaceNeck',
+        geometry('cleric-mace-neck', () => new THREE.CylinderGeometry(0.055, 0.055, 0.5, 7)),
+        materials.iron,
+        { position: [0, 0.63, 0] }
+    );
+    addMesh(
+        mace,
+        'Cleric_MaceHead',
+        geometry('cleric-mace-head', () => new THREE.DodecahedronGeometry(0.27, 0)),
+        materials.bronze,
+        { position: [0, 1, 0], scale: [0.9, 1.18, 0.9] }
+    );
+    for (let index = 0; index < 4; index++) {
+        const angle = (index / 4) * Math.PI * 2;
+        addMesh(
+            mace,
+            `Cleric_MaceRay${index}`,
+            geometry('cleric-mace-ray', () => new THREE.ConeGeometry(0.065, 0.27, 4)),
+            materials.gold,
+            {
+                position: [Math.cos(angle) * 0.27, 1, Math.sin(angle) * 0.27],
+                rotation: [Math.sin(angle) * Math.PI / 2, 0, -Math.cos(angle) * Math.PI / 2]
+            }
+        );
+    }
+    addMesh(
+        mace,
+        'Cleric_MaceCore',
+        geometry('cleric-mace-core', () => new THREE.OctahedronGeometry(0.11, 0)),
+        materials.holy,
+        { position: [0, 1, 0], scale: [0.8, 1.15, 0.8] }
+    );
+}
+
+function addClericCenser(anchor, materials) {
+    const censer = addPivot(anchor, 'Rig_Censer', [0, -0.04, 0.02], [0, 0, 0.12]);
+    censer.userData.defaultEquipmentPart = true;
+    addMesh(
+        censer,
+        'Cleric_CenserChain',
+        geometry('cleric-censer-chain', () => new THREE.CylinderGeometry(0.025, 0.025, 0.72, 6)),
+        materials.gold,
+        { position: [0, -0.4, 0] }
+    );
+    addMesh(
+        censer,
+        'Cleric_CenserBowl',
+        geometry('cleric-censer-bowl', () => new THREE.DodecahedronGeometry(0.22, 0)),
+        materials.bronze,
+        { position: [0, -0.83, 0], scale: [1, 0.82, 1] }
+    );
+    addMesh(
+        censer,
+        'Cleric_CenserCap',
+        geometry('cleric-censer-cap', () => new THREE.ConeGeometry(0.18, 0.25, 8)),
+        materials.iron,
+        { position: [0, -0.62, 0] }
+    );
+    addMesh(
+        censer,
+        'Cleric_CenserFlame',
+        geometry('cleric-censer-flame', () => new THREE.OctahedronGeometry(0.1, 0)),
+        materials.spirit,
+        { position: [0, -0.82, 0.16], scale: [0.7, 1.3, 0.5] }
+    );
+}
+
 function numberTrack(name, property, times, values) {
     return new THREE.NumberKeyframeTrack(`${name}.${property}`, times, values);
 }
@@ -862,6 +1085,81 @@ function createWizardAnimationClips() {
         new THREE.AnimationClip('Run', 0.68, run),
         new THREE.AnimationClip('Attack', 1.08, attack),
         new THREE.AnimationClip('Death', 1.28, death)
+    ];
+}
+
+function createClericAnimationClips() {
+    const idleTimes = [0, 0.9, 1.8, 2.7];
+    const idle = [
+        numberTrack('Rig_Hips', 'position[y]', idleTimes, [1.74, 1.77, 1.74, 1.74]),
+        numberTrack('Rig_Chest', 'rotation[x]', idleTimes, [0.01, 0.06, 0.01, 0.01]),
+        numberTrack('Rig_Head', 'rotation[x]', idleTimes, [0.02, 0.1, 0.02, 0.02]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[x]', idleTimes, [-0.12, -0.22, -0.12, -0.12]),
+        numberTrack('Rig_UpperArmRight', 'rotation[x]', idleTimes, [0.06, 0.13, 0.06, 0.06]),
+        numberTrack('Rig_Cloak', 'rotation[x]', idleTimes, [0.05, 0.11, 0.05, 0.05]),
+        numberTrack('Rig_Censer', 'rotation[z]', idleTimes, [0.12, -0.08, 0.22, 0.12])
+    ];
+
+    const walkTimes = [0, 0.27, 0.54, 0.81, 1.08];
+    const walk = [
+        numberTrack('Rig_ThighLeft', 'rotation[x]', walkTimes, [-0.5, 0, 0.5, 0, -0.5]),
+        numberTrack('Rig_ThighRight', 'rotation[x]', walkTimes, [0.5, 0, -0.5, 0, 0.5]),
+        numberTrack('Rig_ShinLeft', 'rotation[x]', walkTimes, [0.38, 0.04, 0.02, 0.34, 0.38]),
+        numberTrack('Rig_ShinRight', 'rotation[x]', walkTimes, [0.02, 0.34, 0.38, 0.04, 0.02]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[x]', walkTimes, [0.26, 0.04, -0.24, 0.04, 0.26]),
+        numberTrack('Rig_UpperArmRight', 'rotation[x]', walkTimes, [-0.3, 0.02, 0.3, 0.02, -0.3]),
+        numberTrack('Rig_Hips', 'position[y]', walkTimes, [1.74, 1.81, 1.74, 1.81, 1.74]),
+        numberTrack('Rig_Chest', 'rotation[y]', walkTimes, [-0.04, 0, 0.04, 0, -0.04]),
+        numberTrack('Rig_Cloak', 'rotation[x]', walkTimes, [0.12, 0.23, 0.12, 0.23, 0.12]),
+        numberTrack('Rig_Censer', 'rotation[z]', walkTimes, [0.38, 0, -0.38, 0, 0.38])
+    ];
+
+    const runTimes = [0, 0.16, 0.32, 0.48, 0.64];
+    const run = [
+        numberTrack('Rig_ThighLeft', 'rotation[x]', runTimes, [-0.78, 0, 0.78, 0, -0.78]),
+        numberTrack('Rig_ThighRight', 'rotation[x]', runTimes, [0.78, 0, -0.78, 0, 0.78]),
+        numberTrack('Rig_ShinLeft', 'rotation[x]', runTimes, [0.64, 0.07, 0.02, 0.58, 0.64]),
+        numberTrack('Rig_ShinRight', 'rotation[x]', runTimes, [0.02, 0.58, 0.64, 0.07, 0.02]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[x]', runTimes, [0.54, 0.02, -0.52, 0.02, 0.54]),
+        numberTrack('Rig_UpperArmRight', 'rotation[x]', runTimes, [-0.56, 0.02, 0.56, 0.02, -0.56]),
+        numberTrack('Rig_Hips', 'position[y]', runTimes, [1.69, 1.84, 1.69, 1.84, 1.69]),
+        numberTrack('Rig_Chest', 'rotation[x]', runTimes, [-0.16, -0.22, -0.16, -0.22, -0.16]),
+        numberTrack('Rig_Cloak', 'rotation[x]', runTimes, [0.32, 0.54, 0.32, 0.54, 0.32]),
+        numberTrack('Rig_Censer', 'rotation[z]', runTimes, [0.58, 0, -0.58, 0, 0.58])
+    ];
+
+    const attackTimes = [0, 0.18, 0.38, 0.58, 0.78, 0.98];
+    const attack = [
+        numberTrack('Rig_Hips', 'rotation[y]', attackTimes, [0, -0.28, -0.18, 0.4, 0.22, 0]),
+        numberTrack('Rig_Chest', 'rotation[y]', attackTimes, [0, -0.46, -0.3, 0.62, 0.34, 0]),
+        numberTrack('Rig_UpperArmRight', 'rotation[x]', attackTimes, [0.06, -1.4, -1.72, 0.86, 0.42, 0.06]),
+        numberTrack('Rig_UpperArmRight', 'rotation[z]', attackTimes, [0.11, 0.52, 0.62, -0.28, -0.08, 0.11]),
+        numberTrack('Rig_ForearmRight', 'rotation[x]', attackTimes, [-0.04, -0.62, -0.82, -0.12, -0.02, -0.04]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[x]', attackTimes, [-0.12, -0.76, -1.12, -0.52, -0.24, -0.12]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[z]', attackTimes, [-0.11, -0.38, -0.58, -0.3, -0.16, -0.11]),
+        numberTrack('Rig_Head', 'rotation[x]', attackTimes, [0.02, -0.1, -0.18, -0.06, 0, 0.02]),
+        numberTrack('Rig_Cloak', 'rotation[x]', attackTimes, [0.05, 0.24, 0.42, -0.08, 0.12, 0.05]),
+        numberTrack('Rig_Censer', 'rotation[z]', attackTimes, [0.12, -0.5, -0.82, 0.74, 0.38, 0.12])
+    ];
+
+    const deathTimes = [0, 0.22, 0.5, 0.84, 1.2, 1.46];
+    const death = [
+        numberTrack('Rig_Hips', 'position[y]', deathTimes, [1.74, 1.58, 1.1, 0.48, 0.18, 0.08]),
+        numberTrack('Rig_Hips', 'rotation[x]', deathTimes, [0, -0.08, -0.28, -0.56, -0.88, -1.02]),
+        numberTrack('Rig_Chest', 'rotation[x]', deathTimes, [0.01, 0.14, 0.4, 0.7, 1.02, 1.16]),
+        numberTrack('Rig_Chest', 'rotation[z]', deathTimes, [0, -0.04, 0.12, 0.24, 0.34, 0.4]),
+        numberTrack('Rig_UpperArmLeft', 'rotation[x]', deathTimes, [-0.12, -0.5, 0.18, 0.68, 0.96, 1.1]),
+        numberTrack('Rig_UpperArmRight', 'rotation[x]', deathTimes, [0.06, 0.42, -0.18, -0.58, -0.82, -0.96]),
+        numberTrack('Rig_Head', 'rotation[x]', deathTimes, [0.02, 0.18, 0.4, 0.66, 0.84, 0.94]),
+        numberTrack('Rig_Censer', 'rotation[z]', deathTimes, [0.12, 0.46, 0.92, 1.5, 2.2, 2.7])
+    ];
+
+    return [
+        new THREE.AnimationClip('Idle', 2.7, idle),
+        new THREE.AnimationClip('Walk', 1.08, walk),
+        new THREE.AnimationClip('Run', 0.64, run),
+        new THREE.AnimationClip('Attack', 0.98, attack),
+        new THREE.AnimationClip('Death', 1.46, death)
     ];
 }
 
@@ -1539,6 +1837,255 @@ export function createProceduralWizard() {
     });
     root.userData.animations = createWizardAnimationClips();
     root.userData.bounds = Object.freeze({ radius: 1.1, height: 4.55, origin: 'feet' });
+    installRestPoseReset(root);
+    return root;
+}
+
+/**
+ * Creates Lanternhold's code-native gravepriest: an upright reliquary bearer
+ * framed by burial vestments, a broken-sun crown, oathmace, and swinging
+ * spirit censer on the shared humanoid attachment contract.
+ */
+export function createProceduralCleric() {
+    const materials = {
+        cloth: material('cleric-cloth', CLERIC_PALETTE.cloth, { roughness: 0.96 }),
+        clothDark: material('cleric-cloth-dark', CLERIC_PALETTE.clothDark, { roughness: 0.99 }),
+        ivory: material('cleric-ivory', CLERIC_PALETTE.ivory, { roughness: 0.92 }),
+        bronze: material('cleric-bronze', CLERIC_PALETTE.bronze, { metalness: 0.66, roughness: 0.44 }),
+        gold: material('cleric-gold', CLERIC_PALETTE.gold, { metalness: 0.72, roughness: 0.36 }),
+        iron: material('cleric-iron', CLERIC_PALETTE.iron, { metalness: 0.68, roughness: 0.46 }),
+        leather: material('cleric-leather', CLERIC_PALETTE.leather, { roughness: 0.9 }),
+        skin: material('cleric-skin', CLERIC_PALETTE.skin, { roughness: 0.9 }),
+        holy: material('cleric-holy', CLERIC_PALETTE.holy, {
+            emissive: CLERIC_PALETTE.holy,
+            emissiveIntensity: 1.35,
+            roughness: 0.22
+        }),
+        spirit: material('cleric-spirit', CLERIC_PALETTE.spirit, {
+            emissive: CLERIC_PALETTE.spirit,
+            emissiveIntensity: 1.25,
+            roughness: 0.2
+        })
+    };
+
+    const root = new THREE.Group();
+    root.name = 'ProceduralCleric';
+    const rigRoot = addPivot(root, 'RigRoot');
+    const hips = addPivot(rigRoot, 'Rig_Hips', [0, 1.74, 0]);
+
+    addMesh(
+        hips,
+        'Cleric_HipVestment',
+        geometry('cleric-hip-vestment', () => new THREE.CylinderGeometry(0.53, 0.6, 0.56, 8)),
+        materials.cloth,
+        { position: [0, 0.07, 0], scale: [1, 1, 0.84] }
+    );
+    addMesh(
+        hips,
+        'Cleric_FrontStole',
+        geometry('cleric-front-stole', () => new THREE.BoxGeometry(0.32, 1.08, 0.06)),
+        materials.ivory,
+        { position: [0, -0.39, 0.46], rotation: [-0.04, 0, 0] }
+    );
+    addMesh(
+        hips,
+        'Cleric_StoleSeal',
+        geometry('cleric-stole-seal', () => new THREE.OctahedronGeometry(0.12, 0)),
+        materials.holy,
+        { position: [0, -0.46, 0.51], scale: [0.68, 1.22, 0.36] }
+    );
+
+    const belt = addAnchor(hips, 'Equipment_Belt', [0, 0.22, 0]);
+    addMesh(
+        belt,
+        'Cleric_ReliquaryBelt',
+        geometry('cleric-reliquary-belt', () => new THREE.CylinderGeometry(0.52, 0.52, 0.16, 8)),
+        materials.leather,
+        { scale: [1, 1, 0.84] }
+    );
+    addMesh(
+        belt,
+        'Cleric_BeltIcon',
+        geometry('cleric-belt-icon', () => new THREE.BoxGeometry(0.2, 0.2, 0.08)),
+        materials.gold,
+        { position: [0, 0, 0.45], rotation: [0, 0, Math.PI / 4] }
+    );
+    addAnchor(belt, 'Equipment_TrinketLeft', [0.36, -0.18, 0.26]);
+    addAnchor(belt, 'Equipment_TrinketRight', [-0.36, -0.18, 0.26]);
+
+    addClericLeg(hips, 'Left', materials);
+    addClericLeg(hips, 'Right', materials);
+
+    const chest = addPivot(hips, 'Rig_Chest', [0, 0.42, 0], [0.01, 0, 0]);
+    const chestAnchor = addAnchor(chest, 'Equipment_Chest');
+    addMesh(
+        chestAnchor,
+        'Cleric_ReliquaryCuirass',
+        geometry('cleric-reliquary-cuirass', () => new THREE.CylinderGeometry(0.59, 0.5, 1.12, 8)),
+        materials.iron,
+        { position: [0, 0.48, 0], scale: [1.08, 1, 0.75] }
+    );
+    addMesh(
+        chestAnchor,
+        'Cleric_CuirassBib',
+        geometry('cleric-cuirass-bib', () => {
+            const shape = new THREE.Shape();
+            shape.moveTo(-0.34, 0.48);
+            shape.lineTo(0.34, 0.48);
+            shape.lineTo(0.24, -0.4);
+            shape.lineTo(0, -0.54);
+            shape.lineTo(-0.25, -0.4);
+            shape.closePath();
+            return new THREE.ShapeGeometry(shape, 1);
+        }),
+        materials.ivory,
+        { position: [0, 0.48, 0.46] }
+    );
+    addMesh(
+        chestAnchor,
+        'Cleric_SunReliquary',
+        geometry('cleric-sun-reliquary', () => new THREE.TorusGeometry(0.18, 0.035, 5, 10)),
+        materials.gold,
+        { position: [0, 0.58, 0.5], rotation: [Math.PI / 2, 0, 0] }
+    );
+    addMesh(
+        chestAnchor,
+        'Cleric_SunReliquaryCore',
+        geometry('cleric-sun-reliquary-core', () => new THREE.OctahedronGeometry(0.09, 0)),
+        materials.holy,
+        { position: [0, 0.58, 0.52], scale: [0.82, 1.12, 0.46] }
+    );
+    [-1, 1].forEach((side) => {
+        addMesh(
+            chestAnchor,
+            side < 0 ? 'Cleric_ReliquaryRayLeft' : 'Cleric_ReliquaryRayRight',
+            geometry('cleric-reliquary-ray', () => new THREE.ConeGeometry(0.055, 0.3, 4)),
+            materials.gold,
+            { position: [side * 0.25, 0.58, 0.49], rotation: [0, 0, -side * Math.PI / 2] }
+        );
+    });
+
+    const cloak = addPivot(chest, 'Rig_Cloak', [0, 0.84, -0.4], [0.05, 0, 0]);
+    addMesh(
+        cloak,
+        'Cleric_BurialCloak',
+        geometry('cleric-burial-cloak', () => {
+            const shape = new THREE.Shape();
+            shape.moveTo(-0.62, 0.12);
+            shape.lineTo(0.62, 0.12);
+            shape.lineTo(0.5, -1.58);
+            shape.lineTo(0.24, -1.44);
+            shape.lineTo(0, -1.68);
+            shape.lineTo(-0.26, -1.44);
+            shape.lineTo(-0.5, -1.58);
+            shape.closePath();
+            return new THREE.ShapeGeometry(shape, 1);
+        }),
+        materials.clothDark,
+        { rotation: [0.08, Math.PI, 0], receiveShadow: false }
+    );
+    addMesh(
+        cloak,
+        'Cleric_CloakReliquary',
+        geometry('cleric-cloak-reliquary', () => new THREE.OctahedronGeometry(0.14, 0)),
+        materials.spirit,
+        { position: [0, -0.55, -0.02], scale: [0.65, 1.3, 0.24] }
+    );
+
+    const neck = addAnchor(chest, 'Equipment_Neck', [0, 1.05, 0]);
+    addMesh(
+        neck,
+        'Cleric_Gorget',
+        geometry('cleric-gorget', () => new THREE.CylinderGeometry(0.34, 0.44, 0.31, 8)),
+        materials.bronze,
+        { position: [0, 0.05, 0], scale: [1, 1, 0.86] }
+    );
+    addMesh(
+        neck,
+        'Cleric_GorgetCloth',
+        geometry('cleric-gorget-cloth', () => new THREE.TorusGeometry(0.34, 0.075, 5, 9)),
+        materials.ivory,
+        { position: [0, 0.08, 0], rotation: [Math.PI / 2, 0, 0], scale: [1, 0.84, 1] }
+    );
+
+    const head = addPivot(chest, 'Rig_Head', [0, 1.34, 0], [0.02, 0, 0]);
+    const headAnchor = addAnchor(head, 'Equipment_Head');
+    const face = addMesh(
+        headAnchor,
+        'Cleric_Head',
+        geometry('cleric-head', () => new THREE.DodecahedronGeometry(0.3, 1)),
+        materials.skin,
+        { position: [0, 0.1, 0], scale: [0.84, 1.08, 0.84] }
+    );
+    face.userData.equipmentBodyBase = true;
+    addMesh(
+        headAnchor,
+        'Cleric_Coif',
+        geometry('cleric-coif', () => new THREE.CylinderGeometry(0.37, 0.33, 0.62, 8, 1, true)),
+        materials.cloth,
+        { position: [0, 0.16, -0.02], scale: [1, 1, 0.9] }
+    );
+    addMesh(
+        headAnchor,
+        'Cleric_BrowPlate',
+        geometry('cleric-brow-plate', () => new THREE.BoxGeometry(0.58, 0.13, 0.09)),
+        materials.bronze,
+        { position: [0, 0.28, 0.31] }
+    );
+    const eyes = addMesh(
+        headAnchor,
+        'Cleric_EyeGlow',
+        geometry('cleric-eye-glow', () => new THREE.BoxGeometry(0.36, 0.04, 0.025)),
+        materials.holy,
+        { position: [0, 0.17, 0.32] }
+    );
+    eyes.userData.equipmentBodyBase = true;
+    for (let index = 0; index < 5; index++) {
+        const angle = -Math.PI * 0.62 + index * Math.PI * 0.31;
+        addMesh(
+            headAnchor,
+            `Cleric_BrokenSunRay${index}`,
+            geometry('cleric-broken-sun-ray', () => new THREE.ConeGeometry(0.065, 0.38, 4)),
+            materials.gold,
+            {
+                position: [Math.sin(angle) * 0.34, 0.56 + Math.cos(angle) * 0.26, -0.06],
+                rotation: [0, 0, -angle],
+                scale: [1, index === 2 ? 1.25 : 0.9, 0.76]
+            }
+        );
+    }
+
+    const offHand = addClericArm(chest, 'Left', materials);
+    const mainHand = addClericArm(chest, 'Right', materials);
+    addClericCenser(offHand, materials);
+    addClericMace(mainHand, materials);
+
+    assertEquipmentAnchors(root);
+    root.userData.proceduralHumanoid = true;
+    root.userData.proceduralClass = 'Cleric';
+    root.userData.artStyle = 'Lanternhold gravepriest';
+    root.userData.sharedGeometry = true;
+    root.userData.equipmentAnchors = Object.fromEntries(
+        Object.entries(HUMANOID_EQUIPMENT_ANCHORS).map(([slot, names]) => [slot, [...names]])
+    );
+    root.userData.equipmentScaleBySlot = Object.freeze({
+        head: 0.9,
+        shoulders: 0.86,
+        chest: 0.9,
+        gloves: 0.88,
+        belt: 0.9,
+        legs: 0.9,
+        feet: 0.86,
+        neck: 0.92,
+        ring1: 0.9,
+        ring2: 0.9,
+        trinket1: 0.92,
+        trinket2: 0.92,
+        mainHand: 0.92,
+        offHand: 0.9
+    });
+    root.userData.animations = createClericAnimationClips();
+    root.userData.bounds = Object.freeze({ radius: 1.25, height: 4.55, origin: 'feet' });
     installRestPoseReset(root);
     return root;
 }

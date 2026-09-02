@@ -3,7 +3,8 @@ import { BASE_ITEMS } from '../src/core/ItemSystem.js';
 import {
     createProceduralFighter,
     createProceduralRogue,
-    createProceduralWizard
+    createProceduralWizard,
+    createProceduralCleric
 } from '../src/art/ProceduralHumanoid.js';
 import {
     applyProceduralEquipment,
@@ -189,6 +190,36 @@ describe('procedural equipment visual manifest', () => {
         expect(finiteTransforms(root)).toBe(true);
     });
 
+    test.each(Object.keys(EQUIPMENT_VISUAL_DESCRIPTORS))('%s fits its declared Cleric anchor', (baseName) => {
+        const root = createProceduralCleric();
+        const descriptor = EQUIPMENT_VISUAL_DESCRIPTORS[baseName];
+        const renderSlot = descriptor.slot === 'ring' ? 'ring1' : descriptor.slot === 'trinket' ? 'trinket1' : descriptor.slot;
+        const result = applyProceduralEquipment(root, {
+            [renderSlot]: item(baseName, renderSlot, {
+                rarity: 'Eidolic',
+                level: 100,
+                potency: 5,
+                sockets: 2,
+                gems: [{ type: 'Topaz', quality: 'Flawless' }],
+                setId: 'divine_light',
+                uniqueEffect: 'guardian'
+            })
+        });
+        const groups = visualGroups(root);
+
+        expect(result).toEqual(expect.objectContaining({ supported: true, changed: true, items: 1, missing: [] }));
+        expect(groups).toHaveLength(root.userData.equipmentAnchors[renderSlot].length);
+        groups.forEach((group) => {
+            expect(group.userData).toEqual(expect.objectContaining({
+                slot: renderSlot,
+                baseName,
+                fitScale: root.userData.equipmentScaleBySlot[renderSlot]
+            }));
+            expect(group.scale.x).toBeLessThan(1);
+        });
+        expect(finiteTransforms(root)).toBe(true);
+    });
+
     test('renders all fourteen equipped positions as eighteen independently attached regions', () => {
         const root = createProceduralFighter();
         const face = root.getObjectByName('Fighter_Head');
@@ -308,6 +339,51 @@ describe('procedural equipment visual manifest', () => {
         clearProceduralEquipment(root);
         expect(root.getObjectByName('Wizard_Stormstaff').visible).toBe(true);
         expect(root.getObjectByName('Rig_Focus').visible).toBe(true);
+    });
+
+    test('fits the complete fourteen-slot armory to the procedural Cleric and restores both sacred tools', () => {
+        const root = createProceduralCleric();
+        const face = root.getObjectByName('Cleric_Head');
+        const eyes = root.getObjectByName('Cleric_EyeGlow');
+        const equipment = {};
+        EQUIPMENT_RENDER_SLOTS.forEach((slot, index) => {
+            const sourceSlot = SOURCE_SLOT_FOR_RENDER_SLOT[slot] || slot;
+            const baseName = Object.keys(EQUIPMENT_VISUAL_DESCRIPTORS)
+                .find((name) => EQUIPMENT_VISUAL_DESCRIPTORS[name].slot === sourceSlot);
+            equipment[slot] = item(baseName, slot, {
+                rarity: 'Eidolic',
+                level: 100,
+                potency: 5,
+                sockets: 1,
+                gems: [{ type: index % 2 === 0 ? 'Topaz' : 'Emerald', quality: 'Perfect' }],
+                setId: 'divine_light',
+                uniqueEffect: 'guardian'
+            });
+        });
+
+        const result = applyProceduralEquipment(root, equipment);
+
+        expect(result).toEqual(expect.objectContaining({
+            supported: true,
+            changed: true,
+            items: EQUIPMENT_RENDER_SLOTS.length,
+            missing: []
+        }));
+        expect(visualGroups(root)).toHaveLength(18);
+        expect(result.parts).toBeGreaterThanOrEqual(45);
+        visualGroups(root).forEach((group) => {
+            expect(group.userData.fitScale).toBe(root.userData.equipmentScaleBySlot[group.userData.slot]);
+            expect(group.scale.x).toBeLessThan(1);
+        });
+        expect(face.visible).toBe(true);
+        expect(eyes.visible).toBe(true);
+        expect(root.getObjectByName('Cleric_Oathmace').visible).toBe(false);
+        expect(root.getObjectByName('Rig_Censer').visible).toBe(false);
+        expect(finiteTransforms(root)).toBe(true);
+
+        clearProceduralEquipment(root);
+        expect(root.getObjectByName('Cleric_Oathmace').visible).toBe(true);
+        expect(root.getObjectByName('Rig_Censer').visible).toBe(true);
     });
 
     test('diffs appearance state, reuses cached render resources, and restores the default kit on clear', () => {

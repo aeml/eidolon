@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.4</span>
+                <span class="start-version-row__label">Alpha 0.41.0.5</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -587,6 +587,18 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.5">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.5 (the Lanternhold gravepriest)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The Cleric carries a new flame:</strong> A fully code-generated Lanternhold gravepriest replaces every imported Cleric character and animation file with cached faceted geometry, burial cloth, worn bronze, ivory reliquaries, and restrained holy light.</li>
+                        <li><strong>A sacred silhouette at gameplay zoom:</strong> An upright bell-shaped vestment, reliquary cuirass, broken-sun crown, oathmace, and green-flame censer distinguish the Cleric from the oathguard, shadeblade, and hexweaver.</li>
+                        <li><strong>Prayer has physical weight:</strong> Dedicated prayerful Idle, processional Walk, driven Run, mace-and-censer Attack, and kneeling Death clips animate the whole shared rig while the chained censer swings independently for local and nearby characters.</li>
+                        <li><strong>Every item has somewhere honest to live:</strong> All 36 equipment families and 14 equipped positions fit across the Cleric's 18 animated attachment regions, preserve face and eye identity, and replace or restore the oathmace and censer without duplicate gear.</li>
+                        <li><strong>All player classes are now code-native:</strong> Fighter, Rogue, Wizard, and Cleric bypass authored model loading entirely. Their 20 superseded GLBs—78 MB—have been removed from the production tree after complete replacement coverage, while Git history retains the rollback source.</li>
+                        <li><strong>Selection follows the visible body:</strong> Exact grounded 4.55-unit bounds drive the Cleric interaction volume through pool reuse, and immutable cached render resources keep separate actors visually independent.</li>
+                        <li><strong>The whole surface is inspectable:</strong> Unit coverage exercises every Cleric animation and equipment family; hardware Chrome captures all four classes and complete local/replicated loadouts at High and Low quality while rechecking all ability and regional-hazard footprints.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.4">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.4 (the Stormcrown hexweaver)</h3>
                     <ul class="patch-note-entry__list">

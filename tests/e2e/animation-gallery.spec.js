@@ -7,7 +7,7 @@ import { EQUIPMENT_VISUAL_DESCRIPTORS } from '../../src/art/ProceduralEquipment.
 const presentationCount = listPlayerAbilityPresentationVariants().length;
 const actorEntries = listActorAnimationEntries();
 const equipmentFamilyCount = Object.keys(EQUIPMENT_VISUAL_DESCRIPTORS).length;
-const proceduralPlayerTypes = Object.freeze(['Fighter', 'Rogue', 'Wizard']);
+const proceduralPlayerTypes = Object.freeze(['Fighter', 'Rogue', 'Wizard', 'Cleric']);
 
 test.use({ trace: 'off', video: 'off' });
 
@@ -93,6 +93,8 @@ test.describe('deterministic production animation gallery', () => {
         expect(renderer).not.toBeNull();
         expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
 
+        await page.locator('#gallery-actor').selectOption('Fighter');
+        await waitForActor(page, 'Fighter');
         await page.locator('#gallery-run-equipment').click();
         await expect.poll(async () => {
             const metrics = await galleryMetrics(page);

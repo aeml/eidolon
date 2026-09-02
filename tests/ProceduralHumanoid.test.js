@@ -3,6 +3,7 @@ import {
     createProceduralFighter,
     createProceduralRogue,
     createProceduralWizard,
+    createProceduralCleric,
     getProceduralHumanoidCacheMetrics,
     HUMANOID_ANIMATION_STATES,
     HUMANOID_EQUIPMENT_ANCHORS
@@ -10,6 +11,7 @@ import {
 import { Fighter } from '../src/entities/Fighter.js';
 import { Rogue } from '../src/entities/Rogue.js';
 import { Wizard } from '../src/entities/Wizard.js';
+import { Cleric } from '../src/entities/Cleric.js';
 
 function meshCount(root) {
     let count = 0;
@@ -314,6 +316,97 @@ describe('shared procedural humanoid Wizard', () => {
             width: 2.2,
             height: 4.55,
             depth: 2.2
+        }));
+        expect(hitboxes[0].position.y).toBeCloseTo(2.275);
+    });
+});
+
+describe('shared procedural humanoid Cleric', () => {
+    test('creates a grounded Lanternhold gravepriest with a reliquary silhouette', () => {
+        const cleric = createProceduralCleric();
+        const bounds = new THREE.Box3().setFromObject(cleric);
+        const size = bounds.getSize(new THREE.Vector3());
+
+        expect(cleric.userData).toEqual(expect.objectContaining({
+            proceduralHumanoid: true,
+            proceduralClass: 'Cleric',
+            artStyle: 'Lanternhold gravepriest',
+            sharedGeometry: true
+        }));
+        expect(cleric.userData.assetFallback).toBeUndefined();
+        expect(meshCount(cleric)).toBeGreaterThanOrEqual(60);
+        expect(bounds.min.y).toBeCloseTo(0, 1);
+        expect(size.y).toBeGreaterThan(4.4);
+        expect(size.y).toBeLessThan(4.7);
+        expect(size.x).toBeGreaterThan(2.4);
+        expect(cleric.getObjectByName('Cleric_Oathmace')).not.toBeNull();
+        expect(cleric.getObjectByName('Rig_Censer')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_BrokenSunRay2')).not.toBeNull();
+        expect(hasOnlyFiniteTransforms(cleric)).toBe(true);
+    });
+
+    test('uses every shared attachment and a mace-and-censer attack animation', () => {
+        const cleric = createProceduralCleric();
+        const clips = Object.fromEntries(cleric.userData.animations.map((clip) => [clip.name, clip]));
+        const rightArm = cleric.getObjectByName('Rig_UpperArmRight');
+        const censer = cleric.getObjectByName('Rig_Censer');
+        const restArmX = rightArm.rotation.x;
+        const restCenserZ = censer.rotation.z;
+        const mixer = new THREE.AnimationMixer(cleric);
+
+        expect(cleric.userData.equipmentAnchors).toEqual(HUMANOID_EQUIPMENT_ANCHORS);
+        for (const anchorName of Object.values(HUMANOID_EQUIPMENT_ANCHORS).flat()) {
+            expect(cleric.getObjectByName(anchorName)?.userData.equipmentAnchor).toBe(true);
+        }
+        expect(Object.keys(clips)).toEqual(HUMANOID_ANIMATION_STATES);
+        HUMANOID_ANIMATION_STATES.forEach((name) => expect(clips[name].tracks.length).toBeGreaterThan(0));
+
+        mixer.clipAction(clips.Attack).reset().play();
+        mixer.update(0.5);
+        expect(rightArm.rotation.x).not.toBeCloseTo(restArmX, 3);
+        expect(censer.rotation.z).not.toBeCloseTo(restCenserZ, 3);
+        expect(hasOnlyFiniteTransforms(cleric)).toBe(true);
+        mixer.stopAllAction();
+        mixer.uncacheRoot(cleric);
+    });
+
+    test('shares cached render resources while preserving actor-owned censer poses and pool resets', () => {
+        const first = createProceduralCleric();
+        const second = createProceduralCleric();
+        const firstCuirass = first.getObjectByName('Cleric_ReliquaryCuirass');
+        const secondCuirass = second.getObjectByName('Cleric_ReliquaryCuirass');
+
+        expect(firstCuirass.geometry).toBe(secondCuirass.geometry);
+        expect(firstCuirass.material).toBe(secondCuirass.material);
+        first.getObjectByName('Rig_Censer').rotation.z = 1.2;
+        expect(second.getObjectByName('Rig_Censer').rotation.z).toBeCloseTo(0.12);
+
+        first.scale.setScalar(0.76);
+        first.getObjectByName('RigRoot').rotation.z = -1.4;
+        first.userData.resetPose();
+        expect(first.scale.toArray()).toEqual([1, 1, 1]);
+        expect(first.getObjectByName('RigRoot').rotation.z).toBeCloseTo(0);
+        expect(first.getObjectByName('Rig_Censer').rotation.z).toBeCloseTo(0.12);
+    });
+
+    test('declares one correctly sized interaction hitbox when a pooled mesh changes Cleric owners', () => {
+        const mesh = createProceduralCleric();
+        const first = new Cleric('cleric-first');
+        const second = new Cleric('cleric-second');
+
+        first.setMesh(mesh);
+        second.setMesh(mesh);
+        const hitboxes = [];
+        mesh.traverse((child) => {
+            if (child.name === 'ActorInteractionHitbox') hitboxes.push(child);
+        });
+
+        expect(hitboxes).toHaveLength(1);
+        expect(hitboxes[0].userData.entityId).toBe('cleric-second');
+        expect(hitboxes[0].geometry.parameters).toEqual(expect.objectContaining({
+            width: 2.5,
+            height: 4.55,
+            depth: 2.5
         }));
         expect(hitboxes[0].position.y).toBeCloseTo(2.275);
     });
