@@ -5,8 +5,15 @@ describe('AssetAudit', () => {
         expect(findDuplicatePreloadPaths()).toEqual([]);
     });
 
-    test('recipe aliases resolve to an implemented quest-man loader recipe', () => {
+    test('recipe aliases have no unresolved legacy dependency', () => {
         expect(findBrokenRecipeAliases()).toEqual([]);
+        expect(findBrokenRecipeAliases({
+            SharedNpc: { type: 'npc' },
+            AliasNpc: { type: 'npc', alias: 'SharedNpc' }
+        })).toEqual([]);
+        expect(findBrokenRecipeAliases({
+            AliasNpc: { type: 'npc', alias: 'MissingNpc' }
+        })).toEqual([{ name: 'AliasNpc', alias: 'MissingNpc', resolved: false }]);
     });
 
     test('summary reports a non-empty audited preload manifest', () => {

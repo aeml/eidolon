@@ -33,10 +33,10 @@ export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
     HollowSentinel: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
 
     AvengingSeraph: entry('summon', 'GLB', WALKING_ENEMY_CLIPS),
-    DwarfSalesman: entry('npc', 'GLB', ['Idle'], { special: 'none' }),
-    QuestNPC: entry('npc', 'GLB', ['Idle'], { special: 'none' }),
-    DungeonNPC: entry('npc', 'QuestNPC GLB alias', ['Idle'], { special: 'none' }),
-    RespecNPC: entry('npc', 'QuestNPC GLB alias', ['Idle'], { special: 'none' }),
+    DwarfSalesman: entry('npc', 'procedural town actor rig', ['Idle'], { special: 'merchant hammer and ember coin language' }),
+    QuestNPC: entry('npc', 'procedural town actor rig', ['Idle'], { special: 'oath-scroll and broken-sun quest language' }),
+    DungeonNPC: entry('npc', 'procedural town actor rig', ['Idle'], { special: 'wayfinding lantern and key language' }),
+    RespecNPC: entry('npc', 'procedural town actor rig', ['Idle'], { special: 'memory reliquary and soul language' }),
 
     ...Object.fromEntries(
         Object.keys(MeshCatalog.getProceduralEnemySpecs()).map((type) => [

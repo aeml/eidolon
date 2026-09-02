@@ -286,6 +286,50 @@ describe('MeshFactory catalog integration', () => {
         }
     });
 
+    test.each([
+        ['DwarfSalesman', 'Lanternhold ironmonger'],
+        ['QuestNPC', 'Lanternhold oathscribe'],
+        ['DungeonNPC', 'Lanternhold waywarden'],
+        ['RespecNPC', 'Lanternhold ash confessor']
+    ])('%s uses its procedural Lanternhold service silhouette without requesting a GLB', async (type, artStyle) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralTownActor: true,
+                proceduralActorType: type,
+                artStyle,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name)).toEqual(['Idle']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test('a full town actor pool never disposes shared generated resources', async () => {
+        const previousPool = MeshFactory.pool;
+        MeshFactory.pool = {};
+        const mesh = await MeshFactory.createMeshForType('QuestNPC');
+        MeshFactory.pool.QuestNPC = Array.from({ length: 50 }, () => new THREE.Group());
+        const material = mesh.getObjectByName('QuestNPC_Torso').material;
+        const disposeSpy = jest.spyOn(material, 'dispose');
+
+        try {
+            MeshFactory.releaseMesh('QuestNPC', mesh);
+            expect(disposeSpy).not.toHaveBeenCalled();
+            expect(MeshFactory.pool.QuestNPC).toHaveLength(50);
+        } finally {
+            disposeSpy.mockRestore();
+            MeshFactory.pool = previousPool;
+        }
+    });
+
     test('a full Rogue pool never disposes shared procedural render resources', async () => {
         const previousPool = MeshFactory.pool;
         MeshFactory.pool = {};

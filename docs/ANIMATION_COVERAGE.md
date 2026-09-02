@@ -122,10 +122,10 @@ Player classes declare Idle/Walk/Run/Attack/Death clips through either the share
 | RustboundColossus | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | HollowSentinel | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | AvengingSeraph | summon | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| DwarfSalesman | npc | GLB | Idle | not-used | none | local hardware gallery: High/Low |
-| QuestNPC | npc | GLB | Idle | not-used | none | local hardware gallery: High/Low |
-| DungeonNPC | npc | QuestNPC GLB alias | Idle | not-used | none | local hardware gallery: High/Low |
-| RespecNPC | npc | QuestNPC GLB alias | Idle | not-used | none | local hardware gallery: High/Low |
+| DwarfSalesman | npc | procedural town actor rig | Idle | not-used | merchant hammer and ember coin language | local hardware gallery: High/Low |
+| QuestNPC | npc | procedural town actor rig | Idle | not-used | oath-scroll and broken-sun quest language | local hardware gallery: High/Low |
+| DungeonNPC | npc | procedural town actor rig | Idle | not-used | wayfinding lantern and key language | local hardware gallery: High/Low |
+| RespecNPC | npc | procedural town actor rig | Idle | not-used | memory reliquary and soul language | local hardware gallery: High/Low |
 | SandstormDjinn | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | MagmaGolem | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | ScorchedWraith | enemy-or-boss | procedural clips | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |

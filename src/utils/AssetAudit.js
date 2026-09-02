@@ -14,7 +14,7 @@ export function findBrokenRecipeAliases(recipes = MeshCatalog.recipes) {
     const aliases = [];
     for (const [name, recipe] of Object.entries(recipes)) {
         if (!recipe.alias) continue;
-        const target = Object.entries(recipes).find(([, candidate]) => candidate.loader === 'loadQuestManModel');
+        const target = recipes[recipe.alias];
         aliases.push({ name, alias: recipe.alias, resolved: Boolean(target) });
     }
     return aliases.filter((entry) => !entry.resolved);

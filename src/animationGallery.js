@@ -806,6 +806,9 @@ export class AnimationGallery {
             currentAnimation: this.actor?.currentAnimationName || null,
             proceduralHumanoid: Boolean(this.actor?.mesh?.userData?.proceduralHumanoid),
             proceduralClass: this.actor?.mesh?.userData?.proceduralClass || null,
+            proceduralTownActor: Boolean(this.actor?.mesh?.userData?.proceduralTownActor),
+            proceduralActorType: this.actor?.mesh?.userData?.proceduralActorType || null,
+            actorArtStyle: this.actor?.mesh?.userData?.artStyle || null,
             equipmentAnchorCount: Object.values(this.actor?.mesh?.userData?.equipmentAnchors || {})
                 .reduce((count, names) => count + names.length, 0),
             equipmentName: this.currentEquipmentName,

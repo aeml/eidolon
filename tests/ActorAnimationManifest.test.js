@@ -68,6 +68,17 @@ describe('actor animation manifest', () => {
         }));
     });
 
+    test('classifies every Lanternhold service as an intentional procedural town actor', () => {
+        for (const type of ['DwarfSalesman', 'QuestNPC', 'DungeonNPC', 'RespecNPC']) {
+            expect(ACTOR_ANIMATION_MANIFEST[type]).toEqual(expect.objectContaining({
+                category: 'npc',
+                source: 'procedural town actor rig',
+                states: ['Idle']
+            }));
+            expect(ACTOR_ANIMATION_MANIFEST[type].special).not.toBe('none');
+        }
+    });
+
     test('no combat actor is classified without idle, movement, attack, and death presentation', () => {
         for (const actor of listActorAnimationEntries()) {
             if (actor.category === 'npc') continue;

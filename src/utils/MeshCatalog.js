@@ -71,8 +71,6 @@ const PRELOAD_MODEL_PATHS = [
     './assets/enemies/humanoid/mountain_troll/attack.glb',
     './assets/enemies/humanoid/mountain_troll/death.glb',
 
-    './assets/npc/dwarf_salesman/idle.glb',
-    './assets/npc/quest_man/idle.glb',
     './assets/buildings/trading_house.glb',
     './assets/buildings/blacksmith_forge.glb',
     './assets/objects/chests/stash_base.glb',
@@ -112,22 +110,23 @@ export class MeshCatalog {
     static recipes = {
         DwarfSalesman: {
             type: 'npc',
-            modelPath: './assets/npc/dwarf_salesman/idle.glb',
-            animations: ['idle']
+            source: 'procedural town actor',
+            animations: ['Idle']
         },
         QuestNPC: {
             type: 'npc',
-            modelPath: './assets/npc/quest_man/idle.glb',
-            animations: ['idle'],
-            loader: 'loadQuestManModel'
+            source: 'procedural town actor',
+            animations: ['Idle']
         },
         DungeonNPC: {
             type: 'npc',
-            alias: 'QuestManNpc'
+            source: 'procedural town actor',
+            animations: ['Idle']
         },
         RespecNPC: {
             type: 'npc',
-            alias: 'QuestManNpc'
+            source: 'procedural town actor',
+            animations: ['Idle']
         },
         Construct: {
             type: 'enemy',

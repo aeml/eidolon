@@ -67,6 +67,15 @@ Hazards must survive chunk residency changes and must dispose all geometry and m
 - Paired slots remain one logical item but render on every declared attachment region. Equipment follows animated pivots and has no independent gameplay transform or network authority.
 - A missing, replaced, or final unequipped item must restore the class's intentional default silhouette immediately. Shared geometry and materials are immutable and cached; attachment groups remain actor-owned and are removed before pool reuse.
 
+## Lanternhold service language
+
+- Town services share charcoal cloth, worn iron, old leather, faceted anatomy, restrained emissive identity, and a thin circular service sigil. Their silhouettes and held props must still identify the service without reading a nameplate or relying on hue alone.
+- The Dwarf Merchant is the low, broad ironmonger: braided beard, forge apron, merchant pack, coin row, and rune hammer. Ember amber is reserved for trade and active forge craft.
+- The Quest Giver is the tall oathscribe: open scroll, quill, and broken oath-sun. Warm gold marks a route or obligation but never imitates an ability footprint.
+- The Dungeon Guide is the hooded waywarden: witchlight lantern, key ring, map case, and colder travel-worn layers. Teal light means navigation into dangerous spaces, not a safe gameplay zone.
+- The Talent Master is the antler-crowned ash confessor: masked face, memory ledger, orbiting shards, and a violet soul reliquary. Its orbit is local ornament with no collision or network authority.
+- Every service owns an exact, grounded interaction bound spanning its full generated silhouette. Role-specific motion stays subtle, all render resources are cached, and pool reuse restores the complete rest pose without changing quest, vendor, dungeon, or talent state.
+
 ## Migration baseline — 2026-09-02
 
 - Authored asset payload: approximately 963.33 MiB.

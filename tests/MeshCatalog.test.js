@@ -46,14 +46,19 @@ describe('MeshCatalog', () => {
         expect(MeshCatalog.getPreloadModelPaths().some((path) => path.includes('/Cleric/'))).toBe(false);
     });
 
-    test('mesh recipe aliases reuse quest NPC asset loader', () => {
-        expect(MeshCatalog.recipes.DungeonNPC.alias).toBe('QuestManNpc');
-        expect(MeshCatalog.recipes.RespecNPC.alias).toBe('QuestManNpc');
-        expect(MeshCatalog.recipes.QuestNPC.loader).toBe('loadQuestManModel');
+    test('all Lanternhold services use explicit procedural actor recipes', () => {
+        for (const type of ['DwarfSalesman', 'QuestNPC', 'DungeonNPC', 'RespecNPC']) {
+            expect(MeshCatalog.recipes[type]).toEqual({
+                type: 'npc',
+                source: 'procedural town actor',
+                animations: ['Idle']
+            });
+        }
+        expect(MeshCatalog.getPreloadModelPaths().some((path) => path.startsWith('./assets/npc/'))).toBe(false);
     });
 
     test('mesh recipes retain typed asset metadata for concrete entities', () => {
-        expect(MeshCatalog.recipes.DwarfSalesman.modelPath).toBe('./assets/npc/dwarf_salesman/idle.glb');
+        expect(MeshCatalog.recipes.DwarfSalesman.source).toBe('procedural town actor');
         expect(MeshCatalog.recipes.Construct.animations).toEqual(['idle', 'walk', 'run', 'attack', 'death']);
         expect(MeshCatalog.recipes.TradingHouse.type).toBe('structure');
     });

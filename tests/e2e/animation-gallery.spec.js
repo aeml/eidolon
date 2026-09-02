@@ -8,6 +8,12 @@ const presentationCount = listPlayerAbilityPresentationVariants().length;
 const actorEntries = listActorAnimationEntries();
 const equipmentFamilyCount = Object.keys(EQUIPMENT_VISUAL_DESCRIPTORS).length;
 const proceduralPlayerTypes = Object.freeze(['Fighter', 'Rogue', 'Wizard', 'Cleric']);
+const proceduralTownActorTypes = Object.freeze([
+    ['DwarfSalesman', 'Lanternhold ironmonger'],
+    ['QuestNPC', 'Lanternhold oathscribe'],
+    ['DungeonNPC', 'Lanternhold waywarden'],
+    ['RespecNPC', 'Lanternhold ash confessor']
+]);
 
 test.use({ trace: 'off', video: 'off' });
 
@@ -155,6 +161,49 @@ test.describe('deterministic production animation gallery', () => {
                 expect(metrics.nonFiniteTransforms).toBe(0);
                 await page.screenshot({
                     path: testInfo.outputPath(`procedural-${actorType.toLowerCase()}-equipment-${quality}.png`),
+                    animations: 'allow'
+                });
+            }
+        }
+
+        expect(failures, failures.join('\n')).toEqual([]);
+        testInfo.annotations.push({
+            type: 'renderer',
+            description: `${renderer.vendor} · ${renderer.renderer}`
+        });
+    });
+
+    test('renders every procedural Lanternhold service with a distinct animated identity', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        const response = await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
+        expect(response?.status()).toBe(200);
+
+        const renderer = await hardwareRenderer(page);
+        expect(renderer).not.toBeNull();
+        expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
+
+        for (const [actorType, artStyle] of proceduralTownActorTypes) {
+            await page.locator('#gallery-actor').selectOption(actorType);
+            await waitForActor(page, actorType);
+            await page.locator('#gallery-state').selectOption('Idle');
+            await page.locator('#gallery-play-state').click();
+            await expect.poll(async () => (await galleryMetrics(page)).phase).toBe('state:idle');
+            let metrics = await galleryMetrics(page);
+            expect(metrics.proceduralTownActor).toBe(true);
+            expect(metrics.proceduralActorType).toBe(actorType);
+            expect(metrics.actorArtStyle).toBe(artStyle);
+            expect(metrics.currentAnimation).toBe('Idle');
+            expect(metrics.actorVisibleMeshes).toBeGreaterThanOrEqual(40);
+            expect(metrics.nonFiniteTransforms).toBe(0);
+
+            for (const quality of ['high', 'low']) {
+                await page.locator('#gallery-quality').selectOption(quality);
+                await expect.poll(async () => (await galleryMetrics(page)).quality).toBe(quality);
+                metrics = await galleryMetrics(page);
+                expect(metrics.proceduralActorType).toBe(actorType);
+                expect(metrics.nonFiniteTransforms).toBe(0);
+                await page.screenshot({
+                    path: testInfo.outputPath(`procedural-town-${actorType.toLowerCase()}-${quality}.png`),
                     animations: 'allow'
                 });
             }

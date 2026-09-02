@@ -10,6 +10,12 @@ import {
     createProceduralWizard,
     createProceduralCleric
 } from '../art/ProceduralHumanoid.js';
+import {
+    createProceduralDwarfSalesman,
+    createProceduralQuestNPC,
+    createProceduralDungeonNPC,
+    createProceduralRespecNPC
+} from '../art/ProceduralTownActors.js';
 
 export class MeshFactory {
     static loader = new GLTFLoader();
@@ -169,7 +175,6 @@ export class MeshFactory {
         cleric: new THREE.SphereGeometry(0.6, 16, 16),
         default: new THREE.BoxGeometry(0.5, 0.5, 0.5),
         fence: new THREE.BoxGeometry(4.5, 8, 1.5),
-        questNPC: new THREE.BoxGeometry(1, 2, 1),
         stash: new THREE.BoxGeometry(1.5, 1.5, 1.5),
         seraph: new THREE.CylinderGeometry(0.5, 0.5, 2, 8)
     };
@@ -256,49 +261,6 @@ export class MeshFactory {
             const material = new THREE.MeshStandardMaterial({ color: color });
             const mesh = new THREE.Mesh(geometry, material);
             mesh.position.y = 1;
-            return mesh;
-        }
-    }
-
-    /**
-     * Helper to load quest_man model for NPC placeholders.
-     * Uses the same model/animations as QuestNPC.
-     * @param {string} name - NPC name for debugging
-     * @returns {Promise<THREE.Object3D>} The NPC mesh
-     */
-    static async loadQuestManModel(name = 'NPC') {
-        try {
-            const gltf = await this.loadModel('./assets/npc/quest_man/idle.glb');
-            const mesh = SkeletonUtils.clone(gltf.scene);
-            
-            mesh.userData.animations = [];
-            if (gltf.animations.length > 0) {
-                const clip = gltf.animations[0].clone();
-                clip.name = 'Idle';
-                mesh.userData.animations.push(clip);
-            }
-
-            mesh.scale.set(2.0, 2.0, 2.0);
-            
-            mesh.traverse(c => {
-                if (c.isMesh) {
-                    c.castShadow = true;
-                    c.receiveShadow = true;
-                }
-            });
-
-            const hitGeo = new THREE.BoxGeometry(1.5, 3.5, 1.5);
-            const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-            const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-            hitMesh.position.y = 1.75;
-            mesh.add(hitMesh);
-
-            return mesh;
-        } catch (err) {
-            console.error(`Failed to load ${name} model:`, err);
-            const geometry = new THREE.BoxGeometry(1, 2, 1);
-            const material = new THREE.MeshStandardMaterial({ color: 0x0000FF });
-            const mesh = new THREE.Mesh(geometry, material);
             return mesh;
         }
     }
@@ -685,7 +647,7 @@ export class MeshFactory {
             // Procedural enemies now use shared/cached geometries and materials —
             // do NOT dispose them (they are singletons). Only dispose non-cached
             // GLTF materials whose geometry is also shared.
-            const isProceduralType = Boolean(mesh.userData?.proceduralHumanoid) ||
+            const isProceduralType = Boolean(mesh.userData?.sharedGeometry) ||
                 !!this.PROCEDURAL_ENEMY_SPECS[type];
             if (!isProceduralType) {
                 mesh.traverse((child) => {
@@ -807,6 +769,22 @@ export class MeshFactory {
 
         if (type === 'Cleric') {
             return createProceduralCleric();
+        }
+
+        if (type === 'DwarfSalesman') {
+            return createProceduralDwarfSalesman();
+        }
+
+        if (type === 'QuestNPC') {
+            return createProceduralQuestNPC();
+        }
+
+        if (type === 'DungeonNPC') {
+            return createProceduralDungeonNPC();
+        }
+
+        if (type === 'RespecNPC') {
+            return createProceduralRespecNPC();
         }
 
         if (type === 'Skeleton') {
@@ -1002,41 +980,6 @@ export class MeshFactory {
                 mesh.castShadow = true;
                 mesh.receiveShadow = true;
                 mesh.position.y = 0.5;
-                return mesh;
-            }
-        } else if (type === 'DwarfSalesman') {
-            try {
-                const gltf = await this.loadModel('./assets/npc/dwarf_salesman/idle.glb');
-                mesh = SkeletonUtils.clone(gltf.scene);
-                
-                mesh.userData.animations = [];
-                if (gltf.animations.length > 0) {
-                    const clip = gltf.animations[0].clone();
-                    clip.name = 'Idle';
-                    mesh.userData.animations.push(clip);
-                }
-
-                mesh.scale.set(2.0, 2.0, 2.0);
-                
-                mesh.traverse(c => {
-                    if (c.isMesh) {
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-                    }
-                });
-
-                const hitGeo = new THREE.BoxGeometry(2.5, 3.5, 2.5);
-                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-                hitMesh.position.y = 1.5;
-                mesh.add(hitMesh);
-
-                return mesh;
-            } catch (err) {
-                console.error("Failed to load DwarfSalesman:", err);
-                geometry = new THREE.BoxGeometry(1, 1.5, 1);
-                material = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
-                mesh = new THREE.Mesh(geometry, material);
                 return mesh;
             }
         } else if (type === 'Construct') {
@@ -1681,47 +1624,6 @@ export class MeshFactory {
             mesh.receiveShadow = true;
             mesh.position.y = 4.0;
             return mesh;
-        } else if (type === 'QuestNPC') {
-            try {
-                const gltf = await this.loadModel('./assets/npc/quest_man/idle.glb');
-                mesh = SkeletonUtils.clone(gltf.scene);
-                
-                mesh.userData.animations = [];
-                if (gltf.animations.length > 0) {
-                    const clip = gltf.animations[0].clone();
-                    clip.name = 'Idle';
-                    mesh.userData.animations.push(clip);
-                }
-
-                mesh.scale.set(2.0, 2.0, 2.0);
-                
-                mesh.traverse(c => {
-                    if (c.isMesh) {
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-                    }
-                });
-
-                const hitGeo = new THREE.BoxGeometry(1.5, 3.5, 1.5);
-                const hitMat = new THREE.MeshBasicMaterial({ visible: false });
-                const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-                hitMesh.position.y = 1.75;
-                mesh.add(hitMesh);
-
-                return mesh;
-            } catch (err) {
-                console.error("Failed to load QuestNPC:", err);
-                geometry = this.geometryCache.questNPC;
-                material = new THREE.MeshStandardMaterial({ color: 0x0000FF });
-                mesh = new THREE.Mesh(geometry, material);
-                return mesh;
-            }
-        } else if (type === 'DungeonNPC') {
-            // DungeonNPC uses the same quest_man model as QuestNPC
-            return await this.loadQuestManModel('DungeonNPC');
-        } else if (type === 'RespecNPC') {
-            // RespecNPC uses the same quest_man model as QuestNPC
-            return await this.loadQuestManModel('RespecNPC');
         } else if (type === 'TradingHouse') {
             try {
                 const gltf = await this.loadModel('./assets/buildings/trading_house.glb');
