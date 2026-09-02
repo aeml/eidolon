@@ -23,24 +23,6 @@ const PRELOAD_MODEL_PATHS = [
     './assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/attack.glb',
     './assets/enemies/dungeon/verdant_bastion_catacombs/hollow_sentinel/death.glb',
 
-    './assets/enemies/snow/siren/idle.glb',
-    './assets/enemies/snow/siren/walk.glb',
-    './assets/enemies/snow/siren/run.glb',
-    './assets/enemies/snow/siren/attack.glb',
-    './assets/enemies/snow/siren/death.glb',
-
-    './assets/enemies/golems/aqua_golem/idle.glb',
-    './assets/enemies/golems/aqua_golem/walk.glb',
-    './assets/enemies/golems/aqua_golem/run.glb',
-    './assets/enemies/golems/aqua_golem/attack.glb',
-    './assets/enemies/golems/aqua_golem/death.glb',
-
-    './assets/enemies/humanoid/mountain_troll/idle.glb',
-    './assets/enemies/humanoid/mountain_troll/walk.glb',
-    './assets/enemies/humanoid/mountain_troll/run.glb',
-    './assets/enemies/humanoid/mountain_troll/attack.glb',
-    './assets/enemies/humanoid/mountain_troll/death.glb',
-
     './assets/buildings/trading_house.glb',
     './assets/buildings/blacksmith_forge.glb',
     './assets/objects/chests/stash_base.glb',
@@ -120,6 +102,26 @@ export class MeshCatalog {
         InfernoTitan: {
             type: 'enemy',
             source: 'procedural Cinder Wastes crucible-titan rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        MountainTroll: {
+            type: 'enemy',
+            source: 'procedural Moonfrost rimeback-troll rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        AquaGolem: {
+            type: 'enemy',
+            source: 'procedural Moonfrost drowned-cairn rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        Siren: {
+            type: 'enemy',
+            source: 'procedural Moonfrost choir-siren rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
+        FrostGuardian: {
+            type: 'enemy',
+            source: 'procedural Moonfrost glacial-bell rig',
             animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
         },
         TradingHouse: {

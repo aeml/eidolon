@@ -22,7 +22,11 @@ const proceduralRegionalEnemyTypes = Object.freeze([
     ['DemonOrc', 'Cinder Wastes kiln-warrior'],
     ['Imp', 'Cinder Wastes ember-scavenger'],
     ['Construct', 'Gloamwood grave-reliquary construct'],
-    ['InfernoTitan', 'Cinder Wastes crucible titan']
+    ['InfernoTitan', 'Cinder Wastes crucible titan'],
+    ['MountainTroll', 'Moonfrost rimeback troll'],
+    ['AquaGolem', 'Moonfrost drowned-cairn golem'],
+    ['Siren', 'Moonfrost choir siren'],
+    ['FrostGuardian', 'Moonfrost glacial bell guardian']
 ]);
 
 test.use({ trace: 'off', video: 'off' });

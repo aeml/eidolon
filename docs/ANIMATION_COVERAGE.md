@@ -113,10 +113,10 @@ Player classes declare Idle/Walk/Run/Attack/Death clips through either the share
 | DemonOrc | enemy | procedural Cinder Wastes kiln-warrior rig | Idle, Walk, Run, Attack, Death | not-used | furnace breastplate, cinder cleaver, coal chain, and heavy collapse | local hardware gallery: High/Low |
 | Construct | enemy | procedural Gloamwood grave-reliquary rig | Idle, Walk, Run, Attack, Death | not-used | captive-soul chest, grave bell, root joints, and tolling stone maul | local hardware gallery: High/Low |
 | InfernoTitan | enemy | procedural Cinder Wastes crucible-titan rig | Idle, Walk, Run, Attack, Death | not-used | white-hot furnace core, vent flames, caldera cleaver, and ash censer | local hardware gallery: High/Low |
-| Siren | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| FrostGuardian | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| AquaGolem | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| MountainTroll | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
+| Siren | enemy | procedural Moonfrost choir-siren rig | Idle, Walk, Run, Attack, Death | not-used | drowned shroud, rib harp, voice shards, crescent blade, and floating collapse | local hardware gallery: High/Low |
+| FrostGuardian | enemy | procedural Moonfrost glacial-bell rig | Idle, Walk, Run, Attack, Death | not-used | ice heart, broken halo, vigil bell, aurora polearm, and armored collapse | local hardware gallery: High/Low |
+| AquaGolem | enemy | procedural Moonfrost drowned-cairn rig | Idle, Walk, Run, Attack, Death | not-used | tide-soul chest, barnacled cairn body, anchor, water drips, and stone collapse | local hardware gallery: High/Low |
+| MountainTroll | enemy | procedural Moonfrost rimeback-troll rig | Idle, Walk, Run, Attack, Death | not-used | ice ridge, fur mantle, cairn club, aurora charm, and heavy collapse | local hardware gallery: High/Low |
 | RootboundWarden | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | BriarMatron | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | RustboundColossus | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |

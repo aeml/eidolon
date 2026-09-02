@@ -37,6 +37,23 @@ describe('MeshCatalog', () => {
         expect(MeshCatalog.getPreloadModelPaths().some((path) => /skeleton|demon_orc|\/imp\/|\/construct\/|\/inferno_titan\//.test(path))).toBe(false);
     });
 
+    test('Moonfrost enemies have explicit procedural recipes and no authored-model preload', () => {
+        const expectedSources = {
+            MountainTroll: 'procedural Moonfrost rimeback-troll rig',
+            AquaGolem: 'procedural Moonfrost drowned-cairn rig',
+            Siren: 'procedural Moonfrost choir-siren rig',
+            FrostGuardian: 'procedural Moonfrost glacial-bell rig'
+        };
+        for (const [type, source] of Object.entries(expectedSources)) {
+            expect(MeshCatalog.recipes[type]).toEqual({
+                type: 'enemy',
+                source,
+                animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            });
+        }
+        expect(MeshCatalog.getPreloadModelPaths().some((path) => /siren|aqua_golem|mountain_troll|frostguardian/.test(path))).toBe(false);
+    });
+
     test('all Lanternhold services use explicit procedural actor recipes', () => {
         for (const type of ['DwarfSalesman', 'QuestNPC', 'DungeonNPC', 'RespecNPC']) {
             expect(MeshCatalog.recipes[type]).toEqual({

@@ -364,7 +364,39 @@ describe('MeshFactory catalog integration', () => {
         }
     });
 
-    test.each(['Skeleton', 'DemonOrc', 'Imp', 'Construct', 'InfernoTitan'])('a full %s pool never disposes shared generated resources', async (type) => {
+    test.each([
+        ['MountainTroll', 'Moonfrost rimeback troll'],
+        ['AquaGolem', 'Moonfrost drowned-cairn golem'],
+        ['Siren', 'Moonfrost choir siren'],
+        ['FrostGuardian', 'Moonfrost glacial bell guardian']
+    ])('%s uses its Moonfrost procedural rig without requesting a GLB', async (type, artStyle) => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType(type);
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralEnemyFamily: true,
+                proceduralActorType: type,
+                artStyle,
+                region: 'Moonfrost Expanse',
+                combatRadius: 1.25,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test.each([
+        'Skeleton', 'DemonOrc', 'Imp', 'Construct', 'InfernoTitan',
+        'MountainTroll', 'AquaGolem', 'Siren', 'FrostGuardian'
+    ])('a full %s pool never disposes shared generated resources', async (type) => {
         const previousPool = MeshFactory.pool;
         MeshFactory.pool = {};
         const mesh = await MeshFactory.createMeshForType(type);

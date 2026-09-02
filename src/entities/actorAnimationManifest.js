@@ -33,10 +33,18 @@ export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
     InfernoTitan: entry('enemy', 'procedural Cinder Wastes crucible-titan rig', WALKING_ENEMY_CLIPS, {
         special: 'white-hot furnace core, vent flames, caldera cleaver, and ash censer'
     }),
-    Siren: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
-    FrostGuardian: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
-    AquaGolem: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
-    MountainTroll: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
+    Siren: entry('enemy', 'procedural Moonfrost choir-siren rig', WALKING_ENEMY_CLIPS, {
+        special: 'drowned shroud, rib harp, voice shards, crescent blade, and floating collapse'
+    }),
+    FrostGuardian: entry('enemy', 'procedural Moonfrost glacial-bell rig', WALKING_ENEMY_CLIPS, {
+        special: 'ice heart, broken halo, vigil bell, aurora polearm, and armored collapse'
+    }),
+    AquaGolem: entry('enemy', 'procedural Moonfrost drowned-cairn rig', WALKING_ENEMY_CLIPS, {
+        special: 'tide-soul chest, barnacled cairn body, anchor, water drips, and stone collapse'
+    }),
+    MountainTroll: entry('enemy', 'procedural Moonfrost rimeback-troll rig', WALKING_ENEMY_CLIPS, {
+        special: 'ice ridge, fur mantle, cairn club, aurora charm, and heavy collapse'
+    }),
     RootboundWarden: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
     BriarMatron: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
     RustboundColossus: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),

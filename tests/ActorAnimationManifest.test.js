@@ -116,6 +116,23 @@ describe('actor animation manifest', () => {
         expect(ACTOR_ANIMATION_MANIFEST.InfernoTitan.special).toContain('caldera cleaver');
     });
 
+    test('classifies all Moonfrost enemies as intentional regional procedural rigs', () => {
+        const expectedSources = {
+            MountainTroll: 'procedural Moonfrost rimeback-troll rig',
+            AquaGolem: 'procedural Moonfrost drowned-cairn rig',
+            Siren: 'procedural Moonfrost choir-siren rig',
+            FrostGuardian: 'procedural Moonfrost glacial-bell rig'
+        };
+        for (const [type, source] of Object.entries(expectedSources)) {
+            expect(ACTOR_ANIMATION_MANIFEST[type]).toEqual(expect.objectContaining({
+                category: 'enemy',
+                source,
+                states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+            }));
+            expect(ACTOR_ANIMATION_MANIFEST[type].special).not.toBe('Attack clip plus class telegraph/VFX');
+        }
+    });
+
     test('no combat actor is classified without idle, movement, attack, and death presentation', () => {
         for (const actor of listActorAnimationEntries()) {
             if (actor.category === 'npc') continue;
