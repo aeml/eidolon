@@ -191,7 +191,7 @@ export class UIManager {
         this.assetLastSyncedVersionValue = localStorage.getItem('eidolon.assetLastSyncedVersion') || null;
         this.assetPackStatuses = {
             'core-models': 'cached',
-            'dungeon-models': localStorage.getItem('eidolon.assetPack.dungeon-models') || 'not-downloaded',
+            'dungeon-models': 'cached',
             'environment-textures': localStorage.getItem('eidolon.assetPack.environment-textures') || 'not-downloaded'
         };
         this.graphicsQuality = localStorage.getItem('eidolon.graphicsQuality') || 'high';
@@ -296,9 +296,8 @@ export class UIManager {
             this.btnDownloadCoreAssets.textContent = 'Built In';
         }
         if (this.btnDownloadDungeonAssets) {
-            this.btnDownloadDungeonAssets.addEventListener('click', () => {
-                void this.requestAssetDownload('dungeon-models');
-            });
+            this.btnDownloadDungeonAssets.disabled = true;
+            this.btnDownloadDungeonAssets.textContent = 'Built In';
         }
         if (this.btnDownloadEnvironmentAssets) {
             this.btnDownloadEnvironmentAssets.addEventListener('click', () => {
@@ -2442,7 +2441,7 @@ export class UIManager {
     }
 
     getAssetPackLabel(packName) {
-        if (packName === 'dungeon-models') return 'Dungeon models';
+        if (packName === 'dungeon-models') return 'Procedural dungeon entrances';
         if (packName === 'environment-textures') return 'Environment textures';
         return 'Procedural core';
     }
@@ -2452,16 +2451,16 @@ export class UIManager {
             this.assetPackCoreSize.textContent = 'Code-generated locally · no download';
         }
         if (this.assetPackDungeonSize) {
-            this.assetPackDungeonSize.textContent = `Estimated download: ${getAssetPackEstimateMb('dungeon-models')}`;
+            this.assetPackDungeonSize.textContent = 'Code-generated locally · no download';
         }
         if (this.assetPackEnvironmentSize) {
             this.assetPackEnvironmentSize.textContent = `Estimated download: ${getAssetPackEstimateMb('environment-textures')}`;
         }
         this.renderAssetPackVersion('core-models', DEFAULT_ASSET_VERSION);
-        this.renderAssetPackVersion('dungeon-models');
+        this.renderAssetPackVersion('dungeon-models', DEFAULT_ASSET_VERSION);
         this.renderAssetPackVersion('environment-textures');
         this.renderAssetPackBadge('core-models', 'current');
-        this.renderAssetPackBadge('dungeon-models', 'not-cached');
+        this.renderAssetPackBadge('dungeon-models', 'current');
         this.renderAssetPackBadge('environment-textures', 'not-cached');
     }
 
@@ -2499,7 +2498,7 @@ export class UIManager {
         if (!element) {
             return;
         }
-        if (packName === 'core-models') {
+        if (packName === 'core-models' || packName === 'dungeon-models') {
             element.textContent = `Built-in version: ${version || DEFAULT_ASSET_VERSION}`;
             return;
         }
@@ -2639,11 +2638,7 @@ export class UIManager {
             this.assetPackCoreStatus.textContent = 'Procedural core built in';
         }
         if (this.assetPackDungeonStatus) {
-            this.assetPackDungeonStatus.textContent = this.assetPackStatuses['dungeon-models'] === 'cached'
-                ? 'Dungeon models cached'
-                : this.assetPackStatuses['dungeon-models'] === 'downloading'
-                    ? 'Downloading dungeon models...'
-                    : 'Dungeon models not downloaded';
+            this.assetPackDungeonStatus.textContent = 'Procedural dungeon entrances built in';
         }
         if (this.assetPackEnvironmentStatus) {
             this.assetPackEnvironmentStatus.textContent = this.assetPackStatuses['environment-textures'] === 'cached'
@@ -2655,12 +2650,8 @@ export class UIManager {
         if (this.assetDownloadStatus) {
             if (this.assetPackStatuses['core-models'] === 'downloading') {
                 this.assetDownloadStatus.textContent = 'Preparing procedural core';
-            } else if (this.assetPackStatuses['dungeon-models'] === 'downloading') {
-                this.assetDownloadStatus.textContent = 'Downloading dungeon models';
             } else if (this.assetPackStatuses['core-models'] === 'cached' && this.assetPackStatuses['dungeon-models'] === 'cached') {
-                this.assetDownloadStatus.textContent = 'All selected packs ready offline';
-            } else if (this.assetPackStatuses['dungeon-models'] === 'cached') {
-                this.assetDownloadStatus.textContent = 'Dungeon models ready offline';
+                this.assetDownloadStatus.textContent = 'Procedural world art built in';
             } else if (this.assetPackStatuses['core-models'] === 'cached') {
                 this.assetDownloadStatus.textContent = 'Procedural core built in';
             } else {
@@ -2738,7 +2729,7 @@ export class UIManager {
         const handler = this.onAssetCacheClearRequest || (() => this.assetCacheManager.clearAll());
         const result = await handler();
         this.setAssetPackStatus('core-models', 'cached');
-        this.setAssetPackStatus('dungeon-models', 'not-downloaded');
+        this.setAssetPackStatus('dungeon-models', 'cached');
         this.setAssetPackStatus('environment-textures', 'not-downloaded');
         this.updateAssetDownloadProgress({ completed: 0, total: 0, percent: 0 });
         if (this.assetDownloadStatus) {

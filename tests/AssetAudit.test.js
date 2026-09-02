@@ -16,9 +16,9 @@ describe('AssetAudit', () => {
         })).toEqual([{ name: 'AliasNpc', alias: 'MissingNpc', resolved: false }]);
     });
 
-    test('summary reports a non-empty audited preload manifest', () => {
+    test('summary proves the authored-model preload manifest is empty', () => {
         const summary = summarizeAssetAudit();
-        expect(summary.preloadCount).toBeGreaterThan(0);
+        expect(summary.preloadCount).toBe(0);
         expect(summary.duplicatePreloads).toEqual([]);
         expect(summary.brokenAliases).toEqual([]);
     });

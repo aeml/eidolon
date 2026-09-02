@@ -27,14 +27,15 @@ describe('AssetCacheManager refresh outdated assets', () => {
         const manager = new AssetCacheManager();
         jest.spyOn(manager, 'inspectPack').mockImplementation(async (packName) => ({
             packName,
-            cached: false,
-            cachedCount: packName === 'core-models' ? 0 : 1,
-            total: 4,
-            updateAvailable: packName !== 'core-models'
+            cached: packName !== 'environment-textures',
+            cachedCount: packName === 'environment-textures' ? 1 : 0,
+            total: packName === 'environment-textures' ? 4 : 0,
+            builtIn: packName !== 'environment-textures',
+            updateAvailable: packName === 'environment-textures'
         }));
 
         const stale = await manager.getOutdatedPacks();
 
-        expect(stale).toEqual(['dungeon-models', 'environment-textures']);
+        expect(stale).toEqual(['environment-textures']);
     });
 });

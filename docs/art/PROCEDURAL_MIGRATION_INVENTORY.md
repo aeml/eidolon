@@ -6,7 +6,7 @@ Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.15`
+Current migration release: `Alpha 0.41.0.16`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
@@ -14,14 +14,14 @@ This inventory is the migration ledger for the complete Eidolon dark-fantasy red
 
 | Dependency | Audited baseline | Release rule |
 | --- | ---: | --- |
-| Authored GLB models | 106 baseline; 4 current | Count may only decrease from 4 |
-| Authored GLB payload | 814,551,864 baseline; 70,429,592 bytes current | Payload may only decrease from 70,429,592 bytes |
-| Runtime `.glb` tokens | 225 baseline; 10 current | Token count may only decrease from 10 |
-| Runtime files containing `.glb` | 4 | No new referencing module is permitted |
+| Authored GLB models | 106 baseline; 0 current | Must remain exactly zero |
+| Authored GLB payload | 814,551,864 baseline; 0 bytes current | Must remain exactly zero bytes |
+| Runtime `.glb` tokens | 225 baseline; 1 current | Static MIME declaration only; no asset path may return |
+| Runtime files containing `.glb` | 1 | Static server MIME table only |
 | PNG images | 100 files | Audit and replace by use, not file extension alone |
 | SVG gem icons | 49 files | Existing generated vector family; retain or restyle intentionally |
 
-Current legacy runtime references are confined to `MeshCatalog`, `WorldGenerator`, the asset revision manifest, and the static server MIME table. The MIME entry is not an asset dependency but remains inside the guarded surface until final removal.
+No authored model path remains in production code, manifests, preload lists, service-worker payloads, or the asset tree. The only runtime `.glb` token is the static server's content-type declaration, which is not an asset dependency and remains solely so stale compatibility requests receive the correct MIME type.
 
 ## Gameplay visual surfaces
 
@@ -35,7 +35,7 @@ Current legacy runtime references are confined to `MeshCatalog`, `WorldGenerator
 | Overworld areas | Gloamwood Marches, Lanternhold, Moonfrost Expanse, Cinder Wastes, Stormcrown Reach | Theme manifest, lighting/atmosphere foundation, nine-family realm foliage, and complete Lanternhold architecture migrated; realm terrain and remaining structures pending |
 | Dungeons | Thorncrypt, Furnace Below, Shattered Aerie, Drowned Sanctum | Theme manifest complete; room geometry, props, mechanics, and lighting migration pending |
 | Actors | players, remote players, NPCs, summons, legacy enemies, procedural realm enemies and bosses | All players, four Lanternhold services, the Avenging Seraph, Gloamwood/Cinder/Moonfrost overworld families, and all four Thorncrypt bosses are code-native; remaining enemy and boss routes use the earlier procedural-spec system and await their bespoke style pass |
-| World objects | trees, town buildings, camps, dungeon facades, services, chests, portals, blockers | Realm foliage, all Lanternhold buildings/camps/services, auction house, forge, and stash migrated; dungeon facades, dungeon reward chests, portals, and blockers pending |
+| World objects | trees, town buildings, camps, dungeon facades, services, chests, portals, blockers | Realm foliage, all Lanternhold architecture/services, and all four overworld dungeon thresholds migrated; dungeon reward chests, interior portals, and blockers pending |
 | Networked effects | projectiles, traps, persistent zones, auras, statuses, combat feedback | Gameplay contract audit exists; art migration and lifecycle gallery expansion pending |
 
 ## Region and hazard identity
@@ -147,3 +147,13 @@ The live settlement renderer collapses each landmark by material and presents al
 The same two-account gate also exposed a separate attack-range mismatch: hostile left clicks reused the selected ability's cast range, so the client could play a Cleric or Fighter basic attack well outside the server's four-metre acceptance radius. Basic-attack click, chase, validation, and feedback now use the authoritative four-class table—four metres for Fighter and Cleric, sixteen for Rogue and Wizard—with the same large-attacker and large-target reach allowances used by the server. Ability targeting retains its independent per-skill ranges.
 
 The seven removed GLBs totaled 176,749,884 bytes. Four dungeon-facade GLBs totaling 70,429,592 bytes are the only authored models left in the migration ledger; the three tiny empty plant compatibility bridges remain non-authored and non-runtime as documented above.
+
+## Four procedural dungeon thresholds
+
+`Alpha 0.41.0.16` replaces the final four authored models with distinct region-bound landmarks. The Verdant Bastion is a mossed fortress gate bound in grave roots, witchlight, funeral bronze, and a tall briar-antler crown. The Molten Core is an obsidian kiln with crucible pylons, chained horns, basalt fangs, and molten channels. The Tempest Spire is a narrow, asymmetric storm needle built from floating slate, silver conductors, captive arcs, and a bright sky-eye. The Abyssal Well is a low drowned altar whose black-water eye sits inside coral antlers, anchor-tentacles, moon pearls, and a reliquary arch.
+
+Each root carries an invisible box with the exact production-scaled dimensions measured from its retired scene: Verdant 76.1312 × 61.4690 × 72.8712, Molten 76.2376 × 71.2317 × 75.8718, Tempest 44.4046 × 76.5481 × 48.1367, and Abyssal 76.4783 × 37.4995 × 52.1077. The established world coordinates, grounded origin, circular radius formula, `DungeonEntrance` tag, dungeon type, click target, hover hint, eligibility route, server-authoritative transition, and exit flow stay unchanged. Stale scene ownership is checked before the synchronous set is attached, preventing partial colliders during realm changes.
+
+Eleven cached faceted geometries and twenty-five region-specific materials build 109 inspectable semantic pieces. Production merges each landmark by material into 34 total visible batches—eight or nine per threshold—while the dedicated browser gallery retains the detailed hierarchy for inspection. Unit coverage proves every ID, part family, exact bound, radius, position, resource cache, shadow rule, and loader bypass. Hardware Chrome renders all four together at High and Low quality and fails on any authored-model request.
+
+The four removed GLBs totaled 70,429,592 bytes. That brings the original 106-file, 814,551,864-byte authored-model ledger to exactly zero. `MeshCatalog`, overworld creation, the asset manifest, optional download UI, and service-worker pack generation contain no authored-model route; the named core and dungeon packs complete immediately as built-in code. The three 468-byte-total empty plant compatibility bridges remain explicitly excluded because they contain no nodes, meshes, materials, authored geometry, collision, or production reference.

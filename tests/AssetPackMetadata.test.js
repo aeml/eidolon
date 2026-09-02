@@ -23,7 +23,7 @@ describe('AssetCacheManager pack metadata', () => {
                 if (name.endsWith('-meta')) {
                     return {
                         match: jest.fn(async () => ({
-                            json: async () => ({ packName: 'dungeon-models', version: 'older-pack-version' })
+                            json: async () => ({ packName: 'environment-textures', version: 'older-pack-version' })
                         }))
                     };
                 }
@@ -34,7 +34,7 @@ describe('AssetCacheManager pack metadata', () => {
         };
 
         const manager = new AssetCacheManager();
-        const status = await manager.inspectPack('dungeon-models');
+        const status = await manager.inspectPack('environment-textures');
 
         expect(status.cachedVersion).toBe('older-pack-version');
         expect(status.updateAvailable).toBe(true);

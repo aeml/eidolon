@@ -12,17 +12,14 @@ const nonAuthoredMigrationBridges = new Set([
     'assets/plants/willow.glb'
 ]);
 const currentLegacyReferenceFiles = new Set([
-    'scripts/serve-static.mjs',
-    'src/assets/assetManifest.js',
-    'src/utils/MeshCatalog.js',
-    'src/world/WorldGenerator.js'
+    'scripts/serve-static.mjs'
 ]);
 
 const INITIAL_LEGACY_MODEL_COUNT = 106;
 const INITIAL_LEGACY_MODEL_BYTES = 814551864;
-const MAX_LEGACY_MODEL_COUNT = 4;
-const MAX_LEGACY_MODEL_BYTES = 70429592;
-const MAX_RUNTIME_GLB_TOKENS = 10;
+const MAX_LEGACY_MODEL_COUNT = 0;
+const MAX_LEGACY_MODEL_BYTES = 0;
+const MAX_RUNTIME_GLB_TOKENS = 1;
 
 function walkFiles(root) {
     if (!fs.existsSync(root)) return [];
@@ -45,11 +42,11 @@ describe('procedural art migration guard', () => {
         ));
         const totalBytes = modelFiles.reduce((sum, filePath) => sum + fs.statSync(filePath).size, 0);
 
-        expect(modelFiles.length).toBeGreaterThan(0);
         expect(MAX_LEGACY_MODEL_COUNT).toBeLessThan(INITIAL_LEGACY_MODEL_COUNT);
         expect(MAX_LEGACY_MODEL_BYTES).toBeLessThan(INITIAL_LEGACY_MODEL_BYTES);
-        expect(modelFiles.length).toBeLessThanOrEqual(MAX_LEGACY_MODEL_COUNT);
-        expect(totalBytes).toBeLessThanOrEqual(MAX_LEGACY_MODEL_BYTES);
+        expect(modelFiles).toEqual([]);
+        expect(modelFiles.length).toBe(MAX_LEGACY_MODEL_COUNT);
+        expect(totalBytes).toBe(MAX_LEGACY_MODEL_BYTES);
     });
 
     test('new runtime modules cannot introduce authored GLB dependencies', () => {
@@ -93,7 +90,8 @@ describe('procedural art migration guard', () => {
             'assets/buildings/trading_post.glb',
             'assets/buildings/blacksmith.glb',
             'assets/buildings/camp_site.glb',
-            'assets/objects/chests/stash_base.glb'
+            'assets/objects/chests/stash_base.glb',
+            'assets/buildings/dungeons/'
         ];
         const runtimeSource = [
             ...runtimeRoots.flatMap((root) => walkFiles(path.join(repoRoot, root))),

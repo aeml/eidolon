@@ -10,12 +10,8 @@ describe('MeshCatalog', () => {
         expect(startup).not.toContain('./assets/archetypes/Wizard/idle.glb');
         expect(startup).not.toContain('./assets/archetypes/Cleric/idle.glb');
         expect(startup).not.toContain('./assets/buildings/trading_post.glb');
-        expect(background).toEqual([
-            './assets/buildings/dungeons/the_verdant_bastion.glb',
-            './assets/buildings/dungeons/the_molten_core.glb',
-            './assets/buildings/dungeons/the_tempest_spire.glb',
-            './assets/buildings/dungeons/the_abyssal_well.glb'
-        ]);
+        expect(background).toEqual([]);
+        expect(MeshCatalog.getPreloadModelPaths()).toEqual([]);
     });
 
     test.each(['Fighter', 'Rogue', 'Wizard', 'Cleric'])('procedural %s and starter enemies never enter the model preload gate', (type) => {

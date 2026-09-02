@@ -8,6 +8,10 @@ import {
     LANTERNHOLD_STRUCTURE_DEFINITIONS,
     LANTERNHOLD_STRUCTURE_IDS
 } from '../../src/art/ProceduralLanternholdArchitecture.js';
+import {
+    DUNGEON_ENTRANCE_DEFINITIONS,
+    DUNGEON_ENTRANCE_IDS
+} from '../../src/art/ProceduralDungeonEntrances.js';
 
 const presentationCount = listPlayerAbilityPresentationVariants().length;
 const actorEntries = listActorAnimationEntries();
@@ -542,6 +546,55 @@ test.describe('deterministic production animation gallery', () => {
             expect(metrics.structures.every((entry) => entry.finite)).toBe(true);
             await page.screenshot({
                 path: testInfo.outputPath(`procedural-lanternhold-architecture-${quality}.png`),
+                animations: 'allow',
+                fullPage: true
+            });
+        }
+
+        expect(failures, failures.join('\n')).toEqual([]);
+        testInfo.annotations.push({
+            type: 'renderer',
+            description: `${renderer.vendor} · ${renderer.renderer}`
+        });
+    });
+
+    test('renders every exact-footprint procedural dungeon entrance at High and Low quality', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        const authoredModelRequests = [];
+        page.on('request', (request) => {
+            if (/\.glb(?:\?|$)/i.test(request.url())) authoredModelRequests.push(request.url());
+        });
+        const response = await page.goto('/repro.html?entrances=1&instances=1', { waitUntil: 'networkidle' });
+        expect(response?.status()).toBe(200);
+
+        await expect.poll(() => page.evaluate(() => window.__eidolonEntranceGallery?.ready || false)).toBe(true);
+        const renderer = await hardwareRenderer(page);
+        expect(renderer).not.toBeNull();
+        expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
+
+        let metrics = await page.evaluate(() => window.__eidolonEntranceGallery);
+        expect(metrics.entrances.map((entry) => entry.dungeonType)).toEqual(DUNGEON_ENTRANCE_IDS);
+        expect(metrics.cache).toEqual({ geometries: 11, materials: 25, entrances: 4 });
+        expect(new Set(metrics.entrances.map((entry) => entry.artStyle)).size).toBe(4);
+        for (const entry of metrics.entrances) {
+            const definition = DUNGEON_ENTRANCE_DEFINITIONS[entry.dungeonType];
+            expect(entry.label).toBe(definition.label);
+            expect(entry.artStyle).toBe(definition.artStyle);
+            expect(entry.meshCount).toBeGreaterThanOrEqual(24);
+            expect(entry.portalSurfaceCount).toBeGreaterThanOrEqual(3);
+            expect(entry.interactionRadius).toBeCloseTo(definition.interactionRadius, 8);
+            expect(entry.finite).toBe(true);
+            entry.expectedSize.forEach((value, index) => expect(entry.size[index]).toBeCloseTo(value, 5));
+        }
+        expect(authoredModelRequests).toEqual([]);
+
+        for (const quality of ['high', 'low']) {
+            await page.evaluate((value) => window.__eidolonSetEntranceQuality(value), quality);
+            await expect.poll(() => page.evaluate(() => window.__eidolonEntranceGallery.quality)).toBe(quality);
+            metrics = await page.evaluate(() => window.__eidolonEntranceGallery);
+            expect(metrics.entrances.every((entry) => entry.finite)).toBe(true);
+            await page.screenshot({
+                path: testInfo.outputPath(`procedural-dungeon-entrances-${quality}.png`),
                 animations: 'allow',
                 fullPage: true
             });

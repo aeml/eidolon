@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.15</span>
+                <span class="start-version-row__label">Alpha 0.41.0.16</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -451,7 +451,7 @@
                     <div class="asset-cache-panel__header">
                         <div>
                             <div class="asset-cache-panel__title">Keep Assets on This Device</div>
-                            <div class="support-field__hint">Download model packs once so refreshes can reuse them offline-style.</div>
+                            <div class="support-field__hint">Procedural art is built in; optional environment textures can be kept for offline-style reuse.</div>
                         </div>
                         <div id="asset-download-status" class="asset-cache-panel__status">Not downloaded</div>
                     </div>
@@ -470,21 +470,21 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-02-15</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-02-16</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
                         <div class="asset-cache-pack">
                             <div>
                                 <div class="asset-cache-pack__heading">
-                                    <div class="asset-cache-pack__title">Dungeon Models</div>
-                                    <div id="asset-pack-dungeon-badge" class="asset-cache-pack__badge">Not cached</div>
+                                    <div class="asset-cache-pack__title">Dungeon Thresholds</div>
+                                    <div id="asset-pack-dungeon-badge" class="asset-cache-pack__badge">Current</div>
                                 </div>
-                                <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Dungeon models not downloaded</div>
-                                <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Estimated download: 71 MB</div>
-                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Cached version: Not cached</div>
+                                <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Procedural dungeon entrances built in</div>
+                                <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-02-16</div>
                             </div>
-                            <button id="btn-download-dungeon-assets" class="menu-btn" type="button">Download Dungeons</button>
+                            <button id="btn-download-dungeon-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
                         <div class="asset-cache-pack">
                             <div>
@@ -587,6 +587,22 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.16">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.16 (four doors dream in four tongues)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The Thorncrypt grows its own crown:</strong> the Verdant Bastion threshold is now a root-bound fortress with mossed ramparts, witchlight slits, funeral bronze, antler branches, and a bright briar gate.</li>
+                        <li><strong>The Furnace Below opens its iron throat:</strong> the Molten Core becomes an obsidian kiln flanked by crucible pylons, chained horns, basalt fangs, and molten channels that lead cleanly to its portal.</li>
+                        <li><strong>The Shattered Aerie catches the storm:</strong> the Tempest Spire rises as a narrow broken needle of floating slate, silver conductors, violet arcs, and a captive sky-eye.</li>
+                        <li><strong>The Drowned Sanctum watches from below:</strong> the Abyssal Well is now a low tide altar with a black-water eye, coral antlers, anchor-tentacles, moon pearls, and a drowned reliquary door.</li>
+                        <li><strong>Every old footprint remains exact:</strong> all four generated roots preserve the measured production width, height, depth, grounding, world coordinate, circular blocker, interaction radius, click target, and authoritative dungeon ID.</li>
+                        <li><strong>Entry logic never changed hands:</strong> hover hints, eligibility requests, level gates, party rules, instance creation, transition cleanup, exit routing, and server authority remain on their established paths.</li>
+                        <li><strong>Distant doors arrive immediately:</strong> overworld thresholds are created synchronously from cached geometry, removing the model-download queue and its potential late-attach window.</li>
+                        <li><strong>One hundred nine details travel in thirty-four batches:</strong> each production landmark is merged by regional material, keeping the four ornate silhouettes bounded to eight or nine visible draw submissions apiece.</li>
+                        <li><strong>The authored-model ledger reaches zero:</strong> the final four GLBs—70,429,592 bytes—have left production code, manifests, preloads, caches, and the repository; all 106 authored models from the migration baseline are now gone.</li>
+                        <li><strong>The thresholds are inspectable:</strong> exact-contract unit tests and a dedicated hardware-Chrome gallery cover all four themes at High and Low quality while rejecting every authored-model request.</li>
+                        <li><strong>The settings screen tells the truth:</strong> dungeon thresholds now appear as built-in procedural art with no 71 MB download button, and cache generation advances to 2026-09-02-16.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.15">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.15 (Lanternhold keeps the long vigil)</h3>
                     <ul class="patch-note-entry__list">

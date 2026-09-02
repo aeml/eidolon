@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshFactory } from '../src/utils/MeshFactory.js';
 import { RenderSystem } from '../src/core/RenderSystem.js';
-import { DEFAULT_ASSET_VERSION, resolveAssetPath } from '../src/assets/assetManifest.js';
+import { ASSET_VERSION_OVERRIDES, DEFAULT_ASSET_VERSION, resolveAssetPath } from '../src/assets/assetManifest.js';
 
 describe('asset URL versioning', () => {
     const originalCache = MeshFactory.cache;
@@ -30,9 +30,10 @@ describe('asset URL versioning', () => {
         );
     });
 
-    test('resolveAssetPath supports per-asset version overrides so only changed assets need new versions', () => {
+    test('retired dungeon models no longer need a special cache-version override', () => {
+        expect(ASSET_VERSION_OVERRIDES).toEqual({});
         expect(resolveAssetPath('./assets/buildings/dungeons/the_verdant_bastion.glb')).toBe(
-            './assets/buildings/dungeons/the_verdant_bastion.glb?v=dungeon-verdant-v2'
+            `./assets/buildings/dungeons/the_verdant_bastion.glb?v=${DEFAULT_ASSET_VERSION}`
         );
     });
 

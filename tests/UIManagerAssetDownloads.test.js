@@ -174,16 +174,19 @@ describe('UIManager asset download settings', () => {
     test('starts with idle asset download status labels', () => {
         const ui = new UIManager(false);
 
-        expect(ui.assetDownloadStatus.textContent).toContain('Procedural core built in');
+        expect(ui.assetDownloadStatus.textContent).toContain('Procedural world art built in');
         expect(ui.assetPackCoreStatus.textContent).toContain('Procedural core built in');
-        expect(ui.assetPackDungeonStatus.textContent).toContain('Dungeon models not downloaded');
+        expect(ui.assetPackDungeonStatus.textContent).toContain('Procedural dungeon entrances built in');
         expect(ui.assetPackCoreSize.textContent).toContain('no download');
+        expect(ui.assetPackDungeonSize.textContent).toContain('no download');
         expect(ui.assetPackEnvironmentSize.textContent).toContain('MB');
         expect(document.getElementById('asset-pack-core-version').textContent).toContain('Built-in version');
         expect(document.getElementById('asset-pack-core-badge').textContent).toContain('Current');
         expect(document.getElementById('asset-pack-core-badge').dataset.state).toBe('current');
         expect(document.getElementById('asset-pack-core-badge').style.color).toBe('rgb(214, 255, 214)');
         expect(document.getElementById('btn-download-core-assets').disabled).toBe(true);
+        expect(document.getElementById('btn-download-dungeon-assets').disabled).toBe(true);
+        expect(document.getElementById('asset-pack-dungeon-badge').dataset.state).toBe('current');
         expect(ui.assetLastSyncedVersion.textContent).toContain('Not yet synced');
     });
 
@@ -198,21 +201,20 @@ describe('UIManager asset download settings', () => {
         expect(ui.assetPackCoreStatus.textContent).toContain('Procedural core built in');
     });
 
-    test('download success updates pack-specific status text', async () => {
+    test('procedural dungeon entrances are built in and cannot trigger a redundant download', async () => {
         const ui = new UIManager(false);
-        ui.onAssetDownloadRequest = jest.fn(async (packName) => {
-            ui.setAssetPackStatus(packName, 'cached');
-        });
+        ui.onAssetDownloadRequest = jest.fn(async () => undefined);
 
         document.getElementById('btn-download-dungeon-assets').click();
         await Promise.resolve();
         await Promise.resolve();
 
-        expect(ui.assetPackDungeonStatus.textContent).toContain('Dungeon models cached');
+        expect(ui.onAssetDownloadRequest).not.toHaveBeenCalled();
+        expect(ui.assetPackDungeonStatus.textContent).toContain('Procedural dungeon entrances built in');
         expect(document.getElementById('asset-pack-dungeon-badge').textContent).toContain('Current');
         expect(document.getElementById('asset-pack-dungeon-badge').dataset.state).toBe('current');
         expect(document.getElementById('asset-pack-dungeon-badge').style.color).toBe('rgb(214, 255, 214)');
-        expect(ui.assetDownloadStatus.textContent).toContain('All selected packs ready offline');
+        expect(ui.assetDownloadStatus.textContent).toContain('Procedural world art built in');
     });
 
     test('progress updates render percent text and progress bar width', () => {
@@ -237,37 +239,37 @@ describe('UIManager asset download settings', () => {
         expect(ui.onAssetCacheClearRequest).toHaveBeenCalled();
         expect(ui.assetDownloadStatus.textContent).toContain('Cache cleared');
         expect(ui.assetPackCoreStatus.textContent).toContain('Procedural core built in');
-        expect(ui.assetPackDungeonStatus.textContent).toContain('Dungeon models not downloaded');
+        expect(ui.assetPackDungeonStatus.textContent).toContain('Procedural dungeon entrances built in');
     });
 
     test('reflects real cache inspection results in status labels', async () => {
         const ui = new UIManager(false);
         ui.assetCacheManager.inspectPack = jest.fn(async (packName) => ({
             packName,
-            cached: packName === 'core-models',
-            cachedCount: packName === 'core-models' ? 4 : packName === 'environment-textures' ? 2 : 1,
-            total: 4,
-            updateAvailable: packName === 'dungeon-models',
-            cachedVersion: packName === 'core-models' ? '2026-09-02-15' : packName === 'dungeon-models' ? 'legacy-build' : null
+            cached: packName !== 'environment-textures',
+            builtIn: packName !== 'environment-textures',
+            cachedCount: packName === 'environment-textures' ? 2 : 0,
+            total: packName === 'environment-textures' ? 4 : 0,
+            updateAvailable: packName === 'environment-textures',
+            cachedVersion: packName !== 'environment-textures' ? '2026-09-02-16' : 'legacy-build'
         }));
 
         await ui.refreshAssetCacheState();
 
         expect(ui.assetPackCoreStatus.textContent).toContain('Procedural core built in');
-        expect(ui.assetPackDungeonStatus.textContent).toContain('1/4 cached');
+        expect(ui.assetPackDungeonStatus.textContent).toContain('Procedural dungeon entrances built in');
         expect(ui.assetPackEnvironmentStatus.textContent).toContain('2/4 cached');
-        expect(document.getElementById('asset-pack-core-version').textContent).toContain('2026-09-02-15');
-        expect(document.getElementById('asset-pack-dungeon-version').textContent).toContain('legacy-build');
-        expect(document.getElementById('asset-pack-environment-version').textContent).toContain('Not cached');
+        expect(document.getElementById('asset-pack-core-version').textContent).toContain('2026-09-02-16');
+        expect(document.getElementById('asset-pack-dungeon-version').textContent).toContain('2026-09-02-16');
+        expect(document.getElementById('asset-pack-environment-version').textContent).toContain('legacy-build');
         expect(document.getElementById('asset-pack-core-badge').textContent).toContain('Current');
         expect(document.getElementById('asset-pack-core-badge').dataset.state).toBe('current');
         expect(document.getElementById('asset-pack-core-badge').style.color).toBe('rgb(214, 255, 214)');
-        expect(document.getElementById('asset-pack-dungeon-badge').textContent).toContain('Outdated');
-        expect(document.getElementById('asset-pack-dungeon-badge').dataset.state).toBe('outdated');
-        expect(document.getElementById('asset-pack-dungeon-badge').style.color).toBe('rgb(255, 199, 199)');
-        expect(document.getElementById('asset-pack-environment-badge').textContent).toContain('Partial');
-        expect(document.getElementById('asset-pack-environment-badge').dataset.state).toBe('partial');
-        expect(document.getElementById('asset-pack-environment-badge').style.color).toBe('rgb(255, 231, 166)');
+        expect(document.getElementById('asset-pack-dungeon-badge').textContent).toContain('Current');
+        expect(document.getElementById('asset-pack-dungeon-badge').dataset.state).toBe('current');
+        expect(document.getElementById('asset-pack-environment-badge').textContent).toContain('Outdated');
+        expect(document.getElementById('asset-pack-environment-badge').dataset.state).toBe('outdated');
+        expect(document.getElementById('asset-pack-environment-badge').style.color).toBe('rgb(255, 199, 199)');
         expect(ui.assetCacheStateDetail.textContent).toContain('1 pack need refresh');
     });
 
@@ -286,28 +288,29 @@ describe('UIManager asset download settings', () => {
         const ui = new UIManager(false);
         ui.assetCacheManager.inspectPack = jest.fn(async (packName) => ({
             packName,
-            cached: false,
-            cachedCount: packName === 'core-models' ? 4 : 1,
-            total: 4,
-            updateAvailable: packName !== 'core-models'
+            cached: packName !== 'environment-textures',
+            builtIn: packName !== 'environment-textures',
+            cachedCount: packName === 'environment-textures' ? 1 : 0,
+            total: packName === 'environment-textures' ? 4 : 0,
+            updateAvailable: packName === 'environment-textures'
         }));
         ui.onAssetDownloadRequest = jest.fn(async () => undefined);
 
         await ui.refreshOutdatedAssets();
 
-        expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('dungeon-models');
         expect(ui.onAssetDownloadRequest).toHaveBeenCalledWith('environment-textures');
         expect(ui.onAssetDownloadRequest).not.toHaveBeenCalledWith('core-models');
+        expect(ui.onAssetDownloadRequest).not.toHaveBeenCalledWith('dungeon-models');
     });
 
     test('update cached assets refreshes every cached pack', async () => {
         const ui = new UIManager(false);
         ui.assetCacheManager.inspectPack = jest.fn(async (packName) => ({
             packName,
-            cached: packName === 'core-models',
-            builtIn: packName === 'core-models',
-            cachedCount: packName === 'dungeon-models' ? 0 : 2,
-            total: 4,
+            cached: packName !== 'environment-textures',
+            builtIn: packName !== 'environment-textures',
+            cachedCount: packName === 'environment-textures' ? 2 : 0,
+            total: packName === 'environment-textures' ? 4 : 0,
             updateAvailable: packName === 'environment-textures'
         }));
         ui.onAssetDownloadRequest = jest.fn(async () => undefined);
@@ -342,7 +345,7 @@ describe('UIManager asset download settings', () => {
 
         await ui.requestAssetDownload('environment-textures');
 
-        expect(ui.assetLastSyncedVersion.textContent).toContain('2026-09-02-15');
-        expect(localStorage.getItem('eidolon.assetLastSyncedVersion')).toBe('2026-09-02-15');
+        expect(ui.assetLastSyncedVersion.textContent).toContain('2026-09-02-16');
+        expect(localStorage.getItem('eidolon.assetLastSyncedVersion')).toBe('2026-09-02-16');
     });
 });

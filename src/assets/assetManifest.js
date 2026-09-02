@@ -1,10 +1,8 @@
 import { MeshCatalog } from '../utils/MeshCatalog.js';
 
-const DEFAULT_ASSET_VERSION = '2026-09-02-15';
+const DEFAULT_ASSET_VERSION = '2026-09-02-16';
 
-const ASSET_VERSION_OVERRIDES = {
-    './assets/buildings/dungeons/the_verdant_bastion.glb': 'dungeon-verdant-v2'
-};
+const ASSET_VERSION_OVERRIDES = {};
 
 const ASSET_PACKS = {
     'core-models': MeshCatalog.getStartupPreloadModelPaths(),
@@ -21,7 +19,7 @@ const ASSET_PACKS = {
 
 const ASSET_PACK_SIZE_ESTIMATES_MB = {
     'core-models': 0,
-    'dungeon-models': 71,
+    'dungeon-models': 0,
     'environment-textures': 9
 };
 

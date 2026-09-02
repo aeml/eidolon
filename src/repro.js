@@ -15,6 +15,12 @@ import {
     createProceduralLanternholdStructure,
     getProceduralLanternholdCacheMetrics
 } from './art/ProceduralLanternholdArchitecture.js';
+import {
+    DUNGEON_ENTRANCE_DEFINITIONS,
+    DUNGEON_ENTRANCE_IDS,
+    createProceduralDungeonEntrance,
+    getProceduralDungeonEntranceCacheMetrics
+} from './art/ProceduralDungeonEntrances.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const perfOverlayEnabled = urlParams.get('perf') === '1';
@@ -24,7 +30,8 @@ const galleryMode = urlParams.get('gallery') === '1';
 const hazardGalleryMode = urlParams.get('hazards') === '1';
 const foliageGalleryMode = urlParams.get('foliage') === '1';
 const architectureGalleryMode = urlParams.get('architecture') === '1';
-const specializedGalleryMode = galleryMode || hazardGalleryMode || foliageGalleryMode || architectureGalleryMode;
+const entranceGalleryMode = urlParams.get('entrances') === '1';
+const specializedGalleryMode = galleryMode || hazardGalleryMode || foliageGalleryMode || architectureGalleryMode || entranceGalleryMode;
 
 const perfOverlay = document.getElementById('perf-overlay');
 const readout = document.getElementById('repro-readout');
@@ -443,6 +450,36 @@ if (architectureGalleryMode) {
     setReadout('Procedural Lanternhold architecture gallery\nSeven collision-faithful silhouettes: oathhall, market, smithy, camps, auction hall, forge, and stash.');
 }
 
+const entranceGallery = new THREE.Group();
+entranceGallery.name = 'ProceduralDungeonEntranceGallery';
+if (entranceGalleryMode) {
+    document.body.classList.add('entrance-gallery-mode');
+    const placements = Object.freeze({
+        verdant_bastion_catacombs: [-25, 0, -18, 0.08],
+        molten_core: [25, 0, -18, -0.08],
+        tempest_spire: [-25, 0, 19, 0.08],
+        abyssal_well: [25, 0, 19, -0.08]
+    });
+    for (const dungeonType of DUNGEON_ENTRANCE_IDS) {
+        const preview = createProceduralDungeonEntrance(dungeonType, { optimized: false });
+        const [x, y, z, rotationY] = placements[dungeonType];
+        preview.position.set(x, y, z);
+        preview.rotation.y = rotationY;
+        preview.scale.setScalar(0.4);
+        entranceGallery.add(preview);
+    }
+    renderSystem.scene.add(entranceGallery);
+    renderSystem.applyLightingPreset('town', true);
+    renderSystem.setZoom(30);
+    renderSystem.camera.position.set(54, 48, 64);
+    controls.target.set(0, 9, 0);
+    controls.update();
+    window.__eidolonSetEntranceQuality = (quality) => {
+        renderSystem.setGraphicsQuality(quality);
+    };
+    setReadout('Procedural dungeon threshold gallery\nFour exact-footprint landmarks: Thorncrypt, Furnace Below, Shattered Aerie, and Drowned Sanctum.');
+}
+
 window.addEventListener('keydown', (event) => {
     const key = event.key.toLowerCase();
     if (key === 'p') togglePerf();
@@ -519,6 +556,37 @@ const animate = () => {
                     size: gameplayBounds.scale.toArray(),
                     expectedSize: [...definition.bounds],
                     finite: [...bounds.min.toArray(), ...bounds.max.toArray()].every(Number.isFinite)
+                };
+            })
+        };
+    }
+
+    if (entranceGalleryMode) {
+        window.__eidolonEntranceGallery = {
+            ready: entranceGallery.children.length === DUNGEON_ENTRANCE_IDS.length,
+            quality: renderSystem.graphicsQuality,
+            cache: getProceduralDungeonEntranceCacheMetrics(),
+            entrances: entranceGallery.children.map((preview) => {
+                const dungeonType = preview.userData.dungeonType;
+                const definition = DUNGEON_ENTRANCE_DEFINITIONS[dungeonType];
+                const gameplayBounds = preview.getObjectByName(`${dungeonType}:gameplay-bounds`);
+                const worldBounds = new THREE.Box3().setFromObject(preview);
+                let meshCount = 0;
+                let portalSurfaceCount = 0;
+                preview.traverse((child) => {
+                    if (child.isMesh && child.userData.proceduralDungeonEntrancePart) meshCount += 1;
+                    if (child.isMesh && child.userData.portalSurface) portalSurfaceCount += 1;
+                });
+                return {
+                    dungeonType,
+                    label: preview.userData.entranceLabel,
+                    artStyle: preview.userData.artStyle,
+                    meshCount,
+                    portalSurfaceCount,
+                    interactionRadius: preview.userData.interactionRadius,
+                    size: gameplayBounds.scale.toArray(),
+                    expectedSize: [...definition.bounds],
+                    finite: [...worldBounds.min.toArray(), ...worldBounds.max.toArray()].every(Number.isFinite)
                 };
             })
         };

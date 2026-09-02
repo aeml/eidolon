@@ -3,6 +3,10 @@ import { jest } from '@jest/globals';
 import { MeshFactory } from '../src/utils/MeshFactory.js';
 import { WorldGenerator } from '../src/world/WorldGenerator.js';
 import { PROCEDURAL_FOLIAGE_RECIPES } from '../src/art/ProceduralRealmFoliage.js';
+import {
+    DUNGEON_ENTRANCE_DEFINITIONS,
+    DUNGEON_ENTRANCE_IDS
+} from '../src/art/ProceduralDungeonEntrances.js';
 
 function createGenerator() {
     const scene = { add: jest.fn() };
@@ -88,23 +92,58 @@ describe('WorldGenerator staged overworld startup', () => {
 
     test('does not attach a deferred dungeon entrance after its overworld scene is invalidated', async () => {
         const generator = createGenerator();
-        const entranceScene = new THREE.Group();
-        entranceScene.add(new THREE.Mesh(
-            new THREE.BoxGeometry(1, 1, 1),
-            new THREE.MeshStandardMaterial()
-        ));
-        const loadModelSpy = jest.spyOn(MeshFactory, 'loadModel').mockResolvedValue({
-            scene: entranceScene,
-            animations: []
-        });
+        const loadModelSpy = jest.spyOn(MeshFactory, 'loadModel');
 
         try {
             await expect(generator.createOverworldStructures({
                 shouldAttach: () => false
             })).resolves.toBe(false);
-            expect(loadModelSpy).toHaveBeenCalledTimes(1);
+            expect(loadModelSpy).not.toHaveBeenCalled();
             expect(generator.scene.add).not.toHaveBeenCalled();
             expect(generator.collisionManager.addCircularCollider).not.toHaveBeenCalled();
+        } finally {
+            loadModelSpy.mockRestore();
+        }
+    });
+
+    test('attaches all four procedural thresholds with exact positions, IDs, radii, and no model load', async () => {
+        const generator = createGenerator();
+        const loadModelSpy = jest.spyOn(MeshFactory, 'loadModel');
+
+        try {
+            await expect(generator.createOverworldStructures()).resolves.toBe(true);
+            expect(loadModelSpy).not.toHaveBeenCalled();
+            expect(generator.scene.add).toHaveBeenCalledTimes(DUNGEON_ENTRANCE_IDS.length);
+            expect(generator.collisionManager.addCircularCollider).toHaveBeenCalledTimes(DUNGEON_ENTRANCE_IDS.length);
+
+            DUNGEON_ENTRANCE_IDS.forEach((dungeonType, index) => {
+                const definition = DUNGEON_ENTRANCE_DEFINITIONS[dungeonType];
+                const entrance = generator.scene.add.mock.calls[index][0];
+                expect(entrance.name).toBe('DungeonEntrance');
+                expect(entrance.position.toArray()).toEqual(definition.position);
+                expect(entrance.userData).toEqual(expect.objectContaining({
+                    dungeonType,
+                    proceduralDungeonEntrance: true,
+                    interactionRadius: definition.interactionRadius,
+                    renderBatched: true
+                }));
+                expect(generator.collisionManager.addCircularCollider).toHaveBeenNthCalledWith(
+                    index + 1,
+                    definition.position[0],
+                    definition.position[2],
+                    definition.interactionRadius
+                );
+                const visibleMeshes = entrance.children.filter((part) => (
+                    part.isMesh && part.userData.proceduralDungeonEntrancePart
+                ));
+                expect(visibleMeshes).toHaveLength(entrance.userData.drawMeshCount);
+                expect(visibleMeshes.length).toBeLessThanOrEqual(9);
+                for (const mesh of visibleMeshes) {
+                    expect(mesh.castShadow || mesh.userData.portalSurface).toBe(true);
+                    expect(mesh.material.polygonOffset).toBe(true);
+                    expect(mesh.material.shadowSide).toBe(THREE.FrontSide);
+                }
+            });
         } finally {
             loadModelSpy.mockRestore();
         }

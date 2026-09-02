@@ -1,17 +1,6 @@
 import { PROCEDURAL_FOLIAGE_RECIPES } from '../art/ProceduralRealmFoliage.js';
 
-const PRELOAD_MODEL_PATHS = [
-    './assets/buildings/dungeons/the_verdant_bastion.glb',
-    './assets/buildings/dungeons/the_molten_core.glb',
-    './assets/buildings/dungeons/the_tempest_spire.glb',
-    './assets/buildings/dungeons/the_abyssal_well.glb'
-];
-
-const BACKGROUND_PRELOAD_PREFIXES = [
-    './assets/buildings/dungeons/'
-];
-
-const BACKGROUND_PRELOAD_PATHS = new Set();
+const PRELOAD_MODEL_PATHS = [];
 
 export class MeshCatalog {
     static recipes = {
@@ -169,8 +158,8 @@ export class MeshCatalog {
     }
 
     static isBackgroundPreloadPath(path) {
-        if (!path) return false;
-        return BACKGROUND_PRELOAD_PATHS.has(path) || BACKGROUND_PRELOAD_PREFIXES.some((prefix) => path.startsWith(prefix));
+        void path;
+        return false;
     }
 
     static getStartupPreloadModelPaths(playerType = '') {

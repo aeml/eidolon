@@ -11,6 +11,11 @@ import {
     createProceduralLanternholdCampField,
     createProceduralLanternholdStructure
 } from '../art/ProceduralLanternholdArchitecture.js';
+import {
+    DUNGEON_ENTRANCE_DEFINITIONS,
+    DUNGEON_ENTRANCE_IDS,
+    createProceduralDungeonEntrance
+} from '../art/ProceduralDungeonEntrances.js';
 
 // Shared temp objects to reduce allocations during instancing
 const TEMP_POS = new THREE.Vector3();
@@ -354,145 +359,29 @@ export class WorldGenerator {
     }
 
     async createOverworldStructures({ shouldAttach = () => true } = {}) {
-        // The Verdant Bastion (Level 40-50 Dungeon)
-        // Location: X=800, Z=200 (In the InfernoTitan area)
-        const gltf = await MeshFactory.loadModel('./assets/buildings/dungeons/the_verdant_bastion.glb');
+        // All four landmarks are synchronous, cached procedural architecture.
+        // Check scene ownership before constructing the set so a realm change
+        // cannot leave partial visuals or invisible circular colliders behind.
         if (!shouldAttach()) return false;
-        {
-            const mesh = gltf.scene.clone();
-            mesh.name = 'DungeonEntrance'; // Tag for interaction
-            const scale = 40; // "Very large"
-            mesh.scale.set(scale, scale, scale);
-            mesh.position.set(800, 0, 200);
-            
-            mesh.updateMatrixWorld(true);
-            const box = new THREE.Box3().setFromObject(mesh);
-            const bottomY = box.min.y;
-            mesh.position.y += (0 - bottomY); // Ground it
 
-            mesh.traverse(c => { if(c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: true }); } });
-            this.scene.add(mesh);
-
-            // Update matrix again to account for the Y shift
-            mesh.updateMatrixWorld(true);
-
-            // Add collision
-            // const collider = new THREE.Box3().setFromObject(mesh);
-            // this.collisionManager.addCollider(collider);
-
-            // Use circular collider for better fit
-            const collisionBox = new THREE.Box3().setFromObject(mesh);
-            const size = new THREE.Vector3();
-            collisionBox.getSize(size);
-            // Use slightly smaller radius than full box width to avoid "corners" issue
-            const radius = (Math.min(size.x, size.z) / 2) * 0.9; 
-            
-            // Store radius for interaction range
-            mesh.userData.interactionRadius = radius;
-            mesh.userData.dungeonType = 'verdant_bastion_catacombs';
-
-            console.log(`Bastion Size: ${size.x}x${size.z}, Radius: ${radius}`);
-            this.collisionManager.addCircularCollider(800, 200, radius);
-            
-            console.log(`Loaded The Verdant Bastion at 800, 200 with radius ${radius}`);
-            
-            console.log("Loaded The Verdant Bastion at 800, 200");
-        }
-
-        // The Molten Core (Level 80-90 Dungeon)
-        // Location: X=-2400, Z=200 (Fire Realm)
-        const moltenGltf = await MeshFactory.loadModel('./assets/buildings/dungeons/the_molten_core.glb');
-        if (!shouldAttach()) return false;
-        {
-            const mesh = moltenGltf.scene.clone();
-            mesh.name = 'DungeonEntrance';
-            const scale = 40;
-            mesh.scale.set(scale, scale, scale);
-            mesh.position.set(-2400, 0, 200);
-
-            mesh.updateMatrixWorld(true);
-            const box = new THREE.Box3().setFromObject(mesh);
-            const bottomY = box.min.y;
-            mesh.position.y += (0 - bottomY);
-
-            mesh.traverse(c => { if (c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: true }); } });
-            this.scene.add(mesh);
-
-            mesh.updateMatrixWorld(true);
-
-            const collisionBox = new THREE.Box3().setFromObject(mesh);
-            const size = new THREE.Vector3();
-            collisionBox.getSize(size);
-            const radius = (Math.min(size.x, size.z) / 2) * 0.9;
-            mesh.userData.interactionRadius = radius;
-            mesh.userData.dungeonType = 'molten_core';
-
-            this.collisionManager.addCircularCollider(-2400, 200, radius);
-            console.log(`Loaded The Molten Core at -2400, 200 with radius ${radius}`);
-        }
-
-        // The Tempest Spire (Level 80-90 Dungeon)
-        // Location: X=2400, Z=200 (Air Realm)
-        const tempestGltf = await MeshFactory.loadModel('./assets/buildings/dungeons/the_tempest_spire.glb');
-        if (!shouldAttach()) return false;
-        {
-            const mesh = tempestGltf.scene.clone();
-            mesh.name = 'DungeonEntrance';
-            const scale = 40;
-            mesh.scale.set(scale, scale, scale);
-            mesh.position.set(2400, 0, 200);
-
-            mesh.updateMatrixWorld(true);
-            const box = new THREE.Box3().setFromObject(mesh);
-            const bottomY = box.min.y;
-            mesh.position.y += (0 - bottomY);
-
-            mesh.traverse(c => { if (c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: true }); } });
-            this.scene.add(mesh);
-
-            mesh.updateMatrixWorld(true);
-
-            const collisionBox = new THREE.Box3().setFromObject(mesh);
-            const size = new THREE.Vector3();
-            collisionBox.getSize(size);
-            const radius = (Math.min(size.x, size.z) / 2) * 0.9;
-            mesh.userData.interactionRadius = radius;
-            mesh.userData.dungeonType = 'tempest_spire';
-
-            this.collisionManager.addCircularCollider(2400, 200, radius);
-            console.log(`Loaded The Tempest Spire at 2400, 200 with radius ${radius}`);
-        }
-
-        // The Abyssal Well (Level 60-70 Dungeon)
-        // Location: X=0, Z=-1400 (Water Realm center)
-        const abyssalGltf = await MeshFactory.loadModel('./assets/buildings/dungeons/the_abyssal_well.glb');
-        if (!shouldAttach()) return false;
-        {
-            const mesh = abyssalGltf.scene.clone();
-            mesh.name = 'DungeonEntrance';
-            const scale = 40;
-            mesh.scale.set(scale, scale, scale);
-            mesh.position.set(0, 0, -1400);
-
-            mesh.updateMatrixWorld(true);
-            const box = new THREE.Box3().setFromObject(mesh);
-            const bottomY = box.min.y;
-            mesh.position.y += (0 - bottomY);
-
-            mesh.traverse(c => { if (c.isMesh) { MeshFactory.configureShadowCastingForObject(c, { stableFrontShadows: true }); } });
-            this.scene.add(mesh);
-
-            mesh.updateMatrixWorld(true);
-
-            const collisionBox = new THREE.Box3().setFromObject(mesh);
-            const size = new THREE.Vector3();
-            collisionBox.getSize(size);
-            const radius = (Math.min(size.x, size.z) / 2) * 0.9;
-            mesh.userData.interactionRadius = radius;
-            mesh.userData.dungeonType = 'abyssal_well';
-
-            this.collisionManager.addCircularCollider(0, -1400, radius);
-            console.log(`Loaded The Abyssal Well at 0, -1400 with radius ${radius}`);
+        for (const dungeonType of DUNGEON_ENTRANCE_IDS) {
+            const definition = DUNGEON_ENTRANCE_DEFINITIONS[dungeonType];
+            const entrance = createProceduralDungeonEntrance(dungeonType, { optimized: true });
+            entrance.position.set(...definition.position);
+            entrance.traverse((part) => {
+                if (part.isMesh && part.userData.proceduralDungeonEntrancePart) {
+                    MeshFactory.configureShadowCastingForObject(part, { stableFrontShadows: true });
+                }
+            });
+            this.scene.add(entrance);
+            this.collisionManager.addCircularCollider(
+                definition.position[0],
+                definition.position[2],
+                definition.interactionRadius
+            );
+            console.log(
+                `Created ${definition.label} at ${definition.position[0]}, ${definition.position[2]} with radius ${definition.interactionRadius}`
+            );
         }
 
         return true;

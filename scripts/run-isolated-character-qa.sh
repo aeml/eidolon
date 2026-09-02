@@ -84,7 +84,7 @@ mongo_password="$(openssl rand -hex 24)"
 docker build \
   --build-arg GO_VERSION=1.24.5 \
   --build-arg BUILD_COMMIT=isolated-qa \
-  --build-arg "BUILD_VERSION=Alpha 0.41.0.15" \
+  --build-arg "BUILD_VERSION=Alpha 0.41.0.16" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
