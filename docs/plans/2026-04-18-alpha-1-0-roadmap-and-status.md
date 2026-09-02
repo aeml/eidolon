@@ -14,8 +14,8 @@ The deeper, audit-grounded implementation plan that backs every release line bel
 
 ## Current snapshot
 
-- Current in-game displayed version: `Alpha 0.40.0.1`
-- Active implementation line: `0.40`
+- Current in-game displayed version: `Alpha 0.41.0.0`
+- Active implementation line: `0.41`
 - Release-confidence gate: self-hosted locked browser dependencies, real-browser QA, QA-command restrictions, and deploy SHA/readiness verification are live-verified for SHA `634280a`
 - Closed for planned implementation work: `0.21` through `0.37`
 - The game has a large playable alpha foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, asset caching, audio foundation, accessibility baseline, and substantial UX polish

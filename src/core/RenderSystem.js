@@ -7,6 +7,10 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { CONSTANTS } from './Constants.js';
 import { resolveAssetPath } from '../assets/assetManifest.js';
+import {
+    createOverworldLightingPresets,
+    createOverworldParticleConfigs
+} from '../art/darkFantasyTheme.js';
 
 export class RenderSystem {
     constructor(isMobile = false) {
@@ -108,78 +112,7 @@ export class RenderSystem {
             fogFar: 4200
         };
 
-        this.realmLightingPresets = {
-            earth: {
-                ambientIntensity: 2.2,
-                keyIntensity: 2.25,
-                keyColor: 0xffffff,
-                fillColor: 0xe6eeff,
-                fillIntensity: 0.28,
-                fogColor: 0xc6ccd4,
-                fogNear: 1300,
-                fogFar: 4300,
-                exposure: 1.45,
-                bloomStrength: 0.2,
-                bloomRadius: 0.25,
-                bloomThreshold: 0.84
-            },
-            town: {
-                ambientIntensity: 2.35,
-                keyIntensity: 2.15,
-                keyColor: 0xfff8ee,   // warm lantern-like key
-                fillColor: 0xffe8cc,  // warm amber fill
-                fillIntensity: 0.35,
-                fogColor: 0xcfc8be,
-                fogNear: 1400,
-                fogFar: 4000,
-                exposure: 1.48,
-                bloomStrength: 0.22,
-                bloomRadius: 0.3,
-                bloomThreshold: 0.82
-            },
-            water: {
-                ambientIntensity: 2.05,
-                keyIntensity: 2.1,
-                keyColor: 0xf6fbff,
-                fillColor: 0xdbefff,
-                fillIntensity: 0.3,
-                fogColor: 0xb6c8d5,
-                fogNear: 1150,
-                fogFar: 3900,
-                exposure: 1.42,
-                bloomStrength: 0.28,
-                bloomRadius: 0.35,
-                bloomThreshold: 0.78
-            },
-            fire: {
-                ambientIntensity: 2.05,
-                keyIntensity: 2.1,
-                keyColor: 0xffffff,
-                fillColor: 0xfff2e8,
-                fillIntensity: 0.24,
-                fogColor: 0xd6c4b6,
-                fogNear: 1050,
-                fogFar: 3600,
-                exposure: 1.36,
-                bloomStrength: 0.26,
-                bloomRadius: 0.28,
-                bloomThreshold: 0.8
-            },
-            air: {
-                ambientIntensity: 2.2,
-                keyIntensity: 2.2,
-                keyColor: 0xfcfeff,
-                fillColor: 0xe7f1ff,
-                fillIntensity: 0.28,
-                fogColor: 0xd5dde5,
-                fogNear: 1400,
-                fogFar: 4600,
-                exposure: 1.46,
-                bloomStrength: 0.24,
-                bloomRadius: 0.3,
-                bloomThreshold: 0.82
-            }
-        };
+        this.realmLightingPresets = createOverworldLightingPresets();
         this.perfStats = {
             lastTime: performance.now(),
             lastUpdate: performance.now(),
@@ -376,53 +309,7 @@ export class RenderSystem {
          air   — fast horizontal wind wisps
        ---------------------------------------------------------------- */
 
-    static REALM_PARTICLE_CONFIGS = {
-        earth: {
-            color: 0xc8b89a,
-            size: 3.0,
-            velY: [0.15, 0.6],       // gentle upward drift
-            velXZ: [-0.3, 0.3],
-            life: [4, 8],
-            spread: [55, 25, 55],
-            spawnY: [-3, 20]
-        },
-        town: {
-            color: 0xffe4a0,
-            size: 2.5,
-            velY: [0.1, 0.4],        // lazy floating
-            velXZ: [-0.15, 0.15],
-            life: [5, 10],
-            spread: [40, 15, 40],
-            spawnY: [0, 12]
-        },
-        water: {
-            color: 0xe0eaff,
-            size: 3.5,
-            velY: [-1.4, -0.5],      // falling snow
-            velXZ: [-0.35, 0.35],
-            life: [5, 9],
-            spread: [55, 35, 55],
-            spawnY: [18, 38]
-        },
-        fire: {
-            color: 0xff6622,
-            size: 2.0,
-            velY: [1.2, 3.0],        // rising fast
-            velXZ: [-0.5, 0.5],
-            life: [2, 4],
-            spread: [55, 15, 55],
-            spawnY: [-2, 8]
-        },
-        air: {
-            color: 0xc0d8ff,
-            size: 2.8,
-            velY: [-0.1, 0.25],      // mostly horizontal
-            velXZ: [-2.5, 2.5],      // fast wind
-            life: [2, 5],
-            spread: [65, 25, 65],
-            spawnY: [0, 28]
-        }
-    };
+    static REALM_PARTICLE_CONFIGS = createOverworldParticleConfigs();
 
     initRealmParticles() {
         const count = this.isMobile ? 50 : 140;

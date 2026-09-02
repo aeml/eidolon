@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Entity } from './Entity.js';
 import { disposeSceneMesh } from './EffectSceneFallback.js';
+import { getHazardTheme } from '../art/darkFantasyTheme.js';
 
 /**
  * EnvironmentalHazard - Visual effects for world hazards
@@ -23,9 +24,12 @@ export class EnvironmentalHazard extends Entity {
         this.hazardType = hazardType;
         this.position.set(position.x, position.y || 0, position.z);
         
-        this.radius = config.radius || 5.0;
-        this.visualScale = config.visualScale || 1.2;
-        this.visualRadius = this.radius * this.visualScale;
+        const requestedRadius = Number(config.radius);
+        this.radius = Number.isFinite(requestedRadius) && requestedRadius > 0 ? requestedRadius : 5.0;
+        // Gameplay footprints are server-authoritative. Ambient vertical motion
+        // may add atmosphere, but no ground visual may imply a larger boundary.
+        this.visualRadius = this.radius;
+        this.theme = getHazardTheme(hazardType);
         this.intensity = config.intensity || 1.0;
         this.duration = config.duration || -1; // -1 = permanent
         this.elapsedTime = 0;
@@ -35,6 +39,7 @@ export class EnvironmentalHazard extends Entity {
         this.time = 0;
         
         this.createVisual();
+        this.createGameplayBoundary();
     }
 
     createLavaMaterial(isInner = false) {
@@ -140,6 +145,78 @@ export class EnvironmentalHazard extends Entity {
             depthWrite: false,
             blending: THREE.AdditiveBlending
         });
+    }
+
+    /**
+     * Shared dark-fantasy warning field. The geometry's outer radius is exactly
+     * the damage radius supplied by the server, and remains visible on low
+     * quality because it communicates gameplay rather than decoration.
+     */
+    createGameplayBoundary() {
+        const geometry = new THREE.CircleGeometry(this.radius, 64);
+        geometry.computeBoundingSphere();
+        const material = new THREE.ShaderMaterial({
+            uniforms: {
+                uTime: { value: 0 },
+                uBoundaryColor: { value: new THREE.Color(this.theme.boundary) },
+                uSecondaryColor: { value: new THREE.Color(this.theme.secondary) },
+                uFillColor: { value: new THREE.Color(this.theme.fill) },
+                uGlyphCount: { value: this.theme.glyphCount },
+                uPulseRate: { value: this.theme.pulseRate }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform float uTime;
+                uniform vec3 uBoundaryColor;
+                uniform vec3 uSecondaryColor;
+                uniform vec3 uFillColor;
+                uniform float uGlyphCount;
+                uniform float uPulseRate;
+                varying vec2 vUv;
+
+                void main() {
+                    vec2 p = (vUv - 0.5) * 2.0;
+                    float radial = length(p);
+                    if (radial > 1.0) discard;
+
+                    float angle = atan(p.y, p.x);
+                    float pulse = 0.5 + 0.5 * sin(uTime * uPulseRate * 6.2831853);
+                    float outer = smoothstep(0.89, 0.95, radial) * (1.0 - smoothstep(0.975, 1.0, radial));
+                    float inner = smoothstep(0.72, 0.77, radial) * (1.0 - smoothstep(0.82, 0.86, radial));
+                    float glyphWave = sin(angle * uGlyphCount - uTime * uPulseRate * 1.8);
+                    float glyphs = smoothstep(0.62, 0.88, glyphWave) * inner;
+                    float radialVein = smoothstep(0.78, 0.98, sin(radial * 62.0 - uTime * 2.0) * 0.5 + 0.5);
+                    float fill = (1.0 - smoothstep(0.0, 0.92, radial)) * (0.045 + radialVein * 0.025);
+
+                    vec3 color = uFillColor * fill;
+                    color += uBoundaryColor * outer * (0.66 + pulse * 0.34);
+                    color += uSecondaryColor * glyphs * (0.52 + pulse * 0.38);
+                    float alpha = fill + outer * (0.58 + pulse * 0.25) + glyphs * 0.46;
+                    gl_FragColor = vec4(color, min(alpha, 0.9));
+                }
+            `,
+            transparent: true,
+            side: THREE.DoubleSide,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+        });
+
+        this.boundaryMesh = new THREE.Mesh(geometry, material);
+        this.boundaryMesh.name = `HazardBoundary:${this.hazardType}`;
+        this.boundaryMesh.rotation.x = -Math.PI / 2;
+        this.boundaryMesh.position.copy(this.position);
+        this.boundaryMesh.position.y = this.position.y + 0.16;
+        this.boundaryMesh.renderOrder = 4;
+        this.boundaryMesh.userData.hazardBoundary = true;
+        this.boundaryMesh.userData.gameplayRadius = this.radius;
+        this.boundaryMesh.userData.themeName = this.theme.name;
+        this.meshes.push(this.boundaryMesh);
     }
     
     createVisual() {
@@ -281,7 +358,7 @@ export class EnvironmentalHazard extends Entity {
         this.meshes.push(this.particles);
         
         // Swirling cone (wind visual)
-        const coneGeo = new THREE.CylinderGeometry(this.visualRadius * 0.35, this.visualRadius * 1.1, 6, 18, 1, true);
+        const coneGeo = new THREE.CylinderGeometry(this.visualRadius * 0.35, this.visualRadius, 6, 18, 1, true);
         const coneMat = new THREE.MeshBasicMaterial({
             color: 0xC4A574,
             transparent: true,
@@ -514,6 +591,10 @@ export class EnvironmentalHazard extends Entity {
     update(dt) {
         this.time += dt;
         this.elapsedTime += dt;
+
+        if (this.boundaryMesh?.material?.uniforms?.uTime) {
+            this.boundaryMesh.material.uniforms.uTime.value = this.time;
+        }
         
         if (this.duration > 0 && this.elapsedTime >= this.duration) {
             this.isActive = false;

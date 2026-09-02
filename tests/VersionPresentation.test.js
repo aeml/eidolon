@@ -16,8 +16,19 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.40.0.1 for ability and synchronization fixes', () => {
-        expect(indexHtml).toContain('Alpha 0.40.0.1');
+    test('advances the login screen to alpha 0.41.0.0 for the procedural dark-fantasy foundation', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.0');
+        expect(indexHtml).toContain('Patch 0.41.0.0');
+        expect(indexHtml).toContain("Eidolon's visual rebirth begins");
+        expect(indexHtml).toContain('Gloamwood Marches');
+        expect(indexHtml).toContain('Drowned Sanctum');
+        expect(indexHtml).toContain('All 65 live lava pools, sandstorms, lightning fields, and wind gusts');
+        expect(indexHtml).toContain('exactly equals the server-authoritative damage radius');
+        expect(indexHtml).toContain('The migration cannot move backward');
+        expect(indexHtml).toContain('hardware-browser gallery coverage');
+    });
+
+    test('retains the alpha 0.40.0.1 ability, synchronization, and interface pass in history', () => {
         expect(indexHtml).toContain('Patch 0.40.0.1');
         expect(indexHtml).toContain('slow browser frames can no longer replay more than two simulation ticks');
         expect(indexHtml).toContain('Loading cannot be held hostage by unused models');
@@ -34,7 +45,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.40.0.1';
+        const expectedVersion = 'Alpha 0.41.0.0';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -138,9 +149,9 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.40.0.1 current and points the active line at 0.40', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.40.0.1`');
-        expect(alphaRoadmap).toContain('Active implementation line: `0.40`');
+    test('marks 0.41.0.0 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.0`');
+        expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
         expect(alphaRoadmap).toContain('0.37` (closed)');

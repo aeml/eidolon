@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.40.0.1</span>
+                <span class="start-version-row__label">Alpha 0.41.0.0</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -587,6 +587,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.0">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.0 (dark-fantasy foundation and exact world hazards)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Eidolon's visual rebirth begins:</strong> A single code-driven art manifest now defines the shared dark-fantasy language, palettes, lighting, atmosphere, and hazard identity that every procedural replacement will use.</li>
+                        <li><strong>Every region has an identity:</strong> Gloamwood Marches, Lanternhold, Moonfrost Expanse, Cinder Wastes, and Stormcrown Reach now use distinct overworld lighting and ambient-particle themes. Thorncrypt, Furnace Below, Shattered Aerie, and Drowned Sanctum have dedicated visual definitions ready for their room-geometry migration.</li>
+                        <li><strong>World hazards tell the truth:</strong> All 65 live lava pools, sandstorms, lightning fields, and wind gusts now render a themed animated rune boundary whose outer edge exactly equals the server-authoritative damage radius; the old 20% visual overstatement is gone.</li>
+                        <li><strong>Danger remains readable on every quality level:</strong> Mood particles and ornament can scale down, but exact gameplay boundaries remain visible. Each hazard has its own silhouette, colors, pulse rhythm, and motion language.</li>
+                        <li><strong>The migration cannot move backward:</strong> A durable art bible, full migration inventory, and automated dependency ratchet record the 106-model legacy baseline and prevent new authored 3D dependencies while the existing payload is replaced patch by patch.</li>
+                        <li><strong>Regression coverage:</strong> Server tests verify every active hazard's count, type, damage cadence, and replicated radius; client tests verify exact geometry, fallback safety, animation, and cleanup; hardware-browser gallery coverage renders all regional hazards together for visual review.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.40.0.1">
                     <h3 class="patch-note-entry__title">Patch 0.40.0.1 (ability, synchronization, and interface pass)</h3>
                     <ul class="patch-note-entry__list">

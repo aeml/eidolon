@@ -141,4 +141,35 @@ test.describe('deterministic production animation gallery', () => {
             description: `${renderer.vendor} · ${renderer.renderer}`
         });
     });
+
+    test('renders every active regional hazard with its exact authoritative footprint', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        const response = await page.goto('/repro.html?hazards=1&instances=1', { waitUntil: 'networkidle' });
+        expect(response?.status()).toBe(200);
+
+        await expect.poll(() => page.evaluate(() => window.__eidolonHazardGallery?.ready || false)).toBe(true);
+        const renderer = await hardwareRenderer(page);
+        expect(renderer).not.toBeNull();
+        expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
+
+        const metrics = await page.evaluate(() => window.__eidolonHazardGallery);
+        expect(metrics.hazards.map((hazard) => hazard.type)).toEqual([
+            'lava_pool',
+            'sandstorm',
+            'lightning_zone',
+            'wind_gust'
+        ]);
+        for (const hazard of metrics.hazards) {
+            expect(hazard.boundaryRadius).toBeCloseTo(hazard.radius, 5);
+            expect(hazard.themeName).toBeTruthy();
+            expect(hazard.meshCount).toBeGreaterThan(1);
+            expect(hazard.finite).toBe(true);
+        }
+
+        await page.screenshot({
+            path: testInfo.outputPath('dark-fantasy-world-hazards.png'),
+            animations: 'allow'
+        });
+        expect(failures, failures.join('\n')).toEqual([]);
+    });
 });

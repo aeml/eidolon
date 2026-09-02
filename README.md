@@ -198,8 +198,8 @@ Notes:
 
 ## Project Status
 
-- Current in-game displayed version: `Alpha 0.40.0.1`
-- Active implementation line: `0.40` architecture decomposition
+- Current in-game displayed version: `Alpha 0.41.0.0`
+- Active implementation line: `0.41` procedural dark-fantasy art migration
 - Current shipped foundation: four classes, four realms, four dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, friends/presence, reconnect/session resume, asset caching, audio foundation, and substantial UX polish
 - Current engineering emphasis: reducing monolith hotspots in `server/internal/game/world.go`, `server/main.go`, `src/core/GameEngine.js`, and `src/ui/UIManager.js`
 - Next backend-facing hardening themes in the roadmap: persistence, protocol safety, performance, multi-client coverage, and soak validation

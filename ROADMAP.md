@@ -8,8 +8,8 @@ This is the root roadmap and planning source of truth for the repo. Per-patch hi
 
 ## Current Snapshot
 
-- Current in-game displayed version: `Alpha 0.40.0.1`
-- Active implementation line: `0.40` architecture decomposition
+- Current in-game displayed version: `Alpha 0.41.0.0`
+- Active implementation line: `0.41` procedural dark-fantasy art migration
 - Release-confidence gate: locked/self-hosted browser dependencies, production SHA/readiness reporting, and real-browser deployment QA are live-verified for release SHA `634280a`
 - Closed for planned implementation work: `0.21` through `0.37`
 - Current shipped foundation: 4 classes, 4 realms, 4 dungeons, authoritative multiplayer combat, quests, loot, forge, stash, trading house, parties, social statuses, friends/presence, asset caching, audio foundation, accessibility baseline, reconnect/session resume, and substantial UX polish

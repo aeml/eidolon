@@ -2,12 +2,15 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RenderSystem } from './core/RenderSystem.js';
 import { AnimationGallery } from './animationGallery.js';
+import { EnvironmentalHazard } from './entities/EnvironmentalHazard.js';
+import { ACTIVE_WORLD_HAZARD_TYPES } from './art/darkFantasyTheme.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const perfOverlayEnabled = urlParams.get('perf') === '1';
 const instanceCount = Number.parseInt(urlParams.get('instances') || '250', 10);
 const useInstancing = urlParams.get('instancing') !== '0';
 const galleryMode = urlParams.get('gallery') === '1';
+const hazardGalleryMode = urlParams.get('hazards') === '1';
 
 const perfOverlay = document.getElementById('perf-overlay');
 const readout = document.getElementById('repro-readout');
@@ -247,7 +250,7 @@ function resetPreviewState() {
     setReadout('Last pick: none');
 }
 
-if (!galleryMode && useInstancing) {
+if (!galleryMode && !hazardGalleryMode && useInstancing) {
     instancedMesh = new THREE.InstancedMesh(baseGeometry, baseMaterial, spawnCount);
     instancedMesh.castShadow = true;
     instancedMesh.receiveShadow = true;
@@ -261,7 +264,7 @@ if (!galleryMode && useInstancing) {
         instancedMesh.setMatrixAt(i, dummy.matrix);
     }
     renderSystem.scene.add(instancedMesh);
-} else if (!galleryMode) {
+} else if (!galleryMode && !hazardGalleryMode) {
     for (let i = 0; i < spawnCount; i += 1) {
         const angle = (i / spawnCount) * Math.PI * 2;
         const radius = 20 + (i % 8) * 3;
@@ -337,6 +340,26 @@ if (galleryMode) {
     await animationGallery.initialize();
 }
 
+const hazardGallery = [];
+if (hazardGalleryMode) {
+    document.body.classList.add('hazard-gallery-mode');
+    const spacing = 16;
+    ACTIVE_WORLD_HAZARD_TYPES.forEach((hazardType, index) => {
+        const position = {
+            x: (index - (ACTIVE_WORLD_HAZARD_TYPES.length - 1) / 2) * spacing,
+            y: 0,
+            z: 0
+        };
+        const hazard = new EnvironmentalHazard(`gallery-${hazardType}`, hazardType, position, { radius: 6 });
+        hazard.addToScene(renderSystem.effectGroup);
+        hazardGallery.push(hazard);
+    });
+    renderSystem.camera.position.set(24, 28, 38);
+    controls.target.set(0, 0, 0);
+    controls.update();
+    setReadout('Dark-fantasy hazard gallery\nEvery glowing outer edge is the exact server-authoritative damage radius.');
+}
+
 window.addEventListener('keydown', (event) => {
     const key = event.key.toLowerCase();
     if (key === 'p') togglePerf();
@@ -352,6 +375,24 @@ const animate = () => {
     const now = performance.now();
     controls.update();
     animationGallery?.update(delta);
+    hazardGallery.forEach((hazard) => hazard.update(delta));
+
+    if (hazardGalleryMode) {
+        window.__eidolonHazardGallery = {
+            ready: true,
+            hazards: hazardGallery.map((hazard) => ({
+                type: hazard.hazardType,
+                radius: hazard.radius,
+                boundaryRadius: hazard.boundaryMesh?.geometry?.boundingSphere?.radius,
+                themeName: hazard.boundaryMesh?.userData?.themeName,
+                meshCount: hazard.meshes.length,
+                finite: hazard.meshes.every((mesh) => [
+                    mesh.position.x, mesh.position.y, mesh.position.z,
+                    mesh.scale.x, mesh.scale.y, mesh.scale.z
+                ].every(Number.isFinite))
+            }))
+        };
+    }
 
     if (instancedMesh) {
         instancedMesh.rotation.y += delta * 0.1;

@@ -20,6 +20,51 @@ func TestNewWorld(t *testing.T) {
 	}
 }
 
+func TestWorldHazardsHaveExactBroadcastFootprintsAndRegionalCoverage(t *testing.T) {
+	w := NewWorld(nil)
+	expected := map[HazardType]struct {
+		count  int
+		damage float64
+	}{
+		HazardLavaPool:  {count: 19, damage: 0.03},
+		HazardSandstorm: {count: 12, damage: 0.02},
+		HazardLightning: {count: 15, damage: 0.04},
+		HazardWindGust:  {count: 19, damage: 0.025},
+	}
+	counts := make(map[HazardType]int)
+
+	if len(w.Hazards) != 65 {
+		t.Fatalf("expected 65 active overworld hazards, got %d", len(w.Hazards))
+	}
+	for id, hazard := range w.Hazards {
+		counts[hazard.HazardType]++
+		spec, ok := expected[hazard.HazardType]
+		if !ok {
+			t.Fatalf("active hazard %s has unclassified type %q", id, hazard.HazardType)
+		}
+		if hazard.Radius <= 0 || hazard.TickInterval != 1 || math.Abs(hazard.DamagePct-spec.damage) > 1e-9 {
+			t.Fatalf("invalid gameplay contract for %s: %+v", id, hazard)
+		}
+
+		entity := w.GetEntity(id)
+		if entity == nil {
+			t.Fatalf("hazard %s has no replicated entity", id)
+		}
+		if entity.Type != TypeHazard || entity.SubType != string(hazard.HazardType) {
+			t.Fatalf("hazard %s replicated with the wrong identity: %+v", id, entity)
+		}
+		if math.Abs(entity.Scale-hazard.Radius) > 1e-9 {
+			t.Fatalf("hazard %s broadcasts radius %.2f as visual scale %.2f", id, hazard.Radius, entity.Scale)
+		}
+	}
+
+	for hazardType, spec := range expected {
+		if counts[hazardType] != spec.count {
+			t.Errorf("expected %d %s hazards, got %d", spec.count, hazardType, counts[hazardType])
+		}
+	}
+}
+
 func TestAddRemoveEntity(t *testing.T) {
 	w := NewWorld(nil)
 	e := &Entity{
