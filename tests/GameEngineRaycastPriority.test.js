@@ -28,6 +28,48 @@ const actorConfig = {
 };
 
 describe('GameEngine raycast target priority', () => {
+    test('canvas pointer movement raycasts immediately from one coherent input sample', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.mousePosition = new THREE.Vector2();
+        engine.inputManager = { pointerOverCanvas: true };
+        engine.needsRaycast = true;
+        engine.raycastTimer = 0.06;
+        engine.performRaycast = jest.fn();
+
+        expect(engine.handlePointerRaycast(new THREE.Vector2(0.25, -0.5))).toBe(true);
+        expect(engine.mousePosition.toArray()).toEqual([0.25, -0.5]);
+        expect(engine.performRaycast).toHaveBeenCalledTimes(1);
+        expect(engine.needsRaycast).toBe(false);
+        expect(engine.raycastTimer).toBe(0);
+    });
+
+    test('pointer movement over UI does not raycast through the interface', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.mousePosition = new THREE.Vector2();
+        engine.inputManager = { pointerOverCanvas: false };
+        engine.needsRaycast = true;
+        engine.raycastTimer = 0.06;
+        engine.performRaycast = jest.fn();
+
+        expect(engine.handlePointerRaycast(new THREE.Vector2(-0.4, 0.2))).toBe(false);
+        expect(engine.performRaycast).not.toHaveBeenCalled();
+        expect(engine.needsRaycast).toBe(false);
+    });
+
+    test('rapid canvas pointer samples remain deferred inside the hover budget', () => {
+        const engine = Object.create(GameEngine.prototype);
+        engine.mousePosition = new THREE.Vector2();
+        engine.inputManager = { pointerOverCanvas: true };
+        engine.needsRaycast = false;
+        engine.raycastTimer = 0.04;
+        engine.performRaycast = jest.fn();
+
+        expect(engine.handlePointerRaycast(new THREE.Vector2(0.1, 0.3))).toBe(false);
+        expect(engine.performRaycast).not.toHaveBeenCalled();
+        expect(engine.needsRaycast).toBe(true);
+        expect(engine.raycastTimer).toBe(0.04);
+    });
+
     test('a friendly player hitbox cannot intercept a hostile behind it', () => {
         const engine = Object.create(GameEngine.prototype);
         engine.player = new Fighter('local-player');

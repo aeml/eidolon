@@ -23,6 +23,7 @@ import {
 import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
 
 const LOCAL_POSITION_CORRECTION_DISTANCE = 3.0;
+const POINTER_RAYCAST_INTERVAL = 0.05;
 // Never advance more than two fixed simulation ticks between rendered frames.
 // At the 28.8 unit/s movement cap this limits a slow-frame visual step to
 // 0.96m, instead of replaying as much as 2.88m of movement in one lurch.
@@ -1104,8 +1105,7 @@ export class GameEngine {
         });
 
         this.inputManager.subscribe('onMouseMove', (mouse) => {
-            this.mousePosition.copy(mouse);
-            this.needsRaycast = true;
+            this.handlePointerRaycast(mouse);
         });
 
         this.inputManager.subscribe('onZoom', (delta) => {
@@ -4980,6 +4980,27 @@ export class GameEngine {
         return entity.mesh.getObjectByName?.('ActorInteractionHitbox') || entity.mesh;
     }
 
+    handlePointerRaycast(mouse) {
+        this.mousePosition.copy(mouse);
+
+        // Sample the camera and interaction proxies in the same input turn as
+        // the pointer coordinate whenever the hover budget is available.
+        // Always deferring to the game loop lets camera reconciliation or a
+        // moving actor invalidate an otherwise exact click before the ray is
+        // built. Retaining the 20 Hz budget avoids scaling raycasts to raw
+        // mouse polling rates, and the update loop handles the deferred sample.
+        this.needsRaycast = true;
+        if (!this.inputManager?.pointerOverCanvas) {
+            this.needsRaycast = false;
+            return false;
+        }
+        if (this.raycastTimer < POINTER_RAYCAST_INTERVAL) return false;
+        this.performRaycast();
+        this.raycastTimer = 0;
+        this.needsRaycast = false;
+        return true;
+    }
+
     performRaycast() {
         const meshes = this.activeEntitiesCache
             .filter(e => e.mesh && e.isActive && e !== this.player)
@@ -5422,7 +5443,7 @@ export class GameEngine {
         const shouldRefreshMovingHover = !this.isMobile &&
             this.inputManager.pointerOverCanvas &&
             this.hoveredEntity instanceof Actor;
-        if ((this.needsRaycast || shouldRefreshMovingHover) && this.raycastTimer > 0.05) {
+        if ((this.needsRaycast || shouldRefreshMovingHover) && this.raycastTimer > POINTER_RAYCAST_INTERVAL) {
              this.performRaycast();
              this.raycastTimer = 0;
              this.needsRaycast = false;

@@ -343,6 +343,14 @@ export async function moveByGroundClick(page, deltaX, deltaZ, options = {}) {
         }
 
         await page.mouse.move(target.x, target.y);
+        // A projected ground point can be crossed by a moving actor between
+        // projection and click. Wait for the production hover route and only
+        // click coordinates that are still genuinely clear ground; otherwise
+        // this movement helper can accidentally start combat and misdiagnose
+        // an animation or movement regression.
+        await page.waitForTimeout(75);
+        const isClearGround = await page.evaluate(() => !window.game?.hoveredEntity);
+        if (!isClearGround) continue;
         await page.mouse.click(target.x, target.y);
         try {
             await expect.poll(async () => {
