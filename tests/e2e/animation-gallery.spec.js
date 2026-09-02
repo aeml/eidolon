@@ -14,6 +14,9 @@ const proceduralTownActorTypes = Object.freeze([
     ['DungeonNPC', 'Lanternhold waywarden'],
     ['RespecNPC', 'Lanternhold ash confessor']
 ]);
+const proceduralSummonTypes = Object.freeze([
+    ['AvengingSeraph', 'Lanternhold reliquary seraph']
+]);
 
 test.use({ trace: 'off', video: 'off' });
 
@@ -204,6 +207,55 @@ test.describe('deterministic production animation gallery', () => {
                 expect(metrics.nonFiniteTransforms).toBe(0);
                 await page.screenshot({
                     path: testInfo.outputPath(`procedural-town-${actorType.toLowerCase()}-${quality}.png`),
+                    animations: 'allow'
+                });
+            }
+        }
+
+        expect(failures, failures.join('\n')).toEqual([]);
+        testInfo.annotations.push({
+            type: 'renderer',
+            description: `${renderer.vendor} · ${renderer.renderer}`
+        });
+    });
+
+    test('renders every procedural summon state and quality tier in hardware Chrome', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        const response = await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
+        expect(response?.status()).toBe(200);
+
+        const renderer = await hardwareRenderer(page);
+        expect(renderer).not.toBeNull();
+        expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
+
+        for (const [actorType, artStyle] of proceduralSummonTypes) {
+            await page.locator('#gallery-actor').selectOption(actorType);
+            await waitForActor(page, actorType);
+            let metrics = await galleryMetrics(page);
+            expect(metrics.proceduralSummon).toBe(true);
+            expect(metrics.proceduralActorType).toBe(actorType);
+            expect(metrics.actorArtStyle).toBe(artStyle);
+            expect(metrics.actorVisibleMeshes).toBeGreaterThanOrEqual(65);
+
+            for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death']) {
+                await page.locator('#gallery-state').selectOption(state);
+                await page.locator('#gallery-play-state').click();
+                await expect.poll(async () => (await galleryMetrics(page)).phase).toBe(`state:${state.toLowerCase()}`);
+                metrics = await galleryMetrics(page);
+                expect(metrics.currentAnimation).toBe(state);
+                expect(metrics.nonFiniteTransforms).toBe(0);
+            }
+
+            for (const quality of ['high', 'low']) {
+                await page.locator('#gallery-quality').selectOption(quality);
+                await page.locator('#gallery-state').selectOption('Idle');
+                await page.locator('#gallery-play-state').click();
+                await expect.poll(async () => (await galleryMetrics(page)).quality).toBe(quality);
+                metrics = await galleryMetrics(page);
+                expect(metrics.proceduralSummon).toBe(true);
+                expect(metrics.nonFiniteTransforms).toBe(0);
+                await page.screenshot({
+                    path: testInfo.outputPath(`procedural-summon-${actorType.toLowerCase()}-${quality}.png`),
                     animations: 'allow'
                 });
             }

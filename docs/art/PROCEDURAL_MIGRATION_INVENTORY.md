@@ -6,7 +6,7 @@ Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.6`
+Current migration release: `Alpha 0.41.0.7`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
@@ -14,9 +14,9 @@ This inventory is the migration ledger for the complete Eidolon dark-fantasy red
 
 | Dependency | Audited baseline | Release rule |
 | --- | ---: | --- |
-| Authored GLB models | 106 baseline; 84 current | Count may only decrease from 84 |
-| Authored GLB payload | 814,551,864 baseline; 724,708,480 bytes current | Payload may only decrease from 724,708,480 bytes |
-| Runtime `.glb` tokens | 225 baseline; 177 current | Token count may only decrease from 177 |
+| Authored GLB models | 106 baseline; 79 current | Count may only decrease from 79 |
+| Authored GLB payload | 814,551,864 baseline; 670,955,092 bytes current | Payload may only decrease from 670,955,092 bytes |
+| Runtime `.glb` tokens | 225 baseline; 166 current | Token count may only decrease from 166 |
 | Runtime files containing `.glb` | 5 | No new referencing module is permitted |
 | PNG images | 100 files | Audit and replace by use, not file extension alone |
 | SVG gem icons | 49 files | Existing generated vector family; retain or restyle intentionally |
@@ -34,7 +34,7 @@ Current legacy runtime references are confined to `MeshCatalog`, `MeshFactory`, 
 | Active world hazards | 19 lava pools, 12 sandstorms, 15 lightning zones, 19 wind gusts | Exact-radius themed boundaries migrated in 0.41.0.0 |
 | Overworld areas | Gloamwood Marches, Lanternhold, Moonfrost Expanse, Cinder Wastes, Stormcrown Reach | Theme manifest and lighting/atmosphere foundation migrated; geometry and dressing pending |
 | Dungeons | Thorncrypt, Furnace Below, Shattered Aerie, Drowned Sanctum | Theme manifest complete; room geometry, props, mechanics, and lighting migration pending |
-| Actors | players, remote players, NPCs, summons, early legacy enemies, procedural realm enemies and bosses | All players and four Lanternhold service NPCs are code-native; summons and remaining authored enemy families are pending |
+| Actors | players, remote players, NPCs, summons, early legacy enemies, procedural realm enemies and bosses | All players, four Lanternhold service NPCs, and the Avenging Seraph summon are code-native; remaining authored enemy families are pending |
 | World objects | trees, town buildings, camps, dungeon facades, services, chests, portals, blockers | Legacy dependencies audited; procedural replacements pending |
 | Networked effects | projectiles, traps, persistent zones, auras, statuses, combat feedback | Gameplay contract audit exists; art migration and lifecycle gallery expansion pending |
 
@@ -95,3 +95,9 @@ The Cleric implements all 18 equipment anchors and class-specific fitting for ev
 `Alpha 0.41.0.6` replaces the two remaining NPC model files with four role-specific generated service actors. The Dwarf Merchant is a low ironmonger with a braided beard, forge apron, ember coins, merchant pack, and rune hammer. The Quest Giver is a tall oathscribe framed by an open marked scroll, quill, and broken oath-sun. The Dungeon Guide is a hooded waywarden carrying a teal witchlight lantern, key ring, and map case. The Talent Master is an antler-crowned ash confessor with a mask, memory ledger, orbiting shards, and soul reliquary.
 
 All four share a cached Lanternhold rig vocabulary while retaining independent transforms, subtle role-specific prop motion, pool reset, and explicit grounded bounds. Their entity types, quest and daily eligibility, vendor and sell-all behavior, dungeon routing, talent reset flow, positions, network identity, and persistence remain unchanged. Unit tests prove distinct identity pieces, finite animation, resource sharing, loader bypass, and single-owner hitboxes; system-Chrome galleries capture each service at High and Low quality. The two superseded NPC GLBs totaling 8,659,692 bytes were removed from production after those gates passed and remain recoverable through Git history.
+
+## Avenging Seraph
+
+`Alpha 0.41.0.7` replaces the Cleric's five-file summon set with a 68-part code-generated Lanternhold reliquary seraph. Its airborne sacred silhouette combines a blank burial mask, broken-sun halo, layered bone-and-bronze primaries, spectral inner feathers, reliquary breastplate, oath-spear, chained censer, and an exact ground binding seal. Dedicated hover, glide, driven flight, spear judgement, and folding collapse clips preserve the authoritative `Idle`, `Walk`, `Run`, `Attack`, and `Death` state contract for local and replicated actors.
+
+The visual rig declares a complete 2.8-unit radial and 5.2-unit vertical selection bound while retaining the server's existing 1.5-unit combat radius. Health and Wisdom scaling, ownership, lifetime, targeting, damage, instance containment, cleanup, and replication remain mechanically unchanged. Unit tests prove bounds, identity pieces, all five animated states, independent pose ownership, shared cached resources, loader bypass, and pool-safe hitboxes. Hardware Chrome exercises every state and captures local and replicated summons at High and Low quality. The five superseded GLBs totaling 53,753,388 bytes were removed only after those gates passed and remain recoverable through Git history.

@@ -16,6 +16,7 @@ import {
     createProceduralDungeonNPC,
     createProceduralRespecNPC
 } from '../art/ProceduralTownActors.js';
+import { createProceduralAvengingSeraph } from '../art/ProceduralSummons.js';
 
 export class MeshFactory {
     static loader = new GLTFLoader();
@@ -1546,76 +1547,7 @@ export class MeshFactory {
                 return mesh;
             }
         } else if (type === 'AvengingSeraph') {
-            try {
-                // Try loading from folder structure first
-                const idleGltf = await this.loadModel('./assets/summons/avenging_seraph/idle.glb');
-                mesh = SkeletonUtils.clone(idleGltf.scene);
-                
-                mesh.userData.animations = [];
-                const addAnim = (clip, name) => {
-                    if (clip) {
-                        const newClip = clip.clone();
-                        newClip.name = name;
-                        newClip.tracks = newClip.tracks.filter(t => !t.name.endsWith('.scale'));
-                        mesh.userData.animations.push(newClip);
-                    }
-                };
-
-                if (idleGltf.animations.length > 0) addAnim(idleGltf.animations[0], 'Idle');
-
-                try {
-                    const walkGltf = await this.loadModel('./assets/summons/avenging_seraph/walk.glb');
-                    if (walkGltf.animations.length > 0) addAnim(walkGltf.animations[0], 'Walk');
-                } catch (e) {}
-
-                try {
-                    const runGltf = await this.loadModel('./assets/summons/avenging_seraph/run.glb');
-                    if (runGltf.animations.length > 0) addAnim(runGltf.animations[0], 'Run');
-                } catch (e) {}
-
-                try {
-                    const attackGltf = await this.loadModel('./assets/summons/avenging_seraph/attack.glb');
-                    if (attackGltf.animations.length > 0) addAnim(attackGltf.animations[0], 'Attack');
-                } catch (e) {}
-
-                try {
-                    const deathGltf = await this.loadModel('./assets/summons/avenging_seraph/death.glb');
-                    if (deathGltf.animations.length > 0) addAnim(deathGltf.animations[0], 'Death');
-                } catch (e) {}
-
-                mesh.scale.set(2.5, 2.5, 2.5);
-                
-                mesh.traverse(c => {
-                    if (c.isMesh) {
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-                        // Make it glow a bit
-                        if (c.material) {
-                            c.material.emissive = new THREE.Color(0xffd700);
-                            c.material.emissiveIntensity = 0.2;
-                        }
-                    }
-                });
-
-                return mesh;
-            } catch (e) {
-                console.warn("Failed to load AvengingSeraph from folder, trying single file...", e);
-                try {
-                    // Try single file
-                    const gltf = await this.loadModel('./assets/summons/avenging_seraph.glb');
-                    mesh = SkeletonUtils.clone(gltf.scene);
-                    mesh.scale.set(2.5, 2.5, 2.5);
-                    return mesh;
-                } catch (e2) {
-                    console.error("Failed to load AvengingSeraph (all attempts):", e2);
-                    // Fallback to simple geometry
-                    const geometry = this.geometryCache.seraph;
-                    const material = new THREE.MeshStandardMaterial({ color: 0xffff00 });
-                    mesh = new THREE.Mesh(geometry, material);
-                    mesh.position.y = 1.0;
-                    return mesh;
-                }
-            }
+            return createProceduralAvengingSeraph();
         } else if (type === 'Fence') {
             const geometry = this.geometryCache.fence;
             const material = new THREE.MeshStandardMaterial({ color: 0x8B4513 }); // SaddleBrown

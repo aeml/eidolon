@@ -79,6 +79,15 @@ describe('actor animation manifest', () => {
         }
     });
 
+    test('classifies Avenging Seraph as an intentional procedural summon', () => {
+        expect(ACTOR_ANIMATION_MANIFEST.AvengingSeraph).toEqual(expect.objectContaining({
+            category: 'summon',
+            source: 'procedural reliquary seraph rig',
+            states: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        }));
+        expect(ACTOR_ANIMATION_MANIFEST.AvengingSeraph.special).toContain('oath-spear');
+    });
+
     test('no combat actor is classified without idle, movement, attack, and death presentation', () => {
         for (const actor of listActorAnimationEntries()) {
             if (actor.category === 'npc') continue;

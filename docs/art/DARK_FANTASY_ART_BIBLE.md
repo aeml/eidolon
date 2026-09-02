@@ -76,6 +76,13 @@ Hazards must survive chunk residency changes and must dispose all geometry and m
 - The Talent Master is the antler-crowned ash confessor: masked face, memory ledger, orbiting shards, and a violet soul reliquary. Its orbit is local ornament with no collision or network authority.
 - Every service owns an exact, grounded interaction bound spanning its full generated silhouette. Role-specific motion stays subtle, all render resources are cached, and pool reuse restores the complete rest pose without changing quest, vendor, dungeon, or talent state.
 
+## Sacred summon language
+
+- The Avenging Seraph is not a winged copy of the Cleric. It is an airborne Lanternhold reliquary: blank burial mask, broken oath-sun, suspended vestments, layered bone-and-bronze primaries, spectral inner feathers, oath-spear, and censer flame.
+- Summons remain readable beside players through a broader silhouette, open negative space under the wings, a visible ground binding seal, and restrained mint soul-light. Ornament never masquerades as a damage footprint or changes authoritative combat reach.
+- `Idle`, `Walk`, `Run`, `Attack`, and `Death` keep their network state names but express hover, measured glide, driven flight, spear judgement, and folding collapse. Wings, weapon, censer, head, halo, and body are independently animated actor-owned pivots.
+- Generated selection bounds cover the entire apparition while combat radius remains server-owned. Geometry and materials are cached and immutable; every summoned instance owns its pose and pool reset.
+
 ## Migration baseline — 2026-09-02
 
 - Authored asset payload: approximately 963.33 MiB.

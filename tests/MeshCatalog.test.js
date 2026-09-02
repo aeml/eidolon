@@ -57,7 +57,17 @@ describe('MeshCatalog', () => {
         expect(MeshCatalog.getPreloadModelPaths().some((path) => path.startsWith('./assets/npc/'))).toBe(false);
     });
 
+    test('Avenging Seraph is an explicit procedural summon with no model preload', () => {
+        expect(MeshCatalog.recipes.AvengingSeraph).toEqual({
+            type: 'summon',
+            source: 'procedural reliquary seraph rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        });
+        expect(MeshCatalog.getPreloadModelPaths().some((path) => path.includes('/avenging_seraph/'))).toBe(false);
+    });
+
     test('mesh recipes retain typed asset metadata for concrete entities', () => {
+        expect(MeshCatalog.recipes.AvengingSeraph.type).toBe('summon');
         expect(MeshCatalog.recipes.DwarfSalesman.source).toBe('procedural town actor');
         expect(MeshCatalog.recipes.Construct.animations).toEqual(['idle', 'walk', 'run', 'attack', 'death']);
         expect(MeshCatalog.recipes.TradingHouse.type).toBe('structure');

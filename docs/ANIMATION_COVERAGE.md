@@ -121,7 +121,7 @@ Player classes declare Idle/Walk/Run/Attack/Death clips through either the share
 | BriarMatron | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | RustboundColossus | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
 | HollowSentinel | enemy | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
-| AvengingSeraph | summon | GLB | Idle, Walk, Run, Attack, Death | not-used | Attack clip plus class telegraph/VFX | local hardware gallery: High/Low |
+| AvengingSeraph | summon | procedural reliquary seraph rig | Idle, Walk, Run, Attack, Death | not-used | articulated broken-sun wings, oath-spear, censer, and collapse | local hardware gallery: High/Low |
 | DwarfSalesman | npc | procedural town actor rig | Idle | not-used | merchant hammer and ember coin language | local hardware gallery: High/Low |
 | QuestNPC | npc | procedural town actor rig | Idle | not-used | oath-scroll and broken-sun quest language | local hardware gallery: High/Low |
 | DungeonNPC | npc | procedural town actor rig | Idle | not-used | wayfinding lantern and key language | local hardware gallery: High/Low |

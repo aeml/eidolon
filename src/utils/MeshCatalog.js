@@ -75,12 +75,6 @@ const PRELOAD_MODEL_PATHS = [
     './assets/buildings/blacksmith_forge.glb',
     './assets/objects/chests/stash_base.glb',
 
-    './assets/summons/avenging_seraph/idle.glb',
-    './assets/summons/avenging_seraph/walk.glb',
-    './assets/summons/avenging_seraph/run.glb',
-    './assets/summons/avenging_seraph/attack.glb',
-    './assets/summons/avenging_seraph/death.glb',
-
     './assets/plants/birch.glb',
     './assets/plants/pine.glb',
     './assets/plants/willow.glb',
@@ -108,6 +102,11 @@ const BACKGROUND_PRELOAD_PATHS = new Set([
 
 export class MeshCatalog {
     static recipes = {
+        AvengingSeraph: {
+            type: 'summon',
+            source: 'procedural reliquary seraph rig',
+            animations: ['Idle', 'Walk', 'Run', 'Attack', 'Death']
+        },
         DwarfSalesman: {
             type: 'npc',
             source: 'procedural town actor',

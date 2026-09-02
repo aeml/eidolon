@@ -312,6 +312,47 @@ describe('MeshFactory catalog integration', () => {
         }
     });
 
+    test('Avenging Seraph uses its procedural reliquary rig without requesting a GLB', async () => {
+        const previousPool = MeshFactory.pool;
+        const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
+        MeshFactory.pool = {};
+
+        try {
+            const mesh = await MeshFactory.createMeshForType('AvengingSeraph');
+            expect(mesh.userData).toEqual(expect.objectContaining({
+                proceduralSummon: true,
+                proceduralActorType: 'AvengingSeraph',
+                artStyle: 'Lanternhold reliquary seraph',
+                combatRadius: 1.5,
+                sharedGeometry: true
+            }));
+            expect(mesh.userData.animations.map((entry) => entry.name))
+                .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+            expect(loadSpy).not.toHaveBeenCalled();
+        } finally {
+            MeshFactory.pool = previousPool;
+            loadSpy.mockRestore();
+        }
+    });
+
+    test('a full Avenging Seraph pool never disposes shared generated resources', async () => {
+        const previousPool = MeshFactory.pool;
+        MeshFactory.pool = {};
+        const mesh = await MeshFactory.createMeshForType('AvengingSeraph');
+        MeshFactory.pool.AvengingSeraph = Array.from({ length: 50 }, () => new THREE.Group());
+        const material = mesh.getObjectByName('AvengingSeraph_BurialMask').material;
+        const disposeSpy = jest.spyOn(material, 'dispose');
+
+        try {
+            MeshFactory.releaseMesh('AvengingSeraph', mesh);
+            expect(disposeSpy).not.toHaveBeenCalled();
+            expect(MeshFactory.pool.AvengingSeraph).toHaveLength(50);
+        } finally {
+            disposeSpy.mockRestore();
+            MeshFactory.pool = previousPool;
+        }
+    });
+
     test('a full town actor pool never disposes shared generated resources', async () => {
         const previousPool = MeshFactory.pool;
         MeshFactory.pool = {};

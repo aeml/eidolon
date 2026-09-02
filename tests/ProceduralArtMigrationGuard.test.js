@@ -16,9 +16,9 @@ const currentLegacyReferenceFiles = new Set([
 
 const INITIAL_LEGACY_MODEL_COUNT = 106;
 const INITIAL_LEGACY_MODEL_BYTES = 814551864;
-const MAX_LEGACY_MODEL_COUNT = 84;
-const MAX_LEGACY_MODEL_BYTES = 724708480;
-const MAX_RUNTIME_GLB_TOKENS = 177;
+const MAX_LEGACY_MODEL_COUNT = 79;
+const MAX_LEGACY_MODEL_BYTES = 670955092;
+const MAX_RUNTIME_GLB_TOKENS = 166;
 
 function walkFiles(root) {
     if (!fs.existsSync(root)) return [];

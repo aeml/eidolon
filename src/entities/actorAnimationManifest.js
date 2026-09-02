@@ -32,7 +32,9 @@ export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
     RustboundColossus: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
     HollowSentinel: entry('enemy', 'GLB', WALKING_ENEMY_CLIPS),
 
-    AvengingSeraph: entry('summon', 'GLB', WALKING_ENEMY_CLIPS),
+    AvengingSeraph: entry('summon', 'procedural reliquary seraph rig', WALKING_ENEMY_CLIPS, {
+        special: 'articulated broken-sun wings, oath-spear, censer, and collapse'
+    }),
     DwarfSalesman: entry('npc', 'procedural town actor rig', ['Idle'], { special: 'merchant hammer and ember coin language' }),
     QuestNPC: entry('npc', 'procedural town actor rig', ['Idle'], { special: 'oath-scroll and broken-sun quest language' }),
     DungeonNPC: entry('npc', 'procedural town actor rig', ['Idle'], { special: 'wayfinding lantern and key language' }),
