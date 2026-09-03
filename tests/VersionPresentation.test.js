@@ -16,8 +16,23 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.27 for authoritative projectile impacts', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 0.41.0.27</span>');
+    test('advances the login screen to alpha 0.41.0.28 for typed combat consequence and recovery', () => {
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 0.41.0.28</span>');
+        expect(indexHtml).toContain('Patch 0.41.0.28');
+        expect(indexHtml).toContain('every wound answers with a relic');
+        expect(indexHtml).toContain('Every combat outcome now leaves an intentional mark');
+        expect(indexHtml).toContain('Afflictions speak their own language');
+        expect(indexHtml).toContain('Every realm hazard wounds differently');
+        expect(indexHtml).toContain('Recovery is no longer one anonymous green flash');
+        expect(indexHtml).toContain('Damage and healing carry server truth');
+        expect(indexHtml).toContain('Dungeon combat stays inside its instance');
+        expect(indexHtml).toContain('Existing combat cues remain intact');
+        expect(indexHtml).toContain('Busy fights stay clean');
+        expect(indexHtml).toContain('all 16 identities');
+        expect(indexHtml).toContain('2026-09-03-28');
+    });
+
+    test('retains alpha 0.41.0.27 authoritative projectile impact history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.27');
         expect(indexHtml).toContain('every projectile lands with consequence');
         expect(indexHtml).toContain('Every collision-capable projectile and trap now leaves its own mark');
@@ -282,7 +297,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.27';
+        const expectedVersion = 'Alpha 0.41.0.28';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -386,8 +401,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.27 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.27`');
+    test('marks 0.41.0.28 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.28`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
@@ -1457,6 +1472,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.41.0.28');
         expect(indexHtml).toContain('Patch 0.41.0.27');
         expect(indexHtml).toContain('Patch 0.41.0.26');
         expect(indexHtml).toContain('Patch 0.41.0.25');

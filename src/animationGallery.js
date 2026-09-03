@@ -35,6 +35,10 @@ import {
     PROCEDURAL_PROJECTILE_IMPACT_DEFINITIONS,
     getProceduralProjectileImpactCacheMetrics
 } from './art/ProceduralProjectileImpacts.js';
+import {
+    PROCEDURAL_COMBAT_FEEDBACK_DEFINITIONS,
+    getProceduralCombatFeedbackCacheMetrics
+} from './art/ProceduralCombatFeedback.js';
 
 const PLAYER_TYPES = Object.freeze({ Fighter, Rogue, Wizard, Cleric });
 const PLAYER_TYPE_NAMES = Object.freeze(Object.keys(PLAYER_TYPES));
@@ -142,6 +146,27 @@ function collectProceduralProjectileImpacts(effects) {
             hasExactBoundary: radius == null || boundaries.some((boundary) =>
                 boundary.radius === radius && boundary.normalizedRadius === 1
             ),
+            visibleParts
+        }];
+    });
+}
+
+function collectProceduralCombatFeedback(effects) {
+    return effects.flatMap((effect) => {
+        const root = effect.root || effect.meshes?.find((mesh) => mesh?.userData?.proceduralCombatFeedback);
+        if (!root?.userData?.proceduralCombatFeedback) return [];
+        let visibleParts = 0;
+        root.traverse((part) => {
+            if (part.isMesh && part.visible) visibleParts++;
+        });
+        return [{
+            feedbackKind: root.userData.feedbackKind,
+            family: root.userData.feedbackFamily,
+            motif: root.userData.motif,
+            artStyle: root.userData.artStyle,
+            restorative: root.userData.restorative,
+            quality: root.userData.quality,
+            amount: root.userData.amount,
             visibleParts
         }];
     });
@@ -655,6 +680,46 @@ export class AnimationGallery {
         return true;
     }
 
+    presentCombatFeedbackGallery(kind = 'damage') {
+        const restorative = kind === 'restoration';
+        const entries = Object.entries(PROCEDURAL_COMBAT_FEEDBACK_DEFINITIONS)
+            .filter(([, definition]) => definition.restorative === restorative);
+        if (!this.actor || entries.length === 0) return false;
+        this.cleanupPresentation();
+        [this.actor, this.remoteActor, this.targetActor].forEach((actor) => {
+            if (actor?.mesh) actor.mesh.visible = false;
+        });
+
+        const columns = 4;
+        const spacingX = 4.4;
+        const spacingZ = 4.1;
+        const rows = Math.ceil(entries.length / columns);
+        const engine = this.actor.gameEngine;
+        entries.forEach(([feedbackKind], index) => {
+            const column = index % columns;
+            const row = Math.floor(index / columns);
+            const x = (column - (columns - 1) / 2) * spacingX;
+            const z = 4.5 + (row - (rows - 1) / 2) * spacingZ;
+            engine.spawnTransientEffect('combat_feedback', new THREE.Vector3(x, 0.08, z), 0xffffff, {
+                feedbackKind,
+                amount: 275,
+                sourceId: `gallery-source-${feedbackKind}`,
+                targetId: `gallery-target-${feedbackKind}`,
+                instanceId: 'gallery-feedback'
+            });
+        });
+
+        this.controls.target.set(0, 0.8, 4.5);
+        this.renderSystem.camera.position.set(restorative ? 8 : 10, 17, restorative ? 20 : 25);
+        this.renderSystem.setZoom(restorative ? 15 : 20);
+        this.framingMode = `combat-feedback-gallery:${kind}`;
+        this.controls.update();
+        this.phase = `combat-feedback:${kind}`;
+        this.setStatus(`${entries.length} procedural ${kind} combat reactions`, 'playing');
+        this.updateMetrics();
+        return true;
+    }
+
     frameActorState() {
         const mode = 'actor-state';
         const centerX = this.remoteActor ? 2.8 : 1.2;
@@ -1098,6 +1163,7 @@ export class AnimationGallery {
             }));
         const proceduralAbilityCasts = collectProceduralAbilityCasts(this.effects);
         const proceduralProjectileImpacts = collectProceduralProjectileImpacts(this.effects);
+        const proceduralCombatFeedback = collectProceduralCombatFeedback(this.effects);
         const metrics = {
             ready: Boolean(this.actor?.mesh),
             className: this.currentClass,
@@ -1167,6 +1233,8 @@ export class AnimationGallery {
             proceduralAbilityCastCache: getProceduralAbilityCastCacheMetrics(),
             proceduralProjectileImpacts,
             proceduralProjectileImpactCache: getProceduralProjectileImpactCacheMetrics(),
+            proceduralCombatFeedback,
+            proceduralCombatFeedbackCache: getProceduralCombatFeedbackCacheMetrics(),
             spiritGuardians: (this.actor?.spiritEffect?.guardians?.length || 0) +
                 (this.remoteActor?.spiritEffect?.guardians?.length || 0),
             spiritVariants: [this.actor, this.remoteActor]

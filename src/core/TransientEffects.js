@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { createProceduralAbilityCastEffect } from '../art/ProceduralAbilityCasts.js';
+import { createProceduralCombatFeedbackEffect } from '../art/ProceduralCombatFeedback.js';
 import { createProceduralProjectileImpactEffect } from '../art/ProceduralProjectileImpacts.js';
 
 class TransientEffect {
@@ -424,6 +425,9 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
     }
     if (type === 'projectile_impact' && options.projectileType) {
         return createProceduralProjectileImpactEffect(scene, position, options);
+    }
+    if (type === 'combat_feedback' && options.feedbackKind) {
+        return createProceduralCombatFeedbackEffect(scene, position, options);
     }
     const effectScale = Number.isFinite(options.effectScale) ? options.effectScale : 1.0;
     const quality = options.quality || 'high';

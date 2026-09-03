@@ -65,7 +65,7 @@ var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAME
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 0.41.0.27"
+	buildVersion = "Alpha 0.41.0.28"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -546,9 +546,11 @@ type AbilityPayload struct {
 }
 
 type DamagePayload struct {
-	TargetID string `json:"targetId"`
-	Amount   int    `json:"amount"`
-	SourceID string `json:"sourceId"`
+	TargetID   string `json:"targetId"`
+	Amount     int    `json:"amount"`
+	SourceID   string `json:"sourceId"`
+	Kind       string `json:"kind,omitempty"`
+	InstanceID string `json:"instanceId,omitempty"`
 }
 
 type ProjectileImpactPayload struct {
@@ -1040,9 +1042,8 @@ func main() {
 			}
 
 			payload := DamagePayload{
-				TargetID: evt.TargetID,
-				Amount:   evt.Amount,
-				SourceID: evt.SourceID,
+				TargetID: evt.TargetID, Amount: evt.Amount, SourceID: evt.SourceID,
+				Kind: evt.Kind, InstanceID: evt.InstanceID,
 			}
 			b, _ := json.Marshal(payload)
 			outMsg := Message{
@@ -1052,7 +1053,7 @@ func main() {
 			dataBytes, _ := json.Marshal(outMsg)
 
 			go func() {
-				broadcast <- BroadcastMessage{Type: MsgDamage, Data: dataBytes}
+				broadcast <- BroadcastMessage{Type: MsgDamage, Data: dataBytes, InstanceID: evt.InstanceID}
 			}()
 		case "projectile_impact":
 			evt, ok := data.(game.ProjectileImpactEvent)
@@ -1077,12 +1078,15 @@ func main() {
 			if !ok {
 				return
 			}
-			payload := DamagePayload{TargetID: evt.TargetID, Amount: evt.Amount, SourceID: evt.SourceID}
+			payload := DamagePayload{
+				TargetID: evt.TargetID, Amount: evt.Amount, SourceID: evt.SourceID,
+				Kind: evt.Kind, InstanceID: evt.InstanceID,
+			}
 			b, _ := json.Marshal(payload)
 			outMsg := Message{Type: MsgHeal, Payload: b}
 			dataBytes, _ := json.Marshal(outMsg)
 			go func() {
-				broadcast <- BroadcastMessage{Type: MsgHeal, Data: dataBytes}
+				broadcast <- BroadcastMessage{Type: MsgHeal, Data: dataBytes, InstanceID: evt.InstanceID}
 			}()
 		case "hazard_damage":
 			evt, ok := data.(game.HazardDamageEvent)
@@ -1094,6 +1098,7 @@ func main() {
 				TargetID: evt.PlayerID,
 				Amount:   evt.Damage,
 				SourceID: evt.HazardID, // e.g. "hazard-lava-5"
+				Kind:     string(evt.HazardType),
 			}
 			b, _ := json.Marshal(payload)
 			outMsg := Message{

@@ -122,7 +122,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 
 					hitCount++
 
-					w.fireDamageEvent(player.ID, target.ID, finalDamage)
+					w.fireDamageEvent(player.ID, target.ID, finalDamage, "physical", player.InstanceID)
 
 					if isDead {
 						target.Mu.Lock()
@@ -140,7 +140,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 						player.Health = player.MaxHealth
 					}
 					if actualHeal := player.Health - previousHealth; actualHeal > 0 {
-						w.fireHealEvent(player.ID, player.ID, actualHeal)
+						w.fireHealEvent(player.ID, player.ID, actualHeal, "self_restore", player.InstanceID)
 					}
 				}
 			}
@@ -225,7 +225,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
 
-					w.fireDamageEvent(player.ID, target.ID, finalDamage)
+					w.fireDamageEvent(player.ID, target.ID, finalDamage, "physical", player.InstanceID)
 
 					if isDead {
 						target.Mu.Lock()
@@ -401,7 +401,7 @@ func (w *World) performFighterAbility(player *Entity, targetX, targetZ float64, 
 				target.RecalculateStats()
 				isDead := target.Health <= 0
 				target.Mu.Unlock()
-				w.fireDamageEvent(player.ID, target.ID, finalDamage)
+				w.fireDamageEvent(player.ID, target.ID, finalDamage, "physical", player.InstanceID)
 				if isDead {
 					target.Mu.Lock()
 					w.handleDeath(target, player, nil)
@@ -528,7 +528,7 @@ func (w *World) damageFighterCone(player *Entity, targetX, targetZ, radius, half
 		}
 		isDead := target.Health <= 0
 		target.Mu.Unlock()
-		w.fireDamageEvent(player.ID, target.ID, finalDamage)
+		w.fireDamageEvent(player.ID, target.ID, finalDamage, "physical", player.InstanceID)
 		if isDead {
 			target.Mu.Lock()
 			w.handleDeath(target, player, nil)
@@ -567,7 +567,7 @@ func (w *World) damageEarthshakerArea(player *Entity, originX, originZ, targetX,
 		}
 		isDead := target.Health <= 0
 		target.Mu.Unlock()
-		w.fireDamageEvent(player.ID, target.ID, finalDamage)
+		w.fireDamageEvent(player.ID, target.ID, finalDamage, "physical", player.InstanceID)
 		if isDead {
 			target.Mu.Lock()
 			w.handleDeath(target, player, nil)

@@ -631,6 +631,36 @@ test.describe('deterministic production animation gallery', () => {
             });
         }
 
+        for (const [kind, expectedCount] of [['damage', 12], ['restoration', 4]]) {
+            await page.evaluate((galleryKind) => {
+                window.__eidolonAnimationGalleryController.presentCombatFeedbackGallery(galleryKind);
+            }, kind);
+            await expect.poll(async () => {
+                const snapshot = await galleryMetrics(page);
+                return snapshot.phase === `combat-feedback:${kind}`
+                    ? snapshot.proceduralCombatFeedback.length
+                    : -1;
+            }).toBe(expectedCount);
+            const feedbackMetrics = await galleryMetrics(page);
+            expect(feedbackMetrics.proceduralCombatFeedback.every((entry) =>
+                entry.artStyle.length > 16 && entry.motif.length > 8 && entry.visibleParts >= 6
+            )).toBe(true);
+            expect(new Set(feedbackMetrics.proceduralCombatFeedback.map((entry) => entry.motif)).size).toBe(expectedCount);
+            expect(feedbackMetrics.nonFiniteTransforms).toBe(0);
+            expect(feedbackMetrics.proceduralCombatFeedbackCache.geometries).toBeGreaterThan(5);
+            expect(feedbackMetrics.proceduralCombatFeedbackCache.materials).toBeGreaterThan(0);
+            await page.locator('#animation-gallery').evaluate((panel) => {
+                panel.style.visibility = 'hidden';
+            });
+            await page.screenshot({
+                path: testInfo.outputPath(`procedural-combat-feedback-${kind}-gallery.png`),
+                animations: 'allow'
+            });
+            await page.locator('#animation-gallery').evaluate((panel) => {
+                panel.style.visibility = '';
+            });
+        }
+
         for (const quality of ['high', 'low']) {
             await page.locator('#gallery-quality').selectOption(quality);
             await page.locator('#gallery-run-all').click();

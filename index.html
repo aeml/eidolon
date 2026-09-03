@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.27</span>
+                <span class="start-version-row__label">Alpha 0.41.0.28</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -470,7 +470,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-27</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-28</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -482,7 +482,7 @@
                                 </div>
                                 <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Procedural dungeon entrances built in</div>
                                 <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-27</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-28</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -587,6 +587,23 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.28">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.28 (every wound answers with a relic)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Every combat outcome now leaves an intentional mark:</strong> Fighter, Rogue, Wizard, Cleric, hostile, and reflected hits each receive a compact code-generated dark-fantasy reaction instead of relying on floating numbers alone.</li>
+                        <li><strong>Afflictions speak their own language:</strong> bleed drips through a blood-tithe seal and poison blooms from a venom censer, keeping repeated damage readable without pretending it was another direct strike.</li>
+                        <li><strong>Every realm hazard wounds differently:</strong> lava, gravewind sandstorm, lightning, and wind damage use distinct cinder, grit, storm-brand, and gale-shear reactions derived from the exact authoritative hazard kind.</li>
+                        <li><strong>Recovery is no longer one anonymous green flash:</strong> Cleric healing, recurring restoration, lifesteal, and self-restoration now gather through separate mercy, rosary, sanguine, and pale-heart relics.</li>
+                        <li><strong>Damage and healing carry server truth:</strong> authoritative payloads now include semantic kind and instance identity across direct abilities, projectiles, zones, ailments, reflection, kill effects, and restoration.</li>
+                        <li><strong>Dungeon combat stays inside its instance:</strong> damage and healing broadcasts are routed by instance, while open-world hazard messages retain their shared overworld behavior.</li>
+                        <li><strong>Existing combat cues remain intact:</strong> floating numbers and involvement audio still report magnitude and urgency; the new victim-side relics complement cast and projectile art without replacing or duplicating it.</li>
+                        <li><strong>Busy fights stay clean:</strong> reactions are proximity-filtered and throttled per target and effect kind, so rapid ticks cannot bury actors while simultaneous bleed, poison, and direct damage remain distinguishable.</li>
+                        <li><strong>High and Low quality preserve the same identity:</strong> both tiers keep the core wound seal and witness halo, while Low removes only optional shards; cached immutable geometry and materials keep concurrent effects independent and cheap.</li>
+                        <li><strong>The browser audit now witnesses consequence and recovery:</strong> dedicated damage and restoration galleries verify all 16 identities for visible finite geometry, unique motifs, shared-cache safety, and complete cleanup.</li>
+                        <li><strong>Combat balance is unchanged:</strong> damage, healing, tick timing, cooldowns, resource costs, target rules, and authoritative ability footprints remain exactly where gameplay logic placed them.</li>
+                        <li><strong>Clients cross a clean threshold:</strong> the built-in asset generation advances to 2026-09-03-28.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.27">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.27 (every projectile lands with consequence)</h3>
                     <ul class="patch-note-entry__list">

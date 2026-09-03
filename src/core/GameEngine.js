@@ -21,6 +21,7 @@ import {
     shortestAngleDelta
 } from './MovementSmoothing.js';
 import { getProjectileImpactRadius } from '../skills/abilityRadii.js';
+import { PROCEDURAL_COMBAT_FEEDBACK_DEFINITIONS } from '../art/ProceduralCombatFeedback.js';
 import { PROCEDURAL_PROJECTILE_IMPACT_DEFINITIONS } from '../art/ProceduralProjectileImpacts.js';
 
 const LOCAL_POSITION_CORRECTION_DISTANCE = 3.0;
@@ -1629,6 +1630,110 @@ export class GameEngine {
         return true;
     }
 
+    resolveCombatFeedbackKind(data = {}, source = null, target = null, eventType = 'damage') {
+        const serverKind = String(data.kind || '').toLowerCase();
+        if (eventType === 'heal') {
+            if (serverKind === 'lifesteal' || serverKind === 'vampiric') return 'lifesteal';
+            if (serverKind === 'self_restore' || serverKind === 'divine_intervention') return 'self_restore';
+            if (serverKind.includes('hot') || serverKind === 'renewal' || serverKind === 'guardian_embrace'
+                || serverKind === 'consecration' || serverKind === 'spirit_guardians') return 'restoration_tick';
+            const sourceClass = String(source?.meshType || source?.subType || source?.constructor?.name || '').toLowerCase();
+            if (sourceClass === 'cleric' || serverKind === 'holy') return 'cleric_heal';
+            if (data.sourceId && data.sourceId === data.targetId) return 'self_restore';
+            return 'cleric_heal';
+        }
+
+        const explicitKinds = {
+            bleed: 'bleed_tick',
+            poison: 'poison_tick',
+            reflect: 'reflect_strike',
+            lava_pool: 'lava_tick',
+            lava: 'lava_tick',
+            sandstorm: 'sandstorm_tick',
+            lightning_zone: 'lightning_tick',
+            lightning: 'lightning_tick',
+            wind_gust: 'wind_tick',
+            wind: 'wind_tick'
+        };
+        if (explicitKinds[serverKind]) return explicitKinds[serverKind];
+        const sourceId = String(data.sourceId || '').toLowerCase();
+        if (sourceId.includes('hazard-lava')) return 'lava_tick';
+        if (sourceId.includes('hazard-sandstorm')) return 'sandstorm_tick';
+        if (sourceId.includes('hazard-lightning')) return 'lightning_tick';
+        if (sourceId.includes('hazard-wind')) return 'wind_tick';
+        if (sourceId === 'bleed') return 'bleed_tick';
+        if (sourceId === 'poison') return 'poison_tick';
+
+        const sourceClass = String(source?.meshType || source?.subType || source?.constructor?.name || '').toLowerCase();
+        if (sourceClass === 'fighter') return 'fighter_strike';
+        if (sourceClass === 'rogue') return 'rogue_strike';
+        if (sourceClass === 'wizard') return 'wizard_strike';
+        if (sourceClass === 'cleric') return 'cleric_strike';
+        if (serverKind === 'holy') return 'cleric_strike';
+        if (serverKind === 'arcane' || serverKind === 'fire') return 'wizard_strike';
+        if (serverKind === 'reflect') return 'reflect_strike';
+        return 'enemy_strike';
+    }
+
+    renderCombatFeedback(data = {}, eventType = 'damage') {
+        const target = data.targetId === this.player?.id
+            ? this.player
+            : this.remotePlayers?.get?.(data.targetId);
+        if (!target?.position) return false;
+        const eventInstance = data.instanceId || '';
+        const currentInstance = this.currentInstanceId || '';
+        if (eventInstance && eventInstance !== currentInstance) return false;
+
+        const source = data.sourceId === this.player?.id
+            ? this.player
+            : this.remotePlayers?.get?.(data.sourceId);
+        const isLocalInvolvement = data.sourceId === this.player?.id || data.targetId === this.player?.id;
+        const isHazard = String(data.kind || '').includes('_pool')
+            || String(data.kind || '').includes('_zone')
+            || String(data.kind || '').includes('_gust')
+            || String(data.sourceId || '').startsWith('hazard-');
+        const hasNearbyPlayer = (this.isPlayerClassEntity(source) || this.isPlayerClassEntity(target))
+            && this.isNearbyCombatEvent(source, target, 38);
+        if (!isLocalInvolvement && !isHazard && !hasNearbyPlayer) return false;
+
+        const feedbackKind = this.resolveCombatFeedbackKind(data, source, target, eventType);
+        if (!PROCEDURAL_COMBAT_FEEDBACK_DEFINITIONS[feedbackKind]) return false;
+        const hasProductionEffectScene = Boolean(this.renderSystem?.effectGroup);
+        const hasInjectedEffectSpawner = Object.prototype.hasOwnProperty.call(this, 'spawnTransientEffect');
+        if (!hasProductionEffectScene && !hasInjectedEffectSpawner) return false;
+        if (!this.combatFeedbackCueTimestamps) this.combatFeedbackCueTimestamps = new Map();
+        const cueKey = `${eventType}:${feedbackKind}:${data.targetId || 'unknown'}`;
+        const now = Date.now();
+        const minimumInterval = eventType === 'heal' ? 140 : 80;
+        if (now - (this.combatFeedbackCueTimestamps.get(cueKey) || 0) < minimumInterval) return false;
+
+        const position = target.position.clone();
+        position.y = Math.max(0.08, Number(position.y) || 0.08);
+        const spawned = this.spawnTransientEffect?.('combat_feedback', position, 0xffffff, {
+            feedbackKind,
+            amount: Math.max(1, Number(data.amount) || 1),
+            sourceId: data.sourceId || '',
+            targetId: data.targetId || '',
+            instanceId: eventInstance
+        });
+        if (!spawned) return false;
+        if (this.combatFeedbackCueTimestamps.size >= 256
+            && !this.combatFeedbackCueTimestamps.has(cueKey)) {
+            const oldestCue = this.combatFeedbackCueTimestamps.keys().next().value;
+            if (oldestCue) this.combatFeedbackCueTimestamps.delete(oldestCue);
+        }
+        this.combatFeedbackCueTimestamps.set(cueKey, now);
+        this.lastCombatFeedbackPresentation = {
+            feedbackKind,
+            eventType,
+            amount: Math.max(1, Number(data.amount) || 1),
+            sourceId: data.sourceId || '',
+            targetId: data.targetId || '',
+            instanceId: eventInstance
+        };
+        return true;
+    }
+
     handleServerMessage(msg) {
         if (!this.player) return; // Safety check
 
@@ -1742,6 +1847,7 @@ export class GameEngine {
                 : this.remotePlayers.get(healData.targetId);
             if (target && Number(healData.amount) > 0) {
                 this.floatingTextManager.spawn(`+${healData.amount}`, target.position, '#55ff9b');
+                this.renderCombatFeedback(healData, 'heal');
             }
         } else if (msg.type === 'projectile_impact') {
             this.renderProjectileImpactFeedback(msg.payload || {});
@@ -1790,6 +1896,7 @@ export class GameEngine {
                 } else {
                     this.showNearbyRemoteDamageFeedback(sourceEntity, target, dmgData.amount);
                 }
+                this.renderCombatFeedback(dmgData, 'damage');
             }
 
             if (this.player && (dmgData.sourceId === this.player.id || dmgData.targetId === this.player.id)) {

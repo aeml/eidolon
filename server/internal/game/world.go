@@ -1729,15 +1729,19 @@ type World struct {
 }
 
 type DamageEvent struct {
-	TargetID string
-	SourceID string
-	Amount   int
+	TargetID   string `json:"targetId"`
+	SourceID   string `json:"sourceId"`
+	Amount     int    `json:"amount"`
+	Kind       string `json:"kind,omitempty"`
+	InstanceID string `json:"instanceId,omitempty"`
 }
 
 type HealEvent struct {
-	TargetID string
-	SourceID string
-	Amount   int
+	TargetID   string `json:"targetId"`
+	SourceID   string `json:"sourceId"`
+	Amount     int    `json:"amount"`
+	Kind       string `json:"kind,omitempty"`
+	InstanceID string `json:"instanceId,omitempty"`
 }
 
 type AbilityEvent struct {
@@ -4743,7 +4747,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
-							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage})
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage, Kind: damageType, InstanceID: zoneInstanceID})
 						}
 
 						if isDead {
@@ -4777,7 +4781,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						target.Mu.Unlock()
 
 						if actualHeal > 0 {
-							w.fireHealEvent(ownerID, target.ID, actualHeal)
+							w.fireHealEvent(ownerID, target.ID, actualHeal, "consecration", zoneInstanceID)
 						}
 					}
 				}
@@ -4837,7 +4841,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
-							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage})
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage, Kind: "fire", InstanceID: impactInstanceID})
 						}
 
 						if isDead {
@@ -4881,7 +4885,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 								target.Mu.Unlock()
 
 								if w.OnEvent != nil {
-									w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage})
+									w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage, Kind: "arcane", InstanceID: impactInstanceID})
 								}
 
 								if isDead {
@@ -5096,7 +5100,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				}
 
 				if w.OnEvent != nil {
-					w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage})
+					w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: ownerID, Amount: finalDamage, Kind: damageType, InstanceID: projectileInstanceID})
 				}
 
 				if isDead {
@@ -5183,7 +5187,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							splashTarget.Mu.Unlock()
 
 							if w.OnEvent != nil {
-								w.OnEvent("damage", DamageEvent{TargetID: splashTarget.ID, SourceID: ownerID, Amount: splashDmg})
+								w.OnEvent("damage", DamageEvent{TargetID: splashTarget.ID, SourceID: ownerID, Amount: splashDmg, Kind: "fire", InstanceID: projectileInstanceID})
 							}
 
 							if isSplashDead {
@@ -5429,7 +5433,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						target.Mu.Unlock()
 
 						if w.OnEvent != nil {
-							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: sourceID, Amount: finalDamage})
+							w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: sourceID, Amount: finalDamage, Kind: "physical", InstanceID: instanceID})
 						}
 
 						if isDead {
@@ -5641,7 +5645,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							target.Mu.Unlock()
 
 							if w.OnEvent != nil {
-								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: finalDamage})
+								w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: finalDamage, Kind: "physical", InstanceID: e.InstanceID})
 							}
 
 							if isDead {
@@ -5670,7 +5674,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						if sourceID == "" {
 							sourceID = "bleed"
 						}
-						w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: sourceID, Amount: e.BleedDamage})
+						w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: sourceID, Amount: e.BleedDamage, Kind: "bleed", InstanceID: e.InstanceID})
 					}
 					if e.Health <= 0 {
 						sourceID := e.BleedSourceID
@@ -5696,7 +5700,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						if sourceID == "" {
 							sourceID = "poison"
 						}
-						w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: sourceID, Amount: e.PoisonDamage})
+						w.OnEvent("damage", DamageEvent{TargetID: e.ID, SourceID: sourceID, Amount: e.PoisonDamage, Kind: "poison", InstanceID: e.InstanceID})
 					}
 					if e.Health <= 0 {
 						sourceID := e.PoisonSourceID
@@ -5729,7 +5733,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						if sourceID == "" {
 							sourceID = "healinglight_hot"
 						}
-						w.OnEvent("heal", HealEvent{TargetID: e.ID, SourceID: sourceID, Amount: actualHeal})
+						w.OnEvent("heal", HealEvent{TargetID: e.ID, SourceID: sourceID, Amount: actualHeal, Kind: "healing_light_hot", InstanceID: e.InstanceID})
 					}
 					if e.HealingLightHoTTicksRemaining <= 0 {
 						e.HealingLightHoTActive = false
@@ -5770,7 +5774,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 					}
 					selfHeal := e.Health - previousHealth
 					if selfHeal > 0 && w.OnEvent != nil {
-						w.OnEvent("heal", HealEvent{TargetID: e.ID, SourceID: e.ID, Amount: selfHeal})
+						w.OnEvent("heal", HealEvent{TargetID: e.ID, SourceID: e.ID, Amount: selfHeal, Kind: "guardian_embrace", InstanceID: e.InstanceID})
 					}
 
 					// Heal Nearby Allies
@@ -5798,7 +5802,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 							actualHeal := target.Health - previousHealth
 							target.Mu.Unlock()
 							if actualHeal > 0 && w.OnEvent != nil {
-								w.OnEvent("heal", HealEvent{TargetID: target.ID, SourceID: e.ID, Amount: actualHeal})
+								w.OnEvent("heal", HealEvent{TargetID: target.ID, SourceID: e.ID, Amount: actualHeal, Kind: "guardian_embrace", InstanceID: e.InstanceID})
 							}
 						}
 					}
@@ -5857,7 +5861,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 									target.Mu.Unlock()
 
 									if w.OnEvent != nil {
-										w.OnEvent("damage", DamageEvent{TargetID: targetID, SourceID: e.ID, Amount: finalDamage})
+										w.OnEvent("damage", DamageEvent{TargetID: targetID, SourceID: e.ID, Amount: finalDamage, Kind: "holy", InstanceID: e.InstanceID})
 									}
 
 									if isDead {
@@ -5884,7 +5888,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 									actualHeal := target.Health - previousHealth
 									target.Mu.Unlock()
 									if actualHeal > 0 {
-										w.fireHealEvent(e.ID, targetID, actualHeal)
+										w.fireHealEvent(e.ID, targetID, actualHeal, "spirit_guardians", e.InstanceID)
 									}
 								}
 							}
@@ -5992,7 +5996,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				target.Mu.Unlock()
 
 				if w.OnEvent != nil {
-					w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: finalDamage})
+					w.OnEvent("damage", DamageEvent{TargetID: target.ID, SourceID: e.ID, Amount: finalDamage, Kind: "holy", InstanceID: e.InstanceID})
 					// Visual Beam event? Or just rely on attack animation
 					w.OnEvent("ability", AbilityEvent{SourceID: e.ID, TargetID: target.ID, SkillName: "Smite", TargetX: tx, TargetZ: tz})
 				}
@@ -6228,7 +6232,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 									}
 									p.Health -= damage
 									if w.OnEvent != nil {
-										w.OnEvent("damage", DamageEvent{TargetID: p.ID, SourceID: srcID, Amount: damage})
+										w.OnEvent("damage", DamageEvent{TargetID: p.ID, SourceID: srcID, Amount: damage, Kind: "physical", InstanceID: instID})
 									}
 									if p.Health <= 0 {
 										w.handleDeath(p, src, nil)
@@ -6841,7 +6845,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 							et.Mu.Unlock()
 
 							if w.OnEvent != nil {
-								w.OnEvent("damage", DamageEvent{TargetID: et.ID, SourceID: shieldOwnerID, Amount: explosionDamage})
+								w.OnEvent("damage", DamageEvent{TargetID: et.ID, SourceID: shieldOwnerID, Amount: explosionDamage, Kind: "arcane", InstanceID: shieldInstanceID})
 							}
 							if isDead {
 								et.Mu.Lock()
@@ -6895,7 +6899,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		// So we should keep it locked or re-lock.
 
 		if w.OnEvent != nil {
-			w.OnEvent("damage", DamageEvent{TargetID: tgt.ID, SourceID: attackerSnapshot.ID, Amount: actualDamage})
+			w.OnEvent("damage", DamageEvent{TargetID: tgt.ID, SourceID: attackerSnapshot.ID, Amount: actualDamage, Kind: "physical", InstanceID: attackerSnapshot.InstanceID})
 		}
 		if poisonApplied && poisonSpreads {
 			w.spreadPoison(att, tgt, poisonDamage, poisonEndTime)
@@ -6907,7 +6911,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 			attackerDied := att.Health <= 0
 			att.Mu.Unlock()
 			if w.OnEvent != nil {
-				w.OnEvent("damage", DamageEvent{TargetID: att.ID, SourceID: tgt.ID, Amount: pendingReflectDamage})
+				w.OnEvent("damage", DamageEvent{TargetID: att.ID, SourceID: tgt.ID, Amount: pendingReflectDamage, Kind: "reflect", InstanceID: attackerSnapshot.InstanceID})
 			}
 			if attackerDied {
 				att.Mu.Lock()
@@ -7304,7 +7308,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 		}
 		target.DivineInterventionActive = false
 		target.DivineInterventionEndTime = time.Time{}
-		w.fireHealEvent(target.ID, target.ID, target.Health)
+		w.fireHealEvent(target.ID, target.ID, target.Health, "divine_intervention", target.InstanceID)
 		return
 	}
 
@@ -7328,6 +7332,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 		explosionDamage := 0
 		attackerID := attacker.ID
 		attacker.Mu.Lock()
+		attackerInstanceID := attacker.InstanceID
 		// Unique Effect: vampiric - Restore 5% max HP on kill
 		if attacker.HasUniqueEffect("vampiric") {
 			healAmount := applyHealingReceived(attacker, applyHealingDoneBonus(attacker, attacker.MaxHealth/20)) // 5%
@@ -7363,7 +7368,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 		attacker.Mu.Unlock()
 
 		if actualVampiricHeal > 0 {
-			w.fireHealEvent(attackerID, attackerID, actualVampiricHeal)
+			w.fireHealEvent(attackerID, attackerID, actualVampiricHeal, "vampiric", attackerInstanceID)
 		}
 		if explosionDamage > 0 {
 			// Find nearby enemies (not the target itself). Recursive kills keep
@@ -7385,7 +7390,7 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 				}
 				nearby.Mu.Unlock()
 				if w.OnEvent != nil {
-					w.OnEvent("damage", DamageEvent{TargetID: nearbyID, SourceID: attackerID, Amount: explosionDamage})
+					w.OnEvent("damage", DamageEvent{TargetID: nearbyID, SourceID: attackerID, Amount: explosionDamage, Kind: "physical", InstanceID: attackerInstanceID})
 				}
 			}
 		}

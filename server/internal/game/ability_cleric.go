@@ -67,7 +67,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 				primaryTarget.Mu.Unlock()
 			}
 			if primaryHeal > 0 {
-				w.fireHealEvent(player.ID, primaryTarget.ID, primaryHeal)
+				w.fireHealEvent(player.ID, primaryTarget.ID, primaryHeal, "holy", player.InstanceID)
 			}
 
 			// divineintervention_miracle: Can affect 2 targets (protect nearest ally too)
@@ -90,7 +90,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					allyHeal := applyIntervention(nearestAlly)
 					nearestAlly.Mu.Unlock()
 					if allyHeal > 0 {
-						w.fireHealEvent(player.ID, nearestAlly.ID, allyHeal)
+						w.fireHealEvent(player.ID, nearestAlly.ID, allyHeal, "holy", player.InstanceID)
 					}
 				}
 			}
@@ -250,7 +250,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					target.StunEndTime = time.Now().Add(2 * time.Second)
 				}
 
-				w.fireDamageEvent(player.ID, target.ID, finalDamage)
+				w.fireDamageEvent(player.ID, target.ID, finalDamage, "holy", player.InstanceID)
 				if target.Health <= 0 {
 					w.handleDeath(target, player, nil)
 				}
@@ -341,7 +341,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 						actualHeal := ally.Health - previousHealth
 						ally.Mu.Unlock()
 						if actualHeal > 0 {
-							w.fireHealEvent(player.ID, ally.ID, actualHeal)
+							w.fireHealEvent(player.ID, ally.ID, actualHeal, "holy", player.InstanceID)
 						}
 					}
 				}
@@ -398,7 +398,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 							actualHeal := ally.Health - previousHealth
 							ally.Mu.Unlock()
 							if actualHeal > 0 {
-								w.fireHealEvent(player.ID, ally.ID, actualHeal)
+								w.fireHealEvent(player.ID, ally.ID, actualHeal, "holy", player.InstanceID)
 							}
 						}
 					}
@@ -413,7 +413,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					actualHeal := target.Health - previousHealth
 					target.Mu.Unlock()
 					if actualHeal > 0 {
-						w.fireHealEvent(player.ID, target.ID, actualHeal)
+						w.fireHealEvent(player.ID, target.ID, actualHeal, "holy", player.InstanceID)
 					}
 				}
 
@@ -553,7 +553,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 						isDead := target.Health <= 0
 						target.Mu.Unlock()
 
-						w.fireDamageEvent(player.ID, target.ID, finalDamage)
+						w.fireDamageEvent(player.ID, target.ID, finalDamage, "holy", player.InstanceID)
 						if isDead {
 							target.Mu.Lock()
 							w.handleDeath(target, player, nil)
@@ -571,7 +571,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					player.Health = player.MaxHealth
 				}
 				if actualHeal := player.Health - previousHealth; actualHeal > 0 {
-					w.fireHealEvent(player.ID, player.ID, actualHeal)
+					w.fireHealEvent(player.ID, player.ID, actualHeal, "self_restore", player.InstanceID)
 				}
 			}
 
@@ -615,7 +615,7 @@ func (w *World) performClericAbility(player *Entity, targetX, targetZ float64, t
 					isDead := target.Health <= 0
 					target.Mu.Unlock()
 
-					w.fireDamageEvent(player.ID, target.ID, finalDamage)
+					w.fireDamageEvent(player.ID, target.ID, finalDamage, "holy", player.InstanceID)
 					if isDead {
 						target.Mu.Lock()
 						w.handleDeath(target, player, nil)

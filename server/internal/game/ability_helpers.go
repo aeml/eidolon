@@ -71,11 +71,15 @@ func (w *World) fireProjectileImpactEvent(event ProjectileImpactEvent) {
 }
 
 // fireDamageEvent emits a "damage" event if a listener is registered.
-func (w *World) fireDamageEvent(sourceID, targetID string, amount int) {
+func (w *World) fireDamageEvent(sourceID, targetID string, amount int, kind, instanceID string) {
 	actualLifesteal := 0
+	lifestealInstanceID := instanceID
 	if amount > 0 && sourceID != "" {
 		if source, ok := w.Entities[sourceID]; ok && source != nil {
 			source.Mu.Lock()
+			if lifestealInstanceID == "" {
+				lifestealInstanceID = source.InstanceID
+			}
 			healAmount := applyHealingReceived(source, int(float64(amount)*source.LifestealBonus))
 			if healAmount > 0 {
 				previousHealth := source.Health
@@ -91,23 +95,21 @@ func (w *World) fireDamageEvent(sourceID, targetID string, amount int) {
 
 	if w.OnEvent != nil {
 		w.OnEvent("damage", DamageEvent{
-			TargetID: targetID,
-			SourceID: sourceID,
-			Amount:   amount,
+			TargetID: targetID, SourceID: sourceID, Amount: amount,
+			Kind: kind, InstanceID: instanceID,
 		})
 	}
 	if actualLifesteal > 0 {
-		w.fireHealEvent(sourceID, sourceID, actualLifesteal)
+		w.fireHealEvent(sourceID, sourceID, actualLifesteal, "lifesteal", lifestealInstanceID)
 	}
 }
 
 // fireHealEvent emits a "heal" event if a listener is registered.
-func (w *World) fireHealEvent(sourceID, targetID string, amount int) {
+func (w *World) fireHealEvent(sourceID, targetID string, amount int, kind, instanceID string) {
 	if w.OnEvent != nil {
 		w.OnEvent("heal", HealEvent{
-			TargetID: targetID,
-			SourceID: sourceID,
-			Amount:   amount,
+			TargetID: targetID, SourceID: sourceID, Amount: amount,
+			Kind: kind, InstanceID: instanceID,
 		})
 	}
 }
