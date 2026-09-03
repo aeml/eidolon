@@ -13,6 +13,7 @@ import { AvengingSeraph } from '../entities/AvengingSeraph.js';
 import { DwarfSalesman } from '../entities/DwarfSalesman.js';
 import { AUDIO_CUES } from '../audio/AudioManager.js';
 import { resolveRemoteSkillVisual } from '../skills/skillVisuals.js';
+import { getAbilityPresentation } from '../skills/abilityVisualManifest.js';
 
 // These abilities resolve around their caster. Cursor hover must never turn
 // them into a targeted chase: doing so clears an otherwise valid movement path
@@ -146,21 +147,33 @@ export class AbilityController {
      * @param {number} targetZ
      */
     triggerRemoteAbilityVisuals(entity, skillName, targetX, targetZ) {
-        if (!entity || !entity.spawnVisualEffect) return;
+        if (!entity || (
+            typeof this.engine?.spawnTransientEffect !== 'function' &&
+            typeof entity.spawnVisualEffect !== 'function'
+        )) return;
 
         entity.playAbilityAnimation?.(skillName);
 
-        const visual = resolveRemoteSkillVisual(entity, skillName, new THREE.Vector3(targetX, 0, targetZ));
+        const targetPosition = new THREE.Vector3(targetX, 0, targetZ);
+        const visual = resolveRemoteSkillVisual(entity, skillName, targetPosition);
         if (visual.handled) {
             return;
         }
 
+        const className = entity?.meshType || entity?.subType || entity?.constructor?.name || '';
+        const canonicalAbilityName = getAbilityPresentation(className, skillName)?.canonicalName || null;
+        const direction = targetPosition.clone().sub(entity.position || targetPosition);
+        if (direction.lengthSq() > 0) direction.normalize();
         const visualLayers = Array.isArray(visual.layers) ? visual.layers : [visual];
-        visualLayers.forEach((entry) => {
-            if (Number.isFinite(entry.radius) && typeof this.engine?.spawnTransientEffect === 'function') {
+        visualLayers.forEach((entry, index) => {
+            if (typeof this.engine?.spawnTransientEffect === 'function') {
                 this.engine.spawnTransientEffect(entry.type, entry.origin, entry.color, {
                     source: entity,
-                    radius: entry.radius,
+                    direction,
+                    ...(canonicalAbilityName ? { abilityName: canonicalAbilityName } : {}),
+                    ...(canonicalAbilityName ? { requestedAbilityName: skillName } : {}),
+                    ...(canonicalAbilityName ? { abilityLayer: index } : {}),
+                    ...(Number.isFinite(entry.radius) ? { radius: entry.radius } : {}),
                     ...(Number.isFinite(entry.arc) ? { arc: entry.arc } : {})
                 });
                 return;

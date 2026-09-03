@@ -413,12 +413,56 @@ test.describe('deterministic production animation gallery', () => {
         expect(renderer).not.toBeNull();
         expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
 
+        await page.locator('#gallery-class').selectOption('Fighter');
+        await waitForActor(page, 'Fighter');
+        await page.locator('#gallery-ability').selectOption('Shield Slam');
+        await page.locator('#gallery-cast').click();
+        await expect.poll(async () => (await galleryMetrics(page)).lastAbilityCastVisuals.length).toBe(4);
+        let metrics = await galleryMetrics(page);
+        const shieldSlamCones = metrics.lastAbilityCastVisuals.filter((castVisual) => castVisual.type === 'cone');
+        expect(shieldSlamCones).toHaveLength(2);
+        expect(shieldSlamCones.every((castVisual) =>
+            castVisual.abilityName === 'Shield Slam' &&
+            castVisual.gameplayRadius === 4 &&
+            castVisual.gameplayArc === Math.PI / 2 &&
+            castVisual.boundaryParts === 3 &&
+            castVisual.hasExactBoundary
+        )).toBe(true);
+        await page.locator('#animation-gallery').evaluate((panel) => { panel.style.visibility = 'hidden'; });
+        await page.screenshot({
+            path: testInfo.outputPath('procedural-shield-slam-exact-cone.png'),
+            animations: 'allow'
+        });
+        await page.locator('#animation-gallery').evaluate((panel) => { panel.style.visibility = ''; });
+
+        await page.locator('#gallery-class').selectOption('Wizard');
+        await waitForActor(page, 'Wizard');
+        expect(await page.evaluate(() =>
+            window.__eidolonAnimationGalleryController.presentCompatibilityAbility('Frost Nova')
+        )).toBe(true);
+        await expect.poll(async () => (await galleryMetrics(page)).lastAbilityCastVisuals.length).toBe(4);
+        metrics = await galleryMetrics(page);
+        expect(metrics.lastAbilityCastVisuals.every((castVisual) =>
+            castVisual.abilityName === 'Flame Whip' &&
+            castVisual.requestedAbilityName === 'Frost Nova' &&
+            castVisual.motif === 'rimeglass-nova' &&
+            castVisual.artStyle === 'rimeglass nova and winter-chain release'
+        )).toBe(true);
+        expect(metrics.lastAbilityCastVisuals.filter((castVisual) => castVisual.gameplayRadius === 8))
+            .toHaveLength(2);
+        await page.locator('#animation-gallery').evaluate((panel) => { panel.style.visibility = 'hidden'; });
+        await page.screenshot({
+            path: testInfo.outputPath('procedural-frost-nova-rimeglass.png'),
+            animations: 'allow'
+        });
+        await page.locator('#animation-gallery').evaluate((panel) => { panel.style.visibility = ''; });
+
         await page.locator('#gallery-class').selectOption('Cleric');
         await waitForActor(page, 'Cleric');
         await page.locator('#gallery-ability').selectOption('Spirit Guardians');
         await page.locator('#gallery-persist').click();
         await expect.poll(async () => (await galleryMetrics(page)).spiritGuardians).toBe(6);
-        let metrics = await galleryMetrics(page);
+        metrics = await galleryMetrics(page);
         expect(metrics.effectVisibleMeshes).toBeGreaterThan(0);
         expect(metrics.nonFiniteTransforms).toBe(0);
         await page.screenshot({
@@ -568,6 +612,8 @@ test.describe('deterministic production animation gallery', () => {
             metrics = await galleryMetrics(page);
             expect(metrics.auditPassed).toBe(presentationCount);
             expect(metrics.nonFiniteTransforms).toBe(0);
+            expect(metrics.proceduralAbilityCastCache.geometries).toBeGreaterThan(10);
+            expect(metrics.proceduralAbilityCastCache.materials).toBeGreaterThan(200);
         }
 
         for (const entry of actorEntries) {

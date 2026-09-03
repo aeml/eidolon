@@ -16,8 +16,21 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.25 for procedural status relics', () => {
-        expect(indexHtml).toContain('Alpha 0.41.0.25');
+    test('advances the login screen to alpha 0.41.0.26 for procedural ability rites', () => {
+        expect(indexHtml).toContain('Alpha 0.41.0.26');
+        expect(indexHtml).toContain('Patch 0.41.0.26');
+        expect(indexHtml).toContain('every ability cast becomes a rite');
+        expect(indexHtml).toContain('All 52 selectable abilities now cast with an intentional identity');
+        expect(indexHtml).toContain('Shield Slam finally shows its whole hit area');
+        expect(indexHtml).toContain('Every authoritative area remains exact');
+        expect(indexHtml).toContain('Frost Nova keeps its own winter language');
+        expect(indexHtml).toContain('Replicated casts preserve semantic identity');
+        expect(indexHtml).toContain('Generic actor wrappers no longer erase class art');
+        expect(indexHtml).toContain('all 112 base/rune presentations');
+        expect(indexHtml).toContain('2026-09-03-26');
+    });
+
+    test('retains alpha 0.41.0.25 procedural status relic history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.25');
         expect(indexHtml).toContain('every condition bears its own relic');
         expect(indexHtml).toContain('All 23 attached conditions now have an intentional silhouette');
@@ -256,7 +269,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.25';
+        const expectedVersion = 'Alpha 0.41.0.26';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -360,8 +373,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.25 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.25`');
+    test('marks 0.41.0.26 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.26`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');
@@ -1431,6 +1444,7 @@ describe('version presentation', () => {
 
     test('preserves a cumulative version-by-version patch notes history', () => {
         expect(indexHtml).toContain('PATCH NOTES');
+        expect(indexHtml).toContain('Patch 0.41.0.26');
         expect(indexHtml).toContain('Patch 0.41.0.25');
         expect(indexHtml).toContain('Patch 0.41.0.24');
         expect(indexHtml).toContain('Patch 0.41.0.23');

@@ -14,6 +14,7 @@ import {
     PLAYER_ABILITY_VISUALS,
     getAbilityRuneVariants,
     getAbilityPresentation,
+    isAbilityVisualLayerEnabled,
     listPlayerAbilityPresentationVariants,
     listPlayerAbilityPresentations
 } from './skills/abilityVisualManifest.js';
@@ -29,6 +30,7 @@ import {
     PROCEDURAL_STATUS_EFFECT_DEFINITIONS,
     getProceduralStatusEffectCacheMetrics
 } from './art/ProceduralStatusEffects.js';
+import { getProceduralAbilityCastCacheMetrics } from './art/ProceduralAbilityCasts.js';
 
 const PLAYER_TYPES = Object.freeze({ Fighter, Rogue, Wizard, Cleric });
 const PLAYER_TYPE_NAMES = Object.freeze(Object.keys(PLAYER_TYPES));
@@ -65,6 +67,48 @@ const UNIQUE_EFFECT_IDS = Object.freeze([
     'vampiric', 'efficient', 'lucky', 'explosive', 'swift',
     'thorns', 'berserker', 'guardian', 'executioner', 'regenerative'
 ]);
+
+function collectProceduralAbilityCasts(effects) {
+    return effects.flatMap((effect) => {
+        const root = effect.root || effect.meshes?.find((mesh) => mesh?.userData?.proceduralAbilityCast);
+        if (!root?.userData?.proceduralAbilityCast) return [];
+        let visibleParts = 0;
+        const boundaries = [];
+        root.traverse((part) => {
+            if (part.isMesh && part.visible) visibleParts++;
+            if (part.userData?.gameplayBoundary) {
+                boundaries.push({
+                    radius: part.userData.gameplayRadius ?? null,
+                    arc: part.userData.gameplayArc ?? null,
+                    normalizedRadius: part.userData.normalizedGameplayRadius ?? null
+                });
+            }
+        });
+        const radius = root.userData.gameplayRadius;
+        const arc = root.userData.gameplayArc;
+        const hasExactBoundary = radius == null || boundaries.some((boundary) =>
+            boundary.radius === radius &&
+            boundary.normalizedRadius === 1 &&
+            (arc == null || boundary.arc === arc)
+        );
+        return [{
+            className: root.userData.abilityClass,
+            abilityName: root.userData.abilityName,
+            requestedAbilityName: root.userData.requestedAbilityName,
+            layer: root.userData.abilityLayer,
+            type: root.userData.layerType,
+            family: root.userData.castFamily,
+            motif: root.userData.motif,
+            artStyle: root.userData.artStyle,
+            quality: root.userData.quality,
+            gameplayRadius: radius ?? null,
+            gameplayArc: arc ?? null,
+            boundaryParts: boundaries.length,
+            hasExactBoundary,
+            visibleParts
+        }];
+    });
+}
 
 const PERSISTENT_STATE_APPLIERS = Object.freeze({
     iron_fortress: (actor) => { actor.ironFortressTimer = 8; },
@@ -240,6 +284,7 @@ export class AnimationGallery {
         this.lastError = null;
         this.createdEffects = 0;
         this.disposedEffects = 0;
+        this.lastAbilityCastVisuals = [];
         this.bindElements();
         this.populateControls();
         this.bindEvents();
@@ -661,6 +706,7 @@ export class AnimationGallery {
             effect.isActive = false;
         });
         this.effects.length = 0;
+        this.lastAbilityCastVisuals = [];
         this.persistentEntities.forEach((entity) => {
             entity.isActive = false;
             entity.dispose?.();
@@ -737,7 +783,7 @@ export class AnimationGallery {
         }
     }
 
-    async presentAbility(phase = 'cast') {
+    async presentAbility(phase = 'cast', requestedAbilityName = this.currentAbility) {
         if (!this.actor || !PLAYER_TYPE_NAMES.includes(this.currentClass)) return false;
         this.framePresentation(false);
         const sequence = ++this.presentationSequence;
@@ -745,26 +791,27 @@ export class AnimationGallery {
         clearActorStatusState(this.actor);
         clearActorStatusState(this.remoteActor);
         clearActorStatusState(this.targetActor);
-        const presentation = getAbilityPresentation(this.currentClass, this.currentAbility);
+        const presentation = getAbilityPresentation(this.currentClass, requestedAbilityName);
         if (!presentation) {
-            this.setStatus(`FAILED: unclassified ${this.currentClass}/${this.currentAbility}`, 'failed');
+            this.setStatus(`FAILED: unclassified ${this.currentClass}/${requestedAbilityName}`, 'failed');
             return false;
         }
 
         this.phase = phase;
         [this.actor, this.remoteActor].filter(Boolean).forEach((actor) => {
             actor.skillRunes ||= {};
-            if (this.currentRuneId) actor.skillRunes[this.currentAbility] = this.currentRuneId;
-            else delete actor.skillRunes[this.currentAbility];
+            if (this.currentRuneId) actor.skillRunes[presentation.canonicalName] = this.currentRuneId;
+            else delete actor.skillRunes[presentation.canonicalName];
         });
         this.actor.state = 'IDLE';
-        this.actor.playAbilityAnimation(this.currentAbility);
-        this.actor.spawnAbilityPresentation(this.actor.gameEngine, this.currentAbility, TARGET_POSITION);
+        this.actor.playAbilityAnimation(requestedAbilityName);
+        this.actor.spawnAbilityPresentation(this.actor.gameEngine, requestedAbilityName, TARGET_POSITION);
         if (this.remoteActor) {
             this.remoteActor.state = 'IDLE';
-            this.remoteActor.playAbilityAnimation(this.currentAbility);
-            this.remoteActor.spawnAbilityPresentation(this.remoteActor.gameEngine, this.currentAbility, TARGET_POSITION);
+            this.remoteActor.playAbilityAnimation(requestedAbilityName);
+            this.remoteActor.spawnAbilityPresentation(this.remoteActor.gameEngine, requestedAbilityName, TARGET_POSITION);
         }
+        this.lastAbilityCastVisuals = collectProceduralAbilityCasts(this.effects);
         if (phase === 'persistent' || presentation.persistentState) {
             const activations = [this.activatePersistentPresentation(this.actor, this.targetActor, presentation, sequence)];
             if (this.remoteActor) {
@@ -773,9 +820,13 @@ export class AnimationGallery {
             await Promise.all(activations);
             this.phase = 'persistent';
         }
-        this.setStatus(`${this.currentClass} · ${this.currentAbility} · ${this.phase}`, 'playing');
+        this.setStatus(`${this.currentClass} · ${requestedAbilityName} · ${this.phase}`, 'playing');
         this.updateMetrics();
         return true;
+    }
+
+    async presentCompatibilityAbility(skillName) {
+        return this.presentAbility('cast', skillName);
     }
 
     presentStatus(statusKey, ownerRole = 'local') {
@@ -884,12 +935,27 @@ export class AnimationGallery {
             const played = await this.presentAbility(entry.persistentState ? 'persistent' : 'cast');
             await new Promise((resolve) => setTimeout(resolve, 110));
             const metrics = this.updateMetrics();
+            const presentation = getAbilityPresentation(entry.className, entry.skillName);
+            const expectedLayers = presentation.layers.filter((layer) =>
+                isAbilityVisualLayerEnabled(layer, this.actor, presentation.canonicalName)
+            ).length * (this.remoteActor ? 2 : 1);
+            const castVisuals = metrics.lastAbilityCastVisuals;
             const passed = Boolean(
                 played &&
                 metrics.actorVisibleMeshes > 0 &&
                 metrics.effectVisibleMeshes > 0 &&
                 metrics.nonFiniteTransforms === 0 &&
-                metrics.clipNames.includes(this.actor.currentAnimationName)
+                metrics.clipNames.includes(this.actor.currentAnimationName) &&
+                castVisuals.length === expectedLayers &&
+                castVisuals.every((castVisual) =>
+                    castVisual.className === entry.className &&
+                    castVisual.abilityName === presentation.canonicalName &&
+                    castVisual.requestedAbilityName === entry.skillName &&
+                    castVisual.visibleParts > 0 &&
+                    castVisual.motif &&
+                    castVisual.artStyle &&
+                    castVisual.hasExactBoundary
+                )
             );
             this.auditResults.push({
                 className: entry.className,
@@ -952,6 +1018,7 @@ export class AnimationGallery {
                     visibleParts
                 };
             }));
+        const proceduralAbilityCasts = collectProceduralAbilityCasts(this.effects);
         const metrics = {
             ready: Boolean(this.actor?.mesh),
             className: this.currentClass,
@@ -1016,6 +1083,9 @@ export class AnimationGallery {
                 (this.targetActor?.attachedStatusEffects?.size || 0),
             proceduralStatusVisuals,
             proceduralStatusCache: getProceduralStatusEffectCacheMetrics(),
+            proceduralAbilityCasts,
+            lastAbilityCastVisuals: this.lastAbilityCastVisuals.map((entry) => ({ ...entry })),
+            proceduralAbilityCastCache: getProceduralAbilityCastCacheMetrics(),
             spiritGuardians: (this.actor?.spiritEffect?.guardians?.length || 0) +
                 (this.remoteActor?.spiritEffect?.guardians?.length || 0),
             spiritVariants: [this.actor, this.remoteActor]

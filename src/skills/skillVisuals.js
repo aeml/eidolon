@@ -18,7 +18,7 @@ function resolvePosition(entity, targetPos, anchor) {
 }
 
 export function resolveRemoteSkillVisual(entity, skillName, targetPos) {
-    const className = entity?.constructor?.name || entity?.meshType || entity?.subType || '';
+    const className = entity?.meshType || entity?.subType || entity?.constructor?.name || '';
 
     if (entity instanceof AvengingSeraph && skillName === 'Smite') {
         return {

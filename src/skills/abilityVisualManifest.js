@@ -15,7 +15,10 @@ export const PLAYER_ABILITY_VISUALS = Object.freeze({
     Fighter: Object.freeze({
         Charge: presentation('movement', 'charge', [layer('wave', 0xff5500, 'target')]),
         Whirlwind: presentation('area', 'spin', [layer('spin', 0xd7dbe0)]),
-        'Shield Slam': presentation('melee', 'heavy', [layer('impact', 0xffef74, 'target')]),
+        'Shield Slam': presentation('melee', 'heavy', [
+            layer('cone', 0xffd86a),
+            layer('impact', 0xffef74, 'target')
+        ]),
         'Iron Fortress': presentation('buff', 'buff', [layer('sphere', 0xaeb7c2)], { persistentState: 'iron_fortress' }),
         'Guardian Roar': presentation('buff', 'shout', [layer('ring', 0xff4c45)], { persistentState: 'guardian_roar' }),
         'Sweeping Strike': presentation('melee', 'sweep', [layer('cone', 0xf5f7ff)]),

@@ -566,6 +566,7 @@ export class Actor extends Entity {
                 source: this,
                 direction,
                 abilityName: presentation.canonicalName,
+                requestedAbilityName: presentation.skillName,
                 abilityLayer: index,
                 ...(gameplayRadius && isAoeBoundaryVisualType(entry.type)
                     ? { radius: gameplayRadius, ...(gameplayArc ? { arc: gameplayArc } : {}) }

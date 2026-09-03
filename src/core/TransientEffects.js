@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createProceduralAbilityCastEffect } from '../art/ProceduralAbilityCasts.js';
 
 class TransientEffect {
     constructor(scene, meshes, duration, updateFn = null) {
@@ -417,6 +418,9 @@ function createTelegraphLabelSprite(text, color = '#ffffff') {
 
 export function createTransientEffect(scene, type, position, color = 0xffffff, options = {}) {
     if (!scene || !position) return null;
+    if (options.abilityName) {
+        return createProceduralAbilityCastEffect(scene, type, position, color, options);
+    }
     const effectScale = Number.isFinite(options.effectScale) ? options.effectScale : 1.0;
     const quality = options.quality || 'high';
 
