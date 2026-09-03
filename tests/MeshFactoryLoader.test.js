@@ -279,7 +279,7 @@ describe('MeshFactory catalog integration', () => {
         }
     });
 
-    test('Cleric uses the procedural gravepriest without requesting a GLB', async () => {
+    test('Cleric uses the procedural dawnwarden without requesting a GLB', async () => {
         const previousPool = MeshFactory.pool;
         const loadSpy = jest.spyOn(MeshFactory, 'loadModel');
         MeshFactory.pool = {};
@@ -288,7 +288,7 @@ describe('MeshFactory catalog integration', () => {
             const mesh = await MeshFactory.createMeshForType('Cleric');
             expect(mesh.userData.proceduralHumanoid).toBe(true);
             expect(mesh.userData.proceduralClass).toBe('Cleric');
-            expect(mesh.userData.artStyle).toBe('Lanternhold gravepriest');
+            expect(mesh.userData.artStyle).toBe('Lanternhold dawnwarden');
             expect(mesh.userData.animations.map((entry) => entry.name))
                 .toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
             expect(loadSpy).not.toHaveBeenCalled();

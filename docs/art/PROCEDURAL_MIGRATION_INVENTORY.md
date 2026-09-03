@@ -6,7 +6,7 @@ Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.35`
+Current migration release: `Alpha 0.41.0.36`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
@@ -328,3 +328,11 @@ Focused structural coverage verifies the female presentation metadata, paired fe
 The same foundation now composes dungeon trash, elite, boss-depth, run-level, and Normal/Heroic/Mythic modifiers. The obsolete million-Vitality boss declarations and implicit extra ×10 health layer are removed. Fire, Air, Verdant, and Abyssal elite-room actors carry elite IDs as well as elite combat profiles, keeping combat pressure and existing elite loot recognition aligned.
 
 The recalculation path is also type-correct: player-only level health and resource regeneration no longer attach to enemies when a slow begins or expires, while an authored hostile base speed survives the temporary modifier. Regression coverage checks all 18 post-starter overworld families against low, medium, and optimized same-level gear envelopes, plus the exact Skeleton anchor, overworld elites, dungeon ranks, sequential bosses, run levels, difficulty multipliers, and slow apply/restore transitions.
+
+## The dawnwarden casts off the cowl
+
+`Alpha 0.41.0.36` replaces the Cleric's lingering friar silhouette with an open-faced Lanternhold dawnwarden. The pale circular collar, rear coif, long ivory stole, broad burial cloak, and ankle-length bell vestments are removed. In their place, the heroine carries swept auburn hair, a visible bun and temple locks, long side braids, a gold diadem, seven-ray sun crown, fitted dual reliquary breastplate, narrow armored waist, hip faulds, split wine-red war skirt and cape, and long plated legs. Warm facial planes, brows, paired holy eyes, nose, and lips remain legible at the normal isometric distance.
+
+The complete fourteen-slot loadout now uses a tighter Cleric-specific helmet, shoulder, and chest fit so generated equipment follows rather than erases her silhouette. Face components and exterior hair locks remain visible around headgear while the crown, inner hair cap, and other intersecting ornaments still hide correctly. All 18 attachment regions, every equipment family, default mace and censer restoration, animation clips, grounded bounds, hitboxes, pooling, local/remote construction, and shared caches remain intact.
+
+Structural coverage forbids the removed coif, stole, and burial-cloak parts; requires the new dawnwarden anatomy, hair, armor, sash, faulds, split cape, and diadem; and verifies the exact fitted-equipment profile. Full-loadout tests preserve every facial component and both braids while all fourteen slots render. Deterministic hardware Chrome confirms finite High-quality unequipped and fully equipped silhouettes. Class statistics, abilities, movement, combat authority, network synchronization, progression, equipment data, and saves are unchanged.

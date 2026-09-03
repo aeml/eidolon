@@ -380,6 +380,14 @@ describe('procedural equipment visual manifest', () => {
         expect(face.visible).toBe(true);
         expect(eyes.visible).toBe(true);
         expect(root.getObjectByName('Cleric_EyeGlowRight').visible).toBe(true);
+        expect(root.getObjectByName('Cleric_BrowLeft').visible).toBe(true);
+        expect(root.getObjectByName('Cleric_BrowRight').visible).toBe(true);
+        expect(root.getObjectByName('Cleric_Nose').visible).toBe(true);
+        expect(root.getObjectByName('Cleric_Lips').visible).toBe(true);
+        expect(root.getObjectByName('Cleric_TempleLockLeft').visible).toBe(true);
+        expect(root.getObjectByName('Cleric_TempleLockRight').visible).toBe(true);
+        expect(root.getObjectByName('Cleric_BraidLeft').visible).toBe(true);
+        expect(root.getObjectByName('Cleric_BraidRight').visible).toBe(true);
         expect(root.getObjectByName('Cleric_HairCap').visible).toBe(false);
         expect(root.getObjectByName('Cleric_Oathmace').visible).toBe(false);
         expect(root.getObjectByName('Rig_Censer').visible).toBe(false);

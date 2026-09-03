@@ -332,7 +332,7 @@ describe('shared procedural humanoid Wizard', () => {
 });
 
 describe('shared procedural humanoid Cleric', () => {
-    test('creates a grounded female Lanternhold gravepriest with a reliquary silhouette', () => {
+    test('creates a grounded female Lanternhold dawnwarden without a friar silhouette', () => {
         const cleric = createProceduralCleric();
         const bounds = new THREE.Box3().setFromObject(cleric);
         const size = bounds.getSize(new THREE.Vector3());
@@ -340,7 +340,7 @@ describe('shared procedural humanoid Cleric', () => {
         expect(cleric.userData).toEqual(expect.objectContaining({
             proceduralHumanoid: true,
             proceduralClass: 'Cleric',
-            artStyle: 'Lanternhold gravepriest',
+            artStyle: 'Lanternhold dawnwarden',
             genderPresentation: 'female',
             sharedGeometry: true
         }));
@@ -349,21 +349,41 @@ describe('shared procedural humanoid Cleric', () => {
         expect(bounds.min.y).toBeCloseTo(0, 1);
         expect(size.y).toBeGreaterThan(4.4);
         expect(size.y).toBeLessThan(4.7);
-        expect(size.x).toBeGreaterThan(2.3);
-        expect(size.x).toBeLessThan(2.5);
+        expect(size.x).toBeGreaterThan(2.2);
+        expect(size.x).toBeLessThan(2.35);
         expect(cleric.getObjectByName('Cleric_Oathmace')).not.toBeNull();
         expect(cleric.getObjectByName('Rig_Censer')).not.toBeNull();
         expect(cleric.getObjectByName('Cleric_BrokenSunRay2')).not.toBeNull();
         expect(cleric.getObjectByName('Cleric_HairCap')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_HairBack')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_HairBun')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_SweptFringeLeft')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_SweptFringeRight')).not.toBeNull();
         expect(cleric.getObjectByName('Cleric_BraidLeft')).not.toBeNull();
         expect(cleric.getObjectByName('Cleric_BraidRight')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_DiademGem')).not.toBeNull();
         expect(cleric.getObjectByName('Cleric_EyeGlowRight')).not.toBeNull();
         expect(cleric.getObjectByName('Cleric_Nose')).not.toBeNull();
         expect(cleric.getObjectByName('Cleric_Lips')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_BreastplateLeft')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_BreastplateRight')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_WarCapeLeft')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_WarCapeRight')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_WarSash')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_HipFauldLeft')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_HipFauldRight')).not.toBeNull();
+        expect(cleric.getObjectByName('Cleric_Coif')).toBeUndefined();
+        expect(cleric.getObjectByName('Cleric_FrontStole')).toBeUndefined();
+        expect(cleric.getObjectByName('Cleric_BurialCloak')).toBeUndefined();
         expect(cleric.getObjectByName('Cleric_HipVestment').geometry.parameters.radiusBottom)
             .toBeGreaterThan(cleric.getObjectByName('Cleric_HipVestment').geometry.parameters.radiusTop);
         expect(cleric.getObjectByName('Cleric_ReliquaryCuirass').geometry.parameters.radiusBottom)
             .toBeLessThan(cleric.getObjectByName('Cleric_ReliquaryCuirass').geometry.parameters.radiusTop);
+        expect(cleric.userData.equipmentScaleBySlot).toEqual(expect.objectContaining({
+            head: 0.5,
+            shoulders: 0.6,
+            chest: 0.62
+        }));
         expect(hasOnlyFiniteTransforms(cleric)).toBe(true);
     });
 
