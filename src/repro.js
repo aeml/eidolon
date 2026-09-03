@@ -3,8 +3,9 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RenderSystem } from './core/RenderSystem.js';
 import { AnimationGallery } from './animationGallery.js';
 import { EnvironmentalHazard } from './entities/EnvironmentalHazard.js';
-import { ACTIVE_WORLD_HAZARD_TYPES, getRegionTheme } from './art/darkFantasyTheme.js';
+import { getRegionTheme } from './art/darkFantasyTheme.js';
 import {
+    FOLIAGE_HAZARD_CLEARINGS,
     PROCEDURAL_FOLIAGE_RECIPES,
     createProceduralFoliagePreview,
     getProceduralFoliageCacheMetrics
@@ -48,6 +49,7 @@ const entranceGalleryMode = urlParams.get('entrances') === '1';
 const interiorGalleryMode = urlParams.get('interiors') === '1';
 const encounterGalleryMode = urlParams.get('encounters') === '1';
 const terrainGalleryMode = urlParams.get('terrain') === '1';
+const requestedGraphicsQuality = urlParams.get('quality') === 'low' ? 'low' : 'high';
 const specializedGalleryMode = galleryMode || hazardGalleryMode || foliageGalleryMode || architectureGalleryMode || entranceGalleryMode || interiorGalleryMode || encounterGalleryMode || terrainGalleryMode;
 
 const perfOverlay = document.getElementById('perf-overlay');
@@ -66,6 +68,7 @@ const previewWindowCloseButton = document.getElementById('repro-window-close');
 
 const renderSystem = new RenderSystem(false);
 renderSystem.scene.background = new THREE.Color(0x0b0e13);
+renderSystem.setGraphicsQuality(requestedGraphicsQuality);
 
 if (perfOverlayEnabled && perfOverlay) {
     renderSystem.enablePerfOverlay(perfOverlay);
@@ -379,23 +382,66 @@ if (galleryMode) {
 }
 
 const hazardGallery = [];
-if (hazardGalleryMode) {
-    document.body.classList.add('hazard-gallery-mode');
-    const spacing = 16;
-    ACTIVE_WORLD_HAZARD_TYPES.forEach((hazardType, index) => {
+let hazardGalleryGeneration = 0;
+const HAZARD_TYPE_BY_REALM = Object.freeze({
+    earth: 'sandstorm',
+    water: 'lightning_zone',
+    fire: 'lava_pool',
+    air: 'wind_gust'
+});
+
+function buildHazardGallery(quality = renderSystem.graphicsQuality) {
+    const normalizedQuality = quality === 'low' ? 'low' : 'high';
+    renderSystem.setGraphicsQuality(normalizedQuality);
+    hazardGallery.splice(0).forEach((hazard) => {
+        hazard.removeFromScene(renderSystem.effectGroup);
+        hazard.dispose();
+    });
+
+    const catalog = Object.entries(FOLIAGE_HAZARD_CLEARINGS).flatMap(([realm, anchors]) => (
+        anchors.map(([x, z, radius], realmIndex) => ({ realm, realmIndex, x, z, radius }))
+    ));
+    const columns = 13;
+    const spacing = 22;
+    catalog.forEach((entry, index) => {
+        const column = index % columns;
+        const row = Math.floor(index / columns);
         const position = {
-            x: (index - (ACTIVE_WORLD_HAZARD_TYPES.length - 1) / 2) * spacing,
+            x: (column - (columns - 1) / 2) * spacing,
             y: 0,
-            z: 0
+            z: (row - 2) * spacing
         };
-        const hazard = new EnvironmentalHazard(`gallery-${hazardType}`, hazardType, position, { radius: 6 });
+        const hazardType = HAZARD_TYPE_BY_REALM[entry.realm];
+        const hazard = new EnvironmentalHazard(
+            `gallery-${entry.realm}-${entry.realmIndex}`,
+            hazardType,
+            position,
+            { radius: entry.radius, quality: normalizedQuality }
+        );
+        hazard.userData = {
+            realm: entry.realm,
+            realmIndex: entry.realmIndex,
+            authoritativeX: entry.x,
+            authoritativeZ: entry.z
+        };
         hazard.addToScene(renderSystem.effectGroup);
         hazardGallery.push(hazard);
     });
-    renderSystem.camera.position.set(24, 28, 38);
+    hazardGalleryGeneration += 1;
+    return hazardGallery;
+}
+
+if (hazardGalleryMode) {
+    document.body.classList.add('hazard-gallery-mode');
+    buildHazardGallery(requestedGraphicsQuality);
+    controls.maxDistance = 500;
+    renderSystem.camera.position.set(0, 250, 190);
+    renderSystem.camera.zoom = 0.22;
+    renderSystem.camera.updateProjectionMatrix();
     controls.target.set(0, 0, 0);
     controls.update();
-    setReadout('Dark-fantasy hazard gallery\nEvery glowing outer edge is the exact server-authoritative damage radius.');
+    window.__eidolonSetHazardQuality = (quality) => buildHazardGallery(quality);
+    setReadout('Complete dark-fantasy hazard ledger\nAll 65 production footprints; every glowing outer edge is the exact server-authoritative damage radius.');
 }
 
 const foliageGallery = new THREE.Group();
@@ -792,12 +838,25 @@ const animate = () => {
 
     if (hazardGalleryMode) {
         window.__eidolonHazardGallery = {
-            ready: true,
+            ready: hazardGallery.length === 65,
+            generation: hazardGalleryGeneration,
+            quality: renderSystem.graphicsQuality,
+            attachedMeshCount: hazardGallery.reduce(
+                (count, hazard) => count + hazard.meshes.filter((mesh) => mesh.parent === renderSystem.effectGroup).length,
+                0
+            ),
             hazards: hazardGallery.map((hazard) => ({
+                id: hazard.id,
+                realm: hazard.userData.realm,
+                realmIndex: hazard.userData.realmIndex,
                 type: hazard.hazardType,
                 radius: hazard.radius,
                 boundaryRadius: hazard.boundaryMesh?.geometry?.boundingSphere?.radius,
+                boundaryVertices: hazard.boundaryMesh?.geometry?.attributes?.position?.count || 0,
+                particleCount: hazard.particles?.geometry?.attributes?.position?.count || 0,
                 themeName: hazard.boundaryMesh?.userData?.themeName,
+                quality: hazard.quality,
+                authoritativePosition: [hazard.userData.authoritativeX, hazard.userData.authoritativeZ],
                 meshCount: hazard.meshes.length,
                 finite: hazard.meshes.every((mesh) => [
                     mesh.position.x, mesh.position.y, mesh.position.z,

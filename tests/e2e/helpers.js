@@ -29,6 +29,7 @@ export function collectBrowserFailures(page, baseURL) {
     const successfulResponses = new Set();
     const canceledAssetFailures = new Map();
     const transientDocumentFailures = new Map();
+    const transientDocumentRequestFailures = new Map();
 
     page.on('pageerror', (error) => failures.push(`pageerror: ${error.message}`));
     page.on('console', (message) => {
@@ -52,6 +53,19 @@ export function collectBrowserFailures(page, baseURL) {
                 errorText,
                 request.url()
             )) return;
+
+            // A CDN/edge navigation can fail before an HTTP response exists.
+            // Keep the final failure actionable, but reconcile an earlier
+            // failed document when a bounded openGame retry later loads the
+            // same route successfully.
+            if (request.resourceType() === 'document') {
+                failures.push(detail);
+                const documentKey = requestURL.pathname;
+                const details = transientDocumentRequestFailures.get(documentKey) || [];
+                details.push(detail);
+                transientDocumentRequestFailures.set(documentKey, details);
+                return;
+            }
 
             // Chrome can cancel a GLB request while the newly activated asset
             // service worker takes control, after which MeshFactory retries it.
@@ -92,6 +106,11 @@ export function collectBrowserFailures(page, baseURL) {
                 if (index !== -1) failures.splice(index, 1);
             }
             transientDocumentFailures.delete(documentKey);
+            for (const detail of transientDocumentRequestFailures.get(documentKey) || []) {
+                const index = failures.indexOf(detail);
+                if (index !== -1) failures.splice(index, 1);
+            }
+            transientDocumentRequestFailures.delete(documentKey);
         }
         for (const detail of canceledAssetFailures.get(response.url()) || []) {
             const index = failures.indexOf(detail);

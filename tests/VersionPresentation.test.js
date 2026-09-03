@@ -16,8 +16,22 @@ const versionedRuntimeFiles = [
 ].map((relativePath) => fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'));
 
 describe('version presentation', () => {
-    test('advances the login screen to alpha 0.41.0.31 for codeborn realm terrain', () => {
-        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 0.41.0.31</span>');
+    test('advances the login screen to alpha 0.41.0.32 for exact hazard lifecycle boundaries', () => {
+        expect(indexHtml).toContain('<span class="start-version-row__label">Alpha 0.41.0.32</span>');
+        expect(indexHtml).toContain('Patch 0.41.0.32');
+        expect(indexHtml).toContain('no wound crosses a forgotten threshold');
+        expect(indexHtml).toContain('Hazards no longer multiply behind the veil');
+        expect(indexHtml).toContain('Scene thresholds close behind you');
+        expect(indexHtml).toContain('Exposure always starts honestly');
+        expect(indexHtml).toContain("Lanternhold's whole fence line is safe");
+        expect(indexHtml).toContain('Every realm hazard passed inspection');
+        expect(indexHtml).toContain('Exact danger survives Low quality');
+        expect(indexHtml).toContain('The full blighted atlas is visible');
+        expect(indexHtml).toContain('Live release retries report recovery correctly');
+        expect(indexHtml).toContain('2026-09-03-32');
+    });
+
+    test('retains alpha 0.41.0.31 codeborn realm terrain history', () => {
         expect(indexHtml).toContain('Patch 0.41.0.31');
         expect(indexHtml).toContain('the five realms remember their skin');
         expect(indexHtml).toContain('Every overworld realm now has its own codeborn ground');
@@ -334,7 +348,7 @@ describe('version presentation', () => {
     });
 
     test('keeps client, server, container, deploy, and isolated-QA version defaults aligned', () => {
-        const expectedVersion = 'Alpha 0.41.0.31';
+        const expectedVersion = 'Alpha 0.41.0.32';
 
         expect(releaseManifest.version).toBe(expectedVersion);
         versionedRuntimeFiles.forEach((contents) => {
@@ -438,8 +452,8 @@ describe('version presentation', () => {
         expect(indexHtml).toContain('Added client coverage for remote interpolation frame-spike handling and the 0.35.0 release state');
     });
 
-    test('marks 0.41.0.31 current and points the active line at 0.41', () => {
-        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.31`');
+    test('marks 0.41.0.32 current and points the active line at 0.41', () => {
+        expect(alphaRoadmap).toContain('Current in-game displayed version: `Alpha 0.41.0.32`');
         expect(alphaRoadmap).toContain('Active implementation line: `0.41`');
         expect(alphaRoadmap).toContain('0.39` (closed)');
         expect(alphaRoadmap).toContain('0.38` (closed)');

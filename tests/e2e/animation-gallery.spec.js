@@ -931,22 +931,60 @@ test.describe('deterministic production animation gallery', () => {
         expect(renderer).not.toBeNull();
         expect(`${renderer.vendor} ${renderer.renderer}`).not.toMatch(/swiftshader|llvmpipe|software/i);
 
-        const metrics = await page.evaluate(() => window.__eidolonHazardGallery);
-        expect(metrics.hazards.map((hazard) => hazard.type)).toEqual([
-            'lava_pool',
-            'sandstorm',
-            'lightning_zone',
-            'wind_gust'
-        ]);
-        for (const hazard of metrics.hazards) {
+        const highMetrics = await page.evaluate(() => window.__eidolonHazardGallery);
+        expect(highMetrics.quality).toBe('high');
+        expect(highMetrics.hazards).toHaveLength(65);
+        expect(Object.fromEntries(['earth', 'water', 'fire', 'air'].map((realm) => [
+            realm,
+            highMetrics.hazards.filter((hazard) => hazard.realm === realm).length
+        ]))).toEqual({ earth: 12, water: 15, fire: 19, air: 19 });
+        expect(Object.fromEntries(['sandstorm', 'lightning_zone', 'lava_pool', 'wind_gust'].map((type) => [
+            type,
+            highMetrics.hazards.filter((hazard) => hazard.type === type).length
+        ]))).toEqual({ sandstorm: 12, lightning_zone: 15, lava_pool: 19, wind_gust: 19 });
+        for (const hazard of highMetrics.hazards) {
             expect(hazard.boundaryRadius).toBeCloseTo(hazard.radius, 5);
             expect(hazard.themeName).toBeTruthy();
             expect(hazard.meshCount).toBeGreaterThan(1);
+            expect(hazard.particleCount).toBeGreaterThan(0);
+            expect(hazard.quality).toBe('high');
             expect(hazard.finite).toBe(true);
         }
+        expect(highMetrics.attachedMeshCount).toBe(
+            highMetrics.hazards.reduce((sum, hazard) => sum + hazard.meshCount, 0)
+        );
 
         await page.screenshot({
-            path: testInfo.outputPath('dark-fantasy-world-hazards.png'),
+            path: testInfo.outputPath('dark-fantasy-world-hazards-high.png'),
+            animations: 'allow'
+        });
+
+        await page.evaluate(() => window.__eidolonSetHazardQuality('low'));
+        await expect.poll(() => page.evaluate(() => window.__eidolonHazardGallery?.quality)).toBe('low');
+        const lowMetrics = await page.evaluate(() => window.__eidolonHazardGallery);
+        expect(lowMetrics.generation).toBe(highMetrics.generation + 1);
+        expect(lowMetrics.hazards).toHaveLength(65);
+        expect(lowMetrics.hazards.map((hazard) => hazard.id)).toEqual(
+            highMetrics.hazards.map((hazard) => hazard.id)
+        );
+        expect(lowMetrics.hazards.map((hazard) => hazard.authoritativePosition)).toEqual(
+            highMetrics.hazards.map((hazard) => hazard.authoritativePosition)
+        );
+        for (const hazard of lowMetrics.hazards) {
+            expect(hazard.boundaryRadius).toBeCloseTo(hazard.radius, 5);
+            expect(hazard.quality).toBe('low');
+            expect(hazard.finite).toBe(true);
+        }
+        expect(lowMetrics.attachedMeshCount).toBe(
+            lowMetrics.hazards.reduce((sum, hazard) => sum + hazard.meshCount, 0)
+        );
+        expect(lowMetrics.hazards.reduce((sum, hazard) => sum + hazard.particleCount, 0))
+            .toBeLessThan(highMetrics.hazards.reduce((sum, hazard) => sum + hazard.particleCount, 0));
+        expect(lowMetrics.hazards.reduce((sum, hazard) => sum + hazard.boundaryVertices, 0))
+            .toBeLessThan(highMetrics.hazards.reduce((sum, hazard) => sum + hazard.boundaryVertices, 0));
+
+        await page.screenshot({
+            path: testInfo.outputPath('dark-fantasy-world-hazards-low.png'),
             animations: 'allow'
         });
         expect(failures, failures.join('\n')).toEqual([]);

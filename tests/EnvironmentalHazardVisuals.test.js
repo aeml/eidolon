@@ -42,4 +42,22 @@ describe('dark-fantasy environmental hazard visuals', () => {
 
         hazard.dispose();
     });
+
+    test.each(ACTIVE_WORLD_HAZARD_TYPES)('%s scales decoration down without shrinking its low-quality boundary', (hazardType) => {
+        const config = { radius: 9 };
+        const high = new EnvironmentalHazard('hazard-high', hazardType, { x: 0, z: 0 }, { ...config, quality: 'high' });
+        const low = new EnvironmentalHazard('hazard-low', hazardType, { x: 0, z: 0 }, { ...config, quality: 'low' });
+
+        expect(high.quality).toBe('high');
+        expect(low.quality).toBe('low');
+        expect(high.boundaryMesh.geometry.boundingSphere.radius).toBeCloseTo(9, 5);
+        expect(low.boundaryMesh.geometry.boundingSphere.radius).toBeCloseTo(9, 5);
+        expect(low.boundaryMesh.geometry.attributes.position.count)
+            .toBeLessThan(high.boundaryMesh.geometry.attributes.position.count);
+        expect(low.particles.geometry.attributes.position.count)
+            .toBeLessThan(high.particles.geometry.attributes.position.count);
+
+        high.dispose();
+        low.dispose();
+    });
 });

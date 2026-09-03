@@ -646,6 +646,7 @@ func (w *World) MovePlayerToQAWaypoint(playerID, waypoint string) (*Entity, bool
 	player.State = "IDLE"
 	player.MoveLockUntil = time.Now().Add(QAWaypointMovementLockDuration)
 	player.QAWaypointProtectionEndTime = time.Now().Add(QAWaypointProtectionDuration)
+	delete(w.PlayerHazardTicks, playerID)
 	w.Grid.Update(player, oldX, oldZ)
 
 	return player, true
@@ -3131,6 +3132,9 @@ func (w *World) AddEntity(e *Entity) {
 	defer w.Mu.Unlock()
 	if e.Type == TypePlayer {
 		e.SocialStatus = NormalizeSocialStatus(e.SocialStatus)
+		// A newly-added/rejoined player must never inherit fractional damage
+		// time from an older entity with the same stable ID.
+		delete(w.PlayerHazardTicks, e.ID)
 	}
 	// Remove stale grid entry if entity ID already exists (e.g. re-join)
 	if old, exists := w.Entities[e.ID]; exists {
@@ -3143,6 +3147,9 @@ func (w *World) AddEntity(e *Entity) {
 func (w *World) RemoveEntity(id string) {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
+	// Tick state is keyed independently from Entities, so clear it even when
+	// the entity was already removed by another lifecycle path.
+	delete(w.PlayerHazardTicks, id)
 	if e, ok := w.Entities[id]; ok {
 		instanceID := e.InstanceID
 		w.Grid.Remove(e)
@@ -3168,6 +3175,9 @@ func (w *World) SetEntityDisconnected(id string, at time.Time) bool {
 	e.State = "IDLE"
 	e.TargetX = e.X
 	e.TargetZ = e.Z
+	// A resume starts a fresh exposure window. It must not complete a damage
+	// tick accumulated before the socket went away.
+	delete(w.PlayerHazardTicks, id)
 	return true
 }
 
@@ -4555,6 +4565,7 @@ func (w *World) PerformRespawn(playerID string) {
 	player.LastRespawnTime = time.Now()
 	player.Health = player.MaxHealth
 	player.QAHealthRegenPausedUntil = time.Time{}
+	delete(w.PlayerHazardTicks, playerID)
 
 	// Remove from current grid location (which might be in an instance)
 	w.Grid.Remove(player)
@@ -4580,6 +4591,7 @@ func (w *World) PerformRecall(playerID string) {
 
 	// Teleport to town
 	player.State = "IDLE"
+	delete(w.PlayerHazardTicks, playerID)
 
 	w.Grid.Remove(player)
 	player.X = -1.25
@@ -6505,19 +6517,23 @@ func (w *World) processHazardDamage(dt float64, players []*Entity) {
 		playerState := player.State
 		playerHealth := player.Health
 		instanceID := player.InstanceID
+		disconnected := player.Disconnected
 		qaProtectionEnd := player.QAWaypointProtectionEndTime
 		player.Mu.RUnlock()
-		if playerState == "DEAD" || playerHealth <= 0 {
+		if playerState == "DEAD" || playerHealth <= 0 || disconnected {
+			delete(w.PlayerHazardTicks, playerID)
 			continue
 		}
 
 		// Players in town are safe (Town: X -100 to 100, Z 100 to 300)
-		if px > -100 && px < 100 && pz > 100 && pz < 300 {
+		if px >= -100 && px <= 100 && pz >= 100 && pz <= 300 {
+			delete(w.PlayerHazardTicks, playerID)
 			continue
 		}
 
 		// Players in dungeon instances don't get world hazard damage
 		if instanceID != "" {
+			delete(w.PlayerHazardTicks, playerID)
 			continue
 		}
 
@@ -6564,6 +6580,9 @@ func (w *World) processHazardDamage(dt float64, players []*Entity) {
 					}
 					playerDied := player.State == "DEAD"
 					player.Mu.Unlock()
+					if playerDied {
+						delete(w.PlayerHazardTicks, playerID)
+					}
 
 					// Emit damage event
 					if w.OnEvent != nil {
@@ -6583,6 +6602,9 @@ func (w *World) processHazardDamage(dt float64, players []*Entity) {
 							"killedBy":  hazardID,
 							"wasPlayer": true,
 						})
+					}
+					if playerDied {
+						break
 					}
 				}
 			} else {
@@ -9188,6 +9210,7 @@ func (w *World) EnterInstance(playerID string, instanceID string) error {
 
 	oldInstanceID := player.InstanceID
 	log.Printf("EnterInstance: Player %s moving from '%s' to '%s'", playerID, oldInstanceID, instanceID)
+	delete(w.PlayerHazardTicks, playerID)
 	player.InstanceID = instanceID
 
 	// Set Spawn Position based on Dungeon Layout

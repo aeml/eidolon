@@ -30,6 +30,7 @@ export class EnvironmentalHazard extends Entity {
         // may add atmosphere, but no ground visual may imply a larger boundary.
         this.visualRadius = this.radius;
         this.theme = getHazardTheme(hazardType);
+        this.quality = String(config.quality || 'high').toLowerCase() === 'low' ? 'low' : 'high';
         this.intensity = config.intensity || 1.0;
         this.duration = config.duration || -1; // -1 = permanent
         this.elapsedTime = 0;
@@ -40,6 +41,10 @@ export class EnvironmentalHazard extends Entity {
         
         this.createVisual();
         this.createGameplayBoundary();
+    }
+
+    detailCount(high, low) {
+        return this.quality === 'low' ? low : high;
     }
 
     createLavaMaterial(isInner = false) {
@@ -153,7 +158,7 @@ export class EnvironmentalHazard extends Entity {
      * quality because it communicates gameplay rather than decoration.
      */
     createGameplayBoundary() {
-        const geometry = new THREE.CircleGeometry(this.radius, 64);
+        const geometry = new THREE.CircleGeometry(this.radius, this.detailCount(64, 32));
         geometry.computeBoundingSphere();
         const material = new THREE.ShaderMaterial({
             uniforms: {
@@ -216,6 +221,7 @@ export class EnvironmentalHazard extends Entity {
         this.boundaryMesh.userData.hazardBoundary = true;
         this.boundaryMesh.userData.gameplayRadius = this.radius;
         this.boundaryMesh.userData.themeName = this.theme.name;
+        this.boundaryMesh.userData.graphicsQuality = this.quality;
         this.meshes.push(this.boundaryMesh);
     }
     
@@ -246,7 +252,7 @@ export class EnvironmentalHazard extends Entity {
     // ========================================================================
     createLavaPool() {
         // Base lava pool (glowing ground circle)
-        const poolGeo = new THREE.CircleGeometry(this.visualRadius, 32);
+        const poolGeo = new THREE.CircleGeometry(this.visualRadius, this.detailCount(32, 24));
         const poolMat = this.createLavaMaterial(false);
         this.groundMesh = new THREE.Mesh(poolGeo, poolMat);
         this.groundMesh.rotation.x = -Math.PI / 2;
@@ -255,7 +261,7 @@ export class EnvironmentalHazard extends Entity {
         this.meshes.push(this.groundMesh);
         
         // Inner glow (brighter center)
-        const innerGeo = new THREE.CircleGeometry(this.visualRadius * 0.62, 32);
+        const innerGeo = new THREE.CircleGeometry(this.visualRadius * 0.62, this.detailCount(32, 20));
         const innerMat = this.createLavaMaterial(true);
         this.innerGlow = new THREE.Mesh(innerGeo, innerMat);
         this.innerGlow.rotation.x = -Math.PI / 2;
@@ -264,7 +270,7 @@ export class EnvironmentalHazard extends Entity {
         this.meshes.push(this.innerGlow);
         
         // Rising ember particles
-        const particleCount = 45;
+        const particleCount = this.detailCount(45, 20);
         const particleGeo = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const speeds = new Float32Array(particleCount);
@@ -296,8 +302,9 @@ export class EnvironmentalHazard extends Entity {
         
         // Bubbling spheres (simulated bubbles)
         this.bubbles = [];
-        for (let i = 0; i < 5; i++) {
-            const bubbleGeo = new THREE.SphereGeometry(0.28 + Math.random() * 0.35, 8, 8);
+        for (let i = 0; i < this.detailCount(5, 3); i++) {
+            const bubbleSegments = this.detailCount(8, 6);
+            const bubbleGeo = new THREE.SphereGeometry(0.28 + Math.random() * 0.35, bubbleSegments, bubbleSegments);
             const bubbleMat = new THREE.MeshBasicMaterial({
                 color: 0xFF6600,
                 transparent: true,
@@ -328,7 +335,7 @@ export class EnvironmentalHazard extends Entity {
     // ========================================================================
     createSandstorm() {
         // Dust particle cloud
-        const particleCount = 140;
+        const particleCount = this.detailCount(140, 52);
         const particleGeo = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const speeds = new Float32Array(particleCount);
@@ -358,7 +365,14 @@ export class EnvironmentalHazard extends Entity {
         this.meshes.push(this.particles);
         
         // Swirling cone (wind visual)
-        const coneGeo = new THREE.CylinderGeometry(this.visualRadius * 0.35, this.visualRadius, 6, 18, 1, true);
+        const coneGeo = new THREE.CylinderGeometry(
+            this.visualRadius * 0.35,
+            this.visualRadius,
+            6,
+            this.detailCount(18, 12),
+            1,
+            true
+        );
         const coneMat = new THREE.MeshBasicMaterial({
             color: 0xC4A574,
             transparent: true,
@@ -378,7 +392,7 @@ export class EnvironmentalHazard extends Entity {
     // ========================================================================
     createLightningZone() {
         // Ground warning circle
-        const ringGeo = new THREE.RingGeometry(this.visualRadius * 0.78, this.visualRadius, 40);
+        const ringGeo = new THREE.RingGeometry(this.visualRadius * 0.78, this.visualRadius, this.detailCount(40, 28));
         const ringMat = this.createLightningRingMaterial();
         this.groundMesh = new THREE.Mesh(ringGeo, ringMat);
         this.groundMesh.rotation.x = -Math.PI / 2;
@@ -387,7 +401,7 @@ export class EnvironmentalHazard extends Entity {
         this.meshes.push(this.groundMesh);
         
         // Electric spark particles
-        const particleCount = 60;
+        const particleCount = this.detailCount(60, 28);
         const particleGeo = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const speeds = new Float32Array(particleCount);
@@ -426,7 +440,7 @@ export class EnvironmentalHazard extends Entity {
     createLightningBolt() {
         const points = [];
         const startY = 15;
-        const segments = 8;
+        const segments = this.detailCount(8, 6);
         let x = this.position.x;
         let z = this.position.z;
         
@@ -466,7 +480,7 @@ export class EnvironmentalHazard extends Entity {
     // ========================================================================
     createWindGust() {
         // Wind streak particles (moving in a direction)
-        const particleCount = 90;
+        const particleCount = this.detailCount(90, 34);
         const particleGeo = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const speeds = new Float32Array(particleCount);
@@ -495,7 +509,7 @@ export class EnvironmentalHazard extends Entity {
         this.meshes.push(this.particles);
         
         // Wind direction indicator (arrow-like streaks)
-        const arrowGeo = new THREE.ConeGeometry(0.45, 2.6, 8);
+        const arrowGeo = new THREE.ConeGeometry(0.45, 2.6, this.detailCount(8, 6));
         const arrowMat = new THREE.MeshBasicMaterial({
             color: 0xAADDFF,
             transparent: true,
@@ -503,7 +517,7 @@ export class EnvironmentalHazard extends Entity {
             depthWrite: false
         });
         
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < this.detailCount(3, 2); i++) {
             const arrow = new THREE.Mesh(arrowGeo, arrowMat.clone());
             arrow.rotation.x = Math.PI / 2; // Point forward
             arrow.position.set(
@@ -521,7 +535,7 @@ export class EnvironmentalHazard extends Entity {
     // ========================================================================
     createPoisonCloud() {
         // Ground mist circle
-        const mistGeo = new THREE.CircleGeometry(this.visualRadius, 32);
+        const mistGeo = new THREE.CircleGeometry(this.visualRadius, this.detailCount(32, 24));
         const mistMat = new THREE.MeshBasicMaterial({
             color: 0x44FF44,
             transparent: true,
@@ -536,7 +550,7 @@ export class EnvironmentalHazard extends Entity {
         this.meshes.push(this.groundMesh);
         
         // Rising poison particles
-        const particleCount = 70;
+        const particleCount = this.detailCount(70, 30);
         const particleGeo = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const speeds = new Float32Array(particleCount);
@@ -570,7 +584,7 @@ export class EnvironmentalHazard extends Entity {
     // GENERIC HAZARD - Fallback red warning zone
     // ========================================================================
     createGenericHazard() {
-        const ringGeo = new THREE.RingGeometry(this.visualRadius * 0.78, this.visualRadius, 32);
+        const ringGeo = new THREE.RingGeometry(this.visualRadius * 0.78, this.visualRadius, this.detailCount(32, 24));
         const ringMat = new THREE.MeshBasicMaterial({
             color: 0xFF0000,
             transparent: true,
@@ -784,7 +798,7 @@ export class EnvironmentalHazard extends Entity {
         if (this.lightningBolt) {
             const points = [];
             const startY = 15;
-            const segments = 8;
+            const segments = this.detailCount(8, 6);
             let x = this.position.x + (Math.random() - 0.5) * this.visualRadius;
             let z = this.position.z + (Math.random() - 0.5) * this.visualRadius;
             const endX = x;

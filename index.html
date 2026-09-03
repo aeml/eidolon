@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.31</span>
+                <span class="start-version-row__label">Alpha 0.41.0.32</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -470,7 +470,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-31</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-32</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -482,7 +482,7 @@
                                 </div>
                                 <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Procedural dungeon entrances built in</div>
                                 <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-31</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-32</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -494,7 +494,7 @@
                                 </div>
                                 <div id="asset-pack-environment-status" class="asset-cache-pack__status">Procedural realm terrain built in</div>
                                 <div id="asset-pack-environment-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-environment-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-31</div>
+                                <div id="asset-pack-environment-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-32</div>
                             </div>
                             <button id="btn-download-environment-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -587,6 +587,21 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.32">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.32 (no wound crosses a forgotten threshold)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>Hazards no longer multiply behind the veil:</strong> repeated full-state and delta snapshots now reconcile the dedicated hazard ledger instead of recreating animated meshes outside the normal entity map; changed footprints replace cleanly, removed or pending hazards cannot reappear, and old geometry is disposed.</li>
+                        <li><strong>Scene thresholds close behind you:</strong> throttled entity creations are canceled when their authoritative full state removes them and the entire old queue is cleared on realm or dungeon transitions, preventing stale enemies, loot, or effects from materializing in the next scene.</li>
+                        <li><strong>Exposure always starts honestly:</strong> partial environmental-damage time is cleared on death, respawn, recall, town safety, dungeon entry, world transfer, disconnect, reconnect, explicit removal, and QA teleport; a later return must spend one complete tick inside the danger field.</li>
+                        <li><strong>Lanternhold's whole fence line is safe:</strong> the server now uses the same inclusive x -100..100 and z 100..300 boundary as the client and world art, while a step beyond it immediately returns to normal overworld rules.</li>
+                        <li><strong>Every realm hazard passed inspection:</strong> automated server coverage verifies all 65 authoritative anchors—12 Gloamwood sandstorms, 15 Moonfrost lightning zones, 19 Cinder lava pools, and 19 Stormcrown wind gusts—plus their broadcast identity, radii, cadence, and damage configuration.</li>
+                        <li><strong>Exact danger survives Low quality:</strong> lower settings reduce optional particles and segments across all four active hazard families while preserving the identical server-owned radius, fixed boundary, theme, and warning language.</li>
+                        <li><strong>The full blighted atlas is visible:</strong> hardware Chrome renders all 65 production footprints together at High and Low, confirms every mesh is attached exactly once, rebuilds the complete gallery without leaks, and checks every transform and radius.</li>
+                        <li><strong>Live release retries report recovery correctly:</strong> a successful same-route document retry now reconciles an earlier edge-level navigation failure, while an unrecovered failure remains a hard QA error.</li>
+                        <li><strong>Combat balance remains untouched:</strong> hazard damage percentages, tick intervals, anchor positions, gameplay radii, character stats, quests, progression, saves, and economy values are unchanged.</li>
+                        <li><strong>Clients cross a clean threshold:</strong> the built-in asset generation advances to 2026-09-03-32.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.31">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.31 (the five realms remember their skin)</h3>
                     <ul class="patch-note-entry__list">

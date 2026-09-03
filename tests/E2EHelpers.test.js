@@ -1,3 +1,5 @@
+import { EventEmitter } from 'node:events';
+import { jest } from '@jest/globals';
 import {
     isBenignCanceledAssetRequest,
     isIgnoredBrowserRequest
@@ -6,6 +8,29 @@ import {
     backendOriginBrowserArgs,
     hardwareWebGLBrowserArgs
 } from './e2e/browserLaunchPolicy.js';
+
+jest.unstable_mockModule('@playwright/test', () => ({ expect: jest.fn() }));
+const { collectBrowserFailures } = await import('./e2e/helpers.js');
+
+function request(url, resourceType = 'document', errorText = 'net::ERR_ABORTED') {
+    return {
+        url: () => url,
+        method: () => 'GET',
+        resourceType: () => resourceType,
+        failure: () => ({ errorText })
+    };
+}
+
+function response(url, status = 200, resourceType = 'document') {
+    return {
+        url: () => url,
+        status: () => status,
+        request: () => ({
+            method: () => 'GET',
+            resourceType: () => resourceType
+        })
+    };
+}
 
 describe('browser failure collection', () => {
     test('ignores only Cloudflare-injected RUM posts', () => {
@@ -50,5 +75,39 @@ describe('browser failure collection', () => {
             expect.stringContaining('LocalNetworkAccessChecks')
         ]));
         expect(() => backendOriginBrowserArgs('backend.example.com')).toThrow(/literal IPv4 or IPv6/);
+    });
+});
+
+describe('live browser failure reconciliation', () => {
+    test('a successful retry clears an earlier failed document request for the same route', () => {
+        const page = new EventEmitter();
+        const failures = collectBrowserFailures(page, 'https://eidolon.example');
+
+        page.emit('requestfailed', request('https://eidolon.example/?release=old'));
+        expect(failures).toHaveLength(1);
+
+        page.emit('response', response('https://eidolon.example/?release=current'));
+        expect(failures).toEqual([]);
+    });
+
+    test('an unrecovered failed document remains actionable', () => {
+        const page = new EventEmitter();
+        const failures = collectBrowserFailures(page, 'https://eidolon.example');
+
+        page.emit('requestfailed', request('https://eidolon.example/?release=current'));
+
+        expect(failures).toEqual([
+            'requestfailed: GET https://eidolon.example/?release=current (net::ERR_ABORTED)'
+        ]);
+    });
+
+    test('success on a different document route does not hide the failure', () => {
+        const page = new EventEmitter();
+        const failures = collectBrowserFailures(page, 'https://eidolon.example');
+
+        page.emit('requestfailed', request('https://eidolon.example/game?release=current'));
+        page.emit('response', response('https://eidolon.example/repro.html'));
+
+        expect(failures).toHaveLength(1);
     });
 });

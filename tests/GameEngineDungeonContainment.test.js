@@ -109,6 +109,8 @@ function createEngineHarness() {
     engine.lootDrops = [];
     engine.effects = [];
     engine.hazards = new Map();
+    engine.entityCreationQueue = [];
+    engine.pendingEntityIds = new Set();
     engine.pendingInteraction = null;
     engine.combatIntent = null;
     engine.combatIntentSignature = '';
@@ -323,6 +325,8 @@ describe('GameEngine dungeon containment wiring', () => {
         engine.renderSystem.effectGroup.add(targetRing);
         engine.effects = [effect];
         engine.hazards.set('hazard-1', hazard);
+        engine.entityCreationQueue.push({ id: 'queued-old-enemy', type: 'Enemy' });
+        engine.pendingEntityIds.add('queued-old-enemy');
         engine.pendingInteraction = pendingLoot;
         engine.combatTargetHighlight = targetRing;
         engine.highlightedCombatTarget = { id: 'enemy-1' };
@@ -334,6 +338,8 @@ describe('GameEngine dungeon containment wiring', () => {
         expect(hazard.removeFromScene).toHaveBeenCalledWith(engine.renderSystem.environmentGroup);
         expect(hazard.dispose).toHaveBeenCalledTimes(1);
         expect(engine.hazards.size).toBe(0);
+        expect(engine.entityCreationQueue).toEqual([]);
+        expect(engine.pendingEntityIds.size).toBe(0);
         expect(engine.pendingInteraction).toBeNull();
         expect(engine.highlightedCombatTarget).toBeNull();
         expect(engine.combatTargetHighlight.visible).toBe(false);

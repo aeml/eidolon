@@ -1429,6 +1429,12 @@ export class GameEngine {
         }
         this.hazards.clear();
 
+        // Creation is intentionally throttled across frames. Anything still
+        // queued belongs to the old scene and must not materialize after its
+        // authoritative instance has already been torn down.
+        this.entityCreationQueue = [];
+        this.pendingEntityIds?.clear();
+
         // Clear current dynamic entities through explicit render ownership paths.
         this.remotePlayers.forEach(entity => {
             if (entity.mesh) {
@@ -2115,6 +2121,7 @@ export class GameEngine {
         } else if (msg.type === 'state') {
             const state = msg.payload;
             const seenIds = new Set();
+            const seenHazardIds = new Set();
             
             // One-time log on first state message received
             if (!this._firstStateReceived) {
@@ -2137,6 +2144,15 @@ export class GameEngine {
                 this.applyPositionHacks(pData);
 
                 seenIds.add(pData.id);
+
+                // Hazards are intentionally managed outside remotePlayers. Handle
+                // them before generic entity sync so repeated full snapshots do
+                // not recreate and orphan a second set of animated meshes.
+                if (pData.type === 'Hazard') {
+                    seenHazardIds.add(pData.id);
+                    this.syncEnvironmentalHazardSnapshot(pData);
+                    return;
+                }
 
                 if (pData.id === this.player.id) {
                     // Update local player stats from server
@@ -2436,6 +2452,8 @@ export class GameEngine {
                     this.removeRemoteEntity(id);
                 }
             }
+            this.reconcileEnvironmentalHazards(seenHazardIds);
+            this.reconcilePendingEntitySnapshot(seenIds);
         } else if (msg.type === 'delta') {
             // Delta compression: Only changed entities and removals
             const delta = msg.payload;
@@ -2445,6 +2463,11 @@ export class GameEngine {
             // Process updated entities
             Object.values(updates).forEach(pData => {
                 this.applyPositionHacks(pData);
+
+                if (pData.type === 'Hazard') {
+                    this.syncEnvironmentalHazardSnapshot(pData);
+                    return;
+                }
 
                 // Skip self - local player updates come through full state messages
                 if (pData.id === this.player.id) {
@@ -2707,12 +2730,10 @@ export class GameEngine {
 
             // Process removed entities
             for (const id of removed) {
+                this.cancelPendingEntityCreation(id);
                 // Check if it's a hazard first
                 if (this.hazards.has(id)) {
-                    const hazard = this.hazards.get(id);
-                    hazard.removeFromScene(this.renderSystem.environmentGroup);
-                    hazard.dispose();
-                    this.hazards.delete(id);
+                    this.removeEnvironmentalHazard(id);
                     continue;
                 }
 
@@ -2777,6 +2798,86 @@ export class GameEngine {
             }
         }
         return true;
+    }
+
+    cancelPendingEntityCreation(id) {
+        const previousLength = this.entityCreationQueue?.length || 0;
+        if (previousLength > 0) {
+            this.entityCreationQueue = this.entityCreationQueue.filter(entry => entry?.id !== id);
+        }
+        this.pendingEntityIds?.delete(id);
+        return (this.entityCreationQueue?.length || 0) !== previousLength;
+    }
+
+    reconcilePendingEntitySnapshot(seenIds) {
+        if (!this.entityCreationQueue?.length) return;
+        this.entityCreationQueue = this.entityCreationQueue.filter((entry) => {
+            if (seenIds.has(entry?.id)) return true;
+            this.pendingEntityIds?.delete(entry?.id);
+            return false;
+        });
+    }
+
+    getEnvironmentalHazardSnapshot(pData) {
+        const requestedRadius = Number(pData?.scale);
+        return {
+            id: pData?.id,
+            hazardType: pData?.subType || 'lava_pool',
+            radius: Number.isFinite(requestedRadius) && requestedRadius > 0 ? requestedRadius : 5.0,
+            x: Number(pData?.x) || 0,
+            z: Number(pData?.z) || 0
+        };
+    }
+
+    environmentalHazardMatchesSnapshot(hazard, snapshot) {
+        if (!hazard || !snapshot) return false;
+        const sameNumber = (a, b) => Math.abs(Number(a) - Number(b)) < 0.000001;
+        return hazard.id === snapshot.id
+            && hazard.hazardType === snapshot.hazardType
+            && sameNumber(hazard.radius, snapshot.radius)
+            && sameNumber(hazard.position?.x, snapshot.x)
+            && sameNumber(hazard.position?.z, snapshot.z);
+    }
+
+    removeEnvironmentalHazard(id) {
+        const hazard = this.hazards?.get(id);
+        if (!hazard) return false;
+        hazard.removeFromScene(this.renderSystem?.environmentGroup);
+        hazard.dispose();
+        this.hazards.delete(id);
+        return true;
+    }
+
+    syncEnvironmentalHazardSnapshot(pData) {
+        if (!this.hazards) this.hazards = new Map();
+        const snapshot = this.getEnvironmentalHazardSnapshot(pData);
+        const existing = this.hazards.get(snapshot.id);
+        if (this.environmentalHazardMatchesSnapshot(existing, snapshot)) {
+            return false;
+        }
+        if (existing) {
+            this.removeEnvironmentalHazard(snapshot.id);
+        }
+        this.queueEntityCreation({ ...pData, ...snapshot, subType: snapshot.hazardType, scale: snapshot.radius });
+        return true;
+    }
+
+    reconcileEnvironmentalHazards(seenHazardIds) {
+        if (!this.hazards) this.hazards = new Map();
+        for (const id of this.hazards.keys()) {
+            if (!seenHazardIds.has(id)) {
+                this.removeEnvironmentalHazard(id);
+            }
+        }
+
+        // Full state is authoritative. A removed hazard must not materialize a
+        // frame later merely because it was still waiting in the throttled
+        // creation queue.
+        this.entityCreationQueue = (this.entityCreationQueue || []).filter((entry) => {
+            if (entry?.type !== 'Hazard' || seenHazardIds.has(entry.id)) return true;
+            this.pendingEntityIds?.delete(entry.id);
+            return false;
+        });
     }
 
     getInitialRemoteEntityY(pData) {
@@ -5490,7 +5591,7 @@ export class GameEngine {
             this.pendingEntityIds.delete(pData.id);
             
             // Double check if it was already created (race condition)
-            if (this.remotePlayers.has(pData.id)) continue;
+            if (this.remotePlayers.has(pData.id) || this.hazards.has(pData.id)) continue;
             
             // Skip loot that was recently picked up (prevents phantom items)
             if (pData.type === 'Loot' && this.recentlyPickedUpLoot.has(pData.id)) {
@@ -5572,7 +5673,10 @@ export class GameEngine {
                     const radius = pData.scale || 5.0;
                     const position = { x: pData.x, y: 0, z: pData.z };
                     
-                    const hazard = new EnvironmentalHazard(pData.id, hazardType, position, { radius });
+                    const hazard = new EnvironmentalHazard(pData.id, hazardType, position, {
+                        radius,
+                        quality: this.renderSystem.graphicsQuality
+                    });
                     hazard.addToScene(this.getInstanceEnvironmentGroup());
                     this.hazards.set(pData.id, hazard);
                     
