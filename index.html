@@ -285,7 +285,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                <span class="start-version-row__label">Alpha 0.41.0.17</span>
+                <span class="start-version-row__label">Alpha 0.41.0.18</span>
                 <span id="login-patch-notes-link" class="start-version-row__link">(patch notes)</span>
             </div>
 
@@ -470,7 +470,7 @@
                                 </div>
                                 <div id="asset-pack-core-status" class="asset-cache-pack__status">Procedural core built in</div>
                                 <div id="asset-pack-core-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-02-17</div>
+                                <div id="asset-pack-core-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-18</div>
                             </div>
                             <button id="btn-download-core-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -482,7 +482,7 @@
                                 </div>
                                 <div id="asset-pack-dungeon-status" class="asset-cache-pack__status">Procedural dungeon entrances built in</div>
                                 <div id="asset-pack-dungeon-size" class="asset-cache-pack__meta">Code-generated locally · no download</div>
-                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-02-17</div>
+                                <div id="asset-pack-dungeon-version" class="asset-cache-pack__meta">Built-in version: 2026-09-03-18</div>
                             </div>
                             <button id="btn-download-dungeon-assets" class="menu-btn" type="button" disabled>Built In</button>
                         </div>
@@ -587,6 +587,23 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="0.41.0.18">
+                    <h3 class="patch-note-entry__title">Patch 0.41.0.18 (the last bell opens the way)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li><strong>The deep halls finally answer a cleared room:</strong> defeating the last living enemy assigned to an encounter now advances authoritative room progression, pays the established room reward once, and opens the next objective instead of leaving the route frozen.</li>
+                        <li><strong>A fleeing monster cannot confuse the chamber:</strong> room ownership follows each enemy's server spawn cohort, so pulling a foe into a corridor or later arena neither clears the wrong room nor strands its original encounter.</li>
+                        <li><strong>Treasure stays on the side of the threshold where it fell:</strong> dungeon loot now retains its instance ID, keeping drops visible and collectible by the party instead of silently placing them in the overworld scope.</li>
+                        <li><strong>The chosen run level reaches the whole reward loop:</strong> dungeon trash, elites, and bosses now carry their selected run level into XP and level-qualified loot rules as well as the stat multipliers they already used.</li>
+                        <li><strong>Every chamber shows what the server knows:</strong> current rooms breathe with a quiet inner ward, live objectives raise a rotating ritual crown, completed encounters settle into a pale clear sigil, and chest, shrine, and ambush seals disappear only after their authoritative reward state advances.</li>
+                        <li><strong>The entrance remembers the road home:</strong> each dungeon's generated threshold now holds a dim return aperture throughout the run and kindles it brightly when the server reports no objective remaining.</li>
+                        <li><strong>Four bosses break the floor in four tongues:</strong> Thorncrypt Root Quake grows an inward briar ring, Furnace Rupture fractures into molten fault bars, Stormbreak binds a lightning hex, and Undertow Crush closes in as concentric tide circles.</li>
+                        <li><strong>Danger fields keep their exact promise:</strong> all regional boss motifs sit inside the unchanged server radius and duration; the outer boundary remains the precise area that can damage the player.</li>
+                        <li><strong>Spell warnings no longer impersonate bosses:</strong> player-created delayed impacts carry ordinary impact danger metadata, while actual dungeon boss slams receive their named boss tier from the server.</li>
+                        <li><strong>Warning names remain readable while they pulse:</strong> telegraph animation now preserves the label's authored width and dynamically fits longer encounter names instead of collapsing them to a one-unit square or clipping their first letters.</li>
+                        <li><strong>The encounter contract is inspectable:</strong> new server regressions cover last-enemy room clears, cross-room isolation, run-level propagation, instance-scoped loot, and regional boss metadata; deterministic hardware-Chrome galleries cover every room lifecycle and all four damaging boss fields.</li>
+                        <li><strong>Clients cross a clean threshold:</strong> the built-in asset generation advances to 2026-09-03-18.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="0.41.0.17">
                     <h3 class="patch-note-entry__title">Patch 0.41.0.17 (the deep halls remember their names)</h3>
                     <ul class="patch-note-entry__list">

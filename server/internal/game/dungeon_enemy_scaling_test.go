@@ -73,3 +73,75 @@ func TestVerdantEliteRoomSpawnUsesEliteIDPrefixForLootLogic(t *testing.T) {
 		t.Fatalf("expected Verdant elite-room enemy id to use elite prefix for loot logic, got %s", got)
 	}
 }
+
+func TestDungeonEnemySpawnsCarrySelectedRunLevel(t *testing.T) {
+	w := NewWorld(nil)
+	testCases := []struct {
+		instanceID string
+		runLevel   int
+		spawn      func()
+	}{
+		{
+			instanceID: "standard-level",
+			runLevel:   40,
+			spawn: func() {
+				w.spawnEnemyInInstance("Skeleton", 0, 0, "standard-level", DifficultyNormal)
+			},
+		},
+		{
+			instanceID: "fire-level",
+			runLevel:   70,
+			spawn: func() {
+				w.spawnFireDungeonEnemy("MagmaGolem", 0, 0, "fire-level", false, DifficultyNormal)
+			},
+		},
+		{
+			instanceID: "air-level",
+			runLevel:   80,
+			spawn: func() {
+				w.spawnAirDungeonEnemy("StormHarpy", 0, 0, "air-level", false, DifficultyNormal)
+			},
+		},
+		{
+			instanceID: "boss-level",
+			runLevel:   100,
+			spawn: func() {
+				w.spawnBossInInstance("Thalorath", 0, 0, "boss-level", Stats{Strength: 100, Vitality: 100, Dexterity: 10}, DifficultyMythic)
+			},
+		},
+	}
+
+	for _, testCase := range testCases {
+		w.InstanceLayouts[testCase.instanceID] = &DungeonInstance{
+			ID:         testCase.instanceID,
+			Difficulty: DifficultyNormal,
+			RunLevel:   testCase.runLevel,
+		}
+		testCase.spawn()
+		enemy := findOnlyEnemyForInstance(t, w, testCase.instanceID)
+		if enemy.Level != testCase.runLevel {
+			t.Fatalf("expected %s spawn to carry run level %d, got %d", testCase.instanceID, testCase.runLevel, enemy.Level)
+		}
+	}
+}
+
+func TestDungeonBossTelegraphsUseRegionalEncounterLanguage(t *testing.T) {
+	testCases := []struct {
+		boss   string
+		theme  string
+		attack string
+		label  string
+	}{
+		{"HollowSentinel", "verdant_bastion_catacombs", "root_quake", "ROOT QUAKE"},
+		{"LordInfernax", "molten_core", "furnace_rupture", "FURNACE RUPTURE"},
+		{"Zephyrion", "tempest_spire", "stormbreak", "STORMBREAK"},
+		{"Thalorath", "abyssal_well", "undertow_crush", "UNDERTOW CRUSH"},
+	}
+
+	for _, testCase := range testCases {
+		presentation := telegraphPresentationForDungeonBoss(testCase.boss)
+		if presentation.Theme != testCase.theme || presentation.Attack != testCase.attack || presentation.Label != testCase.label {
+			t.Fatalf("unexpected %s telegraph presentation: %+v", testCase.boss, presentation)
+		}
+	}
+}

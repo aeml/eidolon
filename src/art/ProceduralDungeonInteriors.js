@@ -262,6 +262,187 @@ function addFloorRing(root, shapes, material, name, radius, y = 0.14) {
     });
 }
 
+function makeRoomStateMaterial(color, opacity) {
+    const material = new THREE.MeshBasicMaterial({
+        color,
+        transparent: true,
+        opacity,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
+    material.userData.proceduralDungeonRoomState = true;
+    return material;
+}
+
+function addRoomStateMesh(root, name, geometry, material, {
+    position = [0, 0, 0],
+    rotation = [0, 0, 0]
+} = {}) {
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.name = name;
+    mesh.position.set(...position);
+    mesh.rotation.set(...rotation);
+    mesh.castShadow = false;
+    mesh.receiveShadow = false;
+    mesh.userData.proceduralDungeonInteriorPart = true;
+    mesh.userData.proceduralDungeonRoomState = true;
+    root.add(mesh);
+    return mesh;
+}
+
+export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex, { worldSpace = false } = {}) {
+    const theme = getRegionTheme(dungeonType);
+    const identity = getDungeonRoomIdentityTag(room) || 'route_hall';
+    const size = Math.max(40, Number(room.width) || 80);
+    const radius = Math.max(8, Math.min(24, size * 0.2));
+    const root = new THREE.Group();
+    root.name = `DungeonRoomState:${dungeonType}:${roomIndex}`;
+    root.position.set(
+        worldSpace ? Number(room.x) || 0 : 0,
+        0,
+        worldSpace ? Number(room.z) || 0 : 0
+    );
+    root.userData.proceduralDungeonRoomState = true;
+    root.userData.dungeonType = dungeonType;
+    root.userData.roomIndex = roomIndex;
+    root.userData.roomIdentity = identity;
+    root.userData.radius = radius;
+
+    const objectiveMaterial = makeRoomStateMaterial(theme.palette.accent, 0.74);
+    const currentMaterial = makeRoomStateMaterial(theme.palette.spirit, 0.38);
+    const clearedMaterial = makeRoomStateMaterial(0xa8ffd0, 0.46);
+    const sealMaterial = makeRoomStateMaterial(theme.palette.accent, 0.82);
+    const portalMaterial = makeRoomStateMaterial(theme.palette.spirit, 0.18);
+
+    const objectiveHalo = addRoomStateMesh(
+        root,
+        'DungeonObjectiveHalo',
+        new THREE.RingGeometry(radius * 0.78, radius * 0.9, 48),
+        objectiveMaterial,
+        { position: [0, 0.24, 0], rotation: [-Math.PI / 2, 0, 0] }
+    );
+    const currentHalo = addRoomStateMesh(
+        root,
+        'DungeonCurrentRoomHalo',
+        new THREE.RingGeometry(radius * 0.48, radius * 0.55, 32),
+        currentMaterial,
+        { position: [0, 0.23, 0], rotation: [-Math.PI / 2, 0, 0] }
+    );
+    const clearedSigil = addRoomStateMesh(
+        root,
+        'DungeonClearedSigil',
+        new THREE.RingGeometry(radius * 0.22, radius * 0.31, 8),
+        clearedMaterial,
+        { position: [0, 0.25, 0], rotation: [-Math.PI / 2, 0, Math.PI / 8] }
+    );
+
+    const sealCrown = new THREE.Group();
+    sealCrown.name = 'DungeonObjectiveCrown';
+    sealCrown.position.y = 0.28;
+    sealCrown.userData.proceduralDungeonRoomState = true;
+    for (let i = 0; i < 4; i += 1) {
+        const angle = (i / 4) * Math.PI * 2;
+        addRoomStateMesh(
+            sealCrown,
+            `DungeonObjectiveRune:${i}`,
+            new THREE.ConeGeometry(radius * 0.08, radius * 0.34, 3),
+            sealMaterial.clone(),
+            {
+                position: [Math.cos(angle) * radius * 0.68, 0, Math.sin(angle) * radius * 0.68],
+                rotation: [Math.PI / 2, 0, -angle]
+            }
+        );
+    }
+    root.add(sealCrown);
+
+    let rewardSeal = null;
+    if (room?.hook === 'chest' || room?.hook === 'shrine' || room?.hook === 'elite_ambush') {
+        rewardSeal = addRoomStateMesh(
+            root,
+            'DungeonRewardSeal',
+            new THREE.OctahedronGeometry(0.72, 0),
+            sealMaterial.clone(),
+            { position: [0, 3.6, radius * 0.12] }
+        );
+    }
+
+    let exitPortal = null;
+    if (room?.type === 'start') {
+        exitPortal = addRoomStateMesh(
+            root,
+            'DungeonExitPortal',
+            new THREE.TorusGeometry(3.25, 0.24, 8, 36),
+            portalMaterial,
+            { position: [0, 3.7, -radius * 0.42] }
+        );
+    }
+
+    objectiveHalo.visible = false;
+    currentHalo.visible = false;
+    clearedSigil.visible = false;
+    sealCrown.visible = false;
+    if (rewardSeal) rewardSeal.visible = true;
+    if (exitPortal) exitPortal.visible = true;
+    return root;
+}
+
+export function applyDungeonRoomStatePresentation(presentation, roomState = null, summary = null) {
+    if (!presentation?.userData?.proceduralDungeonRoomState) return;
+    const cleared = Boolean(roomState?.cleared);
+    const roomIndex = presentation.userData.roomIndex;
+    const objective = !cleared && summary?.objectiveRoomIndex === roomIndex;
+    const current = summary?.currentRoomIndex === roomIndex;
+    const exitReady = summary?.objectiveRoomIndex === -1;
+    const objectiveHalo = presentation.getObjectByName('DungeonObjectiveHalo');
+    const currentHalo = presentation.getObjectByName('DungeonCurrentRoomHalo');
+    const clearedSigil = presentation.getObjectByName('DungeonClearedSigil');
+    const sealCrown = presentation.getObjectByName('DungeonObjectiveCrown');
+    const rewardSeal = presentation.getObjectByName('DungeonRewardSeal');
+    const exitPortal = presentation.getObjectByName('DungeonExitPortal');
+
+    if (objectiveHalo) objectiveHalo.visible = objective;
+    if (currentHalo) currentHalo.visible = current && !objective;
+    if (clearedSigil) clearedSigil.visible = cleared;
+    if (sealCrown) sealCrown.visible = objective;
+    if (rewardSeal) rewardSeal.visible = !cleared;
+    if (exitPortal) {
+        exitPortal.visible = true;
+        exitPortal.material.opacity = exitReady ? 0.9 : 0.18;
+        exitPortal.scale.setScalar(exitReady ? 1.08 : 0.94);
+    }
+    presentation.userData.cleared = cleared;
+    presentation.userData.objective = objective;
+    presentation.userData.current = current;
+    presentation.userData.exitReady = exitReady;
+}
+
+export function animateDungeonRoomStatePresentation(presentation, elapsedSeconds = 0) {
+    if (!presentation?.userData?.proceduralDungeonRoomState) return;
+    const pulse = 0.5 + (0.5 * Math.sin((elapsedSeconds * 3.2) + presentation.userData.roomIndex));
+    const objectiveHalo = presentation.getObjectByName('DungeonObjectiveHalo');
+    const currentHalo = presentation.getObjectByName('DungeonCurrentRoomHalo');
+    const clearedSigil = presentation.getObjectByName('DungeonClearedSigil');
+    const sealCrown = presentation.getObjectByName('DungeonObjectiveCrown');
+    const rewardSeal = presentation.getObjectByName('DungeonRewardSeal');
+    const exitPortal = presentation.getObjectByName('DungeonExitPortal');
+
+    if (objectiveHalo?.visible) objectiveHalo.material.opacity = 0.58 + (pulse * 0.28);
+    if (currentHalo?.visible) currentHalo.material.opacity = 0.25 + (pulse * 0.22);
+    if (clearedSigil?.visible) clearedSigil.material.opacity = 0.28 + (pulse * 0.2);
+    if (sealCrown?.visible) sealCrown.rotation.y = elapsedSeconds * 0.34;
+    if (rewardSeal?.visible) {
+        rewardSeal.rotation.y = elapsedSeconds * 0.7;
+        rewardSeal.position.y = 3.6 + (pulse * 0.28);
+    }
+    if (exitPortal?.visible) {
+        exitPortal.rotation.z = elapsedSeconds * (presentation.userData.exitReady ? 0.2 : 0.07);
+        exitPortal.material.opacity = presentation.userData.exitReady
+            ? 0.72 + (pulse * 0.22)
+            : 0.14 + (pulse * 0.08);
+    }
+}
+
 function buildRegionalMotif(root, dungeonType, shapes, materials, radius) {
     if (dungeonType === 'verdant_bastion_catacombs') {
         for (const side of [-1, 1]) {
@@ -499,7 +680,9 @@ export function createProceduralDungeonInteriorKit(dungeonType) {
         wallMaterial: (width, height, transparent = false) => surfaceMaterial('wall', width, height, transparent),
         createRoomDressing(room, roomIndex, { optimized = true } = {}) {
             const source = buildRoomDressing(dungeonType, room, roomIndex, shapes, detailMaterials);
-            return optimized ? batchDressing(source) : source;
+            const result = optimized ? batchDressing(source) : source;
+            result.add(createDungeonRoomStatePresentation(dungeonType, room, roomIndex, { worldSpace: optimized }));
+            return result;
         },
         metrics() {
             return Object.freeze({

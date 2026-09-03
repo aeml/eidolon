@@ -45,6 +45,9 @@ describe('repro and QA tooling', () => {
         expect(js).toContain("urlParams.get('interiors') === '1'");
         expect(js).toContain('__eidolonInteriorGallery');
         expect(js).toContain('DUNGEON_ROOM_IDENTITY_IDS');
+        expect(js).toContain("urlParams.get('encounters') === '1'");
+        expect(js).toContain('__eidolonEncounterGallery');
+        expect(js).toContain('FURNACE RUPTURE');
     });
 
     test('repro route stays isolated from normal login and live gameplay boot', () => {

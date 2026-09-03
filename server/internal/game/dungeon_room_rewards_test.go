@@ -416,3 +416,84 @@ func TestMarkDungeonRoomClearedShrineBuffExpiresAfterDuration(t *testing.T) {
 		t.Fatalf("expected shrine buff to expire after duration")
 	}
 }
+
+func TestDefeatingLastSpawnedEnemyClearsItsEncounterRoom(t *testing.T) {
+	w := NewWorld(nil)
+	instanceID := "instance-combat-room-clear"
+	layout := DungeonLayout{Rooms: []DungeonRoom{
+		{X: 0, Z: 0, Width: 40, Height: 40, Type: "start"},
+		{X: 100, Z: 0, Width: 40, Height: 40, Type: "normal", Hook: "chest"},
+		{X: 200, Z: 0, Width: 40, Height: 40, Type: "boss"},
+	}}
+	player := &Entity{
+		ID:            "player-combat-room-clear",
+		Type:          TypePlayer,
+		InstanceID:    instanceID,
+		State:         "IDLE",
+		MaxExperience: 1000,
+		Inventory:     make([]Item, MaxInventorySize),
+	}
+	first := &Entity{
+		ID:         "room-enemy-first",
+		Type:       TypeEnemy,
+		InstanceID: instanceID,
+		State:      "DEAD",
+		Health:     0,
+		SpawnX:     96,
+		SpawnZ:     0,
+		X:          150,
+		Z:          0,
+	}
+	last := &Entity{
+		ID:         "room-enemy-last",
+		Type:       TypeEnemy,
+		InstanceID: instanceID,
+		State:      "IDLE",
+		Health:     10,
+		SpawnX:     104,
+		SpawnZ:     0,
+		X:          205,
+		Z:          0,
+	}
+	otherRoom := &Entity{
+		ID:         "boss-room-enemy",
+		Type:       TypeEnemy,
+		InstanceID: instanceID,
+		State:      "IDLE",
+		Health:     10,
+		SpawnX:     200,
+		SpawnZ:     0,
+	}
+	w.AddEntity(player)
+	w.AddEntity(first)
+	w.AddEntity(last)
+	w.AddEntity(otherRoom)
+	w.InstanceLayouts[instanceID] = &DungeonInstance{
+		ID:                instanceID,
+		Layout:            layout,
+		Difficulty:        DifficultyNormal,
+		DungeonType:       "verdant_bastion_catacombs",
+		RunLevel:          40,
+		RoomState:         NewDungeonRoomState(layout),
+		PlayerRoomSummary: map[string]DungeonRoomSummary{player.ID: {}},
+	}
+
+	if w.markDungeonRoomClearedIfDefeated(instanceID, first.ID, first.SpawnX, first.SpawnZ) {
+		t.Fatal("expected the room to remain live while one spawned encounter enemy survives")
+	}
+	if w.InstanceLayouts[instanceID].RoomState.Rooms[1].Cleared {
+		t.Fatal("expected uncleared progress while the room still has a living encounter enemy")
+	}
+
+	last.State = "DEAD"
+	last.Health = 0
+	if !w.markDungeonRoomClearedIfDefeated(instanceID, last.ID, last.SpawnX, last.SpawnZ) {
+		t.Fatal("expected the final encounter death to clear its spawn room")
+	}
+	if !w.InstanceLayouts[instanceID].RoomState.Rooms[1].Cleared {
+		t.Fatal("expected authoritative room progress to be marked cleared")
+	}
+	if w.InstanceLayouts[instanceID].RoomState.Rooms[2].Cleared {
+		t.Fatal("expected an enemy spawned in the next room not to be consumed by the prior clear")
+	}
+}

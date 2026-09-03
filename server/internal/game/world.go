@@ -1810,11 +1810,36 @@ type HazardDamageEvent struct {
 // Clients render a warning indicator at (X, Z) with the given Radius for
 // Duration seconds before the damage lands.
 type TelegraphEvent struct {
-	SourceID string  `json:"sourceId"`
-	X        float64 `json:"x"`
-	Z        float64 `json:"z"`
-	Radius   float64 `json:"radius"`
-	Duration float64 `json:"duration"` // seconds before impact
+	SourceID   string  `json:"sourceId"`
+	X          float64 `json:"x"`
+	Z          float64 `json:"z"`
+	Radius     float64 `json:"radius"`
+	Duration   float64 `json:"duration"` // seconds before impact
+	Theme      string  `json:"theme,omitempty"`
+	Attack     string  `json:"attack,omitempty"`
+	ThreatTier string  `json:"threatTier,omitempty"`
+	Label      string  `json:"label,omitempty"`
+}
+
+type dungeonBossTelegraphPresentation struct {
+	Theme  string
+	Attack string
+	Label  string
+}
+
+func telegraphPresentationForDungeonBoss(subType string) dungeonBossTelegraphPresentation {
+	switch subType {
+	case "RootboundWarden", "BriarMatron", "RustboundColossus", "HollowSentinel":
+		return dungeonBossTelegraphPresentation{Theme: "verdant_bastion_catacombs", Attack: "root_quake", Label: "ROOT QUAKE"}
+	case "Cindermaw", "ScorchedTwins", "ForgemasterPyrax", "ObsidianGuardian", "LordInfernax":
+		return dungeonBossTelegraphPresentation{Theme: "molten_core", Attack: "furnace_rupture", Label: "FURNACE RUPTURE"}
+	case "Windshear", "Stormcallers", "RocMatriarch", "ThunderlordKaelix", "Zephyrion":
+		return dungeonBossTelegraphPresentation{Theme: "tempest_spire", Attack: "stormbreak", Label: "STORMBREAK"}
+	case "TiderendLeviathan", "DrownedChoir", "AbyssalGoliath", "MaelstromWarden", "Thalorath":
+		return dungeonBossTelegraphPresentation{Theme: "abyssal_well", Attack: "undertow_crush", Label: "UNDERTOW CRUSH"}
+	default:
+		return dungeonBossTelegraphPresentation{Attack: "ground_slam", Label: "BOSS SLAM"}
+	}
 }
 
 type RewardSummaryEvent struct {
@@ -6120,15 +6145,20 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 						bossID := e.ID
 						bossDamage := e.Damage
 						instanceID := e.InstanceID
+						presentation := telegraphPresentationForDungeonBoss(e.SubType)
 
 						// Emit telegraph event so clients show a warning circle
 						if w.OnEvent != nil {
 							w.OnEvent("telegraph", TelegraphEvent{
-								SourceID: bossID,
-								X:        slamX,
-								Z:        slamZ,
-								Radius:   slamRadius,
-								Duration: slamDelay,
+								SourceID:   bossID,
+								X:          slamX,
+								Z:          slamZ,
+								Radius:     slamRadius,
+								Duration:   slamDelay,
+								Theme:      presentation.Theme,
+								Attack:     presentation.Attack,
+								ThreatTier: "boss",
+								Label:      presentation.Label,
 							})
 						}
 
@@ -7242,6 +7272,16 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 	target.State = "DEAD"
 	target.LastAttackTime = time.Now()
 
+	if target.Type == TypeEnemy && target.InstanceID != "" && (attacker == nil || attacker.Type != TypePlayer) {
+		instanceID := target.InstanceID
+		defeatedEnemyID := target.ID
+		spawnX, spawnZ := target.SpawnX, target.SpawnZ
+		if spawnX == 0 && spawnZ == 0 && (target.X != 0 || target.Z != 0) {
+			spawnX, spawnZ = target.X, target.Z
+		}
+		go w.markDungeonRoomClearedIfDefeated(instanceID, defeatedEnemyID, spawnX, spawnZ)
+	}
+
 	// === ON-KILL EFFECTS (Unique Effects & Set Bonuses) ===
 	if attacker != nil && attacker.Type == TypePlayer && target.Type == TypeEnemy {
 		actualVampiricHeal := 0
@@ -7317,6 +7357,10 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 		tSubType := target.SubType
 		tID := target.ID
 		tX, tZ := target.X, target.Z
+		tSpawnX, tSpawnZ := target.SpawnX, target.SpawnZ
+		if tSpawnX == 0 && tSpawnZ == 0 && (tX != 0 || tZ != 0) {
+			tSpawnX, tSpawnZ = tX, tZ
+		}
 		tInstanceID := target.InstanceID
 		attacker.Mu.Lock()
 		qaGuaranteedLoot := attacker.QAGuaranteedLoot
@@ -7326,6 +7370,10 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 		attacker.Mu.Unlock()
 
 		go func() {
+			if tInstanceID != "" {
+				w.markDungeonRoomClearedIfDefeated(tInstanceID, tID, tSpawnX, tSpawnZ)
+			}
+
 			// Get difficulty multipliers and current dungeon completion state for dungeon enemies
 			instanceDifficulty := w.GetInstanceDifficulty(tInstanceID)
 			instanceType := w.GetInstanceType(tInstanceID)
@@ -7776,13 +7824,14 @@ func (w *World) handleDeath(target *Entity, attacker *Entity, deferred *deferred
 					offsetZ := (rand.Float64() - 0.5) * 1.0
 
 					lootEntity := &Entity{
-						ID:       fmt.Sprintf("loot-%d-%d", time.Now().UnixNano(), i),
-						Type:     TypeLoot,
-						X:        tX + offsetX,
-						Y:        0.5,
-						Z:        tZ + offsetZ,
-						LootItem: item,
-						LootTime: time.Now(),
+						ID:         fmt.Sprintf("loot-%d-%d", time.Now().UnixNano(), i),
+						InstanceID: tInstanceID,
+						Type:       TypeLoot,
+						X:          tX + offsetX,
+						Y:          0.5,
+						Z:          tZ + offsetZ,
+						LootItem:   item,
+						LootTime:   time.Now(),
 					}
 
 					// Always add directly since we are async
@@ -8278,6 +8327,68 @@ func (w *World) UpdateDungeonRoomProgress(playerID string, x, z float64) {
 	inst.PlayerRoomSummary[playerID] = withDungeonSummaryContext(inst.RoomState.Summary(x, z), inst.Difficulty, inst.RunLevel)
 }
 
+// markDungeonRoomClearedIfDefeated connects authoritative combat deaths to the
+// room progression/reward system. Enemy spawn positions are used instead of
+// current positions because a chased enemy can die in a corridor or a later
+// room without changing which encounter owns it.
+func (w *World) markDungeonRoomClearedIfDefeated(instanceID, defeatedEnemyID string, spawnX, spawnZ float64) bool {
+	if instanceID == "" {
+		return false
+	}
+
+	w.Mu.RLock()
+	inst, ok := w.InstanceLayouts[instanceID]
+	if !ok || inst.RoomState == nil {
+		w.Mu.RUnlock()
+		return false
+	}
+	layout := inst.Layout
+	roomIndex := inst.RoomState.CurrentRoomIndexForPosition(spawnX, spawnZ)
+	if roomIndex < 0 || roomIndex >= len(layout.Rooms) || layout.Rooms[roomIndex].Type == "start" {
+		w.Mu.RUnlock()
+		return false
+	}
+	candidates := make([]*Entity, 0)
+	for id, entity := range w.Entities {
+		if id == defeatedEnemyID || entity == nil {
+			continue
+		}
+		candidates = append(candidates, entity)
+	}
+	w.Mu.RUnlock()
+
+	for _, entity := range candidates {
+		entity.Mu.RLock()
+		isLivingEncounterEnemy := entity.Type == TypeEnemy &&
+			entity.InstanceID == instanceID &&
+			entity.State != "DEAD" &&
+			entity.Health > 0
+		candidateSpawnX := entity.SpawnX
+		candidateSpawnZ := entity.SpawnZ
+		entity.Mu.RUnlock()
+		if !isLivingEncounterEnemy {
+			continue
+		}
+
+		candidateRoomIndex := -1
+		for idx, room := range layout.Rooms {
+			halfW := room.Width / 2
+			halfH := room.Height / 2
+			if candidateSpawnX >= room.X-halfW && candidateSpawnX <= room.X+halfW &&
+				candidateSpawnZ >= room.Z-halfH && candidateSpawnZ <= room.Z+halfH {
+				candidateRoomIndex = idx
+				break
+			}
+		}
+		if candidateRoomIndex == roomIndex {
+			return false
+		}
+	}
+
+	w.MarkDungeonRoomCleared(instanceID, roomIndex)
+	return true
+}
+
 func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 	w.Mu.Lock()
 	inst, ok := w.InstanceLayouts[instanceID]
@@ -8337,7 +8448,12 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 			rewardScale += 0.45
 		}
 		for _, entity := range w.Entities {
-			if entity == nil || entity.Type != TypePlayer || entity.InstanceID != instanceID || entity.State == "DEAD" {
+			if entity == nil {
+				continue
+			}
+			entity.Mu.Lock()
+			if entity.Type != TypePlayer || entity.InstanceID != instanceID || entity.State == "DEAD" {
+				entity.Mu.Unlock()
 				continue
 			}
 			xpReward := int(float64(max(50, inst.RunLevel*10)) * rewardScale)
@@ -8375,6 +8491,7 @@ func (w *World) MarkDungeonRoomCleared(instanceID string, roomIndex int) {
 				entity.MaxExperience = 100
 			}
 			playerRewards = append(playerRewards, buildDungeonRoomClearRewardSummary(entity.ID, roomIndex, objectiveRoomIndex, goldReward, xpReward, itemCount, gemCount, heartCount, inst.DungeonType, inst.Difficulty, room.Type, room.Hook, healthRestored, manaRestored))
+			entity.Mu.Unlock()
 		}
 	}
 	w.Mu.Unlock()
@@ -8838,7 +8955,8 @@ func (w *World) spawnFireDungeonEnemy(subType string, x, z float64, instanceID s
 		strength = 8000
 	}
 
-	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(w.getInstanceRunLevelUnsafe(instanceID))
+	runLevel := w.getInstanceRunLevelUnsafe(instanceID)
+	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(runLevel)
 
 	// Apply difficulty multipliers
 	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
@@ -8850,6 +8968,7 @@ func (w *World) spawnFireDungeonEnemy(subType string, x, z float64, instanceID s
 		InstanceID:     instanceID,
 		Type:           TypeEnemy,
 		SubType:        subType,
+		Level:          runLevel,
 		X:              x,
 		Y:              0,
 		Z:              z,
@@ -8880,7 +8999,8 @@ func (w *World) spawnAirDungeonEnemy(subType string, x, z float64, instanceID st
 		strength = 7500
 	}
 
-	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(w.getInstanceRunLevelUnsafe(instanceID))
+	runLevel := w.getInstanceRunLevelUnsafe(instanceID)
+	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(runLevel)
 
 	// Apply difficulty multipliers
 	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
@@ -8892,6 +9012,7 @@ func (w *World) spawnAirDungeonEnemy(subType string, x, z float64, instanceID st
 		InstanceID:     instanceID,
 		Type:           TypeEnemy,
 		SubType:        subType,
+		Level:          runLevel,
 		X:              x,
 		Y:              0,
 		Z:              z,
@@ -8912,7 +9033,8 @@ func (w *World) spawnAirDungeonEnemy(subType string, x, z float64, instanceID st
 }
 
 func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID string, stats Stats, difficulty DungeonDifficulty) {
-	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(w.getInstanceRunLevelUnsafe(instanceID))
+	runLevel := w.getInstanceRunLevelUnsafe(instanceID)
+	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(runLevel)
 
 	// Apply difficulty multipliers
 	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
@@ -8934,6 +9056,7 @@ func (w *World) spawnBossInInstance(subType string, x, z float64, instanceID str
 		InstanceID:     instanceID,
 		Type:           TypeEnemy,
 		SubType:        subType,
+		Level:          runLevel,
 		X:              x,
 		Y:              0,
 		Z:              z,
@@ -8969,7 +9092,8 @@ func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID st
 		strength = 5000
 	}
 
-	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(w.getInstanceRunLevelUnsafe(instanceID))
+	runLevel := w.getInstanceRunLevelUnsafe(instanceID)
+	runLevelHealthMult, runLevelDamageMult := DungeonRunLevelStatMultipliers(runLevel)
 
 	// Apply difficulty multipliers
 	healthMult, damageMult, _, _ := DifficultyMultipliers(difficulty)
@@ -8986,6 +9110,7 @@ func (w *World) spawnEnemyInInstance(subType string, x, z float64, instanceID st
 		InstanceID:     instanceID,
 		Type:           TypeEnemy,
 		SubType:        subType,
+		Level:          runLevel,
 		X:              x,
 		Y:              0,
 		Z:              z,

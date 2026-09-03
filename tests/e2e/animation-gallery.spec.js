@@ -637,6 +637,13 @@ test.describe('deterministic production animation gallery', () => {
             expect(entry.surfaceCount).toBe(3);
             expect(entry.detailCount).toBeGreaterThanOrEqual(60);
             expect(entry.roomIdentities).toEqual(DUNGEON_ROOM_IDENTITY_IDS);
+            expect(entry.roomStates).toEqual(expect.arrayContaining([
+                'exit_ready',
+                'cleared',
+                'objective',
+                'current',
+                'dormant'
+            ]));
             expect(entry.cache).toEqual({
                 surfaceTextures: 4,
                 surfaceMaterials: 3,
@@ -665,5 +672,31 @@ test.describe('deterministic production animation gallery', () => {
             type: 'renderer',
             description: `${renderer.vendor} · ${renderer.renderer}`
         });
+    });
+
+    test('renders every authoritative dungeon boss danger field with regional visual language', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        const response = await page.goto('/repro.html?encounters=1&instances=1', { waitUntil: 'networkidle' });
+        expect(response?.status()).toBe(200);
+
+        await expect.poll(() => page.evaluate(() => window.__eidolonEncounterGallery?.ready || false)).toBe(true);
+        const metrics = await page.evaluate(() => window.__eidolonEncounterGallery);
+        expect(metrics.encounters.map((entry) => entry.theme)).toEqual(DUNGEON_INTERIOR_IDS);
+        expect(metrics.encounters.map((entry) => entry.attack)).toEqual([
+            'root_quake',
+            'furnace_rupture',
+            'stormbreak',
+            'undertow_crush'
+        ]);
+        expect(metrics.encounters.every((entry) => entry.radius === 11)).toBe(true);
+        expect(metrics.encounters.every((entry) => entry.motifParts >= 3)).toBe(true);
+        expect(metrics.encounters.every((entry) => entry.finite)).toBe(true);
+
+        await page.screenshot({
+            path: testInfo.outputPath('procedural-dungeon-encounter-telegraphs.png'),
+            animations: 'allow',
+            fullPage: true
+        });
+        expect(failures, failures.join('\n')).toEqual([]);
     });
 });

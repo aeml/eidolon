@@ -428,6 +428,7 @@ export class GameEngine {
         this.currentDungeonLayout = null;
         this.activeBuffs = [];
         this.worldGenerator = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager);
+        this.activeWorldGenerator = this.worldGenerator;
         this.minimap = new Minimap();
         this.minimap.setGameEngine(this);
         this.worldMap = new WorldMap(this);
@@ -1459,6 +1460,7 @@ export class GameEngine {
                 this.renderSystem.effectGroup.remove(child);
             });
         }
+        this.activeWorldGenerator = null;
 
         // Clear collisions
         this.collisionManager.clear();
@@ -1483,6 +1485,7 @@ export class GameEngine {
 
         // Generate new world
         const worldGen = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager);
+        this.activeWorldGenerator = worldGen;
         if (type === 'crypt') {
             await worldGen.createDungeon(0, 0, 100);
         } else if (type === 'verdant_bastion_catacombs') {
@@ -1500,6 +1503,7 @@ export class GameEngine {
             await worldGen.createTown(0, 200, 100);
             await worldGen.createOverworldStructures();
         }
+        worldGen.updateDungeonRoomState?.(this.currentDungeonRoomState);
 
         // Reset player position and state
         let startX = 0;
@@ -1834,6 +1838,7 @@ export class GameEngine {
                             : this.currentDungeonRoomState.objectiveRoomIndex,
                         rooms: updatedRooms
                     });
+                    this.activeWorldGenerator?.updateDungeonRoomState?.(this.currentDungeonRoomState);
                 }
                 if (this.uiManager && this.uiManager.showRoomClearReward) {
                     this.uiManager.showRoomClearReward(summary);
@@ -1854,7 +1859,9 @@ export class GameEngine {
                     radius: data.radius || 10,
                     telegraphDuration: data.duration || 2.0,
                     threatTier,
-                    label
+                    label,
+                    theme: data.theme || '',
+                    attack: data.attack || ''
                 });
                 if (this.uiManager?.showCombatCallout) {
                     this.uiManager.showCombatCallout({
@@ -1921,6 +1928,7 @@ export class GameEngine {
         } else if (msg.type === 'dungeon_room_state') {
             const previousDungeonRoomState = this.currentDungeonRoomState;
             this.currentDungeonRoomState = decorateDungeonRoomState(msg.payload || null);
+            this.activeWorldGenerator?.updateDungeonRoomState?.(this.currentDungeonRoomState);
             const beatAdvanceCallout = this.buildDungeonBeatAdvanceCallout(previousDungeonRoomState, this.currentDungeonRoomState);
             if (beatAdvanceCallout) {
                 this.uiManager?.showCombatCallout?.(beatAdvanceCallout);
@@ -5195,6 +5203,7 @@ export class GameEngine {
 
     update(dt) {
         this.frameCount++;
+        this.activeWorldGenerator?.updateDungeonPresentation?.(dt);
 
         // Process Input Buffer
         this.abilityController.processInputBuffer();

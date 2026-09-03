@@ -28,6 +28,9 @@ describe('Transient telegraph readability', () => {
         expect(fill.material.opacity).toBeGreaterThan(0.18);
         expect(label.position.y).toBeGreaterThan(ring.position.y);
         expect(label.userData.text).toBe('BOSS');
+        effect.update(0.5);
+        expect(label.scale.x).toBeGreaterThan(6.5);
+        expect(label.scale.y).toBeGreaterThan(1.8);
     });
 
     test('uses lighter visuals for minor telegraphs without labels', () => {
@@ -52,6 +55,38 @@ describe('Transient telegraph readability', () => {
         expect(fill.material.color.getHex()).toBe(0xfff0a8);
         expect(ring.material.opacity).toBeLessThan(0.5);
         expect(fill.material.opacity).toBeLessThan(0.12);
+    });
+
+    test.each([
+        ['verdant_bastion_catacombs', 0xb8ff72, 'RootThorn:'],
+        ['molten_core', 0xff7a24, 'MagmaFault:'],
+        ['tempest_spire', 0x8cecff, 'LightningConductor:'],
+        ['abyssal_well', 0x55f1dc, 'UndertowRing:']
+    ])('gives %s boss danger its own procedural ground language', (theme, ringColor, motifPrefix) => {
+        const scene = new THREE.Scene();
+        const effect = createTransientEffect(
+            scene,
+            'telegraph',
+            new THREE.Vector3(0, 0, 0),
+            0xff2200,
+            {
+                radius: 10,
+                telegraphDuration: 2,
+                threatTier: 'boss',
+                label: 'DANGER',
+                theme,
+                attack: 'regional_slam'
+            }
+        );
+
+        expect(effect).not.toBeNull();
+        expect(effect.meshes).toHaveLength(4);
+        const [ring, , motif, label] = effect.meshes;
+        expect(ring.material.color.getHex()).toBe(ringColor);
+        expect(motif.userData.dungeonTelegraphTheme).toBe(theme);
+        expect(motif.userData.attack).toBe('regional_slam');
+        expect(motif.children.some((child) => child.name.startsWith(motifPrefix))).toBe(true);
+        expect(label.userData.text).toBe('DANGER');
     });
 
     test('creates a grounded dust-ring impact for jump landings', () => {

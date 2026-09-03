@@ -28,6 +28,9 @@ function createEngineHarness() {
         addChatMessage: jest.fn(),
         showRoomClearReward: jest.fn()
     };
+    engine.activeWorldGenerator = {
+        updateDungeonRoomState: jest.fn()
+    };
     engine.spawnTransientEffect = jest.fn(() => true);
     return engine;
 }
@@ -45,7 +48,9 @@ describe('GameEngine telegraph feedback', () => {
                 radius: 14,
                 duration: 2.8,
                 threatTier: 'boss',
-                label: 'BOSS SLAM'
+                label: 'FURNACE RUPTURE',
+                theme: 'molten_core',
+                attack: 'furnace_rupture'
             }
         });
 
@@ -57,7 +62,9 @@ describe('GameEngine telegraph feedback', () => {
                 radius: 14,
                 telegraphDuration: 2.8,
                 threatTier: 'boss',
-                label: 'BOSS SLAM'
+                label: 'FURNACE RUPTURE',
+                theme: 'molten_core',
+                attack: 'furnace_rupture'
             })
         );
     });

@@ -25,8 +25,11 @@ import {
     DUNGEON_INTERIOR_DEFINITIONS,
     DUNGEON_INTERIOR_IDS,
     DUNGEON_ROOM_IDENTITY_IDS,
+    animateDungeonRoomStatePresentation,
+    applyDungeonRoomStatePresentation,
     createProceduralDungeonInteriorKit
 } from './art/ProceduralDungeonInteriors.js';
+import { createTransientEffect } from './core/TransientEffects.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const perfOverlayEnabled = urlParams.get('perf') === '1';
@@ -38,7 +41,8 @@ const foliageGalleryMode = urlParams.get('foliage') === '1';
 const architectureGalleryMode = urlParams.get('architecture') === '1';
 const entranceGalleryMode = urlParams.get('entrances') === '1';
 const interiorGalleryMode = urlParams.get('interiors') === '1';
-const specializedGalleryMode = galleryMode || hazardGalleryMode || foliageGalleryMode || architectureGalleryMode || entranceGalleryMode || interiorGalleryMode;
+const encounterGalleryMode = urlParams.get('encounters') === '1';
+const specializedGalleryMode = galleryMode || hazardGalleryMode || foliageGalleryMode || architectureGalleryMode || entranceGalleryMode || interiorGalleryMode || encounterGalleryMode;
 
 const perfOverlay = document.getElementById('perf-overlay');
 const readout = document.getElementById('repro-readout');
@@ -490,6 +494,7 @@ if (entranceGalleryMode) {
 const interiorGallery = new THREE.Group();
 interiorGallery.name = 'ProceduralDungeonInteriorGallery';
 const interiorGalleryKits = new Map();
+const interiorGalleryStatePresentations = [];
 if (interiorGalleryMode) {
     document.body.classList.add('interior-gallery-mode');
     renderSystem.staticEnvironmentGroup.visible = false;
@@ -562,6 +567,27 @@ if (interiorGalleryMode) {
             };
             const dressing = kit.createRoomDressing(room, roomIndex, { optimized: false });
             dressing.scale.setScalar(0.68);
+            const presentation = dressing.getObjectByName(`DungeonRoomState:${dungeonType}:${roomIndex}`);
+            const galleryState = roomIndex === 0
+                ? 'exit_ready'
+                : roomIndex === 1
+                    ? 'cleared'
+                    : roomIndex === 2 || roomIndex === 6
+                        ? 'objective'
+                        : roomIndex === 3
+                            ? 'current'
+                            : 'dormant';
+            if (presentation) {
+                const cleared = galleryState === 'cleared';
+                const objective = galleryState === 'objective' ? roomIndex : (galleryState === 'exit_ready' ? -1 : 99);
+                const current = galleryState === 'current' || galleryState === 'objective' ? roomIndex : 99;
+                applyDungeonRoomStatePresentation(presentation, { index: roomIndex, cleared }, {
+                    currentRoomIndex: current,
+                    objectiveRoomIndex: objective
+                });
+                presentation.userData.galleryState = galleryState;
+                interiorGalleryStatePresentations.push(presentation);
+            }
             panel.add(dressing);
         });
 
@@ -577,6 +603,57 @@ if (interiorGalleryMode) {
         renderSystem.setGraphicsQuality(quality);
     };
     setReadout('Procedural dungeon interior gallery\nFour generated surface languages and every authoritative room beat: gate, cache, shrine, ambush, approach, elite, boss, and route.');
+}
+
+const encounterGalleryEffects = [];
+if (encounterGalleryMode) {
+    document.body.classList.add('encounter-gallery-mode');
+    renderSystem.staticEnvironmentGroup.visible = false;
+    renderSystem.scene.background = new THREE.Color(0x07090c);
+    gridHelper.visible = false;
+
+    const floor = new THREE.Mesh(
+        new THREE.PlaneGeometry(96, 64),
+        new THREE.MeshStandardMaterial({ color: 0x11151b, roughness: 0.96, metalness: 0.08 })
+    );
+    floor.name = 'DungeonEncounterGalleryFloor';
+    floor.rotation.x = -Math.PI / 2;
+    floor.receiveShadow = true;
+    renderSystem.instanceEnvironmentGroup.add(floor);
+
+    const previews = [
+        ['verdant_bastion_catacombs', 'ROOT QUAKE', 'root_quake', -23, -15],
+        ['molten_core', 'FURNACE RUPTURE', 'furnace_rupture', 23, -15],
+        ['tempest_spire', 'STORMBREAK', 'stormbreak', -23, 15],
+        ['abyssal_well', 'UNDERTOW CRUSH', 'undertow_crush', 23, 15]
+    ];
+    previews.forEach(([theme, label, attack, x, z]) => {
+        const effect = createTransientEffect(
+            renderSystem.effectGroup,
+            'telegraph',
+            new THREE.Vector3(x, 0, z),
+            0xff2200,
+            {
+                radius: 11,
+                telegraphDuration: 3,
+                threatTier: 'boss',
+                label,
+                theme,
+                attack
+            }
+        );
+        effect.theme = theme;
+        effect.label = label;
+        effect.attack = attack;
+        encounterGalleryEffects.push(effect);
+    });
+
+    renderSystem.applyLightingPreset('town', true);
+    renderSystem.setZoom(38);
+    renderSystem.camera.position.set(54, 74, 66);
+    controls.target.set(0, 0, 0);
+    controls.update();
+    setReadout('Dungeon encounter telegraph gallery\nFour authoritative boss danger fields: Root Quake, Furnace Rupture, Stormbreak, and Undertow Crush.');
 }
 
 window.addEventListener('keydown', (event) => {
@@ -595,6 +672,13 @@ const animate = () => {
     controls.update();
     animationGallery?.update(delta);
     hazardGallery.forEach((hazard) => hazard.update(delta));
+    interiorGalleryStatePresentations.forEach((presentation) => {
+        animateDungeonRoomStatePresentation(presentation, now / 1000);
+    });
+    encounterGalleryEffects.forEach((effect) => {
+        if (effect.elapsed + delta >= effect.duration) effect.elapsed = 0;
+        effect.update(delta);
+    });
 
     if (hazardGalleryMode) {
         window.__eidolonHazardGallery = {
@@ -701,10 +785,12 @@ const animate = () => {
                 let surfaceCount = 0;
                 let detailCount = 0;
                 const roomIdentities = [];
+                const roomStates = [];
                 panel.traverse((child) => {
                     if (child.isMesh && child.userData.proceduralDungeonSurface) surfaceCount += 1;
                     if (child.isMesh && child.userData.proceduralDungeonInteriorPart) detailCount += 1;
                     if (child.userData?.proceduralDungeonInterior) roomIdentities.push(child.userData.roomIdentity);
+                    if (child.userData?.galleryState) roomStates.push(child.userData.galleryState);
                 });
                 return {
                     dungeonType,
@@ -713,8 +799,30 @@ const animate = () => {
                     surfaceCount,
                     detailCount,
                     roomIdentities,
+                    roomStates,
                     cache: interiorGalleryKits.get(dungeonType)?.metrics(),
                     finite: [...bounds.min.toArray(), ...bounds.max.toArray()].every(Number.isFinite)
+                };
+            })
+        };
+    }
+
+    if (encounterGalleryMode) {
+        window.__eidolonEncounterGallery = {
+            ready: encounterGalleryEffects.length === DUNGEON_INTERIOR_IDS.length,
+            quality: renderSystem.graphicsQuality,
+            encounters: encounterGalleryEffects.map((effect) => {
+                const motif = effect.meshes.find((mesh) => mesh.userData?.dungeonTelegraphTheme);
+                return {
+                    theme: effect.theme,
+                    label: effect.label,
+                    attack: effect.attack,
+                    radius: effect.meshes[0]?.geometry?.parameters?.outerRadius,
+                    motifParts: motif?.children?.length || 0,
+                    finite: effect.meshes.every((mesh) => {
+                        const bounds = new THREE.Box3().setFromObject(mesh);
+                        return [...bounds.min.toArray(), ...bounds.max.toArray()].every(Number.isFinite);
+                    })
                 };
             })
         };

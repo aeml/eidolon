@@ -1,12 +1,12 @@
 # Procedural Art Migration Inventory
 
-Audit date: September 2, 2026
+Audit date: September 3, 2026
 
 Migration baseline: `Alpha 0.40.0.1`
 
 First procedural-art release: `Alpha 0.41.0.0`
 
-Current migration release: `Alpha 0.41.0.17`
+Current migration release: `Alpha 0.41.0.18`
 
 This inventory is the migration ledger for the complete Eidolon dark-fantasy redesign. A category is only marked migrated after its production runtime reference, visual coverage, lifecycle behavior, and representative browser evidence pass. The legacy counts are maximums enforced by `tests/ProceduralArtMigrationGuard.test.js`; they may decrease but cannot increase.
 
@@ -33,10 +33,10 @@ No authored model path remains in production code, manifests, preload lists, ser
 | Inventory-only types | material, relic, gem | Presentation audit pending; must not be treated as equipment |
 | Active world hazards | 19 lava pools, 12 sandstorms, 15 lightning zones, 19 wind gusts | Exact-radius themed boundaries migrated in 0.41.0.0 |
 | Overworld areas | Gloamwood Marches, Lanternhold, Moonfrost Expanse, Cinder Wastes, Stormcrown Reach | Theme manifest, lighting/atmosphere foundation, nine-family realm foliage, and complete Lanternhold architecture migrated; realm terrain and remaining structures pending |
-| Dungeons | Thorncrypt, Furnace Below, Shattered Aerie, Drowned Sanctum | Generated room/corridor surfaces, all eight server room identities, and exact instance lighting/particles migrated in 0.41.0.17; encounter mechanics, dungeon hazards, bosses, and transitions still require the bespoke pass |
+| Dungeons | Thorncrypt, Furnace Below, Shattered Aerie, Drowned Sanctum | Generated shells/atmosphere migrated in 0.41.0.17; server-driven objective, reward-seal, clear-state, return-portal, and exact boss-danger presentation migrated in 0.41.0.18; bespoke boss bodies and any future dungeon hazard families remain pending |
 | Actors | players, remote players, NPCs, summons, legacy enemies, procedural realm enemies and bosses | All players, four Lanternhold services, the Avenging Seraph, Gloamwood/Cinder/Moonfrost overworld families, and all four Thorncrypt bosses are code-native; remaining enemy and boss routes use the earlier procedural-spec system and await their bespoke style pass |
-| World objects | trees, town buildings, camps, dungeon facades, services, chests, portals, blockers | Realm foliage, all Lanternhold architecture/services, all four overworld dungeon thresholds, and visual room-role reliquaries/shrines migrated; reward-state presentation, interior portals, and blockers pending |
-| Networked effects | projectiles, traps, persistent zones, auras, statuses, combat feedback | Gameplay contract audit exists; art migration and lifecycle gallery expansion pending |
+| World objects | trees, town buildings, camps, dungeon facades, services, chests, portals, blockers | Realm foliage, Lanternhold architecture/services, overworld dungeon thresholds, room-role reliquaries/shrines, reward-state seals, and generated interior return portals migrated; any future authoritative room blockers remain pending |
+| Networked effects | projectiles, traps, persistent zones, auras, statuses, combat feedback | Exact four-theme dungeon boss slam presentation migrated in 0.41.0.18; broader ability/effect art migration and lifecycle gallery expansion pending |
 
 ## Region and hazard identity
 
@@ -51,7 +51,7 @@ No authored model path remains in production code, manifests, preload lists, ser
 | Tempest Spire | Shattered Aerie | Lightning and wind language, room edges, encounter timing |
 | Abyssal Well | Drowned Sanctum | Water/abyss language, movement surfaces, encounter timing |
 
-The 0.41.0.0 hazard pass verifies every active overworld hazard entity broadcasts its gameplay radius through `Entity.Scale`, renders a persistent semantic boundary with that exact radius, and has a distinct warning/active language. Dungeon attacks, traps, scripted damage, rogue traps, persistent player zones, projectiles, death cleanup, reconnect restoration, and room unload/reload remain explicit later audit gates; they are not implied complete by the overworld pass.
+The 0.41.0.0 hazard pass verifies every active overworld hazard entity broadcasts its gameplay radius through `Entity.Scale`, renders a persistent semantic boundary with that exact radius, and has a distinct warning/active language. The 0.41.0.18 audit confirms the only current server-authored dungeon damage zone is the shared boss ground slam and gives its unchanged radius/duration four region-specific warning motifs. There are no separate active dungeon trap or floor-hazard entity families to imply migrated. Rogue traps, persistent player zones, projectiles, death cleanup, reconnect restoration, and room unload/reload remain explicit later audit gates.
 
 ## Migration order
 
@@ -167,3 +167,15 @@ The same factory reads the server's established room metadata and gives `entry_g
 This release also fixes dungeon atmosphere selection. The four layouts live at remote server coordinates that previously made position-only routing classify every one as Stormcrown/Air. Render context now overrides that coordinate heuristic while inside an instance, giving each dungeon its declared light, fog, exposure, bloom, and ambient particle family; leaving the instance clears the override and recycles old weather immediately. Unit coverage checks every theme, texture, identity, exact wall collider, loader bypass, context transition, and disposal route. A deterministic hardware-Chrome gallery renders all four surface languages and all eight room identities at High and Low quality while rejecting legacy cobblestone requests.
 
 This is the room-shell and atmosphere portion of migration stage seven. Boss/encounter dressing, damaging dungeon mechanics, reward-state lifecycle, interior portals/blockers, death/reconnect restoration, and room unload/reload behavior remain open and are not implied complete by this slice.
+
+## The last bell opens the way
+
+`Alpha 0.41.0.18` connects the existing authoritative encounter contract to real production combat. A room now clears when the last living enemy whose spawn belongs to that room dies; current positions are deliberately ignored so a kited enemy cannot clear the wrong chamber or strand the chamber it came from. The established one-time chest, shrine, ambush, XP, gold, item, gem, healing, mana, and Sanctuary reward logic now has a production caller rather than test-only reachability. Boss rooms advance through the same state path without receiving the non-boss room payout.
+
+The combat audit also found and closes two instance/reward integrity gaps. Generated dungeon loot now carries the defeated enemy's instance ID, keeping the drop in the party's state stream, and every dungeon trash, elite, and boss spawn carries the selected run level used by its stat scaling into XP and level-qualified loot calculation. Tests cover multiple living enemies, enemies dragged into another room, unrelated enemies in a later room, deterministic dungeon loot, all spawn helpers, and all four boss presentation families.
+
+Generated room dressing now reacts to the replicated server summary without acquiring gameplay authority. Current rooms receive a restrained inner ward; the next uncleared objective receives a rotating crown and exact room-scale halo; cleared rooms receive a settled sigil; chest, shrine, and ambush seals retire when the corresponding server state clears; and the existing entrance carries a dim return aperture that brightens only when `objectiveRoomIndex` becomes `-1`. None of these meshes adds a collider, changes a door opening, moves a portal target, or predicts a clear locally. Scene transition disposal owns the complete hierarchy, and reconnect/late room summaries can reconstruct the same presentation immediately.
+
+The sole current dungeon damage-zone family—the large-enemy boss slam—now carries a server-selected encounter identity. Thorncrypt emits Root Quake, Furnace Below emits Furnace Rupture, Shattered Aerie emits Stormbreak, and Drowned Sanctum emits Undertow Crush. Each client motif is contained by the unchanged authoritative radius and lasts for the unchanged telegraph duration. Player-created delayed spell impacts are explicitly tagged as ordinary danger rather than defaulting to boss language. The label pulse preserves its base dimensions and fits longer names, fixing the prior animation path that collapsed warning text into an unreadable square.
+
+Hardware-Chrome evidence now has two deterministic stage-seven routes: the four-panel interior gallery exercises dormant, current, objective, cleared, reward-seal, and exit-ready states, while the encounter gallery renders all four server-named boss fields from production transient-effect code. Bespoke Molten, Tempest, and Abyssal boss bodies, the remaining general ability/effect restyle, death presentation, and explicit reconnect/unload browser routes remain open; this release does not claim those later gates.

@@ -152,11 +152,14 @@ func applyFinalDamage(attacker, target *Entity, baseDamage int, damageType strin
 func (w *World) fireTelegraphEvent(sourceID string, x, z, radius float64, duration time.Duration) {
 	if w.OnEvent != nil {
 		w.OnEvent("telegraph", TelegraphEvent{
-			SourceID: sourceID,
-			X:        x,
-			Z:        z,
-			Radius:   radius,
-			Duration: duration.Seconds(),
+			SourceID:   sourceID,
+			X:          x,
+			Z:          z,
+			Radius:     radius,
+			Duration:   duration.Seconds(),
+			Attack:     "spell_impact",
+			ThreatTier: "danger",
+			Label:      "IMPACT",
 		})
 	}
 }

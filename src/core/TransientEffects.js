@@ -222,6 +222,44 @@ function createEnergyShardMaterial(color, opacity = 0.95) {
 function getTelegraphTheme(options = {}) {
     const tier = options.threatTier || 'danger';
 
+    const dungeonThemes = {
+        verdant_bastion_catacombs: {
+            ringColor: 0xb8ff72,
+            fillColor: 0x5e8b45,
+            motifColor: 0xd7ff9a,
+            labelColor: '#eaffc8'
+        },
+        molten_core: {
+            ringColor: 0xff7a24,
+            fillColor: 0xb52618,
+            motifColor: 0xffc052,
+            labelColor: '#ffe0a8'
+        },
+        tempest_spire: {
+            ringColor: 0x8cecff,
+            fillColor: 0x6554c7,
+            motifColor: 0xf1e8ff,
+            labelColor: '#e8faff'
+        },
+        abyssal_well: {
+            ringColor: 0x55f1dc,
+            fillColor: 0x126c83,
+            motifColor: 0xa8fff3,
+            labelColor: '#d6fffa'
+        }
+    };
+    const dungeonTheme = dungeonThemes[options.theme];
+
+    if (dungeonTheme && (tier === 'boss' || tier === 'lethal')) {
+        return {
+            ...dungeonTheme,
+            ringOpacity: 0.78,
+            fillOpacity: 0.22,
+            ringPulseBoost: 0.2,
+            fillPulseBoost: 0.24
+        };
+    }
+
     if (tier === 'minor') {
         return {
             ringColor: 0xffd54a,
@@ -257,6 +295,82 @@ function getTelegraphTheme(options = {}) {
     };
 }
 
+function createDungeonTelegraphMotif(themeId, radius, position, color) {
+    if (!themeId) return null;
+
+    const root = new THREE.Group();
+    root.name = `DungeonTelegraphMotif:${themeId}`;
+    root.position.copy(position);
+    root.position.y += 0.075;
+    root.userData.dungeonTelegraphTheme = themeId;
+    const material = new THREE.MeshBasicMaterial({
+        color,
+        transparent: true,
+        opacity: 0.72,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
+    const addGroundMesh = (geometry, name, x = 0, z = 0, rotationZ = 0) => {
+        const mesh = new THREE.Mesh(geometry, material.clone());
+        mesh.name = name;
+        mesh.position.set(x, 0, z);
+        mesh.rotation.x = -Math.PI / 2;
+        mesh.rotation.z = rotationZ;
+        root.add(mesh);
+        return mesh;
+    };
+
+    if (themeId === 'verdant_bastion_catacombs') {
+        for (let i = 0; i < 8; i += 1) {
+            const angle = (i / 8) * Math.PI * 2;
+            addGroundMesh(
+                new THREE.ConeGeometry(radius * 0.065, radius * 0.34, 3),
+                `RootThorn:${i}`,
+                Math.cos(angle) * radius * 0.63,
+                Math.sin(angle) * radius * 0.63,
+                -angle
+            );
+        }
+    } else if (themeId === 'molten_core') {
+        for (let i = 0; i < 5; i += 1) {
+            const angle = (i / 5) * Math.PI * 2;
+            addGroundMesh(
+                new THREE.PlaneGeometry(radius * 0.08, radius * 0.76),
+                `MagmaFault:${i}`,
+                Math.cos(angle) * radius * 0.28,
+                Math.sin(angle) * radius * 0.28,
+                -angle + (i % 2 ? 0.18 : -0.12)
+            );
+        }
+    } else if (themeId === 'tempest_spire') {
+        for (let i = 0; i < 6; i += 1) {
+            const angle = (i / 6) * Math.PI * 2;
+            addGroundMesh(
+                new THREE.PlaneGeometry(radius * 0.055, radius * 0.62),
+                `LightningConductor:${i}`,
+                Math.cos(angle) * radius * 0.38,
+                Math.sin(angle) * radius * 0.38,
+                -angle + 0.24
+            );
+        }
+        addGroundMesh(new THREE.RingGeometry(radius * 0.22, radius * 0.27, 6), 'StormHex');
+    } else if (themeId === 'abyssal_well') {
+        for (let i = 0; i < 3; i += 1) {
+            addGroundMesh(
+                new THREE.RingGeometry(radius * (0.26 + i * 0.18), radius * (0.3 + i * 0.18), 40),
+                `UndertowRing:${i}`
+            );
+        }
+    } else {
+        material.dispose();
+        return null;
+    }
+
+    material.dispose();
+    return root;
+}
+
 function createTelegraphLabelSprite(text, color = '#ffffff') {
     if (!text) return null;
 
@@ -273,7 +387,12 @@ function createTelegraphLabelSprite(text, color = '#ffffff') {
             ctx.strokeStyle = 'rgba(255, 215, 140, 0.65)';
             ctx.lineWidth = 2;
             ctx.strokeRect(1, 9, canvas.width - 2, 46);
-            ctx.font = 'bold 28px Arial';
+            let fontSize = 28;
+            ctx.font = `bold ${fontSize}px Arial`;
+            while (fontSize > 16 && ctx.measureText(text).width > canvas.width - 24) {
+                fontSize -= 2;
+                ctx.font = `bold ${fontSize}px Arial`;
+            }
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillStyle = color;
@@ -292,6 +411,7 @@ function createTelegraphLabelSprite(text, color = '#ffffff') {
     }));
     sprite.scale.set(6.5, 1.8, 1);
     sprite.userData.text = text;
+    sprite.userData.baseScale = [6.5, 1.8];
     return sprite;
 }
 
@@ -760,27 +880,47 @@ export function createTransientEffect(scene, type, position, color = 0xffffff, o
         fill.position.copy(position);
         fill.position.y += 0.05;
 
+        const motif = createDungeonTelegraphMotif(
+            options?.theme,
+            radius,
+            position,
+            theme.motifColor || theme.ringColor
+        );
+        if (motif) {
+            motif.userData.attack = options?.attack || '';
+        }
+
         const label = createTelegraphLabelSprite(options.label, theme.labelColor);
         if (label) {
             label.position.copy(position);
             label.position.y += 2.6;
         }
 
-        const telegraphMeshes = label ? [ring, fill, label] : [ring, fill];
+        const telegraphMeshes = [ring, fill];
+        if (motif) telegraphMeshes.push(motif);
+        if (label) telegraphMeshes.push(label);
         addToScene(scene, telegraphMeshes);
-        return new TransientEffect(scene, telegraphMeshes, telegraphDuration, ({ meshes, t }) => {
-            const [r, f, l] = meshes;
+        return new TransientEffect(scene, telegraphMeshes, telegraphDuration, ({ t }) => {
             // Pulsing opacity — gets more urgent near the end
             const pulse = 0.5 + 0.5 * Math.sin(t * Math.PI * 6);
-            r.material.opacity = (theme.ringOpacity + theme.ringPulseBoost * t) * pulse;
+            ring.material.opacity = (theme.ringOpacity + theme.ringPulseBoost * t) * pulse;
             // Fill grows more opaque as impact approaches
-            f.material.opacity = theme.fillOpacity + theme.fillPulseBoost * t;
+            fill.material.opacity = theme.fillOpacity + theme.fillPulseBoost * t;
             // Slight scale pulse
             const s = 1.0 - 0.04 * Math.sin(t * Math.PI * 8);
-            r.scale.set(s, s, s);
-            if (l?.material) {
-                l.material.opacity = 0.72 + 0.2 * pulse;
-                l.scale.setScalar(1.0 + 0.04 * pulse);
+            ring.scale.set(s, s, s);
+            if (motif) {
+                motif.rotation.y = t * Math.PI * 0.22;
+                motif.scale.setScalar(0.96 + (0.08 * t) + (0.02 * pulse));
+                motif.traverse((part) => {
+                    if (part.material) part.material.opacity = 0.44 + (0.38 * t) + (0.1 * pulse);
+                });
+            }
+            if (label?.material) {
+                label.material.opacity = 0.72 + 0.2 * pulse;
+                const labelPulse = 1.0 + (0.04 * pulse);
+                const [baseWidth, baseHeight] = label.userData.baseScale || [6.5, 1.8];
+                label.scale.set(baseWidth * labelPulse, baseHeight * labelPulse, 1);
             }
         });
     }

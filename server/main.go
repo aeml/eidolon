@@ -65,7 +65,7 @@ var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAME
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 0.41.0.17"
+	buildVersion = "Alpha 0.41.0.18"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -557,11 +557,15 @@ type ComboPayload struct {
 }
 
 type TelegraphPayload struct {
-	SourceID string  `json:"sourceId"`
-	X        float64 `json:"x"`
-	Z        float64 `json:"z"`
-	Radius   float64 `json:"radius"`
-	Duration float64 `json:"duration"`
+	SourceID   string  `json:"sourceId"`
+	X          float64 `json:"x"`
+	Z          float64 `json:"z"`
+	Radius     float64 `json:"radius"`
+	Duration   float64 `json:"duration"`
+	Theme      string  `json:"theme,omitempty"`
+	Attack     string  `json:"attack,omitempty"`
+	ThreatTier string  `json:"threatTier,omitempty"`
+	Label      string  `json:"label,omitempty"`
 }
 
 type RewardSummaryPayload struct {
@@ -1107,11 +1111,15 @@ func main() {
 				return
 			}
 			payload := TelegraphPayload{
-				SourceID: evt.SourceID,
-				X:        evt.X,
-				Z:        evt.Z,
-				Radius:   evt.Radius,
-				Duration: evt.Duration,
+				SourceID:   evt.SourceID,
+				X:          evt.X,
+				Z:          evt.Z,
+				Radius:     evt.Radius,
+				Duration:   evt.Duration,
+				Theme:      evt.Theme,
+				Attack:     evt.Attack,
+				ThreatTier: evt.ThreatTier,
+				Label:      evt.Label,
 			}
 			b, _ := json.Marshal(payload)
 			outMsg := Message{

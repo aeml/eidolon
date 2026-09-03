@@ -251,7 +251,7 @@ describe('UIManager asset download settings', () => {
             cachedCount: packName === 'environment-textures' ? 2 : 0,
             total: packName === 'environment-textures' ? 4 : 0,
             updateAvailable: packName === 'environment-textures',
-            cachedVersion: packName !== 'environment-textures' ? '2026-09-02-17' : 'legacy-build'
+            cachedVersion: packName !== 'environment-textures' ? '2026-09-03-18' : 'legacy-build'
         }));
 
         await ui.refreshAssetCacheState();
@@ -259,8 +259,8 @@ describe('UIManager asset download settings', () => {
         expect(ui.assetPackCoreStatus.textContent).toContain('Procedural core built in');
         expect(ui.assetPackDungeonStatus.textContent).toContain('Procedural dungeon entrances built in');
         expect(ui.assetPackEnvironmentStatus.textContent).toContain('2/4 cached');
-        expect(document.getElementById('asset-pack-core-version').textContent).toContain('2026-09-02-17');
-        expect(document.getElementById('asset-pack-dungeon-version').textContent).toContain('2026-09-02-17');
+        expect(document.getElementById('asset-pack-core-version').textContent).toContain('2026-09-03-18');
+        expect(document.getElementById('asset-pack-dungeon-version').textContent).toContain('2026-09-03-18');
         expect(document.getElementById('asset-pack-environment-version').textContent).toContain('legacy-build');
         expect(document.getElementById('asset-pack-core-badge').textContent).toContain('Current');
         expect(document.getElementById('asset-pack-core-badge').dataset.state).toBe('current');
@@ -345,7 +345,7 @@ describe('UIManager asset download settings', () => {
 
         await ui.requestAssetDownload('environment-textures');
 
-        expect(ui.assetLastSyncedVersion.textContent).toContain('2026-09-02-17');
-        expect(localStorage.getItem('eidolon.assetLastSyncedVersion')).toBe('2026-09-02-17');
+        expect(ui.assetLastSyncedVersion.textContent).toContain('2026-09-03-18');
+        expect(localStorage.getItem('eidolon.assetLastSyncedVersion')).toBe('2026-09-03-18');
     });
 });

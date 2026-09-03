@@ -16,7 +16,11 @@ import {
     DUNGEON_ENTRANCE_IDS,
     createProceduralDungeonEntrance
 } from '../art/ProceduralDungeonEntrances.js';
-import { createProceduralDungeonInteriorKit } from '../art/ProceduralDungeonInteriors.js';
+import {
+    animateDungeonRoomStatePresentation,
+    applyDungeonRoomStatePresentation,
+    createProceduralDungeonInteriorKit
+} from '../art/ProceduralDungeonInteriors.js';
 
 // Shared temp objects to reduce allocations during instancing
 const TEMP_POS = new THREE.Vector3();
@@ -34,6 +38,8 @@ export class WorldGenerator {
         this.floorTexture = null;
         this.wallTexture = null;
         this.dungeonInteriorKit = null;
+        this.dungeonRoomPresentations = new Map();
+        this.dungeonPresentationElapsed = 0;
     }
 
     async preloadTextures() {
@@ -1109,6 +1115,23 @@ export class WorldGenerator {
         if (!this.dungeonInteriorKit || !room) return null;
         const dressing = this.dungeonInteriorKit.createRoomDressing(room, roomIndex, { optimized: true });
         this.scene.add(dressing);
+        const presentation = dressing.getObjectByName(`DungeonRoomState:${this.dungeonInteriorKit.dungeonType}:${roomIndex}`);
+        if (presentation) this.dungeonRoomPresentations.set(roomIndex, presentation);
         return dressing;
+    }
+
+    updateDungeonRoomState(summary = null) {
+        const rooms = Array.isArray(summary?.rooms) ? summary.rooms : [];
+        for (const [roomIndex, presentation] of this.dungeonRoomPresentations.entries()) {
+            const roomState = rooms.find((room) => room?.index === roomIndex) || null;
+            applyDungeonRoomStatePresentation(presentation, roomState, summary);
+        }
+    }
+
+    updateDungeonPresentation(dt = 0) {
+        this.dungeonPresentationElapsed += Math.max(0, Number(dt) || 0);
+        for (const presentation of this.dungeonRoomPresentations.values()) {
+            animateDungeonRoomStatePresentation(presentation, this.dungeonPresentationElapsed);
+        }
     }
 }

@@ -63,7 +63,7 @@ describe('AssetCacheManager service worker progress and inspection', () => {
                     completed: 4,
                     total: 4,
                     percent: 100,
-                    cachedVersion: '2026-09-02-17'
+                    cachedVersion: '2026-09-03-18'
                 }
             }
         });

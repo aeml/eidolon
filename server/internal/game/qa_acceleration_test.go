@@ -64,6 +64,78 @@ func TestQAGuaranteedLootIsConsumedByNextEnemyKill(t *testing.T) {
 	t.Fatal("expected the armed enemy kill to create a normal loot entity")
 }
 
+func TestDungeonKillKeepsGeneratedLootInsideItsInstance(t *testing.T) {
+	w := NewWorld(nil)
+	instanceID := "dungeon_qa_loot_scope"
+	layout := DungeonLayout{Rooms: []DungeonRoom{
+		{X: 0, Z: 0, Width: 40, Height: 40, Type: "start"},
+		{X: 100, Z: 0, Width: 40, Height: 40, Type: "normal"},
+	}}
+	player := &Entity{
+		ID:               "player-dungeon-loot",
+		Type:             TypePlayer,
+		SubType:          "Wizard",
+		Level:            40,
+		InstanceID:       instanceID,
+		State:            "IDLE",
+		MaxExperience:    1_000_000,
+		Inventory:        make([]Item, MaxInventorySize),
+		Equipment:        make(map[string]Item),
+		Cooldowns:        make(map[string]time.Time),
+		SkillRunes:       make(map[string]string),
+		TalentRanks:      make(map[string]int),
+		QAGuaranteedLoot: true,
+	}
+	enemy := &Entity{
+		ID:         "dungeon-loot-enemy",
+		Type:       TypeEnemy,
+		SubType:    "Skeleton",
+		Level:      40,
+		InstanceID: instanceID,
+		State:      "IDLE",
+		Health:     10,
+		MaxHealth:  10,
+		X:          100,
+		Z:          0,
+		SpawnX:     100,
+		SpawnZ:     0,
+	}
+	w.AddEntity(player)
+	w.AddEntity(enemy)
+	w.InstanceLayouts[instanceID] = &DungeonInstance{
+		ID:                instanceID,
+		Layout:            layout,
+		Difficulty:        DifficultyNormal,
+		DungeonType:       "verdant_bastion_catacombs",
+		RunLevel:          40,
+		RoomState:         NewDungeonRoomState(layout),
+		PlayerRoomSummary: map[string]DungeonRoomSummary{player.ID: {}},
+	}
+
+	w.handleDeath(enemy, player, nil)
+	deadline := time.Now().Add(time.Second)
+	for time.Now().Before(deadline) {
+		w.Mu.RLock()
+		for _, entity := range w.Entities {
+			if entity.Type == TypeLoot && entity.LootItem != nil && entity.LootItem.Type != ItemMaterial && entity.LootItem.Type != ItemRelic {
+				lootInstanceID := entity.InstanceID
+				roomCleared := w.InstanceLayouts[instanceID].RoomState.Rooms[1].Cleared
+				w.Mu.RUnlock()
+				if lootInstanceID != instanceID {
+					t.Fatalf("expected dungeon loot in %s, got %q", instanceID, lootInstanceID)
+				}
+				if !roomCleared {
+					t.Fatal("expected the production death path to clear the defeated encounter room")
+				}
+				return
+			}
+		}
+		w.Mu.RUnlock()
+		time.Sleep(5 * time.Millisecond)
+	}
+	t.Fatal("expected the deterministic dungeon kill to generate scoped loot")
+}
+
 func TestQAGuaranteedLootMakesNextAcceptedBasicAttackDeterministic(t *testing.T) {
 	w := NewWorld(nil)
 	player := &Entity{
